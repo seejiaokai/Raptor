@@ -1,0 +1,2471 @@
+{
+ "parts": {
+  "x0102-part1": {
+   "at": "2026-10-08T14:00:16.574Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-01",
+     "did": "Published Thu 23 Jul (four sign-offs), reloaded; Inputs month > 23 Jul > + Input > Several people (Ace, Warden, Hunter) > Meeting 10:00-11:00 > Add; read Edit Schedule day head, changes window, View-only Sched; reload; Publish AL",
+     "saw": "clean: ver=ORIG chip=\"5 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/ | after filing: Inputs bars [\"Zenith · Meeting\",\"Ace +2 · Meeting\",\"Drifter +3 · Meeting\"] (+2 bar count 1); records made 3 grp=gmuzls3gwnywxtf,gmuzls3gwnywxtf,gmuzls3gwnywxtf; working copy ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; changes tabs [\"New to you 0\",\"All changes 8\",\"To go out · AL1 3\"]; view-only unchanged=true; after reload ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; after AL ver=AL1 chip=\"13 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/",
+     "verdict": "PASS",
+     "pics": [
+      "x0102-dk-001-x01-published-clean-head-di3.png",
+      "x0102-dk-008-x01-day-before-filing.png",
+      "x0102-dk-009-x01-editor-filled.png",
+      "x0102-dk-010-x01-inputs-month-after.png",
+      "x0102-dk-011-x01-opened-day-after.png",
+      "x0102-dk-012-x01-working-copy-after-head-di3.png",
+      "x0102-dk-013-x01-after-chg-Newtoyou-item.png",
+      "x0102-dk-014-x01-after-chg-Newtoyou-who.png",
+      "x0102-dk-015-x01-after-chg-Allchanges-item.png",
+      "x0102-dk-016-x01-after-chg-Allchanges-who.png",
+      "x0102-dk-017-x01-after-chg-TogooutAL.png",
+      "x0102-dk-019-x01-after-reload-head-di3.png",
+      "x0102-dk-020-x01-after-AL-head-di3.png"
+     ],
+     "figures": {
+      "clean": {
+       "tag": "ORIG",
+       "pending": "5 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": ""
+      },
+      "after": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": "Not yet signed"
+      },
+      "afterReload": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": "Not yet signed"
+      },
+      "afterAL": {
+       "tag": "AL1",
+       "pending": "13 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": ""
+      },
+      "tabs": [
+       "New to you 0",
+       "All changes 8",
+       "To go out · AL1 3"
+      ],
+      "changes": {
+       "opened": true,
+       "tabs": [
+        "New to you 0",
+        "All changes 8",
+        "To go out · AL1 3"
+       ],
+       "pics": [
+        "x0102-dk-013-x01-after-chg-Newtoyou-item.png",
+        "x0102-dk-014-x01-after-chg-Newtoyou-who.png",
+        "x0102-dk-015-x01-after-chg-Allchanges-item.png",
+        "x0102-dk-016-x01-after-chg-Allchanges-who.png",
+        "x0102-dk-017-x01-after-chg-TogooutAL.png"
+       ],
+       "Newtoyou": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_item": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_who": [
+        "Nothing new to you on Thursday."
+       ],
+       "Allchanges": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "21:59",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "▾",
+        "The day · 5",
+        "21:59",
+        "Published — the Original",
+        "Saber · 8/10 21:59",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 21:59"
+       ],
+       "Allchanges_item": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "21:59",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "▾",
+        "The day · 5",
+        "21:59",
+        "Published — the Original",
+        "Saber · 8/10 21:59",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 21:59"
+       ],
+       "Allchanges_who": [
+        "▾",
+        "Saber · 8 changes",
+        "8/10 21:59–21:59",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 21:59",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 21:59",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 21:59",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Published — the Original",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · APPROVED BY · Anvil",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · PLANNED BY · Anvil",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · SKED CK · Anvil",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · CUR CK · Ace"
+       ],
+       "TogooutAL": [
+        "Waiting to go out as",
+        "AL1",
+        "· 3 changes",
+        "Ace · Meeting",
+        "Saber",
+        "8/10 21:59",
+        "not on the programme → on the programme",
+        "Warden · Meeting",
+        "Saber",
+        "8/10 21:59",
+        "not on the programme → on the programme",
+        "Hunter · Meeting",
+        "Saber",
+        "8/10 21:59",
+        "not on the programme → on the programme",
+        "Tap a change to go to it."
+       ]
+      },
+      "made": [
+       {
+        "iid": "imuzls3hnn82gur",
+        "person": "prowler",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzls3gwnywxtf",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzls3hav972wx",
+        "person": "nact",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzls3gwnywxtf",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzls3gw5fu1f8",
+        "person": "dj",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzls3gwnywxtf",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       }
+      ],
+      "bars": [
+       "Zenith · Meeting",
+       "Ace +2 · Meeting",
+       "Drifter +3 · Meeting"
+      ],
+      "viewUnchanged": true
+     }
+    }
+   ],
+   "pics": {
+    "saved": 22,
+    "opened": 0
+   }
+  },
+  "x0102-part2": {
+   "at": "2026-10-08T14:01:09.693Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-01",
+     "did": "Published Thu 23 Jul (four sign-offs), reloaded; Inputs month > 23 Jul > + Input > Several people (Ace, Warden, Hunter) > Meeting 10:00-11:00 > Add; read Edit Schedule day head, changes window, View-only Sched; reload; Publish AL",
+     "saw": "clean: ver=ORIG chip=\"5 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/ | after filing: Inputs bars [\"Zenith · Meeting\",\"Ace +2 · Meeting\",\"Drifter +3 · Meeting\"] (+2 bar count 1); records made 3 grp=gmuzls3gwnywxtf,gmuzls3gwnywxtf,gmuzls3gwnywxtf; working copy ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; changes tabs [\"New to you 0\",\"All changes 8\",\"To go out · AL1 3\"]; view-only unchanged=true; after reload ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; after AL ver=AL1 chip=\"13 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/",
+     "verdict": "PASS",
+     "pics": [
+      "x0102-dk-001-x01-published-clean-head-di3.png",
+      "x0102-dk-008-x01-day-before-filing.png",
+      "x0102-dk-009-x01-editor-filled.png",
+      "x0102-dk-010-x01-inputs-month-after.png",
+      "x0102-dk-011-x01-opened-day-after.png",
+      "x0102-dk-012-x01-working-copy-after-head-di3.png",
+      "x0102-dk-013-x01-after-chg-Newtoyou-item.png",
+      "x0102-dk-014-x01-after-chg-Newtoyou-who.png",
+      "x0102-dk-015-x01-after-chg-Allchanges-item.png",
+      "x0102-dk-016-x01-after-chg-Allchanges-who.png",
+      "x0102-dk-017-x01-after-chg-TogooutAL.png",
+      "x0102-dk-019-x01-after-reload-head-di3.png",
+      "x0102-dk-020-x01-after-AL-head-di3.png"
+     ],
+     "figures": {
+      "clean": {
+       "tag": "ORIG",
+       "pending": "5 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": ""
+      },
+      "after": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": "Not yet signed"
+      },
+      "afterReload": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": "Not yet signed"
+      },
+      "afterAL": {
+       "tag": "AL1",
+       "pending": "13 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": ""
+      },
+      "tabs": [
+       "New to you 0",
+       "All changes 8",
+       "To go out · AL1 3"
+      ],
+      "changes": {
+       "opened": true,
+       "tabs": [
+        "New to you 0",
+        "All changes 8",
+        "To go out · AL1 3"
+       ],
+       "pics": [
+        "x0102-dk-013-x01-after-chg-Newtoyou-item.png",
+        "x0102-dk-014-x01-after-chg-Newtoyou-who.png",
+        "x0102-dk-015-x01-after-chg-Allchanges-item.png",
+        "x0102-dk-016-x01-after-chg-Allchanges-who.png",
+        "x0102-dk-017-x01-after-chg-TogooutAL.png"
+       ],
+       "Newtoyou": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_item": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_who": [
+        "Nothing new to you on Thursday."
+       ],
+       "Allchanges": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "21:59",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "▾",
+        "The day · 5",
+        "21:59",
+        "Published — the Original",
+        "Saber · 8/10 21:59",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 21:59"
+       ],
+       "Allchanges_item": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "21:59",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 21:59",
+        "▾",
+        "The day · 5",
+        "21:59",
+        "Published — the Original",
+        "Saber · 8/10 21:59",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 21:59",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 21:59"
+       ],
+       "Allchanges_who": [
+        "▾",
+        "Saber · 8 changes",
+        "8/10 21:59–21:59",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 21:59",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 21:59",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 21:59",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Published — the Original",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · APPROVED BY · Anvil",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · PLANNED BY · Anvil",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · SKED CK · Anvil",
+        "The day",
+        "Saber · 8/10 21:59",
+        "Signed · CUR CK · Ace"
+       ],
+       "TogooutAL": [
+        "Waiting to go out as",
+        "AL1",
+        "· 3 changes",
+        "Ace · Meeting",
+        "Saber",
+        "8/10 21:59",
+        "not on the programme → on the programme",
+        "Warden · Meeting",
+        "Saber",
+        "8/10 21:59",
+        "not on the programme → on the programme",
+        "Hunter · Meeting",
+        "Saber",
+        "8/10 21:59",
+        "not on the programme → on the programme",
+        "Tap a change to go to it."
+       ]
+      },
+      "made": [
+       {
+        "iid": "imuzls3hnn82gur",
+        "person": "prowler",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzls3gwnywxtf",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzls3hav972wx",
+        "person": "nact",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzls3gwnywxtf",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzls3gw5fu1f8",
+        "person": "dj",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzls3gwnywxtf",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       }
+      ],
+      "bars": [
+       "Zenith · Meeting",
+       "Ace +2 · Meeting",
+       "Drifter +3 · Meeting"
+      ],
+      "viewUnchanged": true
+     }
+    },
+    {
+     "id": "X-02",
+     "did": "Published 22 Jul clean and 23 Jul (with the 3-person meeting via AL1); Inputs month: real mouse drag of the shared bar from 23 to 22; read both days; Undo (top bar); then 23 Jul opened day > Delete key on the shared line > confirm \"Delete this input for all 3 people?\"",
+     "saw": "baseline src(23) ver=AL1 chip=\"13 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/; dest(22) ver=ORIG chip=\"5 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/ | MOVE: records now on [{\"p\":\"prowler\",\"date\":\"Jul 22\"},{\"p\":\"nact\",\"date\":\"Jul 22\"},{\"p\":\"dj\",\"date\":\"Jul 22\"}]; src ver=AL1 chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL2 ; dest ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1 ; src To-go-out lines [\"Waiting to go out as\",\"AL2\",\"· 3 changes\",\"Ace · Meeting\",\"Saber\",\"8/10 22:00\",\"on the programme → not on the programme\",\"Warden · Meeting\",\"Saber\",\"8/10 22:00\",\"on the programme → not on the programme\",\"Hunter · Meeting\",\"Saber\",\"8/10 22:00\",\"on the programme → not on the programme\"] ; dest To-go-out lines [\"Waiting to go out as\",\"AL1\",\"· 3 changes\",\"Ace · Meeting\",\"Saber\",\"8/10 22:00\",\"not on the programme → on the programme\",\"Warden · Meeting\",\"Saber\",\"8/10 22:00\",\"not on the programme → on the programme\",\"Hunter · Meeting\",\"Saber\",\"8/10 22:00\",\"not on the programme → on the programme\",\"Tap a change to go to it.\"] | UNDO ('Undo — 3 inputs'): src ver=AL1 chip=\"17 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/ ; dest ver=ORIG chip=\"9 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/ ; records [{\"p\":\"prowler\",\"date\":\"Jul 23\"},{\"p\":\"nact\",\"date\":\"Jul 23\"},{\"p\":\"dj\",\"date\":\"Jul 23\"}] | DELETE ask \"Delete this input for all 3 people? Delete Keep\": src ver=AL1 chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL2 ; dest ver=ORIG chip=\"9 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" nys=\"\" publishBtn=none/ ; records left 0 ; To-go-out [\"Waiting to go out as\",\"AL2\",\"· 3 changes\",\"Ace · Meeting\",\"Saber\",\"8/10 22:00\",\"on the programme → deleted\",\"Warden · Meeting\",\"Saber\",\"8/10 22:00\",\"on the programme → deleted\",\"Hunter · Meeting\",\"Saber\",\"8/10 22:00\",\"on the programme → deleted\"]",
+     "verdict": "PASS",
+     "pics": [
+      "x02-dk-023",
+      "x02-dk-024",
+      "x02-dk-025",
+      "x02-dk-026",
+      "x02-dk-027",
+      "x02-dk-028",
+      "x02-dk-029",
+      "x02-dk-034",
+      "x02-dk-039",
+      "x02-dk-040",
+      "x02-dk-041",
+      "x02-dk-042",
+      "x02-dk-044",
+      "x02-dk-050"
+     ],
+     "figures": {
+      "okMove": true,
+      "okUndo": true,
+      "okDel": true
+     }
+    }
+   ],
+   "pics": {
+    "saved": 50,
+    "opened": 0
+   }
+  },
+  "x03-sat": {
+   "at": "2026-10-08T14:04:23.666Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-03 (all-day duty, Sat 18 Jul)",
+     "did": "Opened each man's OIL (Leave War cell on 18 Jul + OIL tracker balance) for Ranger, Piston, Blade and the filer Saber; Inputs > 18 Jul > + Input > Several people (the three) > Duty all day > Add > OIL question answered ONCE \"Yes - credit FO\" > the three read \"on programme\" on the board > four sign-offs > Publish day; re-read the cell and tracker; reload; re-read",
+     "saw": "OIL question said: \"OIL — Ranger +2, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save\". Opening (cell/balance): Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. Before publishing: Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. After publishing: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. After reload: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. Deltas {\"Ranger\":1,\"Piston\":1,\"Blade\":1,\"Saber\":0}. Board Personal Inputs: ⠿ PERSONAL INPUTS submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide A removed input flags nothing until accepted again — delete it here if it should go entirely. ITEM START END PEOPLE RMKS Duty LATE Blade IP UNDO Duty LATE Piston IP UNDO Duty LATE Ranger IP UNDO. Sat head {\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "x03-dk-001-opening-tracker-sat.png",
+      "x03-dk-002-opening-lw-grid-sat.png",
+      "x03-dk-003-sat-editor-filled.png",
+      "x03-dk-004-sat-oil-question.png",
+      "x03-dk-005-sat-month-after.png",
+      "x03-dk-006-sat-tracker-before-publish.png",
+      "x03-dk-007-sat-board-personal-inputs.png",
+      "x03-dk-008-sat-board-published.png",
+      "x03-dk-009-sat-tracker-after-publish.png",
+      "x03-dk-010-sat-lw-grid-after-publish.png",
+      "x03-dk-011-sat-tracker-after-reload.png"
+     ],
+     "figures": {
+      "o18": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "pre": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "post": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "postR": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "satDelta": {
+       "Ranger": 1,
+       "Piston": 1,
+       "Blade": 1,
+       "Saber": 0
+      }
+     }
+    }
+   ],
+   "pics": {
+    "saved": 11,
+    "opened": 0
+   }
+  },
+  "x03": {
+   "at": "2026-10-08T14:04:48.010Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-03 (all-day duty, Sat 18 Jul)",
+     "did": "Opened each man's OIL (Leave War cell on 18 Jul + OIL tracker balance) for Ranger, Piston, Blade and the filer Saber; Inputs > 18 Jul > + Input > Several people (the three) > Duty all day > Add > OIL question answered ONCE \"Yes - credit FO\" > the three read \"on programme\" on the board > four sign-offs > Publish day; re-read the cell and tracker; reload; re-read",
+     "saw": "OIL question said: \"OIL — Ranger +2, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save\". Opening (cell/balance): Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. Before publishing: Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. After publishing: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. After reload: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. Deltas {\"Ranger\":1,\"Piston\":1,\"Blade\":1,\"Saber\":0}. Board Personal Inputs: ⠿ PERSONAL INPUTS submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide A removed input flags nothing until accepted again — delete it here if it should go entirely. ITEM START END PEOPLE RMKS Duty LATE Blade IP UNDO Duty LATE Piston IP UNDO Duty LATE Ranger IP UNDO. Sat head {\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "x03-dk-001-opening-tracker-sat.png",
+      "x03-dk-002-opening-lw-grid-sat.png",
+      "x03-dk-003-sat-editor-filled.png",
+      "x03-dk-004-sat-oil-question.png",
+      "x03-dk-005-sat-month-after.png",
+      "x03-dk-006-sat-tracker-before-publish.png",
+      "x03-dk-007-sat-board-personal-inputs.png",
+      "x03-dk-008-sat-board-published.png",
+      "x03-dk-009-sat-tracker-after-publish.png",
+      "x03-dk-010-sat-lw-grid-after-publish.png",
+      "x03-dk-011-sat-tracker-after-reload.png"
+     ],
+     "figures": {
+      "o18": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "pre": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "post": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "postR": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "satDelta": {
+       "Ranger": 1,
+       "Piston": 1,
+       "Blade": 1,
+       "Saber": 0
+      }
+     }
+    },
+    {
+     "id": "X-03 (timed duty 08:00-10:00, Sun 19 Jul)",
+     "did": "Same three, Sunday 19 Jul, Duty 08:00-10:00, OIL question answered once \"Yes - credit HO\", published day 6; re-read cells and tracker",
+     "saw": "OIL question said: \"OIL — Ranger +2, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save\". Cell/balance after publishing: Ranger: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Piston: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Blade: cell=\"HO*\" bal=4.5 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Saber: cell=\"\" bal=0 entries=[]. After reload Ranger: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Piston: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Blade: cell=\"HO*\" bal=4.5 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Saber: cell=\"\" bal=0 entries=[]. Balance change since Saturday's reading {\"Ranger\":0.5,\"Piston\":0.5,\"Blade\":0.5,\"Saber\":0}. Sun head {\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "x03-dk-012-sun-editor-filled.png",
+      "x03-dk-013-sun-oil-question.png",
+      "x03-dk-014-sun-published-head.png",
+      "x03-dk-015-sun-tracker-after-publish.png",
+      "x03-dk-016-sun-lw-grid-after-publish.png"
+     ],
+     "figures": {
+      "o19": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "post2": {
+       "Ranger": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Piston": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Blade": {
+        "cell": "HO*",
+        "bal": "4.5",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "postR2": {
+       "Ranger": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Piston": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Blade": {
+        "cell": "HO*",
+        "bal": "4.5",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "sunDelta2": {
+       "Ranger": 0.5,
+       "Piston": 0.5,
+       "Blade": 0.5,
+       "Saber": 0
+      }
+     }
+    }
+   ],
+   "pics": {
+    "saved": 16,
+    "opened": 0
+   }
+  },
+  "x04-raw": {
+   "at": "2026-10-08T14:07:42.040Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 23,
+    "opened": 0
+   }
+  },
+  "x05-wed": {
+   "at": "2026-10-08T14:16:34.486Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 28,
+    "opened": 0
+   }
+  },
+  "x05-raw": {
+   "at": "2026-10-08T14:17:07.684Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 43,
+    "opened": 0
+   }
+  },
+  "x06-raw": {
+   "at": "2026-10-08T14:20:20.262Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 16,
+    "opened": 0
+   }
+  },
+  "x06b-raw": {
+   "at": "2026-10-08T14:22:02.281Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 6,
+    "opened": 0
+   }
+  },
+  "x07-raw": {
+   "at": "2026-10-08T14:24:33.741Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 8,
+    "opened": 0
+   }
+  },
+  "x08-raw-a": {
+   "at": "2026-10-08T14:26:41.950Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 5,
+    "opened": 0
+   }
+  },
+  "x09-partial": {
+   "at": "2026-10-08T14:37:01.021Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 6,
+    "opened": 0
+   }
+  },
+  "x09-raw": {
+   "at": "2026-10-08T14:37:47.275Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 13,
+    "opened": 0
+   }
+  },
+  "x09b-raw": {
+   "at": "2026-10-08T14:36:05.369Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 2,
+    "opened": 0
+   }
+  },
+  "x0102-part1-ph": {
+   "at": "2026-10-08T14:40:15.867Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-01",
+     "did": "Published Thu 23 Jul (four sign-offs), reloaded; Inputs month > 23 Jul > + Input > Several people (Ace, Warden, Hunter) > Meeting 10:00-11:00 > Add; read Edit Schedule day head, changes window, View-only Sched; reload; Publish AL",
+     "saw": "clean: ver=ORIG chip=\"5 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/ | after filing: Inputs bars [\"Ace +2 · Meeting\",\"Drifter +3 · Meeting\"] (+2 bar count 1); records made 3 grp=gmuzn7qc05q0ocu,gmuzn7qc05q0ocu,gmuzn7qc05q0ocu; working copy ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; changes tabs [\"New to you 0\",\"All changes 8\",\"To go out · AL1 3\"]; view-only unchanged=true; after reload ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; after AL ver=AL1 chip=\"13 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/",
+     "verdict": "PASS",
+     "pics": [
+      "x0102-ph-001-x01-published-clean-head-di3.png",
+      "x0102-ph-008-x01-day-before-filing.png",
+      "x0102-ph-009-x01-editor-filled.png",
+      "x0102-ph-010-x01-inputs-month-after.png",
+      "x0102-ph-011-x01-opened-day-after.png",
+      "x0102-ph-012-x01-working-copy-after-head-di3.png",
+      "x0102-ph-013-x01-after-chg-Newtoyou-item.png",
+      "x0102-ph-014-x01-after-chg-Newtoyou-who.png",
+      "x0102-ph-015-x01-after-chg-Allchanges-item.png",
+      "x0102-ph-016-x01-after-chg-Allchanges-who.png",
+      "x0102-ph-017-x01-after-chg-TogooutAL.png",
+      "x0102-ph-019-x01-after-reload-head-di3.png",
+      "x0102-ph-020-x01-after-AL-head-di3.png"
+     ],
+     "figures": {
+      "clean": {
+       "tag": "ORIG",
+       "pending": "5 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG Ace Anvil Anvil Anvil",
+       "nys": ""
+      },
+      "after": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG Ace Anvil Anvil Anvil",
+       "nys": "Not yet signed"
+      },
+      "afterReload": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG Ace Anvil Anvil Anvil",
+       "nys": "Not yet signed"
+      },
+      "afterAL": {
+       "tag": "AL1",
+       "pending": "13 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED AL1 Ace Anvil Anvil Anvil",
+       "nys": ""
+      },
+      "tabs": [
+       "New to you 0",
+       "All changes 8",
+       "To go out · AL1 3"
+      ],
+      "changes": {
+       "opened": true,
+       "tabs": [
+        "New to you 0",
+        "All changes 8",
+        "To go out · AL1 3"
+       ],
+       "pics": [
+        "x0102-ph-013-x01-after-chg-Newtoyou-item.png",
+        "x0102-ph-014-x01-after-chg-Newtoyou-who.png",
+        "x0102-ph-015-x01-after-chg-Allchanges-item.png",
+        "x0102-ph-016-x01-after-chg-Allchanges-who.png",
+        "x0102-ph-017-x01-after-chg-TogooutAL.png"
+       ],
+       "Newtoyou": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_item": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_who": [
+        "Nothing new to you on Thursday."
+       ],
+       "Allchanges": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "22:39",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "▾",
+        "The day · 5",
+        "22:39",
+        "Published — the Original",
+        "Saber · 8/10 22:39",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 22:39"
+       ],
+       "Allchanges_item": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "22:39",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "▾",
+        "The day · 5",
+        "22:39",
+        "Published — the Original",
+        "Saber · 8/10 22:39",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 22:39"
+       ],
+       "Allchanges_who": [
+        "▾",
+        "Saber · 8 changes",
+        "8/10 22:39–22:39",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 22:39",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 22:39",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 22:39",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Published — the Original",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · APPROVED BY · Anvil",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · PLANNED BY · Anvil",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · SKED CK · Anvil",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · CUR CK · Ace"
+       ],
+       "TogooutAL": [
+        "Waiting to go out as",
+        "AL1",
+        "· 3 changes",
+        "Ace · Meeting",
+        "Saber",
+        "8/10 22:39",
+        "not on the programme → on the programme",
+        "Warden · Meeting",
+        "Saber",
+        "8/10 22:39",
+        "not on the programme → on the programme",
+        "Hunter · Meeting",
+        "Saber",
+        "8/10 22:39",
+        "not on the programme → on the programme",
+        "Tap a change to go to it."
+       ]
+      },
+      "made": [
+       {
+        "iid": "imuzn7qcnnhhhif",
+        "person": "prowler",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzn7qc05q0ocu",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzn7qcdhapxtm",
+        "person": "nact",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzn7qc05q0ocu",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzn7qc0pe1iwm",
+        "person": "dj",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzn7qc05q0ocu",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       }
+      ],
+      "bars": [
+       "Ace +2 · Meeting",
+       "Drifter +3 · Meeting"
+      ],
+      "viewUnchanged": true
+     }
+    }
+   ],
+   "pics": {
+    "saved": 22,
+    "opened": 0
+   }
+  },
+  "x0102-part2-ph": {
+   "at": "2026-10-08T14:40:53.115Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-01",
+     "did": "Published Thu 23 Jul (four sign-offs), reloaded; Inputs month > 23 Jul > + Input > Several people (Ace, Warden, Hunter) > Meeting 10:00-11:00 > Add; read Edit Schedule day head, changes window, View-only Sched; reload; Publish AL",
+     "saw": "clean: ver=ORIG chip=\"5 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/ | after filing: Inputs bars [\"Ace +2 · Meeting\",\"Drifter +3 · Meeting\"] (+2 bar count 1); records made 3 grp=gmuzn7qc05q0ocu,gmuzn7qc05q0ocu,gmuzn7qc05q0ocu; working copy ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; changes tabs [\"New to you 0\",\"All changes 8\",\"To go out · AL1 3\"]; view-only unchanged=true; after reload ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1; after AL ver=AL1 chip=\"13 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/",
+     "verdict": "PASS",
+     "pics": [
+      "x0102-ph-001-x01-published-clean-head-di3.png",
+      "x0102-ph-008-x01-day-before-filing.png",
+      "x0102-ph-009-x01-editor-filled.png",
+      "x0102-ph-010-x01-inputs-month-after.png",
+      "x0102-ph-011-x01-opened-day-after.png",
+      "x0102-ph-012-x01-working-copy-after-head-di3.png",
+      "x0102-ph-013-x01-after-chg-Newtoyou-item.png",
+      "x0102-ph-014-x01-after-chg-Newtoyou-who.png",
+      "x0102-ph-015-x01-after-chg-Allchanges-item.png",
+      "x0102-ph-016-x01-after-chg-Allchanges-who.png",
+      "x0102-ph-017-x01-after-chg-TogooutAL.png",
+      "x0102-ph-019-x01-after-reload-head-di3.png",
+      "x0102-ph-020-x01-after-AL-head-di3.png"
+     ],
+     "figures": {
+      "clean": {
+       "tag": "ORIG",
+       "pending": "5 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG Ace Anvil Anvil Anvil",
+       "nys": ""
+      },
+      "after": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG Ace Anvil Anvil Anvil",
+       "nys": "Not yet signed"
+      },
+      "afterReload": {
+       "tag": "ORIG",
+       "pending": "3 pending",
+       "beak": "none",
+       "alpub": "Publish AL1",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED ORIG Ace Anvil Anvil Anvil",
+       "nys": "Not yet signed"
+      },
+      "afterAL": {
+       "tag": "AL1",
+       "pending": "13 changes",
+       "beak": "none",
+       "alpub": "",
+       "unpub": "Unpublish",
+       "signs": [
+        "— name —",
+        "— name —",
+        "— name —",
+        "— name —"
+       ],
+       "signed": "SIGNED AL1 Ace Anvil Anvil Anvil",
+       "nys": ""
+      },
+      "tabs": [
+       "New to you 0",
+       "All changes 8",
+       "To go out · AL1 3"
+      ],
+      "changes": {
+       "opened": true,
+       "tabs": [
+        "New to you 0",
+        "All changes 8",
+        "To go out · AL1 3"
+       ],
+       "pics": [
+        "x0102-ph-013-x01-after-chg-Newtoyou-item.png",
+        "x0102-ph-014-x01-after-chg-Newtoyou-who.png",
+        "x0102-ph-015-x01-after-chg-Allchanges-item.png",
+        "x0102-ph-016-x01-after-chg-Allchanges-who.png",
+        "x0102-ph-017-x01-after-chg-TogooutAL.png"
+       ],
+       "Newtoyou": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_item": [
+        "Nothing new to you on Thursday."
+       ],
+       "Newtoyou_who": [
+        "Nothing new to you on Thursday."
+       ],
+       "Allchanges": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "22:39",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "▾",
+        "The day · 5",
+        "22:39",
+        "Published — the Original",
+        "Saber · 8/10 22:39",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 22:39"
+       ],
+       "Allchanges_item": [
+        "▾",
+        "Input · Meeting · 3 people · 3",
+        "22:39",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "Saber · 8/10 22:39",
+        "▾",
+        "The day · 5",
+        "22:39",
+        "Published — the Original",
+        "Saber · 8/10 22:39",
+        "Signed · APPROVED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · PLANNED BY · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · SKED CK · Anvil",
+        "Saber · 8/10 22:39",
+        "Signed · CUR CK · Ace",
+        "Saber · 8/10 22:39"
+       ],
+       "Allchanges_who": [
+        "▾",
+        "Saber · 8 changes",
+        "8/10 22:39–22:39",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 22:39",
+        "Ace · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 22:39",
+        "Warden · Meeting added · 23 Jul (on the programme)",
+        "Input · Meeting · 3 people",
+        "Saber · 8/10 22:39",
+        "Hunter · Meeting added · 23 Jul (on the programme)",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Published — the Original",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · APPROVED BY · Anvil",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · PLANNED BY · Anvil",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · SKED CK · Anvil",
+        "The day",
+        "Saber · 8/10 22:39",
+        "Signed · CUR CK · Ace"
+       ],
+       "TogooutAL": [
+        "Waiting to go out as",
+        "AL1",
+        "· 3 changes",
+        "Ace · Meeting",
+        "Saber",
+        "8/10 22:39",
+        "not on the programme → on the programme",
+        "Warden · Meeting",
+        "Saber",
+        "8/10 22:39",
+        "not on the programme → on the programme",
+        "Hunter · Meeting",
+        "Saber",
+        "8/10 22:39",
+        "not on the programme → on the programme",
+        "Tap a change to go to it."
+       ]
+      },
+      "made": [
+       {
+        "iid": "imuzn7qcnnhhhif",
+        "person": "prowler",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzn7qc05q0ocu",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzn7qcdhapxtm",
+        "person": "nact",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzn7qc05q0ocu",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       },
+       {
+        "iid": "imuzn7qc0pe1iwm",
+        "person": "dj",
+        "type": "Meeting",
+        "date": "Jul 23",
+        "grp": "gmuzn7qc05q0ocu",
+        "grpBy": "stiff",
+        "allday": false,
+        "remarks": "X01 shared brief",
+        "acc": "g"
+       }
+      ],
+      "bars": [
+       "Ace +2 · Meeting",
+       "Drifter +3 · Meeting"
+      ],
+      "viewUnchanged": true
+     }
+    },
+    {
+     "id": "X-02",
+     "did": "Published 22 Jul clean and 23 Jul (with the 3-person meeting via AL1); Inputs month: real mouse drag of the shared bar from 23 to 22; read both days; Undo (top bar); then 23 Jul opened day > Delete key on the shared line > confirm \"Delete this input for all 3 people?\"",
+     "saw": "baseline src(23) ver=AL1 chip=\"13 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/; dest(22) ver=ORIG chip=\"5 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/ | MOVE: records now on [{\"p\":\"prowler\",\"date\":\"Jul 22\"},{\"p\":\"nact\",\"date\":\"Jul 22\"},{\"p\":\"dj\",\"date\":\"Jul 22\"}]; src ver=AL1 chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL2 ; dest ver=ORIG chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL1 ; src To-go-out lines [\"Waiting to go out as\",\"AL2\",\"· 3 changes\",\"Ace · Meeting\",\"Saber\",\"8/10 22:40\",\"on the programme → not on the programme\",\"Warden · Meeting\",\"Saber\",\"8/10 22:40\",\"on the programme → not on the programme\",\"Hunter · Meeting\",\"Saber\",\"8/10 22:40\",\"on the programme → not on the programme\"] ; dest To-go-out lines [\"Waiting to go out as\",\"AL1\",\"· 3 changes\",\"Ace · Meeting\",\"Saber\",\"8/10 22:40\",\"not on the programme → on the programme\",\"Warden · Meeting\",\"Saber\",\"8/10 22:40\",\"not on the programme → on the programme\",\"Hunter · Meeting\",\"Saber\",\"8/10 22:40\",\"not on the programme → on the programme\",\"Tap a change to go to it.\"] | UNDO ('Undo — 3 inputs'): src ver=AL1 chip=\"17 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/ ; dest ver=ORIG chip=\"9 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/ ; records [{\"p\":\"prowler\",\"date\":\"Jul 23\"},{\"p\":\"nact\",\"date\":\"Jul 23\"},{\"p\":\"dj\",\"date\":\"Jul 23\"}] | DELETE ask \"Delete this input for all 3 people? Delete Keep\": src ver=AL1 chip=\"3 pending\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED AL1 Ace Anvil Anvil Anvil\" nys=\"Not yet signed\" publishBtn=none/Publish AL2 ; dest ver=ORIG chip=\"9 changes\" signs=[— name —|— name —|— name —|— name —] line=\"SIGNED ORIG Ace Anvil Anvil Anvil\" nys=\"\" publishBtn=none/ ; records left 0 ; To-go-out [\"Waiting to go out as\",\"AL2\",\"· 3 changes\",\"Ace · Meeting\",\"Saber\",\"8/10 22:40\",\"on the programme → deleted\",\"Warden · Meeting\",\"Saber\",\"8/10 22:40\",\"on the programme → deleted\",\"Hunter · Meeting\",\"Saber\",\"8/10 22:40\",\"on the programme → deleted\"]",
+     "verdict": "PASS",
+     "pics": [
+      "x02-dk-023",
+      "x02-dk-024",
+      "x02-dk-025",
+      "x02-dk-026",
+      "x02-dk-027",
+      "x02-dk-028",
+      "x02-dk-029",
+      "x02-dk-034",
+      "x02-dk-039",
+      "x02-dk-040",
+      "x02-dk-041",
+      "x02-dk-042",
+      "x02-dk-044",
+      "x02-dk-050"
+     ],
+     "figures": {
+      "okMove": true,
+      "okUndo": true,
+      "okDel": true
+     }
+    }
+   ],
+   "pics": {
+    "saved": 50,
+    "opened": 0
+   }
+  },
+  "x03-sat-ph": {
+   "at": "2026-10-08T14:42:33.387Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-03 (all-day duty, Sat 18 Jul)",
+     "did": "Opened each man's OIL (Leave War cell on 18 Jul + OIL tracker balance) for Ranger, Piston, Blade and the filer Saber; Inputs > 18 Jul > + Input > Several people (the three) > Duty all day > Add > OIL question answered ONCE \"Yes - credit FO\" > the three read \"on programme\" on the board > four sign-offs > Publish day; re-read the cell and tracker; reload; re-read",
+     "saw": "OIL question said: \"OIL — Ranger +2, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save\". Opening (cell/balance): Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. Before publishing: Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. After publishing: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. After reload: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. Deltas {\"Ranger\":1,\"Piston\":1,\"Blade\":1,\"Saber\":0}. Board Personal Inputs: ⠿ PERSONAL INPUTS submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide A removed input flags nothing until accepted again — delete it here if it should go entirely. ITEM START END Duty LATE Blade IP UNDO Duty LATE Piston IP UNDO Duty LATE Ranger IP UNDO. Sat head {\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG Ace Anvil Anvil Anvil\",\"nys\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "x03-ph-001-opening-tracker-sat.png",
+      "x03-ph-002-opening-lw-grid-sat.png",
+      "x03-ph-003-sat-editor-filled.png",
+      "x03-ph-004-sat-oil-question.png",
+      "x03-ph-005-sat-month-after.png",
+      "x03-ph-006-sat-tracker-before-publish.png",
+      "x03-ph-007-sat-board-personal-inputs.png",
+      "x03-ph-008-sat-board-published.png",
+      "x03-ph-009-sat-tracker-after-publish.png",
+      "x03-ph-010-sat-lw-grid-after-publish.png",
+      "x03-ph-011-sat-tracker-after-reload.png"
+     ],
+     "figures": {
+      "o18": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "pre": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "post": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "postR": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "satDelta": {
+       "Ranger": 1,
+       "Piston": 1,
+       "Blade": 1,
+       "Saber": 0
+      }
+     }
+    }
+   ],
+   "pics": {
+    "saved": 11,
+    "opened": 0
+   }
+  },
+  "x03-ph": {
+   "at": "2026-10-08T14:43:08.117Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "X-03 (all-day duty, Sat 18 Jul)",
+     "did": "Opened each man's OIL (Leave War cell on 18 Jul + OIL tracker balance) for Ranger, Piston, Blade and the filer Saber; Inputs > 18 Jul > + Input > Several people (the three) > Duty all day > Add > OIL question answered ONCE \"Yes - credit FO\" > the three read \"on programme\" on the board > four sign-offs > Publish day; re-read the cell and tracker; reload; re-read",
+     "saw": "OIL question said: \"OIL — Ranger +2, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save\". Opening (cell/balance): Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. Before publishing: Ranger: cell=\"\" bal=0 entries=[] || Piston: cell=\"\" bal=0 entries=[] || Blade: cell=\"\" bal=3 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\"] || Saber: cell=\"\" bal=0 entries=[]. After publishing: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. After reload: Ranger: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Piston: cell=\"FO*\" bal=1 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Blade: cell=\"FO*\" bal=4 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\"] || Saber: cell=\"\" bal=0 entries=[]. Deltas {\"Ranger\":1,\"Piston\":1,\"Blade\":1,\"Saber\":0}. Board Personal Inputs: ⠿ PERSONAL INPUTS submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap header to hide A removed input flags nothing until accepted again — delete it here if it should go entirely. ITEM START END Duty LATE Blade IP UNDO Duty LATE Piston IP UNDO Duty LATE Ranger IP UNDO. Sat head {\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG Ace Anvil Anvil Anvil\",\"nys\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "x03-ph-001-opening-tracker-sat.png",
+      "x03-ph-002-opening-lw-grid-sat.png",
+      "x03-ph-003-sat-editor-filled.png",
+      "x03-ph-004-sat-oil-question.png",
+      "x03-ph-005-sat-month-after.png",
+      "x03-ph-006-sat-tracker-before-publish.png",
+      "x03-ph-007-sat-board-personal-inputs.png",
+      "x03-ph-008-sat-board-published.png",
+      "x03-ph-009-sat-tracker-after-publish.png",
+      "x03-ph-010-sat-lw-grid-after-publish.png",
+      "x03-ph-011-sat-tracker-after-reload.png"
+     ],
+     "figures": {
+      "o18": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "pre": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "post": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "postR": {
+       "Ranger": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Piston": {
+        "cell": "FO*",
+        "bal": "1",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Blade": {
+        "cell": "FO*",
+        "bal": "4",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "satDelta": {
+       "Ranger": 1,
+       "Piston": 1,
+       "Blade": 1,
+       "Saber": 0
+      }
+     }
+    },
+    {
+     "id": "X-03 (timed duty 08:00-10:00, Sun 19 Jul)",
+     "did": "Same three, Sunday 19 Jul, Duty 08:00-10:00, OIL question answered once \"Yes - credit HO\", published day 6; re-read cells and tracker",
+     "saw": "OIL question said: \"OIL — Ranger +2, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save\". Cell/balance after publishing: Ranger: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Piston: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Blade: cell=\"HO*\" bal=4.5 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Saber: cell=\"\" bal=0 entries=[]. After reload Ranger: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Piston: cell=\"HO*\" bal=1.5 entries=[\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Blade: cell=\"HO*\" bal=4.5 entries=[\"+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left\",\"+1 9 May FLT + SIM 1 left\",\"−1 20 May Correction: double credit · correction\",\"+1 18 Jul AUTO Duty input Duty 1 left\",\"+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left\"] || Saber: cell=\"\" bal=0 entries=[]. Balance change since Saturday's reading {\"Ranger\":0.5,\"Piston\":0.5,\"Blade\":0.5,\"Saber\":0}. Sun head {\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG Ace Anvil Anvil Anvil\",\"nys\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "x03-ph-012-sun-editor-filled.png",
+      "x03-ph-013-sun-oil-question.png",
+      "x03-ph-014-sun-published-head.png",
+      "x03-ph-015-sun-tracker-after-publish.png",
+      "x03-ph-016-sun-lw-grid-after-publish.png"
+     ],
+     "figures": {
+      "o19": {
+       "Ranger": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Piston": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       },
+       "Blade": {
+        "cell": "",
+        "bal": "3",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "post2": {
+       "Ranger": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Piston": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Blade": {
+        "cell": "HO*",
+        "bal": "4.5",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "postR2": {
+       "Ranger": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Piston": {
+        "cell": "HO*",
+        "bal": "1.5",
+        "arch": "",
+        "ents": [
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Blade": {
+        "cell": "HO*",
+        "bal": "4.5",
+        "arch": "",
+        "ents": [
+         "+6 carried in opening figure −1 20 May −1 1 Jun −1 2 Jun −1 3 Jun 2 left",
+         "+1 9 May FLT + SIM 1 left",
+         "−1 20 May Correction: double credit · correction",
+         "+1 18 Jul AUTO Duty input Duty 1 left",
+         "+0.5 19 Jul AUTO Duty input Duty · 08:00–10:00 0.5 left"
+        ]
+       },
+       "Saber": {
+        "cell": "",
+        "bal": "0",
+        "arch": "",
+        "ents": []
+       }
+      },
+      "sunDelta2": {
+       "Ranger": 0.5,
+       "Piston": 0.5,
+       "Blade": 0.5,
+       "Saber": 0
+      }
+     }
+    }
+   ],
+   "pics": {
+    "saved": 16,
+    "opened": 0
+   }
+  },
+  "x04-raw-ph": {
+   "at": "2026-10-08T14:44:56.307Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 23,
+    "opened": 0
+   }
+  },
+  "x06b-raw-ph": {
+   "at": "2026-10-08T14:47:22.444Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 6,
+    "opened": 0
+   }
+  },
+  "x09-partial-ph": {
+   "at": "2026-10-08T14:48:43.601Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 6,
+    "opened": 0
+   }
+  },
+  "x09-raw-ph": {
+   "at": "2026-10-08T14:49:26.372Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 13,
+    "opened": 0
+   }
+  },
+  "x05-wed-ph": {
+   "at": "2026-10-08T14:51:39.357Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 27,
+    "opened": 0
+   }
+  },
+  "x05-raw-ph": {
+   "at": "2026-10-08T14:52:10.977Z",
+   "base": "http://localhost:4213",
+   "table": [],
+   "pics": {
+    "saved": 41,
+    "opened": 0
+   }
+  },
+  "sizes": {
+   "at": "2026-10-08T14:53:14.808Z",
+   "base": "http://localhost:4213",
+   "table": [
+    {
+     "id": "SIZES",
+     "did": "Inputs month > opened 23 Jul > gear > \"Calendar…\" > SANS month at 390x568, 844x390 and 1536x864",
+     "saw": "[{\"size\":\"390x568\",\"month\":{\"sw\":390,\"iw\":390,\"ih\":568},\"day\":{\"sw\":390,\"iw\":390,\"ih\":568,\"win\":{\"rect\":[12,181,358,375],\"inView\":true,\"frontAtCentre\":true}},\"settings\":{\"sw\":390,\"iw\":390,\"ih\":568,\"win\":{\"rect\":[12,147,358,409],\"inView\":true,\"frontAtCentre\":true}},\"calendar\":{\"sw\":390,\"iw\":390,\"ih\":568,\"win\":{\"rect\":[6,54,378,508],\"inView\":true,\"frontAtCentre\":true}},\"sans\":{\"sw\":390,\"iw\":390,\"ih\":568},\"errors\":[]},{\"size\":\"844x390\",\"month\":{\"sw\":844,\"iw\":844,\"ih\":390},\"day\":{\"sw\":844,\"iw\":844,\"ih\":390,\"win\":{\"rect\":[398,96,430,270],\"inView\":true,\"frontAtCentre\":true}},\"settings\":{\"sw\":844,\"iw\":844,\"ih\":390,\"win\":{\"rect\":[428,96,400,270],\"inView\":true,\"frontAtCentre\":true}},\"calendar\":{\"sw\":844,\"iw\":844,\"ih\":390,\"win\":{\"rect\":[16,96,812,270],\"inView\":true,\"frontAtCentre\":true}},\"sans\":{\"sw\":844,\"iw\":844,\"ih\":390},\"errors\":[]},{\"size\":\"1536x864\",\"month\":{\"sw\":1536,\"iw\":1536,\"ih\":864},\"day\":{\"sw\":1536,\"iw\":1536,\"ih\":864,\"win\":{\"rect\":[1090,96,430,417],\"inView\":true,\"frontAtCentre\":true}},\"settings\":{\"sw\":1536,\"iw\":1536,\"ih\":864,\"win\":{\"rect\":[1120,96,400,554],\"inView\":true,\"frontAtCentre\":true}},\"calendar\":{\"sw\":1536,\"iw\":1536,\"ih\":864,\"win\":{\"rect\":[426,96,1094,547],\"inView\":true,\"frontAtCentre\":true}},\"sans\":{\"sw\":1536,\"iw\":1536,\"ih\":864},\"errors\":[]}]",
+     "verdict": "RECORDED",
+     "pics": [
+      "sizes-dk-001-390x568-inputs-month.png",
+      "sizes-dk-002-390x568-day-open.png",
+      "sizes-dk-003-390x568-settings.png",
+      "sizes-dk-004-390x568-calendar-window.png",
+      "sizes-dk-005-390x568-sans-month.png",
+      "sizes-dk-006-844x390-inputs-month.png",
+      "sizes-dk-007-844x390-day-open.png",
+      "sizes-dk-008-844x390-settings.png",
+      "sizes-dk-009-844x390-calendar-window.png",
+      "sizes-dk-010-844x390-sans-month.png",
+      "sizes-dk-011-1536x864-inputs-month.png",
+      "sizes-dk-012-1536x864-day-open.png",
+      "sizes-dk-013-1536x864-settings.png",
+      "sizes-dk-014-1536x864-calendar-window.png",
+      "sizes-dk-015-1536x864-sans-month.png"
+     ],
+     "figures": null
+    }
+   ],
+   "pics": {
+    "saved": 15,
+    "opened": 0
+   }
+  }
+ },
+ "final": {
+  "at": "2026-10-08T14:55:58.152Z",
+  "base": "http://localhost:4213/",
+  "counts": {
+   "PASS": 7,
+   "FAIL": 0,
+   "PARTIAL": 2,
+   "NOT WALKED": 0
+  },
+  "rows": [
+   {
+    "id": "X-01",
+    "verdict": "PASS",
+    "did": "Published Thu 23 Jul (four sign-offs), reload. Inputs > 23 Jul > + Input > \"Several people\": Ace, Warden, Hunter (the filer Saber, lit by default, taken off) > Meeting 10:00-11:00 > Add. Read the Thursday head, the changes window (all three tabs, Item and Who), View-only Sched, reload; then four sign-offs and Publish AL1, reload. Desktop 1440x900 and phone 390x844.",
+    "saw": "CLEAN: tag ORIG, no \"pending\" chip (only the history chip \"5 changes\"), \"SIGNED ORIG\" line. AFTER FILING: Inputs month ONE bar \"Ace +2 · Meeting\"; opened day ONE line with three pucks and \"Placed by Saber for 3 people\"; Thursday head \"3 pending\", marker \"Not yet signed\", \"Publish AL1\" locked, the four sign-off boxes empty (\"4 to sign\"); changes window: All changes holds ONE item \"Input · Meeting · 3 people · 3\" with Ace / Warden / Hunter lines under it (Who view: Saber · 8 changes with the same lines); To go out · AL1 3 lists THREE separate lines (not one item); New to you 0 (the admin made them himself). View-only Sched Thursday text identical before and after. Same after reload. After re-signing and Publish AL1: tag AL1, \"SIGNED AL1\", no pending chip, View-only now carries the meeting. Phone: identical readings.",
+    "pics": [
+     "x0102-dk-001",
+     "x0102-dk-010",
+     "x0102-dk-011",
+     "x0102-dk-012",
+     "x0102-dk-015",
+     "x0102-dk-017",
+     "x0102-dk-018",
+     "x0102-dk-019",
+     "x0102-dk-020",
+     "x0102-dk-021",
+     "x0102-ph-012",
+     "x0102-ph-017"
+    ]
+   },
+   {
+    "id": "X-02",
+    "verdict": "PASS",
+    "did": "Same world: Wed 22 Jul published clean (four sign-offs); the 3-person meeting on Thu 23 published through AL1. Inputs month: real mouse drag of the shared bar from the 23rd onto the 22nd; read both days and their changes windows; top-bar Undo; then 23 Jul opened day > Delete key on the shared line > \"Delete this input for all 3 people?\" > Delete. Phone 390x844 repeated (the bar drag was a mouse in a phone-sized screen, not a finger).",
+    "saw": "MOVE: all three records now on 22 Jul. 23 Jul head \"3 pending\", Publish AL2 locked, \"Not yet signed\"; amendments box \"Thu · 3 changes · 3 removals\"; its To go out lists Ace / Warden / Hunter \"on the programme -> not on the programme\". 22 Jul head \"3 pending\", Publish AL1, To go out lists the three \"not on the programme -> on the programme\". UNDO (\"Undo - 3 inputs\"): both days back to no pending chip, no \"Not yet signed\", sign-off line as before, records back on the 23rd. DELETE: ask text \"Delete this input for all 3 people?\"; 23 Jul \"3 pending\" with three \"on the programme -> deleted\" lines; 22 Jul untouched; 0 records left. Phone: identical.",
+    "pics": [
+     "x02-dk-023",
+     "x02-dk-026",
+     "x02-dk-027",
+     "x02-dk-028",
+     "x02-dk-029",
+     "x02-dk-034",
+     "x02-dk-039",
+     "x02-dk-040",
+     "x02-dk-041",
+     "x02-dk-042",
+     "x02-dk-044",
+     "x02-dk-050",
+     "x02-ph-026",
+     "x02-ph-042"
+    ]
+   },
+   {
+    "id": "X-03",
+    "verdict": "PASS",
+    "did": "Fresh world. Read the Leave War cell and the OIL tracker balance of Ranger, Piston, Blade and the filer Saber before. Inputs > 18 Jul > + Input > Several people (Ranger, Piston, Blade) > Duty, all day > Add > ONE OIL question (\"Does it deserve FO - a full day of OIL?\") answered Yes; the three read \"on programme\" on the board (acceptance was automatic for an admin filing); four sign-offs > Publish day; re-read cells and tracker; reload; re-read. Then Sun 19 Jul, Duty 08:00-10:00, question \"HO - half a day\" Yes, published, re-read. Desktop and phone.",
+    "saw": "Before publishing nothing moves (Ranger 0, Piston 0, Blade 3, Saber 0). After publishing Sat: Ranger 0->1, Piston 0->1, Blade 3->4, each cell \"FO*\", each with one \"+1 18 Jul AUTO Duty input\" credit; Saber 0, no cell; no \"awarded\" entry touched; same after reload. After publishing Sun 08:00-10:00: each +0.5, cell \"HO*\" (\"+0.5 19 Jul AUTO Duty input Duty · 08:00-10:00\"); Saber still 0. Phone: identical figures.",
+    "figures": {
+     "Ranger": "0 -> 1 -> 1.5",
+     "Piston": "0 -> 1 -> 1.5",
+     "Blade": "3 -> 4 -> 4.5",
+     "Saber": "0 -> 0 -> 0"
+    },
+    "pics": [
+     "x03-dk-004",
+     "x03-dk-007",
+     "x03-dk-009",
+     "x03-dk-010",
+     "x03-dk-011",
+     "x03-dk-013",
+     "x03-dk-015",
+     "x03-dk-016",
+     "x03-ph-009",
+     "x03-ph-016"
+    ]
+   },
+   {
+    "id": "X-04",
+    "verdict": "PASS",
+    "did": "From X-03 (Sat 18 Jul published, FO for the three). (a) Signed in as Ranger himself (member): Inputs > 18 Jul > the shared line > editor (read-only for him except \"Your OIL: ... Change...\") > Change... > \"No OIL\" > Save; then as Saber: day head, changes window, sign, Publish AL1. (b) Saber, board for Sat > OIL Earn > tap Piston's puck off > Publish AL2. (c) Saber, Inputs > shared line > editor > OIL \"Change...\" > Yes > Save > Publish AL3. Leave War cell and tracker read after each. Desktop and phone.",
+    "saw": "(a) Ranger's sheet reads \"OIL - Ranger, Duty\" (him alone); after No only his record changed (oil 1 -> 0); Piston and Blade stayed 1; Saturday head \"1 pending\" with \"What this day earns changed\"; before the reissue the cells did not move; after AL1: Ranger cell empty, 1.5 -> 0.5; Piston 1.5, Blade 4.5 unchanged. (b) Board toast \"Piston earns nothing from duty\"; \"1 pending\"; after AL2: Piston cell empty, 1.5 -> 0.5; Blade 4.5. (c) The filer's sheet reads \"OIL - Blade, Duty\" (no \"+2\") and its Yes was written to all three records; after AL3: Ranger's FO came back (0.5 -> 1.5); Piston stayed refused (cell empty, 0.5) - the scheduler's refusal held; Blade 4.5. Same after reload. Phone: identical.",
+    "figures": {
+     "Ranger": "1.5 -> 0.5 (after his No) -> 0.5 -> 1.5 (after the filer's Yes)",
+     "Piston": "1.5 -> 1.5 -> 0.5 (scheduler refused) -> 0.5",
+     "Blade": "4.5 throughout",
+     "Saber": "0 throughout"
+    },
+    "pics": [
+     "x04-dk-002",
+     "x04-dk-003",
+     "x04-dk-005",
+     "x04-dk-011",
+     "x04-dk-013",
+     "x04-dk-015",
+     "x04-dk-017",
+     "x04-dk-019",
+     "x04-dk-022",
+     "x04-dk-023"
+    ]
+   },
+   {
+    "id": "X-05",
+    "verdict": "PASS",
+    "did": "Fresh world. Wed 15 Jul and Thu 16 Jul published (four sign-offs); OIL of the two men on a flying line each day recorded (Trident 9, Relay 0; Blade 3, Basher 0). Inputs gear > \"Calendar…\" > Holidays > + Add > Public holiday \"National Day\", On grid \"ND\", 15 Jul > Save; read the date on the Inputs month, the SANS month and the Leave War Event row; the day head; the Leave War cell and tracker; Publish AL1; then the holiday's line > Delete, read again, Publish AL2. Then an Off day \"Stand Down\" (\"SD\") on Thu 16. Desktop and phone.",
+    "saw": "With the PH: Inputs month tag \"ND\" (green, k-ph), SANS month tag \"ND\" (k-ph), Leave War Event row \"ND\" (title \"National Day\") with the green column tint. Wed head \"1 pending\" (\"What this day earns changed\"); BEFORE the reissue Trident 9 / Relay 0 unchanged; after Publish AL1 Trident cell \"FO*\" 10, Relay \"FO*\" 1 (and the two desk men +0.5). PH removed: tags gone from all three; day \"1 pending\" again; BEFORE the reissue Trident 10 / Relay 1 still; after Publish AL2 back to 9 / 0. Off day on Thu: \"SD\" (k-off) on all three, retained after reload; the day shows NO pending and no earnings change; Blade 3 / Basher 0 unchanged. Phone: identical.",
+    "figures": {
+     "Trident": "9 -> 9 (PH added, not reissued) -> 10 (AL1) -> 10 (PH removed, not reissued) -> 9 (AL2)",
+     "Relay": "0 -> 0 -> 1 -> 1 -> 0",
+     "Blade (Off day)": "3 -> 3",
+     "Basher (Off day)": "0 -> 0"
+    },
+    "pics": [
+     "x05-dk-006",
+     "x05-dk-010",
+     "x05-dk-011",
+     "x05-dk-012",
+     "x05-dk-019",
+     "x05-dk-020",
+     "x05-dk-025",
+     "x05-dk-026",
+     "x05-dk-027",
+     "x05-dk-028",
+     "x05-dk-030",
+     "x05-dk-033",
+     "x05-dk-040",
+     "x05-dk-043"
+    ]
+   },
+   {
+    "id": "X-06",
+    "verdict": "PASS",
+    "did": "Fresh world. Leave War > AUG > Ace, 5 Aug: tap > LL > tap > Approve (Saber). Inputs month/day read. Then, in place as Warden-as-admin (identity swap), 6 Aug: LL > Approve (extension). Back as Saber: tap the 6th > Move > the 12th. Top-bar Undo, reload. Second leave: Ace 17-19 Aug approved by drag-select; Warden (swap) drags the 18th > Delete (the cut); Undo as Warden; Saber's Undo; reload. Desktop; phone repeated through the move and the cut/Undo/reload.",
+    "saw": "APPROVED: records Aug 5, placed by Saber; Inputs bar \"Ace · LL\" with tooltip \"Placed by Saber for Ace · 8 Oct 26, 22:19\"; opened-day line the same. EXTENDED: ONE bar 5-6 Aug, line \"Placed by Warden for Ace\" (the extension re-states who placed it; Saber no longer named). MOVED (6th -> 12th): two bars (5 Aug, 12 Aug), both \"Placed by Warden for Ace ... changed by Saber · 22:20\". Undo (\"Undo - moving a bid\"): one bar 5-6 again, no \"changed by\"; reload keeps it. CUT (18th deleted by Warden): two pieces 17 and 19 Aug, both \"Placed by Saber ... changed by Warden\"; Undo as Warden restored the 3-day leave \"Placed by Saber\" with no change stamp; reload keeps it. No stale bar, no duplicate leave. Phone: same readings (move Undo/reload not finished on phone - a script layout stop).",
+    "pics": [
+     "x06-dk-003",
+     "x06-dk-004",
+     "x06-dk-006",
+     "x06-dk-007",
+     "x06-dk-009",
+     "x06-dk-010",
+     "x06-dk-013",
+     "x06-dk-015",
+     "x06b-dk-002",
+     "x06b-dk-004",
+     "x06b-dk-005",
+     "x06b-dk-006"
+    ]
+   },
+   {
+    "id": "X-07",
+    "verdict": "PASS",
+    "did": "Fresh world. Leave War, 13 Jul: Required P typed into its cell (32) with Available P 28. SANS month and its opened 13 Jul read. Leave War > \"Available P\" name > form > CAT \"is\" -> \"is not\" > A > Save. Reopened the working box (tap Available P), back to SANS WITHOUT reloading; top-bar Undo; SANS and Leave War again.",
+    "saw": "Before: working box Required 32 / Available 28 / SANS committed 0 / Still needed 4; SANS cell \"4\" (amber), opened day 32 / 28 / 0 / 4. After Save (\"CAT is not A\" takes the two A-category pilots out): Leave War Available 26; working box 32 / 26 / 0 / Still needed 6; SANS cell 6 (red) and opened day Available 26, Still needed 6 with no reload. After Undo (\"Undo - a Leave War setting\"): SANS 4 again (amber), Available 28, working box back to 4. Phone: Save and the Leave War row (28 -> 26) read; the phone's SANS reads and Undo were not completed.",
+    "figures": {
+     "Available P": "28 -> 26 -> 28",
+     "Still needed P": "4 -> 6 -> 4"
+    },
+    "pics": [
+     "x07-dk-001",
+     "x07-dk-002",
+     "x07-dk-004",
+     "x07-dk-005",
+     "x07-dk-006",
+     "x07-dk-007",
+     "x07-dk-008"
+    ]
+   },
+   {
+    "id": "X-08",
+    "verdict": "PARTIAL",
+    "did": "Fresh world. Ace's 3-day leave 5-7 Aug approved on the Leave War. Inputs > its bar > editor window; typed a Remark. (A) real mouse drag of the very bar 7 days on with the window up; (B) top-bar Undo of that drag; (C) tried to cut the middle day from the Leave War with the window up; Save pressed with a notice showing. Desktop only.",
+    "saw": "(A) title followed the days (\"Ace · 12 Aug -> 14 Aug\"), typed remark kept, and a notice \"Changed while this window was open - remarks: theirs \"till 14 Aug\", yours \"typed in the editor - mine\"\" with Keep mine / Take theirs (the move rewrites the leave's \"till\" remark). (B) Undo: days followed back to 5-7 Aug, typed remark kept; the same notice STAYS, now \"theirs \"till 7 Aug\"\" - the value the record had when the window was opened. (C) With the editor up, leaving by the Leave War tab turns it into a blocking dialog OVER the war (picture): the war cannot be worked behind it, so the Leave War's own move/cut could NOT be done through its controls; the bridge writer lwSetCell(person, date, \"\") left the approved leave untouched. Save with the notice showing was refused (record unchanged, window still up). \"Keep mine\" / \"Take theirs\" outcomes not walked.",
+    "pics": [
+     "x08-dk-001",
+     "x08-dk-002-A",
+     "x08-dk-002-editor-on-leavewar",
+     "x08-dk-003",
+     "x08-dk-004",
+     "x08-dk-005"
+    ]
+   },
+   {
+    "id": "X-09",
+    "verdict": "PARTIAL",
+    "did": "Fresh world. As Saber: Ranger ATT B 7-12 Jul with a PDF \"X09-docA\". Signed in as Ranger: ATT C 10-14 Jul with \"X09-docB\" (overlaps) > clash sheet > \"ATT C replaces\" > Save. As Saber: Upchit on 13 Jul with \"X09-docC\" > summary > Save upchit. Medical tab > Ranger's card > viewer, paged 1 to 3, as Saber and as Ranger himself. Desktop and phone.",
+    "saw": "Records after: ATT B 7-9 Jul (doc A, by Saber, changed by Ranger), ATT C 10-12 Jul (doc B, by Ranger, changed by Saber), Upchit 13 Jul (doc C, by Saber). Viewer pages: 1 of 3 \"Ranger · ATT B · Jul 7 -> Jul 9\", frame \"X09-docA-attB.pdf\", \"Placed by Saber for Ranger · ... · changed by Ranger\"; 2 of 3 ATT C 10-12 Jul, frame docB, \"Placed by Ranger · ... · changed by Saber\"; 3 of 3 Upchit 13 Jul, frame docC, \"Placed by Saber for Ranger\". The card says \"3 documents\". Same for Ranger signed in as himself (buttons \"Edit input\", \"Close\") and on the phone. Not walked: a schedule puck (pressing a medically-down man's puck on the board opens nothing; no document control on the board), the List's paperclip (no rows with one in view), any viewer other than the two accounts (only Saber and Ranger exist). The PDFs are tiny made-up files that draw blank, so identity was read from each frame's title.",
+    "pics": [
+     "x09-dk-003",
+     "x09-dk-004",
+     "x09-dk-006",
+     "x09-dk-007",
+     "x09-dk-008",
+     "x09-dk-009",
+     "x09-dk-010",
+     "x09-dk-011",
+     "x09-dk-012",
+     "x09-dk-013",
+     "x09-ph-008",
+     "x09-ph-009",
+     "x09-ph-010",
+     "puckdoc-dk-001"
+    ]
+   }
+  ],
+  "findings": [
+   {
+    "n": 1,
+    "title": "The Calendar window can open BEHIND the settings window that opened it",
+    "steps": "Admin > Inputs > gear > \"Calendar…\" > Holidays tab > \"+ Add\" (the holiday form opens) > Cancel > press \"Calendar…\" in the settings window again.",
+    "expected": "the window just opened is in front (H-02).",
+    "saw": "the settings window is the front one (z 411); the Calendar (z 410) is behind it, and the settings window covers the Calendar's right side, including its Holidays tab and \"+ Add\". At the moment the holiday form is up the Calendar and the settings window have the same level and the settings window is drawn over the Calendar. Not seen after closing the settings window first, nor on a phone.",
+    "pics": [
+     "probe5-dk-003-a-5-after-form",
+     "x05-dk-021-calendar-behind-settings",
+     "x05-dk-029-calendar-behind-settings"
+    ]
+   },
+   {
+    "n": 2,
+    "title": "The filer's OIL sheet on a later answer names one man and answers for all",
+    "steps": "X-04 step (c): after a subject had said No and the scheduler had refused Piston, the filer opens the shared Duty > OIL \"Change…\" > Yes > Save.",
+    "expected": "D660: the filer answers for all, once - the sheet should say who it covers; other people's own claims \"remain intact\" (X-04).",
+    "saw": "the sheet title is \"OIL - Blade, Duty\" (at the first save it read \"Ranger +2\"); the Yes was written to all three records, so Ranger's own earlier No was undone (his FO came back, 0.5 -> 1.5). Piston's scheduler refusal held. For the host to judge whether Ranger's No should survive a later filer answer.",
+    "pics": [
+     "x04-dk-019",
+     "x04-dk-022"
+    ]
+   },
+   {
+    "n": 3,
+    "title": "To go out lists a shared input as three lines, not one item",
+    "steps": "X-01: file one input for three people on a published day, open its pending count > To go out.",
+    "expected": "roll-call: \"one shared item on New to you, All changes and To go out\".",
+    "saw": "All changes holds ONE item \"Input · Meeting · 3 people · 3\"; To go out lists three separate lines (as X-01's own EXPECTED line says: three named input changes). No \"Group by\" on To go out.",
+    "pics": [
+     "x0102-dk-015",
+     "x0102-dk-017"
+    ]
+   },
+   {
+    "n": 4,
+    "title": "A leave editor keeps saying \"Changed while this window was open\" after Undo put the record exactly back",
+    "steps": "Open a leave's editor window, type a Remark, drag the leave's bar on the month, then top-bar Undo.",
+    "expected": "once the record is back as it was when the window opened, nothing was changed behind it.",
+    "saw": "the notice stays, with \"theirs\" now equal to the value at opening. (Dragging a leave's bar always collides with a typed remark, because the move rewrites the \"till\" tail - by design?)",
+    "pics": [
+     "x08-dk-004-C-after-leavewar-clear-editor-up",
+     "x08-dk-002-A-after-drag-editor-up"
+    ]
+   },
+   {
+    "n": 5,
+    "title": "Escape did not close the settings window after it closed the Calendar",
+    "steps": "Inputs > gear > \"Calendar…\" > press Escape three times.",
+    "expected": "Escape closes the front window each time (brief).",
+    "saw": "the Calendar closed on the first press; the Inputs settings window stayed after the others (read from the page, no picture).",
+    "pics": []
+   },
+   {
+    "n": 6,
+    "title": "Observation: an extension re-states who placed the leave",
+    "steps": "X-06: Saber approves 5 Aug; Warden approves 6 Aug.",
+    "expected": "the plan's table row 5 (the builder's reading, told to the owner).",
+    "saw": "the bar and the day read \"Placed by Warden for Ace\"; Saber, who first approved it, is no longer named anywhere.",
+    "pics": [
+     "x06-dk-007-extended-inputs-day"
+    ]
+   }
+  ],
+  "notWalked": [
+   "X-02 phone: the bar drag was a MOUSE in a phone-sized screen, not a real finger sequence.",
+   "X-06 phone: Undo and reload of the MOVE not finished (script stopped on a covered date); the cut/Undo/reload was done on the phone. X-07 phone: SANS reads and Undo not done. X-08 phone: not walked (the nav is behind the menu there; the desktop result is the finding).",
+   "X-08: the Leave War's own move/cut with the editor open - not reachable through controls (the editor becomes a blocking dialog over the war); \"Keep mine\" / \"Take theirs\" outcomes.",
+   "X-09: a schedule puck door (none exists on screen), the List paperclip, a viewer other than Saber and Ranger.",
+   "X-01 to X-05: a sign-out and sign-in at every checkpoint - reloads were done at each checkpoint; sign-out/in only where a second person was needed (X-04, X-09). Print and export of issued views (only View-only Sched read).",
+   "Short screens 390x568 and 844x390 and 1536x864: only the Inputs month, the opened day, the settings window, the Calendar window and the SANS month were looked at (sizes script; nothing sideways, every window whole and in front) - not the nine flows.",
+   "X-05: the Calendar window's own month tag was not read (the Holidays tab was showing)."
+  ],
+  "pictures": {
+   "saved": 364,
+   "opened": 41
+  }
+ }
+}

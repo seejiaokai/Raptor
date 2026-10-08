@@ -1,0 +1,3647 @@
+{
+ "parts": {
+  "x10": {
+   "at": "2026-10-08T13:57:23.590Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-10 (a) different items — group input vs B's own input",
+     "did": "A filed a group of 4 (Saber, Ranger, Drifter, Ace); B (Ranger, member, swap) filed his own Appointment; swapped back to A; pressed the top-bar Undo, then Redo",
+     "saw": "ok the group was filed as 4 records, B filed 1 [{\"g1\":4,\"b1\":1}] | ok as A the Undo button is enabled after B's later change (B did not switch off A's unrelated Undo) [{\"undoTitle\":\"Undo — 4 inputs\",\"undoDis\":false,\"redoTitle\":\"Redo\",\"redoDis\":true}] | ok A's Undo was pressed and it ran [{\"present\":true,\"title\":\"Undo — 4 inputs\",\"pressed\":true,\"toasts\":[\"Undid: 4 inputs\"]}] | ok Undo reversed A's group (0 records left) [0] | ok B's own input is still there after A's Undo (1 record) [1] | ok Redo restores A's group whole (4) without touching B (1) [{\"r1\":true,\"g\":4,\"b\":1}] | ok the group is still ONE shared input after Redo (one group id) [[\"gmuzlodaec0xtxj\",\"gmuzlodaec0xtxj\",\"gmuzlodaec0xtxj\",\"gmuzlodaec0xtxj\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "x10-01-a1-A-filed-group.png",
+      "x10-02-a2-B-filed-own.png",
+      "x10-03-a3-A-back-before-undo.png",
+      "x10-04-a4-A-undone.png",
+      "x10-05-a5-A-redone.png"
+     ],
+     "stB": {
+      "undoTitle": "Undo — a personal input",
+      "undoDis": false,
+      "redoTitle": "Redo",
+      "redoDis": true
+     },
+     "stA": {
+      "undoTitle": "Undo — 4 inputs",
+      "undoDis": false,
+      "redoTitle": "Redo",
+      "redoDis": true
+     },
+     "u1": {
+      "present": true,
+      "title": "Undo — 4 inputs",
+      "pressed": true,
+      "toasts": [
+       "Undid: 4 inputs"
+      ]
+     },
+     "afterU": {
+      "toast": "Undid: 4 inputs",
+      "st": {
+       "undoTitle": "Undo",
+       "undoDis": true,
+       "redoTitle": "Redo — 4 inputs",
+       "redoDis": false
+      }
+     },
+     "afterR": {
+      "toast": "Redid: 4 inputs",
+      "st": {
+       "undoTitle": "Undo — 4 inputs",
+       "undoDis": false,
+       "redoTitle": "Redo",
+       "redoDis": true
+      }
+     }
+    },
+    {
+     "id": "X-10 (b) same item — B changed the item after A",
+     "did": "A filed G2 (2 men + Saber); B (Ranger, admin, swap) changed its remark; back to A; Undo, then Redo",
+     "saw": "ok A filed G2 as 3 records, B changed all 3 to the new remark [{\"g2\":3,\"g2b\":3}] | ok the Undo press was refused or did nothing: B's change is still there (3 with B's remark, 0 with the old) [{\"still\":3,\"old\":0}] | NO the refusal names the newer actor (Ranger) on screen [{\"toast\":\"A later change touches the same thing — undo that first.\",\"toasts\":[\"A later change touches the same thing — undo that first.\"]}] | ok Redo does not overwrite B's work (still 3 with B's remark) [{\"still\":3,\"old\":0,\"toast\":\"A later change touches the same thing — undo that first.\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x10-06-b1-A-filed-G2.png",
+      "x10-08-b3-B-changed-G2.png",
+      "x10-09-b4-A-undo-after-B.png",
+      "x10-10-b5-A-redo.png"
+     ],
+     "stA2": {
+      "undoTitle": "Undo — 3 inputs",
+      "undoDis": false,
+      "redoTitle": "Redo",
+      "redoDis": true
+     },
+     "u2": {
+      "present": true,
+      "title": "Undo — 3 inputs",
+      "pressed": true,
+      "toasts": [
+       "A later change touches the same thing — undo that first."
+      ]
+     },
+     "t2": "A later change touches the same thing — undo that first.",
+     "afterU2": {
+      "still": [
+       {
+        "iid": "imuzlojlds2raw0",
+        "person": "slipway",
+        "type": "Meeting",
+        "date": "Jul 16",
+        "endDate": "",
+        "remarks": "X10-G2-by-B",
+        "grp": "gmuzlojl7a7wxx0",
+        "grpBy": "stiff",
+        "placedBy": "stiff"
+       },
+       {
+        "iid": "imuzlojlatjnq4j",
+        "person": "dj",
+        "type": "Meeting",
+        "date": "Jul 16",
+        "endDate": "",
+        "remarks": "X10-G2-by-B",
+        "grp": "gmuzlojl7a7wxx0",
+        "grpBy": "stiff",
+        "placedBy": "stiff"
+       },
+       {
+        "iid": "imuzlojl78a4p0t",
+        "person": "stiff",
+        "type": "Meeting",
+        "date": "Jul 16",
+        "endDate": "",
+        "remarks": "X10-G2-by-B",
+        "grp": "gmuzlojl7a7wxx0",
+        "grpBy": "stiff",
+        "placedBy": "stiff"
+       }
+      ],
+      "old": [],
+      "st": {
+       "undoTitle": "Undo — 3 inputs",
+       "undoDis": false,
+       "redoTitle": "Redo",
+       "redoDis": true
+      }
+     },
+     "afterR2": {
+      "still": [
+       {
+        "iid": "imuzlojlds2raw0",
+        "person": "slipway",
+        "type": "Meeting",
+        "date": "Jul 16",
+        "endDate": "",
+        "remarks": "X10-G2-by-B",
+        "grp": "gmuzlojl7a7wxx0",
+        "grpBy": "stiff",
+        "placedBy": "stiff"
+       },
+       {
+        "iid": "imuzlojlatjnq4j",
+        "person": "dj",
+        "type": "Meeting",
+        "date": "Jul 16",
+        "endDate": "",
+        "remarks": "X10-G2-by-B",
+        "grp": "gmuzlojl7a7wxx0",
+        "grpBy": "stiff",
+        "placedBy": "stiff"
+       },
+       {
+        "iid": "imuzlojl78a4p0t",
+        "person": "stiff",
+        "type": "Meeting",
+        "date": "Jul 16",
+        "endDate": "",
+        "remarks": "X10-G2-by-B",
+        "grp": "gmuzlojl7a7wxx0",
+        "grpBy": "stiff",
+        "placedBy": "stiff"
+       }
+      ],
+      "old": [],
+      "st": {
+       "undoTitle": "Undo — 3 inputs",
+       "undoDis": false,
+       "redoTitle": "Redo",
+       "redoDis": true
+      },
+      "toast": "A later change touches the same thing — undo that first."
+     }
+    },
+    {
+     "id": "X-10 (c) holiday — the same item",
+     "did": "A added a holiday \"X10 Day\" (5 Aug); B (Ranger, admin, swap) renamed it; back to A; Undo",
+     "saw": "ok A's holiday was listed [[\"Wed 5 Aug X10 Day PH\"]] | ok B's rename was listed [[\"Wed 5 Aug X10 Day by B PH\"]] | ok after A's Undo B's rename is still there (not reversed) [[\"Wed 5 Aug X10 Day by B PH\"]] | NO the refusal names Ranger on screen [{\"toast\":\"A later change touches the same thing — undo that first.\",\"uh\":{\"present\":true,\"title\":\"Undo — a public holiday on 5 Aug\",\"pressed\":true,\"toasts\":[\"A later change touches the same thing — undo that first.\"]}}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x10-11-c1-A-added-holiday.png",
+      "x10-12-c2-B-changed-holiday.png",
+      "x10-13-c3-A-undo-after-B.png"
+     ],
+     "uh": {
+      "present": true,
+      "title": "Undo — a public holiday on 5 Aug",
+      "pressed": true,
+      "toasts": [
+       "A later change touches the same thing — undo that first."
+      ]
+     },
+     "th": "A later change touches the same thing — undo that first."
+    },
+    {
+     "id": "X-10 (d) holiday — different items",
+     "did": "A added \"X10 A2\" (12 Aug); B (Ranger, admin, swap) added \"X10 B2\" (19 Aug); back to A; Undo",
+     "saw": "NO A's own latest holiday is gone [[\"Wed 5 Aug X10 Day by B PH\",\"Wed 12 Aug X10 A2 PH\",\"Wed 19 Aug X10 B2 PH\"]] | ok B's holiday is still there [[\"Wed 5 Aug X10 Day by B PH\",\"Wed 12 Aug X10 A2 PH\",\"Wed 19 Aug X10 B2 PH\"]] | ok A's Undo ran [{\"uh2\":{\"present\":true,\"title\":\"Undo — a public holiday on 12 Aug\",\"pressed\":true,\"toasts\":[\"A later change touches the same thing — undo that first.\"]},\"th2\":\"A later change touches the same thing — undo that first.\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x10-14-c4-A-undo-different-holiday.png"
+     ],
+     "uh2": {
+      "present": true,
+      "title": "Undo — a public holiday on 12 Aug",
+      "pressed": true,
+      "toasts": [
+       "A later change touches the same thing — undo that first."
+      ]
+     },
+     "th2": "A later change touches the same thing — undo that first."
+    },
+    {
+     "id": "X-10 (e) requirement — different days",
+     "did": "A typed Required P 9 on 20 Aug; B (Ranger, admin, swap) typed 8 on 21 Aug; back to A; Undo",
+     "saw": "ok A Undo ran [{\"present\":true,\"title\":\"Undo — the required pilots and WSOs for 20 Aug\",\"pressed\":true,\"toasts\":[\"A later change touches the same thing — undo that first.\",\"Undid: the required pilots and WSOs for 20 Aug\"]}] | ok A figure on 20 Aug is gone [{\"a\":\"–\",\"b\":\"8\"}] | ok B figure on 21 Aug stays [{\"a\":\"–\",\"b\":\"8\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x10-15-d1-A-typed-req.png",
+      "x10-16-d2-B-typed-other-day.png",
+      "x10-17-d3-A-undo.png"
+     ],
+     "ur": {
+      "present": true,
+      "title": "Undo — the required pilots and WSOs for 20 Aug",
+      "pressed": true,
+      "toasts": [
+       "A later change touches the same thing — undo that first.",
+       "Undid: the required pilots and WSOs for 20 Aug"
+      ]
+     },
+     "rd": {
+      "a": "–",
+      "b": "8"
+     }
+    },
+    {
+     "id": "X-10 (f) requirement — the same cell",
+     "did": "A typed 7 on 24 Aug; B (Ranger, admin, swap) typed 6 on the same cell; back to A; Undo",
+     "saw": "ok B 6 stays in the cell [6] | NO the refusal names Ranger on screen [{\"th4\":\"A later change touches the same thing — undo that first.\",\"ur2\":{\"present\":true,\"title\":\"Undo — the required pilots and WSOs for 24 Aug\",\"pressed\":true,\"toasts\":[\"Undid: the required pilots and WSOs for 20 Aug\",\"]",
+     "verdict": "FAIL",
+     "pics": [
+      "x10-18-d4-A-undo-same-cell.png"
+     ],
+     "ur2": {
+      "present": true,
+      "title": "Undo — the required pilots and WSOs for 24 Aug",
+      "pressed": true,
+      "toasts": [
+       "Undid: the required pilots and WSOs for 20 Aug",
+       "A later change touches the same thing — undo that first."
+      ]
+     },
+     "th4": "A later change touches the same thing — undo that first.",
+     "rd2": "6"
+    }
+   ],
+   "errors": [],
+   "pics": 18
+  },
+  "x12": {
+   "at": "2026-10-08T14:00:42.690Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-12 step 1",
+     "did": "signed the four boxes of Wed 15 Jul and pressed Publish day",
+     "saw": "ok the day reads ORIG [ORIG] | ok no pending (the chip reads a changes count, not pending) [5 changes] | ok the signed line carries the four names [SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil]",
+     "verdict": "PASS",
+     "pics": [
+      "x12-01-1-published-clean.png"
+     ],
+     "h0": {
+      "tag": "ORIG",
+      "pending": "5 changes",
+      "beak": "none",
+      "alpub": "",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     }
+    },
+    {
+     "id": "X-12 step 2",
+     "did": "filed ONE Meeting for Ranger, Drifter and Ace (Saber taken off) on the published Wed 15 Jul",
+     "saw": "ok 3 records, one group [[\"dj\",\"slipway\",\"bane\"]] | ok the day reads 3 pending [3 pending] | ok the sign-offs fell (D103) [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] | ok the To go out list names each of the 3 people once [[\"Ranger · Meeting\",\"Drifter · Meeting\",\"Ace · Meeting\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "x12-02-2-three-pending.png"
+     ],
+     "h1": {
+      "tag": "ORIG",
+      "pending": "3 pending",
+      "beak": "none",
+      "alpub": "Publish AL1",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": "Not yet signed"
+     },
+     "lines": [
+      "Waiting to go out as",
+      "AL1",
+      "· 3 changes",
+      "Ranger · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Drifter · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Ace · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Tap a change to go to it."
+     ]
+    },
+    {
+     "id": "X-12 step 3",
+     "did": "opened the shared input and changed its remarks, Save",
+     "saw": "ok still 3 records, one group, all with the new remark [[\"X12 second remark\",\"X12 second remark\",\"X12 second remark\"]] | ok the day STILL reads 3 pending (not 6) [3 pending] | ok each of the 3 appears once in To go out [[\"Ranger · Meeting\",\"Drifter · Meeting\",\"Ace · Meeting\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "x12-03-3-after-remark-edit.png"
+     ],
+     "t3": "Ace +2 · 15 Jul",
+     "h2": {
+      "tag": "ORIG",
+      "pending": "3 pending",
+      "beak": "none",
+      "alpub": "Publish AL1",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": "Not yet signed"
+     },
+     "lines": [
+      "Waiting to go out as",
+      "AL1",
+      "· 3 changes",
+      "Ranger · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Drifter · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Ace · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Tap a change to go to it."
+     ]
+    },
+    {
+     "id": "X-12 step 4",
+     "did": "filed an unrelated one-person Appointment for Saber on the same day",
+     "saw": "ok the day reads 4 pending (3 + 1), not more [4 pending] | ok To go out holds Ranger, Drifter, Ace and Saber each once [[\"Saber · Appointment\",\"Ranger · Meeting\",\"Drifter · Meeting\",\"Ace · Meeting\"]] | ok View-only Sched's issued face has not changed yet (same words as at publication) [{\"before\":0,\"now\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "x12-04-4-after-solo.png"
+     ],
+     "h3": {
+      "tag": "ORIG",
+      "pending": "4 pending",
+      "beak": "none",
+      "alpub": "Publish AL1",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": "Not yet signed"
+     },
+     "lines": [
+      "Waiting to go out as",
+      "AL1",
+      "· 4 changes",
+      "Saber · Appointment",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Ranger · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Drifter · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Ace · Meeting",
+      "Saber",
+      "8/10 22:00",
+      "not on the programme → on the programme",
+      "Tap a change to go to it."
+     ],
+     "f0meet": 0,
+     "f3meet": 0
+    },
+    {
+     "id": "X-12 step 5",
+     "did": "signed the four boxes again and pressed Publish AL1",
+     "saw": "ok the publish button was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] | ok the day reads AL1 and no pending [{\"tag\":\"AL1\",\"pending\":\"17 changes\",\"nys\":\"\",\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}] | ok To go out is empty [[{\"t\":\"New to you 0\",\"on\":false},{\"t\":\"All changes 17\",\"on\":true},{\"t\":\"To go out · AL2 0\",\"on\":false}]] | ok View-only Sched now shows the final content (more Meeting words than before) [{\"before\":0,\"after\":3}] | ok the final remark is the edited one []",
+     "verdict": "PASS",
+     "pics": [
+      "x12-05-5-after-AL1.png"
+     ],
+     "h4": {
+      "tag": "AL1",
+      "pending": "17 changes",
+      "beak": "none",
+      "alpub": "",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "tabs": [
+      {
+       "t": "New to you 0",
+       "on": false
+      },
+      {
+       "t": "All changes 17",
+       "on": true
+      },
+      {
+       "t": "To go out · AL2 0",
+       "on": false
+      }
+     ],
+     "f4meet": 3
+    }
+   ],
+   "errors": []
+  },
+  "x11": {
+   "at": "2026-10-08T14:07:01.669Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-11 (1) filed",
+     "did": "published Wed 15 Jul clean, filed ONE Meeting for Ranger, Drifter and Ace; read New to you / All changes (by Item and by Who) / To go out, and New to you as a second admin (Anvil, swap)",
+     "saw": "ok 3 records, one group id [[\"dj\",\"slipway\",\"bane\"]] | ok All changes by Item: ONE item \"Input · Meeting · 3 people\" with the three names under it [[\"▾\",\"Input · Meeting · 3 people · 3\",\"22:05\",\"Ranger · Meeting added · 15 Jul (on the programme)\",\"Saber · 8/10 22:05\",\"Drifter · Meeting added · 15 Jul (on the programme)\",\"Saber · 8/10 22:05\",\"Ace · Meeting added · 15] | ok All changes by Who: Saber's lines each carry the group's title [[\"▾\",\"Saber · 8 changes\",\"8/10 22:05–22:05\",\"Input · Meeting · 3 people\",\"Saber · 8/10 22:05\",\"Ranger · Meeting added · 15 Jul (on the programme)\",\"Input · Meeting · 3 people\",\"Saber · 8/10 22:05\",\"Drifter · Meeting adde] | ok New to you (second admin): ONE shared item [[\"▾\",\"Input · Meeting · 3 people · 3\",\"NEW\",\"22:05\",\"Ranger · Meeting added · 15 Jul (on the programme)\",\"Saber · 8/10 22:05\",\"Drifter · Meeting added · 15 Jul (on the programme)\",\"Saber · 8/10 22:05\",\"Ace · Meeting adde] | NO To go out: ONE shared item (not a line for each man) [[\"Waiting to go out as\",\"AL1\",\"· 3 changes\",\"Ranger · Meeting\",\"Saber\",\"8/10 22:05\",\"not on the programme → on the programme\",\"Drifter · Meeting\",\"Saber\",\"8/10 22:05\",\"not on the programme → on the programme\",\"Ace · Meet]",
+     "verdict": "FAIL",
+     "pics": [
+      "x11-02-1-filed-all-item.png",
+      "x11-03-1-filed-all-who.png",
+      "x11-04-1-filed-togo.png",
+      "x11-05-1b-as-Anvil-new.png"
+     ],
+     "R1": {
+      "allItem": [
+       "▾",
+       "Input · Meeting · 3 people · 3",
+       "22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "▾",
+       "The day · 5",
+       "22:05",
+       "Published — the Original",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:05"
+      ],
+      "allWho": [
+       "▾",
+       "Saber · 8 changes",
+       "8/10 22:05–22:05",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Published — the Original",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace"
+      ],
+      "togo": [
+       "Waiting to go out as",
+       "AL1",
+       "· 3 changes",
+       "Ranger · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Drifter · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Ace · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Tap a change to go to it."
+      ],
+      "tabs": [
+       {
+        "t": "New to you 0",
+        "on": false
+       },
+       {
+        "t": "All changes 8",
+        "on": false
+       },
+       {
+        "t": "To go out · AL1 3",
+        "on": true
+       }
+      ]
+     },
+     "R1b": {
+      "new": [
+       "▾",
+       "Input · Meeting · 3 people · 3",
+       "NEW",
+       "22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "▾",
+       "The day · 5",
+       "NEW",
+       "22:05",
+       "Published — the Original",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:05"
+      ],
+      "tabs": [
+       {
+        "t": "New to you 8",
+        "on": false
+       },
+       {
+        "t": "All changes 8",
+        "on": false
+       },
+       {
+        "t": "To go out · AL1 3",
+        "on": true
+       }
+      ],
+      "togo": [
+       "Waiting to go out as",
+       "AL1",
+       "· 3 changes",
+       "Ranger · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Drifter · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Ace · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Tap a change to go to it."
+      ]
+     }
+    },
+    {
+     "id": "X-11 (2) one subject alone",
+     "did": "Ace (swap to member) opened the shared Meeting, pressed \"Take me out\" and confirmed; back to Saber; read the tabs",
+     "saw": "ok the editor opened on the entry (title names \"+2\") [Ace +2 · 15 Jul] | ok Take me out was there [1] | ok the shared input kept Ranger and Drifter only [[\"slipway\",\"bane\"]] | ok All changes by Item: Ace's own removal line is attributed to Ace, the filing still names him [[\"▾\",\"Input · Meeting · 2 people · 4\",\"NEW\",\"22:06\",\"Ace · Meeting deleted · 15 Jul\",\"Ace · 8/10 22:06\",\"Ranger · Meeting added · 15 Jul (on the programme)\",\"Saber · 8/10 22:05\",\"Drifter · Meeting added · 15 Jul (on the ] | ok All changes by Who: Ace has a heading of his own with 1 change [[\"Ace · 1 change\",\"Ace · 8/10 22:06\",\"Ace · Meeting deleted · 15 Jul\",\"Saber · 8 changes\",\"Saber · 8/10 22:05\",\"Saber · 8/10 22:05\",\"Saber · 8/10 22:05\",\"Ace · Meeting added · 15 Jul (on the programme)\"]] | NO To go out: the pair still waiting is ONE item (2 people) [[\"Waiting to go out as\",\"AL1\",\"· 2 changes\",\"Ranger · Meeting\",\"Saber\",\"8/10 22:05\",\"not on the programme → on the programme\",\"Drifter · Meeting\",\"Saber\",\"8/10 22:05\",\"not on the programme → on the programme\",\"Tap a chan]",
+     "verdict": "FAIL",
+     "pics": [
+      "x11-12-2-ace-out-all-item.png",
+      "x11-13-2-ace-out-all-who.png",
+      "x11-14-2-ace-out-togo.png"
+     ],
+     "R2": {
+      "allItem": [
+       "▾",
+       "Input · Meeting · 2 people · 4",
+       "NEW",
+       "22:06",
+       "Ace · Meeting deleted · 15 Jul",
+       "Ace · 8/10 22:06",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "▾",
+       "The day · 5",
+       "22:05",
+       "Published — the Original",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:05"
+      ],
+      "allWho": [
+       "▾",
+       "Ace · 1 change",
+       "NEW",
+       "8/10 22:06",
+       "Input · Meeting · 2 people",
+       "Ace · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul",
+       "▾",
+       "Saber · 8 changes",
+       "8/10 22:05–22:05",
+       "Input · Meeting · 2 people",
+       "Saber · 8/10 22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 2 people",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 2 people",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Published — the Original",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace"
+      ],
+      "togo": [
+       "Waiting to go out as",
+       "AL1",
+       "· 2 changes",
+       "Ranger · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Drifter · Meeting",
+       "Saber",
+       "8/10 22:05",
+       "not on the programme → on the programme",
+       "Tap a change to go to it."
+      ],
+      "tabs": [
+       {
+        "t": "New to you 1",
+        "on": false
+       },
+       {
+        "t": "All changes 9",
+        "on": false
+       },
+       {
+        "t": "To go out · AL1 2",
+        "on": true
+       }
+      ],
+      "new": [
+       "Input · Meeting · 2 people",
+       "Ace · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul"
+      ]
+     }
+    },
+    {
+     "id": "X-11 (3) amendment AL1",
+     "did": "signed and published AL1 (carrying Ranger and Drifter; Ace already out); read the tabs",
+     "saw": "ok AL1 was published [{\"pu1\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"tag\":\"AL1\"}] | ok All changes by Item: still ONE shared item with its names [[\"▾\",\"The day · 10\",\"22:06\",\"Published — AL1\",\"Saber · 8/10 22:06\",\"Signed · APPROVED BY · Anvil\",\"Saber · 8/10 22:06\",\"Signed · PLANNED BY · Anvil\",\"Saber · 8/10 22:06\",\"Signed · SKED CK · Anvil\",\"Saber · 8/10 22:06\",\"S] | ok All changes by Who: Ace still has his own line [[\"Signed · CUR CK · Ace\",\"Ace · Meeting added · 15 Jul (on the programme)\",\"Signed · CUR CK · Ace\",\"Ace · 1 change\",\"Ace · 8/10 22:06\",\"Ace · Meeting deleted · 15 Jul\"]] | ok To go out is empty [[\"Waiting to go out as\",\"AL2\",\"· 0 changes\",\"Nothing is waiting to go out.\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "x11-16-3-after-AL1-all-item.png",
+      "x11-17-3-after-AL1-all-who.png",
+      "x11-18-3-after-AL1-togo.png"
+     ],
+     "R3": {
+      "allItem": [
+       "▾",
+       "The day · 10",
+       "22:06",
+       "Published — AL1",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:06",
+       "Published — the Original",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:05",
+       "▾",
+       "Input · Meeting · 2 people · 4",
+       "NEW",
+       "22:06",
+       "Ace · Meeting deleted · 15 Jul",
+       "Ace · 8/10 22:06",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05"
+      ],
+      "allWho": [
+       "▾",
+       "Saber · 13 changes",
+       "8/10 22:05–22:06",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Published — AL1",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Input · Meeting · 2 people",
+       "Saber · 8/10 22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 2 people",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 2 people",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Published — the Original",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "▾",
+       "Ace · 1 change",
+       "NEW",
+       "8/10 22:06",
+       "Input · Meeting · 2 people",
+       "Ace · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul"
+      ],
+      "togo": [
+       "Waiting to go out as",
+       "AL2",
+       "· 0 changes",
+       "Nothing is waiting to go out."
+      ],
+      "tabs": [
+       {
+        "t": "New to you 1",
+        "on": true
+       },
+       {
+        "t": "All changes 14",
+        "on": false
+       },
+       {
+        "t": "To go out · AL2 0",
+        "on": false
+       }
+      ]
+     }
+    },
+    {
+     "id": "X-11 (4) deletion",
+     "did": "Saber deleted the remaining shared input (\"Delete this input for all 2 people?\") on the amended day; read the tabs",
+     "saw": "ok the question named both people [Delete this input for all 2 people?\nDelete\nKeep] | ok no X11 input is left [0] | ok All changes by Item: the deleted group keeps its title and the names, each \"deleted\" line [[\"▾\",\"Input · Meeting · 3 people · 6\",\"NEW\",\"22:06\",\"Ranger · Meeting deleted · 15 Jul\",\"Saber · 8/10 22:06\",\"Drifter · Meeting deleted · 15 Jul\",\"Saber · 8/10 22:06\",\"Ace · Meeting deleted · 15 Jul\",\"Ace · 8/10 22:06\",\"] | NO To go out: the deletion is ONE shared item [[\"Waiting to go out as\",\"AL2\",\"· 2 changes\",\"Ranger · Meeting\",\"Saber\",\"8/10 22:06\",\"on the programme → deleted\",\"Drifter · Meeting\",\"Saber\",\"8/10 22:06\",\"on the programme → deleted\"]] | ok All changes by Who: Saber's deletion lines carry the group title [[\"▾\",\"Saber · 15 changes\",\"8/10 22:05–22:06\",\"Input · Meeting · 3 people\",\"Saber · 8/10 22:06\",\"Ranger · Meeting deleted · 15 Jul\",\"Input · Meeting · 3 people\",\"Saber · 8/10 22:06\",\"Drifter · Meeting deleted · 15 Jul\",\"T]",
+     "verdict": "FAIL",
+     "pics": [
+      "x11-21-4-deleted-all-item.png",
+      "x11-22-4-deleted-all-who.png",
+      "x11-23-4-deleted-togo.png"
+     ],
+     "R4": {
+      "allItem": [
+       "▾",
+       "Input · Meeting · 3 people · 6",
+       "NEW",
+       "22:06",
+       "Ranger · Meeting deleted · 15 Jul",
+       "Saber · 8/10 22:06",
+       "Drifter · Meeting deleted · 15 Jul",
+       "Saber · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul",
+       "Ace · 8/10 22:06",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "▾",
+       "The day · 10",
+       "22:06",
+       "Published — AL1",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:06",
+       "Published — the Original",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:05"
+      ],
+      "allWho": [
+       "▾",
+       "Saber · 15 changes",
+       "8/10 22:05–22:06",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:06",
+       "Ranger · Meeting deleted · 15 Jul",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:06",
+       "Drifter · Meeting deleted · 15 Jul",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Published — AL1",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Published — the Original",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "▾",
+       "Ace · 1 change",
+       "NEW",
+       "8/10 22:06",
+       "Input · Meeting · 3 people",
+       "Ace · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul"
+      ],
+      "togo": [
+       "Waiting to go out as",
+       "AL2",
+       "· 2 changes",
+       "Ranger · Meeting",
+       "Saber",
+       "8/10 22:06",
+       "on the programme → deleted",
+       "Drifter · Meeting",
+       "Saber",
+       "8/10 22:06",
+       "on the programme → deleted"
+      ],
+      "tabs": [
+       {
+        "t": "New to you 1",
+        "on": false
+       },
+       {
+        "t": "All changes 16",
+        "on": false
+       },
+       {
+        "t": "To go out · AL2 2",
+        "on": true
+       }
+      ],
+      "t4": "Drifter +1 · 15 Jul"
+     }
+    },
+    {
+     "id": "X-11 (5) jumps",
+     "did": "in the changes window pressed the first To go out item, then the \"Ranger · Meeting deleted\" line of the deleted group; read where the view went",
+     "saw": "ok the lines exist (To go out / All changes) [{\"togo\":[{\"tag\":\"DIV\",\"still\":true,\"text\":\"Ranger · Meeting Saber 8/10 22:06 on the programme → deleted\"},{\"tag\":\"DIV\",\"still\":true,\"text\":\"Drifter · Meeting Saber 8/10 22:06 on the programme → deleted\"}],\"all\":16}] | ok the deleted group's line did not open an unrelated surviving input's editor [{\"delKind\":{\"tag\":\"DIV\",\"still\":true},\"afterDel\":{\"cp\":\"editsched\",\"sb\":false,\"sbday\":null,\"ed\":null,\"flash\":0}}] | ok the To go out jump went to the day / row (a place on the schedule) [{\"s0\":{\"cp\":\"editsched\",\"sb\":false,\"sbday\":null,\"ed\":null,\"flash\":0},\"afterTogo\":{\"cp\":\"editsched\",\"sb\":false,\"sbday\":null,\"ed\":null,\"flash\":0}}]",
+     "verdict": "PASS",
+     "pics": [],
+     "kindsTogo": [
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Ranger · Meeting Saber 8/10 22:06 on the programme → deleted"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Drifter · Meeting Saber 8/10 22:06 on the programme → deleted"
+      }
+     ],
+     "kindsAll": [
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Ranger · Meeting deleted · 15 Jul Saber · 8/10 22:06"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Drifter · Meeting deleted · 15 Jul Saber · 8/10 22:06"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Ace · Meeting deleted · 15 Jul Ace · 8/10 22:06"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Ranger · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:05"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Drifter · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:05"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Ace · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:05"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Published — AL1 Saber · 8/10 22:06"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Signed · APPROVED BY · Anvil Saber · 8/10 22:06"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Signed · PLANNED BY · Anvil Saber · 8/10 22:06"
+      },
+      {
+       "tag": "DIV",
+       "still": true,
+       "text": "Signed · SKED CK · Anvil Saber · 8/10 22:06"
+      }
+     ],
+     "s0": {
+      "cp": "editsched",
+      "sb": false,
+      "sbday": null,
+      "ed": null,
+      "flash": 0
+     },
+     "afterTogo": {
+      "cp": "editsched",
+      "sb": false,
+      "sbday": null,
+      "ed": null,
+      "flash": 0
+     },
+     "delKind": {
+      "tag": "DIV",
+      "still": true
+     },
+     "afterDel": {
+      "cp": "editsched",
+      "sb": false,
+      "sbday": null,
+      "ed": null,
+      "flash": 0
+     }
+    },
+    {
+     "id": "X-11 (6) amendment AL2",
+     "did": "published AL2 (the deletion) and read the tabs",
+     "saw": "ok AL2 was published [{\"pu2\":{\"pressed\":true,\"label\":\"Publish AL2\"},\"tag\":\"AL2\",\"before\":\"2 pending\"}] | ok All changes by Item still holds the group's item with all its lines [[\"▾\",\"The day · 15\",\"22:06\",\"Published — AL2\",\"Saber · 8/10 22:06\",\"Signed · APPROVED BY · Anvil\",\"Saber · 8/10 22:06\",\"Signed · PLANNED BY · Anvil\",\"Saber · 8/10 22:06\",\"Signed · SKED CK · Anvil\",\"Saber · 8/10 22:06\",\"S] | ok Ace's own line is still his [[\"Signed · CUR CK · Ace\",\"Signed · CUR CK · Ace\",\"Ace · Meeting added · 15 Jul (on the programme)\",\"Signed · CUR CK · Ace\",\"Ace · 1 change\",\"Ace · 8/10 22:06\",\"Ace · Meeting deleted · 15 Jul\"]] | ok To go out is empty [[\"Waiting to go out as\",\"AL3\",\"· 0 changes\",\"Nothing is waiting to go out.\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "x11-27-6-after-AL2-all-item.png",
+      "x11-28-6-after-AL2-all-who.png",
+      "x11-29-6-after-AL2-togo.png"
+     ],
+     "R6": {
+      "allItem": [
+       "▾",
+       "The day · 15",
+       "22:06",
+       "Published — AL2",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:06",
+       "Published — AL1",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:06",
+       "Published — the Original",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "Saber · 8/10 22:05",
+       "▾",
+       "Input · Meeting · 3 people · 6",
+       "NEW",
+       "22:06",
+       "Ranger · Meeting deleted · 15 Jul",
+       "Saber · 8/10 22:06",
+       "Drifter · Meeting deleted · 15 Jul",
+       "Saber · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul",
+       "Ace · 8/10 22:06",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "Saber · 8/10 22:05"
+      ],
+      "allWho": [
+       "▾",
+       "Saber · 20 changes",
+       "8/10 22:05–22:06",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Published — AL2",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:06",
+       "Ranger · Meeting deleted · 15 Jul",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:06",
+       "Drifter · Meeting deleted · 15 Jul",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Published — AL1",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:06",
+       "Signed · CUR CK · Ace",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Ranger · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Drifter · Meeting added · 15 Jul (on the programme)",
+       "Input · Meeting · 3 people",
+       "Saber · 8/10 22:05",
+       "Ace · Meeting added · 15 Jul (on the programme)",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Published — the Original",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · APPROVED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · PLANNED BY · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · SKED CK · Anvil",
+       "The day",
+       "Saber · 8/10 22:05",
+       "Signed · CUR CK · Ace",
+       "▾",
+       "Ace · 1 change",
+       "NEW",
+       "8/10 22:06",
+       "Input · Meeting · 3 people",
+       "Ace · 8/10 22:06",
+       "Ace · Meeting deleted · 15 Jul"
+      ],
+      "togo": [
+       "Waiting to go out as",
+       "AL3",
+       "· 0 changes",
+       "Nothing is waiting to go out."
+      ],
+      "tabs": [
+       {
+        "t": "New to you 1",
+        "on": true
+       },
+       {
+        "t": "All changes 21",
+        "on": false
+       },
+       {
+        "t": "To go out · AL3 0",
+        "on": false
+       }
+      ]
+     }
+    }
+   ],
+   "errors": []
+  },
+  "x11b": {
+   "at": "2026-10-08T14:08:00.991Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-11 (7) jump",
+     "did": "in the changes window pressed the \"Drifter · Meeting\" line of a surviving shared item (To go out, then All changes)",
+     "saw": "ok a goable line existed in To go out [[{\"still\":false,\"text\":\"Ranger · Meeting Saber 8/10 22:07 not on the programme → on the progra\"},{\"still\":false,\"text\":\"Drifter · Meeting Saber 8/10 22:07 not on the programme → on the progr\"},{\"still\":false,\"text\":\"Ace ] | ok a goable line existed in All changes [[{\"still\":false,\"text\":\"Ranger · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:07\"},{\"still\":false,\"text\":\"Drifter · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:07\"},{\"still\":false,\"text\":\"Ace ·] | ok no jump opened an unrelated input's editor [{\"a\":{\"cp\":\"editsched\",\"sb\":false,\"sbday\":null,\"ed\":null,\"flash\":[\"ntx txed chgflash | MEETING\"],\"win\":true},\"b\":{\"cp\":\"editsched\",\"sb\":false,\"sbday\":null,\"ed\":null,\"flash\":[\"seat chgflash | Drifter A\"],\"win\":true}}]",
+     "verdict": "PASS",
+     "pics": [
+      "x11b-01-jump-Togoout.png",
+      "x11b-02-jump-Allchanges.png"
+     ],
+     "To go out": {
+      "kinds": [
+       {
+        "still": false,
+        "text": "Ranger · Meeting Saber 8/10 22:07 not on the programme → on the progra"
+       },
+       {
+        "still": false,
+        "text": "Drifter · Meeting Saber 8/10 22:07 not on the programme → on the progr"
+       },
+       {
+        "still": false,
+        "text": "Ace · Meeting Saber 8/10 22:07 not on the programme → on the programme"
+       }
+      ],
+      "after": {
+       "cp": "editsched",
+       "sb": false,
+       "sbday": null,
+       "ed": null,
+       "flash": [
+        "ntx txed chgflash | MEETING"
+       ],
+       "win": true
+      },
+      "pic": "x11b-01-jump-Togoout.png",
+      "lit": [
+       "ntx txed chgflash | MEETING",
+       "mjump on | ",
+       "mjump | ",
+       "mjump | "
+      ]
+     },
+     "All changes": {
+      "kinds": [
+       {
+        "still": false,
+        "text": "Ranger · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:07"
+       },
+       {
+        "still": false,
+        "text": "Drifter · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:07"
+       },
+       {
+        "still": false,
+        "text": "Ace · Meeting added · 15 Jul (on the programme) Saber · 8/10 22:07"
+       },
+       {
+        "still": true,
+        "text": "Published — the Original Saber · 8/10 22:07"
+       },
+       {
+        "still": true,
+        "text": "Signed · APPROVED BY · Anvil Saber · 8/10 22:07"
+       },
+       {
+        "still": true,
+        "text": "Signed · PLANNED BY · Anvil Saber · 8/10 22:07"
+       },
+       {
+        "still": true,
+        "text": "Signed · SKED CK · Anvil Saber · 8/10 22:07"
+       },
+       {
+        "still": true,
+        "text": "Signed · CUR CK · Ace Saber · 8/10 22:07"
+       }
+      ],
+      "after": {
+       "cp": "editsched",
+       "sb": false,
+       "sbday": null,
+       "ed": null,
+       "flash": [
+        "seat chgflash | Drifter A"
+       ],
+       "win": true
+      },
+      "pic": "x11b-02-jump-Allchanges.png",
+      "lit": [
+       "seat chgflash | Drifter A",
+       "mjump on | ",
+       "mjump | ",
+       "mjump | "
+      ]
+     }
+    }
+   ],
+   "errors": []
+  },
+  "x13-desk": {
+   "at": "2026-10-08T14:10:38.995Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-13 desk step 1",
+     "did": "one real write: filed a solo Appointment through the editor on the plain address (not ?fresh=1)",
+     "saw": "ok the input is in browser storage (a real save) [1] | ok no failed-save note is up [{\"note\":null}]",
+     "verdict": "PASS",
+     "pics": [
+      "x13desk-01-1-first-write-saved.png"
+     ]
+    },
+    {
+     "id": "X-13 desk step 2",
+     "did": "the editor window open on a short screen, storage refusing writes; pressed the editor's Save for a 3-person Meeting",
+     "saw": "ok the failure is shown (\"Not saved\") with a Retry [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,56,1440,36],\"retryBox\":[1358,62,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":93}] | ok the warning is whole on screen and the page does not slide sideways [{\"inView\":true,\"sideways\":false}] | ok a press on Retry's middle lands on Retry (nothing covers it) [RETRY] | ok the app does not say it saved: no toast claims \"Saved\" [[\"Input added for 4 people\"]] | ok the work is not discarded: the 4 records (Saber, Ranger, Drifter, Ace) are held in the page [[\"dj|gmuzm5zqns9696y|Meeting|Jul 17\",\"slipway|gmuzm5zqns9696y|Meeting|Jul 17\",\"bane|gmuzm5zqns9696y|Meeting|Jul 17\",\"stiff|gmuzm5zqns9696y|Meeting|Jul 17\"]] | ok and are NOT on disk yet [0]",
+     "verdict": "PASS",
+     "pics": [
+      "x13desk-02-2a-editor-before-save.png",
+      "x13desk-03-2b-after-failed-save.png"
+     ],
+     "band1": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       56,
+       1440,
+       36
+      ],
+      "retryBox": [
+       1358,
+       62,
+       62,
+       26
+      ],
+      "atBandMid": "band",
+      "atRetry": "RETRY",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 93
+     },
+     "toast1": [
+      "Input added for 4 people"
+     ],
+     "edOpen": 0
+    },
+    {
+     "id": "X-13 desk step 3",
+     "did": "with the warning up, opened the Inputs settings window (the gear)",
+     "saw": "ok the settings window opened [1] | ok Retry is still the thing a press lands on (the window does not cover it) [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,56,1440,36],\"retryBox\":[1358,62,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":93}] | ok the failure band is still whole on screen [[0,56,1440,36]]",
+     "verdict": "PASS",
+     "pics": [
+      "x13desk-04-3-settings-over-band.png"
+     ],
+     "band2": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       56,
+       1440,
+       36
+      ],
+      "retryBox": [
+       1358,
+       62,
+       62,
+       26
+      ],
+      "atBandMid": "band",
+      "atRetry": "RETRY",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 93
+     },
+     "swBefore": true
+    },
+    {
+     "id": "X-13 desk step 4",
+     "did": "pressed Retry (storage working again from that press)",
+     "saw": "ok Retry is a pressable size [[62,26]] | ok the warning goes [true] | ok the 4 records are now on disk [4]",
+     "verdict": "PASS",
+     "pics": [
+      "x13desk-05-4-after-retry.png"
+     ]
+    },
+    {
+     "id": "X-13 desk step 5",
+     "did": "reloaded the page (plain address) and signed in again",
+     "saw": "ok exactly ONE shared input of 4 records (Saber + 3), one group id [[\"dj|gmuzm5zqns9696y|Meeting|Jul 17\",\"slipway|gmuzm5zqns9696y|Meeting|Jul 17\",\"bane|gmuzm5zqns9696y|Meeting|Jul 17\",\"stiff|gmuzm5zqns9696y|Meeting|Jul 17\"]] | ok the first write is there exactly once [[\"stiff||Appointment|Jul 16\"]] | ok no duplicate from the retry [4]",
+     "verdict": "PASS",
+     "pics": [
+      "x13desk-06-5-after-reload.png"
+     ]
+    },
+    {
+     "id": "X-13 desk step 6",
+     "did": "settings window: flipped \"Members may file duties and commitments for other people\", Save with storage refusing, then Retry, then reload",
+     "saw": "ok the failure is shown with Retry reachable [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,56,1440,36],\"retryBox\":[1358,62,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":93}] | ok Retry saves and the note goes [true] | ok after reload the switch holds the changed value (it differs from before) [{\"before\":true,\"afterSw\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "x13desk-08-6b-settings-failed-save.png",
+      "x13desk-09-6c-settings-after-reload.png",
+      null
+     ],
+     "winStill": 0
+    }
+   ],
+   "errors": [],
+   "picCount": 9
+  },
+  "x13-short": {
+   "at": "2026-10-08T14:11:54.026Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-13 short step 1",
+     "did": "one real write: filed a solo Appointment through the editor on the plain address (not ?fresh=1)",
+     "saw": "ok the input is in browser storage (a real save) [1] | ok no failed-save note is up [{\"note\":null}]",
+     "verdict": "PASS",
+     "pics": [
+      "x13short-01-1-first-write-saved.png"
+     ]
+    },
+    {
+     "id": "X-13 short step 2",
+     "did": "the editor window open on a short screen, storage refusing writes; pressed the editor's Save for a 3-person Meeting",
+     "saw": "ok the failure is shown (\"Not saved\") with a Retry [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,48,390,36],\"retryBox\":[314,54,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":85}] | ok the warning is whole on screen and the page does not slide sideways [{\"inView\":true,\"sideways\":false}] | ok a press on Retry's middle lands on Retry (nothing covers it) [RETRY] | ok the app does not say it saved: no toast claims \"Saved\" [[\"Input added for 4 people\"]] | ok the work is not discarded: the 4 records (Saber, Ranger, Drifter, Ace) are held in the page [[\"dj|gmuzm7lsuepbcn4|Meeting|Jul 17\",\"slipway|gmuzm7lsuepbcn4|Meeting|Jul 17\",\"bane|gmuzm7lsuepbcn4|Meeting|Jul 17\",\"stiff|gmuzm7lsuepbcn4|Meeting|Jul 17\"]] | ok and are NOT on disk yet [0]",
+     "verdict": "PASS",
+     "pics": [
+      "x13short-02-2a-editor-before-save.png",
+      "x13short-03-2b-after-failed-save.png"
+     ],
+     "band1": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       48,
+       390,
+       36
+      ],
+      "retryBox": [
+       314,
+       54,
+       62,
+       26
+      ],
+      "atBandMid": "band",
+      "atRetry": "RETRY",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 85
+     },
+     "toast1": [
+      "Input added for 4 people"
+     ],
+     "edOpen": 0
+    },
+    {
+     "id": "X-13 short step 3",
+     "did": "with the warning up, opened the Inputs settings window (the gear)",
+     "saw": "ok the settings window opened [1] | ok Retry is still the thing a press lands on (the window does not cover it) [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,48,390,36],\"retryBox\":[314,54,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":85}] | ok the failure band is still whole on screen [[0,48,390,36]]",
+     "verdict": "PASS",
+     "pics": [
+      "x13short-04-3-settings-over-band.png"
+     ],
+     "band2": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       48,
+       390,
+       36
+      ],
+      "retryBox": [
+       314,
+       54,
+       62,
+       26
+      ],
+      "atBandMid": "band",
+      "atRetry": "RETRY",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 85
+     },
+     "swBefore": true
+    },
+    {
+     "id": "X-13 short step 4",
+     "did": "pressed Retry (storage working again from that press)",
+     "saw": "ok Retry is a pressable size [[62,26]] | ok the warning goes [true] | ok the 4 records are now on disk [4]",
+     "verdict": "PASS",
+     "pics": [
+      "x13short-05-4-after-retry.png"
+     ]
+    },
+    {
+     "id": "X-13 short step 5",
+     "did": "reloaded the page (plain address) and signed in again",
+     "saw": "ok exactly ONE shared input of 4 records (Saber + 3), one group id [[\"dj|gmuzm7lsuepbcn4|Meeting|Jul 17\",\"slipway|gmuzm7lsuepbcn4|Meeting|Jul 17\",\"bane|gmuzm7lsuepbcn4|Meeting|Jul 17\",\"stiff|gmuzm7lsuepbcn4|Meeting|Jul 17\"]] | ok the first write is there exactly once [[\"stiff||Appointment|Jul 16\"]] | ok no duplicate from the retry [4]",
+     "verdict": "PASS",
+     "pics": [
+      "x13short-06-5-after-reload.png"
+     ]
+    },
+    {
+     "id": "X-13 short step 6",
+     "did": "settings window: flipped \"Members may file duties and commitments for other people\", Save with storage refusing, then Retry, then reload",
+     "saw": "ok the failure is shown with Retry reachable [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,48,390,36],\"retryBox\":[314,54,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":85}] | ok Retry saves and the note goes [true] | ok after reload the switch holds the changed value (it differs from before) [{\"before\":true,\"afterSw\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "x13short-08-6b-settings-failed-save.png",
+      "x13short-09-6c-settings-after-reload.png",
+      null
+     ],
+     "winStill": 0
+    }
+   ],
+   "errors": [],
+   "picCount": 9
+  },
+  "x13-side": {
+   "at": "2026-10-08T14:13:30.993Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-13 side step 1",
+     "did": "one real write: filed a solo Appointment through the editor on the plain address (not ?fresh=1)",
+     "saw": "ok the input is in browser storage (a real save) [1] | ok no failed-save note is up [{\"note\":null}]",
+     "verdict": "PASS",
+     "pics": [
+      "x13side-01-1-first-write-saved.png"
+     ]
+    },
+    {
+     "id": "X-13 side step 2",
+     "did": "the editor window open on a short screen, storage refusing writes; pressed the editor's Save for a 3-person Meeting",
+     "saw": "ok the failure is shown (\"Not saved\") with a Retry [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,148,844,36],\"retryBox\":[762,154,62,26],\"atBandMid\":\"icRmkEdit\",\"atRetry\":\"icRmkEdit\",\"sideways\":false,\"inView\":true,\"topbarH\":185}] | ok the warning is whole on screen and the page does not slide sideways [{\"inView\":true,\"sideways\":false}] | NO a press on Retry's middle lands on Retry (nothing covers it) [icRmkEdit] | ok the app does not say it saved: no toast claims \"Saved\" [[\"Input added for 4 people\"]] | ok the work is not discarded: the 4 records (Saber, Ranger, Drifter, Ace) are held in the page [[\"dj|gmuzm9o1un2i5vz|Meeting|Jul 17\",\"slipway|gmuzm9o1un2i5vz|Meeting|Jul 17\",\"bane|gmuzm9o1un2i5vz|Meeting|Jul 17\",\"stiff|gmuzm9o1un2i5vz|Meeting|Jul 17\"]] | ok and are NOT on disk yet [0]",
+     "verdict": "FAIL",
+     "pics": [
+      "x13side-02-2a-editor-before-save.png",
+      "x13side-03-2b-after-failed-save.png"
+     ],
+     "band1": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       148,
+       844,
+       36
+      ],
+      "retryBox": [
+       762,
+       154,
+       62,
+       26
+      ],
+      "atBandMid": "icRmkEdit",
+      "atRetry": "icRmkEdit",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 185
+     },
+     "toast1": [
+      "Input added for 4 people"
+     ],
+     "edOpen": 0
+    },
+    {
+     "id": "X-13 side step 2b",
+     "did": "the opened-day window lay over Retry; closed it with its cross and read the band again",
+     "saw": "ok after closing the window a press on Retry lands on Retry [RETRY]",
+     "verdict": "PASS",
+     "pics": [
+      "x13side-04-2c-day-window-closed.png"
+     ],
+     "afterClose": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       148,
+       844,
+       36
+      ],
+      "retryBox": [
+       762,
+       154,
+       62,
+       26
+      ],
+      "atBandMid": "band",
+      "atRetry": "RETRY",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 185
+     }
+    },
+    {
+     "id": "X-13 side step 3",
+     "did": "with the warning up, opened the Inputs settings window (the gear)",
+     "saw": "ok the settings window opened [1] | NO Retry is still the thing a press lands on (the window does not cover it) [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,148,844,36],\"retryBox\":[762,154,62,26],\"atBandMid\":\"band\",\"atRetry\":\"settings window\",\"sideways\":false,\"inView\":true,\"topbarH\":185}] | ok the failure band is still whole on screen [[0,148,844,36]]",
+     "verdict": "FAIL",
+     "pics": [
+      "x13side-04-2c-day-window-closed.png"
+     ],
+     "band2": {
+      "text": "⚠Not saved — keep this page openRetry",
+      "failed": true,
+      "box": [
+       0,
+       148,
+       844,
+       36
+      ],
+      "retryBox": [
+       762,
+       154,
+       62,
+       26
+      ],
+      "atBandMid": "band",
+      "atRetry": "settings window",
+      "sideways": false,
+      "inView": true,
+      "topbarH": 185
+     },
+     "swBefore": true
+    },
+    {
+     "id": "X-13 side step 4",
+     "did": "pressed Retry (storage working again from that press)",
+     "saw": "ok Retry is a pressable size [[62,26]] | ok the warning goes [true] | ok the 4 records are now on disk [4]",
+     "verdict": "PASS",
+     "pics": [
+      "x13side-05-3-settings-over-band.png"
+     ]
+    },
+    {
+     "id": "X-13 side step 5",
+     "did": "reloaded the page (plain address) and signed in again",
+     "saw": "ok exactly ONE shared input of 4 records (Saber + 3), one group id [[\"dj|gmuzm9o1un2i5vz|Meeting|Jul 17\",\"slipway|gmuzm9o1un2i5vz|Meeting|Jul 17\",\"bane|gmuzm9o1un2i5vz|Meeting|Jul 17\",\"stiff|gmuzm9o1un2i5vz|Meeting|Jul 17\"]] | ok the first write is there exactly once [[\"stiff||Appointment|Jul 16\"]] | ok no duplicate from the retry [4]",
+     "verdict": "PASS",
+     "pics": [
+      "x13side-06-4-after-retry.png"
+     ]
+    },
+    {
+     "id": "X-13 side step 6",
+     "did": "settings window: flipped \"Members may file duties and commitments for other people\", Save with storage refusing, then Retry, then reload",
+     "saw": "ok the failure is shown with Retry reachable [{\"text\":\"⚠Not saved — keep this page openRetry\",\"failed\":true,\"box\":[0,148,844,36],\"retryBox\":[762,154,62,26],\"atBandMid\":\"band\",\"atRetry\":\"RETRY\",\"sideways\":false,\"inView\":true,\"topbarH\":185}] | ok Retry saves and the note goes [true] | ok after reload the switch holds the changed value (it differs from before) [{\"before\":true,\"afterSw\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "x13side-08-6a-settings-changed.png",
+      "x13side-09-6b-settings-failed-save.png",
+      "x13side-10-6c-settings-after-reload.png"
+     ],
+     "winStill": 0
+    }
+   ],
+   "errors": [],
+   "picCount": 10
+  },
+  "x14": {
+   "at": "2026-10-08T14:33:35.789Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-14 (A1) settings window",
+     "did": "opened the Inputs settings window as Saber, flipped \"Members may file duties and commitments for other people\" (not saved), tapped the name badge to the member view with the window still up, pressed Save",
+     "saw": "ok the badge changed to the member view [SABER · ADMIN] | ok the window did not pass a write: the stored setting is unchanged [{\"was\":true,\"nowVal\":true,\"windowStillUp\":0,\"saveRes\":\"no Save button left\",\"toastA1\":[]}]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-01-a1-settings-open-admin.png",
+      "x14-02-a1b-member-view-window-up.png",
+      "x14-03-a1c-after-save-press.png"
+     ],
+     "was": true,
+     "nowVal": true,
+     "winAfter": 0,
+     "saveVis": 0,
+     "toastA1": []
+    },
+    {
+     "id": "X-14 (A2) Calendar window",
+     "did": "opened Calendar → Holidays → Add form (name, short form, 2 Sep) as Saber; tapped the badge to member view with the window up; pressed the form's Save",
+     "saw": "ok no holiday \"X14 Hol\" was written [{\"holsAfter\":[],\"formUp\":0,\"calUp\":0,\"a2res\":\"form gone\",\"errTxt\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-04-a2a-holiday-form-admin.png",
+      "x14-05-a2b-holiday-after-save-as-member.png"
+     ],
+     "formUp": 0,
+     "calUp": 0,
+     "a2res": "form gone",
+     "errTxt": ""
+    },
+    {
+     "id": "X-14 (A3) Required cell",
+     "did": "clicked a Required P cell (10 Sep) as Saber, typed 5 and left the box open, swapped in place to Ranger (member, Leave War role member too), pressed Enter",
+     "saw": "ok no figure was written (the cell reads blank again as admin) [{\"memberCell\":\"–\",\"adminCell\":\"–\"}] | ok in member view the cell is not an editable one [false]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-06-a3a-required-box-typed-admin.png",
+      "x14-07-a3b-after-enter-as-member.png"
+     ],
+     "memberCell": "–",
+     "adminCell": "–",
+     "editableNow": false
+    },
+    {
+     "id": "X-14 (A4) group editor",
+     "did": "opened the shared Meeting's editor as Saber, typed a new remark, then swapped to Ranger (a member in the group who did not file it) with the window up and pressed Save",
+     "saw": "ok the remark was NOT changed to the typed one [{\"rmk\":[\"slipway:X14 group\",\"bane:X14 group\",\"stiff:X14 group\"],\"edUp\":1,\"saveBtn\":0,\"a4res\":\"no Save left\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-08-a4a-group-editor-admin.png",
+      "x14-09-a4b-group-editor-after-swap-save.png"
+     ],
+     "rmk": [
+      "slipway:X14 group",
+      "bane:X14 group",
+      "stiff:X14 group"
+     ],
+     "edUp": 1,
+     "saveBtn": 0,
+     "a4res": "no Save left"
+    },
+    {
+     "id": "X-14 (A5) bar drag",
+     "did": "pressed on the shared Meeting's bar as Saber, dragged, swapped to Ranger (member, in the group, not the filer) in the middle of the drag, finished the drag two days on",
+     "saw": "ok the drop moved nothing (dates unchanged) [{\"before\":[\"Jul 20\",\"Jul 20\",\"Jul 20\"],\"after\":[\"Jul 20\",\"Jul 20\",\"Jul 20\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-10-a5a-mid-drag-after-swap.png",
+      "x14-11-a5b-after-drop.png"
+     ],
+     "d0": [
+      "Jul 20",
+      "Jul 20",
+      "Jul 20"
+     ],
+     "d1": [
+      "Jul 20",
+      "Jul 20",
+      "Jul 20"
+     ]
+    },
+    {
+     "id": "X-14 (A6) doors by role",
+     "did": "as Ranger (non-SANS member), Zenith (SANS member) and Saber (admin) read which privileged doors exist: Inputs gear, SANS gear, \"+ Commitment\" on an opened SANS day, Leave War ⚙, Required cell editable",
+     "saw": "ok admin has the Inputs gear, the SANS gear, the Leave War ⚙, and editable Required cells [{\"gear\":1,\"sansGear\":1,\"sdAdd\":1,\"sdAddOn\":true,\"sdWhy\":\"\",\"picSans\":\"x14-16-a6-sans-admin.png\",\"lwGear\":1,\"reqEditable\":true,\"badge\":\"SABER · ADMIN\",\"pic\":\"x14-17-a6-doors-admin.png\"}] | ok a non-SANS member has none of the admin doors, and \"+ Commitment\" is off with its reason [{\"gear\":0,\"sansGear\":0,\"sdAdd\":1,\"sdAddOn\":false,\"sdWhy\":\"SANS aircrew add their availability here.\",\"picSans\":\"x14-12-a6-sans-ranger.png\",\"lwGear\":0,\"reqEditable\":false,\"badge\":\"RANGER · MEMBER\",\"pic\":\"x14-13-a6-doors-r] | ok a SANS member has none of the admin doors, and \"+ Commitment\" is on (his own) [{\"gear\":0,\"sansGear\":0,\"sdAdd\":1,\"sdAddOn\":true,\"sdWhy\":\"\",\"picSans\":\"x14-14-a6-sans-sansman.png\",\"lwGear\":0,\"reqEditable\":false,\"badge\":\"ZENITH · MEMBER\",\"pic\":\"x14-15-a6-doors-sansman.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-12-a6-sans-ranger.png",
+      "x14-14-a6-sans-sansman.png",
+      "x14-16-a6-sans-admin.png",
+      "x14-13-a6-doors-ranger.png",
+      "x14-15-a6-doors-sansman.png",
+      "x14-17-a6-doors-admin.png"
+     ],
+     "dRanger": {
+      "gear": 0,
+      "sansGear": 0,
+      "sdAdd": 1,
+      "sdAddOn": false,
+      "sdWhy": "SANS aircrew add their availability here.",
+      "picSans": "x14-12-a6-sans-ranger.png",
+      "lwGear": 0,
+      "reqEditable": false,
+      "badge": "RANGER · MEMBER",
+      "pic": "x14-13-a6-doors-ranger.png"
+     },
+     "dZen": {
+      "gear": 0,
+      "sansGear": 0,
+      "sdAdd": 1,
+      "sdAddOn": true,
+      "sdWhy": "",
+      "picSans": "x14-14-a6-sans-sansman.png",
+      "lwGear": 0,
+      "reqEditable": false,
+      "badge": "ZENITH · MEMBER",
+      "pic": "x14-15-a6-doors-sansman.png"
+     },
+     "dAdmin": {
+      "gear": 1,
+      "sansGear": 1,
+      "sdAdd": 1,
+      "sdAddOn": true,
+      "sdWhy": "",
+      "picSans": "x14-16-a6-sans-admin.png",
+      "lwGear": 1,
+      "reqEditable": true,
+      "badge": "SABER · ADMIN",
+      "pic": "x14-17-a6-doors-admin.png"
+     }
+    },
+    {
+     "id": "X-14 (A7) guest and no access",
+     "did": "turned Guest view on (Admin → Users), signed out, signed in as an unknown name (waiting screen), tried to navigate by hand, pressed \"View the schedule\" (guest), tried the Inputs and Admin pages, signed out and signed in as Saber again",
+     "saw": "ok an unknown name gets the Request-access screen, not the app [RAPTOR Request access Signed in as stranger You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pic] | ok after asking, a waiting screen with a guest button (switch on) [RAPTOR Your request is with the admins Signed in as stranger You asked for access as Stranger (ST · Pilot · CAT OCU). You'll be able to sign in as soon as an admin approves it. Meanwhile you can look at the schedule, rea] | ok navigating by hand does not leave the waiting screen [1] | ok the guest has no Inputs gear and no add button [{\"badge\":\"\",\"nav\":[\"Sign out\"],\"pic\":\"x14-19-a7b-guest-view.png\",\"cp\":\"viewsched\",\"gear\":0,\"addBtn\":0,\"pic2\":\"x14-20-a7c-guest-after-go-inputs.png\",\"cpAdmin\":\"viewsched\",\"adminBody\":\"142 RAPTOR Waiting for access — view ] | ok the guest cannot reach Admin [viewsched] | ok the sign-in card stays usable afterwards [true]",
+     "verdict": "PASS",
+     "pics": [
+      "x14-18-a7a-no-access-screen.png",
+      "x14-19-a7b-guest-view.png",
+      "x14-20-a7c-guest-after-go-inputs.png"
+     ],
+     "guestInfo": {
+      "badge": "",
+      "nav": [
+       "Sign out"
+      ],
+      "pic": "x14-19-a7b-guest-view.png",
+      "cp": "viewsched",
+      "gear": 0,
+      "addBtn": 0,
+      "pic2": "x14-20-a7c-guest-after-go-inputs.png",
+      "cpAdmin": "viewsched",
+      "adminBody": "142 RAPTOR Waiting for access — view only Sign out Jul 06 Jul 13 Jul 20 Jul 27 Monday Jul 13 · Today DRAFT 4 X 4 Draft COMMON PROGRAMME EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 NAME"
+     },
+     "noAccessText": "RAPTOR Your request is with the admins Signed in as stranger You asked for access as Stranger (ST · Pilot · CAT OCU). You'll be able to sign in as soon as an admin approves it. Meanwhile you can look at the schedule, read only. View the schedule Sign out People waiting can now view the schedule"
+    }
+   ],
+   "errors": []
+  },
+  "x15-post": {
+   "at": "2026-10-08T14:42:57.547Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-15 post",
+     "did": "Zenith (SANS) had a SANS commitment 6-12 Oct, a shared Meeting with Ranger on 9 Oct and a solo Appointment 7-10 Oct; Fri 9 Oct published; then post",
+     "saw": "{\"fx\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"before\":{\"sans\":{\"10\":\"10 – F 1 0 O 0 0 A 0 0\",\"12\":\"12 – F 1 0 O 0 0 A 0 0\",\"06\":\"6 – F 1 0 O 0 0 A 0 0\",\"07\":\"7 – F 1 0 O 0 0 A 0 0\",\"08\":\"8 – F 1 0 O 0 0 A 0 0\",\"09\":\"9 – F 1 0 O 0 0 A 0 0\"},\"inputs\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"meet\":[\"bane:Oct 9\",\"vinci:Oct 9\"],\"head\":\"9 changes\",\"face\":{\"zen\":1,\"meet\":2,\"appt\":0,\"tag\":\"ORIG\"},\"lw\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"after\":{\"sans\":{\"10\":\"10 – F 0 0 O 0 0 A 0 0\",\"12\":\"12 – F 0 0 O 0 0 A 0 0\",\"06\":\"6 – F 0 0 O 0 0 A 0 0\",\"07\":\"7 – F 0 0 O 0 0 A 0 0\",\"08\":\"8 – F 0 0 O 0 0 A 0 0\",\"09\":\"9 – F 0 0 O 0 0 A 0 0\"},\"inputs\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"meet\":[\"bane:Oct 9\",\"vinci:Oct 9\"],\"head\":\"1 pending\",\"face\":{\"zen\":1,\"meet\":2,\"appt\":0,\"tag\":\"ORIG\"},\"lw\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\",\"chg\":[\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"Zenith · posted out\",\"Saber\",\"8/10 22:42\",\"no → yes\"]}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "x15post-03-1-before-sans-9oct.png",
+      "x15post-04-1-before-inputs-month.png",
+      "x15post-08-3-after-post-sans-9oct.png",
+      "x15post-09-3-after-post-inputs-month.png",
+      "x15post-10-3-after-post-changes-tue13.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x15-archive": {
+   "at": "2026-10-08T14:43:58.391Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-15 archive",
+     "did": "Zenith (SANS) had a SANS commitment 6-12 Oct, a shared Meeting with Ranger on 9 Oct and a solo Appointment 7-10 Oct; Fri 9 Oct published; then archive",
+     "saw": "{\"fx\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"before\":{\"sans\":{\"10\":\"10 – F 1 0 O 0 0 A 0 0\",\"12\":\"12 – F 1 0 O 0 0 A 0 0\",\"06\":\"6 – F 1 0 O 0 0 A 0 0\",\"07\":\"7 – F 1 0 O 0 0 A 0 0\",\"08\":\"8 – F 1 0 O 0 0 A 0 0\",\"09\":\"9 – F 1 0 O 0 0 A 0 0\"},\"inputs\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"meet\":[\"bane:Oct 9\",\"vinci:Oct 9\"],\"head\":\"9 changes\",\"face\":{\"zen\":1,\"meet\":2,\"appt\":0,\"tag\":\"ORIG\"},\"lw\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"after\":{\"sans\":{\"10\":\"10 – F 0 0 O 0 0 A 0 0\",\"12\":\"12 – F 0 0 O 0 0 A 0 0\",\"06\":\"6 – F 0 0 O 0 0 A 0 0\",\"07\":\"7 – F 0 0 O 0 0 A 0 0\",\"08\":\"8 – F 0 0 O 0 0 A 0 0\",\"09\":\"9 – F 0 0 O 0 0 A 0 0\"},\"inputs\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"meet\":[\"bane:Oct 9\",\"vinci:Oct 9\"],\"head\":\"1 pending\",\"face\":{\"zen\":1,\"meet\":2,\"appt\":0,\"tag\":\"ORIG\"},\"lw\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\",\"chg\":[\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"Zenith · posted out\",\"Saber\",\"8/10 22:43\",\"no → yes\"]}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "x15archive-03-1-before-sans-9oct.png",
+      "x15archive-04-1-before-inputs-month.png",
+      "x15archive-07-3-after-archive-sans-9oct.png",
+      "x15archive-08-3-after-archive-inputs-month.png",
+      "x15archive-09-3-after-archive-changes-tue13.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x15-unsans": {
+   "at": "2026-10-08T14:46:17.712Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-15 unsans",
+     "did": "Zenith (SANS) had a SANS commitment 6-12 Oct, a shared Meeting with Ranger on 9 Oct and a solo Appointment 7-10 Oct; Fri 9 Oct published; then unsans",
+     "saw": "{\"fx\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"before\":{\"sans\":{\"10\":\"10 – F 1 0 O 0 0 A 0 0\",\"12\":\"12 – F 1 0 O 0 0 A 0 0\",\"06\":\"6 – F 1 0 O 0 0 A 0 0\",\"07\":\"7 – F 1 0 O 0 0 A 0 0\",\"08\":\"8 – F 1 0 O 0 0 A 0 0\",\"09\":\"9 – F 1 0 O 0 0 A 0 0\"},\"inputs\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"meet\":[\"bane:Oct 9\",\"vinci:Oct 9\"],\"head\":\"9 changes\",\"face\":{\"zen\":1,\"meet\":2,\"appt\":0,\"tag\":\"ORIG\"},\"lw\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"after\":{\"sans\":{\"10\":\"10 – F 0 0 O 0 0 A 0 0\",\"12\":\"12 – F 0 0 O 0 0 A 0 0\",\"06\":\"6 – F 0 0 O 0 0 A 0 0\",\"07\":\"7 – F 0 0 O 0 0 A 0 0\",\"08\":\"8 – F 0 0 O 0 0 A 0 0\",\"09\":\"9 – F 0 0 O 0 0 A 0 0\"},\"inputs\":[\"Appointment Oct 7→Oct 10 X15 solo\",\"Meeting Oct 9 X15 meeting\",\"SANS Availability Oct 6→Oct 12 till 12 Oct\",\"SANS Availability Jul 15→Jul 16 \"],\"meet\":[\"bane:Oct 9\",\"vinci:Oct 9\"],\"head\":\"1 pending\",\"face\":{\"zen\":1,\"meet\":2,\"appt\":0,\"tag\":\"ORIG\"},\"lw\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":29,\\\"availW\\\":18}\",\"chg\":[\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"Zenith · SANS\",\"Saber\",\"8/10 22:46\",\"yes → no\"]}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "x15unsans-03-1-before-sans-9oct.png",
+      "x15unsans-04-1-before-inputs-month.png",
+      "x15unsans-08-3-after-unsans-sans-9oct.png",
+      "x15unsans-09-3-after-unsans-inputs-month.png",
+      "x15unsans-10-3-after-unsans-changes-tue13.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x16": {
+   "at": "2026-10-08T14:49:34.950Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-16 (a) calendar readers",
+     "did": "filed a solo LL (Tue 14), a shared Meeting for 4 (Wed 15) and a solo Appointment (Thu 16), edited each one's remarks; read the opened Wed day, the List, the editor's foot, the month cell and the bar titles",
+     "saw": "ok the opened day shows the shared line: \"Placed by Saber for 4 people … changed by Saber …\" [Placed by Saber for 4 people · 8 Oct 26, 22:49 · changed by Saber · 8 Oct 26, 22:49] | ok the List shows it (shared row: Placed … changed by …) [Saber 14 Jul LL LATEX16 solo absence edited Placed by Saber · 8 Oct 26, 22:49 · changed by Saber · 8 Oct 26, 22:49 now ✎ ✕ || Ace +3 15 Jul 06:00–18:00 MEETING LATEX16 shared duty edited Placed by Saber for 4 people · 8 ] | ok the editor foot shows it [Placed by Saber for 4 people · 8 Oct 26, 22:49 · changed by Saber · 8 Oct 26, 22:49] | ok the month cell text carries NO placement words [] | ok the bar tooltips on a desktop name who placed it (D632) [recorded] [Zenith · Meeting · 13 Jul · 09:00–17:00\nPlaced by Saber for Zenith · 26 Jun 26, 16:56|Zenith · Meeting || Bolt · Appointment · 13 Jul · 10:00–11:00\nPlaced by Bolt · 6 Jul 26, 09:10|Bolt · Appointment || Quill · LL · 14 J]",
+     "verdict": "PASS",
+     "pics": [
+      "x16-02-1-opened-day-wed.png",
+      "x16-03-2-list.png",
+      "x16-04-3-editor-foot.png"
+     ],
+     "dayTxt": "⠿ Wed 15 Jul ✕ + Input + Note + Pucks 5 INPUTS Cobra OL All day Overseas leave — off island Placed by Saber for Cobra · 22 Jun 26, 11:21 Gambit OIL All day Grit ATT C till 17 Jul Medically down till 17 Jul Placed by Grit · 12 Jul 26, 14:42 Nomad OD till 17 Jul Overseas duty — exercise, off island Placed by Nomad · 18 Jun 26, 08:03 Ace +3 Meeting LATE 06:00–18:00 X16 shared duty edited Ace A Drifter A Ranger IP Saber IP Placed by Saber for 4 people · 8 Oct 26, 22:49 · changed by Saber · 8 Oct 26, 22:49",
+     "foot": "Placed by Saber for 4 people · 8 Oct 26, 22:49 · changed by Saber · 8 Oct 26, 22:49"
+    },
+    {
+     "id": "X-16 (b) schedule and exports, draft",
+     "did": "read the Edit Schedule week, View-only Sched, the board's Wed panels, the CSV and the print document after filing (nothing published)",
+     "saw": "ok no placement words on the Edit Schedule week [null] | ok no placement words on View-only Sched [null] | ok no placement words on the board [null] | ok the schedule rows still show the three inputs (Ground programme / Unavailable) in their ordinary layout [{\"shared\":true,\"solo\":true}] | ok one row each for the shared duty's men, as before (3+ MEETING rows on Wed) [11] | ok LATE marks still print on the schedule rows (ordinary late mode) [true] | ok the CSV is byte-for-byte the baseline [{\"a\":4400,\"b\":4400}] | ok the print document is the baseline (bar its time stamp) [{\"added\":[],\"removed\":[]}] | ok no placement words in the CSV or the print document [] | ok medical entries still shown on the week as before [{\"before\":13,\"after\":13}]",
+     "verdict": "PASS",
+     "pics": [
+      "x16-05-4-after-filing-board-wed.png"
+     ]
+    },
+    {
+     "id": "X-16 (c) schedule and exports, published Wed",
+     "did": "signed and published Wed 15 Jul, then read the same surfaces and exports",
+     "saw": "ok the day published [{\"pressed\":true,\"label\":\"Publish day\"}] | ok no placement words on the Edit Schedule week / View-only Sched / board [{\"edit\":null,\"view\":null,\"board\":null}] | ok the issued face shows the final wording (the edited remark) [true] | ok the print document has no placement words [] | ok the CSV is still the baseline layout (same bytes) [{\"a\":4400,\"b\":4400}] | ok the print document differs from the baseline only by what publication adds (read the diff) [{\"added\":[\"PUBLISHED — ORIGINAL\"],\"removed\":[]}]",
+     "verdict": "PASS",
+     "pics": [
+      "x16-06-5-after-publish-board-wed.png"
+     ],
+     "printDiffPublished": {
+      "added": [
+       "PUBLISHED — ORIGINAL"
+      ],
+      "removed": []
+     }
+    }
+   ],
+   "errors": []
+  },
+  "x18": {
+   "at": "2026-10-08T14:57:26.466Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-18 stage 1 (draft)",
+     "did": "filed ONE Duty for Saber, Ranger, Drifter and Ace on Sat 18 Jul (one OIL question, Yes — FO); read as Saber; reloaded; signed out and in as Ranger; signed out and in as Saber",
+     "saw": "ok the filing was one group of 4 with the OIL answer written for each man [[\"bane|gmuznr2zr67jllj|X18 duty|{\\\"2026-07-18\\\":1}|stiff|stiff\",\"dj|gmuznr2zr67jllj|X18 duty|{\\\"2026-07-18\\\":1}|stiff|stiff\",\"slipway|gmuznr2zr67jllj|X18 duty|{\\\"2026-07-18\\\":1}|stiff|stiff\",\"stiff|gmuznr2zr67jllj|X18 du] | ok Undo was live right after the filing (before any sign-out) [{\"title\":\"Undo — 4 inputs\",\"disabled\":false}] | ok after a reload: the same group (4 records, one group id), the same OIL cells, the same placed line and the same day head [{\"d\":4,\"r\":4,\"lwD\":{\"Ranger\":\"\",\"Drifter\":\"\",\"Ace\":\"\",\"Saber\":\"\"},\"lwR\":{\"Ranger\":\"\",\"Drifter\":\"\",\"Ace\":\"\",\"Saber\":\"\"},\"headD\":{\"tag\":\"DRAFT\",\"pending\":\"4 changes\",\"signed\":\"\",\"nys\":\"\"},\"headR\":{\"tag\":\"DRAFT\",\"pending\":\"] | ok signed in as Ranger: he sees the same group and the same OIL cells [{\"grp\":4,\"lw\":{\"Ranger\":\"\",\"Drifter\":\"\",\"Ace\":\"\",\"Saber\":\"\"},\"badge\":\"RANGER · MEMBER\"}] | ok signed in as Ranger: the placed line reads the same [{\"r\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54\",\"d\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54\"}] | ok back as Saber: all the same again [{\"backGroup\":4,\"lw\":{\"Ranger\":\"\",\"Drifter\":\"\",\"Ace\":\"\",\"Saber\":\"\"},\"head\":{\"tag\":\"DRAFT\",\"pending\":\"4 changes\",\"signed\":\"\",\"nys\":\"\"}}] | ok the group is still ONE shared input of 4 records [4] | ok Undo does not carry over: disabled for Ranger, and for Saber after coming back [{\"ranger\":null,\"saberBack\":{\"title\":\"Undo\",\"disabled\":true},\"saberReloaded\":{\"title\":\"Undo\",\"disabled\":true}}]",
+     "verdict": "PASS",
+     "pics": [
+      "x18-01-1-draft-a-direct.png",
+      "x18-02-1-draft-b-reloaded.png",
+      "x18-03-1-draft-c-as-Ranger.png",
+      "x18-04-1-draft-d-back-as-Saber.png"
+     ],
+     "S1": {
+      "lw": {
+       "Ranger": "",
+       "Drifter": "",
+       "Ace": "",
+       "Saber": ""
+      },
+      "head": {
+       "tag": "DRAFT",
+       "pending": "4 changes",
+       "signed": "",
+       "nys": ""
+      },
+      "placed": "Placed by Saber for 4 people · 8 Oct 26, 22:54",
+      "undo": [
+       {
+        "title": "Undo",
+        "disabled": true
+       },
+       null,
+       {
+        "title": "Undo",
+        "disabled": true
+       }
+      ]
+     }
+    },
+    {
+     "id": "X-18 stage 2 (published clean)",
+     "did": "signed the four boxes and published Sat 18 Jul; the same four reads",
+     "saw": "ok the day published (ORIG) [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] | ok each man's OIL cell reads the same single credit (no doubling) — same text for all four [{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"}] | ok after a reload: the same group (4 records, one group id), the same OIL cells, the same placed line and the same day head [{\"d\":4,\"r\":4,\"lwD\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"lwR\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"headD\":{\"tag\":\"ORIG\",\"pending\":\"9 changes\",\"signed\":\"SIGNED ORIG CUR CKAce S] | ok signed in as Ranger: he sees the same group and the same OIL cells [{\"grp\":4,\"lw\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"badge\":\"RANGER · MEMBER\"}] | ok signed in as Ranger: the placed line reads the same [{\"r\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54\",\"d\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54\"}] | ok back as Saber: all the same again [{\"backGroup\":4,\"lw\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"head\":{\"tag\":\"ORIG\",\"pending\":\"9 changes\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}] | ok the group is still ONE shared input of 4 records [4] | ok Undo does not carry over: disabled for Ranger, and for Saber after coming back [{\"ranger\":null,\"saberBack\":{\"title\":\"Undo\",\"disabled\":true},\"saberReloaded\":{\"title\":\"Undo\",\"disabled\":true}}]",
+     "verdict": "PASS",
+     "pics": [
+      "x18-05-2-published-a-direct.png",
+      "x18-06-2-published-b-reloaded.png",
+      "x18-07-2-published-c-as-Ranger.png",
+      "x18-08-2-published-d-back-as-Saber.png"
+     ],
+     "S2": {
+      "lw": {
+       "Ranger": "FO*",
+       "Drifter": "FO*",
+       "Ace": "FO*",
+       "Saber": "FO*"
+      },
+      "head": {
+       "tag": "ORIG",
+       "pending": "9 changes",
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": ""
+      },
+      "placed": "Placed by Saber for 4 people · 8 Oct 26, 22:54"
+     }
+    },
+    {
+     "id": "X-18 stage 3 (published, one edit pending)",
+     "did": "changed the shared duty's remarks on the published day; the same four reads",
+     "saw": "ok the day reads 4 pending [{\"tag\":\"ORIG\",\"pending\":\"4 pending\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\"}] | ok every man carries the edited remark; one group [[\"bane|gmuznr2zr67jllj|X18 duty edited|{\\\"2026-07-18\\\":1}|stiff|stiff\",\"dj|gmuznr2zr67jllj|X18 duty edited|{\\\"2026-07-18\\\":1}|stiff|stiff\",\"slipway|gmuznr2zr67jllj|X18 duty edited|{\\\"2026-07-18\\\":1}|stiff|stiff\",\"stiff|g] | ok the placed line now carries \"changed by Saber\" [Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56] | ok OIL still one credit each (no doubling after the edit) [{\"before\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"now\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"}}] | ok after a reload: the same group (4 records, one group id), the same OIL cells, the same placed line and the same day head [{\"d\":4,\"r\":4,\"lwD\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"lwR\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"headD\":{\"tag\":\"ORIG\",\"pending\":\"4 pending\",\"signed\":\"SIGNED ORIG CUR CKAce S] | ok signed in as Ranger: he sees the same group and the same OIL cells [{\"grp\":4,\"lw\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"badge\":\"RANGER · MEMBER\"}] | ok signed in as Ranger: the placed line reads the same [{\"r\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56\",\"d\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56\"}] | ok back as Saber: all the same again [{\"backGroup\":4,\"lw\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"head\":{\"tag\":\"ORIG\",\"pending\":\"4 pending\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\"}}] | ok the group is still ONE shared input of 4 records [4] | ok Undo does not carry over: disabled for Ranger, and for Saber after coming back [{\"ranger\":null,\"saberBack\":{\"title\":\"Undo\",\"disabled\":true},\"saberReloaded\":{\"title\":\"Undo\",\"disabled\":true}}]",
+     "verdict": "PASS",
+     "pics": [
+      "x18-09-3-pending-a-direct.png",
+      "x18-10-3-pending-b-reloaded.png",
+      "x18-11-3-pending-c-as-Ranger.png",
+      "x18-12-3-pending-d-back-as-Saber.png"
+     ],
+     "S3": {
+      "lw": {
+       "Ranger": "FO*",
+       "Drifter": "FO*",
+       "Ace": "FO*",
+       "Saber": "FO*"
+      },
+      "head": {
+       "tag": "ORIG",
+       "pending": "4 pending",
+       "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": "Not yet signed"
+      },
+      "placed": "Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56"
+     }
+    },
+    {
+     "id": "X-18 stage 4 (amended)",
+     "did": "signed and published AL1; the same four reads",
+     "saw": "ok AL1 published, nothing pending [{\"al\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"head\":{\"tag\":\"AL1\",\"pending\":\"18 changes\",\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}] | ok OIL still one credit each [{\"before\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"now\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"}}] | ok after a reload: the same group (4 records, one group id), the same OIL cells, the same placed line and the same day head [{\"d\":4,\"r\":4,\"lwD\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"lwR\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"headD\":{\"tag\":\"AL1\",\"pending\":\"18 changes\",\"signed\":\"SIGNED AL1 CUR CKAce SK] | ok signed in as Ranger: he sees the same group and the same OIL cells [{\"grp\":4,\"lw\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"badge\":\"RANGER · MEMBER\"}] | ok signed in as Ranger: the placed line reads the same [{\"r\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56\",\"d\":\"Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56\"}] | ok back as Saber: all the same again [{\"backGroup\":4,\"lw\":{\"Ranger\":\"FO*\",\"Drifter\":\"FO*\",\"Ace\":\"FO*\",\"Saber\":\"FO*\"},\"head\":{\"tag\":\"AL1\",\"pending\":\"18 changes\",\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}] | ok the group is still ONE shared input of 4 records [4] | ok Undo does not carry over: disabled for Ranger, and for Saber after coming back [{\"ranger\":null,\"saberBack\":{\"title\":\"Undo\",\"disabled\":true},\"saberReloaded\":{\"title\":\"Undo\",\"disabled\":true}}]",
+     "verdict": "PASS",
+     "pics": [
+      "x18-13-4-amended-a-direct.png",
+      "x18-14-4-amended-b-reloaded.png",
+      "x18-15-4-amended-c-as-Ranger.png",
+      "x18-16-4-amended-d-back-as-Saber.png"
+     ],
+     "S4": {
+      "lw": {
+       "Ranger": "FO*",
+       "Drifter": "FO*",
+       "Ace": "FO*",
+       "Saber": "FO*"
+      },
+      "head": {
+       "tag": "AL1",
+       "pending": "18 changes",
+       "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+       "nys": ""
+      },
+      "placed": "Placed by Saber for 4 people · 8 Oct 26, 22:54 · changed by Saber · 8 Oct 26, 22:56"
+     }
+    }
+   ],
+   "errors": []
+  },
+  "x18b": {
+   "at": "2026-10-08T14:58:04.367Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-18 (Undo)",
+     "did": "Saber filed a group (Undo live); signed out; signed in as Ranger; read his Undo on the Inputs page; signed out; signed in as Saber; read Undo",
+     "saw": "ok Undo was live for Saber after the filing [{\"title\":\"Undo — 3 inputs\",\"disabled\":false,\"redo\":true}] | ok Ranger's Undo (Inputs page) is disabled — he did not inherit Saber's step [{\"title\":\"Undo\",\"disabled\":true,\"redo\":true}] | ok Saber's Undo is disabled again after returning (his history cleared at sign-out) [{\"title\":\"Undo\",\"disabled\":true,\"redo\":true}] | ok the group is still filed (3 records) after all that [{\"left\":3,\"pressedCount\":null}]",
+     "verdict": "PASS",
+     "pics": [
+      "x18b-01-1-saber-after-filing.png",
+      "x18b-02-2-ranger-inputs-page.png",
+      "x18b-03-3-saber-back.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x17-phone": {
+   "at": "2026-10-08T15:03:42.321Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-17 phone (1) the month",
+     "did": "six-week August 2026, phone (390x844), a crowded Wed 12 Aug (seeded): the month and the tools",
+     "saw": "ok six weeks drawn [6] | ok the month has no scroll of its own and no height limit [{\"ownScroll\":0,\"calScroll\":0,\"maxH\":\"none\",\"overflowY\":\"hidden\"}] | ok nothing runs off sideways [{\"pageW\":390,\"vw\":390}] | ok the crowded date shows its bars and a \"+N more\" line [{\"bars\":5,\"more\":[\"+8 more\",\"+3 more\"]}] | ok the visible button sizes are those of the tall phone (heights equal) [{\"SZ\":{\"#icPrev\":[34,44],\"#icNext\":[34,44],\"#icToday\":[50,44],\"#inCalBtn\":[34,44],\"#inListBtn\":[34,44],\"#inFiltersBtn\":[34,44],\"[data-testid=\\\"in-gear\\\"]\":[38,44],\"#inMemberMode\":[121,36],\"#inSansMode\":[121,36],\"#inMedBt]",
+     "verdict": "PASS",
+     "pics": [
+      "x17phone-01-1-month-august.png"
+     ],
+     "g": {
+      "weeks": 6,
+      "ownScroll": 0,
+      "calScroll": 0,
+      "overflowY": "hidden",
+      "maxH": "none",
+      "pageH": 844,
+      "pageW": 390,
+      "vh": 844,
+      "vw": 390,
+      "bars": 5,
+      "more": [
+       "+8 more",
+       "+3 more"
+      ]
+     },
+     "SZ": {
+      "#icPrev": [
+       34,
+       44
+      ],
+      "#icNext": [
+       34,
+       44
+      ],
+      "#icToday": [
+       50,
+       44
+      ],
+      "#inCalBtn": [
+       34,
+       44
+      ],
+      "#inListBtn": [
+       34,
+       44
+      ],
+      "#inFiltersBtn": [
+       34,
+       44
+      ],
+      "[data-testid=\"in-gear\"]": [
+       38,
+       44
+      ],
+      "#inMemberMode": [
+       121,
+       36
+      ],
+      "#inSansMode": [
+       121,
+       36
+      ],
+      "#inMedBtn": [
+       121,
+       36
+      ]
+     },
+     "tallSz": {
+      "#icPrev": [
+       34,
+       44
+      ],
+      "#icNext": [
+       34,
+       44
+      ],
+      "#icToday": [
+       50,
+       44
+      ],
+      "#inCalBtn": [
+       34,
+       44
+      ],
+      "#inListBtn": [
+       34,
+       44
+      ],
+      "#inFiltersBtn": [
+       34,
+       44
+      ],
+      "[data-testid=\"in-gear\"]": [
+       38,
+       44
+      ],
+      "#inMemberMode": [
+       121,
+       36
+      ],
+      "#inSansMode": [
+       121,
+       36
+      ],
+      "#inMedBtn": [
+       121,
+       36
+      ]
+     }
+    },
+    {
+     "id": "X-17 phone (2) the opened day",
+     "did": "a real tap at the corner of Wed 12 Aug opened the day window",
+     "saw": "ok the day window is up and wholly on the screen [{\"x\":12,\"y\":275,\"w\":358,\"h\":557}] | ok its close cross is a finger's size (44) and a touch on its middle lands on it [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,304],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsday-x\"}] | ok \"+ Input\" is on screen and a touch on its middle lands on it [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[191,415],\"size\":[332,44],\"lands\":true,\"top\":\"icPopAdd\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17phone-02-2-day-opened.png"
+     ],
+     "dayBox": {
+      "x": 12,
+      "y": 275,
+      "w": 358,
+      "h": 557
+     },
+     "dayHit": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        304
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "add": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        415
+       ],
+       "size": [
+        332,
+        44
+       ],
+       "lands": true,
+       "top": "icPopAdd"
+      },
+      "list": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        639
+       ],
+       "size": [
+        356,
+        383
+       ],
+       "lands": true,
+       "top": "idy-row-x17-6"
+      }
+     }
+    },
+    {
+     "id": "X-17 phone (3) two windows",
+     "did": "with the day window up, a real touch on the gear opened the settings window",
+     "saw": "ok the gear was reachable (a touch on its middle landed on it, or it was reached) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[363,128],\"size\":[38,44],\"lands\":true,\"top\":\"inGear\"}] | ok the settings window is up [{\"x\":12,\"y\":245,\"w\":358,\"h\":587}] | ok the settings window's close cross, Save and Cancel are each hit by a touch on their middles when the window is whole on screen [{\"x\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,274],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsset-x\"},\"save\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[276,797],\"size\":[162,44],\"lands\":true,\"t] | ok (recorded) the day window's close cross before the settings window is moved: COVERED by the settings window (win-body) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,304],\"size\":[44,44],\"lands\":false,\"top\":\"win-body\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17phone-03-3-two-windows.png"
+     ],
+     "setBox": {
+      "x": 12,
+      "y": 245,
+      "w": 358,
+      "h": 587
+     },
+     "setHit": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        274
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsset-x"
+      },
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        276,
+        797
+       ],
+       "size": [
+        162,
+        44
+       ],
+       "lands": true,
+       "top": "iset-save"
+      },
+      "cancel": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        106,
+        797
+       ],
+       "size": [
+        162,
+        44
+       ],
+       "lands": true,
+       "top": "iset-cancel"
+      },
+      "dayX": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        304
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": false,
+       "top": "win-body"
+      },
+      "dayAdd": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        415
+       ],
+       "size": [
+        332,
+        44
+       ],
+       "lands": false,
+       "top": "sset"
+      }
+     },
+     "gearHit": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       363,
+       128
+      ],
+      "size": [
+       38,
+       44
+      ],
+      "lands": true,
+      "top": "inGear"
+     }
+    },
+    {
+     "id": "X-17 phone (4) drag one low",
+     "did": "dragged the settings window down by its bar with a real finger (touchStart / touchMove / touchEnd)",
+     "saw": "ok the window followed the finger (its bar moved down by about the drag) [{\"from\":274.5,\"to\":424.5,\"barAfterY\":424.5,\"winBefore\":{\"x\":12,\"y\":245,\"w\":358,\"h\":587},\"winAfter\":{\"x\":12,\"y\":395,\"w\":358,\"h\":587}}] | ok the window stays inside the screen [{\"x\":12,\"y\":395,\"w\":358,\"h\":587}] | ok the day window's close cross can still be touched (hit by its own middle) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,304],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsday-x\"}] | ok the settings window's own close cross can be touched [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,424],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsset-x\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17phone-04-4-settings-dragged-low.png"
+     ],
+     "afterDrag": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        424
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsset-x"
+      },
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": false,
+       "centre": [
+        276,
+        947
+       ],
+       "size": [
+        162,
+        44
+       ],
+       "lands": false,
+       "top": null
+      },
+      "dayX": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        304
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "dayAdd": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        415
+       ],
+       "size": [
+        332,
+        44
+       ],
+       "lands": false,
+       "top": "win-ttl"
+      },
+      "undo": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        252,
+        24
+       ],
+       "size": [
+        30,
+        30
+       ],
+       "lands": true,
+       "top": "bi"
+      }
+     }
+    },
+    {
+     "id": "X-17 phone (5) expand the day and reach the last input",
+     "did": "closed the settings window by touch, pulled the day up by its title, scrolled the list to its end",
+     "saw": "ok the settings window closed by the FIRST touch on its cross (after the finger drag) [{\"closeTouches\":1,\"setClosed\":true}] | ok the day window rests at the taller height (is-tall) on a phone [{\"isTall\":true,\"tallBox\":{\"x\":12,\"y\":8,\"w\":358,\"h\":824}}] | ok the list is long enough to scroll inside the window, and the last input is in the window and on the screen [{\"rows\":12,\"scrolls\":true,\"lastText\":\"Warden Training till 14 Aug\",\"lastInWin\":true,\"lastOnScreen\":true}] | ok a touch on the last input's open button lands on it [{\"size\":[121,26],\"centre\":[95,792],\"lands\":true,\"top\":\"idy-who\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17phone-05-5-day-expanded.png",
+      "x17phone-06-6-last-input-reached.png"
+     ],
+     "lastInfo": {
+      "rows": 12,
+      "scrolls": true,
+      "lastText": "Warden Training till 14 Aug",
+      "lastInWin": true,
+      "lastOnScreen": true
+     },
+     "lastOpen": {
+      "size": [
+       121,
+       26
+      ],
+      "centre": [
+       95,
+       792
+      ],
+      "lands": true,
+      "top": "idy-who"
+     }
+    },
+    {
+     "id": "X-17 phone (6) the editor and Undo",
+     "did": "touched the last input's open button (the editor window), typed a remark, Save by touch, then the top bar's Undo by touch",
+     "saw": "ok the editor opened as a window, whole on the screen [{\"x\":12,\"y\":430,\"w\":358,\"h\":402}] | ok Save was reachable (on screen after scrolling inside the window) and a touch on it saved [{\"saved\":1,\"save\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[327,807],\"size\":[54,28],\"lands\":true,\"top\":\"inpEditSave\"}}] | NO Undo in the top bar is hit by a touch on its middle WHILE THE DAY IS PULLED UP [{\"undoHitExpanded\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[252,24],\"size\":[30,30],\"lands\":false,\"top\":\"win-bar\"},\"dayExpandedNow\":true}] | ok Undo is hit by a touch on its middle once the day is back down [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[252,24],\"size\":[30,30],\"lands\":true,\"top\":\"bi\"}] | ok the touch on Undo took the change back [{\"saved\":1,\"afterUndo\":0,\"toastU\":[\"Input updated\",\"Undid: a personal input\"]}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17phone-07-7a-day-expanded-undo-covered.png",
+      "x17phone-08-7-after-save-and-undo.png"
+     ],
+     "edHit": {
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        327,
+        807
+       ],
+       "size": [
+        54,
+        28
+       ],
+       "lands": true,
+       "top": "inpEditSave"
+      },
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        459
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputedit-x"
+      },
+      "cancel": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        259,
+        807
+       ],
+       "size": [
+        65,
+        28
+       ],
+       "lands": true,
+       "top": "inpEditCancel"
+      }
+     },
+     "undoHit": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       252,
+       24
+      ],
+      "size": [
+       30,
+       30
+      ],
+      "lands": true,
+      "top": "bi"
+     },
+     "undoHitExpanded": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       252,
+       24
+      ],
+      "size": [
+       30,
+       30
+      ],
+      "lands": false,
+      "top": "win-bar"
+     }
+    },
+    {
+     "id": "X-17 phone (7) close",
+     "did": "closed every window by a touch on its cross, front one first",
+     "saw": "ok every window closed [[\"win-inputsday:landed:44px\"]] | ok each cross was a finger's size and landed [[\"win-inputsday:landed:44px\"]] | ok the month still has no scroll of its own and nothing sideways [{\"ownScroll\":0,\"pageW\":390,\"vw\":390}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17phone-09-8-all-closed.png"
+     ],
+     "closed": [
+      "win-inputsday:landed:44px"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x17-short": {
+   "at": "2026-10-08T15:04:05.648Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-17 short (1) the month",
+     "did": "six-week August 2026, short (390x568), a crowded Wed 12 Aug (seeded): the month and the tools",
+     "saw": "ok six weeks drawn [6] | ok the month has no scroll of its own and no height limit [{\"ownScroll\":0,\"calScroll\":0,\"maxH\":\"none\",\"overflowY\":\"hidden\"}] | ok nothing runs off sideways [{\"pageW\":390,\"vw\":390}] | ok the crowded date shows its bars and a \"+N more\" line [{\"bars\":3,\"more\":[\"+9 more\",\"+4 more\"]}] | ok the visible button sizes are those of the tall phone (heights equal) [{\"SZ\":{\"#icPrev\":[34,44],\"#icNext\":[34,44],\"#icToday\":[50,44],\"#inCalBtn\":[34,44],\"#inListBtn\":[34,44],\"#inFiltersBtn\":[34,44],\"[data-testid=\\\"in-gear\\\"]\":[38,44],\"#inMemberMode\":[121,36],\"#inSansMode\":[121,36],\"#inMedBt]",
+     "verdict": "PASS",
+     "pics": [
+      "x17short-01-1-month-august.png"
+     ],
+     "g": {
+      "weeks": 6,
+      "ownScroll": 0,
+      "calScroll": 0,
+      "overflowY": "hidden",
+      "maxH": "none",
+      "pageH": 739,
+      "pageW": 390,
+      "vh": 568,
+      "vw": 390,
+      "bars": 3,
+      "more": [
+       "+9 more",
+       "+4 more"
+      ]
+     },
+     "SZ": {
+      "#icPrev": [
+       34,
+       44
+      ],
+      "#icNext": [
+       34,
+       44
+      ],
+      "#icToday": [
+       50,
+       44
+      ],
+      "#inCalBtn": [
+       34,
+       44
+      ],
+      "#inListBtn": [
+       34,
+       44
+      ],
+      "#inFiltersBtn": [
+       34,
+       44
+      ],
+      "[data-testid=\"in-gear\"]": [
+       38,
+       44
+      ],
+      "#inMemberMode": [
+       121,
+       36
+      ],
+      "#inSansMode": [
+       121,
+       36
+      ],
+      "#inMedBtn": [
+       121,
+       36
+      ]
+     },
+     "tallSz": {
+      "#icPrev": [
+       34,
+       44
+      ],
+      "#icNext": [
+       34,
+       44
+      ],
+      "#icToday": [
+       50,
+       44
+      ],
+      "#inCalBtn": [
+       34,
+       44
+      ],
+      "#inListBtn": [
+       34,
+       44
+      ],
+      "#inFiltersBtn": [
+       34,
+       44
+      ],
+      "[data-testid=\"in-gear\"]": [
+       38,
+       44
+      ],
+      "#inMemberMode": [
+       121,
+       36
+      ],
+      "#inSansMode": [
+       121,
+       36
+      ],
+      "#inMedBtn": [
+       121,
+       36
+      ]
+     }
+    },
+    {
+     "id": "X-17 short (2) the opened day",
+     "did": "a real tap at the corner of Wed 12 Aug opened the day window",
+     "saw": "ok the day window is up and wholly on the screen [{\"x\":12,\"y\":181,\"w\":358,\"h\":375}] | ok its close cross is a finger's size (44) and a touch on its middle lands on it [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,210],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsday-x\"}] | ok \"+ Input\" is on screen and a touch on its middle lands on it [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[191,321],\"size\":[332,44],\"lands\":true,\"top\":\"icPopAdd\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17short-02-2-day-opened.png"
+     ],
+     "dayBox": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375
+     },
+     "dayHit": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        210
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "add": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        321
+       ],
+       "size": [
+        332,
+        44
+       ],
+       "lands": true,
+       "top": "icPopAdd"
+      },
+      "list": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        455
+       ],
+       "size": [
+        356,
+        201
+       ],
+       "lands": true,
+       "top": "idy-row-x17-3"
+      }
+     }
+    },
+    {
+     "id": "X-17 short (3) two windows",
+     "did": "with the day window up, a real touch on the gear opened the settings window",
+     "saw": "ok the gear was reachable (a touch on its middle landed on it, or it was reached) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[363,128],\"size\":[38,44],\"lands\":true,\"top\":\"inGear\"}] | ok the settings window is up [{\"x\":12,\"y\":147,\"w\":358,\"h\":409}] | ok the settings window's close cross, Save and Cancel are each hit by a touch on their middles when the window is whole on screen [{\"x\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,176],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsset-x\"},\"save\":{\"found\":true,\"drawn\":true,\"onScreen\":false,\"centre\":[276,699],\"size\":[162,44],\"lands\":false,] | ok (recorded) the day window's close cross before the settings window is moved: COVERED by the settings window (win-body) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,210],\"size\":[44,44],\"lands\":false,\"top\":\"win-body\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17short-03-3-two-windows.png"
+     ],
+     "setBox": {
+      "x": 12,
+      "y": 147,
+      "w": 358,
+      "h": 409
+     },
+     "setHit": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        176
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsset-x"
+      },
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": false,
+       "centre": [
+        276,
+        699
+       ],
+       "size": [
+        162,
+        44
+       ],
+       "lands": false,
+       "top": null
+      },
+      "cancel": {
+       "found": true,
+       "drawn": true,
+       "onScreen": false,
+       "centre": [
+        106,
+        699
+       ],
+       "size": [
+        162,
+        44
+       ],
+       "lands": false,
+       "top": null
+      },
+      "dayX": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        210
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": false,
+       "top": "win-body"
+      },
+      "dayAdd": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        321
+       ],
+       "size": [
+        332,
+        44
+       ],
+       "lands": false,
+       "top": "sset-seg"
+      }
+     },
+     "gearHit": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       363,
+       128
+      ],
+      "size": [
+       38,
+       44
+      ],
+      "lands": true,
+      "top": "inGear"
+     }
+    },
+    {
+     "id": "X-17 short (4) drag one low",
+     "did": "dragged the settings window down by its bar with a real finger (touchStart / touchMove / touchEnd)",
+     "saw": "ok the window followed the finger (its bar moved down by about the drag) [{\"from\":176.5,\"to\":326.5,\"barAfterY\":326.5,\"winBefore\":{\"x\":12,\"y\":147,\"w\":358,\"h\":409},\"winAfter\":{\"x\":12,\"y\":297,\"w\":358,\"h\":409}}] | ok the window stays inside the screen [{\"x\":12,\"y\":297,\"w\":358,\"h\":409}] | ok the day window's close cross can still be touched (hit by its own middle) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,210],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsday-x\"}] | ok the settings window's own close cross can be touched [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[341,326],\"size\":[44,44],\"lands\":true,\"top\":\"win-inputsset-x\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17short-04-4-settings-dragged-low.png"
+     ],
+     "afterDrag": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        326
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsset-x"
+      },
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": false,
+       "centre": [
+        276,
+        849
+       ],
+       "size": [
+        162,
+        44
+       ],
+       "lands": false,
+       "top": null
+      },
+      "dayX": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        210
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "dayAdd": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        191,
+        321
+       ],
+       "size": [
+        332,
+        44
+       ],
+       "lands": false,
+       "top": "win-ttl"
+      },
+      "undo": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        252,
+        24
+       ],
+       "size": [
+        30,
+        30
+       ],
+       "lands": true,
+       "top": "bi"
+      }
+     }
+    },
+    {
+     "id": "X-17 short (5) expand the day and reach the last input",
+     "did": "closed the settings window by touch, pulled the day up by its title, scrolled the list to its end",
+     "saw": "ok the settings window closed by the FIRST touch on its cross (after the finger drag) [{\"closeTouches\":1,\"setClosed\":true}] | ok the day window rests at the taller height (is-tall) on a phone [{\"isTall\":true,\"tallBox\":{\"x\":12,\"y\":8,\"w\":358,\"h\":548}}] | ok the list is long enough to scroll inside the window, and the last input is in the window and on the screen [{\"rows\":12,\"scrolls\":true,\"lastText\":\"Warden Training till 14 Aug\",\"lastInWin\":true,\"lastOnScreen\":true}] | ok a touch on the last input's open button lands on it [{\"size\":[121,26],\"centre\":[95,516],\"lands\":true,\"top\":\"idy-who\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17short-05-5-day-expanded.png",
+      "x17short-06-6-last-input-reached.png"
+     ],
+     "lastInfo": {
+      "rows": 12,
+      "scrolls": true,
+      "lastText": "Warden Training till 14 Aug",
+      "lastInWin": true,
+      "lastOnScreen": true
+     },
+     "lastOpen": {
+      "size": [
+       121,
+       26
+      ],
+      "centre": [
+       95,
+       516
+      ],
+      "lands": true,
+      "top": "idy-who"
+     }
+    },
+    {
+     "id": "X-17 short (6) the editor and Undo",
+     "did": "touched the last input's open button (the editor window), typed a remark, Save by touch, then the top bar's Undo by touch",
+     "saw": "ok the editor opened as a window, whole on the screen [{\"x\":12,\"y\":154,\"w\":358,\"h\":402}] | ok Save was reachable (on screen after scrolling inside the window) and a touch on it saved [{\"saved\":1,\"save\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[327,531],\"size\":[54,28],\"lands\":true,\"top\":\"inpEditSave\"}}] | NO Undo in the top bar is hit by a touch on its middle WHILE THE DAY IS PULLED UP [{\"undoHitExpanded\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[252,24],\"size\":[30,30],\"lands\":false,\"top\":\"win-bar\"},\"dayExpandedNow\":true}] | ok Undo is hit by a touch on its middle once the day is back down [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[252,24],\"size\":[30,30],\"lands\":true,\"top\":\"bi\"}] | ok the touch on Undo took the change back [{\"saved\":1,\"afterUndo\":0,\"toastU\":[\"Input updated\",\"Undid: a personal input\"]}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17short-07-7a-day-expanded-undo-covered.png",
+      "x17short-08-7-after-save-and-undo.png"
+     ],
+     "edHit": {
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        327,
+        531
+       ],
+       "size": [
+        54,
+        28
+       ],
+       "lands": true,
+       "top": "inpEditSave"
+      },
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        341,
+        183
+       ],
+       "size": [
+        44,
+        44
+       ],
+       "lands": true,
+       "top": "win-inputedit-x"
+      },
+      "cancel": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        259,
+        531
+       ],
+       "size": [
+        65,
+        28
+       ],
+       "lands": true,
+       "top": "inpEditCancel"
+      }
+     },
+     "undoHit": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       252,
+       24
+      ],
+      "size": [
+       30,
+       30
+      ],
+      "lands": true,
+      "top": "bi"
+     },
+     "undoHitExpanded": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       252,
+       24
+      ],
+      "size": [
+       30,
+       30
+      ],
+      "lands": false,
+      "top": "win-bar"
+     }
+    },
+    {
+     "id": "X-17 short (7) close",
+     "did": "closed every window by a touch on its cross, front one first",
+     "saw": "ok every window closed [[\"win-inputsday:landed:44px\"]] | ok each cross was a finger's size and landed [[\"win-inputsday:landed:44px\"]] | ok the month still has no scroll of its own and nothing sideways [{\"ownScroll\":0,\"pageW\":390,\"vw\":390}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17short-09-8-all-closed.png"
+     ],
+     "closed": [
+      "win-inputsday:landed:44px"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x17-side": {
+   "at": "2026-10-08T15:03:00.879Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-17 side (1) the month",
+     "did": "six-week August 2026, side (844x390), a crowded Wed 12 Aug (seeded): the month and the tools",
+     "saw": "ok six weeks drawn [6] | ok the month has no scroll of its own and no height limit [{\"ownScroll\":0,\"calScroll\":0,\"maxH\":\"none\",\"overflowY\":\"hidden\"}] | ok nothing runs off sideways [{\"pageW\":844,\"vw\":844}] | ok the crowded date shows its bars and a \"+N more\" line [{\"bars\":11,\"more\":[\"+5 more\"]}] | ok the visible button sizes are those of the tall phone (heights equal) [{\"SZ\":{\"#icPrev\":[44,44],\"#icNext\":[44,44],\"#icToday\":[56,44],\"#inCalBtn\":[94,44],\"#inListBtn\":[63,44],\"#inFiltersBtn\":[0,0],\"[data-testid=\\\"in-gear\\\"]\":[44,44],\"#inMemberMode\":[89,36],\"#inSansMode\":[84,36],\"#inMedBtn\":[]",
+     "verdict": "PASS",
+     "pics": [
+      "x17side-01-1-month-august.png"
+     ],
+     "g": {
+      "weeks": 6,
+      "ownScroll": 0,
+      "calScroll": 0,
+      "overflowY": "hidden",
+      "maxH": "none",
+      "pageH": 1048,
+      "pageW": 844,
+      "vh": 390,
+      "vw": 844,
+      "bars": 11,
+      "more": [
+       "+5 more"
+      ]
+     },
+     "SZ": {
+      "#icPrev": [
+       44,
+       44
+      ],
+      "#icNext": [
+       44,
+       44
+      ],
+      "#icToday": [
+       56,
+       44
+      ],
+      "#inCalBtn": [
+       94,
+       44
+      ],
+      "#inListBtn": [
+       63,
+       44
+      ],
+      "#inFiltersBtn": [
+       0,
+       0
+      ],
+      "[data-testid=\"in-gear\"]": [
+       44,
+       44
+      ],
+      "#inMemberMode": [
+       89,
+       36
+      ],
+      "#inSansMode": [
+       84,
+       36
+      ],
+      "#inMedBtn": [
+       144,
+       36
+      ]
+     },
+     "tallSz": {
+      "#icPrev": [
+       34,
+       44
+      ],
+      "#icNext": [
+       34,
+       44
+      ],
+      "#icToday": [
+       50,
+       44
+      ],
+      "#inCalBtn": [
+       34,
+       44
+      ],
+      "#inListBtn": [
+       34,
+       44
+      ],
+      "#inFiltersBtn": [
+       34,
+       44
+      ],
+      "[data-testid=\"in-gear\"]": [
+       38,
+       44
+      ],
+      "#inMemberMode": [
+       121,
+       36
+      ],
+      "#inSansMode": [
+       121,
+       36
+      ],
+      "#inMedBtn": [
+       121,
+       36
+      ]
+     }
+    },
+    {
+     "id": "X-17 side (2) the opened day",
+     "did": "a real tap at the corner of Wed 12 Aug opened the day window",
+     "saw": "ok the day window is up and wholly on the screen [{\"x\":398,\"y\":96,\"w\":430,\"h\":270}] | NO its close cross is a finger's size (44) and a touch on its middle lands on it [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[805,119],\"size\":[28,28],\"lands\":true,\"top\":\"win-inputsday-x\"}] | ok \"+ Input\" is on screen and a touch on its middle lands on it [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[613,214],\"size\":[404,40],\"lands\":true,\"top\":\"icPopAdd\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17side-02-2-day-opened.png"
+     ],
+     "dayBox": {
+      "x": 398,
+      "y": 96,
+      "w": 430,
+      "h": 270
+     },
+     "dayHit": {
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        805,
+        119
+       ],
+       "size": [
+        28,
+        28
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "add": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        613,
+        214
+       ],
+       "size": [
+        404,
+        40
+       ],
+       "lands": true,
+       "top": "icPopAdd"
+      },
+      "list": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        613,
+        305
+       ],
+       "size": [
+        428,
+        120
+       ],
+       "lands": true,
+       "top": "idy-list"
+      }
+     }
+    },
+    {
+     "id": "X-17 side (3) two windows",
+     "did": "with the day window up, a real touch on the gear opened the settings window",
+     "saw": "ok the gear was reachable (a touch on its middle landed on it, or it was reached) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[454,235],\"size\":[44,44],\"lands\":false,\"top\":\"sd-top\"}] | NO the settings window is up [null] | ok the settings window's close cross, Save and Cancel are each hit by a touch on their middles when the window is whole on screen [{\"x\":{\"found\":false},\"save\":{\"found\":false},\"cancel\":{\"found\":false},\"dayX\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[805,119],\"size\":[28,28],\"lands\":true,\"top\":\"win-inputsday-x\"},\"dayAdd\":{\"found\":true,\"drawn] | ok (recorded) the day window's close cross before the settings window is moved: reachable [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[805,119],\"size\":[28,28],\"lands\":true,\"top\":\"win-inputsday-x\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17side-03-3-two-windows.png"
+     ],
+     "setBox": null,
+     "setHit": {
+      "x": {
+       "found": false
+      },
+      "save": {
+       "found": false
+      },
+      "cancel": {
+       "found": false
+      },
+      "dayX": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        805,
+        119
+       ],
+       "size": [
+        28,
+        28
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "dayAdd": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        613,
+        214
+       ],
+       "size": [
+        404,
+        40
+       ],
+       "lands": true,
+       "top": "icPopAdd"
+      }
+     },
+     "gearHit": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       454,
+       235
+      ],
+      "size": [
+       44,
+       44
+      ],
+      "lands": false,
+      "top": "sd-top"
+     }
+    },
+    {
+     "id": "X-17 side (4) drag one low",
+     "did": "dragged the settings window down by its bar with a real finger (touchStart / touchMove / touchEnd)",
+     "saw": "NO the window followed the finger (its bar moved down by about the drag) [null] | NO the window stays inside the screen [null] | ok the day window's close cross can still be touched (hit by its own middle) [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[805,119],\"size\":[28,28],\"lands\":true,\"top\":\"win-inputsday-x\"}] | ok the settings window's own close cross can be touched [{\"found\":false}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17side-04-4-settings-dragged-low.png"
+     ],
+     "afterDrag": {
+      "x": {
+       "found": false
+      },
+      "save": {
+       "found": false
+      },
+      "dayX": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        805,
+        119
+       ],
+       "size": [
+        28,
+        28
+       ],
+       "lands": true,
+       "top": "win-inputsday-x"
+      },
+      "dayAdd": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        613,
+        214
+       ],
+       "size": [
+        404,
+        40
+       ],
+       "lands": true,
+       "top": "icPopAdd"
+      },
+      "undo": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        396,
+        120
+       ],
+       "size": [
+        34,
+        17
+       ],
+       "lands": true,
+       "top": "bi"
+      }
+     }
+    },
+    {
+     "id": "X-17 side (5) expand the day and reach the last input",
+     "did": "closed the settings window by touch, pulled the day up by its title, scrolled the list to its end",
+     "saw": "NO the settings window closed by the FIRST touch on its cross (after the finger drag) [{\"closeTouches\":0,\"setClosed\":true}] | ok the day window rests at the taller height (is-tall) on a phone [{\"isTall\":false,\"tallBox\":{\"x\":398,\"y\":96,\"w\":430,\"h\":270}}] | ok the list is long enough to scroll inside the window, and the last input is in the window and on the screen [{\"rows\":12,\"scrolls\":true,\"lastText\":\"Warden Training till 14 Aug\",\"lastInWin\":true,\"lastOnScreen\":true}] | ok a touch on the last input's open button lands on it [{\"size\":[121,26],\"centre\":[481,326],\"lands\":true,\"top\":\"idy-who\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17side-05-5-day-expanded.png",
+      "x17side-06-6-last-input-reached.png"
+     ],
+     "lastInfo": {
+      "rows": 12,
+      "scrolls": true,
+      "lastText": "Warden Training till 14 Aug",
+      "lastInWin": true,
+      "lastOnScreen": true
+     },
+     "lastOpen": {
+      "size": [
+       121,
+       26
+      ],
+      "centre": [
+       481,
+       326
+      ],
+      "lands": true,
+      "top": "idy-who"
+     }
+    },
+    {
+     "id": "X-17 side (6) the editor and Undo",
+     "did": "touched the last input's open button (the editor window), typed a remark, Save by touch, then the top bar's Undo by touch",
+     "saw": "ok the editor opened as a window, whole on the screen [{\"x\":398,\"y\":96,\"w\":430,\"h\":270}] | ok Save was reachable (on screen after scrolling inside the window) and a touch on it saved [{\"saved\":1,\"save\":{\"found\":true,\"drawn\":true,\"onScreen\":false,\"centre\":[785,453],\"size\":[54,28],\"lands\":false,\"top\":null}}] | ok Undo in the top bar is hit by a touch on its middle WHILE THE DAY IS PULLED UP [{\"undoHitExpanded\":{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[396,120],\"size\":[34,17],\"lands\":true,\"top\":\"bi\"},\"dayExpandedNow\":false}] | ok Undo is hit by a touch on its middle once the day is back down [{\"found\":true,\"drawn\":true,\"onScreen\":true,\"centre\":[396,120],\"size\":[34,17],\"lands\":true,\"top\":\"bi\"}] | ok the touch on Undo took the change back [{\"saved\":1,\"afterUndo\":0,\"toastU\":[\"Input updated\",\"Undid: a personal input\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "x17side-07-7a-day-expanded-undo-covered.png",
+      "x17side-08-7-after-save-and-undo.png"
+     ],
+     "edHit": {
+      "save": {
+       "found": true,
+       "drawn": true,
+       "onScreen": false,
+       "centre": [
+        785,
+        453
+       ],
+       "size": [
+        54,
+        28
+       ],
+       "lands": false,
+       "top": null
+      },
+      "x": {
+       "found": true,
+       "drawn": true,
+       "onScreen": true,
+       "centre": [
+        805,
+        119
+       ],
+       "size": [
+        28,
+        28
+       ],
+       "lands": true,
+       "top": "win-inputedit-x"
+      },
+      "cancel": {
+       "found": true,
+       "drawn": true,
+       "onScreen": false,
+       "centre": [
+        717,
+        453
+       ],
+       "size": [
+        65,
+        28
+       ],
+       "lands": false,
+       "top": null
+      }
+     },
+     "undoHit": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       396,
+       120
+      ],
+      "size": [
+       34,
+       17
+      ],
+      "lands": true,
+      "top": "bi"
+     },
+     "undoHitExpanded": {
+      "found": true,
+      "drawn": true,
+      "onScreen": true,
+      "centre": [
+       396,
+       120
+      ],
+      "size": [
+       34,
+       17
+      ],
+      "lands": true,
+      "top": "bi"
+     }
+    },
+    {
+     "id": "X-17 side (7) close",
+     "did": "closed every window by a touch on its cross, front one first",
+     "saw": "ok every window closed [[\"win-inputsday:landed:28px\"]] | NO each cross was a finger's size and landed [[\"win-inputsday:landed:28px\"]] | ok the month still has no scroll of its own and nothing sideways [{\"ownScroll\":0,\"pageW\":844,\"vw\":844}]",
+     "verdict": "FAIL",
+     "pics": [
+      "x17side-09-8-all-closed.png"
+     ],
+     "closed": [
+      "win-inputsday:landed:28px"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x14b": {
+   "at": "2026-10-08T15:04:54.365Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-14 (Medical)",
+     "did": "read the Medical tab's buttons as Saber (admin), Ranger (member, not the subject) and Grit (member, the subject of the demo medical entry)",
+     "saw": "{\"admin\":[\"|Zenith C Upchit upchitted 20 J\"],\"ranger\":[\"|Zenith C Upchit upchitted 20 J\"],\"grit\":[\"|Zenith C Upchit upchitted 20 J\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "x14b-01-admin-saber.png",
+      "x14b-02-member-ranger.png",
+      "x14b-03-member-grit-subject.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "final": {
+   "at": "2026-10-08T15:06:18.817Z",
+   "base": "http://localhost:4214",
+   "table": [
+    {
+     "id": "X-10",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "different items PASS (group input; requirement on two days); same-item conflicts refuse and leave the other man's work, but the refusal never names the newer actor (group input, holiday, requirement); two different holidays also refuse (A's Undo of his own holiday refused after B added another)",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "X-11",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "All changes and New to you hold ONE shared item with the names; deletion and amendments keep the names; individual history stays attributable; jumps land on the right row; BUT To go out lists one line per man (3 lines), not one shared item",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "X-12",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "3 pending after the three-person filing; still 3 after the remark edit; 4 after an unrelated solo input; AL1 clears pending and issues the final wording",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "X-13",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "desktop and 390x568: failure band, Retry reachable, one saved result after retry and reload — PASS; 844x390: the opened-day window (and the settings window) lie over Retry",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "X-14",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "settings window, Calendar window, Required cell, group editor, a drag begun as admin: none completed a write after authority was gone; doors by role as expected; guest and no-access paths held; sign-in card usable; the Medical tab draws no write door to any role",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "X-15",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "no disproof: SANS counts excluded, published Fri 9 Oct reads 1 pending, issued face unchanged, nobody else touched (observations for the host: past days 6-7 Oct also lost the SANS count; the man's inputs were not trimmed)",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "X-16",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "placement lines on the opened day, List and editor foot only; board, week, View-only Sched, print document and CSV carry none and match the baseline (print differs by the one publication line)",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "X-17",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "month: no inner scroll, button heights equal to the tall phone — PASS at all sizes; touch reach — PASS at 390x844 and 390x568 apart from Undo being under the pulled-up day window; 844x390: the day window covers the month arrows, Today and the gear, its cross is 28px",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "X-18",
+     "did": "see the part rows of this file and cal-H.md",
+     "saw": "all four stages keep the group, the single OIL credit, the pending count and the placed/changed line through a reload and a sign-in as Ranger and back; Undo does not carry over",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

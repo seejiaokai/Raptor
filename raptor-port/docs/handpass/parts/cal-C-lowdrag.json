@@ -1,0 +1,3674 @@
+{
+ "Calendar": {
+  "window": "Calendar",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 6,
+      "y": 54,
+      "w": 378,
+      "h": 508,
+      "b": 562
+     }
+    },
+    "dragged": {
+     "askedDy": 525
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 6,
+      "y": 526,
+      "w": 378,
+      "h": 588,
+      "b": 1114
+     },
+     "bar": {
+      "x": 7,
+      "y": 527,
+      "w": 376,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 333,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "last": {
+      "what": "days-step-2026-01-31",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 6,
+      "y": 3,
+      "w": 378,
+      "h": 588,
+      "b": 591
+     },
+     "bar": {
+      "x": 7,
+      "y": 4,
+      "w": 376,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 333,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "last": {
+      "what": "days-step-2026-01-31",
+      "onScreen": false,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Calendar-390x568.png",
+    "pic2": "lowdrag-Calendar-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 16,
+      "y": 96,
+      "w": 812,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 309
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 16,
+      "y": 348,
+      "w": 812,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 17,
+      "y": 349,
+      "w": 810,
+      "h": 48,
+      "b": 397
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 359,
+      "w": 28,
+      "h": 28,
+      "b": 387
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "last": {
+      "what": "days-nf-2026-01-31",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 812,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 17,
+      "y": 4,
+      "w": 810,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "last": {
+      "what": "days-nf-2026-01-31",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Calendar-844x390.png",
+    "pic2": "lowdrag-Calendar-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 812,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 712
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 16,
+      "y": 658,
+      "w": 880,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 17,
+      "y": 659,
+      "w": 878,
+      "h": 48,
+      "b": 707
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 859,
+      "y": 669,
+      "w": 28,
+      "h": 28,
+      "b": 697
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "last": {
+      "what": "days-nf-2026-01-31",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 880,
+      "h": 605,
+      "b": 608
+     },
+     "bar": {
+      "x": 17,
+      "y": 4,
+      "w": 878,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 859,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "last": {
+      "what": "days-nf-2026-01-31",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Calendar-1280x700.png",
+    "pic2": "lowdrag-Calendar-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 6,
+      "y": 54,
+      "w": 378,
+      "h": 508,
+      "b": 562
+     }
+    },
+    "dragged": {
+     "askedDy": 525
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 6,
+      "y": 526,
+      "w": 378,
+      "h": 588,
+      "b": 1114
+     },
+     "bar": {
+      "x": 7,
+      "y": 527,
+      "w": 376,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 333,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "last": {
+      "what": "days-step-2026-01-31",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 6,
+      "y": 3,
+      "w": 378,
+      "h": 588,
+      "b": 591
+     },
+     "bar": {
+      "x": 7,
+      "y": 4,
+      "w": 376,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 333,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "last": {
+      "what": "days-step-2026-01-31",
+      "onScreen": false,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Calendar-back_390x568.png",
+    "pic2": "lowdrag-Calendar-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "Every Thursday": {
+  "window": "Every Thursday",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 107,
+      "w": 358,
+      "h": 450,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 472
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 450,
+      "b": 976
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 919,
+       "w": 162,
+       "h": 44,
+       "b": 963
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 450,
+      "b": 453
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 396,
+       "w": 162,
+       "h": 44,
+       "b": 440
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Every_Thursday-390x568.png",
+    "pic2": "lowdrag-Every_Thursday-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 16,
+      "y": 96,
+      "w": 380,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 311
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 16,
+      "y": 348,
+      "w": 380,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 17,
+      "y": 349,
+      "w": 378,
+      "h": 45,
+      "b": 394
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 359,
+      "y": 357,
+      "w": 28,
+      "h": 28,
+      "b": 385
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 210,
+       "y": 463,
+       "w": 173,
+       "h": 44,
+       "b": 507
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 380,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 17,
+      "y": 4,
+      "w": 378,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 359,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 210,
+       "y": 325,
+       "w": 173,
+       "h": 44,
+       "b": 369
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Every_Thursday-844x390.png",
+    "pic2": "lowdrag-Every_Thursday-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 380,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 714
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 16,
+      "y": 658,
+      "w": 380,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 17,
+      "y": 659,
+      "w": 378,
+      "h": 45,
+      "b": 704
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 359,
+      "y": 667,
+      "w": 28,
+      "h": 28,
+      "b": 695
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 210,
+       "y": 773,
+       "w": 173,
+       "h": 44,
+       "b": 817
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 380,
+      "h": 438,
+      "b": 441
+     },
+     "bar": {
+      "x": 17,
+      "y": 4,
+      "w": 378,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 359,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 210,
+       "y": 384,
+       "w": 173,
+       "h": 44,
+       "b": 428
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Every_Thursday-1280x700.png",
+    "pic2": "lowdrag-Every_Thursday-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 107,
+      "w": 358,
+      "h": 450,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 472
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 450,
+      "b": 976
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 919,
+       "w": 162,
+       "h": 44,
+       "b": 963
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 450,
+      "b": 453
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 396,
+       "w": 162,
+       "h": 44,
+       "b": 440
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "every-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Every_Thursday-back_390x568.png",
+    "pic2": "lowdrag-Every_Thursday-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "Holiday form": {
+  "window": "Holiday form",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 54,
+      "w": 358,
+      "h": 502,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 525
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 502,
+      "b": 1028
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 297,
+       "y": 971,
+       "w": 60,
+       "h": 44,
+       "b": 1015
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 502,
+      "b": 505
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 297,
+       "y": 448,
+       "w": 60,
+       "h": 44,
+       "b": 492
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Holiday_form-390x568.png",
+    "pic2": "lowdrag-Holiday_form-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 16,
+      "y": 96,
+      "w": 380,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 311
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 16,
+      "y": 348,
+      "w": 380,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 17,
+      "y": 349,
+      "w": 378,
+      "h": 45,
+      "b": 394
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 359,
+      "y": 357,
+      "w": 28,
+      "h": 28,
+      "b": 385
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 323,
+       "y": 451,
+       "w": 60,
+       "h": 44,
+       "b": 495
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 380,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 17,
+      "y": 4,
+      "w": 378,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 359,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 323,
+       "y": 325,
+       "w": 60,
+       "h": 44,
+       "b": 369
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Holiday_form-844x390.png",
+    "pic2": "lowdrag-Holiday_form-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 380,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 714
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 16,
+      "y": 658,
+      "w": 380,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 17,
+      "y": 659,
+      "w": 378,
+      "h": 45,
+      "b": 704
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 359,
+      "y": 667,
+      "w": 28,
+      "h": 28,
+      "b": 695
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 323,
+       "y": 761,
+       "w": 60,
+       "h": 44,
+       "b": 805
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 16,
+      "y": 3,
+      "w": 380,
+      "h": 571,
+      "b": 574
+     },
+     "bar": {
+      "x": 17,
+      "y": 4,
+      "w": 378,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 359,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 323,
+       "y": 517,
+       "w": 60,
+       "h": 44,
+       "b": 561
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Holiday_form-1280x700.png",
+    "pic2": "lowdrag-Holiday_form-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 54,
+      "w": 358,
+      "h": 502,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 525
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 502,
+      "b": 1028
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 297,
+       "y": 971,
+       "w": 60,
+       "h": 44,
+       "b": 1015
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 502,
+      "b": 505
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 297,
+       "y": 448,
+       "w": 60,
+       "h": 44,
+       "b": 492
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "hol-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Holiday_form-back_390x568.png",
+    "pic2": "lowdrag-Holiday_form-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "Inputs day": {
+  "window": "Inputs day",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 397
+    },
+    "after": {
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 182,
+      "w": 356,
+      "h": 57,
+      "b": 239
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 188,
+      "w": 44,
+      "h": 44,
+      "b": 232
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 299,
+       "w": 332,
+       "h": 44,
+       "b": 343
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 196,
+      "askedDy": -178
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 8,
+      "w": 358,
+      "h": 548,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 9,
+      "w": 356,
+      "h": 57,
+      "b": 66
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 15,
+      "w": 44,
+      "h": 44,
+      "b": 59
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 126,
+       "w": 332,
+       "h": 44,
+       "b": 170
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_day-390x568.png",
+    "pic2": "lowdrag-Inputs_day-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 398,
+      "y": 96,
+      "w": 430,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 311
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 398,
+      "y": 348,
+      "w": 430,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 399,
+      "y": 349,
+      "w": 428,
+      "h": 45,
+      "b": 394
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 357,
+      "w": 28,
+      "h": 28,
+      "b": 385
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 446,
+       "w": 404,
+       "h": 40,
+       "b": 486
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 399,
+      "y": 4,
+      "w": 428,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 101,
+       "w": 404,
+       "h": 40,
+       "b": 141
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_day-844x390.png",
+    "pic2": "lowdrag-Inputs_day-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 714
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 398,
+      "y": 658,
+      "w": 430,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 399,
+      "y": 659,
+      "w": 428,
+      "h": 45,
+      "b": 704
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 667,
+      "w": 28,
+      "h": 28,
+      "b": 695
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 756,
+       "w": 404,
+       "h": 40,
+       "b": 796
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 529,
+      "b": 532
+     },
+     "bar": {
+      "x": 399,
+      "y": 4,
+      "w": 428,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 101,
+       "w": 404,
+       "h": 40,
+       "b": 141
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_day-1280x700.png",
+    "pic2": "lowdrag-Inputs_day-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 8,
+      "w": 358,
+      "h": 548,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 571
+    },
+    "after": {
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 182,
+      "w": 356,
+      "h": 57,
+      "b": 239
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 188,
+      "w": 44,
+      "h": 44,
+      "b": 232
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 299,
+       "w": 332,
+       "h": 44,
+       "b": 343
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 196,
+      "askedDy": -178
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 8,
+      "w": 358,
+      "h": 548,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 9,
+      "w": 356,
+      "h": 57,
+      "b": 66
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 15,
+      "w": 44,
+      "h": 44,
+      "b": 59
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 126,
+       "w": 332,
+       "h": 44,
+       "b": 170
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "idy-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_day-back_390x568.png",
+    "pic2": "lowdrag-Inputs_day-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "SANS day": {
+  "window": "SANS day",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 397
+    },
+    "after": {
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 182,
+      "w": 356,
+      "h": 57,
+      "b": 239
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 188,
+      "w": 44,
+      "h": 44,
+      "b": 232
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 400,
+       "w": 235,
+       "h": 40,
+       "b": 440
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 196,
+      "askedDy": -178
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 8,
+      "w": 358,
+      "h": 548,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 9,
+      "w": 356,
+      "h": 57,
+      "b": 66
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 15,
+      "w": 44,
+      "h": 44,
+      "b": 59
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 227,
+       "w": 235,
+       "h": 40,
+       "b": 267
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_day-390x568.png",
+    "pic2": "lowdrag-SANS_day-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 398,
+      "y": 96,
+      "w": 430,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 309
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 398,
+      "y": 348,
+      "w": 430,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 399,
+      "y": 349,
+      "w": 428,
+      "h": 48,
+      "b": 397
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 359,
+      "w": 28,
+      "h": 28,
+      "b": 387
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 467,
+       "w": 307,
+       "h": 40,
+       "b": 507
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 399,
+      "y": 4,
+      "w": 428,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 213,
+       "w": 307,
+       "h": 40,
+       "b": 253
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_day-844x390.png",
+    "pic2": "lowdrag-SANS_day-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 712
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 398,
+      "y": 658,
+      "w": 430,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 399,
+      "y": 659,
+      "w": 428,
+      "h": 48,
+      "b": 707
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 669,
+      "w": 28,
+      "h": 28,
+      "b": 697
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 777,
+       "w": 307,
+       "h": 40,
+       "b": 817
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 529,
+      "b": 532
+     },
+     "bar": {
+      "x": 399,
+      "y": 4,
+      "w": 428,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 411,
+       "y": 213,
+       "w": 307,
+       "h": 40,
+       "b": 253
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_day-1280x700.png",
+    "pic2": "lowdrag-SANS_day-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 8,
+      "w": 358,
+      "h": 548,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 571
+    },
+    "after": {
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 181,
+      "w": 358,
+      "h": 375,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 182,
+      "w": 356,
+      "h": 57,
+      "b": 239
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 188,
+      "w": 44,
+      "h": 44,
+      "b": 232
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 400,
+       "w": 235,
+       "h": 40,
+       "b": 440
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 196,
+      "askedDy": -178
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 8,
+      "w": 358,
+      "h": 548,
+      "b": 556
+     },
+     "bar": {
+      "x": 13,
+      "y": 9,
+      "w": 356,
+      "h": 57,
+      "b": 66
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 15,
+      "w": 44,
+      "h": 44,
+      "b": 59
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 25,
+       "y": 227,
+       "w": 235,
+       "h": 40,
+       "b": 267
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sd-open",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_day-back_390x568.png",
+    "pic2": "lowdrag-SANS_day-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "Input editor": {
+  "window": "Input editor",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 12,
+      "w": 358,
+      "h": 544,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 567
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 544,
+      "b": 1070
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 305,
+       "y": 1041,
+       "w": 49,
+       "h": 28,
+       "b": 1069
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 544,
+      "b": 547
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 305,
+       "y": 518,
+       "w": 49,
+       "h": 28,
+       "b": 546
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Input_editor-390x568.png",
+    "pic2": "lowdrag-Input_editor-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 398,
+      "y": 96,
+      "w": 430,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 311
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 398,
+      "y": 348,
+      "w": 430,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 399,
+      "y": 349,
+      "w": 428,
+      "h": 45,
+      "b": 394
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 357,
+      "w": 28,
+      "h": 28,
+      "b": 385
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 763,
+       "y": 479,
+       "w": 49,
+       "h": 28,
+       "b": 507
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 399,
+      "y": 4,
+      "w": 428,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 763,
+       "y": 343,
+       "w": 49,
+       "h": 28,
+       "b": 371
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Input_editor-844x390.png",
+    "pic2": "lowdrag-Input_editor-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 714
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 398,
+      "y": 658,
+      "w": 430,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 399,
+      "y": 659,
+      "w": 428,
+      "h": 45,
+      "b": 704
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 667,
+      "w": 28,
+      "h": 28,
+      "b": 695
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 763,
+       "y": 789,
+       "w": 49,
+       "h": 28,
+       "b": 817
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 398,
+      "y": 3,
+      "w": 430,
+      "h": 639,
+      "b": 642
+     },
+     "bar": {
+      "x": 399,
+      "y": 4,
+      "w": 428,
+      "h": 45,
+      "b": 49
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 12,
+      "w": 28,
+      "h": 28,
+      "b": 40
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 763,
+       "y": 603,
+       "w": 49,
+       "h": 28,
+       "b": 631
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Input_editor-1280x700.png",
+    "pic2": "lowdrag-Input_editor-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 12,
+      "w": 358,
+      "h": 544,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 567
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 544,
+      "b": 1070
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 305,
+       "y": 1041,
+       "w": 49,
+       "h": 28,
+       "b": 1069
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 544,
+      "b": 547
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 305,
+       "y": 518,
+       "w": 49,
+       "h": 28,
+       "b": 546
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "inpEditSave",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Input_editor-back_390x568.png",
+    "pic2": "lowdrag-Input_editor-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "Inputs settings": {
+  "window": "Inputs settings",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 147,
+      "w": 358,
+      "h": 409,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 431
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 409,
+      "b": 935
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 890,
+       "w": 162,
+       "h": 44,
+       "b": 934
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 409,
+      "b": 412
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 367,
+       "w": 162,
+       "h": 44,
+       "b": 411
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_settings-390x568.png",
+    "pic2": "lowdrag-Inputs_settings-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 428,
+      "y": 96,
+      "w": 400,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 309
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 428,
+      "y": 348,
+      "w": 400,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 429,
+      "y": 349,
+      "w": 398,
+      "h": 48,
+      "b": 397
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 359,
+      "w": 28,
+      "h": 28,
+      "b": 387
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 467,
+       "w": 183,
+       "h": 40,
+       "b": 507
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 428,
+      "y": 3,
+      "w": 400,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 429,
+      "y": 4,
+      "w": 398,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 329,
+       "w": 183,
+       "h": 40,
+       "b": 369
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_settings-844x390.png",
+    "pic2": "lowdrag-Inputs_settings-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 428,
+      "y": 3,
+      "w": 400,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 712
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 428,
+      "y": 658,
+      "w": 400,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 429,
+      "y": 659,
+      "w": 398,
+      "h": 48,
+      "b": 707
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 669,
+      "w": 28,
+      "h": 28,
+      "b": 697
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 777,
+       "w": 183,
+       "h": 40,
+       "b": 817
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 428,
+      "y": 3,
+      "w": 400,
+      "h": 554,
+      "b": 557
+     },
+     "bar": {
+      "x": 429,
+      "y": 4,
+      "w": 398,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 504,
+       "w": 183,
+       "h": 40,
+       "b": 544
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_settings-1280x700.png",
+    "pic2": "lowdrag-Inputs_settings-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 147,
+      "w": 358,
+      "h": 409,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 431
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 409,
+      "b": 935
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 890,
+       "w": 162,
+       "h": 44,
+       "b": 934
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 409,
+      "b": 412
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 367,
+       "w": 162,
+       "h": 44,
+       "b": 411
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "iset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-Inputs_settings-back_390x568.png",
+    "pic2": "lowdrag-Inputs_settings-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ },
+ "SANS settings": {
+  "window": "SANS settings",
+  "stages": {
+   "390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 147,
+      "w": 358,
+      "h": 409,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 431
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 409,
+      "b": 935
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 890,
+       "w": 162,
+       "h": 44,
+       "b": 934
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 409,
+      "b": 412
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 367,
+       "w": 162,
+       "h": 44,
+       "b": 411
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_settings-390x568.png",
+    "pic2": "lowdrag-SANS_settings-390x568-recovered.png"
+   },
+   "844x390": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 428,
+      "y": 96,
+      "w": 400,
+      "h": 270,
+      "b": 366
+     }
+    },
+    "dragged": {
+     "askedDy": 309
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 428,
+      "y": 348,
+      "w": 400,
+      "h": 160,
+      "b": 508
+     },
+     "bar": {
+      "x": 429,
+      "y": 349,
+      "w": 398,
+      "h": 48,
+      "b": 397
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 359,
+      "w": 28,
+      "h": 28,
+      "b": 387
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 467,
+       "w": 183,
+       "h": 40,
+       "b": 507
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 363,
+      "askedDy": -345
+     },
+     "ok": true,
+     "vp": [
+      844,
+      390
+     ],
+     "win": {
+      "x": 428,
+      "y": 3,
+      "w": 400,
+      "h": 379,
+      "b": 382
+     },
+     "bar": {
+      "x": 429,
+      "y": 4,
+      "w": 398,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 329,
+       "w": 183,
+       "h": 40,
+       "b": 369
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_settings-844x390.png",
+    "pic2": "lowdrag-SANS_settings-844x390-recovered.png"
+   },
+   "1280x700": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 428,
+      "y": 3,
+      "w": 400,
+      "h": 379,
+      "b": 382
+     }
+    },
+    "dragged": {
+     "askedDy": 712
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 428,
+      "y": 658,
+      "w": 400,
+      "h": 160,
+      "b": 818
+     },
+     "bar": {
+      "x": 429,
+      "y": 659,
+      "w": 398,
+      "h": 48,
+      "b": 707
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 791,
+      "y": 669,
+      "w": 28,
+      "h": 28,
+      "b": 697
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 777,
+       "w": 183,
+       "h": 40,
+       "b": 817
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 673,
+      "askedDy": -655
+     },
+     "ok": true,
+     "vp": [
+      1280,
+      700
+     ],
+     "win": {
+      "x": 428,
+      "y": 3,
+      "w": 400,
+      "h": 592,
+      "b": 595
+     },
+     "bar": {
+      "x": 429,
+      "y": 4,
+      "w": 398,
+      "h": 48,
+      "b": 52
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 791,
+      "y": 14,
+      "w": 28,
+      "h": 28,
+      "b": 42
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 632,
+       "y": 542,
+       "w": 183,
+       "h": 40,
+       "b": 582
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_settings-1280x700.png",
+    "pic2": "lowdrag-SANS_settings-1280x700-recovered.png"
+   },
+   "back 390x568": {
+    "before": {
+     "ok": true,
+     "barOnScreen": true,
+     "win": {
+      "x": 12,
+      "y": 147,
+      "w": 358,
+      "h": 409,
+      "b": 556
+     }
+    },
+    "dragged": {
+     "askedDy": 431
+    },
+    "after": {
+     "ok": false,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 526,
+      "w": 358,
+      "h": 409,
+      "b": 935
+     },
+     "bar": {
+      "x": 13,
+      "y": 527,
+      "w": 356,
+      "h": 57,
+      "b": 584
+     },
+     "barOnScreen": false,
+     "cross": {
+      "x": 319,
+      "y": 533,
+      "w": 44,
+      "h": 44,
+      "b": 577
+     },
+     "crossOnScreen": false,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 890,
+       "w": 162,
+       "h": 44,
+       "b": 934
+      },
+      "onScreen": false,
+      "hit": false
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": false,
+      "hit": false
+     }
+    },
+    "recovery": {
+     "up": {
+      "grabbedAt": 541,
+      "askedDy": -523
+     },
+     "ok": true,
+     "vp": [
+      390,
+      568
+     ],
+     "win": {
+      "x": 12,
+      "y": 3,
+      "w": 358,
+      "h": 409,
+      "b": 412
+     },
+     "bar": {
+      "x": 13,
+      "y": 4,
+      "w": 356,
+      "h": 57,
+      "b": 61
+     },
+     "barOnScreen": true,
+     "cross": {
+      "x": 319,
+      "y": 10,
+      "w": 44,
+      "h": 44,
+      "b": 54
+     },
+     "crossOnScreen": true,
+     "crossHit": true,
+     "main": {
+      "rect": {
+       "x": 195,
+       "y": 367,
+       "w": 162,
+       "h": 44,
+       "b": 411
+      },
+      "onScreen": true,
+      "hit": true
+     },
+     "last": {
+      "what": "sset-save",
+      "onScreen": true,
+      "hit": true
+     }
+    },
+    "pic": "lowdrag-SANS_settings-back_390x568.png",
+    "pic2": "lowdrag-SANS_settings-back_390x568-recovered.png"
+   }
+  },
+  "errors": []
+ }
+}

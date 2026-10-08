@@ -1,0 +1,6341 @@
+{
+ "rows": {
+  "P3-05": {
+   "id": "P3-05",
+   "did": "Calendar -> Holidays -> + Add; Save with nothing picked; tap 5 Aug, 7 Aug, then earlier 3 Aug, then 10 Aug, 12 Aug; Clear; Save again (real mouse clicks)",
+   "saw": "OK opens with nothing picked (selection words, no data-from) [{\"txt\":\"Pick a start date\",\"from\":\"\",\"to\":\"\"}] | OK opened on the month of today / this year (not a made-up day) [OCTOBER 2026 (app today 2026-10-08)] | OK empty Save refused with a line, form stays [Pick its day — or its first and last day — on the calendar.] | OK tap 1 = 5 Aug one day [{\"txt\":\"5 Aug 26\",\"from\":\"2026-08-05\",\"to\":\"2026-08-05\"}] | OK tap 2 later = run 5-7 Aug [{\"txt\":\"5 Aug 26 – 7 Aug 26\",\"from\":\"2026-08-05\",\"to\":\"2026-08-07\"}] | OK a tap before the start begins again there (3 Aug) [{\"txt\":\"3 Aug 26\",\"from\":\"2026-08-03\",\"to\":\"2026-08-03\"}] | OK a third tap starts over / run (10 Aug) per picker rule [{\"txt\":\"3 Aug 26 – 10 Aug 26\",\"from\":\"2026-08-03\",\"to\":\"2026-08-10\"}] | OK after another tap (12 Aug) [{\"txt\":\"12 Aug 26\",\"from\":\"2026-08-12\",\"to\":\"2026-08-12\"}] | OK Clear leaves nothing picked [{\"txt\":\"Pick a start date\",\"from\":\"\",\"to\":\"\"}] | OK Save after Clear refused again, no holiday saved [{\"errAfterClear\":\"Pick its day — or its first and last day — on the calendar.\",\"savedAfterClear\":0}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p305-1-form.png",
+    "desk-p305-2-empty-save.png",
+    "desk-p305-3-run.png",
+    "desk-p305-4-after-third.png",
+    "desk-p305-5-clear.png"
+   ],
+   "at": "2026-10-08T13:52:47.011Z"
+  },
+  "P3-12a": {
+   "id": "P3-12a",
+   "did": "Add National Day / ND on 5 Aug with \"Save and add another\"; read the next form; then Off day \"Stand Down\" / SD on 12 Aug",
+   "saw": "after save: \"Saved: National Day, Wed 5 Aug.\"; next form {\"name\":\"\",\"short\":\"\",\"sel\":{\"txt\":\"Pick a start date\",\"from\":\"\",\"to\":\"\"},\"month\":\"AUGUST 2026\",\"ph\":\"true\"}; Aug lines: [{\"from\":\"2026-08-05\",\"t\":\"Wed 5 AugNational DayPH\"},{\"from\":\"2026-08-09\",\"t\":\"Sun 9 AugPHPH\"},{\"from\":\"2026-08-12\",\"t\":\"Wed 12 AugStand DownOFF\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-h01-1-after-save-and-add.png",
+    "desk-h01-3-list.png"
+   ],
+   "at": "2026-10-08T13:52:48.918Z"
+  },
+  "H-01": {
+   "id": "H-01",
+   "did": "Added PH \"National Day\"/ND on Wed 5 Aug and Off day \"Stand Down\"/SD on Wed 12 Aug through Calendar -> Holidays; read the tag on 5 and 12 Aug on the Calendar window Month, the Inputs month, the SANS month, the Leave War Event row; opened the date on the Inputs and SANS calendars",
+   "saw": "OK Leave War Event row prints ND / SD [[\"ND\",\"SD\"]] | OK SANS month prints ND (green) / SD (grey) [[[{\"cls\":\"sc-tag k-ph\",\"txt\":\"ND\",\"color\":\"rgb(201, 245, 216)\",\"bg\":\"rgb(31, 107, 63)\"}],[{\"cls\":\"sc-tag k-off\",\"txt\":\"SD\",\"color\":\"rgb(220, 226, 232)\",\"bg\":\"rgb(58, 66, 77)\"}]]] | OK Inputs month prints ND / SD (picture) [desk-h01-6-inputs-month.png shows ND green on 5 Aug and SD grey on 12 Aug] | NO Calendar window own Month prints ND / SD [{\"calND\":\"PH\",\"calSD\":\"OFF\"}] | OK Inputs day opened shows full name [Wed 5 AugPublic holiday · National Day] | OK SANS day opened shows full name (PH and Off day) [[\"Wed 5 AugPublic holiday · National Day\",\"Wed 12 AugOff day · Stand Down\"]]",
+   "verdict": "FAIL",
+   "pics": [
+    "desk-h01-4-calendar-month.png",
+    "desk-h01-5-leavewar-row.png",
+    "desk-h01-6-inputs-month.png",
+    "desk-h01-8-sans-month.png",
+    "desk-h01-9-sans-day-nd.png",
+    "desk-h01-7-inputs-day-nd.png"
+   ],
+   "at": "2026-10-08T13:52:55.421Z"
+  },
+  "P3-12": {
+   "id": "P3-12",
+   "did": "Add Deepavali / DV (Nov 9) with \"Save and add another\"; inspect the next form; then an Off day on Nov 12 with name and short form left blank, Save",
+   "saw": "OK next form: picker on the useful month (Nov), nothing selected [{\"name\":\"\",\"short\":\"\",\"sel\":\"Pick a start date\",\"from\":\"\",\"month\":\"NOVEMBER 2026\",\"saved\":\"Saved: Deepavali, Mon 9 Nov.\"}] | OK next form: name and short form cleared (not carried) [{\"name\":\"\",\"short\":\"\"}] | OK \"Saved: Deepavali, ...\" shown [Saved: Deepavali, Mon 9 Nov.] | OK Off day saved on 12 Nov only (previous 9 Nov range not reused) [[{\"from\":\"2026-11-09\",\"t\":\"Mon 9 NovDeepavaliPH\"},{\"from\":\"2026-11-12\",\"t\":\"Thu 12 NovOff dayOFF\"}]] | OK Event row 9 Nov = DV [DV] | OK Off day prints its own default short form, not DV [OFF]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p312-1-next-form.png",
+    "desk-p312-2-offday-blank.png",
+    "desk-p312-3-list.png"
+   ],
+   "at": "2026-10-08T13:53:48.851Z"
+  },
+  "P3-04a": {
+   "id": "P3-04a",
+   "did": "Add \"Test Fest\"/TF on 22 Sep in Calendar -> Holidays; change it on the Leave War Event row (peek -> Edit -> name \"Test Fest Two\", short T2 -> Apply); read the Calendar list; open it there and press Delete",
+   "saw": "OK Calendar add shows on Event row as TF [{\"line\":{\"from\":\"2026-09-22\",\"t\":\"Tue 22 SepTest FestPH\"},\"cell\":\"TF\"}] | OK Leave War sheet opened on the same record (name/short) [{\"name\":\"Test Fest\",\"short\":\"TF\"}] | OK after the Leave War change the Calendar list reads Test Fest Two (one line, no duplicate) and cell T2 [{\"line\":{\"from\":\"2026-09-22\",\"t\":\"Tue 22 SepTest Fest TwoPH\"},\"cell\":\"T2\"}] | OK Calendar form opens on the changed record [{\"name\":\"Test Fest Two\",\"short\":\"T2\"}] | OK Delete in Calendar clears the Event row (no orphan tag/text) [{\"line\":null,\"cell\":\"＋\",\"tags\":0}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p304-1-event-sheet-edit.png",
+    "desk-p304-3-after-lw-change.png",
+    "desk-p304-4-removed-in-calendar.png"
+   ],
+   "at": "2026-10-08T14:01:58.847Z"
+  },
+  "P3-04b": {
+   "id": "P3-04b",
+   "did": "Reverse: add \"LW Day\" via the Leave War Event sheet on 29 Sep; change it in Calendar -> Holidays (LW Day Two / L2); open it on the Leave War and Delete there",
+   "saw": "OK the Leave War add shows in the Calendar list as one PH line [{\"line\":{\"from\":\"2026-09-29\",\"t\":\"Tue 29 SepLW DayPH\"},\"cell\":\"LW\",\"quicks\":[\"PH\",\"Off day\",\"No Leave\",\"SC\"]}] | OK changed in Calendar -> one line only, Event row prints L2 [{\"line\":{\"from\":\"2026-09-29\",\"t\":\"Tue 29 SepLW Day TwoPH\"},\"cell\":\"L2\",\"n\":1}] | OK the Leave War sheet then holds the new name/short [{\"name\":\"LW Day Two\",\"short\":\"L2\"}] | OK Delete on the Leave War removes it from the Calendar list [{\"line\":null,\"cell\":\"＋\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p304-7-lw-added.png",
+    "desk-p304-8-lw-sheet-after-calendar-change.png",
+    "desk-p304-9-lw-deleted.png"
+   ],
+   "at": "2026-10-08T14:02:06.379Z"
+  },
+  "P3-04c": {
+   "id": "P3-04c",
+   "did": "Holiday form left open on \"Stale Day\"/SD (6 Oct); the same record renamed on the Leave War to \"Newer Name\"/NN; Save pressed in the old form without touching it",
+   "saw": "OK the stale Save is refused with a sentence (not silently applied) [That holiday is no longer there — it was changed on the Leave War.] | OK the newer record is kept (Newer Name / NN), no duplicate line [{\"cell\":\"NN\",\"lines\":[{\"from\":\"2026-10-06\",\"t\":\"Tue 6 OctNewer NamePH\"}]}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p304-11-form-after-lw-rename.png",
+    "desk-p304-12-stale-save.png"
+   ],
+   "at": "2026-10-08T14:02:12.326Z"
+  },
+  "P3-04d": {
+   "id": "P3-04d",
+   "did": "Holiday form open on \"Gone Day\" (13 Oct); the event deleted on the Leave War; Save pressed in the form",
+   "saw": "OK refused with a sentence [That holiday is no longer there — it was changed on the Leave War.] | OK nothing re-created on the Event row or in the list [{\"err\":\"That holiday is no longer there — it was changed on the Leave War.\",\"line\":null,\"cell\":\"＋\",\"formOpen\":1}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p304-13-save-after-lw-delete.png"
+   ],
+   "at": "2026-10-08T14:02:19.662Z"
+  },
+  "P3-02": {
+   "id": "P3-02",
+   "did": "Calendar -> Holidays: add a PH where no period exists (2031) -> \"Create the 2031 leave period\"; cancel a waiting holiday then create the period (2032); edit a waiting holiday then create (2033); partial year (2034, Q1 made on + New): waiting -> \"Add a leave period for…\" sheet -> Create",
+   "saw": "OK 2031: notice says no period covers it [No leave period covers 2031 yet.Create it] | OK 2031: Save refused and the holiday waits, with the create button [{\"err\":\"No leave period covers 9 Aug 31 yet.\",\"waiting\":\"It is kept here, and saved by itself as soon as a leave period covers it.\",\"createBtn\":\"Create the 2031 leave period\",\"formOpen\":1,\"list\":0}] | OK 2031: after Create the holiday saved ONCE on 9 Aug and the form closed [{\"formOpen\":0,\"lines\":[{\"from\":\"2031-08-09\",\"t\":\"Sat 9 AugWait OnePH\"}],\"periods\":[\"JAN - DEC 26\",\"JAN - DEC 27\",\"2031\"]}] | OK 2032: cancelled holiday does NOT appear after the period is created [{\"waitB\":{\"waiting\":true},\"afterB\":{\"formOpen\":0,\"lines\":[],\"empty\":\"No public holidays or Off days in 2032.\"}}] | OK 2033: an edit takes the wait down; creating the period does not save it by itself [{\"waitC\":{\"waiting\":true},\"waitingGoneAfterEdit\":true,\"afterC1\":{\"formOpen\":1,\"lines\":[]}}] | OK 2033: Save then saves the EDITED holiday once (\"Edited Day\", 4-5 Apr: the second tap on the picker extends the first, as the picker rules say) [{\"formOpen\":0,\"lines\":[{\"from\":\"2033-04-04\",\"t\":\"Mon 4 – Tue 5 AprEdited DayPH\"}]}] | OK 2034 partial: the notice names the uncovered dates and offers \"Add a period for…\" [{\"partNotice\":\"No leave period covers 1 Apr – 31 Dec 2034 yet.Add a period for 1 Apr – 31 Dec…\",\"partButtons\":[\"Add a period for 1 Apr – 31 Dec…\"]}] | OK 2034: the holiday waits and offers the period button [{\"err\":\"No leave period covers 9 Aug 34 yet.\",\"waiting\":\"It is kept here, and saved by itself as soon as a leave period covers it.\",\"btn\":\"Add a leave period for 1 Apr – 31 Dec…\"}] | OK 2034: the New-period sheet opens in FRONT of Calendar (centre hit is the sheet) [{\"inSheet\":true,\"sel\":\"1 Apr 34 – 31 Dec 34\"}] | OK 2034: after Create the holiday saved once on 9 Aug, form closed [{\"formOpen\":0,\"lines\":[{\"from\":\"2034-08-09\",\"t\":\"Wed 9 AugPartial DayPH\"}],\"periods\":[\"JAN - DEC 26\",\"JAN - DEC 27\",\"2031\",\"2032\",\"2033\",\"Q1 34\",\"Rest 34\"]}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p302-1-waiting-2031.png",
+    "desk-p302-2-after-create-2031.png",
+    "desk-p302-3-cancelled-then-created.png",
+    "desk-p302-4-edited-then-created.png",
+    "desk-p302-6-partial-notice.png",
+    "desk-p302-7-period-sheet-over-calendar.png",
+    "desk-p302-8-after-partial-period.png"
+   ],
+   "at": "2026-10-08T14:05:29.359Z"
+  },
+  "P3-03": {
+   "id": "P3-03",
+   "did": "In 2034 (Q1 + Rest periods): add a run 30 Mar - 2 Apr (crosses the two periods); a run 30 Dec 2034 - 2 Jan 2035; then change the existing holiday of 10 Feb to 30 Mar - 2 Apr",
+   "saw": "OK original holiday exists first [1] | OK straddling run refused with a sentence, nothing saved [{\"err\":\"Those dates run past 31 Mar 34, the end of the leave period \\\"Q1 34\\\" — add each part to its own period.\",\"formOpen\":1,\"lines\":[]}] | OK year-end run (ends in an uncovered year) refused/waits as a whole, no partial 30-31 Dec saved [{\"err\":\"Those dates run past 31 Dec 34, the end of the leave period \\\"Rest 34\\\" — add each part to its own period.\",\"waiting\":null,\"formOpen\":1,\"lines\":[]}] | OK moving the original there is refused and the original is NOT deleted [{\"err\":\"Those dates run past 31 Mar 34, the end of the leave period \\\"Q1 34\\\" — add each part to its own period.\",\"formOpen\":1,\"lines\":[{\"from\":\"2034-02-10\",\"t\":\"Fri 10 FebOriginalPH\"},{\"from\":\"2034-08-09\",\"t\":\"Wed 9 Aug] | OK after cancel the 2034 list still holds Original 10 Feb once [[{\"from\":\"2034-02-10\",\"t\":\"Fri 10 FebOriginalPH\"},{\"from\":\"2034-08-09\",\"t\":\"Wed 9 AugPartial DayPH\"}]]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p303-1-straddle-refused.png",
+    "desk-p303-2-year-end-refused.png",
+    "desk-p303-3-move-refused.png"
+   ],
+   "at": "2026-10-08T14:05:41.242Z"
+  },
+  "P3-06-desk": {
+   "id": "P3-06-desk",
+   "did": "Calendar month July 2026 at desk: stepped a weekday (Tue 14) and a weekend day (Sat 18) through their classes; pressed an active button; read PH (22) and Off day (21)",
+   "saw": "OK weekday starts day, weekend starts with nothing set [{\"wd\":\"day\",\"we\":\"none\",\"ph\":\"TAG:PH\",\"off\":\"TAG:OFF\"}] | OK PH and Off day show a tag and no flying controls [{\"ph\":\"TAG:PH\",\"off\":\"TAG:OFF\",\"ctrls\":{\"count\":3,\"phCount\":0,\"offCount\":0,\"weCount\":3}}] | OK desktop has three buttons per date [{\"count\":3,\"phCount\":0,\"offCount\":0,\"weCount\":3}] | OK weekday N -> night, NF -> nf, D -> day (each press gives its own class) [[\"night+dot\",\"nf+dot\",\"day\"]] | OK weekend D -> day; D again -> back to none; N -> night [[\"day+dot\",\"none\",\"night+dot\"]] | OK pressing the active control on a weekday writes nothing: ONE Undo takes back the N (night -> day) [{\"afterN\":\"night+dot\",\"afterActivePress\":\"night+dot\",\"afterOneUndo\":\"day\",\"d_on_default\":{\"before\":\"day\",\"after\":\"day\"}}] | OK D on a default-day weekday changes nothing [{\"before\":\"day\",\"after\":\"day\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p306-0-july.png",
+    "desk-p306-1-weekday-cycled.png",
+    "desk-p306-2-weekend-cycled.png",
+    "desk-p306-3-noop.png"
+   ],
+   "at": "2026-10-08T14:07:59.176Z"
+  },
+  "P3-07-desk": {
+   "id": "P3-07-desk",
+   "did": "July 2026, press the Thursday heading: Night from 16 Jul to 30 Jul, Save; reopen (rule listed); change the end to 23 Jul, Save; Remove the rule",
+   "saw": "OK title says Thursday [Every Thursday] | OK sentence names Thursday, night flying, the dates [Every Thursday from Thu 16 Jul 2026 to Thu 30 Jul 2026 is a night-flying day. A single Thursday can still be set by itself.] | OK after Save: Thu 16, 23, 30 night; Thu 2, 9 as before; Wed 15 / Fri 17 untouched [{\"before7\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"day\",\"2026-07-23\":\"day\",\"2026-07-30\":\"day\",\"2026-07-15\":\"day\",\"2026-07-17\":\"day\"},\"after7\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"night\",\"2026] | OK rule listed on reopening [Already set for ThursdaysNight flying · from Thu 16 Jul 2026 · until Thu 30 Jul 2026Remove] | OK end changed to 23 Jul: 30 Jul returns to its default; 16 and 23 stay night; one rule only (same start replaces) [{\"after7b\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"night\",\"2026-07-23\":\"night\",\"2026-07-30\":\"day\"},\"nRules\":1}] | OK Remove: every Thursday back to what it was, other weekdays untouched [{\"before7\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"day\",\"2026-07-23\":\"day\",\"2026-07-30\":\"day\",\"2026-07-15\":\"day\",\"2026-07-17\":\"day\"},\"after7c\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"day\",\"2026-]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-p307-1-every-thursday.png",
+    "desk-p307-2-every-filled.png",
+    "desk-p307-3-after-save.png",
+    "desk-p307-4-reopened-listed.png",
+    "desk-p307-5-after-remove.png"
+   ],
+   "at": "2026-10-08T14:08:07.208Z"
+  },
+  "P3-06-phone": {
+   "id": "P3-06-phone",
+   "did": "Calendar month July 2026 at phone: stepped a weekday (Tue 14) and a weekend day (Sat 18) through their classes; pressed an active button; read PH (22) and Off day (21)",
+   "saw": "OK weekday starts day, weekend starts with nothing set [{\"wd\":\"day\",\"we\":\"none\",\"ph\":\"TAG:PH\",\"off\":\"TAG:OFF\"}] | OK PH and Off day show a tag and no flying controls [{\"ph\":\"TAG:PH\",\"off\":\"TAG:OFF\",\"ctrls\":{\"count\":1,\"phCount\":0,\"offCount\":0,\"weCount\":1}}] | OK phone has ONE control per date [{\"count\":1,\"phCount\":0,\"offCount\":0,\"weCount\":1}] | OK weekday cycle day -> night -> nf -> day [[\"night+dot\",\"nf+dot\",\"day\",\"night+dot\"]] | OK weekend cycle none -> day -> night -> nf -> none [[\"day+dot\",\"night+dot\",\"nf+dot\",\"none\",\"day+dot\"]] | OK the button is the thing a finger lands on (centre hit), size [{\"w\":43,\"h\":36,\"onIt\":true,\"label\":\"Tue 14 Jul: day flying. Tap for night flying\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-p306-0-july.png",
+    "phone-p306-1-weekday-cycled.png",
+    "phone-p306-2-weekend-cycled.png",
+    "phone-p306-3-noop.png"
+   ],
+   "at": "2026-10-08T14:08:23.535Z"
+  },
+  "P3-07-phone": {
+   "id": "P3-07-phone",
+   "did": "July 2026, press the Thursday heading: Night from 16 Jul to 30 Jul, Save; reopen (rule listed); change the end to 23 Jul, Save; Remove the rule",
+   "saw": "OK title says Thursday [Every Thursday] | OK sentence names Thursday, night flying, the dates [Every Thursday from Thu 16 Jul 2026 to Thu 30 Jul 2026 is a night-flying day. A single Thursday can still be set by itself.] | OK after Save: Thu 16, 23, 30 night; Thu 2, 9 as before; Wed 15 / Fri 17 untouched [{\"before7\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"day\",\"2026-07-23\":\"day\",\"2026-07-30\":\"day\",\"2026-07-15\":\"day\",\"2026-07-17\":\"day\"},\"after7\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"night\",\"2026] | OK rule listed on reopening [Already set for ThursdaysNight flying · from Thu 16 Jul 2026 · until Thu 30 Jul 2026Remove] | OK end changed to 23 Jul: 30 Jul returns to its default; 16 and 23 stay night; one rule only (same start replaces) [{\"after7b\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"night\",\"2026-07-23\":\"night\",\"2026-07-30\":\"day\"},\"nRules\":1}] | OK Remove: every Thursday back to what it was, other weekdays untouched [{\"before7\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"day\",\"2026-07-23\":\"day\",\"2026-07-30\":\"day\",\"2026-07-15\":\"day\",\"2026-07-17\":\"day\"},\"after7c\":{\"2026-07-02\":\"day\",\"2026-07-09\":\"day\",\"2026-07-16\":\"day\",\"2026-]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-p307-1-every-thursday.png",
+    "phone-p307-2-every-filled.png",
+    "phone-p307-3-after-save.png",
+    "phone-p307-4-reopened-listed.png",
+    "phone-p307-5-after-remove.png"
+   ],
+   "at": "2026-10-08T14:08:29.286Z"
+  },
+  "P3-01-desk": {
+   "id": "P3-01-desk",
+   "did": "Inputs page July 2026 at desk: day -> + Input -> editor, typed an unsaved remark; gear -> Inputs settings in front; Escape with focus on (V1) the window, (V2) a button, (V3) the title; reversed stacking (V5). Text-box case V4 recorded: {\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"INPUT#inpEditRmk\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"BUTTON#icPopAdd.abtn\",\"remark\":null,\"front\":\"win-inputsset\"}}",
+   "saw": "NO V1 settings in front, focus on the window itself (not a text box): Escape closes settings; editor and its remark stay [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"DIV[win-inputsset].floatwin\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"DIV] | NO V2 focus on a button in settings (Cancel): Escape closes settings; editor and remark stay [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"BUTTON[iset-cancel].abtn\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"BUTTON] | NO V3 press the front window's title, then Escape: settings closes; editor stays [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"DIV[win-inputsset].floatwin\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"DIV] | OK V5 reversed: editor brought in front (its visible edge pressed), settings behind: Escape closes the EDITOR, settings stays [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"DIV[win-inputsset].floatwin\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputedit\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"DIV]",
+   "verdict": "FAIL",
+   "pics": [
+    "desk-p301-2-settings-over-editor.png",
+    "desk-p301-3-after-escape-v1.png",
+    "desk-p301-4-escape-in-textbox-behind.png",
+    "desk-p301-5-editor-in-front.png",
+    "desk-p301-6-after-escape-v5.png"
+   ],
+   "at": "2026-10-08T14:16:58.801Z"
+  },
+  "P3-01-phone": {
+   "id": "P3-01-phone",
+   "did": "Inputs page July 2026 at phone: day -> + Input -> editor, typed an unsaved remark; gear -> Inputs settings in front; Escape with focus on (V1) the window, (V2) a button, (V3) the title; reversed stacking (V5). Text-box case V4 recorded: {\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"INPUT#inpEditRmk\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"BUTTON#icPopAdd.abtn\",\"remark\":null,\"front\":\"win-inputsset\"}}",
+   "saw": "NO V1 settings in front, focus on the window itself (not a text box): Escape closes settings; editor and its remark stay [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"DIV[win-inputsset].floatwin\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"DIV] | NO V2 focus on a button in settings (Cancel): Escape closes settings; editor and remark stay [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"BUTTON[iset-cancel].abtn\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"BUTTON] | NO V3 press the front window's title, then Escape: settings closes; editor stays [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"DIV[win-inputsset].floatwin\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputsset\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"DIV] | OK V5 reversed: editor brought in front (its visible edge pressed), settings behind: Escape closes the EDITOR, settings stays [{\"pre\":{\"wins\":[\"win-inputsday\",\"win-inputedit\",\"win-inputsset\"],\"active\":\"DIV[win-inputsset].floatwin\",\"remark\":\"my unsaved remark\",\"front\":\"win-inputedit\"},\"post\":{\"wins\":[\"win-inputsday\",\"win-inputsset\"],\"active\":\"DIV]",
+   "verdict": "FAIL",
+   "pics": [
+    "phone-p301-2-settings-over-editor.png",
+    "phone-p301-3-after-escape-v1.png",
+    "phone-p301-4-escape-in-textbox-behind.png",
+    "phone-p301-5-editor-in-front.png",
+    "phone-p301-6-after-escape-v5.png"
+   ],
+   "at": "2026-10-08T14:18:01.746Z"
+  },
+  "P3-10-desk": {
+   "id": "P3-10-desk",
+   "did": "Inputs July 2026 at desk: the \"+ Pucks\" picker inside an opened day (outside press, Escape); an existing input's editor with a typed remark, Delete's question (outside press, Escape)",
+   "saw": "OK T1 + Pucks picker: opens [{\"wins\":[\"win-inputsday\"],\"active\":\"BUTTON#icAddPucks.abtn\",\"pick\":1,\"asks\":[]}] | OK T1 outside press closes the picker, the day window stays [{\"wins\":[\"win-inputsday\"],\"active\":\"BODY.in-cal\",\"pick\":0,\"asks\":[]}] | OK T1 Escape (picker open) closes the picker, NOT the day window [{\"wins\":[\"win-inputsday\"],\"active\":\"BUTTON#icAddPucks.abtn\",\"pick\":0,\"asks\":[]}] | OK T3 Delete (keyboard, on a line of the opened day) asks first [{\"askShown\":1,\"lines\":4}] | OK T3a Escape with focus on the question: the QUESTION closes, the day window stays, nothing deleted [{\"ask\":0,\"wins\":[\"win-inputsday\"],\"lines\":4}] | OK T3b a press on the page behind leaves the question up and deletes nothing [{\"ask\":1,\"wins\":[\"win-inputsday\"],\"lines\":4,\"active\":\"BODY.in-cal\"}] | NO T3b then Escape (focus now on the page) cancels the question and keeps the day window [{\"ask\":0,\"wins\":[]}] | OK T4 OIL question appears (a blocking question) when the weekend duty is saved [{\"qEls\":[\"win-inputsday:Sat 18 Jul\",\"insightModal:\",\"win-inputedit:New input · Jul 18\",\"tplModal:\",\"waveTplModal:\",\"daytplModal:\",\"draftsModal:\"],\"wins\":[\"win-inputsday\",\"win-inputedit\"]}] | OK T4 a background press while it is up changes nothing behind (month stays) [{\"monB\":\"July 2026\",\"monA\":\"July 2026\"}] | OK T4 Escape on the question keeps the editor and the typed remark [{\"wins\":[\"win-inputsday\",\"win-inputedit\"],\"rmk4\":\"weekend duty draft\"}]",
+   "verdict": "FAIL",
+   "pics": [
+    "desk-p310-1-pucks-picker-open.png",
+    "desk-p310-3-delete-question.png",
+    "desk-p310-4-after-escape-on-question.png"
+   ],
+   "at": "2026-10-08T14:33:59.242Z"
+  },
+  "P3-11-desk": {
+   "id": "P3-11-desk",
+   "did": "every door to \"Calendar\" at desk: Leave War gear, Inputs gear, Logic row -> settings -> Calendar…, SANS gear, SANS day; then admin member view with Calendar open, and member Ranger",
+   "saw": "OK Leave War door: the line reads \"Calendar…\", window titled \"Calendar\", opened on the grid's month (August after pressing AUG) [{\"lwLine\":\"Calendar…\",\"d1\":{\"month\":\"August 2026\",\"title\":\"Calendaradmins only\"}}] | OK Inputs gear door: \"Calendar…\" and the window opens on the month on screen (September 2026) [{\"isetLine\":\"Calendar…\",\"d2\":{\"month\":\"September 2026\",\"inputsMonth\":\"September 2026\"}}] | OK Logic page door → settings → Calendar opens a month [{\"nLg\":3,\"lgLabels\":[\"Inputs calendar settings…\",\"SANS calendar settings…\",\"Inputs calendar settings…\"],\"d2b\":{\"month\":\"September 2026\"}}] | OK SANS gear door opens on the SANS month on screen (November 2026) [{\"month\":\"November 2026\",\"sansMonth\":\"November 2026\"}] | OK SANS day door: the line reads \"Calendar…\" and opens on that day's month (November 2026) [{\"sdLine\":\"Calendar…\",\"d4\":{\"month\":\"November 2026\",\"sansDay\":\"Nov 2026 (25th)\"}}] | OK Admin switched to member view with Calendar open: the window is gone, and no gear/door remains [{\"openBefore\":[\"win-days\",\"win-sansset\"],\"openAfter\":[],\"roleNow\":\"Saber · Member\",\"gearsNow\":{\"scGear\":0,\"inGear\":\"n/a on SANS tab\"},\"inGearNow\":0,\"lwGearNow\":0}] | OK Member Ranger (us): no Inputs gear, no SANS gear, no \"Calendar…\" in the SANS day, no Leave War gear, no Logic doors [{\"inGear\":0,\"scGear\":0,\"sdDays\":0,\"lwGear\":0,\"logicDoors\":0,\"askedDays\":true}]",
+   "verdict": "PARTIAL",
+   "pics": [
+    "desk-p311-2-calendar-from-lw.png",
+    "desk-p311-3-calendar-from-inputs.png",
+    "desk-p311-5-calendar-from-sans-day.png",
+    "desk-p311-6-after-role-switch-with-calendar-open.png",
+    "desk-p311-8-member-sans-day.png"
+   ],
+   "at": "2026-10-08T14:37:44.390Z"
+  },
+  "H-03-desk": {
+   "id": "H-03-desk",
+   "did": "read every visible text and title/aria-label for the word Days: Leave War gear sheet, the window (Month, Holidays, holiday form, Every Thursday), both calendars' gear windows, SANS day, \"How this works\" on both, the Logic page rows — at desk",
+   "saw": "OK no visible \"Days\" naming that window anywhere (weekday names and \"14 days\" aside) [no hits in 12 places] | OK the title and every line that opens it read Calendar / Calendar… [{\"lwLine\":\"Calendar…\",\"isetLine\":\"Calendar…\",\"sdLine\":\"Calendar…\",\"title\":\"Calendaradmins only\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-h03-1-everywd.png",
+    "desk-h03-2-inputs-settings.png",
+    "desk-h03-3-sans-settings.png",
+    "desk-h03-4-sans-day.png",
+    "desk-p311-1-lw-gear-sheet.png"
+   ],
+   "at": "2026-10-08T14:37:44.414Z"
+  },
+  "P3-11-phone": {
+   "id": "P3-11-phone",
+   "did": "every door to \"Calendar\" at phone: Leave War gear, Inputs gear, Logic row -> settings -> Calendar…, SANS gear, SANS day; then admin member view with Calendar open, and member Ranger",
+   "saw": "OK Leave War door: the line reads \"Calendar…\", window titled \"Calendar\", opened on the grid's month (August after pressing AUG) [{\"lwLine\":\"Calendar…\",\"d1\":{\"month\":\"January 2026\",\"title\":\"Calendaradmins only\"}}] | OK Inputs gear door: \"Calendar…\" and the window opens on the month on screen (September 2026) [{\"isetLine\":\"Calendar…\",\"d2\":{\"month\":\"September 2026\",\"inputsMonth\":\"September 2026\"}}] | OK Logic page door → settings → Calendar opens a month [{\"nLg\":3,\"lgLabels\":[\"Inputs calendar settings…\",\"SANS calendar settings…\",\"Inputs calendar settings…\"],\"d2b\":{\"month\":\"September 2026\"}}] | OK SANS gear door opens on the SANS month on screen (November 2026) [{\"month\":\"November 2026\",\"sansMonth\":\"November 2026\"}] | OK SANS day door: the line reads \"Calendar…\" and opens on that day's month (November 2026) [{\"sdLine\":\"Calendar…\",\"d4\":{\"month\":\"November 2026\",\"sansDay\":\"Nov 2026 (25th)\"}}] | OK Admin switched to member view with Calendar open: the window is gone, and no gear/door remains [{\"openBefore\":[\"win-days\",\"win-sansset\"],\"openAfter\":[],\"roleNow\":\"phone drawer: Back to the admin view\",\"gearsNow\":{\"scGear\":0,\"inGear\":\"n/a on SANS tab\"},\"inGearNow\":0,\"lwGearNow\":0}] | OK Member Ranger (us): no Inputs gear, no SANS gear, no \"Calendar…\" in the SANS day, no Leave War gear, no Logic doors [{\"inGear\":0,\"scGear\":0,\"sdDays\":0,\"lwGear\":0,\"logicDoors\":0,\"askedDays\":true}]",
+   "verdict": "PARTIAL",
+   "pics": [
+    "phone-p311-2-calendar-from-lw.png",
+    "phone-p311-3-calendar-from-inputs.png",
+    "phone-p311-5-calendar-from-sans-day.png",
+    "phone-p311-6-after-role-switch-with-calendar-open.png",
+    "phone-p311-8-member-sans-day.png"
+   ],
+   "at": "2026-10-08T14:39:47.110Z"
+  },
+  "H-03-phone": {
+   "id": "H-03-phone",
+   "did": "read every visible text and title/aria-label for the word Days: Leave War gear sheet, the window (Month, Holidays, holiday form, Every Thursday), both calendars' gear windows, SANS day, \"How this works\" on both, the Logic page rows — at phone",
+   "saw": "OK no visible \"Days\" naming that window anywhere (weekday names and \"14 days\" aside) [no hits in 12 places] | OK the title and every line that opens it read Calendar / Calendar… [{\"lwLine\":\"Calendar…\",\"isetLine\":\"Calendar…\",\"sdLine\":\"Calendar…\",\"title\":\"Calendaradmins only\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-h03-1-everywd.png",
+    "phone-h03-2-inputs-settings.png",
+    "phone-h03-3-sans-settings.png",
+    "phone-h03-4-sans-day.png",
+    "phone-p311-1-lw-gear-sheet.png"
+   ],
+   "at": "2026-10-08T14:39:47.135Z"
+  },
+  "P3-02-phone": {
+   "id": "P3-02-phone",
+   "did": "Calendar -> Holidays: add a PH where no period exists (2031) -> \"Create the 2031 leave period\"; cancel a waiting holiday then create the period (2032); edit a waiting holiday then create (2033); partial year (2034, Q1 made on + New): waiting -> \"Add a leave period for…\" sheet -> Create",
+   "saw": "OK 2031: notice says no period covers it [No leave period covers 2031 yet.Create it] | OK 2031: Save refused and the holiday waits, with the create button [{\"err\":\"No leave period covers 9 Aug 31 yet.\",\"waiting\":\"It is kept here, and saved by itself as soon as a leave period covers it.\",\"createBtn\":\"Create the 2031 leave period\",\"formOpen\":1,\"list\":0}] | OK 2031: after Create the holiday saved ONCE on 9 Aug and the form closed [{\"formOpen\":0,\"lines\":[{\"from\":\"2031-08-09\",\"t\":\"Sat 9 AugWait OnePH\"}],\"periods\":[\"JAN - DEC 26\",\"JAN - DEC 27\",\"2031\"]}] | OK 2032: cancelled holiday does NOT appear after the period is created [{\"waitB\":{\"waiting\":true},\"afterB\":{\"formOpen\":0,\"lines\":[],\"empty\":\"No public holidays or Off days in 2032.\"}}] | OK 2034 partial: the notice names the uncovered dates and offers \"Add a period for…\" [{\"partNotice\":\"No leave period covers 1 Apr – 31 Dec 2034 yet.Add a period for 1 Apr – 31 Dec…\",\"partButtons\":[\"Add a period for 1 Apr – 31 Dec…\"]}] | OK 2034: the holiday waits and offers the period button [{\"err\":\"No leave period covers 9 Aug 34 yet.\",\"waiting\":\"It is kept here, and saved by itself as soon as a leave period covers it.\",\"btn\":\"Add a leave period for 1 Apr – 31 Dec…\"}] | OK 2034: the New-period sheet opens in FRONT of Calendar (centre hit is the sheet) [{\"inSheet\":true,\"sel\":\"1 Apr 34 – 31 Dec 34\"}] | OK 2034: after Create the holiday saved once on 9 Aug, form closed [{\"formOpen\":0,\"lines\":[{\"from\":\"2034-08-09\",\"t\":\"Wed 9 AugPartial DayPH\"}],\"periods\":[\"JAN - DEC 26\",\"JAN - DEC 27\",\"2031\",\"2032\",\"Q1 34\",\"Rest 34\"]}]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-p302-1-waiting-2031.png",
+    "phone-p302-2-after-create-2031.png",
+    "phone-p302-3-cancelled-then-created.png",
+    "phone-p302-4-edited-then-created.png",
+    "phone-p302-6-partial-notice.png",
+    "phone-p302-7-period-sheet-over-calendar.png",
+    "phone-p302-8-after-partial-period.png"
+   ],
+   "at": "2026-10-08T14:50:38.642Z"
+  },
+  "P3-03-phone": {
+   "id": "P3-03-phone",
+   "did": "In 2034 (Q1 + Rest periods): add a run 30 Mar - 2 Apr (crosses the two periods); a run 30 Dec 2034 - 2 Jan 2035; then change the existing holiday of 10 Feb to 30 Mar - 2 Apr",
+   "saw": "OK original holiday exists first [1] | OK straddling run refused with a sentence, nothing saved [{\"err\":\"Those dates run past 31 Mar 34, the end of the leave period \\\"Q1 34\\\" — add each part to its own period.\",\"formOpen\":1,\"lines\":[]}] | OK year-end run (ends in an uncovered year) refused/waits as a whole, no partial 30-31 Dec saved [{\"err\":\"Those dates run past 31 Dec 34, the end of the leave period \\\"Rest 34\\\" — add each part to its own period.\",\"waiting\":null,\"formOpen\":1,\"lines\":[]}] | OK moving the original there is refused and the original is NOT deleted [{\"err\":\"Those dates run past 31 Mar 34, the end of the leave period \\\"Q1 34\\\" — add each part to its own period.\",\"formOpen\":1,\"lines\":[{\"from\":\"2034-02-10\",\"t\":\"Fri 10 FebOriginalPH\"},{\"from\":\"2034-08-09\",\"t\":\"Wed 9 Aug] | OK after cancel the 2034 list still holds Original 10 Feb once [[{\"from\":\"2034-02-10\",\"t\":\"Fri 10 FebOriginalPH\"},{\"from\":\"2034-08-09\",\"t\":\"Wed 9 AugPartial DayPH\"}]]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-p303-1-straddle-refused.png",
+    "phone-p303-2-year-end-refused.png",
+    "phone-p303-3-move-refused.png"
+   ],
+   "at": "2026-10-08T14:50:45.473Z"
+  },
+  "P3-05-phone": {
+   "id": "P3-05-phone",
+   "did": "Calendar -> Holidays -> + Add; Save with nothing picked; tap 5 Aug, 7 Aug, then earlier 3 Aug, then 10 Aug, 12 Aug; Clear; Save again (real mouse clicks)",
+   "saw": "OK opens with nothing picked (selection words, no data-from) [{\"txt\":\"Pick a start date\",\"from\":\"\",\"to\":\"\"}] | OK opened on the month of today / this year (not a made-up day) [OCTOBER 2026 (app today 2026-10-08)] | OK empty Save refused with a line, form stays [Pick its day — or its first and last day — on the calendar.] | OK tap 1 = 5 Aug one day [{\"txt\":\"5 Aug 26\",\"from\":\"2026-08-05\",\"to\":\"2026-08-05\"}] | OK tap 2 later = run 5-7 Aug [{\"txt\":\"5 Aug 26 – 7 Aug 26\",\"from\":\"2026-08-05\",\"to\":\"2026-08-07\"}] | OK a tap before the start begins again there (3 Aug) [{\"txt\":\"3 Aug 26\",\"from\":\"2026-08-03\",\"to\":\"2026-08-03\"}] | OK a third tap starts over / run (10 Aug) per picker rule [{\"txt\":\"3 Aug 26 – 10 Aug 26\",\"from\":\"2026-08-03\",\"to\":\"2026-08-10\"}] | OK after another tap (12 Aug) [{\"txt\":\"12 Aug 26\",\"from\":\"2026-08-12\",\"to\":\"2026-08-12\"}] | OK Clear leaves nothing picked [{\"txt\":\"Pick a start date\",\"from\":\"\",\"to\":\"\"}] | OK Save after Clear refused again, no holiday saved [{\"errAfterClear\":\"Pick its day — or its first and last day — on the calendar.\",\"savedAfterClear\":0}]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-p305-1-form.png",
+    "phone-p305-2-empty-save.png",
+    "phone-p305-3-run.png",
+    "phone-p305-4-after-third.png",
+    "phone-p305-5-clear.png"
+   ],
+   "at": "2026-10-08T14:51:55.437Z"
+  },
+  "P3-12a-phone": {
+   "id": "P3-12a-phone",
+   "did": "Add National Day / ND on 5 Aug with \"Save and add another\"; read the next form; then Off day \"Stand Down\" / SD on 12 Aug",
+   "saw": "after save: \"Saved: National Day, Wed 5 Aug.\"; next form {\"name\":\"\",\"short\":\"\",\"sel\":{\"txt\":\"Pick a start date\",\"from\":\"\",\"to\":\"\"},\"month\":\"AUGUST 2026\",\"ph\":\"true\"}; Aug lines: [{\"from\":\"2026-08-05\",\"t\":\"Wed 5 AugNational DayPH\"},{\"from\":\"2026-08-09\",\"t\":\"Sun 9 AugPHPH\"},{\"from\":\"2026-08-12\",\"t\":\"Wed 12 AugStand DownOFF\"}]",
+   "verdict": "PASS",
+   "pics": [
+    "phone-h01-1-after-save-and-add.png",
+    "phone-h01-3-list.png"
+   ],
+   "at": "2026-10-08T14:51:57.222Z"
+  },
+  "H-01-phone": {
+   "id": "H-01-phone",
+   "did": "Added PH \"National Day\"/ND on Wed 5 Aug and Off day \"Stand Down\"/SD on Wed 12 Aug through Calendar -> Holidays; read the tag on 5 and 12 Aug on the Calendar window Month, the Inputs month, the SANS month, the Leave War Event row; opened the date on the Inputs and SANS calendars",
+   "saw": "OK Leave War Event row prints ND / SD [[\"ND\",\"SD\"]] | OK SANS month prints ND (green) / SD (grey) [[[{\"cls\":\"sc-tag k-ph\",\"txt\":\"ND\",\"color\":\"rgb(201, 245, 216)\",\"bg\":\"rgb(31, 107, 63)\"}],[{\"cls\":\"sc-tag k-off\",\"txt\":\"SD\",\"color\":\"rgb(220, 226, 232)\",\"bg\":\"rgb(58, 66, 77)\"}]]] | OK Inputs month prints ND / SD (picture) [desk-h01-6-inputs-month.png shows ND green on 5 Aug and SD grey on 12 Aug] | NO Calendar window own Month prints ND / SD [{\"calND\":\"PH\",\"calSD\":\"OFF\"}] | OK Inputs day opened shows full name [Wed 5 AugPublic holiday · National Day] | OK SANS day opened shows full name (PH and Off day) [[\"Wed 5 AugPublic holiday · National Day\",\"Wed 12 AugOff day · Stand Down\"]]",
+   "verdict": "FAIL",
+   "pics": [
+    "phone-h01-4-calendar-month.png",
+    "phone-h01-5-leavewar-row.png",
+    "phone-h01-6-inputs-month.png",
+    "phone-h01-8-sans-month.png",
+    "phone-h01-9-sans-day-nd.png",
+    "phone-h01-7-inputs-day-nd.png"
+   ],
+   "at": "2026-10-08T14:52:05.435Z"
+  },
+  "P3-08x": {
+   "id": "P3-08x",
+   "did": "extra: a dragged window across a repaint, Save acting once (Inputs settings), and the SANS Highlight menu with a window up (outside press, Escape)",
+   "saw": "OK Inputs day: dragged by (-300,+120), then the month arrows and the filter box pressed: window kept its place [{\"r1\":{\"x\":694,\"y\":216,\"w\":430,\"h\":529},\"r2\":{\"x\":694,\"y\":216,\"w\":430,\"h\":529}}] | OK Inputs settings: dragged, then the page behind repainted: kept its place [{\"s1\":{\"x\":824,\"y\":296,\"w\":400,\"h\":554},\"s2\":{\"x\":824,\"y\":296,\"w\":400,\"h\":554}}] | OK Inputs settings: Save closes the window; one Undo takes the switch back (acted once) [{\"closed\":true,\"memberAfterUndo\":true,\"undoWasDisabledBefore\":true}] | OK SANS Highlight menu opens beside an open SANS day [{\"menuOpen\":1}] | OK outside press closes the menu and the SANS day stays [{\"menu\":0,\"wins\":[\"win-sansday\"]}] | OK Escape with the menu open closes the menu and the SANS day stays [{\"menu\":0,\"wins\":[\"win-sansday\"]}]",
+   "verdict": "PASS",
+   "pics": [
+    "desk-extra-inputsday-after-repaint.png",
+    "desk-extra-inputs-settings-save.png",
+    "desk-extra-sans-highlight-open.png"
+   ],
+   "at": "2026-10-08T14:53:39.779Z"
+  }
+ },
+ "errors": [],
+ "notes": [],
+ "finals": {
+  "P3-01": "FAIL",
+  "P3-02": "PASS",
+  "P3-03": "PASS",
+  "P3-04": "PARTIAL",
+  "P3-05": "PASS",
+  "P3-06": "PASS",
+  "P3-07": "PASS",
+  "P3-08": "PARTIAL",
+  "P3-09": "PARTIAL",
+  "P3-10": "PARTIAL",
+  "P3-11": "PARTIAL",
+  "P3-12": "PASS",
+  "H-01": "FAIL",
+  "H-02": "PASS",
+  "H-03": "PASS"
+ },
+ "windows": {
+  "Inputs day|desk": {
+   "window": "Inputs day",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-inputsday].floatwin",
+   "hit": {
+    "rect": {
+     "x": 994,
+     "y": 96,
+     "w": 430,
+     "h": 529
+    },
+    "centre": [
+     1209,
+     361
+    ],
+    "centreInside": true,
+    "centreEl": "SPAN.sd-rmk",
+    "buttons": 8,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Inputs_day-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Inputs_day-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#icNext.abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-inputsday].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Inputs settings (gear)|desk": {
+   "window": "Inputs settings (gear)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-inputsset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 1024,
+     "y": 96,
+     "w": 400,
+     "h": 554
+    },
+    "centre": [
+     1224,
+     373
+    ],
+    "centreInside": true,
+    "centreEl": "P.sset-example",
+    "buttons": 7,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Inputs_settings_gear_-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Inputs_settings_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#icNext.abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-inputsset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Inputs settings (Logic row)|desk": {
+   "window": "Inputs settings (Logic row)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-inputsset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 1024,
+     "y": 96,
+     "w": 400,
+     "h": 554
+    },
+    "centre": [
+     1224,
+     373
+    ],
+    "centreInside": true,
+    "centreEl": "P.sset-example",
+    "buttons": 7,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Inputs_settings_Logic_row_-1-open.png",
+   "bg": {
+    "what": "Logic page search box",
+    "reachable": true,
+    "hit": {
+     "t": "INPUT.",
+     "win": null
+    },
+    "changed": false,
+    "before": "",
+    "after": ""
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Inputs_settings_Logic_row_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "INPUT#lgSearch",
+   "close": {
+    "focusBeforeEscape": "INPUT#lgSearch",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "INPUT#lgSearch",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-inputsset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (Inputs gear)|desk": {
+   "window": "Calendar (Inputs gear)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 544,
+     "y": 96,
+     "w": 880,
+     "h": 605
+    },
+    "centre": [
+     984,
+     399
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 105,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Calendar_Inputs_gear_-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Calendar_Inputs_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#icNext.abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-days].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Input editor over the opened day|desk": {
+   "window": "Input editor over the opened day",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-inputedit].floatwin",
+   "hit": {
+    "rect": {
+     "x": 994,
+     "y": 96,
+     "w": 430,
+     "h": 639
+    },
+    "centre": [
+     1209,
+     415
+    ],
+    "centreInside": true,
+    "centreEl": "BUTTON.rc-d",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Input_editor_over_the_opened_day-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Input_editor_over_the_opened_day-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Input editor over the month (picked run)|desk": {
+   "window": "Input editor over the month (picked run)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-inputedit].floatwin",
+   "hit": {
+    "rect": {
+     "x": 994,
+     "y": 96,
+     "w": 430,
+     "h": 639
+    },
+    "centre": [
+     1209,
+     415
+    ],
+    "centreInside": true,
+    "centreEl": "BUTTON.rc-d",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Input_editor_over_the_month_picked_run_-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Input_editor_over_the_month_picked_run_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Input editor over the List|desk": {
+   "window": "Input editor over the List",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-inputedit].floatwin",
+   "hit": {
+    "rect": {
+     "x": 994,
+     "y": 96,
+     "w": 430,
+     "h": 780
+    },
+    "centre": [
+     1209,
+     486
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.pp-group",
+    "buttons": 66,
+    "buttonsCovered": [],
+    "offscreen": 8
+   },
+   "pic1": "desk-w-Input_editor_over_the_List-1-open.png",
+   "bg": {
+    "what": "Calendar | List switch (Calendar)",
+    "reachable": true,
+    "hit": {
+     "t": "SPAN.inv-t",
+     "win": null
+    },
+    "changed": false,
+    "before": "abtn",
+    "after": "abtn"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": -54
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Input_editor_over_the_List-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BODY.in-cal",
+   "close": {
+    "focusBeforeEscape": "BODY.in-cal",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "SANS day|desk": {
+   "window": "SANS day",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-sansday].floatwin",
+   "hit": {
+    "rect": {
+     "x": 994,
+     "y": 96,
+     "w": 430,
+     "h": 529
+    },
+    "centre": [
+     1209,
+     361
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.sd-list",
+    "buttons": 5,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-SANS_day-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-SANS_day-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[sc-next].abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON[sc-next].abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-sansday].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "SANS settings (gear)|desk": {
+   "window": "SANS settings (gear)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-sansset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 1024,
+     "y": 96,
+     "w": 400,
+     "h": 592
+    },
+    "centre": [
+     1224,
+     392
+    ],
+    "centreInside": true,
+    "centreEl": "FORM.sset",
+    "buttons": 10,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-SANS_settings_gear_-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-SANS_settings_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[sc-next].abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON[sc-next].abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-sansset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "SANS settings (Logic row)|desk": {
+   "window": "SANS settings (Logic row)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-sansset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 1024,
+     "y": 96,
+     "w": 400,
+     "h": 592
+    },
+    "centre": [
+     1224,
+     392
+    ],
+    "centreInside": true,
+    "centreEl": "FORM.sset",
+    "buttons": 10,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-SANS_settings_Logic_row_-1-open.png",
+   "bg": {
+    "what": "Logic page search box",
+    "reachable": true,
+    "hit": {
+     "t": "INPUT.",
+     "win": null
+    },
+    "changed": false,
+    "before": "",
+    "after": ""
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-SANS_settings_Logic_row_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "INPUT#lgSearch",
+   "close": {
+    "focusBeforeEscape": "INPUT#lgSearch",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "INPUT#lgSearch",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-sansset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (SANS gear)|desk": {
+   "window": "Calendar (SANS gear)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 544,
+     "y": 96,
+     "w": 880,
+     "h": 605
+    },
+    "centre": [
+     984,
+     399
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 105,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Calendar_SANS_gear_-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Calendar_SANS_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[sc-next].abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON[sc-next].abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-days].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (SANS day)|desk": {
+   "window": "Calendar (SANS day)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 544,
+     "y": 96,
+     "w": 880,
+     "h": 605
+    },
+    "centre": [
+     984,
+     399
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 105,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Calendar_SANS_day_-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "July 2026",
+    "after": "August 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Calendar_SANS_day_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[sc-next].abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON[sc-next].abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-days].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (Leave War gear)|desk": {
+   "window": "Calendar (Leave War gear)",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 544,
+     "y": 96,
+     "w": 880,
+     "h": 605
+    },
+    "centre": [
+     984,
+     399
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 102,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Calendar_Leave_War_gear_-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Calendar_Leave_War_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-days].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Every Thursday|desk": {
+   "window": "Every Thursday",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-every].floatwin",
+   "hit": {
+    "rect": {
+     "x": 16,
+     "y": 96,
+     "w": 380,
+     "h": 438
+    },
+    "centre": [
+     206,
+     315
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.every-lab",
+    "buttons": 8,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Every_Thursday-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "asked": {
+     "dx": 120,
+     "dy": 70
+    },
+    "moved": {
+     "dx": 120,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Every_Thursday-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-every].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Holiday form|desk": {
+   "window": "Holiday form",
+   "size": "desk",
+   "activeAtOpen": "DIV[win-holiday].floatwin",
+   "hit": {
+    "rect": {
+     "x": 16,
+     "y": 96,
+     "w": 380,
+     "h": 571
+    },
+    "centre": [
+     206,
+     382
+    ],
+    "centreInside": true,
+    "centreEl": "BUTTON.rday",
+    "buttons": 40,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Holiday_form-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "asked": {
+     "dx": 120,
+     "dy": 70
+    },
+    "moved": {
+     "dx": 120,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Holiday_form-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-holiday].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "LW typing box / number pad|desk": {
+   "window": "LW typing box / number pad",
+   "size": "desk",
+   "activeAtOpen": "INPUT[fly-edit-input].flyedit",
+   "hit": {
+    "rect": {
+     "x": 564,
+     "y": 316,
+     "w": 682,
+     "h": 39
+    },
+    "centre": [
+     905,
+     336
+    ],
+    "centreInside": true,
+    "centreEl": "KBD.",
+    "buttons": 2,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "desk-w-LW_typing_box_number_pad-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "na": "no title bar — not a movable window"
+   },
+   "pic2": "desk-w-LW_typing_box_number_pad-2-dragged.png",
+   "hitAfterDrag": "window gone",
+   "stayedAfterBg": false,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "LW working box|desk": {
+   "window": "LW working box",
+   "size": "desk",
+   "activeAtOpen": "BODY",
+   "hit": {
+    "rect": {
+     "x": 590,
+     "y": 294,
+     "w": 220,
+     "h": 135
+    },
+    "centre": [
+     700,
+     362
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.flywork-ln",
+    "buttons": 0,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "desk-w-LW_working_box-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "na": "no title bar — not a movable window"
+   },
+   "pic2": "desk-w-LW_working_box-2-dragged.png",
+   "hitAfterDrag": "window gone",
+   "stayedAfterBg": false,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "LW Required panel (picked cells)|desk": {
+   "window": "LW Required panel (picked cells)",
+   "size": "desk",
+   "activeAtOpen": "INPUT#req-panel-num[req-panel-num].reqnum",
+   "hit": {
+    "rect": {
+     "x": 440,
+     "y": 723,
+     "w": 560,
+     "h": 163
+    },
+    "centre": [
+     720,
+     805
+    ],
+    "centreInside": true,
+    "centreEl": "SPAN.note",
+    "buttons": 6,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "desk-w-LW_Required_panel_picked_cells_-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-LW_Required_panel_picked_cells_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "LW people days panel (picked cells)|desk": {
+   "window": "LW people days panel (picked cells)",
+   "size": "desk",
+   "activeAtOpen": "BODY",
+   "hit": {
+    "rect": {
+     "x": 440,
+     "y": 666,
+     "w": 560,
+     "h": 220
+    },
+    "centre": [
+     720,
+     776
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.bidsheet-row",
+    "buttons": 16,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "desk-w-LW_people_days_panel_picked_cells_-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.mjump",
+     "win": null
+    },
+    "changed": true,
+    "before": "mjump",
+    "after": "mjump on"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-LW_people_days_panel_picked_cells_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[month-NOV].mjump",
+   "close": {
+    "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Calendar with OIL tracker open (Leave War)|desk": {
+   "window": "Calendar with OIL tracker open (Leave War)",
+   "size": "desk",
+   "activeAtOpen": "BUTTON[oil-tracker].rtbtn",
+   "hit": {
+    "rect": {
+     "x": 544,
+     "y": 96,
+     "w": 880,
+     "h": 605
+    },
+    "centre": [
+     984,
+     399
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 102,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "desk-w-Calendar_with_OIL_tracker_open_Leave_War_-1-open.png",
+   "bg": {
+    "what": "Leave War month button NOV",
+    "reachable": true,
+    "hit": {
+     "t": "DIV.ents",
+     "win": null
+    },
+    "changed": false,
+    "before": "mjump",
+    "after": "mjump"
+   },
+   "drag": {
+    "asked": {
+     "dx": -150,
+     "dy": 70
+    },
+    "moved": {
+     "dx": -150,
+     "dy": 70,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "desk-w-Calendar_with_OIL_tracker_open_Leave_War_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BODY",
+   "close": {
+    "focusBeforeEscape": "BODY",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BODY",
+    "escapeWithFocusInWindow": "closed"
+   },
+   "errors": []
+  },
+  "Inputs day|phone": {
+   "window": "Inputs day",
+   "size": "phone",
+   "activeAtOpen": "BUTTON#icAddPucks.abtn",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 275,
+     "w": 358,
+     "h": 557
+    },
+    "centre": [
+     191,
+     553
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.sd-row",
+    "buttons": 8,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Inputs_day-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "Jul 2026",
+    "after": "Aug 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -267,
+     "dh": 267
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Inputs_day-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#icNext.abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-inputsday].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Inputs settings (gear)|phone": {
+   "window": "Inputs settings (gear)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-inputsset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 245,
+     "w": 358,
+     "h": 587
+    },
+    "centre": [
+     191,
+     538
+    ],
+    "centreInside": true,
+    "centreEl": "P.sset-example",
+    "buttons": 7,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Inputs_settings_gear_-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "Jul 2026",
+    "after": "Aug 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Inputs_settings_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#icNext.abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-inputsset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Inputs settings (Logic row)|phone": {
+   "window": "Inputs settings (Logic row)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-inputsset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 245,
+     "w": 358,
+     "h": 587
+    },
+    "centre": [
+     191,
+     538
+    ],
+    "centreInside": true,
+    "centreEl": "P.sset-example",
+    "buttons": 7,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Inputs_settings_Logic_row_-1-open.png",
+   "bg": {
+    "what": "Logic page search box",
+    "reachable": true,
+    "hit": {
+     "t": "INPUT.",
+     "win": null
+    },
+    "changed": false,
+    "before": "",
+    "after": ""
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Inputs_settings_Logic_row_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "INPUT#lgSearch",
+   "close": {
+    "focusBeforeEscape": "INPUT#lgSearch",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "INPUT#lgSearch",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-inputsset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (Inputs gear)|phone": {
+   "window": "Calendar (Inputs gear)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 6,
+     "y": 54,
+     "w": 378,
+     "h": 784
+    },
+    "centre": [
+     195,
+     446
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Calendar_Inputs_gear_-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": false,
+    "hit": {
+     "t": "BUTTON.days-tab",
+     "win": "win-days"
+    },
+    "changed": false,
+    "before": "Jul 2026",
+    "after": "Jul 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -54,
+     "dh": -196
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Calendar_Inputs_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "DIV[win-days].floatwin",
+   "close": {
+    "focusBeforeEscape": "DIV[win-days].floatwin",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Input editor over the opened day|phone": {
+   "window": "Input editor over the opened day",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-inputedit].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 159,
+     "w": 358,
+     "h": 673
+    },
+    "centre": [
+     191,
+     495
+    ],
+    "centreInside": true,
+    "centreEl": "BUTTON.rc-d",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Input_editor_over_the_opened_day-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "Jul 2026",
+    "after": "Aug 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Input_editor_over_the_opened_day-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Input editor over the month (picked run)|phone": {
+   "window": "Input editor over the month (picked run)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-inputedit].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 159,
+     "w": 358,
+     "h": 673
+    },
+    "centre": [
+     191,
+     495
+    ],
+    "centreInside": true,
+    "centreEl": "BUTTON.rc-d",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Input_editor_over_the_month_picked_run_-1-open.png",
+   "bg": {
+    "what": "Inputs month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "Jul 2026",
+    "after": "Aug 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Input_editor_over_the_month_picked_run_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#icNext.abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#icNext.abtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Input editor over the List|phone": {
+   "window": "Input editor over the List",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-inputedit].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 12,
+     "w": 358,
+     "h": 820
+    },
+    "centre": [
+     191,
+     422
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.pp-pucks",
+    "buttons": 54,
+    "buttonsCovered": [],
+    "offscreen": 20
+   },
+   "pic1": "phone-w-Input_editor_over_the_List-1-open.png",
+   "bg": {
+    "what": "Calendar | List switch (Calendar)",
+    "reachable": true,
+    "hit": null,
+    "changed": false,
+    "before": "abtn",
+    "after": "abtn"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -12,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Input_editor_over_the_List-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "DIV[win-inputedit].floatwin",
+   "close": {
+    "focusBeforeEscape": "DIV[win-inputedit].floatwin",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "SANS day|phone": {
+   "window": "SANS day",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-sansday].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 275,
+     "w": 358,
+     "h": 557
+    },
+    "centre": [
+     191,
+     553
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.sd-list",
+    "buttons": 5,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-SANS_day-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "Jul 2026",
+    "after": "Aug 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -267,
+     "dh": 267
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-SANS_day-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[sc-next].abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON[sc-next].abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-sansday].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "SANS settings (gear)|phone": {
+   "window": "SANS settings (gear)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-sansset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 224,
+     "w": 358,
+     "h": 608
+    },
+    "centre": [
+     191,
+     528
+    ],
+    "centreInside": true,
+    "centreEl": "LABEL.sset-row",
+    "buttons": 8,
+    "buttonsCovered": [],
+    "offscreen": 3
+   },
+   "pic1": "phone-w-SANS_settings_gear_-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": true,
+    "hit": {
+     "t": "BUTTON.abtn",
+     "win": null
+    },
+    "changed": true,
+    "before": "Jul 2026",
+    "after": "Aug 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-SANS_settings_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON[sc-next].abtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON[sc-next].abtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-sansset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "SANS settings (Logic row)|phone": {
+   "window": "SANS settings (Logic row)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-sansset].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 224,
+     "w": 358,
+     "h": 608
+    },
+    "centre": [
+     191,
+     528
+    ],
+    "centreInside": true,
+    "centreEl": "LABEL.sset-row",
+    "buttons": 8,
+    "buttonsCovered": [],
+    "offscreen": 3
+   },
+   "pic1": "phone-w-SANS_settings_Logic_row_-1-open.png",
+   "bg": {
+    "what": "Logic page search box",
+    "reachable": true,
+    "hit": {
+     "t": "INPUT.",
+     "win": null
+    },
+    "changed": false,
+    "before": "",
+    "after": ""
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-SANS_settings_Logic_row_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "INPUT#lgSearch",
+   "close": {
+    "focusBeforeEscape": "INPUT#lgSearch",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "INPUT#lgSearch",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-sansset].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (SANS gear)|phone": {
+   "window": "Calendar (SANS gear)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 6,
+     "y": 54,
+     "w": 378,
+     "h": 784
+    },
+    "centre": [
+     195,
+     446
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Calendar_SANS_gear_-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": false,
+    "hit": {
+     "t": "BUTTON.days-tab",
+     "win": "win-days"
+    },
+    "changed": false,
+    "before": "Jul 2026",
+    "after": "Jul 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -54,
+     "dh": -196
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Calendar_SANS_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "DIV[win-days].floatwin",
+   "close": {
+    "focusBeforeEscape": "DIV[win-days].floatwin",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (SANS day)|phone": {
+   "window": "Calendar (SANS day)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 6,
+     "y": 54,
+     "w": 378,
+     "h": 784
+    },
+    "centre": [
+     195,
+     446
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 43,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Calendar_SANS_day_-1-open.png",
+   "bg": {
+    "what": "SANS month arrow ›",
+    "reachable": false,
+    "hit": {
+     "t": "BUTTON.days-tab",
+     "win": "win-days"
+    },
+    "changed": false,
+    "before": "Jul 2026",
+    "after": "Jul 2026"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -54,
+     "dh": -196
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Calendar_SANS_day_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "DIV[win-days].floatwin",
+   "close": {
+    "focusBeforeEscape": "DIV[win-days].floatwin",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Calendar (Leave War gear)|phone": {
+   "window": "Calendar (Leave War gear)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 6,
+     "y": 54,
+     "w": 378,
+     "h": 784
+    },
+    "centre": [
+     195,
+     446
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 42,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Calendar_Leave_War_gear_-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -54,
+     "dh": -196
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Calendar_Leave_War_gear_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-days].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Every Thursday|phone": {
+   "window": "Every Thursday",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-every].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 383,
+     "w": 358,
+     "h": 450
+    },
+    "centre": [
+     191,
+     607
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.win-body",
+    "buttons": 8,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Every_Thursday-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Every_Thursday-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-every].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "Holiday form|phone": {
+   "window": "Holiday form",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-holiday].floatwin",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 249,
+     "w": 358,
+     "h": 583
+    },
+    "centre": [
+     191,
+     541
+    ],
+    "centreInside": true,
+    "centreEl": "SPAN.rdow",
+    "buttons": 40,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Holiday_form-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Holiday_form-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-holiday].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  },
+  "LW typing box / number pad|phone": {
+   "window": "LW typing box / number pad",
+   "size": "phone",
+   "activeAtOpen": "BODY",
+   "hit": {
+    "rect": {
+     "x": 0,
+     "y": 524,
+     "w": 390,
+     "h": 102
+    },
+    "centre": [
+     195,
+     575
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.flypad-hd",
+    "buttons": 5,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "phone-w-LW_typing_box_number_pad-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "na": "no title bar — not a movable window"
+   },
+   "pic2": "phone-w-LW_typing_box_number_pad-2-dragged.png",
+   "hitAfterDrag": "window gone",
+   "stayedAfterBg": false,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "LW working box|phone": {
+   "window": "LW working box",
+   "size": "phone",
+   "activeAtOpen": "BODY",
+   "hit": {
+    "rect": {
+     "x": 164,
+     "y": 241,
+     "w": 220,
+     "h": 135
+    },
+    "centre": [
+     274,
+     309
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.flywork-ln",
+    "buttons": 0,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "phone-w-LW_working_box-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "na": "no title bar — not a movable window"
+   },
+   "pic2": "phone-w-LW_working_box-2-dragged.png",
+   "hitAfterDrag": "window gone",
+   "stayedAfterBg": false,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "LW Required panel (picked cells)|phone": {
+   "window": "LW Required panel (picked cells)",
+   "size": "phone",
+   "activeAtOpen": "BODY",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 594,
+     "w": 366,
+     "h": 236
+    },
+    "centre": [
+     195,
+     712
+    ],
+    "centreInside": true,
+    "centreEl": "SPAN.note",
+    "buttons": 6,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "phone-w-LW_Required_panel_picked_cells_-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-LW_Required_panel_picked_cells_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "LW people days panel (picked cells)|phone": {
+   "window": "LW people days panel (picked cells)",
+   "size": "phone",
+   "activeAtOpen": "BODY",
+   "hit": {
+    "rect": {
+     "x": 12,
+     "y": 574,
+     "w": 366,
+     "h": 256
+    },
+    "centre": [
+     195,
+     702
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.bidsheet",
+    "buttons": 16,
+    "buttonsCovered": [],
+    "offscreen": 0
+   },
+   "pic1": "phone-w-LW_people_days_panel_picked_cells_-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -140,
+     "dh": 0
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-LW_people_days_panel_picked_cells_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "closed"
+   },
+   "errors": []
+  },
+  "Calendar with OIL tracker open (Leave War)|phone": {
+   "window": "Calendar with OIL tracker open (Leave War)",
+   "size": "phone",
+   "activeAtOpen": "DIV[win-days].floatwin",
+   "hit": {
+    "rect": {
+     "x": 6,
+     "y": 54,
+     "w": 378,
+     "h": 784
+    },
+    "centre": [
+     195,
+     446
+    ],
+    "centreInside": true,
+    "centreEl": "DIV.days-top",
+    "buttons": 42,
+    "buttonsCovered": [],
+    "offscreen": 1
+   },
+   "pic1": "phone-w-Calendar_with_OIL_tracker_open_Leave_War_-1-open.png",
+   "bg": {
+    "what": "top-bar bell",
+    "reachable": true,
+    "hit": {
+     "t": "path.[object",
+     "win": null
+    },
+    "changed": false,
+    "before": "0",
+    "after": "0"
+   },
+   "drag": {
+    "asked": {
+     "dx": 0,
+     "dy": -140
+    },
+    "moved": {
+     "dx": 0,
+     "dy": -54,
+     "dh": -196
+    },
+    "followed": true,
+    "pageScrolled": false
+   },
+   "pic2": "phone-w-Calendar_with_OIL_tracker_open_Leave_War_-2-dragged.png",
+   "hitAfterDrag": true,
+   "stayedAfterBg": true,
+   "active": "BUTTON#notifyBell.bellbtn",
+   "close": {
+    "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusOnPage": "stayed",
+    "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+    "escapeWithFocusInWindow": "stayed",
+    "focusPutInWindow": "DIV[win-days].floatwin",
+    "escapeAfterFocusingTheWindow": "closed"
+   },
+   "errors": []
+  }
+ },
+ "lowdrag": {
+  "Calendar": {
+   "window": "Calendar",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 6,
+       "y": 54,
+       "w": 378,
+       "h": 508,
+       "b": 562
+      }
+     },
+     "dragged": {
+      "askedDy": 525
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 6,
+       "y": 526,
+       "w": 378,
+       "h": 588,
+       "b": 1114
+      },
+      "bar": {
+       "x": 7,
+       "y": 527,
+       "w": 376,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 333,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "last": {
+       "what": "days-step-2026-01-31",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 6,
+       "y": 3,
+       "w": 378,
+       "h": 588,
+       "b": 591
+      },
+      "bar": {
+       "x": 7,
+       "y": 4,
+       "w": 376,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 333,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "last": {
+       "what": "days-step-2026-01-31",
+       "onScreen": false,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Calendar-390x568.png",
+     "pic2": "lowdrag-Calendar-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 16,
+       "y": 96,
+       "w": 812,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 309
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 16,
+       "y": 348,
+       "w": 812,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 17,
+       "y": 349,
+       "w": 810,
+       "h": 48,
+       "b": 397
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 359,
+       "w": 28,
+       "h": 28,
+       "b": 387
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "last": {
+       "what": "days-nf-2026-01-31",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 812,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 17,
+       "y": 4,
+       "w": 810,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "last": {
+       "what": "days-nf-2026-01-31",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Calendar-844x390.png",
+     "pic2": "lowdrag-Calendar-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 812,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 712
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 16,
+       "y": 658,
+       "w": 880,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 17,
+       "y": 659,
+       "w": 878,
+       "h": 48,
+       "b": 707
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 859,
+       "y": 669,
+       "w": 28,
+       "h": 28,
+       "b": 697
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "last": {
+       "what": "days-nf-2026-01-31",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 880,
+       "h": 605,
+       "b": 608
+      },
+      "bar": {
+       "x": 17,
+       "y": 4,
+       "w": 878,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 859,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "last": {
+       "what": "days-nf-2026-01-31",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Calendar-1280x700.png",
+     "pic2": "lowdrag-Calendar-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 6,
+       "y": 54,
+       "w": 378,
+       "h": 508,
+       "b": 562
+      }
+     },
+     "dragged": {
+      "askedDy": 525
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 6,
+       "y": 526,
+       "w": 378,
+       "h": 588,
+       "b": 1114
+      },
+      "bar": {
+       "x": 7,
+       "y": 527,
+       "w": 376,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 333,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "last": {
+       "what": "days-step-2026-01-31",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 6,
+       "y": 3,
+       "w": 378,
+       "h": 588,
+       "b": 591
+      },
+      "bar": {
+       "x": 7,
+       "y": 4,
+       "w": 376,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 333,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "last": {
+       "what": "days-step-2026-01-31",
+       "onScreen": false,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Calendar-back_390x568.png",
+     "pic2": "lowdrag-Calendar-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "Every Thursday": {
+   "window": "Every Thursday",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 107,
+       "w": 358,
+       "h": 450,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 472
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 450,
+       "b": 976
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 919,
+        "w": 162,
+        "h": 44,
+        "b": 963
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 450,
+       "b": 453
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 396,
+        "w": 162,
+        "h": 44,
+        "b": 440
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Every_Thursday-390x568.png",
+     "pic2": "lowdrag-Every_Thursday-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 16,
+       "y": 96,
+       "w": 380,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 311
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 16,
+       "y": 348,
+       "w": 380,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 17,
+       "y": 349,
+       "w": 378,
+       "h": 45,
+       "b": 394
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 359,
+       "y": 357,
+       "w": 28,
+       "h": 28,
+       "b": 385
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 210,
+        "y": 463,
+        "w": 173,
+        "h": 44,
+        "b": 507
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 380,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 17,
+       "y": 4,
+       "w": 378,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 359,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 210,
+        "y": 325,
+        "w": 173,
+        "h": 44,
+        "b": 369
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Every_Thursday-844x390.png",
+     "pic2": "lowdrag-Every_Thursday-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 380,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 714
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 16,
+       "y": 658,
+       "w": 380,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 17,
+       "y": 659,
+       "w": 378,
+       "h": 45,
+       "b": 704
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 359,
+       "y": 667,
+       "w": 28,
+       "h": 28,
+       "b": 695
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 210,
+        "y": 773,
+        "w": 173,
+        "h": 44,
+        "b": 817
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 380,
+       "h": 438,
+       "b": 441
+      },
+      "bar": {
+       "x": 17,
+       "y": 4,
+       "w": 378,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 359,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 210,
+        "y": 384,
+        "w": 173,
+        "h": 44,
+        "b": 428
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Every_Thursday-1280x700.png",
+     "pic2": "lowdrag-Every_Thursday-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 107,
+       "w": 358,
+       "h": 450,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 472
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 450,
+       "b": 976
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 919,
+        "w": 162,
+        "h": 44,
+        "b": 963
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 450,
+       "b": 453
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 396,
+        "w": 162,
+        "h": 44,
+        "b": 440
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "every-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Every_Thursday-back_390x568.png",
+     "pic2": "lowdrag-Every_Thursday-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "Holiday form": {
+   "window": "Holiday form",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 54,
+       "w": 358,
+       "h": 502,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 525
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 502,
+       "b": 1028
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 297,
+        "y": 971,
+        "w": 60,
+        "h": 44,
+        "b": 1015
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 502,
+       "b": 505
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 297,
+        "y": 448,
+        "w": 60,
+        "h": 44,
+        "b": 492
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Holiday_form-390x568.png",
+     "pic2": "lowdrag-Holiday_form-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 16,
+       "y": 96,
+       "w": 380,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 311
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 16,
+       "y": 348,
+       "w": 380,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 17,
+       "y": 349,
+       "w": 378,
+       "h": 45,
+       "b": 394
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 359,
+       "y": 357,
+       "w": 28,
+       "h": 28,
+       "b": 385
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 323,
+        "y": 451,
+        "w": 60,
+        "h": 44,
+        "b": 495
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 380,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 17,
+       "y": 4,
+       "w": 378,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 359,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 323,
+        "y": 325,
+        "w": 60,
+        "h": 44,
+        "b": 369
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Holiday_form-844x390.png",
+     "pic2": "lowdrag-Holiday_form-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 380,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 714
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 16,
+       "y": 658,
+       "w": 380,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 17,
+       "y": 659,
+       "w": 378,
+       "h": 45,
+       "b": 704
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 359,
+       "y": 667,
+       "w": 28,
+       "h": 28,
+       "b": 695
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 323,
+        "y": 761,
+        "w": 60,
+        "h": 44,
+        "b": 805
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 16,
+       "y": 3,
+       "w": 380,
+       "h": 571,
+       "b": 574
+      },
+      "bar": {
+       "x": 17,
+       "y": 4,
+       "w": 378,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 359,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 323,
+        "y": 517,
+        "w": 60,
+        "h": 44,
+        "b": 561
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Holiday_form-1280x700.png",
+     "pic2": "lowdrag-Holiday_form-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 54,
+       "w": 358,
+       "h": 502,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 525
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 502,
+       "b": 1028
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 297,
+        "y": 971,
+        "w": 60,
+        "h": 44,
+        "b": 1015
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 502,
+       "b": 505
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 297,
+        "y": 448,
+        "w": 60,
+        "h": 44,
+        "b": 492
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "hol-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Holiday_form-back_390x568.png",
+     "pic2": "lowdrag-Holiday_form-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "Inputs day": {
+   "window": "Inputs day",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 181,
+       "w": 358,
+       "h": 375,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 397
+     },
+     "after": {
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 181,
+       "w": 358,
+       "h": 375,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 182,
+       "w": 356,
+       "h": 57,
+       "b": 239
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 188,
+       "w": 44,
+       "h": 44,
+       "b": 232
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 299,
+        "w": 332,
+        "h": 44,
+        "b": 343
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 196,
+       "askedDy": -178
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 8,
+       "w": 358,
+       "h": 548,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 9,
+       "w": 356,
+       "h": 57,
+       "b": 66
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 15,
+       "w": 44,
+       "h": 44,
+       "b": 59
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 126,
+        "w": 332,
+        "h": 44,
+        "b": 170
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_day-390x568.png",
+     "pic2": "lowdrag-Inputs_day-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 398,
+       "y": 96,
+       "w": 430,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 311
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 398,
+       "y": 348,
+       "w": 430,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 399,
+       "y": 349,
+       "w": 428,
+       "h": 45,
+       "b": 394
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 357,
+       "w": 28,
+       "h": 28,
+       "b": 385
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 446,
+        "w": 404,
+        "h": 40,
+        "b": 486
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 399,
+       "y": 4,
+       "w": 428,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 101,
+        "w": 404,
+        "h": 40,
+        "b": 141
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_day-844x390.png",
+     "pic2": "lowdrag-Inputs_day-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 714
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 398,
+       "y": 658,
+       "w": 430,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 399,
+       "y": 659,
+       "w": 428,
+       "h": 45,
+       "b": 704
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 667,
+       "w": 28,
+       "h": 28,
+       "b": 695
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 756,
+        "w": 404,
+        "h": 40,
+        "b": 796
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 529,
+       "b": 532
+      },
+      "bar": {
+       "x": 399,
+       "y": 4,
+       "w": 428,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 101,
+        "w": 404,
+        "h": 40,
+        "b": 141
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_day-1280x700.png",
+     "pic2": "lowdrag-Inputs_day-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 8,
+       "w": 358,
+       "h": 548,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 571
+     },
+     "after": {
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 181,
+       "w": 358,
+       "h": 375,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 182,
+       "w": 356,
+       "h": 57,
+       "b": 239
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 188,
+       "w": 44,
+       "h": 44,
+       "b": 232
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 299,
+        "w": 332,
+        "h": 44,
+        "b": 343
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 196,
+       "askedDy": -178
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 8,
+       "w": 358,
+       "h": 548,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 9,
+       "w": 356,
+       "h": 57,
+       "b": 66
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 15,
+       "w": 44,
+       "h": 44,
+       "b": 59
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 126,
+        "w": 332,
+        "h": 44,
+        "b": 170
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "idy-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_day-back_390x568.png",
+     "pic2": "lowdrag-Inputs_day-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "SANS day": {
+   "window": "SANS day",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 181,
+       "w": 358,
+       "h": 375,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 397
+     },
+     "after": {
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 181,
+       "w": 358,
+       "h": 375,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 182,
+       "w": 356,
+       "h": 57,
+       "b": 239
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 188,
+       "w": 44,
+       "h": 44,
+       "b": 232
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 400,
+        "w": 235,
+        "h": 40,
+        "b": 440
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 196,
+       "askedDy": -178
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 8,
+       "w": 358,
+       "h": 548,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 9,
+       "w": 356,
+       "h": 57,
+       "b": 66
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 15,
+       "w": 44,
+       "h": 44,
+       "b": 59
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 227,
+        "w": 235,
+        "h": 40,
+        "b": 267
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_day-390x568.png",
+     "pic2": "lowdrag-SANS_day-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 398,
+       "y": 96,
+       "w": 430,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 309
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 398,
+       "y": 348,
+       "w": 430,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 399,
+       "y": 349,
+       "w": 428,
+       "h": 48,
+       "b": 397
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 359,
+       "w": 28,
+       "h": 28,
+       "b": 387
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 467,
+        "w": 307,
+        "h": 40,
+        "b": 507
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 399,
+       "y": 4,
+       "w": 428,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 213,
+        "w": 307,
+        "h": 40,
+        "b": 253
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_day-844x390.png",
+     "pic2": "lowdrag-SANS_day-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 712
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 398,
+       "y": 658,
+       "w": 430,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 399,
+       "y": 659,
+       "w": 428,
+       "h": 48,
+       "b": 707
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 669,
+       "w": 28,
+       "h": 28,
+       "b": 697
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 777,
+        "w": 307,
+        "h": 40,
+        "b": 817
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 529,
+       "b": 532
+      },
+      "bar": {
+       "x": 399,
+       "y": 4,
+       "w": 428,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 411,
+        "y": 213,
+        "w": 307,
+        "h": 40,
+        "b": 253
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_day-1280x700.png",
+     "pic2": "lowdrag-SANS_day-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 8,
+       "w": 358,
+       "h": 548,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 571
+     },
+     "after": {
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 181,
+       "w": 358,
+       "h": 375,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 182,
+       "w": 356,
+       "h": 57,
+       "b": 239
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 188,
+       "w": 44,
+       "h": 44,
+       "b": 232
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 400,
+        "w": 235,
+        "h": 40,
+        "b": 440
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 196,
+       "askedDy": -178
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 8,
+       "w": 358,
+       "h": 548,
+       "b": 556
+      },
+      "bar": {
+       "x": 13,
+       "y": 9,
+       "w": 356,
+       "h": 57,
+       "b": 66
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 15,
+       "w": 44,
+       "h": 44,
+       "b": 59
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 25,
+        "y": 227,
+        "w": 235,
+        "h": 40,
+        "b": 267
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sd-open",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_day-back_390x568.png",
+     "pic2": "lowdrag-SANS_day-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "Input editor": {
+   "window": "Input editor",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 12,
+       "w": 358,
+       "h": 544,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 567
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 544,
+       "b": 1070
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 305,
+        "y": 1041,
+        "w": 49,
+        "h": 28,
+        "b": 1069
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 544,
+       "b": 547
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 305,
+        "y": 518,
+        "w": 49,
+        "h": 28,
+        "b": 546
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Input_editor-390x568.png",
+     "pic2": "lowdrag-Input_editor-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 398,
+       "y": 96,
+       "w": 430,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 311
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 398,
+       "y": 348,
+       "w": 430,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 399,
+       "y": 349,
+       "w": 428,
+       "h": 45,
+       "b": 394
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 357,
+       "w": 28,
+       "h": 28,
+       "b": 385
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 763,
+        "y": 479,
+        "w": 49,
+        "h": 28,
+        "b": 507
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 399,
+       "y": 4,
+       "w": 428,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 763,
+        "y": 343,
+        "w": 49,
+        "h": 28,
+        "b": 371
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Input_editor-844x390.png",
+     "pic2": "lowdrag-Input_editor-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 714
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 398,
+       "y": 658,
+       "w": 430,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 399,
+       "y": 659,
+       "w": 428,
+       "h": 45,
+       "b": 704
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 667,
+       "w": 28,
+       "h": 28,
+       "b": 695
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 763,
+        "y": 789,
+        "w": 49,
+        "h": 28,
+        "b": 817
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 398,
+       "y": 3,
+       "w": 430,
+       "h": 639,
+       "b": 642
+      },
+      "bar": {
+       "x": 399,
+       "y": 4,
+       "w": 428,
+       "h": 45,
+       "b": 49
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 12,
+       "w": 28,
+       "h": 28,
+       "b": 40
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 763,
+        "y": 603,
+        "w": 49,
+        "h": 28,
+        "b": 631
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Input_editor-1280x700.png",
+     "pic2": "lowdrag-Input_editor-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 12,
+       "w": 358,
+       "h": 544,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 567
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 544,
+       "b": 1070
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 305,
+        "y": 1041,
+        "w": 49,
+        "h": 28,
+        "b": 1069
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 544,
+       "b": 547
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 305,
+        "y": 518,
+        "w": 49,
+        "h": 28,
+        "b": 546
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "inpEditSave",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Input_editor-back_390x568.png",
+     "pic2": "lowdrag-Input_editor-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "Inputs settings": {
+   "window": "Inputs settings",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 147,
+       "w": 358,
+       "h": 409,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 431
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 409,
+       "b": 935
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 890,
+        "w": 162,
+        "h": 44,
+        "b": 934
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 409,
+       "b": 412
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 367,
+        "w": 162,
+        "h": 44,
+        "b": 411
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_settings-390x568.png",
+     "pic2": "lowdrag-Inputs_settings-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 428,
+       "y": 96,
+       "w": 400,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 309
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 428,
+       "y": 348,
+       "w": 400,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 429,
+       "y": 349,
+       "w": 398,
+       "h": 48,
+       "b": 397
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 359,
+       "w": 28,
+       "h": 28,
+       "b": 387
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 467,
+        "w": 183,
+        "h": 40,
+        "b": 507
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 428,
+       "y": 3,
+       "w": 400,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 429,
+       "y": 4,
+       "w": 398,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 329,
+        "w": 183,
+        "h": 40,
+        "b": 369
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_settings-844x390.png",
+     "pic2": "lowdrag-Inputs_settings-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 428,
+       "y": 3,
+       "w": 400,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 712
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 428,
+       "y": 658,
+       "w": 400,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 429,
+       "y": 659,
+       "w": 398,
+       "h": 48,
+       "b": 707
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 669,
+       "w": 28,
+       "h": 28,
+       "b": 697
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 777,
+        "w": 183,
+        "h": 40,
+        "b": 817
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 428,
+       "y": 3,
+       "w": 400,
+       "h": 554,
+       "b": 557
+      },
+      "bar": {
+       "x": 429,
+       "y": 4,
+       "w": 398,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 504,
+        "w": 183,
+        "h": 40,
+        "b": 544
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_settings-1280x700.png",
+     "pic2": "lowdrag-Inputs_settings-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 147,
+       "w": 358,
+       "h": 409,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 431
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 409,
+       "b": 935
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 890,
+        "w": 162,
+        "h": 44,
+        "b": 934
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 409,
+       "b": 412
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 367,
+        "w": 162,
+        "h": 44,
+        "b": 411
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "iset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-Inputs_settings-back_390x568.png",
+     "pic2": "lowdrag-Inputs_settings-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  },
+  "SANS settings": {
+   "window": "SANS settings",
+   "stages": {
+    "390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 147,
+       "w": 358,
+       "h": 409,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 431
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 409,
+       "b": 935
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 890,
+        "w": 162,
+        "h": 44,
+        "b": 934
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 409,
+       "b": 412
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 367,
+        "w": 162,
+        "h": 44,
+        "b": 411
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_settings-390x568.png",
+     "pic2": "lowdrag-SANS_settings-390x568-recovered.png"
+    },
+    "844x390": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 428,
+       "y": 96,
+       "w": 400,
+       "h": 270,
+       "b": 366
+      }
+     },
+     "dragged": {
+      "askedDy": 309
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 428,
+       "y": 348,
+       "w": 400,
+       "h": 160,
+       "b": 508
+      },
+      "bar": {
+       "x": 429,
+       "y": 349,
+       "w": 398,
+       "h": 48,
+       "b": 397
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 359,
+       "w": 28,
+       "h": 28,
+       "b": 387
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 467,
+        "w": 183,
+        "h": 40,
+        "b": 507
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 363,
+       "askedDy": -345
+      },
+      "ok": true,
+      "vp": [
+       844,
+       390
+      ],
+      "win": {
+       "x": 428,
+       "y": 3,
+       "w": 400,
+       "h": 379,
+       "b": 382
+      },
+      "bar": {
+       "x": 429,
+       "y": 4,
+       "w": 398,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 329,
+        "w": 183,
+        "h": 40,
+        "b": 369
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_settings-844x390.png",
+     "pic2": "lowdrag-SANS_settings-844x390-recovered.png"
+    },
+    "1280x700": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 428,
+       "y": 3,
+       "w": 400,
+       "h": 379,
+       "b": 382
+      }
+     },
+     "dragged": {
+      "askedDy": 712
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 428,
+       "y": 658,
+       "w": 400,
+       "h": 160,
+       "b": 818
+      },
+      "bar": {
+       "x": 429,
+       "y": 659,
+       "w": 398,
+       "h": 48,
+       "b": 707
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 791,
+       "y": 669,
+       "w": 28,
+       "h": 28,
+       "b": 697
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 777,
+        "w": 183,
+        "h": 40,
+        "b": 817
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 673,
+       "askedDy": -655
+      },
+      "ok": true,
+      "vp": [
+       1280,
+       700
+      ],
+      "win": {
+       "x": 428,
+       "y": 3,
+       "w": 400,
+       "h": 592,
+       "b": 595
+      },
+      "bar": {
+       "x": 429,
+       "y": 4,
+       "w": 398,
+       "h": 48,
+       "b": 52
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 791,
+       "y": 14,
+       "w": 28,
+       "h": 28,
+       "b": 42
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 632,
+        "y": 542,
+        "w": 183,
+        "h": 40,
+        "b": 582
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_settings-1280x700.png",
+     "pic2": "lowdrag-SANS_settings-1280x700-recovered.png"
+    },
+    "back 390x568": {
+     "before": {
+      "ok": true,
+      "barOnScreen": true,
+      "win": {
+       "x": 12,
+       "y": 147,
+       "w": 358,
+       "h": 409,
+       "b": 556
+      }
+     },
+     "dragged": {
+      "askedDy": 431
+     },
+     "after": {
+      "ok": false,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 526,
+       "w": 358,
+       "h": 409,
+       "b": 935
+      },
+      "bar": {
+       "x": 13,
+       "y": 527,
+       "w": 356,
+       "h": 57,
+       "b": 584
+      },
+      "barOnScreen": false,
+      "cross": {
+       "x": 319,
+       "y": 533,
+       "w": 44,
+       "h": 44,
+       "b": 577
+      },
+      "crossOnScreen": false,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 890,
+        "w": 162,
+        "h": 44,
+        "b": 934
+       },
+       "onScreen": false,
+       "hit": false
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": false,
+       "hit": false
+      }
+     },
+     "recovery": {
+      "up": {
+       "grabbedAt": 541,
+       "askedDy": -523
+      },
+      "ok": true,
+      "vp": [
+       390,
+       568
+      ],
+      "win": {
+       "x": 12,
+       "y": 3,
+       "w": 358,
+       "h": 409,
+       "b": 412
+      },
+      "bar": {
+       "x": 13,
+       "y": 4,
+       "w": 356,
+       "h": 57,
+       "b": 61
+      },
+      "barOnScreen": true,
+      "cross": {
+       "x": 319,
+       "y": 10,
+       "w": 44,
+       "h": 44,
+       "b": 54
+      },
+      "crossOnScreen": true,
+      "crossHit": true,
+      "main": {
+       "rect": {
+        "x": 195,
+        "y": 367,
+        "w": 162,
+        "h": 44,
+        "b": 411
+       },
+       "onScreen": true,
+       "hit": true
+      },
+      "last": {
+       "what": "sset-save",
+       "onScreen": true,
+       "hit": true
+      }
+     },
+     "pic": "lowdrag-SANS_settings-back_390x568.png",
+     "pic2": "lowdrag-SANS_settings-back_390x568-recovered.png"
+    }
+   },
+   "errors": []
+  }
+ }
+}

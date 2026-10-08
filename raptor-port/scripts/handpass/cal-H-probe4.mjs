@@ -1,0 +1,21 @@
+import * as H from './cal-H-lib.mjs'
+H.setTag('p4')
+const { browser, page, errors } = await H.world({})
+const DI = 2
+await H.toEdit(page); await H.showDay(page, DI)
+await H.signDay(page, DI); await H.publishDay(page, DI)
+await H.inputsMonth(page, 2026, 7)
+await H.fileShared(page, { iso: '2026-07-15', type: 'Meeting', people: ['Ranger', 'Drifter', 'Ace'], exclude: ['Saber'], remarks: 'X12 first remark' })
+await H.toEdit(page); await H.showDay(page, DI)
+await H.signDay(page, DI); await H.publishAL(page, DI)
+await H.go(page, 'viewsched'); await H.sleep(600)
+const t = await page.evaluate(() => { const d = document.querySelector('#vWeek .day[data-day="2"]'); return d ? d.innerText.replace(/\s+/g, ' ') : 'none' })
+console.log(t.slice(0, 3000))
+await H.pic(page, 'view-face-after-AL')
+// board view of the day
+await H.toEdit(page); await page.evaluate(() => window.openScheduler(2)); await H.sleep(900)
+const b = await page.evaluate(() => { const d = document.querySelector('#schedBoard'); return d ? d.innerText.replace(/\s+/g, ' ') : 'none' })
+console.log('BOARD', b.slice(0, 3500))
+await H.pic(page, 'board-after-AL')
+console.log(errors)
+await browser.close()

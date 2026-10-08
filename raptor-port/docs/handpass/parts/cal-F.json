@@ -1,0 +1,762 @@
+{
+ "parts": {
+  "p601-dk": {
+   "at": "2026-10-08T13:55:22.415Z",
+   "table": [
+    {
+     "id": "P6-01 case A (leave over his own leave)",
+     "did": "Ace has LL on 21 Jul; a shared LL for Ace + Anvil + Basher on 21 Jul filed from the editor",
+     "saw": "OK refusal names the conflicting man [Ace already has LL on 21 Jul — LL can't overlap it — nothing was saved for anyone: take that person off the list, or change it] · OK nothing saved for anyone [0] · OK the selection stays in the editor [[\"Ace\",\"Anvil\",\"Basher\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "001-dk-p601-A-refusal.png"
+     ]
+    },
+    {
+     "id": "P6-01 case B (leave over a medical)",
+     "did": "Ace has HL on 28 Jul; a shared LL for Ace + Anvil + Basher on 28 Jul",
+     "saw": "OK refusal names Ace and the medical [Ace is on HL on 28 Jul — leave can't go over a medical — nothing was saved for anyone: take that person off the list, or change it] · OK nothing saved for anyone [0] · OK editor stays open",
+     "verdict": "PASS",
+     "pics": [
+      "002-dk-p601-B-refusal.png"
+     ]
+    },
+    {
+     "id": "P6-01 case C (one man is working)",
+     "did": "Basher is on a flying line Tue 14 Jul; shared LL for Basher + Anvil + Blade",
+     "saw": "OK saved for all three, one group [[\"slash\",\"shaft\",\"glass\"]] · OK the conflict is flagged on the schedule (a warning names Basher) [[{\"sev\":\"hard\",\"code\":\"LEAVE_FLY\",\"who\":[\"Basher\"],\"msg\":\"On leave but planned to fly VL BFM\"}]] · OK the filer was told [Input added for 3 people]",
+     "verdict": "PASS",
+     "pics": [
+      "003-dk-p601-C-working.png",
+      "004-dk-p601-C-month.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p601-A-refusal.png",
+    "002-dk-p601-B-refusal.png",
+    "003-dk-p601-C-working.png",
+    "004-dk-p601-C-month.png"
+   ]
+  },
+  "p601-ph": {
+   "at": "2026-10-08T13:56:58.506Z",
+   "table": [
+    {
+     "id": "P6-01 case A (leave over his own leave)",
+     "did": "Ace has LL on 21 Jul; a shared LL for Ace + Anvil + Basher on 21 Jul filed from the editor",
+     "saw": "OK refusal names the conflicting man [Ace already has LL on 21 Jul — LL can't overlap it — nothing was saved for anyone: take that person off the list, or change it] · OK nothing saved for anyone [0] · OK the selection stays in the editor [[\"Ace\",\"Anvil\",\"Basher\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "001-ph-p601-A-refusal.png"
+     ]
+    },
+    {
+     "id": "P6-01 case B (leave over a medical)",
+     "did": "Ace has HL on 28 Jul; a shared LL for Ace + Anvil + Basher on 28 Jul",
+     "saw": "OK refusal names Ace and the medical [Ace is on HL on 28 Jul — leave can't go over a medical — nothing was saved for anyone: take that person off the list, or change it] · OK nothing saved for anyone [0] · OK editor stays open",
+     "verdict": "PASS",
+     "pics": [
+      "002-ph-p601-B-refusal.png"
+     ]
+    },
+    {
+     "id": "P6-01 case C (one man is working)",
+     "did": "Basher is on a flying line Tue 14 Jul; shared LL for Basher + Anvil + Blade",
+     "saw": "OK saved for all three, one group [[\"slash\",\"shaft\",\"glass\"]] · OK the conflict is flagged on the schedule (a warning names Basher) [[{\"sev\":\"hard\",\"code\":\"LEAVE_FLY\",\"who\":[\"Basher\"],\"msg\":\"On leave but planned to fly VL BFM\"}]] · OK the filer was told [Input added for 3 people]",
+     "verdict": "PASS",
+     "pics": [
+      "003-ph-p601-C-working.png",
+      "004-ph-p601-C-month.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p601-A-refusal.png",
+    "002-ph-p601-B-refusal.png",
+    "003-ph-p601-C-working.png",
+    "004-ph-p601-C-month.png"
+   ]
+  },
+  "p602-dk": {
+   "at": "2026-10-08T14:05:33.863Z",
+   "table": [
+    {
+     "id": "P6-02",
+     "did": "Saber files an all-day Duty for Ace, Anvil, Basher on Sat 18 Jul, answers the OIL question Yes once; then each man read as himself, the Leave War cell and the OIL tracker",
+     "saw": "OK one question was asked (once) and is gone after the answer [{\"nQ\":1,\"nAfterAnswer\":0}] · OK three records, one group [[\"glass\",\"shaft\",\"dj\"]] · OK each record carries his own full-day claim (one day, value 1), not a combined 3 [[{\"2026-07-18\":1},{\"2026-07-18\":1},{\"2026-07-18\":1}]] · OK each man’s bell is not lit with a question for him (Ace, Anvil, Basher) [[{\"cls\":\"bellbtn\",\"on\":false},{\"cls\":\"bellbtn\",\"on\":false},{\"cls\":\"bellbtn\",\"on\":false}]] · OK each man’s editor line reads his own answer [[\"Your OIL: credited on its non-working day\",\"Your OIL: credited on its non-working day\",\"Your OIL: credited on its non-working day\"]] · OK no credit has landed yet for any of the three (Leave War cell blank, tracker balance as before) � the same as for the single filing (Cinder, 25 Jul) [{\"lw1\":{\"Ace\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Basher\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Cinder\":{\"text\":\"\",\"cls\":\"weekend act\"}},\"lw1b\":{\"Cinder\":{\"text\":\"\",\"cls\":\"weekend act\"}},\"bal0\":{\"Ace\":\"4\",\"Anvil\":\"0\",\"Basher\":\"0]",
+     "verdict": "PASS",
+     "pics": [
+      "001-dk-p602-oil-question.png",
+      "002-dk-p602-after-save.png",
+      "004-dk-p602-leavewar-18jul.png",
+      "005-dk-p602-oil-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p602-oil-question.png",
+    "002-dk-p602-after-save.png",
+    "003-dk-p602-anvil-editor.png",
+    "004-dk-p602-leavewar-18jul.png",
+    "005-dk-p602-oil-tracker.png"
+   ]
+  },
+  "p603-dk": {
+   "at": "2026-10-08T14:03:07.565Z",
+   "table": [
+    {
+     "id": "P6-03",
+     "did": "Shared duty (Ace, Anvil, Basher; OIL Yes); Ace changes his own answer to No; then Saber adds Cinder with dates and hours untouched and answers the newcomer",
+     "saw": "OK Ace’s own answer was changed (no OIL) [[{\"2026-07-18\":1},{\"2026-07-18\":0}]] · OK adding Cinder brought a question back [OIL — Ace +3, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the who] · OK Ace’s answer is as he left it after the add [[{\"2026-07-18\":0},{\"2026-07-18\":0}]] · OK Anvil and Basher: OIL answer and every stamp unchanged [[[{\"cs\":\"Anvil\",\"oil\":{\"2026-07-18\":1},\"mod\":\"2026-10-08\",\"modAt\":1791468145273,\"modBy\":\"stiff\",\"at\":1791468145273,\"by\":\"stiff\",\"grp\":\"gmuzlvnndbs56sk\",\"grpBy\":\"stiff\",\"remarks\":\"p603 group\"},{\"cs\":\"Anvil\",\"oil\":{\"2026-07-18\":1},\"mod\":\"2026-10-08\",\"modAt\":1791] · OK Ace’s late/changed stamps unchanged by the add (mod, modAt, modBy) [[{\"cs\":\"Ace\",\"oil\":{\"2026-07-18\":0},\"mod\":\"2026-10-08\",\"modAt\":1791468150687,\"modBy\":\"dj\",\"at\":1791468145273,\"by\":\"stiff\",\"grp\":\"gmuzlvnndbs56sk\",\"grpBy\":\"stiff\",\"remarks\":\"p603 group\"},{\"cs\":\"Ace\",\"oil\":{\"2026-07-18\":0},\"mod\":\"2026-10-08\",\"modAt\":179146815068] · OK Cinder now has a record of his own with the answer given [{\"cs\":\"Cinder\",\"oil\":{\"2026-07-18\":1},\"mod\":\"2026-10-08\",\"modAt\":1791468186133,\"modBy\":\"stiff\",\"at\":1791468186133,\"by\":\"stiff\",\"grp\":\"gmuzlvnndbs56sk\",\"grpBy\":\"stiff\",\"remarks\":\"p603 group\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "004-dk-p603-add-sheet.png",
+      "005-dk-p603-after-add.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p603-ace-editor.png",
+    "002-dk-p603-ace-oil-sheet.png",
+    "003-dk-p603-saber-adding-cinder.png",
+    "004-dk-p603-add-sheet.png",
+    "005-dk-p603-after-add.png"
+   ]
+  },
+  "p604-dk": {
+   "at": "2026-10-08T14:48:07.266Z",
+   "table": [
+    {
+     "id": "P6-04",
+     "did": "Ranger files a Duty (Sat 25 Jul) for himself and Echo; then as Ranger (filer), Echo (included), Cutter (stranger) and Saber (admin) through the editor, the List, the day line’s Delete and the bar’s drag; then Echo takes himself out",
+     "saw": "OK FILER: editor can Save and carries Delete; remarks change reached both records [{\"edF\":{\"save\":true,\"del\":true},\"rem\":[\"p604 one edited\",\"p604 one edited\"]}] · OK FILER: the Delete asks \"for all 2 people?\" [Delete this input for all 2 people?\nDelete\nKeep] · OK FILER: the bar moves both records, one command (mouse drag / held finger) [{\"ghost\":1,\"dates\":[[\"Echo\",\"Jul 26\"],[\"Ranger\",\"Jul 26\"]],\"editorOpened\":true,\"oilAsked\":\"OIL — Echo, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 2\",\"oilAfter\":[[\"Echo\",\"{\\\"2026-07-26\\\":1}\"],[\"Ranger\",\"{\\\"2026-07-26\\\":1}\"]],\"editorOpenAfter\":false}] · OK INCLUDED NON-FILER: reads the whole (no Save, no Delete), has Take me out and his own OIL [{\"save\":false,\"del\":false,\"takeout\":true,\"oilOwn\":true}] · OK Echo’s own OIL answer changed only his record [[[\"Echo\",{\"2026-07-26\":0}],[\"Ranger\",{\"2026-07-26\":1}]]] · OK INCLUDED NON-FILER: the day’s Delete says \"Take yourself out\" (desktop key); on a phone the editor offers no Delete [Take yourself out of this input?\nTake me out\nStay in] · OK INCLUDED NON-FILER: the bar does not lift (no ghost, dates unchanged) [{\"ghost\":0,\"dates\":[[\"Echo\",\"Jul 26\"],[\"Ranger\",\"Jul 26\"]],\"editorOpened\":false}] · OK STRANGER: reads only — no Save, no Delete, no Take me out, no OIL change; the sentence says who can change it [{\"save\":false,\"takeout\":false,\"ro\":\"Only its people, Ranger — who filed it — or an admin can change this.\"}] · OK STRANGER: the day’s Delete does not delete (tells who can); on a phone no Delete is offered [{\"delAskC\":\"no ask // toast: Only Ranger — who filed it — or an admin can delete this for everyone\",\"nC\":2}] · OK STRANGER: the bar does not lift [{\"ghost\":0,\"dates\":[[\"Echo\",\"Jul 26\"],[\"Ranger\",\"Jul 26\"]],\"editorOpened\":false}] · OK ADMIN: editor Save/Delete present and the change reached both [[\"p604 one by admin\",\"p604 one by admin\"]] · OK LIST door as each: filer opens the editable window; Echo opens the read-only one with Take me out; Cutter reads only [{\"filer\":true,\"echo\":{\"save\":false,\"takeout\":true},\"cutter\":{\"save\":false,\"takeout\":false}}] · OK TAKE ME OUT removed only Echo; Ranger’s record remains [[\"Ranger\"]]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p604-gear.png",
+    "002-dk-p604-filer-editor.png",
+    "003-dk-p604-list-filer.png",
+    "004-dk-p604-list-filer-editor.png",
+    "005-dk-p604-filer-day-delete-ask.png",
+    "006-dk-p604-filer-dragged.png",
+    "007-dk-p604-echo-editor.png",
+    "008-dk-p604-echo-day-delete-ask.png",
+    "009-dk-p604-echo-drag-attempt.png",
+    "010-dk-p604-list-echo.png",
+    "011-dk-p604-list-echo-editor.png",
+    "012-dk-p604-stranger-editor.png",
+    "013-dk-p604-stranger-day-delete.png",
+    "014-dk-p604-stranger-drag-attempt.png",
+    "015-dk-p604-list-stranger.png",
+    "016-dk-p604-list-stranger-editor.png",
+    "017-dk-p604-admin-editor.png",
+    "018-dk-p604-echo-takeout-ask.png",
+    "019-dk-p604-after-takeout.png"
+   ]
+  },
+  "p604b-dk": {
+   "at": "2026-10-08T14:10:32.142Z",
+   "table": [],
+   "errors": [],
+   "pics": [
+    "001-dk-p604b-Cutter-oil-row.png",
+    "002-dk-p604b-Echo-oil-row.png"
+   ]
+  },
+  "p610-dk": {
+   "at": "2026-10-08T14:11:57.415Z",
+   "table": [
+    {
+     "id": "P6-10",
+     "did": "Ranger files for himself + Echo; Saber adds Cutter; Ranger takes himself out of it; Ranger (no longer a subject) tries a whole-entry edit while member filing is on",
+     "saw": "OK the first filing: filer is Ranger on both records [[[\"Echo\",\"Ranger\",\"Ranger\"],[\"Ranger\",\"Ranger\",\"Ranger\"]]] · OK Saber’s addition did not take the entry: all three records still say Ranger filed it [[[\"Cutter\",\"Ranger\",\"Saber\"],[\"Echo\",\"Ranger\",\"Ranger\"],[\"Ranger\",\"Ranger\",\"Ranger\"]]] · OK Ranger could take himself out (the entry is now Echo + Cutter), filer still Ranger [{\"toast\":\"Input updated\",\"rows\":[[\"Cutter\",\"Ranger\"],[\"Echo\",\"Ranger\"]]}] · OK Ranger, no longer a subject, still opens the entry with its Save (the original filer’s authority remains) [{\"save\":true,\"del\":true,\"takeout\":false,\"ro\":\"\",\"title\":\"Cutter +1 · 7 Aug\",\"picked\":[\"Cutter\",\"Echo\"]}] · OK his whole-entry edit went through for both men [{\"t4\":\"Input updated\",\"s4\":[[\"Cutter\",\"p610 two\"],[\"Echo\",\"p610 two\"]]}] · OK Echo (subject): read-only with Take me out; Cutter (added by Saber): the same, not the admin’s rights [{\"edE\":{\"save\":false,\"takeout\":true},\"edC\":{\"save\":false,\"takeout\":true}}] · OK Saber (admin) still has Save and Delete [{\"save\":true,\"del\":true}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p610-after-admin-adds.png",
+    "002-dk-p610-ranger-unpicks-himself.png",
+    "003-dk-p610-ranger-not-a-subject-opens.png",
+    "004-dk-p610-cutter-added-by-admin.png"
+   ]
+  },
+  "p609-dk": {
+   "at": "2026-10-08T14:17:47.583Z",
+   "table": [
+    {
+     "id": "P6-09",
+     "did": "one three-man Meeting on Fri 17 Jul; through the board’s own row for Anvil only his remarks changed; read on the Inputs month, the day and the List; then restored the same way",
+     "saw": "OK before: one bar for the three [[\"Ace +2 · Meeting\"]] · OK only Anvil’s record changed (Ace and Basher unchanged) [[[\"Ace\",\"p609 one\"],[\"Anvil\",\"p609 anvil only\"],[\"Basher\",\"p609 one\"]]] · OK the month shows the divergence: Anvil on his own bar, Ace + Basher together on another [[\"Ace +1 · Meeting\",\"Anvil · Meeting\"]] · OK the opened day lists two lines (Anvil’s own; Ace + Basher) [[\"Ace +1 Meeting LATE All day p609 one Ace A Basher IW Placed by Saber for 2 peopl\",\"Anvil Meeting LATE All day p609 anvil only Placed by Saber for Anvil · 8 Oct 26,\"]] · OK the List has two rows (one for the two, one for Anvil) [[\"Ace +1 17 Jul MEETING LATEp609 one Placed by Saber for 2 people · 8 Oc\",\"Anvil 17 Jul MEETING LATEp609 anvil only Placed by Saber for Anvil · 8\"]] · OK restored: Anvil’s remarks equal again => one bar for the three [{\"bars2\":[\"Ace +2 · Meeting\"],\"lines2\":[\"Ace +2 Meeting LATE All day p609 one Ace A Anvil IP Basher IW Placed by Saber fo\"]}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p609-month-before.png",
+    "002-dk-p609-board-edit-anvil.png",
+    "003-dk-p609-month-split.png",
+    "004-dk-p609-list-split.png",
+    "005-dk-p609-board-edit-anvil.png",
+    "006-dk-p609-month-restored.png"
+   ]
+  },
+  "p607-dk": {
+   "at": "2026-10-08T14:20:47.867Z",
+   "table": [
+    {
+     "id": "P6-07 (editor window, Saber)",
+     "did": "switch to Several people, press each All, press them again, take the picks down to one, try to take the last off, return to one person",
+     "saw": "OK groups drawn: pilots, wsos, sans, personnel (in the editor window) [[\"pilots\",\"wsos\",\"sans\",\"personnel\"]] · OK each group A to Z by callsign [{\"pilots\":{\"n\":29,\"az\":true,\"setOk\":true},\"wsos\":{\"n\":18,\"az\":true,\"setOk\":true},\"sans\":{\"n\":11,\"az\":true,\"setOk\":true},\"personnel\":{\"n\":3,\"az\":true,\"setOk\":true}}] · OK each group holds exactly its own men (SANS only in SANS; Personnel = the ground crew) [{\"pilots\":{\"n\":29,\"az\":true,\"setOk\":true},\"wsos\":{\"n\":18,\"az\":true,\"setOk\":true},\"sans\":{\"n\":11,\"az\":true,\"setOk\":true},\"personnel\":{\"n\":3,\"az\":true,\"setOk\":true}}] · OK no man drawn twice [0] · OK All Pilots, All WSOs, All Personnel select their group in full [{\"pilots\":{\"n\":29,\"sansIn\":\"\",\"count\":\"29 picked\",\"hasExp\":true},\"wsos\":{\"n\":47,\"sansIn\":\"\",\"count\":\"47 picked\",\"hasExp\":true},\"personnel\":{\"n\":50,\"sansIn\":\"\",\"count\":\"50 picked\",\"hasExp\":true}}] · OK no All selects a SANS man [0] · OK the second press on each All clears that group [{\"before\":50,\"after\":1}] · OK the last man cannot be taken off (still one picked) [{\"n\":1,\"count\":\"1 picked\"}] · OK returning to one person keeps a picked man [{\"back\":{\"v\":\"spanner\",\"cs\":\"Cotter\",\"vis\":true}}] · OK order of pick: Ace, Echo, Basher -> back to one is Ace; with Ace taken off, back to one is Echo [{\"ord1\":[\"Ace\",\"Basher\",\"Echo\"],\"back1\":{\"v\":\"dj\",\"cs\":\"Ace\",\"vis\":true},\"ord2\":[\"Basher\",\"Echo\"],\"back2\":{\"v\":\"freak\",\"cs\":\"Echo\",\"vis\":true}}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p607-several-on.png",
+    "002-dk-p607-after-all-three.png",
+    "003-dk-p607-after-clear.png",
+    "004-dk-p607-last-man.png",
+    "005-dk-p607-back-to-one.png",
+    "006-dk-p607-order-back.png"
+   ]
+  },
+  "p606-dk": {
+   "at": "2026-10-08T14:22:35.859Z",
+   "table": [
+    {
+     "id": "P6-06",
+     "did": "Ranger: a three-man Duty then the kind changed to LL, HL, Upchit and Save pressed; the correcting press; the List add form; then Saber (admin) the same for HL and Upchit; then the SANS tab",
+     "saw": "OK Ranger LL: the sentence and the correcting press shown, Save refused in words, nothing saved, all three still picked [{\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":\"You can file leave only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\",\"toast\":\"You can file leave only for yourself\",\"saved\":0,\"pickedAfter\":[\"Ranger\",\"Cutter\",\"Echo\"],\"open\":true,\"pic\":\"001-dk-p606-] · OK Ranger HL: the same [{\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":\"You can file a medical entry only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\",\"toast\":\"You can file a medical entry only for yourself\",\"saved\":0,\"pickedAfter\":[\"Ranger\",\"Cutter\",\"Echo\"],\"open\":true] · OK Ranger Upchit: the same [{\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":\"You can file an upchit only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\",\"toast\":\"You can file an upchit only for yourself\",\"saved\":0,\"pickedAfter\":[\"Ranger\",\"Cutter\",\"Echo\"],\"open\":true,\"pic\":\"003-] · OK the correcting press (\"File it for me only\") leaves Ranger alone, in words and not silently [[]] · OK the kind list of the Inputs editor does not offer SANS availability (D620) [false] · OK List add form, Ranger: several for a Duty then LL refused in words, nothing saved [{\"sw\":true,\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":{\"why\":\"You can file leave only for yourself\\nFile it for me only\"},\"toast\":\"You can file leave only for yourself\",\"saved\":0}] · OK Saber, group HL: refused (\"one person at a time\"), nothing saved, selection kept [{\"picked\":[\"Ace\",\"Anvil\",\"Basher\"],\"why\":\"A medical entry is filed for one person at a time — each needs its own document\\nKeep Ace only\",\"fix\":\"Keep Ace only\",\"docAsk\":false,\"toast\":\"A medical entry is filed for one person at a time — each needs its own docum] · OK Saber, group Upchit: the same [{\"picked\":[\"Ace\",\"Anvil\",\"Basher\"],\"why\":\"An upchit is filed for one person at a time — each needs its own document\\nKeep Ace only\",\"fix\":\"Keep Ace only\",\"docAsk\":false,\"toast\":\"An upchit is filed for one person at a time — each needs its own document\",\"saved\"] · OK SANS tab (Saber): a shared SANS commitment for Bolt + Jester saved as two records; its editor�s kind: either fixed (no transition reachable) or an HL/LL change is refused/handled with nothing smuggled in [{\"shared\":[{\"cs\":\"Jester\",\"grp\":\"gmuzmlil47p7wku\"},{\"cs\":\"Bolt\",\"grp\":\"gmuzmlil47p7wku\"}],\"reopen\":{\"typeSel\":true,\"types\":[\"LL\",\"OL\",\"OIL\",\"CCL\",\"PL\",\"FCL\",\"EL\",\"CL\",\"HL\",\"OML\",\"ATT C\",\"ATT B\",\"Upchit\",\"Training\",\"CSE\",\"Meeting\",\"Fly with\",\"Personal\",\"Appoint]",
+     "verdict": "PASS",
+     "pics": [
+      "001-dk-p606-ranger-ll.png",
+      "002-dk-p606-ranger-hl.png",
+      "006-dk-p606-admin-hl.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p606-ranger-ll.png",
+    "002-dk-p606-ranger-hl.png",
+    "003-dk-p606-ranger-upchit.png",
+    "004-dk-p606-ranger-ll-after-fix.png",
+    "005-dk-p606-list-add-ll-refused.png",
+    "006-dk-p606-admin-hl.png",
+    "007-dk-p606-admin-upchit.png",
+    "008-dk-p606-sans-editor.png",
+    "009-dk-p606-sans-several.png",
+    "010-dk-p606-sans-reopen.png",
+    "011-dk-p606-sans-reopen-hl.png",
+    "012-dk-p606-sans-reopen-ll.png"
+   ]
+  },
+  "p605-dk": {
+   "at": "2026-10-08T14:47:52.472Z",
+   "table": [
+    {
+     "id": "P6-05",
+     "did": "Ranger files for himself + Echo, leaves a three-man draft open; Saber turns \"Members may file for other people\" OFF (same world); Ranger tries Save, edit, delete, Undo; the switch goes back ON",
+     "saw": "OK the saved entry stays (both records still there after every attempt) [{\"s1\":2,\"s2\":2}] · OK the open draft still holds its three people after the switch changed [{\"before\":[\"Ranger\",\"Cutter\",\"Echo\"],\"after\":[\"Ranger\",\"Cutter\",\"Echo\"],\"edStill\":true}] · OK the draft says why (a sentence and a correcting press), in words [{\"why\":\"Filing for other people is switched off — you can file this only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\"}] · OK Save of the draft is refused in words and files nothing [{\"tSave\":\"Input added for 2 people | Filing for other people is switched off — you can file this only for yourself\",\"new2\":0}] · OK after the refusal the draft still holds its people (nothing substituted) [[\"Ranger\",\"Cutter\",\"Echo\"]] · OK editing / deleting the saved entry: refused or read-only (no silent change) [{\"ed\":{\"save\":false,\"del\":false,\"ro\":\"Only Ranger — who filed it — or an admin can change this for everyone.\"},\"tEdit\":\"\",\"tDel\":\"\"}] · OK Undo of the earlier filing does not bypass the switch (the entry is not silently removed) [{\"tUndo\":\"You can’t undo that while filing for other people is switched off — the person it was filed for, or an admin, can change it.\",\"s2\":2}] · OK restoring the switch: the same draft now saves for all three [{\"tR\":\"Input added for 3 people\",\"n\":3}]",
+     "verdict": "PASS",
+     "pics": [
+      "004-dk-p605-draft-save-refused.png",
+      "007-dk-p605-undo-try.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p605-draft-open.png",
+    "002-dk-p605-gear-off.png",
+    "003-dk-p605-draft-after-off.png",
+    "004-dk-p605-draft-save-refused.png",
+    "005-dk-p605-saved-entry-switch-off.png",
+    "006-dk-p605-saved-entry-switch-off-foot.png",
+    "007-dk-p605-undo-try.png",
+    "008-dk-p605-gear-on.png",
+    "009-dk-p605-restored-save.png"
+   ]
+  },
+  "p612-dk": {
+   "at": "2026-10-08T14:25:42.527Z",
+   "table": [
+    {
+     "id": "P6-12",
+     "did": "SANS late cut-off set to Wednesday 2 weeks before; Inputs left at 14 days; controlled clock around the end of each deadline day, a later edit, and across New Year",
+     "saw": "OK the SANS gear’s worked example and the \"How this works\" line state the cut-off as set [{\"sansExample\":\"For the week of Mon 20 Jul, commitments are due by the end of Wed 8 Jul.\",\"sansHowText\":\"Commit by the end of the Wednesday two weeks before the week.\"}] · OK Inputs setting untouched (days mode, 14) [{\"daysPressed\":\"true\",\"example\":\"For the week of Mon 20 Jul, inputs are due by the end of Mon 6 Jul.\"}] · OK inputs: filed 29 Jun 23:30 on time; 30 Jun 00:30 late; 1 Jul 23:30 late (the SANS setting does not apply to them) [[{\"who\":\"Ace\",\"kind\":\"LL\",\"late\":false},{\"who\":\"Anvil\",\"kind\":\"LL\",\"late\":true},{\"who\":\"Basher\",\"kind\":\"LL\",\"late\":true}]] · OK SANS (Bolt 29 Jun 23:30, Jester 30 Jun 00:30, Otter 1 Jul 23:30 on time � end of Wed 1 Jul; Pixel 2 Jul 00:30 late) [[{\"who\":\"Pixel\",\"late\":true,\"note\":\"after the cut-off, Wed 1 Jul\"},{\"who\":\"Otter\",\"late\":false,\"note\":\"\"},{\"who\":\"Jester\",\"late\":false,\"note\":\"\"},{\"who\":\"Bolt\",\"late\":false,\"note\":\"\"},{\"who\":\"Zenith\",\"late\":false,\"note\":\"\"},{\"who\":\"Kraken\",\"late\":false,\"note\":] · OK a later edit is judged by the edit’s date: Ace’s LL and Bolt’s SANS edited 3 Jul are now LATE [{\"ace\":{\"who\":\"Ace\",\"kind\":\"LL\",\"late\":true},\"bolt\":{\"who\":\"Bolt\",\"late\":true,\"note\":\"after the cut-off, Wed 1 Jul\"},\"stamps\":{\"aceMod\":\"2026-07-03\",\"boltMod\":\"2026-07-03\"}}] · OK New Year, inputs (week of 4 Jan 2027, due end of Mon 21 Dec 2026): 21 Dec 23:30 on time, 22 Dec 00:30 late [[{\"who\":\"Cinder\",\"kind\":\"LL\",\"late\":false},{\"who\":\"Echo\",\"kind\":\"LL\",\"late\":true}]] · OK New Year, SANS (due end of Wed 23 Dec 2026): 23 Dec 23:30 on time, 24 Dec 00:30 late [[{\"who\":\"Zulu\",\"late\":true,\"note\":\"after the cut-off, Wed 23 Dec\"},{\"who\":\"Tally\",\"late\":false,\"note\":\"\"}]]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p612-sans-gear.png",
+    "002-dk-p612-inputs-gear.png",
+    "003-dk-p612-sans-day-15jul.png",
+    "004-dk-p612-inputs-day-15jul.png",
+    "005-dk-p612-sans-day-after-edit.png",
+    "006-dk-p612-inputs-day-after-edit.png",
+    "007-dk-p612-sans-day-5jan.png",
+    "008-dk-p612-inputs-day-5jan.png"
+   ]
+  },
+  "p608-dk": {
+   "at": "2026-10-08T14:25:43.700Z",
+   "table": [
+    {
+     "id": "P6-08",
+     "did": "one shared Meeting (Fri 17 Jul) and one shared LL (Tue 28 Jul) for Ace, Anvil, Basher; read through the calendar’s doors and then each man’s own schedule and the Leave War",
+     "saw": "OK stored: one record per man, tied by one group id, for each filing [6] · OK month: ONE bar for the Meeting and ONE for the leave (not three each) [[\"Ace +2 · Meeting\",\"Ace +2 · LL\"]] · OK opened day: one line, three men [[\"Ace +2 Meeting LATE All day p608 meeting Ace A Anvil IP Basher IW Placed by Saber for 3 pe\"]] · OK editor: one window for the entry (title names it, three people lit) [{\"title\":\"Ace +2 · 17 Jul\",\"picked\":[\"Ace\",\"Anvil\",\"Basher\"]}] · OK List: one row per filing [[\"Ace +2 17 Jul MEETING LATEp608 meeting Placed by Saber for 3 people · \",\"Ace +2 28 Jul LL LATEp608 leave Placed by Saber for 3 people · 8 Oct 2\"]] · OK week (View-only Sched), Fri 17 Jul: each man has his own Meeting row [[\"MEETING Ace A LATE p608 meeting\",\"MEETING C Anvil IP LATE p608 meeting\",\"MEETING Basher IW LATE p608 meeting\"]] · OK board (Edit Schedule), Fri 17 Jul: three separate Personal Inputs rows, each with its own edit button [[{\"txt\":\"Meeting LATE Basher IW UNDO\",\"edit\":\"imuzmomqhv3kwys\"},{\"txt\":\"Meeting LATE C Anvil IP UNDO\",\"edit\":\"imuzmomqdc32pmj\"},{\"txt\":\"Meeting LATE Ace A UNDO\",\"edit\":\"imuzmomq7l5oc34\"}]] · OK Leave War: each man’s own cell on 28 Jul shows the leave [{\"Ace\":{\"text\":\"LL\",\"cls\":\" act\"},\"Anvil\":{\"text\":\"LL\",\"cls\":\" act\"},\"Basher\":{\"text\":\"LL\",\"cls\":\" act\"}}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p608-month.png",
+    "002-dk-p608-day-17jul.png",
+    "003-dk-p608-editor-entry.png",
+    "004-dk-p608-list.png",
+    "005-dk-p608-week-fri.png",
+    "006-dk-p608-board-fri.png",
+    "007-dk-p608-leavewar-28jul.png"
+   ]
+  },
+  "h07-dk": {
+   "at": "2026-10-08T14:25:56.526Z",
+   "table": [
+    {
+     "id": "H-07",
+     "did": "Saber files a duty for Ranger from \"+ Input\"; Ranger changes its remarks; Saber opens a NEW \"+ Input\" (twice), the saved one, and hovers its bar",
+     "saw": "OK a new input’s window has no placed-by line (first and second time) [{\"newPlaced\":0,\"new2Placed\":0}] · OK the saved one’s foot reads \"Placed by Saber for Ranger · <date, time>\" [Placed by Saber for Ranger · 8 Oct 26, 22:25 · changed by Ranger · 8 Oct 26, 22:25] · OK after Ranger’s change the change is beside it (\"changed by Ranger · …\") [Placed by Saber for Ranger · 8 Oct 26, 22:25 · changed by Ranger · 8 Oct 26, 22:25] · OK the bar’s tooltip carries the same line (desktop) [Ranger · Duty · 28 Jul\nPlaced by Saber for Ranger · 8 Oct 26, 22:25 · changed by Ranger · 8 Oct 26, 22:25] · OK the opened day’s line carries it too [Placed by Saber for Ranger · 8 Oct 26, 22:25 · changed by Ranger · 8 Oct 26, 22:25]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-h07-new-input-window.png",
+    "002-dk-h07-new-input-again.png",
+    "003-dk-h07-saved-editor-foot.png",
+    "004-dk-h07-bar-hover.png"
+   ]
+  },
+  "p611-dk": {
+   "at": "2026-10-08T14:27:37.476Z",
+   "table": [
+    {
+     "id": "P6-11",
+     "did": "controlled clock 29 Jun 10:00 then 30 Jun 10:00; Inputs on 14 days; LL for Ace and Cinder (span 17-21 Jul) filed 29 Jun; LL for Anvil, LL for Basher (10-14 Jul, a span beginning the week before), HL for Echo, Training for Cutter filed 30 Jun; read on the month, List, week and board; then other weeks",
+     "saw": "OK month: 29 Jun filings on time (Ace 15 Jul, Cinder 17 Jul) [{\"ace\":{\"who\":\"Ace\",\"kind\":\"LL\",\"late\":false},\"cinder\":{\"who\":\"Cinder\",\"kind\":\"LL\",\"late\":false}}] · OK month: 30 Jun filings late (Anvil LL, Cutter Training); Echo�s medical never LATE [[{\"who\":\"Anvil\",\"kind\":\"LL\",\"late\":true},{\"who\":\"Echo\",\"kind\":\"HL\",\"late\":false}]] · OK month: Basher�s span starting in the earlier week is late on both of its weeks (10 Jul and 14 Jul) · OK month: Cinder�s span stays on time into the next week (20 Jul) · OK List: the same judgement per man [{\"Basher 10 Jul 14\":true,\"Echo 15 Jul HL\":false,\"Anvil 15 Jul LL\":true,\"Ace 15 Jul LL\":false,\"Cutter 16 Jul TRAINING\":true,\"Cinder 17 Jul 21\":false}] · OK week 13 Jul: Anvil, Basher, Cutter wear LATE; Ace, Cinder, Echo do not [[\"?APPOINTMENT 10:00 11:00 Bolt C\",\"Basher\",\"?APPOINTMENT 14:00 16:00 C Sain\",\"Basher\",\"?LL all day Quill IW LATE Local\",\"?OIL all day Wisp C LATE OIL — \",\"Anvil\",\"Cutter\"]] · OK loading another week does not change a man�s lateness: week 20 Jul (Cinder not late), week 6 Jul (Basher late) [{\"w20\":[\"?LL all day Tally O LATE Local \"],\"w06\":[\"Basher\",\"Basher\",\"Basher\"]}] · OK board (Wed/Thu): Anvil and Cutter LATE; Ace, Echo not [{\"2\":[\"Anvil\"],\"3\":[\"Cutter\"],\"4\":[]}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p611-month-15jul.png",
+    "002-dk-p611-day-15jul.png",
+    "003-dk-p611-list.png",
+    "004-dk-p611-week-13jul.png",
+    "005-dk-p611-week-20jul.png",
+    "006-dk-p611-week-06jul.png",
+    "007-dk-p611-board-wed.png",
+    "008-dk-p611-board-thu.png"
+   ]
+  },
+  "sizes": {
+   "at": "2026-10-08T14:27:43.538Z",
+   "table": [
+    {
+     "id": "P6-sizes ph568",
+     "did": "editor window with Several people open and a three-man Meeting saved, at 390x568",
+     "saw": "OK nothing runs off sideways [{\"pageSideways\":false,\"win\":{\"l\":12,\"t\":12,\"r\":370,\"b\":556,\"vw\":390,\"vh\":568}}] · OK the window lies inside the screen [{\"l\":12,\"t\":12,\"r\":370,\"b\":556,\"vw\":390,\"vh\":568}] · OK Save is reached (a finger lands on it) and files the three [{\"saveHit\":{\"landsOnSave\":true,\"box\":[305,517,354,545],\"inView\":true},\"saved\":3}] · OK the month shows ONE bar for the three [[\"Ace +2 · Meeting\"]]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "P6-sizes ph-side",
+     "did": "editor window with Several people open and a three-man Meeting saved, at 844x390",
+     "saw": "OK nothing runs off sideways [{\"pageSideways\":false,\"win\":{\"l\":398,\"t\":96,\"r\":828,\"b\":366,\"vw\":844,\"vh\":390}}] · OK the window lies inside the screen [{\"l\":398,\"t\":96,\"r\":828,\"b\":366,\"vw\":844,\"vh\":390}] · OK Save is reached (a finger lands on it) and files the three [{\"saveHit\":{\"landsOnSave\":true,\"box\":[763,327,812,355],\"inView\":true},\"saved\":3}] · OK the month shows ONE bar for the three [[\"Ace +2 · Meeting\"]]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "P6-sizes dk1536",
+     "did": "editor window with Several people open and a three-man Meeting saved, at 1536x864",
+     "saw": "OK nothing runs off sideways [{\"pageSideways\":false,\"win\":{\"l\":1090,\"t\":96,\"r\":1520,\"b\":840,\"vw\":1536,\"vh\":864}}] · OK the window lies inside the screen [{\"l\":1090,\"t\":96,\"r\":1520,\"b\":840,\"vw\":1536,\"vh\":864}] · OK Save is reached (a finger lands on it) and files the three [{\"saveHit\":{\"landsOnSave\":true,\"box\":[1455,801,1504,829],\"inView\":true},\"saved\":3}] · OK the month shows ONE bar for the three [[\"Ace +2 · Meeting\"]]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph568-editor-several.png",
+    "002-ph568-after-save.png",
+    "003-ph568-month.png",
+    "004-ph-side-editor-several.png",
+    "005-ph-side-after-save.png",
+    "006-ph-side-month.png",
+    "007-dk1536-editor-several.png",
+    "008-dk1536-after-save.png",
+    "009-dk1536-month.png"
+   ]
+  },
+  "p604-ph": {
+   "at": "2026-10-08T14:52:51.370Z",
+   "table": [
+    {
+     "id": "P6-04",
+     "did": "Ranger files a Duty (Sat 25 Jul) for himself and Echo; then as Ranger (filer), Echo (included), Cutter (stranger) and Saber (admin) through the editor, the List, the day line’s Delete and the bar’s drag; then Echo takes himself out",
+     "saw": "OK FILER: editor can Save and carries Delete; remarks change reached both records [{\"edF\":{\"save\":true,\"del\":true},\"rem\":[\"p604 one edited\",\"p604 one edited\"]}] · OK FILER: the Delete asks \"for all 2 people?\" [Delete this input for all 2 people?\nDelete\nKeep] · OK FILER: the bar moves both records, one command (mouse drag / held finger) [{\"ghost\":1,\"monthAfter\":\"JUL 2026\",\"dates\":[[\"Echo\",\"Jul 26\"],[\"Ranger\",\"Jul 26\"]],\"editorOpened\":true,\"oilAsked\":\"OIL — Echo, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 2\",\"oilAfter\":[[\"Echo\",\"{\\\"2026-07-26\\\":1}\"],[\"Ranger\",\"{\\\"2026-07-26\\\":1}\"]],\"editorO] · OK INCLUDED NON-FILER: reads the whole (no Save, no Delete), has Take me out and his own OIL [{\"save\":false,\"del\":false,\"takeout\":true,\"oilOwn\":true}] · OK Echo’s own OIL answer changed only his record [[[\"Echo\",{\"2026-07-26\":0}],[\"Ranger\",{\"2026-07-26\":1}]]] · OK INCLUDED NON-FILER: the day’s Delete says \"Take yourself out\" (desktop key); on a phone the editor offers no Delete [phone: no Delete in the editor] · OK INCLUDED NON-FILER: the bar does not lift (no ghost, dates unchanged) [{\"ghost\":0,\"monthAfter\":\"AUG 2026\",\"dates\":[[\"Echo\",\"Jul 26\"],[\"Ranger\",\"Jul 26\"]],\"editorOpened\":false}] · OK STRANGER: reads only — no Save, no Delete, no Take me out, no OIL change; the sentence says who can change it [{\"save\":false,\"takeout\":false,\"ro\":\"Only its people, Ranger — who filed it — or an admin can change this.\"}] · OK STRANGER: the day’s Delete does not delete (tells who can); on a phone no Delete is offered [{\"delAskC\":\"phone: no Delete in the editor\",\"nC\":2}] · OK STRANGER: the bar does not lift [{\"ghost\":0,\"monthAfter\":\"AUG 2026\",\"dates\":[[\"Echo\",\"Jul 26\"],[\"Ranger\",\"Jul 26\"]],\"editorOpened\":false}] · OK ADMIN: editor Save/Delete present and the change reached both [[\"p604 one by admin\",\"p604 one by admin\"]] · OK LIST door as each: filer opens the editable window; Echo opens the read-only one with Take me out; Cutter reads only [{\"filer\":true,\"echo\":{\"save\":false,\"takeout\":true},\"cutter\":{\"save\":false,\"takeout\":false}}] · OK TAKE ME OUT removed only Echo; Ranger’s record remains [[\"Ranger\"]]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p604-gear.png",
+    "002-ph-p604-filer-editor.png",
+    "003-ph-p604-list-filer.png",
+    "004-ph-p604-list-filer-editor.png",
+    "005-ph-p604-editor-delete-ask.png",
+    "006-ph-p604-filer-dragged.png",
+    "007-ph-p604-echo-editor.png",
+    "008-ph-p604-echo-drag-attempt.png",
+    "009-ph-p604-list-echo.png",
+    "010-ph-p604-list-echo-editor.png",
+    "011-ph-p604-stranger-editor.png",
+    "012-ph-p604-stranger-drag-attempt.png",
+    "013-ph-p604-list-stranger.png",
+    "014-ph-p604-list-stranger-editor.png",
+    "015-ph-p604-admin-editor.png",
+    "016-ph-p604-echo-takeout-ask.png",
+    "017-ph-p604-after-takeout.png"
+   ]
+  },
+  "p607-ph": {
+   "at": "2026-10-08T14:30:43.892Z",
+   "table": [
+    {
+     "id": "P6-07 (editor window, Saber)",
+     "did": "switch to Several people, press each All, press them again, take the picks down to one, try to take the last off, return to one person",
+     "saw": "OK groups drawn: pilots, wsos, sans, personnel (in the editor window) [[\"pilots\",\"wsos\",\"sans\",\"personnel\"]] · OK each group A to Z by callsign [{\"pilots\":{\"n\":29,\"az\":true,\"setOk\":true},\"wsos\":{\"n\":18,\"az\":true,\"setOk\":true},\"sans\":{\"n\":11,\"az\":true,\"setOk\":true},\"personnel\":{\"n\":3,\"az\":true,\"setOk\":true}}] · OK each group holds exactly its own men (SANS only in SANS; Personnel = the ground crew) [{\"pilots\":{\"n\":29,\"az\":true,\"setOk\":true},\"wsos\":{\"n\":18,\"az\":true,\"setOk\":true},\"sans\":{\"n\":11,\"az\":true,\"setOk\":true},\"personnel\":{\"n\":3,\"az\":true,\"setOk\":true}}] · OK no man drawn twice [0] · OK All Pilots, All WSOs, All Personnel select their group in full [{\"pilots\":{\"n\":29,\"sansIn\":\"\",\"count\":\"29 picked\",\"hasExp\":true},\"wsos\":{\"n\":47,\"sansIn\":\"\",\"count\":\"47 picked\",\"hasExp\":true},\"personnel\":{\"n\":50,\"sansIn\":\"\",\"count\":\"50 picked\",\"hasExp\":true}}] · OK no All selects a SANS man [0] · OK the second press on each All clears that group [{\"before\":50,\"after\":1}] · OK the last man cannot be taken off (still one picked) [{\"n\":1,\"count\":\"1 picked\"}] · OK returning to one person keeps a picked man [{\"back\":{\"v\":\"spanner\",\"cs\":\"Cotter\",\"vis\":true}}] · OK order of pick: Ace, Echo, Basher -> back to one is Ace; with Ace taken off, back to one is Echo [{\"ord1\":[\"Ace\",\"Basher\",\"Echo\"],\"back1\":{\"v\":\"dj\",\"cs\":\"Ace\",\"vis\":true},\"ord2\":[\"Basher\",\"Echo\"],\"back2\":{\"v\":\"freak\",\"cs\":\"Echo\",\"vis\":true}}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p607-several-on.png",
+    "002-ph-p607-after-all-three.png",
+    "003-ph-p607-after-clear.png",
+    "004-ph-p607-last-man.png",
+    "005-ph-p607-back-to-one.png",
+    "006-ph-p607-order-back.png"
+   ]
+  },
+  "p608-ph": {
+   "at": "2026-10-08T14:31:35.323Z",
+   "table": [
+    {
+     "id": "P6-08",
+     "did": "one shared Meeting (Fri 17 Jul) and one shared LL (Tue 28 Jul) for Ace, Anvil, Basher; read through the calendar’s doors and then each man’s own schedule and the Leave War",
+     "saw": "OK stored: one record per man, tied by one group id, for each filing [6] · OK month: ONE bar for the Meeting and ONE for the leave (not three each) [[\"Ace +2 · Meeting\",\"Ace +2 · LL\"]] · OK opened day: one line, three men [[\"Ace +2 Meeting LATE All day p608 meeting Ace A Anvil IP Basher IW Placed by Saber for 3 pe\"]] · OK editor: one window for the entry (title names it, three people lit) [{\"title\":\"Ace +2 · 17 Jul\",\"picked\":[\"Ace\",\"Anvil\",\"Basher\"]}] · OK List: one row per filing [[\"Ace +2 17 Jul MEETING LATEp608 meeting Placed by Saber for 3 people · \",\"Ace +2 28 Jul LL LATEp608 leave Placed by Saber for 3 people · 8 Oct 2\"]] · OK week (View-only Sched), Fri 17 Jul: each man has his own Meeting row [[\"MEETING Ace A LATE p608 meeting\",\"MEETING C Anvil IP LATE p608 meeting\",\"MEETING Basher IW LATE p608 meeting\"]] · OK board (Edit Schedule), Fri 17 Jul: three separate Personal Inputs rows, each with its own edit button [[{\"txt\":\"Meeting LATE Basher IW UNDO\",\"edit\":\"imuzmw66cv412de\"},{\"txt\":\"Meeting LATE C Anvil IP UNDO\",\"edit\":\"imuzmw666si09hc\"},{\"txt\":\"Meeting LATE Ace A UNDO\",\"edit\":\"imuzmw660qq9ahw\"}]] · OK Leave War: each man’s own cell on 28 Jul shows the leave [{\"Ace\":{\"text\":\"LL\",\"cls\":\" act\"},\"Anvil\":{\"text\":\"LL\",\"cls\":\" act\"},\"Basher\":{\"text\":\"LL\",\"cls\":\" act\"}}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p608-month.png",
+    "002-ph-p608-day-17jul.png",
+    "003-ph-p608-editor-entry.png",
+    "004-ph-p608-list.png",
+    "005-ph-p608-week-fri.png",
+    "006-ph-p608-board-fri.png",
+    "007-ph-p608-leavewar-28jul.png"
+   ]
+  },
+  "p609-ph": {
+   "at": "2026-10-08T14:49:51.473Z",
+   "table": [
+    {
+     "id": "P6-09",
+     "did": "one three-man Meeting on Fri 17 Jul; through the board’s own row for Anvil only his remarks changed; read on the Inputs month, the day and the List; then restored the same way",
+     "saw": "OK before: one bar for the three [[\"Ace +2 · Meeting\"]] · OK only Anvil’s record changed (Ace and Basher unchanged) [[[\"Ace\",\"p609 one\"],[\"Anvil\",\"p609 anvil only\"],[\"Basher\",\"p609 one\"]]] · OK the month shows the divergence: Anvil on his own bar, Ace + Basher together on another [{\"bars1\":[\"Ace +1 · Meeting\",\"Anvil\"],\"more1\":[]}] · OK the opened day lists two lines (Anvil’s own; Ace + Basher) [[\"Ace +1 Meeting LATE All day p609 one Ace A Basher IW Placed by Saber for 2 peopl\",\"Anvil Meeting LATE All day p609 anvil only Placed by Saber for Anvil · 8 Oct 26,\"]] · OK the List has two rows (one for the two, one for Anvil) [[\"Ace +1 17 Jul MEETING LATEp609 one Placed by Saber for 2 people · 8 Oc\",\"Anvil 17 Jul MEETING LATEp609 anvil only Placed by Saber for Anvil · 8\"]] · OK restored: Anvil’s remarks equal again => one bar for the three [{\"bars2\":[\"Ace +2 · Meeting\"],\"lines2\":[\"Ace +2 Meeting LATE All day p609 one Ace A Anvil IP Basher IW Placed by Saber fo\"]}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p609-month-before.png",
+    "002-ph-p609-board-edit-anvil.png",
+    "003-ph-p609-month-split-closed.png",
+    "004-ph-p609-month-split.png",
+    "005-ph-p609-list-split.png",
+    "006-ph-p609-board-edit-anvil.png",
+    "007-ph-p609-month-restored.png"
+   ]
+  },
+  "p610-ph": {
+   "at": "2026-10-08T14:33:14.798Z",
+   "table": [
+    {
+     "id": "P6-10",
+     "did": "Ranger files for himself + Echo; Saber adds Cutter; Ranger takes himself out of it; Ranger (no longer a subject) tries a whole-entry edit while member filing is on",
+     "saw": "OK the first filing: filer is Ranger on both records [[[\"Echo\",\"Ranger\",\"Ranger\"],[\"Ranger\",\"Ranger\",\"Ranger\"]]] · OK Saber’s addition did not take the entry: all three records still say Ranger filed it [[[\"Cutter\",\"Ranger\",\"Saber\"],[\"Echo\",\"Ranger\",\"Ranger\"],[\"Ranger\",\"Ranger\",\"Ranger\"]]] · OK Ranger could take himself out (the entry is now Echo + Cutter), filer still Ranger [{\"toast\":\"Input updated\",\"rows\":[[\"Cutter\",\"Ranger\"],[\"Echo\",\"Ranger\"]]}] · OK Ranger, no longer a subject, still opens the entry with its Save (the original filer’s authority remains) [{\"save\":true,\"del\":true,\"takeout\":false,\"ro\":\"\",\"title\":\"Cutter +1 · 7 Aug\",\"picked\":[\"Cutter\",\"Echo\"]}] · OK his whole-entry edit went through for both men [{\"t4\":\"Input updated\",\"s4\":[[\"Cutter\",\"p610 two\"],[\"Echo\",\"p610 two\"]]}] · OK Echo (subject): read-only with Take me out; Cutter (added by Saber): the same, not the admin’s rights [{\"edE\":{\"save\":false,\"takeout\":true},\"edC\":{\"save\":false,\"takeout\":true}}] · OK Saber (admin) still has Save and Delete [{\"save\":true,\"del\":true}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p610-after-admin-adds.png",
+    "002-ph-p610-ranger-unpicks-himself.png",
+    "003-ph-p610-ranger-not-a-subject-opens.png",
+    "004-ph-p610-cutter-added-by-admin.png"
+   ]
+  },
+  "p606-ph": {
+   "at": "2026-10-08T14:35:35.999Z",
+   "table": [
+    {
+     "id": "P6-06",
+     "did": "Ranger: a three-man Duty then the kind changed to LL, HL, Upchit and Save pressed; the correcting press; the List add form; then Saber (admin) the same for HL and Upchit; then the SANS tab",
+     "saw": "OK Ranger LL: the sentence and the correcting press shown, Save refused in words, nothing saved, all three still picked [{\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":\"You can file leave only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\",\"toast\":\"You can file leave only for yourself\",\"saved\":0,\"pickedAfter\":[\"Ranger\",\"Cutter\",\"Echo\"],\"open\":true,\"pic\":\"001-ph-p606-] · OK Ranger HL: the same [{\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":\"You can file a medical entry only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\",\"toast\":\"You can file a medical entry only for yourself\",\"saved\":0,\"pickedAfter\":[\"Ranger\",\"Cutter\",\"Echo\"],\"open\":true] · OK Ranger Upchit: the same [{\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":\"You can file an upchit only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\",\"toast\":\"You can file an upchit only for yourself\",\"saved\":0,\"pickedAfter\":[\"Ranger\",\"Cutter\",\"Echo\"],\"open\":true,\"pic\":\"003-] · OK the correcting press (\"File it for me only\") leaves Ranger alone, in words and not silently [[]] · OK the kind list of the Inputs editor does not offer SANS availability (D620) [false] · OK List add form, Ranger: several for a Duty then LL refused in words, nothing saved [{\"sw\":true,\"picked\":[\"Ranger\",\"Cutter\",\"Echo\"],\"why\":{\"why\":\"You can file leave only for yourself\\nFile it for me only\"},\"toast\":\"You can file leave only for yourself\",\"saved\":0}] · OK Saber, group HL: refused (\"one person at a time\"), nothing saved, selection kept [{\"picked\":[\"Ace\",\"Anvil\",\"Basher\"],\"why\":\"A medical entry is filed for one person at a time — each needs its own document\\nKeep Ace only\",\"fix\":\"Keep Ace only\",\"docAsk\":false,\"toast\":\"A medical entry is filed for one person at a time — each needs its own docum] · OK Saber, group Upchit: the same [{\"picked\":[\"Ace\",\"Anvil\",\"Basher\"],\"why\":\"An upchit is filed for one person at a time — each needs its own document\\nKeep Ace only\",\"fix\":\"Keep Ace only\",\"docAsk\":false,\"toast\":\"An upchit is filed for one person at a time — each needs its own document\",\"saved\"] · OK SANS tab (Saber): a shared SANS commitment for Bolt + Jester saved as two records; its editor�s kind: either fixed (no transition reachable) or an HL/LL change is refused/handled with nothing smuggled in [{\"shared\":[{\"cs\":\"Jester\",\"grp\":\"gmuzn1ldauvcc1h\"},{\"cs\":\"Bolt\",\"grp\":\"gmuzn1ldauvcc1h\"}],\"reopen\":{\"typeSel\":true,\"types\":[\"LL\",\"OL\",\"OIL\",\"CCL\",\"PL\",\"FCL\",\"EL\",\"CL\",\"HL\",\"OML\",\"ATT C\",\"ATT B\",\"Upchit\",\"Training\",\"CSE\",\"Meeting\",\"Fly with\",\"Personal\",\"Appoint]",
+     "verdict": "PASS",
+     "pics": [
+      "001-ph-p606-ranger-ll.png",
+      "002-ph-p606-ranger-hl.png",
+      "006-ph-p606-admin-hl.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p606-ranger-ll.png",
+    "002-ph-p606-ranger-hl.png",
+    "003-ph-p606-ranger-upchit.png",
+    "004-ph-p606-ranger-ll-after-fix.png",
+    "005-ph-p606-list-add-ll-refused.png",
+    "006-ph-p606-admin-hl.png",
+    "007-ph-p606-admin-upchit.png",
+    "008-ph-p606-sans-editor.png",
+    "009-ph-p606-sans-several.png",
+    "010-ph-p606-sans-reopen.png",
+    "011-ph-p606-sans-reopen-hl.png",
+    "012-ph-p606-sans-reopen-ll.png"
+   ]
+  },
+  "p612-ph": {
+   "at": "2026-10-08T14:37:37.559Z",
+   "table": [
+    {
+     "id": "P6-12",
+     "did": "SANS late cut-off set to Wednesday 2 weeks before; Inputs left at 14 days; controlled clock around the end of each deadline day, a later edit, and across New Year",
+     "saw": "OK the SANS gear’s worked example and the \"How this works\" line state the cut-off as set [{\"sansExample\":\"For the week of Mon 20 Jul, commitments are due by the end of Wed 8 Jul.\",\"sansHowText\":\"Commit by the end of the Wednesday two weeks before the week.\"}] · OK Inputs setting untouched (days mode, 14) [{\"daysPressed\":\"true\",\"example\":\"For the week of Mon 20 Jul, inputs are due by the end of Mon 6 Jul.\"}] · OK inputs: filed 29 Jun 23:30 on time; 30 Jun 00:30 late; 1 Jul 23:30 late (the SANS setting does not apply to them) [[{\"who\":\"Ace\",\"kind\":\"LL\",\"late\":false},{\"who\":\"Anvil\",\"kind\":\"LL\",\"late\":true},{\"who\":\"Basher\",\"kind\":\"LL\",\"late\":true}]] · OK SANS (Bolt 29 Jun 23:30, Jester 30 Jun 00:30, Otter 1 Jul 23:30 on time � end of Wed 1 Jul; Pixel 2 Jul 00:30 late) [[{\"who\":\"Pixel\",\"late\":true,\"note\":\"after the cut-off, Wed 1 Jul\"},{\"who\":\"Otter\",\"late\":false,\"note\":\"\"},{\"who\":\"Jester\",\"late\":false,\"note\":\"\"},{\"who\":\"Bolt\",\"late\":false,\"note\":\"\"},{\"who\":\"Zenith\",\"late\":false,\"note\":\"\"},{\"who\":\"Kraken\",\"late\":false,\"note\":] · OK a later edit is judged by the edit’s date: Ace’s LL and Bolt’s SANS edited 3 Jul are now LATE [{\"ace\":{\"who\":\"Ace\",\"kind\":\"LL\",\"late\":true},\"bolt\":{\"who\":\"Bolt\",\"late\":true,\"note\":\"after the cut-off, Wed 1 Jul\"},\"stamps\":{\"aceMod\":\"2026-07-03\",\"boltMod\":\"2026-07-03\"}}] · OK New Year, inputs (week of 4 Jan 2027, due end of Mon 21 Dec 2026): 21 Dec 23:30 on time, 22 Dec 00:30 late [[{\"who\":\"Cinder\",\"kind\":\"LL\",\"late\":false},{\"who\":\"Echo\",\"kind\":\"LL\",\"late\":true}]] · OK New Year, SANS (due end of Wed 23 Dec 2026): 23 Dec 23:30 on time, 24 Dec 00:30 late [[{\"who\":\"Zulu\",\"late\":true,\"note\":\"after the cut-off, Wed 23 Dec\"},{\"who\":\"Tally\",\"late\":false,\"note\":\"\"}]]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p612-sans-gear.png",
+    "002-ph-p612-inputs-gear.png",
+    "003-ph-p612-sans-day-15jul.png",
+    "004-ph-p612-inputs-day-15jul.png",
+    "005-ph-p612-sans-day-after-edit.png",
+    "006-ph-p612-inputs-day-after-edit.png",
+    "007-ph-p612-sans-day-5jan.png",
+    "008-ph-p612-inputs-day-5jan.png"
+   ]
+  },
+  "p603-ph": {
+   "at": "2026-10-08T14:39:48.040Z",
+   "table": [
+    {
+     "id": "P6-03",
+     "did": "Shared duty (Ace, Anvil, Basher; OIL Yes); Ace changes his own answer to No; then Saber adds Cinder with dates and hours untouched and answers the newcomer",
+     "saw": "OK Ace’s own answer was changed (no OIL) [[{\"2026-07-18\":1},{\"2026-07-18\":0}]] · OK adding Cinder brought a question back [OIL — Ace +3, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the who] · OK Ace’s answer is as he left it after the add [[{\"2026-07-18\":0},{\"2026-07-18\":0}]] · OK Anvil and Basher: OIL answer and every stamp unchanged [[[{\"cs\":\"Anvil\",\"oil\":{\"2026-07-18\":1},\"mod\":\"2026-10-08\",\"modAt\":1791470345253,\"modBy\":\"stiff\",\"at\":1791470345253,\"by\":\"stiff\",\"grp\":\"gmuzn6t5xttljld\",\"grpBy\":\"stiff\",\"remarks\":\"p603 group\"},{\"cs\":\"Anvil\",\"oil\":{\"2026-07-18\":1},\"mod\":\"2026-10-08\",\"modAt\":1791] · OK Ace’s late/changed stamps unchanged by the add (mod, modAt, modBy) [[{\"cs\":\"Ace\",\"oil\":{\"2026-07-18\":0},\"mod\":\"2026-10-08\",\"modAt\":1791470350608,\"modBy\":\"dj\",\"at\":1791470345253,\"by\":\"stiff\",\"grp\":\"gmuzn6t5xttljld\",\"grpBy\":\"stiff\",\"remarks\":\"p603 group\"},{\"cs\":\"Ace\",\"oil\":{\"2026-07-18\":0},\"mod\":\"2026-10-08\",\"modAt\":179147035060] · OK Cinder now has a record of his own with the answer given [{\"cs\":\"Cinder\",\"oil\":{\"2026-07-18\":1},\"mod\":\"2026-10-08\",\"modAt\":1791470386557,\"modBy\":\"stiff\",\"at\":1791470386557,\"by\":\"stiff\",\"grp\":\"gmuzn6t5xttljld\",\"grpBy\":\"stiff\",\"remarks\":\"p603 group\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "004-ph-p603-add-sheet.png",
+      "005-ph-p603-after-add.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p603-ace-editor.png",
+    "002-ph-p603-ace-oil-sheet.png",
+    "003-ph-p603-saber-adding-cinder.png",
+    "004-ph-p603-add-sheet.png",
+    "005-ph-p603-after-add.png"
+   ]
+  },
+  "p602-ph": {
+   "at": "2026-10-08T14:42:21.918Z",
+   "table": [
+    {
+     "id": "P6-02",
+     "did": "Saber files an all-day Duty for Ace, Anvil, Basher on Sat 18 Jul, answers the OIL question Yes once; then each man read as himself, the Leave War cell and the OIL tracker",
+     "saw": "OK one question was asked (once) and is gone after the answer [{\"nQ\":1,\"nAfterAnswer\":0}] · OK three records, one group [[\"glass\",\"shaft\",\"dj\"]] · OK each record carries his own full-day claim (one day, value 1), not a combined 3 [[{\"2026-07-18\":1},{\"2026-07-18\":1},{\"2026-07-18\":1}]] · OK each man’s bell is not lit with a question for him (Ace, Anvil, Basher) [[{\"cls\":\"bellbtn\",\"on\":false},{\"cls\":\"bellbtn\",\"on\":false},{\"cls\":\"bellbtn\",\"on\":false}]] · OK each man’s editor line reads his own answer [[\"Your OIL: credited on its non-working day\",\"Your OIL: credited on its non-working day\",\"Your OIL: credited on its non-working day\"]] · OK no credit has landed yet for any of the three (Leave War cell blank, tracker balance as before) � the same as for the single filing (Cinder, 25 Jul) [{\"lw1\":{\"Ace\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Anvil\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Basher\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Cinder\":{\"text\":\"\",\"cls\":\"weekend act\"}},\"lw1b\":{\"Cinder\":{\"text\":\"\",\"cls\":\"weekend act\"}},\"bal0\":{\"Ace\":\"4\",\"Anvil\":\"0\",\"Basher\":\"0]",
+     "verdict": "PASS",
+     "pics": [
+      "001-ph-p602-oil-question.png",
+      "002-ph-p602-after-save.png",
+      "004-ph-p602-leavewar-18jul.png",
+      "005-ph-p602-oil-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p602-oil-question.png",
+    "002-ph-p602-after-save.png",
+    "003-ph-p602-anvil-editor.png",
+    "004-ph-p602-leavewar-18jul.png",
+    "005-ph-p602-oil-tracker.png"
+   ]
+  },
+  "h07-ph": {
+   "at": "2026-10-08T14:42:36.996Z",
+   "table": [
+    {
+     "id": "H-07",
+     "did": "Saber files a duty for Ranger from \"+ Input\"; Ranger changes its remarks; Saber opens a NEW \"+ Input\" (twice), the saved one, and hovers its bar",
+     "saw": "OK a new input’s window has no placed-by line (first and second time) [{\"newPlaced\":0,\"new2Placed\":0}] · OK the saved one’s foot reads \"Placed by Saber for Ranger · <date, time>\" [Placed by Saber for Ranger · 8 Oct 26, 22:42 · changed by Ranger · 8 Oct 26, 22:42] · OK after Ranger’s change the change is beside it (\"changed by Ranger · …\") [Placed by Saber for Ranger · 8 Oct 26, 22:42 · changed by Ranger · 8 Oct 26, 22:42] · OK the bar’s tooltip carries the same line (desktop) [Ranger · Duty · 28 Jul\nPlaced by Saber for Ranger · 8 Oct 26, 22:42 · changed by Ranger · 8 Oct 26, 22:42] · OK the opened day’s line carries it too [Placed by Saber for Ranger · 8 Oct 26, 22:42 · changed by Ranger · 8 Oct 26, 22:42]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-h07-new-input-window.png",
+    "002-ph-h07-new-input-again.png",
+    "003-ph-h07-saved-editor-foot.png"
+   ]
+  },
+  "p611-ph": {
+   "at": "2026-10-08T14:45:21.417Z",
+   "table": [
+    {
+     "id": "P6-11",
+     "did": "controlled clock 29 Jun 10:00 then 30 Jun 10:00; Inputs on 14 days; LL for Ace and Cinder (span 17-21 Jul) filed 29 Jun; LL for Anvil, LL for Basher (10-14 Jul, a span beginning the week before), HL for Echo, Training for Cutter filed 30 Jun; read on the month, List, week and board; then other weeks",
+     "saw": "OK month: 29 Jun filings on time (Ace 15 Jul, Cinder 17 Jul) [{\"ace\":{\"who\":\"Ace\",\"kind\":\"LL\",\"late\":false},\"cinder\":{\"who\":\"Cinder\",\"kind\":\"LL\",\"late\":false}}] · OK month: 30 Jun filings late (Anvil LL, Cutter Training); Echo�s medical never LATE [[{\"who\":\"Anvil\",\"kind\":\"LL\",\"late\":true},{\"who\":\"Echo\",\"kind\":\"HL\",\"late\":false}]] · OK month: Basher�s span starting in the earlier week is late on both of its weeks (10 Jul and 14 Jul) · OK month: Cinder�s span stays on time into the next week (20 Jul) · OK List: the same judgement per man [{\"Basher 10 Jul 14\":true,\"Echo 15 Jul HL\":false,\"Anvil 15 Jul LL\":true,\"Ace 15 Jul LL\":false,\"Cutter 16 Jul TRAINING\":true,\"Cinder 17 Jul 21\":false}] · OK week 13 Jul: Anvil, Basher, Cutter wear LATE; Ace, Cinder, Echo do not [[\"?APPOINTMENT 10:00 11:00 Bolt C\",\"Basher\",\"?APPOINTMENT 14:00 16:00 C Sain\",\"Basher\",\"?LL all day Quill IW LATE Local\",\"?OIL all day Wisp C LATE OIL — \",\"Anvil\",\"Cutter\"]] · OK loading another week does not change a man�s lateness: week 20 Jul (Cinder not late), week 6 Jul (Basher late) [{\"w20\":[\"?LL all day Tally O LATE Local \"],\"w06\":[\"Basher\",\"Basher\",\"Basher\"]}] · OK board (Wed/Thu): Anvil and Cutter LATE; Ace, Echo not [{\"2\":[\"Anvil\"],\"3\":[\"Cutter\"],\"4\":[]}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p611-month-15jul.png",
+    "002-ph-p611-day-15jul.png",
+    "003-ph-p611-list.png",
+    "004-ph-p611-week-13jul.png",
+    "005-ph-p611-week-20jul.png",
+    "006-ph-p611-week-06jul.png",
+    "007-ph-p611-board-wed.png",
+    "008-ph-p611-board-thu.png"
+   ]
+  },
+  "p605-ph": {
+   "at": "2026-10-08T14:48:17.017Z",
+   "table": [
+    {
+     "id": "P6-05",
+     "did": "Ranger files for himself + Echo, leaves a three-man draft open; Saber turns \"Members may file for other people\" OFF (same world); Ranger tries Save, edit, delete, Undo; the switch goes back ON",
+     "saw": "OK the saved entry stays (both records still there after every attempt) [{\"s1\":2,\"s2\":2}] · OK the open draft still holds its three people after the switch changed [{\"before\":[\"Ranger\",\"Cutter\",\"Echo\"],\"after\":[\"Ranger\",\"Cutter\",\"Echo\"],\"edStill\":true}] · OK the draft says why (a sentence and a correcting press), in words [{\"why\":\"Filing for other people is switched off — you can file this only for yourself\\nFile it for me only\",\"fix\":\"File it for me only\"}] · OK Save of the draft is refused in words and files nothing [{\"tSave\":\"Filing for other people is switched off — you can file this only for yourself\",\"new2\":0}] · OK after the refusal the draft still holds its people (nothing substituted) [[\"Ranger\",\"Cutter\",\"Echo\"]] · OK editing / deleting the saved entry: refused or read-only (no silent change) [{\"ed\":{\"save\":false,\"del\":false,\"ro\":\"Only Ranger — who filed it — or an admin can change this for everyone.\"},\"tEdit\":\"\",\"tDel\":\"\"}] · OK Undo of the earlier filing does not bypass the switch (the entry is not silently removed) [{\"tUndo\":\"You can’t undo that while filing for other people is switched off — the person it was filed for, or an admin, can change it.\",\"s2\":2}] · OK restoring the switch: the same draft now saves for all three [{\"tR\":\"Input added for 3 people\",\"n\":3}]",
+     "verdict": "PASS",
+     "pics": [
+      "005-ph-p605-draft-save-refused.png",
+      "008-ph-p605-undo-try.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p605-draft-open.png",
+    "002-ph-p605-draft-dragged-down.png",
+    "003-ph-p605-gear-off.png",
+    "004-ph-p605-draft-after-off.png",
+    "005-ph-p605-draft-save-refused.png",
+    "006-ph-p605-saved-entry-switch-off.png",
+    "007-ph-p605-saved-entry-switch-off-foot.png",
+    "008-ph-p605-undo-try.png",
+    "009-ph-p605-gear-on.png",
+    "010-ph-p605-restored-save.png"
+   ]
+  },
+  "p607b-dk": {
+   "at": "2026-10-08T14:54:17.401Z",
+   "table": [
+    {
+     "id": "P6-07 (List Add form)",
+     "did": "the List Add form’s own picker: Several people, each All, again, return to one",
+     "saw": "OK all four groups drawn, each A to Z, each holding exactly its own men [{\"pilots\":{\"n\":29,\"az\":true,\"same\":true},\"wsos\":{\"n\":18,\"az\":true,\"same\":true},\"sans\":{\"n\":11,\"az\":true,\"same\":true},\"personnel\":{\"n\":3,\"az\":true,\"same\":true}}] · OK the three Alls select their groups and no SANS man [{\"n\":50,\"sansIn\":[]}] · OK pressing each All again clears the group but never the last man (one stays) [[\"Cotter\"]] · OK back to one person keeps a picked man [{\"back\":\"Cotter\",\"cnt\":\"1 picked\"}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p607b-several-on.png",
+    "002-dk-p607b-all-three.png",
+    "003-dk-p607b-after-clear.png"
+   ]
+  },
+  "p607b-ph": {
+   "at": "2026-10-08T14:54:27.117Z",
+   "table": [
+    {
+     "id": "P6-07 (List Add form)",
+     "did": "the List Add form’s own picker: Several people, each All, again, return to one",
+     "saw": "OK all four groups drawn, each A to Z, each holding exactly its own men [{\"pilots\":{\"n\":29,\"az\":true,\"same\":true},\"wsos\":{\"n\":18,\"az\":true,\"same\":true},\"sans\":{\"n\":11,\"az\":true,\"same\":true},\"personnel\":{\"n\":3,\"az\":true,\"same\":true}}] · OK the three Alls select their groups and no SANS man [{\"n\":50,\"sansIn\":[]}] · OK pressing each All again clears the group but never the last man (one stays) [[\"Cotter\"]] · OK back to one person keeps a picked man [{\"back\":\"Cotter\",\"cnt\":\"1 picked\"}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-ph-p607b-several-on.png",
+    "002-ph-p607b-all-three.png",
+    "003-ph-p607b-after-clear.png"
+   ]
+  },
+  "p602b-dk": {
+   "at": "2026-10-08T14:57:48.207Z",
+   "table": [
+    {
+     "id": "P6-02 (credit half)",
+     "did": "the shared Duty filed Sat 18 Jul with OIL Yes is already on the board for each man (landed); before publishing nothing is credited; then four sign-offs and Publish day",
+     "saw": "OK the three men�s requests were each answered at the filing (one claim each) [[{\"2026-07-18\":1},{\"2026-07-18\":1},{\"2026-07-18\":1}]] · OK before publishing the OIL tracker balances are as before the filing (Ace 4, Anvil 0, Basher 0) [{\"Ace\":\"4\",\"Anvil\":\"0\",\"Basher\":\"0\"}] · OK after publishing each man�s own Leave War cell on 18 Jul shows his own FO [{\"Ace\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Anvil\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Basher\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"}}] · OK after publishing each man�s tracker row gains exactly ONE day (+1), none gets the three [{\"Ace\":\"5\",\"Anvil\":\"1\",\"Basher\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-dk-p602b-board-before.png",
+    "002-dk-p602b-signed.png",
+    "003-dk-p602b-after-publish.png",
+    "004-dk-p602b-leavewar-after-publish.png",
+    "005-dk-p602b-oil-tracker-after-publish.png"
+   ]
+  }
+ }
+}

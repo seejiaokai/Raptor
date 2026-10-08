@@ -1,0 +1,21 @@
+import * as F from './cal-F-lib.mjs'
+const b = await F.launch()
+const ctx = await F.newCtx(b)
+const p = await F.newPage(ctx)
+await F.signIn(p, 'ad')
+await F.go(p, 'inputs')
+await F.month(p, 2026, 7)
+await F.pic(p, 'recon-month')
+await p.locator('[data-icday="2026-07-18"]').click({ position: { x: 8, y: 8 } })
+await F.sleep(500)
+await p.locator('#icPopAdd').click()
+await F.sleep(500)
+await F.pic(p, 'recon-editor')
+const info = await p.evaluate(() => {
+  const e = document.getElementById('inpEditPop')
+  return { html: e.innerHTML.slice(0, 6000) }
+})
+console.log(info.html)
+console.log(JSON.stringify(await p.evaluate(() => Object.entries(window.PEOPLE).map(([k, v]) => [k, v.cs, v.cat, v.seat, v.san ? 'SAN' : '', v.pers ? 'PERS' : '', v.special ? 'SPEC' : '']))))
+await b.close()
+console.log(F.errors)

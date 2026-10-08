@@ -1,0 +1,4542 @@
+{
+ "walker": "E",
+ "share": "P5-01..P5-12, H-05, H-09, H-10",
+ "counts": {
+  "PASS": 8,
+  "FAIL": 4,
+  "PARTIAL": 3,
+  "NOT_WALKED": 0
+ },
+ "table": [
+  {
+   "id": "P5-01",
+   "verdict": "FAIL",
+   "sizes": "desk FAIL; phone not reachable (the editor panel covers every other input)",
+   "pics": [
+    "p501-desk-a2-added",
+    "p501-desk-a3-after-click",
+    "p501-desk-b3-after-click",
+    "p501-desk-c1-control",
+    "p501-phone-a2-added"
+   ]
+  },
+  {
+   "id": "P5-02",
+   "verdict": "PARTIAL",
+   "sizes": "desk PASS (bar drag for dates, List row editor for hours); phone not walked (panel covers the doors)",
+   "pics": [
+    "p502-desk-a2-after-drag",
+    "p502-desk-b3-after-list-edit"
+   ]
+  },
+  {
+   "id": "P5-03",
+   "verdict": "PARTIAL",
+   "sizes": "desk PASS (Keep mine and Take theirs, separate worlds); phone not walked (panel covers the List)",
+   "pics": [
+    "p503-desk-mine-2-save-refused",
+    "p503-desk-theirs-2-save-refused",
+    "p503-desk-theirs-4-saved"
+   ]
+  },
+  {
+   "id": "P5-04",
+   "verdict": "PARTIAL",
+   "sizes": "desk PASS (A day Delete, B top-bar Undo, C one man taken out of the shared entry); phone B PASS, A and C not reachable behind the panel",
+   "pics": [
+    "p504-desk-A-3-after-delete",
+    "p504-desk-B-2-after-undo",
+    "p504-desk-C-4-back-as-saber",
+    "p504-phone-B-2-after-undo"
+   ]
+  },
+  {
+   "id": "P5-05",
+   "verdict": "PASS",
+   "sizes": "desk real mouse; phone real finger (hold then drag)",
+   "pics": [
+    "p505-desk-1-mid-drag",
+    "p505-desk-2-after-drag",
+    "p505-desk-3-after-undo",
+    "p505-phone-2-after-drag"
+   ]
+  },
+  {
+   "id": "P5-06",
+   "verdict": "FAIL",
+   "sizes": "short phone all gestures PASS; desk: Escape pressed mid bar-drag then release leaves the ghost stuck",
+   "pics": [
+    "p506-short-3-hold-drag-range",
+    "p506-short-6a-mid-drag",
+    "p506b-3-after-move-away"
+   ]
+  },
+  {
+   "id": "P5-07",
+   "verdict": "PASS",
+   "sizes": "desk and phone",
+   "pics": [
+    "p507-phone-1-crowd",
+    "p507-desk-4-january"
+   ]
+  },
+  {
+   "id": "P5-08",
+   "verdict": "PASS",
+   "sizes": "desk (real keyboard)",
+   "pics": [
+    "p508-desk-2-year-edge-right",
+    "p508-desk-6-backspace-asks"
+   ]
+  },
+  {
+   "id": "P5-09",
+   "verdict": "PASS",
+   "sizes": "desk and phone",
+   "pics": [
+    "p509-desk-1-opened-day",
+    "p509-desk-3-delete-asks"
+   ]
+  },
+  {
+   "id": "P5-10",
+   "verdict": "PASS",
+   "sizes": "desk and phone (phone List has no sort header: cards)",
+   "pics": [
+    "p510-desk-3-list-trident",
+    "p510-phone-3-list-trident"
+   ]
+  },
+  {
+   "id": "P5-11",
+   "verdict": "FAIL",
+   "sizes": "month PASS (still + flash + brought back); List stays still and a hidden row is brought clear of the top bar, but the List row shows no flash on Undo/Redo and only a faint tint on Save; Undo of a bar move turned the month though the bar was partly in view",
+   "pics": [
+    "p505-desk-2-after-drag",
+    "p505-desk-3-after-undo",
+    "p511-desk-l1-after-save",
+    "p511b-desk-list"
+   ]
+  },
+  {
+   "id": "P5-12",
+   "verdict": "PASS",
+   "sizes": "desk and phone",
+   "pics": [
+    "p512-desk-3-invalid-saved",
+    "p512-desk-7-undo-1"
+   ]
+  },
+  {
+   "id": "H-05",
+   "verdict": "PASS",
+   "sizes": "desk and phone, Saber and Ranger",
+   "pics": [
+    "h05-desk-ad-1-medical",
+    "h05-desk-ad-4-viewer-2",
+    "h05-desk-ad-6-upload-door",
+    "h05-phone-ad-1-medical"
+   ]
+  },
+  {
+   "id": "H-09",
+   "verdict": "FAIL",
+   "sizes": "tabs, arrival at top, one row, Calendar|List and filters PASS at desk, phone, short, Saber and Ranger; reload does not come back on the Inputs page",
+   "pics": [
+    "h09-short-ad-2-tab-SANS",
+    "h09-short-ad-4b-after-signin-Inputs",
+    "h09-desk-ad-4-reload-Inputs"
+   ]
+  },
+  {
+   "id": "H-10",
+   "verdict": "PASS",
+   "sizes": "desk and phone",
+   "pics": [
+    "h10-desk-2-person-Saber"
+   ]
+  }
+ ],
+ "runs": {
+  "h05-desk-ad": [
+   {
+    "log": [
+     "Medical open: tabs [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":true}] | close crosses in the Medical view: 0",
+     "placed lines on cards: [\"Placed by Grit · 12 Jul 26, 14:42\",\"Placed by Vector · 12 Jul 26, 08:00\",\"Placed by Quill · 5 Jul 26, 10:20\",\"Placed by Zenith · 20 Jun 26, 12:34\"]",
+     "page sideways scroll? false",
+     "card Grit -> [\"docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Vector -> [\"docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Quill -> [\"docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Upchit | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Zenith -> [\"docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "document viewer first page: {\"title\":\"Zenith · Upchit · Jun 20\",\"sub\":\"medically up — fit to fly again — Medically up 20 Jun\",\"placed\":\"Placed by Zenith · 20 Jun 26, 12:34\",\"count\":\"2 of 2\"}",
+     "after paging back: {\"sub\":\"medically down — no flying, may still work — Grounded — may still work, till 19 Jun\",\"placed\":\"Placed by Zenith · 14 Jun 26, 11:27\",\"count\":\"1 of 2\"}",
+     "viewer buttons: [\"✕\",\"‹\",\"›\",\"Edit input\",\"Close\"]",
+     "Edit input -> [\"win-inputedit :: ⠿ | Zenith · 15 Jun → 19 Jun | ✕ | PERSON | Ace | Anvil | Basher | Blade | Bolt | Cinch | Cinder | Cobra | Comet | Cotter | Cutter | Dash | Diesel | Drifter | Echo | Fable | Forge | Gambit | Ghost | Grit | Havoc | Hex | Hunter | Jester | Kraken | Ledger | Marl\",\"inpEditPop :: PERSON | Ace | Anvil | Basher | Blade | Bolt | Cinch | Cinder | Cobra | Comet | Cotter | Cutter | Dash | Diesel | Drifter | Echo | Fable | Forge | Gambit | Ghost | Grit | Havoc | Hex | Hunter | Jester | Kraken | Ledger | Marlin | Nomad | Otter | Outlaw | Pisto\"]",
+     "upload door pressed -> a file chooser opened (nothing chosen) | windows: [\"win-inputedit :: ⠿ | Zenith · 15 Jun → 19 Jun | ✕ | PERSON | Ace | Anvil | Bashe\",\"inpEditPop :: PERSON | Ace | Anvil | Basher | Blade | Bolt | Cinch | Cinder | Co\"]",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "tab SANS -> selected: #inSansMode | month visible: false | medical view hidden: true",
+     "tab Medical -> selected: #inMedBtn | month visible: false | medical view hidden: false",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "errors []"
+    ],
+    "res": {
+     "tabs": [
+      {
+       "s": "#inMemberMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inSansMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inMedBtn",
+       "sel": "true",
+       "h": 36,
+       "onTop": true
+      }
+     ],
+     "closeX": 0,
+     "docH": 36,
+     "placed": [
+      "Placed by Grit · 12 Jul 26, 14:42",
+      "Placed by Vector · 12 Jul 26, 08:00",
+      "Placed by Quill · 5 Jul 26, 10:20",
+      "Placed by Zenith · 20 Jun 26, 12:34"
+     ],
+     "card Grit": [
+      "docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Edit input | Close"
+     ],
+     "card Vector": [
+      "docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Edit input | Close"
+     ],
+     "card Quill": [
+      "docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Upchit | Edit input | Close"
+     ],
+     "card Zenith": [
+      "docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Edit input | Close"
+     ],
+     "view1": {
+      "title": "Zenith · Upchit · Jun 20",
+      "sub": "medically up — fit to fly again — Medically up 20 Jun",
+      "placed": "Placed by Zenith · 20 Jun 26, 12:34",
+      "count": "2 of 2"
+     },
+     "view2": {
+      "sub": "medically down — no flying, may still work — Grounded — may still work, till 19 Jun",
+      "placed": "Placed by Zenith · 14 Jun 26, 11:27",
+      "count": "1 of 2"
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h05-desk-us": [
+   {
+    "log": [
+     "Medical open: tabs [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":true}] | close crosses in the Medical view: 0",
+     "placed lines on cards: [\"Placed by Grit · 12 Jul 26, 14:42\",\"Placed by Vector · 12 Jul 26, 08:00\",\"Placed by Quill · 5 Jul 26, 10:20\",\"Placed by Zenith · 20 Jun 26, 12:34\"]",
+     "page sideways scroll? false",
+     "card Grit -> [\"docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Vector -> [\"docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Quill -> [\"docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Zenith -> [\"docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "document viewer first page: {\"title\":\"Zenith · Upchit · Jun 20\",\"sub\":\"medically up — fit to fly again — Medically up 20 Jun\",\"placed\":\"Placed by Zenith · 20 Jun 26, 12:34\",\"count\":\"2 of 2\"}",
+     "after paging back: {\"sub\":\"medically down — no flying, may still work — Grounded — may still work, till 19 Jun\",\"placed\":\"Placed by Zenith · 14 Jun 26, 11:27\",\"count\":\"1 of 2\"}",
+     "viewer buttons: [\"✕\",\"‹\",\"›\",\"Close\"]",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "tab SANS -> selected: #inSansMode | month visible: false | medical view hidden: true",
+     "tab Medical -> selected: #inMedBtn | month visible: false | medical view hidden: false",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "errors []"
+    ],
+    "res": {
+     "tabs": [
+      {
+       "s": "#inMemberMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inSansMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inMedBtn",
+       "sel": "true",
+       "h": 36,
+       "onTop": true
+      }
+     ],
+     "closeX": 0,
+     "docH": 36,
+     "placed": [
+      "Placed by Grit · 12 Jul 26, 14:42",
+      "Placed by Vector · 12 Jul 26, 08:00",
+      "Placed by Quill · 5 Jul 26, 10:20",
+      "Placed by Zenith · 20 Jun 26, 12:34"
+     ],
+     "card Grit": [
+      "docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Close"
+     ],
+     "card Vector": [
+      "docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Close"
+     ],
+     "card Quill": [
+      "docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Close"
+     ],
+     "card Zenith": [
+      "docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Close"
+     ],
+     "view1": {
+      "title": "Zenith · Upchit · Jun 20",
+      "sub": "medically up — fit to fly again — Medically up 20 Jun",
+      "placed": "Placed by Zenith · 20 Jun 26, 12:34",
+      "count": "2 of 2"
+     },
+     "view2": {
+      "sub": "medically down — no flying, may still work — Grounded — may still work, till 19 Jun",
+      "placed": "Placed by Zenith · 14 Jun 26, 11:27",
+      "count": "1 of 2"
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h05-phone-ad": [
+   {
+    "log": [
+     "Medical open: tabs [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":true}] | close crosses in the Medical view: 0",
+     "placed lines on cards: [\"Placed by Grit · 12 Jul 26, 14:42\",\"Placed by Vector · 12 Jul 26, 08:00\",\"Placed by Quill · 5 Jul 26, 10:20\",\"Placed by Zenith · 20 Jun 26, 12:34\"]",
+     "page sideways scroll? false",
+     "card Grit -> [\"docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Vector -> [\"docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Quill -> [\"docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Upchit | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Zenith -> [\"docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Edit input | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "document viewer first page: {\"title\":\"Zenith · Upchit · Jun 20\",\"sub\":\"medically up — fit to fly again — Medically up 20 Jun\",\"placed\":\"Placed by Zenith · 20 Jun 26, 12:34\",\"count\":\"2 of 2\"}",
+     "after paging back: {\"sub\":\"medically down — no flying, may still work — Grounded — may still work, till 19 Jun\",\"placed\":\"Placed by Zenith · 14 Jun 26, 11:27\",\"count\":\"1 of 2\"}",
+     "viewer buttons: [\"✕\",\"‹\",\"›\",\"Edit input\",\"Close\"]",
+     "Edit input -> [\"win-inputedit :: ⠿ | Zenith · 15 Jun → 19 Jun | ✕ | PERSON | Ace | Anvil | Basher | Blade | Bolt | Cinch | Cinder | Cobra | Comet | Cotter | Cutter | Dash | Diesel | Drifter | Echo | Fable | Forge | Gambit | Ghost | Grit | Havoc | Hex | Hunter | Jester | Kraken | Ledger | Marl\",\"inpEditPop :: PERSON | Ace | Anvil | Basher | Blade | Bolt | Cinch | Cinder | Cobra | Comet | Cotter | Cutter | Dash | Diesel | Drifter | Echo | Fable | Forge | Gambit | Ghost | Grit | Havoc | Hex | Hunter | Jester | Kraken | Ledger | Marlin | Nomad | Otter | Outlaw | Pisto\"]",
+     "upload door pressed -> a file chooser opened (nothing chosen) | windows: [\"win-inputedit :: ⠿ | Zenith · 15 Jun → 19 Jun | ✕ | PERSON | Ace | Anvil | Bashe\",\"inpEditPop :: PERSON | Ace | Anvil | Basher | Blade | Bolt | Cinch | Cinder | Co\"]",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "tab SANS -> selected: #inSansMode | month visible: false | medical view hidden: true",
+     "tab Medical -> selected: #inMedBtn | month visible: false | medical view hidden: false",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "errors []"
+    ],
+    "res": {
+     "tabs": [
+      {
+       "s": "#inMemberMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inSansMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inMedBtn",
+       "sel": "true",
+       "h": 36,
+       "onTop": true
+      }
+     ],
+     "closeX": 0,
+     "docH": 36,
+     "placed": [
+      "Placed by Grit · 12 Jul 26, 14:42",
+      "Placed by Vector · 12 Jul 26, 08:00",
+      "Placed by Quill · 5 Jul 26, 10:20",
+      "Placed by Zenith · 20 Jun 26, 12:34"
+     ],
+     "card Grit": [
+      "docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Edit input | Close"
+     ],
+     "card Vector": [
+      "docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Edit input | Close"
+     ],
+     "card Quill": [
+      "docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Upchit | Edit input | Close"
+     ],
+     "card Zenith": [
+      "docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Edit input | Close"
+     ],
+     "view1": {
+      "title": "Zenith · Upchit · Jun 20",
+      "sub": "medically up — fit to fly again — Medically up 20 Jun",
+      "placed": "Placed by Zenith · 20 Jun 26, 12:34",
+      "count": "2 of 2"
+     },
+     "view2": {
+      "sub": "medically down — no flying, may still work — Grounded — may still work, till 19 Jun",
+      "placed": "Placed by Zenith · 14 Jun 26, 11:27",
+      "count": "1 of 2"
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h05-phone-us": [
+   {
+    "log": [
+     "Medical open: tabs [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":true},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":true}] | close crosses in the Medical view: 0",
+     "placed lines on cards: [\"Placed by Grit · 12 Jul 26, 14:42\",\"Placed by Vector · 12 Jul 26, 08:00\",\"Placed by Quill · 5 Jul 26, 10:20\",\"Placed by Zenith · 20 Jun 26, 12:34\"]",
+     "page sideways scroll? false",
+     "card Grit -> [\"docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Vector -> [\"docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Quill -> [\"docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "card Zenith -> [\"docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Close\"]",
+     "  tabs while it is open: [{\"s\":\"#inMemberMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inSansMode\",\"sel\":\"false\",\"h\":36,\"onTop\":false},{\"s\":\"#inMedBtn\",\"sel\":\"true\",\"h\":36,\"onTop\":false}]",
+     "  windows after closing: 0",
+     "document viewer first page: {\"title\":\"Zenith · Upchit · Jun 20\",\"sub\":\"medically up — fit to fly again — Medically up 20 Jun\",\"placed\":\"Placed by Zenith · 20 Jun 26, 12:34\",\"count\":\"2 of 2\"}",
+     "after paging back: {\"sub\":\"medically down — no flying, may still work — Grounded — may still work, till 19 Jun\",\"placed\":\"Placed by Zenith · 14 Jun 26, 11:27\",\"count\":\"1 of 2\"}",
+     "viewer buttons: [\"✕\",\"‹\",\"›\",\"Close\"]",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "tab SANS -> selected: #inSansMode | month visible: false | medical view hidden: true",
+     "tab Medical -> selected: #inMedBtn | month visible: false | medical view hidden: false",
+     "tab Inputs -> selected: #inMemberMode | month visible: true | medical view hidden: true",
+     "errors []"
+    ],
+    "res": {
+     "tabs": [
+      {
+       "s": "#inMemberMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inSansMode",
+       "sel": "false",
+       "h": 36,
+       "onTop": true
+      },
+      {
+       "s": "#inMedBtn",
+       "sel": "true",
+       "h": 36,
+       "onTop": true
+      }
+     ],
+     "closeX": 0,
+     "docH": 36,
+     "placed": [
+      "Placed by Grit · 12 Jul 26, 14:42",
+      "Placed by Vector · 12 Jul 26, 08:00",
+      "Placed by Quill · 5 Jul 26, 10:20",
+      "Placed by Zenith · 20 Jun 26, 12:34"
+     ],
+     "card Grit": [
+      "docViewPop :: Grit · ATT C · Jul 13 → Jul 17 | ✕ | medically down — cannot report to work — Medically down till 17 Jul | Placed by Grit · 12 Jul 26, 14:42 | Close"
+     ],
+     "card Vector": [
+      "docViewPop :: Vector · OML · Jul 13 | ✕ | ordinary medical leave — Medical leave 13 Jul | Placed by Vector · 12 Jul 26, 08:00 | Close"
+     ],
+     "card Quill": [
+      "docViewPop :: Quill · OML · Jul 6 → Jul 9 | ✕ | ordinary medical leave — Medically down till 9 Jul | Placed by Quill · 5 Jul 26, 10:20 | Close"
+     ],
+     "card Zenith": [
+      "docViewPop :: Zenith · Upchit · Jun 20 | ✕ | medically up — fit to fly again — Medically up 20 Jun | Placed by Zenith · 20 Jun 26, 12:34 | ‹ | 2 of 2 | › | Close"
+     ],
+     "view1": {
+      "title": "Zenith · Upchit · Jun 20",
+      "sub": "medically up — fit to fly again — Medically up 20 Jun",
+      "placed": "Placed by Zenith · 20 Jun 26, 12:34",
+      "count": "2 of 2"
+     },
+     "view2": {
+      "sub": "medically down — no flying, may still work — Grounded — may still work, till 19 Jun",
+      "placed": "Placed by Zenith · 14 Jun 26, 11:27",
+      "count": "1 of 2"
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h09-desk-ad": [
+   {
+    "log": [
+     "before: page viewsched scrollY 400",
+     "arrived: page inputs scrollY 0",
+     "tabs: tops/heights [[73,36],[73,36],[73,36]] one row? true | tallest tool height 44 | tab height 36 | selected [\"true\",\"false\",\"false\"]",
+     "Inputs tab (Calendar): present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | sideways scroll ok true | inner scroll boxes []",
+     "tab SANS | selected [\"false\",\"true\",\"false\"] | one row true | tab tops [73,73,73] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":true} | scrollY 0 | side ok true | boxes []",
+     "tab Medical | selected [\"false\",\"false\",\"true\"] | one row true | tab tops [73,73,73] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "tab Inputs | selected [\"true\",\"false\",\"false\"] | one row true | tab tops [73,73,73] | present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "List: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":false,\"sansMonth\":false} list table visible true",
+     "Calendar again: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false}",
+     "plain world Inputs : records 50 -> 51",
+     "reload on tab Inputs -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":0}",
+     "plain world SANS : records 50 -> 51",
+     "reload on tab SANS -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":0}",
+     "plain world Medical : records 50 -> 51",
+     "reload on tab Medical -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":0}",
+     "errors []"
+    ],
+    "res": {
+     "arrive": {
+      "page": "inputs",
+      "scrollY": 0
+     },
+     "tabsInfo": {
+      "tabs": [
+       {
+        "top": 73,
+        "h": 36,
+        "left": 4,
+        "right": 93,
+        "vis": true
+       },
+       {
+        "top": 73,
+        "h": 36,
+        "left": 95,
+        "right": 179,
+        "vis": true
+       },
+       {
+        "top": 73,
+        "h": 36,
+        "left": 181,
+        "right": 325,
+        "vis": true
+       }
+      ],
+      "tools": [
+       {
+        "top": 69,
+        "h": 44,
+        "left": 337,
+        "right": 381,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 657,
+        "right": 751,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 751,
+        "right": 815,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 964,
+        "right": 1082,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 1396,
+        "right": 1440,
+        "vis": true
+       }
+      ],
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ]
+     },
+     "tabHeight": 36,
+     "toolHeight": 44,
+     "oneRow": true,
+     "inputsCal": {
+      "present": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "noSide": true,
+      "boxes": []
+     },
+     "tab SANS": {
+      "sel": [
+       "false",
+       "true",
+       "false"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": true
+      },
+      "tops": [
+       73,
+       73,
+       73
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Medical": {
+      "sel": [
+       "false",
+       "false",
+       "true"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": false
+      },
+      "tops": [
+       73,
+       73,
+       73
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Inputs": {
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ],
+      "pr": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "tops": [
+       73,
+       73,
+       73
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "reload Inputs": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Inputs signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0
+     },
+     "reload SANS": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload SANS signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0
+     },
+     "reload Medical": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Medical signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h09-desk-us": [
+   {
+    "log": [
+     "before: page viewsched scrollY 400",
+     "arrived: page inputs scrollY 0",
+     "tabs: tops/heights [[73,36],[73,36],[73,36]] one row? true | tallest tool height 44 | tab height 36 | selected [\"true\",\"false\",\"false\"]",
+     "Inputs tab (Calendar): present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | sideways scroll ok true | inner scroll boxes []",
+     "tab SANS | selected [\"false\",\"true\",\"false\"] | one row true | tab tops [73,73,73] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":true} | scrollY 0 | side ok true | boxes []",
+     "tab Medical | selected [\"false\",\"false\",\"true\"] | one row true | tab tops [73,73,73] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "tab Inputs | selected [\"true\",\"false\",\"false\"] | one row true | tab tops [73,73,73] | present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "List: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":false,\"sansMonth\":false} list table visible true",
+     "Calendar again: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false}",
+     "plain world Inputs : records 50 -> 51",
+     "reload on tab Inputs -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":0}",
+     "plain world SANS : records 50 -> 51",
+     "reload on tab SANS -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":0}",
+     "plain world Medical : records 50 -> 51",
+     "reload on tab Medical -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":0}",
+     "errors []"
+    ],
+    "res": {
+     "arrive": {
+      "page": "inputs",
+      "scrollY": 0
+     },
+     "tabsInfo": {
+      "tabs": [
+       {
+        "top": 73,
+        "h": 36,
+        "left": 4,
+        "right": 93,
+        "vis": true
+       },
+       {
+        "top": 73,
+        "h": 36,
+        "left": 95,
+        "right": 179,
+        "vis": true
+       },
+       {
+        "top": 73,
+        "h": 36,
+        "left": 181,
+        "right": 325,
+        "vis": true
+       }
+      ],
+      "tools": [
+       {
+        "top": 69,
+        "h": 44,
+        "left": 337,
+        "right": 381,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 657,
+        "right": 751,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 751,
+        "right": 815,
+        "vis": true
+       },
+       {
+        "top": 69,
+        "h": 44,
+        "left": 1016,
+        "right": 1134,
+        "vis": true
+       }
+      ],
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ]
+     },
+     "tabHeight": 36,
+     "toolHeight": 44,
+     "oneRow": true,
+     "inputsCal": {
+      "present": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "noSide": true,
+      "boxes": []
+     },
+     "tab SANS": {
+      "sel": [
+       "false",
+       "true",
+       "false"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": true
+      },
+      "tops": [
+       73,
+       73,
+       73
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Medical": {
+      "sel": [
+       "false",
+       "false",
+       "true"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": false
+      },
+      "tops": [
+       73,
+       73,
+       73
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Inputs": {
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ],
+      "pr": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "tops": [
+       73,
+       73,
+       73
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "reload Inputs": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Inputs signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0
+     },
+     "reload SANS": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload SANS signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0
+     },
+     "reload Medical": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Medical signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h09-phone-ad": [
+   {
+    "log": [
+     "before: page viewsched scrollY 400",
+     "arrived: page inputs scrollY 0",
+     "tabs: tops/heights [[61,36],[61,36],[61,36]] one row? true | tallest tool height 44 | tab height 36 | selected [\"true\",\"false\",\"false\"]",
+     "Inputs tab (Calendar): present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | sideways scroll ok true | inner scroll boxes []",
+     "tab SANS | selected [\"false\",\"true\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":true} | scrollY 0 | side ok true | boxes []",
+     "tab Medical | selected [\"false\",\"false\",\"true\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "tab Inputs | selected [\"true\",\"false\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "List: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":false,\"sansMonth\":false} list table visible false",
+     "Calendar again: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false}",
+     "plain world Inputs : records 50 -> 51",
+     "reload on tab Inputs -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world SANS : records 50 -> 51",
+     "reload on tab SANS -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world Medical : records 50 -> 51",
+     "reload on tab Medical -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "errors []"
+    ],
+    "res": {
+     "arrive": {
+      "page": "inputs",
+      "scrollY": 0
+     },
+     "tabsInfo": {
+      "tabs": [
+       {
+        "top": 61,
+        "h": 36,
+        "left": 12,
+        "right": 133,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 135,
+        "right": 255,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 257,
+        "right": 378,
+        "vis": true
+       }
+      ],
+      "tools": [
+       {
+        "top": 106,
+        "h": 44,
+        "left": 8,
+        "right": 42,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 223,
+        "right": 257,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 257,
+        "right": 291,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 305,
+        "right": 339,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 344,
+        "right": 382,
+        "vis": true
+       }
+      ],
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ]
+     },
+     "tabHeight": 36,
+     "toolHeight": 44,
+     "oneRow": true,
+     "inputsCal": {
+      "present": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "noSide": true,
+      "boxes": []
+     },
+     "tab SANS": {
+      "sel": [
+       "false",
+       "true",
+       "false"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": true
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Medical": {
+      "sel": [
+       "false",
+       "false",
+       "true"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Inputs": {
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ],
+      "pr": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "reload Inputs": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Inputs signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload SANS": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload SANS signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload Medical": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Medical signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h09-phone-us": [
+   {
+    "log": [
+     "before: page viewsched scrollY 400",
+     "arrived: page inputs scrollY 0",
+     "tabs: tops/heights [[61,36],[61,36],[61,36]] one row? true | tallest tool height 44 | tab height 36 | selected [\"true\",\"false\",\"false\"]",
+     "Inputs tab (Calendar): present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | sideways scroll ok true | inner scroll boxes []",
+     "tab SANS | selected [\"false\",\"true\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":true} | scrollY 0 | side ok true | boxes []",
+     "tab Medical | selected [\"false\",\"false\",\"true\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "tab Inputs | selected [\"true\",\"false\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "List: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":false,\"sansMonth\":false} list table visible false",
+     "Calendar again: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false}",
+     "plain world Inputs : records 50 -> 51",
+     "reload on tab Inputs -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world SANS : records 50 -> 51",
+     "reload on tab SANS -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world Medical : records 50 -> 51",
+     "reload on tab Medical -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "errors []"
+    ],
+    "res": {
+     "arrive": {
+      "page": "inputs",
+      "scrollY": 0
+     },
+     "tabsInfo": {
+      "tabs": [
+       {
+        "top": 61,
+        "h": 36,
+        "left": 12,
+        "right": 133,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 135,
+        "right": 255,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 257,
+        "right": 378,
+        "vis": true
+       }
+      ],
+      "tools": [
+       {
+        "top": 106,
+        "h": 44,
+        "left": 8,
+        "right": 42,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 223,
+        "right": 257,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 257,
+        "right": 291,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 338,
+        "right": 382,
+        "vis": true
+       }
+      ],
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ]
+     },
+     "tabHeight": 36,
+     "toolHeight": 44,
+     "oneRow": true,
+     "inputsCal": {
+      "present": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "noSide": true,
+      "boxes": []
+     },
+     "tab SANS": {
+      "sel": [
+       "false",
+       "true",
+       "false"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": true
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Medical": {
+      "sel": [
+       "false",
+       "false",
+       "true"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Inputs": {
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ],
+      "pr": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "reload Inputs": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Inputs signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload SANS": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload SANS signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload Medical": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Medical signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h09-short-ad": [
+   {
+    "log": [
+     "before: page viewsched scrollY 400",
+     "arrived: page inputs scrollY 0",
+     "tabs: tops/heights [[61,36],[61,36],[61,36]] one row? true | tallest tool height 44 | tab height 36 | selected [\"true\",\"false\",\"false\"]",
+     "Inputs tab (Calendar): present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | sideways scroll ok true | inner scroll boxes []",
+     "tab SANS | selected [\"false\",\"true\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":true} | scrollY 0 | side ok true | boxes []",
+     "tab Medical | selected [\"false\",\"false\",\"true\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "tab Inputs | selected [\"true\",\"false\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "List: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":false,\"sansMonth\":false} list table visible false",
+     "Calendar again: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false}",
+     "plain world Inputs : records 50 -> 51",
+     "reload on tab Inputs -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world SANS : records 50 -> 51",
+     "reload on tab SANS -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world Medical : records 50 -> 51",
+     "reload on tab Medical -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "errors []"
+    ],
+    "res": {
+     "arrive": {
+      "page": "inputs",
+      "scrollY": 0
+     },
+     "tabsInfo": {
+      "tabs": [
+       {
+        "top": 61,
+        "h": 36,
+        "left": 12,
+        "right": 133,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 135,
+        "right": 255,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 257,
+        "right": 378,
+        "vis": true
+       }
+      ],
+      "tools": [
+       {
+        "top": 106,
+        "h": 44,
+        "left": 8,
+        "right": 42,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 223,
+        "right": 257,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 257,
+        "right": 291,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 305,
+        "right": 339,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 344,
+        "right": 382,
+        "vis": true
+       }
+      ],
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ]
+     },
+     "tabHeight": 36,
+     "toolHeight": 44,
+     "oneRow": true,
+     "inputsCal": {
+      "present": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "noSide": true,
+      "boxes": []
+     },
+     "tab SANS": {
+      "sel": [
+       "false",
+       "true",
+       "false"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": true
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Medical": {
+      "sel": [
+       "false",
+       "false",
+       "true"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Inputs": {
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ],
+      "pr": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "reload Inputs": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Inputs signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload SANS": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload SANS signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload Medical": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Medical signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h09-short-us": [
+   {
+    "log": [
+     "before: page viewsched scrollY 400",
+     "arrived: page inputs scrollY 0",
+     "tabs: tops/heights [[61,36],[61,36],[61,36]] one row? true | tallest tool height 44 | tab height 36 | selected [\"true\",\"false\",\"false\"]",
+     "Inputs tab (Calendar): present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | sideways scroll ok true | inner scroll boxes []",
+     "tab SANS | selected [\"false\",\"true\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":true} | scrollY 0 | side ok true | boxes []",
+     "tab Medical | selected [\"false\",\"false\",\"true\"] | one row true | tab tops [61,61,61] | present {\"cal\":false,\"list\":false,\"filters\":false,\"month\":false,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "tab Inputs | selected [\"true\",\"false\",\"false\"] | one row true | tab tops [61,61,61] | present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false} | scrollY 0 | side ok true | boxes []",
+     "List: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":false,\"sansMonth\":false} list table visible false",
+     "Calendar again: present {\"cal\":true,\"list\":true,\"filters\":true,\"month\":true,\"sansMonth\":false}",
+     "plain world Inputs : records 50 -> 51",
+     "reload on tab Inputs -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world SANS : records 50 -> 51",
+     "reload on tab SANS -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "plain world Medical : records 50 -> 51",
+     "reload on tab Medical -> {\"page\":\"viewsched\",\"loginShown\":true,\"selected\":[null,null,null],\"scrollY\":0,\"hasFixture\":true}",
+     "  after signing in again: {\"page\":\"viewsched\",\"selected\":[null,null,null],\"scrollY\":120}",
+     "errors []"
+    ],
+    "res": {
+     "arrive": {
+      "page": "inputs",
+      "scrollY": 0
+     },
+     "tabsInfo": {
+      "tabs": [
+       {
+        "top": 61,
+        "h": 36,
+        "left": 12,
+        "right": 133,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 135,
+        "right": 255,
+        "vis": true
+       },
+       {
+        "top": 61,
+        "h": 36,
+        "left": 257,
+        "right": 378,
+        "vis": true
+       }
+      ],
+      "tools": [
+       {
+        "top": 106,
+        "h": 44,
+        "left": 8,
+        "right": 42,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 223,
+        "right": 257,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 257,
+        "right": 291,
+        "vis": true
+       },
+       {
+        "top": 106,
+        "h": 44,
+        "left": 338,
+        "right": 382,
+        "vis": true
+       }
+      ],
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ]
+     },
+     "tabHeight": 36,
+     "toolHeight": 44,
+     "oneRow": true,
+     "inputsCal": {
+      "present": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "noSide": true,
+      "boxes": []
+     },
+     "tab SANS": {
+      "sel": [
+       "false",
+       "true",
+       "false"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": true
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Medical": {
+      "sel": [
+       "false",
+       "false",
+       "true"
+      ],
+      "pr": {
+       "cal": false,
+       "list": false,
+       "filters": false,
+       "month": false,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "tab Inputs": {
+      "sel": [
+       "true",
+       "false",
+       "false"
+      ],
+      "pr": {
+       "cal": true,
+       "list": true,
+       "filters": true,
+       "month": true,
+       "sansMonth": false
+      },
+      "tops": [
+       61,
+       61,
+       61
+      ],
+      "side": true,
+      "boxes": [],
+      "scrollY": 0
+     },
+     "reload Inputs": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Inputs signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload SANS": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload SANS signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     },
+     "reload Medical": {
+      "page": "viewsched",
+      "loginShown": true,
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 0,
+      "hasFixture": true
+     },
+     "reload Medical signed": {
+      "page": "viewsched",
+      "selected": [
+       null,
+       null,
+       null
+      ],
+      "scrollY": 120
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h10-desk": [
+   {
+    "log": [
+     "no filter | expected from the records 19 | bars 7 | more +12 more | bars + more = 19 | opened day rows 19 (19 inputs) | who Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt, | AGREE: true",
+     "person = Saber | expected from the records 10 | bars 7 | more +3 more | bars + more = 10 | opened day rows 10 (10 inputs) | who Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber | AGREE: true",
+     "person = Saber + type = Meeting | expected from the records 2 | bars 2 | more  | bars + more = 2 | opened day rows 2 (2 inputs) | who Saber,Saber | AGREE: true",
+     "type = Meeting only | expected from the records 4 | bars 4 | more  | bars + more = 4 | opened day rows 4 (4 inputs) | who Zenith,Ridge,Saber,Saber | AGREE: true",
+     "cleared | expected from the records 19 | bars 7 | more +12 more | bars + more = 19 | opened day rows 19 (19 inputs) | who Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt, | AGREE: true",
+     "errors []"
+    ],
+    "res": {
+     "no filter": {
+      "exp": 19,
+      "v": {
+       "bars": 7,
+       "more": "+12 more"
+      },
+      "day": {
+       "rows": 19,
+       "count": "19 inputs",
+       "who": "Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt,Ridge,Saber,Saber,Saber,Saber,Saber"
+      },
+      "agree": true
+     },
+     "person = Saber": {
+      "exp": 10,
+      "v": {
+       "bars": 7,
+       "more": "+3 more"
+      },
+      "day": {
+       "rows": 10,
+       "count": "10 inputs",
+       "who": "Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber"
+      },
+      "agree": true
+     },
+     "person = Saber + type = Meeting": {
+      "exp": 2,
+      "v": {
+       "bars": 2,
+       "more": null
+      },
+      "day": {
+       "rows": 2,
+       "count": "2 inputs",
+       "who": "Saber,Saber"
+      },
+      "agree": true
+     },
+     "type = Meeting only": {
+      "exp": 4,
+      "v": {
+       "bars": 4,
+       "more": null
+      },
+      "day": {
+       "rows": 4,
+       "count": "4 inputs",
+       "who": "Zenith,Ridge,Saber,Saber"
+      },
+      "agree": true
+     },
+     "cleared": {
+      "exp": 19,
+      "v": {
+       "bars": 7,
+       "more": "+12 more"
+      },
+      "day": {
+       "rows": 19,
+       "count": "19 inputs",
+       "who": "Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt,Ridge,Saber,Saber,Saber,Saber,Saber"
+      },
+      "agree": true
+     }
+    },
+    "errors": []
+   }
+  ],
+  "h10-phone": [
+   {
+    "log": [
+     "no filter | expected from the records 19 | bars 3 | more +16 more | bars + more = 19 | opened day rows 19 (19 inputs) | who Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt, | AGREE: true",
+     "person = Saber | expected from the records 10 | bars 3 | more +7 more | bars + more = 10 | opened day rows 10 (10 inputs) | who Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber | AGREE: true",
+     "person = Saber + type = Meeting | expected from the records 2 | bars 2 | more  | bars + more = 2 | opened day rows 2 (2 inputs) | who Saber,Saber | AGREE: true",
+     "type = Meeting only | expected from the records 4 | bars 3 | more +1 more | bars + more = 4 | opened day rows 4 (4 inputs) | who Zenith,Ridge,Saber,Saber | AGREE: true",
+     "cleared | expected from the records 19 | bars 3 | more +16 more | bars + more = 19 | opened day rows 19 (19 inputs) | who Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt, | AGREE: true",
+     "errors []"
+    ],
+    "res": {
+     "no filter": {
+      "exp": 19,
+      "v": {
+       "bars": 3,
+       "more": "+16 more"
+      },
+      "day": {
+       "rows": 19,
+       "count": "19 inputs",
+       "who": "Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt,Ridge,Saber,Saber,Saber,Saber,Saber"
+      },
+      "agree": true
+     },
+     "person = Saber": {
+      "exp": 10,
+      "v": {
+       "bars": 3,
+       "more": "+7 more"
+      },
+      "day": {
+       "rows": 10,
+       "count": "10 inputs",
+       "who": "Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber,Saber"
+      },
+      "agree": true
+     },
+     "person = Saber + type = Meeting": {
+      "exp": 2,
+      "v": {
+       "bars": 2,
+       "more": null
+      },
+      "day": {
+       "rows": 2,
+       "count": "2 inputs",
+       "who": "Saber,Saber"
+      },
+      "agree": true
+     },
+     "type = Meeting only": {
+      "exp": 4,
+      "v": {
+       "bars": 3,
+       "more": "+1 more"
+      },
+      "day": {
+       "rows": 4,
+       "count": "4 inputs",
+       "who": "Zenith,Ridge,Saber,Saber"
+      },
+      "agree": true
+     },
+     "cleared": {
+      "exp": 19,
+      "v": {
+       "bars": 3,
+       "more": "+16 more"
+      },
+      "day": {
+       "rows": 19,
+       "count": "19 inputs",
+       "who": "Grit,Nomad,Outlaw,Saber,Vector,Gambit,Saber,Saber,Saber,Saint,Saber,Zenith,Bolt,Ridge,Saber,Saber,Saber,Saber,Saber"
+      },
+      "agree": true
+     }
+    },
+    "errors": []
+   }
+  ],
+  "p501-desk": [
+   {
+    "log": [
+     "other input imuznd5vt5grgrw Tally",
+     "== RUN A: add Gambit only",
+     "   (toast about people changed, right after opening the shared entry: 0 )",
+     "title Drifter +3 · 23 Jul | lit slipway,bane,stiff,freak",
+     "after add: lit slipway,bruise,bane,stiff,freak",
+     "other bar reachable",
+     "question: NO QUESTION | window title now: Tally · 24 Jul",
+     "shared entry people stored after cancel: stiff,bane,slipway,freak",
+     "== RUN B: remove Echo only",
+     "   (toast about people changed, right after opening the shared entry: 0 )",
+     "title Drifter +3 · 23 Jul | lit slipway,bane,stiff,freak",
+     "after remove: lit slipway,bane,stiff",
+     "question: NO QUESTION | window title now: Tally · 24 Jul",
+     "== RUN C (control): change the REMARKS only, then click the other bar",
+     "   (toast about people changed, right after opening the shared entry: 0 )",
+     "question: This input has unsaved changes. Open Tally’s input and lose them? | Discard and open | Keep editing | window title now: Drifter +3 · 23 Jul",
+     "errors []"
+    ],
+    "errors": [],
+    "aAsked": false,
+    "bAsked": false
+   }
+  ],
+  "p502-desk": [
+   {
+    "log": [
+     "made imuzlpyrq4iy943 {\"date\":\"Oct 20\",\"s\":360,\"e\":1080,\"remarks\":\"orig remark\",\"allday\":false}",
+     "editor Saber · 20 Oct {\"rmk\":\"orig remark\",\"st\":\"06:00\",\"en\":\"18:00\",\"type\":\"Duty\"}",
+     "after drag record {\"date\":\"Oct 21\",\"s\":360,\"e\":1080,\"remarks\":\"orig remark\",\"allday\":false}",
+     "editor now Saber · 21 Oct {\"rmk\":\"LOCAL remark\",\"st\":\"06:00\",\"en\":\"18:00\",\"type\":\"Duty\"}",
+     "after Save record {\"date\":\"Oct 21\",\"s\":360,\"e\":1080,\"remarks\":\"LOCAL remark\",\"allday\":false}",
+     "List is up; editor still open? 1",
+     "row editor time inputs 2",
+     "row buttons red:Edit this input,rmx:✕",
+     "after row save record {\"date\":\"Oct 21\",\"s\":510,\"e\":945,\"remarks\":\"LOCAL remark\",\"allday\":false}",
+     "editor now Saber · 21 Oct {\"rmk\":\"LOCAL two\",\"st\":\"08:30\",\"en\":\"15:45\",\"type\":\"Duty\"}",
+     "after Save record {\"date\":\"Oct 21\",\"s\":510,\"e\":945,\"remarks\":\"LOCAL two\",\"allday\":false}",
+     "errors []"
+    ],
+    "aPass": true,
+    "bPass": true,
+    "errors": []
+   }
+  ],
+  "p503-desk": [
+   {
+    "log": [
+     "== choice mine: made imuzlts8mi5tk7o {\"remarks\":\"orig remark\",\"s\":360,\"e\":1080,\"date\":\"Oct 20\"}",
+     "row html <tr class=\"ined\" data-iid=\"imuzlts8mi5tk7o\"><td data-fld=\"Person\"><select aria-label=\"Person\" data-ed=\"person\"><option value=\"dj\">Ace</option><option value=\"shaft\">Anvil</option><option value=\"glass\">Basher</option><option value=\"slash\">Blade</option><option value=\"yeti\">Bolt</option><option value=\"snap\">Cinch</option><option value=\"ammo\">Cinder</option><option value=\"taipan\">Cobra</option><option value=\"beams\">Comet</option><option value=\"spanner\">Cotter</option><option value=\"psy\">Cutter</option><option value=\"spaceman\">Dash</option><option value=\"fantom\">Diesel</option><option value=\"slipway\">Drifter</option><option value=\"freak\">Echo</option><option value=\"plasma\">Fable</option><option value=\"chaps\">Forge</option><option value=\"bruise\">Gambit</option><option value=\"riddler\">Ghost</option><option value=\"sufa\">Grit</option><option value=\"boosh\">Havoc</option><option value=\"rocky\">Hex</option><option value=\"prowler\">Hunter</option><option value=\"ipman\">Jester</option><option value=\"krait\">Kraken</option><option value=\"drill\">Ledger</option><option value=\"cards\">Marlin</option><option value=\"pike\">Nomad</option><option value=\"wrangler\">Otter</option><option value=\"casper\">Outlaw</option><option value=\"pump\">Piston</option><option value=\"badger\">Pixel</option><option value=\"nasty\">Quill</option><option value=\"bane\">Ranger</option><option value=\"torque\">Ratchet</option><option value=\"dice\">Reaper</option><option value=\"romeo\">Rebel</option><option value=\"prism\">Recon</option><o",
+     "row remark input value orig remark",
+     "record after the List save {\"remarks\":\"THEIRS remark\",\"s\":360,\"e\":1080,\"date\":\"Oct 20\"}",
+     "conflict panel (before Save pressed): Changed while this window was open | remarks — theirs “THEIRS remark”, yours “MINE remark” | Keep mine | Take theirs",
+     "after pressing Save with conflict open: record {\"remarks\":\"THEIRS remark\",\"s\":360,\"e\":1080,\"date\":\"Oct 20\"} | editor still open 1 | toast: ///////",
+     "conflict panel now: Changed while this window was open | remarks — theirs “THEIRS remark”, yours “MINE remark” | Keep mine | Take theirs",
+     "after mine : panel gone? true | remarks field now MINE remark | end field 16:00",
+     "after Save: record {\"remarks\":\"MINE remark\",\"s\":360,\"e\":960,\"date\":\"Oct 20\"} | editor open 0",
+     "errors []",
+     "== choice theirs: made imuzltyox4bvpr8 {\"remarks\":\"orig remark\",\"s\":360,\"e\":1080,\"date\":\"Oct 20\"}",
+     "row html <tr class=\"ined\" data-iid=\"imuzltyox4bvpr8\"><td data-fld=\"Person\"><select aria-label=\"Person\" data-ed=\"person\"><option value=\"dj\">Ace</option><option value=\"shaft\">Anvil</option><option value=\"glass\">Basher</option><option value=\"slash\">Blade</option><option value=\"yeti\">Bolt</option><option value=\"snap\">Cinch</option><option value=\"ammo\">Cinder</option><option value=\"taipan\">Cobra</option><option value=\"beams\">Comet</option><option value=\"spanner\">Cotter</option><option value=\"psy\">Cutter</option><option value=\"spaceman\">Dash</option><option value=\"fantom\">Diesel</option><option value=\"slipway\">Drifter</option><option value=\"freak\">Echo</option><option value=\"plasma\">Fable</option><option value=\"chaps\">Forge</option><option value=\"bruise\">Gambit</option><option value=\"riddler\">Ghost</option><option value=\"sufa\">Grit</option><option value=\"boosh\">Havoc</option><option value=\"rocky\">Hex</option><option value=\"prowler\">Hunter</option><option value=\"ipman\">Jester</option><option value=\"krait\">Kraken</option><option value=\"drill\">Ledger</option><option value=\"cards\">Marlin</option><option value=\"pike\">Nomad</option><option value=\"wrangler\">Otter</option><option value=\"casper\">Outlaw</option><option value=\"pump\">Piston</option><option value=\"badger\">Pixel</option><option value=\"nasty\">Quill</option><option value=\"bane\">Ranger</option><option value=\"torque\">Ratchet</option><option value=\"dice\">Reaper</option><option value=\"romeo\">Rebel</option><option value=\"prism\">Recon</option><o",
+     "row remark input value orig remark",
+     "record after the List save {\"remarks\":\"THEIRS remark\",\"s\":360,\"e\":1080,\"date\":\"Oct 20\"}",
+     "conflict panel (before Save pressed): Changed while this window was open | remarks — theirs “THEIRS remark”, yours “MINE remark” | Keep mine | Take theirs",
+     "after pressing Save with conflict open: record {\"remarks\":\"THEIRS remark\",\"s\":360,\"e\":1080,\"date\":\"Oct 20\"} | editor still open 1 | toast: ///////",
+     "conflict panel now: Changed while this window was open | remarks — theirs “THEIRS remark”, yours “MINE remark” | Keep mine | Take theirs",
+     "after theirs : panel gone? true | remarks field now THEIRS remark | end field 16:00",
+     "after Save: record {\"remarks\":\"THEIRS remark\",\"s\":360,\"e\":960,\"date\":\"Oct 20\"} | editor open 0",
+     "errors []"
+    ],
+    "out": {
+     "mine": {
+      "refused": true,
+      "panel2": "Changed while this window was open\nremarks — theirs “THEIRS remark”, yours “MINE remark”\nKeep mine\nTake theirs",
+      "fin": {
+       "remarks": "MINE remark",
+       "s": 360,
+       "e": 960,
+       "date": "Oct 20"
+      },
+      "errors": []
+     },
+     "theirs": {
+      "refused": true,
+      "panel2": "Changed while this window was open\nremarks — theirs “THEIRS remark”, yours “MINE remark”\nKeep mine\nTake theirs",
+      "fin": {
+       "remarks": "THEIRS remark",
+       "s": 360,
+       "e": 960,
+       "date": "Oct 20"
+      },
+      "errors": []
+     }
+    }
+   }
+  ],
+  "p504-desk": [
+   {
+    "log": [
+     "day row <div class=\"sd-row idy-row amb\" data-popiid=\"imuzm019zqg58nj\" data-testid=\"idy-row-imuzm019zqg58nj\"><button type=\"button\" class=\"sd-open\" data-testid=\"idy-open\" aria-label=\"Saber, Duty, 06:00–18:00\"><span class=\"idy-sq\" aria-hidden=\"true\"></span><b class=\"idy-who\">Saber</b><span class=\"idy-kind\">Duty</span></button><button type=\"button\" class=\"sd-late\" data-testid=\"idy-late\" aria-expanded=\"false\" title=\"after the cut-off, Mon 5 Oct\">LATE</button><span class=\"sd-hours\" data-testid=\"idy-when\">06:00–18:00</span><span class=\"sd-rmk\">will be deleted</span><span class=\"sd-placed\" data-testid=\"idy-placed\">Placed by Saber · 8 Oct 26, 22:05</span></div>",
+     "A: day window hidden behind the editor? element at the day window top: pp",
+     "ask text ⠿ | Tue 20 Oct | ✕ | + Input | + Note | + Pucks | 1 INPUT | Saber | Duty | LATE | 06:00–18:00 | will be deleted | Placed by Saber · 8 Oct 26, 22:05 | Delete this input? | Delete | Keep",
+     "confirm buttons win-inputsday-x|✕,|+ Input,|+ Note,|+ Pucks,idy-open|SaberDuty,idy-late|LATE,idy-del-yes|Delete,idy-del-no|Keep",
+     "record exists after delete? false | editor windows 0 | toast: ",
+     "A errors []",
+     "B: record exists after Undo? false | editor windows 0 | toast: ",
+     "B later {\"exists\":false,\"editorOpen\":0,\"bars\":0} errors []",
+     "C: after swap to Ranger — editor windows 1 | day windows 1",
+     "C: day buttons as Ranger [\"win-inputsday-x|✕|Close\",\"|+ Input|\",\"idy-open|GambitOML|\",\"idy-open|Drifter +3Meeting|\"]",
+     "C: ask as Ranger:  Drifter | A | Echo | IW | Ranger | IP | Saber | IP | Placed by Saber for 4 people · 25 Jun 26, 14:32 | Take yourself out of this input? | Take me out | Stay in",
+     "C: entry people stored now stiff,slipway,freak",
+     "C: editor windows 1",
+     "C: editor title Drifter +2 · 23 Jul | lit slipway,stiff,freak | remarks field Flight safety brief — DRAFT",
+     "C: after Save, entry people stiff:Flight safety brief — DRAFT | slipway:Flight safety brief — DRAFT | freak:Flight safety brief — DRAFT",
+     "C: any record for Ranger on 23 Jul 0",
+     "C errors []"
+    ],
+    "out": {
+     "A_asked": true,
+     "A": {
+      "exists": false,
+      "editorOpen": 0,
+      "toast": ""
+     },
+     "A_err": [],
+     "B": {
+      "exists": false,
+      "editorOpen": 0,
+      "toast": ""
+     },
+     "B_later": {
+      "exists": false,
+      "editorOpen": 0,
+      "bars": 0
+     },
+     "B_err": [],
+     "C_btns": [
+      "win-inputsday-x|✕|Close",
+      "|+ Input|",
+      "idy-open|GambitOML|",
+      "idy-open|Drifter +3Meeting|"
+     ],
+     "C_err": []
+    }
+   }
+  ],
+  "p504-phone": [
+   {
+    "log": [
+     "B: record exists after Undo? false | editor windows 0 | toast: ",
+     "B later {\"exists\":false,\"editorOpen\":0,\"bars\":0} errors []"
+    ],
+    "out": {
+     "B": {
+      "exists": false,
+      "editorOpen": 0,
+      "toast": ""
+     },
+     "B_later": {
+      "exists": false,
+      "editorOpen": 0,
+      "bars": 0
+     },
+     "B_err": []
+    }
+   }
+  ],
+  "p505-desk": [
+   {
+    "log": [
+     "seeded e-muzm4ixf-0 [\"Jul 29\",\"Aug 3\"]",
+     "bar pieces drawn in July 2",
+     "ghost mid-drag {\"cx\":617,\"cy\":277} pointer 617 221",
+     "date under the pointer lit? ib-day ic-over",
+     "after drag [\"Jul 31\",\"Aug 5\"]",
+     "both endpoints +2 and duration kept? true",
+     "editor opened by the release? 0 | flash on moved bar 0",
+     "after ONE Undo [\"Jul 29\",\"Aug 3\"] month shown: JULY 2026",
+     "after Redo [\"Jul 31\",\"Aug 5\"] month shown: JULY 2026",
+     "undone again [\"Jul 29\",\"Aug 3\"] month shown: JULY 2026",
+     "member: ghost while dragging another man's bar? 0",
+     "member drag result [\"Jul 29\",\"Aug 3\"] | editor opened? 0",
+     "errors []"
+    ],
+    "out": {
+     "moved": [
+      "Jul 31",
+      "Aug 5"
+     ],
+     "undo": [
+      "Jul 29",
+      "Aug 3"
+     ],
+     "redo": [
+      "Jul 31",
+      "Aug 5"
+     ],
+     "member": [
+      "Jul 29",
+      "Aug 3"
+     ]
+    },
+    "mvOk": true,
+    "errors": []
+   }
+  ],
+  "p505-phone": [
+   {
+    "log": [
+     "seeded e-muzm50ek-0 [\"Jul 29\",\"Aug 3\"]",
+     "bar pieces drawn in July 2",
+     "after drag [\"Jul 31\",\"Aug 5\"]",
+     "both endpoints +2 and duration kept? true",
+     "editor opened by the release? 0 | flash on moved bar 0",
+     "after ONE Undo [\"Jul 29\",\"Aug 3\"] month shown: JUL 2026",
+     "after Redo [\"Jul 31\",\"Aug 5\"] month shown: JUL 2026",
+     "undone again [\"Jul 29\",\"Aug 3\"] month shown: JUL 2026",
+     "member drag result [\"Jul 29\",\"Aug 3\"] | editor opened? 0",
+     "errors []"
+    ],
+    "out": {
+     "moved": [
+      "Jul 31",
+      "Aug 5"
+     ],
+     "undo": [
+      "Jul 29",
+      "Aug 3"
+     ],
+     "redo": [
+      "Jul 31",
+      "Aug 5"
+     ],
+     "member": [
+      "Jul 29",
+      "Aug 3"
+     ]
+    },
+    "mvOk": true,
+    "errors": []
+   }
+  ],
+  "p506-desk": [
+   {
+    "log": [
+     "size desk month OCTOBER 2026 viewport [1440,900,900]",
+     "1 mouse drag 6->8 Oct on empty dates: {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":0,\"editor\":1,\"ghost\":0,\"scrollY\":0} Oct 6 → Oct 8 unchanged: true",
+     "2 bar mid-drag (ghost drawn, no range picked): {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":1,\"scrollY\":0}",
+     "2b after Escape + release: [\"Oct 13\",\"Oct 15\"] {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":1,\"scrollY\":0} unchanged: true",
+     "3 dropped back where grabbed: unchanged true {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0}",
+     "4 bar moved 14->16: [\"Oct 15\",\"Oct 17\"] {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0}",
+     "4b Undo restores: true",
+     "5 wheel over the month: {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0} unchanged: true",
+     "6 click on date: {\"mon\":\"OCTOBER 2026\",\"picked\":0,\"open\":1,\"editor\":0,\"ghost\":0,\"scrollY\":0} true",
+     "errors []"
+    ],
+    "res": {
+     "range": {
+      "mon": "OCTOBER 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 1,
+      "ghost": 0,
+      "scrollY": 0
+     },
+     "mid": {
+      "mon": "OCTOBER 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 0,
+      "ghost": 1,
+      "scrollY": 0
+     },
+     "barMove": [
+      "Oct 15",
+      "Oct 17"
+     ],
+     "click": {
+      "mon": "OCTOBER 2026",
+      "picked": 0,
+      "open": 1,
+      "editor": 0,
+      "ghost": 0,
+      "scrollY": 0
+     }
+    },
+    "errors": []
+   }
+  ],
+  "p506-short": [
+   {
+    "log": [
+     "size short month OCT 2026 viewport [390,568,652]",
+     "1 tap on 20 Oct: {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":1,\"editor\":0,\"ghost\":0,\"scrollY\":0} unchanged: true",
+     "2 swipe left: {\"mon\":\"NOV 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0} unchanged: true",
+     "2b swipe right: OCT 2026",
+     "3 hold-drag 6->8 Oct: {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":0,\"editor\":1,\"ghost\":0,\"scrollY\":0} editor range text: Oct 6 → Oct 8 unchanged: true scrollY before/after 0 0",
+     "4 hold-drag bar 14->16: [\"Oct 15\",\"Oct 17\"] {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0}",
+     "4b Undo: \"Oct 13\" true",
+     "5a vertical swipe starting ON A BAR: scrollY 0 -> 84 {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":84} unchanged: true",
+     "5b vertical swipe starting ON A DATE: scrollY 84 -> 0 {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0} unchanged: true",
+     "6 mid-drag before cancel: {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":1,\"scrollY\":0}",
+     "6b after touchCancel: {\"mon\":\"OCT 2026\",\"picked\":0,\"open\":0,\"editor\":0,\"ghost\":0,\"scrollY\":0} unchanged: true",
+     "errors []"
+    ],
+    "res": {
+     "tap": {
+      "mon": "OCT 2026",
+      "picked": 0,
+      "open": 1,
+      "editor": 0,
+      "ghost": 0,
+      "scrollY": 0
+     },
+     "swipe": {
+      "mon": "NOV 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 0,
+      "ghost": 0,
+      "scrollY": 0
+     },
+     "hold": {
+      "mon": "OCT 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 1,
+      "ghost": 0,
+      "scrollY": 0
+     },
+     "barMove": [
+      "Oct 15",
+      "Oct 17"
+     ],
+     "vscrollBar": {
+      "mon": "OCT 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 0,
+      "ghost": 0,
+      "scrollY": 84
+     },
+     "vscrollDate": {
+      "mon": "OCT 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 0,
+      "ghost": 0,
+      "scrollY": 0
+     },
+     "cancelMid": {
+      "mon": "OCT 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 0,
+      "ghost": 1,
+      "scrollY": 0
+     },
+     "cancelEnd": {
+      "mon": "OCT 2026",
+      "picked": 0,
+      "open": 0,
+      "editor": 0,
+      "ghost": 0,
+      "scrollY": 0
+     }
+    },
+    "errors": []
+   }
+  ],
+  "p507-desk": [
+   {
+    "log": [
+     "13 Jul {\"total\":11,\"sansCov\":1,\"bars\":7,\"moreText\":\"+4 more\",\"expectedMore\":4}",
+     "opened day {\"rows\":11,\"count\":\"11 inputs\",\"text\":\"⠿ | Mon 13 Jul | ✕ | + Input | + Note | + Pucks | 11 INPUTS | Diesel | OIL | All day | Grit | ATT C | till 17 Jul | Medically down till 17 Jul | Pla\",\"sansListed\":false}",
+     "rows 11 opened editors 11 unreachable []",
+     "Dec 2026 bars of the 4 seeded: [{\"iid\":\"e-muzmc6x2-0\",\"cls\":\"ib-bar red is-on\",\"text\":\"Drifter · OL\",\"week\":4,\"l\":4,\"r\":558},{\"iid\":\"e-muzmc6x9-1\",\"cls\":\"ib-bar red is-on\",\"text\":\"Ace · LL\",\"week\":4,\"l\":283,\"r\":558},{\"iid\":\"e-muzmc6xl-3\",\"cls\":\"ib-bar amb is-on\",\"text\":\"Hunter · Duty\",\"week\":4,\"l\":423,\"r\":558},{\"iid\":\"e-muzmc6xf-2\",\"cls\":\"ib-bar amb\",\"text\":\"Warden · Meeting\",\"week\":4,\"l\":423,\"r\":555}]",
+     "Jan 2027 bars of the 4 seeded: [{\"iid\":\"e-muzmc6x2-0\",\"cls\":\"ib-bar red is-cont is-on\",\"text\":\"Drifter · OL\",\"week\":0,\"l\":559,\"r\":977},{\"iid\":\"e-muzmc6x9-1\",\"cls\":\"ib-bar red is-cont\",\"text\":\"Ace · LL\",\"week\":0,\"l\":559,\"r\":834},{\"iid\":\"e-muzmc6xl-3\",\"cls\":\"ib-bar amb is-cont\",\"text\":\"Hunter · Duty\",\"week\":0,\"l\":559,\"r\":695},{\"iid\":\"e-muzmc6x2-0\",\"cls\":\"ib-bar red is-cont\",\"text\":\"Drifter · OL\",\"week\":1,\"l\":1,\"r\":137}]",
+     "identity [{\"id\":\"e-muzmc6x2-0\",\"dec\":[\"red\"],\"jan\":[\"red\",\"red\"],\"decWeeks\":[4],\"janWeeks\":[0,1]},{\"id\":\"e-muzmc6x9-1\",\"dec\":[\"red\"],\"jan\":[\"red\"],\"decWeeks\":[4],\"janWeeks\":[0]},{\"id\":\"e-muzmc6xf-2\",\"dec\":[\"ib-bar amb\"],\"jan\":[],\"decWeeks\":[4],\"janWeeks\":[]},{\"id\":\"e-muzmc6xl-3\",\"dec\":[\"ib-bar amb is-on\"],\"jan\":[\"ib-bar amb is-cont\"],\"decWeeks\":[4],\"janWeeks\":[0]}]",
+     "continuation in Jan opens: Drifter · 28 Dec → 4 Jan 2027 | records for that man on Dec 28: 1",
+     "errors []"
+    ],
+    "res": {
+     "crowd": {
+      "total": 11,
+      "sansCov": 1,
+      "bars": 7,
+      "moreText": "+4 more",
+      "expectedMore": 4
+     },
+     "day": {
+      "rows": 11,
+      "count": "11 inputs",
+      "text": "⠿ | Mon 13 Jul | ✕ | + Input | + Note | + Pucks | 11 INPUTS | Diesel | OIL | All day | Grit | ATT C | till 17 Jul | Medically down till 17 Jul | Pla",
+      "sansListed": false
+     },
+     "reach": {
+      "rows": 11,
+      "reach": 11,
+      "unreach": []
+     },
+     "dec": [
+      {
+       "iid": "e-muzmc6x2-0",
+       "cls": "ib-bar red is-on",
+       "text": "Drifter · OL",
+       "week": 4,
+       "l": 4,
+       "r": 558
+      },
+      {
+       "iid": "e-muzmc6x9-1",
+       "cls": "ib-bar red is-on",
+       "text": "Ace · LL",
+       "week": 4,
+       "l": 283,
+       "r": 558
+      },
+      {
+       "iid": "e-muzmc6xl-3",
+       "cls": "ib-bar amb is-on",
+       "text": "Hunter · Duty",
+       "week": 4,
+       "l": 423,
+       "r": 558
+      },
+      {
+       "iid": "e-muzmc6xf-2",
+       "cls": "ib-bar amb",
+       "text": "Warden · Meeting",
+       "week": 4,
+       "l": 423,
+       "r": 555
+      }
+     ],
+     "jan": [
+      {
+       "iid": "e-muzmc6x2-0",
+       "cls": "ib-bar red is-cont is-on",
+       "text": "Drifter · OL",
+       "week": 0,
+       "l": 559,
+       "r": 977
+      },
+      {
+       "iid": "e-muzmc6x9-1",
+       "cls": "ib-bar red is-cont",
+       "text": "Ace · LL",
+       "week": 0,
+       "l": 559,
+       "r": 834
+      },
+      {
+       "iid": "e-muzmc6xl-3",
+       "cls": "ib-bar amb is-cont",
+       "text": "Hunter · Duty",
+       "week": 0,
+       "l": 559,
+       "r": 695
+      },
+      {
+       "iid": "e-muzmc6x2-0",
+       "cls": "ib-bar red is-cont",
+       "text": "Drifter · OL",
+       "week": 1,
+       "l": 1,
+       "r": 137
+      }
+     ],
+     "ident": [
+      {
+       "id": "e-muzmc6x2-0",
+       "dec": [
+        "red"
+       ],
+       "jan": [
+        "red",
+        "red"
+       ],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": [
+        0,
+        1
+       ]
+      },
+      {
+       "id": "e-muzmc6x9-1",
+       "dec": [
+        "red"
+       ],
+       "jan": [
+        "red"
+       ],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": [
+        0
+       ]
+      },
+      {
+       "id": "e-muzmc6xf-2",
+       "dec": [
+        "ib-bar amb"
+       ],
+       "jan": [],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": []
+      },
+      {
+       "id": "e-muzmc6xl-3",
+       "dec": [
+        "ib-bar amb is-on"
+       ],
+       "jan": [
+        "ib-bar amb is-cont"
+       ],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": [
+        0
+       ]
+      }
+     ]
+    },
+    "errors": []
+   }
+  ],
+  "p507-phone": [
+   {
+    "log": [
+     "13 Jul {\"total\":11,\"sansCov\":1,\"bars\":5,\"moreText\":\"+6 more\",\"expectedMore\":6}",
+     "opened day {\"rows\":11,\"count\":\"11 inputs\",\"text\":\"⠿ | Mon 13 Jul | ✕ | + Input | + Note | + Pucks | 11 INPUTS | Diesel | OIL | All day | Grit | ATT C | till 17 Jul | Medically down till 17 Jul | Pla\",\"sansListed\":false}",
+     "rows 11 opened editors 11 unreachable []",
+     "Dec 2026 bars of the 4 seeded: [{\"iid\":\"e-muzmcjmd-0\",\"cls\":\"ib-bar red is-on\",\"text\":\"Drifter · OL\",\"week\":4,\"l\":11,\"r\":221},{\"iid\":\"e-muzmcjmm-1\",\"cls\":\"ib-bar red is-on\",\"text\":\"Ace · LL\",\"week\":4,\"l\":118,\"r\":221},{\"iid\":\"e-muzmcjn2-3\",\"cls\":\"ib-bar amb is-on\",\"text\":\"Hunter · Duty\",\"week\":4,\"l\":171,\"r\":221},{\"iid\":\"e-muzmcjmu-2\",\"cls\":\"ib-bar amb\",\"text\":\"Warden\",\"week\":4,\"l\":171,\"r\":219}]",
+     "Jan 2027 bars of the 4 seeded: [{\"iid\":\"e-muzmcjmd-0\",\"cls\":\"ib-bar red is-cont is-on\",\"text\":\"Drifter · OL\",\"week\":0,\"l\":222,\"r\":381},{\"iid\":\"e-muzmcjmm-1\",\"cls\":\"ib-bar red is-cont\",\"text\":\"Ace · LL\",\"week\":0,\"l\":222,\"r\":326},{\"iid\":\"e-muzmcjn2-3\",\"cls\":\"ib-bar amb is-cont\",\"text\":\"Hunter · Duty\",\"week\":0,\"l\":222,\"r\":272},{\"iid\":\"e-muzmcjmd-0\",\"cls\":\"ib-bar red is-cont\",\"text\":\"Drifter · OL\",\"week\":1,\"l\":9,\"r\":59}]",
+     "identity [{\"id\":\"e-muzmcjmd-0\",\"dec\":[\"red\"],\"jan\":[\"red\",\"red\"],\"decWeeks\":[4],\"janWeeks\":[0,1]},{\"id\":\"e-muzmcjmm-1\",\"dec\":[\"red\"],\"jan\":[\"red\"],\"decWeeks\":[4],\"janWeeks\":[0]},{\"id\":\"e-muzmcjmu-2\",\"dec\":[\"ib-bar amb\"],\"jan\":[],\"decWeeks\":[4],\"janWeeks\":[]},{\"id\":\"e-muzmcjn2-3\",\"dec\":[\"ib-bar amb is-on\"],\"jan\":[\"ib-bar amb is-cont\"],\"decWeeks\":[4],\"janWeeks\":[0]}]",
+     "continuation in Jan opens: Drifter · 28 Dec → 4 Jan 2027 | records for that man on Dec 28: 1",
+     "errors []"
+    ],
+    "res": {
+     "crowd": {
+      "total": 11,
+      "sansCov": 1,
+      "bars": 5,
+      "moreText": "+6 more",
+      "expectedMore": 6
+     },
+     "day": {
+      "rows": 11,
+      "count": "11 inputs",
+      "text": "⠿ | Mon 13 Jul | ✕ | + Input | + Note | + Pucks | 11 INPUTS | Diesel | OIL | All day | Grit | ATT C | till 17 Jul | Medically down till 17 Jul | Pla",
+      "sansListed": false
+     },
+     "reach": {
+      "rows": 11,
+      "reach": 11,
+      "unreach": []
+     },
+     "dec": [
+      {
+       "iid": "e-muzmcjmd-0",
+       "cls": "ib-bar red is-on",
+       "text": "Drifter · OL",
+       "week": 4,
+       "l": 11,
+       "r": 221
+      },
+      {
+       "iid": "e-muzmcjmm-1",
+       "cls": "ib-bar red is-on",
+       "text": "Ace · LL",
+       "week": 4,
+       "l": 118,
+       "r": 221
+      },
+      {
+       "iid": "e-muzmcjn2-3",
+       "cls": "ib-bar amb is-on",
+       "text": "Hunter · Duty",
+       "week": 4,
+       "l": 171,
+       "r": 221
+      },
+      {
+       "iid": "e-muzmcjmu-2",
+       "cls": "ib-bar amb",
+       "text": "Warden",
+       "week": 4,
+       "l": 171,
+       "r": 219
+      }
+     ],
+     "jan": [
+      {
+       "iid": "e-muzmcjmd-0",
+       "cls": "ib-bar red is-cont is-on",
+       "text": "Drifter · OL",
+       "week": 0,
+       "l": 222,
+       "r": 381
+      },
+      {
+       "iid": "e-muzmcjmm-1",
+       "cls": "ib-bar red is-cont",
+       "text": "Ace · LL",
+       "week": 0,
+       "l": 222,
+       "r": 326
+      },
+      {
+       "iid": "e-muzmcjn2-3",
+       "cls": "ib-bar amb is-cont",
+       "text": "Hunter · Duty",
+       "week": 0,
+       "l": 222,
+       "r": 272
+      },
+      {
+       "iid": "e-muzmcjmd-0",
+       "cls": "ib-bar red is-cont",
+       "text": "Drifter · OL",
+       "week": 1,
+       "l": 9,
+       "r": 59
+      }
+     ],
+     "ident": [
+      {
+       "id": "e-muzmcjmd-0",
+       "dec": [
+        "red"
+       ],
+       "jan": [
+        "red",
+        "red"
+       ],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": [
+        0,
+        1
+       ]
+      },
+      {
+       "id": "e-muzmcjmm-1",
+       "dec": [
+        "red"
+       ],
+       "jan": [
+        "red"
+       ],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": [
+        0
+       ]
+      },
+      {
+       "id": "e-muzmcjmu-2",
+       "dec": [
+        "ib-bar amb"
+       ],
+       "jan": [],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": []
+      },
+      {
+       "id": "e-muzmcjn2-3",
+       "dec": [
+        "ib-bar amb is-on"
+       ],
+       "jan": [
+        "ib-bar amb is-cont"
+       ],
+       "decWeeks": [
+        4
+       ],
+       "janWeeks": [
+        0
+       ]
+      }
+     ]
+    },
+    "errors": []
+   }
+  ],
+  "p508-desk": [
+   {
+    "log": [
+     "elements in the grid with tabindex >= 0: [\"2026-12-01\"]",
+     "Tab from the gear reached the grid after 2 presses: {\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-01\",\"tid\":null,\"inGrid\":true}",
+     "next Tab goes to: {\"tag\":\"BODY\",\"id\":\"\",\"day\":null,\"tid\":null,\"inGrid\":false} still in grid? false",
+     "Shift+Tab back: {\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-01\",\"tid\":null,\"inGrid\":true}",
+     "focused {\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-31\",\"tid\":null,\"inGrid\":true}",
+     "31 Dec + ArrowRight -> {\"mon\":\"JANUARY 2027\",\"a\":{\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2027-01-01\",\"tid\":null,\"inGrid\":true}}",
+     "then ArrowLeft -> {\"mon\":\"DECEMBER 2026\",\"a\":{\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-31\",\"tid\":null,\"inGrid\":true}}",
+     "31 Dec ArrowDown (next week, next month) -> {\"mon\":\"JANUARY 2027\",\"a\":{\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2027-01-07\",\"tid\":null,\"inGrid\":true}}",
+     "ArrowUp -> {\"mon\":\"DECEMBER 2026\",\"a\":{\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-31\",\"tid\":null,\"inGrid\":true}}",
+     "1 Dec ArrowLeft -> {\"mon\":\"NOVEMBER 2026\",\"a\":{\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-11-30\",\"tid\":null,\"inGrid\":true}}",
+     "Shift+ArrowRight x2 from 15 Dec: picked [\"2026-12-15\",\"2026-12-16\",\"2026-12-17\"]",
+     "Enter on the run: editor windows 1 | range text Dec 15 → Dec 17 | active {\"tag\":\"DIV\",\"id\":\"\",\"day\":null,\"tid\":\"win-inputedit\",\"inGrid\":false}",
+     "after text-editing keys in Remarks: month DECEMBER 2026 -> DECEMBER 2026 | INPUTS count 52 -> 52 | field now \"abc de\" | picked days 0 | editor still open 1",
+     "Escape in the editor: editor windows 0 | picked 0 | active {\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-17\",\"tid\":null,\"inGrid\":true}",
+     "Enter on a single focused date: day windows 1 | active {\"tag\":\"DIV\",\"id\":\"\",\"day\":null,\"tid\":\"win-inputsday\",\"inGrid\":false}",
+     "Tab reached {\"tag\":\"BUTTON\",\"id\":\"\",\"day\":null,\"tid\":\"idy-open\",\"inGrid\":false} after 6 presses",
+     "Backspace on the line: asks? 1 | records 52 -> 52 | row idy-row-e-muzmdunn-0",
+     "Delete on the line: asks? 1 | records 52",
+     "Escape with the ask up: ask 0 | day windows 1 | records 52",
+     "Escape again: day windows 0 | picked 0 | page inputs | active {\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-15\",\"tid\":null,\"inGrid\":true}",
+     "typing in the day-title box: records 52 -> 52 | month DECEMBER 2026 | active {\"tag\":\"INPUT\",\"id\":\"icRmkEdit\",\"day\":null,\"tid\":null,\"inGrid\":false}",
+     "Escape on a date with a 3-day run picked: picked 3 -> 0 | page inputs | active {\"tag\":\"DIV\",\"id\":\"\",\"day\":\"2026-12-24\",\"tid\":null,\"inGrid\":true} | month DECEMBER 2026",
+     "errors []"
+    ],
+    "res": {
+     "tabStops": [
+      "2026-12-01"
+     ],
+     "reach": {
+      "tag": "DIV",
+      "id": "",
+      "day": "2026-12-01",
+      "tid": null,
+      "inGrid": true
+     },
+     "leaves": true,
+     "yearEdgeRight": {
+      "mon": "JANUARY 2027",
+      "a": {
+       "tag": "DIV",
+       "id": "",
+       "day": "2027-01-01",
+       "tid": null,
+       "inGrid": true
+      }
+     },
+     "yearEdgeLeft": {
+      "mon": "DECEMBER 2026",
+      "a": {
+       "tag": "DIV",
+       "id": "",
+       "day": "2026-12-31",
+       "tid": null,
+       "inGrid": true
+      }
+     },
+     "down": {
+      "mon": "JANUARY 2027",
+      "a": {
+       "tag": "DIV",
+       "id": "",
+       "day": "2027-01-07",
+       "tid": null,
+       "inGrid": true
+      }
+     },
+     "up": {
+      "mon": "DECEMBER 2026",
+      "a": {
+       "tag": "DIV",
+       "id": "",
+       "day": "2026-12-31",
+       "tid": null,
+       "inGrid": true
+      }
+     },
+     "monthEdgeLeft": {
+      "mon": "NOVEMBER 2026",
+      "a": {
+       "tag": "DIV",
+       "id": "",
+       "day": "2026-11-30",
+       "tid": null,
+       "inGrid": true
+      }
+     },
+     "shift": [
+      "2026-12-15",
+      "2026-12-16",
+      "2026-12-17"
+     ],
+     "typing": {
+      "month": "DECEMBER 2026",
+      "count": 52,
+      "editor": 1
+     },
+     "backspaceAsks": 1,
+     "deleteAsks": 1,
+     "titleTyping": {
+      "recs": 52,
+      "after": 52
+     }
+    },
+    "errors": []
+   }
+  ],
+  "p509-desk": [
+   {
+    "log": [
+     "inputs imuzmgr93k0pq4c imuzmgruraycloq e-muzmgs9y-0",
+     "after + Note, inputs in the window: icRmkEdit:Day title…,:e.g. brief the new guy",
+     "pucks picker buttons: All day,AM,PM,Custom,✕,CAT,A,B",
+     "window children, top to bottom: [\"142:sd-top:+ Input\",\"150:ic-title-edit:\",\"194:sd-acts:+ Input\",\"194:abtn primary sd-add:+ Input\",\"245:idy-list:+ Note + Pucks ⠿ Brief at 0800 in the sq\",\"255:ic-secbtns idy-secbtns:+ Note + Pucks\",\"255:abtn sm:+ Note\",\"255:abtn sm:+ Pucks\",\"285:ic-secs:⠿ Brief at 0800 in the squadron room ✏ ✕\",\"285:ic-sec:⠿ Brief at 0800 in the squadron room ✏ ✕\",\"285:ic-sechandle:⠿\",\"285:ic-poppuck:Brief at 0800 in the squadron room ✏ ✕\",\"299:ic-poppuck-txt:Brief at 0800 in the squadron room\",\"291::✏\",\"291::✕\",\"335:ic-sec:⠿ Saber IP Ranger IP + add ✕\",\"335:ic-sechandle:⠿\",\"335:ic-secpucks:Saber IP Ranger IP + add ✕\",\"335:ic-secpk-grid:Saber IP Ranger IP\",\"335:ic-secpk:Saber IP\",\"335:seat:Saber IP\",\"335:puck sm:Saber IP\",\"336:nm:Saber\",\"336:role q-ins:IP\",\"335:ic-secpk:Ranger IP\",\"335:seat:Ranger IP\",\"335:puck sm:Ranger IP\",\"336:nm:Ranger\",\"336:role q-ins:IP\",\"355:ic-pkadd:+ add\",\"356:ic-pkdel ic-rowdel:✕\",\"388:idy-count:3 INPUTS\",\"408:idy-row-imuzmgruraycloq:Ranger Meeting LATE 06:00–18:00 late mee\",\"493:idy-row-imuzmgr93k0pq4c:Saber Duty LATE 06:00–18:00 late duty Pl\",\"578:idy-row-e-muzmgs9y-0:Cinch Appointment 15:00–16:00 on-time ap\"]",
+     "window text: \"⠿ | Tue 20 Oct | ✕ | + Input | + Note | + Pucks | ⠿ | Brief at 0800 in the squadron room | ✏ | ✕ | ⠿ | Saber | IP | Ranger | IP | + add | ✕ | 3 INPUTS | Ranger | Meeting | LATE | 06:00–18:00 | late meeting | Placed by Saber for Ranger · 8 Oct 26, 22:18 | Saber | Duty | LATE | 06:00–18:00 | late duty | Placed by Saber · 8 Oct 26, 22:18 | Cinch | Appointment | 15:00–16:00 | on-time appt | Placed by Ghost for Cinch · 10 Sep 26, 09:00\"",
+     "index of note 40 of \"INPUTS\" heading 110",
+     "lines [{\"id\":\"imuzmgruraycloq\",\"who\":\"Ranger\",\"kind\":\"Meeting\",\"rmk\":\"late meeting\",\"placed\":\"Placed by Saber for Ranger · 8 Oct 26, 22:18\",\"late\":true},{\"id\":\"imuzmgr93k0pq4c\",\"who\":\"Saber\",\"kind\":\"Duty\",\"rmk\":\"late duty\",\"placed\":\"Placed by Saber · 8 Oct 26, 22:18\",\"late\":true},{\"id\":\"e-muzmgs9y-0\",\"who\":\"Cinch\",\"kind\":\"Appointment\",\"rmk\":\"on-time appt\",\"placed\":\"Placed by Ghost for Cinch · 10 Sep 26, 09:00\",\"late\":false}]",
+     "records [{\"id\":\"imuzmgr93k0pq4c\",\"by\":\"Saber\",\"person\":\"Saber\"},{\"id\":\"imuzmgruraycloq\",\"by\":\"Saber\",\"person\":\"Ranger\"},{\"id\":\"e-muzmgs9y-0\",\"by\":\"Ghost\",\"person\":\"Cinch\"}]",
+     "after LATE pressed: + Note | + Pucks | ⠿ | Brief at 0800 in the squadron room | ✏ | ✕ | ⠿ | Saber | IP | Ranger | IP | + add | ✕ | 3 INPUTS | Ranger | Meeting | LATE | 06:00–18:00 | late meeting | Placed by Saber for Ranger · 8 Oct 26, 22:18 | Saber | Duty | LATE | 06:00–18:00 | after the cut-off, Mon 5 Oct | late duty | Placed by Saber · 8 Oct 26, 22:18 | Cinch | Appointment | 15:00–16:00 | on-time appt | Placed by Ghost for Cinch · 10 Sep 26, 09:00",
+     "LATE explanation texts [\"LATE\",\"LATE\",\"after the cut-off, Mon 5 Oct\"]",
+     "ask shown: 1 inside the row of idy-row-imuzmgruraycloq",
+     "after Keep: records unchanged? true",
+     "after confirm: removed [\"imuzmgruraycloq\"] expected imuzmgruraycloq | any added []",
+     "day still lists planning + remaining inputs: \"⠿ | Tue 20 Oct | ✕ | + Input | + Note | + Pucks | ⠿ | Brief at 0800 in the squadron room | ✏ | ✕ | ⠿ | Saber | IP | Ranger | IP | + add | ✕ | 2 INPUTS | Saber | Duty | LATE | 06:00–18:00 | after the cut-off, Mon 5 Oct | late duty | Placed by Saber · 8 Oct 26, 22:18 | Cinch | Appointment | 15:00–16:0\"",
+     "errors []"
+    ],
+    "res": {
+     "order": [
+      {
+       "tid": "",
+       "cls": "sd-top",
+       "top": 142,
+       "text": "+ Input"
+      },
+      {
+       "tid": "",
+       "cls": "ic-title-edit",
+       "top": 150,
+       "text": ""
+      },
+      {
+       "tid": "",
+       "cls": "sd-acts",
+       "top": 194,
+       "text": "+ Input"
+      },
+      {
+       "tid": "",
+       "cls": "abtn primary sd-add",
+       "top": 194,
+       "text": "+ Input"
+      },
+      {
+       "tid": "idy-list",
+       "cls": "sd-list",
+       "top": 245,
+       "text": "+ Note + Pucks ⠿ Brief at 0800 in the sq"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secbtns idy-secbtns",
+       "top": 255,
+       "text": "+ Note + Pucks"
+      },
+      {
+       "tid": "",
+       "cls": "abtn sm",
+       "top": 255,
+       "text": "+ Note"
+      },
+      {
+       "tid": "",
+       "cls": "abtn sm",
+       "top": 255,
+       "text": "+ Pucks"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secs",
+       "top": 285,
+       "text": "⠿ Brief at 0800 in the squadron room ✏ ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sec",
+       "top": 285,
+       "text": "⠿ Brief at 0800 in the squadron room ✏ ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sechandle",
+       "top": 285,
+       "text": "⠿"
+      },
+      {
+       "tid": "",
+       "cls": "ic-poppuck",
+       "top": 285,
+       "text": "Brief at 0800 in the squadron room ✏ ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-poppuck-txt",
+       "top": 299,
+       "text": "Brief at 0800 in the squadron room"
+      },
+      {
+       "tid": "",
+       "cls": "",
+       "top": 291,
+       "text": "✏"
+      },
+      {
+       "tid": "",
+       "cls": "",
+       "top": 291,
+       "text": "✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sec",
+       "top": 335,
+       "text": "⠿ Saber IP Ranger IP + add ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sechandle",
+       "top": 335,
+       "text": "⠿"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpucks",
+       "top": 335,
+       "text": "Saber IP Ranger IP + add ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpk-grid",
+       "top": 335,
+       "text": "Saber IP Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpk",
+       "top": 335,
+       "text": "Saber IP"
+      },
+      {
+       "tid": "",
+       "cls": "seat",
+       "top": 335,
+       "text": "Saber IP"
+      },
+      {
+       "tid": "",
+       "cls": "puck sm",
+       "top": 335,
+       "text": "Saber IP"
+      },
+      {
+       "tid": "",
+       "cls": "nm",
+       "top": 336,
+       "text": "Saber"
+      },
+      {
+       "tid": "",
+       "cls": "role q-ins",
+       "top": 336,
+       "text": "IP"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpk",
+       "top": 335,
+       "text": "Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "seat",
+       "top": 335,
+       "text": "Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "puck sm",
+       "top": 335,
+       "text": "Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "nm",
+       "top": 336,
+       "text": "Ranger"
+      },
+      {
+       "tid": "",
+       "cls": "role q-ins",
+       "top": 336,
+       "text": "IP"
+      },
+      {
+       "tid": "",
+       "cls": "ic-pkadd",
+       "top": 355,
+       "text": "+ add"
+      },
+      {
+       "tid": "",
+       "cls": "ic-pkdel ic-rowdel",
+       "top": 356,
+       "text": "✕"
+      },
+      {
+       "tid": "idy-count",
+       "cls": "sd-gh",
+       "top": 388,
+       "text": "3 INPUTS"
+      },
+      {
+       "tid": "idy-row-imuzmgruraycloq",
+       "cls": "sd-row idy-row amb",
+       "top": 408,
+       "text": "Ranger Meeting LATE 06:00–18:00 late mee"
+      },
+      {
+       "tid": "idy-row-imuzmgr93k0pq4c",
+       "cls": "sd-row idy-row amb",
+       "top": 493,
+       "text": "Saber Duty LATE 06:00–18:00 late duty Pl"
+      },
+      {
+       "tid": "idy-row-e-muzmgs9y-0",
+       "cls": "sd-row idy-row amb",
+       "top": 578,
+       "text": "Cinch Appointment 15:00–16:00 on-time ap"
+      }
+     ],
+     "planningBeforeInputs": true,
+     "lines": [
+      {
+       "id": "imuzmgruraycloq",
+       "who": "Ranger",
+       "kind": "Meeting",
+       "rmk": "late meeting",
+       "placed": "Placed by Saber for Ranger · 8 Oct 26, 22:18",
+       "late": true
+      },
+      {
+       "id": "imuzmgr93k0pq4c",
+       "who": "Saber",
+       "kind": "Duty",
+       "rmk": "late duty",
+       "placed": "Placed by Saber · 8 Oct 26, 22:18",
+       "late": true
+      },
+      {
+       "id": "e-muzmgs9y-0",
+       "who": "Cinch",
+       "kind": "Appointment",
+       "rmk": "on-time appt",
+       "placed": "Placed by Ghost for Cinch · 10 Sep 26, 09:00",
+       "late": false
+      }
+     ],
+     "recs": [
+      {
+       "id": "imuzmgr93k0pq4c",
+       "by": "Saber",
+       "person": "Saber"
+      },
+      {
+       "id": "imuzmgruraycloq",
+       "by": "Saber",
+       "person": "Ranger"
+      },
+      {
+       "id": "e-muzmgs9y-0",
+       "by": "Ghost",
+       "person": "Cinch"
+      }
+     ],
+     "lateExplain": [
+      "LATE",
+      "LATE",
+      "after the cut-off, Mon 5 Oct"
+     ],
+     "keepOk": true,
+     "deleteOnly": true
+    },
+    "errors": []
+   }
+  ],
+  "p509-phone": [
+   {
+    "log": [
+     "inputs imuzmhywpp0f4nh imuzmhzg2ysz94j e-muzmhzv2-0",
+     "after + Note, inputs in the window: icRmkEdit:Day title…,:e.g. brief the new guy",
+     "pucks picker buttons: All day,AM,PM,Custom,✕,CAT,A,B",
+     "window children, top to bottom: [\"333:sd-top:+ Input\",\"341:ic-title-edit:\",\"393:sd-acts:+ Input\",\"393:abtn primary sd-add:+ Input\",\"448:idy-list:+ Note + Pucks ⠿ Brief at 0800 in the sq\",\"458:ic-secbtns idy-secbtns:+ Note + Pucks\",\"458:abtn sm:+ Note\",\"458:abtn sm:+ Pucks\",\"510:ic-secs:⠿ Brief at 0800 in the squadron room ✏ ✕\",\"510:ic-sec:⠿ Brief at 0800 in the squadron room ✏ ✕\",\"510:ic-sechandle:⠿\",\"510:ic-poppuck:Brief at 0800 in the squadron room ✏ ✕\",\"530:ic-poppuck-txt:Brief at 0800 in the squadron room\",\"516::✏\",\"516::✕\",\"572:ic-sec:⠿ Saber IP Ranger IP + add ✕\",\"572:ic-sechandle:⠿\",\"572:ic-secpucks:Saber IP Ranger IP + add ✕\",\"572:ic-secpk-grid:Saber IP Ranger IP\",\"572:ic-secpk:Saber IP\",\"572:seat:Saber IP\",\"572:puck sm:Saber IP\",\"573:nm:Saber\",\"573:role q-ins:IP\",\"572:ic-secpk:Ranger IP\",\"572:seat:Ranger IP\",\"572:puck sm:Ranger IP\",\"573:nm:Ranger\",\"573:role q-ins:IP\",\"603:ic-pkadd:+ add\",\"592:ic-pkdel ic-rowdel:✕\",\"648:idy-count:3 INPUTS\",\"668:idy-row-imuzmhzg2ysz94j:Ranger Meeting LATE 06:00–18:00 late mee\",\"753:idy-row-imuzmhywpp0f4nh:Saber Duty LATE 06:00–18:00 late duty Pl\",\"838:idy-row-e-muzmhzv2-0:Cinch Appointment 15:00–16:00 on-time ap\"]",
+     "window text: \"⠿ | Tue 20 Oct | ✕ | + Input | + Note | + Pucks | ⠿ | Brief at 0800 in the squadron room | ✏ | ✕ | ⠿ | Saber | IP | Ranger | IP | + add | ✕ | 3 INPUTS | Ranger | Meeting | LATE | 06:00–18:00 | late meeting | Placed by Saber for Ranger · 8 Oct 26, 22:19 | Saber | Duty | LATE | 06:00–18:00 | late duty | Placed by Saber · 8 Oct 26, 22:19 | Cinch | Appointment | 15:00–16:00 | on-time appt | Placed by Ghost for Cinch · 10 Sep 26, 09:00\"",
+     "index of note 40 of \"INPUTS\" heading 110",
+     "lines [{\"id\":\"imuzmhzg2ysz94j\",\"who\":\"Ranger\",\"kind\":\"Meeting\",\"rmk\":\"late meeting\",\"placed\":\"Placed by Saber for Ranger · 8 Oct 26, 22:19\",\"late\":true},{\"id\":\"imuzmhywpp0f4nh\",\"who\":\"Saber\",\"kind\":\"Duty\",\"rmk\":\"late duty\",\"placed\":\"Placed by Saber · 8 Oct 26, 22:19\",\"late\":true},{\"id\":\"e-muzmhzv2-0\",\"who\":\"Cinch\",\"kind\":\"Appointment\",\"rmk\":\"on-time appt\",\"placed\":\"Placed by Ghost for Cinch · 10 Sep 26, 09:00\",\"late\":false}]",
+     "records [{\"id\":\"imuzmhywpp0f4nh\",\"by\":\"Saber\",\"person\":\"Saber\"},{\"id\":\"imuzmhzg2ysz94j\",\"by\":\"Saber\",\"person\":\"Ranger\"},{\"id\":\"e-muzmhzv2-0\",\"by\":\"Ghost\",\"person\":\"Cinch\"}]",
+     "after LATE pressed: + Note | + Pucks | ⠿ | Brief at 0800 in the squadron room | ✏ | ✕ | ⠿ | Saber | IP | Ranger | IP | + add | ✕ | 3 INPUTS | Ranger | Meeting | LATE | 06:00–18:00 | late meeting | Placed by Saber for Ranger · 8 Oct 26, 22:19 | Saber | Duty | LATE | 06:00–18:00 | after the cut-off, Mon 5 Oct | late duty | Placed by Saber · 8 Oct 26, 22:19 | Cinch | Appointment | 15:00–16:00 | on-time appt | Placed by Ghost for Cinch · 10 Sep 26, 09:00",
+     "LATE explanation texts [\"LATE\",\"LATE\",\"after the cut-off, Mon 5 Oct\"]",
+     "ask shown: 1 inside the row of idy-row-imuzmhzg2ysz94j",
+     "after Keep: records unchanged? true",
+     "after confirm: removed [\"imuzmhzg2ysz94j\"] expected imuzmhzg2ysz94j | any added []",
+     "day still lists planning + remaining inputs: \"⠿ | Tue 20 Oct | ✕ | + Input | + Note | + Pucks | ⠿ | Brief at 0800 in the squadron room | ✏ | ✕ | ⠿ | Saber | IP | Ranger | IP | + add | ✕ | 2 INPUTS | Saber | Duty | LATE | 06:00–18:00 | after the cut-off, Mon 5 Oct | late duty | Placed by Saber · 8 Oct 26, 22:19 | Cinch | Appointment | 15:00–16:0\"",
+     "errors []"
+    ],
+    "res": {
+     "order": [
+      {
+       "tid": "",
+       "cls": "sd-top",
+       "top": 333,
+       "text": "+ Input"
+      },
+      {
+       "tid": "",
+       "cls": "ic-title-edit",
+       "top": 341,
+       "text": ""
+      },
+      {
+       "tid": "",
+       "cls": "sd-acts",
+       "top": 393,
+       "text": "+ Input"
+      },
+      {
+       "tid": "",
+       "cls": "abtn primary sd-add",
+       "top": 393,
+       "text": "+ Input"
+      },
+      {
+       "tid": "idy-list",
+       "cls": "sd-list",
+       "top": 448,
+       "text": "+ Note + Pucks ⠿ Brief at 0800 in the sq"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secbtns idy-secbtns",
+       "top": 458,
+       "text": "+ Note + Pucks"
+      },
+      {
+       "tid": "",
+       "cls": "abtn sm",
+       "top": 458,
+       "text": "+ Note"
+      },
+      {
+       "tid": "",
+       "cls": "abtn sm",
+       "top": 458,
+       "text": "+ Pucks"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secs",
+       "top": 510,
+       "text": "⠿ Brief at 0800 in the squadron room ✏ ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sec",
+       "top": 510,
+       "text": "⠿ Brief at 0800 in the squadron room ✏ ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sechandle",
+       "top": 510,
+       "text": "⠿"
+      },
+      {
+       "tid": "",
+       "cls": "ic-poppuck",
+       "top": 510,
+       "text": "Brief at 0800 in the squadron room ✏ ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-poppuck-txt",
+       "top": 530,
+       "text": "Brief at 0800 in the squadron room"
+      },
+      {
+       "tid": "",
+       "cls": "",
+       "top": 516,
+       "text": "✏"
+      },
+      {
+       "tid": "",
+       "cls": "",
+       "top": 516,
+       "text": "✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sec",
+       "top": 572,
+       "text": "⠿ Saber IP Ranger IP + add ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-sechandle",
+       "top": 572,
+       "text": "⠿"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpucks",
+       "top": 572,
+       "text": "Saber IP Ranger IP + add ✕"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpk-grid",
+       "top": 572,
+       "text": "Saber IP Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpk",
+       "top": 572,
+       "text": "Saber IP"
+      },
+      {
+       "tid": "",
+       "cls": "seat",
+       "top": 572,
+       "text": "Saber IP"
+      },
+      {
+       "tid": "",
+       "cls": "puck sm",
+       "top": 572,
+       "text": "Saber IP"
+      },
+      {
+       "tid": "",
+       "cls": "nm",
+       "top": 573,
+       "text": "Saber"
+      },
+      {
+       "tid": "",
+       "cls": "role q-ins",
+       "top": 573,
+       "text": "IP"
+      },
+      {
+       "tid": "",
+       "cls": "ic-secpk",
+       "top": 572,
+       "text": "Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "seat",
+       "top": 572,
+       "text": "Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "puck sm",
+       "top": 572,
+       "text": "Ranger IP"
+      },
+      {
+       "tid": "",
+       "cls": "nm",
+       "top": 573,
+       "text": "Ranger"
+      },
+      {
+       "tid": "",
+       "cls": "role q-ins",
+       "top": 573,
+       "text": "IP"
+      },
+      {
+       "tid": "",
+       "cls": "ic-pkadd",
+       "top": 603,
+       "text": "+ add"
+      },
+      {
+       "tid": "",
+       "cls": "ic-pkdel ic-rowdel",
+       "top": 592,
+       "text": "✕"
+      },
+      {
+       "tid": "idy-count",
+       "cls": "sd-gh",
+       "top": 648,
+       "text": "3 INPUTS"
+      },
+      {
+       "tid": "idy-row-imuzmhzg2ysz94j",
+       "cls": "sd-row idy-row amb",
+       "top": 668,
+       "text": "Ranger Meeting LATE 06:00–18:00 late mee"
+      },
+      {
+       "tid": "idy-row-imuzmhywpp0f4nh",
+       "cls": "sd-row idy-row amb",
+       "top": 753,
+       "text": "Saber Duty LATE 06:00–18:00 late duty Pl"
+      },
+      {
+       "tid": "idy-row-e-muzmhzv2-0",
+       "cls": "sd-row idy-row amb",
+       "top": 838,
+       "text": "Cinch Appointment 15:00–16:00 on-time ap"
+      }
+     ],
+     "planningBeforeInputs": true,
+     "lines": [
+      {
+       "id": "imuzmhzg2ysz94j",
+       "who": "Ranger",
+       "kind": "Meeting",
+       "rmk": "late meeting",
+       "placed": "Placed by Saber for Ranger · 8 Oct 26, 22:19",
+       "late": true
+      },
+      {
+       "id": "imuzmhywpp0f4nh",
+       "who": "Saber",
+       "kind": "Duty",
+       "rmk": "late duty",
+       "placed": "Placed by Saber · 8 Oct 26, 22:19",
+       "late": true
+      },
+      {
+       "id": "e-muzmhzv2-0",
+       "who": "Cinch",
+       "kind": "Appointment",
+       "rmk": "on-time appt",
+       "placed": "Placed by Ghost for Cinch · 10 Sep 26, 09:00",
+       "late": false
+      }
+     ],
+     "recs": [
+      {
+       "id": "imuzmhywpp0f4nh",
+       "by": "Saber",
+       "person": "Saber"
+      },
+      {
+       "id": "imuzmhzg2ysz94j",
+       "by": "Saber",
+       "person": "Ranger"
+      },
+      {
+       "id": "e-muzmhzv2-0",
+       "by": "Ghost",
+       "person": "Cinch"
+      }
+     ],
+     "lateExplain": [
+      "LATE",
+      "LATE",
+      "after the cut-off, Mon 5 Oct"
+     ],
+     "keepOk": true,
+     "deleteOnly": true
+    },
+    "errors": []
+   }
+  ],
+  "p510-desk": [
+   {
+    "log": [
+     "solo imuzmkx8dmo8bck shared records [\"imuzmky2riz6z75\",\"imuzmky2mc1q7tf\",\"imuzmky2j1rkh5u\",\"imuzmky2fvo3196\"] persons [\"Trident\",\"Blade\",\"Piston\",\"Saber\"]",
+     "unfiltered bars on the month: [\"Saber · LL\",\"Blade +3 · Meeting\"]",
+     "Calendar, person = Trident: [\"Blade +3 · Meeting\"]",
+     "List, person = Trident: [{\"iid\":\"imuzmky2mc1q7tf\",\"cells\":[\"Blade +3\",\"14 Oct 06:00–18:00\",\"\",\"MEETING\",\"LATEshared meeting Placed by Saber for 4 people · 8 Oct 26, \",\"now\",\"✎\"],\"edit\":1,\"del\":0,\"title\":\"\"}]",
+     "type options: [\"All types\",\"LL\",\"OL\",\"OIL\",\"CCL\",\"PL\",\"FCL\",\"EL\",\"CL\",\"HL\",\"OML\",\"ATT C\",\"ATT B\",\"Upchit\",\"Training\",\"CSE\",\"Meeting\",\"Fly with\",\"Personal\",\"Appointment\",\"Duty\",\"OD\",\"Other\"]",
+     "List, type = Meeting: [\"Blade +3/14 Oct 06:00–18:00//MEETING\"]",
+     "List, type = LL: [\"Saber/14 Oct//LL\"]",
+     "List, Trident + LL: 0",
+     "List, search \"blade\" (a man only in the shared one): [\"Blade +3/14 Oct 06:00–18:00\"]",
+     "Calendar again, person = Trident: [\"Blade +3 · Meeting\"]",
+     "solo row actions {\"edit\":1,\"del\":1}",
+     "after inline save: record remarks solo row edited inline | editor windows 0",
+     "rows now [\"Saber/14 Oct/\",\"Blade +3/14 Oct 06:00–18:00/\"] filters [\"all\",\"all\",\"\"]",
+     "shared row {\"iid\":\"imuzmky2mc1q7tf\",\"edit\":1,\"del\":0,\"chip\":0,\"text\":\"Blade +3\\t14 Oct 06:00–18:00\\t\\tMEETING\\tLATEshared meeting Placed by Saber for 4 people · 8 Oct 26, 22:22 \\tnow\\t ✎\"}",
+     "shared pencil opens: window Blade +3 · 14 Oct",
+     "sort by Name: [\"Saber\",\"Blade +3\"] -> [\"Blade +3\",\"Saber\"] -> [\"Saber\",\"Blade +3\"]",
+     "after ✕ on the solo row: records 55 -> 54 | ask: ",
+     "List Add form adds a solo: records 54 -> 55",
+     "errors []"
+    ],
+    "res": {
+     "calTrident": [
+      "Blade +3 · Meeting"
+     ],
+     "listTrident": [
+      {
+       "iid": "imuzmky2mc1q7tf",
+       "cells": [
+        "Blade +3",
+        "14 Oct 06:00–18:00",
+        "",
+        "MEETING",
+        "LATEshared meeting Placed by Saber for 4 people · 8 Oct 26, ",
+        "now",
+        "✎"
+       ],
+       "edit": 1,
+       "del": 0,
+       "title": ""
+      }
+     ],
+     "listMeeting": [
+      "Blade +3/14 Oct 06:00–18:00//MEETING"
+     ],
+     "listLL": [
+      "Saber/14 Oct//LL"
+     ],
+     "noneBoth": 0,
+     "search": [
+      "Blade +3/14 Oct 06:00–18:00"
+     ],
+     "calTrident2": [
+      "Blade +3 · Meeting"
+     ],
+     "soloActions": {
+      "edit": 1,
+      "del": 1
+     },
+     "inline": "solo row edited inline",
+     "sharedRow": {
+      "iid": "imuzmky2mc1q7tf",
+      "edit": 1,
+      "del": 0,
+      "chip": 0,
+      "text": "Blade +3\t14 Oct 06:00–18:00\t\tMEETING\tLATEshared meeting Placed by Saber for 4 people · 8 Oct 26, 22:22 \tnow\t ✎"
+     },
+     "sort": [
+      [
+       "Saber",
+       "Blade +3"
+      ],
+      [
+       "Blade +3",
+       "Saber"
+      ],
+      [
+       "Saber",
+       "Blade +3"
+      ]
+     ],
+     "soloGone": true,
+     "addWorks": true
+    },
+    "errors": []
+   }
+  ],
+  "p510-phone": [
+   {
+    "log": [
+     "solo imuzmme7opqi4og shared records [\"imuzmmf5unnhg5q\",\"imuzmmf5pcxxwft\",\"imuzmmf5mftn7fa\",\"imuzmmf5i087567\"] persons [\"Trident\",\"Blade\",\"Piston\",\"Saber\"]",
+     "unfiltered bars on the month: [\"Saber\",\"Blade +3 · Meeting\"]",
+     "Calendar, person = Trident: [\"Blade +3 · Meeting\"]",
+     "List, person = Trident: [{\"iid\":\"imuzmmf5pcxxwft\",\"cells\":[\"Blade +3\",\"14 Oct 06:00–18:00\",\"\",\"MEETING\",\"LATEshared meeting Placed by Saber for 4 people · 8 Oct 26, \",\"now\",\"✎\"],\"edit\":1,\"del\":0,\"title\":\"\"}]",
+     "type options: [\"All types\",\"LL\",\"OL\",\"OIL\",\"CCL\",\"PL\",\"FCL\",\"EL\",\"CL\",\"HL\",\"OML\",\"ATT C\",\"ATT B\",\"Upchit\",\"Training\",\"CSE\",\"Meeting\",\"Fly with\",\"Personal\",\"Appointment\",\"Duty\",\"OD\",\"Other\"]",
+     "List, type = Meeting: [\"Blade +3/14 Oct 06:00–18:00//MEETING\"]",
+     "List, type = LL: [\"Saber/14 Oct//LL\"]",
+     "List, Trident + LL: 0",
+     "List, search \"blade\" (a man only in the shared one): [\"Blade +3/14 Oct 06:00–18:00\"]",
+     "Calendar again, person = Trident: [\"Blade +3 · Meeting\"]",
+     "solo row actions {\"edit\":1,\"del\":1}",
+     "after inline save: record remarks solo row edited inline | editor windows 0",
+     "rows now [\"Saber/14 Oct/\",\"Blade +3/14 Oct 06:00–18:00/\"] filters [\"all\",\"all\",\"\"]",
+     "shared row {\"iid\":\"imuzmmf5pcxxwft\",\"edit\":1,\"del\":0,\"chip\":0,\"text\":\"Blade +3 14 Oct 06:00–18:00 MEETING LATEshared meeting Placed by Saber for 4 people · 8 Oct 26, 22:23 now ✎\"}",
+     "shared pencil opens: window Blade +3 · 14 Oct",
+     "sort by Name: [\"Saber\",\"Blade +3\"] -> [\"Saber\",\"Blade +3\"] -> [\"Saber\",\"Blade +3\"]",
+     "after ✕ on the solo row: records 55 -> 54 | ask: ",
+     "List Add form adds a solo: records 54 -> 55",
+     "errors []"
+    ],
+    "res": {
+     "calTrident": [
+      "Blade +3 · Meeting"
+     ],
+     "listTrident": [
+      {
+       "iid": "imuzmmf5pcxxwft",
+       "cells": [
+        "Blade +3",
+        "14 Oct 06:00–18:00",
+        "",
+        "MEETING",
+        "LATEshared meeting Placed by Saber for 4 people · 8 Oct 26, ",
+        "now",
+        "✎"
+       ],
+       "edit": 1,
+       "del": 0,
+       "title": ""
+      }
+     ],
+     "listMeeting": [
+      "Blade +3/14 Oct 06:00–18:00//MEETING"
+     ],
+     "listLL": [
+      "Saber/14 Oct//LL"
+     ],
+     "noneBoth": 0,
+     "search": [
+      "Blade +3/14 Oct 06:00–18:00"
+     ],
+     "calTrident2": [
+      "Blade +3 · Meeting"
+     ],
+     "soloActions": {
+      "edit": 1,
+      "del": 1
+     },
+     "inline": "solo row edited inline",
+     "sharedRow": {
+      "iid": "imuzmmf5pcxxwft",
+      "edit": 1,
+      "del": 0,
+      "chip": 0,
+      "text": "Blade +3 14 Oct 06:00–18:00 MEETING LATEshared meeting Placed by Saber for 4 people · 8 Oct 26, 22:23 now ✎"
+     },
+     "sort": [
+      [
+       "Saber",
+       "Blade +3"
+      ],
+      [
+       "Saber",
+       "Blade +3"
+      ],
+      [
+       "Saber",
+       "Blade +3"
+      ]
+     ],
+     "soloGone": true,
+     "addWorks": true
+    },
+    "errors": []
+   }
+  ],
+  "p511-desk": [
+   {
+    "log": [
+     "M0 month OCTOBER 2026 target bar top 635",
+     "M1 Save: before {\"mon\":\"OCTOBER 2026\",\"top\":635,\"sy\":0} after {\"mon\":\"OCTOBER 2026\",\"top\":635,\"sy\":0,\"classes\":{\"new\":[\"lift-land\"],\"base\":[],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"editor\":0,\"dayOpen\":0}",
+     "M Undo: before {\"mon\":\"OCTOBER 2026\",\"top\":635,\"sy\":0} after {\"mon\":\"OCTOBER 2026\",\"top\":635,\"sy\":0,\"classes\":{\"new\":[],\"base\":[\"lift-land\"],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"rmk\":\"month target\",\"dayOpen\":0}",
+     "M Redo: before {\"mon\":\"OCTOBER 2026\",\"top\":635,\"sy\":0} after {\"mon\":\"OCTOBER 2026\",\"top\":635,\"sy\":0,\"classes\":{\"new\":[],\"base\":[\"lift-land\"],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"rmk\":\"month target edited\",\"dayOpen\":0}",
+     "M2 moved away to DECEMBER 2026",
+     "M2 Undo from Dec:  {\"mon\":\"OCTOBER 2026\",\"top\":635,\"classes\":{\"new\":[\"ib-bar\",\"amb\",\"lift-land\"],\"base\":[],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"rmk\":\"month target\",\"dayOpen\":0}",
+     "L0 rows 27 topbar bottom 57 target {\"top\":426,\"bottom\":475} scrollY 121",
+     "L1 Save visible target: before {\"row\":{\"top\":426,\"bottom\":475},\"sy\":121} after {\"row\":{\"top\":426,\"bottom\":475},\"sy\":121,\"classes\":{\"new\":[\"in-red\"],\"base\":[],\"all\":[],\"anim\":[\"CSSTransition:running\"]},\"rmk\":\"list target edited\"}",
+     "L Undo (target visible): before {\"row\":{\"top\":426,\"bottom\":475},\"sy\":121} after {\"row\":{\"top\":426,\"bottom\":475},\"sy\":121,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"rmk\":\"bulk 12\"}",
+     "L Redo (target visible): before {\"row\":{\"top\":426,\"bottom\":475},\"sy\":121} after {\"row\":{\"top\":426,\"bottom\":475},\"sy\":121,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"rmk\":\"list target edited\"}",
+     "L Undo, target BELOW the fold (last row); was hidden: true (row {\"top\":1723,\"bottom\":1772}) -> after {\"row\":{\"top\":447,\"bottom\":496},\"sy\":0,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"vh\":900,\"tb\":57,\"rmk\":\"bulk 11\"} | fully in view, clear of the top bar: true",
+     "L Undo, target ABOVE the fold (first row); was hidden: true (row {\"top\":-537,\"bottom\":-486}) -> after {\"row\":{\"top\":739,\"bottom\":790},\"sy\":982,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"vh\":900,\"tb\":57,\"rmk\":\"month target\"} | fully in view, clear of the top bar: true",
+     "errors []"
+    ],
+    "res": {
+     "save": {
+      "s0": {
+       "mon": "OCTOBER 2026",
+       "top": 635,
+       "sy": 0
+      },
+      "s1": {
+       "mon": "OCTOBER 2026",
+       "top": 635,
+       "sy": 0,
+       "classes": {
+        "new": [
+         "lift-land"
+        ],
+        "base": [],
+        "all": [
+         "lift-land"
+        ],
+        "anim": [
+         "liftLand:running"
+        ]
+       },
+       "editor": 0,
+       "dayOpen": 0
+      }
+     },
+     "mUndo": {
+      "a0": {
+       "mon": "OCTOBER 2026",
+       "top": 635,
+       "sy": 0
+      },
+      "a1": {
+       "mon": "OCTOBER 2026",
+       "top": 635,
+       "sy": 0,
+       "classes": {
+        "new": [],
+        "base": [
+         "lift-land"
+        ],
+        "all": [
+         "lift-land"
+        ],
+        "anim": [
+         "liftLand:running"
+        ]
+       },
+       "rmk": "month target",
+       "dayOpen": 0
+      }
+     },
+     "mRedo": {
+      "a0": {
+       "mon": "OCTOBER 2026",
+       "top": 635,
+       "sy": 0
+      },
+      "a1": {
+       "mon": "OCTOBER 2026",
+       "top": 635,
+       "sy": 0,
+       "classes": {
+        "new": [],
+        "base": [
+         "lift-land"
+        ],
+        "all": [
+         "lift-land"
+        ],
+        "anim": [
+         "liftLand:running"
+        ]
+       },
+       "rmk": "month target edited",
+       "dayOpen": 0
+      }
+     },
+     "mAway": {
+      "mon": "OCTOBER 2026",
+      "top": 635,
+      "classes": {
+       "new": [
+        "ib-bar",
+        "amb",
+        "lift-land"
+       ],
+       "base": [],
+       "all": [
+        "lift-land"
+       ],
+       "anim": [
+        "liftLand:running"
+       ]
+      },
+      "rmk": "month target",
+      "dayOpen": 0
+     },
+     "listSave": {
+      "l0": {
+       "row": {
+        "top": 426,
+        "bottom": 475
+       },
+       "sy": 121
+      },
+      "l1": {
+       "row": {
+        "top": 426,
+        "bottom": 475
+       },
+       "sy": 121,
+       "classes": {
+        "new": [
+         "in-red"
+        ],
+        "base": [],
+        "all": [],
+        "anim": [
+         "CSSTransition:running"
+        ]
+       },
+       "rmk": "list target edited"
+      }
+     },
+     "lUndo": {
+      "a0": {
+       "row": {
+        "top": 426,
+        "bottom": 475
+       },
+       "sy": 121
+      },
+      "a1": {
+       "row": {
+        "top": 426,
+        "bottom": 475
+       },
+       "sy": 121,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "rmk": "bulk 12"
+      }
+     },
+     "lRedo": {
+      "a0": {
+       "row": {
+        "top": 426,
+        "bottom": 475
+       },
+       "sy": 121
+      },
+      "a1": {
+       "row": {
+        "top": 426,
+        "bottom": 475
+       },
+       "sy": 121,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "rmk": "list target edited"
+      }
+     },
+     "away BELOW the fold (last row)": {
+      "hidden": true,
+      "vis": {
+       "top": 1723,
+       "bottom": 1772
+      },
+      "a1": {
+       "row": {
+        "top": 447,
+        "bottom": 496
+       },
+       "sy": 0,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "vh": 900,
+       "tb": 57,
+       "rmk": "bulk 11"
+      },
+      "clear": true
+     },
+     "away ABOVE the fold (first row)": {
+      "hidden": true,
+      "vis": {
+       "top": -537,
+       "bottom": -486
+      },
+      "a1": {
+       "row": {
+        "top": 739,
+        "bottom": 790
+       },
+       "sy": 982,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "vh": 900,
+       "tb": 57,
+       "rmk": "month target"
+      },
+      "clear": true
+     }
+    },
+    "errors": []
+   }
+  ],
+  "p511-phone": [
+   {
+    "log": [
+     "M0 month OCT 2026 target bar top 612",
+     "M1 Save: before {\"mon\":\"OCT 2026\",\"top\":612,\"sy\":0} after {\"mon\":\"OCT 2026\",\"top\":612,\"sy\":0,\"classes\":{\"new\":[\"lift-land\"],\"base\":[],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"editor\":0,\"dayOpen\":0}",
+     "M Undo: before {\"mon\":\"OCT 2026\",\"top\":612,\"sy\":0} after {\"mon\":\"OCT 2026\",\"top\":612,\"sy\":0,\"classes\":{\"new\":[],\"base\":[\"lift-land\"],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"rmk\":\"month target\",\"dayOpen\":0}",
+     "M Redo: before {\"mon\":\"OCT 2026\",\"top\":612,\"sy\":0} after {\"mon\":\"OCT 2026\",\"top\":612,\"sy\":0,\"classes\":{\"new\":[],\"base\":[\"lift-land\"],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"rmk\":\"month target edited\",\"dayOpen\":0}",
+     "M2 moved away to DEC 2026",
+     "M2 Undo from Dec:  {\"mon\":\"OCT 2026\",\"top\":612,\"classes\":{\"new\":[\"ib-bar\",\"amb\",\"lift-land\"],\"base\":[],\"all\":[\"lift-land\"],\"anim\":[\"liftLand:running\"]},\"rmk\":\"month target\",\"dayOpen\":0}",
+     "L0 rows 27 topbar bottom 49 target {\"top\":387,\"bottom\":457} scrollY 710",
+     "L1 Save visible target: before {\"row\":{\"top\":387,\"bottom\":457},\"sy\":710} after {\"row\":{\"top\":382,\"bottom\":452},\"sy\":715,\"classes\":{\"new\":[\"in-red\"],\"base\":[],\"all\":[],\"anim\":[]},\"rmk\":\"list target edited\"}",
+     "L Undo (target visible): before {\"row\":{\"top\":382,\"bottom\":452},\"sy\":715} after {\"row\":{\"top\":382,\"bottom\":452},\"sy\":715,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"rmk\":\"bulk 12\"}",
+     "L Redo (target visible): before {\"row\":{\"top\":382,\"bottom\":452},\"sy\":715} after {\"row\":{\"top\":382,\"bottom\":452},\"sy\":715,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"rmk\":\"list target edited\"}",
+     "L Undo, target BELOW the fold (last row); was hidden: true (row {\"top\":3145,\"bottom\":3231}) -> after {\"row\":{\"top\":750,\"bottom\":836},\"sy\":159,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"vh\":844,\"tb\":49,\"rmk\":\"bulk 11\"} | fully in view, clear of the top bar: true",
+     "L Undo, target ABOVE the fold (first row); was hidden: true (row {\"top\":-1566,\"bottom\":-1450}) -> after {\"row\":{\"top\":684,\"bottom\":786},\"sy\":2445,\"classes\":{\"new\":[],\"base\":[],\"all\":[],\"anim\":[]},\"vh\":844,\"tb\":49,\"rmk\":\"month target\"} | fully in view, clear of the top bar: true",
+     "errors []"
+    ],
+    "res": {
+     "save": {
+      "s0": {
+       "mon": "OCT 2026",
+       "top": 612,
+       "sy": 0
+      },
+      "s1": {
+       "mon": "OCT 2026",
+       "top": 612,
+       "sy": 0,
+       "classes": {
+        "new": [
+         "lift-land"
+        ],
+        "base": [],
+        "all": [
+         "lift-land"
+        ],
+        "anim": [
+         "liftLand:running"
+        ]
+       },
+       "editor": 0,
+       "dayOpen": 0
+      }
+     },
+     "mUndo": {
+      "a0": {
+       "mon": "OCT 2026",
+       "top": 612,
+       "sy": 0
+      },
+      "a1": {
+       "mon": "OCT 2026",
+       "top": 612,
+       "sy": 0,
+       "classes": {
+        "new": [],
+        "base": [
+         "lift-land"
+        ],
+        "all": [
+         "lift-land"
+        ],
+        "anim": [
+         "liftLand:running"
+        ]
+       },
+       "rmk": "month target",
+       "dayOpen": 0
+      }
+     },
+     "mRedo": {
+      "a0": {
+       "mon": "OCT 2026",
+       "top": 612,
+       "sy": 0
+      },
+      "a1": {
+       "mon": "OCT 2026",
+       "top": 612,
+       "sy": 0,
+       "classes": {
+        "new": [],
+        "base": [
+         "lift-land"
+        ],
+        "all": [
+         "lift-land"
+        ],
+        "anim": [
+         "liftLand:running"
+        ]
+       },
+       "rmk": "month target edited",
+       "dayOpen": 0
+      }
+     },
+     "mAway": {
+      "mon": "OCT 2026",
+      "top": 612,
+      "classes": {
+       "new": [
+        "ib-bar",
+        "amb",
+        "lift-land"
+       ],
+       "base": [],
+       "all": [
+        "lift-land"
+       ],
+       "anim": [
+        "liftLand:running"
+       ]
+      },
+      "rmk": "month target",
+      "dayOpen": 0
+     },
+     "listSave": {
+      "l0": {
+       "row": {
+        "top": 387,
+        "bottom": 457
+       },
+       "sy": 710
+      },
+      "l1": {
+       "row": {
+        "top": 382,
+        "bottom": 452
+       },
+       "sy": 715,
+       "classes": {
+        "new": [
+         "in-red"
+        ],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "rmk": "list target edited"
+      }
+     },
+     "lUndo": {
+      "a0": {
+       "row": {
+        "top": 382,
+        "bottom": 452
+       },
+       "sy": 715
+      },
+      "a1": {
+       "row": {
+        "top": 382,
+        "bottom": 452
+       },
+       "sy": 715,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "rmk": "bulk 12"
+      }
+     },
+     "lRedo": {
+      "a0": {
+       "row": {
+        "top": 382,
+        "bottom": 452
+       },
+       "sy": 715
+      },
+      "a1": {
+       "row": {
+        "top": 382,
+        "bottom": 452
+       },
+       "sy": 715,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "rmk": "list target edited"
+      }
+     },
+     "away BELOW the fold (last row)": {
+      "hidden": true,
+      "vis": {
+       "top": 3145,
+       "bottom": 3231
+      },
+      "a1": {
+       "row": {
+        "top": 750,
+        "bottom": 836
+       },
+       "sy": 159,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "vh": 844,
+       "tb": 49,
+       "rmk": "bulk 11"
+      },
+      "clear": true
+     },
+     "away ABOVE the fold (first row)": {
+      "hidden": true,
+      "vis": {
+       "top": -1566,
+       "bottom": -1450
+      },
+      "a1": {
+       "row": {
+        "top": 684,
+        "bottom": 786
+       },
+       "sy": 2445,
+       "classes": {
+        "new": [],
+        "base": [],
+        "all": [],
+        "anim": []
+       },
+       "vh": 844,
+       "tb": 49,
+       "rmk": "month target"
+      },
+      "clear": true
+     }
+    },
+    "errors": []
+   }
+  ],
+  "p512-desk": [
+   {
+    "log": [
+     "start {\"vc\":{\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2},\"logic\":{\"switch\":\"on\",\"cut\":\"A member's input is due 14 days before the week starts\"}}",
+     "window opened: {\"mode\":\"true\",\"lead\":\"14\",\"file\":true,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Mon 12 Oct.\"}",
+     "before Save (invalid): {\"mode\":\"true\",\"lead\":\"abc\",\"file\":false}",
+     "after invalid Save: {\"vc\":{\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2},\"win\":{\"mode\":\"true\",\"lead\":\"abc\",\"file\":false},\"open\":1,\"toast\":\"\",\"msg\":\"⠿ | Inputs calendar settings | admins only | ✕ | CALENDAR | Calendar… | Day flying, night flying or no fly for each date, and the year’s holidays. | LATE CUT-OFF FOR INPUTS | Days before | A weekday | Days before the week starts |  | An input last changed after its cut-off is marked LATE. Downchits and upchits are never late. |  | FILING FOR OTHER PEOPLE | Members may file duties and commitments for other people |  | Off, a member files for himself only. On or off, never leave, medical or SANS a\"}",
+     "Logic rows after the failed Save + Cancel: {\"switch\":\"on\",\"cut\":\"A member's input is due 14 days before the week starts\"} {\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2}",
+     "window re-opened: {\"mode\":\"true\",\"lead\":\"14\",\"file\":true,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Mon 12 Oct.\"}",
+     "after valid Save: {\"vc\":{\"lead\":10,\"mode\":0,\"wd\":2,\"wk\":2},\"open\":0}",
+     "Logic rows after the valid Save: {\"switch\":\"off\",\"cut\":\"A member's input is due 10 days before the week starts\"}",
+     "Logic \"Inputs calendar settings…\" buttons: 2",
+     "door 0 {\"mode\":\"true\",\"lead\":\"10\",\"file\":false,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct.\"}",
+     "door 1 {\"mode\":\"true\",\"lead\":\"10\",\"file\":false,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct.\"}",
+     "Undo #1 {\"lead\":10,\"mode\":0,\"wd\":2,\"wk\":2} {\"switch\":\"on\",\"cut\":\"A member's input is due 10 days before the week starts\"}",
+     "Undo #2 {\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2} {\"switch\":\"on\",\"cut\":\"A member's input is due 14 days before the week starts\"}",
+     "Undo not available at step 3",
+     "errors []"
+    ],
+    "res": {
+     "start": {
+      "vc": {
+       "lead": 14,
+       "mode": 0,
+       "wd": 2,
+       "wk": 2
+      },
+      "logic": {
+       "switch": "on",
+       "cut": "A member's input is due 14 days before the week starts"
+      }
+     },
+     "afterBad": {
+      "vc": {
+       "lead": 14,
+       "mode": 0,
+       "wd": 2,
+       "wk": 2
+      },
+      "win": {
+       "mode": "true",
+       "lead": "abc",
+       "file": false
+      },
+      "open": 1,
+      "toast": "",
+      "msg": "⠿ | Inputs calendar settings | admins only | ✕ | CALENDAR | Calendar… | Day flying, night flying or no fly for each date, and the year’s holidays. | LATE CUT-OFF FOR INPUTS | Days before | A weekday | Days before the week starts |  | An input last changed after its cut-off is marked LATE. Downchits and upchits are never late. |  | FILING FOR OTHER PEOPLE | Members may file duties and commitments for other people |  | Off, a member files for himself only. On or off, never leave, medical or SANS a"
+     },
+     "logicAfterBad": {
+      "switch": "on",
+      "cut": "A member's input is due 14 days before the week starts"
+     },
+     "afterGood": {
+      "vc": {
+       "lead": 10,
+       "mode": 0,
+       "wd": 2,
+       "wk": 2
+      },
+      "open": 0
+     },
+     "logicAfterGood": {
+      "switch": "off",
+      "cut": "A member's input is due 10 days before the week starts"
+     },
+     "doors": [
+      {
+       "mode": "true",
+       "lead": "10",
+       "file": false,
+       "example": "For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct."
+      },
+      {
+       "mode": "true",
+       "lead": "10",
+       "file": false,
+       "example": "For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct."
+      }
+     ],
+     "undo": [
+      {
+       "i": 1,
+       "v": {
+        "lead": 10,
+        "mode": 0,
+        "wd": 2,
+        "wk": 2
+       },
+       "l": {
+        "switch": "on",
+        "cut": "A member's input is due 10 days before the week starts"
+       }
+      },
+      {
+       "i": 2,
+       "v": {
+        "lead": 14,
+        "mode": 0,
+        "wd": 2,
+        "wk": 2
+       },
+       "l": {
+        "switch": "on",
+        "cut": "A member's input is due 14 days before the week starts"
+       }
+      }
+     ]
+    },
+    "errors": []
+   }
+  ],
+  "p512-phone": [
+   {
+    "log": [
+     "start {\"vc\":{\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2},\"logic\":{\"switch\":\"on\",\"cut\":\"A member's input is due 14 days before the week starts\"}}",
+     "window opened: {\"mode\":\"true\",\"lead\":\"14\",\"file\":true,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Mon 12 Oct.\"}",
+     "before Save (invalid): {\"mode\":\"true\",\"lead\":\"abc\",\"file\":false}",
+     "after invalid Save: {\"vc\":{\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2},\"win\":{\"mode\":\"true\",\"lead\":\"abc\",\"file\":false},\"open\":1,\"toast\":\"\",\"msg\":\"⠿ | Inputs calendar settings | admins only | ✕ | CALENDAR | Calendar… | Day flying, night flying or no fly for each date, and the year’s holidays. | LATE CUT-OFF FOR INPUTS | Days before | A weekday | Days before the week starts |  | An input last changed after its cut-off is marked LATE. Downchits and upchits are never late. |  | FILING FOR OTHER PEOPLE | Members may file duties and commitments for other people |  | Off, a member files for himself only. On or off, never leave, medical or SANS a\"}",
+     "Logic rows after the failed Save + Cancel: {\"switch\":\"on\",\"cut\":\"A member's input is due 14 days before the week starts\"} {\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2}",
+     "window re-opened: {\"mode\":\"true\",\"lead\":\"14\",\"file\":true,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Mon 12 Oct.\"}",
+     "after valid Save: {\"vc\":{\"lead\":10,\"mode\":0,\"wd\":2,\"wk\":2},\"open\":0}",
+     "Logic rows after the valid Save: {\"switch\":\"off\",\"cut\":\"A member's input is due 10 days before the week starts\"}",
+     "Logic \"Inputs calendar settings…\" buttons: 2",
+     "door 0 {\"mode\":\"true\",\"lead\":\"10\",\"file\":false,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct.\"}",
+     "door 1 {\"mode\":\"true\",\"lead\":\"10\",\"file\":false,\"example\":\"For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct.\"}",
+     "Undo #1 {\"lead\":10,\"mode\":0,\"wd\":2,\"wk\":2} {\"switch\":\"on\",\"cut\":\"A member's input is due 10 days before the week starts\"}",
+     "Undo #2 {\"lead\":14,\"mode\":0,\"wd\":2,\"wk\":2} {\"switch\":\"on\",\"cut\":\"A member's input is due 14 days before the week starts\"}",
+     "Undo not available at step 3",
+     "errors []"
+    ],
+    "res": {
+     "start": {
+      "vc": {
+       "lead": 14,
+       "mode": 0,
+       "wd": 2,
+       "wk": 2
+      },
+      "logic": {
+       "switch": "on",
+       "cut": "A member's input is due 14 days before the week starts"
+      }
+     },
+     "afterBad": {
+      "vc": {
+       "lead": 14,
+       "mode": 0,
+       "wd": 2,
+       "wk": 2
+      },
+      "win": {
+       "mode": "true",
+       "lead": "abc",
+       "file": false
+      },
+      "open": 1,
+      "toast": "",
+      "msg": "⠿ | Inputs calendar settings | admins only | ✕ | CALENDAR | Calendar… | Day flying, night flying or no fly for each date, and the year’s holidays. | LATE CUT-OFF FOR INPUTS | Days before | A weekday | Days before the week starts |  | An input last changed after its cut-off is marked LATE. Downchits and upchits are never late. |  | FILING FOR OTHER PEOPLE | Members may file duties and commitments for other people |  | Off, a member files for himself only. On or off, never leave, medical or SANS a"
+     },
+     "logicAfterBad": {
+      "switch": "on",
+      "cut": "A member's input is due 14 days before the week starts"
+     },
+     "afterGood": {
+      "vc": {
+       "lead": 10,
+       "mode": 0,
+       "wd": 2,
+       "wk": 2
+      },
+      "open": 0
+     },
+     "logicAfterGood": {
+      "switch": "off",
+      "cut": "A member's input is due 10 days before the week starts"
+     },
+     "doors": [
+      {
+       "mode": "true",
+       "lead": "10",
+       "file": false,
+       "example": "For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct."
+      },
+      {
+       "mode": "true",
+       "lead": "10",
+       "file": false,
+       "example": "For the week of Mon 26 Oct, inputs are due by the end of Fri 16 Oct."
+      }
+     ],
+     "undo": [
+      {
+       "i": 1,
+       "v": {
+        "lead": 10,
+        "mode": 0,
+        "wd": 2,
+        "wk": 2
+       },
+       "l": {
+        "switch": "on",
+        "cut": "A member's input is due 10 days before the week starts"
+       }
+      },
+      {
+       "i": 2,
+       "v": {
+        "lead": 14,
+        "mode": 0,
+        "wd": 2,
+        "wk": 2
+       },
+       "l": {
+        "switch": "on",
+        "cut": "A member's input is due 14 days before the week starts"
+       }
+      }
+     ]
+    },
+    "errors": []
+   }
+  ],
+  "sizes": [
+   {
+    "log": [
+     "short month: {\"vw\":390,\"vh\":568,\"pageW\":390,\"pageH\":652,\"grid\":{\"top\":216,\"bottom\":652,\"own\":0,\"ovY\":\"hidden\"},\"bars\":4,\"more\":[\"+4 more\"]} | sideways scroll: false",
+     "short opened day window: {\"top\":181,\"bottom\":556,\"left\":12,\"right\":370,\"vw\":390,\"vh\":568,\"closeLands\":true,\"addLands\":true}",
+     "short editor window: {\"top\":12,\"bottom\":556,\"vh\":568,\"btns\":{\"inpEditSave\":{\"inView\":false,\"lands\":false},\"inpEditCancel\":{\"inView\":false,\"lands\":false}},\"bodyScrolls\":129}",
+     "short settings window: {\"top\":147,\"bottom\":556,\"vh\":568,\"btns\":{\"iset-save\":{\"inView\":false,\"lands\":false},\"iset-cancel\":{\"inView\":false,\"lands\":false},\"win-inputsset-x\":{\"inView\":true,\"lands\":true}}}",
+     "short errors []",
+     "side month: {\"vw\":844,\"vh\":390,\"pageW\":844,\"pageH\":921,\"grid\":{\"top\":325,\"bottom\":921,\"own\":0,\"ovY\":\"hidden\"},\"bars\":8,\"more\":[]} | sideways scroll: false",
+     "side opened day window: {\"top\":96,\"bottom\":366,\"left\":398,\"right\":828,\"vw\":844,\"vh\":390,\"closeLands\":true,\"addLands\":true}",
+     "side editor window: {\"top\":96,\"bottom\":366,\"vh\":390,\"btns\":{\"inpEditSave\":{\"inView\":false,\"lands\":false},\"inpEditCancel\":{\"inView\":false,\"lands\":false}},\"bodyScrolls\":369}",
+     "side settings window: {\"top\":96,\"bottom\":366,\"vh\":390,\"btns\":{\"iset-save\":{\"inView\":false,\"lands\":false},\"iset-cancel\":{\"inView\":false,\"lands\":false},\"win-inputsset-x\":{\"inView\":true,\"lands\":true}}}",
+     "side errors []",
+     "wide month: {\"vw\":1536,\"vh\":864,\"pageW\":1536,\"pageH\":889,\"grid\":{\"top\":181,\"bottom\":889,\"own\":0,\"ovY\":\"hidden\"},\"bars\":8,\"more\":[]} | sideways scroll: false",
+     "wide opened day window: {\"top\":96,\"bottom\":658,\"left\":1090,\"right\":1520,\"vw\":1536,\"vh\":864,\"closeLands\":true,\"addLands\":true}",
+     "wide editor window: {\"top\":96,\"bottom\":735,\"vh\":864,\"btns\":{\"inpEditSave\":{\"inView\":true,\"lands\":true},\"inpEditCancel\":{\"inView\":true,\"lands\":true}},\"bodyScrolls\":0}",
+     "wide settings window: {\"top\":96,\"bottom\":650,\"vh\":864,\"btns\":{\"iset-save\":{\"inView\":true,\"lands\":true},\"iset-cancel\":{\"inView\":true,\"lands\":true},\"win-inputsset-x\":{\"inView\":true,\"lands\":true}}}",
+     "wide errors []"
+    ],
+    "res": {
+     "short": {
+      "month": {
+       "vw": 390,
+       "vh": 568,
+       "pageW": 390,
+       "pageH": 652,
+       "grid": {
+        "top": 216,
+        "bottom": 652,
+        "own": 0,
+        "ovY": "hidden"
+       },
+       "bars": 4,
+       "more": [
+        "+4 more"
+       ]
+      },
+      "day": {
+       "top": 181,
+       "bottom": 556,
+       "left": 12,
+       "right": 370,
+       "vw": 390,
+       "vh": 568,
+       "closeLands": true,
+       "addLands": true
+      },
+      "editor": {
+       "top": 12,
+       "bottom": 556,
+       "vh": 568,
+       "btns": {
+        "inpEditSave": {
+         "inView": false,
+         "lands": false
+        },
+        "inpEditCancel": {
+         "inView": false,
+         "lands": false
+        }
+       },
+       "bodyScrolls": 129
+      },
+      "settings": {
+       "top": 147,
+       "bottom": 556,
+       "vh": 568,
+       "btns": {
+        "iset-save": {
+         "inView": false,
+         "lands": false
+        },
+        "iset-cancel": {
+         "inView": false,
+         "lands": false
+        },
+        "win-inputsset-x": {
+         "inView": true,
+         "lands": true
+        }
+       }
+      },
+      "errors": []
+     },
+     "side": {
+      "month": {
+       "vw": 844,
+       "vh": 390,
+       "pageW": 844,
+       "pageH": 921,
+       "grid": {
+        "top": 325,
+        "bottom": 921,
+        "own": 0,
+        "ovY": "hidden"
+       },
+       "bars": 8,
+       "more": []
+      },
+      "day": {
+       "top": 96,
+       "bottom": 366,
+       "left": 398,
+       "right": 828,
+       "vw": 844,
+       "vh": 390,
+       "closeLands": true,
+       "addLands": true
+      },
+      "editor": {
+       "top": 96,
+       "bottom": 366,
+       "vh": 390,
+       "btns": {
+        "inpEditSave": {
+         "inView": false,
+         "lands": false
+        },
+        "inpEditCancel": {
+         "inView": false,
+         "lands": false
+        }
+       },
+       "bodyScrolls": 369
+      },
+      "settings": {
+       "top": 96,
+       "bottom": 366,
+       "vh": 390,
+       "btns": {
+        "iset-save": {
+         "inView": false,
+         "lands": false
+        },
+        "iset-cancel": {
+         "inView": false,
+         "lands": false
+        },
+        "win-inputsset-x": {
+         "inView": true,
+         "lands": true
+        }
+       }
+      },
+      "errors": []
+     },
+     "wide": {
+      "month": {
+       "vw": 1536,
+       "vh": 864,
+       "pageW": 1536,
+       "pageH": 889,
+       "grid": {
+        "top": 181,
+        "bottom": 889,
+        "own": 0,
+        "ovY": "hidden"
+       },
+       "bars": 8,
+       "more": []
+      },
+      "day": {
+       "top": 96,
+       "bottom": 658,
+       "left": 1090,
+       "right": 1520,
+       "vw": 1536,
+       "vh": 864,
+       "closeLands": true,
+       "addLands": true
+      },
+      "editor": {
+       "top": 96,
+       "bottom": 735,
+       "vh": 864,
+       "btns": {
+        "inpEditSave": {
+         "inView": true,
+         "lands": true
+        },
+        "inpEditCancel": {
+         "inView": true,
+         "lands": true
+        }
+       },
+       "bodyScrolls": 0
+      },
+      "settings": {
+       "top": 96,
+       "bottom": 650,
+       "vh": 864,
+       "btns": {
+        "iset-save": {
+         "inView": true,
+         "lands": true
+        },
+        "iset-cancel": {
+         "inView": true,
+         "lands": true
+        },
+        "win-inputsset-x": {
+         "inView": true,
+         "lands": true
+        }
+       }
+      },
+      "errors": []
+     }
+    }
+   }
+  ]
+ }
+}

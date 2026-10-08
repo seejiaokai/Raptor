@@ -705,6 +705,12 @@ nodes, phone and desktop, admin and member - the figure in `docs/performance.md`
 `scripts/handpass/cal-host-leads.mjs` - the calendar job's bug check, THE HOST'S OWN RUN of three leads through the app's
 real controls (the "Calendar" month's holiday tag; Escape with a window in front of the input editor; a change of the
 picked people alone as unsaved work): 0 of 3 right before the fixes; a PASS is the right behaviour, so it is its own re-walk.
+`scripts/handpass/cal-host-short.mjs`, `cal-host-side.mjs` - the same check, the host's own: each settings window's Save
+reached on phones 844, 664 and 568 tall; a day opened on either calendar on a phone on its side (844 x 390).
+`scripts/handpass/cal-A-*.mjs` ... `cal-H-*.mjs` - the EIGHT WALKERS' own scripts of that check (8 Oct 26), one letter a
+walker: A one day's facts, B the Leave War, C the windows and "Calendar", D the SANS calendar, E the Inputs calendar,
+F one input for several people and the late rule, G and H the crossings. Records of what was driven, not gates; each
+walker's table is `docs/handpass/parts/cal-<letter>.md`.
 `scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
 grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26). He chose A (D678); it is built.
 `scripts/handpass/lw-phone-head-measure.mjs` - measures the Leave War's top area (every control's words, box, padding and

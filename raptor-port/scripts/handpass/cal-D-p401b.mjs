@@ -1,0 +1,12 @@
+import { chromium, launchOptions, world, shot, tid, cell } from './cal-D-lib.mjs'
+const browser = await chromium.launch(launchOptions)
+const { ctx, page, errors } = await world(browser, 'desk')
+await page.evaluate(() => window.go('quals')); await page.waitForTimeout(800)
+const c = page.locator('[data-q="vinci|san"]')
+console.log('count', await c.count(), await c.first().innerText().catch(()=>'-'))
+await c.scrollIntoViewIfNeeded()
+await shot(page, 'explore-quals')
+const btns = await page.evaluate(() => [...document.querySelectorAll('#page-quals button, [id*=qual] button')].map(b => b.id + ':' + b.innerText).slice(0, 30))
+console.log(btns.join(' | '))
+console.log(errors.join('\n'))
+await ctx.close(); await browser.close()

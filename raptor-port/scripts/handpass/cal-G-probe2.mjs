@@ -1,0 +1,16 @@
+import * as G from './cal-G-lib.mjs'
+const { L, W, sleep } = G
+const { browser, p, errors } = await G.world({ who: 'a' })
+await p.evaluate(() => window.loadWeek('20/07/2026')); await sleep(900)
+await L.go(p, 'editsched')
+await W.showDay(p, 3)
+console.log('head0', JSON.stringify(await W.head(p, 3)))
+await G.shot(p, 'p2-thu-before')
+console.log('sign', JSON.stringify(await W.signDay(p, 3)))
+console.log('head1', JSON.stringify(await W.head(p, 3)))
+console.log('pub', JSON.stringify(await W.publishDay(p, 3)))
+await sleep(500)
+console.log('head2', JSON.stringify(await W.head(p, 3)))
+await G.shot(p, 'p2-thu-published')
+console.log('errors', errors)
+await browser.close()

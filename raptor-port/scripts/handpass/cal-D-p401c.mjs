@@ -1,0 +1,13 @@
+import { chromium, launchOptions, world, shot, tid } from './cal-D-lib.mjs'
+const browser = await chromium.launch(launchOptions)
+const { ctx, page, errors } = await world(browser, 'desk')
+await page.evaluate(() => window.go('admin')); await page.waitForTimeout(800)
+const row = page.locator('text=Bolt').first()
+console.log(await row.count())
+const info = await page.evaluate(() => { const e = [...document.querySelectorAll('*')].filter(x => x.children.length === 0 && x.textContent.trim() === 'Bolt')[0]; let p = e; const chain = []; while (p && chain.length < 6) { chain.push(p.tagName + '.' + p.className + '#' + p.id); p = p.parentElement } return chain })
+console.log(info.join(' > '))
+await shot(page, "explore-admin0"); const nm = await page.evaluate(() => [...document.querySelectorAll("[data-testid^=dot-roster-]")].slice(0,3).map(e => e.getAttribute("data-testid")+"|"+(e.closest("[class*=acc]")||{}).className)); console.log(nm)
+await shot(page, 'explore-admin')
+console.log(await page.locator('#accEdArchive').count())
+console.log(errors.join('\n'))
+await ctx.close(); await browser.close()

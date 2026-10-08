@@ -1,0 +1,15 @@
+import * as G from './cal-G-lib.mjs'
+const { L, W, sleep } = G
+G.setTag('probe7')
+const { browser, p, errors } = await G.world({ who: 'a' })
+const tid = id => p.locator(`[data-testid="${id}"]`)
+await L.go(p, 'leavewar'); await sleep(1200)
+await tid('month-JUL').first().click(); await sleep(1300)
+const rows = await p.evaluate(() => ['req-p', 'req-w', 'avail-p', 'avail-w'].map(r => { const c = document.querySelector(`[data-testid="${r}-2026-07-13"]`); return r + '=' + (c ? c.innerText.trim() : 'none') }))
+console.log('13 Jul', rows.join(' '))
+await tid('fly-name-avail-p').click(); await sleep(700)
+await G.shot(p, 'avail-form')
+console.log('FORM', (await p.locator('[role=dialog], .bidsheet, .rowsheet').last().innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 1500))
+console.log('testids', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('[data-testid]')].map(e => e.dataset.testid).filter(t => /rule|avail|counter|row-|cat|qual|band|sxo|ocu|name|preview|save|delete/i.test(t) && !/^cell-|^head-|^event-|^count-|^req-|^fly-/.test(t)).slice(0, 80))))
+console.log('errors', JSON.stringify(errors))
+await browser.close()

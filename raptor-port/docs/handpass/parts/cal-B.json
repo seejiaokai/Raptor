@@ -1,0 +1,739 @@
+{
+ "rows": [
+  {
+   "id": "P2-01",
+   "size": "desk",
+   "did": "Opened Available P by its name; read every control/preview; renamed, left OCU out (is not OCU), picked a qualification chip; saved; reopened; tapped Required P name",
+   "saw": "ok name field starts \"Available P\" [\"Available P\"] | ok forbidden controls absent (amber/red/teams/people-mode/delete/slots) [[]] | ok no SANS chip / reset / default words [\"Available P for the SANS calendar ✕ NAME CREW Any crew Pilots WSOs CAT is FI IR IP IW A B C D OCU HOLDING SXO Scheduler SC DAY SC NIGHT DAAR NAAR NVG IMC TF WITHOUT SXO Scheduler SC DAY SC NIGHT DAAR NAAR NVG IMC TF SAN] | ok the sample before change = first day figure [{\"prev1\":\"On this war's first day that counts 28.\",\"before\":\"28\"}] | ok sample after OCU out matches the saved row (cell on first day) [{\"prev2\":\"On this war's first day that counts 25.\",\"prev3\":\"On this war's first day that counts 9.\",\"afterFig\":\"9\"}] | ok row renamed [\"AV P TEST\"] | ok Required name opens nothing [{\"reqNameBtn\":0,\"reqOpened\":0,\"reqText\":\"REQUIRED P\"}] || buttons: ✕ / Any crew / Pilots / WSOs / is / FI / IR / IP / IW / A / B / C / D / OCU / SXO / Scheduler / SC DAY / SC NIGHT / DAAR / NAAR / NVG / IMC / TF / SXO / Scheduler / SC DAY / SC NIGHT / DAAR / NAAR / NVG / IMC / TF / Save / Cancel || previews: 1=\"On this war's first day that counts 28.\" 2=\"On this war's first day that counts 25.\" 3=\"On this war's first day that counts 9.\" 4(reopen)=\"On this war's first day that counts 9.\"; cells first day before=28 after=9; form box {\"x\":440,\"y\":473,\"r\":1000,\"b\":886}; qual chip cf-qual-sxo",
+   "verdict": "PASS",
+   "pics": [
+    "P2-01-desk-1-form-opened.png",
+    "P2-01-desk-2-ocu-left-out.png",
+    "P2-01-desk-3-qual.png",
+    "P2-01-desk-4-saved.png",
+    "P2-01-desk-5-reopened.png",
+    "P2-01-desk-6-required-name.png"
+   ]
+  },
+  {
+   "id": "P2-01",
+   "size": "phone",
+   "did": "Opened Available P by its name; read every control/preview; renamed, left OCU out (is not OCU), picked a qualification chip; saved; reopened; tapped Required P name",
+   "saw": "ok name field starts \"Available P\" [\"Available P\"] | ok forbidden controls absent (amber/red/teams/people-mode/delete/slots) [[]] | ok no SANS chip / reset / default words [\"Available P for the SANS calendar ✕ NAME CREW Any crew Pilots WSOs CAT is FI IR IP IW A B C D OCU HOLDING SXO Scheduler SC DAY SC NIGHT DAAR NAAR NVG IMC TF WITHOUT SXO Scheduler SC DAY SC NIGHT DAAR NAAR NVG IMC TF SAN] | ok the sample before change = first day figure [{\"prev1\":\"On this war's first day that counts 28.\",\"before\":\"28\"}] | ok sample after OCU out matches the saved row (cell on first day) [{\"prev2\":\"On this war's first day that counts 25.\",\"prev3\":\"On this war's first day that counts 9.\",\"afterFig\":\"9\"}] | ok row renamed [\"AV P TEST\"] | ok Required name opens nothing [{\"reqNameBtn\":0,\"reqOpened\":0,\"reqText\":\"REQ P\"}] || buttons: ✕ / Any crew / Pilots / WSOs / is / FI / IR / IP / IW / A / B / C / D / OCU / SXO / Scheduler / SC DAY / SC NIGHT / DAAR / NAAR / NVG / IMC / TF / SXO / Scheduler / SC DAY / SC NIGHT / DAAR / NAAR / NVG / IMC / TF / Save / Cancel || previews: 1=\"On this war's first day that counts 28.\" 2=\"On this war's first day that counts 25.\" 3=\"On this war's first day that counts 9.\" 4(reopen)=\"On this war's first day that counts 9.\"; cells first day before=28 after=9; form box {\"x\":12,\"y\":293,\"r\":378,\"b\":830}; qual chip cf-qual-sxo",
+   "verdict": "PASS",
+   "pics": [
+    "P2-01-phone-1-form-opened.png",
+    "P2-01-phone-2-ocu-left-out.png",
+    "P2-01-phone-3-qual.png",
+    "P2-01-phone-4-saved.png",
+    "P2-01-phone-5-reopened.png",
+    "P2-01-phone-6-required-name.png"
+   ]
+  },
+  {
+   "id": "P2-02-raw",
+   "size": "desk",
+   "did": "Mixed pick Fri 9..Fri 16 (weekdays, flying Sat, unset Sun, PH Mon, Off Tue, NF Wed) x P and W; typed 7 under These days; toggled Include; applied each way; Undo — by gesture mouse/shift/hold",
+   "saw": "{\"mouse\":{\"panelUp\":true,\"panelText0\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 4 days ✕ NUMBER one number for the 8 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"panelText1\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 4 days ✕ NUMBER one number for the 8 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"lit1\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"hasInc\":true,\"incLabel0\":\"Include\",\"lit2\":[\"09PW\",\"10PW\",\"11PW\",\"12PW\",\"13PW\",\"15PW\",\"16PW\"],\"panelText2\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 7 days ✕ NUMBER one number for the 14 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days includedLeave out\",\"afterInclude\":\"09:7/7 10:7/7 11:7/7 12:7/7 13:7/7 14:NF/NF 15:7/7 16:7/7\",\"undone\":true,\"litB\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"afterLeftOut\":\"09:7/7 10:7/7 11:–/– 12:–/– 13:–/– 14:NF/NF 15:7/7 16:7/7\",\"undone2\":true,\"panelGone\":true},\"shift\":{\"panelUp\":true,\"panelText0\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 4 days ✕ NUMBER one number for the 8 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"panelText1\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 4 days ✕ NUMBER one number for the 8 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"lit1\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"hasInc\":true,\"incLabel0\":\"Include\",\"lit2\":[\"09PW\",\"10PW\",\"11PW\",\"12PW\",\"13PW\",\"15PW\",\"16PW\"],\"panelText2\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 7 days ✕ NUMBER one number for the 14 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days includedLeave out\",\"afterInclude\":\"09:7/7 10:7/7 11:7/7 12:7/7 13:7/7 14:NF/NF 15:7/7 16:7/7\",\"undone\":true,\"litB\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"afterLeftOut\":\"09:7/7 10:7/7 11:–/– 12:–/– 13:–/– 14:NF/NF 15:7/7 16:7/7\",\"undone2\":true,\"panelGone\":true},\"hold\":{\"panelUp\":true,\"panelText0\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 4 days ✕ NUMBER one number for the 8 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"panelText1\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 4 days ✕ NUMBER one number for the 8 picked cells APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"lit1\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"hasInc\":true,\"incLabel0\":\"Include\",\"lit2\":[\"09PW\",\"10PW\",\"11PW\",\"12PW\",\"13PW\",\"15PW\",\"16PW\"],\"panelText2\":\"Required P and W 9 Jan 26 – 16 Jan 26 · 7 days ✕ NUMBER one number for the 14 picked cells APPLY TO These days From 9 Jan on Cl",
+   "verdict": "RAW",
+   "pics": [
+    "P2-02-desk-mouse-1-lit-left-out.png",
+    "P2-02-desk-mouse-2-lit-included.png",
+    "P2-02-desk-mouse-3-applied-included.png",
+    "P2-02-desk-mouse-4-applied-leftout.png",
+    "P2-02-desk-shift-1-lit-left-out.png",
+    "P2-02-desk-shift-2-lit-included.png",
+    "P2-02-desk-shift-3-applied-included.png",
+    "P2-02-desk-shift-4-applied-leftout.png",
+    "P2-02-desk-hold-1-lit-left-out.png",
+    "P2-02-desk-hold-2-lit-included.png",
+    "P2-02-desk-hold-3-applied-included.png",
+    "P2-02-desk-hold-4-applied-leftout.png"
+   ]
+  },
+  {
+   "id": "P2-02-raw",
+   "size": "phone",
+   "did": "Mixed pick Fri 9..Fri 16 (weekdays, flying Sat, unset Sun, PH Mon, Off Tue, NF Wed) x P and W; typed 7 under These days; toggled Include; applied each way; Undo — by gesture finger",
+   "saw": "{\"finger\":{\"panelUp\":true,\"panelText0\":\"Req P and W 9 – 16 Jan · 4 days ✕ NUMBER one number for all 8 APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"panelText1\":\"Req P and W 9 – 16 Jan · 4 days ✕ NUMBER one number for all 8 APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days left outInclude\",\"lit1\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"hasInc\":true,\"incLabel0\":\"Include\",\"lit2\":[\"09PW\",\"10PW\",\"11PW\",\"12PW\",\"13PW\",\"15PW\",\"16PW\"],\"panelText2\":\"Req P and W 9 – 16 Jan · 7 days ✕ NUMBER one number for all 14 APPLY TO These days From 9 Jan on Clear Apply Wed 14 Jan is a no-fly day — it is left alone. 3 weekend or holiday days includedLeave out\",\"afterInclude\":\"09:7/7 10:7/7 11:7/7 12:7/7 13:7/7 14:NF/NF 15:7/7 16:7/7\",\"undone\":true,\"litB\":[\"09PW\",\"10PW\",\"15PW\",\"16PW\"],\"afterLeftOut\":\"09:7/7 10:7/7 11:–/– 12:–/– 13:–/– 14:NF/NF 15:7/7 16:7/7\",\"undone2\":true,\"panelGone\":true}}",
+   "verdict": "RAW",
+   "pics": [
+    "P2-02-phone-finger-1-lit-left-out.png",
+    "P2-02-phone-finger-2-lit-included.png",
+    "P2-02-phone-finger-3-applied-included.png",
+    "P2-02-phone-finger-4-applied-leftout.png"
+   ]
+  },
+  {
+   "id": "P2-03",
+   "size": "desk",
+   "did": "Typed 11,12,13,14,15 on Req P 13-17 Jul through the real cell (Enter advances); picked Sat 11..Fri 17 (P row) by hold/drag; 9 -> From … on -> Apply; one Undo",
+   "saw": "ok panel came up [] | ok button names Mon 13 Jul (first eligible flying weekday) [From 13 Jul on] | ok after Apply: 13..17 Jul all show 9 (typed overrides gone) [11:– 12:– 13:9 14:9 15:9 16:9 17:9 20:9 21:9 22:9] | ok weekend 11/12 not given a figure by the run (dash) [– –] | ok the run carries on: 20, 21, 22 Jul show 9 [11:– 12:– 13:9 14:9 15:9 16:9 17:9 20:9 21:9 22:9] | ok ONE Undo restores the originals 11..15 on 13..17 and no run [11:– 12:– 13:11 14:12 15:13 16:14 17:15 20:– 21:– 22:–] || panel(run): Required P from Mon 13 Jul onward ✕ NUMBER one number, from that day on APPLY TO These days From 13 Jul on Clear Apply 9 on every flying day from Mon 13 Jul, until a different figure is typed on a later day. No-fly days, weekends, public holidays and Off days are left alone. || lit: p-2026-07-13,p-2026-07-14,p-2026-07-15,p-2026-07-16,p-2026-07-17 || resolver: 11={\"iso\":\"2026-07-11\",\"weekend\":true,\"kind\":null,\"cls\":\"none\",\"clsFrom\": ; 12={\"iso\":\"2026-07-12\",\"weekend\":true,\"kind\":null,\"cls\":\"none\",\"clsFrom\": ; 13={\"iso\":\"2026-07-13\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 14={\"iso\":\"2026-07-14\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 15={\"iso\":\"2026-07-15\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 16={\"iso\":\"2026-07-16\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 17={\"iso\":\"2026-07-17\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 20={\"iso\":\"2026-07-20\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 21={\"iso\":\"2026-07-21\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 22={\"iso\":\"2026-07-22\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\":",
+   "verdict": "PASS",
+   "pics": [
+    "P2-03-desk-1-typed-figures.png",
+    "P2-03-desk-2-from-on-panel.png",
+    "P2-03-desk-3-after-apply.png",
+    "P2-03-desk-4-one-undo.png"
+   ]
+  },
+  {
+   "id": "P2-03",
+   "size": "phone",
+   "did": "Typed 11,12,13,14,15 on Req P 13-17 Jul through the real cell (Enter advances); picked Sat 11..Fri 17 (P row) by hold/drag; 9 -> From … on -> Apply; one Undo",
+   "saw": "ok panel came up [] | ok button names Mon 13 Jul (first eligible flying weekday) [From 13 Jul on] | ok after Apply: 13..17 Jul all show 9 (typed overrides gone) [11:– 12:– 13:9 14:9 15:9 16:9 17:9 20:9 21:9 22:9] | ok weekend 11/12 not given a figure by the run (dash) [– –] | ok the run carries on: 20, 21, 22 Jul show 9 [11:– 12:– 13:9 14:9 15:9 16:9 17:9 20:9 21:9 22:9] | ok ONE Undo restores the originals 11..15 on 13..17 and no run [11:– 12:– 13:11 14:12 15:13 16:14 17:15 20:– 21:– 22:–] || panel(run): Req P from Mon 13 Jul onward ✕ NUMBER one number, from that day on APPLY TO These days From 13 Jul on Clear Apply 9 on every flying day from Mon 13 Jul, until a different figure is typed on a later day. No-fly days, weekends, public holidays and Off days are left alone. || lit: p-2026-07-13,p-2026-07-14,p-2026-07-15,p-2026-07-16,p-2026-07-17 || resolver: 11={\"iso\":\"2026-07-11\",\"weekend\":true,\"kind\":null,\"cls\":\"none\",\"clsFrom\": ; 12={\"iso\":\"2026-07-12\",\"weekend\":true,\"kind\":null,\"cls\":\"none\",\"clsFrom\": ; 13={\"iso\":\"2026-07-13\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 14={\"iso\":\"2026-07-14\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 15={\"iso\":\"2026-07-15\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 16={\"iso\":\"2026-07-16\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 17={\"iso\":\"2026-07-17\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 20={\"iso\":\"2026-07-20\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 21={\"iso\":\"2026-07-21\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\": ; 22={\"iso\":\"2026-07-22\",\"weekend\":false,\"kind\":null,\"cls\":\"day\",\"clsFrom\":",
+   "verdict": "PASS",
+   "pics": [
+    "P2-03-phone-1-typed-figures.png",
+    "P2-03-phone-2-from-on-panel.png",
+    "P2-03-phone-3-after-apply.png",
+    "P2-03-phone-4-one-undo.png"
+   ]
+  },
+  {
+   "id": "P2-04-raw",
+   "size": "desk",
+   "did": "Req P 13 Jul typed/Enter/Next/Tab-equivalents, excluded dates ahead (weekend 18-19, PH 20, NF 21), click elsewhere, Escape, blank, negative, fractional, four-digit, unchanged-Next on a run",
+   "saw": "1 opened 13 Jul: strip: Required P Mon 13 Jul This day From 13 Jul on Enter next day · Tab the other seat · Esc leave it as it was || box:  || 2 after 21+Next: cell13: 21 || strip: Required P Tue 14 Jul This day From 14 Jul on Enter next day · Tab the other seat · Esc leave it as it was || 3 after 11,12,13: cells 14,15,16: 11,12,13 || strip now (17): Required P Fri 17 Jul This day From 17 Jul on Enter next day · Tab the other seat · Esc leave it as it was || 4 Next from 17 lands: strip: Required P Wed 22 Jul This day From 22 Jul on Enter next day · Tab the other seat · Esc leave it as it was || cell17 after untouched Next: – || undo title unchanged by an untouched Next: true Undo — the required pilots and WSOs for 16 Jul || 5 click elsewhere: cell22: 30 || editor after: (closed) || 6 Escape/Done after 99: cell14: 11 (box showed 99; Escape) || 7 blank + Enter/Done: cell15 was 12 -> : – (box showed \"\") || 8 negative: box \"5\" -> cell16 (was 13) = 5; strip Required P Fri 17 Jul This day From 17 Jul on Enter next day · Tab the other seat · Esc leave it as it was || 9 fractional: cell14 was 11; box \"25\" -> cell14 = 25; strip Required P Wed 15 Jul This day From 15 Jul on Enter next day · Tab the other seat · Esc leave it as it was || 10 four digits: cell16 was 5: box \"123\" -> cell16 = 123 || 11a run from 22 Jul typed 9: cells 22,23,24: 9,9,9 || 11b walked Next over 23,24,27 untouched then changed run to 8 from 22: cells 22,23,24,27: 8,8,8,8",
+   "verdict": "RAW",
+   "pics": [
+    "P2-04-desk-1-opened.png",
+    "P2-04-desk-2-skip-excluded.png",
+    "P2-04-desk-3-click-elsewhere.png",
+    "P2-04-desk-4-negative.png",
+    "P2-04-desk-5-four-digits.png",
+    "P2-04-desk-6-run-followed.png"
+   ]
+  },
+  {
+   "id": "P2-04-raw",
+   "size": "phone",
+   "did": "Req P 13 Jul typed/Enter/Next/Tab-equivalents, excluded dates ahead (weekend 18-19, PH 20, NF 21), click elsewhere, Escape, blank, negative, fractional, four-digit, unchanged-Next on a run",
+   "saw": "1 opened 13 Jul: strip: Req P Mon 13 Jul ‹ › Done This day From 13 Jul on || box:  || 2 after 21+Next: cell13: 21 || strip: Req P Tue 14 Jul ‹ › Done This day From 14 Jul on || 3 after 11,12,13: cells 14,15,16: 11,12,13 || strip now (17): Req P Fri 17 Jul ‹ › Done This day From 17 Jul on || 4 Next from 17 lands: strip: Req P Wed 22 Jul ‹ › Done This day From 22 Jul on || cell17 after untouched Next: – || undo title unchanged by an untouched Next: true Undo — the required pilots and WSOs for 16 Jul || 5 click elsewhere: cell22: 30 || editor after: (closed) || 6 Escape/Done after 99: cell14: 99 (box showed 99; phone: Done saves — Escape has no pad key) || 7 blank + Enter/Done: cell15 was 12 -> : – (box showed \"\") || 8 negative: n/a on the phone pad (no minus key) || 9 fractional: n/a on the phone pad (no point key) || 10 four digits: cell16 was 13: box \"123\" -> cell16 = 123 || 11a run from 22 Jul typed 9: cells 22,23,24: 9,9,9 || 11b walked Next over 23,24,27 untouched then changed run to 8 from 22: cells 22,23,24,27: 8,8,8,8",
+   "verdict": "RAW",
+   "pics": [
+    "P2-04-phone-1-opened.png",
+    "P2-04-phone-2-skip-excluded.png",
+    "P2-04-phone-3-click-elsewhere.png",
+    "P2-04-phone-4-negative.png",
+    "P2-04-phone-5-four-digits.png",
+    "P2-04-phone-6-run-followed.png"
+   ]
+  },
+  {
+   "id": "P2-05-raw",
+   "size": "desk",
+   "did": "Empty Event cell opened; each preset; custom name; Other + Kind; short forms typed (lower-case, spaces, over-long, marks); saved; peek; reopened",
+   "saw": "A opened empty cell: on=[] kindRow=false kinds-on=[] readout=\"\" name=\"\" ph=\"Type a name…\" short=\"\" shortPh=\"\" problem=\"\" || presets: PH(off), Off day(), No Leave(nolv), SC(work), Other…(other) || B each preset: #0 PH: on=[PH] kindRow=false kinds-on=[] readout=\"Public holiday · work on it earns OIL\" name=\"\" ph=\"PH\" short=\"PH\" shortPh=\"PH\" problem=\"\"\n     #1 Off day: on=[Off day] kindRow=false kinds-on=[] readout=\"Off day · no OIL\" name=\"\" ph=\"Off day\" short=\"OFF\" shortPh=\"OFF\" problem=\"\"\n     #2 No Leave: on=[No Leave] kindRow=false kinds-on=[] readout=\"No leave · heads-up only\" name=\"\" ph=\"No Leave\" short=\"NL\" shortPh=\"NL\" problem=\"\"\n     #3 SC: on=[SC] kindRow=false kinds-on=[] readout=\"Working event\" name=\"\" ph=\"SC\" short=\"SC\" shortPh=\"SC\" problem=\"\" || C custom name \"Range closure\": on=[SC] kindRow=false kinds-on=[] readout=\"Working event\" name=\"Range closure\" ph=\"SC\" short=\"RC\" shortPh=\"RC\" problem=\"\" || D pressed Other…: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"RC\" shortPh=\"RC\" problem=\"\" kinds=Public holiday/Off day/No leave/Work/Note || D2 name \"PH\" typed while on Other: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"PH\" ph=\"Type a name…\" short=\"PH\" shortPh=\"PH\" problem=\"\" || D3 name \"Off day\" typed: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Off day\" ph=\"Type a name…\" short=\"OFF\" shortPh=\"OFF\" problem=\"\" || D4 back on Other with custom name: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"RC\" shortPh=\"RC\" problem=\"\" || E typed \"ab\": box shows \"AB\"; Save -> saved; grid cell prints \"AB\" || E peek of \"ab\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \"ab\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"AB\" shortPh=\"RC\" problem=\"\" || E typed \"a b\": box shows \"A B\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"AB\" || E typed \"ABCDEF\": box shows \"ABC\"; Save -> saved; grid cell prints \"ABC\" || E peek of \"ABCDEF\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \"ABCDEF\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"ABC\" shortPh=\"RC\" problem=\"\" || E typed \" x\": box shows \" X\"; Save -> saved; grid cell prints \"X\" || E peek of \" x\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \" x\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"X\" shortPh=\"RC\" problem=\"\" || E typed \"A-B\": box shows \"A-B\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"X\" || E typed \"!!\": box shows \"!!\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"X\" || E typed \"12\": box shows \"12\"; Save -> saved; grid cell prints \"12\" || E peek of \"12\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \"12\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"12\" shortPh=\"RC\" problem=\"\" || E typed \"é\": box shows \"É\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"12\" || F preset \"PH\" with short typed xy: grid: XY || F peek: PH Public holiday Wed 4 Feb 26 Edit | kind Public holiday || F reopened: on=[PH] kindRow=false kinds-on=[] readout=\"Public holiday · work on it earns OIL\" name=\"PH\" ph=\"PH\" short=\"XY\" shortPh=\"PH\" problem=\"\"",
+   "verdict": "RAW",
+   "pics": [
+    "P2-05-desk-1-opened.png",
+    "P2-05-desk-2-preset-0.png",
+    "P2-05-desk-2-preset-1.png",
+    "P2-05-desk-2-preset-2.png",
+    "P2-05-desk-2-preset-3.png",
+    "P2-05-desk-3-other-kindrow.png",
+    "P2-05-desk-4-saved-ab.png",
+    "P2-05-desk-4-saved-ABCDEF.png",
+    "P2-05-desk-4-saved-_x.png",
+    "P2-05-desk-4-saved-12.png",
+    "P2-05-desk-5-preset-with-typed-short.png"
+   ]
+  },
+  {
+   "id": "P2-05-raw",
+   "size": "phone",
+   "did": "Empty Event cell opened; each preset; custom name; Other + Kind; short forms typed (lower-case, spaces, over-long, marks); saved; peek; reopened",
+   "saw": "A opened empty cell: on=[] kindRow=false kinds-on=[] readout=\"\" name=\"\" ph=\"Type a name…\" short=\"\" shortPh=\"\" problem=\"\" || presets: PH(off), Off day(), No Leave(nolv), SC(work), Other…(other) || B each preset: #0 PH: on=[PH] kindRow=false kinds-on=[] readout=\"Public holiday · work on it earns OIL\" name=\"\" ph=\"PH\" short=\"PH\" shortPh=\"PH\" problem=\"\"\n     #1 Off day: on=[Off day] kindRow=false kinds-on=[] readout=\"Off day · no OIL\" name=\"\" ph=\"Off day\" short=\"OFF\" shortPh=\"OFF\" problem=\"\"\n     #2 No Leave: on=[No Leave] kindRow=false kinds-on=[] readout=\"No leave · heads-up only\" name=\"\" ph=\"No Leave\" short=\"NL\" shortPh=\"NL\" problem=\"\"\n     #3 SC: on=[SC] kindRow=false kinds-on=[] readout=\"Working event\" name=\"\" ph=\"SC\" short=\"SC\" shortPh=\"SC\" problem=\"\" || C custom name \"Range closure\": on=[SC] kindRow=false kinds-on=[] readout=\"Working event\" name=\"Range closure\" ph=\"SC\" short=\"RC\" shortPh=\"RC\" problem=\"\" || D pressed Other…: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"RC\" shortPh=\"RC\" problem=\"\" kinds=Public holiday/Off day/No leave/Work/Note || D2 name \"PH\" typed while on Other: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"PH\" ph=\"Type a name…\" short=\"PH\" shortPh=\"PH\" problem=\"\" || D3 name \"Off day\" typed: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Off day\" ph=\"Type a name…\" short=\"OFF\" shortPh=\"OFF\" problem=\"\" || D4 back on Other with custom name: on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"RC\" shortPh=\"RC\" problem=\"\" || E typed \"ab\": box shows \"AB\"; Save -> saved; grid cell prints \"AB\" || E peek of \"ab\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \"ab\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"AB\" shortPh=\"RC\" problem=\"\" || E typed \"a b\": box shows \"A B\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"AB\" || E typed \"ABCDEF\": box shows \"ABC\"; Save -> saved; grid cell prints \"ABC\" || E peek of \"ABCDEF\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \"ABCDEF\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"ABC\" shortPh=\"RC\" problem=\"\" || E typed \" x\": box shows \" X\"; Save -> saved; grid cell prints \"X\" || E peek of \" x\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \" x\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"X\" shortPh=\"RC\" problem=\"\" || E typed \"A-B\": box shows \"A-B\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"X\" || E typed \"!!\": box shows \"!!\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"X\" || E typed \"12\": box shows \"12\"; Save -> saved; grid cell prints \"12\" || E peek of \"12\": Range closure Working event Tue 3 Feb 26 Edit | kind Working event || E reopened \"12\": on=[Other…] kindRow=true kinds-on=[Work] readout=\"A working commitment\" name=\"Range closure\" ph=\"Type a name…\" short=\"12\" shortPh=\"RC\" problem=\"\" || E typed \"é\": box shows \"É\"; Save -> REFUSED, sheet open, problem=\"The short form is one to three letters or digits, with no space.\"; grid cell prints \"12\" || F preset \"PH\" with short typed xy: grid: XY || F peek: PH Public holiday Wed 4 Feb 26 Edit | kind Public holiday || F reopened: on=[PH] kindRow=false kinds-on=[] readout=\"Public holiday · work on it earns OIL\" name=\"PH\" ph=\"PH\" short=\"XY\" shortPh=\"PH\" problem=\"\"",
+   "verdict": "RAW",
+   "pics": [
+    "P2-05-phone-1-opened.png",
+    "P2-05-phone-2-preset-0.png",
+    "P2-05-phone-2-preset-1.png",
+    "P2-05-phone-2-preset-2.png",
+    "P2-05-phone-2-preset-3.png",
+    "P2-05-phone-3-other-kindrow.png",
+    "P2-05-phone-4-saved-ab.png",
+    "P2-05-phone-4-saved-ABCDEF.png",
+    "P2-05-phone-4-saved-_x.png",
+    "P2-05-phone-4-saved-12.png",
+    "P2-05-phone-5-preset-with-typed-short.png"
+   ]
+  },
+  {
+   "id": "P2-07",
+   "size": "phone",
+   "did": "Picked slipway 6-8 Jan (drag/hold-drag); moved the panel by its title; pressed outside; pressed month FEB; picked dice 10-12 Feb; tapped slipway 17 Feb",
+   "saw": "ok panel up, no veil [{\"who\":\"Drifter\",\"span\":\"6 Jan 26 – 8 Jan 26 · 3 days\",\"box\":{\"x\":12,\"y\":574,\"width\":366,\"height\":256},\"scrim\":0}] | ok panel moved (its box changed) [{\"x\":12,\"y\":574,\"width\":366,\"height\":256} -> {\"x\":12,\"y\":478,\"width\":366,\"height\":256}] | ok an outside press does not dismiss the panel [{\"who\":\"Drifter\",\"span\":\"6 Jan 26 – 8 Jan 26 · 3 days\",\"box\":{\"x\":12,\"y\":478,\"width\":366,\"height\":256},\"scrim\":0}] | ok month button answered with the panel up (FEB lit) and the panel stayed [mjump on] | ok a new drag replaces the selection (panel names a different span; only the new cells marked) [6 Jan 26 – 8 Jan 26 · 3 days -> 10 Feb 26 – 12 Feb 26 · 3 days; marked ] | ok the old panel is gone and the cell opened its own sheet [bid-picker|Place a bid]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-07-phone-1-panel-up.png",
+    "P2-07-phone-2-panel-moved.png",
+    "P2-07-phone-3-new-block.png",
+    "P2-07-phone-4-own-sheet.png"
+   ]
+  },
+  {
+   "id": "P2-07",
+   "size": "desk",
+   "did": "Picked slipway 6-8 Jan (drag/hold-drag); moved the panel by its title; pressed outside; pressed month FEB; picked dice 10-12 Feb; tapped slipway 17 Feb",
+   "saw": "ok panel up, no veil [{\"who\":\"Drifter\",\"span\":\"6 Jan 26 – 8 Jan 26 · 3 days\",\"box\":{\"x\":440,\"y\":666,\"width\":560,\"height\":220},\"scrim\":0}] | ok panel moved (its box changed) [{\"x\":440,\"y\":666,\"width\":560,\"height\":220} -> {\"x\":560,\"y\":606,\"width\":560,\"height\":220}] | ok an outside press does not dismiss the panel [{\"who\":\"Drifter\",\"span\":\"6 Jan 26 – 8 Jan 26 · 3 days\",\"box\":{\"x\":560,\"y\":606,\"width\":560,\"height\":220},\"scrim\":0}] | ok month button answered with the panel up (FEB lit) and the panel stayed [mjump on] | ok a new drag replaces the selection (panel names a different span; only the new cells marked) [6 Jan 26 – 8 Jan 26 · 3 days -> 10 Feb 26 – 12 Feb 26 · 3 days; marked ] | ok the old panel is gone and the cell opened its own sheet [bid-picker|Place a bid]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-07-desk-1-panel-up.png",
+    "P2-07-desk-2-panel-moved.png",
+    "P2-07-desk-3-new-block.png",
+    "P2-07-desk-4-own-sheet.png"
+   ]
+  },
+  {
+   "id": "P2-08",
+   "size": "desk",
+   "did": "Made two counters via ⚙ + Counter; Rearrange; dragged each (real mouse / finger over CDP) above, between and below the four fixed rows (5 slots each); left Rearrange; reload; tried to drag a fixed row",
+   "saw": "ok in Rearrange the four fixed rows carry no grip and no cross [grips/crosses on fixed rows: 0] | ok alpha dropped below Available W: 4 fixed rows above it, fixed order kept [#bravo > req-p > req-w > avail-p > avail-w > #alpha | landing row class while held: flyrow avail dragover after] | ok alpha dropped between Required W and Available P: 2 fixed rows above it, fixed order kept [#bravo > req-p > req-w > #alpha > avail-p > avail-w | landing row class while held: flyrow avail dragover] | ok alpha dropped above Required P: 0 fixed rows above it, fixed order kept [#bravo > #alpha > req-p > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover] | ok alpha dropped between Available P and W: 3 fixed rows above it, fixed order kept [#bravo > req-p > req-w > avail-p > #alpha > avail-w | landing row class while held: flyrow avail dragover] | ok alpha dropped between Required P and W: 1 fixed rows above it, fixed order kept [#bravo > req-p > #alpha > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover] | ok bravo dropped below Available W: 4 fixed rows above it, fixed order kept [req-p > #alpha > req-w > avail-p > avail-w > #bravo | landing row class while held: flyrow avail dragover after] | ok bravo dropped between Required W and Available P: 2 fixed rows above it, fixed order kept [req-p > #alpha > req-w > #bravo > avail-p > avail-w | landing row class while held: flyrow avail dragover] | ok bravo dropped above Required P: 0 fixed rows above it, fixed order kept [#bravo > req-p > #alpha > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover] | ok bravo dropped between Available P and W: 3 fixed rows above it, fixed order kept [req-p > #alpha > req-w > avail-p > #bravo > avail-w | landing row class while held: flyrow avail dragover] | ok bravo dropped between Required P and W: 1 fixed rows above it, fixed order kept [req-p > #alpha > #bravo > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover] | ok leaving Rearrange keeps the order [req-p > #bravo > req-w > avail-p > avail-w > #alpha] | ok a reload keeps the order [req-p > #bravo > req-w > avail-p > avail-w > #alpha] | ok dragging a fixed row by its name moves nothing [req-p > #bravo > req-w > avail-p > avail-w > #alpha]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-08-desk-1-rearrange.png",
+    "P2-08-desk-2-alpha-slot4.png",
+    "P2-08-desk-2-alpha-slot2.png",
+    "P2-08-desk-2-bravo-slot4.png",
+    "P2-08-desk-2-bravo-slot2.png",
+    "P2-08-desk-2-bravo-slot1.png",
+    "P2-08-desk-3-final-rearrange.png",
+    "P2-08-desk-4-after-exit.png",
+    "P2-08-desk-5-after-reload.png"
+   ]
+  },
+  {
+   "id": "P2-08",
+   "size": "phone",
+   "did": "Made two counters via ⚙ + Counter; Rearrange; dragged each (real mouse / finger over CDP) above, between and below the four fixed rows (5 slots each); left Rearrange; reload; tried to drag a fixed row",
+   "saw": "ok in Rearrange the four fixed rows carry no grip and no cross [grips/crosses on fixed rows: 0] | ok alpha dropped below Available W: 4 fixed rows above it, fixed order kept [#bravo > req-p > req-w > avail-p > avail-w > #alpha | landing row class while held: flyrow avail] | ok alpha dropped between Required W and Available P: 2 fixed rows above it, fixed order kept [#bravo > req-p > req-w > #alpha > avail-p > avail-w | landing row class while held: flyrow avail dragover after] | ok alpha dropped above Required P: 0 fixed rows above it, fixed order kept [#bravo > #alpha > req-p > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover after] | ok alpha dropped between Available P and W: 3 fixed rows above it, fixed order kept [#bravo > req-p > req-w > avail-p > #alpha > avail-w | landing row class while held: flyrow avail] | ok alpha dropped between Required P and W: 1 fixed rows above it, fixed order kept [#bravo > req-p > #alpha > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover after] | ok bravo dropped below Available W: 4 fixed rows above it, fixed order kept [req-p > #alpha > req-w > avail-p > avail-w > #bravo | landing row class while held: flyrow avail dragover after] | ok bravo dropped between Required W and Available P: 2 fixed rows above it, fixed order kept [req-p > #alpha > req-w > #bravo > avail-p > avail-w | landing row class while held: flyrow avail dragover after] | ok bravo dropped above Required P: 0 fixed rows above it, fixed order kept [#bravo > req-p > #alpha > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover after] | ok bravo dropped between Available P and W: 3 fixed rows above it, fixed order kept [req-p > #alpha > req-w > avail-p > #bravo > avail-w | landing row class while held: flyrow avail] | ok bravo dropped between Required P and W: 1 fixed rows above it, fixed order kept [req-p > #alpha > #bravo > req-w > avail-p > avail-w | landing row class while held: flyrow req dragover after] | ok leaving Rearrange keeps the order [req-p > #bravo > req-w > avail-p > avail-w > #alpha] | ok a reload keeps the order [req-p > #bravo > req-w > avail-p > avail-w > #alpha] | ok dragging a fixed row by its name moves nothing [req-p > #bravo > req-w > avail-p > avail-w > #alpha]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-08-phone-1-rearrange.png",
+    "P2-08-phone-2-alpha-slot4.png",
+    "P2-08-phone-2-alpha-slot2.png",
+    "P2-08-phone-2-bravo-slot4.png",
+    "P2-08-phone-2-bravo-slot2.png",
+    "P2-08-phone-2-bravo-slot1.png",
+    "P2-08-phone-3-final-rearrange.png",
+    "P2-08-phone-4-after-exit.png",
+    "P2-08-phone-5-after-reload.png"
+   ]
+  },
+  {
+   "id": "P2-09",
+   "size": "phone",
+   "did": "Counter Delta (pilots, amber 5 red 3) placed between Required W and Available P by drag; red cross in Rearrange; Undo; window: Delete counter, Cancel, confirm; Undo",
+   "saw": "ok Delta sits between Required W and Available P [req-p > req-w > #delta > avail-p > avail-w] | ok the cross is red (ink or edge) [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"}] | XX the FIRST tap on the cross after the drag deletes the counter [first tap did nothing (counter still on the grid)] | ok the cross deletes at once and asks nothing [req-p > req-w > avail-p > avail-w | [] | ask=false] | ok Undo restores the counter in the same place [req-p > req-w > #delta > avail-p > avail-w] | ok definition restored whole (name Delta, amber 5, red 3, Pilots) [{\"name\":\"Delta\",\"amber\":\"5\",\"red\":\"3\",\"seatOn\":[\"Pilots\"]}] | ok window Delete asks first (\"Really delete?\") and deletes nothing yet [Really delete? / true] | ok Cancel preserves the counter [req-p > req-w > #delta > avail-p > avail-w] | ok confirming deletes the counter [req-p > req-w > avail-p > avail-w] | ok Undo of the window delete restores it complete in place [req-p > req-w > #delta > avail-p > avail-w] || 1 order with Delta between Required W and Available P: req-p > req-w > #delta > avail-p > avail-w || cross paint: {\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"} || 2a first tap on the cross after the placing drag deleted it: false || 2 after one press on the cross: req-p > req-w > avail-p > avail-w | dialogs [] | any \"really/sure\" text false || 3 after Undo: req-p > req-w > #delta > avail-p > avail-w || 4 definition after Undo: {\"name\":\"Delta\",\"amber\":\"5\",\"red\":\"3\",\"seatOn\":[\"Pilots\"]} || button paints: {\"save\":{\"bg\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(5, 42, 52)\",\"edge\":\"rgb(59, 198, 232)\"},\"cancel\":{\"bg\":\"rgb(26, 31, 38)\",\"ink\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(42, 49, 58)\"},\"delete\":{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"}} || 5 window Delete pressed once: button reads \"Really delete?\"; counter still on grid: true || 6 confirmed delete: req-p > req-w > avail-p > avail-w",
+   "verdict": "FAIL",
+   "pics": [
+    "P2-09-phone-1-before-cross.png",
+    "P2-09-phone-1b-first-tap-did-nothing.png",
+    "P2-09-phone-2-after-cross.png",
+    "P2-09-phone-3-window.png",
+    "P2-09-phone-4-really-delete.png",
+    "P2-09-phone-5-after-undo-of-window-delete.png"
+   ]
+  },
+  {
+   "id": "P2-09",
+   "size": "phone-nodrag",
+   "did": "Counter Delta (pilots, amber 5 red 3) placed between Required W and Available P by drag; red cross in Rearrange; Undo; window: Delete counter, Cancel, confirm; Undo",
+   "saw": "ok Delta stands above Required P (made, never dragged) [#delta > req-p > req-w > avail-p > avail-w] | ok the cross is red (ink or edge) [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"}] | ok the FIRST tap on the cross after the drag deletes the counter [] | ok the cross deletes at once and asks nothing [req-p > req-w > avail-p > avail-w | [] | ask=false] | ok Undo restores the counter in the same place [#delta > req-p > req-w > avail-p > avail-w] | ok definition restored whole (name Delta, amber 5, red 3, Pilots) [{\"name\":\"Delta\",\"amber\":\"5\",\"red\":\"3\",\"seatOn\":[\"Pilots\"]}] | ok window Delete asks first (\"Really delete?\") and deletes nothing yet [Really delete? / true] | ok Cancel preserves the counter [#delta > req-p > req-w > avail-p > avail-w] | ok confirming deletes the counter [req-p > req-w > avail-p > avail-w] | ok Undo of the window delete restores it complete in place [#delta > req-p > req-w > avail-p > avail-w] || 1 order with Delta between Required W and Available P: #delta > req-p > req-w > avail-p > avail-w || cross paint: {\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"} || 2a first tap on the cross after the placing drag deleted it: true || 2 after one press on the cross: req-p > req-w > avail-p > avail-w | dialogs [] | any \"really/sure\" text false || 3 after Undo: #delta > req-p > req-w > avail-p > avail-w || 4 definition after Undo: {\"name\":\"Delta\",\"amber\":\"5\",\"red\":\"3\",\"seatOn\":[\"Pilots\"]} || button paints: {\"save\":{\"bg\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(5, 42, 52)\",\"edge\":\"rgb(59, 198, 232)\"},\"cancel\":{\"bg\":\"rgb(26, 31, 38)\",\"ink\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(42, 49, 58)\"},\"delete\":{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"}} || 5 window Delete pressed once: button reads \"Really delete?\"; counter still on grid: true || 6 confirmed delete: req-p > req-w > avail-p > avail-w",
+   "verdict": "PASS",
+   "pics": [
+    "P2-09-phone-nodrag-1-before-cross.png",
+    "P2-09-phone-nodrag-2-after-cross.png",
+    "P2-09-phone-nodrag-3-window.png",
+    "P2-09-phone-nodrag-4-really-delete.png",
+    "P2-09-phone-nodrag-5-after-undo-of-window-delete.png"
+   ]
+  },
+  {
+   "id": "P2-10",
+   "size": "desk",
+   "did": "Fresh world; read Manning + summary; typed Req P 40 on 12 and 13 Jan (Available P ~28 goes red); read the summary; added one ordinary counter via ⚙ + Counter (red below 30); read summary; deleted it via the Rearrange cross",
+   "saw": "ok four fixed rows only, summary 0 days [req-p > req-w > avail-p > avail-w | 0 days] | ok Available P is red where under Required (class under, red ink) [{\"ink\":\"rgb(255, 122, 132)\",\"cls\":\"fr avail tap under\",\"t\":\"29\"}] | ok Available P is not red where Required is a dash [{\"ink\":\"rgb(241, 244, 247)\",\"cls\":\"fr avail tap\",\"t\":\"27\"}] | ok under-manned summary still 0 days (fixed rows never count) [0 days | fchip] | ok the summary now counts days, from the new counter alone [365 days] | ok the figure equals the counter row's own red days [365 vs 365] | ok with the counter gone, back to 0 days (Available is still red) [0 days]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-10-desk-1-fresh.png",
+    "P2-10-desk-2-available-red.png",
+    "P2-10-desk-3-counter-added.png",
+    "P2-10-desk-4-counter-removed.png"
+   ]
+  },
+  {
+   "id": "P2-10",
+   "size": "phone",
+   "did": "Fresh world; read Manning + summary; typed Req P 40 on 12 and 13 Jan (Available P ~28 goes red); read the summary; added one ordinary counter via ⚙ + Counter (red below 30); read summary; deleted it via the Rearrange cross",
+   "saw": "ok four fixed rows only, summary 0 days [req-p > req-w > avail-p > avail-w | Under 0 days] | ok Available P is red where under Required (class under, red ink) [{\"ink\":\"rgb(255, 122, 132)\",\"cls\":\"fr avail tap under\",\"t\":\"29\"}] | ok Available P is not red where Required is a dash [{\"ink\":\"rgb(241, 244, 247)\",\"cls\":\"fr avail tap\",\"t\":\"27\"}] | ok under-manned summary still 0 days (fixed rows never count) [Under 0 days | fchip] | ok the summary now counts days, from the new counter alone [Under 365 days] | ok with the counter gone, back to 0 days (Available is still red) [Under 0 days]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-10-phone-1-fresh.png",
+    "P2-10-phone-2-available-red.png",
+    "P2-10-phone-3-counter-added.png",
+    "P2-10-phone-4-counter-removed.png"
+   ]
+  },
+  {
+   "id": "P2-11",
+   "size": "desk",
+   "did": "For a Required figure, an Event cell and a person cell (each edited through its own control): Undo/Redo with the day in view; after a small nudge; with the day scrolled away to June",
+   "saw": "ok req: Undo with the day in view — change taken back, grid not moved [edited=true afterUndo=false scroll {\"x\":556,\"y\":0} -> {\"x\":556,\"y\":0}] | ok req: Redo with the day in view — change back, grid not moved [redone=true scroll {\"x\":556,\"y\":0}] | ok req: Undo after a small nudge (day still in view) — grid stays where he put it [inView=true 596 -> 596] | ok req: Undo with the day scrolled away — taken back, and the grid brings the day into view [before: {\"drawn\":true,\"past\":-2511,\"inView\":false} after: {\"drawn\":true,\"past\":252,\"inView\":true} undone=true] | ok req: Redo with the day scrolled away — brought back into view [before: {\"drawn\":true,\"past\":-2511,\"inView\":false} after: {\"drawn\":true,\"past\":252,\"inView\":true} redone=true] | ok event: Undo with the day in view — change taken back, grid not moved [edited=true afterUndo=false scroll {\"x\":556,\"y\":0} -> {\"x\":556,\"y\":0}] | ok event: Redo with the day in view — change back, grid not moved [redone=true scroll {\"x\":556,\"y\":0}] | ok event: Undo after a small nudge (day still in view) — grid stays where he put it [inView=true 596 -> 596] | ok event: Undo with the day scrolled away — taken back, and the grid brings the day into view [before: {\"drawn\":true,\"past\":-2476,\"inView\":false} after: {\"drawn\":true,\"past\":252,\"inView\":true} undone=true] | ok event: Redo with the day scrolled away — brought back into view [before: {\"drawn\":true,\"past\":-2476,\"inView\":false} after: {\"drawn\":true,\"past\":252,\"inView\":true} redone=true] | ok person: Undo with the day in view — change taken back, grid not moved [edited=true afterUndo=false scroll {\"x\":556,\"y\":407} -> {\"x\":556,\"y\":407}] | ok person: Redo with the day in view — change back, grid not moved [redone=true scroll {\"x\":556,\"y\":407}] | ok person: Undo after a small nudge (day still in view) — grid stays where he put it [inView=true 596 -> 596] | ok person: Undo with the day scrolled away — taken back, and the grid brings the day into view [before: {\"drawn\":true,\"past\":-2452,\"inView\":false} after: {\"drawn\":true,\"past\":252,\"inView\":true} undone=true] | ok person: Redo with the day scrolled away — brought back into view [before: {\"drawn\":true,\"past\":-2451,\"inView\":false} after: {\"drawn\":true,\"past\":252,\"inView\":true} redone=true]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-11-desk-req-1-edited-in-view.png",
+    "P2-11-desk-req-2-undo-in-view.png",
+    "P2-11-desk-req-3-undo-hidden-early.png",
+    "P2-11-desk-req-4-undo-hidden-landed.png",
+    "P2-11-desk-event-1-edited-in-view.png",
+    "P2-11-desk-event-2-undo-in-view.png",
+    "P2-11-desk-event-3-undo-hidden-early.png",
+    "P2-11-desk-event-4-undo-hidden-landed.png",
+    "P2-11-desk-person-1-edited-in-view.png",
+    "P2-11-desk-person-2-undo-in-view.png",
+    "P2-11-desk-person-3-undo-hidden-early.png",
+    "P2-11-desk-person-4-undo-hidden-landed.png"
+   ]
+  },
+  {
+   "id": "P2-11",
+   "size": "phone",
+   "did": "For a Required figure, an Event cell and a person cell (each edited through its own control): Undo/Redo with the day in view; after a small nudge; with the day scrolled away to June",
+   "saw": "ok req: Undo with the day in view — change taken back, grid not moved [edited=true afterUndo=false scroll {\"x\":648,\"y\":0} -> {\"x\":648,\"y\":0}] | ok req: Redo with the day in view — change back, grid not moved [redone=true scroll {\"x\":648,\"y\":0}] | ok req: Undo after a small nudge (day still in view) — grid stays where he put it [inView=true 688 -> 688] | ok req: Undo with the day scrolled away — taken back, and the grid brings the day into view [before: {\"drawn\":false,\"past\":0,\"inView\":false} after: {\"drawn\":true,\"past\":0,\"inView\":true} undone=true] | ok req: Redo with the day scrolled away — brought back into view [before: {\"drawn\":false,\"past\":0,\"inView\":false} after: {\"drawn\":true,\"past\":0,\"inView\":true} redone=true] | ok event: Undo with the day in view — change taken back, grid not moved [edited=true afterUndo=false scroll {\"x\":649,\"y\":0} -> {\"x\":649,\"y\":0}] | ok event: Redo with the day in view — change back, grid not moved [redone=true scroll {\"x\":649,\"y\":0}] | ok event: Undo after a small nudge (day still in view) — grid stays where he put it [inView=true 689 -> 689] | ok event: Undo with the day scrolled away — taken back, and the grid brings the day into view [before: {\"drawn\":false,\"past\":0,\"inView\":false} after: {\"drawn\":true,\"past\":0,\"inView\":true} undone=true] | ok event: Redo with the day scrolled away — brought back into view [before: {\"drawn\":false,\"past\":0,\"inView\":false} after: {\"drawn\":true,\"past\":0,\"inView\":true} redone=true] | ok person: Undo with the day in view — change taken back, grid not moved [edited=true afterUndo=false scroll {\"x\":649,\"y\":262} -> {\"x\":649,\"y\":262}] | ok person: Redo with the day in view — change back, grid not moved [redone=true scroll {\"x\":649,\"y\":262}] | ok person: Undo after a small nudge (day still in view) — grid stays where he put it [inView=true 689 -> 689] | ok person: Undo with the day scrolled away — taken back, and the grid brings the day into view [before: {\"drawn\":false,\"past\":0,\"inView\":false} after: {\"drawn\":true,\"past\":0,\"inView\":true} undone=true] | ok person: Redo with the day scrolled away — brought back into view [before: {\"drawn\":false,\"past\":0,\"inView\":false} after: {\"drawn\":true,\"past\":0,\"inView\":true} redone=true]",
+   "verdict": "PASS",
+   "pics": [
+    "P2-11-phone-req-1-edited-in-view.png",
+    "P2-11-phone-req-2-undo-in-view.png",
+    "P2-11-phone-req-3-undo-hidden-early.png",
+    "P2-11-phone-req-4-undo-hidden-landed.png",
+    "P2-11-phone-event-1-edited-in-view.png",
+    "P2-11-phone-event-2-undo-in-view.png",
+    "P2-11-phone-event-3-undo-hidden-early.png",
+    "P2-11-phone-event-4-undo-hidden-landed.png",
+    "P2-11-phone-person-1-edited-in-view.png",
+    "P2-11-phone-person-2-undo-in-view.png",
+    "P2-11-phone-person-3-undo-hidden-early.png",
+    "P2-11-phone-person-4-undo-hidden-landed.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "desk-admin",
+   "did": "Role admin: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26 Edit] | ok admin sees Edit on the peek [Edit=true] | ok no event sheet opened for a read [sheet=false] | ok admin: a press opens the typing box [editor elements: 1] | ok the Required figure is unchanged by the attempt [– -> –] | ok admin: the drag opens the Required panel [panel=1] | ok admin: Available name is a button [name button count 1] | ok Required names are never buttons [0] | ok admin: tapping the name opens the form [form=1] || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 Edit | Edit button: true | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 1; cell shows – || 4 dragged over Required cells: panel up: 1 || 5 name buttons: Available P name is a button: 1; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-desk-admin-1-available-working.png",
+    "P2-12-desk-admin-2-event-peek.png",
+    "P2-12-desk-admin-3-required-press.png",
+    "P2-12-desk-admin-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "desk-memberview",
+   "did": "Role memberview: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26] | ok no Edit on the peek for a non-admin role [Edit=false] | ok no event sheet opened for a read [sheet=false] | ok non-admin: a press opens no typing box [editor elements: 0] | ok the Required figure is unchanged by the attempt [– -> –] | ok non-admin: the drag opens no panel [panel=0] | ok non-admin: Available name is plain text [name button count 0] | ok Required names are never buttons [0] | ok non-admin: tapping the name opens no form [form=0] || switched to member view: badge: SABER · MEMBER || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 | Edit button: false | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 0; cell shows – || 4 dragged over Required cells: panel up: 0 || 5 name buttons: Available P name is a button: 0; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-desk-memberview-1-available-working.png",
+    "P2-12-desk-memberview-2-event-peek.png",
+    "P2-12-desk-memberview-3-required-press.png",
+    "P2-12-desk-memberview-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "desk-ranger",
+   "did": "Role ranger: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26] | ok no Edit on the peek for a non-admin role [Edit=false] | ok no event sheet opened for a read [sheet=false] | ok non-admin: a press opens no typing box [editor elements: 0] | ok the Required figure is unchanged by the attempt [– -> –] | ok non-admin: the drag opens no panel [panel=0] | ok non-admin: Available name is plain text [name button count 0] | ok Required names are never buttons [0] | ok non-admin: tapping the name opens no form [form=0] || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 | Edit button: false | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 0; cell shows – || 4 dragged over Required cells: panel up: 0 || 5 name buttons: Available P name is a button: 0; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-desk-ranger-1-available-working.png",
+    "P2-12-desk-ranger-2-event-peek.png",
+    "P2-12-desk-ranger-3-required-press.png",
+    "P2-12-desk-ranger-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "desk-sans",
+   "did": "Role sans: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26] | ok no Edit on the peek for a non-admin role [Edit=false] | ok no event sheet opened for a read [sheet=false] | ok non-admin: a press opens no typing box [editor elements: 0] | ok the Required figure is unchanged by the attempt [– -> –] | ok non-admin: the drag opens no panel [panel=0] | ok non-admin: Available name is plain text [name button count 0] | ok Required names are never buttons [0] | ok non-admin: tapping the name opens no form [form=0] || SANS person (identity swapped in place): vinci Zenith || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 | Edit button: false | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 0; cell shows – || 4 dragged over Required cells: panel up: 0 || 5 name buttons: Available P name is a button: 0; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-desk-sans-1-available-working.png",
+    "P2-12-desk-sans-2-event-peek.png",
+    "P2-12-desk-sans-3-required-press.png",
+    "P2-12-desk-sans-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "phone-admin",
+   "did": "Role admin: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26 Edit] | ok admin sees Edit on the peek [Edit=true] | ok no event sheet opened for a read [sheet=false] | ok admin: a press opens the typing box [editor elements: 2] | ok the Required figure is unchanged by the attempt [– -> –] | ok admin: the drag opens the Required panel [panel=1] | ok admin: Available name is a button [name button count 1] | ok Required names are never buttons [0] | ok admin: tapping the name opens the form [form=1] || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 Edit | Edit button: true | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 2; cell shows – || 4 dragged over Required cells: panel up: 1 || 5 name buttons: Available P name is a button: 1; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-phone-admin-1-available-working.png",
+    "P2-12-phone-admin-2-event-peek.png",
+    "P2-12-phone-admin-3-required-press.png",
+    "P2-12-phone-admin-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "phone-memberview",
+   "did": "Role memberview: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26] | ok no Edit on the peek for a non-admin role [Edit=false] | ok no event sheet opened for a read [sheet=false] | ok non-admin: a press opens no typing box [editor elements: 0] | ok the Required figure is unchanged by the attempt [– -> –] | ok non-admin: the drag opens no panel [panel=0] | ok non-admin: Available name is plain text [name button count 0] | ok Required names are never buttons [0] | ok non-admin: tapping the name opens no form [form=0] || switched to member view: badge: Saber · Member || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 | Edit button: false | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 0; cell shows – || 4 dragged over Required cells: panel up: 0 || 5 name buttons: Available P name is a button: 0; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-phone-memberview-1-available-working.png",
+    "P2-12-phone-memberview-2-event-peek.png",
+    "P2-12-phone-memberview-3-required-press.png",
+    "P2-12-phone-memberview-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "phone-ranger",
+   "did": "Role ranger: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26] | ok no Edit on the peek for a non-admin role [Edit=false] | ok no event sheet opened for a read [sheet=false] | ok non-admin: a press opens no typing box [editor elements: 0] | ok the Required figure is unchanged by the attempt [– -> –] | ok non-admin: the drag opens no panel [panel=0] | ok non-admin: Available name is plain text [name button count 0] | ok Required names are never buttons [0] | ok non-admin: tapping the name opens no form [form=0] || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 | Edit button: false | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 0; cell shows – || 4 dragged over Required cells: panel up: 0 || 5 name buttons: Available P name is a button: 0; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-phone-ranger-1-available-working.png",
+    "P2-12-phone-ranger-2-event-peek.png",
+    "P2-12-phone-ranger-3-required-press.png",
+    "P2-12-phone-ranger-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12",
+   "size": "phone-sans",
+   "did": "Role sans: tapped Available P, tapped a filled Event (PH on 17 Feb), pressed and typed on a Required cell, dragged across Required cells, tapped the Available name",
+   "saw": "ok Available P tap gives the working (Required / Available / SANS committed / Still needed) [Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed –] | ok the working is read only (no input or button in it) [inputs/buttons: 0] | ok a filled Event cell gives its name and kind to this role [PH Public holiday Tue 17 Feb 26] | ok no Edit on the peek for a non-admin role [Edit=false] | ok no event sheet opened for a read [sheet=false] | ok non-admin: a press opens no typing box [editor elements: 0] | ok the Required figure is unchanged by the attempt [– -> –] | ok non-admin: the drag opens no panel [panel=0] | ok non-admin: Available name is plain text [name button count 0] | ok Required names are never buttons [0] | ok non-admin: tapping the name opens no form [form=0] || SANS person (identity swapped in place): vinci Zenith || 1 tapped Available P 2026-02-10: Pilots Tue 10 Feb Required – Available 27.5 SANS committed to fly 0 Still needed – || 2 tapped filled Event 2026-02-17: PH Public holiday Tue 17 Feb 26 | Edit button: false | sheet open: false || 3 pressed Required P cell 2026-02-10: typing box/pad up: 0; cell shows – || 4 dragged over Required cells: panel up: 0 || 5 name buttons: Available P name is a button: 0; Required P name is a button: 0",
+   "verdict": "PASS",
+   "pics": [
+    "P2-12-phone-sans-1-available-working.png",
+    "P2-12-phone-sans-2-event-peek.png",
+    "P2-12-phone-sans-3-required-press.png",
+    "P2-12-phone-sans-4-required-drag.png"
+   ]
+  },
+  {
+   "id": "P2-12-guest",
+   "size": "desk",
+   "did": "Signed in as an unknown name (\"stranger\") — a person with no access / guest",
+   "saw": "after sign-in: RAPTOR Request access Signed in as stranger You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… Request access Sign out || buttons:  || go(leavewar) via the bridge: {\"page\":\"viewsched\",\"rows\":false}",
+   "verdict": "RAW",
+   "pics": [
+    "P2-12-desk-guest-1-after-signin.png",
+    "P2-12-desk-guest-2-leavewar-attempt.png"
+   ]
+  },
+  {
+   "id": "H-04",
+   "size": "desk",
+   "did": "Fresh world: read the Manning block; ⚙ + Counter (made one); opened its window and read the three buttons as painted; compared with the Event sheet Save; Rearrange",
+   "saw": "ok four fixed rows, no counter [fly-row-req-p,fly-row-req-w,fly-row-avail-p,fly-row-avail-w] | ok one counter now stands above the four [count-test-counter,fly-row-req-p,fly-row-req-w,fly-row-avail-p,fly-row-avail-w] | ok button words: \"Save counter\" and \"Delete counter\" [Save counter / Delete counter] | ok \"Delete counter\" is red (ink and edge) [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\",\"w\":112,\"h\":36}] | ok \"Save counter\" is the filled accent button [{\"bg\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(5, 42, 52)\",\"edge\":\"rgb(59, 198, 232)\",\"w\":102,\"h\":36}] | ok Cancel is neither filled nor red [{\"bg\":\"rgb(26, 31, 38)\",\"ink\":\"rgb(241, 244, 247)\",\"edge\":\"rgba(59, 198, 232, 0.5)\",\"w\":66,\"h\":36}] | ok the three buttons do not look alike (all three bg/ink/edge sets differ) [] | ok \"Save counter\" wears the same fill as the app's other Save button [rgb(59, 198, 232) vs rgb(59, 198, 232)] | ok the counter's cross is red [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\",\"w\":26,\"h\":16}] | ok the counter has its grip and cross; no hide-eye anywhere [{\"fixedGrip\":0,\"fixedCross\":0,\"counterGrip\":1,\"counterCross\":1,\"eye\":0}] | ok the four fixed rows carry no grip and no cross [{\"fixedGrip\":0,\"fixedCross\":0,\"counterGrip\":1,\"counterCross\":1,\"eye\":0}]",
+   "verdict": "PASS",
+   "pics": [
+    "H-04-desk-1-fresh.png",
+    "H-04-desk-2-counter-window.png",
+    "H-04-desk-3-rearrange.png"
+   ]
+  },
+  {
+   "id": "H-04",
+   "size": "phone",
+   "did": "Fresh world: read the Manning block; ⚙ + Counter (made one); opened its window and read the three buttons as painted; compared with the Event sheet Save; Rearrange",
+   "saw": "ok four fixed rows, no counter [fly-row-req-p,fly-row-req-w,fly-row-avail-p,fly-row-avail-w] | ok one counter now stands above the four [count-test-counter,fly-row-req-p,fly-row-req-w,fly-row-avail-p,fly-row-avail-w] | ok button words: \"Save counter\" and \"Delete counter\" [Save counter / Delete counter] | ok \"Delete counter\" is red (ink and edge) [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\",\"w\":112,\"h\":36}] | ok \"Save counter\" is the filled accent button [{\"bg\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(5, 42, 52)\",\"edge\":\"rgb(59, 198, 232)\",\"w\":102,\"h\":36}] | ok Cancel is neither filled nor red [{\"bg\":\"rgb(26, 31, 38)\",\"ink\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(42, 49, 58)\",\"w\":66,\"h\":36}] | ok the three buttons do not look alike (all three bg/ink/edge sets differ) [] | ok \"Save counter\" wears the same fill as the app's other Save button [rgb(59, 198, 232) vs rgb(59, 198, 232)] | ok the counter's cross is red [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\",\"w\":21,\"h\":13}] | ok the counter has its grip and cross; no hide-eye anywhere [{\"fixedGrip\":0,\"fixedCross\":0,\"counterGrip\":1,\"counterCross\":1,\"eye\":0}] | ok the four fixed rows carry no grip and no cross [{\"fixedGrip\":0,\"fixedCross\":0,\"counterGrip\":1,\"counterCross\":1,\"eye\":0}]",
+   "verdict": "PASS",
+   "pics": [
+    "H-04-phone-1-fresh.png",
+    "H-04-phone-2-counter-window.png",
+    "H-04-phone-3-rearrange.png"
+   ]
+  },
+  {
+   "id": "SHORT-short",
+   "size": "short",
+   "did": "Leave War windows at 390x568: Available form, Event sheet (Other, A range), Required typing, Required panel, the counter's own window",
+   "saw": "ok the Available P form is wholly on the screen [{\"x\":12,\"y\":58,\"r\":378,\"b\":554,\"w\":366,\"h\":496} vp {\"w\":390,\"h\":568}] | ok cform-save reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":39,\"y\":501,\"r\":95,\"b\":537,\"w\":56,\"h\":36}] | ok cform-cancel reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":103,\"y\":501,\"r\":169,\"b\":537,\"w\":66,\"h\":36}] | ok cform-name reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":109,\"y\":114,\"r\":365,\"b\":135,\"w\":256,\"h\":21}] | ok the Event sheet (Other, A range) is wholly on the screen [{\"x\":12,\"y\":58,\"r\":378,\"b\":554,\"w\":366,\"h\":496} vp {\"w\":390,\"h\":568}] | ok event-apply reachable (scrolled inside its window if needed) [{\"x\":302,\"y\":509,\"r\":365,\"b\":541,\"w\":63,\"h\":32}] | ok event-cancel reachable (scrolled inside its window if needed) [{\"x\":346,\"y\":84,\"r\":365,\"b\":101,\"w\":19,\"h\":17}] | ok event-text reachable (scrolled inside its window if needed) [{\"x\":25,\"y\":205,\"r\":271,\"b\":244,\"w\":246,\"h\":39}] | ok event-short reachable (scrolled inside its window if needed) [{\"x\":281,\"y\":205,\"r\":365,\"b\":244,\"w\":84,\"h\":39}] | ok the pad sits at the foot, the cell and the Available rows are above it [{\"pad\":{\"x\":0,\"y\":247,\"r\":390,\"b\":568,\"w\":390,\"h\":321},\"c\":{\"x\":185,\"y\":162,\"r\":206,\"b\":180,\"w\":20,\"h\":18},\"av\":{\"x\":-1053,\"y\":215,\"r\":6610,\"b\":233,\"w\":7663,\"h\":18}}] | ok every pad key is wholly on screen [] | ok the Required panel is wholly on the screen [{\"x\":12,\"y\":318,\"r\":378,\"b\":554,\"w\":366,\"h\":236} vp {\"w\":390,\"h\":568}] | ok req-panel-apply reachable [{\"x\":282,\"y\":497,\"r\":365,\"b\":541,\"w\":83,\"h\":44}] | ok req-panel-num reachable [{\"x\":109,\"y\":374,\"r\":185,\"b\":422,\"w\":76,\"h\":48}] | ok req-panel-x reachable [{\"x\":346,\"y\":340,\"r\":365,\"b\":357,\"w\":19,\"h\":17}] | ok the picked Required row is above the panel (not hidden under it) [{\"rowBottom\":200,\"panelTop\":318}] | ok the counter's own window is wholly on the screen [{\"x\":12,\"y\":58,\"r\":378,\"b\":554,\"w\":366,\"h\":496} vp {\"w\":390,\"h\":568}] | ok cform-save reachable (scrolled inside its window if needed) [{\"x\":39,\"y\":501,\"r\":141,\"b\":537,\"w\":102,\"h\":36}] | ok cform-cancel reachable (scrolled inside its window if needed) [{\"x\":149,\"y\":501,\"r\":216,\"b\":537,\"w\":66,\"h\":36}] | ok cform-delete reachable (scrolled inside its window if needed) [{\"x\":224,\"y\":501,\"r\":336,\"b\":537,\"w\":112,\"h\":36}]",
+   "verdict": "PASS",
+   "pics": [
+    "short-short-1-available-form.png",
+    "short-short-2-event-sheet.png",
+    "short-short-3-required-typing.png",
+    "short-short-4-required-panel.png",
+    "short-short-5-counter-window.png"
+   ]
+  },
+  {
+   "id": "SHORT-desk1536",
+   "size": "desk1536",
+   "did": "Leave War windows at 1536x864: Available form, Event sheet (Other, A range), Required typing, Required panel, the counter's own window",
+   "saw": "ok the Available P form is wholly on the screen [{\"x\":488,\"y\":437,\"r\":1048,\"b\":850,\"w\":560,\"h\":413} vp {\"w\":1536,\"h\":864}] | ok cform-save reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":515,\"y\":797,\"r\":571,\"b\":833,\"w\":56,\"h\":36}] | ok cform-cancel reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":579,\"y\":797,\"r\":645,\"b\":833,\"w\":66,\"h\":36}] | ok cform-name reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":587,\"y\":493,\"r\":1035,\"b\":514,\"w\":448,\"h\":21}] | ok the Event sheet (Other, A range) is wholly on the screen [{\"x\":488,\"y\":182,\"r\":1048,\"b\":850,\"w\":560,\"h\":668} vp {\"w\":1536,\"h\":864}] | ok event-apply reachable (scrolled inside its window if needed) [{\"x\":972,\"y\":805,\"r\":1035,\"b\":837,\"w\":63,\"h\":32}] | ok event-cancel reachable (scrolled inside its window if needed) [{\"x\":1016,\"y\":208,\"r\":1035,\"b\":225,\"w\":19,\"h\":17}] | ok event-text reachable (scrolled inside its window if needed) [{\"x\":501,\"y\":329,\"r\":941,\"b\":368,\"w\":440,\"h\":39}] | ok event-short reachable (scrolled inside its window if needed) [{\"x\":951,\"y\":329,\"r\":1035,\"b\":368,\"w\":84,\"h\":39}] | ok the typing strip is wholly on the screen [{\"x\":715,\"y\":316,\"r\":1403,\"b\":355,\"w\":688,\"h\":39} vp {\"w\":1536,\"h\":864}] | ok the Required panel is wholly on the screen [{\"x\":488,\"y\":687,\"r\":1048,\"b\":850,\"w\":560,\"h\":163} vp {\"w\":1536,\"h\":864}] | ok req-panel-apply reachable [{\"x\":952,\"y\":797,\"r\":1035,\"b\":837,\"w\":83,\"h\":40}] | ok req-panel-num reachable [{\"x\":587,\"y\":743,\"r\":663,\"b\":791,\"w\":76,\"h\":48}] | ok req-panel-x reachable [{\"x\":1016,\"y\":709,\"r\":1035,\"b\":726,\"w\":19,\"h\":17}] | ok the picked Required row is above the panel (not hidden under it) [{\"rowBottom\":244,\"panelTop\":687}] | ok the counter's own window is wholly on the screen [{\"x\":488,\"y\":364,\"r\":1048,\"b\":850,\"w\":560,\"h\":487} vp {\"w\":1536,\"h\":864}] | ok cform-save reachable (scrolled inside its window if needed) [{\"x\":515,\"y\":797,\"r\":617,\"b\":833,\"w\":102,\"h\":36}] | ok cform-cancel reachable (scrolled inside its window if needed) [{\"x\":625,\"y\":797,\"r\":692,\"b\":833,\"w\":66,\"h\":36}] | ok cform-delete reachable (scrolled inside its window if needed) [{\"x\":700,\"y\":797,\"r\":812,\"b\":833,\"w\":112,\"h\":36}]",
+   "verdict": "PASS",
+   "pics": [
+    "short-desk1536-1-available-form.png",
+    "short-desk1536-2-event-sheet.png",
+    "short-desk1536-3-required-typing.png",
+    "short-desk1536-4-required-panel.png",
+    "short-desk1536-5-counter-window.png"
+   ]
+  },
+  {
+   "id": "SHORT-side",
+   "size": "side",
+   "did": "Leave War windows at 844x390: Available form, Event sheet (Other, A range), Required typing, Required panel, the counter's own window",
+   "saw": "ok the Available P form is wholly on the screen [{\"x\":142,\"y\":58,\"r\":702,\"b\":376,\"w\":560,\"h\":318} vp {\"w\":844,\"h\":390}] | ok cform-save reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":169,\"y\":323,\"r\":225,\"b\":359,\"w\":56,\"h\":36}] | ok cform-cancel reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":233,\"y\":323,\"r\":299,\"b\":359,\"w\":66,\"h\":36}] | ok cform-name reachable (scrolled inside its window if needed; on screen; what a finger lands on) [{\"x\":241,\"y\":114,\"r\":689,\"b\":135,\"w\":448,\"h\":21}] | ok the Event sheet (Other, A range) is wholly on the screen [{\"x\":142,\"y\":58,\"r\":702,\"b\":376,\"w\":560,\"h\":318} vp {\"w\":844,\"h\":390}] | ok event-apply reachable (scrolled inside its window if needed) [{\"x\":626,\"y\":331,\"r\":689,\"b\":363,\"w\":63,\"h\":32}] | ok event-cancel reachable (scrolled inside its window if needed) [{\"x\":670,\"y\":74,\"r\":689,\"b\":91,\"w\":19,\"h\":17}] | ok event-text reachable (scrolled inside its window if needed) [{\"x\":155,\"y\":197,\"r\":595,\"b\":236,\"w\":440,\"h\":39}] | ok event-short reachable (scrolled inside its window if needed) [{\"x\":605,\"y\":197,\"r\":689,\"b\":236,\"w\":84,\"h\":39}] | XX the pad sits at the foot, the cell and the Available rows are above it [{\"pad\":{\"x\":162,\"y\":69,\"r\":682,\"b\":390,\"w\":520,\"h\":321},\"c\":{\"x\":409,\"y\":64,\"r\":434,\"b\":86,\"w\":25,\"h\":22},\"av\":{\"x\":-1201,\"y\":130,\"r\":8154,\"b\":152,\"w\":9355,\"h\":22}}] | ok every pad key is wholly on screen [] | ok the Required panel is wholly on the screen [{\"x\":142,\"y\":213,\"r\":702,\"b\":376,\"w\":560,\"h\":163} vp {\"w\":844,\"h\":390}] | ok req-panel-apply reachable [{\"x\":606,\"y\":323,\"r\":689,\"b\":363,\"w\":83,\"h\":40}] | ok req-panel-num reachable [{\"x\":241,\"y\":269,\"r\":317,\"b\":317,\"w\":76,\"h\":48}] | ok req-panel-x reachable [{\"x\":670,\"y\":235,\"r\":689,\"b\":252,\"w\":19,\"h\":17}] | ok the picked Required row is above the panel (not hidden under it) [{\"rowBottom\":133,\"panelTop\":213}] | ok the counter's own window is wholly on the screen [{\"x\":142,\"y\":58,\"r\":702,\"b\":376,\"w\":560,\"h\":318} vp {\"w\":844,\"h\":390}] | ok cform-save reachable (scrolled inside its window if needed) [{\"x\":169,\"y\":323,\"r\":271,\"b\":359,\"w\":102,\"h\":36}] | ok cform-cancel reachable (scrolled inside its window if needed) [{\"x\":279,\"y\":323,\"r\":346,\"b\":359,\"w\":66,\"h\":36}] | ok cform-delete reachable (scrolled inside its window if needed) [{\"x\":354,\"y\":323,\"r\":466,\"b\":359,\"w\":112,\"h\":36}]",
+   "verdict": "FAIL",
+   "pics": [
+    "short-side-1-available-form.png",
+    "short-side-2-event-sheet.png",
+    "short-side-3-required-typing.png",
+    "short-side-4-required-panel.png",
+    "short-side-5-counter-window.png"
+   ]
+  },
+  {
+   "id": "P2-09",
+   "size": "desk",
+   "did": "Counter Delta (pilots, amber 5 red 3) placed between Required W and Available P by drag; red cross in Rearrange; Undo; window: Delete counter, Cancel, confirm; Undo",
+   "saw": "ok Delta sits between Required W and Available P [req-p > req-w > #delta > avail-p > avail-w] | ok the cross is red (ink or edge) [{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"}] | ok the FIRST tap on the cross after the drag deletes the counter [] | ok the cross deletes at once and asks nothing [req-p > req-w > avail-p > avail-w | [] | ask=false] | ok Undo restores the counter in the same place [req-p > req-w > #delta > avail-p > avail-w] | ok definition restored whole (name Delta, amber 5, red 3, Pilots) [{\"name\":\"Delta\",\"amber\":\"5\",\"red\":\"3\",\"seatOn\":[\"Pilots\"]}] | ok window Delete asks first (\"Really delete?\") and deletes nothing yet [Really delete? / true] | ok Cancel preserves the counter [req-p > req-w > #delta > avail-p > avail-w] | ok confirming deletes the counter [req-p > req-w > avail-p > avail-w] | ok Undo of the window delete restores it complete in place [req-p > req-w > #delta > avail-p > avail-w] || 1 order with Delta between Required W and Available P: req-p > req-w > #delta > avail-p > avail-w || cross paint: {\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"} || 2a first tap on the cross after the placing drag deleted it: true || 2 after one press on the cross: req-p > req-w > avail-p > avail-w | dialogs [] | any \"really/sure\" text false || 3 after Undo: req-p > req-w > #delta > avail-p > avail-w || 4 definition after Undo: {\"name\":\"Delta\",\"amber\":\"5\",\"red\":\"3\",\"seatOn\":[\"Pilots\"]} || button paints: {\"save\":{\"bg\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(5, 42, 52)\",\"edge\":\"rgb(59, 198, 232)\"},\"cancel\":{\"bg\":\"rgb(26, 31, 38)\",\"ink\":\"rgb(241, 244, 247)\",\"edge\":\"rgba(59, 198, 232, 0.5)\"},\"delete\":{\"bg\":\"rgba(0, 0, 0, 0)\",\"ink\":\"rgb(251, 180, 185)\",\"edge\":\"rgba(240, 85, 95, 0.6)\"}} || 5 window Delete pressed once: button reads \"Really delete?\"; counter still on grid: true || 6 confirmed delete: req-p > req-w > avail-p > avail-w",
+   "verdict": "PASS",
+   "pics": [
+    "P2-09-desk-1-before-cross.png",
+    "P2-09-desk-2-after-cross.png",
+    "P2-09-desk-3-window.png",
+    "P2-09-desk-4-really-delete.png",
+    "P2-09-desk-5-after-undo-of-window-delete.png"
+   ]
+  },
+  {
+   "id": "F1",
+   "size": "phone",
+   "did": "A fresh world, ⚙ + Counter, Rearrange on, one real finger drag of the counter row (grip -> upper half of Available P), then ONE real finger tap on the Rearrange button",
+   "saw": "Rearrange on before the drag: true || order after the finger drag: fly-row-req-p > fly-row-req-w > count-delta > fly-row-avail-p > fly-row-avail-w || Rearrange still on after the FIRST tap on it: true || Rearrange on after the SECOND tap: false || control (no drag first): Rearrange on after ONE tap: true",
+   "verdict": "FINDING (first tap after a drag is ignored)",
+   "pics": [
+    "F1-1-after-drag.png",
+    "F1-2-after-first-tap.png",
+    "F1-3-after-second-tap.png"
+   ]
+  },
+  {
+   "id": "P2-06",
+   "size": "desk",
+   "did": "Created named event (short qz) + preset-following PH + wide band + 2-day band; Repeat each day; Move (via Move…); Undo; Redo; a refused move; reload; changed the PH preset short. Copy / cut / resize are not offered on the Event row (the sheet offers Move… and Delete).",
+   "saw": "ok explicit short QZ on A [] | ok B follows its preset (PH) [] | ok a wide band prints its full name where it fits, else the short form [wide: Stand-down week] | ok the 2-day band prints the short form (DA) not the long name [DA] | ok repeat keeps explicit QZ in every cell [23:QZ 24:QZ 25:QZ 26:QZ] | ok moved event keeps QZ at the new date [20=QZ 3=＋] | ok Undo returns QZ to 3; Redo moves it to 20 [3:QZ 20:＋ | 3:＋ 20:QZ] | ok refusal changes nothing (PH stays on 4, QZ stays on 20) [4:PH 20:QZ | banner: Those days already carry an event on this line. Cancel] | ok reload keeps the short forms [4:PH 20:QZ 24:QZ bandA:Stand-down week bandD:DA] | ok inherited short follows the preset (4 = HOL); explicit stays (QZ) [4:HOL 20:QZ 24:QZ] | ok a moved merged band keeps its name / short form (full name where it fits, else SDW) [Stand-down week] | ok Undo brings the band back to 9 Feb with its text [Stand-down week] || 1 A saved (Range closure, short qz): QZ || 2 B saved (PH preset, follows it): PH || 3 C merged band Feb 9-13 prints: Stand-down week (width 138px) || 3b D 2-day band Feb 5-6 prints: DA (width 51px) || 4 reopened A: name=Range closure short=QZ || 4 repeat each day 23-26: 23:QZ 24:QZ 25:QZ 26:QZ || 4 all filled event cells: 2026-01-01=PH 2026-02-03=QZ 2026-02-04=PH 2026-02-17=PH 2026-02-18=PH 2026-02-23=QZ 2026-02-24=QZ 2026-02-25=QZ 2026-02-26=QZ 2026-08-09=PH 2026-12-25=PH || 5 after moving A 3 -> 20: 3:＋ 20:QZ || 6 Undo: 3:QZ 20:＋ || 6 Redo: 3:＋ 20:QZ || 7 refused move banner: Those days already carry an event on this line. Cancel || 7 after the refusal: 4:PH 20:QZ || 8 after a reload: 4:PH 20:QZ 24:QZ bandA:Stand-down week bandD:DA || 9 PH preset short \"PH\" -> HOL; cells: 4:HOL 20:QZ 24:QZ || 10 merged band moved to 2 Mar: Stand-down week (125px) || 10 after Undo, Feb 9 band: Stand-down week",
+   "verdict": "PASS",
+   "pics": [
+    "P2-06-desk-1-band-sheet.png",
+    "P2-06-desk-2-after-create.png",
+    "P2-06-desk-3-repeat.png",
+    "P2-06-desk-4-moved.png",
+    "P2-06-desk-5-refused-move.png",
+    "P2-06-desk-6-after-reload.png",
+    "P2-06-desk-7-preset-changed.png",
+    "P2-06-desk-8-band-moved.png"
+   ]
+  },
+  {
+   "id": "P2-06",
+   "size": "phone",
+   "did": "Created named event (short qz) + preset-following PH + wide band + 2-day band; Repeat each day; Move (via Move…); Undo; Redo; a refused move; reload; changed the PH preset short. Copy / cut / resize are not offered on the Event row (the sheet offers Move… and Delete).",
+   "saw": "ok explicit short QZ on A [] | ok B follows its preset (PH) [] | ok a wide band prints its full name where it fits, else the short form [wide: Stand-down week] | ok the 2-day band prints the short form (DA) not the long name [DA] | ok repeat keeps explicit QZ in every cell [23:QZ 24:QZ 25:QZ 26:QZ] | ok moved event keeps QZ at the new date [20=QZ 3=＋] | ok Undo returns QZ to 3; Redo moves it to 20 [3:QZ 20:＋ | 3:＋ 20:QZ] | ok refusal changes nothing (PH stays on 4, QZ stays on 20) [4:PH 20:QZ | banner: Those days already carry an event on this line. Cancel] | ok reload keeps the short forms [4:PH 20:QZ 24:QZ bandA:Stand-down week bandD:DA] | ok inherited short follows the preset (4 = HOL); explicit stays (QZ) [4:HOL 20:QZ 24:QZ] | ok a moved merged band keeps its name / short form (full name where it fits, else SDW) [Stand-down week] | ok Undo brings the band back to 9 Feb with its text [Stand-down week] || 1 A saved (Range closure, short qz): QZ || 2 B saved (PH preset, follows it): PH || 3 C merged band Feb 9-13 prints: Stand-down week (width 109px) || 3b D 2-day band Feb 5-6 prints: DA (width 38px) || 4 reopened A: name=Range closure short=QZ || 4 repeat each day 23-26: 23:QZ 24:QZ 25:QZ 26:QZ || 4 all filled event cells: 2026-01-01=PH 2026-02-03=QZ 2026-02-04=PH 2026-02-17=PH 2026-02-18=PH 2026-02-23=QZ 2026-02-24=QZ 2026-02-25=QZ 2026-02-26=QZ || 5 after moving A 3 -> 20: 3:＋ 20:QZ || 6 Undo: 3:QZ 20:＋ || 6 Redo: 3:＋ 20:QZ || 7 refused move banner: Those days already carry an event on this line. Cancel || 7 after the refusal: 4:PH 20:QZ || 8 after a reload: 4:PH 20:QZ 24:QZ bandA:Stand-down week bandD:DA || 9 PH preset short \"PH\" -> HOL; cells: 4:HOL 20:QZ 24:QZ || 10 merged band moved to 2 Mar: Stand-down week (100px) || 10 after Undo, Feb 9 band: Stand-down week",
+   "verdict": "PASS",
+   "pics": [
+    "P2-06-phone-1-band-sheet.png",
+    "P2-06-phone-2-after-create.png",
+    "P2-06-phone-3-repeat.png",
+    "P2-06-phone-4-moved.png",
+    "P2-06-phone-5-refused-move.png",
+    "P2-06-phone-6-after-reload.png",
+    "P2-06-phone-7-preset-changed.png",
+    "P2-06-phone-8-band-moved.png"
+   ]
+  }
+ ],
+ "shots": 0,
+ "errors": [
+  {
+   "label": "p201-desk",
+   "errors": []
+  },
+  {
+   "label": "p201-phone",
+   "errors": []
+  },
+  {
+   "label": "p202-desk",
+   "errors": []
+  },
+  {
+   "label": "p202-phone",
+   "errors": []
+  },
+  {
+   "label": "p203-desk",
+   "errors": []
+  },
+  {
+   "label": "p203-phone",
+   "errors": []
+  },
+  {
+   "label": "p204-desk",
+   "errors": []
+  },
+  {
+   "label": "p204-phone",
+   "errors": []
+  },
+  {
+   "label": "p205-desk",
+   "errors": []
+  },
+  {
+   "label": "p205-phone",
+   "errors": []
+  },
+  {
+   "label": "p207-phone",
+   "errors": []
+  },
+  {
+   "label": "p207-desk",
+   "errors": []
+  },
+  {
+   "label": "p208-desk",
+   "errors": []
+  },
+  {
+   "label": "p208-phone",
+   "errors": []
+  },
+  {
+   "label": "p209-phone",
+   "errors": []
+  },
+  {
+   "label": "p209-phone-nodrag",
+   "errors": []
+  },
+  {
+   "label": "p210-desk",
+   "errors": []
+  },
+  {
+   "label": "p210-phone",
+   "errors": []
+  },
+  {
+   "label": "p211-desk",
+   "errors": []
+  },
+  {
+   "label": "p211-phone",
+   "errors": []
+  },
+  {
+   "label": "p212-desk-admin",
+   "errors": []
+  },
+  {
+   "label": "p212-desk-memberview",
+   "errors": []
+  },
+  {
+   "label": "p212-desk-ranger",
+   "errors": []
+  },
+  {
+   "label": "p212-desk-sans",
+   "errors": []
+  },
+  {
+   "label": "p212-phone-admin",
+   "errors": []
+  },
+  {
+   "label": "p212-phone-memberview",
+   "errors": []
+  },
+  {
+   "label": "p212-phone-ranger",
+   "errors": []
+  },
+  {
+   "label": "p212-phone-sans",
+   "errors": []
+  },
+  {
+   "label": "p212g-desk",
+   "errors": []
+  },
+  {
+   "label": "h04-desk",
+   "errors": []
+  },
+  {
+   "label": "h04-phone",
+   "errors": []
+  },
+  {
+   "label": "short-short",
+   "errors": []
+  },
+  {
+   "label": "short-desk1536",
+   "errors": []
+  },
+  {
+   "label": "short-side",
+   "errors": []
+  },
+  {
+   "label": "p209-desk",
+   "errors": []
+  },
+  {
+   "label": "f1",
+   "errors": []
+  },
+  {
+   "label": "p206-desk",
+   "errors": []
+  },
+  {
+   "label": "p206-phone",
+   "errors": []
+  }
+ ],
+ "final": {
+  "P2-01": "PASS",
+  "P2-02": "PASS",
+  "P2-03": "PASS",
+  "P2-04": "FAIL",
+  "P2-05": "PASS",
+  "P2-06": "PASS",
+  "P2-07": "PASS",
+  "P2-08": "PASS",
+  "P2-09": "PASS (see F1 for the phone, after a drag)",
+  "P2-10": "PASS",
+  "P2-11": "PASS",
+  "P2-12": "PASS (guest: not reachable)",
+  "H-04": "PASS"
+ },
+ "findings": [
+  "F1 phone: the first tap after a finger-drag of a counter row in Rearrange is ignored",
+  "F2 phone on its side 844x390: the number pad and the top bar leave no sight of the Required cell being typed",
+  "F3 (P2-04, desktop): \"-5\" saves 5 and \"2.5\" saves 25 over the old figure — typed marks are dropped, not refused"
+ ]
+}

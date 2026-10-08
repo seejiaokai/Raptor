@@ -1,0 +1,48 @@
+import { chromium, launchOptions, world, shot, tid, cell, backToSans, readDate, readDayWin, press, isTouch } from './cal-D-lib.mjs'
+const browser = await chromium.launch(launchOptions)
+for (const size of process.argv.slice(2).length ? process.argv.slice(2) : ['desk', 'phone']) {
+  const { ctx, page, errors } = await world(browser, size)
+  await backToSans(page, size)
+  const ISO = '2026-07-15'
+  console.log(size, 'demo before', JSON.stringify(await readDate(page, ISO)))
+  // admin makes 15 Jul NF through the Calendar window (opened from the SANS day's "Calendar…")
+  await press(size, cell(page, ISO), { position: { x: 8, y: 8 } }); await tid(page, 'win-sansday').waitFor()
+  await press(size, tid(page, 'sd-days')); await tid(page, 'win-days').waitFor(); await page.waitForTimeout(300)
+  if (isTouch(size)) { await tid(page, `days-step-${ISO}`).tap(); await page.waitForTimeout(200); await tid(page, `days-step-${ISO}`).tap() }
+  else await tid(page, `days-nf-${ISO}`).click()
+  await page.waitForTimeout(300)
+  console.log(size, 'days tag', await tid(page, `days-tag-${ISO}`).innerText().catch(() => '?'))
+  await shot(page, `p407-${size}-days`)
+  await press(size, tid(page, 'win-days-x')); await page.waitForTimeout(250)
+  console.log(size, 'NF date', JSON.stringify(await readDate(page, ISO)), 'cls', await page.evaluate(i => window.flyAnswer(i).cls + '/' + window.flyAnswer(i).need.p, ISO))
+  // swap to a SANS member
+  await page.evaluate(() => { window.raptorMe('romeo'); window.raptorRole('member') }); await page.waitForTimeout(500)
+  await backToSans(page, size)
+  if (!(await tid(page, 'win-sansday').count())) { await press(size, cell(page, ISO), { position: { x: 8, y: 8 } }); await tid(page, 'win-sansday').waitFor() }
+  await page.waitForTimeout(300)
+  const w0 = await readDayWin(page)
+  console.log(size, 'as Zenith, day window', JSON.stringify({ work: w0.work, list: w0.list, addDisabled: await tid(page, 'sd-add').isDisabled(), why: await tid(page, 'sd-addwhy').innerText().catch(() => null) }))
+  await shot(page, `p407-${size}-member-day`)
+  await press(size, tid(page, 'sd-add')); await page.waitForSelector('#inpEditSave')
+  const hasPicker = await page.locator('#inpEditPerson').count(), pickerDis = await page.locator('#inpEditPerson').isDisabled().catch(() => null)
+  console.log(size, 'editor person control', hasPicker, 'disabled', pickerDis, 'fixed:', await page.locator('#inpEditPersonFixed').innerText().catch(() => null))
+  await page.locator('#inpEditSans').getByLabel('Fly', { exact: true }).uncheck().catch(() => {})
+  await page.locator('#inpEditSans').getByLabel('OFT', { exact: true }).check()
+  await page.locator('#inpEditSans').getByLabel('AMT', { exact: true }).check()
+  await page.click('#inpEditSpan [data-span="custom"]'); await page.fill('#inpEditStart', '09:00'); await page.fill('#inpEditEnd', '12:00')
+  await shot(page, `p407-${size}-member-editor`)
+  await page.click('#inpEditSave'); await page.waitForTimeout(500)
+  const err = await page.evaluate(() => ((document.querySelector('#inpEditPop') || {}).innerText || '').split(String.fromCharCode(10)).filter(l => /already|only|cannot|can.t|late|not/i.test(l)))
+  console.log(size, 'editor still open', await page.locator('#inpEditSave').isVisible().catch(() => false), 'msgs', err.join('|'))
+  const w1 = await readDayWin(page)
+  console.log(size, 'after', JSON.stringify({ date: await readDate(page, ISO), work: w1 && w1.work, list: w1 && w1.list }))
+  await shot(page, `p407-${size}-member-after`)
+  // reopen the day
+  await tid(page, 'win-sansday-x').click().catch(() => {}); await page.waitForTimeout(250)
+  await press(size, cell(page, ISO), { position: { x: 8, y: 8 } }); await tid(page, 'win-sansday').waitFor(); await page.waitForTimeout(300)
+  const w2 = await readDayWin(page)
+  console.log(size, 'reopened', JSON.stringify({ list: w2.list, hours: await tid(page, 'win-sansday').locator('[data-testid="sd-hours"]').allInnerTexts() }))
+  console.log(size, 'errors', errors.join('|'))
+  await ctx.close()
+}
+await browser.close()

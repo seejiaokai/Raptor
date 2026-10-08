@@ -1,0 +1,5494 @@
+{
+ "parts": {
+  "P1-01-desk": {
+   "at": "2026-10-08T14:04:24.604Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-01",
+     "did": "desk: Required P 8 / W 6 typed \"From 31 Dec 27 on\" in the 2027 period; Mon 3 Jan 28 (no period) read on the SANS month, its opened day, Calendar, Leave War; then \"+\" New made JAN - DEC 28, same date read again",
+     "saw": "OK before: the Leave War does not draw the date (no period) | OK before: SANS month cell need is a dash, label says no leave period covers it [â€“] | OK before: opened day Required 8 / 6, Available dashes, Still needed dashes, with the missing-period line [{\"head\":\"â ¿ Mon 3 Jan Day flying âœ• FIGURE PILOTS W\",\"req\":[\"8\",\"6\"],\"avail\":[\"â€“\",\"â€“\"],\"sans\":[\"0\",\"0\"],\"need\":[\"â€“\",\"â€“\"],\"nocover\":\"No leave period covers this date, so who is available is not known.\",\"why\":null,\"list\":\"No commitments yet.\",\"addwhy\":null}] | OK before: Calendar shows D lit for the date, no tag [{\"tag\":null,\"lit\":\"D\",\"dot\":false,\"tagBg\":null}] | OK after: new period drawn; Leave War Required 8/6, Available 28/18 [{\"reqP\":\"8\",\"reqW\":\"6\",\"availP\":\"28\",\"availW\":\"18\"}] | OK after: Leave War working P and W read Still needed 0 [[\"Pilots Mon 3 Jan Required 8 Available 28 SANS committed to fly 0 Still needed 0\",\"WSOs Mon 3 Jan Required 6 Available 18 SANS committed to fly 0 Still needed 0\"]] | OK after: SANS cell need \"0 0\"; opened day Available 28/18, Still needed 0/0, missing-period line gone [[\"0 0\",{\"head\":\"â ¿ Mon 3 Jan Day flying âœ• FIGURE PILOTS W\",\"req\":[\"8\",\"6\"],\"avail\":[\"28\",\"18\"],\"sans\":[\"0\",\"0\"],\"need\":[\"0\",\"0\"],\"nocover\":null,\"why\":null,\"list\":\"No commitments yet.\",\"addwhy\":null}]] | OK supplement: Required raised to 40/30 gives need 12/12 on Leave War working, SANS cell and opened day [[\"Pilots Mon 3 Jan Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 12\",[\"12\",\"12\"]]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p101-war2027-run.png",
+      "desk-02-p101-sansday-before.png",
+      "desk-03-p101-cal-before.png",
+      "desk-04-p101-war-after-create.png",
+      "desk-05-p101-war-working-after.png",
+      "desk-06-p101-sansday-after.png",
+      "desk-07-p101-cal-after.png",
+      "desk-08-p101-sansday-supp.png"
+     ]
+    }
+   ],
+   "out": {
+    "bridgeBefore": {
+     "f": {
+      "covered": false,
+      "kind": null,
+      "name": "",
+      "short": "",
+      "weekend": false,
+      "availP": null,
+      "availW": null
+     },
+     "a": {
+      "iso": "2028-01-03",
+      "weekend": false,
+      "kind": null,
+      "cls": "day",
+      "clsFrom": "default",
+      "req": {
+       "p": 8,
+       "w": 6
+      },
+      "reqFrom": {
+       "p": "run",
+       "w": "run"
+      },
+      "runStart": {
+       "p": "2027-12-31",
+       "w": "2027-12-31"
+      },
+      "need": {
+       "p": null,
+       "w": null
+      },
+      "tone": "none"
+     }
+    },
+    "warBeforeDrawn": false,
+    "war31Dec": {
+     "reqP": "8",
+     "reqW": "6",
+     "availP": "28",
+     "availW": "18"
+    },
+    "sansCellBefore": {
+     "label": "Mon 3 Jan, day flying. No leave period covers this date. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "â€“",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "sansDayBefore": {
+     "head": "â ¿ Mon 3 Jan Day flying âœ• FIGURE PILOTS W",
+     "req": [
+      "8",
+      "6"
+     ],
+     "avail": [
+      "â€“",
+      "â€“"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "â€“",
+      "â€“"
+     ],
+     "nocover": "No leave period covers this date, so who is available is not known.",
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "calBefore": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "newSel": "1 Jan 28 â€“ 31 Dec 28",
+    "warAfterDrawn": true,
+    "warAfter": {
+     "reqP": "8",
+     "reqW": "6",
+     "availP": "28",
+     "availW": "18"
+    },
+    "workP": "Pilots Mon 3 Jan Required 8 Available 28 SANS committed to fly 0 Still needed 0",
+    "workW": "WSOs Mon 3 Jan Required 6 Available 18 SANS committed to fly 0 Still needed 0",
+    "sansCellAfter": {
+     "label": "Mon 3 Jan, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "0 0",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "sansDayAfter": {
+     "head": "â ¿ Mon 3 Jan Day flying âœ• FIGURE PILOTS W",
+     "req": [
+      "8",
+      "6"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "0",
+      "0"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "calAfter": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "warSupp": {
+     "reqP": "40",
+     "reqW": "30",
+     "availP": "28",
+     "availW": "18"
+    },
+    "workSupp": "Pilots Mon 3 Jan Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+    "sansCellSupp": {
+     "label": "Mon 3 Jan, day flying. Still needed: 12 pilots, 12 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "12 12",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-red"
+    },
+    "sansDaySupp": {
+     "head": "â ¿ Mon 3 Jan Day flying âœ• FIGURE PILOTS W",
+     "req": [
+      "40",
+      "30"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "12",
+      "12"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    }
+   }
+  },
+  "P1-01-phone": {
+   "at": "2026-10-08T14:06:05.744Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-01",
+     "did": "phone: Required P 8 / W 6 typed \"From 31 Dec 27 on\" in the 2027 period; Mon 3 Jan 28 (no period) read on the SANS month, its opened day, Calendar, Leave War; then \"+\" New made JAN - DEC 28, same date read again",
+     "saw": "OK before: the Leave War does not draw the date (no period) | OK before: SANS month cell need is a dash, label says no leave period covers it [–] | OK before: opened day Required 8 / 6, Available dashes, Still needed dashes, with the missing-period line [{\"head\":\"⠿ Mon 3 Jan Day flying ✕ FIGURE PILOTS W\",\"req\":[\"8\",\"6\"],\"avail\":[\"–\",\"–\"],\"sans\":[\"0\",\"0\"],\"need\":[\"–\",\"–\"],\"nocover\":\"No leave period covers this date, so who is available is not known.\",\"why\":null,\"list\":\"No commitments yet.\",\"addwhy\":null}] | OK before: Calendar shows D lit for the date, no tag [{\"tag\":null,\"lit\":\"D\",\"dot\":false,\"tagBg\":null}] | OK after: new period drawn; Leave War Required 8/6, Available 28/18 [{\"reqP\":\"8\",\"reqW\":\"6\",\"availP\":\"28\",\"availW\":\"18\"}] | OK after: Leave War working P and W read Still needed 0 [[\"Pilots Mon 3 Jan Required 8 Available 28 SANS committed to fly 0 Still needed 0\",\"WSOs Mon 3 Jan Required 6 Available 18 SANS committed to fly 0 Still needed 0\"]] | OK after: SANS cell need \"0 0\"; opened day Available 28/18, Still needed 0/0, missing-period line gone [[\"0 0\",{\"head\":\"⠿ Mon 3 Jan Day flying ✕ FIGURE PILOTS W\",\"req\":[\"8\",\"6\"],\"avail\":[\"28\",\"18\"],\"sans\":[\"0\",\"0\"],\"need\":[\"0\",\"0\"],\"nocover\":null,\"why\":null,\"list\":\"No commitments yet.\",\"addwhy\":null}]] | OK supplement: Required raised to 40/30 gives need 12/12 on Leave War working, SANS cell and opened day [[\"Pilots Mon 3 Jan Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 12\",[\"12\",\"12\"]]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p101-war2027-run.png",
+      "phone-02-p101-sansday-before.png",
+      "phone-03-p101-cal-before.png",
+      "phone-04-p101-war-after-create.png",
+      "phone-05-p101-war-working-after.png",
+      "phone-06-p101-sansday-after.png",
+      "phone-07-p101-cal-after.png",
+      "phone-08-p101-sansday-supp.png"
+     ]
+    }
+   ],
+   "out": {
+    "bridgeBefore": {
+     "f": {
+      "covered": false,
+      "kind": null,
+      "name": "",
+      "short": "",
+      "weekend": false,
+      "availP": null,
+      "availW": null
+     },
+     "a": {
+      "iso": "2028-01-03",
+      "weekend": false,
+      "kind": null,
+      "cls": "day",
+      "clsFrom": "default",
+      "req": {
+       "p": 8,
+       "w": 6
+      },
+      "reqFrom": {
+       "p": "run",
+       "w": "run"
+      },
+      "runStart": {
+       "p": "2027-12-31",
+       "w": "2027-12-31"
+      },
+      "need": {
+       "p": null,
+       "w": null
+      },
+      "tone": "none"
+     }
+    },
+    "warBeforeDrawn": false,
+    "war31Dec": {
+     "reqP": "8",
+     "reqW": "6",
+     "availP": "28",
+     "availW": "18"
+    },
+    "sansCellBefore": {
+     "label": "Mon 3 Jan, day flying. No leave period covers this date. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "sansDayBefore": {
+     "head": "⠿ Mon 3 Jan Day flying ✕ FIGURE PILOTS W",
+     "req": [
+      "8",
+      "6"
+     ],
+     "avail": [
+      "–",
+      "–"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "–",
+      "–"
+     ],
+     "nocover": "No leave period covers this date, so who is available is not known.",
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "calBefore": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "newSel": "1 Jan 28 – 31 Dec 28",
+    "warAfterDrawn": true,
+    "warAfter": {
+     "reqP": "8",
+     "reqW": "6",
+     "availP": "28",
+     "availW": "18"
+    },
+    "workP": "Pilots Mon 3 Jan Required 8 Available 28 SANS committed to fly 0 Still needed 0",
+    "workW": "WSOs Mon 3 Jan Required 6 Available 18 SANS committed to fly 0 Still needed 0",
+    "sansCellAfter": {
+     "label": "Mon 3 Jan, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "0 0",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "sansDayAfter": {
+     "head": "⠿ Mon 3 Jan Day flying ✕ FIGURE PILOTS W",
+     "req": [
+      "8",
+      "6"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "0",
+      "0"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "calAfter": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "warSupp": {
+     "reqP": "40",
+     "reqW": "30",
+     "availP": "28",
+     "availW": "18"
+    },
+    "workSupp": "Pilots Mon 3 Jan Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+    "sansCellSupp": {
+     "label": "Mon 3 Jan, day flying. Still needed: 12 pilots, 12 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "12 12",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-red"
+    },
+    "sansDaySupp": {
+     "head": "⠿ Mon 3 Jan Day flying ✕ FIGURE PILOTS W",
+     "req": [
+      "40",
+      "30"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "12",
+      "12"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    }
+   }
+  },
+  "P1-02-desk": {
+   "at": "2026-10-08T14:08:57.257Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-02",
+     "did": "desk: Mon 13 Jul 26: Required P typed as Available P + 2; Available P's definition changed to CAT is not OCU through its name button and the counter form; read on the Leave War row, working box, SANS month and opened day",
+     "saw": "OK before: Available P 28, Required P 30, still needed 2 on the SANS day (Required = Available + 2 so need 2) [Pilots Mon 13 Jul Required 30 Available 28 SANS committed to fly 0 Still needed 2] | OK the form's live preview changed on picking the exclusion (first-day count) [[\"On this war's first day that counts 28.\",\"On this war's first day that counts 25.\",\"is not\"]] | OK Available P fell by the number of OCU pilots the demo counted that day (scenario says one; demo's OCU group has 3 available) on the Leave War row [fell by 3: 28 to 25] | OK still needed rose from 2 to 2 + the fall on the working box [Pilots Mon 13 Jul Required 30 Available 25 SANS committed to fly 0 Still needed 5] | OK SANS month cell and opened day agree: Available 25, need 5, cell need \"5 1\" [[[\"25\",\"16\"],[\"5\",\"1\"],\"5 1\"]] | OK W side did not move (Available W 16 -> 16, need W unchanged 1) [[[\"2\",\"1\"],[\"5\",\"1\"]]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p102-war-before.png",
+      "desk-02-p102-sans-before.png",
+      "desk-03-p102-definition-form.png",
+      "desk-04-p102-war-after.png",
+      "desk-05-p102-sans-after.png"
+     ]
+    }
+   ],
+   "out": {
+    "base": {
+     "reqP": null,
+     "reqW": null,
+     "availP": null,
+     "availW": null
+    },
+    "baseText": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "16"
+    },
+    "sansF0": {
+     "iso": "2026-07-13",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": null,
+      "w": null
+     },
+     "reqFrom": {
+      "p": null,
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": null,
+      "w": null
+     },
+     "tone": "none"
+    },
+    "before": {
+     "reqP": "30",
+     "reqW": "18",
+     "availP": "28",
+     "availW": "16"
+    },
+    "workBefore": "Pilots Mon 13 Jul Required 30 Available 28 SANS committed to fly 0 Still needed 2",
+    "sansCellBefore": {
+     "label": "Mon 13 Jul, day flying. Still needed: 2 pilots, 1 WSOs. SANS committed: fly 0 and 1, OFT 0 and 0, AMT 0 and 0.",
+     "need": "2 1",
+     "f": "F 0 1",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-amber"
+    },
+    "sansDayBefore": {
+     "head": "⠿ Mon 13 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "30",
+      "18"
+     ],
+     "avail": [
+      "28",
+      "16"
+     ],
+     "sans": [
+      "0",
+      "1"
+     ],
+     "need": [
+      "2",
+      "1"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Tally O F PM Placed by Tally · 20 Jun 26, 13:38",
+     "addwhy": null
+    },
+    "previewBefore": "On this war's first day that counts 28.",
+    "previewAfter": "On this war's first day that counts 25.",
+    "catmodeText": "is not",
+    "after": {
+     "reqP": "30",
+     "reqW": "18",
+     "availP": "25",
+     "availW": "16"
+    },
+    "workAfter": "Pilots Mon 13 Jul Required 30 Available 25 SANS committed to fly 0 Still needed 5",
+    "workAfterW": "WSOs Mon 13 Jul Required 18 Available 16 SANS committed to fly 1 Still needed 1",
+    "sansCellAfter": {
+     "label": "Mon 13 Jul, day flying. Still needed: 5 pilots, 1 WSOs. SANS committed: fly 0 and 1, OFT 0 and 0, AMT 0 and 0.",
+     "need": "5 1",
+     "f": "F 0 1",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-red"
+    },
+    "sansDayAfter": {
+     "head": "⠿ Mon 13 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "30",
+      "18"
+     ],
+     "avail": [
+      "25",
+      "16"
+     ],
+     "sans": [
+      "0",
+      "1"
+     ],
+     "need": [
+      "5",
+      "1"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Tally O F PM Placed by Tally · 20 Jun 26, 13:38",
+     "addwhy": null
+    },
+    "bridgeAfter": {
+     "iso": "2026-07-13",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 30,
+      "w": 18
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": "date"
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 5,
+      "w": 1
+     },
+     "tone": "red"
+    }
+   }
+  },
+  "P1-02-phone": {
+   "at": "2026-10-08T14:09:16.798Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-02",
+     "did": "phone: Mon 13 Jul 26: Required P typed as Available P + 2; Available P's definition changed to CAT is not OCU through its name button and the counter form; read on the Leave War row, working box, SANS month and opened day",
+     "saw": "OK before: Available P 28, Required P 30, still needed 2 on the SANS day (Required = Available + 2 so need 2) [Pilots Mon 13 Jul Required 30 Available 28 SANS committed to fly 0 Still needed 2] | OK the form's live preview changed on picking the exclusion (first-day count) [[\"On this war's first day that counts 28.\",\"On this war's first day that counts 25.\",\"is not\"]] | OK Available P fell by the number of OCU pilots the demo counted that day (scenario says one; demo's OCU group has 3 available) on the Leave War row [fell by 3: 28 to 25] | OK still needed rose from 2 to 2 + the fall on the working box [Pilots Mon 13 Jul Required 30 Available 25 SANS committed to fly 0 Still needed 5] | OK SANS month cell and opened day agree: Available 25, need 5, cell need \"5 1\" [[[\"25\",\"16\"],[\"5\",\"1\"],\"5 1\"]] | OK W side did not move (Available W 16 -> 16, need W unchanged 1) [[[\"2\",\"1\"],[\"5\",\"1\"]]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p102-war-before.png",
+      "phone-02-p102-sans-before.png",
+      "phone-03-p102-definition-form.png",
+      "phone-04-p102-war-after.png",
+      "phone-05-p102-sans-after.png"
+     ]
+    }
+   ],
+   "out": {
+    "base": {
+     "reqP": null,
+     "reqW": null,
+     "availP": null,
+     "availW": null
+    },
+    "baseText": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "16"
+    },
+    "sansF0": {
+     "iso": "2026-07-13",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": null,
+      "w": null
+     },
+     "reqFrom": {
+      "p": null,
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": null,
+      "w": null
+     },
+     "tone": "none"
+    },
+    "before": {
+     "reqP": "30",
+     "reqW": "18",
+     "availP": "28",
+     "availW": "16"
+    },
+    "workBefore": "Pilots Mon 13 Jul Required 30 Available 28 SANS committed to fly 0 Still needed 2",
+    "sansCellBefore": {
+     "label": "Mon 13 Jul, day flying. Still needed: 2 pilots, 1 WSOs. SANS committed: fly 0 and 1, OFT 0 and 0, AMT 0 and 0.",
+     "need": "2 1",
+     "f": "F 0 1",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-amber"
+    },
+    "sansDayBefore": {
+     "head": "⠿ Mon 13 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "30",
+      "18"
+     ],
+     "avail": [
+      "28",
+      "16"
+     ],
+     "sans": [
+      "0",
+      "1"
+     ],
+     "need": [
+      "2",
+      "1"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Tally O F PM Placed by Tally · 20 Jun 26, 13:38",
+     "addwhy": null
+    },
+    "previewBefore": "On this war's first day that counts 28.",
+    "previewAfter": "On this war's first day that counts 25.",
+    "catmodeText": "is not",
+    "after": {
+     "reqP": "30",
+     "reqW": "18",
+     "availP": "25",
+     "availW": "16"
+    },
+    "workAfter": "Pilots Mon 13 Jul Required 30 Available 25 SANS committed to fly 0 Still needed 5",
+    "workAfterW": "WSOs Mon 13 Jul Required 18 Available 16 SANS committed to fly 1 Still needed 1",
+    "sansCellAfter": {
+     "label": "Mon 13 Jul, day flying. Still needed: 5 pilots, 1 WSOs. SANS committed: fly 0 and 1, OFT 0 and 0, AMT 0 and 0.",
+     "need": "5 1",
+     "f": "F 0 1",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-red"
+    },
+    "sansDayAfter": {
+     "head": "⠿ Mon 13 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "30",
+      "18"
+     ],
+     "avail": [
+      "25",
+      "16"
+     ],
+     "sans": [
+      "0",
+      "1"
+     ],
+     "need": [
+      "5",
+      "1"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Tally O F PM Placed by Tally · 20 Jun 26, 13:38",
+     "addwhy": null
+    },
+    "bridgeAfter": {
+     "iso": "2026-07-13",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 30,
+      "w": 18
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": "date"
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 5,
+      "w": 1
+     },
+     "tone": "red"
+    }
+   }
+  },
+  "P1-03-desk": {
+   "at": "2026-10-08T14:14:14.325Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-03",
+     "did": "desk (name ''): two periods (JAN-DEC 26 shown, JAN-DEC 27); in Calendar > Holidays added a public holiday on Wed 10 Mar 27 (held only by the 2027 period); read it on Calendar, the SANS month and day, the Inputs month and day, then the 2027 period's Event row and column tint",
+     "saw": "OK the Leave War was on the earlier period (2026) while the holiday was added [[\"y2026\",\"y2026\"]] | OK the add was accepted (no error, form closed) [{\"err\":null,\"formStillOpen\":false,\"span\":\"0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear\"}] | OK the 2026 period gained nothing: its Event cells are exactly as before [[5,5]] | OK Calendar month prints the same tag as the SANS month and the Inputs month [{\"tag\":\"PH\",\"lit\":\"none\",\"dot\":false,\"tagBg\":\"rgb(31, 107, 63)\"}] | OK SANS month tag equals the Inputs month tag; opened day names the holiday [[\"PH\",\"⠿ Wed 10 Mar Public holiday ✕ FIGURE PILOTS WSOS Required to fly – – A\"]] | OK Inputs month tag equals the Leave War Event row text [{\"tag\":\"PH\",\"tagBg\":\"rgb(31, 107, 63)\",\"tagFg\":\"rgb(201, 245, 216)\",\"cellDrawn\":true}] | OK the 2027 period holds exactly ONE event on the date, reading PH [[\"event-0-2027-03-10=PH\"]] | OK the 2027 column is tinted on the date (head and cell backgrounds differ from the day before) [{\"headOn\":\"rgba(74, 201, 126, 0.24)\",\"headPrev\":\"rgb(26, 31, 38)\",\"cellOn\":\"rgba(74, 201, 126, 0.13)\",\"cellPrev\":\"rgba(0, 0, 0, 0)\",\"eventOn\":\"rgba(59, 198, 232, 0.07)\"}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p1-03-cal-after-add.png",
+      "desk-02-p1-03-war-2026-still-shown.png",
+      "desk-03-p1-03-sans-day.png",
+      "desk-04-p1-03-inputs-day.png",
+      "desk-05-p1-03-war-2027-event.png"
+     ]
+    }
+   ],
+   "out": {
+    "shown": "y2026",
+    "events2026Before": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "calBefore": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "add": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear"
+    },
+    "calAfter": {
+     "tag": "PH",
+     "lit": "none",
+     "dot": false,
+     "tagBg": "rgb(31, 107, 63)"
+    },
+    "holList": null,
+    "shownAfter": "y2026",
+    "events2026After": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "warHasDate": false,
+    "sansCell": {
+     "label": "Wed 10 Mar, public holiday. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": "PH",
+     "icon": null,
+     "cls": "sc-day is-ph"
+    },
+    "sansHead": "⠿ Wed 10 Mar Public holiday ✕ FIGURE PILOTS WSOS Required to fly – – A",
+    "sansDay": {
+     "head": "⠿ Wed 10 Mar Public holiday ✕ FIGURE PIL",
+     "req": [
+      "–",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "–",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "inputsTag": {
+     "tag": "PH",
+     "tagBg": "rgb(31, 107, 63)",
+     "tagFg": "rgb(201, 245, 216)",
+     "cellDrawn": true
+    },
+    "inputsHead": "⠿ Wed 10 Mar Public holiday ✕ + Input + Note + Pucks No inputs on this day. Tap + Input to",
+    "events2027": [
+     "0-2027-03-10=PH"
+    ],
+    "eventsOnDate": [
+     "event-0-2027-03-10=PH"
+    ],
+    "tint": {
+     "headOn": "rgba(74, 201, 126, 0.24)",
+     "headPrev": "rgb(26, 31, 38)",
+     "cellOn": "rgba(74, 201, 126, 0.13)",
+     "cellPrev": "rgba(0, 0, 0, 0)",
+     "eventOn": "rgba(59, 198, 232, 0.07)"
+    }
+   }
+  },
+  "P1-03b-desk": {
+   "at": "2026-10-08T14:14:31.165Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-03b",
+     "did": "desk (name 'Test Holiday'): two periods (JAN-DEC 26 shown, JAN-DEC 27); in Calendar > Holidays added a public holiday on Wed 10 Mar 27 (held only by the 2027 period); read it on Calendar, the SANS month and day, the Inputs month and day, then the 2027 period's Event row and column tint",
+     "saw": "OK the Leave War was on the earlier period (2026) while the holiday was added [[\"y2026\",\"y2026\"]] | OK the add was accepted (no error, form closed) [{\"err\":null,\"formStillOpen\":false,\"span\":\"0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear\"}] | OK the 2026 period gained nothing: its Event cells are exactly as before [[5,5]] | XX Calendar month prints the same tag as the SANS month and the Inputs month [{\"tag\":\"PH\",\"lit\":\"none\",\"dot\":false,\"tagBg\":\"rgb(31, 107, 63)\"}] | OK SANS month tag equals the Inputs month tag; opened day names the holiday [[\"TH\",\"⠿ Wed 10 Mar Public holiday · Test Holiday ✕ FIGURE PILOTS WSOS Requir\"]] | OK Inputs month tag equals the Leave War Event row text [{\"tag\":\"TH\",\"tagBg\":\"rgb(31, 107, 63)\",\"tagFg\":\"rgb(201, 245, 216)\",\"cellDrawn\":true}] | OK the 2027 period holds exactly ONE event on the date, reading PH [[\"event-0-2027-03-10=TH\"]] | OK the 2027 column is tinted on the date (head and cell backgrounds differ from the day before) [{\"headOn\":\"rgba(74, 201, 126, 0.24)\",\"headPrev\":\"rgb(26, 31, 38)\",\"cellOn\":\"rgba(74, 201, 126, 0.13)\",\"cellPrev\":\"rgba(0, 0, 0, 0)\",\"eventOn\":\"rgba(59, 198, 232, 0.07)\"}] | OK no console or page errors [[]]",
+     "verdict": "FAIL",
+     "pics": [
+      "desk-01-p1-03b-cal-after-add.png",
+      "desk-02-p1-03b-war-2026-still-shown.png",
+      "desk-03-p1-03b-sans-day.png",
+      "desk-04-p1-03b-inputs-day.png",
+      "desk-05-p1-03b-war-2027-event.png"
+     ]
+    }
+   ],
+   "out": {
+    "shown": "y2026",
+    "events2026Before": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "calBefore": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "add": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear"
+    },
+    "calAfter": {
+     "tag": "PH",
+     "lit": "none",
+     "dot": false,
+     "tagBg": "rgb(31, 107, 63)"
+    },
+    "holList": null,
+    "shownAfter": "y2026",
+    "events2026After": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "warHasDate": false,
+    "sansCell": {
+     "label": "Wed 10 Mar, public holiday. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": "TH",
+     "icon": null,
+     "cls": "sc-day is-ph"
+    },
+    "sansHead": "⠿ Wed 10 Mar Public holiday · Test Holiday ✕ FIGURE PILOTS WSOS Requir",
+    "sansDay": {
+     "head": "⠿ Wed 10 Mar Public holiday · Test Holid",
+     "req": [
+      "–",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "–",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "inputsTag": {
+     "tag": "TH",
+     "tagBg": "rgb(31, 107, 63)",
+     "tagFg": "rgb(201, 245, 216)",
+     "cellDrawn": true
+    },
+    "inputsHead": "⠿ Wed 10 Mar Public holiday · Test Holiday ✕ + Input + Note + Pucks No inputs on this day.",
+    "events2027": [
+     "0-2027-03-10=TH"
+    ],
+    "eventsOnDate": [
+     "event-0-2027-03-10=TH"
+    ],
+    "tint": {
+     "headOn": "rgba(74, 201, 126, 0.24)",
+     "headPrev": "rgb(26, 31, 38)",
+     "cellOn": "rgba(74, 201, 126, 0.13)",
+     "cellPrev": "rgba(0, 0, 0, 0)",
+     "eventOn": "rgba(59, 198, 232, 0.07)"
+    }
+   }
+  },
+  "P1-03-phone": {
+   "at": "2026-10-08T14:14:47.693Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-03",
+     "did": "phone (name ''): two periods (JAN-DEC 26 shown, JAN-DEC 27); in Calendar > Holidays added a public holiday on Wed 10 Mar 27 (held only by the 2027 period); read it on Calendar, the SANS month and day, the Inputs month and day, then the 2027 period's Event row and column tint",
+     "saw": "OK the Leave War was on the earlier period (2026) while the holiday was added [[\"y2026\",\"y2026\"]] | OK the add was accepted (no error, form closed) [{\"err\":null,\"formStillOpen\":false,\"span\":\"0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear\"}] | OK the 2026 period gained nothing: its Event cells are exactly as before [[5,5]] | OK Calendar month prints the same tag as the SANS month and the Inputs month [{\"tag\":\"PH\",\"lit\":\"none\",\"dot\":false,\"tagBg\":\"rgb(31, 107, 63)\"}] | OK SANS month tag equals the Inputs month tag; opened day names the holiday [[\"PH\",\"⠿ Wed 10 Mar Public holiday ✕ FIGURE PILOTS WSOS Required to fly – – A\"]] | OK Inputs month tag equals the Leave War Event row text [{\"tag\":\"PH\",\"tagBg\":\"rgb(31, 107, 63)\",\"tagFg\":\"rgb(201, 245, 216)\",\"cellDrawn\":true}] | OK the 2027 period holds exactly ONE event on the date, reading PH [[\"event-0-2027-03-10=PH\"]] | OK the 2027 column is tinted on the date (head and cell backgrounds differ from the day before) [{\"headOn\":\"rgba(74, 201, 126, 0.24)\",\"headPrev\":\"rgb(26, 31, 38)\",\"cellOn\":\"rgba(74, 201, 126, 0.13)\",\"cellPrev\":\"rgba(0, 0, 0, 0)\",\"eventOn\":\"rgba(59, 198, 232, 0.07)\"}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p1-03-cal-after-add.png",
+      "phone-02-p1-03-war-2026-still-shown.png",
+      "phone-03-p1-03-sans-day.png",
+      "phone-04-p1-03-inputs-day.png",
+      "phone-05-p1-03-war-2027-event.png"
+     ]
+    }
+   ],
+   "out": {
+    "shown": "y2026",
+    "events2026Before": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "calBefore": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "add": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear"
+    },
+    "calAfter": {
+     "tag": "PH",
+     "lit": "none",
+     "dot": false,
+     "tagBg": "rgb(31, 107, 63)"
+    },
+    "holList": null,
+    "shownAfter": "y2026",
+    "events2026After": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "warHasDate": false,
+    "sansCell": {
+     "label": "Wed 10 Mar, public holiday. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": "PH",
+     "icon": null,
+     "cls": "sc-day is-ph"
+    },
+    "sansHead": "⠿ Wed 10 Mar Public holiday ✕ FIGURE PILOTS WSOS Required to fly – – A",
+    "sansDay": {
+     "head": "⠿ Wed 10 Mar Public holiday ✕ FIGURE PIL",
+     "req": [
+      "–",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "–",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "inputsTag": {
+     "tag": "PH",
+     "tagBg": "rgb(31, 107, 63)",
+     "tagFg": "rgb(201, 245, 216)",
+     "cellDrawn": true
+    },
+    "inputsHead": "⠿ Wed 10 Mar Public holiday ✕ + Input + Note + Pucks No inputs on this day. Tap + Input to",
+    "events2027": [
+     "0-2027-03-10=PH"
+    ],
+    "eventsOnDate": [
+     "event-0-2027-03-10=PH"
+    ],
+    "tint": {
+     "headOn": "rgba(74, 201, 126, 0.24)",
+     "headPrev": "rgb(26, 31, 38)",
+     "cellOn": "rgba(74, 201, 126, 0.13)",
+     "cellPrev": "rgba(0, 0, 0, 0)",
+     "eventOn": "rgba(59, 198, 232, 0.07)"
+    }
+   }
+  },
+  "P1-03b-phone": {
+   "at": "2026-10-08T14:15:03.869Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-03b",
+     "did": "phone (name 'Test Holiday'): two periods (JAN-DEC 26 shown, JAN-DEC 27); in Calendar > Holidays added a public holiday on Wed 10 Mar 27 (held only by the 2027 period); read it on Calendar, the SANS month and day, the Inputs month and day, then the 2027 period's Event row and column tint",
+     "saw": "OK the Leave War was on the earlier period (2026) while the holiday was added [[\"y2026\",\"y2026\"]] | OK the add was accepted (no error, form closed) [{\"err\":null,\"formStillOpen\":false,\"span\":\"0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear\"}] | OK the 2026 period gained nothing: its Event cells are exactly as before [[5,5]] | XX Calendar month prints the same tag as the SANS month and the Inputs month [{\"tag\":\"PH\",\"lit\":\"none\",\"dot\":false,\"tagBg\":\"rgb(31, 107, 63)\"}] | OK SANS month tag equals the Inputs month tag; opened day names the holiday [[\"TH\",\"⠿ Wed 10 Mar Public holiday · Test Holiday ✕ FIGURE PILOTS WSOS Requir\"]] | OK Inputs month tag equals the Leave War Event row text [{\"tag\":\"TH\",\"tagBg\":\"rgb(31, 107, 63)\",\"tagFg\":\"rgb(201, 245, 216)\",\"cellDrawn\":true}] | OK the 2027 period holds exactly ONE event on the date, reading PH [[\"event-0-2027-03-10=TH\"]] | OK the 2027 column is tinted on the date (head and cell backgrounds differ from the day before) [{\"headOn\":\"rgba(74, 201, 126, 0.24)\",\"headPrev\":\"rgb(26, 31, 38)\",\"cellOn\":\"rgba(74, 201, 126, 0.13)\",\"cellPrev\":\"rgba(0, 0, 0, 0)\",\"eventOn\":\"rgba(59, 198, 232, 0.07)\"}] | OK no console or page errors [[]]",
+     "verdict": "FAIL",
+     "pics": [
+      "phone-01-p1-03b-cal-after-add.png",
+      "phone-02-p1-03b-war-2026-still-shown.png",
+      "phone-03-p1-03b-sans-day.png",
+      "phone-04-p1-03b-inputs-day.png",
+      "phone-05-p1-03b-war-2027-event.png"
+     ]
+    }
+   ],
+   "out": {
+    "shown": "y2026",
+    "events2026Before": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "calBefore": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    },
+    "add": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 10 Mar 27 Clear"
+    },
+    "calAfter": {
+     "tag": "PH",
+     "lit": "none",
+     "dot": false,
+     "tagBg": "rgb(31, 107, 63)"
+    },
+    "holList": null,
+    "shownAfter": "y2026",
+    "events2026After": [
+     "2026-01-01=ph:PH",
+     "2026-02-17=ph:PH",
+     "2026-02-18=ph:PH",
+     "2026-08-09=ph:PH",
+     "2026-12-25=ph:PH"
+    ],
+    "warHasDate": false,
+    "sansCell": {
+     "label": "Wed 10 Mar, public holiday. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": "TH",
+     "icon": null,
+     "cls": "sc-day is-ph"
+    },
+    "sansHead": "⠿ Wed 10 Mar Public holiday · Test Holiday ✕ FIGURE PILOTS WSOS Requir",
+    "sansDay": {
+     "head": "⠿ Wed 10 Mar Public holiday · Test Holid",
+     "req": [
+      "–",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "–",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "inputsTag": {
+     "tag": "TH",
+     "tagBg": "rgb(31, 107, 63)",
+     "tagFg": "rgb(201, 245, 216)",
+     "cellDrawn": true
+    },
+    "inputsHead": "⠿ Wed 10 Mar Public holiday · Test Holiday ✕ + Input + Note + Pucks No inputs on this day.",
+    "events2027": [
+     "0-2027-03-10=TH"
+    ],
+    "eventsOnDate": [
+     "event-0-2027-03-10=TH"
+    ],
+    "tint": {
+     "headOn": "rgba(74, 201, 126, 0.24)",
+     "headPrev": "rgb(26, 31, 38)",
+     "cellOn": "rgba(74, 201, 126, 0.13)",
+     "cellPrev": "rgba(0, 0, 0, 0)",
+     "eventOn": "rgba(59, 198, 232, 0.07)"
+    }
+   }
+  },
+  "P1-04-desk": {
+   "at": "2026-10-08T14:17:33.738Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-04",
+     "did": "desk: Available P defined as CAT B and C pilots; one of them (Gambit) given AM leave on Mon 20 Jul through the one-day sheet; Required P 6 typed; one SANS pilot (Zenith) Fly commitment filed through \"+ Commitment\"; read on the Leave War row, working box, SANS month cell and opened day",
+     "saw": "OK whole-day Available P before the leave is 5 (five pilots of CAT B or C free that day) [{\"reqP\":\"–\",\"reqW\":\"–\",\"availP\":\"5\",\"availW\":\"18\"}] | OK Gambit's cell shows the AM leave [<LL] | OK Leave War Available P cell reads 4.5 and Required P 6 [{\"reqP\":\"6\",\"reqW\":\"–\",\"availP\":\"4.5\",\"availW\":\"18\"}] | OK working box: Required 6, Available 4.5, SANS 1, Still needed 1 (6 - 4.5 - 1 = 0.5 shown as 1) [Pilots Mon 20 Jul Required 6 Available 4.5 SANS committed to fly 1 Still needed 1] | OK SANS month cell need reads 1 pilot [[\"1 –\",\"Mon 20 Jul, day flying. Still needed: 1 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.\"]] | OK SANS opened day: Required 6, Available 4.5, committed 1, Still needed 1 — same as the Leave War [{\"head\":\"⠿ Mon 20 Jul Day flying ✕ FIGURE PILOTS \",\"req\":[\"6\",\"–\"],\"avail\":[\"4.5\",\"18\"],\"sans\":[\"1\",\"0\"],\"need\":[\"1\",\"–\"],\"nocover\":null,\"why\":null,\"list\":\"PILOTS · 1 TO FLY Zenith C F LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:17\",\"addwhy\":null}] | OK the SANS filing went through [{\"stillOpen\":false,\"err\":\"\"}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p104-war-working.png",
+      "desk-02-p104-sans-day.png"
+     ]
+    }
+   ],
+   "out": {
+    "preview": "On this war's first day that counts 6.",
+    "availWholeDay": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "5",
+     "availW": "18"
+    },
+    "cellBruise": "<LL",
+    "warBeforeSans": {
+     "reqP": "6",
+     "reqW": "–",
+     "availP": "4.5",
+     "availW": "18"
+    },
+    "workBeforeSans": "Pilots Mon 20 Jul Required 6 Available 4.5 SANS committed to fly 0 Still needed 2",
+    "filed": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "war": {
+     "reqP": "6",
+     "reqW": "–",
+     "availP": "4.5",
+     "availW": "18"
+    },
+    "work": "Pilots Mon 20 Jul Required 6 Available 4.5 SANS committed to fly 1 Still needed 1",
+    "sansCell": {
+     "label": "Mon 20 Jul, day flying. Still needed: 1 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "1 –",
+     "f": "F 1 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-yellow"
+    },
+    "sansDay": {
+     "head": "⠿ Mon 20 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "6",
+      "–"
+     ],
+     "avail": [
+      "4.5",
+      "18"
+     ],
+     "sans": [
+      "1",
+      "0"
+     ],
+     "need": [
+      "1",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "PILOTS · 1 TO FLY Zenith C F LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:17",
+     "addwhy": null
+    },
+    "bridge": {
+     "iso": "2026-07-20",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 6,
+      "w": null
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 1,
+      "w": null
+     },
+     "tone": "yellow"
+    }
+   }
+  },
+  "P1-04-phone": {
+   "at": "2026-10-08T14:17:52.935Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-04",
+     "did": "phone: Available P defined as CAT B and C pilots; one of them (Gambit) given AM leave on Mon 20 Jul through the one-day sheet; Required P 6 typed; one SANS pilot (Zenith) Fly commitment filed through \"+ Commitment\"; read on the Leave War row, working box, SANS month cell and opened day",
+     "saw": "OK whole-day Available P before the leave is 5 (five pilots of CAT B or C free that day) [{\"reqP\":\"–\",\"reqW\":\"–\",\"availP\":\"5\",\"availW\":\"18\"}] | OK Gambit's cell shows the AM leave [<LL] | OK Leave War Available P cell reads 4.5 and Required P 6 [{\"reqP\":\"6\",\"reqW\":\"–\",\"availP\":\"4.5\",\"availW\":\"18\"}] | OK working box: Required 6, Available 4.5, SANS 1, Still needed 1 (6 - 4.5 - 1 = 0.5 shown as 1) [Pilots Mon 20 Jul Required 6 Available 4.5 SANS committed to fly 1 Still needed 1] | OK SANS month cell need reads 1 pilot [[\"1 –\",\"Mon 20 Jul, day flying. Still needed: 1 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.\"]] | OK SANS opened day: Required 6, Available 4.5, committed 1, Still needed 1 — same as the Leave War [{\"head\":\"⠿ Mon 20 Jul Day flying ✕ FIGURE PILOTS \",\"req\":[\"6\",\"–\"],\"avail\":[\"4.5\",\"18\"],\"sans\":[\"1\",\"0\"],\"need\":[\"1\",\"–\"],\"nocover\":null,\"why\":null,\"list\":\"PILOTS · 1 TO FLY Zenith C F LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:17\",\"addwhy\":null}] | OK the SANS filing went through [{\"stillOpen\":false,\"err\":\"\"}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p104-war-working.png",
+      "phone-02-p104-sans-day.png"
+     ]
+    }
+   ],
+   "out": {
+    "preview": "On this war's first day that counts 6.",
+    "availWholeDay": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "5",
+     "availW": "18"
+    },
+    "cellBruise": "<LL",
+    "warBeforeSans": {
+     "reqP": "6",
+     "reqW": "–",
+     "availP": "4.5",
+     "availW": "18"
+    },
+    "workBeforeSans": "Pilots Mon 20 Jul Required 6 Available 4.5 SANS committed to fly 0 Still needed 2",
+    "filed": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "war": {
+     "reqP": "6",
+     "reqW": "–",
+     "availP": "4.5",
+     "availW": "18"
+    },
+    "work": "Pilots Mon 20 Jul Required 6 Available 4.5 SANS committed to fly 1 Still needed 1",
+    "sansCell": {
+     "label": "Mon 20 Jul, day flying. Still needed: 1 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "1 –",
+     "f": "F 1 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-yellow"
+    },
+    "sansDay": {
+     "head": "⠿ Mon 20 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "6",
+      "–"
+     ],
+     "avail": [
+      "4.5",
+      "18"
+     ],
+     "sans": [
+      "1",
+      "0"
+     ],
+     "need": [
+      "1",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "PILOTS · 1 TO FLY Zenith C F LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:17",
+     "addwhy": null
+    },
+    "bridge": {
+     "iso": "2026-07-20",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 6,
+      "w": null
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 1,
+      "w": null
+     },
+     "tone": "yellow"
+    }
+   }
+  },
+  "P1-05-desk": {
+   "at": "2026-10-08T14:19:06.840Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-05",
+     "did": "desk: Mon 27 Jul 26: Required P = Available P + 3; \"+ Commitment\" for Zenith with Fly + OFT + AMT, for Bolt with OFT + AMT only; then a second overlapping commitment for Zenith; read on the SANS month, opened day and the Leave War working box",
+     "saw": "OK Required exceeds Available by three (31 vs 28) [{\"reqP\":\"31\",\"reqW\":\"–\",\"availP\":\"28\",\"availW\":\"18\"}] | OK both filings went through [[{\"stillOpen\":false,\"err\":\"\"},{\"stillOpen\":false,\"err\":\"\"}]] | OK SANS month cell: F 1 pilot, O 2 pilots, A 2 pilots; still needed 2 pilots [[\"F 1 0\",\"O 2 0\",\"A 2 0\",\"2 –\"]] | OK opened day: committed to fly 1, still needed 2 (O and A do not fill the flying need) [{\"head\":\"⠿ Mon 27 Jul Day flying ✕ FIGURE PILOTS \",\"req\":[\"31\",\"–\"],\"avail\":[\"28\",\"18\"],\"sans\":[\"1\",\"0\"],\"need\":[\"2\",\"–\"],\"nocover\":null,\"why\":null,\"list\":\"PILOTS · 1 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:18 OFT OR AMT ONLY · 1 Bolt C O · A LATE All day Placed by Saber for Bolt · 8 Oct 26, 22:18\",\"addwhy\":null}] | OK the duplicate was refused with a reason and the window stayed [A SANS availability is already filed for one of these days — edit that entry instead of adding another] | OK nothing changed after the refusal (cell and opened day identical) [[\"F 1 0\",\"O 2 0\",\"A 2 0\"]] | OK Leave War working box agrees: committed to fly 1, still needed 2 [Pilots Mon 27 Jul Required 31 Available 28 SANS committed to fly 1 Still needed 2] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p105-sans-day.png",
+      "desk-02-p105-duplicate-refused.png",
+      "desk-03-p105-war-working.png"
+     ]
+    }
+   ],
+   "out": {
+    "base": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "afterReq": {
+     "reqP": "31",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "filedA": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "filedB": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "cell": {
+     "label": "Mon 27 Jul, day flying. Still needed: 2 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 2 and 0, AMT 2 and 0.",
+     "need": "2 –",
+     "f": "F 1 0",
+     "o": "O 2 0",
+     "a": "A 2 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-yellow"
+    },
+    "day": {
+     "head": "⠿ Mon 27 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "31",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "1",
+      "0"
+     ],
+     "need": [
+      "2",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "PILOTS · 1 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:18 OFT OR AMT ONLY · 1 Bolt C O · A LATE All day Placed by Saber for Bolt · 8 Oct 26, 22:18",
+     "addwhy": null
+    },
+    "dup": "⠿ New input · Jul 27 ✕ PERSON Bolt Jester Kraken Marlin Otter Pixel Rebel Scribe Tally Zenith Zulu Several people TYPE SANS Availability DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 27 AVAILABILITY Fly AMT OFT WHEN ALL DAY AM PM CUSTOM REMARKS Choose the dates and your available hours. Save adds one input covering the whole date range. Cancel Add",
+    "toast": "A SANS availability is already filed for one of these days — edit that entry instead of adding another",
+    "cellAfterDup": {
+     "label": "Mon 27 Jul, day flying. Still needed: 2 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 2 and 0, AMT 2 and 0.",
+     "need": "2 –",
+     "f": "F 1 0",
+     "o": "O 2 0",
+     "a": "A 2 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-yellow"
+    },
+    "dayAfterDup": {
+     "head": "⠿ Mon 27 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "31",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "1",
+      "0"
+     ],
+     "need": [
+      "2",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "PILOTS · 1 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:18 OFT OR AMT ONLY · 1 Bolt C O · A LATE All day Placed by Saber for Bolt · 8 Oct 26, 22:18",
+     "addwhy": null
+    },
+    "work": "Pilots Mon 27 Jul Required 31 Available 28 SANS committed to fly 1 Still needed 2"
+   }
+  },
+  "P1-05-phone": {
+   "at": "2026-10-08T14:19:27.836Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-05",
+     "did": "phone: Mon 27 Jul 26: Required P = Available P + 3; \"+ Commitment\" for Zenith with Fly + OFT + AMT, for Bolt with OFT + AMT only; then a second overlapping commitment for Zenith; read on the SANS month, opened day and the Leave War working box",
+     "saw": "OK Required exceeds Available by three (31 vs 28) [{\"reqP\":\"31\",\"reqW\":\"–\",\"availP\":\"28\",\"availW\":\"18\"}] | OK both filings went through [[{\"stillOpen\":false,\"err\":\"\"},{\"stillOpen\":false,\"err\":\"\"}]] | OK SANS month cell: F 1 pilot, O 2 pilots, A 2 pilots; still needed 2 pilots [[\"F 1 0\",\"O 2 0\",\"A 2 0\",\"2 –\"]] | OK opened day: committed to fly 1, still needed 2 (O and A do not fill the flying need) [{\"head\":\"⠿ Mon 27 Jul Day flying ✕ FIGURE PILOTS \",\"req\":[\"31\",\"–\"],\"avail\":[\"28\",\"18\"],\"sans\":[\"1\",\"0\"],\"need\":[\"2\",\"–\"],\"nocover\":null,\"why\":null,\"list\":\"PILOTS · 1 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:19 OFT OR AMT ONLY · 1 Bolt C O · A LATE All day Placed by Saber for Bolt · 8 Oct 26, 22:19\",\"addwhy\":null}] | OK the duplicate was refused with a reason and the window stayed [A SANS availability is already filed for one of these days — edit that entry instead of adding another] | OK nothing changed after the refusal (cell and opened day identical) [[\"F 1 0\",\"O 2 0\",\"A 2 0\"]] | OK Leave War working box agrees: committed to fly 1, still needed 2 [Pilots Mon 27 Jul Required 31 Available 28 SANS committed to fly 1 Still needed 2] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p105-sans-day.png",
+      "phone-02-p105-duplicate-refused.png",
+      "phone-03-p105-war-working.png"
+     ]
+    }
+   ],
+   "out": {
+    "base": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "afterReq": {
+     "reqP": "31",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "filedA": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "filedB": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "cell": {
+     "label": "Mon 27 Jul, day flying. Still needed: 2 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 2 and 0, AMT 2 and 0.",
+     "need": "2 –",
+     "f": "F 1 0",
+     "o": "O 2 0",
+     "a": "A 2 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-yellow"
+    },
+    "day": {
+     "head": "⠿ Mon 27 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "31",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "1",
+      "0"
+     ],
+     "need": [
+      "2",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "PILOTS · 1 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:19 OFT OR AMT ONLY · 1 Bolt C O · A LATE All day Placed by Saber for Bolt · 8 Oct 26, 22:19",
+     "addwhy": null
+    },
+    "dup": "⠿ New input · Jul 27 ✕ PERSON Bolt Jester Kraken Marlin Otter Pixel Rebel Scribe Tally Zenith Zulu Several people TYPE SANS Availability DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 27 AVAILABILITY Fly AMT OFT WHEN ALL DAY AM PM CUSTOM REMARKS Choose the dates and your available hours. Save adds one input covering the whole date range. Cancel Add",
+    "toast": "A SANS availability is already filed for one of these days — edit that entry instead of adding another",
+    "cellAfterDup": {
+     "label": "Mon 27 Jul, day flying. Still needed: 2 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 2 and 0, AMT 2 and 0.",
+     "need": "2 –",
+     "f": "F 1 0",
+     "o": "O 2 0",
+     "a": "A 2 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day t-yellow"
+    },
+    "dayAfterDup": {
+     "head": "⠿ Mon 27 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "31",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "1",
+      "0"
+     ],
+     "need": [
+      "2",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "PILOTS · 1 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:19 OFT OR AMT ONLY · 1 Bolt C O · A LATE All day Placed by Saber for Bolt · 8 Oct 26, 22:19",
+     "addwhy": null
+    },
+    "work": "Pilots Mon 27 Jul Required 31 Available 28 SANS committed to fly 1 Still needed 2"
+   }
+  },
+  "P1-06-desk": {
+   "at": "2026-10-08T14:20:16.552Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-06",
+     "did": "desk: Mon 13 - Mon 20 Jul 26: Wed 15 a public holiday (Calendar > Holidays), Thu 16 an Off day (Leave War Event row, preset), Fri 17 no-fly (Calendar month), Sat/Sun left unset; Required P 8 typed \"From 13 Jul on\"; read on the Leave War row, the SANS month and opened days, and Calendar",
+     "saw": "OK the Off day and the holiday saved (no error) [[{\"err\":null,\"formStillOpen\":false,\"span\":\"0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 15 Jul 26 Clear\"},\"off\",\"ph\"]] | OK Leave War Required P: Mon 13, Tue 14, Mon 20 read 8 [[\"8\",\"8\",\"8\"]] | OK Leave War Required P: PH (Wed 15), Off (Thu 16), Sat 18, Sun 19 read a dash; NF (Fri 17) reads NF [[\"–\",\"–\",\"NF\",\"–\",\"–\"]] | OK SANS month: Mon 13, Tue 14, Mon 20 carry a still-needed figure; the other five say no required figure or NF [[\"13:Mon 13 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SA\",\"14:Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SA\",\"15:Wed 15 Jul, public holiday. No required figure. SANS committed: fly 2 \",\"16:Thu 16 Jul, Off day. No required figure. SANS committed: fly 1 and 0, \",\"17:Fri 17 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed\",\"18:Sat 18 Jul, no flying set. No required figure. SANS committed: fly 0 a\",\"19:Sun 19 Jul, no flying set. No required figure. SANS committed: fly 0 a\",\"20:Mon 20 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SA\"]] | OK SANS NF day (Fri 17): NF tag, still needed zero, OFT and AMT remain drawn [[\"NF\",\"0 0\",\"Fri 17 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.\"]] | OK SANS opened days: PH shows Required dashes, NF shows Required NF, Sat shows Required dashes [[[\"–\",\"–\"],[\"NF\",\"NF\"],[\"–\",\"–\"]]] | OK Calendar month: PH and OFF tags on 15 and 16, NF lit on 17, D lit on the ordinary weekdays [[\"PH\",\"OFF\",\"NF\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p106-event-sheet.png",
+      "desk-02-p106-war-row.png",
+      "desk-03-p106-sans-month.png",
+      "desk-04-p106-calendar.png"
+     ]
+    }
+   ],
+   "out": {
+    "presets": [
+     "event-quick-0:PH",
+     "event-quick-1:Off day",
+     "event-quick-2:No Leave",
+     "event-quick-3:SC"
+    ],
+    "addPH": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 15 Jul 26 Clear"
+    },
+    "war": {
+     "2026-07-13": "8",
+     "2026-07-14": "8",
+     "2026-07-15": "–",
+     "2026-07-16": "–",
+     "2026-07-17": "NF",
+     "2026-07-18": "–",
+     "2026-07-19": "–",
+     "2026-07-20": "8"
+    },
+    "bridge": {
+     "2026-07-13": [
+      8,
+      "run",
+      null,
+      "day"
+     ],
+     "2026-07-14": [
+      8,
+      "run",
+      null,
+      "day"
+     ],
+     "2026-07-15": [
+      null,
+      null,
+      "ph",
+      null
+     ],
+     "2026-07-16": [
+      null,
+      null,
+      "off",
+      null
+     ],
+     "2026-07-17": [
+      0,
+      "nf",
+      null,
+      "nf"
+     ],
+     "2026-07-18": [
+      null,
+      null,
+      null,
+      "none"
+     ],
+     "2026-07-19": [
+      null,
+      null,
+      null,
+      "none"
+     ],
+     "2026-07-20": [
+      8,
+      "run",
+      null,
+      "day"
+     ]
+    },
+    "sans": {
+     "2026-07-13": {
+      "label": "Mon 13 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 0 and 1, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 0 1",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-14": {
+      "label": "Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 1, OFT 0 and 1, AMT 0 and 1.",
+      "need": "0 –",
+      "f": "F 1 1",
+      "o": "O 0 1",
+      "a": "A 0 1",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-15": {
+      "label": "Wed 15 Jul, public holiday. No required figure. SANS committed: fly 2 and 0, OFT 0 and 1, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 2 0",
+      "o": "O 0 1",
+      "a": "A 0 0",
+      "tag": "PH",
+      "icon": null,
+      "cls": "sc-day is-ph"
+     },
+     "2026-07-16": {
+      "label": "Thu 16 Jul, Off day. No required figure. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": "OFF",
+      "icon": null,
+      "cls": "sc-day is-off"
+     },
+     "2026-07-17": {
+      "label": "Fri 17 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": "NF",
+      "icon": null,
+      "cls": "sc-day is-nf"
+     },
+     "2026-07-18": {
+      "label": "Sat 18 Jul, no flying set. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": null,
+      "cls": "sc-day is-we"
+     },
+     "2026-07-19": {
+      "label": "Sun 19 Jul, no flying set. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": null,
+      "cls": "sc-day is-we"
+     },
+     "2026-07-20": {
+      "label": "Mon 20 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     }
+    },
+    "day": {
+     "2026-07-15": {
+      "head": "⠿ Wed 15 Jul Public holiday ✕ FIGURE PIL",
+      "req": [
+       "–",
+       "–"
+      ],
+      "avail": [
+       "25",
+       "17"
+      ],
+      "sans": [
+       "2",
+       "0"
+      ],
+      "need": [
+       "–",
+       "–"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "PILOTS · 2 TO FLY Zenith C F All day Placed by Zenith · 22 Jun 26, 15:52 Kraken D F All day Placed by Saber for Kraken · 24 Jun 26, 08:06 OFT OR AMT ONLY · 1 Scribe D O AM Placed by Scribe · 23 Jun 26, 16:59",
+      "addwhy": null
+     },
+     "2026-07-17": {
+      "head": "⠿ Fri 17 Jul No fly ✕ FIGURE PILOTS WSOS",
+      "req": [
+       "NF",
+       "NF"
+      ],
+      "avail": [
+       "27",
+       "17"
+      ],
+      "sans": [
+       "0",
+       "0"
+      ],
+      "need": [
+       "0",
+       "0"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "No commitments yet.",
+      "addwhy": null
+     },
+     "2026-07-18": {
+      "head": "⠿ Sat 18 Jul No flying set ✕ FIGURE PILO",
+      "req": [
+       "–",
+       "–"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "sans": [
+       "0",
+       "0"
+      ],
+      "need": [
+       "–",
+       "–"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "No commitments yet.",
+      "addwhy": null
+     }
+    },
+    "cal": {
+     "2026-07-13": {
+      "tag": null,
+      "lit": "D",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-14": {
+      "tag": null,
+      "lit": "D",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-15": {
+      "tag": "PH",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(31, 107, 63)"
+     },
+     "2026-07-16": {
+      "tag": "OFF",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(58, 66, 77)"
+     },
+     "2026-07-17": {
+      "tag": null,
+      "lit": "NF",
+      "dot": true,
+      "tagBg": null
+     },
+     "2026-07-18": {
+      "tag": null,
+      "lit": "none",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-19": {
+      "tag": null,
+      "lit": "none",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-20": {
+      "tag": null,
+      "lit": "D",
+      "dot": false,
+      "tagBg": null
+     }
+    }
+   }
+  },
+  "P1-06-phone": {
+   "at": "2026-10-08T14:20:42.524Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-06",
+     "did": "phone: Mon 13 - Mon 20 Jul 26: Wed 15 a public holiday (Calendar > Holidays), Thu 16 an Off day (Leave War Event row, preset), Fri 17 no-fly (Calendar month), Sat/Sun left unset; Required P 8 typed \"From 13 Jul on\"; read on the Leave War row, the SANS month and opened days, and Calendar",
+     "saw": "OK the Off day and the holiday saved (no error) [[{\"err\":null,\"formStillOpen\":false,\"span\":\"0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 15 Jul 26 Clear\"},\"off\",\"ph\"]] | OK Leave War Required P: Mon 13, Tue 14, Mon 20 read 8 [[\"8\",\"8\",\"8\"]] | OK Leave War Required P: PH (Wed 15), Off (Thu 16), Sat 18, Sun 19 read a dash; NF (Fri 17) reads NF [[\"–\",\"–\",\"NF\",\"–\",\"–\"]] | OK SANS month: Mon 13, Tue 14, Mon 20 carry a still-needed figure; the other five say no required figure or NF [[\"13:Mon 13 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SA\",\"14:Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SA\",\"15:Wed 15 Jul, public holiday. No required figure. SANS committed: fly 2 \",\"16:Thu 16 Jul, Off day. No required figure. SANS committed: fly 1 and 0, \",\"17:Fri 17 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed\",\"18:Sat 18 Jul, no flying set. No required figure. SANS committed: fly 0 a\",\"19:Sun 19 Jul, no flying set. No required figure. SANS committed: fly 0 a\",\"20:Mon 20 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SA\"]] | OK SANS NF day (Fri 17): NF tag, still needed zero, OFT and AMT remain drawn [[\"NF\",\"0 0\",\"Fri 17 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.\"]] | OK SANS opened days: PH shows Required dashes, NF shows Required NF, Sat shows Required dashes [[[\"–\",\"–\"],[\"NF\",\"NF\"],[\"–\",\"–\"]]] | OK Calendar month: PH and OFF tags on 15 and 16, NF lit on 17, D lit on the ordinary weekdays [[\"PH\",\"OFF\",\"NF\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p106-event-sheet.png",
+      "phone-02-p106-war-row.png",
+      "phone-03-p106-sans-month.png",
+      "phone-04-p106-calendar.png"
+     ]
+    }
+   ],
+   "out": {
+    "presets": [
+     "event-quick-0:PH",
+     "event-quick-1:Off day",
+     "event-quick-2:No Leave",
+     "event-quick-3:SC"
+    ],
+    "addPH": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 15 Jul 26 Clear"
+    },
+    "war": {
+     "2026-07-13": "8",
+     "2026-07-14": "8",
+     "2026-07-15": "–",
+     "2026-07-16": "–",
+     "2026-07-17": "NF",
+     "2026-07-18": "–",
+     "2026-07-19": "–",
+     "2026-07-20": "8"
+    },
+    "bridge": {
+     "2026-07-13": [
+      8,
+      "run",
+      null,
+      "day"
+     ],
+     "2026-07-14": [
+      8,
+      "run",
+      null,
+      "day"
+     ],
+     "2026-07-15": [
+      null,
+      null,
+      "ph",
+      null
+     ],
+     "2026-07-16": [
+      null,
+      null,
+      "off",
+      null
+     ],
+     "2026-07-17": [
+      0,
+      "nf",
+      null,
+      "nf"
+     ],
+     "2026-07-18": [
+      null,
+      null,
+      null,
+      "none"
+     ],
+     "2026-07-19": [
+      null,
+      null,
+      null,
+      "none"
+     ],
+     "2026-07-20": [
+      8,
+      "run",
+      null,
+      "day"
+     ]
+    },
+    "sans": {
+     "2026-07-13": {
+      "label": "Mon 13 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 0 and 1, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 0 1",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-14": {
+      "label": "Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 1, OFT 0 and 1, AMT 0 and 1.",
+      "need": "0 –",
+      "f": "F 1 1",
+      "o": "O 0 1",
+      "a": "A 0 1",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-15": {
+      "label": "Wed 15 Jul, public holiday. No required figure. SANS committed: fly 2 and 0, OFT 0 and 1, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 2 0",
+      "o": "O 0 1",
+      "a": "A 0 0",
+      "tag": "PH",
+      "icon": null,
+      "cls": "sc-day is-ph"
+     },
+     "2026-07-16": {
+      "label": "Thu 16 Jul, Off day. No required figure. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": "OFF",
+      "icon": null,
+      "cls": "sc-day is-off"
+     },
+     "2026-07-17": {
+      "label": "Fri 17 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": "NF",
+      "icon": null,
+      "cls": "sc-day is-nf"
+     },
+     "2026-07-18": {
+      "label": "Sat 18 Jul, no flying set. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": null,
+      "cls": "sc-day is-we"
+     },
+     "2026-07-19": {
+      "label": "Sun 19 Jul, no flying set. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "–",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": null,
+      "cls": "sc-day is-we"
+     },
+     "2026-07-20": {
+      "label": "Mon 20 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     }
+    },
+    "day": {
+     "2026-07-15": {
+      "head": "⠿ Wed 15 Jul Public holiday ✕ FIGURE PIL",
+      "req": [
+       "–",
+       "–"
+      ],
+      "avail": [
+       "25",
+       "17"
+      ],
+      "sans": [
+       "2",
+       "0"
+      ],
+      "need": [
+       "–",
+       "–"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "PILOTS · 2 TO FLY Zenith C F All day Placed by Zenith · 22 Jun 26, 15:52 Kraken D F All day Placed by Saber for Kraken · 24 Jun 26, 08:06 OFT OR AMT ONLY · 1 Scribe D O AM Placed by Scribe · 23 Jun 26, 16:59",
+      "addwhy": null
+     },
+     "2026-07-17": {
+      "head": "⠿ Fri 17 Jul No fly ✕ FIGURE PILOTS WSOS",
+      "req": [
+       "NF",
+       "NF"
+      ],
+      "avail": [
+       "27",
+       "17"
+      ],
+      "sans": [
+       "0",
+       "0"
+      ],
+      "need": [
+       "0",
+       "0"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "No commitments yet.",
+      "addwhy": null
+     },
+     "2026-07-18": {
+      "head": "⠿ Sat 18 Jul No flying set ✕ FIGURE PILO",
+      "req": [
+       "–",
+       "–"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "sans": [
+       "0",
+       "0"
+      ],
+      "need": [
+       "–",
+       "–"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "No commitments yet.",
+      "addwhy": null
+     }
+    },
+    "cal": {
+     "2026-07-13": {
+      "tag": null,
+      "lit": "D",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-14": {
+      "tag": null,
+      "lit": "D",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-15": {
+      "tag": "PH",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(31, 107, 63)"
+     },
+     "2026-07-16": {
+      "tag": "OFF",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(58, 66, 77)"
+     },
+     "2026-07-17": {
+      "tag": null,
+      "lit": "NF",
+      "dot": true,
+      "tagBg": null
+     },
+     "2026-07-18": {
+      "tag": null,
+      "lit": "none",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-19": {
+      "tag": null,
+      "lit": "none",
+      "dot": false,
+      "tagBg": null
+     },
+     "2026-07-20": {
+      "tag": null,
+      "lit": "D",
+      "dot": false,
+      "tagBg": null
+     }
+    }
+   }
+  },
+  "P1-07-desk": {
+   "at": "2026-10-08T14:22:06.892Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-07",
+     "did": "desk: Required P 8 run from Mon 13 Jul; Sat 18 set to day flying in Calendar, Required read, then 5 typed straight into its cell; then a public holiday (Wed 15) and an Off day (Thu 16) added in Calendar > Holidays and 5 typed into each",
+     "saw": "OK before: Tue 14 inherits 8 from the run and Sat 18 is a dash [[\"8\",\"–\"]] | OK Sat 18 set to day flying: Calendar shows D lit for it [{\"tag\":null,\"lit\":\"D\",\"dot\":true,\"tagBg\":null}] | OK flying class alone did not import the run: Sat 18 Required still a dash, class day, no figure [[\"–\",\"day\",null]] | OK 5 typed on Sat 18 shows 5 on the Leave War and the figure is the date's own (not from the run) [[\"5\",\"date\"]] | OK PH and Off day: run does not reach them (dashes) before typing [[\"–\",\"–\"]] | OK 5 typed straight into the PH day and the Off day is kept (cells read 5) [[\"5\",\"5\"]] | OK PH and OFF keep their tags on the Calendar and the SANS month [[\"PH\",\"OFF\",\"PH\",\"OFF\"]] | OK the run neighbours are untouched (13, 14, 17, 20 still read 8) [[\"8\",\"8\",\"8\",\"8\"]] | OK SANS month shows a still-needed figure on Sat 18, PH and Off once a figure is typed [[\"Sat 18 Jul, day flying. Still needed: 0 pilots, no figure fo\",\"Wed 15 Jul, public holiday. Still needed: 0 pilots, no figur\",\"Thu 16 Jul, Off day. Still needed: 0 pilots, no figure for W\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p107-cal-sat-day.png",
+      "desk-02-p107-war-sat-typed.png",
+      "desk-03-p107-war-ph-off-typed.png",
+      "desk-04-p107-sans-month.png",
+      "desk-05-p107-calendar.png"
+     ]
+    }
+   ],
+   "out": {
+    "runBefore": [
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "15"
+     },
+     {
+      "reqP": "–",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "18"
+     }
+    ],
+    "calSat": {
+     "tag": null,
+     "lit": "D",
+     "dot": true,
+     "tagBg": null
+    },
+    "satAfterClass": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "satAfterClassFacts": {
+     "iso": "2026-07-18",
+     "weekend": true,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "date",
+     "req": {
+      "p": null,
+      "w": null
+     },
+     "reqFrom": {
+      "p": null,
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": null,
+      "w": null
+     },
+     "tone": "none"
+    },
+    "satTyped": {
+     "reqP": "5",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "satTypedFacts": {
+     "iso": "2026-07-18",
+     "weekend": true,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "date",
+     "req": {
+      "p": 5,
+      "w": null
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 0,
+      "w": null
+     },
+     "tone": "none"
+    },
+    "addPH": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 15 Jul 26 Clear"
+    },
+    "addOff": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 16 Jul 26 Clear"
+    },
+    "phBefore": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "25",
+     "availW": "17"
+    },
+    "offBefore": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "26",
+     "availW": "17"
+    },
+    "phTyped": {
+     "reqP": "5",
+     "reqW": "–",
+     "availP": "25",
+     "availW": "17"
+    },
+    "offTyped": {
+     "reqP": "5",
+     "reqW": "–",
+     "availP": "26",
+     "availW": "17"
+    },
+    "neighbours": [
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "16"
+     },
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "15"
+     },
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "27",
+      "availW": "17"
+     },
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "18"
+     }
+    ],
+    "facts": {
+     "ph": {
+      "f": {
+       "covered": true,
+       "kind": "ph",
+       "name": "PH",
+       "short": "PH",
+       "weekend": false,
+       "availP": 25,
+       "availW": 17
+      },
+      "a": {
+       "iso": "2026-07-15",
+       "weekend": false,
+       "kind": "ph",
+       "cls": null,
+       "clsFrom": null,
+       "req": {
+        "p": 5,
+        "w": null
+       },
+       "reqFrom": {
+        "p": "date",
+        "w": null
+       },
+       "runStart": {
+        "p": null,
+        "w": null
+       },
+       "need": {
+        "p": 0,
+        "w": null
+       },
+       "tone": "none"
+      }
+     },
+     "off": {
+      "f": {
+       "covered": true,
+       "kind": "off",
+       "name": "Off day",
+       "short": "OFF",
+       "weekend": false,
+       "availP": 26,
+       "availW": 17
+      },
+      "a": {
+       "iso": "2026-07-16",
+       "weekend": false,
+       "kind": "off",
+       "cls": null,
+       "clsFrom": null,
+       "req": {
+        "p": 5,
+        "w": null
+       },
+       "reqFrom": {
+        "p": "date",
+        "w": null
+       },
+       "runStart": {
+        "p": null,
+        "w": null
+       },
+       "need": {
+        "p": 0,
+        "w": null
+       },
+       "tone": "none"
+      }
+     }
+    },
+    "sans": {
+     "sat": {
+      "label": "Sat 18 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day is-we"
+     },
+     "ph": {
+      "label": "Wed 15 Jul, public holiday. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 2 and 0, OFT 0 and 1, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 2 0",
+      "o": "O 0 1",
+      "a": "A 0 0",
+      "tag": "PH",
+      "icon": null,
+      "cls": "sc-day is-ph"
+     },
+     "off": {
+      "label": "Thu 16 Jul, Off day. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": "OFF",
+      "icon": null,
+      "cls": "sc-day is-off"
+     }
+    },
+    "cal": {
+     "sat": {
+      "tag": null,
+      "lit": "D",
+      "dot": true,
+      "tagBg": null
+     },
+     "ph": {
+      "tag": "PH",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(31, 107, 63)"
+     },
+     "off": {
+      "tag": "OFF",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(58, 66, 77)"
+     }
+    }
+   }
+  },
+  "P1-07-phone": {
+   "at": "2026-10-08T14:22:33.963Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-07",
+     "did": "phone: Required P 8 run from Mon 13 Jul; Sat 18 set to day flying in Calendar, Required read, then 5 typed straight into its cell; then a public holiday (Wed 15) and an Off day (Thu 16) added in Calendar > Holidays and 5 typed into each",
+     "saw": "OK before: Tue 14 inherits 8 from the run and Sat 18 is a dash [[\"8\",\"–\"]] | OK Sat 18 set to day flying: Calendar shows D lit for it [{\"tag\":null,\"lit\":\"D\",\"dot\":true,\"tagBg\":null}] | OK flying class alone did not import the run: Sat 18 Required still a dash, class day, no figure [[\"–\",\"day\",null]] | OK 5 typed on Sat 18 shows 5 on the Leave War and the figure is the date's own (not from the run) [[\"5\",\"date\"]] | OK PH and Off day: run does not reach them (dashes) before typing [[\"–\",\"–\"]] | OK 5 typed straight into the PH day and the Off day is kept (cells read 5) [[\"5\",\"5\"]] | OK PH and OFF keep their tags on the Calendar and the SANS month [[\"PH\",\"OFF\",\"PH\",\"OFF\"]] | OK the run neighbours are untouched (13, 14, 17, 20 still read 8) [[\"8\",\"8\",\"8\",\"8\"]] | OK SANS month shows a still-needed figure on Sat 18, PH and Off once a figure is typed [[\"Sat 18 Jul, day flying. Still needed: 0 pilots, no figure fo\",\"Wed 15 Jul, public holiday. Still needed: 0 pilots, no figur\",\"Thu 16 Jul, Off day. Still needed: 0 pilots, no figure for W\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p107-cal-sat-day.png",
+      "phone-02-p107-war-sat-typed.png",
+      "phone-03-p107-war-ph-off-typed.png",
+      "phone-04-p107-sans-month.png",
+      "phone-05-p107-calendar.png"
+     ]
+    }
+   ],
+   "out": {
+    "runBefore": [
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "15"
+     },
+     {
+      "reqP": "–",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "18"
+     }
+    ],
+    "calSat": {
+     "tag": null,
+     "lit": "D",
+     "dot": true,
+     "tagBg": null
+    },
+    "satAfterClass": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "satAfterClassFacts": {
+     "iso": "2026-07-18",
+     "weekend": true,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "date",
+     "req": {
+      "p": null,
+      "w": null
+     },
+     "reqFrom": {
+      "p": null,
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": null,
+      "w": null
+     },
+     "tone": "none"
+    },
+    "satTyped": {
+     "reqP": "5",
+     "reqW": "–",
+     "availP": "28",
+     "availW": "18"
+    },
+    "satTypedFacts": {
+     "iso": "2026-07-18",
+     "weekend": true,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "date",
+     "req": {
+      "p": 5,
+      "w": null
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": null
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 0,
+      "w": null
+     },
+     "tone": "none"
+    },
+    "addPH": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 15 Jul 26 Clear"
+    },
+    "addOff": {
+     "err": null,
+     "formStillOpen": false,
+     "span": "0 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 16 Jul 26 Clear"
+    },
+    "phBefore": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "25",
+     "availW": "17"
+    },
+    "offBefore": {
+     "reqP": "–",
+     "reqW": "–",
+     "availP": "26",
+     "availW": "17"
+    },
+    "phTyped": {
+     "reqP": "5",
+     "reqW": "–",
+     "availP": "25",
+     "availW": "17"
+    },
+    "offTyped": {
+     "reqP": "5",
+     "reqW": "–",
+     "availP": "26",
+     "availW": "17"
+    },
+    "neighbours": [
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "16"
+     },
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "15"
+     },
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "27",
+      "availW": "17"
+     },
+     {
+      "reqP": "8",
+      "reqW": "–",
+      "availP": "28",
+      "availW": "18"
+     }
+    ],
+    "facts": {
+     "ph": {
+      "f": {
+       "covered": true,
+       "kind": "ph",
+       "name": "PH",
+       "short": "PH",
+       "weekend": false,
+       "availP": 25,
+       "availW": 17
+      },
+      "a": {
+       "iso": "2026-07-15",
+       "weekend": false,
+       "kind": "ph",
+       "cls": null,
+       "clsFrom": null,
+       "req": {
+        "p": 5,
+        "w": null
+       },
+       "reqFrom": {
+        "p": "date",
+        "w": null
+       },
+       "runStart": {
+        "p": null,
+        "w": null
+       },
+       "need": {
+        "p": 0,
+        "w": null
+       },
+       "tone": "none"
+      }
+     },
+     "off": {
+      "f": {
+       "covered": true,
+       "kind": "off",
+       "name": "Off day",
+       "short": "OFF",
+       "weekend": false,
+       "availP": 26,
+       "availW": 17
+      },
+      "a": {
+       "iso": "2026-07-16",
+       "weekend": false,
+       "kind": "off",
+       "cls": null,
+       "clsFrom": null,
+       "req": {
+        "p": 5,
+        "w": null
+       },
+       "reqFrom": {
+        "p": "date",
+        "w": null
+       },
+       "runStart": {
+        "p": null,
+        "w": null
+       },
+       "need": {
+        "p": 0,
+        "w": null
+       },
+       "tone": "none"
+      }
+     }
+    },
+    "sans": {
+     "sat": {
+      "label": "Sat 18 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day is-we"
+     },
+     "ph": {
+      "label": "Wed 15 Jul, public holiday. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 2 and 0, OFT 0 and 1, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 2 0",
+      "o": "O 0 1",
+      "a": "A 0 0",
+      "tag": "PH",
+      "icon": null,
+      "cls": "sc-day is-ph"
+     },
+     "off": {
+      "label": "Thu 16 Jul, Off day. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 –",
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": "OFF",
+      "icon": null,
+      "cls": "sc-day is-off"
+     }
+    },
+    "cal": {
+     "sat": {
+      "tag": null,
+      "lit": "D",
+      "dot": true,
+      "tagBg": null
+     },
+     "ph": {
+      "tag": "PH",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(31, 107, 63)"
+     },
+     "off": {
+      "tag": "OFF",
+      "lit": "none",
+      "dot": false,
+      "tagBg": "rgb(58, 66, 77)"
+     }
+    }
+   }
+  },
+  "P1-08-desk": {
+   "at": "2026-10-08T14:24:13.407Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-08",
+     "did": "desk: P 8 and W 6 started on Mon 13 Jul, P 10 started on Mon 20 Jul (each \"From <date> on\"); P overridden to 4 on Tue 21 Jul for that day; then the override cleared by emptying the box",
+     "saw": "OK after the runs: P reads 8 on 13-17, 10 from the 20th; W reads 6 on every flying day [{\"13\":\"8/6\",\"14\":\"8/6\",\"15\":\"8/6\",\"16\":\"8/6\",\"17\":\"8/6\",\"20\":\"10/6\",\"21\":\"10/6\",\"22\":\"10/6\",\"23\":\"10/6\"}] | OK after the override: 20, 21, 22 read P 10, 4, 10; W 6 throughout [[\"10/6\",\"4/6\",\"10/6\",\"10/6\"]] | OK the override is the date's own (not the run): 21 Jul comes from \"date\" [{\"p\":\"date\",\"w\":\"run\"}] | OK SANS opened day for 21 Jul reads Required 4 and 6 [[\"4\",\"6\"]] | OK SANS month: 20 and 22 carry figures for a 10-pilot requirement, 21 for a 4 [[\"0 0\",\"0 0\",\"0 0\"]] | OK clearing the override reveals P 10 on 21 Jul, W still 6 [[\"10/6\",{\"p\":\"run\",\"w\":\"run\"}]] | OK Clear erased nothing else: every other date reads as it did before [{\"13\":\"8/6\",\"14\":\"8/6\",\"15\":\"8/6\",\"16\":\"8/6\",\"17\":\"8/6\",\"20\":\"10/6\",\"21\":\"10/6\",\"22\":\"10/6\",\"23\":\"10/6\"}] | OK SANS opened day for 21 Jul after the clear reads Required 10 and 6 [[\"10\",\"6\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p108-war-override.png",
+      "desk-02-p108-sans-day-override.png",
+      "desk-03-p108-war-cleared.png",
+      "desk-04-p108-sans-day-cleared.png"
+     ]
+    }
+   ],
+   "out": {
+    "afterRuns": {
+     "13": "8/6",
+     "14": "8/6",
+     "15": "8/6",
+     "16": "8/6",
+     "17": "8/6",
+     "20": "10/6",
+     "21": "10/6",
+     "22": "10/6",
+     "23": "10/6"
+    },
+    "afterOverride": {
+     "13": "8/6",
+     "14": "8/6",
+     "15": "8/6",
+     "16": "8/6",
+     "17": "8/6",
+     "20": "10/6",
+     "21": "4/6",
+     "22": "10/6",
+     "23": "10/6"
+    },
+    "overrideFacts": {
+     "iso": "2026-07-21",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 4,
+      "w": 6
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": "run"
+     },
+     "runStart": {
+      "p": null,
+      "w": "2026-07-13"
+     },
+     "need": {
+      "p": 0,
+      "w": 0
+     },
+     "tone": "none"
+    },
+    "sansOverride": {
+     "2026-07-20": {
+      "label": "Mon 20 Jul, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-21": {
+      "label": "Tue 21 Jul, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-22": {
+      "label": "Wed 22 Jul, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     }
+    },
+    "dayOverride": {
+     "head": "⠿ Tue 21 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "4",
+      "6"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "0",
+      "0"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "afterClear": {
+     "13": "8/6",
+     "14": "8/6",
+     "15": "8/6",
+     "16": "8/6",
+     "17": "8/6",
+     "20": "10/6",
+     "21": "10/6",
+     "22": "10/6",
+     "23": "10/6"
+    },
+    "clearFacts": {
+     "iso": "2026-07-21",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 10,
+      "w": 6
+     },
+     "reqFrom": {
+      "p": "run",
+      "w": "run"
+     },
+     "runStart": {
+      "p": "2026-07-20",
+      "w": "2026-07-13"
+     },
+     "need": {
+      "p": 0,
+      "w": 0
+     },
+     "tone": "none"
+    },
+    "dayAfterClear": {
+     "head": "⠿ Tue 21 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "10",
+      "6"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "0",
+      "0"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    }
+   }
+  },
+  "P1-08-phone": {
+   "at": "2026-10-08T14:24:35.444Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-08",
+     "did": "phone: P 8 and W 6 started on Mon 13 Jul, P 10 started on Mon 20 Jul (each \"From <date> on\"); P overridden to 4 on Tue 21 Jul for that day; then the override cleared by emptying the box",
+     "saw": "OK after the runs: P reads 8 on 13-17, 10 from the 20th; W reads 6 on every flying day [{\"13\":\"8/6\",\"14\":\"8/6\",\"15\":\"8/6\",\"16\":\"8/6\",\"17\":\"8/6\",\"20\":\"10/6\",\"21\":\"10/6\",\"22\":\"10/6\",\"23\":\"10/6\"}] | OK after the override: 20, 21, 22 read P 10, 4, 10; W 6 throughout [[\"10/6\",\"4/6\",\"10/6\",\"10/6\"]] | OK the override is the date's own (not the run): 21 Jul comes from \"date\" [{\"p\":\"date\",\"w\":\"run\"}] | OK SANS opened day for 21 Jul reads Required 4 and 6 [[\"4\",\"6\"]] | OK SANS month: 20 and 22 carry figures for a 10-pilot requirement, 21 for a 4 [[\"0 0\",\"0 0\",\"0 0\"]] | OK clearing the override reveals P 10 on 21 Jul, W still 6 [[\"10/6\",{\"p\":\"run\",\"w\":\"run\"}]] | OK Clear erased nothing else: every other date reads as it did before [{\"13\":\"8/6\",\"14\":\"8/6\",\"15\":\"8/6\",\"16\":\"8/6\",\"17\":\"8/6\",\"20\":\"10/6\",\"21\":\"10/6\",\"22\":\"10/6\",\"23\":\"10/6\"}] | OK SANS opened day for 21 Jul after the clear reads Required 10 and 6 [[\"10\",\"6\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p108-war-override.png",
+      "phone-02-p108-sans-day-override.png",
+      "phone-03-p108-war-cleared.png",
+      "phone-04-p108-sans-day-cleared.png"
+     ]
+    }
+   ],
+   "out": {
+    "afterRuns": {
+     "13": "8/6",
+     "14": "8/6",
+     "15": "8/6",
+     "16": "8/6",
+     "17": "8/6",
+     "20": "10/6",
+     "21": "10/6",
+     "22": "10/6",
+     "23": "10/6"
+    },
+    "afterOverride": {
+     "13": "8/6",
+     "14": "8/6",
+     "15": "8/6",
+     "16": "8/6",
+     "17": "8/6",
+     "20": "10/6",
+     "21": "4/6",
+     "22": "10/6",
+     "23": "10/6"
+    },
+    "overrideFacts": {
+     "iso": "2026-07-21",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 4,
+      "w": 6
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": "run"
+     },
+     "runStart": {
+      "p": null,
+      "w": "2026-07-13"
+     },
+     "need": {
+      "p": 0,
+      "w": 0
+     },
+     "tone": "none"
+    },
+    "sansOverride": {
+     "2026-07-20": {
+      "label": "Mon 20 Jul, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-21": {
+      "label": "Tue 21 Jul, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     },
+     "2026-07-22": {
+      "label": "Wed 22 Jul, day flying. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "0 0",
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day"
+     }
+    },
+    "dayOverride": {
+     "head": "⠿ Tue 21 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "4",
+      "6"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "0",
+      "0"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    },
+    "afterClear": {
+     "13": "8/6",
+     "14": "8/6",
+     "15": "8/6",
+     "16": "8/6",
+     "17": "8/6",
+     "20": "10/6",
+     "21": "10/6",
+     "22": "10/6",
+     "23": "10/6"
+    },
+    "clearFacts": {
+     "iso": "2026-07-21",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 10,
+      "w": 6
+     },
+     "reqFrom": {
+      "p": "run",
+      "w": "run"
+     },
+     "runStart": {
+      "p": "2026-07-20",
+      "w": "2026-07-13"
+     },
+     "need": {
+      "p": 0,
+      "w": 0
+     },
+     "tone": "none"
+    },
+    "dayAfterClear": {
+     "head": "⠿ Tue 21 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "10",
+      "6"
+     ],
+     "avail": [
+      "28",
+      "18"
+     ],
+     "sans": [
+      "0",
+      "0"
+     ],
+     "need": [
+      "0",
+      "0"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "No commitments yet.",
+     "addwhy": null
+    }
+   }
+  },
+  "P1-09-desk": {
+   "at": "2026-10-08T14:25:21.270Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-09",
+     "did": "desk: Calendar > a weekday's heading \"Thu\": Every Thursday night from 16 Jul (no end); then Every Thursday no-fly from 23 Jul to 6 Aug (ending on a Thursday); then Thu 30 Jul set to day flying by itself; read on the Calendar months, the resolver's class and the SANS months",
+     "saw": "OK both rules saved (form closed, no error) [[\"Every Thursday from Thu 16 Jul 2026 onward is a night-flying day, until you change it here. A single Thursday can still \",\"Every Thursday from Thu 23 Jul 2026 to Thu 6 Aug 2026 is a no-fly day. A single Thursday can still be set by itself.\"]] | OK before any rule: all Thursdays are day flying (D) [{\"07-09\":\"D\",\"07-16\":\"D\",\"07-23\":\"D\",\"07-30\":\"D\",\"08-06\":\"D\",\"08-13\":\"D\",\"08-20\":\"D\"}] | OK Thursdays before the later rule: 9 Jul day (before rule 1), 16 Jul night [07-09=D 07-16=N 07-23=NF 07-30=NF 08-06=NF 08-13=N 08-20=N] | OK inside the bounded rule: 23 Jul, 30 Jul NF; the end date 6 Aug (inclusive) NF [07-09=D 07-16=N 07-23=NF 07-30=NF 08-06=NF 08-13=N 08-20=N] | OK after the bounded rule: 13 Aug and 20 Aug fall back to the night rule [07-09=D 07-16=N 07-23=NF 07-30=NF 08-06=NF 08-13=N 08-20=N] | OK the one-date exception: 30 Jul reads D with the dot; 23 Jul and 6 Aug still NF; 13 Aug still N [07-09=D 07-16=N 07-23=NF 07-30=D* 08-06=NF 08-13=N 08-20=N] | OK the resolver agrees (30 Jul is the date's own day class; others from the rules) [{\"07-09\":\"day:default\",\"07-16\":\"night:rule\",\"07-23\":\"nf:rule\",\"07-30\":\"day:date\",\"08-06\":\"nf:rule\",\"08-13\":\"night:rule\",\"08-20\":\"night:rule\"}] | OK SANS months agree: 9 Jul sun, 16 Jul moon, 23 Jul NF, 30 Jul sun, 6 Aug NF, 13 Aug moon [{\"07-09\":\"day\",\"07-16\":\"night\",\"07-23\":\"NF\",\"07-30\":\"day\",\"08-06\":\"NF\",\"08-13\":\"night\",\"08-20\":\"night\"}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p109-every-night.png",
+      "desk-02-p109-every-nf.png",
+      "desk-03-p109-cal-aug-after-rules.png",
+      "desk-04-p109-cal-jul-after-exception.png",
+      "desk-05-p109-sans-jul.png",
+      "desk-06-p109-sans-aug.png"
+     ]
+    }
+   ],
+   "out": {
+    "before": {
+     "07-09": "D",
+     "07-16": "D",
+     "07-23": "D",
+     "07-30": "D",
+     "08-06": "D",
+     "08-13": "D",
+     "08-20": "D"
+    },
+    "rule1": {
+     "says": "Every Thursday from Thu 16 Jul 2026 onward is a night-flying day, until you change it here. A single Thursday can still be set by itself.",
+     "err": null,
+     "closed": true,
+     "pic": "desk-01-p109-every-night.png"
+    },
+    "rule2": {
+     "says": "Every Thursday from Thu 23 Jul 2026 to Thu 6 Aug 2026 is a no-fly day. A single Thursday can still be set by itself.",
+     "err": null,
+     "closed": true,
+     "pic": "desk-02-p109-every-nf.png"
+    },
+    "afterRules": {
+     "07-09": "D",
+     "07-16": "N",
+     "07-23": "NF",
+     "07-30": "NF",
+     "08-06": "NF",
+     "08-13": "N",
+     "08-20": "N"
+    },
+    "facts1": {
+     "07-09": "day:default",
+     "07-16": "night:rule",
+     "07-23": "nf:rule",
+     "07-30": "nf:rule",
+     "08-06": "nf:rule",
+     "08-13": "night:rule",
+     "08-20": "night:rule"
+    },
+    "afterException": {
+     "07-09": "D",
+     "07-16": "N",
+     "07-23": "NF",
+     "07-30": "D*",
+     "08-06": "NF",
+     "08-13": "N",
+     "08-20": "N"
+    },
+    "facts2": {
+     "07-09": "day:default",
+     "07-16": "night:rule",
+     "07-23": "nf:rule",
+     "07-30": "day:date",
+     "08-06": "nf:rule",
+     "08-13": "night:rule",
+     "08-20": "night:rule"
+    },
+    "sans": {
+     "07-09": "day",
+     "07-16": "night",
+     "07-23": "NF",
+     "07-30": "day",
+     "08-06": "NF",
+     "08-13": "night",
+     "08-20": "night"
+    }
+   }
+  },
+  "P1-09-phone": {
+   "at": "2026-10-08T14:25:41.814Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-09",
+     "did": "phone: Calendar > a weekday's heading \"Thu\": Every Thursday night from 16 Jul (no end); then Every Thursday no-fly from 23 Jul to 6 Aug (ending on a Thursday); then Thu 30 Jul set to day flying by itself; read on the Calendar months, the resolver's class and the SANS months",
+     "saw": "OK both rules saved (form closed, no error) [[\"Every Thursday from Thu 16 Jul 2026 onward is a night-flying day, until you change it here. A single Thursday can still \",\"Every Thursday from Thu 23 Jul 2026 to Thu 6 Aug 2026 is a no-fly day. A single Thursday can still be set by itself.\"]] | OK before any rule: all Thursdays are day flying (D) [{\"07-09\":\"D\",\"07-16\":\"D\",\"07-23\":\"D\",\"07-30\":\"D\",\"08-06\":\"D\",\"08-13\":\"D\",\"08-20\":\"D\"}] | OK Thursdays before the later rule: 9 Jul day (before rule 1), 16 Jul night [07-09=D 07-16=N 07-23=NF 07-30=NF 08-06=NF 08-13=N 08-20=N] | OK inside the bounded rule: 23 Jul, 30 Jul NF; the end date 6 Aug (inclusive) NF [07-09=D 07-16=N 07-23=NF 07-30=NF 08-06=NF 08-13=N 08-20=N] | OK after the bounded rule: 13 Aug and 20 Aug fall back to the night rule [07-09=D 07-16=N 07-23=NF 07-30=NF 08-06=NF 08-13=N 08-20=N] | OK the one-date exception: 30 Jul reads D with the dot; 23 Jul and 6 Aug still NF; 13 Aug still N [07-09=D 07-16=N 07-23=NF 07-30=D* 08-06=NF 08-13=N 08-20=N] | OK the resolver agrees (30 Jul is the date's own day class; others from the rules) [{\"07-09\":\"day:default\",\"07-16\":\"night:rule\",\"07-23\":\"nf:rule\",\"07-30\":\"day:date\",\"08-06\":\"nf:rule\",\"08-13\":\"night:rule\",\"08-20\":\"night:rule\"}] | OK SANS months agree: 9 Jul sun, 16 Jul moon, 23 Jul NF, 30 Jul sun, 6 Aug NF, 13 Aug moon [{\"07-09\":\"day\",\"07-16\":\"night\",\"07-23\":\"NF\",\"07-30\":\"day\",\"08-06\":\"NF\",\"08-13\":\"night\",\"08-20\":\"night\"}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p109-every-night.png",
+      "phone-02-p109-every-nf.png",
+      "phone-03-p109-cal-aug-after-rules.png",
+      "phone-04-p109-cal-jul-after-exception.png",
+      "phone-05-p109-sans-jul.png",
+      "phone-06-p109-sans-aug.png"
+     ]
+    }
+   ],
+   "out": {
+    "before": {
+     "07-09": "D",
+     "07-16": "D",
+     "07-23": "D",
+     "07-30": "D",
+     "08-06": "D",
+     "08-13": "D",
+     "08-20": "D"
+    },
+    "rule1": {
+     "says": "Every Thursday from Thu 16 Jul 2026 onward is a night-flying day, until you change it here. A single Thursday can still be set by itself.",
+     "err": null,
+     "closed": true,
+     "pic": "phone-01-p109-every-night.png"
+    },
+    "rule2": {
+     "says": "Every Thursday from Thu 23 Jul 2026 to Thu 6 Aug 2026 is a no-fly day. A single Thursday can still be set by itself.",
+     "err": null,
+     "closed": true,
+     "pic": "phone-02-p109-every-nf.png"
+    },
+    "afterRules": {
+     "07-09": "D",
+     "07-16": "N",
+     "07-23": "NF",
+     "07-30": "NF",
+     "08-06": "NF",
+     "08-13": "N",
+     "08-20": "N"
+    },
+    "facts1": {
+     "07-09": "day:default",
+     "07-16": "night:rule",
+     "07-23": "nf:rule",
+     "07-30": "nf:rule",
+     "08-06": "nf:rule",
+     "08-13": "night:rule",
+     "08-20": "night:rule"
+    },
+    "afterException": {
+     "07-09": "D",
+     "07-16": "N",
+     "07-23": "NF",
+     "07-30": "D*",
+     "08-06": "NF",
+     "08-13": "N",
+     "08-20": "N"
+    },
+    "facts2": {
+     "07-09": "day:default",
+     "07-16": "night:rule",
+     "07-23": "nf:rule",
+     "07-30": "day:date",
+     "08-06": "nf:rule",
+     "08-13": "night:rule",
+     "08-20": "night:rule"
+    },
+    "sans": {
+     "07-09": "day",
+     "07-16": "night",
+     "07-23": "NF",
+     "07-30": "day",
+     "08-06": "NF",
+     "08-13": "night",
+     "08-20": "night"
+    }
+   }
+  },
+  "P1-10-desk": {
+   "at": "2026-10-08T14:28:58.029Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-10",
+     "did": "desk: Tue 14 Jul 26: Required P 40 / W 30 typed; Zenith filed F+O+A (the demo already holds Zulu F+O+A, Rebel F); the day set to no-fly in Calendar; read on the Leave War row and working box, SANS month and opened day; then Undo in the top bar and read again",
+     "saw": "OK the filing went through [{\"stillOpen\":false,\"err\":\"\"}] | OK before: positive need on both (cell \"10 14\"), O and A offers drawn (O 1 1 | A 1 1) [[\"10 14\",\"F 2 1\",\"O 1 1\",\"A 1 1\"]] | OK Calendar shows NF lit; the Leave War row reads NF on both seats [[\"NF\",\"NF\",\"NF\"]] | OK NF on the SANS month: NF tag, still needed 0 and 0 (no flying shortage) [[\"NF\",\"0 0\",\"Tue 14 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.\"]] | OK NF: the O and A offers remain visible and unchanged [[\"O 1 1\",\"O 1 1\",\"A 1 1\",\"A 1 1\"]] | OK NF opened day: Required NF on both seats, Still needed zero; the offers are still listed [[[\"NF\",\"NF\"],[\"0\",\"0\"]]] | OK NF working box on the Leave War says NF and Still needed 0 [Pilots Tue 14 Jul Required NF Available 28 SANS committed to fly 2 Still needed 0] | OK one Undo takes back exactly the last step (desk: no-fly back to day; phone: no-fly back to night, since its button took two presses) [day] | OK Undo restores the day class (day) and the typed figures 40 / 30 [[\"day\",\"40\",\"30\",\"D\"]] | OK Undo restores the need: SANS cell, opened day and working box equal the before readings [[\"10 14\",\"10 14\",\"Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10\",\"Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p110-sans-before-nf.png",
+      "desk-02-p110-war-nf.png",
+      "desk-03-p110-sans-nf.png",
+      "desk-04-p110-war-undo.png",
+      "desk-05-p110-sans-undo.png"
+     ]
+    }
+   ],
+   "out": {
+    "filed": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "before": {
+     "cell": {
+      "label": "Tue 14 Jul, day flying. Still needed: 10 pilots, 14 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.",
+      "need": "10 14",
+      "f": "F 2 1",
+      "o": "O 1 1",
+      "a": "A 1 1",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day t-red"
+     },
+     "day": {
+      "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+      "req": [
+       "40",
+       "30"
+      ],
+      "avail": [
+       "28",
+       "15"
+      ],
+      "sans": [
+       "2",
+       "1"
+      ],
+      "need": [
+       "10",
+       "14"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 2 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:28 Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+      "addwhy": null
+     },
+     "pic": "desk-01-p110-sans-before-nf.png"
+    },
+    "beforeWar": {
+     "reqP": "",
+     "reqW": "",
+     "availP": "",
+     "availW": ""
+    },
+    "beforeWork": "Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10",
+    "calNF": {
+     "tag": null,
+     "lit": "NF",
+     "dot": true,
+     "tagBg": null
+    },
+    "nfWar": {
+     "reqP": "NF",
+     "reqW": "NF",
+     "availP": "28",
+     "availW": "15"
+    },
+    "nfWork": "Pilots Tue 14 Jul Required NF Available 28 SANS committed to fly 2 Still needed 0",
+    "nfWorkW": "WSOs Tue 14 Jul Required NF Available 15 SANS committed to fly 1 Still needed 0",
+    "nf": {
+     "cell": {
+      "label": "Tue 14 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.",
+      "need": "0 0",
+      "f": "F 2 1",
+      "o": "O 1 1",
+      "a": "A 1 1",
+      "tag": "NF",
+      "icon": null,
+      "cls": "sc-day is-nf"
+     },
+     "day": {
+      "head": "⠿ Tue 14 Jul No fly ✕ FIGURE PILOTS WSOS",
+      "req": [
+       "NF",
+       "NF"
+      ],
+      "avail": [
+       "28",
+       "15"
+      ],
+      "sans": [
+       "2",
+       "1"
+      ],
+      "need": [
+       "0",
+       "0"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 2 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:28 Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+      "addwhy": null
+     },
+     "pic": "desk-03-p110-sans-nf.png"
+    },
+    "afterFirstUndoCls": "day",
+    "afterUndoFacts": {
+     "iso": "2026-07-14",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 40,
+      "w": 30
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": "date"
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 10,
+      "w": 14
+     },
+     "tone": "red"
+    },
+    "afterUndoWar": {
+     "reqP": "40",
+     "reqW": "30",
+     "availP": "28",
+     "availW": "15"
+    },
+    "afterUndoWork": "Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10",
+    "afterUndo": {
+     "cell": {
+      "label": "Tue 14 Jul, day flying. Still needed: 10 pilots, 14 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.",
+      "need": "10 14",
+      "f": "F 2 1",
+      "o": "O 1 1",
+      "a": "A 1 1",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day t-red"
+     },
+     "day": {
+      "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+      "req": [
+       "40",
+       "30"
+      ],
+      "avail": [
+       "28",
+       "15"
+      ],
+      "sans": [
+       "2",
+       "1"
+      ],
+      "need": [
+       "10",
+       "14"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 2 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:28 Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+      "addwhy": null
+     },
+     "pic": "desk-05-p110-sans-undo.png"
+    },
+    "calUndo": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    }
+   }
+  },
+  "P1-10-phone": {
+   "at": "2026-10-08T14:29:28.898Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-10",
+     "did": "phone: Tue 14 Jul 26: Required P 40 / W 30 typed; Zenith filed F+O+A (the demo already holds Zulu F+O+A, Rebel F); the day set to no-fly in Calendar; read on the Leave War row and working box, SANS month and opened day; then Undo in the top bar and read again",
+     "saw": "OK the filing went through [{\"stillOpen\":false,\"err\":\"\"}] | OK before: positive need on both (cell \"10 14\"), O and A offers drawn (O 1 1 | A 1 1) [[\"10 14\",\"F 2 1\",\"O 1 1\",\"A 1 1\"]] | OK Calendar shows NF lit; the Leave War row reads NF on both seats [[\"NF\",\"NF\",\"NF\"]] | OK NF on the SANS month: NF tag, still needed 0 and 0 (no flying shortage) [[\"NF\",\"0 0\",\"Tue 14 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.\"]] | OK NF: the O and A offers remain visible and unchanged [[\"O 1 1\",\"O 1 1\",\"A 1 1\",\"A 1 1\"]] | OK NF opened day: Required NF on both seats, Still needed zero; the offers are still listed [[[\"NF\",\"NF\"],[\"0\",\"0\"]]] | OK NF working box on the Leave War says NF and Still needed 0 [Pilots Tue 14 Jul Required NF Available 28 SANS committed to fly 2 Still needed 0] | OK one Undo takes back exactly the last step (desk: no-fly back to day; phone: no-fly back to night, since its button took two presses) [night] | OK Undo restores the day class (day) and the typed figures 40 / 30 [[\"day\",\"40\",\"30\",\"D\"]] | OK Undo restores the need: SANS cell, opened day and working box equal the before readings [[\"10 14\",\"10 14\",\"Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10\",\"Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p110-sans-before-nf.png",
+      "phone-02-p110-war-nf.png",
+      "phone-03-p110-sans-nf.png",
+      "phone-04-p110-war-undo.png",
+      "phone-05-p110-sans-undo.png"
+     ]
+    }
+   ],
+   "out": {
+    "filed": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "before": {
+     "cell": {
+      "label": "Tue 14 Jul, day flying. Still needed: 10 pilots, 14 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.",
+      "need": "10 14",
+      "f": "F 2 1",
+      "o": "O 1 1",
+      "a": "A 1 1",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day t-red"
+     },
+     "day": {
+      "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+      "req": [
+       "40",
+       "30"
+      ],
+      "avail": [
+       "28",
+       "15"
+      ],
+      "sans": [
+       "2",
+       "1"
+      ],
+      "need": [
+       "10",
+       "14"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 2 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:29 Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+      "addwhy": null
+     },
+     "pic": "phone-01-p110-sans-before-nf.png"
+    },
+    "beforeWar": {
+     "reqP": "",
+     "reqW": "",
+     "availP": "",
+     "availW": ""
+    },
+    "beforeWork": "Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10",
+    "calNF": {
+     "tag": null,
+     "lit": "NF",
+     "dot": true,
+     "tagBg": null
+    },
+    "nfWar": {
+     "reqP": "NF",
+     "reqW": "NF",
+     "availP": "28",
+     "availW": "15"
+    },
+    "nfWork": "Pilots Tue 14 Jul Required NF Available 28 SANS committed to fly 2 Still needed 0",
+    "nfWorkW": "WSOs Tue 14 Jul Required NF Available 15 SANS committed to fly 1 Still needed 0",
+    "nf": {
+     "cell": {
+      "label": "Tue 14 Jul, no-fly day. Still needed: 0 pilots, 0 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.",
+      "need": "0 0",
+      "f": "F 2 1",
+      "o": "O 1 1",
+      "a": "A 1 1",
+      "tag": "NF",
+      "icon": null,
+      "cls": "sc-day is-nf"
+     },
+     "day": {
+      "head": "⠿ Tue 14 Jul No fly ✕ FIGURE PILOTS WSOS",
+      "req": [
+       "NF",
+       "NF"
+      ],
+      "avail": [
+       "28",
+       "15"
+      ],
+      "sans": [
+       "2",
+       "1"
+      ],
+      "need": [
+       "0",
+       "0"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 2 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:29 Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+      "addwhy": null
+     },
+     "pic": "phone-03-p110-sans-nf.png"
+    },
+    "afterFirstUndoCls": "night",
+    "afterUndoFacts": {
+     "iso": "2026-07-14",
+     "weekend": false,
+     "kind": null,
+     "cls": "day",
+     "clsFrom": "default",
+     "req": {
+      "p": 40,
+      "w": 30
+     },
+     "reqFrom": {
+      "p": "date",
+      "w": "date"
+     },
+     "runStart": {
+      "p": null,
+      "w": null
+     },
+     "need": {
+      "p": 10,
+      "w": 14
+     },
+     "tone": "red"
+    },
+    "afterUndoWar": {
+     "reqP": "40",
+     "reqW": "30",
+     "availP": "28",
+     "availW": "15"
+    },
+    "afterUndoWork": "Pilots Tue 14 Jul Required 40 Available 28 SANS committed to fly 2 Still needed 10",
+    "afterUndo": {
+     "cell": {
+      "label": "Tue 14 Jul, day flying. Still needed: 10 pilots, 14 WSOs. SANS committed: fly 2 and 1, OFT 1 and 1, AMT 1 and 1.",
+      "need": "10 14",
+      "f": "F 2 1",
+      "o": "O 1 1",
+      "a": "A 1 1",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day t-red"
+     },
+     "day": {
+      "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+      "req": [
+       "40",
+       "30"
+      ],
+      "avail": [
+       "28",
+       "15"
+      ],
+      "sans": [
+       "2",
+       "1"
+      ],
+      "need": [
+       "10",
+       "14"
+      ],
+      "nocover": null,
+      "why": null,
+      "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 2 TO FLY Zenith C F · O · A LATE All day Placed by Saber for Zenith · 8 Oct 26, 22:29 Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+      "addwhy": null
+     },
+     "pic": "phone-05-p110-sans-undo.png"
+    },
+    "calUndo": {
+     "tag": null,
+     "lit": "D",
+     "dot": false,
+     "tagBg": null
+    }
+   }
+  },
+  "P1-11-desk": {
+   "at": "2026-10-08T14:32:35.256Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-11",
+     "did": "desk (plain address): Tue 21 Jul 26: one change at a time — Required P 40 typed, a leave for Drifter, Zenith's Fly offer — each followed by Undo then Redo in the top bar, with the Leave War row and working box and the SANS cell and opened day read after every step; then a reload and a fresh sign-in",
+     "saw": "OK baseline: Required dash, Available 28, nothing committed [[[\"–\",\"28\"],\"Required – Available 28 SANS committed to fly 0 Still needed –\",\"–\",[\"–\",\"28\",\"0\",\"–\"]]] | OK A change: Required 40 shows 40 and a need of 12 on every reader [[[\"40\",\"28\"],\"Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 –\",[\"40\",\"28\",\"0\",\"12\"]]] | OK A Undo: every reader returns to the baseline with no other edit [[[\"–\",\"28\"],\"Required – Available 28 SANS committed to fly 0 Still needed –\",\"–\",[\"–\",\"28\",\"0\",\"–\"]]] | OK A Redo: every reader returns to the 40 reading [[[\"40\",\"28\"],\"Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 –\",[\"40\",\"28\",\"0\",\"12\"]]] | OK B change: a leave takes Available to 27 and need to 13 on every reader [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 0 Still needed 13\",\"13 –\",[\"40\",\"27\",\"0\",\"13\"]]] | OK B Undo: every reader returns to the previous reading (Available 28, need 12) [[[\"40\",\"28\"],\"Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 –\",[\"40\",\"28\",\"0\",\"12\"]]] | OK B Redo: every reader returns to the 27 / 13 reading [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 0 Still needed 13\",\"13 –\",[\"40\",\"27\",\"0\",\"13\"]]] | OK C change: the Fly offer takes committed to 1 and need to 12 on every reader [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 1 Still needed 12\",\"12 –\",[\"40\",\"27\",\"1\",\"12\"]]] | OK C Undo: every reader returns to committed 0, need 13 [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 0 Still needed 13\",\"13 –\",[\"40\",\"27\",\"0\",\"13\"]]] | OK C Redo: every reader returns to committed 1, need 12 [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 1 Still needed 12\",\"12 –\",[\"40\",\"27\",\"1\",\"12\"]]] | OK after the reload and sign-in every reader still shows the last committed state [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 1 Still needed 12\",\"12 –\",[\"40\",\"27\",\"1\",\"12\"]]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p111-a1-war.png",
+      "desk-02-p111-a1-sans.png",
+      "desk-03-p111-a1undo-war.png",
+      "desk-04-p111-a1undo-sans.png",
+      "desk-05-p111-b1-war.png",
+      "desk-06-p111-b1-sans.png",
+      "desk-07-p111-b1undo-war.png",
+      "desk-08-p111-b1undo-sans.png",
+      "desk-09-p111-c1-war.png",
+      "desk-10-p111-c1-sans.png",
+      "desk-11-p111-c1undo-war.png",
+      "desk-12-p111-c1undo-sans.png",
+      "desk-13-p111-reload-war.png",
+      "desk-14-p111-reload-sans.png"
+     ]
+    }
+   ],
+   "out": {
+    "R0": {
+     "war": [
+      "–",
+      "28"
+     ],
+     "work": "Required – Available 28 SANS committed to fly 0 Still needed –",
+     "cellNeed": "–",
+     "cellF": "F 0 0",
+     "day": [
+      "–",
+      "28",
+      "0",
+      "–"
+     ],
+     "pics": []
+    },
+    "A1": {
+     "war": [
+      "40",
+      "28"
+     ],
+     "work": "Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "28",
+      "0",
+      "12"
+     ],
+     "pics": [
+      "desk-01-p111-a1-war.png",
+      "desk-02-p111-a1-sans.png"
+     ]
+    },
+    "A1u": {
+     "war": [
+      "–",
+      "28"
+     ],
+     "work": "Required – Available 28 SANS committed to fly 0 Still needed –",
+     "cellNeed": "–",
+     "cellF": "F 0 0",
+     "day": [
+      "–",
+      "28",
+      "0",
+      "–"
+     ],
+     "pics": [
+      "desk-03-p111-a1undo-war.png",
+      "desk-04-p111-a1undo-sans.png"
+     ]
+    },
+    "A1r": {
+     "war": [
+      "40",
+      "28"
+     ],
+     "work": "Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "28",
+      "0",
+      "12"
+     ],
+     "pics": []
+    },
+    "B1": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 0 Still needed 13",
+     "cellNeed": "13 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "27",
+      "0",
+      "13"
+     ],
+     "pics": [
+      "desk-05-p111-b1-war.png",
+      "desk-06-p111-b1-sans.png"
+     ]
+    },
+    "B1u": {
+     "war": [
+      "40",
+      "28"
+     ],
+     "work": "Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "28",
+      "0",
+      "12"
+     ],
+     "pics": [
+      "desk-07-p111-b1undo-war.png",
+      "desk-08-p111-b1undo-sans.png"
+     ]
+    },
+    "B1r": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 0 Still needed 13",
+     "cellNeed": "13 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "27",
+      "0",
+      "13"
+     ],
+     "pics": []
+    },
+    "filed": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "C1": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 1 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 1 0",
+     "day": [
+      "40",
+      "27",
+      "1",
+      "12"
+     ],
+     "pics": [
+      "desk-09-p111-c1-war.png",
+      "desk-10-p111-c1-sans.png"
+     ]
+    },
+    "C1u": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 0 Still needed 13",
+     "cellNeed": "13 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "27",
+      "0",
+      "13"
+     ],
+     "pics": [
+      "desk-11-p111-c1undo-war.png",
+      "desk-12-p111-c1undo-sans.png"
+     ]
+    },
+    "C1r": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 1 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 1 0",
+     "day": [
+      "40",
+      "27",
+      "1",
+      "12"
+     ],
+     "pics": []
+    },
+    "reloaded": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 1 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 1 0",
+     "day": [
+      "40",
+      "27",
+      "1",
+      "12"
+     ],
+     "pics": [
+      "desk-13-p111-reload-war.png",
+      "desk-14-p111-reload-sans.png"
+     ]
+    }
+   }
+  },
+  "P1-11-phone": {
+   "at": "2026-10-08T14:33:46.838Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-11",
+     "did": "phone (plain address): Tue 21 Jul 26: one change at a time — Required P 40 typed, a leave for Drifter, Zenith's Fly offer — each followed by Undo then Redo in the top bar, with the Leave War row and working box and the SANS cell and opened day read after every step; then a reload and a fresh sign-in",
+     "saw": "OK baseline: Required dash, Available 28, nothing committed [[[\"–\",\"28\"],\"Required – Available 28 SANS committed to fly 0 Still needed –\",\"–\",[\"–\",\"28\",\"0\",\"–\"]]] | OK A change: Required 40 shows 40 and a need of 12 on every reader [[[\"40\",\"28\"],\"Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 –\",[\"40\",\"28\",\"0\",\"12\"]]] | OK A Undo: every reader returns to the baseline with no other edit [[[\"–\",\"28\"],\"Required – Available 28 SANS committed to fly 0 Still needed –\",\"–\",[\"–\",\"28\",\"0\",\"–\"]]] | OK A Redo: every reader returns to the 40 reading [[[\"40\",\"28\"],\"Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 –\",[\"40\",\"28\",\"0\",\"12\"]]] | OK B change: a leave takes Available to 27 and need to 13 on every reader [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 0 Still needed 13\",\"13 –\",[\"40\",\"27\",\"0\",\"13\"]]] | OK B Undo: every reader returns to the previous reading (Available 28, need 12) [[[\"40\",\"28\"],\"Required 40 Available 28 SANS committed to fly 0 Still needed 12\",\"12 –\",[\"40\",\"28\",\"0\",\"12\"]]] | OK B Redo: every reader returns to the 27 / 13 reading [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 0 Still needed 13\",\"13 –\",[\"40\",\"27\",\"0\",\"13\"]]] | OK C change: the Fly offer takes committed to 1 and need to 12 on every reader [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 1 Still needed 12\",\"12 –\",[\"40\",\"27\",\"1\",\"12\"]]] | OK C Undo: every reader returns to committed 0, need 13 [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 0 Still needed 13\",\"13 –\",[\"40\",\"27\",\"0\",\"13\"]]] | OK C Redo: every reader returns to committed 1, need 12 [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 1 Still needed 12\",\"12 –\",[\"40\",\"27\",\"1\",\"12\"]]] | OK after the reload and sign-in every reader still shows the last committed state [[[\"40\",\"27\"],\"Required 40 Available 27 SANS committed to fly 1 Still needed 12\",\"12 –\",[\"40\",\"27\",\"1\",\"12\"]]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p111-a1-war.png",
+      "phone-02-p111-a1-sans.png",
+      "phone-03-p111-a1undo-war.png",
+      "phone-04-p111-a1undo-sans.png",
+      "phone-05-p111-b1-war.png",
+      "phone-06-p111-b1-sans.png",
+      "phone-07-p111-b1undo-war.png",
+      "phone-08-p111-b1undo-sans.png",
+      "phone-09-p111-c1-war.png",
+      "phone-10-p111-c1-sans.png",
+      "phone-11-p111-c1undo-war.png",
+      "phone-12-p111-c1undo-sans.png",
+      "phone-13-p111-reload-war.png",
+      "phone-14-p111-reload-sans.png"
+     ]
+    }
+   ],
+   "out": {
+    "R0": {
+     "war": [
+      "–",
+      "28"
+     ],
+     "work": "Required – Available 28 SANS committed to fly 0 Still needed –",
+     "cellNeed": "–",
+     "cellF": "F 0 0",
+     "day": [
+      "–",
+      "28",
+      "0",
+      "–"
+     ],
+     "pics": []
+    },
+    "A1": {
+     "war": [
+      "40",
+      "28"
+     ],
+     "work": "Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "28",
+      "0",
+      "12"
+     ],
+     "pics": [
+      "phone-01-p111-a1-war.png",
+      "phone-02-p111-a1-sans.png"
+     ]
+    },
+    "A1u": {
+     "war": [
+      "–",
+      "28"
+     ],
+     "work": "Required – Available 28 SANS committed to fly 0 Still needed –",
+     "cellNeed": "–",
+     "cellF": "F 0 0",
+     "day": [
+      "–",
+      "28",
+      "0",
+      "–"
+     ],
+     "pics": [
+      "phone-03-p111-a1undo-war.png",
+      "phone-04-p111-a1undo-sans.png"
+     ]
+    },
+    "A1r": {
+     "war": [
+      "40",
+      "28"
+     ],
+     "work": "Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "28",
+      "0",
+      "12"
+     ],
+     "pics": []
+    },
+    "B1": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 0 Still needed 13",
+     "cellNeed": "13 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "27",
+      "0",
+      "13"
+     ],
+     "pics": [
+      "phone-05-p111-b1-war.png",
+      "phone-06-p111-b1-sans.png"
+     ]
+    },
+    "B1u": {
+     "war": [
+      "40",
+      "28"
+     ],
+     "work": "Required 40 Available 28 SANS committed to fly 0 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "28",
+      "0",
+      "12"
+     ],
+     "pics": [
+      "phone-07-p111-b1undo-war.png",
+      "phone-08-p111-b1undo-sans.png"
+     ]
+    },
+    "B1r": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 0 Still needed 13",
+     "cellNeed": "13 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "27",
+      "0",
+      "13"
+     ],
+     "pics": []
+    },
+    "filed": {
+     "stillOpen": false,
+     "err": ""
+    },
+    "C1": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 1 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 1 0",
+     "day": [
+      "40",
+      "27",
+      "1",
+      "12"
+     ],
+     "pics": [
+      "phone-09-p111-c1-war.png",
+      "phone-10-p111-c1-sans.png"
+     ]
+    },
+    "C1u": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 0 Still needed 13",
+     "cellNeed": "13 –",
+     "cellF": "F 0 0",
+     "day": [
+      "40",
+      "27",
+      "0",
+      "13"
+     ],
+     "pics": [
+      "phone-11-p111-c1undo-war.png",
+      "phone-12-p111-c1undo-sans.png"
+     ]
+    },
+    "C1r": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 1 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 1 0",
+     "day": [
+      "40",
+      "27",
+      "1",
+      "12"
+     ],
+     "pics": []
+    },
+    "reloaded": {
+     "war": [
+      "40",
+      "27"
+     ],
+     "work": "Required 40 Available 27 SANS committed to fly 1 Still needed 12",
+     "cellNeed": "12 –",
+     "cellF": "F 1 0",
+     "day": [
+      "40",
+      "27",
+      "1",
+      "12"
+     ],
+     "pics": [
+      "phone-13-p111-reload-war.png",
+      "phone-14-p111-reload-sans.png"
+     ]
+    }
+   }
+  },
+  "P1-12-desk": {
+   "at": "2026-10-08T14:42:59.870Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-12",
+     "did": "desk: periods JAN-DEC 26, 27 and a new JAN-DEC 28; distinct Required P/W (41-53 / 31-36) typed and one distinct SANS offer filed on each of 31 Dec 26, 1 Jan 27, 2 Jan 27, 28 Feb 28, 29 Feb 28, 1 Mar 28; read on the SANS month and opened day and the Leave War row; then another schedule week loaded and everything read again",
+     "saw": "OK the 2028 period was made and every typed figure and offer went through [1 Jan 28 – 31 Dec 28] | OK SANS opened days: every date reads its own Required P/W and carries only its own offer (F, O or A) — before the week change [[\"26-12-31:41/31 F 1O 0A 0\",\"27-01-01:42/32 F 0O 1A 0\",\"27-01-02:43/33 F 0O 0A 1\",\"28-02-28:51/34 F 1O 0A 0\",\"28-02-29:52/35 F 0O 1A 0\",\"28-03-01:53/36 F 0O 0A 1\"]] | OK Leave War cells: every date reads its own Required P/W in the period that holds it [{\"2026-12-31\":[\"41\",\"31\",\"28\"],\"2027-01-01\":[\"42\",\"32\",\"28\"],\"2027-01-02\":[\"43\",\"33\",\"28\"],\"2028-02-28\":[\"51\",\"34\",\"28\"],\"2028-02-29\":[\"52\",\"35\",\"28\"],\"2028-03-01\":[\"53\",\"36\",\"28\"]}] | OK another schedule week loaded (the page switched and the week changed) [[\"viewsched\",\"Jul 06\"]] | OK after the week change: SANS opened days and Leave War cells unchanged [sans same: true] | OK 29 February exists only in the leap year: Feb 2027 has 28 cells and no 29th; Feb 2028 has both 28 and 29 [[{\"d28\":true,\"d29\":false,\"mar1\":false},{\"d28\":true,\"d29\":true}]] | OK same-named dates in other years borrow nothing: 28 Feb 27, 1 Mar 27, 28 Feb 26, 1 Mar 26, 31 Dec 27, 1 Jan 28 have no Required figure [{\"2027-02-28\":[null,null],\"2027-03-01\":[null,null],\"2026-02-28\":[null,null],\"2026-03-01\":[null,null],\"2027-12-31\":[null,null],\"2028-01-01\":[null,null]}] | OK 28 Feb 27 and 1 Mar 27 carry no offer (the 2028 offers did not land there) [[\"F 0 0\",\"A 0 0\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "desk-01-p112-before-2026-12-31.png",
+      "desk-02-p112-before-2028-02-29.png",
+      "desk-06-p112-sans-feb-2028.png",
+      "desk-05-p112-after-2028-02-29.png"
+     ]
+    }
+   ],
+   "out": {
+    "newSel": "1 Jan 28 – 31 Dec 28",
+    "filed": {
+     "2026-12-31": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2027-01-01": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2027-01-02": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2028-02-28": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2028-02-29": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2028-03-01": {
+      "stillOpen": false,
+      "err": ""
+     }
+    },
+    "sans1": {
+     "2026-12-31": {
+      "req": [
+       "41",
+       "31"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "12",
+       "13"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "12 13",
+      "pic": "desk-01-p112-before-2026-12-31.png"
+     },
+     "2027-01-01": {
+      "req": [
+       "42",
+       "32"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "14",
+       "14"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "14 14"
+     },
+     "2027-01-02": {
+      "req": [
+       "43",
+       "33"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "15",
+       "15"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "15 15"
+     },
+     "2028-02-28": {
+      "req": [
+       "51",
+       "34"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "22",
+       "16"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "22 16"
+     },
+     "2028-02-29": {
+      "req": [
+       "52",
+       "35"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "24",
+       "17"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "24 17",
+      "pic": "desk-02-p112-before-2028-02-29.png"
+     },
+     "2028-03-01": {
+      "req": [
+       "53",
+       "36"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "25",
+       "18"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "25 18"
+     }
+    },
+    "war1": {
+     "2026-12-31": [
+      "41",
+      "31",
+      "28"
+     ],
+     "2027-01-01": [
+      "42",
+      "32",
+      "28"
+     ],
+     "2027-01-02": [
+      "43",
+      "33",
+      "28"
+     ],
+     "2028-02-28": [
+      "51",
+      "34",
+      "28"
+     ],
+     "2028-02-29": [
+      "52",
+      "35",
+      "28"
+     ],
+     "2028-03-01": [
+      "53",
+      "36",
+      "28"
+     ]
+    },
+    "curpage": "viewsched",
+    "weekLoaded": "Jul 06",
+    "sans2": {
+     "2026-12-31": {
+      "req": [
+       "41",
+       "31"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "12",
+       "13"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "12 13",
+      "pic": "desk-04-p112-after-2026-12-31.png"
+     },
+     "2027-01-01": {
+      "req": [
+       "42",
+       "32"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "14",
+       "14"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "14 14"
+     },
+     "2027-01-02": {
+      "req": [
+       "43",
+       "33"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "15",
+       "15"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "15 15"
+     },
+     "2028-02-28": {
+      "req": [
+       "51",
+       "34"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "22",
+       "16"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "22 16"
+     },
+     "2028-02-29": {
+      "req": [
+       "52",
+       "35"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "24",
+       "17"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "24 17",
+      "pic": "desk-05-p112-after-2028-02-29.png"
+     },
+     "2028-03-01": {
+      "req": [
+       "53",
+       "36"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "25",
+       "18"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "25 18"
+     }
+    },
+    "war2": {
+     "2026-12-31": [
+      "41",
+      "31",
+      "28"
+     ],
+     "2027-01-01": [
+      "42",
+      "32",
+      "28"
+     ],
+     "2027-01-02": [
+      "43",
+      "33",
+      "28"
+     ],
+     "2028-02-28": [
+      "51",
+      "34",
+      "28"
+     ],
+     "2028-02-29": [
+      "52",
+      "35",
+      "28"
+     ],
+     "2028-03-01": [
+      "53",
+      "36",
+      "28"
+     ]
+    },
+    "cells2027": {
+     "d28": true,
+     "d29": false,
+     "mar1": false
+    },
+    "sans0228_2027": {
+     "label": "Sun 28 Feb, no flying set. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": null,
+     "cls": "sc-day is-we"
+    },
+    "cells2028": {
+     "d28": true,
+     "d29": true
+    },
+    "sans0301_2027": {
+     "label": "Mon 1 Mar, day flying. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "sans2026": {
+     "d31": {
+      "label": "Thu 31 Dec, day flying. Still needed: 12 pilots, 13 WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "12 13",
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day t-red"
+     }
+    },
+    "bridge": {
+     "2027-02-28": [
+      null,
+      null
+     ],
+     "2027-03-01": [
+      null,
+      null
+     ],
+     "2026-02-28": [
+      null,
+      null
+     ],
+     "2026-03-01": [
+      null,
+      null
+     ],
+     "2027-12-31": [
+      null,
+      null
+     ],
+     "2028-01-01": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "P1-12-phone": {
+   "at": "2026-10-08T14:52:47.775Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "P1-12",
+     "did": "phone: periods JAN-DEC 26, 27 and a new JAN-DEC 28; distinct Required P/W (41-53 / 31-36) typed and one distinct SANS offer filed on each of 31 Dec 26, 1 Jan 27, 2 Jan 27, 28 Feb 28, 29 Feb 28, 1 Mar 28; read on the SANS month and opened day and the Leave War row; then another schedule week loaded and everything read again",
+     "saw": "OK the 2028 period was made and every typed figure and offer went through [1 Jan 28 – 31 Dec 28] | OK SANS opened days: every date reads its own Required P/W and carries only its own offer (F, O or A) — before the week change [[\"26-12-31:41/31 F 1O 0A 0\",\"27-01-01:42/32 F 0O 1A 0\",\"27-01-02:43/33 F 0O 0A 1\",\"28-02-28:51/34 F 1O 0A 0\",\"28-02-29:52/35 F 0O 1A 0\",\"28-03-01:53/36 F 0O 0A 1\"]] | OK Leave War cells: every date reads its own Required P/W in the period that holds it [{\"2026-12-31\":[\"41\",\"31\",\"28\"],\"2027-01-01\":[\"42\",\"32\",\"28\"],\"2027-01-02\":[\"43\",\"33\",\"28\"],\"2028-02-28\":[\"51\",\"34\",\"28\"],\"2028-02-29\":[\"52\",\"35\",\"28\"],\"2028-03-01\":[\"53\",\"36\",\"28\"]}] | OK another schedule week loaded (the page switched and the week changed) [[\"viewsched\",\"Jul 06\"]] | OK after the week change: SANS opened days and Leave War cells unchanged [sans same: true] | OK 29 February exists only in the leap year: Feb 2027 has 28 cells and no 29th; Feb 2028 has both 28 and 29 [[{\"d28\":true,\"d29\":false,\"mar1\":false},{\"d28\":true,\"d29\":true}]] | OK same-named dates in other years borrow nothing: 28 Feb 27, 1 Mar 27, 28 Feb 26, 1 Mar 26, 31 Dec 27, 1 Jan 28 have no Required figure [{\"2027-02-28\":[null,null],\"2027-03-01\":[null,null],\"2026-02-28\":[null,null],\"2026-03-01\":[null,null],\"2027-12-31\":[null,null],\"2028-01-01\":[null,null]}] | OK 28 Feb 27 and 1 Mar 27 carry no offer (the 2028 offers did not land there) [[\"F 0 0\",\"A 0 0\"]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "phone-01-p112-before-2026-12-31.png",
+      "phone-02-p112-before-2028-02-29.png",
+      "phone-06-p112-sans-feb-2028.png",
+      "phone-05-p112-after-2028-02-29.png"
+     ]
+    }
+   ],
+   "out": {
+    "newSel": "1 Jan 28 – 31 Dec 28",
+    "filed": {
+     "2026-12-31": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2027-01-01": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2027-01-02": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2028-02-28": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2028-02-29": {
+      "stillOpen": false,
+      "err": ""
+     },
+     "2028-03-01": {
+      "stillOpen": false,
+      "err": ""
+     }
+    },
+    "sans1": {
+     "2026-12-31": {
+      "req": [
+       "41",
+       "31"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "12",
+       "13"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "12 13",
+      "pic": "phone-01-p112-before-2026-12-31.png"
+     },
+     "2027-01-01": {
+      "req": [
+       "42",
+       "32"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "14",
+       "14"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "14 14"
+     },
+     "2027-01-02": {
+      "req": [
+       "43",
+       "33"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "15",
+       "15"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "15 15"
+     },
+     "2028-02-28": {
+      "req": [
+       "51",
+       "34"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "22",
+       "16"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "22 16"
+     },
+     "2028-02-29": {
+      "req": [
+       "52",
+       "35"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "24",
+       "17"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "24 17",
+      "pic": "phone-02-p112-before-2028-02-29.png"
+     },
+     "2028-03-01": {
+      "req": [
+       "53",
+       "36"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "25",
+       "18"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "25 18"
+     }
+    },
+    "war1": {
+     "2026-12-31": [
+      "41",
+      "31",
+      "28"
+     ],
+     "2027-01-01": [
+      "42",
+      "32",
+      "28"
+     ],
+     "2027-01-02": [
+      "43",
+      "33",
+      "28"
+     ],
+     "2028-02-28": [
+      "51",
+      "34",
+      "28"
+     ],
+     "2028-02-29": [
+      "52",
+      "35",
+      "28"
+     ],
+     "2028-03-01": [
+      "53",
+      "36",
+      "28"
+     ]
+    },
+    "curpage": "viewsched",
+    "weekLoaded": "Jul 06",
+    "sans2": {
+     "2026-12-31": {
+      "req": [
+       "41",
+       "31"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "12",
+       "13"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "12 13",
+      "pic": "phone-04-p112-after-2026-12-31.png"
+     },
+     "2027-01-01": {
+      "req": [
+       "42",
+       "32"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "14",
+       "14"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "14 14"
+     },
+     "2027-01-02": {
+      "req": [
+       "43",
+       "33"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "15",
+       "15"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "15 15"
+     },
+     "2028-02-28": {
+      "req": [
+       "51",
+       "34"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "22",
+       "16"
+      ],
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "cellNeed": "22 16"
+     },
+     "2028-02-29": {
+      "req": [
+       "52",
+       "35"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "24",
+       "17"
+      ],
+      "f": "F 0 0",
+      "o": "O 1 0",
+      "a": "A 0 0",
+      "cellNeed": "24 17",
+      "pic": "phone-05-p112-after-2028-02-29.png"
+     },
+     "2028-03-01": {
+      "req": [
+       "53",
+       "36"
+      ],
+      "avail": [
+       "28",
+       "18"
+      ],
+      "need": [
+       "25",
+       "18"
+      ],
+      "f": "F 0 0",
+      "o": "O 0 0",
+      "a": "A 1 0",
+      "cellNeed": "25 18"
+     }
+    },
+    "war2": {
+     "2026-12-31": [
+      "41",
+      "31",
+      "28"
+     ],
+     "2027-01-01": [
+      "42",
+      "32",
+      "28"
+     ],
+     "2027-01-02": [
+      "43",
+      "33",
+      "28"
+     ],
+     "2028-02-28": [
+      "51",
+      "34",
+      "28"
+     ],
+     "2028-02-29": [
+      "52",
+      "35",
+      "28"
+     ],
+     "2028-03-01": [
+      "53",
+      "36",
+      "28"
+     ]
+    },
+    "cells2027": {
+     "d28": true,
+     "d29": false,
+     "mar1": false
+    },
+    "sans0228_2027": {
+     "label": "Sun 28 Feb, no flying set. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": null,
+     "cls": "sc-day is-we"
+    },
+    "cells2028": {
+     "d28": true,
+     "d29": true
+    },
+    "sans0301_2027": {
+     "label": "Mon 1 Mar, day flying. No required figure. SANS committed: fly 0 and 0, OFT 0 and 0, AMT 0 and 0.",
+     "need": "–",
+     "f": "F 0 0",
+     "o": "O 0 0",
+     "a": "A 0 0",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "sans2026": {
+     "d31": {
+      "label": "Thu 31 Dec, day flying. Still needed: 12 pilots, 13 WSOs. SANS committed: fly 1 and 0, OFT 0 and 0, AMT 0 and 0.",
+      "need": "12 13",
+      "f": "F 1 0",
+      "o": "O 0 0",
+      "a": "A 0 0",
+      "tag": null,
+      "icon": "day",
+      "cls": "sc-day t-red"
+     }
+    },
+    "bridge": {
+     "2027-02-28": [
+      null,
+      null
+     ],
+     "2027-03-01": [
+      null,
+      null
+     ],
+     "2026-02-28": [
+      null,
+      null
+     ],
+     "2026-03-01": [
+      null,
+      null
+     ],
+     "2027-12-31": [
+      null,
+      null
+     ],
+     "2028-01-01": [
+      null,
+      null
+     ]
+    }
+   }
+  },
+  "SIZES-wide": {
+   "at": "2026-10-08T14:53:17.525Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "SIZES-wide",
+     "did": "wide (1536x864): SANS month, its opened day, the Calendar window (month, holiday form, Every Thursday) laid out and reachable",
+     "saw": "OK page has no sideways scroll on the SANS month (1536 wide in 1536) [{\"sw\":1536,\"iw\":1536,\"sh\":864,\"ih\":864}] | OK the month grid is not a scrolled box of its own (overflow hidden, 626 tall in 626) [{\"client\":626,\"scroll\":626,\"overflowY\":\"hidden\"}] | OK SANS opened day: window inside the screen, its close button and + Commitment are what a finger lands on [[{\"l\":1090,\"t\":96,\"r\":1520,\"b\":559,\"vw\":1536,\"vh\":864,\"inside\":true,\"hit\":true},true,true]] | OK SANS opened day still reads Required 8 / Available 28 etc. [[\"8\",\"–\"]] | OK Calendar window: inside the screen, its close button is what a finger lands on [[{\"l\":426,\"t\":96,\"r\":1520,\"b\":643,\"vw\":1536,\"vh\":864,\"inside\":true,\"hit\":true},true]] | OK holiday form: Save and Cancel inside the screen and reachable [[{\"l\":323,\"t\":610,\"r\":383,\"b\":654,\"vw\":1536,\"vh\":864,\"inside\":true,\"hit\":true},true]] | OK Every Thursday form: Save inside the screen and reachable [{\"l\":210,\"t\":477,\"r\":383,\"b\":521,\"vw\":1536,\"vh\":864,\"inside\":true,\"hit\":true}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "wide-01-sizes-sans-month.png",
+      "wide-02-sizes-sans-day.png",
+      "wide-03-sizes-calendar-month.png",
+      "wide-04-sizes-holiday-form.png",
+      "wide-05-sizes-every-thursday.png"
+     ]
+    }
+   ],
+   "out": {
+    "monthFit": {
+     "sw": 1536,
+     "iw": 1536,
+     "sh": 864,
+     "ih": 864
+    },
+    "gridBox": {
+     "client": 626,
+     "scroll": 626,
+     "overflowY": "hidden"
+    },
+    "cell": {
+     "label": "Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 1, OFT 0 and 1, AMT 0 and 1.",
+     "need": "0 –",
+     "f": "F 1 1",
+     "o": "O 0 1",
+     "a": "A 0 1",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "dayWin": {
+     "l": 1090,
+     "t": 96,
+     "r": 1520,
+     "b": 559,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "dayX": {
+     "l": 1483,
+     "t": 107,
+     "r": 1511,
+     "b": 135,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "dayAdd": {
+     "l": 1103,
+     "t": 306,
+     "r": 1410,
+     "b": 346,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "dayCal": {
+     "l": 1418,
+     "t": 306,
+     "r": 1507,
+     "b": 346,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "dayRead": {
+     "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "8",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "15"
+     ],
+     "sans": [
+      "1",
+      "1"
+     ],
+     "need": [
+      "0",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 1 TO FLY Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+     "addwhy": null
+    },
+    "calWin": {
+     "l": 426,
+     "t": 96,
+     "r": 1520,
+     "b": 643,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "calX": {
+     "l": 1483,
+     "t": 107,
+     "r": 1511,
+     "b": 135,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "calCell": {
+     "l": 548,
+     "t": 405,
+     "r": 654,
+     "b": 479,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "holSave": {
+     "l": 323,
+     "t": 610,
+     "r": 383,
+     "b": 654,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "holCancel": {
+     "l": 29,
+     "t": 610,
+     "r": 102,
+     "b": 654,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "holName": {
+     "l": 29,
+     "t": 256,
+     "r": 289,
+     "b": 298,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "everySave": {
+     "l": 210,
+     "t": 477,
+     "r": 383,
+     "b": 521,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "everyWin": {
+     "l": 16,
+     "t": 96,
+     "r": 396,
+     "b": 534,
+     "vw": 1536,
+     "vh": 864,
+     "inside": true,
+     "hit": true
+    },
+    "errors": []
+   }
+  },
+  "SIZES-short": {
+   "at": "2026-10-08T14:53:45.302Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "SIZES-short",
+     "did": "short (390x568): SANS month, its opened day, the Calendar window (month, holiday form, Every Thursday) laid out and reachable",
+     "saw": "OK page has no sideways scroll on the SANS month (390 wide in 390) [{\"sw\":390,\"iw\":390,\"sh\":720,\"ih\":568}] | OK the month grid is not a scrolled box of its own (overflow hidden, 463 tall in 463) [{\"client\":463,\"scroll\":463,\"overflowY\":\"hidden\"}] | OK SANS opened day: window inside the screen, its close button and + Commitment are what a finger lands on [[{\"l\":12,\"t\":181,\"r\":370,\"b\":556,\"vw\":390,\"vh\":568,\"inside\":true,\"hit\":true},true,true]] | OK SANS opened day still reads Required 8 / Available 28 etc. [[\"8\",\"–\"]] | OK Calendar window: inside the screen, its close button is what a finger lands on [[{\"l\":6,\"t\":54,\"r\":384,\"b\":562,\"vw\":390,\"vh\":568,\"inside\":true,\"hit\":true},true]] | OK holiday form: Save and Cancel inside the screen and reachable [[{\"l\":297,\"t\":499,\"r\":357,\"b\":543,\"vw\":390,\"vh\":568,\"inside\":true,\"hit\":true},true]] | OK Every Thursday form: Save inside the screen and reachable [{\"l\":195,\"t\":499,\"r\":357,\"b\":543,\"vw\":390,\"vh\":568,\"inside\":true,\"hit\":true}] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "short-01-sizes-sans-month.png",
+      "short-02-sizes-sans-day.png",
+      "short-03-sizes-calendar-month.png",
+      "short-04-sizes-holiday-form.png",
+      "short-05-sizes-every-thursday.png"
+     ]
+    }
+   ],
+   "out": {
+    "monthFit": {
+     "sw": 390,
+     "iw": 390,
+     "sh": 720,
+     "ih": 568
+    },
+    "gridBox": {
+     "client": 463,
+     "scroll": 463,
+     "overflowY": "hidden"
+    },
+    "cell": {
+     "label": "Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 1, OFT 0 and 1, AMT 0 and 1.",
+     "need": "0 –",
+     "f": "F 1 1",
+     "o": "O 0 1",
+     "a": "A 0 1",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "dayWin": {
+     "l": 12,
+     "t": 181,
+     "r": 370,
+     "b": 556,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "dayX": {
+     "l": 319,
+     "t": 188,
+     "r": 363,
+     "b": 232,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "dayAdd": {
+     "l": 25,
+     "t": 400,
+     "r": 260,
+     "b": 440,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "dayCal": {
+     "l": 268,
+     "t": 400,
+     "r": 357,
+     "b": 440,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "dayRead": {
+     "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "8",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "15"
+     ],
+     "sans": [
+      "1",
+      "1"
+     ],
+     "need": [
+      "0",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 1 TO FLY Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+     "addwhy": null
+    },
+    "calWin": {
+     "l": 6,
+     "t": 54,
+     "r": 384,
+     "b": 562,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "calX": {
+     "l": 333,
+     "t": 61,
+     "r": 377,
+     "b": 105,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "calCell": {
+     "l": 66,
+     "t": 436,
+     "r": 117,
+     "b": 500,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "holSave": {
+     "l": 297,
+     "t": 499,
+     "r": 357,
+     "b": 543,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "holCancel": {
+     "l": 25,
+     "t": 499,
+     "r": 98,
+     "b": 543,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "holName": {
+     "l": 25,
+     "t": 226,
+     "r": 263,
+     "b": 268,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "everySave": {
+     "l": 195,
+     "t": 499,
+     "r": 357,
+     "b": 543,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "everyWin": {
+     "l": 12,
+     "t": 107,
+     "r": 370,
+     "b": 556,
+     "vw": 390,
+     "vh": 568,
+     "inside": true,
+     "hit": true
+    },
+    "errors": []
+   }
+  },
+  "SIZES-side": {
+   "at": "2026-10-08T14:55:29.000Z",
+   "base": "http://localhost:4211/",
+   "table": [
+    {
+     "id": "SIZES-side",
+     "did": "side (844x390): SANS month, its opened day, the Calendar window (month, holiday form, Every Thursday) laid out and reachable",
+     "saw": "OK page has no sideways scroll on the SANS month (844 wide in 844) [{\"sw\":844,\"iw\":844,\"sh\":865,\"ih\":390}] | OK the month grid is not a scrolled box of its own (overflow hidden, 547 tall in 547) [{\"client\":547,\"scroll\":547,\"overflowY\":\"hidden\"}] | OK SANS opened day: window inside the screen, its close button and + Commitment are what a finger lands on [[{\"l\":398,\"t\":96,\"r\":828,\"b\":366,\"vw\":844,\"vh\":390,\"inside\":true,\"hit\":true},true,true]] | OK SANS opened day still reads Required 8 / Available 28 etc. [[\"8\",\"–\"]] | OK Calendar window: inside the screen, its close button is what a finger lands on [[{\"l\":16,\"t\":96,\"r\":828,\"b\":366,\"vw\":844,\"vh\":390,\"inside\":true,\"hit\":true},true]] | OK holiday form: Save and Cancel inside the screen and reachable [[{\"l\":323,\"t\":309,\"r\":383,\"b\":353,\"vw\":844,\"vh\":390,\"inside\":true,\"hit\":true},true]] | OK Every Thursday form: Save reachable only after scrolling inside the window (below its fold as it opens: top 477 of 390) [[{\"l\":210,\"t\":477,\"r\":383,\"b\":521,\"vw\":844,\"vh\":390,\"inside\":false,\"hit\":false},{\"l\":210,\"t\":309,\"r\":383,\"b\":353,\"vw\":844,\"vh\":390,\"inside\":true,\"hit\":true}]] | OK no console or page errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "side-01-sizes-sans-month.png",
+      "side-02-sizes-sans-day.png",
+      "side-03-sizes-calendar-month.png",
+      "side-04-sizes-holiday-form.png",
+      "side-05-sizes-every-thursday.png"
+     ]
+    }
+   ],
+   "out": {
+    "monthFit": {
+     "sw": 844,
+     "iw": 844,
+     "sh": 865,
+     "ih": 390
+    },
+    "gridBox": {
+     "client": 547,
+     "scroll": 547,
+     "overflowY": "hidden"
+    },
+    "cell": {
+     "label": "Tue 14 Jul, day flying. Still needed: 0 pilots, no figure for WSOs. SANS committed: fly 1 and 1, OFT 0 and 1, AMT 0 and 1.",
+     "need": "0 –",
+     "f": "F 1 1",
+     "o": "O 0 1",
+     "a": "A 0 1",
+     "tag": null,
+     "icon": "day",
+     "cls": "sc-day"
+    },
+    "dayWin": {
+     "l": 398,
+     "t": 96,
+     "r": 828,
+     "b": 366,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "dayX": {
+     "l": 791,
+     "t": 107,
+     "r": 819,
+     "b": 135,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "dayAdd": {
+     "l": 411,
+     "t": 306,
+     "r": 718,
+     "b": 346,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "dayCal": {
+     "l": 726,
+     "t": 306,
+     "r": 815,
+     "b": 346,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "dayRead": {
+     "head": "⠿ Tue 14 Jul Day flying ✕ FIGURE PILOTS ",
+     "req": [
+      "8",
+      "–"
+     ],
+     "avail": [
+      "28",
+      "15"
+     ],
+     "sans": [
+      "1",
+      "1"
+     ],
+     "need": [
+      "0",
+      "–"
+     ],
+     "nocover": null,
+     "why": null,
+     "list": "WSOS · 1 TO FLY Zulu O F · O · A All day Placed by Zulu · 25 Jun 26, 09:13 PILOTS · 1 TO FLY Rebel B F All day Placed by Rebel · 21 Jun 26, 14:45",
+     "addwhy": null
+    },
+    "calWin": {
+     "l": 16,
+     "t": 96,
+     "r": 828,
+     "b": 366,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "calX": {
+     "l": 791,
+     "t": 107,
+     "r": 819,
+     "b": 135,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "calCell": {
+     "l": 142,
+     "t": 463,
+     "r": 253,
+     "b": 537,
+     "vw": 844,
+     "vh": 390,
+     "inside": false,
+     "hit": false
+    },
+    "holSave": {
+     "l": 323,
+     "t": 309,
+     "r": 383,
+     "b": 353,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "holCancel": {
+     "l": 29,
+     "t": 309,
+     "r": 102,
+     "b": 353,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "holName": {
+     "l": 29,
+     "t": 256,
+     "r": 289,
+     "b": 298,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "everySave": {
+     "l": 210,
+     "t": 477,
+     "r": 383,
+     "b": 521,
+     "vw": 844,
+     "vh": 390,
+     "inside": false,
+     "hit": false
+    },
+    "everyWin": {
+     "l": 16,
+     "t": 96,
+     "r": 396,
+     "b": 366,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "everySaveScrolled": {
+     "l": 210,
+     "t": 309,
+     "r": 383,
+     "b": 353,
+     "vw": 844,
+     "vh": 390,
+     "inside": true,
+     "hit": true
+    },
+    "errors": []
+   }
+  }
+ }
+}

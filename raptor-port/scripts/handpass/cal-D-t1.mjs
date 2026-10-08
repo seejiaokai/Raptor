@@ -1,0 +1,11 @@
+import { chromium, launchOptions, world, openSans, shot, tid, cell, typeReq, backToSans } from './cal-D-lib.mjs'
+const browser = await chromium.launch(launchOptions)
+const { ctx, page, errors } = await world(browser, 'desk')
+await typeReq(page, 'desk', 'req-p', '2026-07-20', 8)
+await typeReq(page, 'desk', 'req-w', '2026-07-20', 6)
+await shot(page, 'explore-lw')
+console.log(JSON.stringify(await page.evaluate(() => window.flyAnswer('2026-07-20'))))
+await backToSans(page, 'desk')
+console.log(await tid(page, 'sc-need-2026-07-20').innerText())
+console.log(errors.join('\n'))
+await ctx.close(); await browser.close()
