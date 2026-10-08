@@ -16,7 +16,7 @@
 // A seeded holiday flag (`DayInfo.ph`, written by nothing but the seed) goes with the public holiday on its day:
 // otherwise the removed holiday would come straight back in the list as a bare "PH".
 
-import { defKey, type EventKind } from './eventdefs'
+import { classifyEvent, defKey, type EventDef, type EventKind } from './eventdefs'
 import { normShort } from './eventshort'
 import { writeDayEvent, type Period } from './period'
 
@@ -71,14 +71,21 @@ export function withHoliday(p: Period, line: number, h: HolidayDraft): Period {
   return { ...p, bands: [...p.bands, { line, from: h.from, to: h.to, text: h.name, kind, ...(short ? { short } : {}) }] }
 }
 
-/** the period with that record taken away — null where it is no longer what the line said */
-export function withoutHoliday(p: Period, ref: HolidayRef): Period | null {
+/** the period with that record taken away — null where it is no longer what the line said.
+ *  WHAT THE LINE SAID is its row, its dates, its name AND ITS KIND — and, for a run of repeated days, EVERY day of the run
+ *  (Sol's read of the calendar job's bug check, 8 Oct 26 — S1): the match once ignored the kind and took one surviving
+ *  day for the run, so a holiday form left open while its event was made a working event on the Leave War — same name,
+ *  same date — could still delete it, or write the old holiday back over it. `defs` (the squadron's event types) says
+ *  what kind an event without a kind of its own is; without it the kind is not checked (the engine's own callers). */
+export function withoutHoliday(p: Period, ref: HolidayRef, defs?: EventDef[]): Period | null {
   const inRun = (date: string) => date >= ref.from && date <= ref.to
+  const want = holidayEventKind(ref.kind)
+  const kindIs = (text: string, own: EventKind | null | undefined) => !defs || (own ?? classifyEvent(defs, text)) === want
   /* the seeded flag under a public holiday goes with it */
   const unflag = ref.kind === 'ph'
   if (ref.src === 'band') {
     const band = p.bands.find(b => b.line === ref.line && b.from === ref.from && b.to === ref.to && defKey(b.text) === defKey(ref.name))
-    if (!band) return null
+    if (!band || !kindIs(band.text, band.kind)) return null
     return {
       ...p,
       bands: p.bands.filter(b => b !== band),
@@ -89,6 +96,8 @@ export function withoutHoliday(p: Period, ref: HolidayRef): Period | null {
     const line = ref.line
     if (line == null) return null
     let hit = false
+    /* every day of the run must still be that holiday — one that has changed means the line is no longer what it said */
+    if (defs && p.days.some(d => inRun(d.date) && !(d.events[line] && defKey(d.events[line]!) === defKey(ref.name) && kindIs(d.events[line]!, d.eventKinds?.[line])))) return null
     const days = p.days.map(d => {
       const t = d.events[line]
       if (!inRun(d.date) || !t || defKey(t) !== defKey(ref.name)) return d

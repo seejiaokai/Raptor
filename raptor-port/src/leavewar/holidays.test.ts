@@ -215,6 +215,27 @@ describe('remove', () => {
     expect(holidayRemove(stale)).toMatchObject({ ok: false, reason: 'gone' })
     expect(day('2026-05-01').events[0]).toBe('SC')
   })
+  /* SOL'S READ of the calendar job's bug check (8 Oct 26), S1. The match compared the row, the dates and the NAME - not
+     the kind, and for a run of repeated days one surviving day was enough. A holiday form left open while its event
+     was made a working event on the Leave War (same name, same date) could still delete it, or write the old holiday
+     back over it. */
+  it('the SAME name on the same date, made a working event on the Leave War since: the stale line is refused, Delete and Change alike', () => {
+    holidayAdd(one('2026-05-04', 'ph', 'National Day'))
+    const stale = line(2026, '2026-05-04')
+    setDayEvent('2026-05-04', stale.line!, 'National Day', 'work')
+    expect(holidayRemove(stale)).toMatchObject({ ok: false, reason: 'gone' })
+    expect(day('2026-05-04').events[stale.line!], 'the working event is still there').toBe('National Day')
+    expect(holidayChange(stale, { ...one('2026-05-04', 'ph', 'National Day'), short: 'XX' })).toMatchObject({ ok: false, reason: 'gone' })
+    expect(day('2026-05-04').eventKinds?.[stale.line!]).toBe('work')
+  })
+  it('a run of repeated days, ONE of them changed since: the whole stale line is refused and nothing is taken away', () => {
+    for (const d of ['2026-05-11', '2026-05-12', '2026-05-13']) setDayEvent(d, 0, 'PH')
+    const stale = line(2026, '2026-05-11')
+    expect(stale.to, 'read as one run').toBe('2026-05-13')
+    setDayEvent('2026-05-12', 0, 'SC')
+    expect(holidayRemove(stale)).toMatchObject({ ok: false, reason: 'gone' })
+    expect([day('2026-05-11').events[0], day('2026-05-12').events[0], day('2026-05-13').events[0]]).toEqual(['PH', 'SC', 'PH'])
+  })
 
   it('a member is refused', () => {
     holidayAdd(one('2026-05-01'))

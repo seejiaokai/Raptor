@@ -3509,7 +3509,7 @@ function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResu
   let source: LeaveWar | undefined, cleared: Period | null = null
   if (replacing) {
     source = state.wars.find(w => w.period.id === replacing.warId)
-    cleared = source ? withoutHoliday(source.period, replacing) : null
+    cleared = source ? withoutHoliday(source.period, replacing, state.eventDefs) : null
     if (!source || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
     /* A CHANGE THAT NAMES NO SHORT FORM KEEPS THE ONE THE HOLIDAY HAD — while its name stands. Under a new name the
        old one would mis-name it, so it goes and the new name's own prints. */
@@ -3555,7 +3555,7 @@ export function holidayChange(line: HolidayRef, h: HolidayDraft): HolidayResult 
 export function holidayRemove(line: HolidayRef): HolidayResult {
   if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
   const war = line && typeof line === 'object' ? state.wars.find(w => w.period.id === line.warId) : undefined
-  const cleared = war ? withoutHoliday(war.period, line) : null
+  const cleared = war ? withoutHoliday(war.period, line, state.eventDefs) : null
   if (!war || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
   return holidayRun('lw.holiday.remove', 'remove', [[war.period.id, cleared]], line)
 }
