@@ -215,20 +215,22 @@ for (const [label, viewport, touch] of SIZES) {
       expect((await look(page, BAR)).covers, 'the Inputs calendar open: what the bar’s warning lies over').toEqual([])
       await expect(page.locator('#inpCal .saveband')).toHaveCount(0)
       expect(await page.locator(BAR).evaluate(n => [n.getAttribute('aria-hidden'), (n as HTMLElement).inert]), 'the bar’s copy with the calendar open').toEqual([null, false])
-      for (const [btn, root] of [['#inMedBtn', '#medView']] as const) {
-        await page.locator(btn).click()
-        await page.waitForSelector(root)
-        await expect.poll(async () => (await look(page, root + ' .saveband')).seen, { message: `${root} shows the warning, whole and on top` }).toBe(true)
-        expect((await look(page, root + ' .saveband')).covers, `${root}: what the warning lies over`).toEqual([])
-        /* its Retry, pressed for real: while storage refuses the warning stays; from the Medical view, storage working
-           again, it saves and the warning goes */
-        await retryRefused(page, root + ' .saveband', touch)
-        expect(await page.locator(BAR).getAttribute('aria-hidden'), `${root}: the bar’s copy is hidden from readers`).toBe('true')
-        if (root === '#medView') { await retrySaves(page, root + ' .saveband', touch); await expect(page.locator('.saveband')).toHaveCount(0) }
-        /* Medical is a TAB of the Inputs page now (D620, D626): it is left by choosing another tab, not by a cross */
-        await page.locator('#inMemberMode').click()
-        await expect(page.locator(root)).toHaveCount(0)
-      }
+      /* MEDICAL IS A TAB OF THE INPUTS PAGE NOW (D620, D626 — 8 Oct 26): it sits in the page under the three tabs and no
+         longer lies over the top bar, so — like the Inputs calendar above — it carries NO band of its own: the bar's
+         warning is the one a person sees and a reader hears. Its Retry is pressed for real from there: while storage
+         refuses the warning stays; storage working again, it saves and the warning goes. */
+      await page.locator('#inMedBtn').click()
+      await page.waitForSelector('#medView')
+      await expect.poll(async () => (await look(page, BAR)).seen, { message: 'the Medical tab open: the bar’s warning is on screen, whole and on top' }).toBe(true)
+      expect((await look(page, BAR)).covers, 'the Medical tab open: what the bar’s warning lies over').toEqual([])
+      await expect(page.locator('#medView .saveband')).toHaveCount(0)
+      expect(await page.locator(BAR).evaluate(n => [n.getAttribute('aria-hidden'), (n as HTMLElement).inert]), 'the bar’s copy with Medical open').toEqual([null, false])
+      await retryRefused(page, BAR, touch)
+      await retrySaves(page, BAR, touch)
+      await expect(page.locator(BAR)).toHaveCount(0)
+      /* and the tabs are in reach above it — the only way out of a tab */
+      await page.locator('#inMemberMode').click()
+      await expect(page.locator('#medView')).toHaveCount(0)
     })
 
     /* W13 (the Codex stack check, 5 Oct 26; D587): the phone board's DESKTOP LAYOUT is 1180px wide and pans. The band was a

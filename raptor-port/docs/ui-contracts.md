@@ -9429,7 +9429,9 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   with this rule on 7 Oct 26) the Inputs calendar is PART OF THE INPUTS PAGE, not a surface over the top bar: there it
   carries NO band, and the bar's own warning is the one seen** (`InputsCal.tsx`: the band only when not `embedded`; a
   band in the embedded calendar hid the bar's copy and left an empty line in the bar — `e2e/save-note.spec.ts` pins
-  both). The Medical view is still full screen and keeps its band. A window, a sheet or the phone's menu is a short visit
+  both). **Since the three tabs (D620, D626 — 8 Oct 26) the Medical view is a TAB of the Inputs page too: it sits in the
+  page under the tabs (`.medview.in-page`), has no close cross and carries NO band — the bar's own warning is the one
+  seen** (`MedicalView.tsx`: the band only when it is given a close of its own). A window, a sheet or the phone's menu is a short visit
   and has none — the bar's is there when it closes. **What decides it is the surface, not its component's name:** full
   screen and worked in (the OIL tracker is a `Sheet`) carries the band.
 - **One warning at a time for a screen reader and the keyboard:** while a `SaveBand` shows, the bar's copy beneath it is

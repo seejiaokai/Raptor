@@ -48,6 +48,14 @@
 .inputs-workspace .inputs-listtools{gap:8px;padding:8px 0}
 .inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:44px}
 
+/* MEDICAL IS A TAB, IN THE PAGE (D620, D626). It used to lie over the whole screen, with a close cross of its own; a
+   tab is left by choosing another, so the three tabs must stay in reach above it — it sits under them, as tall as what
+   it holds, and the PAGE scrolls (found by reading the stylesheet after the cross was taken away: the view would have
+   covered the only way out). */
+.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:1px solid var(--edge);border-radius:12px}
+.medview.in-page .ic-head{border-radius:11px 11px 0 0}
+.medview.in-page .med-body{flex:0 0 auto;overflow:visible}
+
 /* the month's own arrows, its name and Today — one group, so they never part across two lines */
 .ic-nav{display:flex;align-items:center;gap:6px;flex:0 0 auto;min-width:0}
 
