@@ -690,3 +690,20 @@ the form and not the page, and at the form’s foot moves nothing. **3 of 3.**
 
 **Tests, red first:** `ui/peoplepick.test.tsx` "a drag across the pucks…" (five of six red) and
 `ui/floatwindow.test.tsx` "a finger on a window…" (two of five red — the other three pin what must stay as it was).
+
+## 17. His look, fourth — the Calendar | List switch keeps its place (D687)
+
+His words, with two pictures from his iPhone: "So weird that the calander/list button jumps to the left when I click on
+the list. Can it remain in the same position?" **Reproduced by measuring the built bundle before the change:** on the
+Calendar the switch stood after the month’s arrows and "Today"; on the List, which has neither, it stood where the
+arrows had been. **Built:** the switch is the first thing after the tabs on both views; the arrows and "Today" follow
+it on the Calendar. This is the order of the tools row changed from the approved drawings, on a phone and a desktop.
+
+**Tier: LOOK-and-a-bit, taken as WALK** — questions 4 and 5 (one row drawn by two components; a control’s place),
+nothing that files, saves or counts. **Roll-call:** the tools row is drawn in two places — by the Inputs calendar
+(with the month’s arrows) and by the page itself over the List — and the switch is now one piece handed to both; the
+SANS and Medical tabs have no switch (unchanged). **The walk is two real-browser tests, kept as gates:** a phone and a
+desktop — the switch’s box on the Calendar, on the List and back on the Calendar is the same to the pixel (a phone:
+8, 106, 68 × 44 on both); the row still holds one line; nothing runs off sideways. The host opened the picture of the
+two views one above the other. **Tests, red first:** `ui/inputstabs.test.tsx` "the Calendar | List switch keeps its
+place" — two of two.

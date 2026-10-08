@@ -890,13 +890,21 @@ export function InputsPage() {
   )
   /* UNDER THE INPUTS TAB: one small switch, Calendar | List (D620 — "for inputs maybe still have the option to have list
      mode"), and the filters — the Inputs tab's alone; the SANS calendar has neither (its Highlight does that job, and
-     its counts ignore filters by ruling, D581). On a phone the filters fold behind one button. */
-  const tools = tab !== 'inputs' ? null : (<>
+     its counts ignore filters by ruling, D581). On a phone the filters fold behind one button.
+
+     THE SWITCH KEEPS ITS PLACE (owner D687, 9 Oct 26 — from his iPhone: "the calander/list button jumps to the left when I
+     click on the list. Can it remain in the same position?"; his standing rule of 2 Sep 26: a control tapped
+     repeatedly must not move). It stood AFTER the month's arrows and "Today", which the List does not have — so it
+     slid left the moment "List" was pressed. It is its own piece now, drawn straight after the tabs on both: on the
+     Calendar the month's arrows follow it (ui/InputsCal.tsx puts `lead` before them), on the List nothing does. */
+  const views = tab !== 'inputs' ? null : (
     <div className="inputs-views" role="group" aria-label="Show inputs as">
       <button className="abtn" id="inCalBtn" title="Calendar — a whole month at a glance" aria-label="Calendar"
         aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}><CalIcon /><span className="inv-t">Calendar</span></button>
       <button className="abtn" id="inListBtn" title="List" aria-label="List" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}><ListIcon /><span className="inv-t">List</span></button>
     </div>
+  )
+  const tools = tab !== 'inputs' ? null : (<>
     <span className="inputs-spring" />
     <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
@@ -926,7 +934,7 @@ export function InputsPage() {
       {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
           controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
           buttons above the month" was a fault seen while drawing) */}
-      {!calUp && <div className="inputs-top">{tabsRow}{tools}</div>}
+      {!calUp && <div className="inputs-top">{tabsRow}{views}{tools}</div>}
       {!calUp && filterSummary}
       <div className="inbar" hidden={!listUp}>
         <div className="ingrid">
@@ -1281,7 +1289,7 @@ export function InputsPage() {
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal />}
       {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
-        seedIso={range.from || isoOf(new Date())} lead={tabsRow} tools={tools} under={filterSummary} />}
+        seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} />}
       {tab === 'med' && <MedicalView />}
       {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
           for the add form and the row editor; Save runs the stashed commit

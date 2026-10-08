@@ -937,3 +937,31 @@ test('a phone: a finger on a window moves what is in the window — its own cont
     await expect(edWin(page)).toHaveCount(0)
   } finally { await context.close() }
 })
+
+/* THE CALENDAR | LIST SWITCH STAYS WHERE IT IS (owner D687, 9 Oct 26 — "the calander/list button jumps to the left when I
+   click on the list"). Only a real browser knows where a button IS: its box on the Calendar and on the List, a phone
+   and a desktop — the same to the pixel, so the finger that pressed "List" is over "Calendar | List" still. */
+for (const [name, vp, touch] of [['a phone', { width: 390, height: 844 }, true], ['a desktop', { width: 1440, height: 900 }, false]] as const) {
+  test(`${name}: the Calendar | List switch is in the same place on the Calendar and on the List, and the row still holds one line (D687)`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, viewport: vp, ...(touch ? { isMobile: true, hasTouch: true } : {}) })
+    const page: Page = await context.newPage()
+    try {
+      await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+      const box = async () => { const b = (await page.locator('.inputs-views').boundingBox())!; return [Math.round(b.x), Math.round(b.y), Math.round(b.width), Math.round(b.height)] }
+      const press = (sel: string) => touch ? page.locator(sel).tap() : page.locator(sel).click()
+      const onCal = await box()
+      /* the whole tools row is one line on the Calendar: the switch, the arrows, Today, the filter and the gear */
+      const mids = await page.evaluate(() => ['#inCalBtn', '#icPrev', '#icToday', '#inGear'].map(s => { const r = document.querySelector(s)!.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }))
+      expect(Math.max(...mids) - Math.min(...mids), 'one line').toBeLessThanOrEqual(2)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(vp.width)
+      const order = await page.evaluate(() => { const x = (s: string) => document.querySelector(s)!.getBoundingClientRect().left; return x('#inCalBtn') < x('#icPrev') && x('#icPrev') < x('#icToday') })
+      expect(order, 'the switch, then the arrows, then Today').toBe(true)
+      await press('#inListBtn')
+      await expect(page.locator('#inpCal')).toHaveCount(0)
+      expect(await box(), 'on the List the switch has not moved').toEqual(onCal)
+      await press('#inCalBtn')
+      await expect(page.locator('#inpCal')).toHaveCount(1)
+      expect(await box(), 'and back on the Calendar it is where it was').toEqual(onCal)
+    } finally { await context.close() }
+  })
+}

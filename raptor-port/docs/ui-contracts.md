@@ -9449,6 +9449,11 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 - **The keyboard** (D621): the month is one tab stop; arrows move the date and turn the month at its ends; Shift +
   arrows stretch a run; Enter opens the day or files for the run; Escape on a date closes the open day, then lets the
   run go, and never leaves the calendar; Delete on a line of the opened day asks first.
+- **The Calendar | List switch keeps its place (owner D687, 9 Oct 26 — from his iPhone; his standing rule of 2 Sep 26).**
+  It is drawn straight after the three tabs on BOTH views (`ui/InputsPage.tsx views` — its own piece; on the Calendar
+  it is handed to `ui/InputsCal.tsx` as `lead`, before the month's arrows): on a desktop after the tabs on the one
+  row, on a phone at the left of the second row. The approved drawings had the arrows and "Today" before it; the List
+  has neither, so the switch slid left when "List" was pressed. Pinned to the pixel by `e2e/inputs-calendar.spec.ts` (D687).
 - **A day opened is a window on the shell** (`win-inputsday`, D641, D648): no veil, an outside press leaves it up,
   another date re-points it; on a phone a panel at two heights; on a desktop beside the month, the page making room.
   **On a phone it OPENS at the tall height (owner D683, 9 Oct 26 — from his iPhone; `FloatWin tallFirst`), every

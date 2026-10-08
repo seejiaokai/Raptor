@@ -189,3 +189,22 @@ describe('SANS availability is filed on the SANS calendar and nowhere else (D620
     expect(options('#inpEditType')).toContain(SANS)
   })
 })
+
+/* THE SWITCH DOES NOT MOVE UNDER THE FINGER (owner D687, 9 Oct 26 — from his iPhone: "So weird that the calander/list
+   button jumps to the left when I click on the list. Can it remain in the same position?"; his standing rule of 2 Sep 26:
+   a control tapped repeatedly must not move). It jumped because the month's arrows and "Today" stood BEFORE it on the
+   Calendar and are not there on the List. It is the first thing after the tabs on both. */
+describe('the Calendar | List switch keeps its place (D687)', () => {
+  const afterTabs = () => $('.inputs-tabs')!.nextElementSibling as HTMLElement
+  it('on the Calendar it comes straight after the tabs — the month’s arrows and "Today" after it', () => {
+    expect(afterTabs().className).toContain('inputs-views')
+    expect($('.inputs-views')!.compareDocumentPosition($('.ic-nav')!) & Node.DOCUMENT_POSITION_FOLLOWING, 'the arrows follow the switch').toBeTruthy()
+    expect($('.inputs-views')!.parentElement, 'on the one row').toBe($('.ic-nav')!.parentElement)
+  })
+  it('on the List it is in the same place: straight after the tabs', async () => {
+    await click('#inListBtn')
+    expect(afterTabs().className).toContain('inputs-views')
+    await click('#inCalBtn')
+    expect(afterTabs().className).toContain('inputs-views')
+  })
+})
