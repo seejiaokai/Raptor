@@ -331,7 +331,7 @@ that changed them (`src/state/persist.ts` — the stream consumer; `persistAll` 
 |---|---|---|
 | `raptor:inputs/<iid>` | a request (`Input`) | the whole request, with `ord` — its place in the list (`src/command/ord.ts`; the design's `sortIndex`) |
 | `raptor:people/<pid>` | a person (`Person`) | the whole roster record, with `ord`; the two placeholder pucks (ALL `all`, ALL AVAIL `allavail`) are code and never stored |
-| `raptor:plan/pp:<id>` | a planning note or pucks row (`PlanningPuck`) | the entry, with `ord`; its id the app's opaque `newId('pp')` (a note saved before keeps its `pp<N>`) |
+| `raptor:plan/pp:<id>` | a planning note — its words, its people, or both (`PlanningPuck`; D684) | the entry, with `ord`; its id the app's opaque `newId('pp')` (a note saved before keeps its `pp<N>`) |
 | `raptor:plan/dm:<iso>` | a day title (`DayRemark`) | the title string |
 
 A list reads back in its order `(ord, id)` — ties between two people's rows break by id, the same on every device. A
@@ -367,7 +367,7 @@ table at the top calls "per-week stash — Yes".
 
 ### Planning layer — `src/state/plan.ts`
 
-- `PLANPUCKS[]`: `{ id: 'pp'+n, date: 'yyyy-mm-dd', kind?: 'pucks', text?, ids?: personId[] }` — a section dropped on a calendar day; the day column is `date` (`src/state/plan.ts:79`, `:130`), a note carries `text` and no `kind`, a pucks row carries `kind: 'pucks'` and `ids`
+- `PLANPUCKS[]`: `{ id: 'pp'+n, date: 'yyyy-mm-dd', text?, ids?: personId[], kind? }` — a NOTE dropped on a calendar day; the day column is `date`. **One kind of record since 9 Oct 26 (owner D684, D695 — a note carries its own pucks):** `text` its words ('' or absent where it holds people alone), `ids` its people (PEOPLE ids; `''` a gap a removed man left — his place is held; trailing gaps are trimmed), either or both, never neither (`src/state/plan.ts` `addPlanPuck`, `togglePuckPerson`). `kind` is no longer written or read: a record saved before then may carry `'pucks'` (the old pucks row — people, no words) or nothing (a note of words), and both load as notes
 - `DAYRMK`: `{ 'yyyy-mm-dd': title }` — the day's free-text title
 
 ### Attachments — `src/state/docs.ts`

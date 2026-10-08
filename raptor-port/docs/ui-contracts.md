@@ -9454,6 +9454,30 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **A note in an opened day carries its own pucks (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
+  `docs/mock/note-with-pucks.html`).** ONE kind of note: words, people, or both — never neither. "+ Note" is the only button
+  in the window's bar ("+ Pucks" is gone). A note's words are one slim line (28px) with its small buttons — a "+" while it
+  has no people, the pencil, the cross; its people stand FOUR across straight under, the schedule's own pucks, a dashed "+"
+  the last of them (`.inputsday .ic-note`, 25-inputs-calendar.css). The six dots and the box's left edge stand 8px left
+  and the box is padded alike both sides, so the fourth puck is as far from the right border as the first from the left
+  (D694). A note of people and no words draws no line of words: its people three across, then the pencil — which adds
+  words — and the cross. A NEW note's box has "+ people" beside it: the picker's OK makes the note, words and people
+  together, in one step; closed with nobody ticked it leaves the words alone, or nothing. A man is taken off as before
+  (D689): dragged off the note (anywhere outside its box), onto another to swap, or a right-click; his place is held
+  as a gap (24 Aug 26); the last man off a note with no words takes the note with him. The buttons are drawn small on
+  his word and answer a finger by a press area reaching up and sideways — never down over the pucks. The month's cell
+  shows a note's words and, under them, its people as tiny pucks. Members read both and have no button. The record:
+  `state/plan.ts`, `docs/data-schema.md`. Pinned by `state/plan.test.ts`, `ui/inputsday.test.tsx`,
+  `e2e/inputs-calendar.spec.ts` (D684–D695). Do not bring back a separate row of pucks or a second kind of section.
+- **An input in an opened day is two rows where its remark is short (owner D696, D699, D701 — drawing B; both the Inputs
+  day and the SANS day).** The remark and who-placed-it share ONE wrapping line (`.sd-foot`, 24-sans-calendar.css): side
+  by side where both fit, the small print on a line of its own under a long remark — pushed to the card's RIGHT end
+  either way, and where there is no remark. The small print is the SHORT form, made FROM the full line
+  (`ui/placedline.ts placedShort`): no "Placed by", no year for a moment in the open day's own year — "Grit · 12 Jul,
+  14:42", "Saber for 4 people · …", "… · changed by Ranger · 8 Oct, 09:10" — with the full line as its title. The List,
+  the editor's foot, a Medical card and the document viewer keep the full line (D629). A shared input's pucks come
+  after that line. A card with a short remark is 51px on a phone where it was 79. Pinned by `ui/placedline.test.ts`,
+  `ui/inputsday.test.tsx`, `ui/sansday.test.tsx`, `e2e/inputs-calendar.spec.ts` (D701).
 - **On a phone the Inputs calendar's month arrows, name and Today stand at the LEFT of their row, where the SANS calendar's
   are; the Calendar | List switch is at the row's right end (owner D705, 9 Oct 26).** The row
   is re-drawn by `order` at 820px and under only (`.inputs-top`, 25-inputs-calendar.css): the arrows, the name, Today, then —

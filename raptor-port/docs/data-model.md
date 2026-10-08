@@ -495,8 +495,10 @@ again once the stage-1 snapshot empties.
 Owner: **Scheduler**. The Inputs page's planning layer — `PLANPUCKS`, `DAYRMK`: one stored row per note or pucks row (`plan/pp:<id>`, with `ord`) and per day title (`plan/dm:<iso>`) since 30 Sep 26 (`[DB-READINESS]` group A, phase 2; one global record `plan/all` until then).
 **No lock** (section 9, rule 10): one record each, reject-and-reload.
 
-- **`PlanningPuck`:** `date` (ISO), `personIds` — the list as the app keeps it, **gaps kept** (a deleted man leaves a
-  gap, never a splice — `state/person-delete.ts`), `sortIndex`.
+- **`PlanningPuck`** — a NOTE on a calendar day (one kind since 9 Oct 26, owner D684, D695: a note carries its own
+  pucks): `date` (ISO), `text` — its words, empty where it holds people alone, `personIds` — its people, the list as
+  the app keeps it, **gaps kept** (a removed or deleted man leaves a gap, never a splice — `state/plan.ts`,
+  `state/person-delete.ts`), `sortIndex`. A row has words, people, or both; one with neither is deleted, not kept.
 - **`DayRemark`:** `date` (unique), `text`.
 
 ### ScheduleRow family
