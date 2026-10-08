@@ -47,11 +47,15 @@
 /* ONE COMMITMENT: the puck and the letters (the line's button), the LATE tag, the hours at the right; under them the
    small print. The puck is the schedule's own at its own size (D649, D650) — the letters beside it are set to its
    scale, so the puck is never the biggest thing on the line. */
-.sd-row{display:grid;grid-template-columns:auto auto minmax(0,1fr);align-items:center;column-gap:8px;row-gap:3px;
+/* THE FIRST LINE: the name and what it is take what is left; the LATE tag and the hours take what they need. The
+   name's column used to be as wide as its words (`auto`), so a long kind - an "Other" named by a long remark - ran on
+   under the hours and the two were printed over each other on a phone (the day-window walk, 9 Oct 26). It gives way
+   now: the kind is cut with an ellipsis where the hours begin. */
+.sd-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;column-gap:8px;row-gap:3px;
   border:1px solid var(--edge);border-radius:8px;padding:7px 9px;margin-bottom:6px;background:var(--panel-2);cursor:pointer}
 .sd-row:hover{border-color:var(--edge-2)}
 .sd-row.is-hi{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.sd-open{display:inline-flex;align-items:center;gap:9px;min-width:0;min-height:26px;background:none;border:0;padding:0;margin:0;
+.sd-open{display:inline-flex;align-items:center;gap:9px;min-width:0;max-width:100%;justify-self:start;min-height:26px;background:none;border:0;padding:0;margin:0;
   color:inherit;font:inherit;text-align:left;cursor:pointer;border-radius:4px}
 .sd-open:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .sd-puck{display:inline-flex;flex:0 0 auto}
