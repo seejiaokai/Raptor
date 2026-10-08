@@ -6536,7 +6536,13 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
   rowOnScreen`).
 - **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
-  row the Undo has just brought back is lifted, so it is found).
+  row the Undo has just brought back is lifted, so it is found). A SAVE shows the saved input by the same rule (it is
+  the same reveal). **And when the page does move, the row lands IN VIEW — just under the top bar** (`ui/onscreen.ts
+  bringRowOnScreen` / `scrollToShow`, 8 Oct 26): the page moves by the least that brings the row wholly between the
+  bar's foot and the window's foot, with 8px of air. Until then it was the browser's own "nearest edge" scroll, which
+  judges by the WINDOW's edges — a row that had been above the screen landed at the window's very top, hidden behind
+  the app's sticky bar (found by the browser check below: Undo lifted the input and the page hid it). Where nothing is
+  laid out (jsdom) the row still goes to that browser scroll, guarded.
 - **Already so, unaltered:** Edit Schedule's week steps sideways to the changed day only when that day is not on screen
   (`ui/highlights.ts bringDayIntoView`, 28 Sep 26); the Scheduler Board changes day only when the change is on another
   day; the Inputs calendar changes month only when the change is in another month; the Tracker's Undo moves nothing.
@@ -6545,7 +6551,13 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   to it only when it is not" (phone and desktop — his steps: an LL on 9 Feb, Undo, Redo, moved a little, half hidden,
   scrolled right away). Pins: `leavewar/ui/inview.test.ts`, `leavewar/undoland.test.ts`, `ui/onscreen.test.ts`. Quals
   was driven in the running build by hand-script on 8 Oct 26 (stays at the same scroll with the row in view; brought back
-  when scrolled away); the Inputs list's landing has had no browser check yet — owed to the job's one full bug check.
+  when scrolled away). **The Inputs list's landing has its own browser test since the afternoon of 8 Oct 26:**
+  `e2e/inputs-sans-calendar.spec.ts` "Undo and Redo on the Inputs list leave the page still when the changed input is on
+  screen, and bring it up only when it is not" (desktop and phone size — an appointment's remarks changed in the row's
+  own editor; Undo and Redo with the row on screen: its place in the list and the page's scroll unchanged; Undo with
+  the page scrolled to its foot: the row at the head of the list and wholly on screen, clear of the bar). Each of the
+  two rules was broken in the browser and seen caught; the landing's arithmetic is `ui/onscreen.test.ts`
+  (`scrollToShow`), its breaks `scripts/handpass/breaks/2026-10-08-inputs-undo-landing.json`.
 
 ## Days — the month (owner, D631, D633, D638, D641, D642, D664; built 8 Oct 26)
 

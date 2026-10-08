@@ -162,3 +162,82 @@ test('colour popup owns Escape and outside presses without saving its draft or e
   await page.click('#icNext');await expect(page.locator('#sansColourForm')).toBeHidden();await expect(page.locator('.ic-mon')).not.toHaveText(before)
   await page.click('#sansColours');await expect(page.locator('#sansAmber')).toHaveValue('1')
 })
+
+/* UNDO AND REDO LEAVE THE INPUTS LIST WHERE IT IS WHEN THE INPUT THEY CHANGE IS ALREADY ON SCREEN (owner, D672, 8 Oct 26 —
+   "if it's already in view, undo/redo don't need to snap to view. Unless it's outside the screen view then it's ok to
+   snap into view"). Until that day the list lifted the changed input to its head EVERY time. Which of the two happens
+   hangs on where the row is on the screen, and jsdom lays nothing out (there the page moves as it always did) — so only
+   a real browser can say. The rule's arithmetic is ui/onscreen.test.ts; this is the list itself, at desktop and phone
+   size: the change made through the row's own editor, the Undo and Redo pressed in the app's top bar. */
+for (const size of [{ name: 'a desktop', width: 1280, height: 720 }, { name: 'a phone', width: 390, height: 844 }]) {
+  test(`Undo and Redo on the Inputs list leave the page still when the changed input is on screen, and bring it up only when it is not — ${size.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: size.width, height: size.height })
+    await login(page); await go(page, 'inputs'); await page.click('#inListBtn')
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    const rows = page.locator('#inBody tr[data-iid]')
+    await expect(rows.nth(20)).toBeAttached()                 // a list long enough for a row to be far off the screen
+    /* an ordinary appointment from the middle of the list: a save of its remarks asks nothing (no OIL question, no
+       medical document) and leaves it where its date puts it */
+    const iid = await page.evaluate(() => [...document.querySelectorAll('#inBody tr[data-iid]')].slice(8, 34)
+      .map(r => r.getAttribute('data-iid')!).find(id => (window as any).INPUTS.find((r: any) => r.iid === id)?.type === 'Appointment') ?? '')
+    expect(iid, 'the demo list holds an appointment between its 9th and 34th rows').not.toBe('')
+    const row = page.locator(`#inBody tr[data-iid="${iid}"]`)
+    const remark = () => page.evaluate(id => (window as any).INPUTS.find((r: any) => r.iid === id).remarks ?? '', iid)
+    const was = await remark()
+    /* where the row is: its place in the list, where the page is scrolled to, and whether the row is wholly on screen */
+    const where = () => page.evaluate(id => {
+      const all = [...document.querySelectorAll('#inBody tr[data-iid]')]
+      const el = all.find(r => r.getAttribute('data-iid') === id)!
+      const b = el.getBoundingClientRect(), bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      return { index: all.indexOf(el), scrollY: Math.round(scrollY), top: Math.round(b.top), onScreen: b.height > 0 && b.top >= bar - 0.5 && b.bottom <= innerHeight + 0.5 }
+    }, iid)
+    const centre = () => row.evaluate(el => el.scrollIntoView({ block: 'center' }))
+    const still = async () => { let a = await where(); for (let i = 0; i < 40; i++) { await page.waitForTimeout(60); const b = await where(); if (b.scrollY === a.scrollY && b.top === a.top && i > 3) return b; a = b } return a }
+
+    /* the change: its remarks, typed in the row's own editor */
+    await centre()
+    const home = (await where()).index                       // its own place in the list, by its dates
+    await row.locator('[data-edit]').click()
+    await page.locator(`#inBody tr.ined[data-iid="${iid}"] [data-ed="remarks"]`).fill('D672 browser check')
+    await page.locator(`#inBody tr.ined[data-iid="${iid}"] [data-save]`).click()
+    await expect.poll(remark).toBe('D672 browser check')
+    /* a SAVE shows the saved input by the same rule: on screen, it stays in its own place in the list */
+    expect((await still()).index, 'a saved input that was on screen was lifted to the head of the list').toBe(home)
+    /* anything held at the head of the list is let go by the next touch of the list's own controls — so what follows
+       is the Undo's doing alone (found by breaking the rule on purpose, 8 Oct 26: with "always lift" the save had
+       already lifted the row, and the Undo then had nothing to move) */
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+
+    /* 1. ON SCREEN: Undo takes the change back and nothing moves — the row keeps its place in the list, the page its scroll */
+    await centre()
+    const before = await still()
+    expect(before.onScreen, 'the row is on screen before the Undo').toBe(true)
+    expect(before.index, 'the row is in its own place in the list before the Undo').toBe(home)
+    await page.click('#undoBtn')
+    await expect.poll(remark).toBe(was)
+    const afterUndo = await still()
+    expect(afterUndo.index, 'Undo lifted an input that was already on screen to the head of the list').toBe(before.index)
+    expect(Math.abs(afterUndo.scrollY - before.scrollY), 'Undo moved the page though the input was on screen').toBeLessThanOrEqual(1)
+    expect(Math.abs(afterUndo.top - before.top), 'the row moved on the screen').toBeLessThanOrEqual(1)
+
+    /* 2. the same for Redo */
+    await page.click('#redoBtn')
+    await expect.poll(remark).toBe('D672 browser check')
+    const afterRedo = await still()
+    expect(afterRedo.index, 'Redo lifted an input that was already on screen').toBe(before.index)
+    expect(Math.abs(afterRedo.scrollY - before.scrollY), 'Redo moved the page though the input was on screen').toBeLessThanOrEqual(1)
+
+    /* 3. OUT OF VIEW: with the page scrolled to its foot the row is far above the screen — Undo brings it up: it rides
+          at the head of the list and the page comes to it */
+    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight))
+    const away = await still()
+    expect(away.onScreen, 'the row is off the screen before the second Undo').toBe(false)
+    expect(away.index).toBe(before.index)
+    await page.click('#undoBtn')
+    await expect.poll(remark).toBe(was)
+    await expect.poll(async () => (await where()).index, { message: 'an input out of view was not lifted to the head of the list' }).toBe(0)
+    /* …wholly on screen, which means CLEAR OF THE TOP BAR: the browser's own nearest-edge scroll left it at the window's
+       very top, hidden behind the bar (the fault this check found, 8 Oct 26) */
+    await expect.poll(async () => (await where()).onScreen, { message: 'the page did not bring the input on screen, clear of the top bar', timeout: 8000 }).toBe(true)
+  })
+}

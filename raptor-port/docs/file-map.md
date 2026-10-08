@@ -576,7 +576,8 @@ Holidays list, its form adding and changing, the window dragged aside) - at a ph
 a look, not a gate.
 `scripts/handpass/breaks.mjs` - the strictness proof's runner (8 Oct 26): breaks ONE rule at a time from a list, runs the
 tests named for it, puts the line back, and says which breaks no test caught. Its lists are `scripts/handpass/breaks/` -
-`2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen) and `2026-10-08-counters-among.json` (D674: twenty-five).
+`2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen), `2026-10-08-counters-among.json` (D674: twenty-five) and
+`2026-10-08-inputs-undo-landing.json` (the Inputs list's landing after an Undo: seven).
 `scripts/handpass/lw-counters-among-look.mjs` - pictures of the Manning block with counters dragged among and below the
 four fixed rows (D674), phone and desktop, by the real drag.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a

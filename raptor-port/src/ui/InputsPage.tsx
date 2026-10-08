@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { rowOnScreen } from './onscreen'
+import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
@@ -337,11 +337,13 @@ export function InputsPage() {
   useEffect(() => {
     if (!justAddedIid) return
     const el = document.querySelector(`[data-iid="${justAddedIid.iid}"]`)
-    /* GUARDED exactly like interactions.ts:72-79 — jsdom implements no
-       scrolling at all, so scrollIntoView is simply absent on its elements;
-       unguarded it throws out of this effect where no test assertion sees it. */
-    if (el && typeof (el as any).scrollIntoView === 'function')
-      (el as any).scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    /* BROUGHT ON SCREEN BY THE LEAST MOVEMENT, CLEAR OF THE TOP BAR (ui/onscreen.ts bringRowOnScreen). The browser's own
+       "nearest edge" scroll, which this was until 8 Oct 26, put a row that was ABOVE the screen at the window's very top
+       — behind the app's sticky bar: an Undo of an input scrolled out of view lifted it to the head of the list and hid
+       it there (found by the browser check of D672). Where nothing is laid out it is still that scroll, GUARDED exactly
+       like interactions.ts:72-79 — jsdom implements no scrolling at all, so scrollIntoView is simply absent on its
+       elements; unguarded it throws out of this effect where no test assertion sees it. */
+    bringRowOnScreen(el)
   }, [justAddedIid])
 
   /* A just-added input rides at the top of the table whatever the filters, the
