@@ -2973,3 +2973,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Describe the pattern: write the mutations as data (test files, source file, name, old text, new text), assert each anchor matches exactly once, restore in a finally block, flush output per mutation, and run it in the background ONLY while doing work that cannot touch or read the mutated tree (records, new files). Never commit, build, or run a browser test until it reports done and the tree is confirmed restored.
 
 **Principle:** Evidence that a test can fail is as cheap as one scripted line change per rule; a job that edits the tree to get it must be treated as holding a lock on that tree.
+
+### Observation 464: A layer (z-index) rule passed every unit test and did nothing — only the look on a phone showed it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Unattended overnight build of the calendar job's step 3 (Days): a Leave War sheet had to be drawn over a scheduler window that asked for it.
+**Skill:** bug-check order / raptor-executor (building a visual rule); claudex-loop (final inspection brief)
+**Type:** internal
+**Phase/Area:** verifying a CSS rule that changes stacking, in a stylesheet scoped by a nesting wrapper
+
+**Issue:** The rule that raises the sheet was appended at the end of a stylesheet whose rules are scoped by a `#page-leavewar { … }` nesting wrapper. The wrapper closes before the file's end, so the new rule was outside it and lost on specificity to the id-scoped rule it meant to beat. The unit test asserted the CLASS was on the element and passed; the build passed; the browser test of the flow passed too until an "is anything drawn over it" assertion was added. On a phone the sheet opened entirely hidden behind a full-screen window. A handoff note written earlier the same night had even said the opposite about that file ("its wrapper is never closed") — recorded from inference, not from measuring.
+
+**Suggested improvement:** In the executor's verification notes: a rule about LAYERS or visibility is proven only in a real browser by asking the page what is on top (`elementFromPoint` at several points of the element), never by asserting a class or a computed property in jsdom. And: break the rule on purpose once and watch that browser test fail before trusting it. In the handoff skill: a "trap" is written from what was measured, with how it was measured; an inferred trap is marked as a guess.
+
+**Principle:** A visual rule's unit test usually proves the rule was ASKED for, not that it took effect. For stacking, clipping and scoping, the only evidence is what the browser reports is actually on top — and a deliberately broken run that the test then fails.
+
+### Observation 465: A "missed" rule-break is one of two things, and both are worth having — decide which before adding a test
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same run: after each piece, a script broke one rule at a time (one line changed, the piece's tests run, the line put back). 111 breaks across five pieces; seven were not caught at first.
+**Skill:** raptor-executor (tests first); bug-check order §"the gates"
+**Type:** open-source
+**Phase/Area:** proving a new test file is strict
+
+**Issue:** Of the seven breaks the tests did not catch, four were missing or weak tests (a rename that must not freeze a derived short form; a second form that must start fresh; a refusal that must not start a wait; a sheet closed without saving that must forget what it was asked) and three were lines the code did not need (a second sort of an already-sorted list, a second repaint subscription under a parent that already repaints, a second reset of state that closing already resets). The reflex is to add a test for every miss; for the second kind that would have pinned dead code in place.
+
+**Suggested improvement:** When a rule-break is not caught, ask first "would anyone see a difference?" If no observable behaviour changes, delete the line and re-run; if one does, write the test for THAT behaviour (not for the line), then re-run the break and see it caught. Report both counts — breaks caught at once, and what each miss turned out to be.
+
+**Principle:** A surviving mutant is either an untested behaviour or code with no behaviour. Telling them apart is the value of the exercise; adding a test without asking pins whichever one it was.
+
+### Observation 466: New screens in a shared global stylesheet need prefixed class names — a plain word picked up another screen's rules
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same run: the first look at a new month view showed some date buttons a thousand pixels tall.
+**Skill:** raptor-executor / impeccable (building a new surface in an existing app)
+**Type:** open-source
+**Phase/Area:** naming CSS classes for a new component
+
+**Issue:** A date button was given the state class `day` (its value). The app's one global stylesheet already owns `.day` for a whole day card on another screen, so the button took that card's sizing. Every unit test passed (jsdom has no layout); the fault was plain at the first screenshot. The same risk sat on `off`, `today`, `on`, `night`.
+
+**Suggested improvement:** For any new surface added to an app with one global stylesheet: state and value classes are prefixed (`is-`, `c-`, `t-`) or scoped under the component's root, and the first check after the tests is a screenshot at each size BEFORE writing the browser test — it finds this class of fault in seconds.
+
+**Principle:** In a global stylesheet a short, meaningful class name is probably already taken. Prefix by habit, and look at the real page before trusting green unit tests about anything that has a size.
