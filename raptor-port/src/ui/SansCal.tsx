@@ -32,7 +32,7 @@ import { INPUTS, isSansAvail } from '../engine/inputs'
 import { getTones, sansCommittedOn } from '../state/flyplan'
 import { addDays } from '../state/flyplan-model'
 import { notify } from '../state/store'
-import { CALMONTH, INPREVEAL, clearInpReveal, setCalMonth } from '../state/view'
+import { CALMONTH, INPREVEAL, SANSHL, clearInpReveal, setCalMonth, setSansHl } from '../state/view'
 import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
 import { initCalPick } from './calpick'
 import { MONTHS, WD, isoToday } from './daysfmt'
@@ -40,20 +40,66 @@ import { MoonIcon, SunIcon } from './icons'
 import { monthCells } from './InputsCal'
 import { SansDay } from './SansDay'
 import { maySansAdd, openSansAdd } from './sansadd'
-import { dayWord, sansCell, type SansCell } from './sanscal-model'
+import { PEOPLE } from '../engine/people'
+import { puck } from './html'
+import { HlIcon } from './icons'
+import { dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useVersion } from './useStore'
 
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
 const span = (from: number, below?: number): string => below === undefined ? `${from}+` : below - 1 <= from ? String(from) : `${from}–${below - 1}`
 const KIND_SAY: Record<string, string> = { day: 'day flying', night: 'night flying', nf: 'no-fly day', none: 'no flying set' }
 
-/** a date said whole, for a screen reader — the figures a sighted reader takes from the columns */
-function say(c: SansCell, kind: 'ph' | 'off' | null, cls: string | null, covered: boolean): string {
+/** a date said whole, for a screen reader — the figures a sighted reader takes from the columns; with a man
+ *  highlighted, what he offered there */
+function say(c: SansCell, kind: 'ph' | 'off' | null, cls: string | null, covered: boolean, mine: { f: boolean; o: boolean; a: boolean } | null, who: string): string {
   const what = kind === 'ph' ? 'public holiday' : kind === 'off' ? 'Off day' : KIND_SAY[cls || 'none']
   const seat = (n: number | null, word: string) => n === null ? `no figure for ${word}` : `${n} ${word}`
   const need = c.need ? `Still needed: ${seat(c.need.p, 'pilots')}, ${seat(c.need.w, 'WSOs')}.`
     : covered ? 'No required figure.' : 'No leave period covers this date.'
-  return `${dayWord(c.iso)}, ${what}. ${need} SANS committed: fly ${c.f.p} and ${c.f.w}, OFT ${c.o.p} and ${c.o.w}, AMT ${c.a.p} and ${c.a.w}.`
+  const his = mine ? ` ${who} committed: ${[mine.f ? 'fly' : '', mine.o ? 'OFT' : '', mine.a ? 'AMT' : ''].filter(Boolean).join(', ')}.` : ''
+  return `${dayWord(c.iso)}, ${what}. ${need} SANS committed: fly ${c.f.p} and ${c.f.w}, OFT ${c.o.p} and ${c.o.w}, AMT ${c.a.p} and ${c.a.w}.${his}`
+}
+
+/* THE HIGHLIGHT PICKER (D619, D626; D647 / D649 — each man as the schedule's own puck with his CAT). A small menu, not a
+   window: it closes on a pick, on Escape and on a press outside it (the standing rule for a menu — the plan §3.7 keeps
+   it for "a small menu, picker or palette"). The button names the man picked, so the ring on the month is never a
+   mystery. */
+function Highlight({ people, hi }: { people: string[]; hi: string | null }) {
+  const [open, setOpen] = useState(false)
+  const wrap = useRef<HTMLDivElement>(null)
+  const btn = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(false) }
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault(); e.stopPropagation(); setOpen(false)
+      if (btn.current?.isConnected) btn.current.focus()
+    }
+    document.addEventListener('pointerdown', outside, true)
+    document.addEventListener('keydown', esc, true)
+    return () => { document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', esc, true) }
+  }, [open])
+  const pick = (id: string | null) => { setSansHl(id); setOpen(false); notify() }
+  return (
+    <div className="sc-hlwrap" ref={wrap}>
+      <button type="button" ref={btn} className={'abtn sc-hl' + (hi ? ' lit' : '')} data-testid="sc-hl" aria-haspopup="listbox" aria-expanded={open}
+        title="Ring one SANS person’s days" onClick={() => setOpen(o => !o)}><HlIcon /><span className="sc-hl-t">{hi ? PEOPLE[hi].cs : 'Highlight'}</span></button>
+      {open && (
+        <div className="sc-hl-menu" data-testid="sc-hl-menu" role="listbox" aria-label="Highlight one SANS person">
+          <button type="button" role="option" aria-selected={!hi} className={'sc-hl-item' + (!hi ? ' lit' : '')} data-testid="sc-hl-none" onClick={() => pick(null)}>No highlight</button>
+          {people.map(id => (
+            <button key={id} type="button" role="option" aria-selected={hi === id} aria-label={PEOPLE[id].cs} className={'sc-hl-item' + (hi === id ? ' lit' : '')}
+              data-testid={'sc-hl-' + id} onClick={() => pick(id)}>
+              <span className="sc-hl-puck" aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(id, false, true, false).replace(' tabindex="0"', '') }} />
+            </button>
+          ))}
+          {!people.length && <p className="sc-hl-empty">No SANS aircrew on the roster.</p>}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export function SansCal() {
@@ -175,6 +221,11 @@ export function SansCal() {
     return () => { window.removeEventListener('resize', fit); window.visualViewport?.removeEventListener('resize', fit); ro?.disconnect() }
   }, [])
 
+  /* the man picked in Highlight — only while he is still SANS and on the roster; one who has left it is let go */
+  const roster = sansRoster()
+  const hi = SANSHL && roster.includes(SANSHL) ? SANSHL : null
+  const stale = !!SANSHL && !hi
+  useEffect(() => { if (stale) { setSansHl(null); notify() } }, [stale])
   const answers = flyMonth(cur.y, cur.m)
   const tones = getTones()
   const cells = monthCells(cur.y, cur.m)
@@ -193,6 +244,8 @@ export function SansCal() {
           <span className="sc-month" data-testid="sc-month" aria-live="polite">{MONTHS[cur.m - 1]} {cur.y}</span>
           <button type="button" className="abtn sc-nav" data-testid="sc-next" aria-label="Next month" onClick={() => step(1)}>&#8250;</button>
           <button type="button" className="abtn" data-testid="sc-today" onClick={goToday}>Today</button>
+          <span className="sc-spring" />
+          <Highlight people={roster} hi={hi} />
         </div>
         <div className="sc-sub">
           <span className="sc-legend" data-testid="sc-legend">
@@ -210,12 +263,14 @@ export function SansCal() {
             {week.map((iso, ci) => {
               if (!iso) return <div key={'x' + ci} className="sc-x" />
               const a = answers[iso], facts = dayFacts(iso)
-              const c = sansCell(a, facts.short, sansCommittedOn(iso))
+              const com = sansCommittedOn(iso)
+              const c = sansCell(a, facts.short, com)
+              const mine = sansMine(com, hi)
               const picked = !!run && iso >= run.a && iso <= run.b
               const cls = 'sc-day' + (c.tone !== 'none' ? ' t-' + c.tone : '') + (ci >= 5 ? ' is-we' : '') + (a.kind ? ' is-' + a.kind : '') +
-                (c.tag && c.tag.kind === 'nf' ? ' is-nf' : '') + (iso === today ? ' is-today' : '') + (picked ? ' is-picked' : '') + (iso === dayIso ? ' is-open' : '')
+                (c.tag && c.tag.kind === 'nf' ? ' is-nf' : '') + (iso === today ? ' is-today' : '') + (picked ? ' is-picked' : '') + (iso === dayIso ? ' is-open' : '') + (mine ? ' is-hi' : '')
               const row = (k: 'f' | 'o' | 'a', letter: string) => (
-                <div className="sc-row" data-testid={`sc-${k}-${iso}`}>
+                <div className={'sc-row' + (mine && mine[k] ? ' is-mine' : '')} data-testid={`sc-${k}-${iso}`}>
                   <span className="sc-k">{letter}</span>
                   <span className={c[k].p ? '' : 'is-nil'}>{c[k].p}</span>
                   <span className={c[k].w ? '' : 'is-nil'}>{c[k].w}</span>
@@ -223,7 +278,7 @@ export function SansCal() {
               )
               return (
                 <div key={iso} className={cls} data-icday={iso} data-testid={'sc-day-' + iso} role="button" tabIndex={iso === tabAt ? 0 : -1}
-                  aria-label={say(c, a.kind, a.cls, facts.covered)} aria-pressed={iso === dayIso} onKeyDown={onKey(iso)} onFocus={() => setAt(iso)}>
+                  aria-label={say(c, a.kind, a.cls, facts.covered, mine, hi ? PEOPLE[hi].cs : '')} aria-pressed={iso === dayIso} onKeyDown={onKey(iso)} onFocus={() => setAt(iso)}>
                   <div className="sc-date">
                     <span className="sc-num">{+iso.slice(8, 10)}</span>
                     {c.icon === 'day' && <span className="sc-icon c-day" data-icon="day"><SunIcon /></span>}
@@ -243,7 +298,7 @@ export function SansCal() {
           </div>
         ))}
       </div>
-      {dayIso && <SansDay iso={dayIso} hi={null} onClose={() => showDay(null)} />}
+      {dayIso && <SansDay iso={dayIso} hi={hi} onClose={() => showDay(null)} />}
     </div>
   )
 }

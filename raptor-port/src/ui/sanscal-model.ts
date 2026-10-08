@@ -48,6 +48,23 @@ export function sansCell(a: DayAnswer, short: string, c: SansCommitted): SansCel
   }
 }
 
+/** HIGHLIGHT (D619, D626): which of F, O and A the picked man offered on a date — null where he offered nothing, so
+ *  the date wears no ring. Asked of the SAME lists the date's counts are made from, so a ringed day is always a day
+ *  he is counted on. */
+export function sansMine(c: SansCommitted, id: string | null): { f: boolean; o: boolean; a: boolean } | null {
+  if (!id) return null
+  const has = (s: { p: readonly string[]; w: readonly string[] }) => s.p.includes(id) || s.w.includes(id)
+  const out = { f: has(c.f), o: has(c.o), a: has(c.a) }
+  return out.f || out.o || out.a ? out : null
+}
+/** the SANS aircrew on the roster today, A to Z by callsign — who the Highlight list offers (the people the count
+ *  itself takes: state/flyplan.ts sansCommittedOn) */
+export function sansRoster(people: Record<string, any> = PEOPLE): string[] {
+  return Object.keys(people)
+    .filter(id => { const p = people[id]; return !!p && p.san && !p.archived && !p.deleted && !p.special && !p.pers && (p.seat === 'FCP' || p.seat === 'RCP') })
+    .sort((a, b) => String(people[a].cs).localeCompare(String(people[b].cs)))
+}
+
 /** a commitment's hours, as the opened day prints them (D572: "show their available hours") */
 export function hoursOf(r: any): string {
   if (!r || r.allday) return 'All day'

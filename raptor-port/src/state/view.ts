@@ -88,6 +88,11 @@ export let CALMONTH:{y:number,m:number}|null=null
 export function setCalMonth(v:{y:number,m:number}|null){ CALMONTH=v }
 /* Successful Inputs saves carry their actual row across a calendar-mode remount.
    This is transient feedback, never a stored input or a second writer. */
+/* THE SANS CALENDAR'S HIGHLIGHT (owner D619, 7 Oct 26 — "a cyan ring around the days … it shows all the days he
+   committed to"): the one SANS person picked there, or null for "No highlight". A way of LOOKING — nothing is hidden
+   and no count changes — so it is view state of this sitting, saved nowhere, and gone at a sign-in or sign-out. */
+export let SANSHL:string|null=null
+export function setSansHl(v:string|null){ SANSHL=v }
 export let INPREVEAL:{iid:string,iso:string,mode:'member'|'sans'}|null=null
 export function clearInpReveal(){ INPREVEAL=null }
 export function requestInpReveal(row:any){
@@ -898,6 +903,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('cal') },
   { name:'INPMODE', scopes:['session'], reset:()=>setInpMode('member') },
   { name:'INPREVEAL', scopes:['session'], reset:clearInpReveal },
+  { name:'SANSHL', scopes:['session'], reset:()=>setSansHl(null) },
   { name:'CALMONTH',scopes:['session'], reset:()=>setCalMonth(null) },
   { name:'MEDASOF', scopes:['session'], reset:()=>setMedAsOf(null) },
   /* the two-tap "Load onto working copy" confirm. Its own doctrine is "any

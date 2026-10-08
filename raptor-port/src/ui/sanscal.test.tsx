@@ -19,7 +19,7 @@ import { PEOPLE } from '../engine/people'
 import { initStore as raptorInitStore, notify } from '../state/store'
 import { DEFAULT_ME, setMe, setSession } from '../state/auth'
 import { saveTones, setFlyDays, setFlyRun } from '../state/flyplan'
-import { CALMONTH, INPREVEAL, requestInpReveal, setCalMonth, clearInpReveal } from '../state/view'
+import { CALMONTH, INPREVEAL, SANSHL, requestInpReveal, resetViewState, setCalMonth, setSansHl, clearInpReveal } from '../state/view'
 import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { flyAnswer, holidayAdd } from '../leavewar/sync'
@@ -44,7 +44,7 @@ beforeEach(() => {
   sansW = Object.keys(PEOPLE).filter(id => live(id) && PEOPLE[id].san && PEOPLE[id].seat === 'RCP')
   member = Object.keys(PEOPLE).find(id => live(id) && !PEOPLE[id].san && PEOPLE[id].seat === 'FCP')!
   kept = INPUTS.splice(0, INPUTS.length)
-  setCalMonth({ y: 2026, m: 10 }); clearInpReveal()
+  setCalMonth({ y: 2026, m: 10 }); clearInpReveal(); setSansHl(null)
   ;(document as any).elementFromPoint = undefined
 })
 afterEach(() => {
@@ -269,5 +269,87 @@ describe('picking several days with the pointer', () => {
     show()
     dragAcross('2026-10-13', '2026-10-15')()
     expect(INPEDIT).toBeNull(); expect(document.querySelector('.is-picked')).toBeNull()
+  })
+})
+
+/* HIGHLIGHT ONE SANS PERSON (owner D619, 7 Oct 26: "a cyan ring around the days … it shows all the days he committed
+   to"; D626: no second chooser for F, O or A — the ring, and the letters he offered underlined; D647 / D649: the list
+   shows each man as his puck with his CAT). A way of LOOKING: nothing is hidden, no count changes, nothing is saved. */
+describe('Highlight', () => {
+  const pick = (id: string | null) => {
+    fireEvent.click(t('sc-hl'))
+    fireEvent.click(t(id ? 'sc-hl-' + id : 'sc-hl-none'))
+  }
+  it('lists "No highlight" first, then every SANS man on the roster as his puck — and nobody else', () => {
+    show()
+    expect(q('sc-hl-menu')).toBeNull()
+    fireEvent.click(t('sc-hl'))
+    const items = [...t('sc-hl-menu').querySelectorAll('[data-testid^="sc-hl-"]')].map(b => b.getAttribute('data-testid'))
+    expect(items[0]).toBe('sc-hl-none')
+    expect(items.slice(1).sort()).toEqual([...sansP, ...sansW].map(id => 'sc-hl-' + id).sort())
+    expect(q('sc-hl-' + member)).toBeNull()
+    const puck = t('sc-hl-' + sansW[0]).querySelector('.puck')!
+    expect(puck.className).toMatch(/\bsan\b/); expect(puck.querySelector('.nm')!.textContent).toBe(PEOPLE[sansW[0]].cs)
+    /* A to Z, so a name is found */
+    const names = items.slice(1).map(i => PEOPLE[i!.slice(6)].cs)
+    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)))
+  })
+  it('rings every day he committed to, underlines the letters he offered there, and names him on the button', () => {
+    commit(sansW[0], { sans: { f: true, o: true } }); commit(sansW[0], { date: 'Oct 12', sans: { a: true } }); commit(sansP[0], { date: 'Oct 13' })
+    show()
+    expect(t('sc-hl').textContent).toBe('Highlight')
+    pick(sansW[0])
+    expect(q('sc-hl-menu')).toBeNull()                                   // a pick closes the list
+    expect(t('sc-hl').textContent).toBe(PEOPLE[sansW[0]].cs)
+    expect(day(WED).className).toContain('is-hi'); expect(day('2026-10-12').className).toContain('is-hi')
+    expect(day('2026-10-13').className).not.toContain('is-hi')           // another man's day
+    expect(day(THU).className).not.toContain('is-hi')
+    expect(t('sc-f-' + WED).className).toContain('is-mine'); expect(t('sc-o-' + WED).className).toContain('is-mine')
+    expect(t('sc-a-' + WED).className).not.toContain('is-mine')
+    expect(t('sc-a-2026-10-12').className).toContain('is-mine'); expect(t('sc-f-2026-10-12').className).not.toContain('is-mine')
+    expect(day(WED).getAttribute('aria-label')).toMatch(new RegExp(`${PEOPLE[sansW[0]].cs} committed: fly, OFT\.$`))
+  })
+  it('changes no figure, and "No highlight" takes it off again', () => {
+    commit(sansW[0]); commit(sansP[0])
+    show()
+    const before = t('sc-grid').textContent
+    pick(sansW[0])
+    expect(t('sc-grid').textContent).toBe(before)
+    pick(null)
+    expect(document.querySelector('.is-hi')).toBeNull(); expect(document.querySelector('.is-mine')).toBeNull()
+    expect(t('sc-hl').textContent).toBe('Highlight')
+  })
+  it('marks his lines in the opened day', () => {
+    const mine = commit(sansW[0]), other = commit(sansP[0])
+    show()
+    pick(sansW[0]); tap(WED)
+    expect(t('sd-row-' + mine.iid).className).toContain('is-hi'); expect(t('sd-row-' + other.iid).className).not.toContain('is-hi')
+  })
+  it('the list closes on Escape and on a press outside it, picking nobody — a small menu, not a window', () => {
+    show()
+    fireEvent.click(t('sc-hl')); fireEvent.keyDown(document, { key: 'Escape' })
+    expect(q('sc-hl-menu')).toBeNull()
+    fireEvent.click(t('sc-hl')); fireEvent.pointerDown(t('sc-month'))
+    expect(q('sc-hl-menu')).toBeNull()
+    fireEvent.click(t('sc-hl')); fireEvent.pointerDown(t('sc-hl-menu'))
+    expect(q('sc-hl-menu')).toBeTruthy()                                 // a press inside it is not outside
+    expect(SANSHL).toBeNull()
+  })
+  it('is this sitting’s own: a sign-out takes it off, and it is saved nowhere', () => {
+    show()
+    pick(sansP[0])
+    expect(SANSHL).toBe(sansP[0])
+    expect([...mem.keys()].some(k => mem.get(k)!.includes('SANSHL') || /hl/i.test(k))).toBe(false)
+    resetViewState('session')
+    expect(SANSHL).toBeNull()
+  })
+  it('a man who is no longer SANS is not left highlighted', () => {
+    commit(sansP[0])
+    show()
+    pick(sansP[0])
+    act(() => { PEOPLE[sansP[0]].san = false; notify() })
+    try {
+      expect(t('sc-hl').textContent).toBe('Highlight'); expect(document.querySelector('.is-hi')).toBeNull()
+    } finally { PEOPLE[sansP[0]].san = true }
   })
 })
