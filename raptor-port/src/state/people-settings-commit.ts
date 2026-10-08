@@ -85,9 +85,10 @@ export const SETTINGS_KEYS = [
    The change history's own lines (`elog:<lineId>`) are NOT records here: written raw by engine/editlog.ts inside the
    command that made them, never undone (the log is not in any Undo). */
 /* - `flyday:<iso>`, `flyrule:<id>`, `flyrun:<iso>` — the flying plan (state/flyplan.ts; the plan §3.2): what is set
-     for one date, a weekday's repeating rule, a required figure running from a date. `sansday:<iso>` is the earlier
-     calendar build's day row, read only by state/sans-calendar.ts until the SANS calendar is re-made (the plan §3.10). */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'sansday:', ...FLY_ROW_PREFIXES] as const
+     for one date, a weekday's repeating rule, a required figure running from a date. (`sansday:<iso>`, the first calendar build's
+     day row, went with that build's SANS screen on 8 Oct 26 — the plan §3.10; it never left this branch, and a row of
+     it still sitting in a browser's storage is read by nothing.) */
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', ...FLY_ROW_PREFIXES] as const
 const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
@@ -325,7 +326,6 @@ export function registerPeopleSettingsCommandLayer(): void {
      COMMAND_OPS through the resolver store.ts wireStore installs */
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   for (const t of CHANGES_TYPES) definePermission(t, anyone)
-  definePermission('sans.day.set', anyone) // authority is the central Setting/admin permission
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
@@ -334,7 +334,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   // or for an unknown key, write raw so nothing nests or is refused-and-lost.
   setSettingsWriteHook((k, v, raw) => {
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
-    if (!isCommitting() && (k.startsWith('sansday:') || k === 'sanscalendar')) throw new Error('SANS calendar settings require the typed settings command')
+    if (!isCommitting() && k === 'sanscalendar') throw new Error('SANS calendar settings require the typed settings command')
     if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
     if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }

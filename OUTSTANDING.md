@@ -1707,6 +1707,12 @@ people's-days panel uses both (`raptor-port/docs/ui-contracts.md` §The page sta
 item still needs is his choice of which other windows stay up, and their own check.
 
 ### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — CALLED BACK 7 Oct 26 (D614), Opus 5.5 builds from here (D615); was ON HOLD D585; built preview/evidence preserved (5 Oct 26)
+**8 Oct 26, night — STEP 4, THE SANS CALENDAR, IS BUILT (seven pieces, each its own commit, pushed for his look):** the SANS
+tab is its own screen — the month on the one resolver, the day's window, Highlight, the gear's settings, "How this works"
+— and the first build's SANS store, command and controls are gone (the plan's "AS BUILT" note under §3.5; the contract:
+`raptor-port/docs/ui-contracts.md` "The SANS calendar"). **Still to build:** step 5 (the Inputs calendar — tabs, bars, the
+gear, the editor as a window, who placed it on the other lists, the group input's screens) and step 6; then the job's ONE
+bug check, FULL. Where it stands: that branch's block in `HANDOFF.md`.
 **7 Oct 26 — where it stands now (the job's own chat, `claude/inputs-sans-calendar`):** the live version is brought into the
 calendar work on that branch (the failed-save band, D587, sits under the calendar's bar). **Owed before any "merge live":**
 Opus's own read of what Codex built (D615 — its finds fixed, each with a test that fails first); his look at the design, which

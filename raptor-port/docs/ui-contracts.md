@@ -9311,7 +9311,65 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
   File menu's Import — his charts and students reach the database by his own Export → Import, D120); the dialog box rides
   along. The first course brings the usual Tracker back and draws the board. Pin: `tracker/trk-nocourse.test.tsx`.
 
+## The SANS calendar — its month, its day, its gear (the Inputs / SANS job, step 4, 8 Oct 26; D617–D651, D664)
+
+The SANS tab of Inputs is ONE screen, `ui/SansCal.tsx`, with no Calendar | List pair, no filters and no list (D620).
+**It works nothing out.** A day's class, its required pilots and WSOs, how many more are needed and its colour are the
+ONE resolver's answer (`leavewar/sync.ts flyMonth` / `flyAnswer` → `state/flyplan-model.ts planFor`); who has committed
+is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's signal and the war's (`useWarFacts`).
+- **A date** (`sanscal-model.ts sansCell`): its number; the sun (day flying) or the moon (night flying) — or the tag
+  that takes their place: NF, or the Leave War's own short form for a public holiday (green) or an Off day (grey); the
+  still-needed pair, pilots then WSOs, in the day's colour over a SOFT wash (D630 — never a deep tint or a bright
+  patch); F, O and A as pairs of the SANS committed, noughts dimmed. A day that needs nobody reads "0 0" quietly; no
+  figure, or no leave period covering the date, a dash and no colour; a no-fly day reads "0 0" beside NF and still
+  shows its OFT and AMT (D642). The three colours are `--t-yellow` / `--t-amber` / `--t-red`
+  (`24-sans-calendar.css`), by pilots and WSOs needed added together, from the figures as set (D618).
+- **A line for everyone** says what the colours mean, written from the figures as set.
+- **What a press does** is `ui/calpick.ts`: a tap opens the day; a mouse drag, or a finger HELD (400ms) then dragged,
+  picks a run of days for "+ Commitment" (held and let go: that one day); a finger slid sideways turns the month. The
+  grid carries `touch-action:pan-y` — without it a slide is cancelled as a scroll. **The click that follows any tap or
+  pick is swallowed once** — it lands on whatever has just opened under the pointer (it pressed "+ Commitment" in the
+  first build). A member who is not SANS taps and slides; his drag picks nothing.
+- **The keyboard** (D621): one tab stop for the month; arrows move date to date and turn the month at its ends; Shift
+  + arrows stretch a run; Enter opens the day or files for the run; Escape lets a run go, then closes the open day.
+- **On a phone the month takes the full screen (D664).** `--sc-fill` is the room from the grid's top to the foot of the
+  visible screen, measured and re-measured; it is a FLOOR the weeks share, never a limit — a month that needs more is
+  taller and the PAGE scrolls. The grid has no height limit and no scroll of its own, on any screen. Its head is ONE
+  line at 390px (the month's name three letters there; the Highlight button is what shortens, never the name).
+- **The day's window** (`ui/SansDay.tsx`, on the shell — D641): the working for both seats (required — "NF" on a
+  no-fly day, a dash where none is set; available — a dash, and a line saying so, where no leave period covers the
+  date; SANS committed to fly; still needed), "+ Commitment" (a SANS man his own, an admin a SANS man's; off, with the
+  reason, for anyone else), an admin's "Calendar…" (Days on that month, D675), then EVERYONE who committed (D648) in
+  WSOs to fly / pilots to fly / OFT or AMT only / not counted. A man stands in ONE group, so a heading's head-count is
+  people and equals the date's figure; a commitment of a man the count leaves out is listed apart with the reason. Each
+  line is the schedule's own puck from `ui/html.ts puck()` (D649, D651 — the SANS edge from the builder), his letters,
+  his hours, a LATE tag that says the cut-off it missed without opening the editor (D646), and who placed it and when
+  (`ui/placedline.ts`, D629). The working and the buttons are pinned; the list scrolls. **On a desktop the page leaves
+  the window room beside it** while it is where it opens (`:has(.sansday:not([data-placed]))`), and takes the width
+  back once he drags it away. **On a phone it has two rest heights** (the shell's `rests`): about two-thirds as it
+  opens, pulled up by its bar to nearly the whole screen and back; a tap on the bar goes to the other height — ON THE
+  CLICK, never on the release (the panel moves under the finger). It opens low every time.
+- **Highlight** (D619): a small menu of the SANS aircrew on the roster, A to Z, each as his puck, "No highlight"
+  first. His days wear a cyan ring drawn INSIDE the date; the F, O, A rows he offered are underlined; his lines are
+  marked in the opened day. Nothing is hidden and no figure changes. `state/view.ts SANSHL`, session-only.
+- **The gear** (D618, D635): the glyph the Leave War's settings button carries, admins only. Its window
+  (`ui/SansSettings.tsx`): "Calendar…", the three day colours, the SANS late cut-off (days before, or a weekday of 1 to
+  8 weeks before) with a worked date from the draft. Nothing is saved until Save; both halves are checked before
+  either is written; each is one Undo step. An Undo of a cut-off pressed on the Inputs page stays there (D672).
+- **"How this works"** (D646): a fold of five lines; the last states the cut-off as it is SET
+  (`sanscal-model.ts cutSentence`), with no worked date.
+- **The windows shell** now caps a window he has placed at the room under its top (its body scrolls), so a window
+  dragged low keeps its foot — and its Save — on the screen.
+Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, `ui/calpick.test.ts`,
+`ui/sanscal-model.test.ts`; in a browser `e2e/inputs-sans-calendar.spec.ts`. Pictures: `scripts/handpass/sans-look.mjs`.
+
 ## Inputs calendar and SANS demand — D580
+
+**SUPERSEDED IN PART, 8 Oct 26 — the SANS half:** the SANS tab is the screen described just above. What this section
+says of SANS cells showing "offered/required", amber and red from two cut-offs, an admin editing the target and the
+flying period in the day's details, "Select dates" on the SANS calendar, the SANS mode's own filters and its List
+is the first build's and is gone. What it says of the Inputs tab — its header, Calendar / List, filters, the
+saved-row reveal — stands until the Inputs calendar is re-made (step 5). The text below is unchanged.
 
 D581: every SANS date shows unique people offering F/Fly, O/OFT and A/AMT,
 independent of filters and using existing covered-date/year semantics. The flying

@@ -93,7 +93,7 @@ const SETTING_PHRASE: Record<string, string> = {
   stores: 'the stores list',
   cxreasons: 'the cancel reasons',
   guestview: 'the guest switch',
-  sanscalendar: 'the SANS calendar shortage colours',
+  sanscalendar: 'the SANS calendar’s day colours',
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -336,13 +336,6 @@ function describeFly(entry: UndoEntry): string | null {
 
 export function describeEntry(entry: UndoEntry): string {
   if (typeof entry.type === 'string' && entry.type.startsWith('fly.')) { const s = describeFly(entry); if (s) return s }
-  if (entry.type === 'sans.day.set') {
-    const id = entry.forward?.find(c => c.collection === 'settings' && c.id.startsWith('sansday:'))?.id
-    const iso = id?.slice('sansday:'.length)
-    const date = iso ? new Date(iso + 'T12:00:00Z') : null
-    const label = date && Number.isFinite(date.getTime()) ? date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : ''
-    return 'the SANS requirements' + (label ? ' for ' + label : '')
-  }
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'insights.role.set') {

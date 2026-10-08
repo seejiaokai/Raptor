@@ -517,6 +517,33 @@ suggested for the new period.
   the rule as set, from the setting — no worked example and no "later is marked LATE". A LATE tag on an entry, pressed,
   says the cut-off it missed ("after the cut-off, Wed 7 Oct").
 
+**AS BUILT (8 Oct 26, night — step 4, seven pieces, each its own commit).** `src/ui/sanscal-model.ts` (how the
+resolver's answer is read onto a date; who an opened day lists), `ui/placedline.ts` (§3.8's line, first drawn here),
+`ui/SansDay.tsx` (the day's window), `ui/sansadd.ts`, `ui/calpick.ts` (the one pointer machine — step 5's month takes
+it), `ui/SansCal.tsx` (the month, Highlight, the fold), `ui/SansSettings.tsx` with `state/cutoff.ts` (the gear);
+styles `ui/scheduler/24-sans-calendar.css`; the shell gained `rests` and a cap for a placed window. **What went
+(§3.10):** `state/sans-calendar.ts`, `ui/SansCalendarControls.tsx`, `sans.day.set` and the `sansday:` rows with their
+permission row, Undo words and landing, `activityPeopleOn` / `flyingPeopleOn`, the first calendar's SANS half and its
+styles. **Choices the builder made, each told to him (§8):** (1) THE SANS TAB HAS NO LIST AND NO FILTERS FROM THIS
+STEP — D620 was done here, not left for step 5, because a SANS screen with a List button beside it would have shown
+him something he ruled out; the List's three SANS-row tests went with it. The Inputs tab's own add form still offers
+the SANS type until step 5. (2) The day window is the shell's window on a desktop too, and the PAGE leaves it room
+while it is where it opens — it is not a docked panel, so D641 holds for it. (3) A day that needs nobody reads
+"0 0" quietly rather than a blank, so it is told from a day with no figure (a dash); a no-fly day reads "0 0"
+beside NF where the drawing wrote "no flying". (4) A fourth group, "Not counted", lists a commitment of a man the
+count leaves out, with the reason — with no List it could not otherwise be reached. (5) A man who filed twice for a
+day stands in one group with both lines. (6) "+ Commitment" on a no-fly day starts with nothing ticked. (7) The
+phone panel's bar takes a TAP as well as a drag, and the panel opens low every time. (8) The Highlight list is A
+to Z. (9) The who-placed line is the plan's wording ("Placed by Saber · 7 Oct 26, 14:32"), not the drawing's
+weekday. (10) The settings window keeps a worked date under the cut-off (the fold does not — D646). (11) The gear is
+the Leave War's own glyph. (12) An Undo of a cut-off pressed on the Inputs page stays there. (13) On a phone the
+month's name is three letters, as drawn. **Found only by LOOKING at the running build or by a real browser, each
+fixed with a test:** a tap on a date pressing through into the day's window; a tap on the phone panel's bar pressing
+through; a sideways slide turning nothing (`touch-action:pan-y`); the phone head on two lines and the Highlight list
+off the left edge; a window dragged low losing its Save off the foot of the screen. **Left for step 5:** the three
+tabs (the two mode buttons and Medical stand until then), the Logic page's rows opening the settings window, the
+who-placed line on the other lists, the demo seed's stamps, the page's side margin on a phone.
+
 ### 3.6 The Inputs calendar
 
 - **Three slim tabs** — Inputs · SANS · Medical — replace the mode pair and the view trio (`INPMODE` / `INPVIEW` stay as
@@ -1380,6 +1407,20 @@ Delete asks nothing (Undo brings it back); a year no leave period reaches offers
 year covered in part names the dates left out, each with a button that opens the Leave War's own new-period sheet on
 them; a holiday refused because nothing covers its date is KEPT in its form and saved by itself as soon as a period
 holds its first day — closing the form gives that up.
+
+**And the SANS calendar (step 4, 8 Oct 26, night) — to tell him the same way, each a default he can change:** SANS
+availability is on no list from now on — the SANS tab is the calendar alone, and the Inputs tab's List shows none; a
+day that needs nobody reads "0 0" in grey, a day with no required figure a dash; a no-fly day reads "0 0" beside
+NF (the drawing wrote "no flying"); a new commitment on a no-fly day starts with nothing ticked; a commitment of a
+man who is no longer SANS, or is archived, is listed in the day under "Not counted" with the reason, so it can still
+be opened and removed; a man who filed twice for a day is one man in one group, both lines shown; the Highlight list
+is A to Z; a tap on the phone day window's top bar pulls it up, another puts it back, and it opens at the lower
+height every time; on a desktop the day window opens beside the month and the page makes room for it until he drags
+it away; the small-print line reads "Placed by Saber · 7 Oct 26, 14:32"; the settings window shows a worked date
+under the cut-off; the admin's button in the day, and the first line of the settings, read "Calendar…" (D675 — his
+caution about that word inside a calendar's own settings is his to judge on the preview); on a phone the month's
+name is three letters ("OCT 2026"); holding a finger on a date for under half a second and then dragging picks
+several days — a quick slide still turns the month.
 
 ## 9. For the challenger
 

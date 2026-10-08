@@ -834,11 +834,11 @@ row kinds are per-date records and want tables of their own, not Setting rows** 
 (`fromDate` PK, `pilots`, `wsos` — each nullable, null meaning the run ends there) — organisation-owned, admin-written,
 read by every member.
 
-SANS calendar D580 uses this existing Setting table: one global `sanscalendar`
-row and one `sansday:<ISO>` row per authored date. Validated shapes/defaults
-live in `data-schema.md` §SANS calendar planning settings. Typed admin writes
-`settings.sanscalendar` / `sans.day.set` retain this row's permissions and Undo;
-members read these rows. They do not amend a schedule or imply shared storage.
+The SANS calendar uses this existing Setting table for ONE row: the global `sanscalendar` (its three day colours —
+`yellowFrom`, `amberFrom`, `redFrom`; `data-schema.md`). The typed admin write `settings.sanscalendar` keeps this
+row's permissions and Undo; members read it. *(The first calendar build's one `sansday:<ISO>` row per authored date and
+its command `sans.day.set` went on 8 Oct 26 — the day's requirement and class are the three flying-plan tables above.
+They never reached `main`.)* The two late cut-offs are values of the `rules` row, as every Logic rule is.
 App change: **an absent row means "on the shipped standard"** — today's `null`
 convention. The default is never written, so a later change to the standard is
 picked up rather than frozen. Do not seed this table.

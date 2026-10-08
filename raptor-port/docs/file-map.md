@@ -465,8 +465,8 @@ holidayAt` - the holiday on a day with its name. `src/leavewar/sync.ts` (its las
 war: `dayFacts(iso)`, `holidaysIn(year)` and the signal `useWarFacts()` / `warFactsVersion()` / `subscribeWarFacts()`;
 `src/leavewar/dayfacts.test.ts` pins all of it. `src/state/flyplan.ts` also holds `sansCommittedOn` / `sansFly` - the
 SANS people committed to F, O and A on a date, per seat, each once a day, never a man since archived and only a man the
-roster marks SANS (`sansfly.test.ts`); it replaces `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar is
-re-made (step 4). The same block of `sync.ts` re-exports the plan's readers and writers for the war's rows and holds the
+roster marks SANS (`sansfly.test.ts`); it REPLACED `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar was
+re-made (step 4, 8 Oct 26 — that function is gone). The same block of `sync.ts` re-exports the plan's readers and writers for the war's rows and holds the
 ONE join, `flyAnswer(iso)` / `flyMonth(y, m)` (`src/leavewar/flyanswer.test.ts`).
 `src/leavewar/engine/eventshort.ts` - an event's SHORT FORM, what a day cell prints for it (the Inputs / SANS redesign,
 plan §3.12; D643–D645): `normShort`, the ONE rule (capitals first, then one to three of A–Z and 0–9) every write and
@@ -694,6 +694,11 @@ and tells a refusal from an inner "no". Used by the editor's Save (new, change, 
 Delete, `commitEditMedChoices`, `commitEditUpchit`, `removeInput`, and the List's edit with an OIL answer and its OIL
 chip (`ui/InputsPage.tsx`). The editor's `stay` and the List's `after` find the record again by its id after a
 refusal (the list comes back as new objects) and keep what was typed. Pinned by `src/ui/savesaysok.test.tsx`.
+*(8 Oct 26, step 4 — REMOVED with the first build's SANS screen, the plan §3.10: `src/state/sans-calendar.ts` and its
+test, `src/ui/SansCalendarControls.tsx`, and `sans-calendar-model.ts`' two counting functions — that file now holds
+`inputsInMode` alone. The three `scripts/handpass/inputs-sans-*` drivers below drove that screen by its ids: they are
+the record of the 5 Oct 26 check and no longer run against the app; the SANS calendar's driver is `sans-look.mjs`. The
+paragraph below is that build's own record, unchanged.)*
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

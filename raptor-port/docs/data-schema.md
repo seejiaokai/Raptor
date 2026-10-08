@@ -834,9 +834,14 @@ zero or more; a row that fails the check is read as nothing. *(`settings/flyname
 GONE since 8 Oct 26 — D668: the Required rows keep their names. Nothing reads or writes the key; it never reached
 `main`, so no table needs a column for it.)* From the same change `settings/sanscalendar` is read by the
 flying plan as THREE figures, `{yellowFrom, amberFrom, redFrom}`, whole numbers, `1 <= yellow < amber < red`, defaults
-1 / 3 / 5 — the two-figure record and the `sansday:` rows described next belong to the earlier calendar build, are read
-only by `src/state/sans-calendar.ts`, and go when the SANS calendar is re-made on the resolver (the build plan §3.10).
+1 / 3 / 5, written by the one admin command `settings.sanscalendar` from the SANS calendar's gear (D618). **The first
+calendar build's own records are GONE since 8 Oct 26 (step 4 — the build plan §3.10):** its two-figure `sanscalendar`
+(`{amberFrom, redFrom}`), its `settings/sansday:<date>` rows (`{required, flying}`) and its command `sans.day.set`, with
+`src/state/sans-calendar.ts`. None of it reached `main`, so no table needs them; a row of either left in a browser's
+storage is read by nothing (the two-figure record reads as the defaults). The day's requirement and class are the
+`flyday:` / `flyrule:` / `flyrun:` rows above. The paragraph that described them is kept below, marked.
 
+*(SUPERSEDED 8 Oct 26 — the first calendar build's records, removed; kept as written, for the record:)*
 `settings/sanscalendar` holds `{amberFrom,redFrom}`: safe whole numbers, `1 <= amberFrom < redFrom`.
 Absent/malformed reads shipped defaults1/3. `settings/sansday:<YYYY-MM-DD>` holds
 `{required:number|null,flying:'unset'|'day'|'night'|'both'}`. Required is a safe integer >=0;

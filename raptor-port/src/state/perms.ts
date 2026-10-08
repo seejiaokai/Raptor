@@ -321,7 +321,6 @@ const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 
   'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights', 'sanscalendar', 'memberfile'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
-  'sans.day.set': op(T.setting, 'U'),
   /* the flying plan (state/flyplan.ts — the Inputs / SANS redesign, plan §3.2): a day's class and required figures,
      a weekday's rule, a running figure — the admin's, like every setting */
   'fly.day.set': op(T.setting, 'U'), 'fly.rule.set': op(T.setting, 'U'), 'fly.rule.remove': op(T.setting, 'U'),

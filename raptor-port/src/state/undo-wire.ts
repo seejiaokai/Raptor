@@ -196,13 +196,9 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     }
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
-    else if(ids.includes('sanscalendar')||ids.some(k=>k.startsWith('sansday:'))){
-      primary='inputs';then=()=>{
-        clearInpReveal()
-        setInpView('cal');setInpMode('sans')
-        const key=ids.find(k=>k.startsWith('sansday:'))
-        if(key){const iso=key.slice(8);setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})}
-      }
+    /* the three day colours are the SANS calendar's own: its month, whichever it is showing */
+    else if(ids.includes('sanscalendar')){
+      primary='inputs';then=()=>{ clearInpReveal(); setInpView('cal');setInpMode('sans') }
     }
     /* THE FLYING PLAN (state/flyplan.ts; the plan §3.2): a required figure is typed on the Leave War, so its Undo
        lands there, on its date (snapView reads the date off the row — flyDateOf); a day's class or a weekday's rule

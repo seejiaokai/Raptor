@@ -1213,6 +1213,20 @@ agree — name it here so the next session knows to check both.
 
 ## Inputs and SANS calendars — D580 build
 
+**SINCE STEP 4 OF THE REDESIGN (8 Oct 26) THE SANS TAB IS ITS OWN SCREEN** (`ui-contracts.md` "The SANS calendar"); what
+this section says of the SANS mode's filters, List, daily target and two colour baselines is the first build's. The
+surfaces a change there now touches: the SANS month (`ui/SansCal.tsx`), the day's window (`ui/SansDay.tsx`), the
+settings window (`ui/SansSettings.tsx`), the Highlight menu — and, because they share one answer, the Leave War's
+four rows and the Calendar (Days) window. **Its drift-seams:** (1) two stores hold a day — a SANS screen that works a
+class, a figure or a need out for itself, instead of asking `flyMonth` / `flyAnswer`, will disagree with the Leave
+War's rows; (2) the count of the SANS committed (`sansCommittedOn`) and the day's list (`sansDayGroups`) must ask the
+same inputs by the same date label, or a heading's head-count and its lines part; (3) the click that follows a
+release lands on whatever opened under the pointer — any new thing that opens on a date's tap inherits
+`calpick`'s swallow, and anything that MOVES under a tap must act on the click, not the release; (4) a late cut-off
+has two ways in (a calendar's gear, the Logic page) onto one `rules` record — a third writer must go through
+`state/cutoff.ts`; (5) the phone month's height is a floor measured from the visible screen — a fixed height or an
+`overflow` on `.sc-grid` brings back the box that scrolls inside the page (D664).
+
 Inputs is one route with session-only Member Inputs/SANS modes, Calendar primary and List secondary.
 Member mode excludes SANS offers; SANS mode includes all F/O/A offers. Filters are independent by mode;
 unique F/Fly, O/OFT and A/AMT counts always read the entire authoritative Input collection,

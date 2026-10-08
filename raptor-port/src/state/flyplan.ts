@@ -19,9 +19,10 @@
    its reader and writer, its permission row and Undo's words all came out. A record that build left behind is read
    by nothing.)
 
-   UNTIL STEP 4 OF THE BUILD the calendar Codex built still reads state/sans-calendar.ts (its `sansday:` rows and a
-   two-figure `sanscalendar`); nothing here reads those, and a two-figure colour record reads here as the defaults. That
-   module and its rows go when the SANS calendar is re-made on the resolver (the plan §3.10). */
+   THE FIRST CALENDAR BUILD'S OWN STORE WENT ON 8 OCT 26 (step 4 — the plan §3.10): state/sans-calendar.ts, its
+   `sansday:` rows, its command `sans.day.set` and its two-figure `sanscalendar`. The SANS calendar reads THIS module
+   through the one join (leavewar/sync.ts flyAnswer / flyMonth). A two-figure colour record that build left in a
+   browser's storage reads here as the defaults; a `sansday:` row is read by nothing. */
 import { store, HOOKS } from '../engine/hooks'
 import { INPUTS, isSansAvail, inputCoversDate } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
