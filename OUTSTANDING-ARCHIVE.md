@@ -3954,3 +3954,10 @@ and the branch's one FULL check (D485) reads this code with the rest. Found on t
 
 **BUILT 9 Oct 26** (`cfcd40b7`, and the fixes after the two reads): the two-tap calendar in the window of a saved shared input, for its filer or an admin; walked 19 of 19, read by Astra and Sol 6.1, six findings fixed. What it does: `raptor-port/docs/ui-contracts.md` "One input filed for several people" (Its DATES are changed in its window); the evidence: the sheet's §12.
 
+
+*Moved here 2026-10-09 by backlog-archive.mjs ([CAL-SANS-KEY-ONE-LINE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [CAL-SANS-KEY-ONE-LINE] On a phone the SANS calendar’s "How this works" and its colour key share one line, as the Inputs calendar’s do (D697 — 9 Oct 26)
+**Ruled, NOT BUILT — small, and wanted before the calendar job’s "merge live" (it is his look at that job).** His words: "Can u match the left sans calander tot he inputs calendar which uses the same amount of vertical space and similar vertical alignment. Compact words if need be". **Today** on a phone the SANS tab draws "How this works" on one line and the key ("Pilots · WSOs still needed: 1–2 3–4 5+", `sc-legend` in `raptor-port/src/ui/SansCal.tsx`, styles `raptor-port/src/ui/scheduler/24-sans-calendar.css`) on the next; the Inputs tab has both on one (`ib` fold line, `25-inputs-calendar.css`). **Build:** shorten the key’s visible words at phone width (keep the full sentence as its `aria-label` / `title`), put it on the fold’s line right-aligned exactly as the Inputs key is, and pin with a real-browser test that the fold line’s top and height, and the month’s top, are the same on the two tabs at 390 wide (and nothing runs off sideways at 360). Tier LOOK/WALK; then the full gate set.
+**BUILT 9 Oct 26 (D697):** the SANS line is the Inputs line on a phone — 28 tall, the key at its right end reading "Still needed:"; pinned at 390, 360 and 320 wide. Its contract: `raptor-port/docs/ui-contracts.md` (the D697 bullet); the check: the sheet `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §21.
+
