@@ -127,4 +127,54 @@ for (const [name, variant, arg] of SHOTS) {
   await page.screenshot({ path: join(OUT, `${name}.png`) })
   await ctx.close()
 }
+
+/* THE DESKTOP'S HALF OF HIS QUESTION ("A looks good, with this is there anything the desktop can follow too?" — D678).
+   A desktop already shows the head in two lines; with its width they can be ONE — every word and button as it is, the
+   stage's two moves still in sight (no menu is needed where there is room). Drawn at 1440 wide; the script prints how
+   wide the one line is, which is the narrowest window it fits in before it must fall back to two. */
+const DESK = {
+  'desk-today': () => {},
+  'desk-one': () => {
+    const pg = document.querySelector('#page-leavewar'), q = t => pg.querySelector(`[data-testid="${t}"]`)
+    const tb = pg.querySelector(':scope > .topbar'), sp = tb.querySelector('.spring'), fl = pg.querySelector(':scope > .filters')
+    const vw = q('lw-viewing')
+    sp.style.cssText += ';display:flex;flex-wrap:nowrap;align-items:center;gap:8px;flex:1 1 auto;width:100%'
+    const rule = document.createElement('span'); rule.style.cssText = 'flex:0 0 1px;align-self:stretch;margin:4px 8px;background:#2a333c'
+    const kids = [...fl.children]
+    for (const el of kids) { el.style.cssText += ';flex:0 0 auto;white-space:nowrap;margin-top:0;margin-bottom:0' }
+    if (vw) { sp.insertBefore(rule, vw); for (const el of kids) sp.insertBefore(el, vw); vw.style.cssText += ';margin-left:auto;flex:0 0 auto' }
+    else { sp.append(rule, ...kids) }
+    fl.style.display = 'none'
+  },
+}
+let deskBase = null
+for (const name of Object.keys(DESK)) {
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
+  const page = await ctx.newPage()
+  await page.goto((process.env.LOOK_URL || 'http://localhost:4180/') + '?fresh=1')
+  await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
+  await page.click('#loginForm button[type=submit]')
+  await page.waitForSelector('#vWeek .day')
+  await page.evaluate(() => window.go('leavewar'))
+  await page.waitForSelector('[data-testid="row-slipway"]')
+  await page.waitForTimeout(500)
+  await page.evaluate(() => {
+    window.setFlyRun('2026-01-02', { p: 16, w: 16 })
+    window.lwSaveManningRule({ id: 'sc-d', label: 'SC D', count: { kind: 'people', filter: { seats: ['wso'] } }, threshold: { amber: 0, red: 0 } })
+  })
+  await page.waitForSelector('[data-testid="count-sc-d"]')
+  await page.mouse.move(1400, 880)
+  await page.evaluate(DESK[name])
+  await page.waitForTimeout(350)
+  const m = await page.evaluate(() => {
+    const sp = document.querySelector('#page-leavewar > .topbar .spring')
+    const kids = [...sp.children].filter(el => el.getBoundingClientRect().width)
+    const used = kids.reduce((n, el) => n + el.getBoundingClientRect().width, 0) + (kids.length - 1) * 8 + 40
+    return { grid: Math.round(document.querySelector('#page-leavewar .mx-outer').getBoundingClientRect().top), used: Math.round(used) }
+  })
+  if (!deskBase) deskBase = m
+  console.log(`${name}.png — the grid starts at ${m.grid}px (today ${deskBase.grid}): ${deskBase.grid - m.grid}px saved` + (name === 'desk-one' ? `; the one line needs about ${m.used}px of width` : ''))
+  await page.screenshot({ path: join(OUT, `${name}.png`), clip: { x: 0, y: 0, width: 1440, height: 430 } })
+  await ctx.close()
+}
 await browser.close()
