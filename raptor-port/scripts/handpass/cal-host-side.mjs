@@ -24,6 +24,11 @@ for (const [name, tab, day, win, rowSel] of [
   await page.click('#loginForm button[type=submit]')
   await page.waitForSelector('#vWeek .day')
   await page.evaluate(() => window.go('inputs'))
+  /* BACKGROUND, not the thing tested: the demo has no SANS commitment on 7 Oct - six are seeded so the list has entries */
+  if (tab === '#inSansMode') await page.evaluate(() => {
+    Object.keys(window.PEOPLE).filter(id => window.PEOPLE[id].san && !window.PEOPLE[id].archived && !window.PEOPLE[id].deleted).slice(0, 6)
+      .forEach((person, i) => window.fileInput({ iid: 'side-' + i, person, type: 'SANS Availability', date: 'Oct 7', yr: 2026, allday: true, sans: { f: true } }))
+  })
   await page.locator(tab).tap()
   /* to the month that holds the day: October for the SANS demo, July for the Inputs demo */
   const wantM = day.includes('2026-07') ? 7 : 10

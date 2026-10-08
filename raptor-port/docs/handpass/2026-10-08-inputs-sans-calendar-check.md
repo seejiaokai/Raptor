@@ -362,3 +362,48 @@ that W12's desktop margin has no geometry assertion.
 **Reconciled.** The two reads share one finding (R4 = S4). Astra alone: R1, R2, R3, R5. Sol alone: S1, S2, S3. Neither
 reported a fault in what a published day issues, in what OIL a man is credited, or in who may change whose input at
 the command gate. Both name `[CAL-TOGO-ONE-ITEM]` as still open.
+
+## 11. The close — 9 Oct 26, 00:50
+
+**After both reads' fixes — the whole gate set again, under the PC lock, watched, on `8b5fe3cb`: wholly green.** unit 9324
+of 9324 (564 files) · build clean · the reference 728 / 0 · the browser tests 706 passed, 0 failed, 56 skipped · the
+Tracker smoke 445 / 0 · the rule check OK · the document check OK.
+
+**The re-walk of what the fixes touched, by the host, in the running final build** (pictures `host-final/`):
+`cal-host-leads.mjs` 4 of 4 (one holiday, one word on four screens; Escape and the window in front; a people-only
+change asks and keeps the picks; the changes window's one line with the names under it); `cal-host-side.mjs` 2 of 2 (a
+day opened on a sideways phone, both calendars — every entry reached); `cal-host-short.mjs` 6 of 6 (each settings
+window's Save reached at 844, 664 and 568 tall). The readers' seven fixes (W13–W19) are rules of what is asked, saved or
+drawn once — each is held by the test that failed before it and by the green browser suite; they were not walked again
+by hand. **That is said plainly: W13 to W19 have a failing-then-passing test each and no picture.**
+
+**Found and fixed in this check: nineteen** (W1–W12 from the roll-call, Astra's scenario leads, D624's pairs and the walk;
+W13–W19 from the two code reads). **Filed, not fixed: four items** — `[CAL-SHARED-DATES]` (a missing door, recommended
+before "merge live"), `[CAL-UNDO-OTHERS]`, `[CAL-TOGO-ONE-ITEM]`, `[CAL-CHECK-SEEN]`. **Parked for him: one question**
+(below). **Not done: his look; a pull request — he said "No merge".**
+
+`Walk: docs/handpass/2026-10-08-inputs-sans-calendar-check.md · 2,043 pictures (the walkers) + 40 (the host) · 60 surfaces (the roll-call's rows, each seen and operated) · 100 orders (Astra's 90 scenarios and the host's 10) · MISSING: 3 fixed (A5; a sheet behind the Calendar window; Calendar behind its settings window), 1 filed (To go out as lines)`
+
+Carried by a test, not walked (listed apart, the order's §7.0): the resolver's boundary cases
+(`state/flyplan-model.test.ts`) and the late rule's dates (`engine/lateinput.test.ts`, `engine/latecut.test.ts`) — each
+calls the calculation and proves the arithmetic; the route on screen was walked once for each (walkers A and F).
+
+`Docs: OUTSTANDING 147 items (+14 −0) · DECISIONS D1–D679 · homes OK`
+`docsize: OVER by 17353, deferred (D29)`
+
+### Questions waiting for him
+
+1. **May the approved mock-ups be copied from your private folder into the repo?** The plan's step 6 has them go into
+   `raptor-port/docs/mock/`. Seven of the 36 showed the other squadron's daily figures (six SANS pictures and the settings
+   sheet drawn over the SANS month); all seven are redrawn with made-up numbers and waiting. The copy was stopped by the
+   app's own safety check on moving private files into a repo that is public for now. **Recommended: yes** — the redrawn
+   seven carry nothing of the other squadron, and the rest never did. Waiting on it: the mock-up half of D624's
+   side-by-side pictures in this sheet (the pairs exist on your PC; the differences they showed are §5 and §8).
+
+### The look card — on the preview, his iPhone for the phone lines
+
+1. **A shared input's dates cannot be changed once saved** (drag it, or delete and file again) — say if it is built before "merge live".
+2. **OIL:** whoever filed a shared duty and answers its OIL question again answers for everyone in it — a man's own earlier No is replaced. Is that what you want?
+3. Pick several days on the Inputs month: the new-input window opens at once (the drawing kept the days picked with a bar to confirm).
+4. The people picker on your phone: the pucks are spaced for a finger, so SANS is below the first screen. Tighter, as drawn?
+5. On your iPhone: type a Required figure on the number pad; hold and drag a bar; pull a day's window up by its bar.
