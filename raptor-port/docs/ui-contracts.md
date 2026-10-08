@@ -6746,8 +6746,10 @@ Four asks from the same sitting, all on the Leave War grid:
   **NOT BUILT YET — D678 (8 Oct 26: "A looks good"): on a phone the top of the Leave War becomes TWO lines** — the
   period, "+" and this chip (words kept) on the first; the stage (its two moves behind the stage button), the bidding
   dates, under-manned and Legend on the second — so the chip goes BACK onto the Period line, which fits once the word
-  "Period" goes. It narrows D365 below. The drawing, the measurements and the build: `OUTSTANDING.md`
-  `[LW-PHONE-HEADER-SPACE]`; until it lands, the paragraph below is what the app does.
+  "Period" goes. It narrows D365 below. **A DESKTOP AND A TABLET STAY AS THEY ARE — D679 ("keep the same for
+  desktop"): two lines, every label and button as today; the one-line desktop drawing is not built.** The drawing, the
+  measurements and the build: `OUTSTANDING.md` `[LW-PHONE-HEADER-SPACE]`; until it lands, the paragraph below is what
+  the app does.
   **On a phone the chip drops to its own line (`[ABSENCE-SMALL-SEEN]` 2, 28 Sep 26 — the re-test's W6 N6).** The shell's
   phone bar rule `.topbar>*{flex:0 0 auto}` (scheduler.css, ≤820px) leaked onto this row, so it never wrapped: at 390 the
   chip hung past the right edge (to 481px) inside a row that scrolled sideways. The row's spacer (`.spring`) may now

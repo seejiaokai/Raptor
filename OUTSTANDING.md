@@ -52,7 +52,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
-**Picked by him, to build (D678, 8 Oct 26 — "A looks good"):** [LW-PHONE-HEADER-SPACE] — the top of the Leave War on a phone becomes two lines (idea A of the page he was shown); whether the desktop becomes one line waits for his word. Not started.
+**Picked by him, to build (D678, 8 Oct 26 — "A looks good"):** [LW-PHONE-HEADER-SPACE] — the top of the Leave War on a phone becomes two lines (idea A of the page he was shown); the desktop stays as it is (D679). Not started.
 
 **Soon, on his word (8 Oct 26), its own documents-only chat:** [SKILL-OBS-REVIEW] — review the skill-observation backlog (about 200 open, last reviewed 24 Sep 26).
 
@@ -1671,7 +1671,9 @@ or leaves the screen at 390px and at 360px; a stage move behind a chip is a new 
 **HIS PICK, the same afternoon — D678: "A looks good, with this is there anything the desktop can follow too?"** A is
 the design for the phone (the ruling's readings are in its full row; D365 is marked). His question on the desktop was
 answered in that chat — the two lines can become ONE there, every word and button kept, about 50px saved — and a
-picture of it was added to the same page; **the desktop half waits for his word.** The build is not started: tests
+picture of it was added to the same page; **HIS WORD, the same afternoon — D679: "keep the same for desktop" (asked
+which he meant: "Leave desktop as today") — THE DESKTOP AND THE TABLET ARE NOT TOUCHED; the build is the phone only, and
+its browser test also holds the desktop's two lines as they are.** The build is not started: tests
 first, a browser test at 390px and 360px (nothing overlapping, nothing off the screen, the stage menu opening inside
 the screen and closing on a press outside — the 4 Sep 26 rule), a member's view with no "+" and a stage button that
 opens nothing, and a long callsign in "Viewing as" still ending in "…".
