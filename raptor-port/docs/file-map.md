@@ -647,6 +647,8 @@ A DAY OPENED on the Inputs month is a window on the shell (`win-inputsday`, draw
 day's title and "+ Input" pinned, the planning sections and then one line an entry scrolling under them - who, the kind,
 when, the LATE tag (D646), who placed it (D629); a saved or brought-back input is shown WHERE IT IS (D672: its bar
 flashes; only one with no bar opens its day). `inputsday.test.tsx`.
+THE KEYBOARD on the Inputs month (D621) is `InputsCal.tsx onKey`: one tab stop, arrows, Shift + arrows for a run, Enter,
+Escape (the open day, then the run), and Delete on a line of the opened day, which asks first. `inputskeys.test.tsx`.
 `scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
 laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
 `inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto

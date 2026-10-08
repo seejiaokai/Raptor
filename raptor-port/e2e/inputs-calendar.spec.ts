@@ -430,3 +430,43 @@ test('on a phone the opened day is a panel on the foot of the screen: about two-
     await page.locator('[data-testid="win-inputsday-x"]').tap(); await expect(win).toHaveCount(0)
   } finally { await context.close() }
 })
+
+/* THE KEYBOARD, WITH REAL KEYS AND REAL FOCUS (D621): what jsdom cannot say is where the browser's focus really goes —
+   onto the next date, into the opened day and back to the date on Escape, onto the question's "Delete". */
+test('the keyboard: arrows move the date, Shift + arrows pick a run, Enter files or opens, Escape closes and gives the keyboard back, Delete asks first', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [iid] = await file(page, [{ who: 3, type: 'LL', from: 'Oct 20' }])
+  const on = () => page.evaluate(() => (document.activeElement as HTMLElement | null)?.dataset.icday || (document.activeElement as HTMLElement | null)?.dataset.testid || document.activeElement?.tagName)
+  await cell(page, '2026-10-13').focus()
+  await page.keyboard.press('ArrowRight'); expect(await on()).toBe('2026-10-14')
+  await page.keyboard.press('ArrowDown'); expect(await on()).toBe('2026-10-21')
+  await page.keyboard.press('Shift+ArrowLeft'); await page.keyboard.press('Shift+ArrowLeft')
+  for (const d of ['2026-10-19', '2026-10-20', '2026-10-21']) await expect(cell(page, d)).toHaveClass(/is-picked/)
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 19 → Oct 21')
+  await page.keyboard.press('Escape'); await expect(page.locator('#inpEditPop')).toBeHidden()
+  /* past the month's end the month turns and the keyboard is on the new month's date */
+  await cell(page, '2026-10-31').focus(); await page.keyboard.press('ArrowRight')
+  await expect(page.locator('#inpCal .ic-mon')).toHaveText('November 2026'); await expect.poll(on).toBe('2026-11-01')
+  await page.keyboard.press('ArrowLeft'); await expect(page.locator('#inpCal .ic-mon')).toHaveText('October 2026'); await expect.poll(on).toBe('2026-10-31')
+  /* Enter opens the day and the keyboard goes INTO its window; Escape closes it and hands the keyboard back to the date */
+  await cell(page, '2026-10-20').focus(); await page.keyboard.press('Enter')
+  await expect(dayWin(page)).toBeVisible()
+  expect(await page.evaluate(() => !!document.activeElement?.closest('[data-testid="win-inputsday"]')), 'the keyboard is in the window').toBe(true)
+  await page.keyboard.press('Escape'); await expect(dayWin(page)).toHaveCount(0)
+  await expect.poll(on, { message: 'the keyboard is back on the date that opened it' }).toBe('2026-10-20')
+  /* Delete on a line asks first; the question's own "Delete" has the keyboard, so Enter answers it */
+  await page.keyboard.press('Enter'); await expect(dayWin(page)).toBeVisible()
+  await page.locator(`[data-testid="idy-row-${iid}"] [data-testid="idy-open"]`).focus()
+  await page.keyboard.press('Delete')
+  await expect(page.locator('[data-testid="idy-ask"]')).toContainText('Delete this input?')
+  expect(await recDates(page, iid), 'nothing is removed until he says').not.toBeNull()
+  await expect.poll(on).toBe('idy-del-yes')
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-testid="idy-ask"]')).toHaveCount(0); await expect(dayWin(page), 'Escape put the question away, not the day').toBeVisible()
+  await page.locator(`[data-testid="idy-row-${iid}"] [data-testid="idy-open"]`).focus()
+  await page.keyboard.press('Delete'); await expect.poll(on).toBe('idy-del-yes'); await page.keyboard.press('Enter')
+  await expect.poll(() => recDates(page, iid)).toBeNull()
+  await page.click('#undoBtn'); await expect.poll(() => recDates(page, iid)).toEqual(['Oct 20', ''])
+})

@@ -41,9 +41,11 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { me } from '../state/perms'
+import { mayDeleteInput, me } from '../state/perms'
+import { addDays } from '../state/flyplan-model'
+import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
+import { fmt, fmtDay, inputTone, firstPersonalType, removeInput } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
@@ -167,8 +169,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      popover is mid-edit" instead of a second one that could fall out of
      step with it. */
   const [popIso, setPopIso] = useState<string | null>(null)
-  /* a run of days being drawn by the pointer, first day first */
+  /* a run of days being drawn by the pointer, first day first — and one stretched by the keyboard */
   const [drawn, setDrawn] = useState<{ a: string; b: string } | null>(null)
+  const [kb, setKb] = useState<{ anchor: string; end: string } | null>(null)
+  /* the date the keyboard is on (ONE tab stop for the whole month), and a date to focus once it is drawn */
+  const [at, setAt] = useState<string | null>(null)
+  const wantFocus = useRef<string | null>(null)
+  /* which input of the opened day Delete has asked about (its entry's key) */
+  const [delAsk, setDelAsk] = useState<string | null>(null)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
   const shown=useRef<typeof INPREVEAL>(null)
@@ -210,7 +218,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
   const showDay=(iso:string|null)=>{ if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso) }
   useEffect(()=>()=>spendReveal(),[])
-  const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null) }
+  const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null);setDelAsk(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
   /* which late input's note is showing in the opened day (its entry's key) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
@@ -305,7 +313,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     setInpEdit({ _new: true, _calendar:true, _ctx: 'i', person: me(), type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080 })
     notify()
   }
-  const closePop = () => { showDay(null); setPopPuckEdit(null) }
+  const closePop = () => { showDay(null); setPopPuckEdit(null); setDelAsk(null) }
 
   /* ---- the pointer: two machines on the one grid, wired once; they read the latest handlers through a ref -------- */
   const tapEntry = (entry: any) => {
@@ -336,9 +344,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        has on the List's add form), so a pick is never refused here */
     const offPick = initCalPick(el, {
       canPick: () => true,
-      onTap: iso => live.current.pickDate(iso),
+      onTap: iso => { setKb(null); setAt(iso); live.current.pickDate(iso) },
       onPicking: setDrawn,
-      onRange: (a, b) => live.current.openAdd(a, b),
+      onRange: (a, b) => { setKb(null); live.current.openAdd(a, b) },
       onSwipe: dir => live.current.step(dir),
     })
     return () => { offDrag(); offPick() }
@@ -366,6 +374,43 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        month, and in the direction it travels (forward if it lands later). */
     slideDirRef.current = (ny * 12 + nm) - (cur.y * 12 + cur.m) < 0 ? -1 : 1
     setCalMonth({ y: ny, m: nm }); notify()
+  }
+
+  /* ---- THE KEYBOARD (owner D621, D626 — the set stands as drawn): arrows move from date to date and turn the month at
+     its ends; Shift and the arrows stretch a run; Enter opens the day, or files "+ Input" for the run; Escape closes
+     the front window, then lets a run go; Delete, on an input in the opened day, removes it — asking first (below, in
+     the day's list). ONE tab stop for the month, as the SANS month has. ---- */
+  useLayoutEffect(() => {
+    const iso = wantFocus.current
+    if (!iso) return
+    const el = gridRef.current?.querySelector<HTMLElement>(`[data-icday="${iso}"]`)
+    if (el) { wantFocus.current = null; el.focus({ preventScroll: false }) }
+  })
+  const moveTo = (iso: string) => {
+    const y = +iso.slice(0, 4), m = +iso.slice(5, 7)
+    setAt(iso); wantFocus.current = iso
+    if (y !== cur.y || m !== cur.m) { slideDirRef.current = y * 12 + m > cur.y * 12 + cur.m ? 1 : -1; setCalMonth({ y, m }); notify() }
+  }
+  const ARROWS: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }
+  const onKey = (iso: string) => (e: ReactKeyboardEvent) => {
+    if (e.target !== e.currentTarget) return
+    const by = ARROWS[e.key]
+    if (by !== undefined) {
+      e.preventDefault()
+      const to = addDays(iso, by)
+      if (e.shiftKey) setKb(k => ({ anchor: k ? k.anchor : iso, end: to }))
+      else setKb(null)
+      moveTo(to)
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      if (kb) { const [a, b] = kb.anchor <= kb.end ? [kb.anchor, kb.end] : [kb.end, kb.anchor]; setKb(null); openAdd(a, b) }
+      else pickDate(iso)
+    } else if (e.key === 'Escape') {
+      /* the front window first, then the run (the plan §3.6). The keyboard is on a date — the page BEHIND the window —
+         where the shell leaves Escape to whatever has it (ui/FloatWindow.tsx), so the date itself closes its day. */
+      if (popIso) { e.preventDefault(); e.stopPropagation(); closePop() }
+      else if (kb) { e.preventDefault(); e.stopPropagation(); setKb(null) }
+    }
   }
 
   /* THE SLIDE. After the month's DOM is in place, run the new grid in from the
@@ -444,6 +489,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weeks.length, narrow])
   const lanes = narrow ? fit.lanes : DESK_LANES
+  /* the month's one tab stop: where the keyboard last was, else today, else the 1st */
+  const firstIso = cells.find(Boolean) as string
+  const tabAt = at && at.slice(0, 7) === firstIso.slice(0, 7) ? at : todayIso.slice(0, 7) === firstIso.slice(0, 7) ? todayIso : firstIso
+  const run = drawn || (kb ? (kb.anchor <= kb.end ? { a: kb.anchor, b: kb.end } : { a: kb.end, b: kb.anchor }) : null)
 
   const KIND_SAY: Record<string, string> = { ph: 'public holiday', off: 'Off day', nf: 'no-fly day' }
   const nameOf = (id: any) => (PEOPLE[id] ? PEOPLE[id].cs : String(id))
@@ -621,6 +670,21 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        this day — the day it runs till */
     const whenOf = (it: BarItem) => (it.b > iso ? (it.allday ? '' : hoursOf(it.rows[0]) + ' · ') + 'till ' + fmtDay(it.b) : hoursOf(it.rows[0]))
     const openInput = (r: any) => { setInpEdit(r); notify() }
+    /* DELETE on a line removes that input — ASKING FIRST (D621): a key pressed by a slip must not take a man's leave
+       away. Only where its reader may delete it (the write path's own rule, perms.ts — the screen mirrors it and says
+       who can); the question is put under the line, and Escape puts it away without closing the day. */
+    const onLineKey = (it: BarItem) => (e: ReactKeyboardEvent) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return
+      e.preventDefault()
+      const r = it.rows[0]
+      if (!mayDeleteInput(r)) { HOOKS.toast(`Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return }
+      setDelAsk(it.key)
+    }
+    const doDelete = (it: BarItem) => {
+      setDelAsk(null)
+      const live = INPUTS.find((x: any) => x.iid === it.rows[0].iid)
+      if (live && removeInput(live)) HOOKS.toast('Input deleted', 'ok')
+    }
     return (
       /* A WINDOW ON THE SHELL (owner D641: it is dragged about and the month behind it still works — so a tap on
          another date re-points this same window, and an input saved behind it shows in it at once). No veil, no close
@@ -775,7 +839,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   return (
                     <div key={it.key} className={'sd-row idy-row ' + it.tone} data-popiid={it.key} data-testid={'idy-row-' + it.key}
                       onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) openInput(r) }}>
-                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${when}`} onClick={() => openInput(r)}>
+                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${when}`} onClick={() => openInput(r)} onKeyDown={onLineKey(it)}>
                         <span className="idy-sq" aria-hidden="true" />
                         <b className="idy-who">{who}</b>
                         <span className="idy-kind">{it.word}</span>
@@ -788,6 +852,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                       {late && lateOpen === it.key && <span className="sd-latenote" data-testid="idy-latenote" role="status">{late}</span>}
                       {rmk && <span className="sd-rmk">{rmk}</span>}
                       {placed && <span className="sd-placed" data-testid="idy-placed">{placed}</span>}
+                      {delAsk === it.key && (
+                        <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
+                          onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
+                          <span className="idy-ask-q">Delete this input?</span>
+                          <button type="button" className="abtn danger" data-testid="idy-del-yes" autoFocus onClick={() => doDelete(it)}>Delete</button>
+                          <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>Keep</button>
+                        </span>
+                      )}
                     </div>
                   )
                 })}
@@ -927,7 +999,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
         {under}
       </div>
       <div className="ib-dow" aria-hidden="true">{WD.map((d, i) => <span key={d} className={i >= 5 ? 'is-we' : ''}>{d}</span>)}</div>
-      <div className={'ib-grid' + (drawn ? ' is-picking' : '')} ref={gridRef} data-testid="ib-grid"
+      <div className={'ib-grid' + (run ? ' is-picking' : '')} ref={gridRef} data-testid="ib-grid"
         style={{ ['--ib-row']: fit.row + 'px', ['--ib-head']: sizes.head + 'px', ['--ib-lane']: sizes.lane + 'px', ['--ib-more']: sizes.more + 'px' } as React.CSSProperties}>
         {weeks.map((week, wi) => {
           const wk = layoutBars(week, items, lanes)
@@ -939,13 +1011,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   if (!iso) return <div key={'x' + ci} className="ib-x" />
                   const tag = dayTag(answers[iso], dayFacts(iso).short)
                   const n = itemsOn(iso, items).length
-                  const picked = !!drawn && iso >= drawn.a && iso <= drawn.b
+                  const picked = !!run && iso >= run.a && iso <= run.b
                   const cls = 'ib-day' + (ci >= 5 ? ' is-we' : '') + (iso === todayIso ? ' is-today' : '') + (tag ? ' k-' + tag.kind : '') +
                     (picked ? ' is-picked' : '') + (iso === popIso ? ' is-open' : '')
                   return (
-                    <div key={iso} className={cls} data-icday={iso} role="button" tabIndex={0} aria-pressed={iso === popIso}
+                    <div key={iso} className={cls} data-icday={iso} role="button" tabIndex={iso === tabAt ? 0 : -1} aria-pressed={iso === popIso}
                       aria-label={`${dayWord(iso)}${tag ? ', ' + KIND_SAY[tag.kind] : ''}, ${n ? `${n} input${n > 1 ? 's' : ''}` : 'no inputs'}`}
-                      onKeyDown={e => { if (e.target !== e.currentTarget) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickDate(iso) } }} />
+                      onKeyDown={onKey(iso)} onFocus={() => setAt(iso)} />
                   )
                 })}
               </div>
