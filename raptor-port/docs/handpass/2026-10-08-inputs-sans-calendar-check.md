@@ -328,3 +328,24 @@ seen failing by the host's script before the rule; W12 (the desktop margin) is a
 SEEN and OPERATED by a walker (the table in each `parts/cal-<letter>.md` cites its pictures). MISSING, with its
 disposition: **A5** — fixed (W1). **G5 on the "To go out" tab** — filed (`[CAL-TOGO-ONE-ITEM]`). **W1 and W5 / W7**
 (a sheet behind the "Calendar" window; "Calendar" behind its settings window) — fixed (W11). No row is blank.
+
+## 10. The two code reads (each blind to the other; the sheet in their hands)
+
+**Astra — `docs/superpowers/briefs/2026-10-08-inputs-sans-check-read-astra.md` — CHANGES REQUIRED.** Five findings, each
+traced through the source with its cause and fix steps. **NONE IS YET REPRODUCED BY THE HOST — each is a lead until it is
+(the order's §4: reproduce through the real route, check against the ruling, compare with `main`).**
+
+| # | Astra's finding | Its rating | The host's disposition |
+|---|---|---|---|
+| R1 | A shared input changed to a medical kind and cut to ONE person ("Keep Ace only") is still saved by the group's branch: the document, upchit and medical-clash questions are skipped, and a document attached in that window is dropped (`ui/inputedit.tsx` — the group branch returns before the questions; the writer puts the survivor's old attachments back) | High | OWED — reproduce, then fix with a test |
+| R2 | A shared weekend duty answered Yes for two; the FIRST man changes his own answer to No; the filer then changes the hours. The save asks the OIL gate about the first man only — his No stands, so no question opens — and the second man's answer, voided by the new hours, is left unanswered: he is asked by his own bell, which D660 says must not happen | High | OWED — reproduce, then fix with a test (both orders of mixed answers) |
+| R3 | A SAVED shared input has no door that changes its date RANGE: the List's row opens the window, the window draws no date picker for an existing input, and a bar's drag keeps its length | Medium | OWED — a missing door; reproduce, then build the picker for a saved shared entry or put it to him |
+| R4 | Undo of a "Calendar" change (a date set no-fly, a weekday's rule) always switches the Inputs page to the SANS tab and, for a rule, to the month it starts in — even when what changed is in view (D672) (`state/undo-wire.ts`) | Medium | OWED — reproduce, then fix with a test |
+| R5 | The "no medical entry for several people" rule is held on screen and at the group's save only: two men of a shared meeting, each retyped SEPARATELY from Edit Schedule into the same medical kind, keep their group and are one shared medical entry again on Inputs | Medium | OWED — reproduce; the sheet's row H8 had named the gap |
+
+Its negatives (checked, sound): the roll-call's readers of the placed-by line, the late tag, the holiday tag and the
+required figures; the members' switch, the filer checks, forged-stamp checks and verified replay behind every screen;
+the late rule's arithmetic and settings. Its test-coverage table names seven combined cases no test holds — among them
+that W12's desktop margin has no geometry assertion.
+
+**Sol 6.1 — `…-read-sol.md`:** still reading when this was written.
