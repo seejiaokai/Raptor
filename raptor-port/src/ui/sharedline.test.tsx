@@ -166,6 +166,23 @@ describe('the List: a shared input is one line', () => {
     expect($('#inBody tr.ined')).toBeNull()
     expect(tid('win-inputedit')!.textContent).toContain(`${cs(g.first)} +2`)
   })
+  /* SOL'S READ of the calendar job's bug check (8 Oct 26), S3 - and what walker C had seen ("Anvil +2" and "Ace +2" for one
+     filing). A man whose callsign sorts BEFORE the others is added from the List: the entry's first record is now his,
+     but the save pins the record it was opened on - and pins went on top AFTER the entries were folded, as a record
+     of their own. The one filing was drawn twice. */
+  it('a man sorting FIRST is added from the List: still ONE row, now leading with him', async () => {
+    const [z, x, y] = az(others())
+    const g = await shared([x, y], LATER)
+    await listUp()
+    expect(rowsOf(g.grp)).toHaveLength(1)
+    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click($(`#inpEditPop .pp-pucks button[aria-label="${cs(z)}"]`))
+    await click($('#inpEditSave'))
+    expect(of(g.grp), 'three records saved').toHaveLength(3)
+    const rows = rowsOf(g.grp)
+    expect(rows, 'one row for the one filing').toHaveLength(1)
+    expect(rows[0].querySelector('[data-label="Name"]')!.textContent).toBe(`${cs(z)} +2`)
+  })
   it('its row has no ✕ and no OIL chip of one man’s: deleting it, and its OIL answer, are in its window — for everyone', async () => {
     const g = await shared(others().slice(0, 3), { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
     await listUp()
@@ -195,7 +212,9 @@ describe('the List: a shared input is one line', () => {
   })
   it('an ordinary input keeps its row as it was — ✎ in place, ✕, its own name', async () => {
     const a = others()[0]
-    await act(async () => { writeInputs(() => { INPUTS.push({ iid: 'solo1', person: a, type: 'Meeting', date: 'Oct 8', yr: 2026, allday: false, s: 600, e: 660, remarks: 'solo', mod: '2026-09-01' }) }); notify() })
+    /* a date the List still shows: it opens on today onward, and 8 Oct 26 - the date written here first - went
+       red the night the calendar turned to the 9th (the calendar job's bug check) */
+    await act(async () => { writeInputs(() => { INPUTS.push({ iid: 'solo1', person: a, type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660, remarks: 'solo', mod: '2026-09-01' }) }); notify() })
     await listUp()
     const row = $('#inBody tr[data-iid="solo1"]')!
     expect(row.querySelector('[data-label="Name"]')!.textContent).toBe(cs(a))

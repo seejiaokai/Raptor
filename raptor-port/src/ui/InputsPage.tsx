@@ -821,7 +821,11 @@ export function InputsPage() {
      Deleted and undone rows fall out here — the pin points at an object, so a
      row that has left INPUTS simply stops matching. */
   {
-    const pins = inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0)
+    /* A PIN IS ITS ENTRY'S ONE ROW (Sol's read of the calendar job's bug check, 8 Oct 26 — and what a walker had seen):
+       a pin points at a RECORD, and a shared input is drawn as its first record's row. A man sorting first, added
+       from the List, made another record the first — and the pinned one went on top as a row of its own: one filing,
+       drawn twice. Each pin is turned into the row its entry is drawn as, once. */
+    const pins = [...new Set(inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0).map((r: any) => (entryOf.get(r) || [r])[0]))]
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
   }
 
