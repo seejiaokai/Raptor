@@ -337,3 +337,41 @@ describe('the counts', () => {
     expect(weekNew(newTo('stiff'))).toBe(2)
   })
 })
+
+/* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663, 7 Oct 26: "in the changes window a group filing is one item —
+   its kind and how many people, the names listed under it — not a line for each man"). The history still writes a line
+   for each man (the plan §3.13: "To go out" finds a line by its man); each carries its record's group id, and "Group
+   by: Item" keys a grouped record by its group. "Group by: Who" is unchanged, and so is the day's count. */
+describe('a group filing is one item (D663)', () => {
+  const T = '2026-07-14'
+  const filed = (iid: string, who: string, cs: string, extra: Partial<ELogRow> = {}) =>
+    row({ key: '', iid, sub: who, sect: 'abs', itype: 'Meeting', grp: 'gA', date: T, lbl: `${cs} · Meeting added · 14 Jul`, ...extra })
+  const four = () => put(filed('g1', 'bane', 'Ranger'), filed('g2', 'stiff', 'Saber'), filed('g3', 'casper', 'Casper'), filed('g4', 'dj', 'DJ'))
+  it('four men filed together: ONE item, "Input · Meeting · 4 people", the four names under it', () => {
+    four()
+    const groups = byItem(linesFor([T], () => false), false, [T]).filter(g => g.key.includes('|IG|'))
+    expect(groups).toHaveLength(1)
+    expect(groups[0]!.title).toBe('Input · Meeting · 4 people')
+    expect(groups[0]!.entries.map(e => e.text).sort()).toEqual([
+      'Casper · Meeting added · 14 Jul', 'DJ · Meeting added · 14 Jul', 'Ranger · Meeting added · 14 Jul', 'Saber · Meeting added · 14 Jul'])
+    expect(byItem(linesFor([T], () => false), false, [T]).some(g => g.key.includes('|I|g')), 'no item of one man’s').toBe(false)
+  })
+  it('a later change to one man alone is its own line under the item, naming him', () => {
+    four()
+    put(filed('g2', 'stiff', 'Saber', { lbl: 'Saber · Meeting 14 Jul · remarks', from: 'brief', to: 'room 2' }))
+    const g = byItem(linesFor([T], () => false), false, [T]).find(x => x.key.includes('|IG|'))!
+    expect(g.entries).toHaveLength(5)
+    expect(g.title, 'still four people').toBe('Input · Meeting · 4 people')
+    expect(g.entries.some(e => e.text === 'Saber · Meeting 14 Jul · remarks' && e.to === 'room 2')).toBe(true)
+  })
+  it('"Group by: Who" is unchanged — a line each, under whoever made it; and four men are four changes', () => {
+    four()
+    const lines = linesFor([T], () => false)
+    expect(lines).toHaveLength(4)
+    expect(byWho(lines).reduce((n, w) => n + w.lines.length, 0)).toBe(4)
+  })
+  it('an ordinary input keeps its own item, as before', () => {
+    put(row({ key: '', iid: 'in7', sub: 'bane', sect: 'abs', itype: 'LL', date: T, lbl: 'Ranger · LL added · 14 Jul' }))
+    expect(itemOf(ELOG.rows[0]!, T).id).toBe(`${T}|I|in7`)
+  })
+})

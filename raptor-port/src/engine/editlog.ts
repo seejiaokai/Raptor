@@ -61,6 +61,7 @@ export type ELogRow = {
   wdate?: string      // the span BEFORE the change, when it moved (Astra DP-05): an absence moved from 1–2 Aug to 6–7 Aug
   wend?: string       //   shows on both spans, never on the days between
   iid?: string        // the input the line is about (an absence line)
+  grp?: string        //   and, for one record of a SHARED input, its group id — the changes window files the men of one filing under one item (D663)
   itype?: string      //   and its TYPE, so a gone input's item keeps its name ("Input · Ranger · LL" — [CHG-BY-ITEM], Astra FR-04)
   iids?: string[]     // EVERY input the line is about, when more than one (a war move files the moved day as a new record —
                       //   the line keeps the one it left too, so "To go out" finds it by id: Astra's round-3 read, R3-02)
@@ -174,6 +175,7 @@ export function elogLoad(): void {
     if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
     if (typeof x.iid === 'string' && x.iid) r.iid = x.iid
     if (typeof x.itype === 'string' && x.itype) r.itype = x.itype
+    if (typeof x.grp === 'string' && x.grp) r.grp = x.grp
     if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
     if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
     const strs = (v: any, ok: (s: string) => boolean) => Array.isArray(v) ? v.filter((s: any) => typeof s === 'string' && ok(s)) : []
@@ -458,7 +460,7 @@ export function logEdit(key: any, from: any, to: any) {
    (an input, a Leave War record) is on ITS dates, which may lie in any week; `iid` names the input it is about. */
 export type LineAt = {
   date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
-  iid?: string | null; itype?: string; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
+  iid?: string | null; itype?: string; grp?: string; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
   iids?: string[]; days?: string[]; wdays?: string[]
 }
 export function logAction(di: any, text: string, at?: LineAt) {
@@ -475,6 +477,7 @@ export function logAction(di: any, text: string, at?: LineAt) {
   }
   if (at && at.iid) row.iid = at.iid
   if (at && at.itype) row.itype = at.itype
+  if (at && at.grp) row.grp = at.grp
   if (at && at.sect) row.sect = at.sect
   if (at && at.sub) { row.sub = at.sub; if (at.fld) row.fld = at.fld }
   if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()

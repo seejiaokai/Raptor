@@ -395,7 +395,8 @@ kept across a reload), wall-clock, display name (from `HOOKS.whoami()` — the s
 written, its CALENDAR day (ISO — the week it belongs to) and, for an absence, the span after (`date`–`end`) and before
 (`wdate`–`wend`), the input it is about, the part of the day a line with no key belongs to, for a Quals line the person it
 is about and which of his details (`sub`, `fld` — by id, so a rename never loses it; Astra's final read), for an absence
-line the person too (`sub`), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
+line the person too (`sub`) and — for one record of an input filed for several people — that filing's group id (`grp`, the
+record's own `Input.grp`; 8 Oct 26, D663: the changes window files the men of one filing under one item), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
 new record), and its exact days when they are not one run (`days`, `wdays` — a gap day stays untouched), the slot key, a frozen label
 of what it was, before and after (a person key keeps the person's ID — `elogVal` says his live callsign). **Durable since
 `[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** loaded at boot, kept across sign-in and sign-out, never a command record (undo

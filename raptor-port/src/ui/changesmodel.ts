@@ -23,7 +23,7 @@ import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { ridKey, posKey } from '../engine/rowids'
 import { PEOPLE } from '../engine/people'
-import { inpById } from '../engine/inputs'
+import { INPUTS, inpById } from '../engine/inputs'
 import { dayApproved, approvedDays } from '../engine/publish'
 import { inVersionLook } from './html'
 
@@ -126,6 +126,14 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
   const who = inp ? inp.person : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
   /* gone, it keeps the type its line recorded (`itype` — Astra's final read, FR-04) */
   const type = inp ? inp.type : (r.itype || '')
+  /* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663): keyed by the group its line recorded — never by the input
+     as it now stands, so a man since changed alone stays under the filing he was part of. Its title is the kind and how
+     many people: those the shared input holds now, or — once it has gone — those its lines name. */
+  if (r.grp) {
+    const now = (INPUTS as any[]).filter(x => x && x.grp === r.grp).length
+    const n = now || new Set(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => x.sub)).size
+    return { id: `${date}|IG|${r.grp}`, title: `Input${type ? ' · ' + type : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
+  }
   const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
 }
@@ -238,6 +246,8 @@ function ownWords(r: ELogRow, item: Item): string {
   /* a Blue/Red answer's own words are where it was given ("Working copy", "Published · AL1", "copied with the day
      template") — its formation and "mission role" are already its heading (W7) */
   if (r.fld === 'mission-role') { const i = lbl.indexOf(' · mission role · '); return i < 0 ? lbl : lbl.slice(i + ' · mission role · '.length) }
+  /* under a group filing's item every line NAMES its man — the heading is the kind and how many (D663) */
+  if (r.grp) return lbl
   const who = r.sub || (r.iid ? (inpById(r.iid) as any)?.person : '')
   for (const lead of [`Leave War · ${csOf(who)} · `, `${csOf(who)} · `]) if (who && lbl.startsWith(lead)) return lbl.slice(lead.length)
   return item.title === lbl ? '' : lbl

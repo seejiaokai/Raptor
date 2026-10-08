@@ -219,9 +219,9 @@ describe('the List’s Add form files for several people too', () => {
     const [b, c] = others()
     await click(form().querySelector(`[data-pp="${b}"]`)); await click(form().querySelector(`[data-pp="${c}"]`))
     await pickDate()
-    const before = INPUTS.length
+    const before = INPUTS.length, had = new Set(INPUTS.map((r: any) => r.iid))
     await click($('#inAdd'))
-    const made = INPUTS.slice().filter((r: any) => r.grp && !String(r.grp).startsWith('gL')) as any[]
+    const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
     expect(INPUTS.length).toBe(before + 3)
     expect(new Set(made.map(r => r.grp)).size).toBe(1)
     expect(made.map(r => String(r.person)).sort()).toEqual([admin, b, c].sort())

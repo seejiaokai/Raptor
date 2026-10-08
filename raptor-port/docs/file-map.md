@@ -658,6 +658,11 @@ Save's refusal); `pickRoster` the people offered (SANS only on the SANS calendar
 editor's half - the entry opened as one thing, "Take me out", Delete for everyone (`inputedit.tsx removeEntry`), the
 OIL question asked once, the people followed behind the window - `groupeditor.test.tsx`. `state/inputgroup.ts
 entryRowsOf` is the entry a record belongs to.
+A shared input as ONE line - the opened day (its people's pucks, both Delete questions), the List (one row, one
+button), the List's own Add form with the picker - `sharedline.test.tsx`; its bar's drag for everyone -
+`barmove.test.tsx`; its one item in the changes window (`changesmodel.ts inputItem`, the line's `grp` from
+`state/changelines.ts`) - `changesmodel.test.ts`; the demo's one shared input (`state/demoseed.ts seedDemoGroup`,
+on the Thursday after the seed week) - `state/demostamps.test.ts`.
 
 `src/ui/InputsSettings.tsx` - THE INPUTS CALENDAR'S SETTINGS, the window behind its gear (`win-inputsset`, `pops.ts
 INPSET`; D639, D628, D654 / D655): "Calendar…", the late cut-off for inputs, and the members' switch - a draft until

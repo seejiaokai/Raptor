@@ -95,7 +95,10 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   const sa = spanOf(a), sb = spanOf(b)
   /* every absence line keeps WHOSE it is, by id (`sub` — Fable's read of the fixes, FF4): "To go out" finds its line by it
      when the input it was about has since been re-filed under another id (a move on the war) */
-  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...extra })
+  /* …and, for one record of a SHARED input, its group id: the changes window files the men of one filing under one
+     item (D663) — a line each is still written, "To go out" finding a line by its man */
+  const grp = (a || b || {}).grp
+  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...(grp ? { grp: String(grp) } : {}), ...extra })
   /* whether it is on the programme is read as the week on screen now shows it: since [DB-READINESS] phase 6 (c) a request's
      row is worked out AFTER its command (state/holderbase.ts, phase 8), so its `acc` in the envelope is the one it had
      before — this line is written at phase 9, after the working-out (Fable's round-3 F4.3) */

@@ -9,7 +9,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { initStore } from './store'
-import { seedDemoStamps } from './demoseed'
+import { seedDemoGroup, seedDemoStamps } from './demoseed'
+import { entriesOf } from './inputgroup'
+import { memberFilesForOthers } from './perms'
 import { placedLine } from '../ui/placedline'
 
 const SNAP = JSON.stringify(INPUTS)
@@ -53,5 +55,32 @@ describe('the demo inputs say who placed them', () => {
     mine.by = 'someone'; mine.at = 5
     seedDemoStamps()
     expect([mine.by, mine.at]).toEqual(['someone', 5])
+  })
+})
+
+/* ONE SHARED INPUT IN THE DEMO (the plan §3.13: "The demo seed carries one group input, so every list is seen with one
+   from the first walk"). Filed by the admin for himself and three others — never by a member for another man. */
+describe('the demo carries one shared input', () => {
+  const team = () => INPUTS.filter((r: any) => r.grp) as any[]
+  it('four records, one group, the same day, hours, kind and remark — each man once', () => {
+    const t = team()
+    expect(t).toHaveLength(4)
+    expect(new Set(t.map(r => r.grp)).size).toBe(1)
+    expect(new Set(t.map(r => String(r.person))).size).toBe(4)
+    expect(entriesOf(t)).toHaveLength(1)
+    expect(memberFilesForOthers(t[0].type), 'a duty or a commitment').toBe(true)
+  })
+  it('filed by the admin, with each record saying who placed it and when', () => {
+    for (const r of team()) {
+      expect(String(r.grpBy)).toBe(admin())
+      expect(String(r.by)).toBe(admin())
+      expect(typeof r.at).toBe('number')
+      expect(r.iid, 'its own id').toBeTruthy()
+    }
+    expect(team().some(r => String(r.person) === admin()), 'the admin is in it').toBe(true)
+  })
+  it('seeded once: a second boot adds no second one', () => {
+    seedDemoGroup()
+    expect(team()).toHaveLength(4)
   })
 })

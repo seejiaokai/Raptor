@@ -21,6 +21,7 @@ import { me } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
+import { ELOG } from '../engine/editlog'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
@@ -114,6 +115,11 @@ describe('filing one input for several people', () => {
     expect(new Set(made.map(r => r.grp)).size).toBe(1)
     expect(made[0].grp, 'tied by a group id').toBeTruthy()
     expect(made.every(r => String(r.grpBy) === admin && String(r.by) === admin)).toBe(true)
+    /* the change history: a line for each man, each carrying the filing's group — what the changes window makes ONE
+       item of (D663) */
+    const lines = ELOG.rows.filter(x => made.some(r => r.iid === x.iid))
+    expect(lines).toHaveLength(3)
+    expect(lines.every(x => x.grp === made[0].grp), 'each line carries the group id').toBe(true)
     await act(async () => { undo(); notify() })
     expect(INPUTS.length, 'one step').toBe(before)
   })

@@ -183,3 +183,36 @@ export function seedDemoStamps() {
     r.by = by; r.at = at; r.modBy = by; r.modAt = at
   })
 }
+
+/* ---- ONE SHARED INPUT (the build plan §3.13: "The demo seed carries one group input, so every list is seen with one
+   from the first walk") -----------------------------------------------------------------------------------------------
+   Owner, D654 / D655 (7 Oct 26): an input can be filed for several people at once, and is "one shared group input,
+   shown and edited as one thing". A fresh demo with none would show that on no screen until somebody filed one. So the
+   demo carries ONE: a flight safety brief on the Thursday AFTER the seed week, filed by the admin for himself and three
+   others — kept as the app keeps every shared input, one record a man tied by a group id (state/inputgroup.ts).
+
+   FILED BY THE ADMIN, never by a member for another man (the rule above the stamps holds here too): the filer of a
+   shared input may change the whole of it, and a made-up filer would hand out a made-up right.
+
+   NOT IN THE SEED WEEK, on purpose: that week's warnings, rows and counts are what the reference comparison, the DOM
+   ceilings and many tests pin, and four more people in a meeting there would move them. The week after is read by the
+   seed week for its Monday alone (the crew-rest look-ahead), so a Thursday there changes nothing in it.
+
+   Same boot-only home and idempotence as the seeds above: a fresh (un-hydrated) store only, pushed before the ids are
+   minted, and skipped where the group is already there or the roster cannot give four people. */
+const DEMO_GRP = 'g-demo-brief'
+export function seedDemoGroup() {
+  if (INPUTS.some((r: any) => r && r.grp === DEMO_GRP)) return
+  const live = (id: string) => PEOPLE[id] && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers
+  const admin = Object.keys(PEOPLE).find(id => PEOPLE[id].cs === 'Saber' && live(id))
+  if (!admin) return
+  const pilots = Object.keys(PEOPLE).filter(id => id !== admin && live(id) && PEOPLE[id].seat !== 'RCP').slice(0, 2)
+  const wso = Object.keys(PEOPLE).filter(id => id !== admin && live(id) && PEOPLE[id].seat === 'RCP').slice(0, 1)
+  const team = [admin, ...pilots, ...wso]
+  if (team.length < 4) return
+  const at = new Date(2026, 6, 9, 14, 32).getTime()
+  for (const person of team) INPUTS.push({
+    person, type: 'Meeting', date: 'Jul 23', allday: false, s: 600, e: 660, remarks: 'Flight safety brief', mod: '2026-07-09',
+    grp: DEMO_GRP, grpBy: admin, by: admin, at, modBy: admin, modAt: at,
+  })
+}
