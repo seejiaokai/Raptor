@@ -235,3 +235,70 @@ describe('where the switch shows, and what it says when it may not be used', () 
     expect(pickProblem([pilots()[0], wsos()[0]], true, 'Meeting')).toBeNull()
   })
 })
+
+
+/* A DRAG PICKS EVERY PUCK IT PASSES (owner D685, 9 Oct 26 — from his iPhone, four pucks picked one tap at a time: "I should
+   be able to drag to select multiple pucks"). The drag does what its FIRST puck does — begun on a man not picked it
+   picks, begun on a picked man it lets go — and never lets the last man go. On a phone it starts SIDEWAYS: a finger
+   moved up or down is the list being scrolled. jsdom has no layout, so "the puck under the point" is told to it here. */
+describe('a drag across the pucks picks every one it passes (D685)', () => {
+  const realFrom = document.elementFromPoint
+  let row: string[] = []
+  /* the pilots stand in one line, ten points each: the puck under a point is asked by its x */
+  const lay = () => { row = pilots(); (document as any).elementFromPoint = (x: number, y: number) => (y > 40 ? host : puckBtn(row[Math.floor(x / 10)]) || host) }
+  afterEach(() => { (document as any).elementFromPoint = realFrom })
+  const at = (i: number) => i * 10 + 5
+  const ptr = async (type: string, el: Element, x: number, y: number, pointerType = 'mouse') => act(async () => {
+    const e = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0 })
+    Object.defineProperty(e, 'pointerType', { value: pointerType }); Object.defineProperty(e, 'pointerId', { value: 1 })
+    el.dispatchEvent(e)
+  })
+  const drag = async (from: number, to: number, pointerType = 'mouse') => {
+    const start = puckBtn(row[from])
+    await ptr('pointerdown', start, at(from), 5, pointerType)
+    const step = to >= from ? 1 : -1
+    for (let i = from; i !== to + step; i += step) await ptr('pointermove', start, at(i) + (i === from ? 4 * step : 0), 5, pointerType)
+    await ptr('pointerup', start, at(to), 5, pointerType)
+    /* the click a browser sends after the release must not undo the first puck */
+    await act(async () => { start.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true })) })
+  }
+  it('a mouse dragged from one man to the fourth along: all four are picked, in the order passed', async () => {
+    await mount({ people: [wsos()[0]], several: true }); lay()
+    await drag(1, 4)
+    expect(got.people).toEqual([wsos()[0], row[1], row[2], row[3], row[4]])
+    expect(tid('pp-count')!.textContent).toBe('5 picked')
+  })
+  it('dragged back the other way it picks those too', async () => {
+    await mount({ people: [wsos()[0]], several: true }); lay()
+    await drag(4, 2)
+    expect(got.people.slice(1).sort()).toEqual([row[2], row[3], row[4]].sort())
+  })
+  it('begun on a man already picked, the drag lets go of every one it passes — but never the last man', async () => {
+    row = pilots()
+    await mount({ people: [row[0], row[1], row[2]], several: true }); lay()
+    await drag(0, 2)
+    expect(got.people, 'an input is for somebody').toHaveLength(1)
+  })
+  it('a finger moved UP OR DOWN is the list being scrolled: nothing is picked', async () => {
+    await mount({ people: [wsos()[0]], several: true }); lay()
+    const start = puckBtn(row[1])
+    await ptr('pointerdown', start, at(1), 5, 'touch')
+    await ptr('pointermove', start, at(1) + 2, 30, 'touch')
+    await ptr('pointermove', start, at(3), 30, 'touch')
+    await ptr('pointerup', start, at(3), 30, 'touch')
+    expect(got.people).toEqual([wsos()[0]])
+  })
+  it('a finger moved SIDEWAYS picks along the row', async () => {
+    await mount({ people: [wsos()[0]], several: true }); lay()
+    await drag(1, 3, 'touch')
+    expect(got.people).toEqual([wsos()[0], row[1], row[2], row[3]])
+  })
+  it('a plain tap still picks one, and a tap straight after a drag is a tap', async () => {
+    await mount({ people: [wsos()[0]], several: true }); lay()
+    await drag(1, 2)
+    await click(puckBtn(row[5]))
+    expect(got.people).toEqual([wsos()[0], row[1], row[2], row[5]])
+    await click(puckBtn(row[5]))
+    expect(got.people).toEqual([wsos()[0], row[1], row[2]])
+  })
+})

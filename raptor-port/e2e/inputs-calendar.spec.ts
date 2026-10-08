@@ -843,3 +843,97 @@ test('a phone: the shared input’s calendar fits the window, a finger picks its
     for (const iid of ids) await expect.poll(() => recDates(page, iid)).toEqual(['Oct 20', 'Oct 21'])
   } finally { await context.close() }
 })
+
+
+/* HIS LOOK ON HIS IPHONE, 9 Oct 26 — two more (D685, D686). What only a real browser says: that a real finger slid
+   SIDEWAYS over the pucks picks them while a finger moved up or down still scrolls the window; that a real mouse drag
+   picks across rows; and that a finger on a window moves what is in the window and never the page behind it. */
+const openNewOn = async (page: Page, iso: string, touch: boolean) => {
+  if (touch) { await cell(page, iso).tap({ position: { x: 10, y: 10 } }); await page.locator('#icPopAdd').tap() }
+  else { await cell(page, iso).click({ position: { x: 8, y: 8 } }); await page.click('#icPopAdd') }
+  await expect(edWin(page)).toBeVisible()
+  await page.selectOption('#inpEditType', 'Meeting')
+}
+const pickedIds = (page: Page) => page.evaluate(() => [...document.querySelectorAll('#inpEditPop [data-pp][aria-pressed="true"]')].map(b => b.getAttribute('data-pp')!))
+test('a phone: a finger slid sideways over the pucks picks every one it passes; a finger moved down scrolls the window and picks none (D685)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await openNewOn(page, '2026-10-21', true)
+    await pick(page).locator('[data-testid="pp-several"]').tap()
+    const before = await pickedIds(page)
+    /* the second row of Pilots: four across — slide from the first to the last of it */
+    const row = await page.evaluate(() => { const b = [...document.querySelectorAll('#inpEditPop [data-ppgroup="pilots"] [data-pp]')].slice(4, 8).map(e => { const r = e.getBoundingClientRect(); return { id: e.getAttribute('data-pp')!, x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } }); return b })
+    expect(row).toHaveLength(4)
+    const cdp = await context.newCDPSession(page)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: row[0].x, y: row[0].y, id: 1 }] })
+    for (let x = row[0].x + 6; x <= row[3].x; x += 12) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: row[0].y, id: 1 }] }); await page.waitForTimeout(12) }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: row[3].x, y: row[3].y, id: 1 }] })
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await page.waitForTimeout(450)
+    const afterSlide = await pickedIds(page)
+    for (const r of row) expect(afterSlide, 'picked by the slide: ' + r.id).toContain(r.id)
+    expect(afterSlide.length, 'and nobody else').toBe(new Set([...before, ...row.map(r => r.id)]).size)
+    await expect(page.locator('#inpEditPop [data-testid="pp-count"]')).toHaveText(`${afterSlide.length} picked`)
+    /* a finger moved UP over the pucks: the window's own list scrolls, nothing more is picked */
+    const body = () => page.evaluate(() => (document.querySelector('[data-testid="win-inputedit"] .win-body') as HTMLElement).scrollTop)
+    const top0 = await body()
+    const far = await page.evaluate(() => { const e = [...document.querySelectorAll('#inpEditPop [data-ppgroup="pilots"] [data-pp]')].slice(-1)[0], r = e.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } })
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: far.x, y: far.y, id: 1 }] })
+    for (let d = 15; d <= 240; d += 25) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: far.x, y: far.y - d, id: 1 }] }); await page.waitForTimeout(16) }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await cdp.detach()
+    await page.waitForTimeout(450)
+    expect(await body(), 'the list moved under the finger').toBeGreaterThan(top0 + 40)
+    expect(await pickedIds(page), 'and the scroll picked nobody').toEqual(afterSlide)
+  } finally { await context.close() }
+})
+test('a desktop: a mouse dragged across the pucks and down into the next row picks every one it passes; begun on a picked one it lets them go (D685)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  await openNewOn(page, '2026-10-21', false)
+  await pick(page).locator('[data-testid="pp-several"]').click()
+  const before = await pickedIds(page)
+  const at = await page.evaluate(() => [...document.querySelectorAll('#inpEditPop [data-ppgroup="wsos"] [data-pp]')].slice(0, 8).map(e => { const r = e.getBoundingClientRect(); return { id: e.getAttribute('data-pp')!, x: r.left + r.width / 2, y: r.top + r.height / 2 } }))
+  const a = at[0], b = at[2], down = at.find(p => p.y > a.y + 10)!
+  await page.mouse.move(a.x, a.y); await page.mouse.down()
+  await page.mouse.move(b.x, b.y, { steps: 10 }); await page.mouse.move(down.x, down.y, { steps: 10 }); await page.mouse.up()
+  const got = await pickedIds(page)
+  for (const p of [at[0], at[1], at[2], down]) expect(got, p.id).toContain(p.id)
+  expect(got.length).toBeGreaterThanOrEqual(before.length + 4)
+  /* the click the browser sends after the drag did not undo the first puck; a plain click still lets one go */
+  await page.locator(`#inpEditPop [data-pp="${at[1].id}"]`).click()
+  expect(await pickedIds(page)).not.toContain(at[1].id)
+  /* begun on a PICKED puck, the drag lets go */
+  await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.move(b.x, b.y, { steps: 10 }); await page.mouse.up()
+  const left = await pickedIds(page)
+  expect(left).not.toContain(a.id); expect(left).not.toContain(b.id)
+})
+test('a phone: a finger on a window moves what is in the window — its own content when that can scroll, and never the page behind it (D686)', async ({ browser, baseURL }) => {
+  /* a short phone: the page behind is taller than the screen, and so is the new-input form */
+  const { context, page } = await phone(browser, baseURL, 600)
+  try {
+    await openNewOn(page, '2026-10-21', true)
+    const read = () => page.evaluate(() => ({ page: Math.round(window.scrollY), body: (document.querySelector('[data-testid="win-inputedit"] .win-body') as HTMLElement).scrollTop, can: document.scrollingElement!.scrollHeight - window.innerHeight }))
+    const w = (await edWin(page).boundingBox())!
+    const cdp = await context.newCDPSession(page)
+    const swipeUp = async () => {
+      const x = 195, y0 = Math.round(w.y + w.height * 0.7)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0, id: 1 }] })
+      for (let d = 20; d <= 260; d += 30) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 - d, id: 1 }] }); await page.waitForTimeout(16) }
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await page.waitForTimeout(450)
+    }
+    const s0 = await read()
+    expect(s0.can, 'the page behind could scroll').toBeGreaterThan(10)
+    await swipeUp()
+    const s1 = await read()
+    expect(s1.body, 'the form scrolled under the finger').toBeGreaterThan(s0.body + 20)
+    expect(s1.page, 'the page behind did not').toBe(s0.page)
+    /* at its foot, more swipes move nothing — above all not the page */
+    await swipeUp(); await swipeUp()
+    const s2 = await read()
+    expect(s2.page, 'at the foot of the form the page behind still does not move').toBe(s0.page)
+    await cdp.detach()
+    /* and a finger on the page BEHIND still scrolls the page (D641) — the strip above the window */
+    await page.locator('[data-testid="win-inputedit-x"]').tap()
+    await expect(edWin(page)).toHaveCount(0)
+  } finally { await context.close() }
+})

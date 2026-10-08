@@ -205,3 +205,57 @@ describe('dragging', () => {
     expect(win().style.left).toBe('')
   })
 })
+
+
+/* A FINGER ON A WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26 — found on his iPhone: with the new-input
+   window up and a finger moved on it, "the page behind this window is being scrolled instead of the window that my
+   finger is on"). Where what is in the window fits, or has reached its end, an iPhone hands the swipe to the page
+   behind; the stylesheet's `overscroll-behavior` does not stop that there. The window stops it itself: a swipe that
+   nothing inside it can take is taken by nobody. Not reproduced on the build PC (its browser engine does not do it) —
+   what is pinned here is the rule the window follows. */
+describe('a finger on a window never scrolls the page behind it (D686)', () => {
+  const swipe = (el: Element, y0: number, y1: number, x0 = 100, x1 = 100) => {
+    const mk = (type: string, x: number, y: number) => { const e = new Event(type, { bubbles: true, cancelable: true }); Object.defineProperty(e, 'touches', { value: [{ clientX: x, clientY: y }] }); return e }
+    el.dispatchEvent(mk('touchstart', x0, y0))
+    const move = mk('touchmove', x1, y1)
+    el.dispatchEvent(move)
+    return move.defaultPrevented
+  }
+  function Scrolly({ top }: { top: number }) {
+    return (
+      <FloatWin id="days" title="Days" testid="win-days" onClose={() => {}}>
+        <div data-testid="scr" style={{ overflowY: 'auto' }} ref={n => {
+          if (!n) return
+          Object.defineProperty(n, 'scrollHeight', { value: 500, configurable: true }); Object.defineProperty(n, 'clientHeight', { value: 200, configurable: true })
+          Object.defineProperty(n, 'scrollTop', { value: top, configurable: true })
+        }}><button data-testid="deep">x</button></div>
+      </FloatWin>
+    )
+  }
+  it('what is in the window fits: a swipe up or down on it is stopped — the page behind does not get it', () => {
+    render(<Page />); open()
+    expect(swipe(screen.getByTestId('in1'), 300, 200)).toBe(true)
+    expect(swipe(screen.getByTestId('in1'), 200, 300)).toBe(true)
+  })
+  it('a list inside it that CAN still move takes the swipe: it is left alone', () => {
+    render(<Scrolly top={100} />)
+    expect(swipe(screen.getByTestId('deep'), 300, 200), 'finger up, list not at its foot').toBe(false)
+    expect(swipe(screen.getByTestId('deep'), 200, 300), 'finger down, list not at its top').toBe(false)
+  })
+  it('at its top a pull down is stopped, at its foot a push up — the list has no more, and the page must not take it', () => {
+    const v = render(<Scrolly top={0} />)
+    expect(swipe(screen.getByTestId('deep'), 200, 300), 'at the top, finger down').toBe(true)
+    expect(swipe(screen.getByTestId('deep'), 300, 200), 'at the top, finger up: it can move').toBe(false)
+    v.unmount()
+    render(<Scrolly top={300} />)
+    expect(swipe(screen.getByTestId('deep'), 300, 200), 'at the foot, finger up').toBe(true)
+  })
+  it('a swipe SIDEWAYS on it is not the window’s business', () => {
+    render(<Page />); open()
+    expect(swipe(screen.getByTestId('in1'), 300, 304, 100, 200)).toBe(false)
+  })
+  it('a finger on the page BEHIND still scrolls the page (D641)', () => {
+    render(<Page />); open()
+    expect(swipe(screen.getByTestId('behind'), 300, 200)).toBe(false)
+  })
+})

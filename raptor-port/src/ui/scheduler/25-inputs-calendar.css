@@ -300,6 +300,11 @@ body.in-cal{padding-bottom:0}
 .pp-all.on{border-color:var(--accent);color:var(--ink)}
 .pp-pucks{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:5px}
 .pp-puck{display:flex;min-width:0;padding:2px;border:1px solid transparent;border-radius:8px;background:transparent;cursor:pointer;opacity:.5}
+/* A DRAG ACROSS THE PUCKS PICKS THEM (PeoplePick.tsx; owner D685): a finger moved up or down is still the list being
+   scrolled — the browser keeps that — and a finger moved sideways is the picker's; nothing is selected as text or
+   lifted as a picture while it is dragged over */
+.pp-pucks,.pp-puck{touch-action:pan-y}
+.pp-puck{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .pp-puck>span{display:flex;min-width:0;flex:1 1 auto}
 .pp-puck .puck{pointer-events:none;flex:1 1 auto;min-width:0;max-width:100%}
 .pp-puck.on{opacity:1;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}

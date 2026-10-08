@@ -16,7 +16,7 @@
 
    The picker holds no state and writes nothing: its owner keeps `people` (in the order picked — the first is the one
    kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitGroup. */
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { PEOPLE } from '../engine/people'
 import { isUpchit, needsDoc } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
@@ -83,10 +83,66 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
     else onChange([...people, id], true)
   }
   const groups = GROUPS.map(g => ({ ...g, ids: roster.filter(id => g.has(PEOPLE[id])) })).filter(g => g.ids.length)
+  /* A DRAG PICKS EVERY PUCK IT PASSES (owner D685, 9 Oct 26 — from his iPhone: "I should be able to drag to select
+     multiple pucks"). The drag does what its FIRST puck does: begun on a man not picked it picks all it passes; begun
+     on a picked man it lets them go — never the last one, as a press never does. It runs across the headings (the
+     handlers are on the picker's whole body). ON A PHONE IT STARTS SIDEWAYS: the picker is taller than the screen, so a
+     finger moved up or down must stay the list being scrolled (the pucks say `touch-action:pan-y` — the browser keeps
+     the vertical swipe and hands the sideways one here; once it is ours it may run down into other rows). With a
+     mouse any drag picks. A plain press is still the button's own click; the click a browser sends after a drag is
+     swallowed, or it would undo the first puck. Nothing is kept between presses but this one drag. */
+  const live = useRef(people)
+  live.current = people
+  const drag = useRef<{ id: string; on: boolean; x: number; y: number; active: boolean; touch: boolean; seen: Set<string> } | null>(null)
+  const swallow = useRef(0)
+  const pass = (id: string) => {
+    const d = drag.current
+    if (!d || d.seen.has(id)) return
+    d.seen.add(id)
+    const p = live.current
+    if (d.on ? p.includes(id) : !p.includes(id) || p.length < 2) return
+    live.current = d.on ? [...p, id] : p.filter(x => x !== id)
+    onChange(live.current, true)
+  }
+  const puckAt = (root: HTMLElement, x: number, y: number): string | null => {
+    const hit = document.elementFromPoint(x, y) as HTMLElement | null
+    const b = hit && typeof hit.closest === 'function' ? hit.closest('[data-pp]') as HTMLElement | null : null
+    return b && root.contains(b) ? b.getAttribute('data-pp') : null
+  }
+  const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const b = (e.target as HTMLElement).closest('[data-pp]') as HTMLElement | null
+    drag.current = null
+    if (!b || e.button) return
+    const id = b.getAttribute('data-pp')!
+    drag.current = { id, on: !live.current.includes(id), x: e.clientX, y: e.clientY, active: false, touch: e.pointerType === 'touch', seen: new Set() }
+  }
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current
+    if (!d) return
+    if (!d.active) {
+      const dx = Math.abs(e.clientX - d.x), dy = Math.abs(e.clientY - d.y)
+      if (Math.max(dx, dy) < 4) return
+      if (d.touch && dy > dx) { drag.current = null; return }           // up or down: the list is being scrolled
+      d.active = true
+      try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* jsdom */ }
+      pass(d.id)
+    }
+    const id = puckAt(e.currentTarget, e.clientX, e.clientY)
+    if (id) pass(id)
+  }
+  const onUp = () => {
+    if (drag.current && drag.current.active) swallow.current = Date.now()
+    drag.current = null
+  }
   return (
     <div className={(form ? 'ifield' : 'inped-f') + ' pp'} data-testid="pp">
       {form ? <label>{several ? 'People' : 'Person'}</label> : <span className="inped-k">{several ? 'People' : 'Person'}</span>}
-      <div className="pp-body">
+      <div className="pp-body" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
+        onClickCapture={e => {
+          /* the click that follows a drag belongs to the drag — once, and only straight after it */
+          if (swallow.current && Date.now() - swallow.current < 400 && (e.target as HTMLElement).closest('.pp-pucks')) { swallow.current = 0; e.stopPropagation(); e.preventDefault() }
+          else swallow.current = 0
+        }}>
         <div className="pp-top">
           {!several && (others
             ? <select id={form ? 'inPerson' : 'inpEditPerson'} aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>

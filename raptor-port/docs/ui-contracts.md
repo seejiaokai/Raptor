@@ -9398,6 +9398,15 @@ is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's 
   either is written; each is one Undo step. An Undo of a cut-off pressed on the Inputs page stays there (D672).
 - **"How this works"** (D646): a fold of five lines; the last states the cut-off as it is SET
   (`sanscal-model.ts cutSentence`), with no worked date.
+- **A finger on a window never scrolls the page behind it (owner D686, 9 Oct 26 — found on his iPhone).** A window
+  does not block the page (D641), so the page behind is free to scroll — and where what is in a window fits, or has
+  reached its top or foot, an iPhone hands the swipe on to that page; `overscroll-behavior:contain` holds it only
+  where there is something to scroll. `ui/FloatWindow.tsx` decides itself, for every window on the shell: a swipe up
+  or down that began on the window is left alone while something INSIDE it can still move that way, and is
+  otherwise stopped (a native, non-passive `touchmove` listener on the window). Sideways swipes are not its
+  business; a finger on the page behind still scrolls the page. Not reproducible in the build PC's browser engine —
+  the rule is pinned by `ui/floatwindow.test.tsx`, and that the window's own content still scrolls by
+  `e2e/inputs-calendar.spec.ts` (D686).
 - **The windows shell** now caps a window he has placed at the room under its top (its body scrolls), so a window
   dragged low keeps its foot — and its Save — on the screen.
 Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, `ui/calpick.test.ts`,
@@ -9487,7 +9496,13 @@ without it shows a group as separate lines.
   switch (`pp-several`, `role="switch"`) shows the schedule's own pucks (`html.ts puck()`, never a look-alike) as buttons
   (`data-pp`, `aria-pressed`) in groups — Pilots, WSOs, SANS, and Personnel only where the roster holds ground crew — each
   A to Z, with "All" on Pilots, WSOs and Personnel (a second press clears that group, never the last man) and a count line.
-  Four across at phone width, each a 36px target; 86px columns where there is room. It holds no state: its owner keeps the
+  Four across at phone width, each a 36px target; 86px columns where there is room. **A DRAG ACROSS THE PUCKS PICKS
+  EVERY ONE IT PASSES (owner D685, 9 Oct 26 — from his iPhone):** the drag does what its FIRST puck does — begun on a
+  man not picked it picks, begun on a picked man it lets go, never the last one — and runs across the headings (the
+  pointer handlers are on `.pp-body`; the puck under the point is asked of the page). On a phone it starts SIDEWAYS:
+  the pucks say `touch-action:pan-y`, so a finger moved up or down is still the list being scrolled, and one moved
+  sideways is the picker's and may then run down into other rows; with a mouse any drag picks. A plain press is
+  still the button's click; the click a browser sends after a drag is swallowed. It holds no state: its owner keeps the
   people in the order picked (the first is the one kept on the way back to one person). **Where it shows:** the editor
   window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids,
   `inPerson` / `inPersonFixed`, and its posted-out group kept). The board's and the week's dialogs keep their one list.

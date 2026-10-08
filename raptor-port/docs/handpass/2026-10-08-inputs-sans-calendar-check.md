@@ -651,3 +651,42 @@ change; added to `[CAL-CHECK-SEEN]`.
 before the build. **Two existing tests changed, by the ruling:** `ui/inputscal.test.tsx` (the two buttons "lead the
 list" → they are in the bar) and `e2e/inputs-calendar.spec.ts` (the phone day "opens about two-thirds high", "+ Input"
 at least 44 → opens tall, 38).
+
+## 16. His look, second and third — a drag picks the pucks (D685); a finger on a window never scrolls the page behind (D686)
+
+**D685 — his words, with a picture of the people picker:** "I should be able to drag to select multiple pucks". Built in
+the one picker (`ui/PeoplePick.tsx`): a drag does what its first puck does, across the headings, never letting the last
+man go; on a phone it starts sideways, and a finger moved up or down still scrolls.
+
+**D686 — his report, with a picture of the new-input window:** "then I try to scroll the page, surprisingly the page
+behind this window is being scrolled instead of the window that my finger is on". **NOT REPRODUCED on the build PC —
+said plainly.** The host drove the built bundle with a real touch at five phone heights, with the page behind made
+taller than the screen and the form both fitting and not: in this browser engine the page behind never moved. The
+cause is taken from how an iPhone is known to behave — where what is under the finger cannot scroll (it fits, or is at
+its end), the swipe passes to the page behind, and the stylesheet’s hold applies only where there is something to
+scroll — and the window now stops such a swipe itself (`ui/FloatWindow.tsx`, every window on the shell). **Only his
+iPhone can say it is fixed; it is the first line of the look card.**
+
+**The eight questions, for the two together.** 1 OIL — NO: neither files, saves or counts anything; the picker hands
+its owner the same list of people a run of taps would. 2 the published record — NO. 3 saved data — NO. 4 a shared
+drawer — YES: the one picker (four places) and the one window shell (every window). 5 a new gesture — YES. 6 a new
+surface — NO. 7 roles — NO: who may be picked is asked after the picking, by the test it was (`pickProblem`, the
+save). 8 the warning list — NO. **Tier: WALK.**
+
+**Roll-call.** The picker shows in: a new input’s window, a saved shared input’s window, the List’s own Add form, the
+SANS calendar’s "+ Commitment" — ONE component, so the drag is in all four or none (driven in the first; the others
+by the component’s own test). The window shell carries: a day opened (both calendars), the input window, "Calendar",
+the two settings windows — the listener is the shell’s, so all or none; the two OLDER movable windows (the changes
+window, ALL AVAIL) are not on this shell and are NOT changed — the same fault may be theirs, and it is said on the
+look card rather than assumed.
+
+**Sizing (D607).** Type C twice. Only a real finger could say: that a sideways slide is given to the picker and an
+up-down one kept by the browser; that the click after a drag does not undo its first puck; that stopping stray swipes
+did not stop the window’s own scrolling. **Chosen: the host, three real-browser tests** (they are the walk, and stay
+as gates): a phone — a finger slid along a row of four picks the four, and a finger moved up over the pucks scrolls
+the form and picks nobody; a desktop — a mouse dragged along a row and down into the next picks every puck passed,
+a click then lets one go, a drag begun on a picked puck lets them go; a short phone — a finger on the form scrolls
+the form and not the page, and at the form’s foot moves nothing. **3 of 3.**
+
+**Tests, red first:** `ui/peoplepick.test.tsx` "a drag across the pucks…" (five of six red) and
+`ui/floatwindow.test.tsx` "a finger on a window…" (two of five red — the other three pin what must stay as it was).

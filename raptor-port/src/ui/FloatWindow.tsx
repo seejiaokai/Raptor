@@ -193,6 +193,40 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once, for the life of this window
   }, [])
 
+  /* A FINGER ON A WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26 — found on his iPhone: with the
+     new-input window up, a finger moved on it scrolled the page behind). A window does not block the page (D641), so
+     the page behind is free to scroll — and where what is in the window FITS, or has reached its top or its foot, an
+     iPhone hands the swipe on to that page; the stylesheet's `overscroll-behavior:contain` holds it only where there
+     is something to scroll (it does hold in the build PC's browser, which is why no test here saw it). So the window
+     decides itself: a swipe up or down that began on it is left alone while something INSIDE it can still move that
+     way, and is otherwise taken by nobody. A native listener, not React's: only a non-passive one may stop a touch
+     move. Sideways swipes are not its business, nor is a finger on the page behind. */
+  useEffect(() => {
+    const n = el.current
+    if (!n) return
+    let x0 = 0, y0 = 0
+    const start = (e: TouchEvent) => { const t = e.touches && e.touches[0]; if (t) { x0 = t.clientX; y0 = t.clientY } }
+    const move = (e: TouchEvent) => {
+      const t = e.touches && e.touches[0]
+      if (!t || e.touches.length !== 1 || !e.cancelable) return
+      const dy = t.clientY - y0, dx = t.clientX - x0
+      if (Math.abs(dy) <= Math.abs(dx)) return
+      for (let a = e.target as HTMLElement | null; a; a = a.parentElement) {
+        const oy = getComputedStyle(a).overflowY
+        if ((oy === 'auto' || oy === 'scroll') && a.scrollHeight > a.clientHeight + 1) {
+          /* finger down: what is above comes into view — it can, unless it is at its top; finger up: unless at its foot */
+          if (dy > 0 ? a.scrollTop > 0 : a.scrollTop + a.clientHeight < a.scrollHeight - 1) return
+        }
+        if (a === n) break
+      }
+      e.preventDefault()
+    }
+    n.addEventListener('touchstart', start, { passive: true })
+    n.addEventListener('touchmove', move, { passive: false })
+    return () => { n.removeEventListener('touchstart', start); n.removeEventListener('touchmove', move) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the window's own element, for its life
+  }, [])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented || frontWin() !== id) return
