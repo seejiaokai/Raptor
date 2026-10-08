@@ -225,7 +225,8 @@ for (const [label, viewport, touch] of SIZES) {
         await retryRefused(page, root + ' .saveband', touch)
         expect(await page.locator(BAR).getAttribute('aria-hidden'), `${root}: the bar’s copy is hidden from readers`).toBe('true')
         if (root === '#medView') { await retrySaves(page, root + ' .saveband', touch); await expect(page.locator('.saveband')).toHaveCount(0) }
-        await page.locator(root + ' .ic-head button[aria-label="Back to list"], ' + root + ' .ic-head button:has-text("✕")').first().click()
+        /* Medical is a TAB of the Inputs page now (D620, D626): it is left by choosing another tab, not by a cross */
+        await page.locator('#inMemberMode').click()
         await expect(page.locator(root)).toHaveCount(0)
       }
     })

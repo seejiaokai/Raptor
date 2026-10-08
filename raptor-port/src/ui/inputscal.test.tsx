@@ -113,7 +113,8 @@ describe('the Inputs page calendar toggle', () => {
        then the compact presentation group. The same switch still works. */
     expect($('#inCalBtn')!.closest('.inputs-views'), 'presentation controls are grouped').toBeTruthy()
     expect($('#inListBtn')!.closest('.inputs-views')).toBe($('#inCalBtn')!.closest('.inputs-views'))
-    expect($('.inputs-modes')!.compareDocumentPosition($('.inputs-tools')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    /* the three tabs come first, the Calendar | List switch after them (D620, D626 — the tabs replaced the mode pair) */
+    expect($('.inputs-tabs')!.compareDocumentPosition($('.inputs-views')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect($('#inpCal'), 'D580: calendar opens first inside Inputs').toBeTruthy()
     await click($('#inListBtn'))
     expect($('#inpCal'), 'secondary list is reachable').toBeFalsy()
@@ -122,8 +123,10 @@ describe('the Inputs page calendar toggle', () => {
     expect($('#inpCal'), 'opens on a click').toBeTruthy()
     expect(INPVIEW).toBe('cal')
 
-    await click($('#icClose'))
-    expect($('#inpCal'), 'closes on ✕').toBeFalsy()
+    /* the calendar's own "List" button went with the switch that now does its job (D626) */
+    expect($('#icClose')).toBeFalsy()
+    await click($('#inListBtn'))
+    expect($('#inpCal'), 'the switch is the way to the List').toBeFalsy()
     expect(INPVIEW).toBe('table')
   })
 
@@ -204,7 +207,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     const rec: any = INPUTS.find((r: any) => r.type === 'SANS Availability' && r.sans)
     expect(rec, 'a seeded SANS record exists').toBeTruthy()
     await click($('#inSansMode'))
-    expect($('#inSansMode').getAttribute('aria-pressed')).toBe('true')
+    expect($('#inSansMode').getAttribute('aria-selected')).toBe('true')
     expect($('#sansCal'), 'the SANS tab is the SANS calendar').toBeTruthy()
     await goJul2026()
     const iso=unfmt(rec.date,rec.yr)

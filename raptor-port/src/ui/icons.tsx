@@ -181,3 +181,23 @@ export function MedIcon() {
     </svg>
   )
 }
+
+/** Lines of a list — the Inputs tab's List, beside the calendar glyph of its switch (owner D620, D626, 7 Oct 26). */
+export function ListIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+    </svg>
+  )
+}
+
+/** A funnel — the Inputs tab's filters, folded behind one button on a phone. */
+export function FilterIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 4h18l-7 8.5V19l-4 2v-8.5z" />
+    </svg>
+  )
+}

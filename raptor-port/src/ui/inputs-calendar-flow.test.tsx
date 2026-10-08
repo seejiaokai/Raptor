@@ -102,7 +102,7 @@ it('groups mode before presentation and folding filters does not release a revea
   await value('#inFSearch','NO_MATCH');await click(`[data-icday="2026-10-23"]`)
   // Save while a remembered search hides the row; the normal save contract pins it.
   await act(async()=>{setInpEdit(row);notify()});await value('#inpEditRmk','Header revealed edited save');await click('#inpEditSave')
-  const mode=host.querySelector('.inputs-modes')!,views=host.querySelector('.inputs-tools')!
+  const mode=host.querySelector('.inputs-tabs')!,views=host.querySelector('.inputs-views')!
   expect(views,'D582 presentation tools').toBeTruthy()
   expect(mode.compareDocumentPosition(views)&Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   expect(host.querySelector('#inFiltersBtn')?.getAttribute('aria-expanded')).toBe('false')
@@ -151,10 +151,13 @@ const newOffer = async (type:string,remark:string) => {
   await value('#inpEditRmk',remark);await click('#inpEditSave')
   const row=INPUTS.find(r=>r.remarks===remark);expect(row).toBeTruthy();return row!
 }
-it('a SANS commitment saved from the Inputs tab opens the SANS calendar on its day, and the Inputs tab’s search is kept',async()=>{
-  await value('#inFSearch','NO_MEMBER_MATCH')
+/* RE-POINTED (D620, 7 Oct 26): the Inputs tab's "+ Input" no longer offers SANS availability — it is filed on the SANS
+   calendar and nowhere else — so this starts from the SANS tab, the one door there is. What it pinned stands: the saved
+   commitment opens its day, is on no list, and what was typed in the Inputs tab's search is kept. */
+it('a SANS commitment saved on the SANS calendar opens its day, is on no list, and the Inputs tab’s search is kept',async()=>{
+  await value('#inFSearch','NO_MEMBER_MATCH');await click('#inSansMode')
   const row=await newOffer('SANS Availability','R1 cross-mode saved offer')
-  expect(host.querySelector('#inSansMode')?.getAttribute('aria-pressed')).toBe('true')
+  expect(host.querySelector('#inSansMode')?.getAttribute('aria-selected')).toBe('true')
   expect(tid('win-sansday')).toBeTruthy()
   expect(host.querySelector(`[data-popiid="${row.iid}"]`)?.textContent).toContain('R1 cross-mode saved offer')
   await click('[data-testid="win-sansday-x"]')
@@ -169,19 +172,14 @@ it('a SANS commitment changed to a Member input leaves the SANS day and shows on
   await click(`[data-popiid="${row.iid}"] [data-testid="sd-open"]`);await value('#inpEditType','Personal');await click('#inpEditSave')
   expect(row.type).toBe('Personal')
   expect(tid('win-sansday')).toBeNull()
-  expect(host.querySelector('#inMemberMode')?.getAttribute('aria-pressed')).toBe('true')
+  expect(host.querySelector('#inMemberMode')?.getAttribute('aria-selected')).toBe('true')
   expect((host.querySelector('#inFSearch') as HTMLInputElement).value).toBe('NO_MEMBER_MATCH')
   expect(host.querySelector(`[data-popiid="${row.iid}"]`)?.textContent).toContain('R1 saved offer retyped')
 })
-it('a Member input changed to a SANS commitment follows its actual saved date and ID',async()=>{
-  const row=await newOffer('Personal','R1 saved member retyped')
-  await click(`[data-popiid="${row.iid}"]`);await value('#inpEditType','SANS Availability');await tickFly();await click('#inpEditSave')
-  expect(row.type).toBe('SANS Availability');expect(row.sans?.f).toBe(true)
-  expect(host.querySelector('#inSansMode')?.getAttribute('aria-pressed')).toBe('true')
-  expect(tid('win-sansday')).toBeTruthy()
-  expect(host.querySelector(`[data-popiid="${row.iid}"]`)?.textContent).toContain('R1 saved member retyped')
-  expect(tid('win-sansday')!.querySelector('.win-ttl')?.textContent).toContain('Fri 23 Oct')
-})
+/* REMOVED WITH THE CONTROL IT TESTED (D620, 7 Oct 26): "a Member input changed to a SANS commitment follows its actual
+   saved date and ID" retyped an ordinary input INTO SANS availability from the Inputs tab's editor. That editor no
+   longer offers the kind — an input already filed cannot be turned into SANS availability (ui/inputstabs.test.tsx
+   pins it). */
 
 /* STEP 0 — OPUS'S OWN READ OF THE BUILD (D615, 7 Oct 26). Three finds, each red before its fix. */
 it('a saved input opens its day ONCE: closing the day, then List and back to Calendar, does not open it again or move the month',async()=>{

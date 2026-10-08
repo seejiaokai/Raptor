@@ -621,6 +621,15 @@ filters, an entry staying when ANY of its people passes; no SANS availability, D
 (one bar across an input's days, cut at the week's end and carried on, long bars first, "+N more" counted day by day),
 `itemsOn` (what an opened day lists), `barText`, `fitLanes` (the phone's lines from the height the screen gives, never
 under three) and `dayTag` (PH / OFF / NF - never a sun or a moon here, D627). `inputscal-model.test.ts`.
+THE THREE TABS (D620, D626) are in `InputsPage.tsx`: Inputs · SANS · Medical, a tab list over the same two facts
+(`state/view.ts INPMODE`, `INPVIEW`), the ids of the buttons they replaced kept on the control that now does each job
+(`inMemberMode`, `inSansMode`, `inMedBtn`); under the Inputs tab ONE switch, Calendar | List (`inCalBtn`, `inListBtn`),
+and the filters. The Inputs calendar draws the tabs and those tools in its own top row (`InputsCal`'s `lead`, `tools`,
+`under`). No form of the Inputs tab offers SANS availability: the List's add form and edit in place, the calendar's
+"+ Input" (`inputedit.tsx TYPE_ALLOW.i`), and an input already filed cannot be turned into one. `MedicalView.tsx` has
+no close cross as a tab. Styles: `ui/scheduler/25-inputs-calendar.css` (the top row; the month's own follow).
+`inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto
+the SANS calendar's "+ Commitment".
 The first calendar's SANS half left `InputsCal.tsx` with it (its cell, day panel, colour dropdown and legend); `mode` there
 is now `'member'` or absent. `e2e/inputs-sans-calendar.spec.ts` was re-pointed whole at the new screen (a real mouse drag,
 a real finger through CDP, the two press-through faults the first look found, D664 at three phone heights in a five-week

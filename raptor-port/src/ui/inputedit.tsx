@@ -748,6 +748,9 @@ export const TYPE_ALLOW: any = {
      the Medical view's pending card */
   u: (t: any) => isUnavail(t) && !isSansAvail(t) && !isUpchit(t),
   s: (t: any) => isSansAvail(t),
+  /* the Inputs tab's own "+ Input": everything but SANS availability, which is filed on the SANS calendar and nowhere
+     else (owner D620, 7 Oct 26) */
+  i: (t: any) => !isSansAvail(t),
 }
 
 /* ADD a brand-new input from a schedule surface (owner, Aug 26 — "scheduler
@@ -1737,6 +1740,9 @@ export function InputEditor() {
   const typeFilter = ctx ? TYPE_ALLOW[ctx]
     : (r && !isNew && isDownchit(r.type)) ? isDownchit
     : (r && !isNew && isUpchit(r.type)) ? isUpchit
+    /* and no input already filed is turned INTO SANS availability (D620: it is filed on the SANS calendar only); a
+       SANS commitment's own editor keeps the full list, as built */
+    : (r && !isNew && !isSansAvail(r.type)) ? TYPE_ALLOW.i
     : undefined
   const [draft, setDraft] = useState<any>(null)
   /* the upchit save-time summary (owner, 27 Aug 26) — effects to show + the

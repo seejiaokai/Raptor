@@ -3,7 +3,7 @@
    logic is the reference's verbatim, including the role gate that keeps a
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
@@ -21,7 +21,7 @@ import { writeInputsBatch, notify, inputProtected } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal, revealInput } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
 import { setDocView } from './pops'
-import { ClipIcon, MedIcon } from './icons'
+import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
@@ -64,6 +64,8 @@ const withTill = (rm: any, s: string, e: string) => withRemarksTail(rm, s, e, 't
    (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:
    sorted by start date, today at the top, the next two months below it. */
 
+/* SANS availability is filed on the SANS calendar and nowhere else (D620): no type list on this page offers it */
+const notSans = (t: string) => !isSansAvail(t)
 const pad = (n: number) => String(n).padStart(2, '0')
 const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 /* Date normalises an overflowing month for us — 31 Dec + 2 months is 3 Mar,
@@ -241,7 +243,7 @@ function TypeLegend() {
 export function InputsPage() {
   useVersion()
   const [person, setPerson] = useState(me() ?? '')
-  const [type, setType] = useState(INPMODE==='sans'?'SANS Availability':INPUT_TYPES[0])
+  const [type, setType] = useState(INPUT_TYPES.find(t => !isSansAvail(t))!)
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [allday, setAllday] = useState(defaultAllday(INPUT_TYPES[0]))
@@ -255,7 +257,7 @@ export function InputsPage() {
   const [remarks, setRemarks] = useState('')
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
-  const [sans, setSans] = useState<any>(INPMODE==='sans'?{f:true}:null)
+  const [sans, setSans] = useState<any>(null)
   /* the supporting documents a medical input is filed with (owner, 27 Aug
      26; several files per entry since 1 Sep 26) — ids into state/docs;
      cleared after a successful add because the files belong to the input
@@ -274,13 +276,23 @@ export function InputsPage() {
   const fType = memberType, setFType = setMemberType
   const fSearch = memberSearch, setFSearch = setMemberSearch
   const [filtersOpen,setFiltersOpen] = useState(false)
-  const medicalReturn = useRef<'cal'|'table'>('cal')
-  const chooseMode=(mode:'member'|'sans')=>{
-    clearInpReveal();setPinned([]);setInpMode(mode);setEditRow(null);setDraft(null)
-    if(mode==='sans'){
-      setType('SANS Availability');setSans({f:true});setAllday(true);setHalf('')
-      if(canEditSched()&&!PEOPLE[person]?.san) setPerson(people().find(id=>PEOPLE[id].san)??person)
-    } else if(isSansAvail(type)) {const t=INPUT_TYPES.find(t=>!isSansAvail(t))!;setType(t);setSans(null);setAllday(defaultAllday(t))}
+  /* THE THREE TABS (owner D620, D626, 7 Oct 26 — "I like the 3 tabs across the top but make it less tall"): Inputs · SANS
+     · Medical. They replace the mode pair and the view trio as buttons; the state behind them is the same two facts
+     (state/view.ts INPMODE — which calendar; INPVIEW — the Inputs tab's Calendar or List, or Medical). `inputsView` is
+     which of its two the Inputs tab was left on, so Medical — a tab, not a place opened from somewhere — never decides
+     where a tab press lands. */
+  const inputsView = useRef<'cal'|'table'>(INPVIEW === 'table' ? 'table' : 'cal')
+  if (INPVIEW !== 'med') inputsView.current = INPVIEW
+  type Tab = 'inputs' | 'sans' | 'med'
+  const tab: Tab = INPVIEW === 'med' ? 'med' : INPMODE === 'sans' ? 'sans' : 'inputs'
+  /* the tab the keyboard has just chosen takes the keyboard with it, once it is drawn as the selected one */
+  const wantTab = useRef<string | null>(null)
+  useLayoutEffect(() => { const id = wantTab.current; if (!id) return; wantTab.current = null; document.getElementById(id)?.focus() })
+  const chooseTab = (t: Tab) => {
+    if (t === tab) return
+    clearInpReveal(); setPinned([]); setEditRow(null); setDraft(null)
+    if (t === 'med') setInpView('med')
+    else { setInpMode(t === 'sans' ? 'sans' : 'member'); setInpView(inputsView.current) }
     notify()
   }
   const [editRow, setEditRow] = useState<any>(null)
@@ -774,48 +786,72 @@ export function InputsPage() {
      filed on the SANS calendar only, which has no list of its own"; the plan §3.5: "the SANS tab has no filters" — the
      Highlight does that job, and the counts ignore filters by ruling, D581). So in that mode the Calendar | List pair,
      the Filters button and the List itself are not drawn; Medical stays, as it is one tab of the three. */
-  const sansUp = INPMODE === 'sans'
-  const listUp = INPVIEW === 'table' && !sansUp
-  const appliedFilters = sansUp ? [] : [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
+  const sansUp = tab === 'sans'
+  const listUp = tab === 'inputs' && INPVIEW === 'table'
+  const calUp = tab === 'inputs' && INPVIEW === 'cal'
+  const appliedFilters = tab !== 'inputs' ? [] : [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
+
+  /* the tabs: a tab list in the usual manner — one tab stop, the arrow keys move along it and round its ends, and the
+     keyboard goes with the tab it chose */
+  const TABS: [Tab, string, string][] = [['inputs', 'inMemberMode', 'Inputs'], ['sans', 'inSansMode', 'SANS'], ['med', 'inMedBtn', 'Medical']]
+  const tabKey = (e: ReactKeyboardEvent, i: number) => {
+    const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
+    if (!by) return
+    e.preventDefault()
+    const to = TABS[(i + by + TABS.length) % TABS.length]
+    wantTab.current = to[1]
+    chooseTab(to[0])
+  }
+  const tabsRow = (
+    <div className="inputs-tabs" role="tablist" aria-label="Inputs">
+      {TABS.map(([t, id, label], i) => (
+        <button key={t} type="button" role="tab" id={id} className="intab" aria-selected={tab === t} tabIndex={tab === t ? 0 : -1}
+          title={t === 'inputs' ? 'Leave, medical, duties and other commitments' : t === 'sans' ? 'SANS availability — who has committed, and how many more are needed'
+            : 'Who is medically down, owing an upchit, or upchitted'}
+          onClick={() => chooseTab(t)} onKeyDown={e => tabKey(e, i)}>
+          {t === 'inputs' ? <CalIcon /> : t === 'sans' ? <UsersIcon /> : <MedIcon />}
+          <span className="intab-t">{label}</span>
+          {/* the Medical tab SIGNALS (owner, 27 Aug 26): red for down now, amber for owing an upchit — a badge that reads
+              0-quiet, never a control that comes and goes with the data */}
+          {t === 'med' && medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
+          {t === 'med' && medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}
+        </button>
+      ))}
+    </div>
+  )
+  /* UNDER THE INPUTS TAB: one small switch, Calendar | List (D620 — "for inputs maybe still have the option to have list
+     mode"), and the filters — the Inputs tab's alone; the SANS calendar has neither (its Highlight does that job, and
+     its counts ignore filters by ruling, D581). On a phone the filters fold behind one button. */
+  const tools = tab !== 'inputs' ? null : (<>
+    <div className="inputs-views" role="group" aria-label="Show inputs as">
+      <button className="abtn" id="inCalBtn" title="Calendar — a whole month at a glance" aria-label="Calendar"
+        aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}><CalIcon /><span className="inv-t">Calendar</span></button>
+      <button className="abtn" id="inListBtn" title="List" aria-label="List" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}><ListIcon /><span className="inv-t">List</span></button>
+    </div>
+    <span className="inputs-spring" />
+    <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
+    <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
+      <label><span>Person</span><select id="inFPerson" aria-label="Person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
+        <option value="all">Everyone</option>
+        {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+        <ArchivedGroup /><DeletedGroup />
+      </select></label>
+      <label><span>Type</span><select id="inFType" aria-label="Type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
+        <option value="all">All types</option>{typeOptions(notSans)}
+      </select></label>
+      <label className="inputs-search"><span>Search</span><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
+    </div>
+  </>)
+  const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');setFType('all');setFSearch('');notify()}}>Clear filters</button></div>
 
   return (
-    <div className="inputs-workspace">
+    <div className={'inputs-workspace tab-' + tab}>
       <div className="title"><h1>Inputs</h1></div>
-      <div className="inputs-modes" role="group" aria-label="Input category">
-        <button className="abtn" id="inMemberMode" aria-pressed={INPMODE==='member'} onClick={()=>chooseMode('member')}>Member Inputs</button>
-        <button className="abtn" id="inSansMode" aria-pressed={INPMODE==='sans'} onClick={()=>chooseMode('sans')}>SANS Availability</button>
-      </div>
-      <div className="inputs-tools">
-        <div className="inputs-views" role="group" aria-label="Display inputs" hidden={sansUp}>
-        <button className="abtn" id="inCalBtn" title="See a whole month at a glance"
-          aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}>Calendar</button>
-        <button className="abtn" id="inListBtn" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}>List</button>
-        </div>
-        {/* the Medical view (owner, 27 Aug 26): who is down, who owes an
-            upchit, who upchitted. The count is down-now + pending as of the
-            notional today — the button SIGNALS instead of the page
-            restructuring itself (a control that appears and disappears with
-            the data is a trap; a badge that reads 0-quiet is not). */}
-        <button className="abtn" id="inMedBtn"
-          title="Who is medically down, owing an upchit, or upchitted"
-          onClick={() => { medicalReturn.current=INPVIEW==='table'?'table':'cal';setInpView('med'); notify() }}>
-          <MedIcon /> Medical
-          {medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
-          {medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}</button>
-        <button className="abtn" id="inFiltersBtn" hidden={sansUp} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}>Filters{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
-      </div>
-      {appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');setFType('all');setFSearch('');notify()}}>Clear filters</button></div>}
-      <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters" hidden={sansUp}>
-        <label><span>Person</span><select id="inFPerson" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
-          <option value="all">Everyone</option>
-          {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-          <ArchivedGroup /><DeletedGroup />
-        </select></label>
-        <label><span>Type</span><select id="inFType" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
-          <option value="all">Show all types</option>{typeOptions(t=>!isSansAvail(t))}
-        </select></label>
-        <label className="inputs-search"><span>Search</span><input id="inFSearch" type="search" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
-      </div>
+      {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
+          controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
+          buttons above the month" was a fault seen while drawing) */}
+      {!calUp && <div className="inputs-top">{tabsRow}{tools}</div>}
+      {!calUp && filterSummary}
       <div className="inbar" hidden={!listUp}>
         <div className="ingrid">
           {/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 —
@@ -837,18 +873,8 @@ export function InputsPage() {
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
             <div className="rc-read" id="inDates">{start ? (fmtDay(start) + (end ? ' → ' + fmtDay(end) : '')) : 'pick a start date'}</div>
           </div>
-          {/* SANS Availability's own Fly/AMT/OFT ticks sit ABOVE the standard
-              How-long control now (owner rework, 14 Aug 26) — it is a normal
-              timed input with one extra field, not a stand-in for the timing
-              controls every other input uses (the owner's own phone bug: a
-              per-event time pair could not be cleared with one tap). Leave,
-              medical and SANS all get the four-way span picker, because
-              INPUT_META now gives SANS half:true same as them; everything
-              else keeps the plain tick, because those types take an exact
-              range and a half-day would be coarser than what they already
-              say. */}
-          {isSansAvail(type) && <div className="ifield sans"><label>Available for</label>
-            <SansPicker id="inSans" sans={sans} onChange={setSans} /></div>}
+          {/* NO SANS AVAILABILITY HERE (owner D620, 7 Oct 26 — "in list mode remove sans avail and move that function to
+              sans calendar solely"): the type list below leaves it out, and its Fly / OFT / AMT ticks went with it. */}
           {hasHalf(type)
             ? <div className="ifield span"><label>How long</label>
               <SpanPicker id="inSpan" span={spanOf(allday, half)} onPick={m => {
@@ -881,7 +907,7 @@ export function InputsPage() {
                  switching in, drop it when switching out */
               setSans(isSansAvail(t) ? (sans || {}) : null)
             }}>
-              {typeOptions()}
+              {typeOptions(notSans)}
             </select></div>
           {/* the "e.g. medical appt" hint is dropped for SANS Availability
               (owner, 22 Aug 26) — a SANS availability line is not a medical note,
@@ -1055,7 +1081,7 @@ export function InputsPage() {
                         medical here too — a downchit edits only within the
                         downchit family, an upchit stays an upchit; the full
                         cross-group list is kept for every other row. */}
-                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : undefined)}
+                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : notSans)}
                   </select>
                     {/* manage (or first-attach, on a retype into medical) the
                         supporting documents without leaving the row */}
@@ -1162,11 +1188,11 @@ export function InputsPage() {
       {/* the table stays mounted underneath — closing the calendar is then a
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
-      {sansUp && INPVIEW !== 'med' && <SansCal />}
-      {!sansUp && INPVIEW === 'cal' && <InputsCal mode="member" embedded fPerson={fPerson} fType={fType} fSearch={fSearch}
-        seedIso={range.from || isoOf(new Date())}
+      {sansUp && <SansCal />}
+      {calUp && <InputsCal mode="member" embedded fPerson={fPerson} fType={fType} fSearch={fSearch}
+        seedIso={range.from || isoOf(new Date())} lead={tabsRow} tools={tools} under={filterSummary}
         onClose={() => { setInpView('table'); notify() }} />}
-      {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView(medicalReturn.current); notify() }} />}
+      {tab === 'med' && <MedicalView />}
       {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
           for the add form and the row editor; Save runs the stashed commit
           with the removals the filer ticked, Cancel writes nothing */}

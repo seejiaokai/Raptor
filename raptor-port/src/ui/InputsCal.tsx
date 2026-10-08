@@ -16,7 +16,7 @@
    for: caldrag.ts's drag/tap machine on `[data-icdrag]`, this file's OWN
    hold-to-add/tap gesture on the empty cell space around those chips, and
    the day popover (`data-icmore` opens it too) that both routes land on. */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -34,6 +34,7 @@ import { initCalDrag } from './caldrag'
 import { landOn, markLand, paintLand } from './lift'
 import { useVersion } from './useStore'
 import { SaveBand } from './SaveStatus'
+import { useMedia } from './usemedia'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
@@ -134,10 +135,20 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
 /* `mode` is 'member' on the Inputs page (everything BUT SANS availability) and absent for a caller that wants every
    input. The SANS half of this calendar — its own cell, its day panel, its colour settings — went on 8 Oct 26: the
    SANS calendar is its own screen now (ui/SansCal.tsx; the Inputs / SANS job's step 4, D617-D651). */
-export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, embedded=false }:
-  { fPerson: string, fType: string, fSearch: string, seedIso?: string, onClose: () => void, mode?: 'member', embedded?:boolean }) {
+export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, embedded=false, lead, tools, under }:
+  { fPerson: string, fType: string, fSearch: string, seedIso?: string, onClose: () => void, mode?: 'member', embedded?:boolean,
+    /** the Inputs page's three tabs — drawn at the head of this calendar's own top row, so a desktop has ONE row of
+     *  controls above the month and a phone the tabs and one tools row (the plan §3.6) */
+    lead?: ReactNode,
+    /** the page's own tools for the Inputs tab — the Calendar | List switch and the filters — after the month's arrows */
+    tools?: ReactNode,
+    /** a line of the page's own under the top row (what the filters are set to) */
+    under?: ReactNode }) {
   useVersion()
   const gridRef = useRef<HTMLDivElement>(null)
+  /* on a phone the month's name is its first three letters, so the arrows, Today, the switch and the filter button hold
+     ONE line across 390px (the SANS month's own rule, ui/SansCal.tsx) */
+  const narrow = useMedia('(max-width:820px)')
   /* the deps-`[]` gesture effect below must always call the CURRENT month
      stepper, never the one captured on its first render (which would page
      from the wrong month forever). A ref updated every render is the
@@ -162,8 +173,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
      popover is mid-edit" instead of a second one that could fall out of
      step with it. */
   const [popIso, setPopIso] = useState<string | null>(null)
-  const [selectDates,setSelectDates] = useState(false)
-  const [selected,setSelected] = useState<{start:string,end:string}|null>(null)
   const [mouseRange,setMouseRange] = useState<{start:string,end:string}|null>(null)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
@@ -183,11 +192,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
   const showDay=(iso:string|null)=>{ if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso) }
   useEffect(()=>()=>spendReveal(),[])
-  const cancelSelection=()=>{setSelectDates(false);setSelected(null);setMouseRange(null)}
-  const pickDate=(iso:string)=>{
-    if(selectDates){setSelected(prev=>!prev||prev.end?{start:iso,end:''}:{start:prev.start,end:iso});return}
-    showDay(iso);setPopPuckEdit(null)
-  }
+  const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
   const [puckDraft, setPuckDraft] = useState('')
@@ -292,12 +297,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
          one-layer-at-a-time ladder the popover follows below the modal */
       if (pickFor != null) { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); return }
       if (popIso) { showDay(null); setPopPuckEdit(null); return }
-      if(selectDates){cancelSelection();return}
       onClose()
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [onClose, popIso, pickFor, selectDates])
+  }, [onClose, popIso, pickFor])
 
   /* Seed the add-input modal exactly the way a board's "+ Add" does
      (interactions.ts ~592-608) — same fields, same defaults — but with NO
@@ -310,7 +314,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   const openAdd = (from: string, until?:string) => {
     const [iso,end]=until&&until<from?[until,from]:[from,until]
     const t = firstPersonalType()
-    setInpEdit({ _new: true, _calendar:true, _ctx: '', person: me(), type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080 })
+    setInpEdit({ _new: true, _calendar:true, _ctx: 'i', person: me(), type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080 })
     notify()
   }
   const closePop = () => { showDay(null); setPopPuckEdit(null) }
@@ -342,7 +346,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
       }
     }
     /* a swipe that began on a chip pages the month exactly as one over empty space does (the re-walk's NEW-1) */
-    const offDrag = selectDates ? ()=>{} : initCalDrag(el, {
+    const offDrag = initCalDrag(el, {
       onTap,
       onSwipe: (dx, dy) => { if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) stepRef.current(dx < 0 ? 1 : -1) },
     })
@@ -388,7 +392,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
       reset()
       const iso = cell.dataset.icday!
       const rec = { iso, end:iso, mouse:e.pointerType==='mouse', ranged:false, x0: e.clientX, y0: e.clientY, timer: 0 as any, fired: false, pointerId: e.pointerId }
-      if(!selectDates && !rec.mouse) rec.timer = setTimeout(() => { rec.fired = true; openAdd(iso) }, HOLD_ADD)
+      if(!rec.mouse) rec.timer = setTimeout(() => { rec.fired = true; openAdd(iso) }, HOLD_ADD)
       st = rec
     }
     const onMove = (e: PointerEvent) => {
@@ -396,7 +400,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
       // any real drift means this is not a still hold — stop the add timer,
       // but keep `st` alive so the release can still read it as a swipe or tap
       if (Math.abs(e.clientX - st.x0) > HOLD_SLOP || Math.abs(e.clientY - st.y0) > HOLD_SLOP) cancelHold()
-      if(st.mouse&&!selectDates){
+      if(st.mouse){
         const cell=(typeof document.elementFromPoint==='function'?document.elementFromPoint(e.clientX,e.clientY):e.target as Element)?.closest('[data-icday]') as HTMLElement|null
         if(cell&&el.contains(cell)){
           st.end=cell.dataset.icday!
@@ -421,7 +425,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
          the NEXT month, right the PREVIOUS — the direction a page turns, and
          the way every month-swipe calendar reads. Horizontal-dominant so a
          diagonal scroll never pages by accident. */
-      if (!mouse&&!selectDates&&Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) { stepRef.current(dx < 0 ? 1 : -1); return }
+      if (!mouse&&Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) { stepRef.current(dx < 0 ? 1 : -1); return }
       // barely moved — a tap opens the day popover (a longer pan does nothing)
       if (Math.abs(dx) <= HOLD_SLOP && Math.abs(dy) <= HOLD_SLOP) pickDate(iso)
     }
@@ -445,7 +449,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
       window.removeEventListener('pointercancel', onCancel)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, selectDates])
+  }, [mode])
 
   const cur = CALMONTH || { y: new Date().getFullYear(), m: new Date().getMonth() + 1 }
   /* year rollover mirrors RangeCal.tsx's own step(), adjusted for CALMONTH's
@@ -967,23 +971,28 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
 
   return (
     <div className={'inpcal'+(embedded?' ic-embedded':'')+(embedded&&popIso?' ic-with-day':'')} id="inpCal">
-      <div className="ic-head">
-        <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
-        <span className="ic-mon">{MON[cur.m - 1]} {cur.y}</span>
-        <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
-        <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
-        {mode&&<button type="button" className="abtn" id="icSelectDates" aria-pressed={selectDates} onClick={()=>{showDay(null);setSelected(null);setSelectDates(!selectDates)}}>{selectDates?'Cancel selection':'Select dates'}</button>}
-        {active && <span className="ic-filterpill">filtered: {pillParts.join(' · ')}</span>}
-        <button type="button" className="abtn" id="icClose" aria-label="Back to list"
-          title="Back to list" onClick={onClose}>{embedded?'List':'✕'}</button>
+      <div className={'ic-head' + (embedded ? ' inputs-top' : '')}>
+        {lead}
+        <div className="ic-nav">
+          <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
+          <span className="ic-mon" aria-live="polite" aria-label={`${MON[cur.m - 1]} ${cur.y}`}>{narrow ? MON[cur.m - 1].slice(0, 3) : MON[cur.m - 1]} {cur.y}</span>
+          <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
+          <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
+        </div>
+        {tools}
+        {active && !embedded && <span className="ic-filterpill">filtered: {pillParts.join(' · ')}</span>}
+        {/* the full-screen overlay closes by its own cross; inside the Inputs page the Calendar | List switch beside the
+            month's arrows is the way to the List (D620, D626 — the calendar's own "List" button went with it) */}
+        {!embedded && <button type="button" className="abtn" id="icClose" aria-label="Back to list"
+          title="Back to list" onClick={onClose}>✕</button>}
       </div>
+      {under}
       {/* a failed save's warning, under this surface's own bar — ONLY when the calendar is the full-screen overlay
           that lies over the top bar, whose own warning cannot be seen from there ([SAVE-NOTE-COVERS], D587;
           ui/SaveStatus.tsx). Embedded in the Inputs page (the calendar-first Inputs, D574/D580) the top bar stays
           in view and carries the warning itself: a band here would hide the bar's copy and leave an empty line in
           the bar (found when the two works were joined, 7 Oct 26 — e2e/save-note.spec.ts). */}
       {!embedded && <SaveBand />}
-      {selectDates&&<div className="ic-range-bar" role="status"><span>{selected?`${fmtDay(selected.start)}${selected.end?' → '+fmtDay(selected.end):' — choose the last day'}`:'Choose the first and last day. Month arrows work here too.'}</span><button className="abtn primary" type="button" id="icRangeAdd" disabled={!selected?.end} onClick={()=>{if(selected?.end){openAdd(selected.start,selected.end);cancelSelection()}}}>+ Input</button><button className="abtn" type="button" onClick={cancelSelection}>Cancel</button></div>}
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
       {/* THE MONTH BODY scrolls when a day is packed. --ic-rows is the live week
           count: each week's MINIMUM height is one viewport share of it (see
@@ -1006,8 +1015,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
           const wk = ci >= 5
           const isToday = iso === todayIso
           const { inputs, pucks } = dayEntries(iso, { fPerson, fType, fSearch }, mode)
-          const selection=mouseRange||selected
-          const inSelection=selection&&iso>=[selection.start,selection.end||selection.start].sort()[0]&&iso<=[selection.start,selection.end||selection.start].sort()[1]
+          const selection=mouseRange
+          const inSelection=selection&&iso>=[selection.start,selection.end].sort()[0]&&iso<=[selection.start,selection.end].sort()[1]
           /* THE CELL'S PRIORITY ORDER (owner, 22 Aug 26): the day TITLE, then
              the sections — notes and tiny pucks, drawn in FULL ("if it fills
              up the whole day box, so be it") — then the inputs, the lesser
