@@ -46,6 +46,17 @@ export function placedLine(r: any, people: Record<string, any> = PEOPLE): string
   return out
 }
 
+/** THE SHORT LINE OF AN OPENED DAY (owner D701, 9 Oct 26 — he chose drawing B of the shorter input: "Grit · 12 Jul,
+ *  14:42"; D699: it shares the remark's row, so its width is what decides whether a card is two rows or three). Made
+ *  FROM the full line — never written a second time — so every form of it shortens alike: "Placed by" goes, and so
+ *  does the year of any moment in `year`, the year of the day that is open (a moment in another year keeps its own).
+ *  The full line stays the small print's `title`, for a pointer and a screen reader; the List, the editor's foot, a
+ *  Medical card and the document viewer keep the full line (D629). */
+export function placedShort(line: string, year: number): string {
+  if (!line) return ''
+  return line.replace(/^Placed by /, '').replace(new RegExp(`(\\d{1,2} [A-Z][a-z]{2}) ${two(year % 100)}(?=, \\d\\d:\\d\\d)`, 'g'), '$1')
+}
+
 /** THE LINE FOR A SHARED INPUT (owner D655, D629 — "Placed by Saber for 4 people · 7 Oct 26, 14:32"): who filed the
  *  entry, for how many, and when — one line for the whole of it. Its filer is the entry's own (`grpBy`), else whoever
  *  placed its first record; the moment is the earliest any of its records was placed; its last change is the latest

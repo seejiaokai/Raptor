@@ -2,7 +2,7 @@
    edited as one thing"; D629: who placed it and when, in small print; the plan §3.13: "Placed by Saber for 4 people ·
    7 Oct 26, 14:32"). The single record's line is pinned in ui/sanscal-model.test.ts. */
 import { describe, expect, it } from 'vitest'
-import { placedLine, placedLineOf } from './placedline'
+import { placedLine, placedLineOf, placedShort } from './placedline'
 
 const PEOPLE: Record<string, any> = { a: { cs: 'Saber' }, b: { cs: 'Ranger' }, c: { cs: 'Wisp' }, d: { cs: 'Anvil' } }
 const T = (d: number, h: number, m: number) => new Date(2026, 9, d, h, m).getTime()
@@ -26,4 +26,18 @@ describe('who placed a shared input', () => {
     expect(placedLineOf([], PEOPLE)).toBe('')
     expect(placedLineOf([{ person: 'b' }, { person: 'c' }], PEOPLE)).toBe('')
   })
+})
+
+/* THE SHORT LINE OF AN OPENED DAY (owner D701, 9 Oct 26 — drawing B of the shorter input: "Grit · 12 Jul, 14:42"): made
+   FROM the full line, so every form of it — for someone else, for several people, changed since — shortens alike. */
+describe('the short line of an opened day (D701)', () => {
+  it('drops "Placed by" and the year of the day that is open', () => {
+    expect(placedShort('Placed by Saber · 7 Oct 26, 14:32', 2026)).toBe('Saber · 7 Oct, 14:32')
+    expect(placedShort(placedLineOf([rec('a'), rec('b'), rec('c'), rec('d')], PEOPLE), 2026)).toBe('Saber for 4 people · 7 Oct, 14:32')
+    expect(placedShort('Placed by Saber for Wisp · 7 Oct 26, 14:32 · changed by Ranger · 8 Oct 26, 09:10', 2026)).toBe('Saber for Wisp · 7 Oct, 14:32 · changed by Ranger · 8 Oct, 09:10')
+  })
+  it('keeps the year of a moment in another year than the day’s', () => {
+    expect(placedShort('Placed by Saber · 28 Dec 25, 14:32 · changed by Ranger · 2 Jan 26, 09:10', 2026)).toBe('Saber · 28 Dec 25, 14:32 · changed by Ranger · 2 Jan, 09:10')
+  })
+  it('no line stays no line', () => { expect(placedShort('', 2026)).toBe('') })
 })

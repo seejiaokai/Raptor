@@ -153,8 +153,21 @@ describe('who placed each, and when (D629)', () => {
     const own = await file({ person: a, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10) })
     const forHim = await file({ person: b, by: a, at: T(3, 17, 20), modBy: b, modAt: T(4, 8, 5) })
     await open('2026-10-07')
-    expect(row(own).querySelector('[data-testid="idy-placed"]')!.textContent).toBe(`Placed by ${cs(a)} · 2 Oct 26, 09:10`)
-    expect(row(forHim).querySelector('[data-testid="idy-placed"]')!.textContent).toBe(`Placed by ${cs(a)} for ${cs(b)} · 3 Oct 26, 17:20 · changed by ${cs(b)} · 4 Oct 26, 08:05`)
+    /* SHORT in an opened day (owner D701, 9 Oct 26 — drawing B: "Grit · 12 Jul, 14:42"): the name, the date, the time —
+       no "Placed by", no year in the day's own year; the full line is the small print's name for a pointer and a reader */
+    expect(row(own).querySelector('[data-testid="idy-placed"]')!.textContent).toBe(`${cs(a)} · 2 Oct, 09:10`)
+    expect(row(own).querySelector('[data-testid="idy-placed"]')!.getAttribute('title')).toBe(`Placed by ${cs(a)} · 2 Oct 26, 09:10`)
+    expect(row(forHim).querySelector('[data-testid="idy-placed"]')!.textContent).toBe(`${cs(a)} for ${cs(b)} · 3 Oct, 17:20 · changed by ${cs(b)} · 4 Oct, 08:05`)
+  })
+  it('the remark and the small print share one line of the card — the remark first (D699, D701)', async () => {
+    const [a] = crew()
+    const r = await file({ person: a, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10), remarks: 'Dental' })
+    const bare = await file({ person: a, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10) })
+    await open('2026-10-07')
+    const foot = row(r).querySelector('.sd-foot')!
+    expect([...foot.children].map(c => c.className.split(' ')[0])).toEqual(['sd-rmk', 'sd-placed'])
+    /* no remark: the small print alone, in the same line of the card */
+    expect([...row(bare).querySelector('.sd-foot')!.children].map(c => c.className.split(' ')[0])).toEqual(['sd-placed'])
   })
   it('a record that never recorded who placed it shows no line (D56)', async () => {
     const r = await file({})

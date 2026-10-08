@@ -61,7 +61,9 @@ test('the day’s figure and class reach the SANS date, a commitment is filed fr
   await expect(tid(page,'sc-need-'+DATE)).toHaveText(`${after.p}${after.w}`)
   await expect(tid(page,'sc-f-'+DATE)).toHaveText(seat==='p'?'F10':'F01')
   await expect(tid(page,'win-sansday').locator('[data-testid="sd-hours"]')).toHaveText('10:00–11:00')
-  await expect(tid(page,'win-sansday').locator('[data-testid="sd-placed"]')).toContainText('Placed by')
+  /* short in an opened day (D701): the name, the date and the time — the full "Placed by …" is its title */
+  await expect(tid(page,'win-sansday').locator('[data-testid="sd-placed"]')).toHaveAttribute('title',/^Placed by /)
+  await expect(tid(page,'win-sansday').locator('[data-testid="sd-placed"]')).not.toContainText('Placed by')
   await page.reload();await login(page);await go(page,'inputs');await page.click('#inSansMode');await month(page,2026,10)
   await expect(tid(page,'sc-need-'+DATE)).toHaveText(`${after.p}${after.w}`)
   await expect(tid(page,'sc-f-'+DATE)).toHaveText(seat==='p'?'F10':'F01')

@@ -50,7 +50,7 @@ import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
-import { placedLineOf } from './placedline'
+import { placedLineOf, placedShort } from './placedline'
 import { cutParts, dayWord, hoursOf, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
@@ -877,7 +877,18 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                       ) : <span />}
                       <span className="sd-hours" data-testid="idy-when">{when}</span>
                       {late && lateOpen === it.key && <span className="sd-latenote" data-testid="idy-latenote" role="status">{late}</span>}
-                      {rmk && <span className="sd-rmk">{rmk}</span>}
+                      {/* THE REMARK AND THE SMALL PRINT SHARE ONE LINE (owner D699, D701, 9 Oct 26 — drawing B: "put the placed
+                          by sentence to the 2nd row if the remarks is short. If the remarks is too long then move the placed
+                          by down to a 3rd row but still the same horizontal alignment"): the remark first, the small print at
+                          the line's right end; where the two do not fit, the small print goes under the remark, still at the
+                          right end (`.sd-foot`, 24-sans-calendar.css). The small print is the SHORT form — the name, the
+                          date, the time — with the full "Placed by …" as its title. */}
+                      {(rmk || placed) && (
+                        <span className="sd-foot">
+                          {rmk && <span className="sd-rmk">{rmk}</span>}
+                          {placed && <span className="sd-placed" data-testid="idy-placed" title={placed}>{placedShort(placed, +iso.slice(0, 4))}</span>}
+                        </span>
+                      )}
                       {/* ITS PEOPLE, as the schedule's own pucks (ui/html.ts puck() — D649), compact, A to Z */}
                       {team && (
                         <span className="idy-people" data-testid="idy-people">
@@ -889,7 +900,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           ))}
                         </span>
                       )}
-                      {placed && <span className="sd-placed" data-testid="idy-placed">{placed}</span>}
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
