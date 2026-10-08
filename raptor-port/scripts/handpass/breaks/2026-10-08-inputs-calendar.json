@@ -1,0 +1,814 @@
+[
+ {
+  "n": 1,
+  "name": "SANS availability is on no bar",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "(inputs || []).filter((r: any) => r && !isSansAvail(r.type))",
+  "put": "(inputs || []).filter((r: any) => r)",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "an entry stays when ANY of its people passes the filter",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "if (!e.rows.some(passes)) continue",
+  "put": "if (!e.rows.every(passes)) continue",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "the type filter",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "if (f.fType !== 'all' && r.type !== f.fType) continue",
+  "put": "",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "an end before its start reads as its one first day",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "const b = b0 != null && b0 > a ? b0 : a",
+  "put": "const b = b0 != null ? b0 : a",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "red for an absence, amber for a duty or commitment",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "!isUpchit(t) && isUnavail(t) ? 'red' : 'amb'",
+  "put": "'amb'",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "a day lists absences first",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "TONE_ORDER[x.tone] - TONE_ORDER[y.tone] || ",
+  "put": "",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "a day lists every input COVERING it, not only those starting on it",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "items.filter(it => it.a <= iso && iso <= it.b)",
+  "put": "items.filter(it => it.a === iso)",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "a bar never runs into the blank dates before the month",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "const c0 = item.a <= first ? cols[0] : week.indexOf(item.a)",
+  "put": "const c0 = item.a <= first ? 0 : week.indexOf(item.a)",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "the longer bar takes the higher line",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "(y.c1 - y.c0) - (x.c1 - x.c0) || ",
+  "put": "",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "a bar with no line is counted on EVERY day it covers",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "if (lane >= maxLanes) { for (let c = s.c0; c <= s.c1; c++) more[c]++; continue }",
+  "put": "if (lane >= maxLanes) { more[s.c0]++; continue }",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "a bar says whether it is carried on",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "head: item.a >= first, tail: item.b <= last",
+  "put": "head: true, tail: true",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "on a phone only a ONE-DAY bar drops its kind",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "return narrow && it.a === it.b && !it.more ? who : ",
+  "put": "return narrow ? who : ",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "a group bar says how many more",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "it.more > 0 ? `${it.who} +${it.more}` : it.who",
+  "put": "it.who",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "a week row is never squeezed under three lines",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "const row = Math.max(floor, share)",
+  "put": "const row = share",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "a no-fly day says NF",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "return a.cls === 'nf' ? { text: 'NF', kind: 'nf' } : null",
+  "put": "return null",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "a holiday with no short form still says what it is",
+  "file": "src/ui/inputscal-model.ts",
+  "find": "short || (a.kind === 'ph' ? 'PH' : 'OFF')",
+  "put": "short",
+  "tests": [
+   "src/ui/inputscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "the filer of a shared input is the entry’s own",
+  "file": "src/ui/placedline.ts",
+  "find": "const filer = withFiler ? withFiler.grpBy : stamped[0].by",
+  "put": "const filer = stamped[0].by",
+  "tests": [
+   "src/ui/placedline.test.ts"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "a shared input says when it was FIRST placed",
+  "file": "src/ui/placedline.ts",
+  "find": "Math.min(...stamped.map(r => r.at))",
+  "put": "Math.max(...stamped.map(r => r.at))",
+  "tests": [
+   "src/ui/placedline.test.ts"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "a shared input says its LATEST change",
+  "file": "src/ui/placedline.ts",
+  "find": ".sort((a, b) => b.modAt - a.modAt)[0]",
+  "put": ".sort((a, b) => a.modAt - b.modAt)[0]",
+  "tests": [
+   "src/ui/placedline.test.ts"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "from Medical a tab press lands on that tab, never stays on Medical",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "else { setInpMode(t === 'sans' ? 'sans' : 'member'); setInpView(inputsView.current) }",
+  "put": "else { setInpMode(t === 'sans' ? 'sans' : 'member') }",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "the List’s add form offers no SANS availability",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "{typeOptions(notSans)}\n            </select></div>",
+  "put": "{typeOptions()}\n            </select></div>",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "the type filter offers no SANS availability",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "<option value=\"all\">All types</option>{typeOptions(notSans)}",
+  "put": "<option value=\"all\">All types</option>{typeOptions()}",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "the List’s edit in place offers no SANS availability",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "isUpchit(r.type) ? isUpchit : notSans)}",
+  "put": "isUpchit(r.type) ? isUpchit : undefined)}",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "the page drops its foot room only while a month is up",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "const monthUp = tab === 'sans' || (tab === 'inputs' && INPVIEW === 'cal')",
+  "put": "const monthUp = true",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "the gear is an admin’s",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "{isAdmin() && (\n      <button type=\"button\" className=\"abtn inputs-gear\"",
+  "put": "{true && (\n      <button type=\"button\" className=\"abtn inputs-gear\"",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "only the selected tab is a tab stop",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "aria-selected={tab === t} tabIndex={tab === t ? 0 : -1}",
+  "put": "aria-selected={tab === t} tabIndex={0}",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "the arrow keys go round the ends of the tabs",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "const to = TABS[(i + by + TABS.length) % TABS.length]",
+  "put": "const to = TABS[Math.min(TABS.length - 1, Math.max(0, i + by))]",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "the switch and the filters are the Inputs tab’s alone",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "const tools = tab !== 'inputs' ? null : (<>",
+  "put": "const tools = tab === 'med' ? null : (<>",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "the List shows who placed an input",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "{placedLine(r) && <span className=\"in-placed\" data-testid=\"in-placed\">{placedLine(r)}</span>}",
+  "put": "",
+  "tests": [
+   "src/ui/placedshown.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "Medical, a tab, has no close cross",
+  "file": "src/ui/MedicalView.tsx",
+  "find": "{onClose && <button type=\"button\" className=\"abtn\" id=\"medClose\"",
+  "put": "{<button type=\"button\" className=\"abtn\" id=\"medClose\"",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "\"+ Input\" on the Inputs tab offers no SANS availability",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  i: (t: any) => !isSansAvail(t),",
+  "put": "  i: (_t: any) => true,",
+  "tests": [
+   "src/ui/inputstabs.test.tsx",
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "an input already filed cannot be turned into SANS availability",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    : (r && !isNew && !isSansAvail(r.type)) ? TYPE_ALLOW.i\n",
+  "put": "",
+  "tests": [
+   "src/ui/inputstabs.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "the editor’s foot says who placed the input",
+  "file": "src/ui/inputedit.tsx",
+  "find": "{!isNew && r && placedLine(r) && <div className=\"inped-placed\"",
+  "put": "{false && r && placedLine(r) && <div className=\"inped-placed\"",
+  "tests": [
+   "src/ui/placedshown.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "the editor is a window on the Inputs page only",
+  "file": "src/ui/inputedit.tsx",
+  "find": "const win = open && CURPAGE === 'inputs'",
+  "put": "const win = open",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "a field he has not touched takes the live value",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (fieldSame(f, draft, b)) next = { ...next, ...fieldPart(f, cur) }",
+  "put": "if (fieldSame(f, draft, b)) next = next",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "a field changed both ways is listed",
+  "file": "src/ui/inputedit.tsx",
+  "find": "else if (!fieldSame(f, draft, cur)) hit.add(f.k)",
+  "put": "else if (false) hit.add(f.k)",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 37,
+  "name": "Save waits for his choice",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    if (!win || !clash.length) return false",
+  "put": "    return false",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 38,
+  "name": "a record that has gone closes its window and says so",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (!now) { HOOKS.toast('That input was removed while its window was open — the window has closed', 'warn'); close(); return }",
+  "put": "if (!now) return",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 39,
+  "name": "a record put back as a new object is followed WITHOUT losing what he typed",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (now !== r) { keepDraft.current = true; setInpEdit(now); notify(); return }",
+  "put": "if (now !== r) { setInpEdit(now); notify(); return }",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 40,
+  "name": "one editor at a time: unsaved changes are asked about",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (win && other && !swapOk.current && draft",
+  "put": "if (false && win && other && !swapOk.current && draft",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 41,
+  "name": "\"Take theirs\" takes theirs",
+  "file": "src/ui/inputedit.tsx",
+  "find": "onClick={() => { setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k)) }}>Take theirs",
+  "put": "onClick={() => { setClash(c => c.filter(x => x !== k)) }}>Take theirs",
+  "tests": [
+   "src/ui/editorwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 42,
+  "name": "seven lines a day on a desktop",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "export const DESK_LANES = 7",
+  "put": "export const DESK_LANES = 9",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 43,
+  "name": "a desktop bar’s tooltip says who placed it",
+  "file": "src/ui/InputsCal.tsx",
+  "find": ", placedLineOf(it.rows)]",
+  "put": ", '']",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 44,
+  "name": "a date wears its tag",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "{tag && <span className={'ib-tag k-' + tag.kind} data-testid={'ib-tag-' + iso}>{tag.text}</span>}",
+  "put": "",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 45,
+  "name": "a tap on a bar opens that input",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (r) { setInpEdit(r); notify() } // object resolve — never index",
+  "put": "if (r) { notify() }",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 46,
+  "name": "a picked run opens \"+ Input\" for it",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "onRange: (a, b) => { setKb(null); live.current.openAdd(a, b) },",
+  "put": "onRange: () => { setKb(null) },",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 47,
+  "name": "a finger slid sideways turns the month",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "onSwipe: dir => live.current.step(dir),",
+  "put": "onSwipe: () => {},",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 48,
+  "name": "a saved input whose bar is on the month flashes there; no day opens",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const bar=key&&popIso==null?gridRef.current",
+  "put": "const bar=false&&key&&popIso==null?gridRef.current",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 49,
+  "name": "a save made from an OPEN day stays in that day",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "key&&popIso==null?",
+  "put": "key?",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 50,
+  "name": "on a phone the lines are what the height gives",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const lanes = narrow ? fit.lanes : DESK_LANES",
+  "put": "const lanes = DESK_LANES",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 51,
+  "name": "the month re-fits when the height changes",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "window.addEventListener('resize', measure)",
+  "put": "void measure",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 52,
+  "name": "\"How this works\" states the cut-off from the SETTING",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "{cutSentence('inputs', 'File')}",
+  "put": "{'File at least 14 days before the week starts.'}",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx"
+  ]
+ },
+ {
+  "n": 53,
+  "name": "an arrow moves the date",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const to = addDays(iso, by)",
+  "put": "const to = iso",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 54,
+  "name": "Shift and the arrows STRETCH a run from where it began",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (e.shiftKey) setKb(k => ({ anchor: k ? k.anchor : iso, end: to }))",
+  "put": "if (e.shiftKey) setKb(() => ({ anchor: iso, end: to }))",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 55,
+  "name": "a plain arrow lets the run go",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "      else setKb(null)\n      moveTo(to)",
+  "put": "      moveTo(to)",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 56,
+  "name": "Escape closes the open day BEFORE it lets the run go",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (popIso) { e.preventDefault(); e.stopPropagation(); closePop() }",
+  "put": "if (popIso && !kb) { e.preventDefault(); e.stopPropagation(); closePop() }",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 57,
+  "name": "the month is one tab stop",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "tabIndex={iso === tabAt ? 0 : -1} aria-pressed={iso === popIso}",
+  "put": "tabIndex={0} aria-pressed={iso === popIso}",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 58,
+  "name": "Delete asks first",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "      setDelAsk(it.key)\n    }",
+  "put": "      doDelete(it)\n    }",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 59,
+  "name": "Delete is offered only where its reader may delete",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (!mayDeleteInput(r)) { HOOKS.toast(",
+  "put": "if (false) { HOOKS.toast(",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 60,
+  "name": "Escape on the question leaves the day open",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) }",
+  "put": "if (e.key === 'Escape') { e.preventDefault(); setDelAsk(null) }",
+  "tests": [
+   "src/ui/inputskeys.test.tsx"
+  ]
+ },
+ {
+  "n": 61,
+  "name": "a late input wears LATE in the opened day",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const late = lateWord(r)",
+  "put": "const late = ''",
+  "tests": [
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 62,
+  "name": "the opened day says who placed each input",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const placed = placedLineOf(it.rows)",
+  "put": "const placed = ''",
+  "tests": [
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 63,
+  "name": "an Other is not said twice",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const rmk = r.remarks && r.remarks !== it.word ? r.remarks : ''",
+  "put": "const rmk = r.remarks || ''",
+  "tests": [
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 64,
+  "name": "an input that runs on says the day it runs till",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "(it.b > iso ? (it.allday ? '' : hoursOf(it.rows[0]) + ' · ') + 'till ' + fmtDay(it.b) : hoursOf(it.rows[0]))",
+  "put": "hoursOf(it.rows[0])",
+  "tests": [
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 65,
+  "name": "one input says \"1 input\"",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "{list.length} input{list.length > 1 ? 's' : ''}</h3>",
+  "put": "{list.length} inputs</h3>",
+  "tests": [
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 66,
+  "name": "the window says a no-fly day is one",
+  "file": "src/ui/InputsCal.tsx",
+  "find": ": kind.kind === 'nf' ? 'No fly'",
+  "put": ": kind.kind === 'nf' ? undefined",
+  "tests": [
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 67,
+  "name": "a bar is moved from the date UNDER THE POINTER, not its first",
+  "file": "src/ui/caldrag.ts",
+  "find": "const fromIso = own && root.contains(own) ? own.dataset.icday! : dayAtPoint(root, e.clientX, e.clientY, null)",
+  "put": "const fromIso = own && root.contains(own) ? own.dataset.icday! : (root.querySelector('[data-icday]') as HTMLElement).dataset.icday!",
+  "tests": [
+   "src/ui/barmove.test.tsx"
+  ]
+ },
+ {
+  "n": 68,
+  "name": "a drag of a bar that does not lift is not a tap",
+  "file": "src/ui/caldrag.ts",
+  "find": "        if (st.fixed) return\n",
+  "put": "",
+  "tests": [
+   "src/ui/barmove.test.tsx"
+  ]
+ },
+ {
+  "n": 69,
+  "name": "the moved bar is found as a bar",
+  "file": "src/ui/caldrag.ts",
+  "find": "`.ib-bar${chipSel(entry)}`",
+  "put": "chipSel(entry)",
+  "tests": [
+   "src/ui/barmove.test.tsx"
+  ]
+ },
+ {
+  "n": 70,
+  "name": "the date under a point is asked of EVERYTHING stacked there",
+  "file": "src/ui/caldays.ts",
+  "find": "for (const hit of stack) {",
+  "put": "for (const hit of stack.slice(0, 1)) {",
+  "tests": [
+   "src/ui/inputsmonth.test.tsx",
+   "src/ui/barmove.test.tsx"
+  ]
+ },
+ {
+  "n": 71,
+  "name": "the settings window is an admin’s",
+  "file": "src/ui/InputsSettings.tsx",
+  "find": "const refused = INPSET && !isAdmin()",
+  "put": "const refused = false",
+  "tests": [
+   "src/ui/inputssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 72,
+  "name": "it writes the INPUTS cut-off, not the SANS one",
+  "file": "src/ui/InputsSettings.tsx",
+  "find": "const c = saveCut('inputs', rule)",
+  "put": "const c = saveCut('sans', rule)",
+  "tests": [
+   "src/ui/inputssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 73,
+  "name": "the worked date says what is due HERE",
+  "file": "src/ui/CutFields.tsx",
+  "find": "{noun} are due by the end of",
+  "put": "commitments are due by the end of",
+  "tests": [
+   "src/ui/inputssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 74,
+  "name": "a Logic row’s door is an admin’s",
+  "file": "src/ui/LogicPage.tsx",
+  "find": "const door = r.open && isAdmin()",
+  "put": "const door = r.open",
+  "tests": [
+   "src/ui/logicdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 75,
+  "name": "the SANS row opens the SANS window",
+  "file": "src/ui/LogicPage.tsx",
+  "find": "if (b.dataset.lgopen === 'sans') setSansSet(true); else setInpSet(true)",
+  "put": "setInpSet(true)",
+  "tests": [
+   "src/ui/logicdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 76,
+  "name": "the members’ row follows the setting",
+  "file": "src/ui/logic-html.ts",
+  "find": "<b>${lgV(membersFileOn()?'on':'off')}</b>",
+  "put": "<b>${lgV('on')}</b>",
+  "tests": [
+   "src/ui/logicdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 77,
+  "name": "nothing of a cut-off is typed on the Logic page",
+  "file": "src/ui/logic-html.ts",
+  "find": "{sev:'note',open:'inputs',src:()=>",
+  "put": "{sev:'note',open:'inputs',set:['inputLead'],src:()=>",
+  "tests": [
+   "src/ui/logicdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 78,
+  "name": "a Medical card says who placed its input",
+  "file": "src/ui/MedicalView.tsx",
+  "find": "{placedLine(r) ? <span className=\"medcard-placed\" data-testid=\"medcard-placed\">{placedLine(r)}</span> : null}",
+  "put": "{null}",
+  "tests": [
+   "src/ui/placedshown.test.tsx"
+  ]
+ },
+ {
+  "n": 79,
+  "name": "the document viewer says who placed the entry on screen",
+  "file": "src/ui/DocViewer.tsx",
+  "find": "{placedLine(r) && <div className=\"docview-placed\" data-testid=\"docview-placed\">{placedLine(r)}</div>}",
+  "put": "",
+  "tests": [
+   "src/ui/placedshown.test.tsx"
+  ]
+ },
+ {
+  "n": 80,
+  "name": "no demo input names a member as another man’s filer",
+  "file": "src/state/demoseed.ts",
+  "find": "const by = admin && i % 5 === 3 && String(r.person) !== admin ? admin : String(r.person)",
+  "put": "const by = i % 5 === 3 ? 'bane' : String(r.person)",
+  "tests": [
+   "src/state/demostamps.test.ts"
+  ]
+ },
+ {
+  "n": 81,
+  "name": "the demo stamps leave a record that already says who placed it",
+  "file": "src/state/demoseed.ts",
+  "find": "if (!r || (r.by != null && r.by !== '') || r.person == null) return",
+  "put": "if (!r || r.person == null) return",
+  "tests": [
+   "src/state/demostamps.test.ts"
+  ]
+ }
+]

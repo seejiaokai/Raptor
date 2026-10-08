@@ -575,6 +575,41 @@ who-placed line on the other lists, the demo seed's stamps, the page's side marg
 - **The gear:** Days · Late cut-off (Inputs' own). **Phone faults seen while drawing are fixed with this:** the page's
   missing side margin; four rows of buttons above the month (now the tabs and ONE tools row).
 
+**AS BUILT (8 Oct 26, late — step 5, pieces 1 to 10, each its own commit; the people picker and a shared input's one
+line and one editor, §3.13's screens, are its last piece and NOT yet built).** `src/ui/inputscal-model.ts` (the pure
+half: `monthItems`, `layoutBars`, `itemsOn`, `barText`, `fitLanes`, `dayTag`), `ui/InputsCal.tsx` re-made (the month, a
+day's window, the keyboard, the fold), `ui/caldays.ts` (the date under a point — one body for `calpick.ts` and
+`caldrag.ts`), `ui/InputsSettings.tsx` with `ui/CutFields.tsx` (the gear; the cut-off's fields shared with the SANS
+window), `ui/inputedit.tsx` (the editor as a window), `ui/placedline.ts placedLineOf`, `state/demoseed.ts
+seedDemoStamps`; styles `ui/scheduler/25-inputs-calendar.css`. The contract: `docs/ui-contracts.md` "The Inputs
+calendar". **Choices the builder made, each told to him (§8):** (1) the old buttons' ids stay on the control that now
+does each job (`inMemberMode` is the Inputs tab, `inSansMode` the SANS tab, `inMedBtn` the Medical tab), so nothing
+that pressed them had to be re-taught; (2) Medical, a tab, has no close cross, sits in the page and carries no
+failed-save band; (3) an input already filed cannot be retyped INTO SANS availability from the Inputs tab (D620 read
+to its end); a SANS commitment's own editor keeps the full list; (4) a week is three layers (dates, heads, lines), so
+the planning layer is drawn in a date's head above the bars; (5) the bars are red for an absence and amber for a duty
+or commitment — the List's own colours — where the drawing's legend said "away all day / part of the day"; (6) a
+desktop bar's tooltip is the browser's own, not a drawn one; (7) the tabs are 36px tall and the tools row keeps 44px
+(made narrower on a phone, never shorter — D487, D653 reading 5); (8) on a phone a one-day bar says the callsign
+alone; (9) the page arrives scrolled to its top and drops the body's foot room while a month is up; an 8px side margin
+on a phone only; (10) Escape never leaves the calendar (the first one's last Escape went "back to the list"); (11) a
+saved or brought-back input is shown WHERE IT IS — its bar flashes, and the day opens only for an input with no bar
+(D672 and its reading 9, applied to the saved-row reveal §3.10 keeps); (12) Delete in the opened day asks under the
+line itself, and where the reader may not delete it says who can; (13) the gear is on the List too; (14) NOTHING of a
+cut-off is typed on the Logic page — the Inputs row's day box went, each row carrying a button to its window; (15)
+the cut-off's fields are one body for both settings windows; (16) "How this works" is one slim line with a legend, and
+on a phone its button answers 44px of press without the line growing; (17) the who-placed line sits under the remark
+in the List, and on a Medical card asks for no width; (18) the demo stamps name the person himself or the admin —
+never a member as another man's filer; (19) the editor is a window when it is opened on the Inputs page (whatever
+opened it there) and the blocking dialog elsewhere; behind a window the hours are ONE field; a record that has gone
+closes the window with a toast. **Found only by LOOKING at the running build or by a real browser, each fixed with a
+test:** Medical still covered the whole screen once its cross went; the page arrived scrolled with its tabs under the
+top bar; the body's foot room scrolled a month that fits; the picked-up copy of a bar caught the mouse's release; the
+landing flash went to the hidden List's row; an Undo of a move threw the day's sheet over the month; a member's drag
+of another man's bar read as a tap; the SANS head lost "Highlight" to the new side margin; one SANS test named a date
+the shorter page top put under its settings window. **And by the demo stamps:** the stored-shape check's list of an
+input's fields lacked the four who-placed fields and the two group fields.
+
 ### 3.7 Windows that drag while the page behind works — D641
 
 One shell, `src/ui/FloatWin.tsx`: a title bar it is dragged by (kept inside the screen; on a phone it starts at the
@@ -1421,6 +1456,20 @@ under the cut-off; the admin's button in the day, and the first line of the sett
 caution about that word inside a calendar's own settings is his to judge on the preview); on a phone the month's
 name is three letters ("OCT 2026"); holding a finger on a date for under half a second and then dragging picks
 several days — a quick slide still turns the month.
+
+**And the Inputs calendar (step 5, 8 Oct 26, late) — to tell him the same way, each a default he can change:** the
+three tabs are slimmer than the buttons under them; Medical is a tab and has no close cross; SANS availability cannot
+be filed, or an existing input turned into it, anywhere on the Inputs tab; a bar is red for an absence and amber for a
+duty or commitment (the drawing's legend said "away all day / part of the day"); on a phone a one-day bar shows the
+callsign alone; pointing at a bar on a desktop shows the browser's own small tooltip; Escape closes what is open and
+never leaves the calendar; after a save or an Undo the input's bar flashes where it is and the day opens only when the
+input has no bar to show (it is behind "+N more" or filtered out); Delete on an input in an opened day asks first,
+under that line; the gear is on the List as well; the late cut-off is no longer typed on the Logic page — each of its
+rows has a button that opens the calendar's own settings; a member switched off from filing for others keeps what he
+already filed for them only as the person's own and an admin's to change; the demo inputs now say who placed them (made
+up: the person himself, or Saber for him); the input editor on the Inputs page is a window — if the same input is
+changed behind it, what he did not touch follows silently and what both changed is put to him as a choice; opening a
+second input over unsaved changes asks first.
 
 ## 9. For the challenger
 

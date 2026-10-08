@@ -14,6 +14,18 @@
 // What it cannot break: a rule only a real browser can see (jsdom lays nothing out) — prove those by running the
 // browser test once on the broken build.
 import { readFileSync, writeFileSync } from 'node:fs'
+
+// A WRITE THAT FAILS IS TRIED AGAIN. On Windows a file another program has just touched (a virus scanner, an editor's
+// watcher) can refuse an open for a moment — "UNKNOWN: unknown error, open". On 8 Oct 26 that struck the write that
+// puts a broken line BACK: the run died and left the break in the source. So every write here waits and retries, and
+// the put-back never gives up quietly — if it cannot be written the run stops with the file's name, to be restored by hand.
+function put(file, text) {
+  let last
+  for (let i = 0; i < 12; i++) {
+    try { writeFileSync(file, text); return } catch (e) { last = e; Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250) }
+  }
+  throw new Error(`could not write ${file} after 12 tries — CHECK IT IS NOT LEFT BROKEN (git diff): ${last}`)
+}
 import { spawnSync } from 'node:child_process'
 
 const list = JSON.parse(readFileSync(process.argv[2], 'utf8'))
@@ -24,12 +36,12 @@ for (const m of list) {
   const before = readFileSync(m.file, 'utf8')
   const hits = before.split(m.find).length - 1
   if (hits !== 1) { out.push({ n: m.n, name: m.name, result: `SKIPPED — the line to break was found ${hits} times` }); console.log(`${m.n}. SKIPPED (${hits} hits) — ${m.name}`); continue }
-  writeFileSync(m.file, before.replace(m.find, () => m.put))
+  put(m.file, before.replace(m.find, () => m.put))
   let r
   try {
     r = spawnSync('npx', ['vitest', 'run', ...m.tests, '--reporter=dot'], { shell: true, encoding: 'utf8', timeout: 240000 })
   } finally {
-    writeFileSync(m.file, before)
+    put(m.file, before)
   }
   const text = (r.stdout || '') + (r.stderr || '')
   const failed = (text.match(/Tests\s+(\d+) failed/) || [])[1]

@@ -281,6 +281,7 @@ describe('a saved or brought-back input is shown where it is (D672)', () => {
     await reveal(r)
     expect(day('2026-10-07').classList.contains('is-open')).toBe(true)
     expect($(`[data-popiid="${r.iid}"]`)).toBeTruthy()
+    expect(bars(r.iid).some(b => b.classList.contains('lift-land')), 'the day shows it; the bar behind does not flash too').toBe(false)
   })
 })
 

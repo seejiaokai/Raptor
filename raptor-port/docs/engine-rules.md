@@ -1935,6 +1935,10 @@ Wednesday two weeks prior)"* (D628); the SANS calendar and the Inputs calendar e
 - **The standards.** The Inputs calendar stays on mode 0 at 14 days — nothing about it moved, and every assertion
   written before this (`lateinput.test.ts`) passes untouched. **The SANS calendar starts as the Wednesday two weeks
   before** — his own example; before this a SANS availability input was judged by the Inputs calendar's 14 days.
+- **Where each is set** (D639 — one setting, two ways in): behind its calendar's own gear (`ui/SansSettings.tsx`,
+  `ui/InputsSettings.tsx`, through `state/cutoff.ts`), and from the Logic page's row for it, whose button opens that
+  same window. Since step 5 (8 Oct 26) nothing of a cut-off is typed on the Logic page itself — the Inputs row's day
+  box went.
 - **A cut-off is the end of its day** (D639): the deadline day itself is on time, the day after is late — in both modes.
 - **A value in the wrong shape never breaks the rule** (`cutBackDays`): a mode that is not exactly 1 reads as days; a
   weekday is held to Monday–Sunday and the weeks to 1–8, so a deadline can never land inside the week it is for.

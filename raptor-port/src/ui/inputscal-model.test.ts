@@ -53,7 +53,12 @@ describe('an input as a bar', () => {
   })
   it('an input whose date cannot be read is on no bar and breaks nothing', () => {
     expect(items([inp('p1', 'LL', 'sometime')])).toEqual([])
-    expect(items([inp('p1', 'LL', 'Jul 9', 'Jul 6')])).toHaveLength(1)   // an end before its start reads as its one first day
+    /* an end before its start reads as its one first day — and is drawn there, one day wide (the strictness proof of
+       8 Oct 26 found this line asserting only that the input was still listed) */
+    const back = items([inp('p1', 'LL', 'Jul 9', 'Jul 6')])
+    expect(back).toHaveLength(1)
+    expect([back[0].a, back[0].b]).toEqual(['2026-07-09', '2026-07-09'])
+    expect(layoutBars(W2, back, 7).segs[0]).toMatchObject({ c0: 3, c1: 3 })
   })
   it('two inputs that share a day take two lines; one that does not overlap goes back to the first', () => {
     const a = inp('p1', 'LL', 'Jul 6', 'Jul 8'), b = inp('p2', 'LL', 'Jul 8', 'Jul 9'), c = inp('p3', 'LL', 'Jul 10')
@@ -64,7 +69,8 @@ describe('an input as a bar', () => {
     expect(wk.lanes).toBe(2)
   })
   it('the longer bar takes the higher line, so a week reads long bars first (as the approved month is drawn)', () => {
-    const short = inp('p1', 'LL', 'Jul 6'), long = inp('p2', 'OML', 'Jul 6', 'Jul 10')
+    /* the short one is first in the month's own order (Ranger before Saber), so only the length can put the long one on top */
+    const short = inp('p2', 'LL', 'Jul 6'), long = inp('p1', 'LL', 'Jul 6', 'Jul 10')
     const wk = layoutBars(W2, items([short, long]), 7)
     expect(seg(wk, long.iid).lane).toBe(0)
     expect(seg(wk, short.iid).lane).toBe(1)

@@ -3138,3 +3138,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When a change removes or replaces a way OUT of a surface (a close cross, a back button, an Escape rule), add one step before the commit: read that surface's positioning rules (fixed / absolute / z-index / scroll lock / inert) and name, in the commit, the control that is now the way out and why it is reachable. Pin it with a real-browser test that presses the new way out.
 
 **Principle:** A way out is a property of the layout as much as of the handlers - before removing one, prove the replacement is on screen and on top in a real browser, because a search for callers only proves nobody will miss the old one.
+
+### Observation 475: A new optional stored field needs ONE seeded record that carries it, or its mirrors never meet it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 5 of the Inputs / SANS calendar job - the demo data was given the "who placed it" stamps that step 1 had added to the record type.
+**Skill:** raptor-executor / test-driven-development
+**Type:** open-source
+**Phase/Area:** adding a field to a persisted record
+
+**Issue:** Step 1 added four optional fields to a stored record, with their writers and tests, and every gate was green. A hand-kept mirror of the record's shape (a conformance test's own field list) was never updated - and nothing failed, because that test only checks the records the seed produces, and no seeded record carried the new fields. It failed two steps later, the first time a seed carried them.
+
+**Suggested improvement:** In the checklist for "a field added to a stored record": add at least one seeded / fixture record that CARRIES the field in the same change, then run the conformance and round-trip tests. Name the mirrors to update (the declared type, the runtime shape list, the table list for the database).
+
+**Principle:** A check that walks real records can only vouch for fields some real record carries - an optional field nobody fills is invisible to every structural test, so give it a carrier the day it is added.
+
+### Observation 476: Two real-browser faults a layout-less test cannot see when dragging a copy of an element
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 5 - re-making drag-to-move for bars on a month; unit tests of the pointer machine were green, the first real-mouse drag did nothing.
+**Skill:** bug-check-order (walk) / New skill candidate: "drag and drop in a real browser"
+**Type:** open-source
+**Phase/Area:** pointer gestures - a dragged clone, and finding the dropped element afterwards
+
+**Issue:** (1) The dragged copy was a clone of the bar; a new rule that made bars take presses also applied to the clone, so the clone caught the mouse release and the drop target never heard it. (2) After the fix, the "landed here" flash went to the wrong element: a hidden twin (a list row kept mounted under the calendar) carried the same data id and came first in the document.
+
+**Suggested improvement:** When a gesture drags a CLONE: state its pointer-events explicitly on the clone's own class, never by inheritance from the original. When finding an element by a data id after a re-render: scope the selector to the surface (or its class), and check for mounted-but-hidden twins. Cover both with one real-browser test that performs the drag with a real mouse and asserts on the record AND on which element flashed.
+
+**Principle:** A cloned element inherits every rule written for its original, including the ones that make it a target - and an id is only unique among the things you remembered were mounted.

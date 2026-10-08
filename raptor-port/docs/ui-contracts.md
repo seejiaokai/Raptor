@@ -5104,6 +5104,15 @@ nothing and is there all day).
 
 ## The Inputs month calendar (owner, 22 Aug 26)
 
+
+**SUPERSEDED IN PART, 8 Oct 26 (step 5 of the Inputs / SANS job) — read "The Inputs calendar — its tabs, its month of
+bars, its day, its gear, the editor as a window" first.** What this section says of the PLANNING LAYER still stands:
+the day's title, the notes and pucks rows, their drags, the puck picker. What no longer holds: it is not a full-screen
+view toggled from the filter bar (it is the Inputs tab's own screen; `#icClose` is gone); an input is a BAR across its
+days, not a chip in a cell (no `MAX_CHIPS`); a held press and "Select dates" gave way to the SANS month's pointer
+machine (`calpick.ts`); the day is a WINDOW (`win-inputsday`), not a sheet a press outside closes; Escape never leaves
+the calendar.
+
 A full-screen, Google-Calendar-style view of the personal inputs, toggled
 from the Inputs page's filter bar (`#inCalBtn` ↔ `#icClose`, view state
 `INPVIEW` in `state/view.ts` — a view of the SAME page, not a page, so it
@@ -9362,6 +9371,71 @@ is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's 
   dragged low keeps its foot — and its Save — on the screen.
 Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, `ui/calpick.test.ts`,
 `ui/sanscal-model.test.ts`; in a browser `e2e/inputs-sans-calendar.spec.ts`. Pictures: `scripts/handpass/sans-look.mjs`.
+
+## The Inputs calendar — its tabs, its month of bars, its day, its gear, the editor as a window (the Inputs / SANS job, step 5, 8 Oct 26; D620, D621, D626, D627, D629, D632, D639, D641, D646, D653, D664, D672)
+
+`ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
+`ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.
+
+- **Three tabs — Inputs · SANS · Medical** (D620, D626: "less tall"), a tab list over the same two facts of view state
+  (`INPMODE`, `INPVIEW`); one is selected (`aria-selected`), the arrows move along them. Under the Inputs tab ONE switch,
+  Calendar | List, and the filters (the Inputs tab's alone). **Medical is a tab IN THE PAGE**: it has no close cross
+  and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
+  Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already
+  filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
+- **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
+  drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
+  stands 8px in from each edge.
+- **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
+  on a desktop; on a phone the tabs are the first line and the tools the second — narrower there, never shorter (D487).
+  Under them one slim line: "How this works" (five lines, the last the late cut-off AS SET — D646, D628) and the legend.
+- **An input is ONE BAR across the days it covers** (D626), cut at a week's end and carried on. A week is three layers
+  — the dates (`.ib-day`, `data-icday`), their heads (the number, the PH / OFF / NF tag — never a sun or a moon, D627 —
+  the day's title, the planning notes and pucks) and the lines (`.ib-bar`; "+N more") — because a bar lies across dates
+  and sits inside none. Red is an absence, amber a duty or commitment (the List's own colours). A group filing is ONE
+  bar, made so by `state/inputgroup.ts entriesOf` alone (D655). A desktop bar's tooltip says who, what, when and who
+  placed it (D632, D629).
+- **How many lines a day:** seven on a desktop, then "+N more" (D632, D639). On a phone the week rows share the height
+  the screen gives (`fitLanes`, re-measured when the height changes) and the lines are what fits — never fewer than
+  three and the "+N more" line; a month too tall for that scrolls the PAGE. The month has no height and no scroll of
+  its own (D653, D664).
+- **The date under a point** is asked of everything stacked there (`ui/caldays.ts dayAtPoint`), never of the bar — one
+  body for both pointer machines. A press that begins on a date is `ui/calpick.ts` (a tap opens the day; a mouse drag,
+  or a finger held and then dragged, picks several days for "+ Input"; a slide turns the month). A press that begins on
+  a bar or a planning note is `ui/caldrag.ts`: a tap opens it; a drag moves it BY THE DAYS between where it was grabbed
+  and where it is dropped — from its middle day or from its continuation alike — its length kept, one Undo step, the
+  moved bar flashing; dropped back is nothing and no step; a bar its reader may not move does not lift, and a drag of
+  it is not a tap.
+- **The keyboard** (D621): the month is one tab stop; arrows move the date and turn the month at its ends; Shift +
+  arrows stretch a run; Enter opens the day or files for the run; Escape on a date closes the open day, then lets the
+  run go, and never leaves the calendar; Delete on a line of the opened day asks first.
+- **A day opened is a window on the shell** (`win-inputsday`, D641, D648): no veil, an outside press leaves it up,
+  another date re-points it; on a phone a panel at two heights; on a desktop beside the month, the page making room.
+  Its title and "+ Input" are pinned; the planning sections and then one line an entry scroll under them — who, the
+  kind, when ("All day", the hours, or the day it runs till), a remark, the LATE tag (pressed, it says the cut-off
+  missed — D646) and who placed it (D629). Everyone is listed; never "+ more".
+- **A saved or brought-back input is shown WHERE IT IS** (D672 and its reading 9): the month turns to it if needed;
+  its bar flashes — brought on screen first if scrolled away — and nothing opens. Only an input with no bar on the
+  month (behind "+N more", let through by no filter), or a save made from an open day, opens the day.
+- **The gear** (the cog glyph, admins — D635) opens the Inputs calendar's settings window (`win-inputsset`):
+  "Calendar…" (D675), the late cut-off for inputs (D628, D639 — the INPUTS set; the SANS calendar's is its own), and
+  the switch "Members may file duties and commitments for other people" (D654, D655). A draft until Save; a bad
+  cut-off saves neither; each change one Undo step. **The Logic page lists both cut-offs and the switch, and each
+  row's button opens that same window — nothing of a cut-off is typed on the Logic page.**
+- **Who placed it** (D629) is on every place an entry is listed or opened: both opened days, the List (under the
+  remark), the editor's foot, a Medical card (asking for no width of its own) and the document viewer (following the
+  page of an episode). The demo data carries made-up stamps — never a member as the filer of another man's input.
+- **The input editor is a window on the Inputs page** (`win-inputedit`, D641) and the blocking dialog elsewhere. Behind
+  a window the record can change, so **it never saves a field its user did not change**: a field he has not touched
+  takes the live value silently; a field changed both ways is listed, theirs and his, and Save waits for his choice
+  (asked again after any blocking question); a record that has gone closes the window and says so; a record put back
+  as a new object by a refusal or an Undo is followed without losing what he typed; another input asked for over
+  unsaved changes is asked about in the window.
+Pins: `ui/inputscal-model.test.ts`, `ui/inputstabs.test.tsx`, `ui/inputsmonth.test.tsx`, `ui/barmove.test.tsx`,
+`ui/inputsday.test.tsx`, `ui/inputskeys.test.tsx`, `ui/inputssettings.test.tsx`, `ui/logicdoors.test.tsx`,
+`ui/placedshown.test.tsx`, `ui/editorwindow.test.tsx`, `ui/placedline.test.ts`, `state/demostamps.test.ts`,
+`ui/sansform.test.tsx`; in a browser `e2e/inputs-calendar.spec.ts`. Pictures: `scripts/handpass/inputs-look.mjs`.
+**Not yet built (step 5's last piece): the people picker and a shared input shown as one line and one editor (§3.13).**
 
 ## Inputs calendar and SANS demand — D580
 
