@@ -1020,3 +1020,41 @@ for (const view of ['the Calendar', 'the List'] as const) {
     } finally { await context.close() }
   })
 }
+
+/* A SHORTER INPUT IN AN OPENED DAY (owner D696, D699, D701, 9 Oct 26 — drawing B: "put the placed by sentence to the
+   2nd row if the remarks is short. If the remarks is too long then move the placed by down to a 3rd row but still the
+   same horizontal alignment"). Where a line of words ends is a browser's to say: a short remark and the small print on
+   ONE line; under a long remark the small print on a line of its own; at the card's right end in both, and where there
+   is no remark at all. */
+test('a phone: in an opened day a short remark shares its line with who placed it; under a long remark that goes to a line of its own — at the card’s right end either way (D701)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 667)
+  try {
+    const at = new Date(2026, 9, 2, 9, 10).getTime()
+    const stamp = { by: 'x', at, modBy: 'x', modAt: at }
+    const [short, long, bare] = await page.evaluate(async ([stamp]) => {
+      const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
+      const mk = (i: number, remarks: string) => { const iid = 'e2e-foot-' + i; w.fileInput({ iid, person: crew[i], type: 'Appointment', date: 'Oct 14', yr: 2026, allday: false, s: 540 + i * 60, e: 600 + i * 60, remarks, ...stamp, by: crew[i], modBy: crew[i] }); return iid }
+      return [mk(1, 'Dental'), mk(2, 'Safety council, wing HQ — back for the 1600 brief if it ends on time'), mk(3, '')]
+    }, [stamp])
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
+    const read = (iid: string) => page.locator(`[data-testid="idy-row-${iid}"]`).evaluate(row => {
+      const r = (s: string) => { const n = row.querySelector(s); if (!n) return null; const b = n.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } }
+      const cs = getComputedStyle(row)
+      return { h: Math.round(row.getBoundingClientRect().height), inner: row.getBoundingClientRect().right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth), rmk: r('.sd-rmk'), placed: r('[data-testid="idy-placed"]'), words: row.querySelector('[data-testid="idy-placed"]')!.textContent }
+    })
+    const a = await read(short), b = await read(long), c = await read(bare)
+    expect(a.words, 'the small print is the short form').toMatch(/^\S+ · 2 Oct, 09:10$/)
+    expect(Math.abs(a.placed!.top - a.rmk!.top), 'a short remark and the small print share a line').toBeLessThanOrEqual(3)
+    expect(a.placed!.left, 'and the small print stands after the remark').toBeGreaterThan(a.rmk!.right)
+    expect(Math.abs(a.placed!.right - a.inner), 'at the card’s right end').toBeLessThanOrEqual(1.5)
+    expect(a.h, 'two rows, not three').toBeLessThanOrEqual(56)
+    expect(b.placed!.top, 'under a long remark the small print has a line of its own').toBeGreaterThanOrEqual(b.rmk!.bottom - 1)
+    expect(Math.abs(b.placed!.right - b.inner), 'still at the card’s right end').toBeLessThanOrEqual(1.5)
+    expect(c.rmk, 'no remark, no remark line').toBeNull()
+    expect(Math.abs(c.placed!.right - c.inner), 'and with no remark it is at the right end too').toBeLessThanOrEqual(1.5)
+    expect(c.h).toBeLessThanOrEqual(56)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
+  } finally { await context.close() }
+})
+
