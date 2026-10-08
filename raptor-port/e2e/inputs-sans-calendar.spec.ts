@@ -465,8 +465,14 @@ for (const [name, tab, label, prev, next, y, m, day, win, rows] of [
     const context = await browser.newContext({ baseURL, viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true })
     const page: Page = await context.newPage()
     await login(page); await go(page, 'inputs')
+    /* BACKGROUND, not the thing tested: six SANS people's commitments on Wed 7 Oct, so the list has something to reach */
+    if (name === 'SANS') await page.evaluate(() => {
+      const w = window as any
+      Object.keys(w.PEOPLE).filter(id => w.PEOPLE[id].san && !w.PEOPLE[id].archived && !w.PEOPLE[id].deleted).slice(0, 6)
+        .forEach((person, i) => w.fileInput({ iid: 'side-' + i, person, type: 'SANS Availability', date: 'Oct 7', yr: 2026, allday: true, sans: { f: true } }))
+    })
     await page.locator(tab).tap()
-    /* the demo's own busy day: Wed 7 Oct 26 on SANS, Tue 14 Jul 26 on Inputs */
+    /* the day with entries: Wed 7 Oct 26 on SANS (seeded above), the demo's own Tue 14 Jul 26 on Inputs */
     for (let i = 0; i < 36; i++) {
       const [mm, yy] = (await page.locator(label).innerText()).trim().toLowerCase().split(/\s+/)
       const d = y * 12 + (m - 1) - (+yy * 12 + ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(mm.slice(0, 3)))

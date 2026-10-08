@@ -4034,7 +4034,9 @@ test('the Holidays list in Days adds, changes and deletes a public holiday — t
   await expect(tid(`event-0-${DAY}`)).toHaveText('DV')
   /* and the month: a tag, no class control */
   await press(tid('days-tab-month'))
-  await expect(tid(`days-tag-${DAY}`)).toHaveText('PH')
+  /* the month prints the holiday's SHORT FORM - the word the Leave War's row and the other two calendars print (it
+     read the fixed "PH" until the calendar job's bug check, 8 Oct 26 - e2e/inputs-calendar.spec.ts "one holiday, one word") */
+  await expect(tid(`days-tag-${DAY}`)).toHaveText('DV')
   await expect(tid(isPhone() ? `days-step-${DAY}` : `days-d-${DAY}`)).toHaveCount(0)
   await press(tid('days-tab-holidays'))
 
@@ -4175,7 +4177,7 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
   /* and the month wears the tag */
   await press(tid('days-tab-month'))
   for (let i = 0; i < 80 && (await tid('days-month').textContent()) !== 'August 2031'; i++) await press(tid('days-next'))
-  await expect(tid('days-tag-2031-08-09')).toHaveText('PH')
+  await expect(tid('days-tag-2031-08-09'), 'its short form, made from the name').toHaveText('ND')
 })
 
 // UNDO AND REDO LEAVE THE GRID WHERE IT IS (owner, D670, 8 Oct 26 — his phone pictures: an LL put on 9 Feb, Undo, and
