@@ -614,6 +614,13 @@ step; `engine/inputs.ts cutBackOf` is the sum both share. An Undo of a cut-off p
 (`state/undo-wire.ts`). `src/ui/usemedia.ts` - `useMedia(query)`, for the few places where what is WRITTEN changes with
 the room (the SANS month's name is three letters on a phone). The windows shell now caps a window he has placed at the
 room under it, so its foot stays on the screen (`FloatWindow.tsx`).
+**THE INPUTS CALENDAR (step 5 of the same job; plan §3.6, §3.13).**
+`src/ui/inputscal-model.ts` - WHICH BAR SITS ON WHICH LINE OF WHICH WEEK (D626, D632, D653, D655, D664). Pure:
+`monthItems` (the inputs as ENTRIES - a group filing is one, by `state/inputgroup.ts entriesOf` - filtered as the List
+filters, an entry staying when ANY of its people passes; no SANS availability, D620), `layoutBars(week, items, maxLanes)`
+(one bar across an input's days, cut at the week's end and carried on, long bars first, "+N more" counted day by day),
+`itemsOn` (what an opened day lists), `barText`, `fitLanes` (the phone's lines from the height the screen gives, never
+under three) and `dayTag` (PH / OFF / NF - never a sun or a moon here, D627). `inputscal-model.test.ts`.
 The first calendar's SANS half left `InputsCal.tsx` with it (its cell, day panel, colour dropdown and legend); `mode` there
 is now `'member'` or absent. `e2e/inputs-sans-calendar.spec.ts` was re-pointed whole at the new screen (a real mouse drag,
 a real finger through CDP, the two press-through faults the first look found, D664 at three phone heights in a five-week
