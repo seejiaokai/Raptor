@@ -712,6 +712,8 @@ shared input's dates changed in its window - sixteen steps through the app's own
 as the member, a phone upright, short and on its side); a PASS is the right behaviour, so it is its own re-walk.
 `scripts/handpass/cal-host-day-look.mjs` - a LOOK, not a gate (D683, 9 Oct 26): the day opened on the Inputs calendar,
 pictured and measured on a phone (admin, member, short, on its side) and a desktop - tall as it opens, its two buttons in the bar.
+`scripts/handpass/cal-strip-measure.mjs` - a LOOK, not a gate (D697, 9 Oct 26): the line under the tools ("How this works"
+and its key) measured and pictured on the Inputs tab and the SANS tab at a phone width given on the command line.
 `scripts/handpass/cal-A-*.mjs` ... `cal-H-*.mjs` - the EIGHT WALKERS' own scripts of that check (8 Oct 26), one letter a
 walker: A one day's facts, B the Leave War, C the windows and "Calendar", D the SANS calendar, E the Inputs calendar,
 F one input for several people and the late rule, G and H the crossings. Records of what was driven, not gates; each

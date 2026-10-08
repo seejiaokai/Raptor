@@ -9453,6 +9453,16 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **On a phone the SANS calendar's "How this works" and its colour key share ONE line, placed as the Inputs calendar's
+  are (owner D697, 9 Oct 26 — from his iPhone: "the same amount of vertical space and similar vertical alignment.
+  Compact words if need be").** The line (`.sc-sub`) is 28px, 6px under the tools, the fold's button at its left and the
+  key at its right END — the same boxes as `.ib-sub`, so the month starts as far under the tools on both tabs. The
+  button is drawn slim and still answers 44px of a finger (its `::after` reaches 5px up and 13px down, as `.ib .sc-how`).
+  The key's words on a phone are "Still needed:" (`SansCal.tsx`, the `narrow` check); a desktop keeps "Pilots · WSOs
+  still needed:", and the key carries the full words as its name. It never wraps and never pushes the page sideways:
+  short of room it is cut from its LEFT, so the words go before a colour does. Pinned at 390, 360 and 320 wide by
+  `e2e/inputs-sans-calendar.spec.ts` (D697) and by `ui/sanscal.test.tsx`. Do not give the phone button back its 44px
+  of drawn height, or the key a line of its own.
 - **On a phone the filter button and the gear do not move when the filters open (owner D693, 9 Oct 26 — from his iPhone).**
   The folded fields stand between the two buttons in the page; opened, they are drawn AFTER the whole row (`order` on
   `.inputs-filterfields.open`, 25-inputs-calendar.css), on a line of their own. And a filter being set does not widen

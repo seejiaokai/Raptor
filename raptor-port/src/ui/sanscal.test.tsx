@@ -145,6 +145,22 @@ describe('a date', () => {
 })
 
 describe('the line that says what the colours mean', () => {
+  /* owner D697 (9 Oct 26): on a phone the key shares the fold's line, as the Inputs calendar's does — its words are
+     the short ones there, and the full words stay on the key for a pointer and a screen reader */
+  it('on a phone reads "Still needed:" and keeps its full words as its name (D697)', () => {
+    const mm = window.matchMedia
+    window.matchMedia = ((q: string) => ({ matches: /max-width:\s*820px/.test(q), media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} })) as any
+    try {
+      show()
+      expect(t('sc-legend').textContent).toBe('Still needed:1–23–45+')
+      expect(t('sc-legend').getAttribute('aria-label')).toBe('Pilots, then WSOs, still needed to fly')
+    } finally { window.matchMedia = mm }
+  })
+  it('on a desktop keeps the full words on the key itself (D697)', () => {
+    show()
+    expect(t('sc-legend').querySelector('.sc-legend-w')!.textContent).toBe('Pilots · WSOs still needed:')
+    expect(t('sc-legend').getAttribute('aria-label')).toBe('Pilots, then WSOs, still needed to fly')
+  })
   it('is there for everyone, written from the three figures as they are set (D618)', () => {
     const v = show()
     expect(t('sc-legend').textContent).toBe('Pilots · WSOs still needed:1–23–45+')

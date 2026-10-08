@@ -494,3 +494,61 @@ for (const [name, tab, label, prev, next, y, m, day, win, rows] of [
     await context.close()
   })
 }
+
+/* THE LINE UNDER THE TOOLS IS THE INPUTS CALENDAR'S (owner D697, 9 Oct 26 — two pictures from his iPhone, the SANS tab
+   beside the Inputs tab: "Can u match the left sans calander tot he inputs calendar which uses the same amount of
+   vertical space and similar vertical alignment. Compact words if need be"). On a phone the SANS fold's button stood
+   44px tall with its colour key on a line of its own under it — 69px where the Inputs calendar spends 28. Now: one
+   line, the key at its right end with shorter words, the same height and the same places as the Inputs calendar's,
+   so the month starts where it does there. At 360 the Inputs tools wrap to a third row, so there the two are compared
+   from the foot of each calendar's own tools. */
+for (const width of [390, 360]) test(`a phone ${width} wide: the SANS calendar's "How this works" and its colour key share one line, placed as the Inputs calendar's are (D697)`, async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, viewport: { width, height: 844 }, isMobile: true, hasTouch: true })
+  const page: Page = await context.newPage()
+  try {
+    await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+    const box = async (sel: string) => page.locator(sel).first().evaluate(n => { const r = n.getBoundingClientRect(); return { top: Math.round(r.top), h: Math.round(r.height), left: Math.round(r.left), right: Math.round(r.right), bottom: Math.round(r.bottom) } })
+    const read = async (strip: string, how: string, key: string, dow: string, head: string) => {
+      const s = await box(strip), h = await box(how), k = await box(key), d = await box(dow), top = (await box(head)).bottom
+      /* every place counted from the foot of the calendar's own tools */
+      return { abs: s.top, strip: [s.top - top, s.h], how: [h.top - top, h.h, h.left, h.right], key: [k.top - top, k.h, k.right], dow: d.top - top, k, h }
+    }
+    const inp = await read('.ib-sub', '[data-testid="ib-how"]', '[data-testid="ib-legend"]', '.ib-dow', '.ic-head')
+    await page.locator('#inSansMode').tap(); await expect(tid(page, 'sanscal')).toBeVisible(); await month(page, 2026, 10)
+    const sc = await read('.sc-sub', '[data-testid="sc-how"]', '[data-testid="sc-legend"]', '[data-testid="sc-dow"]', '.sc-head')
+    expect(sc.strip, 'the line is as far under the tools, and as tall, as the Inputs calendar’s').toEqual(inp.strip)
+    expect(sc.how, 'the fold’s button is where and as big as the Inputs calendar’s').toEqual(inp.how)
+    expect(sc.key, 'the colour key sits on that line, ending at its right end, as the Inputs calendar’s does').toEqual(inp.key)
+    expect(sc.dow, 'so the weekday names — the month — start as far under the tools on both calendars').toBe(inp.dow)
+    if (width === 390) expect(Math.abs(sc.abs - inp.abs), 'and at the same place on the screen where the two tools rows are as tall').toBeLessThanOrEqual(1)
+    expect(sc.k.left, 'the key never runs into the fold’s button').toBeGreaterThanOrEqual(sc.h.right + 8)
+    await expect(page.locator('[data-testid="sc-legend"] .sc-legend-w'), 'its words are the short ones').toHaveText('Still needed:')
+    await expect(tid(page, 'sc-legend')).toContainText('5+')
+    /* the slim button still takes a finger: 44px of it answer a press, as on the Inputs calendar */
+    const reach = await page.evaluate(() => { const b = document.querySelector('[data-testid="sc-how"]')!, r = b.getBoundingClientRect(), x = r.left + r.width / 2; const at = (y: number) => !!document.elementFromPoint(x, y)?.closest('[data-testid="sc-how"]'); let top = r.top, bottom = r.bottom; while (at(top - 1)) top--; while (at(bottom + 1)) bottom++; return bottom - top })
+    expect(reach, 'the fold’s button answers a finger').toBeGreaterThanOrEqual(44)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(width)
+    /* and it still opens: the five lines above the month, the month's foot still on the screen */
+    await tid(page, 'sc-how').tap()
+    await expect(tid(page, 'sc-how-list').locator('li')).toHaveCount(5)
+    const list = await box('[data-testid="sc-how-list"]'), grid = await box('[data-testid="sc-grid"]')
+    expect(list.bottom, 'the fold opens above the month, not over it').toBeLessThanOrEqual(grid.top + 1)
+  } finally { await context.close() }
+})
+
+/* ...AND WHERE THERE IS TOO LITTLE ROOM (D697): a very narrow phone. The key stays on the line and gives way from its
+   left - the three colours and their figures whole, the page not pushed sideways, the fold's button not covered. */
+test('a phone 320 wide: the SANS colour key stays on the fold’s line, its three colours whole, and nothing runs off sideways (D697)', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, viewport: { width: 320, height: 700 }, isMobile: true, hasTouch: true })
+  const page: Page = await context.newPage()
+  try {
+    await login(page); await go(page, 'inputs'); await page.locator('#inSansMode').tap(); await expect(tid(page, 'sanscal')).toBeVisible()
+    const r = await page.evaluate(() => { const b = (s: string) => document.querySelector(s)!.getBoundingClientRect(); const how = b('[data-testid="sc-how"]'), key = b('[data-testid="sc-legend"]'), strip = b('.sc-sub'); const keys = [...document.querySelectorAll('[data-testid="sc-legend"] .sc-key')].map(k => k.getBoundingClientRect()); return { strip: Math.round(strip.height), howR: how.right, keyL: key.left, keyR: key.right, first: keys[0].left, last: keys[2].right, tops: keys.map(k => Math.round(k.top)), wide: document.documentElement.scrollWidth } })
+    expect(r.strip, 'one slim line still').toBe(28)
+    expect(r.keyL, 'the key does not cover the fold’s button').toBeGreaterThanOrEqual(r.howR)
+    expect(r.first, 'the first colour is whole inside the key').toBeGreaterThanOrEqual(r.keyL - 0.5)
+    expect(r.last, 'the last colour is whole inside the key').toBeLessThanOrEqual(r.keyR + 0.5)
+    expect(new Set(r.tops).size, 'the three colours on one line').toBe(1)
+    expect(r.wide, 'nothing runs off sideways').toBeLessThanOrEqual(320)
+  } finally { await context.close() }
+})

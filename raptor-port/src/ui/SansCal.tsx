@@ -266,8 +266,11 @@ export function SansCal() {
           <button type="button" className="sc-how" data-testid="sc-how" aria-expanded={how} aria-controls="scHowList" onClick={() => setHow(h => !h)}>
             <span className="sc-how-v" aria-hidden="true" />How this works
           </button>
-          <span className="sc-legend" data-testid="sc-legend">
-            <span className="sc-legend-w">Pilots · WSOs still needed:</span>
+          {/* ON A PHONE the key's words are the short ones (owner D697: "Compact words if need be") — the whole key then
+              sits on the fold's own line, as the Inputs calendar's does; that the pair is pilots, then WSOs is line 2
+              of the fold, and the full words stay on the key for a pointer and a screen reader. */}
+          <span className="sc-legend" data-testid="sc-legend" role="group" title="Pilots · WSOs still needed to fly" aria-label="Pilots, then WSOs, still needed to fly">
+            <span className="sc-legend-w">{narrow ? 'Still needed:' : 'Pilots · WSOs still needed:'}</span>
             <span className="sc-key t-yellow">{span(tones.yellowFrom, tones.amberFrom)}</span>
             <span className="sc-key t-amber">{span(tones.amberFrom, tones.redFrom)}</span>
             <span className="sc-key t-red">{span(tones.redFrom)}</span>

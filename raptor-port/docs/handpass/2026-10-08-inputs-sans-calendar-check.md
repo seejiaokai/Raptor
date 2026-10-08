@@ -766,3 +766,33 @@ real-browser tests, kept as gates:** shut, open, a filter set, shut again — th
 Calendar | List switch each in the same box to the pixel; the fields under the row; nothing off sideways. The host
 opened the picture of the row shut and open. **Seen and told to him:** the count looks different — a small cyan badge
 on the corner where it was a number inside the button.
+
+## 21. His look, seventh — the SANS calendar's line under the tools matches the Inputs calendar's (D697)
+
+His words, with a picture of each tab from his iPhone: "Can u match the left sans calander tot he inputs calendar which
+uses the same amount of vertical space and similar vertical alignment. Compact words if need be". **Measured first, at
+390 wide:** on the SANS tab "How this works" stood 44 tall with the colour key on a line of its own under it — 69 in
+all, the weekday names 81 under the tools; on the Inputs tab the two share one line of 28, the weekday names 40 under
+the tools. **Reproduced as a failing browser test first** (the SANS line's place and height set against the Inputs
+line's). **The change:** on a phone the SANS line is the Inputs line — 28 tall, the button slim but still answering
+44 of a finger, the key at the right end of the same line with the words "Still needed:" (a desktop keeps "Pilots ·
+WSOs still needed:"). The month gains 41 of height on the SANS tab.
+
+**Type of change and the walk's size (D607):** the look of one line on one screen, drawn by one component; nothing
+that files, saves or counts. **Tier: LOOK taken as WALK**, sized SHORT — the host's own, no walkers.
+**Roll-call — every place this line is drawn:** the SANS calendar on a phone — CHANGED; the SANS calendar on a
+desktop — must not change (the full words, one line already): its unit test and the file's desktop tests pass; the
+Inputs calendar — the model, must not change: measured before and after, the same to the pixel; the Medical tab —
+has no such line; the fold opened — walked, its five lines above the month; a member — the same line (only the gear
+differs, in the row above).
+**The walk is the three real-browser tests, kept as gates,** and the host's pictures
+(`docs/img/handpass/2026-10-09-cal-strip/`, opened and looked at): 390 and 360 wide — the line, the button and the key
+in the same boxes as the Inputs calendar's, counted from the foot of each calendar's own tools (at 360 the Inputs tools
+take a third row, so the two lines are not at the same place on the screen there — that row is the Inputs tab's own);
+the fold opens above the month; 320 wide — too little room: the key stays on the line, its three colours whole, the
+words cut from the left, nothing off sideways.
+**Seen and told to him:** the weekday-name row is 3 shorter on the SANS calendar than on the Inputs calendar (each
+calendar's own, not touched), so the first week starts 2 higher on SANS; on a phone the key no longer says "Pilots ·
+WSOs" — that the pair is pilots, then WSOs is line 2 of "How this works". **Not checked here:** his iPhone's own
+letters are a little different in width from this PC's — there are 48 points to spare at 360 wide, and the key gives
+way from its words first if that were ever not enough.
