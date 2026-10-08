@@ -256,6 +256,25 @@ describe('the keyboard (D621)', () => {
     expect(INPUTS.length).toBe(before)
     expect(document.querySelector('.is-picked')).toBeNull()
   })
+  it('someone who may not add stretches no run with Shift — the arrows still move him', () => {
+    setSession({ user: 'us', role: 'member' }); setMe(member)
+    show()
+    day(WED).focus()
+    fireEvent.keyDown(day(WED), { key: 'ArrowRight', shiftKey: true })
+    expect(document.activeElement).toBe(day(THU)); expect(document.querySelector('.is-picked')).toBeNull()
+    fireEvent.keyDown(day(THU), { key: 'Enter' })
+    expect(INPEDIT).toBeNull(); expect(q('win-sansday')).toBeTruthy()      // Enter opens the day, as for anyone
+  })
+  it('an arrow without Shift lets the run go and simply moves on', () => {
+    show()
+    day(WED).focus()
+    fireEvent.keyDown(day(WED), { key: 'ArrowRight', shiftKey: true })
+    expect(day(THU).className).toContain('is-picked')
+    fireEvent.keyDown(day(THU), { key: 'ArrowRight' })
+    expect(document.querySelector('.is-picked')).toBeNull()
+    fireEvent.keyDown(day('2026-10-09'), { key: 'Enter' })
+    expect(INPEDIT).toBeNull(); expect(q('win-sansday')).toBeTruthy()      // Enter now opens the day; no run is filed
+  })
   it('Escape lets a run go; with none, it closes the open day', () => {
     show()
     day(WED).focus()
@@ -264,6 +283,10 @@ describe('the keyboard (D621)', () => {
     fireEvent.keyDown(day(THU), { key: 'Escape' })
     expect(document.querySelector('.is-picked')).toBeNull()
     fireEvent.keyDown(day(THU), { key: 'Enter' }); expect(q('win-sansday')).toBeTruthy()
+    /* the keyboard is back ON THE MONTH (a click on a date puts it there): the window leaves Escape to the page behind
+       it, so it is the date that closes the day (found by the strictness proof — with the keyboard still in the
+       window, the window closed itself and this line proved nothing) */
+    day(THU).focus()
     fireEvent.keyDown(day(THU), { key: 'Escape' }); expect(q('win-sansday')).toBeNull()
   })
 })

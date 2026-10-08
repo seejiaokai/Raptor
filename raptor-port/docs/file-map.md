@@ -627,6 +627,7 @@ a look, not a gate.
 tests named for it, puts the line back, and says which breaks no test caught. Its lists are `scripts/handpass/breaks/` -
 `2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen), `2026-10-08-counters-among.json` (D674: twenty-five) and
 `2026-10-08-inputs-undo-landing.json` (the Inputs list's landing after an Undo: seven).
+`2026-10-08-sans-calendar.json` is step 4's (the SANS calendar: sixty-five).
 `scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
 grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26). He chose A (D678); it is built.
 `scripts/handpass/lw-phone-head-measure.mjs` - measures the Leave War's top area (every control's words, box, padding and

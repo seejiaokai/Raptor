@@ -21,6 +21,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { globalUndo } from '../undo'
 import { commandStream } from '../command'
 import { getTones } from '../state/flyplan'
+import { saveCut } from '../state/cutoff'
 import { CURPAGE, setCalMonth, setPage } from '../state/view'
 import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
@@ -155,6 +156,33 @@ describe('the SANS late cut-off (D628, D639)', () => {
     fireEvent.click(t('sset-save'))
     expect(t('sset-err').textContent).toMatch(/0 to 60/)
     expect(VCONF.sansCutMode).toBe(1); expect(steps()).toBe(before)
+  })
+  it('a box left empty, or holding a letter, is refused — never read as nought days', () => {
+    render(<SansSettings />); open()
+    fireEvent.click(t('sset-mode-days'))
+    for (const typed of ['', 'x', '1.5', '-3']) {
+      type('sset-lead', typed)
+      expect(q('sset-example'), `no worked date for "${typed}"`).toBeNull()
+      fireEvent.click(t('sset-save'))
+      expect(t('sset-err')).toBeTruthy(); expect(VCONF.sansCutMode).toBe(1)
+    }
+  })
+  it('saving the cut-off as it already is changes nothing, and says so', () => {
+    setPage('logic')
+    expect(saveCut('sans', { mode: 1, wd: 2, weeks: 2, lead: 14 })).toEqual({ ok: true, changed: false })
+    expect(saveCut('sans', { mode: 1, wd: 3, weeks: 2, lead: 14 })).toEqual({ ok: true, changed: true })
+  })
+  it('a bad cut-off stops the WHOLE save: colours changed beside it are not saved either', () => {
+    render(<SansSettings />); open()
+    type('sset-red', '8'); fireEvent.click(t('sset-mode-days')); type('sset-lead', '99')
+    const before = steps()
+    fireEvent.click(t('sset-save'))
+    expect(t('sset-err')).toBeTruthy(); expect(getTones().redFrom).toBe(5); expect(steps()).toBe(before)
+  })
+  it('the door itself is an admin’s: a member’s save is refused and nothing moves', () => {
+    setSession({ user: 'us', role: 'member' })
+    const r = saveCut('sans', { mode: 0, lead: 7, wd: 0, weeks: 1 })
+    expect(r.ok).toBe(false); expect(VCONF.sansCutMode).toBe(1); expect(VCONF.sansLead).toBe(14)
   })
   it('never touches the Inputs calendar’s own cut-off', () => {
     render(<SansSettings />); open()

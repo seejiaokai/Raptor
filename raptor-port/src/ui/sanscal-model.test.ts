@@ -98,6 +98,11 @@ describe('a day opened on the SANS calendar', () => {
     expect(g.w.map(e => e.id)).toEqual(['w1', 'w1'])       // he flies, so both his lines stand under WSOs to fly
     expect(g.other).toEqual([]); expect(g.flyW).toBe(1); expect(g.flyP).toBe(0)
   })
+  it('the OFT-or-AMT-only head-count is people too: a man with two such filings is one', () => {
+    const rows = [row('w2', { sans: { o: true } }), row('w2', { sans: { a: true } }), row('p2', { sans: { a: true } })]
+    const g = sansDayGroups(WED, rows, PEOPLE)
+    expect(g.other.length).toBe(3); expect(g.otherN).toBe(2)
+  })
   it('an input that is not for the day is not listed, and a range covers every day inside it', () => {
     const rows = [row('p1', { date: 'Oct 6', endDate: 'Oct 8' }), row('w1', { date: 'Oct 8' })]
     expect(sansDayGroups(WED, rows, PEOPLE).p.map(e => e.id)).toEqual(['p1'])

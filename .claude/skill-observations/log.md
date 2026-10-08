@@ -3108,3 +3108,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Treat 469's structural guard as due now rather than at some later review: the pre-tool hook, or the one committed find/replace helper that takes its pairs from a file.
 
 **Principle:** When a logged trap recurs in the next session with the note freshly read, the note has been tested and has failed; stop adding notes and build the guard.
+
+### Observation 473: A tap that opens or moves something under the pointer hands the follow-up click to it — only a real browser shows it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Building the SANS calendar (step 4 of the Inputs / SANS job): a month whose dates open a window on a tap, and a phone panel whose bar pulls it up.
+**Skill:** raptor-executor / the bug-check order's door check (docs/bug-check-order.md §7)
+**Type:** open-source
+**Phase/Area:** building a gesture on pointer events; the builder's own look before a commit
+
+**Issue:** Two faults of one kind reached a build whose unit tests were all green, and both were found only by taking a picture of the running app on a phone. (1) A tap on a date opened a window under the finger on pointer-up; the click the browser sends afterwards landed on the window's primary button and opened a form. (2) A tap on a panel's bar changed the panel's height on pointer-up; the click then landed on whatever had moved under the finger. jsdom dispatches only the events a test fires, so a test that fires pointer-down and pointer-up never sees the click. A third fault of the same family: a sideways finger slide did nothing because the grid lacked `touch-action:pan-y` and the browser cancelled the press as a scroll.
+
+**Suggested improvement:** Add to the door check (and to the executor's pre-commit look) a named item: "for every control that acts on pointer-up, ask what is under the pointer AFTER it acts — if the answer is something new or something that moved, either act on the click instead of the release, or swallow the one click that follows; and drive it once with a real tap in a browser." In unit tests, a tap helper should fire the click a browser sends.
+
+**Principle:** A handler that acts on release changes what the following click will hit; decide on the click, or consume it — and treat any gesture test that omits the browser's own follow-up events as unproven until a real browser has run it.

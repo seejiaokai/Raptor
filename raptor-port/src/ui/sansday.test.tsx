@@ -23,6 +23,7 @@ import { dayFacts, flyAnswer } from '../leavewar/sync'
 import { DAYSWIN, INPEDIT, setDaysWin, setInpEdit } from './pops'
 import { _resetFloatWins } from './FloatWindow'
 import { SansDay } from './SansDay'
+import { maySansAdd, openSansAdd } from './sansadd'
 
 const mem = new Map<string, string>()
 const realMM = window.matchMedia
@@ -105,6 +106,8 @@ describe('the working', () => {
     act(() => { setFlyDays([{ iso: WED, cls: 'nf', p: 16, w: 16 }]) })
     show()
     expect(t('sd-req-p').textContent).toBe('NF'); expect(t('sd-need-p').textContent).toBe('0'); expect(t('sd-need-w').textContent).toBe('0')
+    /* nobody needed is said in the 'all is well' green, never in a shortage colour */
+    expect(t('sd-need-p').className).toBe('is-zero')
   })
   it('a date no leave period covers says so, and shows no availability', () => {
     show('2031-03-05')
@@ -204,11 +207,20 @@ describe('+ Commitment, and the admin’s way to the Calendar window', () => {
     expect(INPEDIT).toMatchObject({ _new: true, type: 'SANS Availability', date: 'Oct 7' })
     expect(PEOPLE[INPEDIT.person].san).toBe(true)                     // for a SANS man — an admin who is not one picks whose
   })
-  it('a SANS member’s is his own', () => {
-    setSession({ user: 'us', role: 'member' }); setMe(sansP[0])
+  it('a SANS member’s is his own — not the first SANS man on the roster', () => {
+    const first = Object.keys(PEOPLE).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    const mine = [...sansP, ...sansW].find(id => id !== first)!
+    setSession({ user: 'us', role: 'member' }); setMe(mine)
     show()
     fireEvent.click(t('sd-add'))
-    expect(INPEDIT).toMatchObject({ _new: true, person: sansP[0], type: 'SANS Availability' })
+    expect(INPEDIT).toMatchObject({ _new: true, person: mine, type: 'SANS Availability' })
+  })
+  it('the door itself refuses someone who may not add, whatever called it', () => {
+    setSession({ user: 'us', role: 'member' }); setMe(member)
+    expect(maySansAdd()).toBe(false); expect(openSansAdd(WED)).toBe(false); expect(INPEDIT).toBeNull()
+    setMe(sansP[0])
+    expect(openSansAdd(WED, '2026-10-05')).toBe(true)                  // a run given back to front is put in order
+    expect(INPEDIT).toMatchObject({ date: 'Oct 5', endDate: 'Oct 7', sans: { f: true } })
   })
   it('a member who is not SANS cannot add one, and is told who can', () => {
     setSession({ user: 'us', role: 'member' }); setMe(member)
