@@ -390,6 +390,17 @@ describe('"+ Add"', () => {
     /* the note goes at the next edit */
     type('hol-name', 'x'); expect(q('hol-saved')).toBeNull()
   })
+  /* the test above saves 28–30 Dec, whose day after is in the month the calendar was already paged to — so it never saw
+     the calendar MOVE (found by breaking the rule on purpose, 8 Oct 26: with the move taken out, every test passed) */
+  it('…and the calendar MOVES to the day after: a holiday saved on a month’s last day leaves it on the next month', () => {
+    open(); add()
+    type('hol-name', 'Month end'); pick('2026-11-30')
+    expect(t('holcal-month').textContent).toMatch(/November\s+2026/i)
+    fireEvent.click(t('hol-save-more'))
+    expect(line(2026, '2026-11-30')).toMatchObject({ to: '2026-11-30' })
+    expect(picked()).toEqual(['', ''])
+    expect(t('holcal-month').textContent).toMatch(/December\s+2026/i)
+  })
   it('a date no leave period covers is refused in the window, and what he typed stays', () => {
     open(`${FREE}-03-01`); add()
     type('hol-name', 'National Day'); pick(`${FREE}-08-09`)
