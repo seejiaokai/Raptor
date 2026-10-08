@@ -430,7 +430,7 @@ describe('How this works', () => {
       'The coloured pair is how many more are needed to fly: pilots, then WSOs.',
       'F fly · O OFT · A AMT: the SANS who have committed.',
       'NF is a no-fly day. Green is a public holiday. Grey is an Off day.',
-      'One commitment a day each. Commit by the end of the Wednesday two weeks before the week.',
+      'Commit by the end of the Wednesday two weeks before the week.',   // "One commitment a day each." removed on his word (D704)
     ])
     fireEvent.click(t('sc-how'))
     expect(q('sc-how-list')).toBeNull()

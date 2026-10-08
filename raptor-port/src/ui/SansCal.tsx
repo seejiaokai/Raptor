@@ -284,7 +284,8 @@ export function SansCal() {
             <li>The coloured pair is how many more are needed to fly: <b>pilots, then WSOs</b>.</li>
             <li><b>F</b> fly · <b>O</b> OFT · <b>A</b> AMT: the SANS who have committed.</li>
             <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
-            <li>One commitment a day each. <span data-testid="sc-how-cut">{(p => <>{p.before}<b>{p.cut}</b>{p.after}</>)(cutParts('sans'))}</span></li>
+            {/* the cut-off alone (owner D704, 9 Oct 26: "Remove one commitment a day each") */}
+            <li><span data-testid="sc-how-cut">{(p => <>{p.before}<b>{p.cut}</b>{p.after}</>)(cutParts('sans'))}</span></li>
           </ol>
         )}
       </div>

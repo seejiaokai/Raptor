@@ -9454,6 +9454,10 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
+  commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
+  shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment
+  is refused. Pinned by `ui/sanscal.test.tsx` (the five lines).
 - **On a phone the row of buttons under the three tabs is drawn as tall as the tabs, on the Inputs calendar and the SANS
   calendar (owner D698, 9 Oct 26 — from his iPhone: "Seems like the 2nd row is taller").** Measured
   first: the two rows took the same room (the tabs' frame 44px, the buttons 44px), but a tab is drawn 36px inside its
