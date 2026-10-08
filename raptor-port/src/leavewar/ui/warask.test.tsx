@@ -65,6 +65,19 @@ describe('the war’s top row answers it', () => {
     expect(sheet()).toBeTruthy()
     expect(screen.getByTestId('war-selection').textContent).toMatch(/1 Apr/)
   })
+  /* THE CALENDAR JOB'S BUG CHECK, 8 Oct 26 (walker C): with the "Calendar" window up over the grid - and the grid behind
+     it working, as D641 has it - the Event sheet a press on the grid opens came up BEHIND the window. Only the one sheet
+     the Holidays list asks for was raised. Any sheet that BLOCKS is the question now being asked: it is drawn over a
+     window of the scheduler's that is up. */
+  it('a blocking sheet opened while one of the scheduler\u2019s windows is up is raised over it - whoever asked', () => {
+    const w = document.createElement('div'); w.className = 'floatwin'; document.body.append(w)
+    try {
+      render(<Topbar />)
+      fireEvent.click(screen.getByTestId('war-new'))
+      expect(sheet()!.className).toContain('raised')
+      expect(document.querySelector('[data-testid="sheet-scrim"].raised')).toBeTruthy()
+    } finally { w.remove() }
+  })
   it('the sheet "+ New" opens by itself is as it was: no dates picked, not raised', () => {
     render(<Topbar />)
     fireEvent.click(screen.getByTestId('war-new'))

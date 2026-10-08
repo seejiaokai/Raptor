@@ -77,6 +77,11 @@
   .inputs-top .inputs-filterfields.open label.inputs-search{flex-basis:100%}
   .inputs-top .inputs-filterfields.open label>span{position:static;width:auto;height:auto;clip:auto}
 }
+/* AND ON A DESKTOP (the calendar job's bug check, 8 Oct 26 - seen by three of its walkers and in D624's pairs): the tabs,
+   the tools and both months ran to the very edge of the screen - the gear and the colour key's last word flush against
+   it - where the approved drawings stand in from both sides. 12px each side from 821px up; the room a day's window is
+   given beside a month (padding-right, in :has() rules of higher weight) is unchanged. */
+@media(min-width:821px){.inputs-workspace{padding-left:12px;padding-right:12px}}
 @media(max-width:360px){.intab{font-size:12px;gap:4px;padding:4px 3px}.intab .medcount{min-width:14px;padding:2px 3px}.inputs-top{gap:4px}.inputs-top .abtn{min-width:32px;padding:8px 5px}}
 
 /* ============================================================================================================

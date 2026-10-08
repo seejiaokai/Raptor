@@ -57,6 +57,13 @@ function forward(id: string): boolean {
   UP.push(id)
   return raiseWin(id)
 }
+/** A DOOR THAT OPENS A WINDOW BRINGS IT FORWARD WHEN IT IS ALREADY UP. Opening sets a flag; a window that is up does
+ *  not mount again, so nothing raised it: "Calendar..." pressed in a settings window left the Calendar window BEHIND
+ *  the settings window that asked for it (the calendar job's bug check, 8 Oct 26 - walker G). A window that is not up
+ *  is never named in front. */
+export function bringForward(id: string): void {
+  if (UP.includes(id) && forward(id)) notify()
+}
 function gone(id: string): boolean {
   const i = UP.indexOf(id)
   if (i >= 0) UP.splice(i, 1)

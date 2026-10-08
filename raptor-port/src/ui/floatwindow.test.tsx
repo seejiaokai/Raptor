@@ -10,9 +10,9 @@
    button that finishes it — the caller's. Days, the calendars' settings, a day opened on a calendar and the input
    editor on the Inputs page are built on it in the steps that follow; this file is the shell alone. */
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react'
-import { FloatWin, _resetFloatWins } from './FloatWindow'
+import { FloatWin, _resetFloatWins, bringForward } from './FloatWindow'
 import { frontWin } from './floatwin'
 
 afterEach(() => { cleanup(); _resetFloatWins() })
@@ -146,6 +146,17 @@ describe('two windows', () => {
     fireEvent.keyDown(document.body, { key: 'Escape' })
     expect(screen.queryByTestId('win-other')).toBeNull()
     expect(frontWin(), 'none is left').toBe('')
+  })
+  /* the same check (walker G): "Calendar..." pressed in a settings window while the Calendar window was ALREADY up left it
+     behind the settings window that asked for it - a door that opens a window brings it forward when it is up */
+  it('a window asked for again while it is up comes to the front; one that is not up is not named in front', () => {
+    render(<Three />)
+    expect(frontWin()).toBe('third')
+    act(() => { bringForward('days') })
+    expect(frontWin()).toBe('days')
+    expect(win('win-days').className).toContain('front'); expect(win('win-third').className).not.toContain('front')
+    act(() => { bringForward('nobody') })
+    expect(frontWin(), 'a window that is not up is never the front one').toBe('days')
   })
 })
 

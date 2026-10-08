@@ -28,7 +28,7 @@ import { cutProblem, getCut, saveCut } from '../state/cutoff'
 import { setMembersFile, type SwitchSave } from '../state/memberfile'
 import { CALMONTH } from '../state/view'
 import { CutFields, cutDraftOf, cutRuleOf } from './CutFields'
-import { FloatWin } from './FloatWindow'
+import { FloatWin, bringForward } from './FloatWindow'
 import { INPSET, setDaysWin, setInpSet } from './pops'
 import { useVersion } from './useStore'
 
@@ -62,7 +62,7 @@ function Body() {
   }
   const openDays = () => {
     const now = new Date(), m = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
-    setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify()
+    setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify(); bringForward('days')
   }
 
   return (

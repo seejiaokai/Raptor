@@ -26,7 +26,7 @@ import { getTones, saveTones, type FlySave } from '../state/flyplan'
 import { validTones } from '../state/flyplan-model'
 import { cutProblem, getCut, saveCut, type CutRule } from '../state/cutoff'
 import { CALMONTH } from '../state/view'
-import { FloatWin } from './FloatWindow'
+import { FloatWin, bringForward } from './FloatWindow'
 import { SANSSET, setDaysWin, setSansSet } from './pops'
 import { CutFields, cutDraftOf, cutRuleOf } from './CutFields'
 import { useVersion } from './useStore'
@@ -72,7 +72,7 @@ function Body() {
   }
   const openDays = () => {
     const now = new Date(), m = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
-    setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify()
+    setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify(); bringForward('days')
   }
   const box = (id: string, label: string, tone: string, v: string, set: (s: string) => void) => (
     <label className="sset-row">

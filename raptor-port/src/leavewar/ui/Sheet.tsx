@@ -431,6 +431,13 @@ export function Sheet({
     document.addEventListener('keydown', trap, true)
     return () => document.removeEventListener('keydown', trap, true)
   }, [panelRef, modal])
+  /* A SHEET THAT BLOCKS IS DRAWN OVER A WINDOW OF THE SCHEDULER'S THAT IS UP - whoever asked for it. The "Calendar" window
+     leaves the grid behind it working (D641), so a press on the grid opens the Event sheet, a bid, a move - and at this
+     sheet's own layer each came up BEHIND the window (the calendar job's bug check, 8 Oct 26 - walker C). Only the one
+     sheet the Holidays list asks for was raised (`raised`). A blocking sheet is the question now being asked; a window
+     cannot open while it stands (its veil takes every press), so what is read here at the draw holds for its life.
+     A panel that does not block stays at its own layer - the window may lie over it and be dragged aside. */
+  const over = raised || (modal && typeof document !== 'undefined' && !!document.querySelector('.floatwin'))
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader
@@ -440,8 +447,8 @@ export function Sheet({
           falls through to the grid and its click here never fires there. */}
       {/* NO scrim for a non-blocking window: with nothing mounted, useGridPan arms neither the mouse's interceptor
           nor the touch screen's tap shield (both hang off the scrim's own node), so every press reaches the grid. */}
-      {modal && <div ref={scrimRef} className={`sheetscrim${raised ? ' raised' : ''}`} data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
-      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${modal ? '' : ' nonmodal'}${raised ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
+      {modal && <div ref={scrimRef} className={`sheetscrim${over ? ' raised' : ''}`} data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
+      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${modal ? '' : ' nonmodal'}${over ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>
     </>
