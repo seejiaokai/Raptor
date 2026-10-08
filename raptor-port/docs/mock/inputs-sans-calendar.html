@@ -1,0 +1,213 @@
+<title>Inputs and SANS mock-ups</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: one reading column of short notes; pictures break out into rows of phone-width frames that stack on a phone. */
+:root{--bg:#EDF0F3;--card:#FFFFFF;--ink:#141B24;--ink2:#4A5665;--line:#CCD4DD;--accent:#0A7691;--pick:#0B6B4C;--frame:#0B0D10;
+  --display:'Barlow Semi Condensed','Arial Narrow',system-ui,sans-serif;--body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1014;--card:#151A20;--ink:#EEF2F6;--ink2:#A9B4C0;--line:#2B333D;--accent:#3BC6E8;--pick:#57C97A;--frame:#000000;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0D1014;--card:#151A20;--ink:#EEF2F6;--ink2:#A9B4C0;--line:#2B333D;--accent:#3BC6E8;--pick:#57C97A;--frame:#000000;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:20px 56px}
+main{max-width:1180px;margin-inline:auto;display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:34px;font-weight:700}h2{font-size:26px;font-weight:700}h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:66ch}
+.lede{color:var(--ink2);font-size:17px}
+header,section{display:flex;flex-direction:column;gap:14px}
+section{border-top:2px solid var(--ink);padding-top:16px}
+details section{border-top:1px solid var(--line);margin-top:22px}
+.jump{display:flex;flex-wrap:wrap;gap:8px}
+.jump a{color:var(--accent);text-decoration:none;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--card)}
+.jump a:focus-visible,.shot button:focus-visible,.lb button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;align-items:start}
+.row.wide{grid-template-columns:1fr}
+.shot{display:flex;flex-direction:column;gap:8px;min-width:0;margin:0}
+.shot button{all:unset;cursor:zoom-in;display:block;border-radius:14px;overflow:hidden;background:var(--frame);border:1px solid var(--line)}
+.shot img{display:block;width:100%;height:auto}
+.shot h3{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.shot p{color:var(--ink2);font-size:15px}
+.tag{font-family:var(--body);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:2px 7px;border:1px solid var(--line);color:var(--ink2)}
+.tag.rec{color:var(--pick);border-color:var(--pick)}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;max-width:72ch}
+.note p+p{margin-top:8px}
+.shot p.chg{color:var(--ink);font-size:14px;border-left:0;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.shot p.chg b{color:var(--accent);font-weight:600}
+ul.did{margin:0;padding-left:20px;max-width:72ch;display:flex;flex-direction:column;gap:5px}
+ol.q{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:14px;max-width:72ch}
+ol.q li b,ul.did li b{font-weight:600}
+.rec-line{color:var(--pick);font-weight:600}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;max-width:860px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr:first-child th{border-top:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}td.good{color:var(--pick);font-weight:600}
+details{border-top:2px solid var(--ink);padding-top:14px}
+summary{font-family:var(--display);font-size:22px;font-weight:700;cursor:pointer}
+details .row{margin-top:14px}
+.lb{position:fixed;inset:0;background:rgba(5,7,10,.9);overflow:auto;padding:16px;z-index:10;text-align:center}
+.lb img{max-width:none;width:min(780px,100%);height:auto;border-radius:10px}
+.lb.deskimg img{width:min(1440px,220%)}
+.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;font:600 15px var(--body);background:#fff;color:#111;border:0;border-radius:999px;padding:9px 16px;cursor:pointer}
+@media (max-width:480px){h1{font-size:28px}h2{font-size:23px}}
+@media (prefers-reduced-motion:no-preference){.shot button{transition:transform .15s ease-out}.shot button:hover{transform:translateY(-2px)}}
+</style>
+
+<main>
+<header>
+  <h1>Inputs and SANS calendar: what we decided</h1>
+  <p class="lede">Every screen as decided, in one place. Where a later decision changed a detail after a picture was drawn, a line under it says so. How we got here, set by set, is folded at the bottom. These are the designs of record he accepted on 7 Oct 26 (D657); the job was then built from them (the plan: <code>docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md</code>). Every figure in these pictures is made up: the seven that show the SANS month were redrawn on 8 Oct 26 with invented numbers, and the Leave War pictures are the demo squadron.</p>
+  <nav class="jump" aria-label="Sections"><a href="#d-sans">SANS calendar</a><a href="#d-inputs">Inputs calendar</a><a href="#d-group">Group input</a><a href="#d-days">Days</a><a href="#d-lw">Leave War rows</a><a href="#d-event">Event sheet</a><a href="#d-rules">No picture</a></nav>
+</header>
+
+<section id="d-sans">
+  <h2>The SANS calendar</h2>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img2/sans.png" aria-label="Open picture: The month"><img src="img/inputs-sans-calendar/img2/sans.png" alt="October on a phone with three slim tabs. Each date shows a coloured pair and three rows F, O, A. One day is green and tagged PH, one grey and tagged OFF, two tagged NF." loading="lazy"></button>
+      <h3>The month</h3><p>Pilots left, WSOs right. The coloured pair is how many more are needed to fly. F, O and A are the SANS committed. Yellow, amber, red by the two needs added together.</p><p class="chg"><b>Since drawn:</b> a holiday’s tag is its short form (PH, OFF, or ND for National Day). And one date here shows a sun and a moon together; a day now has one or the other.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img2/sans-hl.png" aria-label="Open picture: Highlight one person"><img src="img/inputs-sans-calendar/img2/sans-hl.png" alt="Six days ringed in cyan with letters underlined." loading="lazy"></button>
+      <h3>Highlight one person</h3><p>His days are ringed in cyan and the letters he offered are underlined.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img13/sans-day.png" aria-label="Open picture: A day opened"><img src="img/inputs-sans-calendar/img13/sans-day.png" alt="A day opened: required, available, SANS committed, still needed; then commitments each with a small line saying who placed it and when." loading="lazy"></button>
+      <h3>A day opened</h3><p>Each person is the schedule’s own puck, his CAT chip attached, all one size, smaller, and wearing the SANS purple edge inside its right end. The puck is now copied from the schedule’s real one, measurement for measurement. Everyone is listed and the list scrolls; no “+ more”. Those who offered only OFT or AMT have their own group. </p><p class="chg"><b>Not shown:</b> the working and “+ Commitment” stay pinned at the top while the names scroll, and on a phone you can pull the window up to nearly the full screen.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img8/sans-instr.png" aria-label="Open picture: How this works"><img src="img/inputs-sans-calendar/img8/sans-instr.png" alt="A fold opened to six lines, the last stating the late cut-off with a worked date." loading="lazy"></button>
+      <h3>How this works</h3><p>Five short lines. The cut-off line states the rule as it is set. Redrawn.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img2/settings.png" aria-label="Open picture: The gear"><img src="img/inputs-sans-calendar/img2/settings.png" alt="A settings window with three colour numbers and a late cut-off set as Wednesday, two weeks before." loading="lazy"></button>
+      <h3>The gear</h3><p>Day colours and the late cut-off: a number of days, or a weekday of a week before. Admins only.</p><p class="chg"><b>Since drawn:</b> its first line is Days. The icon is the app’s own gear.</p></figure>
+  </div>
+  <div class="row wide">
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img2/desk-sans.png" aria-label="Open picture: On a desktop"><img src="img/inputs-sans-calendar/img2/desk-sans.png" alt="The SANS calendar on a desktop with the opened day at the right." loading="lazy"></button>
+      <h3>On a desktop</h3><p>The opened day sits beside the month.</p></figure>
+  </div>
+</section>
+
+<section id="d-inputs">
+  <h2>The Inputs calendar</h2>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img10/inputs-today.png" aria-label="Open picture: Inputs month as drawn"><img src="img/inputs-sans-calendar/img10/inputs-today.png" alt="July on a phone, inputs as bars, three in a day before plus more, the month ending well above the foot of the screen." loading="lazy"></button>
+      <h3>As drawn: 3 a day</h3><p>The month stops short of the foot of the screen.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img10/inputs-fill-roomy.png" aria-label="Open picture: month filling the screen"><img src="img/inputs-sans-calendar/img10/inputs-fill-roomy.png" alt="The same month stretched to the foot of the screen with a slimmer tools row: four inputs fit in a day." loading="lazy"></button>
+      <h3>Your idea, filling the screen: 4 a day <span class="tag">your question</span></h3><p>Slimmer tools row, month stretched to the foot of the screen.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img10/inputs-fill-compact.png" aria-label="Open picture: filling the screen, compact bars"><img src="img/inputs-sans-calendar/img10/inputs-fill-compact.png" alt="The stretched month with thinner bars: six inputs fit in a day." loading="lazy"></button>
+      <h3>Filling the screen, thin bars <span class="tag rec">you picked this</span></h3><p>Six a day on a tall phone. It fits itself to whatever height the phone gives: fewer bars on a shorter screen, never fewer than three, and then the month scrolls.</p></figure>
+    <div class="note"><p><b>Where the room comes from.</b> Stretching the month to the foot of the screen gives one more input a day. Thinner bars give two more. The slimmer tools row gives almost nothing: 8 points over five weeks, under 2 a week row.</p></div>
+  </div>
+  </div>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img2/inputs.png" aria-label="Open picture: Inputs as bars"><img src="img/inputs-sans-calendar/img2/inputs.png" alt="July with inputs drawn as bars. One day green and tagged PH, one tagged NF, one grey and tagged OFF." loading="lazy"></button>
+      <h3>Inputs as bars</h3><p>One bar across the days an input covers. Public holidays, Off days and no-fly days show as on the SANS calendar. No sun or moon here.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img2/inputs-day.png" aria-label="Open picture: A day opened"><img src="img/inputs-sans-calendar/img2/inputs-day.png" alt="A day opened with four inputs, each with a small line saying who placed it; one marked late." loading="lazy"></button>
+      <h3>A day opened</h3><p>Each input with who placed it and when. “Placed by Saber for Wisp” when an admin files for someone.</p><p class="chg"><b>Since drawn:</b> this window drags, and the calendar behind it still works.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img/a-inputs-range.png" aria-label="Open picture: Several days at once"><img src="img/inputs-sans-calendar/img/a-inputs-range.png" alt="Four days selected with a bar to confirm." loading="lazy"></button>
+      <h3>Several days at once</h3><p>Hold, then drag, on a phone. A mouse drag on a desktop.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img/a-inputs-list.png" aria-label="Open picture: The List, behind one switch"><img src="img/inputs-sans-calendar/img/a-inputs-list.png" alt="The Inputs list." loading="lazy"></button>
+      <h3>The List, behind one switch</h3><p>Inputs only. SANS availability is filed on the SANS calendar and no longer appears here.</p></figure>
+  </div>
+  <div class="row wide">
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img3/desk-inputs-dense.png" aria-label="Open picture: On a desktop: compact"><img src="img/inputs-sans-calendar/img3/desk-inputs-dense.png" alt="The desktop Inputs month with short bars, seven fitting in a day, and a tooltip saying who placed one." loading="lazy"></button>
+      <h3>On a desktop: compact</h3><p>Seven inputs a day before “+ more”. Pointing at a bar shows who placed it. No roomy or compact switch.</p></figure>
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img/desk-inputs.png" aria-label="Open picture: The keyboard"><img src="img/inputs-sans-calendar/img/desk-inputs.png" alt="The desktop Inputs calendar with the keyboard keys listed." loading="lazy"></button>
+      <h3>The keyboard</h3><p>Arrows move, Shift and arrows stretch a range, Enter opens, Delete removes, Esc closes.</p><p class="chg"><b>Since drawn:</b> the bars are the compact ones in the picture above.</p></figure>
+  </div>
+</section>
+
+<section id="d-group">
+  <h2>An input for a group of people</h2>
+  <p>Your hybrid. These are the real “+ Input” window from the app, with only the person part drawn in.</p>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img15/hybrid-one.png" aria-label="Open picture: one person, as today"><img src="img/inputs-sans-calendar/img15/hybrid-one.png" alt="The New input window with the usual Person list showing one name, and a switch beside it reading Several people, off." loading="lazy"></button>
+      <h3>By default: one person <span class="tag rec">decided</span></h3><p>The same A-to-Z list as today. The only new thing is the “Several people” switch.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img15/hybrid-many.png" aria-label="Open picture: several people"><img src="img/inputs-sans-calendar/img15/hybrid-many.png" alt="The switch is on. Pucks in three groups, Pilots, WSOs and SANS, each in A to Z order, four across; six are lit and the rest dimmed; an all button beside each group." loading="lazy"></button>
+      <h3>Switch on: pucks in three groups <span class="tag rec">decided</span></h3><p>Pilots, WSOs and SANS, each A to Z. The schedule’s own pucks at the schedule’s own size, four across. Tap to pick; “all” takes a group. Everyone fits on one screen.</p></figure>
+    <div class="note"><p><b>Decided with it:</b> a member can do this for duties and commitments only. It is one shared input for the group. The man himself, whoever filed it, and an admin can change it.</p><p><b>To check on your phone when built:</b> the pucks are small to press at this size. If they are hard to hit, they go one step larger.</p></div>
+  </div>
+<div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img16/chg-one-phone.png" aria-label="Open picture: In the changes window: one item"><img src="img/inputs-sans-calendar/img16/chg-one-phone.png" alt="The changes window on a phone: one item for a meeting filed for four people, their names listed under it." loading="lazy"></button>
+      <h3>In the changes window: one item</h3><p>A filing for several people is one item, its people listed under it (D663).</p></figure>
+  </div>
+</section>
+
+<section id="d-days">
+  <h2>Days: day, night or no fly, and the year’s holidays</h2>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img4/enter.png" aria-label="Open picture: The gear, then Days"><img src="img/inputs-sans-calendar/img4/enter.png" alt="A settings window whose first line is Days." loading="lazy"></button>
+      <h3>The gear, then Days</h3><p>The same line in the SANS calendar’s, the Inputs calendar’s and the Leave War’s settings.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img4/month-select.png" aria-label="Open picture: Month, on a phone"><img src="img/inputs-sans-calendar/img4/month-select.png" alt="November on a phone. Each date has one button showing a sun, a moon or NF." loading="lazy"></button>
+      <h3>Month, on a phone</h3><p>One button on each date steps day, night, no fly. Weekends start blank.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img4/month-thu.png" aria-label="Open picture: Repeating days"><img src="img/inputs-sans-calendar/img4/month-thu.png" alt="A window titled Every Thursday with Day, Night or NF, a From date and Until set to No end." loading="lazy"></button>
+      <h3>Repeating days</h3><p>Tap a weekday’s heading: every Thursday no fly, from a date, with no end.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img3/days-hol.png" aria-label="Open picture: Holidays, the whole year"><img src="img/inputs-sans-calendar/img3/days-hol.png" alt="A list of the year’s holidays, each a date, a name and a PH or OFF tag." loading="lazy"></button>
+      <h3>Holidays, the whole year</h3><p>Public holidays and Off days in one list. The same record as the Leave War’s Event row.</p><p class="chg"><b>Since drawn:</b> each line shows its full name; the calendars show its short form.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img12/days-hol-add.png" aria-label="Open picture: Adding one"><img src="img/inputs-sans-calendar/img12/days-hol-add.png" alt="A form to add a day: kind, name, from and to." loading="lazy"></button>
+      <h3>Adding one</h3><p>Kind, name, and “On grid”, the short form. It fills in by itself from the name and you can type over it. “Save and add another” for entering a year in one sitting. Redrawn.</p></figure>
+  </div>
+  <div class="row wide">
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img4/desk-month.png" aria-label="Open picture: On a desktop"><img src="img/inputs-sans-calendar/img4/desk-month.png" alt="November on a desktop, three buttons on each date, the holidays listed beside it." loading="lazy"></button>
+      <h3>On a desktop</h3><p>D, N and NF on every date, the holiday list beside the month.</p></figure>
+  </div>
+</section>
+
+<section id="d-lw">
+  <h2>The Leave War: required pilots and WSOs</h2>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img5/phone-rest.png" aria-label="Open picture: Four rows under the Event rows"><img src="img/inputs-sans-calendar/img5/phone-rest.png" alt="The real Leave War on a phone with four new rows under the Event rows." loading="lazy"></button>
+      <h3>Four rows under the Event rows</h3><p>Req P and Req W are typed. Avail P and Avail W are worked out, and turn red where short.</p><p class="chg"><b>Since drawn:</b> you can rename the Available rows and choose who they count, for example leaving out OCU.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img5/phone-type.png" aria-label="Open picture: Type one"><img src="img/inputs-sans-calendar/img5/phone-type.png" alt="A Required P cell being typed on a phone, with a number pad and a line reading Req P, Thu 8 Jan." loading="lazy"></button>
+      <h3>Type one</h3><p>Tap the cell, type on the number pad. The line above it says which row and day.</p><p class="chg"><b>Since drawn:</b> the line also offers “From 8 Jan on”.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img5/phone-pick.png" aria-label="Open picture: Pick several"><img src="img/inputs-sans-calendar/img5/phone-pick.png" alt="Cells picked across both Required rows, a panel with a number box, These days or From 5 Jan on, and Apply." loading="lazy"></button>
+      <h3>Pick several</h3><p>Hold, then drag. One number for all. A no-fly day is left alone.</p><p class="chg"><b>Since drawn:</b> this panel stays up and the grid behind it still works. If a pick mixes weekdays with weekend days, the weekend days are left out, with one press to include them.</p></figure>
+  </div>
+  <div class="row wide">
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img5/desk-rest-crop.png" aria-label="Open picture: On a desktop"><img src="img/inputs-sans-calendar/img5/desk-rest-crop.png" alt="The real Leave War on a desktop with the four rows." loading="lazy"></button>
+      <h3>On a desktop</h3><p>The date is right above the number.</p></figure>
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img5/desk-type-crop.png" aria-label="Open picture: Click and type"><img src="img/inputs-sans-calendar/img5/desk-type-crop.png" alt="A Required P cell being typed in, with a hint listing Enter, Tab and Esc." loading="lazy"></button>
+      <h3>Click and type</h3><p>Enter to the next day, Tab to the other seat, Esc to leave it.</p></figure>
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img5/desk-pick-crop.png" aria-label="Open picture: Drag to pick"><img src="img/inputs-sans-calendar/img5/desk-pick-crop.png" alt="Ten cells picked with a panel reading Required P and W, 12 to 16 Jan." loading="lazy"></button>
+      <h3>Drag to pick</h3><p>Any drag works: with Shift, without, or after a pause.</p></figure>
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img5/desk-fromhere-crop.png" aria-label="Open picture: A figure that runs on"><img src="img/inputs-sans-calendar/img5/desk-fromhere-crop.png" alt="The panel with From 12 Jan on chosen." loading="lazy"></button>
+      <h3>A figure that runs on</h3><p>It holds on every flying day, skipping weekends, public holidays, Off days and no-fly days.</p></figure>
+    <figure class="shot"><button type="button" data-desk="1" data-src="img/inputs-sans-calendar/img5/desk-after-crop.png" aria-label="Open picture: Afterwards"><img src="img/inputs-sans-calendar/img5/desk-after-crop.png" alt="Both Required rows read 18 from the twelfth onward; three Available W cells are red." loading="lazy"></button>
+      <h3>Afterwards</h3><p>A corner mark shows where a running figure starts. Available turns red where it is under Required.</p></figure>
+  </div>
+</section>
+
+<section id="d-event">
+  <h2>The Leave War: the Event sheet and short names</h2>
+  <div class="row">
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img6/phone-sheet-new.png" aria-label="Open picture: Presets, then an optional name"><img src="img/inputs-sans-calendar/img6/phone-sheet-new.png" alt="The Event sheet with a Presets row, PH lit, Name National Day and On grid ND." loading="lazy"></button>
+      <h3>Presets, then an optional name</h3><p>Press a preset; it stays lit. “On grid” is the short form.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img6/phone-sheet-other.png" aria-label="Open picture: “Other…”"><img src="img/inputs-sans-calendar/img6/phone-sheet-other.png" alt="The Event sheet with Other chosen and a Kind row." loading="lazy"></button>
+      <h3>“Other…”</h3><p>Only then does the sheet ask what kind of day it is.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img6/phone-grid-short.png" aria-label="Open picture: A tap shows the full name"><img src="img/inputs-sans-calendar/img6/phone-grid-short.png" alt="The grid with ND on a date and a small box reading National Day, Public holiday." loading="lazy"></button>
+      <h3>A tap shows the full name</h3><p>An admin gets Edit there. An empty cell still opens the sheet at once.</p></figure>
+    <figure class="shot"><button type="button" data-src="img/inputs-sans-calendar/img7/phone-presets-short.png" aria-label="Open picture: Every preset has a short form"><img src="img/inputs-sans-calendar/img7/phone-presets-short.png" alt="The real Leave War grid with NL, PH and OFF on three days of equal width." loading="lazy"></button>
+      <h3>Every preset has a short form</h3><p>PH, OFF, NL, SC. Every day stays the same width, on one line. This picture is the real grid, nothing drawn in.</p></figure>
+  </div>
+</section>
+
+<section id="d-rules">
+  <h2>Decided, with no picture of its own</h2>
+  <ul class="did">
+    <li><b>Windows.</b> Every window of this job can be dragged, and the page behind it still works. A click outside does not close it. On the Leave War this also covers the panel for picked people’s days.</li>
+    <li><b>Still needed.</b> Required, less those the Leave War shows available, less the SANS committed to fly. Worked for pilots and WSOs apart. “Available” never counts a SANS man.</li>
+    <li><b>A no-fly day</b> needs nobody to fly and reads 0, but still shows and takes OFT and AMT.</li>
+    <li><b>A public holiday or an Off day</b> shows its tag in place of the day button, and takes no required figure unless you type one on it.</li>
+    <li><b>The late cut-off.</b> Each calendar has its own, behind its gear. The Logic page lists both and opens the same setting. A cut-off is the end of its day.</li>
+    <li><b>No list for SANS</b>, and no “SANS needed” row on the Leave War.</li>
+    <li><b>In the check of the build</b>, each picture on this page is set beside the built screen at the same size.</li>
+  </ul>
+</section>
+
+</main>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Picture, full size"><button type="button" id="lbClose">Close</button><img id="lbImg" alt=""></div>
+<script>
+const lb = document.getElementById('lb'), img = document.getElementById('lbImg'), closeBtn = document.getElementById('lbClose')
+let from = null
+document.querySelectorAll('.shot button').forEach(b => b.addEventListener('click', () => {
+  from = b; img.src = b.dataset.src; img.alt = b.querySelector('img').alt
+  lb.classList.toggle('deskimg', !!b.dataset.desk); lb.hidden = false; lb.scrollTop = 0; closeBtn.focus()
+}))
+const shut = () => { lb.hidden = true; img.removeAttribute('src'); if (from) from.focus() }
+closeBtn.addEventListener('click', shut)
+lb.addEventListener('click', e => { if (e.target === lb || e.target === img) shut() })
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lb.hidden) shut() })
+</script>

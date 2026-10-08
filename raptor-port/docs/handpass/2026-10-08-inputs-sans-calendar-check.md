@@ -280,7 +280,7 @@ Every one is in `OUTSTANDING.md` with its evidence. None loses data, earns or wi
 
 ## 8. Told to him, not changed — differences from an approved picture, or a reading the walk made visible (the look card)
 
-0. **A shared input's DATES cannot be changed once it is saved** — it can be dragged (its length kept) or deleted and filed again. Found by Astra's read; filed as `[CAL-SHARED-DATES]`; the builder would build it before "merge live".
+0. **A shared input's DATES cannot be changed once it is saved** — it can be dragged (its length kept) or deleted and filed again. Found by Astra's read; filed as `[CAL-SHARED-DATES]`; the builder would build it before "merge live". **ANSWERED 9 Oct 26 — "2 agree" (D681): it is built before "merge live", in the input’s own window, for everyone in it at once.**
 1. **Picking several days opens the new-input window at once.** The drawing left the days picked with a bar at the foot ("4 days · Cancel · + Input"); the plan says "release opens + Input for the range, as today".
 2. **The List is today's list.** The drawing showed a re-made one (a range box in the tools row, one-line rows under day headings); the plan kept the List as it was.
 3. **No strip of keys along the foot of the desktop month.** The keys work; the drawing listed them on the page.
@@ -288,7 +288,7 @@ Every one is in `OUTSTANDING.md` with its evidence. None loses data, earns or wi
 5. **On a 1440-wide laptop the "Calendar" window shows Month and Holidays as two tabs**; side by side from 1510 (his PC is 1536) — told 8 Oct.
 6. **An Available figure under its Required turns its digits red**; the drawing washed the whole cell.
 7. **The Inputs month's colour key reads "absence / duty or commitment"** (the drawing: "away all day / part of the day") — told 8 Oct.
-8. **Whoever filed a shared duty and answers its OIL question again answers for everyone in it** — so a man's own earlier No is replaced by the filer's later Yes (the scheduler's refusal still holds). Told 8 Oct as a reading; the walk showed it happen (walker G, X-04). **This is OIL — his to confirm.**
+8. **Whoever filed a shared duty and answers its OIL question again answers for everyone in it** — so a man's own earlier No is replaced by the filer's later Yes (the scheduler's refusal still holds). Told 8 Oct as a reading; the walk showed it happen (walker G, X-04). **This is OIL — his to confirm.** **CONFIRMED 9 Oct 26 — "3 OIL yes that’s what I want" (D682): the latest answer is the one that counts, whoever gave it; a man may still change his own afterwards.**
 9. **A man posted out or archived stops counting on the SANS calendar for his commitments BEFORE that date too** — only days already past by then (walkers D and H).
 10. **A Required cell takes digits only**: a typed "-5" shows and saves 5, "2.5" shows and saves 25.
 11. **On a phone the month's five-week July shows five inputs a day at 844 tall, then "+N more"** — the drawing showed six.
@@ -399,6 +399,10 @@ calls the calculation and proves the arithmetic; the route on screen was walked 
    app's own safety check on moving private files into a repo that is public for now. **Recommended: yes** — the redrawn
    seven carry nothing of the other squadron, and the rest never did. Waiting on it: the mock-up half of D624's
    side-by-side pictures in this sheet (the pairs exist on your PC; the differences they showed are §5 and §8).
+
+**Question 1 — ANSWERED 9 Oct 26: "1 yes" (D680).** The copy is made: the 36 approved pictures and the page that shows them are in `raptor-port/docs/mock/` (`inputs-sans-calendar.html`, pictures under `img/inputs-sans-calendar/`). The host opened every one of the 36 before the commit: the seven SANS pictures carry the made-up figures only, the Leave War pictures are the demo squadron, and none shows the other squadron’s numbers or names. The originals stay in his private folder.
+
+**The look card’s first two lines are answered too (9 Oct 26):** line 1 — agreed, built before "merge live" (D681); line 2 — yes, that is what he wants (D682). Lines 3 to 5 still wait for his look.
 
 ### The look card — on the preview, his iPhone for the phone lines
 

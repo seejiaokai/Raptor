@@ -9495,12 +9495,18 @@ without it shows a group as separate lines.
 - **The editor opened on ANY record of a shared input holds the ENTRY** (title "Drifter +3 · 23 Jul"; the people lit; the
   shared fields). Save is one command (`commitGroup`), and so is a save for more than one man from a new input. The OIL
   question is asked ONCE and its answer written for every man (D660); a man added to an entry already answered brings the
-  sheet back, the standing answers ticked. Its filer and an admin change it; **a man in it who did not file it** reads it
+  sheet back, the standing answers ticked. **When the filer (or an admin) answers the question again, the answer is
+  written for EVERY man of the entry — a man's own earlier answer, a No included, is replaced; the latest answer is the
+  one that counts, a man may change his own again afterwards, and the scheduler's refusal on the day still wins (his
+  ruling, D682, 9 Oct 26 — confirming what the walk showed).** Its filer and an admin change it; **a man in it who did not file it** reads it
   and has two things of his own, drawn outside the read-only form — "Take me out" (asked first: `inped-takeout-ask`) and
   his own OIL answer; **anyone else** reads "Only its people, Saber — who filed it — or an admin can change this."
   Delete asks "Delete this input for all N people?" (`inped-delall`; `removeEntry` — one command). A man added or taken
   off on the page behind the window is followed in it and said once; if the very record the window was opened on goes
   while the entry lives on, the window holds the rest.
+- **Its DATES (D681, 9 Oct 26 — ruled, being built as `[CAL-SHARED-DATES]`; this line is rewritten when it lands).** A
+  saved shared input's dates are changed in its own window, by whoever may change the input (its filer, an admin), for
+  everyone in it in ONE command; until it lands the only ways are the bar's drag (its length kept) or delete and file again.
 - **The month:** one bar, "Drifter +3 · Meeting". A drag moves every record in one command for whoever may change all of
   it; for a man in it who did not file it, and for anyone else, the bar does not lift (`caldrag.ts`).
 - **A day opened:** one line — "Drifter +3", the kind, the hours, the remark, its people as pucks (`idy-people`), "Placed by
