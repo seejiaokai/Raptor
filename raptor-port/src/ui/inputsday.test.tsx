@@ -263,7 +263,7 @@ describe('the day as he asked for it on his phone (D683)', () => {
     expect($('.ic-poppuck-edit'), 'the note box').toBeTruthy()
     await click($('#icNewNotePpl'))
     expect($('.ic-pick'), 'the people to pick').toBeTruthy()
-    expect($('.ic-poppuck-edit'), 'the note box is still there under the picker').toBeTruthy()
+    expect($('.ic-newnote'), 'the note box has handed over to the picker').toBeNull()
   })
   it('a press on one of them is not a press on the bar: on a phone the window keeps its height', async () => {
     asPhone(true)
@@ -353,6 +353,55 @@ describe('a note carries its own pucks (D684, D695)', () => {
     await click($('#icNewNotePpl'))
     await click($('#icPickCancel'))
     expect(notes().map((p: any) => [p.text, (p.ids || []).length])).toEqual([['Just words', 0]])
+  })
+  /* ASTRA'S SCENARIOS (the check of 9 Oct 26) — 2.1: made with the KEYBOARD. Tab from the words goes to "+ people"; that
+     must not save the words as a note of their own and take the button away before it can be pressed. */
+  it('by keyboard: Tab from the words to "+ people" keeps the note in the making, and Enter there opens the people — ONE note', async () => {
+    await open(D)
+    await click($('#icAddPuck'))
+    const box = $('.ic-newnote .ic-poppuck-edit')!, btn = $('#icNewNotePpl')!
+    await type(box, 'Brief at 0800')
+    await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: btn })) })
+    expect(notes().length, 'nothing saved by the Tab').toBe(0)
+    expect($('#icNewNotePpl'), 'the button is still there to press').toBeTruthy()
+    await click($('#icNewNotePpl'))
+    const picked = await pickFirst(2)
+    expect(notes().map((p: any) => [p.text, p.ids])).toEqual([['Brief at 0800', picked]])
+  })
+  it('by keyboard: Tab on past "+ people" leaves the words as a note, as leaving the box does', async () => {
+    await open(D)
+    await click($('#icAddPuck'))
+    const box = $('.ic-newnote .ic-poppuck-edit')!, btn = $('#icNewNotePpl')!
+    await type(box, 'Words only')
+    await act(async () => { box.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: btn })) })
+    await act(async () => { btn.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null })) })
+    expect(notes().map((p: any) => [p.text, (p.ids || []).length])).toEqual([['Words only', 0]])
+    expect($('.ic-newnote')).toBeNull()
+  })
+  /* 2.2: the picker belongs to the note it was opened for. Its words are taken when "+ people" is pressed, so nothing
+     typed or opened elsewhere while it is up can become this note's words; and Escape ends it as Cancel does. */
+  it('the picker shows the new note’s words, and Escape ends it as Cancel does: the words alone become the note', async () => {
+    await open(D)
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'Escape me')
+    await click($('#icNewNotePpl'))
+    expect($('.ic-pick')!.textContent, 'the words it is for are in sight').toContain('Escape me')
+    await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect($('.ic-pick')).toBeNull()
+    expect(notes().map((p: any) => [p.text, (p.ids || []).length])).toEqual([['Escape me', 0]])
+  })
+  it('another note opened for its words while the picker is up cannot lend the new note its words', async () => {
+    await act(async () => { addPlanPuck(D, 'Note B'); notify() })
+    await open(D)
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'Note C')
+    await click($('#icNewNotePpl'))
+    const b = notes().find((p: any) => p.text === 'Note B')!
+    await click(tid('idy-note-' + b.id)!.querySelector('[data-ppedit]'))          // the keyboard can reach it under the picker
+    const picked = await pickFirst(1)
+    expect(notes().find((p: any) => (p.ids || []).length)!.text, 'the new note keeps ITS words').toBe('Note C')
+    expect(notes().find((p: any) => (p.ids || []).length)!.ids).toEqual(picked)
+    expect(notes().find((p: any) => p.id === b.id)!.ids || [], 'and B gets nobody').toEqual([])
   })
   it('emptying the words of a note that has people keeps the note; emptying one that has none changes nothing', async () => {
     const [a] = crew()

@@ -84,7 +84,9 @@ describe('a day opened: a shared input is one line', () => {
     expect(pucks).toEqual(az([a, b, c]))
     expect(lines[0].textContent).toContain('Meeting')
     expect(lines[0].querySelector('[data-testid="idy-when"]')!.textContent).toContain('10:00')
-    expect(lines[0].querySelector('[data-testid="idy-placed"]')!.textContent).toContain(`Placed by ${cs(admin)} for 3 people`)
+    /* short in an opened day since D701 (9 Oct 26): no "Placed by" — the full line is its title */
+    expect(lines[0].querySelector('[data-testid="idy-placed"]')!.textContent).toContain(`${cs(admin)} for 3 people`)
+    expect(lines[0].querySelector('[data-testid="idy-placed"]')!.getAttribute('title')).toContain(`Placed by ${cs(admin)} for 3 people`)
     expect(tid('idy-count')!.textContent).toBe('1 input')
   })
   it('LATE stands beside the man whose own record is late — not on the others', async () => {

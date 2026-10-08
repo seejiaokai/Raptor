@@ -257,6 +257,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      belongs to; `pickSel` is the people ticked so far. */
   const [pickFor, setPickFor] = useState<string | null>(null)
   const [pickIso, setPickIso] = useState<string>('')
+  /* THE WORDS OF THE NOTE THE PICKER IS FOR, when it is a NEW one (pickFor === ''): taken the moment its "+ people" is
+     pressed — so nothing typed or opened elsewhere while the picker is up can become this note's words (the day-window
+     check, Astra's scenario 2.2: the one shared draft could have lent a new note another note's words) */
+  const [pickWords, setPickWords] = useState('')
+  /* true from the press of a new note's "+ people" until its picker closes: the button's own blur must not finish the note */
+  const pickingNew = useRef(false)
   const [pickSel, setPickSel] = useState<Set<string>>(new Set())
   /* the picker's HIGHLIGHT is a pure visual filter, NOT a selection (owner,
      24 Aug 26 — "when I mentioned highlight, it just means u will fade those
@@ -300,11 +306,25 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || INPEDIT) return
-      if (pickFor != null) { e.stopPropagation(); setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
+      /* Escape ends the picker exactly as Cancel does (a new note keeps its words — cancelPick) */
+      if (pickFor != null) { e.stopPropagation(); cancelPick() }
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [pickFor])
+  }, [pickFor, pickWords, pickIso])
+
+  /* THE PICKER'S THREE ENDS, one body each — its Cancel, Escape and OK all come here. A note being WRITTEN is finished
+     by its picker whichever way that closes: with the people ticked, or — with none — as its words alone, exactly as
+     leaving its box would have made it; no words and no people, no note (a note with neither is not kept, D695). */
+  const shutPick = () => { pickingNew.current = false; setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); setPickWords('') }
+  const finishNewNote = (ids: string[]) => { if (pickWords || ids.length) writeInputs(() => addPlanPuck(pickIso, pickWords, ids)) }
+  const cancelPick = () => { if (pickFor === '') finishNewNote([]); shutPick() }
+  const confirmPick = () => {
+    const ids = [...pickSel]
+    if (pickFor === '') finishNewNote(ids)
+    else if (ids.length && pickFor) writeInputs(() => addPuckPeople(pickFor, ids))
+    shutPick()
+  }
 
   /* Seed the add-input modal exactly the way a board's "+ Add" does
      (interactions.ts ~592-608) — same fields, same defaults — but with NO
@@ -819,25 +839,30 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
               </div>
             )}
             {/* A NEW NOTE: its words, and "+ people" beside the box — so a note of people and no words can be made
-                (D695). The box keeps its words while the picker is up; the picker's OK makes the note, words and
-                people together, in one step. */}
-            {sched && popPuckEdit === '' && (
-              <div className="ic-newnote">
-                <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
-                  placeholder="e.g. brief the new guy"
-                  onChange={e => setPuckDraft(e.target.value)}
-                  onBlur={() => {
-                    if (pickFor === '') return                          // the picker is up for THIS note: it finishes it
-                    const t = puckDraft.trim()
-                    if (t) writeInputs(() => addPlanPuck(iso, t))
-                    setPopPuckEdit(null); setPuckDraft('')
-                  }}
-                  onKeyDown={blurOnEnter} />
-                <button type="button" className="ic-pkadd ic-newnote-ppl" id="icNewNotePpl" aria-label="Add people to this note"
-                  onPointerDown={e => e.preventDefault()}
-                  onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ people</button>
-              </div>
-            )}
+                (D695). The box and its button are ONE thing being made: the keyboard moving between the two saves
+                nothing (a Tab from the words used to save them as a note of their own and take the button away before
+                it could be pressed — the day-window check, Astra's scenario 2.1); leaving the pair saves the words.
+                "+ people" hands the words to the picker and closes the box: the picker's OK makes the note, words
+                and people together, in one step. */}
+            {sched && popPuckEdit === '' && (() => {
+              const leave = (e: { relatedTarget: EventTarget | null }) => {
+                const to = e.relatedTarget as HTMLElement | null
+                if (pickingNew.current || (to && to.closest && to.closest('.ic-newnote'))) return
+                const t = puckDraft.trim()
+                if (t) writeInputs(() => addPlanPuck(iso, t))
+                setPopPuckEdit(null); setPuckDraft('')
+              }
+              return (
+                <div className="ic-newnote">
+                  <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
+                    placeholder="e.g. brief the new guy"
+                    onChange={e => setPuckDraft(e.target.value)} onBlur={leave} onKeyDown={blurOnEnter} />
+                  <button type="button" className="ic-pkadd ic-newnote-ppl" id="icNewNotePpl" aria-label="Add people to this note"
+                    onPointerDown={e => e.preventDefault()} onBlur={leave}
+                    onClick={() => { pickingNew.current = true; setPickWords(puckDraft.trim()); setPopPuckEdit(null); setPuckDraft(''); setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ people</button>
+                </div>
+              )
+            })()}
 
             {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). One line each: who, the kind and
                 when; a remark under it; the LATE tag, which says the cut-off it missed when pressed (D646); and in
@@ -938,21 +963,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        as the schedule pages' highlight (matchesHiSet, state/view.ts), so the
        picker and the strip can't disagree. */
     const matchesHi = (id: string) => matchesHiSet(PEOPLE[id], pickHi)
-    const shut = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
-    /* the note being written is finished by the picker, whichever way it closes: with the people ticked, or — with
-       none — as the words alone, exactly as leaving its box would have made it; no words and no people, no note */
-    const finishNew = (ids: string[]) => {
-      const t = puckDraft.trim()
-      if (t || ids.length) writeInputs(() => addPlanPuck(pickIso, t, ids))
-      setPopPuckEdit(null); setPuckDraft('')
-    }
-    const close = () => { if (pickFor === '') finishNew([]); shut() }
-    const confirm = () => {
-      const ids = [...pickSel]
-      if (pickFor === '') finishNew(ids)
-      else if (ids.length) writeInputs(() => addPuckPeople(pickFor!, ids))
-      shut()
-    }
+    const close = cancelPick, confirm = confirmPick     // the picker's ends are the component's (above): Escape uses them too
     /* the roster is grouped by seat, the way the aircrew palette lays its crew
        out (owner, 24 Aug 26 — "arrange them just like how the placeholders
        arranges them"): Pilots, WSOs, then SANS — split the SAME pilots-then-WSOs
@@ -997,6 +1008,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
             <span className="ic-pick-n">{pickSel.size} picked</span>
             <button type="button" className="x" id="icPickClose" aria-label="Close" onClick={close}>✕</button>
           </div>
+          {/* a NEW note's words, in sight while its people are picked (its box has handed over to this picker) */}
+          {pickFor === '' && pickWords && <div className="ic-pick-for" data-testid="ic-pick-for">For the note: <b>{pickWords}</b></div>}
           {/* the CAT/Type/Quals tabs — the SAME grouped strip as the schedule
               (owner, 24 Aug 26: "apply these to all pages"). A chip tap FADES
               everyone NOT in the lit categories so the applicable pucks stand

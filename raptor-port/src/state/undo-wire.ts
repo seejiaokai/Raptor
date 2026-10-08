@@ -159,7 +159,17 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     primary = 'inputs'
     /* the calendar's own records (a day title, its puck rows — saved through the Inputs page's door, so filed under
        inputs) and no input row: the change is on the calendar */
-    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) then = () => { clearInpReveal(); setInpMode('member'); setInpView('cal') }
+    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) {
+      /* …AND ITS MONTH, WHEN ANOTHER IS SHOWING (D672: the screen moves to the change only when it is out of view; the
+         day-window check, 9 Oct 26 — Astra's scenario 2.5: a note undone from another month changed nothing a person
+         could see). A note's day is its `date` — the image this direction restores, else the other; a day title's is
+         in its id (`dm:<iso>`). Setting the month it already shows moves nothing. */
+      const pl = fwd.find(c => c.collection === 'plan') as Change
+      const img: any = (dir === 'undo' ? pl.before : pl.after) || pl.after || pl.before
+      const raw = pl.id.startsWith('dm:') ? pl.id.slice(3) : img && typeof img === 'object' && typeof img.date === 'string' ? img.date : pl.id
+      const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : ''
+      then = () => { clearInpReveal(); setInpMode('member'); setInpView('cal'); if (iso) setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) }) }
+    }
     else if(m==='inputs') {
       const changes=fwd.filter(c=>c.collection==='inputs')
       const image=(c:Change)=>dir==='undo'?c.before:c.after

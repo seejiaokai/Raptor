@@ -420,4 +420,6 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-newnote-ppl{flex:0 0 auto;min-height:36px;padding:0 10px;border:1px dashed var(--edge-2);border-radius:7px;background:transparent;color:var(--ink-2);
   font:700 12px/1 inherit;white-space:nowrap;cursor:pointer}
 .inputsday .ic-newnote-ppl:hover,.inputsday .ic-newnote-ppl:focus-visible{border-color:var(--accent);color:var(--accent)}
-
+/* the picker opened for a note being written says which words it is for */
+.ic-pick-for{padding:6px 12px 0;font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}
+.ic-pick-for b{color:var(--ink);font-weight:700}
