@@ -20,9 +20,11 @@
    `canPick()` — whether this person may add here at all. Where he may not, a tap and a slide behave as ever, and a drag
    or a hold picks nothing (the screen says who may add, in words).
 
-   The date under a moving pointer is asked of the PAGE's geometry (elementFromPoint), never of the event's target: a
-   captured or a touch pointer keeps reporting the element it went down on. Presses that begin on a control inside a
-   date are that control's own. */
+   The date under a moving pointer is asked of the PAGE's geometry (ui/caldays.ts dayAtPoint — everything stacked at
+   the point, so a run drawn across a bar of the Inputs month carries on), never of the event's target: a captured or a
+   touch pointer keeps reporting the element it went down on. Presses that begin on a control inside a date are that
+   control's own. */
+import { dayAtPoint } from './caldays'
 
 /** how long a finger is held still before a pick begins — past a deliberate tap, short of a wait */
 export const PICK_HOLD = 400
@@ -46,11 +48,7 @@ export function initCalPick(el: HTMLElement, o: CalPick): () => void {
   let st: { iso: string; end: string; mouse: boolean; armed: boolean; ranged: boolean; x0: number; y0: number; timer: any; id: number } | null = null
   let retire: (() => void) | null = null
 
-  const dayAt = (x: number, y: number, fallback: EventTarget | null): string | null => {
-    const hit = typeof document.elementFromPoint === 'function' ? document.elementFromPoint(x, y) : (fallback as Element | null)
-    const cell = hit && typeof (hit as Element).closest === 'function' ? (hit as Element).closest('[data-icday]') as HTMLElement | null : null
-    return cell && el.contains(cell) ? cell.dataset.icday || null : null
-  }
+  const dayAt = (x: number, y: number, fallback: EventTarget | null): string | null => dayAtPoint(el, x, y, fallback)
   const run = (s: NonNullable<typeof st>) => (s.iso <= s.end ? { a: s.iso, b: s.end } : { a: s.end, b: s.iso })
   /* THE CLICK THAT FOLLOWS A RELEASE lands on whatever is under the pointer NOW — and a tap or a pick has just opened a
      window there (found on the first look at the running build, 8 Oct 26: a tap on a date opened the day's window

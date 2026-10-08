@@ -116,6 +116,19 @@ describe('under the Inputs tab, one small switch: Calendar | List', () => {
   })
 })
 
+describe('a calendar tab takes the screen, no more (D664)', () => {
+  const on = () => document.body.classList.contains('in-cal')
+  it('while a month is up the page drops its foot room; the List and Medical keep it; leaving the page puts it back', async () => {
+    expect(on(), 'the Inputs month').toBe(true)
+    await click('#inListBtn'); expect(on(), 'the List is an ordinary long page').toBe(false)
+    await click('#inSansMode'); expect(on(), 'the SANS month').toBe(true)
+    await click('#inMedBtn'); expect(on(), 'Medical').toBe(false)
+    await click('#inMemberMode'); await click('#inCalBtn'); expect(on()).toBe(true)
+    await act(async () => { root.render(<></>) })
+    expect(on(), 'gone with the page').toBe(false)
+  })
+})
+
 describe('SANS availability is filed on the SANS calendar and nowhere else (D620)', () => {
   const SANS = 'SANS Availability'
   it('the List’s add form does not offer it, nor its filter', async () => {

@@ -29,6 +29,7 @@ import { mayEditInput } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
+import { dayAtPoint, dayEl } from './caldays'
 
 /* drag.ts's own numbers, cited rather than re-derived (its tdArm/onPointerDown/
    onPointerMove, drag.ts ~240-338): 180ms of hold turns a touch into a
@@ -145,7 +146,9 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
    THE GESTURE MACHINE.
    =========================================================================== */
 
-type Entry = { kind: 'input' | 'puck', iid?: string, pid?: string, el: HTMLElement, fromIso: string }
+type Entry = { kind: 'input' | 'puck', iid?: string, pid?: string, el: HTMLElement, fromIso: string,
+  /** the chip sat INSIDE one date (a planning note of the first calendar's cell); a bar lies across dates */
+  inDay: boolean }
 
 /* The address the calendar draws this entry at, for the landing flash: a
    planning section by its own id, an input by its input id (InputsCal renders
@@ -179,7 +182,7 @@ export function initCalDrag(root: HTMLElement, opts: {
     if (!st || !st.ghost) return
     st.ghost.style.left = x + 'px'
     st.ghost.style.top = y + 'px'
-    const t = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-icday]') as HTMLElement | null
+    const t = dayEl(root, dayAtPoint(root, x, y))
     if (t !== st.over) {
       if (st.over) st.over.classList.remove('ic-over')
       if (t) t.classList.add('ic-over')
@@ -243,8 +246,14 @@ export function initCalDrag(root: HTMLElement, opts: {
   function onPointerDown(e: PointerEvent) {
     const chip = (e.target as HTMLElement)?.closest?.('[data-icdrag]') as HTMLElement | null
     if (!chip) return // no chip under the finger/cursor — an empty-cell gesture is the calendar's own business, not this machine's
-    const cell = chip.closest('[data-icday]') as HTMLElement | null
-    if (!cell) return
+    /* WHICH DATE IT WAS GRABBED ON. A chip that sits inside one date is that date's. A BAR lies across the dates an
+       input covers and belongs to none of them (owner D626), so its date is the one UNDER THE POINTER at the press —
+       on its first week or on a continuation in a later one — asked of the page (ui/caldays.ts). The move is then by
+       the difference between that date and the one it is dropped on: a Monday-to-Friday input grabbed on its
+       Wednesday and dropped on a Friday moves two days, its length kept (the plan §3.6). */
+    const own = chip.closest('[data-icday]') as HTMLElement | null
+    const fromIso = own && root.contains(own) ? own.dataset.icday! : dayAtPoint(root, e.clientX, e.clientY, null)
+    if (!fromIso) return
     /* mirrors drag.ts's own guard: a non-primary touch (a second finger
        landing mid-gesture) never starts a NEW gesture of its own */
     if (e.pointerType !== 'mouse' && !e.isPrimary) return
@@ -252,7 +261,7 @@ export function initCalDrag(root: HTMLElement, opts: {
     const entry: Entry = {
       kind: chip.dataset.iid ? 'input' : 'puck',
       iid: chip.dataset.iid, pid: chip.dataset.pid,
-      el: chip, fromIso: cell.dataset.icday!,
+      el: chip, fromIso, inDay: !!own,
     }
     /* A CHIP THE READER MAY NOT MOVE DOES NOT LIFT (the absence-record re-test, W1-F3, 26 Sep 26): a member could pick
        up another man's chip — the ghost followed him and a day lit — and only the drop said no. The same test the drop
@@ -312,12 +321,9 @@ export function initCalDrag(root: HTMLElement, opts: {
     if (!st || e.pointerId !== st.pointerId) return
     const { entry, armed, x0, y0, ox, oy, gaveUp } = st
     const x = e.clientX, y = e.clientY
-    const target = armed
-      ? ((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-icday]') as HTMLElement | null)
-      : null
+    const to = armed ? (dayAtPoint(root, x, y) || '') : ''
     clearGesture()
     if (armed) {
-      const to = target ? target.dataset.icday! : ''
       /* WHERE IT LANDED (owner, 6 Sep 26 — "once I drop the item, it should
          flash to show where the new item ended up"). A real move rewrites the
          whole month, so its flash is deferred: the chip's address IN THE DAY IT
@@ -329,7 +335,8 @@ export function initCalDrag(root: HTMLElement, opts: {
          REFUSED move (someone else's input, no rights) has said its own piece in
          a toast and the chip never left, so it shows nothing; nor does a cancel
          or a release over no day at all. */
-      if (to && commitChipMove(entry, entry.fromIso, to)) markLand(`[data-icday="${to}"] ${chipSel(entry)}`)
+      /* a chip inside a date is found in the date it landed in; a bar, by its own id — it is inside no date */
+      if (to && commitChipMove(entry, entry.fromIso, to)) markLand(entry.inDay ? `[data-icday="${to}"] ${chipSel(entry)}` : chipSel(entry))
       else if (to && to === entry.fromIso) landOn(entry.el)
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
     } else if (gaveUp) {

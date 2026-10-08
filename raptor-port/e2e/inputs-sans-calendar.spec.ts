@@ -126,7 +126,11 @@ test('the gear: three colours and the late cut-off are saved from its window, re
   await page.mouse.move(bar.x+90,bar.y+12);await page.mouse.down();await page.mouse.move(bar.x-200,bar.y+140,{steps:6});await page.mouse.up()
   const moved=(await tid(page,'win-sansset').boundingBox())!
   expect(Math.abs(moved.x-(bar.x-290))).toBeLessThanOrEqual(3)
-  await cell(page,'2026-10-02').click();await expect(tid(page,'win-sansday')).toBeVisible();await expect(tid(page,'win-sansset')).toBeVisible()
+  /* a date the moved window does NOT lie over — found by where things are, not named: which date that is depends on
+     how tall the page's top is, and the three tabs made it shorter in step 5 (the named date ended up under the window) */
+  const clear=await page.evaluate(m=>{for(const d of document.querySelectorAll('[data-testid="sc-grid"] [data-icday]')){const r=d.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;if(x<m.x-4||x>m.x+m.width+4||y<m.y-4||y>m.y+m.height+4)return (d as HTMLElement).dataset.icday||''}return ''},moved)
+  expect(clear,'some date is clear of the window').not.toBe('')
+  await cell(page,clear).click();await expect(tid(page,'win-sansday')).toBeVisible();await expect(tid(page,'win-sansset')).toBeVisible()
   await tid(page,'win-sansday-x').click()
   /* red only from more than the day needs: the day falls to amber */
   await tid(page,'sset-yellow').fill('1');await tid(page,'sset-amber').fill('2');await tid(page,'sset-red').fill(String(total+1))
@@ -176,11 +180,15 @@ test('a member sees the SANS calendar and a day’s working, with no admin contr
   else await expect(tid(page,'sd-add')).toBeEnabled()
 })
 
-test('a SANS commitment saved from the Inputs tab opens the SANS calendar on its day; Undo, Redo and a change of type follow the record',async({page})=>{
+/* RE-POINTED (step 5, 8 Oct 26 — D620): the Inputs tab's "+ Input" no longer offers SANS availability, so this files it
+   through the one door there is, the SANS calendar's "+ Commitment". What it pinned stands: the saved commitment is in
+   its day's window; Undo, Redo and a change of type follow the record; the Inputs tab's search is kept. */
+test('a SANS commitment saved on the SANS calendar is in its day; Undo, Redo and a change of type follow the record',async({page})=>{
   await login(page);await go(page,'inputs');await month(page,2026,10)
   await page.fill('#inFSearch','NO_MEMBER_MATCH')
-  await page.locator(`.inpcal [data-icday="${DATE}"]`).click();await page.click('#icPopAdd')
-  await page.selectOption('#inpEditPerson','vinci');await page.selectOption('#inpEditType','SANS Availability')
+  await page.click('#inSansMode');await cell(page).click();await tid(page,'sd-add').click()
+  await page.selectOption('#inpEditPerson','vinci')
+  await expect(page.locator('#inpEditTypeFixed')).toHaveText('SANS Availability')
   await page.locator('#inpEditSans').getByLabel('Fly',{exact:true}).check()
   await page.fill('#inpEditRmk','Cross-mode regression');await page.click('#inpEditSave')
   const iid=await page.evaluate(()=>(window as any).INPUTS.find((r:any)=>r.remarks==='Cross-mode regression').iid)
@@ -349,9 +357,12 @@ for(const height of [844,568])test(`phone ${height}: the month’s controls are 
   const picked=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const e=document.querySelector(`[data-testid="${id}"]`) as HTMLElement,r=e.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,cut:id==='sc-month'&&e.scrollWidth>e.clientWidth}}))
   expect(Math.max(...picked.map(h=>h.mid))-Math.min(...picked.map(h=>h.mid)),'a long callsign wrapped the head').toBeLessThanOrEqual(2)
   expect(Math.max(...picked.map(h=>h.right))).toBeLessThanOrEqual(390);expect(picked.some(h=>h.cut),'the month’s name was cut').toBe(false)
+  /* THE THREE TABS ARE LESS TALL THAN A BUTTON (owner D626, 7 Oct 26 — "I like the 3 tabs across the top but make it less
+     tall"; the later word over the 44px this pinned for the two mode buttons they replaced) — and still a third of the
+     screen wide each */
   for(const id of ['#inMemberMode','#inSansMode','#inMedBtn']){
     const r=(await page.locator(id).boundingBox())!
-    expect(r.height,id+' phone target').toBeGreaterThanOrEqual(44)
+    expect(r.height,id+' is less tall than a button').toBeLessThan(44);expect(r.height).toBeGreaterThanOrEqual(36);expect(r.width).toBeGreaterThan(100)
   }
 })
 

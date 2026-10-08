@@ -285,6 +285,22 @@ export function InputsPage() {
   if (INPVIEW !== 'med') inputsView.current = INPVIEW
   type Tab = 'inputs' | 'sans' | 'med'
   const tab: Tab = INPVIEW === 'med' ? 'med' : INPMODE === 'sans' ? 'sans' : 'inputs'
+  /* ARRIVING ON THE PAGE SHOWS IT FROM ITS TOP. The app keeps the window's scroll from page to page (the week opens
+     scrolled to its day on a phone), and this page starts with its tabs: found on the first look at the running build
+     — the calendar came up scrolled, its tabs and tools hidden under the top bar. (The Tracker does the same on its
+     own arrival.) Only where the window IS scrolled, so a layout-less test environment is never asked to scroll. */
+  useEffect(() => { if (window.scrollY) window.scrollTo(0, 0) }, [])
+  /* AND A CALENDAR TAB TAKES THE SCREEN, NO MORE (owner D664: "It should be a full screen of the phone"). The app's
+     body keeps 120px of room at its foot for the week pages' pinned chrome; under a month that fills the screen that
+     room made the whole page scroll by an empty strip. While a calendar is up — the Inputs month or the SANS month —
+     the body carries `in-cal`, which drops it (the Tracker's `tr-on`, without the lock: a month too tall for the
+     screen must still scroll the page). The List and Medical are ordinary long pages and keep it. */
+  const monthUp = tab === 'sans' || (tab === 'inputs' && INPVIEW === 'cal')
+  useEffect(() => {
+    if (!monthUp) return
+    document.body.classList.add('in-cal')
+    return () => document.body.classList.remove('in-cal')
+  }, [monthUp])
   /* the tab the keyboard has just chosen takes the keyboard with it, once it is drawn as the selected one */
   const wantTab = useRef<string | null>(null)
   useLayoutEffect(() => { const id = wantTab.current; if (!id) return; wantTab.current = null; document.getElementById(id)?.focus() })
@@ -1189,9 +1205,8 @@ export function InputsPage() {
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal />}
-      {calUp && <InputsCal mode="member" embedded fPerson={fPerson} fType={fType} fSearch={fSearch}
-        seedIso={range.from || isoOf(new Date())} lead={tabsRow} tools={tools} under={filterSummary}
-        onClose={() => { setInpView('table'); notify() }} />}
+      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+        seedIso={range.from || isoOf(new Date())} lead={tabsRow} tools={tools} under={filterSummary} />}
       {tab === 'med' && <MedicalView />}
       {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
           for the add form and the row editor; Save runs the stashed commit

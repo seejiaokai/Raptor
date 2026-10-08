@@ -1,23 +1,38 @@
-/* Full-screen month-calendar view for the Inputs page (owner ask, Aug 26 —
-   see a whole month of leave, activities and SANS offers at a glance instead
-   of scrolling the table). A REACT component, not a string builder like the
-   week/board/palette (CLAUDE.md: "React owns chrome, strings own density").
-   Those surfaces earn the innerHTML/string-diff discipline because they are
-   DENSE (hundreds of nodes) and carry a phone perf ceiling and byte-exact
-   reference parity. Neither applies here: this is a NEW surface — at most 42
-   day cells carrying a handful of chips apiece, a few hundred nodes total —
-   with no reference to stay parity with, and its free-text fields (the day
-   popover) live in ordinary component state, where React's own diffing is
-   exactly the right tool; there is no caret position to preserve across an
-   innerHTML replace the way there is on the week grid.
+/* THE INPUTS CALENDAR — THE MONTH (the build plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.6).
 
-   The first task built the shell, the toggle and the chips' DISPLAY only.
-   THIS task wires the interaction the chips were already carrying markup
-   for: caldrag.ts's drag/tap machine on `[data-icdrag]`, this file's OWN
-   hold-to-add/tap gesture on the empty cell space around those chips, and
-   the day popover (`data-icmore` opens it too) that both routes land on. */
+   Owner, D626 (7 Oct 26): "I like bars the way Google calendar does" — an input is ONE bar across the days it covers,
+   cut at a week's end and carried on. D632 / D639: a desktop shows seven a day before "+N more", compact, no roomy /
+   compact switch. D653 / D664: on a phone the week rows share the height the screen gives and the lines a day are what
+   fits — never fewer than three; where that cannot fit the WHOLE PAGE scrolls, the month is never a box scrolled
+   inside it. D627: a public holiday, an Off day and a no-fly day show as on the SANS calendar, tint and tag — the sun
+   and the moon are that calendar's alone. D621 / D626: several days are picked by a mouse drag, or a finger held and
+   then dragged; the "Select dates" button is gone. D620: no SANS availability here. D655: a group filing is one bar.
+
+   A REACT component, not a string builder like the week and the board ("React owns chrome, strings own density"): at
+   most 42 dates carrying a few bars apiece, no reference to stay byte-for-byte with, and free-text fields (the day's
+   title, a note) that live in component state.
+
+   THE MONTH WORKS NOTHING OUT. Which bar sits on which line of which week is ui/inputscal-model.ts (pure); a date's
+   class and tag are the ONE resolver's answer (leavewar/sync.ts flyMonth) with the Leave War's short form (dayFacts).
+   It hears both stores, so a holiday declared on the war is on the month at once.
+
+   A WEEK IS THREE LAYERS, because a bar lies ACROSS dates and so can sit inside none of them:
+     · the DATES themselves (`.ib-day`, `data-icday`) — what a press on empty space lands on, and what the keyboard is on;
+     · their HEADS (the number, the tag, the day's title, the planning notes and pucks — drawn in full, as before);
+     · the LINES (`.ib-lanes`) — the bars, each placed by its columns and its line, and "+N more".
+   The heads and the lines let a press through to the date beneath, except on what they hold.
+
+   WHAT A PRESS DOES is two machines on the one grid, which cannot both take a press: ui/caldrag.ts takes one that
+   begins on a bar or a planning note (a tap opens it, a drag moves it by days); ui/calpick.ts takes one that begins on
+   a date (a tap opens the day, a mouse drag or a held finger picks several days for "+ Input", a finger slid sideways
+   turns the month). Both ask the date under the pointer of the page (ui/caldays.ts), never of the bar.
+
+   THE FIRST CALENDAR WAS A LAYER OVER THE WHOLE SCREEN (22 Aug 26); since the calendar-first Inputs (D574 / D580) it
+   has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
+   own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
+import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
@@ -28,51 +43,28 @@ import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
 import { me } from '../state/perms'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, unfmt, inputTone, firstPersonalType } from './inputedit'
+import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
+import { initCalPick, SWIPE_MIN } from './calpick'
+import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
+import { placedLineOf } from './placedline'
+import { dayWord } from './sanscal-model'
+import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
 import { useVersion } from './useStore'
-import { SaveBand } from './SaveStatus'
 import { useMedia } from './usemedia'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
-const DOW = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 
-/* COUNT-based overflow, deliberately not height-based: a height cutoff needs
-   a real box model per screen size (the phone chip is a bare colour bar, the
-   desktop one carries text, so "how many fit" is a different number on each)
-   and jsdom renders no layout at all, so a height rule could never be pinned
-   by a test — only eyeballed on the live view, forever. A count is the same
-   rule on every screen and is exactly what a test can assert against. */
-/* Applies to the INPUT chips only since the 22 Aug 26 cell redesign — the
-   title, notes and pucks sections draw in full ("if it fills up the whole day
-   box, so be it"; inputs are the stated lesser priority). Raised 3 → 6 with
-   the same redesign: input chips pack side by side now, so six fit where
-   three stacked lines used to. */
-export const MAX_CHIPS = 6
-
-/* HOLD-TO-ADD on empty cell space — deliberately longer than caldrag's own
-   180ms chip hold (caldrag.ts's HOLD). A chip has only one meaning under a
-   finger: pick it up. An empty cell has TWO — a quick tap opens the day
-   popover, a hold means "add an input here" — so the hold has to be long
-   enough that the two can never be confused on a slow, deliberate tap.
-   450ms is comfortably past normal tap duration and still well inside what
-   reads as a deliberate press-and-hold. Exported so the test drives the same
-   number rather than a second 450 that could quietly drift from this one. */
-export const HOLD_ADD = 450
-const HOLD_SLOP = 8 // px of drift a hold can absorb before it reads as a scroll/pan instead — same idea as caldrag's SLOP
-/* a horizontal drag past this, and more sideways than vertical, PAGES the
-   month (owner, 22 Aug 26 — "allow me to swipe left and right… to see
-   different months"). Well above HOLD_SLOP so a hold/tap is never read as a
-   swipe, and about one phone cell wide (~55px on a 390px screen) so it takes
-   a deliberate drag, not a stray finger. A DISCRETE step on release, not a
-   finger-tracking carousel: this grid is a fixed layout, not a native
-   scroller, so none of the board/Leave-War fling-vs-scrollLeft hazards apply
-   — the swipe just decides a direction and calls the same step() the ‹ ›
-   arrows do. */
-export const SWIPE_MIN = 50
+/* THE LINES OF A DAY. A desktop: seven before "+N more" (owner D632, D639 — "compact, no switch"). A phone: whatever
+   the screen's height gives, worked out by fitLanes from these three heights, which the stylesheet reads back from the
+   grid as custom properties — ONE source, so what is measured is what is drawn. */
+export const DESK_LANES = 7
+/* "+N more" stands on a line of its own, as tall as a bar's */
+const PHONE = { head: 22, lane: 16, more: 16 }
+const DESK = { head: 26, lane: 20, more: 20 }
 
 /* yyyy-mm-dd → today's own iso, local time (the calendar's "Today" jump and
    its today-ring both want the viewer's own day, not UTC's). */
@@ -132,11 +124,8 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   return { inputs, pucks }
 }
 
-/* `mode` is 'member' on the Inputs page (everything BUT SANS availability) and absent for a caller that wants every
-   input. The SANS half of this calendar — its own cell, its day panel, its colour settings — went on 8 Oct 26: the
-   SANS calendar is its own screen now (ui/SansCal.tsx; the Inputs / SANS job's step 4, D617-D651). */
-export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, embedded=false, lead, tools, under }:
-  { fPerson: string, fType: string, fSearch: string, seedIso?: string, onClose: () => void, mode?: 'member', embedded?:boolean,
+export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under }:
+  { fPerson: string, fType: string, fSearch: string, seedIso?: string,
     /** the Inputs page's three tabs — drawn at the head of this calendar's own top row, so a desktop has ONE row of
      *  controls above the month and a phone the tabs and one tools row (the plan §3.6) */
     lead?: ReactNode,
@@ -144,6 +133,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
     tools?: ReactNode,
     /** a line of the page's own under the top row (what the filters are set to) */
     under?: ReactNode }) {
+  const mode = 'member' as const
+  useVersion()
+  useWarFacts()
   useVersion()
   const gridRef = useRef<HTMLDivElement>(null)
   /* on a phone the month's name is its first three letters, so the arrows, Today, the switch and the filter button hold
@@ -173,7 +165,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
      popover is mid-edit" instead of a second one that could fall out of
      step with it. */
   const [popIso, setPopIso] = useState<string | null>(null)
-  const [mouseRange,setMouseRange] = useState<{start:string,end:string}|null>(null)
+  /* a run of days being drawn by the pointer, first day first */
+  const [drawn, setDrawn] = useState<{ a: string; b: string } | null>(null)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
   const shown=useRef<typeof INPREVEAL>(null)
@@ -258,50 +251,19 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /* BODY SCROLL-LOCK — same pattern and the same reason as the scheduler
-     board's own (SchedBoard.tsx lines ~60-90): this overlay is
-     position:fixed over the whole viewport, and without this the page
-     underneath it stays a live scrolling document that a stray drag can
-     still reach. The scroll position is captured and put back by hand on
-     close, so returning to the table lands exactly where it was left. */
-  useEffect(() => {
-    if(embedded) return
-    const el = document.scrollingElement || document.documentElement
-    const y = el.scrollTop, x = el.scrollLeft
-    document.body.classList.add('sb-lock')
-    return () => {
-      document.body.classList.remove('sb-lock')
-      el.scrollTop = y; el.scrollLeft = x
-    }
-  }, [embedded])
-
-  /* Escape closes the overlay, the same capture-phase idiom inputedit.tsx's
-     own dialog uses (~line 650) — captured so it fires ahead of anything
-     else on the page that might also be listening for the key. It stands
-     DOWN while the input-edit modal is open above this overlay: both
-     listeners sit on the same document in the capture phase, where
-     stopPropagation cannot silence a sibling listener (only
-     stopImmediatePropagation between listeners of ONE registration could),
-     so without this guard one Escape would close the modal AND the calendar
-     under it in a single press. The day popover slots into the SAME ladder,
-     one layer further down: the modal guard still wins first (it can open
-     on top of the popover too, from an entries-list row), then an open
-     popover eats the key for itself — closing just the popover, leaving the
-     month underneath — and only once neither is open does Escape reach all
-     the way out to the calendar. */
+  /* ESCAPE peels one layer of what THIS calendar has open — the people picker, then the day — and stands down while
+     the input editor is up over them (it has its own; both listen on the document in the capture phase, where
+     stopPropagation cannot silence a sibling). It never leaves the calendar: the month is a tab's screen, not a layer
+     to close. */
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || INPEDIT) return
-      e.stopPropagation()
-      /* the picker sits ABOVE the popover, so it eats Escape first — the same
-         one-layer-at-a-time ladder the popover follows below the modal */
-      if (pickFor != null) { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); return }
-      if (popIso) { showDay(null); setPopPuckEdit(null); return }
-      onClose()
+      if (pickFor != null) { e.stopPropagation(); setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); return }
+      if (popIso) { e.stopPropagation(); showDay(null); setPopPuckEdit(null) }
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [onClose, popIso, pickFor])
+  }, [popIso, pickFor])
 
   /* Seed the add-input modal exactly the way a board's "+ Add" does
      (interactions.ts ~592-608) — same fields, same defaults — but with NO
@@ -319,137 +281,42 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   }
   const closePop = () => { showDay(null); setPopPuckEdit(null) }
 
-  /* Wire caldrag's chip machine, and this calendar's OWN empty-cell gesture,
-     onto the grid — both as plain native listeners on the same element, so
-     they can freely coexist: caldrag's onPointerDown refuses anything that
-     is not a chip (its very first line), and this one refuses anything that
-     IS one (or is `.ic-more`, which owns its own click). An effect with no
-     deps is safe for both: neither closure below reads anything that
-     changes across a render — ME/firstPersonalType/INPUTS are module-level,
-     and the setState functions are React's own stable identities. */
+  /* ---- the pointer: two machines on the one grid, wired once; they read the latest handlers through a ref -------- */
+  const tapEntry = (entry: any) => {
+    if (entry.kind === 'input') {
+      const r = INPUTS.find((x: any) => x.iid === entry.iid)
+      if (r) { setInpEdit(r); notify() } // object resolve — never index
+      return
+    }
+    showDay(entry.fromIso)
+    /* a NOTE opens already in its own edit box; a PUCKS row has no text to edit, so its tap just opens the day (its
+       people are edited through the row's own picker there) */
+    const sec = PLANPUCKS.find((p: any) => p.id === entry.pid)
+    if (sec && sec.kind === 'pucks') { setPopPuckEdit(null) }
+    else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
+  }
+  const live = useRef({ tapEntry, pickDate, openAdd, step: (_n: number) => {} })
+  live.current.tapEntry = tapEntry; live.current.pickDate = pickDate; live.current.openAdd = openAdd
   useEffect(() => {
     const el = gridRef.current
     if (!el) return
-
-    const onTap = (entry: any) => {
-      if (entry.kind === 'input') {
-        const r = INPUTS.find((x: any) => x.iid === entry.iid)
-        if (r) { setInpEdit(r); notify() } // object resolve — never index; the modal opens above this overlay
-      } else {
-        showDay(entry.fromIso)
-        /* a NOTE opens already in its own edit box; a PUCKS row has no text
-           to edit, so its tap just opens the day (its people are edited
-           through the row's own picker/✕ controls there). */
-        const sec = PLANPUCKS.find((p: any) => p.id === entry.pid)
-        if (sec && sec.kind === 'pucks') { setPopPuckEdit(null) }
-        else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
-      }
-    }
-    /* a swipe that began on a chip pages the month exactly as one over empty space does (the re-walk's NEW-1) */
+    /* a press that begins on a bar or a planning note: a tap opens it, a drag moves it by days; a finger slid sideways
+       from one turns the month, as it does from empty space */
     const offDrag = initCalDrag(el, {
-      onTap,
-      onSwipe: (dx, dy) => { if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) stepRef.current(dx < 0 ? 1 : -1) },
+      onTap: entry => live.current.tapEntry(entry),
+      onSwipe: (dx, dy) => { if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) live.current.step(dx < 0 ? 1 : -1) },
     })
-
-    /* HOLD-TO-ADD / TAP-TO-OPEN / SWIPE-TO-PAGE over empty cell space — this
-       calendar's own tiny pointer machine, deliberately separate from
-       caldrag's rather than a mode bolted onto it: it has no ghost, no drop
-       target, and three meanings for a release depending on how the finger
-       moved. `rec.fired` records that the hold already added a row, so the
-       release must NOT also open the popover or page — the same "one
-       gesture, one outcome" rule caldrag's own armed/tap split enforces for
-       chips. The swipe verdict is taken on RELEASE from the total travel, so
-       no per-move state or animation is needed; onMove only cancels the hold
-       timer once the finger has clearly left a hold. */
-    let st: { iso: string, end:string, mouse:boolean, ranged:boolean, x0: number, y0: number, timer: any, fired: boolean, pointerId: number } | null = null
-    let retireReleaseClick: (() => void) | null = null
-    const consumeReleaseClick = () => {
-      retireReleaseClick?.()
-      // Opening the editor during a hold changes what is under the finger.
-      // Its compatibility click must not pick a date in that new editor.
-      // Retire on the next real press too, so a missing click cannot eat it.
-      let timer: ReturnType<typeof setTimeout>
-      const off = () => {
-        document.removeEventListener('click', eat, true)
-        document.removeEventListener('pointerdown', off, true)
-        clearTimeout(timer)
-        retireReleaseClick = null
-      }
-      const eat = (e: Event) => { e.preventDefault(); e.stopPropagation(); off() }
-      document.addEventListener('click', eat, { capture: true, once: true })
-      document.addEventListener('pointerdown', off, { capture: true, once: true })
-      timer = setTimeout(off, 350)
-      retireReleaseClick = off
-    }
-    const reset = () => { if (st) clearTimeout(st.timer); st = null }
-    const cancelHold = () => { if (st) clearTimeout(st.timer) } // stop the add timer but keep tracking for a swipe/tap verdict on up
-    const onDown = (e: PointerEvent) => {
-      const t = e.target as HTMLElement
-      if(e.isPrimary===false || (e.button!=null&&e.button!==0)) return
-      if (t.closest('[data-icdrag]') || t.closest('button,input,select,textarea,a')) return
-      const cell = t.closest('[data-icday]') as HTMLElement | null
-      if (!cell) return
-      reset()
-      const iso = cell.dataset.icday!
-      const rec = { iso, end:iso, mouse:e.pointerType==='mouse', ranged:false, x0: e.clientX, y0: e.clientY, timer: 0 as any, fired: false, pointerId: e.pointerId }
-      if(!rec.mouse) rec.timer = setTimeout(() => { rec.fired = true; openAdd(iso) }, HOLD_ADD)
-      st = rec
-    }
-    const onMove = (e: PointerEvent) => {
-      if (!st || e.pointerId !== st.pointerId) return
-      // any real drift means this is not a still hold — stop the add timer,
-      // but keep `st` alive so the release can still read it as a swipe or tap
-      if (Math.abs(e.clientX - st.x0) > HOLD_SLOP || Math.abs(e.clientY - st.y0) > HOLD_SLOP) cancelHold()
-      if(st.mouse){
-        const cell=(typeof document.elementFromPoint==='function'?document.elementFromPoint(e.clientX,e.clientY):e.target as Element)?.closest('[data-icday]') as HTMLElement|null
-        if(cell&&el.contains(cell)){
-          st.end=cell.dataset.icday!
-          if(st.end!==st.iso) st.ranged=true
-          if(st.ranged) setMouseRange({start:st.iso,end:st.end})
-        }
-      }
-    }
-    const onUp = (e: PointerEvent) => {
-      if (!st || e.pointerId !== st.pointerId) return
-      const { iso, end, mouse, ranged, fired, x0, y0 } = st
-      reset()
-      setMouseRange(null)
-      if (fired) { consumeReleaseClick(); return } // the hold already added a row
-      if(mouse&&ranged){
-        const cell=(typeof document.elementFromPoint==='function'?document.elementFromPoint(e.clientX,e.clientY):e.target as Element)?.closest('[data-icday]')
-        if(cell&&el.contains(cell)) openAdd(iso,end)
-        return
-      }
-      const dx = e.clientX - x0, dy = e.clientY - y0
-      /* a decisive sideways drag pages the month: left (finger moves −x) is
-         the NEXT month, right the PREVIOUS — the direction a page turns, and
-         the way every month-swipe calendar reads. Horizontal-dominant so a
-         diagonal scroll never pages by accident. */
-      if (!mouse&&Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy)) { stepRef.current(dx < 0 ? 1 : -1); return }
-      // barely moved — a tap opens the day popover (a longer pan does nothing)
-      if (Math.abs(dx) <= HOLD_SLOP && Math.abs(dy) <= HOLD_SLOP) pickDate(iso)
-    }
-    const onCancel = (e: PointerEvent) => { if (st && e.pointerId === st.pointerId) {reset();setMouseRange(null)} }
-
-    /* down FILTERS by target, so it stays on the grid; move/up/cancel go on
-       WINDOW so a swipe that ends past the grid's edge still completes and
-       resets — a release off-element would otherwise leave the gesture
-       half-open. Every handler no-ops unless `st` is the matching pointer. */
-    el.addEventListener('pointerdown', onDown, { passive: true })
-    window.addEventListener('pointermove', onMove, { passive: true })
-    window.addEventListener('pointerup', onUp, { passive: true })
-    window.addEventListener('pointercancel', onCancel, { passive: true })
-    return () => {
-      offDrag()
-      reset()
-      retireReleaseClick?.()
-      el.removeEventListener('pointerdown', onDown)
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerup', onUp)
-      window.removeEventListener('pointercancel', onCancel)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode])
+    /* a press that begins on a date: everyone may file his OWN input from his own calendar (the reach a member already
+       has on the List's add form), so a pick is never refused here */
+    const offPick = initCalPick(el, {
+      canPick: () => true,
+      onTap: iso => live.current.pickDate(iso),
+      onPicking: setDrawn,
+      onRange: (a, b) => live.current.openAdd(a, b),
+      onSwipe: dir => live.current.step(dir),
+    })
+    return () => { offDrag(); offPick() }
+  }, [])
 
   const cur = CALMONTH || { y: new Date().getFullYear(), m: new Date().getMonth() + 1 }
   /* year rollover mirrors RangeCal.tsx's own step(), adjusted for CALMONTH's
@@ -464,8 +331,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
     setCalMonth({ y: cur.y + Math.floor(m0 / 12), m: ((m0 % 12) + 12) % 12 + 1 })
     notify()
   }
-  /* keep the swipe gesture's stepper current — see stepRef above */
+  /* keep the pointer machines' stepper current — see `live` above */
   stepRef.current = step
+  live.current.step = step
   const goToday = () => {
     const d = new Date(); const ny = d.getFullYear(), nm = d.getMonth() + 1
     /* Today reads as a jump, not a page — slide only when it actually crosses a
@@ -518,14 +386,48 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
   const todayIso = isoToday()
 
-  /* a month emptied by a filter has to say WHY — the product bar's "real
-     empty states" rule — so any active filter earns a header pill naming
-     what is hiding the rest of the picture. */
-  const active = fPerson !== 'all' || fType !== 'all' || !!fSearch
-  const pillParts: string[] = []
-  if (fPerson !== 'all') pillParts.push(PEOPLE[fPerson] ? PEOPLE[fPerson].cs : String(fPerson))
-  if (fType !== 'all') pillParts.push(fType)
-  if (fSearch) pillParts.push(`"${fSearch}"`)
+  /* ---- the bars: every input the filters let through, as entries; each week lays out its own ---------------------- */
+  const items = monthItems(INPUTS, { fPerson, fType, fSearch })
+  const answers = flyMonth(cur.y, cur.m)
+
+  /* ---- ON A PHONE THE MONTH TAKES THE FULL SCREEN (D653, D664): the week rows share the height from the month's top
+     to the foot of the screen — measured from what the browser really shows, and measured again when that changes (its
+     own bars sliding away, a turn of the phone, the rows above the month growing). A FLOOR, never a limit: a row is
+     never squeezed under three lines, so a short screen or a six-week month makes the month taller than the screen and
+     the WHOLE PAGE scrolls — the month has no scroll of its own. On a desktop the rows share the height the same way
+     and the lines are seven. ---- */
+  const topRef = useRef<HTMLDivElement>(null)
+  const sizes = narrow ? PHONE : DESK
+  const [fit, setFit] = useState(() => fitLanes(NaN, weeks.length, sizes))
+  useLayoutEffect(() => {
+    const el = gridRef.current
+    if (!el) return
+    const measure = () => {
+      const vv = window.visualViewport
+      const h = vv ? vv.height : window.innerHeight
+      const top = el.getBoundingClientRect().top + (window.scrollY || 0)
+      const next = fitLanes(h - top - 12, weeks.length, sizes)
+      setFit(f => (f.row === next.row && f.lanes === next.lanes ? f : next))
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    window.visualViewport?.addEventListener('resize', measure)
+    const ro = typeof ResizeObserver !== 'undefined' && topRef.current ? new ResizeObserver(measure) : null
+    if (ro && topRef.current) ro.observe(topRef.current)
+    return () => { window.removeEventListener('resize', measure); window.visualViewport?.removeEventListener('resize', measure); ro?.disconnect() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weeks.length, narrow])
+  const lanes = narrow ? fit.lanes : DESK_LANES
+
+  const KIND_SAY: Record<string, string> = { ph: 'public holiday', off: 'Off day', nf: 'no-fly day' }
+  const nameOf = (id: any) => (PEOPLE[id] ? PEOPLE[id].cs : String(id))
+  /* a desktop bar's tooltip (D632 — "pointing at a bar shows who placed it"): who, what, when, and the small-print line */
+  const tip = (it: BarItem) => {
+    const r = it.rows[0]
+    const dates = it.a === it.b ? fmtDay(it.a) : `${fmtDay(it.a)} – ${fmtDay(it.b)}`
+    const hours = r.allday ? '' : ` · ${hhmm(r.s)}–${hhmm(r.e)}`
+    return [`${it.rows.map((x: any) => nameOf(x.person)).join(', ')} · ${it.word} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
+  }
 
   /* THE DAY POPOVER — a day's inputs, remark and planning notes without
      leaving the month view. A plain function rather than a separate
@@ -970,115 +872,92 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   }
 
   return (
-    <div className={'inpcal'+(embedded?' ic-embedded':'')+(embedded&&popIso?' ic-with-day':'')} id="inpCal">
-      <div className={'ic-head' + (embedded ? ' inputs-top' : '')}>
-        {lead}
-        <div className="ic-nav">
-          <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
-          <span className="ic-mon" aria-live="polite" aria-label={`${MON[cur.m - 1]} ${cur.y}`}>{narrow ? MON[cur.m - 1].slice(0, 3) : MON[cur.m - 1]} {cur.y}</span>
-          <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
-          <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
+    <div className={'inpcal ib' + (popIso ? ' ic-with-day' : '')} id="inpCal">
+      <div className="ib-top" ref={topRef}>
+        <div className="ic-head inputs-top">
+          {lead}
+          <div className="ic-nav">
+            <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
+            <span className="ic-mon" aria-live="polite" aria-label={`${MON[cur.m - 1]} ${cur.y}`}>{narrow ? MON[cur.m - 1].slice(0, 3) : MON[cur.m - 1]} {cur.y}</span>
+            <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
+            <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
+          </div>
+          {tools}
         </div>
-        {tools}
-        {active && !embedded && <span className="ic-filterpill">filtered: {pillParts.join(' · ')}</span>}
-        {/* the full-screen overlay closes by its own cross; inside the Inputs page the Calendar | List switch beside the
-            month's arrows is the way to the List (D620, D626 — the calendar's own "List" button went with it) */}
-        {!embedded && <button type="button" className="abtn" id="icClose" aria-label="Back to list"
-          title="Back to list" onClick={onClose}>✕</button>}
+        {under}
       </div>
-      {under}
-      {/* a failed save's warning, under this surface's own bar — ONLY when the calendar is the full-screen overlay
-          that lies over the top bar, whose own warning cannot be seen from there ([SAVE-NOTE-COVERS], D587;
-          ui/SaveStatus.tsx). Embedded in the Inputs page (the calendar-first Inputs, D574/D580) the top bar stays
-          in view and carries the warning itself: a band here would hide the bar's copy and leave an empty line in
-          the bar (found when the two works were joined, 7 Oct 26 — e2e/save-note.spec.ts). */}
-      {!embedded && <SaveBand />}
-      <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
-      {/* THE MONTH BODY scrolls when a day is packed. --ic-rows is the live week
-          count: each week's MINIMUM height is one viewport share of it (see
-          .ic-grid / .ic-week in scheduler.css), so a normal month fills the
-          screen exactly, while a week holding a day drawn in FULL (the owner's
-          22 Aug call) grows past that share and the body scrolls to reach it —
-          it no longer clips the lower weeks off the bottom (owner report, 29 Aug
-          26 — "calendar filled with many data I cannot scroll down to view").
-          Each WEEK is its own flex row rather than the old flat 7-col grid: a
-          grid track can't measure a wrapping-flex cell's real height (it reads
-          it at infinite width, as a single line), so the packed row never grew
-          and its pucks spilled OVER the weeks below; a flex row resolves the
-          cell widths first and then its height from the tallest cell's actual
-          wrapped content, so the row grows and pushes the rest down. */}
-      <div className="ic-grid" ref={gridRef} style={{ ['--ic-rows']: cells.length / 7 } as React.CSSProperties}>
-        {weeks.map((week, wi) => (
-          <div key={wi} className="ic-week">{week.map((iso, ci) => {
-          const i = wi * 7 + ci
-          if (!iso) return <div key={i} className="ic-x" />
-          const wk = ci >= 5
-          const isToday = iso === todayIso
-          const { inputs, pucks } = dayEntries(iso, { fPerson, fType, fSearch }, mode)
-          const selection=mouseRange
-          const inSelection=selection&&iso>=[selection.start,selection.end].sort()[0]&&iso<=[selection.start,selection.end].sort()[1]
-          /* THE CELL'S PRIORITY ORDER (owner, 22 Aug 26): the day TITLE, then
-             the sections — notes and tiny pucks, drawn in FULL ("if it fills
-             up the whole day box, so be it") — then the inputs, the lesser
-             priority, as side-by-side mini chips capped at MAX_CHIPS with a
-             +N more. Only the INPUTS are counted against the cap now; the
-             cap used to cover sections too, back when they shared one
-             column. */
-          const shown = inputs.slice(0, MAX_CHIPS)
-          const extra = inputs.length - shown.length
-          const day = +iso.slice(8, 10)
-          const rmk = DAYRMK[iso]
+      <div className="ib-dow" aria-hidden="true">{WD.map((d, i) => <span key={d} className={i >= 5 ? 'is-we' : ''}>{d}</span>)}</div>
+      <div className={'ib-grid' + (drawn ? ' is-picking' : '')} ref={gridRef} data-testid="ib-grid"
+        style={{ ['--ib-row']: fit.row + 'px', ['--ib-head']: sizes.head + 'px', ['--ib-lane']: sizes.lane + 'px', ['--ib-more']: sizes.more + 'px' } as React.CSSProperties}>
+        {weeks.map((week, wi) => {
+          const wk = layoutBars(week, items, lanes)
           return (
-            <div key={iso} className={'ic-day' + (isToday ? ' ic-today' : '') + (wk ? ' ic-wk' : '')+(inSelection?' ic-selected':'')} data-icday={iso} role="button" tabIndex={0} aria-label={fmtDay(iso)} onKeyDown={e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();pickDate(iso)}}}>
-              <div className="ic-date-line"><div className="ic-num">{day}</div></div>
-              <>
-              {/* the day's TITLE — free text typed beside the date in the
-                  popover, allowed to wrap (owner: "it will show up as the
-                  title on the calendar view for mobile and desktop"). Keeps
-                  the .ic-rmk class its tests and store history know it by. */}
-              {rmk && <div className="ic-rmk" title={rmk}>{rmk}</div>}
-              {pucks.map((p: any) => p.kind === 'pucks' ? (
-                /* a pucks section as a row of TINY person chips, styled like the
-                   app's standard puck (owner, 23 Aug 26 — "the standard green or
-                   yellow"): the olive body lives in .ic-pk, and each person's
-                   CATEGORY reads as a colour line on the RIGHT (the QCOLOR
-                   ladder the Quals page uses); a SANS person carries an extra
-                   purple line on the LEFT — the same purple the real puck wears,
-                   just moved to the opposite edge so it never fights the CAT
-                   line. Ground crew (no CAT) simply get no right line. */
-                <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
-                  {/* the cell summary lists the real people only — gaps in the
-                      row (blanked slots) are positional, not members. */}
-                  {(p.ids || []).filter(Boolean).map((id: string) => {
-                    const per = PEOPLE[id]
-                    const cat = per && QCOLOR[per.q]   // category → right line (drawn by .ic-pk::after off this var)
-                    return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
-                      style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
-                  })}
-                </div>
-              ) : (
-                <div key={'p' + p.id} className="ic-chip plan" data-pid={p.id} data-icdrag>{p.text}</div>
-              ))}
-              {shown.length > 0 && (
-                /* inputs side by side (owner: "coloured pucks arranged side by
-                   side, just showing the callsign and the input") — the times
-                   live in the popover; a SANS record reads as its F/O/A
-                   letters on the purple chip, never the words. */
-                <div className="ic-inrow">
-                  {shown.map((r: any) => (
-                    <div key={'i' + r.iid} className={'ic-chip ' + inputTone(r.type)} data-iid={r.iid} data-icdrag>
-                      {PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person} {isSansAvail(r.type) ? (sansLetters(r) || 'F/O/A') : inpLabel(r)}
+            <div key={wi} className="ib-week" data-testid={'ib-week-' + wi}>
+              {/* THE DATES — what a press on empty space lands on */}
+              <div className="ib-cells">
+                {week.map((iso, ci) => {
+                  if (!iso) return <div key={'x' + ci} className="ib-x" />
+                  const tag = dayTag(answers[iso], dayFacts(iso).short)
+                  const n = itemsOn(iso, items).length
+                  const picked = !!drawn && iso >= drawn.a && iso <= drawn.b
+                  const cls = 'ib-day' + (ci >= 5 ? ' is-we' : '') + (iso === todayIso ? ' is-today' : '') + (tag ? ' k-' + tag.kind : '') +
+                    (picked ? ' is-picked' : '') + (iso === popIso ? ' is-open' : '')
+                  return (
+                    <div key={iso} className={cls} data-icday={iso} role="button" tabIndex={0} aria-pressed={iso === popIso}
+                      aria-label={`${dayWord(iso)}${tag ? ', ' + KIND_SAY[tag.kind] : ''}, ${n ? `${n} input${n > 1 ? 's' : ''}` : 'no inputs'}`}
+                      onKeyDown={e => { if (e.target !== e.currentTarget) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickDate(iso) } }} />
+                  )
+                })}
+              </div>
+              {/* THEIR HEADS — the number and the tag, then the day's TITLE and the planning notes and pucks, drawn in
+                  full above the bars (owner, 22 Aug 26: "if it fills up the whole day box, so be it") */}
+              <div className="ib-heads">
+                {week.map((iso, ci) => {
+                  if (!iso) return <div key={'x' + ci} />
+                  const tag = dayTag(answers[iso], dayFacts(iso).short)
+                  const rmk = DAYRMK[iso]
+                  const pucks = PLANPUCKS.filter((p: any) => p.date === iso)
+                  return (
+                    <div key={iso} className={'ib-head' + (ci >= 5 ? ' is-we' : '') + (iso === todayIso ? ' is-today' : '')} data-ichead={iso}>
+                      <div className="ib-date">
+                        <span className="ib-num">{+iso.slice(8, 10)}</span>
+                        {tag && <span className={'ib-tag k-' + tag.kind} data-testid={'ib-tag-' + iso}>{tag.text}</span>}
+                      </div>
+                      {rmk && <div className="ic-rmk" title={rmk}>{rmk}</div>}
+                      {pucks.map((p: any) => p.kind === 'pucks' ? (
+                        /* a pucks section as a row of TINY person chips, styled like the app's standard puck (owner,
+                           23 Aug 26): the CATEGORY a colour line on the right, a SANS person a purple line on the left */
+                        <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
+                          {(p.ids || []).filter(Boolean).map((id: string) => {
+                            const per = PEOPLE[id]
+                            const cat = per && QCOLOR[per.q]
+                            return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
+                              style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
+                          })}
+                        </div>
+                      ) : (
+                        <div key={'p' + p.id} className="ic-chip plan" data-pid={p.id} data-icdrag>{p.text}</div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-              {extra > 0 && <button type="button" className="ic-more" data-icmore={iso}
-                onClick={() => { showDay(iso); setPopPuckEdit(null) }}>+{extra} more</button>}
-              </>
+                  )
+                })}
+              </div>
+              {/* THE LINES — one bar across the days an input covers (D626); a bar is not a tab stop: the keyboard opens
+                  the day, where every input is listed and reached */}
+              <div className="ib-lanes">
+                {wk.segs.map(sg => (
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on')}
+                    data-iid={sg.item.key} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
+                    style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
+                ))}
+                {wk.more.map((more, c) => more > 0 && (
+                  <button key={'m' + c} type="button" className="ib-more" data-icmore={week[c]!} title={`${more} more on ${fmtDay(week[c])} — open the day`}
+                    style={{ gridColumn: c + 1, gridRow: lanes + 1 }} onClick={() => pickDate(week[c]!)}>+{more} more</button>
+                ))}
+              </div>
             </div>
           )
-        })}</div>
-        ))}
+        })}
       </div>
       {popIso != null && renderPop(popIso)}
       {pickFor != null && renderPicker()}

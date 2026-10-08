@@ -33,7 +33,7 @@ const tid=(id:string)=>host.querySelector(`[data-testid="${id}"]`)
 const sansPeople=()=>Object.keys(PEOPLE).filter(k=>PEOPLE[k].san&&!PEOPLE[k].archived&&!PEOPLE[k].deleted&&!PEOPLE[k].special&&!PEOPLE[k].pers)
 
 it('keeps app Inputs navigation and secondary list in the calendar workspace',async()=>{
-  expect(host.querySelector('.ic-embedded')).toBeTruthy()
+  expect(host.querySelector('#inpCal.ib'),'the month is part of the Inputs page').toBeTruthy()
   expect(document.body.classList.contains('sb-lock')).toBe(false)
   await click('#inListBtn'); expect(host.querySelector('#inpCal')).toBeNull()
   await click('#inCalBtn'); expect(host.querySelector('#inpCal')).toBeTruthy()

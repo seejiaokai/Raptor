@@ -628,6 +628,21 @@ and the filters. The Inputs calendar draws the tabs and those tools in its own t
 `under`). No form of the Inputs tab offers SANS availability: the List's add form and edit in place, the calendar's
 "+ Input" (`inputedit.tsx TYPE_ALLOW.i`), and an input already filed cannot be turned into one. `MedicalView.tsx` has
 no close cross as a tab. Styles: `ui/scheduler/25-inputs-calendar.css` (the top row; the month's own follow).
+THE MONTH ITSELF is `InputsCal.tsx`, re-made (D626): a week is three layers - the dates (`.ib-day`, `data-icday`), their
+heads (the number, the PH / OFF / NF tag, the day's title, the planning notes and pucks) and the lines (`.ib-bar`, one
+across the days an input covers; "+N more") - because a bar lies across dates and sits inside none. Seven lines on a
+desktop; on a phone `fitLanes` from the height the screen gives, re-measured when it changes (D653, D664 - the month has
+no height and no scroll of its own). Its overlay half went: the page's scroll lock, its close cross, its failed-save
+band, an Escape that left the calendar. *(The older `InputsCal.tsx` row above describes the first calendar's cell; its
+day popover and its planning layer still stand as written there.)* `src/ui/caldays.ts` - THE DATE UNDER A POINT of a
+month (`dayAtPoint`: everything stacked at the point, so a bar never hides the date beneath it), shared by `calpick.ts`
+(a run drawn across a bar carries on) and `caldrag.ts` (a bar grabbed on its Wednesday knows it; the move is by the
+difference in days). `placedline.ts placedLineOf` - the one who-placed line of a shared input. The Inputs page arrives
+scrolled to its top and, while a month is up, drops the body's foot room (`body.in-cal`). Tests: `inputsmonth.test.tsx`,
+`placedline.test.ts`; in a real browser `e2e/inputs-calendar.spec.ts` (three phone heights in a five-week and a six-week
+month, the tabs and the one tools row, a real mouse drag, a real finger, every bar over its own dates).
+`scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
+laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
 `inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto
 the SANS calendar's "+ Commitment".
 The first calendar's SANS half left `InputsCal.tsx` with it (its cell, day panel, colour dropdown and legend); `mode` there

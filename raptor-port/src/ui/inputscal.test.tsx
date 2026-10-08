@@ -17,7 +17,7 @@ import { ME } from '../state/auth'
 import { PEOPLE, QORDER } from '../engine/people'
 import { fmt, fmtDay, unfmt, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
-import { monthCells, MAX_CHIPS, HOLD_ADD } from './InputsCal'
+import { monthCells } from './InputsCal'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -162,16 +162,20 @@ describe('the Inputs page calendar toggle', () => {
 describe('chips (seeded demo data)', () => {
   /* divot's OML (a medical leave, Jul 13, all day) — an unavailable type,
      so inputTone reads it red */
-  it('a leave/medical input chips red', () => {
-    const cell = $('[data-icday="2026-07-13"]')!
-    expect(cell.querySelector('.ic-chip.red'), cell.textContent || '').toBeTruthy()
+  /* RE-POINTED (step 5, 8 Oct 26 — D626): an input is a BAR across its days now, inside no one date, so the two colour
+     tests find the record's own bar by its id */
+  it('a leave/medical input is a red bar', () => {
+    const rec: any = INPUTS.find((r: any) => r.type === 'OML' && r.date === 'Jul 13')
+    expect(rec, 'the seeded OML of 13 Jul').toBeTruthy()
+    expect($(`.ib-bar.red[data-iid="${rec.iid}"]`), 'its bar is red').toBeTruthy()
   })
 
   /* bane's Appointment (Jul 16, timed 17:00–18:30) — a Duty & other
      commitments type, amber */
-  it('an activity/appointment input chips amber', () => {
-    const cell = $('[data-icday="2026-07-16"]')!
-    expect(cell.querySelector('.ic-chip.amb'), cell.textContent || '').toBeTruthy()
+  it('an activity/appointment input is an amber bar', () => {
+    const rec: any = INPUTS.find((r: any) => r.type === 'Appointment' && r.date === 'Jul 16')
+    expect(rec, 'the seeded Appointment of 16 Jul').toBeTruthy()
+    expect($(`.ib-bar.amb[data-iid="${rec.iid}"]`), 'its bar is amber').toBeTruthy()
   })
 
   /* every day the seeded SANS records land on also carries two overlapping
@@ -272,7 +276,8 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       expect(sec.ids.length).toBe(2)
       expect(sec.ids, 'the hand-picked people are on it').toEqual(expect.arrayContaining(pickedIds))
       expect($(`[data-secpucks="${sec.id}"] .puck`), 'the row draws real pucks').toBeTruthy()
-      expect(cell.querySelector('.ic-pks .ic-pk'), 'the cell carries the tiny chip').toBeTruthy()
+      /* the date's HEAD carries it now — a week is three layers, and the date itself holds nothing (step 5, D626) */
+      expect($(`[data-ichead="${iso}"] .ic-pks .ic-pk`), 'the date carries the tiny chip').toBeTruthy()
       /* the per-puck ✕ is gone now (owner, 24 Aug 26 — removal is drag-off or
          right-click); no seated puck carries a delete button anymore */
       expect($(`[data-secpucks="${sec.id}"] [data-pkdel]`), 'no per-puck ✕').toBeFalsy()
@@ -381,9 +386,11 @@ describe('member session — reduced controls, same reach to add and to open a c
       expect($('#icPopAdd'), '+Input stays available to everyone').toBeTruthy()
       await click($('#icPopClose'))
 
-      const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!
-      await tap(chip, 5, 5)
-      expect(INPEDIT, 'a chip tap still opens the modal for a member').toBe(rec)
+      /* the input is a BAR across its days now (step 5, D626), found by its own id */
+      const chip = $(`.ib-bar[data-icdrag][data-iid="${rec.iid}"]`)!
+      ;(document as any).elementsFromPoint = () => [chip, $('[data-icday="2026-07-16"]')]
+      try { await tap(chip, 5, 5) } finally { delete (document as any).elementsFromPoint }
+      expect(INPEDIT, 'a tap on a bar still opens the input for a member').toBe(rec)
       await act(async () => { setInpEdit(null); notify() })
     } finally {
       await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
@@ -644,8 +651,11 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
   })
 })
 
-describe('Esc layering: popover first, then the calendar', () => {
-  it('the first Esc closes just the popover; the second closes the calendar', async () => {
+/* RE-POINTED (step 5, 8 Oct 26): the first calendar was a layer over the whole screen and its last Escape went "back
+   to the list". It is the Inputs tab's own screen now — Escape closes what is open ON it and never leaves it (the plan
+   §3.6: "Esc closes the front window, then clears a range"). */
+describe('Esc layering: the opened day first, and the calendar stays', () => {
+  it('the first Esc closes just the opened day; a second leaves the calendar where it is', async () => {
     const cell = $('[data-icday="2026-07-06"]')!
     await tap(cell, 10, 10)
     expect($('.ic-pop')).toBeTruthy()
@@ -655,7 +665,7 @@ describe('Esc layering: popover first, then the calendar', () => {
     expect($('#inpCal'), 'the calendar itself is still open').toBeTruthy()
 
     await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
-    expect($('#inpCal'), 'second Esc closes the calendar').toBeFalsy()
-    expect(INPVIEW).toBe('table')
+    expect($('#inpCal'), 'a second Esc leaves the calendar up').toBeTruthy()
+    expect(INPVIEW).toBe('cal')
   })
 })

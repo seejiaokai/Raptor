@@ -3123,3 +3123,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Add to the door check (and to the executor's pre-commit look) a named item: "for every control that acts on pointer-up, ask what is under the pointer AFTER it acts — if the answer is something new or something that moved, either act on the click instead of the release, or swallow the one click that follows; and drive it once with a real tap in a browser." In unit tests, a tap helper should fire the click a browser sends.
 
 **Principle:** A handler that acts on release changes what the following click will hit; decide on the click, or consume it — and treat any gesture test that omits the browser's own follow-up events as unproven until a real browser has run it.
+
+### Observation 474: Taking a control away from a screen needs a look at how that screen is LAID OUT, not only at who used the control
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 5 of the Inputs / SANS calendar job - the view buttons became three tabs, and Medical's own close cross was removed because "a tab is left by choosing another".
+**Skill:** raptor-executor / bug-check-order (roll-call) - New skill candidate: "removing a way out"
+**Type:** open-source
+**Phase/Area:** building - removing or replacing navigation
+
+**Issue:** The cross was removed after searching for who CALLED it (tests, scripts). Every unit test passed. Only reading the stylesheet for a different reason showed the screen was still a fixed layer over the whole window - the tabs that were now its only exit would have been drawn underneath it. A layout-less test environment cannot see this class of fault.
+
+**Suggested improvement:** When a change removes or replaces a way OUT of a surface (a close cross, a back button, an Escape rule), add one step before the commit: read that surface's positioning rules (fixed / absolute / z-index / scroll lock / inert) and name, in the commit, the control that is now the way out and why it is reachable. Pin it with a real-browser test that presses the new way out.
+
+**Principle:** A way out is a property of the layout as much as of the handlers - before removing one, prove the replacement is on screen and on top in a real browser, because a search for callers only proves nobody will miss the old one.

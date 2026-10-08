@@ -45,3 +45,22 @@ export function placedLine(r: any, people: Record<string, any> = PEOPLE): string
   }
   return out
 }
+
+/** THE LINE FOR A SHARED INPUT (owner D655, D629 — "Placed by Saber for 4 people · 7 Oct 26, 14:32"): who filed the
+ *  entry, for how many, and when — one line for the whole of it. Its filer is the entry's own (`grpBy`), else whoever
+ *  placed its first record; the moment is the earliest any of its records was placed; its last change is the latest
+ *  any of them carries. One record is the ordinary line. */
+export function placedLineOf(rows: readonly any[], people: Record<string, any> = PEOPLE): string {
+  const list = (rows || []).filter(Boolean)
+  if (list.length < 2) return list.length ? placedLine(list[0], people) : ''
+  const stamped = list.filter(r => r.by != null && r.by !== '' && stampText(r.at))
+  if (!stamped.length) return ''
+  const withFiler = stamped.find(r => r.grpBy != null && r.grpBy !== '')
+  const filer = withFiler ? withFiler.grpBy : stamped[0].by
+  let out = `Placed by ${nameOf(filer, people)} for ${list.length} people · ${stampText(Math.min(...stamped.map(r => r.at)))}`
+  const changed = stamped
+    .filter(r => stampText(r.modAt) && (r.modAt !== r.at || (r.modBy != null && String(r.modBy) !== String(r.by))))
+    .sort((a, b) => b.modAt - a.modAt)[0]
+  if (changed) out += changed.modBy != null && changed.modBy !== '' ? ` · changed by ${nameOf(changed.modBy, people)} · ${stampText(changed.modAt)}` : ` · changed ${stampText(changed.modAt)}`
+  return out
+}
