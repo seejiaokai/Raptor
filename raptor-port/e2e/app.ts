@@ -279,6 +279,18 @@ export async function lwView(page: Page, id: string | null) {
   await page.waitForTimeout(150)
 }
 
+/* MOVE THE WAR'S STAGE the way a person does at this size ([LW-PHONE-HEADER-SPACE], owner D678, 8 Oct 26). On a tablet
+   and a desktop the two moves are in sight on the stage strip; on a phone (the Leave War's own phone width, 430px and
+   under) an admin's stage is a button and the same two moves are in the menu it opens — one tap more. A test that is
+   about what the stage DOES, not where its button is, goes through here and runs unchanged in both projects. */
+export async function stageMove(page: Page, which: 'advance' | 'back') {
+  if ((page.viewportSize()?.width ?? 1440) <= 430) {
+    await page.locator('[data-testid="stage-now"]').click()
+    await page.locator('[data-testid="stage-menu"]').waitFor({ state: 'visible' })
+  }
+  await page.locator(`[data-testid="stage-${which}"]`).click()
+}
+
 /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): with a day's sheet open, its Move picks the chip up into the grid's
    move mode, and a click on a day lands it — a phone stages it and asks to Confirm. The move ignores clicks for its
    first moments (a double-click on Move must land nothing), so the landing waits a beat, as a person's click would. */

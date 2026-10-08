@@ -22,6 +22,16 @@ export function shortSpan(start: string, end: string): string {
   return start === end ? shortDate(start) : `${shortDate(start)} – ${shortDate(end)}`
 }
 
+/** `1 Jan – 31 Mar` — a span WITHOUT its year, for the one place that has no room for it: the bidding dates at the top
+ *  of the page on a phone ([LW-PHONE-HEADER-SPACE], owner D678, 8 Oct 26 — the period's own name on the line above
+ *  carries the year). Only where both dates are in ONE year: across a year's end the year is the only thing that tells
+ *  "15 Dec – 15 Jan" from its mirror image, so there the span reads whole, as `shortSpan` writes it. */
+export function spanInYear(start: string, end: string): string {
+  if (start.slice(0, 4) !== end.slice(0, 4)) return shortSpan(start, end)
+  const bare = (date: string) => `${Number(date.slice(8, 10))} ${MONTHS[Number(date.slice(5, 7)) - 1]}`
+  return start === end ? bare(start) : `${bare(start)} – ${bare(end)}`
+}
+
 /** `2026-07-17` → `Fri 17 Jul` — a sheet HEADED by one day, in the voice the day's list beside it already uses
  *  ([LW-ISO-DATES], 28 Sep 26: the bid sheet, the award, the posting sheets printed the stored `2026-07-17`). Moved here
  *  from DayList so the list and the sheets cannot word a day two ways. UTC maths, so the weekday never shifts with the

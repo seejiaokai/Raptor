@@ -5,6 +5,11 @@
 // the live page by this script. NOTHING HERE IS BUILT — the controls in the pictures are the app's own, moved; a menu
 // or a bar that does not exist yet is drawn by hand in the app's colours. Not a gate; a person opens the pictures.
 //
+// SINCE 8 OCT 26 IDEA A IS BUILT (D678), so on today's build only this script's FIRST picture ("today") still draws — it
+// is the built page, and its count of names is the built page's (11, where the page before had 6). The other variants
+// re-arrange the page as it was BEFORE the build and stop on the first control that is no longer there; to redraw B or
+// C, run it against a build from before commit "D678 built".
+//
 //   npm run build && npx vite preview --port 4180 --strictPort      (NOT 4173 — the browser tests reuse a server left there)
 //   node scripts/handpass/lw-phone-head-mock.mjs <out dir>
 //

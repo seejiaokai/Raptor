@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo } from './app'
+import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, stageMove } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -357,7 +357,9 @@ test('the page itself never scrolls sideways — only the grid does', async ({ p
 
 // THE "VIEWING AS" CHIP STAYS ON THE SCREEN ([ABSENCE-SMALL-SEEN] 2, 28 Sep 26 — the re-test's W6 N6). The shell's
 // phone bar rule `.topbar>*{flex:0 0 auto}` leaked onto this row, so it never wrapped: the chip hung past the right edge
-// of a 390px screen inside a row that scrolled sideways. The row now wraps; the chip, its words whole, sits inside it.
+// of a 390px screen inside a row that scrolled sideways. The row then wrapped, the chip on a line of its own (D365);
+// since D678 (8 Oct 26) a phone's row is ONE line again with the chip at its right — what gives is the callsign, which
+// ends in "…" (the two-line tests further down). This test's three rules hold through both.
 test('the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways', async ({ page }) => {
   await lwView(page, 'slipway')   // the harness runs unscoped; a sign-in always names its person (D166 (4)), and the chip names him
   const chip = page.locator('[data-testid="lw-viewing"]')
@@ -370,6 +372,306 @@ test('the VIEWING AS chip stays inside the screen, its words whole, and the top 
   expect(m.right, 'the chip ends inside the screen').toBeLessThanOrEqual(m.vw + 0.5)
   expect(m.labCut, '"VIEWING AS" is never cut').toBe(false)
   expect(m.rowOver, 'the top row does not scroll sideways').toBeLessThanOrEqual(1)
+})
+
+// ---- THE TOP OF THE LEAVE WAR ON A PHONE IS TWO LINES, AND A DESKTOP'S IS AS IT WAS ------------------------------
+// [LW-PHONE-HEADER-SPACE]. Owner, 8 Oct 26, with a phone picture of this page, everything above the grid circled: "how
+// can we optimise the space such that we don't use so much vertical space?" — five lines then, the grid's first row
+// 279px down a 390px screen. Of three ideas drawn into the running build he chose A (D678 — "A looks good"): the
+// period, "+" and "Viewing as" on one line; the stage (an admin's two moves behind it), the bidding dates, under-manned
+// and Legend on the next. And for the desktop (D679): "keep the same for desktop".
+//
+// The unit tests (src/leavewar/ui/phonehead.test.tsx) hold the words and who is offered what. Only a real browser can
+// say that two lines ARE two lines, that nothing overlaps or leaves a 360px screen, that the menu opens inside it over
+// the grid — and that none of the phone's rules reached a wider screen.
+
+type HeadBox = { l: number; t: number; r: number; b: number; text: string; tag: string }
+/** The top area as it is painted: every control that takes up room, the labels in sight, and how far anything runs. */
+async function head(page: Page) {
+  return page.evaluate(() => {
+    const pg = document.querySelector('#page-leavewar')!
+    const tb = pg.querySelector(':scope > .topbar') as HTMLElement, fl = pg.querySelector(':scope > .filters') as HTMLElement
+    const boxes: Record<string, { l: number; t: number; r: number; b: number; text: string; tag: string }> = {}
+    for (const id of ['war-picker', 'war-new', 'lw-viewing', 'stage-now', 'stage-advance', 'stage-back', 'bid-window', 'undermanned', 'legend-open']) {
+      const el = pg.querySelector(`[data-testid="${id}"]`) as HTMLElement | null
+      if (!el) continue
+      const r = el.getBoundingClientRect()
+      if (!r.width || !r.height) continue
+      boxes[id] = { l: r.left, t: r.top, r: r.right, b: r.bottom, text: (el.textContent || '').trim(), tag: el.tagName }
+    }
+    const labs = [...tb.querySelectorAll('.lab'), ...fl.querySelectorAll(':scope > .lab')]
+      .filter(el => (el as HTMLElement).getBoundingClientRect().width > 0)
+      .map(el => (el.textContent || '').trim())
+    const who = pg.querySelector('[data-testid="lw-viewing"] .vwho') as HTMLElement | null
+    const vlab = pg.querySelector('[data-testid="lw-viewing"] .vlab') as HTMLElement | null
+    return {
+      boxes, labs, vw: innerWidth, vh: innerHeight,
+      height: fl.getBoundingClientRect().bottom - tb.getBoundingClientRect().top,
+      rowOver: Math.max(tb.scrollWidth - tb.clientWidth, fl.scrollWidth - fl.clientWidth),
+      pageOver: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      whoCut: who ? who.scrollWidth > who.clientWidth + 1 : null,
+      whoEllipsis: who ? getComputedStyle(who).textOverflow === 'ellipsis' && getComputedStyle(who).overflow !== 'visible' : null,
+      labCut: vlab ? vlab.scrollWidth > vlab.clientWidth + 1 : null,
+    }
+  })
+}
+/** These controls share ONE line: each one's middle is inside every other's top-to-bottom. */
+function expectOneLine(boxes: Record<string, HeadBox>, ids: string[], what: string) {
+  for (const id of ids) expect(boxes[id], `${what}: "${id}" is not on the page`).toBeTruthy()
+  for (const a of ids) for (const b of ids) {
+    const mid = (boxes[a]!.t + boxes[a]!.b) / 2
+    expect(mid > boxes[b]!.t && mid < boxes[b]!.b, `${what}: "${a}" is not on the same line as "${b}"`).toBe(true)
+  }
+}
+/** …and none of them lies over its neighbour. */
+function expectApart(boxes: Record<string, HeadBox>, ids: string[], what: string) {
+  const row = ids.map(id => ({ id, ...boxes[id]! })).sort((a, b) => a.l - b.l)
+  for (let i = 1; i < row.length; i++)
+    expect(row[i]!.l, `${what}: "${row[i]!.id}" lies over "${row[i - 1]!.id}"`).toBeGreaterThanOrEqual(row[i - 1]!.r - 0.5)
+}
+const LINE1 = ['war-picker', 'war-new', 'lw-viewing'], LINE2 = ['stage-now', 'bid-window', 'undermanned', 'legend-open']
+/** The two lines, as D678 draws them, for whoever is looking: nothing over anything, nothing past the screen. */
+async function expectTwoLines(page: Page, line1: string[], line2: string[], what: string) {
+  const m = await head(page)
+  expect(m.labs, `${what}: no label word is left on a phone`).toEqual([])
+  expectOneLine(m.boxes, line1, `${what}, line 1`); expectApart(m.boxes, line1, `${what}, line 1`)
+  expectOneLine(m.boxes, line2, `${what}, line 2`); expectApart(m.boxes, line2, `${what}, line 2`)
+  const foot1 = Math.max(...line1.map(id => m.boxes[id]!.b)), top2 = Math.min(...line2.map(id => m.boxes[id]!.t))
+  expect(top2, `${what}: line 2 is not under line 1`).toBeGreaterThanOrEqual(foot1)
+  for (const [id, b] of Object.entries(m.boxes)) {
+    expect(b.l, `${what}: "${id}" starts off the screen`).toBeGreaterThanOrEqual(0)
+    expect(b.r, `${what}: "${id}" runs past the screen's edge`).toBeLessThanOrEqual(m.vw + 0.5)
+  }
+  expect(m.rowOver, `${what}: a line scrolls sideways`).toBeLessThanOrEqual(1)
+  expect(m.pageOver, `${what}: the page scrolls sideways`).toBeLessThanOrEqual(1)
+  /* THE POINT OF IT: two lines' worth of height. Before, the same controls took 230px at 390 wide. */
+  expect(m.height, `${what}: the top area is taller than two lines`).toBeLessThanOrEqual(84)
+  expect(m.labCut, `${what}: "VIEWING AS" is cut`).not.toBe(true)
+  return m
+}
+const PHONES: [number, number][] = [[390, 844], [360, 740]]
+
+test('the top of the Leave War on a phone is two lines, nothing overlapping or off the screen at 390 and 360 wide', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone-size rule (D678); the desktop has its own test below (D679)')
+  await lwRole(page, 'admin')
+  await lwView(page, 'slipway')     // the harness runs unscoped; a sign-in always names its person, and the chip names him
+  /* 430 as well: the widest screen the Leave War calls a phone. The words (Chrome.tsx) and the layout (chrome.css)
+     must change at the SAME width — a strip with the phone's words in the desktop's layout, or the other way round,
+     would show here or at 431 in the desktop's test. */
+  for (const [width, height] of [...PHONES, [430, 932] as [number, number]]) {
+    await page.setViewportSize({ width, height })
+    await page.waitForTimeout(200)
+    const m = await expectTwoLines(page, LINE1, LINE2, `admin, ${width} wide`)
+    /* the words, as he was shown them */
+    expect(m.boxes['war-new']!.text).toBe('+')
+    expect(m.boxes['stage-now']!.text).toBe('OPEN FOR BIDDING')
+    expect(m.boxes['stage-now']!.tag, 'an admin\'s stage is a button').toBe('BUTTON')
+    expect(m.boxes['bid-window']!.text).toBe('1 Jan – 31 Mar')
+    expect(m.boxes['undermanned']!.text).toBe('Under 0 days')
+    expect(m.boxes['legend-open']!.text).toBe('Legend')
+    await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Viewing as')
+    expect(m.whoCut, `${width}: an ordinary callsign is cut short`).toBe(false)
+    /* the two moves are NOT on the strip — they are behind the stage button */
+    expect(m.boxes['stage-advance'], 'the forward move is in sight on a phone').toBeUndefined()
+    expect(m.boxes['stage-back'], 'the back move is in sight on a phone').toBeUndefined()
+    /* Legend ends the line at the right; "Viewing as" ends the line above it there */
+    expect(m.boxes['legend-open']!.r).toBeGreaterThan(m.vw - 14)
+    expect(m.boxes['lw-viewing']!.r).toBeGreaterThan(m.vw - 14)
+    /* the stage button says it opens: the small arrow is painted (a drawn triangle), and is not part of its words */
+    const arrow = await page.locator('[data-testid="stage-now"]').evaluate(el => {
+      const c = getComputedStyle(el, '::after')
+      return { content: c.content, display: c.display, top: parseFloat(c.borderTopWidth), ink: c.borderTopColor }
+    })
+    expect(arrow.content !== 'none' && arrow.content !== 'normal' && arrow.display !== 'none' && arrow.top >= 3, `the stage button shows no arrow (${JSON.stringify(arrow)})`).toBe(true)
+    expect(arrow.ink, 'the arrow is drawn in no colour').not.toBe('rgba(0, 0, 0, 0)')
+    /* the four chips of line 2 are one height — the stage button no taller than its neighbours */
+    const tall = LINE2.map(id => Math.round((m.boxes[id]!.b - m.boxes[id]!.t) * 2) / 2)
+    expect(new Set(tall).size, `${width}: line 2's chips are of different heights (${tall.join(', ')})`).toBe(1)
+  }
+})
+
+test('on a phone an admin\'s stage button opens his two moves inside the screen, over the grid; a press outside closes it and moves nothing', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone-size control (D678)')
+  await lwRole(page, 'admin')
+  const now = page.locator('[data-testid="stage-now"]'), menu = page.locator('[data-testid="stage-menu"]')
+  for (const [width, height] of PHONES) {
+    await page.setViewportSize({ width, height })
+    await page.waitForTimeout(200)
+    await expect(menu).toHaveCount(0)
+    await now.click()
+    await expect(menu).toBeVisible()
+    await expect(now).toHaveAttribute('aria-expanded', 'true')
+    const g = await page.evaluate(() => {
+      const q = (t: string) => document.querySelector(`#page-leavewar [data-testid="${t}"]`) as HTMLElement
+      const box = (el: HTMLElement) => { const r = el.getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom, h: r.height } }
+      const m = q('stage-menu'), adv = q('stage-advance'), back = q('stage-back')
+      /* what a finger would actually reach at each move's middle, and at the menu's own (order §6: a new floating
+         surface is proved to be ON TOP of what it opens over — here the Manning block and the grid) */
+      const at = (el: HTMLElement) => { const r = el.getBoundingClientRect(); return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) }
+      return {
+        vw: innerWidth, vh: innerHeight, menu: box(m), adv: box(adv), back: box(back), now: box(q('stage-now')),
+        advOnTop: at(adv) === adv || adv.contains(at(adv)), backOnTop: at(back) === back || back.contains(at(back)),
+        menuOnTop: m.contains(at(m)),
+        words: [adv.textContent!.trim(), back.textContent!.trim()],
+        inMenu: m.contains(adv) && m.contains(back),
+      }
+    })
+    expect(g.menu.l, `${width}: the menu starts off the screen`).toBeGreaterThanOrEqual(0)
+    expect(g.menu.r, `${width}: the menu runs past the screen's edge`).toBeLessThanOrEqual(g.vw)
+    expect(g.menu.b, `${width}: the menu runs past the screen's foot`).toBeLessThanOrEqual(g.vh)
+    expect(g.menu.t, `${width}: the menu lies over its own button`).toBeGreaterThanOrEqual(g.now.b)
+    expect(g.inMenu).toBe(true)
+    expect(g.words).toEqual(['→ BIDDING CLOSED', '← DRAFT'])
+    for (const [name, b] of [['forward', g.adv], ['back', g.back]] as const) {
+      expect(b.h, `${width}: the ${name} move is too small for a thumb`).toBeGreaterThanOrEqual(38)
+      expect(b.l >= g.menu.l && b.r <= g.menu.r && b.t >= g.menu.t && b.b <= g.menu.b, `${width}: the ${name} move pokes out of the menu`).toBe(true)
+    }
+    expect(g.back.t, `${width}: the two moves overlap`).toBeGreaterThanOrEqual(g.adv.b)
+    expect(g.advOnTop && g.backOnTop && g.menuOnTop, `${width}: something is drawn over the menu`).toBe(true)
+
+    /* A PRESS OUTSIDE (the 4 Sep 26 rule) — on the grid, well clear of the menu: the menu goes, the stage stands, and
+       the press reached nothing under it (no day's sheet came up) */
+    await page.mouse.click(g.vw - 30, g.vh - 80)
+    await expect(menu).toHaveCount(0)
+    await expect(now).toHaveText('OPEN FOR BIDDING')
+    await expect(now).toHaveAttribute('aria-expanded', 'false')
+    await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
+    await expect(page.locator('[data-testid="sheet-scrim"]')).toHaveCount(0)
+    /* …and Escape, for a keyboard */
+    await now.click()
+    await expect(menu).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(menu).toHaveCount(0)
+
+    /* EACH MOVE IS ONE TAP FROM THE MENU. Forward: the war closes, the menu goes, the bidding dates go with it (a
+       closed war advertises none) and the line is still one line. */
+    await now.click()
+    await page.locator('[data-testid="stage-advance"]').click()
+    await expect(now).toHaveText('BIDDING CLOSED')
+    await expect(menu).toHaveCount(0)
+    await expect(page.locator('[data-testid="bid-window"]')).toHaveCount(0)
+    await expectTwoLines(page, ['war-picker', 'war-new'], ['stage-now', 'undermanned', 'legend-open'], `closed, ${width} wide`)
+    /* Back: the menu now offers the way back to open, and takes it */
+    await now.click()
+    await expect(page.locator('[data-testid="stage-back"]')).toContainText('OPEN FOR BIDDING')
+    await page.locator('[data-testid="stage-back"]').click()
+    await expect(now).toHaveText('OPEN FOR BIDDING')
+    await expect(menu).toHaveCount(0)
+    await expect(page.locator('[data-testid="bid-window"]')).toHaveText('1 Jan – 31 Mar')
+  }
+})
+
+test('a member on a phone has the same two lines with no "+", and a stage that is a label and opens nothing', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone-size rule (D678)')
+  await lwRole(page, 'member')
+  await lwView(page, 'slipway')
+  for (const [width, height] of PHONES) {
+    await page.setViewportSize({ width, height })
+    await page.waitForTimeout(200)
+    await expect(page.locator('[data-testid="war-new"]')).toHaveCount(0)
+    const m = await expectTwoLines(page, ['war-picker', 'lw-viewing'], LINE2, `member, ${width} wide`)
+    expect(m.boxes['stage-now']!.tag, 'a member\'s stage is a label, not a button').toBe('SPAN')
+    expect(m.boxes['stage-now']!.text).toBe('OPEN FOR BIDDING')
+    expect(m.boxes['bid-window']!.text).toBe('1 Jan – 31 Mar')
+    /* no arrow promises a menu he does not have */
+    const arrow = await page.locator('[data-testid="stage-now"]').evaluate(el => getComputedStyle(el, '::after').content)
+    expect(arrow === 'none' || arrow === 'normal', `a member's stage shows an arrow (${arrow})`).toBe(true)
+    await page.locator('[data-testid="stage-now"]').click()
+    await expect(page.locator('[data-testid="stage-menu"]')).toHaveCount(0)
+    await expect(page.locator('[data-testid="stage-advance"]')).toHaveCount(0)
+    await expect(page.locator('[data-testid="stage-back"]')).toHaveCount(0)
+    /* the bidding dates are a fact for him, not a control — as on a desktop */
+    await expect(page.locator('[data-testid="bid-window"]')).toBeDisabled()
+  }
+})
+
+test('on a phone a long callsign in "Viewing as" ends in "…": the words stay whole, the period keeps its name, nothing leaves the screen', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone-size rule (D678)')
+  await lwRole(page, 'admin')
+  await lwView(page, 'slipway')
+  await page.setViewportSize({ width: 360, height: 740 })
+  await page.waitForTimeout(200)
+  const before = await head(page)
+  /* the longest callsign the app takes is 14 letters (D226); wide ones, so it cannot fit beside the picker and "+".
+     Renamed in the roster itself — this test is about how the chip gives way, not about the rename's own route. */
+  await page.evaluate(() => { const w = window as any; w.PEOPLE.slipway.cs = 'Wwwwwwwwwwwwww'; w.renderSchedule() })
+  await expect(page.locator('[data-testid="lw-viewing"] .vwho')).toHaveText('Wwwwwwwwwwwwww')
+  const m = await expectTwoLines(page, LINE1, LINE2, 'a 14-letter callsign, 360 wide')
+  expect(m.whoCut, 'the long callsign was expected not to fit').toBe(true)
+  expect(m.whoEllipsis, 'a callsign that does not fit must end in "…", not be sliced').toBe(true)
+  expect(m.labCut).toBe(false)
+  /* the chip gave way — the period picker and "+" did not */
+  for (const id of ['war-picker', 'war-new']) {
+    expect(m.boxes[id]!.r - m.boxes[id]!.l, `"${id}" was squeezed by the long callsign`).toBeCloseTo(before.boxes[id]!.r - before.boxes[id]!.l, 0)
+  }
+})
+
+/* D679 — "keep the same for desktop" (asked which he meant: "Leave desktop as today"). A tablet and a desktop keep the
+   top exactly as it was: the four label words, the whole "+ New", the stage as a label with its two moves IN SIGHT,
+   the dates with their year. And "a phone" ends at 430px — at 431 the page is already the wider one.
+   Read as PAINTED: the words on screen, and each control's own padding and type size — the numbers the phone block
+   overrides. (They are the stylesheet's, so they hold on any machine; a box's width in pixels would not, the app
+   loads no font of its own.) The measured boxes before and after the build were compared whole, once, by
+   scripts/handpass/lw-phone-head-measure.mjs — the bug check's evidence sheet has the result. */
+test('on a tablet and a desktop the top of the Leave War is as it was: every label, "+ New", the stage\'s two moves in sight', async ({ page }) => {
+  test.skip(isPhone(), 'the wider sizes (D679); the phone has its own tests above (D678)')
+  await lwRole(page, 'admin')
+  await lwView(page, 'slipway')
+  for (const [width, height] of [[1440, 900], [768, 1024], [431, 900]] as const) {
+    await page.setViewportSize({ width, height })
+    await page.waitForTimeout(200)
+    const m = await head(page)
+    expect(m.labs, `${width}: the label words`).toEqual(['Period', 'Stage', 'Bidding on', 'Under-manned'])
+    expect(m.boxes['war-new']!.text, `${width}`).toBe('+ New')
+    expect(m.boxes['stage-now']!.tag, `${width}: the stage is a label`).toBe('SPAN')
+    expect(m.boxes['stage-now']!.text).toBe('OPEN FOR BIDDING')
+    expect(m.boxes['stage-advance']!.text, `${width}: the forward move is in sight`).toBe('→ BIDDING CLOSED')
+    expect(m.boxes['stage-back']!.text, `${width}: the back move is in sight`).toBe('← DRAFT')
+    expect(m.boxes['bid-window']!.text, `${width}`).toBe('1 Jan 26 – 31 Mar 26')
+    expect(m.boxes['undermanned']!.text, `${width}`).toBe('0 days')
+    expect(m.pageOver, `${width}: the page scrolls sideways`).toBeLessThanOrEqual(1)
+    /* the paddings and type sizes of today, control by control */
+    const paint = await page.evaluate(() => {
+      const pg = document.querySelector('#page-leavewar')!
+      const cs = (sel: string, pseudo?: string) => getComputedStyle(pg.querySelector(sel)!, pseudo)
+      const one = (sel: string) => { const c = cs(sel); return `${c.paddingTop} ${c.paddingRight} ${c.paddingBottom} ${c.paddingLeft} / ${c.fontSize}` }
+      return {
+        topbar: one(':scope > .topbar'), filters: one(':scope > .filters'),
+        topbarWrap: cs(':scope > .topbar').flexWrap, springWrap: cs(':scope > .topbar .spring').flexWrap,
+        picker: one('[data-testid="war-picker"]'), plus: one('[data-testid="war-new"]'), plusWidth: cs('[data-testid="war-new"]').width,
+        viewing: one('[data-testid="lw-viewing"]'), stage: one('[data-testid="stage-now"]'), advance: one('[data-testid="stage-advance"]'),
+        dates: one('[data-testid="bid-window"]'), under: one('[data-testid="undermanned"]'), legend: one('[data-testid="legend-open"]'),
+        legendPush: cs('[data-testid="legend-open"]').marginLeft, label: cs(':scope > .filters > .lab').fontSize,
+        arrow: cs('[data-testid="stage-now"]', '::after').content,
+        advanceParent: (pg.querySelector('[data-testid="stage-advance"]')!.parentElement as HTMLElement).className,
+      }
+    })
+    expect(paint, `${width}: a phone rule reached this size`).toMatchObject({
+      topbar: '12px 20px 12px 20px / 13px', filters: '8px 20px 8px 20px / 13px',
+      topbarWrap: 'wrap', springWrap: 'wrap',
+      picker: '6px 32px 6px 14px / 12px', plus: '6px 11px 6px 11px / 12px',
+      viewing: '5px 11px 5px 11px / 13px', stage: '6px 11px 6px 11px / 12px', advance: '6px 11px 6px 11px / 11.5px',
+      dates: '6px 11px 6px 11px / 12px', under: '6px 11px 6px 11px / 12px', legend: '6px 11px 6px 11px / 12px',
+      legendPush: '0px', label: '10px', advanceParent: 'filters',
+    })
+    expect(paint.arrow === 'none' || paint.arrow === 'normal', `${width}: the stage label shows a menu arrow (${paint.arrow})`).toBe(true)
+    expect(parseFloat(paint.plusWidth), `${width}: "+ New" was squeezed to the phone's square`).toBeGreaterThan(40)
+    /* a press on the stage opens nothing: there is no menu at this size */
+    await page.locator('[data-testid="stage-now"]').click()
+    await expect(page.locator('[data-testid="stage-menu"]')).toHaveCount(0)
+    await expect(page.locator('[data-testid="stage-scrim"]')).toHaveCount(0)
+    /* on the desktop itself each of the two lines IS one line, as it was */
+    if (width === 1440) {
+      expectOneLine(m.boxes, ['war-picker', 'war-new', 'lw-viewing'], 'desktop, the Period line')
+      expectOneLine(m.boxes, ['stage-now', 'stage-advance', 'stage-back', 'bid-window', 'undermanned', 'legend-open'], 'desktop, the Stage line')
+    }
+  }
+  /* and the two moves still work from the strip, with nothing to open first */
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.locator('[data-testid="stage-advance"]').click()
+  await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
+  await page.locator('[data-testid="stage-back"]').click()
+  await expect(page.locator('[data-testid="stage-now"]')).toHaveText('OPEN FOR BIDDING')
 })
 
 // The Raptor restyle repaints .blocked as a tinted amber fill
@@ -829,7 +1131,7 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   // seed no longer plants one). Close the war as an admin and MOVE a bid —
   // the landed cell paints the dotted edge.
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="stage-advance"]').click()
+  await stageMove(page, 'advance')
   await page.locator('[data-testid="cell-slash-2026-02-03"]').click()
   await moveOneTo(page, 'cell-slash-2026-02-06')           // D262: Move picks the chip up; a click lands it
   const moved = await edge('[data-testid="cell-slash-2026-02-06"] .c')
@@ -852,7 +1154,7 @@ test('a cell Raptor owns offers no way to change it', async ({ page }) => {
 test('closing the war locks the squadron out, and the admin account still edits', async ({ page }) => {
   // advancing the cycle is admin-only since 27 Aug 26 — the admin closes it…
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="stage-advance"]').click()
+  await stageMove(page, 'advance')
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
 
   // …and the squadron is then locked out of the closed sheet
@@ -867,7 +1169,7 @@ test('closing the war locks the squadron out, and the admin account still edits'
 
 test('an admin moves a bid to another date, and it lands pending there', async ({ page }) => {
   await lwRole(page, 'admin')          // advancing the cycle is admin-only (27 Aug 26)
-  await page.locator('[data-testid="stage-advance"]').click()
+  await stageMove(page, 'advance')
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await moveOneTo(page, 'cell-bruise-2026-01-30')          // D262: Move picks the chip up; a click lands it
 
@@ -1381,8 +1683,8 @@ test('at published, a tap on an approved leave edits its note, and it sticks', a
   // role mirrors the login), so the realistic session is the admin one.
   await openLeaveWar(page, 'a')
   await putDrawerAway(page)
-  await page.locator('[data-testid="stage-advance"]').click()   // open -> closed
-  await page.locator('[data-testid="stage-advance"]').click()   // closed -> published
+  await stageMove(page, 'advance')   // open -> closed
+  await stageMove(page, 'advance')   // closed -> published
   const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // a Raptor-owned leave
   await cell.click()
   await expect(page.locator('[data-testid="remarks-sheet"]')).toBeVisible()
@@ -4382,7 +4684,10 @@ test('the counter picker is a contained, squared control', async ({ page }) => {
 // All three from the owner's review of 10 Aug 26.
 
 test('the period picker says what it is', async ({ page }) => {
-  await expect(page.locator('[data-testid="period-label"]')).toHaveText('Period')
+  // On a phone the word beside the picker is gone (owner, D678, 8 Oct 26 — the top of the page is two lines there);
+  // a tablet and a desktop keep it (D679). The picker's own name, below, says "Period" at every size.
+  if (isPhone()) await expect(page.locator('[data-testid="period-label"]')).toHaveCount(0)
+  else await expect(page.locator('[data-testid="period-label"]')).toHaveText('Period')
   // The visible label has to name the control for a screen reader too, not
   // merely sit next to it.
   expect(await page.locator('[data-testid="war-picker"]').getAttribute('aria-label'))
@@ -4436,12 +4741,14 @@ test('the picker options are neutral, not the chip green', async ({ page }) => {
    opened otherwise. */
 test('the under-manned chip reads 0 days on the projected roster, and is disabled', async ({ page }) => {
   const chip = page.locator('[data-testid="undermanned"]')
+  /* on a phone the label beside the count is gone and the count carries its one word (D678): "Under 0 days" */
+  const zero = isPhone() ? 'Under 0 days' : '0 days'
   /* as the app opens — NO counters, so nothing can be under-manned (D669) */
-  await expect(chip).toHaveText('0 days')
+  await expect(chip).toHaveText(zero)
   await expect(chip).toBeDisabled()
   /* and still 0 once the eleven counters the app used to start with are made: the demo roster breaks none of them */
   await elevenCounters(page)
-  await expect(chip).toHaveText('0 days')
+  await expect(chip).toHaveText(zero)
   await expect(chip).toBeDisabled()
   await expect(page.locator('[data-testid="undermanned-list"]')).toHaveCount(0)
 })
@@ -4680,9 +4987,11 @@ test('scrolling the year stays responsive with the readout attached', async ({ p
 
 test('an admin can reopen bidding after closing it', async ({ page }) => {
   await lwRole(page, 'admin')          // -> admin
-  await page.locator('[data-testid="stage-advance"]').click()        // open -> closed
+  await stageMove(page, 'advance')        // open -> closed
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
 
+  // On a phone the two moves are behind the stage button (D678): open it, as a person would.
+  if (isPhone()) await page.locator('[data-testid="stage-now"]').click()
   const back = page.locator('[data-testid="stage-back"]')
   await expect(back).toContainText('OPEN FOR BIDDING')
   // Clicking is the proof: a control that has wrapped off the strip, or that
@@ -4693,9 +5002,16 @@ test('an admin can reopen bidding after closing it', async ({ page }) => {
 
 test('a member is offered no way back', async ({ page }) => {
   await lwRole(page, 'admin')          // -> admin
-  await page.locator('[data-testid="stage-advance"]').click()        // open -> closed
+  await stageMove(page, 'advance')        // open -> closed
+  // On a phone the way back is in the stage menu (D678): opened, it is there for the admin…
+  if (isPhone()) await page.locator('[data-testid="stage-now"]').click()
   await expect(page.locator('[data-testid="stage-back"]')).toHaveCount(1)
   await lwRole(page, 'member')                                       // -> member
+  // …and gone for the member, the open menu with it; his stage is a label, and a tap on it opens nothing.
+  await expect(page.locator('[data-testid="stage-back"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="stage-menu"]')).toHaveCount(0)
+  await page.locator('[data-testid="stage-now"]').click()
+  await expect(page.locator('[data-testid="stage-menu"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="stage-back"]')).toHaveCount(0)
 })
 
@@ -4704,13 +5020,13 @@ test('a member is offered no way back', async ({ page }) => {
 // a reopen would be invisible to every test that only watches the stage.
 test('a decision made before the reopen survives it', async ({ page }) => {
   await lwRole(page, 'admin')          // -> admin
-  await page.locator('[data-testid="stage-advance"]').click()        // open -> closed
+  await stageMove(page, 'advance')        // open -> closed
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="decide-refuse"]').click()
   const chip = page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
   expect(await chip.getAttribute('class')).toContain('ref')
 
-  await page.locator('[data-testid="stage-back"]').click()
+  await stageMove(page, 'back')
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('OPEN FOR BIDDING')
   expect(await chip.getAttribute('class')).toContain('ref')
 })
@@ -5681,7 +5997,7 @@ test('a glowing green box frames the open-bidding window and clears when bidding
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)
   expect(grown).toBeGreaterThan(geo.bh)
   // Closing bidding removes it — a closed / published / draft war shows none.
-  await page.locator('[data-testid="stage-advance"]').click()
+  await stageMove(page, 'advance')
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
   await expect(box).toHaveCount(0)
 })

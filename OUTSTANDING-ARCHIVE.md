@@ -3902,3 +3902,47 @@ finger); looked at in the running build (`raptor-port/scripts/handpass/lw-counte
 set. **OWED, with the calendar job's ONE full check (D485):** the roll-call row for the Manning block, the walk, and
 Astra's and Sol 6.1's reads — it changed what is saved (the checking order's question 3).
 
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([LW-PHONE-HEADER-SPACE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-08-lw-phone-header.md`.*
+
+### [LW-PHONE-HEADER-SPACE] The top of the Leave War on a phone uses too much height — three ideas drawn, his pick awaited (asked 8 Oct 26)
+
+**His words, with a phone picture of the page, everything above the grid circled:** *"how can we optimise the space such
+that we don't use so much vertical space? Give me mock ups for ideas to rearrange or minimise"*. Measured in the running
+build at phone size: 230px from the app's bar to the grid's first row — the Period line, the "Viewing as" line, the Stage
+line, the "Bidding on" / "Under-manned" line, the Legend line, then the grid's own buttons — leaving six names on screen.
+
+**Where it stands:** NOTHING BUILT. Three ideas, each drawn into the running build by
+`raptor-port/scripts/handpass/lw-phone-head-mock.mjs` (D634), are on a private page for him —
+https://claude.ai/artifact/Q3RwbqjSpEgzt32V2v1VCw (its source and pictures: `C:/Users/User/.raptor-private/lw-phone-header-mock/`;
+republish to the same address): **A** two lines — the period, "+", "Viewing as" / the stage (its two moves behind the stage
+chip), the bidding dates, under-manned, Legend (95px saved, ten names; the agent's pick); **B** one line that opens
+(121px saved, twelve names; Legend, under-manned and "Viewing as" out of sight until it is opened); **C** two lines, the
+second one swiped sideways (95px saved, nothing renamed, the bidding dates and under-manned a swipe away).
+**A ruling it touches, told to him on the page:** D365 (29 Sep 26 — on a phone the "Viewing as" chip takes a line of its
+own, words kept); A and C keep the words and put the chip back on the Period line, which fits once the word "Period" goes.
+**Not drawn:** a member's view (no "+ New", no stage moves — only shorter). **When he picks:** record the ruling first
+(and D365's mark if the chip moves), then build it tests-first with a browser test at phone size that nothing overlaps
+or leaves the screen at 390px and at 360px; a stage move behind a chip is a new control, so its tier is WALK.
+**Place:** his to set — a small job of its own on the Leave War; it does not wait for the calendar job.
+
+**HIS PICK, the same afternoon — D678: "A looks good, with this is there anything the desktop can follow too?"** A is
+the design for the phone (the ruling's readings are in its full row; D365 is marked). His question on the desktop was
+answered in that chat — the two lines can become ONE there, every word and button kept, about 50px saved — and a
+picture of it was added to the same page; **HIS WORD, the same afternoon — D679: "keep the same for desktop" (asked
+which he meant: "Leave desktop as today") — THE DESKTOP AND THE TABLET ARE NOT TOUCHED; the build is the phone only, and
+its browser test also holds the desktop's two lines as they are.** The build is not started: tests
+first, a browser test at 390px and 360px (nothing overlapping, nothing off the screen, the stage menu opening inside
+the screen and closing on a press outside — the 4 Sep 26 rule), a member's view with no "+" and a stage button that
+opens nothing, and a long callsign in "Viewing as" still ending in "…".
+
+**BUILT, 8 Oct 26 (the evening), on `claude/inputs-sans-calendar` — not merged.** On a phone (430px and under) the top
+is two lines; a desktop and a tablet measure byte for byte as before (D679). Tests first (`leavewar/ui/phonehead.test.tsx`,
+`leavewar/ui/dates.test.ts`, five tests of `e2e/leavewar.spec.ts`); 31 + 12 rules broken one at a time, all caught; its
+bug check, tier WALK, with the walk and its pictures: `raptor-port/docs/handpass/2026-10-08-lw-phone-header.md`. The
+contract: `raptor-port/docs/ui-contracts.md` ("ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES — D678"). The readings
+the build added are in D678's full row (7 to 13). Measured: the grid starts 182px down (279 before at 390 wide) — eleven names on screen where six fitted, counted as
+the drawing counted them. **Owed:
+his look on his own iPhone** — whether "Legend" holds the second line in Apple's font cannot be measured on this PC —
+and the branch's one FULL check (D485) reads this code with the rest. Found on the way and filed: `[LW-HEAD-BIG-PHONE]`.
+

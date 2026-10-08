@@ -18,7 +18,8 @@ import {
 } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
-import { shortDate, shortSpan } from './dates'
+import { shortDate, shortSpan, spanInYear } from './dates'
+import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
@@ -32,6 +33,8 @@ const LIST_WIDTH = 244
  *  word the popover now carries, and the constant has to track the CSS
  *  width exactly or the clamp math above places the popover off-screen. */
 const LEGEND_WIDTH = 312
+/** Same, for the phone's stage menu (`.stagemenu`) — the two stage moves behind the stage button (D678). */
+const STAGE_MENU_WIDTH = 224
 /** What each clash line says after its dash — where the admin can actually undo it ([ABSENCE-SMALL-SEEN] 1,
  *  28 Sep 26; the reason for each is at `clashWayOut` in sync.ts). "Resolve on the sheet" sent him to a sheet with no
  *  control on it whenever the leave in the way was filed on the Inputs page. */
@@ -45,6 +48,13 @@ const WAY_OUT: Record<ClashWayOut, string> = {
 export function Topbar() {
   useVersion()
   const { period, wars, role, people, viewer } = getState()
+  /* ON A PHONE THIS LINE IS THE PERIOD, "+" AND "VIEWING AS" — ONE LINE ([LW-PHONE-HEADER-SPACE]; owner, D678,
+     8 Oct 26 — "A looks good", of three ideas drawn into the running build after "how can we optimise the space such
+     that we don't use so much vertical space?"). The word "Period" goes (the picker says it, and still names itself
+     to a screen reader) and "+ New" reads "+": that is what lets the chip come back up beside the picker, where
+     D365 had it on a line of its own. A TABLET AND A DESKTOP ARE NOT TOUCHED (D679 — "keep the same for desktop"):
+     every `phone ?` below leaves their markup exactly as it was. The sizes are chrome.css's phone block. */
+  const phone = usePhone()
   const [making, setMaking] = useState(false)
   /* THE SHEET ASKED FOR FROM DAYS (ui/warask.ts): the Holidays list cannot write a holiday on dates no leave period
      holds, and asks for THIS sheet — the one "+ New" opens — with those dates picked. The ask is taken once: an admin
@@ -90,7 +100,7 @@ export function Topbar() {
         {/* The picker carried only the war's name, which says what is in it
             and not what it is. Every chip in the stage strip below is
             labelled this way already. */}
-        <span className="lab" data-testid="period-label">Period</span>
+        {!phone && <span className="lab" data-testid="period-label">Period</span>}
         <select
           className="wk on warpick"
           data-testid="war-picker"
@@ -105,8 +115,8 @@ export function Topbar() {
           ))}
         </select>
         {role === 'admin' && (
-          <button className="warnew" data-testid="war-new" onClick={() => setMaking(true)}>
-            + New
+          <button className="warnew" data-testid="war-new" aria-label={phone ? 'New period' : undefined} onClick={() => setMaking(true)}>
+            {phone ? '+' : '+ New'}
           </button>
         )}
         {/* THE WAR'S UNDO / REDO LEFT THIS ROW for the app's top bar ([UNDO-TOPBAR] — owner D347, 28 Sep 26: "all undo
@@ -232,6 +242,35 @@ export function StageBar() {
   const [listOpen, setListOpen] = useState(false)
   const showList = listOpen && redDays > 0
 
+  /* ON A PHONE THIS STRIP IS ONE LINE — the stage, the bidding dates, under-manned, Legend ([LW-PHONE-HEADER-SPACE];
+     owner, D678, 8 Oct 26: idea A of the page he was shown). Three things make room for it, each a reading he was
+     told with the drawing: the words "Stage", "Bidding on" and "Under-manned" go (the buttons say it); the dates read
+     without their year; and AN ADMIN'S TWO STAGE MOVES GO BEHIND THE STAGE BUTTON — a tap opens a small menu holding
+     the very same two buttons, so moving the stage is one tap more than on a desktop. A member has no moves, so his
+     stage stays the plain label it always was and a tap on it opens nothing. A TABLET AND A DESKTOP ARE NOT TOUCHED
+     (D679): there `stageMenu` is false and every branch below draws what it drew before. */
+  const phone = usePhone()
+  const stageMenu = phone && role === 'admin'
+  const [stageOpen, setStageOpen] = useState(false)
+  const showStage = stageOpen && stageMenu
+  const closeStage = () => setStageOpen(false)
+  /* The menu's reason to exist can go while it is open — he switches to the member view, the phone is turned on its
+     side. It is put away then, not merely hidden: left "open" it would spring back the moment he is an admin on a
+     narrow screen again, over whatever he is doing. */
+  useEffect(() => { if (!stageMenu) setStageOpen(false) }, [stageMenu])
+  const stageRef = useRef<HTMLButtonElement>(null)
+  const [stageAt, setStageAt] = useState<{ left: number; top: number } | null>(null)
+  useLayoutEffect(() => {
+    if (!showStage) { setStageAt(null); return }
+    const r = stageRef.current?.getBoundingClientRect()
+    if (!r) return
+    const margin = 8
+    setStageAt({
+      left: Math.max(margin, Math.min(r.left, window.innerWidth - STAGE_MENU_WIDTH - margin)),
+      top: r.bottom + 6,
+    })
+  }, [showStage, period.stage])
+
   // Where the list hangs. Measured, because the strip wraps: the chip is in a
   // different place on a phone than on a desktop, and a list anchored to its
   // left edge runs off the right of a narrow viewport and stops being
@@ -265,7 +304,7 @@ export function StageBar() {
      own sheets. `Sheet` carries the same rule for the panels it wraps; these
      two use a different overlay, which is why it is restated here. */
   useEffect(() => {
-    if (!legOpen && !listOpen) return
+    if (!legOpen && !listOpen && !showStage) return
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       /* Same kept-mounted guard as Sheet.tsx (bug-hunt fix, 1 Sep 26): the
@@ -275,11 +314,12 @@ export function StageBar() {
       if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
       if (legOpen) setLegOpen(false)
-      else setListOpen(false)
+      else if (listOpen) setListOpen(false)
+      else setStageOpen(false)      // the phone's stage menu (D678) — the third of these pop-outs, by the same rule
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [legOpen, listOpen])
+  }, [legOpen, listOpen, showStage])
   useLayoutEffect(() => {
     if (!legOpen) { setLegAt(null); return }
     const r = legRef.current?.getBoundingClientRect()
@@ -291,56 +331,92 @@ export function StageBar() {
     })
   }, [legOpen])
 
+  /* The stage's two moves, built ONCE and placed twice: in sight on the strip (a tablet, a desktop) or inside the
+     stage menu (a phone, D678). One pair of buttons — the same words, the same test ids, the same store calls — so the
+     two sizes cannot come to offer different moves. */
+  /* It names the stage it will move TO — the label answers "what does this do", and the chip beside it (or above it,
+     in the menu) is already showing where the period stands.
+     Forward only, and disabled at the end of the cycle: `nextStage` owns which transitions exist and this asks it
+     rather than deciding for itself.
+     ADMIN ONLY, absent rather than disabled for a member (owner, 27 Aug 26 — "for a member i shouldnt be able to click
+     on bidding closed or published, thats an admin function"), the same idiom as the back control below; the store's
+     advanceStage refuses a member write regardless. Members still BID as before — this is the only member-facing
+     change. */
+  const advanceBtn = role === 'admin' && (
+    <button
+      className="stage-go"
+      data-testid="stage-advance"
+      disabled={next === null}
+      title={next ? `Move this period to ${stageLabel(next)}` : 'The cycle ends at published'}
+      onClick={() => { advanceStage(); closeStage() }}
+    >
+      → {next ? stageLabel(next) : 'END OF CYCLE'}
+    </button>
+  )
+  /* Stepping the cycle BACK — how bidding is opened again after being closed (owner, 10 Aug 26). Admin only, and
+     absent rather than disabled for a member: a disabled control advertises something they cannot have, and this one
+     is not theirs to want.
+
+     It names where it returns to, exactly as the forward control names where it goes, so the two read as one cycle.
+     Nothing here is destructive — every decision already made survives the move; see `reopenStage`. */
+  const backBtn = back && (
+    <button
+      className="stage-go"
+      data-testid="stage-back"
+      title={`Step this period back to ${stageLabel(back)}. Bids and decisions already made are kept.`}
+      onClick={() => { reopenStage(); closeStage() }}
+    >
+      ← {stageLabel(back)}
+    </button>
+  )
+
   return (
     <div className="filters">
-      <span className="lab">Stage</span>
-      <span
-        className={`fchip${period.stage === 'open' ? ' stage-open' : ''}`}
-        data-testid="stage-now"
-      >
-        {stageLabel(period.stage)}
-      </span>
-      {/* The control sits beside the stage it moves, so the strip reads as
-          one thing rather than as a label and an unrelated button. It names
-          the stage it will move TO — the label answers "what does this do",
-          and the chip immediately to its left is already showing where the
-          period stands.
-          Forward only, and disabled at the end of the cycle: `nextStage`
-          owns which transitions exist and this asks it rather than deciding
-          for itself.
-          ADMIN ONLY, absent rather than disabled for a member (owner, 27 Aug
-          26 — "for a member i shouldnt be able to click on bidding closed or
-          published, thats an admin function"), the same idiom as the back
-          control below; the store's advanceStage refuses a member write
-          regardless. Members still BID as before — this is the only
-          member-facing change. */}
-      {role === 'admin' && <button
-        className="stage-go"
-        data-testid="stage-advance"
-        disabled={next === null}
-        title={next ? `Move this period to ${stageLabel(next)}` : 'The cycle ends at published'}
-        onClick={advanceStage}
-      >
-        → {next ? stageLabel(next) : 'END OF CYCLE'}
-      </button>}
-      {/* Stepping the cycle BACK — how bidding is opened again after being
-          closed (owner, 10 Aug 26). Admin only, and absent rather than
-          disabled for a member: a disabled control advertises something they
-          cannot have, and this one is not theirs to want.
-
-          It names where it returns to, exactly as the forward control names
-          where it goes, so the two read as one cycle. Nothing here is
-          destructive — every decision already made survives the move; see
-          `reopenStage`. */}
-      {back && (
+      {!phone && <span className="lab">Stage</span>}
+      {stageMenu ? (
+        /* A PHONE, AN ADMIN: the stage is the button its two moves hang from (D678). It reads the stage alone — the
+           small arrow that says "this opens" is drawn by the stylesheet, so the words on the button are exactly the
+           words on a desktop's label. */
         <button
-          className="stage-go"
-          data-testid="stage-back"
-          title={`Step this period back to ${stageLabel(back)}. Bids and decisions already made are kept.`}
-          onClick={reopenStage}
+          ref={stageRef}
+          className={`fchip stagebtn${period.stage === 'open' ? ' stage-open' : ''}`}
+          data-testid="stage-now"
+          aria-haspopup="dialog"
+          aria-expanded={showStage}
+          title="Move this period to another stage"
+          onClick={() => setStageOpen(o => !o)}
         >
-          ← {stageLabel(back)}
+          {stageLabel(period.stage)}
         </button>
+      ) : (
+        <span
+          className={`fchip${period.stage === 'open' ? ' stage-open' : ''}`}
+          data-testid="stage-now"
+        >
+          {stageLabel(period.stage)}
+        </span>
+      )}
+      {/* The control sits beside the stage it moves, so the strip reads as one thing rather than as a label and an
+          unrelated button. On a phone the pair is in the stage menu instead (below). */}
+      {!stageMenu && advanceBtn}
+      {!stageMenu && backBtn}
+      {showStage && (
+        <>
+          {/* the same scrim the two pop-outs below use: a press anywhere outside the menu puts it away and reaches
+              nothing under it (the 4 Sep 26 rule — a click-open popup closes on a click outside it) */}
+          <div className="umscrim" data-testid="stage-scrim" onClick={closeStage} />
+          <div
+            className="stagemenu"
+            data-testid="stage-menu"
+            role="dialog"
+            aria-label="Move the stage"
+            style={stageAt ? { left: stageAt.left, top: stageAt.top } : undefined}
+          >
+            <div className="stagemenu-hd">Move the stage</div>
+            {advanceBtn}
+            {backBtn}
+          </div>
+        </>
       )}
       {/* Which part of the year the squadron may bid on. The war is a whole
           year on screen and the schedule firms up a quarter at a time, so
@@ -352,18 +428,22 @@ export function StageBar() {
           CLOSED" would contradict it. */}
       {period.stage === 'open' && (
         <>
-          <span className="lab" style={{ marginLeft: 12 }}>Bidding on</span>
+          {!phone && <span className="lab" style={{ marginLeft: 12 }}>Bidding on</span>}
           <button
             className={`fchip winchip${role === 'admin' ? ' can' : ''}`}
             data-testid="bid-window"
             disabled={role !== 'admin'}
+            /* on a phone the words "Bidding on" and the dates' year are not on screen (D678), so they are said here */
+            aria-label={phone
+              ? `Bidding on ${period.bidFrom && period.bidTo ? shortSpan(period.bidFrom, period.bidTo) : 'the whole year'}`
+              : undefined}
             title={role === 'admin'
               ? 'Choose which dates the squadron may bid on'
               : 'The dates the squadron may bid on'}
             onClick={() => setPicking(true)}
           >
             {period.bidFrom && period.bidTo
-              ? shortSpan(period.bidFrom, period.bidTo)
+              ? (phone ? spanInYear : shortSpan)(period.bidFrom, period.bidTo)
               : 'THE WHOLE YEAR'}
           </button>
         </>
@@ -374,7 +454,7 @@ export function StageBar() {
           session (resetSession → setRole, admin account = admin here), the
           Raptor topbar already shows the Admin/Member badge, and a toggle
           that disagreed with the login would be a lie. Do not re-add it. */}
-      <span className="lab" style={{ marginLeft: 12 }}>Under-manned</span>
+      {!phone && <span className="lab" style={{ marginLeft: 12 }}>Under-manned</span>}
       {/* The tally used to be a dead end: it said seven days were broken and
           left the scheduler to find them by eye across 365 columns. It opens
           the list of those days instead, and choosing one jumps the grid to
@@ -386,11 +466,14 @@ export function StageBar() {
         onClick={() => setListOpen(o => !o)}
         disabled={redDays === 0}
         aria-expanded={showList}
+        aria-label={phone ? `Under-manned: ${redDays} day${redDays === 1 ? '' : 's'}` : undefined}
         title={redDays === 0
           ? 'No day in this war breaks a manning rule'
           : 'Show the days that break a manning rule'}
       >
-        {redDays} day{redDays === 1 ? '' : 's'}
+        {/* on a phone the label beside the count is gone, so the count carries one quiet word of it (D678 — "Under 0
+            days", as drawn) */}
+        {phone && <span className="umlab">Under </span>}{redDays} day{redDays === 1 ? '' : 's'}
       </button>
       {showList && (
         <>

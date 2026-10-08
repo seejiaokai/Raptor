@@ -553,6 +553,10 @@ the shell (kind, name, "On grid", first and last day; Save, "Save and add anothe
 It writes the war's own record with `holidayAdd` / `holidayChange` / `holidayRemove`. Tests `ui/holidayspanel.test.tsx`;
 the two readers it added to the seam (`uncoveredIn`, `holidayWord`) are pinned by it and `leavewar/uncovered.test.ts`.
 A holiday refused because no leave period covers its date WAITS in the form and is saved by itself once one does.
+`src/leavewar/ui/phone.ts` - "is this a phone?" for a Leave War component that must DRAW something different there
+(D678): `PHONE_QUERY`, the war's own phone width (430px and under, the same string as `chrome.css`'s phone block), and
+`usePhone()`, which follows it live. Used by `ui/Chrome.tsx`; its tests `ui/phonehead.test.tsx` (the two-line top on a
+phone, the stage menu, the desktop as it was - D679).
 `src/leavewar/ui/inview.ts` - "is this day's column already on screen?" (D670) - the one question the Leave War's grid
 asks before an Undo or a Redo moves it: drawn, with a width, wholly between the frozen name columns and the grid's right
 edge. Pure. Tests `leavewar/ui/inview.test.ts`; which asks are soft is `leavewar/undoland.test.ts`.
@@ -579,7 +583,17 @@ tests named for it, puts the line back, and says which breaks no test caught. It
 `2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen), `2026-10-08-counters-among.json` (D674: twenty-five) and
 `2026-10-08-inputs-undo-landing.json` (the Inputs list's landing after an Undo: seven).
 `scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
-grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26).
+grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26). He chose A (D678); it is built.
+`scripts/handpass/lw-phone-head-measure.mjs` - measures the Leave War's top area (every control's words, box, padding and
+type size) at six widths, three views each, into JSON: run before and after a change there, the wider sizes' files must
+be byte for byte the same (D679). Not a gate.
+`scripts/handpass/lw-phone-head-walk.mjs` - THE WALK of the two-line phone top (D678, D679): an admin and a member at 390
+and 360 wide, a desktop and a tablet, every control pressed; 86 checks written as the right behaviour, 28 pictures
+(`docs/img/handpass/2026-10-08-lw-phone-header/`). Its sheet: `docs/handpass/2026-10-08-lw-phone-header.md`.
+`scripts/handpass/breaks-browser.mjs` - the strictness proof for what only a browser sees (8 Oct 26): breaks ONE layout
+rule at a time, REBUILDS the app, runs the named browser tests against it, puts the line back and rebuilds the true app.
+Its lists end `.browser.json` in `scripts/handpass/breaks/` - `2026-10-08-lw-phone-header.browser.json` (twelve), beside
+that job's unit list `2026-10-08-lw-phone-header.json` (thirty-one).
 `scripts/handpass/lw-counters-among-look.mjs` - pictures of the Manning block with counters dragged among and below the
 four fixed rows (D674), phone and desktop, by the real drag.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a

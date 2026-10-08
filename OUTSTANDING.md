@@ -52,7 +52,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
-**Picked by him, to build (D678, 8 Oct 26 — "A looks good"):** [LW-PHONE-HEADER-SPACE] — the top of the Leave War on a phone becomes two lines (idea A of the page he was shown); the desktop stays as it is (D679). Not started.
+**A question for him, found while building the phone's two lines (8 Oct 26):** [LW-HEAD-BIG-PHONE] — between 431 and about 700 wide (the largest iPhones are 440) the top of the Leave War is at its TALLEST; D679 keeps everything wider than a phone as it is. Should those screens get the phone's two lines?
 
 **Soon, on his word (8 Oct 26), its own documents-only chat:** [SKILL-OBS-REVIEW] — review the skill-observation backlog (about 200 open, last reviewed 24 Sep 26).
 
@@ -1647,36 +1647,21 @@ waive owed reads or authorize a live merge.
 
 **Found, not fixed** — by the Inputs / SANS calendar chat (`claude/inputs-sans-calendar`), which touched nothing of the Tracker. In a full unit run under the PC lock (7 Oct 26, 506 files, 8,186 tests) ONE test failed: `raptor-port/src/tracker/leftovers.test.tsx`, "[TRK-DLG-LEFTOVERS] B1 — while a question is up, the rest of the Tracker page is inert, and Tab / Shift+Tab stay inside the box" — its last check, "Shift+Tab from the first goes to the last", found the focus still on the text box. Run alone straight afterwards it passed three times out of three (53 of 53), and the full run of that morning passed it. So it depends on timing or on what ran before it in the same worker, not on the app's rule. **To do, with the next Tracker batch (D490):** read how the test moves focus (a key event sent before the box has taken focus is the likely cause), make it wait on what it needs rather than on timing (D87's rule for browser tests, applied here), and run the file fifty times in a loaded run to prove it. Until then: a red full run whose only failure is this test is re-run once for that file, and said so in the report.
 
-### [LW-PHONE-HEADER-SPACE] The top of the Leave War on a phone uses too much height — three ideas drawn, his pick awaited (asked 8 Oct 26)
+### [LW-HEAD-BIG-PHONE] Between a phone and a tablet the top of the Leave War is at its tallest — his call (found 8 Oct 26)
 
-**His words, with a phone picture of the page, everything above the grid circled:** *"how can we optimise the space such
-that we don't use so much vertical space? Give me mock ups for ideas to rearrange or minimise"*. Measured in the running
-build at phone size: 230px from the app's bar to the grid's first row — the Period line, the "Viewing as" line, the Stage
-line, the "Bidding on" / "Under-manned" line, the Legend line, then the grid's own buttons — leaving six names on screen.
-
-**Where it stands:** NOTHING BUILT. Three ideas, each drawn into the running build by
-`raptor-port/scripts/handpass/lw-phone-head-mock.mjs` (D634), are on a private page for him —
-https://claude.ai/artifact/Q3RwbqjSpEgzt32V2v1VCw (its source and pictures: `C:/Users/User/.raptor-private/lw-phone-header-mock/`;
-republish to the same address): **A** two lines — the period, "+", "Viewing as" / the stage (its two moves behind the stage
-chip), the bidding dates, under-manned, Legend (95px saved, ten names; the agent's pick); **B** one line that opens
-(121px saved, twelve names; Legend, under-manned and "Viewing as" out of sight until it is opened); **C** two lines, the
-second one swiped sideways (95px saved, nothing renamed, the bidding dates and under-manned a swipe away).
-**A ruling it touches, told to him on the page:** D365 (29 Sep 26 — on a phone the "Viewing as" chip takes a line of its
-own, words kept); A and C keep the words and put the chip back on the Period line, which fits once the word "Period" goes.
-**Not drawn:** a member's view (no "+ New", no stage moves — only shorter). **When he picks:** record the ruling first
-(and D365's mark if the chip moves), then build it tests-first with a browser test at phone size that nothing overlaps
-or leaves the screen at 390px and at 360px; a stage move behind a chip is a new control, so its tier is WALK.
-**Place:** his to set — a small job of its own on the Leave War; it does not wait for the calendar job.
-
-**HIS PICK, the same afternoon — D678: "A looks good, with this is there anything the desktop can follow too?"** A is
-the design for the phone (the ruling's readings are in its full row; D365 is marked). His question on the desktop was
-answered in that chat — the two lines can become ONE there, every word and button kept, about 50px saved — and a
-picture of it was added to the same page; **HIS WORD, the same afternoon — D679: "keep the same for desktop" (asked
-which he meant: "Leave desktop as today") — THE DESKTOP AND THE TABLET ARE NOT TOUCHED; the build is the phone only, and
-its browser test also holds the desktop's two lines as they are.** The build is not started: tests
-first, a browser test at 390px and 360px (nothing overlapping, nothing off the screen, the stage menu opening inside
-the screen and closing on a press outside — the 4 Sep 26 rule), a member's view with no "+" and a stage button that
-opens nothing, and a long callsign in "Viewing as" still ending in "…".
+**Found, not changed** — while measuring for `[LW-PHONE-HEADER-SPACE]` (D678, D679). The Leave War calls a screen "a
+phone" at 430px wide or less, and only there does the top become two lines. From 431px up to about 700px the page is the
+desktop's strip squeezed: "Viewing as" on a line of its own, the Stage line wrapped over three — the grid's first row
+354px down at 431 wide, against 182 on a phone and 222 on a desktop. **Who meets it:** the largest iPhones (the newest
+Pro Max models are 440 wide — the agent's knowledge of them, not measured on one), a small tablet in a split view. His own phone's
+picture showed the phone layout, so his is 430 or less.
+**Why it was left:** D679 — "keep the same for desktop"; its reading (1) fixed "a phone" as the width the top changes
+at today, and everything wider stays whole. Widening "a phone" is a new choice, and the grid below has
+phone rules of its own at other widths (it opens one step out at 700 and under), which this would not touch.
+**The question for him:** should a screen up to about 700 wide get the phone's two lines too? **Recommended:** yes, for
+the TOP AREA only (one width in two places — `leavewar/ui/phone.ts PHONE_QUERY` and `chrome.css`'s phone block — and the
+browser test's three sizes), leaving the grid's own widths alone; a picture first, drawn into the running build at 440
+and 600 wide (D634). **Place:** his to set — small, the Leave War's own; it does not wait for the calendar job.
 
 ### [SKILL-OBS-REVIEW] Review the skill-observation backlog — he asked for it "soon" (8 Oct 26)
 

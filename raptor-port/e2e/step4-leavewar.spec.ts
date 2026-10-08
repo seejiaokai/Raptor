@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { go, gridAtRest, login, lwRole, lwView, moveOneTo } from './app'
+import { go, gridAtRest, login, lwRole, lwView, moveOneTo, stageMove } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -229,7 +229,7 @@ async function dragSelect(page: Page, p: string, from: string, to: string) {
 }
 
 async function closeBidding(page: Page) {
-  await page.locator('[data-testid="stage-advance"]').click()
+  await stageMove(page, 'advance')        // in sight on a desktop, behind the stage button on a phone (D678)
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
 }
 

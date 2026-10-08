@@ -524,6 +524,130 @@
     min-width: 0;
   }
 
+  /* ---- THE TOP OF THE PAGE IS TWO LINES ON A PHONE ([LW-PHONE-HEADER-SPACE]) ----
+     Owner, D678, 8 Oct 26 — "A looks good", of three ideas drawn into the running build after "how can we optimise the
+     space such that we don't use so much vertical space?" (measured before: five lines, the grid's first row 279px
+     down a 390px screen and six names in sight). Line 1: the period, "+", "Viewing as". Line 2: the stage, the bidding
+     dates, under-manned, Legend. The WORDS that changed are Chrome.tsx's (`usePhone`, the same width as this block);
+     these rules only lay them out. A TABLET AND A DESKTOP ARE NOT TOUCHED (D679 — "keep the same for desktop"): every
+     rule here is inside this phone block, and e2e/leavewar.spec.ts reads the wider sizes' own paddings to prove it.
+
+     Unlike the block's opening note ("a size reduction, not a removal"), four labels DO go here — his choice, shown to
+     him drawn; nothing a person presses is removed. */
+
+  /* LINE 1. The row may no longer wrap: that is what put "Viewing as" on a line of its own (D365, 28 Sep 26 — the
+     chip could not share the line while the word "Period" and the whole "+ New" were on it; with both gone it can).
+     What gives when the line is too full is the CALLSIGN, which ends in "…" — never the words "Viewing as", never the
+     screen's edge. The picker holds its name whole up to half the line, so a long period name cannot squeeze the chip
+     down to nothing. */
+  .topbar {
+    padding: 6px 10px 5px;
+    flex-wrap: nowrap;
+  }
+
+  .spring {
+    flex: 1 1 auto;
+    width: 100%;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .warpick {
+    flex: 0 0 auto;
+    max-width: 50%;
+    padding-left: 11px;
+    padding-right: 28px;
+    text-overflow: ellipsis;
+  }
+
+  .wk.warpick {
+    background-position: calc(100% - 10px) 50%;
+  }
+
+  /* "+ New" reads "+" here: a square the height of the picker beside it, as drawn */
+  .warnew {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .lw-viewing {
+    flex: 0 1 auto;
+    gap: 5px;
+    padding: 5px 9px;
+  }
+
+  /* LINE 2. Four chips on one row, Legend at the right edge. `flex-wrap` stays as the safety net the Manning row
+     keeps (chrome.css `.card-hd`): a stage name or a count longer than any seen so far drops Legend to a line of its
+     own rather than pushing it off the screen.
+
+     THE SIDE PADDING IS 5px, NOT THE 7px OF THE DRAWING, ON PURPOSE. Measured on this PC at 390 wide with 7px the four
+     chips needed 371px of the 370 there are, and Legend fell to a third line. With 5px they take 355 — fifteen to
+     spare, about 5% of the words' own width. That spare is not for looks: the app loads no font of its own, so his
+     iPhone draws these words in Apple's font, whose width nobody here can measure. One line-height for all four,
+     because the stage is a label for a member and a button for an admin, and the two do not agree on their own. */
+  .filters {
+    padding: 3px 10px 7px;
+  }
+
+  .filters > .fchip {
+    flex: 0 0 auto;
+    padding: 4px 5px;
+    line-height: 13px;
+    white-space: nowrap;
+  }
+
+  .legkey {
+    margin-left: auto;
+  }
+
+  /* an admin's stage is a BUTTON here — his two moves hang from it — and the small arrow says so. Drawn by this
+     sheet, not written into the button: its words stay exactly the desktop label's. */
+  .stagebtn {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* a drawn triangle, not the "▾" letter: a letter comes from whichever font the phone falls back to, at that font's
+     size and height (on this PC it made the stage button 3px taller than its neighbours) */
+  .stagebtn::after {
+    content: '';
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: 1px;
+    border: 3.5px solid transparent;
+    border-top: 4.5px solid currentColor;
+    border-bottom: 0;
+    opacity: .85;
+  }
+
+  .stagebtn[aria-expanded="true"] {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  /* "Under" before the count: the one quiet word left of the label that stood beside it */
+  .umlab {
+    font-weight: 500;
+    opacity: .7;
+  }
+
+  /* THE NARROWEST PHONES (under 380px — a 375px iPhone SE or mini, a 360px Android). The same one line, half a point
+     smaller and a pixel closer: at 360 the four chips take 331px of 340. */
+  @media (max-width: 379px) {
+    .filters {
+      gap: 3px;
+    }
+
+    .filters > .fchip {
+      padding: 4px 4px;
+      font-size: 10.5px;
+    }
+  }
+
 
   .stage {
     padding: 8px 10px 20px;
@@ -614,6 +738,47 @@
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
+}
+
+/* ---- the stage menu — a phone only (owner, D678, 8 Oct 26) ---------------
+   An admin's two stage moves, behind the stage button on a phone, where the strip is one line and has no room to show
+   them. The same fixed, JS-anchored pop-out as the under-manned list above, over the same scrim, for the same reasons;
+   the two buttons inside it are the strip's own `.stage-go` pair, drawn as full-width rows a thumb can tell apart
+   (40px — a little taller than the drawing's, on purpose: one of them moves the whole squadron's cycle). Never drawn
+   on a tablet or a desktop, where the pair stays in sight on the strip. */
+.stagemenu {
+  position: fixed;
+  top: 96px;
+  left: 8px;
+  z-index: 70;   /* above the frozen header mirror (55) — see .umlist */
+  width: 224px;  /* kept in step with Chrome.tsx STAGE_MENU_WIDTH */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 9px 8px 8px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .6);
+}
+
+.stagemenu-hd {
+  padding: 1px 3px 0;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.stagemenu .stage-go {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 11px;
+  font-size: 12px;
+  text-align: left;
 }
 
 /* ---- the colour/mark legend (owner, 27 Aug 26) --------------------------

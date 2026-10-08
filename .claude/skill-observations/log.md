@@ -3063,3 +3063,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Make it structural rather than remembered: a pre-tool hook that refuses a shell command containing `<<` followed by a `python`/`node` invocation in the same command, with the message "write the script with the Write tool and run the file". Or, cheaper: keep one committed helper that applies a list of exact find/replace pairs from a JSON file, so no ad-hoc script is needed at all.
 
 **Principle:** A trap that "usually works" will be walked into again however many notes describe it, because each success renews the habit. Rules of that kind need a guard that fires on the action, not a sentence that relies on recall.
+
+### Observation 470: A "leave this half exactly as it is" ruling was proved by dumping the untouched sizes before the change and byte-comparing after
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A phone-only rearrangement of one screen's top area, with an explicit ruling that the desktop and tablet must not move at all.
+**Skill:** test-driven-development / verification-before-completion
+**Type:** open-source
+**Phase/Area:** pinning the unchanged half of a change before building the changed half
+
+**Issue:** The usual guard for "the other sizes stay as they are" is a test that names a handful of properties. That only protects what the author thought to list. Here a small script wrote EVERY element of the area — words, box, padding, type size, colours — to a file per size and per viewer, once on the build before any code was touched and once after; the files for the untouched sizes compared byte for byte. It cost about five minutes and turned "I believe nothing moved" into a checked fact, and the same dump showed the two real faults on the changed size (a line one pixel too long; one control three pixels taller than its neighbours) before any walk began. A companion end-to-end test for the untouched sizes was shown to pass on BOTH the old and the new build, which is what makes it a description of "as it was" rather than of "as I built it".
+
+**Suggested improvement:** In the TDD and verification guidance, for any change scoped to one size, role or mode: (1) before editing, capture a whole-surface dump of the OUT-of-scope cases from the current build; (2) after, diff it — any difference is a finding; (3) write the out-of-scope test first and run it against the old build, where it must pass. Keep the dump script with the change so the next change to that surface can reuse it.
+
+**Principle:** The half of a change that must not move is best proved by a before/after comparison of everything, taken before the first edit — an enumerated test protects only what its author imagined could break.
+
+### Observation 471: The mutation runner covered unit tests only; layout rules needed their own build-and-browser runner, written (again) on the spot
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same session: proving each new test strict by breaking one rule at a time. Most of this change's rules were stylesheet lines.
+**Skill:** raptor bug-check order (docs/bug-check-order.md §8.4) / New skill candidate: mutation-proof for layout
+**Type:** internal
+**Phase/Area:** the break test per wired surface
+
+**Issue:** The committed break runner rewrites a source line, runs unit tests and restores it; its own header says a rule only a browser can see must be proved "by running the browser test once on the broken build" — by hand. With twelve such rules that is twelve manual build-test-restore cycles, so a second runner was written in the scratch folder, where (as the handoff already records of the first runner) it would have been lost; it was then ported into the repo as `scripts/handpass/breaks-browser.mjs`. Its first scratch version also stopped half-way on a bad list entry and left a BROKEN build being served — the committed version rebuilds the true app in a `finally`.
+
+**Suggested improvement:** Name the browser runner in the order's §8.4 beside the unit one (a working-guide change — it needs its two reads). In the runner pattern itself: validate every list entry BEFORE the first break, and always restore the true build on the way out, including on an error.
+
+**Principle:** A proof tool that mutates shared state (source files, a served build) must validate its whole input before the first mutation and restore on every exit path — and a tool written twice on the spot belongs in the repository the first time.
+
+### Observation 472: Observation 469's shell trap recurred three more times in the very next session
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The session after 469 was logged; the saved memory and the handoff both carried the warning and both were read at the start.
+**Skill:** raptor-executor (editing files by script on this machine)
+**Type:** internal
+**Phase/Area:** how edit scripts are written and run
+
+**Issue:** Evidence for 469, not a new lesson: three more shell heredocs carrying a script failed in this session (an apostrophe that never parsed; a backslash escape eaten twice), each costing a round trip, each after short heredocs "without apostrophes" had worked. Reading the warning at the start of the session did not prevent any of them.
+
+**Suggested improvement:** Treat 469's structural guard as due now rather than at some later review: the pre-tool hook, or the one committed find/replace helper that takes its pairs from a file.
+
+**Principle:** When a logged trap recurs in the next session with the note freshly read, the note has been tested and has failed; stop adding notes and build the guard.

@@ -1,0 +1,91 @@
+{
+ "spec": "leavewar.spec.ts",
+ "grep": "top of the Leave War|stage button opens|member on a phone has|long callsign in",
+ "port": 4180,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "line 1 may not wrap: a long callsign ends in an ellipsis instead of dropping to its own line",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "    width: 100%;\n    flex-wrap: nowrap;\n    gap: 6px;",
+   "put": "    width: 100%;\n    gap: 6px;"
+  },
+  {
+   "n": 2,
+   "name": "Legend ends line 2 at the right edge",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "  .legkey {\n    margin-left: auto;\n  }",
+   "put": ""
+  },
+  {
+   "n": 3,
+   "name": "the narrowest phones get the tighter line (360 holds one line)",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "@media (max-width: 379px) {",
+   "put": "@media (max-width: 300px) {"
+  },
+  {
+   "n": 4,
+   "name": "no phone rule reaches a tablet or a desktop (D679)",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "@media (max-width: 430px) {",
+   "put": "@media (max-width: 2000px) {"
+  },
+  {
+   "n": 5,
+   "name": "the words change at the same width as the layout — too narrow",
+   "file": "src/leavewar/ui/phone.ts",
+   "find": "export const PHONE_QUERY = '(max-width: 430px)'",
+   "put": "export const PHONE_QUERY = '(max-width: 400px)'"
+  },
+  {
+   "n": 6,
+   "name": "the words change at the same width as the layout — too wide (D679)",
+   "file": "src/leavewar/ui/phone.ts",
+   "find": "export const PHONE_QUERY = '(max-width: 430px)'",
+   "put": "export const PHONE_QUERY = '(max-width: 800px)'"
+  },
+  {
+   "n": 7,
+   "name": "the stage button's arrow is painted",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "    border-top: 4.5px solid currentColor;\n",
+   "put": ""
+  },
+  {
+   "n": 8,
+   "name": "the stage menu is drawn on top of what it opens over",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "  z-index: 70;   /* above the frozen header mirror (55) — see .umlist */\n  width: 224px;",
+   "put": "  z-index: 1;\n  width: 224px;"
+  },
+  {
+   "n": 9,
+   "name": "line 2's chips are narrow enough to hold one line at 390",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "    padding: 4px 5px;\n    line-height: 13px;",
+   "put": "    padding: 4px 9px;\n    line-height: 13px;"
+  },
+  {
+   "n": 10,
+   "name": "the period picker does not give way to a long callsign",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "    flex: 0 0 auto;\n    max-width: 50%;",
+   "put": "    flex: 0 1 auto;\n    min-width: 0;\n    max-width: 50%;"
+  },
+  {
+   "n": 11,
+   "name": "the stage menu's moves are big enough for a thumb",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "  width: 100%;\n  min-height: 40px;\n  padding: 8px 11px;",
+   "put": "  width: 100%;\n  padding: 2px 11px;"
+  },
+  {
+   "n": 12,
+   "name": "line 2's chips are one height",
+   "file": "src/leavewar/ui/chrome.css",
+   "find": "    padding: 4px 5px;\n    line-height: 13px;",
+   "put": "    padding: 4px 5px;"
+  }
+ ]
+}

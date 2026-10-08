@@ -6743,14 +6743,43 @@ Four asks from the same sitting, all on the Leave War grid:
   (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
   &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
   there is no "you" to name, mirroring the picker's existing dash rule.
-  **NOT BUILT YET — D678 (8 Oct 26: "A looks good"): on a phone the top of the Leave War becomes TWO lines** — the
-  period, "+" and this chip (words kept) on the first; the stage (its two moves behind the stage button), the bidding
-  dates, under-manned and Legend on the second — so the chip goes BACK onto the Period line, which fits once the word
-  "Period" goes. It narrows D365 below. **A DESKTOP AND A TABLET STAY AS THEY ARE — D679 ("keep the same for
-  desktop"): two lines, every label and button as today; the one-line desktop drawing is not built.** The drawing, the
-  measurements and the build: `OUTSTANDING.md` `[LW-PHONE-HEADER-SPACE]`; until it lands, the paragraph below is what
-  the app does.
-  **On a phone the chip drops to its own line (`[ABSENCE-SMALL-SEEN]` 2, 28 Sep 26 — the re-test's W6 N6).** The shell's
+  **ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES — D678 (8 Oct 26: "A looks good"), BUILT the same day
+  (`[LW-PHONE-HEADER-SPACE]`).** Line 1: the period picker, "+" and this chip (words kept). Line 2: the stage, the
+  bidding dates, under-manned, Legend. So the chip is BACK on the Period line, which fits once the word "Period" goes;
+  it narrows D365 below.
+  - **"A phone" is the war's own phone width — 430px and under — and it is ONE query**, `ui/phone.ts PHONE_QUERY`, the
+    same string as `chrome.css`'s phone block. The WORDS change in `ui/Chrome.tsx` (`usePhone()`, followed live: a phone
+    turned on its side gets the wide strip, and back) and the LAYOUT in the stylesheet, at the same width — never two.
+    Where the browser has no `matchMedia` (jsdom) it is "not a phone".
+  - **What is different there, and only there:** the words "Period", "Stage", "Bidding on" and "Under-manned" are not
+    drawn; "+ New" reads "+" (its `aria-label` "New period"); the bidding dates read without their year where both are
+    in ONE year (`ui/dates.ts spanInYear` — across a year's end they keep it; the `aria-label` says "Bidding on" and the
+    whole dates); under-manned reads "Under N days" (`aria-label` "Under-manned: N days").
+  - **An ADMIN's stage is a button** (`stage-now`, class `stagebtn`, a small DRAWN arrow — not a letter, which comes
+    from a fall-back font at its own height) **that opens the stage menu** (`stage-menu`, `.stagemenu`): the same fixed,
+    JS-placed pop-out over the same scrim as the under-manned list and Legend, holding the SAME two move buttons the
+    strip shows on a desktop (`stage-advance`, `stage-back` — built once in `StageBar`, placed in one or the other), as
+    rows 40px tall. It goes on a move, a press outside (the 4 Sep 26 rule), Escape, a second tap, and when its reason
+    goes (the member view, the screen widening) — put away, so it never springs back. **A member's stage is the label it
+    always was** and opens nothing. Moving the stage is one tap more than on a desktop.
+  - **Line 1 does not wrap:** what gives is the CALLSIGN, which ends in "…"; "VIEWING AS" and the eye never shrink, and
+    the picker keeps its name whole up to half the line. **Line 2 keeps `flex-wrap` as a safety net:** a line too long
+    drops Legend to a line of its own rather than off the screen (seen: a 360px phone with a three-figure count).
+  - **The chips' side padding is 5px, not the drawing's 7px, on purpose:** at 390 the four chips take 355px of 370 —
+    fifteen to spare for his iPhone's own font, which cannot be measured here (the app loads none). Under 380px they
+    are half a point smaller and a pixel closer (331px of 340 at 360).
+  - **Measured:** the grid's card starts 182px down at 360, 390 and 430 wide (282, 279 and 243 before).
+  **A DESKTOP AND A TABLET STAY AS THEY ARE — D679 ("keep the same for desktop"): two lines, every label and button as
+  before; the one-line desktop drawing is not built.** Every phone rule is inside `chrome.css`'s phone block and every
+  phone branch behind `usePhone()`; measured at 431, 768 and 1440 wide before and after the build, every control's box,
+  words, padding and type size came out byte for byte the same (`scripts/handpass/lw-phone-head-measure.mjs`).
+  Pinned: `leavewar/ui/phonehead.test.tsx`, `leavewar/ui/dates.test.ts`, and five tests of `e2e/leavewar.spec.ts` ("the
+  top of the Leave War on a phone is two lines…" at 390, 360 and 430; the stage menu; a member; a long callsign; "on a
+  tablet and a desktop the top of the Leave War is as it was" at 1440, 768 and 431). A browser test that MOVES the stage
+  goes through `e2e/app.ts stageMove`, which opens the menu first at a phone's size. Evidence:
+  `docs/handpass/2026-10-08-lw-phone-header.md`.
+  **Until 8 Oct 26, on a phone, the chip had a line of its own — kept here for the leak it explains (the rule
+  `.spring` still carries at every wider size): `[ABSENCE-SMALL-SEEN]` 2, 28 Sep 26 — the re-test's W6 N6.** The shell's
   phone bar rule `.topbar>*{flex:0 0 auto}` (scheduler.css, ≤820px) leaked onto this row, so it never wrapped: at 390 the
   chip hung past the right edge (to 481px) inside a row that scrolled sideways. The row's spacer (`.spring`) may now
   shrink (`chrome.css`), so the chip wraps under the picker, right-aligned; "VIEWING AS" and the eye never shrink and a
