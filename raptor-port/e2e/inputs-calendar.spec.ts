@@ -111,8 +111,15 @@ for (const height of [844, 568]) test(`phone ${height}: three slim tabs, then ON
   expect(Math.min(...tools.map(t => t.top)), 'the tools row is under the tabs').toBeGreaterThan(Math.max(...tabs.map(t => t.top)))
   expect(Math.max(...[...tabs, ...tools].map(t => t.right))).toBeLessThanOrEqual(390)
   expect(Math.min(...[...tabs, ...tools].map(t => t.left)), 'the page stands in from the edge of the screen').toBeGreaterThanOrEqual(6)
-  /* the tools keep their height (D487, D653 reading 5): narrower on a phone, never shorter */
-  for (const id of ['#icPrev', '#icNext', '#icToday', '#inCalBtn', '#inListBtn', '#inFiltersBtn', '[data-testid="in-gear"]']) expect((await box(id)).h, id + ' phone target').toBeGreaterThanOrEqual(44)
+  /* THE TOOLS ARE DRAWN AS TALL AS THE TABS ABOVE THEM (owner D698, 9 Oct 26, from his iPhone: "Can the bottom buttons
+     row match the top inputs row in terms of vertical height. Seems like the 2nd row is taller" — his word for a
+     button's size, D487; it replaces "narrower, never shorter", D653's reading 5). What is DRAWN is the tab's height;
+     what answers a finger is still 44 — a press area a little larger than the button, as "How this works" has. */
+  const reach = (sel: string) => page.evaluate(sel => { const b = document.querySelector(sel)!, r = b.getBoundingClientRect(), x = r.left + r.width / 2; const at = (y: number) => { const h = document.elementFromPoint(x, y); return !!h && (h === b || b.contains(h)) }; let top = r.top + 1, bottom = r.bottom - 1; while (at(top - 1)) top--; while (at(bottom + 1)) bottom++; return Math.round(bottom - top) + 1 }, sel)
+  for (const id of ['#icPrev', '#icNext', '#icToday', '#inCalBtn', '#inListBtn', '#inFiltersBtn', '[data-testid="in-gear"]']) {
+    expect(Math.round((await box(id)).h), id + ' is drawn as tall as a tab').toBe(Math.round(tabs[0].h))
+    expect(await reach(id), id + ' still answers a finger').toBeGreaterThanOrEqual(44)
+  }
   /* the month's name reads whole in every month of a year, and the row holds its one line through them all */
   for (let i = 0; i < 12; i++) {
     const cut = await page.evaluate(() => { const m = document.querySelector('#inpCal .ic-mon') as HTMLElement, f = document.querySelector('[data-testid="in-gear"]')!.getBoundingClientRect(), n = document.querySelector('#icPrev')!.getBoundingClientRect(); return { cut: m.scrollWidth > m.clientWidth, name: m.textContent, wrapped: Math.abs(f.top - n.top) > 2, right: f.right } })
@@ -124,6 +131,18 @@ for (const height of [844, 568]) test(`phone ${height}: three slim tabs, then ON
   await page.click('#inFiltersBtn'); await expect(page.locator('#inFSearch')).toBeVisible()
   expect((await box('#inFSearch')).top).toBeGreaterThan((await box('#icPrev')).top + 40)
   expect(await page.evaluate(() => document.documentElement.scrollWidth), 'no sideways scroll with the filters open').toBeLessThanOrEqual(390)
+})
+
+/* ...AND ON THE LIST, whose row is the same row (D698): the switch, the filter button and the gear as tall as a tab. */
+test('a phone, the List: the row under the tabs is drawn as tall as the tabs, and each button still answers a finger (D698)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await page.locator('#inListBtn').tap(); await expect(page.locator('#inpCal')).toHaveCount(0)
+    const h = (sel: string) => page.locator(sel).evaluate(n => Math.round(n.getBoundingClientRect().height))
+    const reach = (sel: string) => page.evaluate(sel => { const b = document.querySelector(sel)!, r = b.getBoundingClientRect(), x = r.left + r.width / 2; const at = (y: number) => { const h = document.elementFromPoint(x, y); return !!h && (h === b || b.contains(h)) }; let top = r.top + 1, bottom = r.bottom - 1; while (at(top - 1)) top--; while (at(bottom + 1)) bottom++; return Math.round(bottom - top) + 1 }, sel)
+    const tab = await h('#inMemberMode')
+    for (const id of ['#inCalBtn', '#inListBtn', '#inFiltersBtn', '#inGear']) { expect(await h(id), id + ' is drawn as tall as a tab').toBe(tab); expect(await reach(id), id + ' still answers a finger').toBeGreaterThanOrEqual(44) }
+  } finally { await context.close() }
 })
 
 test('arriving from a scrolled page shows the Inputs page from its top, tabs in reach — and each tab leaves them in reach', async ({ page }) => {

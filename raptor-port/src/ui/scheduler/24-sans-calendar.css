@@ -177,12 +177,13 @@
 @media (prefers-reduced-motion:reduce){.sc-how-v{transition:none}}
 /* ON A PHONE the line is the Inputs calendar's (owner D697 — "the same amount of vertical space and similar vertical
    alignment"): slim, the fold's button on the left and the key at the right END of the same line, never under it. The
-   button is still a finger's size — its PRESS area reaches 5px above and 13px below what is drawn (down over the
-   weekday names, which take no press), 44px in all, exactly as `.ib .sc-how` does (25-inputs-calendar.css). */
+   button is still a finger's size — its PRESS area reaches 2px above and 16px below what is drawn (down over the
+   weekday names, which take no press), 46px in all, exactly as `.ib .sc-how` does (25-inputs-calendar.css) — down,
+   not up: the room above it is the press area of the buttons over it (D698). */
 @media (max-width:820px){
   .sanscal .sc-sub{flex-wrap:nowrap}
   .sanscal .sc-how{position:relative;flex:0 0 auto}
-  .sanscal .sc-how::after{content:'';position:absolute;inset:-5px 0 -13px}
+  .sanscal .sc-how::after{content:'';position:absolute;inset:-2px 0 -16px}
 }
 /* ---- THE GEAR AND ITS WINDOW (ui/SansSettings.tsx — D618, D635, D639). The gear is the app's own cog, the glyph the
    Leave War's settings button carries; its box is fixed so the glyph's own font cannot change the row's height. ---- */
@@ -231,7 +232,11 @@
   /* the page stands 8px in from each edge of a phone since step 5 (25-inputs-calendar.css): the head gives those 16px
      back from its gaps and its buttons' WIDTHS — never their height — so its one line still holds "Highlight" whole */
   .sanscal .sc-head{gap:3px;flex-wrap:nowrap}
-  .sanscal .sc-head .abtn{min-height:44px;padding-left:9px;padding-right:9px}
+  /* drawn as tall as the tabs above them (owner D698, 9 Oct 26: "Seems like the 2nd row is taller. Do this for the sans
+     and inputs calander") — 36px, as on a desktop; each still answers a finger over 44px by a press area 4px larger
+     above and below than what is drawn (the Inputs tab's row does the same, 25-inputs-calendar.css) */
+  .sanscal .sc-head .abtn{min-height:36px;padding-left:9px;padding-right:9px;position:relative}
+  .sanscal .sc-head .abtn::after{content:'';position:absolute;inset:-5px 0}   /* 4px past its 1px border */
   .sanscal .sc-nav{min-width:32px;padding:4px 4px}
   /* the NAME is never the one that gives way: it takes what its letters need, and the Highlight button — whose words
      may be a long callsign — takes what is left and shortens itself with an ellipsis */

@@ -9427,7 +9427,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
   stands 8px in from each edge.
 - **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
-  on a desktop; on a phone the tabs are the first line and the tools the second — narrower there, never shorter (D487).
+  on a desktop; on a phone the tabs are the first line and the tools the second — narrower there, and drawn as tall as a
+  tab, 36px, on his word (D698, 9 Oct 26; until then "never shorter", D487 — the D698 bullet below).
   Under them one slim line: "How this works" (five lines, the last the late cut-off AS SET — D646, D628) and the legend.
 - **An input is ONE BAR across the days it covers** (D626), cut at a week's end and carried on. A week is three layers
   — the dates (`.ib-day`, `data-icday`), their heads (the number, the PH / OFF / NF tag — never a sun or a moon, D627 —
@@ -9453,11 +9454,24 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **On a phone the row of buttons under the three tabs is drawn as tall as the tabs, on the Inputs calendar and the SANS
+  calendar (owner D698, 9 Oct 26 — from his iPhone: "Seems like the 2nd row is taller").** Measured
+  first: the two rows took the same room (the tabs' frame 44px, the buttons 44px), but a tab is drawn 36px inside its
+  frame, so each button stood taller than the tab above it. Now, at 820px and under, every button of that row — the
+  Calendar | List switch, the arrows, Today, the filter button, the gear; on SANS the arrows, Today, Highlight, the gear
+  — is DRAWN 36px (`.inputs-top .abtn:not(.intab)`, `.sanscal .sc-head .abtn`), and still answers a finger over 44px:
+  its `::after` reaches 4px past its border above and below. The List's row is the same row and follows; the Medical
+  tab's own row is not in the ruling and keeps 44px; a desktop is as it was. This is his word for a button's size
+  (D487) and replaces "narrower there, never shorter" (D653's reading 5). The month gains the 8px. Because the room
+  under the row now belongs to those buttons, the fold's button ("How this works", both calendars) takes its press area
+  DOWNWARD: 2px above, 16px below. Pinned by `e2e/inputs-calendar.spec.ts` (the tools-row test and the List's, D698)
+  and `e2e/inputs-sans-calendar.spec.ts`. Do not give the row back its 44px of drawn height, and do not let a press
+  area of the line under it reach up into it.
 - **On a phone the SANS calendar's "How this works" and its colour key share ONE line, placed as the Inputs calendar's
   are (owner D697, 9 Oct 26 — from his iPhone: "the same amount of vertical space and similar vertical alignment.
   Compact words if need be").** The line (`.sc-sub`) is 28px, 6px under the tools, the fold's button at its left and the
   key at its right END — the same boxes as `.ib-sub`, so the month starts as far under the tools on both tabs. The
-  button is drawn slim and still answers 44px of a finger (its `::after` reaches 5px up and 13px down, as `.ib .sc-how`).
+  button is drawn slim and still answers 44px of a finger (its `::after` reaches 2px up and 16px down, as `.ib .sc-how` — D698).
   The key's words on a phone are "Still needed:" (`SansCal.tsx`, the `narrow` check); a desktop keeps "Pilots · WSOs
   still needed:", and the key carries the full words as its name. It never wraps and never pushes the page sideways:
   short of room it is cut from its LEFT, so the words go before a colour does. Pinned at 390, 360 and 320 wide by

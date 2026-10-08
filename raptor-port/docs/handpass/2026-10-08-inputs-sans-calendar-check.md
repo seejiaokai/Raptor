@@ -796,3 +796,30 @@ calendar's own, not touched), so the first week starts 2 higher on SANS; on a ph
 WSOs" — that the pair is pilots, then WSOs is line 2 of "How this works". **Not checked here:** his iPhone's own
 letters are a little different in width from this PC's — there are 48 points to spare at 360 wide, and the key gives
 way from its words first if that were ever not enough.
+
+## 22. His look, eighth — the row of buttons is drawn as tall as the tabs above it (D698)
+
+His words, with a picture of the Inputs calendar on his phone, the tabs circled and the row under them circled: "Can the
+bottom buttons row match the top inputs row in terms of vertical height. Seems like the 2nd row is taller. Do this for
+the sans and inputs calander". **Measured first, at 390 wide, on both calendars:** the tabs' frame is 44 and so is the
+row of buttons — but a tab is drawn 36 inside its frame, and each button the full 44. That is what reads taller.
+**The two tests that pinned "44" were changed first and failed** (his word for a button's size, D487; it replaces D653's
+reading 5, "never shorter" — marked there). **The change (stylesheet only):** on a phone every button of that row is
+drawn 36, and still answers a finger over 44 by a press area 4 larger above and below than what is drawn. The first
+attempt measured 40 to 42: the press area of "How this works", in the line under the row, reached up over the buttons'
+own — it now reaches down instead (2 above, 16 below, over the weekday names, which take no press).
+
+**Type of change and the walk's size (D607):** the look of one row on two screens; nothing that files, saves or counts.
+**Tier: LOOK taken as WALK**, sized SHORT — the host's own.
+**Roll-call — every place that row is drawn:** the Inputs calendar on a phone — CHANGED; the Inputs List on a phone
+(the same row) — CHANGED, has its own test; the SANS calendar on a phone — CHANGED; the Medical tab — must not,
+because he named the two calendars: measured, its button still 44; a desktop, all tabs — must not: measured before
+and after, the same (Inputs 44 beside the tabs on one line, SANS 36); the filters opened under the row (D693) — its
+two tests pass, nothing moves; the fold under the row on both calendars — its press area moved, its tests pass (46
+answers a finger).
+**The walk is the real-browser tests, kept as gates** (the tools row at two phone heights and through twelve months; the
+List; the SANS head at two heights; D693's two; D697's three; the fold's), and the host's pictures
+(`docs/img/handpass/2026-10-09-cal-rows/`, opened and looked at).
+**Seen and told to him:** the tabs' FRAME is still 44 — the row under it is now 8 shorter than that frame, as tall as
+the lit tab inside it; the month gains those 8. **Not checked here:** how the smaller buttons feel under his thumb —
+only his iPhone says; one line of the stylesheet gives them back their height if he prefers it.

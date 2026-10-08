@@ -332,9 +332,14 @@ for(const height of [844,568])test(`phone ${height}: the month’s controls are 
   await page.setViewportSize({width:390,height});await sans(page)
   const label=await tid(page,'sc-month').evaluate(e=>({width:e.clientWidth,textWidth:e.scrollWidth}))
   expect(label.width).toBeGreaterThanOrEqual(label.textWidth)
+  /* DRAWN AS TALL AS THE TABS ABOVE THEM (owner D698, 9 Oct 26: "Seems like the 2nd row is taller. Do this for the sans
+     and inputs calander") — and each still answers a finger over 44, by a press area a little larger than it. */
+  const tab=Math.round((await page.locator('#inSansMode').boundingBox())!.height)
+  const reach=(id:string)=>page.evaluate(id=>{const b=document.querySelector(`[data-testid="${id}"]`)!,r=b.getBoundingClientRect(),x=r.left+r.width/2;const at=(y:number)=>{const h=document.elementFromPoint(x,y);return !!h&&(h===b||b.contains(h))};let top=r.top+1,bottom=r.bottom-1;while(at(top-1))top--;while(at(bottom+1))bottom++;return Math.round(bottom-top)+1},id)
   for(const id of ['sc-prev','sc-next','sc-today','sc-hl','sc-gear']){
     const r=(await tid(page,id).boundingBox())!
-    expect(r.height,id+' phone target').toBeGreaterThanOrEqual(44)
+    expect(Math.round(r.height),id+' is drawn as tall as a tab').toBe(tab)
+    expect(await reach(id),id+' still answers a finger').toBeGreaterThanOrEqual(44)
   }
   /* the head is ONE line: the arrows, the name, Today, Highlight and the gear share a top, and none runs off the screen */
   const head=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const r=document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,left:r.left}}))

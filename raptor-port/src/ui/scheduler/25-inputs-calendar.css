@@ -7,8 +7,11 @@
    keeps its place on both; the drawings had it after the arrows, which the List does not have), the month's arrows,
    Today, the filters and the gear. On a desktop the tabs and the tools share one line; on a phone the tabs take the first line
    and the tools the second (the plan: "four rows of buttons above the month" was a fault seen while drawing).
-   THE TOOLS KEEP THEIR HEIGHT (D487, D653 reading 5: the buttons are not slimmed without his word) — on a phone they
-   are made NARROWER, never shorter, so seven of them hold one line across 390px.
+   THE TOOLS' HEIGHT IS HIS (D487: no button is resized without his word). On a desktop they keep the app's 44px. ON A
+   PHONE they are made narrower, so seven of them hold one line across 390px, and — on his word, D698, 9 Oct 26: "Can
+   the bottom buttons row match the top inputs row in terms of vertical height. Seems like the 2nd row is taller" —
+   they are DRAWN as tall as a tab (36px), each still answering a finger over 44px (a press area 4px larger above and
+   below than what is drawn). That replaces "narrower, never shorter" (D653's reading 5).
    Class names are prefixed (`intab`, `inv-`, `ib-`): the scheduler's sheet is one global sheet (23-days.css).
    ============================================================================================================ */
 .inputs-workspace .title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;padding:0;margin:0}
@@ -67,8 +70,10 @@
   .inputs-top{gap:5px;margin:8px 0 6px}
   .inputs-tabs{flex:1 0 100%}
   .intab{flex:1 1 0;padding:4px 6px}
-  /* narrower, never shorter (see the head of this file) */
+  /* narrower, and drawn as tall as a tab — the press area stays a finger's size (D698; see the head of this file) */
   .inputs-top .abtn{min-width:34px;padding:8px 7px}
+  .inputs-top .abtn:not(.intab){min-height:36px;position:relative}
+  .inputs-top .abtn:not(.intab)::after{content:'';position:absolute;inset:-5px 0}   /* 4px past its 1px border */
   .inputs-top .inv-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .ic-nav{gap:4px}
   #inFiltersBtn{display:inline-flex}
@@ -245,11 +250,12 @@ body.in-cal{padding-bottom:0}
 .ib-key::before{content:'';width:11px;height:11px;border-radius:3px;background:#6B5320;background:color-mix(in srgb,var(--adv) 62%,var(--panel))}
 .ib-key.red::before{background:#6E2F3A;background:color-mix(in srgb,var(--hard) 64%,var(--panel))}
 /* ON A PHONE the line stays slim — every pixel above the month is a pixel off the month (D653) — and the fold's button
-   is still a finger's size: its PRESS area reaches 5px above and 13px below what is drawn (down over the weekday
-   names, which take no press), 44px in all. */
+   is still a finger's size: its PRESS area reaches 2px above and 16px below what is drawn (down over the weekday
+   names, which take no press), 46px in all. It reaches DOWN, not up: the 6px above it belong to the buttons of the
+   row over it, whose own press areas reach 4px down (D698). */
 @media(max-width:820px){
   .ib .sc-how{position:relative}
-  .ib .sc-how::after{content:'';position:absolute;inset:-5px 0 -13px}
+  .ib .sc-how::after{content:'';position:absolute;inset:-2px 0 -16px}
   .ib-legend{font-size:11px;gap:8px}
 }
 
