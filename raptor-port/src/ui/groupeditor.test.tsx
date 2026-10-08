@@ -232,6 +232,17 @@ describe('the editor opened on any record of a shared input opens the ENTRY', ()
   })
 })
 
+describe('an input already filed, read by a member', () => {
+  it('its one person is a value — moving it to another man stays a scheduler’s — but he may still add people to it', async () => {
+    const r = await single({ person: member, by: member })
+    await as('member')
+    await openOn(r)
+    expect($('#inpEditPerson'), 'no list to move it by').toBeNull()
+    expect($('#inpEditPersonFixed')!.textContent).toBe(cs(member))
+    expect($('#inpEditPop [data-testid="pp-several"]'), 'a meeting is a kind he may file for others').toBeTruthy()
+  })
+})
+
 describe('who may change it', () => {
   it('a man in it who did not file it: read only, with "Take me out" — which removes HIS record alone', async () => {
     const [a, b] = others()

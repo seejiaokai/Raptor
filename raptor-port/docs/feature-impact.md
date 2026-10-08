@@ -1328,3 +1328,14 @@ up over the thing it opened; (3) the grid's drag is now live BEHIND an open pane
 sheet's veil to keep the gesture off (a new non-blocking window, a mode that must not be interrupted) has to say so in
 `SelectCtx.enabled` / `reqEnabled`; (4) a new id prefix on a day cell must not start with `req-` unless it is a Required
 cell — the gesture hit-tests that prefix as it does `cell-` and `event-`.
+
+## One input filed for several people — the surfaces that make it ONE thing (step 5, 8 Oct 26)
+A shared input is one record a man tied by `grp` (`state/inputgroup.ts`). A new surface that LISTS inputs on the Inputs
+page must read entries (`entriesOf` / `entryRowsOf`), or it shows a group as separate lines; a new surface that CHANGES one
+must go through `commitGroup` / `removeEntry`, or it changes the first man's record alone and that man leaves the entry.
+The surfaces that do: the month's bar and its drag (`inputscal-model.ts`, `caldrag.ts`), the opened day's line
+(`InputsCal.tsx`), the List's row and its Add form (`InputsPage.tsx`), the editor window (`inputedit.tsx`), the changes
+window's item (`changesmodel.ts`). The surfaces that deliberately do NOT (one input a man): the board, the week, the
+warnings, the Leave War, OIL and the bell, a published day's pending count, print, export, the SANS calendar's counts
+and its day list. The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the
+seed week's pinned warnings, rows and counts do not move.

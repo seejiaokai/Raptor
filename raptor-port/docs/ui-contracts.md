@@ -9435,7 +9435,51 @@ Pins: `ui/inputscal-model.test.ts`, `ui/inputstabs.test.tsx`, `ui/inputsmonth.te
 `ui/inputsday.test.tsx`, `ui/inputskeys.test.tsx`, `ui/inputssettings.test.tsx`, `ui/logicdoors.test.tsx`,
 `ui/placedshown.test.tsx`, `ui/editorwindow.test.tsx`, `ui/placedline.test.ts`, `state/demostamps.test.ts`,
 `ui/sansform.test.tsx`; in a browser `e2e/inputs-calendar.spec.ts`. Pictures: `scripts/handpass/inputs-look.mjs`.
-**Not yet built (step 5's last piece): the people picker and a shared input shown as one line and one editor (§3.13).**
+### One input filed for several people — the picker, and a shared input as ONE thing (step 5's last piece, 8 Oct 26; D654–D656, D658–D660, D663)
+
+Kept as one record a man tied by a group id (`state/inputgroup.ts`; the no-screen half is the plan's §3.13 "AS BUILT"). "One
+thing" is made on the Inputs page only — and by ONE function, `entriesOf` / `entryRowsOf`: a screen that draws inputs
+without it shows a group as separate lines.
+
+- **The people picker (`ui/PeoplePick.tsx`, D656, D659).** One person from the A-to-Z list by default; a "Several people"
+  switch (`pp-several`, `role="switch"`) shows the schedule's own pucks (`html.ts puck()`, never a look-alike) as buttons
+  (`data-pp`, `aria-pressed`) in groups — Pilots, WSOs, SANS, and Personnel only where the roster holds ground crew — each
+  A to Z, with "All" on Pilots, WSOs and Personnel (a second press clears that group, never the last man) and a count line.
+  Four across at phone width, each a 36px target; 86px columns where there is room. It holds no state: its owner keeps the
+  people in the order picked (the first is the one kept on the way back to one person). **Where it shows:** the editor
+  window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids,
+  `inPerson` / `inPersonFixed`, and its posted-out group kept). The board's and the week's dialogs keep their one list.
+  **So the page holds TWO pickers when the editor is open** (the form's is under the calendar): a test asks for
+  `#inpEditPop [data-testid="pp…"]`.
+- **Who may pick whom** is asked of `state/perms.ts`: an admin anyone, and several on every kind but the medical ones and
+  the upchit; a member another man only for a duty or commitment while the members' switch is on, never SANS
+  availability; on the SANS calendar the people offered are the SANS people only. **Nothing is substituted for what was
+  picked:** people he may not file the kind for stay shown, with the sentence and the one press that corrects it
+  (`pickProblem` — `pp-why`, `pp-fix`), and Save / Add refuses with that same sentence.
+- **The editor opened on ANY record of a shared input holds the ENTRY** (title "Drifter +3 · 23 Jul"; the people lit; the
+  shared fields). Save is one command (`commitGroup`), and so is a save for more than one man from a new input. The OIL
+  question is asked ONCE and its answer written for every man (D660); a man added to an entry already answered brings the
+  sheet back, the standing answers ticked. Its filer and an admin change it; **a man in it who did not file it** reads it
+  and has two things of his own, drawn outside the read-only form — "Take me out" (asked first: `inped-takeout-ask`) and
+  his own OIL answer; **anyone else** reads "Only its people, Saber — who filed it — or an admin can change this."
+  Delete asks "Delete this input for all N people?" (`inped-delall`; `removeEntry` — one command). A man added or taken
+  off on the page behind the window is followed in it and said once; if the very record the window was opened on goes
+  while the entry lives on, the window holds the rest.
+- **The month:** one bar, "Drifter +3 · Meeting". A drag moves every record in one command for whoever may change all of
+  it; for a man in it who did not file it, and for anyone else, the bar does not lift (`caldrag.ts`).
+- **A day opened:** one line — "Drifter +3", the kind, the hours, the remark, its people as pucks (`idy-people`), "Placed by
+  Saber for 4 people · …". LATE beside the man whose own record is late (`idy-late-<person>`); where every man is late
+  alike, LATE once on the line, as an ordinary input. Delete on the line: "Delete this input for all N people?" for its
+  filer or an admin; "Take yourself out of this input?" for a man in it; anyone else is told who can.
+- **The List:** one row, its Name "Drifter +3" with everyone in the title, shown when ANY of its people passes the filter.
+  ONE button (✎) that opens the editor window — for everyone, to change it or to read it. No edit in place, no ✕ and no
+  OIL chip on that row: each would act on the first man's record alone.
+- **The changes window (D663):** "Group by: Item" files the lines of one filing under one item — "Input · Meeting · 4
+  people" — each line naming its man; a later change to one man alone is its own line under it. A line each is still
+  written (each carries its record's `grp`); "Group by: Who" and the day's count are as they were.
+- **Everywhere else it is one input a man, unchanged:** the board's and the week's rows, the warnings, the Leave War,
+  the bell, a published day's pending count, print and export. The schedule's one row for a group is its own job
+  (`[GROUP-INPUT-ONE-ROW]`, D661, D662).
 
 ## Inputs calendar and SANS demand — D580
 

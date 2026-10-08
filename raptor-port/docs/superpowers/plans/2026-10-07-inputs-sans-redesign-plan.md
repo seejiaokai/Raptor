@@ -1188,7 +1188,25 @@ this section was silent, or stricter than its own reason — for the readers of 
    List's row buttons, the calendar's drag. Nothing a member can press files for another man until the picker (step 5).
 10. *Two existing tests* pinned "a member's draft for another man is re-pointed at himself" and are changed, each
     with its note (`leavewar/scenarios-rules.test.ts`, `ui/inputs.test.tsx`).
-**Left for step 5, with their screens:** the picker, the month's one bar, the opened day's one line, the List's one
+**AS BUILT (8 Oct 26, night — step 5, pieces 11a to 11e and 12a; the contract is `docs/ui-contracts.md` "One input
+filed for several people").** The picker (`ui/PeoplePick.tsx`), the editor on the entry, the opened day's one line, the
+List's one row and its Add form, the bar's drag, the SANS "+ Commitment" for several, the changes window's one item and
+the demo's one shared input are built, tests first. **Choices the builder made, each told to him (§8):** (1) the List's
+row for a shared input has ONE button — it opens the window; deleting it and its OIL answer are there, for everyone;
+(2) Delete in the editor window asks "for all N people?" first (the plan named the question on the day's line only);
+(3) "Take me out" asks first, in the window and on the day's line; (4) "All" stands on Pilots, WSOs and Personnel, and
+on SANS only where SANS is the one group shown (the SANS calendar); a press never lets the LAST man go; (5) where every
+man of a shared input is late alike, the day's line says LATE once; (6) a man added to an entry whose OIL question is
+already answered brings the sheet back to whoever adds him, the standing answers ticked; (7) the List's line is LATE
+where any of its people is, its note naming them; (8) an existing input read by a member shows its one person as a
+value — moving it to another man stays a scheduler's — but he may still turn "Several people" on and add to it;
+(9) the demo's shared input sits on the Thursday AFTER the seed week, filed four weeks ahead, so the seed week's pinned
+figures do not move and it is not also the LATE example; (10) the change line of each man carries the group id, so the
+changes window keys the item by the filing, not by the input as it now stands. **Found by looking at the running build:**
+the demo's shared input read LATE four times; a long callsign was clipped in the desktop picker. **Found by the tests:**
+the List's Add form puts a second picker on the page, so anything that asks for "the picker" must say which.
+
+**Left for step 5, with their screens (now built — the note above):** the picker, the month's one bar, the opened day's one line, the List's one
 line and the entry's editor ("Take me out"; the OIL sheet shown once — the writer already takes its one answer), the
 gear's switch and the Logic page's row, the changes window's one item (D663), and the demo seed's one group input
 (with its stamps — §3.8).
@@ -1456,6 +1474,15 @@ under the cut-off; the admin's button in the day, and the first line of the sett
 caution about that word inside a calendar's own settings is his to judge on the preview); on a phone the month's
 name is three letters ("OCT 2026"); holding a finger on a date for under half a second and then dragging picks
 several days — a quick slide still turns the month.
+
+**And one input filed for several people (step 5's last piece, 8 Oct 26, night) — each a default he can change:** on the
+List a shared input's line has one button, which opens its window — deleting it and changing its OIL answer are done
+there, for everyone; deleting a shared input always asks "for all N people?" first, and "Take me out" asks too; "All"
+is on Pilots, WSOs and Personnel (and on SANS only on the SANS calendar); the last person picked cannot be un-picked;
+where everyone in a shared input is late it says LATE once, otherwise beside each late person; adding a person to a
+shared input that already has an OIL answer asks the question again of whoever adds him; a member reading an input
+already filed cannot move it to another person, but can add people to it; the demo now carries one shared input, on
+Thursday 23 Jul 26 (the week after the demo week, so the demo week's own figures are untouched).
 
 **And the Inputs calendar (step 5, 8 Oct 26, late) — to tell him the same way, each a default he can change:** the
 three tabs are slimmer than the buttons under them; Medical is a tab and has no close cross; SANS availability cannot

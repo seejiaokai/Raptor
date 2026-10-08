@@ -212,6 +212,15 @@ describe('where the switch shows, and what it says when it may not be used', () 
     expect(got).toEqual({ people: [me()!], several: false })
     expect(tid('pp-why')).toBeNull()
   })
+  it('ONE other man picked, then the kind turned to leave — a member: he stays shown, with the sentence and "File it for me only"', async () => {
+    asMember()
+    const other = pilots().find(p => p !== me())!
+    await mount({ people: [other], type: 'LL' })
+    expect($('#inpEditPersonFixed')!.textContent, 'nothing is substituted: it still says the man he picked').toBe(cs(other))
+    expect(tid('pp-why')!.textContent).toContain('You can file leave only for yourself')
+    await click(tid('pp-fix'))
+    expect(got).toEqual({ people: [me()!], several: false })
+  })
   it('the same for an admin who turns a group into a medical entry: "Keep <first> only"', async () => {
     const [a, b] = [pilots()[1], wsos()[0]]
     await mount({ people: [a, b], several: true, type: 'ATT C' })
