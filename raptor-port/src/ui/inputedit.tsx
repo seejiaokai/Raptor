@@ -1320,9 +1320,15 @@ export function reassignInput(iid: any, personId: any) {
  *  member somewhere. */
 export function askOilIfPending(r: any): boolean {
   if (!r || !oilAsks(r.type)) return false
-  const g: any = oilGate(draftOf(r), r)
-  if (g.kind !== 'ask') return false
-  setOilAsk(r.iid); setInpEdit(r); notify()
+  /* OF EVERY MAN OF A SHARED ENTRY, NOT OF THE ONE RECORD THE GESTURE HELD (Sol's read of the calendar job's bug check,
+     8 Oct 26 — seen failing in `groupeditor.test.tsx` before this): the first man's standing No said nothing about a
+     man beside him with no answer, who was then left to his own bell — what D660 rules out. The sheet opens on the
+     first record that needs an answer. */
+  const live = INPUTS.find((x: any) => x.iid === r.iid) || r
+  const rows = entryRowsOf(INPUTS, live)
+  const need = (rows.length ? rows : [live]).find((x: any) => (oilGate(draftOf(x), x) as any).kind === 'ask')
+  if (!need) return false
+  setOilAsk(need.iid); setInpEdit(need); notify()
   return true
 }
 

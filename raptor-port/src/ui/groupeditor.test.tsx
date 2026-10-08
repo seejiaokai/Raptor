@@ -13,7 +13,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor, commitGroup, draftOf, removeInput } from './inputedit'
+import { InputEditor, askOilIfPending, commitGroup, draftOf, removeInput } from './inputedit'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
@@ -336,6 +336,31 @@ describe('a shared input is never turned into a medical entry by the group\u2019
     expect(said.join(' | ')).toMatch(/medical entry is one person/i)
     expect(of(g.grp).map(r => r.type), 'nothing was written').toEqual(['Meeting', 'Meeting'])
     expect($$('[data-testid="docconf"], [data-testid="oilconf"]')).toHaveLength(0)
+  })
+})
+
+/* SOL'S READ of the calendar job's bug check (8 Oct 26), S2 - the same fault as R2 on another door. After a bar is
+   dragged onto a weekend the question "follows the move" (ui/caldrag.ts -> askOilIfPending), and it was asked of the
+   ONE record the drag held: a first man's standing No for that day left the second man, who has no answer, to his own
+   bell. It is asked while ANY man of the entry needs an answer. */
+describe('the OIL question that follows a move is asked while ANY man of a shared entry needs an answer (D660)', () => {
+  for (const who of [0, 1]) {
+    it(`a shared duty on a Saturday; the ${who === 0 ? 'FIRST' : 'SECOND'} man has a standing No, the other no answer: it asks`, async () => {
+      const [a, b] = others()
+      const g = await shared([a, b], { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439 })
+      await act(async () => { writeInputs(() => { of(g.grp)[who].oil = { '2026-10-17': 0 } }); notify() })
+      let asked = false
+      await act(async () => { asked = askOilIfPending(live(g.rows[0].iid)); notify() })
+      expect(asked, 'the question opens').toBe(true)
+      expect($$('[data-testid="oilconf"]')).toHaveLength(1)
+    })
+  }
+  it('every man answered: nothing is asked', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b], { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
+    let asked = true
+    await act(async () => { asked = askOilIfPending(live(g.rows[0].iid)); notify() })
+    expect(asked).toBe(false)
   })
 })
 
