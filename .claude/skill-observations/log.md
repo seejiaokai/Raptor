@@ -3168,3 +3168,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When a gesture drags a CLONE: state its pointer-events explicitly on the clone's own class, never by inheritance from the original. When finding an element by a data id after a re-render: scope the selector to the surface (or its class), and check for mounted-but-hidden twins. Cover both with one real-browser test that performs the drag with a real mouse and asserts on the record AND on which element flashed.
 
 **Principle:** A cloned element inherits every rule written for its original, including the ones that make it a target - and an id is only unique among the things you remembered were mounted.
+
+### Observation 477: Two test sign-ins that looked different were the same person, so a "may he?" test proved nothing
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Inputs calendar, step 5 — the editor for an input filed for several people (who may change it)
+**Skill:** New skill candidate: permission-test set-up check (or a line in raptor-executor's verification section)
+**Type:** internal
+**Phase/Area:** writing tests for a rule that depends on WHO is signed in
+
+**Issue:** The new tests signed in "as the admin" and "as the member" the way many older tests do (a session with a
+role), and read each one's identity back from the app. Both came back as the same person: the role had changed, the
+identity had not — it has its own setter. Every test of "a man in it who did not file it" and "anyone else" therefore ran
+as the filer, and two of them passed for the wrong reason until the read-only assertions happened to fail. The older
+tests that copy the short sign-in are not wrong — they test the role alone — but the pattern is unsafe to copy for a rule
+about identity.
+
+**Suggested improvement:** Before writing a test whose subject is "X may, Y may not", assert in the set-up that the two
+actors resolve to two DIFFERENT people (one line), and take the sign-in helper from a test that already tests identity,
+not from the nearest test in the folder.
+
+**Principle:** A permission test is only as good as the difference between its actors. Prove the actors differ before
+trusting any "refused" or "allowed" the test reports.
+
+### Observation 478: Adding a second instance of a component to a page silently re-pointed existing tests at it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Inputs calendar, step 5 — the people picker put into the List's own Add form as well as the editor window
+**Skill:** New skill candidate: shared-component reuse checklist (or a line in the bug-check order's roll-call)
+**Type:** open-source
+**Phase/Area:** reusing a component in a second place on a page that keeps hidden parts mounted
+
+**Issue:** The picker was built and tested inside one window. Putting the same component into a form that stays mounted
+(hidden) under the calendar made every "find the picker" query in the first set of tests match the hidden one first: six
+previously green tests failed at once, and — worse — a query for "is the switch absent?" could have passed or failed for
+the wrong element. Nothing was wrong on screen; the tests had been written as if the component could only exist once.
+
+**Suggested improvement:** When a component gains a second home, (1) grep the tests and browser specs for its test ids
+and scope each query to its container in the same change; (2) record in the contract doc that the page can hold two, so
+the next test author scopes from the start; (3) prefer container-scoped queries for any component that is not a
+singleton by construction.
+
+**Principle:** A test id is unique only until the component is reused. Scope queries to the container the behaviour
+belongs to, and treat "a second instance now exists" as a change with its own blast radius in the tests.
