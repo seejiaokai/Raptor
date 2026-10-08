@@ -366,3 +366,67 @@ test('a finger: a bar held still lifts, is carried to another date and lands the
     expect(await editorOpen(page)).toBe(false)
   } finally { await context.close() }
 })
+
+/* A DAY OPENED ON THE INPUTS MONTH IS A WINDOW (D641, D648; the plan §3.6, §3.7): beside the month on a desktop and
+   covering no date; on a phone a panel on the foot of the screen at two heights; the month behind it takes a press. */
+const dayWin = (p: Page) => p.locator('[data-testid="win-inputsday"]')
+test('on a desktop the opened day sits beside the month and covers no date; another date re-points it; dragged away, the month takes the width back', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [iid] = await file(page, [{ who: 3, type: 'Meeting', from: 'Oct 13', timed: [840, 960], more: { remarks: 'Bring the folder' } }])
+  const width = async () => (await page.locator('[data-testid="ib-grid"]').boundingBox())!.width
+  const full = await width()
+  await cell(page, '2026-10-13').click({ position: { x: 8, y: 8 } }); await expect(dayWin(page)).toBeVisible()
+  await expect(dayWin(page).locator('.win-ttl')).toContainText('Tue 13 Oct')
+  const row = page.locator(`[data-testid="idy-row-${iid}"]`)
+  await expect(row.locator('[data-testid="idy-when"]')).toHaveText('14:00–16:00'); await expect(row).toContainText('Bring the folder')
+  const win = (await dayWin(page).boundingBox())!, grid = (await page.locator('[data-testid="ib-grid"]').boundingBox())!
+  expect(grid.x + grid.width, 'the month ends before the window begins').toBeLessThanOrEqual(win.x)
+  /* nothing of the window lies over a date: every date's own corner is still the date */
+  const covered = await page.evaluate(() => [...document.querySelectorAll('#inpCal [data-icday]')].filter(c => { const r = c.getBoundingClientRect(); const hit = document.elementFromPoint(r.x + 6, r.y + 6); return !(hit && (hit === c || c.contains(hit))) }).map(c => (c as HTMLElement).dataset.icday))
+  expect(covered).toEqual([])
+  /* the tabs and the tools are not under it either */
+  for (const id of ['#inMedBtn', '#inFSearch', '#inListBtn']) { const b = (await page.locator(id).boundingBox())!; expect(b.x + b.width, id + ' is under the window').toBeLessThanOrEqual(win.x) }
+  await cell(page, '2026-10-20').click({ position: { x: 8, y: 8 } })
+  await expect(dayWin(page)).toHaveCount(1); await expect(dayWin(page).locator('.win-ttl')).toContainText('Tue 20 Oct')
+  /* a press on the page outside it leaves it up (D641) */
+  await page.locator('#inpCal .ic-mon').click(); await expect(dayWin(page)).toBeVisible()
+  const bar = (await dayWin(page).locator('.win-bar').boundingBox())!
+  await page.mouse.move(bar.x + 80, bar.y + 12); await page.mouse.down(); await page.mouse.move(bar.x - 300, bar.y + 200, { steps: 6 }); await page.mouse.up()
+  await expect.poll(width).toBe(full)
+  await page.locator('[data-testid="win-inputsday-x"]').click(); await expect(dayWin(page)).toHaveCount(0)
+})
+
+test('on a phone the opened day is a panel on the foot of the screen: about two-thirds high, pulled up by its bar and back, its controls a finger’s size', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await file(page, Array.from({ length: 14 }, (_, i) => ({ who: i, type: 'LL', from: 'Oct 20' })))
+    await cell(page, '2026-10-20').tap({ position: { x: 10, y: 10 } })
+    const win = dayWin(page); await expect(win).toBeVisible()
+    await page.waitForTimeout(450)
+    expect(await editorOpen(page), 'the tap pressed through into the window').toBe(false)
+    const low = (await win.boundingBox())!
+    expect(low.height, 'it opens about two-thirds high — the month behind stays in reach').toBeLessThan(844 * 0.72)
+    expect(low.y + low.height).toBeLessThanOrEqual(844)
+    /* everyone is listed and the LIST scrolls — "+ Input" stays pinned above it (D648) */
+    const g = await page.evaluate(() => { const l = document.querySelector('[data-testid="idy-list"]') as HTMLElement, a = document.querySelector('#icPopAdd')!.getBoundingClientRect(), w = document.querySelector('[data-testid="win-inputsday"]')!.getBoundingClientRect(); return { rows: l.querySelectorAll('[data-testid^="idy-row-"]').length, scrolls: l.scrollHeight > l.clientHeight + 4, addIn: a.top >= w.top && a.bottom <= w.bottom, addH: a.height } })
+    expect(g.rows).toBe(14); expect(g.scrolls, 'the list scrolls inside the window').toBe(true); expect(g.addIn).toBe(true); expect(g.addH).toBeGreaterThanOrEqual(44)
+    await page.evaluate(() => { const l = document.querySelector('[data-testid="idy-list"]') as HTMLElement; l.scrollTop = l.scrollHeight })
+    const add = (await page.locator('#icPopAdd').boundingBox())!
+    expect(add.y, '"+ Input" stood still while the list scrolled').toBeGreaterThanOrEqual(low.y)
+    /* the month behind still takes a tap: another date re-points the same window */
+    /* (a date of the first week — the panel stands over the lower weeks, which is what its two heights are for) */
+    await cell(page, '2026-10-01').tap({ position: { x: 10, y: 10 } })
+    await expect(win.locator('.win-ttl')).toContainText('Thu 1 Oct')
+    await win.locator('.win-ttl').tap(); await expect(win).toHaveClass(/is-tall/)
+    await page.waitForTimeout(450)
+    expect(await editorOpen(page), 'the bar’s tap pressed through as the window moved').toBe(false)
+    const tall = (await win.boundingBox())!
+    expect(tall.y).toBeLessThanOrEqual(12); expect(tall.height).toBeGreaterThan(844 * 0.9)
+    await win.locator('.win-ttl').tap(); await expect(win).not.toHaveClass(/is-tall/)
+    const x = (await page.locator('[data-testid="win-inputsday-x"]').boundingBox())!
+    expect(Math.min(x.width, x.height)).toBeGreaterThanOrEqual(44)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'no sideways scroll with the day open').toBeLessThanOrEqual(390)
+    await page.locator('[data-testid="win-inputsday-x"]').tap(); await expect(win).toHaveCount(0)
+  } finally { await context.close() }
+})

@@ -237,7 +237,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
     await tap(cell, 10, 10)
-    expect($('.ic-pop')).toBeTruthy()
+    expect($('[data-testid="win-inputsday"]')).toBeTruthy()
 
     await click($('#icAddPucks'))
     expect($('.ic-pick'), 'the picker opened instead of making an empty row').toBeTruthy()
@@ -291,7 +291,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     } finally {
       sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
       if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
     }
   })
 
@@ -329,7 +329,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       }
     } finally {
       if ($('#icPickCancel')) await click($('#icPickCancel'))
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
     }
   })
 
@@ -339,21 +339,24 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     const cell = $(`[data-icday="${iso}"]`)!
     await tap(cell, 10, 10)
     try {
-      const body = $('.ic-pop-body')!
-      const secs = body.querySelector('.ic-secs')!
-      const inpSec = body.querySelector('.ic-inp-sec')!
+      /* RE-POINTED (step 5, 8 Oct 26 — the day is a window on the shell, D641): "+ Input" is PINNED at the window's top
+         with the day's title, and the list scrolls under it — the planning sections first, then the inputs */
+      const list = $('[data-testid="idy-list"]')!
+      const secs = list.querySelector('.ic-secs')!
+      const inputs = list.querySelector('[data-testid="idy-count"], [data-testid="idy-empty"]')!
       expect(secs, 'sections render').toBeTruthy()
-      expect(inpSec, 'the inputs block renders').toBeTruthy()
-      expect(secs.compareDocumentPosition(inpSec) & Node.DOCUMENT_POSITION_FOLLOWING,
-        'sections sit ABOVE the inputs block').toBeTruthy()
-      /* + Input is the block's own first control, top-left */
-      expect(inpSec.firstElementChild!.id).toBe('icPopAdd')
-      /* the admin section buttons lead the body */
-      expect(body.firstElementChild!.classList.contains('ic-secbtns')).toBe(true)
+      expect(inputs, 'the inputs block renders').toBeTruthy()
+      expect(secs.compareDocumentPosition(inputs) & Node.DOCUMENT_POSITION_FOLLOWING,
+        'sections sit ABOVE the inputs').toBeTruthy()
+      /* + Input is pinned above the list, never scrolled away with it */
+      expect($('#icPopAdd')!.closest('.sd-top'), '+ Input is pinned').toBeTruthy()
+      expect(list.contains($('#icPopAdd'))).toBe(false)
+      /* the admin section buttons lead the list */
+      expect(list.firstElementChild!.classList.contains('ic-secbtns')).toBe(true)
     } finally {
       const note: any = PLANPUCKS.find((p: any) => p.text === 'note first')
       await act(async () => { if (note) removePlanPuck(note.id); notify() })
-      await click($('#icPopClose'))
+      await click($('[data-testid="win-inputsday-x"]'))
     }
   })
 
@@ -362,10 +365,11 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     const cell = $(`[data-icday="${iso}"]`)!
     await tap(cell, 10, 10)
     try {
-      const head = $('.ic-pop-head')!
-      expect(head.querySelector('#icRmkEdit'), 'the title input lives in the head').toBeTruthy()
+      /* RE-POINTED (step 5): the window's own bar carries the date; the day's title is pinned right under it */
+      const head = $('[data-testid="win-inputsday"] .sd-top')!
+      expect(head.querySelector('#icRmkEdit'), 'the title input is pinned at the window’s top').toBeTruthy()
     } finally {
-      await click($('#icPopClose'))
+      await click($('[data-testid="win-inputsday-x"]'))
     }
   })
 })
@@ -379,12 +383,12 @@ describe('member session — reduced controls, same reach to add and to open a c
       /* the cell tap is the popover's front door — see the identity test above */
       const cell = $(`[data-icday="${iso}"]`)!
       await tap(cell, 10, 10)
-      expect($('.ic-pop')).toBeTruthy()
+      expect($('[data-testid="win-inputsday"]')).toBeTruthy()
       expect($('#icRmkEdit'), 'no title editor for a member').toBeFalsy()
       expect($('#icAddPuck'), 'no +Note for a member').toBeFalsy()
       expect($('#icAddPucks'), 'no +Pucks for a member').toBeFalsy()
       expect($('#icPopAdd'), '+Input stays available to everyone').toBeTruthy()
-      await click($('#icPopClose'))
+      await click($('[data-testid="win-inputsday-x"]'))
 
       /* the input is a BAR across its days now (step 5, D626), found by its own id */
       const chip = $(`.ib-bar[data-icdrag][data-iid="${rec.iid}"]`)!
@@ -418,7 +422,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
   const openPop = async (iso: string) => {
     const cell = $(`[data-icday="${iso}"]`)!
     await tap(cell, 10, 10)
-    expect($('.ic-pop'), `the ${iso} popover opened`).toBeTruthy()
+    expect($('[data-testid="win-inputsday"]'), `the ${iso} popover opened`).toBeTruthy()
   }
   const dayIds = (iso: string) => PLANPUCKS.filter((p: any) => p.date === iso).map((p: any) => p.id)
   const wipe = async (iso: string) => act(async () => {
@@ -468,7 +472,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       await act(async () => { vi.advanceTimersByTime(LIFT_LAND_MS + 50) })
       expect(landed.classList.contains('lift-land'), 'the flash is over within its own beat').toBe(false)
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -494,7 +498,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       await act(async () => { vi.advanceTimersByTime(LIFT_LAND_MS + 50) })
       expect(slot(1).classList.contains('lift-land')).toBe(false)
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -516,7 +520,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       expect(pendingLand(), 'a removal has no landing place to flash').toBeNull()
       expect(host.querySelector('.lift-land'), 'so nothing flashes').toBeFalsy()
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -550,7 +554,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       expect($(`[data-sec="${one}"]`)!.classList.contains('lift-land'),
         'and it still flashes — in place is where it ended up').toBe(true)
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -577,7 +581,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       await act(async () => { notify() })
       expect(pendingLand(), 'no mark survives into an unrelated render').toBeNull()
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -601,7 +605,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       expect(pendingLand(), 'an in-place puck needs no deferred landing').toBeNull()
       expect(host.querySelector('.pk-drag'), 'nothing left picked up').toBeFalsy()
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -623,7 +627,7 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       document.elementFromPoint = () => $(`[data-sec="${top}"]`)
       await act(async () => { $(`[data-sechandle="${below}"]`)!.dispatchEvent(ptr('pointerdown', 10, 60)) })
       await win('pointermove', 10, 20)
-      await click($('#icPopClose'))
+      await click($('[data-testid="win-inputsday-x"]'))
       await win('pointerup', 10, 20)             // the stray release the canceller disarmed
       expect(dayIds(iso), 'nothing moved').toEqual(before)
       expect(pendingLand(), 'nothing was marked').toBeNull()
@@ -635,17 +639,17 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
       await act(async () => { chip.dispatchEvent(ptr('pointerdown', 10, 10)) })
       await win('pointermove', 30, 10)
       expect(chip.className, 'it really was picked up').toMatch(/\bpk-drag\b/)
-      await click($('#icPopClose'))
+      await click($('[data-testid="win-inputsday-x"]'))
       await win('pointerup', 30, 10)
       expect(chip.className, 'the lift came off on the way out').not.toMatch(/\bpk-drag\b/)
       expect((PLANPUCKS.find((p: any) => p.id === rowId) as any).ids, 'the seats are untouched').toEqual([a, b])
       expect(pendingLand(), 'and nothing was marked').toBeNull()
 
       await openPop(iso)
-      expect(host.querySelector('.ic-pop .lift, .ic-pop .lift-land'), 'the reopened popover carries neither class').toBeFalsy()
-      expect(host.querySelector('.ic-pop .dragging'), 'nor a stuck picked-up section').toBeFalsy()
+      expect(host.querySelector('[data-testid="win-inputsday"] .lift, [data-testid="win-inputsday"] .lift-land'), 'the reopened popover carries neither class').toBeFalsy()
+      expect(host.querySelector('[data-testid="win-inputsday"] .dragging'), 'nor a stuck picked-up section').toBeFalsy()
     } finally {
-      if ($('#icPopClose')) await click($('#icPopClose'))
+      if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
       await wipe(iso)
     }
   })
@@ -658,10 +662,10 @@ describe('Esc layering: the opened day first, and the calendar stays', () => {
   it('the first Esc closes just the opened day; a second leaves the calendar where it is', async () => {
     const cell = $('[data-icday="2026-07-06"]')!
     await tap(cell, 10, 10)
-    expect($('.ic-pop')).toBeTruthy()
+    expect($('[data-testid="win-inputsday"]')).toBeTruthy()
 
     await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
-    expect($('.ic-pop'), 'first Esc closes just the popover').toBeFalsy()
+    expect($('[data-testid="win-inputsday"]'), 'first Esc closes just the popover').toBeFalsy()
     expect($('#inpCal'), 'the calendar itself is still open').toBeTruthy()
 
     await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })

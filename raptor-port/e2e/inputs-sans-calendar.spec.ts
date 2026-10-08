@@ -201,7 +201,9 @@ test('a SANS commitment saved on the SANS calendar is in its day; Undo, Redo and
   await expect(page.locator('#inMemberMode')).toHaveAttribute('aria-selected','true')
   await expect(page.locator('#inFSearch')).toHaveValue('NO_MEMBER_MATCH')
   await expect(tid(page,'win-sansday')).toHaveCount(0)
-  await expect(page.locator(`.ic-pop [data-popiid="${iid}"]`)).toBeVisible()
+  /* the Inputs tab's search lets it through nowhere, so it has no bar on the month: its day opens and lists it (a
+     save is never answered with an empty screen — the saved-row reveal; an input WITH a bar only flashes, D672) */
+  await expect(page.locator(`[data-testid="win-inputsday"] [data-popiid="${iid}"]`)).toBeVisible()
 })
 
 test('the SANS tab has no filters, no list and no "Select dates"; the Inputs tab keeps its own',async({page})=>{

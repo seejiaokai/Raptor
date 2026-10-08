@@ -155,3 +155,35 @@ body.in-cal{padding-bottom:0}
   .ib-bar{margin:1px 2px;padding:0 3px;font-size:10px;border-radius:3px}
   .ib-more{padding:0 3px;font-size:9px}
 }
+
+/* ============================================================================================================
+   A DAY OPENED ON THE INPUTS MONTH — a window on the shell (22-float-windows.css; owner D641: it drags, and the month
+   behind it still works). It is laid out as the SANS calendar's opened day is (24-sans-calendar.css — `.sd-top` pinned,
+   `.sd-list` scrolling, one `.sd-row` an entry, the LATE tag, the small-print line), so the two days read as one
+   family; what is its own is said here. On a desktop it opens beside the month and the page makes room for it until
+   he drags it away (the same `:has()` rule, Safari 15.4 and later).
+   ============================================================================================================ */
+.floatwin.inputsday{width:min(430px,calc(100vw - 32px))}
+.floatwin.inputsday .win-body{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.inputsday .sd-top{flex:0 0 auto;padding:8px 12px 10px;border-bottom:1px solid var(--edge);display:flex;flex-direction:column;gap:8px}
+.inputsday .sd-top .sd-acts{margin-top:0}
+.inputsday .sd-list{flex:1 1 auto;min-height:0;overflow:auto;padding:6px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.inputsday .ic-title-edit{width:100%;box-sizing:border-box;min-height:36px;padding:6px 10px;background:var(--bg);border:1px solid var(--edge);border-radius:8px;
+  color:var(--ink);font:inherit;font-size:14px;font-weight:700}
+.inputsday .ic-title-edit:focus{outline:none;border-color:var(--accent)}
+.inputsday .ic-title-ro{font-size:14px;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+.inputsday .idy-secbtns{display:flex;gap:6px;margin:4px 0 8px}
+.inputsday .ic-secs{margin-bottom:10px}
+/* a line: the square of its colour (red an absence, amber a duty or a commitment), the callsign, the kind */
+.idy-row .sd-open{gap:7px}
+.idy-sq{flex:0 0 auto;width:9px;height:9px;border-radius:2px;background:var(--adv)}
+.idy-row.red .idy-sq{background:var(--hard)}
+.idy-who{font-size:13.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.idy-kind{font-size:13px;color:var(--ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (min-width:1100px){
+  .inputs-workspace:has(.floatwin.inputsday:not([data-placed])){padding-right:462px}
+}
+@media (max-width:820px){
+  .inputsday .sd-add,.inputsday .idy-secbtns .abtn{min-height:44px}
+  .inputsday .ic-title-edit{min-height:44px;font-size:16px}
+}

@@ -32,7 +32,7 @@
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
-import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
+import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
@@ -49,7 +49,8 @@ import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
 import { placedLineOf } from './placedline'
-import { dayWord } from './sanscal-model'
+import { dayWord, hoursOf, lateWord } from './sanscal-model'
+import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
@@ -211,6 +212,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   useEffect(()=>()=>spendReveal(),[])
   const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
+  /* which late input's note is showing in the opened day (its entry's key) */
+  const [lateOpen, setLateOpen] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
   const [puckDraft, setPuckDraft] = useState('')
   /* the section being DRAGGED to a new position in the popover (owner, 22 Aug
@@ -275,19 +278,18 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  /* ESCAPE peels one layer of what THIS calendar has open — the people picker, then the day — and stands down while
-     the input editor is up over them (it has its own; both listen on the document in the capture phase, where
-     stopPropagation cannot silence a sibling). It never leaves the calendar: the month is a tab's screen, not a layer
-     to close. */
+  /* ESCAPE peels one layer: the people picker (a blocking chooser over the day's window — this handler, which stops the
+     key there), then the day's window (the shell's own rule, ui/FloatWindow.tsx: the front window, when the keyboard
+     is in a window or nowhere). It stands down while the input editor is up (that has its own). It never leaves the
+     calendar: the month is a tab's screen, not a layer to close. */
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || INPEDIT) return
-      if (pickFor != null) { e.stopPropagation(); setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); return }
-      if (popIso) { e.stopPropagation(); showDay(null); setPopPuckEdit(null) }
+      if (pickFor != null) { e.stopPropagation(); setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [popIso, pickFor])
+  }, [pickFor])
 
   /* Seed the add-input modal exactly the way a board's "+ Add" does
      (interactions.ts ~592-608) — same fields, same defaults — but with NO
@@ -462,8 +464,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   const renderPop = (iso: string) => {
     const entries = dayEntries(iso, { fPerson, fType, fSearch }, mode)
     const saved=INPUTS.find((r:any)=>r.iid===savedId&&inputsInMode([r],mode).length&&inputCoversDate(r,fmt(iso)))
-    const revealed=!!saved&&!entries.inputs.includes(saved)
-    if(revealed) entries.inputs.unshift(saved)
+    const revealed=!!saved&&!itemsOn(iso,items).some(it=>it.rows.includes(saved))
     const hasRmk = !!DAYRMK[iso]
     const sched = canEditSched()
     /* Enter commits by handing off to the SAME blur handler that already
@@ -607,35 +608,50 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       window.addEventListener('pointercancel', cancel)
       dragCancelRef.current = cancel        // popover close → cancel, don't drop/swap
     }
+    /* what the day lists: every input covering it, as the month's own items (a group is one — ui/inputscal-model.ts),
+       plus the one just saved where no filter lets it through, so a save is never answered with an empty day */
+    const list = itemsOn(iso, items)
+    if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
+    const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
+    const name = dayFacts(iso).name
+    const kindWord = !kind ? undefined
+      : kind.kind === 'nf' ? 'No fly'
+        : (kind.kind === 'ph' ? 'Public holiday' : 'Off day') + (name && !/^(ph|off day|off)$/i.test(name.trim()) ? ' · ' + name : '')
+    /* when an input is, said the way the approved day says it: its hours, "All day", or — for one that runs on past
+       this day — the day it runs till */
+    const whenOf = (it: BarItem) => (it.b > iso ? (it.allday ? '' : hoursOf(it.rows[0]) + ' · ') + 'till ' + fmtDay(it.b) : hoursOf(it.rows[0]))
+    const openInput = (r: any) => { setInpEdit(r); notify() }
     return (
-      <div className="ic-popwrap" onPointerDown={e => { if (e.target === e.currentTarget) closePop() }}>
-        <div className="ic-pop" role="dialog" aria-label={`${fmtDay(iso)} details`}>
-          {/* the day TITLE lives beside the date (owner, 22 Aug 26 — "beside
-              the date, I can input free text there, and it will show up as
-              the title on the calendar view"). A scheduler edits it in place
-              (draft-apart-from-model, commit on Enter/blur); a member reads
-              it as plain text. It is the same per-day store the old Day
-              remark field wrote (DAYRMK), promoted to the header. */}
-          <div className="ic-pop-head">
-            <b>{fmtDay(iso)}</b>
-            {sched ? (
-              <input id="icRmkEdit" className="ic-title-edit" placeholder="Day title…"
-                aria-label="Day title" value={rmkDraft}
-                onChange={e => setRmkDraft(e.target.value)}
-                onBlur={() => writeInputs(() => setDayRemark(iso, rmkDraft))}
-                onKeyDown={blurOnEnter} />
-            ) : hasRmk ? (
-              <span className="ic-title-ro">{DAYRMK[iso]}</span>
-            ) : null}
-            <button type="button" className="x" id="icPopClose" aria-label="Close" onClick={closePop}>✕</button>
+      /* A WINDOW ON THE SHELL (owner D641: it is dragged about and the month behind it still works — so a tap on
+         another date re-points this same window, and an input saved behind it shows in it at once). No veil, no close
+         on an outside press; it closes by its ✕, by Escape, or by another date taking its place. On a phone it stands
+         on the foot of the screen at two heights (D648, the SANS day's own manner). */
+      <FloatWin id="inputsday" title={dayWord(iso)} sub={kindWord} testid="win-inputsday" className="inputsday" rests onClose={closePop}>
+        {/* PINNED: the day's title and "+ Input" stay while the list scrolls under them */}
+        <div className="sd-top">
+          {/* the day TITLE (owner, 22 Aug 26 — "beside the date, I can input free text there, and it will show up as the
+              title on the calendar view"). A scheduler edits it in place (commit on Enter / blur); a member reads it. */}
+          {sched ? (
+            <input id="icRmkEdit" className="ic-title-edit" placeholder="Day title…"
+              aria-label="Day title" value={rmkDraft}
+              onChange={e => setRmkDraft(e.target.value)}
+              onBlur={() => writeInputs(() => setDayRemark(iso, rmkDraft))}
+              onKeyDown={blurOnEnter} />
+          ) : hasRmk ? (
+            <span className="ic-title-ro">{DAYRMK[iso]}</span>
+          ) : null}
+          {/* everyone may add — the reach a member already has on the List's own add form */}
+          <div className="sd-acts">
+            <button type="button" className="abtn primary sd-add" id="icPopAdd" onClick={() => openAdd(iso)}>+ Input</button>
           </div>
-          <div className="ic-pop-body">
+        </div>
+        <div className="sd-list" data-testid="idy-list">
             {/* THE SECTIONS (owner, 22 Aug 26): small + Note / + Pucks buttons
                 at the top; each section is a full-width block below — a note
                 is free text, a pucks row is people — and an admin drags the ⠿
                 handle to rearrange them. Members read them, nothing more. */}
             {sched && (
-              <div className="ic-secbtns">
+              <div className="ic-secbtns idy-secbtns">
                 <button type="button" className="abtn sm" id="icAddPuck"
                   onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
                 <button type="button" className="abtn sm" id="icAddPucks"
@@ -739,46 +755,46 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                 onKeyDown={blurOnEnter} />
             )}
 
-            {/* THE INPUTS, at the BOTTOM (owner, 22 Aug 26 — "have the inputs
-                at the bottom, then the + input button at the very top of all
-                inputs on the top left, a small button"). Everyone may add —
-                page-rights parity with the openAdd seed above, the same reach
-                a member already has on the Inputs table's own + Add. */}
-            <div className="ic-inp-sec">
-              <button type="button" className="abtn sm primary" id="icPopAdd" onClick={() => openAdd(iso)}>+ Input</button>
-              {entries.inputs.length === 0 ? (
-                <div className="ic-pop-empty">No inputs on this day — hold the cell or tap + Input</div>
-              ) : (
-                <div className="ic-pop-rows">
-                  {entries.inputs.map((r: any) => (
-                    <button key={r.iid} type="button" className={'ic-poprow ' + inputTone(r.type)}
-                      data-popiid={r.iid} onClick={() => { setInpEdit(r); notify() }}>
-                      {/* the identity line — callsign, type, and (timed only) the
-                          window pinned right, the same three fields the row always
-                          carried; wrapped now so a remark can sit under it */}
-                      <span className="ic-poprow-top">
-                        <span className="ic-poprow-who">{PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person}</span>
-                        {/* a SANS row reads as its F/O/A offer letters, not the
-                            generic "SANS Availability" type name (owner, 23 Aug
-                            26 — "show the F/O/A on the inputs"); the same read
-                            the month-cell chip already gives, so the two agree.
-                            Empty ticks fall back to F/O/A, meaning "offered". */}
-                        <span className="ic-poprow-lbl">{isSansAvail(r.type) ? (sansLetters(r) || 'F/O/A') : inpLabel(r)}</span>
-                        {!r.allday && <span className="ic-poprow-win">{hhmm(r.s)}–{hhmm(r.e)}</span>}
-                      </span>
-                      {/* the remark as its own aligned line under the identity
-                          (owner, 22 Aug 26 — "show remarks too and align them
-                          nicely"); absent when the input carries none, so a
-                          remark-less row stays the single tidy line it was */}
-                      {r.remarks && <span className="ic-poprow-rmk">{r.remarks}</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+            {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). One line each: who, the kind and
+                when; a remark under it; the LATE tag, which says the cut-off it missed when pressed (D646); and in
+                small print who placed it and when (D629). The line's BUTTON is the name and the kind — what a keyboard
+                and a screen reader meet; a press anywhere else on the line opens the input too. */}
+            {list.length === 0 ? (
+              <p className="sd-empty" data-testid="idy-empty">No inputs on this day. Tap + Input to add one.</p>
+            ) : (
+              <>
+                <h3 className="sd-gh" data-testid="idy-count">{list.length} input{list.length > 1 ? 's' : ''}</h3>
+                {list.map(it => {
+                  const r = it.rows[0]
+                  const who = it.more > 0 ? `${it.who} +${it.more}` : it.who
+                  const when = whenOf(it)
+                  const late = lateWord(r)
+                  const placed = placedLineOf(it.rows)
+                  /* an Other is NAMED by its remark (inpLabel) — it is not said a second time under the line */
+                  const rmk = r.remarks && r.remarks !== it.word ? r.remarks : ''
+                  return (
+                    <div key={it.key} className={'sd-row idy-row ' + it.tone} data-popiid={it.key} data-testid={'idy-row-' + it.key}
+                      onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) openInput(r) }}>
+                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${when}`} onClick={() => openInput(r)}>
+                        <span className="idy-sq" aria-hidden="true" />
+                        <b className="idy-who">{who}</b>
+                        <span className="idy-kind">{it.word}</span>
+                      </button>
+                      {late ? (
+                        <button type="button" className="sd-late" data-testid="idy-late" aria-expanded={lateOpen === it.key} title={late}
+                          onClick={() => setLateOpen(o => (o === it.key ? null : it.key))}>LATE</button>
+                      ) : <span />}
+                      <span className="sd-hours" data-testid="idy-when">{when}</span>
+                      {late && lateOpen === it.key && <span className="sd-latenote" data-testid="idy-latenote" role="status">{late}</span>}
+                      {rmk && <span className="sd-rmk">{rmk}</span>}
+                      {placed && <span className="sd-placed" data-testid="idy-placed">{placed}</span>}
+                    </div>
+                  )
+                })}
+              </>
+            )}
         </div>
-      </div>
+      </FloatWin>
     )
   }
 

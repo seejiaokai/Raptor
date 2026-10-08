@@ -185,12 +185,13 @@ it('a SANS commitment changed to a Member input leaves the SANS day and shows on
 it('a saved input opens its day ONCE: closing the day, then List and back to Calendar, does not open it again or move the month',async()=>{
   const row=await newOffer('Personal','Step 0 reveal once')
   expect(host.querySelector(`[data-popiid="${row.iid}"]`)).toBeTruthy()
-  await act(async()=>{(host.querySelector('.ic-popwrap') as HTMLElement).dispatchEvent(new MouseEvent('pointerdown',{bubbles:true}))})
-  expect(host.querySelector('.ic-popwrap')).toBeNull()
+  /* the day is a window now (step 5, D641): a press outside leaves it up; it is closed by its own cross */
+  await click('[data-testid="win-inputsday-x"]')
+  expect(tid('win-inputsday')).toBeNull()
   await click('#icNext')
   expect(host.querySelector('.ic-mon')?.textContent).toContain('Nov')
   await click('#inListBtn');await click('#inCalBtn')
-  expect(host.querySelector('.ic-popwrap'),'the day must stay closed').toBeNull()
+  expect(tid('win-inputsday'),'the day must stay closed').toBeNull()
   expect(host.querySelector('.ic-mon')?.textContent).toContain('Nov')
 })
 it('the same for the SANS day closed by its own button',async()=>{

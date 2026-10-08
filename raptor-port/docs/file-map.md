@@ -641,6 +641,12 @@ difference in days). `placedline.ts placedLineOf` - the one who-placed line of a
 scrolled to its top and, while a month is up, drops the body's foot room (`body.in-cal`). Tests: `inputsmonth.test.tsx`,
 `placedline.test.ts`; in a real browser `e2e/inputs-calendar.spec.ts` (three phone heights in a five-week and a six-week
 month, the tabs and the one tools row, a real mouse drag, a real finger, every bar over its own dates).
+`barmove.test.tsx` - A BAR MOVED (plan 3.6, 5): by the days between where it is grabbed and where it is dropped, from its
+middle day and from its continuation, by mouse and by finger; dropped back is nothing and no Undo step; who may move.
+A DAY OPENED on the Inputs month is a window on the shell (`win-inputsday`, drawn by `InputsCal.tsx renderPop`): the
+day's title and "+ Input" pinned, the planning sections and then one line an entry scrolling under them - who, the kind,
+when, the LATE tag (D646), who placed it (D629); a saved or brought-back input is shown WHERE IT IS (D672: its bar
+flashes; only one with no bar opens its day). `inputsday.test.tsx`.
 `scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
 laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
 `inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto
