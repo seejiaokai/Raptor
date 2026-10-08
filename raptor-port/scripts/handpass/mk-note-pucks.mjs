@@ -87,8 +87,16 @@ const gather = page => page.evaluate(() => {
   const { ctx, page } = await day(); await gather(page)
   await page.evaluate(() => {
     const box = document.getElementById('mockBox'), g = document.getElementById('mockGrid'), a = document.getElementById('mockAdd')
-    /* D692: the words line no taller than the box a note is typed in (28px) - the pencil and the cross drawn small */
-    box.style.cssText += ';padding:2px 4px 6px 10px;min-height:0;row-gap:3px;align-items:center'
+    /* D692: the words line no taller than the box a note is typed in (28px) - the pencil and the cross drawn small.
+       D694: the six dots and the box's left edge moved left, the box's two sides padded alike, and each puck held
+       inside its quarter - so the fourth puck stands as far from the right border as the first does from the left */
+    const sec = box.closest('.ic-sec'), grip = sec.querySelector('.ic-sechandle')
+    sec.style.cssText += ';column-gap:2px;gap:2px;margin-left:-8px'
+    if (grip) grip.style.cssText += ';margin:0;padding:0 1px;min-width:0;width:14px;flex:0 0 14px;text-align:center'
+    box.style.cssText += ';padding:2px 8px 6px 8px;min-height:0;row-gap:3px;align-items:center'
+    box.querySelector('.ic-poppuck-txt').style.paddingLeft = '2px'
+    g.querySelectorAll('.ic-secpk').forEach(k => { k.style.cssText += ';min-width:0;display:flex' })
+    g.querySelectorAll('.ic-secpk .seat, .ic-secpk .puck').forEach(k => { k.style.cssText += ';min-width:0;max-width:100%;width:100%' })
     box.querySelectorAll('button[data-ppedit],button[data-ppdel]').forEach(b => { b.style.cssText += ';min-width:28px;min-height:28px;width:28px;height:28px;padding:0' })
     g.style.cssText += ';flex:1 0 100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%'
     g.querySelectorAll('.ic-secpk-gap').forEach(x => x.remove())
@@ -97,6 +105,8 @@ const gather = page => page.evaluate(() => {
     a.style.cssText += ';min-height:0;height:auto;align-self:stretch;padding:0;font-weight:700;border:1px dashed var(--edge-2);background:transparent;color:var(--ink-2);border-radius:5px;width:100%'
     g.append(a)
   })
+  const room = await page.evaluate(() => { const b = document.getElementById('mockBox').getBoundingClientRect(); const ps = [...document.querySelectorAll('#mockGrid .ic-secpk .puck')].slice(0, 4).map(p => p.getBoundingClientRect()); return { left: Math.round((ps[0].left - b.left) * 10) / 10, right: Math.round((b.right - ps[3].right) * 10) / 10, puck: Math.round(ps[0].width) } })
+  console.log('c-compact: room left of the first puck', room.left, 'px; right of the fourth', room.right, 'px; a puck is', room.puck, 'px wide')
   say('c-compact', await measure(page)); await shot(page, 'c-compact'); await ctx.close()
 }
 /* D — FOLDED: one line a note — its words and "5 people"; a tap unfolds the people */
