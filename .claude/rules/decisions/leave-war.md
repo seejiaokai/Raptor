@@ -351,3 +351,20 @@ ONE resolver. **The Holidays list writes the war's own record** (D638 — two do
 `holidayChange` / `holidayRemove` (`state/store.ts`, pure half `engine/holidays.ts`) write a tagged day event or a merged
 band into the period HOLDING the date, on the first Event row free across the range, each ONE named command
 (`lw.holiday.*`); a change is checked whole before anything is taken away.
+**WHO READS IT, AS BUILT (steps 3 to 5 of that job, 8 Oct 26) — the list a new reader is added to.** On the scheduler's
+side, six screen files import the war's half (and `probe-bridge.ts`, for the browser tests), all from `leavewar/sync.ts`: the window called "Calendar" on screen
+(`ui/DaysWindow.tsx` — `flyMonth`, `useWarFacts`) and its Holidays list (`ui/HolidaysPanel.tsx` — `holidaysIn`, the three
+`holiday*` writers, `uncoveredIn(year)`: the runs of dates no period covers, said BEFORE a save is refused, and
+`holidayWord(kind)`: the word a nameless holiday is saved under); the SANS month, its opened day and "+ Commitment"
+(`ui/SansCal.tsx`, `ui/SansDay.tsx`, `ui/sansadd.ts` — `flyMonth` / `flyAnswer` for the need, `dayFacts` for the tag);
+and the Inputs month (`ui/InputsCal.tsx` — the date's tag only: PH, an Off day, NF; no sun, no moon, no figures — D627).
+`dayFacts` answers `covered:false` with both counts `null` for a date no period holds — who is available is then
+UNKNOWN, and every reader prints a dash, never 0 — and carries `short`, what the Event row prints for that holiday
+(D652), so a calendar's tag and the war's grid cannot differ. **Two doors cross the boundary, and each reaches a flag,
+never a screen:** `sync.ts openDays(iso)` — the "Calendar…" line in the war's ⚙ — sets the scheduler's open-flag
+(`ui/pops.ts`) and the window itself stays the gate (admins only); `sync.ts openNewPeriod(from, to)` — the Holidays
+list, on dates no period covers — leaves an ask for the war's own top row (`leavewar/ui/warask.ts`, never the war's
+store: an ask is not a fact about the war, so it is not saved, not undone and repaints no grid) and brings the Leave
+War to the front, where the war's own sheet checks everything itself. The war's four rows repaint on two signals of
+their own (`usePlanVersion`, `useWarFacts`) inside `leavewar/ui/FlyRows.tsx`; `Matrix` and the memo firewall are not
+touched (`raptor-port/docs/performance.md` §E).

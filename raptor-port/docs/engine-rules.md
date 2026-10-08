@@ -2139,7 +2139,10 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   decline, an ABSENT key on an applicable day = unanswered → no credit plus
   the bell (`oilPendingFor`). Plain JSON, riding histSnap (undo) free.
   Voided when the type leaves the ask set or the input moves to another
-  person (`commitInputEdit`; `reassignInput` and the calendar drag
+  person (ONE body since 8 Oct 26, `engine/oil.ts voidedOil` — a positive answer
+  the new hours no longer price is dropped, a no stays; the editor's save,
+  `commitInputEdit`, and the check on what a member's command really changed,
+  `state/perms.ts inputBreach`, both call it; `reassignInput` and the calendar drag
   inherit); kept on time/remark edits — the save gate re-asks when the plan
   goes stale, and the credit pass re-checks coverage and non-working LIVE,
   so a moved input or a revoked PH leaves a stale yes inert.
@@ -3551,8 +3554,8 @@ published schedule too — he has no door to a document). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
 gated on the one permissions rule (`perms.ts mayEditInput` / `mayDeleteInput`, which take the RECORD since 8 Oct 26 —
 a member his own, an admin any, a guest none) — the render gate asks the same module.
-**AMENDED 7 Oct 26 by his D654, D655, D658 and D660 (the write path built 8 Oct 26; the screens come with the Inputs
-calendar): "own" has a second meaning for a member.** While the squadron's members' switch is on (the setting
+**AMENDED 7 Oct 26 by his D654, D655, D658 and D660 (the write path and the screens built 8 Oct 26 —
+`ui-contracts.md` "One input filed for several people"): "own" has a second meaning for a member.** While the squadron's members' switch is on (the setting
 `memberfile`, on by default; an admin turns it off) a member may FILE an input for another person — one, or several
 at once — of any kind under the "Duty & other commitments" heading except SANS availability; never a leave, a medical
 or an upchit. What he filed he may change and delete, and he answers its OIL question for them at the save (each man
@@ -3880,3 +3883,28 @@ the cx look wins on screen. The flip itself is `ds.pinfo`/`ds.grinfo` in
 key so a flip on a published day rides the next AL. Prose lives once on the
 Logic page (a note row beside DOUBLE_BOOK). Pinned in
 `engine/infoflag.test.ts` and the two board toggle tests.
+
+## The flying plan — one day's answer (`state/flyplan-model.ts planFor`; D617, D627, D631, D637, D642)
+
+One function answers, for one date, its flying class, its required pilots and WSOs, how many more are still needed
+and the colour of that need. Every surface that shows any of them asks it through `leavewar/sync.ts flyAnswer(iso)` /
+`flyMonth(y, m)` — the Leave War's four rows and working box, the SANS month and its opened day, the Inputs month's
+tag, the window called "Calendar" — and none works one out itself (two stores hold a day's facts; a second join is
+how two screens come to show two answers). The records: `docs/data-schema.md` §The flying plan and the SANS
+calendar's colours. The war's half (a holiday, who is available): `.claude/rules/decisions/leave-war.md` §Architecture.
+
+- **Class.** A public holiday or an Off day (the Leave War's record) has NO class. Otherwise: the class set for the
+  date itself; else its weekday's rule — of the rules covering the date, the one that started latest (`ruleInForce`);
+  else day flying Monday to Friday and "not set" on a Saturday or Sunday (D631, D642).
+- **Required, each seat by itself.** A no-fly day needs 0, whatever is typed under it — the typed figure is kept and
+  comes back when the day is no longer no-fly. Else the figure typed for the date (on a weekend or a holiday too — a
+  typed figure holds). Else, on a weekday that is neither a public holiday nor an Off day, the latest RUNNING figure
+  that started on or before the date and names the seat; a run set to nothing ends it (D637). Else no figure.
+- **Still needed** = required − those the Leave War shows available − the SANS committed to fly, rounded up, never
+  under 0 (D617). 0 where the required figure is 0. UNKNOWN — drawn as a dash, never as 0 — where there is no required
+  figure, or where no leave period covers the date (who is available is then not known).
+- **Colour.** Pilots needed and WSOs needed added together, against the squadron's three thresholds (`sanscalendar`:
+  yellow from 1, amber from 3, red from 5 unless changed — D618). Nothing else judges a day: the four rows raise no
+  warning and count towards no "under-manned" figure.
+- **Who counts as committed to fly** (`state/flyplan.ts sansFly`): a SANS person with a SANS availability on the date
+  offering Fly, counted once however many he filed (D572) — never a man no longer SANS, never one archived.

@@ -368,7 +368,11 @@ All three type dropdowns (add form, filter, row editor) carry the same three
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
 list anyone can pick from.
 
-- **A member's Person is a value, not a choice (owner, 22 Aug 26).** The
+- **A member's Person is a value, not a choice (owner, 22 Aug 26).** *(AMENDED 8 Oct 26 — D654, D655: while the
+  members' switch is on, a member filing a duty or a commitment gets the person picker — one person from the list, or
+  "Several people" (`ui/PeoplePick.tsx`, "One input filed for several people"); for leave, medical and everything
+  else it is still his own name, printed. And this form no longer offers SANS availability — D620, "The Inputs
+  calendar".)* The
   full-roster `#inPerson` select renders for a scheduler only; a member sees
   the view-as callsign printed plainly (`#inPersonFixed`, `.inper-fixed` —
   on the same 36px control line, deliberately not boxed, so it cannot read
@@ -1904,6 +1908,10 @@ Where `lateTag()` is emitted:
   (`ui/board-html.ts`; the read-only "Inputs · <day>" summary band that also
   carried it was removed 22 Aug 26 — the live panels are the one surface);
 - the **Inputs page** table, in the Remarks column (`ui/InputsPage.tsx`).
+- *(since 8 Oct 26)* the two calendars' opened days — not `lateTag()`'s chip but a LATE button that opens the
+  reason (`sd-late` in `ui/SansDay.tsx`, `idy-late` in `ui/InputsCal.tsx`; once for a shared input where everyone
+  in it is late), each judged by its own cut-off ("The SANS calendar", "The Inputs calendar";
+  `engine-rules.md` "The cut-off has two shapes").
 
 Three things fall out of that cell rather than the badge, and each is pinned
 by `ui/lateinput-ui.test.ts`:
@@ -2569,7 +2577,9 @@ beside every badge.
   This IS the phone-bug fix: clearing a timing is one tap on All day, not a
   fight with a native time input's segments. All three editors (add form,
   in-table row, dialog) keep the shared shape; `sansFlags` normalises the
-  payload so none of them can write the old per-event `{s,e}` values.
+  payload so none of them can write the old per-event `{s,e}` values. *(Since 8 Oct 26 SANS
+  availability is filed from the SANS calendar's "+ Commitment" and the board's + Add; the Inputs tab's add form and
+  row editor no longer offer it — D620, "The SANS calendar".)*
 - **The palette section — `.rall.rsans` (`palette-html.ts`, `sansAvailHTML`).**
   One full-width band below the three seat columns, callsign-sorted, every
   SANS member pilot or WSO. Row = puck + badge + remarks:
@@ -7640,7 +7650,9 @@ On the Inputs page a member lands on THEIR OWN inputs — the person filter
 defaults to `ME` for a member, `all` (Everyone) for a scheduler — with
 Everyone one pick away in the same filter. On every other person's row the
 edit ✎ and delete ✕ are simply not rendered (`canEditSched() || r.person ===
-ME`); the row is view-only. The document paperclip is the exception and stays
+ME`); the row is view-only. *(Since 8 Oct 26 the gate is `perms.ts mayEditInput(row)`, which takes the record: a member
+also changes a duty or a commitment he FILED for another man while the members' switch is on — "One input filed for
+several people".)* The document paperclip is the exception and stays
 on every row — anyone may VIEW any attachment, gated nowhere. The write-path
 backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
@@ -9085,6 +9097,12 @@ this covers is a public holiday the war takes back off.
 
 ## [ALL-AVAIL-WINDOW] — the counter's window, the app's THIRD transient surface (owner, D38–D41, 23 Sep 26)
 
+*(Since 8 Oct 26 it is no longer the only one of its kind: every window of the Inputs / SANS calendar job is this
+kind too, on ONE shell — `ui/FloatWindow.tsx`, over the placement helper this window already used
+(`ui/floatwin.ts useFloatWin`): no veil, an outside press leaves it up, it drags by its bar, Escape closes the front
+one, and the page behind it works (D641). Each window's own rules are with its screen: "Days — the month", "The
+SANS calendar", "The Inputs calendar".)*
+
 **THE OUTSIDE-CLICK RULE DOES NOT APPLY TO THIS SURFACE.** Read that before
 changing anything here. The app has two transient surfaces and this is a third
 kind:
@@ -9483,11 +9501,11 @@ without it shows a group as separate lines.
 
 ## Inputs calendar and SANS demand — D580
 
-**SUPERSEDED IN PART, 8 Oct 26 — the SANS half:** the SANS tab is the screen described just above. What this section
-says of SANS cells showing "offered/required", amber and red from two cut-offs, an admin editing the target and the
-flying period in the day's details, "Select dates" on the SANS calendar, the SANS mode's own filters and its List
-is the first build's and is gone. What it says of the Inputs tab — its header, Calendar / List, filters, the
-saved-row reveal — stands until the Inputs calendar is re-made (step 5). The text below is unchanged.
+**SUPERSEDED WHOLE, 8 Oct 26:** the SANS half by "The SANS calendar" just above — what this section says of SANS cells
+showing "offered/required", amber and red from two cut-offs, an admin editing the target and the flying period in the
+day's details, "Select dates" on the SANS calendar, the SANS mode's own filters and its List is the first build's and
+is gone; the Inputs half by "The Inputs calendar" (step 5: three tabs, a month of bars, the day and the editor as
+windows; D672 for what a saved input shows). The text below is the first build's record, unchanged.
 
 D581: every SANS date shows unique people offering F/Fly, O/OFT and A/AMT,
 independent of filters and using existing covered-date/year semantics. The flying

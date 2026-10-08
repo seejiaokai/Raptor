@@ -263,6 +263,36 @@ Grouped by area. Each is the short rule; the source has the full story.
   owner's iPhone is the gate.
 - **Day cells stay one memoised `PersonMonth` per month** — inline rendering
   re-reconciled all ~21,000 cells on every month draw.
+- **The four rows at the foot of the Manning block hear two stores and wake
+  nothing else** (Required P / W, Available P / W — the Inputs / SANS calendar
+  job, 8 Oct 26; `leavewar/ui/FlyRows.tsx`). Their figures are the scheduler's
+  records and their counts are the war's, so the component subscribes ITSELF to
+  both signals (`sync.ts usePlanVersion`, `useWarFacts`): `Matrix` and the memo
+  firewall above are untouched, and a scheduler notify still reaches nothing
+  else in the hidden tree. Each drawn month's cells are ONE memo, keyed on a
+  signature of what the one resolver ANSWERED for that month (`sync.ts
+  flyMonth`) — never on the records dated inside it: a running figure or a
+  weekday rule that began months earlier moves the answers, and a memo keyed on
+  the month's own rows would miss it. They follow the row contract above to the
+  letter (`who`, `bal`, the two placeholders, one cell per drawn day), and a
+  cell at rest has NO children — the typing box and the working are drawn
+  once, outside the row, and the corner mark is a class and a title. Measured on the built bundle,
+  8 Oct 26 (`scripts/handpass/cal-lw-nodes.mjs`): 1,482 nodes of the grid's
+  23,857 with the whole year drawn on a desktop (6.2%), 506 of 8,441 over a
+  phone's four months — one node a drawn day and row; the e2e band (31,700)
+  was not raised and has ~7,800 to spare. Don't hand these rows props from
+  `Matrix`'s render, don't key the memo on the month's records, don't give a
+  resting cell a child.
+- **What the calendars read from the war is PULLED and kept per date**
+  (`sync.ts warFactsVersion` / `dayFacts`, the same job). The version is
+  worked out on read from a handful of identity comparisons (the roster, the
+  count rows, the event types, each period) — no second store, no write, no
+  grid repaint; a date's answer is kept until that version moves, and dropped
+  whole then. It is NOT the OIL-only Raptor notify, which stays narrow so a
+  leave bid never repaints the board. The SANS month, the Inputs month and
+  the "Calendar" window are ordinary React months of 35 to 42 dates, outside
+  the perf gate; on a phone the Inputs month measures its lanes once per
+  resize (`inputscal-model.ts fitLanes`), never per paint.
 
 ## The device gate
 This container runs Blink (Chromium) only — **no WebKit binary**. Anything whose

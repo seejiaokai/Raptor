@@ -696,6 +696,12 @@ tests named for it, puts the line back, and says which breaks no test caught. It
 `2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen), `2026-10-08-counters-among.json` (D674: twenty-five) and
 `2026-10-08-inputs-undo-landing.json` (the Inputs list's landing after an Undo: seven).
 `2026-10-08-sans-calendar.json` is step 4's (the SANS calendar: sixty-five).
+`2026-10-08-inputs-calendar.json` is step 5's (the Inputs calendar: eighty-one) and `2026-10-08-shared-input.json` the
+shared input's (one input filed for several people: forty-one).
+`scripts/handpass/group-look.mjs` - a LOOK, not a gate: pictures of an input filed for several people in the running
+build (the people picker, the opened day's one line, the List's one row, the editor window), phone and desktop.
+`scripts/handpass/cal-lw-nodes.mjs` - a MEASUREMENT, not a gate: what the Leave War's four rows cost the grid in DOM
+nodes, phone and desktop, admin and member - the figure in `docs/performance.md` section E.
 `scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
 grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26). He chose A (D678); it is built.
 `scripts/handpass/lw-phone-head-measure.mjs` - measures the Leave War's top area (every control's words, box, padding and
@@ -775,6 +781,9 @@ thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and stor
 `sans-calendar-model.test.ts` pins flags, hours, years and spans. `src/ui/SansCalendarControls.tsx`
 provides explicit flying-period SVGs and admin forms. `src/ui/inputs-calendar-flow.test.tsx`
 pins main embedded calendar/secondary list, demand/icons, member controls and reverse range seeds.
+*(What those two test files pin NOW, 8 Oct 26: `src/ui/sans-calendar-model.test.ts` - `inputsInMode` alone (the Inputs tab
+and the SANS tab each take their own inputs; the counting moved to `state/sansfly.test.ts`);
+`src/ui/inputs-calendar-flow.test.tsx` - re-pointed at the re-made Inputs page.)*
 `docs/handpass/2026-10-05-inputs-sans-calendar.md` is the FULL roll-call/evidence sheet.
 `e2e/inputs-sans-calendar.spec.ts` pins production save/reload/count, settings,
 date gestures, member doors and phone reach. Its project match is in Playwright config.
