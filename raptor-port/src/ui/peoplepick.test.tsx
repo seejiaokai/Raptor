@@ -1,0 +1,228 @@
+// @vitest-environment jsdom
+/* THE PEOPLE PICKER (owner D656, D659, D655, D658 — 7 Oct 26; the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13, "The picker").
+
+   D656: "hybrid" — one person from an A-to-Z list by default, as today; a switch for several people then shows the
+   pucks in groups — Pilots, WSOs and SANS — each A to Z, drawn compact. D659: a fourth heading, "Personnel", for ground
+   crew, shown only where the roster holds ground crew. D655: a member files for others only duties and commitments;
+   D658: never SANS availability. The plan: switching back to one person keeps the first one picked; NOTHING is ever
+   substituted for what he picked — where a change of kind leaves people picked that he may not file that kind for, the
+   picker keeps them shown, says why in one line, and one press offers the correction. */
+import { act, useState } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { PeoplePick, pickProblem } from './PeoplePick'
+import { initStore, setSession } from '../state/store'
+import { setMembersFile } from '../state/memberfile'
+import { me } from '../state/perms'
+import { setMe } from '../state/auth'
+import { PEOPLE } from '../engine/people'
+import { storeBackend } from '../engine/hooks'
+;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+
+let host: HTMLDivElement, root: Root
+const seed = JSON.stringify(PEOPLE)
+const $ = (sel: string) => host.querySelector(sel) as HTMLElement | null
+const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
+const tid = (id: string) => $(`[data-testid="${id}"]`)
+const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
+const live = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+const cs = (id: string) => PEOPLE[id].cs as string
+const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
+const pilots = () => az(live().filter(id => !PEOPLE[id].san && !PEOPLE[id].pers && PEOPLE[id].seat !== 'RCP'))
+const wsos = () => az(live().filter(id => !PEOPLE[id].san && !PEOPLE[id].pers && PEOPLE[id].seat === 'RCP'))
+const sans = () => az(live().filter(id => PEOPLE[id].san))
+const ground = () => az(live().filter(id => PEOPLE[id].pers && !PEOPLE[id].san))
+const group = (k: string) => $(`[data-ppgroup="${k}"]`)
+const pucksIn = (k: string) => [...(group(k)?.querySelectorAll('[data-pp]') || [])].map(b => b.getAttribute('data-pp')!)
+const puckBtn = (id: string) => $(`[data-pp="${id}"]`)!
+
+let got: { people: string[]; several: boolean }
+function Harness({ people, several, type, sansOnly }: { people: string[]; several: boolean; type: string; sansOnly?: boolean }) {
+  const [st, setSt] = useState({ people, several })
+  got = st
+  return <PeoplePick people={st.people} several={st.several} type={type} sansOnly={sansOnly}
+    onChange={(p, s) => setSt({ people: p, several: s })} />
+}
+/* the member Ranger (`bane`); the admin is Saber (`stiff`) */
+const asMember = () => { setSession({ user: 'bane', role: 'main' }); setMe('bane') }
+const mount = async (p: { people: string[]; several?: boolean; type?: string; sansOnly?: boolean }) =>
+  act(async () => { root.render(<Harness people={p.people} several={!!p.several} type={p.type || 'Meeting'} sansOnly={p.sansOnly} />) })
+
+beforeEach(() => {
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, JSON.parse(seed))
+  const mem = new Map<string, string>()
+  storeBackend.impl = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v), keys: () => [...mem.keys()] }
+  initStore(); setSession({ user: 'stiff', role: 'admin' }); setMe('stiff')
+  host = document.createElement('div'); document.body.append(host); root = createRoot(host)
+})
+afterEach(async () => { await act(async () => { root.unmount() }); host.remove() })
+
+describe('one person — the default, as today (D656)', () => {
+  it('an admin sees the A-to-Z list of everyone, with no pucks until he asks for several', async () => {
+    await mount({ people: [pilots()[0]] })
+    const sel = $('#inpEditPerson') as HTMLSelectElement
+    expect(sel, 'the list').toBeTruthy()
+    expect([...sel.options].map(o => o.value)).toEqual(az(live()))
+    expect(sel.value).toBe(pilots()[0])
+    expect($$('[data-pp]')).toHaveLength(0)
+    expect(tid('pp-several')!.getAttribute('aria-checked')).toBe('false')
+  })
+  it('picking another man from the list files it for him', async () => {
+    await mount({ people: [pilots()[0]] })
+    const sel = $('#inpEditPerson') as HTMLSelectElement
+    await act(async () => { sel.value = wsos()[1]; sel.dispatchEvent(new Event('change', { bubbles: true })) })
+    expect(got).toEqual({ people: [wsos()[1]], several: false })
+  })
+  it('an archived man and the placeholder pucks are never offered', async () => {
+    const gone = pilots()[2]
+    PEOPLE[gone].archived = true
+    await mount({ people: [pilots()[0]], several: true })
+    expect(puckBtn(gone)).toBeNull()
+    expect($$('[data-pp]').some(b => PEOPLE[b.getAttribute('data-pp')!].special)).toBe(false)
+  })
+})
+
+describe('"Several people" — the pucks in groups (D656, D659)', () => {
+  it('the switch shows Pilots, WSOs and SANS, each A to Z — a SANS man under SANS only', async () => {
+    await mount({ people: [pilots()[0]] })
+    await click(tid('pp-several'))
+    expect(got.several).toBe(true)
+    expect(tid('pp-several')!.getAttribute('aria-checked')).toBe('true')
+    expect(pucksIn('pilots')).toEqual(pilots())
+    expect(pucksIn('wsos')).toEqual(wsos())
+    expect(pucksIn('sans')).toEqual(sans())
+    expect(sans().length, 'the demo roster holds SANS people').toBeGreaterThan(0)
+    for (const s of sans()) expect($$(`[data-pp="${s}"]`), 'once').toHaveLength(1)
+    expect($('#inpEditPerson'), 'the one-person list has gone').toBeNull()
+  })
+  it('the man already picked stays picked — lit; the rest are dimmed', async () => {
+    await mount({ people: [wsos()[0]] })
+    await click(tid('pp-several'))
+    expect(got.people).toEqual([wsos()[0]])
+    expect(puckBtn(wsos()[0]).getAttribute('aria-pressed')).toBe('true')
+    expect(puckBtn(pilots()[0]).getAttribute('aria-pressed')).toBe('false')
+  })
+  it('each person is the schedule’s own puck, and a button that says who it is', async () => {
+    await mount({ people: [pilots()[0]], several: true })
+    const b = puckBtn(sans()[0])
+    expect(b.tagName).toBe('BUTTON')
+    expect(b.getAttribute('aria-label')).toBe(cs(sans()[0]))
+    expect(b.querySelector('.puck'), 'ui/html.ts puck()').toBeTruthy()
+    expect(b.querySelector('.puck')!.hasAttribute('tabindex'), 'one stop for the keyboard: the button').toBe(false)
+  })
+  it('a press picks a man, a second press lets him go, and a line counts them', async () => {
+    await mount({ people: [pilots()[0]], several: true })
+    await click(puckBtn(wsos()[0])); await click(puckBtn(sans()[0]))
+    expect(got.people).toEqual([pilots()[0], wsos()[0], sans()[0]])
+    expect(tid('pp-count')!.textContent).toBe('3 picked')
+    await click(puckBtn(wsos()[0]))
+    expect(got.people).toEqual([pilots()[0], sans()[0]])
+    expect(tid('pp-count')!.textContent).toBe('2 picked')
+  })
+  it('"All" on Pilots picks every pilot and leaves the others as they were; a second press clears that group', async () => {
+    await mount({ people: [wsos()[0]], several: true })
+    await click(tid('pp-all-pilots'))
+    expect(new Set(got.people)).toEqual(new Set([wsos()[0], ...pilots()]))
+    expect(tid('pp-all-pilots')!.getAttribute('aria-pressed')).toBe('true')
+    await click(tid('pp-all-pilots'))
+    expect(got.people).toEqual([wsos()[0]])
+    await click(tid('pp-all-wsos'))
+    expect(new Set(got.people)).toEqual(new Set(wsos()))
+  })
+  it('Personnel — ground crew — is a fourth heading with its own "All" (D659)', async () => {
+    expect(ground().length, 'the demo roster holds ground crew').toBeGreaterThan(0)
+    await mount({ people: [pilots()[0]], several: true })
+    expect(group('personnel')!.textContent).toContain('Personnel')
+    expect(pucksIn('personnel')).toEqual(ground())
+    await click(tid('pp-all-personnel'))
+    expect(got.people).toEqual([pilots()[0], ...ground()])
+  })
+  it('a roster with no ground crew has no such heading (D656: the three he named)', async () => {
+    for (const id of ground()) delete (PEOPLE as any)[id]
+    await mount({ people: [pilots()[0]], several: true })
+    expect(group('personnel')).toBeNull()
+    expect(group('pilots')).toBeTruthy(); expect(group('wsos')).toBeTruthy(); expect(group('sans')).toBeTruthy()
+  })
+  it('back to one person keeps the FIRST one picked (D656, reading 4)', async () => {
+    await mount({ people: [wsos()[1], pilots()[0], sans()[0]], several: true })
+    await click(tid('pp-several'))
+    expect(got).toEqual({ people: [wsos()[1]], several: false })
+    expect(($('#inpEditPerson') as HTMLSelectElement).value).toBe(wsos()[1])
+  })
+  it('the last man is not let go by a press: an input is for somebody', async () => {
+    await mount({ people: [pilots()[0]], several: true })
+    await click(puckBtn(pilots()[0]))
+    expect(got.people).toEqual([pilots()[0]])
+  })
+})
+
+describe('the SANS calendar’s "+ Commitment" — SANS people only (D658)', () => {
+  it('an admin’s list and pucks hold the SANS people and nobody else', async () => {
+    await mount({ people: [sans()[0]], type: 'SANS Availability', sansOnly: true })
+    expect([...($('#inpEditPerson') as HTMLSelectElement).options].map(o => o.value)).toEqual(sans())
+    await click(tid('pp-several'))
+    expect($$('[data-pp]').map(b => b.getAttribute('data-pp'))).toEqual(sans())
+    expect(group('pilots')).toBeNull(); expect(group('wsos')).toBeNull(); expect(group('personnel')).toBeNull()
+  })
+})
+
+describe('where the switch shows, and what it says when it may not be used', () => {
+  it('an admin gets no switch on a medical entry or an upchit — each needs its own document (D655, reading 4)', async () => {
+    await mount({ people: [pilots()[0]], type: 'ATT C' })
+    expect(tid('pp-several')).toBeNull()
+    expect($('#inpEditPerson'), 'he still picks the one man').toBeTruthy()
+  })
+  it('a member, on a duty or commitment, gets the list and the switch — starting on himself', async () => {
+    asMember()
+    await mount({ people: [me()!], type: 'Meeting' })
+    expect(($('#inpEditPerson') as HTMLSelectElement).value).toBe(me())
+    expect(tid('pp-several')).toBeTruthy()
+  })
+  it('a member, on leave: his own callsign as a value — no list, no switch (D655)', async () => {
+    asMember()
+    await mount({ people: [me()!], type: 'LL' })
+    expect($('#inpEditPerson')).toBeNull()
+    expect($('#inpEditPersonFixed')!.textContent).toBe(cs(me()!))
+    expect(tid('pp-several')).toBeNull()
+  })
+  it('a member with the setting switched off files for himself only', async () => {
+    setMembersFile(false)
+    asMember()
+    await mount({ people: [me()!], type: 'Meeting' })
+    expect($('#inpEditPerson')).toBeNull()
+    expect(tid('pp-several')).toBeNull()
+  })
+  it('a member never files SANS availability for another man (D658)', async () => {
+    asMember()
+    await mount({ people: [me()!], type: 'SANS Availability', sansOnly: true })
+    expect($('#inpEditPerson')).toBeNull()
+    expect(tid('pp-several')).toBeNull()
+  })
+  it('a change of kind under several people keeps them shown, says why, and one press corrects it — a member', async () => {
+    asMember()
+    const other = pilots().find(p => p !== me())!
+    await mount({ people: [me()!, other], several: true, type: 'LL' })
+    expect(puckBtn(other).getAttribute('aria-pressed'), 'nothing is substituted').toBe('true')
+    expect(tid('pp-why')!.textContent).toContain('You can file leave only for yourself')
+    expect(pickProblem([me()!, other], true, 'LL')!.why).toBe('You can file leave only for yourself')
+    expect(tid('pp-fix')!.textContent).toBe('File it for me only')
+    await click(tid('pp-fix'))
+    expect(got).toEqual({ people: [me()!], several: false })
+    expect(tid('pp-why')).toBeNull()
+  })
+  it('the same for an admin who turns a group into a medical entry: "Keep <first> only"', async () => {
+    const [a, b] = [pilots()[1], wsos()[0]]
+    await mount({ people: [a, b], several: true, type: 'ATT C' })
+    expect(tid('pp-why')!.textContent).toContain('one person at a time')
+    expect(tid('pp-fix')!.textContent).toBe(`Keep ${cs(a)} only`)
+    await click(tid('pp-fix'))
+    expect(got).toEqual({ people: [a], several: false })
+  })
+  it('nothing to say while what is picked may be filed', async () => {
+    await mount({ people: [pilots()[0], wsos()[0]], several: true, type: 'Meeting' })
+    expect(tid('pp-why')).toBeNull()
+    expect(pickProblem([pilots()[0], wsos()[0]], true, 'Meeting')).toBeNull()
+  })
+})

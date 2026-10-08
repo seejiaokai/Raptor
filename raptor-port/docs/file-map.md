@@ -649,6 +649,16 @@ when, the LATE tag (D646), who placed it (D629); a saved or brought-back input i
 flashes; only one with no bar opens its day). `inputsday.test.tsx`.
 THE KEYBOARD on the Inputs month (D621) is `InputsCal.tsx onKey`: one tab stop, arrows, Shift + arrows for a run, Enter,
 Escape (the open day, then the run), and Delete on a line of the opened day, which asks first. `inputskeys.test.tsx`.
+`src/ui/PeoplePick.tsx` - THE PEOPLE PICKER (D656, D659): who an input is for, on the Inputs page's editor window. One
+person from the A-to-Z list by default; a "Several people" switch shows the schedule's own pucks (`html.ts puck()`) in
+groups - Pilots, WSOs, SANS, and Personnel where the roster holds ground crew - each a button, "All" per group, a count
+line. Holds no state and writes nothing: `ui/inputedit.tsx InputEditor` keeps `ppl` / `several` and saves through
+`commitGroup`. `pickProblem` is the one sentence for people he may not file a kind for (the picker's line and the
+Save's refusal); `pickRoster` the people offered (SANS only on the SANS calendar). Tests `peoplepick.test.tsx`; the
+editor's half - the entry opened as one thing, "Take me out", Delete for everyone (`inputedit.tsx removeEntry`), the
+OIL question asked once, the people followed behind the window - `groupeditor.test.tsx`. `state/inputgroup.ts
+entryRowsOf` is the entry a record belongs to.
+
 `src/ui/InputsSettings.tsx` - THE INPUTS CALENDAR'S SETTINGS, the window behind its gear (`win-inputsset`, `pops.ts
 INPSET`; D639, D628, D654 / D655): "Calendar…", the late cut-off for inputs, and the members' switch - a draft until
 Save, each change one Undo step. `src/ui/CutFields.tsx` - the cut-off's fields and worked date, ONE body for this window

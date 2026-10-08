@@ -254,3 +254,40 @@ body.in-cal{padding-bottom:0}
   .floatwin.inpedwin{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
   .inped-ask .abtn{min-height:44px}
 }
+
+/* THE PEOPLE PICKER (owner D656, D659 — ui/PeoplePick.tsx). One person: the editor's own list, with the "Several
+   people" switch beside it. Several: the schedule's own pucks in groups, drawn COMPACT — four across on a phone, more
+   where there is room — picked ones lit, the rest dimmed (the puck itself is never restyled: only its button is). */
+.pp-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pp-top{display:flex;align-items:center;gap:8px;min-width:0}
+.pp-top select{flex:1 1 auto;min-width:0}
+.pp-top .inped-v,.pp-count{flex:1 1 auto;min-width:0}
+.pp-count{font-size:12px;font-weight:700;color:var(--ink-2)}
+.pp-sw{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 11px 0 9px;border:1px solid var(--edge-2);
+  border-radius:999px;background:transparent;color:var(--ink-2);font:600 12px inherit;cursor:pointer;white-space:nowrap}
+.pp-sw-dot{width:26px;height:14px;border-radius:999px;background:var(--edge-2);position:relative;flex:0 0 auto;transition:background .12s}
+.pp-sw-dot::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--ink-2);transition:transform .12s}
+.pp-sw.on{border-color:var(--accent);color:var(--ink)}
+.pp-sw.on .pp-sw-dot{background:var(--accent)}
+.pp-sw.on .pp-sw-dot::after{transform:translateX(12px);background:#fff}
+.pp-sw:focus-visible,.pp-all:focus-visible,.pp-puck:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pp-why{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--adv);border-radius:9px;font-size:12px;line-height:1.35;color:var(--ink)}
+.pp-why span{flex:1 1 160px}
+.pp-why .abtn{min-height:36px;padding:6px 12px;font-size:12px}
+.pp-group{display:flex;flex-direction:column;gap:5px;min-width:0}
+.pp-gh{display:flex;align-items:center;gap:8px}
+.pp-gh b{font:700 11px 'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.pp-all{min-height:24px;padding:0 9px;border:1px solid var(--edge-2);border-radius:999px;background:transparent;color:var(--ink-2);font:600 11px inherit;cursor:pointer;position:relative}
+.pp-all::after{content:'';position:absolute;inset:-8px -4px}
+.pp-all.on{border-color:var(--accent);color:var(--ink)}
+.pp-pucks{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:5px}
+.pp-puck{display:flex;min-width:0;padding:2px;border:1px solid transparent;border-radius:8px;background:transparent;cursor:pointer;opacity:.5}
+.pp-puck>span{display:flex;min-width:0;flex:1 1 auto}
+.pp-puck .puck{pointer-events:none;flex:1 1 auto;min-width:0;max-width:100%}
+.pp-puck.on{opacity:1;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+@media (hover:hover){.pp-puck:hover{opacity:.85}.pp-puck.on:hover{opacity:1}}
+@media (max-width:620px){
+  .pp-pucks{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  .pp-sw,.pp-why .abtn{min-height:44px}
+  .pp-puck{min-height:36px;align-items:center}
+}

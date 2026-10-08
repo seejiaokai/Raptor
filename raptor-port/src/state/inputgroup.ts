@@ -61,6 +61,14 @@ export function entriesOf(inputs: readonly any[], nameOf: (pid: string) => strin
   return out
 }
 
+/** The records of the entry a record belongs to — itself alone for an ordinary input (and for a record that has left
+ *  its group by being changed alone). The editor, a dragged bar and a day's line all ask this one function. */
+export function entryRowsOf(inputs: readonly any[], r: any): any[] {
+  if (!r) return []
+  if (r.grp == null || r.grp === '') return [r]
+  return entriesOf(inputs).find(e => e.rows.includes(r))?.rows || [r]
+}
+
 /* ---- the check at the write --------------------------------------------------------------------------------------
    Asked only of the groups a command TOUCHED: a fault that lives only in records already stored is not this
    command's to refuse (D56), and an untouched group cannot have been broken by it. */
