@@ -654,3 +654,102 @@ test('a member files a meeting for himself and another man from the month: ONE b
   expect(left[0]).not.toBe(other)
   await expect(page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })).toHaveCount(0)
 })
+
+/* THE CALENDAR JOB'S BUG CHECK (8 Oct 26 — docs/handpass/2026-10-08-inputs-sans-calendar-check.md, findings W1 to W5).
+   Each of these was SEEN going wrong in the running build by the host (scripts/handpass/cal-host-leads.mjs) before it
+   was fixed; the rules are unit tests (ui/dayswindow.test.tsx, ui/floatwindow.test.tsx, ui/editorwindow.test.tsx).
+   What only a real browser says: that real focus and a real Escape reach the right window, that a real press on a
+   bar behind the editor raises the question, and that four screens print one word for one holiday. */
+test('Escape closes the window in FRONT — the settings window over the editor: the editor keeps what was typed, and is then the front one', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [iid] = await file(page, [{ who: 0, type: 'Meeting', from: 'Oct 13', timed: [600, 660] }])
+  await page.locator(`.ib-bar[data-iid="${iid}"]`).first().click()
+  await expect(edWin(page)).toBeVisible()
+  await page.locator('#inpEditRmk').fill('typed, not saved')
+  await page.locator('#inGear').click()
+  const settings = page.locator('[data-testid="win-inputsset"]')
+  await expect(settings).toBeVisible()
+  await expect(settings).toHaveClass(/front/)
+  await page.locator('[data-testid="iset-cancel"]').focus()
+  await page.keyboard.press('Escape')
+  await expect(settings, 'the window in front closed').toHaveCount(0)
+  await expect(edWin(page), 'the editor behind it stayed').toBeVisible()
+  await expect(page.locator('#inpEditRmk')).toHaveValue('typed, not saved')
+  await expect(edWin(page), 'and the one left is in front').toHaveClass(/front/)
+  await page.locator('#inpEditRmk').focus()
+  await page.keyboard.press('Escape')
+  await expect(edWin(page)).toHaveCount(0)
+  expect(await page.evaluate(iid => (window as any).INPUTS.find((r: any) => r.iid === iid)?.remarks, iid), 'nothing was saved').not.toBe('typed, not saved')
+})
+
+test('one more person picked in a shared input, nothing else touched: a press on another bar ASKS, and the picked people stay', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 7)
+  /* the demo's shared input: a meeting for four on Thu 23 Jul */
+  await cell(page, '2026-07-23').focus()
+  await page.keyboard.press('Enter')
+  await dayWin(page).locator('[data-testid="idy-people"]').first().click()
+  await expect(edWin(page)).toBeVisible()
+  const picked = page.locator('#inpEditPop .pp-pucks button[aria-pressed="true"]')
+  await expect(picked).toHaveCount(4)
+  await page.locator('#inpEditPop .pp-pucks button[aria-pressed="false"]').first().click()
+  await expect(picked).toHaveCount(5)
+  /* another input's bar, clear of both windows, pressed for real */
+  const at = await page.evaluate(() => {
+    const wins = [...document.querySelectorAll('.floatwin')].map(w => w.getBoundingClientRect())
+    for (const b of document.querySelectorAll('.ib-bar[data-iid]')) {
+      const r = b.getBoundingClientRect(); const x = r.left + Math.min(12, r.width / 2), y = r.top + r.height / 2
+      if (r.width < 8 || wins.some(w => x >= w.left && x <= w.right && y >= w.top && y <= w.bottom)) continue
+      const hit = document.elementFromPoint(x, y)
+      if (hit && (hit === b || b.contains(hit)) && !/Meeting/.test(b.textContent || '')) return { x, y }
+    }
+    return null
+  })
+  expect(at, 'a bar clear of the windows').not.toBeNull()
+  await page.mouse.click(at!.x, at!.y)
+  await expect(page.locator('[data-testid="inped-swap"]'), 'it asks before it shows the other input').toBeVisible()
+  await expect(picked, 'and the five he picked are still picked').toHaveCount(5)
+  await expect(page.locator('.toast, [role="status"]').filter({ hasText: /changed while this window was open/i }), 'no false "changed behind it" message').toHaveCount(0)
+  await page.locator('[data-testid="inped-swap-stay"]').click()
+  await expect(picked).toHaveCount(5)
+})
+
+test('one holiday, one word: "ND" for a National Day on the "Calendar" month, the Inputs month, the SANS month and the Leave War', async ({ page }) => {
+  await login(page); await go(page, 'leavewar')
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-days"]').click()
+  await expect(page.locator('[data-testid="win-days"]')).toBeVisible()
+  if (await page.locator('[data-testid="days-tabs"]').count()) await page.locator('[data-testid="days-tab-holidays"]').click()
+  await page.locator('[data-testid="hol-add"]').click()
+  await page.locator('[data-testid="hol-name"]').fill('National Day')
+  await page.locator('[data-testid="hol-short"]').fill('ND')
+  for (let i = 0; i < 24; i++) {
+    const [name, year] = (await page.locator('[data-testid="holcal-month"]').innerText()).trim().toLowerCase().split(/\s+/)
+    const d = 2026 * 12 + 7 - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name.slice(0, 3))))
+    if (!d) break
+    await page.locator(`[data-testid="${d > 0 ? 'holcal-next-month' : 'holcal-prev-month'}"]`).click()
+  }
+  await page.locator('[data-testid="holcal-day-2026-08-05"]').click()
+  await page.locator('[data-testid="hol-save"]').click()
+  if (await page.locator('[data-testid="days-tabs"]').count()) await page.locator('[data-testid="days-tab-month"]').click()
+  for (let i = 0; i < 24; i++) {
+    const [name, year] = (await page.locator('[data-testid="days-month"]').innerText()).trim().toLowerCase().split(/\s+/)
+    const d = 2026 * 12 + 7 - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name.slice(0, 3))))
+    if (!d) break
+    await page.locator(`[data-testid="${d > 0 ? 'days-next' : 'days-prev'}"]`).click()
+  }
+  const calTag = page.locator('[data-testid="days-tag-2026-08-05"]')
+  await expect(calTag, 'the "Calendar" month').toHaveText('ND')
+  await expect(calTag).toHaveAttribute('title', 'National Day - public holiday')
+  await page.locator('[data-testid="win-days-x"]').click()
+  await go(page, 'inputs'); await month(page, 2026, 8)
+  await expect(page.locator('[data-testid="ib-tag-2026-08-05"]'), 'the Inputs month').toHaveText('ND')
+  await page.locator('#inSansMode').click()
+  await expect(page.locator('[data-testid="sanscal"]')).toBeVisible()
+  for (let i = 0; i < 24; i++) {
+    const [name, year] = (await page.locator('[data-testid="sc-month"]').innerText()).trim().toLowerCase().split(/\s+/)
+    const d = 2026 * 12 + 7 - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name.slice(0, 3))))
+    if (!d) break
+    await page.locator(`[data-testid="${d > 0 ? 'sc-next' : 'sc-prev'}"]`).click()
+  }
+  await expect(page.locator('[data-testid="sc-tag-2026-08-05"]'), 'the SANS month').toHaveText('ND')
+})

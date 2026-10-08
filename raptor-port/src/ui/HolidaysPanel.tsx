@@ -37,7 +37,7 @@
 import { useEffect, useState } from 'react'
 import { FloatWin } from './FloatWindow'
 import {
-  createOilPeriodFor, holidayAdd, holidayChange, holidayRemove, holidayWord, holidaysIn, openNewPeriod, uncoveredIn,
+  createOilPeriodFor, holidayAdd, holidayChange, holidayRemove, holidayShortHint, holidayWord, holidaysIn, openNewPeriod, uncoveredIn,
   MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayLine, type HolidayResult,
 } from '../leavewar/sync'
 import { RangePicker, type Range } from '../leavewar/ui/RangePicker'
@@ -226,7 +226,10 @@ export function HolidayForm({ line, year, onClose }: {
         </label>
         <label className="hol-f short">
           <span className="every-lab">On grid</span>
-          <input type="text" className="every-date" data-testid="hol-short" maxLength={3} value={short} autoComplete="off" autoCapitalize="characters"
+          {/* a NEW holiday's box shows the suggestion until he types in it - it follows the name, as the Event sheet's
+              does (D652 reading 1; it stayed empty until the calendar job's bug check, 8 Oct 26). Untouched, nothing
+              is sent and the store makes the same short form. A line being changed shows what it prints now. */}
+          <input type="text" className="every-date" data-testid="hol-short" maxLength={3} value={line || shortTouched ? short : holidayShortHint(kind, name)} autoComplete="off" autoCapitalize="characters"
             title="What the calendars and the Leave War grid print for it — one to three letters or digits"
             onChange={e => { edit(); setShortTouched(true); setShort(e.target.value.toUpperCase()) }} />
         </label>

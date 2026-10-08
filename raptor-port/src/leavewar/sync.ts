@@ -2282,6 +2282,14 @@ export function holidayWord(kind: 'ph' | 'off'): string {
   const k = kind === 'ph' ? 'off' : 'free'
   return getState().eventDefs.find(d => d.kind === k)?.name || (kind === 'ph' ? 'PH' : 'Off day')
 }
+/** WHAT A HOLIDAY OF THAT NAME WOULD PRINT with no short form typed for it - the SAME suggestion the Event sheet shows in
+ *  its "On grid" box (eventdefs.ts shortOf: a preset's own short form, else one made from the name), so the Holidays
+ *  list's form can show it as he types (D652 reading 1: "filled by itself from the name's initials ... exactly as on
+ *  the Event sheet - the same rule"). '' where the name gives nothing to print. */
+export function holidayShortHint(kind: 'ph' | 'off', name: string): string {
+  const s = shortOf(getState().eventDefs, name.trim() || holidayWord(kind), null)
+  return s === '•' ? '' : s
+}
 
 /* =====================================================================
    THE WAR READS THE FLYING PLAN — the second rider on this seam (the plan §3.1 point 2)

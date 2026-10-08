@@ -297,7 +297,8 @@ describe('"+ Add"', () => {
     expect(t('win-holiday').getAttribute('aria-modal')).toBe('false')
     expect(t('win-days')).toBeTruthy()
     expect(pressed('hol-kind-ph')).toBe('true'); expect(pressed('hol-kind-off')).toBe('false')
-    expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('')
+    /* the box shows what a nameless public holiday would print (D652 reading 1 - it was empty until 8 Oct 26) */
+    expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('PH')
     /* a date he did not choose is never saved (D671): none is picked for him */
     expect(picked()).toEqual(['', ''])
     expect(t('holcal-month').textContent).toMatch(/October\s+2026/i)
@@ -328,6 +329,32 @@ describe('"+ Add"', () => {
     expect(picked()).toEqual(['2026-10-30', '2026-11-02'])
     fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-10-30')).toMatchObject({ to: '2026-11-02' })
+  })
+  /* THE CALENDAR JOB'S BUG CHECK, 8 Oct 26 (D624's pair for "Adding one"). His ruling D652, reading 1: "the box is filled
+     by itself from the name's initials (National Day -> ND) and he can type over it, exactly as on the Event sheet -
+     the same rule". The Event sheet's box did; this one stayed empty until Save made the short form unseen. */
+  it('"On grid" fills itself from the name as he types, until he types in it himself', () => {
+    open(); add()
+    const box = () => (t('hol-short') as HTMLInputElement).value
+    expect(box(), 'a public holiday with no name of its own prints PH').toBe('PH')
+    type('hol-name', 'National Day')
+    expect(box()).toBe('ND')
+    type('hol-name', 'Deepavali')
+    expect(box(), 'it follows the name').toBe('DEE')
+    type('hol-short', 'dv')
+    expect(box(), 'typed: his, in capitals').toBe('DV')
+    type('hol-name', 'Deepavali eve')
+    expect(box(), 'and no longer re-suggested').toBe('DV')
+    pick('2026-11-09')
+    fireEvent.click(t('hol-save'))
+    expect(line(2026, '2026-11-09')).toMatchObject({ name: 'Deepavali eve', short: 'DV' })
+  })
+  it('left alone, the suggestion shown is the short form saved', () => {
+    open(); add()
+    type('hol-name', 'National Day'); pick('2026-11-10')
+    expect((t('hol-short') as HTMLInputElement).value).toBe('ND')
+    fireEvent.click(t('hol-save'))
+    expect(line(2026, '2026-11-10')).toMatchObject({ name: 'National Day', short: 'ND' })
   })
   it('Save writes ONE holiday in one Undo step, closes, and the list and the month follow', () => {
     open(); add()
@@ -385,7 +412,8 @@ describe('"+ Add"', () => {
     expect(t('win-holiday')).toBeTruthy()
     expect(t('hol-saved').textContent).toBe('Saved: Stand-down, Mon 28 – Wed 30 Dec.')
     expect(pressed('hol-kind-off')).toBe('true')
-    expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('')
+    /* the name cleared, the box back to the kept kind's own suggestion - nothing of the holiday just saved */
+    expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('OFF')
     /* nothing is picked for the next one — and the calendar is on the month of the day after */
     expect(picked()).toEqual(['', ''])
     expect(t('holcal-month').textContent).toMatch(/December\s+2026/i)

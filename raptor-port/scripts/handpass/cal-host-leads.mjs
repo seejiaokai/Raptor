@@ -153,6 +153,42 @@ const browser = await chromium.launch(launchOptions)
   await ctx.close()
 }
 
+/* ---- W7: a filing for several people in the changes window — ONE line, the names under it (D663) -------------------- */
+{
+  const { ctx, page, errors } = await world(browser)
+  await page.evaluate(() => window.go('inputs'))
+  await page.locator('#inpCal').waitFor()
+  await toMonth(page, page.locator('#inpCal .ic-mon'), page.locator('#icPrev'), page.locator('#icNext'), 2026, 7)
+  await page.locator('[data-icday="2026-07-15"]').focus()
+  await page.keyboard.press('Enter')
+  await tid(page, 'win-inputsday').waitFor()
+  await page.locator('#icPopAdd').click()
+  await page.locator('#inpEditPop [data-testid="pp-several"]').click()
+  for (let i = 0; i < 2; i++) await page.locator('#inpEditPop [data-ppgroup="pilots"] .pp-pucks button[aria-pressed="false"]').first().click()
+  const picked = await page.locator('#inpEditPop .pp-pucks button[aria-pressed="true"]').evaluateAll(bs => bs.map(b => b.getAttribute('aria-label')))
+  await page.locator('#inpEditType').selectOption({ label: 'Meeting' })
+  await page.locator('#inpEditSave').click()
+  await page.waitForTimeout(600)
+  const made = await page.evaluate(() => window.INPUTS.filter(r => r.type === 'Meeting' && r.date === 'Jul 15').length)
+  await page.evaluate(() => window.go('editsched'))
+  await page.waitForSelector('#eWeek .day')
+  await page.locator('button[title^="Every change on Wednesday"]').first().click()
+  await page.waitForSelector('.chgwin')
+  const all = page.locator('.chgwin :text("All changes")').first()
+  if (await all.count()) await all.click()
+  await page.waitForTimeout(400)
+  const seen = await page.evaluate(() => {
+    const w = document.querySelector('.chgwin')
+    const lines = [...w.querySelectorAll('.cw-l')].filter(l => /Meeting added/.test(l.textContent))
+    return { lines: lines.length, text: lines.map(l => l.textContent.replace(/\s+/g, ' ').trim()), names: [...w.querySelectorAll('[data-testid="cw-names"]')].map(n => n.textContent), head: [...w.querySelectorAll('.cw-ghname, .cw-what')].map(n => n.textContent).filter(t => /Meeting/.test(t)) }
+  })
+  await page.screenshot({ path: join(OUT, 'w7-changes-window.png') })
+  const want = [...picked].sort((a, b) => a.localeCompare(b)).join(' · ')
+  judge('W7', made === picked.length && seen.lines === 1 && seen.names.length === 1 && seen.names[0] === want,
+    `filed a Meeting on Wed 15 Jul for ${picked.length} (${picked.join(', ')}) — ${made} records; the changes window: ${seen.lines} "Meeting added" line(s), heading ${JSON.stringify(seen.head)}, names line ${JSON.stringify(seen.names)} (ONE line, and "${want}" under it)` + (errors.length ? ' · ERRORS ' + errors.join(' | ') : ''))
+  await ctx.close()
+}
+
 await browser.close()
 const bad = results.filter(r => !r.ok).length
 console.log(`\n${results.length - bad} of ${results.length} as they should be`)

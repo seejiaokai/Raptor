@@ -67,6 +67,8 @@
 .chgwin .cw-txt{display:block;margin-top:2px;color:var(--ink-2);overflow-wrap:anywhere}
 .chgwin .cw-txt s{color:var(--ink-3)}
 .chgwin .cw-txt b{color:#F2D699;font-weight:600}
+/* the men of one filing, listed once under its line (D663) — the window's quiet ink, wrapping where they are many */
+.chgwin .cw-names{display:block;margin-top:2px;font-size:11px;color:var(--ink-3);overflow-wrap:anywhere}
 .chgwin .cw-none{color:var(--ink-3);font-size:12px;padding:10px 6px;font-style:italic}
 .chgwin .cw-out{font-size:12px}
 .chgwin .cw-out .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px}

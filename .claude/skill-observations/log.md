@@ -3213,3 +3213,48 @@ singleton by construction.
 
 **Principle:** A test id is unique only until the component is reused. Scope queries to the container the behaviour
 belongs to, and treat "a second instance now exists" as a change with its own blast radius in the tests.
+
+### Observation 479: A plan step that copies from a private folder into the repo needs the owner's word named in the plan
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 6 of a multi-step job: "the approved mock-ups redrawn with made-up figures into the repo". The redraw ran; the copy from the owner's private folder into the (public) repo was refused by the harness's own permission check, mid-run, with the owner away.
+**Skill:** writing-plans (and session-handoff)
+**Type:** open-source
+**Phase/Area:** Plan steps that move files across a privacy boundary
+
+**Issue:** The plan listed the copy as an ordinary records chore. Nothing in the plan or the handoff said that moving files out of a private source folder is an action a harness may stop and that only the owner can allow, so the step was reached unattended and had to be parked. A second surprise sat beside it: the plan named six pictures as carrying private figures; a seventh showed them behind a settings sheet and was found only by opening it.
+
+**Suggested improvement:** In writing-plans: any step that copies or publishes material from a private or out-of-repo source is written as its own step with (a) the owner's explicit go-ahead recorded beside it at planning time, and (b) "open every file before it crosses" as part of the step — never "the N files known to carry X". In session-handoff: list such steps under what needs the owner present.
+
+**Principle:** A privacy boundary is crossed by an explicit, pre-authorised step that looks at every item — never as a side effect of a records chore, and never from a list of the items "known" to be sensitive.
+
+### Observation 480: Writing the failing test for a reviewer's lead - and for its mirror case - found a second fault the lead did not name
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A FULL bug check. A reviewer asked for MISSING call sites named two from reading; the host reproduced both in the running app, then wrote the failing tests before fixing.
+**Skill:** test-driven-development (and receiving-code-review)
+**Type:** open-source
+**Phase/Area:** Red-first tests for a reviewer's finding
+
+**Issue:** The lead was "adding a person is not counted as unsaved work". The test for ADDING went red and then green with the one-line fix. The test for the mirror case - REMOVING a person - stayed red after the fix, for a different reason: a neighbouring effect was resetting the state while the question was on screen and emitting two false messages. Only the mirror case exposed it, because in the add case the reset happened to land on the same value. A second lead's fix (which window owns Escape) likewise exposed that "the front window" went stale once the front one closed.
+
+**Suggested improvement:** In test-driven-development, under "write the failing test": for a state-comparison bug, write the pair - the case reported AND its inverse (add / remove, open / close, first / last) - and assert the side effects too (messages shown, nothing else reset), before touching the code. In receiving-code-review: a reviewer's lead is a pointer to a region; after reproducing it, test the neighbours of the fix, not only the sentence in the report.
+
+**Principle:** A fix that makes one direction pass can leave the opposite direction broken by a different cause; test both directions and the visible side effects, because coincidence hides the second fault in the first.
+
+### Observation 481: A check left "to ride the final check" went stale for two build steps
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A job built in five steps, each ending on the full gate set, with two slower browser suites (a speed check and six adapted probes) recorded at each step as "NOT run - they ride the final check".
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Which checks may be deferred to the end of a multi-step build
+
+**Issue:** At the final check one deferred probe failed 2 of 54. The cause was not the app: two rulings built in steps 4 and 5 had changed what the probe counted, and nobody had re-pointed it. It took an investigation with a throwaway script to tell a stale check from a real fault (a row missing from a list would have looked the same).
+
+**Suggested improvement:** In verification-before-completion: a suite may be deferred only if it is cheap to triage later; any deferred suite that reads the surface a step changes is run at that step, or the step's record names it as "will need re-pointing: <which assertions>". The handoff's "NOT run" line should say which of the deferred suites touch what was built.
+
+**Principle:** Deferring a check defers its triage too, and a stale check is indistinguishable from a real failure until someone investigates - run the ones that read what you changed while the change is fresh.
