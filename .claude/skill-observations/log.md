@@ -3018,3 +3018,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** For any new surface added to an app with one global stylesheet: state and value classes are prefixed (`is-`, `c-`, `t-`) or scoped under the component's root, and the first check after the tests is a screenshot at each size BEFORE writing the browser test — it finds this class of fault in seconds.
 
 **Principle:** In a global stylesheet a short, meaningful class name is probably already taken. Prefix by habit, and look at the real page before trusting green unit tests about anything that has a size.
+
+### Observation 467: A tool the handoff tells the next session to re-run was never committed — the next session wrote it again
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A chat picking up a handoff whose first steps were "run the whole gate set, then run the strictness list that was written and not run".
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** what a handoff must leave in the repo
+
+**Issue:** The handoff listed fourteen rule-breaks to run "one at a time: change one line, run the named tests, put it back" and referred to "the proof script" the previous session had used all night. The script lived only in that session's scratch folder. The next session searched the repo, found nothing, and rebuilt the runner and the list from the prose before it could start.
+
+**Suggested improvement:** In the handoff skill's checklist: for every step the next session is told to RUN, name the command and confirm the thing it runs is committed (a `git ls-files` check on each path named). A list of cases to run goes into the repo as data beside its runner, not as a sentence.
+
+**Principle:** A handoff step is only as executable as its least-committed dependency. If the next session is told to run it, it is a deliverable — commit the runner and the cases, and write the command, not a description of the method.
+
+### Observation 468: Breaking the rule on purpose showed a passing browser test was standing on its own setup, not on the act it claimed to test
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same session: a real-browser test that an Undo leaves a list row where it is when the row is already on screen.
+**Skill:** test-driven-development / verification-before-completion
+**Type:** open-source
+**Phase/Area:** proving a new end-to-end test is strict
+
+**Issue:** The test edited a row, saved, measured the row's place, pressed Undo and asserted the place had not changed. With the rule under test deliberately broken ("always move the row to the top"), the test still passed: the SAVE in the setup runs the same code path, so the broken build had already moved the row before the "before" measurement — Undo then had nothing left to move. The unit-level breaks had all been caught; only running the break against the browser test exposed it.
+
+**Suggested improvement:** When the act under test shares a code path with a setup step, (a) reset that path's state between setup and act through the product's own controls, and (b) assert the pre-state against a value taken BEFORE the setup, not after it. And run at least one deliberate break against every new end-to-end test, in its own medium — a mutation list that only runs unit tests says nothing about the browser test.
+
+**Principle:** "Before and after are equal" proves nothing if the setup can already have produced the after. Anchor the pre-state to something the setup cannot have touched, and prove each test red in the medium it runs in.
+
+### Observation 469: A known shell trap, written in the notes twice, was walked into again — the note did not change the habit
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same session: multi-line edit scripts passed to an interpreter through a shell heredoc.
+**Skill:** raptor-executor (editing files by script on this machine)
+**Type:** internal
+**Phase/Area:** how edit scripts are written and run
+
+**Issue:** Both the project handoff and a saved memory say: write a multi-line edit script to a file with the file-writing tool, never through a shell heredoc (backslashes and quotes get eaten). The session still used heredocs for about ten scripts because the first few happened to work; one then turned an escaped line-break into a real one inside a committed script's header, which broke the script until it was repaired.
+
+**Suggested improvement:** Make it structural rather than remembered: a pre-tool hook that refuses a shell command containing `<<` followed by a `python`/`node` invocation in the same command, with the message "write the script with the Write tool and run the file". Or, cheaper: keep one committed helper that applies a list of exact find/replace pairs from a JSON file, so no ad-hoc script is needed at all.
+
+**Principle:** A trap that "usually works" will be walked into again however many notes describe it, because each success renews the habit. Rules of that kind need a guard that fires on the action, not a sentence that relies on recall.

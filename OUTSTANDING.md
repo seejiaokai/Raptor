@@ -52,6 +52,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
+**A test to steady, any time (found 8 Oct 26):** [LW-REQ-PICK-MONTH-UNSTEADY] — one Leave War browser test (the Required panel, phone size) failed once in a full run at its month-button step and passes alone and in the next whole run.
+
 **With step 5 of the calendar job, the Inputs calendar (found 8 Oct 26):** [INPUTS-LIST-NEXT-YEAR] — the Inputs list shows a next year's input among this year's dates, without its year, until it is edited (seen on the demo's 15 Feb 2027 OIL; the cause read in the code, to reproduce first).
 
 **After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
@@ -1167,6 +1169,19 @@ documented ceiling of 1,048,576 characters for a multi-line text column (to conf
 raised to the proposal itself. **Was to ask (answered above):** an example
 of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
 2,000 limit is.
+
+### [LW-REQ-PICK-MONTH-UNSTEADY] The Required-panel browser test's month-button step failed once inside a full run — test-only (filed 8 Oct 26)
+`raptor-port/e2e/leavewar.spec.ts` "several Required cells are picked with a drag and given one number, and the panel
+leaves the grid behind it working" (lw-phone) failed once in the full gate run on `claude/inputs-sans-calendar`
+(`a35fc26b`, 656 of 657): with the Required panel up it presses the second month button, waits for the grid to have
+moved, then presses the first one at once — and the grid stayed on February (the 5-second wait for it to come back ran
+out). Straight after: 8 of 8 alone, 40 of 40 run eight at a time, and green in a second whole run of the browser set
+(657 of 657). The change that run was checking (D674, the Inputs list's landing) does not touch the month buttons or
+the phone's window of months. The likely cause, NOT proven (it did not reproduce): the second press lands while the
+first jump is still settling the phone's rolling window of months — the family of `[LW-WINDOW-PRUNE-FLAKE-2]`. **Do
+(D87):** let the grid come to rest between the two presses (`settleGrid(page)`, the helper the file already has), not
+a fixed time — and if it can be reproduced first, check whether a person pressing two month buttons quickly can leave
+the grid on the wrong month. **Place:** test-only, low, any time; with `[LW-WINDOW-PRUNE-FLAKE-2]`.
 
 ### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
 `raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
