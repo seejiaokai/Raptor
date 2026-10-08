@@ -752,3 +752,17 @@ places are named and both seen). **Seen in the built bundle on a phone, both cal
 the week." (weight 700; the picture of the SANS fold opened by the host and sent to him). **Tests, red first:** the
 two that already held the sentence (`ui/inputsmonth.test.tsx`, `ui/sanscal.test.tsx`) now also hold which words are
 bold, in every shape the setting takes.
+
+## 20. His look, sixth — the filter button and the gear stay put (D693)
+
+His words, with two pictures from his iPhone: "Why did the setting button move? Can the filter and the setting button
+stay when the filter button is pressed". **Reproduced as a failing browser test first** (a phone, the Calendar and the
+List: the filter button’s box changed when it was pressed). Two causes, both fixed in the stylesheet alone: the
+opened fields stood between the two buttons and took a whole line (they are drawn after the row now), and — found
+by the same test once the first was fixed — the count of filters set widened the button, which on a row full to its
+last points sent the gear to a second line (the count is a badge on the button’s corner now). **Tier: LOOK taken as
+WALK** (layout of one row, drawn by two components; nothing that files, saves or counts). **The walk is the two
+real-browser tests, kept as gates:** shut, open, a filter set, shut again — the filter button, the gear and the
+Calendar | List switch each in the same box to the pixel; the fields under the row; nothing off sideways. The host
+opened the picture of the row shut and open. **Seen and told to him:** the count looks different — a small cyan badge
+on the corner where it was a number inside the button.

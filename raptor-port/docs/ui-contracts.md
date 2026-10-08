@@ -9453,6 +9453,12 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **On a phone the filter button and the gear do not move when the filters open (owner D693, 9 Oct 26 — from his iPhone).**
+  The folded fields stand between the two buttons in the page; opened, they are drawn AFTER the whole row (`order` on
+  `.inputs-filterfields.open`, 25-inputs-calendar.css), on a line of their own. And a filter being set does not widen
+  the button: its count is a small badge on the button's corner (`#inFiltersBtn .inputs-filter-count`, absolute), so
+  a row full to its last few points never sends the gear to a second line. Pinned to the pixel on the Calendar and the
+  List by `e2e/inputs-calendar.spec.ts` (D693). A desktop has no filter button.
 - **The Calendar | List switch keeps its place (owner D687, 9 Oct 26 — from his iPhone; his standing rule of 2 Sep 26).**
   It is drawn straight after the three tabs on BOTH views (`ui/InputsPage.tsx views` — its own piece; on the Calendar
   it is handed to `ui/InputsCal.tsx` as `lead`, before the month's arrows): on a desktop after the tabs on the one

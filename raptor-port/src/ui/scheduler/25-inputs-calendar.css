@@ -73,7 +73,17 @@
   .ic-nav{gap:4px}
   #inFiltersBtn{display:inline-flex}
   .inputs-top .inputs-filterfields{display:none}
-  .inputs-top .inputs-filterfields.open{display:flex;flex:1 0 100%;flex-wrap:wrap;align-items:end}
+  /* OPENED, THE FIELDS GO UNDER THE WHOLE ROW (owner D693, 9 Oct 26 — from his iPhone: "Why did the setting button move?
+     Can the filter and the setting button stay when the filter button is pressed"). They stand between the filter
+     button and the gear in the page, and a full line of them there dropped the gear under them and let the filter
+     button slide into its place. `order` draws them after everything else on the row; the row does not move. */
+  .inputs-top .inputs-filterfields.open{display:flex;flex:1 0 100%;flex-wrap:wrap;align-items:end;order:9}
+  /* ...AND A FILTER BEING SET DOES NOT WIDEN THE BUTTON (D693, the same finding): the count stood inside it, the button
+     grew by it, and on a row that is full to the last few points that sent the gear to a second line. The count is a
+     small badge on the button's corner; the button is one width whatever it says. */
+  #inFiltersBtn{position:relative}
+  #inFiltersBtn .inputs-filter-count{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;box-sizing:border-box;padding:0 4px;border-radius:999px;
+    background:var(--accent);color:#04222b;font-size:10px;font-weight:800;line-height:16px;text-align:center}
   .inputs-top .inputs-filterfields.open label{flex:1 1 calc(50% - 8px)}
   .inputs-top .inputs-filterfields.open label.inputs-search{flex-basis:100%}
   .inputs-top .inputs-filterfields.open label>span{position:static;width:auto;height:auto;clip:auto}

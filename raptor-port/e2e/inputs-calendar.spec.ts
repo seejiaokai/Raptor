@@ -965,3 +965,35 @@ for (const [name, vp, touch] of [['a phone', { width: 390, height: 844 }, true],
     } finally { await context.close() }
   })
 }
+
+/* THE FILTER BUTTON AND THE GEAR DO NOT MOVE WHEN THE FILTERS OPEN (owner D693, 9 Oct 26 — from his iPhone: "Why did the
+   setting button move? Can the filter and the setting button stay when the filter button is pressed"). The folded
+   fields stood between the two buttons, and opened they took a whole line — the gear fell under them and the filter
+   button slid into its place. On the Calendar and on the List: both buttons where they were, the fields under the row. */
+for (const view of ['the Calendar', 'the List'] as const) {
+  test(`a phone, ${view}: pressing the filter button moves neither it nor the gear; the fields open on their own line under the row (D693)`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL)
+    try {
+      if (view === 'the List') { await page.locator('#inListBtn').tap(); await expect(page.locator('#inpCal')).toHaveCount(0) }
+      const box = async (sel: string) => { const b = (await page.locator(sel).boundingBox())!; return [Math.round(b.x), Math.round(b.y), Math.round(b.width), Math.round(b.height)] }
+      const shut = { filter: await box('#inFiltersBtn'), gear: await box('#inGear'), views: await box('.inputs-views') }
+      await page.locator('#inFiltersBtn').tap()
+      await expect(page.locator('#inFilters')).toBeVisible()
+      expect(await box('#inFiltersBtn'), 'the filter button has not moved').toEqual(shut.filter)
+      expect(await box('#inGear'), 'nor the gear').toEqual(shut.gear)
+      expect(await box('.inputs-views'), 'nor the Calendar | List switch').toEqual(shut.views)
+      const f = await box('#inFilters')
+      expect(f[1], 'the fields are under the row, not in it').toBeGreaterThanOrEqual(shut.gear[1] + shut.gear[3])
+      expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
+      /* a filter chosen: its count is a badge on the button's corner — the button is no wider, so nothing moves */
+      await page.selectOption('#inFType', 'OL')
+      await expect(page.locator('#inFiltersBtn .inputs-filter-count')).toHaveText('1')
+      expect(await box('#inFiltersBtn'), 'with a filter set the button is where and as wide as it was').toEqual(shut.filter)
+      expect(await box('#inGear'), 'and so is the gear').toEqual(shut.gear)
+      await page.locator('#inFiltersBtn').tap()
+      await expect(page.locator('#inFilters')).toBeHidden()
+      expect(await box('#inFiltersBtn')).toEqual(shut.filter)
+      expect(await box('#inGear')).toEqual(shut.gear)
+    } finally { await context.close() }
+  })
+}
