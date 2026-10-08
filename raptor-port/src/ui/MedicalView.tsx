@@ -20,6 +20,7 @@
    your own puck or an admin, and on a Pending card the Upchit path itself.
    This view deliberately ignores the table's filter bar: it is the
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
+import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { inpType } from '../engine/inputs'
@@ -89,6 +90,8 @@ function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolea
       <span className="medcard-t">{line}</span>
       {n > 1 ? <span className="medcard-docn">{n} documents</span> : null}
       {remarkNote(r.remarks) ? <span className="medcard-r" title={r.remarks}>{r.remarks}</span> : null}
+      {/* who placed this entry and when (owner D629 — "wherever an entry is listed or opened"; ui/placedline.ts) */}
+      {placedLine(r) ? <span className="medcard-placed" data-testid="medcard-placed">{placedLine(r)}</span> : null}
     </button>
   )
 }

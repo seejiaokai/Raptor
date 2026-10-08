@@ -11,6 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
+import { placedLine } from './placedline'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
@@ -2084,6 +2085,9 @@ export function InputEditor() {
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>
             </div>
           </div>}
+          {/* who placed this input and when, and its last change — the editor's small print (owner D629; the one line
+              is ui/placedline.ts). Not on a new input, which nobody has placed yet. */}
+          {!isNew && r && placedLine(r) && <div className="inped-placed" data-testid="inped-placed">{placedLine(r)}</div>}
           <div className="inped-hint">{isNew
             ? r._calendar
               /* "your available hours" is the SANS calendar's wording — on the Inputs calendar the same window files

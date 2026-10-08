@@ -223,3 +223,14 @@ body.in-cal{padding-bottom:0}
   .ib .sc-how::after{content:'';position:absolute;inset:-5px 0 -13px}
   .ib-legend{font-size:11px;gap:8px}
 }
+
+/* ---- WHO PLACED IT, AND WHEN (owner D629: "a small one") — the one small-print line, on the other places an entry is
+   listed or opened: the List (under the remark), the editor's foot, a Medical card, the document viewer. The opened
+   days carry it as `.sd-placed` (24-sans-calendar.css). ---- */
+.in-placed{display:block;margin-top:2px;font-size:10.5px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere;white-space:normal}
+.inped-placed,.docview-placed{font-size:11px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere}
+.docview-placed{margin:2px 0 6px}
+/* on a Medical card the line NEVER WIDENS THE CARD: a card hugs its puck and its dates (owner, 28 Aug 26 — "the box
+   around the puck doesn't look compact enough"; e2e/medical.spec.ts measures it), so the small print asks for no width
+   of its own and wraps inside whatever the card already is */
+.medcard-placed{width:0;min-width:100%;font-size:9.5px;line-height:1.35;color:var(--ink-3);white-space:normal;overflow-wrap:anywhere;text-align:left}

@@ -99,6 +99,12 @@ const inputSpec = (booted: boolean): Spec => ({
   ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)
   hand: 'number?',  // how many times it has changed hands ([DB-READINESS] group A, phase 6 (a) — an OIL decision's holding)
   leftAt: { $opt: { $map: 'number' } },   // the holding at which it left each man (phase 6 (a))
+  /* who placed it and when, and its last change (owner D629; state/inputstamp.ts) — the type has carried these since
+     step 1 of the Inputs / SANS job, but no SEED did, so this mirror never met them; the demo seed carries them now
+     (state/demoseed.ts seedDemoStamps), which is how the gap was found */
+  by: { $opt: 'string' }, at: { $opt: 'number' }, modBy: { $opt: 'string' }, modAt: { $opt: 'number' },
+  /* an input filed for a group: its group id and the entry's filer (owner D654, D655; state/inputgroup.ts) */
+  grp: { $opt: 'string' }, grpBy: { $opt: 'string' },
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
 const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }

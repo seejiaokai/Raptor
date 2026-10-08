@@ -40,6 +40,7 @@ import {
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
+import { placedLine } from './placedline'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
@@ -1158,7 +1159,11 @@ export function InputsPage() {
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
-                  <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
+                  {/* …and under the remark, in small print, who placed the input and when (owner D629 — "wherever an
+                      entry is listed or opened"; ui/placedline.ts writes the one line; a record that never recorded a
+                      filer shows none, D56). In the Remarks cell because that is the column with room for it. */}
+                  <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}
+                    {placedLine(r) && <span className="in-placed" data-testid="in-placed">{placedLine(r)}</span>}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     {/* the paperwork behind a medical row — EVERY account may

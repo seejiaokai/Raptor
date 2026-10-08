@@ -655,6 +655,9 @@ Save, each change one Undo step. `src/ui/CutFields.tsx` - the cut-off's fields a
 and the SANS calendar's (`SansSettings.tsx`). The Logic page's rows for the two cut-offs and the switch carry a button
 that opens the same window (`logic-html.ts` `open`, `LogicPage.tsx` `[data-lgopen]`); nothing of a cut-off is typed on
 the Logic page. `inputssettings.test.tsx`, `logicdoors.test.tsx`.
+WHO PLACED IT is shown, by the one line of `placedline.ts`, on the List, at the editor's foot, on a Medical card and in
+the document viewer too (D629; `placedshown.test.tsx`); `state/demoseed.ts seedDemoStamps` gives every demo input a
+filer and a moment - the person himself, or the admin for him, never another member (`state/demostamps.test.ts`).
 `scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
 laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
 `inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto

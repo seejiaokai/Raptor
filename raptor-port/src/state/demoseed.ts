@@ -159,3 +159,27 @@ export function seedDemoMedical(docAdd: (f: any) => { id: string }) {
       r.docId = docAdd(demoDoc('Medical certificate', `${cs} — ${r.type}`)).id
   })
 }
+
+/* ---- DEMO-ONLY: WHO PLACED EACH INPUT (the Inputs / SANS calendar job, step 5 — the plan §3.8: "the demo seed is
+   rewritten to carry them") -------------------------------------------------------------------------------------
+   Owner, D629 (7 Oct 26): every input shows, in small print, who placed it and when. A record with no filer shows no
+   line (D56) — so a fresh demo would have shown the line on nothing but what was filed after it. The seed's inputs
+   are made up, and so are these: each is placed by the person himself on the day its `mod` says it was last touched —
+   and one in five by the admin FOR him, so the "Placed by Saber for Wisp" wording is seen too.
+
+   NO SEEDED INPUT NAMES A MEMBER AS THE FILER OF ANOTHER MAN'S. Who placed an input is what lets a member change one
+   he filed for someone else (D655, state/perms.ts) — a made-up filer would hand out a made-up right.
+
+   Same boot-only home and idempotence as the seeds above: it runs after them, only on a fresh (un-hydrated) store,
+   and never touches a record that already says who placed it — so a second boot, and anything really filed, is left
+   alone. The moment is local time on the record's own day; with no readable day, a fixed one. */
+export function seedDemoStamps() {
+  const admin = Object.keys(PEOPLE).find(id => PEOPLE[id] && PEOPLE[id].cs === 'Saber' && !PEOPLE[id].archived && !PEOPLE[id].deleted)
+  INPUTS.forEach((r: any, i: number) => {
+    if (!r || (r.by != null && r.by !== '') || r.person == null) return
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(r.mod || ''))
+    const at = (m ? new Date(+m[1], +m[2] - 1, +m[3], 8 + (i % 9), (i * 7) % 60) : new Date(2026, 5, 15, 8 + (i % 9), (i * 7) % 60)).getTime()
+    const by = admin && i % 5 === 3 && String(r.person) !== admin ? admin : String(r.person)
+    r.by = by; r.at = at; r.modBy = by; r.modAt = at
+  })
+}

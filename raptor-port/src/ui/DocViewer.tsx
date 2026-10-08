@@ -8,6 +8,7 @@
    the pending card's Upchit lands on ME for a member), at the write path as
    always. The object URL is minted here on open and revoked on close — the
    store (state/docs) never holds one, so nothing leaks per stored file. */
+import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE } from '../engine/people'
 import { inpMeta, baseYear } from '../engine/inputs'
@@ -97,6 +98,9 @@ export function DocViewer() {
             {/* the file's own name, but only when this ENTRY holds several —
                 two scans of one certificate are otherwise identical pages */}
             {doc && rowDocIds(r).length > 1 ? <span className="docview-fname"> · {doc.name}</span> : null}</div>}
+          {/* who placed the entry whose document is showing, and when (owner D629) — it follows the page as an
+              episode's documents are stepped through, because it is read from the row on screen */}
+          {placedLine(r) && <div className="docview-placed" data-testid="docview-placed">{placedLine(r)}</div>}
           {/* the episode pager (owner, 1 Sep 26) — only when a person's
               overlapping documents are shown together; a lone document has no
               nav bar, so the single-doc view is unchanged */}

@@ -28,7 +28,7 @@ import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
-import { seedDemoSans, seedDemoMedical } from './demoseed'
+import { seedDemoSans, seedDemoMedical, seedDemoStamps } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
@@ -889,6 +889,9 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
     /* demo-only medical lifecycle rows + placeholder documents (same boot-only
        home and blindness guarantee — see state/demoseed.ts) */
     seedDemoMedical(docAdd)
+    /* who placed each demo input, and when — made up, as they are (D629; state/demoseed.ts says why and what it never
+       does). After the seeds above, so every one of their rows is there to stamp. */
+    seedDemoStamps()
   }
   /* ANCHOR EVERY SEED INPUT TO ITS YEAR (24 Aug 26). A bare 'Jul 13' label
      is resolved through the row's `yr`; at boot CURWEEK is the seed week, so
