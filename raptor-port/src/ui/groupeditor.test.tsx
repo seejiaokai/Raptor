@@ -318,6 +318,27 @@ describe('hours changed on a shared duty: the question comes back while ANY man 
   }
 })
 
+/* ASTRA'S READ, R1. A shared meeting, its kind changed to a medical one in the window and the people cut to ONE ("Keep ...
+   only"): the save still took the GROUP's branch - the saved entry has two records - which returns before the document,
+   the upchit summary and the medical-clash questions. A medical entry was written with none of them asked. It is
+   refused now, in words, with nothing written: the others are taken out and saved first, and the kind is changed
+   after - through the one-person save that asks every question. */
+describe('a shared input is never turned into a medical entry by the group\u2019s save', () => {
+  it('kind changed to a medical one, people cut to one: refused in words, both records as they were', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b])
+    await openOn(g.rows[0])
+    await choose('#inpEditType', 'OML')
+    const fix = tid('pp-fix')
+    if (fix) await click(fix)
+    said.length = 0
+    await click($('#inpEditSave'))
+    expect(said.join(' | ')).toMatch(/medical entry is one person/i)
+    expect(of(g.grp).map(r => r.type), 'nothing was written').toEqual(['Meeting', 'Meeting'])
+    expect($$('[data-testid="docconf"], [data-testid="oilconf"]')).toHaveLength(0)
+  })
+})
+
 describe('the entry changed behind its window', () => {
   it('a man added on the page behind: the window shows him, and a Save of the remarks keeps him', async () => {
     const [a, b, c] = others()

@@ -16,6 +16,7 @@
    state/sched-commit.ts): one man once an entry, one filer a group. `entriesOf` does no tidying of its own — a screen
    never hides what the write should have refused. */
 import { PEOPLE } from '../engine/people'
+import { isUpchit, needsDoc } from '../engine/inputs'
 
 /* what every record of an entry says alike; everything else on a record is the man's own (his id and place, his OIL
    answers, where his request is filed, his hand-overs, the late date, the Leave War's mark, who placed and changed it) */
@@ -47,7 +48,12 @@ export function entriesOf(inputs: readonly any[], nameOf: (pid: string) => strin
   const byKey = new Map<string, InputEntry>()
   for (const r of inputs || []) {
     if (!r) continue
-    if (r.grp == null || r.grp === '') { out.push({ grp: null, rows: [r] }); continue }
+    /* A MEDICAL ENTRY OR AN UPCHIT IS NEVER PART OF A GROUP — each man's needs his own document, his own clash question
+       and his own summary (D655 reading 4). That was held on screen and at the group's save only: two men of a shared
+       meeting, each retyped separately into the same medical kind, kept their group fields and read as ONE shared
+       medical entry again (Astra's read of the calendar job's bug check, 8 Oct 26 — R5). Held HERE, the one place a
+       group is worked out, so every reader agrees whatever a record carries. */
+    if (r.grp == null || r.grp === '' || needsDoc(r.type) || isUpchit(r.type)) { out.push({ grp: null, rows: [r] }); continue }
     const k = `${r.grp}\u0000${sharedKey(r)}`
     let e = byKey.get(k)
     if (!e) { e = { grp: String(r.grp), rows: [] }; byKey.set(k, e); out.push(e) }

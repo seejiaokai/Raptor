@@ -2060,6 +2060,15 @@ export function InputEditor() {
       /* ONE QUESTION FOR THE ENTRY (D660): the days and the hours are every man's alike, so the amounts are. A man
          added to an entry already answered is answered for by whoever adds him — the sheet comes back, with the
          standing answers ticked */
+      /* NEVER INTO A MEDICAL ENTRY BY THIS BRANCH (Astra's read of the calendar job's bug check, 8 Oct 26 — R1, seen
+         failing in `groupeditor.test.tsx`): this branch returns before the document ask, the upchit summary and the
+         medical-clash question, and a shared meeting whose kind was changed to a medical one and whose people were cut
+         to one was SAVED through it with none of them asked. A medical entry is one person's own: the others are taken
+         out and saved first, and the kind is changed after — by the one-person save, which asks them all. */
+      if (needsDoc(draft.type) || isUpchit(draft.type)) {
+        HOOKS.toast('A medical entry is one person’s own. Take the other people out and save first — then change its kind.', 'warn')
+        return
+      }
       const first = rows.find(x => ppl.includes(String(x.person))) || null
       const adds = !!first && ppl.some(p => !rows.some(x => String(x.person) === p))
       /* ASKED OF EVERY MAN KEPT, NOT OF THE FIRST ALONE (Astra's read of the calendar job's bug check, 8 Oct 26 — seen

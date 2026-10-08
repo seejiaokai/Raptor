@@ -89,6 +89,24 @@ describe('entriesOf — one entry for the records of a group that still say the 
   })
 })
 
+/* ASTRA'S READ of the calendar job's bug check (8 Oct 26), R5. "A medical entry or an upchit is never a group - each man's
+   needs his own document" was held on screen and at the group's save only. Two men of a shared meeting, each retyped
+   SEPARATELY from Edit Schedule into the same medical kind, kept their group fields and - their shared fields matching
+   again - came back on the Inputs page as ONE shared medical entry. The rule is held where a group is worked out. */
+describe('entriesOf — a medical entry or an upchit is never part of a group, whatever its record carries', () => {
+  for (const type of ['OML', 'ATT C', 'Upchit']) {
+    it(`two records of one group, both ${type}: two entries, each a man's own`, () => {
+      const es = entriesOf([rec('bane', { ...G, type }), rec('stiff', { ...G, type })], nameOf)
+      expect(es).toHaveLength(2)
+      expect(es.map(e => e.grp)).toEqual([null, null])
+      expect(es.map(people)).toEqual([['bane'], ['stiff']])
+    })
+  }
+  it('the same two as a Meeting are still one entry', () => {
+    expect(entriesOf([rec('bane', { ...G, type: 'Meeting' }), rec('stiff', { ...G, type: 'Meeting' })], nameOf)).toHaveLength(1)
+  })
+})
+
 describe('groupBreach — one man once an entry, one filer a group; asked of the groups a command touched', () => {
   it('a sound group breaks nothing', () => {
     const rows = [rec('stiff', G), rec('bane', G)]
