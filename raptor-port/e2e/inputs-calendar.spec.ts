@@ -88,8 +88,8 @@ test('the month re-fits when the phone’s height changes, without its top movin
     return { top: g.getBoundingClientRect().top, bottom: g.getBoundingClientRect().bottom, bars: [...document.querySelectorAll('.ib-bar')].length, vh: innerHeight }
   })
   const tall = await read()
-  await page.setViewportSize({ width: 390, height: 640 })           // the browser's own bars slide in
-  await expect.poll(async () => (await read()).bottom).toBeLessThanOrEqual(640 + 1)
+  await page.setViewportSize({ width: 390, height: 700 })           // the browser's own bars slide in
+  await expect.poll(async () => (await read()).bottom).toBeLessThanOrEqual(700 + 1)
   const short = await read()
   expect(short.top, 'the top of the month stood still').toBeCloseTo(tall.top, 0)
   expect(short.bars, 'fewer lines on the shorter screen').toBeLessThan(tall.bars)
@@ -509,4 +509,30 @@ test('a member has no gear on the Inputs calendar and no door on the Logic page;
   await login(page, 'user'); await go(page, 'inputs')
   await expect(page.locator('#inpCal')).toBeVisible(); await expect(page.locator('[data-testid="in-gear"]')).toHaveCount(0)
   await go(page, 'logic'); await expect(page.locator('#lgBody [data-lgopen]')).toHaveCount(0)
+})
+
+/* "HOW THIS WORKS" AND THE LEGEND IN A REAL BROWSER (D646): the fold opens ABOVE the month and the month re-fits under
+   it — its foot still on the screen's foot where it fits — and the line holds on a phone. */
+test('"How this works" opens above the month, which re-fits under it; the legend holds its line on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const grid = () => page.locator('[data-testid="ib-grid"]').boundingBox()
+  const before = (await grid())!
+  const how = (await page.locator('[data-testid="ib-how"]').boundingBox())!, legend = (await page.locator('[data-testid="ib-legend"]').boundingBox())!
+  /* the line is slim, and the fold's button still takes a finger: 44px of it answer a press */
+  const reach = await page.evaluate(() => { const b = document.querySelector('[data-testid="ib-how"]')!, r = b.getBoundingClientRect(), x = r.left + r.width / 2; const at = (y: number) => !!document.elementFromPoint(x, y)?.closest('[data-testid="ib-how"]'); let top = r.top, bottom = r.bottom; while (at(top - 1)) top--; while (at(bottom + 1)) bottom++; return bottom - top })
+  expect(reach, 'the fold’s button answers a finger').toBeGreaterThanOrEqual(44)
+  expect(Math.abs((how.y + how.height / 2) - (legend.y + legend.height / 2)), 'the fold’s button and the legend share a line').toBeLessThanOrEqual(8)
+  expect(legend.x + legend.width).toBeLessThanOrEqual(390)
+  await page.locator('[data-testid="ib-how"]').click()
+  await expect(page.locator('[data-testid="ib-how-list"] li')).toHaveCount(5)
+  await expect(page.locator('[data-testid="ib-how-cut"]')).toHaveText('File at least 14 days before the week starts.')
+  const list = (await page.locator('[data-testid="ib-how-list"]').boundingBox())!
+  await expect.poll(async () => (await grid())!.y, { message: 'the month moves down under the opened fold' }).toBeGreaterThan(before.y + 40)
+  const after = (await grid())!
+  expect(list.y + list.height, 'the fold is above the month, not over it').toBeLessThanOrEqual(after.y + 1)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+  await page.locator('[data-testid="ib-how"]').click()
+  await expect.poll(async () => Math.round((await grid())!.y)).toBe(Math.round(before.y))
+  await expect.poll(async () => Math.round((await grid())!.height), { message: 'and takes its height back' }).toBe(Math.round(before.height))
 })

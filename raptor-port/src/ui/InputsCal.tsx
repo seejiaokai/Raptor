@@ -51,7 +51,7 @@ import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
 import { placedLineOf } from './placedline'
-import { dayWord, hoursOf, lateWord } from './sanscal-model'
+import { cutSentence, dayWord, hoursOf, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
@@ -220,6 +220,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   useEffect(()=>()=>spendReveal(),[])
   const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null);setDelAsk(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
+  /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
+  const [how, setHow] = useState(false)
   /* which late input's note is showing in the opened day (its entry's key) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
@@ -996,6 +998,29 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
           </div>
           {tools}
         </div>
+        {/* "HOW THIS WORKS" AND THE LEGEND — one quiet line under the tools. The fold is five short lines (owner D646:
+            "abit wordy" — cut, "the same on the Inputs calendar"); its last states the late cut-off AS IT IS SET, from
+            the setting, so it changes when the setting does (D628) — no worked date and no "later is marked LATE"; the
+            date an input missed is said by its own LATE tag, in the opened day. The legend names the two colours of a
+            bar — the List's own: an absence, a duty or commitment — for everyone. */}
+        <div className="ib-sub">
+          <button type="button" className="sc-how" data-testid="ib-how" aria-expanded={how} aria-controls="ibHowList" onClick={() => setHow(h => !h)}>
+            <span className="sc-how-v" aria-hidden="true" />How this works
+          </button>
+          <span className="ib-legend" data-testid="ib-legend">
+            <span className="ib-key red">absence</span>
+            <span className="ib-key amb">duty or commitment</span>
+          </span>
+        </div>
+        {how && (
+          <ol className="sc-how-list" id="ibHowList" data-testid="ib-how-list">
+            <li>Tap a day to see its inputs and add one. Tap a <b>bar</b> to open it; drag it to move it.</li>
+            <li>A bar runs across the days an input covers: <b>red</b> is an absence, <b>amber</b> a duty or another commitment.</li>
+            <li>To file for <b>several days</b>, drag across them — on a phone, hold first, then drag.</li>
+            <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
+            <li><span data-testid="ib-how-cut">{cutSentence('inputs', 'File')}</span></li>
+          </ol>
+        )}
         {under}
       </div>
       <div className="ib-dow" aria-hidden="true">{WD.map((d, i) => <span key={d} className={i >= 5 ? 'is-we' : ''}>{d}</span>)}</div>

@@ -25,6 +25,8 @@ import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/stat
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
 import { PICK_HOLD } from './calpick'
+import { saveCut } from '../state/cutoff'
+import { cutSentence } from './sanscal-model'
 import { INPEDIT, setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -279,6 +281,45 @@ describe('a saved or brought-back input is shown where it is (D672)', () => {
     await reveal(r)
     expect(day('2026-10-07').classList.contains('is-open')).toBe(true)
     expect($(`[data-popiid="${r.iid}"]`)).toBeTruthy()
+  })
+})
+
+/* "HOW THIS WORKS" AND THE LEGEND (owner D646, 7 Oct 26: the fold was "abit wordy" — five short lines, "the same on the
+   Inputs calendar"; the cut-off line "only states the rule as it is set", with no worked date and no "later than that
+   is marked LATE"; D628: it changes when the setting changes). The legend says what the two colours of a bar mean, for
+   everyone. */
+describe('"How this works" and the legend (D646, D628)', () => {
+  const press = async (el: HTMLElement) => act(async () => { el.click() })
+  it('folded away until asked for; opened, it is five short lines', async () => {
+    const how = $('[data-testid="ib-how"]')!
+    expect(how.getAttribute('aria-expanded')).toBe('false'); expect($('[data-testid="ib-how-list"]')).toBeNull()
+    await press(how)
+    expect(how.getAttribute('aria-expanded')).toBe('true')
+    expect($$('[data-testid="ib-how-list"] li')).toHaveLength(5)
+    await press(how)
+    expect($('[data-testid="ib-how-list"]')).toBeNull()
+  })
+  it('its last line states the late cut-off AS IT IS SET — and follows the setting, with no worked date and no word of LATE', async () => {
+    await press($('[data-testid="ib-how"]')!)
+    const line = () => $('[data-testid="ib-how-cut"]')!.textContent
+    expect(line()).toBe('File at least 14 days before the week starts.')
+    await act(async () => { saveCut('inputs', { mode: 1, lead: 14, wd: 2, weeks: 2 }) })
+    expect(line()).toBe(cutSentence('inputs', 'File'))
+    expect(line()).toMatch(/Wednesday/)
+    expect($('[data-testid="ib-how-list"]')!.textContent).not.toMatch(/LATE|\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/)
+    await act(async () => { saveCut('inputs', { mode: 0, lead: 14, wd: 2, weeks: 2 }) })
+  })
+  it('the lines say what this calendar does — a tap, a bar, several days, the three tags', async () => {
+    await press($('[data-testid="ib-how"]')!)
+    const t = $('[data-testid="ib-how-list"]')!.textContent || ''
+    for (const word of ['Tap a day', 'bar', 'several days', 'NF', 'public holiday', 'Off day']) expect(t, word).toContain(word)
+    expect(t, 'SANS availability is not this calendar’s').not.toMatch(/SANS|committed|to fly/i)
+  })
+  it('the legend names the two colours of a bar, for a member too', async () => {
+    const legend = () => $('[data-testid="ib-legend"]')!.textContent
+    expect(legend()).toMatch(/absence/); expect(legend()).toMatch(/duty or commitment/)
+    await act(async () => { setSession({ user: 'b', role: 'member' }); notify() })
+    expect(legend()).toMatch(/absence/)
   })
 })
 
