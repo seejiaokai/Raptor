@@ -32,11 +32,6 @@
   font-size:18px;font-weight:700;color:var(--ink);padding:0 2px}
 /* a month emptied by a filter has to say why — see InputsCal.tsx's own
    comment on the pill (the product bar's "real empty states" rule) */
-.ic-filterpill{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;
-  border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
-.ic-dow{display:grid;grid-template-columns:repeat(7,1fr);padding-top:4px;background:var(--edge)}
-.ic-dow span{text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-  color:var(--ink-3);background:var(--bg);padding:3px 0}
 /* the 1px gaps on an --edge background draw every gridline for free — no
    per-cell borders to keep aligned across up to 42 cells */
 /* THE MONTH BODY SCROLLS when a day outgrows its share (owner report, 29 Aug 26
@@ -63,7 +58,6 @@
    but a SIDEWAYS one now reaches the calendar's own swipe-to-page (owner, 22 Aug 26). With no touch rule the browser
    took a sideways finger as its own pan and cancelled the pointer after one move, so on a phone only the ‹ › arrows
    paged. A chip's hold-drag sets its own `none` when it lifts. */
-.ic-grid{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1px;background:var(--edge);touch-action:pan-y}
 /* flex-shrink:0 is load-bearing: without it the column would SHRINK a packed
    week back to fit the fixed body height (its siblings can't give more room),
    clipping the very content this is meant to reveal. Held at ≥ one viewport
@@ -76,10 +70,6 @@
    legitimately fill the cell (the owner's call), so the overflow trim must
    never be able to carry the one "there is more here" affordance away with
    the inputs it stands for. */
-.ic-day,.ic-x{flex:1 1 0;min-width:0;background:var(--panel);overflow:hidden;padding:2px 3px;position:relative}
-.ic-num{font-size:11px;font-weight:700;color:var(--ink-2);width:18px;height:18px;line-height:18px;text-align:center}
-.ic-today .ic-num{border-radius:50%;background:var(--accent);color:var(--accent-ink)}
-.ic-wk .ic-num{color:var(--ink-3)}
 /* the day's TITLE (owner, 22 Aug 26 — the free text typed beside the date in
    the popover; was the italic one-line remark). It WRAPS by his word ("u will
    allow wrap text") and may run the cell — the title and sections outrank the
@@ -101,8 +91,6 @@
 /* the INPUT chips pack side by side now (owner, 22 Aug 26 — "coloured pucks
    arranged side by side, just showing the callsign and the input"); each chip
    shrinks-to-fit and ellipses only when a single one outgrows the cell */
-.ic-inrow{display:flex;flex-wrap:wrap;gap:2px;align-content:start}
-.ic-inrow .ic-chip{display:inline-block;margin-bottom:0;max-width:100%;flex:0 1 auto}
 /* a pucks section on the cell — tiny CAT-tinted person chips in a row */
 .ic-pks{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:1px;cursor:pointer}
 /* the standard olive puck body (owner, 23 Aug 26 — "standard green or
@@ -117,8 +105,6 @@
    at all it must be VISIBLE — an overflowing cell used to clip it out with
    the very inputs it announces (review fix, 22 Aug 26). The panel background
    keeps it legible over a chip it happens to cover. */
-.ic-more{position:absolute;right:2px;bottom:1px;display:block;background:var(--panel);border:0;
-  padding:0 2px;font-size:10px;color:var(--accent);cursor:pointer}
 
 @media (max-width:820px){
   /* the phone form: a chip too narrow to hold a label becomes a plain colour
@@ -137,7 +123,6 @@
      invisible transparent slot, so give it a muted grey fill — visible, and
      clearly not one of the toned input bars beside it. */
   .ic-chip.plan{background:var(--edge-2)}
-  .ic-more{font-size:9px}
   /* the bar gets tighter horizontal padding, but the buttons in it keep
      their 44px touch target from the desktop rule above. It also stops
      WRAPPING on a phone (owner, 1 Sep 26 — "put just a cross in the same
@@ -162,22 +147,12 @@
    drawer (440), the airspace popup (460) and the generic .modal (470) — the
    input-edit dialog that can open ON TOP of a row in this popover (.airpop,
    460) needs to sit clearly above it, and every heavier box already does. */
-.ic-popwrap{position:fixed;inset:0;z-index:420;background:rgba(4,7,10,.55);
-  display:flex;align-items:center;justify-content:center;padding:16px}
 .ic-pop{background:var(--panel);border:1px solid var(--edge);border-radius:12px;
   width:min(92vw,420px);max-height:70vh;overflow-y:auto;display:flex;flex-direction:column}
-.ic-pop-head{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--edge);
-  position:sticky;top:0;background:var(--panel)}
 /* the date is content-sized so the TITLE beside it gets ALL the spare width
    (b used to be flex:1, which split the head 50/50 with the title input and
    started the field mid-head — review fix, 22 Aug 26); the ✕ pins itself
    right so a member's title-less head still reads date … ✕ */
-.ic-pop-head b{font-size:15px;font-weight:700;flex:0 0 auto}
-.ic-pop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;
-  min-width:44px;min-height:44px;margin-left:auto}
-.ic-pop-body{padding:12px 15px;display:flex;flex-direction:column;gap:14px}
-.ic-pop-empty{color:var(--ink-3);font-size:12.5px;font-style:italic}
-.ic-pop-rows{display:flex;flex-direction:column;gap:4px}
 /* an entry row is a <button> (the whole row opens the input-edit dialog),
    so it borrows .ic-chip's own tone stripes rather than a second copy of
    them, keeping the calendar and this popover reading the same three
@@ -185,23 +160,11 @@
 /* a column now (was a single flex line): the identity line on top, the
    remark — when there is one — on its own line under it, both starting at
    the same left edge so a stack of rows reads as aligned cards */
-.ic-poprow{display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;background:var(--bg);
-  border:1px solid var(--edge-2);border-radius:8px;padding:8px 10px;cursor:pointer;min-height:44px;
-  justify-content:center;font:inherit;color:inherit}
-.ic-poprow:hover{border-color:var(--accent)}
-.ic-poprow.red{box-shadow:inset 2px 0 0 var(--hard)}
-.ic-poprow.amb{box-shadow:inset 2px 0 0 var(--adv)}
-.ic-poprow.san{box-shadow:inset 2px 0 0 var(--san)}
 /* the identity line keeps the old row's flex: who at the left, type beside
    it, the window pinned right */
-.ic-poprow-top{display:flex;align-items:center;gap:8px}
-.ic-poprow-who{font-weight:700;font-size:12px}
-.ic-poprow-lbl{flex:1;font-size:12px;color:var(--ink-2)}
-.ic-poprow-win{font-size:11px;color:var(--ink-3)}
 /* the remark reads muted under the identity, wrapping at the space (a long
    word breaks rather than widening the sheet) and aligned to the card's
    left edge like the callsign above it */
-.ic-poprow-rmk{font-size:11.5px;color:var(--ink-3);line-height:1.35;overflow-wrap:anywhere;white-space:normal}
 /* the TITLE beside the date in the head — the input takes the head's spare
    width (the date is content-sized, the ✕ fixed), the read-only form is the
    same slot as plain text */
@@ -210,7 +173,6 @@
    the UA default, which on a phone is 16px — larger than the 15px date, so the
    title loomed over it. `.ic-pop .ic-pop-head` outspecifies the shared
    `.ic-pop input` font shorthand so this size actually lands. */
-.ic-pop .ic-pop-head .ic-title-edit{flex:1;min-width:0;font-size:15px;font-weight:700}
 .ic-title-ro{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
 /* the + Note / + Pucks pair, small buttons on one line at the top of the
    sections area (owner, 22 Aug 26) */
@@ -322,10 +284,6 @@
   .ic-pick{width:100vw;height:100vh;height:100dvh;max-height:100dvh;border-radius:0}
 }
 /* the inputs block at the bottom: its small + Input leads it, top-left */
-.ic-inp-sec{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
-.ic-inp-sec .ic-pop-rows{align-self:stretch}
-.ic-poppucks-wrap{display:flex;flex-direction:column;gap:6px}
-.ic-poppucks{display:flex;flex-direction:column;gap:6px}
 .ic-poppuck{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--edge-2);
   border-radius:8px;padding:5px 5px 5px 10px}
 .ic-poppuck-txt{flex:1;font-size:12.5px;overflow-wrap:anywhere}
@@ -342,7 +300,6 @@
 @media (max-width:820px){
   /* a bottom sheet, not a centred card — reachable one-thumb on a phone,
      the same shape the drawer already uses for the same reason */
-  .ic-popwrap{align-items:flex-end;padding:0}
   .ic-pop{width:100%;max-width:100%;border-radius:12px 12px 0 0;max-height:75vh}
   .ic-pop .abtn,.ic-poprow,.ic-poppuck button{min-height:44px}
   /* the row's ✕ (delete this whole pucks row) keeps its small glyph but earns a
@@ -352,13 +309,5 @@
 }
 
 /* Calendar first and SANS flying demand (D580). */
-.inpcal.ic-embedded{position:relative;inset:auto;z-index:auto;height:max(460px,calc(100dvh - 235px));border:1px solid var(--edge);border-radius:12px;overflow:hidden}
-.ic-embedded .ic-head{padding:8px;gap:5px}.ic-embedded .ic-head .abtn{font-size:12px;padding:5px 9px;min-height:44px;min-width:44px}.ic-embedded .ic-mon{font-size:18px}.ic-embedded .ic-filterpill{flex-basis:100%;order:2}
-.ic-date-line{display:flex;align-items:center;gap:3px;justify-content:space-between}.ic-embedded .ic-num{font-size:13px;width:24px;height:24px;line-height:24px}
-.ic-selected{box-shadow:inset 0 0 0 2px var(--accent);background:var(--panel-2)}.ic-day:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 /* the first build's SANS rules (.sans-*, .ic-sans) went with its screen on 8 Oct 26 — the SANS calendar's styles are
    24-sans-calendar.css; a few still ride the mixed phone rules below, dead, until the Inputs month is re-made (step 5) */
-.ic-range-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--edge);font-size:12px;color:var(--ink-2)}.ic-range-bar>span{flex:1;min-width:150px}
-@media(min-width:821px){.ic-embedded.ic-with-day .ic-head,.ic-embedded.ic-with-day .ic-dow,.ic-embedded.ic-with-day .ic-grid,.ic-embedded.ic-with-day .sans-legend,.ic-embedded.ic-with-day .ic-range-bar{margin-right:360px}.ic-embedded .ic-popwrap{position:absolute;inset:0 0 0 auto;width:360px;background:none;display:flex;align-items:stretch;padding:0;pointer-events:none}.ic-embedded .ic-pop{pointer-events:auto;width:100%;max-height:100%;height:100%;border-radius:0;border-left:1px solid var(--edge);box-shadow:none;margin:0}.ic-embedded .ic-pop-body{min-height:0;overflow-y:auto}.ic-embedded .ic-pop-head{flex-shrink:0}}
-@media(max-width:820px){.ic-embedded .ic-head #icClose{display:none}.ic-embedded .ic-head .ic-mon{flex:1}.ic-embedded .ic-head #icSelectDates{order:2}.ic-embedded .ic-head .sans-colour-control{order:2;margin-left:auto}.ic-sans .ic-day{padding:5px 3px}.sans-cell-summary strong{font-size:16px}.sans-cell-summary span{font-size:10px}.sans-period svg{width:13px;height:13px}.sans-legend{font-size:10px;gap:5px 10px}.ic-embedded .ic-popwrap{z-index:420}.ic-embedded .ic-pop-head{position:sticky;top:0;background:var(--panel);z-index:1}.ic-embedded .ic-pop-body{overflow-y:auto;min-height:0}.ic-embedded .ic-pop{max-height:calc(100dvh - 24px)}.ic-embedded .ic-pop-head #icPopClose{min-width:44px;min-height:44px}}
-@media(max-width:820px){#inpCal.ic-embedded .ic-head{flex-wrap:wrap}#inpCal.ic-embedded .ic-head #icPrev{order:0}#inpCal.ic-embedded .ic-head .ic-mon{order:0;min-width:125px;text-align:center;flex:1}#inpCal.ic-embedded .ic-head #icNext{order:0}#inpCal.ic-embedded .ic-head #icToday{order:0}#inpCal.ic-embedded .ic-head #icSelectDates{order:2}.ic-embedded .ic-head::after{content:"";flex-basis:100%;height:0;order:1}.ic-embedded .ic-head:has(.sans-colour-control) #icSelectDates{margin-right:auto}.ic-embedded .ic-head:has(.sans-colour-control) .sans-colour-control{margin-left:0}}
