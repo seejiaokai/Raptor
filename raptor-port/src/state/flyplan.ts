@@ -193,11 +193,15 @@ export function saveTones(t: Tones): FlySave {
 export interface SeatIds { p: string[]; w: string[] }
 export interface SansCommitted { f: SeatIds; o: SeatIds; a: SeatIds }
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+/** a date as an input's own label, WITH its year - so it is read the same whatever week is loaded ('' for a non-date).
+ *  The opened day's list (ui/sanscal-model.ts) asks the same question of the same inputs, so it asks it the same way. */
+export function sansDateLabel(iso: string): string {
+  return validIso(iso) ? `${MONTH_LABELS[+iso.slice(5, 7) - 1]} ${+iso.slice(8, 10)} ${+iso.slice(0, 4)}` : ''
+}
 export function sansCommittedOn(iso: string, rows: readonly any[] = INPUTS, people: Record<string, any> = PEOPLE): SansCommitted {
   const out: SansCommitted = { f: { p: [], w: [] }, o: { p: [], w: [] }, a: { p: [], w: [] } }
   if (!validIso(iso)) return out
-  /* the date as an input's own label, WITH its year - so it is read the same whatever week is loaded */
-  const label = `${MONTH_LABELS[+iso.slice(5, 7) - 1]} ${+iso.slice(8, 10)} ${+iso.slice(0, 4)}`
+  const label = sansDateLabel(iso)
   const seen = { f: new Set<string>(), o: new Set<string>(), a: new Set<string>() }
   for (const r of rows) {
     if (!r || !r.person || !r.sans || !isSansAvail(r.type) || !inputCoversDate(r, label)) continue

@@ -574,6 +574,16 @@ rules already made for that weekday beneath, each with Remove. A second window o
 `setFlyRule`, Remove `removeFlyRule` - one command, one Undo step each. Tests `ui/everyweekday.test.tsx`.
 `src/ui/daysfmt.ts` - the words and small date sums those two windows share (weekday and month names, how a class and a
 date are said, today's date, the first such weekday on or after a date). Pure.
+STEP 4, THE SANS CALENDAR (plan §3.5; D617-D619, D626, D630, D635, D646-D651, D664):
+`src/ui/sanscal-model.ts` - how the ONE resolver's answer is READ onto a SANS date (`sansCell`: the sun or moon, or the
+tag NF / the holiday's short form; the still-needed pair or nothing; F, O, A as pairs) and who an opened day lists
+(`sansDayGroups`: every commitment, WSOs to fly, pilots to fly, OFT or AMT only - a man in ONE group, the head-counts
+people; a commitment the count leaves out listed apart with why), with `hoursOf` and `lateWord` (the cut-off a late
+entry missed, D646). Pure; it works nothing out about the day. `sanscal-model.test.ts`.
+`src/ui/placedline.ts` - who placed an entry and when, the ONE small-print line (plan §3.8, D629): `placedLine(record)`
+from the record's `by` / `at` / `modBy` / `modAt`; no line for a record that never recorded it. Drawn so far on the SANS
+calendar's opened day; the Inputs calendar's opened day, the List, the editor, a Medical card and the document viewer
+take the same line with step 5.
 `scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
 settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
 Holidays list, its form adding and changing, the window dragged aside) - at a phone, a 1440px laptop and 1536px across;
