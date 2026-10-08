@@ -973,8 +973,10 @@ for (const [name, vp, touch] of [['a phone', { width: 390, height: 844 }, true],
       const mids = await page.evaluate(() => ['#inCalBtn', '#icPrev', '#icToday', '#inGear'].map(s => { const r = document.querySelector(s)!.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }))
       expect(Math.max(...mids) - Math.min(...mids), 'one line').toBeLessThanOrEqual(2)
       expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(vp.width)
-      const order = await page.evaluate(() => { const x = (s: string) => document.querySelector(s)!.getBoundingClientRect().left; return x('#inCalBtn') < x('#icPrev') && x('#icPrev') < x('#icToday') })
-      expect(order, 'the switch, then the arrows, then Today').toBe(true)
+      /* a desktop: the switch, then the arrows, then Today. A phone (owner D705, 9 Oct 26): the arrows and Today first, where
+         the SANS calendar has them, and the switch to their right */
+      const order = await page.evaluate(phone => { const x = (s: string) => document.querySelector(s)!.getBoundingClientRect().left; return phone ? x('#icPrev') < x('#icToday') && x('#icToday') < x('#inCalBtn') : x('#inCalBtn') < x('#icPrev') && x('#icPrev') < x('#icToday') }, touch)
+      expect(order, touch ? 'the arrows, then Today, then the switch (D705)' : 'the switch, then the arrows, then Today').toBe(true)
       await press('#inListBtn')
       await expect(page.locator('#inpCal')).toHaveCount(0)
       expect(await box(), 'on the List the switch has not moved').toEqual(onCal)
@@ -994,7 +996,9 @@ for (const view of ['the Calendar', 'the List'] as const) {
     const { context, page } = await phone(browser, baseURL)
     try {
       if (view === 'the List') { await page.locator('#inListBtn').tap(); await expect(page.locator('#inpCal')).toHaveCount(0) }
-      const box = async (sel: string) => { const b = (await page.locator(sel).boundingBox())!; return [Math.round(b.x), Math.round(b.y), Math.round(b.width), Math.round(b.height)] }
+      /* WHERE a button is, without the press effect: the app's buttons draw 3% smaller while pressed (`.abtn:active`), and a
+         finger's press lingers after a tap - a box read through that shrink is a pixel out, by timing alone (D87) */
+      const box = (sel: string) => page.locator(sel).evaluate(n => { const el = n as HTMLElement, t = el.style.transition, f = el.style.transform; el.style.transition = 'none'; el.style.transform = 'none'; const b = el.getBoundingClientRect(); el.style.transform = f; el.style.transition = t; return [Math.round(b.x), Math.round(b.y), Math.round(b.width), Math.round(b.height)] })
       const shut = { filter: await box('#inFiltersBtn'), gear: await box('#inGear'), views: await box('.inputs-views') }
       await page.locator('#inFiltersBtn').tap()
       await expect(page.locator('#inFilters')).toBeVisible()

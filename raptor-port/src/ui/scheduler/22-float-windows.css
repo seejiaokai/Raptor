@@ -29,14 +29,19 @@
 .floatwin .win-body{flex:1;min-height:0;overflow:auto;padding:10px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 /* A PHONE: the window starts at the bottom of the screen (D641, reading 3) — the stylesheet's panel, as the two older
    windows have it; its bar drags it up and down (floatwin.ts keeps only its top), and the page above it still takes
-   taps. The ✕ is a full 44px there. */
+   taps. The ✕ is a full 44px there.
+   AS TALL AS WHAT IS IN IT, UP TO NEARLY THE WHOLE SCREEN (owner D706, 9 Oct 26 — his iPhone's picture of the SANS
+   calendar settings, a box two-thirds high with its last rows cut off: "Why is this not full screen height"). It
+   stopped at 72% of the screen, so a settings window scrolled inside a short box while the screen above it stood
+   empty. The limit is the screen less 12px above and below — D537's rule for these windows too; a window with little
+   in it is as short as before. */
 @media (max-width:620px){
-  .floatwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;max-width:calc(100vw - 24px);max-height:72vh;max-height:72dvh}
+  .floatwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
   .floatwin .win-x{width:44px;height:44px;font-size:14px}
   .floatwin .win-bar{padding:6px 6px 6px 10px}
   /* TWO REST HEIGHTS (FloatWindow.tsx `rests`; owner D648): a panel standing on the foot of the screen — about
-     two-thirds high as it opens, so the calendar behind it stays in reach (D641), and pulled up by its bar to nearly
-     the whole screen. While a finger holds the bar the element's own top is written inline and wins over both. */
+     two-thirds high, so the calendar behind it stays in reach (D641), or pulled up by its bar to nearly the whole
+     screen. Both days OPEN at the tall one (`tallFirst` — the Inputs day D683, the SANS day D707). While a finger holds the bar the element's own top is written inline and wins over both. */
   .floatwin.rests{height:66vh;height:66dvh;max-height:none}
   .floatwin.rests.is-tall{top:8px;height:auto}
 }

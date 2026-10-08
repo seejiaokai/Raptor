@@ -99,7 +99,7 @@ export function SansDay({ iso, hi, onClose }: {
   const any = g.w.length + g.p.length + g.other.length + g.out.length > 0
 
   return (
-    <FloatWin id="sansday" title={dayWord(iso)} sub={kindWord(iso)} testid="win-sansday" className="sansday" rests onClose={onClose}>
+    <FloatWin id="sansday" title={dayWord(iso)} sub={kindWord(iso)} testid="win-sansday" className="sansday" rests tallFirst onClose={onClose}>
       {/* PINNED: the working and "+ Commitment" stay while the names scroll under them (D648) */}
       <div className="sd-top">
         <table className="sd-work" data-testid="sd-work">

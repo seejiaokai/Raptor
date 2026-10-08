@@ -9454,6 +9454,25 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **On a phone the Inputs calendar's month arrows, name and Today stand at the LEFT of their row, where the SANS calendar's
+  are; the Calendar | List switch is at the row's right end (owner D705, 9 Oct 26).** The row
+  is re-drawn by `order` at 820px and under only (`.inputs-top`, 25-inputs-calendar.css): the arrows, the name, Today, then —
+  pushed to the right end by its own margin — the switch, the filter button, the gear. The List has no arrows, so the
+  switch keeps the same place on both (D687 holds; a desktop keeps the switch first, after the tabs). The four boxes are
+  the SAME on both calendars: arrows 32px, the name's box 96px, Today 52px, 3px apart (under 390px wide: 30, 88, 46, the
+  SANS name a size smaller, the row's buttons 30px, so the row is still ONE line at 375 and 360). The name's one width
+  also keeps the next arrow and Today still from month to month — before, both moved with the month's letters, on both
+  calendars. Pinned at 390, 375 and 360 by `e2e/inputs-sans-calendar.spec.ts` (D705) and by D687's test in
+  `e2e/inputs-calendar.spec.ts`. Do not let the name's box take its letters' width again.
+- **On a phone a floating window is as tall as what is in it, up to nearly the whole screen (owner D706, 9 Oct 26 — "Why is
+  this not full screen height"), and a day opened on the SANS calendar opens tall (D707).** The
+  phone limit on `.floatwin` (22-float-windows.css) was 72% of the screen; it is the screen less 12px above and below —
+  D537's rule for these windows too. A window with little in it is as short as before. It changes the SANS calendar
+  settings and the Inputs calendar settings (at 660 tall they hid 146 and 112px of themselves under an empty 173px);
+  the holiday form, the editor and the Calendar window had limits of their own. The SANS day opens at its tall rest
+  height (`tallFirst`, as the Inputs day, D683); its bar brings it down to two-thirds and back (D648's two heights
+  stay). The ALL AVAIL window (D77) and the changes window (D167) are other kinds and keep their heights. Pinned by
+  `e2e/inputs-sans-calendar.spec.ts` (D706, D707) and `ui/sansday.test.tsx`.
 - **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
   commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
   shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment

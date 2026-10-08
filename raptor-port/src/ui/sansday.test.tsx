@@ -248,24 +248,24 @@ describe('+ Commitment, and the admin’s way to the Calendar window', () => {
   })
 })
 
-describe('on a phone: two rest heights (D648)', () => {
-  it('opens at its lower height; a tap on its top bar pulls it up, and another puts it back', () => {
+describe('on a phone: two rest heights (D648), and it opens at the tall one (D707)', () => {
+  it('opens TALL (owner D707, 9 Oct 26); a tap on its top bar brings it down, and another puts it back', () => {
     asPhone(true)
     show()
     const win = t('win-sansday'), bar = win.querySelector('.win-bar')!
-    expect(win.className).not.toContain('is-tall')
+    expect(win.className, 'tall as it opens').toContain('is-tall')
     const tapBar = (y: number) => { fireEvent.pointerDown(bar, { clientX: 100, clientY: y, pointerId: 1 }); fireEvent.pointerUp(bar, { clientX: 100, clientY: y, pointerId: 1 }) }
     /* the height changes on the CLICK, not on the release — a panel that moved under the finger first would hand the
        click to whatever arrived there (it pressed "+ Commitment" in the running build) */
-    tapBar(300)
-    expect(win.className).not.toContain('is-tall')
-    fireEvent.click(bar)
+    tapBar(20)
     expect(win.className).toContain('is-tall')
-    tapBar(20); fireEvent.click(bar)
+    fireEvent.click(bar)
     expect(win.className).not.toContain('is-tall')
+    tapBar(300); fireEvent.click(bar)
+    expect(win.className).toContain('is-tall')
     /* ✕ is never a tap on the bar */
     fireEvent.click(win.querySelector('.win-x')!)
-    expect(win.className).not.toContain('is-tall')
+    expect(win.className).toContain('is-tall')
   })
   it('dragged up by its bar it stays up; dragged back down it comes down', () => {
     asPhone(true)

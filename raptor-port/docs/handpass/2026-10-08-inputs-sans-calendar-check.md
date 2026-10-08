@@ -828,3 +828,52 @@ only his iPhone says; one line of the stylesheet gives them back their height if
 `Walk:` §21 and §22 — SHORT, the host’s own; the real-browser tests named in each, kept as gates; pictures `docs/img/handpass/2026-10-09-cal-strip/` and `2026-10-09-cal-rows/`, opened. His look on his iPhone is the last check of both.
 
 **His answers of 9 Oct 26, after §22.** D703 — the page behind a window (D686, § his look, third: the one fix this PC could not reproduce): "No the page behind the window is not scrolling it’s fixed" — CONFIRMED ON HIS IPHONE, closed. D704 — "Remove one commitment a day each": the sentence is taken out of the SANS fold’s fifth line (the unit test of the five lines changed first and failed); LOOK tier, one line of words in one place, no walk beyond its test and the host’s look at the opened fold.
+
+## 23. His look, ninth — the month's arrows at the left on both calendars (D705); windows as tall as their content (D706); the SANS day opens tall (D707)
+
+The gates on D704 first (`54cd050b`, the whole set under the PC lock, nothing else running): WHOLLY GREEN — unit 9371 /
+9371 · build clean · tfin 728 / 0 · e2e 719 passed, 0 failed, 56 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.
+
+**His words.** D705, with a picture of each tab: "I see sans, the month and arrows and today are on the left. Can u make
+inputs calander the same position? Then shift the calendar and list buttons to somewhere right of it". D706, with the
+SANS calendar settings two-thirds high and cut off: "Why is this not full screen height … check what else that opens a
+window that is not full screen on a phone" — the list put to him, and his "Yes". D707, asked whether the SANS day
+should open tall as the Inputs day does: "Yes".
+
+**Measured first** (`scripts/handpass/cal-nav-measure.mjs`, `cal-windows-phone.mjs`): at 390 wide the Inputs row began
+with the switch and its arrows stood 73 further right than the SANS calendar's; through a year the next arrow and Today
+stood in 8 different places on the Inputs calendar and 9 on the SANS calendar — they moved with the month's letters.
+At 660 tall the two settings windows stopped at 72% of the screen and hid 146 and 112 of themselves.
+**The tests were written first and failed** (four: the places, the two windows, the SANS day).
+
+**The changes.** D705 — stylesheet only: on a phone the row is drawn arrows, name, Today, then at the right end the
+switch, the filter button and the gear; the four boxes have the same widths on both calendars and the name one width.
+D706 — one limit in the stylesheet: a window grows to the screen less 12 above and below before it scrolls. D707 —
+the SANS day opens at its tall height.
+
+**Type of change and the walk's size (D607):** D705 and D706 are the look of one row and the height of a kind of
+window; D707 one starting state. Nothing that files, saves or counts. **Tier: WALK** (a shared drawer: every floating
+window takes D706's limit; the row is drawn by two calendars and the List), sized SHORT — the host's own, by script.
+**Roll-call.** *The row of D705:* the Inputs calendar on a phone — CHANGED; the Inputs List on a phone — the switch,
+the filter button and the gear in the Calendar's own places (measured; D687's test); the SANS calendar on a phone —
+CHANGED (the name's one width, Today's width); the Medical tab — its own row, not touched (measured before, §22); a
+desktop, both calendars — must not change: the rules are inside the phone widths only, D687's desktop test passes;
+the filters opened (D693) — its two tests pass. *Every floating window, for D706* (each opened on a phone 660 and 844
+tall by the script): the SANS calendar settings — CHANGED, all of it shows; the Inputs calendar settings — CHANGED,
+all of it shows; Add / Change a holiday — all shows (its own limit); New input / New commitment — to the top, as
+before; the Calendar window — under the top bar, as before; Every <weekday> — short, as before; the Inputs day —
+tall, as before; the SANS day — CHANGED by D707, tall. Not this kind of window, not changed: the ALL AVAIL window
+(D77), the changes window (D167), the ordinary pop-up sheets (D537).
+**The walk** is the script's two passes (pictures `docs/img/handpass/2026-10-09-cal-nav/`, opened) and the real-browser
+tests, kept as gates: the places at 390, 375 and 360 wide through twelve months on both calendars and the List; the two
+settings windows at two heights; the SANS day opened by a real finger, brought down by its bar and back.
+**Found on the way, and fixed.** (1) Under 390 wide the re-drawn row did not fit — the gear fell alone onto a line of
+its own and the switch stood in different places on the Calendar and the List; the row's boxes are a little narrower
+there, on both calendars alike, and it is one line at 375 and 360 (where, before tonight, the Inputs tools wrapped onto
+a third row). (2) D693's List test read the filter button a pixel small: the app draws a pressed button 3% smaller and
+a finger's press lingers; the test now reads the button's place without the press effect (D87) — the same claim.
+**Seen and told to him:** the arrows on the Inputs calendar are 2 narrower than they were (32, the SANS calendar's),
+and under 390 wide the row's buttons are 30 wide — needed for the row he asked for to fit; drawn height unchanged.
+**Not checked here:** his iPhone's own letters; the name's box has 4 to spare over the widest month on this PC and his
+phone draws the name narrower than this PC does.
+

@@ -3,7 +3,9 @@
    job, plan §3.6; the approved pictures `img10/inputs-fill-compact.png` (phone) and `img3/desk-inputs-dense.png`).
 
    THREE TABS, LESS TALL (owner D620, D626: "I like the 3 tabs across the top but make it less tall") — Inputs · SANS ·
-   Medical, one strip. Under the Inputs tab ONE tools row: the Calendar | List switch FIRST (owner D687, 9 Oct 26 — it
+   Medical, one strip. Under the Inputs tab ONE tools row: on a desktop the Calendar | List switch FIRST; on a phone the
+   month's arrows, its name and Today first and the switch at the row's right end (owner D705 — the phone rules below).
+   Either way the switch is in ONE place on the Calendar and the List (owner D687, 9 Oct 26 — it
    keeps its place on both; the drawings had it after the arrows, which the List does not have), the month's arrows,
    Today, the filters and the gear. On a desktop the tabs and the tools share one line; on a phone the tabs take the first line
    and the tools the second (the plan: "four rows of buttons above the month" was a fault seen while drawing).
@@ -75,7 +77,23 @@
   .inputs-top .abtn:not(.intab){min-height:36px;position:relative}
   .inputs-top .abtn:not(.intab)::after{content:'';position:absolute;inset:-5px 0}   /* 4px past its 1px border */
   .inputs-top .inv-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  .ic-nav{gap:4px}
+  /* THE MONTH'S ARROWS, ITS NAME AND TODAY FIRST, WHERE THE SANS CALENDAR HAS THEM; THE SWITCH AT THE ROW'S RIGHT END
+     (owner D705, 9 Oct 26 — from his iPhone: "I see sans, the month and arrows and today are on the left. Can u make
+     inputs calander the same position? Then shift the calendar and list buttons to somewhere right of it"). `order`
+     re-draws the row on a phone only — a desktop keeps the tabs and the tools on one line, the switch after the tabs.
+     The switch stands beside the filter button and the gear, pushed right by its own margin, so the List — which has
+     no arrows — keeps it in the same place (D687). The arrows are 32px, the name's box 96px, Today 52px, 3px apart:
+     the SANS head's own figures (24-sans-calendar.css), so the four stand in the same places on both tabs, and the
+     name's one width keeps the next arrow and Today still from month to month (a control tapped repeatedly must not
+     move). */
+  .inputs-top{column-gap:4px}
+  .inputs-top .ic-nav{order:1;gap:3px}
+  .inputs-top .inputs-spring{display:none}
+  .inputs-top .inputs-views{order:3;margin-left:auto}
+  .inputs-top #inFiltersBtn{order:4}
+  .inputs-top .inputs-gear{order:5}
+  .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext{width:32px;min-width:32px;padding-left:4px;padding-right:4px}
+  .inputs-top .ic-nav #icToday{width:52px;min-width:52px;padding-left:0;padding-right:0}
   #inFiltersBtn{display:inline-flex}
   .inputs-top .inputs-filterfields{display:none}
   /* OPENED, THE FIELDS GO UNDER THE WHOLE ROW (owner D693, 9 Oct 26 — from his iPhone: "Why did the setting button move?
@@ -168,7 +186,7 @@ body.in-cal{padding-bottom:0}
 .ib-more:hover,.ib-more:focus-visible{color:var(--accent)}
 
 @media(max-width:820px){
-  .ib .ic-mon{font-size:16px;min-width:74px}
+  .ib .ic-mon,#inpCal .ic-mon{font-size:16px;flex:0 0 96px;width:96px;min-width:0;padding:0;text-align:center}   /* one width, the SANS name's (D705) */
   .ib-head{padding:2px 3px 0}
   .ib-num{font-size:11px;min-width:16px;height:16px;line-height:16px}
   .ib-tag{font-size:8px;padding:0 3px}
@@ -340,3 +358,16 @@ body.in-cal{padding-bottom:0}
 /* a man's own two things in a shared input he did not file, under the read-only form */
 .inped-own{display:flex;flex-direction:column;gap:8px;margin:8px 12px 0}
 .inped-own .inped-ask{margin:0}
+
+/* NARROWER THAN 390px (an iPhone SE or mini at 375, a small Android at 360) the row of D705 does not fit at its sizes
+   — the gear fell alone onto a line of its own. The arrows, the name's box, Today and the row's buttons are a little
+   narrower there instead, by the same figures as the SANS head (24-sans-calendar.css), so the row stays ONE line and
+   the two calendars still agree. Drawn height and press areas are unchanged (D698). */
+@media(max-width:389px){
+  .inputs-top{column-gap:3px}
+  .inputs-top .abtn:not(.intab){min-width:30px;padding-left:4px;padding-right:4px}
+  .inputs-top .inputs-gear{width:32px;min-width:32px}
+  .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext{width:30px;min-width:30px}
+  .inputs-top .ic-nav #icToday{width:46px;min-width:46px}
+  .ib .ic-mon,#inpCal .ic-mon{flex-basis:88px;width:88px}
+}

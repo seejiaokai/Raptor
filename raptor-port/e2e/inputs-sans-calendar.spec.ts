@@ -226,22 +226,26 @@ async function phone(browser:any,baseURL:string|undefined,height=844){
 }
 const centre=async(p:Page,iso:string)=>{const r=(await cell(p,iso).boundingBox())!;return {x:Math.round(r.x+r.width/2),y:Math.round(r.y+r.height/2)}}
 
-test('a tap on a phone opens the day and presses nothing else; the bar’s tap pulls the window up and back without pressing through',async({browser,baseURL})=>{
+/* IT OPENS TALL (owner D707, 9 Oct 26 — asked "Shall it open tall like the Inputs day now does?": "Yes"; until then it
+   opened two-thirds high, D648). Its bar still brings it down to two-thirds and back. */
+test('a tap on a phone opens the day TALL and presses nothing else; the bar’s tap brings the window down and back without pressing through (D707)',async({browser,baseURL})=>{
   const {context,page}=await phone(browser,baseURL)
   try{
     await cell(page,'2026-10-07').tap()
     const win=tid(page,'win-sansday');await expect(win).toBeVisible()
     await page.waitForTimeout(450)                                     // past the click a phone sends after the tap
     expect(await editorOpen(page),'the tap pressed through into the day’s window').toBe(false)
-    const low=(await win.boundingBox())!
-    expect(low.height,'it opens about two-thirds high — the month behind stays in reach').toBeLessThan(844*0.72)
-    expect(low.y+low.height).toBeLessThanOrEqual(844)
-    await win.locator('.win-ttl').tap();await expect(win).toHaveClass(/is-tall/)
-    await page.waitForTimeout(450)
-    expect(await editorOpen(page),'the bar’s tap pressed through as the window moved').toBe(false)
+    await expect(win,'it opens tall (D707)').toHaveClass(/is-tall/)
     const tall=(await win.boundingBox())!
     expect(tall.y).toBeLessThanOrEqual(12);expect(tall.height).toBeGreaterThan(844*0.9)
+    expect(tall.y+tall.height).toBeLessThanOrEqual(844)
     await win.locator('.win-ttl').tap();await expect(win).not.toHaveClass(/is-tall/)
+    await page.waitForTimeout(450)
+    expect(await editorOpen(page),'the bar’s tap pressed through as the window moved').toBe(false)
+    const low=(await win.boundingBox())!
+    expect(low.height,'brought down it is about two-thirds high — the month behind in reach').toBeLessThan(844*0.72)
+    expect(low.y+low.height).toBeLessThanOrEqual(844)
+    await win.locator('.win-ttl').tap();await expect(win).toHaveClass(/is-tall/)
     /* its ✕ is a finger's size and on the screen */
     const x=(await tid(page,'win-sansday-x').boundingBox())!
     expect(Math.min(x.width,x.height)).toBeGreaterThanOrEqual(44)
@@ -557,3 +561,65 @@ test('a phone 320 wide: the SANS colour key stays on the fold’s line, its thre
     expect(r.wide, 'nothing runs off sideways').toBeLessThanOrEqual(320)
   } finally { await context.close() }
 })
+
+/* THE MONTH'S ARROWS, ITS NAME AND TODAY STAND IN THE SAME PLACES ON BOTH CALENDARS (owner D705, 9 Oct 26 — two
+   pictures from his iPhone: "I see sans, the month and arrows and today are on the left. Can u make inputs calander the
+   same position? Then shift the calendar and list buttons to somewhere right of it"). On a phone the Inputs row began
+   with the Calendar | List switch and the arrows came after it. Now: the arrows, the name and Today first, at the SANS
+   calendar's own places; the switch at the row's right end beside the filter button and the gear — where the List,
+   which has no arrows, keeps it too (D687). The name has one width on both, so nothing shifts from month to month. */
+/* ...at 375 and 360 wide too (an iPhone SE, a small Android): there the row would not fit at those sizes, and the gear
+   fell alone onto a line of its own; the arrows, the name's box, Today and the buttons are a little narrower instead. */
+for (const width of [390, 375, 360]) test(`a phone ${width} wide: the month’s arrows, name and Today are in the same places on the Inputs and SANS calendars; the Calendar | List switch is to their right, and in one place on the Calendar and the List (D705)`, async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, viewport: { width, height: 844 }, isMobile: true, hasTouch: true })
+  const page: Page = await context.newPage()
+  try {
+    await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+    const box = (sel: string) => page.locator(sel).first().evaluate(n => { const r = n.getBoundingClientRect(); return { left: Math.round(r.left), w: Math.round(r.width), right: Math.round(r.right), mid: Math.round(r.top + r.height / 2) } })
+    const nav = async (prev: string, name: string, next: string, today: string) => [await box(prev), await box(name), await box(next), await box(today)].map(b => [b.left, b.w])
+    /* through a year the next arrow and Today never move under the finger (the name's box is one width) */
+    const still = async (next: string, today: string) => { const seen = new Set<string>(); for (let i = 0; i < 12; i++) { seen.add((await box(next)).left + '/' + (await box(today)).left); await page.locator(next).tap() } for (let i = 0; i < 12; i++) await page.locator(next.replace('Next', 'Prev').replace('sc-next', 'sc-prev')).tap(); return seen.size }
+    expect(await still('#icNext', '#icToday'), 'the Inputs arrows and Today stand still through twelve months').toBe(1)
+    const inp = await nav('#icPrev', '#inpCal .ic-mon', '#icNext', '#icToday')
+    const today = await box('#icToday'), views = await box('.inputs-views'), filter = await box('#inFiltersBtn'), gear = await box('#inGear'), prev = await box('#icPrev')
+    expect(prev.left, 'the arrows start at the left of the row').toBeLessThanOrEqual(9)
+    expect(views.left, 'the switch is to the right of Today').toBeGreaterThanOrEqual(today.right)
+    expect(filter.left).toBeGreaterThanOrEqual(views.right); expect(gear.left).toBeGreaterThanOrEqual(filter.right)
+    expect(gear.right, 'the gear ends the row').toBeGreaterThanOrEqual(width - 10); expect(gear.right).toBeLessThanOrEqual(width)
+    expect(Math.max(prev.mid, today.mid, views.mid, gear.mid) - Math.min(prev.mid, today.mid, views.mid, gear.mid), 'one line').toBeLessThanOrEqual(2)
+    /* the List: the switch, the filter button and the gear exactly where the Calendar has them (D687) */
+    await page.locator('#inListBtn').tap(); await expect(page.locator('#inpCal')).toHaveCount(0)
+    expect([await box('.inputs-views'), await box('#inFiltersBtn'), await box('#inGear')].map(b => [b.left, b.w])).toEqual([views, filter, gear].map(b => [b.left, b.w]))
+    await page.locator('#inCalBtn').tap(); await expect(page.locator('#inpCal')).toBeVisible()
+    /* the SANS calendar: the same four boxes */
+    await page.locator('#inSansMode').tap(); await expect(tid(page, 'sanscal')).toBeVisible(); await month(page, 2026, 10)
+    expect(await nav('[data-testid="sc-prev"]', '[data-testid="sc-month"]', '[data-testid="sc-next"]', '[data-testid="sc-today"]'), 'the SANS arrows, name and Today are where the Inputs calendar has them').toEqual(inp)
+    expect(await still('[data-testid="sc-next"]', '[data-testid="sc-today"]'), 'and stand still through twelve months').toBe(1)
+    await page.waitForTimeout(400)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(width)
+  } finally { await context.close() }
+})
+
+/* A WINDOW IS AS TALL AS WHAT IS IN IT (owner D706, 9 Oct 26 — his iPhone's picture of the SANS calendar settings, a box
+   two-thirds of the screen high with its last rows cut off: "Why is this not full screen height"). Every floating
+   window stopped at 72% of a phone's screen. Now it grows to nearly the whole screen before it scrolls, and a window
+   with little in it stays short. */
+for (const [name, tab, gear, win] of [['the SANS calendar settings', '#inSansMode', '[data-testid="sc-gear"]', 'win-sansset'], ['the Inputs calendar settings', '', '#inGear', 'win-inputsset']] as const) {
+  test(`a phone: ${name} open as tall as what is in them — nothing to scroll while the screen above stands empty (D706)`, async ({ browser, baseURL }) => {
+    for (const height of [660, 844]) {
+      const context = await browser.newContext({ baseURL, viewport: { width: 390, height }, isMobile: true, hasTouch: true })
+      const page: Page = await context.newPage()
+      try {
+        await login(page); await go(page, 'inputs'); if (tab) { await page.locator(tab).tap(); await expect(tid(page, 'sanscal')).toBeVisible() }
+        await page.locator(gear).tap(); await expect(tid(page, win)).toBeVisible(); await page.waitForTimeout(350)
+        const r = await tid(page, win).evaluate(w => { const b = w.getBoundingClientRect(); const over = [w, ...w.querySelectorAll('*')].map(e => { const o = getComputedStyle(e).overflowY; return o === 'auto' || o === 'scroll' ? e.scrollHeight - e.clientHeight : 0 }); return { top: Math.round(b.top), bottom: Math.round(b.bottom), hidden: Math.max(...over) } })
+        expect(r.bottom, 'the window is on the screen').toBeLessThanOrEqual(height)
+        expect(r.top, 'it never runs off the top').toBeGreaterThanOrEqual(8)
+        /* either everything in it shows, or it has grown to the top of the screen before it scrolls */
+        if (r.hidden > 2) expect(r.top, `at ${height} tall: ${r.hidden}px of it is hidden while ${r.top}px of screen stands empty above it`).toBeLessThanOrEqual(14)
+        if (height === 844) expect(r.hidden, 'on a tall phone all of it shows').toBeLessThanOrEqual(2)
+      } finally { await context.close() }
+    }
+  })
+}
+
