@@ -4,6 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { rowOnScreen } from './onscreen'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
@@ -327,7 +328,10 @@ export function InputsPage() {
   useLayoutEffect(()=>{
     const row=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],INPMODE).length)
     if(!row||!reveal||reveal.mode!==INPMODE)return
-    setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
+    /* MOVED TO THE TOP OF THE LIST ONLY WHEN ITS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already
+       in view, undo/redo don't need to snap to view"): an Undo of an input he is looking at used to lift it to the top
+       every time. A row brought back by the Undo (it was not drawn a moment ago) is still lifted, so it is found. */
+    if(!rowOnScreen(document.querySelector(`[data-iid="${row.iid}"]`)))setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
     setJustAddedIid({iid:row.iid})
   },[reveal])
   useEffect(() => {

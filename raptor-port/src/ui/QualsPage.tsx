@@ -3,6 +3,7 @@
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { rowOnScreen } from './onscreen'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -317,7 +318,10 @@ export function QualsPage() {
     const el = document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr') as HTMLElement | null
     if (!el) return
     el.classList.add('back-hl')
-    el.scrollIntoView?.({ block: 'center' })
+    /* ONLY WHEN HIS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already in view, undo/redo don't need
+       to snap to view"): this is where an Undo of a Quals change lands, and it used to put the row in the middle of the
+       screen every time. The outline above still shows which row it was. */
+    if (!rowOnScreen(el, document.querySelector('#qtbl thead'))) el.scrollIntoView?.({ block: 'center' })
   })
   const tblRef = useRef<HTMLTableElement>(null)
   /* the frozen-header mirror (see the effect below): the scroll wrap it pins

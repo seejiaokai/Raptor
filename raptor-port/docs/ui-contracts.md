@@ -6336,6 +6336,12 @@ its day from about 20 px to 33 px and made the Event row two lines tall.
 
 ## The four rows at the foot of the Manning block — Required P / W, Available P / W (owner, D617, D637, D640, D665; built 8 Oct 26)
 
+**NOT BUILT YET — D674 (8 Oct 26): "Can rearrange allow newly created counter rows be allowed to moved to anywhere in
+between the fixed blue dot rows? Even to below the 4 as well."** In Rearrange a counter row will be droppable above the
+four rows, between any two of them, or below all four; the four keep their own order and still carry no grip and no
+cross. It narrows D665's "the LAST rows of the Manning block" below. The build is `OUTSTANDING.md`
+`[LW-COUNTERS-AMONG-FIXED]`; until it lands, everything under this heading is as built.
+
 The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
 
 - **Where they sit — D665 (8 Oct 26: "I'm going with B").** The LAST rows of the Manning block (`tbody.counts`), under
@@ -6477,16 +6483,46 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
   opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
 - **The "Days…" line in ⚙ Settings (the last piece of step 2 — built 8 Oct 26 with Days' month).** At the head of the
-  sheet: a "Days…" button with "Day flying, night flying or no fly for each date, and the year's holidays." under it. It closes the sheet and
+  sheet: a "Calendar…" button (its on-screen name since D675; "Days…" until then) with "Day flying, night flying or no fly for each date, and the year's holidays." under it. It closes the sheet and
   opens Days on the month the grid's month strip has lit (`sync.ts openDays` — the war imports no scheduler screen).
   Pins: `ui/daysline.test.tsx`.
 - Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
   what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
   round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
 
+## Undo and Redo leave the screen where it is (owner, D670, D672; built 8 Oct 26)
+
+His words (D670, the Leave War; D672, "the rest of the app"): "if it's already in view, undo/redo don't need to snap to
+view. Unless it's outside the screen view then it's ok to snap into view."
+
+- **The Leave War's grid (D670).** An Undo or a Redo asks the grid for the changed day SOFTLY (`focusDay(date, {
+  ifHidden: true })` → `focusSoft`; `state/undo-wire.ts snapView`). The grid jumps only when that day's column is not
+  wholly on screen (`leavewar/ui/inview.ts columnInView`): its month not drawn, the column under the frozen name columns
+  — even half under — or off either edge. In view, the scroll position does not change by a pixel, however he has moved
+  the grid since. Every plain ask still jumps and lands the day just past the frozen columns: a month button, the
+  under-manned list, a period opened, switched or made.
+- **Quals (D672).** The man's row is outlined as before; the page moves to it — the row to the middle of the window —
+  only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
+  rowOnScreen`).
+- **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
+  row the Undo has just brought back is lifted, so it is found).
+- **Already so, unaltered:** Edit Schedule's week steps sideways to the changed day only when that day is not on screen
+  (`ui/highlights.ts bringDayIntoView`, 28 Sep 26); the Scheduler Board changes day only when the change is on another
+  day; the Inputs calendar changes month only when the change is in another month; the Tracker's Undo moves nothing.
+- An Undo that changes something on ANOTHER page still takes him to that page.
+- Gates: `e2e/leavewar.spec.ts` "Undo and Redo leave the grid where it is when the changed day is on screen, and jump
+  to it only when it is not" (phone and desktop — his steps: an LL on 9 Feb, Undo, Redo, moved a little, half hidden,
+  scrolled right away). Pins: `leavewar/ui/inview.test.ts`, `leavewar/undoland.test.ts`, `ui/onscreen.test.ts`. Quals
+  was driven in the running build by hand-script on 8 Oct 26 (stays at the same scroll with the row in view; brought back
+  when scrolled away); the Inputs list's landing has had no browser check yet — owed to the job's one full bug check.
+
 ## Days — the month (owner, D631, D633, D638, D641, D642, D664; built 8 Oct 26)
 
 The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shell (`ui/FloatWindow.tsx`).
+
+- **ON SCREEN IT IS CALLED "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead of days").** The window's
+  title reads "Calendar"; its line in the Leave War's ⚙ is the heading "Calendar" and the button "Calendar…". "Days" is
+  its name in the code and in these records only — wherever this section says Days, the screen says Calendar.
 
 - **A window, admins only, that does not block the page (D641).** Opened by `ui/pops.ts DAYSWIN` — the date whose month
   to open on; closed by its ✕ or Escape. It can be dragged by its bar and the page behind still takes clicks. A member
@@ -6550,16 +6586,21 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     – 31 Dec…", which opens the Leave War's own New-period sheet with those dates picked.
 - **The holiday form (`HolidayForm` — D641, D652).** A window on the shell, at the left on a desktop, the bottom panel
   on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day; Name (40 letters at most; empty, the box shows
-  the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most); First
-  day and Last day (a new one starts today on this year's list, on 1 January of another year's; the last day follows
-  the first while they are one day and never falls before it); Cancel / "Save and add another" / Save. "Change a
-  holiday" (a line opened): the same, filled in — "On grid" showing what it prints now and sent only if touched —
-  with Cancel / Save and, beneath, "Delete this public holiday" (no question; Undo brings it back).
+  the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most);
+  **Dates — the Leave War's own range calendar (D671, 8 Oct 26: "use the same calendar interface and logic for
+  selecting start and end date"), `leavewar/ui/RangePicker` itself, not two date boxes:** one tap is one day, a second
+  tap on a later day makes the run, a tap before the start begins again there, a third tap starts over, the span said
+  in words beneath, "Clear". A new holiday opens with NOTHING picked, the calendar on today's month (this year's list)
+  or on that January (another year's); nothing picked, Save says "Pick its day — or its first and last day — on the
+  calendar." Then Cancel / "Save and add another" / Save. "Change a holiday" (a line opened): the same, filled in — its
+  own day or run picked, so a tap on a later day is "one more day"; "On grid" showing what it prints now and sent only
+  if touched — with Delete (red; no question; Undo brings it back) / Cancel / Save. The buttons stay at the foot of
+  the form while it scrolls under them, so Save and Delete are never under the fold of a short phone.
   - Save, a change and Delete are one command and one Undo step each, and reach the Leave War's Event row at once.
-  - "Save and add another" stays open: the kind kept, the day after ready, the name cleared, "Saved: <name>, <dates>."
-    shown until the next edit.
-  - Refused in the form, each with its sentence and what he typed left as it was: no first day; a last day before the
-    first; a short form that is not one; a date no leave period covers; every Event row used on those dates; a holiday
+  - "Save and add another" stays open: the kind kept, the calendar on the month of the day after with nothing picked,
+    the name cleared, "Saved: <name>, <dates>." shown until the next edit.
+  - Refused in the form, each with its sentence and what he typed left as it was: nothing picked; a short form that is
+    not one; a date no leave period covers; every Event row used on those dates; a holiday
     taken away on the Leave War meanwhile. Any edit takes the line down.
   - Every box carries 16px text.
 - **A holiday on a date no leave period covers WAITS.** Refused for that reason (and only that one), the form keeps
@@ -6624,6 +6665,14 @@ sentence or a span reads day-first with its year (`shortDate` → "17 Jul 26"); 
 Pinned by `leavewar/ui/isodates.test.tsx` — one roll-call over every sheet, reading the page a sheet draws into.
 
 ## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
+
+**The counter's own window — its three buttons (owner, D673, 8 Oct 26: "delete counter button be red, save counter be
+another colour like green or blue, similar to the rest of the app").** "Save counter" ("Add counter"; "Save" on an
+Available row's window) is the app's FILLED save button — the accent, as the Event sheet's Save; "Cancel" is the plain
+grey outline; "Delete counter" is red — outlined, and solid red on "Really delete?". This narrows D332 (Leave War
+"Delete" in a dashed grey edge, not red) for this window only; the bid sheets' Delete and the delete cross in Rearrange
+(D669) stay dashed grey. Gate: `e2e/leavewar.spec.ts` "deleting a counter takes its row off the grid" reads the three
+buttons' colours.
 
 Four asks from the same sitting, all on the Leave War grid:
 

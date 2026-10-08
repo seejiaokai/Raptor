@@ -29,6 +29,9 @@
    form takes the place of "Every <weekday>", and the other way round — two forms stacked in one corner would hide
    each other. */
 import { useEffect, useState } from 'react'
+/* ON SCREEN IT IS CALLED "CALENDAR" (owner, D675, 8 Oct 26 — "The terms days seems abit weird … Change it to Calendar
+   instead of days"): the window's title and its line in the settings that open it. "Days" stays the name in the code
+   and the working records — nothing he sees. */
 /* CLASS NAMES here are prefixed (`is-`, `c-`, `t-`, `lit`): the scheduler's stylesheet is one global sheet, and its
    week already owns `.day` — a date button classed `day` grew as tall as a day card (seen in the first look). */
 import { FloatWin } from './FloatWindow'
@@ -131,9 +134,9 @@ function DaysBody({ at }: { at: string }) {
 
   return (
     <>
-    <FloatWin id="days" title="Days" sub="admins only" testid="win-days" className={'dayswin' + (tabbed ? '' : ' two')} onClose={close}>
+    <FloatWin id="days" title="Calendar" sub="admins only" testid="win-days" className={'dayswin' + (tabbed ? '' : ' two')} onClose={close}>
       {tabbed && (
-        <div className="days-tabs" role="tablist" aria-label="Days" data-testid="days-tabs">
+        <div className="days-tabs" role="tablist" aria-label="Calendar" data-testid="days-tabs">
           {(['month', 'holidays'] as const).map(k => (
             <button key={k} type="button" role="tab" className={'days-tab' + (tab === k ? ' lit' : '')} data-testid={`days-tab-${k}`}
               aria-selected={tab === k} onClick={() => setTab(k)}>{k === 'month' ? 'Month' : 'Holidays'}</button>

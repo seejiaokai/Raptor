@@ -66,6 +66,22 @@ const shown = () => [...t('hol-list').querySelectorAll('.hol-line')].map(n => [n
 const FREE = 2031
 function open(iso = '2026-11-02') { render(<DaysWindow />); act(() => { setDaysWin(iso); notify() }) }
 const add = () => fireEvent.click(t('hol-add'))
+/* THE DATES ARE PICKED ON THE LEAVE WAR'S OWN RANGE CALENDAR (D671): walk it to a month, tap a day */
+const MONTHS_L = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const calAt = () => { const [m, y] = t('holcal-month').textContent!.trim().split(/\s+/); return +y * 12 + MONTHS_L.findIndex(x => x.toLowerCase() === m.toLowerCase()) }
+const goTo = (iso: string) => {
+  let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - calAt()
+  for (; d > 0; d--) fireEvent.click(t('holcal-next-month'))
+  for (; d < 0; d++) fireEvent.click(t('holcal-prev-month'))
+}
+const tap = (iso: string) => { goTo(iso); fireEvent.click(t(`holcal-day-${iso}`)) }
+/** pick one day, or a run — from a clean calendar, whatever was picked before */
+const pick = (from: string, to?: string) => {
+  if (q('holcal-clear')) fireEvent.click(t('holcal-clear'))
+  tap(from)
+  if (to && to !== from) tap(to)
+}
+const picked = () => [t('hol-dates').getAttribute('data-from'), t('hol-dates').getAttribute('data-to')]
 
 describe('the two parts of Days', () => {
   it('a wide screen shows the month and the holidays side by side, with no tabs', () => {
@@ -181,7 +197,7 @@ describe('a year no leave period covers', () => {
 })
 
 describe('a holiday on a date no leave period covers WAITS — and is saved by itself once one does', () => {
-  const fill = (iso: string) => { add(); type('hol-name', 'National Day'); type('hol-from', iso) }
+  const fill = (iso: string) => { add(); type('hol-name', 'National Day'); pick(iso) }
   it('no period reaches the year: the form says it is kept and offers to create the year; created, the holiday is saved and the form closes', () => {
     open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
     fireEvent.click(t('hol-save'))
@@ -236,7 +252,7 @@ describe('a holiday on a date no leave period covers WAITS — and is saved by i
   })
   it('the new period holds its first day but not its last: it is not saved in part — the form says why and stops waiting', () => {
     open(`${FREE}-03-01`); add()
-    type('hol-name', 'Stand-down'); type('hol-from', `${FREE}-08-30`); type('hol-to', `${FREE}-09-02`)
+    type('hol-name', 'Stand-down'); pick(`${FREE}-08-30`, `${FREE}-09-02`)
     fireEvent.click(t('hol-save'))
     expect(t('hol-waiting')).toBeTruthy()
     act(() => { createWar('Aug only', `${FREE}-08-01`, `${FREE}-08-31`) })
@@ -262,7 +278,7 @@ describe('a holiday on a date no leave period covers WAITS — and is saved by i
   it('a line being CHANGED onto such a date waits the same way, and is moved — not copied — once the period exists', () => {
     holidayAdd({ kind: 'ph', name: 'National Day', from: '2026-08-10', to: '2026-08-10' })
     open(); fireEvent.click(t('hol-list').querySelector('.hol-line[data-from="2026-08-10"]')!)
-    type('hol-from', `${FREE}-08-09`)
+    pick(`${FREE}-08-09`)
     fireEvent.click(t('hol-save'))
     expect(t('hol-waiting')).toBeTruthy()
     expect(lines(2026).some(h => h.from === '2026-08-10')).toBe(true)
@@ -273,30 +289,47 @@ describe('a holiday on a date no leave period covers WAITS — and is saved by i
 })
 
 describe('"+ Add"', () => {
-  it('opens a window beside Days that does not block it, starting on a public holiday today', () => {
+  it('opens a window beside Days that does not block it: a public holiday, nothing picked, the calendar on today’s month', () => {
     open(); add()
     expect(t('win-holiday').getAttribute('aria-label')).toBe('Add a holiday')
     expect(t('win-holiday').getAttribute('aria-modal')).toBe('false')
     expect(t('win-days')).toBeTruthy()
     expect(pressed('hol-kind-ph')).toBe('true'); expect(pressed('hol-kind-off')).toBe('false')
     expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('')
-    expect(val('hol-from')).toBe('2026-10-08'); expect(val('hol-to')).toBe('2026-10-08')
+    /* a date he did not choose is never saved (D671): none is picked for him */
+    expect(picked()).toEqual(['', ''])
+    expect(t('holcal-month').textContent).toMatch(/October\s+2026/i)
+    expect(t('holcal-selection').textContent).toBe('Pick a start date')
     expect(q('hol-delete')).toBeNull(); expect(t('hol-save-more')).toBeTruthy()
+    /* no date boxes any more — one calendar */
+    expect(q('hol-from')).toBeNull(); expect(q('hol-to')).toBeNull()
+    expect(t('win-holiday').querySelector('input[type="date"]')).toBeNull()
   })
-  it('on another year’s list it starts on that year’s first day', () => {
+  it('on another year’s list the calendar opens on that January', () => {
     open(); fireEvent.click(t('hol-next')); add()
-    expect(val('hol-from')).toBe('2027-01-01'); expect(val('hol-to')).toBe('2027-01-01')
+    expect(t('holcal-month').textContent).toMatch(/January\s+2027/i)
+    expect(picked()).toEqual(['', ''])
   })
-  it('the last day follows the first while they are one day, and never falls before it', () => {
+  it('it is the Leave War’s own picker: one tap is one day, a later tap makes the run, an earlier one starts again, a third starts over, Clear empties it', () => {
     open(); add()
-    type('hol-from', '2026-11-09'); expect(val('hol-to')).toBe('2026-11-09')
-    type('hol-to', '2026-11-10')
-    type('hol-from', '2026-11-08'); expect(val('hol-to')).toBe('2026-11-10')        // a run keeps its end
-    type('hol-from', '2026-11-12'); expect(val('hol-to')).toBe('2026-11-12')        // … until the start passes it
+    tap('2026-11-09'); expect(picked()).toEqual(['2026-11-09', '2026-11-09'])
+    tap('2026-11-11'); expect(picked()).toEqual(['2026-11-09', '2026-11-11'])
+    expect(t('holcal-day-2026-11-10').getAttribute('aria-pressed')).toBe('true')
+    expect(t('holcal-selection').textContent).toMatch(/9 Nov.*11 Nov/)
+    tap('2026-11-20'); expect(picked()).toEqual(['2026-11-20', '2026-11-20'])          // a third tap starts over
+    tap('2026-11-18'); expect(picked()).toEqual(['2026-11-18', '2026-11-18'])          // before the start: begins there
+    fireEvent.click(t('holcal-clear')); expect(picked()).toEqual(['', ''])
+  })
+  it('a run may cross into the next month: ‹ › page the calendar and the pick is kept', () => {
+    open(); add()
+    tap('2026-10-30'); tap('2026-11-02')
+    expect(picked()).toEqual(['2026-10-30', '2026-11-02'])
+    fireEvent.click(t('hol-save'))
+    expect(line(2026, '2026-10-30')).toMatchObject({ to: '2026-11-02' })
   })
   it('Save writes ONE holiday in one Undo step, closes, and the list and the month follow', () => {
     open(); add()
-    type('hol-name', 'Deepavali'); type('hol-from', '2026-11-09')
+    type('hol-name', 'Deepavali'); pick('2026-11-09')
     fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-11-09')).toMatchObject({ kind: 'ph', name: 'Deepavali', to: '2026-11-09' })
     expect(q('win-holiday')).toBeNull(); expect(t('win-days')).toBeTruthy()
@@ -310,7 +343,7 @@ describe('"+ Add"', () => {
   it('an Off day over a run of days is one line', () => {
     open(); add()
     fireEvent.click(t('hol-kind-off'))
-    type('hol-name', 'Stand-down'); type('hol-from', '2026-12-28'); type('hol-to', '2026-12-30')
+    type('hol-name', 'Stand-down'); pick('2026-12-28', '2026-12-30')
     fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-12-28')).toMatchObject({ kind: 'off', name: 'Stand-down', to: '2026-12-30' })
     expect(shown()).toContainEqual(['Mon 28 – Wed 30 Dec', 'Stand-down', 'OFF'])
@@ -319,64 +352,66 @@ describe('"+ Add"', () => {
     open(); add()
     const usual = t('hol-name').getAttribute('placeholder')!
     expect(usual.length).toBeGreaterThan(0)
-    type('hol-from', '2026-11-09'); fireEvent.click(t('hol-save'))
+    pick('2026-11-09'); fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-11-09').name).toBe(usual)
     cleanup(); _resetFloatWins(); setDaysWin(null)
     open(); add(); fireEvent.click(t('hol-kind-off'))
     const usualOff = t('hol-name').getAttribute('placeholder')!
     expect(usualOff).not.toBe(usual)
-    type('hol-from', '2026-11-10'); fireEvent.click(t('hol-save'))
+    pick('2026-11-10'); fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-11-10')).toMatchObject({ kind: 'off', name: usualOff })
   })
   it('"On grid" is its short form — capitals, three at most; one that is not a short form is refused with the rule', () => {
     open(); add()
-    type('hol-name', 'National Day'); type('hol-from', '2026-08-10'); type('hol-short', 'nd')
+    type('hol-name', 'National Day'); pick('2026-08-10'); type('hol-short', 'nd')
     expect(val('hol-short')).toBe('ND')
     expect(t('hol-short').getAttribute('maxlength')).toBe('3')
     fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-08-10').short).toBe('ND')
     add()
-    type('hol-name', 'Other'); type('hol-from', '2026-08-11'); type('hol-short', 'a b')
+    type('hol-name', 'Other'); pick('2026-08-11'); type('hol-short', 'a b')
     fireEvent.click(t('hol-save'))
     expect(t('hol-err').textContent).toBe('The short form is one to three letters or digits, with no space.')
     expect(lines(2026).some(h => h.from === '2026-08-11')).toBe(false); expect(t('win-holiday')).toBeTruthy()
   })
-  it('"Save and add another" saves, says so, and stays — the kind kept, the next day ready, the name cleared', () => {
+  it('"Save and add another" saves, says so, and stays — the kind kept, the calendar ready on the day after’s month, the name cleared', () => {
     open(); add()
     fireEvent.click(t('hol-kind-off'))
-    type('hol-name', 'Stand-down'); type('hol-short', 'SD'); type('hol-from', '2026-12-28'); type('hol-to', '2026-12-30')
+    type('hol-name', 'Stand-down'); type('hol-short', 'SD'); pick('2026-12-28', '2026-12-30')
     fireEvent.click(t('hol-save-more'))
     expect(line(2026, '2026-12-28')).toMatchObject({ kind: 'off', to: '2026-12-30' })
     expect(t('win-holiday')).toBeTruthy()
     expect(t('hol-saved').textContent).toBe('Saved: Stand-down, Mon 28 – Wed 30 Dec.')
     expect(pressed('hol-kind-off')).toBe('true')
     expect(val('hol-name')).toBe(''); expect(val('hol-short')).toBe('')
-    expect(val('hol-from')).toBe('2026-12-31'); expect(val('hol-to')).toBe('2026-12-31')
+    /* nothing is picked for the next one — and the calendar is on the month of the day after */
+    expect(picked()).toEqual(['', ''])
+    expect(t('holcal-month').textContent).toMatch(/December\s+2026/i)
     /* the note goes at the next edit */
     type('hol-name', 'x'); expect(q('hol-saved')).toBeNull()
   })
   it('a date no leave period covers is refused in the window, and what he typed stays', () => {
     open(`${FREE}-03-01`); add()
-    type('hol-name', 'National Day'); type('hol-from', `${FREE}-08-09`)
+    type('hol-name', 'National Day'); pick(`${FREE}-08-09`)
     fireEvent.click(t('hol-save'))
     expect(t('hol-err').textContent).toBe(`No leave period covers 9 Aug ${String(FREE).slice(2)} yet.`)
-    expect(t('win-holiday')).toBeTruthy(); expect(val('hol-name')).toBe('National Day'); expect(val('hol-from')).toBe(`${FREE}-08-09`)
+    expect(t('win-holiday')).toBeTruthy(); expect(val('hol-name')).toBe('National Day'); expect(picked()[0]).toBe(`${FREE}-08-09`)
     /* any edit takes the line down */
     type('hol-name', 'National Day!'); expect(q('hol-err')).toBeNull()
   })
-  it('a last day before the first, and no first day, are refused with a sentence', () => {
+  it('nothing picked is not saved — it says what to do; and picking takes the line down', () => {
     open(); add()
-    type('hol-from', '2026-11-09'); type('hol-to', '2026-11-01')
+    type('hol-name', 'Deepavali')
     fireEvent.click(t('hol-save'))
-    expect(t('hol-err').textContent).toBe('The last day cannot be before the first.')
-    type('hol-from', '')
+    expect(t('hol-err').textContent).toBe('Pick its day — or its first and last day — on the calendar.')
+    expect(lines(2026).some(h => h.name === 'Deepavali')).toBe(false); expect(t('win-holiday')).toBeTruthy()
+    tap('2026-11-09'); expect(q('hol-err')).toBeNull()
     fireEvent.click(t('hol-save'))
-    expect(t('hol-err').textContent).toBe('Choose its first day.')
-    expect(lines(2026).some(h => h.from === '2026-11-09' || h.from === '2026-11-01')).toBe(false)
+    expect(line(2026, '2026-11-09').name).toBe('Deepavali')
   })
   it('Cancel and ✕ close it and save nothing; closing Days takes it too', () => {
     open(); add()
-    type('hol-name', 'Deepavali'); type('hol-from', '2026-11-09')
+    type('hol-name', 'Deepavali'); pick('2026-11-09')
     fireEvent.click(t('hol-cancel'))
     expect(q('win-holiday')).toBeNull(); expect(lines(2026).some(h => h.from === '2026-11-09')).toBe(false)
     add(); fireEvent.click(t('win-holiday-x')); expect(q('win-holiday')).toBeNull()
@@ -392,13 +427,14 @@ describe('a line opens to change or delete', () => {
     seed(); open(); openLine('2026-08-10')
     expect(t('win-holiday').getAttribute('aria-label')).toBe('Change a holiday')
     expect(pressed('hol-kind-ph')).toBe('true'); expect(val('hol-name')).toBe('National Day'); expect(val('hol-short')).toBe('ND')
-    expect(val('hol-from')).toBe('2026-08-10'); expect(val('hol-to')).toBe('2026-08-10')
+    expect(picked()).toEqual(['2026-08-10', '2026-08-10'])
+    expect(t('holcal-month').textContent).toMatch(/August\s+2026/i)
     expect(t('hol-delete')).toBeTruthy(); expect(q('hol-save-more')).toBeNull()
   })
   it('Save changes that one record — a new name, a longer run — in one Undo step', () => {
     seed(); open(); openLine('2026-08-10')
     const n = lines(2026).length
-    type('hol-name', 'National Day weekend'); type('hol-to', '2026-08-11')
+    type('hol-name', 'National Day weekend'); tap('2026-08-11')
     fireEvent.click(t('hol-save'))
     expect(lines(2026).length).toBe(n)
     expect(line(2026, '2026-08-10')).toMatchObject({ name: 'National Day weekend', to: '2026-08-11' })
@@ -409,7 +445,7 @@ describe('a line opens to change or delete', () => {
   })
   it('a change that leaves "On grid" alone keeps the short form it had', () => {
     seed(); open(); openLine('2026-08-10')
-    type('hol-to', '2026-08-11'); fireEvent.click(t('hol-save'))
+    tap('2026-08-11'); fireEvent.click(t('hol-save'))
     expect(line(2026, '2026-08-10').short).toBe('ND')
   })
   it('a holiday with no short form of its own shows what it prints — and a rename with "On grid" left alone prints the NEW name’s', () => {

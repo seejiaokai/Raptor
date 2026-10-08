@@ -61,7 +61,9 @@ describe('the window', () => {
     expect(q('win-days')).toBeNull()
     open(THU)
     expect(t('win-days').getAttribute('aria-modal')).toBe('false')
-    expect(t('win-days').getAttribute('aria-label')).toBe('Days')
+    /* on screen it is called "Calendar" (D675) — "Days" is its name in the code only */
+    expect(t('win-days').getAttribute('aria-label')).toBe('Calendar')
+    expect(t('win-days').querySelector('.win-ttl')!.textContent).toBe('Calendaradmins only')
     expect(t('days-month').textContent).toBe('November 2026')
     fireEvent.click(t('win-days-x'))
     expect(q('win-days')).toBeNull(); expect(DAYSWIN).toBeNull()

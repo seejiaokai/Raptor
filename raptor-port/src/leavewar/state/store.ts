@@ -318,6 +318,10 @@ interface State {
    *  the day you are notionally already on must snap you back to it. A date
    *  alone cannot say "asked again". */
   focusSeq: number
+  /** The last ask was "only if that day is out of view" (owner, D670, 8 Oct 26 — an Undo or a Redo of a change he is
+   *  looking at must leave the grid where it is). False for every plain ask: a month's worth of jumps — the
+   *  under-manned list, a new or a switched period, the first showing — still put the day at the left. */
+  focusSoft: boolean
 
   /* (The war's own seat / band / SXO overrides — `personEdits`, written by its
      "Edit person" sheet — are GONE: D460, D461, 30 Sep 26. Quals is the one
@@ -419,6 +423,7 @@ function blank(): State {
     viewer: null,
     focusDate: null,
     focusSeq: 0,
+    focusSoft: false,
     postOuts: {},
   })
 }
@@ -4750,8 +4755,10 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
  * the store is already the channel they share. It is not persisted; where
  * someone was last looking is not a fact about the leave war.
  */
-export function focusDay(date: string): void {
-  state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1 }
+export function focusDay(date: string, opts?: { ifHidden?: boolean }): void {
+  /* `ifHidden` — the soft ask (D670): the matrix jumps only when the day's column is not already on screen. What Undo
+     and Redo send (state/undo-wire.ts snapView), so a change he is looking at is taken back where he is looking. */
+  state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1, focusSoft: !!(opts && opts.ifHidden) }
   notify()
 }
 
@@ -4773,6 +4780,7 @@ export function selectWar(id: string): void {
     currentId: id,
     focusDate: defaultFocusDate(picked.period),
     focusSeq: state.focusSeq + 1,
+    focusSoft: false,                 // a period switched to is always a jump (D670 is Undo's and Redo's alone)
   })
   persistNotify()
   // Undo is scoped to the war on screen: switching wars starts a fresh stack,

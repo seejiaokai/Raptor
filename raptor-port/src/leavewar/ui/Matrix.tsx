@@ -83,6 +83,7 @@ import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -710,7 +711,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -3532,8 +3533,18 @@ export function Matrix() {
   // has to snap back to it after the grid has been dragged away, and a date
   // alone cannot express that. jsdom reports every rect as 0, which makes the
   // jump a harmless no-op there; the browser gate is what proves it moves.
+  //
+  // THE SOFT ASK (owner, D670, 8 Oct 26 — "if the change was already in view for the undo and redo, the screen should
+  // just remain there … instead of snapping the change to the left of the screen"): an Undo or a Redo asks with
+  // `focusSoft`, and the grid then moves only when the day's column is NOT wholly on screen (ui/inview.ts) — its month
+  // not drawn, the column under the frozen names, or off either edge. Every plain ask still jumps.
   useEffect(() => {
-    if (focusDate) jumpTo(focusDate)
+    if (!focusDate) return
+    if (focusSoft) {
+      const wrap = wrapRef.current, cell = headCell(focusDate)
+      if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
+    }
+    jumpTo(focusDate)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusSeq, focusDate])
 

@@ -25,6 +25,15 @@ const SIZES = {
   phone: { ...devices['iPhone 13'] },
 }
 const tid = (page, id) => page.locator(`[data-testid="${id}"]`)
+/* the holiday form's dates are picked on the Leave War's own range calendar (D671): walk it to a month, tap a day */
+const HOL_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+async function holTap(page, size, iso) {
+  const at = async () => { const [m, y] = (await tid(page, 'holcal-month').textContent()).trim().toLowerCase().split(/\s+/); return +y * 12 + HOL_MONTHS.indexOf(m) }
+  let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - await at()
+  for (; d > 0; d--) await press(size, tid(page, 'holcal-next-month'))
+  for (; d < 0; d++) await press(size, tid(page, 'holcal-prev-month'))
+  await press(size, tid(page, `holcal-day-${iso}`))
+}
 const press = (size, loc) => (size === 'phone' ? loc.tap() : loc.click())
 
 async function open(browser, size) {
@@ -95,7 +104,7 @@ const SHOTS = {
     await press(size, tid(page, 'hol-add'))
     await tid(page, 'hol-name').fill('Deepavali eve')
     await tid(page, 'hol-short').fill('DE')
-    await tid(page, 'hol-from').fill('2026-11-06')
+    await holTap(page, size, '2026-11-06'); await holTap(page, size, '2026-11-08')
   },
   /* a line opened to change or delete */
   async holchange(page, size) {
@@ -118,7 +127,7 @@ const SHOTS = {
     await SHOTS.holpart(page, size)
     await press(size, tid(page, 'hol-add'))
     await tid(page, 'hol-name').fill('National Day')
-    await tid(page, 'hol-from').fill('2031-08-09')
+    await holTap(page, size, '2031-08-09')
     await press(size, tid(page, 'hol-save'))
   },
   /* … and the Leave War's own New-period sheet it opens, over the window that asked */

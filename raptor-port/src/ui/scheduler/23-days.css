@@ -75,8 +75,9 @@
 .every-opt.lit{background:var(--panel-2);border-color:var(--accent);color:var(--accent)}
 .every-opt.c-nf.lit{border-color:#DCE2E8;color:#fff}
 .every-opt.c-night.lit{border-color:#8F86F0;color:#C9C4FF}
-/* 16px: an iPhone zooms the page when a box with smaller text takes the keyboard */
-.every-date{display:block;width:100%;box-sizing:border-box;min-height:42px;margin-top:0;padding:8px 10px;border-radius:10px;border:1px solid var(--edge-2);
+/* 16px: an iPhone zooms the page when a box with smaller text takes the keyboard. min-width 0 / max-width 100%: an
+   iPhone's date box has a width of its own and ran off the form's edge (his picture, 8 Oct 26) */
+.every-date{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:42px;margin-top:0;padding:8px 10px;border-radius:10px;border:1px solid var(--edge-2);
   background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;font-weight:700;color-scheme:dark}
 .every-seg.two + .every-date{margin-top:6px}
 .every-date:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
@@ -137,6 +138,9 @@
 .holwin .hol-f .every-lab{margin-top:12px}
 .holwin .every-date[type="text"]{font-weight:700}
 .holwin .every-date::placeholder{color:var(--ink-3);font-weight:600}
+/* the Leave War's range calendar in the holiday form (D671): its own look (leavewar/ui/rangepicker.css, scoped to
+   `.hol-cal` too), let to fill the form's width */
+.hol-cal .rpick{max-width:none}
 .hol-saved{margin:10px 0 0;font-size:12.5px;font-weight:700;color:#7FDCA0}
 /* a holiday that waits for a leave period: what is kept, and the way to make the period */
 .hol-wait{margin:8px 0 0;padding:9px 11px;border:1px solid rgba(229,168,59,.45);border-radius:10px;background:rgba(229,168,59,.08)}
@@ -144,8 +148,11 @@
 .hol-wait .abtn{width:100%;min-height:40px}
 .every-acts.three{grid-template-columns:auto 1fr auto}
 .every-acts.three .abtn{padding-left:14px;padding-right:14px}
-.hol-del{margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
-.hol-del .abtn{width:100%;min-height:40px}
+/* the form's buttons stay in sight at its foot: the body scrolls under them (a calendar makes the form taller than a
+   short phone) */
+.holwin .win-body{padding-bottom:0}
+.holwin .hol-acts{position:sticky;bottom:0;z-index:1;margin-top:10px;padding:10px 0 12px;background:var(--panel);border-top:1px solid var(--edge)}
+.holwin .hol-acts .abtn.danger{min-width:76px}
 /* A PHONE: the month takes the screen down to its foot — never a short box scrolled inside the page (D664); the
    window's own body scrolls as one. It starts UNDER the app's top bar (48px tall on a phone), so Undo and Redo stay in
    reach: every press here is one Undo step, and a mis-tap on a stepping button is taken back there. The bar still drags

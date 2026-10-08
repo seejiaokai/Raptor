@@ -7,8 +7,10 @@
    internal cascade order (the .blocked/.weekend and count-row orderings
    below are load-bearing). :root blocks became `&` blocks for the same
    reason. Do not unwrap, and never fix a cross-page bleed by editing
-   scheduler.css — add the explicit property here instead. */
-#page-leavewar {
+   scheduler.css — add the explicit property here instead.
+   AND UNDER `.hol-cal` (owner, D671, 8 Oct 26): the holiday form in Days — the scheduler's window, outside the Leave
+   War's page — draws this same calendar ("the same calendar interface and logic"), so the wrapper names both. */
+#page-leavewar, .hol-cal {
 /* The range calendar. Sits inside a `.bidsheet`, so it inherits that sheet's
    ground and only paints what is its own. */
 

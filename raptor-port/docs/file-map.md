@@ -543,6 +543,12 @@ the shell (kind, name, "On grid", first and last day; Save, "Save and add anothe
 It writes the war's own record with `holidayAdd` / `holidayChange` / `holidayRemove`. Tests `ui/holidayspanel.test.tsx`;
 the two readers it added to the seam (`uncoveredIn`, `holidayWord`) are pinned by it and `leavewar/uncovered.test.ts`.
 A holiday refused because no leave period covers its date WAITS in the form and is saved by itself once one does.
+`src/leavewar/ui/inview.ts` - "is this day's column already on screen?" (D670) - the one question the Leave War's grid
+asks before an Undo or a Redo moves it: drawn, with a width, wholly between the frozen name columns and the grid's right
+edge. Pure. Tests `leavewar/ui/inview.test.ts`; which asks are soft is `leavewar/undoland.test.ts`.
+`src/ui/onscreen.ts` - the same question for a ROW on the scheduler's pages (D672): wholly between the top bar (and a
+stuck table heading) and the foot of the window. Asked by Quals' and the Inputs list's Undo landings. Tests
+`ui/onscreen.test.ts`.
 `src/leavewar/ui/warask.ts` - ONE waiting ask, "open the war's New-period sheet on these dates" (plan §3.4): set by
 `sync.ts openNewPeriod` (from the Holidays list in Days), taken once by the war's top row (`ui/Chrome.tsx Topbar`), which
 opens its own `WarSheet` with the dates picked and RAISED above the scheduler's windows (`Sheet`'s `raised`; the layer

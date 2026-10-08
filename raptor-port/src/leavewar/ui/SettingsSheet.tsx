@@ -159,20 +159,21 @@ export function SettingsSheet({
       </div>
 
       {/* ---- Days (the Inputs / SANS calendar job, plan §3.3; the fourth mock-ups' "the way in") — the same line the
-          two calendars' settings carry. It opens the scheduler's Days window, where each date is set day flying, night
+          two calendars' settings carry. ON SCREEN IT IS "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead
+          of days"); the code and the working records still call the window Days. It opens the scheduler's Days window, where each date is set day flying, night
           flying or no fly: what the Required rows at the foot of the Manning block show as "NF", and count as 0 — and
           where the year's public holidays and Off days are one list (the same records as the Event rows here). The
           sheet closes first — Days is a window that leaves the grid working behind it (D641), and this sheet would
           cover it. */}
-      <div className="gs-sec">Days</div>
+      <div className="gs-sec">Calendar</div>
       <div className="set-tray">
         <div className="set-ctrls">
           <button
             className="rtbtn"
             data-testid="settings-days"
-            title="Open Days — set each date day flying, night flying or no fly"
+            title="Open the Calendar — set each date day flying, night flying or no fly, and the year's holidays"
             onClick={onDays}
-          >Days…</button>
+          >Calendar…</button>
         </div>
         <div className="set-hint" data-testid="settings-days-hint">Day flying, night flying or no fly for each date, and the year’s holidays.</div>
       </div>

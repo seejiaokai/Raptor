@@ -226,7 +226,9 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
     const date = lwDateOf(entry) ?? flyDateOf(entry)
-    if (date) focusDay(date)
+    /* the SOFT ask (owner, D670, 8 Oct 26): a change he is looking at is undone or redone where he is looking — the
+       grid jumps to the day only when its column is out of view */
+    if (date) focusDay(date, { ifHidden: true })
     return
   }
   const di = schedDayOf(entry) ?? inputDayOf(entry)

@@ -869,9 +869,34 @@
   padding: 10px 14px 4px;
 }
 
+/* THE COUNTER WINDOW'S THREE BUTTONS NO LONGER LOOK ALIKE (owner, D673, 8 Oct 26 — "Can delete counter button be red,
+   save counter be another colour like green or blue, similar to the rest of the app"). Save is the app's FILLED save
+   button (the Event sheet's Save beside it is this blue); Cancel stays the plain outline; Delete is red — an outline
+   until it is armed, solid on "Really delete?". This narrows D332 ("Delete … in a dashed grey edge, not red") for this
+   window only: that rule kept Delete from reading as "Refuse" beside the bid buttons, and there is no Refuse here. */
 .creset.pri {
-  border-color: rgba(59, 198, 232, .5);
-  color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink, #052A34);
+}
+.creset.pri:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink, #052A34);
+  filter: brightness(1.08);
+}
+.creset.cf-del {
+  background: transparent;
+  border-color: rgba(240, 85, 95, .6);
+  color: #FBB4B9;
+}
+.creset.cf-del:hover {
+  border-color: #F0555F;
+  color: #FFD9DC;
+}
+.creset.cf-del.arm {
+  background: #F0555F;
+  border-color: #F0555F;
+  color: #1A0508;
 }
 
 .creset:disabled {
@@ -939,10 +964,8 @@
   cursor: default;
 }
 
-.bidsheet .cf-del.arm {
-  border-color: rgba(255, 92, 92, .6);
-  color: #ff5c5c;
-}
+/* (the counter window's Delete, armed, is solid red since D673 — `.creset.cf-del.arm` above; the older red-outline rule
+   that sat here is folded into it) */
 
 /* The published-stage remarks editor's field (owner, 27 Aug 26). A plain
    multi-line note box in the sheet's panel tones; the row stacks its label

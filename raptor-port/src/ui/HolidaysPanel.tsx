@@ -16,6 +16,14 @@
    row it takes, a band for a run are theirs (leavewar/state/store.ts), and every refusal of theirs is said in the
    window with what he typed left as it was.
 
+   ITS DATES ARE PICKED ON THE LEAVE WAR'S OWN RANGE CALENDAR (owner, D671, 8 Oct 26 — "Instead of selecting first day
+   and last day. Could u use the same calendar interface and logic for selecting start and end date?", with a picture of
+   the war's Event sheet): `leavewar/ui/RangePicker` itself, not a copy — one tap is one day, a second tap on a later
+   day makes the run, the span said in words beneath, "Clear". (The two date boxes it replaces also ran off the form's
+   edge on an iPhone.) A new holiday opens with NOTHING picked — a date he did not choose is never saved, and in this
+   picker a day already picked is a START, so his first tap would have made a run from it — on the month of today (this
+   year's list) or that January (another year's). A line being changed opens with its own day or run picked.
+
    A DATE NO LEAVE PERIOD COVERS has nowhere to be written (a holiday lives in the period HOLDING its date). The list
    says so before he tries: where no period reaches the year at all, D19's line and its way out — "No leave period
    covers 2027 yet. Create it" (`createOilPeriodFor`, a whole year, in draft); where the year is covered in part, the
@@ -32,6 +40,7 @@ import {
   createOilPeriodFor, holidayAdd, holidayChange, holidayRemove, holidayWord, holidaysIn, openNewPeriod, uncoveredIn,
   MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayLine, type HolidayResult,
 } from '../leavewar/sync'
+import { RangePicker, type Range } from '../leavewar/ui/RangePicker'
 import { addDays, validIso, weekdayOf } from '../state/flyplan-model'
 import { MONTHS, WD, isoToday, sayDate } from './daysfmt'
 
@@ -129,16 +138,21 @@ export function HolidayForm({ line, year, onClose }: {
   onClose: () => void
 }) {
   const today = isoToday()
-  /* a new one starts today on this year's list, and on the first day of any other year's */
-  const first = line ? line.from : +today.slice(0, 4) === year ? today : `${year}-01-01`
+  /* a line being changed: its own day or run. A new one: nothing — he picks it (D671) */
+  const first: Range | null = line ? { from: line.from, to: line.to } : null
   const [kind, setKind] = useState<Kind>(line ? line.kind : 'ph')
   const [name, setName] = useState(line ? line.name : '')
   /* ON GRID: what the calendars and the grid print for it. A line being changed shows what it prints now; left alone,
      a change keeps the short form the holiday had (the store's rule) — so only a box he TOUCHED is sent */
   const [short, setShort] = useState(line && line.short ? line.short : '')
   const [shortTouched, setShortTouched] = useState(false)
-  const [from, setFrom] = useState(first)
-  const [to, setTo] = useState(line ? line.to : first)
+  const [range, setRange] = useState<Range | null>(first)
+  /* the month the calendar opens on while nothing is picked: today's on this year's list, January on another year's;
+     after "Save and add another", the month of the day after the one just saved. The calendar keeps which month it is
+     showing, so it is drawn afresh (`calKey`) when that moves */
+  const [anchor, setAnchor] = useState(+today.slice(0, 4) === year ? today : `${year}-01-01`)
+  const [calKey, setCalKey] = useState(0)
+  const from = range ? range.from : ''
   const [err, setErr] = useState('')
   const [saved, setSaved] = useState('')
   /* refused because no leave period covers its first day: it is kept, and saved by itself once one does */
@@ -146,19 +160,10 @@ export function HolidayForm({ line, year, onClose }: {
   /* any edit takes the last complaint — and the last "Saved" note — down: they were about what the form held then. And
      it ends a wait: what is saved by itself is only ever what the form held when he pressed Save */
   const edit = () => { setErr(''); setSaved(''); setWaiting(false) }
-  /* the last day follows the first while the two are one day, and never falls before it */
-  const pickFrom = (v: string) => {
-    edit()
-    if (to === from || (validIso(v) && to < v)) setTo(v)
-    setFrom(v)
-  }
-
   /* what a save would hold, or the sentence that says what is missing */
   const draft = (): HolidayDraft | string => {
-    if (!validIso(from)) return 'Choose its first day.'
-    const last = validIso(to) ? to : from
-    if (last < from) return 'The last day cannot be before the first.'
-    const d: HolidayDraft = { kind, name, from, to: last }
+    if (!range) return 'Pick its day — or its first and last day — on the calendar.'
+    const d: HolidayDraft = { kind, name, from: range.from, to: range.to }
     if (line ? shortTouched : short.trim() !== '') d.short = short
     return d
   }
@@ -173,10 +178,11 @@ export function HolidayForm({ line, year, onClose }: {
     if (refused(line ? holidayChange(line, d) : holidayAdd(d))) { setSaved(''); return }
     setWaiting(false)
     if (!more) { onClose(); return }
-    /* "Save and add another": the kind stays, the day after is ready, the name and its short form are cleared */
+    /* "Save and add another": the kind stays, the calendar is on the month of the day after with nothing picked, the
+       name and its short form are cleared */
     const next = addDays(d.to, 1)
     setErr(''); setSaved(`Saved: ${name.trim() || holidayWord(kind)}, ${when(d.from, d.to)}.`)
-    setName(''); setShort(''); setShortTouched(false); setFrom(next); setTo(next)
+    setName(''); setShort(''); setShortTouched(false); setRange(null); setAnchor(next); setCalKey(k => k + 1)
   }
   const remove = () => { if (line && !refused(holidayRemove(line))) onClose() }
 
@@ -226,15 +232,10 @@ export function HolidayForm({ line, year, onClose }: {
         </label>
       </div>
 
-      <div className="hol-row">
-        <label className="hol-f grow">
-          <span className="every-lab">First day</span>
-          <input type="date" className="every-date" data-testid="hol-from" value={from} onChange={e => pickFrom(e.target.value)} />
-        </label>
-        <label className="hol-f grow">
-          <span className="every-lab">Last day</span>
-          <input type="date" className="every-date" data-testid="hol-to" min={validIso(from) ? from : undefined} value={to} onChange={e => { edit(); setTo(e.target.value) }} />
-        </label>
+      <div className="every-lab">Dates</div>
+      {/* the Leave War's own range calendar (D671); `data-from` / `data-to` say what is picked, for the tests */}
+      <div className="hol-cal" data-testid="hol-dates" data-from={range ? range.from : ''} data-to={range ? range.to : ''}>
+        <RangePicker key={calKey} testid="holcal" compact anchor={anchor} value={range} onChange={r => { edit(); setRange(r) }} />
       </div>
 
       {saved && <p className="hol-saved" data-testid="hol-saved" role="status">{saved}</p>}
@@ -247,16 +248,17 @@ export function HolidayForm({ line, year, onClose }: {
             : <button type="button" className="abtn" data-testid="hol-wait-period" onClick={() => openNewPeriod(gap.from, gap.to)}>Add a leave period for {gapSaid(gap)}…</button>}
         </div>
       )}
-      <div className={'every-acts' + (line ? '' : ' three')}>
-        <button type="button" className="abtn" data-testid="hol-cancel" onClick={onClose}>Cancel</button>
-        {!line && <button type="button" className="abtn" data-testid="hol-save-more" onClick={() => save(true)}>Save and add another</button>}
+      {/* the buttons stay at the foot of the form while it scrolls under them: with the calendar in it the form is
+          taller than a short phone, and Save — and Delete, on a line being changed — must never be under the fold */}
+      <div className="every-acts three hol-acts">
+        {line
+          ? <button type="button" className="abtn danger" data-testid="hol-delete" aria-label={`Delete this ${KIND_SAID[line.kind]}`} onClick={remove}>Delete</button>
+          : <button type="button" className="abtn" data-testid="hol-cancel" onClick={onClose}>Cancel</button>}
+        {line
+          ? <button type="button" className="abtn" data-testid="hol-cancel" onClick={onClose}>Cancel</button>
+          : <button type="button" className="abtn" data-testid="hol-save-more" onClick={() => save(true)}>Save and add another</button>}
         <button type="button" className="abtn primary" data-testid="hol-save" onClick={() => save(false)}>Save</button>
       </div>
-      {line && (
-        <div className="hol-del">
-          <button type="button" className="abtn danger" data-testid="hol-delete" onClick={remove}>Delete this {KIND_SAID[line.kind]}</button>
-        </div>
-      )}
     </FloatWin>
   )
 }

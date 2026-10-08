@@ -3623,6 +3623,17 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
   await expect(tid(`req-p-${THU[1]}`)).toHaveText('NF')
 })
 
+/* THE HOLIDAY FORM'S DATES are picked on the Leave War's own range calendar (D671): walk it to a month, tap a day */
+const HOL_MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+async function holTap(page: Page, iso: string, phone: boolean) {
+  const at = async () => { const [m, y] = (await page.locator('[data-testid="holcal-month"]').textContent())!.trim().toLowerCase().split(/\s+/); return +y * 12 + HOL_MONTHS.indexOf(m) }
+  let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - await at()
+  const step = async (id: string) => { const b = page.locator(`[data-testid="${id}"]`); if (phone) await b.tap(); else await b.click() }
+  for (; d > 0; d--) await step('holcal-next-month')
+  for (; d < 0; d++) await step('holcal-prev-month')
+  await step(`holcal-day-${iso}`)
+}
+
 // THE YEAR'S HOLIDAYS, IN DAYS (plan §3.4, §3.12; D631, D638, D641, D652). jsdom proves the list, the form and what is
 // saved (src/ui/holidayspanel.test.tsx). A real browser says: the two parts are tabs on a phone and on a 1440px laptop,
 // and side by side where there is room for them AND a form beside them; the form is on the screen whole, with Save in
@@ -3669,20 +3680,32 @@ test('the Holidays list in Days adds, changes and deletes a public holiday — t
   expect(f.x).toBeGreaterThanOrEqual(-0.5); expect(f.r).toBeLessThanOrEqual(vp.width + 0.5)
   expect(f.y).toBeGreaterThanOrEqual(-0.5); expect(f.b).toBeLessThanOrEqual(vp.height + 0.5)
   if (!isPhone()) expect(f.r, 'the form covers Days').toBeLessThanOrEqual(w.x + 0.5)
-  for (const id of ['hol-kind-ph', 'hol-kind-off', 'hol-name', 'hol-short', 'hol-from', 'hol-to', 'hol-cancel', 'hol-save-more', 'hol-save']) {
+  /* ONE calendar for its dates — the Leave War's own (D671) — and no date box anywhere in the form */
+  await expect(form.locator('input[type="date"]')).toHaveCount(0)
+  await expect(tid('holcal-picker')).toBeVisible()
+  await expect(tid('holcal-selection')).toHaveText('Pick a start date')
+  const cal = await rect(tid('holcal-picker'))
+  expect(cal.x, 'the calendar runs out of the form').toBeGreaterThanOrEqual(f.x); expect(cal.r, 'the calendar runs out of the form').toBeLessThanOrEqual(f.r + 0.5)
+  {
+    const day = await rect(tid('holcal-day-2026-01-14').or(page.locator('[data-testid^="holcal-day-"]').first()).first())
+    expect(day.w, 'a day of the calendar is too small to tap').toBeGreaterThanOrEqual(28); expect(day.h).toBeGreaterThanOrEqual(isPhone() ? 30 : 26)
+  }
+  for (const id of ['hol-kind-ph', 'hol-kind-off', 'hol-name', 'hol-short', 'hol-cancel', 'hol-save-more', 'hol-save']) {
     const b = await rect(tid(id))
     expect(b.h, `${id} is too short`).toBeGreaterThanOrEqual(isPhone() ? 40 : 36)
     expect(b.x, `${id} runs out of the form`).toBeGreaterThanOrEqual(f.x); expect(b.r, `${id} runs out of the form`).toBeLessThanOrEqual(f.r + 0.5)
     expect(b.b, `${id} is under the fold`).toBeLessThanOrEqual(Math.min(f.b, vp.height) + 0.5)
   }
-  for (const id of ['hol-name', 'hol-short', 'hol-from', 'hol-to'])
+  for (const id of ['hol-name', 'hol-short'])
     expect(await tid(id).evaluate(el => parseFloat(getComputedStyle(el).fontSize)), `${id} would zoom an iPhone`).toBeGreaterThanOrEqual(16)
 
   await tid('hol-name').fill('Deepavali')
   await tid('hol-short').fill('dv')
   await expect(tid('hol-short')).toHaveValue('DV')
-  await tid('hol-from').fill(DAY)
-  await expect(tid('hol-to')).toHaveValue(DAY)
+  await holTap(page, DAY, isPhone())
+  await expect(tid('hol-dates')).toHaveAttribute('data-from', DAY)
+  await expect(tid('hol-dates')).toHaveAttribute('data-to', DAY)
+  await expect(tid('holcal-selection')).toContainText('14 Jan')
   await press(tid('hol-save'))
   await expect(form).toHaveCount(0)
   /* the list has it … */
@@ -3705,7 +3728,10 @@ test('the Holidays list in Days adds, changes and deletes a public holiday — t
   await expect(tid('hol-save-more')).toHaveCount(0)
   const del = await rect(tid('hol-delete')), f2 = await rect(form)
   expect(del.b, 'Delete is under the fold').toBeLessThanOrEqual(Math.min(f2.b, vp.height) + 0.5)
-  await tid('hol-to').fill(NEXT)
+  /* its one day is picked already, so a tap on the next day makes the run */
+  await expect(tid('hol-dates')).toHaveAttribute('data-from', DAY)
+  await holTap(page, NEXT, isPhone())
+  await expect(tid('hol-dates')).toHaveAttribute('data-to', NEXT)
   await press(tid('hol-save'))
   await expect(form).toHaveCount(0)
   await expect(lineOf(DAY)).toContainText('Wed 14 – Thu 15 Jan')
@@ -3788,7 +3814,7 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
   /* a holiday in August: refused, KEPT, and the same way out offered in the form */
   await press(tid('hol-add'))
   await tid('hol-name').fill('National Day')
-  await tid('hol-from').fill('2031-08-09')
+  await holTap(page, '2031-08-09', isPhone())
   await press(tid('hol-save'))
   await expect(tid('hol-err')).toHaveText('No leave period covers 9 Aug 31 yet.')
   await expect(tid('hol-waiting')).toBeVisible()
@@ -3832,6 +3858,85 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
   await press(tid('days-tab-month'))
   for (let i = 0; i < 80 && (await tid('days-month').textContent()) !== 'August 2031'; i++) await press(tid('days-next'))
   await expect(tid('days-tag-2031-08-09')).toHaveText('PH')
+})
+
+// UNDO AND REDO LEAVE THE GRID WHERE IT IS (owner, D670, 8 Oct 26 — his phone pictures: an LL put on 9 Feb, Undo, and
+// the screen snapped 9 Feb to the left edge; "if the change was already in view for the undo and redo, the screen should
+// just remain there … I understand if u scroll away from the screen and press undo/redo and it snaps back to 9feb it's
+// ok"). Only a browser has a scroll position: this is his steps, measured.
+test('Undo and Redo leave the grid where it is when the changed day is on screen, and jump to it only when it is not', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const DAY = '2026-02-09'
+  const cell = tid(`cell-slipway-${DAY}`)
+  const at = () => page.evaluate(() => (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft)
+  /* where the day's column sits: how far its left edge is past the frozen name columns, and whether it is wholly in view */
+  const place = () => page.evaluate(d => {
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    const w = wrap.getBoundingClientRect()
+    const frozen = (wrap.querySelector('.who') as HTMLElement).getBoundingClientRect().width + ((wrap.querySelector('.bal') as HTMLElement | null)?.getBoundingClientRect().width ?? 0)
+    const h = document.querySelector(`[data-testid="head-${d}"]`) as HTMLElement | null
+    if (!h) return { drawn: false, past: 0, inView: false }
+    const c = h.getBoundingClientRect()
+    return { drawn: true, past: c.left - (w.left + frozen), inView: c.left >= w.left + frozen - 0.5 && c.right <= w.right + 0.5 }
+  }, DAY)
+  const settle = () => page.waitForTimeout(350)
+  const nudge = (px: number) => page.evaluate(n => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft += n }, px)
+
+  /* February on screen: 9 Feb is in view, well clear of the left edge */
+  await tid('month-FEB').click(); await settle()
+  let p = await place()
+  expect(p.inView, '9 Feb should be in view after the jump to February').toBe(true)
+  expect(p.past, '9 Feb should not already be at the left edge').toBeGreaterThan(60)
+  const x0 = await at()
+
+  /* an LL on 9 Feb — then Undo: gone, and the grid has not moved */
+  expect(await page.evaluate(d => (window as any).lwSetCell('slipway', d, 'LL'), DAY)).toBe(true)
+  await expect(cell).toContainText('LL')
+  await page.locator('#undoBtn').click(); await settle()
+  await expect(cell).not.toContainText('LL')
+  expect(Math.abs(await at() - x0), 'Undo moved the grid though 9 Feb was in view').toBeLessThan(1.5)
+  /* Redo: back, and still not moved */
+  await page.locator('#redoBtn').click(); await settle()
+  await expect(cell).toContainText('LL')
+  expect(Math.abs(await at() - x0), 'Redo moved the grid though 9 Feb was in view').toBeLessThan(1.5)
+
+  /* "when I move the screen again and I redo": moved a little, the day still in view — it stays where HE put it */
+  await nudge(70); await settle()
+  const x1 = await at()
+  expect((await place()).inView).toBe(true)
+  await page.locator('#undoBtn').click(); await settle()
+  expect(Math.abs(await at() - x1), 'Undo moved the grid after he had moved it a little').toBeLessThan(1.5)
+  await page.locator('#redoBtn').click(); await settle()
+  expect(Math.abs(await at() - x1)).toBeLessThan(1.5)
+
+  /* HALF UNDER THE FROZEN NAMES is not "in view": the grid brings the day out, to the left edge */
+  p = await place()
+  const w9 = await tid(`head-${DAY}`).evaluate(el => el.getBoundingClientRect().width)
+  await nudge(p.past + w9 / 2); await settle()
+  expect((await place()).inView).toBe(false)
+  await page.locator('#undoBtn').click(); await settle()
+  await expect(cell).not.toContainText('LL')
+  p = await place()
+  expect(p.inView, 'a day half hidden was not brought out').toBe(true)
+  expect(Math.abs(p.past), 'a jump puts the day just past the frozen columns').toBeLessThan(3)
+
+  /* SCROLLED RIGHT AWAY — "it snaps back to 9 Feb, it's ok": June on screen, Redo brings February's day back */
+  await tid('month-JUN').click(); await settle()
+  expect((await place()).inView).toBe(false)
+  await page.locator('#redoBtn').click()
+  await expect(cell).toContainText('LL')
+  await expect.poll(async () => (await place()).inView, { timeout: 5000 }).toBe(true)
+
+  /* and the grid's OTHER jumps are as they were: a month button still puts its month at the left edge */
+  await tid('month-FEB').click(); await settle()
+  const feb1 = await page.evaluate(() => {
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement, w = wrap.getBoundingClientRect()
+    const frozen = (wrap.querySelector('.who') as HTMLElement).getBoundingClientRect().width + ((wrap.querySelector('.bal') as HTMLElement | null)?.getBoundingClientRect().width ?? 0)
+    return (document.querySelector('[data-testid="head-2026-02-01"]') as HTMLElement).getBoundingClientRect().left - (w.left + frozen)
+  })
+  expect(Math.abs(feb1), 'the month button no longer lands its month at the left edge').toBeLessThan(3)
 })
 
 // PICKING SEVERAL REQUIRED CELLS, AND THE PANEL THAT DOES NOT BLOCK THE GRID (plan §3.3 "Picking several"; D636, D637,
@@ -5181,8 +5286,20 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
   await page.locator('[data-testid="manning-info-wmp"]').click()
   await page.locator('[data-testid="counter-edit-open"]').click()
   const del = page.locator('[data-testid="cform-delete"]')
+  /* THE THREE BUTTONS DO NOT LOOK ALIKE (owner, D673, 8 Oct 26 — "delete counter button be red, save counter be another
+     colour … similar to the rest of the app"): Save is filled with the app's accent, Cancel is a plain outline, Delete
+     is red — an outline until armed, then solid. Colours are a browser's to report. */
+  const paint = (id: string) => page.locator(`[data-testid="${id}"]`).evaluate(el => { const c = getComputedStyle(el); return { bg: c.backgroundColor, ink: c.color, edge: c.borderTopColor } })
+  const rgb = (c: string) => (c.match(/[\d.]+/g) || []).map(Number)
+  const isRed = (c: string) => { const [r, g, b] = rgb(c); return r > 200 && g < 200 && b < 200 && r - g > 40 }
+  const save = await paint('cform-save'), cancel = await paint('cform-cancel'), d0 = await paint('cform-delete')
+  expect(save.bg, 'Save counter is not filled with the accent').toBe('rgb(59, 198, 232)')
+  expect(cancel.bg).not.toBe(save.bg); expect(cancel.edge).not.toBe(save.edge)
+  expect(isRed(d0.ink), `Delete counter is not red (${d0.ink})`).toBe(true); expect(isRed(d0.edge), `Delete counter's edge is not red (${d0.edge})`).toBe(true)
+  expect(d0.bg).not.toBe(save.bg)
   await del.click()
   await expect(del).toHaveText('Really delete?')
+  expect((await paint('cform-delete')).bg, 'armed, Delete is not solid red').toBe('rgb(240, 85, 95)')
   await del.click()
   await expect(page.locator('[data-testid="count-wmp"]')).toHaveCount(0)
 })
