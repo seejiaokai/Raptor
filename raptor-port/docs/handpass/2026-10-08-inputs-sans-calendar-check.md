@@ -707,3 +707,30 @@ desktop — the switch’s box on the Calendar, on the List and back on the Cale
 8, 106, 68 × 44 on both); the row still holds one line; nothing runs off sideways. The host opened the picture of the
 two views one above the other. **Tests, red first:** `ui/inputstabs.test.tsx` "the Calendar | List switch keeps its
 place" — two of two.
+
+## 18. The gates after his look — 9 Oct 26, on `803be8d7` (D683, D685, D686, D687 built): wholly green
+
+Under the PC lock, watched, with nothing else running on the PC: unit 9369 of 9369 (564 files) · build clean · the
+reference 728 / 0 · the browser tests 713 passed, 0 failed, 56 skipped · the Tracker smoke 445 / 0 · the rule check OK ·
+the document check OK. (A run started earlier on `bed9b04b` was stopped by the host when his next request changed the
+code again; before it was stopped its unit gate had failed on the one known unsteady Tracker test,
+`[TRK-DLG-FOCUS-UNSTEADY]`, while the host was also taking pictures on the same PC. It passed in this run.)
+
+**The look card, as it stands — on the preview, his iPhone:**
+
+1. **The page behind a window** — with a finger on the new-input window, does the page behind still scroll? Not
+   reproducible on the build PC; only his phone can say (D686). The two older windows — the changes window and ALL
+   AVAIL — are built differently and were not changed: say if they do it too.
+2. Drag across the pucks to pick several — sideways first on a phone (D685).
+3. The Calendar | List switch stays put; the month’s arrows and "Today" now come after it, desktop too (D687).
+4. The day opens tall on a phone; "+ Note" and "+ Pucks" beside the date; a shorter title box and "+ Input" (D683).
+   The SANS day still opens at the shorter height — the same for it?
+5. A note that carries its own pucks, in place of "+ Pucks" (D684, his "perhaps") — not built: a picture first.
+6. The date door of a shared input (D681), and its OIL reading: when the filer adds a person and answers again, the
+   answer is for everyone (D682).
+7. Still open from before: the confirm bar for several days picked (drawn) against the window opening at once
+   (built) — he withdrew his answer; the small calendar days in a window on a phone; the picker’s spacing; typing a
+   Required figure, holding and dragging a bar on his iPhone.
+
+`Docs: OUTSTANDING 147 items (+14 −0) · DECISIONS D1–D687 · homes OK`
+`docsize: OVER, deferred (D29)`
