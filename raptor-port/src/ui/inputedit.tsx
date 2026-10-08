@@ -12,6 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { FloatWin } from './FloatWindow'
+import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, pickProblem } from './PeoplePick'
 import { entryRowsOf } from '../state/inputgroup'
@@ -1843,7 +1844,11 @@ export function InputEditor() {
        this one holds changes nobody has saved. It is not replaced under him: the window keeps the first, and asks. */
     const prev = shown.current
     const other = !!prev && !!r && r !== prev && !(prev.iid && prev.iid === r.iid)
-    if (win && other && !swapOk.current && draft && base.current && WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))) {
+    /* ... and WHO IT IS FOR is his work too (the same bug check - Astra's M2): the picked people are held apart from
+       the draft's fields, so a third man added to a shared input, and nothing else touched, was thrown away without
+       a word when another input was opened. Compared as a set - picked and un-picked again is no change. */
+    const pplTouched = ppl.length !== basePpl.current.length || ppl.some(id => !basePpl.current.includes(id))
+    if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
       return
     }
@@ -1872,6 +1877,12 @@ export function InputEditor() {
      So a Save writes only his own changes over the record as it stands (the plan §3.7). */
   useLayoutEffect(() => {
     if (!win || !r || isNew || !draft) return
+    /* NOT WHILE IT IS ASKING. When another input is asked for over unsaved work, the effect above keeps the first one
+       and puts it back — but for that one paint `r` IS the other input, and this step took it for the window's own
+       record changed behind it: it said "Changed while this window was open: people — X added, Y taken off", said the
+       reverse a moment later, and put the saved people back over the ones he had picked (the calendar job's bug check,
+       8 Oct 26 — found writing the test for a people-only change). The window follows only the record it is SHOWING. */
+    if (shown.current !== r) return
     const now = INPUTS.find((x: any) => x.iid === r.iid)
     if (!now) {
       /* the record this window was opened on left a shared input that lives on: the window holds the rest of it */
@@ -1928,6 +1939,13 @@ export function InputEditor() {
         const a = document.activeElement as HTMLElement | null
         const mine = !!a && !!box.current && !!box.current.closest('.floatwin')?.contains(a)
         if (!mine && a && a !== document.body && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return
+        /* AND IT IS THE FRONT WINDOW'S (D641; the calendar job's bug check, 8 Oct 26 - Astra's M1, seen in the running
+           build): with the settings window opened over this one, Escape closed THIS editor - the one behind - and
+           lost what he had typed, because this handler runs first and never asked which window was in front. With
+           none of its own questions up, the editor takes Escape only when it is the front window; otherwise the
+           key is left for the shell, which closes the front one (ui/FloatWindow.tsx). A question of its own (the
+           OIL, upchit, medical or document sheet) blocks the page, so it still answers first. */
+        if (!docConf && !upConf && !medConf && !oilConf && frontWin() !== 'inputedit') return
       }
       e.stopPropagation()
       if (docConf) setDocConf(null)

@@ -6598,7 +6598,11 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   (150px on a desktop, the leftover width on a phone), so › does not move under a finger as names change length. The
   blanks before the 1st and after the last date are drawn as empty places.
 - **A date** shows its number — dimmed on a Saturday or Sunday, in the accent disc on today — and EITHER the tag the
-  Leave War gives it (PH on a green wash, OFF on grey; no class control under a holiday) OR its class control.
+  Leave War gives it (the holiday's SHORT FORM — "PH", "OFF", or the squadron's own, "ND" — on a green wash for a
+  public holiday, grey for an Off day; its title gives the full name; no class control under a holiday) OR its class
+  control. *(Until the calendar job's bug check, 8 Oct 26, this month printed the fixed words "PH" / "OFF" while the
+  SANS month, the Inputs month and the Leave War's Event row printed the short form — one day, two words. All four read
+  `leavewar/sync.ts dayFacts().short`; pinned `ui/dayswindow.test.tsx`.)*
   - *Wider than 820px:* three buttons, D / N / NF, side by side inside the date, the chosen one lit (day the accent,
     night violet, no fly grey; `aria-pressed`). A Saturday and a Sunday start with none lit (D642). Pressing the lit one
     does nothing on a weekday and goes back to "no flying set" on a weekend.
@@ -9103,6 +9107,15 @@ kind too, on ONE shell — `ui/FloatWindow.tsx`, over the placement helper this 
 one, and the page behind it works (D641). Each window's own rules are with its screen: "Days — the month", "The
 SANS calendar", "The Inputs calendar".)*
 
+*(And which one is "in front" — the same check, 8 Oct 26: the shell keeps the windows that are up in the order they were
+last brought forward (`ui/FloatWindow.tsx`, `UP`), so when the front one closes the one LEFT is in front — it wears
+`.front`, and the next Escape closes it. Before, "in front" was one remembered name that a closing window left behind:
+no window on screen was in front and Escape did nothing until one was pressed. The input editor has an Escape handler
+of its own (its OIL, upchit, medical and document questions answer first); with none of those up it takes Escape ONLY
+when it is the front window — it used to close itself from BEHIND a settings window and lose what was typed. Pinned
+`ui/floatwindow.test.tsx` "when the front one closes…", `ui/editorwindow.test.tsx` "Escape belongs to the window in
+FRONT".)*
+
 **THE OUTSIDE-CLICK RULE DOES NOT APPLY TO THIS SURFACE.** Read that before
 changing anything here. The app has two transient surfaces and this is a third
 kind:
@@ -9448,7 +9461,12 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   takes the live value silently; a field changed both ways is listed, theirs and his, and Save waits for his choice
   (asked again after any blocking question); a record that has gone closes the window and says so; a record put back
   as a new object by a refusal or an Undo is followed without losing what he typed; another input asked for over
-  unsaved changes is asked about in the window.
+  unsaved changes is asked about in the window. *(Two corrections from the job's bug check, 8 Oct 26: WHO IT IS FOR is
+  unsaved work too — a person picked or un-picked, compared as a set against the people it opened with, asks the same
+  question (it used to be thrown away without a word); and while it asks, the window follows only the record it is
+  SHOWING — it used to take the other input for its own record changed behind it, say "Changed while this window was
+  open: people — X added, Y taken off" twice over, and put the saved people back. Pinned `ui/editorwindow.test.tsx`
+  "a change of the PEOPLE alone is unsaved work too".)*
 Pins: `ui/inputscal-model.test.ts`, `ui/inputstabs.test.tsx`, `ui/inputsmonth.test.tsx`, `ui/barmove.test.tsx`,
 `ui/inputsday.test.tsx`, `ui/inputskeys.test.tsx`, `ui/inputssettings.test.tsx`, `ui/logicdoors.test.tsx`,
 `ui/placedshown.test.tsx`, `ui/editorwindow.test.tsx`, `ui/placedline.test.ts`, `state/demostamps.test.ts`,

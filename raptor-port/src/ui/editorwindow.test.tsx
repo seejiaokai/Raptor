@@ -29,7 +29,8 @@ import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
-import { INPEDIT, setInpEdit } from './pops'
+import { INPEDIT, INPSET, setInpEdit, setInpSet } from './pops'
+import { InputsSettings } from './InputsSettings'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -71,7 +72,7 @@ beforeEach(async () => {
   await act(async () => { setCalMonth({ y: 2026, m: 10 }); notify() })
 })
 afterEach(async () => {
-  await act(async () => { root.unmount(); setInpEdit(null) })
+  await act(async () => { root.unmount(); setInpEdit(null); setInpSet(false) })
   HOOKS.toast = realToast
   host.remove(); _resetFloatWins(); setSession(null); storeBackend.impl = null; setPage('inputs')
 })
@@ -234,5 +235,121 @@ describe('one editor at a time', () => {
     const a = await file(), b = await file({ person: crew()[1], date: 'Oct 14', remarks: 'second' })
     await openOn(a); await openOn(b)
     expect(tid('inped-swap')).toBeNull(); expect(rmk()).toBe('second')
+  })
+})
+
+/* THE CALENDAR JOB'S BUG CHECK (8 Oct 26 - docs/handpass/2026-10-08-inputs-sans-calendar-check.md). Astra named both
+   from reading the promise against the code; the host reproduced each in the running build before either was fixed
+   (scripts/handpass/cal-host-leads.mjs, M1 and M2). */
+describe('Escape belongs to the window in FRONT, never to an editor behind it (D641)', () => {
+  const withSettings = async () => {
+    await act(async () => { root.render(<><InputsPage /><InputEditor /><InputsSettings /></>) })
+    await act(async () => { setInpSet(true); notify() })
+    expect(tid('win-inputsset'), 'the settings window is up').toBeTruthy()
+  }
+  const escapeOn = async (el: HTMLElement) => {
+    await act(async () => { el.focus() })
+    await act(async () => { el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+  }
+  it('a settings window opened over the editor: Escape closes the settings; the editor and what he typed stay', async () => {
+    const r = await file()
+    await openOn(r)
+    await type('#inpEditRmk', 'not saved yet')
+    await withSettings()
+    await escapeOn(tid('iset-cancel')!)
+    expect(INPSET, 'the window in front closed').toBe(false)
+    expect(tid('win-inputsset')).toBeNull()
+    expect(win(), 'the editor behind it is still up').toBeTruthy()
+    expect(rmk(), 'with what he typed').toBe('not saved yet')
+    expect(live(r.iid).remarks, 'and nothing was saved').toBe('first')
+  })
+  it('the other way round - the editor brought to the front over the settings: Escape closes the editor only', async () => {
+    const r = await file()
+    await openOn(r)
+    await withSettings()
+    await act(async () => { win()!.dispatchEvent(new Event('pointerdown', { bubbles: true })) })
+    await escapeOn($('#inpEditRmk')!)
+    expect(win(), 'the editor, in front, closed').toBeNull()
+    expect(INPSET, 'the settings behind it stayed').toBe(true)
+  })
+  it('alone on the page it still closes on Escape, wherever in it the keyboard is', async () => {
+    const r = await file()
+    await openOn(r)
+    await escapeOn($('#inpEditCancel')!)
+    expect(win()).toBeNull(); expect(INPEDIT).toBeNull()
+  })
+})
+
+describe('a change of the PEOPLE alone is unsaved work too (D654, D656)', () => {
+  const group = async () => {
+    const [p1, p2] = crew()
+    const a = await file({ person: p1, grp: 'g-ew', grpBy: p1, remarks: 'shared' })
+    await file({ person: p2, grp: 'g-ew', grpBy: p1, remarks: 'shared' })
+    return a
+  }
+  const puck = (id: string) => $(`#inpEditPop .pp-pucks button[aria-label="${PEOPLE[id].cs}"]`)
+  const pickedNow = () => [...document.querySelectorAll('#inpEditPop .pp-pucks button[aria-pressed="true"]')].map(b => b.getAttribute('aria-label')).sort()
+  it('one more person picked, nothing else touched: opening another input asks, and the window keeps who he picked', async () => {
+    const a = await group()
+    const third = crew()[2]
+    const b = await file({ person: crew()[3], date: 'Oct 14', remarks: 'second' })
+    await openOn(a)
+    expect(pickedNow()).toHaveLength(2)
+    await click(puck(third))
+    expect(pickedNow()).toHaveLength(3)
+    await openOn(b)
+    expect(tid('inped-swap'), 'it asks before the other input replaces this one').toBeTruthy()
+    expect(tid('inped-swap')!.textContent).toMatch(/unsaved changes/i)
+    expect(pickedNow(), 'the three he picked are still picked').toContain(PEOPLE[third].cs)
+    expect(pickedNow()).toHaveLength(3)
+    await click(tid('inped-swap-stay'))
+    expect(pickedNow()).toHaveLength(3)
+    expect(INPUTS.filter((r: any) => r.grp === 'g-ew'), 'and nothing was saved').toHaveLength(2)
+  })
+  it('one person taken out of three: the same question', async () => {
+    const a = await group()
+    const third = crew()[2]
+    await file({ person: third, grp: 'g-ew', grpBy: crew()[0], remarks: 'shared' })
+    const b = await file({ person: crew()[3], date: 'Oct 14', remarks: 'second' })
+    await openOn(a)
+    expect(pickedNow()).toHaveLength(3)
+    await click(puck(third))
+    expect(pickedNow()).toHaveLength(2)
+    await openOn(b)
+    expect(tid('inped-swap')).toBeTruthy()
+    expect(pickedNow(), 'the two he left picked - the man he took out is not put back while it asks').toHaveLength(2)
+    expect(pickedNow()).not.toContain(PEOPLE[third].cs)
+  })
+  /* found writing the test above: while the window asked, it took the OTHER input for its own record changed behind
+     it - it said "Changed while this window was open: people - X added, Y taken off", said the reverse a moment later,
+     and put the saved people back over the ones he had picked */
+  it('while it asks, it says nothing was changed behind it, lists no clash, and keeps every field as he left it', async () => {
+    const a = await file(), b = await file({ person: crew()[1], date: 'Oct 14', remarks: 'second', s: 720, e: 780 })
+    await openOn(a)
+    await type('#inpEditRmk', 'half typed')
+    said.length = 0
+    await openOn(b)
+    expect(tid('inped-swap')).toBeTruthy()
+    expect(said.filter(m => /changed while this window was open/i.test(m)), 'no message about a change behind it').toEqual([])
+    expect(tid('inped-clash'), 'and no clash to choose between').toBeNull()
+    await click(tid('inped-swap-stay'))
+    expect(tid('inped-clash')).toBeNull()
+    expect(rmk()).toBe('half typed')
+    expect(($('#inpEditPerson') as HTMLSelectElement).value, 'still the person of the first input').toBe(String(a.person))
+    await click($('#inpEditSave'))
+    expect(live(a.iid).remarks).toBe('half typed')
+    expect([live(a.iid).date, live(a.iid).s, live(a.iid).e], 'saved with its own date and hours, nothing of the other input').toEqual(['Oct 13', 600, 660])
+    expect(live(b.iid).remarks, 'and the other input untouched').toBe('second')
+  })
+  it('picked and un-picked again - the same people as when it opened - is no unsaved change', async () => {
+    const a = await group()
+    const third = crew()[2]
+    const b = await file({ person: crew()[3], date: 'Oct 14', remarks: 'second' })
+    await openOn(a)
+    await click(puck(third)); await click(puck(third))
+    expect(pickedNow()).toHaveLength(2)
+    await openOn(b)
+    expect(tid('inped-swap'), 'nothing to ask about').toBeNull()
+    expect(rmk()).toBe('second')
   })
 })

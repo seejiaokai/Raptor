@@ -44,7 +44,24 @@ import { notify } from '../state/store'
    keystroke, and component state would throw a window back to its corner mid-drag (floatwin.ts) */
 const BOXES = new Map<string, FloatBox | null>()
 /** test-only: forget every window's place and which was in front */
-export function _resetFloatWins(): void { BOXES.clear(); raiseWin('') }
+export function _resetFloatWins(): void { BOXES.clear(); UP.length = 0; raiseWin('') }
+
+/* THE WINDOWS THAT ARE UP, in the order they were last brought forward - so that when the front one closes, the one
+   left is in front. "In front" (ui/floatwin.ts) is one remembered name; a closing window used to leave it behind, so
+   NO window on screen was in front: none wore the mark, and Escape did nothing until one was pressed (the calendar
+   job's bug check, 8 Oct 26). The input editor asks the same question before it takes an Escape (ui/inputedit.tsx). */
+const UP: string[] = []
+function forward(id: string): boolean {
+  const i = UP.indexOf(id)
+  if (i >= 0) UP.splice(i, 1)
+  UP.push(id)
+  return raiseWin(id)
+}
+function gone(id: string): boolean {
+  const i = UP.indexOf(id)
+  if (i >= 0) UP.splice(i, 1)
+  return frontWin() === id && raiseWin(UP[UP.length - 1] || '')
+}
 
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
@@ -143,9 +160,11 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
   useLayoutEffect(() => {
     const opener = document.activeElement as HTMLElement | null
     const n = el.current
-    if (raiseWin(id)) notify()
+    if (forward(id)) notify()
     if (n && !n.contains(document.activeElement)) n.focus({ preventScroll: true })
     return () => {
+      /* the one left comes forward - and is repainted, so it wears the mark */
+      if (gone(id)) notify()
       const at = document.activeElement
       if (opener && opener.isConnected && typeof opener.focus === 'function' && (!at || at === document.body || (n && n.contains(at)))) {
         opener.focus({ preventScroll: true })
@@ -177,7 +196,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
       aria-label={title}
       tabIndex={-1}
       data-testid={testid}
-      onPointerDownCapture={() => { if (raiseWin(id)) notify() }}
+      onPointerDownCapture={() => { if (forward(id)) notify() }}
     >
       <div className="win-bar" {...bar}>
         {/* the app's own six-dot grip, "drag me" (D40) */}

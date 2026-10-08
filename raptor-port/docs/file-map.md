@@ -702,6 +702,9 @@ shared input's (one input filed for several people: forty-one).
 build (the people picker, the opened day's one line, the List's one row, the editor window), phone and desktop.
 `scripts/handpass/cal-lw-nodes.mjs` - a MEASUREMENT, not a gate: what the Leave War's four rows cost the grid in DOM
 nodes, phone and desktop, admin and member - the figure in `docs/performance.md` section E.
+`scripts/handpass/cal-host-leads.mjs` - the calendar job's bug check, THE HOST'S OWN RUN of three leads through the app's
+real controls (the "Calendar" month's holiday tag; Escape with a window in front of the input editor; a change of the
+picked people alone as unsaved work): 0 of 3 right before the fixes; a PASS is the right behaviour, so it is its own re-walk.
 `scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
 grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26). He chose A (D678); it is built.
 `scripts/handpass/lw-phone-head-measure.mjs` - measures the Leave War's top area (every control's words, box, padding and

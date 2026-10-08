@@ -121,6 +121,32 @@ describe('two windows', () => {
     fireEvent.keyDown(screen.getByTestId('in1'), { key: 'Escape' })
     expect(onClose).toHaveBeenCalledTimes(1); expect(onOther).toHaveBeenCalledTimes(1)
   })
+  /* THE CALENDAR JOB'S BUG CHECK (8 Oct 26). "In front" was one remembered name: when the front window closed, the name
+     stayed its, so NO window left on screen was in front - none wore the mark, and Escape did nothing until one was
+     pressed. The window left - the one brought forward most recently of those still up - is the front one. */
+  function Three() {
+    const [up, setUp] = useState<Record<string, boolean>>({ days: true, other: true, third: true })
+    const w = (id: string) => up[id] && (
+      <FloatWin key={id} id={id} title={id} testid={'win-' + id} onClose={() => setUp(u => ({ ...u, [id]: false }))}><button data-testid={'b-' + id}>x</button></FloatWin>
+    )
+    return <div>{w('days')}{w('other')}{w('third')}</div>
+  }
+  it('when the front one closes, the one left is in front: it wears the mark and the next Escape closes it', () => {
+    render(<Three />)
+    expect(frontWin()).toBe('third')
+    fireEvent.pointerDown(screen.getByTestId('b-days'))                 // Days forward: the order is now other, third, days
+    expect(frontWin()).toBe('days')
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('win-days')).toBeNull()
+    expect(frontWin(), 'the one brought forward before it').toBe('third')
+    expect(win('win-third').className).toContain('front'); expect(win('win-other').className).not.toContain('front')
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('win-third')).toBeNull()
+    expect(frontWin()).toBe('other'); expect(win('win-other').className).toContain('front')
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('win-other')).toBeNull()
+    expect(frontWin(), 'none is left').toBe('')
+  })
 })
 
 describe('dragging', () => {

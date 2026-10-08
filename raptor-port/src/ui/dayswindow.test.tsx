@@ -20,7 +20,8 @@ import { _resetTimeline } from '../undo/timeline'
 import { globalUndo, undoState } from '../undo'
 import { commandStream } from '../command'
 import { getFlyPlan, setFlyRule } from '../state/flyplan'
-import { getState, initStore as lwInitStore, setDayEvent, setRole } from '../leavewar/state/store'
+import { getState, holidayAdd, initStore as lwInitStore, setDayEvent, setRole } from '../leavewar/state/store'
+import { dayFacts } from '../leavewar/sync'
 import { memoryBackend } from '../leavewar/state/storage'
 import { flyAnswer } from '../leavewar/sync'
 import { DAYSWIN, POPS_RESET, setDaysWin } from './pops'
@@ -232,6 +233,26 @@ describe('a public holiday and an Off day show their tag, never a class control'
     expect(q(`days-d-${PH}`)).toBeTruthy()
     act(() => { setDayEvent(PH, 0, 'PH') })
     expect(q(`days-d-${PH}`)).toBeNull(); expect(t(`days-tag-${PH}`).textContent).toBe('PH')
+  })  /* THE BUG CHECK'S ROLL-CALL ROW A5 (8 Oct 26). The plan's rule (section 3.12): "the calendars' date tag is the short form in
+     the kind's colour (so PH, OFF or ND)". The SANS month and the Inputs month printed it; THIS month printed the fixed
+     words, so a National Day read "ND" on two calendars and on the Leave War's Event row, and "PH" here. */
+  it('a holiday with a short form of its own prints THAT - the word the other two calendars and the Leave War print', () => {
+    const war = getState().period
+    const days = war.days.map(d => d.date).filter(iso => { const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })
+    const ND = days[10], SD = days[11]
+    expect(holidayAdd({ kind: 'ph', name: 'National Day', short: 'ND', from: ND, to: ND })).toEqual({ ok: true })
+    expect(holidayAdd({ kind: 'off', name: 'Stand Down', short: 'SD', from: SD, to: SD })).toEqual({ ok: true })
+    expect(SD.slice(0, 7)).toBe(ND.slice(0, 7))
+    for (const phone of [false, true]) {
+      cleanup(); asPhone(phone)
+      render(<DaysWindow />); open(ND)
+      /* ONE answer for every reader: what the war's own function says the day prints */
+      expect(dayFacts(ND).short).toBe('ND'); expect(dayFacts(SD).short).toBe('SD')
+      expect(t(`days-tag-${ND}`).textContent).toBe('ND'); expect(t(`days-tag-${ND}`).className).toContain('ph')
+      expect(t(`days-tag-${ND}`).getAttribute('title')).toBe('National Day - public holiday')
+      expect(t(`days-tag-${SD}`).textContent).toBe('SD'); expect(t(`days-tag-${SD}`).className).toContain('off')
+      expect(t(`days-tag-${SD}`).getAttribute('title')).toBe('Stand Down - Off day')
+    }
   })
 })
 

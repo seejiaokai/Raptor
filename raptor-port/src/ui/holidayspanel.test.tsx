@@ -160,8 +160,10 @@ describe('the list', () => {
     const n = shown().length
     act(() => { holidayAdd({ kind: 'ph', name: 'Deepavali', from: '2026-11-09', to: '2026-11-09' }) })
     expect(shown().length).toBe(n + 1)
-    /* and the month beside it wears the tag */
-    expect(t('days-tag-2026-11-09').textContent).toBe('PH')
+    /* and the month beside it wears the tag - the holiday's SHORT FORM, as the Leave War's row and the other two
+       calendars print it (the plan section 3.12; "Deepavali" suggests "DEE"). It read the fixed word "PH" until the
+       calendar job's bug check, 8 Oct 26 (roll-call row A5 - ui/dayswindow.test.tsx). */
+    expect(t('days-tag-2026-11-09').textContent).toBe('DEE')
   })
 })
 
@@ -334,7 +336,7 @@ describe('"+ Add"', () => {
     expect(line(2026, '2026-11-09')).toMatchObject({ kind: 'ph', name: 'Deepavali', to: '2026-11-09' })
     expect(q('win-holiday')).toBeNull(); expect(t('win-days')).toBeTruthy()
     expect(shown()).toContainEqual(['Mon 9 Nov', 'Deepavali', 'PH'])
-    expect(t('days-tag-2026-11-09').textContent).toBe('PH')
+    expect(t('days-tag-2026-11-09').textContent, 'the month prints its short form (row A5, above)').toBe('DEE')
     expect(undoState().undoLabel).toContain('a public holiday on 9 Nov')
     act(() => { globalUndo() })
     expect(lines(2026).some(h => h.from === '2026-11-09')).toBe(false)

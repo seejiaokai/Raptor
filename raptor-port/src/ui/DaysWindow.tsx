@@ -10,7 +10,7 @@
    still works (D641) — so the Leave War's rows, or a calendar, repaint under it as he presses. Mounted once in the
    shell (ui/App.tsx) and opened by ui/pops.ts DAYSWIN — the date whose month to open on.
 
-   THE MONTH. A date shows its number and EITHER the tag the Leave War gives it — PH, OFF; a holiday carries no class,
+   THE MONTH. A date shows its number and EITHER the tag the Leave War gives it — the holiday's short form: PH, OFF, ND; a holiday carries no class,
    so it gets no control — OR its class control. Each press is one `fly.day.set` command and one Undo step
    (state/flyplan.ts setFlyDays, which writes nothing when nothing would change). A date whose class is set for the
    date itself — apart from what its weekday would give it — wears a small dot.
@@ -42,7 +42,7 @@ import { notify } from '../state/store'
 import { isAdmin } from '../state/perms'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
-import { flyMonth, useWarFacts } from '../leavewar/sync'
+import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
 import { type HolidayLine } from '../leavewar/sync'
 import { EveryWeekday } from './EveryWeekday'
 import { HolidayForm, HolidaysPanel } from './HolidaysPanel'
@@ -81,6 +81,17 @@ function Face({ cls }: { cls: FlyCls }) {
   if (cls === 'day') return <SunIcon />
   if (cls === 'night') return <MoonIcon />
   return <>{cls === 'nf' ? 'NF' : '–'}</>
+}
+
+/* A HOLIDAY'S TAG IS ITS SHORT FORM, in the kind's colour - "PH", "OFF", or the squadron's own "ND" (the build plan
+   section 3.12; D645, D652): the word the Leave War's Event row prints and the SANS and Inputs months print, from the ONE
+   answer (leavewar/sync.ts dayFacts). This month once printed the fixed words "PH" / "OFF", so a National Day read "ND"
+   on the other three and "PH" here (the calendar job's bug check, roll-call row A5 - 8 Oct 26). The title carries the
+   full name, as an opened day does on the calendars. */
+function holidayTitle(iso: string, kind: 'ph' | 'off'): string {
+  const word = kind === 'ph' ? 'public holiday' : 'Off day'
+  const name = dayFacts(iso).name
+  return name && name.toLowerCase() !== (kind === 'ph' ? 'ph' : 'off day') ? `${name} - ${word}` : kind === 'ph' ? 'Public holiday' : 'Off day'
 }
 
 export function DaysWindow() {
@@ -187,8 +198,8 @@ function DaysBody({ at }: { at: string }) {
                 {a.clsFrom === 'date' && <span className="days-dot" data-testid={`days-dot-${iso}`} title="Set for this date" aria-label="Set for this date" />}
               </div>
               {a.kind ? (
-                <span className={'days-tag t-' + a.kind} data-testid={`days-tag-${iso}`} title={a.kind === 'ph' ? 'Public holiday' : 'Off day'}>
-                  {a.kind === 'ph' ? 'PH' : 'OFF'}
+                <span className={'days-tag t-' + a.kind} data-testid={`days-tag-${iso}`} title={holidayTitle(iso, a.kind)}>
+                  {dayFacts(iso).short || (a.kind === 'ph' ? 'PH' : 'OFF')}
                 </span>
               ) : narrow ? (
                 <button
