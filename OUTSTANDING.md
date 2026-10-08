@@ -1196,7 +1196,7 @@ and draws in place" (lw-desktop) failed once in the full gate run on `claude/db-
 months ran out. The first fix (`[LW-WINDOW-PRUNE-FLAKE]`, archived 29 Sep 26) made the premise exact; this branch still
 waits a fixed 5 seconds for a prune that happens only when the PC is idle (`state/idle.ts`) — a busy PC outlasts it. Alone
 3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
-not a fixed time. **Place:** test-only, low, any time.
+not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (`claude/inputs-sans-calendar`, the final gate run after the shared input's date door — a change to the input editor only): the same branch, the same 5-second wait; alone 3 / 3 and its whole group 186 / 0 straight after.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived

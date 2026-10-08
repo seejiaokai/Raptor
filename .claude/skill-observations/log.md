@@ -3258,3 +3258,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In verification-before-completion: a suite may be deferred only if it is cheap to triage later; any deferred suite that reads the surface a step changes is run at that step, or the step's record names it as "will need re-pointing: <which assertions>". The handoff's "NOT run" line should say which of the deferred suites touch what was built.
 
 **Principle:** Deferring a check defers its triage too, and a stale check is indistinguishable from a real failure until someone investigates - run the ones that read what you changed while the change is fresh.
+
+### Observation 482: A walk of a new control passed 16 of 16; two blind code reads then found six faults, every one an order of action
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** A date picker added to an existing editor window (a control with its own small state: a pick half made, a record swapped under it, a change arriving behind it). The check was sized as a short host walk, then two independent read-only reviewers.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Sizing a walk for a control that carries its own state
+
+**Issue:** The walk drove the four doors, both orders of two controls, a refusal, three screen sizes - and found nothing. The readers, asked to trace the control's state through every way it can be entered and left (a record swapped, a question answered either way, a tap that changes nothing), found six real faults, each reproduced as a failing test. The walk's scenarios had been written from the surfaces and roles, not from the control's states.
+
+**Suggested improvement:** When a change adds a control that holds state between presses, list its states and every event that can arrive in each (its own presses, the record changed behind it, another record opened, each answer to each question) and make each pair a scenario - a walk step where it needs the screen, a test otherwise - BEFORE the walk is sized. Ask the reviewers the same question in their brief; it is what found the faults here.
+
+**Principle:** Surfaces and roles find the control that is missing; states and events find the control that is wrong. A control with memory needs its state table walked, not only its doors.
+
+### Observation 483: A ruling's reading was recorded while an existing test still required the opposite
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** The owner confirmed a rule ("the latest answer is everyone's"). The agent recorded it with a reading that named three cases. One of the three was already contradicted by a passing test and by the code, and nobody looked until a reviewer traced it.
+**Skill:** New skill candidate: recording a decision (the project's own record-decisions rule)
+**Type:** open-source
+**Phase/Area:** What is searched when a ruling is written down
+
+**Issue:** The rule for recording says to fix what an older ruling left behind in the documents, the app and the lists. The search that was run was of the documents. The tests were not searched for the subject, so a test whose title said the opposite of the new reading stayed green and unread.
+
+**Suggested improvement:** When recording a ruling, search the TEST titles and assertions for its subject as well as the documents; a test that pins the old behaviour is the fastest proof that the app does not yet do what the ruling says, and it must be changed (by the ruling) or the build filed in the same change.
+
+**Principle:** A passing test is a written claim about behaviour; when a decision changes the behaviour, the tests are part of what the old decision left behind.

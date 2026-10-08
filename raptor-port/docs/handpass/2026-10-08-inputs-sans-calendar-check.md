@@ -564,3 +564,43 @@ fixes came from, not pictures of the final build. What they showed is §5 (W1, W
 §8 (the differences told to him and not changed: the picker’s spacing, "Calendar" for "Days", the gear’s lines,
 several days picked opening the window at once). The built side after the fixes is in the host’s re-walk pictures
 (`host-rewalk/`, `host-final/`) and the walkers’ own.
+
+## 14. The close of the date door — 9 Oct 26
+
+**The final gate run, under the PC lock, watched, on `ec9791b8` (the door and its six fixes):** unit 9349 of 9349 (564
+files) · build clean · the reference 728 / 0 · the Tracker smoke 445 / 0 · the rule check OK · the document check OK ·
+**the browser tests 707 passed, 1 FAILED, 56 skipped.** The one failure is `e2e/leavewar.spec.ts` "the grid draws a
+window of months over year-wide placeholders…" (Leave War, desktop), at its 5-second wait for December to leave the
+drawn months — **the known unsteady test `[LW-WINDOW-PRUNE-FLAKE-2]`** (`OUTSTANDING.md`: a fixed wait for something that
+happens only when the PC is idle), on a screen this change does not touch (the change is one file, the input editor).
+By D84 it got one re-run and no investigation: **alone, 3 of 3; its whole group (the Leave War desktop browser tests)
+re-run under the lock, 186 passed, 0 failed.** The same test passed in the first full run of this section, on `cfcd40b7`.
+Said plainly: no single full run on the final code was wholly green; every gate but that one test was, and that test
+passed four times running straight after.
+
+`Walk: docs/handpass/2026-10-08-inputs-sans-calendar-check.md · 2,043 pictures (the walkers) + 40 (the host) + 49 (the date door: 23 and 26) + 36 pairs · 71 surfaces (the roll-call's 60 rows and the date door's 11) · 119 orders (100, and the date door's 19 steps) · MISSING: 4 fixed (A5; a sheet behind the Calendar window; Calendar behind its settings window; a saved shared input's dates — built, D681), 1 filed (To go out as lines)`
+
+Carried by a test, not walked (the order’s §7.0): the six fixes W20–W25 beyond the three re-walk steps (W20 a move of
+exactly a year, W23 "Take theirs", W24 a tap on the saved day — each `ui/groupeditor.test.tsx`, through the window’s
+own controls in a rendered page; the change behind the window is made by calling the entry’s command directly, the
+route a real drag takes having been walked as D8); the board’s dialog (R7).
+
+`Docs: OUTSTANDING 146 items (+13 −0) · DECISIONS D1–D682 · homes OK`
+`docsize: OVER, deferred (D29)`
+
+**Found and fixed since §11: six (W20–W25), all from the two reads.** In the whole check: twenty-five fixed.
+**Filed, not fixed: three** (`[CAL-UNDO-OTHERS]`, `[CAL-TOGO-ONE-ITEM]`, `[CAL-CHECK-SEEN]`) — `[CAL-SHARED-DATES]` is built
+and archived. **No question is waiting for him.**
+
+### The look card, as it stands — on the preview, his iPhone for the phone lines
+
+1. **The new date door.** Open a shared input (its bar, or its row in the List): the calendar is in its window. Tap the
+   new start, tap the new end, Save — everyone in it moves; Undo puts it back.
+2. **OIL, as he ruled (D682) — one reading to hear:** when whoever filed a shared weekend duty ADDS a person and answers
+   the OIL question that comes back, the answer is now for everyone in it, not only the person added. Cancelling the
+   question changes nobody’s answer.
+3. On a phone the calendar’s days in that window are small — the size they already are on "+ Input". Bigger?
+4. Pick several days on the Inputs month: the new-input window opens at once (the drawing kept the days picked with a
+   bar to confirm).
+5. The people picker on his phone: the pucks are spaced for a finger, so SANS is below the first screen. Tighter, as drawn?
+6. On his iPhone: type a Required figure on the number pad; hold and drag a bar; pull a day’s window up by its bar.
