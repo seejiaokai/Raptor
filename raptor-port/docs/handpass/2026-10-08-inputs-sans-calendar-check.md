@@ -291,3 +291,40 @@ Every one is in `OUTSTANDING.md` with its evidence. None loses data, earns or wi
 9. **A man posted out or archived stops counting on the SANS calendar for his commitments BEFORE that date too** — only days already past by then (walkers D and H).
 10. **A Required cell takes digits only**: a typed "-5" shows and saves 5, "2.5" shows and saves 25.
 11. **On a phone the month's five-week July shows five inputs a day at 844 tall, then "+N more"** — the drawing showed six.
+
+## 9. The gates, the break tests, and what was NOT walked
+
+**The whole gate set, under the PC lock, watched — on `02e99d04` (the code after fix round 2):** unit 9310 of 9310 (564 files)
+· build clean · the reference 728 / 0 · the Tracker smoke 445 / 0 · the rule check OK · the document check OK · the
+browser tests **701 passed, 5 failed**, 56 skipped. The five were checks, not the app: four older Leave War tests still
+expected the fixed "PH" on the "Calendar" month (W1 changed it to the holiday's short form) and this check's own new
+sideways-phone test had no commitment on its date. Corrected (`ea459963`) and re-run by name: 9 of 9. **Before the
+fixes, on the code as walked:** `npm run perf` 4 of 4 (the week 5,131 nodes of a 5,450 ceiling, the board 1,018 of
+1,150); the six adapted probes — five pass, `audit-async` 52 of 54 and, re-pointed at D654 / D620, 55 of 55.
+
+**The break tests (the order's §8.4).** Each of the twelve fixes has a named test that was SEEN red on the code as walked
+before the fix went in — its failure is quoted in §5's "Seen" column or in the fix's commit — except W9 and W12, which
+are stylesheet rules: W9 is held by two real-browser tests (`e2e/inputs-sans-calendar.spec.ts` "a phone on its side…"),
+seen failing by the host's script before the rule; W12 (the desktop margin) is a look and is held by nothing but the
+"no sideways scroll" tests. For the code of steps 1 to 5 the builder's own lists stand: 81 + 41 + 65 + 111 + 35 + 15 +
+25 + 7 rules, each broken alone and caught (`scripts/handpass/breaks/2026-10-08-*.json`, and the handoff's step notes).
+
+**Not walked, and why.**
+- **His iPhone.** Every phone step ran in a desktop browser at a phone's size with real touch events. The number pad,
+  a finger's hold-then-drag, the windows' pull-up and Safari's own handling are his look (§8 and the look card).
+- **A guest and a person with no access** on the new screens: neither can reach the Inputs page or the Leave War, which
+  walker B confirmed for the no-access card; the guest view was not switched on.
+- **Tab and Shift + Enter in a Required cell** (walker B); **the roster with no ground crew** in the people picker
+  (walker F); **the Leave War's own move or cut with an input's editor open** — on the Leave War the editor is the
+  blocking dialog, so it cannot be done (walker G).
+- **The short screens for every flow.** 390 × 568, a phone on its side and 1536 × 864 were walked for every window and
+  both months, not for each of the hundred scenarios.
+- **Print and CSV of an ISSUED day** were read once (walker H), not at each publish stage.
+- **The roll-call's rows A10 and E8** (the "no leave period" note; a cut-off in days marking what it marked before) were
+  not driven: A10 was not touched by this job, and E8 is carried by `engine/lateinput.test.ts`, which calls the
+  calculation — it proves the arithmetic, and walker F walked the route once on screen (29 Jun on time, 30 Jun late).
+
+**The roll-call, after the walk.** Rows A1–A9, A11, B1–B6, C1–C3, D1–D8, E1–E7, F1–F7, G1–G10, H1–H8 and W1–W10 were each
+SEEN and OPERATED by a walker (the table in each `parts/cal-<letter>.md` cites its pictures). MISSING, with its
+disposition: **A5** — fixed (W1). **G5 on the "To go out" tab** — filed (`[CAL-TOGO-ONE-ITEM]`). **W1 and W5 / W7**
+(a sheet behind the "Calendar" window; "Calendar" behind its settings window) — fixed (W11). No row is blank.
