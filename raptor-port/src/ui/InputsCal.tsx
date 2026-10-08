@@ -852,7 +852,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const when = whenOf(it)
                   /* a shared input's late tags are each man's own, beside his puck — a man added later can be late alone */
                   const team = it.rows.length > 1
-                  const late = team ? '' : lateWord(r)
+                  /* …unless EVERY man is late alike: then the line says LATE once, as an ordinary input does */
+                  const lates = it.rows.map(x => lateWord(x))
+                  const allLate = team && lates.every(w => w && w === lates[0])
+                  const late = team && !allLate ? '' : lates[0]
                   const forAll = team && it.rows.every(x => mayDeleteInput(x))
                   const placed = placedLineOf(it.rows)
                   /* an Other is NAMED by its remark (inpLabel) — it is not said a second time under the line */
@@ -878,7 +881,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           {it.rows.map(x => (
                             <span key={x.iid} className="idy-man">
                               <span className="sd-puck" aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(x.person, false, true, false).replace(' tabindex="0"', '') }} />
-                              {lateWord(x) && <span className="sd-late idy-manlate" data-testid={'idy-late-' + x.person} title={lateWord(x)}>LATE</span>}
+                              {!allLate && lateWord(x) && <span className="sd-late idy-manlate" data-testid={'idy-late-' + x.person} title={lateWord(x)}>LATE</span>}
                             </span>
                           ))}
                         </span>

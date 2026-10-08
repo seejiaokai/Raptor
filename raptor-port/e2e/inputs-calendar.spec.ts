@@ -584,3 +584,73 @@ for (const height of [568, 844]) test(`phone ${height}: the editor window is who
     await page.locator('[data-testid="win-inputedit-x"]').tap(); await expect(edWin(page)).toHaveCount(0)
   } finally { await context.close() }
 })
+
+/* ONE INPUT FOR SEVERAL PEOPLE (owner D654–D656, D659; the plan §3.13, "Browser (phone and desktop)"): the picker four
+   across at 390 px with no sideways scroll, a puck pressed by touch; a group filed from the month by a member, seen as
+   one bar, opened, one man taken out. */
+const pick = (p: Page) => p.locator('#inpEditPop [data-testid="pp"]')
+test('a phone: "Several people" draws the pucks four across with nothing running off sideways, and a finger picks one', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await cell(page, '2026-10-20').tap({ position: { x: 10, y: 10 } })
+    await page.locator('#icPopAdd').tap()
+    await expect(edWin(page)).toBeVisible()
+    await page.selectOption('#inpEditType', 'Meeting')
+    await pick(page).locator('[data-testid="pp-several"]').tap()
+    const pilots = pick(page).locator('[data-ppgroup="pilots"] [data-pp]')
+    await expect(pilots.nth(4)).toBeVisible()
+    const boxes = await pilots.evaluateAll(els => els.slice(0, 8).map(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height, r: r.right } }))
+    expect(boxes.filter(b => Math.abs(b.y - boxes[0].y) < 2), 'four on the first line').toHaveLength(4)
+    expect(Math.abs(boxes[4].y - boxes[0].y), 'the fifth starts the next').toBeGreaterThan(10)
+    for (const b of boxes) { expect(b.x).toBeGreaterThanOrEqual(0); expect(b.r).toBeLessThanOrEqual(390); expect(b.h, 'a finger’s target').toBeGreaterThanOrEqual(36) }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+    expect(await page.evaluate(() => { const e = document.getElementById('inpEditPop')!; return e.scrollWidth <= e.clientWidth + 1 }), 'the window does not scroll sideways').toBe(true)
+    /* every group he named is there, and Personnel for the demo's ground crew (D659) */
+    for (const g of ['pilots', 'wsos', 'sans', 'personnel']) await expect(pick(page).locator(`[data-ppgroup="${g}"]`)).toHaveCount(1)
+    const other = pilots.nth(2)
+    await expect(other).toHaveAttribute('aria-pressed', 'false')
+    await other.tap()
+    await expect(other).toHaveAttribute('aria-pressed', 'true')
+    await expect(pick(page).locator('[data-testid="pp-count"]')).toHaveText('2 picked')
+    /* "All" has a finger's reach though it is drawn small */
+    const all = (await pick(page).locator('[data-testid="pp-all-wsos"]').boundingBox())!
+    expect(all.height).toBeGreaterThanOrEqual(24)
+  } finally { await context.close() }
+})
+
+test('a member files a meeting for himself and another man from the month: ONE bar; opened, it is the entry; the other man taken out, it is his own again', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page, 'user'); await go(page, 'inputs'); await page.selectOption('#inFPerson', 'all'); await month(page, 2026, 10)
+  const had = await page.evaluate(() => (window as any).INPUTS.map((r: any) => r.iid))
+  await cell(page, '2026-10-21').click({ position: { x: 8, y: 8 } })
+  await page.click('#icPopAdd')
+  await expect(edWin(page)).toBeVisible()
+  await page.selectOption('#inpEditType', 'Meeting')
+  await pick(page).locator('[data-testid="pp-several"]').click()
+  const other = await page.evaluate(() => { const w = window as any, P = w.PEOPLE; return Object.keys(P).find(id => P[id].cs === 'Saber')! })
+  await pick(page).locator(`[data-pp="${other}"]`).click()
+  await page.fill('#inpEditRmk', 'flight meeting')
+  await page.click('#inpEditSave')
+  await expect(edWin(page)).toHaveCount(0)
+  const made = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => ({ iid: r.iid, person: r.person, grp: r.grp, grpBy: r.grpBy })), had)
+  expect(made).toHaveLength(2)
+  expect(made[0].grp, 'one shared input').toBeTruthy(); expect(made[1].grp).toBe(made[0].grp)
+  /* ONE bar on the month for the two of them, saying the first and "+1" */
+  const bars = page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })
+  await expect(bars).toHaveCount(1)
+  await expect(bars).toContainText('Meeting')
+  /* opened: the entry — both lit — and it is his to change, as its filer */
+  await bars.click()
+  await expect(edWin(page)).toBeVisible()
+  await expect(edWin(page).locator('.win-ttl')).toContainText('+1')
+  await expect(pick(page).locator('[data-pp][aria-pressed="true"]')).toHaveCount(2)
+  await expect(page.locator('#inpEditSave')).toBeVisible()
+  /* the other man taken out */
+  await pick(page).locator(`[data-pp="${other}"]`).click()
+  await page.click('#inpEditSave')
+  await expect(edWin(page)).toHaveCount(0)
+  const left = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => r.person), had)
+  expect(left).toHaveLength(1)
+  expect(left[0]).not.toBe(other)
+  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })).toHaveCount(0)
+})

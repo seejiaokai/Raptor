@@ -6,7 +6,7 @@
    not have: who placed an input is what lets a member change one he filed for another man (D655), so no seeded input
    names a member as the filer of someone else's. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, isLateInput } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { initStore } from './store'
 import { seedDemoGroup, seedDemoStamps } from './demoseed'
@@ -78,6 +78,9 @@ describe('the demo carries one shared input', () => {
       expect(r.iid, 'its own id').toBeTruthy()
     }
     expect(team().some(r => String(r.person) === admin()), 'the admin is in it').toBe(true)
+  })
+  it('it is not late: the demo’s one shared input is not also its LATE example', () => {
+    for (const r of team()) expect(isLateInput(r), PEOPLE[r.person].cs).toBe(false)
   })
   it('seeded once: a second boot adds no second one', () => {
     seedDemoGroup()

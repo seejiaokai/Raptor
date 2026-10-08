@@ -210,9 +210,10 @@ export function seedDemoGroup() {
   const wso = Object.keys(PEOPLE).filter(id => id !== admin && live(id) && PEOPLE[id].seat === 'RCP').slice(0, 1)
   const team = [admin, ...pilots, ...wso]
   if (team.length < 4) return
-  const at = new Date(2026, 6, 9, 14, 32).getTime()
+  /* filed four weeks ahead — well inside the cut-off, so the demo's one shared input is not also its LATE example */
+  const at = new Date(2026, 5, 25, 14, 32).getTime()
   for (const person of team) INPUTS.push({
-    person, type: 'Meeting', date: 'Jul 23', allday: false, s: 600, e: 660, remarks: 'Flight safety brief', mod: '2026-07-09',
+    person, type: 'Meeting', date: 'Jul 23', allday: false, s: 600, e: 660, remarks: 'Flight safety brief', mod: '2026-06-25',
     grp: DEMO_GRP, grpBy: admin, by: admin, at, modBy: admin, modAt: at,
   })
 }

@@ -280,7 +280,7 @@ body.in-cal{padding-bottom:0}
 .pp-all{min-height:24px;padding:0 9px;border:1px solid var(--edge-2);border-radius:999px;background:transparent;color:var(--ink-2);font:600 11px inherit;cursor:pointer;position:relative}
 .pp-all::after{content:'';position:absolute;inset:-8px -4px}
 .pp-all.on{border-color:var(--accent);color:var(--ink)}
-.pp-pucks{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:5px}
+.pp-pucks{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:5px}
 .pp-puck{display:flex;min-width:0;padding:2px;border:1px solid transparent;border-radius:8px;background:transparent;cursor:pointer;opacity:.5}
 .pp-puck>span{display:flex;min-width:0;flex:1 1 auto}
 .pp-puck .puck{pointer-events:none;flex:1 1 auto;min-width:0;max-width:100%}

@@ -97,6 +97,13 @@ describe('a day opened: a shared input is one line', () => {
     expect(line.querySelector(`[data-testid="idy-late-${a}"]`)).toBeNull()
     expect(line.querySelector(`[data-testid="idy-late-${b}"]`)).toBeNull()
   })
+  it('every man late alike: the line says LATE once, as an ordinary input does — not once a man', async () => {
+    const g = await shared(others().slice(0, 3), { mod: '2026-10-06' })
+    await open('2026-10-07')
+    const line = g.line()
+    expect(line.querySelectorAll('[data-testid="idy-late"]')).toHaveLength(1)
+    expect(line.querySelectorAll('[data-testid^="idy-late-"]')).toHaveLength(0)
+  })
   it('a press on the line opens the ENTRY in the editor window', async () => {
     const g = await shared(others().slice(0, 3))
     await open('2026-10-07')
