@@ -351,8 +351,11 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       /* + Input is pinned above the list, never scrolled away with it */
       expect($('#icPopAdd')!.closest('.sd-top'), '+ Input is pinned').toBeTruthy()
       expect(list.contains($('#icPopAdd'))).toBe(false)
-      /* the admin section buttons lead the list */
-      expect(list.firstElementChild!.classList.contains('ic-secbtns')).toBe(true)
+      /* the admin section buttons led the list until his ruling D683 (9 Oct 26: "+note and pucks can shift … to beside
+         the day title"): they are in the window's bar, and the sections are the first thing in the list */
+      expect(list.querySelector('.ic-secbtns')).toBeNull()
+      expect($('[data-testid="win-inputsday"] .win-bar #icAddPuck'), '+ Note is in the bar').toBeTruthy()
+      expect(list.firstElementChild!.classList.contains('ic-secs')).toBe(true)
     } finally {
       const note: any = PLANPUCKS.find((p: any) => p.text === 'note first')
       await act(async () => { if (note) removePlanPuck(note.id); notify() })

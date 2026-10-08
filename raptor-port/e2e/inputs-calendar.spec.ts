@@ -397,7 +397,11 @@ test('on a desktop the opened day sits beside the month and covers no date; anot
   await page.locator('[data-testid="win-inputsday-x"]').click(); await expect(dayWin(page)).toHaveCount(0)
 })
 
-test('on a phone the opened day is a panel on the foot of the screen: about two-thirds high, pulled up by its bar and back, its controls a finger’s size', async ({ browser, baseURL }) => {
+/* RE-POINTED 9 Oct 26 BY HIS RULING D683 (from his iPhone: "show the window to like a tall size when someone clicks on a day for
+   input. Day title and input can be slightly shorter in height. +note and pucks can shift … to beside the day title"): it
+   OPENS tall, where it used to open two-thirds high; its bar brings it down to that height and back; "+ Input" and the title
+   box are 38px; "+ Note" and "+ Pucks" are in the bar beside the date, and a tap on one is not a tap on the bar. */
+test('on a phone the opened day is a panel on the foot of the screen: it opens TALL, is pulled down by its bar and back, "+ Note" and "+ Pucks" in its bar, its controls a finger’s size (D683)', async ({ browser, baseURL }) => {
   const { context, page } = await phone(browser, baseURL)
   try {
     await file(page, Array.from({ length: 14 }, (_, i) => ({ who: i, type: 'LL', from: 'Oct 20' })))
@@ -405,12 +409,38 @@ test('on a phone the opened day is a panel on the foot of the screen: about two-
     const win = dayWin(page); await expect(win).toBeVisible()
     await page.waitForTimeout(450)
     expect(await editorOpen(page), 'the tap pressed through into the window').toBe(false)
+    await expect(win, 'it opens tall (D683)').toHaveClass(/is-tall/)
+    const first = (await win.boundingBox())!
+    expect(first.y).toBeLessThanOrEqual(12); expect(first.height).toBeGreaterThan(844 * 0.9); expect(first.y + first.height).toBeLessThanOrEqual(844)
+    /* the two buttons in the bar, after the date and before the cross — each a finger's size, none over another */
+    const bar = await page.evaluate(() => {
+      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
+      const t = r('[data-testid="win-inputsday"] .win-ttl'), n = r('#icAddPuck'), k = r('#icAddPucks'), x = r('[data-testid="win-inputsday-x"]'), b = r('[data-testid="win-inputsday"] .win-bar')
+      return { order: t.right <= n.left + 1 && n.right <= k.left + 1 && k.right <= x.left + 1, inBar: n.top >= b.top && n.bottom <= b.bottom && k.top >= b.top && k.bottom <= b.bottom, h: Math.min(n.height, k.height), w: Math.min(n.width, k.width), title: t.width }
+    })
+    expect(bar.order, 'the date, + Note, + Pucks, the cross — in that order, none over another').toBe(true)
+    expect(bar.inBar).toBe(true); expect(bar.h).toBeGreaterThanOrEqual(36); expect(bar.w).toBeGreaterThanOrEqual(44)
+    expect(bar.title, 'the date is still read whole').toBeGreaterThan(80)
+    /* a tap on one of them is the button's, not the bar's: the note box opens and the window keeps its height */
+    await page.locator('#icAddPuck').tap()
+    await expect(page.locator('.ic-poppuck-edit')).toBeVisible()
+    await expect(win).toHaveClass(/is-tall/)
+    /* left empty, the note box goes when it loses the keyboard (Escape there closes the whole day — the shell's rule,
+       older than this change and filed with `[CAL-CHECK-SEEN]`) */
+    await page.locator('.ic-poppuck-edit').blur()
+    await expect(page.locator('.ic-poppuck-edit')).toHaveCount(0)
+    await expect(win).toBeVisible()
+    /* down to the shorter height by a tap on its bar — the month behind is in reach again */
+    await win.locator('.win-ttl').tap(); await expect(win).not.toHaveClass(/is-tall/)
+    await page.waitForTimeout(450)
+    expect(await editorOpen(page), 'the bar’s tap pressed through as the window moved').toBe(false)
     const low = (await win.boundingBox())!
-    expect(low.height, 'it opens about two-thirds high — the month behind stays in reach').toBeLessThan(844 * 0.72)
+    expect(low.height, 'pulled down it is about two-thirds high').toBeLessThan(844 * 0.72)
     expect(low.y + low.height).toBeLessThanOrEqual(844)
     /* everyone is listed and the LIST scrolls — "+ Input" stays pinned above it (D648) */
     const g = await page.evaluate(() => { const l = document.querySelector('[data-testid="idy-list"]') as HTMLElement, a = document.querySelector('#icPopAdd')!.getBoundingClientRect(), w = document.querySelector('[data-testid="win-inputsday"]')!.getBoundingClientRect(); return { rows: l.querySelectorAll('[data-testid^="idy-row-"]').length, scrolls: l.scrollHeight > l.clientHeight + 4, addIn: a.top >= w.top && a.bottom <= w.bottom, addH: a.height } })
-    expect(g.rows).toBe(14); expect(g.scrolls, 'the list scrolls inside the window').toBe(true); expect(g.addIn).toBe(true); expect(g.addH).toBeGreaterThanOrEqual(44)
+    expect(g.rows).toBe(14); expect(g.scrolls, 'the list scrolls inside the window').toBe(true); expect(g.addIn).toBe(true)
+    expect(g.addH, '"+ Input" is a little shorter, on his word (D683)').toBeGreaterThanOrEqual(38); expect(g.addH).toBeLessThan(44)
     await page.evaluate(() => { const l = document.querySelector('[data-testid="idy-list"]') as HTMLElement; l.scrollTop = l.scrollHeight })
     const add = (await page.locator('#icPopAdd').boundingBox())!
     expect(add.y, '"+ Input" stood still while the list scrolled').toBeGreaterThanOrEqual(low.y)

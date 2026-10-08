@@ -22,6 +22,10 @@
 .floatwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:28px;height:28px;
   flex:0 0 auto;font-size:12px;line-height:1;cursor:pointer}
 .floatwin .win-x:hover{border-color:#F0555F;color:var(--ink)}
+/* a window's own buttons in its bar, after the title (FloatWindow.tsx `tools`; owner D683) — the bar is still dragged
+   by everything else in it, so these take the plain pointer and their own taps */
+.floatwin .win-tools{display:flex;align-items:center;gap:6px;flex:0 0 auto;cursor:default;touch-action:manipulation}
+.floatwin .win-tools .abtn{white-space:nowrap}
 .floatwin .win-body{flex:1;min-height:0;overflow:auto;padding:10px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 /* A PHONE: the window starts at the bottom of the screen (D641, reading 3) — the stylesheet's panel, as the two older
    windows have it; its bar drags it up and down (floatwin.ts keeps only its top), and the page above it still takes

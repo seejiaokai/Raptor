@@ -712,8 +712,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       /* A WINDOW ON THE SHELL (owner D641: it is dragged about and the month behind it still works — so a tap on
          another date re-points this same window, and an input saved behind it shows in it at once). No veil, no close
          on an outside press; it closes by its ✕, by Escape, or by another date taking its place. On a phone it stands
-         on the foot of the screen at two heights (D648, the SANS day's own manner). */
-      <FloatWin id="inputsday" title={dayWord(iso)} sub={kindWord} testid="win-inputsday" className="inputsday" rests onClose={closePop}>
+         on the foot of the screen at two heights (D648, the SANS day's own manner) — and opens at the TALL one, with
+         an admin's "+ Note" and "+ Pucks" in its bar beside the date (owner D683, 9 Oct 26, from his phone). */
+      <FloatWin id="inputsday" title={dayWord(iso)} sub={kindWord} testid="win-inputsday" className="inputsday" rests tallFirst onClose={closePop}
+        tools={sched ? <>
+          <button type="button" className="abtn sm" id="icAddPuck"
+            onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
+          <button type="button" className="abtn sm" id="icAddPucks"
+            onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ Pucks</button>
+        </> : null}>
         {/* PINNED: the day's title and "+ Input" stay while the list scrolls under them */}
         <div className="sd-top">
           {/* the day TITLE (owner, 22 Aug 26 — "beside the date, I can input free text there, and it will show up as the
@@ -733,18 +740,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
           </div>
         </div>
         <div className="sd-list" data-testid="idy-list">
-            {/* THE SECTIONS (owner, 22 Aug 26): small + Note / + Pucks buttons
-                at the top; each section is a full-width block below — a note
-                is free text, a pucks row is people — and an admin drags the ⠿
-                handle to rearrange them. Members read them, nothing more. */}
-            {sched && (
-              <div className="ic-secbtns idy-secbtns">
-                <button type="button" className="abtn sm" id="icAddPuck"
-                  onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
-                <button type="button" className="abtn sm" id="icAddPucks"
-                  onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ Pucks</button>
-              </div>
-            )}
+            {/* THE SECTIONS (owner, 22 Aug 26): each section is a full-width block — a note is free text, a pucks row is
+                people — and an admin drags the ⠿ handle to rearrange them. Members read them, nothing more. Their two
+                small buttons, + Note and + Pucks, are in the window's bar beside the date since D683 (above). */}
             {entries.pucks.length > 0 && (
               <div className="ic-secs">
                 {entries.pucks.map((p: any) => {

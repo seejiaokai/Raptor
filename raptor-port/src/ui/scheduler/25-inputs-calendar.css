@@ -186,7 +186,6 @@ body.in-cal{padding-bottom:0}
   color:var(--ink);font:inherit;font-size:14px;font-weight:700}
 .inputsday .ic-title-edit:focus{outline:none;border-color:var(--accent)}
 .inputsday .ic-title-ro{font-size:14px;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
-.inputsday .idy-secbtns{display:flex;gap:6px;margin:4px 0 8px}
 .inputsday .ic-secs{margin-bottom:10px}
 /* a line: the square of its colour (red an absence, amber a duty or a commitment), the callsign, the kind */
 .idy-row .sd-open{gap:7px}
@@ -197,9 +196,14 @@ body.in-cal{padding-bottom:0}
 @media (min-width:1100px){
   .inputs-workspace:has(.floatwin.inputsday:not([data-placed])){padding-right:462px}
 }
+/* ON A PHONE (owner D683, 9 Oct 26 — his look on his iPhone: "Day title and input can be slightly shorter in height"):
+   the day's title box and "+ Input" are 38px, down from 44 — his word for these two (D487) — and the two buttons that
+   moved into the bar are a finger's 36 by at least 44 wide. The title box keeps 16px type: under that an iPhone zooms
+   the page when the box is tapped. */
 @media (max-width:820px){
-  .inputsday .sd-add,.inputsday .idy-secbtns .abtn{min-height:44px}
-  .inputsday .ic-title-edit{min-height:44px;font-size:16px}
+  .inputsday .sd-add{min-height:38px}
+  .inputsday .ic-title-edit{min-height:38px;padding-top:4px;padding-bottom:4px;font-size:16px}
+  .inputsday .win-tools .abtn{min-height:36px;min-width:44px;padding-left:10px;padding-right:10px}
 }
 /* DELETE ASKS FIRST (D621): the question sits under the line it is about, with its two answers */
 .idy-ask{grid-column:1 / -1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;padding-top:6px;border-top:1px solid var(--edge)}

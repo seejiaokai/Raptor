@@ -604,3 +604,50 @@ and archived. **No question is waiting for him.**
    bar to confirm).
 5. The people picker on his phone: the pucks are spaced for a finger, so SANS is below the first screen. Tighter, as drawn?
 6. On his iPhone: type a Required figure on the number pad; hold and drag a bar; pull a day’s window up by its bar.
+
+## 15. His look, first change — the day opened on the Inputs calendar, on a phone (D683, 9 Oct 26)
+
+His words, with a picture from his iPhone of Thu 16 Jul on the preview: "Can u show the window to like a tall size when
+someone clicks on a day for input. Day title and input can be slightly shorter in height. +note and pucks can shift it
+to to beside the day title in this case on the right of thu 16 jul".
+
+**Built:** on a phone the day opens at its TALL height (it opened two-thirds high), every time, and its bar still
+brings it down and back; the "Day title" box and "+ Input" are 38px on a phone (from 44); an admin’s "+ Note" and
+"+ Pucks" are in the window’s bar, after the date — on a desktop too. The SANS calendar’s day is not changed (D648).
+
+**The eight questions.** 1 OIL — NO: nothing that files, saves or counts is touched; the three files changed draw a
+window. 2 the published record — NO, the same reason. 3 saved data — NO: the height is not remembered, nothing is
+stored. 4 a shared drawer — YES: the window shell every window of this job stands on took two new settings. 5 a new
+control or place for one — YES: two buttons moved into a bar that is also a drag handle and, on a phone, a tap
+target. 6 a new surface — NO. 7 roles — NO: who sees "+ Note" and "+ Pucks" is the test it was, moved with them (a
+member’s bar was driven). 8 the warning list — NO. **Tier: WALK.**
+
+**Roll-call — every window on the shell, and whether it changed.** The Inputs day: opens tall on a phone, two buttons
+in its bar — CHANGED (seen). The SANS day (`rests`, no `tallFirst`, no `tools`): MUST NOT change, because D648 is his
+ruling for it — `ui/sansday.test.tsx` "on a phone: two rest heights" still green, and its browser test. "Calendar",
+the two settings windows, the input editor, the changes and ALL AVAIL windows: pass neither setting — MUST NOT
+change (`ui/floatwindow.test.tsx`, the day-window browser tests of both calendars, 5 of 5).
+
+**Sizing (D607).** Type E and C: layout, and two controls in a new place. Only a walk could find: the bar too crowded
+to read the date; a tap on a moved button taken as a tap on the bar; the tall window off the screen on a short phone;
+the list under a shorter top. The ledger: layout walks find what is covered or cut off, at the sizes driven. **Chosen:
+the host alone, one scripted run of the built bundle** (`scripts/handpass/cal-host-day-look.mjs`, a look, not a gate; pictures `host-day/`, 13) — a phone as the admin
+and as the member, a short phone, a phone on its side, a desktop.
+
+| What was driven | Result |
+|---|---|
+| phone 390 × 844, admin: tap 16 Jul | the window 824 of 844 high, tall; the date read whole (137 wide); "+ Note" 56 × 36 and "+ Pucks" 64 × 36 in the bar, the cross 44; the title box 38, "+ Input" 38; no sideways scroll |
+| …a tap on the date in the bar | down to two-thirds; no input opened by the tap; a second tap, tall again |
+| …a tap on "+ Note" | the note box opens; the window stays tall |
+| phone, the member Ranger | tall; the bar carries the date alone; "+ Input" 38 |
+| phone 390 × 568 | 548 of 568 high, whole on the screen; the same bar |
+| a phone on its side, 844 × 390, and a desktop 1440 × 900 | the window beside the month as before (not made tall); "+ Note" and "+ Pucks" in the bar; the title box 36, "+ Input" 40 — as they were |
+
+Pictures opened by the host: the phone as admin (opened; "+ Note" pressed) and the desktop.
+**Seen, not changed:** Escape pressed while typing a note closes the whole day — the shell’s rule, older than this
+change; added to `[CAL-CHECK-SEEN]`.
+
+**Tests, red first:** `ui/inputsday.test.tsx` "the day as he asked for it on his phone (D683)" — four of seven red
+before the build. **Two existing tests changed, by the ruling:** `ui/inputscal.test.tsx` (the two buttons "lead the
+list" → they are in the bar) and `e2e/inputs-calendar.spec.ts` (the phone day "opens about two-thirds high", "+ Input"
+at least 44 → opens tall, 38).

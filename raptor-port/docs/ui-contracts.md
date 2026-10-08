@@ -9442,6 +9442,12 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   run go, and never leaves the calendar; Delete on a line of the opened day asks first.
 - **A day opened is a window on the shell** (`win-inputsday`, D641, D648): no veil, an outside press leaves it up,
   another date re-points it; on a phone a panel at two heights; on a desktop beside the month, the page making room.
+  **On a phone it OPENS at the tall height (owner D683, 9 Oct 26 — from his iPhone; `FloatWin tallFirst`), every
+  time; its bar still brings it down to two-thirds and back. An admin's "+ Note" and "+ Pucks" are in the window's
+  BAR, after the date and before the cross (`FloatWin tools` — `.win-tools`; a press on one is the button's, never
+  the bar's: no drag, no change of height), on a desktop too; a member's bar carries the date alone. On a phone the
+  title box and "+ Input" are 38px (his word for these two — D487), the two bar buttons 36 by at least 44.** The
+  SANS calendar's day is unchanged: it opens at the lower height (D648).
   Its title and "+ Input" are pinned; the planning sections and then one line an entry scroll under them — who, the
   kind, when ("All day", the hours, or the day it runs till), a remark, the LATE tag (pressed, it says the cut-off
   missed — D646) and who placed it (D629). Everyone is listed; never "+ more".

@@ -204,3 +204,63 @@ describe('what it opens', () => {
     expect(row(r).querySelector('[data-testid="idy-open"]')!.getAttribute('aria-label')).toBe(`${cs(r.person)}, Meeting, 14:00–16:00`)
   })
 })
+
+/* HIS LOOK AT THE BUILT DAY ON HIS PHONE (owner D683, 9 Oct 26 — with a picture of Thu 16 Jul: "Can u show the window to
+   like a tall size when someone clicks on a day for input. Day title and input can be slightly shorter in height. +note
+   and pucks can shift it to to beside the day title in this case on the right of thu 16 jul"). */
+describe('the day as he asked for it on his phone (D683)', () => {
+  const asPhone = (on: boolean) => { (window as any).matchMedia = (q: string) => ({ matches: on && /max-width:\s*620px/.test(q), addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }) }
+  afterEach(() => asPhone(false))
+  it('on a phone it OPENS tall; a tap on its bar brings it down to the shorter height, and another takes it back up', async () => {
+    asPhone(true)
+    await open('2026-10-07')
+    expect(win()!.className, 'tall as it opens').toContain('is-tall')
+    const bar = win()!.querySelector('.win-ttl')!
+    await click(bar)
+    expect(win()!.className).not.toContain('is-tall')
+    await click(bar)
+    expect(win()!.className).toContain('is-tall')
+  })
+  it('opened again on another date it is tall again — it does not remember having been pulled down', async () => {
+    asPhone(true)
+    await open('2026-10-07')
+    await click(win()!.querySelector('.win-ttl')!)
+    await click(tid('win-inputsday-x'))
+    await open('2026-10-08')
+    expect(win()!.className).toContain('is-tall')
+  })
+  it('on a desktop nothing is made tall', async () => {
+    await open('2026-10-07')
+    expect(win()!.className).not.toContain('is-tall')
+  })
+  it('"+ Note" and "+ Pucks" are in the window’s top bar, after the date — and no longer in the list under "+ Input"', async () => {
+    await open('2026-10-07')
+    const bar = win()!.querySelector('.win-bar')!
+    expect(bar.querySelector('#icAddPuck'), '+ Note in the bar').toBeTruthy()
+    expect(bar.querySelector('#icAddPucks'), '+ Pucks in the bar').toBeTruthy()
+    const order = Array.from(bar.children).map(c => c.className.split(' ')[0])
+    expect(order.indexOf('win-tools'), 'after the date, before the cross').toBeGreaterThan(order.indexOf('win-ttl'))
+    expect(order.indexOf('win-tools')).toBeLessThan(order.indexOf('win-x'))
+    expect(win()!.querySelector('.win-body #icAddPuck, .win-body #icAddPucks')).toBeNull()
+  })
+  it('they still do what they did: "+ Note" opens the note box, "+ Pucks" the people to pick', async () => {
+    await open('2026-10-07')
+    await click($('#icAddPuck'))
+    expect($('.ic-poppuck-edit'), 'the note box').toBeTruthy()
+    await click($('#icAddPucks'))
+    expect($('.ic-pick'), 'the people to pick').toBeTruthy()
+  })
+  it('a press on one of them is not a press on the bar: on a phone the window keeps its height', async () => {
+    asPhone(true)
+    await open('2026-10-07')
+    expect(win()!.className).toContain('is-tall')
+    await click($('#icAddPuck'))
+    expect(win()!.className, 'still tall').toContain('is-tall')
+  })
+  it('a member’s bar carries the date alone', async () => {
+    await act(async () => { setSession({ user: 'us', role: 'main' }); notify() })
+    await open('2026-10-07')
+    expect(win()!.querySelector('.win-tools')).toBeNull()
+    expect($('#icAddPuck')).toBeNull(); expect($('#icAddPucks')).toBeNull()
+  })
+})

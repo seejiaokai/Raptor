@@ -34,7 +34,15 @@
    nearly the whole screen and back, and it rests at one of the two — never in between, where a list would be cut at an
    odd line. A tap on the bar goes to the other height (a drag is not the only way to say "more"). It opens at the lower
    height EVERY time: the calendar behind it is what he came from (D641), and a window that remembered being tall would
-   open over all of it. On a desktop `rests` changes nothing — the bar moves the window, as every window's does. */
+   open over all of it. On a desktop `rests` changes nothing — the bar moves the window, as every window's does.
+
+   `tallFirst` (owner D683, 9 Oct 26 — his look at the day opened on the Inputs calendar, on his phone: "show the window
+   to like a tall size when someone clicks on a day for input"): the same two heights, opened at the TALL one. It is
+   still pulled down by its bar and back, and it opens tall every time — what it remembers is nothing, as before.
+
+   `tools` (D683: "+note and pucks can shift … to beside the day title"): a window's own few buttons, drawn in the bar
+   between its title and its cross. A press on one is the button's, never the bar's — it does not start a drag, and on
+   a phone it does not send the panel to its other height. */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { frontWin, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
 import { useVersion } from './useStore'
@@ -73,7 +81,7 @@ function gone(id: string): boolean {
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
 
-export function FloatWin({ id, title, sub, onClose, testid, className, rests, children }: {
+export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, children }: {
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
@@ -86,6 +94,10 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
   className?: string
   /** on a phone: a panel with two rest heights, pulled up and down by its bar (see the head of this file) */
   rests?: boolean
+  /** with `rests`: the phone panel opens at its TALL height (D683) */
+  tallFirst?: boolean
+  /** the window's own buttons, in the bar after the title (D683) */
+  tools?: ReactNode
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
@@ -96,6 +108,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
     getBox: () => BOXES.get(id) ?? null,
     setBox: b => { BOXES.set(id, b); placed(n => n + 1) },
     deps: [id],
+    closeSel: '.win-x, .win-tools',
   })
   /* THE SIZE IS THE CONTENT'S. The shared body writes back the width and height a window had when it was dragged — right
      for the two list windows he resizes by hand, wrong here: Days is a month on one tab and a list on the other. So
@@ -117,14 +130,14 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
      element (no re-render per frame, as a window's drag is); let go, the inline styles are taken away and the
      stylesheet's two heights decide — `is-tall` or not. */
   const sheet = !!rests && phoneLayout()
-  const [tall, setTall] = useState(false)
+  const [tall, setTall] = useState(!!tallFirst)
   const pull = useRef<{ y0: number; top0: number; top: number; moved: boolean } | null>(null)
   /* a drag just ended on the bar: the click that may follow it is not a tap */
   const dragged = useRef(false)
   const sheetDown = (e: React.PointerEvent) => {
     const n = el.current
     dragged.current = false
-    if (!n || (e.target as HTMLElement).closest('.win-x')) return
+    if (!n || (e.target as HTMLElement).closest('.win-x, .win-tools')) return
     const top = n.getBoundingClientRect().top
     pull.current = { y0: e.clientY, top0: top, top, moved: false }
     try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch { /* jsdom */ }
@@ -154,7 +167,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
      look at the running build, 8 Oct 26: a tap on the bar pulled the panel up and its "+ Commitment" took the click). */
   const sheetTap = (e: React.MouseEvent) => {
     if (dragged.current) { dragged.current = false; return }
-    if ((e.target as HTMLElement).closest('.win-x')) return
+    if ((e.target as HTMLElement).closest('.win-x, .win-tools')) return
     setTall(t => !t)
   }
   const bar = sheet
@@ -209,6 +222,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
         {/* the app's own six-dot grip, "drag me" (D40) */}
         <span className="win-grip" aria-hidden="true">&#10303;</span>
         <span className="win-ttl">{title}{sub ? <small>{sub}</small> : null}</span>
+        {tools ? <span className="win-tools">{tools}</span> : null}
         <button type="button" className="win-x" data-testid={testid ? `${testid}-x` : undefined} onClick={onClose} title="Close" aria-label={`Close ${title}`}>&#10005;</button>
       </div>
       <div className="win-body">{children}</div>
