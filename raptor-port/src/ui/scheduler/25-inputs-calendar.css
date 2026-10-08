@@ -136,6 +136,11 @@ body.in-cal{padding-bottom:0}
 .ib-bar.is-cont{margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0}
 .ib-bar.is-on{margin-right:0;border-top-right-radius:0;border-bottom-right-radius:0}
 .ib-bar:hover{filter:brightness(1.18)}
+/* THE PICKED-UP COPY of a bar (ui/caldrag.ts) must let the pointer THROUGH — it rides under the mouse, and the drop is
+   read from what lies beneath it. The rule above makes a bar take presses, so its copy says otherwise by name (found
+   by the first real-mouse drag: the copy caught the release and the month never heard the drop). It is outside the
+   grid, so the grid's heights do not reach it: its box is the size the bar had, set by the machine. */
+.ib-bar.ic-ghost{pointer-events:none;margin:0;display:flex;align-items:center;line-height:1.2}
 .ib-grid.is-picking .ib-bar{opacity:.5}
 .ib-more{pointer-events:auto;min-width:0;margin:0;padding:0 6px;border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:10px;font-weight:700;
   text-align:left;white-space:nowrap;overflow:hidden;cursor:pointer}

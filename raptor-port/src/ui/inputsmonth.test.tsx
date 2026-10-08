@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor } from './inputedit'
 import { initStore, notify, setSession } from '../state/store'
-import { CALMONTH, setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
+import { CALMONTH, revealInput, setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { storeBackend } from '../engine/hooks'
@@ -239,6 +239,46 @@ describe('on a phone the lines are what the screen’s height gives (D653, D664)
     const r = await file({ date: 'Oct 6' })
     expect(bars(r.iid)[0].textContent).toBe(cs(r.person))
     expect($('.ic-mon')!.textContent).toBe('Oct 2026')
+  })
+})
+
+/* A SAVED INPUT, OR ONE BROUGHT BACK BY UNDO, IS SHOWN WHERE IT IS (the saved-row reveal, kept from the first calendar —
+   the plan §3.10). Owner D672 (8 Oct 26): "if it's already in view, undo/redo don't need to snap to view. Unless it's
+   outside the screen view then it's ok to snap into view." On the month an input is a BAR he can see: it flashes where
+   it stands and nothing opens over the month. Only an input with no bar on the month — behind "+N more", or let
+   through by no filter — opens its day, where it is listed. */
+describe('a saved or brought-back input is shown where it is (D672)', () => {
+  const reveal = async (row: any) => act(async () => { revealInput(INPUTS.find((r: any) => r.iid === row.iid)); notify() })
+  it('its bar is on the month: the bar flashes, and no day opens over the month', async () => {
+    const r = await file({ date: 'Oct 5', endDate: 'Oct 9' })
+    await reveal(r)
+    expect(bars(r.iid)[0].classList.contains('lift-land'), 'the bar flashes where it stands').toBe(true)
+    expect($('.ib-day.is-open'), 'no day opens').toBeNull()
+    expect($(`[data-popiid="${r.iid}"]`)).toBeNull()
+  })
+  it('it is in another month: the month turns to it, and its bar flashes there', async () => {
+    const r = await file({ date: 'Dec 8' })
+    await reveal(r)
+    expect(CALMONTH).toEqual({ y: 2026, m: 12 })
+    expect(bars(r.iid)[0].classList.contains('lift-land')).toBe(true)
+    expect($('.ib-day.is-open')).toBeNull()
+  })
+  it('it has no bar — behind "+N more": its day opens and lists it', async () => {
+    const rows: any[] = []
+    for (const p of crew().slice(0, 9)) rows.push(await file({ person: p, date: 'Oct 21' }))
+    const hidden = rows.find(r => !bars(r.iid).length)!
+    expect(hidden, 'two of the nine have no line').toBeTruthy()
+    await reveal(hidden)
+    expect(day('2026-10-21').classList.contains('is-open')).toBe(true)
+    expect($(`[data-popiid="${hidden.iid}"]`)).toBeTruthy()
+  })
+  it('a day is already open (he saved from its "+ Input"): the day shows the saved input, as before', async () => {
+    under(day('2026-10-07'))
+    await tap(day('2026-10-07'))
+    const r = await file({ date: 'Oct 7' })
+    await reveal(r)
+    expect(day('2026-10-07').classList.contains('is-open')).toBe(true)
+    expect($(`[data-popiid="${r.iid}"]`)).toBeTruthy()
   })
 })
 

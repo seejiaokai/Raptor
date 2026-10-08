@@ -282,3 +282,87 @@ test('a public holiday, an Off day and a no-fly day wear their tag on the Inputs
   await page.evaluate(() => (window as any).lwSetDayEvent('2026-10-09', 0, ''))
   await expect(tag('2026-10-09')).toHaveCount(0)
 })
+
+/* A BAR MOVED (the plan §3.6, §5): the move is by the days between where the bar was grabbed and where it is dropped —
+   resolved from where things ARE on the page, which no unit test can see — its length kept; one Undo step; the moved
+   bar is the thing that flashes. */
+const recDates = (p: Page, iid: string) => p.evaluate(iid => { const r = (window as any).INPUTS.find((x: any) => x.iid === iid); return r ? [r.date, r.endDate || ''] : null }, iid)
+test('a real mouse moves a bar by the days between grab and drop — from its middle day, and from its continuation in the next week', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [a, b] = await file(page, [{ who: 3, type: 'LL', from: 'Oct 5', to: 'Oct 9' }, { who: 4, type: 'LL', from: 'Oct 23', to: 'Oct 27' }])
+  const xOf = async (iso: string) => { const r = (await cell(page, iso).boundingBox())!; return r.x + r.width / 2 }
+  /* Mon 5 – Fri 9, grabbed over Wednesday the 7th, dropped on Friday the 9th: two days later, still five days long */
+  const barA = (await page.locator(`[data-testid="ib-bar-${a}"]`).boundingBox())!, yA = barA.y + barA.height / 2
+  await page.mouse.move(await xOf('2026-10-07'), yA); await page.mouse.down()
+  await page.mouse.move(await xOf('2026-10-08'), yA + 4, { steps: 4 })
+  await expect(page.locator('.ic-ghost'), 'the bar is picked up and follows the mouse').toHaveCount(1)
+  await page.mouse.move(await xOf('2026-10-09'), yA + 6, { steps: 4 })
+  await expect(cell(page, '2026-10-09'), 'the date under it lights').toHaveClass(/ic-over/)
+  await page.mouse.up()
+  await expect.poll(() => recDates(page, a)).toEqual(['Oct 7', 'Oct 11'])
+  await expect(page.locator('.ic-ghost')).toHaveCount(0)
+  await expect(page.locator(`.ib-bar.lift-land[data-iid="${a}"]`).first(), 'the moved bar is what flashes').toBeVisible()
+  await page.waitForTimeout(400)
+  expect(await editorOpen(page), 'the release must not open the input it moved').toBe(false)
+  await page.click('#undoBtn')
+  await expect.poll(() => recDates(page, a)).toEqual(['Oct 5', 'Oct 9'])
+  /* Undo leaves the screen where it is (D672): the bar he is looking at goes back and flashes — no day opens over the month */
+  await expect(page.locator(`.ib-bar.lift-land[data-iid="${a}"]`).first()).toBeVisible()
+  await expect(page.locator('.ib-day.is-open')).toHaveCount(0)
+  /* Fri 23 – Tue 27: its SECOND piece, in the next week, grabbed over Monday the 26th and dropped on Wednesday the 28th */
+  const second = page.locator(`[data-testid="ib-bar-${b}"]`).nth(1)
+  const barB = (await second.boundingBox())!, yB = barB.y + barB.height / 2
+  await page.mouse.move(await xOf('2026-10-26'), yB); await page.mouse.down()
+  await page.mouse.move(await xOf('2026-10-27'), yB + 4, { steps: 4 }); await page.mouse.move(await xOf('2026-10-28'), yB + 6, { steps: 4 })
+  await page.mouse.up()
+  await expect.poll(() => recDates(page, b)).toEqual(['Oct 25', 'Oct 29'])
+  /* dropped back where it was grabbed: nothing changes and there is no step to take back */
+  const barB2 = (await page.locator(`[data-testid="ib-bar-${b}"]`).nth(1).boundingBox())!, y2 = barB2.y + barB2.height / 2
+  await page.mouse.move(await xOf('2026-10-27'), y2); await page.mouse.down()
+  await page.mouse.move(await xOf('2026-10-28'), y2 + 4, { steps: 4 }); await page.mouse.move(await xOf('2026-10-27'), y2, { steps: 4 }); await page.mouse.up()
+  expect(await recDates(page, b)).toEqual(['Oct 25', 'Oct 29'])
+  await page.click('#undoBtn')
+  await expect.poll(() => recDates(page, b), 'the one Undo step is the move before it').toEqual(['Oct 23', 'Oct 27'])
+})
+
+test('another man’s bar does not lift for a member, and trying to drag it opens nothing', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  /* a member cannot file for another man through the test door either, so this uses the demo squadron's own July:
+     the first bar there whose input is not his (us = Ranger) */
+  await login(page, 'user'); await go(page, 'inputs'); await page.selectOption('#inFPerson', 'all'); await month(page, 2026, 7)
+  await page.waitForSelector('.ib-bar')
+  const iid = await page.evaluate(() => { const w = window as any; const bar = [...document.querySelectorAll('.ib-bar')].find(b => { const r = w.INPUTS.find((x: any) => x.iid === (b as HTMLElement).dataset.iid); return r && r.person !== 'bane' && !r.grp }) as HTMLElement; return bar.dataset.iid! })
+  const was = await recDates(page, iid)
+  const bar = (await page.locator(`[data-testid="ib-bar-${iid}"]`).first().boundingBox())!, y = bar.y + bar.height / 2
+  const to = (await cell(page, '2026-07-30').boundingBox())!
+  await page.mouse.move(bar.x + 12, y); await page.mouse.down(); await page.mouse.move(bar.x + 60, y + 3, { steps: 4 })
+  await expect(page.locator('.ic-ghost')).toHaveCount(0)
+  await page.mouse.move(to.x + to.width / 2, to.y + to.height - 8, { steps: 4 }); await page.mouse.up()
+  expect(await recDates(page, iid)).toEqual(was)
+  await page.waitForTimeout(400)
+  expect(await editorOpen(page), 'a drag that could not lift is not a tap').toBe(false)
+  /* and a plain click still opens it, read only */
+  await page.locator(`[data-testid="ib-bar-${iid}"]`).first().click()
+  await expect(page.locator('[data-testid="inped-ro"]')).toBeVisible()
+})
+
+test('a finger: a bar held still lifts, is carried to another date and lands there — the page standing still', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    const [iid] = await file(page, [{ who: 3, type: 'LL', from: 'Oct 20', to: 'Oct 22' }])
+    const cdp = await context.newCDPSession(page)
+    const bar = (await page.locator(`[data-testid="ib-bar-${iid}"]`).boundingBox())!
+    const xOf = async (iso: string) => { const r = (await cell(page, iso).boundingBox())!; return Math.round(r.x + r.width / 2) }
+    const y = Math.round(bar.y + bar.height / 2), y0 = await page.evaluate(() => scrollY)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: await xOf('2026-10-21'), y, id: 1 }] })
+    await expect(page.locator('.ic-ghost'), 'held still, the bar lifts').toHaveCount(1)
+    for (const iso of ['2026-10-22', '2026-10-23']) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: await xOf(iso), y: y + 3, id: 1 }] })
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await cdp.detach()
+    await expect.poll(() => recDates(page, iid)).toEqual(['Oct 22', 'Oct 24'])
+    expect(await page.evaluate(() => scrollY), 'the page scrolled under the finger').toBe(y0)
+    await expect(page.locator('#inpCal .ic-mon'), 'and the month was not turned').toHaveText('Oct 2026')
+    await page.waitForTimeout(400)
+    expect(await editorOpen(page)).toBe(false)
+  } finally { await context.close() }
+})

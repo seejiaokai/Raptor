@@ -283,6 +283,11 @@ export function initCalDrag(root: HTMLElement, opts: {
     if (!st.armed) {
       const dx = Math.abs(e.clientX - st.x0), dy = Math.abs(e.clientY - st.y0)
       if (st.mouse) {
+        /* A BAR THAT DOES NOT LIFT KEEPS WHERE IT WAS PRESSED (found by the bar-move tests, 8 Oct 26): a member who
+           dragged another man's bar and let go had the travel re-centred under him at every move, so the release
+           read as a TAP where it ended and opened the input he had only tried to move. Its travel is read from the
+           press, and a drag of it is nothing at all. */
+        if (st.fixed) return
         if (dx > MOUSE_SLOP || dy > MOUSE_SLOP) { st.x0 = e.clientX; st.y0 = e.clientY; arm() }
         return
       }
@@ -335,8 +340,11 @@ export function initCalDrag(root: HTMLElement, opts: {
          REFUSED move (someone else's input, no rights) has said its own piece in
          a toast and the chip never left, so it shows nothing; nor does a cancel
          or a release over no day at all. */
-      /* a chip inside a date is found in the date it landed in; a bar, by its own id — it is inside no date */
-      if (to && commitChipMove(entry, entry.fromIso, to)) markLand(entry.inDay ? `[data-icday="${to}"] ${chipSel(entry)}` : chipSel(entry))
+      /* a chip inside a date is found in the date it landed in. A BAR is inside no date, so it is found by its own id
+         — AS A BAR: the Inputs List stays in the page, hidden, under the calendar, and its row carries the same id (the
+         first real-mouse move flashed that hidden row instead). A planning note is found in a date's head. */
+      if (to && commitChipMove(entry, entry.fromIso, to))
+        markLand(entry.inDay ? `[data-icday="${to}"] ${chipSel(entry)}` : entry.kind === 'puck' ? `[data-ichead="${to}"] ${chipSel(entry)}` : `.ib-bar${chipSel(entry)}`)
       else if (to && to === entry.fromIso) landOn(entry.el)
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
     } else if (gaveUp) {

@@ -52,6 +52,7 @@ import { placedLineOf } from './placedline'
 import { dayWord } from './sanscal-model'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
+import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { useMedia } from './usemedia'
 
@@ -170,12 +171,35 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
   const shown=useRef<typeof INPREVEAL>(null)
+  /* A SAVED INPUT, OR ONE BROUGHT BACK BY UNDO, IS SHOWN WHERE IT IS (owner D672, 8 Oct 26: "if it's already in view,
+     undo/redo don't need to snap to view. Unless it's outside the screen view then it's ok to snap into view" — and its
+     reading 9: a save follows the same rule). The month turns to it if it is in another month (unaltered). Then, once
+     that month is drawn (`pending`): an input whose BAR is on the month flashes where it stands — brought on screen
+     first if the page had it scrolled away — and nothing opens over the month. Only one with no bar (behind "+N more",
+     or let through by no filter), or a save made from a day that is open, opens the day, where it is listed. The first
+     calendar opened the day every time: an Undo of a bar's move threw a sheet over the month he was looking at. */
+  const [pending, setPending] = useState<typeof INPREVEAL>(null)
   useLayoutEffect(()=>{
     const saved=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],mode).length)
     if(!saved||!reveal||(mode&&reveal.mode!==mode)){setSavedId(null);return}
-    setSavedId(saved.iid);setPopIso(reveal.iso);shown.current=reveal
     setCalMonth({y:+reveal.iso.slice(0,4),m:+reveal.iso.slice(5,7)})
+    setPending(reveal)
   },[reveal,mode])
+  useLayoutEffect(()=>{
+    if(!pending)return
+    setPending(null)
+    if(INPREVEAL!==pending)return
+    const key=items.find(it=>it.rows.some((r:any)=>r.iid===pending.iid))?.key
+    const bar=key&&popIso==null?gridRef.current?.querySelector(`.ib-bar[data-iid="${key}"]`) as HTMLElement|null:null
+    if(bar){
+      if(!rowOnScreen(bar))bringRowOnScreen(bar)
+      landOn(bar)
+      clearInpReveal()
+      return
+    }
+    setSavedId(pending.iid);setPopIso(pending.iso);shown.current=pending
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[pending])
   /* THE REVEAL IS SPENT ONCE ITS DAY HAS BEEN SHOWN AND LEFT (Opus's own read of the build, step 0, 7 Oct 26). It is
      view state that outlives this component — so the List can pin the same row — and nothing took it back when the
      day was closed: List and back to Calendar (or Medical and back) mounted a new calendar, which opened the saved
