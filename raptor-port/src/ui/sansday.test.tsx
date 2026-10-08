@@ -242,9 +242,17 @@ describe('on a phone: two rest heights (D648)', () => {
     show()
     const win = t('win-sansday'), bar = win.querySelector('.win-bar')!
     expect(win.className).not.toContain('is-tall')
-    fireEvent.pointerDown(bar, { clientX: 100, clientY: 300, pointerId: 1 }); fireEvent.pointerUp(bar, { clientX: 100, clientY: 300, pointerId: 1 })
+    const tapBar = (y: number) => { fireEvent.pointerDown(bar, { clientX: 100, clientY: y, pointerId: 1 }); fireEvent.pointerUp(bar, { clientX: 100, clientY: y, pointerId: 1 }) }
+    /* the height changes on the CLICK, not on the release — a panel that moved under the finger first would hand the
+       click to whatever arrived there (it pressed "+ Commitment" in the running build) */
+    tapBar(300)
+    expect(win.className).not.toContain('is-tall')
+    fireEvent.click(bar)
     expect(win.className).toContain('is-tall')
-    fireEvent.pointerDown(bar, { clientX: 100, clientY: 20, pointerId: 1 }); fireEvent.pointerUp(bar, { clientX: 100, clientY: 20, pointerId: 1 })
+    tapBar(20); fireEvent.click(bar)
+    expect(win.className).not.toContain('is-tall')
+    /* ✕ is never a tap on the bar */
+    fireEvent.click(win.querySelector('.win-x')!)
     expect(win.className).not.toContain('is-tall')
   })
   it('dragged up by its bar it stays up; dragged back down it comes down', () => {
@@ -257,6 +265,8 @@ describe('on a phone: two rest heights (D648)', () => {
     fireEvent.pointerMove(bar, { clientX: 100, clientY: 60, pointerId: 1 })
     fireEvent.pointerUp(bar, { clientX: 100, clientY: 60, pointerId: 1 })
     expect(win.className).toContain('is-tall')
+    fireEvent.click(bar)                                               // the click a mouse sends after a drag is not a tap
+    expect(win.className).toContain('is-tall')
     win.getBoundingClientRect = () => ({ top: 8, left: 12, right: 378, bottom: 788, width: 366, height: 780, x: 12, y: 8, toJSON() {} }) as DOMRect
     fireEvent.pointerDown(bar, { clientX: 100, clientY: 20, pointerId: 1 })
     fireEvent.pointerMove(bar, { clientX: 100, clientY: 300, pointerId: 1 })
@@ -266,7 +276,7 @@ describe('on a phone: two rest heights (D648)', () => {
   it('on a desktop its bar moves it as every window’s does — it is never made tall', () => {
     show()
     const win = t('win-sansday'), bar = win.querySelector('.win-bar')!
-    fireEvent.pointerDown(bar, { clientX: 100, clientY: 300, pointerId: 1 }); fireEvent.pointerUp(bar, { clientX: 100, clientY: 300, pointerId: 1 })
+    fireEvent.pointerDown(bar, { clientX: 100, clientY: 300, pointerId: 1 }); fireEvent.pointerUp(bar, { clientX: 100, clientY: 300, pointerId: 1 }); fireEvent.click(bar)
     expect(win.className).not.toContain('is-tall')
   })
 })

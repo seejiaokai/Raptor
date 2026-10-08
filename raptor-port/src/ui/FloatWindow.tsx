@@ -86,8 +86,11 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
   const sheet = !!rests && phoneLayout()
   const [tall, setTall] = useState(false)
   const pull = useRef<{ y0: number; top0: number; top: number; moved: boolean } | null>(null)
+  /* a drag just ended on the bar: the click that may follow it is not a tap */
+  const dragged = useRef(false)
   const sheetDown = (e: React.PointerEvent) => {
     const n = el.current
+    dragged.current = false
     if (!n || (e.target as HTMLElement).closest('.win-x')) return
     const top = n.getBoundingClientRect().top
     pull.current = { y0: e.clientY, top0: top, top, moved: false }
@@ -108,12 +111,21 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
     pull.current = null
     if (!d) return
     if (n) { n.style.top = ''; n.style.height = ''; n.style.maxHeight = '' }
-    if (!d.moved) setTall(t => !t)
-    else if (d.top0 - d.top > PULL) setTall(true)
+    if (!d.moved) return
+    dragged.current = true
+    if (d.top0 - d.top > PULL) setTall(true)
     else if (d.top - d.top0 > PULL) setTall(false)
   }
+  /* A TAP GOES TO THE OTHER HEIGHT — ON THE CLICK, never on the release: the panel moves under the finger as it
+     changes height, and a click that came AFTER the move would press whatever had arrived there (found on the first
+     look at the running build, 8 Oct 26: a tap on the bar pulled the panel up and its "+ Commitment" took the click). */
+  const sheetTap = (e: React.MouseEvent) => {
+    if (dragged.current) { dragged.current = false; return }
+    if ((e.target as HTMLElement).closest('.win-x')) return
+    setTall(t => !t)
+  }
   const bar = sheet
-    ? { onPointerDown: sheetDown, onPointerMove: sheetMove, onPointerUp: sheetUp, onPointerCancel: sheetUp }
+    ? { onPointerDown: sheetDown, onPointerMove: sheetMove, onPointerUp: sheetUp, onPointerCancel: sheetUp, onClick: sheetTap }
     : { onPointerDown: onBarDown, onPointerMove: onBarMove, onPointerUp: onBarUp, onPointerCancel: onBarUp }
 
   /* OPENED LAST, IN FRONT — and the keyboard goes into it; closed, the keyboard goes back to what opened it */

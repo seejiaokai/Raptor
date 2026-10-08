@@ -26,6 +26,7 @@ import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
 import { InputsCal } from './InputsCal'
+import { SansCal } from './SansCal'
 /* the halves, the span control, the draft shape and the commit are shared with
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
@@ -266,14 +267,12 @@ export function InputsPage() {
   const [memberPerson, setMemberPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
   const [memberType, setMemberType] = useState('all')
   const [memberSearch, setMemberSearch] = useState('')
-  const [sansPerson, setSansPerson] = useState('all')
-  const [sansSearch, setSansSearch] = useState('')
-  const fPerson = INPMODE === 'sans' ? sansPerson : memberPerson
-  const setFPerson = INPMODE === 'sans' ? setSansPerson : setMemberPerson
-  const fType = INPMODE === 'sans' ? 'all' : memberType
-  const setFType = setMemberType
-  const fSearch = INPMODE === 'sans' ? sansSearch : memberSearch
-  const setFSearch = INPMODE === 'sans' ? setSansSearch : setMemberSearch
+  /* the filters are the Inputs tab's alone — the SANS calendar has none (the plan §3.5; its own remembered person and
+     search went with its list, D620). What is typed here is kept while he looks at the SANS tab and is there when he
+     comes back. */
+  const fPerson = memberPerson, setFPerson = setMemberPerson
+  const fType = memberType, setFType = setMemberType
+  const fSearch = memberSearch, setFSearch = setMemberSearch
   const [filtersOpen,setFiltersOpen] = useState(false)
   const medicalReturn = useRef<'cal'|'table'>('cal')
   const chooseMode=(mode:'member'|'sans')=>{
@@ -771,7 +770,13 @@ export function InputsPage() {
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
   const medDownN = medDownAsOf(medOrd).length
   const medPendN = pendingUpchits(medOrd).length
-  const appliedFilters = [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
+  /* THE SANS TAB IS THE SANS CALENDAR AND NOTHING ELSE (owner D620, 7 Oct 26: SANS availability "leaves the List and is
+     filed on the SANS calendar only, which has no list of its own"; the plan §3.5: "the SANS tab has no filters" — the
+     Highlight does that job, and the counts ignore filters by ruling, D581). So in that mode the Calendar | List pair,
+     the Filters button and the List itself are not drawn; Medical stays, as it is one tab of the three. */
+  const sansUp = INPMODE === 'sans'
+  const listUp = INPVIEW === 'table' && !sansUp
+  const appliedFilters = sansUp ? [] : [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
 
   return (
     <div className="inputs-workspace">
@@ -781,7 +786,7 @@ export function InputsPage() {
         <button className="abtn" id="inSansMode" aria-pressed={INPMODE==='sans'} onClick={()=>chooseMode('sans')}>SANS Availability</button>
       </div>
       <div className="inputs-tools">
-        <div className="inputs-views" role="group" aria-label="Display inputs">
+        <div className="inputs-views" role="group" aria-label="Display inputs" hidden={sansUp}>
         <button className="abtn" id="inCalBtn" title="See a whole month at a glance"
           aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}>Calendar</button>
         <button className="abtn" id="inListBtn" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}>List</button>
@@ -797,21 +802,21 @@ export function InputsPage() {
           <MedIcon /> Medical
           {medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
           {medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}</button>
-        <button className="abtn" id="inFiltersBtn" aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}>Filters{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
+        <button className="abtn" id="inFiltersBtn" hidden={sansUp} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}>Filters{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
       </div>
-      {appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');if(INPMODE==='member')setFType('all');setFSearch('');notify()}}>Clear filters</button></div>}
-      <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
+      {appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');setFType('all');setFSearch('');notify()}}>Clear filters</button></div>}
+      <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters" hidden={sansUp}>
         <label><span>Person</span><select id="inFPerson" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
           <option value="all">Everyone</option>
           {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
           <ArchivedGroup /><DeletedGroup />
         </select></label>
-        <label hidden={INPMODE==='sans'}><span>Type</span><select id="inFType" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
+        <label><span>Type</span><select id="inFType" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
           <option value="all">Show all types</option>{typeOptions(t=>!isSansAvail(t))}
         </select></label>
         <label className="inputs-search"><span>Search</span><input id="inFSearch" type="search" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
       </div>
-      <div className="inbar" hidden={INPVIEW!=='table'}>
+      <div className="inbar" hidden={!listUp}>
         <div className="ingrid">
           {/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 —
               admin files for anyone, a member only for whoever they are
@@ -889,10 +894,10 @@ export function InputsPage() {
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={() => add(false)}>Add input</button></div>
         </div>
       </div>
-      <div className="infilter inputs-listtools" hidden={INPVIEW!=='table'}>
+      <div className="infilter inputs-listtools" hidden={!listUp}>
         {/* the window, picked on the same two-click calendar as the form above:
             first click is the from-date, second the to-date */}
-        <div className="inrange" hidden={INPVIEW!=='table'} ref={rangeRef}>
+        <div className="inrange" hidden={!listUp} ref={rangeRef}>
           <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
             aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
           {calOpen && (
@@ -950,7 +955,7 @@ export function InputsPage() {
             </div>
           )}
         </div>
-        <button className="abtn" id="inExport" hidden={INPVIEW!=='table'} onClick={() => {
+        <button className="abtn" id="inExport" hidden={!listUp} onClick={() => {
           /* EVERY input, each one's whole span (AB10) — never only the rows the list is filtered to. The calendar
              build had narrowed it to the filtered rows, so a member (whose list opens on himself) exported his own
              inputs only, and a search that matched nothing wrote an empty file (Opus's own read, step 0, 7 Oct 26) */
@@ -961,7 +966,7 @@ export function InputsPage() {
           HOOKS.toast('CSV downloaded', 'ok')
         }}>Export to Excel</button>
       </div>
-      <div className="inwrap" hidden={INPVIEW!=='table'}>
+      <div className="inwrap" hidden={!listUp}>
         <table className="intbl" id="intbl">
           <thead><tr>
             {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
@@ -1157,7 +1162,8 @@ export function InputsPage() {
       {/* the table stays mounted underneath — closing the calendar is then a
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
-      {INPVIEW === 'cal' && <InputsCal key={INPMODE} mode={INPMODE} embedded fPerson={fPerson} fType={fType} fSearch={fSearch}
+      {sansUp && INPVIEW !== 'med' && <SansCal />}
+      {!sansUp && INPVIEW === 'cal' && <InputsCal mode="member" embedded fPerson={fPerson} fType={fType} fSearch={fSearch}
         seedIso={range.from || isoOf(new Date())}
         onClose={() => { setInpView('table'); notify() }} />}
       {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView(medicalReturn.current); notify() }} />}

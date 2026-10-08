@@ -26,11 +26,8 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { me, isAdmin } from '../state/perms'
-import { inputsInMode, activityPeopleOn, type InputsMode } from './sans-calendar-model'
-import { getSansDay, getSansCutoffs, sansShortage } from '../state/sans-calendar'
-import { FlyingIcons, SansDayControls, SansColourControls } from './SansCalendarControls'
-import { clickedOutside } from './outside'
+import { me } from '../state/perms'
+import { inputsInMode } from './sans-calendar-model'
 import { fmt, fmtDay, unfmt, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
@@ -105,7 +102,7 @@ export function monthCells(y: number, m: number): (string | null)[] {
    whatever plan pucks were dropped on that day. Pure and exported so the
    chip tests can drive a day directly instead of steering the whole page
    through the DOM to get there. */
-export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: InputsMode) {
+export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
   let inputs = inputsInMode(INPUTS, mode).filter((r: any) => inputCoversDate(r, label))
   if (f.fPerson !== 'all') inputs = inputs.filter((r: any) => r.person === f.fPerson)
@@ -134,8 +131,11 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   return { inputs, pucks }
 }
 
+/* `mode` is 'member' on the Inputs page (everything BUT SANS availability) and absent for a caller that wants every
+   input. The SANS half of this calendar — its own cell, its day panel, its colour settings — went on 8 Oct 26: the
+   SANS calendar is its own screen now (ui/SansCal.tsx; the Inputs / SANS job's step 4, D617-D651). */
 export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, embedded=false }:
-  { fPerson: string, fType: string, fSearch: string, seedIso?: string, onClose: () => void, mode?: InputsMode, embedded?:boolean }) {
+  { fPerson: string, fType: string, fSearch: string, seedIso?: string, onClose: () => void, mode?: 'member', embedded?:boolean }) {
   useVersion()
   const gridRef = useRef<HTMLDivElement>(null)
   /* the deps-`[]` gesture effect below must always call the CURRENT month
@@ -286,7 +286,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
      the way out to the calendar. */
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || INPEDIT || document.getElementById('sansColourForm')) return
+      if (e.key !== 'Escape' || INPEDIT) return
       e.stopPropagation()
       /* the picker sits ABOVE the popover, so it eats Escape first — the same
          one-layer-at-a-time ladder the popover follows below the modal */
@@ -307,13 +307,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
      hidden inside the dialog (inputedit.tsx ~695, canEditSched-gated), so
      the ME seed here is exactly what ends up saved regardless of who opened
      it. */
-  const canOffer = mode!=='sans'||isAdmin()||!!PEOPLE[me()??'']?.san
   const openAdd = (from: string, until?:string) => {
-    if(mode==='sans'&&!isAdmin()&&!PEOPLE[me()??'']?.san) return
     const [iso,end]=until&&until<from?[until,from]:[from,until]
-    const t = mode==='sans'?'SANS Availability':firstPersonalType()
-    const who=mode==='sans'&&isAdmin()&&!PEOPLE[me()??'']?.san ? Object.keys(PEOPLE).find(id=>PEOPLE[id].san&&!PEOPLE[id].archived&&!PEOPLE[id].deleted&&!PEOPLE[id].special) : me()
-    setInpEdit({ _new: true, _calendar:true, _ctx: mode==='sans'?'s':'', person: who, type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080, ...(mode==='sans'?{sans:{f:true}}:{}) })
+    const t = firstPersonalType()
+    setInpEdit({ _new: true, _calendar:true, _ctx: '', person: me(), type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080 })
     notify()
   }
   const closePop = () => { showDay(null); setPopPuckEdit(null) }
@@ -537,30 +534,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
     const saved=INPUTS.find((r:any)=>r.iid===savedId&&inputsInMode([r],mode).length&&inputCoversDate(r,fmt(iso)))
     const revealed=!!saved&&!entries.inputs.includes(saved)
     if(revealed) entries.inputs.unshift(saved)
-    if(mode==='sans'){
-      const config=getSansDay(iso), counts=activityPeopleOn(iso), total=counts.f.length, shortage=sansShortage(total,config.required)
-      return <div className="ic-popwrap" id="sansDayPop" onClick={e=>{if(clickedOutside(e,'sansDayPop'))closePop()}}>
-        <section className="ic-pop sans-day-panel" role="dialog" aria-modal={embedded&&window.innerWidth>820?undefined:true} aria-label={'SANS commitments on '+fmtDay(iso)}>
-          <div className="ic-pop-head"><strong>{fmtDay(iso)}</strong><FlyingIcons period={config.flying}/><button type="button" className="abtn" id="icPopClose" aria-label="Close day" onClick={closePop}>✕</button></div>
-          <div className="ic-pop-body">
-            <div className={'sans-day-summary '+shortage.tone}><strong data-sans-count="f" data-count={total}>Fly {total}{config.required===null?'':` / ${config.required} required`}</strong><div className="sans-other-counts"><span data-sans-count="o" data-count={counts.o.length}>OFT {counts.o.length}</span><span data-sans-count="a" data-count={counts.a.length}>AMT {counts.a.length}</span></div><span>{shortage.state==='unset'?'Target not set':shortage.state==='zero'?'None required':shortage.needed?`${shortage.needed} more needed`:'Enough people offered'}</span></div>
-            <p className="sans-explain">Flying offers count each person once. Their available hours are shown below.</p>
-            {active&&<p className="sans-explain">Filtered commitments shown{revealed?', with your saved commitment kept in view':''}. The total still includes everyone.</p>}
-            <button className="abtn primary" type="button" id="icPopAdd" disabled={!canOffer} onClick={()=>openAdd(iso)}>+ Commitment</button>
-            {!canOffer&&<p className="sans-explain">SANS aircrew can add their availability here.</p>}
-            <div className="ic-pop-rows">
-              {!entries.inputs.length&&<p className="ic-pop-empty">{active?'No commitments match these filters.':'No commitments yet.'}</p>}
-              {entries.inputs.map((r:any)=><button key={r.iid} type="button" className="ic-poprow san" data-popiid={r.iid} onClick={()=>{setInpEdit(r);notify()}}>
-                <span className="ic-poprow-top"><span className="ic-poprow-who">{PEOPLE[r.person]?.cs??r.person}</span><span className="ic-poprow-lbl">{sansLetters(r)||'No activities'}</span><span className="ic-poprow-win">{r.allday?'All day':`${hhmm(r.s)}–${hhmm(r.e)}`}</span></span>
-                {!r.sans?.f&&<span className="ic-poprow-rmk">OFT / AMT only · not counted for flying</span>}
-                {r.remarks&&<span className="ic-poprow-rmk">{r.remarks}</span>}
-              </button>)}
-            </div>
-            <SansDayControls key={iso+JSON.stringify(config)} iso={iso}/>
-          </div>
-        </section>
-      </div>
-    }
     const hasRmk = !!DAYRMK[iso]
     const sched = canEditSched()
     /* Enter commits by handing off to the SAME blur handler that already
@@ -993,14 +966,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   }
 
   return (
-    <div className={'inpcal'+(embedded?' ic-embedded':'')+(embedded&&popIso?' ic-with-day':'')+(mode==='sans'?' ic-sans':'')} id="inpCal">
+    <div className={'inpcal'+(embedded?' ic-embedded':'')+(embedded&&popIso?' ic-with-day':'')} id="inpCal">
       <div className="ic-head">
         <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
         <span className="ic-mon">{MON[cur.m - 1]} {cur.y}</span>
         <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
         <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
-        {mode&&<button type="button" className="abtn" id="icSelectDates" aria-pressed={selectDates} disabled={!canOffer} onClick={()=>{showDay(null);setSelected(null);setSelectDates(!selectDates)}}>{selectDates?'Cancel selection':'Select dates'}</button>}
-        {mode==='sans'&&<SansColourControls/>}
+        {mode&&<button type="button" className="abtn" id="icSelectDates" aria-pressed={selectDates} onClick={()=>{showDay(null);setSelected(null);setSelectDates(!selectDates)}}>{selectDates?'Cancel selection':'Select dates'}</button>}
         {active && <span className="ic-filterpill">filtered: {pillParts.join(' · ')}</span>}
         <button type="button" className="abtn" id="icClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>{embedded?'List':'✕'}</button>
@@ -1011,8 +983,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
           in view and carries the warning itself: a band here would hide the bar's copy and leave an empty line in
           the bar (found when the two works were joined, 7 Oct 26 — e2e/save-note.spec.ts). */}
       {!embedded && <SaveBand />}
-      {mode==='sans'&&<div className="sans-legend"><span>F Fly · O OFT · A AMT</span><span>F: available / required</span><span className="amber">Amber: {getSansCutoffs().amberFrom}+ more needed</span><span className="red">Red: {getSansCutoffs().redFrom}+ more needed</span><span><FlyingIcons period="day"/> day flying <FlyingIcons period="night"/> night flying</span></div>}
-      {selectDates&&<div className="ic-range-bar" role="status"><span>{selected?`${fmtDay(selected.start)}${selected.end?' → '+fmtDay(selected.end):' — choose the last day'}`:'Choose the first and last day. Month arrows work here too.'}</span><button className="abtn primary" type="button" id="icRangeAdd" disabled={!selected?.end} onClick={()=>{if(selected?.end){openAdd(selected.start,selected.end);cancelSelection()}}}>+ {mode==='sans'?'Commitment':'Input'}</button><button className="abtn" type="button" onClick={cancelSelection}>Cancel</button></div>}
+      {selectDates&&<div className="ic-range-bar" role="status"><span>{selected?`${fmtDay(selected.start)}${selected.end?' → '+fmtDay(selected.end):' — choose the last day'}`:'Choose the first and last day. Month arrows work here too.'}</span><button className="abtn primary" type="button" id="icRangeAdd" disabled={!selected?.end} onClick={()=>{if(selected?.end){openAdd(selected.start,selected.end);cancelSelection()}}}>+ Input</button><button className="abtn" type="button" onClick={cancelSelection}>Cancel</button></div>}
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
       {/* THE MONTH BODY scrolls when a day is packed. --ic-rows is the live week
           count: each week's MINIMUM height is one viewport share of it (see
@@ -1035,7 +1006,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
           const wk = ci >= 5
           const isToday = iso === todayIso
           const { inputs, pucks } = dayEntries(iso, { fPerson, fType, fSearch }, mode)
-          const config=getSansDay(iso), counts=mode==='sans'?activityPeopleOn(iso):{f:[],o:[],a:[]}, shortage=sansShortage(counts.f.length,config.required)
           const selection=mouseRange||selected
           const inSelection=selection&&iso>=[selection.start,selection.end||selection.start].sort()[0]&&iso<=[selection.start,selection.end||selection.start].sort()[1]
           /* THE CELL'S PRIORITY ORDER (owner, 22 Aug 26): the day TITLE, then
@@ -1050,9 +1020,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
           const day = +iso.slice(8, 10)
           const rmk = DAYRMK[iso]
           return (
-            <div key={iso} className={'ic-day' + (isToday ? ' ic-today' : '') + (wk ? ' ic-wk' : '')+(mode==='sans'?' sans-'+shortage.tone:'')+(inSelection?' ic-selected':'')} data-icday={iso} role="button" tabIndex={0} aria-label={fmtDay(iso)+(mode==='sans'?`, ${counts.f.length} Fly, ${counts.o.length} OFT, ${counts.a.length} AMT, ${config.required===null?'target not set':config.required+' required for Fly'}`:'')} onKeyDown={e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();pickDate(iso)}}}>
-              <div className="ic-date-line"><div className="ic-num">{day}</div>{mode==='sans'&&<FlyingIcons period={config.flying}/>}</div>
-              {mode==='sans'?<div className="sans-cell-summary"><strong data-sans-count="f" data-count={counts.f.length}>F {counts.f.length}{config.required===null?'':` / ${config.required}`}</strong><span data-sans-count="o" data-count={counts.o.length}>O {counts.o.length}</span><span data-sans-count="a" data-count={counts.a.length}>A {counts.a.length}</span><span className="sans-shortfall">{shortage.state==='unset'?'No target':shortage.state==='zero'?'None required':shortage.needed?`${shortage.needed} more`:'Enough'}</span></div>:<>
+            <div key={iso} className={'ic-day' + (isToday ? ' ic-today' : '') + (wk ? ' ic-wk' : '')+(inSelection?' ic-selected':'')} data-icday={iso} role="button" tabIndex={0} aria-label={fmtDay(iso)} onKeyDown={e=>{if(e.target!==e.currentTarget)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();pickDate(iso)}}}>
+              <div className="ic-date-line"><div className="ic-num">{day}</div></div>
+              <>
               {/* the day's TITLE — free text typed beside the date in the
                   popover, allowed to wrap (owner: "it will show up as the
                   title on the calendar view for mobile and desktop"). Keeps
@@ -1095,7 +1065,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
               )}
               {extra > 0 && <button type="button" className="ic-more" data-icmore={iso}
                 onClick={() => { showDay(iso); setPopPuckEdit(null) }}>+{extra} more</button>}
-              </>}
+              </>
             </div>
           )
         })}</div>

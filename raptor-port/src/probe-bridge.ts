@@ -42,7 +42,7 @@ import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './sta
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
-import { pinViewer } from './leavewar/sync'
+import { pinViewer, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
@@ -143,6 +143,11 @@ export function installProbeBridge() {
   w.setFlyDays = setFlyDays
   w.setFlyRun = setFlyRun
   w.setFlyRule = setFlyRule            // "every <weekday> from a date on" — what Days' month draws with no dot
+  /* the ONE join's answer for a date, and the Leave War's half of it — READ ONLY. The SANS calendar's browser tests
+     compare what a date shows with these (never with a figure worked out a second time in the test), and the look
+     script sets its required figures a little over who is available so the three colours show. */
+  w.flyAnswer = flyAnswer
+  w.lwDayFacts = lwDayFacts
   /* [GLOBAL-UNDO] the RAPTOR effective role — what deriveActor()/mayReverse read to
      gate a global undo. The e2e sets its LOGIN actor to admin this way (the reliable
      path: no mid-test re-login — the grid is already up). GATED TO LOCALHOST (dev +

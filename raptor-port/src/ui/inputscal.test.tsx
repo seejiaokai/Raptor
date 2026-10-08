@@ -176,373 +176,23 @@ describe('chips (seeded demo data)', () => {
      Jul 15-17), so red always fills MAX_CHIPS before tone order ever reaches
      san. Filtering to the type itself is what a scheduler would actually do
      to see the SANS picture, and it is what isolates the tone here too. */
-  it('a SANS Availability record chips purple', async () => {
+  /* RE-POINTED 8 Oct 26 (the Inputs / SANS job, step 4): the SANS tab is its own calendar now (ui/SansCal.tsx). The
+     promise is the same one — a SANS record is seen on its date and read as SANS at a glance — kept by the controls
+     that now do it: the date's F / O / A counts, and the man's own puck wearing the SANS edge in the opened day
+     (D649, D651), where the first calendar drew a purple row. */
+  it('a SANS Availability record is counted on its SANS date, and its man is listed as his puck with the SANS edge', async () => {
     await click($('#inSansMode'))
     await goJul2026()
     try {
       const cell = $('[data-icday="2026-07-13"]')!
-      expect(cell.querySelector('.sans-cell-summary'), 'SANS mode shows its daily count').toBeTruthy()
+      expect(cell.querySelector('[data-testid="sc-f-2026-07-13"]'), 'a SANS date shows its F, O and A counts').toBeTruthy()
       await tap(cell,10,10)
-      expect($('.ic-poprow.san'), 'offers retain the purple row treatment').toBeTruthy()
+      expect($('[data-testid="win-sansday"] [data-testid^="sd-row-"] .puck.san'), 'each commitment is the man’s puck, SANS edge on it').toBeTruthy()
+      await click($('[data-testid="win-sansday-x"]'))
     } finally {
       await click($('#inMemberMode'))
       await goJul2026()
     }
-  })
-
-  it('a spanning input (endDate) chips on every day it covers', async () => {
-    const rec: any = { person: 'yeti', date: 'Jul 20', endDate: 'Jul 22', allday: true, type: 'OL', remarks: '', mod: 'now' }
-    await act(async () => { INPUTS.unshift(rec); inpId(rec); notify() })
-    try {
-      for (const d of ['2026-07-20', '2026-07-21', '2026-07-22']) {
-        const cell = $(`[data-icday="${d}"]`)!
-        expect(cell.querySelector(`[data-iid="${rec.iid}"]`), d).toBeTruthy()
-      }
-      /* the day just before the span carries nothing of this row's */
-      expect($('[data-icday="2026-07-19"]')!.querySelector(`[data-iid="${rec.iid}"]`)).toBeFalsy()
-    } finally {
-      await act(async () => { INPUTS.splice(INPUTS.indexOf(rec), 1); notify() })
-    }
-  })
-
-  it('more than MAX_CHIPS on one day shows exactly MAX_CHIPS chips plus a +N more', async () => {
-    const day = 'Jul 25'
-    const extras: any[] = []
-    for (let i = 0; i < MAX_CHIPS + 2; i++) {
-      const rec = { person: 'yeti', date: day, allday: true, type: 'Training', remarks: '', mod: 'now' }
-      extras.push(rec)
-    }
-    await act(async () => { extras.forEach(r => { INPUTS.unshift(r); inpId(r) }); notify() })
-    try {
-      const cell = $('[data-icday="2026-07-25"]')!
-      const chipsHere = [...cell.querySelectorAll('.ic-chip')]
-      expect(chipsHere.length).toBe(MAX_CHIPS)
-      const more = cell.querySelector('[data-icmore]')
-      expect(more, 'a +N more button appears').toBeTruthy()
-      expect(more!.textContent).toBe(`+${extras.length - MAX_CHIPS} more`)
-    } finally {
-      await act(async () => { extras.forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
-    }
-  })
-
-  /* a dense day is drawn in full (the owner's 22 Aug call) and can outgrow its
-     cell; the grid must be able to SCROLL to it rather than clip the lower
-     weeks off the bottom (owner report, 29 Aug 26). jsdom paints no layout, so
-     the scroll itself can't be asserted here — but the wiring that drives it
-     can: --ic-rows is handed to the grid as the live week count, and it is what
-     divides the per-row minimum so the rows fill the viewport yet grow-and-
-     scroll past it. If this var is missing or wrong the CSS falls back to a flat
-     6-share and the clip-with-no-scroll bug is back. */
-  it('the grid carries --ic-rows = its real week count (drives the scroll-when-dense rows)', () => {
-    const rows = monthCells(2026, 7).length / 7   // July 2026 spans 5 weeks
-    expect(rows).toBe(5)
-    expect($('.ic-grid')!.style.getPropertyValue('--ic-rows')).toBe(String(rows))
-  })
-
-  it('a day remark shows as .ic-rmk (display only)', async () => {
-    await act(async () => { DAYRMK['2026-07-14'] = 'CO visiting — keep it tidy'; notify() })
-    try {
-      const rmk = $('[data-icday="2026-07-14"] .ic-rmk')
-      expect(rmk, 'the remark line appears').toBeTruthy()
-      expect(rmk!.getAttribute('title')).toBe('CO visiting — keep it tidy')
-    } finally {
-      await act(async () => { delete DAYRMK['2026-07-14']; notify() })
-    }
-  })
-})
-
-describe('filtering the calendar', () => {
-  it('filtering by person hides other people\'s chips and shows the filter pill', async () => {
-    await setSelect('#inFPerson', 'bane')
-    try {
-      expect($('.ic-filterpill')!.textContent).toContain('Ranger') // bane's callsign
-      /* bane's own Appointment on Jul 16 still shows */
-      expect($('[data-icday="2026-07-16"]')!.querySelector('.ic-chip.amb'), 'bane\'s own input stays').toBeTruthy()
-      /* divot's leave on Jul 13 belongs to someone else and drops out */
-      expect($('[data-icday="2026-07-13"]')!.querySelector('.ic-chip.red'), 'another person\'s input is filtered out').toBeFalsy()
-    } finally {
-      await setSelect('#inFPerson', 'all')
-      expect($('.ic-filterpill'), 'the pill goes with the last active filter').toBeFalsy()
-    }
-  })
-})
-
-/* ---------------------------------------------------------------------------
-   THE DAY POPOVER, HOLD-TO-ADD, AND THE GESTURE WIRING — every one of these
-   drives a REAL event on the rendered element and reads the resulting DOM
-   back, never the model alone (a bug already got past this session once by
-   driving state instead of the control). The calendar stays open at July
-   2026 from the describes above; these use empty days (no seeded record
-   touches Jul 6/8/9/11/18/27) so each test's fixture is its own. */
-describe('the day popover — tap an empty cell, close it two ways', () => {
-  it('a quick tap opens .ic-pop for that day; ✕ closes it; the backdrop closes it too', async () => {
-    const cell = $('[data-icday="2026-07-06"]')!
-    await tap(cell, 40, 40)
-    expect($('.ic-pop'), 'the popover opens on a tap').toBeTruthy()
-    expect($('.ic-pop-head b')!.textContent).toBe(fmtDay('2026-07-06'))
-
-    await click($('#icPopClose'))
-    expect($('.ic-pop'), 'closes on the ✕').toBeFalsy()
-
-    await tap(cell, 40, 40)
-    expect($('.ic-pop')).toBeTruthy()
-    await act(async () => { $('.ic-popwrap')!.dispatchEvent(ptr('pointerdown', 5, 5)) })
-    expect($('.ic-pop'), 'closes on a backdrop pointerdown').toBeFalsy()
-  })
-})
-
-describe('hold-to-add on an empty cell', () => {
-  it('consumes the release click after a hold, while the next deliberate date pick still works', async () => {
-    await goJul2026()
-    vi.useFakeTimers()
-    try {
-      const cell = $('[data-icday="2026-07-08"]')!
-      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 30, 30)); vi.advanceTimersByTime(HOLD_ADD) })
-      // The new dialog can cover the finger before it lifts. Chromium follows
-      // that lift with a compatibility click on the newly exposed date button.
-      const covered = $('#inpEdCal [data-cal="2026-07-30"]')!
-      await act(async () => {
-        covered.dispatchEvent(ptr('pointerup', 30, 30))
-        covered.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
-      })
-      expect($('#inpEditPop .rc-read')!.textContent).toBe('Jul 8')
-      const intentional = $('#inpEdCal [data-cal="2026-07-10"]')!
-      await tap(intentional, 30, 30)
-      expect($('#inpEditPop .rc-read')!.textContent).toBe('Jul 8 → Jul 10')
-    } finally {
-      vi.useRealTimers()
-      await act(async () => { setInpEdit(null); notify() })
-    }
-  })
-  it(`holding ${HOLD_ADD}ms seeds a new personal input for ME, without also opening the popover`, async () => {
-    vi.useFakeTimers()
-    try {
-      const cell = $('[data-icday="2026-07-08"]')!
-      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 30, 30)) })
-      await act(async () => { vi.advanceTimersByTime(HOLD_ADD) })
-      await act(async () => { cell.dispatchEvent(ptr('pointerup', 30, 30)) })
-
-      expect(INPEDIT, 'the add-input dialog seeded').toBeTruthy()
-      expect(INPEDIT._new).toBe(true)
-      expect(INPEDIT.date).toBe(fmt('2026-07-08'))
-      expect(INPEDIT.person).toBe(ME)
-      expect(INPEDIT.allday).toBe(defaultAllday(firstPersonalType()))
-      expect($('.ic-pop'), 'the fired hold suppressed the tap-to-open popover').toBeFalsy()
-    } finally {
-      vi.useRealTimers()
-      await act(async () => { setInpEdit(null); notify() })
-    }
-  })
-
-  it('releasing before the hold fires, with no meaningful movement, opens the popover instead', async () => {
-    vi.useFakeTimers()
-    try {
-      const cell = $('[data-icday="2026-07-08"]')!
-      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 30, 30)) })
-      await act(async () => { vi.advanceTimersByTime(HOLD_ADD - 50) }) // short of the hold
-      await act(async () => { cell.dispatchEvent(ptr('pointerup', 30, 30)) })
-
-      expect(INPEDIT, 'no add-dialog for an early release').toBeFalsy()
-      expect($('.ic-pop'), 'a tap opens the popover instead').toBeTruthy()
-      await click($('#icPopClose'))
-    } finally {
-      vi.useRealTimers()
-    }
-  })
-})
-
-describe('.ic-more opens the popover listing every entry, not just MAX_CHIPS', () => {
-  it('lists all of a day\'s entries beyond the chip cutoff', async () => {
-    const extras: any[] = []
-    for (let i = 0; i < MAX_CHIPS + 2; i++) {
-      extras.push({ person: 'yeti', date: 'Jul 27', allday: true, type: 'Training', remarks: '', mod: 'now' })
-    }
-    await act(async () => { extras.forEach(r => { INPUTS.unshift(r); inpId(r) }); notify() })
-    try {
-      const more = $('[data-icday="2026-07-27"] [data-icmore]')!
-      await click(more)
-      expect($('.ic-pop')).toBeTruthy()
-      expect($$('.ic-poprow').length, 'every entry, not the MAX_CHIPS cutoff').toBe(extras.length)
-      await click($('#icPopClose'))
-    } finally {
-      await act(async () => { extras.forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
-    }
-  })
-})
-
-describe('a popover entry row shows its remark on an aligned second line', () => {
-  it('a remark renders as .ic-poprow-rmk under the identity line; a blank one draws none', async () => {
-    const withRmk: any = { person: 'yeti', date: 'Jul 24', allday: true, type: 'Training', remarks: 'brief the new guy', mod: 'now' }
-    const noRmk: any = { person: 'yeti', date: 'Jul 24', allday: true, type: 'OL', remarks: '', mod: 'now' }
-    await act(async () => { [withRmk, noRmk].forEach(r => { INPUTS.unshift(r); inpId(r) }); notify() })
-    try {
-      /* two entries is under the chip cutoff, so there is no "+N more" to
-         click — tap the cell's empty space to open the popover, the same
-         gesture the empty-cell test uses */
-      const cell = $('[data-icday="2026-07-24"]')!
-      await tap(cell, 40, 40)
-      expect($('.ic-pop')).toBeTruthy()
-      const row = $(`[data-popiid="${withRmk.iid}"]`)!
-      const rmk = row.querySelector('.ic-poprow-rmk')
-      expect(rmk, 'the remark line renders').toBeTruthy()
-      expect(rmk!.textContent).toBe('brief the new guy')
-      /* the identity line still carries who + type, unchanged */
-      expect(row.querySelector('.ic-poprow-top .ic-poprow-who')!.textContent).toBe(PEOPLE.yeti.cs)
-      /* a remark-less row draws no remark line at all — it stays one tidy line */
-      expect($(`[data-popiid="${noRmk.iid}"]`)!.querySelector('.ic-poprow-rmk'), 'no empty remark line').toBeFalsy()
-      await click($('#icPopClose'))
-    } finally {
-      await act(async () => { [withRmk, noRmk].forEach(r => { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
-    }
-  })
-})
-
-describe('a horizontal swipe pages the month', () => {
-  /* down on a cell (bubbles to the grid), release on window at an offset —
-     the gesture reads the total travel on release. A cell that always exists
-     whatever month is showing, so the same helper works after a page. */
-  const swipe = async (dx: number, dy = 0) => {
-    const cell = $('[data-icday]')!
-    await act(async () => {
-      cell.dispatchEvent(ptr('pointerdown', 200, 300))
-      window.dispatchEvent(ptr('pointerup', 200 + dx, 300 + dy))
-    })
-  }
-  it('swipe left → next month, swipe right → previous; vertical or short drags do not page', async () => {
-    await goJul2026()
-    expect($('.ic-mon')!.textContent).toContain('July 2026')
-    await swipe(-80)                                   // left → next
-    expect(CALMONTH).toEqual({ y: 2026, m: 8 })
-    expect($('.ic-mon')!.textContent).toContain('August 2026')
-    await swipe(80)                                    // right → previous
-    expect(CALMONTH).toEqual({ y: 2026, m: 7 })
-    await swipe(40, 130)                               // mostly vertical — a scroll, not a page
-    expect(CALMONTH, 'a vertical drag never pages').toEqual({ y: 2026, m: 7 })
-    await swipe(-40)                                   // under SWIPE_MIN — neither a page nor a tap
-    expect(CALMONTH, 'a short drag never pages').toEqual({ y: 2026, m: 7 })
-    expect($('.ic-pop'), 'and a short drag did not open the popover either').toBeFalsy()
-    await goJul2026()
-  })
-  it('pages across a year boundary and back', async () => {
-    await act(async () => { setCalMonth({ y: 2026, m: 12 }); notify() })
-    await swipe(-80)
-    expect(CALMONTH, 'December → next is January of the next year').toEqual({ y: 2027, m: 1 })
-    await swipe(80)
-    expect(CALMONTH, 'January → previous is December of the year before').toEqual({ y: 2026, m: 12 })
-    await goJul2026()
-  })
-})
-
-describe('a popover entry row opens the same edit route as a chip', () => {
-  it('tapping a row sets INPEDIT to that EXACT record (object identity, not a re-lookup)', async () => {
-    const rec: any = INPUTS.find((r: any) => r.person === 'divot' && r.type === 'OML')
-    expect(rec, 'the seeded OML record exists').toBeTruthy()
-    /* a cell TAP is the popover's front door (the +N more button only exists
-       past MAX_CHIPS, which the redesigned side-by-side cell rarely hits) */
-    const cell = $('[data-icday="2026-07-13"]')!
-    await tap(cell, 10, 10)
-    const row = $(`[data-popiid="${rec.iid}"]`)!
-    expect(row, 'the row renders').toBeTruthy()
-    await click(row)
-    expect(INPEDIT).toBe(rec)
-    expect($('.ic-pop'), 'the popover stays open under the modal').toBeTruthy()
-    await act(async () => { setInpEdit(null); notify() })
-    await click($('#icPopClose'))
-  })
-})
-
-describe('the day popover — scheduler day remark', () => {
-  it('typing #icRmkEdit and blurring commits it to DAYRMK and repaints the cell\'s .ic-rmk; undo reverts it', async () => {
-    const iso = '2026-07-09'
-    const cell = $(`[data-icday="${iso}"]`)!
-    await tap(cell, 10, 10)
-    expect($('.ic-pop')).toBeTruthy()
-
-    const input = $('#icRmkEdit') as HTMLInputElement
-    expect(input, 'a scheduler sees the editable remark field').toBeTruthy()
-    await typeInto(input, 'CO visiting')
-    await focusOut(input)
-
-    expect(DAYRMK[iso]).toBe('CO visiting')
-    expect(cell.querySelector('.ic-rmk')!.textContent).toBe('CO visiting')
-
-    await act(async () => { undo() })
-    expect(DAYRMK[iso]).toBeUndefined()
-
-    await click($('#icPopClose'))
-  })
-})
-
-describe('the day popover — planning notes (pucks)', () => {
-  it('+ Note adds one (Enter commits) shown as a .plan chip; ✏ edits, ✕ removes; undo walks it all back', async () => {
-    const iso = '2026-07-11'
-    const cell = $(`[data-icday="${iso}"]`)!
-    await tap(cell, 10, 10)
-    expect($('.ic-pop')).toBeTruthy()
-
-    await click($('#icAddPuck'))
-    const addInput = $('.ic-poppuck-edit') as HTMLInputElement
-    expect(addInput, 'the new-note box opened').toBeTruthy()
-    await typeInto(addInput, 'brief the new guy')
-    await act(async () => { addInput.focus(); addInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })) })
-
-    expect(PLANPUCKS.some((p: any) => p.date === iso && p.text === 'brief the new guy'), 'Enter committed the note').toBe(true)
-    expect(cell.querySelector('.ic-chip.plan'), 'the day shows a plan chip').toBeTruthy()
-
-    const pid = PLANPUCKS.find((p: any) => p.date === iso)!.id
-
-    await click($(`[data-ppedit="${pid}"]`))
-    const editInput = $('.ic-poppuck-edit') as HTMLInputElement
-    await typeInto(editInput, 'brief the new guy at 0800')
-    await focusOut(editInput)
-    expect(PLANPUCKS.find((p: any) => p.id === pid)!.text).toBe('brief the new guy at 0800')
-
-    await click($(`[data-ppdel="${pid}"]`))
-    expect(PLANPUCKS.find((p: any) => p.id === pid)).toBeUndefined()
-
-    await act(async () => { undo() }) // back over the delete
-    expect(PLANPUCKS.find((p: any) => p.id === pid)).toBeTruthy()
-    await act(async () => { undo() }) // back over the edit
-    expect(PLANPUCKS.find((p: any) => p.id === pid)!.text).toBe('brief the new guy')
-    await act(async () => { undo() }) // back over the add
-    expect(PLANPUCKS.find((p: any) => p.id === pid)).toBeUndefined()
-
-    await click($('#icPopClose'))
-  })
-})
-
-describe('a puck chip tap opens the popover with that note already in edit mode', () => {
-  it('caldrag routes a puck tap to onTap, which pre-opens its inline edit box', async () => {
-    const iso = '2026-07-18'
-    let added = false
-    await act(async () => { writeInputs(() => { added = addPlanPuck(iso, 'check quals') }) })
-    expect(added).toBe(true)
-    const pid = PLANPUCKS.find((p: any) => p.date === iso)!.id
-    try {
-      const chip = $(`[data-icday="${iso}"] [data-icdrag][data-pid="${pid}"]`)!
-      expect(chip, 'the plan chip renders').toBeTruthy()
-      await tap(chip, 5, 5)
-
-      expect($('.ic-pop'), 'the popover opened').toBeTruthy()
-      expect($('.ic-pop-head b')!.textContent).toBe(fmtDay(iso))
-      const editBox = $('.ic-poppuck-edit') as HTMLInputElement
-      expect(editBox, 'the note is already switched into its inline edit box').toBeTruthy()
-      expect(editBox.value).toBe('check quals')
-      await click($('#icPopClose'))
-    } finally {
-      await act(async () => { writeInputs(() => { removePlanPuck(pid) }) })
-    }
-  })
-})
-
-describe('caldrag chip-tap wiring, driven on the real grid', () => {
-  it('a real pointerdown+pointerup on an input chip sets INPEDIT to that EXACT record', async () => {
-    const rec: any = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment' && r.date === 'Jul 16')
-    expect(rec, 'the seeded Appointment record exists').toBeTruthy()
-    const chip = $(`[data-icday="2026-07-16"] [data-icdrag][data-iid="${rec.iid}"]`)!
-    expect(chip, 'the chip renders').toBeTruthy()
-    await tap(chip, 5, 5)
-    expect(INPEDIT).toBe(rec)
     await act(async () => { setInpEdit(null); notify() })
   })
 })
@@ -555,17 +205,18 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     expect(rec, 'a seeded SANS record exists').toBeTruthy()
     await click($('#inSansMode'))
     expect($('#inSansMode').getAttribute('aria-pressed')).toBe('true')
-    expect($('#inpCal').classList.contains('ic-sans')).toBe(true)
+    expect($('#sansCal'), 'the SANS tab is the SANS calendar').toBeTruthy()
     await goJul2026()
     const iso=unfmt(rec.date,rec.yr)
     await act(async()=>{setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)});notify()})
     await tap($(`[data-icday="${iso}"]`),10,10)
     try {
-      const chip = host.querySelector(`[data-popiid="${rec.iid}"] .ic-poprow-lbl`)!
-      expect(chip, `its chip renders (${rec.iid}; ${$('.ic-pop')?.textContent})`).toBeTruthy()
+      const chip = host.querySelector(`[data-popiid="${rec.iid}"] [data-testid="sd-letters"]`)!
+      expect(chip, `its line renders (${rec.iid}; ${$('[data-testid="win-sansday"]')?.textContent})`).toBeTruthy()
       expect(chip.textContent).not.toContain('SANS')
       expect(chip.textContent).not.toContain('Availability')
-      expect(chip.textContent).toMatch(/[FOA](\/[FOA])*/)
+      expect(chip.textContent).toMatch(/^[FOA]( · [FOA])*$/)
+      await click($('[data-testid="win-sansday-x"]'))
     } finally {
       await click($('#inMemberMode'))
       await goJul2026()

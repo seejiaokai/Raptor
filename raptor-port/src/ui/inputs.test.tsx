@@ -438,7 +438,7 @@ describe('the Inputs page (tfin)', () => {
      commitments", amber), and the demo SANS Availability seed (state/
      demoseed.ts, filed for nick) for purple. toContain, not equality —
      the flash class ('innew') can ride the same row. */
-  it('stripes rows red/amber/purple by inputTone', async () => {
+  it('stripes rows red and amber by inputTone — and carries no SANS availability (D620)', async () => {
     /* an earlier test in this file ('the filters narrow the table') leaves
        the type filter on OML and never resets it — put it back to All so
        every seeded person is on screen for this assertion */
@@ -452,38 +452,24 @@ describe('the Inputs page (tfin)', () => {
     expect(rowFor(redIx).className, 'medical leave').toContain('in-red')
     const ambIx = INPUTS.findIndex((r: any) => r.person === 'vinci' && r.type === 'Meeting')
     expect(rowFor(ambIx).className, 'an activity commitment').toContain('in-amb')
+    /* THE PURPLE ROW WENT WITH THE SANS LIST (owner D620, 7 Oct 26: SANS availability "leaves the List and is filed on the
+       SANS calendar only, which has no list of its own"; built with the SANS calendar, 8 Oct 26). The seed is still
+       there — it is simply on no list: not this one, and the SANS tab draws its calendar instead. */
     const sanIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
     expect(sanIx, 'the demo SANS seed is present').toBeGreaterThanOrEqual(0)
+    expect(document.querySelector('#inBody tr.in-san'), 'no SANS row on the Inputs List').toBeNull()
     await click($('#inSansMode'))
-    expect(rowFor(sanIx).className, 'SANS Availability').toContain('in-san')
+    expect(document.querySelector('#sansCal'), 'the SANS tab is the SANS calendar').toBeTruthy()
+    expect((document.querySelector('#inBody') as HTMLElement).closest('[hidden]'), 'and has no list').toBeTruthy()
     await click($('#inMemberMode'))
   })
 
-  /* owner, 24 Aug 26 — "include the F/O/A in the inputs as well". A SANS row
-     wears its offer letters in a chip BESIDE the type tag; the tag itself stays
-     the pure type string the sort/export and the .intag pin above still read. */
-  it('a SANS row shows its F/O/A offer letters beside the type, never inside it', async () => {
-    /* the earlier filter test can leave fType on OML — put it back to All so
-       every seeded SANS person is on screen */
-    await act(async () => {
-      const sel = $('#inFType') as unknown as HTMLSelectElement
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-      setter.call(sel, 'all')
-      sel.dispatchEvent(new Event('change', { bubbles: true }))
-    })
-    /* bullet's seed ticks all three (F/O/A); nick's ticks Fly only (F) */
-    const bulletIx = INPUTS.findIndex((r: any) => r.person === 'bullet' && r.type === 'SANS Availability')
-    const nickIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
-    expect(bulletIx, 'the all-letters SANS seed is present').toBeGreaterThanOrEqual(0)
-    await click($('#inSansMode'))
-    expect(rowFor(bulletIx).querySelector('.foa')!.textContent).toBe('F/O/A')
-    expect(rowFor(nickIx).querySelector('.foa')!.textContent).toBe('F')
-    /* the type tag stays pure identity — no letters leaked into it */
-    expect(rowFor(bulletIx).querySelector('.intag')!.textContent).toBe('SANS Availability')
-    await click($('#inMemberMode'))
-    /* a non-SANS row carries no F/O/A chip at all */
-    const omlIx = INPUTS.findIndex((r: any) => r.type === 'OML')
-    expect(rowFor(omlIx).querySelector('.foa')).toBeNull()
+  /* REMOVED WITH THE CONTROL IT TESTED (D620, 8 Oct 26): "a SANS row shows its F/O/A offer letters beside the type, never
+     inside it" pinned the letters chip on a SANS row OF THE LIST (owner, 24 Aug 26). There is no such row any more. The
+     letters themselves are pinned where a commitment is now listed — the SANS day's line (ui/sansday.test.tsx, "each
+     line carries his letters"). What stays true here: no other row grows the chip. */
+  it('no row of the List carries the F/O/A chip', async () => {
+    expect(document.querySelector('#inBody .foa')).toBeNull()
   })
 
   it('an added downchit re-validates the week (reflow)', async () => {

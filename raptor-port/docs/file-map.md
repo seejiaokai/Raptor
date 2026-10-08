@@ -593,6 +593,20 @@ that says the cut-off it missed, and who placed it. The working and the buttons 
 (`openSansAdd(from, until?)`, `maySansAdd`), for the day's button and the month's gestures alike; on a no-fly day
 nothing is ticked (D642). `src/ui/scheduler/24-sans-calendar.css` - the SANS calendar's styles and its three colours
 (D630). The windows shell gained `rests` (two rest heights on a phone - D648): `FloatWindow.tsx`, `22-float-windows.css`.
+`src/ui/SansCal.tsx` - THE SANS CALENDAR'S MONTH (`#sansCal`; D617, D618, D626, D627, D630, D664), drawn by `InputsPage`
+whenever the SANS tab is up - which now shows no Calendar | List pair, no filters and no list (D620): each date from
+`flyMonth` + `sansCell`, the line saying what the three colours mean, the day's window, the saved-row reveal, the
+keyboard (arrows, Shift + arrows, Enter, Escape - D621), and the phone month's height (`--sc-fill`: a floor measured
+from the visible screen, never a limit - D664). It hears both stores. `sanscal.test.tsx`.
+`src/ui/calpick.ts` - PICKING DAYS ON A MONTH, the one pointer machine for a calendar's dates (`initCalPick`): a tap, a
+finger slid sideways (the month turns), a mouse drag or a finger held then dragged (a run of days - D621, D626); it
+swallows the click that follows a release, which lands on whatever has just opened under the pointer. The Inputs month
+takes it with step 5. `calpick.test.ts`.
+The first calendar's SANS half left `InputsCal.tsx` with it (its cell, day panel, colour dropdown and legend); `mode` there
+is now `'member'` or absent. `e2e/inputs-sans-calendar.spec.ts` was re-pointed whole at the new screen (a real mouse drag,
+a real finger through CDP, the two press-through faults the first look found, D664 at three phone heights in a five-week
+and a six-week month). `scripts/handpass/sans-look.mjs` - pictures of the SANS calendar in the RUNNING build at two
+phone heights, a 1440px laptop and 1536px across: the builder's look and the built side of D624's pairs. Not a gate.
 `scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
 settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
 Holidays list, its form adding and changing, the window dragged aside) - at a phone, a 1440px laptop and 1536px across;
