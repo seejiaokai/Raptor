@@ -1,19 +1,21 @@
-/* ---- the type legend and the AM/PM span picker (owner, 10 Aug 26) --------
-   Both sit inside .ifield, whose direct children are forced to 100% width and
-   36px height — so both are wrapped in a container the rule can reach rather
-   than fighting it. */
+/* ---- the type legend and the AM/PM span picker (owner, 10 Aug 26) -------- */
 
-/* THE LEGEND. A "?" beside the Type label opening an anchored popover, the
-   same shape as the date-window picker above (.inrange), because this is a
-   reference card and not a task: a modal would take the whole screen to say
-   what an abbreviation means. It hangs off the LABEL, so it costs no grid
-   cell and does not reflow the two tidy rows of four. */
-/* The label ELLIPSES its overflow, which is right for a long field name and
-   fatal for a popover hanging off one — the legend opened clipped to a 10px
-   strip, which is exactly the kind of thing only a screenshot catches. The
-   label that carries the legend opts out; every other label keeps the clip. */
-.ifield label.withhelp{overflow:visible}
-.ifield label .tylegend{margin-left:5px}
+/* THE LEGEND. A "?" beside the Type label opening an anchored popover, because this is a reference card and not a
+   task: a modal would take the whole screen to say what an abbreviation means.
+   IT STANDS IN THE INPUT'S WINDOW SINCE 10 OCT 26 (owner D729 — the design vet's V1: the List's own add form, the only
+   place it lived, went). There it hangs off the field's key (`.inped-kh`: the word "Type" and the "?" on one
+   line), outside the field's <label>. The window's body scrolls, so the card is laid IN the flow of the form — the
+   Type list moves down under it while it is open — where a card hung over the form would be cut off at the window's
+   edge, or run under its pinned buttons. */
+.inped-kh{display:flex;align-items:center;flex-wrap:wrap;gap:0 6px}
+/* the "?" and its card are laid out as that row's own items: the "?" beside the word, the card on a row of its own */
+.inped-kh .tylegend{display:contents}
+/* `z-index:auto`: the card is an item of a flex row here, and such an item is layered by its z-index even with no
+   position — the hanging card's 70 lifted it OVER the window's pinned Cancel / Add row, which then could not be seen or
+   pressed while the card was open (found by the phone's browser test, 10 Oct 26). In the flow of the form it needs no
+   layer of its own: it scrolls under the pinned row like every other line of the form. No shadow either — it is not
+   floating over anything. */
+.inped-kh .tylegend-pop{position:static;z-index:auto;flex:1 0 100%;box-sizing:border-box;width:auto;max-height:none;margin:6px 0 2px;box-shadow:none}
 .tylegend{position:relative;display:inline-block;text-transform:none}
 .tylegend-b{width:15px;height:15px;padding:0;line-height:1;font-size:10px;font-weight:800;
   border-radius:50%;cursor:pointer;vertical-align:middle;

@@ -93,28 +93,33 @@ describe('the medical-document prompt gates a bare new medical save', () => {
   })
 })
 
-/* The Inputs PAGE has its own two save paths (add + edit) — the page a member
-   actually files on (Fable M2). They wire the same docGate/DocConfirm, so pin
-   the prompt on both there too, including that the resume closure still carries
-   the right person/type. */
-describe('the Inputs page add form prompts for a bare medical too', () => {
-  const gotoInputs = async () => {
+/* THE INPUTS PAGE — the page a member actually files on (Fable M2). Its List had a save path of its own, the add
+   form, which wired the same docGate/DocConfirm; that form went on 10 Oct 26 (owner D729 — the design vet's V1) and
+   the List's "+ Input" opens the input's window instead. The prompt is pinned through THAT door: from the List, a
+   bare medical still asks, "No document" still files it bare, and "Upload" still writes nothing. */
+describe('the Inputs list’s "+ Input" prompts for a bare medical too', () => {
+  const gotoList = async () => {
     await click($$('.nav a[data-page]').find(a => (a as HTMLElement).dataset.page === 'inputs') || null)
+    await click($('#inListBtn'))
   }
   const setType = async (v: string) => act(async () => {
-    const sel = $('#inType') as unknown as HTMLSelectElement
+    const sel = $('#inpEditType') as unknown as HTMLSelectElement
     Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!.call(sel, v)
     sel.dispatchEvent(new Event('change', { bubbles: true }))
   })
-  const pickADay = async () => { await click($('#inCal [data-cal]')); await click($('#inCal [data-cal]')) }
+  const newMedical = async () => {
+    await gotoList()
+    await click($('#inNew'))
+    expect($('[data-testid="win-inputedit"]'), 'the new input’s window').toBeTruthy()
+    await setType('ATT C')
+    await click($('#inpEdCal [data-cal]'))
+  }
   const attc = () => INPUTS.filter((r: any) => r.type === 'ATT C')
 
   it('add: a medical with no document opens the ask; "No document" files it bare', async () => {
-    await gotoInputs()
-    await setType('ATT C')
-    await pickADay()
+    await newMedical()
     const n = attc().length
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     expect($('[data-testid="docconf"]'), 'the ask is up on the page too').toBeTruthy()
     expect(attc().length, 'nothing written yet').toBe(n)
     await click($('[data-testid="docconf-nodoc"]'))
@@ -123,14 +128,14 @@ describe('the Inputs page add form prompts for a bare medical too', () => {
     expect(rowDocIds(attc()[0]).length, 'with no document').toBe(0)
   })
 
-  it('add: "Upload" writes nothing and keeps the form', async () => {
-    await gotoInputs()
-    await setType('ATT C')
-    await pickADay()
+  it('add: "Upload" writes nothing and keeps the window, with what he chose', async () => {
+    await newMedical()
     const n = attc().length
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     await click($('[data-testid="docconf-upload"]'))
     expect($('[data-testid="docconf"]'), 'sheet gone').toBeFalsy()
     expect(attc().length, 'Upload wrote nothing').toBe(n)
+    expect($('[data-testid="win-inputedit"]'), 'the window is still open').toBeTruthy()
+    expect(($('#inpEditType') as unknown as HTMLSelectElement).value).toBe('ATT C')
   })
 })

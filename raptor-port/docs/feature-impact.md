@@ -129,6 +129,7 @@ the rest are the ones the code actually has.
 | **The SANS calendar** (8 Oct 26) | The SANS tab: a month of needs and F / O / A counts, a day's window, Highlight, its gear | `ui/SansCal.tsx`, `ui/SansDay.tsx`, `ui/SansSettings.tsx`, `ui/sanscal-model.ts` — `ui-contracts.md` "The SANS calendar" | `sync.ts flyMonth` / `flyAnswer` → `planFor`; `state/flyplan.ts sansCommittedOn`; `INPUTS` |
 | **The Inputs calendar** (8 Oct 26) | The Inputs tab: three tabs, a month of bars, a day's window, the keyboard, its gear, the editor as a window | `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx` — `ui-contracts.md` "The Inputs calendar" | `INPUTS` as ENTRIES (`state/inputgroup.ts entriesOf`); the date's tag from `sync.ts flyMonth` / `dayFacts` |
 | **An input filed for ALL AVAIL / ALL** (9 Oct 26, D700–D714) | One ordinary input whose person is a placeholder: drawn by every surface that draws an input's person (the pickers, the List and its two editors *[one since 10 Oct 26: its pencil row went with D718 — a row opens the window]*, the month's bar, the opened day's card, the schedule's request row and its ALL AVAIL window, the changes window), credited through the ONE OIL default, refused in three shapes at every door and at the save boundary | `engine/inputs.ts placeholderProblem`, `engine/oilev.ts claimDefault`, `state/store.ts placeholderShapeViolation`, `ui/PeoplePick.tsx PlaceholderGroup`, `ui/inputscal-model.ts personFilterPasses` — `engine-rules.md` §An input filed for ALL AVAIL / ALL | no new record shape; a new reader of an input's person must be asked what it shows for a placeholder |
+| **The Inputs list and calendar after the design vet** (10 Oct 26, D726–D729) | The List's own add form is GONE — one "+ Input" opens the input's window (`ui/inputedit.tsx`, `newInputSeed`), so that window is the Inputs page's ONE maker of an input: anything a new input must ask or refuse is asked there, and a new field belongs there and nowhere else. The window gained the "?" beside Type (`ui/TypeLegend.tsx`), an admin's posted-out people for a new input, and "Pick a start date on the calendar first". The desktop row and both cards read ONE model (`ui/inputcard-model.ts cardOf`) for who it is for and who filed it; the card alone leaves the automatic "till <date>" out of its remark (`remarkOnce`). The month's bar: a shared one says its count first, a timed one is lighter (`.ib-bar.timed`). | the List (desktop table, phone cards), the opened day, the month, the input's window, the Inputs settings window; NOT the SANS calendar, the schedule's dialogs or the board's | `ui/inputsvet.test.tsx`, `inputs.test.tsx`, `windowdoors.test.tsx`, `inputcard-model.test.ts`, `inputscal-model.test.ts`, `e2e/inputs-calendar.spec.ts` |
 | **An input's own title** (9 Oct 26, D715–D717) | An optional `title` on an input of a "Duty & other commitments" kind: its NAME wherever a name is printed, the KIND deciding every rule and kept in sight small where the name is not the kind's own. DRAWN by: the three editors (the window, the List's form, its pencil row *[gone 10 Oct 26, D718 — two editors now]*), the month's bar and its tip, the opened day's card, the List's row, the Personal Inputs and Unavailable cards (week; board editable AND read only), the request's row on the week, View-only Sched, the board (also in OIL Earn) and the next-week peek, the changes window (headings, lines, To go out), the history bubble, the OIL question and the OIL explanations, the warning sentences, the crew picker's reason, the toasts, the Inputs export | `engine/inputs.ts titledKind` / `titleOf` / `inpLabel` / `inpKindTag` / `inpDetailKey`, `ui/html.ts rowKindTag` / `inpKindTagHTML`, `ui/oilmode.ts oilClaimWhat`, `engine/events.ts` (`mapInp`; a request's row merges only with itself), `state/inputgroup.ts SHARED_FIELDS`, `state/changelines.ts` (`iname`) | **The drift seam: a NEW place that names an input must call `inpLabel` (never print `type` as a name), and a new row or card builder must call `rowKindTag` / `inpKindTagHTML`** — the check found eight such places by walking and seven by reading (`docs/handpass/2026-10-09-input-title-check.md`). A copy of an input made for a calculation must carry `title` if anything downstream words it. The title is in the published-day comparison and NOT in the OIL one. |
 | **The people picker and a shared input** (8 Oct 26) | One input filed for several people, shown as ONE thing on the Inputs month, an opened day, the List, the editor and the changes window — and as each man's own record everywhere else | `ui/PeoplePick.tsx`, `state/inputgroup.ts`, `ui/inputedit.tsx commitGroup` / `removeEntry` — §One input filed for several people, below | one record a man, grouped on read |
 | **The input card, and the Inputs list without a pencil** (10 Oct 26, D718–D724) | ONE card — top line (square, who, the kind in small grey capitals, LATE, hours), the title on its own row with the remark after it, every name of a shared input, "By Saber" as ruled — DRAWN by the Inputs calendar's opened day and by the Inputs list on a phone (cards under a heading a day; no table there). The desktop list is the table without pencil or cross: a row opens the input's window. THE LIST HAS NO EDIT IN PLACE: every door it had is the WINDOW's — fields, Delete, and since this change the date calendar for a one-person input, the unanswered-OIL line, the paperclip, the posted-out people in an admin's Person list. MUST NOT draw the card: the SANS day (pucks with the CAT), the month's bars and tips, the Medical tab, the schedule's rows | `ui/InputCard.tsx`, `ui/inputcard-model.ts` (`cardOf`, `cardWhen`, `lateNoteOf`), `ui/placedline.ts filerOf`, `ui/InputsCal.tsx` (the day), `ui/InputsPage.tsx` (`phone`, `dayGroups`, `openInput`), `ui/inputedit.tsx` (`datesHere`, `unansweredDay`, `archivedHere`, the foot's paperclip) — `ui-contracts.md` "THE INPUT CARD", "THE INPUTS LIST HAS NO EDIT IN PLACE" | no new record |
@@ -201,7 +202,7 @@ guarded physical settings namespace, atomic fresh-row copy, Show-all resets, and
 
 ### Flow B — a personal input added or edited (the owner's example)
 ```
-add form / row editor / week cell / board cell / board panel adds
+add form / row editor / week cell / board cell / board panel adds *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
                                                  (three editors + the board's
                                                   context-bound adds, ONE list)
   → commitInputEdit / setInpField / removeInput / commitNewInput
@@ -655,7 +656,7 @@ ON these, don't route around them):
   prose lives once on the Logic page. `personCount` deliberately still
   counts it (ink on the week, like cx). Pins: `engine/infoflag.test.ts`.
 - **`rosterOptions` (`inputedit.tsx`) is the one roster list** (14 Aug 26) —
-  the Inputs page's add form, its row editor and the schedule's
+  the Inputs page's add form, its row editor and the schedule's *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   Unavailable-reassign dialog all call it, so the three can never disagree
   on who is offered or in what order.
 - **`inputTone` (`inputedit.tsx`) is the one input colour code** (22 Aug 26)
@@ -1004,7 +1005,7 @@ agree — name it here so the next session knows to check both.
 - **The medical tracker's drift-seams (27 Aug 26).** Three named pairs, each
   ONE body on purpose — check both ends when touching either:
   - `needsDoc` (`engine/inputs.ts`) decides BOTH the upload control's
-    visibility (`DocField` render sites: the Inputs add form, its row editor,
+    visibility (`DocField` render sites: the Inputs add form, its row editor, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
     the shared modal) and the write path's refusal (`normalizeInputDraft` +
     `InputsPage.add`). A new doc-needing type is one edit there; a second
     predicate is the seam.
@@ -1293,7 +1294,7 @@ joins it and answers "yes" at once; only the OUTER command is checked (what a me
 locked week, one man once an entry), and a refusal rolls back the lot. **The drift seam:** a door that wraps
 per-record input saves in an outer `writeInputsBatch` and reports the inner answer says "Input added" for a save
 that was refused. Such a door saves through `ui/inputedit.tsx saveBatch` (or reads the outer `writeInputsBatch`'s own
-answer, as `commitGroup` and the List's Add form do), and — because a refused command puts the list back as new
+answer, as `commitGroup` and the List's Add form do), and — because a refused command puts the list back as new *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 objects — finds any record it still holds again by its id. `ui/savesaysok.test.tsx` drives each door refused; add a
 new door's case there.
 **The Leave War's Required figures, typed in place (8 Oct 26 — the redesign's plan §3.3; D636, D637).** An admin's click
@@ -1360,7 +1361,7 @@ A shared input is one record a man tied by `grp` (`state/inputgroup.ts`). A new 
 page must read entries (`entriesOf` / `entryRowsOf`), or it shows a group as separate lines; a new surface that CHANGES one
 must go through `commitGroup` / `removeEntry`, or it changes the first man's record alone and that man leaves the entry.
 The surfaces that do: the month's bar and its drag (`inputscal-model.ts`, `caldrag.ts`), the opened day's line
-(`InputsCal.tsx`), the List's row and its Add form (`InputsPage.tsx`), the editor window (`inputedit.tsx`), the changes
+(`InputsCal.tsx`), the List's row and its Add form (`InputsPage.tsx`), the editor window (`inputedit.tsx`), the changes *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 window's item (`changesmodel.ts`). The surfaces that deliberately do NOT (one input a man): the board, the week, the
 warnings, the Leave War, OIL and the bell, a published day's pending count, print, export, the SANS calendar's counts
 and its day list. The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the

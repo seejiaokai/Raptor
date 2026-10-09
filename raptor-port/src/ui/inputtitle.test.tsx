@@ -267,30 +267,39 @@ describe('the List — its form, its rows, the window a row opens, its search', 
   }
   const rowOf = (r: any) => $$('#inBody tr').find(tr => tr.getAttribute('data-iid') === String(r.iid))!
   const openRow = async (r: any) => { await click(rowOf(r).querySelector('[data-testid="in-open"]')); expect(win(), 'the row opened the input’s window').toBeTruthy() }
-  const pickDay = async () => { await click($('#inCal [data-cal]')); await click($('#inCal [data-cal]')) }
+  /* THE LIST'S OWN ADD FORM IS GONE (owner D729 — the design vet's V1, 10 Oct 26): its "+ Input" opens the window the
+     calendar opens. The form's title tests are RESTATED for that door — the box, what is saved, and that nothing of one
+     input's title rides onto the next. */
+  const plus = async () => { await click($('#inNew')); expect(win(), '"+ Input" opened the new input’s window').toBeTruthy() }
+  const pickDay = async () => { await click($('#inpEdCal [data-cal]')) }
 
-  it('the form: a Title box beside Type for a titled kind, filled from the kind; none for leave', async () => {
+  it('"+ Input" on the List: a Title box under Type for a titled kind, filled from the kind; none for leave', async () => {
     await toList()
-    await choose('#inType', 'Event')
-    expect(($('#inTitle') as HTMLInputElement).value).toBe('Event')
-    await choose('#inType', 'Duty')
-    expect(($('#inTitle') as HTMLInputElement).value).toBe('Duty')
-    await choose('#inType', 'LL')
-    expect($('#inTitle')).toBeNull()
+    await plus()
+    await choose('#inpEditType', 'Event')
+    expect(box()!.value).toBe('Event')
+    await choose('#inpEditType', 'Duty')
+    expect(box()!.value).toBe('Duty')
+    await choose('#inpEditType', 'LL')
+    expect(box()).toBeNull()
+    await click($('#inpEditCancel'))
   })
 
-  it('the form: a typed title is saved with the input; an untouched box saves none; the box is cleared for the next one', async () => {
+  it('"+ Input" on the List: a typed title is saved with the input; an untouched box saves none; the next new input starts from its own kind’s name', async () => {
     await toList()
-    await choose('#inType', 'Meeting')
+    await plus()
+    await choose('#inpEditType', 'Meeting')
     await pickDay()
-    await type('#inTitle', 'Open house')
-    await click($('#inAdd'))
+    await type('#inpEditOwnTitle', 'Open house')
+    await click($('#inpEditSave'))
     const a = newest()
     expect([a.type, a.title]).toEqual(['Meeting', 'Open house'])
-    expect(($('#inTitle') as HTMLInputElement).value, 'the box is back to the kind’s name').toBe('Meeting')
     had.add(String(a.iid))
-    await choose('#inType', 'Training')
-    await click($('#inAdd'))
+    await plus()
+    expect(box()!.value, 'the box shows the new input’s own kind — nothing of the last title').toBe(($('#inpEditType') as HTMLSelectElement).value)
+    await choose('#inpEditType', 'Training')
+    await pickDay()
+    await click($('#inpEditSave'))
     const b = newest()
     expect(b.type).toBe('Training')
     expect('title' in b).toBe(false)
@@ -468,17 +477,18 @@ describe('a shared input and the List’s own OIL question', () => {
     expect(['title' in live(a.iid), 'title' in live(b.iid)]).toEqual([false, false])
   })
 
-  it('the List’s Add form on a weekend: the OIL question is headed by the typed title', async () => {
+  it('the List’s "+ Input" on a weekend: the OIL question is headed by the typed title', async () => {
     await act(async () => { setInpView('table'); notify() })
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeAll'))
-    await choose('#inType', 'Event')
-    /* a Saturday of the month the form's own calendar is showing */
-    const sat = [...document.querySelectorAll('#inCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 6 && !(c as HTMLButtonElement).disabled) as HTMLElement
-    expect(sat, 'Saturday on the form’s calendar').toBeTruthy()
-    await click(sat); await click(sat)
-    await type('#inTitle', 'Weekend exercise')
-    await click($('#inAdd'))
+    await click($('#inNew'))
+    await choose('#inpEditType', 'Event')
+    /* a Saturday of the month the window's own calendar is showing */
+    const sat = [...document.querySelectorAll('#inpEdCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 6 && !(c as HTMLButtonElement).disabled) as HTMLElement
+    expect(sat, 'Saturday on the window’s calendar').toBeTruthy()
+    await click(sat)
+    await type('#inpEditOwnTitle', 'Weekend exercise')
+    await click($('#inpEditSave'))
     const head = document.querySelector('[data-testid="oilconf"] .airpop-head')
     expect(head, 'the OIL question is up').toBeTruthy()
     expect(head!.textContent).toContain('Weekend exercise')
@@ -533,27 +543,30 @@ describe('the kind and the title changed in ONE save (Astra 1)', () => {
   })
 })
 
-describe('the List’s form, filed for several people (Astra 2)', () => {
-  it('a shared input’s title does not stay in the form for the next input', async () => {
+describe('the List’s "+ Input", filed for several people (Astra 2 — restated for the window, D729)', () => {
+  it('a shared input’s title does not ride onto the next input', async () => {
     await act(async () => { setInpView('table'); notify() })
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeAll'))
-    await choose('#inType', 'Event')
+    await click($('#inNew'))
+    await choose('#inpEditType', 'Event')
     await click($('[data-testid="pp-several"]'))
     const two = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin).slice(0, 2)
     for (const id of two) { const b = $(`[data-pp="${id}"]`); if (b && b.getAttribute('aria-pressed') !== 'true') await click(b) }
-    /* a working day of the month the form's calendar shows — no OIL question in the way */
-    const wed = [...document.querySelectorAll('#inCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 3 && !(c as HTMLButtonElement).disabled) as HTMLElement
-    await click(wed); await click(wed)
-    await type('#inTitle', 'Team day')
-    await click($('#inAdd'))
+    /* a working day of the month the window's calendar shows — no OIL question in the way */
+    const wedOf = () => [...document.querySelectorAll('#inpEdCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 3 && !(c as HTMLButtonElement).disabled) as HTMLElement
+    await click(wedOf())
+    await type('#inpEditOwnTitle', 'Team day')
+    await click($('#inpEditSave'))
     const made = INPUTS.filter((r: any) => !had.has(String(r.iid)))
     expect(made.length, 'one record a man').toBeGreaterThanOrEqual(2)
     expect(new Set(made.map((r: any) => r.title))).toEqual(new Set(['Team day']))
-    expect(($('#inTitle') as HTMLInputElement).value, 'the box is back to the kind’s name').toBe('Event')
     for (const r of made) had.add(String(r.iid))
-    await choose('#inType', 'Duty')
-    await click($('#inAdd'))
+    await click($('#inNew'))
+    await choose('#inpEditType', 'Duty')
+    expect(($('#inpEditOwnTitle') as HTMLInputElement).value, 'the box shows the kind’s name — not the last input’s title').toBe('Duty')
+    await click(wedOf())
+    await click($('#inpEditSave'))
     const next = INPUTS.filter((r: any) => !had.has(String(r.iid)))
     expect(next.length).toBeGreaterThanOrEqual(1)
     for (const r of next) { expect(r.type).toBe('Duty'); expect('title' in r, 'the next input has no title of the last one').toBe(false) }

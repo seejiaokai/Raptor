@@ -31,7 +31,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
+import { INPUTS, inputCoversDate, inpLabel, isSansAvail, sansLetters } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -41,11 +41,11 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { isMe, mayDeleteInput, me } from '../state/perms'
+import { isMe, mayDeleteInput } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, firstPersonalType, removeInput, removeEntry } from './inputedit'
+import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
@@ -388,10 +388,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      hidden inside the dialog (inputedit.tsx ~695, canEditSched-gated), so
      the ME seed here is exactly what ends up saved regardless of who opened
      it. */
+  /* ONE SEED WITH THE LIST'S "+ Input" SINCE D729 (ui/inputedit.tsx newInputSeed) — the same window, opened the same
+     way; this door hands in the day (or the days dragged across), the List's hands in none. */
   const openAdd = (from: string, until?:string) => {
-    const [iso,end]=until&&until<from?[until,from]:[from,until]
-    const t = firstPersonalType()
-    setInpEdit({ _new: true, _calendar:true, _ctx: 'i', person: me(), type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080 })
+    setInpEdit(newInputSeed(from, until))
     notify()
   }
   const closePop = () => { showDay(null); setPopPuckEdit(null); setDelAsk(null) }
@@ -937,7 +937,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const team = it.rows.length > 1
                   const forAll = team && it.rows.every(x => mayDeleteInput(x))
                   return (
-                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows)} when={cardWhen(r, it.b, iso)}
+                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, cardWhen(r, it.b, iso))} when={cardWhen(r, it.b, iso)}
                       late={lateNoteOf(it.rows, lateWord)} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
@@ -1077,26 +1077,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
           </div>
           {tools}
         </div>
-        {/* "HOW THIS WORKS" AND THE LEGEND — one quiet line under the tools. The fold is five short lines (owner D646:
-            "abit wordy" — cut, "the same on the Inputs calendar"); its last states the late cut-off AS IT IS SET, from
-            the setting, so it changes when the setting does (D628) — no worked date and no "later is marked LATE"; the
-            date an input missed is said by its own LATE tag, in the opened day. The legend names the two colours of a
-            bar — the List's own: an absence, a duty or commitment — for everyone. */}
+        {/* "HOW THIS WORKS" AND THE LEGEND — one quiet line under the tools. The fold is FOUR short lines (owner D646:
+            "abit wordy" — cut, "the same on the Inputs calendar"; and again by the design vet, D729 — V5, 10 Oct 26: the
+            line about red and amber went, because the colour key beside the fold says it, and the other three say the
+            same in fewer words); its last states the late cut-off AS IT IS SET, from the setting, so it changes when
+            the setting does (D628) — no worked date and no "later is marked LATE"; the date an input missed is said by
+            its own LATE tag, in the opened day. The legend names the two colours of a bar — the List's own: an
+            absence, a duty ("duty or commitment" until D729) — for everyone. */}
         <div className="ib-sub">
           <button type="button" className="sc-how" data-testid="ib-how" aria-expanded={how} aria-controls="ibHowList" onClick={() => setHow(h => !h)}>
             <span className="sc-how-v" aria-hidden="true" />How this works
           </button>
           <span className="ib-legend" data-testid="ib-legend">
             <span className="ib-key red">absence</span>
-            <span className="ib-key amb">duty or commitment</span>
+            <span className="ib-key amb">duty</span>
           </span>
         </div>
         {how && (
           <ol className="sc-how-list" id="ibHowList" data-testid="ib-how-list">
-            <li>Tap a day to see its inputs and add one. Tap a <b>bar</b> to open it; drag it to move it.</li>
-            <li>A bar runs across the days an input covers: <b>red</b> is an absence, <b>amber</b> a duty or another commitment.</li>
-            <li>To file for <b>several days</b>, drag across them — on a phone, hold first, then drag.</li>
-            <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
+            <li>Tap a day to open it. Tap a <b>bar</b> to edit it, drag to move it.</li>
+            <li><b>Several days:</b> drag across them (phone: hold, then drag).</li>
+            <li><b>NF</b> no-fly · green public holiday · grey Off day.</li>
             {/* the cut-off itself in bold (D691) - the same bold the lines above give "bar" and "several days" */}
             <li><span data-testid="ib-how-cut">{(p => <>{p.before}<b>{p.cut}</b>{p.after}</>)(cutParts('inputs', 'File'))}</span></li>
           </ol>
@@ -1170,7 +1171,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   the day, where every input is listed and reached */}
               <div className="ib-lanes">
                 {wk.segs.map(sg => (
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on')}
+                  /* `timed`: an input with hours (a half day too) is drawn LIGHTER than one that takes the whole day — a tint
+                     of its colour with a solid edge (D729, V4: "a one-hour appointment looks as heavy as a whole day
+                     of leave"; 25-inputs-calendar.css) */
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on')}
                     data-iid={sg.item.key} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}

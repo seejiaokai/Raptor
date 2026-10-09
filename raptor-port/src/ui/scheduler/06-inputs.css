@@ -1,49 +1,12 @@
 /* ============ INPUTS PAGE ============ */
-.inbar{padding:16px 20px;background:rgba(59,198,232,.05);border-bottom:1px solid var(--edge)}
-/* The calendar is ~3 field-rows tall, so it gets its own fixed column and the
-   eight remaining fields flow in a 4-wide track beside it — two tidy rows of
-   four. Every track is an equal `1fr` and every control fills its cell, so
-   START TIME and END TIME are the same width (they were `1fr` and `auto`
-   before, which is why the row read ragged). */
-.ingrid{display:grid;grid-template-columns:212px repeat(4,minmax(0,1fr));gap:12px 14px;align-items:start}
-.ifield.cal{grid-column:1;grid-row:1/span 3}
-/* the fixed eight-column track forced a ~930px document, so on a phone the whole
-   app was scaled down to 41% and half the form sat off the right edge */
+/* THE LIST'S OWN ADD FORM WENT ON 10 OCT 26 (owner D729 — the design vet's V1: one "+ Input" button opens the window the
+   calendar opens), and its rules with it: the bar it stood in, its grid of fields, the fields' own look, the dimmed
+   time boxes, and a member's fixed Person. What a new input is typed into is the input's window
+   (14-input-editors.css, `.inped-*`). */
 @media (max-width:820px){
-  .ingrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .ingrid>.ifield.chk{align-items:flex-start}
   .inwrap{overflow-x:auto}
   .intbl{min-width:640px}
 }
-@media (max-width:430px){ .ingrid{grid-template-columns:minmax(0,1fr)} }
-/* Below 820px the calendar stops being a column of its own and simply spans the
-   row. `1/-1` spans the EXPLICIT tracks — `span 2` would have invented an
-   implicit second column in the one-column phone layout, and that implicit
-   track is `auto`, not `1fr`: that is what made the phone form two ragged
-   columns (173px / 181px) instead of the single column it was written to be. */
-@media (max-width:820px){ .ifield.cal{grid-column:1/-1;grid-row:auto} }
-.ifield{display:flex;flex-direction:column;gap:4px;min-width:0}
-.ifield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ifield input,.ifield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:8px 9px;border-radius:8px}
-/* one shared height + full-bleed width for every control, so the row lines up
-   whatever the intrinsic width of a date/time/number widget happens to be */
-.ifield>input,.ifield>select,.ifield>button{width:100%;min-width:0;box-sizing:border-box;height:36px}
-.ifield>button{height:36px}
-/* A field the current mode has taken out of play — today that is START/END
-   TIME once All day is ticked. The control is genuinely `disabled`; this is
-   what makes that readable, label included, so nobody aims at it first. */
-.ifield.dim{opacity:.4;transition:opacity .15s ease}
-.ifield.dim>input,.ifield.dim>select{cursor:not-allowed}
-/* the All-day checkbox keeps its natural size and sits on the control line */
-.ifield.chk{justify-content:flex-start}
-.ifield.chk>input[type=checkbox]{width:18px;height:18px;min-width:18px;accent-color:var(--accent);margin:9px 0}
-/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 — a member
-   files for whoever they are viewing as; only a scheduler picks anyone).
-   Printed as plain text on the same 36px control line the selects sit on —
-   deliberately NOT drawn as a boxed input, so it cannot read as a control
-   that stopped working (the SANS fixed-type precedent, .inped-v). */
-.inper-fixed{height:36px;line-height:36px;font-weight:600;font-size:12.5px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .infilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
 .infilter select,.infilter input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
 /* table-layout:fixed so ONE long remark cannot widen the whole page. A remark
@@ -65,11 +28,14 @@
    ~142px with padding) so it gets the room to say it on one line; Remarks
    — the only free-text column — takes everything left over. The header row
    is what fixed layout sizes from, so the widths live on the th. */
-.intbl thead th:nth-child(1){width:90px}   /* Name */
+/* NAME: every person of a shared input, A to Z, wrapping in the column — never "Drifter +3" (owner D727, 10 Oct 26;
+   250px is the drawing's own, docs/mock/img/inputs-vet/desk-list-drawn.png: a meeting of four on one line, a group of
+   nine on two). Remarks still takes what is left. */
+.intbl thead th:nth-child(1){width:250px}  /* Name */
 .intbl thead th:nth-child(2){width:150px}  /* Start */
 .intbl thead th:nth-child(3){width:115px}  /* End */
 .intbl thead th:nth-child(4){width:160px}  /* Type — SANS AVAILABILITY, the widest chip, measures 129px + the cell's 24px padding, and must not wrap */
-.intbl thead th:nth-child(6){width:104px}  /* Last modified */
+.intbl thead th:nth-child(6){width:104px}  /* Changed ("Last modified" until D729) */
 .intbl thead th:nth-child(7){width:96px}   /* actions */
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
 /* the row stripe, coloured from inputTone (ui/inputedit.tsx) — one source
@@ -126,7 +92,8 @@
 /* A ROW OPENS ITS INPUT (D718): the whole row answers a click, and its Name is the button a keyboard and a screen
    reader meet — drawn as the plain name it replaced, with a ring when the keyboard is on it. */
 #inBody tr{cursor:pointer}
-.in-open{background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;font-weight:inherit;text-align:left;cursor:pointer;border-radius:4px;overflow-wrap:anywhere}
+/* its names wrap (D727): the button is the cell's own text, so a long list of people breaks at its commas and spaces */
+.in-open{background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;font-weight:inherit;text-align:left;cursor:pointer;border-radius:4px;overflow-wrap:anywhere;white-space:normal;line-height:1.35}
 .in-open:hover{text-decoration:underline;text-underline-offset:3px}
 .in-open:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* the date-window picker: a button in the filter bar that drops the same
@@ -153,7 +120,8 @@
 .inrange-cfg .la-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2)}
 /* on a phone the filter bar wraps, so the popover must not hang off the edge */
 @media (max-width:700px){.inrange{position:static}.inrange-pop{left:8px;right:8px}}
-/* the two-click range calendar — its grid placement lives with the .ingrid
+/* the two-click range calendar — it stands in the input's window and in the List's dates picker (its place in the
+   List's own add form went with that form, D729); (the old note: its grid placement lives with the .ingrid
    tracks above, NOT here: a bare `grid-column:span 2` this far down the file
    outranked every breakpoint rule (same specificity, later source) and was
    what forced the implicit second column on phones. */

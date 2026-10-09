@@ -459,12 +459,18 @@ describe('the dates of a saved shared input are changed in its window (D681)', (
     expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 16', 'Oct 17'], ['Oct 16', 'Oct 17']])
     for (const r of of(g.grp)) expect(r.oil, cs(r.person)).toEqual({ '2026-10-17': 1 })
   })
-  it('the words under the form speak of THIS door — never "changed on the Inputs page", never "delete it and add it again"', async () => {
+  /* ONE SHORT LINE (owner D729 — the design vet's V3, 10 Oct 26; D726): the paragraph of instructions under the form
+     ("To change its dates for everyone in it, tap the new start on the calendar above, then the new end …") went. What
+     stays is the one thing nothing else in the window says — that the dates change for every man in it. */
+  it('the words under the form are ONE short line: the dates change for all of them — never "changed on the Inputs page", never "delete it and add it again"', async () => {
     const g = await shared(others().slice(0, 2))
     await openOn(g.rows[0])
     const hint = $('#inpEditPop .inped-hint')!.textContent || ''
-    expect(hint).not.toMatch(/Inputs page|delete it/i)
-    expect(hint).toMatch(/for everyone/i)
+    expect(hint).toBe('Date changes apply to all 2.')
+    expect(hint).not.toMatch(/Inputs page|delete it|tap the new start/i)
+    const g3 = await shared(others().slice(2, 5))
+    await openOn(g3.rows[0])
+    expect($('#inpEditPop .inped-hint')!.textContent, 'the count is the entry’s own').toBe('Date changes apply to all 3.')
   })
   it('the dates changed on the page behind the open window are followed, and a Save of the remarks keeps them', async () => {
     const [a, b] = others()
@@ -644,10 +650,14 @@ describe('the date door, after the two reads (9 Oct 26)', () => {
     /* the old answer stays written against its own date, and a Tuesday has no day to earn on: nothing is credited */
     for (const r of of(g.grp)) expect(oilAnswered(r), cs(r.person) + ' has nothing that earns').toBe(false)
   })
-  it('the words under the form say the one-day way too', async () => {
+  /* RESTATED (D729 — V3): the paragraph that said the one-day way ("for one day, tap that day and Save") is gone; the
+     LINE UNDER THE CALENDAR says what a Save will write, and says one day as one day */
+  it('one tap for one day: the line under the calendar says that day alone, and the paragraph is not there to say it', async () => {
     const g = await shared(others().slice(0, 2))
     await openOn(g.rows[0])
-    expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/one day/i)
+    await click(day('2026-10-20'))
+    expect($('#inpEditPop .rc-read')!.textContent).toBe('Oct 20')
+    expect($('#inpEditPop')!.textContent).not.toMatch(/for one day, tap that day/i)
   })
 })
 
@@ -740,12 +750,14 @@ describe('the dates of a saved one-person input are changed in its window (D718 
     expect([live(r.iid).date, live(r.iid).endDate]).toEqual(['Oct 16', 'Oct 17'])
     expect(live(r.iid).oil).toEqual({ '2026-10-17': 1 })
   })
-  it('the words under the form speak of THIS door, for one person — never "changed on the Inputs page", never "for everyone"', async () => {
+  /* NO WORDS UNDER THE FORM (D729 — V3; D726): "To change its dates, tap the new start on the calendar above, then the
+     new end — for one day, tap that day and Save. The line under the calendar shows what Save will write." went */
+  it('a one-person input has no line of instructions under its form — and nothing that sends him elsewhere', async () => {
     const r = await single()
     await openOn(r)
-    const hint = $('#inpEditPop .inped-hint')!.textContent || ''
-    expect(hint).not.toMatch(/Inputs page|delete it|for everyone/i)
-    expect(hint).toMatch(/tap the new start/i)
+    expect($('#inpEditPop .inped-hint'), 'no instructions').toBeNull()
+    expect($('#inpEditPop')!.textContent).not.toMatch(/Inputs page|delete it and add|tap the new start|apply to all/i)
+    expect($('#inpEdCal'), 'the calendar itself is there').toBeTruthy()
   })
   it('a date changed on the page behind the open window is followed, and a Save of the remarks keeps it', async () => {
     const r = await single()

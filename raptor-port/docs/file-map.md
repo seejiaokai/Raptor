@@ -580,6 +580,19 @@ tag NF / the holiday's short form; the still-needed pair or nothing; F, O, A as 
 (`sansDayGroups`: every commitment, WSOs to fly, pilots to fly, OFT or AMT only - a man in ONE group, the head-counts
 people; a commitment the count leaves out listed apart with why), with `hoursOf` and `lateWord` (the cut-off a late
 entry missed, D646). Pure; it works nothing out about the day. `sanscal-model.test.ts`.
+`src/ui/TypeLegend.tsx` - THE "?" BESIDE AN INPUT'S TYPE (moved whole out of `InputsPage.tsx`, 10 Oct 26 — D729, V1):
+what each kind means, generated from the engine's own table; it stands beside Type in the input's window on the Inputs
+page since the List's own add form went. **THE DESIGN VET'S BUILD (owner D726–D729, 10 Oct 26 — `[INPUTS-VET]`; the plan
+`docs/superpowers/plans/2026-10-10-inputs-vet-plan.md`):** `InputsPage.tsx` lost its add form, its `add()` and three of
+its four question sheets, and gained `#inNew` ("+ Input"), `rangeWords` (the empty list's line) and the lit row;
+`inputedit.tsx` gained `newInputSeed` (the one seed of a new input on the Inputs page) and lost the window's paragraph
+of instructions; `inputcard-model.ts` gained `remarkOnce` ("till" said once on a card — D728); `inputscal-model.ts
+barText` says a shared bar's count first; `PeoplePick.tsx` lost its form variant. Tests: `ui/inputsvet.test.tsx` (what
+no other file pins: "till" once on both cards and only there, the pill kept, the lit row, "Changed", the empty list,
+the filter boxes), and every file that drove the form, restated for the window (`inputs.test.tsx`,
+`inputtitle.test.tsx`, `sharedline.test.tsx`, `placeholderlist.test.tsx`, `docconfirm.test.tsx`, `inputstabs.test.tsx`,
+`audit-e-window-sort.test.tsx`, `whoplaced.test.tsx`, `e2e/step4-leavewar.spec.ts`). Its look and its walk:
+`scripts/handpass/ivet-look.mjs`, `ivet-walk.mjs`; the check `docs/handpass/2026-10-10-inputs-vet-check.md`.
 `src/ui/InputCard.tsx` - THE INPUT CARD (owner D718–D724, 10 Oct 26 — `[INPUT-LIST-AS-DAY-CARD]`): the one card of the
 Inputs calendar's opened day and of the Inputs list on a phone. A flow of text with the LATE-and-hours corner floated at
 its right, so a shared input's names wrap round it; the card's button is a span with a button's role (a real button is

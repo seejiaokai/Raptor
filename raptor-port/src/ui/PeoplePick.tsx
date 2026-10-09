@@ -91,7 +91,7 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
   return null
 }
 
-export function PeoplePick({ people, several, type, sansOnly, lockOne, form, more, moreIds, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, more, moreIds, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -99,13 +99,12 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
   sansOnly?: boolean
   /** an input already filed, read by a member: its one person is a value — moving it to another man is a scheduler's */
   lockOne?: boolean
-  /** the List's own Add form: its field markup and its own ids (`inPerson` / `inPersonFixed`), as they always were */
-  form?: boolean
-  /** more choices for the one-person list — the form's "Posted out / archived" group */
+  /** more choices for the one-person list — an admin's "Posted out / archived" group. (The List's own add form, which
+   *  drew this picker with its own field markup and ids, went on 10 Oct 26 — D729; the input's window is its one user.) */
   more?: ReactNode
   /** …and who is IN that group, where the caller's first person may be someone on no list at all — a deleted man, whose
    *  own name must still be the list's value (the List's pencil kept it so; ui/windowdoors.test.tsx). Without it a
-   *  caller that passes `more` is taken to list everyone its first person can be (the List's Add form). */
+   *  caller that passes `more` is taken to list everyone its first person can be. */
   moreIds?: readonly string[]
   onChange: (people: string[], several: boolean) => void
 }) {
@@ -175,8 +174,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
     drag.current = null
   }
   return (
-    <div className={(form ? 'ifield' : 'inped-f') + ' pp'} data-testid="pp">
-      {form ? <label>{several ? 'People' : 'Person'}</label> : <span className="inped-k">{several ? 'People' : 'Person'}</span>}
+    <div className="inped-f pp" data-testid="pp">
+      <span className="inped-k">{several ? 'People' : 'Person'}</span>
       <div className="pp-body" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
         onClickCapture={e => {
           /* the click that follows a drag belongs to the drag — once, and only straight after it */
@@ -185,15 +184,14 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
         }}>
         <div className="pp-top">
           {!several && (others
-            ? <select id={form ? 'inPerson' : 'inpEditPerson'} aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
+            ? <select id="inpEditPerson" aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
               {/* a man no longer on the list (archived since) still reads as himself, never as the first name on it */}
               {first != null && !roster.includes(first) && !isSpecial(first) && (more ? !!moreIds && !moreIds.includes(first) : true) && <option value={first}>{cs(first)}</option>}
               {offerPh && <PlaceholderGroup type={type} current={first} />}
               {roster.map(id => <option key={id} value={id}>{cs(id)}</option>)}
               {more}
             </select>
-            : form ? <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{cs(first)}</div>
-              : <span className="inped-v" id="inpEditPersonFixed">{cs(first)}</span>)}
+            : <span className="inped-v" id="inpEditPersonFixed">{cs(first)}</span>)}
           {several && <span className="pp-count" data-testid="pp-count" aria-live="polite">{people.length} picked</span>}
           {showSwitch && (
             <button type="button" className={'pp-sw' + (several ? ' on' : '')} role="switch" aria-checked={several} data-testid="pp-several"

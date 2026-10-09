@@ -3438,3 +3438,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the parked-questions step, add: "open the full row of every ruling the question touches and check the RECOMMENDED ANSWER against his words, not only that the question is unanswered." In the walk-script notes: "a before/after made by removing a rule from the built page must print how many rules it removed and the measured size both sides — zero removed or equal sizes means the before is not a before."
 
 **Principle:** A recommendation is a claim about what the owner wants; it needs the same search of his words as the question itself. And an A/B picture is evidence only when the script proves the two states differ.
+
+### Observation 494: "Typecheck without writing output" checked nothing — the project is a solution of sub-projects
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** An unattended build (Raptor, the design vet's changes to the Inputs screens). After each batch of edits the host ran a no-output typecheck with the project flag and read its silence as "clean"; one real error (a name used and never imported) sat unseen through three such runs until the build's own typecheck was run.
+**Skill:** verification-before-completion (and the project's guide, "the host fixing in parallel typechecks without writing output")
+**Type:** open-source
+**Phase/Area:** The quick check between edits
+
+**Issue:** The repository's root type configuration only lists sub-projects. The single-project form of the type checker, pointed at that root, has no files of its own and exits clean in a second whatever the code says. Only the build-mode form (the one the real build runs) checks the sub-projects. A check that cannot fail was read as a pass, three times.
+
+**Suggested improvement:** In verification-before-completion: before trusting a quick check, make it fail once on purpose (or confirm it is the very command the build runs). In the project guide's "typecheck without writing output" line, name the exact command that works for this repository's layout.
+
+**Principle:** A check earns trust only after you have seen it go red. Silence from a command that has nothing to check is not a result.
+
+### Observation 495: Edit scripts carried in the shell lost their backslashes and failed on apostrophes — again
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** The same build. Edit scripts were first passed to the interpreter inline through the shell; one silently turned a regular expression's escapes into control characters (the tests caught it), and three later ones failed to parse because the text contained an apostrophe. Both traps are already written in this user's memory notes.
+**Skill:** New skill candidate: scripted-multi-file-edits (or a line in executing-plans)
+**Type:** open-source
+**Phase/Area:** Applying many exact replacements across large files
+
+**Issue:** Knowing the trap did not prevent it: the inline form is the habit, and it works often enough to be tried again. The reliable form — write the script to a file with the file tool, then run the file — was used only after each failure.
+
+**Suggested improvement:** Make the reliable form the only form in the recipe: "an edit script is always written to a file first; never passed inline", with the two failure signatures named (escapes turned into control characters; a parse error at an apostrophe).
+
+**Principle:** A known trap that is avoided by judgement each time will be hit again under load; remove the choice.

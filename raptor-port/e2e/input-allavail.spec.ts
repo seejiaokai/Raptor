@@ -163,7 +163,8 @@ test('the kind "Event": in the type list, filed for several people as ONE bar, a
   expect(rows).toHaveLength(2)
   expect(rows.every(r => r.type === 'Event')).toBe(true)
   expect(rows[0].grp, 'one shared input').toBeTruthy()
-  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: '+1' }).filter({ hasText: 'Event' })).toHaveCount(1)
+  /* ONE bar for the two of them: how many, then what (the count first since the design vet — D729, V4) */
+  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Event$/ })).toHaveCount(1)
   /* and the demo's own Event for ALL, in July — named by its own title since [INPUT-OWN-TITLE] (D715, D716: the demo's
      Event is titled "Sports afternoon"); its kind is said in the bar's tip, the bar having room for the name only */
   await month(page, 2026, 7)

@@ -338,6 +338,12 @@ not passing for the wrong reason.
 
 ## The Inputs add form (`ui/InputsPage.tsx`, owner 10 Aug 26)
 
+> **GONE — 10 Oct 26 (owner D729, the design vet's V1: "the list's own add form becomes one '+ Input' button").** The
+> List has no form of its own: "+ Input" opens the input's window (`ui/inputedit.tsx InputEditor`), the one the
+> calendar opens. This section is kept as the record of what the form was; what the screens do now is "THE INPUTS LIST
+> AND CALENDAR AFTER THE DESIGN VET", near the end of this file. The "?" legend it describes lives on, beside Type in
+> that window (`ui/TypeLegend.tsx`).
+
 The form is a CSS grid, `.ingrid`: column 1 is a fixed 212px track owned
 entirely by the calendar (`grid-row:1/span 3`), and the remaining eight fields
 auto-flow into four `1fr` tracks as two tidy rows of four. **Anything added
@@ -373,7 +379,7 @@ two 10 Aug additions took one:
   default drives the board's + Inputs / + Add seed (`interactions.ts`) and its
   dialog's type dropdown (new adds only), so the two entry points agree.
 
-All three type dropdowns (add form, filter, row editor) carry the same three
+All three type dropdowns (add form, filter, row editor) carry the same three *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
 list anyone can pick from.
 
@@ -401,7 +407,7 @@ Owner, Aug 5. Three things, all view-only — none of them touches the model:
   today → +`DEFAULT_SPAN_MONTHS` (2) window it is labelled after. Membership is
   **overlap**, not "starts inside": a span that began before today and has not
   ended is still live and must stay on screen. `#inRangeBtn` drops the same
-  two-click `RangeCal` the add form uses; `#inRangeDef` restores the default
+  two-click `RangeCal` the add form uses; `#inRangeDef` restores the default *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   and `#inRangeAll` clears the window entirely.
 - **Sort.** Every `<th data-sort>` sorts; a repeat click inverts, and the first
   click on any column is always ascending. Default is `start` ascending.
@@ -2187,7 +2193,7 @@ page's job. **Person now IS, for a scheduler** (owner, 14 Aug 26 — "allow
 Unavailable to be editable too… even down to changing the puck"): a
 `canEditSched()`-gated `<select>` sits above the Type field, offering
 `rosterOptions()` — the same sorted-by-callsign roster list the Inputs
-page's add form and row editor now call too, so all three can never
+page's add form and row editor now call too, so all three can never *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 disagree on who is offered or in what order. Reassigning changes WHOSE row
 this is, not which day it sits on, so it stays inside what the dialog
 already keeps in view, unlike a date move — the row you are looking at is
@@ -2584,10 +2590,10 @@ beside every badge.
   else; the one window is the SAME All day / AM / PM / Custom SpanPicker +
   time fields every half-capable type uses (`half:true` in `INPUT_META`).
   This IS the phone-bug fix: clearing a timing is one tap on All day, not a
-  fight with a native time input's segments. All three editors (add form,
+  fight with a native time input's segments. All three editors (add form, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   in-table row, dialog) keep the shared shape; `sansFlags` normalises the
   payload so none of them can write the old per-event `{s,e}` values. *(Since 8 Oct 26 SANS
-  availability is filed from the SANS calendar's "+ Commitment" and the board's + Add; the Inputs tab's add form and
+  availability is filed from the SANS calendar's "+ Commitment" and the board's + Add; the Inputs tab's add form and *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   row editor no longer offer it — D620, "The SANS calendar".)*
 - **The palette section — `.rall.rsans` (`palette-html.ts`, `sansAvailHTML`).**
   One full-width band below the three seat columns, callsign-sorted, every
@@ -5628,7 +5634,7 @@ refusal), `medclash.test.tsx` (the chips through the real editor) and
 ### The upchit, medical-clash and OIL sheets, revising OIL, and the bell
 
 **The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
-27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
+27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 in-table row editor, or the shared `InputEditor` (where it paints one layer
 above the dialog, `.upconf-pop` z 470 over airpop's 460) — opens this sheet
 before anything is written. Top section: what the save will do, one boxed
@@ -5749,7 +5755,7 @@ No acknowledgment = no credit, structurally.
 
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
-green once attached) renders in all three editors — the Inputs add form,
+green once attached) renders in all three editors — the Inputs add form, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 the in-table row editor, the board/modal editor — exactly when
 `needsDoc(type)` says the commit will demand it (one body, no drift). A
 documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
@@ -9430,7 +9436,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   (`INPMODE`, `INPVIEW`); one is selected (`aria-selected`), the arrows move along them. Under the Inputs tab ONE switch,
   Calendar | List, and the filters (the Inputs tab's alone). **Medical is a tab IN THE PAGE**: it has no close cross
   and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
-  Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already
+  Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
 - **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
   drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
@@ -9519,21 +9525,48 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   card's button is its names and kind. **The SANS day's card is NOT this card** (D723 reading 3; D647, D649 — pucks
   with the CAT; the bullet above).
 - **THE INPUTS LIST AND CALENDAR AFTER THE DESIGN VET (owner D729, 10 Oct 26 — "Yes to all"; the build: `OUTSTANDING.md`
-  `[INPUTS-VET]`).** (V1) The list has NO form of its own: one "+ Input" button beside its dates button opens the
+  `[INPUTS-VET]`; BUILT 10 Oct 26 — the plan `docs/superpowers/plans/2026-10-10-inputs-vet-plan.md`, the check
+  `docs/handpass/2026-10-10-inputs-vet-check.md`).** (V1) The list has NO form of its own: one "+ Input" button beside its dates button opens the
   window the calendar opens. (V2) On the desktop table the small print under a remark is "By Saber", only where
   someone else filed the input or it is for several people; the full stamp is in the input's window. (V3) The window
   carries no paragraph of instructions; a shared input keeps "Date changes apply to all N." (V4) On the month a shared
   input's bar reads its count first ("4 · Meeting"); a timed input's bar is lighter than an all-day one, with a solid
   edge. (V5) The gear's settings, "How this works", the empty list and the phone's filters say the same in fewer
   words; the table's last column is "Changed"; the colour key reads "duty". The drawings: `docs/mock/inputs-vet.html`.
+  **AS BUILT.** *V1:* `#inNew` ("+ Input", the row's one filled button, first in `.inputs-listtools`) calls
+  `ui/inputedit.tsx newInputSeed()` — the ONE seed of a new input on this page, the calendar's too — with NO date: the
+  window says "pick a start date" and its Save refuses "Pick a start date on the calendar first" before any question
+  (OIL, a document) is asked. Three things only the form did were moved first (the door inventory, the plan's §2): the
+  "?" beside Type (`ui/TypeLegend.tsx`, in the window on the Inputs page, a new input and a saved one alike — its card
+  is laid in the flow of the form, and Escape closes the card, not the window); an admin's "Posted out / archived"
+  people for a NEW input (`archivedHere`); and the just-shown row LIT (`InputsPage.tsx`, the reveal effect — an input
+  added, changed, or put back by Undo). The form's own `add()` and its copies of the upchit, medical-clash and
+  document questions are gone; the window asks them. What does not carry over: the form kept its dates and its kind
+  for the next add — the window opens fresh each time, on the calendar's first kind. *V2:* the row asks the card's own
+  `cardOf` for `names` and `by` — so the desktop list, the phone's list and the opened day cannot differ; `.in-placed`
+  is inline after the remark. *V3:* in the window on the Inputs page `.inped-hint` is drawn only where there is a line
+  to say — a saved shared input's "Date changes apply to all N."; the SANS calendar's lines and every line of the
+  schedule's and the board's dialogs are as they were. *V4:* `inputscal-model.ts barText` — a shared bar is
+  `${n} · ${word}` at every width; the bar carries `timed` where the input is not all-day (a half day too) and
+  `25-inputs-calendar.css` paints it as 34% of its own colour over the panel with a 3px solid edge inside its left
+  side (`--ib-c` is the tone's solid colour, said once). *V5:* `ui/InputsSettings.tsx`, the fold in `ui/InputsCal.tsx`
+  (four lines), `rangeWords` for the empty list, no `<span>` over the three filter boxes (each keeps its `aria-label`).
+  Pins: `ui/inputsvet.test.tsx`, `inputs.test.tsx`, `windowdoors.test.tsx`, `groupeditor.test.tsx`,
+  `inputscal-model.test.ts`, `inputsmonth.test.tsx`, `inputssettings.test.tsx`; in a real browser
+  `e2e/inputs-calendar.spec.ts` (the three tests named D729).
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
   schedule's row, the desktop table and the input's window are untouched. Step 2 - the app no longer writing the date
   into remarks at all - is `OUTSTANDING.md` `[TILL-FROM-DATES]`, not built.
-- **ON THE DESKTOP LIST A SHARED INPUT NAMES EVERYONE, AND THE KIND KEEPS ITS PILL (owner D727, 10 Oct 26 — "A"; NOT BUILT
-  YET: `OUTSTANDING.md` `[INPUTS-VET]`).** The table's Name cell is to read every name of a shared input, A to Z, wrapping in
-  its column (today it reads the first name and a count, "Drifter +3", the rest in a tooltip); the kind stays in its
+  **AS BUILT (10 Oct 26).** `ui/inputcard-model.ts remarkOnce(remark, corner)`, asked by `cardOf(rows, people, corner)`
+  — both cards hand in what their corner prints (`cardWhen`). Only a "till" for the corner's OWN day goes (with the
+  corner's year where it says one: "till 1 Jan" beside "till 1 Jan 2027"); a "till" for another day, a year the corner
+  does not say, and a card whose corner says no "till" (a one-day input; an input shown under its last day) keep the
+  remark whole. Pins: `ui/inputcard-model.test.ts`, `ui/inputsvet.test.tsx`.
+- **ON THE DESKTOP LIST A SHARED INPUT NAMES EVERYONE, AND THE KIND KEEPS ITS PILL (owner D727, 10 Oct 26 — "A"; BUILT
+  10 Oct 26 with `[INPUTS-VET]`).** The table's Name cell reads every name of a shared input, A to Z, wrapping in
+  its column — 250px wide, the drawing's own (until then it read the first name and a count, "Drifter +3", the rest in a tooltip); the kind stays in its
   pill (`.intag`) on the table - the cards keep their small grey capitals (D723), so the kind has two looks by his
   choice, which narrows D718's "one look everywhere" for this screen. The drawing: `docs/mock/card-questions.html`.
 - **THE INPUTS LIST HAS NO EDIT IN PLACE (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
@@ -9675,7 +9708,7 @@ without it shows a group as separate lines.
 
 - **An input's own title, and its kind kept in sight (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`; the drawing
   of record `docs/mock/input-own-title.html`).** *The Title box* — in the input's window (`inputedit.tsx`,
-  `#inpEditOwnTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`),
+  `#inpEditOwnTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`), *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   drawn only for a kind that takes a title. The draft's `title` is NULL until somebody types: the box then SHOWS the
   kind's own name and follows a change of kind; once typed in it is a string — an emptied box stays empty (its
   placeholder says the kind), it never snaps back under the cursor. A change to a kind that takes none clears it. The
@@ -9698,7 +9731,7 @@ without it shows a group as separate lines.
 - **"ALL AVAIL" and "ALL" as a choice of person (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`).**
   Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
   label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither
-  takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add /
+  takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add / *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   edit dialog and the List's pencil editor. Offered for the six kinds `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
   may pick another person for that kind (an admin; a member while the members' switch is on), never on the SANS
   calendar, never as a puck under "Several people". **A placeholder already chosen is ALWAYS listed, whatever the kind
@@ -9731,7 +9764,7 @@ without it shows a group as separate lines.
   sideways is the picker's and may then run down into other rows; with a mouse any drag picks. A plain press is
   still the button's click; the click a browser sends after a drag is swallowed. It holds no state: its owner keeps the
   people in the order picked (the first is the one kept on the way back to one person). **Where it shows:** the editor
-  window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids,
+  window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   `inPerson` / `inPersonFixed`, and its posted-out group kept). The board's and the week's dialogs keep their one list.
   **So the page holds TWO pickers when the editor is open** (the form's is under the calendar): a test asks for
   `#inpEditPop [data-testid="pp…"]`.

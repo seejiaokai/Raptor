@@ -104,14 +104,17 @@ describe('an input is one bar across its days (D626)', () => {
     const r = await file({ person: sans, type: 'SANS Availability', sans: { f: true } })
     expect(bars(r.iid)).toHaveLength(0)
   })
-  it('a group filing is ONE bar: the first callsign A to Z, how many more, the kind (D655)', async () => {
+  it('a group filing is ONE bar: how many, then the kind (D655; the count first — D729)', async () => {
     const four = crew().slice(0, 4)
     const rows: any[] = []
     for (const p of four) rows.push(await file({ person: p, type: 'Meeting', date: 'Oct 8', allday: false, s: 600, e: 660, grp: 'g-test', grpBy: four[0] }))
     const drawn = $$('.ib-bar').filter(b => rows.some(r => r.iid === b.dataset.iid))
     expect(drawn).toHaveLength(1)
-    const first = four.map(cs).sort((a, b) => a.localeCompare(b))[0]
-    expect(drawn[0].textContent).toBe(`${first} +3 · Meeting`)
+    expect(drawn[0].textContent).toBe('4 · Meeting')
+    /* …and a timed input's bar is the lighter one, an all-day one the solid (D729 — V4) */
+    expect(drawn[0].classList.contains('timed'), 'a meeting with hours is drawn lighter').toBe(true)
+    const day = await file({ person: four[0], type: 'LL', date: 'Oct 9' })
+    expect(bars(day.iid)[0].classList.contains('timed'), 'a day of leave stays solid').toBe(false)
     for (const p of four) expect(drawn[0].title, 'its tooltip lists everyone').toContain(cs(p))
   })
   it('a desktop bar’s tooltip says its dates and who placed it (D629, D632); a record with no filer says no such line', async () => {
@@ -303,12 +306,20 @@ describe('a saved or brought-back input is shown where it is (D672)', () => {
    everyone. */
 describe('"How this works" and the legend (D646, D628)', () => {
   const press = async (el: HTMLElement) => act(async () => { el.click() })
-  it('folded away until asked for; opened, it is five short lines', async () => {
+  /* FOUR LINES SINCE THE DESIGN VET (owner D729 — V5, 10 Oct 26; D726: "I don’t like too wordy interface"): the line
+     about red and amber went — the colour key beside the fold says it — and the other three say the same in fewer words */
+  it('folded away until asked for; opened, it is four short lines', async () => {
     const how = $('[data-testid="ib-how"]')!
     expect(how.getAttribute('aria-expanded')).toBe('false'); expect($('[data-testid="ib-how-list"]')).toBeNull()
     await press(how)
     expect(how.getAttribute('aria-expanded')).toBe('true')
-    expect($$('[data-testid="ib-how-list"] li')).toHaveLength(5)
+    expect($$('[data-testid="ib-how-list"] li').map(li => li.textContent)).toEqual([
+      'Tap a day to open it. Tap a bar to edit it, drag to move it.',
+      'Several days: drag across them (phone: hold, then drag).',
+      'NF no-fly · green public holiday · grey Off day.',
+      'File at least 14 days before the week starts.',
+    ])
+    expect($('[data-testid="ib-how-list"]')!.textContent, 'the colours are the key’s to say, once').not.toMatch(/red|amber|absence/i)
     await press(how)
     expect($('[data-testid="ib-how-list"]')).toBeNull()
   })
@@ -331,12 +342,13 @@ describe('"How this works" and the legend (D646, D628)', () => {
   it('the lines say what this calendar does — a tap, a bar, several days, the three tags', async () => {
     await press($('[data-testid="ib-how"]')!)
     const t = $('[data-testid="ib-how-list"]')!.textContent || ''
-    for (const word of ['Tap a day', 'bar', 'several days', 'NF', 'public holiday', 'Off day']) expect(t, word).toContain(word)
+    for (const word of ['Tap a day', 'bar', 'Several days', 'NF', 'public holiday', 'Off day']) expect(t, word).toContain(word)
     expect(t, 'SANS availability is not this calendar’s').not.toMatch(/SANS|committed|to fly/i)
   })
   it('the legend names the two colours of a bar, for a member too', async () => {
     const legend = () => $('[data-testid="ib-legend"]')!.textContent
-    expect(legend()).toMatch(/absence/); expect(legend()).toMatch(/duty or commitment/)
+    /* "duty", not "duty or commitment" (D729 — V5): two short words beside the fold */
+    expect($$('[data-testid="ib-legend"] .ib-key').map(k => k.textContent)).toEqual(['absence', 'duty'])
     await act(async () => { setSession({ user: 'b', role: 'member' }); notify() })
     expect(legend()).toMatch(/absence/)
   })

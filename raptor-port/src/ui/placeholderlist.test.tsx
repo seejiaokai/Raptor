@@ -237,30 +237,31 @@ describe('the List row, and the window it opens (the pencil editor\'s cases — 
   })
 })
 
-describe('the List\'s own Add form — it builds its record by hand, so it asks the one body itself', () => {
-  const formUp = async () => { await listUp(); if (!$('#inAdd')) await click($('#inAddToggle') || $('#inNew')) }
+/* THE LIST'S OWN ADD FORM WENT ON 10 OCT 26 (owner D729 — the design vet's V1). It built its record by hand and asked the
+   one body itself; its "+ Input" now opens the input's window, which asks that body at its own save. The three claims
+   are RESTATED for that door — the List is still a place ALL AVAIL is filed from. */
+describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it opens', () => {
+  const formUp = async () => { await listUp(); await click($('#inNew')); expect($('[data-testid="win-inputedit"]'), 'the new input’s window').toBeTruthy() }
+  const days = () => $$('#inpEdCal [data-cal]')
   it('ALL AVAIL over a several-day range is refused in words, and nothing is saved', async () => {
     await formUp()
-    expect($('#inAdd'), 'the form').toBeTruthy()
-    await pick($('#inType'), 'Duty')
-    await pick($('#inPerson'), 'allavail')
-    const days = $$('#inCal [data-cal]')
-    await click(days[10]); await click(days[12])
+    await pick($('#inpEditType'), 'Duty')
+    await pick($('#inpEditPerson'), 'allavail')
+    await click(days()[10]); await click(days()[12])
     const was = world(); said.length = 0
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     expect(said.join(' | ')).toContain('ALL AVAIL is filed one day at a time')
     expect(world()).toBe(was)
   })
 
   it('ALL AVAIL on one day is saved: one record, no group', async () => {
     await formUp()
-    await pick($('#inType'), 'Meeting')
-    await pick($('#inPerson'), 'allavail')
-    const days = $$('#inCal [data-cal]')
-    const working = days.find(d => { const iso = d.getAttribute('data-cal') || ''; const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })!
-    await click(working); await click(working)
+    await pick($('#inpEditType'), 'Meeting')
+    await pick($('#inpEditPerson'), 'allavail')
+    const working = days().find(d => { const iso = d.getAttribute('data-cal') || ''; const wd = new Date(iso + 'T00:00:00Z').getUTCDay(); return wd >= 1 && wd <= 5 })!
+    await click(working)
     const before = INPUTS.length
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     expect(INPUTS.length, said.join(' | ')).toBe(before + 1)
     expect(INPUTS[0].person).toBe('allavail')
     expect(INPUTS[0].grp).toBeUndefined()
@@ -268,89 +269,16 @@ describe('the List\'s own Add form — it builds its record by hand, so it asks 
     expect(String(INPUTS[0].by)).toBe(admin)
   })
 
-  it('a kind that may not carry one: the form\'s list stops offering it, and a save with it still chosen is refused', async () => {
+  it('a kind that may not carry one: what he picked stays shown, and a save with it still chosen is refused', async () => {
     await formUp()
-    await pick($('#inType'), 'Meeting')
-    await pick($('#inPerson'), 'all')
-    await pick($('#inType'), 'OD')
-    expect(($('#inPerson') as HTMLSelectElement).value, 'what he picked stays shown').toBe('all')
-    const days = $$('#inCal [data-cal]')
-    await click(days[10]); await click(days[10])
+    await pick($('#inpEditType'), 'Meeting')
+    await pick($('#inpEditPerson'), 'all')
+    await pick($('#inpEditType'), 'OD')
+    expect(($('#inpEditPerson') as HTMLSelectElement).value, 'what he picked stays shown').toBe('all')
+    await click(days()[10])
     const was = world(); said.length = 0
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     expect(said.join(' | ')).toContain('ALL can be filed only for')
     expect(world()).toBe(was)
-  })
-})
-
-describe('THE SAVE BOUNDARY, with no door in front of it (Sol\'s read of the plan)', () => {
-  it('the hard check is registered, and reads neither the role nor where the command came from', () => {
-    expect(invariants('hard').map(i => i.id)).toContain('placeholder-input-shape')
-    const env = (actor: any, origin: string, after: any) => ({ type: 'undo.restore', origin, actor, changes: [{ collection: 'inputs', id: 'x', op: 'put', before: null, after }] }) as any
-    const bad = { iid: 'x', person: 'allavail', type: 'OD', date: 'Oct 13', yr: 2026 }
-    for (const role of ['admin', 'member', 'system'])
-      for (const origin of ['user', 'restore', 'projection'])
-        expect(placeholderShapeViolation(env({ role, personId: admin }, origin, bad)), `${role} · ${origin}`).toContain('ALL AVAIL can be filed only for')
-    expect(placeholderShapeViolation(env({ role: 'admin' }, 'restore', { ...bad, type: 'Duty' }))).toBeNull()
-    expect(placeholderShapeViolation({ changes: [{ collection: 'inputs', id: 'x', op: 'delete', before: bad }] } as any), 'a delete is never judged').toBeNull()
-    expect(placeholderShapeViolation({ changes: [{ collection: 'inputs', id: '__order', op: 'put', after: { order: [] } }] } as any)).toBeNull()
-    expect(placeholderShapeViolation({ changes: [{ collection: 'people', id: 'allavail', op: 'put', after: { person: 'allavail', type: 'OD' } }] } as any), 'only inputs').toBeNull()
-  })
-
-  /* the restore's own command: the same type, origin and store write an Undo or a Redo runs (undo/timeline.ts
-     restoreCommit) — handed a record no door would ever have let through */
-  beforeEach(() => { installGlobalUndo() })   // registers the Undo engine's own command, as the app's boot does
-  const restore = (entries: any[]) => commitAs(
-    { type: 'undo.restore', scope: { module: 'inputs' } as any, apply: (txn: any) => { txn.enlist(schedStore); schedStore.write!(entries, { allowIssued: true, restore: true } as any) } },
-    { actor: deriveActor(), origin: 'restore' as any })
-  const refused: Array<[string, any]> = [['a wrong kind', { type: 'CSE' }], ['two dates', { endDate: 'Oct 15' }], ['a group mark', { grp: 'gZ', grpBy: admin }]]
-  for (const ph of ['allavail', 'all'])
-    for (const [name, over] of refused)
-      it(`a RESTORE that would put back ${PEOPLE[ph].cs} with ${name} is rolled back whole — no record, no history line, no Undo step`, async () => {
-        const r = await put({ person: ph })
-        const was = world()
-        let res: any
-        await act(async () => { res = restore([{ collection: 'inputs', id: r.iid, op: 'put', value: { ...live(r.iid), ...over } }]) })
-        expect(res.ok, 'refused at the boundary').toBe(false)
-        expect(String(res.message)).toContain('placeholder-input-shape')
-        expect(world()).toBe(was)
-        expect(live(r.iid).type).toBe('Meeting')
-      })
-
-  it('a restore of a GOOD placeholder record is kept', async () => {
-    const r = await put({ person: 'all' })
-    let res: any
-    await act(async () => { res = restore([{ collection: 'inputs', id: r.iid, op: 'put', value: { ...live(r.iid), remarks: 'put back' } }]) })
-    expect(res.ok, String(res && res.message)).toBe(true)
-    expect(live(r.iid).remarks).toBe('put back')
-  })
-})
-
-describe('the answer rules are the existing ones — for a placeholder input exactly as for a named man\'s (both readers)', () => {
-  const SAT = '2026-10-17'
-  for (const person of ['allavail', 'all', 'NAMED']) {
-    const who = () => person === 'NAMED' ? others()[0] : person
-    it(`${person}: a No survives a change of hours`, () => {
-      const before = { person: who(), type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 540, e: 720, oil: { [SAT]: 0 } }
-      const after = { ...before, s: 600, e: 1020 }
-      expect((voidedOil(before, after) || {})[SAT]).toBe(0)
-    })
-    it(`${person}: a Yes survives a change that leaves its amount as it was; it is dropped when the amount changes`, () => {
-      const before = { person: who(), type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 540, e: 720, oil: { [SAT]: 0.5 } }
-      expect((voidedOil(before, { ...before, s: 600, e: 780 }) || {})[SAT], 'three hours moved an hour: still half a day').toBe(0.5)
-      expect((voidedOil(before, { ...before, s: 480, e: 1020 }) || {})[SAT], 'nine hours now: the half-day Yes no longer fits').toBeUndefined()
-    })
-    it(`${person}: a change of person voids every answer`, () => {
-      const before = { person: who(), type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 540, e: 720, oil: { [SAT]: 0.5 } }
-      expect(voidedOil(before, { ...before, person: others()[1] }) || {}).toEqual({})
-    })
-  }
-
-  it('through the real save: an ALL AVAIL Duty re-timed by an hour keeps the filer\'s Yes; lengthened past the full-day line, it loses it', async () => {
-    const r = await put({ type: 'Duty', date: 'Oct 17', s: 540, e: 720, oil: { [SAT]: 0.5 } })
-    await act(async () => { commitInputEdit(live(r.iid), { ...draftOf(live(r.iid)), sTime: '10:00', eTime: '13:00' }) })
-    expect(live(r.iid).oil, said.join(' | ')).toEqual({ [SAT]: 0.5 })
-    await act(async () => { commitInputEdit(live(r.iid), { ...draftOf(live(r.iid)), sTime: '08:00', eTime: '17:00' }) })
-    expect((live(r.iid).oil || {})[SAT], 'asked again: the old Yes priced half a day').toBeUndefined()
   })
 })

@@ -163,11 +163,16 @@ export function layoutBars(week: readonly (string | null)[], items: readonly Bar
   return { segs, more, lanes }
 }
 
-/** What a bar says: the callsign (and how many more, for a group) and the kind. On a phone a bar one day wide has room
- *  for the callsign alone — its kind is one tap away, in the opened day. */
+/** What a bar says: the callsign and the kind. On a phone a bar one day wide has room for the callsign alone — its
+ *  kind is one tap away, in the opened day.
+ *  A SHARED INPUT'S BAR SAYS HOW MANY, FIRST (owner D729 — the design vet's V4, 10 Oct 26: "4 · Meeting"). It used to
+ *  lead with whoever comes first in the alphabet ("Drifter +3 · Meeting"): Saber's own meeting did not show his name,
+ *  and a bar cut short by its day lost the "+3". Now the count leads — so a cut-off bar never loses it — then what it
+ *  is; who is in it is the opened day's to say (every name — D721) and the bar's tooltip's. On a phone too: a count
+ *  alone would say nothing, so a shared bar always carries its word. */
 export function barText(it: BarItem, narrow: boolean): string {
-  const who = it.more > 0 ? `${it.who} +${it.more}` : it.who
-  return narrow && it.a === it.b && !it.more ? who : `${who} · ${it.word}`
+  if (it.more > 0) return `${it.more + 1} · ${it.word}`
+  return narrow && it.a === it.b ? it.who : `${it.who} · ${it.word}`
 }
 
 /** THE PHONE'S LINES (D653, D664): the week rows share `fillPx` — the height from the month's top to the foot of the

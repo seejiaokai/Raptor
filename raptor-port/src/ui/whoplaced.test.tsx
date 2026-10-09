@@ -82,15 +82,17 @@ beforeEach(async () => {
 })
 
 describe('the Inputs List (§3.8 rows 2, 3 and 4)', () => {
-  it('its Add form: placed by whoever pressed Add, now', async () => {
+  /* the List's own add form went on 10 Oct 26 (D729 — V1); its "+ Input" opens the input's window, whose Add is the
+     List's one maker of an input now */
+  it('its "+ Input": placed by whoever pressed Add, now', async () => {
     await as('stiff')
     await openList()
     const t1 = T(9)
-    await click($('#inCal [data-cal="2026-07-14"]'))
-    await click($('#inCal [data-cal="2026-07-14"]'))
+    await click($('#inNew'))
+    await click($('#inpEdCal [data-cal="2026-07-14"]'))
     const n = INPUTS.length
-    await click($('#inAdd'))
-    expect(INPUTS.length, 'the form filed one input').toBe(n + 1)
+    await click($('#inpEditSave'))
+    expect(INPUTS.length, 'one input filed').toBe(n + 1)
     expect(stamps(INPUTS[0])).toEqual(placed('stiff', t1))
     expect(INPUTS[0].mod, 'the late rule\'s date is written as before').toBe(nowStamp())
   })

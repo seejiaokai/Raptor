@@ -10,6 +10,7 @@
      D720  "Just put By Saber. Since the ranger is already at the title."
      D723  …and only where someone other than the input's own person placed it; no day, no time on the card.
      D724  "multiple people in 1 input it's better to show who made that input" — several people: always.
+     D728  "till 17 Jul" is said ONCE: where the corner says it, the remark's automatic "till 17 Jul" is left out.
 
    PURE — no screen, no store. `ui/InputCard.tsx` draws what this answers; nothing else works a card's words out, so the
    day and the list cannot disagree (the roll-call of the plan's §4 names the surfaces that must NOT draw it: the SANS
@@ -41,8 +42,29 @@ const csOf = (id: unknown, people: Record<string, any>): string => {
 }
 const az = (a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' })
 
-/** the facts of one entry's card — `rows` is one record, or the records of one shared input */
-export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPLE): CardFacts {
+/* "TILL" SAID ONCE (owner D728, 10 Oct 26 — "1 now, 2 later"; step 2, the app no longer writing it at all, is
+   `[TILL-FROM-DATES]`). The calendar writes "till 17 Jul" into the remark of an input of several days
+   (engine/inputs.ts withRemarksTail), and the card's corner says that day too — so a card read "till 17 Jul" at its
+   right and again in its remark. ON THE CARD ONLY the automatic words are left out, and only where they repeat the
+   corner's OWN day: anything typed before or after them stays, a remark that was nothing else is no remark, and a
+   "till" for another day — somebody's own words — is left alone. The record is not changed: the schedule's row, the
+   desktop list's Remarks column and the input's window read the whole remark, as before.
+   `corner` is the card's corner as it is printed (cardWhen, below): "till 17 Jul", "10:00–11:00 · till 17 Jul", or —
+   for an input that runs into another year — "till 1 Jan 2027", where the remark's own words carry no year. A card
+   whose corner says no "till" (a one-day input; an input shown under its last day) keeps its remark whole. */
+const SEP = '[\\s,·—–-]'
+export function remarkOnce(remark: string, corner: string): string {
+  const m = /\btill (\d{1,2}) ([A-Za-z]{3})(?: (\d{4}))?/.exec(corner || '')
+  if (!m || !remark) return remark
+  /* the corner's year, where it says one, may follow the words; any other year after them was typed, and is his */
+  const tok = new RegExp(`${SEP}*\\btill\\s+${m[1]}\\s+${m[2]}\\b${m[3] ? `(?:\\s+${m[3]}\\b)?` : ''}(?!\\s+\\d{4}\\b)`, 'i')
+  if (!tok.test(remark)) return remark
+  return remark.replace(tok, '').replace(new RegExp(`^${SEP}+|${SEP}+$`, 'g'), '').replace(/\s{2,}/g, ' ')
+}
+
+/** the facts of one entry's card — `rows` is one record, or the records of one shared input; `corner` is what the
+ *  card's right corner says (cardWhen), by which the remark leaves out the "till <date>" the corner already says */
+export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPLE, corner = ''): CardFacts {
   const list = (rows || []).filter(Boolean)
   const r = list[0] || {}
   const filer = filerOf(list)
@@ -53,7 +75,7 @@ export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPL
     names: list.map(x => csOf(x.person, people)).sort(az).join(', '),
     kind: String(r.type || ''),
     title: inpKindTag(r) ? inpLabel(r) : '',
-    remark: String(r.remarks || '').trim() ? String(r.remarks) : '',
+    remark: String(r.remarks || '').trim() ? remarkOnce(String(r.remarks), corner) : '',
     by: said ? filerName(filer, people) : '',
     tone: toneOf(r.type),
   }

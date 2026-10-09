@@ -50,6 +50,7 @@ import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove, setDocView } from '
 import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
+import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
 
 /* THE ROSTER LIST, one place — the Inputs page's add form, its own row
@@ -756,6 +757,20 @@ export function oilSummary(row: any): string {
    the dialog; SANS Availability is deliberately never the Unavailable default
    (it is an offer, not an absence, and carries its own aircrew restriction). */
 export const firstPersonalType = () => INPUT_TYPES.find((t: any) => isPersonal(t)) || INPUT_TYPES[0]
+/* THE NEW INPUT OF THE INPUTS PAGE — one seed for its two doors: "+ Input" in a day opened on the calendar (and a
+   drag across several days), and "+ Input" on the List (owner D729 — the design vet's V1, 10 Oct 26: "one '+ Input'
+   button … opens the same window the calendar opens"). The calendar hands in the day it was pressed on; THE LIST HANDS
+   IN NONE — the window then opens with no date picked ("pick a start date"), as the List's own form always did:
+   quietly dating an input nobody dated was the trap that form's first check named. Everything else is the calendar's
+   seed as it was (ui/InputsCal.tsx openAdd): filed for the signed-in person, the first "Duty & other commitments"
+   kind, its own all-day default. `_calendar` is what gives the window its date calendar and keeps the saved input in
+   view (InputEditor, below). */
+export const newInputSeed = (from?: string, until?: string) => {
+  const [iso, end] = from && until && until < from ? [until, from] : [from, until]
+  const t = firstPersonalType()
+  return { _new: true, _calendar: true, _ctx: 'i', person: me(), type: t, date: iso ? fmt(iso) : undefined,
+    endDate: iso && end && end !== iso ? fmt(end) : undefined, allday: defaultAllday(t), s: 360, e: 1080 }
+}
 export const firstUnavailType = () => INPUT_TYPES.find((t: any) => isUnavail(t) && !isSansAvail(t)) || INPUT_TYPES[0]
 export const firstSansType = () => INPUT_TYPES.find((t: any) => isSansAvail(t)) || INPUT_TYPES[0]
 /* which types each board add offers (owner, 19 Aug 26) — the Ground
@@ -2088,7 +2103,17 @@ export function InputEditor() {
   /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
-  const doSave = (removals: any[], oilDec?: Record<string, number>) => {
+  /* THE SAVE AND ITS OWN WORD ARE ONE NOTE (found by the gate run of the design vet's build, 10 Oct 26). The app has one
+     passing note, whose words the next one replaces. A save can say something of its own as it is written — the Leave
+     War's door: "Ammo's LL replaces the LL bid on 11 Feb", "the leave is cut for the ATT C" — and this window then said
+     "Input added" over it in the same instant. While the List had its own add form (which said nothing after a
+     one-person add) that sentence was read there; with the form gone (D729, V1) the window is the page's one maker,
+     and the sentence would have been covered on every filing. So every save of this window runs inside ONE note
+     (engine/hooks.ts toastBatch — the publish command's way): what the save said and "Input added" are said together,
+     in order, in the stronger colour. A refused save still says its one sentence alone — nothing is joined to it,
+     because the window says "added" only after a save that happened. */
+  const doSave = (removals: any[], oilDec?: Record<string, number>) => HOOKS.toastBatch(() => saveNow(removals, oilDec))
+  const saveNow = (removals: any[], oilDec?: Record<string, number>) => {
     if (undecided()) return
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     /* FOR SEVERAL PEOPLE, OR A SHARED INPUT: one command for the whole entry (commitGroup) — the OIL answer, asked
@@ -2148,7 +2173,8 @@ export function InputEditor() {
   }
   /* the clash sheet's Save — resolve the choices into kept segments, file
      the draft as the first and mint the rest, all one undo step */
-  const doMedSave = (choices: string[], keepTail: any[]) => {
+  const doMedSave = (choices: string[], keepTail: any[]) => HOOKS.toastBatch(() => medSaveNow(choices, keepTail))
+  const medSaveNow = (choices: string[], keepTail: any[]) => {
     if (undecided()) return
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
@@ -2180,6 +2206,10 @@ export function InputEditor() {
      object — see the bindings below (SYNC-002). */
   const save = (skipDoc = false) => {
     if (undecided()) return
+    /* A NEW INPUT WITH NO DATE PICKED IS REFUSED FIRST, in the List's own old sentence (D729 — V1: the List's "+ Input"
+       opens this window with no date). Before every question: the OIL and the medical questions below would otherwise
+       be asked about a day nobody chose (a blank date reads as the loaded week's Monday — engine fmt). */
+    if (isNew && r._calendar && draft && !draft.start) { HOOKS.toast('Pick a start date on the calendar first', 'warn'); return }
     /* an input for ALL AVAIL / ALL that may not be saved is refused FIRST — before the picker's own line, the document
        question and every sheet ([INPUT-ALL-AVAIL]) */
     if (draft && placeholderRefused(several && picker ? { ...draft, person: ppl.find(p => isSpecial(p)) ?? draft.person, grp: ppl.some(p => isSpecial(p)) ? 1 : undefined } : draft)) return
@@ -2327,7 +2357,12 @@ export function InputEditor() {
      list (D620) and keeps its own way: deleted and added again on the SANS calendar. */
   const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))
   /* who the window's Person list offers beyond the roster (below) */
-  const archivedHere = win && !isNew && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []
+  /* …AND FOR A NEW INPUT OF THE INPUTS PAGE, since the List's own add form went (D729 — V1, 10 Oct 26): that form was
+     "where such leave is filed" — its Person list carried this group — and the window a new input opens in did not,
+     so with the form gone no door could file an input for a man who has posted out. Found by the door inventory made
+     before the form was removed (docs/superpowers/plans/2026-10-10-inputs-vet-plan.md §2). Not on the SANS calendar's
+     "+ Commitment", nor on a pending upchit's own window: neither ever offered it. */
+  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   /* …asked of EVERY record of the entry, not of the one the window happens to be opened on (walker C's find, 10 Oct 26 —
      Astra's scenario 69: a shared duty whose first man had answered from his own bell read "no OIL … Change…", with no
@@ -2371,8 +2406,8 @@ export function InputEditor() {
               /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
                  Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed
                  for a man who has posted out — [ARCH-STACK] step 4, H5) and the pencil is gone (D718): without this
-                 no form could move a saved input to an archived man. A NEW input's window keeps the list it had — the
-                 List's Add form is where such leave is filed. */
+                 no form could move a saved input to an archived man. A NEW input's window offers them too since the
+                 List's Add form — where such leave was filed — went (D729; `archivedHere`, above). */
               more={archivedHere.length ? <optgroup label="Posted out / archived">{archivedHere.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup> : undefined}
               moreIds={archivedHere.length ? archivedHere : undefined}
               onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
@@ -2392,8 +2427,16 @@ export function InputEditor() {
               <span className="inped-k">Type</span>
               <span className="inped-v" id="inpEditTypeFixed">{draft.type}</span>
             </div>
-            : <label className="inped-f">
-              <span className="inped-k">Type</span>
+            /* ON THE INPUTS PAGE THE "?" STANDS BESIDE "TYPE" (owner D729 — V1, 10 Oct 26; ui/TypeLegend.tsx): what each
+               kind means lived only in the List's own add form, which went. It is outside the field's <label>, so a
+               press on the card is never a press on the list of kinds. NOT where the form cannot be used: the form
+               of an input its reader may not change is inert, and a "?" inside it would be a button that is seen and
+               does nothing (Astra's scenario design, 10 Oct 26) — a reader chooses no kind, and the card is one press
+               away under "+ Input". */
+            : <div className="inped-f">
+              {win && !readOnly
+                ? <span className="inped-kh"><label className="inped-k" htmlFor="inpEditType">Type</label><TypeLegend /></span>
+                : <label className="inped-k" htmlFor="inpEditType">Type</label>}
               <select id="inpEditType" aria-label="Type" value={draft.type}
                 onChange={e => {
                   const t = e.target.value
@@ -2416,7 +2459,7 @@ export function InputEditor() {
                     ...(isNew ? { allday: defaultAllday(t) } : {}),
                   })
                 }}>{typeOptions(typeFilter)}</select>
-            </label>}
+            </div>}
           {/* THE INPUT'S OWN TITLE (owner D715, 9 Oct 26 — "select the type of input and it gives the user the option to
               change the name of the input … if event Is selected, event shows as the title which can be edited"; D716:
               the "Duty & other commitments" kinds only). The box SHOWS the kind's own name until something else is
@@ -2546,13 +2589,21 @@ export function InputEditor() {
               buttons already says who can change it, and "changed on the Inputs page" sent him to the page he is on */}
           {/* …and since the window carries the dates of EVERY saved input (D718), no reader of another person's input is
               sent "to the Inputs page" for them either: he is on it, and they are not his to change */}
-          {!(win && !isNew && readOnly) && <div className="inped-hint">{isNew
+          {/* THE PARAGRAPH OF INSTRUCTIONS IS GONE FROM THE INPUTS PAGE'S WINDOW (owner D729 — the design vet's V3,
+              10 Oct 26; D726: "I don't like too wordy interface"). A new input said "Choose the dates and the hours.
+              Save adds one input covering the whole date range." and a saved one "To change its dates, tap the new
+              start on the calendar above, then the new end …" — the line under the calendar already shows what a Save
+              will write. ONE short line stays, on a saved SHARED input: its dates change for every man in it, which
+              nothing else in the window says. `hint` is '' where there is nothing to say, and then no line is drawn.
+              NOT TOUCHED (D729 reading 2 — only what the page showed): the SANS calendar's own lines, and every line
+              of the dialogs the schedule and the board open. */}
+          {(hint => hint && <div className="inped-hint">{hint}</div>)(win && !isNew && readOnly ? '' : isNew
             ? r._calendar
               /* "your available hours" is the SANS calendar's wording — on the Inputs calendar the same window files
                  a meeting or a leave (Opus's own read of the build, step 0, 7 Oct 26) */
               ? isSansAvail(draft.type)
                 ? 'Choose the dates and your available hours. Save adds one input covering the whole date range.'
-                : 'Choose the dates and the hours. Save adds one input covering the whole date range.'
+                : ''
               : ctx === 'up'
               ? 'Pick the day he is fit for full duty and attach the upchit document — the medical entry ends the day before, and a summary asks before anything is changed.'
               : ctx === 'u'
@@ -2563,14 +2614,12 @@ export function InputEditor() {
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
             : datesHere
-              ? rows.length > 1
-                ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
-                : 'To change its dates, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
+              ? rows.length > 1 ? `Date changes apply to all ${rows.length}.` : ''
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
               ? 'The dates are changed on the Inputs page.'
-              : 'The person and the dates are changed on the Inputs page.'}</div>}
+              : 'The person and the dates are changed on the Inputs page.')}
         </div>}
         {/* HIS OWN TWO THINGS in a shared input he did not file — outside the read-only form, so they are live */}
         {mineRow && draft && (

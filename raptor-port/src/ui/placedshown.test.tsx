@@ -53,17 +53,24 @@ afterEach(async () => {
 })
 
 describe('in the List', () => {
-  it('a small line under the row’s remark says who placed it and when; a record with no filer has none', async () => {
+  /* "BY SABER" — ONLY WHERE SOMEONE ELSE FILED IT (owner D729 — the design vet's V2, 10 Oct 26, which narrows D629 for
+     this table; D726: "I don't like too wordy interface"). The full line — "Placed by Ranger for Saber · 2 Jul 26,
+     09:10 · changed by Saber · 4 Jul 26, 08:05" — stood under every remark, saying the first column's name and the
+     last column's date again; it is in the input's own window still (the next describe). */
+  it('the row’s small print is "By <the filer>", on the remark’s line, only where someone ELSE filed it; a man’s own input and a record with no filer have none', async () => {
     const [a, b] = crew()
-    const withLine: any = { iid: 'ps-1', person: b, type: 'Meeting', date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: 'Bring the folder', mod: '2026-07-04', ...stamps(a, b) }
+    const byOther: any = { iid: 'ps-1', person: b, type: 'Meeting', date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: 'Bring the folder', mod: '2026-07-04', ...stamps(a, b) }
+    const own: any = { iid: 'ps-1b', person: a, type: 'Meeting', date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: 'my own', mod: '2026-07-02', ...stamps(a) }
     const without: any = { iid: 'ps-2', person: a, type: 'Meeting', date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '', mod: '2026-07-02' }
-    INPUTS.push(withLine, without)
+    INPUTS.push(byOther, own, without)
     await mount(<InputsPage />)
     await click($('#inRangeBtn')); await click($('#inRangeAll'))
     const line = $(`#inBody [data-iid="ps-1"] [data-testid="in-placed"]`)
-    expect(line!.textContent).toBe(placedLine(withLine))
-    expect(line!.textContent).toBe(`Placed by ${PEOPLE[a].cs} for ${PEOPLE[b].cs} · 2 Jul 26, 09:10 · changed by ${PEOPLE[b].cs} · 4 Jul 26, 08:05`)
-    expect(line!.closest('td')!.getAttribute('data-label'), 'under the remark, where there is room for it').toBe('Remarks')
+    expect(line!.textContent).toBe(`By ${PEOPLE[a].cs}`)
+    expect(line!.textContent, 'no "for", no day, no time — the window has them').not.toMatch(/Placed|for |\d/)
+    expect(placedLine(byOther), 'the record still carries the whole stamp').toBe(`Placed by ${PEOPLE[a].cs} for ${PEOPLE[b].cs} · 2 Jul 26, 09:10 · changed by ${PEOPLE[b].cs} · 4 Jul 26, 08:05`)
+    expect(line!.closest('td')!.getAttribute('data-label'), 'in the Remarks cell, beside the remark').toBe('Remarks')
+    expect($(`#inBody [data-iid="ps-1b"] [data-testid="in-placed"]`), 'his own input: the first column already says who').toBeNull()
     expect($(`#inBody [data-iid="ps-2"] [data-testid="in-placed"]`)).toBeNull()
   })
 })

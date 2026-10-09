@@ -134,3 +134,49 @@ describe('the LATE note (D646)', () => {
     expect(lateNoteOf(rows, l2, P)).toBe('Ace: after the cut-off, Wed 1 Jul · Ranger: after the cut-off, Wed 8 Jul')
   })
 })
+
+/* "TILL" SAID ONCE (owner D728, 10 Oct 26 — "1 now, 2 later"): the app writes "till 17 Jul" into the remark of an input
+   of several days, and the card's corner says the same day — so the card leaves those automatic words out of its
+   remark. ONLY on the card, only the words that repeat the corner's own day; anything typed stays; the record is not
+   touched. The corner is handed in as the card prints it (cardWhen). */
+describe('"till <date>" is said once — by the corner (D728)', () => {
+  const corner = 'till 17 Jul'
+  it('a remark that is only the automatic words shows no remark', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, corner).remark).toBe('')
+  })
+  it('the words typed before it stay', () => {
+    expect(cardOf([rec({ remarks: 'Medically down till 17 Jul' })], P, corner).remark).toBe('Medically down')
+    expect(cardOf([rec({ remarks: 'bring ID card till 17 Jul' })], P, '10:00–11:00 · till 17 Jul').remark).toBe('bring ID card')
+  })
+  it('…and the words typed after it, or round it', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul Bangkok' })], P, corner).remark).toBe('Bangkok')
+    expect(cardOf([rec({ remarks: 'Detachment till 17 Jul — Bangkok' })], P, corner).remark).toBe('Detachment — Bangkok')
+    expect(cardOf([rec({ remarks: 'Overseas leave — off island, till 17 Jul' })], P, corner).remark).toBe('Overseas leave — off island')
+  })
+  it('a "till" for ANOTHER day is not the corner’s and stays — somebody typed it', () => {
+    expect(cardOf([rec({ remarks: 'Course till 30 Jul' })], P, corner).remark).toBe('Course till 30 Jul')
+  })
+  it('a card whose corner says no "till" keeps its remark whole — a one-day input, or an input on its last day', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, 'All day').remark).toBe('till 17 Jul')
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P, '').remark).toBe('till 17 Jul')
+    expect(cardOf([rec({ remarks: 'till 17 Jul' })], P).remark).toBe('till 17 Jul')
+  })
+  it('an input that runs into another year: the remark’s "till 1 Jan" is the corner’s "till 1 Jan 2027"', () => {
+    expect(cardOf([rec({ remarks: 'Overseas leave till 1 Jan' })], P, 'till 1 Jan 2027').remark).toBe('Overseas leave')
+    expect(cardOf([rec({ remarks: 'till 1 Jan 2027' })], P, 'till 1 Jan 2027').remark).toBe('')
+  })
+  it('a year somebody typed after it, which the corner does not say, is his words — left alone', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul 2025 (last year’s)' })], P, corner).remark).toBe('till 17 Jul 2025 (last year’s)')
+  })
+  it('never mid-word, whatever the capitals', () => {
+    expect(cardOf([rec({ remarks: 'Until 17 Jul stay clear' })], P, corner).remark).toBe('Until 17 Jul stay clear')
+    expect(cardOf([rec({ remarks: 'TILL 17 JUL' })], P, corner).remark).toBe('')
+  })
+  it('a shared input’s remark is treated the same', () => {
+    expect(cardOf([rec({ person: 'a', remarks: 'Range week till 17 Jul' }), rec({ person: 'b', remarks: 'Range week till 17 Jul' })], P, corner).remark).toBe('Range week')
+  })
+  it('nothing else of the card changes', () => {
+    const plain = cardOf([rec({ remarks: 'Medically down till 17 Jul', title: 'Sports day' })], P)
+    expect(cardOf([rec({ remarks: 'Medically down till 17 Jul', title: 'Sports day' })], P, corner)).toEqual({ ...plain, remark: 'Medically down' })
+  })
+})

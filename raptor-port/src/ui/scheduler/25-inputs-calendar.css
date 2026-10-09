@@ -44,7 +44,7 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
-.inputs-top .inputs-filterfields label>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* (the three boxes carry no words over them since D729 — "Person", "Type", "Search" went; each box names itself) */
 .inputs-filter-summary{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--ink-2);font-size:12px;min-width:0}
 .inputs-filter-summary>span{flex:1;min-width:0;overflow-wrap:anywhere}
 .inputs-filter-summary .abtn{flex-shrink:0;min-height:44px;padding:8px;font-size:12px}
@@ -109,7 +109,6 @@
     background:var(--accent);color:#04222b;font-size:10px;font-weight:800;line-height:16px;text-align:center}
   .inputs-top .inputs-filterfields.open label{flex:1 1 calc(50% - 8px)}
   .inputs-top .inputs-filterfields.open label.inputs-search{flex-basis:100%}
-  .inputs-top .inputs-filterfields.open label>span{position:static;width:auto;height:auto;clip:auto}
 }
 /* AND ON A DESKTOP (the calendar job's bug check, 8 Oct 26 - seen by three of its walkers and in D624's pairs): the tabs,
    the tools and both months ran to the very edge of the screen - the gear and the colour key's last word flush against
@@ -172,6 +171,18 @@ body.in-cal{padding-bottom:0}
   cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}
 .ib-bar.red{background:#6E2F3A;background:color-mix(in srgb,var(--hard) 44%,var(--panel))}
 .ib-bar.amb{background:#6B5320;background:color-mix(in srgb,var(--adv) 42%,var(--panel))}
+/* A TIMED INPUT IS LIGHTER THAN AN ALL-DAY ONE (owner D729 — the design vet's V4, 10 Oct 26; the drawing
+   docs/mock/img/inputs-vet/desk-month-drawn.png, whose measures these are): a one-hour appointment was drawn as heavy
+   as a whole day of leave. An all-day bar stays solid; a bar with hours is a TINT of its own colour — 34% of it over
+   the panel — with a solid 3px edge of that colour at its left, and the page's ink for its words. `--ib-c` is the
+   bar's solid colour, said once per tone so the tint and the edge cannot drift from it. */
+.ib-bar.red{--ib-c:#6E2F3A}
+.ib-bar.amb{--ib-c:#6B5320}
+@supports (background:color-mix(in srgb,red 50%,blue)){
+  .ib-bar.red{--ib-c:color-mix(in srgb,var(--hard) 44%,var(--panel))}
+  .ib-bar.amb{--ib-c:color-mix(in srgb,var(--adv) 42%,var(--panel))}
+}
+.ib-bar.timed{background:var(--panel-2);background:color-mix(in srgb,var(--ib-c) 34%,var(--panel));box-shadow:inset 3px 0 0 var(--ib-c);color:var(--ink)}
 .ib-bar.is-cont{margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0}
 .ib-bar.is-on{margin-right:0;border-top-right-radius:0;border-bottom-right-radius:0}
 .ib-bar:hover{filter:brightness(1.18)}
@@ -307,7 +318,14 @@ body.in-cal{padding-bottom:0}
 /* ---- WHO PLACED IT, AND WHEN (owner D629: "a small one") — the one small-print line, on the other places an entry is
    listed or opened: the List (under the remark), the editor's foot, a Medical card, the document viewer. The opened
    days carry it as `.sd-placed` (24-sans-calendar.css). ---- */
-.in-placed{display:block;margin-top:2px;font-size:10.5px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere;white-space:normal}
+/* "BY SABER" ON THE REMARK'S OWN LINE (owner D729 — the design vet's V2, 10 Oct 26; the drawing
+   docs/mock/img/inputs-vet/desk-list-drawn.png, whose measures these are): the full "Placed by … · date, time" stood
+   on a line of its own under every remark and made every row two lines. It is the name alone now, only where someone
+   else filed the input or it is for several people, and it follows the remark on its line. */
+.in-placed{display:inline;margin-left:12px;font-size:10.5px;line-height:1.35;color:var(--ink-3);white-space:nowrap}
+/* a row with no remark and no LATE: nothing stands before it, so it starts at the cell's edge (the row says so —
+   a stylesheet cannot see whether text stands before an element) */
+.in-placed.alone{margin-left:0}
 .inped-placed,.docview-placed{font-size:11px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere}
 .docview-placed{margin:2px 0 6px}
 /* on a Medical card the line NEVER WIDENS THE CARD: a card hugs its puck and its dates (owner, 28 Aug 26 — "the box

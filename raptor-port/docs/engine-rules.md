@@ -1593,7 +1593,7 @@ truthy, seed raises zero).
 
 **The type is restricted to SANS aircrew, and all three editors refuse
 through one function.** `sansRefusal(person,sans)` (`inputedit.tsx`) is what
-`commitInputEdit` and the add form's own `add()` (`InputsPage.tsx`) both call
+`commitInputEdit` and the add form's own `add()` (`InputsPage.tsx`) both call *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 before any write — a non-SANS person is refused with "SANS Availability is
 for SANS aircrew only" (the owner reconfirmed the restriction on the rework
 day: "only SANS can input the availability"), and an empty tick set with
@@ -1615,7 +1615,7 @@ give-both-times-or-neither refusal is gone with the per-event windows — the
 one window's own validation rides the STANDARD path every half-capable type
 already uses. `commitInputEdit` returns `false` on a refusal, so the editor
 stays open with the typing still in it (house convention). All three editors
-— the add form, the in-table row editor and the modal — share one
+— the add form, the in-table row editor and the modal — share one *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 `SansPicker` component (`inputedit.tsx`, a plain Fly/AMT/OFT checkbox row
 since the rework — the window controls are the standard SpanPicker + time
 fields, not SANS-special).
@@ -1781,7 +1781,7 @@ the input that caused them — one undo step):
   filer ticked logs "removed with the upchit" (`applyMedPlan`'s `why`).
 
 **The upchit save-time summary** (owner, 27 Aug 26 — "ask at save time").
-An upchit is NEVER saved silently from a form: the Inputs page's add form,
+An upchit is NEVER saved silently from a form: the Inputs page's add form, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 its row editor and the shared `InputEditor` dialog all open
 `ui/UpchitConfirm.tsx` before writing. The sheet lists exactly what the
 upchit will trim or remove (from `upchitEffects` — the same body the write
@@ -3606,7 +3606,7 @@ user account they can only input their own self. Which is whoever they are
 viewing as"; since `[ACCOUNTS]` "whoever they are" is the signed-in person — D166).** An admin picks anyone, on the
 Inputs page's form and the month calendar alike; a member's input always lands on the signed-in person
 (`perms.ts me()`), read live at commit; a guest files nothing. The Person control is therefore a scheduler's
-on every editor — the page's add form and row editor print a member's
+on every editor — the page's add form and row editor print a member's *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 person as a plain value, the shared dialog hides the field
 (`inputedit.tsx`, `canEditSched()`-gated) — and the write paths repeat the
 gate: `commitNewInput` pins a non-scheduler's draft onto `ME`,

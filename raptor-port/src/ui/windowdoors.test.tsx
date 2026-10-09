@@ -117,10 +117,34 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
     await click($('#inpEditSave'))
     expect(live(r.iid).person).toBe(gone)
   })
-  it('a NEW input’s window keeps the list it had: no archived group (the List’s own Add form is where clearing leave is filed)', async () => {
-    mark(others()[3], 'archived', true)
-    await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: admin, type: 'Meeting', date: 'Oct 13', allday: false, s: 600, e: 660 }); notify() })
+  /* RESTATED 10 Oct 26 (owner D729 — the design vet's V1). This said "a NEW input's window keeps the list it had: no
+     archived group (the List's own Add form is where clearing leave is filed)". That form is gone — its "+ Input" opens
+     this window — so the window is where such leave is filed now, and a new input offers the group to an admin. Found
+     by the door inventory made before the form was removed (docs/superpowers/plans/2026-10-10-inputs-vet-plan.md §2). */
+  it('a NEW input on the Inputs page offers an admin the posted-out / archived people too — and files a leave for one', async () => {
+    const gone = others()[3]
+    mark(gone, 'archived', true)
+    await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: admin, type: 'LL', date: 'Oct 13', allday: true, s: 360, e: 1080 }); notify() })
     expect($('#inpEditPerson')).toBeTruthy()
+    expect(groupOf(), 'the group is there for a new input').toBeTruthy()
+    expect([...groupOf()!.querySelectorAll('option')].map(o => o.getAttribute('value'))).toContain(gone)
+    await choose('#inpEditPerson', gone)
+    const had = new Set(INPUTS.map((r: any) => r.iid))
+    await click($('#inpEditSave'))
+    const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
+    expect(made.map(r => [r.person, r.type]), 'the clearing leave is filed for him').toEqual([[gone, 'LL']])
+  })
+  it('…but not the SANS calendar’s "+ Commitment", which never offered it', async () => {
+    mark(others()[3], 'archived', true)
+    const sans = Object.keys(PEOPLE).find(id => PEOPLE[id].san && !PEOPLE[id].archived)!
+    await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 's', person: sans, type: 'SANS Availability', date: 'Oct 13', allday: true, s: 0, e: 1439, sans: {} }); notify() })
+    expect(groupOf()).toBeNull()
+  })
+  it('a member’s new input offers no such group', async () => {
+    mark(others()[3], 'archived', true)
+    await as('member')
+    await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: member, type: 'Meeting', date: 'Oct 13', allday: false, s: 600, e: 660 }); notify() })
+    expect($('#inpEditPerson'), 'a duty: he has a list').toBeTruthy()
     expect(groupOf()).toBeNull()
   })
   it('a member is offered no list at all, as before', async () => {

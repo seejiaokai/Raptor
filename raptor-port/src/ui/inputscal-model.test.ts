@@ -112,6 +112,12 @@ describe('what a bar says', () => {
     expect(barText(it2, false)).toBe('Saber · Sports day')
     expect(it2.kind).toBe('Event')
   })
+  /* A TIMED INPUT IS DRAWN LIGHTER THAN AN ALL-DAY ONE (D729 — V4): the model says which it is */
+  it('an all-day input is not timed; one with hours, or a half day, is', () => {
+    const [day, hrs, half] = items([inp('p1', 'LL', 'Jul 8'), inp('p2', 'Meeting', 'Jul 9', undefined, { allday: false, s: 600, e: 660 }),
+      inp('p3', 'LL', 'Jul 10', undefined, { allday: false, half: 'am', s: 0, e: 720 })])
+    expect([day.allday, hrs.allday, half.allday]).toEqual([true, false, false])
+  })
   it('red for an absence, amber for a duty or a commitment — the List’s own colours', () => {
     const [ll, mtg] = items([inp('p1', 'LL', 'Jul 8'), inp('p2', 'Meeting', 'Jul 9')])
     expect(ll.tone).toBe('red')
@@ -121,19 +127,34 @@ describe('what a bar says', () => {
 
 describe('a group filing is ONE bar (D655)', () => {
   const grp = (people: string[], over: any = {}) => people.map(p => inp(p, 'Meeting', 'Jul 8', undefined, { grp: 'g1', grpBy: 'p1', allday: false, ...over }))
-  it('one bar for the entry: the first callsign A to Z, how many more, and the kind', () => {
+  /* THE COUNT FIRST (owner D729 — the design vet's V4, 10 Oct 26: "4 · Meeting"). The bar used to lead with whoever
+     comes first in the alphabet — "Anvil +3 · Meeting" — so Saber's own meeting did not show his name, and a bar cut
+     short lost the "+3". It says how many and what; the opened day names everyone. */
+  it('one bar for the entry: HOW MANY first, then what it is — never one callsign and "+N" (D729)', () => {
     const its = items(grp(['p1', 'p2', 'p3', 'p4']))
     expect(its).toHaveLength(1)
     expect(its[0].rows.map((r: any) => r.person)).toEqual(['p4', 'p2', 'p1', 'p3'])   // Anvil, Ranger, Saber, Wisp
-    expect(barText(its[0], false)).toBe('Anvil +3 · Meeting')
+    expect(barText(its[0], false)).toBe('4 · Meeting')
     expect(layoutBars(W2, its, 7).segs).toHaveLength(1)
+  })
+  it('…by its own title where it has one, and the same on a phone’s one-day bar — the count is never dropped', () => {
+    const [photo] = items(grp(['p1', 'p2', 'p3'], { type: 'Event', title: 'Squadron photo' }))
+    expect(barText(photo, false)).toBe('3 · Squadron photo')
+    expect(barText(photo, true)).toBe('3 · Squadron photo')
+    const [two] = items(grp(['p1', 'p2']))
+    expect(barText(two, true)).toBe('2 · Meeting')
+  })
+  it('an input for ALL AVAIL or ALL is one record: its bar keeps the placeholder’s name', () => {
+    const P2 = { ...PEOPLE, allavail: { cs: 'ALL AVAIL', special: true } }
+    const [it0] = monthItems([inp('allavail', 'Duty', 'Jul 8')], ALL, P2)
+    expect(barText(it0, false)).toBe('ALL AVAIL · Duty')
   })
   it('a man whose record was changed alone reads as his own input beside the entry', () => {
     const rows = grp(['p1', 'p2', 'p3'])
     rows[1].e = 900
     const its = items(rows)
     expect(its).toHaveLength(2)
-    expect(its.map(i => barText(i, false)).sort()).toEqual(['Ranger · Meeting', 'Saber +1 · Meeting'])
+    expect(its.map(i => barText(i, false)).sort()).toEqual(['2 · Meeting', 'Ranger · Meeting'])
   })
   it('the Person filter shows an entry when ANY of its people passes; the bar still names them all', () => {
     const its = items(grp(['p1', 'p2', 'p3']), { ...ALL, fPerson: 'p3' })

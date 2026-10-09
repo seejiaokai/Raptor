@@ -576,7 +576,7 @@ test('"How this works" opens above the month, which re-fits under it; the legend
   expect(Math.abs((how.y + how.height / 2) - (legend.y + legend.height / 2)), 'the fold’s button and the legend share a line').toBeLessThanOrEqual(8)
   expect(legend.x + legend.width).toBeLessThanOrEqual(390)
   await page.locator('[data-testid="ib-how"]').click()
-  await expect(page.locator('[data-testid="ib-how-list"] li')).toHaveCount(5)
+  await expect(page.locator('[data-testid="ib-how-list"] li')).toHaveCount(4)
   await expect(page.locator('[data-testid="ib-how-cut"]')).toHaveText('File at least 14 days before the week starts.')
   const list = (await page.locator('[data-testid="ib-how-list"]').boundingBox())!
   await expect.poll(async () => (await grid())!.y, { message: 'the month moves down under the opened fold' }).toBeGreaterThan(before.y + 40)
@@ -686,10 +686,11 @@ test('a member files a meeting for himself and another man from the month: ONE b
   const made = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => ({ iid: r.iid, person: r.person, grp: r.grp, grpBy: r.grpBy })), had)
   expect(made).toHaveLength(2)
   expect(made[0].grp, 'one shared input').toBeTruthy(); expect(made[1].grp).toBe(made[0].grp)
-  /* ONE bar on the month for the two of them, saying the first and "+1" */
-  const bars = page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })
+  /* ONE bar on the month for the two of them, saying how many and what — "2 · Meeting" (the count first since the
+     design vet, D729 V4; it said the first man and "+1" until then) */
+  const bars = page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Meeting$/ })
   await expect(bars).toHaveCount(1)
-  await expect(bars).toContainText('Meeting')
+  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /\+\d/ }), 'no bar hides a man behind "+N"').toHaveCount(0)
   /* opened: the entry — both lit — and it is his to change, as its filer */
   await bars.click()
   await expect(edWin(page)).toBeVisible()
@@ -703,7 +704,7 @@ test('a member files a meeting for himself and another man from the month: ONE b
   const left = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => r.person), had)
   expect(left).toHaveLength(1)
   expect(left[0]).not.toBe(other)
-  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })).toHaveCount(0)
+  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Meeting$/ }), 'his own again: no count on its bar').toHaveCount(0)
 })
 
 /* THE CALENDAR JOB'S BUG CHECK (8 Oct 26 — docs/handpass/2026-10-08-inputs-sans-calendar-check.md, findings W1 to W5).
@@ -812,7 +813,7 @@ test('one holiday, one word: "ND" for a National Day on the "Calendar" month, th
    the calendar fits the window's width and Save can still be reached under it. The rules are `ui/groupeditor.test.tsx`. */
 const sharedMeeting = (p: Page, from: string) => file(p, [0, 1, 2].map(who => ({ who, type: 'Meeting', from, timed: [600, 660] as [number, number],
   more: { grp: 'e2e-g681', grpBy: 'stiff', by: 'stiff', at: '2026-09-01T08:00:00.000Z', remarks: 'range brief' } })))
-const sharedBar = (p: Page) => p.locator('.ib-bar[data-iid]').filter({ hasText: /\+2 · Meeting/ })
+const sharedBar = (p: Page) => p.locator('.ib-bar[data-iid]').filter({ hasText: /^3 · Meeting/ })
 test('a saved shared input: its window carries the calendar; two presses and Save move the ONE bar for every man; one Undo puts it back (D681)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   const ids = await sharedMeeting(page, 'Oct 13')
@@ -1047,9 +1048,12 @@ for (const size of [{ name: 'a desktop 1440 × 900', width: 1440, height: 900 },
     })
     for (const [k, v] of Object.entries(m)) expect(v, `${k}: inside the window, on the screen, and the thing a press there reaches`).toEqual({ inWin: true, onScreen: true, hit: true })
     /* …and the form still scrolls above the pinned row: its last line can be brought into view, clear of the buttons */
-    const hint = page.locator('#inpEditPop .inped-hint')
+    /* (its last line was the paragraph of instructions until the design vet took it out — D729, V3; it is whatever the
+       form ends with now: who placed the input, or its Remarks box) */
+    const hint = page.locator('#inpEditPop .inped-body > *').last()
     await hint.scrollIntoViewIfNeeded()
-    const clear = await page.evaluate(() => { const h = document.querySelector('#inpEditPop .inped-hint')!.getBoundingClientRect(), f = document.querySelector('#inpEditPop .airpop-foot')!.getBoundingClientRect(); return h.bottom <= f.top + 0.5 })
+    const clear = await page.evaluate(() => { const all = document.querySelectorAll('#inpEditPop .inped-body > *'); const h = all[all.length - 1]!.getBoundingClientRect(), f = document.querySelector('#inpEditPop .airpop-foot')!.getBoundingClientRect(); return h.bottom <= f.top + 0.5 })
+    await expect(page.locator('#inpEditPop .inped-hint'), 'no paragraph of instructions under a one-person input (D729)').toHaveCount(0)
     expect(clear, 'the form’s last line is not hidden under the pinned row').toBe(true)
   })
 }
@@ -1223,3 +1227,118 @@ test('a phone: in an opened day a long title, a long remark and fourteen names a
   } finally { await context.close() }
 })
 
+
+/* THE DESIGN VET'S CHANGES, IN THE BUILT APP (owner D726–D729, 10 Oct 26 — the plan
+   docs/superpowers/plans/2026-10-10-inputs-vet-plan.md; the drawings docs/mock/inputs-vet.html, card-questions.html).
+   What only a real browser can say: that a timed bar is PAINTED lighter than an all-day one and wears its solid edge
+   (a class switched on proves nothing — the checking guide's anti-pattern 21); that the List opens on its list, the one
+   "+ Input" button first in its row and the cards straight under it on a phone; that a shared input's names wrap inside
+   their column and "By Saber" shares the remark's line; and that the "?" card opened in the window stays inside the
+   window, readable, with the window's own buttons still in reach. The rules are unit tests (ui/inputsvet.test.tsx,
+   ui/inputs.test.tsx, ui/inputscal-model.test.ts). */
+const vetWorld = (p: Page) => file(p, [
+  { who: 0, type: 'LL', from: 'Oct 13' },
+  { who: 1, type: 'Appointment', from: 'Oct 13', timed: [600, 660] },
+  ...[2, 3, 4, 5, 6, 7, 8, 9, 10].map(who => ({ who, type: 'Event', from: 'Oct 14', timed: [900, 930] as [number, number],
+    /* `at` is a moment, as the app stamps one (state/inputstamp.ts) — a record with no readable moment has no filer (D56) */
+    more: { grp: 'e2e-vet9', grpBy: 'stiff', by: 'stiff', at: Date.UTC(2026, 8, 1, 8), title: 'Squadron photo', remarks: 'outside the hangar' } })),
+])
+/* how bright a painted colour is, 0–255, whichever way the browser writes it ("rgb(…)" or "color(srgb …)") */
+const LUM = `(c => { const m = c.match(/[\\d.]+/g).map(Number); const k = /srgb/.test(c) ? 255 : 1; return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) * k })`
+test('the month: a timed bar is painted lighter than an all-day one, with a solid edge at its left; a shared bar reads its count first (D729)', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [day, timed] = await vetWorld(page)
+  const paint = (iid: string) => page.locator(`.ib-bar[data-iid="${iid}"]`).first().evaluate((el, LUM) => {
+    const cs = getComputedStyle(el)
+    return { bg: cs.backgroundColor, lum: (0, eval)(LUM)(cs.backgroundColor) as number, shadow: cs.boxShadow }
+  }, LUM)
+  const solid = await paint(day!), light = await paint(timed!)
+  expect(solid.shadow, 'an all-day bar has no edge of its own').toBe('none')
+  expect(light.shadow, 'a timed bar wears a solid edge inside its left side').toMatch(/inset/)
+  expect(light.shadow).toMatch(/3px 0px 0px 0px/)
+  expect(light.bg, 'and a different fill').not.toBe(solid.bg)
+  /* on this dark page "lighter" is the weaker fill — nearer the panel behind it: measured against a solid bar of the
+     timed bar's own colour */
+  const amber = await page.evaluate(LUM => { const b = document.createElement('div'); b.className = 'ib-bar amb'; document.querySelector('.ib-lanes')!.appendChild(b); const c = getComputedStyle(b).backgroundColor; b.remove(); return (0, eval)(LUM)(c) as number }, LUM)
+  expect(light.lum, 'the timed amber is weaker than the solid amber').toBeLessThan(amber - 8)
+  await expect(page.locator('.ib-bar', { hasText: /^9 · Squadron photo$/ }), 'the shared bar: how many, then what').toHaveCount(1)
+  await expect(page.locator('.ib-bar', { hasText: /\+\d/ }), 'no bar hides people behind "+N"').toHaveCount(0)
+  await expect(page.locator('[data-testid="ib-legend"]')).toHaveText(/absence\s*duty$/)
+})
+test('the desktop list: "+ Input" first in its row and the table straight under it; nine names wrap inside the Name column; "By" shares the remark’s line (D727, D729)', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  await vetWorld(page)
+  await page.click('#inListBtn'); await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+  await expect(page.locator('.inbar'), 'no form over the list').toHaveCount(0)
+  const m = await page.evaluate(() => {
+    const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect()
+    const add = box('#inNew'), range = box('#inRangeBtn'), table = box('#intbl')
+    const row = [...document.querySelectorAll('#inBody tr')].find(tr => /Squadron photo/.test(tr.textContent || ''))!
+    const name = row.querySelector('[data-label="Name"]')!, btn = name.querySelector('.in-open')!
+    const rmk = row.querySelector('[data-label="Remarks"]')!, by = rmk.querySelector('.in-placed')!
+    const range0 = document.createRange(); range0.selectNodeContents(btn)
+    const lines = new Set([...range0.getClientRects()].map(r => Math.round(r.top))).size
+    const text = [...rmk.childNodes].find(n => n.nodeType === 3 && (n.textContent || '').trim())!
+    const tr = document.createRange(); tr.selectNodeContents(text)
+    const one = [...document.querySelectorAll('#inBody tr')].find(tr => !tr.querySelector('.intitle') && !/,/.test(tr.querySelector('[data-label="Name"]')!.textContent || ''))!
+    return {
+      addLeft: add.right <= range.left + 1, sameRow: Math.abs((add.top + add.height / 2) - (range.top + range.height / 2)) <= 6,
+      tableTop: table.top - add.bottom, names: btn.textContent, lines, inCol: btn.getBoundingClientRect().right <= name.getBoundingClientRect().right + 0.5,
+      nameW: Math.round(name.getBoundingClientRect().width), by: by.textContent,
+      bySameLine: Math.abs(by.getBoundingClientRect().top - tr.getBoundingClientRect().top) <= 6, byAfter: by.getBoundingClientRect().left >= tr.getBoundingClientRect().right + 8,
+      pill: getComputedStyle(row.querySelector('.intag')!).borderTopLeftRadius, oneLineRow: Math.round(one.getBoundingClientRect().height),
+      wide: document.documentElement.scrollWidth <= innerWidth,
+    }
+  })
+  expect(m.addLeft && m.sameRow, '"+ Input" stands at the left of the dates button, on its line').toBe(true)
+  expect(m.tableTop, 'the table starts straight under the tools — no form between').toBeLessThan(40)
+  expect(m.names!.split(', '), 'every name').toHaveLength(9)
+  expect(m.lines, 'wrapping in its column').toBeGreaterThanOrEqual(2)
+  expect(m.inCol, 'and inside it').toBe(true)
+  expect(m.nameW).toBe(250)
+  expect(m.by).toBe('By Saber')
+  expect(m.bySameLine && m.byAfter, '"By Saber" follows the remark on its own line, with air before it').toBe(true)
+  expect(parseFloat(m.pill), 'the kind keeps its pill on this list').toBeGreaterThan(8)
+  expect(m.oneLineRow, 'a plain row is ONE line tall').toBeLessThanOrEqual(42)
+  expect(m.wide, 'nothing runs off sideways').toBe(true)
+})
+test('a phone: the List opens on its cards under ONE "+ Input"; the "?" card opens inside the window, readable, with Add still in reach (D729)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await page.locator('#inListBtn').tap()
+    await expect(page.locator('.inbar')).toHaveCount(0)
+    const top = await page.evaluate(() => {
+      const add = document.querySelector('#inNew')!.getBoundingClientRect()
+      const first = document.querySelector('[data-testid="inl-day"], #inEmpty:not([hidden])')!.getBoundingClientRect()
+      return { addH: Math.round(add.height), addOnScreen: add.top >= 0 && add.bottom <= innerHeight, listTop: Math.round(first.top), h: innerHeight }
+    })
+    expect(top.addH, 'a finger’s size').toBeGreaterThanOrEqual(44)
+    expect(top.addOnScreen).toBe(true)
+    expect(top.listTop, 'the list starts in the top half of the screen — it used to start below a screen of form').toBeLessThan(top.h / 2)
+    await page.locator('#inNew').tap()
+    await expect(edWin(page)).toBeVisible()
+    await expect(page.locator('#inpEditPop .rc-read')).toHaveText('pick a start date')
+    await expect(page.locator('#inpEditPop .inped-hint')).toHaveCount(0)
+    await page.locator('#inTypeHelp').tap()
+    await expect(page.locator('#inTypePop')).toBeVisible()
+    const card = await page.evaluate(() => {
+      const win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect(), pop = document.querySelector('#inTypePop')!.getBoundingClientRect()
+      const save = document.querySelector('#inpEditSave')!.getBoundingClientRect()
+      const hit = document.elementFromPoint(save.left + save.width / 2, save.top + save.height / 2)
+      return { inside: pop.left >= win.left - 0.5 && pop.right <= win.right + 0.5, w: Math.round(pop.width), saveReached: !!hit && !!hit.closest('#inpEditSave'), wide: document.documentElement.scrollWidth }
+    })
+    expect(card.inside, 'the card is inside the window').toBe(true)
+    expect(card.w, 'and wide enough to read').toBeGreaterThanOrEqual(280)
+    expect(card.saveReached, 'Add is still the thing a press on it reaches').toBe(true)
+    expect(card.wide).toBeLessThanOrEqual(390)
+    /* its last line can be scrolled to, above the pinned buttons */
+    const last = page.locator('#inTypePop .tylegend-r').last()
+    await last.scrollIntoViewIfNeeded()
+    const clear = await page.evaluate(() => { const rows = document.querySelectorAll('#inTypePop .tylegend-r'); const r = rows[rows.length - 1]!.getBoundingClientRect(), f = document.querySelector('#inpEditPop .airpop-foot')!.getBoundingClientRect(); return r.bottom <= f.top + 0.5 })
+    expect(clear, 'the card’s last line is not hidden under the pinned buttons').toBe(true)
+    await page.locator('#inTypeHelp').scrollIntoViewIfNeeded()
+    await page.locator('#inTypeHelp').tap()
+    await expect(page.locator('#inTypePop')).toHaveCount(0)
+    await expect(edWin(page), 'closing the card leaves the window').toBeVisible()
+  } finally { await context.close() }
+})
