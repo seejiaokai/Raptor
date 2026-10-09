@@ -1,0 +1,356 @@
+{
+ "walker": "C",
+ "server": "http://localhost:4233/",
+ "share": [
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  51
+ ],
+ "summary": {
+  "PASS": 19,
+  "FAIL": 0,
+  "NOT RUN": 0,
+  "RECORDED": 1
+ },
+ "rows": [
+  {
+   "n": "32",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "groups of 2/4/9/14 each show every name once A–Z in a 250px column; row heights 54/54/54/68px, 1/1/2/3 lines; Meeting pill kept; no overlap",
+   "pics": [
+    "32-desk-groups.png",
+    "32-desk-row-g2.png",
+    "32-desk-row-g4.png",
+    "32-desk-row-g9.png",
+    "32-desk-row-g14.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "6 rows; Name ▲ then ▼ order by each entry's first name (asc: Ace/Ace/Anvil/Blade/Bolt/Zulu; desc: Zulu/Bolt/Blade/Anvil/Ace/Ace); no row lost or doubled; Enter on a focused group name opened it with its 4 people; title \"Blade +3 · 21 Jul\"",
+   "pics": [
+    "33-desk-sorted-asc.png",
+    "33-desk-sorted-desc.png",
+    "33-desk-keyboard-open.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desktop",
+   "role": "Ranger",
+   "verdict": "PASS",
+   "note": "list started at 63 rows; for each group the Person filter set to its last name (Wisp/Zulu/Vapor/Widget) and a search for it left that group as ONE row with all its names, unrelated rows filtered out, and both clears restored 63. Wisp: Person filter 2 rows (group \"Ace, Wisp\"), search 2 rows ; Zulu: Person filter 2 rows (group \"Blade, Cinch, Hex, Zulu\"), search 2 rows ; Vapor: Person filter 2 rows (group \"Anvil, Basher, Drifter, Echo, Ghost, Kraken, Ranger, Static,…\"), search 2 rows ; Widget: Person filter 1 rows (group \"Bolt, Cobra, Comet, Forge, Marlin, Nomad, Otter, Piston, Rea…\"), search 1 rows",
+   "pics": [
+    "34-desk-person-Wisp.png",
+    "34-desk-search-Wisp.png",
+    "34-desk-person-Zulu.png",
+    "34-desk-search-Zulu.png",
+    "34-desk-person-Vapor.png",
+    "34-desk-search-Vapor.png",
+    "34-desk-person-Widget.png",
+    "34-desk-search-Widget.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desktop (+ phone comparison below)",
+   "role": "Saber and Ranger",
+   "verdict": "PASS",
+   "note": "AS SABER: his own input By=\"\", the one he filed for Ranger By=\"By Saber\", window stamp \"Placed by Saber for Ranger · 10 Oct 26, 07:04\"; Ranger's own input By=\"\". AS RANGER: his own By=\"\", Saber's for him By=\"By Saber\", Saber's own input By=\"\", window stamp \"Placed by Saber for Ranger · 10 Oct 26, 07:04\"; Saber's re-read of Ranger-filed own stamp \"Placed by Ranger · 10 Oct 26, 07:07\". Phone: (see 35p)",
+   "pics": [
+    "35-desk-saber-reads.png",
+    "35-desk-saber-window-stamp.png",
+    "35-desk-ranger-reads.png",
+    "35-desk-ranger-window-stamp.png",
+    "35-desk-saber-rereads.png"
+   ]
+  },
+  {
+   "n": "35p/36p/37p",
+   "size": "phone",
+   "role": "Saber",
+   "verdict": "RECORDED",
+   "note": "phone cards: Saber's own By=\"null\", for Ranger By=\"By Saber\", Ranger's own By=\"null\"; C36 groups By=\"By Saber\"/\"By Saber\"; ALL AVAIL card By=\"By Saber\", ALL card By=\"By Saber\". Cards: {\"forRanger\":\"LATE06:00–18:00RangerMeetingC35 for Ranger · C35 for RangerBy Saber\",\"incl\":\"LATE06:00–18:00Ace, SaberMeetingC36 incl · C36 incl filerBy Saber\",\"av\":\"LATE06:00–18:00ALL AVAILDutyC37 allavailBy Saber\",\"al\":\"LATE06:00–18:00ALLEventC37 allBy Saber\"}",
+   "pics": [
+    "35-phone-cards.png",
+    "36-phone-cards.png",
+    "37-phone-cards.png"
+   ]
+  },
+  {
+   "n": "36",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "group incl. filer (Ace, Saber): \"By Saber\" same line as remark=true; group excl. filer (Ace, Blade): \"By Saber\" same line=true; remark cells \"LATEC36 incl filerBy Saber\" / \"LATEC36 excl filerBy Saber\"",
+   "pics": [
+    "36-desk-by-on-groups.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "ALL AVAIL input made=1 (person allavail) row \"ALL AVAIL\" by \"By Saber\"; ALL input made=1 row \"ALL\" by \"By Saber\". Missing-filer subcase: 23 demo records have no filer; of the 23 shown in the table, any with a By label: 0, any with undefined/null text: 0; examples [{\"type\":\"OL\",\"person\":\"Drifter\",\"text\":\"LATE\",\"by\":\"\",\"undef\":false},{\"type\":\"OIL\",\"person\":\"Hunter\",\"text\":\"LATE\",\"by\":\"\",\"undef\":false}]. Demo placeholders: [{\"person\":\"all\",\"filer\":\"Saber\",\"by\":\"By Saber\",\"rmk\":\"LATEC37 allBy Saber\"},{\"person\":\"allavail\",\"filer\":\"Saber\",\"by\":\"By Saber\",\"rmk\":\"LATEC37 allavailBy Saber\"},{\"person\":\"allavail\",\"filer\":\"Saber\",\"by\":\"By Saber\",\"rmk\":\"Hangar clean-upBy Saber\"},{\"person\":\"all\",\"filer\":\"Saber\",\"by\":\"By Saber\",\"rmk\":\"PT kitBy Saber\"}]. Person options seen: allavail=ALL AVAIL ; all=ALL ; nick=Tally",
+   "pics": [
+    "37-desk-placeholders.png",
+    "37-desk-placeholders-and-unfiled.png"
+   ]
+  },
+  {
+   "n": "38",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "no-remark: \"By Saber\"; LATE alone: \"LATEBy Saber\"; short: \"C38 short remarkBy Saber\"; late+short: \"LATEC38 late shortBy Saber\"; long cell 501px wide, row 83px tall, text inside cell; page not wider. (look at the pictures to decide) EYE: opened 38-desk-remarks.png — the no-remark row starts with \"By Saber\" at the cell edge, \"LATE\" and \"By Saber\" sit apart and readable on one line, short remarks share a line with By, the long remark (the box stops it at 200 characters) wraps on four lines inside the column with its unbroken word broken at the edge, nothing overlaps the next column, the page is not wider; no \"Placed by\" line under any remark.",
+   "pics": [
+    "38-desk-remarks.png",
+    "38-desk-row-e1.png",
+    "38-desk-row-e2.png",
+    "38-desk-row-e3.png",
+    "38-desk-row-e4.png",
+    "38-desk-row-e5.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "63 rows each with ONE pill (kinds seen: LL, OL, ATT C, OML, Upchit, OIL, CSE, CCL, ATT B, Duty, Fly with, Meeting, Appointment, OD, Event, Other); titled rows: [{\"pill\":\"Event\",\"pillCount\":1,\"name\":\"Ace\",\"type\":\"C39 Titled event EVENT\"},{\"pill\":\"Other\",\"pillCount\":1,\"name\":\"Ace\",\"type\":\"C39 Titled other OTHER\"},{\"pill\":\"LL\",\"pillCount\":1,\"name\":\"Saber\",\"type\":\"LL\"}]; Changed heading \"Changed\", click1 aria=ascending click2 aria=descending, first Changed values 1 Jan 26 | 1 Jan 26 then now | now; no SANS rows",
+   "pics": [
+    "39-desk-pills.png",
+    "39-desk-changed-1.png",
+    "39-desk-changed-2.png"
+   ]
+  },
+  {
+   "n": "40",
+   "size": "desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "empty line reads \"No inputs 10–24 Oct. Try All dates.\" (1376px wide, 1 line, fits=true); \"+ Input\" opens its window=true; dates button opens its calendar=true",
+   "pics": [
+    "40-desk-empty-oct.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "phone",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "30 Oct–2 Nov: \"No inputs 30 Oct – 2 Nov. Try All dates.\"; 30 Dec–2 Jan: \"No inputs 30 Dec – 2 Jan 2027. Try All dates.\"; start only: \"No inputs from 30 Oct. Try All dates.\"; all fit 390px (1/1/1 lines)",
+   "pics": [
+    "41-phone-empty-twoMonths.png",
+    "41-phone-empty-overYear.png",
+    "41-phone-empty-startOnly.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desktop",
+   "role": "Ranger",
+   "verdict": "PASS",
+   "note": "with All dates and an unmatched search the line reads \"No inputs match.\" (no date instruction); clearing the search brings back 43 rows (43 before)",
+   "pics": [
+    "42-desk-no-match.png",
+    "42-desk-cleared.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "phone list; opened day on phone and desktop",
+   "role": "Ranger (member)",
+   "verdict": "PASS",
+   "note": "own LL 27–29 Jul with only the automatic remark: phone list card corner \"till 29 Jul\", no remark line; opened day 27 and 28 (phone and desktop) corner \"till 29 Jul\", no remark line; desktop Remarks cell \"LATEtill 29 Jul\", window box \"till 29 Jul\"; saved remark unchanged \"till 29 Jul\"",
+   "pics": [
+    "43-phone-list.png",
+    "43-phone-day-07-27.png",
+    "43-phone-day-07-28.png",
+    "43-desk-row.png",
+    "43-desk-window.png",
+    "43-desk-day-07-27.png",
+    "43-desk-day-07-28.png",
+    "43-desk-day-07-29.png"
+   ]
+  },
+  {
+   "n": "44",
+   "size": "desktop filed; phone list + opened day on phone and desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "typed \"Bring ID till 29 Jul\" → cards read \"Bring ID\" | typed \"till 29 Jul bring ID\" → cards read \"bring ID\" | typed \"Bring ID till 29 Jul report to desk\" → cards read \"Bring ID report to desk\" ; desktop cell and window box keep the full typed remark; (look at pictures) EYE: opened 44-Cinch-phone-list.png and 44-Blade-desk-day-07-27.png — the cards read \"Bring ID\", \"bring ID\", \"Bring ID report to desk\", one space between words, no stray separator, no empty remark line; corner reads \"06:00–18:00 · till 29 Jul\".",
+   "pics": [
+    "44-Ace-phone-list.png",
+    "44-Ace-phone-day-07-27.png",
+    "44-Ace-phone-day-07-28.png",
+    "44-Ace-desk-row.png",
+    "44-Ace-desk-window.png",
+    "44-Ace-desk-day-07-27.png",
+    "44-Ace-desk-day-07-28.png",
+    "44-Blade-phone-list.png",
+    "44-Blade-phone-day-07-27.png",
+    "44-Blade-phone-day-07-28.png",
+    "44-Blade-desk-row.png",
+    "44-Blade-desk-window.png",
+    "44-Blade-desk-day-07-27.png",
+    "44-Blade-desk-day-07-28.png"
+   ]
+  },
+  {
+   "n": "45",
+   "size": "phone filed; phone list + opened day on phone and desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "\"Submit form till 28 Jul\": corner \"06:00–18:00 · till 29 Jul\", cards read \"Submit form till 28 Jul\", saved after reading \"Submit form till 28 Jul\" | \"Submit form till 29 Jul 2027\": corner \"06:00–18:00 · till 29 Jul\", cards read \"Submit form till 29 Jul 2027\", saved after reading \"Submit form till 29 Jul 2027\"",
+   "pics": [
+    "45-Ace-phone-list.png",
+    "45-Ace-phone-day-07-27.png",
+    "45-Ace-desk-row.png",
+    "45-Blade-phone-list.png",
+    "45-Blade-phone-day-07-27.png",
+    "45-Blade-desk-row.png"
+   ]
+  },
+  {
+   "n": "46",
+   "size": "desktop filed; phone list + opened day on phone and desktop",
+   "role": "Ranger (member)",
+   "verdict": "PASS",
+   "note": "own LL 30 Dec 2026–2 Jan 2027, automatic words were \"till 2 Jan\", saved remark \"Family trip till 2 Jan\"; December days' corner \"till 2 Jan 2027\" remark \"Family trip\"; phone list corner \"till 2 Jan 2027\" remark \"Family trip\"; last day corner \"All day\" remark whole; desktop cell and window keep every word (look at pictures) EYE: opened 46-desk-day-12-30.png, 46-desk-day-01-02.png, 46-phone-list.png — December days say \"till 2 Jan 2027\" with \"Family trip\"; 1 Jan says \"till 2 Jan\"; 2 Jan (last day) says \"All day\" with \"Family trip till 2 Jan\" whole; the phone list card says \"till 2 Jan 2027\" under \"Wed 30 Dec\".",
+   "pics": [
+    "46-desk-row.png",
+    "46-desk-window.png",
+    "46-desk-day-12-30.png",
+    "46-desk-day-12-31.png",
+    "46-desk-day-01-01.png",
+    "46-desk-day-01-02.png",
+    "46-phone-list.png",
+    "46-phone-day-12-30.png",
+    "46-phone-day-12-31.png",
+    "46-phone-day-01-01.png",
+    "46-phone-day-01-02.png"
+   ]
+  },
+  {
+   "n": "47",
+   "size": "phone list + opened day on phone and desktop",
+   "role": "Ranger (member)",
+   "verdict": "PASS",
+   "note": "LL 27–29: day 27 and 28 corner \"till 29 Jul\", remark left out; day 29 (last) corner \"All day\" and remark whole \"till 29 Jul\" on phone and desktop; the phone list shows it once, under \"Mon 27 Jul1 input\"; the one-day input keeps its remark \"till 27 Jul\" whole on the list card, the opened day (phone and desktop)",
+   "pics": [
+    "43-phone-day-07-29.png",
+    "47-oneday-phone-list.png",
+    "47-oneday-phone-day-07-27.png",
+    "47-oneday-desk-row.png",
+    "47-oneday-desk-window.png",
+    "47-oneday-desk-day-07-27.png"
+   ]
+  },
+  {
+   "n": "48",
+   "size": "desktop filed + edited; phone list + opened day on phone and desktop",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "two-person Meeting 27–29 Jul \"Bring ID till 29 Jul\" (window line \"Date changes apply to all 2.\"); after moving the end to 30 Jul both records end Jul 30 with remark \"Bring ID till 30 Jul\"; days 28 and 29 corner \"till 30 Jul\" remark \"Bring ID\" (phone and desktop); day 30 corner \"06:00–18:00\" remark whole; phone list card corner \"06:00–18:00 · till 30 Jul\"; no card says 29 Jul. (In the open saved window the Remarks box still read \"Bring ID till 29 Jul\" after the new end was picked and before Save; reopened it read \"Bring ID till 30 Jul\".)",
+   "pics": [
+    "48-desk-window-30jul.png",
+    "48-desk-row.png",
+    "48-desk-window.png",
+    "48-desk-day-07-28.png",
+    "48-desk-day-07-29.png",
+    "48-phone-list.png",
+    "48-phone-day-07-28.png",
+    "48-phone-day-07-29.png"
+   ]
+  },
+  {
+   "n": "49",
+   "size": "phone 390 (list + opened day) and desktop opened day",
+   "role": "Saber",
+   "verdict": "PASS",
+   "note": "14-person timed Event (09:15–11:45) with a 101-char title and 144-char remark: list card 330×160px, names wrap on 3 lines, title 1 lines, remark 4 lines; no part overlaps another or leaves the card; kind \"Event\" is uppercase grey text, no pill (look at the pictures) EYE: opened 49-phone-list-card-crop.png, 49-phone-day.png, 49-desk-day.png — all 14 names wrap on 3 lines and stay readable, title and remark wrap, hours/LATE/By stand apart; kind \"EVENT\" is small grey capitals without a pill. NOTE: the Title box stops at 40 characters (the card shows \"…full dress b\") and the Remarks box at 200, so the long title I typed was cut by the boxes, not by the card.",
+   "pics": [
+    "49-phone-list-card.png",
+    "49-phone-list-card-crop.png",
+    "49-phone-day.png",
+    "49-desk-day.png"
+   ]
+  },
+  {
+   "n": "51",
+   "size": "phone",
+   "role": "Ranger (member)",
+   "verdict": "PASS",
+   "note": "Saber-owned ordinary input opens read-only: \"Only Saber or an admin can change this.\", no Save, no Delete, stamp \"Placed by Saber · 10 Oct 26, 07:15\", typing into Remarks changed nothing; \"?\" help in the read-only window: NOT drawn; fresh + Input \"?\" opens the card. Medical input with a document: read-only \"Only Saber or an admin can change this.\", paperclip present and opens the viewer ([{\"tag\":\"IMG\",\"w\":314,\"h\":314,\"src\":\"blob:http://localhost:4233/001\"}]); nothing saved changed.",
+   "pics": [
+    "51-phone-ordinary.png",
+    "51-phone-medical.png",
+    "51-phone-document.png",
+    "51-phone-fresh-help.png"
+   ]
+  }
+ ],
+ "extras": [
+  {
+   "what": "Lit rows do not let go when a filter or a column heading is touched (brief: \"it lets go when a filter or a column heading is next touched\"). On a desktop list, after each Add: lit rows 1 → typed in Search: still 1 → Add again: 2 → typed with the keyboard: still 2 → Type filter set: 3 → Add: 4 → Name heading pressed: still 4. They only went dark by themselves after the six seconds. Seen in the pictures of 32, 33, 38, 39 (blue-framed rows after the search box had been used). Possibly the \"lets go\" applies only to a row that was force-shown through a hiding filter (the host walked that case) — the host decides.",
+   "pics": [
+    "32-desk-groups.png",
+    "38-desk-remarks.png",
+    "33-desk-sorted-asc.png"
+   ]
+  },
+  {
+   "what": "A blue tinted block lies across one row of the read-only window right after it is opened by a tap on a phone card (over the Person row of the ordinary input, over the Type row of the medical one) — in 51-phone-ordinary.png and 51-phone-medical.png. Looks like a touch highlight left over from the tap; not seen in windows opened from \"+ Input\" or from the opened day.",
+   "pics": [
+    "51-phone-ordinary.png",
+    "51-phone-medical.png"
+   ]
+  },
+  {
+   "what": "In the read-only window of a medical input (opened by Ranger on Saber's OML) the person row still shows the amber line \"You can file a medical entry only for yourself\" — a line about FILING, in a window where nothing can be filed or changed.",
+   "pics": [
+    "51-phone-medical.png"
+   ]
+  },
+  {
+   "what": "A saved input's window: after the new end date is picked the Remarks box keeps the old words (\"Bring ID till 29 Jul\") until Save; the saved remark and the reopened box then read \"till 30 Jul\". (A new input's window rewrites the box at once.) Matches the scenario 48 expectation, which is about the saved result — noted only.",
+   "pics": [
+    "48-desk-window-30jul.png"
+   ]
+  },
+  {
+   "what": "A member's Inputs list opens with the Person filter on himself (\"Ranger\"), not \"Everyone\" — scenarios 34, 35 and 42 had to set it to Everyone first. Not in the brief; noted only.",
+   "pics": [
+    "46-phone-list.png"
+   ]
+  },
+  {
+   "what": "The desktop table's cells are labelled \"Modified\" in the page (data-label) while the heading reads \"Changed\" — not visible on a desktop; noted only.",
+   "pics": []
+  }
+ ],
+ "errors": "No console error, page error or 4xx/5xx response in any of the runs (the error list was empty at the end of every script)."
+}

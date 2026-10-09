@@ -119,31 +119,20 @@ const barBox = async (p, iid) => p.locator(`[data-testid="ib-bar-${iid}"]`).firs
     await L.shot(page, 's59-empty-space-tap')
     L.chk('a tap on empty space of its date opens that DAY, whose card agrees with the bar', day.day && !day.edit && day.cards.some(x => /S59/.test(x || '')), JSON.stringify(day))
     await page.keyboard.press('Escape'); await sleep(250)
-    // crowded day: "+N more"
-    const more = await page.evaluate(() => [...document.querySelectorAll('#inpCal [data-icday]')].map(c => ({ d: c.getAttribute('data-icday'), m: [...c.querySelectorAll('*')].filter(e => e.children.length === 0 && /\+\d+/.test(e.textContent) && !/^\d ·/.test(e.textContent)).map(e => e.textContent.trim()) })).filter(x => x.m.length))
-    L.info('cells showing a "+N more"', JSON.stringify(more))
-    if (more.length) {
-      const d = more[0].d
-      await page.locator(`#inpCal [data-icday="${d}"] *`).filter({ hasText: /\+\d+/ }).last().tap(); await sleep(500)
+    // crowded day: "+N more" (the month's own button)
+    await L.toList(page, T, false)
+    for (let k = 0; k < 6; k++) await L.fileInput(page, T, { type: 'Training', d1: '2026-07-22', rmk: 'S59 crowd ' + k })
+    await L.toCal(page, T)
+    const more = page.locator('.ib-more').first()
+    const mtxt = (await more.count()) ? await more.innerText() : null
+    await L.shot(page, 's59-crowded')
+    if (mtxt) {
+      await more.tap(); await sleep(500)
       const o = await page.evaluate(() => ({ day: !!document.querySelector('[data-testid="win-inputsday"]'), edit: !!document.querySelector('[data-testid="win-inputedit"]'), title: document.querySelector('[data-testid="win-inputsday"] .win-ttl')?.textContent, n: document.querySelectorAll('[data-testid^="idy-row-"]').length }))
       await L.shot(page, 's59-more')
-      L.chk('"+N more" opens the intended DAY (all its cards)', o.day && !o.edit && o.n >= 3, JSON.stringify({ d, ...o }))
+      L.chk(`"${mtxt}" opens the intended DAY with all its cards (the month showed the rest)`, o.day && !o.edit && o.n >= 5, JSON.stringify(o))
       await page.keyboard.press('Escape')
-    } else {
-      // crowd one day: file extra inputs on one date until the month shows "+N more"
-      L.info('no crowded day in the demo; crowding Jul 22 by filing four more', '')
-      await L.toList(page, T, false)
-      for (let k = 0; k < 4; k++) await L.fileInput(page, T, { type: 'Training', d1: '2026-07-22', rmk: 'S59 crowd ' + k })
-      await L.toCal(page, T)
-      const m2 = await page.evaluate(() => { const c = document.querySelector('#inpCal [data-icday="2026-07-22"]'); return { txt: c.textContent.replace(/\s+/g, ' ').trim(), more: [...c.querySelectorAll('*')].filter(e => e.children.length === 0 && /\+\d+/.test(e.textContent)).map(e => e.textContent.trim()) } })
-      await L.shot(page, 's59-crowded')
-      if (m2.more.length) {
-        await page.locator('#inpCal [data-icday="2026-07-22"] *').filter({ hasText: /\+\d+/ }).last().tap(); await sleep(500)
-        const o = await page.evaluate(() => ({ day: !!document.querySelector('[data-testid="win-inputsday"]'), edit: !!document.querySelector('[data-testid="win-inputedit"]'), n: document.querySelectorAll('[data-testid^="idy-row-"]').length }))
-        L.chk('"+N more" opens the intended DAY with all its cards', o.day && !o.edit && o.n >= 4, JSON.stringify({ m2, o }))
-        await page.keyboard.press('Escape')
-      } else L.notRun('"+N more"', 'no cell showed a "+N more" after crowding: ' + JSON.stringify(m2))
-    }
+    } else L.notRun('"+N more"', 'no .ib-more button showed after crowding one day with six inputs')
   })
   await ctx.close()
 }

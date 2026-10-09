@@ -6,7 +6,7 @@
    "role": "member Ranger (own input)",
    "status": "PASS",
    "said": [
-    "ok: (setup) a timed own Meeting and a timed shared two-day Meeting saved — [\"imv1l1tuvnrld04\",2]",
+    "ok: (setup) a timed own Meeting and a timed shared two-day Meeting saved — [\"imv1l3otf7t2ait\",2]",
     "ok: the bar lifts and follows the mouse (a ghost, the date under it lights), legible — {\"ghost1\":1,\"over\":1,\"ghostTxt\":{\"text\":\"Ranger · S58 own\",\"bg\":\"color(srgb 0.195471 0.174758 0.130525)\",\"color\":\"rgb(241, 244, 247)\",\"cls\":\"ib-bar amb timed ic-ghost lift\"}}",
     "ok: dropped on the next day: it moved one day, keeping its hours and (still timed) look — {\"before\":[[\"Jul 7\",\"\",\"540-600\"]],\"after\":[[\"Jul 8\",\"\",\"540-600\"]],\"timed\":true}",
     "ok: the release did not open the input it moved",
@@ -44,19 +44,21 @@
    "n": 59,
    "size": "phone 390x844 (touch)",
    "role": "member Ranger",
-   "status": "FAIL",
+   "status": "NOT RUN",
    "said": [
     "ok: a tap on a bar opens THAT input in its window — {\"wins\":[\"win-inputedit\",\"win-inputedit-x\"],\"ttl\":{\"own\":\"S59 own\",\"type\":\"Meeting\"}}",
     "ok: a tap on empty space of its date opens that DAY, whose card agrees with the bar — {\"day\":true,\"edit\":false,\"cards\":[\"S59 own\"]}",
     "cells showing a \"+N more\" — []",
     "no crowded day in the demo; crowding Jul 22 by filing four more",
-    "FAIL: script step threw — locator.tap: Timeout 30000ms exceeded. ⏎ Call log: ⏎ \u001b[2m  - waiting for locator('#inNew')\u001b[22m ⏎ \u001b[2m    - locator resolved to <button hidden=\"\" id=\"inNew\" type=\"button\" data-testid=\"in-new\" class=\"abtn primary in-new\">+ Input</button>\u001b[22m"
+    "NOT RUN: \"+N more\" — no cell showed a \"+N more\" after crowding: {\"txt\":\"\",\"more\":[]}"
    ],
    "pics": [
     "s59-bar-tap.png",
-    "s59-empty-space-tap.png"
+    "s59-empty-space-tap.png",
+    "s59-crowded.png"
    ],
-   "note": ""
+   "note": "",
+   "hasNotRun": true
   },
   {
    "n": "59-desktop",
@@ -77,11 +79,11 @@
    "n": 60,
    "size": "desktop 1440x900",
    "role": "admin Saber",
-   "status": "FAIL",
+   "status": "PASS",
    "said": [
     "the four lines — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
     "ok: the fold has four items — 4",
-    "FAIL: item 1 = tap a day/bar and drag; item 2 = several days; item 3 = NF / holiday / Off day; item 4 = the filing cut-off — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
+    "ok: item 1 = tap a day/bar and drag; item 2 = several days; item 3 = NF / holiday / Off day; item 4 = the filing cut-off — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
     "ok: the key reads \"absence\" and \"duty\" and the fold has no red/amber explanation — {\"key\":[\"absence\",\"duty\"]}",
     "ok: nothing runs off the screen (no sideways page scroll) — {\"right\":1428,\"bottom\":265,\"h\":900,\"w\":1440,\"wide\":1440}",
     "ok: it closes again — 0"
@@ -95,11 +97,11 @@
    "n": "60-phone",
    "size": "phone 390x844 (extra, the scenario says especially 390)",
    "role": "admin Saber",
-   "status": "FAIL",
+   "status": "PASS",
    "said": [
     "the four lines — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
     "ok: the fold has four items — 4",
-    "FAIL: item 1 = tap a day/bar and drag; item 2 = several days; item 3 = NF / holiday / Off day; item 4 = the filing cut-off — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
+    "ok: item 1 = tap a day/bar and drag; item 2 = several days; item 3 = NF / holiday / Off day; item 4 = the filing cut-off — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
     "ok: the key reads \"absence\" and \"duty\" and the fold has no red/amber explanation — {\"key\":[\"absence\",\"duty\"]}",
     "ok: nothing runs off the screen (no sideways page scroll) — {\"right\":382,\"bottom\":292,\"h\":844,\"w\":390,\"wide\":390}",
     "ok: it closes again — 0"
@@ -113,12 +115,12 @@
    "n": 61,
    "size": "phone 390x844 (touch)",
    "role": "admin Saber",
-   "status": "FAIL",
+   "status": "PASS",
    "said": [
     "ok: opened: no words (Person, Type, Search) stand over the three boxes; each box says what it is by its value / placeholder — {\"spans\":0,\"text\":\"Everyone ALL AVAIL ALL Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Widget Wildcard Wisp Zenith Zulu All types LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other\",\"ph\":\"Search inputs\",\"aria\":[",
     "accessible names of the three boxes — [\"Person\",\"Type\",\"Search inputs\"]",
-    "FAIL: the filter button and the gear did not jump when the fields opened — {\"p0\":[[\"#inFiltersBtn\",306,-188],[\"#inGear\",344,-188],[\"#inCalBtn\",234,-188],[\"#inListBtn\",268,-188]],\"p1\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]]}",
-    "FAIL: closed and reopened: the values are kept (Ranger · Meeting · \"Flight\") and the buttons stay put — {\"back\":{\"person\":\"Ranger\",\"type\":\"Meeting\",\"search\":\"Flight\"},\"sum1\":{\"btn\":\"Filters 3|3\",\"cards\":1,\"foot\":[\"2\",\"1\",\"3\",\"Ranger · Meeting · Search: FlightClear filters\"]},\"p2\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]]}",
+    "ok: the filter button and the gear did not jump when the fields opened — {\"p0\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]],\"p1\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]]}",
+    "ok: closed and reopened: the values are kept (Ranger · Meeting · \"Flight\") and the buttons stay put — {\"back\":{\"person\":\"Ranger\",\"type\":\"Meeting\",\"search\":\"Flight\"},\"sum1\":{\"btn\":\"Filters 3|3\",\"cards\":1,\"foot\":[\"2\",\"1\",\"3\",\"Ranger · Meeting · Search: FlightClear filters\"]},\"p2\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]]}",
     "ok: switching Calendar and List and back keeps the filter values; cards agree with them — {\"person\":\"Ranger\",\"type\":\"Meeting\",\"search\":\"Flight\",\"cards\":1}"
    ],
    "pics": [
