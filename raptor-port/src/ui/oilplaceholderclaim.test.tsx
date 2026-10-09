@@ -131,6 +131,38 @@ describe('the row itself — the placeholder is never a switch', () => {
   })
 })
 
+describe('walker B’s finds (9 Oct 26) — the placeholder is never a switch ANYWHERE, and a row off the programme says so', () => {
+  it('no puck of the placeholder is an OIL switch on any panel of the board — the Personal Inputs echo included', async () => {
+    /* seen in the walk: the request’s own Personal Inputs row drew "ALL AVAIL earns nothing yet — tap to take him off
+       this event" — a switch for a puck that is nobody */
+    landed()
+    await open(SAT)
+    await click(oilBtn())
+    expect($$('[data-oilp="allavail"]'), 'no switch carries the placeholder’s id').toHaveLength(0)
+    const echo = $$('.seat.oilpk').filter(s => s.querySelector('.puck.allavail'))
+    for (const s of echo) {
+      expect(s.classList.contains('inert'), 'its puck is drawn, never as a control').toBe(true)
+      expect(s.title).toContain('the people behind it')
+      expect(s.title).not.toContain('tap to take him off')
+    }
+  })
+
+  it('the name box replaced by a named man: still no switch for the placeholder on the request’s own echo', async () => {
+    landed({}, { who: 'divot' })
+    await open(SAT)
+    await click(oilBtn())
+    expect($$('[data-oilp="allavail"]')).toHaveLength(0)
+  })
+
+  it('taken off the programme: its name no longer says "tap the count" — there is no count', async () => {
+    INPUTS.unshift({ iid: 'rq1', person: 'allavail', by: 'saber', type: 'Duty', date: 'Jul 18', yr: 2026, acc: 'r', allday: false, s: 540, e: 720, remarks: '', mod: 'now', oil: YES })
+    await open(SAT)
+    await click(oilBtn())
+    const cells = $$('.oilitem').filter(c => /tap the count/.test(c.title))
+    expect(cells, 'nothing on the board points at a count that is not there').toHaveLength(0)
+  })
+})
+
 describe('after the filer answered NO — a tap GRANTS, a second tap takes the grant away', () => {
   it('every crowd man starts OFF, a real switch, and is told whose No it is', async () => {
     landed({ oil: NO })

@@ -2,6 +2,7 @@
 import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { publish as libPublish, lwCell } from './lib.mjs'
 
 export const BASE = process.env.LOOK_URL || 'http://localhost:4232/'
 export const PICS = 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-09-all-avail-event-check/B'
@@ -73,7 +74,7 @@ export function savePart(name, extra = {}) {
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
 export async function inputsMonth(page, y = 2026, m = 6) {
   await go(page, 'inputs')
-  // calendar tab (not the List)
+  if (await page.locator('#inCalBtn').count()) { await page.locator('#inCalBtn').click(); await sleep(300) }
   for (let i = 0; i < 60; i++) {
     const t = (await page.locator('#inpCal .ic-mon').first().innerText()).trim().toLowerCase().split(/\s+/)
     const d = y * 12 + m - (+t[1] * 12 + MONTHS.findIndex(x => x.startsWith(t[0])))
@@ -85,13 +86,21 @@ export async function inputsMonth(page, y = 2026, m = 6) {
 export async function openNew(page, iso) {
   const [y, m] = iso.split('-').map(Number)
   await inputsMonth(page, y, m - 1)
+  for (let i = 0; i < 4; i++) { const x = page.locator('.floatwin .win-x:visible').first(); if (await x.count()) { await x.click(); await sleep(300) } else break }
   await page.locator(`#inpCal [data-icday="${iso}"]`).click({ position: { x: 8, y: 8 } })
   await page.locator('#icPopAdd').click()
   await page.waitForSelector('[data-testid="win-inputedit"]')
   await sleep(200)
 }
-/** File an input. opts: iso, kind, person ('allavail' | 'all' | person id | undefined), rmk, s, e, oil: 'yes'|'no'|'skip'|null
-    Returns {ok, oilShown, why, rec}. */
+export async function setTimes(page, s, e) {
+  const ad = page.locator('#inpEditAllday')
+  if (await ad.count() && await ad.isChecked()) await ad.uncheck()
+  const set = async (sel, v) => { const l = page.locator(sel).first(); if (await l.count()) { await l.fill(v); await l.blur() } }
+  if (s != null) await set('#inpEditStart', s)
+  if (e != null) await set('#inpEditEnd', e)
+}
+/** File an input through the editor window. opts: iso, kind, person ('allavail' | 'all' | person id), rmk, s, e, oil: 'yes'|'no'|'cancel'|null
+    Returns {oilShown, why, rec, winOpen}. */
 export async function fileInput(page, o) {
   await openNew(page, o.iso || '2026-07-18')
   const win = page.locator('[data-testid="win-inputedit"]')
@@ -113,37 +122,17 @@ export async function fileInput(page, o) {
   const rec = await page.evaluate(r => { const x = window.INPUTS.find(i => i.remarks === r); return x ? { iid: x.iid, person: x.person, type: x.type || x.kind, s: x.s, e: x.e, oil: x.oil, acc: x.acc } : null }, o.rmk)
   return { oilShown, why, rec, winOpen: await win.count() }
 }
-/** the time boxes of the editor window — find them whatever their ids are */
 export async function timeFields(page) {
-  return page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] input, [data-testid="win-inputedit"] select')].map(e => ({ id: e.id, name: e.name, type: e.type, v: e.value, ph: e.placeholder || '', tid: e.dataset.testid || '' })))
-}
-export async function setTimes(page, s, e) {
-  const ad = page.locator('#inpEditAllday')
-  if (await ad.count() && await ad.isChecked()) await ad.uncheck()
-  const set = async (sel, v) => { const l = page.locator(sel).first(); if (await l.count()) { await l.fill(v); await l.blur() } }
-  if (s != null) await set('#inpEditS, #inpEditStart, [data-testid="inp-start"]', s)
-  if (e != null) await set('#inpEditE, #inpEditEnd, [data-testid="inp-end"]', e)
+  return page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] input, [data-testid="win-inputedit"] select')].map(e => ({ id: e.id, type: e.type, v: e.value })))
 }
 
 /* ---- the schedule ---- */
-export async function editWeek(page) { await go(page, 'editsched') }
 export async function openBoard(page, di) {
   if (await page.locator('#schedBoard').count()) { const x = page.locator('#schedBoard').getByRole('button', { name: /Close|Done/ }).first(); if (await x.count()) { await x.click(); await sleep(500) } }
   await go(page, 'editsched')
   await page.locator(`#eWeek [data-sbday="${di}"]:visible`).first().click()
-  await page.waitForSelector('#sbBoard, #schedBoard')
+  await page.waitForSelector('#schedBoard')
   await sleep(600)
-}
-export async function dump(page, sel, n = 3000) {
-  return page.evaluate(([s, n]) => [...document.querySelectorAll(s)].map(e => e.outerHTML.slice(0, n)), [sel, n])
-}
-
-/* ---- board, OIL Earn, the crowd window, publishing, credits ---- */
-import { publish as libPublish, lwCell } from './lib.mjs'
-export async function boardDay(page, di) {
-  const open = await page.evaluate(() => (document.querySelector('#schedBoard') ? window.SBDAY : null))
-  if (open === di) return
-  await openBoard(page, di)
 }
 export async function oilOn(page, on = true) {
   const pressed = async () => (await page.locator('#sbOil').getAttribute('aria-pressed')) === 'true'
@@ -177,28 +166,71 @@ export async function seatTitle(page, pid) {
   return page.locator(`.availwin .seat.oilpk[data-oilp="${pid}"]`).first().getAttribute('title')
 }
 export async function closeWin(page) { const x = page.locator('.availwin .win-x'); if (await x.count()) { await x.first().click(); await sleep(300) } }
-/** sign the four and publish the day open on the board; returns the version chip */
-export async function pubDay(page, di) {
-  const r = await libPublish(page, di)
-  return r
-}
-/** a figure per person off the Leave War grid, then back to the schedule */
+/** sign the four and publish the day open on the board */
+export async function pubDay(page, di) { return libPublish(page, di) }
+/** a figure per person off the Leave War grid */
 export async function credits(page, ids, iso = '2026-07-18') {
   const out = await lwCell(page, ids, iso)
   const o = {}
   for (const [k, v] of Object.entries(out)) o[k] = typeof v === 'string' ? v : v.text
   return o
 }
-/** press the OIL chip of a List row for an input and answer */
-export async function reanswer(page, iid, ans) {
+/** a real reload WITHOUT ?fresh=1 (a fresh world keeps nothing); signs in again if the page asks */
+export async function reload(page, who = 'ad') {
+  await page.goto(BASE)
+  await page.addStyleTag({ content: '*{scroll-behavior:auto !important}' })
+  await sleep(600)
+  if (await page.locator('#luser').count()) await signIn(page, who)
+  await sleep(500)
+}
+export async function undoRedo(page, which) {
+  // a first press of Undo in OIL Earn only leaves the mode (seen 9 Oct 26) — leave it by its own button first
+  if ((await page.locator('#sbOil').getAttribute('aria-pressed')) === 'true') { await page.locator('#sbOil').click(); await sleep(600) }
+  const b = page.locator('#schedBoard').getByRole('button', { name: which === 'undo' ? /Undo/ : /Redo/ }).first()
+  await b.click(); await sleep(700)
+}
+/** open the Inputs List with every date shown */
+export async function listAll(page) {
   await go(page, 'inputs')
   await page.locator('#inListBtn').click(); await sleep(500)
-  const row = page.locator(`[data-iid="${iid}"]`)
-  // the List's rows carry the input index, not the id — find the OIL chip of the row whose remarks match
-  const r = await page.evaluate(i => { const x = window.INPUTS.find(v => v.iid === i); return x ? x.remarks : null }, iid)
-  const tr = page.locator('tr', { hasText: r }).first()
-  const chip = tr.locator('.roil').first()
-  await chip.click(); await sleep(400)
+  if (!(await page.locator('#inRangeAll').count())) { const b = page.getByRole('button', { name: /→/ }).first(); if (await b.count()) { await b.click(); await sleep(300) } }
+  const all = page.locator('#inRangeAll'); if (await all.count()) { await all.first().click(); await sleep(400) }
+}
+/** press the OIL chip of a List row for an input and answer */
+export async function reanswer(page, iid, ans) {
+  await listAll(page)
+  const tr = page.locator(`tr[data-iid="${iid}"]`).first()
+  await tr.locator('.roil').first().click(); await sleep(400)
   await tid(page, ans === 'yes' ? 'oil-yes' : 'oil-no').click()
   await tid(page, 'oilconf-save').click(); await sleep(500)
+}
+
+/** the "Who's available" tab of the open window: the set of men listed (data-awp) and the count chip */
+export async function availSet(page) {
+  return page.evaluate(() => {
+    const w = document.querySelector('.availwin')
+    if (!w) return null
+    return { ids: [...w.querySelectorAll('[data-awp]')].map(e => e.dataset.awp), tabs: [...w.querySelectorAll('.win-tab')].map(t => t.innerText.replace(/\s+/g, ' ').trim()), one: (w.querySelector('.win-one') || {}).innerText || '', text: w.innerText.replace(/\s+/g, ' ').slice(0, 300) }
+  })
+}
+/** warnings as listed in the day's warning list (its text lines) */
+export async function warnLines(page) {
+  return page.evaluate(() => { const s = document.querySelector('#sbSide'); return s ? s.innerText.split(/\n/).map(x => x.trim()).filter(Boolean).slice(0, 14) : null })
+}
+/** type into one of the board's Personal Inputs fields (data-ifld="<iid>.str|end|rmks") */
+export async function typeIfld(page, iid, fld, v) {
+  const l = page.locator(`#schedBoard [data-ifld="${iid}.${fld}"]`).first()
+  await l.scrollIntoViewIfNeeded(); await l.click(); await l.fill(v); await l.blur(); await sleep(500)
+}
+
+/** a real finger over CDP: touchStart, touchMove (in steps), touchEnd */
+export async function touchDrag(page, x1, y1, x2, y2, steps = 14, holdMs = 0) {
+  const c = await page.context().newCDPSession(page)
+  const pt = (x, y) => [{ x: Math.round(x), y: Math.round(y), id: 1 }]
+  await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pt(x1, y1) })
+  if (holdMs) await sleep(holdMs)
+  for (let i = 1; i <= steps; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: pt(x1 + (x2 - x1) * i / steps, y1 + (y2 - y1) * i / steps) }); await sleep(18) }
+  await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await c.detach().catch(() => {})
+  await sleep(300)
 }

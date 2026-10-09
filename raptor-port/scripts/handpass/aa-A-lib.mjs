@@ -79,7 +79,15 @@ export async function toMonth(page, year, mon0) {
     await page.waitForTimeout(120)
   }
 }
+export async function closeWins(page) {
+  for (let i = 0; i < 4; i++) {
+    const x = page.locator('[data-testid="win-inputsday-x"]:visible, [data-testid="win-inputedit-x"]:visible').first()
+    if (!(await x.count())) break
+    await x.click().catch(() => {}); await page.waitForTimeout(250)
+  }
+}
 export async function openDay(page, iso) {
+  await closeWins(page)
   const [y, m] = iso.split('-').map(Number)
   await toMonth(page, y, m - 1)
   await page.locator(`#inpCal [data-icday="${iso}"]`).click({ position: { x: 8, y: 8 } })
@@ -135,7 +143,12 @@ export async function listAll(page) {
   // the popup closes on an outside press
   await page.mouse.click(700, 880); await page.waitForTimeout(250)
 }
+export async function ensureFilters(page) {
+  if (!(await page.locator('#inFPerson').isVisible().catch(() => false))) { await page.locator('#inFiltersBtn').click(); await page.waitForTimeout(350) }
+}
+export async function setPerson(page, value) { await ensureFilters(page); await page.selectOption('#inFPerson', value); await page.waitForTimeout(350) }
 export async function listSearch(page, text) {
+  await ensureFilters(page)
   const s = page.locator('input[placeholder="Search inputs"]:visible').first()
   await s.fill(text); await page.waitForTimeout(350)
 }
@@ -155,6 +168,33 @@ export async function membersSwitch(page, on) {
   const state = await page.locator(T('iset-memberfile')).isChecked()
   await page.locator(T('iset-cancel')).click(); await page.waitForTimeout(300)
   return state
+}
+/** Admin, on the Inputs page: declare a date a public holiday (or Off day) through Calendar... > Holidays > + Add. */
+export async function declareHoliday(page, iso, kind = 'ph', name = 'Walk holiday') {
+  const [y, m] = iso.split('-').map(Number)
+  await page.locator('#inGear').click(); await page.waitForTimeout(400)
+  await page.locator(T('iset-days')).click(); await page.waitForTimeout(600)
+  await page.locator(T('days-tab-holidays')).click(); await page.waitForTimeout(400)
+  await page.locator(T('hol-add')).click(); await page.waitForTimeout(500)
+  await page.locator(T('hol-kind-' + kind)).click()
+  await page.locator(T('hol-name')).fill(name)
+  for (let i = 0; i < 24; i++) {
+    const lab = (await page.locator(T('holcal-month')).innerText()).trim().toLowerCase()
+    const [mn, yy] = lab.split(/\s+/)
+    const d = y * 12 + (m - 1) - (+yy * 12 + MONTHS.findIndex(x => x.startsWith(mn)))
+    if (!d) break
+    await page.locator(T(d > 0 ? 'holcal-next-month' : 'holcal-prev-month')).click(); await page.waitForTimeout(120)
+  }
+  const day = page.locator(T('holcal-day-' + iso))
+  await day.click(); await page.waitForTimeout(150); await day.click(); await page.waitForTimeout(250)
+  const sel = await page.locator(T('holcal-selection')).innerText().catch(() => '')
+  await page.locator(T('hol-save')).click(); await page.waitForTimeout(800)
+  // close the Calendar window and the settings window
+  for (const x of await page.locator('[data-testid="win-days"] .win-x, [data-testid="win-days"] button[aria-label="Close"]').all()) await x.click().catch(() => {})
+  await page.waitForTimeout(300)
+  const cancel = page.locator(T('iset-cancel')); if (await cancel.count()) await cancel.click().catch(() => {})
+  await page.waitForTimeout(300)
+  return sel
 }
 /** Leave the in-row pencil editor without saving: go to the Calendar and back to the List. */
 export async function closeRowEdit(page) {

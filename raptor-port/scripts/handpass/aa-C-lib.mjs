@@ -42,6 +42,7 @@ export async function calTo(page, y, m) {
   }
 }
 export async function openDay(page, iso) {
+  { const x = page.locator('#icPopClose:visible, button.win-x[aria-label^="Close"]:visible').first(); if (await x.count()) { await x.click(); await sleep(400) } }
   const [y, m] = iso.split('-').map(Number)
   await calTo(page, y, m - 1)
   await page.locator(`#inpCal [data-icday="${iso}"]`).click({ position: { x: 8, y: 8 } })
@@ -235,4 +236,106 @@ export async function changePerson(page, iso, rmk, person, oil) {
   const r = await answerOil(page, oil)
   await closeWins(page)
   return r
+}
+
+/** Drag an input's bar on the Inputs month onto another date (real mouse). */
+export async function moveBar(page, iid, toIso) {
+  await inputsPage(page)
+  const [y, m] = toIso.split('-').map(Number); await calTo(page, y, m - 1)
+  const bar = page.locator(`[data-testid="ib-bar-${iid}"]`).first()
+  await bar.scrollIntoViewIfNeeded()
+  const b = await bar.boundingBox()
+  const cell = page.locator(`#inpCal [data-icday="${toIso}"]`).first()
+  const c = await cell.boundingBox()
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b.x + b.width / 2 + 6, b.y + b.height / 2 + 6, { steps: 4 })
+  await page.mouse.move(c.x + c.width / 2, c.y + c.height / 2 + 10, { steps: 14 })
+  await sleep(150)
+  await page.mouse.up(); await sleep(600)
+  return await page.evaluate(i => { const x = window.INPUTS.find(r => r.iid === i); return x && { date: x.date, endDate: x.endDate, oil: x.oil } }, iid)
+}
+
+/** Press an accepted request's "Take off" (data-acc="x") in the board's Personal Inputs panel. */
+export async function takeOff(page, di, iid) {
+  await board(page, di)
+  await L.openInputs(page, di)
+  const b = page.locator(`#schedBoard [data-acc="x"][data-acck="${iid}"]:visible`).first()
+  if (!(await b.count())) return { pressed: false, why: 'no Take off button for ' + iid }
+  const label = ((await b.innerText()) + ' / ' + (await b.getAttribute('title'))).trim()
+  await b.evaluate(e => e.scrollIntoView({ block: 'center' })); await b.click(); await sleep(700)
+  await closeBoard(page)
+  return { pressed: true, label }
+}
+export const lastIid = (page, rmk) => page.evaluate(r => { const a = window.INPUTS.filter(i => i.remarks === r); return a.length ? a[a.length - 1].iid : null }, rmk)
+
+const HM = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+async function openHolidays(page) {
+  await go(page, 'leavewar'); await sleep(1000)
+  await page.locator('[data-testid="settings-open"]').click(); await sleep(400)
+  await page.locator('[data-testid="settings-days"]').click(); await sleep(700)
+  await page.locator('[data-testid="days-tab-holidays"]').click(); await sleep(400)
+}
+/** Declare a date a public holiday through Leave War gear -> Calendar... -> Holidays -> + Add. */
+export async function declarePH(page, iso) {
+  await openHolidays(page)
+  await page.locator('[data-testid="hol-add"]').click(); await sleep(400)
+  await page.locator('[data-testid="hol-kind-ph"]').click()
+  const at = async () => { const [m, y] = (await page.locator('[data-testid="holcal-month"]').textContent()).trim().toLowerCase().split(/\s+/); return +y * 12 + HM.indexOf(m) }
+  let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - await at()
+  for (; d > 0; d--) await page.locator('[data-testid="holcal-next-month"]').click()
+  for (; d < 0; d++) await page.locator('[data-testid="holcal-prev-month"]').click()
+  await page.locator(`[data-testid="holcal-day-${iso}"]`).click(); await sleep(200)
+  await page.locator('[data-testid="hol-save"]').click(); await sleep(700)
+  const said = await page.evaluate(() => (document.querySelector('[data-testid="hol-saved"], [data-testid="hol-err"]') || {}).innerText || '')
+  await page.keyboard.press('Escape'); await sleep(300)
+  return said
+}
+/** Delete the holiday line that mentions `words` (e.g. '15 Jul'). */
+export async function removePH(page, words) {
+  await openHolidays(page)
+  const line = page.locator('[data-testid="hol-list"] > *', { hasText: words }).first()
+  if (!(await line.count())) return 'no such line'
+  await line.click(); await sleep(500)
+  await page.locator('[data-testid="hol-delete"]').click(); await sleep(700)
+  return 'deleted'
+}
+/** Open the bell and return what it lists. */
+export async function bellText(page) {
+  await page.locator('button.bellbtn:visible').first().click(); await sleep(600)
+  const t = await page.evaluate(() => { const e = document.querySelector('.bellpanel, .notifs, [data-testid*="bell"], .bellpop'); return e ? e.innerText.replace(/\s+/g, ' ').slice(0, 500) : null })
+  return t
+}
+
+/** Change a saved input's end time (and re-answer if the question comes back). */
+export async function changeEnd(page, iso, rmk, end, oil) {
+  await openSaved(page, iso, rmk)
+  await page.fill('#inpEditEnd', end)
+  await page.locator('#inpEditSave').click(); await sleep(500)
+  const r = await answerOil(page, oil)
+  await closeWins(page)
+  return r
+}
+
+const MON3 = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+/** Jump the edit week to the week holding an ISO date through the week calendar button ("Jump to a date"). */
+export async function jumpWeek(page, iso) {
+  await go(page, 'editsched'); await sleep(300)
+  await page.locator('.wk-cal:visible').first().click(); await sleep(500)
+  const [y, m, d] = iso.split('-').map(Number)
+  const head = async () => await page.evaluate(() => { const e = [...document.querySelectorAll('div,span,b')].find(x => x.offsetParent && x.children.length === 0 && /^[A-Za-z]{3} \d{4}$/.test((x.textContent || '').trim())); return e ? e.textContent.trim().toUpperCase() : '' })
+  for (let i = 0; i < 24; i++) {
+    const [mm, yy] = (await head()).split(' ')
+    const diff = y * 12 + (m - 1) - (+yy * 12 + MON3.indexOf(mm))
+    if (!diff) break
+    await page.locator(diff > 0 ? 'button:has-text("›")' : 'button:has-text("‹")').last().click(); await sleep(250)
+  }
+  await page.locator('button', { hasText: new RegExp('^' + d + '$') }).filter({ visible: true }).first().click(); await sleep(900)
+}
+/** Archive a man through Admin -> Users -> his row -> Archive (from today). */
+export async function archivePerson(page, pid) {
+  await go(page, 'admin'); await sleep(500)
+  if (!(await page.locator('#accList:visible').count())) { await page.getByText('Sign-in and roster').first().click(); await sleep(600) }
+  await page.locator(`#accList [data-person="${pid}"]`).first().click(); await sleep(400)
+  await page.getByRole('button', { name: 'Archive', exact: true }).first().click(); await sleep(700)
 }

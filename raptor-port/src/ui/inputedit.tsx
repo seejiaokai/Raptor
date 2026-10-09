@@ -1284,7 +1284,10 @@ export function reassignInput(iid: any, personId: any) {
      a drag or an armed tap can reach here with one even though the dialog's
      own Person field can never offer it. "Unavailable" describes a real
      person's day; a placeholder has no day to describe. */
-  if (!PEOPLE[personId] || isSpecial(personId)) return false
+  if (!PEOPLE[personId]) return false
+  /* …and it SAYS so (walker B of the ALL AVAIL check, 9 Oct 26: the drop was refused with no words at all — a gesture
+     the palette invites, declined in silence) */
+  if (isSpecial(personId)) { HOOKS.toast(`Unavailable is a real person’s day — ${PEOPLE[personId].cs} cannot take it`, 'warn'); return false }
   /* …AND A PLACEHOLDER IS NEVER THE SOURCE EITHER ([INPUT-ALL-AVAIL]; both first-round plan readers, 9 Oct 26). An input
      filed for ALL AVAIL / ALL carries the filer's one OIL answer for everyone behind it (D711 (1)); dragging a man onto
      it would turn it into that man's own input by a gesture that asks nothing. Its own window is the one door. */

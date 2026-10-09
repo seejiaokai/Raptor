@@ -567,8 +567,12 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
     if (claim && (claim.stand === 'active' || claim.stand === 'unlanded')) {
       /* AN INPUT FILED FOR ALL AVAIL / ALL HAS NO PUCK OF A MAN ON ITS ROW TO TAP ([INPUT-ALL-AVAIL]): the people behind
          it are in the window its count opens (D38), each starting where the filer's answer puts him (D711 (1)) */
+      /* …and one TAKEN OFF the programme has no row and so no count to tap (walker B, 9 Oct 26: its Personal Inputs
+         line still said "tap the count") — it says what is true of it */
       if (isSpecial(claim.person))
-        return `<span class="${cls} oilitem none" title="This request follows the answer of whoever filed it — tap the count to switch one person">${esc(txt) || '&nbsp;'}</span>`
+        return claim.acc === 'r'
+          ? `<span class="${cls} oilitem none" title="This request is off the programme, so nobody earns from it">${esc(txt) || '&nbsp;'}</span>`
+          : `<span class="${cls} oilitem none" title="This request follows the answer of whoever filed it — tap the count to switch one person">${esc(txt) || '&nbsp;'}</span>`
       return `<span class="${cls} oilitem none" title="A request is answered for each person on it — tap a puck on this row, not the row itself">${esc(txt) || '&nbsp;'}</span>`
     }
     /* A START AND NO END ([ALLAVAIL-OPEN-ROW], D360): not "nothing can earn" — it could, once it has an end. Its crowd is
@@ -667,6 +671,12 @@ export function inertWhy(di: any, item: string): string {
 export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) => string): string {
   const p = (PEOPLE as any)[person]
   if (!p) return ''
+  /* A PLACEHOLDER IS NEVER A SWITCH ([INPUT-ALL-AVAIL]; walker B of its check, 9 Oct 26). An input filed for ALL AVAIL /
+     ALL carries the placeholder as its PERSON, and the request's own line under Personal Inputs draws that person's
+     puck through here — so it came out as a man's switch: "ALL AVAIL earns nothing yet — tap to take him off this
+     event". It is nobody, it is never credited (engine/oilev.ts oilEarnedWork), and a tap wrote a decision about
+     nobody. Its puck is drawn; the men behind it are switched in the window its count opens. */
+  if (isSpecial(person)) return `<span class="seat oilpk inert" title="${esc(p.cs)} — the people behind it are switched in the window its count opens">${pk(null)}</span>`
   const eligible = oilEligible(di, person, item)
   if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(inertWhy(di, item))}">${pk(null)}</span>`
   /* UNDER A MASK THE PUCK IS NOT A CONTROL. The old markup left it tappable and

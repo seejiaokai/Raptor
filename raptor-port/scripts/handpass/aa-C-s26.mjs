@@ -1,0 +1,42 @@
+// S26 - a fresh rule change cannot recalculate an already-issued day silently (desktop, admin)
+const C = await import('./aa-C-lib.mjs')
+const { world, shot, sleep, go, fileInput, pubSat, closeBoard, editWeek, face, fs, cr, crS, undoRedo, reload, signDay, pend, pendListText } = C
+const say = (k, v) => console.log(k, '::', typeof v === 'string' ? v : JSON.stringify(v))
+const SAT = '2026-07-18'
+async function setThreshold(page, v) {
+  await go(page, 'logic'); await sleep(600)
+  await page.getByRole('button', { name: /Edit rules/ }).click(); await sleep(400)
+  await page.locator('#lgSearch').fill('OIL'); await sleep(500)
+  const inp = page.locator('input[type=text]:visible, input:not([type]):visible').filter({ hasNot: page.locator('#lgSearch') })
+  const all = await page.evaluate(() => [...document.querySelectorAll('input')].filter(e => e.offsetParent && !e.id).map(e => e.value))
+  const idx = all.findIndex(x => /^\d+h\d\d$/.test(x))
+  const box = page.locator('input:visible:not([id])').nth(idx)
+  const before = await box.inputValue()
+  await box.fill(v); await box.press('Tab'); await sleep(600)
+  return { before, after: await box.inputValue(), all }
+}
+const w = await world(); const { page } = w
+await fileInput(page, { iso: SAT, kind: 'Duty', person: 'allavail', s: '09:00', e: '16:00', rmk: 'S26 duty', oil: 'yes' })
+await go(page, 'editsched'); await pubSat(page, 5); await closeBoard(page)
+say('1 issued', fs(await face(page, 5))); say('1 credits (FO each: 7h over 6h threshold)', crS(await cr(page, SAT)))
+await go(page, 'editsched'); await editWeek(page); await signDay(page, 5, 3)
+say('2 set threshold 8h00', await setThreshold(page, '8h00'))
+await shot(page, 'S26-01-logic-set')
+await go(page, 'editsched'); await sleep(500)
+say('2 face (pending expected)', fs(await face(page, 5))); say('2 credits (issued: FO unchanged)', crS(await cr(page, SAT)))
+say('2 pend list', await pendListText(page))
+await editWeek(page)
+await page.locator('#eWeek [data-pendlist="5"]:visible').first().click().catch(() => {}); await sleep(800)
+await shot(page, 'S26-02-pending-window')
+say('2 window text', await page.evaluate(() => [...document.querySelectorAll('.floatwin, [data-testid*="win-chg"]')].filter(e => e.offsetParent).map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 500)).join(' || ')))
+await page.keyboard.press('Escape'); await sleep(300)
+// replay check of the setting
+say('3 undo', await undoRedo(page, 'undo')); say('3 after undo', fs(await face(page, 5))); say('3 credits', crS(await cr(page, SAT)))
+say('3 threshold value now', await page.evaluate(() => 'n/a'))
+say('3 redo', await undoRedo(page, 'redo')); say('3 after redo', fs(await face(page, 5)))
+await reload(page); await go(page, 'editsched'); await sleep(300)
+say('3 after reload', fs(await face(page, 5))); say('3 credits', crS(await cr(page, SAT)))
+await go(page, 'editsched'); say('4 AL1', await pubSat(page, 5)); await closeBoard(page)
+say('4 face', fs(await face(page, 5))); say('4 credits (HO each expected)', crS(await cr(page, SAT)))
+await shot(page, 'S26-03-al1-credits')
+say('errors', w.errors); await w.browser.close()

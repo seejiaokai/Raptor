@@ -403,6 +403,8 @@ describe('the schedule\'s own doors', () => {
     await act(async () => { ok = reassignInput(named.iid, 'allavail') })
     expect(ok, 'a placeholder as the DESTINATION').toBe(false)
     expect(world()).toBe(was2)
+    /* …and it says why (walker B, 9 Oct 26: the drop was refused with no words at all) */
+    expect(said.join(' | ')).toContain('Unavailable is a real person')
   })
 
   it('"→ Unavail" refuses a placeholder input: Unavailable describes a real person\'s day', async () => {

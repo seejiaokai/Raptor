@@ -1,0 +1,35 @@
+// S28 second half: editing a named group — can its selection be replaced with a placeholder? (phone, admin)
+import { closeWins, world, closeAll, toInputs, openNew, openDay, setTimes, pic, T, oilAnswer, sleep, readInputs, observe, undoState } from './aa-A-lib.mjs'
+const w = await world({ who: 'ad', size: 'p' })
+const page = w.page
+await toInputs(page)
+await openNew(page, '2026-07-16')
+await page.selectOption('#inpEditType', 'Duty')
+await page.locator('#inpEditPop ' + T('pp-several')).click(); await sleep(400)
+for (const p of ['dj', 'shaft']) { const b = page.locator(`#inpEditPop [data-pp="${p}"]`).first(); await b.scrollIntoViewIfNeeded(); await b.click(); await sleep(200) }
+await page.fill('#inpEditRmk', 'walkS28 group')
+await page.locator('#inpEditSave').click(); await sleep(700)
+console.log('group filed:', JSON.stringify((await readInputs(page, 'walkS28 group')).map(r => r.name)))
+await closeWins(page)
+await openDay(page, '2026-07-16')
+const rows = await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputsday"] .sd-row')].map(r => r.getAttribute('data-popiid') + ' :: ' + r.innerText.replace(/\s+/g, ' ').slice(0, 80)))
+console.log(rows.join('\n'))
+
+await page.locator('[data-testid="win-inputsday"] .sd-row').filter({ hasText: 'walkS28 group' }).locator('.sd-open').click(); await sleep(800)
+await pic(page, 's28b-1-group-editor')
+const info = await page.evaluate(() => { const p = document.querySelector('#inpEditPop'); if (!p) return null; return { title: document.querySelector('#inpEditTitle')?.innerText, severalSwitch: !!p.querySelector('[data-testid="pp-several"]'), severalOn: p.querySelector('[data-testid="pp-several"]')?.getAttribute('aria-checked'), phPucks: p.querySelectorAll('[data-pp="allavail"],[data-pp="all"]').length, phOptions: p.querySelectorAll('option[value=allavail], option[value=all]').length, personSelect: !!p.querySelector('#inpEditPerson'), pucks: [...p.querySelectorAll('[data-pp]')].length, text: p.innerText.replace(/\s+/g, ' ').slice(0, 300) } })
+console.log('group editor:', JSON.stringify(info))
+// try turning Several off to reach the one-person list
+const sw = page.locator('#inpEditPop ' + T('pp-several'))
+if (await sw.count()) { await sw.click(); await sleep(500); await pic(page, 's28b-2-several-off')
+  console.log('after Several off:', JSON.stringify(await page.evaluate(() => { const p = document.querySelector('#inpEditPop'); const s = p.querySelector('#inpEditPerson'); return { personSelect: !!s, value: s?.value, phOptions: p.querySelectorAll('option[value=allavail], option[value=all]').length, why: p.querySelector('[data-testid="pp-why"]')?.innerText.replace(/\s+/g, ' ') || null } })))
+  const s = page.locator('#inpEditPop #inpEditPerson')
+  if (await s.count()) { await s.selectOption('allavail').catch(e => console.log('select placeholder failed', String(e).slice(0, 100))); await sleep(400); await pic(page, 's28b-3-placeholder-chosen')
+    console.log('why after choosing placeholder:', await page.locator(T('pp-why')).first().innerText().catch(() => null))
+    const n0 = await page.evaluate(() => window.INPUTS.length); const g0 = JSON.stringify((await readInputs(page, 'walkS28 group')).map(r => r.name))
+    await page.locator('#inpEditSave').click(); await sleep(700)
+    console.log('Save ->', 'OIL q:', await page.locator(T('oilconf')).isVisible().catch(() => false), '| messages', JSON.stringify((await observe(page)).msgs.slice(0, 3)), '| inputs', n0, await page.evaluate(() => window.INPUTS.length), '| group before', g0, 'after', JSON.stringify((await readInputs(page, 'walkS28 group')).map(r => r.name)))
+    await pic(page, 's28b-4-after-save')
+  } }
+console.log('errs', JSON.stringify(w.errs))
+await closeAll()
