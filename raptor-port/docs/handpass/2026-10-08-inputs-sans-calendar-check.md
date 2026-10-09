@@ -893,3 +893,17 @@ is that test (an all-day and a timed input) and both calendars' whole browser-te
 first line is the same rule: its puck and letters are short and are unchanged (its tests pass).
 
 **The gates after §24 (9 Oct 26, `a1f13dae`, the whole set under the PC lock, nothing else running): WHOLLY GREEN — unit 9371 / 9371 (564 files) · build clean · tfin 728 / 0 · e2e 725 passed, 0 failed, 56 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.**
+
+## 25. Found by the pull request's own checks: the Leave War's phone header wrapped to a third line in wider letters (9 Oct 26)
+
+On his "merge live" the pull request's checks ran on GitHub's machines for the first time for this job (they had run
+on his PC). One failed: two Leave War phone tests — the second line of the header (the stage, the bidding dates,
+under-manned, Legend; D678) was three lines there. **Cause:** the app loads no font; GitHub's machines draw the same
+words about a seventh wider than this PC, and the line had 15 to spare. So would any phone whose letters are wider.
+**Reproduced on this PC as a failing test first** by forcing wide letters (`e2e/leavewar.spec.ts`, "with wide
+letters…"). **The fix:** the line no longer wraps, and the stage's NAME is the one thing that gives way — cut with
+"…", its small arrow kept — as the callsign is on line 1; the dates, the count and Legend are never cut. With this
+PC's letters nothing looks different. **Tier: LOOK taken as WALK**; the walk is the Leave War's whole browser-test file,
+phone and desktop: 330 passed, 46 skipped (the other size's tests). **Not merged until the pull request's checks are
+green on this.**
+

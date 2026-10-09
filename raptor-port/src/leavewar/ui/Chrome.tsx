@@ -386,14 +386,15 @@ export function StageBar() {
           title="Move this period to another stage"
           onClick={() => setStageOpen(o => !o)}
         >
-          {stageLabel(period.stage)}
+          {/* its words in a box of their own: on a phone they are the one thing on the line that gives way (chrome.css) */}
+          <span className="stagetxt">{stageLabel(period.stage)}</span>
         </button>
       ) : (
         <span
           className={`fchip${period.stage === 'open' ? ' stage-open' : ''}`}
           data-testid="stage-now"
         >
-          {stageLabel(period.stage)}
+          <span className="stagetxt">{stageLabel(period.stage)}</span>
         </span>
       )}
       {/* The control sits beside the stage it moves, so the strip reads as one thing rather than as a label and an

@@ -9454,6 +9454,10 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **The Leave War's phone header (D678) holds its two lines in ANY system letters:** line 2 does not wrap; the stage's
+  name (`.stagetxt`, `leavewar/ui/chrome.css`) is the one thing that gives way, cut with "…", its arrow kept. Found when
+  the pull request's checks ran on GitHub's machines, whose letters are wider (9 Oct 26). Pinned by
+  `e2e/leavewar.spec.ts` ("with wide letters…").
 - **A card's first line in an opened day (both calendars): the name and what it is take the room the LATE tag and the hours
   leave — a long kind is cut with "…" where the hours begin, never printed over them** (found on a walk, 9 Oct 26; `.sd-row`
   is `minmax(0,1fr) auto auto`, 24-sans-calendar.css). Pinned by `e2e/inputs-calendar.spec.ts` ("a long kind…").
