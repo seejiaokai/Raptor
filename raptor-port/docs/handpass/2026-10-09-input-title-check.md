@@ -5,8 +5,9 @@ Host and builder: Opus 5.5. The plan (`docs/superpowers/plans/2026-10-09-input-o
 by Sol 6.1, each blind, before the build: both "CLEAN WITH THESE EXACT CHANGES" — its §8 says what each found and what
 was done. Scenario design: Astra. Code reads: Astra and Sol 6.1, each blind (D590).
 
-**STATE OF THIS SHEET: OPEN — the walkers' share (§5.2), the gates (§7), the two code reads (§6) and his look card (§8)
-are filled as each is done. A section that says "to do" has not been done.**
+**STATE OF THIS SHEET: CLOSED but for his look (§8).** Fifteen faults of this change found and fixed, each with a test
+that was red first or a measured browser check — eight by the walk (W0–W7), three by Astra's read of the code, four by
+Sol's; ten older small finds filed, not fixed; the gates wholly green on the last code (§7).
 
 ## 0. Questions waiting for him
 
@@ -57,9 +58,9 @@ failing test first → the re-walk → his look (§8).
 | D717 | the kind kept in sight: under the title on the schedule's row; on the day card's small-print line | T5, T10, T12, P2, P3, P4 | PASS — with reading 1 of §0 |
 | D713, D714 | Event's rules come from its kind | T16; `engine/scshift-inputs.test.ts` (a title's words decide nothing) | PASS |
 | D711, D702 | an input for ALL AVAIL / ALL: its kinds, one day, the filer's one OIL answer | T3 (titled, for ALL AVAIL: one record, the question asked once, headed by the title) | PASS |
-| D660, D655, D682 | a shared input is one thing for everyone in it | `ui/inputtitle.test.tsx` (the title reaches every record; typed back, every record loses it); walker A's 6, 12, 13 | to do (walkers) |
-| D178, D103 | an input change after publishing is pending; the sign-offs fall | `ui/latepub.test.tsx` (five cases); walker B's 28–34 | to do (walkers) |
-| D45 | nothing on a published schedule changes without the scheduler acknowledging it | the issued face keeps the issued name — `ui/latepub.test.tsx`; walker B | to do (walkers) |
+| D660, D655, D682 | a shared input is one thing for everyone in it | `ui/inputtitle.test.tsx` (the title reaches every record; typed back, every record loses it); walker A's 6, 12, 13 | PASS (the walkers, §5.2) |
+| D178, D103 | an input change after publishing is pending; the sign-offs fall | `ui/latepub.test.tsx` (five cases); walker B's 28–34 | PASS (the walkers, §5.2) |
+| D45 | nothing on a published schedule changes without the scheduler acknowledging it | the issued face keeps the issued name — `ui/latepub.test.tsx`; walker B | PASS (the walkers, §5.2) |
 | D629, D701 | the day card's small print: who placed it | T5 (the kind heads the line, the placed-by print keeps its place at the right) | PASS |
 | D56 | harm only in stored demo data is no finding | §0 reading 2 | noted |
 | D29 | a change under `src/` never trims a document | the document check: over its tripwire, deferred | noted |
@@ -77,29 +78,29 @@ No new ruling contradicts or narrows an older one except as §0's reading 1 says
 | 1 | The input's window — new | the Title box | Type box | YES | host T1–T3, P1 (pictures `t1`, `p1`) |
 | 2 | The input's window — a saved input | the Title box, seeded | Type box | YES | host T9 (typed, Undo, Redo) |
 | 3 | The input's window — read only (another man's) | shown, inert | Type | must not: nothing can be typed or saved | host M2 (picture `m2`) |
-| 4 | The List's Add form | the Title box | Type | YES | `ui/inputtitle.test.tsx` presses it; walker A (5–7 name the doors) — to do |
+| 4 | The List's Add form | the Title box | Type | YES | `ui/inputtitle.test.tsx` presses it; walker A (5–7 name the doors) (§5.2) |
 | 5 | The List's rows | bold, above the kind | the Type cell | no | host T7 (picture `t7`) |
 | 6 | The List's pencil editor | a Title box under Type | Type | YES | host T8 (picture `t8`) |
 | 7 | The month's bar (desktop) | YES | must not — no room; said in its tip | no | host T4 (picture `t4`) |
-| 8 | The month's bar (phone) | must not — the person only, as before | — | no | walker A — to do |
+| 8 | The month's bar (phone) | must not — the person only, as before | — | no | walker A (§5.2) |
 | 9 | The opened day's card | YES | head of the small-print line | no (opens 1) | host T5, P2 (pictures `t5`, `p2`) |
 | 10 | Edit Schedule's week — the Ground Programme row | YES (the row's name) | under the name | no — the name cell is the scheduler's | host T10, T11, P3 (pictures `t10`, `p3`) |
-| 11 | View-only Sched — the same row | YES | under the name | must not | host T15 (picture `t15`); the ISSUED face: walker B — to do |
+| 11 | View-only Sched — the same row | YES | under the name | must not | host T15 (picture `t15`); the ISSUED face: walker B (§5.2) |
 | 12 | The Scheduler Board — the same row | YES | under the name box | no | host T12, P4 (pictures `t12`, `p4`) |
-| 13 | The board in OIL Earn | YES (the item cell) | must not — the cell is the item's switch | no | host T13 (picture `t13`); walker C's 59 — to do |
-| 14 | Personal Inputs card — the week | YES | after the name | no (opens 1) | `ui/inputtitle-row.test.tsx`; walker A's 22 — to do |
+| 13 | The board in OIL Earn | YES (the item cell) | YES, under the switch — first built without it: the walk's W1 | no | host T13 (picture `t13`); walker C's 59 (§5.2) |
+| 14 | Personal Inputs card — the week | YES | after the name | no (opens 1) | `ui/inputtitle-row.test.tsx`; walker A's 22 (§5.2) |
 | 15 | Personal Inputs card — the board | YES | in the item cell | no | host T14 (picture `t14`) |
-| 16 | Unavailable card (an OD) — week and board | YES | after the name | no | walker A's 23 — to do |
-| 17 | The next-week peek | YES (the same builder) | the same | no | walker A's 36 — to do |
-| 18 | The changes window — To go out | YES; a title change said "Event → Sports day" | — | no | `ui/latepub.test.tsx`; walker B — to do |
-| 19 | The changes window — history; the history bubble | YES; a "title" line | — | no | `ui/inputtitle.test.tsx` (a line is written); walker B's 42 — to do |
-| 20 | Warning sentences; "already on …" | YES | must not — a sentence | no | host T16 (no new warning); the words: walker C's 50–55 — to do |
-| 21 | The OIL question's heading — the window, the List's form | YES | — | no | host T3 ("OIL — ALL AVAIL, Sports day"); walker C's 57 — to do |
-| 22 | The OIL history / the ALL AVAIL window's heading | YES | — | no | `ui/inputtitle.test.tsx` (`oilRequestName`); walker C's 60 — to do |
-| 23 | The accept / unaccept toasts | YES | — | no | walker B's 40 — to do |
-| 24 | The Inputs export | a `Title` column | the `Type` column | no | `ui/inputtitle.test.tsx`, `ui/export.test.ts`; walker A's 26 — to do |
-| 25 | A shared input's window | one title for everyone | Type | YES, for all | `ui/inputtitle.test.tsx`; walker A's 6, 12, 13 — to do |
-| 26 | Leave, medical, Upchit, SANS editors | must not — these kinds take none | — | must not | host T1 (LL, OML); walker A's 27 — to do |
+| 16 | Unavailable card (an OD) — week and board | YES | after the name | no | walker A's 23 (§5.2) |
+| 17 | The next-week peek | YES — by its OWN builder, which the roll-call wrongly called the same one | YES — first built without it: the walk's W6 | no | walker A's 36 (§5.2) |
+| 18 | The changes window — To go out | YES; a title change said "Event → Sports day" | — | no | `ui/latepub.test.tsx`; walker B (§5.2) |
+| 19 | The changes window — history; the history bubble | YES; a "title" line | — | no | `ui/inputtitle.test.tsx` (a line is written); walker B's 42 (§5.2) |
+| 20 | Warning sentences; "already on …" | YES | must not — a sentence | no | host T16 (no new warning); the words: walker C's 50–55 (§5.2) |
+| 21 | The OIL question's heading — the window, the List's form | YES | — | no | host T3 ("OIL — ALL AVAIL, Sports day"); walker C's 57 (§5.2) |
+| 22 | The OIL history / the ALL AVAIL window's heading | YES | — | no | `ui/inputtitle.test.tsx` (`oilRequestName`); walker C's 60 (§5.2) |
+| 23 | The accept / unaccept toasts | YES | — | no | walker B's 40 (§5.2) |
+| 24 | The Inputs export | a `Title` column | the `Type` column | no | `ui/inputtitle.test.tsx`, `ui/export.test.ts`; walker A's 26 (§5.2) |
+| 25 | A shared input's window | one title for everyone | Type | YES, for all | `ui/inputtitle.test.tsx`; walker A's 6, 12, 13 (§5.2) |
+| 26 | Leave, medical, Upchit, SANS editors | must not — these kinds take none | — | must not | host T1 (LL, OML); walker A's 27 (§5.2) |
 | 27 | The Logic page's kind table, Insights | must not — they are about kinds | — | — | not changed; read by both plan readers (their negatives) |
 
 ### 3a. The doors — every action the data allows, and the control that does it
@@ -109,7 +110,7 @@ No new ruling contradicts or narrows an older one except as §0's reading 1 says
 | Change a saved input's title | the window; the List's pencil | host T8, T9 |
 | Take a title away | type the kind's own name, or empty the box | host T8 ("meeting" → none); tests |
 | Change the kind of a titled input | the Type list | host T2 (kept across titled kinds); tests (dropped for a leave) |
-| Title a shared input | its window | tests; walker A — to do |
+| Title a shared input | its window | tests; walker A (§5.2) |
 | Undo / Redo a title | the top bar | host T9 |
 | Reload | — | host R1 (a stored world) |
 | Rename the ROW on the schedule (not the input) | the row's own name cell | host T11 (the label is not swallowed; it stays) |
@@ -263,14 +264,83 @@ headed by the kind; the clash sentence naming the kind. Each was a wire with no 
 (`ui/inputtitle.test.tsx` — the shared input, the List's question; `engine/blankabsence.test.ts` and
 `engine/scshift-inputs.test.ts` — the sentences). **Second run of those three: 3 of 3 caught. All 40 are caught.**
 
-## 6. The two reads of the code
+### 5.6 The re-walk — the final build, after every fix (W0–W7, the reads' seven)
 
-To do.
+`scripts/handpass/it-host-walk.mjs` again, its pictures kept apart from the first walk's
+(`docs/img/handpass/2026-10-09-input-title-check/rewalk/`): **23 of 23 PASS, no console or page error.** And
+`scripts/handpass/it-rewalk-extras.mjs` — the walkers' finds the host's walk does not drive, each re-driven as an
+assertion of the right behaviour: **7 of 7 PASS** (X1 the board's card of a 40-character title, a desktop and a phone:
+the name ends in an ellipsis inside its cell, clear of its kind and of LATE; X2 its row keeps its kind; X3 Saturday's
+board in OIL Earn: the name cell is the switch and "EVENT" stands under it; X4, X5 the two older finds, placed).
+Opened by the host: `rewalk/x3-board-oil-earn-kind`, `rewalk/x1-phone-board-card-40`. **What the re-walk did not drive
+again:** the walkers' publishing orders (28–43) — the reads' fixes there are words in the changes window and the
+history, carried by `ui/latepub.test.tsx` and `ui/inputtitle.test.tsx`, which drive the production doors and read the
+same builders the screen calls; a split filing's heading (`ui/changesmodel.test.ts`); the OIL explanations' wording
+(`ui/inputtitle.test.tsx` calls the one name function; the sentences themselves were not seen on screen again — a
+limit, said here).
 
-## 7. The gates
+**The walk's row in the ledger:** `docs/walk-ledger.md`, 9 Oct 26.
 
-To do.
+## 6. The two reads of the code (each blind; this sheet in hand; their reports are kept beside the briefs)
 
-## 8. His look
+The brief: `docs/superpowers/briefs/2026-10-09-input-own-title-code-read.md`. Reports:
+`docs/superpowers/briefs/2026-10-09-reads/input-own-title-code-astra.md`, `…-code-sol.md`. **Both: CHANGES REQUIRED —
+three findings and four, all seven different, all seven real.** Each was reproduced as a failing test before its fix.
 
-To do.
+| # | Reader | The failure | Cause | The fix | Test |
+|---|---|---|---|---|---|
+| R1 | Astra | a kind and a title changed in ONE save ("Sports day", an Event → "Guard shift", a Duty) wrote "Event → Duty" and nothing of the title — in the history and in "To go out" | the title line was written only where the kind stood still | the title each side STORES is compared by itself; two untitled kinds still write the kind's line alone | `ui/inputtitle.test.tsx` (four cases), `ui/latepub.test.tsx` |
+| R2 | Astra | filed for several people from the List's form, a title stayed in the form and rode onto the next input whatever its kind | the shared save cleared the remark and not the title | it clears the title too — after a save only | `ui/inputtitle.test.tsx` (the List's form, several people) |
+| R3 | Astra | the board shown read only (a look at an issued version; a member's view) named a titled input's card and dropped its kind — a titled OD has no programme row to say "OD" for it | that card has a short route of its own | the label rides the name's own cell there too | `ui/inputtitle-row.test.tsx` (the board read only) |
+| R4 | Sol | a filing whose men now carry different titles was headed by ONE of them, and which one depended on the order the records were stored in | the heading read the first record of the group | every title its surviving men carry, sorted | `ui/changesmodel.test.ts` (both orders) |
+| R5 | Sol | OIL explanations still called a titled claim "this Event" — the off puck's reason, the ALL AVAIL window's hint, "his Event's row is cancelled"; and the crew picker's reason said "overseas duty (OD)" for "Exercise Darwin" | these read the evidence's kind, or the kind's catalogue words | one name for a claim, looked up for the words only, from the input as the day being read holds it; `offWord` leads with the title. The OIL evidence itself never learns a title | `ui/inputtitle.test.tsx` (`oilClaimWhat`, `offWord`) |
+| R6 | Sol | a titled input handed to another man kept its title, and the history line said "Event … · whose" | that sentence was missed by the naming sweep | it names the input by its title | `ui/inputtitle.test.tsx` (the hand-over) |
+| R7 | Sol | `data-schema.md` and `data-model.md` still listed a shared entry's shared fields without the title | not updated with the code | both lists carry it | the documents |
+
+**Their notes on the tests, each acted on:** the pencil-editor test claimed a retype to a leave and stopped at Personal
+without saving (Sol) — a new test retypes to LL, sees the Title box go, saves and reads the record; the break tests
+prove the wires chosen for breaking, not the callers nobody listed (Sol) — R4–R6 were exactly such callers, and each
+now has its test.
+**Found sound by both, by tracing (their explicit negatives):** the ten kinds and no other; the editors' "untouched" and
+"emptied" states; every writer of an input carrying the title — the window, the List, the group save, a re-date, a
+hand-over, an in-place edit, the medical splits, undo and redo, a reload; a draft that does not state a title leaving
+it alone; the published day — one pending change, the sign-offs, the issued face reading its frozen copy; the kind
+label outside the name that is typed in, the board's wrapper keeping every cell in its place; two requests of one name
+staying two, in either order, and no figure counting a man twice; warnings graded by kind whatever a title says; the
+export; permissions unchanged.
+**Not repeated by a second round of reads:** the seven fixes are small, each pinned by a test that was red, and the
+gates ran on them (§7); a second static round is what the checking order calls review pile-on. The re-walk (§5.6) drove
+the build that carries them.
+
+## 7. The gates — watched, under the PC's lock (`node scripts/gatelock.mjs run`)
+
+| Gate | After the walk's fixes | FINAL — after both reads' fixes, commit `f296fac4` |
+|---|---|---|
+| Unit | green (one earlier run) | **9663 / 9663** (574 files) |
+| Build (typecheck + bundle) | clean | **clean** |
+| The original's own assertions (tfin) | 728 / 0 | **728 / 0** |
+| Browser tests (e2e) | 735 passed, 1 FAILED — the older test of the demo's Event looked for the word "Event" on its bar, which now reads its title; restated for D716 and re-run with the title's own: 8 of 8 | **736 passed, 0 failed, 57 skipped** |
+| Tracker smoke | 445 / 0 | **445 / 0** |
+| Rule coverage | OK | **OK** |
+| Documents | OK | **OK** (over its size tripwire, deferred — D29: a change under `src/` never trims a document) |
+
+`perms.test.ts` and `perms-scan.test.ts` ran green in the unit gate; no row of the permissions table (data-model §11)
+changed. The typecheck is `tsc -b` (the build's own): `tsc -p .` checks nothing in this repo, which the builder learned
+mid-build from four missing imports it had reported as clean.
+
+`Walk: docs/handpass/2026-10-09-input-title-check.md · about 1,200 pictures (host 40, walkers about 1,150) · 27 surfaces · 50 scenarios + 23 host steps + 7 re-walk extras · MISSING: 15 fixed (W0–W7, R1–R7), 10 filed ([TITLE-CHECK-SEEN]), 2 named and not reached (the history bubble on hover, the deletion toast with markup)`
+
+## 8. His look — five minutes on his iPhone, on this branch's preview link
+
+1. **Inputs → the calendar → tap a day → + Input.** Pick "Event": a Title box under Type reads "Event". Type "Sports
+   day", save. *The bar on the month reads the title (on a desktop), the day's card reads "Sports day" with a small grey
+   EVENT on the line below.*
+2. **Pick a leave (LL) instead:** *no Title box.*
+3. **Edit Schedule, that day:** *the Ground Programme row is named SPORTS DAY with a small EVENT under it, and is no
+   taller than the row beside it.*
+4. **Open the Scheduler Board for that day:** *the same row, EVENT under its name box.*
+5. **Inputs → List:** *the row shows "Sports day" in bold with the EVENT tag whole under it.* (This list is the one
+   D718 redraws; what you see here is the title made to fit the list as it is.)
+
+**Not on the card, and why:** the published-day behaviour (a title changed after publishing shows "1 pending") needs a
+day published first — walked by walker B in fifteen orders, and pinned by tests.

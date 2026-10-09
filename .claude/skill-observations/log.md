@@ -3348,3 +3348,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In §8.4, add: where a rule is held in more than one layer, each layer's test must assert something only THAT layer does (called directly; the exact wording with no rollback tail; one toast, not two; no command attempted) — and the break test cuts each layer separately.
 
 **Principle:** Defence in depth makes the outer layer's absence invisible to an outcome-only test; a layer is proved only by an observation the layer behind it cannot produce.
+
+### Observation 488: A coded, switchable mock-up answered three design questions that two rounds of re-lettered screenshots could not
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** Designing a shorter input card and one look for an input's kind (branch claude/day-window-compact; OUTSTANDING.md [INPUT-LIST-AS-DAY-CARD]; the mock-ups raptor-port/docs/mock/input-list-as-day-card.html, input-card-ideas.html, input-card-a.html).
+**Skill:** the mock-up step of a visual change (raptor-port/CLAUDE.md "Ideate before building non-trivial UX"; the artifact-design guide) - a working guide, not a skill file
+**Type:** open-source
+**Phase/Area:** how a layout idea is shown to a non-technical owner before it is built
+
+**Issue:** The first mock-up re-arranged real screenshots of the built app. It showed one arrangement of one case, and the owner asked for "a more proper mock up" and then three follow-up questions (long text, what a small-print line costs, whether it is needed at all). Each needed another round of pictures. The second mock-up drew the card as live HTML with the app's own style values, the same six inputs under every idea, switches for the open choices, and each idea's height MEASURED on the viewer's own screen. Every follow-up became a switch position rather than a new round; and a first local look at it was wrong because the file was opened in a mobile-emulated browser without a viewport tag (laid out 980 wide), which a width assertion would have caught.
+
+**Suggested improvement:** Where the open question is a LAYOUT's behaviour over a range of content (long and short text, optional parts), build the mock-up as working markup with (a) the same varied sample set under every option, including the worst case, (b) a switch per open choice, (c) a measured figure per option computed in the page, and (d) a today/proposed toggle. Keep re-lettered screenshots for "what will this exact screen look like". When checking such a page locally, assert the layout width first.
+
+**Principle:** A picture answers the question it was drawn for; a working drawing with switches answers the next three as well - show behaviour, not an instance, when the design question is about behaviour.
