@@ -9518,6 +9518,11 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   no small print is ONE line. A tap anywhere on the card opens the input's window to change or delete it (D718); the
   card's button is its names and kind. **The SANS day's card is NOT this card** (D723 reading 3; D647, D649 — pucks
   with the CAT; the bullet above).
+- **ON THE DESKTOP LIST A SHARED INPUT NAMES EVERYONE, AND THE KIND KEEPS ITS PILL (owner D727, 10 Oct 26 — "A"; NOT BUILT
+  YET: `OUTSTANDING.md` `[INPUTS-VET]`).** The table's Name cell is to read every name of a shared input, A to Z, wrapping in
+  its column (today it reads the first name and a count, "Drifter +3", the rest in a tooltip); the kind stays in its
+  pill (`.intag`) on the table - the cards keep their small grey capitals (D723), so the kind has two looks by his
+  choice, which narrows D718's "one look everywhere" for this screen. The drawing: `docs/mock/card-questions.html`.
 - **THE INPUTS LIST HAS NO EDIT IN PLACE (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
   live — `ui/usephone.ts`) the list is the input card under a slim heading a day ("SAT 18 JUL · 6 inputs"), in date
   order; an input of several days stands under its first day. On a desktop it is the table, its columns and sorting as
