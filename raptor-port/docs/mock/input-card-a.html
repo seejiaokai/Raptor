@@ -119,11 +119,11 @@
   <header>
     <span class="tag">Idea A in full · a working drawing, nothing is built</span>
     <h1>The input card: one line of facts, then the words</h1>
-    <p class="lede">A whole busy Saturday with sixteen inputs of every kind, the same cards on the list, then each state of the card one by one. The cards are live: they wrap on your own screen. “A · one line” is A with the title on the top line, as in your reference; flip “A” and “Today” to compare.</p>
+    <p class="lede">A whole busy Saturday with sixteen inputs of every kind, the same cards on the list, then each state of the card one by one. The cards are live: they wrap on your own screen. In A the title always starts at the left on a row of its own. “A · one line” (the title trailing on the top line) and “Today” are kept only to compare.</p>
   </header>
 
   <div class="bar" role="group" aria-label="What to show">
-    <div class="sw"><div class="seg" id="segCard" role="group" aria-label="Which card"><button type="button" data-v="a" aria-pressed="false">A</button><button type="button" data-v="a1" aria-pressed="true">A · one line</button><button type="button" data-v="now" aria-pressed="false">Today</button></div></div>
+    <div class="sw"><div class="seg" id="segCard" role="group" aria-label="Which card"><button type="button" data-v="a" aria-pressed="true">A</button><button type="button" data-v="a1" aria-pressed="false">A · one line</button><button type="button" data-v="now" aria-pressed="false">Today</button></div></div>
     <div class="sw"><span>Kind</span><div class="seg" id="segKind"><button type="button" data-v="grey" aria-pressed="true">Grey</button><button type="button" data-v="pill" aria-pressed="false">Pill</button></div></div>
     <div class="sw"><span>By</span><div class="seg" id="segBy"><button type="button" data-v="other" aria-pressed="true">Others only</button><button type="button" data-v="when" aria-pressed="false">With date</button><button type="button" data-v="none" aria-pressed="false">None</button></div></div>
   </div>
@@ -213,7 +213,7 @@
   const CREW = [['Ranger', 'IP', ''], ['Ace', 'A', 'a'], ['Drifter', 'A', 'a'], ['Vapor', 'D', 'd'], ['Blade', 'IP', ''], ['Cinch', 'IP', ''], ['Comet', 'IP', ''],
     ['Forge', 'IP', ''], ['Hunter', 'IP', ''], ['Piston', 'IP', ''], ['Sidewinder', 'IP', ''], ['Trident', 'IP', ''], ['Vandal', 'IP', ''], ['Warden', 'IP', '']]
   const grown = n => ({ who: `Ranger +${n - 1}`, kind: 'Meeting', title: 'Flight safety brief', hrs: '10:00–11:00', by: 'Saber', when: '25 Jun, 14:32', people: CREW.slice(0, n) })
-  const state = { card: 'a1', kind: 'grey', by: 'other', w: 'full', ppl: 'all' }
+  const state = { card: 'a', kind: 'grey', by: 'other', w: 'full', ppl: 'all' }
   /* several people: the schedule's pucks under the card, or their names where the one name stands (three, then "+N") */
   const names = (r, m) => !r.people ? r.who : m === 'all' ? r.people.map(x => x[0]).join(', ')
     : r.people.slice(0, 3).map(x => x[0]).join(', ') + (r.people.length > 3 ? ' +' + (r.people.length - 3) : '')
