@@ -202,13 +202,17 @@ const rowOf = (p, iid) => p.evaluate(iid => {
   })
 
   await step('A7 Undo takes the last input away; Redo brings it back, in view and lit', async () => {
-    const before = await count(page)
+    const before = await count(page), last = await page.evaluate(() => window.INPUTS.find(r => r.remarks === 'kept in view')?.iid)
+    await page.waitForTimeout(6300)                                   // every earlier light has gone out (six seconds)
+    const dark = await page.locator('#inBody tr.innew').count()
     await page.locator('#undoBtn').click(); await page.waitForTimeout(350)
-    const gone = await count(page)
+    const gone = await count(page), rowGone = (await rowOf(page, last)) === null
     await page.locator('#redoBtn').click(); await page.waitForTimeout(450)
     const back = await count(page)
+    const row = await rowOf(page, last)
     const lit = await page.locator('#inBody tr.innew').count()
-    return { ok: gone === before - 1 && back === before && lit === 1, detail: JSON.stringify({ before, gone, back, lit }) }
+    await shot(page, 'A7-desk-redo-lit')
+    return { ok: dark === 0 && gone === before - 1 && rowGone && back === before && !!row && row.lit && row.onScreen && lit === 1, detail: JSON.stringify({ before, dark, gone, rowGone, back, row, lit }) }
   })
 
   let trio = null
@@ -247,18 +251,15 @@ const rowOf = (p, iid) => p.evaluate(iid => {
     const who = await page.evaluate(() => Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].archived && !window.PEOPLE[k].special && !window.PEOPLE[k].deleted) || null)
     let gone = who, how = 'the demo already holds a posted-out man'
     if (!gone) {
-      await page.evaluate(() => window.go('admin')); await page.waitForTimeout(300)
-      const tab = page.locator('button, a', { hasText: /^Users$/ }).first(); if (await tab.count()) await tab.click()
-      await page.waitForTimeout(300)
-      const btn = page.locator('[data-archive], button', { hasText: /^Archive/ }).first()
-      if (!(await btn.count())) return { ok: false, detail: 'no posted-out man in the demo and no Archive button found on Admin → Users — carried by the test that presses the window’s real controls (ui/windowdoors.test.tsx, ui/inputs.test.tsx)' }
-      const before = await page.evaluate(() => Object.keys(window.PEOPLE).filter(k => window.PEOPLE[k].archived))
-      await btn.click(); await page.waitForTimeout(300)
-      const yes = page.locator('button', { hasText: /^(Archive|Post out|Confirm|Yes)/ }).last(); if (await yes.count()) await yes.click().catch(() => {})
-      await page.waitForTimeout(400)
-      gone = await page.evaluate(before => Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].archived && !before.includes(k) && !window.PEOPLE[k].special) || null, before)
-      how = 'archived on Admin → Users'
-      if (!gone) return { ok: false, detail: 'the Archive press did not archive anyone — carried by the test that presses the window’s real controls (ui/windowdoors.test.tsx, ui/inputs.test.tsx)' }
+      const pid = await id('Ridge')
+      await page.evaluate(() => window.go('admin')); await page.waitForTimeout(500)
+      if (!(await page.locator('#accList:visible').count())) { await page.getByText('Sign-in and roster').first().click(); await page.waitForTimeout(600) }
+      await page.locator(`#accList [data-person="${pid}"]`).first().click(); await page.waitForTimeout(400)
+      await page.getByRole('button', { name: 'Archive', exact: true }).first().click(); await page.waitForTimeout(700)
+      gone = await page.evaluate(pid => (window.PEOPLE[pid].archived ? pid : null), pid)
+      how = 'Ridge archived on Admin → Users'
+      await shot(page, 'A10-desk-admin-users-archived')
+      if (!gone) return { ok: false, detail: 'the Archive press did not archive Ridge' }
     }
     await toList(page, T)
     await plus(page, T)
@@ -387,7 +388,7 @@ const rowOf = (p, iid) => p.evaluate(iid => {
       const name = tr.querySelector('[data-label="Name"]'), btn = name.querySelector('.in-open'), rmk = tr.querySelector('[data-label="Remarks"]'), by = rmk.querySelector('.in-placed')
       const rg = document.createRange(); rg.selectNodeContents(btn)
       const text = [...rmk.childNodes].find(x => x.nodeType === 3 && x.textContent.trim()); const tr2 = document.createRange(); tr2.selectNodeContents(text)
-      const plain = [...document.querySelectorAll('#inBody tr')].filter(t => !t.querySelector('.intitle') && !/,/.test(t.querySelector('[data-label="Name"]').textContent)).map(t => Math.round(t.getBoundingClientRect().height))
+      const plain = [...document.querySelectorAll('#inBody tr')].filter(t => !t.querySelector('.intitle') && !t.querySelector('.rclip, .roil') && !/,/.test(t.querySelector('[data-label="Name"]').textContent)).map(t => Math.round(t.getBoundingClientRect().height))
       return { names: btn.textContent, lines: new Set([...rg.getClientRects()].map(r => Math.round(r.top))).size, nameW: Math.round(name.getBoundingClientRect().width), inCol: btn.getBoundingClientRect().right <= name.getBoundingClientRect().right + 0.5,
         by: by.textContent, sameLine: Math.abs(by.getBoundingClientRect().top - tr2.getBoundingClientRect().top) <= 6, gap: Math.round(by.getBoundingClientRect().left - tr2.getBoundingClientRect().right), plainMax: Math.max(...plain), plainMin: Math.min(...plain), wide: document.documentElement.scrollWidth <= innerWidth }
     }, made[0].iid)
@@ -520,8 +521,9 @@ const rowOf = (p, iid) => p.evaluate(iid => {
 
   await step('A23 NOT CHANGED — an input opened from EDIT SCHEDULE is the schedule’s own dialog: its old line of words, no "?" card, Save not Add', async () => {
     await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(500)
-    const el = page.locator('[data-inpedit]').first()
-    if (!(await el.count())) return { ok: false, detail: 'no input row with its edit door on Edit Schedule this week' }
+    const key = await page.evaluate(() => { for (const el of document.querySelectorAll('[data-inpedit]')) { const r = window.INPUTS.find(x => x.iid === el.getAttribute('data-inpedit')); if (r && !/SANS/.test(r.type) && el.getClientRects().length) return el.getAttribute('data-inpedit') } return null })
+    if (!key) return { ok: false, detail: 'no ordinary input row with its edit door on Edit Schedule this week' }
+    const el = page.locator(`[data-inpedit="${key}"]`).first()
     await el.scrollIntoViewIfNeeded(); await el.click(); await page.waitForTimeout(400)
     const m = await page.evaluate(() => { const pop = document.querySelector('#inpEditPop'); return { open: !!pop && !pop.hidden, floating: !!document.querySelector('[data-testid="win-inputedit"]'), hint: pop?.querySelector('.inped-hint')?.textContent || '', help: pop?.querySelectorAll('#inTypeHelp').length, typeLabel: pop?.querySelector('label[for="inpEditType"]')?.textContent || '' } })
     await shot(page, 'A23-desk-schedule-dialog')
