@@ -892,3 +892,4 @@ hours": the kind ended 21 past where the hours began). **Tier: LOOK taken as WAL
 is that test (an all-day and a timed input) and both calendars' whole browser-test files, 76 of 76. The SANS day's
 first line is the same rule: its puck and letters are short and are unchanged (its tests pass).
 
+**The gates after §24 (9 Oct 26, `a1f13dae`, the whole set under the PC lock, nothing else running): WHOLLY GREEN — unit 9371 / 9371 (564 files) · build clean · tfin 728 / 0 · e2e 725 passed, 0 failed, 56 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.**
