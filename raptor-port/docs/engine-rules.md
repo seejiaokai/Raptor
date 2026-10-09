@@ -140,7 +140,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   "everything in duty and commitments affects crew rest… do not include
   personal, sans availability"; "use the timings u see"): an input whose
   type passes `inputs.ts:restsInput` (Training, CSE, Meeting, Fly with,
-  Appointment, Duty, OD, Other — NOT the type spelled 'Personal', not SANS
+  Appointment, Duty, Event — D713, 9 Oct 26 — OD, Other — NOT the type spelled 'Personal', not SANS
   Availability, and no leave or medical type) counts exactly like a
   scheduled event, on BOTH sides, provided it carries TYPED times: an
   all-day record spans the full 1439 minutes and moves nothing. Ending
@@ -564,7 +564,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   against `kind==='shift'` (an SC MAIN) the grading is **per TYPE** (owner,
   26 Aug 26 — the shift may launch the man):
   - **Red-list commitments — Training, CSE, Fly with, Personal, Appointment,
-    Duty, Other — hard-flag the shift** (`INPUT_FLY` "Training but tasked —
+    Duty, Event (owner D714, 9 Oct 26: "a clash like that, not the meeting softer amber"), Other — hard-flag the
+    shift** (`INPUT_FLY` "Training but tasked —
     SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
     `shiftHardInput()` — one body for the validator, the ground-row upgrade
     and the crew picker. All-day and timed alike.
@@ -607,7 +608,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   nothing else to go on and fails closed. A hand-typed row is likewise
   judged by its own words
   (`shiftHardLabel`, a regex DERIVED from the same `shiftHard` flags —
-  TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, OTHER, word-bounded,
+  TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, EVENT (since D713 / D714, 9 Oct 26 — the word follows the
+  kind's flag by construction; told to him as a reading), OTHER, word-bounded,
   case-blind). The owner chose those keywords knowing they are common words:
   a hand-typed "DUTY OFFICER HANDOVER" goes red on purpose. A row matching
   neither — MEETING, ACADEMICS, anything else — stays the amber
@@ -666,7 +668,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   nothing else. `isUnavail` = leave + medical + OD; `isPersonal` = the
   activity types (Training, CSE, Meeting, Fly with, Personal, Appointment,
   **Duty** — a LOCAL duty added 18 Aug 26, identical to Appointment in every
-  derived rule — and Other),
+  derived rule — **Event** — added 9 Oct 26 (owner D713, D714: "its work, it can be an official event too … it should
+  clash"), Duty's flags to the letter, pinned by `eventkind.test.ts` — and Other),
   which are also exactly the types a scheduler may lift onto the Ground
   Programme (`ground` in the table). Together they partition `INPUT_TYPES` —
   a test pins that nothing falls between them, and a second pins that
@@ -2101,7 +2104,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     window drops him, **EXCEPT ATT B**, the one type that says "no flying, may
     still work" (`canWork`);
   - a **COMMITMENT** overlapping the window drops him (Training, CSE, Meeting,
-    Fly with, Personal, Appointment, Duty, Other). One the scheduler took off the
+    Fly with, Personal, Appointment, Duty, Event, Other — `isPersonal`). One the scheduler took off the
     programme (`acc === 'r'`) is dormant and drops nothing;
   - anything he is **NAMED** for on the day's own schedule that overlaps the
     window drops him (`avail.ts:personBusy` — the same occupancy the validator
@@ -3908,3 +3911,47 @@ calendar's colours. The war's half (a holiday, who is available): `.claude/rules
   warning and count towards no "under-manned" figure.
 - **Who counts as committed to fly** (`state/flyplan.ts sansFly`): a SANS person with a SANS availability on the date
   offering Fly, counted once however many he filed (D572) — never a man no longer SANS, never one archived.
+
+## An input filed for ALL AVAIL / ALL (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`)
+
+His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."
+The plan and its two reads: `superpowers/plans/2026-10-09-input-all-avail-plan.md`.
+
+- **The record** is an ordinary single input whose `person` is one of the two placeholder people (`allavail`, `all`). No
+  name is stored: who stands behind it is the crowd `leavewar/sync.ts availableFor` works out for the request's own
+  window — live on a working day, written into the day's evidence (`ev.sent['i:<iid>']`) and frozen at publication,
+  exactly as for a placeholder a scheduler drops on a request's row (D44, D46). It lands its row on read like any
+  request, the placeholder's puck in the name box.
+- **Three structural rules, ONE body — `inputs.ts placeholderProblem`:** one of six kinds (`PLACEHOLDER_KINDS`: Training,
+  Meeting, Appointment, Duty, Event, Other — never an overseas duty or a course, D711 (2); never "Fly with" or
+  "Personal", D712); ONE day (D711 (3)); never in a group. Asked first at every save door, with its sentence
+  (`ui/inputedit.tsx placeholderRefused` — inside `normalizeInputDraft`, and before the document question in the three
+  save handlers; `commitGroup` judges the whole selection; `ui/PeoplePick.tsx pickProblem`), and by the HARD check
+  `placeholder-input-shape` at the save boundary (`state/store.ts placeholderShapeViolation`): it reads no role and no
+  origin, judges every input record a command PUT, and a breach rolls the whole command back — an admin, a restore and
+  the test bridge are held as a member is.
+- **The doors that refuse one outright:** the schedule's reassign, in BOTH directions (`reassignInput` — a placeholder is
+  neither the destination nor the source); `→ Unavail` (`slots.ts acceptInput(…, 'u')`, and the button is not drawn):
+  "Unavailable" describes a real person's day. Replacing the name box of its landed row stays a scheduler's ordinary act
+  (D470).
+- **It is nobody's absence and nobody's warning.** `avail.ts dayAway` leaves a placeholder out of both absence sets;
+  `availableFor` matches inputs by person, so it makes nobody busy; every validator loop matches a real man's id.
+- **OIL — ONE default, `oilev.ts claimDefault`** (D711 (1): "the filer answers the OIL question once and the scheduler
+  may switch any one man — a man behind it does not change his own answer"), read by the credit (`oilEarnedWork`) and by
+  each man's switch (`spanDefault` → `ui/oilmode.ts`): the placeholder itself is never credited and never put into the
+  work; a man the scheduler TYPED onto the row defaults yes (D18, D470); a man there only as one of the crowd follows
+  the FILER's answer for the day — more than 0, he earns; 0 or not answered yet, he does not; a man who is both counts
+  once, as typed; the day blanket and the scheduler's switch for one man stay over the top (D28), so after a No a tap
+  GRANTS (`allow`) and after a Yes a tap refuses (`deny`). An answer of 0.5 is no cap: it admits the work, and the man's
+  own day decides half or full. A NAMED man's request is untouched — his own answer for him, yes for everyone else on
+  his row, a placeholder dropped there included (D46; `oilclaimcrowd.test.ts`).
+- **The answer rules are the existing ones** (`oil.ts voidedOil`, `inputedit.tsx oilGate`): a change of person voids the
+  answers; a change of hours drops only a positive answer whose amount changed; a No stays; new dates ask for the days
+  that have no answer.
+- **The bell (D711 (4)):** `sync.ts oilPendingFor(person)` also returns a placeholder input HE filed (`by`) with a
+  non-working day unanswered — only while he may still answer it (`perms.ts mayEditInput`); nobody behind it is ever
+  asked. Where the filer no longer may (a member filer, the members' switch since turned off), the scheduler meets it on
+  the Inputs List's "OIL?" chip and in OIL Earn, where the window says the question has no answer yet.
+- Pinned by `engine/placeholderinput.test.ts`, `engine/oilplaceholderclaim.test.ts`, `ui/oilplaceholderclaim.test.tsx`,
+  `ui/placeholderdoors.test.tsx`, `ui/placeholderlist.test.tsx`.
+

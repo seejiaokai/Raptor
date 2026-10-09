@@ -52,10 +52,12 @@ export const PLACEHOLDER_HEADING = 'Whoever is free that day'
  *  carry; `current`: the person now chosen — a placeholder already chosen is ALWAYS listed, whatever the kind has
  *  become, so the box never shows another name over it (nothing is substituted for what he picked). `all`: list both
  *  whatever the kind (a filter, which chooses among what exists). */
-export function PlaceholderGroup({ type, current, all }: { type?: any; current?: any; all?: boolean }) {
+export function PlaceholderGroup({ type, current, all, value }: { type?: any; current?: any; all?: boolean; value?: (id: string) => string }) {
   const ids = PLACEHOLDER_IDS().filter(id => all || placeholderKind(type) || String(current ?? '') === id)
   if (!ids.length) return null
-  return <optgroup label={PLACEHOLDER_HEADING} data-ph="1">{ids.map(id => <option key={id} value={id}>{cs(id)}</option>)}</optgroup>
+  /* `value`: a person FILTER gives a placeholder a value of its own (ui/inputscal-model.ts personFilterValue — its bare
+     id 'all' is the filter's "Everyone") */
+  return <optgroup label={PLACEHOLDER_HEADING} data-ph="1">{ids.map(id => <option key={id} value={value ? value(id) : id}>{cs(id)}</option>)}</optgroup>
 }
 
 /** may he pick someone other than himself for this kind at all? (an admin: yes; a member: a kind he may file for others) */
@@ -72,7 +74,10 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
   if (ph != null) {
     if (several || people.length > 1) return { why: placeholderProblem({ person: ph, type: 'Duty', grp: 1 }), fix: [ph], fixLabel: `File it for ${cs(ph)} only` }
     const why = placeholderProblem({ person: ph, type })
-    if (why) return { why, fix: mine != null ? [mine] : [], fixLabel: 'File it for me only' }
+    /* the one press is a MEMBER's ("File it for me only" — what he may always do); an admin is offered none: he
+       picks the name it is really for from the list (Astra's scenario design, 9 Oct 26 — the admin was being offered
+       to file another kind's input for HIMSELF) */
+    if (why) return { why, fix: !canEditSched() && mine != null ? [mine] : [], fixLabel: 'File it for me only' }
   }
   if (several && people.length > 1 && !mayFileGroup(type)) {
     if (canEditSched()) return {

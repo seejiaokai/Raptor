@@ -49,7 +49,7 @@ import { fmt, fmtDay, inputTone, firstPersonalType, removeInput, removeEntry } f
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
-import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
+import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, personFilterPasses } from './inputscal-model'
 import { placedLineOf, placedShort } from './placedline'
 import { cutParts, dayWord, hoursOf, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
@@ -102,7 +102,7 @@ export function monthCells(y: number, m: number): (string | null)[] {
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
   let inputs = inputsInMode(INPUTS, mode).filter((r: any) => inputCoversDate(r, label))
-  if (f.fPerson !== 'all') inputs = inputs.filter((r: any) => r.person === f.fPerson)
+  inputs = inputs.filter((r: any) => personFilterPasses(f.fPerson, r.person))   // one body with the List and the month
   if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
   if (f.fSearch) {
     const s = f.fSearch.toLowerCase()

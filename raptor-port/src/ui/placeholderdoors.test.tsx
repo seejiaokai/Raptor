@@ -198,11 +198,25 @@ describe('D711 (2), D712 — a kind that is not allowed is refused, with its sen
     await choose('#inpEditType', 'OD')
     expect(($('#inpEditPerson') as HTMLSelectElement).value, 'ALL AVAIL stays shown').toBe('allavail')
     expect(tid('pp-why')?.textContent).toContain('ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other')
+    expect(tid('pp-fix'), 'an ADMIN is offered no "file it for me" — he picks the name it is for').toBeNull()
     const was = world()
     await click($('#inpEditSave'))
     expect(said.join(' | ')).toContain('ALL AVAIL can be filed only for')
     expect(world()).toBe(was)
     expect(win(), 'the window stays, nothing typed is lost').toBeTruthy()
+  })
+
+  it('a MEMBER is offered the one press — "File it for me only" — and it files nothing by itself', async () => {
+    await as('member')
+    await openNew()
+    await choose('#inpEditPerson', 'allavail')
+    await choose('#inpEditType', 'OD')
+    expect(tid('pp-why')?.textContent).toContain('ALL AVAIL can be filed only for')
+    expect(tid('pp-fix')?.textContent).toBe('File it for me only')
+    const was = world()
+    await click(tid('pp-fix'))
+    expect(world(), 'the press changes the pick, never the records').toBe(was)
+    expect(tid('pp-why')).toBeNull()
   })
 
   it('a medical kind is refused BEFORE the document question is ever asked', async () => {

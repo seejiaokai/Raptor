@@ -138,9 +138,12 @@ landed row stays a scheduler's ordinary act (D470).
 ### 3.5 Where it shows (D702: "only on the day and the schedule")
 - **The Inputs calendar:** its bar, its tip and its opened-day card read "ALL AVAIL · Meeting", the card wearing the
   placeholder's own puck and the small print "Saber · 12 Jul, 14:42" (D701). It is nobody's "mine".
-- **The Inputs List:** one row, the same words. **The person filter's "Everyone" gets a value of its own**
-  (`EVERYONE`, a string no person id can be) in all three places of §2.10 together — the default, the reset, the
-  "reveal" helpers and the summary chip included — and the filter offers ALL AVAIL and ALL as two choices of their own.
+- **The Inputs List:** one row, the same words. **The person filter: Everyone, ALL and ALL AVAIL are three choices, in
+  all three places of §2.10 together, by ONE body** (`ui/inputscal-model.ts personFilterPasses`) — the default, the
+  reset and the summary chip included. *As built (the builder's change to this plan, 9 Oct 26 — §11):* it is the
+  PLACEHOLDER's value in a filter that is its own (`'ph:'` + its id), and "Everyone" keeps `'all'` — the reverse of what
+  version 2 first said, same end: seventeen walk scripts and three browser tests choose Everyone by that value, and had
+  it changed each would have gone on choosing, silently, the ALL placeholder instead.
 - **The schedule:** the landed request row with the placeholder puck in its name box, its count chip and the ALL AVAIL
   window — as built for D46; nothing new is drawn.
 - **Bells:** no man behind it is ever asked or told. **The ONE exception (D711 (4)):** an OIL question nobody has
@@ -335,6 +338,11 @@ credit, every switch and every sentence; what does §5's roll-call miss; what wo
 | Astra 1 — the List's pencil editor has a Person list of its own that left both placeholders out (a filed ALL AVAIL input opened showing a real man's name), and its document question came before the refusal | §2.8, §3.2 (asked first, before any sheet), §3.3 (one group for every Person list), §5, §6.1 |
 | Astra 2 and Sol 1 — §3.7 overstated today's re-ask rule ("voided … when the day, the hours or the person change") against §3.8's promise to leave named inputs alone | §3.7 "Asked" — the existing `voidedOil` / `oilGate` rules, stated exactly and not changed; §6.3 |
 | Sol 2 — a good filing's Undo and Redo do not prove the save boundary refuses during a restore | §6.1 — the restore command with each refused after-image, both ids; `acc` / `ord` / OIL-only changes; a version load and a plan switch |
+
+**One change made by the builder after the read (9 Oct 26), for the two code readers to judge:** the person filter
+(§3.5) — the collision between "Everyone" and the ALL placeholder's id is removed by giving the PLACEHOLDER its own
+filter value, not Everyone; one body, three callers, tested for Everyone, ALL and ALL AVAIL
+(`ui/placeholderlist.test.tsx`).
 
 Both found sound, by tracing the code: the one OIL default (typed men yes, crowd-only men the filer's answer, a man in
 both once, the placeholder never credited, 0.5 no cap) and that it reaches the credit and every switch; that an issued

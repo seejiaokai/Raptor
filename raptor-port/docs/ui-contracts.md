@@ -356,7 +356,7 @@ two 10 Aug additions took one:
 - **The All day tick opens OFF for a "Duty & other commitments" type, ON for
   everything else** (owner, 22 Aug 26). A brand-new input re-seeds its All day
   state from `defaultAllday(type)` on every type change: the timed group
-  (Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, OD, Other)
+  (Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, OD, Other)
   starts UNTICKED with the 06:00–18:00 window live, because those are
   commitments the aircrew states real hours for; leave, medical and **SANS
   Availability** keep All day ON. It is a default only — a user is free to
@@ -5668,8 +5668,8 @@ on it; the answer rides `keepTail` into the write.
 user if the duty and commitment deserves an applicable OIL") is the third
 sibling in this recipe — same `.upconf-*` layer classes plus `.oilconf-pop`.
 Saving a duty-&-commitments input (`oilAsks` — exactly the `restsInput`
-eight: Training, CSE, Meeting, Fly with, Appointment, Duty, OD, Other;
-Personal and SANS Availability excluded) whose span covers a weekend or
+set — eight until 9 Oct 26, nine with Event (D713): Training, CSE, Meeting, Fly with, Appointment, Duty, Event, OD,
+Other; Personal and SANS Availability excluded) whose span covers a weekend or
 public holiday opens it from all three form paths — `InputEditor.save()`,
 `InputsPage.add()` and `InputsPage.saveEdit()` — through ONE gate body,
 `inputedit.tsx:oilGate`, which runs the shared refusals first (a bad draft
@@ -9598,6 +9598,30 @@ Kept as one record a man tied by a group id (`state/inputgroup.ts`; the no-scree
 thing" is made on the Inputs page only — and by ONE function, `entriesOf` / `entryRowsOf`: a screen that draws inputs
 without it shows a group as separate lines.
 
+- **"ALL AVAIL" and "ALL" as a choice of person (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`).**
+  Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
+  label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither
+  takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add /
+  edit dialog and the List's pencil editor. Offered for the six kinds `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
+  may pick another person for that kind (an admin; a member while the members' switch is on), never on the SANS
+  calendar, never as a puck under "Several people". **A placeholder already chosen is ALWAYS listed, whatever the kind
+  becomes** — with no option the box drew the first man on the list over an ALL AVAIL input. The picker's own line
+  (`pp-why`) says why a pick cannot be saved and offers one press: a kind it may not carry → the kinds named, "File it
+  for me only"; "Several people" switched on with a placeholder picked → "ALL AVAIL is filed on its own — it already
+  stands for whoever is free", "File it for ALL AVAIL only". Save says the same sentence FIRST — before the document
+  question, the medical sheets and the OIL question — and "… is filed one day at a time" for a range. On the schedule
+  the input's row is the request row D46 already draws: the placeholder puck in the name box, its count, the ALL AVAIL
+  window; `→ Unavail` is not drawn for it. **In OIL Earn** its row offers no whole-row switch and says so ("This request
+  follows the answer of whoever filed it — tap the count to switch one person"); in the window each man behind it starts
+  where the filer's answer puts him, and an off puck says whose word it is ("whoever filed this Duty answered No to OIL;
+  tap to credit him anyway" / "the OIL question for this Duty has not been answered yet; tap to credit him"), with the
+  window's hint above the list saying the same.
+  **The person filter (the List, the month, the opened day — ONE body, `inputscal-model.ts personFilterPasses`):**
+  "Everyone" keeps its value `'all'` (walk scripts and browser tests choose it by that value); a placeholder's value in
+  a filter is `'ph:' + id` (`personFilterValue`), so Everyone, ALL and ALL AVAIL are three different choices and the
+  ALL placeholder's own id never reads as "Everyone". A member's List opens on his own inputs: an ALL AVAIL input is
+  nobody's "mine" and shows under Everyone (D702). Tests: `placeholderdoors.test.tsx`, `placeholderlist.test.tsx`,
+  `oilplaceholderclaim.test.tsx`, `peoplepick.test.tsx`.
 - **The people picker (`ui/PeoplePick.tsx`, D656, D659).** One person from the A-to-Z list by default; a "Several people"
   switch (`pp-several`, `role="switch"`) shows the schedule's own pucks (`html.ts puck()`, never a look-alike) as buttons
   (`data-pp`, `aria-pressed`) in groups — Pilots, WSOs, SANS, and Personnel only where the roster holds ground crew — each

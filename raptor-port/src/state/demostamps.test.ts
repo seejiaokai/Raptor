@@ -6,10 +6,10 @@
    not have: who placed an input is what lets a member change one he filed for another man (D655), so no seeded input
    names a member as the filer of someone else's. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, isLateInput } from '../engine/inputs'
+import { INPUTS, isLateInput, isPlaceholderInput, placeholderProblem, oilAsks } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { initStore } from './store'
-import { seedDemoGroup, seedDemoStamps } from './demoseed'
+import { seedDemoGroup, seedDemoPlaceholders, seedDemoStamps } from './demoseed'
 import { entriesOf } from './inputgroup'
 import { memberFilesForOthers } from './perms'
 import { placedLine } from '../ui/placedline'
@@ -87,3 +87,38 @@ describe('the demo carries one shared input', () => {
     expect(team()).toHaveLength(4)
   })
 })
+
+/* [INPUT-ALL-AVAIL], [INPUT-EVENT-KIND] (owner D700, D702, D711, D713 — 9 Oct 26): the demo carries an input filed for
+   each placeholder, one of them of the new kind Event, so a fresh boot shows both on every list and the walk starts on
+   them (the checking order's §7.1). Each is the record the app itself would write. */
+describe('the demo carries an input filed for ALL AVAIL, and an Event filed for ALL', () => {
+  const phs = () => (INPUTS as any[]).filter(r => isPlaceholderInput(r))
+  it('two of them: a weekend Duty for ALL AVAIL, and an Event for ALL', () => {
+    expect(phs().map(r => `${r.person} · ${r.type} · ${r.date}`).sort()).toEqual(['all · Event · Jul 22', 'allavail · Duty · Jul 25'])
+  })
+  it('each is a record the app itself would write: an allowed kind, one day, no group, no names', () => {
+    for (const r of phs()) {
+      expect(placeholderProblem(r), `${r.person} ${r.type}`).toBe('')
+      expect(r.grp).toBeUndefined()
+      expect(r.endDate).toBeUndefined()
+      expect(r.iid, 'its own id').toBeTruthy()
+    }
+  })
+  it('filed by the admin — a made-up member filer would hand out a made-up right, and here it is also whose OIL answer counts', () => {
+    for (const r of phs()) { expect(String(r.by)).toBe(admin()); expect(typeof r.at).toBe('number') }
+    const duty = phs().find(r => r.type === 'Duty')
+    expect(oilAsks(duty.type)).toBe(true)
+    expect(duty.oil, 'the Saturday\'s question is answered, so the demo opens on a crowd that earns').toEqual({ '2026-07-25': 0.5 })
+  })
+  it('neither is the demo\'s LATE example, and neither sits in the seed week', () => {
+    for (const r of phs()) {
+      expect(isLateInput(r), `${r.type}`).toBe(false)
+      expect(['Jul 13', 'Jul 14', 'Jul 15', 'Jul 16', 'Jul 17', 'Jul 18', 'Jul 19']).not.toContain(r.date)
+    }
+  })
+  it('seeded once: a second boot adds no second pair', () => {
+    seedDemoPlaceholders()
+    expect(phs()).toHaveLength(2)
+  })
+})
+

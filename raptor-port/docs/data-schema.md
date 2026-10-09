@@ -148,7 +148,7 @@ truth for what each type means; the fields below are what a record carries.
 | Field | Type | Meaning |
 |---|---|---|
 | `iid` | string | **CORRECTED 17 Sep 26** — it is NOT `'i' + n` and there is NO counter. Since ARCH-STACK 1A it is the shared OPAQUE id `newId('i')` = `'i'` + a base-36 timestamp + 6 random base-36 chars (`src/engine/newid.ts`), minted by `inpId` on first read and by `mintInpIds` at boot. Opaque precisely so two devices cannot both mint `i5`. The stable handle — never address an input by index. `state/persist.ts` says so in place: "no counter to seed past stored ids" |
-| `person` | string | a PEOPLE id |
+| `person` | string | a PEOPLE id — a person's, or one of the two PLACEHOLDERS `allavail` / `all` for an input filed for "whoever is free" (D700, D702, 9 Oct 26): then no name is stored at all, the record is one of six kinds, one day, never in a group (`engine/inputs.ts placeholderProblem`; held at the save boundary), and `by` is whose OIL answer everyone behind it follows (D711) |
 | `date` | string | day, display form (`'Jul 13'`) |
 | `endDate` | string? | last day of a multi-day input |
 | `yr` | number | the anchor year the bare date label belongs to — written on create/edit (`src/ui/inputedit.tsx:712`, `src/ui/InputsPage.tsx:391`, `src/leavewar/sync.ts:323`) and back-filled at boot on any row without one (`src/state/store.ts:602`); part of the content key `inpKey` |
@@ -175,7 +175,7 @@ local, ground, half, shiftHard` flags):
 - `leave`: `LL` local, `OL` overseas, `OIL` off in lieu, `CCL` childcare, `PL` paternity, `FCL` family care, `EL` embarkation, `CL` compassionate
 - `med`: `HL` hospitalisation, `OML` ordinary medical, `ATT C` medically down — cannot report, `ATT B` medically down — no flying, may work
 - `upchit`: `Upchit` — fit to fly again
-- `act`: `Training`, `CSE`, `Meeting`, `Fly with`, `Personal`, `Appointment`, `Duty`, `Other`
+- `act`: `Training`, `CSE`, `Meeting`, `Fly with`, `Personal`, `Appointment`, `Duty`, `Event` (D713, 9 Oct 26 — Duty's flags), `Other`
 - `duty`: `OD` overseas duty
 - `sans`: `SANS Availability`
 

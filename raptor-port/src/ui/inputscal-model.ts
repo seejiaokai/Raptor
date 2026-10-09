@@ -60,6 +60,32 @@ export interface WeekBars {
 }
 export interface CalFilter { fPerson: string; fType: string; fSearch: string }
 
+/* ---- THE PERSON FILTER'S VALUES — ONE BODY FOR THE LIST, THE MONTH AND THE OPENED DAY ([INPUT-ALL-AVAIL], 9 Oct 26) ----
+   The filter's "Everyone" has always been the string 'all' — which is also the id of the ALL placeholder (people.ts),
+   and since an input can be filed FOR that placeholder (D700) the two meet: three places each compared the filter's
+   value with a record's person by hand, so choosing ALL would have shown everyone, and there was no way to ask for the
+   ALL inputs alone (both first-round readers of the plan).
+
+   WHICH SIDE MOVED, AND WHY. "Everyone" keeps 'all': seventeen walk scripts and three browser tests choose it by that
+   value, and had it changed each of them would have gone on choosing — silently — the ALL placeholder instead. So it is
+   the PLACEHOLDER's value in a filter that is its own: 'ph:' + its id. A named person's value is his id, as always.
+   Every reader asks `personFilterPasses`; nothing compares the filter with a person by hand any more. */
+export const EVERYONE = 'all'
+const PH = 'ph:'
+/** the value a person carries in a person filter */
+export const personFilterValue = (pid: any, people: Record<string, any> = PEOPLE): string => {
+  const id = String(pid ?? ''), p = people[id]
+  return p && p.special ? PH + id : id
+}
+/** the person a filter value names ('' for Everyone) */
+export const personFilterId = (fPerson: any): string => {
+  const v = String(fPerson ?? '')
+  return v === EVERYONE ? '' : v.startsWith(PH) ? v.slice(PH.length) : v
+}
+/** does a record of this person pass the filter? */
+export const personFilterPasses = (fPerson: any, pid: any, people: Record<string, any> = PEOPLE): boolean =>
+  String(fPerson ?? EVERYONE) === EVERYONE || personFilterValue(pid, people) === String(fPerson)
+
 const two = (n: number) => String(n).padStart(2, '0')
 const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${two(Math.floor(o / 100) % 100)}-${two(o % 100)}`
 const TONE_ORDER = { red: 0, amb: 1 } as const
@@ -72,7 +98,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
   const cs = (p: any): string => { const x = people[String(p)]; return x && x.cs ? String(x.cs) : String(p ?? '') }
   const search = (f.fSearch || '').trim().toLowerCase()
   const passes = (r: any) =>
-    (f.fPerson === 'all' || String(r.person) === String(f.fPerson)) &&
+    personFilterPasses(f.fPerson, r.person, people) &&
     (!search || String(r.remarks || '').toLowerCase().includes(search) || cs(r.person).toLowerCase().includes(search))
   const out: BarItem[] = []
   for (const e of entriesOf((inputs || []).filter((r: any) => r && !isSansAvail(r.type)), cs)) {

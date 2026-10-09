@@ -33,7 +33,7 @@ import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, commitGroup, removeInput, saveBatch, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
-  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate,
+  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate, placeholderRefused,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
   medAskFor, commitEditMedChoices, commitEditUpchit,
 } from './inputedit'
@@ -42,7 +42,8 @@ import { docFields, docHas, rowDocIds } from '../state/docs'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { placedLine, placedLineOf } from './placedline'
 import { entriesOf } from '../state/inputgroup'
-import { PeoplePick, pickProblem } from './PeoplePick'
+import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
+import { EVERYONE, personFilterId, personFilterPasses, personFilterValue } from './inputscal-model'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
@@ -269,7 +270,7 @@ export function InputsPage() {
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
-  const [memberPerson, setMemberPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
+  const [memberPerson, setMemberPerson] = useState(canEditSched() ? EVERYONE : (me() ?? ''))
   const [memberType, setMemberType] = useState('all')
   const [memberSearch, setMemberSearch] = useState('')
   /* the filters are the Inputs tab's alone — the SANS calendar has none (the plan §3.5; its own remembered person and
@@ -437,6 +438,11 @@ export function InputsPage() {
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
+    /* AN INPUT FOR ALL AVAIL / ALL THAT MAY NOT BE SAVED IS REFUSED FIRST ([INPUT-ALL-AVAIL] — ui/inputedit.tsx
+       placeholderRefused, the doors' one sentence). THIS form builds its record by hand and never passes through the
+       editor's own checks — which is how the first plan would have let an admin save a several-day ALL AVAIL here (both
+       its readers). Before the picker's line, the document question and every sheet. */
+    if (!several && placeholderRefused({ person: filedFor(), type, date, endDate })) return
     /* nothing is substituted for the people he picked: where he may not file this kind for them, the add is refused in
        the picker's own sentence (ui/PeoplePick.tsx) */
     const pb = pickProblem(picked(), several, type)
@@ -684,6 +690,9 @@ export function InputsPage() {
      this page's own inline ✓/✕ ran the same functions silently. */
   const saveEdit = (skipDoc = false) => {
     if (!editRow || !draft) return
+    /* an input for ALL AVAIL / ALL that may not be saved is refused FIRST — before the document question below (Astra's
+       read of the plan, 9 Oct 26: retyping one into a medical kind reached "No document?" before any refusal) */
+    if (placeholderRefused(draft)) return
     /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): editing an input INTO
        the medical group with no certificate opens [Upload] / [No document] before
        the upchit/downchit/OIL sheets; "No document" resumes through them. An
@@ -776,7 +785,7 @@ export function InputsPage() {
      filters show an entry when ANY of its people passes; it sorts by its first callsign. */
   const entryOf = new Map<any, any[]>()
   for (const e of entriesOf(rows)) if (e.rows.length > 1) for (const r of e.rows) entryOf.set(r, e.rows)
-  if (fPerson !== 'all') rows = rows.filter((r: any) => r.person === fPerson)
+  rows = rows.filter((r: any) => personFilterPasses(fPerson, r.person))   // one body with the month and the opened day
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
   if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
   rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
@@ -858,7 +867,7 @@ export function InputsPage() {
   const sansUp = tab === 'sans'
   const listUp = tab === 'inputs' && INPVIEW === 'table'
   const calUp = tab === 'inputs' && INPVIEW === 'cal'
-  const appliedFilters = tab !== 'inputs' ? [] : [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
+  const appliedFilters = tab !== 'inputs' ? [] : [fPerson!==EVERYONE?(PEOPLE[personFilterId(fPerson)]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
 
   /* the tabs: a tab list in the usual manner — one tab stop, the arrow keys move along it and round its ends, and the
      keyboard goes with the tab it chose */
@@ -909,7 +918,9 @@ export function InputsPage() {
     <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
       <label><span>Person</span><select id="inFPerson" aria-label="Person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
-        <option value="all">Everyone</option>
+        <option value={EVERYONE}>Everyone</option>
+        {/* the inputs filed for ALL AVAIL / ALL, each on its own — never "Everyone" ([INPUT-ALL-AVAIL]) */}
+        <PlaceholderGroup all value={personFilterValue} />
         {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
         <ArchivedGroup /><DeletedGroup />
       </select></label>
@@ -926,7 +937,7 @@ export function InputsPage() {
         aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}>&#9881;</button>
     )}
   </>)
-  const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');setFType('all');setFSearch('');notify()}}>Clear filters</button></div>
+  const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson(EVERYONE);setFType('all');setFSearch('');notify()}}>Clear filters</button></div>
 
   return (
     <div className={'inputs-workspace tab-' + tab}>
@@ -1127,6 +1138,9 @@ export function InputsPage() {
                     ? <select aria-label="Person" data-ed="person" value={draft.person}
                       onChange={e => setDraft({ ...draft, person: e.target.value })}>
                       <DeletedSelf id={draft.person} />
+                      {/* a placeholder already chosen is always listed — with no option the box drew the first man on
+                          the list over an ALL AVAIL input (Astra's read of the plan, 9 Oct 26) */}
+                      <PlaceholderGroup type={draft.type} current={draft.person} />
                       {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
                       <ArchivedGroup />
                     </select>

@@ -658,6 +658,19 @@ Save's refusal); `pickRoster` the people offered (SANS only on the SANS calendar
 editor's half - the entry opened as one thing, "Take me out", Delete for everyone (`inputedit.tsx removeEntry`), the
 OIL question asked once, the people followed behind the window - `groupeditor.test.tsx`. `state/inputgroup.ts
 entryRowsOf` is the entry a record belongs to.
+AN INPUT FILED FOR ALL AVAIL / ALL, AND THE KIND "EVENT" (9 Oct 26 - owner D700, D702, D711-D714; the plan
+`docs/superpowers/plans/2026-10-09-input-all-avail-plan.md`; the rules `docs/engine-rules.md` section "An input filed
+for ALL AVAIL / ALL"). No new source file - the pieces, and their tests: `engine/inputs.ts` - the kind `Event` (one row
+of `INPUT_META`; `eventkind.test.ts`) and `PLACEHOLDER_KINDS` / `placeholderProblem` / `isPlaceholderInput`, the ONE body
+for a placeholder input's three rules (`placeholderinput.test.ts`); `engine/oilev.ts claimDefault` - the one OIL
+default for a request, read by the credit and by each man's switch (`oilplaceholderclaim.test.ts`; on screen, with real
+taps, `ui/oilplaceholderclaim.test.tsx`); `state/store.ts placeholderShapeViolation` - the hard check at the save
+boundary; `ui/PeoplePick.tsx PlaceholderGroup` - the two entries, for every Person list; `ui/inputedit.tsx
+placeholderRefused` - the doors' one sentence; `ui/inputscal-model.ts EVERYONE` / `personFilterValue` /
+`personFilterPasses` - the person filter's one body for the List, the month and the opened day. Every door that can
+write or must refuse one: `ui/placeholderdoors.test.tsx`; the List's Add form and pencil editor, the three filters, the
+restore refused at the boundary and the answer rules: `ui/placeholderlist.test.tsx`. The demo's two
+(`state/demoseed.ts seedDemoPlaceholders` - a weekend Duty for ALL AVAIL, an Event for ALL; `demostamps.test.ts`).
 A shared input as ONE line - the opened day (its people's pucks, both Delete questions), the List (one row, one
 button), the List's own Add form with the picker - `sharedline.test.tsx`; its bar's drag for everyone -
 `barmove.test.tsx`; its one item in the changes window (`changesmodel.ts inputItem`, the line's `grp` from

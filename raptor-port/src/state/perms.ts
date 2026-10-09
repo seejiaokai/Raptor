@@ -257,7 +257,7 @@ export const mayEditInput = (row: any): boolean => mayChangeInput(row, 'U')
 export const mayDeleteInput = (row: any): boolean => mayChangeInput(row, 'D')
 /* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
    (D200: "the server's rules at the database step are a translation of an agreed list") */
-export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED for him (`filedBy` or `groupFiledBy` = my person; D654, D655, D658): I may create, change and delete it, and answer its OIL question for him (D660); never move it to another person'
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED for him (`filedBy` or `groupFiledBy` = my person; D654, D655, D658): I may create, change and delete it, and answer its OIL question for him (D660); never move it to another person; an input filed for ALL AVAIL / ALL counts as filed for another person — one of six kinds, one day, never in a group (D700, D711, D712, D713)'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
