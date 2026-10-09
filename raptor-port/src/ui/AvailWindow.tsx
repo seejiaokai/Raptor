@@ -32,7 +32,7 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilHeldClaimHint, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
@@ -233,6 +233,7 @@ export function AvailWindow() {
     return {
       lbl, lost, body, worst, known,
       noAsk: oilNoAskWhy(di, item),
+      heldHint: oil ? oilHeldClaimHint(di, item) : '',
       /* the EARN half's foot about a tapped man who could not earn (Fable's final read, F2): said afresh in the chip's own
          world while he is still listed and still cannot — and dropped the moment he can (a request retyped behind the
          window), so the foot never contradicts the puck above it */
@@ -341,6 +342,9 @@ export function AvailWindow() {
       : masked ? (oilBlanketOn(di)
         ? 'Nothing on this day earns. Turn that off to switch men one by one.'
         : 'This event earns nobody. Turn it back on to switch men one by one.')
+      /* an input filed for ALL AVAIL / ALL whose filer said No, or has not answered ([INPUT-ALL-AVAIL], D711 (1)): the
+         men listed earn nothing until one is tapped — the hint says that, not the opposite */
+      : m.heldHint ? m.heldHint
       : 'Tap a puck to stop a man earning from this event.')
     : m.flagged
       ? `Tap a puck for why. ${m.flagged === 1 ? 'One man is' : `${m.flagged} men are`} flagged.`

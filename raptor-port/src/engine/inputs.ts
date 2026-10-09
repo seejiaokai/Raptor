@@ -3,6 +3,7 @@ import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
+import { PEOPLE, isSpecial } from './people'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -241,6 +242,16 @@ export const INPUT_META:any={
      (overseas duty, grp:'duty' — out of reach). Placed AFTER the medical block
      so the leave/med indices the suite pins stay put. */
   'Duty':       {name:'duty',                     grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
+  /* EVENT (owner, D713 + D714, 9 Oct 26 — "should I add a new input called event … sports, night out with, games").
+     Ruled a COMMITMENT LIKE THE OTHERS, not a softer social kind: "Ask it [the OIL question], its work, it can be an
+     official event too … It should be like a ground programme so yes it should clash … it shows directly on the
+     schedule unless taken out by an admin" (D713), and across a standby shift "a clash like that, not the meeting
+     softer amber" (D714). So: Duty's flags to the letter — grp:'act' lands it on the Ground Programme and makes a
+     man on it busy for an ALL AVAIL crowd, shiftHard makes it red across SC MAIN, and restsInput / oilAsks take it
+     in by construction (every act kind but Personal). Placed straight after Duty, before OD, so the leave / medical
+     indices the suite pins stay put. DRIFT SEAM, walked with this row: testing/refwin.ts reshift (the hand-typed
+     label list) and reirest (the crew-rest set), engine/schema.ts. Pinned by eventkind.test.ts. */
+  'Event':      {name:'event',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
@@ -496,6 +507,30 @@ export function restsInput(t:any){const m=inpMeta(t);
    so the two rules can diverge later without a hunt; today one delegates. */
 export function oilAsks(t:any){return restsInput(t);}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
+/* ---- AN INPUT FILED FOR A PLACEHOLDER — "ALL AVAIL" OR "ALL" ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 —
+   9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.1, §3.2) ---------------------------
+   His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments"
+   (D700). It is an ORDINARY SINGLE INPUT whose `person` is one of the two placeholder people (people.ts `special`):
+   nobody's name is stored in it — who stands behind it is worked out on the day, as for a placeholder dropped on a row
+   (D702, D44). So no man behind it has a record of his own, and none has an OIL answer of his own (D711 (1)).
+   THREE STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
+   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" or "Personal" (D712), and the new
+   Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); (c) alone — never a group
+   member: it already stands for whoever is free. `placeholderProblem` answers '' or the sentence the screen says; every
+   save door asks it first (ui/inputedit.tsx normalizeInputDraft, commitGroup; ui/InputsPage.tsx add; ui/PeoplePick.tsx)
+   and the save boundary's hard check asks it of what a command really changed, whoever ran it (state/store.ts
+   wireStore — `placeholder-input-shape`). Pinned by placeholderinput.test.ts. */
+export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Appointment','Duty','Event','Other'];
+export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
+export function isPlaceholderInput(inp:any){return !!inp&&inp.person!=null&&isSpecial(inp.person);}
+export function placeholderProblem(inp:any):string{
+  if(!isPlaceholderInput(inp))return '';
+  const cs=String(PEOPLE[inp.person].cs);
+  if(!placeholderKind(inp.type))return `${cs} can be filed only for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} or ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
+  if(inp.endDate&&String(inp.endDate)!==String(inp.date)){const a=dateOrd(inp.date,inp.yr),b=dateOrd(inp.endDate,inp.yr);
+    if(a==null||b==null||a!==b)return `${cs} is filed one day at a time`;}
+  if(inp.grp!=null||inp.grpBy!=null)return `${cs} is filed on its own — it already stands for whoever is free`;
+  return '';}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
    typed is the name of the thing (owner, Aug 26). Everywhere an input is
    labelled — the Personal Inputs list, the Unavailable block, the board rows,

@@ -282,6 +282,10 @@ export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: b
 export function spanDefault(day: any, ev: OilEvidence, person: string, item: string): boolean {
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === person)
   if (inp) return inp.ans != null && inp.ans > 0
+  /* a request HELD BY A PLACEHOLDER answers for everyone on its row through the one body below ([INPUT-ALL-AVAIL],
+     D711 (1)) — a crowd man follows the filer's answer, so his switch must start where his credit does */
+  const held = ev.inputs.find(i => inputItemKey(i.iid) === item && isSpecial(i.person))
+  if (held) return claimDefault(day, ev, held, person)
   const spans = (oilDayWork(day, ev)[person] || []).filter(w => String(w.item || '') === item)
   return spans.length ? spans.every(w => w.dflt !== false) : true
 }
@@ -1112,6 +1116,31 @@ export function landedExtras(day: any, iid: string, owner: string, crowd?: strin
   return out
 }
 
+/** DOES THIS MAN EARN BY DEFAULT FROM THIS REQUEST — the ONE answer, before any decision of the scheduler's is applied.
+ *  Read by the credit (`oilEarnedWork`, just below) and by each man's switch (`spanDefault` → ui/oilmode.ts), so the
+ *  screen and the credit cannot answer it two ways.
+ *
+ *  · THE HOLDER — the man the request is filed for: his own answer (§2.2), as always.
+ *  · ANYONE ELSE ON A NAMED MAN'S REQUEST — a man the scheduler typed onto its row (D18, D470) or one of the crowd of a
+ *    placeholder the scheduler dropped there (D46): YES, as always.
+ *  · A REQUEST HELD BY A PLACEHOLDER — an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL]; owner D702, D711 (1),
+ *    9 Oct 26: "the filer answers the OIL question once and the scheduler may switch any one man — a man behind it does
+ *    not change his own answer"). Nobody behind it has a record, so nobody has an answer of his own: a man the
+ *    SCHEDULER typed onto the row still defaults YES (he was put there by name), and a man who is there only as one of
+ *    the crowd follows the FILER's answer for the day — more than 0, he earns; 0 or not answered yet, he does not. A
+ *    man who is both counts as typed. The answer is no cap on the amount: it admits the work, and the man's own day
+ *    decides half or full (oilAmount).
+ *
+ *  Both halves it reads are inside an issued day's own record — the typed men on the day's row, the answer in the
+ *  block's `inputs` — so a published day answers from what it went out with (D44, D142). `typed` lets a caller that
+ *  asks about many men hand over the row's typed men once. Pinned by oilplaceholderclaim.test.ts. */
+export function claimDefault(day: any, ev: OilEvidence, claim: OilInputEv, person: string, typed?: string[]): boolean {
+  const own = claim.ans != null && claim.ans > 0
+  if (String(claim.person) === String(person)) return own
+  if (!isSpecial(claim.person)) return true
+  return (typed || landedExtras(day, claim.iid, String(claim.person))).includes(String(person)) || own
+}
+
 export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork[]> {
   const out: Record<string, OilWork[]> = {}
   if (!ev.earns) return out
@@ -1145,7 +1174,12 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
     /* the man who FILED it: his own answer is the default, and the admin's
        three-state sits over the top (§2.2 / OIL10) */
     const own = inp.ans != null && inp.ans > 0
-    if (earnsFrom(ev, inp.person, item, own)) put(inp.person, span(own))
+    /* A PLACEHOLDER THAT HOLDS THE REQUEST IS NOT A MAN, AND IS NEVER PUT INTO THE WORK ([INPUT-ALL-AVAIL]): an input
+       filed for ALL AVAIL / ALL names nobody. It used to be put here on a Yes and dropped later by the credit's own
+       people filter (leavewar/sync.ts) — and anything between that read the work (a figure, a count) saw a man called
+       ALL AVAIL earning half a day. */
+    const held = isSpecial(inp.person)
+    if (!held && earnsFrom(ev, inp.person, item, own)) put(inp.person, span(own))
     /* D18 (owner, 21 Sep 26 — "for 2 he should earn"): a second man the
        SCHEDULER puts on the row earns from it, the same as the man who filed
        it. Until now the claim owned the row and the schedule half skipped every
@@ -1166,9 +1200,14 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
        ([OIL-SEATS-CAN-EARN] step 6, D46 — no carve-outs). It is resolved from
        the day's own written-down membership, so an issued day credits the people it
        went out with and not whoever happens to be free when it is read. */
+    /* …AND EACH OF THEM ON THE ONE DEFAULT (`claimDefault` above): yes for all of them on a named man's request, as it
+       always was; on a request the placeholder itself holds, yes for a man the scheduler typed and the FILER's answer
+       for a man who is there only as one of the crowd (D711 (1)). */
+    const typed = held ? landedExtras(day, inp.iid, inp.person) : undefined
     for (const extra of landedExtras(day, inp.iid, inp.person, ev.sent[item])) {
-      if (!earnsFrom(ev, extra, item, true)) continue
-      put(extra, span(true))
+      const dflt = claimDefault(day, ev, inp, extra, typed)
+      if (!earnsFrom(ev, extra, item, dflt)) continue
+      put(extra, span(dflt))
     }
   }
   return out

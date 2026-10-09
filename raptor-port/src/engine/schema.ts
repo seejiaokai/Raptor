@@ -157,7 +157,7 @@ export type Person = {
 export const INPUT_TYPES = [
   'LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'CL',
   'HL', 'OML', 'ATT C', 'ATT B', 'Upchit',
-  'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'OD', 'Other',
+  'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'OD', 'Other',
   'SANS Availability',
 ] as const
 export type InputType = (typeof INPUT_TYPES)[number]

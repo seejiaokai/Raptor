@@ -17,8 +17,8 @@
    The picker holds no state and writes nothing: its owner keeps `people` (in the order picked — the first is the one
    kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitGroup. */
 import { useRef, type ReactNode } from 'react'
-import { PEOPLE } from '../engine/people'
-import { isUpchit, needsDoc } from '../engine/inputs'
+import { PEOPLE, isSpecial } from '../engine/people'
+import { isUpchit, needsDoc, placeholderKind, placeholderProblem } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
 import { mayFileGroup, mayFileInputFor, me } from '../state/perms'
 import { fileForOtherRefusal, rosterOptions } from './inputedit'
@@ -39,12 +39,41 @@ const GROUPS: Array<{ k: string; label: string; has: (p: any) => boolean }> = [
   { k: 'personnel', label: 'Personnel', has: p => !!p.pers && !p.san },
 ]
 
+/* ---- "ALL AVAIL" AND "ALL" AS A CHOICE ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 — 9 Oct 26) ------------
+   His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."
+   The schedule's two placeholders are offered in the ONE-PERSON list, under a heading that says what both mean (D702:
+   each "stands for whoever is free" — and neither takes ground crew, D52, so "everyone" would be false). Never in
+   "Several people": a placeholder input is filed on its own. Which kinds may carry one, that it is one day and never a
+   group, is ONE body — engine/inputs.ts placeholderProblem — asked here, at every save door and by the save boundary's
+   hard check. */
+export const PLACEHOLDER_IDS = (): string[] => Object.keys(PEOPLE).filter(id => PEOPLE[id].special)
+export const PLACEHOLDER_HEADING = 'Whoever is free that day'
+/** The two entries, as a group of a person list. `type`: the kind being filed — offered only for one a placeholder may
+ *  carry; `current`: the person now chosen — a placeholder already chosen is ALWAYS listed, whatever the kind has
+ *  become, so the box never shows another name over it (nothing is substituted for what he picked). `all`: list both
+ *  whatever the kind (a filter, which chooses among what exists). */
+export function PlaceholderGroup({ type, current, all }: { type?: any; current?: any; all?: boolean }) {
+  const ids = PLACEHOLDER_IDS().filter(id => all || placeholderKind(type) || String(current ?? '') === id)
+  if (!ids.length) return null
+  return <optgroup label={PLACEHOLDER_HEADING} data-ph="1">{ids.map(id => <option key={id} value={id}>{cs(id)}</option>)}</optgroup>
+}
+
 /** may he pick someone other than himself for this kind at all? (an admin: yes; a member: a kind he may file for others) */
 const mayPickOthers = (type: any): boolean => canEditSched() || mayFileInputFor('\u0000another', type)
 
 /** What is wrong with the people picked for this kind, and the one press that corrects it — or null. */
 export function pickProblem(people: readonly string[], several: boolean, type: any): { why: string; fix: string[]; fixLabel: string } | null {
   const mine = me()
+  /* A PLACEHOLDER PICKED ([INPUT-ALL-AVAIL]). With "Several people" on — he switched it on after choosing ALL AVAIL, and
+     the switch keeps what was chosen — it is refused with its one press back to ALL AVAIL alone. With a kind it may not
+     carry, the kinds are named; the press files it for himself instead. (Its dates are not known here: the one-day rule
+     is said at the save, by the same body — ui/inputedit.tsx placeholderRefused.) */
+  const ph = people.find(p => isSpecial(p))
+  if (ph != null) {
+    if (several || people.length > 1) return { why: placeholderProblem({ person: ph, type: 'Duty', grp: 1 }), fix: [ph], fixLabel: `File it for ${cs(ph)} only` }
+    const why = placeholderProblem({ person: ph, type })
+    if (why) return { why, fix: mine != null ? [mine] : [], fixLabel: 'File it for me only' }
+  }
   if (several && people.length > 1 && !mayFileGroup(type)) {
     if (canEditSched()) return {
       why: `${isUpchit(type) ? 'An upchit' : needsDoc(type) ? 'A medical entry' : 'This'} is filed for one person at a time — each needs its own document`,
@@ -74,6 +103,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
   const roster = pickRoster(sansOnly)
   const first = people[0]
   const others = !lockOne && mayPickOthers(type)
+  /* the two placeholders: where he may pick another "person" for this kind, never on the SANS calendar */
+  const offerPh = !sansOnly
   /* the switch shows where a group may be filed — and stays while several ARE picked, so a kind that no longer allows
      it never hides what he chose */
   const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditSched())) || several
@@ -147,7 +178,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
           {!several && (others
             ? <select id={form ? 'inPerson' : 'inpEditPerson'} aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
               {/* a man no longer on the list (archived since) still reads as himself, never as the first name on it */}
-              {!more && first != null && !roster.includes(first) && <option value={first}>{cs(first)}</option>}
+              {!more && first != null && !roster.includes(first) && !isSpecial(first) && <option value={first}>{cs(first)}</option>}
+              {offerPh && <PlaceholderGroup type={type} current={first} />}
               {roster.map(id => <option key={id} value={id}>{cs(id)}</option>)}
               {more}
             </select>

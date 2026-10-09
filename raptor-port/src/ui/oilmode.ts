@@ -260,8 +260,11 @@ function effectiveDefault(di: any, ev: OilEvidence, person: string, item: string
  *               pass (Fable R2-10) — without it the mode would spend the rest of
  *               the build telling an admin a man "earns nothing from this event
  *               — tap to put him back on it" about a man who was never on it.
- *  `off`      — anything else (ordinary schedule work switched off). */
-export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'never' | 'off'
+ *  `off`      — anything else (ordinary schedule work switched off).
+ *  `filerNo` / `filerUnasked` — a man behind an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL], D711 (1)): he has
+ *               no answer of his own; whoever FILED it answered No, or has not answered yet. Without these two he fell
+ *               to `never` — "this kind of event earns nothing by default" — which is false of a Duty. */
+export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'never' | 'off' | 'filerNo' | 'filerUnasked'
 export function oilOffReason(di: any, person: any, item: string): { why: OilOffWhy, what: string } {
   const ev = evOf(di)
   const dec = personDecision(ev, String(person), item)
@@ -271,8 +274,29 @@ export function oilOffReason(di: any, person: any, item: string): { why: OilOffW
     const what = String(inp.type || '').trim()
     return { why: inp.ans == null ? 'unasked' : 'declined', what }
   }
+  const held = heldClaim(ev, item)
+  if (held && !itemDefaultFor(di, ev, String(person), item))
+    return { why: held.ans == null ? 'filerUnasked' : 'filerNo', what: String(held.type || '').trim() }
   if (!itemDefaultFor(di, ev, String(person), item)) return { why: 'never', what: '' }
   return { why: 'off', what: '' }
+}
+
+/** THE REQUEST BEHIND THIS ITEM WHEN A PLACEHOLDER HOLDS IT — an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL]) —
+ *  else undefined. Read off the day's own evidence, so an issued day answers from what it went out with. */
+function heldClaim(ev: OilEvidence, item: string) {
+  return item && item.startsWith('i:') ? ev.inputs.find(i => inputItemKey(i.iid) === item && isSpecial(i.person)) : undefined
+}
+/** …and what the ALL AVAIL window says above its "Who earns OIL" list for such a request, or '' when the ordinary hint
+ *  is the true one (the filer answered Yes; any other kind of row). The men behind it start where the FILER's answer
+ *  puts them (D711 (1)), so "Tap a puck to stop a man earning" over a list of men who earn nothing would invite a tap
+ *  that does the opposite of what it says. */
+export function oilHeldClaimHint(di: any, item: string): string {
+  const held = heldClaim(evOf(di), item)
+  if (!held || (held.ans != null && held.ans > 0)) return ''
+  const what = String(held.type || 'request').trim() || 'request'
+  return held.ans == null
+    ? `The OIL question for this ${what} has not been answered yet, so nobody behind it earns. Tap a puck to credit one man.`
+    : `Whoever filed this ${what} answered No to OIL, so nobody behind it earns. Tap a puck to credit one man.`
 }
 
 /** What the mode shows on ONE puck: whether it glows, and the man's figure for
@@ -541,6 +565,10 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
       ? (evOf(di).inputs || []).find((i: any) => String(i.iid) === String(item).slice(2))
       : null
     if (claim && (claim.stand === 'active' || claim.stand === 'unlanded')) {
+      /* AN INPUT FILED FOR ALL AVAIL / ALL HAS NO PUCK OF A MAN ON ITS ROW TO TAP ([INPUT-ALL-AVAIL]): the people behind
+         it are in the window its count opens (D38), each starting where the filer's answer puts him (D711 (1)) */
+      if (isSpecial(claim.person))
+        return `<span class="${cls} oilitem none" title="This request follows the answer of whoever filed it — tap the count to switch one person">${esc(txt) || '&nbsp;'}</span>`
       return `<span class="${cls} oilitem none" title="A request is answered for each person on it — tap a puck on this row, not the row itself">${esc(txt) || '&nbsp;'}</span>`
     }
     /* A START AND NO END ([ALLAVAIL-OPEN-ROW], D360): not "nothing can earn" — it could, once it has an end. Its crowd is
@@ -672,6 +700,11 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
              scheduler did. This is the spare standing by at home, the AVALON or
              BB line, the AVALON desk — and the owner's words for the way out are
              exactly this tap ("the admin can just easily click credit OIL"). */
+          /* a man behind an input filed for ALL AVAIL / ALL: the answer is the FILER's, never his own (D711 (1)) */
+          : why === 'filerNo'
+            ? `${p.cs} — whoever filed ${thing} answered No to OIL; tap to credit him anyway`
+            : why === 'filerUnasked'
+              ? `${p.cs} — the OIL question for ${thing} has not been answered yet; tap to credit him`
           : why === 'never'
             ? `${p.cs} — this kind of event earns nothing by default; tap to credit him`
             : `${p.cs} earns nothing from this event — tap to put him back on it`

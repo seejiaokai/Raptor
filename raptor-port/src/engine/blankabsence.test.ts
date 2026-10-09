@@ -179,7 +179,7 @@ describe('the oracle — what each input type says on each kind of seat, with no
     [['HL', 'OML', 'ATT C'], M, M, M, M, M, M],                                            // medically down: nothing
     [['ATT B'], M, M, M, M, NONE, NONE],                                                   // grounded, not absent: no jet seat, any desk
     [['OD'], I, I, L, L, I, L],                                                            // overseas duty: out of reach (a standby place words it as its own look does)
-    [['Training', 'CSE', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Other'], I, I, NONE, NONE, I, NONE],
+    [['Training', 'CSE', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'Other'], I, I, NONE, NONE, I, NONE],   // Event joined 9 Oct 26 (D713, D714): red, as these
     [['Meeting'], I, SOFT, NONE, NONE, I, NONE],                                           // the one soft type on an SC MAIN
     [['SANS Availability'], NONE, NONE, NONE, NONE, NONE, NONE],                           // an offer, not an absence
     [['Upchit'], NONE, NONE, NONE, NONE, NONE, NONE],                                      // a paperwork record: fit again

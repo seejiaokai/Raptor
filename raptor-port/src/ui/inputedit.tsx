@@ -14,10 +14,10 @@
 import { FloatWin } from './FloatWindow'
 import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
-import { PeoplePick, pickProblem } from './PeoplePick'
+import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { entryRowsOf } from '../state/inputgroup'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -559,6 +559,9 @@ export function normalizeInputDraft(draft: any, except: any):
     HOOKS.toast('An upchit stays an upchit — delete it instead if it was filed in error', 'warn'); return null
   }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
+  /* AN INPUT FOR ALL AVAIL / ALL: one of six kinds, one day ([INPUT-ALL-AVAIL] — placeholderRefused above says why).
+     Here, at the one body every editor's commit passes through, so no door can write what the picker will not offer. */
+  if (placeholderRefused({ person: draft.person, type: draft.type, date, endDate })) return null
   /* A SPAN HAS TO RUN FORWARDS. Dates now carry their year whenever it is not
      the loaded week's (fmt above), so a leave into the new year — Dec 28 →
      Jan 3 — stores its end as 'Jan 3 2027', dateOrd orders it AFTER the start,
@@ -814,6 +817,25 @@ const medicalLocked = () => HOOKS.toast('This week is locked — it was publishe
 export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, entryEnd?: any, except = base) =>
   segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
     medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
+
+/* IS THIS DRAFT A PLACEHOLDER INPUT THAT MAY NOT BE SAVED? ([INPUT-ALL-AVAIL] — owner D700, D711, D712, D713; the plan
+   docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2.) An input for ALL AVAIL / ALL is one of six kinds, ONE
+   day, never in a group — engine/inputs.ts placeholderProblem, the one body. This is its voice at a save DOOR: it says
+   the sentence and answers true, and the caller keeps its window open. Asked FIRST by every save handler — before the
+   document question, the medical sheets and the OIL question (Astra's read of the plan, 9 Oct 26: changing an ALL AVAIL
+   input's kind to a medical one reached the document question before any refusal) — and again inside
+   normalizeInputDraft, which every other door passes through (the calendar's drag, the time cells, each man of a group
+   save). A draft carries ISO `start` / `end`; a record carries `date` / `endDate`. The save boundary's hard check
+   (state/store.ts) is behind them all. */
+export function placeholderRefused(d: any): boolean {
+  if (!d || !isSpecial(d.person)) return false
+  const iso = d.start != null || d.end != null
+  const date = iso ? (d.start ? fmt(d.start) : '') : d.date
+  const endDate = iso ? (d.end && d.end !== d.start ? fmt(d.end) : undefined) : d.endDate
+  const why = placeholderProblem({ person: d.person, type: d.type, date, endDate, yr: d.yr ?? baseYear(), grp: d.grp, grpBy: d.grpBy })
+  if (why) HOOKS.toast(why, 'warn')
+  return !!why
+}
 
 /* WHY A MEMBER MAY NOT FILE THIS KIND FOR ANOTHER MAN, in a sentence — one wording for the new-input door, the edit door
    and (with the Inputs calendar) the people picker's own line. The members' switch being off is said as that; else the
@@ -1263,6 +1285,10 @@ export function reassignInput(iid: any, personId: any) {
      own Person field can never offer it. "Unavailable" describes a real
      person's day; a placeholder has no day to describe. */
   if (!PEOPLE[personId] || isSpecial(personId)) return false
+  /* …AND A PLACEHOLDER IS NEVER THE SOURCE EITHER ([INPUT-ALL-AVAIL]; both first-round plan readers, 9 Oct 26). An input
+     filed for ALL AVAIL / ALL carries the filer's one OIL answer for everyone behind it (D711 (1)); dragging a man onto
+     it would turn it into that man's own input by a gesture that asks nothing. Its own window is the one door. */
+  if (isSpecial(r.person)) { HOOKS.toast(`An input for ${PEOPLE[r.person].cs} is changed in its own window — open it to change who it is for`, 'warn'); return false }
   if (r.person === personId) return false           // dropped back on themselves — nothing to say
   const was = PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')
   const draft = draftOf(r)
@@ -1497,6 +1523,14 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
   if (!want.length) { say('Pick at least one person', 'warn'); return false }
   const scheduler = canEditSched(), mine = me()
   if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
+  /* A PLACEHOLDER IS FILED ON ITS OWN ([INPUT-ALL-AVAIL] — the plan §3.2). The WHOLE selection is judged before any man
+     is written: a placeholder among several people, the two placeholders together, or a placeholder taking over an
+     entry that is a group. (Hiding the two in "Several people" is not enough — switching from one person to several
+     keeps what was chosen; both first-round plan readers.) */
+  const ph = want.find(p => isSpecial(p))
+  if (ph != null && (want.length > 1 || rows.some(r => r.grp != null || r.grpBy != null) || rows.length > 1)) {
+    say(placeholderProblem({ person: ph, type: 'Duty', grp: 1 }), 'warn'); return false
+  }
   const kept = rows.filter(r => want.includes(String(r.person)))
   const gone = rows.filter(r => !want.includes(String(r.person)))
   const have = new Set(rows.map(r => String(r.person)))
@@ -2095,6 +2129,9 @@ export function InputEditor() {
      object — see the bindings below (SYNC-002). */
   const save = (skipDoc = false) => {
     if (undecided()) return
+    /* an input for ALL AVAIL / ALL that may not be saved is refused FIRST — before the picker's own line, the document
+       question and every sheet ([INPUT-ALL-AVAIL]) */
+    if (draft && placeholderRefused(several && picker ? { ...draft, person: ppl.find(p => isSpecial(p)) ?? draft.person, grp: ppl.some(p => isSpecial(p)) ? 1 : undefined } : draft)) return
     if (picker && draft) {
       /* nothing is substituted for what he picked: people he may not file this kind for refuse the save, in the
          picker's own sentence */
@@ -2270,6 +2307,7 @@ export function InputEditor() {
               <span className="inped-k">Person</span>
               <select id="inpEditPerson" aria-label="Person" value={draft.person}
                 onChange={e => setDraft({ ...draft, person: e.target.value })}>
+                <PlaceholderGroup type={draft.type} current={draft.person} />
                 {peopleFor().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
               </select>
             </label>}

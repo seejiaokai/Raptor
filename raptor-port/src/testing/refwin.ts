@@ -533,7 +533,7 @@ function reinput(html: string): string {
    (port reads the source type off row.src; the reference reads the remarks
    label) — no parity fixture may build one. */
 function reshift(html: string): string {
-  const RH = "/\\b(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|OTHER)\\b/i"
+  const RH = "/\\b(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|EVENT|OTHER)\\b/i"
   const swaps: Array<[string, string]> = [
     /* the sortie-clash loop no longer speaks over a shift line — the graded
        events loop is a shift's one voice (see validate.ts, same guard) */
@@ -725,7 +725,7 @@ function reirest(html: string): string {
   const swaps: Array<[string, string]> = [
     ["prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });",
      "prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });"
-     + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|od|other)$/i;"
+     + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|event|od|other)$/i;"
      + "const _il=i=>(/^other$/i.test(String(i.type||'').trim())&&String(i.remarks||'').trim())?String(i.remarks).trim():String(i.type||'');"
      + "ev[idx-1].input.forEach(i=>{"
      + "if(i.nx||i.pv||!_rt.test(String(i.type||'').trim()))return;"

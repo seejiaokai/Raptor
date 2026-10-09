@@ -2165,7 +2165,9 @@ export function accCtl(di:any,inp:any){
   }
   const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
-    +(/^Other$/i.test(String(inp.type))
+    /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
+       ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
+    +(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
       ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
       : b('g','Accept','Accept into the ground programme'))
     +`</span>`;
