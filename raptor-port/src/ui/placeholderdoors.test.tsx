@@ -404,6 +404,15 @@ describe('THE SAVE BOUNDARY — one hard check on what a command really changed,
     }
   })
 
+  it('a placeholder input UNDER UNAVAILABLE is refused at the boundary too (Astra\'s read of the code)', async () => {
+    const was = world(); said.length = 0
+    let ok = true
+    await act(async () => { ok = writeInputs(() => { INPUTS.unshift({ iid: 'badu', person: 'allavail', by: admin, type: 'Other', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: '', mod: '2026-09-01', acc: 'u' }) }); notify() })
+    expect(ok).toBe(false)
+    expect(world()).toBe(was)
+    expect(said.join(' | ')).toContain('cannot be filed under Unavailable')
+  })
+
   it('a NAMED man\'s input of any shape is none of this check\'s business', async () => {
     let ok = false
     await act(async () => { ok = writeInputs(() => { INPUTS.unshift({ iid: 'ok1', person: others()[0], type: 'OD', date: 'Oct 13', endDate: 'Oct 20', yr: 2026, allday: true, remarks: '', mod: '2026-09-01' }) }) })
@@ -413,7 +422,9 @@ describe('THE SAVE BOUNDARY — one hard check on what a command really changed,
 
 describe('the schedule\'s own doors', () => {
   it('reassign refuses BOTH directions — a placeholder input is changed in its own window, never by a drag', async () => {
-    const r = await filed({ type: 'Other', acc: 'u' })
+    /* (a placeholder input can never BE under Unavailable — the save boundary refuses that record, below — so the
+       source here is an ordinary one; the door must refuse it wherever the gesture came from) */
+    const r = await filed({ type: 'Other' })
     const was = world(); said.length = 0
     let ok = true
     await act(async () => { ok = reassignInput(r.iid, others()[0]) })

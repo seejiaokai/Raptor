@@ -199,6 +199,22 @@ describe('the List row, and its pencil editor (Astra\'s read of the plan)', () =
     expect(live(r.iid).person).toBe(others()[1])
   })
 
+  /* ASTRA'S READ OF THE CODE (9 Oct 26): an edit keeps a request's "filed under Unavailable" — right for a man, and
+     through the new Person choices it left an ALL AVAIL input under Unavailable: no row on the programme, no crowd, and
+     nobody able to earn from a Yes. Turned into a placeholder's, it goes back onto the programme. */
+  for (const ph of ['allavail', 'all']) {
+    it(`a named man's Other filed under Unavailable, turned into ${PEOPLE[ph].cs}'s in the pencil editor: it leaves Unavailable`, async () => {
+      const r = await put({ person: others()[0], type: 'Other', acc: 'u' })
+      expect(live(r.iid).acc).toBe('u')
+      await listUp()
+      await click(rowEl(r.iid)!.querySelector('[data-edit]'))
+      await pick(rowEl(r.iid)!.querySelector('[data-ed="person"]'), ph)
+      await click(rowEl(r.iid)!.querySelector('[data-save]'))
+      expect(live(r.iid).person, said.join(' | ')).toBe(ph)
+      expect(live(r.iid).acc, 'no longer under Unavailable').not.toBe('u')
+    })
+  }
+
   it('a leave\'s pencil editor offers no placeholder', async () => {
     const r = await put({ person: others()[0], type: 'LL', allday: true })
     await listUp()

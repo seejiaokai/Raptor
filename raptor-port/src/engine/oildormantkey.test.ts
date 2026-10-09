@@ -73,6 +73,44 @@ describe('D174, D176 — a request taken off the programme is no change to what 
   }
 })
 
+/* ASTRA'S READ OF THE CODE (9 Oct 26): the first repair above was incomplete. A scheduler's switch about ONE MAN on a
+   request (`oild.people['<man>|i:<request>']`) is ignored on read while the request stands without its row, and counted
+   again once the request is deleted — so deleting a taken-off request that had ever had a man switched read "1 pending"
+   and broke the sign-offs, with nobody's OIL moved. A decision about a request that is not on the programme (dormant,
+   or gone) is in neither side of the comparison; the decision itself is KEPT, for Undo and for putting the request back. */
+describe('D176 — a switch about a request that is off the programme, or gone, is no change either', () => {
+  for (const [who, dec] of [['stiff', 'deny'], ['stiff', 'allow'], ['divot', 'deny']] as Array<[string, string]>) {
+    it(`a ${dec} for ${who}: taken off, published, then DELETED — the comparison does not move`, () => {
+      const r = claim({ iid: 'rq1', person: 'allavail', acc: 'g' })
+      ;(DAYS[SAT] as any).ground = [{ prog: 'Duty', str: '0900', end: '1200', who: 'allavail', src: 'rq1', more: who === 'divot' ? ['divot'] : [] }]; ensureRowIds(DAYS)
+      ;(DAYS[SAT] as any).oild = { people: { [`${who}|i:rq1`]: dec }, pa: { [`${who}|i:rq1`]: 0 } }
+      const standing = key()
+      r.acc = 'r'; (DAYS[SAT] as any).ground = []
+      const takenOff = key()
+      expect(takenOff, 'taking a standing request off IS a change (D114)').not.toBe(standing)
+      INPUTS.shift()
+      expect(key(), 'deleting it afterwards is none (D176)').toBe(takenOff)
+      expect(((DAYS[SAT] as any).oild.people || {})[`${who}|i:rq1`], 'the decision itself is kept, for Undo').toBe(dec)
+    })
+  }
+
+  it('THE CONTROL — a switch about a request that STANDS still moves the comparison, both ways', () => {
+    claim({ iid: 'rq1', person: 'allavail', acc: 'g' })
+    ;(DAYS[SAT] as any).ground = [{ prog: 'Duty', str: '0900', end: '1200', who: 'allavail', src: 'rq1' }]; ensureRowIds(DAYS)
+    const none = key()
+    ;(DAYS[SAT] as any).oild = { people: { 'stiff|i:rq1': 'deny' }, pa: { 'stiff|i:rq1': 0 } }
+    expect(key()).not.toBe(none)
+  })
+
+  it('…and a switch on an ordinary ROW (not a request) is untouched by this', () => {
+    ;(DAYS[SAT] as any).ground = [{ prog: 'BRIEF', str: '0900', end: '1200', who: 'stiff' }]; ensureRowIds(DAYS)
+    const rid = (DAYS[SAT] as any).ground[0].rid
+    const none = key()
+    ;(DAYS[SAT] as any).oild = { people: { [`stiff|r:${rid}`]: 'deny' } }
+    expect(key()).not.toBe(none)
+  })
+})
+
 describe('D327 — archiving a man who was only behind a placeholder leaves the published day as it went out', () => {
   const day = (over: any = {}) => ({ ground: [{ prog: 'Duty', who: 'allavail', src: 'rq1' }], oilev: { sent: { 'i:rq1': ['stiff', 'plasma'] } }, ...over })
   const same = (pa: any) => JSON.stringify(peopleAttrsNow(pa)) === JSON.stringify(pa)

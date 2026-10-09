@@ -876,7 +876,7 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, me
      and reads exactly as before. */
   if (!ev.earns) return sent ? `${ev.iso}|||${sent}` : ''
   const ins = keyedInputs(ev).map(i => insSeg(day, i)).join(',')
-  return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+  return `${ev.iso}|${oilDecisionsKey(keyedDecisions(ev))}|${ins}|${sent}`
 }
 /** THE REQUESTS THE COMPARISON IS MEASURED ON — every one but a DORMANT one (owner, D174 / D176, 25 Sep 26: a request
  *  that was not there when the day was published, filed since and taken off — or taken off at publication and since
@@ -888,6 +888,27 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, me
  *  in neither side's dormant set (D114). One body for the key and for oilMovedInputsOnly. Pinned by
  *  oildormantkey.test.ts. */
 const keyedInputs = (ev: OilEvidence): OilInputEv[] => ev.inputs.filter(i => i.acc !== 'r')
+/** …AND THE DECISIONS THE COMPARISON IS MEASURED ON — every one but a decision about a REQUEST that is not among those
+ *  (Astra's read of the code, 9 Oct 26: the repair above was incomplete). A scheduler's switch about one man on a
+ *  request (`people['<man>|i:<request>']`), or about the request itself (`items['i:<request>']`), decides nothing once
+ *  the request is off the programme or gone — and it was read two ways: dropped on read while the request stood without
+ *  its row (pruneHandedOverDecisions), kept once the request was deleted (an orphan). So deleting a taken-off request
+ *  that had ever had a man switched read "1 pending" and broke the sign-offs with nobody's OIL moved. In the COMPARISON
+ *  such a decision is in neither side. The stored decisions are not touched: an Undo, or putting the request back on
+ *  the programme, finds them as they were. A decision about an ordinary row (`r:`) is never filtered. */
+function keyedDecisions(ev: OilEvidence): OilDecisions {
+  const d = ev.d || {}
+  if (!d.items && !d.people) return d
+  const live = new Set(keyedInputs(ev).map(i => inputItemKey(i.iid)))
+  const gone = (item: string) => item.startsWith('i:') && !live.has(item)
+  const pick = (m: any, itemOf: (k: string) => string) => {
+    if (!m) return m
+    const out: any = {}
+    for (const k of Object.keys(m)) if (!gone(itemOf(k))) out[k] = m[k]
+    return out
+  }
+  return { ...d, items: pick(d.items, k => k), people: pick(d.people, k => k.slice(k.indexOf('|') + 1)) }
+}
 /** one input's part of the key — ONE spelling, shared with oilMovedInputsOnly below */
 const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`
 
@@ -898,7 +919,7 @@ const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.
  *  line into those inputs' own lines; null when anything else moved, which stays its own OIL line. */
 export function oilMovedInputsOnly(now: OilEvidence | null | undefined, nowDay: any, was: OilEvidence | null | undefined, wasDay: any, mem = true): { iids: string[], people: string[] } | null {
   if (!now || !was || !!now.earns !== !!was.earns) return null
-  if (now.earns && oilDecisionsKey(now.d) !== oilDecisionsKey(was.d)) return null
+  if (now.earns && oilDecisionsKey(keyedDecisions(now)) !== oilDecisionsKey(keyedDecisions(was))) return null
   const iids: string[] = []
   if (now.earns) {
     const a = new Map(keyedInputs(was).map(i => [String(i.iid), insSeg(wasDay, i)]))

@@ -1159,6 +1159,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        that kind, as the loaded week's relink always left it. One rule on and off the loaded week now (P2-QREV/Fable-9 had
        the off-week edit re-derive on any type change). */
     if (r.acc === 'u' && r.type !== wasType && isUnavail(r.type)) delete r.acc
+    /* …and except an input turned into a PLACEHOLDER's ([INPUT-ALL-AVAIL]; Astra's read of the code, 9 Oct 26): an input
+       filed for ALL AVAIL / ALL is never under Unavailable (engine/inputs.ts placeholderProblem) — it goes back onto
+       the programme, where its row, its crowd and its OIL are (state/holderbase.ts lands it after this command). */
+    if (r.acc === 'u' && isSpecial(r.person)) delete r.acc
   })
   /* the funnel backstop rolled the batch back — report failure so the editor
      stays open and nothing typed is lost (P2-QREV-04) */

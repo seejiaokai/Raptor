@@ -530,6 +530,13 @@ export function placeholderProblem(inp:any):string{
   if(inp.endDate&&String(inp.endDate)!==String(inp.date)){const a=dateOrd(inp.date,inp.yr),b=dateOrd(inp.endDate,inp.yr);
     if(a==null||b==null||a!==b)return `${cs} is filed one day at a time`;}
   if(inp.grp!=null||inp.grpBy!=null)return `${cs} is filed on its own — it already stands for whoever is free`;
+  /* …and NEVER UNDER UNAVAILABLE (Astra's read of the code, 9 Oct 26). "Unavailable" names a real person's day; a
+     placeholder input filed there lands no row, so it has no crowd and nobody behind it can earn from the filer's Yes.
+     The accept door refuses to file one there (slots.ts acceptInput) — but an EDIT keeps a request's filing, so a named
+     man's input already under Unavailable, turned into a placeholder's through the new Person choices, stayed there.
+     The edit now takes it back onto the programme (ui/inputedit.tsx commitInputEdit); this is the rule behind it, held
+     at the save boundary like the other three. */
+  if(inp.acc==='u')return `${cs} cannot be filed under Unavailable — that names a real person’s day`;
   return '';}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
    typed is the name of the thing (owner, Aug 26). Everywhere an input is

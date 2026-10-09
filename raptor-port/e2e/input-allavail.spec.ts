@@ -98,6 +98,12 @@ test('a desktop: an admin files a weekend Duty for ALL AVAIL from the month — 
   expect(kept, 'still there after a reload').toBeTruthy()
   expect(kept!.person).toBe('allavail')
   expect(Object.values(kept!.oil || {}).some((v: any) => v > 0)).toBe(true)
+  /* …and its ROW on the schedule, with its count (Astra's read of the code, 9 Oct 26: the reload proved the input and
+     its answer, never the row it stands on) */
+  await go(page, 'editsched')
+  const again = page.locator(`#eWeek .oilcount[data-oilsent="i:${row.iid}"]`)
+  await expect(again).toHaveCount(1)
+  expect(parseInt((await again.innerText()).replace(/\D+/g, ''), 10)).toBeGreaterThan(0)
   expect(errs, 'no error on the way').toEqual([])
 })
 

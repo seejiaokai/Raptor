@@ -60,6 +60,16 @@ describe('never in a group — it already stands for whoever is free', () => {
   })
 })
 
+describe('never under Unavailable — that names a real person\'s day (Astra\'s read of the code, 9 Oct 26)', () => {
+  it('a placeholder input filed under Unavailable is refused, for both placeholders', () => {
+    expect(placeholderProblem(base({ type: 'Other', acc: 'u' }))).toBe('ALL AVAIL cannot be filed under Unavailable — that names a real person\u2019s day')
+    expect(placeholderProblem(base({ person: 'all', type: 'Other', acc: 'u' }))).toContain('ALL cannot be filed under Unavailable')
+  })
+  it('on the programme, taken off it, or not yet landed: fine', () => {
+    for (const acc of ['g', 'r', undefined]) expect(placeholderProblem(base({ type: 'Other', acc })), String(acc)).toBe('')
+  })
+})
+
 describe('it speaks only about a placeholder input', () => {
   it('a named man\'s input of any kind, any length, in any group is none of its business', () => {
     for (const t of INPUT_TYPES)
