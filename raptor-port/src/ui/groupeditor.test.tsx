@@ -476,10 +476,15 @@ describe('the dates of a saved shared input are changed in its window (D681)', (
     await click($('#inpEditSave'))
     expect(of(g.grp).map(r => [r.date, r.remarks])).toEqual([['Oct 22', 'mine'], ['Oct 22', 'mine']])
   })
-  it('an ordinary one-man input keeps its window as it was: no picker there', async () => {
+  /* RESTATED 10 Oct 26 (owner D718, D723 — the Inputs list's pencil is gone; the plan
+     docs/superpowers/plans/2026-10-10-input-card-plan.md §3.1). This test used to say "an ordinary one-man input keeps
+     its window as it was: no picker there" — true while its row in the List changed its dates (D681's reading 7). With
+     the edit in place removed, the window is the one form that can: the cases follow in their own describe, below. */
+  it('an ordinary one-man input’s window carries the picker too, on its saved day', async () => {
     const r = await single()
     await openOn(r)
-    expect($('#inpEditPop #inpEdCal')).toBeNull()
+    expect($('#inpEditPop #inpEdCal')).toBeTruthy()
+    expect(day('2026-10-13')!.className).toContain(' s')
   })
   it('a shared SANS commitment an admin filed for two: the picker is there, and the new dates are both men’s', async () => {
     const sans = Object.keys(PEOPLE).filter(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
@@ -664,6 +669,145 @@ describe('outside the Inputs page nothing changes', () => {
     expect(win()).toBeNull()
     expect($('#inpEditPop #inpEdCal')).toBeNull()
     expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/dates are changed on the Inputs page/i)
+  })
+})
+
+/* THE DATES OF A SAVED ONE-PERSON INPUT ARE CHANGED IN ITS WINDOW (owner D718, D723 — 10 Oct 26: "the edit and cross is
+   not needed because … u can click on it to edit it or delete it"; the plan §3.1). The List's pencil was the only form
+   that changed an ordinary input's dates; it is gone, so the window carries the calendar a shared input's already had
+   (D681). Nothing new is written: the one-person save always took the dates from what the window holds, and asks every
+   question it asked before. */
+describe('the dates of a saved one-person input are changed in its window (D718 — the List’s pencil is gone)', () => {
+  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+  it('a tap for the start and a tap for the end stretch it; the line under the calendar says what Save will write — one Undo', async () => {
+    const r = await single()
+    await openOn(r)
+    await click(day('2026-10-13')); await click(day('2026-10-15'))
+    expect($('#inpEditPop .rc-read')!.textContent).toMatch(/13.*15/)
+    await click($('#inpEditSave'))
+    expect(win(), 'saved: the window has closed').toBeNull()
+    expect([live(r.iid).date, live(r.iid).endDate]).toEqual(['Oct 13', 'Oct 15'])
+    expect(live(r.iid).grp, 'still an ordinary input').toBeFalsy()
+    await act(async () => { undo(); notify() })
+    expect([live(r.iid).date, live(r.iid).endDate || '']).toEqual(['Oct 13', ''])
+  })
+  it('a one-day input moved to another day: ONE tap is the new start, and Save keeps it one day', async () => {
+    const r = await single()
+    await openOn(r)
+    await click(day('2026-10-20'))
+    await click($('#inpEditSave'))
+    expect([live(r.iid).date, live(r.iid).endDate || '']).toEqual(['Oct 20', ''])
+  })
+  it('a range moved whole: a tap for the new start, a tap for the new end', async () => {
+    const r = await single({ type: 'LL', allday: true, s: 0, e: 1439, endDate: 'Oct 14', remarks: 'Home till 14 Oct' })
+    await openOn(r)
+    await click(day('2026-10-20')); await click(day('2026-10-22'))
+    await click($('#inpEditSave'))
+    expect([live(r.iid).date, live(r.iid).endDate]).toEqual(['Oct 20', 'Oct 22'])
+    expect(live(r.iid).remarks, 'the remark’s "till" word follows the new end').toBe('Home till 22 Oct')
+  })
+  it('the remarks alone changed: the dates are left exactly as they were', async () => {
+    const r = await single({ endDate: 'Oct 14' })
+    await openOn(r)
+    await type('#inpEditRmk', 'only the words')
+    await click($('#inpEditSave'))
+    expect([live(r.iid).date, live(r.iid).endDate]).toEqual(['Oct 13', 'Oct 14'])
+  })
+  it('a member changes the dates of his OWN input', async () => {
+    const r = await single({ person: member, by: member })
+    await as('member')
+    await openOn(r)
+    expect($('#inpEditPop #inpEdCal')).toBeTruthy()
+    await click(day('2026-10-21'))
+    await click($('#inpEditSave'))
+    expect(live(r.iid).date).toBe('Oct 21')
+  })
+  it('another man’s input, read only: no picker, and nothing sends him elsewhere for the dates', async () => {
+    const r = await single()
+    await as('member')
+    await openOn(r)
+    expect($('#inpEditPop #inpEdCal')).toBeNull()
+    expect(win()!.textContent).not.toMatch(/dates are changed/i)
+  })
+  it('new dates that reach a Saturday bring the OIL question before anything is written; its answer is saved with the dates', async () => {
+    const r = await single({ type: 'Duty', date: 'Oct 16', allday: true, s: 0, e: 1439 })
+    await openOn(r)
+    await click(day('2026-10-16')); await click(day('2026-10-17'))
+    await click($('#inpEditSave'))
+    expect($$('[data-testid="oilconf"]'), 'asked').toHaveLength(1)
+    expect(live(r.iid).endDate, 'nothing is written before the answer').toBeFalsy()
+    await click(tid('oil-yes')); await click(tid('oilconf-save'))
+    expect([live(r.iid).date, live(r.iid).endDate]).toEqual(['Oct 16', 'Oct 17'])
+    expect(live(r.iid).oil).toEqual({ '2026-10-17': 1 })
+  })
+  it('the words under the form speak of THIS door, for one person — never "changed on the Inputs page", never "for everyone"', async () => {
+    const r = await single()
+    await openOn(r)
+    const hint = $('#inpEditPop .inped-hint')!.textContent || ''
+    expect(hint).not.toMatch(/Inputs page|delete it|for everyone/i)
+    expect(hint).toMatch(/tap the new start/i)
+  })
+  it('a date changed on the page behind the open window is followed, and a Save of the remarks keeps it', async () => {
+    const r = await single()
+    await openOn(r)
+    await type('#inpEditRmk', 'mine')
+    await act(async () => { writeInputs(() => { live(r.iid).date = 'Oct 22' }); notify() })
+    await click($('#inpEditSave'))
+    expect([live(r.iid).date, live(r.iid).remarks]).toEqual(['Oct 22', 'mine'])
+  })
+  it('one SANS commitment keeps its own way: no picker — it is deleted and added again on the SANS calendar', async () => {
+    const sans = Object.keys(PEOPLE).filter(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    const r = await single({ person: sans[0], type: 'SANS Availability', date: 'Oct 14', allday: true, s: 0, e: 1439, sans: { f: true }, remarks: '' })
+    await act(async () => { setInpMode('sans'); notify() })
+    await openOn(r)
+    expect($('#inpEditPop #inpEdCal')).toBeNull()
+    expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/delete it and add it again on the SANS calendar/i)
+  })
+  it('the board’s dialog on an ordinary input: no date calendar — the dates are changed on the Inputs page', async () => {
+    const r = await single()
+    await act(async () => { setPage('editsched'); notify() })
+    await openOn(r)
+    expect($('#inpEditPop #inpEdCal')).toBeNull()
+    expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/dates are changed on the Inputs page/i)
+  })
+})
+
+/* THE OIL QUESTION NOBODY ANSWERED, IN THE WINDOW (the plan §3.2). The List's "OIL?" chip (22 Sep 26) is what tells a
+   scheduler that a weekend request's question was asked and never answered — the bell is the member's alone. The
+   phone's card has no chips (D723), so the window's OIL line is drawn for that case too, with the same forced
+   question the chip opened. */
+describe('an OIL question nobody has answered is said in the input’s window, and answered from it', () => {
+  it('"Not answered yet" and "Answer…": the question opens, and its answer is saved on the record', async () => {
+    const r = await single({ type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439 })
+    expect(oilAnswered(r)).toBe(false)
+    await openOn(r)
+    const line = tid('oil-unanswered')!
+    expect(line.textContent).toMatch(/Not answered yet/)
+    await click(tid('oil-answer'))
+    expect($$('[data-testid="oilconf"]')).toHaveLength(1)
+    await click(tid('oil-yes')); await click(tid('oilconf-save'))
+    expect(live(r.iid).oil).toEqual({ '2026-10-17': 1 })
+  })
+  it('an answered one keeps "Change…", and has no "Not answered yet"', async () => {
+    const r = await single({ type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
+    await openOn(r)
+    expect(tid('oil-revise')).toBeTruthy()
+    expect(tid('oil-unanswered')).toBeNull()
+  })
+  it('THE CONTROL — a kind that never asks, and a weekday, carry no OIL line at all', async () => {
+    const leave = await single({ type: 'LL', date: 'Oct 17', allday: true, s: 0, e: 1439 })
+    await openOn(leave)
+    expect(tid('oil-unanswered')).toBeNull(); expect(tid('oil-revise')).toBeNull()
+    await act(async () => { setInpEdit(null); notify() })
+    const weekday = await single({ type: 'Duty', date: 'Oct 14', allday: true, s: 0, e: 1439 })
+    await openOn(weekday)
+    expect(tid('oil-unanswered')).toBeNull()
+  })
+  it('a reader who may not change the input is offered no "Answer…"', async () => {
+    const r = await single({ type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439 })
+    await as('member')
+    await openOn(r)
+    expect(tid('oil-answer')).toBeNull()
   })
 })
 

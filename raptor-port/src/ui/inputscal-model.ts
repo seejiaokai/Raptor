@@ -91,7 +91,8 @@ export const personFilterPasses = (fPerson: any, pid: any, people: Record<string
 const two = (n: number) => String(n).padStart(2, '0')
 const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${two(Math.floor(o / 100) % 100)}-${two(o % 100)}`
 const TONE_ORDER = { red: 0, amb: 1 } as const
-const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
+/** red for an absence, amber for a duty or a commitment (an upchit too) — the month's bar and the input card read it */
+export const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
 
 /** Every input the Inputs month may show, as ENTRIES (a group is one), filtered as the List filters its rows — an
  *  entry stays when ANY of its people passes — in the order a day lists them: absences, then commitments; all-day

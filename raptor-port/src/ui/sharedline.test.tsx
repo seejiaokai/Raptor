@@ -74,30 +74,39 @@ afterEach(async () => {
 })
 
 describe('a day opened: a shared input is one line', () => {
-  it('one line, not one a man — its people as the schedule’s pucks, A to Z; the kind, the hours, who placed it for how many', async () => {
+  it('one card, not one a man — EVERY name, A to Z, as words (D721: never "+N", no row of pucks); the kind, the hours, and who filed it', async () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c])
     await open('2026-10-07')
     const lines = $$('[data-testid^="idy-row-"]').filter(el => of(g.grp).some(r => el.getAttribute('data-popiid') === r.iid))
-    expect(lines, 'one line').toHaveLength(1)
-    const pucks = [...lines[0].querySelectorAll('[data-testid="idy-people"] .puck')].map(p => p.getAttribute('data-person'))
-    expect(pucks).toEqual(az([a, b, c]))
-    expect(lines[0].textContent).toContain('Meeting')
+    expect(lines, 'one card').toHaveLength(1)
+    expect(lines[0].querySelector('[data-testid="idy-who"]')!.textContent).toBe(az([a, b, c]).map(cs).join(', '))
+    expect(lines[0].textContent).not.toMatch(/\+\d/)
+    expect(lines[0].querySelector('.puck'), 'the pucks stay in the input’s window').toBeNull()
+    expect(lines[0].querySelector('[data-testid="idy-kind"]')!.textContent).toBe('Meeting')
     expect(lines[0].querySelector('[data-testid="idy-when"]')!.textContent).toContain('10:00')
-    /* short in an opened day since D701 (9 Oct 26): no "Placed by" — the full line is its title */
-    expect(lines[0].querySelector('[data-testid="idy-placed"]')!.textContent).toContain(`${cs(admin)} for 3 people`)
-    expect(lines[0].querySelector('[data-testid="idy-placed"]')!.getAttribute('title')).toContain(`Placed by ${cs(admin)} for 3 people`)
+    /* "By Saber" and no more (D720, D723): how many it is for is the names themselves; the day and time are in its window */
+    expect(lines[0].querySelector('[data-testid="idy-by"]')!.textContent).toBe(`By ${cs(admin)}`)
     expect(tid('idy-count')!.textContent).toBe('1 input')
   })
-  it('LATE stands beside the man whose own record is late — not on the others', async () => {
+  it('several people: who filed it is ALWAYS said — even where the filer is one of them (D724)', async () => {
+    const [a, b] = others()
+    const g = await shared([admin, a, b])
+    await open('2026-10-07')
+    expect(g.line().querySelector('[data-testid="idy-who"]')!.textContent).toContain(cs(admin))
+    expect(g.line().querySelector('[data-testid="idy-by"]')!.textContent).toBe(`By ${cs(admin)}`)
+  })
+  it('one man late and the others not: the card says LATE once and, pressed, names who — the late date is each man’s own', async () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c], {}, { [c]: { mod: '2026-10-06' } })
     await open('2026-10-07')
     const line = g.line()
-    expect(line, 'still one line: the late date is each man’s own').toBeTruthy()
-    expect(line.querySelector(`[data-testid="idy-late-${c}"]`), cs(c)).toBeTruthy()
-    expect(line.querySelector(`[data-testid="idy-late-${a}"]`)).toBeNull()
-    expect(line.querySelector(`[data-testid="idy-late-${b}"]`)).toBeNull()
+    expect(line, 'still one card').toBeTruthy()
+    expect(line.querySelectorAll('[data-testid="idy-late"]')).toHaveLength(1)
+    await click(line.querySelector('[data-testid="idy-late"]'))
+    const note = g.line().querySelector('[data-testid="idy-latenote"]')!.textContent!
+    expect(note.startsWith(`${cs(c)}: after the cut-off`), note).toBe(true)
+    expect(note).not.toContain(cs(a)); expect(note).not.toContain(cs(b))
   })
   it('every man late alike: the line says LATE once, as an ordinary input does — not once a man', async () => {
     const g = await shared(others().slice(0, 3), { mod: '2026-10-06' })
@@ -161,10 +170,11 @@ describe('the List: a shared input is one line', () => {
     expect(name.querySelector('[title]')!.getAttribute('title')).toBe(az([a, b, c]).map(cs).join(', '))
     expect(rows[0].querySelector('[data-testid="in-placed"]')!.textContent).toContain('for 3 people')
   })
-  it('its ✎ opens the editor window on the entry — never the row’s edit in place', async () => {
+  /* the row's own button since D718 (10 Oct 26) — the ✎ a shared row carried is gone with every row's pencil */
+  it('its row opens the editor window on the entry — nothing is edited in place', async () => {
     const g = await shared(others().slice(0, 3), LATER)
     await listUp()
-    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
     expect($('#inBody tr.ined')).toBeNull()
     expect(tid('win-inputedit')!.textContent).toContain(`${cs(g.first)} +2`)
   })
@@ -177,7 +187,7 @@ describe('the List: a shared input is one line', () => {
     const g = await shared([x, y], LATER)
     await listUp()
     expect(rowsOf(g.grp)).toHaveLength(1)
-    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
     await click($(`#inpEditPop .pp-pucks button[aria-label="${cs(z)}"]`))
     await click($('#inpEditSave'))
     expect(of(g.grp), 'three records saved').toHaveLength(3)
@@ -191,13 +201,17 @@ describe('the List: a shared input is one line', () => {
     const row = rowsOf(g.grp)[0]
     expect(row.querySelector('.rmx')).toBeNull()
     expect(row.querySelector('.roil')).toBeNull()
-    expect(row.querySelector('[data-edit]')).toBeTruthy()
+    expect(row.querySelector('[data-edit]'), 'nor a pencil: the row itself opens it').toBeNull()
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect(tid('win-inputedit'), 'its window').toBeTruthy()
+    expect($('#inpEditDel'), 'Delete is in the window').toBeTruthy()
+    expect($('#inpEditPop [data-testid="oil-revise"]'), 'and its OIL answer').toBeTruthy()
   })
   it('a man who may change nothing of it still opens it, to read', async () => {
     const g = await shared(others().slice(0, 3), LATER)
     await as('member')
     await listUp()
-    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
     expect(tid('inped-ro')).toBeTruthy()
   })
   it('filtered to ONE of its people the line still shows — as the whole entry', async () => {
@@ -212,7 +226,10 @@ describe('the List: a shared input is one line', () => {
     expect(rows).toHaveLength(1)
     expect(rows[0].querySelector('[data-label="Name"]')!.textContent).toBe(`${cs(g.first)} +2`)
   })
-  it('an ordinary input keeps its row as it was — ✎ in place, ✕, its own name', async () => {
+  /* RESTATED 10 Oct 26 (owner D718, D723): this used to say "an ordinary input keeps its row as it was — ✎ in place, ✕,
+     its own name". The pencil and the cross are gone from EVERY row; an ordinary input's row opens its window as a
+     shared one's does, and keeps its own name. */
+  it('an ordinary input’s row opens its window too — no pencil, no cross, its own name', async () => {
     const a = others()[0]
     /* a date the List still shows: it opens on today onward, and 8 Oct 26 - the date written here first - went
        red the night the calendar turned to the 9th (the calendar job's bug check) */
@@ -220,10 +237,11 @@ describe('the List: a shared input is one line', () => {
     await listUp()
     const row = $('#inBody tr[data-iid="solo1"]')!
     expect(row.querySelector('[data-label="Name"]')!.textContent).toBe(cs(a))
-    expect(row.querySelector('.rmx')).toBeTruthy()
-    await click(row.querySelector('[data-edit]'))
-    expect($('#inBody tr.ined')).toBeTruthy()
-    expect(tid('win-inputedit')).toBeNull()
+    expect(row.querySelector('.rmx, [data-edit], [data-inx]')).toBeNull()
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect($('#inBody tr.ined')).toBeNull()
+    expect(tid('win-inputedit')!.textContent).toContain(cs(a))
+    expect(tid('win-inputedit')!.textContent, 'one man’s: no "+N"').not.toMatch(/\+\d/)
   })
 })
 

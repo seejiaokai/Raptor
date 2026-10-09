@@ -95,15 +95,16 @@ describe('the Inputs List (§3.8 rows 2, 3 and 4)', () => {
     expect(INPUTS[0].mod, 'the late rule\'s date is written as before').toBe(nowStamp())
   })
 
-  it('its edit in place: who placed it is kept, changed by whoever pressed the tick, now', async () => {
+  /* the List's edit in place is gone (D718, 10 Oct 26): the row opens the input's window, and its Save is asked instead */
+  it('changed from its row in the List: who placed it is kept, changed by whoever pressed Save, now', async () => {
     await as('stiff')
     const r = plant({ person: 'bane', type: 'Meeting', date: 'Jul 14', allday: false, s: 540, e: 600 })
     await openList()
     await as('casper')
     const t2 = T(10)
-    await click($(`tr[data-iid="${r.iid}"] [data-edit]`))
-    await setV($('#inBody tr.ined input[data-ed="remarks"]'), 'room changed')
-    await click($('#inBody tr.ined [data-save]'))
+    await click($(`tr[data-iid="${r.iid}"] [data-testid="in-open"]`))
+    await setV($('#inpEditRmk'), 'room changed')
+    await click($('#inpEditSave'))
     expect(r.remarks).toBe('room changed')
     expect(stamps(r)).toEqual({ by: 'bane', at: T0, modBy: 'casper', modAt: t2 })
     expect(r.mod).toBe(nowStamp())

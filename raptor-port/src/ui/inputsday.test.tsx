@@ -139,44 +139,56 @@ describe('it lists the day’s inputs', () => {
     await open('2026-10-07')
     expect($$('[data-testid^="idy-row-"]')).toHaveLength(0)
   })
-  it('a remark is said under the line — an Other’s too, now that it is named by its title and not its remark (D716); and one that repeats the title is still said: he typed both', async () => {
+  it('a remark is said on the words row — an Other’s too, now that it is named by its title and not its remark (D716); and one that repeats the title is still said: he typed both', async () => {
     const a = await file({ type: 'Meeting', allday: false, s: 600, e: 660, remarks: 'Bring the folder' })
     const b = await file({ person: crew()[1], type: 'Other', allday: false, s: 600, e: 660, remarks: 'Dental' })
     const c = await file({ person: crew()[2], type: 'Other', title: 'Dental', allday: false, s: 600, e: 660, remarks: 'Dental' })
     await open('2026-10-07')
-    expect(row(a).querySelector('.sd-rmk')!.textContent).toBe('Bring the folder')
-    expect(row(b).querySelector('.idy-kind')!.textContent).toBe('Other')
-    expect(row(b).querySelector('.sd-rmk')!.textContent).toBe('Dental')
-    expect(row(c).querySelector('.idy-kind')!.textContent).toBe('Dental'); expect(row(c).querySelector('.sd-rmk')!.textContent).toBe('Dental')
+    const part = (r: any, k: string) => row(r).querySelector(`[data-testid="idy-${k}"]`)
+    expect(part(a, 'rmk')!.textContent).toBe('Bring the folder')
+    /* THE CARD OF D723: the kind's own name on the top line, always; the title on its own row only where it has one */
+    expect(part(b, 'kind')!.textContent).toBe('Other')
+    expect(part(b, 'title'), 'an Other with no title has no title row').toBeNull()
+    expect(part(b, 'rmk')!.textContent).toBe('Dental')
+    expect(part(c, 'kind')!.textContent).toBe('Other')
+    expect(part(c, 'title')!.textContent).toBe('Dental'); expect(part(c, 'rmk')!.textContent).toBe('Dental')
   })
 })
 
-describe('who placed each, and when (D629)', () => {
-  it('a small line under the input: the filer, for whom where that is someone else, and its last change', async () => {
+describe('who placed each (D629, as narrowed for the card by D720, D723, D724)', () => {
+  it('"By Saber" only where someone else placed it — no "for", no day, no time; the whole of it stays in the input’s window', async () => {
     const [a, b] = crew()
     const own = await file({ person: a, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10) })
     const forHim = await file({ person: b, by: a, at: T(3, 17, 20), modBy: b, modAt: T(4, 8, 5) })
     await open('2026-10-07')
-    /* SHORT in an opened day (owner D701, 9 Oct 26 — drawing B: "Grit · 12 Jul, 14:42"): the name, the date, the time —
-       no "Placed by", no year in the day's own year; the full line is the small print's name for a pointer and a reader */
-    expect(row(own).querySelector('[data-testid="idy-placed"]')!.textContent).toBe(`${cs(a)} · 2 Oct, 09:10`)
-    expect(row(own).querySelector('[data-testid="idy-placed"]')!.getAttribute('title')).toBe(`Placed by ${cs(a)} · 2 Oct 26, 09:10`)
-    expect(row(forHim).querySelector('[data-testid="idy-placed"]')!.textContent).toBe(`${cs(a)} for ${cs(b)} · 3 Oct, 17:20 · changed by ${cs(b)} · 4 Oct, 08:05`)
+    /* a man's own input says nothing: the card already begins with his name (D720, D723) */
+    expect(row(own).querySelector('[data-testid="idy-by"]')).toBeNull()
+    const by = row(forHim).querySelector('[data-testid="idy-by"]')!
+    expect(by.textContent).toBe(`By ${cs(a)}`)
+    expect(row(forHim).textContent, 'no day or time of the placing on the card').not.toMatch(/3 Oct|17:20|4 Oct|08:05|changed by/)
+    /* …and who placed it WHEN, and its last change, are whole in the window (D629) */
+    await click(row(forHim).querySelector('[data-testid="idy-open"]'))
+    expect(document.querySelector('[data-testid="inped-placed"]')!.textContent).toBe(`Placed by ${cs(a)} for ${cs(b)} · 3 Oct 26, 17:20 · changed by ${cs(b)} · 4 Oct 26, 08:05`)
   })
-  it('the remark and the small print share one line of the card — the remark first (D699, D701)', async () => {
-    const [a] = crew()
-    const r = await file({ person: a, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10), remarks: 'Dental' })
-    const bare = await file({ person: a, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10) })
+  it('the words and the small print share one row of the card — the words first; with no words, the small print alone (D719)', async () => {
+    const [a, b] = crew()
+    const r = await file({ person: b, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10), remarks: 'Dental' })
+    const bare = await file({ person: crew()[2], by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10) })
     await open('2026-10-07')
-    const foot = row(r).querySelector('.sd-foot')!
-    expect([...foot.children].map(c => c.className.split(' ')[0])).toEqual(['sd-rmk', 'sd-placed'])
-    /* no remark: the small print alone, in the same line of the card */
-    expect([...row(bare).querySelector('.sd-foot')!.children].map(c => c.className.split(' ')[0])).toEqual(['sd-placed'])
+    const kids = (x: any) => [...row(x).querySelector('.icard-words')!.children].map(c => c.className.split(' ')[0])
+    expect(kids(r)).toEqual(['icard-text', 'icard-by'])
+    expect(kids(bare)).toEqual(['icard-by'])
+  })
+  it('a card with no title, no remark and nobody else’s hand in it is ONE line: no words row at all (D723)', async () => {
+    const [a] = crew()
+    const r = await file({ person: a, by: a, at: T(2, 9, 10) })
+    await open('2026-10-07')
+    expect(row(r).querySelector('.icard-words')).toBeNull()
   })
   it('a record that never recorded who placed it shows no line (D56)', async () => {
     const r = await file({})
     await open('2026-10-07')
-    expect(row(r).querySelector('[data-testid="idy-placed"]')).toBeNull()
+    expect(row(r).querySelector('[data-testid="idy-by"]')).toBeNull()
   })
 })
 

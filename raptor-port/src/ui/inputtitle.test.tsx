@@ -256,14 +256,17 @@ describe('the window — a Title box under Type (D715)', () => {
   })
 })
 
-describe('the List — its form, its rows, its pencil editor, its search', () => {
+/* THE LIST'S PENCIL IS GONE (owner D718, D723 — 10 Oct 26): a row opens the input's window. The pencil's cases below are
+   restated for that door — the row, then the window's own Title box. */
+describe('the List — its form, its rows, the window a row opens, its search', () => {
   const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
   const toList = async () => {
     await act(async () => { setInpView('table'); notify() })
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeAll'))
   }
-  const rowOf = (r: any) => $$('#inBody tr').find(tr => tr.querySelector(`[data-edit="${INPUTS.indexOf(r)}"],[data-save="${INPUTS.indexOf(r)}"]`))!
+  const rowOf = (r: any) => $$('#inBody tr').find(tr => tr.getAttribute('data-iid') === String(r.iid))!
+  const openRow = async (r: any) => { await click(rowOf(r).querySelector('[data-testid="in-open"]')); expect(win(), 'the row opened the input’s window').toBeTruthy() }
   const pickDay = async () => { await click($('#inCal [data-cal]')); await click($('#inCal [data-cal]')) }
 
   it('the form: a Title box beside Type for a titled kind, filled from the kind; none for leave', async () => {
@@ -304,35 +307,32 @@ describe('the List — its form, its rows, its pencil editor, its search', () =>
     expect(plain.textContent).toBe('Duty')
   })
 
-  it('the pencil editor: the title is edited in the row, and saved', async () => {
+  it('from its row: the window opens with the title in its box; edited there, it is saved', async () => {
     const t = await filed({ title: 'Sports day' })
     await toList()
-    await click(rowOf(t).querySelector('[data-edit]'))
-    const ed = $('#inBody tr.ined')!
-    const tb = ed.querySelector('input[data-ed="title"]') as HTMLInputElement
-    expect(tb.value).toBe('Sports day')
-    await act(async () => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(tb, 'Open house'); tb.dispatchEvent(new Event('input', { bubbles: true })) })
-    await click(ed.querySelector('[data-save]'))
+    await openRow(t)
+    expect(box()!.value).toBe('Sports day')
+    await type('#inpEditOwnTitle', 'Open house')
+    await click($('#inpEditSave'))
     expect(live(t.iid).title).toBe('Open house')
+    expect(rowOf(live(t.iid)).querySelector('[data-testid="in-title"]')!.textContent, 'and the row reads by it').toBe('Open house')
   })
 
-  it('the pencil editor: retyped to a leave, the Title box goes and the saved record keeps no title', async () => {
+  it('from its row: retyped to another titled kind, the title is kept across the kinds', async () => {
     const t = await filed({ title: 'Sports day' })
     await toList()
-    await click(rowOf(t).querySelector('[data-edit]'))
-    const ed = $('#inBody tr.ined')!
-    const sel = ed.querySelector('select[data-ed="type"]') as HTMLSelectElement
-    await act(async () => { sel.value = 'Duty'; sel.dispatchEvent(new Event('change', { bubbles: true })) })
-    expect((ed.querySelector('input[data-ed="title"]') as HTMLInputElement).value, 'kept across titled kinds').toBe('Sports day')
-    await act(async () => { sel.value = 'Personal'; sel.dispatchEvent(new Event('change', { bubbles: true })) })
-    expect(ed.querySelector('input[data-ed="title"]')).toBeTruthy()
+    await openRow(t)
+    await choose('#inpEditType', 'Duty')
+    expect(box()!.value, 'kept across titled kinds').toBe('Sports day')
+    await choose('#inpEditType', 'Personal')
+    expect(box()).toBeTruthy()
   })
 
   it('the search finds an input by its title', async () => {
     const t = await filed({ title: 'Regatta', remarks: '' })
     await toList()
     await type('#inFSearch', 'regat')
-    const shown = $$('#inBody tr').filter(tr => tr.querySelector('[data-edit]'))
+    const shown = $$('#inBody tr')
     expect(shown.length).toBe(1)
     expect(shown[0]).toBe(rowOf(t))
   })
@@ -357,31 +357,36 @@ describe('the month and the opened day — the title, and the kind kept in sight
     expect(bar.getAttribute('title')!.split(String.fromCharCode(10))[0]).toMatch(/· Event · 13 Oct/)
     expect(bar.getAttribute('title')!.split(String.fromCharCode(10))[0]).not.toMatch(/Event · Event/)
   })
-  it('the day’s card: the title as its name, the kind small on its small-print line, before the remark and the placed-by print', async () => {
+  /* THE CARD OF D723 (10 Oct 26): the kind kept in sight (D717) is now the top line's small grey capitals — on EVERY
+     card, titled or not — and the title starts a row of its own at the left (D722), the remark after it */
+  it('the day’s card: the kind on the top line, the title on a row of its own at the left, the remark after it', async () => {
     const t = await filed({ title: 'Sports day', remarks: 'bring boots' })
     await openDay('2026-10-13')
     const card = $(`[data-testid="idy-row-${t.iid}"]`)!
-    expect(card.querySelector('.idy-kind')!.textContent).toBe('Sports day')
-    const foot = card.querySelector('.sd-foot')!
-    const tag = foot.querySelector('[data-testid="idy-kindtag"]')!
-    expect(tag.textContent).toBe('Event')
-    expect(foot.firstElementChild).toBe(tag)
-    expect(foot.querySelector('.sd-rmk')!.textContent).toBe('bring boots')
-    expect(card.querySelector('[data-testid="idy-open"]')!.getAttribute('aria-label')).toMatch(/Sports day, Event,/)
+    const top = card.querySelector('.icard-top')!, words = card.querySelector('.icard-words')!
+    expect(top.querySelector('[data-testid="idy-kind"]')!.textContent).toBe('Event')
+    expect(top.textContent, 'the title is not on the top line').not.toContain('Sports day')
+    const text = words.querySelector('.icard-text')!
+    expect(text.firstElementChild).toBe(text.querySelector('[data-testid="idy-title"]'))
+    expect(text.querySelector('[data-testid="idy-title"]')!.textContent).toBe('Sports day')
+    expect(text.querySelector('[data-testid="idy-rmk"]')!.textContent).toBe('bring boots')
+    expect(card.querySelector('[data-testid="idy-open"]')!.getAttribute('aria-label')).toMatch(/, Sports day, Event,/)
   })
-  it('an untitled input’s card carries no kind label — it looks as it does today', async () => {
+  it('an untitled input’s card says its kind in the same place, and has no title row', async () => {
     const u = await filed({ remarks: 'bring boots' })
     await openDay('2026-10-13')
     const card = $(`[data-testid="idy-row-${u.iid}"]`)!
-    expect(card.querySelector('.idy-kind')!.textContent).toBe('Event')
-    expect(card.querySelector('[data-testid="idy-kindtag"]')).toBeNull()
+    expect(card.querySelector('[data-testid="idy-kind"]')!.textContent).toBe('Event')
+    expect(card.querySelector('[data-testid="idy-title"]')).toBeNull()
+    expect(card.querySelector('[data-testid="idy-rmk"]')!.textContent).toBe('bring boots')
   })
-  it('an "Other" with a remark and no title: named Other, its remark said under the line (D716 (3))', async () => {
+  it('an "Other" with a remark and no title: its kind reads Other, its remark on the words row (D716 (3))', async () => {
     const o = await filed({ type: 'Other', remarks: 'dentist run' })
     await openDay('2026-10-13')
     const card = $(`[data-testid="idy-row-${o.iid}"]`)!
-    expect(card.querySelector('.idy-kind')!.textContent).toBe('Other')
-    expect(card.querySelector('.sd-rmk')!.textContent).toBe('dentist run')
+    expect(card.querySelector('[data-testid="idy-kind"]')!.textContent).toBe('Other')
+    expect(card.querySelector('[data-testid="idy-title"]')).toBeNull()
+    expect(card.querySelector('[data-testid="idy-rmk"]')!.textContent).toBe('dentist run')
   })
 })
 
@@ -587,19 +592,18 @@ describe('a titled input handed to another man (Sol 3)', () => {
   })
 })
 
-describe('the List’s pencil editor, retyped to a leave and SAVED (Sol’s note on the tests)', () => {
+describe('opened from its row in the List, retyped to a leave and SAVED (Sol’s note on the tests; the pencil’s case, restated for the window — D718)', () => {
   it('the Title box goes, and the saved record keeps no title', async () => {
     const t = await filed({ title: 'Sports day' })
     await act(async () => { setInpView('table'); notify() })
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeAll'))
-    const row = [...document.querySelectorAll('#inBody tr')].find(tr => tr.querySelector(`[data-edit="${INPUTS.indexOf(live(t.iid))}"]`))!
-    await click(row.querySelector('[data-edit]'))
-    const ed = $('#inBody tr.ined')!
-    const sel = ed.querySelector('select[data-ed="type"]') as HTMLSelectElement
-    await act(async () => { sel.value = 'LL'; sel.dispatchEvent(new Event('change', { bubbles: true })) })
-    expect(ed.querySelector('input[data-ed="title"]'), 'a leave takes no title').toBeNull()
-    await click(ed.querySelector('[data-save]'))
+    const row = [...document.querySelectorAll('#inBody tr')].find(tr => tr.getAttribute('data-iid') === String(t.iid))!
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect(win(), 'the row opened the input’s window').toBeTruthy()
+    await choose('#inpEditType', 'LL')
+    expect(box(), 'a leave takes no title').toBeNull()
+    await click($('#inpEditSave'))
     const now = live(t.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
     expect(now, 'the retyped record').toBeTruthy()
     expect(now.type).toBe('LL'); expect('title' in now).toBe(false)

@@ -3,7 +3,7 @@
    logic is the reference's verbatim, including the role gate that keeps a
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, inpLabel, inpKindTag, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
@@ -31,11 +31,10 @@ import { SansCal } from './SansCal'
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
-  draftOf, commitInputEdit, commitGroup, removeInput, saveBatch, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
+  draftOf, commitGroup, saveBatch, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate, placeholderRefused,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
-  medAskFor, commitEditMedChoices, commitEditUpchit,
 } from './inputedit'
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
@@ -47,6 +46,10 @@ import { EVERYONE, personFilterId, personFilterPasses, personFilterValue } from 
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
+import { InputCard } from './InputCard'
+import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
+import { dayWord, lateWord } from './sanscal-model'
+import { useMedia } from './usemedia'
 
 /* The remarks tail (owner, Aug 26; single-day "till" added 18 Aug 26). Picking
    a range on the calendar writes its date into Remarks as `till 15 Jul`, so an
@@ -85,18 +88,13 @@ function ArchivedGroup() {
 }
 /* A DELETED man's past inputs stay on record (D299 — [POST-OUT-OUTCOMES], 27 Sep 26), so the filter must still find them:
    the deleted men who still have an input, as their own group. Never offered as WHO a new input is for (they are on no
-   picker — D287); in a row's own editor his name is kept as the row's value (DeletedSelf). */
+   picker — D287). (The row's own editor, which kept his name as the row's value, went with the List's pencil — D718,
+   10 Oct 26; the input's window keeps it the same way.) */
 function DeletedGroup() {
   const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && INPUTS.some((r: any) => r && r.person === id))
   if (!ids.length) return null
   return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
 }
-/* the row's own person when he has been deleted — kept as its value, so the box shows HIS name (with no option the box
-   drew the first man on the list while the row still belonged to him; Fable's scenario 7) */
-function DeletedSelf({ id }: { id: string }) {
-  return PEOPLE[id] && PEOPLE[id].deleted ? <option value={id}>{PEOPLE[id].cs} (deleted)</option> : null
-}
-
 export const DEFAULT_SPAN_MONTHS = 2
 /* The quick button now applies the SQUADRON'S look-ahead rather than a fixed
    two months (owner, 28 Aug 26 — "i am able to change the button function to
@@ -149,6 +147,8 @@ export function initialRange(now = new Date()) {
    tie-break (this same key, see below) could then no longer tell them
    apart. `??` only falls back to 0 for a genuinely absent s/e. */
 const pad4 = (m: any) => String(m).padStart(4, '0')
+/* a date as the engine numbers it (yyyymmdd) → 'yyyy-mm-dd' */
+const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${pad(Math.floor(o / 100) % 100)}-${pad(o % 100)}`
 const SORTKEY: any = {
   name: (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')).toLowerCase(),
   start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s ?? 0)),
@@ -246,6 +246,10 @@ function TypeLegend() {
 
 export function InputsPage() {
   useVersion()
+  /* A PHONE, as the stylesheet calls one (06-inputs.css: the same `max-width:820px` at which the table used to be
+     restyled into cards) — asked of the browser and followed live, because what is DRAWN differs there, not only how it
+     is laid out: the list is the input card under a heading a day (D718, D723), and no table at all. */
+  const phone = useMedia('(max-width:820px)')
   const [person, setPerson] = useState(me() ?? '')
   const [type, setType] = useState(INPUT_TYPES.find(t => !isSansAvail(t))!)
   const [start, setStart] = useState('')
@@ -314,13 +318,11 @@ export function InputsPage() {
   useLayoutEffect(() => { const id = wantTab.current; if (!id) return; wantTab.current = null; document.getElementById(id)?.focus() })
   const chooseTab = (t: Tab) => {
     if (t === tab) return
-    clearInpReveal(); setPinned([]); setEditRow(null); setDraft(null)
+    clearInpReveal(); setPinned([])
     if (t === 'med') setInpView('med')
     else { setInpMode(t === 'sans' ? 'sans' : 'member'); setInpView(inputsView.current) }
     notify()
   }
-  const [editRow, setEditRow] = useState<any>(null)
-  const [draft, setDraft] = useState<any>(null)
   const [range, setRange] = useState(initialRange)
   /* The admin's default-window editor (owner, 28 Aug 26). Draft values while
      open, so a half-typed number never becomes the squadron's setting. */
@@ -330,17 +332,17 @@ export function InputsPage() {
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
   /* Rows just added, newest first, and rows still flashing. Both hold the input
-     OBJECT rather than its index, for the same reason the row editor does:
-     adding, deleting or undoing renumbers INPUTS underneath us. */
+     OBJECT rather than its index: adding, deleting or undoing renumbers INPUTS
+     underneath us. */
   /* the upchit save-time summary (owner, 27 Aug 26) — holds the effects to
-     show and the commit to run on Save; null = no sheet. One state serves
-     both the add form and the row editor, so the sheet has one render site. */
+     show and the commit to run on Save; null = no sheet. The add form's own
+     (the row editor that shared it went with the List's pencil — D718, 10 Oct 26;
+     an input opened from its row asks through its window's own sheets). */
   const [upConf, setUpConf] = useState<any>(null)
-  /* the medical clash sheet (owner, 27 Aug 26) — same shape, same one
-     render site for the add form and the row editor */
+  /* the medical clash sheet (owner, 27 Aug 26) — same shape, the add form's */
   const [medConf, setMedConf] = useState<any>(null)
   /* the OIL ask (owner, 28 Aug 26) — the oilGate payload plus the commit to
-     run on Save; one state, one render site, both editors */
+     run on Save; one state, one render site: the add form and the row's OIL chip */
   const [oilConf, setOilConf] = useState<any>(null)
   /* the medical-document ask (owner, [SYNC-INTEG]) — {who, typeLabel, resume};
      resume() re-runs the pending add/edit with the document treated as resolved */
@@ -485,7 +487,7 @@ export function InputsPage() {
       return
     }
     /* the medical refusals (owner, 27 Aug 26) — one shared check per rule so
-       this form, the row editor and the board dialog can never disagree */
+       this form and the input's window (the board's dialog too) can never disagree */
     if (isDownchit(type)) {
       const dup = medOverlapRefusal(filedFor(), type, date, endDate, null)
       if (dup) return HOOKS.toast(dup, 'warn')
@@ -683,92 +685,12 @@ export function InputsPage() {
     commit([])
   }
 
-  /* the pencil turns ONE row into fields in place (owner, Aug 26). The draft is
-     held apart from the model so Cancel is a real cancel, and the commit runs
-     through writeInputs like every other mutation — so an edit joins the undo
-     stack and re-validates the week. */
-  const startEdit = (inx: number) => {
-    const r = INPUTS[inx]
-    /* the ROW ITSELF is held, never its index: adding, deleting or undoing
-       while an editor is open renumbers INPUTS, and an index captured before
-       that would commit the draft onto somebody else's input */
-    setEditRow(r)
-    setDraft(draftOf(r))
-  }
-  /* SAID, not just done (owner audit — a tap with no feedback reads as "did
-     it register?"). The board's own input dialog (inputedit.tsx) already
-     toasts these two same words for the identical commit/removeInput calls;
-     this page's own inline ✓/✕ ran the same functions silently. */
-  const saveEdit = (skipDoc = false) => {
-    if (!editRow || !draft) return
-    /* an input for ALL AVAIL / ALL that may not be saved is refused FIRST — before the document question below (Astra's
-       read of the plan, 9 Oct 26: retyping one into a medical kind reached "No document?" before any refusal) */
-    if (placeholderRefused(draft)) return
-    /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): editing an input INTO
-       the medical group with no certificate opens [Upload] / [No document] before
-       the upchit/downchit/OIL sheets; "No document" resumes through them. An
-       already-medical row never prompts — docGate returns 'ok' for it (the
-       replace-don't-strip guard still refuses stripping its last file). */
-    if (!skipDoc && docGate(draft, editRow) === 'ask') {
-      setDocConf({
-        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
-        typeLabel: titleOf(draft.type, draft.title) || draft.type,
-        resume: () => saveEdit(true),
-      })
-      return
-    }
-    /* THE MEDICAL QUESTIONS on an EDIT (owner, 27 Aug 26 — nothing silent): an upchit re-runs its trims against the
-       (possibly moved) date through the summary sheet; a DIFFERENT-type medical overlap goes to the clash sheet, the
-       edited row becoming the first kept segment. What to ask and what each Save writes are the ONE body the
-       calendar's drag and the schedule's reassign now share too (inputedit.tsx medAskFor / commitEditUpchit /
-       commitEditMedChoices — the absence-record re-test, AB4, 26 Sep 26), so the three doors cannot drift. The shared
-       refusals run first; each Save is one undo step. */
-    const after = (ok: boolean) => {
-      if (ok) { revealInput(editRow);setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-      else if (INPUTS.indexOf(editRow) < 0) {
-        /* a REFUSED save puts the list back as new objects ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]): the row being edited is
-           found again by its id and stays in edit, with what was typed; one that is truly gone closes the edit */
-        const live = INPUTS.find((x: any) => x.iid === editRow.iid)
-        if (live) setEditRow(live); else { setEditRow(null); setDraft(null) }
-      }
-    }
-    const ask = medAskFor(editRow, draft)
-    if (ask === 'refused') return
-    if (ask && ask.kind === 'up') {
-      setUpConf({ who: ask.who, dateLabel: ask.dateLabel, effects: ask.effects,
-        commit: (removals: any[]) => after(commitEditUpchit(editRow, draft, removals)) })
-      return
-    }
-    if (ask && ask.kind === 'clash') {
-      setMedConf({ who: ask.who, newType: ask.newType, span: ask.span, clashes: ask.clashes, a: ask.a, b: ask.b,
-        commit: (choices: string[], keepTail: any[]) => after(commitEditMedChoices(editRow, draft, ask, choices, keepTail)) })
-      return
-    }
-    /* the OIL ask on an EDIT (owner, 28 Aug 26) — oilGate runs the shared
-       refusals first (a bad draft toasts at once) and re-asks only when the
-       plan went stale; its Save commits edit + decisions as one batch */
-    const g = oilGate(draft, editRow)
-    if (g.kind === 'refused') return
-    if (g.kind === 'ask') {
-      setOilConf({
-        ...g,
-        commit: (dec: Record<string, number>) => {
-          /* the OUTER save's answer, never the inner one's (inputedit.tsx saveBatch) */
-          after(saveBatch(() => { const ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec; return ok }))
-        },
-      })
-      return
-    }
-    after(commitInputEdit(editRow, draft))
-  }
-
-  const del = (inx: number) => {
-    const r = INPUTS[inx]
-    if (removeInput(r)) {
-      if (editRow === r) { setEditRow(null); setDraft(null) }
-      HOOKS.toast('Input deleted', 'ok')
-    }
-  }
+  /* NO EDIT IN PLACE (owner D718, D723 — 10 Oct 26: "the edit and cross is not needed because … u can click on it to
+     edit it or delete it"). The pencil that turned ONE row into fields (Aug 26), its tick, and the row's cross are
+     gone: a tap on a row or a card opens the input's own window (ui/inputedit.tsx), which changes every field — its
+     dates too, since this change (`datesHere`) — and deletes it. Every question the row's save asked (the document,
+     the upchit's summary, the medical clash, OIL) was the window's own body already, so nothing is asked differently. */
+  const openInput = (r: any) => { setInpEdit(r); notify() }
 
   /* REVISE A RECORDED OIL ANSWER from the row itself (owner, 29 Aug 26 — a
      mistaken "No OIL" used to be revisable only by nudging the input's
@@ -790,6 +712,7 @@ export function InputsPage() {
     })
   }
 
+  let pinCount = 0
   let rows = inputsInMode(INPUTS, INPMODE)
   /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13): the records of one entry
      (state/inputgroup.ts — worked out on read) are drawn as its FIRST record's row, the Name reading "Saber +3". The
@@ -809,9 +732,6 @@ export function InputsPage() {
     }
     rows = one
   }
-  /* the row being edited stays put whatever the sort and the window say —
-     retyping a date must not make the open editor jump or vanish mid-edit */
-  if (editRow && INPUTS.indexOf(editRow) >= 0 && rows.indexOf(editRow) < 0) rows.push(editRow)
   {
     const key = SORTKEY[sort.key] || SORTKEY.start
     const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
@@ -847,7 +767,32 @@ export function InputsPage() {
        drawn twice. Each pin is turned into the row its entry is drawn as, once. */
     const pins = [...new Set(inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0).map((r: any) => (entryOf.get(r) || [r])[0]))]
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
+    pinCount = pins.length
   }
+  /* ON A PHONE THE LIST IS THE INPUT CARD UNDER A HEADING A DAY (owner D718, D723 — 10 Oct 26; ui/InputCard.tsx, the
+     card the opened day draws). In date order — a phone's list has no column headings to sort by: each day's inputs
+     all-day first, then by the hour they start, then by callsign. An input of several days stands under its FIRST
+     day and its corner says the day it runs till. The pinned inputs (just saved, and hidden by a filter or the
+     window) stand first, each under its own day's heading — the card carries no date of its own, so the heading
+     says it. Worked out only where it is drawn. */
+  const dayGroups = !phone ? [] : (() => {
+    const first = (r: any) => dateOrd(r.date, r.yr) ?? 0
+    const whoOf = (r: any) => (PEOPLE[r.person] ? String(PEOPLE[r.person].cs) : String(r.person || ''))
+    const byDay = (a: any, b: any) =>
+      first(a) - first(b) || (a.allday === b.allday ? 0 : a.allday ? -1 : 1) || (a.allday ? 0 : (a.s ?? 0) - (b.s ?? 0)) ||
+      whoOf(a).localeCompare(whoOf(b), undefined, { sensitivity: 'base' })
+    const groups: { key: string, iso: string, pinned: boolean, rows: any[] }[] = []
+    const put = (list: any[], pinnedPart: boolean) => {
+      for (const r of list) {
+        const iso = isoOfOrd(first(r)), last = groups[groups.length - 1]
+        if (last && last.iso === iso && last.pinned === pinnedPart) last.rows.push(r)
+        else groups.push({ key: (pinnedPart ? 'pin:' : 'day:') + iso + ':' + groups.length, iso, pinned: pinnedPart, rows: [r] })
+      }
+    }
+    put(rows.slice(0, pinCount).sort(byDay), true)
+    put(rows.slice(pinCount).sort(byDay), false)
+    return groups
+  })()
 
   const RANGE_ALL = 'All dates'
   const rangeLabel = (!range.from && !range.to) ? RANGE_ALL
@@ -1106,6 +1051,24 @@ export function InputsPage() {
         }}>Export to Excel</button>
       </div>
       <div className="inwrap" hidden={!listUp}>
+        {phone ? (
+          <div className="inlist" id="inList">
+            {dayGroups.map(g => (
+              <Fragment key={g.key}>
+                <div className="icard-day" data-testid="inl-day" data-iso={g.iso}>
+                  <b>{dayWord(g.iso) + (+g.iso.slice(0, 4) !== baseYear() ? ' ' + g.iso.slice(0, 4) : '')}</b>
+                  <i>{g.rows.length} input{g.rows.length > 1 ? 's' : ''}</i>
+                </div>
+                {g.rows.map((r: any) => {
+                  const team = entryOf.get(r) || [r]
+                  const b0 = r.endDate ? dateOrd(r.endDate, r.yr) : null
+                  return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf(team)} when={cardWhen(r, b0 != null ? isoOfOrd(b0) : g.iso, g.iso)}
+                    late={lateNoteOf(team, lateWord)} flash={team.some((x: any) => flash.indexOf(x) >= 0)} onOpen={() => openInput(r)} />
+                })}
+              </Fragment>
+            ))}
+          </div>
+        ) : (
         <table className="intbl" id="intbl">
           <thead><tr>
             {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
@@ -1143,94 +1106,27 @@ export function InputsPage() {
               const st = stT ? <>{day0} <span className="tnw">{stT}</span></> : day0
               const en = sameDay ? '' : (r.allday ? day1 : `${day1} ${hhmm(r.e)}`)
               const inx = INPUTS.indexOf(r)
-              if (editRow === r && draft) return (
-                <tr key={inx} className="ined" data-iid={r.iid}>
-                  {/* same rule as the add form (owner, 22 Aug 26): moving an
-                      input onto a DIFFERENT person is a scheduler's act — a
-                      member editing a row keeps its person, printed as the
-                      plain name every closed row already shows. The write
-                      path repeats the check (commitInputEdit), so a hand-made
-                      select could not get past this render gate anyway. */}
-                  <td data-fld="Person">{canEditSched()
-                    ? <select aria-label="Person" data-ed="person" value={draft.person}
-                      onChange={e => setDraft({ ...draft, person: e.target.value })}>
-                      <DeletedSelf id={draft.person} />
-                      {/* a placeholder already chosen is always listed — with no option the box drew the first man on
-                          the list over an ALL AVAIL input (Astra's read of the plan, 9 Oct 26) */}
-                      <PlaceholderGroup type={draft.type} current={draft.person} />
-                      {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-                      <ArchivedGroup />
-                    </select>
-                    : (PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person))}</td>
-                  <td colSpan={2} data-fld="Dates">
-                    {/* the editor's calendar owns the tail the same way — but only
-                        from a click: OPENING the editor leaves an existing remark
-                        exactly as it was written */}
-                    <RangeCal idPrefix="ined" start={draft.start} end={draft.end}
-                      onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withTill(draft.remarks, s2, e2) })} />
-                    <div className="rc-read">{draft.start ? (fmtDay(draft.start) + (draft.end ? ' → ' + fmtDay(draft.end) : '')) : 'pick a start date'}</div>
-                    {/* same split as the add form: SANS's ticks sit ABOVE the
-                        span picker now, not in place of it — the standard
-                        span picker (or plain tick, for a type with no
-                        halves) always follows */}
-                    {isSansAvail(draft.type) && <SansPicker id="inedSans" sans={draft.sans} onChange={sans => setDraft({ ...draft, sans })} />}
-                    {hasHalf(draft.type)
-                      ? <SpanPicker id="inedSpan" span={spanOf(draft.allday, draft.half)} onPick={m => {
-                        const f = spanFields(m)
-                        setDraft({
-                          ...draft, allday: f.allday, half: f.half,
-                          ...(f.sTime ? { sTime: f.sTime, eTime: f.eTime } : {}),
-                        })
-                      }} />
-                      : <label className="ined-ad"><input type="checkbox" data-ed="allday" checked={draft.allday}
-                        onChange={e => setDraft({ ...draft, allday: e.target.checked })} /> all day</label>}
-                    <span className="ined-t" hidden={draft.allday}>
-                      <input type="time" aria-label="Start time" data-ed="stime" value={draft.sTime}
-                        onChange={e => setDraft({ ...draft, sTime: e.target.value })} />
-                      <input type="time" aria-label="End time" data-ed="etime" value={draft.eTime}
-                        onChange={e => setDraft({ ...draft, eTime: e.target.value })} />
-                    </span>
-                  </td>
-                  <td data-fld="Type"><select aria-label="Type" data-ed="type" value={draft.type}
-                    onChange={e => {
-                      const t = e.target.value
-                      setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null, ...(titledKind(t) ? {} : { title: null }) })
-                    }}>
-                    {/* GUARD RAIL (owner, 27 Aug 26): a medical row stays
-                        medical here too — a downchit edits only within the
-                        downchit family, an upchit stays an upchit; the full
-                        cross-group list is kept for every other row. */}
-                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : notSans)}
-                  </select>
-                    {/* its own title, under its kind ([INPUT-OWN-TITLE]) — the window's box, here in the row */}
-                    {titledKind(draft.type) && <input aria-label="Title" data-ed="title" className="intitle-ed" maxLength={TITLE_MAX} autoComplete="off"
-                      value={draft.title == null ? draft.type : draft.title} placeholder={draft.type}
-                      onChange={e => setDraft({ ...draft, title: e.target.value })} />}
-                    {/* manage (or first-attach, on a retype into medical) the
-                        supporting documents without leaving the row */}
-                    {needsDoc(draft.type) && <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />}</td>
-                  <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
-                    onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
-                  <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
-                  <td className="inact">
-                    <span className="rok" data-save={inx} title="Save" onClick={() => saveEdit(false)}>✓</span>
-                    <span className="rmx" data-cancel={inx} title="Cancel" onClick={() => { setEditRow(null); setDraft(null) }}>✕</span>
-                  </td>
-                </tr>
-              )
               /* the stripe mirrors the month calendar's chip tones — both
                  read inputTone so the two surfaces can't disagree on a
                  colour (see ui/inputedit.tsx) */
               const rowCls = ['in-' + inputTone(r.type), ...(flash.indexOf(r) >= 0 ? ['innew'] : [])].join(' ')
               return (
-                <tr key={inx} className={rowCls} data-iid={r.iid}>
+                <tr key={inx} className={rowCls} data-iid={r.iid}
+                  /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on
+                     one of the row's own controls: its Name button opens it by itself, and the paperclip and the OIL
+                     chips of the last cell do their own work. */
+                  onClick={ev => { const t = ev.target as HTMLElement; if (!t.closest('button') && !t.closest('.inact')) openInput(r) }}>
                   {/* data-same now marks an EMPTY End — an all-day one-day
                       input, whose date already reads once in Start — so the
                       phone card drops it and reads just "13 Jul". A timed
                       same-day input keeps a non-empty End (the bare end time),
                       so it shows "13 Jul 10:00 → 11:00" (scheduler.css, the
                       inputs card block); the desktop table renders both cells. */}
-                  <td data-label="Name">{team ? <span title={team.map((x: any) => (PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person)).join(', ')}>{cs} +{team.length - 1}</span> : cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
+                  <td data-label="Name">
+                    {/* the row's BUTTON — what a keyboard and a screen reader meet (the pencil and the cross were spans a
+                        Tab never reached: `[TITLE-CHECK-SEEN]` 6) */}
+                    <button type="button" className="in-open" data-testid="in-open" title={team ? team.map((x: any) => (PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person)).join(', ') : 'Open this input'}
+                      onClick={() => openInput(r)}>{team ? `${cs} +${team.length - 1}` : cs}</button></td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
                   {/* The two chips too wide for the phone card's aligned type
                       column wear the board day name's split-span idiom (owner,
                       22 Aug 26 — "if there's no space like sans availability u
@@ -1282,10 +1178,11 @@ export function InputsPage() {
                         Since the group input (D655): also a duty or commitment
                         he FILED for another man — the one rule, perms.ts
                         mayEditInput, which takes the record. */}
-                    {/* A SHARED INPUT'S ONE BUTTON opens its window — for everyone, to change it or to read it. Deleting
-                        it and its OIL answer are there, asked for everyone (the plan §3.13); an edit in place, a ✕ or an
-                        OIL chip here would act on the first man's record alone. */}
-                    {team && <span className="red" data-edit={inx} title="Open this input" onClick={() => { setInpEdit(r); notify() }}>✎</span>}
+                    {/* NO PENCIL, NO CROSS (owner D718, D723): the row opens the input's window, where it is changed and
+                        deleted — a shared input's for everyone, asked first (the plan §3.13). What stays here is what
+                        acts on the record WITHOUT opening it: the paperclip above, and the OIL chips of an ordinary
+                        input its reader may change (a shared input's OIL answer is in its window: here it would act
+                        on the first man's record alone). */}
                     {!team && mayEditInput(r) && <>
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
@@ -1303,8 +1200,6 @@ export function InputsPage() {
                       {!oilAnswered(r) && oilUnansweredDay(r) && <span className="roil ask" data-oilask={inx}
                         title={`Nobody has answered the OIL question for ${isoLabel(oilUnansweredDay(r))} — tap to answer it`}
                         onClick={() => reviseOil(r)}>OIL?</span>}
-                      <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
-                      <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
                     </>}
                   </td>
                 </tr>
@@ -1312,6 +1207,7 @@ export function InputsPage() {
             })}
           </tbody>
         </table>
+        )}
         {/* an empty table under a date window is almost always the WINDOW, not
             an empty roster — say which, and where the way out is */}
         <div className="empty" id="inEmpty" hidden={rows.length > 0}>
@@ -1327,8 +1223,7 @@ export function InputsPage() {
       {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
         seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} />}
       {tab === 'med' && <MedicalView />}
-      {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
-          for the add form and the row editor; Save runs the stashed commit
+      {/* the upchit save-time summary (owner, 27 Aug 26) — the add form's; Save runs the stashed commit
           with the removals the filer ticked, Cancel writes nothing */}
       {upConf && <UpchitConfirm who={upConf.who} dateLabel={upConf.dateLabel} effects={upConf.effects}
         onCancel={() => setUpConf(null)}

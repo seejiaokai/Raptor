@@ -159,15 +159,17 @@ describe('SANS availability is filed on the SANS calendar and nowhere else (D620
     expect(options('#inFType')).not.toContain(SANS)
     expect($('#inSans'), 'no Fly / OFT / AMT ticks on the List’s form').toBeNull()
   })
-  it('the List’s edit in place does not offer it', async () => {
+  /* the List's edit in place is gone (D718, 10 Oct 26): its row opens the input's window, which is asked instead */
+  it('the window a List row opens does not offer it', async () => {
     await click('#inListBtn')
     const row = INPUTS.find((r: any) => r.type === 'Meeting' || r.type === 'Appointment' || r.type === 'Personal')!
     expect(row, 'the demo data has an ordinary commitment').toBeTruthy()
     /* every date, so the row is on the List whatever today's window is */
     await click('#inRangeBtn'); await click('#inRangeAll')
-    await click(`#inBody [data-iid="${row.iid}"] [data-edit]`)
-    expect(options('#inBody [data-ed="type"]').length).toBeGreaterThan(5)
-    expect(options('#inBody [data-ed="type"]')).not.toContain(SANS)
+    await click(`#inBody [data-iid="${row.iid}"] [data-testid="in-open"]`)
+    expect(INPEDIT && INPEDIT.iid, 'the row opened its window').toBe(row.iid)
+    expect(options('#inpEditType').length).toBeGreaterThan(5)
+    expect(options('#inpEditType')).not.toContain(SANS)
   })
   it('"+ Input" on the Inputs calendar does not offer it', async () => {
     await act(async () => { $('[data-icday="2026-10-23"]')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })

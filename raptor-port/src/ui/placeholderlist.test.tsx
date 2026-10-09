@@ -5,8 +5,9 @@
 
    · THE LIST'S ADD FORM builds its record by hand and never passes the editor's checks — the door both first-round
      readers found open (an admin could save a several-day ALL AVAIL there).
-   · THE LIST'S PENCIL EDITOR has a Person list of its own (Astra, second read): it left both placeholders out, so a filed
-     ALL AVAIL input opened showing a real man's name over it, and its document question came before any refusal.
+   · THE LIST'S PENCIL EDITOR had a Person list of its own (Astra, second read): it left both placeholders out, so a filed
+     ALL AVAIL input opened showing a real man's name over it, and its document question came before any refusal. THE
+     PENCIL IS GONE (D718, 10 Oct 26) — a row opens the input's window, and those cases are asked of that route.
    · "EVERYONE" in the person filter is the string 'all' — the ALL placeholder's own id — in three places.
    · THE SAVE BOUNDARY (Sol, second read): a good filing's Undo and Redo do not prove a RESTORE is refused; here the
      restore's own command shape is handed each refused record, with no picker or editor in front of it.
@@ -154,29 +155,43 @@ describe('the person filter — Everyone, ALL and ALL AVAIL are three different 
   })
 })
 
-describe('the List row, and its pencil editor (Astra\'s read of the plan)', () => {
+/* RESTATED 10 Oct 26 — THE LIST'S PENCIL EDITOR IS GONE (owner D718, D723: "the edit and cross is not needed because … u can
+   click on it to edit it or delete it"). Its Person list of its own was the door Astra's read of the plan found (a filed
+   ALL AVAIL input opened showing a real man's name over it). A row opens the input's WINDOW now, so each case below is
+   asked of that route: the row, then the window's own Person list and Save. The claims are unchanged. */
+describe('the List row, and the window it opens (the pencil editor\'s cases — Astra\'s read of the plan)', () => {
+  const openRow = async (iid: string) => {
+    await click(rowEl(iid)!.querySelector('[data-testid="in-open"]'))
+    expect($('[data-testid="win-inputedit"]'), 'the row opened the input’s window').toBeTruthy()
+  }
+  const person = () => $('#inpEditPerson') as HTMLSelectElement
+  const save = async () => click($('#inpEditSave'))
+  it('no row carries a pencil or a cross', async () => {
+    await put({ person: 'allavail' }); await put({ person: others()[0] })
+    await listUp()
+    expect($$('#inBody [data-edit], #inBody [data-inx], #inBody [data-save], #inBody .rmx')).toHaveLength(0)
+  })
   for (const ph of ['allavail', 'all']) {
-    it(`a filed ${PEOPLE[ph].cs} input reads "${PEOPLE[ph].cs}" on its row, and its pencil editor opens ON the placeholder — never a real man's name`, async () => {
+    it(`a filed ${PEOPLE[ph].cs} input reads "${PEOPLE[ph].cs}" on its row, and its window opens ON the placeholder — never a real man's name`, async () => {
       const r = await put({ person: ph })
       await listUp()
       expect(rowEl(r.iid)?.textContent).toContain(PEOPLE[ph].cs)
-      await click(rowEl(r.iid)!.querySelector('[data-edit]'))
-      const sel = rowEl(r.iid)!.querySelector('[data-ed="person"]') as HTMLSelectElement
-      expect(sel, 'the pencil editor\'s own Person list').toBeTruthy()
-      expect(sel.value, 'the box shows the placeholder it is filed for').toBe(ph)
-      expect(sel.selectedOptions[0].textContent).toBe(PEOPLE[ph].cs)
+      await openRow(r.iid)
+      expect(person(), 'the window\'s own Person list').toBeTruthy()
+      expect(person().value, 'the box shows the placeholder it is filed for').toBe(ph)
+      expect(person().selectedOptions[0].textContent).toBe(PEOPLE[ph].cs)
       /* saved unchanged: it is still the placeholder's */
-      await click(rowEl(r.iid)!.querySelector('[data-save]'))
+      await save()
       expect(live(r.iid).person).toBe(ph)
     })
 
     it(`its kind changed to a medical one is refused BEFORE the document question (${PEOPLE[ph].cs})`, async () => {
       const r = await put({ person: ph })
       await listUp()
-      await click(rowEl(r.iid)!.querySelector('[data-edit]'))
-      await pick(rowEl(r.iid)!.querySelector('[data-ed="type"]'), 'OML')
+      await openRow(r.iid)
+      await pick($('#inpEditType'), 'OML')
       const was = world(); said.length = 0
-      await click(rowEl(r.iid)!.querySelector('[data-save]'))
+      await save()
       expect(said.join(' | ')).toContain(`${PEOPLE[ph].cs} can be filed only for`)
       expect(document.body.textContent || '', 'no document prompt').not.toContain('No document')
       expect(world()).toBe(was)
@@ -184,18 +199,17 @@ describe('the List row, and its pencil editor (Astra\'s read of the plan)', () =
     })
   }
 
-  it('an admin turns a named man\'s Meeting into an ALL AVAIL one in the pencil editor, and back', async () => {
+  it('an admin turns a named man\'s Meeting into an ALL AVAIL one in its window, and back', async () => {
     const r = await put({ person: others()[0] })
     await listUp()
-    await click(rowEl(r.iid)!.querySelector('[data-edit]'))
-    const sel = () => rowEl(r.iid)!.querySelector('[data-ed="person"]') as HTMLSelectElement
-    expect([...sel().options].map(o => o.value), 'both are offered for a kind that may carry one').toEqual(expect.arrayContaining(['allavail', 'all']))
-    await pick(sel(), 'allavail')
-    await click(rowEl(r.iid)!.querySelector('[data-save]'))
+    await openRow(r.iid)
+    expect([...person().options].map(o => o.value), 'both are offered for a kind that may carry one').toEqual(expect.arrayContaining(['allavail', 'all']))
+    await pick(person(), 'allavail')
+    await save()
     expect(live(r.iid).person, said.join(' | ')).toBe('allavail')
-    await click(rowEl(r.iid)!.querySelector('[data-edit]'))
-    await pick(sel(), others()[1])
-    await click(rowEl(r.iid)!.querySelector('[data-save]'))
+    await openRow(r.iid)
+    await pick(person(), others()[1])
+    await save()
     expect(live(r.iid).person).toBe(others()[1])
   })
 
@@ -203,24 +217,23 @@ describe('the List row, and its pencil editor (Astra\'s read of the plan)', () =
      through the new Person choices it left an ALL AVAIL input under Unavailable: no row on the programme, no crowd, and
      nobody able to earn from a Yes. Turned into a placeholder's, it goes back onto the programme. */
   for (const ph of ['allavail', 'all']) {
-    it(`a named man's Other filed under Unavailable, turned into ${PEOPLE[ph].cs}'s in the pencil editor: it leaves Unavailable`, async () => {
+    it(`a named man's Other filed under Unavailable, turned into ${PEOPLE[ph].cs}'s in its window: it leaves Unavailable`, async () => {
       const r = await put({ person: others()[0], type: 'Other', acc: 'u' })
       expect(live(r.iid).acc).toBe('u')
       await listUp()
-      await click(rowEl(r.iid)!.querySelector('[data-edit]'))
-      await pick(rowEl(r.iid)!.querySelector('[data-ed="person"]'), ph)
-      await click(rowEl(r.iid)!.querySelector('[data-save]'))
+      await openRow(r.iid)
+      await pick(person(), ph)
+      await save()
       expect(live(r.iid).person, said.join(' | ')).toBe(ph)
       expect(live(r.iid).acc, 'no longer under Unavailable').not.toBe('u')
     })
   }
 
-  it('a leave\'s pencil editor offers no placeholder', async () => {
+  it('a leave\'s window offers no placeholder', async () => {
     const r = await put({ person: others()[0], type: 'LL', allday: true })
     await listUp()
-    await click(rowEl(r.iid)!.querySelector('[data-edit]'))
-    const sel = rowEl(r.iid)!.querySelector('[data-ed="person"]') as HTMLSelectElement
-    expect([...sel.options].some(o => PEOPLE[o.value] && PEOPLE[o.value].special)).toBe(false)
+    await openRow(r.iid)
+    expect([...person().options].some(o => PEOPLE[o.value] && PEOPLE[o.value].special)).toBe(false)
   })
 })
 

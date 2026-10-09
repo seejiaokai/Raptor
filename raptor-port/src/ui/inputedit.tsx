@@ -17,7 +17,7 @@ import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { entryRowsOf } from '../state/inputgroup'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -2289,10 +2289,19 @@ export function InputEditor() {
      for a reader who may change it for EVERYONE (`readOnly` is the write path's own rule): a man in it who did not file
      it keeps his two things and no more. Nothing new is written: the entry's ONE command (`commitGroup`) always took
      the dates from the draft, asks the OIL question of every man kept (D660, D682) and follows the remark's "till"
-     word (`commitInputEdit`) — only the control was missing. An ordinary one-man input keeps the doors it has (its row
-     in the List, its bar), and the board's and the week's dialogs are as they were: there a moved span would take the
-     row off the day it was opened from. */
-  const datesHere = win && !isNew && rows.length > 1 && !readOnly && ctx !== 'up'
+     word (`commitInputEdit`) — only the control was missing. The board's and the week's dialogs are as they were:
+     there a moved span would take the row off the day it was opened from.
+     AND AN ORDINARY ONE-PERSON INPUT'S TOO (owner D718, D723, 10 Oct 26 — `[INPUT-LIST-AS-DAY-CARD]`; the plan
+     docs/superpowers/plans/2026-10-10-input-card-plan.md §3.1). D681's reading (7) left it "the ways it already has
+     (its row in the List)" — and that row's pencil, the ONLY form that changed a saved one-person input's dates, went
+     with D718 ("the edit and cross is not needed because … u can click on it to edit it"). So the window carries the
+     same calendar for every saved input its reader may change. Again nothing new is written: the one-person save
+     (`commitInputEdit`) always took the dates from the draft, and `save` asks every question the pencil's row asked —
+     the document, the upchit's summary, the medical clash, OIL. NOT for one man's SANS commitment, which is on no
+     list (D620) and keeps its own way: deleted and added again on the SANS calendar. */
+  const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))
+  /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
+  const unansweredDay = !isNew && r ? ((rows.length > 1 ? rows : [r]).map(x => oilUnansweredDay(x)).find(Boolean) || '') : ''
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
      says what a Save would write */
@@ -2476,12 +2485,27 @@ export function InputEditor() {
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>
             </div>
           </div>}
+          {/* …AND THE QUESTION NOBODY HAS ANSWERED YET (the plan docs/superpowers/plans/2026-10-10-input-card-plan.md
+              §3.2; `oilUnansweredDay` — Fable F6, 22 Sep 26). The List's "OIL?" chip was the one sign, outside the bell
+              of the man himself, that a weekend request's question was asked and put away unanswered; the phone's
+              list is cards now and a card has no chips (D723), so the window says it — and answers it, by the same
+              forced question the chip opened. Only for a reader who may change the input. */}
+          {!isNew && r && !oilAnswered(r) && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
+            <span className="inped-k">OIL</span>
+            <div className="inped-oil">
+              <span className="inped-oilsum">Not answered yet — {isoLabel(unansweredDay)}</span>
+              {!readOnly && <button type="button" className="abtn ghost" data-testid="oil-answer"
+                onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Answer…</button>}
+            </div>
+          </div>}
           {/* who placed this input and when, and its last change — the editor's small print (owner D629; the one line
               is ui/placedline.ts). Not on a new input, which nobody has placed yet. */}
           {!isNew && r && (rows.length > 1 ? placedLineOf(rows) : placedLine(r)) && <div className="inped-placed" data-testid="inped-placed">{rows.length > 1 ? placedLineOf(rows) : placedLine(r)}</div>}
           {/* a shared input its reader may NOT change for everyone says nothing here about dates: the line beside the
               buttons already says who can change it, and "changed on the Inputs page" sent him to the page he is on */}
-          {!(win && !isNew && rows.length > 1 && readOnly) && <div className="inped-hint">{isNew
+          {/* …and since the window carries the dates of EVERY saved input (D718), no reader of another person's input is
+              sent "to the Inputs page" for them either: he is on it, and they are not his to change */}
+          {!(win && !isNew && readOnly) && <div className="inped-hint">{isNew
             ? r._calendar
               /* "your available hours" is the SANS calendar's wording — on the Inputs calendar the same window files
                  a meeting or a leave (Opus's own read of the build, step 0, 7 Oct 26) */
@@ -2498,7 +2522,9 @@ export function InputEditor() {
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
             : datesHere
-              ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
+              ? rows.length > 1
+                ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
+                : 'To change its dates, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()

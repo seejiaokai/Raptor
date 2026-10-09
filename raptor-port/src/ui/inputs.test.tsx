@@ -27,9 +27,34 @@ const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 /* The table is sorted by start date now (owner, Aug 5), so DOM row order is
    no longer INPUTS order. A test that means "the row for INPUTS[n]" has to say
-   so — its buttons carry the model index, so find it by that. */
-const rowFor = (inx: number) => $$('#inBody tr').find(tr =>
-  tr.querySelector(`[data-edit="${inx}"],[data-inx="${inx}"],[data-save="${inx}"]`))!
+   so — a row carries its input's own id (the pencil and the cross that used to
+   carry the model index are gone: below). */
+const rowFor = (inx: number) => {
+  const r = INPUTS[inx]
+  /* a record a test pushed straight into the list has no id until a command mints one */
+  if (!r.iid) { inpId(r); act(() => { notify() }) }
+  return $$('#inBody tr').find(tr => tr.dataset.iid === String(r.iid))!
+}
+/* THE LIST HAS NO PENCIL AND NO CROSS (owner D718, D723 — 10 Oct 26: "the edit and cross is not needed because … u can
+   click on it to edit it or delete it"; the plan docs/superpowers/plans/2026-10-10-input-card-plan.md §2.3, §5). Every
+   test below that pressed the row's ✎, its ✓ or its ✕ is RESTATED for the door that does that work now — the row
+   opens the input's own window, which changes it and deletes it. The claims are the same; only the door moved. */
+const D = (sel: string) => document.querySelector(sel) as HTMLElement
+/* the window itself (the closed dialog's empty shell, `#inpEditPop`, stays in the page — so that is never the test) */
+const W = () => document.querySelector('[data-testid="win-inputedit"]') as HTMLElement | null
+const openRow = async (inx: number) => {
+  const row = rowFor(inx)
+  expect(row, 'the row is on the page').toBeTruthy()
+  await click(row.querySelector('[data-testid="in-open"]'))
+  expect(W(), 'the input’s window opened').toBeTruthy()
+}
+const delRow = async (inx: number) => { await openRow(inx); await click(D('#inpEditDel')) }
+const setWin = async (sel: string, v: string) => act(async () => {
+  const el = D(sel) as any
+  const isSel = el instanceof window.HTMLSelectElement
+  Object.getOwnPropertyDescriptor((isSel ? window.HTMLSelectElement : window.HTMLInputElement).prototype, 'value')!.set!.call(el, v)
+  el.dispatchEvent(new Event(isSel ? 'change' : 'input', { bubbles: true }))
+})
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -102,7 +127,7 @@ describe('the Inputs page (tfin)', () => {
     await click($('#inAdd'))
     expect(INPUTS.length).toBe(n + 1)
     expect('recur' in INPUTS[0], 'a fresh record carries no recur field').toBe(false)
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
     expect(INPUTS.length).toBe(n)
   })
 
@@ -295,10 +320,12 @@ describe('the Inputs page (tfin)', () => {
     await click($('#inSpan [data-span="all"]'))       // back to all-day for later tests
   })
 
-  it('the ✕ deletes a row, and undo resurrects it', async () => {
+  it('the window’s Delete removes a row’s input, and undo resurrects it', async () => {
     const n = INPUTS.length
     const first = INPUTS[0]
-    await click(rowFor(0).querySelector('.rmx'))
+    expect($$('#inBody .rmx, #inBody [data-inx], #inBody [data-edit]'), 'no cross and no pencil on any row').toHaveLength(0)
+    await delRow(0)
+    expect(W(), 'deleted: the window has closed').toBeFalsy()
     expect(INPUTS.length).toBe(n - 1)
     expect(INPUTS[0]).not.toBe(first)
     await act(async () => { undo() })
@@ -313,12 +340,11 @@ describe('the Inputs page (tfin)', () => {
     const n = INPUTS.length
     await click($('#inAdd'))
     expect(INPUTS.length, 'the add went through').toBe(n + 1)
-    await click($('#inBody .rmx'))
+    /* his own input opens to be CHANGED — Save and Delete are his (the third gate that used to refuse) */
+    await openRow(0)
+    expect(D('#inpEditSave'), 'the window offers Save').toBeTruthy()
+    await click(D('#inpEditDel'))
     expect(INPUTS.length, 'and so did the delete').toBe(n)
-    /* the pencil opens for them as well — the third gate that used to refuse */
-    await click($('#inBody [data-edit]'))
-    expect($('#inBody [data-cancel]'), 'the row opened as fields').toBeTruthy()
-    await click($('#inBody [data-cancel]'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
@@ -357,20 +383,24 @@ describe('the Inputs page (tfin)', () => {
     await click($('#inAdd'))
     expect(INPUTS.length, 'the add went through').toBe(n + 1)
     expect(INPUTS[0].person, 'and landed on the view-as person').toBe('dj')
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
     expect(INPUTS.length).toBe(n)
     await act(async () => { setMe('bane'); setSession({ user: 'a', role: 'admin' }); notify() })
     expect(($('#inPerson') as unknown as HTMLSelectElement), 'admin gets the roster select back').toBeTruthy()
   })
 
-  it('a member\'s row editor keeps the person as plain text', async () => {
+  it('a member changing his own leave keeps the person as plain text — no list to move it to another man', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
-    await click($('#inBody [data-edit]'))
-    const ed = $('#inBody tr.ined')
-    expect(ed, 'the row opened as fields').toBeTruthy()
-    expect(ed.querySelector('select[data-ed="person"]'), 'no Person select for a member').toBeFalsy()
-    expect(ed.querySelector('[data-fld="Person"]')!.textContent, 'the name still prints').toBeTruthy()
-    await click($('#inBody [data-cancel]'))
+    /* a leave: a kind a member never files for anyone else (D655), so its window offers no people to pick */
+    await act(async () => {
+      const { writeInputs } = await import('../state/store')
+      writeInputs(() => INPUTS.unshift({ person: ME, type: 'LL', date: 'Jul 14', allday: true, remarks: 'own leave', mod: '' }))
+    })
+    await openRow(0)
+    expect(D('#inpEditSave'), 'it is his to change').toBeTruthy()
+    expect(D('#inpEditPerson'), 'no Person list for a member').toBeFalsy()
+    expect(D('#inpEditPersonFixed').textContent, 'the name still prints').toBe(PEOPLE[ME].cs)
+    await click(D('#inpEditDel'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
@@ -629,31 +659,26 @@ describe('the End cell marks itself data-same on a one-day input', () => {
   })
 })
 
-/* the pencil edits the row in place */
+/* a row opens the input's window, and the window edits it (the pencil that edited the row in place is gone — D718) */
 describe('editing an input from its own line', () => {
-  it('opens on the pencil, commits on ✓, and joins the undo stack', async () => {
-    const row0 = () => rowFor(0)
-    await click(row0().querySelector('[data-edit]'))
-    expect($('#inBody tr.ined'), 'the row became fields').toBeTruthy()
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-    await act(async () => { setter.call(rm, 'EDITED IN PLACE'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    const inx = +($('#inBody tr.ined [data-save]') as HTMLElement).dataset.save!
-    const was = INPUTS[inx].remarks
-    await click($('#inBody tr.ined [data-save]'))
-    expect($('#inBody tr.ined'), 'the row closed').toBeFalsy()
-    expect(INPUTS[inx].remarks).toBe('EDITED IN PLACE')
+  it('opens from its row, commits on Save, and joins the undo stack', async () => {
+    const target = INPUTS[0], was = target.remarks
+    await openRow(0)
+    expect($('#inBody tr.ined'), 'no row turns into fields any more').toBeFalsy()
+    await setWin('#inpEditRmk', 'EDITED IN ITS WINDOW')
+    await click(D('#inpEditSave'))
+    expect(W(), 'saved: the window closed').toBeFalsy()
+    expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe('EDITED IN ITS WINDOW')
     await act(async () => { undo() })
-    expect(INPUTS[inx].remarks).toBe(was)
+    expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe(was)
   })
 
   it('cancel leaves the row untouched', async () => {
     const before = JSON.stringify(INPUTS[0])
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-    await act(async () => { setter.call(rm, 'THROWN AWAY'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    await click($('#inBody tr.ined [data-cancel]'))
+    await openRow(0)
+    await setWin('#inpEditRmk', 'THROWN AWAY')
+    await click(D('#inpEditCancel'))
+    expect(W()).toBeFalsy()
     expect(JSON.stringify(INPUTS[0])).toBe(before)
   })
 })
@@ -697,13 +722,9 @@ beforeAll(async () => {
     const nGround = DAYS[0].ground.length
     expect(DAYS[0].ground.some((r: any) => r.src === inpId(inp))).toBe(true)
 
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const ty = $('#inBody tr.ined [data-ed="type"]') as HTMLSelectElement
-    await act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-      setter.call(ty, 'Appointment'); ty.dispatchEvent(new Event('change', { bubbles: true }))
-    })
-    await click($('#inBody tr.ined [data-save]'))
+    await openRow(0)
+    await setWin('#inpEditType', 'Appointment')
+    await click(D('#inpEditSave'))
 
     expect(inp.type).toBe('Appointment')
     expect(DAYS[0].ground.length, 'no duplicate row left behind').toBe(nGround)
@@ -715,20 +736,19 @@ beforeAll(async () => {
   })
 
   /* the editor used to hold a model INDEX; adding a row renumbers INPUTS and
-     the draft then committed onto whoever had shifted into that slot */
+     the draft then committed onto whoever had shifted into that slot. The window holds the RECORD, by its id. */
   it('commits onto the right row even after the list renumbers underneath', async () => {
     const target = INPUTS[0]
     const wasOther = INPUTS[1] ? { ...INPUTS[1] } : null
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    await setV(rm, 'STAYS ON TARGET')
+    await openRow(0)
+    await setV(D('#inpEditRmk'), 'STAYS ON TARGET')
     // something else lands at the top of the list while the editor is open
     await act(async () => {
       const { writeInputs } = await import('../state/store')
       writeInputs(() => INPUTS.unshift({ person: 'yeti', date: 'Jul 14', allday: true, type: 'LL', remarks: 'jumped the queue', mod: '' }))
     })
-    await click($('#inBody tr.ined [data-save]'))
-    expect(target.remarks).toBe('STAYS ON TARGET')
+    await click(D('#inpEditSave'))
+    expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe('STAYS ON TARGET')
     expect(INPUTS[0].remarks).toBe('jumped the queue')   // the interloper is untouched
     if (wasOther) expect(INPUTS.find((x: any) => x.remarks === wasOther.remarks)).toBeTruthy()
     await act(async () => { undo() })
@@ -749,8 +769,8 @@ describe('accepted rows are never stranded', () => {
     const before = groundRows().filter(r => r.src === inpId(inp)).length
     expect(before).toBe(1)
 
-    await click(rowFor(0).querySelector('[data-edit]'))
-    await click($('#inBody tr.ined [data-save]'))                  // change nothing
+    await openRow(0)
+    await click(D('#inpEditSave'))                                 // change nothing
 
     const after = groundRows().filter(r => r.src === inpId(inp))
     expect(after.length, 'still exactly one row').toBe(1)
@@ -764,7 +784,7 @@ describe('accepted rows are never stranded', () => {
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
     const key = inpId(inp)
     expect(groundRows().some(r => r.src === key)).toBe(true)
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(groundRows().some(r => r.src === key), 'no row left behind').toBe(false)
     await act(async () => { undo() })
@@ -782,17 +802,13 @@ describe('accepted rows are never stranded', () => {
     })
     const inp = INPUTS[0]
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    await act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-      setter.call(rm, 'CHANGED'); rm.dispatchEvent(new Event('input', { bubbles: true }))
-    })
+    await openRow(0)
+    await setWin('#inpEditRmk', 'CHANGED')
     /* the bug was that ONE ✓ pushed TWO snapshots — unacceptInput's markEdit
        fired mid-way, so the first Undo landed on old fields that were already
        un-accepted, a state the user never created */
     const depth = HIST.stack.length
-    await click($('#inBody tr.ined [data-save]'))
+    await click(D('#inpEditSave'))
     expect(INPUTS[0].remarks).toBe('CHANGED')
     expect(HIST.stack.length - depth, 'one action, one undo step').toBe(1)
     await act(async () => { undo() })
@@ -871,19 +887,29 @@ describe('the picked date writes itself into Remarks', () => {
     expect(INPUTS.length).toBe(n)
   })
 
-  it('the row editor writes the same tail — but only from a click', async () => {
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const ed = () => $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    expect(ed().value, 'opening the editor rewrites nothing').toBe(INPUTS[0].remarks || '')
-    await typeInto(ed(), 'LL')
-    /* Jul 12 is before every date in the demo week, so this always lands as a
-       bare start whatever range the row opened with — and a bare start now
-       carries its own one-day "till" */
-    await click($('#inedCal [data-cal="2026-07-12"]'))
-    expect(ed().value).toBe('LL till 12 Jul')
-    await click($('#inedCal [data-cal="2026-07-14"]'))
-    expect(ed().value).toBe('LL till 14 Jul')
-    await click($('#inBody tr.ined [data-cancel]'))
+  /* RESTATED 10 Oct 26 with the pencil's row gone (D718). The row's own calendar rewrote the remark box at every pick,
+     adding a "till" even where the remark had none. The window's calendar (D681; a one-person input's too, since this
+     change) leaves the box alone while he picks — a remark the picker had touched would read as HIS change to a window
+     that follows the record behind it — and the SAVE makes a "till" the remark carries follow the new last day
+     (commitInputEdit; D189: the wording is the app's own). What is no longer done: a "till" is not ADDED to a remark
+     that carried none. */
+  it('the window’s calendar leaves the remark box alone; the save makes its "till" follow the new dates', async () => {
+    await act(async () => {
+      const { writeInputs } = await import('../state/store')
+      writeInputs(() => INPUTS.unshift({ person: 'sufa', type: 'LL', date: 'Jul 13', endDate: 'Jul 14', allday: true, remarks: 'Bangkok till 14 Jul', mod: '' }))
+    })
+    const target = INPUTS[0]
+    await openRow(0)
+    const ed = () => D('#inpEditRmk') as HTMLInputElement
+    expect(ed().value, 'opening the window rewrites nothing').toBe('Bangkok till 14 Jul')
+    await click(D('#inpEdCal [data-cal="2026-07-13"]'))
+    await click(D('#inpEdCal [data-cal="2026-07-16"]'))
+    expect(ed().value, 'nor does picking').toBe('Bangkok till 14 Jul')
+    await click(D('#inpEditSave'))
+    const saved = INPUTS.find((x: any) => x.iid === target.iid)
+    expect([saved.date, saved.endDate]).toEqual(['Jul 13', 'Jul 16'])
+    expect(saved.remarks, 'the tail followed the calendar').toBe('Bangkok till 16 Jul')
+    await act(async () => { undo(); undo() })
   })
 })
 
@@ -1202,20 +1228,18 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     try { await fn() } finally { HOOKS.toast = orig }
   }
 
-  it('saving and deleting the inline row editor both say so', async () => {
+  it('saving and deleting from the row’s window both say so', async () => {
     const n = INPUTS.length
     await click($('#inCal [data-cal="2026-07-13"]'))
     await click($('#inCal [data-cal="2026-07-13"]'))
     await click($('#inAdd'))
     await withToast(async () => {
-      await click(rowFor(0).querySelector('[data-edit]'))
-      await click($('#inBody tr.ined [data-save]'))
+      await openRow(0)
+      await click(D('#inpEditSave'))
     })
-    expect(toasts, 'the ✓ says the same words the dialog\'s own ✓ does').toContain('Input updated')
-    await withToast(async () => {
-      await click(rowFor(0).querySelector('.rmx'))
-    })
-    expect(toasts, 'and the ✕ says the same words the dialog\'s own delete does').toContain('Input deleted')
+    expect(toasts, 'a save says so').toContain('Input updated')
+    await withToast(async () => { await delRow(0) })
+    expect(toasts, 'and a delete says so').toContain('Input deleted')
     expect(INPUTS.length, 'the add and the delete cancel out').toBe(n)
   })
 
@@ -1290,6 +1314,6 @@ describe('Edit history hears an add made on this page', () => {
     const mine = ELOG.rows.slice(before).filter((x: any) => x.iid === r.iid)
     expect(mine.length, 'exactly one line').toBe(1)
     expect(mine[0]!.lbl).toContain(`${cs} · ${r.type} added`)
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
   })
 })

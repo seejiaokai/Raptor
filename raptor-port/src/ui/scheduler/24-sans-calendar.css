@@ -78,8 +78,6 @@
    place. A remark longer than the card wraps inside the first line; small print longer than the card wraps too. */
 .sd-foot{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:1px;min-width:0}
 .sd-foot .sd-rmk{flex:0 1 auto;min-width:0}
-/* the kind of an input that is named by its own title (D717): small, quiet capitals at the head of the small-print line */
-.sd-foot .sd-kindtag{flex:0 0 auto;font-size:10.5px;line-height:1.35;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 .sd-foot .sd-placed{flex:0 1 auto;min-width:0;margin-left:auto;text-align:right}
 .sd-latenote{color:var(--adv);font-weight:700}
 .sd-why{color:var(--ink-2);font-weight:700}

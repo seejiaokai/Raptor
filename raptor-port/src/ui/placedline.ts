@@ -57,6 +57,20 @@ export function placedShort(line: string, year: number): string {
   return line.replace(/^Placed by /, '').replace(new RegExp(`(\\d{1,2} [A-Z][a-z]{2}) ${two(year % 100)}(?=, \\d\\d:\\d\\d)`, 'g'), '$1')
 }
 
+/** WHO FILED AN ENTRY — the one answer for the line below and for the input card's "By Saber" (D720, D723, D724;
+ *  ui/inputcard-model.ts). A shared input's filer is the entry's own (`grpBy`), else whoever placed its first stamped
+ *  record; an ordinary input's is its `by`. `null` for an entry that never recorded one (D56) — judged as the line is:
+ *  a filer with no readable moment is no filer. */
+export function filerOf(rows: readonly any[]): unknown {
+  const stamped = (rows || []).filter(r => r && r.by != null && r.by !== '' && stampText(r.at))
+  if (!stamped.length) return null
+  if ((rows || []).filter(Boolean).length < 2) return stamped[0].by
+  const withFiler = stamped.find(r => r.grpBy != null && r.grpBy !== '')
+  return withFiler ? withFiler.grpBy : stamped[0].by
+}
+/** a callsign for the small print — the line's own rule for a name (someone taken off every list is said in words) */
+export const filerName = (id: unknown, people: Record<string, any> = PEOPLE): string => nameOf(id, people)
+
 /** THE LINE FOR A SHARED INPUT (owner D655, D629 — "Placed by Saber for 4 people · 7 Oct 26, 14:32"): who filed the
  *  entry, for how many, and when — one line for the whole of it. Its filer is the entry's own (`grpBy`), else whoever
  *  placed its first record; the moment is the earliest any of its records was placed; its last change is the latest
@@ -66,8 +80,7 @@ export function placedLineOf(rows: readonly any[], people: Record<string, any> =
   if (list.length < 2) return list.length ? placedLine(list[0], people) : ''
   const stamped = list.filter(r => r.by != null && r.by !== '' && stampText(r.at))
   if (!stamped.length) return ''
-  const withFiler = stamped.find(r => r.grpBy != null && r.grpBy !== '')
-  const filer = withFiler ? withFiler.grpBy : stamped[0].by
+  const filer = filerOf(list)
   let out = `Placed by ${nameOf(filer, people)} for ${list.length} people · ${stampText(Math.min(...stamped.map(r => r.at)))}`
   const changed = stamped
     .filter(r => stampText(r.modAt) && (r.modAt !== r.at || (r.modBy != null && String(r.modBy) !== String(r.by))))

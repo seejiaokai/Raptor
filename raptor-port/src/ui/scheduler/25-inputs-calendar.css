@@ -221,12 +221,39 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-title-edit:focus{outline:none;border-color:var(--accent)}
 .inputsday .ic-title-ro{font-size:14px;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
 .inputsday .ic-secs{margin-bottom:10px}
-/* a line: the square of its colour (red an absence, amber a duty or a commitment), the callsign, the kind */
-.idy-row .sd-open{gap:7px}
-.idy-sq{flex:0 0 auto;width:9px;height:9px;border-radius:2px;background:var(--adv)}
-.idy-row.red .idy-sq{background:var(--hard)}
-.idy-who{font-size:13.5px;font-weight:800;color:var(--ink);white-space:nowrap}
-.idy-kind{font-size:13px;color:var(--ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ---- THE INPUT CARD (owner D718–D724, 10 Oct 26 — ui/InputCard.tsx; the pictures of record
+   docs/mock/img/input-card-final/). ONE card for this day and for the Inputs list on a phone. The SANS day's `.sd-row`
+   (24-sans-calendar.css) is NOT this card and is not touched (D723: pucks with the CAT there — D647, D649); the LATE
+   tag and its note are the two days' shared ones (`.sd-late`, `.sd-latenote`), so LATE looks the same on both.
+   THE TOP LINE is a flow of text with the LATE-and-hours corner FLOATED at its right: a shared input's names wrap and
+   run on under the corner at the card's full width (D721), which no grid or flex row can do. THE WORDS ROW wraps at
+   the card's full width (D719), "By Saber" pushed to its right end and falling under the words where the two do not
+   fit. Sizes are the mock-up's, measured on his pictures: a two-line card is 51px on a phone. ---- */
+.icard{border:1px solid var(--edge);border-radius:8px;padding:5px 9px;margin-bottom:4px;background:var(--panel-2);min-width:0;cursor:pointer;text-align:left}
+.icard:hover{border-color:var(--edge-2)}
+.icard-top{display:flow-root;font-size:13px;line-height:1.5;padding:1px 0;overflow-wrap:break-word}
+.icard-corner{float:right;display:inline-flex;align-items:center;gap:8px;margin-left:10px;min-height:20px}
+.icard-sq{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--adv);margin-right:7px}
+.icard.red .icard-sq{background:var(--hard)}
+.icard-open{margin-right:7px;border-radius:4px;cursor:pointer}
+.icard-open:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icard-who{font-size:13.5px;font-weight:800;color:var(--ink)}
+.icard-kind{font-size:10.5px;line-height:1.35;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.icard-hrs{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.icard-words{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:1px;min-width:0}
+.icard-text{flex:1 1 auto;min-width:0;font-size:13px;line-height:1.3;color:var(--ink-2);overflow-wrap:anywhere}
+.icard-title{color:var(--ink);font-weight:600}
+.icard-rmk{color:var(--ink-3);font-size:12px}
+.icard-by{margin-left:auto;text-align:right;font-size:11.5px;line-height:1.35;color:var(--ink-3);white-space:nowrap}
+.icard-latenote{display:block}
+/* just saved on the list: the row's own flash (06-inputs.css @keyframes inflash) */
+.icard.innew{animation:inflash 6s ease-out 1}
+@media (prefers-reduced-motion:reduce){.icard.innew{animation:none}}
+/* THE LIST'S DAY HEADING on a phone (D723): "SAT 18 JUL" and, at the right, how many inputs stand under it */
+.icard-day{display:flex;align-items:baseline;gap:8px;margin:14px 2px 6px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.icard-day:first-child{margin-top:4px}
+.icard-day b{color:var(--ink);font-weight:800}
+.icard-day i{font-style:normal;margin-left:auto;font-weight:600;letter-spacing:.04em;text-transform:none;font-size:11.5px}
 @media (min-width:1100px){
   .inputs-workspace:has(.floatwin.inputsday:not([data-placed])){padding-right:462px}
 }
@@ -350,11 +377,6 @@ body.in-cal{padding-bottom:0}
   .pp-puck{min-height:36px;align-items:center}
 }
 
-/* A SHARED INPUT'S PEOPLE on an opened day (D655): the schedule's own pucks, compact, wrapping under the line; LATE
-   beside the man whose own record is late */
-.idy-people{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:3px}
-.idy-man{display:inline-flex;align-items:center;gap:3px}
-.idy-manlate{cursor:default}
 /* a man's own two things in a shared input he did not file, under the read-only form */
 .inped-own{display:flex;flex-direction:column;gap:8px;margin:8px 12px 0}
 .inped-own .inped-ask{margin:0}

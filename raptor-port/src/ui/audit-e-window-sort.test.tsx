@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { InputsPage } from './InputsPage'
+import { InputEditor } from './inputedit'
 import { initStore, setSession, notify, writeInputs } from '../state/store'
 import { INPUTS } from '../engine/inputs'
 import { removeInput } from './inputedit'
@@ -43,7 +44,8 @@ beforeAll(async () => {
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)
-  await act(async () => { root.render(<InputsPage />) })
+  /* with the input's window: a row's edit and delete are done there since D718 (10 Oct 26) */
+  await act(async () => { root.render(<><InputsPage /><InputEditor /></>) })
 })
 
 /* Unmount before the file ends: a render task left queued by the last test
@@ -166,12 +168,16 @@ describe('DOM-vs-model addressing under sort and a narrowed window', () => {
     })
   })
 
+  /* RESTATED 10 Oct 26 — the row's ✕ and ✎ are gone (owner D718, D723): the row opens the input's window, and the
+     window's Delete and Save act on the input the ROW stood for, whatever the sort and whatever shifts underneath. */
+  const D = (sel: string) => document.querySelector(sel) as HTMLElement
   it('delete hits the row clicked after sorting by name descending', async () => {
     await click($('#intbl thead th[data-sort="name"]'))
     await click($('#intbl thead th[data-sort="name"]'))   // descending
     const row = $$('#inBody tr').find(tr => (tr.textContent || '').includes('A-YETI'))!
     const n = INPUTS.length
-    await click(row.querySelector('[data-inx]'))
+    await click(row.querySelector('[data-testid="in-open"]'))
+    await click(D('#inpEditDel'))
     expect(INPUTS.length).toBe(n - 1)
     expect(INPUTS.some((r: any) => r.remarks === 'A-YETI'), 'the clicked row went').toBe(false)
     expect(INPUTS.some((r: any) => r.remarks === 'A-BANE'), 'its neighbours stayed').toBe(true)
@@ -180,16 +186,16 @@ describe('DOM-vs-model addressing under sort and a narrowed window', () => {
 
   it('edit + save hits the row clicked even after a lower-indexed input is deleted mid-edit', async () => {
     const row = $$('#inBody tr').find(tr => (tr.textContent || '').includes('A-BANE'))!
-    await click(row.querySelector('[data-edit]'))
-    expect($('#inBody tr.ined')).toBeTruthy()
-    /* a DIFFERENT input is deleted while the editor is open — every model
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect(D('#inpEditRmk'), 'the input’s editor opened').toBeTruthy()
+    /* a DIFFERENT input is deleted while the window is open — every model
        index below it shifts down one */
     const victim = INPUTS.find((r: any) => r.remarks === 'A-STIFF')
     await act(async () => { removeInput(victim) })
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    const rm = D('#inpEditRmk') as HTMLInputElement
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     await act(async () => { setter.call(rm, 'A-BANE EDITED'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    await click($('#inBody tr.ined [data-save]'))
+    await click(D('#inpEditSave'))
     expect(INPUTS.some((r: any) => r.remarks === 'A-BANE EDITED'), 'the edit landed on the opened row').toBe(true)
     expect(INPUTS.some((r: any) => r.remarks === 'A-YETI EDITED' || r.remarks === 'A-STIFF EDITED'), 'and nowhere else').toBe(false)
     await act(async () => { clean('A-') })

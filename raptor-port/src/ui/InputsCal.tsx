@@ -50,8 +50,10 @@ import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, personFilterPasses } from './inputscal-model'
-import { placedLineOf, placedShort } from './placedline'
-import { cutParts, dayWord, hoursOf, lateWord } from './sanscal-model'
+import { placedLineOf } from './placedline'
+import { InputCard } from './InputCard'
+import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
+import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
@@ -237,7 +239,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
   const [how, setHow] = useState(false)
   /* which late input's note is showing in the opened day (its entry's key) */
-  const [lateOpen, setLateOpen] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
   const [puckDraft, setPuckDraft] = useState('')
   /* the section being DRAGGED to a new position in the popover (owner, 22 Aug
@@ -747,9 +748,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     const kindWord = !kind ? undefined
       : kind.kind === 'nf' ? 'No fly'
         : (kind.kind === 'ph' ? 'Public holiday' : 'Off day') + (name && !/^(ph|off day|off)$/i.test(name.trim()) ? ' · ' + name : '')
-    /* when an input is, said the way the approved day says it: its hours, "All day", or — for one that runs on past
-       this day — the day it runs till */
-    const whenOf = (it: BarItem) => (it.b > iso ? (it.allday ? '' : hoursOf(it.rows[0]) + ' · ') + 'till ' + fmtDay(it.b) : hoursOf(it.rows[0]))
     const openInput = (r: any) => { setInpEdit(r); notify() }
     /* DELETE on a line removes that input — ASKING FIRST (D621): a key pressed by a slip must not take a man's leave
        away. Only where its reader may delete it (the write path's own rule, perms.ts — the screen mirrors it and says
@@ -924,10 +922,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
               )
             })()}
 
-            {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). One line each: who, the kind and
-                when; a remark under it; the LATE tag, which says the cut-off it missed when pressed (D646); and in
-                small print who placed it and when (D629). The line's BUTTON is the name and the kind — what a keyboard
-                and a screen reader meet; a press anywhere else on the line opens the input too. */}
+            {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). Each is THE INPUT CARD (owner
+                D718–D724, 10 Oct 26 — ui/InputCard.tsx, its words from ui/inputcard-model.ts): the one card the Inputs
+                list draws on a phone too, so the two cannot differ. A shared input names everyone (D721) — its row of
+                pucks and their own LATE tags went with that; who placed it is "By Saber" where the card says it at all
+                (D723, D724), and the day and the time of it stay in the input's window. */}
             {list.length === 0 ? (
               <p className="sd-empty" data-testid="idy-empty">No inputs on this day. Tap + Input to add one.</p>
             ) : (
@@ -935,61 +934,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                 <h3 className="sd-gh" data-testid="idy-count">{list.length} input{list.length > 1 ? 's' : ''}</h3>
                 {list.map(it => {
                   const r = it.rows[0]
-                  const who = it.more > 0 ? `${it.who} +${it.more}` : it.who
-                  const when = whenOf(it)
-                  /* a shared input's late tags are each man's own, beside his puck — a man added later can be late alone */
                   const team = it.rows.length > 1
-                  /* …unless EVERY man is late alike: then the line says LATE once, as an ordinary input does */
-                  const lates = it.rows.map(x => lateWord(x))
-                  const allLate = team && lates.every(w => w && w === lates[0])
-                  const late = team && !allLate ? '' : lates[0]
                   const forAll = team && it.rows.every(x => mayDeleteInput(x))
-                  const placed = placedLineOf(it.rows)
-                  /* a remark is said under the line whatever the input is called: an Other USED TO be named by its
-                     remark, which was then not said twice — since D716 (3) its remarks are plain remarks, and a filer who
-                     typed the same word as title and as remark typed both (Astra's read of the plan — 5) */
-                  const rmk = r.remarks ? String(r.remarks) : ''
                   return (
-                    <div key={it.key} className={'sd-row idy-row ' + it.tone} data-popiid={it.key} data-testid={'idy-row-' + it.key}
-                      onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) openInput(r) }}>
-                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${it.kind ? it.kind + ', ' : ''}${when}`} onClick={() => openInput(r)} onKeyDown={onLineKey(it)}>
-                        <span className="idy-sq" aria-hidden="true" />
-                        <b className="idy-who">{who}</b>
-                        <span className="idy-kind">{it.word}</span>
-                      </button>
-                      {late ? (
-                        <button type="button" className="sd-late" data-testid="idy-late" aria-expanded={lateOpen === it.key} title={late}
-                          onClick={() => setLateOpen(o => (o === it.key ? null : it.key))}>LATE</button>
-                      ) : <span />}
-                      <span className="sd-hours" data-testid="idy-when">{when}</span>
-                      {late && lateOpen === it.key && <span className="sd-latenote" data-testid="idy-latenote" role="status">{late}</span>}
-                      {/* THE REMARK AND THE SMALL PRINT SHARE ONE LINE (owner D699, D701, 9 Oct 26 — drawing B: "put the placed
-                          by sentence to the 2nd row if the remarks is short. If the remarks is too long then move the placed
-                          by down to a 3rd row but still the same horizontal alignment"): the remark first, the small print at
-                          the line's right end; where the two do not fit, the small print goes under the remark, still at the
-                          right end (`.sd-foot`, 24-sans-calendar.css). The small print is the SHORT form — the name, the
-                          date, the time — with the full "Placed by …" as its title. */}
-                      {/* THE KIND, KEPT IN SIGHT (owner D717, 9 Oct 26 — "Kind kept in sight"): an input named by its own title
-                          says its kind small at the head of this line. The line above has no room for it on a phone — with
-                          the kind beside the title, the LATE mark and the hours, the title was cut to "Sports …". */}
-                      {(it.kind || rmk || placed) && (
-                        <span className="sd-foot">
-                          {it.kind && <span className="sd-kindtag" data-testid="idy-kindtag">{it.kind}</span>}
-                          {rmk && <span className="sd-rmk">{rmk}</span>}
-                          {placed && <span className="sd-placed" data-testid="idy-placed" title={placed}>{placedShort(placed, +iso.slice(0, 4))}</span>}
-                        </span>
-                      )}
-                      {/* ITS PEOPLE, as the schedule's own pucks (ui/html.ts puck() — D649), compact, A to Z */}
-                      {team && (
-                        <span className="idy-people" data-testid="idy-people">
-                          {it.rows.map(x => (
-                            <span key={x.iid} className="idy-man">
-                              <span className="sd-puck" aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(x.person, false, true, false).replace(' tabindex="0"', '') }} />
-                              {!allLate && lateWord(x) && <span className="sd-late idy-manlate" data-testid={'idy-late-' + x.person} title={lateWord(x)}>LATE</span>}
-                            </span>
-                          ))}
-                        </span>
-                      )}
+                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows)} when={cardWhen(r, it.b, iso)}
+                      late={lateNoteOf(it.rows, lateWord)} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
@@ -998,7 +947,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>{team && !forAll ? 'Stay in' : 'Keep'}</button>
                         </span>
                       )}
-                    </div>
+                    </InputCard>
                   )
                 })}
               </>
