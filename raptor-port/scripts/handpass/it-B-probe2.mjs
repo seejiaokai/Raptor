@@ -1,0 +1,20 @@
+import * as L from './it-B-lib.mjs'
+const W = await L.newWorld()
+const p = W.page
+const ranger = await L.csId(p, 'Ranger')
+const out = {}
+await L.fileInput(W, { iso: '2026-07-15', type: 'Event', person: ranger, s: '09:00', e: '10:00', rmk: 'probe' })
+const r = await L.recBy(p, { person: ranger, type: 'Event' })
+await L.pubDay(W, 2)
+await L.editWeek(p); await L.showDay(p, 2)
+out.signBlock1 = await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="2"]'); return [...d.querySelectorAll('[data-sign]')].map(s => ({ role: s.dataset.sign, vis: !!s.offsetParent, val: s.value, txt: s.options[s.selectedIndex]?.text })) })
+out.html1 = await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="2"]'); return [...d.querySelectorAll('.signbox, .signoff, [class*=sign]')].map(e => e.className + ' :: ' + e.innerText.replace(/\s+/g, ' ').slice(0, 100)).slice(0, 12) })
+await L.shot(p, 'probe2-published')
+await L.retitle(W, r.iid, '2026-07-15', 'Sports day')
+await L.editWeek(p); await L.showDay(p, 2)
+out.signBlock2 = await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="2"]'); return [...d.querySelectorAll('[data-sign]')].map(s => ({ role: s.dataset.sign, vis: !!s.offsetParent, val: s.value, txt: s.options[s.selectedIndex]?.text })) })
+await L.shot(p, 'probe2-retitled')
+await p.locator('#eWeek [data-pendlist="2"]:visible').first().click(); await L.sleep(500)
+out.win = await p.evaluate(() => { const hit = [...document.querySelectorAll('*')].filter(e => e.children.length && /Waiting to go out/.test(e.innerText || '') && e.innerText.length < 800).sort((a, b) => a.innerText.length - b.innerText.length)[0]; if (!hit) return null; let e = hit, chain = []; for (let i = 0; i < 6 && e; i++) { chain.push(e.tagName + '#' + e.id + '.' + e.className + ' [' + (e.getAttribute('data-testid') || '') + ']'); e = e.parentElement } return chain })
+console.log(JSON.stringify(out, null, 1))
+await W.browser.close()

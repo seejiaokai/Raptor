@@ -388,3 +388,38 @@ describe('the other places that name an input (both reads of the plan)', () => {
   })
 })
 
+describe('a shared input and the List’s own OIL question', () => {
+  it('a shared input’s title is typed once, in its window, and reaches every man’s record; typed back, every record loses it', async () => {
+    const [x, y] = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)
+    const a = await filed({ person: x, grp: 'gT1', grpBy: admin }), b = await filed({ person: y, grp: 'gT1', grpBy: admin })
+    await openOn(a)
+    expect(box(), 'the shared window carries the Title box').toBeTruthy()
+    await type('#inpEditTitle', 'Team day')
+    await click($('#inpEditSave'))
+    expect(win(), 'saved: the window has closed').toBeNull()
+    expect([live(a.iid).title, live(b.iid).title]).toEqual(['Team day', 'Team day'])
+    await openOn(a)
+    expect(box()!.value).toBe('Team day')
+    await type('#inpEditTitle', 'Event')
+    await click($('#inpEditSave'))
+    expect(['title' in live(a.iid), 'title' in live(b.iid)]).toEqual([false, false])
+  })
+
+  it('the List’s Add form on a weekend: the OIL question is headed by the typed title', async () => {
+    await act(async () => { setInpView('table'); notify() })
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeAll'))
+    await choose('#inType', 'Event')
+    /* a Saturday of the month the form's own calendar is showing */
+    const sat = [...document.querySelectorAll('#inCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 6 && !(c as HTMLButtonElement).disabled) as HTMLElement
+    expect(sat, 'Saturday on the form’s calendar').toBeTruthy()
+    await click(sat); await click(sat)
+    await type('#inTitle', 'Weekend exercise')
+    await click($('#inAdd'))
+    const head = document.querySelector('[data-testid="oilconf"] .airpop-head')
+    expect(head, 'the OIL question is up').toBeTruthy()
+    expect(head!.textContent).toContain('Weekend exercise')
+    expect(head!.textContent).not.toContain('Event')
+  })
+})
+

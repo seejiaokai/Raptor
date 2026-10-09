@@ -136,6 +136,8 @@ export async function showDay(p, di, surf = '#eWeek') {
   }, [surf, di])
   await sleep(350)
 }
+export let TAP = false
+export const setTap = v => { TAP = v }
 const pressDay = async (p, attr, di) => {
   const r = (await p.locator('#schedBoard:visible').count()) ? '#schedBoard' : '#eWeek'
   const b = p.locator(`${r} [${attr}="${di}"]:visible`).first()
@@ -143,7 +145,8 @@ const pressDay = async (p, attr, di) => {
   if (await b.isDisabled()) return { pressed: false, why: 'disabled: ' + (await b.getAttribute('title')) }
   const label = (await b.innerText()).trim()
   await b.evaluate(e => e.scrollIntoView({ block: 'center' }))
-  await b.click(); await sleep(900)
+  if (TAP) await b.tap(); else await b.click()
+  await sleep(900)
   return { pressed: true, label }
 }
 export async function signDay(p, di, pick = 0) {
@@ -184,7 +187,8 @@ export async function face(p, di) {
     const pend = [...d.querySelectorAll('.dpend:not(.dnew):not(.dchg)')].map(t)
     const signs = [...d.querySelectorAll(`select[data-sign][data-signday="${i}"]`)].map(s => s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '')
     const rows = [...d.querySelectorAll('.pl-row.gr-frominput')].map(r => ({ name: t(r.querySelector(':scope > .nm .ntx')), kind: t(r.querySelector(':scope > .nm .nm-kind')) }))
-    return { tag: t(d.querySelector('.verchip')), pend, signs: signs.map(s => /name/i.test(s) ? '·' : s), signed: signs.filter(s => s && !/name/i.test(s)).length, rows, signedLn: t(d.querySelector('.signedln')) }
+    const unav = ((d, t) => { const h = [...d.querySelectorAll('*')].find(e => e.children.length === 0 && /^unavailable$/i.test((e.textContent || '').trim())); if (!h) return []; let sec = h; for (let i = 0; i < 5 && sec && !sec.querySelector('.nm'); i++) sec = sec.parentElement; if (!sec) return []; return [...sec.querySelectorAll('.nm')].map(n => ({ name: t(n.querySelector('.ntx')), kind: t(n.querySelector('.nm-kind')) })) })(d, t)
+    return { tag: t(d.querySelector('.verchip')), pend, nys: t(d.querySelector('.nysmark')), signs: signs.map(s => /name/i.test(s) ? '·' : s), signed: signs.filter(s => s && !/name/i.test(s)).length, rows, unav, signedLn: t(d.querySelector('.signedln')) }
   }, di)
 }
 /* the changes window ("To go out") for day di: the pending-list button on the edit week */
@@ -193,7 +197,7 @@ export async function toGoOut(p, di) {
   const b = p.locator(`#eWeek [data-pendlist="${di}"]:visible`).first()
   if (!(await b.count())) return '(no pending button)'
   await b.evaluate(e => e.scrollIntoView({ block: 'center' })); await b.click(); await sleep(500)
-  const t = await p.evaluate(() => { const e = document.querySelector('#pendList') || document.querySelector('[data-testid="win-changes"]'); return e ? e.innerText.replace(/\s+/g, ' ').trim() : '(window not found)' })
+  const t = await p.evaluate(() => { const e = document.querySelector('.chgwin .cw-out') || document.querySelector('.chgwin'); return e ? e.innerText.replace(/\s+/g, ' ').trim() : '(window not found)' })
   return t
 }
 export const closeTop = async p => { await p.keyboard.press('Escape'); await sleep(250) }
@@ -206,7 +210,8 @@ export async function viewFace(p, di) {
     const t = e => e ? (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim() : ''
     const sel = d.querySelector('select[data-vwork], select[data-dver]')
     return {
-      tag: t(d.querySelector('.verchip')), pend: [...d.querySelectorAll('.dpend:not(.dnew):not(.dchg)')].map(t),
+      tag: t(d.querySelector('.verchip')), pend: [...d.querySelectorAll('.dpend:not(.dnew):not(.dchg)')].map(t), nys: t(d.querySelector('.nysmark')),
+      unav: ((d, t) => { const h = [...d.querySelectorAll('*')].find(e => e.children.length === 0 && /^unavailable$/i.test((e.textContent || '').trim())); if (!h) return []; let sec = h; for (let i = 0; i < 5 && sec && !sec.querySelector('.nm'); i++) sec = sec.parentElement; if (!sec) return []; return [...sec.querySelectorAll('.nm')].map(n => ({ name: t(n.querySelector('.ntx')), kind: t(n.querySelector('.nm-kind')) })) })(d, t),
       rows: [...d.querySelectorAll('.pl-row.gr-frominput')].map(r => ({ name: t(r.querySelector(':scope > .nm .ntx')), kind: t(r.querySelector(':scope > .nm .nm-kind')) })),
       picker: sel ? { attr: sel.hasAttribute('data-vwork') ? 'vwork' : 'dver', opts: [...sel.options].map(o => (o.selected ? '*' : '') + o.text) } : null,
       signedLn: t(d.querySelector('.signedln')),
@@ -232,3 +237,70 @@ export async function undoRedo(p, dir) {
 }
 export const rec = (p, iid) => p.evaluate(i => { const r = window.INPUTS.find(x => x.iid === i); return r ? { person: r.person, type: r.type, title: r.title, date: r.date, endDate: r.endDate, remarks: r.remarks } : null }, iid)
 export const dayGround = (p, di) => p.evaluate(i => window.DAYS[i].ground.map(g => ({ prog: g.prog, src: g.src, srcType: g.srcType })), di)
+
+/* ---------- shared scenario helpers ---------- */
+export const SIZES = { desk: { width: 1440, height: 900, mobile: false }, phone: { width: 390, height: 844, mobile: true } }
+export async function mk(size, o = {}) {
+  const S = SIZES[size]
+  const W = await newWorld({ ...S, fresh: false, ...o })
+  setTap(S.mobile)
+  W.size = size
+  return W
+}
+/* the changes window: close it (its own X, else Escape) */
+export async function closeChg(p) {
+  if (!(await p.locator('.chgwin').count())) return
+  const x = p.locator('.chgwin .win-x, .chgwin button[aria-label^="Close"]').first()
+  if (await x.count()) { await x.click().catch(() => {}); await sleep(300) }
+  if (await p.locator('.chgwin').count()) { await p.keyboard.press('Escape'); await sleep(300) }
+}
+/* one reading of day di: the edit week, View-only Sched, and (when something is pending) "To go out" */
+export async function snap(W, di, { togo = true, pic = null, focus = null } = {}) {
+  const p = W.page
+  const f = await face(p, di)
+  if (focus) await focusName(p, "#eWeek", di, focus)
+  if (pic) await shot(p, pic + "-edit")
+  let t = null
+  if (togo && f && f.pend.length) { t = await toGoOut(p, di); if (pic) await shot(p, pic + '-togo'); await closeChg(p) }
+  const v = await viewFace(p, di)
+  if (focus) await focusName(p, "#vWeek", di, focus)
+  if (pic) await shot(p, pic + '-view')
+  return { f, v, togo: t }
+}
+export const nm = s => (s && s.rows ? s.rows.map(r => r.name + (r.kind ? '[' + r.kind + ']' : '')).join('|') : '(none)')
+export const un = s => (s && s.unav ? s.unav.map(r => r.name + (r.kind ? '[' + r.kind + ']' : '')).join('|') : '(none)')
+export const brief = S => `edit{pend:${S.f.pend.join(',') || '0'} nys:${S.f.nys ? 'YES' : 'no'} rows:${nm(S.f)} unav:${un(S.f)} signedLn:${S.f.signedLn ? 'stands' : 'none'}} view{rows:${nm(S.v)} unav:${un(S.v)} pend:${S.v.pend.join(',') || '0'}}${S.togo ? ' togo{' + S.togo.replace(/^.*?Waiting to go out/, 'Waiting to go out').slice(0, 220) + '}' : ''}`
+export async function undo(W) { return L_undo(W.page, 'undo') }
+export async function redo(W) { return L_undo(W.page, 'redo') }
+const L_undo = async (p, d) => { await editWeek(p); return undoRedo(p, d) }
+/* bring the first name in day di that matches re (a string) to the middle of the window, for the picture */
+export async function focusName(p, root, di, re) {
+  await p.evaluate(([root, di, re]) => {
+    const d = document.querySelector(`${root} .day[data-day="${di}"]`); if (!d) return
+    const rx = new RegExp(re, 'i')
+    const el = [...d.querySelectorAll('.nm .ntx')].find(e => rx.test(e.textContent))
+    if (el) el.scrollIntoView({ block: 'center', inline: 'nearest' })
+  }, [root, di, re])
+  await sleep(350)
+}
+
+/* the checkpoint after a title change: Undo -> (Redo -> reload) | (reload). read(tag) returns {s, text, pics}; applied/reverted judge s. */
+export async function checkpoint(W, variant, { n, tag, role = 'admin', read, applied, reverted }) {
+  const size = W.size
+  const u = await undo(W)
+  const r2 = await read(tag + '-2undo')
+  const ok2 = u.pressed && reverted(r2.s)
+  row(n, size, role, ok2 ? 'PASS' : 'FAIL', `[${variant}] after Undo${u.pressed ? '' : ' (undo not pressable: ' + u.why + ')'}: ${r2.text}`, r2.pics)
+  if (variant === 'A') {
+    const rd = await redo(W)
+    const r3 = await read(tag + '-3redo')
+    row(n, size, role, rd.pressed && applied(r3.s) ? 'PASS' : 'FAIL', `[A] after Redo${rd.pressed ? '' : ' (redo not pressable)'}: ${r3.text}`, r3.pics)
+    await reload(W)
+    const r4 = await read(tag + '-4reload')
+    row(n, size, role, applied(r4.s) ? 'PASS' : 'FAIL', `[A] after reload: ${r4.text}`, r4.pics)
+  } else {
+    await reload(W)
+    const r4 = await read(tag + '-4reload')
+    row(n, size, role, reverted(r4.s) ? 'PASS' : 'FAIL', `[B] Undo then reload: ${r4.text}`, r4.pics)
+  }
+}

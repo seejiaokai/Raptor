@@ -28,6 +28,7 @@ export async function world(size = 'desk', who = 'ad', { fresh = true, browser =
   const ctx = await b.newContext(SIZES[size])
   const page = await ctx.newPage()
   const errors = []
+  page.setDefaultTimeout(10000)
   page.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text().slice(0, 220)) })
   page.on('pageerror', e => errors.push('pageerror: ' + String(e).slice(0, 220)))
   page.on('response', r => { if (r.status() >= 400) errors.push('HTTP ' + r.status() + ' ' + r.url()) })
@@ -106,11 +107,17 @@ export async function openNew(w, iso) {
   await sleep(200)
 }
 /** open the day card (calendar) then a saved input's window by iid */
+export async function showEveryone(w) {
+  const p = w.page
+  if (!(await p.locator('#inFPerson').isVisible().catch(() => false))) { await p.locator('#inFiltersBtn').click().catch(() => {}); await sleep(250) }
+  await p.selectOption('#inFPerson', 'all'); await sleep(250)
+}
 export async function openSaved(w, iso, iid) {
   const p = w.page
   await go(p, 'inputs')
   const calBtn = p.locator('#inCalBtn'); if (await calBtn.count() && await calBtn.isVisible().catch(() => false)) { await calBtn.click().catch(() => {}); await sleep(200) }
   await closeWins(p)
+  if (w.who === 'us') await showEveryone(w)
   const [y, m] = iso.split('-').map(Number)
   await month(p, y, m)
   const cell = p.locator(`#inpCal [data-icday="${iso}"]`)
@@ -235,4 +242,94 @@ export async function scShift(w, di, person) {
   const r = await put(p, `[data-slot="${di}.0.0.0.p"]`, [person])
   const shift = await p.evaluate(di => { const wv = window.DAYS[di].waves[0]; return JSON.stringify({ label: wv.label, to: wv.to, ld: wv.ld, kind: wv.kind, type: wv.type, str: wv.str, end: wv.end }) }, di)
   return { r, shift }
+}
+
+/** sign out through the app's own Logout and sign in as someone else (same page, same stored world) */
+export async function switchUser(w, who) {
+  const p = w.page
+  let out = p.locator('button:visible', { hasText: /^Logout$/ }).first()
+  if (!(await out.count())) { await p.locator('#burger').click().catch(() => {}); await sleep(500); out = p.locator('button:visible', { hasText: /^Logout$/ }).first() }
+  await out.click(); await sleep(900)
+  await signIn(p, who); w.who = who
+}
+/** the gear on the Inputs calendar: set "members may file for other people". Admin only. */
+export async function setMemberFiling(w, on) {
+  const p = w.page
+  await go(p, 'inputs')
+  const calBtn = p.locator('#inCalBtn'); if (await calBtn.count() && await calBtn.isVisible().catch(() => false)) { await calBtn.click().catch(() => {}); await sleep(200) }
+  await closeWins(p)
+  await press(w, p.locator('[data-testid="in-gear"]')); await sleep(500)
+  const cb = p.locator('[data-testid="iset-memberfile"]')
+  const was = await cb.isChecked()
+  if (was !== on) await cb.setChecked(on)
+  await press(w, p.locator('[data-testid="iset-save"]')); await sleep(700)
+  const err = (await p.locator('[data-testid="iset-err"]').count()) ? await p.locator('[data-testid="iset-err"]').innerText() : ''
+  await closeWins(p)
+  return { was, now: on, err }
+}
+/** state of the open input window: fields, buttons, read-only marks */
+export const winInfo = p => p.evaluate(() => {
+  const g = id => document.querySelector(id)
+  const t = g('#inpEditTitle'), ty = g('#inpEditType')
+  const body = g('.inped-body')
+  return {
+    title: t ? t.value : null, titleInert: !!(t && t.closest('[inert]')), titleDisabled: !!(t && (t.disabled || t.readOnly)),
+    type: ty ? ty.value : (g('#inpEditTypeFixed') ? g('#inpEditTypeFixed').textContent : null), typeInert: !!(ty && ty.closest('[inert]')),
+    save: !!g('#inpEditSave'), del: !!g('#inpEditDel'), takeout: !!g('[data-testid="inped-takeout"]'), oilOwn: !!g('[data-testid="oil-revise-own"]'), oilRevise: !!g('[data-testid="oil-revise"]'),
+    ro: g('[data-testid="inped-ro"]') ? g('[data-testid="inped-ro"]').innerText : null, placed: g('[data-testid="inped-placed"]') ? g('[data-testid="inped-placed"]').innerText : null,
+    winTitle: g('[data-testid="win-inputedit"] .win-title, [data-testid="win-inputedit"] .floatwin-title') ? (g('[data-testid="win-inputedit"] .win-title, [data-testid="win-inputedit"] .floatwin-title').innerText) : null,
+    bodyInert: !!(body && body.hasAttribute('inert')), cancel: g('#inpEditCancel') ? g('#inpEditCancel').innerText : null,
+  }
+})
+
+/* ---- the List ---- */
+export async function openList(w) {
+  const p = w.page
+  await go(p, 'inputs')
+  await p.locator('#inListBtn').click(); await sleep(400)
+  if (!(await p.locator('#inRangeAll').count())) { await p.locator('#inRangeBtn').click().catch(() => {}); await sleep(250) }
+  const all = p.locator('#inRangeAll'); if (await all.count()) { await all.first().click().catch(() => {}); await sleep(400) }
+  if (w.who === 'us') await showEveryone(w)
+}
+export const listRow = (p, iid) => p.locator(`#inBody tr[data-iid="${iid}"]`).first()
+/** List pencil: open the row's editor. returns whether a pencil existed */
+export async function pencil(w, iid) {
+  const p = w.page
+  await openList(w)
+  const r = listRow(p, iid)
+  await r.scrollIntoViewIfNeeded().catch(() => {})
+  const pen = r.locator('[data-edit]').first()
+  if (!(await pen.count())) return false
+  await press(w, pen); await sleep(350)
+  await p.locator('#inBody tr.ined').waitFor()
+  return true
+}
+/** List pencil edit: set title (and optionally other fields), save, answer an OIL question if asked. Returns {head,asked}. */
+export async function pencilSave(w, iid, { title, oil } = {}) {
+  const p = w.page
+  const ok = await pencil(w, iid)
+  if (!ok) return { nopencil: true }
+  const ed = p.locator('#inBody tr.ined')
+  if (title != null) await ed.locator('input[data-ed="title"]').fill(title)
+  await press(w, ed.locator('[data-save]'))
+  const sheet = p.locator('[data-testid="oilconf"]')
+  let head = '', asked = false
+  if (await sheet.waitFor({ timeout: 1200 }).then(() => true, () => false)) {
+    asked = true
+    head = (await sheet.locator('.airpop-head').innerText()).replace(/\s+/g, ' ').trim()
+    if (oil === 'yes' || oil === 'no') { await press(w, sheet.locator(`[data-testid="oil-${oil}"]`)); await press(w, sheet.locator('[data-testid="oilconf-save"]')) }
+    else if (oil === 'cancel') await press(w, sheet.locator('.abtn.ghost').first())
+  }
+  await sleep(450)
+  return { head, asked }
+}
+/** window edit of a saved input: open from the day card, set title (and type), save */
+export async function winRetitle(w, iso, iid, { title, type, oil } = {}) {
+  const p = w.page
+  await openSaved(w, iso, iid)
+  if (type) await p.selectOption('#inpEditType', type)
+  if (title != null) await p.fill('#inpEditTitle', title)
+  const r = await saveWin(w, oil)
+  await closeWins(p)
+  return r
 }

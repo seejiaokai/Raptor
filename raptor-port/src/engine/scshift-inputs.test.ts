@@ -56,6 +56,13 @@ describe('raw inputs are graded by type against SC MAIN', () => {
       expect(w[0].msg, t).toContain(`${t} but tasked — SC AM`)
     }
   })
+  it('a titled input is named by its title in that sentence — and graded by its kind, whatever the title says (D716)', () => {
+    addSC(P); inp('Training', { title: 'Meeting' })
+    const w = mine('INPUT_FLY')
+    expect(w.length).toBe(1)
+    expect(w[0].sev).toBe('hard')
+    expect(w[0].msg).toContain('Meeting but tasked — SC AM')
+  })
   it('an ALL-DAY red-list input counts too', () => {
     addSC(P); inp('Training', { allday: true, s: undefined, e: undefined })
     const w = mine('INPUT_FLY')

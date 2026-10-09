@@ -20,7 +20,7 @@ export const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', '
 
 export async function open(browser, size, who = 'ad', pass = 'a', { fresh = true } = {}) {
   const s = typeof size === 'string' ? SIZES[size] : size
-  const ctx = await browser.newContext({ viewport: s.viewport, deviceScaleFactor: s.touch ? 2 : 1, ...(s.touch ? { isMobile: true, hasTouch: true } : {}), acceptDownloads: true })
+  const ctx = await browser.newContext({ viewport: s.viewport, deviceScaleFactor: s.touch ? 2 : 1, ...(s.touch ? { isMobile: true, hasTouch: true } : {}), acceptDownloads: true, permissions: ['clipboard-read', 'clipboard-write'] })
   const page = await ctx.newPage()
   page.on('pageerror', e => errs.push('pageerror: ' + String(e).slice(0, 200)))
   page.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text().slice(0, 200)) })

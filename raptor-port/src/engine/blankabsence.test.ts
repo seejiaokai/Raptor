@@ -144,6 +144,15 @@ describe('D605 — a whole-day absence is flagged on a seat with no times, exact
     })
   }
 
+  it('an overseas duty with a title of its own is named by it in that sentence; its kind still decides that it is said (D716)', () => {
+    const s = flyLine(); s.seat(); file('OD', { title: 'Exercise in Darwin' })
+    const a = abs()
+    expect(a.length).toBe(1)
+    expect(a[0].code).toBe('INPUT_FLY')
+    expect(a[0].msg).toContain('Exercise in Darwin clashes with this line')
+    expect(a[0].msg).not.toMatch(/^OD clashes/)
+  })
+
   it('a leave, a downchit and an overseas duty each say so on a blank flying line — the red line, the ring, the C chip', () => {
     for (const [type, code, words] of [['LL', 'LEAVE_FLY', 'On leave but planned to fly this line'],
       ['OL', 'LEAVE_FLY', 'On leave but planned to fly this line'], ['ATT C', 'DNIF_FLY', 'Downchit but planned to fly this line'],
