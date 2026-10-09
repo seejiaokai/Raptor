@@ -3363,3 +3363,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Where the open question is a LAYOUT's behaviour over a range of content (long and short text, optional parts), build the mock-up as working markup with (a) the same varied sample set under every option, including the worst case, (b) a switch per open choice, (c) a measured figure per option computed in the page, and (d) a today/proposed toggle. Keep re-lettered screenshots for "what will this exact screen look like". When checking such a page locally, assert the layout width first.
 
 **Principle:** A picture answers the question it was drawn for; a working drawing with switches answers the next three as well - show behaviour, not an instance, when the design question is about behaviour.
+
+### Observation 489: A check piped into a filter cannot stop the commit that follows it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** recording a ruling and writing a handoff at the end of a long chat (Raptor, branch claude/day-window-compact)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the closing commit — "run the document check, then commit and push"
+
+**Issue:** One command chained the rulings script, the document check, the commit and the push with `&&`, and each check was piped into `head` / `grep` to keep the output short. The rulings script REFUSED the new row and the document check FAILED, yet the commit and the push went through: a pipeline reports the status of its LAST command (the filter), so the `&&` saw success. The failing state sat on the pushed branch until the next command read the output.
+
+**Suggested improvement:** In the handoff's closing step, say: run each check as its own command and read its result before the commit; if a check must be filtered, send it to a file and keep its exit code (`cmd > out.txt 2>&1; echo $?`), or set `pipefail`. Never put a filtered check and `git commit` in one `&&` chain.
+
+**Principle:** A gate guards only what waits on its real exit status. Filtering a gate's output for brevity replaces that status with the filter's — so a gate and the action it guards never share a chain unless the gate's own status is what the chain tests.
