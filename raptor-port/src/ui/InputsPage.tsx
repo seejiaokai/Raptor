@@ -1115,7 +1115,7 @@ export function InputsPage() {
                   /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on
                      one of the row's own controls: its Name button opens it by itself, and the paperclip and the OIL
                      chips of the last cell do their own work. */
-                  onClick={ev => { const t = ev.target as HTMLElement; if (!t.closest('button') && !t.closest('.inact')) openInput(r) }}>
+                  onClick={ev => { const t = ev.target as HTMLElement; if (!t.closest('button') && !t.closest('.inact > span')) openInput(r) }}>
                   {/* data-same now marks an EMPTY End — an all-day one-day
                       input, whose date already reads once in Start — so the
                       phone card drops it and reads just "13 Jul". A timed

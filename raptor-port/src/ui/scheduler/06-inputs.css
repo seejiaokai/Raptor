@@ -114,7 +114,12 @@
    that stood here are gone (owner D718, D723 — 10 Oct 26): a click on the row opens the input's window, where it is
    changed and deleted. The controls stay finger-sized and well apart (owner, Aug 5): 30px is above the 24px minimum
    for a pointer target, and the 22px gap means a near miss lands on nothing rather than on the wrong one. */
-.inact{white-space:nowrap;display:flex;gap:22px;align-items:center;justify-content:center}
+/* A REAL TABLE CELL (10 Oct 26). It was a flex box, which is not a table cell: its bottom border was drawn at its OWN
+   height, and with the pencil and the ✕ gone most rows hold nothing here — the cell shrank to its padding and its line
+   was drawn across the middle of the row (seen on the first picture of the built table). As a cell it is as tall as
+   its row; the controls sit in it centred, with the same 22px between them. */
+.inact{white-space:nowrap;text-align:center}
+.inact>span{margin:0 11px;vertical-align:middle}
 .inact>span{display:inline-flex;align-items:center;justify-content:center;
   width:30px;height:30px;border-radius:6px;font-size:15px;line-height:1;
   border:1px solid transparent;transition:background .12s,border-color .12s}

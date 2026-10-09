@@ -738,7 +738,8 @@ test('one more person picked in a shared input, nothing else touched: a press on
   /* the demo's shared input: a meeting for four on Thu 23 Jul */
   await cell(page, '2026-07-23').focus()
   await page.keyboard.press('Enter')
-  await dayWin(page).locator('[data-testid="idy-people"]').first().click()
+  /* the shared input's card (its names, several — D721: the row of pucks it used to be pressed by is gone) */
+  await dayWin(page).locator('[data-testid^="idy-row-"]').filter({ has: page.locator('[data-testid="idy-who"]', { hasText: ',' }) }).first().locator('[data-testid="idy-open"]').click()
   await expect(edWin(page)).toBeVisible()
   const picked = page.locator('#inpEditPop .pp-pucks button[aria-pressed="true"]')
   await expect(picked).toHaveCount(4)
@@ -1023,39 +1024,40 @@ for (const view of ['the Calendar', 'the List'] as const) {
   })
 }
 
-/* A SHORTER INPUT IN AN OPENED DAY (owner D696, D699, D701, 9 Oct 26 — drawing B: "put the placed by sentence to the
-   2nd row if the remarks is short. If the remarks is too long then move the placed by down to a 3rd row but still the
-   same horizontal alignment"). Where a line of words ends is a browser's to say: a short remark and the small print on
-   ONE line; under a long remark the small print on a line of its own; at the card's right end in both, and where there
-   is no remark at all. */
-test('a phone: in an opened day a short remark shares its line with who placed it; under a long remark that goes to a line of its own — at the card’s right end either way (D701)', async ({ browser, baseURL }) => {
+/* THE CARD'S WORDS ROW (owner D719, D720, D723 — 10 Oct 26; RESTATED that day from D701's "a short remark shares its line
+   with who placed it"). Where a line of words ends is a browser's to say: a short remark and "By Saber" on ONE row;
+   under a long remark "By Saber" on a line of its own; at the card's right end in both, and where there is no remark
+   at all. The small print is "By <who>" and no more — and only where someone else placed the input. */
+test('a phone: in an opened day a short remark shares its row with "By Saber"; under a long remark that goes to a line of its own — at the card’s right end either way (D719, D723)', async ({ browser, baseURL }) => {
   const { context, page } = await phone(browser, baseURL, 667)
   try {
     const at = new Date(2026, 9, 2, 9, 10).getTime()
-    const stamp = { by: 'x', at, modBy: 'x', modAt: at }
-    const [short, long, bare] = await page.evaluate(async ([stamp]) => {
+    const [short, long, bare, own, filer] = await page.evaluate(async ([at]) => {
       const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
-      const mk = (i: number, remarks: string) => { const iid = 'e2e-foot-' + i; w.fileInput({ iid, person: crew[i], type: 'Appointment', date: 'Oct 14', yr: 2026, allday: false, s: 540 + i * 60, e: 600 + i * 60, remarks, ...stamp, by: crew[i], modBy: crew[i] }); return iid }
-      return [mk(1, 'Dental'), mk(2, 'Safety council, wing HQ — back for the 1600 brief if it ends on time'), mk(3, '')]
-    }, [stamp])
+      const mk = (i: number, remarks: string, by: string) => { const iid = 'e2e-foot-' + i; w.fileInput({ iid, person: crew[i], type: 'Appointment', date: 'Oct 14', yr: 2026, allday: false, s: 540 + i * 60, e: 600 + i * 60, remarks, by, at, modBy: by, modAt: at }); return iid }
+      return [mk(1, 'Dental', crew[0]), mk(2, 'Safety council, wing HQ — back for the 1600 brief if it ends on time', crew[0]), mk(3, '', crew[0]), mk(4, '', crew[4]), P[crew[0]].cs]
+    }, [at])
     await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
     await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
     const read = (iid: string) => page.locator(`[data-testid="idy-row-${iid}"]`).evaluate(row => {
       const r = (s: string) => { const n = row.querySelector(s); if (!n) return null; const b = n.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } }
       const cs = getComputedStyle(row)
-      return { h: Math.round(row.getBoundingClientRect().height), inner: row.getBoundingClientRect().right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth), rmk: r('.sd-rmk'), placed: r('[data-testid="idy-placed"]'), words: row.querySelector('[data-testid="idy-placed"]')!.textContent }
+      return { h: Math.round(row.getBoundingClientRect().height), inner: row.getBoundingClientRect().right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth), rmk: r('[data-testid="idy-rmk"]'), by: r('[data-testid="idy-by"]'), words: row.querySelector('[data-testid="idy-by"]')?.textContent ?? null, all: row.textContent }
     })
-    const a = await read(short), b = await read(long), c = await read(bare)
-    expect(a.words, 'the small print is the short form').toMatch(/^\S+ · 2 Oct, 09:10$/)
-    expect(Math.abs(a.placed!.top - a.rmk!.top), 'a short remark and the small print share a line').toBeLessThanOrEqual(3)
-    expect(a.placed!.left, 'and the small print stands after the remark').toBeGreaterThan(a.rmk!.right)
-    expect(Math.abs(a.placed!.right - a.inner), 'at the card’s right end').toBeLessThanOrEqual(1.5)
+    const a = await read(short), b = await read(long), c = await read(bare), d = await read(own)
+    expect(a.words, 'the small print is "By <who>" and no more').toBe(`By ${filer}`)
+    expect(a.all, 'no day or time of the placing on the card').not.toMatch(/2 Oct|09:10/)
+    expect(Math.abs(a.by!.top - a.rmk!.top), 'a short remark and the small print share a row').toBeLessThanOrEqual(3)
+    expect(a.by!.left, 'and the small print stands after the remark').toBeGreaterThan(a.rmk!.right)
+    expect(Math.abs(a.by!.right - a.inner), 'at the card’s right end').toBeLessThanOrEqual(1.5)
     expect(a.h, 'two rows, not three').toBeLessThanOrEqual(56)
-    expect(b.placed!.top, 'under a long remark the small print has a line of its own').toBeGreaterThanOrEqual(b.rmk!.bottom - 1)
-    expect(Math.abs(b.placed!.right - b.inner), 'still at the card’s right end').toBeLessThanOrEqual(1.5)
-    expect(c.rmk, 'no remark, no remark line').toBeNull()
-    expect(Math.abs(c.placed!.right - c.inner), 'and with no remark it is at the right end too').toBeLessThanOrEqual(1.5)
+    expect(b.by!.top, 'under a long remark the small print has a line of its own').toBeGreaterThanOrEqual(b.rmk!.bottom - 1)
+    expect(Math.abs(b.by!.right - b.inner), 'still at the card’s right end').toBeLessThanOrEqual(1.5)
+    expect(c.rmk, 'no remark, no remark').toBeNull()
+    expect(Math.abs(c.by!.right - c.inner), 'and with no remark it is at the right end too').toBeLessThanOrEqual(1.5)
     expect(c.h).toBeLessThanOrEqual(56)
+    expect(d.by, 'his own input says nothing of who placed it').toBeNull()
+    expect(d.h, 'and is ONE line').toBeLessThanOrEqual(38)
     expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
   } finally { await context.close() }
 })
@@ -1108,30 +1110,42 @@ test('a phone: a note is written, given five people from its own "+", stands fou
   } finally { await context.close() }
 })
 
-/* A LONG KIND NEVER RUNS UNDER THE HOURS (found on the day-window walk, 9 Oct 26 — the host's look at its picture: an
-   "Other" input is named by its remark, and a long one ran on under "All day" at the right of its card on a phone,
-   the two printed over each other). The kind is cut with "…" where the hours begin. */
-test('a phone: in an opened day a long kind is cut short of the hours — the two are never printed over each other', async ({ browser, baseURL }) => {
+/* NOTHING IS CUT, AND NOTHING IS PRINTED OVER THE HOURS (owner D719, 9 Oct 26 — "allow remarks that maybe potentially
+   long as well as title that maybe potentially long text be able to not look like it's being blocked by the item on the
+   right and allowed to grow vertically"; D721 — every name of a shared input, wrapping). RESTATED 10 Oct 26: until the
+   card of D723 a long kind was CUT with "…" where the hours begin (the day-window walk's fix of 9 Oct 26, which D719
+   set aside). Now a long title and a long remark wrap at the card's full width, a shared input's names wrap round the
+   LATE-and-hours corner, and the hours stay on the first line, inside the card, with no word lying over them. */
+test('a phone: in an opened day a long title, a long remark and fourteen names all wrap — nothing is cut, and nothing lies over the hours (D719, D721)', async ({ browser, baseURL }) => {
   const { context, page } = await phone(browser, baseURL, 667)
   try {
     await page.evaluate(() => {
       const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
-      w.fileInput({ iid: 'e2e-longkind', person: crew[2], type: 'Other', date: 'Oct 14', yr: 2026, allday: true, remarks: 'A very long custom commitment name that runs on and on past the card' })
-      w.fileInput({ iid: 'e2e-longkind-t', person: crew[3], type: 'Other', date: 'Oct 14', yr: 2026, allday: false, s: 1020, e: 1110, remarks: 'Another long custom commitment name, with hours' })
+      w.fileInput({ iid: 'e2e-longwords', person: crew[2], type: 'Event', title: 'Squadron family day and open house', date: 'Oct 14', yr: 2026, allday: true, remarks: 'A very long remark that runs on and on past the card, to the next line and beyond it' })
+      w.fileInput({ iid: 'e2e-longrmk', person: crew[3], type: 'Other', date: 'Oct 14', yr: 2026, allday: false, s: 1020, e: 1110, remarks: 'Collecting a new ID card from the pass office before lunch, then the bank' })
+      crew.slice(4, 18).forEach((p: string, i: number) => w.fileInput({ iid: 'e2e-many-' + i, person: p, type: 'Meeting', date: 'Oct 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '', grp: 'e2e-many', grpBy: crew[0], by: crew[0], at: Date.UTC(2026, 8, 1) }))
     })
     await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
     await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
-    for (const iid of ['e2e-longkind', 'e2e-longkind-t']) {
+    const many = await page.evaluate(() => (document.querySelector('[data-testid^="idy-row-e2e-many-"]') as HTMLElement).getAttribute('data-testid')!.replace('idy-row-', ''))
+    for (const iid of ['e2e-longwords', 'e2e-longrmk', many]) {
       const g = await page.locator(`[data-testid="idy-row-${iid}"]`).evaluate(row => {
-        const b = (s: string) => row.querySelector(s)!.getBoundingClientRect()
-        const kind = b('.idy-kind'), who = b('.idy-who'), when = b('[data-testid="idy-when"]'), r = row.getBoundingClientRect()
-        return { kindRight: kind.right, whenLeft: when.left, whenRight: when.right, whoWhole: who.width > 20, inner: r.right, sameLine: Math.abs(kind.top - when.top) < 8 }
+        const r = row.getBoundingClientRect(), corner = row.querySelector('.icard-corner')!.getBoundingClientRect(), when = row.querySelector('[data-testid="idy-when"]')!.getBoundingClientRect()
+        /* every painted line of every piece of text on the card, against the corner's box */
+        const texts = [...row.querySelectorAll('.icard-who, .icard-kind, .icard-title, .icard-rmk, .icard-by')]
+        const over = texts.flatMap(el => [...el.getClientRects()]).filter(b => b.width > 0 && b.left < corner.right - 0.5 && b.right > corner.left + 0.5 && b.top < corner.bottom - 0.5 && b.bottom > corner.top + 0.5).length
+        const cut = texts.filter(el => (el as HTMLElement).scrollWidth > (el as HTMLElement).clientWidth + 1 && getComputedStyle(el).overflow !== 'visible').length
+        const outside = texts.flatMap(el => [...el.getClientRects()]).filter(b => b.width > 0 && (b.left < r.left - 0.5 || b.right > r.right + 0.5)).length
+        return { over, cut, outside, whenFirstLine: when.top - r.top < 16, whenInside: when.right <= r.right + 0.5, h: Math.round(r.height), names: row.querySelector('.icard-who')!.textContent!.split(', ').length, lines: new Set([...row.querySelector('.icard-who')!.getClientRects()].map(b => Math.round(b.top))).size }
       })
-      expect(g.sameLine, 'the kind and the hours are on the card’s first line').toBe(true)
-      expect(g.kindRight, `${iid}: the kind ends before the hours begin`).toBeLessThanOrEqual(g.whenLeft - 2)
-      expect(g.whenRight, 'the hours are inside the card').toBeLessThanOrEqual(g.inner)
-      expect(g.whoWhole, 'the name is whole').toBe(true)
+      expect(g.over, `${iid}: no word lies over the LATE-and-hours corner`).toBe(0)
+      expect(g.cut, `${iid}: nothing is cut`).toBe(0)
+      expect(g.outside, `${iid}: nothing runs outside the card`).toBe(0)
+      expect(g.whenFirstLine, `${iid}: the hours are on the card’s first line`).toBe(true)
+      expect(g.whenInside, `${iid}: and inside the card`).toBe(true)
+      if (iid === many) { expect(g.names, 'all fourteen are named').toBe(14); expect(g.lines, 'on more than one line').toBeGreaterThan(1) }
     }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
   } finally { await context.close() }
 })
 

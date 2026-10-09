@@ -80,13 +80,25 @@ for (const [what, viewport, tap] of [['a desktop', { width: 1440, height: 900 },
     await page.locator('#inListBtn').click()
     if (!(await page.locator('#inRangePop').count())) await page.locator('#inRangeBtn').click()
     await page.locator('#inRangeAll').click()
-    const pill = await page.evaluate(() => {
-      const t = [...document.querySelectorAll('#inBody [data-testid="in-title"]')].find(x => x.textContent === 'Sports day') as HTMLElement
-      const p = t.nextElementSibling as HTMLElement, q = (e: Element) => e.getBoundingClientRect()
-      return { text: p.textContent, under: q(p).top >= q(t).bottom - 1, h: Math.round(q(p).height) }
-    })
-    expect(pill).toMatchObject({ text: 'Event', under: true })
-    expect(pill.h, 'one line tall — never broken inside the word').toBeLessThan(26)
+    if (viewport.width > 820) {
+      const pill = await page.evaluate(() => {
+        const t = [...document.querySelectorAll('#inBody [data-testid="in-title"]')].find(x => x.textContent === 'Sports day') as HTMLElement
+        const p = t.nextElementSibling as HTMLElement, q = (e: Element) => e.getBoundingClientRect()
+        return { text: p.textContent, under: q(p).top >= q(t).bottom - 1, h: Math.round(q(p).height) }
+      })
+      expect(pill).toMatchObject({ text: 'Event', under: true })
+      expect(pill.h, 'one line tall — never broken inside the word').toBeLessThan(26)
+    } else {
+      /* ON A PHONE THE LIST IS THE INPUT CARD (owner D718, D723 — 10 Oct 26): the kind in small capitals on the top line,
+         whole on one line, and the title at the left on a row of its own under it (D722) */
+      const card = await page.evaluate(() => {
+        const t = [...document.querySelectorAll('#inList [data-testid="inl-title"]')].find(x => x.textContent === 'Sports day') as HTMLElement
+        const c = t.closest('[data-testid^="inl-row-"]') as HTMLElement, k = c.querySelector('[data-testid="inl-kind"]') as HTMLElement, q = (e: Element) => e.getBoundingClientRect()
+        return { kind: k.textContent, under: q(t).top >= q(k).bottom - 4, atLeft: Math.abs(q(t).left - q(c.querySelector('.icard-sq')!).left) < 1.5, h: Math.round(q(k).height) }
+      })
+      expect(card).toMatchObject({ kind: 'Event', under: true, atLeft: true })
+      expect(card.h, 'the kind is one line tall — never broken inside the word').toBeLessThan(26)
+    }
     /* a reload keeps the title, the row's name and its label */
     await page.reload()
     await page.waitForSelector('#vWeek .day, #loginForm')
