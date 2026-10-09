@@ -156,6 +156,61 @@ walk" = not yet.*
 
 ## 5. The walk
 
+**Sizing looked at again before it started (the order's §7.0):** Astra's list came back with 56 scenarios, thirteen of
+them whole publication orders — more than two walkers' halves. THREE Sonnet 5.5 walkers, not two, each on a frozen copy
+of the build (`dist-fix`, made from commit `0ed09ea5`; ports 4231–4233): A — the Inputs page side (22 scenarios);
+B — the OIL switches and the schedule's own screens (21); C — everything around publishing a day (13). The lock on his
+PC was held for the walk.
+
+### 5.1 The host's own walk — `scripts/handpass/aa-host-walk.mjs`, the built bundle, the app's own controls
+Twenty steps: a desktop 1440×900 as the admin (15), a desktop as a member (2), a phone 390×844 by touch (3).
+**Final run: 20 of 20 PASS; no console or page error.** Pictures: `docs/img/handpass/2026-10-09-all-avail-event-check/host/`
+(22; opened by the host: `h3-month-bar`, `h11-availwin-oil-no`, `p1-phone-editor`, and those behind each first-run FAIL).
+The first run was 11 of 20: all nine misses were the SCRIPT's (it pressed a date whose day window was already open; it
+read the List inside its default two-month window; it looked for the board under the wrong id; Personal Inputs is
+folded until opened) — each was looked at on its picture before being called the script's, and none was the app's.
+
+| Step | What was pressed | What the screen said |
+|---|---|---|
+| H1 | "+ Input" on Sat 18 Jul, kind Duty | the Person list opens with a group "Whoever is free that day": ALL AVAIL, ALL — above the names |
+| H2 | ALL AVAIL, Save | the OIL question, titled "OIL — ALL AVAIL, Duty", asked once; Yes → ONE record, no group, filed by Saber |
+| H3 | — | ONE bar on Sat 18 "ALL AVAIL · Duty"; its tip "ALL AVAIL · Duty · 18 Jul · 06:00–18:00 / Placed by Saber for ALL AVAIL · 9 Oct 26" |
+| H4 | the opened day | the card: "ALL AVAIL  Duty … hangar clean … Saber for ALL AVAIL · 9 Oct, 16:09" (the name as words; no puck on a card, as for a man) |
+| H5 | the List, all dates, the person filter | Everyone / ALL AVAIL / ALL are the first three choices; "ALL AVAIL" lists the two ALL AVAIL inputs and nothing else; the chip reads "ALL AVAIL" |
+| H6 | the List's pencil | its Person box shows "ALL AVAIL"; saved unchanged it is still ALL AVAIL's |
+| H7 | Edit Schedule's week | Saturday's Ground Programme: "DUTY 06:00 18:00 [ALL AVAIL] 45 … hangar clean"; the count says "All 45 earn a full day — tap to see each one (who is free as things stand now)" |
+| H8 | the count | the window: 45 pucks, pilots and WSOs |
+| H9 | the Scheduler Board, OIL Earn on | the same row; its name offers no switch and says "This request follows the answer of whoever filed it — tap the count to switch one person"; no man's switch on the row |
+| H10 | "Who earns OIL" after the Yes | 45 of 45 on; a tap on one → a refusal stored, he is off; a second tap → nothing stored, he is on |
+| H11 | the input's own window → "Change…" → No; back to the board | 45 of 45 OFF; each puck "… whoever filed this Duty answered No to OIL; tap to credit him anyway"; the window's foot says the same; a tap → a GRANT stored, he is on |
+| H12 | — | no warning names a placeholder; the day's absence set does not hold one |
+| H13 | an "Other" for ALL on Tue 14; Personal Inputs unfolded | landed: "Undo"; taken off: "Accept" only — no "→ Unavail" |
+| H14 | — | the Undo button reads "Undo — a personal input" (the app's words for any one input — as built, see §5.4); the history lines read "ALL AVAIL · Duty …" |
+| H15 | kind Event, for Ranger, Wed 15 | Event is in the kinds; its row lands on the Ground Programme as "EVENT"; the Logic page names it |
+| M1 | a member (Ranger): "+ Input", Meeting, ALL AVAIL | offered (the members' switch is on); filed by him; not under his own filter; ONE bar under Everyone |
+| M2 | the demo's ALL AVAIL Duty (Saber's), opened by the member | read only — no Save |
+| P1 | a phone, by a finger: Sun 19 Jul, Duty, ALL AVAIL | the window 358 wide in a 390 screen; the OIL question fits; nothing runs off sideways |
+| P2 | — | the bar "ALL AVAIL"; the day's card names it |
+| P3 | Edit Schedule on the phone; a finger on the count | the count is the thing the finger lands on; the window opens as a panel with 45 pucks |
+
+### 5.2 The three walkers
+
+To do — their reports land in `docs/handpass/parts/aa-A.md`, `aa-B.md`, `aa-C.md`.
+
+### 5.3 What the walk found, and each disposition
+
+To do.
+
+### 5.4 Leads from the scenario designer's reading (Astra), each dispositioned
+| Lead | Disposition |
+|---|---|
+| The picker offered an ADMIN "File it for me only" when the kind could not carry a placeholder | REAL, in this change — FIXED before the walk, a test first (`placeholderdoors.test.tsx`): the one press is a member's; an admin picks the name it is for |
+| The Undo label for one input reads "a personal input" — it names neither ALL AVAIL nor the kind | AS BUILT for every input (`undo/describe.ts` — not this change's); seen in H14. Left: a label that named each input would be a change to every input's Undo, its own small job if he wants it |
+| The pending list words an answer-only change of the filer's as a general earnings line | the walkers' S3 / S10 — see §5.3 |
+| Print draws flying lines only — there is no Ground Programme on the printed page, so an Event row is not printed | TRUE, and older than this change: the print route has never drawn ground rows. The plan's roll-call named print by mistake; row 27 / E4 below say so |
+
+### 5.5 The break tests — `scripts/handpass/aa-breaks.mjs`
+
 To do.
 
 ## 6. The two reads of the code
