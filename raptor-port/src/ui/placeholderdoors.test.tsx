@@ -13,7 +13,8 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor, commitGroup, commitInputEdit, commitNewInput, draftOf, reassignInput } from './inputedit'
+import { InputEditor, commitGroup, commitInputEdit, commitNewInput, draftOf, normalizeInputDraft, reassignInput } from './inputedit'
+import { accCtl } from './html'
 import { pickProblem } from './PeoplePick'
 import { initStore, notify, setSession, undo, redo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
@@ -245,6 +246,27 @@ describe('D711 (2), D712 — a kind that is not allowed is refused, with its sen
   })
 })
 
+describe('the editor\u2019s one body asks the rules itself — before any write is tried (the break test B8)', () => {
+  /* every editor's commit passes through normalizeInputDraft; with its own check gone the save boundary still refused,
+     so no door test went red. Asked directly: it answers null and says the sentence, with nothing written or rolled back */
+  const draft = (over: any) => ({ person: 'allavail', type: 'Meeting', start: '2026-10-13', end: '2026-10-13', allday: false, sTime: '10:00', eTime: '11:00', remarks: '', ...over })
+  it('a kind it may not carry, two days — each refused by the body itself; a good one passes', () => {
+    said.length = 0
+    expect(normalizeInputDraft(draft({ type: 'OD' }), null)).toBeNull()
+    expect(said.join(' | ')).toContain('ALL AVAIL can be filed only for')
+    said.length = 0
+    expect(normalizeInputDraft(draft({ end: '2026-10-14' }), null)).toBeNull()
+    expect(said.join(' | ')).toContain('ALL AVAIL is filed one day at a time')
+    said.length = 0
+    expect(normalizeInputDraft(draft({ person: 'all', type: 'CSE' }), null)).toBeNull()
+    expect(said.join(' | ')).toContain('ALL can be filed only for')
+    said.length = 0
+    expect(normalizeInputDraft(draft({}), null)).toBeTruthy()
+    expect(normalizeInputDraft(draft({ person: others()[0], type: 'OD', end: '2026-10-20', allday: true }), null), 'a named man\u2019s is none of its business').toBeTruthy()
+    expect(said).toEqual([])
+  })
+})
+
 describe('D711 (3) — one day at a time', () => {
   it('the editor: a two-day range with ALL AVAIL is refused in words', async () => {
     await openNew({ person: 'allavail', date: 'Oct 13', endDate: 'Oct 14' })
@@ -303,6 +325,11 @@ describe('never in a group — it already stands for whoever is free', () => {
       await act(async () => { ok = commitGroup(null, draftOf({ person: want[0], type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'x' }), want) })
       expect(ok, want.join('+')).toBe(false)
       expect(said.join(' | '), want.join('+')).toContain('filed on its own')
+      /* refused BEFORE any man is written: the plain sentence, said once — not the save boundary's rollback with its
+         "nothing was saved for anyone" tail (the break test B9, 9 Oct 26: with the up-front check gone the boundary
+         still refused, so nothing here went red) */
+      expect(said, want.join('+')).toHaveLength(1)
+      expect(said[0], want.join('+')).not.toContain('nothing was saved')
       expect(world(), `${want.join('+')}: nobody was written`).toBe(was)
     }
   })
@@ -385,6 +412,16 @@ describe('the schedule\'s own doors', () => {
     expect(live(r.iid).acc).toBe('r')
     const named = await filed({ person: others()[0], type: 'Other', date: 'Jul 14', acc: 'r' })
     expect(acceptInput(1, live(named.iid), 'u'), 'a named man\'s Other still files under Unavailable').toBe(true)
+  })
+
+  it('the "→ Unavail" BUTTON is not drawn for a placeholder\u2019s Other; a named man\u2019s Other keeps both (the break test B26)', () => {
+    const ph = accCtl(1, { iid: 'b1', person: 'all', type: 'Other', date: 'Jul 14', yr: 2026, acc: 'r' })
+    expect(ph).toContain('data-acc="g"')
+    expect(ph, 'no door to Unavailable').not.toContain('data-acc="u"')
+    expect(ph).not.toContain('Unavail')
+    const named = accCtl(1, { iid: 'b2', person: others()[0], type: 'Other', date: 'Jul 14', yr: 2026, acc: 'r' })
+    expect(named).toContain('data-acc="g"')
+    expect(named).toContain('data-acc="u"')
   })
 
   it('a placeholder is never counted as one absent man, whatever record reaches the day', () => {

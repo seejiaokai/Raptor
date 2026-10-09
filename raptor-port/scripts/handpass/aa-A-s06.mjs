@@ -1,5 +1,5 @@
 // S6 — permission withdrawn while the OIL question is open (phone 390x844). Two tabs of ONE world: member and admin.
-import { world, closeAll, toInputs, openNew, setTimes, pic, T, oilAnswer, signIn, sleep, readInputs, observe, URL_, undoState } from './aa-A-lib.mjs'
+import { world, closeAll, toInputs, openNew, setTimes, pic, T, oilAnswer, signIn, sleep, readInputs, observe, URL_, undoState, membersSwitch } from './aa-A-lib.mjs'
 const rows = []
 for (const ph of ['allavail', 'all']) {
   const rm = 'walkS6 ' + ph
@@ -23,11 +23,7 @@ for (const ph of ['allavail', 'all']) {
   console.log(ph, 'question open; saved so far:', before.length)
   // admin turns the switch off
   await toInputs(B)
-  await B.locator('#inGear').click(); await sleep(500)
-  const cb = B.locator('input[type=checkbox]').filter({ has: B.locator('xpath=.') }).last()
-  const lab = B.getByText('Members may file duties and commitments for other people')
-  await lab.click(); await sleep(300)
-  await B.getByRole('button', { name: 'Save', exact: true }).last().click(); await sleep(800)
+  console.log(ph, 'admin switch after save (reopened):', await membersSwitch(B, false))
   await pic(B, `s06-${ph}-2-admin-switch-off`)
   // has the change reached A?
   await sleep(1500)

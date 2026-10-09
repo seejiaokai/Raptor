@@ -204,3 +204,35 @@ export async function reanswer(page, iso, rmk, ans) {
   await closeWins(page)
 }
 export const oilOf = (page, rmk) => page.evaluate(r => { const x = window.INPUTS.find(i => i.remarks === r); return x && x.oil }, rmk)
+
+/** Delete a saved input from its editor (Inputs page); answers a confirm if one is asked. */
+export async function deleteSaved(page, iso, rmk) {
+  await openSaved(page, iso, rmk)
+  await page.locator('#inpEditDel').click(); await sleep(500)
+  for (const sel of ['[data-testid="inped-delall"]', '[data-testid="inped-delconfirm"]', '[data-testid="inped-del-yes"]']) {
+    const b = page.locator(`${sel}:visible`).first(); if (await b.count()) { await b.click(); await sleep(500) }
+  }
+  const dlg = page.getByRole('button', { name: /^(Delete|Yes|Confirm|Remove)/ }).first()
+  if (await page.locator('#inpEditPop:visible').count() && await dlg.count() && await dlg.isVisible().catch(() => false) && (await dlg.getAttribute('id')) !== 'inpEditDel') { await dlg.click(); await sleep(500) }
+  await closeWins(page)
+}
+
+/** The figure columns of a man's Leave War row (the OIL columns) - must be on the Leave War page already (cr() leaves it there). */
+export async function figs(page, name) {
+  const id = await pidOf(page, name)
+  return page.evaluate(i => {
+    const c = document.querySelector(`[data-testid^="cell-${i}-"]`)
+    const tr = c && c.closest('tr'); if (!tr) return 'no row'
+    return [...tr.querySelectorAll('td')].slice(0, 10).map(t => (t.innerText || '').replace(/\s+/g, ' ').trim()).join(' | ')
+  }, id)
+}
+
+/** Change a saved input's Person in its editor and save; answers the OIL question if it comes back. Returns {asked}. */
+export async function changePerson(page, iso, rmk, person, oil) {
+  await openSaved(page, iso, rmk)
+  await page.selectOption('#inpEditPerson', person)
+  await page.locator('#inpEditSave').click(); await sleep(500)
+  const r = await answerOil(page, oil)
+  await closeWins(page)
+  return r
+}

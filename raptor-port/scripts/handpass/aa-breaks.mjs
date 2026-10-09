@@ -95,7 +95,9 @@ const BREAKS = [
 ]
 
 let red = 0, green = 0
+const ONLY = process.argv[2] ? new RegExp(process.argv[2]) : null   // e.g. "^B(8|9|26) " — run only these
 for (const [name, file, from, to, tests] of BREAKS) {
+  if (ONLY && !ONLY.test(name)) continue
   const src = readFileSync(file, 'utf8')
   if (src.split(from).length !== 2) { console.log(`SKIP   ${name} — the text to break is not there exactly once in ${file}`); green++; continue }
   writeFileSync(file, src.replace(from, to))
