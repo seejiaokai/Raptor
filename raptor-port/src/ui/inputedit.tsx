@@ -321,6 +321,13 @@ export function downOverUpchitRefusal(person: any, date: any, endDate: any): str
 }
 /* ord (dateOrd form) → ISO, for the remarks-tail rewrites here and in the
    clash-segment writers the forms run */
+/** a draft's own date ('2026-01-16') as the number the medical rules compare (20260116). A DRAFT'S DATES ARE WHOLE
+ *  DATES — year and all — so this is the one honest way to ask "which days would this save take": the label a date is
+ *  STORED under leaves its year out when it is the loaded week's, and reading such a label back in the record's OLD
+ *  year asked the medical question about the wrong year (both readers of the input card's check, 10 Oct 26 — a
+ *  downchit moved from next year onto another medical entry of this year was saved with no question, the other entry
+ *  cut in silence). */
+export const isoOrd = (iso: any): number => +String(iso || '').replace(/-/g, '')
 export const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(o / 100) % 100).padStart(2, '0')}-${String(o % 100).padStart(2, '0')}`
 /* Apply a trim plan from engine/medical.ts. Runs INSIDE the caller's
    writeInputsBatch so the new input and the rows it shortens land as ONE
@@ -1048,7 +1055,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        leave the admin approved clears `lw` (it stays green and gains the blue
        "filed on the Inputs page" edge; from then on it is changed here). A
        remarks-only edit, and any admin edit, keep it war-approved. */
-    const leaveSame = leaveKey(r) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: r.yr, allday: draft.allday, half, s, e })
+    /* …compared in the year the save WRITES (`baseYear()` — the labels above were made against it): read in the record's
+       old year, a leave moved to the same day of another year looked unchanged and kept its approval (both readers of
+       the input card's check, 10 Oct 26) */
+    const leaveSame = leaveKey(r) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: baseYear(), allday: draft.allday, half, s, e })
     if (r.lw && !leaveSame && !canEditSched()) delete r.lw
     /* THE EDIT WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (c) — D450; plan §3 (c) §6). Its row — on the
        week on screen or on any other — is worked out from the request after this command and whenever its week is read
@@ -1207,10 +1217,11 @@ export function medAskFor(r: any, draft: any): MedAsk | null | 'refused' {
   if (isUpchit(draft.type)) {
     /* an upchit is NEVER saved silently: the summary runs whatever it finds */
     const dateLabel = fmt(draft.start)
-    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, dateOrd(dateLabel, r.yr), r) }
+    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, isoOrd(draft.start), r) }
   }
-  const a = dateOrd(fmt(draft.start), r.yr)
-  const b = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), r.yr)
+  /* the days the SAVE will take — the draft's own whole dates (`isoOrd`), never its labels read in the record's old year */
+  const a = isoOrd(draft.start)
+  const b = isoOrd(draft.end || draft.start)
   const clashes = medClashes(draft.person, draft.type, a, b, r)
   if (!clashes.length) return null
   return { kind: 'clash', who, newType: draft.type,
@@ -2109,6 +2120,21 @@ export function InputEditor() {
       }
       return
     }
+    /* AN OIL ANSWER ALONE IS NOT A CHANGE TO THE INPUT (both readers of the input card's check, 10 Oct 26). "Answer…" and
+       "Change…" came through the full save below, which stamps the input's late date with today — so an on-time input
+       turned LATE for having its OIL question answered after the cut-off. The desktop row's chip never did that
+       (ui/InputsPage.tsx reviseOil), and since the phone's card has no chip (D723) this window is the phone's only
+       way to an answer. Where nothing of the input itself differs from the record as it stands, the answer is written
+       by itself — who answered and when is stamped, the late date is not moved — one step, one Undo. Anything he has
+       also changed goes through the full save, answer and change together, as before. */
+    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, draftOf(r)))) {
+      if (!mayEditInput(r) || protectedInput(r)) { stay(); return }
+      const s = saveBatchX(() => { r.oil = { ...oilDec }; stampChanged(r); return true })
+      if (s.ok) { if (CURPAGE === 'inputs') revealInput(r); HOOKS.toast('OIL answer saved', 'ok'); close() }
+      else if (s.refused) stay()
+      else if (INPUTS.indexOf(r) < 0) close()
+      return
+    }
     const s = saveBatchX(() => {
       const ok = commitInputEdit(r, draft)
       if (ok && oilDec) r.oil = oilDec
@@ -2214,7 +2240,7 @@ export function InputEditor() {
       setUpConf({
         who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
         dateLabel: fmt(draft.start),
-        effects: upchitEffects(draft.person, dateOrd(fmt(draft.start), isNew ? baseYear() : r.yr), isNew ? null : r),
+        effects: upchitEffects(draft.person, isoOrd(draft.start), isNew ? null : r),
       })
       return
     }
@@ -2223,9 +2249,9 @@ export function InputEditor() {
        order as the upchit path */
     if (draft && isDownchit(draft.type) && draft.start) {
       if (!normalizeInputDraft(draft, isNew ? null : r)) return
-      const yr = isNew ? baseYear() : r.yr
-      const a = dateOrd(fmt(draft.start), yr)
-      const b = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), yr)
+      /* the days the save will take — `isoOrd`, as `medAskFor` reads them (the record's old year is not theirs) */
+      const a = isoOrd(draft.start)
+      const b = isoOrd(draft.end || draft.start)
       const clashes = medClashes(draft.person, draft.type, a, b, isNew ? null : r)
       if (clashes.length) {
         setMedConf({
@@ -2553,6 +2579,15 @@ export function InputEditor() {
               <span className="inped-oilsum">Your OIL: {oilSummary(mineRow)}</span>
               <button type="button" className="abtn ghost" data-testid="oil-revise-own"
                 onClick={() => { const g = oilGate(draftOf(mineRow), mineRow, true); if (g.kind === 'ask') setOilConf({ ...g, own: mineRow.iid }) }}>Change…</button>
+            </div>}
+            {/* …and where HIS question was never answered (Sol's read of the input card's check, 10 Oct 26): he could
+                revise an answer here but not give one — the bell was his only way, and a phone's card has no chip. The
+                same question, for his record alone (`own`); where he has answered one day and not another, "Change…"
+                above is the one button. */}
+            {oilUnansweredDay(mineRow) && <div className="inped-oil" data-testid="oil-unanswered-own">
+              <span className="inped-oilsum">Your OIL: not answered yet — {isoLabel(oilUnansweredDay(mineRow))}</span>
+              {!oilAnswered(mineRow) && <button type="button" className="abtn ghost" data-testid="oil-answer-own"
+                onClick={() => { const g = oilGate(draftOf(mineRow), mineRow, true); if (g.kind === 'ask') setOilConf({ ...g, own: mineRow.iid }) }}>Answer…</button>}
             </div>}
             {takeOut && (
               <div className="inped-ask" data-testid="inped-takeout-ask" role="alertdialog" aria-label="Take yourself out?">

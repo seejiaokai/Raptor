@@ -116,8 +116,8 @@
   "n": 11,
   "name": "the phone’s cards follow the desktop’s sort (Astra B13)",
   "file": "src/ui/InputsPage.tsx",
-  "find": "    put(rows.slice(pinCount).sort(byDay), false)",
-  "put": "    put(rows.slice(pinCount), false)",
+  "find": "    for (const r of rows.slice().sort(byDay)) { const iso = isoOfOrd(first(r));",
+  "put": "    for (const r of rows.slice()) { const iso = isoOfOrd(first(r));",
   "tests": [
    "src/ui/inputslist.test.tsx"
   ]
@@ -325,6 +325,96 @@
   "put": "              {!readOnly && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
   "tests": [
    "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "the shared medical question reads a moved date in the record’s OLD year (readers’ R1)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const a = isoOrd(draft.start)\n  const b = isoOrd(draft.end || draft.start)\n  const clashes = medClashes(draft.person, draft.type, a, b, r)",
+  "put": "  const a = dateOrd(fmt(draft.start), r.yr)\n  const b = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), r.yr)\n  const clashes = medClashes(draft.person, draft.type, a, b, r)",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "the window’s medical question reads a moved date in the record’s OLD year (R1)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "      const a = isoOrd(draft.start)\n      const b = isoOrd(draft.end || draft.start)\n      const clashes = medClashes(draft.person, draft.type, a, b, isNew ? null : r)",
+  "put": "      const a = dateOrd(fmt(draft.start), isNew ? baseYear() : r.yr)\n      const b = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), isNew ? baseYear() : r.yr)\n      const clashes = medClashes(draft.person, draft.type, a, b, isNew ? null : r)",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "a moved upchit’s summary reads the record’s OLD year (R1)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, isoOrd(draft.start), r) }",
+  "put": "    return { kind: 'up', who, dateLabel, effects: upchitEffects(draft.person, dateOrd(dateLabel, r.yr), r) }",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "a leave moved to the same day of another year keeps its war approval (R2)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "date, endDate, yr: baseYear(), allday: draft.allday, half, s, e })",
+  "put": "date, endDate, yr: r.yr, allday: draft.allday, half, s, e })",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "an OIL answer alone moves the input’s late date (R3)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, draftOf(r)))) {",
+  "put": "    if (false && oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, draftOf(r)))) {",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 37,
+  "name": "an OIL answer WITH a change of the input skips the input’s own save (R3 control)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, draftOf(r)))) {",
+  "put": "    if (oilDec && !removals.length) {",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 38,
+  "name": "a member of a shared input cannot answer his own unanswered OIL (R4)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "              {!oilAnswered(mineRow) && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer-own\"",
+  "put": "              {false && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer-own\"",
+  "tests": [
+   "src/ui/windowreads.test.tsx"
+  ]
+ },
+ {
+  "n": 39,
+  "name": "a just-saved input’s day is drawn under two headings / not first (R5)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "    groups.sort((a, b) => (a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1))",
+  "put": "    void 0",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 40,
+  "name": "a just-saved input is not first inside its day (R5)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "rows: held.concat(list.filter(r => !pins.has(r))) }",
+  "put": "rows: list }",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
   ]
  }
 ]

@@ -338,4 +338,22 @@ describe('a just-saved input the filters would hide still shows — on a phone, 
     expect(order[0]).toBe('Mon 26 Oct'); expect(order[1]).toBe(hidden.iid)
     expect(order.slice(2), 'then the days the search leaves').toEqual(['Tue 20 Oct', expect.any(String)])
   })
+  /* SOL'S READ of the code (10 Oct 26): a just-saved input kept in view stood under a heading of its own, so a day that
+     also held an input the filters show was drawn TWICE — "Tue 20 Oct · 1 input", and "Tue 20 Oct · 1 input" again.
+     One heading a day: the day that holds the just-saved input comes first, whole, that input first inside it. */
+  it('a just-saved input on a day the list already shows: ONE heading for that day, its count the two together, the saved one first — and that day first', async () => {
+    await mount(true)
+    const [a, b, c] = others()
+    const earlier = await file({ person: a, date: 'Oct 19', remarks: 'findme early' })
+    const shown = await file({ person: b, date: 'Oct 20', remarks: 'findme' })
+    const box = $('#inFSearch') as HTMLInputElement
+    await act(async () => { Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(box, 'findme'); box.dispatchEvent(new Event('input', { bubbles: true })) })
+    const hidden = await file({ person: c, date: 'Oct 20', s: 900, e: 960, remarks: 'elsewhere' })
+    expect(card(hidden), 'the search hides it').toBeNull()
+    await act(async () => { setInpEdit(hidden); notify() })
+    await click($('#inpEditSave'))
+    const heads = $$('[data-testid="inl-day"]').map(h => [h.querySelector('b')!.textContent, h.querySelector('i')!.textContent])
+    expect(heads).toEqual([['Tue 20 Oct', '2 inputs'], ['Mon 19 Oct', '1 input']])
+    expect($$('[data-testid^="inl-row-"]').map(el => el.getAttribute('data-iid'))).toEqual([hidden.iid, shown.iid, earlier.iid])
+  })
 })

@@ -772,25 +772,26 @@ export function InputsPage() {
   /* ON A PHONE THE LIST IS THE INPUT CARD UNDER A HEADING A DAY (owner D718, D723 — 10 Oct 26; ui/InputCard.tsx, the
      card the opened day draws). In date order — a phone's list has no column headings to sort by: each day's inputs
      all-day first, then by the hour they start, then by callsign. An input of several days stands under its FIRST
-     day and its corner says the day it runs till. The pinned inputs (just saved, and hidden by a filter or the
-     window) stand first, each under its own day's heading — the card carries no date of its own, so the heading
-     says it. Worked out only where it is drawn. */
+     day and its corner says the day it runs till. A pinned input (just saved, and hidden by a filter or the
+     window) is brought to the head of the list WITH ITS DAY: that day's heading comes first — the card carries no
+     date of its own, so the heading says it — the pinned input first under it. Worked out only where it is drawn. */
   const dayGroups = !phone ? [] : (() => {
     const first = (r: any) => dateOrd(r.date, r.yr) ?? 0
     const whoOf = (r: any) => (PEOPLE[r.person] ? String(PEOPLE[r.person].cs) : String(r.person || ''))
     const byDay = (a: any, b: any) =>
       first(a) - first(b) || (a.allday === b.allday ? 0 : a.allday ? -1 : 1) || (a.allday ? 0 : (a.s ?? 0) - (b.s ?? 0)) ||
       whoOf(a).localeCompare(whoOf(b), undefined, { sensitivity: 'base' })
-    const groups: { key: string, iso: string, pinned: boolean, rows: any[] }[] = []
-    const put = (list: any[], pinnedPart: boolean) => {
-      for (const r of list) {
-        const iso = isoOfOrd(first(r)), last = groups[groups.length - 1]
-        if (last && last.iso === iso && last.pinned === pinnedPart) last.rows.push(r)
-        else groups.push({ key: (pinnedPart ? 'pin:' : 'day:') + iso + ':' + groups.length, iso, pinned: pinnedPart, rows: [r] })
-      }
-    }
-    put(rows.slice(0, pinCount).sort(byDay), true)
-    put(rows.slice(pinCount).sort(byDay), false)
+    /* ONE HEADING A DAY (Sol's read of the code, 10 Oct 26): a just-saved input kept in view stood under a heading of
+       its own, so a day that also held an input the filters show was drawn twice, each with half the count. The day
+       is grouped ONCE; a day holding a just-saved input comes first, whole, that input first inside it. */
+    const pins = new Set(rows.slice(0, pinCount))
+    const byIso = new Map<string, any[]>()
+    for (const r of rows.slice().sort(byDay)) { const iso = isoOfOrd(first(r)); if (!byIso.has(iso)) byIso.set(iso, []); byIso.get(iso)!.push(r) }
+    const groups = [...byIso].map(([iso, list]) => {
+      const held = list.filter(r => pins.has(r))
+      return { key: 'day:' + iso, iso, pinned: held.length > 0, rows: held.concat(list.filter(r => !pins.has(r))) }
+    })
+    groups.sort((a, b) => (a.pinned === b.pinned ? 0 : a.pinned ? -1 : 1))   // a stable sort: date order is kept inside each part
     return groups
   })()
 
