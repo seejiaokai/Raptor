@@ -157,6 +157,7 @@ await L.scn(55, SZ, ROLE, async () => {
   if (await tcell.count()) { await tcell.click(); await p.waitForTimeout(300); const n = await p.locator(L.WIN).count(); notes.push(`title text: windows ${n}`); ck.push(n === 1); await p.locator('#inpEditCancel').click().catch(() => {}); await p.waitForTimeout(250); await L.toList(p, T) }
   // drag across the remark text and copy it
   const rc = row.locator('td[data-label="Remarks"]')
+  await rc.scrollIntoViewIfNeeded(); await p.waitForTimeout(300)
   const tb = await rc.evaluate(td => { const w = document.createTreeWalker(td, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { if (/Select this remark/.test(n.textContent)) { const r = document.createRange(); r.selectNodeContents(n); const b = r.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height } } } return null })
   notes.push('remark text sits at ' + JSON.stringify(tb))
   await p.mouse.move(tb.x + 1, tb.y + tb.h / 2); await p.mouse.down(); await p.mouse.move(tb.x + tb.w - 1, tb.y + tb.h / 2, { steps: 12 }); await p.mouse.up(); await p.waitForTimeout(300)

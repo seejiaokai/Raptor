@@ -803,6 +803,32 @@ describe('an OIL question nobody has answered is said in the input’s window, a
     await openOn(weekday)
     expect(tid('oil-unanswered')).toBeNull()
   })
+  /* WALKER C's FIND (Astra's scenario 69, 10 Oct 26). A shared duty's day became a holiday after it was filed; its FIRST
+     man answered from his own bell, another did not. The window judged the whole entry by the record it was opened on:
+     "no OIL … Change…" and no word that anyone was still unanswered. The line is drawn while ANY man of the entry is
+     unanswered, and names who. */
+  it('a shared input where ONE man has answered and another has not: the window still says who is unanswered — whichever record it is opened on', async () => {
+    const [a, b] = others()
+    const first = [a, b].sort((x, y) => cs(x).localeCompare(cs(y), undefined, { sensitivity: 'base' }))[0], second = first === a ? b : a
+    const g = await shared([a, b], { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439 })
+    await act(async () => { writeInputs(() => { of(g.grp).find(r => r.person === first)!.oil = { '2026-10-17': 0 } }); notify() })
+    for (const opened of of(g.grp)) {
+      await openOn(opened)
+      const line = tid('oil-unanswered')
+      expect(line, `opened on ${cs(opened.person)}`).toBeTruthy()
+      expect(line!.textContent).toMatch(/Not answered yet — 17 Oct/)
+      expect(line!.textContent, 'it names the man nobody has answered for').toContain(cs(second))
+      expect(line!.textContent, 'and not the one who has').not.toContain(cs(first))
+      await act(async () => { setInpEdit(null); notify() })
+    }
+  })
+  it('one record with one day answered and another not: the answered line AND the unanswered one', async () => {
+    const r = await single({ type: 'Duty', date: 'Oct 17', endDate: 'Oct 18', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
+    await openOn(r)
+    expect(tid('oil-revise'), 'the answered day: Change…').toBeTruthy()
+    expect(tid('oil-unanswered')!.textContent).toMatch(/Not answered yet — 18 Oct/)
+    expect($$('#inpEditPop [data-testid="oil-answer"], #inpEditPop [data-testid="oil-revise"]'), 'ONE button opens the question — not two that do the same').toHaveLength(1)
+  })
   it('a reader who may not change the input is offered no "Answer…"', async () => {
     const r = await single({ type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439 })
     await as('member')

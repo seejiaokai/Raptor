@@ -1,0 +1,80 @@
+import * as L from './icard-C-lib.mjs'
+const { sleep } = L
+const w = await L.world('phone', 'us')
+const p = w.page
+const parts = [], pics = []
+let verdict = 'PASS'
+const fail = m => { verdict = 'FAIL'; parts.push('FAIL: ' + m) }
+const fmt = r => r ? `${r.type} ${r.date} ${r.s}-${r.e} oil ${JSON.stringify(r.oil)}` : 'GONE'
+const toast = () => p.evaluate(() => (document.getElementById('toastEl') || {}).innerText || '')
+try {
+  const ranger = await L.pid(p, 'Ranger')
+  const rec = await L.recBy(p, { type: 'Appointment', date: 'Jul 16', person: ranger })
+  await L.toList(w)
+  if (!(await p.locator('#inFPerson').isVisible().catch(() => false))) { await p.locator('#inFiltersBtn').tap(); await sleep(300) }
+  const personOpts = await p.locator('#inFPerson option').evaluateAll(os => os.map(o => o.value + '=' + o.textContent))
+  await p.selectOption('#inFType', 'Appointment'); await sleep(300)
+  parts.push(`filters: person ${await p.locator('#inFPerson').inputValue()} (options ${personOpts.slice(0, 3).join(', ')}...), kind Appointment`)
+  const cardBefore = p.locator(`#inList [data-testid="inl-row-${rec.iid}"]`)
+  parts.push(`Ranger's Appointment card visible under the filters: ${await cardBefore.count()}`)
+  await cardBefore.scrollIntoViewIfNeeded()
+  pics.push(await L.pic(w, '81-1-filtered-list'))
+  await cardBefore.tap(); await L.win(p).waitFor(); await sleep(300)
+  await p.selectOption('#inpEditType', 'Meeting')
+  const line = await L.calTap(w, '2026-07-19')
+  const s = await L.saveWin(w)
+  parts.push(`changed kind to Meeting and the date to Sun 19 Jul (line "${line}"); Save asked: ${s.asked ? s.head.slice(0, 140) : 'nothing'}`)
+  pics.push(await L.pic(w, '81-2-oil-question'))
+  if (s.asked) await L.answerOil(w, 'yes')
+  await sleep(600)
+  const r = await L.recId(p, rec.iid)
+  parts.push('saved: ' + fmt(r) + '; toast: "' + (await toast()) + '"')
+  pics.push(await L.pic(w, '81-3-after-save'))
+  await L.closeWins(p)
+  await sleep(300)
+  // the reveal: the card shows although it no longer matches the Appointment filter
+  const heads = await p.evaluate(iid => { const c = document.querySelector(`#inList [data-testid="inl-row-${iid}"]`); if (!c) return null; let e = c; while (e && !e.matches('[data-testid="inl-day"]')) e = e.previousElementSibling; return e ? e.textContent.replace(/\s+/g, ' ') : null }, rec.iid)
+  const n = await p.locator(`#inList [data-testid="inl-row-${rec.iid}"]`).count()
+  parts.push(`the reveal: the saved card is in the list ${n} time(s) under heading "${heads}"`)
+  if (n !== 1) fail('the saved card is not shown exactly once: ' + n)
+  else await p.locator(`#inList [data-testid="inl-row-${rec.iid}"]`).scrollIntoViewIfNeeded()
+  if (n === 1 && !/19 Jul/.test(heads || '')) fail('wrong heading: ' + heads)
+  pics.push(await L.pic(w, '81-4-reveal'))
+  // return through the calendar while the reveal stands (filters still on)
+  await L.toCal(w)
+  await L.month(p, 2026, 7)
+  await p.locator('#inpCal [data-icday="2026-07-19"]').tap({ position: { x: 8, y: 8 } }); await p.locator(L.DAYWIN).waitFor(); await sleep(300)
+  const cAfter = await p.locator(`[data-testid="idy-row-${rec.iid}"]`).count()
+  parts.push(`the Calendar's opened day 19 Jul right after the save (filters still Appointment): ${cAfter} card(s) for the saved record`)
+  pics.push(await L.pic(w, '81-4b-calendar-right-after'))
+  if (!cAfter) fail('the Calendar does not show the saved record right after the save while the filters still hide it (no reveal there)')
+  await L.closeWins(p)
+  await L.closeWins(p)
+  await p.locator('#inListBtn').scrollIntoViewIfNeeded(); await p.locator('#inListBtn').tap(); await sleep(400)
+  // clear the reveal by changing a filter
+  if (!(await p.locator('#inFPerson').isVisible().catch(() => false))) { await p.locator('#inFiltersBtn').tap(); await sleep(300) }
+  await p.selectOption('#inFType', 'Duty'); await sleep(300)
+  await p.selectOption('#inFType', 'Appointment'); await sleep(400)
+  const n2 = await p.locator(`#inList [data-testid="inl-row-${rec.iid}"]`).count()
+  parts.push(`after changing the kind filter (Duty, then Appointment again): the saved card is in the list ${n2} time(s) (it is a Meeting now, so it should follow the filter and leave)`)
+  if (n2 !== 0) fail('the reveal did not end after a filter change: ' + n2)
+  pics.push(await L.pic(w, '81-5-after-filter-change'))
+  // back through the calendar
+  await L.openDay(w, '2026-07-19')
+  const c = p.locator(`[data-testid="idy-row-${rec.iid}"]`)
+  parts.push('(this last look is with the Appointment filter still on, so a Meeting is rightly hidden)')
+  const cf = await L.cardFacts(p, L.DAYWIN, 'idy')
+  parts.push(`the Calendar's opened day 19 Jul shows the record: ${await c.count()} card(s); ${JSON.stringify(cf.map(x => [x.who, x.kind, x.when]))}`)
+  pics.push(await L.pic(w, '81-6-calendar-day'))
+  await L.closeWins(p)
+  const u = await L.undo(w); const rU = await L.recId(p, rec.iid)
+  const rd = await L.redo(w); const rR = await L.recId(p, rec.iid)
+  parts.push(`Undo ${u}: ${fmt(rU)}; Redo ${rd}: ${fmt(rR)}`)
+  if (rU.type !== 'Appointment' || rU.date !== 'Jul 16') fail('Undo did not restore')
+  L.row(81, 'phone 390x844', 'Member (Ranger)', verdict, parts.join(' || '), pics)
+} catch (e) {
+  console.log('ERR', e)
+  pics.push(await L.pic(w, '81-err'))
+  L.row(81, 'phone 390x844', 'Member (Ranger)', 'NOT RUN', 'script stopped: ' + String(e).slice(0, 500) + ' || ' + parts.join(' || '), pics)
+}
+await L.finish(w)

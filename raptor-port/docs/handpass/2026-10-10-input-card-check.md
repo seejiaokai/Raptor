@@ -6,7 +6,7 @@ builder: Opus 5.5. The design is his, approved as pictured (D723): `docs/mock/im
 (`docs/superpowers/briefs/2026-10-10-input-card-scenarios-astra.md`, 84 scenarios). Code reads: Astra and Sol 6.1, each
 blind (D590).
 
-**STATE OF THIS SHEET: OPEN — the walk is under way.** *(Kept true as the check goes; this line is rewritten at its
+**STATE OF THIS SHEET: OPEN — the walk is done (§5); the gates and the two reads are next.** *(Kept true as the check goes; this line is rewritten at its
 close.)*
 
 ## 0. Questions waiting for him
@@ -16,6 +16,10 @@ close.)*
    one a new input and a shared input already used. Not changed here: the size of the app's buttons stays as it is
    without his word (D487). **Recommended:** on a phone, make the window calendar's days the size the pencil's were.
    **What waits on it:** nothing — dates can be changed today, by a careful finger.
+3. **A several-day input says "till 22 Jul" twice on its card** — at the right, where the hours stand, and again as its
+   remark, where the remark is nothing but the automatic "till <date>". (So did the opened day's old card.)
+   **Recommended:** on the card, leave out a remark that says only what the corner already says. **What waits on it:**
+   nothing.
 2. **On the DESKTOP list a shared input still reads "Saber +3"** (the names appear on hover) **and the kind is still a
    pill.** His rulings speak of the card (D721, D723). **Recommended:** name everyone on the desktop row too; leave the
    pill — a column of a table reads well as a pill. **What waits on it:** nothing.
@@ -177,7 +181,49 @@ Saber", D724).
 
 ### 5.2 The three walkers (Sonnet 5.5, each in its own world, the frozen build of `88a74708`)
 
-*(Running — filled when their reports are in and every FAIL has been reproduced by the host.)*
+Each walked its share through the app's own controls on its own server (ports 4231–4233, the frozen `dist-fix`), one
+size a scenario (odd numbers a phone 390 × 844 by touch, even a desktop 1440 × 900) unless the scenario named its
+sizes. No walker saw a console error, a page error or a 4xx. Their reports: `docs/handpass/parts/icard-A.md`, `-B.md`,
+`-C.md` (and `.json`); pictures under `docs/img/handpass/2026-10-10-input-card-check/A|B|C/` (about 120, 103 and 150).
+
+| Walker | Its share | Result as reported | After the host's check of every FAIL |
+|---|---|---|---|
+| A — cards and lists | 4, 5, 8, 10–17, 19–23, 25, 28 (18; 15 with the browser's own clock) | 18 PASS | 18 PASS |
+| B — the pencil's replacement, dates, medical entries | 30, 31, 33–36, 38–53, 55, 57, 58 (25) | 24 PASS, 1 FAIL (55) | 25 — the FAIL is not a fault (below) |
+| C — roles, OIL, published days | 59–66, 68–84 (25; 79 at three sizes) | 24 PASS, 3 FAIL (69, 70, 81) | 1 real fault, fixed (W5); 2 as designed (below) |
+
+**The high-consequence passes whose pictures the host opened:** A 4 and 8 at 320 wide (a 40-letter title, a long remark,
+fourteen names — all whole, nothing over the hours); A 12 (an input of several days under its first day, "till 22
+Jul"); B 42 (a downchit moved onto another medical entry: the clash question before anything is saved); B 43 (a
+downchit moved onto a leave: the morning medical, the leave left PM); C 74 (an input moved off a published Monday: the
+day's sign-offs blank, "4 to sign"); C 66 (a phone: "Not answered yet — 15 Jul · Answer…").
+**What their scenarios proved that the host's walk did not:** every kind's colour and capitals (22 kinds); an archived
+and then a deleted person's past input; another year; the filters and the date window on the phone's list; the export
+(53 rows whatever the filter); a leave moved over a leave and over a medical entry (refused whole, in words); an
+upchit moved and refused as a range; a leave the Leave War approved, changed and deleted from the list (the war and
+the list agree; a member's own date change clears the link, a remark alone does not); documents added and removed; the
+window following a change made behind it; a member's own / another's / a shared / a filed-for-others input; members'
+filing switched off; the role changed with a window open; published days (74–77, 84: pending, the sign-offs cleared,
+the issued face and its OIL kept until the amendment); short screens.
+
+**The four FAILs, each looked at by the host before it was believed:**
+- **B 55 — "a drag across a row's remark opens the input instead of selecting the words": NOT A FAULT.** The app selects
+  no text outside its typing boxes, by a standing rule of its own stylesheet (`html{user-select:none}` — a tap-hold
+  must not paint a blue range on a phone); the list's words could not be selected before this change either. The
+  scenario's expectation was the designer's assumption. *(The host first wrote a fix and a unit test from the report —
+  and only then tried the real browser, where the selection never existed; the fix was taken out. Host A7b now checks
+  the rule itself. Logged as a lesson: a reported failure is reproduced in the running app before anything is written
+  for it.)*
+- **C 69 — a shared duty, one man answered and another not: the window read "no OIL … Change…" and said nothing of the
+  man still unanswered: A REAL FAULT of the new line → W5**, below. (That "Change…" then writes the answer for everyone
+  is as ruled — D682: the filer's later answer replaces each man's own.)
+- **C 70 — the OIL question opens with neither Yes nor No chosen: AS DESIGNED** — "the forced choice — unset until the
+  filer picks, even on a re-ask" (`ui/OilConfirm.tsx`, unchanged by this job; the earlier answers pre-seed only which
+  days "some" starts from).
+- **C 81 — after an input was changed on the list so that the filters hide it, the calendar's opened day says "No
+  inputs on this day": AS DESIGNED, AND OLDER** — the filters are one for the list, the month and the day (so they can
+  never disagree about what is hidden); the list keeps the just-saved input in view until a filter is touched. The
+  day's wording under a filter is filed (`[CARD-CHECK-SEEN]`).
 
 ### 5.3 What the walk found, and each disposition
 
@@ -188,6 +234,20 @@ Saber", D724).
 | W3 | Astra's scenario 57, confirmed the same way | an admin could no longer move a saved input to a posted-out / archived person — the pencil's Person list offered them, the window's did not | FIXED, a test red first (the same file): the window's Person list offers the group for a saved input and keeps a deleted man's own name; in the change |
 
 | W4 | the host's picture of the built window (A10), and walker A's extra 3 | on an ordinary desktop (1440 × 900) the window's last row — Delete, Cancel, Save — was cut off at the window's foot and reached only by scrolling inside it; a shared input's "Delete for all?" had its "Keep" under the foot. The window is about 170px taller for the date calendar every saved input now gets; at his PC's 125% it would be worse | FIXED, a browser test red first at two of three sizes (`e2e/inputs-calendar.spec.ts`, "keeps Delete, Cancel and Save in sight" — 1440 × 900, 1280 × 640, a phone 390 × 664): the row is pinned to the window's foot, the form scrolling above it; host A10 and A17 check it; no button changes size (D487). It also closes `[TITLE-CHECK-SEEN]` item 9; in the change |
+
+| W5 | walker C, scenario 69 — reproduced by the host in a test that then failed | a shared input where one man's OIL question is answered and another's is not: the window judged the whole entry by the record it was opened on, so it could read "no OIL on its non-working day · Change…" with no word that anyone was unanswered | FIXED, a test red first (`ui/groupeditor.test.tsx`): the line "Not answered yet — <day>: <who>" is drawn while ANY record of the entry is unanswered and names who, beside an answered line too (one button for the one question); in the change (the new line of the plan's §3.2) |
+
+**Older finds met on the way — none caused by this change; filed, not fixed (`OUTSTANDING.md` `[CARD-CHECK-SEEN]`):**
+a several-day input says "till 22 Jul" twice on its card where its remark is only the automatic "till" (put to him —
+§0 question 3); the document viewer with two documents is a little taller than its box on a 1440 × 900 desktop (B 46);
+on a phone the passing note ("Input updated") lies over the window's Cancel while it shows (B); a member reading
+another man's medical input sees the picker's "You can file a medical entry only for yourself" box in the read-only
+window (C 60); the opened day under a filter says "No inputs on this day" (C 81); the desktop row's paperclip and OIL
+chips cannot be reached by Tab (C 83 — they are not buttons); a shared input's OIL line shows the first man's answer
+("credited") after another man's own became No (C 61); the OIL question of a 2027 input names "9 JAN" with no year
+(C 78); the list's date picker stays open after its end date is tapped, and Escape does not close it (A). **A teal
+band in some phone pictures** is the browser's own tap flash at the place the card was tapped, caught by the camera
+with the window already over it — not something the app draws.
 
 ### 5.4 The cases carried by a test, each with its test and what it proves
 

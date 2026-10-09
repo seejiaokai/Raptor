@@ -2303,7 +2303,11 @@ export function InputEditor() {
   /* who the window's Person list offers beyond the roster (below) */
   const archivedHere = win && !isNew && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
-  const unansweredDay = !isNew && r ? ((rows.length > 1 ? rows : [r]).map(x => oilUnansweredDay(x)).find(Boolean) || '') : ''
+  /* …asked of EVERY record of the entry, not of the one the window happens to be opened on (walker C's find, 10 Oct 26 —
+     Astra's scenario 69: a shared duty whose first man had answered from his own bell read "no OIL … Change…", with no
+     word that another man of it was still unanswered) */
+  const unanswered = !isNew && r ? (rows.length > 1 ? rows : [r]).filter(x => oilUnansweredDay(x)) : []
+  const unansweredDay = unanswered.length ? oilUnansweredDay(unanswered[0]) : ''
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
      says what a Save would write */
@@ -2498,12 +2502,14 @@ export function InputEditor() {
               §3.2; `oilUnansweredDay` — Fable F6, 22 Sep 26). The List's "OIL?" chip was the one sign, outside the bell
               of the man himself, that a weekend request's question was asked and put away unanswered; the phone's
               list is cards now and a card has no chips (D723), so the window says it — and answers it, by the same
-              forced question the chip opened. Only for a reader who may change the input. */}
-          {!isNew && r && !oilAnswered(r) && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
+              forced question the chip opened. Only for a reader who may change the input. Said while ANY record of the
+              entry has a day nobody answered — a shared input names who — and beside an answered line too (one day
+              answered, another not): then that line's "Change…" is the one button, since both open the same question. */}
+          {!isNew && r && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
-              <span className="inped-oilsum">Not answered yet — {isoLabel(unansweredDay)}</span>
-              {!readOnly && <button type="button" className="abtn ghost" data-testid="oil-answer"
+              <span className="inped-oilsum">Not answered yet — {isoLabel(unansweredDay)}{rows.length > 1 ? ': ' + unanswered.map(x => csOf(x.person)).join(', ') : ''}</span>
+              {!readOnly && !oilAnswered(r) && <button type="button" className="abtn ghost" data-testid="oil-answer"
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Answer…</button>}
             </div>
           </div>}

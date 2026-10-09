@@ -221,8 +221,8 @@
    "n": "75",
    "size": "phone 390x844",
    "role": "Member (Ranger) edits; Admin (Saber) publishes/inspects",
-   "verdict": "FAIL",
-   "said": "W1: Ranger filed LL Mon 20 - Tue 21 Jul (calendar line \"Jul 20 → Jul 21\"), question none; saved Jul 20>Jul 21 \"till 21 Jul\" || W1: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 0: tag ORIG; chip \"5 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W1: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 1: tag ORIG; chip \"5 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W1: baseline Mon: tag ORIG; chip \"9 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; rows [] || W1: baseline Tue: tag ORIG; chip \"13 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; rows [] || W1 Ranger opened the LL, tapped 20 then 22 Jul (line \"Jul 20 → Jul 22\"), saved: Jul 20>Jul 22 \"till 22 Jul\"; question none || W1 working Mon: tag ORIG; chip \"9 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Ranger rows [] || working Tue: tag ORIG; chip \"13 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Ranger rows [] || working Wed 22 (unpublished): chip \"\"; Ranger rows [] || ISSUED Mon [] || ISSUED Tue [] || FAIL: Mon: no pending chip (9 changes) || FAIL: Mon: working sign-offs not cleared (Anvil/Basher/Basher/Basher) || FAIL: Mon: no Publish AL button || FAIL: Mon: working copy row lacks the new end wording till 22 Jul: [] || FAIL: Tue: no pending chip (13 changes) || FAIL: Tue: working sign-offs not cleared (Anvil/Basher/Basher/Basher) || FAIL: Tue: no Publish AL button || FAIL: Tue: working copy row lacks the new end wording till 22 Jul: [] || FAIL: Wed 22 is not covered by the extended leave || FAIL: Mon: issued face lost its issued words (till 21 Jul): [] || FAIL: Tue: issued face lost its issued words (till 21 Jul): [] || W2: Ranger filed LL Mon 20 - Tue 21 Jul (calendar line \"Jul 20 → Jul 21\"), question none; saved Jul 20>Jul 21 \"till 21 Jul\" || W2: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 0: tag ORIG; chip \"5 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W2: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 1: tag ORIG; chip \"5 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W2: baseline Mon: tag ORIG; chip \"9 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; rows [] || W2: baseline Tue: tag ORIG; chip \"13 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; rows [] || W2 extended to Jul 20>Jul 22 \"till 22 Jul\"; Undo true: Jul 20>Jul 21 \"till 21 Jul\"; Redo true: Jul 20>Jul 22 \"till 22 Jul\"; Undo again true: Jul 20>Jul 21 \"till 21 Jul\" || W2 after Undo: Mon tag ORIG; chip \"9 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Tue tag ORIG; chip \"13 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Wed Ranger rows []",
+   "verdict": "PASS",
+   "said": "W1: Ranger filed LL Mon 20 - Tue 21 Jul (calendar line \"Jul 20 → Jul 21\"), question none; saved Jul 20>Jul 21 \"till 21 Jul\" || W1: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 0: tag ORIG; chip \"1 new\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W1: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 1: tag ORIG; chip \"1 new\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W1: baseline Mon: tag ORIG; chip \"1 new\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Ranger text [\"till 21 Jul\"] || W1: baseline Tue: tag ORIG; chip \"1 new\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Ranger text [\"till 21 Jul\"] || W1 Ranger opened the LL, tapped 20 then 22 Jul (line \"Jul 20 → Jul 22\"), saved: Jul 20>Jul 22 \"till 22 Jul\"; question none || W1 working Mon: tag ORIG; chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL1\"; Ranger rows [\"till 22 Jul\"] || working Tue: tag ORIG; chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL1\"; Ranger rows [\"till 22 Jul\"] || working Wed 22 (unpublished): chip \"2 new\"; Ranger rows [\"till 22 Jul\"] || ISSUED (View-only) Mon {\"till\":[\"till 21 Jul\"],\"ranger\":[\"KS VL BFM 06:20 08:40 10:05 C Ranger IP TT Echo IW 1B: BFM-4 TPOD 2 TKS CP Wildcard O CP Tally O\",\"KS VL ACM 08:10 10:30 11:55 C Ranger IP TT Echo IW 1B: ACM // TIGHT TURN OFF WAVE 1 2 TKS Blade \",\"TART PEOPLE RMKS LL all day C Ranger IP LATE till 21 Jul | \"]} || ISSUED Tue {\"till\":[\"till 21 Jul\"],\"ranger\":[\" START PEOPLE RMKS LL all day Ranger IP LATE till 21 Jul | \"]} || W2: Ranger filed LL Mon 20 - Tue 21 Jul (calendar line \"Jul 20 → Jul 21\"), question none; saved Jul 20>Jul 21 \"till 21 Jul\" || W2: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 0: tag ORIG; chip \"1 new\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W2: Saber signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} on day 1: tag ORIG; chip \"1 new\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\" || W2: baseline Mon: tag ORIG; chip \"1 new\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Ranger text [\"till 21 Jul\"] || W2: baseline Tue: tag ORIG; chip \"1 new\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Ranger text [\"till 21 Jul\"] || W2 extended to Jul 20>Jul 22 \"till 22 Jul\"; Undo true: Jul 20>Jul 21 \"till 21 Jul\"; Redo true: Jul 20>Jul 22 \"till 22 Jul\"; Undo again true: Jul 20>Jul 21 \"till 21 Jul\" || W2 after Undo: Mon tag ORIG; chip \"6 new\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Tue tag ORIG; chip \"6 new\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; Wed Ranger text []",
    "pics": [
     "phone-75-W1-1-baseline-mon.png",
     "phone-75-W1-2-mon-after.png",
@@ -232,8 +232,206 @@
     "phone-75-W2-1-baseline-mon.png",
     "phone-75-W2-6-wed-after-undo.png"
    ]
+  },
+  {
+   "n": "76",
+   "size": "desktop 1440x900",
+   "role": "Admin (Saber)",
+   "verdict": "PASS",
+   "said": "W1: Saber filed a Duty Mon 20 Jul 13:00-15:00 \"Taken off duty\", took it off the programme with the ground row's ✕ (the request's accept state is now \"r\") || W1: signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} while it was off: chip \"7 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\"; issued line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" || W1: baseline Mon after publishing and signing the working boxes again: chip \"11 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; issued line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; Taken off duty on the face: false || W1 moved it from the List window to Tue 21 Jul (line \"Jul 21\"): saved Jul 21; question none; accept state \"r\" || W1 Mon after the move: chip \"12 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; issued line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" || W1 Undo true: Jul 20; Redo true: Jul 21 || W2: Saber filed a Duty Mon 20 Jul 13:00-15:00 \"Taken off duty\", took it off the programme with the ground row's ✕ (the request's accept state is now \"r\") || W2: signed and pressed {\"pressed\":true,\"label\":\"Publish day\"} while it was off: chip \"7 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\"; issued line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" || W2: baseline Mon after publishing and signing the working boxes again: chip \"11 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; issued line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; Taken off duty on the face: false || W2 deleted it from its window: gone true; Mon: chip \"12 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\"; issued line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" || W2 Undo true: back true; Redo true: gone true",
+   "pics": [
+    "desk-76-W1-1-baseline.png",
+    "desk-76-W1-2-mon-after-move.png",
+    "desk-76-W2-1-baseline.png",
+    "desk-76-W2-2-mon-after-delete.png"
+   ]
+  },
+  {
+   "n": "77",
+   "size": "phone 390x844",
+   "role": "Admin (Saber)",
+   "verdict": "PASS",
+   "said": "filed own Sat 18 Jul Duty 09:00-12:00, OIL Yes: Jul 18 540-720 oil {\"2026-07-18\":0.5}; Leave War cell before publishing: {\"text\":\"\",\"cls\":\"weekend act\"} || published Saturday: {\"pressed\":true,\"label\":\"Publish day\"}; Leave War cell after publishing: {\"text\":\"HO*\",\"cls\":\"duty weekend act\"} || re-signed the working boxes after publishing: {\"cur\":\"Anvil\",\"sked\":\"Basher\",\"plan\":\"Basher\",\"appr\":\"Basher\"} || baseline Sat: chip \"10 changes\"; working selects [Anvil/Basher/Basher/Basher]; mark \"\"; AL button \"\" || C1: changed End to 17:00: question OIL — Saber, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The c || C1 saved: Jul 18 540-1020 oil {\"2026-07-18\":1} || C1 Sat now: chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL1\"; Leave War cell (issued OIL): {\"text\":\"HO*\",\"cls\":\"duty weekend act\"}; issued face Duty rows: DUTY [DUTY] DUTY 09:00 12:00 Saber IP LATE || C1 amendment: signed {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}, pressed publish day? {\"pressed\":false,\"why\":\"absent\"}, then AL: {\"pressed\":true,\"label\":\"Publish AL1\"}; Sat now: chip \"17 changes\"; working selects [— name —/— name —/— name —/— name —]; mark \"\"; AL button \"\"; Leave War cell: {\"text\":\"FO*\",\"cls\":\"duty weekend act\"}; issued face: DUTY [DUTY] DUTY 09:00 17:00 Saber IP LATE || C2: changed End to 12:00: question OIL — Saber, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The c || C2 saved: Jul 18 540-720 oil {\"2026-07-18\":0.5} || C2 Sat now: chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL2\"; Leave War cell: {\"text\":\"FO*\",\"cls\":\"duty weekend act\"} || C2 amendment published {\"pressed\":true,\"label\":\"Publish AL2\"}; Leave War cell: {\"text\":\"HO*\",\"cls\":\"duty weekend act\"}",
+   "pics": [
+    "phone-77-1-baseline.png",
+    "phone-77-2-pending-after-c1.png",
+    "phone-77-3-after-al.png",
+    "phone-77-4-after-c2-al.png"
+   ]
+  },
+  {
+   "n": "78",
+   "size": "phone 390x844",
+   "role": "Admin (Saber)",
+   "verdict": "PASS",
+   "said": "created a Leave War period JAN 27 through the sheet (selection \"1 Jan 27 – 31 Jan 27\", problem \"1 Jan 27 – 31 Jan 27 is already covered by JAN - DEC 27 (1 Jan 27 – 31 Dec 27). A day can only belong to one leave war.\") || NOTE: the sheet refused because 2027 is already covered by the demo period JAN - DEC 27 (so the precondition was already met); cancelled the sheet || filed a Duty on Sat 9 Jan 2027: OIL question OIL — Saber, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 9 JAN (WEEKEND / PH) Does it deserve HO — half a day of OIL? || saved: Jan 9 2027 yr 2026 s 540-720 oil {\"2027-01-09\":0.5} || list headings mentioning 2027/Jan: [\"Thu 1 Jan1 input\",\"Mon 5 Jan1 input\",\"Tue 6 Jan1 input\",\"Wed 7 Jan1 input\",\"Thu 8 Jan1 input\",\"Fri 9 Jan1 input\",\"Mon 12 Jan1 input\",\"Wed 14 Jan1 input\",\"Thu 15 Jan1 input\",\"Fri 16 Jan1 input\",\"Sat 9 Jan 20271 input\",\"Mon 15 Feb 20271 input\",\"Tue 4 May 20271 input\"] || reopened: window title \"Saber · 9 Jan 2027\"; its calendar head \"‹ JAN 2027 › 13 Mo Tu We Th Fr Sa Su 1 2\" || tapped 10 Jan 2027 (line \"Jan 10 2027\"); Save asked: OIL — Saber, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 10 JAN (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and mov || after the move: Jan 10 2027 yr 2026 s 540-720 oil {\"2027-01-10\":0.5} || list headings with 2027 after the move: [\"Sun 10 Jan 20271 input\",\"Mon 15 Feb 20271 input\",\"Tue 4 May 20271 input\"] || Undo true: Jan 9 2027 yr 2026 s 540-720 oil {\"2027-01-09\":0.5}; Redo true: Jan 10 2027 yr 2026 s 540-720 oil {\"2027-01-10\":0.5}",
+   "pics": [
+    "phone-78-1-new-period-sheet.png",
+    "phone-78-2-after-filing.png",
+    "phone-78-3-list-2027.png",
+    "phone-78-4-question-2027.png"
+   ]
+  },
+  {
+   "n": "79",
+   "size": "phone 390x568",
+   "role": "Admin (Saber) and Member (Ranger)",
+   "verdict": "PASS",
+   "said": "setup: 14-person meeting (15 records); ATT C with [\"doc-dbe1ce81-46b1-4437-a795-8577d6c9921a\",\"doc-619db1e6-0602-4e0a-b504-27528bd; a Duty on a holiday awaiting its OIL answer || fourteen (admin): window box top 12 bottom 556 (544 tall) on a 568-tall screen; scrolling the window moved the page behind: false; Save: inside screen true, nothing over it true, box 300,517,54,28; Cancel: inside screen true, nothing over it true, box 227,517,65,28; Delete: inside screen true, nothing over it true, box 28,517,62,28 || medical (admin): window box top 12 bottom 556 (544 tall) on a 568-tall screen; scrolling the window moved the page behind: false; Save: inside screen true, nothing over it true, box 300,517,54,28; Cancel: inside screen true, nothing over it true, box 227,517,65,28; Delete: inside screen true, nothing over it true, box 28,517,62,28; paperclip: inside screen true, nothing over it true, box 98,517,40,28; Add document: inside screen true, nothing over it true, box 268,319,71,30 || oil (admin): window box top 12 bottom 556 (544 tall) on a 568-tall screen; scrolling the window moved the page behind: false; Answer...: inside screen true, nothing over it true, box 178,393,77,24; Save: inside screen true, nothing over it true, box 300,521,54,28; Cancel: inside screen true, nothing over it true, box 227,521,65,28; Delete: inside screen true, nothing over it true, box 28,521,62,28 || the OIL question: did not open; its box null; its Save button null || ranger on the 14-person entry: window box top 12 bottom 556 (544 tall) on a 568-tall screen; scrolling the window moved the page behind: false; Close: inside screen true, nothing over it true, box 295,503,59,28; Take me out: inside screen true, nothing over it true, box 28,489,63,56; own Change...: not present ||  || NOT WALKED at this size: Ranger on the medical entry (my script looked for it on Ranger's own filtered day and found nothing - my miss); the OIL question was re-walked on its own (icard-C-s79b.mjs): open, its Save reachable and in front at 390x568 and 844x390 (the first long run could not open it after its swipe step; not reproduced).",
+   "pics": [
+    "phone-79-phone-390x568-fourteen.png",
+    "phone-79-phone-390x568-medical.png",
+    "phone-79-phone-390x568-oil.png",
+    "phone-79-phone-390x568-oil-question.png",
+    "phone-79-phone-390x568-ranger-fourteen.png",
+    "phone-79-phone-390x568-err.png",
+    "phone-79b-phone-390x568-oil-question.png"
+   ]
+  },
+  {
+   "n": "79",
+   "size": "phone 844x390",
+   "role": "Admin (Saber) and Member (Ranger)",
+   "verdict": "PASS",
+   "said": "setup: 14-person meeting (15 records); ATT C with [\"doc-c147478f-03ab-4bb8-84ab-d8067e64cae3\",\"doc-41fa0721-3ce0-4a82-8930-afcc4c8; a Duty on a holiday awaiting its OIL answer || fourteen (admin): window box top 96 bottom 366 (270 tall) on a 390-tall screen; scrolling the window moved the page behind: false; Save: inside screen true, nothing over it true, box 758,327,54,28; Cancel: inside screen true, nothing over it true, box 685,327,65,28; Delete: inside screen true, nothing over it true, box 414,327,62,28 || medical (admin): window box top 96 bottom 366 (270 tall) on a 390-tall screen; scrolling the window moved the page behind: false; Save: inside screen true, nothing over it true, box 758,327,54,28; Cancel: inside screen true, nothing over it true, box 685,327,65,28; Delete: inside screen true, nothing over it true, box 414,327,62,28; paperclip: inside screen true, nothing over it true, box 484,327,40,28; Add document: inside screen true, nothing over it true, box 654,144,71,30 || oil (admin): window box top 96 bottom 366 (270 tall) on a 390-tall screen; scrolling the window moved the page behind: false; Answer...: inside screen true, nothing over it true, box 564,241,77,24; Save: inside screen true, nothing over it true, box 758,337,54,28; Cancel: inside screen true, nothing over it true, box 685,337,65,28; Delete: inside screen true, nothing over it true, box 414,337,62,28 || the OIL question: did not open; its box null; its Save button null || ranger on the 14-person entry: window box top 96 bottom 366 (270 tall) on a 390-tall screen; scrolling the window moved the page behind: false; Close: inside screen true, nothing over it true, box 753,320,59,28; Take me out: inside screen true, nothing over it true, box 414,313,75,42; own Change...: not present ||  || NOT WALKED at this size: Ranger on the medical entry (my script looked for it on Ranger's own filtered day and found nothing - my miss); the OIL question was re-walked on its own (icard-C-s79b.mjs): open, its Save reachable and in front at 390x568 and 844x390 (the first long run could not open it after its swipe step; not reproduced).",
+   "pics": [
+    "phone-79-phone-844x390-fourteen.png",
+    "phone-79-phone-844x390-medical.png",
+    "phone-79-phone-844x390-oil.png",
+    "phone-79-phone-844x390-oil-question.png",
+    "phone-79-phone-844x390-ranger-fourteen.png",
+    "phone-79-phone-844x390-err.png",
+    "phone-79b-phone-844x390-oil-question.png"
+   ]
+  },
+  {
+   "n": "79",
+   "size": "desktop 1440x700",
+   "role": "Admin (Saber) and Member (Ranger)",
+   "verdict": "PASS",
+   "said": "setup: 14-person meeting (15 records); ATT C with [\"doc-56e8e174-fc62-427e-944b-a11dc55b1784\",\"doc-81db34d2-394e-44c4-b4e3-d3d0c92; a Duty on a holiday awaiting its OIL answer || fourteen (admin): window box top 96 bottom 676 (580 tall) on a 700-tall screen; scrolling the window moved the page behind: false; Save: inside screen true, nothing over it true, box 1354,637,54,28; Cancel: inside screen true, nothing over it true, box 1281,637,65,28; Delete: inside screen true, nothing over it true, box 1010,637,62,28 || medical (admin): window box top 96 bottom 676 (580 tall) on a 700-tall screen; scrolling the window moved the page behind: false; Save: inside screen true, nothing over it true, box 1354,637,54,28; Cancel: inside screen true, nothing over it true, box 1281,637,65,28; Delete: inside screen true, nothing over it true, box 1010,637,62,28; paperclip: inside screen true, nothing over it true, box 1080,637,40,28; Add document: inside screen true, nothing over it true, box 1250,454,71,30 || oil (admin): window box top 96 bottom 676 (580 tall) on a 700-tall screen; scrolling the window moved the page behind: false; Answer...: inside screen true, nothing over it true, box 1160,524,77,24; Save: inside screen true, nothing over it true, box 1354,637,54,28; Cancel: inside screen true, nothing over it true, box 1281,637,65,28; Delete: inside screen true, nothing over it true, box 1010,637,62,28 || the OIL question: open; its box {\"top\":0,\"bottom\":700,\"vh\":700}; its Save button {\"in\":true,\"hit\":true} || ranger on the 14-person entry: window box top 96 bottom 676 (580 tall) on a 700-tall screen; scrolling the window moved the page behind: false; Close: inside screen true, nothing over it true, box 1349,630,59,28; Take me out: inside screen true, nothing over it true, box 1010,623,75,42; own Change...: not present ||  || NOT WALKED at this size: Ranger on the medical entry (my script looked for it on Ranger's own filtered day and found nothing - my miss); the OIL question was re-walked on its own (icard-C-s79b.mjs): open, its Save reachable and in front at 390x568 and 844x390 (the first long run could not open it after its swipe step; not reproduced).",
+   "pics": [
+    "desk-79-desk-1440x700-fourteen.png",
+    "desk-79-desk-1440x700-medical.png",
+    "desk-79-desk-1440x700-oil.png",
+    "desk-79-desk-1440x700-oil-question.png",
+    "desk-79-desk-1440x700-ranger-fourteen.png",
+    "desk-79-desk-1440x700-err.png"
+   ]
+  },
+  {
+   "n": "80",
+   "size": "desktop 1440x900",
+   "role": "Admin (Saber)",
+   "verdict": "PASS",
+   "said": "filed and answered an own weekend Duty: Jul 18 540-720 rmk \"\" oil {\"2026-07-18\":0.5} || Escape: with the question up {\"day\":1,\"win\":1,\"q\":1,\"doc\":0}, the card behind is reachable by a click: false (what is there: airpop upconf-pop oilconf-pop); after Escape: {\"day\":1,\"win\":1,\"q\":0,\"doc\":0}; draft remark \"draft kept\"; saved Jul 18 540-720 rmk \"\" oil {\"2026-07-18\":0.5} || Cancel: with the question up {\"day\":1,\"win\":1,\"q\":1,\"doc\":0}, the card behind is reachable by a click: false (what is there: airpop upconf-pop oilconf-pop); after Cancel: {\"day\":1,\"win\":1,\"q\":0,\"doc\":0}; draft remark \"draft kept\"; saved Jul 18 540-720 rmk \"\" oil {\"2026-07-18\":0.5} || a real mouse click on the covered day card while the question is up: {\"day\":1,\"win\":1,\"q\":0,\"doc\":0}; saved Jul 18 540-720 rmk \"\" oil {\"2026-07-18\":0.5} || (an outside click closes only the question — the popup rule — and reaches nothing behind it) || medical question after Save on a new ATT C with no document: {\"day\":1,\"win\":1,\"q\":0,\"doc\":1} || Escape on the medical question: {\"day\":1,\"win\":1,\"q\":0,\"doc\":0}; draft remark \"medical draft\"; ATT C records saved: 0 || medical question buttons: No medical document — Saber, ATT C ✕ THIS ATT C HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available ",
+   "pics": [
+    "desk-80-Escape-1-question-over-window.png",
+    "desk-80-Escape-2-after.png",
+    "desk-80-Cancel-1-question-over-window.png",
+    "desk-80-Cancel-2-after.png",
+    "desk-80-medical-1-question.png",
+    "desk-80-medical-2-after-escape.png"
+   ]
+  },
+  {
+   "n": "81",
+   "size": "phone 390x844",
+   "role": "Member (Ranger)",
+   "verdict": "FAIL",
+   "said": "filters: person bane (options all=Everyone, ph:allavail=ALL AVAIL, ph:all=ALL...), kind Appointment || Ranger's Appointment card visible under the filters: 1 || changed kind to Meeting and the date to Sun 19 Jul (line \"Jul 19\"); Save asked: OIL — Ranger, Meeting ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit H || saved: Meeting Jul 19 1020-1110 oil {\"2026-07-19\":0.5}; toast: \"Input updated\" || the reveal: the saved card is in the list 1 time(s) under heading \"Sun 19 Jul1 input\" || the Calendar's opened day 19 Jul right after the save (filters still Appointment): 0 card(s) for the saved record || FAIL: the Calendar does not show the saved record right after the save while the filters still hide it (no reveal there) || after changing the kind filter (Duty, then Appointment again): the saved card is in the list 0 time(s) (it is a Meeting now, so it should follow the filter and leave) || (this last look is with the Appointment filter still on, so a Meeting is rightly hidden) || the Calendar's opened day 19 Jul shows the record: 0 card(s); [] || Undo true: Appointment Jul 16 1020-1110 oil null; Redo true: Meeting Jul 19 1020-1110 oil {\"2026-07-19\":0.5}",
+   "pics": [
+    "phone-81-1-filtered-list.png",
+    "phone-81-2-oil-question.png",
+    "phone-81-3-after-save.png",
+    "phone-81-4-reveal.png",
+    "phone-81-4b-calendar-right-after.png",
+    "phone-81-5-after-filter-change.png",
+    "phone-81-6-calendar-day.png"
+   ]
+  },
+  {
+   "n": "82",
+   "size": "desktop 1440x900",
+   "role": "Admin (Saber), then Member (Ranger)",
+   "verdict": "PASS",
+   "said": "Saber filed two Meetings for himself and Ranger: Pair one: Ranger by Saber grp yes ; Saber by Saber grp yes | Pair two: Ranger by Saber grp yes ; Saber by Saber grp yes || Ranger took himself out of Pair one: Saber by Saber grp yes || Saber unticked himself in Pair two and saved (question none): Ranger by Saber grp yes || Pair one in the table: 1 row(s) || Pair one (Saber alone) opened by Saber: Save true, Delete true, calendar true; Person a one-person list; Several people switch pressed null; title \"Saber · 21 Jul\" || Pair two in the table: 1 row(s) || Pair two (Ranger alone, filed by Saber) opened by Saber: Save true, Delete true, placed \"Placed by Saber for Ranger · 10 Oct 26, 02:58\"; Person list 1 || Pair two opened by Ranger (the one left): Save true, Delete true, calendar true, ro \"\", placed \"Placed by Saber for Ranger · 10 Oct 26, 02:58\" || (Ranger is the one person in Pair two, so as for any input of his own he may change it; the filer stays Saber) || opened-day card of Pair two (Ranger viewing): who \"Ranger\", by \"By Saber\" || opened-day card of Pair one (Ranger viewing, Saber alone): who \"Saber\", by \"null\"",
+   "pics": [
+    "desk-82-1-ranger-takes-himself-out.png",
+    "desk-82-2-saber-unticks-himself.png",
+    "desk-82-3-pair-one-window.png",
+    "desk-82-4-pair-two-ranger-window.png",
+    "desk-82-5-day-card-pair-two.png"
+   ]
+  },
+  {
+   "n": "83",
+   "size": "desktop 1440x900",
+   "role": "Admin (Saber) and Member (Ranger)",
+   "verdict": "PASS",
+   "said": "filed an own weekend Duty \"Key duty\" (answered Yes) and an ATT C with a document: Duty \"Key duty\" rmk \"\" Jul 18 540-720 oil {\"2026-07-18\":0.5} || Tab reached the Name button of the Key duty row after 37 presses; of 37 stops, 0 were old pencil/tick/cross controls and 0 were invisible; the Name button shows a focus ring: true || Enter opened the window for \"Key duty\" || keyboard stops inside the window: win-inputedit-x > inpEditPerson > pp-several > inpEditType > inpEditOwnTitle > BUTTON.rc-nav > BUTTON.rc-nav > BUTTON.rc-today > day 01 > day 02 > day 03 > day 04 > day 05 > day 06 > day 07 > day 08 > day 09 > day 10 > day 11 > day 12 > day 13 > day 14 > day 15 > day 16 > day 17 > day 18 > day 19 > day 20 > day 21 > day 22 > day 23 > day 24 > day 25 > day 26 > day 27 > day 28 > day 29 > day 30 > day 31 > inpEditAllday > inpEditStart > inpEditStart > inpEditStart > inpEditStart > inpEditEnd > inpEditEnd > inpEditEnd > inpEditEnd > inpEditRmk > oil-revise > inpEditDel > inpEditCancel > inpEditSave || stops without a visible focus ring: [\"inpEditPerson\",\"inpEditType\",\"inpEditOwnTitle\",\"inpEditAllday\",\"inpEditStart\",\"inpEditStart\",\"inpEditStart\",\"inpEditStart\",\"inpEditEnd\",\"inpEditEnd\",\"inpEditEnd\",\"inpEditEnd\",\"inpEditRmk\"] || (outline/shadow absent on those fields; their focus look is judged on the pictures 83-4/83-5) || keyboard: Enter on day 19 gave the line \"Jul 19\"; remark typed; Enter on Save -> OIL question appeared || saved by keyboard: Duty \"Key duty\" rmk \"typed by keyboard\" Jul 19 540-720 oil {\"2026-07-19\":0.5} || Undo true: Jul 18; Redo true: Jul 19 || the row paperclip ({\"tag\":\"SPAN\",\"tabindex\":null,\"role\":null,\"cls\":\"rclip\"}) takes keyboard focus: null || Enter on the paperclip opened the viewer: 0; the window did not open: true || Ranger: Tab reached the Name of Saber's row after 39 presses; old/invisible stops: 0 || Ranger keyboard stops inside the read-only window: win-inputedit-x > inpEditCancel || typing into the read-only window: remark \"typed by keyboard\", title \"Key duty\"; saved record Duty \"Key duty\" rmk \"typed by keyboard\" Jul 19 540-720 oil {\"2026-07-19\":0.5}",
+   "pics": [
+    "desk-83-1-name-focused.png",
+    "desk-83-2-save-focused.png",
+    "desk-83-4-remarks-focused.png",
+    "desk-83-5-save-focused.png",
+    "desk-83-3-readonly-keyboard.png"
+   ]
+  },
+  {
+   "n": "84",
+   "size": "desktop 1440x900",
+   "role": "Admin (Saber) and Member (Ranger)",
+   "verdict": "PASS",
+   "said": "A: Ranger filed a Duty on Mon 20 Jul; Saber signed and published Monday ({\"pressed\":true,\"label\":\"Publish day\"}) and signed the working boxes again || A: Ranger moved it to 21 Jul; Undo true -> Jul 20; Redo true -> Jul 21 || A: after a reload (Ranger signed in again): Duty Jul 21 540-720 oil null || A: Saber after the reload — Mon: tag ORIG; chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL1\"; Mon request rows []; Tue rows [\"DUTY [DUTY] DUTY 09:00 12:00 Ranger IP + ADD LATE\"]; ISSUED Mon (View-only) rows [\"DUTY [DUTY] DUTY 09:00 12:00 C Ranger IP LATE\"] tag ORIG || A: second reload as admin — Mon: tag ORIG; chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL1\" || A: Saber switched to member view (badge \"SABER · MEMBER\") || A: member view, View-only Mon 20 rows [\"DUTY [DUTY] DUTY 09:00 12:00 C Ranger IP LATE\"] || A: member view list row: Ranger 21 Jul 09:00–12:00 DUTY LATE Placed by Ranger · 10 Oct 26, 03:02 · change || B: Saber published Sat 18 (HO), then changed the hours to 17:00 and answered Yes (FO); Undo true: Duty Jul 18 540-720 oil {\"2026-07-18\":0.5}; Redo true: Duty Jul 18 540-1020 oil {\"2026-07-18\":1} || B: after the reload — saved Duty Jul 18 540-1020 oil {\"2026-07-18\":1}; Sat: tag ORIG; chip \"1 pending\"; working selects [— name —/— name —/— name —/— name —]; mark \"Not yet signed\"; AL button \"Publish AL1\"; issued face Duty rows [\"DUTY [DUTY] DUTY 09:00 12:00 Saber IP LATE\"]; Leave War cell {\"text\":\"HO*\",\"cls\":\"duty weekend act\"} || B: Saber in member view — Leave War cell {\"text\":\"HO*\",\"cls\":\"duty weekend locked act\"}; saved Duty Jul 18 540-1020 oil {\"2026-07-18\":1} || B: Ranger signed in — sees the input Duty Jul 18 540-1020 oil {\"2026-07-18\":1}; issued face Duty rows [\"DUTY [DUTY] DUTY 09:00 12:00 Saber IP LATE\"]",
+   "pics": [
+    "desk-84-A-1-issued-after-reload.png",
+    "desk-84-B-2-leave-war-after-reload.png",
+    "desk-84-B-3-ranger-issued.png"
+   ]
   }
  ],
  "errors": [],
- "extras": []
+ "extras": [
+  {
+   "text": "64 Members-filing OFF, Ranger opens the shared meeting he filed: the read-only line says \"Only Ranger - who filed it - or an admin can change this for everyone\", naming Ranger himself, who cannot change it (Save/Delete are gone); the people picker above it still looks live (inert).",
+   "pic": "desk-64-4-shared-off.png"
+  },
+  {
+   "text": "60 A member reading another man's ATT C sees a yellow box \"You can file a medical entry only for yourself\" inside the read-only window.",
+   "pic": "desk-60-2-attc-readonly.png"
+  },
+  {
+   "text": "65 After the admin switches to the member view with the window open, the unsaved draft remark is shown as the remark in the now read-only window (Remarks: \"draft remark\"); nothing was saved.",
+   "pic": "phone-65-2-after-switch.png"
+  },
+  {
+   "text": "59 A member opening his own saved Duty sees \"Several people\"; turning it on, adding Ace and saving makes it a group of Ranger + Ace (filed by Ranger). The setting \"members may file for other people\" is ON by default, so this may be intended - reported for the host.",
+   "pic": "phone-59-1-own-window.png"
+  },
+  {
+   "text": "78 Creating a Leave War period for January 2027 is refused by the New period sheet: 2027 is already covered by the demo period JAN - DEC 27 (precondition already met). The OIL question for a 2027 date names \"9 JAN\" / \"10 JAN\" with no year (the saved OIL keys are 2027-01-09 / 2027-01-10, correct). The record's date string is \"Jan 9 2027\" while its yr field reads 2026.",
+   "pic": "phone-78-4-question-2027.png"
+  },
+  {
+   "text": "83 The paperclip on a desktop table row is a plain span with no tabindex: it cannot take keyboard focus (the window's own paperclip button can).",
+   "pic": ""
+  },
+  {
+   "text": "70 After a \"No\" OIL answer the desktop row's chip still reads \"OIL\" (the window says \"no OIL on its non-working day\"); the chip text does not tell Yes from No.",
+   "pic": "desk-D-admin-2-question-current-no.png"
+  },
+  {
+   "text": "61 In the window a member who is in a group sees the group line \"credited on its non-working day\" even after his own answer is No (his own line reads \"no OIL\"); the group line follows another person's answer.",
+   "pic": "phone-61-5-takeout-question.png"
+  },
+  {
+   "text": "80 A real click outside an OIL question (on the covered card) closes the question only (the popup rule); the window and day stay, nothing behind is opened.",
+   "pic": ""
+  },
+  {
+   "text": "66 Answering the OIL question from the window closes the window (the line then reads the recorded answer when it is reopened).",
+   "pic": "phone-66-6-answered.png"
+  }
+ ]
 }

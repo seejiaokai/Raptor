@@ -231,7 +231,7 @@ export async function fileNew(w, o) {
 export const SAMPLE = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor/4fe0a868-4766-4a61-b47c-1e2d7bfe00d0/scratchpad/sample-doc.png'
 export async function attachDoc(w, file = SAMPLE) {
   const p = w.page
-  const btn = p.locator(WIN).getByRole('button', { name: /Document/ }).first()
+  const btn = p.locator(`${WIN} .docbtn`).first()
   const [fc] = await Promise.all([p.waitForEvent('filechooser'), press(w, btn)])
   await fc.setFiles(file); await sleep(500)
 }
@@ -361,19 +361,20 @@ export async function weekTo(w, page, label) {
   await p.locator('#weekCal button.rc-d').filter({ hasText: new RegExp('^' + day + '$') }).first().tap(); await sleep(900)
   if (await p.locator('#weekCal:visible').count()) { await p.keyboard.press('Escape'); await sleep(300) }
 }
+const unavText = (p, root, di) => p.evaluate(([root, di]) => { const d = document.querySelector(`${root} .day[data-day="${di}"]`); if (!d) return null; const u = d.querySelector('.sec-unav'); return u ? u.innerText.replace(/s+/g, ' ') + ' ## values: ' + [...u.querySelectorAll('input,textarea,[contenteditable]')].map(e => (e.value !== undefined && e.value !== '' ? e.value : e.textContent).trim()).filter(Boolean).join(' | ') : '(no unavailable section)' }, [root, di])
 const reqRows = (p, root, di) => p.evaluate(([root, di]) => [...document.querySelectorAll(`${root} .day[data-day="${di}"] .pl-row.gr-frominput`)].map(r => ((r.querySelector(':scope > .nm .ntx') || {}).textContent || '').trim() + ' [' + (((r.querySelector(':scope > .nm .nm-kind') || {}).textContent) || r.innerText.split('\n')[0]) + '] ' + r.innerText.replace(/\s+/g, ' ').slice(0, 70)), [root, di])
 export async function editDay(w, label, di) {
   const p = w.page
   await weekTo(w, 'editsched', label)
   await showDay(p, di)
-  return { head: await head(p, di), rows: await reqRows(p, '#eWeek', di), week: await p.evaluate(() => window.CURWEEK) }
+  return { head: await head(p, di), rows: await reqRows(p, '#eWeek', di), unav: await unavText(p, '#eWeek', di), week: await p.evaluate(() => window.CURWEEK) }
 }
 export async function issuedDay(w, label, di) {
   const p = w.page
   await weekTo(w, 'viewsched', label)
   await p.evaluate(i => { const d = document.querySelector(`#vWeek .day[data-day="${i}"]`); if (d) d.scrollIntoView({ block: 'start', inline: 'center' }) }, di)
   await sleep(300)
-  return { rows: await reqRows(p, '#vWeek', di), week: await p.evaluate(() => window.CURWEEK), tag: await p.evaluate(i => ((document.querySelector(`#vWeek .day[data-day="${i}"] .verchip`) || {}).innerText || ''), di) }
+  return { rows: await reqRows(p, '#vWeek', di), unav: await unavText(p, '#vWeek', di), week: await p.evaluate(() => window.CURWEEK), tag: await p.evaluate(i => ((document.querySelector(`#vWeek .day[data-day="${i}"] .verchip`) || {}).innerText || ''), di) }
 }
 export async function signAndPublish(w, label, di) {
   const p = w.page
@@ -445,4 +446,16 @@ export async function oilMode(w, on = true) {
     else { await hit(p.locator('#sbMore').first()); await sleep(450); await hit(p.locator('button:visible', { hasText: /^OIL Earn$/ }).first()) }
     await sleep(800)
   } else if (!on && (await isOn())) { await hit(done); await sleep(600) }
+}
+/** every "till <date>" and the words near Ranger in a day of a week surface ('#eWeek' or '#vWeek') — innerText and field values */
+export const dayTill = (p, root, di) => p.evaluate(([root, di]) => { const d = document.querySelector(`${root} .day[data-day="${di}"]`); if (!d) return null; const t = d.innerText.replace(/\s+/g, ' ') + ' | ' + [...d.querySelectorAll('input,textarea')].map(e => e.value).join(' | '); return { till: (t.match(/till \d+ \w+/g) || []), ranger: (t.match(/.{0,30}Ranger.{0,60}/g) || []).slice(0, 3) } }, [root, di])
+/** the Leave War grid cell text for one person on one day (what the issued schedule earned shows there as HO / FO) */
+export async function lwCellText(w, cs, iso = '2026-07-18') {
+  const p = w.page
+  const id = await pid(p, cs)
+  await go(p, 'leavewar')
+  await sleep(1000)
+  const mon = p.locator(`[data-testid="month-${new Date(iso).toLocaleString('en', { month: 'short' }).toUpperCase()}"]`)
+  if (await mon.count()) { await mon.first().click(); await sleep(900) }
+  return p.evaluate(([id, d]) => { const c = document.querySelector(`[data-testid="cell-${id}-${d}"]`); return c ? { text: (c.innerText || '').trim(), cls: c.className.slice(0, 60) } : 'NO CELL DRAWN' }, [id, iso])
 }

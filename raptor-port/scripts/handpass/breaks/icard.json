@@ -241,8 +241,8 @@
   "n": 23,
   "name": "the unanswered OIL line is gone (Astra B51)",
   "file": "src/ui/inputedit.tsx",
-  "find": "{!isNew && r && !oilAnswered(r) && unansweredDay && <div className=\"inped-f\" data-testid=\"oil-unanswered\">",
-  "put": "{false && r && !oilAnswered(r) && unansweredDay && <div className=\"inped-f\" data-testid=\"oil-unanswered\">",
+  "find": "{!isNew && r && unansweredDay && <div className=\"inped-f\" data-testid=\"oil-unanswered\">",
+  "put": "{false && r && unansweredDay && <div className=\"inped-f\" data-testid=\"oil-unanswered\">",
   "tests": [
    "src/ui/groupeditor.test.tsx"
   ]
@@ -251,8 +251,8 @@
   "n": 24,
   "name": "\"Answer…\" is offered to a reader who may not change the input",
   "file": "src/ui/inputedit.tsx",
-  "find": "              {!readOnly && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
-  "put": "              {<button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
+  "find": "              {!readOnly && !oilAnswered(r) && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
+  "put": "              {!oilAnswered(r) && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
   "tests": [
    "src/ui/groupeditor.test.tsx"
   ]
@@ -305,6 +305,26 @@
   "put": "{!isNew && r && <button type=\"button\" className=\"abtn inped-doc\" data-testid=\"inped-docview\"",
   "tests": [
    "src/ui/windowdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the unanswered OIL line is judged by the opened record alone (walker C’s 69)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const unanswered = !isNew && r ? (rows.length > 1 ? rows : [r]).filter(x => oilUnansweredDay(x)) : []",
+  "put": "  const unanswered = !isNew && r ? [r].filter(x => oilUnansweredDay(x)) : []",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "two buttons open the one OIL question on a partly answered input",
+  "file": "src/ui/inputedit.tsx",
+  "find": "              {!readOnly && !oilAnswered(r) && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
+  "put": "              {!readOnly && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
   ]
  }
 ]

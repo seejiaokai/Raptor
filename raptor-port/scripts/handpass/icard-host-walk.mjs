@@ -203,6 +203,14 @@ const expectSix = cards => {
     await page.locator('#inpEditCancel').click(); await page.waitForTimeout(200)
     return { ok: t1 === 'CRM refresher' && focused && /Collecting a new ID/.test(rm), detail: `${t1} | ${rm}` }
   })
+  await step('A7b the app selects no text outside its fields (its standing rule): a mouse drag across a row’s remark selects nothing — walker B’s scenario 55 expected a selection; none was ever possible on this list', async () => {
+    const m = await page.evaluate(() => {
+      const tr = [...document.querySelectorAll('#inBody tr')].find(t => /Collecting a new ID/.test(t.textContent))
+      const td = tr.querySelector('td[data-label="Remarks"]')
+      return { rule: getComputedStyle(td).userSelect, html: getComputedStyle(document.documentElement).userSelect }
+    })
+    return { ok: m.rule === 'none' && m.html === 'none', detail: JSON.stringify(m) }
+  })
   await step('A8 the OIL chip stays on a desktop row and does its own work: the question opens, the window does not', async () => {
     const chip = rowOf('Collecting a new ID').locator('[data-oilrev]')
     await chip.click()

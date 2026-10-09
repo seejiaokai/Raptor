@@ -3408,3 +3408,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** When a control many tests use is replaced: (1) write the new route's own tests first; (2) remove the old control; (3) run every file that mentions it and take the failure list as the inventory; (4) give each test file ONE helper for the new route (open, set a field, save, delete) and restate each test through it; (5) never delete a failing test - where its claim no longer holds, rewrite it to the new claim and say in a comment what it used to say and which decision changed it.
 
 **Principle:** The failing tests after a removal are a free, complete list of the promises the removed thing was keeping; restate each promise for the new door instead of deleting the test that held it.
+
+### Observation 492: A walker's FAIL is reproduced in the running app before any test or fix is written for it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** a helper walking the running app reported one FAIL ("dragging across a row's text opens the item instead of selecting the text"); the host wrote a failing unit test and a fix from the report, and only then tried it in the real browser (Raptor, the input card check)
+**Skill:** systematic-debugging (and the project's bug-check order, "the host reproduces every finding")
+**Type:** open-source
+**Phase/Area:** handling a finding handed back by a helper or a reviewer
+
+**Issue:** The unit test was written first, as the tests-first rule asks, and went red and then green. But the test environment has no stylesheet: it built a text selection that the real app can never hold, because the app switches text selection off everywhere outside form fields by a standing rule. In the real browser the "fix" changed nothing, and the scenario's expectation turned out to be the scenario designer's assumption, not a promise of the app. The fix, its tests and three break tests had to be taken out again.
+
+**Suggested improvement:** Order the steps: (1) reproduce the reported failure in the RUNNING app, by the reported gesture; (2) check the expectation against the governing rule - is the expected behaviour something the app promises?; (3) only then write the failing test, in the environment that can actually hold the failing state (a browser test where the state depends on styles or layout); (4) fix. A red unit test is not a reproduction when the test environment can fabricate a state production cannot reach.
+
+**Principle:** Reproduce where the fault lives before you pin it where it is convenient. A test can go red on a state the product cannot reach, and a fix for an unreachable state is dead code with a green tick.

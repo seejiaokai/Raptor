@@ -1,0 +1,368 @@
+{
+ "walker": "B",
+ "server": "http://localhost:4232/",
+ "counts": {
+  "PASS": 24,
+  "FAIL": 1
+ },
+ "rows": [
+  {
+   "n": 42,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "calendar read \"Jul 22 → Jul 24\"; sheet: \"ATT C — Saber, Jul 22 – Jul 24 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM OML Jul 23 – Jul 25 · both cover Jul 23 – Jul 24 ATT C replaces Keep OML till Jul 25 The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Choose for each clash above Cancel Save\"; saved while sheet up: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25; after Cancel: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25; window still open 1 || sheet after choosing \"ATT C replaces\": \"ATT C — Saber, Jul 22 – Jul 24 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM OML Jul 23 – Jul 25 · both cover Jul 23 – Jul 24 ATT C replaces Keep OML till Jul 25 Left over after it: OML Jul 25 — will be removed Remove those days Keep them The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Cancel Save\"; after replaces + Keep them: ATT C Jul 22→Jul 24 ; OML Jul 25 || day 25 Saber cards: All day SaberOML till 25 Jul || 09:00–12:00 ALL AVAILDUTY Hangar clean-up By Saber ; day 23 Saber cards: till 24 Jul SaberATT C till 24 Jul || 10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber || ONE Undo: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25; Redo: ATT C Jul 22→Jul 24 ; OML Jul 25 || replaces + Remove those days: ATT C Jul 22→Jul 24 || Undo: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25 || sheet after \"Keep OML\": \"ATT C — Saber, Jul 22 – Jul 24 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM OML Jul 23 – Jul 25 · both cover Jul 23 – Jul 24 ATT C replaces Keep OML till Jul 25 The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Cancel Save\"; result: ATT C Jul 22 ; OML Jul 23→Jul 25 || Undo: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25",
+   "pics": [
+    "B42-3-choose-replaces.png",
+    "B42-4-after-replaces.png",
+    "B42-4-day25-oml-tail.png",
+    "B42-7-keep-oml.png"
+   ],
+   "savedPics": [
+    "B42-1-clash-sheet.png",
+    "B42-2-after-cancel.png",
+    "B42-3-replaces-keep-them.png",
+    "B42-4-day25-oml-tail.png",
+    "B42-5-day23.png",
+    "B42-6-replaces-remove.png",
+    "B42-7-keep-oml.png"
+   ]
+  },
+  {
+   "n": 39,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "setup: LL Jul 21 540-660 ; LL Jul 22 0-1439 || read: Jul 21 || after Save at 10:00-12:00: toasts [\"Ranger already has LL on 21 Jul (09:00–11:00) — LL can't overlap it\"]; window still open 1; draft times [\"10:00\",\"12:00\"]; saved: LL Jul 21 540-660 ; LL Jul 22 0-1439 || after retry 11:00-12:00: toasts [\"Input updated\"]; saved: LL Jul 21 540-660 ; LL Jul 21 660-720 || Undo: LL Jul 21 540-660 ; LL Jul 22 0-1439; Redo: LL Jul 21 540-660 ; LL Jul 21 660-720",
+   "pics": [
+    "B39-1-refused.png"
+   ],
+   "savedPics": [
+    "B39-1-refused.png",
+    "B39-2-retry.png"
+   ]
+  },
+  {
+   "n": 40,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "setup: ATT C Jul 21 540-660 ; LL Jul 22 0-1439 || overlapping 10:00-12:00: toasts [\"Saber is on ATT C on 21 Jul (09:00–11:00) — leave can't go over a medical\"]; window open 1; saved: ATT C Jul 21 540-660 ; LL Jul 22 0-1439 || non-overlapping 11:00-12:00: toasts [\"Input updated\"]; saved: ATT C Jul 21 540-660 ; LL Jul 21 660-720 || Undo: ATT C Jul 21 540-660 ; LL Jul 22 0-1439; Redo: ATT C Jul 21 540-660 ; LL Jul 21 660-720",
+   "pics": [
+    "B40-1-refused.png"
+   ],
+   "savedPics": [
+    "B40-1-refused.png",
+    "B40-2-retry.png"
+   ]
+  },
+  {
+   "n": 43,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "setup: ATT C Jul 27 0-1439 ; LL Jul 23 0-1439 || read: Jul 23 || after Save: toasts [\"Input updated\"]; saved: ATT C Jul 23 am ; LL Jul 23 pm || day 23 cards: AM RangerATT C || LATE PM RangerLL || 10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber || Undo: ATT C Jul 27 0-1439 ; LL Jul 23 0-1439; Redo: ATT C Jul 23 am ; LL Jul 23 pm || (the leave balance itself is not readable: the demo carries no counter on the Leave War; the stored LL became PM, i.e. the morning is returned)",
+   "pics": [
+    "B43-2-day23-cards.png"
+   ],
+   "savedPics": [
+    "B43-1-after-save-press.png",
+    "B43-2-day23-cards.png"
+   ]
+  },
+  {
+   "n": 44,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filing summary: Upchit — Saber, Jul 20 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 22 → now ends Jul 19 Fit for full duty from Jul 20. STILL ON FILE AFTER IT — CHOOSE FOR EACH OML Jul 25 – Jul 27 Keep Remove Choose Keep or Remove for each entry above Cancel Save upchit || after filing the upchit on 20 Jul (Keep OML): ATT C Jul 13→Jul 19 [till 19 Jul] ; OML Jul 25→Jul 27 [till 27 Jul] ; Upchit Jul 20 || calendar Jul 20 -> Jul 17; summary before saving: \"Upchit — Saber, Jul 17 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 19 → now ends Jul 16 Fit for full duty from Jul 17. STILL ON FILE AFTER IT — CHOOSE FOR EACH OML Jul 25 – Jul 27 Keep Remove Choose Keep or Remove for each entry above Cancel Save upchit\"; saved while summary up: unchanged || after Cancel: unchanged; window open 1 || after confirming (Keep): ATT C Jul 13→Jul 16 [till 16 Jul] ; OML Jul 25→Jul 27 [till 27 Jul] ; Upchit Jul 17 || medical tab, Saber lines: cannot fly as of 13 Jul Saber IP ATT C till 16 Jul 2 documents || 2 documents Placed by Saber · 10 Oct 26, 01:56 · changed by Saber · 10 Oct 26, 01:56 Grit C ATT C till 17 Jul ; headers: MEDICALLY DOWN, PENDING UPCHIT, UPCHIT COMPLETE || list rows: Saber 13 Jul 16 Jul ATT C till 16 Jul Placed by Saber · 10 Oct 26, 01:56 · changed by Sabe | Saber 17 Jul UPCHIT Placed by Saber · 10 Oct 26, 01:56 · changed by Saber · 10 Oct 26, 01: | Saber 25 Jul 27 Jul OML till 27 Jul Placed by Saber · 10 Oct 26, 01:56 now  || Undo: back to before the move || Redo: same as confirmed",
+   "pics": [
+    "B44-1-summary-before-save.png"
+   ],
+   "savedPics": [
+    "B44-1-summary-before-save.png",
+    "B44-2-summary-keep-chosen.png",
+    "B44-3-medical-tab.png",
+    "B44-4-list.png"
+   ]
+  },
+  {
+   "n": 30,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed Duty title \"Safety brief Z\" || -> Meeting: title field present, value \"Safety brief Z\"; saved type Meeting title \"Safety brief Z\"; day card: Saber|Meeting|amb|title=Safety brief Z|rmk=null|09:00–10:00 || -> LL: title field absent; saved type LL title undefined; day card: Saber|LL|red|title=null|rmk=null|09:00–10:00 || -> Duty: title field present, value \"Duty\"; saved type Duty title undefined; day card: Saber|Duty|amb|title=null|rmk=null|09:00–10:00 || Undo -> LL \"\"; Redo -> Duty \"\"",
+   "pics": [],
+   "savedPics": [
+    "B30-meeting.png",
+    "B30-ll.png",
+    "B30-duty-again.png"
+   ]
+  },
+  {
+   "n": 31,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "Duty timed->all day: was ticked false; saved allday true 0-1439; card Duty|All day|title=AllDay test|rmk=null || Duty all day->timed: reopened ticked true; saved allday false 540-600; card Duty|09:00–10:00|title=AllDay test|rmk=null || LL -> AM: was ALL DAY; saved half am 0-720; reopened with \"AM\" selected (times 00:00/12:00); card LL|AM|title=null|rmk=null || LL -> PM: was AM; saved half pm 721-1439; reopened with \"PM\" selected (times 12:01/23:59); card LL|PM|title=null|rmk=null || LL -> Custom: was PM; saved half null 540-660; reopened with \"CUSTOM\" selected (times 09:00/11:00); card LL|09:00–11:00|title=null|rmk=null || LL -> All day: was CUSTOM; saved half null 0-1439; reopened with \"ALL DAY\" selected (times 06:00/18:00); card LL|All day|title=null|rmk=null || PM chosen, then tapped 23 Jul in the calendar: selected span \"PM\", read \"Jul 23\" || saved Jul 23 half pm || checks [true,true,true,true,true,true,true,true]",
+   "pics": [],
+   "savedPics": [
+    "B31-1-duty-allday.png",
+    "B31-2-span-after-date-tap.png"
+   ]
+  },
+  {
+   "n": 33,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "opens on: Jul 20 || tap saved date 20: \"Jul 20\"; then 22: \"Jul 20 → Jul 22\" || saved Jul 20→Jul 22 || later 24: \"Jul 24\"; earlier 21: \"Jul 21\"; end 23: \"Jul 21 → Jul 23\"; painted: 2026-07-21:rc-d s 2026-07-23:rc-d e || saved Jul 21→Jul 23 || Undo -> Jul 20→Jul 22",
+   "pics": [],
+   "savedPics": [
+    "B33-1-two-taps.png",
+    "B33-2-reversed.png"
+   ]
+  },
+  {
+   "n": 34,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed Jul 29→Jul 31 || window opens on: Jul 29 → Jul 31 || after two taps: Aug 2 → Aug 4 || saved Aug 2→Aug 4 (OIL question asked true) || Range-test cards per day: {\"2026-07-29\":0,\"2026-07-30\":0,\"2026-07-31\":0,\"2026-08-02\":1,\"2026-08-03\":1,\"2026-08-04\":1} || list rows for it: 1 — \"Saber 2 Aug 09:00 4 Aug 10:00 Range test DUTY LATEtill 4 Aug Placed by Saber · 10 Oct 26, 02:10 · changed by Saber · 10 \" || Undo -> Jul 29→Jul 31; Redo -> Aug 2→Aug 4 || after one tap: Aug 3 || shortened -> Aug 3 (OIL asked false) || cards per day: {\"2026-08-02\":0,\"2026-08-03\":1,\"2026-08-04\":0} || Undo -> Aug 2→Aug 4; Redo -> Aug 3",
+   "pics": [],
+   "savedPics": [
+    "B34-1-range-picked.png",
+    "B34-2-aug4-card.png",
+    "B34-3-list.png"
+   ]
+  },
+  {
+   "n": 35,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "filed Jul 20→Jul 22 remark \"Travel till 22 Jul Bangkok\" || window remark box: \"Travel till 22 Jul Bangkok\" || read: Jul 20 → Jul 24; remark box before save: \"Travel till 22 Jul Bangkok\" || saved Jul 20→Jul 24 remark \"Travel till 24 Jul Bangkok\" || card on 24 Jul: Duty|09:00–10:00|title=Token test|rmk=Travel till 24 Jul Bangkok || remarks-only edit saved \"Travel till 24 Jul Bangkok and back, bring ID\" Jul 20→Jul 24 || Undo -> \"Travel till 24 Jul Bangkok\"",
+   "pics": [],
+   "savedPics": [
+    "B35-1-day24.png"
+   ]
+  },
+  {
+   "n": 36,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed: one has remark \"Bring boots and water\", two has remark \"\" || Rmk one: opened remark \"Bring boots and water\"; after Cancel \"Bring boots and water\"; read \"Jul 21 → Jul 22\"; remark box before save \"Bring boots and water\"; saved Jul 21→Jul 22 remark \"Bring boots and water\"; card on 22 Jul: Saber|Duty|amb|title=Rmk one|rmk=Bring boots and water|09:00–10:00 || Rmk two: opened remark \"\"; after Cancel \"\"; read \"Jul 21 → Jul 22\"; remark box before save \"\"; saved Jul 21→Jul 22 remark \"\"; card on 22 Jul: Saber|Duty|amb|title=Rmk two|rmk=null|11:00–12:00 || Undo -> Jul 20",
+   "pics": [],
+   "savedPics": [
+    "B36-Rmkone-picked.png",
+    "B36-Rmktwo-picked.png"
+   ]
+  },
+  {
+   "n": 38,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "declared PH 23 Jul (err \"\") and Off 24 Jul (err \"\") || Event filed: Event Jul 21 oil=null || PH move: question asked true: \"OIL — Saber, Move test ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 23 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work o\"; saved while asked: Event Jul 21 oil=null || after answering Yes: Event Jul 23 oil={\"2026-07-23\":0.5} || Undo: Event Jul 21 oil=null; Redo: Event Jul 23 oil={\"2026-07-23\":0.5} || Off-day move: OIL question asked false; saved: Event Jul 24 oil={\"2026-07-23\":0.5} || on the Off day (24 Jul): row OIL chip count 0 \"\"; window OIL line \"\"; window text near OIL: OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr || Undo: Event Jul 23 oil={\"2026-07-23\":0.5}; Redo: Event Jul 24 oil={\"2026-07-23\":0.5} || a second weekday Event (22 Jul) moved straight onto the Off day 24 Jul: OIL question asked false; saved date Jul 24, oil null || OBSERVATION: the saved record still carries oil={2026-07-23:0.5} (read from window.INPUTS) although it now sits on 24 Jul; no chip and no OIL line is drawn",
+   "pics": [
+    "B38-1-ph-question.png"
+   ],
+   "savedPics": [
+    "B38-1-ph-question.png",
+    "B38-2-off-day.png",
+    "B38-3-off-day-window.png",
+    "B38-4-second-event-off-day.png"
+   ]
+  },
+  {
+   "n": 41,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "filed ATT C Jul 13→Jul 15 remark \"Boots check\" docs \"doc-c1c35a39-f75b-4fab-b56f-31a64e919c29\" || Type choices offered: HL,OML,ATT C,ATT B || after choosing OML: 1 document chip(s), remark box \"Boots check\" || saved: OML Jul 13→Jul 15 remark \"Boots check\" docs \"doc-c1c35a39-f75b-4fab-b56f-31a64e919c29\" || Medical view: cannot fly as of 13 Jul Ranger IP OML till 15 Jul Boots check Placed by Ranger · 10 Oct 26, 02:17 · changed by Ranger · 10 Oct 26, 02:17 || Undo -> ATT C || unrelated choices offered: []",
+   "pics": [],
+   "savedPics": [
+    "B41-1-retyped.png",
+    "B41-2-medical.png"
+   ]
+  },
+  {
+   "n": 45,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "setup: ATT C Jul 13→Jul 19 ; Upchit Jul 20 || two dates picked: read \"Jul 17 → Jul 18\"; Save -> toasts [\"An upchit is a single date — pick the day he is medically up\"]; summary up 0; saved: unchanged; window open 1 || one date 17 Jul: read \"Jul 17\"; summary: \"Upchit — Ranger, Jul 17 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 19 → now ends Jul 16 Fit for full duty from Jul 17. Cancel Save upchit\" || after confirming: ATT C Jul 13→Jul 16 ; Upchit Jul 17; toasts [\"An upchit is a single date — pick the day he is medically up\",\"Input updated\"] || Undo -> ATT C Jul 13→Jul 19 ; Upchit Jul 20",
+   "pics": [
+    "B45-1-range-refused.png"
+   ],
+   "savedPics": [
+    "B45-1-range-refused.png",
+    "B45-2-summary.png"
+   ]
+  },
+  {
+   "n": 46,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed ATT C with 1 document: stored docs 1 || window: 1 document chip(s) || paperclip: viewer true, 1 document element(s) || after Add: 2 chip(s) || saved: stored docs 3 || next document: \"Saber · ATT C · Jul 20 ✕ medically down — cannot report to work · sample-doc2.png Placed by Saber · 10 Oct 26, 02:14 · c\" || reopened: 2 chips; viewer shows 1 document element(s), text \"Saber · ATT C · Jul 20 ✕ medically down — cannot report to work · sample-doc.png\" || after removing one: 1 chip(s) || reopened after removing one: 1 chip(s) || saved: stored docs 1 || after removing the last: 0 chip(s) || Save with no file left: toasts [\"Keep at least one document on this entry — add the replacement before removing the last file\"]; sheet \"\"; window open 1; stored docs 1 || retype Duty -> ATT C with no document: question \"No medical document — Saber, ATT C ✕ THIS ATT C HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload\"; saved type while asked Duty || after cancelling the question: saved type Duty; window open 1 || after \"No document\": saved type ATT C, docs 0",
+   "pics": [
+    "B46-3-viewer-two.png"
+   ],
+   "savedPics": [
+    "B46-1-viewer-one.png",
+    "B46-2-two-chips.png",
+    "B46-3-viewer-two.png",
+    "B46-3b-viewer-second.png",
+    "B46-4-remove-last.png",
+    "B46-5-retype-question.png"
+   ]
+  },
+  {
+   "n": 47,
+   "size": "390x844 touch",
+   "role": "Saber (admin) then Ranger (member)",
+   "verdict": "PASS",
+   "saw": "bid made on 27 Jul; Inputs holds LL: null || after Approve, Inputs holds LL: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 27\",\"remarks\":\"on 27 Jul\",\"lw\":\"y2026\",\"half\":null,\"by\":\"stiff\"} || war cells after approve: {\"07-27\":\" act | LL | \",\"07-28\":\" act | | \"} || remark-only edit: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 27\",\"remarks\":\"war remark one\",\"lw\":\"y2026\",\"half\":null,\"by\":\"stiff\"} || war cells after remark: {\"07-27\":\" act | LL | \",\"07-28\":\" act | | \"} || Undo -> remark \"on 27 Jul\"; Redo -> \"war remark one\" || admin date change: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 28\",\"remarks\":\"war remark one\",\"lw\":\"y2026\",\"half\":null,\"by\":\"stiff\"} || war cells after admin date change: {\"07-27\":\" act | | \",\"07-28\":\" act | LL | \"} || Ranger date change: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 29\",\"remarks\":\"war remark one\",\"lw\":null,\"half\":null,\"by\":\"stiff\"} || war cells after Ranger date change: {\"07-28\":\"locked | | \",\"07-29\":\"locked act | LL | \"} || after Delete: null || war cells after delete: {\"07-27\":\"locked | | \",\"07-28\":\"locked | | \",\"07-29\":\"locked | | \"} || Undo of the delete: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 29\",\"remarks\":\"war remark one\",\"lw\":null,\"half\":null,\"by\":\"stiff\"} || checks [true,true,true,true,true,true]",
+   "pics": [
+    "B47-4-war-after-ranger.png"
+   ],
+   "savedPics": [
+    "B47-1-bid-made.png",
+    "B47-2-approved.png",
+    "B47-3-war-after-date-change.png",
+    "B47-4-war-after-ranger.png",
+    "B47-5-war-after-delete.png"
+   ]
+  },
+  {
+   "n": 48,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed: Ace:Trio|first remark|Jul 20|600-660 ; Blade:Trio|first remark|Jul 20|600-660 ; Cinch:Trio|first remark|Jul 20|600-660 || window head \"Ace +2 · 20 Jul\"; read \"Jul 21 → Jul 22\"; saved: Ace:Trio two|second remark|Jul 21→Jul 22|780-840 ; Blade:Trio two|second remark|Jul 21→Jul 22|780-840 ; Cinch:Trio two|second remark|Jul 21→Jul 22|780-840 || list rows for it: 1 || delete question: \"Delete this input for all 3 people? Delete Keep\"; after Keep: 3 records, window open 1 || after confirmed Delete: 0 records || after ONE Undo: Ace:Trio two|second remark|Jul 21→Jul 22|780-840 ; Blade:Trio two|second remark|Jul 21→Jul 22|780-840 ; Cinch:Trio two|second remark|Jul 21→Jul 22|780-840 || Redo: 0 records",
+   "pics": [
+    "B48-2-delete-question.png"
+   ],
+   "savedPics": [
+    "B48-1-shared-edited.png",
+    "B48-2-delete-question.png"
+   ]
+  },
+  {
+   "n": 49,
+   "size": "390x844 touch",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "ALLAVAIL: start Duty person=allavail \"undefined\" Jul 25 540-720 || window: person select value \"allavail\", Several-people switch present 1; kinds offered: LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Fly with,Personal,Appointment,Duty,Event,OD,Other || read Jul 27 || saved: person=allavail \"Changed title\" \"changed remark\" Jul 27 780-900 || range 27-29 Save: toasts [\"ALL AVAIL is filed one day at a time\"]; sheets 0; saved Jul 27 person=allavail; window open 1 || kind LL: toasts [\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Duty person=allavail || kind ATT C: toasts [\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Duty person=allavail || kind OML: toasts [\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Duty person=allavail || Several people switched on (0 lit), Save: toasts [\"ALL AVAIL is filed on its own — it already stands for whoever is free\"]; saved person=allavail; records titled so: 1 || checks [true,true,true,true,true,true] || ALL: ALL: start Event person=all \"Sports afternoon\" Jul 22 900-1020 || window: person select value \"all\", Several-people switch present 1; kinds offered: LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Fly with,Personal,Appointment,Duty,Event,OD,Other || read Jul 27 || saved: person=all \"Changed title\" \"changed remark\" Jul 27 780-900 || range 27-29 Save: toasts [\"ALL is filed one day at a time\"]; sheets 0; saved Jul 27 person=all; window open 1 || kind LL: toasts [\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Event person=all || kind ATT C: toasts [\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Event person=all || kind OML: toasts [\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Event person=all || Several people switched on (0 lit), Save: toasts [\"ALL is filed on its own — it already stands for whoever is free\"]; saved person=all; records titled so: 2 || checks [true,true,true,true,true,false] || NOTE: ALL AVAIL (row 49) and ALL (row 49b) walked in one script; 49b printed FAIL only because its own check counted the ALL AVAIL input already retitled \"Changed title\" in the same world (2 records with that title, one each) — a script miss; every screen fact in both runs agreed.",
+   "pics": [
+    "B49-ALLAVAIL-range.png"
+   ],
+   "savedPics": [
+    "B49-ALLAVAIL-window.png",
+    "B49-ALLAVAIL-range.png",
+    "B49-ALL-window.png",
+    "B49-ALL-range.png"
+   ]
+  },
+  {
+   "n": 50,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "date: question up true on top true \"This input has unsaved changes. Open Saber’s input and lose them? Discard and open Keep editing\"; after Keep editing: title \"Input A\", draft Jul 21; after Discard: window shows title \"Input B\" remark \"b remark\" dates \"Jul 22\"; A saved unchanged: Jul 20 a remark person true || person: question up true on top true \"This input has unsaved changes. Open Saber’s input and lose them? Discard and open Keep editing\"; after Keep editing: title \"Input A\", draft bane; after Discard: window shows title \"Input B\" remark \"b remark\" dates \"Jul 22\"; A saved unchanged: Jul 20 a remark person true || remark: question up true on top true \"This input has unsaved changes. Open Saber’s input and lose them? Discard and open Keep editing\"; after Keep editing: title \"Input A\", draft a remark edited; after Discard: window shows title \"Input B\" remark \"b remark\" dates \"Jul 22\"; A saved unchanged: Jul 20 a remark person true || Cancel after a date change: A is Jul 20 || checks [true,true,true,true]",
+   "pics": [
+    "B50-date-question.png"
+   ],
+   "savedPics": [
+    "B50-date-question.png",
+    "B50-person-question.png",
+    "B50-remark-question.png"
+   ]
+  },
+  {
+   "n": 51,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "window opens on Jul 20 || window moved from y=96 to y=196 || bar dragged to 22 Jul: saved record now Jul 22; window still open 1; its calendar reads \"Jul 22\"; remark box \"typed while behind\" || after Save: Jul 22 remark \"typed while behind\" || Undo -> Jul 22 \"\"",
+   "pics": [
+    "B51-1-after-bar-drag.png"
+   ],
+   "savedPics": [
+    "B51-1-after-bar-drag.png"
+   ]
+  },
+  {
+   "n": 52,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "[mine-after-new-date] tapped 21 Jul (window reads \"Jul 21\"), then bar dragged to 23 Jul: saved is Jul 23; clash shown true: \"Changed while this window was open start date — theirs 23 Jul, yours 21 Jul Keep mine Take theirs\" || [mine-after-new-date] Save with the clash outstanding: toasts [\"Choose which to keep first — your change, or the one made while this window was open\"]; saved Jul 23; window open 1; clash still up 1 || [mine-after-new-date] chose mine: window read \"Jul 21\", final Jul 21 || [theirs-after-new-date] tapped 21 Jul (window reads \"Jul 21\"), then bar dragged to 23 Jul: saved is Jul 23; clash shown true: \"Changed while this window was open start date — theirs 23 Jul, yours 21 Jul Keep mine Take theirs\" || [theirs-after-new-date] Save with the clash outstanding: toasts [\"Choose which to keep first — your change, or the one made while this window was open\"]; saved Jul 23; window open 1; clash still up 1 || [theirs-after-new-date] chose theirs: window read \"Jul 23\", final Jul 23 || [saved-day-tap] tapped 20 Jul (window reads \"Jul 20\"), then bar dragged to 23 Jul: saved is Jul 23; clash shown true: \"Changed while this window was open start date — theirs 23 Jul, yours 20 Jul Keep mine Take theirs\" || [saved-day-tap] Save with the clash outstanding: toasts [\"Choose which to keep first — your change, or the one made while this window was open\"]; saved Jul 23; window open 1; clash still up 1 || checks [true,true,true,true,true,true]",
+   "pics": [
+    "B52-mine-after-new-date-clash.png"
+   ],
+   "savedPics": [
+    "B52-mine-after-new-date-clash.png",
+    "B52-theirs-after-new-date-clash.png",
+    "B52-saved-day-tap-clash.png"
+   ]
+  },
+  {
+   "n": 53,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "Undo with the editor open: editor closed true; input gone true; message(s) [\"That input was removed while its window was open — the window has closed\"]; INPUTS 53 -> 52 || Redo: input back true; remark \"saved remark\"; window open 0; INPUTS 53 || explained=true",
+   "pics": [
+    "B53-1-after-undo.png"
+   ],
+   "savedPics": [
+    "B53-1-after-undo.png",
+    "B53-2-after-redo.png"
+   ]
+  },
+  {
+   "n": 55,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "FAIL",
+   "saw": "Name: windows 1 opened on \"Cell test\" || Start: windows 1 opened on \"Cell test\" || End: windows 1 opened on \"Cell test\" || Type: windows 1 opened on \"Cell test\" || Remarks: windows 1 opened on \"Cell test\" || Modified: windows 1 opened on \"Cell test\" || title text: windows 1 || remark text sits at {\"x\":597.703125,\"y\":434.296875,\"w\":152.15625,\"h\":16} || drag-select over the remark: selection \"\"; window opened 1; clipboard after Ctrl+C \"\" || record unchanged: true; INPUTS still 2 of 2 || checks [true,true,true,true,true,true,true,false,true]",
+   "pics": [
+    "B55-1-text-selected.png"
+   ],
+   "savedPics": [
+    "B55-1-text-selected.png"
+   ]
+  },
+  {
+   "n": 57,
+   "size": "390x844 touch",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "added Zed=pmv1ao0iwq4oe58 Yap=pmv1ao1gorrufbm || Yap's past input: person pmv1ao1gorrufbm; Saber's duty imv1ao6dy6hnzge || Zed archived: true || Person list groups: [\"Whoever is free that day: ALL AVAIL,ALL\",\"Posted out / archived: Zed\"]; Zed offered: 1 || after saving with Zed: person Zed (the archived man) || delete button now says: \"Tap again to delete Yap\"; note: \"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.\" || after the second press, toasts [\"Yap archived\",\"Yap deleted\"] || Yap deleted: false; his past input still stored: true (person pmv1ao1gorrufbm) || window showed: select shows \"Yap\" (value pmv1ao1gorrufbm); after saving only the remark: person pmv1ao1gorrufbm (was pmv1ao1gorrufbm), remark \"remark edited after delete\" || the list card names the person \"Yap\" || checks [true,true,true]",
+   "pics": [
+    "B57-1-person-list.png"
+   ],
+   "savedPics": [
+    "B57-1-person-list.png",
+    "B57-3-delete.png",
+    "B57-2-deleted-persons-input.png"
+   ]
+  },
+  {
+   "n": 58,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "before Undo/Redo: Saber|Duty|Persist one edited|P58 second|Jul 22|660-750|docs 0 ;; Ace|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Blade|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Cinch|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Saber|ATT C|undefined|P58 med|Jul 24|0-1439|docs 2 || Undo brought back \"Persist del\": true; Redo -> state same as before: true || after reload: Saber|Duty|Persist one edited|P58 second|Jul 22|660-750|docs 0 ;; Ace|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Blade|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Cinch|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Saber|ATT C|undefined|P58 med|Jul 24|0-1439|docs 2 || list rows after reload (All dates): {\"Persist one edited\":1,\"Persist trio edited\":1,\"Persist del\":0}; the medical row has a paperclip: 1 || medical window after reload: 2 document chip(s); viewer counter 1 of 2",
+   "pics": [],
+   "savedPics": [
+    "B58-1-list-after-reload.png",
+    "B58-2-documents-after-reload.png"
+   ]
+  }
+ ],
+ "errors": []
+}

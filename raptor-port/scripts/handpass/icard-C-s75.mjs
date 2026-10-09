@@ -25,10 +25,10 @@ async function setup(label) {
   const base = [await L.editDay(w, 'Jul 20', 0), await L.editDay(w, 'Jul 20', 1)]
   await L.signDay(p, 1, 1)
   const b0 = await L.editDay(w, 'Jul 20', 0)
-  parts.push(`${label}: baseline Mon: ${hs(b0.head)}; rows ${JSON.stringify(b0.rows.filter(r => /Ranger/.test(r)))}`)
+  parts.push(`${label}: baseline Mon: ${hs(b0.head)}; Ranger text ${JSON.stringify((((b0.unav||'').split('## values: ')[1]||'').split(' | ').filter(x => /till/.test(x))))}`)
   pics.push(await L.pic(w, `75-${label}-1-baseline-mon`))
   const b1 = await L.editDay(w, 'Jul 20', 1)
-  parts.push(`${label}: baseline Tue: ${hs(b1.head)}; rows ${JSON.stringify(b1.rows.filter(r => /Ranger/.test(r)))}`)
+  parts.push(`${label}: baseline Tue: ${hs(b1.head)}; Ranger text ${JSON.stringify((((b1.unav||'').split('## values: ')[1]||'').split(' | ').filter(x => /till/.test(x))))}`)
   await L.switchUser(w, 'us')
   return { rec, b0, b1 }
 }
@@ -52,18 +52,18 @@ try {
   pics.push(await L.pic(w, '75-W1-3-tue-after'))
   const d2 = await L.editDay(w, 'Jul 20', 2)
   pics.push(await L.pic(w, '75-W1-4-wed-after'))
-  const i0 = await L.issuedDay(w, 'Jul 20', 0), i1 = await L.issuedDay(w, 'Jul 20', 1)
+  const i0 = await L.issuedDay(w, 'Jul 20', 0); i0.t = await L.dayTill(w.page, '#vWeek', 0); const i1 = await L.issuedDay(w, 'Jul 20', 1); i1.t = await L.dayTill(w.page, '#vWeek', 1)
   pics.push(await L.pic(w, '75-W1-5-issued-tue'))
-  const mine = rs => rs.filter(r => /Ranger/.test(r))
-  parts.push(`W1 working Mon: ${hs(d0.head)}; Ranger rows ${JSON.stringify(mine(d0.rows))} || working Tue: ${hs(d1.head)}; Ranger rows ${JSON.stringify(mine(d1.rows))} || working Wed 22 (unpublished): chip "${d2.head.pending}"; Ranger rows ${JSON.stringify(mine(d2.rows))} || ISSUED Mon ${JSON.stringify(mine(i0.rows))} || ISSUED Tue ${JSON.stringify(mine(i1.rows))}`)
+  const mine = d => ((d.unav || '').split('## values: ')[1] || '').split(' | ').filter(x => /till|Ranger|Local|leave/i.test(x))
+  parts.push(`W1 working Mon: ${hs(d0.head)}; Ranger rows ${JSON.stringify(mine(d0))} || working Tue: ${hs(d1.head)}; Ranger rows ${JSON.stringify(mine(d1))} || working Wed 22 (unpublished): chip "${d2.head.pending}"; Ranger rows ${JSON.stringify(mine(d2))} || ISSUED (View-only) Mon ${JSON.stringify(i0.t)} || ISSUED Tue ${JSON.stringify(i1.t)}`)
   for (const [n, d] of [['Mon', d0], ['Tue', d1]]) {
     if (!/pending/i.test(d.head.pending)) fail(`${n}: no pending chip (${d.head.pending})`)
     if (!d.head.signs.every(x => /name/i.test(x))) fail(`${n}: working sign-offs not cleared (${d.head.signs.join('/')})`)
     if (!/Publish AL/i.test(d.head.alpub)) fail(`${n}: no Publish AL button`)
-    if (!mine(d.rows).some(r => /22 Jul/.test(r))) fail(`${n}: working copy row lacks the new end wording till 22 Jul: ${JSON.stringify(mine(d.rows))}`)
+    if (!mine(d).some(r => /22 Jul/.test(r))) fail(`${n}: working copy row lacks the new end wording till 22 Jul: ${JSON.stringify(mine(d))}`)
   }
-  if (!mine(d2.rows).length) fail('Wed 22 is not covered by the extended leave')
-  for (const [n, d] of [['Mon', i0], ['Tue', i1]]) if (!mine(d.rows).some(r => /21 Jul/.test(r)) || mine(d.rows).some(r => /22 Jul/.test(r))) fail(`${n}: issued face lost its issued words (till 21 Jul): ${JSON.stringify(mine(d.rows))}`)
+  if (!mine(d2).length) fail('Wed 22 is not covered by the extended leave')
+  for (const [n, d] of [['Mon', i0], ['Tue', i1]]) if (!(d.t && d.t.till.includes('till 21 Jul')) || (d.t && d.t.till.includes('till 22 Jul'))) fail(`${n}: issued face lost its issued words (till 21 Jul): ${JSON.stringify(d.t)}`)
   await w.browser.close(); errs.push(...w.errors)
   // W2: undo / redo
   const s2 = await setup('W2')
@@ -80,11 +80,11 @@ try {
   const f1 = await L.editDay(w, 'Jul 20', 1)
   const f2 = await L.editDay(w, 'Jul 20', 2)
   pics.push(await L.pic(w, '75-W2-6-wed-after-undo'))
-  parts.push(`W2 after Undo: Mon ${hs(f0.head)}; Tue ${hs(f1.head)}; Wed Ranger rows ${JSON.stringify(f2.rows.filter(x => /Ranger/.test(x)))}`)
+  parts.push(`W2 after Undo: Mon ${hs(f0.head)}; Tue ${hs(f1.head)}; Wed Ranger text ${JSON.stringify((((f2.unav||'').split('## values: ')[1]||'').split(' | ').filter(x => /till/.test(x))))}`)
   for (const [n, d, b] of [['Mon', f0, s2.b0], ['Tue', f1, s2.b1]]) {
     if (/pending/i.test(d.head.pending) || d.head.alpub) fail(`${n}: pending/AL button remained after Undo`)
   }
-  if (f2.rows.some(x => /Ranger/.test(x))) fail('Wed 22 still carries the leave after Undo')
+  if (/till/.test(f2.unav || '')) fail('Wed 22 still carries the leave after Undo')
   errs.push(...w.errors)
   L.row(75, 'phone 390x844', 'Member (Ranger) edits; Admin (Saber) publishes/inspects', verdict, parts.join(' || '), pics)
 } catch (e) {

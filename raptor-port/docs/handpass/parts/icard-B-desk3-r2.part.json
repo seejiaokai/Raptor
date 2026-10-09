@@ -1,0 +1,15 @@
+{
+ "rows": [
+  {
+   "n": 55,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "FAIL",
+   "saw": "Name: windows 1 opened on \"Cell test\" || Start: windows 1 opened on \"Cell test\" || End: windows 1 opened on \"Cell test\" || Type: windows 1 opened on \"Cell test\" || Remarks: windows 1 opened on \"Cell test\" || Modified: windows 1 opened on \"Cell test\" || title text: windows 1 || remark text sits at {\"x\":597.703125,\"y\":434.296875,\"w\":152.15625,\"h\":16} || drag-select over the remark: selection \"\"; window opened 1; clipboard after Ctrl+C \"\" || record unchanged: true; INPUTS still 2 of 2 || checks [true,true,true,true,true,true,true,false,true]",
+   "pics": [
+    "B55-1-text-selected.png"
+   ]
+  }
+ ],
+ "errs": []
+}
