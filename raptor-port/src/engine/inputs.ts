@@ -428,7 +428,10 @@ export function offWord(inp:any){const m=inpMeta(inp.type);
      legend; a type that is already an ordinary word ("Training") would only
      read as "training (Training)", so it does not */
   const t=inpType(inp.type), abbr=m.name.toLowerCase()!==t.toLowerCase();
-  return `${m.name}${abbr?` (${t})`:''}${half}`+(inp.remarks?' — '+inp.remarks:'');}
+  /* its own title leads, where it has one ([INPUT-OWN-TITLE]; Sol's read of the code, 2): "Exercise Darwin — overseas
+     duty (OD)" — the kind's words stay, they are the reason the slot is closed */
+  const tt=titleOf(inp.type,inp.title);
+  return `${tt?tt+' — ':''}${m.name}${abbr?` (${t})`:''}${half}`+(inp.remarks?' — '+inp.remarks:'');}
 /* "Office", "Available fly" and "Available duty" are gone (owner decision, Aug 26).
    The first was a desk marker nobody read off the programme; the other two were
    OFFERS — a man saying what he WANTED rather than where he had to be. With them

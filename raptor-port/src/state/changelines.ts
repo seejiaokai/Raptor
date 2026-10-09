@@ -121,7 +121,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
      `itype`, and a change of kind has its own line below */
   const who = cs(a.person), what = inpLabel(a)
   const base = (x: any) => at({ date: sa && sa.date, end: sa && sa.end, wdate: sb && sb.date, wend: sb && sb.end, ...x })
-  if (!same(a.person, b.person)) logAction(null, `${b.type} ${spanWords(sb)} · whose`, base({ from: cs(b.person), to: cs(a.person) }))
+  if (!same(a.person, b.person)) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(b.person), to: cs(a.person) }))
   if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type) }))
   if (!same(sa, sb)) logAction(null, `${who} · ${what}${tail} · dates`, base({ from: spanWords(sb), to: spanWords(sa) }))
   /* the times as a reader sees them — stored times rewritten under an all-day record are no change to it ([HIST-PHONE-HIDE]

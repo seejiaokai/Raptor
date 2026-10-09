@@ -12,15 +12,15 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor, oilGate, draftOf, commitInputEdit, setInpField } from './inputedit'
+import { InputEditor, oilGate, draftOf, commitInputEdit, setInpField, reassignInput } from './inputedit'
 import { inputRows, csvText } from './export'
-import { oilRequestName } from './oilmode'
+import { oilRequestName, oilClaimWhat } from './oilmode'
 import { dayEntries } from './InputsCal'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
 import { me } from '../state/perms'
-import { INPUTS, INPUT_TYPES, titledKind } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, titledKind, offWord } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { ELOG } from '../engine/editlog'
@@ -552,5 +552,56 @@ describe('the List’s form, filed for several people (Astra 2)', () => {
     const next = INPUTS.filter((r: any) => !had.has(String(r.iid)))
     expect(next.length).toBeGreaterThanOrEqual(1)
     for (const r of next) { expect(r.type).toBe('Duty'); expect('title' in r, 'the next input has no title of the last one').toBe(false) }
+  })
+})
+
+/* SOL'S READ OF THE CODE (9 Oct 26 — docs/superpowers/briefs/2026-10-09-reads/input-own-title-code-sol.md) */
+describe('the explanations that name a request say its title (Sol 2)', () => {
+  /* Sat 17 Oct 2026 — a weekend, so an Event is asked about OIL */
+  const sat = (over: any = {}) => filed({ date: 'Oct 17', title: 'Sports day', ...over })
+  it('the absence wording a crew picker shows: "Exercise Darwin — overseas duty (OD)"; an untitled one as it always read', () => {
+    expect(offWord({ type: 'OD', title: 'Exercise Darwin', remarks: '' })).toBe('Exercise Darwin — overseas duty (OD)')
+    expect(offWord({ type: 'OD', remarks: '' })).toBe('overseas duty (OD)')
+    expect(offWord({ type: 'Training', title: 'CRM refresher', remarks: 'room 2' })).toBe('CRM refresher — training — room 2')
+    expect(offWord({ type: 'LL', title: 'ignored', half: 'am' })).toBe(offWord({ type: 'LL', half: 'am' }))
+  })
+  it('the name an OIL explanation uses for a claim: the title, in quotes; the kind where it has none; never from the comparison’s own record', async () => {
+    const t = await sat(), u = await sat({ title: undefined, s: 720, e: 780 })
+    expect(oilClaimWhat(null, { iid: t.iid, type: 'Event' })).toBe('“Sports day”')
+    expect(oilClaimWhat(null, { iid: u.iid, type: 'Event' })).toBe('Event')
+    expect(oilClaimWhat(null, { iid: 'gone', type: 'Event' }), 'the input is gone: the kind the evidence kept').toBe('Event')
+  })
+})
+
+describe('a titled input handed to another man (Sol 3)', () => {
+  it('keeps its title, and the history line names it by its title', async () => {
+    const r = await filed({ title: 'Sports day' })
+    const other = Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)!
+    const log = ELOG.rows.length
+    await act(async () => { expect(reassignInput(r.iid, other)).toBeTruthy(); notify() })
+    expect([live(r.iid).person, live(r.iid).title]).toEqual([other, 'Sports day'])
+    const whose = ELOG.rows.slice(log).find(l => / · whose$/.test(l.lbl)) as any
+    expect(whose, 'the hand-over wrote its line').toBeTruthy()
+    expect(whose.lbl).toMatch(/^Sports day /)
+    expect(whose.itype).toBe('Event')
+  })
+})
+
+describe('the List’s pencil editor, retyped to a leave and SAVED (Sol’s note on the tests)', () => {
+  it('the Title box goes, and the saved record keeps no title', async () => {
+    const t = await filed({ title: 'Sports day' })
+    await act(async () => { setInpView('table'); notify() })
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeAll'))
+    const row = [...document.querySelectorAll('#inBody tr')].find(tr => tr.querySelector(`[data-edit="${INPUTS.indexOf(live(t.iid))}"]`))!
+    await click(row.querySelector('[data-edit]'))
+    const ed = $('#inBody tr.ined')!
+    const sel = ed.querySelector('select[data-ed="type"]') as HTMLSelectElement
+    await act(async () => { sel.value = 'LL'; sel.dispatchEvent(new Event('change', { bubbles: true })) })
+    expect(ed.querySelector('input[data-ed="title"]'), 'a leave takes no title').toBeNull()
+    await click(ed.querySelector('[data-save]'))
+    const now = live(t.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
+    expect(now, 'the retyped record').toBeTruthy()
+    expect(now.type).toBe('LL'); expect('title' in now).toBe(false)
   })
 })

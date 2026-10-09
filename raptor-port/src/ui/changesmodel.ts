@@ -135,8 +135,11 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
   if (r.grp) {
     const now = (INPUTS as any[]).filter(x => x && x.grp === r.grp).length
     const n = now || new Set(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => x.sub)).size
-    /* a shared input's one title (state/inputgroup.ts SHARED_FIELDS), read off any man still in it */
-    const g = (INPUTS as any[]).find(x => x && x.grp === r.grp), gname = g ? inpLabel(g) : name
+    /* a filing's name: the title its men carry (state/inputgroup.ts SHARED_FIELDS) — EVERY one, where a man since changed
+       alone carries another (Sol's read of the code, 1: the first record's title was said for everybody, and which it
+       was depended on the order the records happened to be stored in). Sorted, so the heading is one thing. */
+    const names = [...new Set((INPUTS as any[]).filter(x => x && x.grp === r.grp).map(x => inpLabel(x)))].sort((a, b) => a.localeCompare(b))
+    const gname = names.length ? names.join(' / ') : name
     return { id: `${date}|IG|${r.grp}`, title: `Input${gname ? ' · ' + gname : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
   }
   const title = inp ? `Input · ${csOf(inp.person)} · ${inpLabel(inp)}` : who ? `Input · ${csOf(who)}${name ? ' · ' + name : ''}` : 'Input'

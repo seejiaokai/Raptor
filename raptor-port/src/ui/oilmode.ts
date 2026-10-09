@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inpWin, inpMeta, inpLabel, inpKindTag, oilAsks } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel, inpKindTag, inputOn, oilAsks } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -265,18 +265,28 @@ function effectiveDefault(di: any, ev: OilEvidence, person: string, item: string
  *               no answer of his own; whoever FILED it answered No, or has not answered yet. Without these two he fell
  *               to `never` — "this kind of event earns nothing by default" — which is false of a Duty. */
 export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'never' | 'off' | 'filerNo' | 'filerUnasked'
+/** WHAT AN OIL EXPLANATION CALLS A CLAIM ([INPUT-OWN-TITLE]; Sol's read of the code, 2): its own title, in quotes, where
+ *  it has one — "answered No for this “Sports day”" — and its kind where it has none, exactly as before. The name is
+ *  looked up HERE, for the words only, from the input as the day being read holds it (`inputOn`: an issued face reads
+ *  its frozen copy). The OIL evidence itself never learns a title: it is no part of what is compared or priced. */
+export function oilClaimWhat(di: any, claim: { iid?: any, type?: any } | null | undefined): string {
+  const kind = String((claim && claim.type) || '').trim()
+  const d: any = di == null ? null : DAYS[+di]
+  const inp: any = claim && claim.iid != null ? inputOn(String(claim.iid), d ? d.dt : null) : null
+  return inp && inpKindTag(inp) ? `“${inpLabel(inp)}”` : kind
+}
 export function oilOffReason(di: any, person: any, item: string): { why: OilOffWhy, what: string } {
   const ev = evOf(di)
   const dec = personDecision(ev, String(person), item)
   if (dec === 'deny') return { why: 'denied', what: '' }
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
   if (inp) {
-    const what = String(inp.type || '').trim()
+    const what = oilClaimWhat(di, inp)
     return { why: inp.ans == null ? 'unasked' : 'declined', what }
   }
   const held = heldClaim(ev, item)
   if (held && !itemDefaultFor(di, ev, String(person), item))
-    return { why: held.ans == null ? 'filerUnasked' : 'filerNo', what: String(held.type || '').trim() }
+    return { why: held.ans == null ? 'filerUnasked' : 'filerNo', what: oilClaimWhat(di, held) }
   if (!itemDefaultFor(di, ev, String(person), item)) return { why: 'never', what: '' }
   return { why: 'off', what: '' }
 }
@@ -293,7 +303,7 @@ function heldClaim(ev: OilEvidence, item: string) {
 export function oilHeldClaimHint(di: any, item: string): string {
   const held = heldClaim(evOf(di), item)
   if (!held || (held.ans != null && held.ans > 0)) return ''
-  const what = String(held.type || 'request').trim() || 'request'
+  const what = oilClaimWhat(di, held) || 'request'
   /* IT STATES THE DEFAULT, NEVER "NOBODY EARNS" (Sol's read of the code, 9 Oct 26): once the scheduler has credited one
      man — or typed one onto the row — a flat "so nobody behind it earns" contradicted the count and the lit puck
      beside it; and the instruction is the one that is right for a mixed list. */
@@ -657,7 +667,7 @@ export function inertWhy(di: any, item: string): string {
   const iid = item.slice(2)
   const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
   if (!inp) return oilNoAskWhy(di, item) || plain
-  const what = String(inp.type || 'request').trim() || 'request'
+  const what = oilClaimWhat(di, inp) || 'request'
   const row = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
   const when = row && row.date ? ` on ${String(row.date)}` : ''
   if (inp.stand === 'cx') return `his ${what}'s row${when} is cancelled, so nothing is earned from it`
