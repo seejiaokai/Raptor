@@ -138,6 +138,7 @@ D654–D660, D178, D700, D702), Astra's scenario design, the roll-call above, a 
 the gates, Astra's and Sol's code reads with the evidence sheet, fixes, re-walk, his look.
 
 ## 7. Parked for him — his to choose; the work that waits on each is NOT done meanwhile (D596)
+**ALL ANSWERED 9 Oct 26 (D711, D712): Q1 — the filer’s answer and the scheduler’s switches; Q2 — no OD, no CSE; Q3 — one day at a time; Q4 — the filer’s bell only. AND the kinds are narrowed: no "Fly with", no "Personal" (D712) — Training, Meeting, Appointment, Duty, Other. The plan is to be rewritten with these before it is read again.**
 - **Q1. Each man’s own OIL answer.** In a shared input each man may still change HIS OWN answer after the filer’s (D660,
   D682). An ALL AVAIL input names nobody, so as planned only the filer answers, and the scheduler’s switches sit over
   it — a man behind it could not change his own. *Is that what he wants for ALL AVAIL (recommended: yes — the filer
