@@ -9455,6 +9455,19 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
 <<<<<<< HEAD
+- **The people picker of a day is OWNED by the note it was opened for, and ends with its day (the day-window check, 9 Oct 26 —
+  Sol's read).** One opener (`openPick`, `ui/InputsCal.tsx`): while it is up a second "+" does nothing. A NEW note's words
+  are taken when its "+ people" is pressed and shown in the picker; Escape, the cross and Cancel are one ending (the words
+  alone become the note; nobody is added); OK makes the note, words and people together. Closing or changing the day
+  settles the picker first, as Cancel does — nothing is written to a day that is no longer open. The keyboard stays in
+  the picker (Tab turns round at its ends) and goes back to the control that opened it. A new note's box and its
+  "+ people" are one thing being made: focus moving between the two saves nothing; leaving the pair saves the words.
+- **A note changed by Undo or Redo is brought into view (D672):** the calendar turns to its month when another shows, and a
+  day window open on ANOTHER day goes to its day (`state/undo-wire.ts` → `PLANREVEAL` → `InputsCal`), as for an input;
+  with its day in view already, or no day open, nothing moves.
+- **A deleted man is never put on a note on or after his delete (D299; Astra's read):** a note holding him is not moved to
+  such a day — refused whole, "Not moved: Hex was deleted from 9 Oct — take him off the note first" — and no writer adds
+  him there (`state/plan.ts planMoveBlock`, `goneOn`). Before his delete the note moves and keeps him.
 - **A note in an opened day carries its own pucks (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
   `docs/mock/note-with-pucks.html`).** ONE kind of note: words, people, or both — never neither. "+ Note" is the only button
   in the window's bar ("+ Pucks" is gone). A note's words are one slim line (28px) with its small buttons — a "+" while it

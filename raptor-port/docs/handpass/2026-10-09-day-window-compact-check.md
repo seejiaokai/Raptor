@@ -105,6 +105,10 @@ memory-only boot, so its reload step could see nothing saved; it starts from sav
 | F5 | the gates | an older test still expected "Placed by" on a shared input's card | the test now reads the short form and its title |
 | F6 | the host's look at a picture (walk 2) | a long custom name on an "Other" input printed over the hours on its card | fixed on the CALENDAR branch (its fault; that sheet's §24) and merged in here |
 | F7 | the host's look at a picture (walk 1) | the box a note is typed in was the browser's bare box | it wears the day title's look; 16 on a phone so an iPhone does not zoom |
+| F8 | Sol's read, S1 | with the picker up for a new note, pressing another note's "+" (the keyboard could reach it) gave that note the people and lost the new note's words | one guarded opener; the keyboard stays in the picker; `inputsday.test.tsx`, walk 2 |
+| F9 | Sol's read, S2 | closing the day with the picker up left the picker standing; its Cancel or OK then wrote a note onto a day no longer open | every day change settles the picker first, as Cancel does; `inputsday.test.tsx` |
+| F10 | Sol's read, S3 | Undo of a note while ANOTHER day's window was open: the note came back behind that window | the window goes to the note's day (D672); `inputsday.test.tsx`, `undo-wire.test.ts`, walk 2 |
+| F11 | Astra's read | a note from before a man was deleted, dragged to a later day, carried him onto a day after his delete (D299) | the move is refused, saying who and to take him off first; no writer adds a deleted man on or after his delete; `caldrag.test.tsx`, `plan.test.ts` |
 
 **Astra's scenarios not turned into fixes, and why:** 2.3 / 4.1 the delete's list — question 1; 2.4 a shared card's
 per-man LATE tag cannot be opened by a finger — the calendar job's, filed (`[CAL-CHECK-SEEN]`); 2.12 rename, archive,
@@ -113,6 +117,28 @@ with no server (`HANDOFF.md` §Standing constraints), the database step's lock (
 clear — read: no path reads a note's old kind; 2.15 signing out with the picker up — the page is unmounted with its
 picker; 4.3, 4.4 — the two mock-up pages now say what he decided.
 
-## 6. The gates, the reads, the look card
+## 6. The two reads of the code (each blind; their reports are kept beside the briefs)
 
-*(filled as each finishes)*
+- **Sol 6.1** (`docs/superpowers/briefs/2026-10-09-reads/day-window-code-sol.md`): three findings, all Medium, all
+  reproduced as failing tests and fixed — F8, F9, F10 above. Nothing found in the saved-record writers, the old
+  shapes, the short small print, or the card's layout rules.
+- **Astra** (`…/day-window-code-astra.md`; her first run stopped — the model was at capacity — and was run again): one
+  finding, Medium, reproduced and fixed — F11. She confirmed by her own check that deleting the last man of a note of
+  people removes its SAVED row. Nothing found in the picker as fixed, Undo's landing, the small print, the layout.
+- Neither read the other's report. The host reproduced every finding before changing anything (D588's rule for
+  helpers, applied to readers).
+
+## 7. The gates
+
+*(the final run's counts)*
+
+## 8. His look — sixty seconds on his iPhone, on this branch's preview link
+
+1. Inputs calendar → tap a day → **"+ Note"**: type a few words, tap **"+ people"**, tick five, **Add**. One note: the
+   words on one slim line, the five pucks four across under them, a dashed "+" last. *Is it as tight as you wanted?*
+2. Drag one puck off the note — he goes, his place stays empty. Drag one onto another — they swap.
+3. Tap the pencil, clear the words, Done — the note is its people alone. Tap the pencil again to give it words back.
+4. Look at the inputs under it: a short remark and "Grit · 12 Jul, 14:42" share one line; the same on a SANS day.
+5. **Seen and for you to judge:** a note of words alone has a small third button, "+", to add people (question 2 at
+   the top); the pencil and cross are drawn small (28) on your word that the line be slim; under a long remark the
+   small print wraps onto two lines when it also says who changed it.

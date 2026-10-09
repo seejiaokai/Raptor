@@ -22,7 +22,7 @@
    --------------------------------------------------------------------------- */
 import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor } from './inputedit'
 import { entryRowsOf } from '../state/inputgroup'
-import { movePlanPuck } from '../state/plan'
+import { movePlanPuck, planMoveBlock } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
@@ -76,6 +76,14 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
        disagree with the first. Read what it decided instead. There is ONE
        kind of section since D684 (9 Oct 26) — a note, with words, people or
        both — so the toast, the move's one visible word, says "Note". */
+    /* a note holding a DELETED man does not move to a day on or after his delete (D299; state/plan.ts planMoveBlock) —
+       refused whole, saying who and what to do; before that day it moves as any note */
+    const gone = canEditSched() ? planMoveBlock(entry.pid, toIso) : null
+    if (gone) {
+      const p: any = (PEOPLE as any)[gone], d = String(p.deletedFrom || ''), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      HOOKS.toast(`Not moved: ${p.cs} was deleted from ${+d.slice(8, 10)} ${MON[+d.slice(5, 7) - 1]} — take him off the note first`, 'warn')
+      return false
+    }
     let did = false
     writeInputs(() => { did = movePlanPuck(entry.pid, toIso) })
     if (did) HOOKS.toast('Note moved', 'ok')

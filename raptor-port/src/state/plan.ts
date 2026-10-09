@@ -26,6 +26,7 @@
    happen exactly once, in one place. */
 import { canEditSched } from './auth'
 import { newId } from '../engine/newid'
+import { PEOPLE } from '../engine/people'
 
 /* one SECTION dropped on a day, addressed by its own id rather than its
    position, the same reason inpId exists (engine/inputs.ts): an array a
@@ -76,6 +77,18 @@ export function setDayRemark(iso: string, text: string) {
 const idsOf = (p: any): string[] => Array.isArray(p.ids) ? p.ids : (p.ids = [])
 const hasPeople = (p: any) => Array.isArray(p.ids) && p.ids.some(Boolean)
 const hasWords = (p: any) => !!String(p.text == null ? '' : p.text).trim()
+/* A DELETED MAN IS NEVER PUT ON A DAY ON OR AFTER HIS DELETE (owner D299: "a delete takes him out of today and the future;
+   the past keeps its record of him"; the day-window check, 9 Oct 26 — Astra's read: a note from before his delete,
+   dragged forward, carried him onto a later day). The delete itself takes him off the notes of those days
+   (state/person-delete.ts); these keep every later write from putting him back: a move is refused whole, an add
+   leaves him out. */
+const goneOn = (personId: string, iso: string) => { const p: any = (PEOPLE as any)[personId]; return !!p && !!p.deleted && String(iso) >= String(p.deletedFrom || '') }
+/** who stops a note moving to `iso` — the first deleted man on it whose delete is on or before that day; null if none */
+export function planMoveBlock(id: string, iso: string): string | null {
+  const p = PLANPUCKS.find((x: any) => x.id === id)
+  if (!p || !Array.isArray(p.ids)) return null
+  return p.ids.find((x: string) => x && goneOn(x, iso)) || null
+}
 
 /* drop a new NOTE on a day — its words, its people, or both (owner D684: "a function to add pucks on the text
    written"; D695: a note may hold people and no words). One with NEITHER is refused: it says nothing and would only
@@ -85,7 +98,7 @@ const hasWords = (p: any) => !!String(p.text == null ? '' : p.text).trim()
 export function addPlanPuck(iso: string, text: string, ids?: string[]) {
   if (!canEditSched()) return false
   const t = String(text == null ? '' : text).trim()
-  const who = [...new Set((ids || []).filter(Boolean))]
+  const who = [...new Set((ids || []).filter(Boolean))].filter(x => !goneOn(x, iso))
   if (!t && !who.length) return false
   PLANPUCKS.unshift({ id: nextPuckId(), date: iso, text: t, ...(who.length ? { ids: who } : {}) })
   return true
@@ -111,6 +124,7 @@ export function movePlanPuck(id: string, iso: string) {
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p) return false
   if (p.date === iso) return false
+  if (planMoveBlock(id, iso)) return false
   p.date = iso
   return true
 }
@@ -133,7 +147,7 @@ export function addPuckPeople(id: string, personIds: string[]) {
   if (!p) return false
   const ids = idsOf(p)
   let added = false
-  for (const pid of personIds) if (pid && !ids.includes(pid)) { ids.push(pid); added = true }
+  for (const pid of personIds) if (pid && !ids.includes(pid) && !goneOn(pid, p.date)) { ids.push(pid); added = true }
   return added
 }
 
@@ -157,7 +171,7 @@ export function togglePuckPerson(id: string, personId: string) {
     ids[ix] = ''
     while (ids.length && !ids[ids.length - 1]) ids.pop()
     if (!ids.length && !hasWords(p)) PLANPUCKS.splice(PLANPUCKS.indexOf(p), 1)
-  } else ids.push(personId)
+  } else { if (goneOn(personId, p.date)) return false; ids.push(personId) }
   return true
 }
 

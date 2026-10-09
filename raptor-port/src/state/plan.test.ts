@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setSession } from './auth'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from './plan'
+import { PEOPLE } from '../engine/people'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, planMoveBlock, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from './plan'
 import { INPVIEW, CALMONTH, setInpView, setCalMonth } from './view'
 import { undo, redo, histInit, HIST, histApply, resetSession, writeInputs } from './store'
 import { histSnap } from './history'
@@ -203,6 +204,25 @@ describe('a note carries its own pucks (D684, D695)', () => {
     expect(editPlanPuck('ppOld', 'now with words')).toBe(true)
     const sec = PLANPUCKS.find((p: any) => p.id === 'ppOld')
     expect(sec.ids).toEqual(['bane', 'yeti', 'vinci']); expect(sec.text).toBe('now with words')
+  })
+  /* Astra's read, 9 Oct 26 (D299): no writer puts a deleted man on a day on or after his delete */
+  it('a deleted man is not put on a note on or after his delete — by a move, by a new note, or by an add', () => {
+    const was = { ...PEOPLE.bane }
+    try {
+      addPlanPuck('2026-08-20', 'before', ['bane', 'yeti'])
+      const before = last()
+      Object.assign(PEOPLE.bane, { deleted: true, deletedFrom: '2026-08-24', archived: true })
+      expect(planMoveBlock(before.id, '2026-08-24')).toBe('bane')
+      expect(movePlanPuck(before.id, '2026-08-25')).toBe(false)
+      expect(before.date).toBe('2026-08-20')
+      expect(planMoveBlock(before.id, '2026-08-23')).toBe(null)
+      expect(addPlanPuck('2026-08-26', 'after', ['bane', 'yeti'])).toBe(true)
+      expect(last().ids, 'he is left out of a new note after his delete').toEqual(['yeti'])
+      expect(addPuckPeople(last().id, ['bane', 'vinci'])).toBe(true)
+      expect(last().ids).toEqual(['yeti', 'vinci'])
+      expect(togglePuckPerson(last().id, 'bane'), 'nor added one at a time').toBe(false)
+      expect(addPlanPuck('2026-08-26', '', ['bane']), 'a note of him alone is no note').toBe(false)
+    } finally { for (const k of Object.keys(PEOPLE.bane)) delete (PEOPLE.bane as any)[k]; Object.assign(PEOPLE.bane, was) }
   })
   it('a member is refused by every mutator of a note’s people', () => {
     addPlanPuck('2026-08-24', 'n', ['bane', 'yeti'])

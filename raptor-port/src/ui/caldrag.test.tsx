@@ -13,6 +13,7 @@ import { initStore, setSession, undo, writeInputs, histInit } from '../state/sto
 import { setMe } from '../state/auth'
 import { INPUTS, inpId, mintInpIds } from '../engine/inputs'
 import { PLANPUCKS, addPlanPuck } from '../state/plan'
+import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
 import { markLand, pendingLand } from './lift'
@@ -99,6 +100,22 @@ describe('commitChipMove — puck moves', () => {
     expect(said_()).toContain('Note moved')
   })
 
+  /* ASTRA'S READ (the day-window check, 9 Oct 26). D299: a delete takes a man out of today and the future; the past keeps
+     its record of him. A note from BEFORE his delete, dragged to a day on or after it, carried him onto that day. */
+  it('a note holding a deleted man cannot be moved to a day on or after his delete; before it, it moves freely', () => {
+    writeInputs(() => { addPlanPuck('2026-07-08', 'Past briefing', ['bane', 'yeti']) })
+    const sec = PLANPUCKS.find((p: any) => p.text === 'Past briefing')!
+    const was = { ...PEOPLE.bane }
+    try {
+      Object.assign(PEOPLE.bane, { deleted: true, deletedFrom: '2026-07-10', archived: true })
+      expect(commitChipMove({ kind: 'puck', pid: sec.id }, '2026-07-08', '2026-07-10'), 'onto the day he was deleted from').toBe(false)
+      expect(commitChipMove({ kind: 'puck', pid: sec.id }, '2026-07-08', '2026-07-14'), 'or any day after').toBe(false)
+      expect(sec.date).toBe('2026-07-08'); expect(sec.ids).toEqual(['bane', 'yeti']); expect(sec.text).toBe('Past briefing')
+      expect(said_().join(' | '), 'and it says who, and what to do').toMatch(new RegExp(`${PEOPLE.bane.cs}.*take him off the note`))
+      expect(commitChipMove({ kind: 'puck', pid: sec.id }, '2026-07-08', '2026-07-09'), 'a day before his delete is still the past').toBe(true)
+      expect(sec.date).toBe('2026-07-09'); expect(sec.ids).toEqual(['bane', 'yeti'])
+    } finally { for (const k of Object.keys(PEOPLE.bane)) delete (PEOPLE.bane as any)[k]; Object.assign(PEOPLE.bane, was) }
+  })
   it('a non-scheduler is refused with the planning-section toast, and nothing moves', () => {
     writeInputs(() => { addPlanPuck('2026-07-10', 'Check quals') })
     const pid = PLANPUCKS[0].id
