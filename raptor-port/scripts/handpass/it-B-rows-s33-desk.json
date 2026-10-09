@@ -1,0 +1,88 @@
+{
+ "rows": [
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] OD published (before: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}); retitled: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-A-0published-edit.png",
+    "s33-desk-A-1retitled-edit.png",
+    "s33-desk-A-1retitled-togo.png",
+    "s33-desk-A-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-desk-A-2undo-edit.png",
+    "s33-desk-A-2undo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-A-3redo-edit.png",
+    "s33-desk-A-3redo-togo.png",
+    "s33-desk-A-3redo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-A-4reload-edit.png",
+    "s33-desk-A-4reload-togo.png",
+    "s33-desk-A-4reload-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] OD published (before: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}); retitled: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-B-0published-edit.png",
+    "s33-desk-B-1retitled-edit.png",
+    "s33-desk-B-1retitled-togo.png",
+    "s33-desk-B-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-desk-B-2undo-edit.png",
+    "s33-desk-B-2undo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-desk-B-4reload-edit.png",
+    "s33-desk-B-4reload-view.png"
+   ]
+  }
+ ],
+ "errs": []
+}

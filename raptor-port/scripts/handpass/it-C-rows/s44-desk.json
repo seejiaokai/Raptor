@@ -1,0 +1,14 @@
+[
+ {
+  "n": 44,
+  "size": "desk",
+  "role": "member (Ranger)",
+  "verdict": "PASS",
+  "said": "own Event: filed \"Mine v1\", window retitle -> \"Mine v2\", List pencil -> \"Mine v3\" (pencil asked OIL: false). Saber's Event \"Saber briefing\": window title \"Saber briefing\" inert=true/true, type \"Event\", Save false, Delete false, text \"Only Saber or an admin can change this.\"; after typing \"XYZ\"+Enter value \"Saber briefing\" (typed), window still open 1, reopened \"Saber briefing\", record \"Saber briefing\"; List pencil on Saber's row: 0",
+  "pics": [
+   "desk-s44-list-after-own-retitle.png",
+   "desk-s44-saber-readonly.png",
+   "desk-s44-list-everyone.png"
+  ]
+ }
+]

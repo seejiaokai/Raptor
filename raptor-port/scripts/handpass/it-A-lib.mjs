@@ -128,3 +128,24 @@ export function readRows() {
   return out
 }
 export const norm = s => (s || '').replace(/\s+/g, ' ').trim()
+
+/** the admin turns "Members may file duties and commitments for other people" ON, through the Inputs gear (one write),
+ *  then the same page is a member in place (raptorRole + raptorMe, never a new sign-in on a world nobody wrote to). */
+export async function enableMemberFiling(p) {
+  await gotoInputs(p)
+  const g = p.locator('#inGear'); await press(p, g)
+  const cb = p.locator('[data-testid="iset-memberfile"]'); await cb.waitFor()
+  if (!(await cb.isChecked())) await cb.check()
+  await press(p, p.locator('[data-testid="iset-save"]')); await p.waitForTimeout(500)
+}
+export async function asMember(p, cs = 'Ranger') {
+  const id = await csId(p, cs)
+  await p.evaluate(id => { window.raptorRole('member'); window.raptorMe(id) }, id)
+  await p.waitForTimeout(400)
+  return id
+}
+export async function asAdmin(p, cs = 'Saber') {
+  const id = await csId(p, cs)
+  await p.evaluate(id => { window.raptorRole('admin'); window.raptorMe(id) }, id)
+  await p.waitForTimeout(400)
+}

@@ -187,7 +187,7 @@ export async function face(p, di) {
     const pend = [...d.querySelectorAll('.dpend:not(.dnew):not(.dchg)')].map(t)
     const signs = [...d.querySelectorAll(`select[data-sign][data-signday="${i}"]`)].map(s => s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '')
     const rows = [...d.querySelectorAll('.pl-row.gr-frominput')].map(r => ({ name: t(r.querySelector(':scope > .nm .ntx')), kind: t(r.querySelector(':scope > .nm .nm-kind')) }))
-    const unav = ((d, t) => { const h = [...d.querySelectorAll('*')].find(e => e.children.length === 0 && /^unavailable$/i.test((e.textContent || '').trim())); if (!h) return []; let sec = h; for (let i = 0; i < 5 && sec && !sec.querySelector('.nm'); i++) sec = sec.parentElement; if (!sec) return []; return [...sec.querySelectorAll('.nm')].map(n => ({ name: t(n.querySelector('.ntx')), kind: t(n.querySelector('.nm-kind')) })) })(d, t)
+    const unav = ((d, t) => [...d.querySelectorAll('.sec-unav .pl-row > .nm')].map(n => ({ name: t(n.querySelector('.ntx')), kind: t(n.querySelector('.nm-kind')) })).filter(x => x.name))(d, t)
     return { tag: t(d.querySelector('.verchip')), pend, nys: t(d.querySelector('.nysmark')), signs: signs.map(s => /name/i.test(s) ? '·' : s), signed: signs.filter(s => s && !/name/i.test(s)).length, rows, unav, signedLn: t(d.querySelector('.signedln')) }
   }, di)
 }
@@ -211,7 +211,7 @@ export async function viewFace(p, di) {
     const sel = d.querySelector('select[data-vwork], select[data-dver]')
     return {
       tag: t(d.querySelector('.verchip')), pend: [...d.querySelectorAll('.dpend:not(.dnew):not(.dchg)')].map(t), nys: t(d.querySelector('.nysmark')),
-      unav: ((d, t) => { const h = [...d.querySelectorAll('*')].find(e => e.children.length === 0 && /^unavailable$/i.test((e.textContent || '').trim())); if (!h) return []; let sec = h; for (let i = 0; i < 5 && sec && !sec.querySelector('.nm'); i++) sec = sec.parentElement; if (!sec) return []; return [...sec.querySelectorAll('.nm')].map(n => ({ name: t(n.querySelector('.ntx')), kind: t(n.querySelector('.nm-kind')) })) })(d, t),
+      unav: ((d, t) => [...d.querySelectorAll('.sec-unav .pl-row > .nm')].map(n => ({ name: t(n.querySelector('.ntx')), kind: t(n.querySelector('.nm-kind')) })).filter(x => x.name))(d, t),
       rows: [...d.querySelectorAll('.pl-row.gr-frominput')].map(r => ({ name: t(r.querySelector(':scope > .nm .ntx')), kind: t(r.querySelector(':scope > .nm .nm-kind')) })),
       picker: sel ? { attr: sel.hasAttribute('data-vwork') ? 'vwork' : 'dver', opts: [...sel.options].map(o => (o.selected ? '*' : '') + o.text) } : null,
       signedLn: t(d.querySelector('.signedln')),

@@ -366,6 +366,12 @@ describe('the other places that name an input (both reads of the plan)', () => {
     expect(titled.typeLabel).toBe('Sports day')
     expect(titled.plan).toEqual(plain.plan)
   })
+  it('a title cannot dodge an OIL rule, nor earn one: an Event titled "Personal" is still asked; a Personal titled "Duty" is still not', async () => {
+    const d = (type: string, title: string) => draftOf({ person: admin, type, title, date: 'Oct 17', yr: 2026, allday: false, s: 600, e: 900, remarks: '' })
+    expect((oilGate(d('Event', 'Personal'), null) as any).kind).toBe('ask')
+    expect((oilGate(d('Personal', 'Duty'), null) as any).kind).toBe('none')
+    expect((oilGate(d('Duty', 'Personal'), null) as any).plan).toEqual((oilGate(d('Duty', ''), null) as any).plan)
+  })
   it('the OIL history calls a titled request by its title; an untitled one keeps the kind’s long name', async () => {
     const t = await filed({ title: 'Sports day' }), u = await filed({ date: 'Oct 14' })
     expect(oilRequestName('i:' + t.iid)).toBe('Sports day')
