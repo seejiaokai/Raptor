@@ -92,14 +92,14 @@
 
   /* A · ONE LINE — the title joins the top line and runs on under it only when it is long; the hours keep the corner */
   .t-a1 { display: flow-root; }
-  .t-a1 .top { font-size: 13px; line-height: 1.7; color: var(--ink); overflow-wrap: break-word; }
-  .t-a1 .corner { float: right; display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; min-height: 22px; }
-  .t-a1 .sq { display: inline-block; margin-right: 7px; }
+  .card .top { font-size: 13px; line-height: 1.7; color: var(--ink); overflow-wrap: break-word; }
+  .card .corner { float: right; display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; min-height: 22px; }
+  .card .top .sq { display: inline-block; margin-right: 7px; }
   /* the square never stands alone: it belongs to the first word of the name */
-  .t-a1 .lead { font-size: 13.5px; font-weight: 800; margin-right: 7px; }
-  .t-a1 .kind { margin-right: 7px; }
+  .card .lead { font-size: 13.5px; font-weight: 800; margin-right: 7px; }
+  .card .top .kind { margin-right: 7px; }
   /* the title moves down WHOLE when it does not fit beside the name — never split after its first word */
-  .t-a1 .top b { font-weight: 600; display: inline-block; max-width: 100%; vertical-align: top; }
+  .card .top b { font-weight: 600; display: inline-block; max-width: 100%; vertical-align: top; }
   .t-a1 .words { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 1px; min-width: 0; clear: both; }
   .t-a1 .words:empty { display: none; }
   .t-a1 .words .rm { flex: 1 1 auto; min-width: 0; font-size: 12px; line-height: 1.35; color: var(--ink-3); overflow-wrap: anywhere; }
@@ -108,6 +108,7 @@
   .state { display: flex; flex-direction: column; gap: 4px; }
   .state > span { font-size: 14px; color: var(--ink-2); }
   .state > span b { color: var(--ink); font-weight: 600; }
+  .state .hts { font-style: normal; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .states { display: flex; flex-direction: column; gap: 14px; }
   .q { border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
   .q b { color: var(--ink); font-weight: 600; }
@@ -131,7 +132,7 @@
     <span class="tag">1 · The opened day</span>
     <h2>A busy Saturday, sixteen inputs</h2>
     <div class="meas" id="m-day"></div>
-    <div class="sw"><span>Several people as</span><div class="seg" id="segPpl"><button type="button" data-v="names" aria-pressed="true">Names</button><button type="button" data-v="pucks" aria-pressed="false">Pucks</button></div></div>
+    <div class="sw"><span>Several people as</span><div class="seg" id="segPpl"><button type="button" data-v="all" aria-pressed="true">All names</button><button type="button" data-v="names" aria-pressed="false">3 names +N</button><button type="button" data-v="pucks" aria-pressed="false">Pucks</button></div></div>
     <div class="sw"><span>Draw it on</span><div class="seg" id="segW"><button type="button" data-v="full" aria-pressed="true">This screen</button><button type="button" data-v="w320" aria-pressed="false">A small phone</button></div></div>
     <div class="win" id="w-day">
       <div class="head" aria-hidden="true"><span class="grip"></span><span class="ttl">Sat 18 Jul</span><span class="ghost">+ Note</span><span class="ghost">✕</span></div>
@@ -141,6 +142,13 @@
         <div id="f-day"></div>
       </div>
     </div>
+  </section>
+
+  <section>
+    <span class="tag">A shared input, as it grows</span>
+    <h2>Two, four, eight and fourteen people</h2>
+    <p>The same meeting filed for more and more people, drawn three ways. In “All names” every name is shown: they wrap round the hours and the card grows downward, as you asked.</p>
+    <div class="states" id="grow"></div>
   </section>
 
   <section>
@@ -202,10 +210,16 @@
     ['LATE, tapped', 'The reason opens under the card’s top line.', { ...DAY[4], note: 'after the cut-off, Mon 29 Jun' }],
     ['The card just opened', 'A cyan edge, as now.', { ...DAY[8], hi: 1 }],
   ]
-  const state = { card: 'a1', kind: 'grey', by: 'other', w: 'full', ppl: 'names' }
+  const CREW = [['Ranger', 'IP', ''], ['Ace', 'A', 'a'], ['Drifter', 'A', 'a'], ['Vapor', 'D', 'd'], ['Blade', 'IP', ''], ['Cinch', 'IP', ''], ['Comet', 'IP', ''],
+    ['Forge', 'IP', ''], ['Hunter', 'IP', ''], ['Piston', 'IP', ''], ['Sidewinder', 'IP', ''], ['Trident', 'IP', ''], ['Vandal', 'IP', ''], ['Warden', 'IP', '']]
+  const grown = n => ({ who: `Ranger +${n - 1}`, kind: 'Meeting', title: 'Flight safety brief', hrs: '10:00–11:00', by: 'Saber', when: '25 Jun, 14:32', people: CREW.slice(0, n) })
+  const state = { card: 'a1', kind: 'grey', by: 'other', w: 'full', ppl: 'all' }
   /* several people: the schedule's pucks under the card, or their names where the one name stands (three, then "+N") */
-  const names = r => r.people ? r.people.slice(0, 3).map(x => x[0]).join(', ') + (r.people.length > 3 ? ' +' + (r.people.length - 3) : '') : r.who
-  const whoOf = r => state.card !== 'now' && state.ppl === 'names' ? names(r) : r.who
+  const names = (r, m) => !r.people ? r.who : m === 'all' ? r.people.map(x => x[0]).join(', ')
+    : r.people.slice(0, 3).map(x => x[0]).join(', ') + (r.people.length > 3 ? ' +' + (r.people.length - 3) : '')
+  const whoOf = r => state.card === 'now' || state.ppl === 'pucks' ? r.who : names(r, state.ppl)
+  /* every name shown: the names run on and wrap ROUND the hours in the corner, and the card grows downward */
+  const flows = r => !!r.people && state.card !== 'now' && state.ppl === 'all'
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
   const hrs = r => esc(r.date ? r.date + (r.hrs === 'All day' ? '' : ' · ' + r.hrs) : r.hrs)
   const late = r => r.late ? '<span class="late">LATE</span>' : ''
@@ -222,7 +236,9 @@
       + note(r) + `<span class="foot">${r.title ? kind(r) : ''}${r.rm ? `<span class="small">${esc(r.rm)}</span>` : ''}<span class="small placed">${byNow(r)}</span></span>${people(r)}</div>`,
     a1: r => { const b = byA(r); return `<div class="${cls('t-a1', r)}"><div class="top"><span class="corner">${late(r)}<span class="hrs">${hrs(r)}</span></span><span class="lead"><span class="sq"></span>${esc(whoOf(r))}</span>${kind(r)}${r.title ? `<b>${esc(r.title)}</b>` : ''}</div>`
       + note(r) + `<div class="words">${r.rm ? `<span class="rm">${esc(r.rm)}</span>` : ''}${b ? `<span class="small placed">${b}</span>` : ''}</div>${people(r)}</div>` },
-    a: r => { const b = byA(r); return `<div class="${cls('t-a', r)}"><div class="facts"><span class="sq"></span><span class="who">${esc(whoOf(r))}</span>${kind(r)}<span class="right">${late(r)}<span class="hrs">${hrs(r)}</span></span></div>`
+    a: r => { const b = byA(r); return `<div class="${cls('t-a', r)}">` + (flows(r)
+        ? `<div class="top"><span class="corner">${late(r)}<span class="hrs">${hrs(r)}</span></span><span class="lead"><span class="sq"></span>${esc(whoOf(r))}</span>${kind(r)}</div>`
+        : `<div class="facts"><span class="sq"></span><span class="who">${esc(whoOf(r))}</span>${kind(r)}<span class="right">${late(r)}<span class="hrs">${hrs(r)}</span></span></div>`)
       + note(r) + `<div class="words">${r.title || r.rm ? `<span class="text">${r.title ? `<b>${esc(r.title)}</b>` : ''}${r.title && r.rm ? ' <span class="rm">· ' : r.rm ? '<span class="rm">' : ''}${r.rm ? esc(r.rm) + '</span>' : ''}</span>` : ''}${b ? `<span class="small placed">${b}</span>` : ''}</div>${people(r)}</div>` },
   }
   const heights = (rows, k) => { const t = document.createElement('div'); t.style.cssText = 'position:absolute;visibility:hidden;left:0;right:0'; t.innerHTML = rows.map(draw[k]).join(''); return t }
@@ -256,6 +272,15 @@
     const kids = [...fd.children]; let y = 0, at = -1
     kids.forEach((c, i) => { const h = c.getBoundingClientRect().height + 4; if (at < 0 && y + h > ROOM) at = i; y += h })
     if (at > 0) { const f = document.createElement('div'); f.className = 'fold'; fd.insertBefore(f, kids[at]) }
+    /* the growth, each way, whatever the switch above says — and each card's measured height */
+    const g = document.getElementById('grow'), kk = k === 'now' ? 'a1' : k, was = state.ppl
+    g.innerHTML = [['all', 'All names, wrapping', 'Nobody is hidden. The card grows downward with the number of people.'], ['pucks', 'Pucks', 'Nobody is hidden either. Grows fastest; shows each man’s CAT.'], ['names', 'Three names, then “+N”', 'Never grows, but hides who the rest are.']].map(([m, t, d]) => {
+      state.ppl = m
+      const cards = [2, 4, 8, 14].map(n => draw[kk](grown(n))).join('')
+      return `<div class="state" data-m="${m}"><span><b>${t}.</b> ${d} <i class="hts"></i></span>${cards}</div>`
+    }).join('')
+    state.ppl = was
+    for (const b of g.children) b.querySelector('.hts').textContent = 'Heights: ' + [...b.querySelectorAll('.card')].map(c => Math.round(c.getBoundingClientRect().height)).join(' · ')
     document.getElementById('states').innerHTML = STATES.map(([t, d, r]) => `<div class="state"><span><b>${esc(t)}.</b> ${esc(d)}</span>${draw[k](r)}</div>`).join('')
   }
   for (const [id, key] of [['segCard', 'card'], ['segKind', 'kind'], ['segBy', 'by'], ['segW', 'w'], ['segPpl', 'ppl']]) {
