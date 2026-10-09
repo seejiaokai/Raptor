@@ -24,13 +24,15 @@ import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
+import { verifiedReplay } from '../undo/timeline'
+import { filedForOther, setInputReplayCheck } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { weekOf, dayKeyOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal } from './view'
 import { canEditSched } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -41,7 +43,7 @@ import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
 import { warVisible } from '../leavewar/absences'
-import { DATES, inputCoversDate } from '../engine/inputs'
+import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -84,6 +86,10 @@ function schedDayOf(entry: UndoEntry): number | null {
 /* the date an LW closure touched (lw.cell id = `<warId>:<pid>:<date>`,
    the date is the LAST segment — a warId may itself contain ':'). */
 function lwDateOf(entry: UndoEntry): string | null {
+  /* a holiday added, changed or removed from the Holidays list: its first day, from the command's own note */
+  if (typeof entry.type === 'string' && (entry.type.startsWith('lw.holiday.') || entry.type.startsWith('lw.event.'))) {
+    try { const d = JSON.parse(entry.detail || 'null'); if (d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from))) return String(d.from) } catch { /* no note */ }
+  }
   for (const ch of entry.forward) {
     if (ch.collection === 'lw.cell') {
       const p = ch.id.split(':')
@@ -133,7 +139,16 @@ function inputDayOf(entry: UndoEntry): number | null {
   }
   return null
 }
-function landingOf(entry: UndoEntry): Landing | null {
+/* the date a flying-plan step is about: its first day row, the start of its run, or the start of its rule */
+function flyDateOf(entry: UndoEntry): string | null {
+  const ids = entry.forward.filter(c => c.collection === 'settings').map(c => c.id)
+  const day = ids.filter(k => k.startsWith('flyday:') || k.startsWith('flyrun:')).map(k => k.slice(7)).sort()[0]
+  if (day) return day
+  const rule: any = entry.forward.find(c => c.collection === 'settings' && c.id.startsWith('flyrule:'))
+  const r = rule && (rule.after || rule.before)
+  return r && typeof r.from === 'string' ? r.from : null
+}
+function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
   const fwd = entry.forward, m = entry.scope.module
   const also: string[] = []
   let primary: string | null = null
@@ -144,7 +159,23 @@ function landingOf(entry: UndoEntry): Landing | null {
     primary = 'inputs'
     /* the calendar's own records (a day title, its puck rows — saved through the Inputs page's door, so filed under
        inputs) and no input row: the change is on the calendar */
-    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) then = () => setInpView('cal')
+    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) then = () => { clearInpReveal(); setInpMode('member'); setInpView('cal') }
+    else if(m==='inputs') {
+      const changes=fwd.filter(c=>c.collection==='inputs')
+      const image=(c:Change)=>dir==='undo'?c.before:c.after
+      // snapView runs BEFORE the restored writes. Use their directional image,
+      // never the old live row. New retained medical segments outrank removed tails.
+      const change=changes.find(c=>image(c)&&(dir==='undo'?!c.after:!c.before))??changes.find(c=>image(c))
+      const row=(change?image(change):null) as any
+      const fallback=(dir==='undo'?changes[0]?.after:changes[0]?.before) as any
+      if(row||fallback) then=()=>{
+        clearInpReveal();setInpMode(isSansAvail((row??fallback).type)?'sans':'member')
+        /* only when the undo LANDED on Inputs (snapView has changed page by now): an input undone from Edit Schedule
+           stays there, and a reveal left waiting would open that day by itself at the next visit to Inputs, however
+           much later (Opus's own read of the build, step 0, 7 Oct 26) */
+        if(row&&change&&CURPAGE==='inputs')requestInpReveal({...row,iid:change.id})
+      }
+    }
   } else if (m === 'people') {
     primary = 'quals'
     const person = fwd.find(c => c.collection === 'people')
@@ -152,9 +183,50 @@ function landingOf(entry: UndoEntry): Landing | null {
   } else if (m === 'settings') {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
     if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
-    else if (ids.includes('rules') || ids.includes('insights')) primary = 'logic'
+    else if (ids.includes('rules') || ids.includes('insights')) {
+      primary = 'logic'
+      /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page
+         shows it as the Logic page does: an Undo of a cut-off pressed there leaves him there (D672), and from
+         anywhere else it lands on Logic, as every rule's does. */
+      const row = fwd.find(c => c.collection === 'settings' && c.id === 'rules')
+      const vals = (x: any) => (x && x.v) || {}
+      const a = vals(row && row.before), b = vals(row && row.after)
+      const moved = [...new Set([...Object.keys(a), ...Object.keys(b)])].filter(k => a[k] !== b[k])
+      if (row && moved.length && moved.every(k => /^(input|sans)(Lead|CutMode|CutWd|CutWeeks)$/.test(k))) also.push('inputs')
+    }
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
+    /* the three day colours are the SANS calendar's own: its month, whichever it is showing */
+    else if(ids.includes('sanscalendar')){
+      primary='inputs';then=()=>{ clearInpReveal(); setInpView('cal');setInpMode('sans') }
+    }
+    /* THE FLYING PLAN (state/flyplan.ts; the plan §3.2): a required figure is typed on the Leave War, so its Undo
+       lands there, on its date (snapView reads the date off the row — flyDateOf); a day's class or a weekday's rule
+       shows on the Leave War and on both calendars, so it stays where he is if that page shows it, else the SANS month */
+    else if (ids.some(k => k.startsWith('flyday:') || k.startsWith('flyrun:') || k.startsWith('flyrule:'))) {
+      const rows = fwd.filter(c => c.collection === 'settings')
+      const fig = (v: any, s: string) => (v && v[s] != null ? v[s] : null)
+      const figures = ids.some(k => k.startsWith('flyrun:')) ||
+        rows.some(c => c.id.startsWith('flyday:') && (fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w')))
+      if (figures) primary = 'leavewar'
+      else {
+        primary = 'inputs'; also.push('leavewar')
+        const iso = flyDateOf(entry)
+        /* IN VIEW ALREADY, NOTHING MOVES (D672; both readers of the calendar job's bug check, 8 Oct 26). A day's class
+           shows on BOTH calendars, so a calendar of the Inputs page that is up keeps its TAB; its month turns only when
+           the date is not on it - and a weekday's rule is on every month from the one it starts in. It used to switch
+           to the SANS tab and the rule's first month whatever was on screen. Read HERE, before the page is changed. */
+        const onCal = CURPAGE === 'inputs' && INPVIEW === 'cal'
+        const want = iso ? +iso.slice(0, 4) * 12 + +iso.slice(5, 7) : 0, at = CALMONTH ? CALMONTH.y * 12 + CALMONTH.m : 0
+        const shown = onCal && !!want && (ids.some(k => k.startsWith('flyrule:')) ? at >= want : at === want)
+        then = () => {
+          if (CURPAGE !== 'inputs' || shown) return
+          clearInpReveal()
+          if (!onCal) { setInpView('cal'); setInpMode('sans') }
+          if (iso) setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) })
+        }
+      }
+    }
     else if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) primary = 'admin'
   }
   if (m === 'inputs') {
@@ -164,15 +236,17 @@ function landingOf(entry: UndoEntry): Landing | null {
   return primary || also.length ? { primary, also, then } : null
 }
 
-function snapView(entry: UndoEntry, _dir: 'undo' | 'redo'): void {
+function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   const boardWas = BOARD_WAS; BOARD_WAS = null
-  const land = landingOf(entry)
+  const land = landingOf(entry,dir)
   /* not when the change already shows on the page you are on (an input filed on Inputs, undone there) */
   if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE)) setPage(land.primary)
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
-    const date = lwDateOf(entry)
-    if (date) focusDay(date)
+    const date = lwDateOf(entry) ?? flyDateOf(entry)
+    /* the SOFT ask (owner, D670, 8 Oct 26): a change he is looking at is undone or redone where he is looking — the
+       grid jumps to the day only when its column is out of view */
+    if (date) focusDay(date, { ifHidden: true })
     return
   }
   const di = schedDayOf(entry) ?? inputDayOf(entry)
@@ -291,6 +365,11 @@ export function installGlobalUndo(): void {
     /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
     seenOverlay,
     nameOf: (a) => (a.personId != null && (PEOPLE as any)[a.personId] ? String((PEOPLE as any)[a.personId].cs) : null),
+    /* the group input (plan §3.13): a member reverses his own step though it holds an input that is another man's —
+       one he FILED for him. The one rule, asked of the step's recorded images (state/perms.ts filedForOther) */
+    filerMay: (cur, before, after) => cur.personId != null && filedForOther(String(cur.personId), before, after),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
+  /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */
+  setInputReplayCheck(verifiedReplay)
 }

@@ -381,3 +381,6 @@
   tr.ined>td.inact>span{ width:40px; height:40px; font-size:17px; }
 }
 
+/* the Inputs page's top row — the three tabs, the Calendar | List switch, the filters — is 25-inputs-calendar.css
+   (the mode pair and the view trio they replaced went with their buttons, D620 / D626) */
+.inputs-workspace [hidden]{display:none!important}

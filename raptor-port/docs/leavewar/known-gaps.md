@@ -1057,6 +1057,13 @@ The shape, briefly (detail in HANDOFF's bullet):
   as soon as anyone holds it; one removed keeps counting whoever still holds
   the flag (removal never touches `p.quals`), and an edited rule keeps its
   orphan key as a chip so Save cannot silently rewrite it.
+- ***(8 Oct 26 — D669, read with everything in this section: the Manning block now comes with NO counters of its
+  own. "The seeded eleven" below are no longer in the app — `engine/seed.ts seedRequirements` is empty and the eleven
+  live on as test data, `src/leavewar/testing/eleven.ts`; "Reset counters" and a row's "Reset to default" are gone;
+  the eye that hid a row is a delete cross, with Undo as the way back; a corrupt or missing `manningdefs` reads as no
+  counters; `manningthresh` is no longer read; and the war has PERSISTED since 8 Sep 26, so the next bullet's
+  "forget with the war" describes the dev and test backend only. The contract: `docs/ui-contracts.md` §The four rows
+  at the foot of the Manning block, "The block's own rows".)***
 - **The counters forget with the war**: `manningdefs` / `manningorder` /
   `manninghidden` ride the memory backend like everything else (owner,
   19 Aug 26 — no persistence wanted; counter configuration will live in the

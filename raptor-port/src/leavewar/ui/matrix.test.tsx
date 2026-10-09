@@ -3,11 +3,12 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
 import { addGroup, advanceStage, getState, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
-import { fileAbsence } from '../testkit'
+import { fileAbsence, elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
   // SPLICE's medical is MEMBER-FILED now (owner, 13 Sep 26): the pristine seed
   // has none, so ingest a member-filed ATT C / OML (the way a member's Inputs
   // filing syncs onto the war) to exercise how the grid renders a medical cell.

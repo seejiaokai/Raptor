@@ -55,6 +55,7 @@ describe('a rendered input row is compact and uniform', () => {
     host = document.createElement('div'); document.body.appendChild(host)
     root = createRoot(host)
     await act(async () => { root.render(<InputsPage />) })
+    await act(async()=>$(host,'#inListBtn').click())
     // show everything so the July rows are certainly on screen
     if (!host.querySelector('#inRangePop')) await act(async () => { $(host, '#inRangeBtn').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     await act(async () => { $(host, '#inRangeAll').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -96,15 +97,9 @@ describe('a rendered input row is compact and uniform', () => {
      CSS hides under 820px, reading SANS AVAIL / APPOINT there — so the DOM
      text every test and export reads stays the full raw type string on one
      markup path */
-  it('the two wide chips carry a .bl tail; a short chip carries none', async () => {
-    await act(async () => {
-      writeInputs(() => {
-        INPUTS.unshift({ person: 'zzv', date: 'Jul 14', allday: true, type: 'SANS Availability', remarks: 'sans split', f: true, mod: 'now' })
-      })
-    })
-    const sans = $(rowOf('sans split'), '.intag')
-    expect(sans.textContent, 'the DOM text is still the raw type').toBe('SANS Availability')
-    expect($(sans, '.bl')?.textContent, 'the hideable tail').toBe('ability')
+  /* THE SANS HALF OF THIS WENT WITH THE SANS LIST (D620, built 8 Oct 26): a SANS availability row is on no list any
+     more, so its "SANS AVAIL" short form has no row to be read on. The other wide chip keeps its tail. */
+  it('the wide chip carries a .bl tail; a short chip carries none', async () => {
     const appt = $(rowOf('timed one-day'), '.intag')
     expect(appt.textContent).toBe('Appointment')
     expect($(appt, '.bl')?.textContent, 'APPOINTMENT measured 88px against a 76px track').toBe('ment')

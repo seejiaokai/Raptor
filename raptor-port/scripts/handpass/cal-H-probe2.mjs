@@ -1,0 +1,22 @@
+import * as H from './cal-H-lib.mjs'
+const { browser, page, errors } = await H.world({})
+await H.toEdit(page)
+for (let di = 0; di < 7; di++) { await H.showDay(page, di); console.log(di, JSON.stringify(await H.head(page, di))) }
+await H.showDay(page, 2)
+console.log('sign', JSON.stringify(await H.signDay(page, 2)))
+console.log('head', JSON.stringify(await H.head(page, 2)))
+console.log('publish', JSON.stringify(await H.publishDay(page, 2)))
+console.log('head', JSON.stringify(await H.head(page, 2)))
+await H.pic(page, 'probe-published')
+// file a shared input on 15 Jul
+await H.inputsMonth(page, 2026, 7)
+await H.pic(page, 'probe-july')
+const asked = await H.fileShared(page, { iso: '2026-07-15', type: 'Meeting', people: ['Ranger', 'Drifter', 'Ace'], remarks: 'probe shared' })
+console.log('asked', asked)
+await H.pic(page, 'probe-after-file')
+console.log(JSON.stringify((await H.inputsNow(page)).filter(x => x.remarks === 'probe shared')))
+await H.toEdit(page); await H.showDay(page, 2)
+console.log('head', JSON.stringify(await H.head(page, 2)))
+await H.pic(page, 'probe-pending')
+console.log(errors)
+await browser.close()

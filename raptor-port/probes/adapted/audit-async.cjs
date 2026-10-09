@@ -340,6 +340,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
 
   /* ---- 12 · undo on the Inputs page redraws the table -------------------- */
   await p.evaluate(() => go('inputs')); await p.waitForTimeout(600)
+  await p.click('#inListBtn') // D580: the probe drives the secondary List.
   /* the table now opens on a today → +2-months window (owner, Aug 5) and this
      item's contract is "the table follows the MODEL" — so widen the window
      first, or the Jul 13 row it adds is filtered out and the count is a
@@ -372,7 +373,13 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     console.log(`   12 · inputs ${n0}/${r0} → ${n0 + 1}/${r1} → ${n2}/${r2}`)
     T('12 · the added row really appears', r1, r0 + 1)
     T('12 · undo takes it back out of the model', n2, n0)
-    T('12 · and the table follows the model', r2, n2)
+    /* RE-POINTED 8 Oct 26 (the Inputs / SANS calendar job's bug check) — owner D654, D655: one input filed for
+       several people is ONE row of the List (a row an ENTRY), and that row carries no delete cross — it opens the
+       window. So the List follows the model's entries, counted by its rows (`tr[data-iid]`), not by its crosses:
+       the demo's four-man meeting is one row. The check asked for one row a record and read 40 against 44. */
+    const entryRows = () => p.evaluate(() => document.querySelectorAll('#inBody tr[data-iid]').length)
+    const entryCount = () => p.evaluate(() => { const m = INPUTS.filter(i => !isSansAvail(i.type)); return m.filter(i => !i.grp).length + new Set(m.filter(i => i.grp).map(i => i.grp)).size })
+    T('12 · and the Inputs list follows its model: one row an entry', await entryRows(), await entryCount())
     T('12 · Undo removed the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), false)
     T('12 · Undo removed the matching row', await matching(), 0)
     T('12 · Undo kept page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
@@ -381,6 +388,13 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     T('12 · Redo restores the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), true)
     T('12 · Redo restores exactly the matching row', await matching(), 1)
     T('12 · Redo keeps page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
+    /* RE-POINTED the same day — owner D620: SANS availability is filed on the SANS calendar only, which has NO list.
+       The check used to add the two modes' list rows together; the SANS tab now shows its month and no list at all. */
+    T('12 · after Redo the list is one row an entry again', await entryRows(), await entryCount())
+    await p.click('#inSansMode')
+    await p.waitForSelector('[data-testid="sanscal"]')
+    T('12 · the SANS tab shows its month and no list', await p.evaluate(() => { const t = document.querySelector('#intbl'); return !!document.querySelector('[data-testid="sanscal"]') && !(t && t.getClientRects().length) }), true)
+    await p.click('#inMemberMode')
   }
 
   /* ---- 14 · a traffic edit earns a history step and an amendment mark ---- */

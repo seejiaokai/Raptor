@@ -1,0 +1,23 @@
+[
+  { "n": 1, "name": "a row above the window lands under the top bar's foot, not at the window's own top", "file": "src/ui/onscreen.ts",
+    "find": "if (box.top < top) return Math.round(toHead)", "put": "if (box.top < top) return Math.round(box.top)",
+    "tests": ["src/ui/onscreen.test.ts"] },
+  { "n": 2, "name": "a row brought on screen keeps a little air from the edge", "file": "src/ui/onscreen.ts",
+    "find": "const toHead = box.top - top - GAP", "put": "const toHead = box.top - top",
+    "tests": ["src/ui/onscreen.test.ts"] },
+  { "n": 3, "name": "a row taller than the room shows its head", "file": "src/ui/onscreen.ts",
+    "find": "return Math.round(Math.min(box.bottom - bottom + GAP, toHead))", "put": "return Math.round(box.bottom - bottom + GAP)",
+    "tests": ["src/ui/onscreen.test.ts"] },
+  { "n": 4, "name": "a row already on screen moves nothing", "file": "src/ui/onscreen.ts",
+    "find": "  if (boxOnScreen(box, top, bottom)) return 0\n", "put": "",
+    "tests": ["src/ui/onscreen.test.ts"] },
+  { "n": 5, "name": "a row with no height moves nothing", "file": "src/ui/onscreen.ts",
+    "find": "if (!box || !((box.height ?? box.bottom - box.top) > 0)) return 0\n  if (boxOnScreen(box, top, bottom)) return 0", "put": "if (!box) return 0\n  if (boxOnScreen(box, top, bottom)) return 0",
+    "tests": ["src/ui/onscreen.test.ts"] },
+  { "n": 6, "name": "a new input's row is still handed to the page's scroll, once", "file": "src/ui/InputsPage.tsx",
+    "find": "    bringRowOnScreen(el)\n", "put": "",
+    "tests": ["src/ui/inputs.test.tsx"] },
+  { "n": 7, "name": "where nothing is laid out the row goes to the browser's own nearest-edge scroll", "file": "src/ui/onscreen.ts",
+    "find": "(el as any).scrollIntoView({ block: 'nearest', behavior: 'smooth' })", "put": "(el as any).scrollIntoView({ block: 'center' })",
+    "tests": ["src/ui/inputs.test.tsx"] }
+]

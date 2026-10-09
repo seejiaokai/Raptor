@@ -2742,3 +2742,549 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the step that marks a ruling SPENT or REPLACED, add a check done sentence by sentence, not by heading: for every "if", "until", "when", "waits" or "still" in the full row, name the live ruling or document that now carries it, or keep the ruling live with only the used part marked spent. Give the archived list to a reviewer as a matter of course when more than a handful move at once.
 
 **Principle:** A record is spent only when every forward-looking sentence in it is either used up or stated elsewhere; judge by the conditions it contains, not by its title.
+
+### Observation 449: A ruling recorded on main leaves stale text on an unmerged branch — the handoff should list those leftovers for the chat that merges
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Bringing main into a held feature branch (the Inputs / SANS calendar) after the owner called the work back.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** What the handoff tells the next chat when the next job lives on a branch main has not got
+
+**Issue:** The ruling that called the held work back was recorded on main, in a documents-only chat. The documents that still said "on hold" (the spec, the review note, the branch's backlog item, the branch's own ruling for the hold) existed only on the unmerged branch, so that chat could not fix them in the same change. Its handoff listed the FILES where the branch meets main (the merge conflicts) but not the stale statements the new ruling left behind on the branch. The merging chat found them only by reading the branch's records.
+
+**Suggested improvement:** In the session-handoff skill's block for a job that resumes an unmerged branch: beside "where the branch meets main", add a line "what the new rulings leave stale ON that branch" — found by searching the branch (`git grep <subject> origin/<branch>`) for the subject of every ruling recorded since the branch forked — so the merging chat fixes them in its first change.
+
+**Principle:** A rule that says "fix what a superseded ruling leaves behind, in the same change" cannot reach text that lives on another branch; the handoff is the only carrier, so it must name the leftovers, not just the conflicts.
+
+### Observation 450: Quoting the owner verbatim can carry someone else's real data into a public repo — check visibility before the record is written
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Recording the owner's design direction, which he explained with a worked example read off another unit's live tool.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Recording a ruling in the owner's words (the rulings files, design notes, the handoff block)
+
+**Issue:** The rule "record his words" was followed literally: the full row quoted his worked example, whose figures were another unit's real daily numbers. The repository was public at that moment (a temporary state nobody had restated in the handoff). It was caught only because the repo's visibility was checked for an unrelated reason, after the commit and before the push; the two unpushed commits had to be folded and rewritten.
+
+**Suggested improvement:** In the handoff block's standing facts, state the repo's current visibility whenever it is not the default. In the ruling-recording steps, add one check before writing a quote: does it carry a third party's names or figures? If so, paraphrase and give a made-up example (the decision, not the transcript), and say where the real example lives.
+
+**Principle:** A verbatim quote is a data import. Before it is committed, ask who else's facts are inside it and who can read the place it is going.
+
+### Observation 451: A mock-up of a change to an existing screen is cheapest and most truthful when the new parts are drawn INTO the running app
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Drawing a newly ruled interaction (figures typed into new rows of an existing grid) for the owner, after an earlier mock-up of the same screen had been redrawn from memory and misrepresented what the app already had.
+**Skill:** New skill candidate: mock-ups on the real screen
+**Type:** open-source
+**Phase/Area:** Producing pictures of a proposed change to a built screen, before any build
+
+**Issue:** The earlier sets were stand-alone drawings; one of them simplified a real sheet and the owner read it as a proposal to remove features. This time the running build was opened in a scripted browser, the new rows were cloned from a real neighbouring row and injected into the live page, and the panel reused the app's own panel classes — so every pixel not marked as new was the real app, at phone and desktop size. Three things had to be learned on the way: (1) do a REAL interaction first (a real drag) to capture the selection look and the panel the app opens, and reuse those classes rather than restyling; (2) an overlay positioned from measured row tops went out of line once rows were injected — fold it with its own control rather than patching its geometry; (3) scroll the page so the changed region is clear of whatever docks at the bottom, and crop a close-up for a reader on a phone.
+
+**Suggested improvement:** A short guide (or a section of the design skill used here): for a change to an EXISTING surface — run the build; capture the real surface at each size; do the nearest real interaction and record its look and markup; inject only the new parts, cloned from real neighbours, marked as new; state in the caption what is drawn in; keep the injection script beside the pictures so the set can be re-shot after the design changes. Stand-alone drawings stay for surfaces that do not exist yet.
+
+**Principle:** When the thing being proposed is a change to something that exists, draw the change, not the thing: let the real artefact supply everything that is not in question, so the reviewer's attention — and trust — lands only on what is new.
+
+### Observation 452: A screenshot shows how an existing surface LOOKS, not how it BEHAVES — a behaviour claim made to the owner from a picture was wrong
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Drawing a new panel onto an existing grid by reusing the look of the panel the grid already opens, then telling the owner the new one would behave "like the one the grid already has".
+**Skill:** New skill candidate: mock-ups on the real screen (see observation 451)
+**Type:** open-source
+**Phase/Area:** Captions and claims that go with a mock-up of a change to a built screen
+
+**Issue:** The existing panel had been exercised once, for its look. From that one picture the agent told the owner it already dragged and that the new panel would match it. A read of the code, done later for the plan, showed the existing panel blocks the page behind it and closes on an outside press — the opposite of what the owner had just ruled for the new one. The claim had to be corrected to him, and it turned into a scope question that could have been put with the drawing.
+
+**Suggested improvement:** In the mock-up guide: any sentence of the form "this works like the existing X" is a behaviour claim — before it is written, exercise X for the behaviour named (close it, press outside it, drag it, use the page behind it) or read its code; list what was exercised beside the picture. Where the proposal and the existing behaviour differ, say so on the drawing itself.
+
+**Principle:** Reusing how something looks proves nothing about what it does. A comparison to an existing behaviour is a factual claim and needs its own check, separate from the picture.
+
+### Observation 453: An existing component drawn "to look like" the real one took four corrections; copying its measured styles took one
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Showing an existing component (a small labelled chip the product draws everywhere) inside a mock-up of a new panel.
+**Skill:** New skill candidate: mock-ups on the real screen (see observations 451, 452)
+**Type:** open-source
+**Phase/Area:** Reusing an existing component inside a stand-alone mock-up
+
+**Issue:** The component was first drawn from memory of another screen (wrong shape, wrong colours), then from its markup and colours read in the app (right colours, wrong size), then with its special marker added by eye (the marker outside the box with a glow the real one clips). The owner corrected each in turn and finally sent a close-up of the real thing. Only then were the element's computed styles — box, border, overflow, each child, the pseudo-element — read from the running app and reproduced verbatim, scaled as one piece; that version matched at once.
+
+**Suggested improvement:** In the mock-up guide: when a mock-up contains a component the product already draws, do not style it — measure it. Read the live element's computed styles (including pseudo-elements and overflow) and its markup from the running build, paste them as the mock's rule, scale with one factor, and put a close-up of the real one beside the mock's before showing anyone. Budget: one measuring pass before the first drawing, not after the third correction.
+
+**Principle:** A copy made by eye converges on the original one correction at a time, each paid for by the reviewer. A copy made by measurement starts where that process ends.
+
+### Observation 454: A plan's "builder's reading" that departs from his words is a question, not a reading
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** Writing a late feature (an input filed for several people) into an already-reviewed build plan, then two independent readers.
+**Skill:** writing-plans (and the project's record-decisions rule)
+**Type:** open-source
+**Phase/Area:** Writing the section a ruling implies — the list of "readings to tell him"
+
+**Issue:** The section listed two defaults as readings he would simply be told: one narrowed a reading he had already been told and that sat in the ruling's full row; the other added a fourth group where he had named three. Both readers flagged them as changes to recorded scope. A third default (a recorded-work refusal) had been copied from an architecture paragraph that a later ruling had reversed; the code already obeyed the later ruling.
+
+**Suggested improvement:** In the planning guide's step that lists the builder's readings: before a default goes in that list, hold it against the ruling's own words AND every reading recorded in its full row. If it narrows, widens or contradicts either, it is not a reading — it goes in the questions put to him, with a recommended answer and a stated "until he answers" default that follows his words. And a rule quoted from a prose summary is checked against the code or the newest ruling before the plan leans on it.
+
+**Principle:** A reading fills a gap the owner left; it never moves a line he drew. The test is mechanical: can the default be reached from his words without deleting any of them?
+
+### Observation 455: A new module wired into a shared registry is tested from the registry's other entry points, not only its own file
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** Adding a settings-backed module whose row kinds and command types join a shared settings store's lists.
+**Skill:** test-driven-development (and verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Going green — which tests to run after wiring
+
+**Issue:** The new module's own test file passed, 19 of 19. Six other suites then failed to load at all: the shared store built a list at import time from a constant exported by the new module, and from those suites' import order the new module had not finished loading (a circular import). The new file's own test imported in the one order that worked.
+
+**Suggested improvement:** In the "green" step: when the change adds an import to a module many suites load (a registry, a store, a permissions table), run at least the suites that reach that module from a different entry before calling it green; and keep anything a shared module needs at import time in a leaf module with no imports of its own.
+
+**Principle:** A file's own test proves the file under one import order. A registry is loaded from many; its wiring is proved only from more than one of them.
+
+
+### Observation 456: A test that matches a record by date can be silently defeated by the seed data beside it
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Building the Holidays list's writers (the Inputs / SANS calendar job, step 1); tests written first.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Writing the failing test — choosing fixture dates
+
+**Issue:** Four change tests failed with "no longer there" although the code was right. They added a holiday on a date next to a seeded holiday of the same name, and the list under test (correctly) reads two same-named neighbours as ONE run — so the lookup by the new date found nothing. The failure message pointed at the writer, not at the fixture.
+
+**Suggested improvement:** In the red step, when a test will look a record up by a key the system may group or merge (dates, ranges, names), check the seed for a neighbour of the same kind first, or pick a date well clear of seeded ones — and when the grouping IS the behaviour, pin it with its own named test rather than meeting it by accident.
+
+**Principle:** A fixture is part of the test's input. Where the system merges adjacent records, a fixture chosen next to seeded data tests the merge, not the thing the test is named for.
+
+
+### Observation 457: A fixture reset from a snapshot taken before start-up can make a later save look like it changed other records
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Building "who placed an input" at every door (the Inputs / SANS calendar job, step 1); a screen test of a member's save.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Writing the failing test — the fixture's reset between cases
+
+**Issue:** One case failed in its own setup: a member's save reported success and filed nothing. The test file took its copy of the list at import time, before the store had given each record its id, and put that copy back before every case. The next save gave those records fresh ids, so the ownership check saw a member changing other people's records and rolled the whole save back. Cases run as an admin never showed it. It took five runs to find because the screen said "added" — which also uncovered a real fault: the save's success message does not wait for the outer command's result.
+
+**Suggested improvement:** In the red step, take a reset snapshot only AFTER the system under test has finished starting up (ids minted, defaults filled), and when a case fails in its setup under one role but not another, suspect a check that reads what the command really changed before suspecting the feature. Also: when a "success" message appears and the data is not there, treat the mismatch itself as a finding and file it.
+
+**Principle:** A fixture restored between cases must be a state the system could have produced itself. A copy taken before start-up is not one, and the system's own integrity checks will treat the difference as somebody's change.
+
+
+## 2026-10-08
+
+### Observation 458: A refused command hands back NEW objects - a test (or a screen) holding a record across the refusal is looking at a ghost
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Building the group input's permission rule (the Inputs / SANS calendar job, step 1 piece (f)); tests of "this change is refused and nothing is altered", and then a fix for a save that said OK when refused.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Writing the failing test - asserting a refusal
+
+**Issue:** Each refused command rolls the store back by restoring a snapshot, which replaces every record object. Tests written as "get record r; try a forbidden change to r; try another forbidden change to r" changed a detached object on the second try: the command saw no change, answered "ok", and the assertion "refused" would have failed for a reason that had nothing to do with the rule - or, written the other way round, passed without testing anything. The same thing was then found in the product: an editor window holding the record across a refused save was holding a ghost, and its next Save said "no longer there".
+
+**Suggested improvement:** In the red step for any "refused, nothing changed" case: hold the record's ID, never the object, and find it again inside each attempt (a one-line helper, e.g. chg(id, fn)). When reviewing such a test, ask of every attempt after the first refusal whether the thing it mutates is still the thing in the store. In product code, any surface that survives a refusal must re-find its record by id.
+
+**Principle:** After a rollback, object identity is gone and only ids survive. A reference kept across a refusal makes both tests and screens act on something that no longer exists - a vacuous pass in a test, a false "gone" on screen.
+
+
+### Observation 459: When the red step was not watched, break each rule in turn to prove the tests bite
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same build: tests for a permission rule were written first, but first RUN only after the code existed (the tests imported names that did not exist yet, so the first run could only fail to compile - a red that proves nothing).
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED verification - when the test cannot fail meaningfully before the code exists
+
+**Issue:** A test file that imports not-yet-written functions fails at import, for every case alike. That is not "seen to fail for the right reason". Running the finished tests green then proves only that they pass.
+
+**Suggested improvement:** Add to the red step: where a meaningful red run is impossible before the code exists, prove the bite afterwards - a small script that applies ONE named one-line mutation (switch a rule off), runs the test file, prints which cases failed, and restores the file in a finally block. One mutation per rule; each must fail the cases named for that rule and no others it should not. Keep the script and its list of mutations with the session, and name the mutations in the commit message. Write such a script as a file, never inline in the shell (quoting and escapes break it).
+
+**Principle:** "Seen to fail first" is about evidence that the test can fail for the reason it claims. If the order of work removed that evidence, a targeted mutation puts it back - one rule at a time, cheaply, with the source restored by construction.
+
+### Observation 460: An in-place stream edit under Git Bash silently converts a CRLF file to LF
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Building step 2 of the Inputs / SANS redesign (the Leave War's Event sheet); one-line fix to a 4,700-line store file kept with Windows line endings
+**Skill:** New skill candidate: safe-file-edits-on-windows (or a line in session-handoff's "traps met")
+**Type:** open-source
+**Phase/Area:** Editing source files by script on Windows
+
+**Issue:** A single `sed -i` substitution on a file stored with CRLF line endings rewrote every line ending to LF. The tests still passed and the typecheck was clean; the only signal was the commit's diff stat (about 9,600 changed lines for a 180-line change). The handoff had warned that an exact-text edit by script must keep that file's line endings, but the warning named Python scripts, not sed, so it did not fire.
+
+**Suggested improvement:** Before any scripted edit, and again before any commit, compare the diff stat with the size of the intended change; treat a stat far larger than the change as a line-ending rewrite and restore the endings before committing. State the trap by its mechanism (any tool that re-writes the file in text mode) rather than by the tool that first hit it.
+
+**Principle:** A warning written about one tool does not protect against the same mechanism in another; record traps by mechanism, and make the diff's size a standing pre-commit check.
+
+### Observation 461: A green browser run proved nothing because the test server was serving an older build
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 2 of the Inputs / SANS redesign; four new rows added to a grid, then the browser suite run to check them
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Evidence that a check ran against the code it is claimed for
+
+**Issue:** A local preview server started earlier for a visual look was still running when the browser suite was launched. The suite's config reuses a server already on its port and so skipped its own build: every test passed against a build that did not contain the new rows. The false pass was caught only because a brand-new test for the rows could not find them. The project's own gate notes already described the trap; they were not read before the run. The honest re-run found fourteen failures, one of them a real defect (a side panel that mirrors the grid's rows had no counterpart for the new ones).
+
+**Suggested improvement:** Add to the skill's checklist: before citing a browser or end-to-end result, confirm the run exercised the current code — either the run's own log shows the build step, or a test that can only pass on the new code is among those that passed. Treat "reused existing server" as unverified until shown otherwise. And: read the project's known-traps note for a gate before the first run of that gate in a session, not after a surprise.
+
+**Principle:** A passing check is evidence only for the artefact it actually ran against; establish which artefact that was before quoting the result.
+
+### Observation 462: Emptying a default data set leaves tests that pass while checking nothing
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Unattended overnight run on the Inputs / SANS redesign; the Leave War's built-in count rows were removed by ruling, and 77 tests failed and were re-pointed
+**Skill:** test-driven-development (and verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Changing or removing seed / default data that many tests stand on
+
+**Issue:** After a built-in list of eleven items was emptied, the red run named 77 failing tests — and three more went on passing with nothing left to check: a loop that GENERATED one test per built-in item (it generated none, so the file simply had fewer tests), an equality between two lists that were now both empty, and a "delete every item, reload, expect none" test with nothing to delete. None appeared in the failure list. They were found only by searching the tests for every read of the emptied list and reading each one.
+
+**Suggested improvement:** When a change empties or shrinks data that tests iterate over, treat the failing list as incomplete. Search for every test that loops over, maps, or compares that data, and give each a guard that fails on an empty input (assert the expected length first). Compare the test COUNT before and after as well as pass / fail: a drop with no deleted test is a generated test that vanished.
+
+**Principle:** A test that iterates over data proves nothing when the data is empty; removing data turns such tests green-and-vacuous, and only reading (or a count of tests run) reveals them.
+
+### Observation 463: A background run that edits source files must own the tree until it ends
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Same run; a script broke one rule at a time in a source file, ran the tests, and restored it, in the background, to prove the tests catch each rule
+**Skill:** New skill candidate: mutation-proof-of-tests (or a section of test-driven-development)
+**Type:** open-source
+**Phase/Area:** Proving tests after they were written green; working alongside a background job
+
+**Issue:** Tests written before the code went green on first run, so the usual "seen to fail" evidence was missing; a small script that replaces one line, runs the affected test file, reports CAUGHT or MISSED and restores the line gave that evidence cheaply (26 rules across three pieces, all caught). The cost was that the job temporarily rewrites source files for many minutes: any edit, build or browser test started meanwhile would read a broken tree, and the job's own restore could overwrite an edit. The work was arranged so only documents and new test files were touched while it ran, and the commit waited for it.
+
+**Suggested improvement:** Describe the pattern: write the mutations as data (test files, source file, name, old text, new text), assert each anchor matches exactly once, restore in a finally block, flush output per mutation, and run it in the background ONLY while doing work that cannot touch or read the mutated tree (records, new files). Never commit, build, or run a browser test until it reports done and the tree is confirmed restored.
+
+**Principle:** Evidence that a test can fail is as cheap as one scripted line change per rule; a job that edits the tree to get it must be treated as holding a lock on that tree.
+
+### Observation 464: A layer (z-index) rule passed every unit test and did nothing — only the look on a phone showed it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Unattended overnight build of the calendar job's step 3 (Days): a Leave War sheet had to be drawn over a scheduler window that asked for it.
+**Skill:** bug-check order / raptor-executor (building a visual rule); claudex-loop (final inspection brief)
+**Type:** internal
+**Phase/Area:** verifying a CSS rule that changes stacking, in a stylesheet scoped by a nesting wrapper
+
+**Issue:** The rule that raises the sheet was appended at the end of a stylesheet whose rules are scoped by a `#page-leavewar { … }` nesting wrapper. The wrapper closes before the file's end, so the new rule was outside it and lost on specificity to the id-scoped rule it meant to beat. The unit test asserted the CLASS was on the element and passed; the build passed; the browser test of the flow passed too until an "is anything drawn over it" assertion was added. On a phone the sheet opened entirely hidden behind a full-screen window. A handoff note written earlier the same night had even said the opposite about that file ("its wrapper is never closed") — recorded from inference, not from measuring.
+
+**Suggested improvement:** In the executor's verification notes: a rule about LAYERS or visibility is proven only in a real browser by asking the page what is on top (`elementFromPoint` at several points of the element), never by asserting a class or a computed property in jsdom. And: break the rule on purpose once and watch that browser test fail before trusting it. In the handoff skill: a "trap" is written from what was measured, with how it was measured; an inferred trap is marked as a guess.
+
+**Principle:** A visual rule's unit test usually proves the rule was ASKED for, not that it took effect. For stacking, clipping and scoping, the only evidence is what the browser reports is actually on top — and a deliberately broken run that the test then fails.
+
+### Observation 465: A "missed" rule-break is one of two things, and both are worth having — decide which before adding a test
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same run: after each piece, a script broke one rule at a time (one line changed, the piece's tests run, the line put back). 111 breaks across five pieces; seven were not caught at first.
+**Skill:** raptor-executor (tests first); bug-check order §"the gates"
+**Type:** open-source
+**Phase/Area:** proving a new test file is strict
+
+**Issue:** Of the seven breaks the tests did not catch, four were missing or weak tests (a rename that must not freeze a derived short form; a second form that must start fresh; a refusal that must not start a wait; a sheet closed without saving that must forget what it was asked) and three were lines the code did not need (a second sort of an already-sorted list, a second repaint subscription under a parent that already repaints, a second reset of state that closing already resets). The reflex is to add a test for every miss; for the second kind that would have pinned dead code in place.
+
+**Suggested improvement:** When a rule-break is not caught, ask first "would anyone see a difference?" If no observable behaviour changes, delete the line and re-run; if one does, write the test for THAT behaviour (not for the line), then re-run the break and see it caught. Report both counts — breaks caught at once, and what each miss turned out to be.
+
+**Principle:** A surviving mutant is either an untested behaviour or code with no behaviour. Telling them apart is the value of the exercise; adding a test without asking pins whichever one it was.
+
+### Observation 466: New screens in a shared global stylesheet need prefixed class names — a plain word picked up another screen's rules
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same run: the first look at a new month view showed some date buttons a thousand pixels tall.
+**Skill:** raptor-executor / impeccable (building a new surface in an existing app)
+**Type:** open-source
+**Phase/Area:** naming CSS classes for a new component
+
+**Issue:** A date button was given the state class `day` (its value). The app's one global stylesheet already owns `.day` for a whole day card on another screen, so the button took that card's sizing. Every unit test passed (jsdom has no layout); the fault was plain at the first screenshot. The same risk sat on `off`, `today`, `on`, `night`.
+
+**Suggested improvement:** For any new surface added to an app with one global stylesheet: state and value classes are prefixed (`is-`, `c-`, `t-`) or scoped under the component's root, and the first check after the tests is a screenshot at each size BEFORE writing the browser test — it finds this class of fault in seconds.
+
+**Principle:** In a global stylesheet a short, meaningful class name is probably already taken. Prefix by habit, and look at the real page before trusting green unit tests about anything that has a size.
+
+### Observation 467: A tool the handoff tells the next session to re-run was never committed — the next session wrote it again
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A chat picking up a handoff whose first steps were "run the whole gate set, then run the strictness list that was written and not run".
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** what a handoff must leave in the repo
+
+**Issue:** The handoff listed fourteen rule-breaks to run "one at a time: change one line, run the named tests, put it back" and referred to "the proof script" the previous session had used all night. The script lived only in that session's scratch folder. The next session searched the repo, found nothing, and rebuilt the runner and the list from the prose before it could start.
+
+**Suggested improvement:** In the handoff skill's checklist: for every step the next session is told to RUN, name the command and confirm the thing it runs is committed (a `git ls-files` check on each path named). A list of cases to run goes into the repo as data beside its runner, not as a sentence.
+
+**Principle:** A handoff step is only as executable as its least-committed dependency. If the next session is told to run it, it is a deliverable — commit the runner and the cases, and write the command, not a description of the method.
+
+### Observation 468: Breaking the rule on purpose showed a passing browser test was standing on its own setup, not on the act it claimed to test
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same session: a real-browser test that an Undo leaves a list row where it is when the row is already on screen.
+**Skill:** test-driven-development / verification-before-completion
+**Type:** open-source
+**Phase/Area:** proving a new end-to-end test is strict
+
+**Issue:** The test edited a row, saved, measured the row's place, pressed Undo and asserted the place had not changed. With the rule under test deliberately broken ("always move the row to the top"), the test still passed: the SAVE in the setup runs the same code path, so the broken build had already moved the row before the "before" measurement — Undo then had nothing left to move. The unit-level breaks had all been caught; only running the break against the browser test exposed it.
+
+**Suggested improvement:** When the act under test shares a code path with a setup step, (a) reset that path's state between setup and act through the product's own controls, and (b) assert the pre-state against a value taken BEFORE the setup, not after it. And run at least one deliberate break against every new end-to-end test, in its own medium — a mutation list that only runs unit tests says nothing about the browser test.
+
+**Principle:** "Before and after are equal" proves nothing if the setup can already have produced the after. Anchor the pre-state to something the setup cannot have touched, and prove each test red in the medium it runs in.
+
+### Observation 469: A known shell trap, written in the notes twice, was walked into again — the note did not change the habit
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same session: multi-line edit scripts passed to an interpreter through a shell heredoc.
+**Skill:** raptor-executor (editing files by script on this machine)
+**Type:** internal
+**Phase/Area:** how edit scripts are written and run
+
+**Issue:** Both the project handoff and a saved memory say: write a multi-line edit script to a file with the file-writing tool, never through a shell heredoc (backslashes and quotes get eaten). The session still used heredocs for about ten scripts because the first few happened to work; one then turned an escaped line-break into a real one inside a committed script's header, which broke the script until it was repaired.
+
+**Suggested improvement:** Make it structural rather than remembered: a pre-tool hook that refuses a shell command containing `<<` followed by a `python`/`node` invocation in the same command, with the message "write the script with the Write tool and run the file". Or, cheaper: keep one committed helper that applies a list of exact find/replace pairs from a JSON file, so no ad-hoc script is needed at all.
+
+**Principle:** A trap that "usually works" will be walked into again however many notes describe it, because each success renews the habit. Rules of that kind need a guard that fires on the action, not a sentence that relies on recall.
+
+### Observation 470: A "leave this half exactly as it is" ruling was proved by dumping the untouched sizes before the change and byte-comparing after
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A phone-only rearrangement of one screen's top area, with an explicit ruling that the desktop and tablet must not move at all.
+**Skill:** test-driven-development / verification-before-completion
+**Type:** open-source
+**Phase/Area:** pinning the unchanged half of a change before building the changed half
+
+**Issue:** The usual guard for "the other sizes stay as they are" is a test that names a handful of properties. That only protects what the author thought to list. Here a small script wrote EVERY element of the area — words, box, padding, type size, colours — to a file per size and per viewer, once on the build before any code was touched and once after; the files for the untouched sizes compared byte for byte. It cost about five minutes and turned "I believe nothing moved" into a checked fact, and the same dump showed the two real faults on the changed size (a line one pixel too long; one control three pixels taller than its neighbours) before any walk began. A companion end-to-end test for the untouched sizes was shown to pass on BOTH the old and the new build, which is what makes it a description of "as it was" rather than of "as I built it".
+
+**Suggested improvement:** In the TDD and verification guidance, for any change scoped to one size, role or mode: (1) before editing, capture a whole-surface dump of the OUT-of-scope cases from the current build; (2) after, diff it — any difference is a finding; (3) write the out-of-scope test first and run it against the old build, where it must pass. Keep the dump script with the change so the next change to that surface can reuse it.
+
+**Principle:** The half of a change that must not move is best proved by a before/after comparison of everything, taken before the first edit — an enumerated test protects only what its author imagined could break.
+
+### Observation 471: The mutation runner covered unit tests only; layout rules needed their own build-and-browser runner, written (again) on the spot
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same session: proving each new test strict by breaking one rule at a time. Most of this change's rules were stylesheet lines.
+**Skill:** raptor bug-check order (docs/bug-check-order.md §8.4) / New skill candidate: mutation-proof for layout
+**Type:** internal
+**Phase/Area:** the break test per wired surface
+
+**Issue:** The committed break runner rewrites a source line, runs unit tests and restores it; its own header says a rule only a browser can see must be proved "by running the browser test once on the broken build" — by hand. With twelve such rules that is twelve manual build-test-restore cycles, so a second runner was written in the scratch folder, where (as the handoff already records of the first runner) it would have been lost; it was then ported into the repo as `scripts/handpass/breaks-browser.mjs`. Its first scratch version also stopped half-way on a bad list entry and left a BROKEN build being served — the committed version rebuilds the true app in a `finally`.
+
+**Suggested improvement:** Name the browser runner in the order's §8.4 beside the unit one (a working-guide change — it needs its two reads). In the runner pattern itself: validate every list entry BEFORE the first break, and always restore the true build on the way out, including on an error.
+
+**Principle:** A proof tool that mutates shared state (source files, a served build) must validate its whole input before the first mutation and restore on every exit path — and a tool written twice on the spot belongs in the repository the first time.
+
+### Observation 472: Observation 469's shell trap recurred three more times in the very next session
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The session after 469 was logged; the saved memory and the handoff both carried the warning and both were read at the start.
+**Skill:** raptor-executor (editing files by script on this machine)
+**Type:** internal
+**Phase/Area:** how edit scripts are written and run
+
+**Issue:** Evidence for 469, not a new lesson: three more shell heredocs carrying a script failed in this session (an apostrophe that never parsed; a backslash escape eaten twice), each costing a round trip, each after short heredocs "without apostrophes" had worked. Reading the warning at the start of the session did not prevent any of them.
+
+**Suggested improvement:** Treat 469's structural guard as due now rather than at some later review: the pre-tool hook, or the one committed find/replace helper that takes its pairs from a file.
+
+**Principle:** When a logged trap recurs in the next session with the note freshly read, the note has been tested and has failed; stop adding notes and build the guard.
+
+### Observation 473: A tap that opens or moves something under the pointer hands the follow-up click to it — only a real browser shows it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Building the SANS calendar (step 4 of the Inputs / SANS job): a month whose dates open a window on a tap, and a phone panel whose bar pulls it up.
+**Skill:** raptor-executor / the bug-check order's door check (docs/bug-check-order.md §7)
+**Type:** open-source
+**Phase/Area:** building a gesture on pointer events; the builder's own look before a commit
+
+**Issue:** Two faults of one kind reached a build whose unit tests were all green, and both were found only by taking a picture of the running app on a phone. (1) A tap on a date opened a window under the finger on pointer-up; the click the browser sends afterwards landed on the window's primary button and opened a form. (2) A tap on a panel's bar changed the panel's height on pointer-up; the click then landed on whatever had moved under the finger. jsdom dispatches only the events a test fires, so a test that fires pointer-down and pointer-up never sees the click. A third fault of the same family: a sideways finger slide did nothing because the grid lacked `touch-action:pan-y` and the browser cancelled the press as a scroll.
+
+**Suggested improvement:** Add to the door check (and to the executor's pre-commit look) a named item: "for every control that acts on pointer-up, ask what is under the pointer AFTER it acts — if the answer is something new or something that moved, either act on the click instead of the release, or swallow the one click that follows; and drive it once with a real tap in a browser." In unit tests, a tap helper should fire the click a browser sends.
+
+**Principle:** A handler that acts on release changes what the following click will hit; decide on the click, or consume it — and treat any gesture test that omits the browser's own follow-up events as unproven until a real browser has run it.
+
+### Observation 474: Taking a control away from a screen needs a look at how that screen is LAID OUT, not only at who used the control
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 5 of the Inputs / SANS calendar job - the view buttons became three tabs, and Medical's own close cross was removed because "a tab is left by choosing another".
+**Skill:** raptor-executor / bug-check-order (roll-call) - New skill candidate: "removing a way out"
+**Type:** open-source
+**Phase/Area:** building - removing or replacing navigation
+
+**Issue:** The cross was removed after searching for who CALLED it (tests, scripts). Every unit test passed. Only reading the stylesheet for a different reason showed the screen was still a fixed layer over the whole window - the tabs that were now its only exit would have been drawn underneath it. A layout-less test environment cannot see this class of fault.
+
+**Suggested improvement:** When a change removes or replaces a way OUT of a surface (a close cross, a back button, an Escape rule), add one step before the commit: read that surface's positioning rules (fixed / absolute / z-index / scroll lock / inert) and name, in the commit, the control that is now the way out and why it is reachable. Pin it with a real-browser test that presses the new way out.
+
+**Principle:** A way out is a property of the layout as much as of the handlers - before removing one, prove the replacement is on screen and on top in a real browser, because a search for callers only proves nobody will miss the old one.
+
+### Observation 475: A new optional stored field needs ONE seeded record that carries it, or its mirrors never meet it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 5 of the Inputs / SANS calendar job - the demo data was given the "who placed it" stamps that step 1 had added to the record type.
+**Skill:** raptor-executor / test-driven-development
+**Type:** open-source
+**Phase/Area:** adding a field to a persisted record
+
+**Issue:** Step 1 added four optional fields to a stored record, with their writers and tests, and every gate was green. A hand-kept mirror of the record's shape (a conformance test's own field list) was never updated - and nothing failed, because that test only checks the records the seed produces, and no seeded record carried the new fields. It failed two steps later, the first time a seed carried them.
+
+**Suggested improvement:** In the checklist for "a field added to a stored record": add at least one seeded / fixture record that CARRIES the field in the same change, then run the conformance and round-trip tests. Name the mirrors to update (the declared type, the runtime shape list, the table list for the database).
+
+**Principle:** A check that walks real records can only vouch for fields some real record carries - an optional field nobody fills is invisible to every structural test, so give it a carrier the day it is added.
+
+### Observation 476: Two real-browser faults a layout-less test cannot see when dragging a copy of an element
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 5 - re-making drag-to-move for bars on a month; unit tests of the pointer machine were green, the first real-mouse drag did nothing.
+**Skill:** bug-check-order (walk) / New skill candidate: "drag and drop in a real browser"
+**Type:** open-source
+**Phase/Area:** pointer gestures - a dragged clone, and finding the dropped element afterwards
+
+**Issue:** (1) The dragged copy was a clone of the bar; a new rule that made bars take presses also applied to the clone, so the clone caught the mouse release and the drop target never heard it. (2) After the fix, the "landed here" flash went to the wrong element: a hidden twin (a list row kept mounted under the calendar) carried the same data id and came first in the document.
+
+**Suggested improvement:** When a gesture drags a CLONE: state its pointer-events explicitly on the clone's own class, never by inheritance from the original. When finding an element by a data id after a re-render: scope the selector to the surface (or its class), and check for mounted-but-hidden twins. Cover both with one real-browser test that performs the drag with a real mouse and asserts on the record AND on which element flashed.
+
+**Principle:** A cloned element inherits every rule written for its original, including the ones that make it a target - and an id is only unique among the things you remembered were mounted.
+
+### Observation 477: Two test sign-ins that looked different were the same person, so a "may he?" test proved nothing
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Inputs calendar, step 5 — the editor for an input filed for several people (who may change it)
+**Skill:** New skill candidate: permission-test set-up check (or a line in raptor-executor's verification section)
+**Type:** internal
+**Phase/Area:** writing tests for a rule that depends on WHO is signed in
+
+**Issue:** The new tests signed in "as the admin" and "as the member" the way many older tests do (a session with a
+role), and read each one's identity back from the app. Both came back as the same person: the role had changed, the
+identity had not — it has its own setter. Every test of "a man in it who did not file it" and "anyone else" therefore ran
+as the filer, and two of them passed for the wrong reason until the read-only assertions happened to fail. The older
+tests that copy the short sign-in are not wrong — they test the role alone — but the pattern is unsafe to copy for a rule
+about identity.
+
+**Suggested improvement:** Before writing a test whose subject is "X may, Y may not", assert in the set-up that the two
+actors resolve to two DIFFERENT people (one line), and take the sign-in helper from a test that already tests identity,
+not from the nearest test in the folder.
+
+**Principle:** A permission test is only as good as the difference between its actors. Prove the actors differ before
+trusting any "refused" or "allowed" the test reports.
+
+### Observation 478: Adding a second instance of a component to a page silently re-pointed existing tests at it
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Inputs calendar, step 5 — the people picker put into the List's own Add form as well as the editor window
+**Skill:** New skill candidate: shared-component reuse checklist (or a line in the bug-check order's roll-call)
+**Type:** open-source
+**Phase/Area:** reusing a component in a second place on a page that keeps hidden parts mounted
+
+**Issue:** The picker was built and tested inside one window. Putting the same component into a form that stays mounted
+(hidden) under the calendar made every "find the picker" query in the first set of tests match the hidden one first: six
+previously green tests failed at once, and — worse — a query for "is the switch absent?" could have passed or failed for
+the wrong element. Nothing was wrong on screen; the tests had been written as if the component could only exist once.
+
+**Suggested improvement:** When a component gains a second home, (1) grep the tests and browser specs for its test ids
+and scope each query to its container in the same change; (2) record in the contract doc that the page can hold two, so
+the next test author scopes from the start; (3) prefer container-scoped queries for any component that is not a
+singleton by construction.
+
+**Principle:** A test id is unique only until the component is reused. Scope queries to the container the behaviour
+belongs to, and treat "a second instance now exists" as a change with its own blast radius in the tests.
+
+### Observation 479: A plan step that copies from a private folder into the repo needs the owner's word named in the plan
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 6 of a multi-step job: "the approved mock-ups redrawn with made-up figures into the repo". The redraw ran; the copy from the owner's private folder into the (public) repo was refused by the harness's own permission check, mid-run, with the owner away.
+**Skill:** writing-plans (and session-handoff)
+**Type:** open-source
+**Phase/Area:** Plan steps that move files across a privacy boundary
+
+**Issue:** The plan listed the copy as an ordinary records chore. Nothing in the plan or the handoff said that moving files out of a private source folder is an action a harness may stop and that only the owner can allow, so the step was reached unattended and had to be parked. A second surprise sat beside it: the plan named six pictures as carrying private figures; a seventh showed them behind a settings sheet and was found only by opening it.
+
+**Suggested improvement:** In writing-plans: any step that copies or publishes material from a private or out-of-repo source is written as its own step with (a) the owner's explicit go-ahead recorded beside it at planning time, and (b) "open every file before it crosses" as part of the step — never "the N files known to carry X". In session-handoff: list such steps under what needs the owner present.
+
+**Principle:** A privacy boundary is crossed by an explicit, pre-authorised step that looks at every item — never as a side effect of a records chore, and never from a list of the items "known" to be sensitive.
+
+### Observation 480: Writing the failing test for a reviewer's lead - and for its mirror case - found a second fault the lead did not name
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A FULL bug check. A reviewer asked for MISSING call sites named two from reading; the host reproduced both in the running app, then wrote the failing tests before fixing.
+**Skill:** test-driven-development (and receiving-code-review)
+**Type:** open-source
+**Phase/Area:** Red-first tests for a reviewer's finding
+
+**Issue:** The lead was "adding a person is not counted as unsaved work". The test for ADDING went red and then green with the one-line fix. The test for the mirror case - REMOVING a person - stayed red after the fix, for a different reason: a neighbouring effect was resetting the state while the question was on screen and emitting two false messages. Only the mirror case exposed it, because in the add case the reset happened to land on the same value. A second lead's fix (which window owns Escape) likewise exposed that "the front window" went stale once the front one closed.
+
+**Suggested improvement:** In test-driven-development, under "write the failing test": for a state-comparison bug, write the pair - the case reported AND its inverse (add / remove, open / close, first / last) - and assert the side effects too (messages shown, nothing else reset), before touching the code. In receiving-code-review: a reviewer's lead is a pointer to a region; after reproducing it, test the neighbours of the fix, not only the sentence in the report.
+
+**Principle:** A fix that makes one direction pass can leave the opposite direction broken by a different cause; test both directions and the visible side effects, because coincidence hides the second fault in the first.
+
+### Observation 481: A check left "to ride the final check" went stale for two build steps
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** A job built in five steps, each ending on the full gate set, with two slower browser suites (a speed check and six adapted probes) recorded at each step as "NOT run - they ride the final check".
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Which checks may be deferred to the end of a multi-step build
+
+**Issue:** At the final check one deferred probe failed 2 of 54. The cause was not the app: two rulings built in steps 4 and 5 had changed what the probe counted, and nobody had re-pointed it. It took an investigation with a throwaway script to tell a stale check from a real fault (a row missing from a list would have looked the same).
+
+**Suggested improvement:** In verification-before-completion: a suite may be deferred only if it is cheap to triage later; any deferred suite that reads the surface a step changes is run at that step, or the step's record names it as "will need re-pointing: <which assertions>". The handoff's "NOT run" line should say which of the deferred suites touch what was built.
+
+**Principle:** Deferring a check defers its triage too, and a stale check is indistinguishable from a real failure until someone investigates - run the ones that read what you changed while the change is fresh.
+
+### Observation 482: A walk of a new control passed 16 of 16; two blind code reads then found six faults, every one an order of action
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** A date picker added to an existing editor window (a control with its own small state: a pick half made, a record swapped under it, a change arriving behind it). The check was sized as a short host walk, then two independent read-only reviewers.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Sizing a walk for a control that carries its own state
+
+**Issue:** The walk drove the four doors, both orders of two controls, a refusal, three screen sizes - and found nothing. The readers, asked to trace the control's state through every way it can be entered and left (a record swapped, a question answered either way, a tap that changes nothing), found six real faults, each reproduced as a failing test. The walk's scenarios had been written from the surfaces and roles, not from the control's states.
+
+**Suggested improvement:** When a change adds a control that holds state between presses, list its states and every event that can arrive in each (its own presses, the record changed behind it, another record opened, each answer to each question) and make each pair a scenario - a walk step where it needs the screen, a test otherwise - BEFORE the walk is sized. Ask the reviewers the same question in their brief; it is what found the faults here.
+
+**Principle:** Surfaces and roles find the control that is missing; states and events find the control that is wrong. A control with memory needs its state table walked, not only its doors.
+
+### Observation 483: A ruling's reading was recorded while an existing test still required the opposite
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** The owner confirmed a rule ("the latest answer is everyone's"). The agent recorded it with a reading that named three cases. One of the three was already contradicted by a passing test and by the code, and nobody looked until a reviewer traced it.
+**Skill:** New skill candidate: recording a decision (the project's own record-decisions rule)
+**Type:** open-source
+**Phase/Area:** What is searched when a ruling is written down
+
+**Issue:** The rule for recording says to fix what an older ruling left behind in the documents, the app and the lists. The search that was run was of the documents. The tests were not searched for the subject, so a test whose title said the opposite of the new reading stayed green and unread.
+
+**Suggested improvement:** When recording a ruling, search the TEST titles and assertions for its subject as well as the documents; a test that pins the old behaviour is the fastest proof that the app does not yet do what the ruling says, and it must be changed (by the ruling) or the build filed in the same change.
+
+**Principle:** A passing test is a written claim about behaviour; when a decision changes the behaviour, the tests are part of what the old decision left behind.

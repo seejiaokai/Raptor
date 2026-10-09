@@ -2,11 +2,13 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { setSession } from '../../state/auth'
 import { StageBar, Topbar } from './Chrome'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
 describe('the stage strip', () => {

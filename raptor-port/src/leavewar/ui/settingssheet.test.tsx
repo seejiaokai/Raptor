@@ -2,11 +2,13 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { displayRoster, getState, groupsInOrder, initStore, setRole, setRosterOrder } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { LIFT_LAND_MS } from '../../ui/lift'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
 /* The counter block's ONE-ROW top bar (owner, 5 Sep 26 — "all in 1 row to
@@ -98,7 +100,7 @@ describe('the ⚙ Settings sheet', () => {
     expect(screen.getByTestId('counter-add')).toBeTruthy()
     expect(screen.getByTestId('event-add')).toBeTruthy()
     expect(screen.getByTestId('sans-toggle')).toBeTruthy()
-    expect(screen.getByTestId('counter-reset-all')).toBeTruthy()
+    expect(screen.queryByTestId('counter-reset-all')).toBeNull()   // "Reset counters" left with the built-in counters (D669)
     // the groups editor is folded in
     expect(screen.getByTestId('group-reset')).toBeTruthy()
     // …but rearranging is NOT in the sheet — no Auto-sort here
@@ -410,22 +412,8 @@ describe('⚙ Settings — Reset order', () => {
     expect(btn().disabled).toBe(true)
     expect(screen.getByTestId('roster-order-hint').textContent).toMatch(/In the default order/)
   })
-  /* W2's walk (26 Sep 26): Reset counters and Reset order could both read "Really reset?" at once — one tap never fired
-     the other, but two armed questions side by side read as one. Arming either takes the other's question back. */
-  it("arming one reset takes the other one's question back", () => {
-    setRosterOrder(['ramp', 'ace'])
-    open()
-    const counters = () => screen.getByTestId('counter-reset-all')
-    fireEvent.click(btn())
-    expect(btn().textContent).toBe('Really reset?')
-    fireEvent.click(counters())
-    expect(counters().textContent).toBe('Really reset?')
-    expect(btn().textContent, 'arming Reset counters took Reset order back').toMatch(/Reset order/)
-    fireEvent.click(btn())
-    expect(btn().textContent).toBe('Really reset?')
-    expect(counters().textContent, 'and the other way round').toMatch(/Reset counters/)
-    expect(getState().rosterOrder, 'nothing was fired').toEqual(['ramp', 'ace'])
-  })
+  /* (W2's walk, 26 Sep 26, had Reset counters and Reset order take each other's "Really reset?" back. Reset counters is
+     gone — D669, 8 Oct 26 — so Reset order's is the only such question on the sheet; its test went with the button.) */
   it('closing the sheet takes the question back', () => {
     setRosterOrder(['ramp', 'ace'])
     open()

@@ -20,12 +20,12 @@ const day = (date: string, e0 = '', e1 = ''): DayInfo => ({
 })
 
 describe('the seed', () => {
-  it('is PH=off, Off day=free, No Leave=nolv, SC=work', () => {
+  it('is PH=off, Off day=free, No Leave=nolv, SC=work — each with the short form the grid prints (D645)', () => {
     expect(seedEventDefs()).toEqual([
-      { name: 'PH', kind: 'off' },
-      { name: 'Off day', kind: 'free' },
-      { name: 'No Leave', kind: 'nolv' },
-      { name: 'SC', kind: 'work' },
+      { name: 'PH', kind: 'off', short: 'PH' },
+      { name: 'Off day', kind: 'free', short: 'OFF' },
+      { name: 'No Leave', kind: 'nolv', short: 'NL' },
+      { name: 'SC', kind: 'work', short: 'SC' },
     ])
   })
 
@@ -113,15 +113,15 @@ describe('updateEventDef', () => {
   it('renames and reclassifies', () => {
     const out = updateEventDef(seedEventDefs(), 3, { name: 'Standing Charge', kind: 'off' })
     expect(out).toEqual([
-      { name: 'PH', kind: 'off' },
-      { name: 'Off day', kind: 'free' },
-      { name: 'No Leave', kind: 'nolv' },
-      { name: 'Standing Charge', kind: 'off' },
+      { name: 'PH', kind: 'off', short: 'PH' },
+      { name: 'Off day', kind: 'free', short: 'OFF' },
+      { name: 'No Leave', kind: 'nolv', short: 'NL' },
+      { name: 'Standing Charge', kind: 'off', short: 'SC' },
     ])
   })
   it('changes only the kind when no name is given', () => {
     const out = updateEventDef(seedEventDefs(), 0, { kind: 'work' })
-    expect((out as EventDef[])[0]).toEqual({ name: 'PH', kind: 'work' })
+    expect((out as EventDef[])[0]).toEqual({ name: 'PH', kind: 'work', short: 'PH' })
   })
   it('refuses a rename onto another type', () => {
     expect(updateEventDef(seedEventDefs(), 3, { name: 'PH' })).toContain('already an event type')
@@ -131,9 +131,9 @@ describe('updateEventDef', () => {
 describe('removeEventDef', () => {
   it('drops the entry', () => {
     expect(removeEventDef(seedEventDefs(), 1)).toEqual([
-      { name: 'PH', kind: 'off' },
-      { name: 'No Leave', kind: 'nolv' },
-      { name: 'SC', kind: 'work' },
+      { name: 'PH', kind: 'off', short: 'PH' },
+      { name: 'No Leave', kind: 'nolv', short: 'NL' },
+      { name: 'SC', kind: 'work', short: 'SC' },
     ])
   })
   it('returns the same array unchanged for a bad index', () => {

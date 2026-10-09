@@ -1,0 +1,25 @@
+import * as G from './cal-G-lib.mjs'
+const { L, W, sleep } = G
+G.setTag('probe5')
+const { browser, p, errors } = await G.world({ who: 'a' })
+const tid = id => p.locator(`[data-testid="${id}"]`)
+const z = () => p.evaluate(() => ['win-inputsset', 'win-days', 'win-holiday'].map(t => { const w = document.querySelector(`[data-testid="${t}"]`); if (!w) return t + ': none'; return `${t}: z=${getComputedStyle(w).zIndex}${w.classList.contains('front') ? ' FRONT' : ''}` }).join(' | '))
+const first = () => p.evaluate(() => { const t = document.querySelector('[data-testid="days-tab-holidays"]') || document.querySelector('[data-testid="days-prev"]'); if (!t) return 'no control'; const r = t.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return (e && ((e.closest('[role=dialog]') || {}).ariaLabel)) || 'page' })
+await L.go(p, 'inputs'); await sleep(500)
+const step = async (n) => console.log(n, '->', await z(), '| topmost at Calendar first control:', await first())
+await tid('in-gear').click(); await tid('win-inputsset').waitFor(); await sleep(300)
+await tid('iset-days').click(); await tid('win-days').waitFor(); await sleep(500); await step('1 Calendar… opened from settings')
+await G.shot(p, 'a-1-opened')
+// close Calendar by its own X, reopen from the settings window
+await tid('win-days-x').click().catch(async () => { console.log('no win-days-x'); await p.keyboard.press('Escape') }); await sleep(300)
+await tid('iset-days').click(); await tid('win-days').waitFor(); await sleep(500); await step('2 closed by X, Calendar… pressed again')
+await G.shot(p, 'a-2-reopened-after-x')
+// now open the holiday form from it, cancel, close, reopen
+await tid('days-tab-holidays').click().catch(() => {}); await sleep(300)
+await tid('hol-add').click(); await tid('win-holiday').waitFor(); await sleep(400); await step('3 + Add opened the holiday form')
+await tid('hol-cancel').click(); await sleep(400); await step('4 form cancelled')
+await tid('win-days-x').click().catch(() => {}); await sleep(300)
+await tid('iset-days').click(); await tid('win-days').waitFor(); await sleep(500); await step('5 Calendar… pressed again after the form')
+await G.shot(p, 'a-5-after-form')
+console.log('errors', JSON.stringify(errors))
+await browser.close()

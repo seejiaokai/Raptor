@@ -52,6 +52,90 @@ beforeEach(() => {
 afterEach(() => { _resetTimeline() })
 
 describe('installGlobalUndo() wires the live cutover', () => {
+  it('addition Redo reveals its live saved input and addition Undo leaves no reveal',()=>{
+    view.setPage('inputs');view.setInpMode('sans')
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-add',person:'vinci',type:'SANS Availability',date:'Jul 22',yr:2026,allday:true,sans:{f:true}} as any))
+    expect(globalUndo().ok).toBe(true);expect(INPUTS.some(r=>r.iid==='reveal-wire-add')).toBe(false)
+    expect(view.INPREVEAL).toBeNull()
+    expect(globalRedo().ok).toBe(true)
+    expect(view.INPREVEAL).toEqual({iid:'reveal-wire-add',iso:'2026-07-22',mode:'sans'})
+  })
+  it('type-edit Undo/Redo uses the restored image rather than the live image before restoration',()=>{
+    view.setPage('inputs')
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-edit',person:'vinci',type:'Personal',date:'Jul 22',yr:2026,allday:true} as any))
+    const row=INPUTS.find(r=>r.iid==='reveal-wire-edit')!
+    writeInputs(()=>{row.type='SANS Availability';row.sans={f:true}})
+    expect(globalUndo().ok).toBe(true);expect(view.INPMODE).toBe('member')
+    expect(view.INPREVEAL).toEqual({iid:row.iid,iso:'2026-07-22',mode:'member'})
+    expect(globalRedo().ok).toBe(true);expect(view.INPMODE).toBe('sans')
+    expect(view.INPREVEAL).toEqual({iid:row.iid,iso:'2026-07-22',mode:'sans'})
+  })
+  it('Redo of a new upchit and shortened old medical reveals the new request rather than the old tail',()=>{
+    view.setPage('inputs')
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-old-med',person:'vinci',type:'OML',date:'Jul 20',endDate:'Jul 24',yr:2026,allday:true} as any))
+    writeInputsBatch(()=>{
+      INPUTS.find(r=>r.iid==='reveal-wire-old-med')!.endDate='Jul 21'
+      INPUTS.unshift({iid:'reveal-wire-upchit',person:'vinci',type:'Upchit',date:'Jul 22',yr:2026,allday:true} as any)
+    })
+    expect(globalUndo().ok).toBe(true);expect(globalRedo().ok).toBe(true)
+    expect(view.INPREVEAL).toEqual({iid:'reveal-wire-upchit',iso:'2026-07-22',mode:'member'})
+  })
+  it('an input undone while staying on Edit Schedule leaves no reveal waiting for the next visit to Inputs (step 0, 7 Oct 26)',()=>{
+    view.setPage('inputs');view.clearInpReveal()
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-stay',person:'vinci',type:'Personal',date:'Jul 15',yr:2026,allday:true} as any))
+    const row=INPUTS.find(r=>r.iid==='reveal-wire-stay')!
+    writeInputs(()=>{row.remarks='changed'})
+    view.setPage('editsched');view.clearInpReveal()
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('editsched')
+    expect(view.INPREVEAL).toBeNull()
+    expect(globalRedo().ok).toBe(true)
+    expect(view.INPREVEAL).toBeNull()
+  })
+  it('a flying-plan step lands where it shows: a required figure on the Leave War; a day class stays on a page that shows it, else the SANS month (plan 3.2)',()=>{
+    const fig={type:'fly.day.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyday:2026-10-09',before:null,after:{p:5}}]} as any
+    view.setPage('editsched');_snapView(fig,'undo');expect(view.CURPAGE).toBe('leavewar')
+    const run={type:'fly.run.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrun:2026-10-12',before:null,after:{p:18}}]} as any
+    view.setPage('inputs');_snapView(run,'redo');expect(view.CURPAGE).toBe('leavewar')
+    const cls={type:'fly.day.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyday:2026-11-05',before:null,after:{cls:'nf'}}]} as any
+    view.setPage('leavewar');_snapView(cls,'undo');expect(view.CURPAGE).toBe('leavewar')
+    view.setPage('editsched');view.setInpMode('member');view.setInpView('table');_snapView(cls,'redo')
+    expect(view.CURPAGE).toBe('inputs');expect(view.INPMODE).toBe('sans');expect(view.INPVIEW).toBe('cal');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    const rule={type:'fly.rule.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrule:r1',before:null,after:{id:'r1',wd:3,cls:'nf',from:'2027-02-04'}}]} as any
+    view.setPage('quals');_snapView(rule,'undo');expect(view.CURPAGE).toBe('inputs');expect(view.CALMONTH).toEqual({y:2027,m:2})
+  })
+  /* BOTH READERS of the calendar job's bug check (8 Oct 26 - Astra R4, Sol S4). D672: Undo and Redo leave the screen where
+     it is when what they change is already in view. A day's class shows on BOTH calendars, yet the landing always
+     switched the Inputs page to the SANS tab - and, for a weekday's rule, to the month the rule STARTS in. */
+  it('a day class or a weekday rule changed while the Inputs calendar already shows it: the tab and the month stay (D672)',()=>{
+    const cls={type:'fly.day.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyday:2026-11-05',before:null,after:{cls:'nf'}}]} as any
+    view.setPage('inputs');view.setInpMode('member');view.setInpView('cal');view.setCalMonth({y:2026,m:11})
+    _snapView(cls,'undo')
+    expect(view.CURPAGE).toBe('inputs');expect(view.INPMODE,'the Inputs tab he was on').toBe('member');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    /* on the Inputs calendar, another month: the month turns to the date, the tab is kept */
+    view.setCalMonth({y:2026,m:7});_snapView(cls,'redo')
+    expect(view.INPMODE).toBe('member');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    /* a rule that began in February, March on screen - its Thursdays are in view: nothing moves */
+    const rule={type:'fly.rule.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrule:r1',before:null,after:{id:'r1',wd:3,cls:'nf',from:'2027-02-04'}}]} as any
+    view.setCalMonth({y:2027,m:3});_snapView(rule,'undo')
+    expect(view.INPMODE).toBe('member');expect(view.CALMONTH).toEqual({y:2027,m:3})
+    /* the List, not a calendar: he is taken to the SANS month, as before */
+    view.setInpView('table');_snapView(cls,'undo')
+    expect(view.INPVIEW).toBe('cal');expect(view.INPMODE).toBe('sans');expect(view.CALMONTH).toEqual({y:2026,m:11})
+  })
+  it('planning Undo and Redo leave SANS for the Member calendar where the note lives',()=>{
+    const entry={scope:{module:'inputs'},forward:[{collection:'plan',id:'2026-07-22',before:null,after:{rmk:'Planning note'}}]} as any
+    view.setPage('inputs');view.setInpMode('sans');view.setInpView('table')
+    _snapView(entry,'undo');expect(view.INPMODE).toBe('member');expect(view.INPVIEW).toBe('cal')
+    view.setInpMode('sans');view.setInpView('table')
+    _snapView(entry,'redo');expect(view.INPMODE).toBe('member');expect(view.INPVIEW).toBe('cal')
+  })
+  it('D580 Undo and Redo reveal the input mode of the restored row after a type change',()=>{
+    const entry={scope:{module:'inputs'},forward:[{collection:'inputs',id:'test-mode',before:{type:'LL'},after:{type:'SANS Availability'}}]} as any
+    view.setPage('inputs');view.setInpMode('sans')
+    _snapView(entry,'undo');expect(view.INPMODE).toBe('member')
+    _snapView(entry,'redo');expect(view.INPMODE).toBe('sans')
+  })
   it('a real scheduler edit is undoable/redoable with only the production wire', () => {
     const before = note0()
     writeText('dn:0.0', 'HELLO WIRE')

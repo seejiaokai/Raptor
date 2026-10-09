@@ -3,7 +3,8 @@
    logic is the reference's verbatim, including the role gate that keeps a
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
@@ -15,20 +16,22 @@ import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
-import { me, isMe, isAdmin } from '../state/perms'
+import { me, isAdmin, mayEditInput } from '../state/perms'
 import { writeInputsBatch, notify, inputProtected } from '../state/store'
-import { INPVIEW, setInpView } from '../state/view'
-import { setDocView } from './pops'
-import { ClipIcon, MedIcon } from './icons'
+import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal, revealInput } from '../state/view'
+import { inputsInMode } from './sans-calendar-model'
+import { setDocView, setInpSet, setInpEdit } from './pops'
+import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
 import { InputsCal } from './InputsCal'
+import { SansCal } from './SansCal'
 /* the halves, the span control, the draft shape and the commit are shared with
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
-  draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
+  draftOf, commitInputEdit, commitGroup, removeInput, saveBatch, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
@@ -36,6 +39,10 @@ import {
 } from './inputedit'
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
+import { stampPlaced, stampChanged } from '../state/inputstamp'
+import { placedLine, placedLineOf } from './placedline'
+import { entriesOf } from '../state/inputgroup'
+import { PeoplePick, pickProblem } from './PeoplePick'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
@@ -60,6 +67,8 @@ const withTill = (rm: any, s: string, e: string) => withRemarksTail(rm, s, e, 't
    (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:
    sorted by start date, today at the top, the next two months below it. */
 
+/* SANS availability is filed on the SANS calendar and nowhere else (D620): no type list on this page offers it */
+const notSans = (t: string) => !isSansAvail(t)
 const pad = (n: number) => String(n).padStart(2, '0')
 const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 /* Date normalises an overflowing month for us — 31 Dec + 2 months is 3 Mar,
@@ -237,7 +246,7 @@ function TypeLegend() {
 export function InputsPage() {
   useVersion()
   const [person, setPerson] = useState(me() ?? '')
-  const [type, setType] = useState(INPUT_TYPES[0])
+  const [type, setType] = useState(INPUT_TYPES.find(t => !isSansAvail(t))!)
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [allday, setAllday] = useState(defaultAllday(INPUT_TYPES[0]))
@@ -260,9 +269,51 @@ export function InputsPage() {
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
-  const [fPerson, setFPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
-  const [fType, setFType] = useState('all')
-  const [fSearch, setFSearch] = useState('')
+  const [memberPerson, setMemberPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
+  const [memberType, setMemberType] = useState('all')
+  const [memberSearch, setMemberSearch] = useState('')
+  /* the filters are the Inputs tab's alone — the SANS calendar has none (the plan §3.5; its own remembered person and
+     search went with its list, D620). What is typed here is kept while he looks at the SANS tab and is there when he
+     comes back. */
+  const fPerson = memberPerson, setFPerson = setMemberPerson
+  const fType = memberType, setFType = setMemberType
+  const fSearch = memberSearch, setFSearch = setMemberSearch
+  const [filtersOpen,setFiltersOpen] = useState(false)
+  /* THE THREE TABS (owner D620, D626, 7 Oct 26 — "I like the 3 tabs across the top but make it less tall"): Inputs · SANS
+     · Medical. They replace the mode pair and the view trio as buttons; the state behind them is the same two facts
+     (state/view.ts INPMODE — which calendar; INPVIEW — the Inputs tab's Calendar or List, or Medical). `inputsView` is
+     which of its two the Inputs tab was left on, so Medical — a tab, not a place opened from somewhere — never decides
+     where a tab press lands. */
+  const inputsView = useRef<'cal'|'table'>(INPVIEW === 'table' ? 'table' : 'cal')
+  if (INPVIEW !== 'med') inputsView.current = INPVIEW
+  type Tab = 'inputs' | 'sans' | 'med'
+  const tab: Tab = INPVIEW === 'med' ? 'med' : INPMODE === 'sans' ? 'sans' : 'inputs'
+  /* ARRIVING ON THE PAGE SHOWS IT FROM ITS TOP. The app keeps the window's scroll from page to page (the week opens
+     scrolled to its day on a phone), and this page starts with its tabs: found on the first look at the running build
+     — the calendar came up scrolled, its tabs and tools hidden under the top bar. (The Tracker does the same on its
+     own arrival.) Only where the window IS scrolled, so a layout-less test environment is never asked to scroll. */
+  useEffect(() => { if (window.scrollY) window.scrollTo(0, 0) }, [])
+  /* AND A CALENDAR TAB TAKES THE SCREEN, NO MORE (owner D664: "It should be a full screen of the phone"). The app's
+     body keeps 120px of room at its foot for the week pages' pinned chrome; under a month that fills the screen that
+     room made the whole page scroll by an empty strip. While a calendar is up — the Inputs month or the SANS month —
+     the body carries `in-cal`, which drops it (the Tracker's `tr-on`, without the lock: a month too tall for the
+     screen must still scroll the page). The List and Medical are ordinary long pages and keep it. */
+  const monthUp = tab === 'sans' || (tab === 'inputs' && INPVIEW === 'cal')
+  useEffect(() => {
+    if (!monthUp) return
+    document.body.classList.add('in-cal')
+    return () => document.body.classList.remove('in-cal')
+  }, [monthUp])
+  /* the tab the keyboard has just chosen takes the keyboard with it, once it is drawn as the selected one */
+  const wantTab = useRef<string | null>(null)
+  useLayoutEffect(() => { const id = wantTab.current; if (!id) return; wantTab.current = null; document.getElementById(id)?.focus() })
+  const chooseTab = (t: Tab) => {
+    if (t === tab) return
+    clearInpReveal(); setPinned([]); setEditRow(null); setDraft(null)
+    if (t === 'med') setInpView('med')
+    else { setInpMode(t === 'sans' ? 'sans' : 'member'); setInpView(inputsView.current) }
+    notify()
+  }
   const [editRow, setEditRow] = useState<any>(null)
   const [draft, setDraft] = useState<any>(null)
   const [range, setRange] = useState(initialRange)
@@ -293,6 +344,7 @@ export function InputsPage() {
   const [flash, setFlash] = useState<any[]>([])
   const timers = useRef<any[]>([])
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
+  useEffect(()=>()=>clearInpReveal(),[])
 
   /* SCROLL THE NEW ROW INTO VIEW (owner — "once an input is made, the view
      will snap to the input u just made"). The row already pins to the top
@@ -301,15 +353,27 @@ export function InputsPage() {
      <tr> commits to the DOM after this render, on the same clock the pin/
      flash lists already ride — so the lookup runs from an effect keyed off
      the iid add() just set, which fires once React has painted it. */
-  const [justAddedIid, setJustAddedIid] = useState<string | null>(null)
+  const [justAddedIid, setJustAddedIid] = useState<{iid:string} | null>(null)
+  const reveal=INPREVEAL
+  useLayoutEffect(()=>{
+    const row=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],INPMODE).length)
+    if(!row||!reveal||reveal.mode!==INPMODE)return
+    /* MOVED TO THE TOP OF THE LIST ONLY WHEN ITS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already
+       in view, undo/redo don't need to snap to view"): an Undo of an input he is looking at used to lift it to the top
+       every time. A row brought back by the Undo (it was not drawn a moment ago) is still lifted, so it is found. */
+    if(!rowOnScreen(document.querySelector(`[data-iid="${row.iid}"]`)))setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
+    setJustAddedIid({iid:row.iid})
+  },[reveal])
   useEffect(() => {
     if (!justAddedIid) return
-    const el = document.querySelector(`[data-iid="${justAddedIid}"]`)
-    /* GUARDED exactly like interactions.ts:72-79 — jsdom implements no
-       scrolling at all, so scrollIntoView is simply absent on its elements;
-       unguarded it throws out of this effect where no test assertion sees it. */
-    if (el && typeof (el as any).scrollIntoView === 'function')
-      (el as any).scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    const el = document.querySelector(`[data-iid="${justAddedIid.iid}"]`)
+    /* BROUGHT ON SCREEN BY THE LEAST MOVEMENT, CLEAR OF THE TOP BAR (ui/onscreen.ts bringRowOnScreen). The browser's own
+       "nearest edge" scroll, which this was until 8 Oct 26, put a row that was ABOVE the screen at the window's very top
+       — behind the app's sticky bar: an Undo of an input scrolled out of view lifted it to the head of the list and hid
+       it there (found by the browser check of D672). Where nothing is laid out it is still that scroll, GUARDED exactly
+       like interactions.ts:72-79 — jsdom implements no scrolling at all, so scrollIntoView is simply absent on its
+       elements; unguarded it throws out of this effect where no test assertion sees it. */
+    bringRowOnScreen(el)
   }, [justAddedIid])
 
   /* A just-added input rides at the top of the table whatever the filters, the
@@ -318,7 +382,7 @@ export function InputsPage() {
      the one thing the feedback has to rule out. It is a HOLD, not a new
      ordering: the next touch of the filter bar or a column heading is the user
      arranging the table for themselves, and it releases every pin. */
-  const unpin = () => setPinned(p => (p.length ? [] : p))
+  const unpin = () => { clearInpReveal();setPinned(p => (p.length ? [] : p)) }
 
   /* first click on a heading sorts it ascending, a second click inverts it —
      every column the same way round, so there is one rule to remember */
@@ -360,12 +424,23 @@ export function InputsPage() {
      control left to move it) would silently lag it. The calendar's add
      already worked exactly this way (InputsCal.tsx openAdd seeds ME and the
      dialog hides Person for a member); this is the page catching up. */
-  const filedFor = (): string => canEditSched() ? person : (me() ?? '')
+  /* SINCE THE GROUP INPUT (owner D654–D656; the plan §3.13): the form's Person field is the people picker. A member may
+     now pick another man for a duty or a commitment (`memberPick` — his own choice, made on this form; until he makes
+     one it is still whoever he is signed in as, read live), and "Several people" files ONE shared input (`team`). */
+  const [memberPick, setMemberPick] = useState<string | null>(null)
+  const [several, setSeveral] = useState(false)
+  const [team, setTeam] = useState<string[]>([])
+  const filedFor = (): string => canEditSched() ? person : (memberPick ?? me() ?? '')
+  const picked = (): string[] => several && team.length ? team : [filedFor()]
   const add = (skipDoc = false) => {
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
+    /* nothing is substituted for the people he picked: where he may not file this kind for them, the add is refused in
+       the picker's own sentence (ui/PeoplePick.tsx) */
+    const pb = pickProblem(picked(), several, type)
+    if (pb) return HOOKS.toast(pb.why, 'warn')
     /* READ-ONLY QUARANTINE preflight (P2-QREV-01/04): refuse an add onto a
        protected week BEFORE any branch, confirm sheet, or write — so a rejection
        never leaves partial state (a Leave War withdrawal, a finishAdd flash on an
@@ -420,6 +495,27 @@ export function InputsPage() {
        row type — see commitInputEdit for the reasoning. Only equal times are
        refused, being a zero-length absence. */
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
+    /* FOR SEVERAL PEOPLE: one shared input, one command (ui/inputedit.tsx commitGroup) — every refusal asked for every
+       man before anything is written; the OIL question asked ONCE, its answer every man's (D660) */
+    if (several && team.length > 1) {
+      const d = draftOf({ person: team[0], type, date, endDate, allday, s, e, yr: baseYear(), remarks, ...(!allday && half ? { half } : {}) })
+      const go = (dec?: Record<string, number>) => {
+        const had = new Set(INPUTS.map((x: any) => x.iid))
+        if (!commitGroup(null, d, team, dec)) return
+        const row = INPUTS.find((x: any) => !had.has(x.iid))
+        HOOKS.toast(`Input added for ${team.length} people`, 'ok')
+        if (row) {
+          revealInput(row)
+          setFlash(f => [row, ...f])
+          timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
+        }
+        setRemarks(withTill('', start, end))
+      }
+      const g = oilGate(d, null)
+      if (g.kind === 'refused') return
+      if (g.kind === 'ask') { setOilConf({ ...g, who: `${PEOPLE[team[0]] ? PEOPLE[team[0]].cs : team[0]} +${team.length - 1}`, commit: go }); return }
+      return go()
+    }
     /* writeInputsBatch, not writeInputs: the medical trims below run engine
        helpers (Leave-War retraction) that push history of their own, and the
        add plus its trims must land as ONE undo step. Wrapped in a closure
@@ -429,7 +525,8 @@ export function InputsPage() {
     /* one row body for every segment the save files (the clash sheet can
        split an entry around a kept status) — dates and remarks vary, the
        rest is the form's state verbatim */
-    const rowBody = (d: string, ed: string | undefined, rem: string) => withId({
+    /* …and who placed it, and when (D629): this form is its own maker, not the editor's — state/inputstamp.ts */
+    const rowBody = (d: string, ed: string | undefined, rem: string) => stampPlaced(withId({
       /* yr anchors the bare labels to the year they were picked under —
          the same stamp every other creation path writes (24 Aug 26) */
       person: filedFor(), date: d, allday, s, e, yr: baseYear(),
@@ -445,21 +542,20 @@ export function InputsPage() {
          the leave row */
       ...(needsDoc(type) ? docFields(docIds) : {}),
       type, remarks: rem, mod: nowStamp(),
-    })
+    }))
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
        out. The flash comes off on a timer; the pin waits for the user. The
        dates stay on the form after an add, so the tail that describes them
        stays too — only what the typist wrote is cleared. The document goes
        with its input; the next one needs its own. */
-    const finishAdd = () => {
-      const row = INPUTS[0]
+    const finishAdd = (row:any) => {
+      if(!row||!INPUTS.includes(row))return
+      revealInput(row)
       /* ITS HISTORY LINE (AB8a, 26 Sep 26 — this page's Add, the door people use most, once wrote nothing) is written
          by the change history's ONE writer now, from the command itself (state/changelines.ts — [DRAFT-PENDING],
          Astra DP-03, 28 Sep 26), so no door writes it twice and none can forget it */
-      setPinned(p => [row, ...p])
       setFlash(f => [row, ...f])
-      setJustAddedIid(row.iid)
       timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
       setRemarks(withTill('', start, end))
       setDocIds([])
@@ -475,8 +571,10 @@ export function InputsPage() {
       if (medPlanProtected(checkPlan) || medPlanProtected((removals || []).map((lr: any) => ({ row: lr })))) {
         return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
       }
+      let savedRow:any=null
       const ok = writeInputsBatch(() => {
         INPUTS.unshift(rowBody(date, endDate, remarks.trim()))
+        savedRow=INPUTS[0]
         /* the OIL answers land on the just-unshifted row inside the same
            batch — add plus acknowledgment is ONE undo step (owner, 28 Aug 26) */
         if (oilDec) INPUTS[0].oil = oilDec
@@ -499,7 +597,7 @@ export function InputsPage() {
            PUBLISHED day it lands on the working copy as a pending amendment (owner 16 Sep 26), the issued face frozen — and a
            reload, or another device, shows the same */
       })
-      if (ok) finishAdd()   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
+      if (ok) finishAdd(savedRow)   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
     }
     /* an upchit is NEVER saved silently (owner, 27 Aug 26): the summary sheet
        says what it ends and puts every later-dated entry to the filer as an
@@ -532,17 +630,19 @@ export function InputsPage() {
             if (medSegmentsProtected({ person: filedFor(), type, yr: baseYear() }, segs, keepTail, bOrd, null)) {
               return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
             }
+            let savedRow:any=null
             const ok = writeInputsBatch(() => {
               const g0 = segs[0]
               INPUTS.unshift(rowBody(
                 ordLabel(g0.startOrd, baseYear()),
                 g0.endOrd > g0.startOrd ? ordLabel(g0.endOrd, baseYear()) : undefined,
                 withRemarksTail(remarks.trim(), ordISO(g0.startOrd), ordISO(g0.endOrd), 'till')))
+              savedRow=INPUTS[0]
               applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0], keepTail, bOrd))
               mintMedSegments(INPUTS[0], segs.slice(1), keepTail, bOrd)
               /* a medical never goes on the programme; an activity's row is worked out after the command (phase 6 (c)) */
             })
-            if (ok) finishAdd()
+            if (ok) finishAdd(savedRow)
           },
         })
         return
@@ -604,8 +704,13 @@ export function InputsPage() {
        commitEditMedChoices — the absence-record re-test, AB4, 26 Sep 26), so the three doors cannot drift. The shared
        refusals run first; each Save is one undo step. */
     const after = (ok: boolean) => {
-      if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-      else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+      if (ok) { revealInput(editRow);setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
+      else if (INPUTS.indexOf(editRow) < 0) {
+        /* a REFUSED save puts the list back as new objects ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]): the row being edited is
+           found again by its id and stays in edit, with what was typed; one that is truly gone closes the edit */
+        const live = INPUTS.find((x: any) => x.iid === editRow.iid)
+        if (live) setEditRow(live); else { setEditRow(null); setDraft(null) }
+      }
     }
     const ask = medAskFor(editRow, draft)
     if (ask === 'refused') return
@@ -628,16 +733,13 @@ export function InputsPage() {
       setOilConf({
         ...g,
         commit: (dec: Record<string, number>) => {
-          let ok = false
-          writeInputsBatch(() => { ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec })
-          if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-          else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+          /* the OUTER save's answer, never the inner one's (inputedit.tsx saveBatch) */
+          after(saveBatch(() => { const ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec; return ok }))
         },
       })
       return
     }
-    if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-    else if (editRow && INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+    after(commitInputEdit(editRow, draft))
   }
 
   const del = (inx: number) => {
@@ -661,17 +763,32 @@ export function InputsPage() {
     setOilConf({
       ...g,
       commit: (dec: Record<string, number>) => {
-        writeInputsBatch(() => { r.oil = dec })
-        HOOKS.toast('OIL decision updated', 'ok')
+        /* an answer alone is a change to the record: who gave it, and when (D629). `mod` — the date the late rule
+           reads — is NOT moved by it, as before */
+        if (saveBatch(() => { r.oil = dec; stampChanged(r) })) HOOKS.toast('OIL decision updated', 'ok')
       },
     })
   }
 
-  let rows = INPUTS.slice()
+  let rows = inputsInMode(INPUTS, INPMODE)
+  /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13): the records of one entry
+     (state/inputgroup.ts — worked out on read) are drawn as its FIRST record's row, the Name reading "Saber +3". The
+     filters show an entry when ANY of its people passes; it sorts by its first callsign. */
+  const entryOf = new Map<any, any[]>()
+  for (const e of entriesOf(rows)) if (e.rows.length > 1) for (const r of e.rows) entryOf.set(r, e.rows)
   if (fPerson !== 'all') rows = rows.filter((r: any) => r.person === fPerson)
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
   if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
   rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
+  if (entryOf.size) {
+    const seen = new Set<any[]>(), one: any[] = []
+    for (const r of rows) {
+      const e = entryOf.get(r)
+      if (!e) { one.push(r); continue }
+      if (!seen.has(e)) { seen.add(e); one.push(e[0]) }
+    }
+    rows = one
+  }
   /* the row being edited stays put whatever the sort and the window say —
      retyping a date must not make the open editor jump or vanish mid-edit */
   if (editRow && INPUTS.indexOf(editRow) >= 0 && rows.indexOf(editRow) < 0) rows.push(editRow)
@@ -704,7 +821,11 @@ export function InputsPage() {
      Deleted and undone rows fall out here — the pin points at an object, so a
      row that has left INPUTS simply stops matching. */
   {
-    const pins = pinned.filter((r: any) => INPUTS.indexOf(r) >= 0)
+    /* A PIN IS ITS ENTRY'S ONE ROW (Sol's read of the calendar job's bug check, 8 Oct 26 — and what a walker had seen):
+       a pin points at a RECORD, and a shared input is drawn as its first record's row. A man sorting first, added
+       from the List, made another record the first — and the pinned one went on top as a row of its own: one filing,
+       drawn twice. Each pin is turned into the row its entry is drawn as, once. */
+    const pins = [...new Set(inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0).map((r: any) => (entryOf.get(r) || [r])[0]))]
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
   }
 
@@ -730,32 +851,92 @@ export function InputsPage() {
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
   const medDownN = medDownAsOf(medOrd).length
   const medPendN = pendingUpchits(medOrd).length
+  /* THE SANS TAB IS THE SANS CALENDAR AND NOTHING ELSE (owner D620, 7 Oct 26: SANS availability "leaves the List and is
+     filed on the SANS calendar only, which has no list of its own"; the plan §3.5: "the SANS tab has no filters" — the
+     Highlight does that job, and the counts ignore filters by ruling, D581). So in that mode the Calendar | List pair,
+     the Filters button and the List itself are not drawn; Medical stays, as it is one tab of the three. */
+  const sansUp = tab === 'sans'
+  const listUp = tab === 'inputs' && INPVIEW === 'table'
+  const calUp = tab === 'inputs' && INPVIEW === 'cal'
+  const appliedFilters = tab !== 'inputs' ? [] : [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
+
+  /* the tabs: a tab list in the usual manner — one tab stop, the arrow keys move along it and round its ends, and the
+     keyboard goes with the tab it chose */
+  const TABS: [Tab, string, string][] = [['inputs', 'inMemberMode', 'Inputs'], ['sans', 'inSansMode', 'SANS'], ['med', 'inMedBtn', 'Medical']]
+  const tabKey = (e: ReactKeyboardEvent, i: number) => {
+    const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
+    if (!by) return
+    e.preventDefault()
+    const to = TABS[(i + by + TABS.length) % TABS.length]
+    wantTab.current = to[1]
+    chooseTab(to[0])
+  }
+  const tabsRow = (
+    <div className="inputs-tabs" role="tablist" aria-label="Inputs">
+      {TABS.map(([t, id, label], i) => (
+        <button key={t} type="button" role="tab" id={id} className="intab" aria-selected={tab === t} tabIndex={tab === t ? 0 : -1}
+          title={t === 'inputs' ? 'Leave, medical, duties and other commitments' : t === 'sans' ? 'SANS availability — who has committed, and how many more are needed'
+            : 'Who is medically down, owing an upchit, or upchitted'}
+          onClick={() => chooseTab(t)} onKeyDown={e => tabKey(e, i)}>
+          {t === 'inputs' ? <CalIcon /> : t === 'sans' ? <UsersIcon /> : <MedIcon />}
+          <span className="intab-t">{label}</span>
+          {/* the Medical tab SIGNALS (owner, 27 Aug 26): red for down now, amber for owing an upchit — a badge that reads
+              0-quiet, never a control that comes and goes with the data */}
+          {t === 'med' && medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
+          {t === 'med' && medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}
+        </button>
+      ))}
+    </div>
+  )
+  /* UNDER THE INPUTS TAB: one small switch, Calendar | List (D620 — "for inputs maybe still have the option to have list
+     mode"), and the filters — the Inputs tab's alone; the SANS calendar has neither (its Highlight does that job, and
+     its counts ignore filters by ruling, D581). On a phone the filters fold behind one button.
+
+     THE SWITCH KEEPS ITS PLACE (owner D687, 9 Oct 26 — from his iPhone: "the calander/list button jumps to the left when I
+     click on the list. Can it remain in the same position?"; his standing rule of 2 Sep 26: a control tapped
+     repeatedly must not move). It stood AFTER the month's arrows and "Today", which the List does not have — so it
+     slid left the moment "List" was pressed. It is its own piece now, drawn straight after the tabs on both: on the
+     Calendar the month's arrows follow it (ui/InputsCal.tsx puts `lead` before them), on the List nothing does. */
+  const views = tab !== 'inputs' ? null : (
+    <div className="inputs-views" role="group" aria-label="Show inputs as">
+      <button className="abtn" id="inCalBtn" title="Calendar — a whole month at a glance" aria-label="Calendar"
+        aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}><CalIcon /><span className="inv-t">Calendar</span></button>
+      <button className="abtn" id="inListBtn" title="List" aria-label="List" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}><ListIcon /><span className="inv-t">List</span></button>
+    </div>
+  )
+  const tools = tab !== 'inputs' ? null : (<>
+    <span className="inputs-spring" />
+    <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
+    <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
+      <label><span>Person</span><select id="inFPerson" aria-label="Person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
+        <option value="all">Everyone</option>
+        {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+        <ArchivedGroup /><DeletedGroup />
+      </select></label>
+      <label><span>Type</span><select id="inFType" aria-label="Type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
+        <option value="all">All types</option>{typeOptions(notSans)}
+      </select></label>
+      <label className="inputs-search"><span>Search</span><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
+    </div>
+    {/* THE GEAR (D635, D639): the app's own cog — the Leave War's settings button — never a drawing with rays. Admins
+        only. It opens the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the
+        door to "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
+    {isAdmin() && (
+      <button type="button" className="abtn inputs-gear" id="inGear" data-testid="in-gear" title="Inputs calendar settings — the late cut-off, who may file for other people, the Calendar"
+        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}>&#9881;</button>
+    )}
+  </>)
+  const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');setFType('all');setFSearch('');notify()}}>Clear filters</button></div>
 
   return (
-    <>
-      {/* the Calendar-view switch leads the page now (owner, 22 Aug 26 — "make
-          the calendar button more obvious… I want people to see it"): a prominent
-          accent button in the title row, not a plain grey one buried at the end
-          of the wrapping filter bar. Same id/handler as before, so every caller
-          and test is unchanged — it still just flips INPVIEW over the same
-          filtered/windowed data. */}
-      <div className="title">
-        <h1>Personal Inputs</h1>
-        <button className="abtn calview" id="inCalBtn" title="See a whole month at a glance"
-          onClick={() => { setInpView('cal'); notify() }}>📅 Calendar view</button>
-        {/* the Medical view (owner, 27 Aug 26): who is down, who owes an
-            upchit, who upchitted. The count is down-now + pending as of the
-            notional today — the button SIGNALS instead of the page
-            restructuring itself (a control that appears and disappears with
-            the data is a trap; a badge that reads 0-quiet is not). */}
-        <button className="abtn calview" id="inMedBtn"
-          title="Who is medically down, owing an upchit, or upchitted"
-          onClick={() => { setInpView('med'); notify() }}>
-          <MedIcon /> Medical
-          {medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
-          {medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}</button>
-      </div>
-      <div className="inbar">
+    <div className={'inputs-workspace tab-' + tab}>
+      <div className="title"><h1>Inputs</h1></div>
+      {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
+          controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
+          buttons above the month" was a fault seen while drawing) */}
+      {!calUp && <div className="inputs-top">{tabsRow}{views}{tools}</div>}
+      {!calUp && filterSummary}
+      <div className="inbar" hidden={!listUp}>
         <div className="ingrid">
           {/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 —
               admin files for anyone, a member only for whoever they are
@@ -764,30 +945,21 @@ export function InputsPage() {
               would only pretend to be a control (the SANS fixed-type
               precedent, inputedit.tsx) — and it follows the topbar's View-as
               live, which is exactly what add() then commits (filedFor). */}
-          <div className="ifield"><label>Person</label>
-            {canEditSched()
-              ? <select id="inPerson" aria-label="Person" value={person} onChange={e => setPerson(e.target.value)}>
-                {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-                <ArchivedGroup />
-              </select>
-              : <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{(() => { const m = me(); return m && PEOPLE[m] ? PEOPLE[m].cs : String(m ?? '') })()}</div>}</div>
+          {/* SINCE THE GROUP INPUT (D656): the same field, drawn by the people picker — the scheduler's list as it was
+              (with its posted-out group), a member's list where he may file this kind for another man and his callsign
+              where he may not, and "Several people" for one shared input. */}
+          <PeoplePick form people={picked()} several={several} type={type} more={canEditSched() ? <ArchivedGroup /> : undefined}
+            onChange={(p, s2) => {
+              setSeveral(s2); setTeam(s2 ? p : [])
+              if (p.length && !s2) { if (canEditSched()) setPerson(p[0]); else setMemberPick(p[0]) }
+            }} />
           <div className="ifield cal"><label>Dates</label>
             <RangeCal idPrefix="in" start={start} end={end}
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />
             <div className="rc-read" id="inDates">{start ? (fmtDay(start) + (end ? ' → ' + fmtDay(end) : '')) : 'pick a start date'}</div>
           </div>
-          {/* SANS Availability's own Fly/AMT/OFT ticks sit ABOVE the standard
-              How-long control now (owner rework, 14 Aug 26) — it is a normal
-              timed input with one extra field, not a stand-in for the timing
-              controls every other input uses (the owner's own phone bug: a
-              per-event time pair could not be cleared with one tap). Leave,
-              medical and SANS all get the four-way span picker, because
-              INPUT_META now gives SANS half:true same as them; everything
-              else keeps the plain tick, because those types take an exact
-              range and a half-day would be coarser than what they already
-              say. */}
-          {isSansAvail(type) && <div className="ifield sans"><label>Available for</label>
-            <SansPicker id="inSans" sans={sans} onChange={setSans} /></div>}
+          {/* NO SANS AVAILABILITY HERE (owner D620, 7 Oct 26 — "in list mode remove sans avail and move that function to
+              sans calendar solely"): the type list below leaves it out, and its Fly / OFT / AMT ticks went with it. */}
           {hasHalf(type)
             ? <div className="ifield span"><label>How long</label>
               <SpanPicker id="inSpan" span={spanOf(allday, half)} onPick={m => {
@@ -820,7 +992,7 @@ export function InputsPage() {
                  switching in, drop it when switching out */
               setSans(isSansAvail(t) ? (sans || {}) : null)
             }}>
-              {typeOptions()}
+              {typeOptions(notSans)}
             </select></div>
           {/* the "e.g. medical appt" hint is dropped for SANS Availability
               (owner, 22 Aug 26) — a SANS availability line is not a medical note,
@@ -829,25 +1001,14 @@ export function InputsPage() {
               whose add() refuses without one (needsDoc, one body) */}
           {needsDoc(type) && <div className="ifield"><label>Document</label>
             <DocField ids={docIds} onIds={setDocIds} /></div>}
-          <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder={isSansAvail(type) ? '' : 'e.g. medical appt'} maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
+          <div className="ifield"><label>Remarks</label><input id="inRemarks" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={() => add(false)}>Add input</button></div>
         </div>
       </div>
-      <div className="infilter">
-        <span className="lab">Filter</span>
-        <select id="inFPerson" aria-label="Filter by person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
-          <option value="all">Everyone</option>
-          {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-          <ArchivedGroup />
-          <DeletedGroup />
-        </select>
-        <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
-          <option value="all">Show all types</option>
-          {typeOptions()}
-        </select>
+      <div className="infilter inputs-listtools" hidden={!listUp}>
         {/* the window, picked on the same two-click calendar as the form above:
             first click is the from-date, second the to-date */}
-        <div className="inrange" ref={rangeRef}>
+        <div className="inrange" hidden={!listUp} ref={rangeRef}>
           <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
             aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
           {calOpen && (
@@ -905,19 +1066,18 @@ export function InputsPage() {
             </div>
           )}
         </div>
-        <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></div>
-        {/* the Calendar-view switch moved to the title row (see above) — it opens
-            over whatever the table is already filtered and windowed to
-            (INPVIEW, state/view.ts); wherever it sits, the filters still apply */}
-        <button className="abtn" id="inExport" onClick={() => {
-          exportCSV('142-inputs.csv', inputRows(INPUTS))   // each input's whole span (AB10) — ui/export.ts
+        <button className="abtn" id="inExport" hidden={!listUp} onClick={() => {
+          /* EVERY input, each one's whole span (AB10) — never only the rows the list is filtered to. The calendar
+             build had narrowed it to the filtered rows, so a member (whose list opens on himself) exported his own
+             inputs only, and a search that matched nothing wrote an empty file (Opus's own read, step 0, 7 Oct 26) */
+          exportCSV('142-inputs.csv', inputRows(INPUTS))
           /* a phone browser often shows nothing at all when a download lands —
              no bar, no tray notification the user is looking at — so the tap
              otherwise reads as dead (owner audit) */
           HOOKS.toast('CSV downloaded', 'ok')
         }}>Export to Excel</button>
       </div>
-      <div className="inwrap">
+      <div className="inwrap" hidden={!listUp}>
         <table className="intbl" id="intbl">
           <thead><tr>
             {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
@@ -927,6 +1087,9 @@ export function InputsPage() {
           <tbody id="inBody">
             {rows.map((r: any) => {
               const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
+              /* the entry this row stands for — a shared input's people, A to Z — or undefined for an ordinary input */
+              const team = entryOf.get(r)
+              const placed = team ? placedLineOf(team) : placedLine(r)
               /* DAY-FIRST and de-duplicated (owner, 21 Aug 26 — standardise +
                  compress). Start carries the day-first date + its time; End
                  drops the date when the span stays on one day, so a same-day
@@ -1006,7 +1169,7 @@ export function InputsPage() {
                         medical here too — a downchit edits only within the
                         downchit family, an upchit stays an upchit; the full
                         cross-group list is kept for every other row. */}
-                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : undefined)}
+                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : notSans)}
                   </select>
                     {/* manage (or first-attach, on a retype into medical) the
                         supporting documents without leaving the row */}
@@ -1032,7 +1195,7 @@ export function InputsPage() {
                       same-day input keeps a non-empty End (the bare end time),
                       so it shows "13 Jul 10:00 → 11:00" (scheduler.css, the
                       inputs card block); the desktop table renders both cells. */}
-                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
+                  <td data-label="Name">{team ? <span title={team.map((x: any) => (PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person)).join(', ')}>{cs} +{team.length - 1}</span> : cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
                   {/* The two chips too wide for the phone card's aligned type
                       column wear the board day name's split-span idiom (owner,
                       22 Aug 26 — "if there's no space like sans availability u
@@ -1060,7 +1223,14 @@ export function InputsPage() {
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
-                  <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}</td>
+                  {/* …and under the remark, in small print, who placed the input and when (owner D629 — "wherever an
+                      entry is listed or opened"; ui/placedline.ts writes the one line; a record that never recorded a
+                      filer shows none, D56). In the Remarks cell because that is the column with room for it. */}
+                  {/* a shared input is LATE on its line where any of its people is — a man added later can be late alone,
+                      and the note says who */}
+                  <td data-label="Remarks">{(team || [r]).some((x: any) => isLateInput(x)) && <span className="latetag"
+                    title={team ? team.filter((x: any) => isLateInput(x)).map((x: any) => `${PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person}: ${lateNote(x)}`).join(' · ') : lateNote(r)}>LATE</span>}{r.remarks || ''}
+                    {placed && <span className="in-placed" data-testid="in-placed">{placed}</span>}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     {/* the paperwork behind a medical row — EVERY account may
@@ -1072,8 +1242,15 @@ export function InputsPage() {
                         member (owner, 27 Aug 26): a scheduler works every row,
                         a member only their own — someone else's row is view
                         only (the document clip above stays, so they can still
-                        read the paperwork). The write path repeats this gate. */}
-                    {(canEditSched() || isMe(r.person)) && <>
+                        read the paperwork). The write path repeats this gate.
+                        Since the group input (D655): also a duty or commitment
+                        he FILED for another man — the one rule, perms.ts
+                        mayEditInput, which takes the record. */}
+                    {/* A SHARED INPUT'S ONE BUTTON opens its window — for everyone, to change it or to read it. Deleting
+                        it and its OIL answer are there, asked for everyone (the plan §3.13); an edit in place, a ✕ or an
+                        OIL chip here would act on the first man's record alone. */}
+                    {team && <span className="red" data-edit={inx} title="Open this input" onClick={() => { setInpEdit(r); notify() }}>✎</span>}
+                    {!team && mayEditInput(r) && <>
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
                           change (oilAnswered), same right as editing the row */}
@@ -1110,10 +1287,10 @@ export function InputsPage() {
       {/* the table stays mounted underneath — closing the calendar is then a
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
-      {INPVIEW === 'cal' && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
-        seedIso={range.from || isoOf(new Date())}
-        onClose={() => { setInpView('table'); notify() }} />}
-      {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView('table'); notify() }} />}
+      {sansUp && <SansCal />}
+      {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+        seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} />}
+      {tab === 'med' && <MedicalView />}
       {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
           for the add form and the row editor; Save runs the stashed commit
           with the removals the filer ticked, Cancel writes nothing */}
@@ -1136,6 +1313,6 @@ export function InputsPage() {
       {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
         onUpload={() => setDocConf(null)}
         onNoDoc={() => { const r = docConf.resume; setDocConf(null); r() }} />}
-    </>
+    </div>
   )
 }

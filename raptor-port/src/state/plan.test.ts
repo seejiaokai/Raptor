@@ -107,7 +107,7 @@ describe('resetSession resets the calendar view and keeps the plan', () => {
 
     expect(PLANPUCKS.length).toBe(1)
     expect(DAYRMK['2026-08-24']).toBe('short week')
-    expect(INPVIEW).toBe('table')
+    expect(INPVIEW).toBe('cal') // D580: fresh session opens calendar first.
     expect(CALMONTH).toBe(null)
   })
 })

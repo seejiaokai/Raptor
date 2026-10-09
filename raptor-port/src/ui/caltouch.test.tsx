@@ -19,8 +19,13 @@ const css = readSchedulerCss()
 
 describe('the month swipe reaches the calendar on a phone (W1-F1)', () => {
   it('the calendar grid hands a sideways finger to its own swipe, and keeps the vertical scroll', () => {
-    const rules = css.match(/\.ic-grid\{[^}]*\}/g) || []
-    expect(rules.some(r => /touch-action:\s*pan-y/.test(r))).toBe(true)
+    /* the grid that is DRAWN: since the month of bars (step 5 of the Inputs / SANS job, 8 Oct 26) that is `.ib-grid` —
+       the first calendar's `.ic-grid` is drawn by nothing, and this test went on passing against its leftover rule
+       until that rule was cleared away. The SANS month is the same gesture on its own grid. */
+    for (const grid of ['ib-grid', 'sc-grid']) {
+      const rules = css.match(new RegExp('\\.' + grid + '\\{[^}]*\\}', 'g')) || []
+      expect(rules.some(r => /touch-action:\s*pan-y/.test(r)), grid).toBe(true)
+    }
   })
 })
 

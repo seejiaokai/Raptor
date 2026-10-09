@@ -68,6 +68,97 @@
 .bidsheet .evchip.nolv { border-color: rgba(242, 139, 46, .6); }
 .bidsheet .evchip.work { border-color: rgba(240, 85, 95, .55); color: #FFA6AD; }
 
+/* THE REDRAWN FIRST VIEW (the Inputs / SANS redesign, plan §3.12; D643–D645) — Presets, Name / On grid, Kind. */
+/* a row's small heading: PRESETS, NAME, ON GRID, KIND */
+.bidsheet .evlab {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.bidsheet > .evlab {
+  margin: 10px 0 5px;
+}
+/* The picked preset is LIT in its kind's colour — the one thing the old sheet never said: which is chosen. */
+.bidsheet .evchip {
+  min-height: 32px;
+}
+.bidsheet .evchip.on {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .14);
+  color: var(--ink);
+}
+.bidsheet .evchip.off.on { background: rgba(74, 201, 126, .24); color: #BFF0D2; border-color: rgba(74, 201, 126, .85); }
+.bidsheet .evchip.free.on { background: rgba(180, 190, 200, .22); color: #E6EBEF; border-color: rgba(180, 190, 200, .85); }
+.bidsheet .evchip.nolv.on { background: rgba(242, 139, 46, .24); color: #FBDDBC; border-color: rgba(242, 139, 46, .9); }
+.bidsheet .evchip.work.on { background: rgba(240, 85, 95, .24); color: #FFC4C9; border-color: rgba(240, 85, 95, .85); }
+/* "Other…" is not one of the squadron's presets, so it is drawn apart: a dashed edge, cyan when picked. */
+.bidsheet .evchip.other {
+  border-style: dashed;
+  color: var(--ink-3);
+}
+.bidsheet .evchip.other.on {
+  border-style: solid;
+  border-color: var(--accent);
+  background: rgba(59, 198, 232, .16);
+  color: var(--accent);
+}
+/* the read-out under the lit preset, or under the Kind row */
+.bidsheet .evreadout {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+/* NAME and ON GRID side by side: the name takes the room, the short form a box three letters wide. Two rows of a
+   grid — the headings, then the boxes — so each heading sits over its own box at any width. */
+.bidsheet .evnamerow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px;
+  column-gap: 10px;
+  row-gap: 5px;
+  margin: 10px 0 2px;
+}
+.bidsheet .evtext.evshort {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.bidsheet .evtagrow .evlab {
+  flex: 0 0 100%;
+}
+/* each kind keeps its own width — "Note", alone on a second line on a phone, must not stretch across the sheet */
+.bidsheet .evtagrow .evkind {
+  flex: 0 0 auto;
+  min-height: 32px;
+}
+.bidsheet .evkind.note.on {
+  background: rgba(255, 255, 255, .1);
+  color: var(--ink);
+  border-color: var(--edge-2);
+}
+/* a preset's short form in "Edit presets" */
+.bidsheet .evtype-short {
+  flex: 0 0 52px;
+  width: 52px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  color: var(--ink-1);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 6px 4px;
+}
+.bidsheet .evtype-short:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 /* The tag row: three kind buttons plus a read-out of the current tag. */
 .bidsheet .evtagrow {
   align-items: center;
@@ -123,7 +214,7 @@
   border-color: rgba(240, 85, 95, .6);
 }
 
-/* The "Edit types" opener sits in the sheet header beside the ✕. */
+/* The "Edit presets" opener ("Edit types" until D644) sits in the sheet header beside the ✕. */
 .bidsheet .evtypes-open {
   margin-left: auto;
   padding: 4px 10px;

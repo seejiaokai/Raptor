@@ -64,6 +64,7 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'inputs')!)
+  await click($('#inListBtn')) // D580: these list assertions enter the secondary view.
   await showAllDates()
 })
 
@@ -174,11 +175,10 @@ describe('the Inputs page (tfin)', () => {
       expect($('#inSpan'), `${t} takes the plain tick, not the span picker`).toBeFalsy()
       expect(($('#inAllday') as HTMLInputElement).checked, `${t} opens unticked`).toBe(false)
     }
-    /* SANS Availability is the carve-out: it takes the span picker and opens
-       on all-day, exactly as leave and medical do */
-    await setType('SANS Availability')
-    expect($('#inAllday'), 'SANS has the span picker, not the plain tick').toBeFalsy()
-    expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'SANS opens all-day').toBe('true')
+    /* SANS Availability — the group's one carve-out — is no longer offered on this form (owner D620, 7 Oct 26: it is
+       filed on the SANS calendar only); that it opens all-day with the span picker is pinned on that calendar's own
+       form, ui/sansform.test.tsx */
+    expect(Array.from(($('#inType') as unknown as HTMLSelectElement).options).map(o => o.value)).not.toContain('SANS Availability')
     /* a leave type is unchanged — still opens all-day */
     await setType('LL')
     expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'leave opens all-day').toBe('true')
@@ -388,12 +388,21 @@ describe('the Inputs page (tfin)', () => {
     await act(async () => { ok = commitInputEdit(r, d) })
     expect(ok, 'the re-person is refused').toBe(false)
     expect(r.person, 'and nothing moved').toBe(was)
-    /* commitNewInput pins a hand-made draft onto the viewer */
+    /* commitNewInput ASKS about a hand-made draft for another man — changed 8 Oct 26 with the group input (owner D654,
+       D655; the build plan §3.13). Until then it pinned the draft onto the signed-in member in silence, and this test
+       pinned that. A leave for another man is refused and nothing is filed, for either of them; a draft naming nobody
+       is still his own. */
+    const n = INPUTS.length
     await act(async () => {
       ok = commitNewInput({ person: was, type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
     })
+    expect(ok, 'a leave for another man is refused').toBe(false)
+    expect(INPUTS.length, 'and nothing was filed for the member instead').toBe(n)
+    await act(async () => {
+      ok = commitNewInput({ person: '', type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
+    })
     expect(ok).toBe(true)
-    expect(INPUTS[0].person, 'the add landed on the view-as person, not the claimed one').toBe(ME)
+    expect(INPUTS[0].person, 'a draft naming nobody is his own').toBe(ME)
     await act(async () => { removeInput(INPUTS[0]) })
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
@@ -428,7 +437,7 @@ describe('the Inputs page (tfin)', () => {
      commitments", amber), and the demo SANS Availability seed (state/
      demoseed.ts, filed for nick) for purple. toContain, not equality —
      the flash class ('innew') can ride the same row. */
-  it('stripes rows red/amber/purple by inputTone', async () => {
+  it('stripes rows red and amber by inputTone — and carries no SANS availability (D620)', async () => {
     /* an earlier test in this file ('the filters narrow the table') leaves
        the type filter on OML and never resets it — put it back to All so
        every seeded person is on screen for this assertion */
@@ -442,34 +451,24 @@ describe('the Inputs page (tfin)', () => {
     expect(rowFor(redIx).className, 'medical leave').toContain('in-red')
     const ambIx = INPUTS.findIndex((r: any) => r.person === 'vinci' && r.type === 'Meeting')
     expect(rowFor(ambIx).className, 'an activity commitment').toContain('in-amb')
+    /* THE PURPLE ROW WENT WITH THE SANS LIST (owner D620, 7 Oct 26: SANS availability "leaves the List and is filed on the
+       SANS calendar only, which has no list of its own"; built with the SANS calendar, 8 Oct 26). The seed is still
+       there — it is simply on no list: not this one, and the SANS tab draws its calendar instead. */
     const sanIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
     expect(sanIx, 'the demo SANS seed is present').toBeGreaterThanOrEqual(0)
-    expect(rowFor(sanIx).className, 'SANS Availability').toContain('in-san')
+    expect(document.querySelector('#inBody tr.in-san'), 'no SANS row on the Inputs List').toBeNull()
+    await click($('#inSansMode'))
+    expect(document.querySelector('#sansCal'), 'the SANS tab is the SANS calendar').toBeTruthy()
+    expect((document.querySelector('#inBody') as HTMLElement).closest('[hidden]'), 'and has no list').toBeTruthy()
+    await click($('#inMemberMode'))
   })
 
-  /* owner, 24 Aug 26 — "include the F/O/A in the inputs as well". A SANS row
-     wears its offer letters in a chip BESIDE the type tag; the tag itself stays
-     the pure type string the sort/export and the .intag pin above still read. */
-  it('a SANS row shows its F/O/A offer letters beside the type, never inside it', async () => {
-    /* the earlier filter test can leave fType on OML — put it back to All so
-       every seeded SANS person is on screen */
-    await act(async () => {
-      const sel = $('#inFType') as unknown as HTMLSelectElement
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-      setter.call(sel, 'all')
-      sel.dispatchEvent(new Event('change', { bubbles: true }))
-    })
-    /* bullet's seed ticks all three (F/O/A); nick's ticks Fly only (F) */
-    const bulletIx = INPUTS.findIndex((r: any) => r.person === 'bullet' && r.type === 'SANS Availability')
-    const nickIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
-    expect(bulletIx, 'the all-letters SANS seed is present').toBeGreaterThanOrEqual(0)
-    expect(rowFor(bulletIx).querySelector('.foa')!.textContent).toBe('F/O/A')
-    expect(rowFor(nickIx).querySelector('.foa')!.textContent).toBe('F')
-    /* the type tag stays pure identity — no letters leaked into it */
-    expect(rowFor(bulletIx).querySelector('.intag')!.textContent).toBe('SANS Availability')
-    /* a non-SANS row carries no F/O/A chip at all */
-    const omlIx = INPUTS.findIndex((r: any) => r.type === 'OML')
-    expect(rowFor(omlIx).querySelector('.foa')).toBeNull()
+  /* REMOVED WITH THE CONTROL IT TESTED (D620, 8 Oct 26): "a SANS row shows its F/O/A offer letters beside the type, never
+     inside it" pinned the letters chip on a SANS row OF THE LIST (owner, 24 Aug 26). There is no such row any more. The
+     letters themselves are pinned where a commitment is now listed — the SANS day's line (ui/sansday.test.tsx, "each
+     line carries his letters"). What stays true here: no other row grows the chip. */
+  it('no row of the List carries the F/O/A chip', async () => {
+    expect(document.querySelector('#inBody .foa')).toBeNull()
   })
 
   it('an added downchit re-validates the week (reflow)', async () => {
@@ -518,123 +517,14 @@ describe('the SANS Availability sub-form on the add form', () => {
     try { await fn() } finally { HOOKS.toast = orig }
   }
 
-  it('SansPicker mounts on selecting the type, alongside the standard span picker and time fields', async () => {
-    const before = originalPerson()
+  /* THE SIX TESTS THAT FILED SANS AVAILABILITY THROUGH THIS FORM WENT WITH THE CONTROL (owner D620, 7 Oct 26 — "in list
+     mode remove sans avail and move that function to sans calendar solely"). Each is RE-POINTED at the form that now
+     does that job, the SANS calendar's "+ Commitment" (ui/sansform.test.tsx): the three ticks beside the standard span
+     picker, SANS aircrew only, no empty tick set, the flags under All day, AM, and a custom window. */
+  it('the form no longer offers SANS availability, nor its Fly / AMT / OFT ticks', async () => {
+    expect(Array.from(($('#inType') as unknown as HTMLSelectElement).options).map(o => o.value)).not.toContain('SANS Availability')
     expect($('#inSans')).toBeFalsy()
-    await setType('SANS Availability')
-    expect($('#inSans'), 'the picker mounts').toBeTruthy()
-    /* exactly 3 checkboxes, in Fly / AMT / OFT order */
-    const rows = $$('#inSans .sanspick-ck')
-    expect(rows.length).toBe(3)
-    expect(rows.map(r => r.textContent?.trim())).toEqual(['Fly', 'AMT', 'OFT'])
-    /* the owner's phone bug is what this pins: no per-event time pair any
-       more, anywhere inside the picker */
-    expect($$('#inSans input[type="time"]').length).toBe(0)
-    /* INPUT_META gives SANS half:true now, so it gets the SAME span picker
-       and time fields as leave and medical — not a swapped-out control */
-    expect($('#inSpan'), 'the standard span picker is offered too').toBeTruthy()
-    expect($('.spanpick')).toBeTruthy()
-    expect($('#inStartT'), 'the standard start time field is present').toBeTruthy()
-    expect($('#inEndT'), 'the standard end time field is present').toBeTruthy()
-    expect($('#inAllday'), 'a half-day type never gets the plain tick').toBeFalsy()
-    await setType('LL')                        // back to an ordinary type for later tests
-    expect($('#inSans')).toBeFalsy()
-    await setPerson(before)
-  })
-
-  it('refuses a non-SANS person, and leaves INPUTS untouched', async () => {
-    await setType('SANS Availability')
-    const nonSans = Object.keys(PEOPLE).find(id => !PEOPLE[id].san && !PEOPLE[id].archived)!
-    expect(PEOPLE[nonSans].san).toBeFalsy()
-    await setPerson(nonSans)
-    await click(sansCk('Fly'))
-    const n = INPUTS.length
-    await withToast(async () => { await click($('#inAdd')) })
-    expect(INPUTS.length, 'nothing was added').toBe(n)
-    expect(toasts.some(t => /SANS aircrew only/.test(t)), toasts.join(' | ')).toBe(true)
-    await setType('LL')
-  })
-
-  it('refuses an empty tick set', async () => {
-    await setType('SANS Availability')
-    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
-    await setPerson(sansId)
-    const n = INPUTS.length
-    await withToast(async () => { await click($('#inAdd')) })
-    expect(INPUTS.length, 'nothing was added').toBe(n)
-    expect(toasts.some(t => /Tick at least one/.test(t)), toasts.join(' | ')).toBe(true)
-    await setType('LL')
-  })
-
-  /* All day is the form's default span, so the ticked flags alone decide
-     whether Add goes through; the record rides the same all-day shape
-     (s:0, e:1439) every other type gets — SANS carries no window of its
-     own outside allday/half/s/e any more. */
-  it('ticking Fly + OFT under the default All day commits sans flags only', async () => {
-    await setType('SANS Availability')
-    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
-    await setPerson(sansId)
-    await click(sansCk('Fly'))
-    await click(sansCk('OFT'))
-    /* twice, so the pick lands on Jul 13 whatever range the form was left in
-       — two clicks on one day always end with that day as the start */
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    const n = INPUTS.length
-    await click($('#inAdd'))
-    expect(INPUTS.length).toBe(n + 1)
-    const r = INPUTS[0] as any
-    expect(r.person).toBe(sansId)
-    expect(r.type).toBe('SANS Availability')
-    expect(r.allday).toBe(true)
-    expect(r.half).toBeUndefined()
-    /* sans values are true flags, never the old {s,e} object shape */
-    expect(r.sans).toEqual({ f: true, o: true })
-    await act(async () => { undo() })
-    await setType('LL')
-  })
-
-  it('picking AM commits allday:false, half:\'am\', and the ticked flags', async () => {
-    await setType('SANS Availability')
-    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
-    await setPerson(sansId)
-    await click(sansCk('AMT'))
-    await click($('#inSpan [data-span="am"]'))
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    const n = INPUTS.length
-    await click($('#inAdd'))
-    expect(INPUTS.length).toBe(n + 1)
-    const r = INPUTS[0] as any
-    expect(r.allday).toBe(false)
-    expect(r.half).toBe('am')
-    expect(r.sans).toEqual({ a: true })
-    await act(async () => { undo() })
-    await click($('#inSpan [data-span="all"]'))
-    await setType('LL')
-  })
-
-  it('picking Custom and typing 08:00–12:00 commits s:480, e:720', async () => {
-    await setType('SANS Availability')
-    const sansId = Object.keys(PEOPLE).find(id => PEOPLE[id].san)!
-    await setPerson(sansId)
-    await click(sansCk('Fly'))
-    await click($('#inSpan [data-span="custom"]'))
-    await setV($('#inStartT'), '08:00')
-    await setV($('#inEndT'), '12:00')
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    const n = INPUTS.length
-    await click($('#inAdd'))
-    expect(INPUTS.length).toBe(n + 1)
-    const r = INPUTS[0] as any
-    expect(r.allday).toBe(false)
-    expect(r.s).toBe(480)
-    expect(r.e).toBe(720)
-    expect(r.sans).toEqual({ f: true })
-    await act(async () => { undo() })
-    await click($('#inSpan [data-span="all"]'))
-    await setType('LL')
+    void setV; void setPerson; void sansCk; void originalPerson; void withToast
   })
 
   it('the type legend carries the SANS "not an absence" sentence', async () => {

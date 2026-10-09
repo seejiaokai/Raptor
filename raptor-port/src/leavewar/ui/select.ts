@@ -107,6 +107,28 @@ export function eventRange(dates: string[], line: number, a: string, f: string):
   return { line, from: span[0], to: span[span.length - 1], dates: span }
 }
 
+/* A REQUIRED cell is `req-p-<YYYY-MM-DD>` or `req-w-<YYYY-MM-DD>` — the two typed rows of the four at the foot of the
+   Manning block (FlyRows.tsx; the Inputs / SANS redesign, plan §3.3). The Available rows (`avail-…`) and the rows'
+   own ids (`fly-row-…`) are not selectable. */
+export type ReqRow = 'p' | 'w'
+export type ReqCell = { row: ReqRow; date: string }
+/** A pick over the Required rows: which seats, and a date span. Pilots first when both. */
+export type ReqSelection = { rows: ReqRow[]; from: string; to: string; dates: string[] }
+export function parseReqCell(testid: string | null | undefined): ReqCell | null {
+  const m = /^req-([pw])-(\d{4}-\d{2}-\d{2})$/.exec(testid ?? '')
+  return m ? { row: m[1] as ReqRow, date: m[2] } : null
+}
+/** The rectangle between two Required cells: the seats between them (one row, or both) × the days between, in the
+ *  grid's own column order. UNLIKE an event line, a drag here may cross rows — one number for pilots and WSOs alike
+ *  is the point of the pick (owner, D622). `null` if a date is off the drawn days (a stale hit-test). */
+export function reqRange(dates: string[], a: ReqCell, f: ReqCell): ReqSelection | null {
+  const ai = dates.indexOf(a.date), fi = dates.indexOf(f.date)
+  if (ai < 0 || fi < 0) return null
+  const span = dates.slice(Math.min(ai, fi), Math.max(ai, fi) + 1)
+  const rows: ReqRow[] = a.row === f.row ? [a.row] : ['p', 'w']
+  return { rows, from: span[0], to: span[span.length - 1], dates: span }
+}
+
 export interface SelectCtx {
   order: () => string[]     // visible person ids, top → bottom
   dates: () => string[]     // ordered day strings, left → right
@@ -117,6 +139,11 @@ export interface SelectCtx {
   // false ⇒ event cells are not selectable (a member, or the rows are gone).
   eventsEnabled?: () => boolean
   onEventSelect?: (sel: EventSelection) => void
+  // The Required rows (admin only): a drag that starts on a Required cell picks a rectangle over the two rows × days
+  // and opens the Required panel for it (owner, D636, D637). `reqEnabled` absent or false ⇒ a press there is an
+  // ordinary click (a member; or the admin's one typing box, which a plain click opens).
+  reqEnabled?: () => boolean
+  onReqSelect?: (sel: ReqSelection) => void
   /** Client-x where the day columns begin — past the frozen name/counter pair,
    *  or past the figures drawer while it is open. The drag's LEFT auto-scroll
    *  band starts there rather than at the wrap's own edge, which is buried
@@ -130,9 +157,19 @@ const cellAt = (x: number, y: number): Cell | null =>
   parseCellId((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-testid^="cell-"]')?.getAttribute('data-testid'))
 const eventAt = (x: number, y: number): EventCell | null =>
   parseEventCell((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-testid^="event-"]')?.getAttribute('data-testid'))
+/* What a Required drag's focus is over: a Required cell gives its row and its date; ANY other day cell of the grid (a
+   roster cell, an event cell, a count or an Available cell, a date heading — every one ends its id with the date)
+   gives only the DATE, so a pointer that slides off the two rows still extends the span along them. */
+const reqFocusAt = (x: number, y: number): { row: ReqRow | null; date: string } | null => {
+  const id = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-testid]')?.getAttribute('data-testid')
+  const req = parseReqCell(id)
+  if (req) return req
+  const m = /(\d{4}-\d{2}-\d{2})$/.exec(id ?? '')
+  return m ? { row: null, date: m[1] } : null
+}
 
 /** Attach the one selection listener to `.mx-wrap`. Returns a teardown. */
-type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell }
+type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell } | { kind: 'req'; cell: ReqCell }
 
 /* ---- THE GESTURE CORE ------------------------------------------------------
    Everything about ARMING a drag — the mouse slop, the finger's hold, the
@@ -555,19 +592,23 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
 export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   let lastFocus: Cell | null = null      // last roster cell the finger was over
   let lastFocusDate: string | null = null // last event date the finger was over
-  type Payload = { roster?: Selection; event?: EventSelection }
+  let lastReq: ReqCell | null = null      // last Required row + date the pointer was over
+  type Payload = { roster?: Selection; event?: EventSelection; req?: ReqSelection }
 
   return wireGesture<Hit, Payload>(wrap, {
     enabled: ctx.enabled,
     cls: 'selcell',
     node: id => wrap.querySelector(`[data-testid="${id}"]`),
     leftEdge: ctx.leftEdge,
-    reset: () => { lastFocus = null; lastFocusDate = null },
+    reset: () => { lastFocus = null; lastFocusDate = null; lastReq = null },
     hit: el => {
       const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
       const event = roster ? null : parseEventCell(el?.closest?.('[data-testid^="event-"]')?.getAttribute('data-testid'))
       if (roster) return { kind: 'roster', cell: roster }
       if (event && (ctx.eventsEnabled?.() ?? false)) return { kind: 'event', cell: event }
+      /* the THIRD kind — a Required cell (plan §3.3). The arming is the same as every kind's. */
+      const req = roster || event ? null : parseReqCell(el?.closest?.('[data-testid^="req-"]')?.getAttribute('data-testid'))
+      if (req && (ctx.reqEnabled?.() ?? false)) return { kind: 'req', cell: req }
       return null
     },
     // The selection under the current focus point, as the ids to paint plus the
@@ -595,6 +636,16 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
         const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
         return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), payload: { roster: sel } } : null
       }
+      if (anchor.kind === 'req') {
+        /* a rectangle over the two Required rows × days. The focus's ROW is the Required row it is over, else the one
+           it was last over (a pointer in the roster below, or over nothing, keeps what it had); its DATE is whatever
+           column it is in. */
+        const at = reqFocusAt(x, y)
+        const prev: ReqCell = lastReq ?? anchor.cell
+        if (at) lastReq = { row: at.row ?? prev.row, date: at.date }
+        const sel = reqRange(ctx.dates(), anchor.cell, lastReq ?? anchor.cell)
+        return sel ? { ids: sel.rows.flatMap(r => sel.dates.map(d => `req-${r}-${d}`)), payload: { req: sel } } : null
+      }
       const hitDate = cellAt(x, y)?.date ?? eventAt(x, y)?.date
       if (hitDate) lastFocusDate = hitDate
       const fd = hitDate ?? lastFocusDate ?? anchor.cell.date
@@ -604,6 +655,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     onSelect: p => {
       if (p.roster) ctx.onSelect(p.roster)
       else if (p.event) ctx.onEventSelect?.(p.event)
+      else if (p.req) ctx.onReqSelect?.(p.req)
     },
   })
 }

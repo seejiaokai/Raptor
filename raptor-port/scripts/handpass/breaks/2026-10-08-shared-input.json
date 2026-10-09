@@ -1,0 +1,412 @@
+[
+ {
+  "n": 1,
+  "name": "a SANS man is under SANS only",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "has: p => !p.san && !p.pers && p.seat !== 'RCP' }",
+  "put": "has: p => !p.pers && p.seat !== 'RCP' }",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "no Personnel heading on a roster with no ground crew",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "})).filter(g => g.ids.length)",
+  "put": "}))",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "the last man is not let go by a press",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "if (people.length > 1) onChange(people.filter(p => p !== id), true)",
+  "put": "onChange(people.filter(p => p !== id), true)",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "back to one person keeps the FIRST one picked",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "several ? people.slice(0, 1) : people.slice()",
+  "put": "several ? people.slice(-1) : people.slice()",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "a second press of All clears that group",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "if (all) onChange(rest.length ? rest : people.slice(0, 1), true)",
+  "put": "if (all) onChange(people, true)",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "the switch shows only where a group may be filed",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditSched())) || several",
+  "put": "const showSwitch = true",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "one other man a member may not file the kind for is said",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "const other = people.find(p => !mayFileInputFor(p, type))",
+  "put": "const other = undefined as string | undefined",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "the SANS calendar offers SANS people only",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "(!sansOnly || PEOPLE[id].san)",
+  "put": "(true)",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "an admin is offered to keep the FIRST of a group",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "fix: [people[0]], fixLabel: `Keep ${cs(people[0])} only`",
+  "put": "fix: [people[1]], fixLabel: `Keep ${cs(people[0])} only`",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "a member on a kind he may not file for others has no list",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "const others = !lockOne && mayPickOthers(type)",
+  "put": "const others = !lockOne",
+  "tests": [
+   "src/ui/peoplepick.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "an input already filed keeps its one person a value for a member",
+  "file": "src/ui/inputedit.tsx",
+  "find": "lockOne={!isNew && !canEditSched()}",
+  "put": "lockOne={false}",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "several people picked on a new input are saved as one entry",
+  "file": "src/ui/inputedit.tsx",
+  "find": "const grouped = picker && (ppl.length > 1 || rows.length > 1)",
+  "put": "const grouped = picker && (rows.length > 1)",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "the one OIL answer is written for every man",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (commitGroup(entry, draft, ppl, oilDec)) {",
+  "put": "if (commitGroup(entry, draft, ppl)) {",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "a shared input is read only for who may not change all of it",
+  "file": "src/ui/inputedit.tsx",
+  "find": "const readOnly = !isNew && !!r && (rows.length > 1 ? !canAll : !mayEditInput(r))",
+  "put": "const readOnly = !isNew && !!r && (rows.length > 1 ? false : !mayEditInput(r))",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "a man in it has Take me out",
+  "file": "src/ui/inputedit.tsx",
+  "find": "const mineRow = rows.length > 1 && !canAll ? rows.find(x => isMe(x.person)) || null : null",
+  "put": "const mineRow = null as any",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "Take me out removes HIS record alone",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (mine && removeInput(mine)) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()",
+  "put": "if (mine && removeEntry(rows)) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "Delete of a shared input asks first",
+  "file": "src/ui/inputedit.tsx",
+  "find": "if (rows.length > 1) { setDelAll(true); return }",
+  "put": "if (rows.length > 1) { delEntry(); return }",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "a man added behind the window is followed in it",
+  "file": "src/ui/inputedit.tsx",
+  "find": "setPpl(next.length ? next : liveP)",
+  "put": "setPpl(ppl)",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "the window holds the rest of an entry its own record left",
+  "file": "src/ui/inputedit.tsx",
+  "find": "const rest = entryIds.current.length > 1 ?",
+  "put": "const rest = false ?",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "the title says the first and how many more",
+  "file": "src/ui/inputedit.tsx",
+  "find": "const who = rows.length > 1 ? `${csOf(rows[0].person)} +${rows.length - 1}`",
+  "put": "const who = rows.length > 1 ? `${csOf(rows[0].person)}`",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "the editor opens the ENTRY a record belongs to",
+  "file": "src/state/inputgroup.ts",
+  "find": "return entriesOf(inputs).find(e => e.rows.includes(r))?.rows || [r]",
+  "put": "return [r]",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "a dragged bar moves every record of the entry",
+  "file": "src/ui/caldrag.ts",
+  "find": "const ok = whole ? commitGroup({ rows }, d, rows.map(x => x.person)) : commitInputEdit(r, d)",
+  "put": "const ok = commitInputEdit(r, d)",
+  "tests": [
+   "src/ui/barmove.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "a shared bar does not lift for a man who may not change all of it",
+  "file": "src/ui/caldrag.ts",
+  "find": "(!!row && !entryRowsOf(INPUTS, row).every(x => mayEditInput(x)))",
+  "put": "(!!row && !mayEditInput(row))",
+  "tests": [
+   "src/ui/barmove.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "LATE stands beside the late man",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "{!allLate && lateWord(x) && <span className=\"sd-late idy-manlate\"",
+  "put": "{!allLate && false && <span className=\"sd-late idy-manlate\"",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "everyone late alike says LATE once",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "const allLate = team && lates.every(w => w && w === lates[0])",
+  "put": "const allLate = false",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "Delete on the day takes the whole entry",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows))",
+  "put": "if (rows.every(x => mayDeleteInput(x))) { if (removeInput(rows[0]))",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "the question names everyone",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "`Delete this input for all ${it.rows.length} people?`",
+  "put": "`Delete this input?`",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "a man in it is asked about himself",
+  "file": "src/ui/InputsCal.tsx",
+  "find": ": 'Take yourself out of this input?'}",
+  "put": ": 'Delete this input?'}",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "anyone else is told who can delete it",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "if (!it.rows.every(x => mayDeleteInput(x)) && !it.rows.some(x => isMe(x.person))) {",
+  "put": "if (false) {",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the List draws a shared input as one row, its first man",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "if (!seen.has(e)) { seen.add(e); one.push(e[0]) }",
+  "put": "one.push(r)",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "the List row opens the window, not the edit in place",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "title=\"Open this input\" onClick={() => { setInpEdit(r); notify() }}",
+  "put": "title=\"Open this input\" onClick={() => startEdit(inx)}",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "the List row of a shared input has no x and no OIL chip",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "{!team && mayEditInput(r) && <>",
+  "put": "{mayEditInput(r) && <>",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "the List form files several as one",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "if (several && team.length > 1) {",
+  "put": "if (false) {",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "the List name says how many more",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "{cs} +{team.length - 1}</span>",
+  "put": "{cs}</span>",
+  "tests": [
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "a group filing is one item in the changes window",
+  "file": "src/ui/changesmodel.ts",
+  "find": "  if (r.grp) {\n    const now",
+  "put": "  if (false) {\n    const now",
+  "tests": [
+   "src/ui/changesmodel.test.ts"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "each line under a group item names its man",
+  "file": "src/ui/changesmodel.ts",
+  "find": "if (r.grp) return lbl",
+  "put": "if (false) return lbl",
+  "tests": [
+   "src/ui/changesmodel.test.ts"
+  ]
+ },
+ {
+  "n": 37,
+  "name": "each change line carries its group",
+  "file": "src/state/changelines.ts",
+  "find": "...(grp ? { grp: String(grp) } : {}), ...extra })",
+  "put": "...extra })",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 38,
+  "name": "the change log keeps the group on a line",
+  "file": "src/engine/editlog.ts",
+  "find": "  if (at && at.grp) row.grp = at.grp\n",
+  "put": "",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 39,
+  "name": "the demo shared input says who placed it",
+  "file": "src/state/demoseed.ts",
+  "find": "grp: DEMO_GRP, grpBy: admin, by: admin, at, modBy: admin, modAt: at,",
+  "put": "grp: DEMO_GRP, grpBy: admin,",
+  "tests": [
+   "src/state/demostamps.test.ts"
+  ]
+ },
+ {
+  "n": 40,
+  "name": "the demo shared input is seeded once",
+  "file": "src/state/demoseed.ts",
+  "find": "  if (INPUTS.some((r: any) => r && r.grp === DEMO_GRP)) return\n",
+  "put": "",
+  "tests": [
+   "src/state/demostamps.test.ts"
+  ]
+ },
+ {
+  "n": 41,
+  "name": "the demo shared input is not late",
+  "file": "src/state/demoseed.ts",
+  "find": "remarks: 'Flight safety brief', mod: '2026-06-25',",
+  "put": "remarks: 'Flight safety brief', mod: '2026-07-22',",
+  "tests": [
+   "src/state/demostamps.test.ts"
+  ]
+ }
+]

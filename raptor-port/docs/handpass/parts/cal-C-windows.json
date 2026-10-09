@@ -1,0 +1,2289 @@
+{
+ "Inputs day|desk": {
+  "window": "Inputs day",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-inputsday].floatwin",
+  "hit": {
+   "rect": {
+    "x": 994,
+    "y": 96,
+    "w": 430,
+    "h": 529
+   },
+   "centre": [
+    1209,
+    361
+   ],
+   "centreInside": true,
+   "centreEl": "SPAN.sd-rmk",
+   "buttons": 8,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Inputs_day-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Inputs_day-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#icNext.abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-inputsday].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Inputs settings (gear)|desk": {
+  "window": "Inputs settings (gear)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-inputsset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 1024,
+    "y": 96,
+    "w": 400,
+    "h": 554
+   },
+   "centre": [
+    1224,
+    373
+   ],
+   "centreInside": true,
+   "centreEl": "P.sset-example",
+   "buttons": 7,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Inputs_settings_gear_-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Inputs_settings_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#icNext.abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-inputsset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Inputs settings (Logic row)|desk": {
+  "window": "Inputs settings (Logic row)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-inputsset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 1024,
+    "y": 96,
+    "w": 400,
+    "h": 554
+   },
+   "centre": [
+    1224,
+    373
+   ],
+   "centreInside": true,
+   "centreEl": "P.sset-example",
+   "buttons": 7,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Inputs_settings_Logic_row_-1-open.png",
+  "bg": {
+   "what": "Logic page search box",
+   "reachable": true,
+   "hit": {
+    "t": "INPUT.",
+    "win": null
+   },
+   "changed": false,
+   "before": "",
+   "after": ""
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Inputs_settings_Logic_row_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "INPUT#lgSearch",
+  "close": {
+   "focusBeforeEscape": "INPUT#lgSearch",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "INPUT#lgSearch",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-inputsset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (Inputs gear)|desk": {
+  "window": "Calendar (Inputs gear)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 544,
+    "y": 96,
+    "w": 880,
+    "h": 605
+   },
+   "centre": [
+    984,
+    399
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 105,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Calendar_Inputs_gear_-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Calendar_Inputs_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#icNext.abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-days].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Input editor over the opened day|desk": {
+  "window": "Input editor over the opened day",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-inputedit].floatwin",
+  "hit": {
+   "rect": {
+    "x": 994,
+    "y": 96,
+    "w": 430,
+    "h": 639
+   },
+   "centre": [
+    1209,
+    415
+   ],
+   "centreInside": true,
+   "centreEl": "BUTTON.rc-d",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Input_editor_over_the_opened_day-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Input_editor_over_the_opened_day-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Input editor over the month (picked run)|desk": {
+  "window": "Input editor over the month (picked run)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-inputedit].floatwin",
+  "hit": {
+   "rect": {
+    "x": 994,
+    "y": 96,
+    "w": 430,
+    "h": 639
+   },
+   "centre": [
+    1209,
+    415
+   ],
+   "centreInside": true,
+   "centreEl": "BUTTON.rc-d",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Input_editor_over_the_month_picked_run_-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Input_editor_over_the_month_picked_run_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Input editor over the List|desk": {
+  "window": "Input editor over the List",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-inputedit].floatwin",
+  "hit": {
+   "rect": {
+    "x": 994,
+    "y": 96,
+    "w": 430,
+    "h": 780
+   },
+   "centre": [
+    1209,
+    486
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.pp-group",
+   "buttons": 66,
+   "buttonsCovered": [],
+   "offscreen": 8
+  },
+  "pic1": "desk-w-Input_editor_over_the_List-1-open.png",
+  "bg": {
+   "what": "Calendar | List switch (Calendar)",
+   "reachable": true,
+   "hit": {
+    "t": "SPAN.inv-t",
+    "win": null
+   },
+   "changed": false,
+   "before": "abtn",
+   "after": "abtn"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": -54
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Input_editor_over_the_List-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BODY.in-cal",
+  "close": {
+   "focusBeforeEscape": "BODY.in-cal",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "SANS day|desk": {
+  "window": "SANS day",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-sansday].floatwin",
+  "hit": {
+   "rect": {
+    "x": 994,
+    "y": 96,
+    "w": 430,
+    "h": 529
+   },
+   "centre": [
+    1209,
+    361
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.sd-list",
+   "buttons": 5,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-SANS_day-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-SANS_day-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[sc-next].abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON[sc-next].abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-sansday].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "SANS settings (gear)|desk": {
+  "window": "SANS settings (gear)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-sansset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 1024,
+    "y": 96,
+    "w": 400,
+    "h": 592
+   },
+   "centre": [
+    1224,
+    392
+   ],
+   "centreInside": true,
+   "centreEl": "FORM.sset",
+   "buttons": 10,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-SANS_settings_gear_-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-SANS_settings_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[sc-next].abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON[sc-next].abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-sansset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "SANS settings (Logic row)|desk": {
+  "window": "SANS settings (Logic row)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-sansset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 1024,
+    "y": 96,
+    "w": 400,
+    "h": 592
+   },
+   "centre": [
+    1224,
+    392
+   ],
+   "centreInside": true,
+   "centreEl": "FORM.sset",
+   "buttons": 10,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-SANS_settings_Logic_row_-1-open.png",
+  "bg": {
+   "what": "Logic page search box",
+   "reachable": true,
+   "hit": {
+    "t": "INPUT.",
+    "win": null
+   },
+   "changed": false,
+   "before": "",
+   "after": ""
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-SANS_settings_Logic_row_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "INPUT#lgSearch",
+  "close": {
+   "focusBeforeEscape": "INPUT#lgSearch",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "INPUT#lgSearch",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-sansset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (SANS gear)|desk": {
+  "window": "Calendar (SANS gear)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 544,
+    "y": 96,
+    "w": 880,
+    "h": 605
+   },
+   "centre": [
+    984,
+    399
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 105,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Calendar_SANS_gear_-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Calendar_SANS_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[sc-next].abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON[sc-next].abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-days].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (SANS day)|desk": {
+  "window": "Calendar (SANS day)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 544,
+    "y": 96,
+    "w": 880,
+    "h": 605
+   },
+   "centre": [
+    984,
+    399
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 105,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Calendar_SANS_day_-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "July 2026",
+   "after": "August 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Calendar_SANS_day_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[sc-next].abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON[sc-next].abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-days].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (Leave War gear)|desk": {
+  "window": "Calendar (Leave War gear)",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 544,
+    "y": 96,
+    "w": 880,
+    "h": 605
+   },
+   "centre": [
+    984,
+    399
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 102,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Calendar_Leave_War_gear_-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Calendar_Leave_War_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-days].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Every Thursday|desk": {
+  "window": "Every Thursday",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-every].floatwin",
+  "hit": {
+   "rect": {
+    "x": 16,
+    "y": 96,
+    "w": 380,
+    "h": 438
+   },
+   "centre": [
+    206,
+    315
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.every-lab",
+   "buttons": 8,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Every_Thursday-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "asked": {
+    "dx": 120,
+    "dy": 70
+   },
+   "moved": {
+    "dx": 120,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Every_Thursday-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-every].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Holiday form|desk": {
+  "window": "Holiday form",
+  "size": "desk",
+  "activeAtOpen": "DIV[win-holiday].floatwin",
+  "hit": {
+   "rect": {
+    "x": 16,
+    "y": 96,
+    "w": 380,
+    "h": 571
+   },
+   "centre": [
+    206,
+    382
+   ],
+   "centreInside": true,
+   "centreEl": "BUTTON.rday",
+   "buttons": 40,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Holiday_form-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "asked": {
+    "dx": 120,
+    "dy": 70
+   },
+   "moved": {
+    "dx": 120,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Holiday_form-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-holiday].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "LW typing box / number pad|desk": {
+  "window": "LW typing box / number pad",
+  "size": "desk",
+  "activeAtOpen": "INPUT[fly-edit-input].flyedit",
+  "hit": {
+   "rect": {
+    "x": 564,
+    "y": 316,
+    "w": 682,
+    "h": 39
+   },
+   "centre": [
+    905,
+    336
+   ],
+   "centreInside": true,
+   "centreEl": "KBD.",
+   "buttons": 2,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "desk-w-LW_typing_box_number_pad-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "na": "no title bar — not a movable window"
+  },
+  "pic2": "desk-w-LW_typing_box_number_pad-2-dragged.png",
+  "hitAfterDrag": "window gone",
+  "stayedAfterBg": false,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "LW working box|desk": {
+  "window": "LW working box",
+  "size": "desk",
+  "activeAtOpen": "BODY",
+  "hit": {
+   "rect": {
+    "x": 590,
+    "y": 294,
+    "w": 220,
+    "h": 135
+   },
+   "centre": [
+    700,
+    362
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.flywork-ln",
+   "buttons": 0,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "desk-w-LW_working_box-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "na": "no title bar — not a movable window"
+  },
+  "pic2": "desk-w-LW_working_box-2-dragged.png",
+  "hitAfterDrag": "window gone",
+  "stayedAfterBg": false,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "LW Required panel (picked cells)|desk": {
+  "window": "LW Required panel (picked cells)",
+  "size": "desk",
+  "activeAtOpen": "INPUT#req-panel-num[req-panel-num].reqnum",
+  "hit": {
+   "rect": {
+    "x": 440,
+    "y": 723,
+    "w": 560,
+    "h": 163
+   },
+   "centre": [
+    720,
+    805
+   ],
+   "centreInside": true,
+   "centreEl": "SPAN.note",
+   "buttons": 6,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "desk-w-LW_Required_panel_picked_cells_-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-LW_Required_panel_picked_cells_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "LW people days panel (picked cells)|desk": {
+  "window": "LW people days panel (picked cells)",
+  "size": "desk",
+  "activeAtOpen": "BODY",
+  "hit": {
+   "rect": {
+    "x": 440,
+    "y": 666,
+    "w": 560,
+    "h": 220
+   },
+   "centre": [
+    720,
+    776
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.bidsheet-row",
+   "buttons": 16,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "desk-w-LW_people_days_panel_picked_cells_-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.mjump",
+    "win": null
+   },
+   "changed": true,
+   "before": "mjump",
+   "after": "mjump on"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-LW_people_days_panel_picked_cells_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[month-NOV].mjump",
+  "close": {
+   "focusBeforeEscape": "BUTTON[month-NOV].mjump",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Calendar with OIL tracker open (Leave War)|desk": {
+  "window": "Calendar with OIL tracker open (Leave War)",
+  "size": "desk",
+  "activeAtOpen": "BUTTON[oil-tracker].rtbtn",
+  "hit": {
+   "rect": {
+    "x": 544,
+    "y": 96,
+    "w": 880,
+    "h": 605
+   },
+   "centre": [
+    984,
+    399
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 102,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "desk-w-Calendar_with_OIL_tracker_open_Leave_War_-1-open.png",
+  "bg": {
+   "what": "Leave War month button NOV",
+   "reachable": true,
+   "hit": {
+    "t": "DIV.ents",
+    "win": null
+   },
+   "changed": false,
+   "before": "mjump",
+   "after": "mjump"
+  },
+  "drag": {
+   "asked": {
+    "dx": -150,
+    "dy": 70
+   },
+   "moved": {
+    "dx": -150,
+    "dy": 70,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "desk-w-Calendar_with_OIL_tracker_open_Leave_War_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BODY",
+  "close": {
+   "focusBeforeEscape": "BODY",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BODY",
+   "escapeWithFocusInWindow": "closed"
+  },
+  "errors": []
+ },
+ "Inputs day|phone": {
+  "window": "Inputs day",
+  "size": "phone",
+  "activeAtOpen": "BUTTON#icAddPucks.abtn",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 275,
+    "w": 358,
+    "h": 557
+   },
+   "centre": [
+    191,
+    553
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.sd-row",
+   "buttons": 8,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Inputs_day-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "Jul 2026",
+   "after": "Aug 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -267,
+    "dh": 267
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Inputs_day-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#icNext.abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-inputsday].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Inputs settings (gear)|phone": {
+  "window": "Inputs settings (gear)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-inputsset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 245,
+    "w": 358,
+    "h": 587
+   },
+   "centre": [
+    191,
+    538
+   ],
+   "centreInside": true,
+   "centreEl": "P.sset-example",
+   "buttons": 7,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Inputs_settings_gear_-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "Jul 2026",
+   "after": "Aug 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Inputs_settings_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#icNext.abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-inputsset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Inputs settings (Logic row)|phone": {
+  "window": "Inputs settings (Logic row)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-inputsset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 245,
+    "w": 358,
+    "h": 587
+   },
+   "centre": [
+    191,
+    538
+   ],
+   "centreInside": true,
+   "centreEl": "P.sset-example",
+   "buttons": 7,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Inputs_settings_Logic_row_-1-open.png",
+  "bg": {
+   "what": "Logic page search box",
+   "reachable": true,
+   "hit": {
+    "t": "INPUT.",
+    "win": null
+   },
+   "changed": false,
+   "before": "",
+   "after": ""
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Inputs_settings_Logic_row_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "INPUT#lgSearch",
+  "close": {
+   "focusBeforeEscape": "INPUT#lgSearch",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "INPUT#lgSearch",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-inputsset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (Inputs gear)|phone": {
+  "window": "Calendar (Inputs gear)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 6,
+    "y": 54,
+    "w": 378,
+    "h": 784
+   },
+   "centre": [
+    195,
+    446
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Calendar_Inputs_gear_-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": false,
+   "hit": {
+    "t": "BUTTON.days-tab",
+    "win": "win-days"
+   },
+   "changed": false,
+   "before": "Jul 2026",
+   "after": "Jul 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -54,
+    "dh": -196
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Calendar_Inputs_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "DIV[win-days].floatwin",
+  "close": {
+   "focusBeforeEscape": "DIV[win-days].floatwin",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Input editor over the opened day|phone": {
+  "window": "Input editor over the opened day",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-inputedit].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 159,
+    "w": 358,
+    "h": 673
+   },
+   "centre": [
+    191,
+    495
+   ],
+   "centreInside": true,
+   "centreEl": "BUTTON.rc-d",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Input_editor_over_the_opened_day-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "Jul 2026",
+   "after": "Aug 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Input_editor_over_the_opened_day-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Input editor over the month (picked run)|phone": {
+  "window": "Input editor over the month (picked run)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-inputedit].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 159,
+    "w": 358,
+    "h": 673
+   },
+   "centre": [
+    191,
+    495
+   ],
+   "centreInside": true,
+   "centreEl": "BUTTON.rc-d",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Input_editor_over_the_month_picked_run_-1-open.png",
+  "bg": {
+   "what": "Inputs month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "Jul 2026",
+   "after": "Aug 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Input_editor_over_the_month_picked_run_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#icNext.abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#icNext.abtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Input editor over the List|phone": {
+  "window": "Input editor over the List",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-inputedit].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 12,
+    "w": 358,
+    "h": 820
+   },
+   "centre": [
+    191,
+    422
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.pp-pucks",
+   "buttons": 54,
+   "buttonsCovered": [],
+   "offscreen": 20
+  },
+  "pic1": "phone-w-Input_editor_over_the_List-1-open.png",
+  "bg": {
+   "what": "Calendar | List switch (Calendar)",
+   "reachable": true,
+   "hit": null,
+   "changed": false,
+   "before": "abtn",
+   "after": "abtn"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -12,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Input_editor_over_the_List-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "DIV[win-inputedit].floatwin",
+  "close": {
+   "focusBeforeEscape": "DIV[win-inputedit].floatwin",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "SANS day|phone": {
+  "window": "SANS day",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-sansday].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 275,
+    "w": 358,
+    "h": 557
+   },
+   "centre": [
+    191,
+    553
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.sd-list",
+   "buttons": 5,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-SANS_day-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "Jul 2026",
+   "after": "Aug 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -267,
+    "dh": 267
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-SANS_day-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[sc-next].abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON[sc-next].abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-sansday].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "SANS settings (gear)|phone": {
+  "window": "SANS settings (gear)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-sansset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 224,
+    "w": 358,
+    "h": 608
+   },
+   "centre": [
+    191,
+    528
+   ],
+   "centreInside": true,
+   "centreEl": "LABEL.sset-row",
+   "buttons": 8,
+   "buttonsCovered": [],
+   "offscreen": 3
+  },
+  "pic1": "phone-w-SANS_settings_gear_-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": true,
+   "hit": {
+    "t": "BUTTON.abtn",
+    "win": null
+   },
+   "changed": true,
+   "before": "Jul 2026",
+   "after": "Aug 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-SANS_settings_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON[sc-next].abtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON[sc-next].abtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON[sc-next].abtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-sansset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "SANS settings (Logic row)|phone": {
+  "window": "SANS settings (Logic row)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-sansset].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 224,
+    "w": 358,
+    "h": 608
+   },
+   "centre": [
+    191,
+    528
+   ],
+   "centreInside": true,
+   "centreEl": "LABEL.sset-row",
+   "buttons": 8,
+   "buttonsCovered": [],
+   "offscreen": 3
+  },
+  "pic1": "phone-w-SANS_settings_Logic_row_-1-open.png",
+  "bg": {
+   "what": "Logic page search box",
+   "reachable": true,
+   "hit": {
+    "t": "INPUT.",
+    "win": null
+   },
+   "changed": false,
+   "before": "",
+   "after": ""
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-SANS_settings_Logic_row_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "INPUT#lgSearch",
+  "close": {
+   "focusBeforeEscape": "INPUT#lgSearch",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "INPUT#lgSearch",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-sansset].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (SANS gear)|phone": {
+  "window": "Calendar (SANS gear)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 6,
+    "y": 54,
+    "w": 378,
+    "h": 784
+   },
+   "centre": [
+    195,
+    446
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Calendar_SANS_gear_-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": false,
+   "hit": {
+    "t": "BUTTON.days-tab",
+    "win": "win-days"
+   },
+   "changed": false,
+   "before": "Jul 2026",
+   "after": "Jul 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -54,
+    "dh": -196
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Calendar_SANS_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "DIV[win-days].floatwin",
+  "close": {
+   "focusBeforeEscape": "DIV[win-days].floatwin",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (SANS day)|phone": {
+  "window": "Calendar (SANS day)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 6,
+    "y": 54,
+    "w": 378,
+    "h": 784
+   },
+   "centre": [
+    195,
+    446
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 43,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Calendar_SANS_day_-1-open.png",
+  "bg": {
+   "what": "SANS month arrow ›",
+   "reachable": false,
+   "hit": {
+    "t": "BUTTON.days-tab",
+    "win": "win-days"
+   },
+   "changed": false,
+   "before": "Jul 2026",
+   "after": "Jul 2026"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -54,
+    "dh": -196
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Calendar_SANS_day_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "DIV[win-days].floatwin",
+  "close": {
+   "focusBeforeEscape": "DIV[win-days].floatwin",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Calendar (Leave War gear)|phone": {
+  "window": "Calendar (Leave War gear)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 6,
+    "y": 54,
+    "w": 378,
+    "h": 784
+   },
+   "centre": [
+    195,
+    446
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 42,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Calendar_Leave_War_gear_-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -54,
+    "dh": -196
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Calendar_Leave_War_gear_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-days].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Every Thursday|phone": {
+  "window": "Every Thursday",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-every].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 383,
+    "w": 358,
+    "h": 450
+   },
+   "centre": [
+    191,
+    607
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.win-body",
+   "buttons": 8,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Every_Thursday-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Every_Thursday-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-every].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "Holiday form|phone": {
+  "window": "Holiday form",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-holiday].floatwin",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 249,
+    "w": 358,
+    "h": 583
+   },
+   "centre": [
+    191,
+    541
+   ],
+   "centreInside": true,
+   "centreEl": "SPAN.rdow",
+   "buttons": 40,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Holiday_form-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Holiday_form-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-holiday].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ },
+ "LW typing box / number pad|phone": {
+  "window": "LW typing box / number pad",
+  "size": "phone",
+  "activeAtOpen": "BODY",
+  "hit": {
+   "rect": {
+    "x": 0,
+    "y": 524,
+    "w": 390,
+    "h": 102
+   },
+   "centre": [
+    195,
+    575
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.flypad-hd",
+   "buttons": 5,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "phone-w-LW_typing_box_number_pad-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "na": "no title bar — not a movable window"
+  },
+  "pic2": "phone-w-LW_typing_box_number_pad-2-dragged.png",
+  "hitAfterDrag": "window gone",
+  "stayedAfterBg": false,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "LW working box|phone": {
+  "window": "LW working box",
+  "size": "phone",
+  "activeAtOpen": "BODY",
+  "hit": {
+   "rect": {
+    "x": 164,
+    "y": 241,
+    "w": 220,
+    "h": 135
+   },
+   "centre": [
+    274,
+    309
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.flywork-ln",
+   "buttons": 0,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "phone-w-LW_working_box-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "na": "no title bar — not a movable window"
+  },
+  "pic2": "phone-w-LW_working_box-2-dragged.png",
+  "hitAfterDrag": "window gone",
+  "stayedAfterBg": false,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "LW Required panel (picked cells)|phone": {
+  "window": "LW Required panel (picked cells)",
+  "size": "phone",
+  "activeAtOpen": "BODY",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 594,
+    "w": 366,
+    "h": 236
+   },
+   "centre": [
+    195,
+    712
+   ],
+   "centreInside": true,
+   "centreEl": "SPAN.note",
+   "buttons": 6,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "phone-w-LW_Required_panel_picked_cells_-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-LW_Required_panel_picked_cells_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "LW people days panel (picked cells)|phone": {
+  "window": "LW people days panel (picked cells)",
+  "size": "phone",
+  "activeAtOpen": "BODY",
+  "hit": {
+   "rect": {
+    "x": 12,
+    "y": 574,
+    "w": 366,
+    "h": 256
+   },
+   "centre": [
+    195,
+    702
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.bidsheet",
+   "buttons": 16,
+   "buttonsCovered": [],
+   "offscreen": 0
+  },
+  "pic1": "phone-w-LW_people_days_panel_picked_cells_-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -140,
+    "dh": 0
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-LW_people_days_panel_picked_cells_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "closed"
+  },
+  "errors": []
+ },
+ "Calendar with OIL tracker open (Leave War)|phone": {
+  "window": "Calendar with OIL tracker open (Leave War)",
+  "size": "phone",
+  "activeAtOpen": "DIV[win-days].floatwin",
+  "hit": {
+   "rect": {
+    "x": 6,
+    "y": 54,
+    "w": 378,
+    "h": 784
+   },
+   "centre": [
+    195,
+    446
+   ],
+   "centreInside": true,
+   "centreEl": "DIV.days-top",
+   "buttons": 42,
+   "buttonsCovered": [],
+   "offscreen": 1
+  },
+  "pic1": "phone-w-Calendar_with_OIL_tracker_open_Leave_War_-1-open.png",
+  "bg": {
+   "what": "top-bar bell",
+   "reachable": true,
+   "hit": {
+    "t": "path.[object",
+    "win": null
+   },
+   "changed": false,
+   "before": "0",
+   "after": "0"
+  },
+  "drag": {
+   "asked": {
+    "dx": 0,
+    "dy": -140
+   },
+   "moved": {
+    "dx": 0,
+    "dy": -54,
+    "dh": -196
+   },
+   "followed": true,
+   "pageScrolled": false
+  },
+  "pic2": "phone-w-Calendar_with_OIL_tracker_open_Leave_War_-2-dragged.png",
+  "hitAfterDrag": true,
+  "stayedAfterBg": true,
+  "active": "BUTTON#notifyBell.bellbtn",
+  "close": {
+   "focusBeforeEscape": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusOnPage": "stayed",
+   "focusAfterTitlePress": "BUTTON#notifyBell.bellbtn",
+   "escapeWithFocusInWindow": "stayed",
+   "focusPutInWindow": "DIV[win-days].floatwin",
+   "escapeAfterFocusingTheWindow": "closed"
+  },
+  "errors": []
+ }
+}

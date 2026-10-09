@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, resetManningThreshold, saveManningRule, deleteManningRule, resetManningRules, setQualCatalog, orderedManningIds, moveManningRow, toggleManningRow, setPeople, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
+  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, saveManningRule, deleteManningRule, setQualCatalog, orderedManningIds, moveManningRow, setPeople, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
-import { FIGURES, figureParts, makeWar, seedRequirements, MAX_MANNING_RULES, type CounterName } from '../engine'
+import { FIGURES, figureParts, makeWar, MAX_MANNING_RULES, type CounterName } from '../engine'
 import { balanceOf, figureLines } from '../engine/counters'
 import { localBackend, memoryBackend } from './storage'
-import { fileAbsence } from '../testkit'
+import { elevenCounters, fileAbsence } from '../testkit'
 /* [LW-SPARE-MOVE-DOORS] (28 Sep 26): the old one-bid mover `shiftBid` is RETIRED — every move goes through the one door,
    `moveRecords`, which the grid, the one-day sheet and the day's list all use. These tests keep what they pinned by asking
    that door the way a drag of the day does (`moveCells`, the store's kept cell adapter over it) and answering in the old
@@ -1450,12 +1450,12 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(true)
   })
 
-  it('boots with the four seeded event types', () => {
+  it('boots with the four seeded event types, each with the short form the grid prints (D645)', () => {
     expect(getState().eventDefs).toEqual([
-      { name: 'PH', kind: 'off' },
-      { name: 'Off day', kind: 'free' },
-      { name: 'No Leave', kind: 'nolv' },
-      { name: 'SC', kind: 'work' },
+      { name: 'PH', kind: 'off', short: 'PH' },
+      { name: 'Off day', kind: 'free', short: 'OFF' },
+      { name: 'No Leave', kind: 'nolv', short: 'NL' },
+      { name: 'SC', kind: 'work', short: 'SC' },
     ])
   })
 
@@ -1483,9 +1483,10 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
 
 // The manning amber/red lines are the squadron's own (owner, 19 Aug 26 —
 // "when does the amber show or red show… is customisable"). The rules are
-// whole data now (`manningdefs`); the old `manningthresh` overlay is read at
-// boot as a migration, which the corrupt-blob test below still exercises.
+// whole data now (`manningdefs`). The app starts with NO counters (D669, 8 Oct 26), so these tests make the old eleven
+// first; the `manningthresh` overlay of the pre-definitions build is no longer read (it lay over built-in rows).
 describe('the manning thresholds are editable, admin-gated and persisted', () => {
+  beforeEach(() => { elevenCounters() })
   it('a member cannot move a line', () => {
     expect(setManningThreshold('sets', 6, 5)).toBe(false)
     expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 5, red: 4.5 })
@@ -1512,35 +1513,31 @@ describe('the manning thresholds are editable, admin-gated and persisted', () =>
     expect(setManningThreshold('ip', 1, 4)).toBe(true)
   })
 
-  it('a saved line survives a reload; reset returns the seeded default', () => {
+  /* ("…reset returns the seeded default" and "a member cannot reset either" stood here: a row's amber / red could go
+     back to its built-in default until D669, 8 Oct 26. There are no built-in rows now, so there is no default to
+     return to and `resetManningThreshold` is gone.) */
+  it('a saved line survives a reload', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
+    elevenCounters()
     setManningThreshold('flp', 3, 2)
     initStore(backend)
     expect(getState().requirements.default.rules.find(r => r.id === 'flp')!.threshold).toEqual({ amber: 3, red: 2 })
-    setRole('admin')
-    resetManningThreshold('flp')
-    expect(getState().requirements.default.rules.find(r => r.id === 'flp')!.threshold).toEqual({ amber: 0, red: 0 })
-    initStore(backend)
-    expect(getState().requirements.default.rules.find(r => r.id === 'flp')!.threshold).toEqual({ amber: 0, red: 0 })
   })
 
-  it('a member cannot reset either', () => {
+  it('the pre-definitions amber / red record is no longer read: a store holding only it starts with no counters, and the saved counters are then the whole truth', () => {
+    const legacy = memoryBackend()
+    legacy.write('manningthresh', JSON.stringify({ ip: { amber: 'six', red: 2 }, sets: { amber: 7, red: 6 } }))
+    initStore(legacy)                                              // a corrupt entry in it crashes nothing either
+    expect(getState().requirements.default.rules).toEqual([])
     setRole('admin')
-    setManningThreshold('ip', 5, 4)
-    setRole('member')
-    resetManningThreshold('ip')
-    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 5, red: 4 })
-  })
-
-  it('a corrupt stored blob degrades to the defaults instead of crashing', () => {
-    const backend = memoryBackend()
-    backend.write('manningthresh', JSON.stringify({ ip: { amber: 'six', red: 2 }, sets: { amber: 7, red: 6 } }))
-    initStore(backend)
-    // The bad entry is dropped; the good one beside it still applies.
-    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 3, red: 2 })
-    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 7, red: 6 })
+    elevenCounters()
+    setManningThreshold('ip', 4, 3)
+    legacy.write('manningthresh', JSON.stringify({ ip: { amber: 9, red: 8 } }))
+    initStore(legacy)
+    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 4, red: 3 })
+    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 5, red: 4.5 })
   })
 })
 
@@ -1555,13 +1552,14 @@ describe('custom manning counters', () => {
     count: { kind: 'people' as const, filter: { seats: ['pilot' as const], quals: ['nvg'] } },
     threshold: { amber: 2, red: 1 },
   })
+  /* the app starts with none (D669); these tests rework, move and delete counters, so they make the old eleven first */
+  beforeEach(() => { elevenCounters() })
 
-  it('a member cannot save, delete or reset', () => {
+  it('a member cannot save or delete', () => {
     expect(saveManningRule(nvgRule())).toBe(false)
     expect(deleteManningRule('ip')).toBe(false)
-    const before = getState().requirements.default.rules.length
-    resetManningRules()
-    expect(getState().requirements.default.rules.length).toBe(before)
+    expect(getState().requirements.default.rules.map(r => r.id)).toHaveLength(11)
+    expect(getState().requirements.default.rules.some(r => r.id === 'ip')).toBe(true)
   })
 
   it('an admin adds a counter and it joins the row set, at the end', () => {
@@ -1595,10 +1593,10 @@ describe('custom manning counters', () => {
     expect(getState().requirements.default.rules.some(r => r.id === 'nvg-pilots')).toBe(false)
   })
 
-  it('deletes a counter — the seeded ones included — and its order/hidden entries with it', () => {
+  it('deletes a counter, and its place in the hand order with it', () => {
     setRole('admin')
     moveManningRow('scd', -1)
-    toggleManningRow('scd')
+    expect(getState().manningOrder).toContain('scd')
     expect(deleteManningRule('scd')).toBe(true)
     expect(getState().requirements.default.rules.some(r => r.id === 'scd')).toBe(false)
     expect(getState().manningOrder).not.toContain('scd')
@@ -1606,10 +1604,11 @@ describe('custom manning counters', () => {
     expect(deleteManningRule('scd')).toBe(false)
   })
 
-  it('custom counters and deletions survive a reload; a corrupt blob falls back to the seed', () => {
+  it('custom counters and deletions survive a reload; a corrupt blob reads as no counters', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
+    elevenCounters()
     saveManningRule(nvgRule())
     deleteManningRule('wmp')
     initStore(backend)
@@ -1619,22 +1618,7 @@ describe('custom manning counters', () => {
     const broken = memoryBackend()
     broken.write('manningdefs', '{"not":"a list"}')
     initStore(broken)
-    expect(getState().requirements.default.rules.length).toBe(seedRequirements().default.rules.length)
-  })
-
-  it('a stored rule set wins over the legacy threshold overlay; the overlay migrates when no set is stored', () => {
-    const legacy = memoryBackend()
-    legacy.write('manningthresh', JSON.stringify({ ip: { amber: 9, red: 8 } }))
-    initStore(legacy)
-    // Migration: the seed with the old numbers laid on.
-    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 9, red: 8 })
-    // The first persist writes `manningdefs`; from then on the overlay is
-    // inert — even one pointing at different numbers.
-    setRole('admin')
-    setManningThreshold('ip', 4, 3)
-    legacy.write('manningthresh', JSON.stringify({ ip: { amber: 9, red: 8 } }))
-    initStore(legacy)
-    expect(getState().requirements.default.rules.find(r => r.id === 'ip')!.threshold).toEqual({ amber: 4, red: 3 })
+    expect(getState().requirements.default.rules).toEqual([])        // it was the built-in set until D669
   })
 
   /* [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): the reader refuses a list longer than MAX_MANNING_RULES — its
@@ -1657,24 +1641,21 @@ describe('custom manning counters', () => {
     expect(after.some(r => r.id === 'one-too-many')).toBe(false)
   })
 
-  it('deleting EVERY counter is a decision that survives a reload — the seed does not resurrect', () => {
+  it('deleting EVERY counter is a decision that survives a reload', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
+    elevenCounters()
+    expect(getState().requirements.default.rules).toHaveLength(11)   // never an empty loop below
     for (const id of getState().requirements.default.rules.map(r => r.id)) deleteManningRule(id)
     expect(getState().requirements.default.rules).toEqual([])
     initStore(backend)
     expect(getState().requirements.default.rules).toEqual([])
   })
 
-  it('reset puts the whole built-in set back, admin only', () => {
-    setRole('admin')
-    saveManningRule(nvgRule())
-    deleteManningRule('sets')
-    resetManningRules()
-    const ids = getState().requirements.default.rules.map(r => r.id)
-    expect(ids).toEqual(seedRequirements().default.rules.map(r => r.id))
-  })
+  /* ("reset puts the whole built-in set back, admin only" stood here — `resetManningRules`, "Reset counters" — until
+     D669: there is no built-in set to put back. A counter deleted by mistake comes back with Undo: undoaudit.test.ts,
+     ui/nocounters.test.tsx.) */
 
   it('the qual catalogue installs through its setter and starts on the seed three', () => {
     expect(getState().qualCatalog.map(q => q.k)).toEqual(['sxo', 'scDay', 'scNight'])
@@ -1691,12 +1672,12 @@ describe('session-only counters', () => {
     initStore(memoryBackend())
     setRole('admin')
     setCell('ramp', '2026-01-05', 'LL')
-    deleteManningRule('scn')
-    expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(false)
+    expect(saveManningRule({ id: 'mine', label: 'MINE', count: { kind: 'people', filter: {} }, threshold: { amber: 0, red: 0 } })).toBe(true)
+    expect(getState().requirements.default.rules.some(r => r.id === 'mine')).toBe(true)
     // A "reload": a brand-new backend, nothing carried across.
     initStore(memoryBackend())
     expect(getState().grid['ramp']?.['2026-01-05']).toBeUndefined()
-    expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(true)
+    expect(getState().requirements.default.rules).toEqual([])        // as every fresh store starts (D669)
   })
 })
 
@@ -2030,13 +2011,16 @@ describe('undo / redo', () => {
     expect(getState().states.ramp['2026-01-20'].state).toBe('pending')
   })
 
-  it('undoes an admin arrangement change (manning row hidden)', () => {
+  /* (it was "manning row hidden" — the eye, gone with D669; a row MOVED is the arrangement change that remains) */
+  it('undoes an admin arrangement change (a manning row moved)', () => {
     setRole('admin')
-    const id = orderedManningIds()[0]
-    toggleManningRow(id)
-    expect(getState().manningHidden).toContain(id)
+    elevenCounters()
+    const id = orderedManningIds()[0]!
+    expect(moveManningRow(id, 1)).toBe(true)
+    expect(orderedManningIds()[1]).toBe(id)
     lwUndo()
-    expect(getState().manningHidden).not.toContain(id)
+    expect(orderedManningIds()[0]).toBe(id)
+    expect(getState().requirements.default.rules).toHaveLength(11)   // the move went back, not a counter
   })
 
   it('re-baselines the stack when a different war comes on screen', () => {

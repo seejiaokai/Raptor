@@ -1,0 +1,12 @@
+import { chromium, launchOptions, world, shot, tid, cell, backToSans, setNeed, fileRun, press } from './cal-D-lib.mjs'
+const browser = await chromium.launch(launchOptions)
+const { ctx, page } = await world(browser, 'desk')
+await backToSans(page, 'desk')
+await fileRun(page, 'desk', '2026-07-29', '2026-07-29', 'vinci', { o: true, a: true })
+await press('desk', tid(page, 'sc-hl')); await press('desk', tid(page, 'sc-hl-vinci')); await page.waitForTimeout(300)
+const r = await page.evaluate(() => ['f', 'o', 'a'].map(k => { const e = document.querySelector(`[data-testid="sc-${k}-2026-07-29"]`); const all = [e, ...e.children]; return k + ': ' + all.map(x => `${x.tagName}.${x.className}[${x.innerText.trim()}] td=${getComputedStyle(x).textDecorationLine} bb=${getComputedStyle(x).borderBottomWidth}/${getComputedStyle(x).borderBottomColor} ts=${getComputedStyle(x).textDecorationColor}`).join(' ; ') }))
+console.log(r.join('\n'))
+await page.locator('[data-icday="2026-07-29"]').scrollIntoViewIfNeeded()
+const b = await page.locator('[data-icday="2026-07-29"]').boundingBox()
+await page.screenshot({ path: 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/D/p405-desk-underline-zoom.png', clip: { x: b.x, y: b.y, width: b.width, height: b.height } })
+await ctx.close(); await browser.close()

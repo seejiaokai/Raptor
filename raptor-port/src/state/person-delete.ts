@@ -63,6 +63,7 @@ import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
 import { mayDeletePerson } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
+import { stampChanged } from './inputstamp'
 import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
@@ -228,6 +229,9 @@ export function applyDelete(id: string, cutoff: string): void {
     else r.endDate = ordLabel(end, r.yr)
     r.remarks = withRemarksTail(r.remarks, ordIso(a), ordIso(end), 'till')
     r.mod = nowStamp()
+    /* who ended it, and when (D629): the admin whose delete this is — or, for a posting that runs by itself on its
+       date, the moment alone and no name (state/inputstamp.ts) */
+    stampChanged(r)
   }
   /* 3b. every saved week — NOT rewritten since phase 6 (d): each reads without him from his cutoff when its days come
      into memory (engine/overlay.ts). */

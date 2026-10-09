@@ -1,5 +1,5 @@
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, dateOrd, isSansAvail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
@@ -63,8 +63,10 @@ export function setRosDay(n:any){ ROSDAY=n }
    the calendar is a view of the same page, not a different page, so a hop to
    another page and back must land on whichever of the two the scheduler had
    open — it survives leaving/returning to Inputs within a session on purpose. */
-export let INPVIEW:'table'|'cal'|'med'='table'
+export let INPVIEW:'table'|'cal'|'med'='cal'
 export function setInpView(v:'table'|'cal'|'med'){ INPVIEW=v }
+export let INPMODE:'member'|'sans'='member'
+export function setInpMode(v:'member'|'sans'){ INPMODE=v }
 /* The Medical view's as-of date, ISO, or null for "the notional today"
    (owner, 27 Aug 26 — "it will show all from the current view date ... u can
    click on a calendar view to view the history as per that selected date").
@@ -84,6 +86,37 @@ export function setMedAsOf(v:string|null){ MEDASOF=v }
    uses — every reader here converts at its own edge. */
 export let CALMONTH:{y:number,m:number}|null=null
 export function setCalMonth(v:{y:number,m:number}|null){ CALMONTH=v }
+/* Successful Inputs saves carry their actual row across a calendar-mode remount.
+   This is transient feedback, never a stored input or a second writer. */
+/* THE SANS CALENDAR'S HIGHLIGHT (owner D619, 7 Oct 26 — "a cyan ring around the days … it shows all the days he
+   committed to"): the one SANS person picked there, or null for "No highlight". A way of LOOKING — nothing is hidden
+   and no count changes — so it is view state of this sitting, saved nowhere, and gone at a sign-in or sign-out. */
+export let SANSHL:string|null=null
+export function setSansHl(v:string|null){ SANSHL=v }
+export let INPREVEAL:{iid:string,iso:string,mode:'member'|'sans'}|null=null
+export function clearInpReveal(){ INPREVEAL=null }
+export function requestInpReveal(row:any){
+  if(!row||!row.iid)return
+  const ordinal=dateOrd(row.date,row.yr)
+  if(ordinal==null)return
+  const day=String(ordinal).padStart(8,'0')
+  const iso=`${day.slice(0,4)}-${day.slice(4,6)}-${day.slice(6,8)}`
+  const mode=isSansAvail(row.type)?'sans':'member'
+  /* THE MONTH TURNS ONLY WHEN NONE OF THE INPUT IS ON THE MONTH SHOWN (owner D672 — "if it's already in view, undo/redo
+     don't need to snap to view"). It used to turn to the month the input STARTS in, always: an input running 29 Jul to
+     3 Aug, looked at in August, was thrown back to July by an Undo of its move (the calendar job's bug check,
+     8 Oct 26). An end written before its start is the next year's (a run over New Year). */
+  let end=row.endDate?dateOrd(row.endDate,row.yr):null
+  if(end!=null&&end<ordinal)end=dateOrd(row.endDate,(+row.yr||+day.slice(0,4))+1)
+  const at=CALMONTH,lo=at?at.y*10000+at.m*100+1:0,hi=at?at.y*10000+at.m*100+31:0
+  const inView=!!at&&INPMODE===mode&&ordinal<=hi&&(end??ordinal)>=lo
+  setInpMode(mode);if(!inView)setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})
+  INPREVEAL={iid:row.iid,iso,mode}
+}
+export function revealInput(row:any){
+  if(!row||!INPUTS.includes(row))return
+  requestInpReveal({...row,iid:inpId(row)})
+}
 
 /* ---- HISTORY MODE (owner, 11 Aug 26) --------------------------------------
    The board's History toggle. A VIEW mode, not an edit mode: it changes what
@@ -875,7 +908,10 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      refold the strip mid-gesture), and only reset when the user changes */
   { name:'HLOPEN',  scopes:['session'], reset:()=>setHlOpen(false) },
   { name:'HLGROUP', scopes:['session'], reset:()=>setHlGroup('') },
-  { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('table') },
+  { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('cal') },
+  { name:'INPMODE', scopes:['session'], reset:()=>setInpMode('member') },
+  { name:'INPREVEAL', scopes:['session'], reset:clearInpReveal },
+  { name:'SANSHL', scopes:['session'], reset:()=>setSansHl(null) },
   { name:'CALMONTH',scopes:['session'], reset:()=>setCalMonth(null) },
   { name:'MEDASOF', scopes:['session'], reset:()=>setMedAsOf(null) },
   /* the two-tap "Load onto working copy" confirm. Its own doctrine is "any

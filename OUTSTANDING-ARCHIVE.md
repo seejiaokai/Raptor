@@ -3813,3 +3813,158 @@ agent's line):** ask him with the start-of-chat options. **7 Oct 26: he said "De
 "So don't delete*" — a correction of his sentence about the SANS calendar work (D610), most likely not of this. The
 deletion is HELD until he says which; the branch is untouched.**
 
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]). Forward facts: `raptor-port/docs/feature-impact.md`, `raptor-port/docs/file-map.md`.*
+
+### [INPUT-SAVE-SAYS-OK-WHEN-REFUSED] An input's Save says "added" / "updated" although the save was refused (found 7 Oct 26, not fixed)
+**What it is.** Several of the input doors wrap one or more per-record saves in ONE outer save (so the whole is one
+Undo step) and then report success from the INNER save's answer alone, never the outer one's. The inner save answers
+"yes" before the outer command has been checked (the check on what a member's command really changed, the locked-week
+backstop). If the outer command is then refused, everything is rolled back — and the screen still says "Input added" /
+"Input updated" / "OIL decision updated" / "Input deleted", and the editor's window closes. Nothing is kept; nothing
+says so.
+**Where:** `raptor-port/src/ui/inputedit.tsx` — the editor's `doSave` (new and change) and `doMedSave`,
+`commitEditMedChoices`, `commitEditUpchit`, `removeInput`; `raptor-port/src/ui/InputsPage.tsx` — the List's edit with
+an OIL answer (`saveEdit`'s sheet) and `reviseOil`. Each calls `writeInputsBatch(…)` and drops what it returns.
+**How it was seen.** A test of a member's save whose command the ownership check refused (the test's own fault — see
+the trap in `HANDOFF.md`): the toast read "Input added", the list held nothing new.
+**Why it is filed and not fixed now.** No real gesture reaches it today: every refusal the outer command can make is
+also asked for at the door before the save. The group input (the plan
+`raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) adds refusals that ARE reachable
+— a forged filer, the members' switch turned off under an open window, the one-man-once check — and its own rule is
+"his Save is refused with the sentence, the window stays". So it is fixed with that writer, piece (f): each door keeps
+the outer save's answer (`ok && done`), says the refusal in a sentence, keeps its window open; a test that fails first
+drives a refused save through each door.
+
+
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([LW-DEMO-COUNTERS-TRIM]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-DEMO-COUNTERS-TRIM] The Leave War's Manning block comes with no count rows of its own, and a row's eye becomes a delete cross (D669 — 8 Oct 26)
+
+**Ruled, not built.** Owner, 8 Oct 26: first *"In the demo data remove crew sets, IP+IWSO, OPSP, OPSW, FL P, WM P"* (D666, five rows to start — REPLACED the same
+evening), then, asked what "the demo data" meant: *"should there be a default counter? I think there shouldn't be and the user can create what they want.
+Instead of hide (eye) we should replace it with a delete cross."* (D669). **So:** the starting set of count rows is EMPTY (`raptor-port/src/leavewar/engine/seed.ts`,
+the list `seedRequirements` builds — all eleven go: `sets`, `ip`, `iwso`, `instr`, `opsp`, `opsw`, `flp`, `wmp`, `sxo`, `scd`, `scn`), and in Rearrange a count
+row's eye is replaced by a cross that deletes it (`ui/CountRows.tsx`; `state/store.ts deleteManningRule`). **D669's seven readings are in its full row and are
+told to him — build to them, and where one proves wrong in the code, say so in the closing report rather than quietly choosing another:** no default for the
+demo squadron either; the Archive bar and "bring back" go with the eye; the cross asks nothing if Undo brings the counter back (CHECK that it does); "Reset
+counters" leaves ⚙ Settings; "under-manned" judges only counters that exist; the two Available rows carry no cross and no grip; nothing stored is converted (D56).
+**Weigh before building — this is wider than it looks:** the eleven seeded rows are what MANY tests stand on (every count-row, verdict and "under-manned" test,
+the Manning sheet and counter-form tests, `e2e/leavewar.spec.ts` — `grep -rlE "count-(sets|ip|iwso|instr|opsp|opsw|flp|wmp|sxo|scd|scn)\b" raptor-port/src raptor-port/e2e`).
+The clean way is the one the app's own rule implies: the APP starts empty, and a test that needs counters MAKES them (one shared test helper that builds the old
+eleven through the real "+ Counter" writer) — never a hidden default kept alive for the tests. SC D / SC N lean on the SC slots (`SC_SLOTS`, `SC_TEAM` in the
+seed): they become counters a squadron can make like any other, so check the counter form can express them, and if it cannot, PARK that for him rather than
+dropping the ability. Stale after the build and corrected in the same change (D201): the Manning sections of `docs/ui-contracts.md`, `docs/data-schema.md`
+(the seeded `manningdefs`, `manninghidden`), the Leave War's "Settled before this list" lines on the Archive and "Reset counters"
+(`.claude/rules/decisions/leave-war.md` — amended in brackets, never reworded), `docs/leavewar/known-gaps.md`. **Place:** in the overnight run of 8 Oct 26, AFTER
+the typing and the picking of step 2 (those are drawn and approved; this has readings he has not yet seen) and before the counter form's mode for the Available
+rows, which touches the same form. Tier: FULL in the job's one check (it changes what judges a day).
+
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([LW-COUNTERS-AMONG-FIXED]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/data-schema.md`, `raptor-port/docs/file-map.md`, `.claude/decisions-full/leave-war.md`.*
+
+### [LW-COUNTERS-AMONG-FIXED] Rearrange: a counter row can go between, and below, the four fixed rows (D674 — 8 Oct 26) — OPEN, not started
+
+**His words, with a phone picture of Rearrange (one counter, SC D, above the four blue-dot rows):** *"Can rearrange allow
+newly created counter rows be allowed to moved to anywhere in between the fixed blue dot rows? Even to below the 4 as
+well. When I try to drag and drop them"* — the ruling is D674 (`.claude/rules/decisions/leave-war.md`; its four readings
+are in its full row). It narrows D665 (the four rows "at the foot of the Manning block").
+
+**Where it stands:** NOT BUILT. Today the Manning block draws the squadron's counters (in their saved order,
+`manningRowIds`) and THEN the four rows (`leavewar/ui/CountRows.tsx` with `FlyRows` as its children); the drag machine
+accepts a drop only among the counters. **What the build has to settle (the builder's, to explain — none is his):** how
+the four rows' places are saved within the one order (four fixed ids in the same list is the obvious shape — a list a
+store written before it has without them must still read as "counters, then the four"); the drop lines between two fixed
+rows and under the last; that the four keep their own order, carry no grip and no cross (D640, D669 reading 6), and are
+still never hidden or judged; that the SANS calendar and Days read the four by id, wherever they sit; that the frozen
+header mirror, the figures drawer's rows and the open-bidding outline stay in step when a counter sits among or under
+them (the two faults he circled on 8 Oct were exactly this kind). It changes what is SAVED (the rows' order), so its tier
+is FULL by the checking order's question 3 — it rides the calendar job's one full check (D485). Tests first; a browser
+test at phone and desktop size that DRAGS a counter between two fixed rows and below the fourth.
+
+**Read first:** `raptor-port/docs/ui-contracts.md` "The four rows at the foot of the Manning block" and "Leave War
+Rearrange + the counter picker"; D640, D665, D669 in full.
+
+**DONE — BUILT 8 Oct 26, tests first (the chat after the one that filed it; the heading above is as it was filed).** How each thing above was settled: the four
+rows' places are four TOKENS in the same saved list (`@req-p`, `@req-w`, `@avail-p`, `@avail-w` — a letter no counter's
+id can hold), read by ONE pure rule, `raptor-port/src/leavewar/engine/fixedrows.ts blockOrder`; a list without them
+reads "its counters, then the four", and that is also what is still SAVED while no counter stands among or below them
+(`orderToSave`); a counter made since appears just above Required P. The drag is the one row drag: in Rearrange each of
+the four carries the same hit-test attribute a counter does, so it is a place to drop and shows the landing bar; none
+has a grip, and the store refuses to move one. `CountRows` hands its rows to `FlyRows` in five runs. Found by the
+browser test and fixed: the desktop typing strip for a Required figure lay over a counter placed under the four — it
+sits under the whole block now. The contract: `raptor-port/docs/ui-contracts.md` "A counter may stand among the four";
+what is stored: `raptor-port/docs/data-schema.md` (`manningorder`); the files: `raptor-port/docs/file-map.md`; what the
+build added, to tell him: D674's full row. **Checked:** its own tests red first (16 + 22 + 16, and one more in
+`ui/counts.test.tsx`); 25 rules broken one at a time; the browser test at phone and desktop size (a mouse; a real
+finger); looked at in the running build (`raptor-port/scripts/handpass/lw-counters-among-look.mjs`); the whole gate
+set. **OWED, with the calendar job's ONE full check (D485):** the roll-call row for the Manning block, the walk, and
+Astra's and Sol 6.1's reads — it changed what is saved (the checking order's question 3).
+
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([LW-PHONE-HEADER-SPACE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-08-lw-phone-header.md`.*
+
+### [LW-PHONE-HEADER-SPACE] The top of the Leave War on a phone uses too much height — three ideas drawn, his pick awaited (asked 8 Oct 26)
+
+**His words, with a phone picture of the page, everything above the grid circled:** *"how can we optimise the space such
+that we don't use so much vertical space? Give me mock ups for ideas to rearrange or minimise"*. Measured in the running
+build at phone size: 230px from the app's bar to the grid's first row — the Period line, the "Viewing as" line, the Stage
+line, the "Bidding on" / "Under-manned" line, the Legend line, then the grid's own buttons — leaving six names on screen.
+
+**Where it stands:** NOTHING BUILT. Three ideas, each drawn into the running build by
+`raptor-port/scripts/handpass/lw-phone-head-mock.mjs` (D634), are on a private page for him —
+https://claude.ai/artifact/Q3RwbqjSpEgzt32V2v1VCw (its source and pictures: `C:/Users/User/.raptor-private/lw-phone-header-mock/`;
+republish to the same address): **A** two lines — the period, "+", "Viewing as" / the stage (its two moves behind the stage
+chip), the bidding dates, under-manned, Legend (95px saved, ten names; the agent's pick); **B** one line that opens
+(121px saved, twelve names; Legend, under-manned and "Viewing as" out of sight until it is opened); **C** two lines, the
+second one swiped sideways (95px saved, nothing renamed, the bidding dates and under-manned a swipe away).
+**A ruling it touches, told to him on the page:** D365 (29 Sep 26 — on a phone the "Viewing as" chip takes a line of its
+own, words kept); A and C keep the words and put the chip back on the Period line, which fits once the word "Period" goes.
+**Not drawn:** a member's view (no "+ New", no stage moves — only shorter). **When he picks:** record the ruling first
+(and D365's mark if the chip moves), then build it tests-first with a browser test at phone size that nothing overlaps
+or leaves the screen at 390px and at 360px; a stage move behind a chip is a new control, so its tier is WALK.
+**Place:** his to set — a small job of its own on the Leave War; it does not wait for the calendar job.
+
+**HIS PICK, the same afternoon — D678: "A looks good, with this is there anything the desktop can follow too?"** A is
+the design for the phone (the ruling's readings are in its full row; D365 is marked). His question on the desktop was
+answered in that chat — the two lines can become ONE there, every word and button kept, about 50px saved — and a
+picture of it was added to the same page; **HIS WORD, the same afternoon — D679: "keep the same for desktop" (asked
+which he meant: "Leave desktop as today") — THE DESKTOP AND THE TABLET ARE NOT TOUCHED; the build is the phone only, and
+its browser test also holds the desktop's two lines as they are.** The build is not started: tests
+first, a browser test at 390px and 360px (nothing overlapping, nothing off the screen, the stage menu opening inside
+the screen and closing on a press outside — the 4 Sep 26 rule), a member's view with no "+" and a stage button that
+opens nothing, and a long callsign in "Viewing as" still ending in "…".
+
+**BUILT, 8 Oct 26 (the evening), on `claude/inputs-sans-calendar` — not merged.** On a phone (430px and under) the top
+is two lines; a desktop and a tablet measure byte for byte as before (D679). Tests first (`leavewar/ui/phonehead.test.tsx`,
+`leavewar/ui/dates.test.ts`, five tests of `e2e/leavewar.spec.ts`); 31 + 12 rules broken one at a time, all caught; its
+bug check, tier WALK, with the walk and its pictures: `raptor-port/docs/handpass/2026-10-08-lw-phone-header.md`. The
+contract: `raptor-port/docs/ui-contracts.md` ("ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES — D678"). The readings
+the build added are in D678's full row (7 to 13). Measured: the grid starts 182px down (279 before at 390 wide) — eleven names on screen where six fitted, counted as
+the drawing counted them. **Owed:
+his look on his own iPhone** — whether "Legend" holds the second line in Apple's font cannot be measured on this PC —
+and the branch's one FULL check (D485) reads this code with the rest. Found on the way and filed: `[LW-HEAD-BIG-PHONE]`.
+
+
+*Moved here 2026-10-09 by backlog-archive.mjs ([CAL-SHARED-DATES]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md`.*
+
+### [CAL-SHARED-DATES] No door changes the dates of a shared input once it is saved (Astra's read, R3 — 8 Oct 26)
+**Found, not built — a missing door, not a wrong line.** One input filed for several people, saved for 12–14 Oct, cannot be made 12–15 Oct: the List's row opens the window (never the row's edit in place — by design, `docs/ui-contracts.md` "One input filed for several people"); the window draws its date picker only for a NEW input (`ui/inputedit.tsx` — the picker is shown for `r._calendar` and the Unavailable add); a bar's drag moves the whole span and keeps its length. Today's ways round: drag it, or delete it and file it again. D655 has a shared input "shown and edited as one thing" — its dates are part of it. **To build:** show the range picker in the window for a saved shared entry its reader may change; save through `commitGroup` (one command, the OIL question asked of every man kept — `35b819e0` — and no medical kind); correct the hint that sends him "to the Inputs page" for the dates, where he already is. **RULED 9 Oct 26 — "2 agree" (D681): built before the calendar job's "merge live", in the input's own window, by whoever may change the input, for everyone in it at once.** As filed: medium. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §10 (R3).
+
+**BUILT 9 Oct 26** (`cfcd40b7`, and the fixes after the two reads): the two-tap calendar in the window of a saved shared input, for its filer or an admin; walked 19 of 19, read by Astra and Sol 6.1, six findings fixed. What it does: `raptor-port/docs/ui-contracts.md` "One input filed for several people" (Its DATES are changed in its window); the evidence: the sheet's §12.
+
+
+*Moved here 2026-10-09 by backlog-archive.mjs ([CAL-SANS-KEY-ONE-LINE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [CAL-SANS-KEY-ONE-LINE] On a phone the SANS calendar’s "How this works" and its colour key share one line, as the Inputs calendar’s do (D697 — 9 Oct 26)
+**Ruled, NOT BUILT — small, and wanted before the calendar job’s "merge live" (it is his look at that job).** His words: "Can u match the left sans calander tot he inputs calendar which uses the same amount of vertical space and similar vertical alignment. Compact words if need be". **Today** on a phone the SANS tab draws "How this works" on one line and the key ("Pilots · WSOs still needed: 1–2 3–4 5+", `sc-legend` in `raptor-port/src/ui/SansCal.tsx`, styles `raptor-port/src/ui/scheduler/24-sans-calendar.css`) on the next; the Inputs tab has both on one (`ib` fold line, `25-inputs-calendar.css`). **Build:** shorten the key’s visible words at phone width (keep the full sentence as its `aria-label` / `title`), put it on the fold’s line right-aligned exactly as the Inputs key is, and pin with a real-browser test that the fold line’s top and height, and the month’s top, are the same on the two tabs at 390 wide (and nothing runs off sideways at 360). Tier LOOK/WALK; then the full gate set.
+**BUILT 9 Oct 26 (D697):** the SANS line is the Inputs line on a phone — 28 tall, the key at its right end reading "Still needed:"; pinned at 390, 360 and 320 wide. Its contract: `raptor-port/docs/ui-contracts.md` (the D697 bullet); the check: the sheet `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §21.
+
+
+*Moved here 2026-10-09 by backlog-archive.mjs ([CAL-WINDOWS-PHONE-HEIGHT]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [CAL-WINDOWS-PHONE-HEIGHT] On a phone three of the calendar job’s windows stop at about three-quarters of the screen and scroll inside (found 9 Oct 26 — his question)
+**Found, measured, NOT FIXED — put to him.** His words, with his iPhone’s picture of the SANS calendar settings window: "Why is this not full screen height" and "Can u check what else that opens a window that is not full screen on a phone". **Why:** every floating window is capped on a phone at 72% of the screen (`raptor-port/src/ui/scheduler/22-float-windows.css`, the phone rule on `.floatwin`) so the page behind stays in view and usable (D641) — the builder’s default, not a ruling of his. **Measured** (`raptor-port/scripts/handpass/cal-windows-phone.mjs`, 390 wide, 844 and 660 tall): CAPPED WITH MORE TO SHOW — SANS calendar settings (72%; at 660 its content is 146 taller than the window), Inputs calendar settings (72%; 112 taller), Add / Change a holiday (the same cap; 583 of content). ALREADY TALL — a day opened on the Inputs calendar (D683), New input / New commitment (to the top), the Calendar window (to under the top bar). SHORT BECAUSE ITS CONTENT IS — Every <weekday>. TWO-THIRDS BY HIS RULING — a day opened on the SANS calendar (D648: pulled up by its bar); whether it should open tall as the Inputs day does is still his to say. **Recommended to him:** D537’s rule for these windows too — a window is as tall as what is in it, up to nearly the whole screen; a short one stays short. One line of the stylesheet and its tests; LOOK tier; then the gate set. **Not measured here** (other areas, each ruled): the ALL AVAIL window (62%, D77), the changes window (a bottom panel that folds to a bar, D167, D339), the ordinary pop-up sheets (D537).
+**BUILT 9 Oct 26 on his "Yes" (D706, and D707 for the SANS day):** a floating window is as tall as what is in it, up to the screen less 12 above and below; the SANS day opens tall. Contract: `raptor-port/docs/ui-contracts.md` (the D706 / D707 bullet); the check: the sheet `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §23.
+

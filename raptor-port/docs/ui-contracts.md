@@ -368,7 +368,11 @@ All three type dropdowns (add form, filter, row editor) carry the same three
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
 list anyone can pick from.
 
-- **A member's Person is a value, not a choice (owner, 22 Aug 26).** The
+- **A member's Person is a value, not a choice (owner, 22 Aug 26).** *(AMENDED 8 Oct 26 — D654, D655: while the
+  members' switch is on, a member filing a duty or a commitment gets the person picker — one person from the list, or
+  "Several people" (`ui/PeoplePick.tsx`, "One input filed for several people"); for leave, medical and everything
+  else it is still his own name, printed. And this form no longer offers SANS availability — D620, "The Inputs
+  calendar".)* The
   full-roster `#inPerson` select renders for a scheduler only; a member sees
   the view-as callsign printed plainly (`#inPersonFixed`, `.inper-fixed` —
   on the same 36px control line, deliberately not boxed, so it cannot read
@@ -1904,6 +1908,10 @@ Where `lateTag()` is emitted:
   (`ui/board-html.ts`; the read-only "Inputs · <day>" summary band that also
   carried it was removed 22 Aug 26 — the live panels are the one surface);
 - the **Inputs page** table, in the Remarks column (`ui/InputsPage.tsx`).
+- *(since 8 Oct 26)* the two calendars' opened days — not `lateTag()`'s chip but a LATE button that opens the
+  reason (`sd-late` in `ui/SansDay.tsx`, `idy-late` in `ui/InputsCal.tsx`; once for a shared input where everyone
+  in it is late), each judged by its own cut-off ("The SANS calendar", "The Inputs calendar";
+  `engine-rules.md` "The cut-off has two shapes").
 
 Three things fall out of that cell rather than the badge, and each is pinned
 by `ui/lateinput-ui.test.ts`:
@@ -2569,7 +2577,9 @@ beside every badge.
   This IS the phone-bug fix: clearing a timing is one tap on All day, not a
   fight with a native time input's segments. All three editors (add form,
   in-table row, dialog) keep the shared shape; `sansFlags` normalises the
-  payload so none of them can write the old per-event `{s,e}` values.
+  payload so none of them can write the old per-event `{s,e}` values. *(Since 8 Oct 26 SANS
+  availability is filed from the SANS calendar's "+ Commitment" and the board's + Add; the Inputs tab's add form and
+  row editor no longer offer it — D620, "The SANS calendar".)*
 - **The palette section — `.rall.rsans` (`palette-html.ts`, `sansAvailHTML`).**
   One full-width band below the three seat columns, callsign-sorted, every
   SANS member pilot or WSO. Row = puck + badge + remarks:
@@ -5104,6 +5114,15 @@ nothing and is there all day).
 
 ## The Inputs month calendar (owner, 22 Aug 26)
 
+
+**SUPERSEDED IN PART, 8 Oct 26 (step 5 of the Inputs / SANS job) — read "The Inputs calendar — its tabs, its month of
+bars, its day, its gear, the editor as a window" first.** What this section says of the PLANNING LAYER still stands:
+the day's title, the notes and pucks rows, their drags, the puck picker. What no longer holds: it is not a full-screen
+view toggled from the filter bar (it is the Inputs tab's own screen; `#icClose` is gone); an input is a BAR across its
+days, not a chip in a cell (no `MAX_CHIPS`); a held press and "Select dates" gave way to the SANS month's pointer
+machine (`calpick.ts`); the day is a WINDOW (`win-inputsday`), not a sheet a press outside closes; Escape never leaves
+the calendar.
+
 A full-screen, Google-Calendar-style view of the personal inputs, toggled
 from the Inputs page's filter bar (`#inCalBtn` ↔ `#icClose`, view state
 `INPVIEW` in `state/view.ts` — a view of the SAME page, not a page, so it
@@ -5883,6 +5902,11 @@ Press-and-drag across day-cells to select a rectangle — one row or many
 people's rows — then act on the whole block at once. It is built AROUND the
 BidPicker's look and vocabulary, not instead of it.
 
+*(8 Oct 26: the same gesture has a THIRD kind — a drag that starts on a Required cell picks the two Required rows ×
+days and opens the Required panel: §The four rows at the foot of the Manning block, "Picking several". And the sheet
+this section's drag opens no longer blocks the grid — D642: §The page stays fully usable behind an open sheet, its
+first bullet.)*
+
 - **A member's reach is their OWN row; an admin's is every row** (owner,
   27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
   war, I shouldn't be able to input on other people's row except mine"). The
@@ -6154,6 +6178,20 @@ Every Leave War decision opens in a `Sheet` over a full-page `.sheetscrim`
 (`ui/Sheet.tsx`). Over two owner asks (28 Aug 26) the sheet went from a modal
 that froze everything behind it to a panel you can read the grid around:
 
+- **TWO WINDOWS DO NOT BLOCK THE GRID AT ALL (owner, D641, D642 — 7 Oct 26; built 8 Oct 26).** `Sheet` has a
+  `modal={false}` form: NO scrim is mounted (so neither the mouse's interceptor nor the touch screen's tap shield
+  below is armed — both hang off the scrim's own node), a press outside does not close it, and Tab is not held in it;
+  Escape, its ✕ and its finishing button close it, and its title strip still drags it. It is used by the Required
+  panel (`ReqPanel.tsx`) and by the panel for a picked block of people's days (`SelectSheet.tsx` — D642). For both, a
+  plain click on a CELL of the grid behind (`cell-`, `event-`, `req-`, `avail-`) opens that cell's own thing and
+  closes the panel — one hook, `ui/gridclick.ts`, on the document's BUBBLE phase, so the click a finished drag leaves
+  behind (swallowed at capture by `select.ts`) never closes the panel that drag just opened or re-aimed. A press on
+  the month buttons, a heading or the toolbar leaves it up. A NEW drag while the people's-days panel is up replaces
+  what it acts on, and `Matrix` keys the sheet by its selection so it starts afresh (an armed Delete, a below-zero
+  ask, never carry over to another block). Move is unchanged — it closes the sheet and hands the block to the grid's
+  move mode, where an empty tap outside still cancels the MOVE (D262). **Every OTHER Leave War window keeps the
+  blocking form described below** (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`); `ui/nonmodal.test.tsx` pins both
+  forms, and `e2e/leavewar.spec.ts` "the people's-days panel stays up with no veil…" the real drag behind an open panel.
 - **ESCAPE CLOSES IT** (bug sweep, 28 Aug 26). Not one Leave War sheet answered
   Escape — its ✕ and a scrim tap were the only ways out — while the input editor
   peels its layers on Escape and the Medical as-of picker closes on it, so the
@@ -6276,6 +6314,382 @@ because headless Chromium flings nothing from synthetic touches; "the scrim
 follows a scroll the grid makes on its own, and shares its range" on both
 widths).
 
+## The Event rows print a short form; the Event sheet is Presets, Name, On grid (owner, D643–D645, 8 Oct 26)
+
+The Inputs / SANS redesign, plan §3.12 (`docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md`). It REPLACES the
+10 Aug 26 rule for the Event rows ("the day widens to fit the text, then wraps"): measured on a phone, "No Leave" took
+its day from about 20 px to 33 px and made the Event row two lines tall.
+
+- **An event is three things:** its full name (`events[line]` / a band's `text`), its kind (its own tag, else its word's
+  preset — "no tag" is NOT "no kind": an untagged "PH" is a public holiday by its name), and a SHORT FORM of one to three
+  letters or digits. ONE rule for a short form, `engine/eventshort.ts normShort` (capitals first, then the count); ONE
+  answer to "what does the grid print", `engine/eventdefs.ts shortOf` — the event's own, else its preset's, else one
+  derived from its name (initials of the words, else the first three), else a dot. An event saved before this prints
+  short at once; nothing stored is converted.
+- **A day cell prints the short form** and takes its `min-width` from it — never more than three characters, so no event
+  widens its day and the Event row stays one line tall. **A merged band** prints its full text where the bar is wide
+  enough (about three characters a day spanned), else its short form. The full name is the cell's `title` and
+  `aria-label`. Gate: `e2e/leavewar.spec.ts` "no event widens its day…", phone and desktop.
+- **A tap on a FILLED cell opens a small box** (`Matrix.tsx evPeek`, `.evpeek`) — the name, a square of the kind's
+  colour with the kind and the date (a band: its dates) — for EVERYONE; an admin's carries **Edit**, which opens the
+  sheet. An EMPTY cell opens the sheet at once for an admin; a drag along the line still opens it for the span. The box
+  is a small menu, not a window: a press outside, Escape, a scroll, a resize or a second tap on its cell closes it; it
+  goes with its event, when a sheet opens, and when either move mode starts.
+- **The sheet's first view:** a **Presets** row (the squadron's ready-made events in their colours, the picked one LIT)
+  ending in **Other…**; under it a read-out of a few words ("Public holiday · work on it earns OIL"); **Name**, optional
+  under a preset, beside **On grid** — the short form, suggested from the preset or the name and his to type over (once
+  typed it is no longer re-suggested); a **Kind** row — Public holiday, Off day, No leave, Work, Note — only under
+  "Other…". This day / A range, the merge choice, the calendar, Save, Move and Delete are as they were. The header's
+  button reads **Edit presets**; its view gives each preset a short-form box.
+- **Opening an event never changes it.** A preset is lit only when its NAME matches the text AND its kind is the event's
+  real kind; anything else — a name of its own, a "PH" someone tagged Off day, an event whose preset was since renamed,
+  re-kinded or deleted — opens on "Other…" with its real kind lit. A Save with nothing changed writes the same text, tag
+  and short form back. A name that matches a preset IS that preset: as it is typed the sheet lights it and leaves
+  "Other…", and "Note" is never paired with a preset's name.
+- **What a save stores:** under a preset with no name of its own — the preset's name, no tag and no short form, so the
+  event follows its preset (as a typed "PH" always did); with a name of its own — the preset's kind as the event's own
+  tag; a short form only where he typed one. **Save and Delete are each ONE command** (`state/store.ts saveEvent` /
+  `deleteEvent`): checked whole before the band it replaces is taken away, one Undo step, words that say what was saved.
+- Pins: `engine/eventshort.test.ts`, `eventshort-store.test.ts`, `ui/eventshort.test.tsx`,
+  `ui/eventsheet-presets.test.tsx`.
+
+## The four rows at the foot of the Manning block — Required P / W, Available P / W (owner, D617, D637, D640, D665; built 8 Oct 26)
+
+**A COUNTER MAY STAND AMONG THE FOUR — D674 (8 Oct 26: "Can rearrange allow newly created counter rows be allowed to
+moved to anywhere in between the fixed blue dot rows? Even to below the 4 as well."), BUILT the same day
+(`[LW-COUNTERS-AMONG-FIXED]`, archived).** It narrows D665's "the LAST rows of the Manning block" below: in Rearrange a
+counter row is dropped above the four, between any two of them, or below all four.
+- **One order for the whole block** — `state/store.ts manningBlockOrder()`: the squadron's counters and the four fixed
+  rows, each fixed row as a TOKEN (`engine/fixedrows.ts FIXED_ROWS`: `@req-p`, `@req-w`, `@avail-p`, `@avail-w` — "@"
+  is a letter no counter's id can hold, and a token is NOT the Available rows' rule id, which the calendars keep
+  finding them by). What a saved list means is ONE pure rule, `blockOrder`: the four keep THEIR OWN order whatever the
+  list says (only counters move — reading 1); a list that names none of them — every order saved before D674 — reads
+  as "its counters, then the four" (reading 4; nothing stored is converted, D56); a counter made since the order was
+  saved appears just above Required P, where a new counter has always appeared; an id that is no counter any more is
+  dropped. `orderedManningIds()` is that order with the four left out.
+- **What is saved** (`manningorder`, the list a counter's place was always kept in): the order WITHOUT the four while
+  they stand at the foot (`orderToSave`) — so a squadron that never puts a counter among them saves exactly what it
+  always saved — and the whole order, tokens and all, once a counter sits among or below them. Undo takes a move back
+  and a reload keeps it, as a counter's place always did (reading 3).
+- **The drag is the one row drag** (`Matrix.tsx startRowDrag`, `MANNING_DRAG`): while an admin rearranges, each of the
+  four carries `data-mrow` = its token, so it is hit-tested as a place to DROP — its upper half "before it", its lower
+  half "before the row that follows", the lower half of the block's last row "the end" — and wears the same landing
+  bar (`tr.dragover` / `.after`) from the drag state Matrix hands `FlyRows`. The four carry no grip and no cross, so
+  none can be picked up; the store refuses to move one besides (`moveManningRowTo`).
+- **Who draws what:** `CountRows` cuts the counters into five RUNS where the tokens stand (above Required P; under each
+  of the four) and hands them to its `fixed` render prop; `FlyRows` draws each run in its place between its own four
+  rows. A row the order does not name (a per-day override's) goes in the first run. `FlyRows` therefore re-renders
+  with the grid, and its cells' model is memoised on what they can show (`months`, `admin`, the pick).
+- **Nothing that READS the four cares where they sit:** the SANS calendar, the Calendar window and the working box
+  find the Available rows by rule id and the Required figures by date; no day is judged by a fixed row; the Required
+  pick's drag keeps the row it was last over when it crosses a counter between the two Required rows.
+- **The typing strip sits under the BLOCK** (`FlyEdit.tsx footOfBlock`), not under Available W: with a counter below
+  the four it lay over that counter's figures (found by the browser gate). On a phone the pad still brings the FOUR
+  rows above itself (`footOfRows`).
+- Gate: `e2e/leavewar.spec.ts` "a counter row is dragged between the fixed rows and below all four, and the grid stays
+  whole" — a mouse on a desktop, a real finger through CDP on a phone; the landing bar read as PAINTED; every row
+  under the one before it with its 6 Jan cell in the 6 Jan column; no month button covered; the open-bidding outline
+  at the dates; Undo / Redo; a reload as a member. Pins: `engine/fixedrows.test.ts`, `countersamong.test.ts`,
+  `ui/countersamong.test.tsx`, `ui/counts.test.tsx`. A look: `scripts/handpass/lw-counters-among-look.mjs`.
+
+The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
+
+- **Where they sit — D665 (8 Oct 26: "I'm going with B").** The LAST rows of the Manning block (`tbody.counts`), under
+  the squadron's own counts *(and, until the Archive went with D669, above its bar)* — through a `children` slot of `CountRows`. His first answer was
+  "Under the event rows" (D637) and they were built there for a few hours; shown both placements on the running build
+  he chose this one. So: they fold away with the Manning button; in Rearrange they carry no grip and no eye (the SANS
+  calendar reads them — never dragged elsewhere, never hidden); no day is judged by them. **The two faults he circled on
+  the hand-drawn picture are gated** — nothing lies over a month button (Figures panel open or shut), and the green
+  open-bidding outline starts at the dates, under the month buttons, crossing none of the four rows:
+  `e2e/leavewar.spec.ts` "in the Manning block the four rows cover no month button…", phone and desktop.
+- **The block's own rows — D669 (8 Oct 26: "should there be a default counter? I think there shouldn't be and the user
+  can create what they want. Instead of hide (eye) we should replace it with a delete cross"), BUILT the same night.**
+  The Manning block comes with NO count rows of its own (`engine/seed.ts seedRequirements` is empty, for the demo
+  squadron too) — a squadron makes the ones it wants with ⚙ → "+ Counter" — so these four are ALL it shows until a
+  counter is made, and `CountRows` draws its `tbody` for them even with no count row. It replaced the same evening's
+  first answer, D666 (five rows to start). What follows from it, each told to him:
+  - **In Rearrange a count row's eye is a DELETE CROSS** (`manning-delete-<id>`, in the balance box where the eye
+    sat; 26×16px). **IT IS RED — D676 (8 Oct 26: "Yeah cross should be red")**: the counter window's own red (D673) — a
+    red outline and a pale red cross, brighter under a mouse, never a solid red block; until that afternoon it wore
+    the dashed grey edge every Leave War "Delete" wears (D332, which stands on the bid sheets). It deletes the counter
+    outright and ASKS NOTHING — **left so on his word, D677 ("Yeah leave them"): the cross asks nothing, and "Delete
+    counter" in the counter's own window still asks "Really delete?"; do not make the two alike** — because the app's
+    Undo brings it back whole — what it counts, its amber and red, its place (the
+    war's command stream carries the counters; `ui/nocounters.test.tsx`, and in a real browser `e2e/leavewar.spec.ts`
+    "the open-bidding outline moves with the rows when a counter is deleted in Rearrange"). A member, and an admin
+    outside Rearrange, see no cross. The four rows carry no cross and no grip.
+  - **Nothing can be hidden, so the ARCHIVE bar and "bring back" are gone**, with the eye's writer
+    (`toggleManningRow`). `manninghidden` is still read and saved, so a store written before loads as it was, but no
+    screen consults it: a row an older store had hidden is simply drawn (nothing stored is converted — D56).
+  - **"↺ Reset counters" left ⚙ Settings** (`resetManningRules`): there is no built-in set to put back. So did a
+    counter's own "Default: amber … · red …" note and "Reset to default" on its sheet (`resetManningThreshold`) —
+    every counter is the squadron's own, and its own numbers are its default. And the pre-definitions amber / red
+    overlay (`manningthresh`) is no longer read at boot: it lay over built-in rows.
+  - **A day is "under-manned" only by a counter that exists.** With none, no day is, and the tally reads "0 days".
+  - **A count row going in or out re-measures the grid** (`CountRows` `onRowsChange` → Matrix's `onArchiveChange`,
+    the Archive's old signal): the rows stand above the dates, and the outline, the Figures drawer and the frozen
+    header are placed off rows below them.
+  - **The eleven the app used to start with** — Crew sets, IP, IWSO, IP + IWSO, OPSP, OPSW, FL P, WM P, SXO, SC D,
+    SC N — are kept word for word in `src/leavewar/testing/eleven.ts`, for the TESTS only: a test that is about
+    counters makes them through the real "+ Counter" writer (`testkit.ts elevenCounters()`; `e2e/app.ts
+    elevenCounters()`), never a hidden default. The counter form can express every one of them, the SC team rows
+    included (a team of slots, each a seat and a qualification) — pinned in `ui/nocounters.test.tsx`.
+  - Gate: `e2e/leavewar.spec.ts` "with no counters the Manning block is the four rows alone, and the grid still reads
+    top to bottom" (phone and desktop). Pins: `ui/nocounters.test.tsx`, `ui/counts.test.tsx`, `ui/rowswire.test.tsx`.
+- **The row contract, to the letter:** each of the four carries `who`, `bal`, the two placeholders and ONE cell per drawn
+  day — `req-p-<iso>`, `req-w-<iso>`, `avail-p-<iso>`, `avail-w-<iso>` (never an `event-`, `cell-` or `count-` prefix:
+  the drag code hit-tests those). **A row added to the EVENTS block needs an empty box in the Figures drawer**
+  (`Matrix.tsx drawerRows`), or every roster row in the drawer sits that many rows too high — found by the browser gate
+  while these four sat there (jsdom lays nothing out); in the Manning block, above where the drawer starts, they need none
+  (`ui/figdrawer.test.tsx` states the rule whole).
+- **A Required cell** shows the ONE resolver's figure (`sync.ts flyMonth`): the number in the accent, "NF" on a no-fly
+  day, a dash where no figure applies; the day a running figure starts wears a corner mark, its title "16 from Tue 6 Jan
+  onward". **An Available cell** shows the war's own count for the seat (never a SANS man), red where it is UNDER its
+  Required; a tap opens the working — required, available, SANS committed to fly, still needed — a small read-only menu
+  for everyone (a press outside, Escape, a scroll or a second tap closes it).
+- **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W are FIXED — D668
+  (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 had made room for (`flynames`, its
+  command, permission row, reader, writer and Undo's words) was TAKEN OUT on 8 Oct 26 — the rows read `REQ_NAME`
+  (`ui/FlyEdit.tsx`), never a store; a record that build left behind is read by nothing (`ui/flyrows.test.tsx`,
+  `state/flyplan.test.ts`). While a name is still the one it started with, a
+  phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
+- **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
+  firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
+  resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is
+  drawn it asks the grid for the re-measure the Archive's rows used to ask for (a figure can widen a day column).
+- **They make the Manning block four rows taller, so the roster starts that much lower** (about 88px on a desktop) while
+  the block is open. The browser tests that drag along the first roster rows scroll by exactly that first
+  (`e2e/leavewar.spec.ts pastFlyRows`).
+- **Typing one Required figure (admin) — built 8 Oct 26, overnight; `leavewar/ui/FlyEdit.tsx` (D636: "no sheet to
+  open").** A click on a Required cell lays ONE box over it — screen-fixed and portalled out of the table, never an
+  input per cell (730 inputs a year; and a box laid out INSIDE the grid would widen its day column). It opens holding
+  the figure the cell shows, selected.
+  - **Desktop:** Enter saves and goes to the next FLYING day (a weekend, a holiday, an Off day and a no-fly day are
+    passed over — he clicks one of those to type it); Tab saves and goes to the other seat on the same day; Shift with
+    either goes back; Esc leaves the cell as it was; an empty box and Enter clears the date's typed figure; a press
+    anywhere else saves and closes. At the end of what is drawn, Enter saves and closes.
+  - **Touch — the app's own number pad, NEVER an input:** an 11px input in a grid cell makes iOS zoom the page on
+    focus, and a bar above the phone's own keyboard is unreliable. The box over the cell is a plain element showing
+    what the pad typed; the pad (`.flypad`) is docked at the foot — row and day, ‹ › (previous / next flying day), Done,
+    then the keys. The first key replaces the figure that was there. The page behind stays live: a tap on another
+    Required cell saves and moves the pad there. With the pad up the page scrolls ALL FOUR rows above it (a Required
+    figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
+    (`FlyRows` keeps the last press's kind): a touch-screen laptop gets the pad for a finger, the input for its mouse.
+  - **The strip** names the row and the day and carries "This day | From <date> on". "From … on" writes a RUNNING figure
+    from that date and takes the date's own typed figure away in the same command (one Undo step — else the run would
+    not show on the day it starts). The choice returns to "This day" at every cell, and is not offered on a weekend, a
+    holiday or an Off day (a run never shows there). On a desktop it sits UNDER the four rows and to the RIGHT of the
+    month buttons — never over the figures he reads against, never over a month button (D665).
+  - **Nothing changed, nothing written:** Enter over a cell he did not touch only moves — were it to save, every running
+    figure he walked over would become a figure typed for its date and stop following its run.
+  - A no-fly cell opens nothing (its title says where the day is changed); a member's click opens nothing; a save the
+    app refuses says why in the strip and keeps the box with what was typed; a figure changed under the open box (an
+    Undo) shows in it while nothing has been typed. Three digits at most, digits only.
+  - Gates: `e2e/leavewar.spec.ts` "a Required figure is typed straight into its cell: one box on a desktop, the app's
+    own number pad on a phone". Pins: `ui/flytype.test.tsx`.
+- **Picking several, and the Required panel (admin) — built 8 Oct 26, overnight (D636, D637, D622).**
+  - **The pick** is the grid's own drag, a THIRD kind in `ui/select.ts` (`parseReqCell`, `reqRange`, hit kind `req`):
+    a drag that STARTS on a Required cell picks a rectangle over the two Required rows × days. The event rows'
+    one-line rule is not reused — both seats in one pick is the point (D622). Arming is every kind's: 4px for a mouse
+    (so Shift-drag and press-pause-drag both pick — D636), a 180ms hold for a finger; a quick flick is still the
+    grid's scroll. A pointer that strays off the two rows keeps the rows it had and takes that column's DATE. A press
+    that never arms is the plain click that opens the typing box. A roster drag that crosses the rows stays a roster
+    drag. `Matrix` hands the pick to `FlyRows` through a ref (`FlyPickApi`) — a pick never re-renders the grid.
+  - **The panel** (`ui/ReqPanel.tsx`, drawn as the fifth mock-ups): the number, "These days | From <date> on", Apply,
+    Clear. On a phone (≤430px) the head and the hint say it shorter — "Req P and W", "5 – 9 Jan · 4 days", "one
+    number for all 8" — so nothing wraps. Its number box is 22px (an input under 16px makes iOS zoom the page).
+    Opening it scrolls the page so the four rows sit ABOVE its top edge — docked at the foot of a phone, it opened
+    straight over the block just picked (found by the browser gate).
+  - **Which picked cells take the number** is ONE pure rule, `ui/reqpick.ts planPick`, read from the one resolver's
+    answer for each day — and the cells `FlyRows` keeps LIT while the panel is up (`.pick`) are that same answer, so
+    what is lit is what Apply writes. **"These days"** writes the dates themselves (`fly.day.set`, ONE command): a
+    no-fly day is always left out and said so; a weekend not set to fly, a public holiday or an Off day is FILLED
+    where the pick holds only such days, and LEFT OUT where it mixes them with ordinary days — the panel says "2
+    weekend or holiday days left out" with one press, Include, to take them in. **"From <date> on"** is a RUNNING
+    figure (`fly.run.set`, ONE command): it starts on the first flying weekday of the pick (its button says that
+    date), and the figures typed for the picked flying weekdays go with it in the same command (`setFlyRun`'s `clear`)
+    — he picked those cells and said "18 from here on". Weekends, holidays, Off days and no-fly days are the
+    resolver's to skip, and a figure typed on one of them is left alone. **Clear** takes the typed figures off the
+    days it is acting on, or — with "From … on" picked — the run that starts on that date for the picked seats; it is
+    offered only where there is something to take away. Apply waits for a number; Enter is Apply.
+  - **It does not block the page (D641)** — `Sheet`'s `modal={false}`: no veil, a press outside does not close it,
+    Tab is not held in it. A NEW drag over the rows is followed by the same panel (the number typed stays); a drag
+    over people's days closes it for that panel, and the other way round — the two are never up together; a plain
+    click on a cell of the grid opens that cell's own thing and closes it (`ui/gridclick.ts`); ✕, Escape and Apply
+    close it. Folding the Manning block away takes it with the rows.
+  - Gates: `e2e/leavewar.spec.ts` "several Required cells are picked with a drag and given one number, and the panel
+    leaves the grid behind it working" (a real mouse drag; a held finger through CDP on the phone). Pins:
+    `ui/selectreq.test.ts`, `ui/reqpanel.test.tsx`, `ui/nonmodal.test.tsx`.
+- **Renaming an Available row and changing who it counts (admin) — built 8 Oct 26, overnight (D640).** For an admin
+  the row's NAME is a button (`fly-name-avail-p` / `-w`, the dotted underline a count row's name wears — "this opens
+  something"); a tap opens the counter form the war already has (`CounterForm.tsx`, Matrix's `counterEdit` = `availp` /
+  `availw`) in a MODE for these two rows, which shows what holds for them and nothing the store would refuse:
+  the name and who it counts (crew, CAT with "is not", qualifications held or lacked) — and NO "Sets / teams" choice
+  (they count people), NO amber / red boxes (their red comes from the Required row above), NO Delete (the SANS
+  calendar reads them), and no "SANS" qualification chip (a SANS man is never counted here, so it could decide
+  nothing). One line says so: "SANS people are never counted here. The SANS calendar reads this row, so it cannot be
+  deleted." Its live sample ("On this war's first day that counts N") is summed the row's OWN way
+  (`engine/availrows.ts availHave` — never a SANS man), so the form cannot promise a number the grid does not show.
+  The row is read with `availRuleOf` (the squadron's own where its list holds one, else the built-in) — it is not IN
+  the list until first changed, so a search of the list would open an empty "New counter". A NEW counter can never
+  take one of the two ids (`mintId` holds them as taken — a counter named "availp" was otherwise saved over the row).
+  A member's name is plain text. The Required rows' names open nothing (D668). The store's own refusals — delete, a
+  teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
+  opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
+- **The "Days…" line in ⚙ Settings (the last piece of step 2 — built 8 Oct 26 with Days' month).** At the head of the
+  sheet: a "Calendar…" button (its on-screen name since D675; "Days…" until then) with "Day flying, night flying or no fly for each date, and the year's holidays." under it. It closes the sheet and
+  opens Days on the month the grid's month strip has lit (`sync.ts openDays` — the war imports no scheduler screen).
+  Pins: `ui/daysline.test.tsx`.
+- Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
+  what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
+  round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
+
+## Undo and Redo leave the screen where it is (owner, D670, D672; built 8 Oct 26)
+
+His words (D670, the Leave War; D672, "the rest of the app"): "if it's already in view, undo/redo don't need to snap to
+view. Unless it's outside the screen view then it's ok to snap into view."
+
+- **The Leave War's grid (D670).** An Undo or a Redo asks the grid for the changed day SOFTLY (`focusDay(date, {
+  ifHidden: true })` → `focusSoft`; `state/undo-wire.ts snapView`). The grid jumps only when that day's column is not
+  wholly on screen (`leavewar/ui/inview.ts columnInView`): its month not drawn, the column under the frozen name columns
+  — even half under — or off either edge. In view, the scroll position does not change by a pixel, however he has moved
+  the grid since. Every plain ask still jumps and lands the day just past the frozen columns: a month button, the
+  under-manned list, a period opened, switched or made.
+- **Quals (D672).** The man's row is outlined as before; the page moves to it — the row to the middle of the window —
+  only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
+  rowOnScreen`).
+- **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
+  row the Undo has just brought back is lifted, so it is found). A SAVE shows the saved input by the same rule (it is
+  the same reveal). **And when the page does move, the row lands IN VIEW — just under the top bar** (`ui/onscreen.ts
+  bringRowOnScreen` / `scrollToShow`, 8 Oct 26): the page moves by the least that brings the row wholly between the
+  bar's foot and the window's foot, with 8px of air. Until then it was the browser's own "nearest edge" scroll, which
+  judges by the WINDOW's edges — a row that had been above the screen landed at the window's very top, hidden behind
+  the app's sticky bar (found by the browser check below: Undo lifted the input and the page hid it). Where nothing is
+  laid out (jsdom) the row still goes to that browser scroll, guarded.
+- **Already so, unaltered:** Edit Schedule's week steps sideways to the changed day only when that day is not on screen
+  (`ui/highlights.ts bringDayIntoView`, 28 Sep 26); the Scheduler Board changes day only when the change is on another
+  day; the Inputs calendar changes month only when the change is in another month; the Tracker's Undo moves nothing.
+- An Undo that changes something on ANOTHER page still takes him to that page.
+- Gates: `e2e/leavewar.spec.ts` "Undo and Redo leave the grid where it is when the changed day is on screen, and jump
+  to it only when it is not" (phone and desktop — his steps: an LL on 9 Feb, Undo, Redo, moved a little, half hidden,
+  scrolled right away). Pins: `leavewar/ui/inview.test.ts`, `leavewar/undoland.test.ts`, `ui/onscreen.test.ts`. Quals
+  was driven in the running build by hand-script on 8 Oct 26 (stays at the same scroll with the row in view; brought back
+  when scrolled away). **The Inputs list's landing has its own browser test since the afternoon of 8 Oct 26:**
+  `e2e/inputs-sans-calendar.spec.ts` "Undo and Redo on the Inputs list leave the page still when the changed input is on
+  screen, and bring it up only when it is not" (desktop and phone size — an appointment's remarks changed in the row's
+  own editor; Undo and Redo with the row on screen: its place in the list and the page's scroll unchanged; Undo with
+  the page scrolled to its foot: the row at the head of the list and wholly on screen, clear of the bar). Each of the
+  two rules was broken in the browser and seen caught; the landing's arithmetic is `ui/onscreen.test.ts`
+  (`scrollToShow`), its breaks `scripts/handpass/breaks/2026-10-08-inputs-undo-landing.json`.
+
+## Days — the month (owner, D631, D633, D638, D641, D642, D664; built 8 Oct 26)
+
+The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shell (`ui/FloatWindow.tsx`).
+
+- **ON SCREEN IT IS CALLED "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead of days").** The window's
+  title reads "Calendar"; its line in the Leave War's ⚙ is the heading "Calendar" and the button "Calendar…". "Days" is
+  its name in the code and in these records only — wherever this section says Days, the screen says Calendar.
+
+- **A window, admins only, that does not block the page (D641).** Opened by `ui/pops.ts DAYSWIN` — the date whose month
+  to open on; closed by its ✕ or Escape. It can be dragged by its bar and the page behind still takes clicks. A member
+  who has it asked for sees nothing, and the ask is dropped. It closes with the session (`POPS_RESET`) and is NOT one of
+  the windows the schedule's Tab route stops for (`windowOverSchedule`).
+- **The month.** Seven columns, Monday first; ‹ › step a month and Today comes back; the month's name has a fixed room
+  (150px on a desktop, the leftover width on a phone), so › does not move under a finger as names change length. The
+  blanks before the 1st and after the last date are drawn as empty places.
+- **A date** shows its number — dimmed on a Saturday or Sunday, in the accent disc on today — and EITHER the tag the
+  Leave War gives it (the holiday's SHORT FORM — "PH", "OFF", or the squadron's own, "ND" — on a green wash for a
+  public holiday, grey for an Off day; its title gives the full name; no class control under a holiday) OR its class
+  control. *(Until the calendar job's bug check, 8 Oct 26, this month printed the fixed words "PH" / "OFF" while the
+  SANS month, the Inputs month and the Leave War's Event row printed the short form — one day, two words. All four read
+  `leavewar/sync.ts dayFacts().short`; pinned `ui/dayswindow.test.tsx`.)*
+  - *Wider than 820px:* three buttons, D / N / NF, side by side inside the date, the chosen one lit (day the accent,
+    night violet, no fly grey; `aria-pressed`). A Saturday and a Sunday start with none lit (D642). Pressing the lit one
+    does nothing on a weekday and goes back to "no flying set" on a weekend.
+  - *820px and under:* ONE button that steps day → night → no fly (→ no flying set, on a weekend): a sun, a moon, "NF",
+    a dash in a dashed outline (D577 — the sun is day flying, so the app's gear is never drawn like one, D635). Its
+    label says what it is and what a tap gives.
+  - Each press is one command and one Undo step; a press that changes nothing writes nothing. A refusal shows as one red
+    line above the month and the date keeps what it had.
+  - **The dot:** a small accent dot beside the number where the class is stored for the date itself; a date that
+    follows its weekday's rule, or the default, has none.
+- **On a phone (620px and under)** the window starts under the app's top bar (Undo and Redo stay in reach) and runs to
+  the foot of the screen (D664); the weeks share the height that is left, each date's button between 36px and 60px, so a
+  six-week month fits a short phone and never sits as a short box.
+- **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
+  `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
+- **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
+  <weekday>" and is lit while that window is up.
+- **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days
+  closes it; another heading starts a fresh form. On a desktop it opens at the left of the screen (Days is at the
+  right), so it does not cover the month; on a phone it is the bottom panel and may grow up to the app's top bar.
+  - *Flying:* Day (a sun) / Night (a moon) / "NF · no fly" — one lit. It starts on no fly for Monday to Friday and on day
+    flying for Saturday and Sunday. "No flying set" is not offered: a rule that says nothing is removed instead.
+  - *From:* a date box, starting on the first such day on screen that is not in the past.
+  - *Until:* "No end" / "A date"; "A date" adds a second date box.
+  - *One sentence* says what will be saved — "Every Thursday from Thu 5 Nov 2026 onward is a no-fly day, until you
+    change it here. A single Thursday can still be set by itself." / "… from Sat 7 Nov 2026 to Sat 26 Dec 2026 is a
+    day-flying day. …".
+  - *Cancel / Save.* Save is one command and one Undo step and closes the window. Refused, each with its own line and
+    nothing written: no start ("Choose the date it starts."), "A date" with no date ("Choose the date it ends, or pick
+    No end."), an end before the start ("It cannot end before it starts."), a save the store refuses. Any change to the
+    form takes the line down.
+  - *Beneath, "Already set for <weekday>s":* each rule of that weekday in date order — "No fly · from Thu 5 Nov 2026 ·
+    no end" — with Remove (one command, one Undo step, no question; the window stays). Nothing is listed when there
+    is none. Saving for the same weekday and the same start replaces that rule.
+  - A date the rule covers shows its class on the month with NO dot; a single such day set against it wears the dot.
+  - The date boxes carry 16px text (an iPhone zooms the page under that).
+- **Two parts — the Month and the Holidays.** 1510px across or wider: side by side in one window 1094px wide (the list
+  300px), no tabs. Under that: two tabs at the head of the window, "Month" (first) and "Holidays", the window 880px. The
+  threshold is where a 380px form window still opens clear of the two parts.
+- **ONE side window at a time:** the holiday form takes the place of "Every <weekday>", and the other way round.
+- **The Holidays list (`ui/HolidaysPanel.tsx` — D631, D638).** The war's own record seen as a list; it keeps nothing.
+  - *Head:* "Holidays", ‹ year › (the year a fixed width, so › stays put), "+ Add". It opens on the year of the month
+    Days opened on and then moves by its own arrows.
+  - *A line* is a button: its date ("Mon 9 Nov") or run ("Mon 28 – Wed 30 Dec"; across two months, both named), its
+    name, a PH (green) or OFF (grey) tag. In date order. One already over is dimmed; today's is not. At least 40px tall.
+  - *None:* "No public holidays or Off days in 2031."
+  - *Dates no leave period covers* (a holiday is kept in the period holding its date): an amber notice above the list.
+    No period reaches the year — "No leave period covers 2031 yet." and a "Create it" button, which makes the whole
+    year, in draft, and leaves him in Days. Covered in part — the dates left out are named ("… covers 1 Apr – 31 Dec
+    2031 yet."; two holes joined by "or"), no year button is offered, and each run has its own: "Add a period for 1 Apr
+    – 31 Dec…", which opens the Leave War's own New-period sheet with those dates picked.
+- **The holiday form (`HolidayForm` — D641, D652).** A window on the shell, at the left on a desktop, the bottom panel
+  on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day; Name (40 letters at most; empty, the box shows
+  the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most);
+  **Dates — the Leave War's own range calendar (D671, 8 Oct 26: "use the same calendar interface and logic for
+  selecting start and end date"), `leavewar/ui/RangePicker` itself, not two date boxes:** one tap is one day, a second
+  tap on a later day makes the run, a tap before the start begins again there, a third tap starts over, the span said
+  in words beneath, "Clear". A new holiday opens with NOTHING picked, the calendar on today's month (this year's list)
+  or on that January (another year's); nothing picked, Save says "Pick its day — or its first and last day — on the
+  calendar." Then Cancel / "Save and add another" / Save. "Change a holiday" (a line opened): the same, filled in — its
+  own day or run picked, so a tap on a later day is "one more day"; "On grid" showing what it prints now and sent only
+  if touched — with Delete (red; no question; Undo brings it back) / Cancel / Save. The buttons stay at the foot of
+  the form while it scrolls under them, so Save and Delete are never under the fold of a short phone.
+  - Save, a change and Delete are one command and one Undo step each, and reach the Leave War's Event row at once.
+  - "Save and add another" stays open: the kind kept, the calendar on the month of the day after with nothing picked,
+    the name cleared, "Saved: <name>, <dates>." shown until the next edit.
+  - Refused in the form, each with its sentence and what he typed left as it was: nothing picked; a short form that is
+    not one; a date no leave period covers; every Event row used on those dates; a holiday
+    taken away on the Leave War meanwhile. Any edit takes the line down.
+  - Every box carries 16px text.
+- **A holiday on a date no leave period covers WAITS.** Refused for that reason (and only that one), the form keeps
+  what he typed and shows, under the red line, an amber box: "It is kept here, and saved by itself as soon as a leave
+  period covers it." with ONE button for that date — "Create the 2031 leave period" where no period reaches the year,
+  else "Add a leave period for 1 Apr – 31 Dec…" (the run its first day sits in). The moment any period holds its first
+  day the holiday is saved and the form closes. If that period ends before its last day, the store's sentence shows
+  and nothing is saved. An edit, Cancel or ✕ ends the wait.
+- **The Leave War's New-period sheet, asked for from Days** (`leavewar/ui/warask.ts`, `sync.ts openNewPeriod`): the
+  Leave War comes to the front and its own sheet opens with the dates picked — the calendar on that month, the span in
+  words, a name still to type — DRAWN OVER Days and the form (layers 480 / 481 against the windows' 410 / 411), whole on
+  the screen. Closed without creating, the next "+ New" opens as it always has. A member gets no sheet.
+- Gates: `e2e/leavewar.spec.ts` "Days opens from the Leave War's settings: the month sets a date's class, and the grid
+  behind it follows at once", "a weekday's heading on Days sets every such day from a date onward, and the war's rows
+  follow" and "the Holidays list in Days adds, changes and deletes a public holiday — the same record as the Leave
+  War's Event row" (phone and desktop; the last also at 1536px across) and "a holiday on dates no leave period covers
+  waits: the Leave War's New-period sheet opens over Days, and the holiday saves itself once the period exists". Pins:
+  `ui/dayswindow.test.tsx`, `ui/everyweekday.test.tsx`, `ui/holidayspanel.test.tsx`, `leavewar/ui/warask.test.tsx`.
+
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 
 The event sheet autofocused its name field, so a phone raised the on-screen
@@ -6322,6 +6736,16 @@ Pinned by `leavewar/ui/isodates.test.tsx` — one roll-call over every sheet, re
 
 ## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
 
+**The counter's own window — its three buttons (owner, D673, 8 Oct 26: "delete counter button be red, save counter be
+another colour like green or blue, similar to the rest of the app").** "Save counter" ("Add counter"; "Save" on an
+Available row's window) is the app's FILLED save button — the accent, as the Event sheet's Save; "Cancel" is the plain
+grey outline; "Delete counter" is red — outlined, and solid red on "Really delete?". This narrows D332 (Leave War
+"Delete" in a dashed grey edge, not red) for this window — and, since D676 the same afternoon, for the delete cross on
+a counter's row in Rearrange, which is red too (§The four rows at the foot of the Manning block, "The block's own
+rows"); the bid sheets' Delete stays dashed grey. Gates: `e2e/leavewar.spec.ts` "deleting a counter takes its row off
+the grid" reads the three buttons' colours, and "in Rearrange the counter grip is left of the name and nothing clips"
+reads the cross's.
+
 Four asks from the same sitting, all on the Leave War grid:
 
 - **The counter picker is COMPACT** ("much smaller and compress the data"). It
@@ -6342,7 +6766,43 @@ Four asks from the same sitting, all on the Leave War grid:
   (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
   &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
   there is no "you" to name, mirroring the picker's existing dash rule.
-  **On a phone the chip drops to its own line (`[ABSENCE-SMALL-SEEN]` 2, 28 Sep 26 — the re-test's W6 N6).** The shell's
+  **ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES — D678 (8 Oct 26: "A looks good"), BUILT the same day
+  (`[LW-PHONE-HEADER-SPACE]`).** Line 1: the period picker, "+" and this chip (words kept). Line 2: the stage, the
+  bidding dates, under-manned, Legend. So the chip is BACK on the Period line, which fits once the word "Period" goes;
+  it narrows D365 below.
+  - **"A phone" is the war's own phone width — 430px and under — and it is ONE query**, `ui/phone.ts PHONE_QUERY`, the
+    same string as `chrome.css`'s phone block. The WORDS change in `ui/Chrome.tsx` (`usePhone()`, followed live: a phone
+    turned on its side gets the wide strip, and back) and the LAYOUT in the stylesheet, at the same width — never two.
+    Where the browser has no `matchMedia` (jsdom) it is "not a phone".
+  - **What is different there, and only there:** the words "Period", "Stage", "Bidding on" and "Under-manned" are not
+    drawn; "+ New" reads "+" (its `aria-label` "New period"); the bidding dates read without their year where both are
+    in ONE year (`ui/dates.ts spanInYear` — across a year's end they keep it; the `aria-label` says "Bidding on" and the
+    whole dates); under-manned reads "Under N days" (`aria-label` "Under-manned: N days").
+  - **An ADMIN's stage is a button** (`stage-now`, class `stagebtn`, a small DRAWN arrow — not a letter, which comes
+    from a fall-back font at its own height) **that opens the stage menu** (`stage-menu`, `.stagemenu`): the same fixed,
+    JS-placed pop-out over the same scrim as the under-manned list and Legend, holding the SAME two move buttons the
+    strip shows on a desktop (`stage-advance`, `stage-back` — built once in `StageBar`, placed in one or the other), as
+    rows 40px tall. It goes on a move, a press outside (the 4 Sep 26 rule), Escape, a second tap, and when its reason
+    goes (the member view, the screen widening) — put away, so it never springs back. **A member's stage is the label it
+    always was** and opens nothing. Moving the stage is one tap more than on a desktop.
+  - **Line 1 does not wrap:** what gives is the CALLSIGN, which ends in "…"; "VIEWING AS" and the eye never shrink, and
+    the picker keeps its name whole up to half the line. **Line 2 keeps `flex-wrap` as a safety net:** a line too long
+    drops Legend to a line of its own rather than off the screen (seen: a 360px phone with a three-figure count).
+  - **The chips' side padding is 5px, not the drawing's 7px, on purpose:** at 390 the four chips take 355px of 370 —
+    fifteen to spare for his iPhone's own font, which cannot be measured here (the app loads none). Under 380px they
+    are half a point smaller and a pixel closer (331px of 340 at 360).
+  - **Measured:** the grid's card starts 182px down at 360, 390 and 430 wide (282, 279 and 243 before).
+  **A DESKTOP AND A TABLET STAY AS THEY ARE — D679 ("keep the same for desktop"): two lines, every label and button as
+  before; the one-line desktop drawing is not built.** Every phone rule is inside `chrome.css`'s phone block and every
+  phone branch behind `usePhone()`; measured at 431, 768 and 1440 wide before and after the build, every control's box,
+  words, padding and type size came out byte for byte the same (`scripts/handpass/lw-phone-head-measure.mjs`).
+  Pinned: `leavewar/ui/phonehead.test.tsx`, `leavewar/ui/dates.test.ts`, and five tests of `e2e/leavewar.spec.ts` ("the
+  top of the Leave War on a phone is two lines…" at 390, 360 and 430; the stage menu; a member; a long callsign; "on a
+  tablet and a desktop the top of the Leave War is as it was" at 1440, 768 and 431). A browser test that MOVES the stage
+  goes through `e2e/app.ts stageMove`, which opens the menu first at a phone's size. Evidence:
+  `docs/handpass/2026-10-08-lw-phone-header.md`.
+  **Until 8 Oct 26, on a phone, the chip had a line of its own — kept here for the leak it explains (the rule
+  `.spring` still carries at every wider size): `[ABSENCE-SMALL-SEEN]` 2, 28 Sep 26 — the re-test's W6 N6.** The shell's
   phone bar rule `.topbar>*{flex:0 0 auto}` (scheduler.css, ≤820px) leaked onto this row, so it never wrapped: at 390 the
   chip hung past the right edge (to 481px) inside a row that scrolled sideways. The row's spacer (`.spring`) may now
   shrink (`chrome.css`), so the chip wraps under the picker, right-aligned; "VIEWING AS" and the eye never shrink and a
@@ -6686,8 +7146,8 @@ appears, the phone's word is hidden).
 
 **His ask came 24 Sep 26 (D160, "9 yes"): a RESET ORDER line in ⚙ Settings** — its own small "Roster order" tray
 between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
-("Really reset?", the Reset counters idiom; closing the sheet takes the question back, and arming either reset
-takes the other's question back — one "Really reset?" at a time) and is **greyed, with a line
+("Really reset?"; closing the sheet takes the question back *— until 8 Oct 26 "Reset counters" stood beside it with
+the same question, and arming either took the other's back; Reset counters is gone, D669, so this is the only one*) and is **greyed, with a line
 saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster AS DRAWN
 (`rosterFollowsDefault`), so a man dragged away and back reads as the default, never a press that moves nothing; a hand-arranged roster's line says
 what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
@@ -6760,6 +7220,11 @@ buttons, one line, inside the viewport, none cut, row under 52px — both
 projects).
 
 ### In Rearrange: the wider name column, the manning-row grip, the Archive bar
+
+*(8 Oct 26 — D669: the EYE on a manning row is now a DELETE CROSS, and the ARCHIVE bar is gone with it. What holds
+now is in §The four rows at the foot of the Manning block, "The block's own rows". The two paragraphs below on the eye
+and the Archive bar are kept as the record of what was built on 5 Sep 26; read "the eye" as "the cross" for where the
+control sits — alone, centred, in the balance box — and the Archive paragraph as history.)*
 
 **In Rearrange the frozen name column widens by the grip, so callsigns keep
 their at-rest width (owner, 6 Sep 26 — "the CS/name will not be causing the
@@ -6970,8 +7435,8 @@ history; THIS block is the recipe to copy. Six pieces, in order:
    because a freshly created scroll-driven animation is not applied on its
    creation frame; `lwx-follow` states its `from`, so the hold never blends
    into it. **It RE-MEASURES whenever a column can have widened under it** —
-   any store change, the row window, folds, the manning rows, the Archive
-   (`widthGen`; value-checked, so free when nothing moved). Pinned by "the
+   any store change, the row window, folds, the manning rows, a figure typed in the four Required / Available rows
+   (and, until D669, the Archive) (`widthGen`; value-checked, so free when nothing moved). Pinned by "the
    frozen bar is in step with the grid the moment it appears" and "a column
    that widens while the dates are frozen re-measures the frozen bar". Still
    open: it arrives one frame after the real header leaves (`[LW-FROZEN-BAR-GAP]`).
@@ -7189,7 +7654,9 @@ On the Inputs page a member lands on THEIR OWN inputs — the person filter
 defaults to `ME` for a member, `all` (Everyone) for a scheduler — with
 Everyone one pick away in the same filter. On every other person's row the
 edit ✎ and delete ✕ are simply not rendered (`canEditSched() || r.person ===
-ME`); the row is view-only. The document paperclip is the exception and stays
+ME`); the row is view-only. *(Since 8 Oct 26 the gate is `perms.ts mayEditInput(row)`, which takes the record: a member
+also changes a duty or a commitment he FILED for another man while the members' switch is on — "One input filed for
+several people".)* The document paperclip is the exception and stays
 on every row — anyone may VIEW any attachment, gated nowhere. The write-path
 backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
@@ -7198,7 +7665,7 @@ and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 **Another man's input opens READ ONLY, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
 From the calendar's chip or the day popover a member opening someone else's input gets the edit window with its body
 `inert`, no Delete and no Save, and "Only Tally or an admin can change this." at the foot (`ui/inputedit.tsx`,
-`perms.ts mayEditInputOf`). Its locked fields used to be drawn exactly as live ones — the dropdown box and arrow, the
+`perms.ts mayEditInput` - it takes the record since 8 Oct 26). Its locked fields used to be drawn exactly as live ones — the dropdown box and arrow, the
 remarks box, a text cursor, the OIL "Change…" button. Keyed on that same `inert` (`scheduler.css`, `.inped-body[inert]`),
 a locked field now reads as its VALUE — no box, no arrow, the plain cursor, the quieter ink — and a tick box or a button
 is dimmed rather than removed, so the record still shows what was chosen. His own input keeps its live boxes. Before and
@@ -8634,6 +9101,21 @@ this covers is a public holiday the war takes back off.
 
 ## [ALL-AVAIL-WINDOW] — the counter's window, the app's THIRD transient surface (owner, D38–D41, 23 Sep 26)
 
+*(Since 8 Oct 26 it is no longer the only one of its kind: every window of the Inputs / SANS calendar job is this
+kind too, on ONE shell — `ui/FloatWindow.tsx`, over the placement helper this window already used
+(`ui/floatwin.ts useFloatWin`): no veil, an outside press leaves it up, it drags by its bar, Escape closes the front
+one, and the page behind it works (D641). Each window's own rules are with its screen: "Days — the month", "The
+SANS calendar", "The Inputs calendar".)*
+
+*(And which one is "in front" — the same check, 8 Oct 26: the shell keeps the windows that are up in the order they were
+last brought forward (`ui/FloatWindow.tsx`, `UP`), so when the front one closes the one LEFT is in front — it wears
+`.front`, and the next Escape closes it. Before, "in front" was one remembered name that a closing window left behind:
+no window on screen was in front and Escape did nothing until one was pressed. The input editor has an Escape handler
+of its own (its OIL, upchit, medical and document questions answer first); with none of those up it takes Escape ONLY
+when it is the front window — it used to close itself from BEHIND a settings window and lose what was typed. Pinned
+`ui/floatwindow.test.tsx` "when the front one closes…", `ui/editorwindow.test.tsx` "Escape belongs to the window in
+FRONT".)*
+
 **THE OUTSIDE-CLICK RULE DOES NOT APPLY TO THIS SURFACE.** Read that before
 changing anything here. The app has two transient surfaces and this is a third
 kind:
@@ -8869,6 +9351,329 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
   File menu's Import — his charts and students reach the database by his own Export → Import, D120); the dialog box rides
   along. The first course brings the usual Tracker back and draws the board. Pin: `tracker/trk-nocourse.test.tsx`.
 
+## The SANS calendar — its month, its day, its gear (the Inputs / SANS job, step 4, 8 Oct 26; D617–D651, D664)
+
+The SANS tab of Inputs is ONE screen, `ui/SansCal.tsx`, with no Calendar | List pair, no filters and no list (D620).
+**It works nothing out.** A day's class, its required pilots and WSOs, how many more are needed and its colour are the
+ONE resolver's answer (`leavewar/sync.ts flyMonth` / `flyAnswer` → `state/flyplan-model.ts planFor`); who has committed
+is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's signal and the war's (`useWarFacts`).
+- **A date** (`sanscal-model.ts sansCell`): its number; the sun (day flying) or the moon (night flying) — or the tag
+  that takes their place: NF, or the Leave War's own short form for a public holiday (green) or an Off day (grey); the
+  still-needed pair, pilots then WSOs, in the day's colour over a SOFT wash (D630 — never a deep tint or a bright
+  patch); F, O and A as pairs of the SANS committed, noughts dimmed. A day that needs nobody reads "0 0" quietly; no
+  figure, or no leave period covering the date, a dash and no colour; a no-fly day reads "0 0" beside NF and still
+  shows its OFT and AMT (D642). The three colours are `--t-yellow` / `--t-amber` / `--t-red`
+  (`24-sans-calendar.css`), by pilots and WSOs needed added together, from the figures as set (D618).
+- **A line for everyone** says what the colours mean, written from the figures as set.
+- **What a press does** is `ui/calpick.ts`: a tap opens the day; a mouse drag, or a finger HELD (400ms) then dragged,
+  picks a run of days for "+ Commitment" (held and let go: that one day); a finger slid sideways turns the month. The
+  grid carries `touch-action:pan-y` — without it a slide is cancelled as a scroll. **The click that follows any tap or
+  pick is swallowed once** — it lands on whatever has just opened under the pointer (it pressed "+ Commitment" in the
+  first build). A member who is not SANS taps and slides; his drag picks nothing.
+- **The keyboard** (D621): one tab stop for the month; arrows move date to date and turn the month at its ends; Shift
+  + arrows stretch a run; Enter opens the day or files for the run; Escape lets a run go, then closes the open day.
+- **On a phone the month takes the full screen (D664).** `--sc-fill` is the room from the grid's top to the foot of the
+  visible screen, measured and re-measured; it is a FLOOR the weeks share, never a limit — a month that needs more is
+  taller and the PAGE scrolls. The grid has no height limit and no scroll of its own, on any screen. Its head is ONE
+  line at 390px (the month's name three letters there; the Highlight button is what shortens, never the name).
+- **The day's window** (`ui/SansDay.tsx`, on the shell — D641): the working for both seats (required — "NF" on a
+  no-fly day, a dash where none is set; available — a dash, and a line saying so, where no leave period covers the
+  date; SANS committed to fly; still needed), "+ Commitment" (a SANS man his own, an admin a SANS man's; off, with the
+  reason, for anyone else), an admin's "Calendar…" (Days on that month, D675), then EVERYONE who committed (D648) in
+  WSOs to fly / pilots to fly / OFT or AMT only / not counted. A man stands in ONE group, so a heading's head-count is
+  people and equals the date's figure; a commitment of a man the count leaves out is listed apart with the reason. Each
+  line is the schedule's own puck from `ui/html.ts puck()` (D649, D651 — the SANS edge from the builder), his letters,
+  his hours, a LATE tag that says the cut-off it missed without opening the editor (D646), and who placed it and when
+  (`ui/placedline.ts`, D629). The working and the buttons are pinned; the list scrolls. **On a desktop the page leaves
+  the window room beside it** while it is where it opens (`:has(.sansday:not([data-placed]))`), and takes the width
+  back once he drags it away. **On a phone it has two rest heights** (the shell's `rests`): about two-thirds as it
+  opens, pulled up by its bar to nearly the whole screen and back; a tap on the bar goes to the other height — ON THE
+  CLICK, never on the release (the panel moves under the finger). It opens low every time.
+- **Highlight** (D619): a small menu of the SANS aircrew on the roster, A to Z, each as his puck, "No highlight"
+  first. His days wear a cyan ring drawn INSIDE the date; the F, O, A rows he offered are underlined; his lines are
+  marked in the opened day. Nothing is hidden and no figure changes. `state/view.ts SANSHL`, session-only.
+- **The gear** (D618, D635): the glyph the Leave War's settings button carries, admins only. Its window
+  (`ui/SansSettings.tsx`): "Calendar…", the three day colours, the SANS late cut-off (days before, or a weekday of 1 to
+  8 weeks before) with a worked date from the draft. Nothing is saved until Save; both halves are checked before
+  either is written; each is one Undo step. An Undo of a cut-off pressed on the Inputs page stays there (D672).
+- **"How this works"** (D646): a fold of five lines; the last states the cut-off as it is SET
+  (`sanscal-model.ts cutSentence`), with no worked date.
+- **A finger on a window never scrolls the page behind it (owner D686, 9 Oct 26 — found on his iPhone).** A window
+  does not block the page (D641), so the page behind is free to scroll — and where what is in a window fits, or has
+  reached its top or foot, an iPhone hands the swipe on to that page; `overscroll-behavior:contain` holds it only
+  where there is something to scroll. `ui/FloatWindow.tsx` decides itself, for every window on the shell: a swipe up
+  or down that began on the window is left alone while something INSIDE it can still move that way, and is
+  otherwise stopped (a native, non-passive `touchmove` listener on the window). Sideways swipes are not its
+  business; a finger on the page behind still scrolls the page. Not reproducible in the build PC's browser engine —
+  the rule is pinned by `ui/floatwindow.test.tsx`, and that the window's own content still scrolls by
+  `e2e/inputs-calendar.spec.ts` (D686).
+- **The windows shell** now caps a window he has placed at the room under its top (its body scrolls), so a window
+  dragged low keeps its foot — and its Save — on the screen.
+Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, `ui/calpick.test.ts`,
+`ui/sanscal-model.test.ts`; in a browser `e2e/inputs-sans-calendar.spec.ts`. Pictures: `scripts/handpass/sans-look.mjs`.
+
+## The Inputs calendar — its tabs, its month of bars, its day, its gear, the editor as a window (the Inputs / SANS job, step 5, 8 Oct 26; D620, D621, D626, D627, D629, D632, D639, D641, D646, D653, D664, D672)
+
+`ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
+`ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.
+
+- **Three tabs — Inputs · SANS · Medical** (D620, D626: "less tall"), a tab list over the same two facts of view state
+  (`INPMODE`, `INPVIEW`); one is selected (`aria-selected`), the arrows move along them. Under the Inputs tab ONE switch,
+  Calendar | List, and the filters (the Inputs tab's alone). **Medical is a tab IN THE PAGE**: it has no close cross
+  and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
+  Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already
+  filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
+- **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
+  drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
+  stands 8px in from each edge.
+- **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
+  on a desktop; on a phone the tabs are the first line and the tools the second — narrower there, and drawn as tall as a
+  tab, 36px, on his word (D698, 9 Oct 26; until then "never shorter", D487 — the D698 bullet below).
+  Under them one slim line: "How this works" (five lines, the last the late cut-off AS SET — D646, D628) and the legend.
+- **An input is ONE BAR across the days it covers** (D626), cut at a week's end and carried on. A week is three layers
+  — the dates (`.ib-day`, `data-icday`), their heads (the number, the PH / OFF / NF tag — never a sun or a moon, D627 —
+  the day's title, the planning notes and pucks) and the lines (`.ib-bar`; "+N more") — because a bar lies across dates
+  and sits inside none. Red is an absence, amber a duty or commitment (the List's own colours). A group filing is ONE
+  bar, made so by `state/inputgroup.ts entriesOf` alone (D655). A desktop bar's tooltip says who, what, when and who
+  placed it (D632, D629).
+- **How many lines a day:** seven on a desktop, then "+N more" (D632, D639). On a phone the week rows share the height
+  the screen gives (`fitLanes`, re-measured when the height changes) and the lines are what fits — never fewer than
+  three and the "+N more" line; a month too tall for that scrolls the PAGE. The month has no height and no scroll of
+  its own (D653, D664).
+- **The date under a point** is asked of everything stacked there (`ui/caldays.ts dayAtPoint`), never of the bar — one
+  body for both pointer machines. A press that begins on a date is `ui/calpick.ts` (a tap opens the day; a mouse drag,
+  or a finger held and then dragged, picks several days for "+ Input"; a slide turns the month). A press that begins on
+  a bar or a planning note is `ui/caldrag.ts`: a tap opens it; a drag moves it BY THE DAYS between where it was grabbed
+  and where it is dropped — from its middle day or from its continuation alike — its length kept, one Undo step, the
+  moved bar flashing; dropped back is nothing and no step; a bar its reader may not move does not lift, and a drag of
+  it is not a tap.
+- **The keyboard** (D621): the month is one tab stop; arrows move the date and turn the month at its ends; Shift +
+  arrows stretch a run; Enter opens the day or files for the run; Escape on a date closes the open day, then lets the
+  run go, and never leaves the calendar; Delete on a line of the opened day asks first.
+- **"How this works": the late cut-off itself is in BOLD (owner D691, 9 Oct 26 — from his iPhone).** The fifth line of the fold
+  on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
+  two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
+  the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **The Leave War's phone header (D678) holds its two lines in ANY system letters:** line 2 does not wrap; the stage's
+  name (`.stagetxt`, `leavewar/ui/chrome.css`) is the one thing that gives way, cut with "…", its arrow kept. Found when
+  the pull request's checks ran on GitHub's machines, whose letters are wider (9 Oct 26). Pinned by
+  `e2e/leavewar.spec.ts` ("with wide letters…").
+- **A card's first line in an opened day (both calendars): the name and what it is take the room the LATE tag and the hours
+  leave — a long kind is cut with "…" where the hours begin, never printed over them** (found on a walk, 9 Oct 26; `.sd-row`
+  is `minmax(0,1fr) auto auto`, 24-sans-calendar.css). Pinned by `e2e/inputs-calendar.spec.ts` ("a long kind…").
+- **On a phone the Inputs calendar's month arrows, name and Today stand at the LEFT of their row, where the SANS calendar's
+  are; the Calendar | List switch is at the row's right end (owner D705, 9 Oct 26).** The row
+  is re-drawn by `order` at 820px and under only (`.inputs-top`, 25-inputs-calendar.css): the arrows, the name, Today, then —
+  pushed to the right end by its own margin — the switch, the filter button, the gear. The List has no arrows, so the
+  switch keeps the same place on both (D687 holds; a desktop keeps the switch first, after the tabs). The four boxes are
+  the SAME on both calendars: arrows 32px, the name's box 96px, Today 52px, 3px apart (under 390px wide: 30, 88, 46, the
+  SANS name a size smaller, the row's buttons 30px, so the row is still ONE line at 375 and 360). The name's one width
+  also keeps the next arrow and Today still from month to month — before, both moved with the month's letters, on both
+  calendars. Pinned at 390, 375 and 360 by `e2e/inputs-sans-calendar.spec.ts` (D705) and by D687's test in
+  `e2e/inputs-calendar.spec.ts`. Do not let the name's box take its letters' width again.
+- **On a phone a floating window is as tall as what is in it, up to nearly the whole screen (owner D706, 9 Oct 26 — "Why is
+  this not full screen height"), and a day opened on the SANS calendar opens tall (D707).** The
+  phone limit on `.floatwin` (22-float-windows.css) was 72% of the screen; it is the screen less 12px above and below —
+  D537's rule for these windows too. A window with little in it is as short as before. It changes the SANS calendar
+  settings and the Inputs calendar settings (at 660 tall they hid 146 and 112px of themselves under an empty 173px);
+  the holiday form, the editor and the Calendar window had limits of their own. The SANS day opens at its tall rest
+  height (`tallFirst`, as the Inputs day, D683); its bar brings it down to two-thirds and back (D648's two heights
+  stay). The ALL AVAIL window (D77) and the changes window (D167) are other kinds and keep their heights. Pinned by
+  `e2e/inputs-sans-calendar.spec.ts` (D706, D707) and `ui/sansday.test.tsx`.
+- **The SANS calendar's "How this works" no longer says "One commitment a day each." (owner D704, 9 Oct 26 — "Remove one
+  commitment a day each").** Its fifth line is the late cut-off alone, as set, the cut-off in bold (D628, D691) — the same
+  shape as the Inputs calendar's fifth line. Only the sentence went: the rule stands and is said where a second commitment
+  is refused. Pinned by `ui/sanscal.test.tsx` (the five lines).
+- **On a phone the row of buttons under the three tabs is drawn as tall as the tabs, on the Inputs calendar and the SANS
+  calendar (owner D698, 9 Oct 26 — from his iPhone: "Seems like the 2nd row is taller").** Measured
+  first: the two rows took the same room (the tabs' frame 44px, the buttons 44px), but a tab is drawn 36px inside its
+  frame, so each button stood taller than the tab above it. Now, at 820px and under, every button of that row — the
+  Calendar | List switch, the arrows, Today, the filter button, the gear; on SANS the arrows, Today, Highlight, the gear
+  — is DRAWN 36px (`.inputs-top .abtn:not(.intab)`, `.sanscal .sc-head .abtn`), and still answers a finger over 44px:
+  its `::after` reaches 4px past its border above and below. The List's row is the same row and follows; the Medical
+  tab's own row is not in the ruling and keeps 44px; a desktop is as it was. This is his word for a button's size
+  (D487) and replaces "narrower there, never shorter" (D653's reading 5). The month gains the 8px. Because the room
+  under the row now belongs to those buttons, the fold's button ("How this works", both calendars) takes its press area
+  DOWNWARD: 2px above, 16px below. Pinned by `e2e/inputs-calendar.spec.ts` (the tools-row test and the List's, D698)
+  and `e2e/inputs-sans-calendar.spec.ts`. Do not give the row back its 44px of drawn height, and do not let a press
+  area of the line under it reach up into it.
+- **On a phone the SANS calendar's "How this works" and its colour key share ONE line, placed as the Inputs calendar's
+  are (owner D697, 9 Oct 26 — from his iPhone: "the same amount of vertical space and similar vertical alignment.
+  Compact words if need be").** The line (`.sc-sub`) is 28px, 6px under the tools, the fold's button at its left and the
+  key at its right END — the same boxes as `.ib-sub`, so the month starts as far under the tools on both tabs. The
+  button is drawn slim and still answers 44px of a finger (its `::after` reaches 2px up and 16px down, as `.ib .sc-how` — D698).
+  The key's words on a phone are "Still needed:" (`SansCal.tsx`, the `narrow` check); a desktop keeps "Pilots · WSOs
+  still needed:", and the key carries the full words as its name. It never wraps and never pushes the page sideways:
+  short of room it is cut from its LEFT, so the words go before a colour does. Pinned at 390, 360 and 320 wide by
+  `e2e/inputs-sans-calendar.spec.ts` (D697) and by `ui/sanscal.test.tsx`. Do not give the phone button back its 44px
+  of drawn height, or the key a line of its own.
+- **On a phone the filter button and the gear do not move when the filters open (owner D693, 9 Oct 26 — from his iPhone).**
+  The folded fields stand between the two buttons in the page; opened, they are drawn AFTER the whole row (`order` on
+  `.inputs-filterfields.open`, 25-inputs-calendar.css), on a line of their own. And a filter being set does not widen
+  the button: its count is a small badge on the button's corner (`#inFiltersBtn .inputs-filter-count`, absolute), so
+  a row full to its last few points never sends the gear to a second line. Pinned to the pixel on the Calendar and the
+  List by `e2e/inputs-calendar.spec.ts` (D693). A desktop has no filter button.
+- **The Calendar | List switch keeps its place (owner D687, 9 Oct 26 — from his iPhone; his standing rule of 2 Sep 26).**
+  It is drawn straight after the three tabs on BOTH views (`ui/InputsPage.tsx views` — its own piece; on the Calendar
+  it is handed to `ui/InputsCal.tsx` as `lead`, before the month's arrows): on a desktop after the tabs on the one
+  row, on a phone at the left of the second row. The approved drawings had the arrows and "Today" before it; the List
+  has neither, so the switch slid left when "List" was pressed. Pinned to the pixel by `e2e/inputs-calendar.spec.ts` (D687).
+- **A day opened is a window on the shell** (`win-inputsday`, D641, D648): no veil, an outside press leaves it up,
+  another date re-points it; on a phone a panel at two heights; on a desktop beside the month, the page making room.
+  **On a phone it OPENS at the tall height (owner D683, 9 Oct 26 — from his iPhone; `FloatWin tallFirst`), every
+  time; its bar still brings it down to two-thirds and back. An admin's "+ Note" and "+ Pucks" are in the window's
+  BAR, after the date and before the cross (`FloatWin tools` — `.win-tools`; a press on one is the button's, never
+  the bar's: no drag, no change of height), on a desktop too; a member's bar carries the date alone. On a phone the
+  title box and "+ Input" are 38px (his word for these two — D487), the two bar buttons 36 by at least 44.** The
+  SANS calendar's day is unchanged: it opens at the lower height (D648).
+  Its title and "+ Input" are pinned; the planning sections and then one line an entry scroll under them — who, the
+  kind, when ("All day", the hours, or the day it runs till), a remark, the LATE tag (pressed, it says the cut-off
+  missed — D646) and who placed it (D629). Everyone is listed; never "+ more".
+- **A saved or brought-back input is shown WHERE IT IS** (D672 and its reading 9): the month turns to it if needed;
+  its bar flashes — brought on screen first if scrolled away — and nothing opens. Only an input with no bar on the
+  month (behind "+N more", let through by no filter), or a save made from an open day, opens the day.
+- **The gear** (the cog glyph, admins — D635) opens the Inputs calendar's settings window (`win-inputsset`):
+  "Calendar…" (D675), the late cut-off for inputs (D628, D639 — the INPUTS set; the SANS calendar's is its own), and
+  the switch "Members may file duties and commitments for other people" (D654, D655). A draft until Save; a bad
+  cut-off saves neither; each change one Undo step. **The Logic page lists both cut-offs and the switch, and each
+  row's button opens that same window — nothing of a cut-off is typed on the Logic page.**
+- **Who placed it** (D629) is on every place an entry is listed or opened: both opened days, the List (under the
+  remark), the editor's foot, a Medical card (asking for no width of its own) and the document viewer (following the
+  page of an episode). The demo data carries made-up stamps — never a member as the filer of another man's input.
+- **The input editor is a window on the Inputs page** (`win-inputedit`, D641) and the blocking dialog elsewhere. Behind
+  a window the record can change, so **it never saves a field its user did not change**: a field he has not touched
+  takes the live value silently; a field changed both ways is listed, theirs and his, and Save waits for his choice
+  (asked again after any blocking question); a record that has gone closes the window and says so; a record put back
+  as a new object by a refusal or an Undo is followed without losing what he typed; another input asked for over
+  unsaved changes is asked about in the window. *(Two corrections from the job's bug check, 8 Oct 26: WHO IT IS FOR is
+  unsaved work too — a person picked or un-picked, compared as a set against the people it opened with, asks the same
+  question (it used to be thrown away without a word); and while it asks, the window follows only the record it is
+  SHOWING — it used to take the other input for its own record changed behind it, say "Changed while this window was
+  open: people — X added, Y taken off" twice over, and put the saved people back. Pinned `ui/editorwindow.test.tsx`
+  "a change of the PEOPLE alone is unsaved work too".)*
+Pins: `ui/inputscal-model.test.ts`, `ui/inputstabs.test.tsx`, `ui/inputsmonth.test.tsx`, `ui/barmove.test.tsx`,
+`ui/inputsday.test.tsx`, `ui/inputskeys.test.tsx`, `ui/inputssettings.test.tsx`, `ui/logicdoors.test.tsx`,
+`ui/placedshown.test.tsx`, `ui/editorwindow.test.tsx`, `ui/placedline.test.ts`, `state/demostamps.test.ts`,
+`ui/sansform.test.tsx`; in a browser `e2e/inputs-calendar.spec.ts`. Pictures: `scripts/handpass/inputs-look.mjs`.
+### One input filed for several people — the picker, and a shared input as ONE thing (step 5's last piece, 8 Oct 26; D654–D656, D658–D660, D663)
+
+Kept as one record a man tied by a group id (`state/inputgroup.ts`; the no-screen half is the plan's §3.13 "AS BUILT"). "One
+thing" is made on the Inputs page only — and by ONE function, `entriesOf` / `entryRowsOf`: a screen that draws inputs
+without it shows a group as separate lines.
+
+- **The people picker (`ui/PeoplePick.tsx`, D656, D659).** One person from the A-to-Z list by default; a "Several people"
+  switch (`pp-several`, `role="switch"`) shows the schedule's own pucks (`html.ts puck()`, never a look-alike) as buttons
+  (`data-pp`, `aria-pressed`) in groups — Pilots, WSOs, SANS, and Personnel only where the roster holds ground crew — each
+  A to Z, with "All" on Pilots, WSOs and Personnel (a second press clears that group, never the last man) and a count line.
+  Four across at phone width, each a 36px target; 86px columns where there is room. **A DRAG ACROSS THE PUCKS PICKS
+  EVERY ONE IT PASSES (owner D685, 9 Oct 26 — from his iPhone):** the drag does what its FIRST puck does — begun on a
+  man not picked it picks, begun on a picked man it lets go, never the last one — and runs across the headings (the
+  pointer handlers are on `.pp-body`; the puck under the point is asked of the page). On a phone it starts SIDEWAYS:
+  the pucks say `touch-action:pan-y`, so a finger moved up or down is still the list being scrolled, and one moved
+  sideways is the picker's and may then run down into other rows; with a mouse any drag picks. A plain press is
+  still the button's click; the click a browser sends after a drag is swallowed. It holds no state: its owner keeps the
+  people in the order picked (the first is the one kept on the way back to one person). **Where it shows:** the editor
+  window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids,
+  `inPerson` / `inPersonFixed`, and its posted-out group kept). The board's and the week's dialogs keep their one list.
+  **So the page holds TWO pickers when the editor is open** (the form's is under the calendar): a test asks for
+  `#inpEditPop [data-testid="pp…"]`.
+- **Who may pick whom** is asked of `state/perms.ts`: an admin anyone, and several on every kind but the medical ones and
+  the upchit; a member another man only for a duty or commitment while the members' switch is on, never SANS
+  availability; on the SANS calendar the people offered are the SANS people only. **Nothing is substituted for what was
+  picked:** people he may not file the kind for stay shown, with the sentence and the one press that corrects it
+  (`pickProblem` — `pp-why`, `pp-fix`), and Save / Add refuses with that same sentence.
+- **The editor opened on ANY record of a shared input holds the ENTRY** (title "Drifter +3 · 23 Jul"; the people lit; the
+  shared fields). Save is one command (`commitGroup`), and so is a save for more than one man from a new input. The OIL
+  question is asked ONCE and its answer written for every man (D660); a man added to an entry already answered brings the
+  sheet back, the standing answers ticked. **When the filer (or an admin) answers the question again, the answer is
+  written for EVERY man of the entry — a man's own earlier answer, a No included, is replaced; the latest answer is the
+  one that counts, a man may change his own again afterwards, and the scheduler's refusal on the day still wins (his
+  ruling, D682, 9 Oct 26 — confirming what the walk showed).** That holds on EVERY route the question comes back by —
+  the hours or the dates changed, "Change…", and a man ADDED or taken off (`commitGroup`: `forAll` — the answer goes
+  on every record kept, changed or not, when whoever gives it may change the input for everyone; a man who may only
+  add somebody answers for the man he adds and nobody else). Its filer and an admin change it; **a man in it who did not file it** reads it
+  and has two things of his own, drawn outside the read-only form — "Take me out" (asked first: `inped-takeout-ask`) and
+  his own OIL answer; **anyone else** reads "Only its people, Saber — who filed it — or an admin can change this."
+  Delete asks "Delete this input for all N people?" (`inped-delall`; `removeEntry` — one command). A man added or taken
+  off on the page behind the window is followed in it and said once; if the very record the window was opened on goes
+  while the entry lives on, the window holds the rest.
+- **Its DATES are changed in its window (owner D681, 9 Oct 26; built the same day — `ui/inputedit.tsx datesHere`).** On
+  the Inputs page, the window of a SAVED entry of more than one man carries the two-tap calendar a new input has
+  (`#inpEditPop #inpEdCal`, `ui/RangeCal.tsx`) — for a reader who may change it for everyone (its filer, an admin:
+  the window is not read only), never for a man in it who did not file it, never for anyone else, never in the
+  board's or the week's dialog (there a moved span would take the row off the day it was opened from), and not for
+  an ordinary one-man input, which keeps its row in the List and its bar. **A saved input's dates are a finished
+  range, so the first tap is always the NEW START and the next the new end** (a one-day input is handed to the
+  calendar as a range of one day until that first tap — `midPick`); one tap and Save is a one-day input. The title
+  keeps the saved dates; the line under the calendar (`.rc-read`) says what Save will write. Save is the entry's
+  ONE command (`commitGroup`, one Undo): the OIL question is asked of every man kept where the new days need it
+  (D660, D682), a refusal for one man refuses it for everyone in words that name him, and the remark's "till" word
+  follows the new last day in the save (`commitInputEdit`) — the picker itself never rewrites the remark, or the
+  window would read it as his own change. **The effective remark is worked out once, in `commitGroup`, and is what
+  every man is saved with, kept or ADDED** — a man added in the same save as new dates otherwise kept the old last
+  day, and remarks being part of what makes the records one entry, one input came out as two. **Dates are compared
+  as dates, not as their printed labels** (a label carries no year inside the loaded one: a move of exactly a year
+  read as no change). Dates moved behind the open window (a bar dragged) are followed in it — **unless he has
+  TAPPED the calendar (`datesPicked`): a tapped date is his even where the tap was on the day already saved, so a
+  move behind him then ASKS ("Keep mine" / "Take theirs")**; "Take theirs" makes the dates a finished range again,
+  so the next tap is a new start. The calendar is made again whenever the window takes another record's dates
+  (`calKey`), never on a tap — its month is seeded once, and it had been seeded from the input held before.
+  A bar's drag still moves the input as it is, its length kept. Tests: `ui/groupeditor.test.tsx` ("the dates of a
+  saved shared input…"), `e2e/inputs-calendar.spec.ts` (two, D681); the walk `scripts/handpass/cal-host-dates.mjs`.
+- **The month:** one bar, "Drifter +3 · Meeting". A drag moves every record in one command for whoever may change all of
+  it; for a man in it who did not file it, and for anyone else, the bar does not lift (`caldrag.ts`).
+- **A day opened:** one line — "Drifter +3", the kind, the hours, the remark, its people as pucks (`idy-people`), "Placed by
+  Saber for 4 people · …". LATE beside the man whose own record is late (`idy-late-<person>`); where every man is late
+  alike, LATE once on the line, as an ordinary input. Delete on the line: "Delete this input for all N people?" for its
+  filer or an admin; "Take yourself out of this input?" for a man in it; anyone else is told who can.
+- **The List:** one row, its Name "Drifter +3" with everyone in the title, shown when ANY of its people passes the filter.
+  ONE button (✎) that opens the editor window — for everyone, to change it or to read it. No edit in place, no ✕ and no
+  OIL chip on that row: each would act on the first man's record alone.
+- **The changes window (D663):** "Group by: Item" files the lines of one filing under one item — "Input · Meeting · 4
+  people" — each line naming its man; a later change to one man alone is its own line under it. A line each is still
+  written (each carries its record's `grp`); "Group by: Who" and the day's count are as they were.
+- **Everywhere else it is one input a man, unchanged:** the board's and the week's rows, the warnings, the Leave War,
+  the bell, a published day's pending count, print and export. The schedule's one row for a group is its own job
+  (`[GROUP-INPUT-ONE-ROW]`, D661, D662).
+
+## Inputs calendar and SANS demand — D580
+
+**SUPERSEDED WHOLE, 8 Oct 26:** the SANS half by "The SANS calendar" just above — what this section says of SANS cells
+showing "offered/required", amber and red from two cut-offs, an admin editing the target and the flying period in the
+day's details, "Select dates" on the SANS calendar, the SANS mode's own filters and its List is the first build's and
+is gone; the Inputs half by "The Inputs calendar" (step 5: three tabs, a month of bars, the day and the editor as
+windows; D672 for what a saved input shows). The text below is the first build's record, unchanged.
+
+D581: every SANS date shows unique people offering F/Fly, O/OFT and A/AMT,
+independent of filters and using existing covered-date/year semantics. The flying
+target and deficit colour remain Fly-only; other activities have counts, no
+invented requirements. A multi-activity person counts once in each offered activity.
+D582: simplify the existing Inputs header and entry hierarchy; preserve its two
+modes, Calendar/List, Medical access/counts and filters/export. Concrete compact
+layout is delegated by D580, with pre-source pictures and independent challenge.
+Built arrangement: category first, compact Calendar/List plus quiet Medical/Filters next.
+Phone native person/type/search fields fold out of keyboard order; applied summary and
+Clear filters stay visible. Desktop fields stay expanded in the same DOM. Clear changes
+current-mode person/type/search only, preserving List dates and other-mode memory.
+Folding alone retains saved-row reveal. Every action stays at least44px high.
+
+Inputs opens within the app on Calendar; List remains reachable with existing filters and export.
+Member Inputs and SANS Availability are separate modes with independently retained person/search
+filters. SANS cells show offered/required and textual shortage; amber/red use inclusive global
+cutoffs, red first. Unset and explicit zero stay neutral. Counts ignore filters; day details state
+when rows are filtered and show each offer's F/O/A and All day/custom hours. Admin edits target,
+flying period and colour baselines; members read demand and edit their own eligible offers only.
+Desktop details sit beside the month; phone details scroll below a reachable header/close.
+Empty-cell primary mouse drag selects inclusive dates; phone/keyboard Select dates uses two picks,
+month arrows, Cancel/Escape and ordinary shared Save. Touch scrolling/swiping and chip drag remain
+separate. Each day is Enter/Space reachable. Saved inputs hidden by a filter are retained in day
+view; changing modes clears transient selection. No remarks placeholder, no inferred weather icon.
+Successful Inputs saves reveal the actual retained row in its correct mode and date in Calendar/List,
+including edits and confirmed medical/OIL paths. Remembered filters remain unchanged; a deliberate
+filter/mode change, leaving Inputs or session reset releases the temporary reveal. Only a live row
+of the current mode may be pinned. Undo/Redo follows the restored row; addition Undo never resurrects
+a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes and pucks live.
+
 ## The failed-save warning has a band of its own (owner, 5 Oct 26 — D586, D587; `[SAVE-NOTE-COVERS]`)
 
 **The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
@@ -8893,7 +9698,13 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
 - **A full-screen surface that lies over the top bar carries the same warning under its own bar** (`SaveBand`, in the
   flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
   view (between the head and the body), and the Leave War's full-screen OIL tracker — its grid and its settings (under
-  the sheet's head). There the bar's own warning cannot be seen. A window, a sheet or the phone's menu is a short visit
+  the sheet's head). There the bar's own warning cannot be seen. **Since the calendar-first Inputs (D574/D580 — joined
+  with this rule on 7 Oct 26) the Inputs calendar is PART OF THE INPUTS PAGE, not a surface over the top bar: there it
+  carries NO band, and the bar's own warning is the one seen** (`InputsCal.tsx`: the band only when not `embedded`; a
+  band in the embedded calendar hid the bar's copy and left an empty line in the bar — `e2e/save-note.spec.ts` pins
+  both). **Since the three tabs (D620, D626 — 8 Oct 26) the Medical view is a TAB of the Inputs page too: it sits in the
+  page under the tabs (`.medview.in-page`), has no close cross and carries NO band — the bar's own warning is the one
+  seen** (`MedicalView.tsx`: the band only when it is given a close of its own). A window, a sheet or the phone's menu is a short visit
   and has none — the bar's is there when it closes. **What decides it is the surface, not its component's name:** full
   screen and worked in (the OIL tracker is a `Sheet`) carries the band.
 - **One warning at a time for a screen reader and the keyboard:** while a `SaveBand` shows, the bar's copy beneath it is

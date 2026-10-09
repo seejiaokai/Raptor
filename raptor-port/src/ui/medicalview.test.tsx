@@ -133,8 +133,11 @@ describe('the Medical view', () => {
     expect($('#medCalBtn').textContent).toContain('3 Jul')
     await click($('#medToday'))
   })
-  it('closes back to the list', async () => {
-    await click($('#medClose'))
+  /* Medical is a TAB of the Inputs page since the three tabs (D620, D626): it has no close cross of its own, and is
+     left by choosing another tab */
+  it('is left by choosing the Inputs tab', async () => {
+    expect($('#medClose')).toBeNull()
+    await click($('#inMemberMode'))
     expect($('#medView')).toBeNull()
   })
 })

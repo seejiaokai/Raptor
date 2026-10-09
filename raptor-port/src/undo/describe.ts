@@ -93,6 +93,7 @@ const SETTING_PHRASE: Record<string, string> = {
   stores: 'the stores list',
   cxreasons: 'the cancel reasons',
   guestview: 'the guest switch',
+  sanscalendar: 'the SANS calendar’s day colours',
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -183,8 +184,32 @@ function lwCellLabel(entry: UndoEntry): string | null {
   if (removed.req && !added.req) return who ? `removing ${who}’s bid` : 'removing a bid'
   return who ? `${who}’s leave` : 'leave on the Leave War'
 }
+/* THE HOLIDAYS LIST'S STEPS, in his words (the Inputs / SANS redesign, plan §3.4) — from the note the command left
+   (leavewar/state/store.ts holidayRun): what it did, the kind, the dates */
+function holidayLabel(entry: UndoEntry): string {
+  let d: any = null
+  try { d = JSON.parse(entry.detail || 'null') } catch { /* no note */ }
+  const dated = d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from)) && /^\d{4}-\d{2}-\d{2}$/.test(String(d.to))
+  const on = dated ? ` on ${flySpan([String(d.from), String(d.to)])}` : ''
+  const off = d && d.kind === 'off'
+  if (entry.type === 'lw.holiday.remove') return `removing the ${off ? 'Off day' : 'public holiday'}${on}`
+  if (entry.type === 'lw.holiday.change') return `a change to the ${off ? 'Off day' : 'public holiday'}${on}`
+  return `${off ? 'an Off day' : 'a public holiday'}${on}`
+}
+/* THE EVENT SHEET'S STEPS (the plan §3.12) — from the note the command left (leavewar/state/store.ts saveEvent /
+   deleteEvent): the event's name and its dates. `the event “National Day” on 12–14 May`. */
+function eventLabel(entry: UndoEntry): string {
+  let d: any = null
+  try { d = JSON.parse(entry.detail || 'null') } catch { /* no note */ }
+  const dated = d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from)) && /^\d{4}-\d{2}-\d{2}$/.test(String(d.to))
+  const on = dated ? ` on ${flySpan([String(d.from), String(d.to)])}` : ''
+  const name = d && typeof d.text === 'string' && d.text.trim() ? `the event “${d.text.trim()}”` : 'an event'
+  return `${entry.type === 'lw.event.remove' ? 'removing ' : ''}${name}${on}`
+}
 function lwLabel(entry: UndoEntry): string {
   if (entry.type === 'lw.stage') return stageLabel(entry) || 'a stage change on the Leave War'
+  if (entry.type.startsWith('lw.holiday.')) return holidayLabel(entry)
+  if (entry.type.startsWith('lw.event.')) return eventLabel(entry)
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   const colls = new Set(entry.forward.map(c => c.collection))
   const cell = lwCellLabel(entry)
@@ -272,7 +297,45 @@ function inputsCount(entry: UndoEntry): number {
   return entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order').length
 }
 
+/* THE FLYING PLAN'S STEPS, in his words (the Inputs / SANS redesign, plan §3.2). Dates are read off the rows' own ids
+   and worked out through UTC, so the words are the same in every time zone. */
+const FLY_WD = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays']
+const FLY_DAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const FLY_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const FLY_AS: Record<string, string> = { nf: 'no-fly days', night: 'night flying', day: 'day flying', none: 'days with no flying set' }
+const flyDM = (iso: string) => `${+iso.slice(8, 10)} ${FLY_MON[+iso.slice(5, 7) - 1]}`
+const flyWDM = (iso: string) => `${FLY_DAY[new Date(iso + 'T12:00:00Z').getUTCDay()]} ${flyDM(iso)}`
+/* "12 Jan", "12–16 Jan", "30 Jan – 3 Feb" */
+function flySpan(isos: string[]): string {
+  const a = isos[0], b = isos[isos.length - 1]
+  if (a === b) return flyDM(a)
+  return a.slice(0, 7) === b.slice(0, 7) ? `${+a.slice(8, 10)}–${flyDM(b)}` : `${flyDM(a)} – ${flyDM(b)}`
+}
+function describeFly(entry: UndoEntry): string | null {
+  const rows = (entry.forward || []).filter(c => c.collection === 'settings')
+  if (entry.type === 'fly.day.set') {
+    const days = rows.filter(c => c.id.startsWith('flyday:'))
+    const isos = days.map(c => c.id.slice(7)).sort()
+    if (!isos.length) return 'a day of the flying plan'
+    const fig = (v: any, s: string) => (v && v[s] != null ? v[s] : null)
+    const figures = days.some(c => fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w'))
+    return figures ? `the required pilots and WSOs for ${flySpan(isos)}`
+      : `day or night flying on ${isos.length === 1 ? flyWDM(isos[0]) : flySpan(isos)}`
+  }
+  if (entry.type === 'fly.rule.set' || entry.type === 'fly.rule.remove') {
+    const c = rows.find(x => x.id.startsWith('flyrule:'))
+    const r: any = c && (c.after || c.before)
+    return r && FLY_WD[r.wd] ? `${FLY_WD[r.wd]} as ${FLY_AS[r.cls] || 'set'} from ${flyDM(String(r.from))}` : 'a repeating day of the flying plan'
+  }
+  if (entry.type === 'fly.run.set') {
+    const c = rows.find(x => x.id.startsWith('flyrun:'))
+    return c ? `a required figure running from ${flyDM(c.id.slice(7))}` : 'a running required figure'
+  }
+  return null
+}
+
 export function describeEntry(entry: UndoEntry): string {
+  if (typeof entry.type === 'string' && entry.type.startsWith('fly.')) { const s = describeFly(entry); if (s) return s }
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'insights.role.set') {
@@ -301,6 +364,11 @@ export function describeEntry(entry: UndoEntry): string {
   if (entry.type === 'people.edit') return peopleLabel(entry) || genericLabel(entry)
   if (entry.type.startsWith('settings.')) {
     const k = entry.type.slice('settings.'.length)
+    /* the members' switch says which way it went (the plan §3.13): stored only when OFF, so no record = on */
+    if (k === 'memberfile') {
+      const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'memberfile')
+      return `members filing for other people — ${ch && ch.op !== 'delete' && ch.after === false ? 'off' : 'on'}`
+    }
     return SETTING_PHRASE[k] || 'a settings change'
   }
   return genericLabel(entry)

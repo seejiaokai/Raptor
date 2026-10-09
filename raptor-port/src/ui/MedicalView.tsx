@@ -20,6 +20,7 @@
    your own puck or an admin, and on a Pending card the Upchit path itself.
    This view deliberately ignores the table's filter bar: it is the
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
+import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { inpType } from '../engine/inputs'
@@ -89,11 +90,13 @@ function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolea
       <span className="medcard-t">{line}</span>
       {n > 1 ? <span className="medcard-docn">{n} documents</span> : null}
       {remarkNote(r.remarks) ? <span className="medcard-r" title={r.remarks}>{r.remarks}</span> : null}
+      {/* who placed this entry and when (owner D629 — "wherever an entry is listed or opened"; ui/placedline.ts) */}
+      {placedLine(r) ? <span className="medcard-placed" data-testid="medcard-placed">{placedLine(r)}</span> : null}
     </button>
   )
 }
 
-export function MedicalView({ onClose }: { onClose: () => void }) {
+export function MedicalView({ onClose }: { onClose?: () => void }) {
   useVersion()
   const todayIso = keyToIso(TODAY)
   const asOf = MEDASOF || todayIso
@@ -139,7 +142,7 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
   }, [calOpen])
 
   return (
-    <div className="inpcal medview" id="medView">
+    <div className={'inpcal medview' + (onClose ? '' : ' in-page')} id="medView">
       <div className="ic-head">
         <b className="med-title">Medical</b>
         {/* the as-of control: which day the three sections describe. A pick
@@ -151,8 +154,9 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
         </button>
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
         <span style={{ flex: 1 }}></span>
-        <button type="button" className="abtn" id="medClose" aria-label="Back to list"
-          title="Back to list" onClick={onClose}>✕</button>
+        {/* no cross where Medical is a TAB of the Inputs page (D626): a tab is left by choosing another */}
+        {onClose && <button type="button" className="abtn" id="medClose" aria-label="Back to list"
+          title="Back to list" onClick={onClose}>✕</button>}
         {/* the as-of picker is a FLOATING dropdown, not an in-flow band — it
             overlays the sections rather than shoving them down (owner, 27 Aug).
             Anchored to the header (position:relative) so it hangs from the bar
@@ -182,7 +186,10 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
       </div>
       {/* a failed save's warning, under this full-screen surface's own bar — it lies over the top bar, whose own
           warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
-      <SaveBand />
+      {/* a failed save's warning under this surface's own bar — ONLY where it lies over the top bar (opened with a close
+          cross of its own). As a TAB of the Inputs page (D620, D626) it sits in the page, under the tabs: the top bar is
+          in view and carries the warning itself, as it does for the Inputs calendar ([SAVE-NOTE-COVERS], D587). */}
+      {onClose && <SaveBand />}
       <div className="med-body">
         <section className="medsec med-down">
           <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span>

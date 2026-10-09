@@ -35,6 +35,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
   and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
   `< /dev/null`.
+- **`gatelock.mjs run --from <folder>` is read from the folder the command runs in** (met 7 Oct 26): started from inside
+  `raptor-port/` with `--from raptor-port`, it looks for `raptor-port/raptor-port`, and all seven gates "FAIL" in 0 seconds
+  with empty logs — a launch fault, not a result. From inside `raptor-port/` leave `--from` out (it defaults to that folder).
 - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,
   so once it carries code any push — even notes-only — restarts every gate and cancels the run in progress. The
   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.

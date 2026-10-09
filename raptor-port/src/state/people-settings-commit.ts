@@ -54,6 +54,8 @@ import { mintOrd, byOrd } from '../command/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
 import { insightsLoad } from '../engine/insights-config'
+import { flyplanLoad } from './flyplan'
+import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
 
 /* ---- the SETTINGS EnlistableStore ---------------------------------------- */
 /* the 11 durable settings keys (design §3.1). `wavetpl` + `wavehide` are two
@@ -64,7 +66,14 @@ export const SETTINGS_KEYS = [
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
   /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
      state/accounts.ts, through its intent commands. */
-  'guestview', 'insights',
+  'guestview', 'insights', 'sanscalendar',
+  /* (`flynames` — a saved name for each of the Leave War's Required rows — stood here from step 1 of the Inputs / SANS
+     redesign until 8 Oct 26: D668, the Required rows keep their names.) */
+  /* the members' switch — "members may file duties and commitments for other people" (D654, D655; the plan §3.13).
+     A boolean, absent = ON. Listed HERE or it would be written raw, outside permission and Undo (the hook below
+     writes an unlisted key straight through). Written ONLY by state/memberfile.ts, through `settings.memberfile`;
+     read by state/perms.ts membersFileOn. */
+  'memberfile',
 ] as const
 /* THE SETTINGS RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 4 — plan §2.5's matrix, §2.9: the command
    layer's records follow the storage grain). Each row is its own record, `settings/<prefix><id>`, found by its prefix:
@@ -75,7 +84,11 @@ export const SETTINGS_KEYS = [
      written ONLY by state/changes.ts, through its one command `changes.seen` (own row only — D170).
    The change history's own lines (`elog:<lineId>`) are NOT records here: written raw by engine/editlog.ts inside the
    command that made them, never undone (the log is not in any Undo). */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:'] as const
+/* - `flyday:<iso>`, `flyrule:<id>`, `flyrun:<iso>` — the flying plan (state/flyplan.ts; the plan §3.2): what is set
+     for one date, a weekday's repeating rule, a required figure running from a date. (`sansday:<iso>`, the first calendar build's
+     day row, went with that build's SANS screen on 8 Oct 26 — the plan §3.10; it never left this branch, and a row of
+     it still sitting in a browser's storage is read by nothing.) */
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', ...FLY_ROW_PREFIXES] as const
 const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
@@ -87,7 +100,7 @@ function settingsRecordKeys(): string[] {
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
 const SETTINGS_LOADERS: Array<() => void> = [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
-  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad, insightsLoad,
+  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad, insightsLoad, flyplanLoad,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -313,6 +326,7 @@ export function registerPeopleSettingsCommandLayer(): void {
      COMMAND_OPS through the resolver store.ts wireStore installs */
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   for (const t of CHANGES_TYPES) definePermission(t, anyone)
+  for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
   // route every durable settings write (store.set) through a named command.
@@ -320,6 +334,9 @@ export function registerPeopleSettingsCommandLayer(): void {
   // or for an unknown key, write raw so nothing nests or is refused-and-lost.
   setSettingsWriteHook((k, v, raw) => {
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
+    if (!isCommitting() && k === 'sanscalendar') throw new Error('SANS calendar settings require the typed settings command')
+    if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
+    if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))
   })

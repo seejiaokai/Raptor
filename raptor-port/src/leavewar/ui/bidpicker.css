@@ -45,6 +45,15 @@
   touch-action: pan-y;
 }
 
+/* A SHEET RAISED ABOVE THE SCHEDULER'S MOVABLE WINDOWS (Sheet.tsx `raised` — the New-period sheet the Holidays list in
+   Days asks for, ui/warask.ts). Those windows sit at 410 / 411 (ui/scheduler/22-float-windows.css) and on a phone Days
+   fills the screen, so at this sheet's own layer (79 / 80) it would open unseen behind the window that asked for it.
+   480 / 481: above the windows and the scheduler's own modal (470) — it is the question now being asked.
+   (Kept HERE, inside the file's #page-leavewar wrapper: written after the wrapper's close it loses to the id-scoped
+   `.bidsheet` rule below and the sheet stays at 80 — seen in the first look, on a phone, where Days hid it whole.) */
+.sheetscrim.raised { z-index: 480; }
+.bidsheet.raised { z-index: 481; }
+
 .bidsheet {
   position: fixed;
   z-index: 80;
@@ -860,9 +869,34 @@
   padding: 10px 14px 4px;
 }
 
+/* THE COUNTER WINDOW'S THREE BUTTONS NO LONGER LOOK ALIKE (owner, D673, 8 Oct 26 — "Can delete counter button be red,
+   save counter be another colour like green or blue, similar to the rest of the app"). Save is the app's FILLED save
+   button (the Event sheet's Save beside it is this blue); Cancel stays the plain outline; Delete is red — an outline
+   until it is armed, solid on "Really delete?". This narrows D332 ("Delete … in a dashed grey edge, not red") for this
+   window only: that rule kept Delete from reading as "Refuse" beside the bid buttons, and there is no Refuse here. */
 .creset.pri {
-  border-color: rgba(59, 198, 232, .5);
-  color: var(--ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink, #052A34);
+}
+.creset.pri:hover {
+  border-color: var(--accent);
+  color: var(--accent-ink, #052A34);
+  filter: brightness(1.08);
+}
+.creset.cf-del {
+  background: transparent;
+  border-color: rgba(240, 85, 95, .6);
+  color: #FBB4B9;
+}
+.creset.cf-del:hover {
+  border-color: #F0555F;
+  color: #FFD9DC;
+}
+.creset.cf-del.arm {
+  background: #F0555F;
+  border-color: #F0555F;
+  color: #1A0508;
 }
 
 .creset:disabled {
@@ -930,10 +964,8 @@
   cursor: default;
 }
 
-.bidsheet .cf-del.arm {
-  border-color: rgba(255, 92, 92, .6);
-  color: #ff5c5c;
-}
+/* (the counter window's Delete, armed, is solid red since D673 — `.creset.cf-del.arm` above; the older red-outline rule
+   that sat here is folded into it) */
 
 /* The published-stage remarks editor's field (owner, 27 Aug 26). A plain
    multi-line note box in the sheet's panel tones; the row stacks its label
@@ -1248,3 +1280,83 @@
   padding-bottom: 2px;
 }
 
+/* THE REQUIRED PANEL (ReqPanel.tsx; the Inputs / SANS redesign, plan §3.3 "Picking several"; owner D636, D637) — drawn
+   as the fifth mock-ups show it: a large number box, "one number for the 10 picked cells" beside it, the two "Apply
+   to" chips, and Apply at the right. It is one of the two NON-BLOCKING windows (D641 — `.bidsheet.nonmodal`, no veil
+   behind it), so it wears a slightly brighter edge than a blocking sheet: nothing else says "this one floats". */
+.bidsheet.nonmodal {
+  border-color: var(--edge-2, var(--edge));
+}
+
+/* 22px, never under 16: an input smaller than that makes iOS zoom the page when it takes the focus */
+.bidsheet .reqnum {
+  width: 76px;
+  box-sizing: border-box;
+  padding: 7px 8px;
+  text-align: center;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: #0A0E13;
+  border: 2px solid var(--accent);
+  border-radius: 9px;
+  outline: none;
+  caret-color: var(--accent);
+}
+
+.bidsheet .reqp-num .note {
+  margin-left: 8px;
+  /* beside the box, never wrapped under it: a note's own 220px basis would push it to the next line on a phone */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Clear and Apply, pushed to the row's right edge; on a phone the row wraps and they take the next line's end */
+.bidsheet .reqp-do {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bidsheet .reqapply {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 9px 20px;
+  min-height: 40px;
+  color: #06222B;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.bidsheet .reqapply:disabled,
+.bidsheet .tchip.clear:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+/* "Include" / "Leave out" — a word in the sentence that is also the press */
+.bidsheet .reqp-inc {
+  margin-left: 8px;
+  padding: 3px 9px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid rgba(59, 198, 232, .55);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+@media (max-width: 430px) {
+  .bidsheet .reqapply { min-height: 44px; }
+  .bidsheet .reqp-apply .pchip,
+  .bidsheet .reqp-do .tchip { min-height: 40px; }
+  .bidsheet .reqp-inc { padding: 8px 12px; }
+}

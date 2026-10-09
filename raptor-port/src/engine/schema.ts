@@ -217,6 +217,27 @@ export type Input = {
    *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
    *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
   leftAt?: Record<string, number>
+  /** Who PLACED it: the signed-in person (a PEOPLE id) who filed it — which can differ from `person`, the man it is
+   *  for (an admin filing for a member, an approval on the Leave War). Absent on a record filed before 7 Oct 26, or
+   *  with nobody signed in — it then shows no "placed by" line. Never changed by an edit; a piece cut from a record
+   *  carries that record's — screen (state/inputstamp.ts stampPlaced; owner D629). */
+  by?: string
+  /** When it was placed — the moment, ms since the epoch (never a calendar day) — screen (state/inputstamp.ts). */
+  at?: number
+  /** Who last CHANGED it (a PEOPLE id); equal to `by` on a record nobody has changed. Absent when the last change was
+   *  the app's own act — a posting that ran by itself on its date — screen (state/inputstamp.ts stampChanged). */
+  modBy?: string
+  /** When it was last changed, ms; equal to `at` on a record nobody has changed. Beside `mod`, never instead of it:
+   *  `mod` is the DATE the late rule reads and is written exactly as before — screen (state/inputstamp.ts). */
+  modAt?: number
+  /** A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. The
+   *  group is kept as one record per man (every reader reads one man's), and an "entry" is worked out on read: the
+   *  records sharing a `grp` AND the same shared fields (state/inputgroup.ts entriesOf; owner D654, D655). */
+  grp?: string
+  /** The ENTRY'S FILER (a PEOPLE id) — the same on every record of the group, never changed once set; what lets the
+   *  member who filed a shared input change the whole of it, whoever later added a man (state/perms.ts). `by` stays
+   *  the truth of who placed THIS man's record. Always with `grp`, never alone. */
+  grpBy?: string
 }
 
 /* ---------------------------------------------------------------------------
@@ -716,6 +737,7 @@ export type RetractionRow = { at: string; by: string | null; restoreSeq?: number
 export const VCONF_KEYS = [
   'briefLead', 'dur', 'step', 'dekit', 'minTurn', 'tightTurn', 'crewRest', 'debrief', 'reportLead', 'reportText',
   'longDay', 'epBrief', 'simDebrief', 'amtDebrief', 'openEnd', 'maxRun', 'inputLead',
+  'inputCutMode', 'inputCutWd', 'inputCutWeeks', 'sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks',
   'scDayFrom', 'scDayTo', 'simLen', 'oilFullMin',
 ] as const
 export type VConfKey = (typeof VCONF_KEYS)[number]

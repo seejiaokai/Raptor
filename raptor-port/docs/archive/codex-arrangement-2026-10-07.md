@@ -184,3 +184,19 @@ priority list.
 Rewrite ONLY your own block under `## Now` in `HANDOFF.md` (the shape is at the head of that file): what you
 built, on which branch, what was checked and how, every read owed to Claude, and what is next. Commit and push the
 branch. Monday's Claude chat starts from that block.
+
+## AGENTS.md on the branch `codex/inputs-sans-calendar` — the lines Codex added there on 5 Oct 26
+
+Moved whole on 7 Oct 26, when the live version was brought into the calendar's working branch (`claude/inputs-sans-calendar`)
+and `AGENTS.md` took the live version's text. They stood at the head of "The order of work (D495) and how to plan it with
+him" (above). The rulings they name are in `.claude/rules/decisions/scheduler.md`; his hold (D585) was ended by D614, and
+Opus 5.5 builds the calendars from here (D615).
+
+**Current owner direction — D568/D580, 5 Oct 26:** the immediate D567 caps/ops
+new-chat handoff is cancelled; no new chat was created. The replacement task is
+[SANS-COMMITMENT-CALENDAR] Inputs/SANS build is authorized from delegated recommendations
+under D580 while the owner sleeps. Caps/ops, other Inputs work
+and Tracker remain outstanding. All hard limits, checks and owed reads remain.
+See `OUTSTANDING.md` and the D569 SANS design-start note linked there.
+
+**Original D495 order (reference; no automatic start under D568):**

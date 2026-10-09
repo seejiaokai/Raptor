@@ -33,9 +33,16 @@ function nextFreeDay(): string {
   return ends.length ? addDays(ends.reduce((a, b) => (a > b ? a : b)), 1) : localToday().slice(0, 8) + '01'
 }
 
-export function WarSheet({ onClose }: { onClose: () => void }) {
+export function WarSheet({ onClose, initial = null, raised = false }: {
+  onClose: () => void
+  /** dates already picked when it opens — the run no leave period covers, when the Holidays list in Days asked for the
+   *  sheet (ui/warask.ts); he may still change them. "+ New" opens it with none. */
+  initial?: Range | null
+  /** drawn above the scheduler's movable windows — set with `initial`, for the same ask (Sheet.tsx) */
+  raised?: boolean
+}) {
   const [name, setName] = useState('')
-  const [range, setRange] = useState<Range | null>(null)
+  const [range, setRange] = useState<Range | null>(initial)
   const start = range?.from ?? ''
   const end = range?.to ?? ''
   // A refusal has to SAY why, or the button reads as broken. The store
@@ -75,7 +82,7 @@ export function WarSheet({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Sheet testid="war-sheet" label="New leave war" onClose={onClose}>
+    <Sheet testid="war-sheet" label="New leave war" onClose={onClose} raised={raised}>
       <div className="bidsheet-hd">
         <span className="who">NEW LEAVE WAR</span>
         <button className="x" data-testid="war-cancel" onClick={onClose} aria-label="Cancel">

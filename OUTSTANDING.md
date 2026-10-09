@@ -48,6 +48,22 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**Straight after the Inputs / SANS calendar job, as its own job (D662, 7 Oct 26 — ahead of the Tracker batch unless he says otherwise):** [GROUP-INPUT-ONE-ROW] — on the schedule a group input is ONE row holding everyone (D661); not built, and its rules are not yet asked.
+
+**A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
+
+**A question for him, found while building the phone's two lines (8 Oct 26):** [LW-HEAD-BIG-PHONE] — between 431 and about 700 wide (the largest iPhones are 440) the top of the Leave War is at its TALLEST; D679 keeps everything wider than a phone as it is. Should those screens get the phone's two lines?
+
+**Soon, on his word (8 Oct 26), its own documents-only chat:** [SKILL-OBS-REVIEW] — review the skill-observation backlog (about 200 open, last reviewed 24 Sep 26).
+
+**A test to steady, any time (found 8 Oct 26):** [LW-REQ-PICK-MONTH-UNSTEADY] — one Leave War browser test (the Required panel, phone size) failed once in a full run at its month-button step and passes alone and in the next whole run.
+
+**Found by the calendar job's bug check (8 Oct 26) — after its merge, his to place:** [CAL-UNDO-OTHERS] (reproduce first), [CAL-TOGO-ONE-ITEM], [CAL-CHECK-SEEN] — small, none loses data or OIL.
+
+**With step 5 of the calendar job, the Inputs calendar (found 8 Oct 26):** [INPUTS-LIST-NEXT-YEAR] — the Inputs list shows a next year's input among this year's dates, without its year, until it is edited (seen on the demo's 15 Feb 2027 OIL; the cause read in the code, to reproduce first).
+
+**After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
+
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
 changes (today it moves at once). **BUILT, FULL-checked and MERGED on his "merge live" — live since 7 Oct 26 (PR #484; D591, D592, D606); archived 7 Oct 26.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** **From his D607 (7 Oct 26 — a walk is sized per change by Opus, from a record of past walks), next, with [START-CONTEXT-AUDIT]:** *(both DONE 7 Oct 26 — D607, D608 — and archived:)* [WALK-LEDGER-HISTORY] (compile the past walks into the record and write its figures), [WALK-SIZING-GUIDE] (the checking guide's wording, read by Astra and Sol before he approves it). [INTIME-LINES-DRAG] (D593, his ask of
@@ -118,7 +134,7 @@ only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHI
 before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
 [ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [STACK-LEFTOVERS] (low — four small loose ends named in the Codex stack's archived items), [WALK-COST] (a proposal, his word starts it — measure where a walker's tokens go on the next fanned-out walk, then a library of ready walk steps), [SANS-CALENDAR-WIP] (**NEXT — called back 7 Oct 26, D614**; it was on hold, his to call back — the SANS availability calendar's new layout, on its own Codex branch; nothing of it is deleted, D610), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — MERGED with the Codex stack, live since 6 Oct 26, PR #481), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [GUEST-SAVE-WARNING] (low — a check first, with the next change to the guest's pages), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [IMPECCABLE-UPDATE] (D625 — to v4.1.3, after the calendar job), [STACK-LEFTOVERS] (low — four small loose ends named in the Codex stack's archived items), [WALK-COST] (a proposal, his word starts it — measure where a walker's tokens go on the next fanned-out walk, then a library of ready walk steps), [SANS-CALENDAR-WIP] (**NEXT — called back 7 Oct 26, D614**; it was on hold, his to call back — the SANS availability calendar's new layout, on its own Codex branch; nothing of it is deleted, D610), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — MERGED with the Codex stack, live since 6 Oct 26, PR #481), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [GUEST-SAVE-WARNING] (low — a check first, with the next change to the guest's pages), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (DONE 2 Oct 26; archived), [INSIGHTS-WHICH-COPY] (D477, D478 — MERGED 1 Oct 26, PR #479; archived), [WORKSPAN-NEGATIVE] (DONE — live 6 Oct 26 with the Codex stack, archived; as filed: **NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (DONE — both trials ran and were decided under D595, archived; as filed: the first walked 1 Oct 26; **ONE MORE, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (DONE — built, live 6 Oct 26, archived; as filed: RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; archived) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -137,7 +153,8 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (DONE — live 6 Oct 26, archived; it was the first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
-**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** *(7 Oct 26: the first four — Discard marks, the work-hours fix, Insights, the workflow UI pass — are built and live (PR #481) and archived; next in this order is Inputs, where the SANS calendar's new layout is on hold — [SANS-CALENDAR-WIP], D610.)* [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights ([INSIGHTS-MISSION-MIX], with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
+**IN HAND (7 Oct 26): the Inputs calendar and the SANS availability calendar — called back (D614), Opus 5.5 builds from here (D615), on `claude/inputs-sans-calendar`; where it stands: [SANS-COMMITMENT-CALENDAR] and that branch's block in `HANDOFF.md`.** **Historical build authority — D580, put ON HOLD by D585 (5 Oct 26), the hold ended by D614:** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
+**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** *(7 Oct 26: the first four — Discard marks, the work-hours fix, Insights, the workflow UI pass — are built and live (PR #481) and archived; next in this order is Inputs: the Inputs calendar and the SANS availability calendar, called back on 7 Oct 26 and in hand (D614, D615) — [SANS-CALENDAR-WIP], [SANS-COMMITMENT-CALENDAR].)* [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights ([INSIGHTS-MISSION-MIX], with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
@@ -772,7 +789,7 @@ by a Sonnet helper — lives in `[OG-TAG-OVER-COUNT]`. **Place (the agent's line
 role question; (2) and (3) with their own jobs; (4) only if he raises it.
 
 ### [SANS-CALENDAR-WIP] The new layout for the SANS availability calendar, worked on with Codex, is in progress and on hold — nothing of it is deleted (owner, D610, 7 Oct 26)
-**CALLED BACK 7 Oct 26 (D614): the NEXT job is the Inputs calendar and the SANS availability calendar.** Start from
+**CALLED BACK 7 Oct 26 (D614): the NEXT job is the Inputs calendar and the SANS availability calendar.** *(7 Oct 26, the job's own chat: the branch is brought level on `claude/inputs-sans-calendar`; what is built and what is owed: [SANS-COMMITMENT-CALENDAR].)* Start from
 `codex/inputs-sans-calendar`'s own `HANDOFF.md` block (read it with `git show origin/codex/inputs-sans-calendar:HANDOFF.md`).
 That branch is 124 commits behind the live version: bring it level FIRST — it meets `main` in the rulings files (use
 `backlog-archive.mjs --rulings --merge`), `AGENTS.md`, `HANDOFF.md`, `OUTSTANDING.md`, `raptor-port/docs/ui-contracts.md`,
@@ -785,6 +802,19 @@ the Codex stack. **Until he calls it back: no chat reviews, rebuilds, merges or 
 its records, its pictures, its backlog items or its rulings.** When he calls it back: read that branch's `HANDOFF.md` block
 first; its ruling numbers D567–D585 are reserved. In D495's order it is the batch "how inputs show on the calendar"
 (`[FEATURE-WISHLIST]`). **Place:** his to call.
+
+### [IMPECCABLE-UPDATE] Move Impeccable to v4.1.3, the last version built from readable scripts — AFTER the calendar job (D625; the newest version is not taken, D623 — 7 Oct 26)
+**Place (his word, D625):** after the Inputs / SANS calendar job — its own small branch from `main`, the vendoring note's own steps (copy the publisher's files at the tag `skill-v4.1.3`, merge the two hook lines by hand), Astra's and Sol 6.1's reads (D70), then his "merge live". *The paragraph below is how the question arose; its two points "to put to him" are answered by D625 — v4.1.1 stays until then, and the update is 4.1.3, not a later version's guide text.*
+**As filed:** low — his call, after the Inputs / SANS calendar job. He asked for the update on 7 Oct 26; it was tried on a
+throwaway branch and undone, because v4.5.0 replaces the readable scripts with a 17 MB program that the two automatic
+checks would run on every turn, and nobody — Astra, Sol or another model — can read a program (D623: guides and tools stay
+reviewable by different models). What was found, first-hand, and the publisher's claims for the new version (guidance
+tuned for working screens, design variants cycling in the browser, side-by-side review, checks that measure what the
+browser draws): `.claude/skills/IMPECCABLE-VENDORED.md` §Updating. **Two things to put to him:** (1) confirm in so many
+words that the installed version stays; (2) whether to take the new guide TEXT with the program kept out — which features
+then work is NOT tested (the automatic checks would stop: the old scripts are deleted in that version). A guide change
+either way: Astra and Sol 6.1 read it before he approves it (D70). **Two facts not yet checked:** whether the program's
+source is published, and whether it updates itself.
 
 ### [EVIDENCE-RECORD-SIZE] The Codex branches carry very large machine-written record files (filed 5 Oct 26)
 **Place:** low — his call, put to him at Claude's review of the Codex branches, before any of them reaches `main`. He
@@ -1146,6 +1176,19 @@ raised to the proposal itself. **Was to ask (answered above):** an example
 of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
 2,000 limit is.
 
+### [LW-REQ-PICK-MONTH-UNSTEADY] The Required-panel browser test's month-button step failed once inside a full run — test-only (filed 8 Oct 26)
+`raptor-port/e2e/leavewar.spec.ts` "several Required cells are picked with a drag and given one number, and the panel
+leaves the grid behind it working" (lw-phone) failed once in the full gate run on `claude/inputs-sans-calendar`
+(`a35fc26b`, 656 of 657): with the Required panel up it presses the second month button, waits for the grid to have
+moved, then presses the first one at once — and the grid stayed on February (the 5-second wait for it to come back ran
+out). Straight after: 8 of 8 alone, 40 of 40 run eight at a time, and green in a second whole run of the browser set
+(657 of 657). The change that run was checking (D674, the Inputs list's landing) does not touch the month buttons or
+the phone's window of months. The likely cause, NOT proven (it did not reproduce): the second press lands while the
+first jump is still settling the phone's rolling window of months — the family of `[LW-WINDOW-PRUNE-FLAKE-2]`. **Do
+(D87):** let the grid come to rest between the two presses (`settleGrid(page)`, the helper the file already has), not
+a fixed time — and if it can be reproduced first, check whether a person pressing two month buttons quickly can leave
+the grid on the wrong month. **Place:** test-only, low, any time; with `[LW-WINDOW-PRUNE-FLAKE-2]`.
+
 ### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
 `raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
 and draws in place" (lw-desktop) failed once in the full gate run on `claude/db-readiness-table-shaping-4094f6` (phase 4,
@@ -1153,7 +1196,7 @@ and draws in place" (lw-desktop) failed once in the full gate run on `claude/db-
 months ran out. The first fix (`[LW-WINDOW-PRUNE-FLAKE]`, archived 29 Sep 26) made the premise exact; this branch still
 waits a fixed 5 seconds for a prune that happens only when the PC is idle (`state/idle.ts`) — a busy PC outlasts it. Alone
 3 / 3 straight after; phase 4 does not touch the grid. **Do (D87):** wait on the idle signal or the window's settled state,
-not a fixed time. **Place:** test-only, low, any time.
+not a fixed time. **Place:** test-only, low, any time. **Seen again 9 Oct 26** (`claude/inputs-sans-calendar`, the final gate run after the shared input's date door — a change to the input editor only): the same branch, the same 5-second wait; alone 3 / 3 and its whole group 186 / 0 straight after.
 
 ### [PEEK-ISSUED] The desktop next-week preview on View-only Sched shows next week's working copy, even for a published day — a question for him (filed 26 Sep 26)
 Noted by the sweep behind `[LEAVE-LATE-PUBLISHED]` (Astra, its plan read; carried in `[LATE-PUB-FACE-LIVE]`, archived
@@ -1580,7 +1623,7 @@ says what it changes (before the features that would sit on the screens it moves
 end.** **Item 5, in his words the same day:** *"how the UI flows, to make it more efficient for the user, how does the keyboard
 interact, how the mobile usage is done, moving of buttons etc."* — it crosses every screen, so it is planned as its own pass
 with pictures first; where it moves a screen's controls, that screen's feature batch comes after it or carries it.
-**THE ORDER — D495 (2 Oct 26, "the batch order looks ok"):** (1) `[WORKSPAN-NEGATIVE]`; (2) Insights — item 3, with
+**ORIGINAL ORDER — D495 (2 Oct 26, "the batch order looks ok"); the D567 narrowing below is CANCELLED by D568:** (1) `[WORKSPAN-NEGATIVE]`; (2) Insights — item 3, with
 `[INSIGHTS-BOARD-DOOR]`; (3) the workflow UI pass — item 5, `[CSS-SPLIT-BY-SCREEN]` its first step (D493); (4) Inputs — item 1,
 with `[INP-TILL-STALE]`; (5) the Tracker — item 4, with `[TRK-FILE-TRANSFER-SPLIT]` and its small finds; (6) the rules —
 item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds — D494:** until the reset (Monday 5 Oct 26,
@@ -1589,6 +1632,238 @@ after the reset, before any "merge live". Insights is built. D546 (4 Oct 26) def
 (D542/D543: build/correct a day first, phone quick checks/small edits first); he will introduce ideas during building.
 D544's times/notes keyboard entry keeping Enter/Escape stays pending. The usability/file-split distinction has been explained;
 no layout is approved. D545 adds [SCHEDULE-TAB-ROW-FLOW]; D550–D553 settle both surfaces, available boxes only, reverse Shift+Tab and final-day exit; D554 chooses B flight sequence after the shown comparison. D555 includes open headings/notes through displayed section order. Product scope settled; independent plan/challenge precedes source work. The other feature batches' questions wait.
+
+**CANCELLED PRIORITY — D567, cancelled D568, 5 Oct 26:** owner requests a new chat for caps and ops limits,
+ahead of Inputs and Tracker. The remaining order is caps/ops → Inputs → Tracker →
+one whole-app check. This chooses the next batch; its policies and design still
+need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
+waive owed reads or authorize a live merge.
+
+**Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
+
+### [CAL-UNDO-OTHERS] Undo after another person's change: the refusal does not say who, and a holiday on another date blocks it (the calendar job's bug check, 8 Oct 26)
+**Found, not fixed — REPORTED BY ONE WALKER, NOT YET SEEN BY THE HOST: reproduce first.** Walker H (X-10), `raptor-port/docs/handpass/parts/cal-H.md`, scripts `raptor-port/scripts/handpass/cal-H-*.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/H/x10-*.png`. (a) Saber files a meeting for three; a second admin changes its remark; Saber's Undo is refused with "A later change touches the same thing — undo that first" — D148 has the refusal say WHO; the same line for a holiday renamed and a Required cell retyped by the other. (b) Saber adds a holiday on 12 Aug, the other admin adds one on 19 Aug, Saber's Undo of his own is refused — a different date is not "the same thing" (a different Required day and a different group input DO undo cleanly). Likely place: how the Leave War's holiday commands name what they touch for the Undo's "changed since" test. **As filed:** medium-low — an Undo that refuses too readily loses nothing. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §7.
+
+### [CAL-TOGO-ONE-ITEM] "To go out" lists a shared input as a line for each man (D663 reading 2 — the calendar job's bug check, 8 Oct 26)
+**Found, not fixed.** Walkers G (X-01) and H (X-11): on a published day's "To go out" tab one meeting filed for three is three lines ("Ranger · Meeting", "Drifter · Meeting", "Ace · Meeting"); "All changes" and "New to you" show ONE item with the names under it (fixed in the same check — `ui/changesmodel.ts mergeFiled`). He was told the one item "holds on every tab" (D663 reading 2). The pending list is built by `ui/pendlist.ts`, which finds a line by its man; the count beside it stays per man by his ruling (reading 3). **As filed:** low — the list and its count agree; fold the men of one filing there as `mergeFiled` does. Also seen: after one man left a shared input, "All changes" titled the item "2 people" over three "added" names.
+
+### [CAL-NOTE-WITH-PUCKS] A note in an opened day carries its own pucks; the separate "+ Pucks" button goes (his direction, D684 — 9 Oct 26)
+**Ruled as a direction ("perhaps"), not built — a picture first.** His words, shown the day window with "+ Note" and "+ Pucks" in its bar (D683): "For the +note, perhaps just have a function to add pucks on the text written, instead of a +pucks button." **Today** a day’s planning sections are two kinds, each its own block and button (his asks of 22–24 Aug 26; `raptor-port/src/state/plan.ts` — a note is `{ id, iso, text }`, a pucks row `{ id, iso, kind: 'pucks', ids }`; drawn in `raptor-port/src/ui/InputsCal.tsx`, the month’s cell shows a note as words and a pucks row as small pucks). **The direction:** one kind — a note with words, people, or both; people are added on the note itself. **Before any build, put to him with the picture (one round):** may a note hold people and no words (so nothing a pucks row does today is lost); how the month’s cell shows a note with people; whether it is built before or after the calendar job’s "merge live". **What it touches:** what is saved for a note (`raptor-port/docs/data-schema.md`, `data-model.md` — so the check is FULL on the saved-data question), the people picker of the day, the three-across pucks grid and its swap / move / drag-off gestures, the drag that reorders sections, the month’s cell, Undo. The demo’s existing pucks rows need no carrying over (D56). **As filed:** medium; its own small job.
+
+**THE PICTURE IS DRAWN AND WITH HIM (9 Oct 26 — his "Draw the note"):** `raptor-port/docs/mock/note-with-pucks.html` (also an Artifact, private: https://claude.ai/artifact/DrpirYQFv9kBTbhoxmAVQq), four pictures in `raptor-port/docs/mock/img/note-with-pucks/`, made from the built app by `raptor-port/scripts/handpass/mk-note-pucks.mjs` — today (a note, and a separate row of pucks), the direction (one "+ Note"; the note’s box holds its words, then its people, then "+ people"), a note with people and no words, and the month’s cell. **A drawing, not an approved design until he says so.** The three questions on it, each with the agent’s recommendation: (1) may a note hold people and no words — yes; (2) how a person is taken off a note — as today, dragged off or onto another to swap; (3) built before or after the calendar job’s "merge live" — after, as its own job. **Waiting on his answers.**
+
+**HE ASKED FOR IT MORE COMPACT (D688, 9 Oct 26):** "Is there a way to make it more compact? Because there will be many inputs too I don’t want people to scroll massively down". The page is redrawn on a day that already holds four inputs, with two compact ways to choose from and how tall each makes a note; the test for any build is how many of the day’s inputs stay on a phone’s first screen.
+
+**HIS ANSWERS, 9 Oct 26 ("1. If yes how would the user interface look like 2 yes 3 after then"):** question 2 — a person is taken off a note as today, dragged off or onto another to swap (**D689**); question 3 — built AFTER the calendar job’s "merge live", as its own small job (**D690**); question 1 (people and no words) — NOT answered: he asked to see it, and it is drawn. **THE PAGE AS REDRAWN (the same link):** a small phone (390 × 667), a day that already holds four inputs, the built app’s own parts — today (the note and its row of pucks are 146px tall), COMPACT (the words on one slim line, the people four across under them, "+" as the last of them: 86px), FOLDED (one line: the words and "5 people", a tap unfolds them: 46px), and compact with people and no words (no words line at all: 50px). The first, roomy drawing (170px — it pushed the fourth input off the first screen) is dropped. **Waiting on him:** compact or folded; and question 1.
+
+**THE DESIGN HE CHOSE (D692, 9 Oct 26 — "A looks good but can u make the text box even shorter in height"):** drawing A — COMPACT: the note’s words on one line no taller than the box a note is typed in (28px drawn, the pencil and the cross small beside it), its people four across straight under, a dashed "+" as the last of them; 77px before the first input on a small phone, against today’s 146. B (folded) is not taken. `raptor-port/docs/mock/img/note-with-pucks/c-compact.png` is the picture of record once he has answered the one question left: **may a note hold people and no words** (`e-people-only.png` — drawn for him, not yet answered). Build after the calendar job’s merge (D690).
+
+**AND EVEN ROOM EITHER SIDE (D694, 9 Oct 26):** the six dots and the box’s left edge moved a little left, the box’s sides padded alike, each puck held inside its quarter — in the drawing the first puck stands 9px from the left border and the fourth 8.5px from the right, a puck 74px wide. `c-compact.png` is redrawn so.
+
+**EVERY QUESTION IS ANSWERED (D695, 9 Oct 26 — "Yes"):** a note may hold people and no words — drawn with no line of words at all (`e-people-only.png`). **THE DESIGN OF RECORD for the build:** `raptor-port/docs/mock/note-with-pucks.html` — `c-compact.png` and `e-people-only.png` (D684, D688, D689, D692, D694, D695). **Ready to be built as its own job after the calendar job’s merge (D690).**
+
+### [CAL-DAY-LINES-COMPACT] Each input in an opened day takes less height (his direction, D696 — 9 Oct 26)
+**Ruled as a direction, not built — a drawing first.** His words, with a picture of the day opened: "Is there a way to use less vertical space per input? Or u can compact some words for inputs." **Today** (`raptor-port/src/ui/InputsCal.tsx`, the opened day’s list; the SANS day is laid out the same way, `ui/SansDay.tsx`) a card is up to three lines: who, the kind and when; the remark; "Placed by … · date, time" (D629). **To put to him, with pictures on a small phone and a day of eight or more inputs:** (a) the remark on the first line after the kind where it fits, cut with "…" where it does not; (b) the placed-by line shortened and moved to the end of a line ("Grit · 12 Jul") instead of a line of its own — or shown only where someone ELSE placed it, or it is late — his choice, since D629 has every input show who placed it and when; (c) less padding in a card. Count the inputs whole on the first screen for each. Ask too: the SANS day alike? **Place:** his to say; the agent recommends after the calendar job’s merge, with the note job. **As filed:** small-medium; look and layout only.
+**HIS OWN IDEA (D699, 9 Oct 26), the one to draw first:** "put the placed by sentence to the 2nd row if the remarks is short. If the remarks is too long then move the placed by down to a 3rd row but still the same horizontal alignment" — and "Can give me a mock up". Read as: "Placed by …" at the right end of the remark’s row where both fit; under it, still at the right end, where they do not. The mock-up: `raptor-port/docs/mock/day-inputs-compact.html` (a drawing; nothing built).
+**HE CHOSE (D701, 9 Oct 26 — "B and sans day should follow"):** drawing B of the mock-up — `c-shorter-words.png`: his D699 layout, the small print as "Grit · 12 Jul, 14:42", a little less padding (a card with a short remark 51 tall where it is 79 today; 7 of 9 inputs whole on a small phone where 5 are) — and the SANS day’s commitments laid out the same way (`ui/SansDay.tsx`). **THE DESIGN OF RECORD; ready to build.** Only WHEN is open — recommended after the calendar job’s merge, with `[CAL-NOTE-WITH-PUCKS]`.
+
+### [INPUT-ALL-AVAIL] An input filed for "ALL" or "ALL AVAIL" — duties and other commitments only (his direction, D700 — 9 Oct 26)
+**Ruled as a direction, NOT DESIGNED, NOT BUILT.** His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments". **What exists:** on the schedule the two placeholder pucks may stand on an accepted request’s row and earn OIL by default (D46, D43); who stands behind one is worked out on the day and frozen at publication (D44, D45); the count and the ALL AVAIL window (D37–D41). Filing for several people is one shared input (D654–D660), the picker has headings (D656, D659), a member may file for others only duties and commitments (D655). **To put to him before any design (at most four, each with a recommendation):** (1) is the input the PLACEHOLDER itself — one input reading "ALL AVAIL", who is behind it worked out on the day as on the schedule (recommended: it stays right when leave is filed later) — or the names of whoever is available at the moment of filing, copied in; (2) who may choose it — admins only (recommended to start), or members too; (3) does it show in every man’s own inputs and on his bell, or only on the day and the schedule (recommended: the day and the schedule — it is not his own filing); (4) its OIL answer on a weekend or holiday — the filer answers once for everyone, as D660 (recommended). **Place:** its own job after the calendar job’s merge (the agent’s recommendation). **As filed:** medium; touches the picker, the shared input, the schedule’s request row and OIL — FULL tier when built.
+**HIS FOUR ANSWERS (D702, 9 Oct 26):** (1) LIVE — it stands for whoever is free, starting with whoever is free at filing and changing by itself as availability changes (read as: one input carrying the placeholder; frozen at publication like everything on a published day — D44, D45); (2) MEMBERS may choose it too; (3) it shows on the DAY and the SCHEDULE only; (4) OIL — the filer answers once for everyone, as a shared input (D660). **Designable now; still its own job after the calendar job’s merge unless he says otherwise.**
+
+### [CAL-CHECK-SEEN] The small finds of the calendar job's bug check, none fixed (8 Oct 26)
+**Found, not fixed** — each with its walker's report under `raptor-port/docs/handpass/parts/cal-<letter>.md` and pictures under `raptor-port/docs/img/handpass/2026-10-08-inputs-sans-calendar-check/<letter>/`. **A phone on its SIDE (844 × 390):** the number pad covers the Required cell being typed (B); windows lie over the top bar's Undo / Redo, the month's arrows and gear, and the failed-save band's Retry until dragged or closed (A, H); the SANS Highlight list runs off the foot (D). **Gestures:** the first tap after a finger-drag of a counter in Rearrange is ignored, the second works (B — one walker, not seen by the host); Escape pressed during a bar's mouse drag leaves the picked-up copy following the pointer until the next drag (E — one walker, not seen by the host). **Windows:** the "Calendar" window on a 568-tall phone is 588 tall once dragged and brought back, its last week cut (C); Escape on an opened day's Delete question, after a press on the page behind, closes the whole day (C); Escape does nothing while a control on the page behind has the keyboard (the shell's rule, as built — C); a settings window left open stays up when the page is changed (C); "Calendar…" from the SANS day at 1440 lands exactly over that day's window (A). **The editor:** after a bar's drag is undone the "changed while this window was open" note stays, with "theirs" equal to the value at opening (G); a reader's OIL row draws a "Change…" button that cannot be pressed (F); with the members' switch off the filer is told "Only <himself> — who filed it — or an admin can change this" and offered "Take me out" (F); a group's OIL question after a drag is titled with one man's name (F). **The List:** its row does not flash on Undo or Redo where a month's bar does (E). **Outside this job, seen in passing:** the Quals save toast reads "Quals saved (prototype — writes to Dataverse in the full build)" — a prototype caveat on screen (the 25 Aug 26 rule: UI copy reads production) (D). **As filed:** low, his to place; the sheet's §7.
+
+**Added 9 Oct 26 (the look at D683):** Escape pressed while typing a planning note in an opened day closes the whole day, where it might be expected to leave only the note box — the window shell’s rule (Escape closes the window in front), older than D683.
+
+### [GROUP-INPUT-ONE-ROW] On the schedule a group input is ONE row holding everyone (D661 — 7 Oct 26)
+
+**Ruled, not built.** He chose picture B of the mock-ups (https://claude.ai/artifact/RU8YNk1gDXj8sddcWvA76b, drawn by `shoot10.cjs` on his PC): a meeting filed for four men shows on the Ground Programme as one row with four pucks, not four rows. **Today** every landed input is its own row with one man (`raptor-port/src/state/holderbase.ts`, `engine/overlay.ts viewOfWeek`), and the group input of the calendar job is kept as one record per man (the build plan `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) — so until this is built the schedule shows one row per man. **Its place — his ruling, D662 (7 Oct 26): its own job, straight after the calendar job, not inside it** (it reaches into how a published day counts changes waiting to go out: D109, D113, D114, D178). **Before it is planned, put to him with pictures (rounds of at most four):** a scheduler takes ONE man off the shared row, or cancels or re-times it for one man — does he leave the group, or does the whole input change; on a published day is a change to the row one change waiting or one per man; a man on leave that day — is his puck on the row flagged or left off; does the row show on Personal Inputs, on the Ground Programme, or wherever its men's rows would each have landed. **Then:** a plan read by Astra and Sol 6.1 (published records), built tests first, its own bug check or the calendar job's if it rides with it (D485).
+
+### [TRK-DLG-FOCUS-UNSTEADY] A Tracker unit test of the question box's keyboard fails now and then in a full run (found 7 Oct 26)
+
+**Found, not fixed** — by the Inputs / SANS calendar chat (`claude/inputs-sans-calendar`), which touched nothing of the Tracker. In a full unit run under the PC lock (7 Oct 26, 506 files, 8,186 tests) ONE test failed: `raptor-port/src/tracker/leftovers.test.tsx`, "[TRK-DLG-LEFTOVERS] B1 — while a question is up, the rest of the Tracker page is inert, and Tab / Shift+Tab stay inside the box" — its last check, "Shift+Tab from the first goes to the last", found the focus still on the text box. Run alone straight afterwards it passed three times out of three (53 of 53), and the full run of that morning passed it. **Seen again 8 Oct 26, night** (the same chat, step 5): the same check failed in ONE of three full runs that evening (9,293 tests), and passed alone twice. So it depends on timing or on what ran before it in the same worker, not on the app's rule. **To do, with the next Tracker batch (D490):** read how the test moves focus (a key event sent before the box has taken focus is the likely cause), make it wait on what it needs rather than on timing (D87's rule for browser tests, applied here), and run the file fifty times in a loaded run to prove it. Until then: a red full run whose only failure is this test is re-run once for that file, and said so in the report.
+
+### [LW-HEAD-BIG-PHONE] Between a phone and a tablet the top of the Leave War is at its tallest — his call (found 8 Oct 26)
+
+**Found, not changed** — while measuring for `[LW-PHONE-HEADER-SPACE]` (D678, D679). The Leave War calls a screen "a
+phone" at 430px wide or less, and only there does the top become two lines. From 431px up to about 700px the page is the
+desktop's strip squeezed: "Viewing as" on a line of its own, the Stage line wrapped over three — the grid's first row
+354px down at 431 wide, against 182 on a phone and 222 on a desktop. **Who meets it:** the largest iPhones (the newest
+Pro Max models are 440 wide — the agent's knowledge of them, not measured on one), a small tablet in a split view. His own phone's
+picture showed the phone layout, so his is 430 or less.
+**Why it was left:** D679 — "keep the same for desktop"; its reading (1) fixed "a phone" as the width the top changes
+at today, and everything wider stays whole. Widening "a phone" is a new choice, and the grid below has
+phone rules of its own at other widths (it opens one step out at 700 and under), which this would not touch.
+**The question for him:** should a screen up to about 700 wide get the phone's two lines too? **Recommended:** yes, for
+the TOP AREA only (one width in two places — `leavewar/ui/phone.ts PHONE_QUERY` and `chrome.css`'s phone block — and the
+browser test's three sizes), leaving the grid's own widths alone; a picture first, drawn into the running build at 440
+and 600 wide (D634). **Place:** his to set — small, the Leave War's own; it does not wait for the calendar job.
+
+### [SKILL-OBS-REVIEW] Review the skill-observation backlog — he asked for it "soon" (8 Oct 26)
+
+Told that the observation backlog had not been reviewed since 24 Sep 26 (about 200 open entries in
+`.claude/skill-observations/log.md`), he said: *"Yeah we should review the skill soon too"*. **To do:** run the review as
+its own job, in a fresh chat, documents only — the way this repo runs it is `.claude/skills/TASK-OBSERVER-VENDORED.md`
+and the skill's `references/weekly-review.md`; a change to a working guide that comes out of it is read by Astra and
+Sol 6.1 before his approval (D70), and merges only on his "merge live". **Place:** his "soon" — offer it at the next
+handoff; it needs no code and can run beside the calendar job in its own worktree on `main`.
+
+### [INPUTS-LIST-NEXT-YEAR] The Inputs list reads a next-year input as this year's (found 8 Oct 26) — OPEN, not started
+
+**What was seen, in the running build (8 Oct 26, while writing the browser test of the Inputs list's Undo landing):** with
+the list on "All dates", the demo squadron's OIL input for 15 Feb 2027 (the one the 2027 leave period carries) is shown as
+"15 Feb" — no year — and sits between this year's 17 Jan and 2 Mar rows. Saved once through the row's own editor (only
+its remarks changed) it then reads "15 Feb 2027" and moves to the foot of the list, where it belongs.
+
+**The cause, read in the code, NOT yet reproduced through the Leave War's own Approve:** an input keeps its date as a
+label and an anchor year (`yr`); the Leave War's approval writes the label WITHOUT a year and the anchor year beside it
+(`raptor-port/src/leavewar/absences.ts isoToInputDate` / `inputRowFor`), and the list orders its rows by the label alone
+(`raptor-port/src/ui/InputsPage.tsx SORTKEY.start` / `.end` — `unfmt(r.date)`, never `r.yr`). So a leave approved on a
+NEXT year's period would be listed among this year's dates, without its year, until someone edits it. New data, not only
+the demo's — which is why it is filed and not left under D56. The schedule and the Leave War read the anchor year and
+are right; whether the list's date window ("Next 2 weeks") also misreads it is to check with it.
+
+**To do:** reproduce it first through the app's own controls (make a 2027 period, approve a leave on it, open Inputs →
+List → All dates); then order, print and window the list by the label WITH its anchor year (`dateOrd(r.date, r.yr)` is
+the app's one reading of the two); a test first. **Its place:** with step 5 of the calendar job — the Inputs calendar —
+which rebuilds the Inputs screens and keeps the List behind one switch (D490: an area's small finds ride the batch that
+touches the area). Not a fault that harms a published record or OIL: the input itself is right.
+
+### [LW-WINDOWS-NONBLOCKING] The Leave War's other windows: stay up, and let the grid behind them work (D641, D642 — 7 Oct 26)
+Every Leave War window blocks the grid behind it and closes on a click outside (`src/leavewar/ui/Sheet.tsx`). D641 asked that the
+windows of the Inputs / SANS calendar job drag and leave the page behind usable, and D642 brought ONE existing war window into line
+inside that job — the panel for a picked block of people's days (`SelectSheet.tsx`). The rest keep today's behaviour: the one-day
+sheet, the day's list, the Event sheet, the counter form, ⚙ Settings, the Manning explainer, the OIL tracker, Remarks, the war sheet.
+**To do, as its own job with its own check (bids and OIL are behind these windows):** decide with him which of them should stay
+up, then give each the non-blocking form built for the calendar job; an outside press that today cancels a move (D262) is a ruling
+to re-read first. Not started. Depends on `[SANS-COMMITMENT-CALENDAR]` shipping the non-blocking form.
+**8 Oct 26 — the form is BUILT on `claude/inputs-sans-calendar` (not merged):** `Sheet`'s `modal={false}` (no veil, no close on a
+press outside, no Tab trap) and `ui/gridclick.ts` (a plain click on a cell closes the panel for that cell's own sheet); the
+people's-days panel uses both (`raptor-port/docs/ui-contracts.md` §The page stays fully usable behind an open sheet). What this
+item still needs is his choice of which other windows stay up, and their own check.
+
+### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — CALLED BACK 7 Oct 26 (D614), Opus 5.5 builds from here (D615); was ON HOLD D585; built preview/evidence preserved (5 Oct 26)
+**8 Oct 26, night — STEP 4, THE SANS CALENDAR, IS BUILT (seven pieces, each its own commit, pushed for his look):** the SANS
+tab is its own screen — the month on the one resolver, the day's window, Highlight, the gear's settings, "How this works"
+— and the first build's SANS store, command and controls are gone (the plan's "AS BUILT" note under §3.5; the contract:
+`raptor-port/docs/ui-contracts.md` "The SANS calendar"). **Still to build:** step 5 (the Inputs calendar — tabs, bars, the
+gear, the editor as a window, who placed it on the other lists, the group input's screens) and step 6; then the job's ONE
+bug check, FULL. Where it stands: that branch's block in `HANDOFF.md`.
+**7 Oct 26 — where it stands now (the job's own chat, `claude/inputs-sans-calendar`):** the live version is brought into the
+calendar work on that branch (the failed-save band, D587, sits under the calendar's bar). **Owed before any "merge live":**
+Opus's own read of what Codex built (D615 — its finds fixed, each with a test that fails first); his look at the design, which
+he has NOT accepted (D583, D584); his answers to the open product points; the walk of the running app, sized first (D607, D608);
+Astra's and Sol 6.1's reads of what Opus adds. The current state and the next step: that branch's block under `## Now` in
+`HANDOFF.md`. Everything below is Codex's record of 5 Oct 26, unchanged.
+**His picks and new points, 7 Oct 26 afternoon (D626–D629):** lined-up columns in the first set's own colours (D630 — the
+deeper tints tried in the second set were too much contrast), three slimmer tabs, bars, the rest as drawn (D626); a day is day flying, night flying or no fly — NF needs nobody and shows "NF" — and
+PH and Off days show on both calendars from the Leave War's own record (D627); the late cut-off as days or as a weekday of a
+week before, stated in "How this works" (D628); who placed an entry and when, in small print (D629). Three questions are back
+with him, drawn in the second mock-ups (D630 settled the colour): where the cut-off is set, one door or three, a SANS-needed row on the Leave War.
+**The baseline is set once, not day by day (D631, 7 Oct 26):** a day is day flying unless night is selected; no-fly days can repeat
+from a date onward; the year's holidays in one list; drawn as ONE home, "Days" (normal week, holidays, month), the one-day sheet
+kept as the quick door. **D632:** a denser desktop Inputs month, drawn for him to pick.
+**No normal-week view (D633, 7 Oct 26):** the month carries a select button on every day (Day / Night / No fly), the weekday's
+heading sets every such day from a date onward, and the required pilots and WSOs are set on the Leave War's columns (a figure can
+run "from this day on"); PH and Off days in the Holidays list, No Leave on the Leave War's Event row — drawn in the fourth mock-ups.
+**The Leave War's Event sheet stays as built (D634, 7 Oct 26):** colours, tags, "Edit types", a day or a range — nothing of it is
+redrawn or removed in this job.
+**The settings icon is a gear, never like the day-flying sun (D635, 7 Oct 26).**
+**The required figures are typed straight into the Leave War's cells, several picked by a drag and given one number (D636, 7 Oct 26)** —
+drawn on real pictures of the Leave War in the fifth mock-ups (7 Oct 26).
+**His answers on the fifth set, 7 Oct 26 (D637–D640) — the design is settled but for two small readings:** the typed rows are Required P
+and Required W, the four rows (those two, Available P, Available W) sit under the Leave War's Event rows, a figure can run "from a
+date on" skipping weekends, public holidays, Off days and no-fly days, and there is no "SANS needed" row (D637); a phone date carries
+one stepping button and a desktop date three, three choices are enough (no "day and night"), a weekday's heading sets repeating days,
+a public holiday and an Off day each have two doors onto one record and No Leave is on the Leave War only (D638); the late cut-off is
+behind each calendar's own gear, the Logic page lists both, a cut-off is the end of its day, and the desktop Inputs month is compact
+with no switch (D639); the two Available rows are ordinary Leave War count rows an admin can rename and re-define — leaving out OCU,
+say — and the SANS calendar uses whatever they count (D640). **Every pop-up window drawn for this job drags, and the page behind it still works — a click outside does not close it (D641).** **Weekends start with no flying set; a no-fly day still shows and takes OFT and AMT; the war's panel for picked people's days is
+brought into line with D641 in this job (D642). The Event sheet is to be made plainer and a long event name shows as a short form that
+opens at a click — a mock-up first (D643); the drawing in fewer words, its first row "Presets", not "Type" (D644). **The group input's three later answers (7 Oct 26, evening): a member never files SANS availability for another man, an admin may for several (D658); the "Several people" picker has a fourth heading, "Personnel", where the roster holds ground crew (D659); whoever files for other people answers the OIL question for all of them at the save (D660). And in the changes window a group filing is ONE item with its people listed, built in this job (D663); on the schedule it is one row holding everyone, built as its own job straight after — `[GROUP-INPUT-ONE-ROW]` (D661, D662).** **"How this works" is cut to five short lines, no worked example (D646).** **On the SANS day each committed person is the schedule's own puck, his CAT chip attached, all one size, in proportion with the row's letters, wearing the SANS purple edge (D647, D649, D650, D651).** **The Holidays list's "Add a day" form carries the short form too (D652).** **On a phone the Inputs month fills the screen's height with thin bars and fits any phone's height (D653).** **HE ACCEPTED THE DESIGN AND GAVE THE GO TO BUILD IN THE NEXT CHAT (D657).** **An input can be filed for a group of people at once, by an admin and for now by a member (D654) — it changes who may file for whom; a member only duties and commitments, one shared group input, the man, the filer and an admin may change it (D655); the picker is a hybrid — one person from a list by default, a "Several people" switch showing compact pucks in three groups, Pilots, WSOs and SANS, each A to Z (D656); NOT in the plan yet — an add-on for both readers first.** **The opened day lists everyone and scrolls, no "+ more"; not full screen, but it pulls up on a phone (D648).** **TAKEN, "yes to all" (D645): built as redrawn, short forms on the grid, each preset with its own (PH, OFF, NL, SC) — the plan's §3.12, to both readers as an add-on first.** **The build plan (7 Oct 26, nothing built):** `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` — with Astra and Sol 6.1 for one round of challenge each, blind (D590; the brief: `raptor-port/docs/superpowers/briefs/2026-10-07-inputs-sans-redesign-plan-challenge-brief.md`); its section 8 holds what is still with him. No build before both have read it.
+**In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
+the evidence sheet.
+**HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date
+shows pilots / WSOs — still needed to fly, and SANS committed to F, O and A; still needed comes from the Leave War's pax
+required, less those available, less the SANS committed to fly (D617 — the pax required figure is NEW on the Leave War, kept as
+two figures, pilots and WSOs: D622); three
+colours, yellow / amber / red, set from a settings icon (D618); a Highlight picker rings one SANS person's days in cyan (D619);
+the layout — Medical, the SANS calendar and the Inputs calendar from one place, Inputs keeps its List, SANS availability
+leaves the List for the SANS calendar (D620); ideas to draw — Google-style bars, drag a range, an Instructions fold, the
+keyboard (D621). The design note: `raptor-port/docs/superpowers/specs/2026-10-07-inputs-sans-redesign.md`.
+**D585:** owner puts this task on hold before choosing other outstanding work.
+Pause further design, building and Claude vetting until explicit resume. Keep
+the existing branch/Ready preview, settled requirements, recommendations and
+all evidence/owed reads. No cancellation, main authority or new batch inferred.
+**D583 delivery:** show finished desktop and mobile mockups from the actual preview,
+then bring to Claude for vetting. No owner design acceptance or main authority inferred.
+**D584 handoff:** explain owner intent, original references and settled answers;
+separate agent choices and invite fresh independent critique of how to tackle it.
+Home: `raptor-port/docs/handpass/2026-10-05-inputs-sans-claude-handoff.md`.
+**Current corrections D581/D582:** show F/Fly, O/OFT and A/AMT unique-person
+availability counts on every SANS date; flying-only target/shortage remains.
+Compact Inputs entry/header delegated addendum and independent challenge:
+`raptor-port/docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-addendum.md`
+and `raptor-port/docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-sol-challenge.md`.
+Simplify the cluttered phone Inputs entry/header through Impeccable, retaining
+the existing mode/view/Medical/filter/export doors. Recommended compact layout,
+pre-source phone/desktop pictures and independent plan challenge precede these
+additions. Original R2 remains frozen on the old build; new code's independent
+Claude read after reset is owed before main, no third Astra inspection inferred.
+**Build status:** Calendar-first Inputs with Member/SANS modes and secondary List,
+shared day/editor and date-range gestures, admin daily Fly demand/manual day/night
+intent and global amber1/red3 deficit cutoffs built on `codex/inputs-sans-calendar`.
+Independent plan/challenge and private pre-source pictures complete. FULL evidence:
+`raptor-port/docs/handpass/2026-10-05-inputs-sans-calendar.md`. A final picture walk
+caught a hold-release date change; fixed after failing proof. Corrected-build
+gates and31 independent runtime groups PASS on the earlier snapshot. Fresh Astra
+R1 found three save/reveal orders; corrected with failing-first tests. The rewalk
+also exposed a restore-before-data-replay error; corrected directional metadata
+and primary restored-row selection. Final independent runtime50groups PASS with
+seven actual showcase states; all42 original pictures personally opened/hashed.
+Corrected final gates unit7810/494files, browser570/49existing skips, six adapted
+156assertions and performance4/0 PASS on that older snapshot. Final Astra R2
+CHANGES REQUIRED (one P2 colour-popup dismissal/Escape defect), immutable2of2.
+Corrected capturing outside press/Escape/focus/role cleanup; no third Astra code
+read. New D581/D582 header/counts plus popup correction: focused72unit,
+11production-browser/build PASS; independent expanded34runtimegroups PASS,
+all25 original pictures opened. Two original harness errors preserved/corrected
+(native all-date seed rows; hidden phone role badge), no app defect established.
+Current Freeze13 has identical18served assets to walked Freeze11/12; one CSS
+source CRLF→LF byte normalization only. Final new full gates PASS: unit7819/494,
+browser572PASS/49existing skips/0FAIL, adapted156/performance4/reference728/
+Tracker445; build/rulecheck/whitespace PASS. Final expanded
+code's independent Claude read after reset remains owed before main.
+Owner look/Claude reads/explicit
+merge remain owed. Existing per-browser backend; no shared database is delivered.
+D570–D572 settle flying-only demand, deficit-based admin-editable red/amber baselines and one count/person with hours visible. D573 initially deferred placement; D574 asks for recommendations, D575 requests app-style pictures/Claude review, D576 considers secondary List, D577 sun/day and moon/night flying. D578 held build; D579/D580 supersede that hold and delegate choices/build now. Monthly calendar shows the resulting flying-offer shortage.
+Members open a day to see others' commitments and add their own. Form follows the
+fourth private reference/current app availability controls, with Custom start/end;
+Remarks has no faded placeholder. References1/2 supply month/day direction,3 is
+contrast only. Remaining numbers/boundaries/config scope and day-list/navigation choices are delegated by D580; explain them in the plan rather than waiting for another answer. Existing timing/edit/delete/overlap
+behaviour retained, not re-asked. One short offer counts once, not full-day coverage.
+**Home:** `raptor-port/docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md`.
+**Independent initial read:** `raptor-port/docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`; first round answered D570–D573 (flying demand, deficit colours, unique people with hours, location deferred). Concrete Astra plan/pictures and Sol challenge completed before source work. No new unseen picture acceptance is inferred; D580 supplies recommendation-based build authority.
+**Place:** replacement current build task after D568 cancels caps/ops handoff;
+no new chat requested. Other feature batches remain outstanding. Picture/plan and
+independent challenge precede source work; calendar request/count/permission and
+published consequences retain applicable FULL checks. All old Claude reads owed.
+
+### [CAPS-OPS-LIMITS] Caps and ops limits — handoff CANCELLED D568, remains unbuilt (5 Oct 26)
+**Current — D568:** "nvm i will do something else." Stop the immediate handoff; no new chat created, no replacement task chosen. Wait for the owner. The following D567 design-start draft is cancelled history, not current authority.
+
+His words: "lets handoff to a new chat and i want to do the caps and ops limits".
+Move this batch ahead of Inputs and Tracker; both remain outstanding. Begin with
+his meaning and examples, after searching existing rules, in product-question
+rounds of at most four with recommendations. No cap value, counting period,
+applicability, exceptions, severity or publication policy is yet chosen by D567.
+**Home/design start:** `raptor-port/docs/superpowers/specs/2026-10-05-caps-ops-limits.md`;
+entry and all previous checks/owed reads in own `HANDOFF.md` workflow block.
+**With this batch:** [REST-FIRST-CREW-HINT] and [SANS-PREVIOUS-REPORT-OFFER], retaining
+their unresolved policy/repair boundaries. Source work waits for agreed product
+scope and an independently challenged plan; rules changes are FULL tier.
+**Place:** unbuilt backlog under original D495; immediate D567 priority/handoff cancelled D568. No batch starts automatically. Previous builds remain separate for review; no main/live authority.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
@@ -2007,6 +2282,13 @@ reword is read against the original for meaning (D138) — one reviewer, Astra f
 about 60 lines further under its tripwire.
 
 ### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
+**Characterized 5 Oct, Inputs/SANS batch:** the exact18→18–19→single19 sequence
+passes both incumbent List and shared calendar editor doors: one matching
+`till 19 Jul`, user prose Bangkok, one-day saved dates and durable reload.
+The established one-day till wording is valid; no token-removal policy/fix is
+invented. Evidence/forward facts: `raptor-port/docs/handpass/2026-10-05-inputs-sans-calendar.md`.
+Original report below is retained for Claude's later review; its described sequence
+does not demonstrate a currently stale date. No source change made for this item.
 Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),
 outside that batch. **Steps:** Inputs page, the editor of a one-day request on 18 Jul; click 19 Jul in its calendar (dates read
 "18 Jul → 19 Jul", the remarks gain "till 19 Jul"); click 19 Jul again (dates "19 Jul") — the remarks keep "till 19 Jul"; Save

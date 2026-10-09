@@ -13,6 +13,7 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
 import { lgRules, LG_TIER } from './logic-html'
+import { setInpSet, setSansSet } from './pops'
 import { missionTracking, setMissionTracking } from '../engine/insights-config'
 
 /* the reference's ruleApply: write, persist, re-run the engine, repaint */
@@ -60,10 +61,15 @@ function logicBody(LGQ: string, LGF: string) {
           + (off ? `<span class="lgstd">standard ${esc(ruleFmt(k, RULE_STD.v[k]))}</span>`
             + `<span class="lgmod">changed</span>` : '') + `</span>`
       }).join('') + `</span>` : ''
+      /* ONE SETTING, TWO WAYS IN (owner D639): a row whose setting is set in a calendar's own settings window carries a
+         button that opens that SAME window — for an admin, in or out of "Edit rules" (the window is its own draft and
+         its own Save); a member reads the rule as it is set. */
+      const door = r.open && isAdmin()
+        ? `<button type="button" class="abtn lgopen" data-lgopen="${r.open}">${r.open === 'sans' ? 'SANS calendar settings…' : 'Inputs calendar settings…'}</button>` : ''
       return `<div class="lgrule ${r.sev}${edited ? ' edited' : ''}">`
         + `<span class="lgsev"><span class="tier ${r.sev}">${LG_TIER[r.sev]}</span>`
         + (r.code ? `<span class="code">${esc(r.code)}</span>` : '') + `</span>`
-        + `<span class="lgtxt">${txt}${r.extra ? r.extra() : ''}${fields}</span>`
+        + `<span class="lgtxt">${txt}${r.extra ? r.extra() : ''}${fields}${door}</span>`
         + `<span class="lgsrc">${esc(src)}`
         + (r.code ? `<span class="lgfired ${f ? 'on' : 'off'}">${f ? `fired ${f.n}× · ${esc(days)}` : 'not fired this week'}</span>` : '')
         + `</span></div>`
@@ -157,9 +163,17 @@ export function LogicPage() {
       LGNEXT = t ? (t.dataset.lgi != null ? ['lgi', t.dataset.lgi]
         : t.dataset.lgset ? ['lgset', t.dataset.lgset] : ['lgkind', t.dataset.lgkind]) : null
     }
+    /* a row's door to its calendar's settings window (D639) */
+    const onClick = (e: Event) => {
+      const b = (e.target as HTMLElement).closest('[data-lgopen]') as HTMLElement | null
+      if (!b || !isAdmin()) return
+      if (b.dataset.lgopen === 'sans') setSansSet(true); else setInpSet(true)
+      notify()
+    }
     host.addEventListener('change', onChange)
     host.addEventListener('pointerdown', onPointerDown)
-    return () => { host.removeEventListener('change', onChange); host.removeEventListener('pointerdown', onPointerDown) }
+    host.addEventListener('click', onClick)
+    return () => { host.removeEventListener('change', onChange); host.removeEventListener('pointerdown', onPointerDown); host.removeEventListener('click', onClick) }
   }, [])
 
   return (

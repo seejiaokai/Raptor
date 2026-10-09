@@ -52,9 +52,9 @@ import {
   setRosterOrder,
   setPersLabel,
   setShowSans,
-  toggleManningRow,
 } from './state/store'
 import { memoryBackend } from './state/storage'
+import { elevenCounters } from './testkit'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
 
@@ -290,13 +290,17 @@ describe('roster order + labels are admin-gated writers', () => {
   })
 })
 
-describe('the manning count rows are admin-arrangeable and hideable', () => {
+/* (Until D669, 8 Oct 26, a row could also be HIDDEN — `toggleManningRow`, the eye — and this block tested it. The eye
+   became a delete cross and nothing can be hidden; the cross's own tests are ui/nocounters.test.tsx and
+   ui/counts.test.tsx. The app starts with no counters, so the eleven these tests move about are MADE first.) */
+describe('the manning count rows are admin-arrangeable', () => {
   beforeEach(() => {
     lwInitStore(memoryBackend())
     setRole('admin')
+    elevenCounters()
   })
 
-  it('lists the seed manning rows in natural order until one is moved', () => {
+  it('lists the counters in the order they were made until one is moved', () => {
     expect(manningRowIds()).toEqual(['sets', 'ip', 'iwso', 'instr', 'opsp', 'opsw', 'flp', 'wmp', 'sxo', 'scd', 'scn'])
     expect(orderedManningIds()).toEqual(manningRowIds())
   })
@@ -309,30 +313,25 @@ describe('the manning count rows are admin-arrangeable and hideable', () => {
     expect(moveManningRow('sets', -1)).toBe(false)   // already first
   })
 
-  it('hides and shows a row, and reset clears both order and hidden', () => {
-    toggleManningRow('opsw')
-    expect(getState().manningHidden).toContain('opsw')
-    toggleManningRow('opsw')
-    expect(getState().manningHidden).not.toContain('opsw')
-    toggleManningRow('wmp')
+  it('reset clears the hand order', () => {
     moveManningRow('sxo', -1)
+    expect(getState().manningOrder.length).toBeGreaterThan(0)
     resetManning()
-    expect(getState().manningHidden).toEqual([])
     expect(getState().manningOrder).toEqual([])
+    expect(orderedManningIds()).toEqual(manningRowIds())
   })
 
-  it('a member cannot reorder or hide a manning row', () => {
+  it('a member cannot reorder a manning row', () => {
     setRole('member')
     expect(moveManningRow('sxo', -1)).toBe(false)
-    toggleManningRow('opsw')
     expect(getState().manningOrder).toEqual([])
-    expect(getState().manningHidden).toEqual([])
   })
 
   it('every row still appears after a partial reorder — none is dropped', () => {
     moveManningRow('sxo', -1)
     moveManningRow('flp', -1)
     // whatever the hand order, orderedManningIds is a permutation of the full set
+    expect(manningRowIds()).toHaveLength(11)                         // never an empty comparison
     expect([...orderedManningIds()].sort()).toEqual([...manningRowIds()].sort())
   })
 

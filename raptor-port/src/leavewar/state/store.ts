@@ -68,6 +68,12 @@ import {
   drawnFrom,
   localToday,
   bandOverlaps,
+  bandAt,
+  defKey,
+  dayEventShort,
+  normShort,
+  shortOf,
+  SHORT_RULE,
   warHolding,
   STAGE_ORDER,
   pickDefaultPeriodId,
@@ -128,6 +134,23 @@ import {
   type Threshold,
   type Stage,
   type States,
+  AVAIL_P,
+  AVAIL_W,
+  AVAIL_DELETE_MSG,
+  writeDayEvent,
+  freeEventLine,
+  withHoliday,
+  withoutHoliday,
+  validDate,
+  MAX_HOLIDAY_NAME,
+  type HolidayDraft,
+  type HolidayRef,
+  isAvailId,
+  availRuleOf,
+  cleanAvailRule,
+  blockOrder,
+  isFixedRow,
+  orderToSave,
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
@@ -158,13 +181,11 @@ interface State {
    *  also be deleted"): `requirements.default.rules` is the squadron's own
    *  set, persisted WHOLE under `manningdefs` and edited through
    *  `saveManningRule` / `deleteManningRule` / the threshold setters, all
-   *  ADMIN-gated. The old numbers-only overlay (`manningthresh`) is still
-   *  READ at boot so a squadron's tuned amber/red lines survive the upgrade,
-   *  but never written again. This deliberately departs from the
+   *  ADMIN-gated. It starts EMPTY — a squadron makes the counters it wants
+   *  (owner, D669, 8 Oct 26). This deliberately departs from the
    *  stores-list rule about code-owned definitions: the owner asked for the
    *  definitions themselves, and forward-compat lives in `readManningRules`
-   *  dropping any stored rule a later build cannot understand (the seed
-   *  fills the gap). */
+   *  dropping any stored rule a later build cannot understand. */
   requirements: Requirements
   /** The qualification chips the counter form offers — Raptor's live Quals
    *  catalogue, installed by the projection (`setQualCatalog`) exactly like
@@ -300,6 +321,10 @@ interface State {
    *  the day you are notionally already on must snap you back to it. A date
    *  alone cannot say "asked again". */
   focusSeq: number
+  /** The last ask was "only if that day is out of view" (owner, D670, 8 Oct 26 — an Undo or a Redo of a change he is
+   *  looking at must leave the grid where it is). False for every plain ask: a month's worth of jumps — the
+   *  under-manned list, a new or a switched period, the first showing — still put the day at the left. */
+  focusSoft: boolean
 
   /* (The war's own seat / band / SXO overrides — `personEdits`, written by its
      "Edit person" sheet — are GONE: D460, D461, 30 Sep 26. Quals is the one
@@ -401,6 +426,7 @@ function blank(): State {
     viewer: null,
     focusDate: null,
     focusSeq: 0,
+    focusSoft: false,
     postOuts: {},
   })
 }
@@ -478,44 +504,17 @@ function readFigureOrder(x: unknown): string[] | null {
 /** A stored id list (the roster order), same shape as the figure order. */
 const readIdList = readFigureOrder
 
-/** The stored amber/red overlay of the PRE-definitions build, read at boot
- *  only so an upgraded browser keeps its tuned lines (they migrate into the
- *  rules themselves and persist under `manningdefs` from then on). One bad
- *  entry is dropped rather than rejecting the whole blob (the label-map
- *  rule); an id no rule carries any more is harmless — `requirementsWith`
- *  only reads ids the seed still has. */
-function readThreshMap(x: unknown): Record<string, Threshold> | null {
-  if (!isPlainObject(x)) return null
-  const out: Record<string, Threshold> = {}
-  for (const [id, t] of Object.entries(x)) {
-    if (!isPlainObject(t)) continue
-    const { amber, red } = t as { amber?: unknown; red?: unknown }
-    if (typeof amber !== 'number' || !Number.isFinite(amber) || amber < 0) continue
-    if (typeof red !== 'number' || !Number.isFinite(red) || red < 0) continue
-    out[id] = { amber, red }
-  }
-  return out
-}
-
-/** The seeded requirements with a legacy amber/red overlay laid on top — the
- *  migration path for a browser that customised its lines before the rules
- *  became data. The old overlay knew `sets` as its own key; it is an ordinary
- *  rule now, so the same map read covers it. */
-function requirementsWith(overlay: Record<string, Threshold>): Requirements {
-  const req = seedRequirements()
-  req.default.rules = req.default.rules.map(r =>
-    overlay[r.id] ? { ...r, threshold: { ...overlay[r.id] } } : r,
-  )
-  return req
-}
+/* (The amber / red OVERLAY of the pre-definitions build — `manningthresh`, read at boot until 8 Oct 26 so a browser
+   from before 19 Aug 26 kept its tuned lines over the built-in rows — is no longer read: there are no built-in rows
+   for it to lie over (D669). A store that holds only that record starts with no counters, as every store does.) */
 
 // ---- The stored manning rules (owner, 19 Aug 26) ---------------------------
 //
 // Read with the label-map tolerance: one rule a later build cannot understand
 // is dropped, the rest survive. A stored empty LIST is honoured (the admin
 // deleted every counter — a decision, not damage); a non-empty list where
-// nothing survived is corruption and falls back to the seed rather than to a
-// blank manning block.
+// nothing survived is corruption and reads as no saved list at all — which,
+// since D669, is a block with no counters (it was the built-in set).
 
 const isShortString = (x: unknown): x is string => typeof x === 'string' && x.length > 0 && x.length <= 80
 
@@ -586,19 +585,31 @@ function readManningRule(x: unknown): ManningRule | null {
 }
 
 function readManningRules(x: unknown): ManningRule[] | null {
-  if (!Array.isArray(x) || x.length > MAX_MANNING_RULES) return null
+  /* the two Available rows (engine/availrows.ts) sit in this list once an admin has changed them, BESIDE the squadron's
+     own counters and never counted against their limit — so the list may be two longer than the limit, and it is the
+     ordinary counters that are counted below */
+  if (!Array.isArray(x) || x.length > MAX_MANNING_RULES + 2) return null
   const out: ManningRule[] = []
   const seen = new Set<string>()
+  let dropped = 0
   for (const r of x) {
-    const rule = readManningRule(r)
+    let rule = readManningRule(r)
     if (!rule || seen.has(rule.id)) continue
+    if (isAvailId(rule.id)) {
+      /* a stored Available row that is not a people count is left out — the built-in one serves — and one that is
+         carries no amber or red, whatever was stored */
+      rule = cleanAvailRule(rule)
+      if (!rule) { dropped++; continue }
+    }
     out.push(rule)
     seen.add(rule.id)
   }
-  // A stored EMPTY list is a decision — the admin deleted every counter, and
-  // a reload must not resurrect the seed. A non-empty list where every entry
-  // was dropped is corruption, and falls back to the seed like any other
-  // unreadable blob.
+  if (out.filter(r => !isAvailId(r.id)).length > MAX_MANNING_RULES) return null
+  /* a list whose only loss was a bad Available row is still the squadron's list (an empty one included) */
+  if (dropped && out.length + dropped === x.length) return out
+  // A stored EMPTY list is a decision — the admin deleted every counter. A
+  // non-empty list where every entry was dropped is corruption, and reads as
+  // no saved list, like any other unreadable blob.
   return out.length || x.length === 0 ? out : null
 }
 
@@ -716,7 +727,7 @@ function readWar(x: unknown): LeaveWar | null {
   const readDays: DayInfo[] = []
   for (const d of days) {
     if (!isPlainObject(d)) return null
-    const { date, events, eventKinds, blocked, blockedReason, ph } = d
+    const { date, events, eventKinds, eventShorts, blocked, blockedReason, ph } = d
     if (typeof date !== 'string') return null
     // At LEAST two event lines (the historic default), and any number beyond
     // that (an admin can add rows since 18 Aug 26). Every entry a string.
@@ -731,7 +742,16 @@ function readWar(x: unknown): LeaveWar | null {
     const readKinds: (EventKind | null)[] = Array.isArray(eventKinds)
       ? eventKinds.map(k => (typeof k === 'string' && EVENT_KINDS.includes(k as EventKind) ? (k as EventKind) : null))
       : []
-    readDays.push({ date, events: [...events], eventKinds: readKinds, blocked, blockedReason, ph })
+    /* THE SHORT FORMS ARE NAMED HERE OR THEY VANISH ON A RELOAD (the build plan §3.12): this rebuilds a day from the
+       fields it names and drops the rest. Read as leniently as the tags — absent on every day stored before short
+       forms, and an entry that breaks the rule reads as none (engine/eventshort.ts), never failing the day. A day
+       with none keeps no list, so it is stored exactly as it was. */
+    const readShorts: (string | null)[] = Array.isArray(eventShorts) ? eventShorts.map(s => normShort(s)) : []
+    readDays.push({
+      date, events: [...events], eventKinds: readKinds,
+      ...(readShorts.some(Boolean) ? { eventShorts: readShorts } : {}),
+      blocked, blockedReason, ph,
+    })
   }
 
   // Bands are READ LENIENTLY, like the window above: a war stored before
@@ -746,7 +766,7 @@ function readWar(x: unknown): LeaveWar | null {
     if (!Array.isArray(bands)) return null
     for (const b of bands) {
       if (!isPlainObject(b)) return null
-      const { line, from: bf, to: bt, text, kind } = b
+      const { line, from: bf, to: bt, text, kind, short } = b
       // Any row an admin can have (variable event rows, 18 Aug 26) — the old
       // `0 | 1` check silently dropped a band on an added row at reload.
       if (typeof line !== 'number' || !Number.isInteger(line) || line < 0 || line >= MAX_EVENT_ROWS) continue
@@ -756,7 +776,9 @@ function readWar(x: unknown): LeaveWar | null {
       // The band's instance tag, read as leniently as the days' (null when
       // absent or unrecognised).
       const bk = typeof kind === 'string' && EVENT_KINDS.includes(kind as EventKind) ? (kind as EventKind) : null
-      readBands.push({ line, from: bf, to: bt, text, kind: bk })
+      /* its short form, named here for the same reason as a day's above — through the one rule */
+      const bs = normShort(short)
+      readBands.push({ line, from: bf, to: bt, text, kind: bk, ...(bs ? { short: bs } : {}) })
     }
   }
 
@@ -1043,12 +1065,11 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   const groupPriority = readStored('grouppriority', readIdList) ?? []
   const groupPriorityCustom = readStored('grouppriocustom', x => (typeof x === 'boolean' ? x : null)) ?? false
   const groupColors = readStored('groupcolors', readColorMap) ?? {}
-  // The squadron's own rule set, or — for a browser from before rules were
-  // data — the seed with its old numbers-only overlay migrated in.
+  // The squadron's own rule set — or none: the Manning block comes with no count rows of its own (D669).
   const storedRules = readStored('manningdefs', readManningRules)
   const requirements: Requirements = storedRules
     ? { default: { rules: storedRules }, overrides: {} }
-    : requirementsWith(readStored('manningthresh', readThreshMap) ?? {})
+    : seedRequirements()
   const eventRows = readStored('eventrows', x =>
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
@@ -1443,6 +1464,10 @@ function lwRegisterCommands(): void {
      are their OWN commands, so the command gate asks the right row of the permissions table (perms.ts COMMAND_OPS:
      the award's, the ledger's) rather than the bid's */
   for (const t of ['lw.award', 'lw.ledger', 'lw.clear']) cmdDefinePermission(t, cmdAnyone)
+  /* the Holidays list's three writers (holidayAdd / holidayChange / holidayRemove below): their own types so Undo can
+     say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves — and the
+     Event sheet's Save and Delete (saveEvent / deleteEvent), for the same two reasons */
+  for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove', 'lw.event.save', 'lw.event.remove']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
      changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
@@ -2583,11 +2608,14 @@ export function absenceDoor(): AbsenceDoor | null { return DOOR }
 /** Run a war gesture as ONE command — every cell it touches, requests and
  *  approved leave alike, lands in one envelope and one undo step (design §5.2
  *  OA-003). Inside an already-running command it simply joins. */
-function gesture<T>(type: string, fn: () => T): T {
+function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
   let out!: T
   const r = cmdCommit({
-    type, scope: { module: 'lw', warId: state.currentId } as CmdScope,
+    /* `warId` — the period the gesture writes, where that is not the one on screen (an Undo then returns to IT);
+       `note` — what it did, kept on the Undo step for its words (the command's `meta.key`, as a text box's is) */
+    type, scope: { module: 'lw', warId: opts.warId ?? state.currentId } as CmdScope,
+    ...(opts.note ? { meta: { key: opts.note } } : {}),
     apply: (t) => {
       t.enlist(lwStore)
       out = fn()
@@ -3236,39 +3264,29 @@ export function clearBidWindow(): BidWindowResult {
  * Days are stored in full rather than rebuilt from the period's range
  * precisely so these survive a reload; see `readWar`.
  */
-export function setDayEvent(date: string, line: number, text: string, kind: EventKind | null = null): boolean {
+export function setDayEvent(date: string, line: number, text: string, kind: EventKind | null = null, short: string | null = null): boolean {
   if (state.role !== 'admin') return false
   if (!state.period.days.some(d => d.date === date)) return false
+  if (badShort(short)) return false
   updateCurrent(w => ({
     ...w,
     period: {
       ...w.period,
-      days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, text, kind) : d)),
+      days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, text, kind, short) : d)),
     },
   }))
   return true
 }
 
-/** Copy a day's event lines and write one, padding with '' so a row beyond the
- *  stored array's end (a just-added row) can be written into rather than
- *  silently dropped. The one place events are mutated. */
-function writeEventLine(events: string[], line: number, text: string): string[] {
-  const out = [...events]
-  while (out.length <= line) out.push('')
-  out[line] = text
-  return out
+/* A SHORT FORM THAT BREAKS THE RULE IS REFUSED AT THE WRITE (the build plan §3.12; engine/eventshort.ts) — by every
+   writer below that makes or re-makes an event. None typed (null, or an empty box) is not a breach: the event then
+   prints its preset's short form, or one derived from its name. */
+function badShort(short: string | null | undefined): boolean {
+  return typeof short === 'string' && short.trim() !== '' && !normShort(short)
 }
 
-/** A day with one event slot written — text AND its instance tag together
- *  (owner, 18 Aug 26: the tag rides the event, not the type library). Every
- *  write sets both: an edit that drops the tag must clear the stored one, or
- *  yesterday's tag would silently colour today's different word. */
-function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind | null): DayInfo {
-  const kinds = [...(d.eventKinds ?? [])]
-  while (kinds.length <= line) kinds.push(null)
-  kinds[line] = text ? kind : null // a cleared event keeps no tag behind
-  return { ...d, events: writeEventLine(d.events, line, text), eventKinds: kinds }
-}
+/* (`writeEventLine` and `writeDayEvent` — the one place a day's events are mutated — moved whole to engine/period.ts on
+   7 Oct 26, so the Holidays list's writers (engine/holidays.ts) and the writers here share the ONE body.) */
 
 /**
  * Write one event line across a RANGE of days — the "repeat" mode: the same
@@ -3280,9 +3298,10 @@ function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind |
  * beneath it is suppressed anyway — so the repeat writes only the free days.
  * A backwards range is a no-op.
  */
-export function setDayEventRange(from: string, to: string, line: number, text: string, kind: EventKind | null = null): boolean {
+export function setDayEventRange(from: string, to: string, line: number, text: string, kind: EventKind | null = null, short: string | null = null): boolean {
   if (state.role !== 'admin') return false
   if (to < from) return false
+  if (badShort(short)) return false
   updateCurrent(w => ({
     ...w,
     period: {
@@ -3290,7 +3309,7 @@ export function setDayEventRange(from: string, to: string, line: number, text: s
       days: w.period.days.map(d => {
         if (d.date < from || d.date > to) return d
         if (bandCoversDate(w.period.bands, line, d.date)) return d
-        return writeDayEvent(d, line, text, kind)
+        return writeDayEvent(d, line, text, kind, short)
       }),
     },
   }))
@@ -3298,7 +3317,7 @@ export function setDayEventRange(from: string, to: string, line: number, text: s
 }
 
 /** Why a merged band was refused. */
-export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'forbidden'
+export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'forbidden' | 'badshort'
 
 /**
  * Add a MERGED event label spanning a range on one event line.
@@ -3309,8 +3328,10 @@ export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'for
  * line is cleared, so a merged label never hides stray words a later delete
  * would resurrect.
  */
-export function addEventBand(line: number, from: string, to: string, text: string, kind: EventKind | null = null): EventBandResult {
+export function addEventBand(line: number, from: string, to: string, text: string, kind: EventKind | null = null, short: string | null = null): EventBandResult {
   if (state.role !== 'admin') return 'forbidden'
+  if (badShort(short)) return 'badshort'
+  const sh = normShort(short)
   if (to < from) return 'backwards'
   if (from < state.period.start || to > state.period.end) return 'outside'
   if (bandOverlaps(state.period.bands, line, from, to)) return 'overlap'
@@ -3318,12 +3339,115 @@ export function addEventBand(line: number, from: string, to: string, text: strin
     ...w,
     period: {
       ...w.period,
-      bands: [...w.period.bands, { line, from, to, text, kind }],
+      /* a band with no short form of its own is stored exactly as it always was */
+      bands: [...w.period.bands, { line, from, to, text, kind, ...(sh ? { short: sh } : {}) }],
       days: w.period.days.map(d =>
         d.date < from || d.date > to || !d.events[line] ? d : writeDayEvent(d, line, '', null)),
     },
   }))
   return 'set'
+}
+
+/* =====================================================================
+   THE EVENT SHEET'S SAVE AND DELETE — each ONE command (the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.12; owner D643–D645)
+   ---------------------------------------------------------------------
+   The sheet used to save in pieces: take the old band away, write the new event, and put the old band back if the
+   new one was refused — two or three Undo steps, and a band re-made from its text and kind alone. Now:
+   - the whole save is CHECKED before anything is taken away, so a refused replacement leaves the event it would have
+     replaced exactly as it was — text, kind and short form;
+   - it is ONE command, so ONE Undo step, whose words say what was saved (undo/describe.ts);
+   - text, kind and short form are written together, through the one rule for a short form.
+   "No tag" is not "no kind": `kind: null` is saved as it is, and a word that matches a preset still takes that
+   preset's kind by its name (engine/eventdefs.ts classifyEvent) — an untagged "PH" is a public holiday, as it always
+   was. The plain writers above stay for the other callers and the tests. Admin only, as every write to a period is. */
+export interface EventSave {
+  line: number
+  /** the cell the sheet was opened on — the band covering it (if any) is the one being replaced */
+  date: string
+  /** this day; a range with the word in each day; a range as one merged bar */
+  scope: 'day' | 'repeat' | 'merge'
+  from?: string
+  to?: string
+  text: string
+  kind: EventKind | null
+  /** what the grid prints; '' or absent = none of its own */
+  short?: string | null
+}
+export type EventSaveFail = 'forbidden' | 'short' | 'noshort' | 'label' | 'dates' | 'backwards' | 'outside' | 'overlap'
+export type EventSaveResult = { ok: true } | { ok: false; reason: EventSaveFail; message: string }
+
+export function saveEvent(e: EventSave): EventSaveResult {
+  const fail = (reason: EventSaveFail, message: string): EventSaveResult => ({ ok: false, reason, message })
+  if (state.role !== 'admin') return fail('forbidden', 'Only an admin can edit events.')
+  if (!e || typeof e !== 'object' || !Number.isInteger(e.line) || e.line < 0 || e.line >= state.eventRows)
+    return fail('dates', 'That Event row is no longer there.')
+  const p = state.period
+  const line = e.line
+  const text = typeof e.text === 'string' ? e.text.trim() : ''
+  if (badShort(e.short)) return fail('short', SHORT_RULE)
+  const short = normShort(e.short)
+  const from = e.scope === 'day' ? e.date : e.from, to = e.scope === 'day' ? e.date : e.to
+  if (!from || !to) return fail('dates', 'Pick the dates first.')
+  if (to < from) return fail('backwards', 'The end date is before the start date.')
+  if (from < p.start || to > p.end) return fail('outside', 'Those dates leave this leave war.')
+  /* the event already on the cell — the band covering it, or the day's own word */
+  const old = bandAt(p.bands, line, e.date)
+  const oldText = old ? old.text : (p.days.find(d => d.date === e.date)?.events[line] ?? '')
+  /* A NEW name with no letter or digit in it has nothing the grid could print: one must be typed. An OLD event of
+     such a name is left alone — saved again unchanged it keeps its name and kind, and prints a dot. */
+  if (text && !short && text !== oldText && shortOf(state.eventDefs, text, null) === '•')
+    return fail('noshort', 'Type what the grid should print for this event — its name has no letter or digit.')
+  if (e.scope === 'merge') {
+    if (!text) return fail('label', 'A merged event needs a name.')
+    /* against every OTHER band on the line: the one being replaced does not clash with itself */
+    if (bandOverlaps(p.bands.filter(b => b !== old), line, from, to)) return fail('overlap', 'Those dates already carry a merged event on this line.')
+  }
+  const kind = EVENT_KINDS.includes(e.kind as EventKind) ? e.kind : null
+  /* the note Undo's words are made from (undo/describe.ts eventLabel) and its landing reads (state/undo-wire.ts) */
+  const note = JSON.stringify({ text: text || oldText, from, to })
+  gesture(text ? 'lw.event.save' : 'lw.event.remove', () => updateCurrent(w => {
+    const bands = old ? w.period.bands.filter(b => b !== old) : w.period.bands
+    if (e.scope === 'merge') {
+      return {
+        ...w,
+        period: {
+          ...w.period,
+          bands: [...bands, { line, from, to, text, kind, ...(short ? { short } : {}) }],
+          /* the single words under the new bar go, as addEventBand clears them — their short forms with them */
+          days: w.period.days.map(d => (d.date < from || d.date > to || !d.events[line] ? d : writeDayEvent(d, line, '', null))),
+        },
+      }
+    }
+    return {
+      ...w,
+      period: {
+        ...w.period,
+        bands,
+        days: w.period.days.map(d => {
+          if (d.date < from || d.date > to) return d
+          /* a repeat writes only the free days: a day under another band keeps the band */
+          if (e.scope === 'repeat' && bandCoversDate(bands, line, d.date)) return d
+          return writeDayEvent(d, line, text, kind, short)
+        }),
+      },
+    }
+  }), { note })
+  return { ok: true }
+}
+
+/** Take away the event on a cell — the merged band covering it, or the day's own word — text, kind and short form
+ *  together. ONE command, one Undo step. False where there is nothing there, or for anyone but an admin. */
+export function deleteEvent(line: number, date: string): boolean {
+  if (state.role !== 'admin') return false
+  const band = bandAt(state.period.bands, line, date)
+  const text = band ? band.text : (state.period.days.find(d => d.date === date)?.events[line] ?? '')
+  if (!text) return false
+  const note = JSON.stringify(band ? { text, from: band.from, to: band.to } : { text, from: date, to: date })
+  gesture('lw.event.remove', () => updateCurrent(w => (band
+    ? { ...w, period: { ...w.period, bands: w.period.bands.filter(b => b !== band) } }
+    : { ...w, period: { ...w.period, days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, '', null) : d)) } })), { note })
+  return true
 }
 
 /** Remove the merged band on `line` that covers `date`. Admin-only. A no-op
@@ -3344,6 +3468,96 @@ export function removeEventBand(line: number, date: string): boolean {
  *  range writer above; the engine's `bandAt` is the exported one. */
 function bandCoversDate(bands: EventBand[], line: number, date: string): boolean {
   return bands.some(b => b.line === line && b.from <= date && date <= b.to)
+}
+
+/* =====================================================================
+   THE HOLIDAYS LIST'S THREE WRITERS (the build plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md
+   §3.4; owner D631, D638) — a public holiday or an Off day added, changed or removed from the year's list in Days.
+   ---------------------------------------------------------------------
+   The list is this store's own record seen as a list (sync.ts holidaysIn), and these write that same record — a tagged
+   day event for one day, a merged band for a run (engine/holidays.ts) — so the Leave War's Event row and the list are
+   two doors onto one thing (D638). What sets them apart from the Event sheet's writers above:
+   - they write to the period HOLDING the date, which need not be the one on screen (the list shows a year, and the
+     calendars any month);
+   - they FIND their own Event row: the first one free across the whole range;
+   - each is ONE named command — one Undo step, whose words say what it was;
+   - a refusal is a sentence, with a reason the list's form can act on (`noperiod` offers to make the period);
+   - a change is checked WHOLE before anything is taken away, so a refused change leaves the holiday as it was.
+   Admin only, as every write to a period is. */
+export type HolidayFail = 'forbidden' | 'bad' | 'noperiod' | 'crosses' | 'full' | 'gone'
+export type HolidayResult = { ok: true } | { ok: false; reason: HolidayFail; message: string }
+const HOL_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+/* the day-first date voice of the war's own sentences ("9 Aug 26") */
+const holDate = (iso: string) => `${+iso.slice(8, 10)} ${HOL_MON[+iso.slice(5, 7) - 1]} ${iso.slice(2, 4)}`
+const holFail = (reason: HolidayFail, message: string): HolidayResult => ({ ok: false, reason, message })
+
+/* What a holiday write would do, worked out and checked before anything changes: the periods to write, or the refusal.
+   `replacing` = the line being changed (its record is taken away first, and its own days then count as free). */
+function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResult | { writes: Array<[string, Period]>; draft: HolidayDraft } {
+  if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
+  if (!h || typeof h !== 'object' || (h.kind !== 'ph' && h.kind !== 'off') || !validDate(h.from) || !validDate(h.to) || h.to < h.from)
+    return holFail('bad', 'Choose public holiday or Off day, and a first and last day — the last cannot be before the first.')
+  const typed = typeof h.name === 'string' ? h.name.trim().replace(/\s+/g, ' ') : ''
+  if (typed.length > MAX_HOLIDAY_NAME) return holFail('bad', `A holiday's name is at most ${MAX_HOLIDAY_NAME} letters.`)
+  /* no name typed: the squadron's own word for the kind (its first event type of that kind), else the standard one */
+  const kind = h.kind === 'ph' ? 'off' : 'free'
+  const name = typed || state.eventDefs.find(d => d.kind === kind)?.name || (h.kind === 'ph' ? 'PH' : 'Off day')
+  /* its short form ("On grid" — the plan §3.12, D652): one typed must be a short form; none typed stores none */
+  if (badShort(h.short)) return holFail('bad', SHORT_RULE)
+  let short = normShort(h.short)
+
+  let source: LeaveWar | undefined, cleared: Period | null = null
+  if (replacing) {
+    source = state.wars.find(w => w.period.id === replacing.warId)
+    cleared = source ? withoutHoliday(source.period, replacing, state.eventDefs) : null
+    if (!source || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+    /* A CHANGE THAT NAMES NO SHORT FORM KEEPS THE ONE THE HOLIDAY HAD — while its name stands. Under a new name the
+       old one would mis-name it, so it goes and the new name's own prints. */
+    if (h.short === undefined && defKey(name) === defKey(replacing.name)) {
+      const line = replacing.line
+      const own = replacing.src === 'band'
+        ? source.period.bands.find(b => b.line === line && b.from === replacing.from && b.to === replacing.to)?.short
+        : replacing.src === 'day' && line != null
+          ? dayEventShort(source.period.days.find(d => d.date === replacing.from) ?? { date: '', events: [], blocked: false, blockedReason: '', ph: false }, line)
+          : null
+      short = normShort(own)
+    }
+  }
+  const draft: HolidayDraft = { kind: h.kind, name, from: h.from, to: h.to, ...(short ? { short } : {}) }
+  const target = warHolding(state.wars, draft.from)
+  if (!target) return holFail('noperiod', `No leave period covers ${holDate(draft.from)} yet.`)
+  if (draft.to > target.period.end) return holFail('crosses', `Those dates run past ${holDate(target.period.end)}, the end of the leave period "${target.period.name}" — add each part to its own period.`)
+  const base = source && source === target ? cleared! : target.period
+  const line = freeEventLine(base, state.eventRows, draft.from, draft.to)
+  if (line < 0) return holFail('full', 'Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.')
+  const writes: Array<[string, Period]> = []
+  if (source && source !== target) writes.push([source.period.id, cleared!])
+  writes.push([target.period.id, withHoliday(base, line, draft)])
+  return { writes, draft }
+}
+function holidayRun(type: string, op: 'add' | 'change' | 'remove', writes: Array<[string, Period]>, what: { kind: string; from: string; to: string }): HolidayResult {
+  /* the note Undo's words are made from (undo/describe.ts lwLabel) and its landing reads (state/undo-wire.ts) */
+  const note = JSON.stringify({ op, kind: what.kind, from: what.from, to: what.to })
+  gesture(type, () => { for (const [id, period] of writes) updateWar(id, w => ({ ...w, period })) }, { warId: writes[writes.length - 1]![0], note })
+  return { ok: true }
+}
+export function holidayAdd(h: HolidayDraft): HolidayResult {
+  const plan = holidayPlan(h, null)
+  if ('ok' in plan) return plan
+  return holidayRun('lw.holiday.add', 'add', plan.writes, plan.draft)
+}
+export function holidayChange(line: HolidayRef, h: HolidayDraft): HolidayResult {
+  if (!line || typeof line !== 'object') return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+  const plan = holidayPlan(h, line)
+  if ('ok' in plan) return plan
+  return holidayRun('lw.holiday.change', 'change', plan.writes, plan.draft)
+}
+export function holidayRemove(line: HolidayRef): HolidayResult {
+  if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
+  const war = line && typeof line === 'object' ? state.wars.find(w => w.period.id === line.warId) : undefined
+  const cleared = war ? withoutHoliday(war.period, line, state.eventDefs) : null
+  if (!war || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+  return holidayRun('lw.holiday.remove', 'remove', [[war.period.id, cleared]], line)
 }
 
 /** Why an event move was refused. Mirrors `MoveResult` for the roster. */
@@ -3393,7 +3607,9 @@ export function moveEvent(line: number, from: string, to: string, dayDelta: numb
       ...w,
       period: {
         ...w.period,
-        bands: [...w.period.bands.filter(b => b !== band), { line, from: nFrom, to: nTo, text: band.text, kind: band.kind ?? null }],
+        /* text, kind AND short form travel (the build plan §3.12, finding C): the band was re-made from its dates,
+           text and kind, and a short form typed for it would have been dropped by the move */
+        bands: [...w.period.bands.filter(b => b !== band), { line, from: nFrom, to: nTo, text: band.text, kind: band.kind ?? null, ...(normShort(band.short) ? { short: normShort(band.short)! } : {}) }],
         // clear any stray per-day text under the new span, the same rule addEventBand applies
         days: w.period.days.map(d => (d.date >= nFrom && d.date <= nTo && d.events[line]) ? writeDayEvent(d, line, '', null) : d),
       },
@@ -3403,13 +3619,14 @@ export function moveEvent(line: number, from: string, to: string, dayDelta: numb
     const text = src?.events[line]
     if (!text) return { reason: 'nothing' }
     const kind = (src?.eventKinds?.[line] ?? null) as EventKind | null
+    const short = src ? dayEventShort(src, line) : null                  // …and its short form goes with it
     updateCurrent(w => ({
       ...w,
       period: {
         ...w.period,
         days: w.period.days.map(d => {
           if (d.date === from) return writeDayEvent(d, line, '', null)   // clear the source
-          if (d.date === nFrom) return writeDayEvent(d, line, text, kind) // land the target
+          if (d.date === nFrom) return writeDayEvent(d, line, text, kind, short) // land the target
           return d
         }),
       },
@@ -3489,12 +3706,12 @@ function commitEventDefs(result: EventDef[] | string): string | null {
   return null
 }
 
-export function addEventType(name: string, kind: EventKind): string | null {
+export function addEventType(name: string, kind: EventKind, short?: string): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit event types'
-  return commitEventDefs(addEventDef(state.eventDefs, name, kind))
+  return commitEventDefs(addEventDef(state.eventDefs, name, kind, short))
 }
 
-export function updateEventType(index: number, patch: { name?: string; kind?: EventKind }): string | null {
+export function updateEventType(index: number, patch: { name?: string; kind?: EventKind; short?: string }): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit event types'
   return commitEventDefs(updateEventDef(state.eventDefs, index, patch))
 }
@@ -3858,36 +4075,49 @@ export function toggleFigure(id: string): boolean {
 /** The rule ids the manning block can draw, in their natural order — `'sets'`
  *  when a set rule exists, then each default rule's id. */
 export function manningRowIds(): string[] {
-  return state.requirements.default.rules.map(r => r.id)
+  /* never the two Available rows: they are drawn with the Required rows by ui/FlyRows.tsx — at the foot of this block
+     since D665 — not as rows of this list
+     (engine/availrows.ts) — so they are in no order, no hidden list and no Rearrange */
+  return state.requirements.default.rules.filter(r => !isAvailId(r.id)).map(r => r.id)
 }
 
-/** The manning rows in DISPLAY order: the admin's hand-order first (unknown ids
- *  dropped), then any not named appended in natural order — the `orderedPeople`
- *  rule, so a rule added to the default after an order was saved still appears
- *  rather than vanishing. Hidden rows are still IN this list; hiding is applied
- *  at render, so Rearrange mode can show and un-hide them. */
+/** THE TWO AVAILABLE ROWS as they stand — the squadron's own where it has changed one, else the built-in (a store
+ *  that never touched them, or a damaged row). What the war's rows and the calendars both count by. */
+export function availRules(): { p: ManningRule; w: ManningRule } {
+  const rules = state.requirements.default.rules
+  return { p: availRuleOf(rules, AVAIL_P), w: availRuleOf(rules, AVAIL_W) }
+}
+
+/** THE MANNING BLOCK'S ROWS IN THE ORDER THEY ARE DRAWN — the squadron's counters AND the four fixed rows (Required P
+ *  and W, Available P and W), each fixed row as its token (engine/fixedrows.ts). Owner, D674, 8 Oct 26: a counter may
+ *  stand above the four, between any two of them, or below all four; the four keep their own order. A saved order
+ *  that names none of the four — every one saved before D674 — reads as its counters, then the four; a counter made
+ *  since the order was saved appears just above Required P. What the block draws and what the drag moves within. */
+export function manningBlockOrder(): string[] {
+  return blockOrder(state.manningOrder, manningRowIds())
+}
+
+/** The squadron's COUNTERS in display order — the block's order with the four fixed rows left out: the admin's
+ *  hand-order first (unknown ids dropped), then any not named, so a rule added to the default after an order was
+ *  saved still appears rather than vanishing (the `orderedPeople` rule). */
 export function orderedManningIds(): string[] {
-  const all = manningRowIds()
-  if (!state.manningOrder.length) return all
-  const known = new Set(all)
-  const seen = new Set<string>()
-  const out: string[] = []
-  for (const id of state.manningOrder) if (known.has(id) && !seen.has(id)) { out.push(id); seen.add(id) }
-  for (const id of all) if (!seen.has(id)) out.push(id)
-  return out
+  return manningBlockOrder().filter(id => !isFixedRow(id))
 }
 
-/** Move one manning row up (`-1`) or down (`+1`). Clamped at the ends; returns
- *  whether it moved so a control can disable at the boundary. ADMIN-gated. */
+/** Move one manning row up (`-1`) or down (`+1`) among the COUNTERS: it changes places with the counter before or
+ *  after it, whatever fixed rows stand between the two (D674 — a fixed row itself never moves). Clamped at the ends;
+ *  returns whether it moved so a control can disable at the boundary. ADMIN-gated. No screen calls it. */
 export function moveManningRow(id: string, dir: -1 | 1): boolean {
   if (state.role !== 'admin') return false
-  const ids = orderedManningIds()
+  const order = manningBlockOrder()
+  const ids = order.filter(x => !isFixedRow(x))
   const i = ids.indexOf(id)
   if (i < 0) return false
   const j = i + dir
   if (j < 0 || j >= ids.length) return false
-  ;[ids[i], ids[j]] = [ids[j], ids[i]]
-  state = withCurrent({ ...state, manningOrder: ids })
+  const a = order.indexOf(ids[i]!), b = order.indexOf(ids[j]!)
+  ;[order[a], order[b]] = [order[b]!, order[a]!]
+  state = withCurrent({ ...state, manningOrder: orderToSave(order) })
   persistNotify()
   return true
 }
@@ -3897,31 +4127,32 @@ export function moveManningRow(id: string, dir: -1 | 1): boolean {
  * drag-and-drop reorder (owner, 28 Aug 26, replacing the ▲▼ arrows with the
  * same drag the roster rows already use). Same shape as `moveRosterRow`:
  * materialise the current display order, splice `id` out, reinsert before the
- * target, write the whole order. ADMIN-gated. */
+ * target, write the whole order. ADMIN-gated.
+ *   SINCE D674 (8 Oct 26) THE ORDER IT MOVES WITHIN IS THE WHOLE BLOCK'S — the counters and the four fixed rows — so
+ * `beforeId` may be a fixed row's token (the counter lands just above that row) and "the end" is below all four. A
+ * fixed row is never the row that moves. What is saved is the order with the four left out while they stand at the
+ * foot (`orderToSave`): a squadron that never puts a counter among them saves what it always saved. */
 export function moveManningRowTo(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
   // "before itself" is where it already is — and the splice removes `id` first,
   // so without this guard indexOf would miss and the row would jump to the end
   // (the same trap moveRosterRow guards).
   if (beforeId === id) return
-  const ids = orderedManningIds()
+  if (isFixedRow(id)) return
+  const ids = manningBlockOrder()
   const from = ids.indexOf(id)
   if (from < 0) return
   ids.splice(from, 1)
   const at = beforeId ? ids.indexOf(beforeId) : ids.length
   ids.splice(at < 0 ? ids.length : at, 0, id)
-  state = withCurrent({ ...state, manningOrder: ids })
+  state = withCurrent({ ...state, manningOrder: orderToSave(ids) })
   persistNotify()
 }
 
-/** Hide or show one manning row. ADMIN-gated. */
-export function toggleManningRow(id: string): void {
-  if (state.role !== 'admin') return
-  const hidden = new Set(state.manningHidden)
-  hidden.has(id) ? hidden.delete(id) : hidden.add(id)
-  state = withCurrent({ ...state, manningHidden: [...hidden] })
-  persistNotify()
-}
+/* (The eye that hid a manning row — `toggleManningRow` — is GONE with the Archive it fed: owner, D669, 8 Oct 26,
+   "instead of hide (eye) we should replace it with a delete cross". Nothing can be hidden now. `manningHidden` is still
+   read and saved so a store written before that day loads as it was — nothing stored is converted (D56) — but no
+   screen consults it: a row an older store had hidden is simply drawn.) */
 
 /** Put every manning row back — natural order, nothing hidden. ADMIN-gated. */
 export function resetManning(): void {
@@ -3942,6 +4173,8 @@ export function resetManning(): void {
 export function setManningThreshold(id: string, amber: number, red: number): boolean {
   if (state.role !== 'admin') return false
   if (!Number.isFinite(amber) || amber < 0 || !Number.isFinite(red) || red < 0) return false
+  /* the two Available rows carry no amber or red of their own — their red comes from the Required row above them */
+  if (isAvailId(id)) return false
   const rules = state.requirements.default.rules
   if (!rules.some(r => r.id === id)) return false
   const next = rules.map(r => (r.id === id ? { ...r, threshold: { amber, red } } : r))
@@ -3950,15 +4183,8 @@ export function setManningThreshold(id: string, amber: number, red: number): boo
   return true
 }
 
-/** Put one row's amber/red lines back to the built-in default — only a row
- *  the seed still knows has one; a counter the admin built is its own
- *  default. ADMIN-gated. */
-export function resetManningThreshold(id: string): void {
-  if (state.role !== 'admin') return
-  const seedT = seedRequirements().default.rules.find(r => r.id === id)?.threshold
-  if (!seedT) return
-  setManningThreshold(id, seedT.amber, seedT.red)
-}
+/* (`resetManningThreshold` — a row's amber / red back to its built-in default — is gone with the built-in rows
+   themselves: D669, 8 Oct 26. Every counter is the squadron's own now, and its own numbers are its default.) */
 
 /**
  * Create or rework one counter (owner, 19 Aug 26). The rule is pushed through
@@ -3969,27 +4195,44 @@ export function resetManningThreshold(id: string): void {
  */
 export function saveManningRule(rule: ManningRule): boolean {
   if (state.role !== 'admin') return false
-  const clean = readManningRule(rule)
+  let clean = readManningRule(rule)
   if (!clean) return false
+  /* one of the two Available rows (engine/availrows.ts — D640): renamed and re-defined like any counter, but it stays a
+     count of PEOPLE (a "teams" count is refused) and its amber and red are held at 0 */
+  if (isAvailId(clean.id)) {
+    clean = cleanAvailRule(clean)
+    if (!clean) return false
+  }
   const rules = state.requirements.default.rules
   /* a NEW counter past the limit the reload keeps is refused — a longer list would read back as damage and be replaced
      by the built-in set (readManningRules); reworking one already in the list is always allowed
-     ([STORE-READER-SWEEP], [DB-READINESS] phase 7) */
-  if (!rules.some(r => r.id === clean.id) && rules.length >= MAX_MANNING_RULES) return false
-  const next = rules.some(r => r.id === clean.id)
-    ? rules.map(r => (r.id === clean.id ? clean : r))
-    : [...rules, clean]
+     ([STORE-READER-SWEEP], [DB-READINESS] phase 7). The two Available rows are beside that limit, not inside it: the
+     reader allows for them, so the squadron's sixty counters can never crowd them out. (A longer list "read back as
+     damage" is a list not read at all — no counters; it was the built-in set until D669.) */
+  if (!isAvailId(clean.id) && !rules.some(r => r.id === clean!.id) && rules.filter(r => !isAvailId(r.id)).length >= MAX_MANNING_RULES) return false
+  const saved = clean
+  const next = rules.some(r => r.id === saved.id)
+    ? rules.map(r => (r.id === saved.id ? saved : r))
+    : [...rules, saved]
   state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
   persistNotify()
   return true
 }
 
+/** Why a counter cannot be deleted, as a sentence for the sheet — null when it can. The two Available rows cannot: the
+ *  SANS calendar reads them (engine/availrows.ts). */
+export function manningDeleteProblem(id: string): string | null {
+  return isAvailId(id) ? AVAIL_DELETE_MSG : null
+}
+
 /** Delete one counter outright (owner, 19 Aug 26 — "these counters can also
  *  be deleted"). Its order and hidden entries go with it, so nothing keeps a
- *  dead id alive; a SEEDED id deleted here stays deleted (the stored list is
- *  the whole truth), and `resetManningRules` is the road back. ADMIN-gated. */
+ *  dead id alive; the stored list is the whole truth, so it stays deleted over
+ *  a reload. The road back is the app's Undo — which is why the cross in
+ *  Rearrange (ui/CountRows.tsx — D669) asks nothing first. ADMIN-gated. */
 export function deleteManningRule(id: string): boolean {
   if (state.role !== 'admin') return false
+  if (manningDeleteProblem(id)) return false
   const rules = state.requirements.default.rules
   if (!rules.some(r => r.id === id)) return false
   state = withCurrent({
@@ -4002,15 +4245,9 @@ export function deleteManningRule(id: string): boolean {
   return true
 }
 
-/** Put the BUILT-IN counter set back — the recovery path when a seeded row
- *  was deleted or reworked beyond recognition. Counters the admin created
- *  are discarded with everything else, which is what "reset" says; the
- *  toolbar arms the button so one stray tap cannot do it. ADMIN-gated. */
-export function resetManningRules(): void {
-  if (state.role !== 'admin') return
-  state = withCurrent({ ...state, requirements: seedRequirements(), manningOrder: [], manningHidden: [] })
-  persistNotify()
-}
+/* (`resetManningRules` — "Reset counters", the built-in set put back — is gone: the Manning block comes with no
+   count rows of its own (owner, D669, 8 Oct 26), so there is nothing to go back to. A counter deleted by mistake
+   comes back with the app's Undo.) */
 
 /** Install Raptor's live qualification catalogue for the counter form's
  *  chips — the projection's rider, change-guarded by the caller like the
@@ -4529,8 +4766,10 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
  * the store is already the channel they share. It is not persisted; where
  * someone was last looking is not a fact about the leave war.
  */
-export function focusDay(date: string): void {
-  state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1 }
+export function focusDay(date: string, opts?: { ifHidden?: boolean }): void {
+  /* `ifHidden` — the soft ask (D670): the matrix jumps only when the day's column is not already on screen. What Undo
+     and Redo send (state/undo-wire.ts snapView), so a change he is looking at is taken back where he is looking. */
+  state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1, focusSoft: !!(opts && opts.ifHidden) }
   notify()
 }
 
@@ -4552,6 +4791,7 @@ export function selectWar(id: string): void {
     currentId: id,
     focusDate: defaultFocusDate(picked.period),
     focusSeq: state.focusSeq + 1,
+    focusSoft: false,                 // a period switched to is always a jump (D670 is Undo's and Redo's alone)
   })
   persistNotify()
   // Undo is scoped to the war on screen: switching wars starts a fresh stack,

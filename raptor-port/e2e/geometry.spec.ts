@@ -4847,6 +4847,7 @@ test('the desktop checks panel resizes by its grip', async ({ page }) => {
 test('the phone Inputs cards align their type and date columns', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page); await go(page, 'inputs')
+  await page.click('#inListBtn') // D580: these assertions concern the secondary List.
   /* the default today→two-weeks window is EMPTY on the demo data by design
      (owner, 12 Aug 26 — do not "fix" it): All dates is the way to rows,
      exactly as a user is told by the empty state */
@@ -4871,7 +4872,9 @@ test('the phone Inputs cards align their type and date columns', async ({ page }
   expect(m.n, 'enough cards on screen to prove alignment').toBeGreaterThan(3)
   for (const x of m.chipX) expect(Math.abs(x - m.chipX[0]), 'every type chip starts at the same x').toBeLessThan(1.5)
   for (const x of m.dateX) expect(Math.abs(x - m.dateX[0]), 'every date starts at the same x').toBeLessThan(1.5)
-  expect(m.sansTail, 'the SANS tail is hidden on a phone — the chip reads SANS AVAIL').toBe('none')
+  await page.click('#inSansMode')
+  const sansTail=await page.locator('#inBody .intag .bl').first().evaluate(el=>getComputedStyle(el).display)
+  expect(sansTail, 'the SANS tail is hidden on a phone — the chip reads SANS AVAIL').toBe('none')
   expect(m.below, 'a card carrying remarks exists in the demo data').toBeTruthy()
   expect(m.below.rkTop, 'remarks sit below the callsign line').toBeGreaterThanOrEqual(m.below.nameBottom - 0.5)
   expect(Math.abs(m.below.rkLeft - m.below.nameLeft), 'and start under it').toBeLessThan(1.5)
@@ -4886,70 +4889,70 @@ test('the phone Inputs cards align their type and date columns', async ({ page }
    chips are bare colour bars, not text. */
 test.describe('the Inputs month calendar', () => {
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
-    test(`fills the viewport with 7 equal columns, chips inside their cells, on ${name}`, async ({ page }) => {
+    test(`fills the Inputs workspace with 7 equal columns, chips inside their cells, on ${name}`, async ({ page }) => {
       await page.setViewportSize(viewport)
       await login(page)
       await go(page, 'inputs')
       await page.click('#inCalBtn')
       await page.waitForSelector('#inpCal')
 
-      /* the overlay is the whole screen — that is what "full screen" means */
+      /* D580: the main calendar fills Inputs while app navigation stays reachable. RE-POINTED (step 5, 8 Oct 26): the
+         month is no longer a fixed-height box (owner D664 — never a box scrolled inside the page; its height is pinned
+         in e2e/inputs-calendar.spec.ts at three phone heights), and an input is a BAR across its days (D626), so "a
+         chip inside its day cell" became "a bar inside its week, over its own dates". */
       const box = await page.evaluate(() => {
         const r = document.getElementById('inpCal')!.getBoundingClientRect()
-        return { x: r.x, y: r.y, w: r.width, h: r.height, iw: innerWidth, ih: innerHeight }
+        const parent=document.querySelector('.inputs-workspace')!, pr=parent.getBoundingClientRect(), cs=getComputedStyle(parent)
+        return { x: r.x, y: r.y, w: r.width, inner: pr.width-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight) }
       })
-      expect(box.x).toBe(0); expect(box.y).toBe(0)
-      expect(Math.abs(box.w - box.iw)).toBeLessThan(1)
-      expect(Math.abs(box.h - box.ih)).toBeLessThan(1)
+      expect(box.x).toBeGreaterThanOrEqual(0); expect(box.y).toBeGreaterThan(0)
+      expect(Math.abs(box.w - box.inner), 'the month is as wide as the page allows').toBeLessThan(2)
+      await expect(page.locator('#inMemberMode')).toBeVisible()
 
-      /* seven equal columns — the first WEEK's cells, blanks included, and no
-         horizontal spill past the overlay's own right edge. Each week is its own
-         flex row now (the scroll-when-packed fix, 29 Aug 26), so the columns are
-         a week's children, not the grid's direct children (which are the weeks). */
+      /* seven equal columns — the first WEEK's dates, blanks included — and no horizontal spill */
       const cols = await page.evaluate(() => {
-        const cells = [...document.querySelectorAll('.ic-week:first-child > *')]
+        const cells = [...document.querySelectorAll('.ib-week:first-child .ib-cells > *')]
         const ws = cells.map(el => +el.getBoundingClientRect().width.toFixed(1))
-        const right = Math.max(...[...document.querySelectorAll('.ic-week > *')].map(el => el.getBoundingClientRect().right))
-        return { n: cells.length, ws, right, iw: innerWidth }
+        const right = Math.max(...[...document.querySelectorAll('.ib-cells > *')].map(el => el.getBoundingClientRect().right))
+        return { n: cells.length, ws, right, iw: innerWidth, pageW: document.documentElement.scrollWidth }
       })
       expect(cols.n).toBe(7)
       for (const w of cols.ws) expect(Math.abs(w - cols.ws[0]), 'columns are equal within a px').toBeLessThan(1.5)
       expect(cols.right, 'the grid never scrolls the page sideways').toBeLessThanOrEqual(cols.iw + 0.5)
+      expect(cols.pageW).toBeLessThanOrEqual(cols.iw)
 
       /* step to the seeded demo month (July 2026) — bounded, not hardcoded:
          the seed month follows the real clock, so walk ‹ until the title
          reads out, and fail loudly if two years of clicks never find it */
+      const want = name === 'phone' ? 'Jul 2026' : 'July 2026'      // a phone prints the month's first three letters
       for (let i = 0; i < 24; i++) {
-        if ((await page.locator('.ic-mon').textContent()) === 'July 2026') break
+        if ((await page.locator('.ic-mon').textContent()) === want) break
         await page.click('#icPrev')
       }
-      expect(await page.locator('.ic-mon').textContent()).toBe('July 2026')
-      await page.waitForSelector('.ic-chip')
+      expect(await page.locator('.ic-mon').textContent()).toBe(want)
+      await page.waitForSelector('.ib-bar')
 
-      /* every chip paints inside its own day cell — the one geometric
-         promise the whole month view rests on */
+      /* every bar paints inside its own week, between the week's first and last date — the one geometric promise
+         the month view rests on (which dates it covers is pinned bar by bar in e2e/inputs-calendar.spec.ts) */
       const stray = await page.evaluate(() => {
         const bad: any[] = []
-        for (const cell of document.querySelectorAll('[data-icday]')) {
-          const c = cell.getBoundingClientRect()
-          for (const chip of cell.querySelectorAll('.ic-chip')) {
-            const r = chip.getBoundingClientRect()
-            if (r.left < c.left - 0.5 || r.right > c.right + 0.5 || r.top < c.top - 0.5 || r.bottom > c.bottom + 0.5)
-              bad.push({ day: (cell as HTMLElement).dataset.icday, chip: { l: r.left, r: r.right, t: r.top, b: r.bottom }, cell: { l: c.left, r: c.right, t: c.top, b: c.bottom } })
-          }
+        for (const bar of document.querySelectorAll('.ib-bar')) {
+          const w = bar.closest('.ib-week')!.getBoundingClientRect(), r = bar.getBoundingClientRect()
+          if (r.left < w.left - 0.5 || r.right > w.right + 0.5 || r.top < w.top - 0.5 || r.bottom > w.bottom + 0.5)
+            bad.push({ bar: bar.textContent, r: { l: r.left, r: r.right, t: r.top, b: r.bottom }, week: { l: w.left, r: w.right, t: w.top, b: w.bottom } })
         }
         return bad.slice(0, 4)
       })
-      expect(stray, 'no chip paints outside its day cell').toEqual([])
+      expect(stray, 'no bar paints outside its week').toEqual([])
 
       if (name === 'phone') {
-        /* the owner-approved phone form: chips shrink to colour bars */
-        const h = await page.evaluate(() => [...document.querySelectorAll('.ic-chip')]
-          .map(el => +el.getBoundingClientRect().height.toFixed(1)))
-        expect(h.length).toBeGreaterThan(0)
-        for (const v of h) expect(v, 'phone chips are compact colour bars').toBeLessThanOrEqual(10)
+        /* the owner-approved phone form (D653): THIN bars, so more show in a day — and each still says its callsign */
+        const bars = await page.evaluate(() => [...document.querySelectorAll('.ib-bar')]
+          .map(el => ({ h: +el.getBoundingClientRect().height.toFixed(1), t: (el.textContent || '').trim() })))
+        expect(bars.length).toBeGreaterThan(0)
+        for (const v of bars) { expect(v.h, 'phone bars are thin').toBeLessThanOrEqual(16); expect(v.t.length, 'a bar says who').toBeGreaterThan(0) }
       }
-      await page.click('#icClose')
+      await page.click('#inListBtn')
     })
   }
 })

@@ -17,6 +17,7 @@
 // The derived passes are reconciliation, not queues: compute the desired state,
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
+import { useSyncExternalStore } from 'react'
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
@@ -34,7 +35,8 @@ import { oilEarnedWork, oilAmount, oilWorkSpans as workSpans, type OilEvidence }
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
-import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
+import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
+import { setDaysWin } from '../ui/pops'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -57,14 +59,27 @@ import {
   overlaps,
   newRecId,
   outcomeOf,
+  holidayAt,
+  availHave,
+  classifyEvent,
+  defKey,
+  shortOf,
+  normShort,
+  isWeekend,
   type PostOutcome,
   type Contrib,
   type RequestRec,
   type RequestState,
   type WarRec,
+  type Period,
+  type DayInfo,
+  type EventBand,
+  type EventKind,
+  type HolidayRef,
 } from './engine'
 import {
   absencesChanged,
+  availRules,
   getVersion,
   setRefusalHook,
   clearRaptorCell,
@@ -96,14 +111,18 @@ import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore } from '../state/accounts'
-import { markBack, clearBack } from '../state/view'
+import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
+import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
-import { setPublishGate } from '../state/inputgate-hook'
-import { absencesAt, setAbsenceRows } from './state/merge'
+import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
+import { stampPlaced, stampChanged } from '../state/inputstamp'
+import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
+import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
+import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
 import { MAX_CARRIED_REMARK } from './engine/warrecs'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
@@ -214,6 +233,8 @@ export function installAbsenceDoor(): void {
   setRefusalHook(() => { refreshAbsences(true) })
   installInputGate()
   setPublishGate(publishFlagsBids)
+  /* which days of an input ask the OIL question, for the check on a filer's answers (state/perms.ts - D660) */
+  setOilPlan(oilAskPlan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
      this before it speaks, and only Leave War can answer for a public holiday
      (the engine covers Saturday and Sunday from the day's own name). One
@@ -364,6 +385,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       lwMoved: moved, mod: nowStamp(),
     })
     inpId(row)
+    /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
+    stampPlaced(row)
     return row
   })
   let ok = false
@@ -387,6 +410,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
       merged.remarks = withRemarksTail(keep.remarks ?? '', from, to, 'on')
       merged.mod = nowStamp()
+      /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
+      stampPlaced(merged)
       INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
       if (before && after) INPUTS.splice(INPUTS.indexOf(after), 1)
     }
@@ -426,6 +451,10 @@ export function sliceInput(row: any, from: string, to: string, keepIid: boolean)
   const word = remarksTailWord(row.remarks)
   if (word) out.remarks = withRemarksTail(row.remarks, from, to, word)
   if (!keepIid) { delete out.iid; inpId(out) }
+  /* WHO CUT OR MOVED IT, AND WHEN (D629 — state/inputstamp.ts). Every caller of this body is a change to the leave — a
+     day un-approved, deleted or moved on the war, a medical cutting it (inputgate.ts) — and each piece is a copy of the
+     record, so it keeps who PLACED that (`by`, `at`) and takes the change here. `mod` is carried as it was. */
+  stampChanged(out)
   return out
 }
 
@@ -2065,3 +2094,261 @@ function oilDaySig(): string {
   return DAYS.map((_: any, di: number) => `${HOOKS.oilEarningDay(di) ? 1 : 0}:${HOOKS.oilNoPeriod(di) || ''}`).join('|')
 }
 let lastOilDaySig: string | null = null
+
+/* =====================================================================
+   WHAT THE CALENDARS READ FROM THE WAR — a rider on this seam (the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.1; owner D617, D627, D631, D637, D640)
+   ---------------------------------------------------------------------
+   Two stores hold the facts of one day. Its flying class and its required pilots and WSOs are the scheduler's settings
+   rows (state/flyplan.ts) — they outlive any one leave period. Whether it is a public holiday or an Off day, and who
+   is available per seat, are the WAR's: its day events and bands, its roster, its bids and the absences it derives.
+   The ONE resolver that joins them is state/flyplan-model.ts planFor; no screen joins them itself. This block is the
+   war's half, read-only for the calendars:
+
+     dayFacts(iso)      a date's holiday (with its name) and who is available per seat, from the period HOLDING the date
+     holidaysIn(year)   the year's public holidays and Off days as one list — the war's own records, seen as a list
+     useWarFacts()      the signal: a number that moves when anything those two read has moved
+
+   WHY A SIGNAL OF ITS OWN (both readers of the plan, finding 1): the war's store repaints its own screens, and the one
+   thing it tells the scheduler's side is the narrow OIL signal (the lw lane above fires a Raptor notify only when an
+   OIL answer changed) — kept narrow on purpose, so the board is not repainted by leave bids. A holiday added in Days,
+   a count row re-defined or a bid decided would otherwise leave a calendar showing yesterday's answer. The version
+   below is PULLED, not pushed: each read compares what the reads depend on — the roster, the count rows, the event
+   types and every period as merged with its absences — by identity, so it costs a handful of comparisons, cannot miss
+   a writer (an Undo and a Redo replace the same objects), and stands still for a look (the day in view, the viewer,
+   the role). */
+export interface WarDayFacts extends DayFacts {
+  /** the holiday's or Off day's name as typed ("PH", "National Day"); '' where the day is neither */
+  name: string
+  /** what a calendar's date tag prints for it, in the kind's colour — "PH", "OFF", "ND" (the build plan §3.12, D652:
+   *  the same answer the Leave War's Event row prints, eventdefs.ts shortOf); '' where the day is neither */
+  short: string
+  /** a Saturday or a Sunday */
+  weekend: boolean
+}
+/** one line of the Holidays list: a public holiday or an Off day, over one date or a run of dates — the record it
+ *  stands for (engine/holidays.ts HolidayRef: its period, where it is, its dates, kind and name) and an id for the list.
+ *  The list's three writers take the line itself: holidayChange(line, …), holidayRemove(line). */
+export interface HolidayLine extends HolidayRef { id: string }
+export { holidayAdd, holidayChange, holidayRemove, type HolidayResult, type HolidayFail } from './state/store'
+export { MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayRef } from './engine'
+
+let WF_VER = 0
+let WF_SIG: readonly unknown[] = []
+const FACTS = new Map<string, WarDayFacts>()
+export function warFactsVersion(): number {
+  const s = getState()
+  const sig: unknown[] = [s.people, s.requirements, s.eventDefs, ...s.wars]
+  if (sig.length !== WF_SIG.length || sig.some((x, i) => x !== WF_SIG[i])) {
+    WF_SIG = sig
+    WF_VER += 1
+    FACTS.clear()
+  }
+  return WF_VER
+}
+/** told once per change that matters — never for a look */
+export function subscribeWarFacts(fn: () => void): () => void {
+  let seen = warFactsVersion()
+  return lwSubscribe(() => {
+    const v = warFactsVersion()
+    if (v !== seen) { seen = v; fn() }
+  })
+}
+/** for a component: re-renders it when the war's answers may have moved; the number is fit to key a memo on */
+export function useWarFacts(): number {
+  return useSyncExternalStore(lwSubscribe, warFactsVersion, warFactsVersion)
+}
+
+const holidayKind = (k: EventKind | null): 'ph' | 'off' | null => (k === 'off' ? 'ph' : k === 'free' ? 'off' : null)
+/* a period's days run from its first date without a gap, so a date's day is found by counting — with a plain search
+   behind it should a stored period ever not be */
+function dayIn(period: Period, iso: string): DayInfo | undefined {
+  const i = Math.round((Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) -
+    Date.UTC(+period.start.slice(0, 4), +period.start.slice(5, 7) - 1, +period.start.slice(8, 10))) / 86400000)
+  const d = period.days[i]
+  return d && d.date === iso ? d : period.days.find(x => x.date === iso)
+}
+function readDayFacts(iso: string): WarDayFacts {
+  if (!validIso(iso)) return { covered: false, kind: null, name: '', short: '', weekend: false, availP: null, availW: null }
+  const weekend = isWeekend(iso)
+  const st = getState()
+  /* the period HOLDING the date — never the one on screen: the calendars show any month */
+  const war = warHolding(st.wars, iso) as MergedWar | undefined
+  /* no period covers it: there was nowhere to file a holiday, and nobody's leave is known — so who is available is
+     UNKNOWN, never zero and never everyone (the need then shows "–") */
+  if (!war) return { covered: false, kind: null, name: '', short: '', weekend, availP: null, availW: null }
+  const day = dayIn(war.period, iso)
+  const h = day ? holidayAt(st.eventDefs, day, war.period.bands) : null
+  const rows = availRules()
+  return {
+    covered: true,
+    kind: h ? holidayKind(h.kind) : null,
+    name: h ? h.name : '',
+    short: h ? shortOf(st.eventDefs, h.name, h.short) : '',
+    weekend,
+    /* the same sum the war's own Available cells draw (engine/availrows.ts availHave) — a SANS man never counted */
+    availP: availHave(rows.p, st.people, war.grid, war.states, iso, war.views),
+    availW: availHave(rows.w, st.people, war.grid, war.states, iso, war.views),
+  }
+}
+export function dayFacts(iso: string): WarDayFacts {
+  warFactsVersion()                       // drops every kept answer when anything they were read from has moved
+  const hit = FACTS.get(iso)
+  if (hit) return hit
+  const out = Object.freeze(readDayFacts(iso))
+  if (FACTS.size >= 4096) FACTS.clear()   // a few years of dates; clearing is only a miss
+  FACTS.set(iso, out)
+  return out
+}
+
+/** THE YEAR'S PUBLIC HOLIDAYS AND OFF DAYS, in date order — every period that reaches into the year, not only the one
+ *  on screen. A line is the record as the war holds it: a merged band; a day's own Event line, with the same word
+ *  repeated over neighbouring days read as ONE run (the Event sheet's "repeat" writes it that way); or the seeded
+ *  holiday flag where no event names the day. A line that starts or ends outside the year is shown whole. */
+export function holidaysIn(year: number | string): HolidayLine[] {
+  const y = String(year).trim()
+  if (!/^\d{4}$/.test(y)) return []
+  const lo = `${y}-01-01`, hi = `${y}-12-31`
+  const st = getState()
+  const out: HolidayLine[] = []
+  const kinds = new Map<string, EventKind | null>()
+  const kindOf = (text: string, own: EventKind | null | undefined): 'ph' | 'off' | null => {
+    if (own) return holidayKind(own)
+    if (!kinds.has(text)) kinds.set(text, classifyEvent(st.eventDefs, text))
+    return holidayKind(kinds.get(text)!)
+  }
+  for (const war of st.wars) {
+    const p = war.period
+    if (p.end < lo || p.start > hi) continue
+    const mine: HolidayLine[] = []
+    const add = (src: HolidayLine['src'], line: number | null, from: string, to: string, kind: 'ph' | 'off', name: string, own?: unknown): HolidayLine => {
+      /* `short` = what it prints, the same answer as the calendars' tag and the Leave War's Event row (D652) */
+      const h: HolidayLine = { id: `${p.id}|${src}|${line ?? 'f'}|${from}`, warId: p.id, from, to, kind, name, src, line, short: shortOf(st.eventDefs, name, normShort(own)) }
+      mine.push(h)
+      return h
+    }
+    const phBands: EventBand[] = []
+    for (const b of p.bands) {
+      const k = kindOf(b.text, b.kind)
+      if (!k) continue
+      if (k === 'ph') phBands.push(b)
+      add('band', b.line, b.from, b.to, k, b.text, b.short)
+    }
+    const open = new Map<number, HolidayLine>()      // per Event row, the run still growing
+    let flag: HolidayLine | null = null
+    for (const d of p.days) {
+      let named = false
+      for (let i = 0; i < d.events.length; i++) {
+        const t = d.events[i]
+        const k = t ? kindOf(t, d.eventKinds?.[i]) : null
+        if (!k) { open.delete(i); continue }
+        if (k === 'ph') named = true
+        const run = open.get(i)
+        if (run && run.kind === k && defKey(run.name) === defKey(t!) && addDays(run.to, 1) === d.date) run.to = d.date
+        else open.set(i, add('day', i, d.date, d.date, k, t!, d.eventShorts?.[i]))
+      }
+      for (const i of [...open.keys()]) if (i >= d.events.length) open.delete(i)
+      if (d.ph && !named && !phBands.some(b => b.from <= d.date && d.date <= b.to)) {
+        if (flag && addDays(flag.to, 1) === d.date) flag.to = d.date
+        else flag = add('flag', null, d.date, d.date, 'ph', 'PH')
+      } else flag = null
+    }
+    for (const h of mine) if (h.to >= lo && h.from <= hi) out.push(h)
+  }
+  return out.sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : (a.line ?? -1) - (b.line ?? -1)))
+}
+
+/** THE DATES OF A YEAR NO LEAVE PERIOD COVERS, as runs in date order — [] when the year is held whole. A holiday is the
+ *  war's own record, kept in the period HOLDING its date, so a date outside every period has nowhere to be written: the
+ *  Holidays list says which dates those are BEFORE a save is refused (the plan §3.4; D19 — "indicate that the leave war
+ *  period doesn't exist, create it"). One run that is the whole year = no period reaches the year at all. */
+export function uncoveredIn(year: number | string): Array<{ from: string; to: string }> {
+  const y = String(year).trim()
+  if (!/^\d{4}$/.test(y)) return []
+  const lo = `${y}-01-01`, hi = `${y}-12-31`
+  const held = getState().wars.map(w => w.period).filter(p => p.end >= lo && p.start <= hi).sort((a, b) => (a.start < b.start ? -1 : 1))
+  const out: Array<{ from: string; to: string }> = []
+  let at = lo                                  // the first date not yet known to be covered
+  for (const p of held) {
+    if (p.start > at) out.push({ from: at, to: addDays(p.start, -1) })
+    if (p.end >= at) at = addDays(p.end, 1)
+  }
+  if (at <= hi) out.push({ from: at, to: hi })
+  return out
+}
+/** the word a holiday with no name of its own is saved under — the squadron's first event type of that kind, else the
+ *  standard one (the same answer as state/store.ts holidayPlan; the list's form shows it in its empty name box) */
+export function holidayWord(kind: 'ph' | 'off'): string {
+  const k = kind === 'ph' ? 'off' : 'free'
+  return getState().eventDefs.find(d => d.kind === k)?.name || (kind === 'ph' ? 'PH' : 'Off day')
+}
+/** WHAT A HOLIDAY OF THAT NAME WOULD PRINT with no short form typed for it - the SAME suggestion the Event sheet shows in
+ *  its "On grid" box (eventdefs.ts shortOf: a preset's own short form, else one made from the name), so the Holidays
+ *  list's form can show it as he types (D652 reading 1: "filled by itself from the name's initials ... exactly as on
+ *  the Event sheet - the same rule"). '' where the name gives nothing to print. */
+export function holidayShortHint(kind: 'ph' | 'off', name: string): string {
+  const s = shortOf(getState().eventDefs, name.trim() || holidayWord(kind), null)
+  return s === '•' ? '' : s
+}
+
+/* =====================================================================
+   THE WAR READS THE FLYING PLAN — the second rider on this seam (the plan §3.1 point 2)
+   ---------------------------------------------------------------------
+   The war's Required rows show the scheduler's own records — a day's class, its required pilots and WSOs, a figure
+   that runs from a date — and write them through the scheduler's typed commands. They reach them HERE and nowhere
+   else, so the boundary between the two apps stays the one file it has always been. The plan's rows repaint on the
+   scheduler's own change signal (state/store useVersion), the war's on `useWarFacts()` above.
+
+   AND THE ONE JOIN. `flyAnswer` hands the three halves of a day — the plan, the war's facts, the SANS committed to
+   fly — to the ONE resolver (state/flyplan-model.ts planFor). Every screen that shows a day's class, its required
+   figures or how many more are needed asks here: the war's rows, the SANS calendar, the Inputs calendar's tags, Days.
+   A screen that puts the halves together itself is a defect (the plan's risk 1) — two screens would then be free to
+   show two answers for one day. */
+export {
+  getFlyPlan, getTones, sansFly, sansCommittedOn, setFlyDays, setFlyRun, dropFlyRun,
+  type FlyDayPatch, type FlySave, type SansCommitted, type SeatIds,
+} from '../state/flyplan'
+export type { DayAnswer, FlyCls, Tone } from '../state/flyplan-model'
+
+/** THE PLAN'S OWN CHANGE SIGNAL, for a component of the war (the plan §3.3 "Repaint"): the scheduler's version, which
+ *  moves when a plan row or a SANS commitment moves. The war's rows hear the scheduler HERE,
+ *  as they reach its records here — beside `useWarFacts()` for the war's own half. */
+export function usePlanVersion(): number {
+  return useSyncExternalStore(raptorSubscribe, raptorVersion, raptorVersion)
+}
+/** the two Available rows' names as they stand (an admin renames them with the counter form — D640) */
+export function availRowNames(): { p: string; w: string } {
+  const r = availRules()
+  return { p: r.p.label, w: r.w.label }
+}
+
+/** THE WAR'S DOOR TO DAYS (the plan §3.3 — the "Days…" line in the war's ⚙ Settings). Days is the scheduler's window
+ *  (ui/DaysWindow.tsx, admins only — the window itself is the gate); the war asks for it HERE, on the month of the date
+ *  given, and tells the scheduler's screens so it draws at once. Only the open-flag is reached (ui/pops.ts, plain state
+ *  with no screen behind it) — the war imports no scheduler screen. */
+export function openDays(iso: string): void {
+  if (!validIso(iso)) return
+  setDaysWin(iso)
+  raptorNotify()
+}
+
+/** THE WAR'S NEW-PERIOD SHEET, ASKED FOR FROM DAYS, on a run of dates no leave period covers (the plan §3.4). The
+ *  Holidays list cannot write a holiday there, and nothing about making a period is rebuilt in the scheduler's
+ *  window: the ask is left for the war's own top row (ui/warask.ts, ui/Chrome.tsx), the Leave War is brought to the
+ *  front — the sheet is the war's, drawn on its page — and the scheduler's screens are told. The sheet still checks
+ *  everything itself (a name, an admin, no overlap): the ask grants nothing. */
+export function openNewPeriod(from: string, to: string): void {
+  if (!validIso(from) || !validIso(to) || to < from) return
+  askNewWar({ from, to })
+  if (CURPAGE !== 'leavewar') setPage('leavewar')
+  raptorNotify()
+}
+
+export function flyAnswer(iso: string): DayAnswer {
+  return planFor(iso, getFlyPlan(), dayFacts(iso), sansFly(iso), getTones())
+}
+/** a month of answers (1-based month) — what a drawn month is painted from, and what its repaint is keyed on: a figure
+ *  or a weekday rule that began months earlier moves these, so a memo built from them cannot miss it */
+export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
+  return monthAnswers(y, m, getFlyPlan(), dayFacts, iso => sansFly(iso), getTones())
+}

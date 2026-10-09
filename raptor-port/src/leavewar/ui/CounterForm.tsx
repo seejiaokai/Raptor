@@ -15,12 +15,27 @@
 //   TEAM   — sets of DIFFERENT people built from slots ("crew sets of a
 //            certain qualification… crew sets plus a certain type of
 //            qualification"), shown as complete sets or as the people in them.
+//
+// A THIRD USE, for two rows only (owner, D640, 7 Oct 26 — "can [this row] be
+// customised like for e.g not including ocu? And rename it with free text"): the
+// AVAILABLE P and AVAILABLE W rows the SANS calendar reads are ordinary count rows
+// under two fixed ids (engine/availrows.ts), renamed and re-defined HERE — opened by
+// a tap on the row's name (ui/FlyRows.tsx). For them the form shows what holds and
+// nothing the store would refuse: a people count only (no "Sets / teams"), no amber
+// or red (their red comes from the Required row above them), no Delete (the SANS
+// calendar reads them) — and its live sample is summed the row's own way, which
+// never counts a SANS man (`availHave`), with a line saying so.
 
 import { useMemo, useState } from 'react'
 import {
   CAT_LADDER,
   MAX_TEAM_SLOTS,
   MAX_MANNING_RULES,
+  AVAIL_P,
+  AVAIL_W,
+  availHave,
+  availRuleOf,
+  isAvailId,
   ruleHave,
   type CrewFilter,
   type ManningRule,
@@ -177,7 +192,10 @@ export function CounterForm({ ruleId, onClose }: {
   useVersion()
   const { requirements, qualCatalog, people, grid, states, views, period } = getState()
   const rules = requirements.default.rules
-  const existing = ruleId ? rules.find(r => r.id === ruleId) : undefined
+  /* one of the two Available rows: the squadron's own where its list holds one, else the built-in (it is not IN the
+     list until an admin changes it — so it is read as the rows themselves read it, never by a search of the list) */
+  const avail = !!ruleId && isAvailId(ruleId)
+  const existing = ruleId ? (isAvailId(ruleId) ? availRuleOf(rules, ruleId) : rules.find(r => r.id === ruleId)) : undefined
 
   // The qualification chips: the live catalogue, plus any key this rule
   // already names that the catalogue no longer carries (a column since
@@ -192,8 +210,10 @@ export function CounterForm({ ruleId, onClose }: {
     }
     if (existing?.count.kind === 'people') f(existing.count.filter)
     if (existing?.count.kind === 'team') existing.count.slots.forEach(s => f(s.filter))
-    return out
-  }, [qualCatalog, existing])
+    /* an Available row never counts a SANS man, whatever is picked — so "Holding SANS" could only ever read 0 and
+       "Without SANS" would change nothing: the chip is not offered there (the line under the pickers says why) */
+    return avail ? out.filter(q => q.k !== 'san') : out
+  }, [qualCatalog, existing, avail])
 
   const [label, setLabel] = useState(existing?.label ?? '')
   const [mode, setMode] = useState<'people' | 'team'>(existing?.count.kind ?? 'people')
@@ -240,16 +260,22 @@ export function CounterForm({ ruleId, onClose }: {
   // A live sample, so the admin sees what the rule reads BEFORE saving it —
   // the war's first day, the one every open war is guaranteed to have.
   const sampleDate = period.days[0]?.date
-  const sample = valid && sampleDate ? ruleHave(draftCount(), people, grid, states, sampleDate, views) : null
+  // An Available row's sample is summed the way the row itself is — a SANS man is never counted (engine/availrows.ts
+  // availHave, the ONE sum) — so the form cannot promise a number the grid then does not show.
+  const sample = !valid || !sampleDate ? null
+    : avail && existing ? availHave({ ...existing, count: draftCount() }, people, grid, states, sampleDate, views)
+    : ruleHave(draftCount(), people, grid, states, sampleDate, views)
 
   // The list is full: a NEW counter would be refused by the store (the most a
   // reload keeps — MAX_MANNING_RULES). Said here, with the way out, rather than
   // an Add button that does nothing ([STORE-READER-SWEEP], phase 7).
-  const full = !existing && rules.length >= MAX_MANNING_RULES
+  const full = !existing && rules.filter(r => !isAvailId(r.id)).length >= MAX_MANNING_RULES
 
   const save = () => {
     if (!valid || full) return
-    const id = existing?.id ?? mintId(label, new Set(rules.map(x => x.id)))
+    /* a NEW counter never takes one of the two Available rows' ids — a counter someone names "availp" would
+       otherwise be saved OVER the row the SANS calendar reads */
+    const id = existing?.id ?? mintId(label, new Set([...rules.map(x => x.id), AVAIL_P, AVAIL_W]))
     // `desc` deliberately absent: a rule saved from this form gets its sheet
     // words written from the definition (describeRule), so they cannot lie.
     const rule: ManningRule = { id, label: label.trim(), count: draftCount(), threshold: { amber: a, red: r } }
@@ -260,7 +286,7 @@ export function CounterForm({ ruleId, onClose }: {
     <Sheet testid="counter-form" label={existing ? `Edit ${existing.label}` : 'New counter'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{existing ? existing.label : 'New counter'}</span>
-        <span className="dt">{existing ? 'edit this counter' : 'build a counting rule'}</span>
+        <span className="dt">{avail ? 'for the SANS calendar' : existing ? 'edit this counter' : 'build a counting rule'}</span>
         <button className="x" data-testid="cform-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
 
@@ -276,7 +302,8 @@ export function CounterForm({ ruleId, onClose }: {
         />
       </div>
 
-      <div className="bidsheet-row cf-row">
+      {/* An Available row counts PEOPLE — a "teams" count is refused by the store for it, so the choice is not drawn. */}
+      {!avail && <div className="bidsheet-row cf-row">
         <span className="lab">Count</span>
         <button
           className={`tchip${mode === 'people' ? ' on' : ''}`}
@@ -299,7 +326,7 @@ export function CounterForm({ ruleId, onClose }: {
             ? 'Adds up everyone matching the picks below.'
             : 'Counts complete sets — every slot filled by a different person.'}
         </span>
-      </div>
+      </div>}
 
       {mode === 'people' && (
         <FilterFields d={filter} tid="cf" qualChips={qualChips} onChange={setFilter} />
@@ -382,7 +409,9 @@ export function CounterForm({ ruleId, onClose }: {
         </>
       )}
 
-      <div className="mth-edit">
+      {/* An Available row carries no amber or red of its own — its red comes from the Required row above it — and the
+          store holds both at 0 whatever is sent: the boxes are not drawn. */}
+      {!avail && <div className="mth-edit">
         <label className="mth-field">
           <span className="lab">Amber below</span>
           <input
@@ -397,7 +426,13 @@ export function CounterForm({ ruleId, onClose }: {
             inputMode="decimal" value={red} onChange={e => setRed(e.target.value)}
           />
         </label>
-      </div>
+      </div>}
+
+      {avail && (
+        <div className="mwhen" data-testid="cform-avail-note">
+          SANS people are never counted here. The SANS calendar reads this row, so it cannot be deleted.
+        </div>
+      )}
 
       {sample !== null && (
         <div className="mwhen" data-testid="cform-preview">
@@ -413,12 +448,12 @@ export function CounterForm({ ruleId, onClose }: {
 
       <div className="cfoot mth-foot">
         <button className="creset pri" data-testid="cform-save" disabled={!valid || full} onClick={save}>
-          {existing ? 'Save counter' : 'Add counter'}
+          {avail ? 'Save' : existing ? 'Save counter' : 'Add counter'}
         </button>
         <button className="creset" data-testid="cform-cancel" onClick={onClose}>Cancel</button>
         {/* Delete arms first (owner: counters can be deleted) — one stray tap
             must not remove a rule the whole squadron reads. */}
-        {existing && (
+        {existing && !avail && (
           <button
             className={`creset cf-del${armDel ? ' arm' : ''}`}
             data-testid="cform-delete"

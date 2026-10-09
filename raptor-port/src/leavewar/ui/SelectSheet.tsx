@@ -20,6 +20,14 @@
 // one-day bid of the same leave would have asked. It asks ONCE for the whole block, naming everyone the fill would
 // take below zero in one sentence (`belowzero.ts`, the one-day sheet's words), and the same leave tapped again goes
 // ahead. Never a refusal — a balance may run negative.
+//
+// IT DOES NOT BLOCK THE GRID (owner, D642, 7 Oct 26 — brought into line with D641's windows): `Sheet`'s
+// `modal={false}` form. No veil, a press outside does not close it, the grid behind it works. While it is up a NEW
+// drag on the grid replaces what it acts on (Matrix keys this sheet by its selection, so it starts afresh); a plain
+// click on a cell opens that cell's own sheet and closes this one (`useCloseOnCellClick`); its ✕ and Escape close
+// it. Move is unchanged: it closes the sheet and hands the block to the grid's move mode, where an empty tap outside
+// still cancels the MOVE (D262) — that is the move, not this panel. The war's other windows keep blocking
+// (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
 import { useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
@@ -30,6 +38,7 @@ import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
 import { Sheet } from './Sheet'
+import { useCloseOnCellClick } from './gridclick'
 import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
 import './bidpicker.css'
@@ -92,6 +101,7 @@ export function SelectSheet({
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  useCloseOnCellClick(onClose)
 
   const nPeople = sel.people.length
   const nDays = new Set(sel.cells.map(c => c.date)).size
@@ -183,7 +193,7 @@ export function SelectSheet({
   const canFill = role === 'admin' || !canDecide // members fill while open; the sheet only opens for them then
 
   return (
-    <Sheet testid="select-sheet" label="Selected days" onClose={onClose}>
+    <Sheet testid="select-sheet" label="Selected days" onClose={onClose} modal={false}>
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>

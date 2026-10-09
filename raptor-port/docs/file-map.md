@@ -135,7 +135,7 @@ in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old opt
 | `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, `setPage` (which sweeps body-level popups, closes the board, and captures the day being left), setters. Also `DPREV`/`prunePreviews` (the edit surfaces' version previews) and **`VWORK`/`toggleViewWork`** (15 Aug 26 — which PUBLISHED days the VIEW page is showing the live working copy for instead of its frozen issued default; deliberately NOT DPREV, so the two pages' choices can never cross — `docs/ui-contracts.md`). Also `CARRYDAY`/`weekLeftDay`/`scrollWeekToDay` — the day carried between View-only and Edit Schedule; the two geometry helpers live here, not in `ui/pan.ts`, because `pan.ts` already imports this module and `setPage` is the one moment the outgoing week still has layout. Contract: `docs/ui-contracts.md` §The day carries across a page switch. Also `AVSHUT`/`toggleAvail` (Available-crew fold — Aug 26 it names the days a scheduler COLLAPSED, since the panel is OPEN by default now; was `AVOPEN`, the open-set, before the owner flipped the default) and **`PIOPEN`/`togglePInputs`** (Aug 26 — the Personal Inputs fold, collapsed by default; same session-only pattern, cleared on session/week change). Also the Aug-26 session-only registries, all on the LATEOFF pattern and cleared on session/week change: **`BELLLIT`/`markBell`/`bellLit`/`clearBell`** (the top-bar notification glow, keyed `page|person`), **`WARNOFF`/`warnMuteKey`/`warnShown`/`toggleWarnOff`** + **`WMOPEN`/`toggleWarnMuted`** (a muted board check, keyed by the warning's day\|code\|people\|message content so it auto-re-arms when the situation changes, and its per-day "show the hidden ones" reveal — WARNOFF rides the history snapshot now so a mute is an undo step), and **`NOTEPUB`/`notePub`/`toggleNotePub`** (Aug 26 — a scheduler note flagged to show on the view-only week, keyed by the note's funnel key). |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. The snapshot carries `view.WARNOFF` (as `wo`, array) since Aug 26, so muting/un-muting a board check is an ordinary undo step (owner: "when I click undo I should revert my hidden warning changes"); it is the ONE session-view set in the snapshot — folds, previews and late marks stay out. |
 | `auth.ts` | SESSION `{ user, role, pid, name }` (since `[ACCOUNTS]`, 26 Sep 26 — the role is the account's: admin / main, or pending / guest / off for someone signed in without access), `setSession` (resets LGEDIT), `ME` — the SIGNED-IN person, set only by `store.ts resetSession` (`DEFAULT_ME` is the headless test person), `setMe` (resetSession + the localhost probe), `setEffectiveRole` (the localhost probe's role switch only), `canEditSched`/`lgCanEdit` (asking `perms.ts`). The two hard-coded logins, `LOGINROLE` and the admin's view toggle are gone. |
-| `perms.ts` | **THE ONE PLACE THAT ANSWERS "MAY THIS PERSON DO THIS?"** (`[ACCOUNTS]`, D200 (3), 26 Sep 26): `PERMS` — `docs/data-model.md` §11 as data (drift-tested by `perms.test.ts`); `allows` and the named questions every gate asks (`isAdmin`, `me`, `isMe`, `viewerId`, `mayEditSched`, `mayEditInputOf`, `mayEditQualsOf`, `mayManageRoster`, `mayManageAccounts`, `mayRequestAccess`, `mayReadMedicalOf` …); `COMMAND_OPS` + `cmdAuthorize` — the command gate's resolver (installed by `store.ts wireStore`; every registered type mapped, an unmapped one refused); `ownershipViolation` — the commit-gate check that a member's command changed only his own records. `perms-scan.test.ts` fails on an authority check anywhere else. |
+| `perms.ts` | **THE ONE PLACE THAT ANSWERS "MAY THIS PERSON DO THIS?"** (`[ACCOUNTS]`, D200 (3), 26 Sep 26): `PERMS` — `docs/data-model.md` §11 as data (drift-tested by `perms.test.ts`); `allows` and the named questions every gate asks (`isAdmin`, `me`, `isMe`, `viewerId`, `mayEditSched`, `mayEditInput` (the input questions take the record since 8 Oct 26 - the group input), `mayEditQualsOf`, `mayManageRoster`, `mayManageAccounts`, `mayRequestAccess`, `mayReadMedicalOf` …); `COMMAND_OPS` + `cmdAuthorize` — the command gate's resolver (installed by `store.ts wireStore`; every registered type mapped, an unmapped one refused); `ownershipViolation` — the commit-gate check that a member's command changed only his own records. `perms-scan.test.ts` fails on an authority check anywhere else. |
 | `changes.ts` | **New to you** (`[DRAFT-PENDING]`, D170, 28 Sep 26) — each person's own seen record, ONE ROW PER PERSON since 30 Sep 26 (`settings/seen:<pid>` = `{upto: {at, lineId} \| null, extra: lineId[]}` — positions in the history's order; it was the shared `changeseen`, `[DB-READINESS]` group A phase 4.3), `isNewToMe`, `markSeen` (ONE command `changes.seen`, own entry only — `perms.ts` `EditLogSeen`, `ownershipViolation`), `changesLoad`, `SEEN_VER`; an account's `seenFrom` gives someone given access later nothing new (Fable F6). |
 | `changelines.ts` | **The lines the cell funnels never see** (`[DRAFT-PENDING]`, D263) — ONE subscriber on the command stream (`registerChangeLines`, `changeLinesFor`): every change to an input (sole writer — Astra DP-03; a door's reason via `elogReason`), the Leave War's decisions and OIL awards (`lw.cell`, `lw.ledger`), Quals changes (`people`), a publish or a withdrawal (the command's boundary); `logFiling` (the accept door), `logReversed` (Undo / Redo, at the global undo's success — Astra DP-04). |
 | `accounts.ts` | **The accounts** (`[ACCOUNTS]`, D165/D166/D204, 26 Sep 26): the accounts, access requests and each admin's seen requests ONE ROW EACH since 30 Sep 26 (`account:<id>`, `accessreq:<id>`, `reqseen:<accountId>` — `[DB-READINESS]` group A phase 4.4; each write changes exactly the rows its own list edit changed; `readAccounts` — the older of two accounts for one person wins; `accountsAfter` / `requestsAfter` — what a restore would leave, read by the Undo's rules, its words and the delete's guard) and the `guestview` settings record (no password stored — the two seeds' in code only), the seeds (`ad` Saber admin, `us` Ranger member, `outlaw`, `hex`), `accountsLoad` (never writes; the lock-out fallback adds the seed admin), `signIn` → the five outcomes and `sessionFor`, and the intent writers (`addAccount`, `updateAccount`, `approveRequest`, `declineRequest`, `requestAccess`, `setGuestView`) — each one command over the settings store, each refusing with its reason. Pinned in `accounts.test.ts`. |
@@ -277,7 +277,7 @@ in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old opt
 | `docs/img/handpass/2026-10-03-rally-review-fixes/`, `docs/handpass/2026-10-03-rally-review-fixes-evidence.zip` | **D509–D511 runtime and portable proof:** current/issued/hide/settings/previous-day/LateShow pictures, measured text/header RED and GREEN, actual PDF pages, source/bundle fingerprints; zip preserves raw RED/green/gates/breaks/drivers/worlds and the exact production bundle. Snapshot1's independent header find remains failed until repaired and freshly inspected; later snapshot archive is separate. |
 | `docs/handpass/2026-10-03-rally-review-fixes-evidence-2.zip`, `docs/superpowers/plans/2026-10-03-rally-review-fixes-inspection-1.md`, `docs/superpowers/plans/2026-10-03-rally-review-fixes-inspection-2.md` | **Repaired review-fix snapshot2:** separate portable archive preserves all69 opened pictures/ledger, R1 four-width RED/GREEN and real controls, R2 actual Insights/SANS/earned-credit routes, final raw probes/perf and exact frozen source/bundle. Initial CHANGES REQUIRED and fresh final Astra reports remain immutable; current verdict is in the Rally evidence sheet. |
 | `src/testing/reporting-fixture.ts`, `e2e/app.ts:validReportingFixture` | **Retired D502 fixture adaptation:** no active consumers after D509/D510; retained history only. Fresh corrected seeds and identical strict parity inputs replace it. |
-| `docs/mock/` | **Approved visual designs of record**, in the app's own stylesheet so they are pixel-faithful — not sketches to argue with. `allavail-window.html` is D41's approved design for `[ALL-AVAIL-WINDOW]`. `amend-seat-marks.html` (24 Sep 26) is D93's approved design for `[AMEND-MARK-RING-CLASH]` — a changed puck gets a tag, never a ring (D92) (its first version's mark for an emptied seat was declined, D91), pictures of the real app in `img/amend-seat-marks/`, made by `scripts/handpass/am/mk-seat-marks.mjs` (three single examples) and `mk-seat-marks-busy.mjs` (a day with three amendments out and a fourth waiting), both drawing the fix from `mk-seat-marks-lib.mjs`. `amend-answers.html` (25 Sep 26) answers his questions 3, 6 and 7 with pictures of the real app — who signed each version on View-only Sched (D95) and loading a version back after a request was taken off — made by `scripts/handpass/am/mk-view-signers.mjs`, `mk-unpublish.mjs` (a mistaken Unpublish and the way back, today's app) and `mk-load-input.mjs` (pictures in `img/view-signers/`, `img/unpublish/`, `img/load-input/`). `pending-list.html` (25 Sep 26) is the mock-up for D99 — tap "N pending" to list what will go out and jump to it — made by `scripts/handpass/am/mk-pending-list.mjs` (pictures in `img/pending-list/`). `orig-tag.html` (25 Sep 26) is the mock-up for D108 — three ways to make the published Original's ORIG tag stand out, on the edit week, the board and View-only Sched — made by `scripts/handpass/am/mk-orig-tag.mjs` and, for his question whether the green would be confused with AL3's, `mk-orig-tag-compare.mjs` (each option beside a real AL3 and AL4 day), and, after he chose A's direction (D110), `mk-orig-tag-refine.mjs` (four drawings of A; pictures in `img/orig-tag/`); he picked A1, the seal (D111), built 25 Sep 26. `post-out.html` (27 Sep 26) is the mock-up for `[POST-OUT-OUTCOMES]` and the guest-flyer mark (D229, D280–D299) — made by `scripts/handpass/am/mk-post-out.mjs` (pictures in `img/post-out/`), APPROVED 27 Sep 26 (D299), the design of record. `one-door.html` (27 Sep 26, also an Artifact) is the mock-up for `[ONE-DOOR]` (D309, D310, with D308's post-in date and D305's welcome-back note) — Admin → Users as one row per person with a Sign-in and a Roster dot and every action on his row, Quals without its archive — with his `[POST-OUT-ASKS]` questions; made by `scripts/handpass/am/mk-one-door.mjs` (pictures in `img/one-door/`; `ONLY=7` draws just §8, the months away — D320), APPROVED 27 Sep 26 (D322), the design of record. The house rule (owner, 7 Aug 26) is that a visual direction gets a picture before any product code. `checkpoint.html` (25 Sep 26) is D118's mock-up — the checkpoint's word ("Set checkpoint" / "Hand over") and the hollow ORIG tag on an unpublished day's changed puck (plain or dotted edge), his pick pending; made by `scripts/handpass/am/mk-checkpoint.mjs`. `handover.html` (25 Sep 26) is D118's hand-over storyboard — two schedulers passing an unpublished day back and forth, each hand over kept, the highlights showing the last person's work; made by `scripts/handpass/am/mk-handover.mjs`. `since.html` (25 Sep 26) is D118's "Since" choice for three or more schedulers (and the callsign-picker alternative); made by `scripts/handpass/am/mk-since.mjs`. `handoff-accounts.html` (25 Sep 26) is the hand over WITH accounts (D166): each scheduler signed in as their callsign sees what changed since their own last hand over; made by `scripts/handpass/am/mk-handoff-accounts.mjs`. `handoff-window.html` (25 Sep 26) is D167's changes WINDOW — movable, resizable, every hand over folded or open with its 25/9 date, a tap takes the schedule behind to the change and the window stays; the phone's bottom panel shrinks to a bar; made by `scripts/handpass/am/mk-handoff-window.mjs`. `changes-window.html` (25 Sep 26) is D168–D169's ONE changes window — New to you / All changes, a day picker, Group by Who / Where; with and without Hand over; a member's read-only view from the live working copy; made by `scripts/handpass/am/mk-changes-window.mjs`. `changes-doors.html` (25 Sep 26) shows the two ways the changes window opens — the day heading's count and a top-bar "Changes" button — for an admin and a member; made by `scripts/handpass/am/mk-changes-doors.mjs`. `tags-ticks.html` (25 Sep 26) is D172's comparison — the unpublished-day corner tag (NEW, AL0, a dot, OG) and a tick on every AL in the day heading, two ways; made by `scripts/handpass/am/mk-tags-ticks.mjs`. `five-flags.html` (27 Sep 26, also an Artifact) is the five-flags batch's before-and-after (the glow, Reset order, the crowd swap, the arrow's room — the walk's own pictures where it took them) and the mock-ups for its look card: Q2 (answered yes, D270), Q1 (refuse a second copy of a man on one row) and Q3 (the strip beside the ‹ arrow: keep / empty / fade); pictures in `img/five-flags/`, made by `scripts/handpass/am/mk-five-flags.mjs` (parts `p1`, `q2`, `q1`, `q3`). `lw-move-standard.html` (27 Sep 26, also an Artifact) is the mock-up for `[LW-MOVE-STANDARD]` (D264–D266) — one layout for the Leave War's one-day and drag-selection sheets in two orders, a bid beside an OIL award getting its Move (Vector's 3 Jan), the day's list moving a record by the move mode, a member's own bid; pictures in `img/lw-move-standard/`, made by `scripts/handpass/am/mk-lw-move-standard.mjs` (`desktop` / `phone`). `undo-topbar.html` (28 Sep 26, also an Artifact) is the mock-up for D347 and D348, APPROVED as drawn (D349) — every Undo / Redo pair in the top bar, in Edit Schedule's place and look, before and after on every page, desktop and phone; pictures in `img/handpass/2026-09-28-change-recording/mock/`, made by `scripts/handpass/cr-mock-topbar.mjs` (the real app, its own buttons moved in the page). `trk-leftovers-choices.html` (28 Sep 26, also an Artifact) puts the Tracker leftovers' six questions to him with pictures of the real app — answered D370–D373 (the sideways-phone Edit chart layout: FOLD); pictures in `img/handpass/2026-09-28-trk-leftovers/` (`baseline/`, `mock/`), the fold and scroll drawn by `scripts/handpass/trk-lo-mock-sideways.mjs`; the re-walk of today's build that found which notes still happen is `scripts/handpass/trk-lo-00-*.mjs`. `day-lock.html` (29 Sep 26, also an Artifact) is the mock-up for `[DB-SYNC-MODEL]` (D355, D356, D450–D454) — taking a day to edit once the app is in the database: the teal "You're editing" and amber "<callsign> – editing" strips on Edit Schedule and the board, "Edit days…", the 25-minute warning, an admin's take-over, the Sync menu, desktop and phone, with his questions; pictures in `img/day-lock/`, made by `scripts/handpass/mk-day-lock.mjs` (the real app, the lock drawn in with its own classes; it borrows the IT flow guide's `scripts/itflow/lib.mjs`). |
+| `docs/mock/` | **Approved visual designs of record**, in the app's own stylesheet so they are pixel-faithful — not sketches to argue with. `allavail-window.html` is D41's approved design for `[ALL-AVAIL-WINDOW]`. `amend-seat-marks.html` (24 Sep 26) is D93's approved design for `[AMEND-MARK-RING-CLASH]` — a changed puck gets a tag, never a ring (D92) (its first version's mark for an emptied seat was declined, D91), pictures of the real app in `img/amend-seat-marks/`, made by `scripts/handpass/am/mk-seat-marks.mjs` (three single examples) and `mk-seat-marks-busy.mjs` (a day with three amendments out and a fourth waiting), both drawing the fix from `mk-seat-marks-lib.mjs`. `amend-answers.html` (25 Sep 26) answers his questions 3, 6 and 7 with pictures of the real app — who signed each version on View-only Sched (D95) and loading a version back after a request was taken off — made by `scripts/handpass/am/mk-view-signers.mjs`, `mk-unpublish.mjs` (a mistaken Unpublish and the way back, today's app) and `mk-load-input.mjs` (pictures in `img/view-signers/`, `img/unpublish/`, `img/load-input/`). `pending-list.html` (25 Sep 26) is the mock-up for D99 — tap "N pending" to list what will go out and jump to it — made by `scripts/handpass/am/mk-pending-list.mjs` (pictures in `img/pending-list/`). `orig-tag.html` (25 Sep 26) is the mock-up for D108 — three ways to make the published Original's ORIG tag stand out, on the edit week, the board and View-only Sched — made by `scripts/handpass/am/mk-orig-tag.mjs` and, for his question whether the green would be confused with AL3's, `mk-orig-tag-compare.mjs` (each option beside a real AL3 and AL4 day), and, after he chose A's direction (D110), `mk-orig-tag-refine.mjs` (four drawings of A; pictures in `img/orig-tag/`); he picked A1, the seal (D111), built 25 Sep 26. `post-out.html` (27 Sep 26) is the mock-up for `[POST-OUT-OUTCOMES]` and the guest-flyer mark (D229, D280–D299) — made by `scripts/handpass/am/mk-post-out.mjs` (pictures in `img/post-out/`), APPROVED 27 Sep 26 (D299), the design of record. `one-door.html` (27 Sep 26, also an Artifact) is the mock-up for `[ONE-DOOR]` (D309, D310, with D308's post-in date and D305's welcome-back note) — Admin → Users as one row per person with a Sign-in and a Roster dot and every action on his row, Quals without its archive — with his `[POST-OUT-ASKS]` questions; made by `scripts/handpass/am/mk-one-door.mjs` (pictures in `img/one-door/`; `ONLY=7` draws just §8, the months away — D320), APPROVED 27 Sep 26 (D322), the design of record. The house rule (owner, 7 Aug 26) is that a visual direction gets a picture before any product code. `checkpoint.html` (25 Sep 26) is D118's mock-up — the checkpoint's word ("Set checkpoint" / "Hand over") and the hollow ORIG tag on an unpublished day's changed puck (plain or dotted edge), his pick pending; made by `scripts/handpass/am/mk-checkpoint.mjs`. `handover.html` (25 Sep 26) is D118's hand-over storyboard — two schedulers passing an unpublished day back and forth, each hand over kept, the highlights showing the last person's work; made by `scripts/handpass/am/mk-handover.mjs`. `since.html` (25 Sep 26) is D118's "Since" choice for three or more schedulers (and the callsign-picker alternative); made by `scripts/handpass/am/mk-since.mjs`. `handoff-accounts.html` (25 Sep 26) is the hand over WITH accounts (D166): each scheduler signed in as their callsign sees what changed since their own last hand over; made by `scripts/handpass/am/mk-handoff-accounts.mjs`. `handoff-window.html` (25 Sep 26) is D167's changes WINDOW — movable, resizable, every hand over folded or open with its 25/9 date, a tap takes the schedule behind to the change and the window stays; the phone's bottom panel shrinks to a bar; made by `scripts/handpass/am/mk-handoff-window.mjs`. `changes-window.html` (25 Sep 26) is D168–D169's ONE changes window — New to you / All changes, a day picker, Group by Who / Where; with and without Hand over; a member's read-only view from the live working copy; made by `scripts/handpass/am/mk-changes-window.mjs`. `changes-doors.html` (25 Sep 26) shows the two ways the changes window opens — the day heading's count and a top-bar "Changes" button — for an admin and a member; made by `scripts/handpass/am/mk-changes-doors.mjs`. `tags-ticks.html` (25 Sep 26) is D172's comparison — the unpublished-day corner tag (NEW, AL0, a dot, OG) and a tick on every AL in the day heading, two ways; made by `scripts/handpass/am/mk-tags-ticks.mjs`. `five-flags.html` (27 Sep 26, also an Artifact) is the five-flags batch's before-and-after (the glow, Reset order, the crowd swap, the arrow's room — the walk's own pictures where it took them) and the mock-ups for its look card: Q2 (answered yes, D270), Q1 (refuse a second copy of a man on one row) and Q3 (the strip beside the ‹ arrow: keep / empty / fade); pictures in `img/five-flags/`, made by `scripts/handpass/am/mk-five-flags.mjs` (parts `p1`, `q2`, `q1`, `q3`). `lw-move-standard.html` (27 Sep 26, also an Artifact) is the mock-up for `[LW-MOVE-STANDARD]` (D264–D266) — one layout for the Leave War's one-day and drag-selection sheets in two orders, a bid beside an OIL award getting its Move (Vector's 3 Jan), the day's list moving a record by the move mode, a member's own bid; pictures in `img/lw-move-standard/`, made by `scripts/handpass/am/mk-lw-move-standard.mjs` (`desktop` / `phone`). `undo-topbar.html` (28 Sep 26, also an Artifact) is the mock-up for D347 and D348, APPROVED as drawn (D349) — every Undo / Redo pair in the top bar, in Edit Schedule's place and look, before and after on every page, desktop and phone; pictures in `img/handpass/2026-09-28-change-recording/mock/`, made by `scripts/handpass/cr-mock-topbar.mjs` (the real app, its own buttons moved in the page). `trk-leftovers-choices.html` (28 Sep 26, also an Artifact) puts the Tracker leftovers' six questions to him with pictures of the real app — answered D370–D373 (the sideways-phone Edit chart layout: FOLD); pictures in `img/handpass/2026-09-28-trk-leftovers/` (`baseline/`, `mock/`), the fold and scroll drawn by `scripts/handpass/trk-lo-mock-sideways.mjs`; the re-walk of today's build that found which notes still happen is `scripts/handpass/trk-lo-00-*.mjs`. `day-lock.html` (29 Sep 26, also an Artifact) is the mock-up for `[DB-SYNC-MODEL]` (D355, D356, D450–D454) — taking a day to edit once the app is in the database: the teal "You're editing" and amber "<callsign> – editing" strips on Edit Schedule and the board, "Edit days…", the 25-minute warning, an admin's take-over, the Sync menu, desktop and phone, with his questions; pictures in `img/day-lock/`, made by `scripts/handpass/mk-day-lock.mjs` (the real app, the lock drawn in with its own classes; it borrows the IT flow guide's `scripts/itflow/lib.mjs`). `inputs-sans-calendar.html` (copied in 9 Oct 26 on his word — D680) is the "what we decided" page of the Inputs / SANS calendar job, the designs of record he accepted on 7 Oct 26 (D657): the SANS calendar, the Inputs calendar, an input for a group, the window now called "Calendar" (drawn as "Days"), the Leave War's four rows and its event sheet — 36 pictures in `img/inputs-sans-calendar/`, drawn on his PC and kept in his private folder; the seven that show the SANS month are REDRAWN with made-up figures (his reference pictures and their figures stay out of the repo), and the Leave War ones are the demo squadron. The page loads one web font from Google; nothing else is fetched. `note-with-pucks.html` (9 Oct 26, also an Artifact) is a DRAWING, not yet approved, for `[CAL-NOTE-WITH-PUCKS]` (D684): a note in an opened day that carries its own people, in place of the separate "+ Pucks" button — five pictures in `img/note-with-pucks/`, made by `scripts/handpass/mk-note-pucks.mjs` (the built app’s own elements, rearranged in the page; a small phone, a day with four inputs): today, the first roomy drawing (`b-roomy`, kept for the record, not on the page), COMPACT, FOLDED, and compact with people and no words — redrawn the same day on his word that it be more compact (D688); what he has settled (D689, D690) and what is open are on the page. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
 | `docs/archive/BUG-TESTING.md` (moved from the repo root 24 Sep 26) | **RETIRED 23 Sep 26 (owner, D72)** — the old batch-by-batch bug-testing list (27 Aug 26), kept as history only: nothing adds rows to it and no handoff checks it (it had not been kept since 10 Sep). Each change's bug check is now recorded in its evidence sheet under `docs/handpass/` (the standing order, `docs/bug-check-order.md`), and re-testing older features is `[HUMAN-RETEST]` in `../OUTSTANDING.md`. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |
@@ -421,7 +421,408 @@ report is `docs/handpass/2026-10-03-insights-mission-mix-review-r2.md`, covering
 804 matching hashes, eleven independently opened existing pictures and explicit limits. Required gate and comparison logs are retained in
 `docs/handpass/insights-gates/`, including the unchanged planning snapshot's three existing adapted audit failures.
 
+D569 SANS calendar design start: `docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md` records the requested month/day/form behaviour, private reference mapping and historical unsettled choices. D580 now authorizes the delegated build recorded below.
+Initial independent read/full dispositions: `docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`.
+
+D567 design-start draft, cancelled D568: `docs/superpowers/specs/2026-10-05-caps-ops-limits.md` retains the cancelled caps/ops priority, baseline and policy boundaries; no new chat created. `docs/handpass/2026-10-05-caps-ops-handoff-meaning-read.md` preserves the independent priority/handoff read and correction dispositions; application unchanged.
+
 D566 implementation addendum/challenge: `docs/superpowers/plans/2026-10-04-flight-taper-{implementation-addendum,plan-challenge}.md`.
 Current accepted-build evidence: `docs/handpass/2026-10-04-accepted-taper-interface-batch.md`; earlier rejected build proof remains historical.
 
 Fresh accepted-batch R1 inspector: immutable `docs/superpowers/briefs/2026-10-04-accepted-taper-interface-astra-final-r1.md`; complete PASS/report `docs/handpass/2026-10-04-accepted-taper-interface-astra-final-r1.md`. Source freeze unchanged; closing status only afterward.
+
+D580 Inputs/SANS calendar proposed build plan and independent scenario proposal: docs/superpowers/plans/2026-10-05-inputs-sans-calendar.md (Astra; corrected plan independently challenged by Sol PASS; private synthetic design pictures separate).
+
+D581/D582 header/counts addendum: docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-addendum.md (Astra); independent Sol disposition: docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-sol-challenge.md. Private synthetic proposal pictures precede source work; final expanded code remains owed to Claude after reset.
+
+`scripts/handpass/inputs-sans-header-counts.mjs`: independent D581/D582 actual-app scenario driver; default phone header/filter memory, three-activity totals, popup layering and role withdrawal, short phone/320 reflow. Synthetic design examples are separate from runtime proof.
+
+`docs/handpass/2026-10-05-inputs-sans-claude-handoff.md`: D583/D584 owner-intent-first Claude handoff, original reference map, settled answers versus agent recommendations, finished desktop/mobile views and verification/review limits. Invites fresh critique; no assumed design approval or main authority.
+D580 independent Sol plan/picture challenge: `docs/superpowers/plans/2026-10-05-inputs-sans-plan-challenge.md`; corrected plan PASS, source/review authority qualified.
+
+The Inputs / SANS redesign (D617-D657; the plan `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md`), step 1: `src/state/flyplan-model.ts` - the flying plan's records (a day, a weekday rule, a running figure) and the ONE resolver `planFor` every surface calls for a day's class, required pilots and WSOs, how many more are needed and its colour; pure, ISO dates through UTC. Its tests are one body, `src/state/flyplan-model.suite.ts`, run by `flyplan-model.test.ts` and again under the Leave War suite's hostile time zone by `src/leavewar/flyplan-model-tz.test.ts`.
+`src/state/flyplan.ts` - the flying plan's store: the reads (`getFlyPlan`, `getTones`) and the typed admin
+commands (`setFlyDays` - one date or a picked block, one Undo step; `setFlyRule` / `removeFlyRule`; `setFlyRun` / `dropFlyRun`;
+`saveTones`), each row read back inside its command (`getFlyNames` / `saveFlyNames` and the `flynames` key came out on
+8 Oct 26 - D668: the Required rows keep their names); `flyplan.test.ts` pins refusals, a raw write, the block as
+one step, Undo / Redo and its words, a reload, and the earlier build's leftover rows. Its guards: `people-settings-commit.ts`
+(row kinds, the write hook, the loader), `perms.ts` `COMMAND_OPS`; Undo's words `undo/describe.ts describeFly`,
+its landing `undo-wire.ts`.
+`src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
+or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
+their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
+what is saved (`orderToSave`). Pure; the store's side is `state/store.ts` `manningBlockOrder`, `orderedManningIds`,
+`moveManningRowTo`. Tests: `engine/fixedrows.test.ts`, `leavewar/countersamong.test.ts` (the move, who may make it, saving,
+Undo, and that nothing which reads the four cares where they sit), `ui/countersamong.test.tsx` (the block drawn in the one
+order; each of the four a place to drop in Rearrange, with the landing bar; the drag as far as jsdom carries it). A look at
+the running build: `scripts/handpass/lw-counters-among-look.mjs`.
+`src/leavewar/engine/availrows.ts` - the two Available rows the SANS calendar reads (`availp`, `availw` - D640): their
+built-in definitions, the check that keeps a stored one a people count with no amber or red, and `availHave`, the ONE sum
+that never counts a SANS man (D626); the store's side is `state/store.ts` `availRules`, `manningDeleteProblem` and the
+guards in `saveManningRule`, `setManningThreshold`, `deleteManningRule`, `readManningRules` (the two are beside the
+sixty-counter limit, never inside it), and `engine/evaluate.ts` passes them over (they judge no day). `engine/eventdefs.ts
+holidayAt` - the holiday on a day with its name. `src/leavewar/sync.ts` (its last block) - what the calendars read from the
+war: `dayFacts(iso)`, `holidaysIn(year)` and the signal `useWarFacts()` / `warFactsVersion()` / `subscribeWarFacts()`;
+`src/leavewar/dayfacts.test.ts` pins all of it. `src/state/flyplan.ts` also holds `sansCommittedOn` / `sansFly` - the
+SANS people committed to F, O and A on a date, per seat, each once a day, never a man since archived and only a man the
+roster marks SANS (`sansfly.test.ts`); it REPLACED `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar was
+re-made (step 4, 8 Oct 26 — that function is gone). The same block of `sync.ts` re-exports the plan's readers and writers for the war's rows and holds the
+ONE join, `flyAnswer(iso)` / `flyMonth(y, m)` (`src/leavewar/flyanswer.test.ts`).
+`src/leavewar/engine/eventshort.ts` - an event's SHORT FORM, what a day cell prints for it (the Inputs / SANS redesign,
+plan §3.12; D643–D645): `normShort`, the ONE rule (capitals first, then one to three of A–Z and 0–9) every write and
+every read goes through, `SHORT_RULE` its refusal, and `derivedShort` (initials of the words, else the first three). The
+one answer to "what does the grid print" is `engine/eventdefs.ts shortOf` — the event's own, else its preset's, else
+derived. Text, kind and short form are written together by `engine/period.ts writeDayEvent` and by every store writer;
+the Event sheet's Save and Delete are each ONE command, `state/store.ts saveEvent` / `deleteEvent` (`lw.event.save` /
+`lw.event.remove`). Tests: `engine/eventshort.test.ts`, `eventshort-store.test.ts`.
+**On the grid:** `ui/EventRows.tsx` prints the short form in a day cell (its width from that - never more than three
+characters) and a band's full text only where the bar is wide enough; a tap on a FILLED cell opens the small box
+(`Matrix.tsx` `evPeek`, `.evpeek` in `matrix.css`) with the full name, the kind in its colour and the date - for
+everyone, an admin's carrying Edit; an empty cell still opens the sheet at once for an admin. `ui/eventshort.test.tsx`.
+**The sheet:** `ui/EventSheet.tsx`, redrawn - a Presets row with the picked one lit and "Other…", an optional Name beside
+"On grid", a Kind row only under "Other…", "Edit presets" with a short-form box on each row; opening an event never
+changes it (`ui/eventsheet-presets.test.tsx`). The contract: `docs/ui-contracts.md` "The Event rows print a short form".
+`src/leavewar/ui/FlyRows.tsx` - THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK (the Inputs / SANS redesign, plan §3.3;
+D617, D637, D640; D665 - his "I'm going with B", first built under the Event rows): Required P and W (the one resolver's figure, "NF" on a no-fly day, a dash; a corner mark where a running figure
+starts) and Available P and W (the war's own count, red where it is under its Required; a tap opens the read-only
+working - required, available, SANS committed to fly, still needed). Rows of the grid's own table, drawn through the
+`fixed` render prop of `CountRows` (until D674 a `children` slot, last in `tbody.counts`): it is handed the counters' rows in
+five runs and draws each above, between or below its four, and in Rearrange each of the four is a place to drop a counter;
+it subscribes ITSELF to the plan's signal (`sync.ts usePlanVersion`) and the war's (`useWarFacts`),
+and memoises each drawn month on what it shows. An admin's click on a Required cell opens the ONE typing box (`FlyEdit.tsx`, below) - `FlyRows` holds
+at most one, and keeps the kind of pointer that made the press; it also holds the PICKED BLOCK and its panel
+(`ReqPanel.tsx`, below), lighting the cells that will take the number. Tests: `ui/flyrows.test.tsx`; the browser gates `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning
+block…" and "in the Manning block the four rows cover no month button…" (the two faults he circled, D665).
+`src/probe-bridge.ts` carries `setFlyDays` / `setFlyRun` for that gate (this PC only).
+`src/leavewar/ui/FlyEdit.tsx` - TYPING ONE REQUIRED FIGURE straight into its cell (plan §3.3 "Typing one cell"; D636, D637):
+the one box laid over the cell (screen-fixed, portalled out of the table) - a real input on a desktop (Enter the next
+FLYING day, Tab the other seat, Shift back, Esc as it was, an empty box clears the date's figure, a press anywhere else
+saves), and on a touch screen NO input at all but the app's own number pad docked at the foot (`.flypad` - an input that
+small makes iOS zoom the page); the strip with "This day | From <date> on" (`state/flyplan.ts setFlyRun`'s `clearDay`
+takes the date's own figure away in the same command, so a run shows on the day it starts). Nothing changed, nothing
+written. `isFlyingDay` / `stepFlyingDay` are the walk along the row. Styles: `.flyedit*`, `.flypad*` in `matrix.css`.
+Tests: `ui/flytype.test.tsx`; the browser gate `e2e/leavewar.spec.ts` "a Required figure is typed straight into its
+cell…" (the box exactly over its cell, the strip off the month buttons, no input focused on a phone, all four rows above
+the pad, every key 44px or more).
+`src/leavewar/ui/ReqPanel.tsx` - THE REQUIRED PANEL (plan §3.3 "Picking several"; D636, D637, D622): one number for a
+picked block of Required cells - the number, "These days | From <date> on", Apply, Clear; `Sheet`'s `modal={false}`
+form (D641 - no veil, the grid behind works); a phone's shorter wording; it lifts the four rows clear of itself when it
+opens. `src/leavewar/ui/reqpick.ts` - `planPick`, the ONE pure rule for which picked days take the number (a no-fly day
+never; weekend / holiday / Off days filled when picked alone, left out of a mixed pick until Include; where a running
+figure starts and which typed figures go with it) - `FlyRows` lights the same answer (`.pick`). `src/leavewar/ui/gridclick.ts`
+- `useCloseOnCellClick`: a plain click on a cell of the grid closes a non-blocking panel (the Required panel and
+`SelectSheet`). The pick itself is `ui/select.ts`' THIRD kind (`parseReqCell`, `reqRange`, `ReqSelection`; `SelectCtx.reqEnabled`
+/ `onReqSelect`), handed from `Matrix` to `FlyRows` by a ref (`FlyPickApi`). `ui/Sheet.tsx` gained `modal` (false = no scrim,
+no outside close, no Tab trap); `ui/SelectSheet.tsx` uses it since D642. Tests: `ui/selectreq.test.ts`, `ui/reqpanel.test.tsx`,
+`ui/nonmodal.test.tsx`; the browser gates "several Required cells are picked with a drag…" and "the people's-days panel
+stays up with no veil…".
+`src/leavewar/testing/eleven.ts` - THE ELEVEN COUNTERS THE APP USED TO START WITH, as TEST DATA ONLY (D669, 8 Oct 26: the
+Manning block comes with no count rows of its own). Pure data, word for word what `engine/seed.ts` held; nothing in the
+app imports it. A test that is about counters MAKES them through the real "+ Counter" writer: `src/leavewar/testkit.ts
+elevenCounters()` (unit suites) and `e2e/app.ts elevenCounters()` (browser tests, through `probe-bridge.ts
+lwSaveManningRule` - this PC only). `src/leavewar/ui/nocounters.test.tsx` - D669's seven readings, each pinned (the
+empty start, the delete cross and Undo, no Archive, no Reset counters, under-manned by counters that exist, the
+Available rows untouched, nothing stored converted; and that the counter form can express each of the old eleven).
+`src/leavewar/ui/rowswire.test.tsx` (was `archivewire.test.tsx`) - Matrix hands `CountRows` the re-measure it calls when
+a count row goes in or out. `ui/CountRows.tsx` lost the eye, the Archive bar and its `hidden` prop; it draws its block
+for the rows handed to it even with no counter.
+`ui/CounterForm.tsx` has a MODE for the two Available rows (D640; plan §3.3) - reached by a tap on the row's name in
+`FlyRows` (`onEditAvail` -> Matrix's `counterEdit`): a people count only, no amber / red, no Delete, no SANS chip, a
+sample summed by `availHave`, one line saying SANS people are never counted. `ui/availform.test.tsx`; the browser gate
+"an Available row's name opens the counter form for it…".
+`src/ui/FloatWindow.tsx` - THE WINDOWS SHELL of the Inputs / SANS calendar job (plan §3.7; D641), exporting `FloatWin`:
+a movable window that does NOT block the page - a bar it is dragged by, a close button, `role="dialog"` with
+`aria-modal="false"`, no veil, no close on a press outside, no Tab trap, focus in and back, Escape for the front one. A
+shell over `ui/floatwin.ts useFloatWin` (the one body of placement rules), never a second one. (Named FloatWindow, not
+FloatWin: on Windows `FloatWin.tsx` and `floatwin.ts` are one name to the bundler.) Styles
+`ui/scheduler/22-float-windows.css`; tests `ui/floatwindow.test.tsx`. Nothing is built on it yet - Days is next.
+`src/ui/DaysWindow.tsx` - DAYS, THE MONTH (plan §3.4; D631, D633, D638, D642): the admin's window that says what kind of
+day each date is, on the windows shell (`FloatWin id="days"`), mounted once in `ui/App.tsx`, opened by `ui/pops.ts
+DAYSWIN` (the date whose month it opens on) - from the Leave War's settings through `leavewar/sync.ts openDays`. A date
+shows the war's tag (PH, OFF) or its class control: three buttons D / N / NF above 820px wide, ONE stepping button
+(sun, moon, NF, a dash) at or under it; each press one `setFlyDays` command, one Undo step; a dot where the class is set
+for the date itself. It joins nothing - a month's answers are `sync.ts flyMonth`. Styles `ui/scheduler/23-days.css`
+(prefixed class names - the sheet is global and the week owns `.day`); the sun and moon are `ui/icons.tsx`. Tests
+`ui/dayswindow.test.tsx`, `leavewar/ui/daysline.test.tsx`; pictures `scripts/handpass/days-look.mjs`. Its two parts -
+the month and the year's Holidays - sit side by side from 1510px across and are two tabs under that; one side window
+("Every <weekday>" or the holiday form) is up at a time.
+`src/ui/HolidaysPanel.tsx` - THE YEAR'S HOLIDAYS in Days (plan §3.4, §3.12; D631, D638, D652): `HolidaysPanel`, the list
+(`leavewar/sync.ts holidaysIn` - a year, one line per public holiday or Off day, the past ones dimmed, "+ Add", and the
+notice for dates no leave period covers with "Create it" where none reaches the year), and `HolidayForm`, a window on
+the shell (kind, name, "On grid", first and last day; Save, "Save and add another", Delete on a line being changed).
+It writes the war's own record with `holidayAdd` / `holidayChange` / `holidayRemove`. Tests `ui/holidayspanel.test.tsx`;
+the two readers it added to the seam (`uncoveredIn`, `holidayWord`) are pinned by it and `leavewar/uncovered.test.ts`.
+A holiday refused because no leave period covers its date WAITS in the form and is saved by itself once one does.
+`src/leavewar/ui/phone.ts` - "is this a phone?" for a Leave War component that must DRAW something different there
+(D678): `PHONE_QUERY`, the war's own phone width (430px and under, the same string as `chrome.css`'s phone block), and
+`usePhone()`, which follows it live. Used by `ui/Chrome.tsx`; its tests `ui/phonehead.test.tsx` (the two-line top on a
+phone, the stage menu, the desktop as it was - D679).
+`src/leavewar/ui/inview.ts` - "is this day's column already on screen?" (D670) - the one question the Leave War's grid
+asks before an Undo or a Redo moves it: drawn, with a width, wholly between the frozen name columns and the grid's right
+edge. Pure. Tests `leavewar/ui/inview.test.ts`; which asks are soft is `leavewar/undoland.test.ts`.
+`src/ui/onscreen.ts` - the same question for a ROW on the scheduler's pages (D672): wholly between the top bar (and a
+stuck table heading) and the foot of the window. Asked by Quals' and the Inputs list's Undo landings. Tests
+`ui/onscreen.test.ts`.
+`src/leavewar/ui/warask.ts` - ONE waiting ask, "open the war's New-period sheet on these dates" (plan §3.4): set by
+`sync.ts openNewPeriod` (from the Holidays list in Days), taken once by the war's top row (`ui/Chrome.tsx Topbar`), which
+opens its own `WarSheet` with the dates picked and RAISED above the scheduler's windows (`Sheet`'s `raised`; the layer
+rule is inside `bidpicker.css`'s wrapper, beside `.bidsheet`). Module state, never the war's store. Tests
+`leavewar/ui/warask.test.tsx`.
+`src/ui/EveryWeekday.tsx` - "EVERY <WEEKDAY>" (plan §3.4; D631, D638): the window a weekday's heading opens on Days'
+month - the class (day, night, no fly), From, Until (no end, or a date), a sentence saying what will be saved, and the
+rules already made for that weekday beneath, each with Remove. A second window on the shell, drawn by Days. Save is
+`setFlyRule`, Remove `removeFlyRule` - one command, one Undo step each. Tests `ui/everyweekday.test.tsx`.
+`src/ui/daysfmt.ts` - the words and small date sums those two windows share (weekday and month names, how a class and a
+date are said, today's date, the first such weekday on or after a date). Pure.
+STEP 4, THE SANS CALENDAR (plan §3.5; D617-D619, D626, D630, D635, D646-D651, D664):
+`src/ui/sanscal-model.ts` - how the ONE resolver's answer is READ onto a SANS date (`sansCell`: the sun or moon, or the
+tag NF / the holiday's short form; the still-needed pair or nothing; F, O, A as pairs) and who an opened day lists
+(`sansDayGroups`: every commitment, WSOs to fly, pilots to fly, OFT or AMT only - a man in ONE group, the head-counts
+people; a commitment the count leaves out listed apart with why), with `hoursOf` and `lateWord` (the cut-off a late
+entry missed, D646). Pure; it works nothing out about the day. `sanscal-model.test.ts`.
+`src/ui/placedline.ts` - who placed an entry and when, the ONE small-print line (plan §3.8, D629): `placedLine(record)`
+from the record's `by` / `at` / `modBy` / `modAt`; no line for a record that never recorded it. Drawn so far on the SANS
+calendar's opened day; the Inputs calendar's opened day, the List, the editor, a Medical card and the document viewer
+take the same line with step 5.
+`src/ui/SansDay.tsx` - A DAY OPENED ON THE SANS CALENDAR (D617, D626, D647-D651, D629, D646, D675): a window on the shell
+(`win-sansday`) - the working for both seats (required, available, SANS committed to fly, still needed: the resolver's
+own answer), "+ Commitment", an admin's "Calendar…" (opens Days on that month), then everyone who committed, each as
+the schedule's own puck (`ui/html.ts puck()`, the SANS edge from the builder) with his letters, hours, the LATE tag
+that says the cut-off it missed, and who placed it. The working and the buttons are pinned; the list scrolls.
+`sansday.test.tsx`. `src/ui/sansadd.ts` - "+ Commitment": the one way the SANS calendar starts a new SANS availability
+(`openSansAdd(from, until?)`, `maySansAdd`), for the day's button and the month's gestures alike; on a no-fly day
+nothing is ticked (D642). `src/ui/scheduler/24-sans-calendar.css` - the SANS calendar's styles and its three colours
+(D630). The windows shell gained `rests` (two rest heights on a phone - D648): `FloatWindow.tsx`, `22-float-windows.css`.
+`src/ui/SansCal.tsx` - THE SANS CALENDAR'S MONTH (`#sansCal`; D617, D618, D626, D627, D630, D664), drawn by `InputsPage`
+whenever the SANS tab is up - which now shows no Calendar | List pair, no filters and no list (D620): each date from
+`flyMonth` + `sansCell`, the line saying what the three colours mean, the day's window, the saved-row reveal, the
+keyboard (arrows, Shift + arrows, Enter, Escape - D621), and the phone month's height (`--sc-fill`: a floor measured
+from the visible screen, never a limit - D664). It hears both stores. `sanscal.test.tsx`.
+`src/ui/calpick.ts` - PICKING DAYS ON A MONTH, the one pointer machine for a calendar's dates (`initCalPick`): a tap, a
+finger slid sideways (the month turns), a mouse drag or a finger held then dragged (a run of days - D621, D626); it
+swallows the click that follows a release, which lands on whatever has just opened under the pointer. The Inputs month
+takes it with step 5. `calpick.test.ts`.
+Highlight (D619) is in `SansCal.tsx` (its picker) with `state/view.ts SANSHL` and `sanscal-model.ts sansMine` / `sansRoster`.
+"How this works" (D646) is in `SansCal.tsx` too - a fold of five lines, the last from `sanscal-model.ts cutSentence`, which states the cut-off as it is set.
+`src/ui/SansSettings.tsx` - THE SANS CALENDAR'S SETTINGS, the window behind its gear (`win-sansset`; D618, D628, D635,
+D639, D675): the door to Days ("Calendar…"), the three day colours, the SANS late cut-off as days or as a weekday of a
+number of weeks before, with a worked date. Admins only; nothing saved until Save; mounted once in `App.tsx`, opened by
+`ui/pops.ts SANSSET` (so the Logic page's row can open the same window - step 5). `sanssettings.test.tsx`.
+`src/state/cutoff.ts` - the door a calendar's settings write a late cut-off through (`getCut`, `cutProblem`,
+`cutExample`, `saveCut`): the engine's own ranges, only what changed, saved by the commit the Logic page uses - one Undo
+step; `engine/inputs.ts cutBackOf` is the sum both share. An Undo of a cut-off pressed on the Inputs page stays there
+(`state/undo-wire.ts`). `src/ui/usemedia.ts` - `useMedia(query)`, for the few places where what is WRITTEN changes with
+the room (the SANS month's name is three letters on a phone). The windows shell now caps a window he has placed at the
+room under it, so its foot stays on the screen (`FloatWindow.tsx`).
+**THE INPUTS CALENDAR (step 5 of the same job; plan §3.6, §3.13).**
+`src/ui/inputscal-model.ts` - WHICH BAR SITS ON WHICH LINE OF WHICH WEEK (D626, D632, D653, D655, D664). Pure:
+`monthItems` (the inputs as ENTRIES - a group filing is one, by `state/inputgroup.ts entriesOf` - filtered as the List
+filters, an entry staying when ANY of its people passes; no SANS availability, D620), `layoutBars(week, items, maxLanes)`
+(one bar across an input's days, cut at the week's end and carried on, long bars first, "+N more" counted day by day),
+`itemsOn` (what an opened day lists), `barText`, `fitLanes` (the phone's lines from the height the screen gives, never
+under three) and `dayTag` (PH / OFF / NF - never a sun or a moon here, D627). `inputscal-model.test.ts`.
+THE THREE TABS (D620, D626) are in `InputsPage.tsx`: Inputs · SANS · Medical, a tab list over the same two facts
+(`state/view.ts INPMODE`, `INPVIEW`), the ids of the buttons they replaced kept on the control that now does each job
+(`inMemberMode`, `inSansMode`, `inMedBtn`); under the Inputs tab ONE switch, Calendar | List (`inCalBtn`, `inListBtn`),
+and the filters. The Inputs calendar draws the tabs and those tools in its own top row (`InputsCal`'s `lead`, `tools`,
+`under`). No form of the Inputs tab offers SANS availability: the List's add form and edit in place, the calendar's
+"+ Input" (`inputedit.tsx TYPE_ALLOW.i`), and an input already filed cannot be turned into one. `MedicalView.tsx` has
+no close cross as a tab. Styles: `ui/scheduler/25-inputs-calendar.css` (the top row; the month's own follow).
+THE MONTH ITSELF is `InputsCal.tsx`, re-made (D626): a week is three layers - the dates (`.ib-day`, `data-icday`), their
+heads (the number, the PH / OFF / NF tag, the day's title, the planning notes and pucks) and the lines (`.ib-bar`, one
+across the days an input covers; "+N more") - because a bar lies across dates and sits inside none. Seven lines on a
+desktop; on a phone `fitLanes` from the height the screen gives, re-measured when it changes (D653, D664 - the month has
+no height and no scroll of its own). Its overlay half went: the page's scroll lock, its close cross, its failed-save
+band, an Escape that left the calendar. *(The older `InputsCal.tsx` row above describes the first calendar's cell; its
+day popover and its planning layer still stand as written there.)* `src/ui/caldays.ts` - THE DATE UNDER A POINT of a
+month (`dayAtPoint`: everything stacked at the point, so a bar never hides the date beneath it), shared by `calpick.ts`
+(a run drawn across a bar carries on) and `caldrag.ts` (a bar grabbed on its Wednesday knows it; the move is by the
+difference in days). `placedline.ts placedLineOf` - the one who-placed line of a shared input. The Inputs page arrives
+scrolled to its top and, while a month is up, drops the body's foot room (`body.in-cal`). Tests: `inputsmonth.test.tsx`,
+`placedline.test.ts`; in a real browser `e2e/inputs-calendar.spec.ts` (three phone heights in a five-week and a six-week
+month, the tabs and the one tools row, a real mouse drag, a real finger, every bar over its own dates).
+`barmove.test.tsx` - A BAR MOVED (plan 3.6, 5): by the days between where it is grabbed and where it is dropped, from its
+middle day and from its continuation, by mouse and by finger; dropped back is nothing and no Undo step; who may move.
+A DAY OPENED on the Inputs month is a window on the shell (`win-inputsday`, drawn by `InputsCal.tsx renderPop`): the
+day's title and "+ Input" pinned, the planning sections and then one line an entry scrolling under them - who, the kind,
+when, the LATE tag (D646), who placed it (D629); a saved or brought-back input is shown WHERE IT IS (D672: its bar
+flashes; only one with no bar opens its day). `inputsday.test.tsx`.
+THE KEYBOARD on the Inputs month (D621) is `InputsCal.tsx onKey`: one tab stop, arrows, Shift + arrows for a run, Enter,
+Escape (the open day, then the run), and Delete on a line of the opened day, which asks first. `inputskeys.test.tsx`.
+`src/ui/PeoplePick.tsx` - THE PEOPLE PICKER (D656, D659): who an input is for, on the Inputs page's editor window. One
+person from the A-to-Z list by default; a "Several people" switch shows the schedule's own pucks (`html.ts puck()`) in
+groups - Pilots, WSOs, SANS, and Personnel where the roster holds ground crew - each a button, "All" per group, a count
+line. Holds no state and writes nothing: `ui/inputedit.tsx InputEditor` keeps `ppl` / `several` and saves through
+`commitGroup`. `pickProblem` is the one sentence for people he may not file a kind for (the picker's line and the
+Save's refusal); `pickRoster` the people offered (SANS only on the SANS calendar). Tests `peoplepick.test.tsx`; the
+editor's half - the entry opened as one thing, "Take me out", Delete for everyone (`inputedit.tsx removeEntry`), the
+OIL question asked once, the people followed behind the window - `groupeditor.test.tsx`. `state/inputgroup.ts
+entryRowsOf` is the entry a record belongs to.
+A shared input as ONE line - the opened day (its people's pucks, both Delete questions), the List (one row, one
+button), the List's own Add form with the picker - `sharedline.test.tsx`; its bar's drag for everyone -
+`barmove.test.tsx`; its one item in the changes window (`changesmodel.ts inputItem`, the line's `grp` from
+`state/changelines.ts`) - `changesmodel.test.ts`; the demo's one shared input (`state/demoseed.ts seedDemoGroup`,
+on the Thursday after the seed week) - `state/demostamps.test.ts`.
+
+`src/ui/InputsSettings.tsx` - THE INPUTS CALENDAR'S SETTINGS, the window behind its gear (`win-inputsset`, `pops.ts
+INPSET`; D639, D628, D654 / D655): "Calendar…", the late cut-off for inputs, and the members' switch - a draft until
+Save, each change one Undo step. `src/ui/CutFields.tsx` - the cut-off's fields and worked date, ONE body for this window
+and the SANS calendar's (`SansSettings.tsx`). The Logic page's rows for the two cut-offs and the switch carry a button
+that opens the same window (`logic-html.ts` `open`, `LogicPage.tsx` `[data-lgopen]`); nothing of a cut-off is typed on
+the Logic page. `inputssettings.test.tsx`, `logicdoors.test.tsx`.
+WHO PLACED IT is shown, by the one line of `placedline.ts`, on the List, at the editor's foot, on a Medical card and in
+the document viewer too (D629; `placedshown.test.tsx`); `state/demoseed.ts seedDemoStamps` gives every demo input a
+filer and a moment - the person himself, or the admin for him, never another member (`state/demostamps.test.ts`).
+THE INPUT EDITOR IS A WINDOW ON THE INPUTS PAGE (D641; plan 3.7) - `inputedit.tsx InputEditor` stands in the shell
+(`win-inputedit`) when it is opened there and stays the blocking dialog elsewhere; behind a window the record can
+change, so the editor follows it and never saves a field its user did not change (untouched fields take the live value,
+a field changed both ways is put to him, a record that has gone closes the window, another input asked for over unsaved
+changes is asked about). `editorwindow.test.tsx`.
+`scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
+laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
+`inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto
+the SANS calendar's "+ Commitment".
+The first calendar's SANS half left `InputsCal.tsx` with it (its cell, day panel, colour dropdown and legend); `mode` there
+is now `'member'` or absent. `e2e/inputs-sans-calendar.spec.ts` was re-pointed whole at the new screen (a real mouse drag,
+a real finger through CDP, the two press-through faults the first look found, D664 at three phone heights in a five-week
+and a six-week month). `scripts/handpass/sans-look.mjs` - pictures of the SANS calendar in the RUNNING build at two
+phone heights, a 1440px laptop and 1536px across: the builder's look and the built side of D624's pairs. Not a gate.
+`scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
+settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
+Holidays list, its form adding and changing, the window dragged aside) - at a phone, a 1440px laptop and 1536px across;
+a look, not a gate.
+`scripts/handpass/breaks.mjs` - the strictness proof's runner (8 Oct 26): breaks ONE rule at a time from a list, runs the
+tests named for it, puts the line back, and says which breaks no test caught. Its lists are `scripts/handpass/breaks/` -
+`2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen), `2026-10-08-counters-among.json` (D674: twenty-five) and
+`2026-10-08-inputs-undo-landing.json` (the Inputs list's landing after an Undo: seven).
+`2026-10-08-sans-calendar.json` is step 4's (the SANS calendar: sixty-five).
+`2026-10-08-inputs-calendar.json` is step 5's (the Inputs calendar: eighty-one) and `2026-10-08-shared-input.json` the
+shared input's (one input filed for several people: forty-one).
+`scripts/handpass/group-look.mjs` - a LOOK, not a gate: pictures of an input filed for several people in the running
+build (the people picker, the opened day's one line, the List's one row, the editor window), phone and desktop.
+`scripts/handpass/cal-lw-nodes.mjs` - a MEASUREMENT, not a gate: what the Leave War's four rows cost the grid in DOM
+nodes, phone and desktop, admin and member - the figure in `docs/performance.md` section E.
+`scripts/handpass/cal-host-leads.mjs` - the calendar job's bug check, THE HOST'S OWN RUN of three leads through the app's
+real controls (the "Calendar" month's holiday tag; Escape with a window in front of the input editor; a change of the
+picked people alone as unsaved work): 0 of 3 right before the fixes; a PASS is the right behaviour, so it is its own re-walk.
+`scripts/handpass/cal-host-short.mjs`, `cal-host-side.mjs` - the same check, the host's own: each settings window's Save
+reached on phones 844, 664 and 568 tall; a day opened on either calendar on a phone on its side (844 x 390).
+`scripts/handpass/cal-host-dates.mjs` - the host's walk of the door built after that check (D681, 9 Oct 26): a saved
+shared input's dates changed in its window - sixteen steps through the app's own controls (a desktop as the admin and
+as the member, a phone upright, short and on its side); a PASS is the right behaviour, so it is its own re-walk.
+`scripts/handpass/cal-host-day-look.mjs` - a LOOK, not a gate (D683, 9 Oct 26): the day opened on the Inputs calendar,
+pictured and measured on a phone (admin, member, short, on its side) and a desktop - tall as it opens, its two buttons in the bar.
+`scripts/handpass/cal-nav-measure.mjs` - a LOOK, not a gate (D705, 9 Oct 26): the month's arrows, its name and Today on the Inputs
+calendar and the SANS calendar through twelve months - where each stands, and whether any of them moved.
+`scripts/handpass/cal-windows-phone.mjs` - a LOOK, not a gate (9 Oct 26, `[CAL-WINDOWS-PHONE-HEIGHT]`, D706): opens every window of the calendar job
+on a phone and prints how tall each opens and whether what is in it must be scrolled.
+`scripts/handpass/mk-day-compact.mjs` - the MOCK-UP MAKER for `[CAL-DAY-LINES-COMPACT]` (D696, D699, 9 Oct 26): the opened day with nine
+inputs as it is today, and re-arranged two ways - "Placed by" beside a short remark, and that with shorter small print; its
+pictures and page: `docs/mock/img/day-inputs-compact/`, `docs/mock/day-inputs-compact.html`. A drawing; nothing built.
+`scripts/handpass/cal-rows-measure.mjs` - a LOOK, not a gate (D698, 9 Oct 26): the row of three tabs and the row of buttons
+under it, measured and pictured on the Inputs calendar, its List, the SANS calendar and the Medical tab.
+`scripts/handpass/cal-strip-measure.mjs` - a LOOK, not a gate (D697, 9 Oct 26): the line under the tools ("How this works"
+and its key) measured and pictured on the Inputs tab and the SANS tab at a phone width given on the command line.
+`scripts/handpass/cal-A-*.mjs` ... `cal-H-*.mjs` - the EIGHT WALKERS' own scripts of that check (8 Oct 26), one letter a
+walker: A one day's facts, B the Leave War, C the windows and "Calendar", D the SANS calendar, E the Inputs calendar,
+F one input for several people and the late rule, G and H the crossings. Records of what was driven, not gates; each
+walker's table is `docs/handpass/parts/cal-<letter>.md`.
+`scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
+grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26). He chose A (D678); it is built.
+`scripts/handpass/lw-phone-head-measure.mjs` - measures the Leave War's top area (every control's words, box, padding and
+type size) at six widths, three views each, into JSON: run before and after a change there, the wider sizes' files must
+be byte for byte the same (D679). Not a gate.
+`scripts/handpass/lw-phone-head-walk.mjs` - THE WALK of the two-line phone top (D678, D679): an admin and a member at 390
+and 360 wide, a desktop and a tablet, every control pressed; 86 checks written as the right behaviour, 28 pictures
+(`docs/img/handpass/2026-10-08-lw-phone-header/`). Its sheet: `docs/handpass/2026-10-08-lw-phone-header.md`.
+`scripts/handpass/breaks-browser.mjs` - the strictness proof for what only a browser sees (8 Oct 26): breaks ONE layout
+rule at a time, REBUILDS the app, runs the named browser tests against it, puts the line back and rebuilds the true app.
+Its lists end `.browser.json` in `scripts/handpass/breaks/` - `2026-10-08-lw-phone-header.browser.json` (twelve), beside
+that job's unit list `2026-10-08-lw-phone-header.json` (thirty-one).
+`scripts/handpass/lw-counters-among-look.mjs` - pictures of the Manning block with counters dragged among and below the
+four fixed rows (D674), phone and desktop, by the real drag.
+`scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
+cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
+a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.
+`src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
+a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only
+while it is still what the line said. The store's half is `state/store.ts` `holidayAdd` / `holidayChange` /
+`holidayRemove` - each ONE named command (`lw.holiday.add` / `.change` / `.remove`: `perms.ts COMMAND_OPS`, Undo's words
+`undo/describe.ts holidayLabel`, its landing `undo-wire.ts lwDateOf`), written to the period HOLDING the date;
+`sync.ts` hands them on to the calendars. `engine/period.ts` now holds `writeDayEvent` (moved whole from the store).
+`src/leavewar/holidays.test.ts` pins them; `permsparity.test.ts` holds them to the permissions list.
+The two late cut-offs (D628, D639): `engine/rules.ts` holds their eight values and ranges; `engine/inputs.ts` `cutSetOf`
+(which set judges an input), `cutBackDays` inside `dueOfWeekISO`, and `cutRuleText` (the rule in words, one source);
+`ui/logic-html.ts` states both on the Logic page; `engine/latecut.test.ts` pins them - `lateinput.test.ts` is untouched.
+Who placed an input, and when (D629; the plan §3.8): `src/state/inputstamp.ts` - the two bodies every door calls,
+`stampPlaced` (a record filed: `by`, `at`, and its last change the same) and `stampChanged` (`modBy`, `modAt`; who placed
+it never touched); who is the running command's own person, one moment per command, nothing on a restore, a name left
+out for the app's own act. Called from `ui/inputedit.tsx` (`commitNewInput`, `commitInputEdit`, `applyMedPlan`,
+`mintMedSegments`), `ui/InputsPage.tsx` (the List's Add form, an OIL answer alone), `leavewar/sync.ts` (`doorApprove`,
+and `sliceInput` - every cut or move of a leave, the medical's cut of one in `inputgate.ts` too) and
+`state/person-delete.ts` (a posting's trim). `src/leavewar/whoplaced.test.ts` is §3.8's table, one case a row, with
+Undo / Redo of each; `src/ui/whoplaced.test.tsx` the doors that are screens' own. `state/changelines.ts` gained the
+line for a change to a SANS availability's F / O / A ticks.
+An input filed for a group (D654, D655, D658, D660; the plan §3.13) - its no-screen half: `src/state/inputgroup.ts` -
+what an ENTRY is (`entriesOf`: the records sharing a group id `grp` AND the same shared fields, worked out on read, its
+people A to Z) and the one check held at the write (`groupSnapshot` / `groupsTouched` / `groupBreach`: one man once an
+entry, one filer a group); pinned by `src/state/inputgroup.test.ts`. `src/state/memberfile.ts` - the one writer of the
+members' switch (`setMembersFile`, the admin command `settings.memberfile`; the setting `memberfile`, absent = on), read
+by `state/perms.ts membersFileOn`; pinned by `src/state/memberfile.test.ts`. `src/engine/oil.ts voidedOil` - the rule
+for which OIL answers a change leaves standing, one function shared by the editor's save and the permission check;
+pinned by `src/engine/voidedoil.test.ts`. WHO MAY DO WHAT is all in `src/state/perms.ts`: `memberFilesForOthers` (which
+kinds), `mayFileInputFor(pid, type)`, `mayFileGroup(type)`, `mayEditInput(row)` / `mayDeleteInput(row)` (they take the
+RECORD; the old three that took a person are gone, and the editor, the List's row buttons and the calendar's drag ask
+these), `filedForOther` (the one test of "he filed it for another man"), and the commit gate's three tests on what a
+member's command changed (`inputBreach`: whose record; who placed it never forged; another man's OIL answers only as
+the days and hours give) - mirrored by `docs/data-model.md` §11's `Input` row through `INPUT_FILER_NOTE`. Which days
+ask the OIL question reaches it through `state/inputgate-hook.ts oilPlanOf` (the Leave War installs it). Undo: `src/undo/
+timeline.ts mayReverse` asks the filer's rule of a step's recorded images (the hook `filerMay`), and `verifiedReplay`
+vouches, record by record, for the restore it is applying - the only case the gate passes its forgery tests over
+(`state/undo-wire.ts` installs both). Pinned by `src/state/perms.test.ts` (the questions, §11) and, through the real
+doors and the one Undo, `src/leavewar/groupinput.test.ts`. THE WRITER is `ui/inputedit.tsx commitGroup(entry, draft,
+people, oilDec?)`: one outer batch around `commitNewInput` (each man added), `commitInputEdit` (each record kept whose
+shared fields change - never one left as it was) and `dropInputRow` (each man taken off); every refusal asked for
+every man first, what the doors say inside gathered and said once; the filer's OIL answer written on every record
+it files or changes (D660). `fileForOtherRefusal` is the one sentence for a kind a member may not file for another
+man. The check at the write sits in `state/store.ts runInputWrite` and in `state/sched-commit.ts`' restore. Pinned by
+`src/leavewar/groupwrite.test.ts` (the writer, the door's check, §3.8's rows 10 to 12, the late date, OIL).
+A SAVE THAT WAS REFUSED NEVER SAYS IT WAS SAVED: `ui/inputedit.tsx saveBatch` / `saveBatchX` - the one way a door wraps
+per-record saves in an outer save; it answers with the OUTER command's result (a save raised inside a running save
+joins it and answers yes before the whole is checked), says `NOT_SAVED` where the refusal had no words of its own,
+and tells a refusal from an inner "no". Used by the editor's Save (new, change, the medical clash sheet) and
+Delete, `commitEditMedChoices`, `commitEditUpchit`, `removeInput`, and the List's edit with an OIL answer and its OIL
+chip (`ui/InputsPage.tsx`). The editor's `stay` and the List's `after` find the record again by its id after a
+refusal (the list comes back as new objects) and keep what was typed. Pinned by `src/ui/savesaysok.test.tsx`.
+*(8 Oct 26, step 4 — REMOVED with the first build's SANS screen, the plan §3.10: `src/state/sans-calendar.ts` and its
+test, `src/ui/SansCalendarControls.tsx`, and `sans-calendar-model.ts`' two counting functions — that file now holds
+`inputsInMode` alone. The three `scripts/handpass/inputs-sans-*` drivers below drove that screen by its ids: they are
+the record of the 5 Oct 26 check and no longer run against the app; the SANS calendar's driver is `sans-look.mjs`. The
+paragraph below is that build's own record, unchanged.)*
+D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
+through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
+thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.
+`src/ui/sans-calendar-model.ts` derives mode subsets and unique F/Fly, O/OFT and A/AMT people per date (D581); only Fly drives shortage;
+`sans-calendar-model.test.ts` pins flags, hours, years and spans. `src/ui/SansCalendarControls.tsx`
+provides explicit flying-period SVGs and admin forms. `src/ui/inputs-calendar-flow.test.tsx`
+pins main embedded calendar/secondary list, demand/icons, member controls and reverse range seeds.
+*(What those two test files pin NOW, 8 Oct 26: `src/ui/sans-calendar-model.test.ts` - `inputsInMode` alone (the Inputs tab
+and the SANS tab each take their own inputs; the counting moved to `state/sansfly.test.ts`);
+`src/ui/inputs-calendar-flow.test.tsx` - re-pointed at the re-made Inputs page.)*
+`docs/handpass/2026-10-05-inputs-sans-calendar.md` is the FULL roll-call/evidence sheet.
+`e2e/inputs-sans-calendar.spec.ts` pins production save/reload/count, settings,
+date gestures, member doors and phone reach. Its project match is in Playwright config.
+Independent runtime drivers: `scripts/handpass/inputs-sans-calendar.cjs` (Astra
+scenario walk; host portability/failed-harness corrections) and
+`scripts/handpass/inputs-sans-supplementary.mjs` (Astra FULL downstream cases).
+Results/pictures are task-private; evidence and final reviewer reports live under handpass.
+Fresh final inspection brief: `docs/superpowers/briefs/2026-10-05-inputs-sans-astra-final-r1.md`.
+Its fresh independent inspector's complete report belongs at
+`docs/handpass/2026-10-05-inputs-sans-astra-final-r1.md`; that report is not an
+owner or Claude approval and never edits the source it judges.
+R1 repair uses transient `state/view.ts:INPREVEAL`/`requestInpReveal` metadata
+and live-only `revealInput`, consumed by Calendar/List. Ordinary and confirmed
+save callbacks carry the actual retained row; `undo-wire.ts` requests the
+directional image before restore, validated by the live renderer afterward.
+Final fresh R2 brief/report: `docs/superpowers/briefs/2026-10-05-inputs-sans-astra-final-r2.md`
+and `docs/handpass/2026-10-05-inputs-sans-astra-final-r2.md`; immutable after dispatch.

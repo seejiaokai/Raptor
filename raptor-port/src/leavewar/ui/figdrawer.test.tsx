@@ -138,8 +138,15 @@ describe('the figures drawer (owner, 6 Sep 26)', () => {
     for (const k of keys) expect(table.querySelectorAll(`[data-testid="${k}"]`)).toHaveLength(1)
     // The event lines come first (a blank box across the block), then the
     // roster in the grid's own order — the same sequence the frozen band draws.
-    expect(keys.slice(0, 2)).toEqual(['event-row-0', 'event-row-1'])
-    const band = keys.slice(2)
+    // THE RULE, STATED WHOLE (8 Oct 26): the drawer stands a box beside EVERY row of the Events block, in the grid's
+    // order. For a few hours that block held the four Required / Available rows too (FlyRows.tsx), and without a box
+    // each every roster row in the drawer sat four rows too high — which a browser showed (88px) and this test,
+    // comparing against a fixed two, could not. They sit at the foot of the Manning block now (D665), ABOVE where the
+    // drawer starts, so the block is the Event rows again; the test keeps the whole rule for the next row added there.
+    const head = [...table.querySelectorAll('tbody.events > tr')].map(tr => tr.getAttribute('data-testid'))
+    expect(head).toEqual(['event-row-0', 'event-row-1'])
+    expect(keys.slice(0, head.length)).toEqual(head)
+    const band = keys.slice(head.length)
     expect(band).toEqual([...document.querySelectorAll('.mx-wrap table.mx tbody.mxbody > tr')]
       .map(tr => tr.getAttribute('data-testid')))
   })

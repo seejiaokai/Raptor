@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, initStore, reopenStage, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
 
@@ -16,6 +17,7 @@ async function moveTo(testid: string) {
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
   /* deciding is an admin activity, and advancing the cycle to 'closed' is
      admin-only since 27 Aug 26 (owner) — so the file runs as an admin; the
      two member-view cases set 'member' themselves after advancing */

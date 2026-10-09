@@ -159,3 +159,61 @@ export function seedDemoMedical(docAdd: (f: any) => { id: string }) {
       r.docId = docAdd(demoDoc('Medical certificate', `${cs} — ${r.type}`)).id
   })
 }
+
+/* ---- DEMO-ONLY: WHO PLACED EACH INPUT (the Inputs / SANS calendar job, step 5 — the plan §3.8: "the demo seed is
+   rewritten to carry them") -------------------------------------------------------------------------------------
+   Owner, D629 (7 Oct 26): every input shows, in small print, who placed it and when. A record with no filer shows no
+   line (D56) — so a fresh demo would have shown the line on nothing but what was filed after it. The seed's inputs
+   are made up, and so are these: each is placed by the person himself on the day its `mod` says it was last touched —
+   and one in five by the admin FOR him, so the "Placed by Saber for Wisp" wording is seen too.
+
+   NO SEEDED INPUT NAMES A MEMBER AS THE FILER OF ANOTHER MAN'S. Who placed an input is what lets a member change one
+   he filed for someone else (D655, state/perms.ts) — a made-up filer would hand out a made-up right.
+
+   Same boot-only home and idempotence as the seeds above: it runs after them, only on a fresh (un-hydrated) store,
+   and never touches a record that already says who placed it — so a second boot, and anything really filed, is left
+   alone. The moment is local time on the record's own day; with no readable day, a fixed one. */
+export function seedDemoStamps() {
+  const admin = Object.keys(PEOPLE).find(id => PEOPLE[id] && PEOPLE[id].cs === 'Saber' && !PEOPLE[id].archived && !PEOPLE[id].deleted)
+  INPUTS.forEach((r: any, i: number) => {
+    if (!r || (r.by != null && r.by !== '') || r.person == null) return
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(r.mod || ''))
+    const at = (m ? new Date(+m[1], +m[2] - 1, +m[3], 8 + (i % 9), (i * 7) % 60) : new Date(2026, 5, 15, 8 + (i % 9), (i * 7) % 60)).getTime()
+    const by = admin && i % 5 === 3 && String(r.person) !== admin ? admin : String(r.person)
+    r.by = by; r.at = at; r.modBy = by; r.modAt = at
+  })
+}
+
+/* ---- ONE SHARED INPUT (the build plan §3.13: "The demo seed carries one group input, so every list is seen with one
+   from the first walk") -----------------------------------------------------------------------------------------------
+   Owner, D654 / D655 (7 Oct 26): an input can be filed for several people at once, and is "one shared group input,
+   shown and edited as one thing". A fresh demo with none would show that on no screen until somebody filed one. So the
+   demo carries ONE: a flight safety brief on the Thursday AFTER the seed week, filed by the admin for himself and three
+   others — kept as the app keeps every shared input, one record a man tied by a group id (state/inputgroup.ts).
+
+   FILED BY THE ADMIN, never by a member for another man (the rule above the stamps holds here too): the filer of a
+   shared input may change the whole of it, and a made-up filer would hand out a made-up right.
+
+   NOT IN THE SEED WEEK, on purpose: that week's warnings, rows and counts are what the reference comparison, the DOM
+   ceilings and many tests pin, and four more people in a meeting there would move them. The week after is read by the
+   seed week for its Monday alone (the crew-rest look-ahead), so a Thursday there changes nothing in it.
+
+   Same boot-only home and idempotence as the seeds above: a fresh (un-hydrated) store only, pushed before the ids are
+   minted, and skipped where the group is already there or the roster cannot give four people. */
+const DEMO_GRP = 'g-demo-brief'
+export function seedDemoGroup() {
+  if (INPUTS.some((r: any) => r && r.grp === DEMO_GRP)) return
+  const live = (id: string) => PEOPLE[id] && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers
+  const admin = Object.keys(PEOPLE).find(id => PEOPLE[id].cs === 'Saber' && live(id))
+  if (!admin) return
+  const pilots = Object.keys(PEOPLE).filter(id => id !== admin && live(id) && PEOPLE[id].seat !== 'RCP').slice(0, 2)
+  const wso = Object.keys(PEOPLE).filter(id => id !== admin && live(id) && PEOPLE[id].seat === 'RCP').slice(0, 1)
+  const team = [admin, ...pilots, ...wso]
+  if (team.length < 4) return
+  /* filed four weeks ahead — well inside the cut-off, so the demo's one shared input is not also its LATE example */
+  const at = new Date(2026, 5, 25, 14, 32).getTime()
+  for (const person of team) INPUTS.push({
+    person, type: 'Meeting', date: 'Jul 23', allday: false, s: 600, e: 660, remarks: 'Flight safety brief', mod: '2026-06-25',
+    grp: DEMO_GRP, grpBy: admin, by: admin, at, modBy: admin, modAt: at,
+  })
+}

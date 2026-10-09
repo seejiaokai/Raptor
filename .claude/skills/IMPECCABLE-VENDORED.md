@@ -51,10 +51,29 @@ settings must MERGE into this file, not overwrite it, or the hook goes dark.
 
 ## Updating
 
+**READ FIRST — his ruling D623 (7 Oct 26): working guides and the tools that run automatically here stay in a form
+different models can read and review.** On 7 Oct 26 an update to **v4.5.0** was tried on a throwaway branch and undone
+(nothing committed). What it does, checked first-hand:
+- it **deletes about a hundred readable script files** (the design-detector, `hook.mjs`, `context.mjs` among them, and
+  `LICENSE` / `NOTICE.md`) and installs **one 17 MB program**, `scripts/bin/windows-x64/impeccable.exe`, with two small
+  launchers — Windows only, so a phone or web session (a Linux container, the reason this skill is vendored) would have to
+  download its own;
+- it **rewrites both hook commands in `.claude/settings.json`** to run that program after every UI edit and at every
+  Stop — and did so although run with `--no-hooks`;
+- nobody can read the program, so D70's two reads cannot cover what would run on every turn.
+The publisher's notes say the guide still works from its written references when the program is blocked, naming the checks
+it could not run — not tested here. **So: v4.1.1 stays — and the NEXT update is v4.1.3, after the Inputs / SANS calendar job
+(his ruling D625, 7 Oct 26).** v4.1.3 (tag `skill-v4.1.3`, 2 Sep 26) is the last version built from readable scripts: it and
+v4.1.2 still ship `hook.mjs` and the script files; v4.2.0 (4 Sep 26) and every version since ship the launcher for the
+downloaded program (checked on the publisher's site, version by version, 7 Oct 26). Copy from that TAG, not from the head
+of the publisher's repo; merge the hook lines by hand; Astra and Sol 6.1 read the change before he approves it (D70)
+(`OUTSTANDING.md` `[IMPECCABLE-UPDATE]`). **Never run the tool's own updater (`npx impeccable update`) in this
+repo** — the skill's start-up notice suggests it; the steps below are the way.
+
 No auto-update. Re-clone upstream and re-copy the three pieces:
 
 ```sh
-git clone --depth 1 https://github.com/pbakaus/impeccable.git /tmp/imp
+git clone --depth 1 --branch skill-v4.1.3 https://github.com/pbakaus/impeccable.git /tmp/imp   # the tag D625 names — never the head
 cp -a /tmp/imp/.claude/skills/impeccable/. .claude/skills/impeccable/
 cp /tmp/imp/.claude/agents/impeccable-*.md .claude/agents/
 cp /tmp/imp/LICENSE .claude/skills/impeccable/LICENSE

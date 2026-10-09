@@ -1,0 +1,15 @@
+import { world, toLeaveWar, tid, press, pic, sleep, closeAll } from './cal-C-lib.mjs'
+const SIZE = process.env.SZ || 'desk'
+const { page } = await world(SIZE)
+await toLeaveWar(page)
+const ids = () => page.evaluate(() => [...new Set([...document.querySelectorAll('[data-testid]')].map(e => e.getAttribute('data-testid')))].filter(x => /^(fly-(?!row|name)|req-panel|select-sheet|sel-|fly-working)/.test(x)))
+await press(SIZE, tid(page, SIZE === 'phone' ? 'req-p-2026-01-08' : 'req-p-2026-01-15')); await sleep(500)
+console.log('typing:', await ids())
+await pic(page, SIZE + '-probe-typing')
+await page.keyboard.press('Escape'); await sleep(300)
+await press(SIZE, tid(page, 'avail-p-2026-01-15').or(tid(page, 'availp-2026-01-15'))).catch(e => console.log('avail cell?', String(e).slice(0, 80)))
+await sleep(500)
+console.log('working:', await ids())
+await pic(page, SIZE + '-probe-working')
+console.log(await page.evaluate(() => [...new Set([...document.querySelectorAll('[data-testid]')].map(e => e.getAttribute('data-testid')))].filter(x => /avail|fly-row|fly-name/.test(x)).slice(0, 12)))
+await closeAll()

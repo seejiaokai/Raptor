@@ -45,7 +45,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 Leave War file** (OIL is leave the war banks) — among them **D79, D80, D81, D82** (a hand-typed award: any
 day; never flags a leave day; a worked weekend that earns nobody says so; an award and a worked day add up),
 **D19** (a weekend no Leave War period covers says so and offers to create it) and **D21** (an Off day earns
-no OIL). **Also read** — in `oil.md`: **D260** (a dragged block's Delete and the one-day Clear remove OIL awards too, and name them first; awards never move — and D265 here: a bid beside an award moves alone). In `scheduler.md`: **D274** (Reset order approved as built, 27 Sep 26). In `how-we-work.md`: **D347** (the war's Undo / Redo leave its Period row for the app's top bar, in the same place and look as Edit Schedule's — desktop and phone). In `people-accounts.md` (it loads by itself with the Leave War's posting files; moved there from How we work, D390): **D166** (accounts: the war follows the signed-in callsign, not "View as"); **D229, D280, D281, D283, D284** (a posting out's four outcomes — archive + suspend, delete, SANS, transfer — which change the war's post-out sheet; a man posted out as SANS joins the SANS group that day when Show SANS is on, else stays shown as posted out, untracked; a man back from overseas returns as he was); **D308, D320, D323** (a man posted in is asked his post-in date; Archive on Admin → Users is "posted out from today", his past kept; the war keeps every stint a man has in the squadron — "away" between a posting out and a later post-in, his months before it as they were). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
+no OIL). **Also read** — in `oil.md`: **D260** (a dragged block's Delete and the one-day Clear remove OIL awards too, and name them first; awards never move — and D265 here: a bid beside an award moves alone). In `scheduler.md`: **D274** (Reset order approved as built, 27 Sep 26); **D665** (the four Required / Available rows of the calendar job sit at the foot of the Manning block, not under the Event rows — nothing covers the month buttons, and the open-bidding outline stays round the dates). In `how-we-work.md`: **D347** (the war's Undo / Redo leave its Period row for the app's top bar, in the same place and look as Edit Schedule's — desktop and phone). In `people-accounts.md` (it loads by itself with the Leave War's posting files; moved there from How we work, D390): **D166** (accounts: the war follows the signed-in callsign, not "View as"); **D229, D280, D281, D283, D284** (a posting out's four outcomes — archive + suspend, delete, SANS, transfer — which change the war's post-out sheet; a man posted out as SANS joins the SANS group that day when Show SANS is on, else stays shown as posted out, untracked; a man back from overseas returns as he was); **D308, D320, D323** (a man posted in is asked his post-in date; Archive on Admin → Users is "posted out from today", his past kept; the war keeps every stint a man has in the squadron — "away" between a posting out and a later post-in, his months before it as they were). In `scheduler.md`: **D44, D45** (nothing on a published day changes without the
 scheduler acknowledging it; the pending mark is the mechanism).
 
 **Where the detail lives:** the grid, its sheets and its window of months — `raptor-port/docs/ui-contracts.md`
@@ -56,15 +56,23 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D679 | 8 Oct 26 | ON A DESKTOP THE TOP OF THE LEAVE WAR STAYS AS IT IS — TWO LINES, EVERY LABEL AND BUTTON AS TODAY; ONLY THE PHONE TAKES THE TWO-LINE LAYOUT OF D678. |
+| D678 | 8 Oct 26 | ON A PHONE THE TOP OF THE LEAVE WAR IS TWO LINES, AS DRAWN IN IDEA A: THE PERIOD, "+" AND "VIEWING AS" ON THE FIRST; THE STAGE (ITS TWO MOVES BEHIND THE STAGE BUTTON), THE BIDDING DATES, UNDER-MANNED AND LEGEND ON THE SECOND. |
+| D677 | 8 Oct 26 | THE TWO WAYS OF DELETING A COUNTER STAY AS THEY ARE: THE CROSS IN REARRANGE DELETES AT ONCE AND ASKS NOTHING (UNDO BRINGS THE COUNTER BACK), AND "DELETE COUNTER" IN THE COUNTER'S OWN WINDOW STILL ASKS "REALLY DELETE?". |
+| D676 | 8 Oct 26 | IN REARRANGE A COUNTER ROW'S DELETE CROSS IS RED — AS "DELETE COUNTER" IS IN THE COUNTER'S OWN WINDOW. |
+| D674 | 8 Oct 26 | IN REARRANGE A COUNTER ROW CAN BE DROPPED ANYWHERE AMONG THE FOUR FIXED ROWS (REQUIRED P AND W, AVAILABLE P AND W) — ABOVE THEM, BETWEEN ANY TWO OF THEM, OR BELOW ALL FOUR. |
+| D673 | 8 Oct 26 | ON A COUNTER'S OWN WINDOW, "DELETE COUNTER" IS RED AND "SAVE COUNTER" IS THE APP'S FILLED SAVE BUTTON — THE THREE BUTTONS NO LONGER LOOK ALIKE. — changed by D676 |
+| D670 | 8 Oct 26 | ON THE LEAVE WAR, UNDO AND REDO LEAVE THE GRID WHERE IT IS WHEN THE DAY THEY CHANGE IS ALREADY ON SCREEN; THE GRID JUMPS TO THAT DAY ONLY WHEN IT IS OUT OF VIEW. — changed by D672 |
+| D669 | 8 Oct 26 | THE LEAVE WAR'S MANNING BLOCK COMES WITH NO COUNT ROWS OF ITS OWN — A SQUADRON MAKES THE ONES IT WANTS; AND IN REARRANGE A COUNT ROW'S EYE (HIDE) IS REPLACED BY A CROSS THAT DELETES IT. |
 | D461 | 30 Sep 26 | THE LEAVE WAR HAS NO "EDIT PERSON": A MAN'S SEAT, BAND AND SXO ARE CHANGED ONLY ON QUALS, AND THE WAR SHOWS WHAT QUALS SAYS. |
 | D460 | 30 Sep 26 | THE SXO TICK HE KEEPS ON QUALS IS THE ONE SOURCE THE APP READS (HIS SETTING, NOT A CLAIM ABOUT THE OFFICIAL QUALIFICATION): THE LEAVE WAR CANNOT MAKE ANYONE SXO — IT SHOWS WHAT QUALS SAYS, READ ONLY, AND COUNTS HIM AS SXO ONLY IF QUALS DOES; NOTHING ON THE WAR (ITS PERSON SHEET, A MOVE INTO A CATEGORY) TICKS SXO. — changed by D461 |
 | D418 | 29 Sep 26 | THE LEAVE WAR STAYS AS BUILT ON THREE COUNTS — AN APPROVED LEAVE REACHES INPUTS AT APPROVE; THE ADMIN DECIDES BIDS IN EVERY STAGE BUT DRAFT; A PUBLISHED WAR'S APPROVED LEAVE OFFERS ONLY ITS REMARKS — AND A DRAG ACROSS DAYS THAT GOES BELOW ZERO MUST ASK FIRST, AS A ONE-DAY BID DOES. |
 | D352 | 28 Sep 26 | THE ONE UNDO TAKES BACK A LEAVE WAR STAGE MOVE, AS TODAY — AND SAYS SO. |
-| D365 | 29 Sep 26 | ON A PHONE THE LEAVE WAR'S "VIEWING AS" CHIP TAKES A LINE OF ITS OWN UNDER THE PICKER, WORDS KEPT — AS BUILT; A TABLET AND A DESKTOP KEEP THE ONE LINE. |
+| D365 | 29 Sep 26 | ON A PHONE THE LEAVE WAR'S "VIEWING AS" CHIP TAKES A LINE OF ITS OWN UNDER THE PICKER, WORDS KEPT — AS BUILT; A TABLET AND A DESKTOP KEEP THE ONE LINE. — changed by D678 |
 | D335 | 27 Sep 26 | THE ONE-DAY SHEET KEEPS "HOW MANY" (Just this day / Pick a range), AT ITS TOP. |
 | D334 | 27 Sep 26 | THE MOVE BUTTON IS THE GREY CHIP WITH A TEAL ARROW BEFORE THE WORD ("⇄ Move") — ON EVERY SHEET THAT OFFERS IT. |
 | D333 | 27 Sep 26 | A MEMBER GETS MOVE ON HIS OWN BID WHILE BIDDING IS OPEN — ON THE ONE-DAY SHEET AND THE DAY'S LIST, AS THE DRAG ALREADY LETS HIM. |
-| D332 | 27 Sep 26 | "DELETE" IS THE ONE WORD FOR TAKING A RECORD AWAY, ON EVERY LEAVE WAR SHEET — THE ONE-DAY SHEET'S "CLEAR" AND THE DAY'S LIST'S "CLEAR" BECOME "DELETE" — IN A DASHED GREY EDGE, NOT RED |
+| D332 | 27 Sep 26 | "DELETE" IS THE ONE WORD FOR TAKING A RECORD AWAY, ON EVERY LEAVE WAR SHEET — THE ONE-DAY SHEET'S "CLEAR" AND THE DAY'S LIST'S "CLEAR" BECOME "DELETE" — IN A DASHED GREY EDGE, NOT RED — changed by D676, D673 |
 | D331 | 27 Sep 26 | BOTH SHEETS FOLLOW ORDER A: DECIDE (Ack · Approve · Refuse) → SELECTED (Move · Delete) → HOW MUCH → WHICH LEAVE |
 | D330 | 27 Sep 26 | The Move button has one look of its own on every sheet that offers it, set apart from the sheet's other buttons: the grey chip with a teal arrow before the word ("⇄ Move") (D334). — changed by D334 |
 | D267 | 27 Sep 26 | PR #444 merges first; D264–D266 ([LW-MOVE-STANDARD]) are built afterwards on a new branch from main — mock-up first, its own FULL check, his look and "merge live". |
@@ -104,7 +112,7 @@ decision + a pointer. Owner + date establish authority; keep them.
   the same steps and the same phone-opens-at-0.8 default (`OilTracker.tsx`).
   Don't put the zoom back on the strip, let the strip wrap, or let it scale
   with the grid. ⚙ opens `SettingsSheet`
-  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
+  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters *[gone 8 Oct 26 — D669: the Manning block comes with no count rows of its own, so there is nothing to reset to; a row's eye in Rearrange is a delete cross and the Archive bar went with it]* + the roster GROUPS
   editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
   is STILL hands-on-grid (person rows AND category headings drag), and the top
   row's ⇅ toggle is the ONE way in and out (owner, 6 Sep 26 — "delete this whole
@@ -323,3 +331,40 @@ the war still stores only through `state/storage.ts`. `rawPersist` writes nothin
 not saved. **No Edit person (D460, D461):** the war keeps no seat, band or SXO of its own — `setPerson`,
 `PersonSheet.tsx` and `personEdits` are gone; the projection's are the man's (Quals is the one place they change).
 Detail: `raptor-port/docs/data-schema.md` §World 2.
+
+**THE CALENDARS READ THE WAR THROUGH `sync.ts` — a rider on that seam, not a fifth (the Inputs / SANS redesign, 7 Oct 26;
+D617, D627, D640; the plan `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.1).** Two stores
+hold the facts of one day: its flying class and required pilots and WSOs are the scheduler's settings rows
+(`state/flyplan.ts` — they outlive any one period); whether it is a public holiday or an Off day, and who is available
+per seat, are the war's. `sync.ts` hands the war's half over, read only: `dayFacts(iso)` (from the period HOLDING the
+date, never the one on screen), `holidaysIn(year)`, and the signal `useWarFacts()` — a version that moves when anything
+those read has moved (a day's events, a band, the event types, a period, the count rows, the roster, a bid, an absence,
+an Undo of any) and stands still for a look. It is NOT the OIL-only Raptor notify, which stays as narrow as it is. The
+ONE place the two halves are joined is `state/flyplan-model.ts planFor`; a screen that joins them itself is a defect.
+Who is available is the two Available rows (`engine/availrows.ts`, ids `availp` / `availw`): ordinary count rows an admin
+renames and re-defines, summed by ONE function that never counts a SANS man, never drawn or judged with the Manning rows. *[AMENDED 8 Oct 26 by D665: they ARE drawn in the Manning block now — its last rows, with the two Required rows, by `ui/FlyRows.tsx` — still never as rows of the Manning list (`manningRowIds`), and still never judged.]* *[AND SINCE D674 (8 Oct 26) NOT ALWAYS ITS LAST ROWS: a counter may stand above the four, between any two of them, or below all four. The block's ONE order is `state/store.ts manningBlockOrder` — the counters and the four rows' tokens, read by the pure `engine/fixedrows.ts`; `manningRowIds` is still the counters alone, and the calendars still find the Available rows by their rule ids.]*
+**And the war reads the flying plan through the same file — the second rider:** its Required rows reach the scheduler's
+records and typed commands only through the re-export at the foot of `sync.ts`, and every screen that shows a day's
+class, required figures or how many more are needed asks `sync.ts flyAnswer(iso)` / `flyMonth(y, m)` — the plan, the
+war's facts and the SANS committed to fly (`state/flyplan.ts sansFly`: only a SANS man, never one archived) handed to the
+ONE resolver. **The Holidays list writes the war's own record** (D638 — two doors, one record): `holidayAdd` /
+`holidayChange` / `holidayRemove` (`state/store.ts`, pure half `engine/holidays.ts`) write a tagged day event or a merged
+band into the period HOLDING the date, on the first Event row free across the range, each ONE named command
+(`lw.holiday.*`); a change is checked whole before anything is taken away.
+**WHO READS IT, AS BUILT (steps 3 to 5 of that job, 8 Oct 26) — the list a new reader is added to.** On the scheduler's
+side, six screen files import the war's half (and `probe-bridge.ts`, for the browser tests), all from `leavewar/sync.ts`: the window called "Calendar" on screen
+(`ui/DaysWindow.tsx` — `flyMonth`, `useWarFacts`) and its Holidays list (`ui/HolidaysPanel.tsx` — `holidaysIn`, the three
+`holiday*` writers, `uncoveredIn(year)`: the runs of dates no period covers, said BEFORE a save is refused, and
+`holidayWord(kind)`: the word a nameless holiday is saved under); the SANS month, its opened day and "+ Commitment"
+(`ui/SansCal.tsx`, `ui/SansDay.tsx`, `ui/sansadd.ts` — `flyMonth` / `flyAnswer` for the need, `dayFacts` for the tag);
+and the Inputs month (`ui/InputsCal.tsx` — the date's tag only: PH, an Off day, NF; no sun, no moon, no figures — D627).
+`dayFacts` answers `covered:false` with both counts `null` for a date no period holds — who is available is then
+UNKNOWN, and every reader prints a dash, never 0 — and carries `short`, what the Event row prints for that holiday
+(D652), so a calendar's tag and the war's grid cannot differ. **Two doors cross the boundary, and each reaches a flag,
+never a screen:** `sync.ts openDays(iso)` — the "Calendar…" line in the war's ⚙ — sets the scheduler's open-flag
+(`ui/pops.ts`) and the window itself stays the gate (admins only); `sync.ts openNewPeriod(from, to)` — the Holidays
+list, on dates no period covers — leaves an ask for the war's own top row (`leavewar/ui/warask.ts`, never the war's
+store: an ask is not a fact about the war, so it is not saved, not undone and repaints no grid) and brings the Leave
+War to the front, where the war's own sheet checks everything itself. The war's four rows repaint on two signals of
+their own (`usePlanVersion`, `useWarFacts`) inside `leavewar/ui/FlyRows.tsx`; `Matrix` and the memo firewall are not
+touched (`raptor-port/docs/performance.md` §E).

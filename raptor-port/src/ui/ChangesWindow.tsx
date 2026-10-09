@@ -104,9 +104,11 @@ function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo
     </>
   )
   const dot = e.fresh ? <span className="cw-dot" aria-label="new to you" /> : null
+  /* the men of one filing, listed once under its line (D663 — ui/changesmodel.ts mergeFiled) */
+  const names = e.names ? <span className="cw-names" data-testid="cw-names">{e.names.join(' · ')}</span> : null
   const body = title != null
-    ? <><span className="cw-top">{dot}<b className="cw-what">{title}</b>{who}</span><span className="cw-txt">{change}</span></>
-    : <span className="cw-top cw-sub">{dot}<span className="cw-txt">{change}</span>{who}</span>
+    ? <><span className="cw-top">{dot}<b className="cw-what">{title}</b>{who}</span><span className="cw-txt">{change}</span>{names}</>
+    : <><span className="cw-top cw-sub">{dot}<span className="cw-txt">{change}</span>{who}</span>{names}</>
   const cls = 'cw-l' + (e.fresh ? ' fresh' : '')
   return may
     ? <button className={cls} data-cwkey={e.key || undefined} onClick={() => onGo(e)} title="Go to this change">{body}</button>

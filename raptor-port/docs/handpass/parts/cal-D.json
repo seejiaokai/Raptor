@@ -1,0 +1,16 @@
+{
+ "walker": "D",
+ "server": "http://localhost:4214/",
+ "counts": {"PASS": 11, "FAIL": 2, "PARTIAL": 1, "NOT_WALKED": 0},
+ "PASS": ["P4-03","P4-04","P4-05","P4-06","P4-07","P4-08","P4-10","P4-11","P4-12","H-06","H-08"],
+ "FAIL": ["P4-01 (clause: posting/archive follows its effective date)","P4-02 (at 844x390 only)"],
+ "PARTIAL": ["P4-09 (schedule-side read not completed)"],
+ "findings": [
+  "F1 P4-02: at 844x390 the opened SANS day's list is 18px high below the window foot; no entry visible even with one entry; bar tap does nothing; side-one-entry.png, p402-side-open.png",
+  "F2 P4-01: commitments on days before a posting/archive effective date stop counting (NOT COUNTED archived); p401-C3-day.png, p401-B2-day.png",
+  "F3 H-06/P4-09: editor of an existing SANS commitment says 'The dates are changed on the Inputs page.' though Inputs has no SANS items; h06-4-editor.png"
+ ],
+ "errors": "none (console, page, 4xx)",
+ "pictures": {"saved": 211, "opened": 23},
+ "report": "raptor-port/docs/handpass/parts/cal-D.md"
+}

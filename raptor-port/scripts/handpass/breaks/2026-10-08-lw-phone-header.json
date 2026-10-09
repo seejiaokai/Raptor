@@ -1,0 +1,312 @@
+[
+ {
+  "n": 1,
+  "name": "a phone drops the word \"Period\"",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!phone && <span className=\"lab\" data-testid=\"period-label\">Period</span>}",
+  "put": "<span className=\"lab\" data-testid=\"period-label\">Period</span>",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "on a phone \"+ New\" reads \"+\"",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{phone ? '+' : '+ New'}",
+  "put": "{'+ New'}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "a desktop keeps the whole \"+ New\" (D679)",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{phone ? '+' : '+ New'}",
+  "put": "{'+'}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "the phone's \"+\" says what it makes to a screen reader",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "aria-label={phone ? 'New period' : undefined} ",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "a member's stage is a label, never a button",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "const stageMenu = phone && role === 'admin'",
+  "put": "const stageMenu = phone",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "a desktop has no stage menu (D679)",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "const stageMenu = phone && role === 'admin'",
+  "put": "const stageMenu = role === 'admin'",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "a forward move chosen in the menu puts the menu away",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "onClick={() => { advanceStage(); closeStage() }}",
+  "put": "onClick={() => { advanceStage() }}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "a back move chosen in the menu puts the menu away",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "onClick={() => { reopenStage(); closeStage() }}",
+  "put": "onClick={() => { reopenStage() }}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "an open menu is put away when its reason goes, and does not spring back",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "useEffect(() => { if (!stageMenu) setStageOpen(false) }, [stageMenu])",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "Escape puts the stage menu away",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "else setStageOpen(false)      // the phone's stage menu",
+  "put": "else void 0      // the phone's stage menu",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "Escape is listened for while only the stage menu is open",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "if (!legOpen && !listOpen && !showStage) return",
+  "put": "if (!legOpen && !listOpen) return",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "a press outside the menu puts it away",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "<div className=\"umscrim\" data-testid=\"stage-scrim\" onClick={closeStage} />",
+  "put": "<div className=\"umscrim\" data-testid=\"stage-scrim\" />",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "on a phone the bidding dates lose their year",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "? (phone ? spanInYear : shortSpan)(period.bidFrom, period.bidTo)",
+  "put": "? shortSpan(period.bidFrom, period.bidTo)",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "on a desktop the bidding dates keep their year (D679)",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "? (phone ? spanInYear : shortSpan)(period.bidFrom, period.bidTo)",
+  "put": "? spanInYear(period.bidFrom, period.bidTo)",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "on a phone under-manned carries the word \"Under\"",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{phone && <span className=\"umlab\">Under </span>}",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "on a desktop under-manned is the bare count (D679)",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{phone && <span className=\"umlab\">Under </span>}",
+  "put": "{<span className=\"umlab\">Under </span>}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "a phone drops the word \"Stage\"",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!phone && <span className=\"lab\">Stage</span>}",
+  "put": "<span className=\"lab\">Stage</span>",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "a desktop keeps the word \"Stage\" (D679)",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!phone && <span className=\"lab\">Stage</span>}",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "a phone drops the words \"Bidding on\"",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!phone && <span className=\"lab\" style={{ marginLeft: 12 }}>Bidding on</span>}",
+  "put": "<span className=\"lab\" style={{ marginLeft: 12 }}>Bidding on</span>",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "a phone drops the word \"Under-manned\"",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!phone && <span className=\"lab\" style={{ marginLeft: 12 }}>Under-manned</span>}",
+  "put": "<span className=\"lab\" style={{ marginLeft: 12 }}>Under-manned</span>",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "on a phone the forward move is NOT on the strip",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!stageMenu && advanceBtn}",
+  "put": "{advanceBtn}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "on a phone the back move is NOT on the strip",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!stageMenu && backBtn}",
+  "put": "{backBtn}",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "on a desktop the two moves stay in sight on the strip (D679)",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "{!stageMenu && advanceBtn}",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "the stage button says whether its menu is open",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "aria-expanded={showStage}\n          title=\"Move this period to another stage\"",
+  "put": "aria-expanded={false}\n          title=\"Move this period to another stage\"",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "the phone's dates say \"Bidding on\" and the whole dates to a screen reader",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "? `Bidding on ${period.bidFrom",
+  "put": "? `Dates ${period.bidFrom",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "the phone's count says \"Under-manned\" to a screen reader",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "aria-label={phone ? `Under-manned: ",
+  "put": "aria-label={phone ? `Under: ",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "the stage menu holds the two moves",
+  "file": "src/leavewar/ui/Chrome.tsx",
+  "find": "<div className=\"stagemenu-hd\">Move the stage</div>\n            {advanceBtn}\n            {backBtn}",
+  "put": "<div className=\"stagemenu-hd\">Move the stage</div>",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "dates in two different years keep their years",
+  "file": "src/leavewar/ui/dates.ts",
+  "find": "if (start.slice(0, 4) !== end.slice(0, 4)) return shortSpan(start, end)",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/dates.test.ts"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "a one-day span without its year is said once",
+  "file": "src/leavewar/ui/dates.ts",
+  "find": "return start === end ? bare(start) : `${bare(start)} – ${bare(end)}`",
+  "put": "return `${bare(start)} – ${bare(end)}`",
+  "tests": [
+   "src/leavewar/ui/dates.test.ts"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the phone width is followed live as the screen changes",
+  "file": "src/leavewar/ui/phone.ts",
+  "find": "mq.addEventListener('change', onChange)\n    return",
+  "put": "void onChange\n    return",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "with no matchMedia the answer is \"not a phone\"",
+  "file": "src/leavewar/ui/phone.ts",
+  "find": "const isPhone = () => !!query()?.matches",
+  "put": "const isPhone = () => query()?.matches ?? true",
+  "tests": [
+   "src/leavewar/ui/phonehead.test.tsx"
+  ]
+ }
+]

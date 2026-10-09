@@ -2,6 +2,7 @@
    docs/mock/changes-window.html, option A). What a line says, how a move reads as ONE line (Fable F2), the two
    groupings (Item = one group per item, every line item-first — D340, D345, [CHG-BY-ITEM]; Who = by person and
    sitting), what is new to you, and the counts the day chip and the admin's icon show. */
+import { PEOPLE } from '../engine/people'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ELOG, elogClear, type ELogRow } from '../engine/editlog'
 import { setCurWeek } from '../engine/waves'
@@ -335,5 +336,71 @@ describe('the counts', () => {
     expect(c['2026-07-14']).toEqual({ fresh: 2, all: 3 })
     expect(c['2026-07-16']).toEqual({ fresh: 0, all: 0 })
     expect(weekNew(newTo('stiff'))).toBe(2)
+  })
+})
+
+/* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663, 7 Oct 26: "in the changes window a group filing is one item —
+   its kind and how many people, the names listed under it — not a line for each man"). The history still writes a line
+   for each man (the plan §3.13: "To go out" finds a line by its man); each carries its record's group id, and "Group
+   by: Item" keys a grouped record by its group. "Group by: Who" is unchanged, and so is the day's count. */
+describe('a group filing is one item (D663)', () => {
+  const T = '2026-07-14'
+  /* the callsign each line names is the man's as the roster has it now (the window draws a renamed callsign live) */
+  const cs = (pid: string) => String((PEOPLE as any)[pid]?.cs || pid)
+  /* ONE filing is one command: its lines are written in the same moment (`at`) */
+  const filed = (iid: string, who: string, extra: Partial<ELogRow> = {}, at = 2_000_000) =>
+    row({ key: '', iid, sub: who, sect: 'abs', itype: 'Meeting', grp: 'gA', date: T, lbl: `${cs(who)} · Meeting added · 14 Jul`, t: at, ...extra })
+  const MEN = ['bane', 'stiff', 'casper', 'dj']
+  const four = () => put(...MEN.map((m, i) => filed('g' + (i + 1), m)))
+  /* CORRECTED BY THE CALENDAR JOB'S BUG CHECK, 8 Oct 26 (D624's pair: the approved picture beside the built window).
+     These two tests pinned ONE HEADING WITH A LINE FOR EACH MAN - "Ranger - Meeting added", "Saber - Meeting added" ...
+     - which is what his ruling said it was not to be ("not a line for each man") and not what the approved picture
+     shows: ONE line, "Meeting added - 14 Jul", and the names listed under it. */
+  it('four men filed together: ONE item, "Input · Meeting · 4 people" — ONE line for the filing, the four names listed under it', () => {
+    four()
+    const groups = byItem(linesFor([T], () => false), false, [T]).filter(g => g.key.includes('|IG|'))
+    expect(groups).toHaveLength(1)
+    expect(groups[0]!.title).toBe('Input · Meeting · 4 people')
+    expect(groups[0]!.entries, 'one line, not one for each man').toHaveLength(1)
+    expect(groups[0]!.one).toBe(true)
+    expect(groups[0]!.entries[0]!.text, 'the change, said once, naming nobody').toBe('Meeting added · 14 Jul')
+    expect(groups[0]!.entries[0]!.names, 'the names under it, A to Z').toEqual(MEN.map(cs).sort((a, b) => a.localeCompare(b)))
+    expect(byItem(linesFor([T], () => false), false, [T]).some(g => g.key.includes('|I|g')), 'no item of one man’s').toBe(false)
+  })
+  it('a later change to one man alone is its own line under the item, naming him', () => {
+    four()
+    put(filed('g2', 'stiff', { lbl: `${cs('stiff')} · Meeting 14 Jul · remarks`, from: 'brief', to: 'room 2' }, 2_600_000))
+    const g = byItem(linesFor([T], () => false), false, [T]).find(x => x.key.includes('|IG|'))!
+    expect(g.entries, 'the filing, and his own change').toHaveLength(2)
+    expect(g.title, 'still four people').toBe('Input · Meeting · 4 people')
+    const own = g.entries.find(e => e.to === 'room 2')!
+    expect(own.text, 'it names him').toBe(`${cs('stiff')} · Meeting 14 Jul · remarks`)
+    expect(own.names).toBeUndefined()
+    expect(g.entries.find(e => e.names)!.names).toHaveLength(4)
+  })
+  it('the same words written at ANOTHER time are another line: two filings an hour apart are never merged', () => {
+    put(filed('g1', 'bane'), filed('g2', 'stiff'))
+    put(filed('g3', 'casper', {}, 2_000_000 + 3_600_000), filed('g4', 'dj', {}, 2_000_000 + 3_600_000))
+    const g = byItem(linesFor([T], () => false), false, [T]).find(x => x.key.includes('|IG|'))!
+    expect(g.entries.map(e => (e.names || []).length)).toEqual([2, 2])
+  })
+  it('the same words by ANOTHER person are another line, and a fresh one among them marks the line new', () => {
+    put(filed('g1', 'bane', { pid: 'rocky' }), filed('g2', 'stiff', { pid: 'rocky' }), filed('g3', 'casper', { pid: 'stiff', who: 'Saber' }))
+    const g = byItem(linesFor([T], r => r.sub === 'stiff'), false, [T]).find(x => x.key.includes('|IG|'))!
+    expect(g.entries).toHaveLength(2)
+    const two = g.entries.find(e => e.names)!
+    expect(two.names).toHaveLength(2)
+    expect(two.fresh, 'new to you if any man’s line is').toBe(true)
+    expect(g.entries.find(e => !e.names)!.text, 'one man alone keeps his name in the line').toBe(`${cs('casper')} · Meeting added · 14 Jul`)
+  })
+  it('"Group by: Who" is unchanged — a line each, under whoever made it; and four men are four changes', () => {
+    four()
+    const lines = linesFor([T], () => false)
+    expect(lines).toHaveLength(4)
+    expect(byWho(lines).reduce((n, w) => n + w.lines.length, 0)).toBe(4)
+  })
+  it('an ordinary input keeps its own item, as before', () => {
+    put(row({ key: '', iid: 'in7', sub: 'bane', sect: 'abs', itype: 'LL', date: T, lbl: 'Ranger · LL added · 14 Jul' }))
+    expect(itemOf(ELOG.rows[0]!, T).id).toBe(`${T}|I|in7`)
   })
 })

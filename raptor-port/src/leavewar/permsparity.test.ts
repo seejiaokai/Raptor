@@ -10,7 +10,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, advanceStage,
-  setBidWindow, setBalance, setPostOut,
+  setBidWindow, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { allows, T, type Act, type Role } from '../state/perms'
@@ -26,6 +26,8 @@ const WHO: Who[] = [
 const act = (w: Who) => { setRole(w.role === 'admin' ? 'admin' : 'member'); setViewer(w.viewer) }
 const identity = (w: Who) => (w.role === 'guest' ? null : w.viewer)
 
+/* the seed's 25 Dec, as the Holidays list reads it */
+const XMAS = { warId: 'y2026', src: 'day', line: 0, from: '2026-12-25', to: '2026-12-25', kind: 'ph', name: 'PH' } as const
 /* each: the §11 table and letter, whose row it writes (null = no row), and the write */
 const CASES: { what: string; table: string; letter: Act; owner: string | null; run: () => boolean }[] = [
   { what: 'a bid on his own row, in the window', table: T.bid, letter: 'C', owner: 'ramp', run: () => setCell('ramp', '2026-01-20', 'LL') },
@@ -39,6 +41,15 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
   { what: 'moving the war\'s stage forward', table: T.war, letter: 'U', owner: null, run: () => { const s = getState().period.stage; advanceStage(); return getState().period.stage !== s } },
   { what: 'the bid window', table: T.war, letter: 'U', owner: null, run: () => (setBidWindow('2026-01-05', '2026-03-30') as any)?.ok !== false && getState().period.bidFrom === '2026-01-05' },
   { what: 'a posting out', table: T.profile, letter: 'U', owner: null, run: () => setPostOut('tata', '2026-06-01') },
+  /* the Holidays list's three writers (the Inputs / SANS redesign, plan §3.4) — the leave period's own record */
+  { what: 'a holiday added from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayAdd({ kind: 'ph', name: '', from: '2026-05-01', to: '2026-05-01' }).ok },
+  { what: 'a holiday changed from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayChange(XMAS, { kind: 'ph', name: 'Christmas Day', from: '2026-12-25', to: '2026-12-25' }).ok },
+  { what: 'a holiday removed from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayRemove(XMAS).ok },
+  /* the Event sheet's Save and Delete, each one command (plan §3.12) — the leave period's own record too */
+  { what: 'an event saved from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => saveEvent({ line: 0, date: '2026-05-12', scope: 'day', text: 'National Day', kind: 'off', short: 'NAT' }).ok },
+  { what: 'an event deleted from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => {
+      const was = getState().role; setRole('admin'); setDayEvent('2026-05-13', 0, 'Visit'); setRole(was)
+      return deleteEvent(0, '2026-05-13') } },
 ]
 
 describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (§11)', () => {

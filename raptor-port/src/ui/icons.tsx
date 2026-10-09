@@ -18,6 +18,28 @@ export function CalIcon() {
   )
 }
 
+/** DAY FLYING and NIGHT FLYING, as the calendars of the Inputs / SANS job draw them (owner, D577: "sun means day flying
+ *  and moon means night flying"; D635: the SETTINGS icon is the app's gear and must never read as a sun, because on
+ *  these calendars the sun means this). Sized by their own class — `.fly-ico` — not `.btnglyph`: they sit inside a
+ *  date's small button, not a toolbar's. */
+export function SunIcon() {
+  return (
+    <svg className="fly-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" />
+    </svg>
+  )
+}
+export function MoonIcon() {
+  return (
+    <svg className="fly-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" />
+    </svg>
+  )
+}
+
 /** A spreadsheet file: the folded-corner document with a small table inside —
  *  the grid says "Excel" at 16px where lettering would blur to noise. */
 export function XlsIcon() {
@@ -156,6 +178,26 @@ export function MedIcon() {
       stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="3" />
       <path d="M12 8v8M8 12h8" />
+    </svg>
+  )
+}
+
+/** Lines of a list — the Inputs tab's List, beside the calendar glyph of its switch (owner D620, D626, 7 Oct 26). */
+export function ListIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+    </svg>
+  )
+}
+
+/** A funnel — the Inputs tab's filters, folded behind one button on a phone. */
+export function FilterIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 4h18l-7 8.5V19l-4 2v-8.5z" />
     </svg>
   )
 }

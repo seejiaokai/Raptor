@@ -54,9 +54,7 @@ import './bidpicker.css'
 export function SettingsSheet({
   onClose,
   onAddCounter,
-  armCounterReset,
-  onResetCounters,
-  disarmCounterReset,
+  onDays,
   onGroupDragStart,
   onPriorityDragStart,
   draggingId,
@@ -66,13 +64,8 @@ export function SettingsSheet({
   onClose: () => void
   /** Open the counter builder (Matrix owns the form + its `counterEdit` state). */
   onAddCounter: () => void
-  /** Reset counters ARMS first (Matrix owns the arm state so it disarms when this
-   *  sheet closes); this sheet only shows the armed/unarmed label and forwards taps. */
-  armCounterReset: boolean
-  onResetCounters: () => void
-  /** Take Reset counters' question back — Reset order arming does it, so two "Really reset?" never stand side by side
-   *  (W2's walk, 26 Sep 26); Matrix owns that arm. */
-  disarmCounterReset?: () => void
+  /** Open Days — the admin's window that says what kind of day each date is (Matrix closes this sheet first). */
+  onDays: () => void
   /** Drag in the groups list (display order — the same write as the grid's heading
    *  grip) and in the who-wins (priority) list — both wired by Matrix to the one
    *  drag machine. */
@@ -88,7 +81,7 @@ export function SettingsSheet({
   // the roster, as drawn, is out of the default order — Reset order has something to do (judged by what the grid
   // SHOWS, so a drag away and back reads as the default: rosterFollowsDefault)
   const handOrder = !rosterFollowsDefault()
-  // Reset order ARMS first (the Reset counters idiom); local, so closing the sheet takes the question back
+  // Reset order ARMS first; local, so closing the sheet takes the question back
   const [armOrder, setArmOrder] = useState(false)
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
@@ -165,6 +158,26 @@ export function SettingsSheet({
         <button className="x" data-testid="settings-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
 
+      {/* ---- Days (the Inputs / SANS calendar job, plan §3.3; the fourth mock-ups' "the way in") — the same line the
+          two calendars' settings carry. ON SCREEN IT IS "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead
+          of days"); the code and the working records still call the window Days. It opens the scheduler's Days window, where each date is set day flying, night
+          flying or no fly: what the Required rows at the foot of the Manning block show as "NF", and count as 0 — and
+          where the year's public holidays and Off days are one list (the same records as the Event rows here). The
+          sheet closes first — Days is a window that leaves the grid working behind it (D641), and this sheet would
+          cover it. */}
+      <div className="gs-sec">Calendar</div>
+      <div className="set-tray">
+        <div className="set-ctrls">
+          <button
+            className="rtbtn"
+            data-testid="settings-days"
+            title="Open the Calendar — set each date day flying, night flying or no fly, and the year's holidays"
+            onClick={onDays}
+          >Calendar…</button>
+        </div>
+        <div className="set-hint" data-testid="settings-days-hint">Day flying, night flying or no fly for each date, and the year’s holidays.</div>
+      </div>
+
       {/* ---- counters & rows ------------------------------------------------- */}
       <div className="gs-sec">Counters &amp; rows</div>
       <div className="set-tray">
@@ -198,15 +211,10 @@ export function SettingsSheet({
             title={showSans ? 'Take SANS aircrew off the leave war roster' : 'Put SANS aircrew on the leave war roster'}
             onClick={() => setShowSans(!showSans)}
           >{showSans ? '✓ SANS shown' : 'Show SANS'}</button>
-          <button
-            className={`rtbtn set-danger${armCounterReset ? ' arm' : ''}`}
-            data-testid="counter-reset-all"
-            title="Put the built-in counters back — counters you built are discarded"
-            // arming (or firing) Reset counters takes Reset order's question back — one question at a time
-            onClick={() => { setArmOrder(false); onResetCounters() }}
-          >{armCounterReset ? 'Really reset?' : '↺ Reset counters'}</button>
+          {/* "↺ Reset counters" stood here until D669 (owner, 8 Oct 26): it put the built-in counters back, and the
+              Manning block now comes with none — there is nothing to go back to. A counter is deleted with the cross
+              on its row in Rearrange (or from its own form), and Undo brings it back. */}
         </div>
-        <div className="set-hint">Reset counters asks once before it clears your custom counters.</div>
       </div>
       <div className="gs-note">
         Showing SANS puts them on the roster as <b>their own group at the very bottom</b>,
@@ -216,7 +224,7 @@ export function SettingsSheet({
 
       {/* ---- the roster's row order (owner, D160, 24 Sep 26 — "9 yes": a "Reset order" line HERE; the grid's old
           Auto-sort button and strip stay gone). People are still rearranged by hand on the grid (⇅); this only
-          takes a hand arrangement back to the default. It asks once, like Reset counters above — fifty rows
+          takes a hand arrangement back to the default. It asks once — fifty rows
           arranged by hand are real work — and is greyed, with a line saying so, while the roster already follows
           the default. The store clears the saved order (resetRosterOrder), so a man who joins later lands in his
           ranked place too; the one Undo brings the arrangement back. */}
@@ -232,7 +240,7 @@ export function SettingsSheet({
             disabled={!handOrder}
             title={handOrder ? 'Put every row back in the default order' : 'The roster is already in the default order'}
             onClick={() => {
-              if (!armOrder) { setArmOrder(true); disarmCounterReset?.(); return }
+              if (!armOrder) { setArmOrder(true); return }
               setArmOrder(false)
               resetRosterOrder()
             }}

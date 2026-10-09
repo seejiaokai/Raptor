@@ -2,12 +2,16 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { advanceStage, getState, getVersion, initStore, selectWar, setBidState, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { StageBar } from './Chrome'
 import { INPUTS } from '../../engine/inputs'
 import { syncAbsences } from '../sync'
 import { Matrix } from './Matrix'
 
-beforeEach(() => { initStore(memoryBackend()) })
+beforeEach(() => {
+  initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
+})
 
 // The seeded war's red days, in order: RAMP is the only SXO and is away on
 // 1 Jan and half of 10 Feb; the roster carries two IWSOs (SPLICE and

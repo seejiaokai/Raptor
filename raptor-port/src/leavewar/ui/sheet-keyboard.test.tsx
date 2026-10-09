@@ -108,6 +108,7 @@ describe('opening the full window vs typing at once', () => {
     render(<Matrix />)
     // place a merged band 05→09 on line 0
     fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    { const edit = screen.queryByTestId('event-peek-edit'); if (edit) fireEvent.click(edit) }   // a filled cell opens the small box first (plan §3.12)
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Exercise' } })
     fireEvent.click(screen.getByTestId('event-scope-range'))
     fireEvent.click(screen.getByTestId('event-mode-merge'))
@@ -116,6 +117,7 @@ describe('opening the full window vs typing at once', () => {
     fireEvent.click(screen.getByTestId('event-apply'))
     // reopen it via a covered day — a band open, so no autofocus
     fireEvent.click(screen.getByTestId('event-band-0-2026-01-05'))
+    { const edit = screen.queryByTestId('event-peek-edit'); if (edit) fireEvent.click(edit) }   // a filled cell opens the small box first (plan §3.12)
     expect(screen.getByTestId('event-sheet')).toBeTruthy()
     expect(document.activeElement).not.toBe(screen.getByTestId('event-text'))
   })

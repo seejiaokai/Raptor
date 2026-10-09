@@ -14,10 +14,12 @@
    --------------------------------------------------------------------------- */
 import { HOOKS } from '../engine/hooks'
 import { inputGate } from './inputgate-hook'
+import { groupSnapshot, groupsTouched, groupBreach } from './inputgroup'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
+import { flyplanLoad } from './flyplan'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
 import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
@@ -26,7 +28,7 @@ import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
-import { seedDemoSans, seedDemoMedical } from './demoseed'
+import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
@@ -174,7 +176,20 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
      before, enforce after, inside this same command */
   const gate = inputGate()
   const gateSnap = gate ? gate.snapshot() : null
-  try { fn(); if (gate) gate.apply(gateSnap) }
+  /* ONE MAN ONCE AN ENTRY, ONE FILER A GROUP — held HERE, at the write, beside the absence rules (the group input:
+     owner D654, D655; the build plan §3.13 "Records", Astra's finding G5). A group is one record per man tied by a
+     group id, and what the Inputs page shows as one shared input is worked out on read (state/inputgroup.ts). Two
+     doors that each look innocent — a man's record changed alone, the same man added to the entry again, his first
+     record changed back — would leave two inputs for one man where the screen shows one. So for every group this
+     write touched, no two live records may name the same man with the same shared fields, and every record carries
+     the group's one filer; a write that would break either is refused whole, with its sentence. The same check sits
+     in the Undo / Redo restore (state/sched-commit.ts). */
+  const grpSnap = groupSnapshot(INPUTS)
+  try {
+    fn(); if (gate) gate.apply(gateSnap)
+    const breach = groupBreach(INPUTS, groupsTouched(grpSnap, INPUTS))
+    if (breach) { HOOKS.toast(breach, 'warn'); throw new CmdRefused(breach) }
+  }
   catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
   finally { if (suppressHist) HOOKS.histPush = push }
   if (snap && protectedTouched(JSON.parse(snap), prot)) {
@@ -821,6 +836,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   resyncPeopleBaseline()
   rulesLoad()
   insightsLoad()
+  flyplanLoad()      // the flying plan is re-read from the rows this store holds (state/flyplan.ts)
   storesLoad()
   lookaheadLoad()
   cxReasonsLoad()
@@ -873,6 +889,11 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
     /* demo-only medical lifecycle rows + placeholder documents (same boot-only
        home and blindness guarantee — see state/demoseed.ts) */
     seedDemoMedical(docAdd)
+    /* one input filed for several people, so every list shows a shared input from the first look (state/demoseed.ts) */
+    seedDemoGroup()
+    /* who placed each demo input, and when — made up, as they are (D629; state/demoseed.ts says why and what it never
+       does). After the seeds above, so every one of their rows is there to stamp. */
+    seedDemoStamps()
   }
   /* ANCHOR EVERY SEED INPUT TO ITS YEAR (24 Aug 26). A bare 'Jul 13' label
      is resolved through the row's `yr`; at boot CURWEEK is the seed week, so

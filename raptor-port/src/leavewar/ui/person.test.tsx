@@ -2,10 +2,12 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setPeople, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
 /* THE LEAVE WAR HAS NO "EDIT PERSON" (D460, D461 — 30 Sep 26: "Just remove the edit person functionality in the leave

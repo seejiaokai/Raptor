@@ -11,8 +11,13 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
-import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
+import { FloatWin } from './FloatWindow'
+import { frontWin } from './floatwin'
+import { placedLine, placedLineOf } from './placedline'
+import { PeoplePick, pickProblem } from './PeoplePick'
+import { entryRowsOf } from '../state/inputgroup'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -26,19 +31,23 @@ import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
+import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
-import { inputOilAmt } from '../engine/oil'
+import { voidedOil } from '../engine/oil'
+import { newId } from '../engine/newid'
+import { CmdRefused } from '../command'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
+import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
 import { clickedOutside } from './outside'
@@ -345,6 +354,8 @@ export function applyMedPlan(plan: any[]) {
       else delete t.endDate
       t.remarks = withRemarksTail(r.remarks, ordISO(p.tail.startOrd), ordISO(p.tail.endOrd), 'till')
       inpId(t)
+      /* a piece of the old record: it keeps who placed that (the copy carries `by` and `at`), changed now (D629) */
+      stampChanged(t)
       INPUTS.push(t)
       elogReason(t.iid, 'the tail of a split medical entry')
     }
@@ -368,6 +379,7 @@ export function applyMedPlan(plan: any[]) {
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
     r.remarks = withRemarksTail(r.remarks, a != null ? ordISO(a) : '', ordISO(p.newEndOrd), 'till')
     r.mod = nowStamp()
+    stampChanged(r)
     elogReason(r.iid, 'cut by a medical')
   }
 }
@@ -407,6 +419,8 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
     else delete t.endDate
     t.remarks = withRemarksTail(base.remarks, ordISO(g.startOrd), ordISO(g.endOrd), 'till')
     inpId(t)
+    /* a sibling of `base`: who placed it is base's (a new filing's own filer, or the edited record's — D629) */
+    stampChanged(t)
     INPUTS.push(t)
     elogReason(t.iid, 'a kept piece of a split medical entry')
     applyMedPlan(newMedTrimPlan(t.person, t.type, g.startOrd, g.endOrd, t, keepTail, entryEnd))
@@ -739,6 +753,9 @@ export const TYPE_ALLOW: any = {
      the Medical view's pending card */
   u: (t: any) => isUnavail(t) && !isSansAvail(t) && !isUpchit(t),
   s: (t: any) => isSansAvail(t),
+  /* the Inputs tab's own "+ Input": everything but SANS availability, which is filed on the SANS calendar and nowhere
+     else (owner D620, 7 Oct 26) */
+  i: (t: any) => !isSansAvail(t),
 }
 
 /* ADD a brand-new input from a schedule surface (owner, Aug 26 — "scheduler
@@ -798,7 +815,16 @@ export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, ent
   segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
     medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
 
-export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
+/* WHY A MEMBER MAY NOT FILE THIS KIND FOR ANOTHER MAN, in a sentence — one wording for the new-input door, the edit door
+   and (with the Inputs calendar) the people picker's own line. The members' switch being off is said as that; else the
+   kind is named: a member files for others only duties and commitments (D655), never SANS availability (D658). */
+export function fileForOtherRefusal(type: any): string {
+  if (!membersFileOn() && memberFilesForOthers(type)) return 'Filing for other people is switched off — you can file this only for yourself'
+  const what = isLeave(type) ? 'leave' : isUpchit(type) ? 'an upchit' : isDownchit(type) ? 'a medical entry' : isSansAvail(type) ? 'SANS availability' : 'this'
+  return `You can file ${what} only for yourself`
+}
+
+export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
      for whoever they are viewing as; the Person choice is a scheduler's).
@@ -812,7 +838,14 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
        without access (a guest) is nobody's person and files nothing */
     const mine = me()
     if (mine == null) { HOOKS.toast('Sign in with your own account to file an input', 'warn'); return false }
-    draft = { ...draft, person: mine }
+    /* A MEMBER'S DRAFT FOR ANOTHER MAN IS ASKED, NEVER RE-POINTED AT HIMSELF IN SILENCE (the group input — owner D654,
+       D655, D658; the build plan §3.13). Until 7 Oct 26 this line wrote his own name over whatever the draft said:
+       right while a member could file for nobody else, and now the quiet substitution of one man for another that the
+       picker's rule forbids ("nothing is ever substituted for what he picked"). A draft naming nobody is still his
+       own; one naming another man is filed for that man where the one rule allows it (perms.ts mayFileInputFor — a
+       duty or a commitment, the members' switch on) and refused with the sentence where it does not. */
+    if (draft.person == null || draft.person === '') draft = { ...draft, person: mine }
+    else if (!mayFileInputFor(draft.person, draft.type)) { HOOKS.toast(fileForOtherRefusal(draft.type), 'warn'); return false }
   }
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
@@ -837,6 +870,8 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
+  /* who placed it, and when (D629 — state/inputstamp.ts): the signed-in person, whoever it is filed FOR */
+  stampPlaced(row)
   /* the medical trim cascade, computed and PREFLIGHTED before the batch (P2-QREV-01):
      it mutates existing rows and fires Leave War withdrawals the funnel cannot undo,
      so a plan touching a protected-date row is refused whole, before anything runs. */
@@ -877,6 +912,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
      preflights above) — report failure, don't log a phantom "Input added" (P2-QREV-04) */
   if (!ok) return false
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
+  onAdded?.(row)
   return true
 }
 
@@ -913,7 +949,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      relink) stay person-scoped to the row's own person, so a member's cascade
      is their own row and still passes; a sessionless test/boot context is not
      a member and is not gated. */
-  if (!mayEditInputOf(r.person)) {   // [ACCOUNTS]: the one rule, perms.ts (member own, admin any, no one else)
+  if (!mayEditInput(r)) {   // [ACCOUNTS]: the one rule, perms.ts (the man, whoever filed it for him, an admin — no one else)
     HOOKS.toast('You can only edit your own inputs', 'warn')
     return false
   }
@@ -926,6 +962,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      untouched person sails through). */
   if (!canEditSched() && draft.person !== r.person) {
     HOOKS.toast('Only a scheduler can move an input to another person', 'warn')
+    return false
+  }
+  /* …and what a member FILED for another man stays a kind he may file for him (the group input, plan §3.13): retyping
+     his Meeting for Hex into Hex's leave is refused here with its sentence — the commit gate would roll it back with
+     none. His own input retypes as freely as ever (mayFileInputFor: himself, any kind). */
+  if (!canEditSched() && !isMe(draft.person) && !mayFileInputFor(draft.person, draft.type)) {
+    HOOKS.toast(fileForOtherRefusal(draft.type), 'warn')
     return false
   }
   const n = normalizeInputDraft(draft, r)
@@ -997,6 +1040,8 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const word = redated ? remarksTailWord(rem) : null
     if (word) rem = withRemarksTail(rem, ordISO(dateOrd(date, baseYear())), ordISO(dateOrd(endDate || date, baseYear())), word)
     r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
+    /* …and who changed it, and when — `by` and `at` are never touched by a change (D629 — state/inputstamp.ts) */
+    stampChanged(r)
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
        so the anchor moves with them — an edit is a re-statement of the date */
     r.yr = baseYear()
@@ -1040,7 +1085,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        for a day the row no longer covers is inert to the credit pass, which
        re-checks coverage live. reassignInput and the calendar drag both land
        here, so they inherit the person rule. */
-    if (r.oil && (!oilAsks(r.type) || r.person !== wasPerson)) delete r.oil
+    /* …and the per-day rule further down (a positive answer the new hours no longer price). ONE function says all of
+       it — engine/oil.ts voidedOil — shared with the check on what a member's command really changed (state/perms.ts,
+       the plan §3.13): what a save did not answer afresh must be exactly what this leaves. */
+    const keptOil = voidedOil({ person: wasPerson, oil: r.oil }, r)
+    if (keptOil) r.oil = keptOil; else delete r.oil
     /* ...and the SCHEDULER's own override on this request dies with the
        assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
        answers above was only half of it: a refusal the scheduler made about the
@@ -1067,13 +1116,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        the bell lights and the owner re-confirms; an explicit 0 (a decline)
        stays — hours cannot change a No. Gate saves are unaffected: they
        write their fresh decisions after this commit, in the same batch. */
-    if (r.oil) {
-      const now = inputOilAmt(r.allday, r.s, r.e)
-      for (const k of Object.keys(r.oil)) {
-        if (r.oil[k] > 0 && r.oil[k] !== now) delete r.oil[k]
-      }
-      if (!Object.keys(r.oil).length) delete r.oil
-    }
+    /* (applied above, with the retype / hand-over rule: voidedOil) */
     /* A DORMANT record whose TYPE changes COUNTS AGAIN (26 Aug 26 bug pass).
        Dormancy marks "the scheduler removed THIS commitment"; retype it and it
        is a different commitment, so it fails CLOSED — it flags — rather than
@@ -1146,25 +1189,50 @@ export function commitEditMedChoices(r: any, draft: any, ask: { clashes: any[]; 
     end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
     remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
   }
-  let ok = false
-  writeInputsBatch(() => {
-    ok = commitInputEdit(r, d2, keepTail, ask.b)
+  return saveBatch(() => {
+    const ok = commitInputEdit(r, d2, keepTail, ask.b)
     if (ok) mintMedSegments(r, segs.slice(1), keepTail, ask.b)
+    return ok
   })
-  return ok
 }
+
+/* ---- THE OUTER SAVE'S ANSWER IS THE ANSWER ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED], found 7 Oct 26, fixed 8 Oct 26 with the
+   group input — the build plan §3.13) --------------------------------------------------------------------------------
+   Several doors wrap one or more per-record saves in ONE outer save, so the whole is one Undo step. A save raised
+   inside a running save JOINS it and answers "yes" at once — before the outer command has been checked (the check on
+   what a member's command really changed, the locked-week backstop, one man once an entry). Each door then reported
+   the INNER answer: an outer command that was refused, and rolled back whole, still said "Input added" and closed its
+   window. So every such door saves through here.
+
+   `fn` is the door's own body; returning false means an inner save already refused and said why. The answer is
+   `ok` — saved — and `refused`: the inner saves were content and the OUTER command said no. A refusal that said
+   nothing of its own (the commit gate has no voice) is said here, so no Save is ever silent. A refused command puts
+   the list back as NEW objects: a door that holds a record across the save finds it again by its id. */
+export const NOT_SAVED = 'Not saved — that change was refused, and nothing was kept'
+export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: boolean } {
+  const say = HOOKS.toast
+  /* held in an object: the door's answer is set inside the save's own callback */
+  const got: { inner: boolean | void; spoke: boolean } = { inner: undefined, spoke: false }
+  let done = false
+  HOOKS.toast = (...a: any[]) => { got.spoke = true; return (say as any)(...a) }
+  try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say }
+  const content = got.inner !== false
+  const refused = content && !done
+  if (refused && !got.spoke) say(NOT_SAVED, 'warn')
+  return { ok: content && done, refused }
+}
+export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
 
 /** The upchit sheet's Save for an EDIT: the edit and the ticked leftover removals as ONE undo step (the nested batch
  *  is safe — the inner writeInputsBatch's push is a no-op under the outer). */
 export function commitEditUpchit(r: any, draft: any, removals: any[]): boolean {
   if (medPlanProtected(removals.map((row: any) => ({ row })))) { medicalLocked(); return false }
-  let ok = false
-  writeInputsBatch(() => {
-    ok = commitInputEdit(r, draft)
+  return saveBatch(() => {
+    const ok = commitInputEdit(r, draft)
     if (ok && removals.length)
       applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+    return ok
   })
-  return ok
 }
 
 /* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
@@ -1252,9 +1320,15 @@ export function reassignInput(iid: any, personId: any) {
  *  member somewhere. */
 export function askOilIfPending(r: any): boolean {
   if (!r || !oilAsks(r.type)) return false
-  const g: any = oilGate(draftOf(r), r)
-  if (g.kind !== 'ask') return false
-  setOilAsk(r.iid); setInpEdit(r); notify()
+  /* OF EVERY MAN OF A SHARED ENTRY, NOT OF THE ONE RECORD THE GESTURE HELD (Sol's read of the calendar job's bug check,
+     8 Oct 26 — seen failing in `groupeditor.test.tsx` before this): the first man's standing No said nothing about a
+     man beside him with no answer, who was then left to his own bell — what D660 rules out. The sheet opens on the
+     first record that needs an answer. */
+  const live = INPUTS.find((x: any) => x.iid === r.iid) || r
+  const rows = entryRowsOf(INPUTS, live)
+  const need = (rows.length ? rows : [live]).find((x: any) => (oilGate(draftOf(x), x) as any).kind === 'ask')
+  if (!need) return false
+  setOilAsk(need.iid); setInpEdit(need); notify()
   return true
 }
 
@@ -1327,7 +1401,7 @@ export function removeInput(r: any) {
      (and the render gate): any signed-in session that cannot edit the
      schedule — not the role literal 'member', which no account carries and
      which left this gate inert in production. */
-  if (!mayDeleteInputOf(r.person)) {   // [ACCOUNTS]: the one rule, perms.ts
+  if (!mayDeleteInput(r)) {   // [ACCOUNTS]: the one rule, perms.ts
     HOOKS.toast('You can only delete your own inputs', 'warn')
     return false
   }
@@ -1338,8 +1412,24 @@ export function removeInput(r: any) {
      one (accepted into that day's ground programme), else null — an input
      that was never accepted has no day to pin the removal to. */
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
-  writeInputsBatch(() => { dropInputRow(r) })
-  return true
+  /* the save's own answer, never a bare "yes": a delete the commit gate refused is not a delete (saveBatch) */
+  return saveBatch(() => { dropInputRow(r) })
+}
+
+/* DELETE A WHOLE SHARED INPUT — every record of the entry, as ONE command and one Undo step (owner D655: "shown and
+   edited as one thing"; the plan §3.13: Delete "for all 4 people" is the filer's or an admin's). All or nothing: asked
+   of the one rule for EVERY record before anything goes. A man in it who is neither takes HIMSELF out — removeInput on
+   his own record, which is still his. */
+export function removeEntry(rows: any[]): boolean {
+  const live = (rows || []).filter(r => INPUTS.indexOf(r) >= 0)
+  if (!live.length) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  if (protectedInput(...live)) return false
+  if (!live.every(r => mayDeleteInput(r))) {
+    const by = live.find(r => r.grpBy)?.grpBy ?? live.find(r => r.by)?.by
+    HOOKS.toast(`Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can delete this for everyone`, 'warn')
+    return false
+  }
+  return saveBatch(() => { for (const r of live) dropInputRow(r) })
 }
 
 /* THE one per-row removal body — removeInput above (one row, its own batch)
@@ -1359,6 +1449,167 @@ function dropInputRow(r: any) {
      request "taken off" whose own row stands again (a plan switched in — [REQ-ORPHAN-ROW] 3) needs nothing of its own
      either: rule 1 takes that row too. */
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
+}
+
+/* ---- ONE SAVE FOR A WHOLE GROUP (owner D654, D655, D658, D660 — 7 Oct 26; the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13, "The writer") ---------------------------------
+   His ruling is "one shared group input, shown and edited as one thing". It is KEPT as one record per man tied by a
+   group id (state/inputgroup.ts — every reader of an input reads one man's record and stays as it is), so "one thing"
+   is made here, at the save: ONE command files, changes or trims every record of the entry alike.
+
+   `entry` — the records the editor was opened on (state/inputgroup.ts entriesOf), or null for a new filing.
+   `draft` — the editor's own draft; its `person` is not read. `people` — who the entry should now hold.
+   `oilDec` — the filer's answer to the OIL question, asked ONCE for the entry (D660: "that person filing should answer
+   for all" — the days and the hours are the same for every man, so the amounts are): it is written onto every record
+   this save files or changes; with nothing else changed, onto every record of the entry (the filer revising it for all).
+
+   IT RUNS THE PER-RECORD BODIES A SINGLE INPUT ALREADY USES — commitNewInput for each man added, commitInputEdit for
+   each record kept WHOSE SHARED FIELDS ACTUALLY CHANGE, dropInputRow for each man taken off — inside one outer batch,
+   so every per-record rule (the remark's date token, the voiding of an OIL answer the hours no longer price, the late
+   date `mod`, who placed and changed it, the absence rules at the door) runs for each man exactly as for a single
+   input, and the whole is ONE Undo step.
+
+   A CHANGE TO THE PEOPLE ALONE TOUCHES NOBODY ELSE (both plan readers' finding G6): commitInputEdit stamps the late
+   date on every save, whatever changed — so a record kept with its shared fields as they were is NOT passed through
+   it. Adding or taking off a man after the cut-off leaves the others' late date and stamps alone; only the man added
+   can be late.
+
+   ALL OR NOTHING. Every refusal a single input can meet is asked for EVERY man before anything is written, and the
+   sentence names the man where it is his alone; a refusal that only shows inside the batch (the absence rules — no
+   leave over leave, none over a medical; the check on what a member's command changed) throws and rolls the whole
+   command back. A half-filed group cannot exist. Leave over recorded work is NOT a refusal (his ruling of 20 Sep 26):
+   it is filed and flagged, for a group as for one man, in ONE note naming every man it applies to.
+
+   WHO THE ENTRY'S FILER IS (`grpBy`, finding G4). A group made from nothing: whoever files it. A single input made a
+   group by a MEMBER: that member. By an ADMIN: the single input's own filer (`by`) where it has one — an admin's hand
+   never takes an entry from the member who filed it — else that admin. Every man added later takes the entry's
+   filer and his own true `by`. An entry of one man is an ordinary input: one person filed alone gets no group at all.
+
+   Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
+export function commitGroup(entry: { rows: any[] } | null, draft: any, people: any[], oilDec?: Record<string, number>): boolean {
+  if (!draft) return false
+  const say = HOOKS.toast
+  const cs = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
+  const want: string[] = []
+  for (const p of people || []) { const id = p == null ? '' : String(p); if (id && !want.includes(id)) want.push(id) }
+  const rows: any[] = entry ? (entry.rows || []).filter((r: any) => INPUTS.indexOf(r) >= 0) : []
+  if (entry && !rows.length) { say('That input is no longer there — nothing was saved', 'warn'); return false }
+  if (!want.length) { say('Pick at least one person', 'warn'); return false }
+  const scheduler = canEditSched(), mine = me()
+  if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
+  const kept = rows.filter(r => want.includes(String(r.person)))
+  const gone = rows.filter(r => !want.includes(String(r.person)))
+  const have = new Set(rows.map(r => String(r.person)))
+  const added = want.filter(p => !have.has(p))
+
+  /* WHO MAY — asked before anything else, of the one module (state/perms.ts) */
+  const many = kept.length + added.length > 1
+  if (many && scheduler && needsDoc(draft.type)) {
+    say(`${isUpchit(draft.type) ? 'An upchit' : 'A medical entry'} is filed for one person at a time — each needs its own document`, 'warn'); return false
+  }
+  for (const p of added) if (!mayFileInputFor(p, draft.type)) { say(fileForOtherRefusal(draft.type), 'warn'); return false }
+
+  /* EVERY REFUSAL A SINGLE INPUT CAN MEET, FOR EVERY MAN, BEFORE ANYTHING IS WRITTEN. Asked quietly, then said once:
+     as it is where every man meets the same one (a missing time), with his callsign where it is one man's alone */
+  const norm = new Map<string, NonNullable<ReturnType<typeof normalizeInputDraft>>>()
+  const refused: Array<[string, string]> = []
+  for (const p of want) {
+    const r = kept.find(x => String(x.person) === p) || null
+    let why = ''
+    HOOKS.toast = (m: any) => { if (!why) why = String(m) }
+    let n: ReturnType<typeof normalizeInputDraft>
+    try { n = normalizeInputDraft({ ...draft, person: p }, r) } finally { HOOKS.toast = say }
+    if (!n) refused.push([p, why || 'This input could not be saved'])
+    else norm.set(p, n)
+  }
+  if (refused.length) {
+    const same = refused.length === want.length && refused.every(x => x[1] === refused[0][1])
+    say(same ? refused[0][1] : `${cs(refused[0][0])} — ${refused[0][1]}`, 'warn')
+    return false
+  }
+  const first = norm.get(want[0])!
+  if (protectedInput(...rows, normDest(first, draft.yr))) return false
+
+  /* which of the records kept actually change: only those are saved (G6) */
+  const sansKey = (x: any) => Object.keys(sansFlags(x)).sort().join(',')
+  /* THE DATES ARE COMPARED AS DATES, NOT AS THEIR LABELS (Astra's read of the date door, 9 Oct 26 - A1). A label
+     carries no year inside the loaded one, so a shared input moved by exactly a year - 13 Oct 2027 to 13 Oct 2026 -
+     read 'Oct 13' on both sides: nothing was written, and the window closed saying "Input updated". */
+  const wantEnd = draft.end && draft.end !== draft.start ? draft.end : ''
+  const moved = (r: any): boolean => unfmt(r.date, r.yr) !== draft.start || (r.endDate ? unfmt(r.endDate, r.yr) : '') !== wantEnd
+  /* ONE REMARK FOR EVERY MAN OF THE ENTRY (both reads of the date door - Astra A2, Sol 2). When the dates change, the
+     save rewrites the remark's "till <last day>" word on each record it CHANGES (commitInputEdit) - and a man ADDED in
+     the same save took the remark as typed, old last day and all. Remarks are part of what makes the records one
+     entry, so one shared input came out as two. The effective remark is worked out HERE, once, and is what every
+     man - kept or added - is saved with; the picker itself still never touches the remark. */
+  const redated = kept.some(r => r.date !== first.date || (r.endDate || '') !== (first.endDate || '') || moved(r))
+  let rem = String(draft.remarks || '').trim()
+  const tail = redated ? remarksTailWord(rem) : null
+  if (tail) rem = withRemarksTail(rem, ordISO(dateOrd(first.date, baseYear())), ordISO(dateOrd(first.endDate || first.date, baseYear())), tail)
+  const d = rem === String(draft.remarks || '') ? draft : { ...draft, remarks: rem }
+  const changes = (r: any): boolean => {
+    const n = norm.get(String(r.person))!
+    return r.type !== draft.type || !!r.allday !== !!draft.allday || r.s !== n.s || r.e !== n.e
+      || r.date !== n.date || (r.endDate || '') !== (n.endDate || '') || moved(r) || (r.half || '') !== (n.half || '')
+      || String(r.remarks || '') !== rem
+      || (isSansAvail(draft.type) && sansKey(r.sans) !== sansKey(draft.sans))
+  }
+  const changed = kept.filter(changes)
+  const whole = `Only ${cs(rows.find(r => r.grpBy)?.grpBy ?? rows.find(r => r.by)?.by ?? '') || 'whoever filed it'} — who filed it — or an admin can change this for everyone`
+  for (const r of changed) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
+  for (const r of gone) if (!mayDeleteInput(r)) { say(whole, 'warn'); return false }
+
+  const regroup = many && kept.some(r => !r.grp)
+  const oilOnly = !!oilDec && !added.length && !gone.length && !changed.length
+  if (oilOnly) for (const r of kept) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
+  /* a fresh OIL answer is EVERY man's (D682, below) - when it is given by someone who may change the input for
+     everyone: its filer, an admin. A man who may only ADD somebody (this door lets a member add a man to an entry he
+     did not file) answers for the man he adds and for nobody else - the others' answers are not his to replace. */
+  const forAll = !!oilDec && kept.every(r => mayEditInput(r))
+  if (!added.length && !gone.length && !changed.length && !regroup && !oilOnly) return true
+
+  /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
+  const heard: string[] = []
+  HOOKS.toast = (m: any) => { for (const part of String(m).split(' · ')) if (part && !heard.includes(part)) heard.push(part) }
+  let ok = false
+  try {
+    ok = writeInputsBatch(() => {
+      const stop = (): never => { throw new CmdRefused(heard[heard.length - 1] || 'refused') }
+      let grp: any = rows.find(r => r.grp)?.grp, grpBy: any = rows.find(r => r.grpBy)?.grpBy
+      if (!grp && many) {
+        grp = newId('g')
+        grpBy = !scheduler ? mine : (rows[0] && rows[0].by != null ? rows[0].by : mine)
+      }
+      for (const r of gone) dropInputRow(r)
+      for (const r of kept) {
+        if (grp && !r.grp) { r.grp = grp; r.grpBy = grpBy }
+        if (changed.includes(r)) {
+          if (!commitInputEdit(r, { ...d, person: r.person, docIds: rowDocIds(r) })) stop()
+          if (oilDec) r.oil = { ...oilDec }
+        } else if (oilOnly) { r.oil = { ...oilDec }; stampChanged(r) }
+        /* THE ANSWER IS EVERY MAN'S (owner D682, 9 Oct 26: "the answer is written for everyone in it - a man's own
+           earlier answer, a No included, is replaced"; Sol's read of the date door - 1). A man added or taken off
+           brings the question back for "X +2", and the filer's answer went on the ADDED man's record alone: the sheet
+           had asked about all of them, and a man's own earlier No stood against the filer's fresh Yes. A record
+           whose answer is already this one is not touched (no "changed" stamp for nothing). */
+        else if (forAll && JSON.stringify(r.oil || {}) !== JSON.stringify(oilDec)) { r.oil = { ...oilDec }; stampChanged(r) }
+      }
+      for (const p of added) {
+        let row: any = null
+        if (!commitNewInput({ ...d, person: p }, false, undefined, undefined, x => { row = x }) || !row) stop()
+        if (grp) { row.grp = grp; row.grpBy = grpBy }
+        if (oilDec) row.oil = { ...oilDec }
+      }
+    })
+  } finally { HOOKS.toast = say }
+  if (!ok) {
+    const why = heard[0]
+    say(why ? `${why} — nothing was saved${want.length > 1 ? ' for anyone: take that person off the list, or change it' : ''}` : 'Not saved — that change is not yours to make', 'warn')
+    return false
+  }
+  /* what went through and wants telling — leave over recorded work, a bid replaced — as ONE note */
+  if (heard.length) say(heard.join(' · '), 'warn')
+  return true
 }
 
 /* ---- CLEAR OLD DATA / CLEAR EDIT HISTORY (owner, 25 Aug 26 — "an option on
@@ -1517,6 +1768,31 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
    on, so it stays inside what this dialog already keeps in view — unlike a
    date move, the row you are looking at is still the row you are looking
    at afterwards, just under a different name. */
+/* THE FIELDS OF AN INPUT AS A WINDOW WEIGHS THEM (the plan §3.7): what "a field" is when the record is changed behind
+   an open window. The hours are ONE field — all day, a half, a start and an end are set together by one control, and
+   a clash on two of the four would be nonsense to read. */
+const WIN_FIELDS: { k: string; label: string; keys: string[] }[] = [
+  { k: 'person', label: 'person', keys: ['person'] }, { k: 'type', label: 'kind', keys: ['type'] },
+  { k: 'start', label: 'start date', keys: ['start'] }, { k: 'end', label: 'end date', keys: ['end'] },
+  { k: 'hours', label: 'hours', keys: ['allday', 'half', 'sTime', 'eTime'] },
+  { k: 'remarks', label: 'remarks', keys: ['remarks'] }, { k: 'sans', label: 'Fly / OFT / AMT', keys: ['sans'] },
+  { k: 'docs', label: 'documents', keys: ['docIds'] },
+]
+const fieldSame = (f: { keys: string[] }, a: any, b: any) => f.keys.every(k => JSON.stringify(a?.[k] ?? null) === JSON.stringify(b?.[k] ?? null))
+const fieldPart = (f: { keys: string[] }, d: any) => Object.fromEntries(f.keys.map(k => [k, d?.[k]]))
+/** a field's value in words, for "theirs … yours …" */
+function fieldSay(k: string, d: any): string {
+  if (!d) return 'nothing'
+  if (k === 'person') return PEOPLE[d.person] ? PEOPLE[d.person].cs : String(d.person ?? 'nobody')
+  if (k === 'type') return String(d.type || 'none')
+  if (k === 'start' || k === 'end') return d[k] ? fmtDay(d[k]) : 'none'
+  if (k === 'hours') return d.allday ? 'all day' : d.half ? String(d.half).toUpperCase() : `${d.sTime}–${d.eTime}`
+  if (k === 'remarks') return d.remarks ? `“${d.remarks}”` : 'none'
+  if (k === 'sans') return d.sans ? (['f', 'o', 'a'].filter(x => d.sans[x]).map(x => x.toUpperCase()).join(' ') || 'none ticked') : 'none'
+  const n = (d.docIds || []).length
+  return n ? `${n} document${n > 1 ? 's' : ''}` : 'none'
+}
+
 export function InputEditor() {
   useVersion()
   const r = INPEDIT
@@ -1541,6 +1817,9 @@ export function InputEditor() {
   const typeFilter = ctx ? TYPE_ALLOW[ctx]
     : (r && !isNew && isDownchit(r.type)) ? isDownchit
     : (r && !isNew && isUpchit(r.type)) ? isUpchit
+    /* and no input already filed is turned INTO SANS availability (D620: it is filed on the SANS calendar only); a
+       SANS commitment's own editor keeps the full list, as built */
+    : (r && !isNew && !isSansAvail(r.type)) ? TYPE_ALLOW.i
     : undefined
   const [draft, setDraft] = useState<any>(null)
   /* the upchit save-time summary (owner, 27 Aug 26) — effects to show + the
@@ -1554,25 +1833,165 @@ export function InputEditor() {
   /* the medical-document ask (owner, [SYNC-INTEG]) — {who, typeLabel}; null = no sheet */
   const [docConf, setDocConf] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
+  const keepDraft = useRef(false)
+  /* A WINDOW ON THE INPUTS PAGE (owner D641: "an input or a commitment being filed" is one of the windows that drag
+     while the page behind works; the plan §3.7: "the input / commitment editor when it is opened on the Inputs page").
+     Opened from the board or the week it stays the blocking dialog it was — outside this job's mock-ups.
+     A window does not block, so the record it shows CAN be changed behind it. The rule is the plan's: "an editor never
+     saves a field its user did not change". `base` is the record as the window last saw it; on every change behind it
+     a field he has not touched takes the live value silently, and a field changed BOTH ways is put to him (`clash`).
+     `shown` is the record the window holds, for the one-editor-at-a-time question (`swap`). */
+  const win = open && CURPAGE === 'inputs'
+  const base = useRef<any>(null)
+  const shown = useRef<any>(null)
+  const [clash, setClash] = useState<string[]>([])
+  const [swap, setSwap] = useState<any>(null)
+  const swapOk = useRef(false)
+  /* WHO IT IS FOR (owner D654–D656; the plan §3.13). On the Inputs page the Person field is the people picker
+     (ui/PeoplePick.tsx): `ppl` in the order picked, `several` its switch. The editor opened on ANY record of a shared
+     input holds the ENTRY — its records worked out on read (state/inputgroup.ts), never kept here — and a save for
+     more than one man, or of an entry of more than one, is ONE command (commitGroup). `basePpl` is the entry's people
+     as the window last saw them: a man added or taken off on the page behind is followed silently — an add and a
+     removal of different men cannot collide. */
+  const [ppl, setPpl] = useState<string[]>([])
+  const [several, setSeveral] = useState(false)
+  const basePpl = useRef<string[]>([])
+  const entryIds = useRef<string[]>([])
+  const [delAll, setDelAll] = useState(false)
+  const [takeOut, setTakeOut] = useState(false)
+  /* a saved shared input's dates, being re-picked in the window (D681): true between the tap for the new start and the
+     tap for the new end — see `datesHere`, below */
+  const [midPick, setMidPick] = useState(false)
+  /* ...and two more, from the two reads of that door (9 Oct 26). `calKey`: the calendar's month is seeded ONCE, when it
+     is put on screen - and it was put on screen with the dates of the input the window held BEFORE (the new record
+     arrives a render ahead of its draft), so a December input opened over an October one showed October (Astra A3).
+     It is counted up where the draft is re-seeded, so the calendar is made again WITH that draft - and never on a
+     tap, which would throw away a month he had turned to. `datesPicked`: he has tapped the calendar since the window
+     took its dates. A first tap ON the saved day leaves the dates as they were, and "not different from what was
+     saved" read as "not touched": a move made behind the window then replaced his start without a word (Sol 3). */
+  const [calKey, setCalKey] = useState(0)
+  const [datesPicked, setDatesPicked] = useState(false)
+  const rows: any[] = r && !isNew ? entryRowsOf(INPUTS, r).filter((x: any) => INPUTS.indexOf(x) >= 0) : []
+  const picker = win && ctx !== 'up'
+  const grouped = picker && (ppl.length > 1 || rows.length > 1)
+  const csOf = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
      hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
      OIL sheet comes straight up over the dialog so the tap lands on the
      question itself — one-shot, cleared as it is read. */
-  useEffect(() => {
+  useLayoutEffect(() => {
+    /* the same record, found again after a refused save (stay, below): what he typed is kept */
+    if (keepDraft.current) { keepDraft.current = false; shown.current = r; return }
+    /* ONE EDITOR AT A TIME (the plan §3.7): the page behind a window works, so another input can be asked for while
+       this one holds changes nobody has saved. It is not replaced under him: the window keeps the first, and asks. */
+    const prev = shown.current
+    const other = !!prev && !!r && r !== prev && !(prev.iid && prev.iid === r.iid)
+    /* ... and WHO IT IS FOR is his work too (the same bug check - Astra's M2): the picked people are held apart from
+       the draft's fields, so a third man added to a shared input, and nothing else touched, was thrown away without
+       a word when another input was opened. Compared as a set - picked and un-picked again is no change. */
+    const pplTouched = ppl.length !== basePpl.current.length || ppl.some(id => !basePpl.current.includes(id))
+    if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
+      setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
+      return
+    }
+    swapOk.current = false
+    shown.current = r
+    base.current = r ? draftOf(r) : null
+    setClash([]); setSwap(null)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
+    const rs = r && !r._new ? entryRowsOf(INPUTS, r) : []
+    const p0 = rs.length ? rs.map((x: any) => String(x.person)) : r ? [String(r.person ?? '')] : []
+    setPpl(p0); setSeveral(rs.length > 1); basePpl.current = p0; entryIds.current = rs.map((x: any) => x.iid)
+    setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
-      if (g.kind === 'ask') setOilConf(g)
+      /* the bell's question to a man about his OWN record inside a shared input he did not file: his answer alone */
+      if (g.kind === 'ask') setOilConf(rs.length > 1 && isMe(r.person) && !rs.every((x: any) => mayEditInput(x)) ? { ...g, own: r.iid } : g)
     } else if (OILASK && !r) setOilAsk(null)
   }, [r])
+  /* THE RECORD BEHIND THE WINDOW. After every paint of the page the window asks what its record now is:
+       · GONE (deleted on the page behind, or taken away by an Undo) — the window closes and says so;
+       · the same record as a NEW object (a refused command and an Undo both put the list back as new objects) — it
+         holds that one, without throwing away what he typed;
+       · CHANGED — a field he has not touched takes the live value silently; one changed both ways is listed, with what
+         theirs is and what his is, and waits for his choice; Save is refused until he has made it.
+     So a Save writes only his own changes over the record as it stands (the plan §3.7). */
+  useLayoutEffect(() => {
+    if (!win || !r || isNew || !draft) return
+    /* NOT WHILE IT IS ASKING. When another input is asked for over unsaved work, the effect above keeps the first one
+       and puts it back — but for that one paint `r` IS the other input, and this step took it for the window's own
+       record changed behind it: it said "Changed while this window was open: people — X added, Y taken off", said the
+       reverse a moment later, and put the saved people back over the ones he had picked (the calendar job's bug check,
+       8 Oct 26 — found writing the test for a people-only change). The window follows only the record it is SHOWING. */
+    if (shown.current !== r) return
+    const now = INPUTS.find((x: any) => x.iid === r.iid)
+    if (!now) {
+      /* the record this window was opened on left a shared input that lives on: the window holds the rest of it */
+      const rest = entryIds.current.length > 1 ? entryIds.current.map(id => INPUTS.find((x: any) => x.iid === id)).find(x => x && x.grp) : null
+      if (rest) { keepDraft.current = true; setInpEdit(rest); notify(); return }
+      HOOKS.toast('That input was removed while its window was open — the window has closed', 'warn'); close(); return
+    }
+    if (now !== r) { keepDraft.current = true; setInpEdit(now); notify(); return }
+    /* THE PEOPLE, FOLLOWED: a man added or taken off behind the window is added or taken off in it, and said once */
+    const liveRows = entryRowsOf(INPUTS, now)
+    const liveP = liveRows.map((x: any) => String(x.person)), bp = basePpl.current
+    entryIds.current = liveRows.map((x: any) => x.iid)
+    if (liveP.join('\u0000') !== bp.join('\u0000')) {
+      const added = liveP.filter(p => !bp.includes(p)), removed = bp.filter(p => !liveP.includes(p))
+      basePpl.current = liveP
+      const next = [...ppl.filter(p => !removed.includes(p)), ...added.filter(p => !ppl.includes(p))]
+      setPpl(next.length ? next : liveP)
+      if (next.length > 1) setSeveral(true)
+      const what = [added.length ? added.map(csOf).join(', ') + ' added' : '', removed.length ? removed.map(csOf).join(', ') + ' taken off' : ''].filter(Boolean).join(', ')
+      if (what) HOOKS.toast('Changed while this window was open: people — ' + what, 'info')
+    }
+    const cur = draftOf(now), b = base.current
+    if (!b) { base.current = cur; return }
+    if (WIN_FIELDS.every(f => fieldSame(f, cur, b))) return
+    let next = draft
+    const hit = new Set(clash)
+    for (const f of WIN_FIELDS) {
+      if (fieldSame(f, cur, b)) continue                                   // not changed behind him
+      /* a date he has TAPPED is his, even where the tap was on the day already saved (`datesPicked`, above) */
+      const tapped = datesPicked && (f.k === 'start' || f.k === 'end')
+      if (!tapped && fieldSame(f, draft, b)) next = { ...next, ...fieldPart(f, cur) } // he has not touched it: theirs, silently
+      else if (!fieldSame(f, draft, cur)) hit.add(f.k)                     // changed both ways
+      else hit.delete(f.k)                                                 // both made the same change
+    }
+    base.current = cur
+    if (next !== draft) setDraft(next)
+    if (hit.size !== clash.length || [...hit].some(k => !clash.includes(k))) setClash([...hit])
+  })
+  /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
+     have been changed behind the window while the question stood */
+  const undecided = () => {
+    if (!win || !clash.length) return false
+    setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
+    HOOKS.toast('Choose which to keep first — your change, or the one made while this window was open', 'warn')
+    return true
+  }
   useEffect(() => {
     if (!open) return
     /* Escape peels one layer: whichever sheet is up first, then the dialog —
        all are deps so the handler never closes the dialog under a sheet */
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* as a window it does not own the page: Escape typed in a box on the page BEHIND it is that box's own (a cell
+         being edited puts its text back on Escape) — the shell's own rule, ui/FloatWindow.tsx */
+      if (win) {
+        const a = document.activeElement as HTMLElement | null
+        const mine = !!a && !!box.current && !!box.current.closest('.floatwin')?.contains(a)
+        if (!mine && a && a !== document.body && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return
+        /* AND IT IS THE FRONT WINDOW'S (D641; the calendar job's bug check, 8 Oct 26 - Astra's M1, seen in the running
+           build): with the settings window opened over this one, Escape closed THIS editor - the one behind - and
+           lost what he had typed, because this handler runs first and never asked which window was in front. With
+           none of its own questions up, the editor takes Escape only when it is the front window; otherwise the
+           key is left for the shell, which closes the front one (ui/FloatWindow.tsx). A question of its own (the
+           OIL, upchit, medical or document sheet) blocks the page, so it still answers first. */
+        if (!docConf && !upConf && !medConf && !oilConf && frontWin() !== 'inputedit') return
+      }
       e.stopPropagation()
       if (docConf) setDocConf(null)
       else if (upConf) setUpConf(null)
@@ -1582,40 +2001,70 @@ export function InputEditor() {
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [open, upConf, medConf, oilConf, docConf])
+  }, [open, win, upConf, medConf, oilConf, docConf])
 
   const close = () => { setInpEdit(null); notify() }
+  /* A REFUSED SAVE KEEPS THE WINDOW, ON THE RECORD, WITH WHAT HE TYPED ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]; the plan
+     §3.13: "his Save is refused with the sentence, the window stays"). A refused command puts the list back as new
+     objects, so the record this window holds is no longer the one in the list: find it again by its id and hold
+     that — WITHOUT re-seeding the draft, which the effect above would do for any newly opened row. A new input's
+     seed is in no list and simply stays; a record that is truly gone closes the window, as it always did. */
+  const stay = () => {
+    if (!r || r._new) return
+    const live = INPUTS.find((x: any) => x.iid === r.iid)
+    if (!live) { close(); return }
+    if (live !== r) { keepDraft.current = true; setInpEdit(live); notify() }
+  }
   /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const doSave = (removals: any[], oilDec?: Record<string, number>) => {
+    if (undecided()) return
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
-    if (isNew) {
-      let ok = false
-      writeInputsBatch(() => {
-        ok = commitNewInput(draft, ctx === 'g')
-        /* the OIL answers land on the just-unshifted row, inside the same
-           batch, so the add and its acknowledgment are ONE undo step */
-        if (ok && oilDec) INPUTS[0].oil = oilDec
-        if (ok && removals.length)
-          applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
-      })
-      if (ok) { HOOKS.toast(ctx === 'g' ? 'Input added to the Ground Programme' : 'Input added', 'ok'); close() }
+    /* FOR SEVERAL PEOPLE, OR A SHARED INPUT: one command for the whole entry (commitGroup) — the OIL answer, asked
+       once, written for every man (D660) */
+    if (grouped) {
+      const had = new Set(INPUTS.map((x: any) => x.iid))
+      const entry = isNew ? null : { rows: entryRowsOf(INPUTS, r) }
+      if (commitGroup(entry, draft, ppl, oilDec)) {
+        const row = (entry && entry.rows.find((x: any) => INPUTS.indexOf(x) >= 0)) || INPUTS.find((x: any) => !had.has(x.iid))
+        if (row) revealInput(row)
+        HOOKS.toast(isNew ? (ppl.length > 1 ? `Input added for ${ppl.length} people` : 'Input added') : 'Input updated', 'ok'); close()
+      } else stay()
       return
     }
-    let ok = false
-    writeInputsBatch(() => {
-      ok = commitInputEdit(r, draft)
+    if (isNew) {
+      let savedRow:any=null
+      const ok = saveBatch(() => {
+        const ok = commitNewInput(draft, ctx === 'g', undefined, undefined, row=>{savedRow=row})
+        /* the OIL answers land on the just-unshifted row, inside the same
+           batch, so the add and its acknowledgment are ONE undo step */
+        if (ok && oilDec) savedRow.oil = oilDec
+        if (ok && removals.length)
+          applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+        return ok
+      })
+      if (ok) {
+        if(r._calendar||CURPAGE==='inputs')revealInput(savedRow)
+        HOOKS.toast(ctx === 'g' ? 'Input added to the Ground Programme' : 'Input added', 'ok'); close()
+      }
+      return
+    }
+    const s = saveBatchX(() => {
+      const ok = commitInputEdit(r, draft)
       if (ok && oilDec) r.oil = oilDec
       if (ok && removals.length)
         applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+      return ok
     })
-    if (ok) { HOOKS.toast('Input updated', 'ok'); close() }
+    if (s.ok) { if(CURPAGE==='inputs')revealInput(r);HOOKS.toast('Input updated', 'ok'); close() }
+    else if (s.refused) stay()
     else if (INPUTS.indexOf(r) < 0) close()
   }
   /* the clash sheet's Save — resolve the choices into kept segments, file
      the draft as the first and mint the rest, all one undo step */
   const doMedSave = (choices: string[], keepTail: any[]) => {
+    if (undecided()) return
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
     if (medSegmentsProtected({ ...draft, yr: isNew ? baseYear() : r.yr }, segs, keepTail, medConf.b, isNew ? null : r)) return medicalLocked()
@@ -1626,23 +2075,60 @@ export function InputEditor() {
       end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
       remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
     }
-    let ok = false
-    writeInputsBatch(() => {
-      ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b) : commitInputEdit(r, d2, keepTail, medConf.b)
+    let savedRow:any=isNew?null:r
+    const s = saveBatchX(() => {
+      const ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b, row=>{savedRow=row}) : commitInputEdit(r, d2, keepTail, medConf.b)
       /* the commit's own trim only cuts rows the first segment overlaps —
          all of them chosen losers, since kept rows sit outside every
          segment; the later segments land as sibling rows, each trimmed the
          same way. keepTail carries the filer's per-leftover Remove/Keep so a
          tail is minted only where kept (owner, 28 Aug 26) */
-      if (ok) mintMedSegments(isNew ? INPUTS[0] : r, segs.slice(1), keepTail, medConf.b)
+      if (ok) mintMedSegments(savedRow, segs.slice(1), keepTail, medConf.b)
+      return ok
     })
-    if (ok) { HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
+    if (s.ok) { if(r._calendar||CURPAGE==='inputs')revealInput(savedRow);HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
+    else if (s.refused) stay()
     else if (!isNew && INPUTS.indexOf(r) < 0) close()
   }
   /* `skipDoc` is reserved for the DocConfirm "No document" resume (owner,
      [SYNC-INTEG]); a plain click/Enter must pass FALSE, never React's event
      object — see the bindings below (SYNC-002). */
   const save = (skipDoc = false) => {
+    if (undecided()) return
+    if (picker && draft) {
+      /* nothing is substituted for what he picked: people he may not file this kind for refuse the save, in the
+         picker's own sentence */
+      const pb = pickProblem(ppl, several, draft.type)
+      if (pb) { HOOKS.toast(pb.why, 'warn'); return }
+    }
+    if (grouped && draft) {
+      /* ONE QUESTION FOR THE ENTRY (D660): the days and the hours are every man's alike, so the amounts are. A man
+         added to an entry already answered is answered for by whoever adds him — the sheet comes back, with the
+         standing answers ticked */
+      /* NEVER INTO A MEDICAL ENTRY BY THIS BRANCH (Astra's read of the calendar job's bug check, 8 Oct 26 — R1, seen
+         failing in `groupeditor.test.tsx`): this branch returns before the document ask, the upchit summary and the
+         medical-clash question, and a shared meeting whose kind was changed to a medical one and whose people were cut
+         to one was SAVED through it with none of them asked. A medical entry is one person's own: the others are taken
+         out and saved first, and the kind is changed after — by the one-person save, which asks them all. */
+      if (needsDoc(draft.type) || isUpchit(draft.type)) {
+        HOOKS.toast('A medical entry is one person’s own. Take the other people out and save first — then change its kind.', 'warn')
+        return
+      }
+      const first = rows.find(x => ppl.includes(String(x.person))) || null
+      const adds = !!first && ppl.some(p => !rows.some(x => String(x.person) === p))
+      /* ASKED OF EVERY MAN KEPT, NOT OF THE FIRST ALONE (Astra's read of the calendar job's bug check, 8 Oct 26 — seen
+         failing in `groupeditor.test.tsx` before this): each man's record carries his OWN answer, and the first man's
+         standing No said nothing about the others — their answers were voided by the new hours and nobody was asked,
+         which is the bell D660 rules out. The question opens while ANY of them needs one. */
+      const kept = rows.filter(x => ppl.includes(String(x.person)))
+      const gates = (kept.length ? kept : [first]).map(x => oilGate({ ...draft, person: x ? x.person : ppl[0] }, x, adds))
+      if (gates.some(x => x.kind === 'refused')) return
+      const g = gates.find(x => x.kind === 'ask') || gates[0]!
+      if (g.kind === 'refused') return
+      if (g.kind === 'ask') { setOilConf(ppl.length > 1 ? { ...g, who: `${csOf(ppl[0])} +${ppl.length - 1}` } : g); return }
+      doSave([])
+      return
+    }
     /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): saving a NEW medical
        with no certificate opens [Upload] / [No document] before anything else,
        so "No document" then flows on through the upchit-summary / downchit-clash
@@ -1698,16 +2184,56 @@ export function InputEditor() {
     if (g.kind === 'ask') { setOilConf(g); return }
     doSave([])
   }
-  const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
+  /* a shared input is deleted for everyone only after it is asked (the day's own question — the plan §3.13) */
+  const del = () => {
+    if (rows.length > 1) { setDelAll(true); return }
+    if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay()
+  }
+  const delEntry = () => {
+    const live = entryRowsOf(INPUTS, r)
+    setDelAll(false)
+    if (removeEntry(live)) { HOOKS.toast(`Input deleted for ${live.length} people`, 'ok'); close() } else stay()
+  }
+  /* a man's own OIL answer inside a shared input he did not file: his record alone, and never its late date */
+  const saveOwnOil = (iid: string, dec: Record<string, number>) => {
+    const row = INPUTS.find((x: any) => x.iid === iid)
+    if (!row) return
+    const s = saveBatchX(() => { row.oil = { ...dec }; stampChanged(row); return true })
+    if (s.ok) HOOKS.toast('OIL answer saved', 'ok'); else if (s.refused) stay()
+  }
 
-  const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
+  const who = rows.length > 1 ? `${csOf(rows[0].person)} +${rows.length - 1}`
+    : r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
   /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
      another man's input — the calendar's chip, the day popover's row — was shown Delete and Save, each refused only
-     when pressed. The write path's own rule (perms.ts mayEditInputOf), asked before the form is drawn: he may still
+     when pressed. The write path's own rule (perms.ts mayEditInput), asked before the form is drawn: he may still
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
-  const readOnly = !isNew && !!r && !mayEditInputOf(r.person)
+  const canAll = rows.length > 1 ? rows.every(x => mayEditInput(x)) : true
+  const readOnly = !isNew && !!r && (rows.length > 1 ? !canAll : !mayEditInput(r))
+  /* A MAN IN A SHARED INPUT WHO DID NOT FILE IT (D655, reading 2) reads it, and has exactly two things of his own: take
+     himself out, and his own OIL answer. Anyone else only reads it. */
+  const mineRow = rows.length > 1 && !canAll ? rows.find(x => isMe(x.person)) || null : null
+  const filer = rows.length > 1 ? csOf(rows.find(x => x.grpBy)?.grpBy ?? rows.find(x => x.by)?.by ?? '') || 'whoever filed it' : ''
+  const takeMeOut = () => {
+    const mine = mineRow && INPUTS.find((x: any) => x.iid === mineRow.iid)
+    setTakeOut(false)
+    if (mine && removeInput(mine)) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()
+  }
+  /* THE DATES OF A SAVED SHARED INPUT ARE CHANGED HERE (owner D681, 9 Oct 26 — `[CAL-SHARED-DATES]`, found by Astra's
+     read of the calendar job's bug check). "One shared input, shown and edited as one thing" (D655) — and no door
+     changed its dates: the List's shared row opens this window (it has no edit in place: that would act on the first
+     man's record alone), the window drew its date picker for a NEW input only, and a bar's drag keeps the length. So
+     the window carries the same two-tap calendar for a saved entry of more than one man — on the Inputs page, and only
+     for a reader who may change it for EVERYONE (`readOnly` is the write path's own rule): a man in it who did not file
+     it keeps his two things and no more. Nothing new is written: the entry's ONE command (`commitGroup`) always took
+     the dates from the draft, asks the OIL question of every man kept (D660, D682) and follows the remark's "till"
+     word (`commitInputEdit`) — only the control was missing. An ordinary one-man input keeps the doors it has (its row
+     in the List, its bar), and the board's and the week's dialogs are as they were: there a moved span would take the
+     row off the day it was opened from. */
+  const datesHere = win && !isNew && rows.length > 1 && !readOnly && ctx !== 'up'
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
-     edit's stay on the row, whose dates this dialog never changes */
+     edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
+     says what a Save would write */
   const when = !r ? '' : (isNew && draft && draft.start)
     ? fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')
     /* the stored month-first labels said day-first, as the rest of the Inputs page speaks ([LW-ISO-DATES], 28 Sep 26 —
@@ -1718,14 +2244,8 @@ export function InputEditor() {
      anyone else at commit (sansRefusal), so the list should not offer them */
   const peopleFor = () => ctx === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
 
-  return (
-    <div className="airpop" id="inpEditPop" hidden={!open}
-      onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
-      <div className="airpop-box inpedbox" ref={box}>
-        <div className="airpop-head">
-          <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
-          <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
-        </div>
+  /* the form itself — the same fields, checks and buttons whichever chrome it stands in */
+  const inner = (<>
         {draft && <div className="airpop-body inped-body" inert={readOnly || undefined}>
           {/* SCHEDULER ONLY (owner, 14 Aug 26 — "allow Unavailable to be
               editable too... even down to changing the puck"). A member
@@ -1741,6 +2261,11 @@ export function InputEditor() {
               <span className="inped-k">Person</span>
               <span className="inped-v" id="inpEditPersonFixed">{PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person}</span>
             </div>
+            : picker
+            /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
+            ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)}
+              lockOne={!isNew && !canEditSched()}
+              onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
             : canEditSched() && <label className="inped-f">
               <span className="inped-k">Person</span>
               <select id="inpEditPerson" aria-label="Person" value={draft.person}
@@ -1791,11 +2316,20 @@ export function InputEditor() {
             <input type="date" id="inpEditUpDate" aria-label="Upchit date" value={draft.start}
               onChange={e => setDraft({ ...draft, start: e.target.value, end: '' })} />
           </label>}
-          {ctx === 'u' && <div className="inped-f">
+          {/* ...and a SAVED shared input's (D681 — `datesHere`, above). A saved input's dates are a finished range, so
+              the first tap is always the NEW START and the next the new end — "a tap for the start, a tap for the end";
+              a one-day input is handed to the calendar as a range of one day until that first tap, or its first tap
+              would stretch it instead (`midPick`). Its remark is not rewritten here: the save follows the "till" word
+              itself, and a remark the picker had touched would read as his own change to the window. */}
+          {(ctx === 'u' || (isNew && r._calendar) || datesHere) && <div className="inped-f">
             <span className="inped-k">Dates</span>
             <div className="inped-dates">
-              <RangeCal idPrefix="inpEd" start={draft.start} end={draft.end}
-                onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })} />
+              <RangeCal key={'cal-' + calKey} idPrefix="inpEd" start={draft.start}
+                end={datesHere && !midPick ? (draft.end || draft.start) : draft.end}
+                onPick={(s2, e2) => {
+                  if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
+                  setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })
+                }} />
               <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
             </div>
           </div>}
@@ -1861,28 +2395,75 @@ export function InputEditor() {
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>
             </div>
           </div>}
-          <div className="inped-hint">{isNew
-            ? ctx === 'up'
+          {/* who placed this input and when, and its last change — the editor's small print (owner D629; the one line
+              is ui/placedline.ts). Not on a new input, which nobody has placed yet. */}
+          {!isNew && r && (rows.length > 1 ? placedLineOf(rows) : placedLine(r)) && <div className="inped-placed" data-testid="inped-placed">{rows.length > 1 ? placedLineOf(rows) : placedLine(r)}</div>}
+          {/* a shared input its reader may NOT change for everyone says nothing here about dates: the line beside the
+              buttons already says who can change it, and "changed on the Inputs page" sent him to the page he is on */}
+          {!(win && !isNew && rows.length > 1 && readOnly) && <div className="inped-hint">{isNew
+            ? r._calendar
+              /* "your available hours" is the SANS calendar's wording — on the Inputs calendar the same window files
+                 a meeting or a leave (Opus's own read of the build, step 0, 7 Oct 26) */
+              ? isSansAvail(draft.type)
+                ? 'Choose the dates and your available hours. Save adds one input covering the whole date range.'
+                : 'Choose the dates and the hours. Save adds one input covering the whole date range.'
+              : ctx === 'up'
               ? 'Pick the day he is fit for full duty and attach the upchit document — the medical entry ends the day before, and a summary asks before anything is changed.'
               : ctx === 'u'
               ? 'Pick the dates on the calendar — the remarks carry the till date automatically, and a leave syncs to the Inputs page and Leave War.'
               : ctx === 'g'
                 ? `Added on ${when}, straight onto the Ground Programme. For a multi-day span, use the Inputs page.`
                 : `Added on ${when}. For a multi-day span, use the Inputs page.`
+            /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
+               dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
+            : datesHere
+              ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
+            : isSansAvail(draft.type)
+              ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
               ? 'The dates are changed on the Inputs page.'
-              : 'The person and the dates are changed on the Inputs page.'}</div>
+              : 'The person and the dates are changed on the Inputs page.'}</div>}
         </div>}
+        {/* HIS OWN TWO THINGS in a shared input he did not file — outside the read-only form, so they are live */}
+        {mineRow && draft && (
+          <div className="inped-own">
+            {oilAnswered(mineRow) && <div className="inped-oil">
+              <span className="inped-oilsum">Your OIL: {oilSummary(mineRow)}</span>
+              <button type="button" className="abtn ghost" data-testid="oil-revise-own"
+                onClick={() => { const g = oilGate(draftOf(mineRow), mineRow, true); if (g.kind === 'ask') setOilConf({ ...g, own: mineRow.iid }) }}>Change…</button>
+            </div>}
+            {takeOut && (
+              <div className="inped-ask" data-testid="inped-takeout-ask" role="alertdialog" aria-label="Take yourself out?">
+                <span className="inped-ask-q">Take yourself out of this input? It stays for the other {rows.length - 1 === 1 ? 'person' : `${rows.length - 1} people`}.</span>
+                <button type="button" className="abtn danger" data-testid="inped-takeout-yes" autoFocus onClick={takeMeOut}>Take me out</button>
+                <button type="button" className="abtn ghost" data-testid="inped-takeout-no" onClick={() => setTakeOut(false)}>Stay in</button>
+              </div>
+            )}
+          </div>
+        )}
+        {delAll && (
+          <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?">
+            <span className="inped-ask-q">Delete this input for all {rows.length} people?</span>
+            <button type="button" className="abtn danger" data-testid="inped-delall-yes" autoFocus onClick={delEntry}>Delete</button>
+            <button type="button" className="abtn ghost" data-testid="inped-delall-no" onClick={() => setDelAll(false)}>Keep</button>
+          </div>
+        )}
         <div className="airpop-foot">
           {/* nothing to delete on a row that does not exist yet (the board's
               + Add) — the button is simply absent in that mode */}
           {!isNew && !readOnly && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
-          {readOnly && <span className="inped-ro" data-testid="inped-ro">Only {who || 'its owner'} or an admin can change this.</span>}
+          {mineRow && !takeOut && <button className="abtn" data-testid="inped-takeout" onClick={() => setTakeOut(true)}>Take me out</button>}
+          {readOnly && <span className="inped-ro" data-testid="inped-ro">{rows.length > 1
+            ? mineRow ? `Only ${filer} — who filed it — or an admin can change this for everyone.` : `Only its people, ${filer} — who filed it — or an admin can change this.`
+            : `Only ${who || 'its owner'} or an admin can change this.`}</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>
           {!readOnly && <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>}
         </div>
-      </div>
+  </>)
+  /* the questions that must be answered before going on stay BLOCKING, over the form (the plan §3.7: "It does not
+     carry: a question that must be answered before going on") */
+  const sheets = (<>
       {/* the upchit save-time summary rides OVER this dialog (its z sits one
           layer up) — Save commits with the ticked removals, Cancel returns
           to the still-open form with nothing written */}
@@ -1900,13 +2481,65 @@ export function InputEditor() {
       {oilConf && <OilConfirm who={oilConf.who} typeLabel={oilConf.typeLabel}
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => setOilConf(null)}
-        onSave={dec => { setOilConf(null); doSave([], dec) }} />}
+        onSave={dec => { const own = oilConf.own; setOilConf(null); if (own) saveOwnOil(own, dec); else doSave([], dec) }} />}
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
           the SAME save through the rest of the pipeline (skipDoc); "Upload"
           dismisses so the filer can attach a certificate and save again */}
       {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
         onUpload={() => setDocConf(null)}
         onNoDoc={() => { setDocConf(null); save(true) }} />}
+  </>)
+  if (win) return (<>
+    <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={close}>
+      <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
+        {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
+        {swap && (
+          <div className="inped-ask" data-testid="inped-swap" role="alertdialog" aria-label="Unsaved changes">
+            <span className="inped-ask-q">This input has unsaved changes. Open {swap._new ? 'a new input' : `${PEOPLE[swap.person] ? PEOPLE[swap.person].cs : 'the other'}’s input`} and lose them?</span>
+            <button type="button" className="abtn danger" data-testid="inped-swap-go"
+              onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
+            <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>
+          </div>
+        )}
+        {/* A FIELD CHANGED BOTH WAYS — his, in the window, and someone's on the page behind it: listed, each with its
+            two values and a choice. Nothing of his is thrown away, and nothing is saved over theirs unasked. */}
+        {clash.length > 0 && draft && (
+          <div className="inped-ask" data-testid="inped-clash" role="alert">
+            <b className="inped-ask-h">Changed while this window was open</b>
+            {clash.map(k => {
+              const f = WIN_FIELDS.find(x => x.k === k)!
+              return (
+                <div key={k} className="inped-clash-row">
+                  <span className="inped-ask-q">{f.label} — theirs {fieldSay(k, base.current)}, yours {fieldSay(k, draft)}</span>
+                  <button type="button" className="abtn" data-testid={'inped-clash-mine-' + k} onClick={() => setClash(c => c.filter(x => x !== k))}>Keep mine</button>
+                  <button type="button" className="abtn" data-testid={'inped-clash-theirs-' + k}
+                    onClick={() => {
+                      setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k))
+                      /* dates taken back from the record are a FINISHED range again: the next tap is a new start, not
+                         the end of a pick he has just given up (Astra's read of the date door, 9 Oct 26 - A4) */
+                      if (k === 'start' || k === 'end') { setMidPick(false); if (!clash.some(x => x !== k && (x === 'start' || x === 'end'))) setDatesPicked(false) }
+                    }}>Take theirs</button>
+                </div>
+              )
+            })}
+          </div>
+        )}
+        {inner}
+      </div>
+    </FloatWin>
+    {sheets}
+  </>)
+  return (
+    <div className="airpop" id="inpEditPop" hidden={!open}
+      onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
+      <div className="airpop-box inpedbox" ref={box}>
+        <div className="airpop-head">
+          <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
+          <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
+        </div>
+        {inner}
+      </div>
+      {sheets}
     </div>
   )
 }

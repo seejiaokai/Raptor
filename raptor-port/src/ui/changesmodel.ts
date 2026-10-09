@@ -23,7 +23,7 @@ import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { ridKey, posKey } from '../engine/rowids'
 import { PEOPLE } from '../engine/people'
-import { inpById } from '../engine/inputs'
+import { INPUTS, inpById } from '../engine/inputs'
 import { dayApproved, approvedDays } from '../engine/publish'
 import { inVersionLook } from './html'
 
@@ -126,6 +126,14 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
   const who = inp ? inp.person : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
   /* gone, it keeps the type its line recorded (`itype` — Astra's final read, FR-04) */
   const type = inp ? inp.type : (r.itype || '')
+  /* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663): keyed by the group its line recorded — never by the input
+     as it now stands, so a man since changed alone stays under the filing he was part of. Its title is the kind and how
+     many people: those the shared input holds now, or — once it has gone — those its lines name. */
+  if (r.grp) {
+    const now = (INPUTS as any[]).filter(x => x && x.grp === r.grp).length
+    const n = now || new Set(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => x.sub)).size
+    return { id: `${date}|IG|${r.grp}`, title: `Input${type ? ' · ' + type : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
+  }
   const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
 }
@@ -226,6 +234,8 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
 export type Entry = {
   line: CLine; row: ELogRow; item: Item; title: string; detail: string; text: string; from: string; to: string
   key: string; iid?: string; t: number; seq: number; date: string | null; fresh: boolean; move?: 'in' | 'out'
+  /** the men of ONE filing, A to Z, where this entry stands for several of them (D663 — `mergeFiled`, below) */
+  names?: string[]
 }
 /* the other item's title, its kind word dropped when both are the same kind ("moved in from MET + NOTAM BRIEF") */
 const shortTitle = (other: string, mine: string) => {
@@ -238,6 +248,8 @@ function ownWords(r: ELogRow, item: Item): string {
   /* a Blue/Red answer's own words are where it was given ("Working copy", "Published · AL1", "copied with the day
      template") — its formation and "mission role" are already its heading (W7) */
   if (r.fld === 'mission-role') { const i = lbl.indexOf(' · mission role · '); return i < 0 ? lbl : lbl.slice(i + ' · mission role · '.length) }
+  /* under a group filing's item every line NAMES its man — the heading is the kind and how many (D663) */
+  if (r.grp) return lbl
   const who = r.sub || (r.iid ? (inpById(r.iid) as any)?.person : '')
   for (const lead of [`Leave War · ${csOf(who)} · `, `${csOf(who)} · `]) if (who && lbl.startsWith(lead)) return lbl.slice(lead.length)
   return item.title === lbl ? '' : lbl
@@ -291,6 +303,36 @@ export function entriesOf(l: CLine, days?: string[]): Entry[] {
 const dowOf = (iso: string | null) => { if (!iso) return ''; const d = new Date(iso + 'T00:00:00Z').getUTCDay(); return Number.isFinite(d) ? DOW[(d + 6) % 7]! : '' }
 const withDay = (title: string, date: string | null, week: boolean) => (week && dowOf(date) ? `${dowOf(date)} · ${title}` : title)
 
+/* THE MEN OF ONE FILING ARE ONE LINE, THEIR NAMES LISTED UNDER IT (owner D663, 7 Oct 26: "a group filing is one item —
+   its kind and how many people, the names listed under it — not a line for each man"; the approved picture shows ONE
+   line, "Meeting added · 15 Jul", and "Ace · Drifter · Ranger · Saber" beneath). The history still writes a line for
+   each man — "To go out" finds a line by its man, and "Group by: Who" is a line each — so the folding is done HERE,
+   where the window groups by item: under a group filing's item, the lines one person wrote in one moment that say the
+   same thing of different men become one entry — its words said once, without a name, and the men in `names`.
+   A change to ONE man alone stays its own line, naming him (D663 reading 1). It was built as one heading over a line
+   for each man; D624's pair in the calendar job's bug check, 8 Oct 26, set the picture beside it. */
+function mergeFiled(entries: Entry[]): Entry[] {
+  const out: Entry[] = []
+  const runs: Array<{ k: string; e: Entry; who: string[]; words: string }> = []
+  for (const e of entries) {
+    const r = e.row
+    const cs = r.grp && r.sub && e.line.rows.length === 1 ? csOf(r.sub) : ''
+    if (!cs || !e.text.startsWith(cs + ' · ')) { out.push(e); continue }
+    const words = e.text.slice(cs.length + 3)
+    const k = `${r.pid ?? e.line.who}|${words}|${e.from}|${e.to}`
+    const run = runs.find(x => x.k === k && Math.abs(x.e.t - e.t) <= PAIR_MS)
+    if (run) { run.who.push(cs); if (e.fresh) run.e.fresh = true; continue }
+    const mine = { ...e }
+    runs.push({ k, e: mine, who: [cs], words }); out.push(mine)
+  }
+  for (const run of runs) {
+    if (run.who.length < 2) continue                 // one man alone: his own line, naming him
+    run.e.text = run.words
+    run.e.names = [...new Set(run.who)].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+  }
+  return out
+}
+
 export type ItemGroup = { key: string; title: string; entries: Entry[]; t: number; seq: number; fresh: boolean; one: boolean }
 /* one group per item, the item whose latest change is newest on top; its entries newest first; `one` — changed once */
 export function byItem(lines: CLine[], week: boolean, days?: string[]): ItemGroup[] {
@@ -302,6 +344,7 @@ export function byItem(lines: CLine[], week: boolean, days?: string[]): ItemGrou
   }
   for (const g of m.values()) {
     g.entries.sort((a, b) => b.t - a.t || b.seq - a.seq)
+    g.entries = mergeFiled(g.entries)
     const top = g.entries[0]!
     g.title = withDay(top.title, top.date, week)
     g.t = top.t; g.seq = top.seq

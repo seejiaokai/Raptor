@@ -1,0 +1,98 @@
+<title>Note With Pucks</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
+<style>
+  /* One column of phone pictures, each with its height in the caption; the open questions sit at the foot as cards.
+     A single dark look, the app's own: its panels, its cyan, its amber. */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0d11; --panel: #14181e; --edge: #2a313b; --ink: #e9edf2; --ink-2: #a8b1bd; --ink-3: #7a8491;
+    --accent: #3bc6e8; --mark: #ffd60a; --done: #57c98a;
+    --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+    --body: Barlow, "Segoe UI", Arial, sans-serif;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; }
+  main { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 28px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 30px; line-height: 1.1; margin: 0; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 21px; margin: 0; text-wrap: balance; }
+  p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+  .lede { color: var(--ink); }
+  .tag { font-family: var(--display); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; color: var(--ink-3); }
+  .tag.pick { color: var(--mark); }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; align-items: start; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  figure button { all: unset; cursor: zoom-in; display: block; border: 1px solid var(--edge); border-radius: 12px; overflow: hidden; background: var(--panel); }
+  figure button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  figure img { display: block; width: 100%; height: auto; }
+  figcaption { display: flex; flex-direction: column; gap: 2px; }
+  figcaption b { font-weight: 600; color: var(--ink); }
+  figcaption span { color: var(--ink-2); font-size: 15px; }
+  .size { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  section { display: flex; flex-direction: column; gap: 12px; }
+  .q { border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .q b { color: var(--ink); font-weight: 600; }
+  .q .rec { color: var(--accent); font-weight: 600; }
+  .q.done b { color: var(--ink-2); }
+  .q.done .rec { color: var(--done); }
+  .note { font-size: 14px; color: var(--ink-3); }
+  dialog { border: 0; padding: 0; background: #000; max-width: 100vw; max-height: 100dvh; width: 100vw; height: 100dvh; overflow: auto; }
+  dialog::backdrop { background: #000; }
+  dialog img { display: block; width: 780px; max-width: none; margin: 0 auto; cursor: zoom-out; }
+  dialog button { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; font: 600 15px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; padding: 8px 14px; }
+</style>
+<main>
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="tag">A drawing · nothing here is built</span>
+    <h1>A note that carries its own pucks</h1>
+    <p class="lede">Redrawn compact, then slimmer again, as you asked. Every picture is a small phone on a day that already has four inputs, so you can see how far the inputs are pushed down. Tap a picture to see it full size.</p>
+  </header>
+
+  <section>
+    <h2>Today, for comparison</h2>
+    <div class="pair">
+      <figure>
+        <button type="button" data-zoom="img/note-with-pucks/a-today.png" aria-label="Open picture: today"><img src="img/note-with-pucks/a-today.png" alt="The opened day today: a note, and under it a separate row of five pucks with its own add and delete buttons, then the day's four inputs. The top bar has two buttons, + Note and + Pucks."></button>
+        <figcaption><span class="tag">Today</span><b>A note, and a separate row of pucks</b><span>Together they take <span class="size">146</span> points of height before the first input.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>The one you chose: A, with a slimmer line of words</h2>
+    <div class="pair">
+      <figure>
+        <button type="button" data-zoom="img/note-with-pucks/c-compact.png" aria-label="Open picture: compact"><img src="img/note-with-pucks/c-compact.png" alt="Compact: the note's words on one slim line with a small pencil and cross, its five pucks four across straight under them with a dashed plus as the last, then the day's four inputs."></button>
+        <figcaption><span class="tag pick">A · Compact — chosen</span><b>People shown, four across</b><span><span class="size">77</span> points. The line of words is as slim as the box a note is typed in. The six dots and the box’s left edge are moved left, so four pucks sit with the same room on the right as on the left.</span></figcaption>
+      </figure>
+    </div>
+    <p class="note">B, folded to one line, is not taken.</p>
+  </section>
+
+  <section>
+    <h2>Your question: people and no words</h2>
+    <div class="pair">
+      <figure>
+        <button type="button" data-zoom="img/note-with-pucks/e-people-only.png" aria-label="Open picture: people and no words"><img src="img/note-with-pucks/e-people-only.png" alt="A note with no words: just its five pucks three across, a dashed plus, and the note's edit and delete buttons at the right."></button>
+        <figcaption><b>It would look like this</b><span><span class="size">50</span> points. No line of words at all: just the people, the “+”, and the note’s pencil and cross. The pencil adds words later.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>What is settled, and what is open</h2>
+    <div class="q done"><b>Taking a person off a note</b><span><span class="rec">Settled — as today.</span> Drag the puck off, or onto another puck to swap.</span></div>
+    <div class="q done"><b>When it is built</b><span><span class="rec">Settled — after “merge live”,</span> as its own small job.</span></div>
+    <div class="q done"><b>Which drawing</b><span><span class="rec">Settled — A,</span> with the line of words made slimmer.</span></div>
+    <div class="q"><b>Still open. May a note hold people and no words, as drawn above?</b><span><span class="rec">I recommend yes.</span> Otherwise a plain list of people for a day would need made-up words.</span></div>
+  </section>
+</main>
+<dialog id="zoom" aria-label="Picture, full size"><button type="button" id="zoomClose">Close</button><img id="zoomImg" src="img/note-with-pucks/a-today.png" alt="The opened day today"></dialog>
+<script>
+  const dlg = document.getElementById('zoom'), big = document.getElementById('zoomImg')
+  document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => {
+    big.src = b.dataset.zoom; big.alt = b.querySelector('img').alt
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '')
+  }))
+  const shut = () => { if (dlg.close) dlg.close(); else dlg.removeAttribute('open') }
+  document.getElementById('zoomClose').addEventListener('click', shut)
+  big.addEventListener('click', shut)
+</script>

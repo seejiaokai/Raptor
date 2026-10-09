@@ -1,5 +1,5 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback, type TouchEvent } from 'react'
-import { shortDate } from './dates'
+import { dayLabel, shortDate, shortSpan } from './dates'
 import {
   addDays,
   balanceOf,
@@ -51,7 +51,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -61,13 +61,14 @@ import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
+import { FlyRows, type FlyPickApi } from './FlyRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
 import type { Portion, PostOutcome } from '../engine'
-import { outcomeOf } from '../engine'
+import { outcomeOf, bandAt, classifyEvent, dayEvent, dayEventKind, EVENT_KIND_WORDS } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
 import { creditGiver, type CreditRec } from '../engine/warrecs'
@@ -81,7 +82,8 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -709,7 +711,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -857,6 +859,12 @@ export function Matrix() {
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
   // then opens pre-set to that range; a single click leaves it undefined.
   const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string } | null>(null)
+  /* THE BOX A TAP ON A FILLED EVENT CELL OPENS (the Inputs / SANS redesign, plan §3.12; owner D643, D644): the grid
+     prints an event's short form, and this is where its full name, its kind and its dates are read — by everyone; an
+     admin's carries "Edit". A small menu, not a window (D641's reading 2): screen-fixed like the quals popover, closed
+     by a press outside it, Escape, a scroll or a resize. `tid` is the cell it hangs from, so a second tap on that cell
+     closes it rather than closing and re-opening it. */
+  const [evPeek, setEvPeek] = useState<{ line: number; date: string; tid: string; x: number; y: number } | null>(null)
   // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
   // the row's name says what it counts and where its colours turn on).
   const [manningInfo, setManningInfo] = useState<string | null>(null)
@@ -864,6 +872,8 @@ export function Matrix() {
   // NEW counter, an id editing that one. Reached from + Counter in the
   // Rearrange tools and from the explainer sheet's Edit counter… button.
   const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
+  /* the two Available rows' names open this same form (FlyRows.tsx — D640); stable, so the rows' memo holds */
+  const editAvail = useCallback((id: 'availp' | 'availw') => setCounterEdit(id), [])
   // The ⚙ SETTINGS sheet (owner, 3 Sep 26) — all admin config (counters, event
   // rows, Show SANS, the roster groups), opened from the top-row ⚙.
   const [settings, setSettings] = useState(false)
@@ -871,10 +881,8 @@ export function Matrix() {
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Started from the ⠿ in the grid corner (owner, 3 Sep 26).
   const [arranging, setArranging] = useState(false)
-  // "Reset counters" arms rather than firing (it discards custom counters);
-  // disarmed whenever the Settings sheet closes so it never sits armed unseen.
-  const [armCounterReset, setArmCounterReset] = useState(false)
-  useEffect(() => { if (!settings) setArmCounterReset(false) }, [settings])
+  // ("Reset counters" and its armed question lived here until D669, 8 Oct 26: with no built-in counters there is
+  // nothing to go back to. A counter deleted by mistake comes back with Undo.)
   // Pointer-based drag (owner, 18 Aug 26 — the roster rearranges on a phone
   // too, where HTML5 drag-and-drop does nothing). `dragId`/`dragOverRef` are
   // refs because they change many times a second during a drag and must not
@@ -1114,6 +1122,10 @@ export function Matrix() {
   // Assigned just before the return, where rosterSequence and the mode flags
   // are in scope.
   const selCtxRef = useRef<SelectCtx | null>(null)
+  /* The Required rows own their picked block and its panel (FlyRows.tsx) — a pick there must not re-render this
+     grid. This ref is the hand-over: the drag below calls `pick`, and a pick of anything else calls `close`, so the
+     two non-blocking panels (D641, D642) are never up together. */
+  const flyPickRef = useRef<FlyPickApi | null>(null)
   useEffect(() => {
     const w = wrapRef.current
     if (!w) return
@@ -1124,6 +1136,8 @@ export function Matrix() {
       onSelect: s => selCtxRef.current?.onSelect(s),
       eventsEnabled: () => selCtxRef.current?.eventsEnabled?.() ?? false,
       onEventSelect: s => selCtxRef.current?.onEventSelect?.(s),
+      reqEnabled: () => selCtxRef.current?.reqEnabled?.() ?? false,
+      onReqSelect: s => selCtxRef.current?.onReqSelect?.(s),
       leftEdge: () => selCtxRef.current?.leftEdge?.() ?? w.getBoundingClientRect().left,
     })
   }, [])
@@ -1140,7 +1154,7 @@ export function Matrix() {
      its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
      keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
      switch (an undo that snaps the war, a reload of the picker). */
-  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null) }, [period.id])   // the event sheet too (Fable F4)
+  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null); setEvPeek(null) }, [period.id])   // the event sheet too (Fable F4)
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -1799,10 +1813,13 @@ export function Matrix() {
   // rest, where the anchor correction absorbs the difference.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const widthGen = useMemo(() => ({}), [version, visWindow, folded, countsOpen, arranging])
-  // The CURRENT token lives in a ref, because one input never reaches a render:
-  // the manning Archive is CountRows' own state (a tap there must not re-render
-  // this grid), so it replaces the token directly (`onArchiveChange`). A render
-  // only overwrites the ref when its own inputs moved, never with a stale memo.
+  // The CURRENT token lives in a ref, because some inputs never reach a render:
+  // the four Required / Available rows repaint themselves (FlyRows hears its own
+  // two stores — a figure there can widen a day column), and until D669 the
+  // manning Archive was CountRows' own state. Each replaces the token directly
+  // (`onArchiveChange` — the name is the Archive's, kept; CountRows calls it now
+  // when a count row goes in or out). A render only overwrites the ref when its
+  // own inputs moved, never with a stale memo.
   const widthGenRef = useRef<object>(widthGen)
   const widthGenSeenRef = useRef(widthGen)
   if (widthGenSeenRef.current !== widthGen) { widthGenSeenRef.current = widthGen; widthGenRef.current = widthGen }
@@ -1917,6 +1934,39 @@ export function Matrix() {
       >{catText(p) || 'GND'}</span>
     )
   }
+  /* THE EVENT BOX'S OWN WAYS TO CLOSE — the quals popover's, below, for the same reasons: it is anchored in screen
+     coordinates, so a scroll or a resize strands it; a pointer-down anywhere but the box and the cell it hangs from
+     dismisses it, by a listener and never a scrim, so the next tap and the next drag reach the grid untouched. */
+  useEffect(() => {
+    if (!evPeek) return
+    const close = () => setEvPeek(null)
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (!t || t.closest('.evpeek')) return
+      if (t.closest(`[data-testid="${evPeek.tid}"]`)) return   // its own cell: the click that follows toggles it
+      setEvPeek(null)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      e.stopPropagation()
+      setEvPeek(null)
+    }
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    document.addEventListener('pointerdown', onDown, true)
+    window.addEventListener('keydown', onKey, true)
+    return () => {
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
+      document.removeEventListener('pointerdown', onDown, true)
+      window.removeEventListener('keydown', onKey, true)
+    }
+  }, [evPeek])
+  /* …and it never outlives what it was opened for: a sheet opening over the grid, either move mode starting. */
+  useEffect(() => { if (eventEdit || moveSel || eventMoveSel) setEvPeek(null) }, [eventEdit, moveSel, eventMoveSel])
+
   /* While the popover is up: it is anchored in screen coordinates, so any scroll
      or resize leaves it stranded — close it. And a pointer-down anywhere that is
      not a chip or the popover itself dismisses it (the phone's tap-away, and the
@@ -3466,6 +3516,9 @@ export function Matrix() {
   // reason the band does: one order, so the two cannot fall out of step.
   const drawerRows = (): DrawerRow[] => [
     ...Array.from({ length: eventRows }, (_, line) => ({ kind: 'blank' as const, key: `event-row-${line}` })),
+    /* (The four Required / Available rows — FlyRows.tsx — are NOT here: they sit at the foot of the Manning block
+       (D665), above where the drawer starts. While they sat in the Events block, for a few hours on 8 Oct 26, each
+       needed a box here or every roster row in the drawer stood four rows too high — a row added to that block does.) */
     ...rosterSequence().map((item): DrawerRow =>
       item.kind === 'group' ? { kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g) }
         : item.kind === 'catsub' ? { kind: 'catsub', key: `subcat-${item.g}-${item.cat}` }
@@ -3480,8 +3533,18 @@ export function Matrix() {
   // has to snap back to it after the grid has been dragged away, and a date
   // alone cannot express that. jsdom reports every rect as 0, which makes the
   // jump a harmless no-op there; the browser gate is what proves it moves.
+  //
+  // THE SOFT ASK (owner, D670, 8 Oct 26 — "if the change was already in view for the undo and redo, the screen should
+  // just remain there … instead of snapping the change to the left of the screen"): an Undo or a Redo asks with
+  // `focusSoft`, and the grid then moves only when the day's column is NOT wholly on screen (ui/inview.ts) — its month
+  // not drawn, the column under the frozen names, or off either edge. Every plain ask still jumps.
   useEffect(() => {
-    if (focusDate) jumpTo(focusDate)
+    if (!focusDate) return
+    if (focusSoft) {
+      const wrap = wrapRef.current, cell = headCell(focusDate)
+      if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
+    }
+    jumpTo(focusDate)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusSeq, focusDate])
 
@@ -3600,12 +3663,16 @@ export function Matrix() {
       .filter(id => canEditRow(role, viewer, id)),
     dates: () => drawnDates,
     enabled: () => !arranging && !moveSel && !eventMoveSel && (role === 'admin' || period.stage === 'open'),
-    onSelect: s => setSel(s),
+    onSelect: s => { flyPickRef.current?.close(); setSel(s) },
     // Events are the admin's (the store refuses a member write anyway); a drag
     // along one event line opens the event sheet pre-set to that date span
     // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
     eventsEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
-    onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
+    onEventSelect: s => { flyPickRef.current?.close(); setSel(null); setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }) },
+    // The Required rows are the admin's to type (the scheduler's command gate refuses a member anyway); a drag over
+    // them opens the Required panel for the picked block (owner, D636, D637), and closes the people's-days panel.
+    reqEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
+    onReqSelect: s => { setSel(null); flyPickRef.current?.pick(s) },
     // The days begin past the frozen block — the name/counter pair, or the
     // drawer while it is open (frozenWidth is already drawer-aware).
     //   No wrap means nothing to measure, and `0` would be a LIE the band could
@@ -3774,14 +3841,13 @@ export function Matrix() {
                 paints a thead at the TOP of the table wherever it sits in
                 the DOM, which would undo this whole arrangement. */}
             {/* Collapsed away on the view toggle, but always shown while an
-                admin is Rearranging — that is where the per-row reorder / hide
+                admin is Rearranging — that is where the per-row reorder / delete
                 controls live, and hiding the block would hide them too. */}
             {(countsOpen || (arranging && role === 'admin')) && (
               <CountRows
                 verdicts={verdicts}
                 dates={drawnDates}
-                order={orderedManningIds()}
-                hidden={manningHidden}
+                order={manningBlockOrder()}
                 arranging={arranging}
                 admin={role === 'admin'}
                 onInfo={setManningInfo}
@@ -3793,7 +3859,24 @@ export function Matrix() {
                 padR={padR}
                 phL={phL}
                 phR={phR}
-                onArchiveChange={onArchiveChange}
+                onRowsChange={onArchiveChange}
+                /* THE FOUR FIXED ROWS OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS
+                   redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to the
+                   plan's and the war's signals; a figure that widens a day column asks for the same re-measure the
+                   Archive rows did — which also re-places the Figures drawer and the open-bidding outline, both
+                   measured off the dates BELOW this block (the two things he circled on the hand-drawn picture: the
+                   gate e2e/leavewar.spec.ts checks both in a real browser).
+                     AND THE COUNTERS STAND AMONG THEM WHERE THE ADMIN PUTS THEM (D674, 8 Oct 26): CountRows hands its
+                   rows over in runs and FlyRows draws each run above, between or below its four. In Rearrange each of
+                   the four is a place to drop (the same `data-mrow` the counters carry, so MANNING_DRAG hit-tests
+                   them with no second machine) and shows the landing bar from the drag state below. */
+                fixed={runs => (
+                  <FlyRows
+                    days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR}
+                    onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail}
+                    runs={runs} arranging={arranging && role === 'admin'} dragOver={draggingId ? dragOver : null} dragAfter={dragAfter}
+                  />
+                )}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -3851,6 +3934,13 @@ export function Matrix() {
                  its sheet, whose Move started a SECOND move — and one click then moved both. While any move is on, the
                  event rows open nothing. */
               onEdit={(line, date) => { if (moveSel || eventMoveSel) return; setEventEdit({ line, date }) }}
+              /* a FILLED cell: the small box, for everyone — and nothing while a move is on (a landing opens neither a
+                 box nor a sheet). 240 is `.evpeek`'s own width; a second tap on the same cell closes it. */
+              onPeek={(line, date, el) => {
+                if (moveSel || eventMoveSel) return
+                const tid = el.getAttribute('data-testid') ?? ''
+                setEvPeek(cur => (cur && cur.tid === tid ? null : { line, date, tid, ...popAt(el.getBoundingClientRect(), 240, 104) }))
+              }}
               padL={padL}
               padR={padR}
               phL={phL}
@@ -4311,6 +4401,9 @@ export function Matrix() {
           `open`; a drag never sets `open`. */}
       {sel && (
         <SelectSheet
+          /* a NEW drag while the panel is up replaces what it acts on (D642) — and starts it afresh: a Delete armed
+             for the old block, or a below-zero ask, must not carry over to the new one */
+          key={`${sel.from}|${sel.to}|${sel.people.join(',')}`}
           sel={sel}
           people={csOf}
           /* the ask before a fill takes anyone below zero (D418) */
@@ -4494,6 +4587,34 @@ export function Matrix() {
           </div>
         )
       })()}
+      {/* The event box (plan §3.12): the full name the grid's short form stands for, its kind in its colour, its date
+          or — for a merged band — its dates. Read from the store on every paint, so it can never show an event that
+          has since been changed, and it goes when its event does. */}
+      {evPeek && (() => {
+        const band = bandAt(period.bands, evPeek.line, evPeek.date)
+        const day = period.days.find(d => d.date === evPeek.date)
+        const text = band ? band.text : day ? dayEvent(day, evPeek.line) : ''
+        if (!text) return null
+        const kind = (band ? band.kind : day ? dayEventKind(day, evPeek.line) : null) ?? classifyEvent(eventDefs, text)
+        return (
+          <div className="evpeek" role="dialog" aria-label={text} data-testid="event-peek" style={{ left: evPeek.x, top: evPeek.y }}>
+            <div className="evpeek-name">{text}</div>
+            <div className="evpeek-meta">
+              {kind && <span className={`evpeek-kind ${kind}`} data-testid="event-peek-kind">{EVENT_KIND_WORDS[kind]}</span>}
+              <span className="evpeek-when">{band ? shortSpan(band.from, band.to) : `${dayLabel(evPeek.date)} ${evPeek.date.slice(2, 4)}`}</span>
+            </div>
+            {role === 'admin' && (
+              <button
+                className="evpeek-edit"
+                data-testid="event-peek-edit"
+                onClick={() => { const { line, date } = evPeek; setEvPeek(null); setEventEdit({ line, date }) }}
+              >
+                Edit
+              </button>
+            )}
+          </div>
+        )
+      })()}
       {/* The OIL tracker — everyone's balances, or one person's ledger. The
           person guard matches the sheets above: a row can go while it is up. */}
       {oilTracker && (oilTracker.person === null || people.some(p => p.id === oilTracker.person)) && (
@@ -4546,13 +4667,13 @@ export function Matrix() {
           // settings sheet so the two do not stack (both `.bidsheet`, same z-index,
           // so an open settings row would sit over the builder and eat its taps).
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
-          armCounterReset={armCounterReset}
-          onResetCounters={() => {
-            if (!armCounterReset) { setArmCounterReset(true); return }
-            setArmCounterReset(false)
-            resetManningRules()
+          // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
+          // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
+          onDays={() => {
+            setSettings(false)
+            const shown = months.find(m => m.label === inViewRef.current) || months[0]
+            openDays(shown ? shown.first : period.start)
           }}
-          disarmCounterReset={() => setArmCounterReset(false)}
           onGroupDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}

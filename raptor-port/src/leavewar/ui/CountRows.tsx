@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent, RefCallback } from 'react'
-import type { DayVerdict } from '../engine'
-import { toggleManningRow } from '../state/store'
+import { useLayoutEffect, useRef } from 'react'
+import type { PointerEvent as ReactPointerEvent, ReactNode, RefCallback } from 'react'
+import { FIXED_ROWS, isFixedRow, type DayVerdict } from '../engine'
+import { deleteManningRule } from '../state/store'
 
 /** Rounds for display only — 4.5 stays 4.5, 4 does not become "4.0". */
 const show = (n: number) => String(Math.round(n * 10) / 10)
@@ -10,7 +10,6 @@ export function CountRows({
   verdicts,
   dates,
   order,
-  hidden,
   arranging,
   admin,
   onInfo,
@@ -22,17 +21,25 @@ export function CountRows({
   padR,
   phL,
   phR,
-  onArchiveChange,
+  onRowsChange,
+  fixed,
 }: {
+  /** THE FOUR FIXED ROWS — Required P and W, Available P and W (FlyRows.tsx; owner D665, 8 Oct 26: "I'm going with B" —
+   *  in the Manning block, not under the Event rows) — drawn by the caller AMONG this block's own rows. It is handed
+   *  the counters' rows in five runs — those above Required P, those between each pair of the four, those below
+   *  Available W — and returns the block's rows whole (owner, D674, 8 Oct 26: a counter "moved to anywhere in between
+   *  the fixed blue dot rows … even to below the 4 as well"). The four follow the same row contract, fold away with
+   *  the block, and are never dragged or deleted here. Since D669 they are ALL the block shows until a squadron makes
+   *  a counter — so the block is drawn for them even when it has no count row at all. */
+  fixed?: (runs: ReactNode[][]) => ReactNode
   verdicts: Record<string, DayVerdict>
   dates: string[]
-  /** The manning rows' display order (store's `orderedManningIds`). */
+  /** The block's rows in the order they are drawn (store's `manningBlockOrder`): the squadron's own counters and the
+   *  four fixed rows' tokens (engine/fixedrows.ts). A list that names no fixed row draws its counters above them. */
   order: string[]
-  /** Rule ids an admin has hidden. */
-  hidden: string[]
   /** Rearrange mode is on (the roster/manning edit toggle). */
   arranging: boolean
-  /** The viewer is an admin — the only role that may reorder or hide. */
+  /** The viewer is an admin — the only role that may reorder or delete. */
   admin: boolean
   /** A tap on a row's NAME opens its explainer sheet (owner, 19 Aug 26 —
    *  "create a bubble when I tap on the individual crew counter"). */
@@ -54,34 +61,14 @@ export function CountRows({
   padR?: boolean
   phL?: RefCallback<HTMLTableCellElement>
   phR?: RefCallback<HTMLTableCellElement>
-  /** Called once the Archive's rows have gone in or out of the DOM. They are
-   *  cells of the grid's own table, so they can change a day column's width —
-   *  Matrix re-measures on it (see there). Wired by Matrix. */
-  onArchiveChange?: () => void
+  /** Called once a count row has gone in or out of the DOM (a counter made, or deleted with the cross). They are
+   *  rows of the grid's own table, standing ABOVE the dates: the open-bidding outline, the Figures drawer and the
+   *  frozen header are all placed off rows below them, and a row's numbers can change a day column's width — Matrix
+   *  re-measures on it (see there). It was the Archive's signal until the Archive went (D669); the reason for it
+   *  did not. Wired by Matrix. */
+  onRowsChange?: () => void
 }) {
   const editing = arranging && admin
-  // THE ARCHIVE (owner, 5 Sep 26 — "a row to open below the counter row that's
-  // called Archive, so those go there will be out of view unless I bring it
-  // back", then "a merged 1 bar horizontally", and Rearrange-only). A hidden
-  // counter no longer sits dimmed in the list while an admin rearranges: it
-  // moves under an ARCHIVE bar at the foot of the block, closed by default, and
-  // comes back with the ↺ inside. Local view state on purpose — a tap on the
-  // bar must not re-render the ~28k-node grid the way a Matrix state would —
-  // and it shuts again when Rearrange ends, so every visit starts closed.
-  const [archiveOpen, setArchiveOpen] = useState(false)
-  useEffect(() => { if (!editing) setArchiveOpen(false) }, [editing])
-  // ...but its rows ARE rows of the grid's table, and their numbers can widen a
-  // day column. The grid caches month widths and pins the frozen header's
-  // column widths, so it has to hear about it — without being re-rendered
-  // ([LW-MONTHJUMP-PHONE] review, Astra LW-101, 23 Sep 26). A layout effect, so
-  // the rows are already in (or out of) the DOM when the grid measures. Not on
-  // the first run: a block that mounts closed has changed nothing.
-  const archiveMountedRef = useRef(false)
-  useLayoutEffect(() => {
-    if (!archiveMountedRef.current) { archiveMountedRef.current = true; return }
-    onArchiveChange?.()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [archiveOpen])
 
   // `requirementFor` can swap in a wholly different rule set per date via
   // `overrides[date]` — nothing constrains an override's rules to the same
@@ -94,34 +81,44 @@ export function CountRows({
       if (!label.has(r.ruleId)) label.set(r.ruleId, r.label)
     }
   }
-  if (label.size === 0) return null
 
   // Display order = the admin's order first (only ids that actually have a row
-  // today), then any row a per-day override introduced that the default order
-  // never named, appended so it is never dropped.
-  const ids = order.filter(id => label.has(id))
-  const seen = new Set(ids)
-  for (const id of label.keys()) if (!seen.has(id)) ids.push(id)
+  // today — and the four fixed rows' tokens, which mark where those stand), then
+  // any row a per-day override introduced that the default order never named,
+  // so it is never dropped: at the foot of the counters above the four, where a
+  // counter the order does not name has always appeared.
+  const seq = order.filter(id => isFixedRow(id) || label.has(id))
+  const seen = new Set(seq)
+  const extra = [...label.keys()].filter(id => !seen.has(id))
+  if (extra.length) { const at = seq.findIndex(isFixedRow); seq.splice(at < 0 ? seq.length : at, 0, ...extra) }
+  /* the counters drawn, top to bottom */
+  const ids = seq.filter(id => !isFixedRow(id))
+  /* THERE IS NO HIDING A ROW ANY MORE (owner, D669, 8 Oct 26 — "instead of hide (eye) we should replace it with a
+     delete cross"). The eye archived a counter out of view and the ARCHIVE bar at the foot of the block (5 Sep 26)
+     brought it back; both are gone. A row a store written before that day had hidden is simply drawn — nothing
+     stored is converted (D56), and a row nobody can see with no way to bring it back would be worse than one too
+     many. */
 
-  // A member never sees a hidden row, and neither does an idle admin. While an
-  // admin is arranging, the hidden rows are ARCHIVED: out of the list, kept
-  // under the Archive bar below it, drawn only while that bar is open.
-  const hiddenSet = new Set(hidden)
-  const live = ids.filter(id => !hiddenSet.has(id))
-  const archived = editing ? ids.filter(id => hiddenSet.has(id)) : []
-  if (live.length === 0 && archived.length === 0) return null
+  // Tell the grid when the NUMBER of count rows it draws has changed — after they are in (or out of) the DOM, since
+  // that is what it then measures. Not on the first run: a block that has just mounted has changed nothing.
+  const rowCount = useRef<number | null>(null)
+  useLayoutEffect(() => {
+    if (rowCount.current !== null && rowCount.current !== ids.length) onRowsChange?.()
+    rowCount.current = ids.length
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ids.length])
+
+  /* nothing to draw at all: no counter, and nobody drawing the four fixed rows */
+  if (ids.length === 0 && !fixed) return null
 
   // One lookup map per date, built once, so each cell is a ruleId lookup
   // rather than a per-cell `find` over that date's results array.
   const byDate = new Map(dates.map(date => [date, new Map(verdicts[date]?.results.map(r => [r.ruleId, r]))]))
-  // The day columns as the header draws them — the drawn days plus the column
-  // window's placeholder cell on each side (see `padL`/`padR`) — which is what
-  // the Archive bar's fill cell must span to read as one bar.
-  const dayCols = dates.length + (padL ? 1 : 0) + (padR ? 1 : 0)
+  /* the cross deletes a counter of the squadron's own list; a row a per-day override alone introduced is not one */
+  const own = new Set(order)
 
-  const rowFor = (ruleId: string, isHidden: boolean) => {
+  const rowFor = (ruleId: string) => {
         const cls = [
-          isHidden ? 'mrow-hidden' : '',
           draggingId === ruleId ? 'dragging' : '',
           draggingId && dragOver === ruleId && draggingId !== ruleId ? (dragAfter ? 'dragover after' : 'dragover') : '',
         ].filter(Boolean).join(' ')
@@ -146,7 +143,7 @@ export function CountRows({
             /* the drag machine hit-tests this attribute, not the testid — the
                day cells are `count-<id>-<date>` and would shadow a testid
                prefix match (Matrix: MANNING_DRAG) */
-            data-mrow={editing && !isHidden ? ruleId : undefined}
+            data-mrow={editing ? ruleId : undefined}
             className={cls || undefined}
           >
             {/* In Rearrange the reorder GRIP sits to the LEFT of the name
@@ -154,11 +151,9 @@ export function CountRows({
                 start of the titles"), so the whole row reads as the thing you
                 grab; the two share one flex line. OUTSIDE Rearrange the cell is
                 exactly the bare button — the frozen-column clip gate measures
-                that state, and the grip (edit-mode only) never reaches it. An
-                archived row has no grip (nowhere to drag to), so it too is the
-                bare button. */}
+                that state, and the grip (edit-mode only) never reaches it. */}
             <td className="who">
-              {editing && !isHidden ? (
+              {editing ? (
                 <div className="mwho-row">
                   <span
                     className="drag"
@@ -174,38 +169,23 @@ export function CountRows({
             </td>
             {/* A count row is a rule, not a person, so it has no leave balance.
                 The cell is otherwise empty and aligns the column — in Rearrange
-                mode it carries the admin's reorder / hide controls, which have
+                mode it carries the admin's one control for the row, which has
                 nowhere else to sit in a frozen 44px column. */}
             <td className="bal" data-testid={`counter-count-${ruleId}`}>
-              {editing && !isHidden && (
+              {editing && own.has(ruleId) && (
                 <span className="mrow-tools">
-                  {/* Reorder is DRAG now (owner, 28 Aug 26 — "the rearrange
-                      could u do drag and drop … remove the arrow function"): the
-                      grip moved to the LEFT of the name (owner, 5 Sep 26, above).
-                      The hide (eye) stays here, now centred ALONE in the balance
-                      box, and since 5 Sep 26 it ARCHIVES the row — under the bar
-                      below, out of view until opened. */}
+                  {/* THE DELETE CROSS, where the eye was (owner, D669, 8 Oct 26 — "Instead of hide (eye) we should
+                      replace it with a delete cross"). It deletes the counter outright and asks nothing first,
+                      because the app's Undo brings the counter back whole — what it counts, its amber and red, its
+                      place in the list (the war's command stream carries the counters; pinned in
+                      nocounters.test.tsx). Reorder is still the grip, to the LEFT of the name. */}
                   <button
-                    className="mrow-btn eye"
-                    data-testid={`manning-hide-${ruleId}`}
-                    title="Archive this row"
-                    aria-label={`Archive ${label.get(ruleId)}`}
-                    onClick={() => toggleManningRow(ruleId)}
-                  >👁</button>
-                </span>
-              )}
-              {editing && isHidden && (
-                <span className="mrow-tools">
-                  {/* An archived row has no place to drag to, so no grip — only
-                      the way back, which returns it to its old position in the
-                      order (hiding never touched `manningOrder`). */}
-                  <button
-                    className="mrow-btn restore"
-                    data-testid={`manning-restore-${ruleId}`}
-                    title="Bring this row back"
-                    aria-label={`Bring ${label.get(ruleId)} back`}
-                    onClick={() => toggleManningRow(ruleId)}
-                  >↺</button>
+                    className="mrow-btn del"
+                    data-testid={`manning-delete-${ruleId}`}
+                    title="Delete this counter — Undo brings it back"
+                    aria-label={`Delete the ${label.get(ruleId)} counter`}
+                    onClick={() => deleteManningRule(ruleId)}
+                  >✕</button>
                 </span>
               )}
             </td>
@@ -229,44 +209,16 @@ export function CountRows({
         )
   }
 
-  return (
-    <tbody className="counts">
-      {live.map(id => rowFor(id, false))}
-      {/* THE ARCHIVE BAR — one merged bar with no day grid (owner, 5 Sep 26).
-          The category-heading technique (Matrix `tr.grp`): a sticky td over the
-          two frozen columns carries the label and stays pinned as the year
-          scrolls; ONE fill cell spans every day column, so the row is a bar,
-          not a grid. The td is the tap target, not the zero-width `.marchhd-in`
-          inside it (the heading's own lesson). Drawn only while something is
-          archived: an empty archive is clutter, and the bar appears the moment
-          the first eye is pressed. It is a HEM, not a heading (owner, 5 Sep 26
-          — "make the archive section much smaller"): a step shorter than a
-          count row, one type step below the row labels, muted ink, so it
-          never outranks the counters it serves. */}
-      {archived.length > 0 && (
-        <tr className="march" data-testid="manning-archive-row">
-          <td
-            className="marchhd"
-            colSpan={2}
-            data-testid="manning-archive"
-            role="button"
-            tabIndex={0}
-            aria-expanded={archiveOpen}
-            aria-label={`Archive — ${archived.length} hidden ${archived.length === 1 ? 'row' : 'rows'}, ${archiveOpen ? 'close' : 'open'} it`}
-            title={archiveOpen ? 'Close the Archive' : 'Open the Archive — bring a hidden row back'}
-            onClick={() => setArchiveOpen(o => !o)}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setArchiveOpen(o => !o) } }}
-          >
-            <div className="marchhd-in">
-              <span className="mcar" aria-hidden="true">{archiveOpen ? '▾' : '▸'}</span>
-              <span className="mname">ARCHIVE</span>
-              <span className="mcount">· {archived.length}</span>
-            </div>
-          </td>
-          <td className="marchfill" colSpan={dayCols} />
-        </tr>
-      )}
-      {archiveOpen && archived.map(id => rowFor(id, true))}
-    </tbody>
-  )
+  if (!fixed) return <tbody className="counts">{ids.map(id => rowFor(id))}</tbody>
+
+  /* THE COUNTERS IN FIVE RUNS, split where the four fixed rows stand (D674): run 0 above Required P, run k just under
+     the k-th fixed row, run 4 below Available W. The four keep their own order (the store's order guarantees it), so a
+     token only ever moves the cut downward. */
+  const runs: ReactNode[][] = [[], ...FIXED_ROWS.map(() => [] as ReactNode[])]
+  let k = 0
+  for (const id of seq) {
+    if (isFixedRow(id)) k = FIXED_ROWS.indexOf(id) + 1
+    else runs[k]!.push(rowFor(id))
+  }
+  return <tbody className="counts">{fixed(runs)}</tbody>
 }

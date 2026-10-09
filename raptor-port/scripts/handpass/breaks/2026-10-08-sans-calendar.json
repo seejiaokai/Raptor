@@ -1,0 +1,652 @@
+[
+ {
+  "n": 1,
+  "name": "a no-fly day says NF",
+  "file": "src/ui/sanscal-model.ts",
+  "find": ": a.cls === 'nf' ? { text: 'NF', kind: 'nf' } : null",
+  "put": ": null",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "a holiday with no short form still says what it is",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "short || (a.kind === 'ph' ? 'PH' : 'OFF')",
+  "put": "short",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "no figure, or no period: no pair at all",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "const known = a.need.p !== null || a.need.w !== null",
+  "put": "const known = true",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "a man who flies stands in the fly group with every filing of his",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "} else if (flies.has(id)) (man.seat === 'FCP' ? out.p : out.w).push(e)",
+  "put": "} else if (r.sans && r.sans.f) (man.seat === 'FCP' ? out.p : out.w).push(e)",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "pilots and WSOs are told apart by the man's seat",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "(man.seat === 'FCP' ? out.p : out.w).push(e)",
+  "put": "(man.seat === 'FCP' ? out.w : out.p).push(e)",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "a commitment the count leaves out is still listed",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "out.out.push({ ...e, why })",
+  "put": "void why",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "the reason a man is not counted is his own",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "!man.san ? 'no longer SANS'",
+  "put": "!man.san ? 'archived'",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "the morning is AM",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "if (r.half === 'am') return 'AM'",
+  "put": "if (r.half === 'am') return 'PM'",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "only a late commitment says a cut-off",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "if (!isLateInput(r)) return ''",
+  "put": "if (isLateInput(r)) return ''",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "the OFT-or-AMT head-count is people",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "out.otherN = others.size",
+  "put": "out.otherN = out.other.length",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "a day he did not commit to wears no ring",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "return out.f || out.o || out.a ? out : null",
+  "put": "return out",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "the Highlight list is SANS people only",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "return !!p && p.san && !p.archived",
+  "put": "return !!p && !p.archived",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "'the week' is said only where weeks are counted",
+  "file": "src/ui/sanscal-model.ts",
+  "find": "${c.weeks > 1 ? ' the week' : ''}",
+  "put": "${' the week'}",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "a record that never recorded who placed it shows no line",
+  "file": "src/ui/placedline.ts",
+  "find": "if (!r || r.by == null || r.by === '') return ''",
+  "put": "if (!r) return ''",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "'for <person>' only when the filer is someone else",
+  "file": "src/ui/placedline.ts",
+  "find": "String(r.person) !== String(r.by) ? ",
+  "put": "String(r.person) === String(r.by) ? ",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "a record as filed says its change once",
+  "file": "src/ui/placedline.ts",
+  "find": "if (changed && (r.modAt !== r.at || (r.modBy != null && String(r.modBy) !== String(r.by)))) {",
+  "put": "if (changed) {",
+  "tests": [
+   "src/ui/sanscal-model.test.ts"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "a hold picks only for someone who may add",
+  "file": "src/ui/calpick.ts",
+  "find": "    if (o.canPick()) {",
+  "put": "    if (true) {",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "the click after a tap is swallowed",
+  "file": "src/ui/calpick.ts",
+  "find": "{ swallowClick(); o.onTap(s.iso) }",
+  "put": "{ o.onTap(s.iso) }",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "a mouse let go outside the month picks nothing",
+  "file": "src/ui/calpick.ts",
+  "find": "      if (s.mouse && !dayAt(e.clientX, e.clientY, e.target)) return\n",
+  "put": "",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "a finger that moves before the hold never picks",
+  "file": "src/ui/calpick.ts",
+  "find": "      if (Math.abs(e.clientX - st.x0) > PICK_SLOP || Math.abs(e.clientY - st.y0) > PICK_SLOP) clearTimeout(st.timer)\n",
+  "put": "",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "a slide mostly up or down turns nothing",
+  "file": "src/ui/calpick.ts",
+  "find": " && Math.abs(dx) > Math.abs(dy)) { o.onSwipe",
+  "put": ") { o.onSwipe",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "a held finger's moves are claimed",
+  "file": "src/ui/calpick.ts",
+  "find": "if (st && st.armed && !st.mouse && e.cancelable) e.preventDefault()",
+  "put": "void e",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "a mouse never turns the month",
+  "file": "src/ui/calpick.ts",
+  "find": "if (!s.mouse && Math.abs(dx) >= SWIPE_MIN",
+  "put": "if (Math.abs(dx) >= SWIPE_MIN",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "a press on a control inside a date is the control's",
+  "file": "src/ui/calpick.ts",
+  "find": " || t.closest('button,input,select,textarea,a')) return",
+  "put": ") return",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "a pick lights nothing once it is over",
+  "file": "src/ui/calpick.ts",
+  "find": "    if (s.armed && (s.ranged || !s.mouse)) {\n      o.onPicking(null)\n",
+  "put": "    if (s.armed && (s.ranged || !s.mouse)) {\n",
+  "tests": [
+   "src/ui/calpick.test.ts"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "the reveal is spent once its day is left",
+  "file": "src/ui/SansCal.tsx",
+  "find": "const spendReveal = () => { if (shown.current && INPREVEAL === shown.current) clearInpReveal(); shown.current = null }",
+  "put": "const spendReveal = () => { shown.current = null }",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "Shift + arrows pick only for someone who may add",
+  "file": "src/ui/SansCal.tsx",
+  "find": "if (e.shiftKey) { if (maySansAdd()) setKb(",
+  "put": "if (e.shiftKey) { if (true) setKb(",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "Escape closes the open day",
+  "file": "src/ui/SansCal.tsx",
+  "find": "      else if (dayIso) { e.preventDefault(); e.stopPropagation(); showDay(null) }\n",
+  "put": "",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "a plain arrow lets a run go",
+  "file": "src/ui/SansCal.tsx",
+  "find": "      else setKb(null)\n      moveTo(to)",
+  "put": "      moveTo(to)",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the day wears its colour",
+  "file": "src/ui/SansCal.tsx",
+  "find": "(c.tone !== 'none' ? ' t-' + c.tone : '')",
+  "put": "''",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "a man who is no longer SANS is not left highlighted",
+  "file": "src/ui/SansCal.tsx",
+  "find": "const hi = SANSHL && roster.includes(SANSHL) ? SANSHL : null",
+  "put": "const hi = SANSHL",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "the gear is an admin's",
+  "file": "src/ui/SansCal.tsx",
+  "find": "{isAdmin() && (\n            <button type=\"button\" className=\"abtn sc-gear\"",
+  "put": "{true && (\n            <button type=\"button\" className=\"abtn sc-gear\"",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "a colour that covers one figure says one figure",
+  "file": "src/ui/SansCal.tsx",
+  "find": "below - 1 <= from ? String(from)",
+  "put": "false ? String(from)",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "an arrow past the month's end turns the month",
+  "file": "src/ui/SansCal.tsx",
+  "find": "if (y !== cur.y || m !== cur.m) goTo(",
+  "put": "if (false) goTo(",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "the open day is marked on the month",
+  "file": "src/ui/SansCal.tsx",
+  "find": "(iso === dayIso ? ' is-open' : '')",
+  "put": "''",
+  "tests": [
+   "src/ui/sanscal.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "Calendar… in the day is an admin's",
+  "file": "src/ui/SansDay.tsx",
+  "find": "{isAdmin() && (\n            <button type=\"button\" className=\"abtn sd-days\"",
+  "put": "{true && (\n            <button type=\"button\" className=\"abtn sd-days\"",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 37,
+  "name": "a no-fly day's requirement reads NF",
+  "file": "src/ui/SansDay.tsx",
+  "find": "a.reqFrom[s] === 'nf' ? 'NF' : ",
+  "put": "",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 38,
+  "name": "nobody needed is green, never a shortage colour",
+  "file": "src/ui/SansDay.tsx",
+  "find": "a.need[s] === 0 ? 'is-zero' : 't-' + a.tone",
+  "put": "'t-' + a.tone",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 39,
+  "name": "the LATE tag never opens the editor",
+  "file": "src/ui/SansDay.tsx",
+  "find": "onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) open(e.r) }}",
+  "put": "onClick={() => open(e.r)}",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 40,
+  "name": "only the highlighted man's lines are marked",
+  "file": "src/ui/SansDay.tsx",
+  "find": "(hi && hi === e.id ? ' is-hi' : '')",
+  "put": "(hi ? ' is-hi' : '')",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 41,
+  "name": "a date no period covers says so",
+  "file": "src/ui/SansDay.tsx",
+  "find": "{!facts.covered && <p className=\"sd-note\" data-testid=\"sd-nocover\">",
+  "put": "{false && <p className=\"sd-note\" data-testid=\"sd-nocover\">",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 42,
+  "name": "an empty day shows no empty heading",
+  "file": "src/ui/SansDay.tsx",
+  "find": "list.length > 0 && (",
+  "put": "(",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 43,
+  "name": "the door refuses someone who may not add",
+  "file": "src/ui/sansadd.ts",
+  "find": "  if (!maySansAdd()) return false\n",
+  "put": "",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 44,
+  "name": "a no-fly day starts with nothing ticked",
+  "file": "src/ui/sansadd.ts",
+  "find": "sans: single && flyAnswer(iso).cls === 'nf' ? {} : { f: true }",
+  "put": "sans: { f: true }",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 45,
+  "name": "a SANS man's commitment is his own",
+  "file": "src/ui/sansadd.ts",
+  "find": "const who = isSans(mine) ? mine",
+  "put": "const who = false ? mine",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 46,
+  "name": "a run given back to front is put in order",
+  "file": "src/ui/sansadd.ts",
+  "find": "until && until < from ? [until, from] : [from, until]",
+  "put": "[from, until]",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 47,
+  "name": "both halves are checked before either is saved",
+  "file": "src/ui/SansSettings.tsx",
+  "find": "    const bad = cutProblem('sans', rule)\n    if (bad) return setErr(bad)\n",
+  "put": "",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 48,
+  "name": "the settings window is an admin's",
+  "file": "src/ui/SansSettings.tsx",
+  "find": "const refused = SANSSET && !isAdmin()",
+  "put": "const refused = false",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 49,
+  "name": "unchanged colours write nothing",
+  "file": "src/ui/SansSettings.tsx",
+  "find": "const r: FlySave = same ? { ok: true } : saveTones(t)",
+  "put": "const r: FlySave = saveTones(t)",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 50,
+  "name": "a typed 'x' is not a nought",
+  "file": "src/ui/SansSettings.tsx",
+  "find": "(/^\\d+$/.test(v.trim()) ? +v.trim() : NaN)",
+  "put": "(+v.trim() || 0)",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 51,
+  "name": "Save finishes the window",
+  "file": "src/ui/SansSettings.tsx",
+  "find": "      if (!c.ok) return setErr(c.message || 'The cut-off could not be saved. Try again.')\n      close()",
+  "put": "      if (!c.ok) return setErr(c.message || 'The cut-off could not be saved. Try again.')",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 52,
+  "name": "the cut-off's door is an admin's",
+  "file": "src/state/cutoff.ts",
+  "find": "  if (!isAdmin()) return { ok: false, message: 'Only an admin can change the late cut-off.' }\n",
+  "put": "",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 53,
+  "name": "an unchanged cut-off writes nothing",
+  "file": "src/state/cutoff.ts",
+  "find": "  if (!keys.length) return { ok: true, changed: false }\n",
+  "put": "",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 54,
+  "name": "a day count out of range is refused",
+  "file": "src/state/cutoff.ts",
+  "find": "return whole(r.lead, s.lo, s.hi) ? '' :",
+  "put": "return true ? '' :",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 55,
+  "name": "the worked date uses the engine's own sum",
+  "file": "src/state/cutoff.ts",
+  "find": "monday - cutBackOf(r.mode, r.lead, r.wd, r.weeks) * 86400000",
+  "put": "monday - 14 * 86400000",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 56,
+  "name": "a drag's click is not a tap",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "    if (dragged.current) { dragged.current = false; return }\n",
+  "put": "",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 57,
+  "name": "dragged back down, the panel comes down",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "    else if (d.top - d.top0 > PULL) setTall(false)\n",
+  "put": "",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 58,
+  "name": "two heights are a phone's only",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "const sheet = !!rests && phoneLayout()",
+  "put": "const sheet = !!rests",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 59,
+  "name": "the height changes on the click, not the release",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "    if (!d.moved) return\n    dragged.current = true",
+  "put": "    if (!d.moved) { setTall(t => !t); return }\n    dragged.current = true",
+  "tests": [
+   "src/ui/sansday.test.tsx"
+  ]
+ },
+ {
+  "n": 60,
+  "name": "a placed window is capped at the room under it",
+  "file": "src/ui/FloatWindow.tsx",
+  "find": "if (b && !b.phone && !phoneLayout()) n.style.maxHeight",
+  "put": "if (false) n.style.maxHeight",
+  "tests": [
+   "src/ui/floatwindow.test.tsx"
+  ]
+ },
+ {
+  "n": 61,
+  "name": "an Undo of a cut-off on Inputs stays on Inputs",
+  "file": "src/state/undo-wire.ts",
+  "find": "if (row && moved.length && moved.every(k => /^(input|sans)(Lead|CutMode|CutWd|CutWeeks)$/.test(k))) also.push('inputs')",
+  "put": "void moved",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 62,
+  "name": "only a cut-off keeps him on Inputs",
+  "file": "src/state/undo-wire.ts",
+  "find": "moved.every(k => /^(input|sans)(Lead|CutMode|CutWd|CutWeeks)$/.test(k))",
+  "put": "true",
+  "tests": [
+   "src/ui/sanssettings.test.tsx"
+  ]
+ },
+ {
+  "n": 63,
+  "name": "Medical takes the SANS calendar's place",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "{sansUp && INPVIEW !== 'med' && <SansCal />}",
+  "put": "{sansUp && <SansCal />}",
+  "tests": [
+   "src/ui/inputs-calendar-flow.test.tsx"
+  ]
+ },
+ {
+  "n": 64,
+  "name": "the SANS tab has no list",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "const listUp = INPVIEW === 'table' && !sansUp",
+  "put": "const listUp = INPVIEW === 'table'",
+  "tests": [
+   "src/ui/inputs-calendar-flow.test.tsx"
+  ]
+ },
+ {
+  "n": 65,
+  "name": "the SANS tab has no filters",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "id=\"inFilters\" hidden={sansUp}>",
+  "put": "id=\"inFilters\">",
+  "tests": [
+   "src/ui/inputs-calendar-flow.test.tsx"
+  ]
+ }
+]

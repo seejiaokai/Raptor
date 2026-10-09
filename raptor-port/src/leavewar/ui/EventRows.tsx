@@ -15,14 +15,21 @@
 // event and an edit button is at the top"). So an admin now TAPS a cell to open
 // the Event sheet — which carries the range, the merge/repeat choice, the tag,
 // and the type library — rather than typing inline. A member still only reads.
+//
+// THE GRID PRINTS A SHORT FORM (the Inputs / SANS redesign, plan §3.12; owner D643, D644, 8 Oct 26). The 10 Aug rule
+// was "widen the day to fit the text, then wrap" — and measured on a phone, "No Leave" took its day from about 20 px
+// to 33 px and made the Event row two lines tall. So a day cell now prints `shortOf(…)` (engine/eventdefs.ts): the
+// event's own short form, else its preset's, else one derived from its name — never more than three characters, so no
+// event widens a day. A merged band has the room of the days it spans, and prints its full text where that is enough.
+// The full name is one tap away, for EVERYONE: a tap on a FILLED cell asks Matrix for the small box (`onPeek`), which
+// for an admin carries "Edit"; an EMPTY cell still opens the sheet at once for an admin (`onEdit`).
 
 import type { ReactNode, RefCallback } from 'react'
-import { bandAt, classifyEvent, dayEvent, dayEventKind, type DayInfo, type EventBand, type EventDef } from '../engine'
+import { bandAt, classifyEvent, dayEvent, dayEventKind, dayEventShort, shortOf, type DayInfo, type EventBand, type EventDef } from '../engine'
 
-/** How many characters a day column widens to before the text wraps. In `ch`,
- *  the width of a character in the cell's own font — the unit the row height is
- *  also derived from, so the two cannot disagree. */
-const CEILING = 22
+/** About how many characters of a band's text one spanned day has room for. A band whose text is longer than its span
+ *  allows prints its short form instead — the bar must never be what widens its days. */
+const BAND_CH_PER_DAY = 3
 
 export function EventRows({
   days,
@@ -31,6 +38,7 @@ export function EventRows({
   rows,
   editable,
   onEdit,
+  onPeek,
   padL,
   padR,
   phL,
@@ -43,8 +51,10 @@ export function EventRows({
    *  them (store's `eventRows`, owner 18 Aug 26). */
   rows: number
   editable: boolean
-  /** Open the Event sheet for one line + day. Only wired when `editable`. */
+  /** Open the Event sheet for one line + day. Only wired when `editable`: an EMPTY cell, and the blocked-reason bar. */
   onEdit: (line: number, date: string) => void
+  /** A tap on a FILLED cell or band, anyone's: open the small box with its full name, kind and dates under `el`. */
+  onPeek: (line: number, date: string, el: HTMLElement) => void
   /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
    *  cell before / after the drawn days standing in for the undrawn months, so
    *  every row keeps the same column count as the header. Sized by Matrix,
@@ -76,15 +86,19 @@ export function EventRows({
               // The band's own tag first (per-event tags, 18 Aug 26), then
               // the library word match — same precedence the column tint uses.
               const work = (band.kind ?? classifyEvent(defs, band.text)) === 'work'
+              /* its full text where the bar is wide enough, else its short form (the plan §3.12) */
+              const fits = band.text.length <= span * BAND_CH_PER_DAY
               cells.push(
                 <td
                   key={d.date}
                   colSpan={span}
-                  className={`ev band has${work ? ' work' : ''}${editable ? ' editable' : ''}`}
+                  className={`ev band has tap${work ? ' work' : ''}${editable ? ' editable' : ''}`}
                   data-testid={`event-band-${line}-${band.from}`}
-                  onClick={editable ? () => onEdit(line, d.date) : undefined}
+                  title={band.text}
+                  aria-label={band.text}
+                  onClick={e => onPeek(line, d.date, e.currentTarget)}
                 >
-                  {band.text}
+                  {fits ? band.text : shortOf(defs, band.text, band.short)}
                 </td>,
               )
               i += span - 1
@@ -92,11 +106,13 @@ export function EventRows({
             continue
           }
 
-          // A plain per-day cell. Widens to fit the text up to the ceiling,
-          // then the CSS wraps it — the owner's "widen then wrap" rule. An
-          // empty admin cell shows a faint add hint so there is something to
-          // tap; a member's empty cell is blank.
+          // A plain per-day cell. It prints the event's SHORT FORM and takes its
+          // width from that — one to three characters, so no event widens its day
+          // (the plan §3.12; the 10 Aug "widen then wrap" rule is what this
+          // replaces). An empty admin cell shows a faint add hint so there is
+          // something to tap; a member's empty cell is blank.
           const text = dayEvent(d, line)
+          const short = shortOf(defs, text, dayEventShort(d, line))
 
           // A BLOCKED day's reason, printed on the first event line (owner,
           // 18 Aug 26 — "it should show exercise on the event"). The amber
@@ -134,12 +150,16 @@ export function EventRows({
           cells.push(
             <td
               key={d.date}
-              className={`ev${text ? ' has' : ''}${work ? ' work' : ''}${editable ? ' editable' : ''}`}
+              className={`ev${text ? ' has tap' : ''}${work ? ' work' : ''}${editable ? ' editable' : ''}`}
               data-testid={`event-${line}-${d.date}`}
-              onClick={editable ? () => onEdit(line, d.date) : undefined}
-              style={{ minWidth: `${Math.min(Math.max(text.length, 1), CEILING)}ch` }}
+              /* the full name, for a hover and for a screen reader — the cell itself prints only the short form */
+              title={text || undefined}
+              aria-label={text ? `${text} (${short})` : undefined}
+              /* FILLED: the box, for everyone. EMPTY: the sheet at once, for an admin. */
+              onClick={text ? e => onPeek(line, d.date, e.currentTarget) : editable ? () => onEdit(line, d.date) : undefined}
+              style={{ minWidth: `${Math.max(short.length, 1)}ch` }}
             >
-              {text || (editable ? <span className="evadd" aria-hidden="true">＋</span> : null)}
+              {short || (editable ? <span className="evadd" aria-hidden="true">＋</span> : null)}
             </td>,
           )
         }

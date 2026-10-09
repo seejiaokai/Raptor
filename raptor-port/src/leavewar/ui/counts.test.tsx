@@ -3,11 +3,13 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import type { DayVerdict, RuleResult } from '../engine'
 import { initStore, moveManningRowTo, orderedManningIds, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { CountRows } from './CountRows'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
 // Dummy counts payload — CountRows never reads `counts`, only `results`, but
@@ -85,7 +87,7 @@ describe('count rows keyed by rule identity, not array position', () => {
       // the "ip" row, and its ip count to the "sxo" row.
       'd2': day('d2', [rule('sxo', 'SXO', 9), rule('sets', 'Crew sets', 6), rule('ip', 'IP', 3)]),
     }
-    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
+    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
 
     expect(screen.getByTestId('count-sets-d1').textContent).toBe('5')
     expect(screen.getByTestId('count-sets-d2').textContent).toBe('6')
@@ -105,7 +107,7 @@ describe('count rows keyed by rule identity, not array position', () => {
       // the real one.
       'd2': day('d2', [rule('sets', 'Crew sets', 6), rule('sxo', 'SXO', 9)]),
     }
-    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} hidden={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
+    render(<table><CountRows verdicts={verdicts} dates={['d1', 'd2']} order={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
 
     expect(screen.getByTestId('count-sets-d2').textContent).toBe('6')
     // CountRows renders a missing cell as a bare `<td />` with no testid —
@@ -115,132 +117,103 @@ describe('count rows keyed by rule identity, not array position', () => {
   })
 })
 
-// Rearrange/hide the manning rows (owner, 18 Aug 26). CountRows takes the
-// order, the hidden set and whether an admin is arranging; it drops a hidden
-// row for everyone until an admin turns Rearrange on — where, since 5 Sep 26,
-// it waits under the ARCHIVE bar at the foot of the block (closed by default,
-// "out of view unless I bring it back") rather than sitting dimmed in the list.
-describe('the manning rows can be reordered and hidden (admin)', () => {
+// Rearrange the manning rows, and DELETE one (owner, 18 Aug 26; D669, 8 Oct 26). CountRows takes the order and
+// whether an admin is arranging. Until D669 a row could be HIDDEN with an eye and waited under an ARCHIVE bar at the
+// foot of the block (5 Sep 26); he replaced the eye with a delete cross — "instead of hide (eye) we should replace it
+// with a delete cross" — so nothing can be hidden, and the Archive went with the eye. The tests of the eye and the
+// bar that stood here are replaced by the cross's (the store side and Undo: nocounters.test.tsx).
+describe('the manning rows can be reordered and deleted (admin)', () => {
   const verdicts = {
     d1: day('d1', [rule('sets', 'Crew sets', 5), rule('ip', 'IP', 2), rule('sxo', 'SXO', 1)]),
   }
-  const draw = (props: Partial<{ order: string[]; hidden: string[]; arranging: boolean; admin: boolean }>) =>
+  const ALL = ['sets', 'ip', 'sxo']
+  const draw = (props: Partial<{ order: string[]; arranging: boolean; admin: boolean }>) =>
     render(<table><CountRows verdicts={verdicts} dates={['d1']}
-      order={props.order ?? []} hidden={props.hidden ?? []}
+      order={props.order ?? ALL}
       arranging={props.arranging ?? false} admin={props.admin ?? false} onInfo={() => {}} /></table>)
 
-  it('a hidden row is gone for a member and an idle admin', () => {
-    draw({ hidden: ['ip'] })
-    expect(screen.queryByTestId('count-ip')).toBeNull()
-    expect(screen.getByTestId('count-sxo')).toBeTruthy()
-  })
-
-  it('an arranging admin finds the hidden row under the Archive bar, not in the list', () => {
-    draw({ hidden: ['ip'], arranging: true, admin: true })
-    // out of view: the row is not drawn, the bar says one is archived
-    expect(screen.queryByTestId('count-ip')).toBeNull()
-    const bar = screen.getByTestId('manning-archive')
-    expect(bar.textContent).toContain('ARCHIVE')
-    expect(bar.textContent).toContain('1')
-    expect(bar.getAttribute('aria-expanded')).toBe('false')
-    // the live rows keep their grip and archive eye (drag-and-drop replaced the
-    // ▲▼ arrows, owner 28 Aug 26 — still gone)
-    expect(screen.getByTestId('manning-drag-sxo')).toBeTruthy()
-    expect(screen.getByTestId('manning-hide-sxo')).toBeTruthy()
+  it('an arranging admin gets a grip and a delete cross on every row — no eye, no arrows, no Archive bar', () => {
+    draw({ arranging: true, admin: true })
+    for (const id of ALL) {
+      expect(screen.getByTestId(`manning-drag-${id}`)).toBeTruthy()
+      expect(screen.getByTestId(`manning-delete-${id}`).textContent).toBe('✕')
+      expect(screen.getByTestId(`count-${id}`).getAttribute('data-mrow')).toBe(id)
+    }
+    // drag-and-drop replaced the ▲▼ arrows (owner, 28 Aug 26 — still gone); the cross replaced the eye (D669)
     expect(screen.queryByTestId('manning-up-sxo')).toBeNull()
-    // open the archive: the row is back, dimmed, with only its way back — no
-    // grip (an archived row has no place to drag to) and no eye
-    fireEvent.click(bar)
-    expect(bar.getAttribute('aria-expanded')).toBe('true')
-    const row = screen.getByTestId('count-ip')
-    expect(row.className).toContain('mrow-hidden')
-    expect(row.getAttribute('data-mrow')).toBeNull()
-    expect(screen.getByTestId('manning-restore-ip')).toBeTruthy()
-    expect(screen.queryByTestId('manning-drag-ip')).toBeNull()
-    expect(screen.queryByTestId('manning-hide-ip')).toBeNull()
-    // and closes again
-    fireEvent.click(bar)
-    expect(screen.queryByTestId('count-ip')).toBeNull()
+    expect(document.querySelector('[data-testid^="manning-hide-"], [data-testid^="manning-restore-"]')).toBeNull()
+    expect(screen.queryByTestId('manning-archive')).toBeNull()
+    expect(screen.queryByTestId('manning-archive-row')).toBeNull()
   })
 
-  // THE ARCHIVE TELLS THE GRID ([LW-MONTHJUMP-PHONE] review, Astra LW-101, 23 Sep
-  // 26). Its rows are cells of the grid's own table, so opening or closing it can
-  // change a day column's width — and the grid caches month widths and pins the
-  // frozen header's. It stays this block's own state (a tap must not re-render the
-  // whole grid), so the grid hears through `onArchiveChange`: once per open, once
-  // per close, never on mount — and only AFTER the rows are in (or out of) the
-  // DOM, since that is what the grid then measures.
-  it('opening and closing the Archive tells the grid, after its rows are in or out', () => {
+  // A COUNT ROW GOING IN OR OUT TELLS THE GRID ([LW-MONTHJUMP-PHONE] review, Astra LW-101, 23 Sep 26 — it was the
+  // Archive's signal then). The rows are cells of the grid's own table, standing above the dates: the grid caches
+  // month widths, pins the frozen header's, and places the open-bidding outline off the rows below them. It hears
+  // through `onRowsChange`: once per change in how many rows are drawn, never on mount — and only AFTER the rows are
+  // in (or out of) the DOM, since that is what the grid then measures.
+  it('a count row added or deleted tells the grid, after the row is in or out', () => {
     const rowsAtCall: number[] = []
-    render(<table><CountRows verdicts={verdicts} dates={['d1']} order={[]} hidden={['ip']}
-      arranging admin onInfo={() => {}}
-      onArchiveChange={() => rowsAtCall.push(document.querySelectorAll('[data-testid="count-ip"]').length)} /></table>)
-    expect(rowsAtCall).toEqual([])
-    fireEvent.click(screen.getByTestId('manning-archive'))
-    expect(rowsAtCall).toEqual([1])
-    fireEvent.click(screen.getByTestId('manning-archive'))
-    expect(rowsAtCall).toEqual([1, 0])
+    const ui = (v: Record<string, DayVerdict>, order: string[]) => (
+      <table><CountRows verdicts={v} dates={['d1']} order={order} arranging admin onInfo={() => {}}
+        onRowsChange={() => rowsAtCall.push(document.querySelectorAll('tbody.counts tr').length)} /></table>)
+    const { rerender } = render(ui(verdicts, ALL))
+    expect(rowsAtCall).toEqual([])                                   // never on mount
+    rerender(ui({ d1: day('d1', [rule('sets', 'Crew sets', 5), rule('sxo', 'SXO', 1)]) }, ['sets', 'sxo']))
+    expect(rowsAtCall).toEqual([2])                                  // IP deleted: told once, the row already out
+    rerender(ui({ d1: day('d1', [rule('sets', 'Crew sets', 6), rule('sxo', 'SXO', 2)]) }, ['sets', 'sxo']))
+    expect(rowsAtCall).toEqual([2])                                  // a figure moving is not a row moving
+    rerender(ui(verdicts, ALL))
+    expect(rowsAtCall).toEqual([2, 3])                               // a counter made: told once, the row already in
   })
 
   // The grip moved to the LEFT of the counter name (owner, 5 Sep 26 — "move the
-  // rearrange 6 dots to the left of the start of the titles"); the eye stays
-  // centred alone in the balance box. Pin both homes so a refactor can't quietly
-  // put the grip back beside the eye.
-  it('the grip sits in the NAME cell ahead of the title; the eye stays alone in the balance box', () => {
+  // rearrange 6 dots to the left of the start of the titles"); the cross sits
+  // centred alone in the balance box, where the eye was. Pin both homes so a
+  // refactor can't quietly put the grip back beside it.
+  it('the grip sits in the NAME cell ahead of the title; the cross is alone in the balance box', () => {
     draw({ arranging: true, admin: true })
     const grip = screen.getByTestId('manning-drag-sxo')
-    const eye = screen.getByTestId('manning-hide-sxo')
+    const cross = screen.getByTestId('manning-delete-sxo')
     const label = screen.getByTestId('manning-info-sxo')
     // grip is in the frozen name cell, and it comes BEFORE the label (its left)
     expect(grip.closest('td.who')).toBeTruthy()
     expect(grip.closest('td.bal')).toBeNull()
     expect(grip.compareDocumentPosition(label) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    // the eye is alone in the balance box — no grip beside it any more
-    expect(eye.closest('td.bal')).toBeTruthy()
-    expect(eye.closest('td.who')).toBeNull()
-    expect(eye.closest('.mrow-tools')!.querySelectorAll('.drag').length).toBe(0)
+    // the cross is alone in the balance box — no grip beside it
+    expect(cross.closest('td.bal')).toBeTruthy()
+    expect(cross.closest('td.who')).toBeNull()
+    expect(cross.closest('.mrow-tools')!.querySelectorAll('.drag').length).toBe(0)
+    expect(cross.getAttribute('aria-label')).toBe('Delete the SXO counter')
   })
 
-  it('the Archive bar is ONE merged bar over the day columns, not a row of cells', () => {
-    draw({ hidden: ['ip'], arranging: true, admin: true })
-    const row = screen.getByTestId('manning-archive-row')
-    const cells = row.querySelectorAll('td')
-    expect(cells.length).toBe(2)                                   // label + one fill
-    expect(cells[0]!.getAttribute('colspan')).toBe('2')            // the two frozen columns
-    expect(cells[1]!.getAttribute('colspan')).toBe('1')            // every day column (one date here)
+  it('outside Rearrange there is no grip and no cross (idle admin or member)', () => {
+    draw({ admin: true })
+    expect(document.querySelector('[data-testid^="manning-drag-"], [data-testid^="manning-delete-"]')).toBeNull()
+    expect(screen.getByTestId('count-ip').getAttribute('data-mrow')).toBeNull()
   })
 
-  it('the Archive bar is absent while nothing is hidden', () => {
-    draw({ arranging: true, admin: true })
-    expect(screen.queryByTestId('manning-archive')).toBeNull()
+  it('a row the squadron’s own list does not hold (one a per-day override alone introduced) has no cross: there is nothing of the list to delete', () => {
+    draw({ order: ['sets', 'sxo'], arranging: true, admin: true })
+    expect(screen.getByTestId('count-ip')).toBeTruthy()               // still drawn, appended after the list's own
+    expect(screen.queryByTestId('manning-delete-ip')).toBeNull()
+    expect(screen.getByTestId('manning-delete-sxo')).toBeTruthy()
   })
 
-  it('outside Rearrange there is no bar and no hidden row (idle admin or member)', () => {
-    draw({ hidden: ['ip'] })
-    expect(screen.queryByTestId('manning-archive')).toBeNull()
-    expect(screen.queryByTestId('count-ip')).toBeNull()
-  })
-
-  it('archiving from the eye and restoring from the Archive round-trip through the store', () => {
+  it('the cross deletes its counter through the store, and the row leaves the grid at once — nothing is asked', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
-    expect(screen.queryByTestId('manning-archive')).toBeNull()
-    fireEvent.click(screen.getByTestId('manning-hide-ip'))           // archive IP
-    expect(screen.queryByTestId('count-ip')).toBeNull()              // out of view at once
-    const bar = screen.getByTestId('manning-archive')
-    expect(bar.textContent).toContain('1')
-    fireEvent.click(bar)                                             // open
-    fireEvent.click(screen.getByTestId('manning-restore-ip'))        // bring it back
-    const row = screen.getByTestId('count-ip')
-    expect(row.className).not.toContain('mrow-hidden')
-    expect(screen.getByTestId('manning-drag-ip')).toBeTruthy()       // a live row again, in the list
-    expect(screen.queryByTestId('manning-archive')).toBeNull()       // the bar goes when it empties
+    fireEvent.click(screen.getByTestId('manning-delete-ip'))         // the cross
+    expect(screen.queryByTestId('count-ip')).toBeNull()              // gone at once
+    expect(orderedManningIds()).not.toContain('ip')
+    expect(screen.getByTestId('count-sxo')).toBeTruthy()             // the rest stay, with their own controls
+    expect(screen.getByTestId('manning-delete-sxo')).toBeTruthy()
   })
 
   it('a member never gets the reorder controls even for a visible row', () => {
     draw({ arranging: true, admin: false })
     expect(screen.queryByTestId('manning-drag-ip')).toBeNull()
+    expect(screen.queryByTestId('manning-delete-ip')).toBeNull()
   })
 
   it('honours the given display order', () => {
@@ -249,30 +222,67 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     expect(rows).toEqual(['count-sxo', 'count-sets', 'count-ip'])
   })
 
-  // A reorder must never leave a row without its grip/eye tools. On the phone the
+  // A reorder must never leave a row without its grip/cross tools. On the phone the
   // frozen tools column could paint stale after a drag (the iOS sticky-repaint
   // glitch the Matrix drag machine now kicks a redraw for); this pins the DOM
   // invariant behind it — every visible row keeps BOTH tools across a real move.
-  it('every count row keeps its grip and eye after a manning reorder', () => {
+  it('every count row keeps its grip and cross after a manning reorder', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
     const toolCount = () => ({
-      rows: document.querySelectorAll('tbody.counts tr').length,
+      /* the squadron's OWN count rows. The four Required / Available rows at the foot of the block (FlyRows.tsx — D665,
+         8 Oct 26) are not among them: the SANS calendar reads those, so they carry no grip and no cross by design
+         (pinned in flyrows.test.tsx and nocounters.test.tsx). */
+      rows: document.querySelectorAll('tbody.counts tr:not(.flyrow)').length,
       grips: document.querySelectorAll('[data-testid^="manning-drag-"]').length,
-      eyes: document.querySelectorAll('[data-testid^="manning-hide-"]').length,
+      crosses: document.querySelectorAll('[data-testid^="manning-delete-"]').length,
     })
     const before = toolCount()
     expect(before.rows).toBeGreaterThan(1)
     expect(before.grips).toBe(before.rows)
-    expect(before.eyes).toBe(before.rows)
+    expect(before.crosses).toBe(before.rows)
     // move the last manning row to the front — a genuine store reorder
     const ids = orderedManningIds()
     act(() => { moveManningRowTo(ids[ids.length - 1]!, ids[0]!) })
     const after = toolCount()
     expect(after.rows).toBe(before.rows)          // nothing dropped
     expect(after.grips).toBe(after.rows)          // every row still has its grip
-    expect(after.eyes).toBe(after.rows)           // and its eye
+    expect(after.crosses).toBe(after.rows)        // and its cross
+  })
+})
+
+// THE BLOCK IS DRAWN FOR THE ROWS AT ITS FOOT EVEN WITH NO COUNTER (D669): the Manning block comes with no count rows
+// of its own, and the four Required / Available rows (drawn by Matrix through `fixed` — re-pointed 8 Oct 26 from the
+// `children` they were handed in as until D674) are then all it shows.
+describe('a block with no count row', () => {
+  it('still draws the rows handed to it', () => {
+    render(<table><CountRows verdicts={{}} dates={['d1']} order={[]} arranging={false} admin={false} onInfo={() => {}}
+      fixed={() => <tr data-testid="foot-row"><td>x</td></tr>} /></table>)
+    const block = screen.getByTestId('foot-row').parentElement!
+    expect(block.tagName).toBe('TBODY'); expect(block.className).toBe('counts')
+    expect(block.children.length).toBe(1)
+  })
+  // D674: the counters are handed to whoever draws the four fixed rows in FIVE runs, cut where the order's tokens stand
+  it('hands its counters over in five runs, cut where the four fixed rows stand in the order', () => {
+    const seen: string[][] = []
+    const verdicts = { d1: day('d1', [rule('sets', 'Crew sets', 5), rule('ip', 'IP', 3), rule('sxo', 'SXO', 1)]) }
+    const ui = (order: string[]) => (
+      <table><CountRows verdicts={verdicts} dates={['d1']} order={order} arranging={false} admin={false} onInfo={() => {}}
+        fixed={runs => { seen.push(runs.map(r => String(r.length))); return <>{runs.flat()}</> }} /></table>)
+    const { rerender } = render(ui(['sets', '@req-p', 'ip', '@req-w', '@avail-p', '@avail-w', 'sxo']))
+    expect(seen.at(-1)).toEqual(['1', '1', '0', '0', '1'])
+    /* an order that names no fixed row (saved before D674): every counter above the four */
+    rerender(ui(['sxo', 'sets', 'ip']))
+    expect(seen.at(-1)).toEqual(['3', '0', '0', '0', '0'])
+    expect([...document.querySelectorAll('tbody.counts > tr')].map(tr => tr.getAttribute('data-testid'))).toEqual(['count-sxo', 'count-sets', 'count-ip'])
+    /* a row the order does not name (a per-day override's, a counter made since) goes at the foot of the counters ABOVE the four */
+    rerender(ui(['sets', '@req-p', '@req-w', '@avail-p', '@avail-w', 'sxo']))
+    expect(seen.at(-1)).toEqual(['2', '0', '0', '0', '1'])
+  })
+  it('and draws nothing at all when nothing is handed to it', () => {
+    const { container } = render(<table><CountRows verdicts={{}} dates={['d1']} order={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)
+    expect(container.querySelector('tbody')).toBeNull()
   })
 })
 

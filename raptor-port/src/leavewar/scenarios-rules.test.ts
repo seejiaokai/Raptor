@@ -150,10 +150,15 @@ describe('member permissions at the doors', () => {
     expect(recs('ammo', '2026-02-10').some(r => r.kind === 'request')).toBe(true)
   })
 
-  it('a member filing for someone else files it for THEMSELVES (the add door rewrites the person)', () => {
+  /* CHANGED 8 Oct 26 with the group input (owner D654, D655; the build plan §3.13 — "commitNewInput no longer re-points
+     a member's draft at himself in silence"). Until then the add door wrote the member's own name over a draft for
+     another man, and this test pinned that a leave "for Ammo" landed on Hex. A member may now file a duty or a
+     commitment for another man, so a draft naming one is ASKED: a leave for him is refused with its sentence, and
+     nothing is filed for anybody — never quietly for the filer instead. */
+  it('a member filing a LEAVE for someone else is refused — nothing is filed, for him or for the member himself', () => {
     setRole('member'); setViewer('rocky'); setSession({ user: 'us', role: 'main' }); setMe('rocky')
-    expect(add('ammo', 'LL', '2026-02-10')).toBe(true)
-    expect(grid('rocky', '2026-02-10')).toBe('LL')
+    expect(add('ammo', 'LL', '2026-02-10')).toBe(false)
+    expect(grid('rocky', '2026-02-10')).toBeUndefined()
     expect(grid('ammo', '2026-02-10')).toBeUndefined()
   })
 })

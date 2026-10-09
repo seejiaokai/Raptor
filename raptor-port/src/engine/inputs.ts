@@ -757,11 +757,47 @@ export function weekStartISO(wk?:any){
   const d=+p[0],m=+p[1],y=+p[2];
   return (isFinite(d)&&isFinite(m)&&isFinite(y))?`${y}-${pad2(m)}-${pad2(d)}`:'';
 }
+/* WHICH CUT-OFF JUDGES AN INPUT (owner D628, D639, 7 Oct 26): the SANS calendar and the Inputs calendar each have
+   their own — a SANS availability input is judged by the SANS set, every other input by the Inputs set. */
+const CUT_KEYS:any={inputs:['inputLead','inputCutMode','inputCutWd','inputCutWeeks'],
+                    sans:['sansLead','sansCutMode','sansCutWd','sansCutWeeks']};
+export function cutSetOf(inp:any){return inp&&isSansAvail(inp.type)?'sans':'inputs';}
+/* how many days before its week's Monday a set's cut-off falls. Mode 1 — a weekday of a number of weeks before — is
+   weeks x 7 less the weekday (Monday = 0), each held to a real value however it was stored: at least one week back, so
+   a cut-off can never land inside the week it is for. Anything that is not exactly mode 1 is the day count, as the
+   rule always was. */
+/* THE SUM ITSELF, for any four values — exported so a calendar's settings window can show a worked date for a rule
+   NOT YET SAVED by the same arithmetic the mark will judge by (state/cutoff.ts cutExample; 8 Oct 26 — the body is the
+   one cutBackDays always had, moved out unchanged) */
+export function cutBackOf(mode:any,lead:any,wd:any,weeks:any){
+  if(mode===1){
+    const wk=Math.min(8,Math.max(1,Math.floor(+weeks)||1)), d=Math.min(6,Math.max(0,Math.floor(+wd)||0));
+    return wk*7-d;
+  }
+  return Math.max(0,+lead||0);
+}
+function cutBackDays(set:any){
+  const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
+  return cutBackOf(VCONF[k[1]],VCONF[k[0]],VCONF[k[2]],VCONF[k[3]]);
+}
+/* the rule in words, as each calendar's "How this works" states it — from the set in force, so it changes when the
+   setting does (D628, D646: the rule only; the date an entry missed is said by its LATE tag) */
+const CUT_WD=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const CUT_N=['','one','two','three','four','five','six','seven','eight'];
+export function cutRuleText(set:any){
+  const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
+  if(VCONF[k[1]]===1){
+    const wk=Math.min(8,Math.max(1,Math.floor(+VCONF[k[3]])||1)), wd=Math.min(6,Math.max(0,Math.floor(+VCONF[k[2]])||0));
+    return wk===1?`the ${CUT_WD[wd]} of the week before`:`the ${CUT_WD[wd]} ${CUT_N[wk]} weeks before`;
+  }
+  const n=cutBackDays(set);
+  return n===0?'the Monday the week starts':`${n} day${n===1?'':'s'} before the week starts`;
+}
 /* a week-start ISO date → that week's input deadline (its Monday minus the
    lead), '' in for '' out so unknown stays unknown */
-function dueOfWeekISO(ws:any){
+function dueOfWeekISO(ws:any,set?:any){
   if(!ws)return '';
-  const n=Math.max(0,+VCONF.inputLead||0);
+  const n=cutBackDays(set);
   const t=Date.UTC(+ws.slice(0,4),+ws.slice(5,7)-1,+ws.slice(8,10))-n*86400000;
   const d=new Date(t);
   return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
@@ -770,7 +806,7 @@ function dueOfWeekISO(ws:any){
    touched and still count as on time — kept for callers that reason about a
    week rather than an input (probe-bridge, tests); the mark itself judges
    each input by inputOwnDueISO below */
-export function inputDueISO(wk?:any){ return dueOfWeekISO(weekStartISO(wk)); }
+export function inputDueISO(wk?:any,set?:any){ return dueOfWeekISO(weekStartISO(wk),set); }
 /* the Monday of the week the input's own FIRST day falls in, resolved
    through the row's anchor year (dateOrd + inp.yr, the 24 Aug 26 convention)
    so 'Jul 13' filed for 2027 is judged against 2027's week. '' when the date
@@ -784,7 +820,7 @@ export function inputWeekStartISO(inp:any){
 }
 /* the running deadline: the last day THIS input may be touched and still
    count as on time, wherever the viewer happens to be */
-export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp)); }
+export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp),cutSetOf(inp)); }
 /* TODAY as an ISO 'yyyy-mm-dd' stamp — what every input WRITE path records as
    `mod`, FROZEN at the moment of the edit (ARCH-STACK 1b). The literal 'now'
    used to be stored instead and re-resolved to whatever "today" was at read

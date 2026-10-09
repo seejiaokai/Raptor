@@ -161,6 +161,9 @@ truth for what each type means; the fields below are what a record carries.
 | `acc` | `undefined \| 'g' \| 'u' \| 'r'` | never landed / landed on the Ground Programme / actioned to Unavailable / **removed by a scheduler (dormant)** |
 | `hand` | number? | how many times the request has changed hands — +1 at every change of person (`ui/inputedit.tsx commitInputEdit`); absent = 0 (`[DB-READINESS]` group A phase 6 (a), 30 Sep 26) |
 | `leftAt` | `{ <personId>: number }`? | the holding at which the request LEFT each man — written by the hand-over; an OIL decision about him made under an earlier holding reads as nothing (phase 6 (a)) |
+| `by` / `at` | string? / number? | **who PLACED it and when** (owner D629, 7 Oct 26): the signed-in PERSON's id and the moment (ms) — the filer, who can differ from `person` (an admin filing for a member; the approver of a leave on the Leave War). Written once, by `state/inputstamp.ts stampPlaced` (the editor's new input, the Inputs List's Add form, the war's approve door — an approval that extends a leave re-states it); never changed by an edit; a PIECE the app cuts from a record (a leave cut or moved, a medical split) is a copy and carries that record's. Absent on a record filed before 7 Oct 26 or with nobody signed in |
+| `modBy` / `modAt` | string? / number? | **who last CHANGED it and when** — equal to `by` / `at` on a record nobody has changed. Written by `state/inputstamp.ts stampChanged` at every door that changes an input (the plan `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.8: an edit, an OIL answer alone, a leave moved or cut, a medical split or trimmed, a posting's trim). ONE moment per command. `modBy` is absent when the last change was the app's own act (a posting that ran by itself on its date). Undo / Redo put all four back as recorded. **Beside `mod`, never instead of it** — `mod` is the DATE the late rule reads, written exactly as before; a filing decision (`acc`) is not a change to the record and stamps nothing |
+| `grp` / `grpBy` | string? / string? | **an input filed for a GROUP** (owner D654, D655, 7 Oct 26; the plan `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13): `grp` is a group id, the same on every record of one group filing, absent on an ordinary input; `grpBy` is the ENTRY'S FILER (a person id), the same on every record of the group and never changed once set — always together, never one alone. The group is kept as ONE RECORD PER MAN (every reader of an input reads one man's record and is unchanged); an "entry" — the one thing the Inputs page shows — is worked out on read: the records sharing a `grp` AND the same shared fields (`type, date, endDate, yr, allday, s, e, half, remarks, sans` — `sans` read as the set of Fly / OFT / AMT boxes ticked, so one availability an admin files for several SANS people is one entry, D658), `src/state/inputgroup.ts entriesOf`. A record changed alone no longer matches and reads as that man's own input; nothing is written to keep a group in step. Held at the write (the inputs door and the Undo / Redo restore): one man once an entry, one filer a group. `by` stays the truth of who placed THIS man's record |
 | `lw` | string? | the **war id** the leave was approved in — PROVENANCE ("approved in war W"), written by the war's approval door (`src/leavewar/sync.ts` `doorApprove`); a member's own date/type edit clears it ([ARCH-STACK] step 4) |
 | `docId` / `docIds` | string / string[] | attachment ids (see Attachments) |
 | `oil` | `{ 'yyyy-mm-dd': 0 \| 0.5 \| 1 }`? | the per-day OIL credit decision from the OilConfirm ask-flow — written after a create or edit (`src/ui/InputsPage.tsx:425`, `:599`, `:631`; `src/ui/inputedit.tsx:1325`, `:1335`) |
@@ -392,7 +395,8 @@ kept across a reload), wall-clock, display name (from `HOOKS.whoami()` — the s
 written, its CALENDAR day (ISO — the week it belongs to) and, for an absence, the span after (`date`–`end`) and before
 (`wdate`–`wend`), the input it is about, the part of the day a line with no key belongs to, for a Quals line the person it
 is about and which of his details (`sub`, `fld` — by id, so a rename never loses it; Astra's final read), for an absence
-line the person too (`sub`), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
+line the person too (`sub`) and — for one record of an input filed for several people — that filing's group id (`grp`, the
+record's own `Input.grp`; 8 Oct 26, D663: the changes window files the men of one filing under one item), every input a war decision is about when more than one (`iids` — a moved day is re-filed as a
 new record), and its exact days when they are not one run (`days`, `wdays` — a gap day stays untouched), the slot key, a frozen label
 of what it was, before and after (a person key keeps the person's ID — `elogVal` says his live callsign). **Durable since
 `[DRAFT-PENDING]` (28 Sep 26, D336 (b)):** loaded at boot, kept across sign-in and sign-out, never a command record (undo
@@ -453,7 +457,9 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
 | `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
-| `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |
+| `memberfile` | `false` or null | the members' switch — "members may file duties and commitments for other people" (owner D654, D655): ON (null) by default, `false` = admins only. Written only by the admin command `settings.memberfile` (`src/state/memberfile.ts`); a raw write is refused. Read live by `src/state/perms.ts membersFileOn`. Switched off, nothing already filed is removed or altered — a member's right over what he had filed for others simply goes |
+| `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin` — and, since 7 Oct 26 (D628, D639), the two late cut-offs' seven: `inputCutMode, inputCutWd, inputCutWeeks, sansLead, sansCutMode, sansCutWd, sansCutWeeks` — a mode (0 days / 1 weekday), a weekday (0 = Monday … 6), a number of weeks (1–8), a number of days (0–60)), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |
+| `sanscalendar`, `flyday:<ISO>`, `flyrule:<id>`, `flyrun:<ISO>` | see below | the SANS calendar's three day colours and the flying plan's three kinds of row — a date's class and required figures, a weekday's rule, a running figure (`src/state/flyplan.ts`): §The flying plan and the SANS calendar's colours, at the foot of this file |
 
 ---
 
@@ -477,7 +483,7 @@ world replaces it, inside the boot's group); the one-time fold (`store.ts leavew
 | `ledger:<id>` | `LeaveLedger` | one `LedgerEntry`; a reload reads the ledger by (date, entry time, id) — every reader sorts it for itself |
 | `opening:<pid>:<counter>` | `LeaveOpening` | one opening balance, a number |
 | `profile:<pid>` | `LeavePersonProfile` | `{ post?, label? }` — his posting window (`post`: the `postouts` entry below) and his personnel label (`label`, the admin's text for a ground-crew row); the row goes when both do |
-| `current`, `oilpolicy`, `eventdefs`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`, `eventrows`, `showsans` | `Setting` | one key each, as before — only the keys a command changed are written. `manningdefs` holds at most `MAX_MANNING_RULES` (60) counters: ONE number for the reader (a longer list reads as damage → the built-in set) and the writer (a new counter past it is refused, and the form says so) — `[STORE-READER-SWEEP]`, phase 7 |
+| `current`, `oilpolicy`, `eventdefs`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`, `eventrows`, `showsans` | `Setting` | one key each, as before — only the keys a command changed are written. **`manningorder` — the order of the Manning block's rows — is a list of counter ids and, since D674 (8 Oct 26), may also hold the four fixed rows' TOKENS (`@req-p`, `@req-w`, `@avail-p`, `@avail-w` — `leavewar/engine/fixedrows.ts`): a list that names none of them means "these counters, then the four", which is what every list saved before that day says and what is still saved while no counter stands among or below the four; nothing stored is converted.** **`manningdefs` starts ABSENT and means "no counters" — the Manning block comes with no count rows of its own (D669, 8 Oct 26; until then an absent or unreadable list read as eleven built-in counters, and a pre-19 Aug 26 `manningthresh` overlay was laid over them — that key is no longer read). `manninghidden` is still read and written, so a store from before loads as it was, but nothing consults it: the eye that hid a row became a delete cross and a row can no longer be hidden.** `manningdefs` holds at most `MAX_MANNING_RULES` (60) counters: ONE number for the reader (a longer list reads as damage → no saved list, so no counters) and the writer (a new counter past it is refused, and the form says so) — `[STORE-READER-SWEEP]`, phase 7. **Since the Inputs / SANS redesign (7 Oct 26, D640) the list may also hold `availp` and `availw`** — the two Available rows the SANS calendar reads, stored only once an admin has renamed or re-defined one (until then the built-in definition serves: every pilot / every WSO — "Reset counters", which also put it back, went with D669). They are BESIDE the limit (the list may be 62 long, the ordinary counters still at most 60); each is a `people` count with `threshold` `{amber: 0, red: 0}` — a stored one of any other shape is left out at the read, and a SANS man is never counted whatever its filter says (`leavewar/engine/availrows.ts`) |
 
 A started store is read as it stands — no opening, ledger entry or window stored means none, never the seed's; a
 row that will not read (or a war claiming a day another already holds, or a record that would break its address's
@@ -538,7 +544,9 @@ postOuts: { personId: Person }   // (personEdits went with the war's Edit person
 | `OilLedger` (derived) | `credits: OilCredit[], debits: OilDebit[], balance, earned, awarded, corrections, taken, expired, overdrawn, first` — `earned` the automatic credits, `awarded` every award, `corrections` the negative entries (D400) |
 | `OilCredit` | `id, date, amount, reason, source: 'opening' \| 'auto' \| 'grant', approvedBy?, givenBy?, enteredBy?, enteredAt?, expires, used: [{date, amount}], left, expired, ledgerId?` — `grant` is an award (a ledger entry) |
 | `OilDebit` | `id, date, amount, reason, source: 'taken' \| 'correction' \| 'opening', from: [{creditId, amount}], unbacked, ledgerId?` |
-| `EventDef` | `{ name, kind: 'off' \| 'free' \| 'nolv' \| 'work' }` |
+| `EventDef` | `{ name, kind: 'off' \| 'free' \| 'nolv' \| 'work', short? }` — a preset; `short` is what the grid prints for an event of that name (one to three letters or digits, `engine/eventshort.ts normShort`; the four seeded ones carry PH, OFF, NL, SC — D645). Absent on a library stored before short forms: its events print one derived from the name |
+| `DayInfo` | `{ date, events: string[], eventKinds?: (kind \| null)[], eventShorts?: (string \| null)[], blocked, blockedReason, ph }` — a day's Event lines: each line's text, its own kind tag and its own short form, same index, written TOGETHER (`engine/period.ts writeDayEvent`; the build plan §3.12). `eventShorts` is absent on a day that never had one typed |
+| `EventBand` | `{ line, from, to, text, kind?, short? }` — a merged event over a run of dates on one Event line; `short` as on a day, absent where none was typed |
 | `Requirements` | `{ default: { rules: ManningRule[] }, overrides: { key: Requirement } }` |
 | `QualDef` | `{ k, label }` |
 
@@ -810,3 +818,36 @@ normalising on day one:
 Normalising `Weeks` into Days / Waves / Formations / Aircraft rows is a
 later step, worth doing only when something outside RAPTOR (a report, Power
 BI) needs to query inside a week.
+
+## The flying plan and the SANS calendar's colours (7–8 Oct 26; the first build's D580 records below, superseded)
+
+**The flying plan (the Inputs / SANS redesign, 7 Oct 26 — D617–D642; `src/state/flyplan.ts`, records and resolver
+`src/state/flyplan-model.ts`).** Three kinds of settings row, each its own stored record, written only by its typed admin
+command and refused as a raw write: `settings/flyday:<YYYY-MM-DD>` = `{cls?, p?, w?}` — what is set for ONE date: its
+flying class (`day`, `night`, `nf` no fly, `none` not set), required pilots, required WSOs; any subset; the class stored
+only where it differs from what the date would inherit; the row removed when empty (`fly.day.set`, one command for one
+date or a picked block). `settings/flyrule:<id>` = `{id, wd, cls, from, until?}` — every weekday `wd` (0 = Monday) from a
+date onward, with or without a last day (`fly.rule.set`, `fly.rule.remove`). `settings/flyrun:<YYYY-MM-DD>` = `{p?, w?}`
+— a required figure RUNNING from that date, per seat; `null` ends the run for that seat (`fly.run.set` — which, typed as
+"From <date> on" on the Leave War, also takes that date's own `p` / `w` out of its `flyday:` row in the same command, so
+the run shows on the day it starts: one command, two rows, one Undo step; applied to a PICKED BLOCK it does the same for
+every picked flying weekday — one command, the run's row and each of those `flyday:` rows). Whole numbers of
+zero or more; a row that fails the check is read as nothing. *(`settings/flynames` = `{p?, w?}`, a saved name for each Required row, was written by this branch's step 1 and is
+GONE since 8 Oct 26 — D668: the Required rows keep their names. Nothing reads or writes the key; it never reached
+`main`, so no table needs a column for it.)* From the same change `settings/sanscalendar` is read by the
+flying plan as THREE figures, `{yellowFrom, amberFrom, redFrom}`, whole numbers, `1 <= yellow < amber < red`, defaults
+1 / 3 / 5, written by the one admin command `settings.sanscalendar` from the SANS calendar's gear (D618). **The first
+calendar build's own records are GONE since 8 Oct 26 (step 4 — the build plan §3.10):** its two-figure `sanscalendar`
+(`{amberFrom, redFrom}`), its `settings/sansday:<date>` rows (`{required, flying}`) and its command `sans.day.set`, with
+`src/state/sans-calendar.ts`. None of it reached `main`, so no table needs them; a row of either left in a browser's
+storage is read by nothing (the two-figure record reads as the defaults). The day's requirement and class are the
+`flyday:` / `flyrule:` / `flyrun:` rows above. The paragraph that described them is kept below, marked.
+
+*(SUPERSEDED 8 Oct 26 — the first calendar build's records, removed; kept as written, for the record:)*
+`settings/sanscalendar` holds `{amberFrom,redFrom}`: safe whole numbers, `1 <= amberFrom < redFrom`.
+Absent/malformed reads shipped defaults1/3. `settings/sansday:<YYYY-MM-DD>` holds
+`{required:number|null,flying:'unset'|'day'|'night'|'both'}`. Required is a safe integer >=0;
+null means no target, 0 explicitly none required. A null/unset pair deletes the row.
+Dates round-trip as real ISO dates; unknown fields/periods are refused. Writes use typed
+admin commands `sans.day.set` and `settings.sanscalendar`, one settings record per changed day.
+Input records are unchanged. Sun/moon intent never rewrites availability or issued schedules.

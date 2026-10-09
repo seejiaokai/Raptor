@@ -15,6 +15,7 @@
        shipping silently. */
 import { afterEach, describe, expect, it } from 'vitest'
 import * as view from './view'
+import { INPUTS } from '../engine/inputs'
 
 /* put every registry field into a non-default state, so a clear is observable */
 function dirtyAll() {
@@ -37,6 +38,16 @@ const setsEmpty = () =>
 afterEach(() => { view.resetViewState('session'); view.resetViewState('week') })
 
 describe('the reset registry', () => {
+  it('a saved-row reveal is transient: a week swap retains it and session reset clears it',()=>{
+    const row={iid:'reveal-reset',person:'bane',type:'SANS Availability',date:'Jul 22',yr:2026,sans:{f:true}}
+    INPUTS.push(row as any)
+    try{
+      view.revealInput(row)
+      expect(view.INPREVEAL).toEqual({iid:row.iid,iso:'2026-07-22',mode:'sans'})
+      view.resetViewState('week');expect(view.INPREVEAL?.iid).toBe(row.iid)
+      view.resetViewState('session');expect(view.INPREVEAL).toBeNull();expect(view.INPMODE).toBe('member')
+    }finally{INPUTS.splice(INPUTS.indexOf(row as any),1)}
+  })
   it("resetViewState('session') clears every session-scoped field", () => {
     dirtyAll()
     view.resetViewState('session')
@@ -46,7 +57,7 @@ describe('the reset registry', () => {
     expect(view.CARRYDAY).toBe(null)
     expect(view.HLOPEN).toBe(false)
     expect(view.HLGROUP, 'the expanded highlight group tab resets (leak the registry closed)').toBe('')
-    expect(view.INPVIEW).toBe('table')
+    expect(view.INPVIEW).toBe('cal') // D580: fresh session opens calendar first.
     expect(view.CALMONTH).toBe(null)
     expect(view.MEDASOF).toBe(null)
     expect(view.RESTARM, 'the load-onto-working-copy confirm resets (leak the registry closed)').toBe(null)
