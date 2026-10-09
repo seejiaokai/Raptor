@@ -2376,7 +2376,9 @@ export function InputEditor() {
               nothing (titleOf). The KIND above goes on deciding every rule; this is the name people read. */}
           {titledKind(draft.type) && ctx !== 's' && ctx !== 'up' && <label className="inped-f">
             <span className="inped-k">Title</span>
-            <input id="inpEditTitle" aria-label="Title" maxLength={TITLE_MAX} autoComplete="off"
+            {/* its id is NOT `inpEditTitle`: that is the dialog's own heading where this editor opens from the schedule or
+                the board, and the two shared one id there (the check's walk, walker C — W3) */}
+            <input id="inpEditOwnTitle" aria-label="Title" maxLength={TITLE_MAX} autoComplete="off"
               value={draft.title == null ? inpType(draft.type) : draft.title} placeholder={inpType(draft.type)}
               onChange={e => setDraft({ ...draft, title: e.target.value })}
               onFocus={e => { if (draft.title == null) e.target.select() }}

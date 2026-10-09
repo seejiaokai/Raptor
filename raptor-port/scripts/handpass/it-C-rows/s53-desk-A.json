@@ -1,0 +1,15 @@
+[
+ {
+  "n": 53,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "PASS",
+  "said": "[A: Training titled \"Meeting\" first, then a Meeting] Ranger on SC AM 07:00-13:00 Fri 17 Jul, both 10:00-11:00. Records saved 2 (Training \"Meeting\" + Meeting \"\"). After the first alone: hard: SC AM & MEETING clash. After both: hard [SC AM & MEETING clash ; Ranger is on two items called MEETING at once], other [adv: Ranger is on SC AM (07:00–13:00) and also down for MEETING]; \"two items called MEETING at once\" present: true. Warning list on the board: [\"⚠ 4 issues\",\"· 3 warnings ·\",\"tap to review\",\"Ranger — SC AM & MEETING clash\",\"✕\",\"Ranger — Ranger is on two items called MEETING at once\",\"✕\",\"✕\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for MEETING\",\"✕\"]. Day card shows 4 rows: [\"Grit ATT C All day Medically down till 17 Jul Grit · 12 Jul, 14:42\",\"Nomad OD All day Overseas duty — exercise, off island Nomad · 18 Jun, 08:03\",\"Ranger Meeting LATE 10:00–11:00 b53 Saber for Ranger · 9 Oct, 21:36\",\"Ranger Meeting LATE 10:00–11:00 TRAINING a53 Saber for Ranger · 9 Oct, 21:36\"]. Week's Ground Programme rows on Friday: [\"MEETING TRAINING\",\"MEETING\"]. Board name boxes: [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]. Ring: puck sm warn hard boxred | Ranger · IP · instructor pilot · SXO · Conflict (two events at once)",
+  "pics": [
+   "desk-s53-A-board.png",
+   "desk-s53-A-warnlist.png",
+   "desk-s53-A-daycard.png",
+   "desk-s53-A-week.png"
+  ]
+ }
+]

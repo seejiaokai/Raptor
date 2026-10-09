@@ -86,6 +86,11 @@
 #inBody tr.in-amb>td:first-child{box-shadow:inset 3px 0 0 var(--adv)}
 #inBody tr.in-san>td:first-child{box-shadow:inset 3px 0 0 var(--san)}
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+/* A TITLED INPUT'S NAME, above its kind's pill ([INPUT-OWN-TITLE], D716 (2)): a line of its own, so the pill sits under it
+   whole. Drawn inline at first, the pill was squeezed beside a long title on a phone and broke inside the word —
+   "EVEN" over "T" (the check's walk, walker C — W2). A long title wraps; the pill never breaks. */
+.intitle{display:block;font-weight:700;line-height:1.2;margin-bottom:3px;overflow-wrap:anywhere}
+.intitle + .intag{display:inline-block;white-space:nowrap}
 /* the SANS row's F/O/A offer letters — the crew group's purple (--san), the
    same accent the SANS chip/puck wears everywhere, so the two agree at a
    glance. A quiet pill beside the type tag, never replacing it. */

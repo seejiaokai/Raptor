@@ -1,22 +1,24 @@
 // Doors that write an input's title, each driven only through its own controls, and the title cases T2 T3 T5 T6 T8
 // (docs/superpowers/briefs/2026-10-09-reads/input-own-title-scenarios-astra.md, the head). Reading uses window.INPUTS only.
-import { press, tapAt, win, DAYWIN, sleep, month, openNew as calOpenNew, openSaved as calOpenSaved, saveWin, gotoInputs, closeAnyWin, closeDayWin, csId, allRecs, norm, shot, elShot } from './it-A-lib.mjs'
+import { toCal, press, tapAt, win, DAYWIN, sleep, month, openNew as calOpenNew, openSaved as calOpenSaved, saveWin, gotoInputs, closeAnyWin, closeDayWin, csId, allRecs, norm, shot, elShot } from './it-A-lib.mjs'
 
 export async function setSeveral(p, ids) {
-  const sw = p.locator('[data-testid="pp-several"]'); await sw.waitFor()
+  const R = (await win(p).count()) ? win(p) : p
+  const sw = R.locator('[data-testid="pp-several"]:visible'); await sw.waitFor()
   if ((await sw.getAttribute('aria-checked')) !== 'true') { await press(p, sw); await sleep(p, 250) }
   const want = new Set(ids)
-  for (const b of await p.locator('button[data-pp]').all()) {
+  for (const b of await R.locator('button[data-pp]:visible').all()) {
     const id = await b.getAttribute('data-pp'), on = (await b.getAttribute('aria-pressed')) === 'true'
     if (want.has(id) !== on) { await b.scrollIntoViewIfNeeded(); await press(p, b); await sleep(p, 80) }
   }
-  const cnt = await p.locator('[data-testid="pp-count"]').innerText().catch(() => '?')
+  const cnt = await R.locator('[data-testid="pp-count"]:visible').innerText().catch(() => '?')
   return cnt
 }
 export const T40 = '1234567890123456789012345678901234567890'
 export const LIT = '<b>Ops</b> "A&B"'
 const newRecs = async (p, before) => { const a = await allRecs(p); return a.filter(r => !before.has(r.iid)) }
 const idset = async p => new Set((await allRecs(p)).map(r => r.iid))
+export const mateIds = async (p, rec) => rec.grp ? (await allRecs(p)).filter(x => x.grp === rec.grp).map(x => x.iid) : [rec.iid]
 export const recOf = async (p, iid) => p.evaluate(iid => { const r = window.INPUTS.find(x => x.iid === iid); return r ? { iid: r.iid, person: r.person, type: r.type, title: r.title, has: r.title != null && r.title !== '', remarks: r.remarks, date: r.date, grp: r.grp } : null }, iid)
 
 /* ---------- geometry of a form: nothing overlaps the Title box, nothing leaves the form ---------- */
@@ -32,6 +34,7 @@ export async function geometry(p, containerSel) {
       if (a.r > cr.right + 1 || a.l < cr.left - 1) out.push((els[i].id || els[i].getAttribute('aria-label') || els[i].className || els[i].tagName))
       for (let j = i + 1; j < els.length; j++) {
         if (els[i].contains(els[j]) || els[j].contains(els[i])) continue
+        if (/^Close /.test(els[i].getAttribute('aria-label') || '') || /^Close /.test(els[j].getAttribute('aria-label') || '')) continue
         const b = box(els[j])
         const w = Math.min(a.r, b.r) - Math.max(a.l, b.l), h = Math.min(a.b, b.b) - Math.max(a.t, b.t)
         if (w > 2 && h > 2) overlaps.push((els[i].id || els[i].getAttribute('aria-label') || els[i].tagName) + ' x ' + (els[j].id || els[j].getAttribute('aria-label') || els[j].tagName))
@@ -49,6 +52,7 @@ const POPSEL = '#inpEditPop'
 export function calDoor() {
   const d = {
     key: 'cal', label: 'the Calendar window',
+    saveBtn: p => p.locator('#inpEditSave'),
     isNewDoor: true,
     form: WINSEL,
     title: p => win(p).locator('input#inpEditTitle'),
@@ -61,18 +65,20 @@ export function calDoor() {
       if (s.st && await p.locator('#inpEditStart').count()) { await p.fill('#inpEditStart', s.st); await p.fill('#inpEditEnd', s.en) }
       if (s.rmk != null) await p.fill('#inpEditRmk', s.rmk)
     },
-    async openSaved(p, rec) { await calOpenSaved(p, rec.iid, isoOf(rec)) },
+    async openSaved(p, rec) { await calOpenSaved(p, await mateIds(p, rec), isoOf(rec)) },
     async submit(p, oil = 'no') { const head = await saveWin(p, oil); return { head, open: (await win(p).count()) > 0 } },
     async saveSaved(p, oil = 'no') { return d.submit(p, oil) },
     async cancel(p) { if (await win(p).count()) { await press(p, p.locator('#inpEditCancel')); await sleep(p, 250) } },
     async shown(p, rec) {
       const iso = isoOf(rec)
-      if (!(await p.locator(`[data-testid="idy-row-${rec.iid}"]`).count())) {
-        await gotoInputs(p); await closeAnyWin(p)
+      const ids = await mateIds(p, rec)
+      const sel = ids.map(i => `[data-testid="idy-row-${i}"]`).join(', ')
+      if (!(await p.locator(sel).count())) {
+        await gotoInputs(p); await toCal(p); await closeAnyWin(p)
         const [y, m] = iso.split('-').map(Number); await month(p, y, m)
         await tapAt(p, p.locator(`#inpCal [data-icday="${iso}"]`), { x: 8, y: 8 })
       }
-      const c = p.locator(`[data-testid="idy-row-${rec.iid}"]`); await c.waitFor()
+      const c = p.locator(sel).first(); await c.waitFor()
       return c.evaluate(c => ({ name: (c.querySelector('.idy-kind') || {}).textContent, kind: (c.querySelector('[data-testid="idy-kindtag"]') || {}).textContent || null, rmk: (c.querySelector('.sd-rmk') || {}).textContent || null, html: c.innerHTML.includes('<b>Ops') }))
     },
   }
@@ -81,6 +87,7 @@ export function calDoor() {
 export function listDoor() {
   const d = {
     key: 'list', label: 'the List’s Add form',
+    saveBtn: p => p.locator('#inAdd'),
     isNewDoor: true,
     form: '.inbar',
     title: p => p.locator('#inTitle'),
@@ -109,7 +116,7 @@ export function listDoor() {
     async cancel() {},
     async shown(p, rec) {
       await showAll(p)
-      const tr = p.locator(`#inBody tr[data-iid="${rec.iid}"]`); await tr.first().waitFor()
+      const tr = p.locator((await mateIds(p, rec)).map(i => `#inBody tr[data-iid="${i}"]`).join(', ')); await tr.first().waitFor()
       return tr.first().evaluate(t => { const c = t.querySelector('[data-label="Type"]'); return { name: (c.querySelector('[data-testid="in-title"]') || {}).textContent || null, kind: (c.querySelector('.intag') || {}).textContent || null, html: t.innerHTML.includes('<b>Ops'), titleLine: !!c.querySelector('[data-testid="in-title"]'), rmk: (t.querySelector('[data-label="Remarks"]') || {}).textContent || '' } })
     },
   }
@@ -117,6 +124,7 @@ export function listDoor() {
 }
 export const penDoor = {
   key: 'pencil', label: 'the List’s pencil editor', isNewDoor: false,
+  saveBtn: p => p.locator('#inBody tr.ined [data-save]'),
   form: '#inBody tr.ined',
   title: p => p.locator('#inBody tr.ined input[data-ed="title"]'),
   type: p => p.locator('#inBody tr.ined select[data-ed="type"]'),
@@ -144,11 +152,26 @@ export const penDoor = {
   },
   async shown(p, rec) { return listDoor().shown(p, rec) },
 }
-export const listD = () => Object.assign(listDoor(), { saveSaved: penDoor.saveSaved, openSaved: penDoor.openSaved })
+penDoor.submit = (p, oil) => penDoor.saveSaved(p, oil)
+export const listD = () => penDoor
+/* a shared entry's pencil in the List opens the shared window, not a row editor */
+export const sharedPen = {
+  key: 'sharedpen',
+  title: p => win(p).locator('input#inpEditTitle'),
+  type: p => win(p).locator('#inpEditType'),
+  async openSaved(p, rec) {
+    await gotoInputs(p); await closeAnyWin(p)
+    await press(p, p.locator('#inListBtn')); await showAll(p)
+    const tr = p.locator((await mateIds(p, rec)).map(i => `#inBody tr[data-iid="${i}"]`).join(', ')); await tr.first().waitFor(); await tr.first().scrollIntoViewIfNeeded()
+    await press(p, tr.first().locator('[data-edit]')); await win(p).waitFor(); await sleep(p, 200)
+  },
+  async cancel(p) { if (await win(p).count()) { await press(p, p.locator('#inpEditCancel')); await sleep(p, 250) } },
+}
 
 export function boardDoor(di = 2) {
   const d = {
     key: 'board', label: 'the Board’s Ground Programme + Inputs', isNewDoor: true,
+    saveBtn: p => p.locator('#inpEditPop #inpEditSave'),
     form: POPSEL + ' .inpedbox',
     title: p => p.locator('#inpEditPop input#inpEditTitle'),
     type: p => p.locator('#inpEditPop #inpEditType'),
@@ -168,7 +191,7 @@ export function boardDoor(di = 2) {
       if (s.rmk != null) await p.fill('#inpEditPop #inpEditRmk', s.rmk)
     },
     async openSaved(p, rec) {
-      if (!(await p.locator('#schedBoard').count())) await d.openBoard(p)
+      if (!(await p.locator('#schedBoard').isVisible().catch(() => false))) await d.openBoard(p)
       const btn = p.locator(`#schedBoard [data-inpedit="${rec.iid}"]`)
       if (!(await btn.count())) { const t = p.locator('#schedBoard [data-pitog]'); if (await t.count()) { await press(p, t.first()); await sleep(p, 350) } }
       await btn.first().scrollIntoViewIfNeeded()
@@ -187,7 +210,7 @@ export function boardDoor(di = 2) {
     async saveSaved(p, oil = 'no') { return d.submit(p, oil) },
     async cancel(p) { if (await p.locator('#inpEditPop').isVisible().catch(() => false)) { await press(p, p.locator('#inpEditPop #inpEditCancel')); await sleep(p, 250) } },
     async shown(p, rec) {
-      if (!(await p.locator('#schedBoard').count())) await d.openBoard(p)
+      if (!(await p.locator('#schedBoard').isVisible().catch(() => false))) await d.openBoard(p)
       let row = p.locator(`#schedBoard [data-inprow="${rec.iid}"]`)
       if (!(await row.count()) || !(await row.first().isVisible().catch(() => false))) { const t = p.locator('#schedBoard [data-pitog]'); if (await t.count()) { await press(p, t.first()); await sleep(p, 350) } }
       row = p.locator(`#schedBoard [data-inprow="${rec.iid}"]`)
@@ -199,9 +222,8 @@ export function boardDoor(di = 2) {
 }
 export async function closeBoardAny(p) {
   if (await p.locator('#inpEditPop').isVisible().catch(() => false)) { await press(p, p.locator('#inpEditPop #inpEditCancel')); await sleep(p, 250) }
-  if (!(await p.locator('#schedBoard').count())) return
   const x = p.locator('#sbDone')
-  if (await x.count()) { await press(p, x); await sleep(p, 500) } else { await p.keyboard.press('Escape'); await sleep(p, 400) }
+  if (await x.isVisible().catch(() => false)) { await press(p, x); await sleep(p, 500) }
 }
 export async function showAll(p) {
   if (!(await p.locator('#inAdd').isVisible().catch(() => false)) && !(await p.locator('#inBody').isVisible().catch(() => false))) await press(p, p.locator('#inListBtn'))
@@ -237,7 +259,8 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
   const before = await idset(p)
   let rec = base.rec || null
   /* the form up */
-  if (door.isNewDoor) await door.openNew(p, { iso: base.iso, person: base.person, type: base.type || 'Event', st: base.st, en: base.en, rmk: base.rmk, several: base.several })
+  const editing = !!base.rec
+  if (!editing) await door.openNew(p, { iso: base.iso, person: base.person, type: base.type || 'Event', st: base.st, en: base.en, rmk: base.rmk, several: base.several })
   else {
     if (!rec) throw new Error('an editing door needs rec')
     await door.openSaved(p, rec)
@@ -248,6 +271,7 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
   const startVal = await T.inputValue()
   let want = null            // the title that must be saved (null = none)
   let finalType = base.type || 'Event'
+  const ph = base.ph || (base.person === 'allavail' || base.person === 'all' ? base.person : null)
   let wantName = null
   const apply = async () => {
     if (c === 'T2') { await typeInto(p, T, 'Sports day'); want = 'Sports day' }
@@ -271,6 +295,18 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
         await door.type(p).selectOption('LL'); await sleep(p, 300)
         const n = await door.title(p).count()
         need(n === 0, `LL: no Title control (${n} found)`)
+        if (ph) {
+          const nBefore = (await allRecs(p)).length
+          await door.saveBtn(p).click().catch(() => {})
+          await sleep(p, 700)
+          const why = await p.locator('[data-testid="pp-why"]').first().innerText().catch(() => '')
+          const toast = await p.locator('#toastEl').innerText().catch(() => '')
+          const nAfter = (await allRecs(p)).length
+          const still = (await win(p).count()) > 0 || (await p.locator('#inpEditPop').isVisible().catch(() => false)) || (await p.locator('#inBody tr.ined').count()) > 0 || door.key === 'list'
+          const cur = rec ? await recOf(p, rec.iid) : null
+          need(nAfter === nBefore && (!cur || cur.type === 'Event') && still, `saving the placeholder as LL was refused: no row added (${nBefore} to ${nAfter}), stored kind ${cur ? cur.type : 'n/a'}; the screen said "${norm(why || toast)}"`)
+          await shot(p, `${tag}-${c}-LL-refused`); pics.push(`${tag}-${c}-LL-refused.png`)
+        }
         await door.type(p).selectOption('Event'); await sleep(p, 300)
         const v = await door.title(p).inputValue()
         need(v === 'Event', `back to Event: box shows "${v}", the discarded "Sports day" has not returned`)
@@ -291,7 +327,7 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
   need(!r.open, 'the form closed on save')
   /* what was stored */
   let recs
-  if (door.isNewDoor) recs = (await allRecs(p)).filter(x => !before.has(x.iid))
+  if (!editing) recs = (await allRecs(p)).filter(x => !before.has(x.iid))
   else recs = [await recOf(p, rec.iid)]
   need(recs.length === (base.expectCount || 1), `${recs.length} input(s) stored`)
   const stored = recs[0]
@@ -301,8 +337,10 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
     if (want) need(t === want, `stored title "${t}"`)
     else need(t == null || t === '', `nothing stored as a title (title ${JSON.stringify(t)})`)
     need(stored.type === finalType, `kind ${stored.type}`)
+    if (ph) need(stored.person === ph, `the placeholder stayed (${stored.person})`)
     need(!(stored.remarks || '').includes(want || '\u0000'), `remarks "${stored.remarks}" gained no title`)
     rec = stored
+    if (stored.grp && editing) { const mates = (await allRecs(p)).filter(x => x.grp === stored.grp); need(mates.every(x => x.title === stored.title), `every person of the shared entry (${mates.length}) carries title ${JSON.stringify(stored.title)}`) }
     /* what the door's own screen prints */
     try {
       const sh = await door.shown(p, stored)
@@ -314,13 +352,14 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
     /* reopen */
     if (door.key !== 'board' || true) {
       try {
+        const rd = door.key === 'list' ? (base.several ? sharedPen : penDoor) : door
         await door.cancel(p)
-        await door.openSaved(p, stored)
-        const t2 = door.title(p); await t2.waitFor({ state: 'visible' })
-        const v = await t2.inputValue(), ty = await door.type(p).inputValue()
+        await rd.openSaved(p, stored)
+        const t2 = rd.title(p); await t2.waitFor({ state: 'visible' })
+        const v = await t2.inputValue(), ty = await rd.type(p).inputValue()
         need(v === (want ?? 'Event') && ty === finalType, `reopened: Title "${v}", Type "${ty}"`)
         const pic2 = `${tag}-${c}-reopen`; await shot(p, pic2); pics.push(pic2 + '.png')
-        await door.cancel(p)
+        await rd.cancel(p)
       } catch (e) { ok = false; say.push('MISSED: could not reopen: ' + String(e.message).split('\n')[0]) }
     }
   }

@@ -1,0 +1,18 @@
+[
+ {
+  "n": 57,
+  "size": "phone",
+  "role": "admin (Saber)",
+  "verdict": "PASS",
+  "said": "Calendar Add (window): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List Add form: heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Board Add (+ INPUTS): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (Calendar window, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (List form, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List pencil (date Fri 24 -> Sat 25): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Existing window (shared entry, date Fri 24 -> Sat 25): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}]",
+  "pics": [
+   "phone-s57-ad-da57-question.png",
+   "phone-s57-ad-db57-question.png",
+   "phone-s57-ad-dc57-question.png",
+   "phone-s57-ad-dd57-question.png",
+   "phone-s57-ad-de57-question.png",
+   "phone-s57-ad-df57-question.png",
+   "phone-s57-ad-dg57-question.png"
+  ]
+ }
+]

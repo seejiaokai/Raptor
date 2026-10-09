@@ -1,0 +1,96 @@
+{
+ "rows": [
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Sun 26-Mon 27 Event published in both weeks, retitled from Inputs while on the 27 Jul week (OIL question on retitle: none): SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-A-2retitled-sun-edit.png",
+    "s35-desk-A-2retitled-sun-togo.png",
+    "s35-desk-A-2retitled-mon-edit.png",
+    "s35-desk-A-2retitled-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: SUN26(wk20Jul) edit{pend:0 nys:no rows:CROSS-WEEK[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} || MON27(wk27Jul) edit{pend:0 nys:no rows: unav: signedLn:stands} view{rows: unav: pend:0} || saved title \"Cross-week\"",
+   "pics": [
+    "s35-desk-A-2undo-sun-edit.png",
+    "s35-desk-A-2undo-sun-togo.png",
+    "s35-desk-A-2undo-mon-edit.png",
+    "s35-desk-A-2undo-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-A-3redo-sun-edit.png",
+    "s35-desk-A-3redo-sun-togo.png",
+    "s35-desk-A-3redo-mon-edit.png",
+    "s35-desk-A-3redo-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-A-4reload-sun-edit.png",
+    "s35-desk-A-4reload-sun-togo.png",
+    "s35-desk-A-4reload-mon-edit.png",
+    "s35-desk-A-4reload-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Sun 26-Mon 27 Event published in both weeks, retitled from Inputs while on the 27 Jul week (OIL question on retitle: none): SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:27 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:27 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-B-2retitled-sun-edit.png",
+    "s35-desk-B-2retitled-sun-togo.png",
+    "s35-desk-B-2retitled-mon-edit.png",
+    "s35-desk-B-2retitled-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: SUN26(wk20Jul) edit{pend:0 nys:no rows:CROSS-WEEK[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} || MON27(wk27Jul) edit{pend:0 nys:no rows: unav: signedLn:stands} view{rows: unav: pend:0} || saved title \"Cross-week\"",
+   "pics": [
+    "s35-desk-B-2undo-sun-edit.png",
+    "s35-desk-B-2undo-sun-togo.png",
+    "s35-desk-B-2undo-mon-edit.png",
+    "s35-desk-B-2undo-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: SUN26(wk20Jul) edit{pend:0 nys:no rows:CROSS-WEEK[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} || MON27(wk27Jul) edit{pend:0 nys:no rows: unav: signedLn:stands} view{rows: unav: pend:0} || saved title \"Cross-week\"",
+   "pics": [
+    "s35-desk-B-4reload-sun-edit.png",
+    "s35-desk-B-4reload-sun-togo.png",
+    "s35-desk-B-4reload-mon-edit.png",
+    "s35-desk-B-4reload-mon-togo.png"
+   ]
+  }
+ ],
+ "errs": []
+}

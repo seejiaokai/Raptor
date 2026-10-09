@@ -20,10 +20,10 @@ for (const variant of ['A', 'B']) {
   await L.retitle(W, r.iid, ISO, 'Games afternoon')
   const rd = async t => {
     const S = await L.snap(W, DI, { focus: FOC, pic: t })
-    const vOrig = await L.viewVersion(p, DI, 'orig'); await L.focusName(p, '#vWeek', DI, FOC); await L.shot(p, t + '-view-orig')
-    const vAl1 = await L.viewVersion(p, DI, 'AL1'); await L.focusName(p, '#vWeek', DI, FOC); await L.shot(p, t + '-view-al1')
+    const oo = await L.lookIssued(W, DI, 'orig'); const vOrig = oo.face || { rows: [], signedLn: '' }; await L.focusName(p, '#eWeek', DI, FOC); await L.shot(p, t + '-view-orig'); await L.backLive(W, DI)
+    const aa = await L.lookIssued(W, DI, 'AL1'); const vAl1 = aa.face || { rows: [], signedLn: '' }; await L.focusName(p, '#eWeek', DI, FOC); await L.shot(p, t + '-view-al1'); await L.backLive(W, DI)
     const vDef = S.v
-    const text = `${L.brief(S)} | ORIG face rows:${L.nm(vOrig)} signedLn:${vOrig.signedLn} | AL1 face rows:${L.nm(vAl1)} signedLn:${vAl1.signedLn} | picker:${JSON.stringify(vDef.picker)}`
+    const text = `${L.brief(S)} | ORIG face rows:${L.nm(vOrig)} signedLn:${vOrig.signedLn} | AL1 face rows:${L.nm(vAl1)} signedLn:${vAl1.signedLn} `
     return { s: { S, vOrig, vAl1 }, text, pics: [t + '-edit.png', t + '-togo.png', t + '-view.png', t + '-view-orig.png', t + '-view-al1.png'] }
   }
   const applied = ({ S, vOrig, vAl1 }) => S.f.pend.length === 1 && /not yet signed/i.test(S.f.nys) && S.f.rows[0]?.name === 'GAMES AFTERNOON' && S.f.rows[0]?.kind === 'EVENT'

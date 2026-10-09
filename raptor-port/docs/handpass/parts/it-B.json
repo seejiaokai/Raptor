@@ -1,0 +1,1216 @@
+{
+ "letter": "B",
+ "rows": [
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published then retitled: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:13 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-A-1retitled-edit.png",
+    "s28-desk-A-1retitled-togo.png",
+    "s28-desk-A-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Undo: edit{pend:0 nys:no rows:EVENT unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0}",
+   "pics": [
+    "s28-desk-A-2undo-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Redo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:13 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-A-3redo-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:13 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-A-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published then retitled: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:14 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-B-1retitled-edit.png",
+    "s28-desk-B-1retitled-togo.png",
+    "s28-desk-B-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:EVENT unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0}",
+   "pics": [
+    "s28-desk-B-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published then retitled: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:15 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-phone-A-1retitled-edit.png",
+    "s28-phone-A-1retitled-togo.png",
+    "s28-phone-A-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Undo: edit{pend:0 nys:no rows:EVENT unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0}",
+   "pics": [
+    "s28-phone-A-2undo-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Redo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:15 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-phone-A-3redo-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:15 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-phone-A-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published then retitled: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:15 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-phone-B-1retitled-edit.png",
+    "s28-phone-B-1retitled-togo.png",
+    "s28-phone-B-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:EVENT unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0}",
+   "pics": [
+    "s28-phone-B-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "29",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "published after titling: week EVENT[]|SPORTS DAY[EVENT] | view-only EVENT[]|SPORTS DAY[EVENT] | board EVENT[]|SPORTS DAY[EVENT] | pending 0 | not-yet-signed no",
+   "pics": [
+    "s29-desk-1published-edit.png",
+    "s29-desk-1published-view.png",
+    "s29-desk-1published-board.png"
+   ]
+  },
+  {
+   "n": "29",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "after reload: week EVENT[]|SPORTS DAY[EVENT] | view-only EVENT[]|SPORTS DAY[EVENT] | board EVENT[]|SPORTS DAY[EVENT] | pending 0",
+   "pics": [
+    "s29-desk-2reload-edit.png",
+    "s29-desk-2reload-view.png",
+    "s29-desk-2reload-board.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] untitled published, titled+AL1 published (after AL1: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}), then retitled: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL2 · 1 change Ranger · Games afternoon Saber 9/10 21:23 Sports day → Games afternoon Tap a change to go to it.} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-A-2al1-published-edit.png",
+    "s30-desk-A-3retitled-edit.png",
+    "s30-desk-A-3retitled-togo.png",
+    "s30-desk-A-3retitled-view.png",
+    "s30-desk-A-3retitled-view-orig.png",
+    "s30-desk-A-3retitled-view-al1.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-A-2undo-edit.png",
+    "s30-desk-A-2undo-view.png",
+    "s30-desk-A-2undo-view-orig.png",
+    "s30-desk-A-2undo-view-al1.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL2 · 1 change Ranger · Games afternoon Saber 9/10 21:23 Sports day → Games afternoon Tap a change to go to it.} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-A-3redo-edit.png",
+    "s30-desk-A-3redo-togo.png",
+    "s30-desk-A-3redo-view.png",
+    "s30-desk-A-3redo-view-orig.png",
+    "s30-desk-A-3redo-view-al1.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL2 · 1 change Ranger · Games afternoon Saber 9/10 21:23 Sports day → Games afternoon Tap a change to go to it.} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-A-4reload-edit.png",
+    "s30-desk-A-4reload-togo.png",
+    "s30-desk-A-4reload-view.png",
+    "s30-desk-A-4reload-view-orig.png",
+    "s30-desk-A-4reload-view-al1.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] untitled published, titled+AL1 published (after AL1: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}), then retitled: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL2 · 1 change Ranger · Games afternoon Saber 9/10 21:24 Sports day → Games afternoon Tap a change to go to it.} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-B-2al1-published-edit.png",
+    "s30-desk-B-3retitled-edit.png",
+    "s30-desk-B-3retitled-togo.png",
+    "s30-desk-B-3retitled-view.png",
+    "s30-desk-B-3retitled-view-orig.png",
+    "s30-desk-B-3retitled-view-al1.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-B-2undo-edit.png",
+    "s30-desk-B-2undo-view.png",
+    "s30-desk-B-2undo-view-orig.png",
+    "s30-desk-B-2undo-view-al1.png"
+   ]
+  },
+  {
+   "n": "30",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | ORIG face rows:EVENT signedLn:SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil | AL1 face rows:SPORTS DAY[EVENT] signedLn:SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil ",
+   "pics": [
+    "s30-desk-B-4reload-edit.png",
+    "s30-desk-B-4reload-view.png",
+    "s30-desk-B-4reload-view-orig.png",
+    "s30-desk-B-4reload-view-al1.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] titled Event: published edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} -> changed to Games afternoon edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:25 Sports day → Games afternoon Tap a change to go to it.} -> typed Sports day back edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s31-desk-A-p1-0published-edit.png",
+    "s31-desk-A-p1-1changed-edit.png",
+    "s31-desk-A-p1-1changed-togo.png",
+    "s31-desk-A-p1-2typedback-edit.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] untitled Event: published edit{pend:0 nys:no rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} -> titled Sports day edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT]|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Basher · Sports day Saber 9/10 21:26 Event → Sports day Tap a change to go to it.} -> typed eVeNt edit{pend:0 nys:no rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} (saved record title: undefined)",
+   "pics": [
+    "s31-desk-A-p2-0published-edit.png",
+    "s31-desk-A-p2-1titled-edit.png",
+    "s31-desk-A-p2-2eVeNt-edit.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT]|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Basher · Sports day Saber 9/10 21:26 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s31-desk-A-2undo-edit.png",
+    "s31-desk-A-2undo-togo.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:0 nys:no rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s31-desk-A-3redo-edit.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:0 nys:no rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s31-desk-A-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] titled Event: published edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} -> changed to Games afternoon edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:26 Sports day → Games afternoon Tap a change to go to it.} -> typed Sports day back edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s31-desk-B-p1-0published-edit.png",
+    "s31-desk-B-p1-1changed-edit.png",
+    "s31-desk-B-p1-1changed-togo.png",
+    "s31-desk-B-p1-2typedback-edit.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] untitled Event: published edit{pend:0 nys:no rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} -> titled Sports day edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT]|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Basher · Sports day Saber 9/10 21:27 Event → Sports day Tap a change to go to it.} -> typed eVeNt edit{pend:0 nys:no rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} (saved record title: undefined)",
+   "pics": [
+    "s31-desk-B-p2-0published-edit.png",
+    "s31-desk-B-p2-1titled-edit.png",
+    "s31-desk-B-p2-2eVeNt-edit.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT]|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Basher · Sports day Saber 9/10 21:27 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s31-desk-B-2undo-edit.png",
+    "s31-desk-B-2undo-togo.png"
+   ]
+  },
+  {
+   "n": "31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT]|APPOINTMENT unav:ATT C|OD|OIL signedLn:stands} view{rows:EVENT|APPOINTMENT unav:ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Basher · Sports day Saber 9/10 21:27 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s31-desk-B-4reload-edit.png",
+    "s31-desk-B-4reload-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published \"Sports day\" (edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"); changed to SPORTS DAY: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:25 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-A-0published-edit.png",
+    "s32-desk-A-1caps-edit.png",
+    "s32-desk-A-1caps-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] typed \"Sports day\" back: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-A-2back-edit.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-A-2undo-edit.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:25 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-A-3redo-edit.png",
+    "s32-desk-A-3redo-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:25 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-A-4reload-edit.png",
+    "s32-desk-A-4reload-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published \"Sports day\" (edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"); changed to SPORTS DAY: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:26 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-B-0published-edit.png",
+    "s32-desk-B-1caps-edit.png",
+    "s32-desk-B-1caps-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-B-2undo-edit.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-B-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] OD published (before: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}); retitled: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-A-0published-edit.png",
+    "s33-desk-A-1retitled-edit.png",
+    "s33-desk-A-1retitled-togo.png",
+    "s33-desk-A-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-desk-A-2undo-edit.png",
+    "s33-desk-A-2undo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-A-3redo-edit.png",
+    "s33-desk-A-3redo-togo.png",
+    "s33-desk-A-3redo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-A-4reload-edit.png",
+    "s33-desk-A-4reload-togo.png",
+    "s33-desk-A-4reload-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] OD published (before: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}); retitled: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:18 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-desk-B-0published-edit.png",
+    "s33-desk-B-1retitled-edit.png",
+    "s33-desk-B-1retitled-togo.png",
+    "s33-desk-B-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-desk-B-2undo-edit.png",
+    "s33-desk-B-2undo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-desk-B-4reload-edit.png",
+    "s33-desk-B-4reload-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] OD published (before: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}); retitled: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:19 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-phone-A-0published-edit.png",
+    "s33-phone-A-1retitled-edit.png",
+    "s33-phone-A-1retitled-togo.png",
+    "s33-phone-A-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-phone-A-2undo-edit.png",
+    "s33-phone-A-2undo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:19 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-phone-A-3redo-edit.png",
+    "s33-phone-A-3redo-togo.png",
+    "s33-phone-A-3redo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:19 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-phone-A-4reload-edit.png",
+    "s33-phone-A-4reload-togo.png",
+    "s33-phone-A-4reload-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] OD published (before: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}); retitled: edit{pend:1 pending nys:YES rows: unav:Detachment visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Detachment visit Saber 9/10 21:19 Overseas visit → Detachment visit}",
+   "pics": [
+    "s33-phone-B-0published-edit.png",
+    "s33-phone-B-1retitled-edit.png",
+    "s33-phone-B-1retitled-togo.png",
+    "s33-phone-B-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-phone-B-2undo-edit.png",
+    "s33-phone-B-2undo-view.png"
+   ]
+  },
+  {
+   "n": "33",
+   "size": "phone",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:Overseas visit[OD]|OL|ATT C|OD|OIL pend:0}",
+   "pics": [
+    "s33-phone-B-4reload-edit.png",
+    "s33-phone-B-4reload-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] 22-23 Jul Event published both days, retitled: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"} :: WED edit rows REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] / view rows TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT]; THU edit rows MEETING|MEETING|MEETING|MEETING / view rows MEETING|MEETING|MEETING|MEETING",
+   "pics": [
+    "s34-desk-A-2retitled-wed-edit.png",
+    "s34-desk-A-2retitled-wed-togo.png",
+    "s34-desk-A-2retitled-wed-view.png",
+    "s34-desk-A-2retitled-thu-edit.png",
+    "s34-desk-A-2retitled-thu-togo.png",
+    "s34-desk-A-2retitled-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: WED edit{pend:0 nys:no rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} || THU edit{pend:0 nys:no rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} || saved {\"t\":\"Two-day session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-A-2undo-wed-edit.png",
+    "s34-desk-A-2undo-wed-view.png",
+    "s34-desk-A-2undo-thu-edit.png",
+    "s34-desk-A-2undo-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-A-3redo-wed-edit.png",
+    "s34-desk-A-3redo-wed-togo.png",
+    "s34-desk-A-3redo-wed-view.png",
+    "s34-desk-A-3redo-thu-edit.png",
+    "s34-desk-A-3redo-thu-togo.png",
+    "s34-desk-A-3redo-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-A-4reload-wed-edit.png",
+    "s34-desk-A-4reload-wed-togo.png",
+    "s34-desk-A-4reload-wed-view.png",
+    "s34-desk-A-4reload-thu-edit.png",
+    "s34-desk-A-4reload-thu-togo.png",
+    "s34-desk-A-4reload-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] 22-23 Jul Event published both days, retitled: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:27 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:27 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"} :: WED edit rows REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] / view rows TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT]; THU edit rows MEETING|MEETING|MEETING|MEETING / view rows MEETING|MEETING|MEETING|MEETING",
+   "pics": [
+    "s34-desk-B-2retitled-wed-edit.png",
+    "s34-desk-B-2retitled-wed-togo.png",
+    "s34-desk-B-2retitled-wed-view.png",
+    "s34-desk-B-2retitled-thu-edit.png",
+    "s34-desk-B-2retitled-thu-togo.png",
+    "s34-desk-B-2retitled-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: WED edit{pend:0 nys:no rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} || THU edit{pend:0 nys:no rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} || saved {\"t\":\"Two-day session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-B-2undo-wed-edit.png",
+    "s34-desk-B-2undo-wed-view.png",
+    "s34-desk-B-2undo-thu-edit.png",
+    "s34-desk-B-2undo-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: WED edit{pend:0 nys:no rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} || THU edit{pend:0 nys:no rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} || saved {\"t\":\"Two-day session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-B-4reload-wed-edit.png",
+    "s34-desk-B-4reload-wed-view.png",
+    "s34-desk-B-4reload-thu-edit.png",
+    "s34-desk-B-4reload-thu-view.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Sun 26-Mon 27 Event published in both weeks, retitled from Inputs while on the 27 Jul week (OIL question on retitle: none): SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-A-2retitled-sun-edit.png",
+    "s35-desk-A-2retitled-sun-togo.png",
+    "s35-desk-A-2retitled-mon-edit.png",
+    "s35-desk-A-2retitled-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: SUN26(wk20Jul) edit{pend:0 nys:no rows:CROSS-WEEK[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} || MON27(wk27Jul) edit{pend:0 nys:no rows: unav: signedLn:stands} view{rows: unav: pend:0} || saved title \"Cross-week\"",
+   "pics": [
+    "s35-desk-A-2undo-sun-edit.png",
+    "s35-desk-A-2undo-mon-edit.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-A-3redo-sun-edit.png",
+    "s35-desk-A-3redo-sun-togo.png",
+    "s35-desk-A-3redo-mon-edit.png",
+    "s35-desk-A-3redo-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:26 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-A-4reload-sun-edit.png",
+    "s35-desk-A-4reload-sun-togo.png",
+    "s35-desk-A-4reload-mon-edit.png",
+    "s35-desk-A-4reload-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Sun 26-Mon 27 Event published in both weeks, retitled from Inputs while on the 27 Jul week (OIL question on retitle: none): SUN26(wk20Jul) edit{pend:1 pending nys:YES rows:RENAMED RANGE[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:27 Cross-week → Renamed range Tap a change to go to it.} || MON27(wk27Jul) edit{pend:1 pending nys:YES rows: unav: signedLn:stands} view{rows: unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Renamed range Saber 9/10 21:27 Cross-week → Renamed range} || saved title \"Renamed range\"",
+   "pics": [
+    "s35-desk-B-2retitled-sun-edit.png",
+    "s35-desk-B-2retitled-sun-togo.png",
+    "s35-desk-B-2retitled-mon-edit.png",
+    "s35-desk-B-2retitled-mon-togo.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: SUN26(wk20Jul) edit{pend:0 nys:no rows:CROSS-WEEK[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} || MON27(wk27Jul) edit{pend:0 nys:no rows: unav: signedLn:stands} view{rows: unav: pend:0} || saved title \"Cross-week\"",
+   "pics": [
+    "s35-desk-B-2undo-sun-edit.png",
+    "s35-desk-B-2undo-mon-edit.png"
+   ]
+  },
+  {
+   "n": "35",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: SUN26(wk20Jul) edit{pend:0 nys:no rows:CROSS-WEEK[EVENT] unav: signedLn:stands} view{rows:CROSS-WEEK[EVENT] unav: pend:0} || MON27(wk27Jul) edit{pend:0 nys:no rows: unav: signedLn:stands} view{rows: unav: pend:0} || saved title \"Cross-week\"",
+   "pics": [
+    "s35-desk-B-4reload-sun-edit.png",
+    "s35-desk-B-4reload-mon-edit.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[A] member's own checkpoint — after Undo: glass:Team session,stiff:Team session,bane:Team session | after Redo: glass:Team review,stiff:Team review,bane:Team review | after reload: glass:Team review,stiff:Team review,bane:Team review",
+   "pics": []
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] shared Event of 3 people (3 picked) filed by the member, published by the admin; base: edit{pend:0 nys:no rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} | records glass:Team session,stiff:Team session,bane:Team session; after the member's retitle: edit{pend:3 pending nys:YES rows:TEAM REVIEW[EVENT]|TEAM REVIEW[EVENT]|TEAM REVIEW[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 3 changes Ranger · Team review Ranger 9/10 21:33 Team session → Team review Saber · Team review Ranger 9/10 21:33 Team session → Team review Basher · Team review Ranger 9/10 21:33 Team session } | records glass:Team review,stiff:Team review,bane:Team review",
+   "pics": [
+    "s37-desk-A-1member-window.png",
+    "s37-desk-A-3retitled-edit.png",
+    "s37-desk-A-3retitled-togo.png",
+    "s37-desk-A-3retitled-view.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "FAIL",
+   "said": "[A] To go out for the shared retitle should be ONE item with its people underneath; the screen said: pending chip \"3 pending\"; changes window: Waiting to go out as AL1 · 3 changes Ranger · Team review Ranger 9/10 21:33 Team session → Team review Saber · Team review Ranger 9/10 21:33 Team session → Team review Basher · Team review Ranger 9/10 21:33 Team session → Team review Tap a change to go to it.",
+   "pics": [
+    "s37-desk-A-3retitled-togo.png",
+    "s37-desk-A-3retitled-edit.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[B] member Undo then reload — records: glass:Team session,stiff:Team session,bane:Team session",
+   "pics": []
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] shared Event of 3 people (3 picked) filed by the member, published by the admin; base: edit{pend:0 nys:no rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} | records glass:Team session,stiff:Team session,bane:Team session; after the member's retitle: edit{pend:0 nys:no rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} | records glass:Team session,stiff:Team session,bane:Team session",
+   "pics": [
+    "s37-desk-B-1member-window.png",
+    "s37-desk-B-3retitled-edit.png",
+    "s37-desk-B-3retitled-view.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] To go out for the shared retitle should be ONE item with its people underneath; the screen said: pending chip \"0\"; changes window: ",
+   "pics": [
+    "s37-desk-B-3retitled-edit.png"
+   ]
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[A] after both retitles: all:Town hall,allavail:Games afternoon | Undo: all:Open house,allavail:Games afternoon | Redo: all:Town hall,allavail:Games afternoon | reload: all:Town hall,allavail:Games afternoon",
+   "pics": []
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published ALL (Wed) and ALL AVAIL (Sat), then the member retitled: BEFORE WED(ALL): pend 0 nys no rows OPEN HOUSE[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"OPEN HOUSEEvent09:0010:00ALL36+ addLATEall one\"] togo  || SAT(ALL AVAIL): pend 0 nys no rows SPORTS DAY[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"SPORTS DAYEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo  || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"OPEN HOUSE :: ⠿OPEN HOUSEEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"SPORTS DAY :: ⠿SPORTS DAYEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Sports day:oil={\\\"2026-07-18\\\":0.5}\",\"all:Open house:oil=null\"] || AFTER WED(ALL): pend 1 pending nys YES rows TOWN HALL[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"TOWN HALLEvent09:0010:00ALL36+ addLATEall one\"] togo Waiting to go out as AL1 · 1 change ALL · Town hall Ranger 9/10 21:36 Open house → Town hall Tap a change to go to it. || SAT(ALL AVAIL): pend 1 pending nys YES rows GAMES AFTERNOON[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"GAMES AFTERNOONEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo Waiting to go out as AL1 · 1 change ALL AVAIL · Games afternoon Ranger 9/10 21:36 Sports day → Games afternoon Tap a change to go to it. || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"TOWN HALL :: ⠿TOWN HALLEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"GAMES AFTERNOON :: ⠿GAMES AFTERNOONEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Games afternoon:oil={\\\"2026-07-18\\\":0.5}\",\"all:Town hall:oil=null\"] || OIL question on retitle: [\"\",\"\"]",
+   "pics": [
+    "s38-desk-A-1published-wed-edit.png",
+    "s38-desk-A-2retitled-wed-edit.png",
+    "s38-desk-A-2retitled-wed-togo.png",
+    "s38-desk-A-2retitled-sat-edit.png",
+    "s38-desk-A-2retitled-sat-togo.png",
+    "s38-desk-A-2retitled-wed-board.png",
+    "s38-desk-A-2retitled-sat-board.png"
+   ]
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[B] after both retitles then Undo (reverts the LAST one, the ALL one) then reload: all:Open house,allavail:Games afternoon",
+   "pics": []
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published ALL (Wed) and ALL AVAIL (Sat), then the member retitled: BEFORE WED(ALL): pend 0 nys no rows OPEN HOUSE[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"OPEN HOUSEEvent09:0010:00ALL36+ addLATEall one\"] togo  || SAT(ALL AVAIL): pend 0 nys no rows SPORTS DAY[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"SPORTS DAYEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo  || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"OPEN HOUSE :: ⠿OPEN HOUSEEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"SPORTS DAY :: ⠿SPORTS DAYEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Sports day:oil={\\\"2026-07-18\\\":0.5}\",\"all:Open house:oil=null\"] || AFTER WED(ALL): pend 0 nys no rows OPEN HOUSE[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"OPEN HOUSEEvent09:0010:00ALL36+ addLATEall one\"] togo  || SAT(ALL AVAIL): pend 1 pending nys YES rows GAMES AFTERNOON[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"GAMES AFTERNOONEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo Waiting to go out as AL1 · 1 change ALL AVAIL · Games afternoon Ranger 9/10 21:37 Sports day → Games afternoon Tap a change to go to it. || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"OPEN HOUSE :: ⠿OPEN HOUSEEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"GAMES AFTERNOON :: ⠿GAMES AFTERNOONEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Games afternoon:oil={\\\"2026-07-18\\\":0.5}\",\"all:Open house:oil=null\"] || OIL question on retitle: [\"\",\"\"]",
+   "pics": [
+    "s38-desk-B-1published-wed-edit.png",
+    "s38-desk-B-2retitled-wed-edit.png",
+    "s38-desk-B-2retitled-sat-edit.png",
+    "s38-desk-B-2retitled-sat-togo.png",
+    "s38-desk-B-2retitled-wed-board.png",
+    "s38-desk-B-2retitled-sat-board.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published \"Sports day\", then deleted: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 2 21:30 Sports day deleted · 15 Jul Saber · 9/10 21:30 Sports day added · 15 Jul (on the programme) Sabe",
+   "pics": [
+    "s39-desk-A-1deleted-edit.png",
+    "s39-desk-A-1deleted-togo.png",
+    "s39-desk-A-1deleted-view.png",
+    "s39-desk-A-1deleted-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | input exists: true | history window: Changes · week of 13/7 8 changes this week ✕ New to you 0 All changes 8 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · The day · 6 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original Saber · 9/10 21:29 Signed · APPROVED BY · Anvil Saber · 9/10 21:29 Sign",
+   "pics": [
+    "s39-desk-A-2undo-edit.png",
+    "s39-desk-A-2undo-view.png",
+    "s39-desk-A-2undo-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 7 21:30 Redo — a personal input Saber · 9/10 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original ",
+   "pics": [
+    "s39-desk-A-3redo-edit.png",
+    "s39-desk-A-3redo-togo.png",
+    "s39-desk-A-3redo-view.png",
+    "s39-desk-A-3redo-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 7 21:30 Redo — a personal input Saber · 9/10 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original ",
+   "pics": [
+    "s39-desk-A-4reload-edit.png",
+    "s39-desk-A-4reload-togo.png",
+    "s39-desk-A-4reload-view.png",
+    "s39-desk-A-4reload-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published \"Sports day\", then deleted: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 2 21:30 Sports day deleted · 15 Jul Saber · 9/10 21:30 Sports day added · 15 Jul (on the programme) Sabe",
+   "pics": [
+    "s39-desk-B-1deleted-edit.png",
+    "s39-desk-B-1deleted-togo.png",
+    "s39-desk-B-1deleted-view.png",
+    "s39-desk-B-1deleted-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | input exists: true | history window: Changes · week of 13/7 8 changes this week ✕ New to you 0 All changes 8 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · The day · 6 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original Saber · 9/10 21:30 Signed · APPROVED BY · Anvil Saber · 9/10 21:30 Sign",
+   "pics": [
+    "s39-desk-B-2undo-edit.png",
+    "s39-desk-B-2undo-view.png",
+    "s39-desk-B-2undo-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | input exists: true | history window: Changes · week of 13/7 8 changes this week ✕ New to you 0 All changes 8 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · The day · 6 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original Saber · 9/10 21:30 Signed · APPROVED BY · Anvil Saber · 9/10 21:30 Sign",
+   "pics": [
+    "s39-desk-B-4reload-edit.png",
+    "s39-desk-B-4reload-view.png",
+    "s39-desk-B-4reload-history.png"
+   ]
+  },
+  {
+   "n": "40",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "published \"Sports day\": edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}; after Take off (button \"UNDO / Undo — removes the ground-programme row this created\"): edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:28 on the programme → taken off}; after Accept (button \"ACCEPT / Accept into the ground programme\"): edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}; saved title \"Sports day\"",
+   "pics": [
+    "s40-desk-1takeoff-edit.png",
+    "s40-desk-1takeoff-togo.png",
+    "s40-desk-1takeoff-view.png",
+    "s40-desk-2accepted-edit.png"
+   ]
+  },
+  {
+   "n": "40",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "FAIL",
+   "said": "the messages shown (toasts): after Take off [\"Accept undone\"]; after Accept [\"Ranger's Sports day added to the ground programme\"] — expected each to name \"Sports day\"",
+   "pics": [
+    "s40-desk-1takeoff-board.png",
+    "s40-desk-2accept-board.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] taken off (button present: true) then published: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\" || dormant request retitled: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-0published-off-edit.png",
+    "s41-desk-A-0published-off-view.png",
+    "s41-desk-A-1retitled-dormant-edit.png",
+    "s41-desk-A-1retitled-dormant-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\"",
+   "pics": [
+    "s41-desk-A-2undo-edit.png",
+    "s41-desk-A-2undo-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-3redo-edit.png",
+    "s41-desk-A-3redo-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-4reload-edit.png",
+    "s41-desk-A-4reload-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] accepted afterwards (button present: true): edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:30 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-2accepted-edit.png",
+    "s41-desk-A-2accepted-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] taken off (button present: true) then published: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\" || dormant request retitled: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-B-0published-off-edit.png",
+    "s41-desk-B-0published-off-view.png",
+    "s41-desk-B-1retitled-dormant-edit.png",
+    "s41-desk-B-1retitled-dormant-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\"",
+   "pics": [
+    "s41-desk-B-2undo-edit.png",
+    "s41-desk-B-2undo-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\"",
+   "pics": [
+    "s41-desk-B-4reload-edit.png",
+    "s41-desk-B-4reload-view.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "History tab (All changes) after add \"Sports day\" / retitle \"Games afternoon\" / clear: Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Ranger · Event · 3 21:33 15 Jul · title Games afternoon → Event Saber · 9/10 21:33 15 Jul · title Sports day → Games afternoon Saber · 9/10 21:33 Sports day added · 15 Jul (on the programme) Saber · 9/10 21:33 Tap a change to go to it — the window stays open. | saved title now undefined",
+   "pics": [
+    "s42-desk-admin-allchanges.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "the day's change bubble (chip \"n changes\"): chgwin front :: ⠿ Changes · Wednesday 15/7 Not yet published ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 3 21:33 15 Jul · title Games afternoon → Event Saber · 9/10 21:33 15 Jul · title Sports day → Games afternoon Saber · 9/10 21:33 Sports day added · 15 Jul (on the programme) Saber · 9/10 21:33 Tap a change to go to it — the window stays open.",
+   "pics": [
+    "s42-desk-admin-bubble.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "after reload, History tab: Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Ranger · Event · 3 21:33 15 Jul · title Games afternoon → Event Saber · 9/10 21:33 15 Jul · title Sports day → Games afternoon Saber · 9/10 21:33 Sports day added · 15 Jul (on the programme) Saber · 9/10 21:33 Tap a change to go to it — the window stays open.",
+   "pics": [
+    "s42-desk-admin-allchanges-reload.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "member's own Event (saved title now undefined): Changes button on View-only Sched: no; day change chip: yes; window text: ⠿ Changes · Wednesday 15/7 Not yet published ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 3 21:34 15 Jul · title Games afternoon → Event Ranger · 9/10 21:34 15 Jul · title Sports day → Games afternoon Ranger · 9/10 21:34 Sports day added · 15 Jul (on the programme) Ranger · 9/10 21:34 Read only — every change and who made it, for everyo",
+   "pics": [
+    "s42-desk-member-view.png",
+    "s42-desk-member-allchanges.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "row renamed on Edit Schedule: week row \"Scheduler wording[EVENT]\"; reopened input's Title box \"Sports day\"; saved title \"Sports day\"",
+   "pics": [
+    "s43-desk-1week-renamed.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "row renamed on the Board: board row {\"name\":\"Board wording\",\"kind\":\"Event\"}; week row \"Board wording[EVENT]\"; reopened input's Title box \"Sports day\"; saved title \"Sports day\"",
+   "pics": [
+    "s43-desk-2board-renamed.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "published with the hand-named row: edit{pend:0 nys:no rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} || input then retitled \"Games afternoon\": edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:33 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\"",
+   "pics": [
+    "s43-desk-3published-edit.png",
+    "s43-desk-4retitled-edit.png",
+    "s43-desk-4retitled-togo.png",
+    "s43-desk-4retitled-view.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s43-desk-2undo-edit.png",
+    "s43-desk-2undo-view.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:33 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\"",
+   "pics": [
+    "s43-desk-3redo-edit.png",
+    "s43-desk-3redo-togo.png",
+    "s43-desk-3redo-view.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:33 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\"",
+   "pics": [
+    "s43-desk-4reload-edit.png",
+    "s43-desk-4reload-togo.png",
+    "s43-desk-4reload-view.png"
+   ]
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,15 @@
+[
+ {
+  "n": 55,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "CHECK",
+  "said": "(1) All-day OD, Ranger put on a Friday flying line with take-off and landing blank ({\"to\":\"\",\"ld\":\"\",\"label\":\"WAVE 1\"}): untitled OD -> [\"hard/INPUT_FLY: OD clashes with this line — reason: od55\"]; titled \"Overseas visit\" -> [\"hard/INPUT_FLY: Overseas visit clashes with this line — reason: od55\"]. (2) Timed Event Wed 15 23:00-02:00 (saved {\"s\":1380,\"e\":120,\"date\":\"Jul 15\"}) with Ranger's typed row Thu 01:00-01:30: untitled -> Wed [\"hard/INPUT_FLY: OD clashes with RU BFM — reason: Overseas duty — exercise, off island\"] Thu [\"hard/DOUBLE_BOOK: RU BFM & APPOINTMENT clash\",\"adv/DEBRIEF: Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)\",\"note/LONGDAY: Ranger has a long work day: 19h10, 01:00 → 20:10 (last landing 18:10 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Wednesday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (NIGHT WORK) before the 13:45 report — 1h00 before his Thursday duty ends.\"]; titled \"Night exercise\" -> Wed [\"hard/INPUT_FLY: OD clashes with RU BFM — reason: Overseas duty — exercise, off island\"] Thu [\"hard/DOUBLE_BOOK: RU BFM & APPOINTMENT clash\",\"adv/DEBRIEF: Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)\",\"note/LONGDAY: Ranger has a long work day: 19h10, 01:00 → 20:10 (last landing 18:10 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Wednesday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (NIGHT WORK) before the 13:45 report — 1h00 before his Thursday duty ends.\"]. (3) Sunday 19 23:00-02:00 with Monday 20 01:00-01:30 (next week): untitled Monday -> [\"adv/TURN: Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"hard/INPUT_FLY: Event but tasked — MONDAY NIGHT WORK — reason: sm55\",\"adv/DT_SUM: 2 people are double turning: Ranger, Echo\",\"note/LONGDAY: Ranger has a long work day: 12h55, 01:00 → 13:55 (last landing 11:55 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Sunday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (MONDAY NIGHT WORK) before the 05:40 report — 1h00 before his Monday duty ends.\"]; titled -> [\"adv/TURN: Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"hard/INPUT_FLY: Night exercise but tasked — MONDAY NIGHT WORK — reason: sm55\",\"adv/DT_SUM: 2 people are double turning: Ranger, Echo\",\"note/LONGDAY: Ranger has a long work day: 12h55, 01:00 → 13:55 (last landing 11:55 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Sunday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (MONDAY NIGHT WORK) before the 05:40 report — 1h00 before his Monday duty ends.\"]; Sunday side titled -> []",
+  "pics": [
+   "desk-s55-od-titled-board.png",
+   "desk-s55-night-thu-board.png",
+   "desk-s55-sunmon-control-board.png",
+   "desk-s55-sunmon-titled-board.png"
+  ]
+ }
+]

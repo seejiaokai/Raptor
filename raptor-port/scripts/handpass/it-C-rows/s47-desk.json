@@ -1,0 +1,13 @@
+[
+ {
+  "n": 47,
+  "size": "desk",
+  "role": "admin then member (Ranger)",
+  "verdict": "PASS",
+  "said": "Ranger filed \"Ranger filed this\"; admin retitled it \"Admin retitled\" (placed-by still Ranger); Ranger reopened: title \"Admin retitled\", Save true, locked false, placed line \"Placed by Ranger · 9 Oct 26, 21:27 · changed by Saber · 9 Oct 26, 21:27\"; Ranger retitled \"Ranger again\" (placed-by Ranger). History (admin's view, All changes): \"Tue · Input · Ranger · Ranger again · 3 NEW 21:27 28 Jul · title Admin retitled → Ranger again Ranger · 9/10 21:27 28 Jul · title Ranger filed this → Admin retitled Saber · 9/10 21:27 Ranger filed this added · 28 Jul Ranger · 9/10 21:27 \"",
+  "pics": [
+   "desk-s47-ranger-reopen.png",
+   "desk-s47-history-admin.png"
+  ]
+ }
+]

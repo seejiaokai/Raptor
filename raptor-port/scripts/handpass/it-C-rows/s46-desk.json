@@ -1,0 +1,13 @@
+[
+ {
+  "n": 46,
+  "size": "desk",
+  "role": "member (Ranger) in Saber's shared Event",
+  "verdict": "PASS",
+  "said": "Saber filed a shared Saturday Event \"Shared session\" for Saber + Ranger (2 picked; OIL question asked: true, heading \"OIL — Saber +1, Shared session ✕\"). Ranger opened it: title \"Shared session\" locked (body inert true), Save false, Delete false, text \"Only Saber — who filed it — or an admin can change this for everyone.\", Take me out true, own OIL \"Change...\" true (its question: \"OIL — Ranger, Shared session ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 25 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The \"); after typing ZZ title \"Shared session\". Took himself out: records left 1 (Saber)",
+  "pics": [
+   "desk-s46-ranger-shared.png",
+   "desk-s46-takeout-ask.png"
+  ]
+ }
+]

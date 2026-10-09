@@ -101,6 +101,7 @@ export async function openSaved(W, iid, iso) {
   await go(p, 'inputs')
   const [y, m] = iso.split('-').map(Number)
   await month(p, y, m)
+  if (await p.locator('#inFPerson').count()) { if (!(await p.locator('#inFPerson').isVisible())) { const fb = p.locator('#inFiltersBtn'); if (await fb.count()) { await press(W, fb); await sleep(300) } } if (await p.locator('#inFPerson').isVisible()) { await p.selectOption('#inFPerson', 'all'); await sleep(250) } }
   if (await p.locator(DAYWIN).count()) { await p.keyboard.press('Escape'); await sleep(200) }
   const cell = p.locator(`#inpCal [data-icday="${iso}"]`)
   if (W.mobile) await cell.tap({ position: { x: 8, y: 8 } }); else await cell.click({ position: { x: 8, y: 8 } })
@@ -120,7 +121,16 @@ export async function retitle(W, iid, iso, title, oil) {
 }
 
 /* ---------- the schedule ---------- */
-export async function editWeek(p) { await closeBoard(p); if ((await p.evaluate(() => window.CURPAGE)) !== 'editsched') await go(p, 'editsched') }
+export let WEEK = null
+export const setWeek = w => { WEEK = w }
+export async function ensureWeek(p) {
+  if (!WEEK) return
+  const b = p.locator('button.wk[data-wk="' + WEEK + '"]:visible').first()
+  if (!(await b.count())) return
+  if ((await b.getAttribute('class')).split(' ').includes('on')) return
+  await (TAP ? b.tap() : b.click()); await sleep(900)
+}
+export async function editWeek(p) { await closeBoard(p); if ((await p.evaluate(() => window.CURPAGE)) !== 'editsched') await go(p, 'editsched'); await ensureWeek(p) }
 export async function closeBoard(p) {
   if (!(await p.locator('#schedBoard:visible').count())) return
   const x = p.locator('#sbDone:visible, #sbClose:visible').first()
@@ -203,7 +213,7 @@ export async function toGoOut(p, di) {
 export const closeTop = async p => { await p.keyboard.press('Escape'); await sleep(250) }
 /* what View-only Sched says about day di (issued face) */
 export async function viewFace(p, di) {
-  await go(p, 'viewsched'); await showDay(p, di, '#vWeek')
+  await go(p, 'viewsched'); await ensureWeek(p); await showDay(p, di, '#vWeek')
   return p.evaluate(i => {
     const d = document.querySelector(`#vWeek .day[data-day="${i}"]`)
     if (!d) return null
@@ -337,3 +347,112 @@ export async function viewVersion(p, di, re) {
   await sel.selectOption(val); await sleep(700)
   return viewFace(p, di)
 }
+
+/* Edit Schedule: look at an ISSUED version (ORIG / ALn) through the day's plans menu, read the day, come back to live */
+export async function lookIssued(W, di, re) {
+  const p = W.page
+  await editWeek(p); await showDay(p, di)
+  const btn = p.locator(`#eWeek [data-planmenu="${di}"]:visible`).first()
+  await btn.evaluate(e => e.scrollIntoView({ block: 'center' }))
+  const tapIt = loc => W.mobile ? loc.tap() : loc.click()
+  await tapIt(btn); await sleep(500)
+  const items = await p.evaluate(() => [...document.querySelectorAll('.wavemenu .wm')].filter(e => e.offsetWidth).map(e => (e.dataset.planpv != null ? '[look]' : e.dataset.plangolive != null ? '[live]' : e.dataset.plansel != null ? '[plan]' : '[?]') + e.innerText.replace(/\s+/g, ' ').trim().slice(0, 60)))
+  const it = p.locator('.wavemenu .wm[data-planpv]:visible').filter({ hasText: new RegExp(re, 'i') }).first()
+  if (!(await it.count())) { await p.mouse.click(5, p.viewportSize().height - 5); await sleep(300); return { missing: true, items } }
+  await tapIt(it); await sleep(800)
+  const f = await p.evaluate(i => {
+    const d = document.querySelector(`#eWeek .day[data-day="${i}"]`); if (!d) return null
+    const t = e => e ? (e.innerText || e.textContent || '').replace(/\s+/g, ' ').trim() : ''
+    return { rows: [...d.querySelectorAll('.pl-row.gr-frominput')].map(r => ({ name: t(r.querySelector(':scope > .nm .ntx')), kind: t(r.querySelector(':scope > .nm .nm-kind')) })), bar: [...d.querySelectorAll('.dprev-bar')].map(t).join(' / '), signedLn: t(d.querySelector('.signedln')), tag: t(d.querySelector('.verchip')) }
+  }, di)
+  return { items, face: f }
+}
+export async function backLive(W, di) {
+  const p = W.page
+  const btn = p.locator(`#eWeek [data-planmenu="${di}"]:visible`).first()
+  if (!(await btn.count())) return false
+  await (W.mobile ? btn.tap() : btn.click()); await sleep(500)
+  const it = p.locator('.wavemenu .wm[data-plangolive]:visible').first()
+  if (!(await it.count())) { await p.mouse.click(5, p.viewportSize().height - 5); await sleep(300); return false }
+  await (W.mobile ? it.tap() : it.click()); await sleep(700); return true
+}
+
+/* sign out through the Logout button and sign in as someone else (the world is kept) */
+export async function switchUser(W, who, pass) {
+  const p = W.page
+  await closeWins(p)
+  await closeBoard(p)
+  const lo = p.getByRole('button', { name: 'Logout' }).first()
+  await (W.mobile ? lo.tap() : lo.click())
+  await sleep(500)
+  // a confirm may stand in the way
+  const ok = p.getByRole('button', { name: /^(Log ?out|Yes|Confirm|Sign out)/i }).first()
+  if (!(await p.locator('#luser').isVisible().catch(() => false)) && (await ok.count()) && await ok.isVisible().catch(() => false)) { await ok.click(); await sleep(500) }
+  await p.waitForSelector('#luser', { state: 'visible' })
+  await signIn(p, who, pass)
+  W.who = who; W.pass = pass
+}
+/* pick people on the window's "Several people" chips */
+export async function severalPick(W, names) {
+  const p = W.page
+  const sv = p.locator('[data-testid="pp-several"]')
+  if (!(await p.locator('[data-testid="pp-count"]').count())) { await press(W, sv); await sleep(300) }
+  for (const n of names) {
+    const b = p.locator('[data-testid="win-inputedit"] button', { hasText: new RegExp('^' + n + '\s*(A|B|C|D|O|IP|IR|IW)?$') }).first()
+    await b.scrollIntoViewIfNeeded().catch(() => {})
+    await press(W, b); await sleep(150)
+  }
+  return (await p.locator('[data-testid="pp-count"]').innerText()).trim()
+}
+export const recsBy = (p, title, type) => p.evaluate(([t, ty]) => window.INPUTS.filter(x => x.title === t && (!ty || x.type === ty)).map(x => ({ iid: x.iid, person: x.person, title: x.title, type: x.type, date: x.date })), [title, type || null])
+
+/* the changes window's "All changes" tab for day di (opened from the pending button, or from the top bar's history button when none) */
+export async function allChanges(W, di) {
+  const p = W.page
+  await editWeek(p); await showDay(p, di)
+  let b = p.locator(`#eWeek [data-pendlist="${di}"]:visible`).first()
+  if (await b.count()) { await b.evaluate(e => e.scrollIntoView({ block: 'center' })); await (W.mobile ? b.tap() : b.click()) }
+  else { const h = p.locator('button[title*="hange" i]:visible, #chgBtn:visible, #histBtn:visible').first(); if (await h.count()) await (W.mobile ? h.tap() : h.click()) }
+  await sleep(500)
+  const tab = p.locator('.chgwin button', { hasText: /All changes/ }).first()
+  if (await tab.count()) { await (W.mobile ? tab.tap() : tab.click()); await sleep(500) }
+  return p.evaluate(() => { const e = document.querySelector('.chgwin'); return e ? e.innerText.replace(/\s+/g, ' ').trim() : '(window not found)' })
+}
+/* delete a saved input through its window */
+export async function deleteInput(W, iid, iso) {
+  const p = W.page
+  await openSaved(W, iid, iso)
+  await press(W, p.locator('#inpEditDel')); await sleep(500)
+  await shot(p, 'delete-confirm-' + Date.now() % 100000)
+  for (const sel of ['[data-testid="inped-delall"]', '[data-testid="inped-delconfirm"]', '[data-testid="inped-del-yes"]', '[data-testid="confirm-yes"]']) {
+    const b = p.locator(`${sel}:visible`).first(); if (await b.count()) { await press(W, b); await sleep(500) }
+  }
+  const dlg = p.getByRole('button', { name: /^(Delete|Yes|Confirm|Remove)/ }).first()
+  if (await p.locator('[data-testid="win-inputedit"]:visible').count() && await dlg.count() && await dlg.isVisible().catch(() => false) && (await dlg.getAttribute('id')) !== 'inpEditDel') { await press(W, dlg); await sleep(500) }
+  await closeWins(p)
+}
+
+/* open a saved input from the opened day by its card's text (a shared input's card has one id for the group) */
+export async function openSavedText(W, iso, re) {
+  const p = W.page
+  await go(p, 'inputs')
+  const [y, m] = iso.split('-').map(Number)
+  await month(p, y, m)
+  if (await p.locator(DAYWIN).count()) { await p.keyboard.press('Escape'); await sleep(200) }
+  const cell = p.locator(`#inpCal [data-icday="${iso}"]`)
+  if (W.mobile) await cell.tap({ position: { x: 8, y: 8 } }); else await cell.click({ position: { x: 8, y: 8 } })
+  await sleep(300)
+  const c = p.locator('[data-testid^="idy-row-"]').filter({ hasText: re }).first().locator('[data-testid="idy-open"]')
+  await press(W, c)
+  await win(p).waitFor()
+}
+export async function retitleText(W, iso, re, title, oil) {
+  const p = W.page
+  await openSavedText(W, iso, re)
+  await p.fill('#inpEditTitle', title)
+  await L_shotWin(p)
+  const head = await saveWin(W, oil)
+  await closeWins(p)
+  return head
+}
+const L_shotWin = async p => { await shot(p, 'win-' + Date.now() % 100000) }

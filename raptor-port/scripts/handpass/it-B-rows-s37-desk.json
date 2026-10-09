@@ -1,0 +1,69 @@
+{
+ "rows": [
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[A] member's own checkpoint — after Undo: glass:Team session,stiff:Team session,bane:Team session | after Redo: glass:Team review,stiff:Team review,bane:Team review | after reload: glass:Team review,stiff:Team review,bane:Team review",
+   "pics": []
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] shared Event of 3 people (3 picked) filed by the member, published by the admin; base: edit{pend:0 nys:no rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} | records glass:Team session,stiff:Team session,bane:Team session; after the member's retitle: edit{pend:3 pending nys:YES rows:TEAM REVIEW[EVENT]|TEAM REVIEW[EVENT]|TEAM REVIEW[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 3 changes Ranger · Team review Ranger 9/10 21:33 Team session → Team review Saber · Team review Ranger 9/10 21:33 Team session → Team review Basher · Team review Ranger 9/10 21:33 Team session } | records glass:Team review,stiff:Team review,bane:Team review",
+   "pics": [
+    "s37-desk-A-1member-window.png",
+    "s37-desk-A-3retitled-edit.png",
+    "s37-desk-A-3retitled-togo.png",
+    "s37-desk-A-3retitled-view.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "FAIL",
+   "said": "[A] To go out for the shared retitle should be ONE item with its people underneath; the screen said: pending chip \"3 pending\"; changes window: Waiting to go out as AL1 · 3 changes Ranger · Team review Ranger 9/10 21:33 Team session → Team review Saber · Team review Ranger 9/10 21:33 Team session → Team review Basher · Team review Ranger 9/10 21:33 Team session → Team review Tap a change to go to it.",
+   "pics": [
+    "s37-desk-A-3retitled-togo.png",
+    "s37-desk-A-3retitled-edit.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[B] member Undo then reload — records: glass:Team session,stiff:Team session,bane:Team session",
+   "pics": []
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] shared Event of 3 people (3 picked) filed by the member, published by the admin; base: edit{pend:0 nys:no rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} | records glass:Team session,stiff:Team session,bane:Team session; after the member's retitle: edit{pend:0 nys:no rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:TEAM SESSION[EVENT]|TEAM SESSION[EVENT]|TEAM SESSION[EVENT] unav:OL|ATT C|OD|OIL pend:0} | records glass:Team session,stiff:Team session,bane:Team session",
+   "pics": [
+    "s37-desk-B-1member-window.png",
+    "s37-desk-B-3retitled-edit.png",
+    "s37-desk-B-3retitled-togo.png",
+    "s37-desk-B-3retitled-view.png"
+   ]
+  },
+  {
+   "n": "37",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] To go out for the shared retitle should be ONE item with its people underneath; the screen said: pending chip \"0\"; changes window: ",
+   "pics": [
+    "s37-desk-B-3retitled-togo.png",
+    "s37-desk-B-3retitled-edit.png"
+   ]
+  }
+ ],
+ "errs": []
+}

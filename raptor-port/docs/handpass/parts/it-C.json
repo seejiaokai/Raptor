@@ -1,0 +1,333 @@
+{
+ "walker": "C",
+ "server": "http://localhost:4233/",
+ "counts": {
+  "PASS": 22,
+  "PARTIAL": 2,
+  "FAIL": 2
+ },
+ "rows": [
+  {
+   "n": 44,
+   "size": "desk",
+   "role": "member (Ranger)",
+   "verdict": "PASS",
+   "said": "own Event: filed \"Mine v1\", window retitle -> \"Mine v2\", List pencil -> \"Mine v3\" (pencil asked OIL: false). Saber's Event \"Saber briefing\": window title \"Saber briefing\" inert=true/true, type \"Event\", Save false, Delete false, text \"Only Saber or an admin can change this.\"; after typing \"XYZ\"+Enter value \"Saber briefing\" (typed), window still open 1, reopened \"Saber briefing\", record \"Saber briefing\"; List pencil on Saber's row: 0",
+   "pics": [
+    "desk-s44-saber-readonly.png",
+    "desk-s44-list-everyone.png"
+   ],
+   "script": "s44-desk.json"
+  },
+  {
+   "n": 44,
+   "size": "phone",
+   "role": "member (Ranger)",
+   "verdict": "PASS",
+   "said": "own Event: filed \"Mine v1\", window retitle -> \"Mine v2\", List pencil -> \"Mine v3\" (pencil asked OIL: false). Saber's Event \"Saber briefing\": window title \"Saber briefing\" inert=true/true, type \"Event\", Save false, Delete false, text \"Only Saber or an admin can change this.\"; after typing \"XYZ\"+Enter value \"Saber briefing\" (typed), window still open 1, reopened \"Saber briefing\", record \"Saber briefing\"; List pencil on Saber's row: 0",
+   "pics": [
+    "phone-s44-saber-readonly.png",
+    "phone-s44-list-everyone.png"
+   ],
+   "script": "s44-phone.json"
+  },
+  {
+   "n": 45,
+   "size": "desk",
+   "role": "member (Ranger) then admin (Saber)",
+   "verdict": "PASS",
+   "said": "switch \"members may file for others\" was ON (left ON). Ranger filed Saber's Event \"Filed by Ranger\" (person Saber, placed-by Ranger); reopened as Ranger: Save true, body locked false, placed line \"Placed by Ranger for Saber · 9 Oct 26, 21:21\"; retitled -> \"Retitled by Ranger\" (placed-by Ranger), reopen line \"Placed by Ranger for Saber · 9 Oct 26, 21:21 · changed by Ranger · 9 Oct 26, 21:21\". Saber signed in: Save true, title box \"Retitled by Ranger\"; retitled -> \"Saber changed it\" placed-by Ranger, person Saber; line \"Placed by Ranger for Saber · 9 Oct 26, 21:21 · changed by Saber · 9 Oct 26, 21:22\". (Saber is an admin, so his right here is also the admin's.) || HOST-READING NOTE: Saber is an admin, so his right to edit it is also the admin's; a non-admin subject was not available (Saber is the only seeded admin and Ranger the only member account).",
+   "pics": [
+    "desk-s45-saber-after.png"
+   ],
+   "script": "s45-desk.json"
+  },
+  {
+   "n": 45,
+   "size": "phone",
+   "role": "member (Ranger) then admin (Saber)",
+   "verdict": "PASS",
+   "said": "switch \"members may file for others\" was ON (left ON). Ranger filed Saber's Event \"Filed by Ranger\" (person Saber, placed-by Ranger); reopened as Ranger: Save true, body locked false, placed line \"Placed by Ranger for Saber · 9 Oct 26, 21:23\"; retitled -> \"Retitled by Ranger\" (placed-by Ranger), reopen line \"Placed by Ranger for Saber · 9 Oct 26, 21:23 · changed by Ranger · 9 Oct 26, 21:23\". Saber signed in: Save true, title box \"Retitled by Ranger\"; retitled -> \"Saber changed it\" placed-by Ranger, person Saber; line \"Placed by Ranger for Saber · 9 Oct 26, 21:23 · changed by Saber · 9 Oct 26, 21:23\". (Saber is an admin, so his right here is also the admin's.) || HOST-READING NOTE: Extra size (the brief asked desktop only for 45).",
+   "pics": [
+    "phone-s45-saber-after.png"
+   ],
+   "script": "s45-phone.json"
+  },
+  {
+   "n": 46,
+   "size": "desk",
+   "role": "member (Ranger) in Saber's shared Event",
+   "verdict": "PASS",
+   "said": "Saber filed a shared Saturday Event \"Shared session\" for Saber + Ranger (2 picked; OIL question asked: true, heading \"OIL — Saber +1, Shared session ✕\"). Ranger opened it: title \"Shared session\" locked (body inert true), Save false, Delete false, text \"Only Saber — who filed it — or an admin can change this for everyone.\", Take me out true, own OIL \"Change...\" true (its question: \"OIL — Ranger, Shared session ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 25 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The \"); after typing ZZ title \"Shared session\". Took himself out: records left 1 (Saber)",
+   "pics": [
+    "desk-s46-takeout-ask.png"
+   ],
+   "script": "s46-desk.json"
+  },
+  {
+   "n": 47,
+   "size": "desk",
+   "role": "admin then member (Ranger)",
+   "verdict": "PASS",
+   "said": "Ranger filed \"Ranger filed this\"; admin retitled it \"Admin retitled\" (placed-by still Ranger); Ranger reopened: title \"Admin retitled\", Save true, locked false, placed line \"Placed by Ranger · 9 Oct 26, 21:27 · changed by Saber · 9 Oct 26, 21:27\"; Ranger retitled \"Ranger again\" (placed-by Ranger). History (admin's view, All changes): \"Tue · Input · Ranger · Ranger again · 3 NEW 21:27 28 Jul · title Admin retitled → Ranger again Ranger · 9/10 21:27 28 Jul · title Ranger filed this → Admin retitled Saber · 9/10 21:27 Ranger filed this added · 28 Jul Ranger · 9/10 21:27 \"",
+   "pics": [
+    "desk-s47-ranger-reopen.png",
+    "desk-s47-history-admin.png"
+   ],
+   "script": "s47-desk.json"
+  },
+  {
+   "n": 48,
+   "size": "desk",
+   "role": "member (Ranger) and admin",
+   "verdict": "PASS",
+   "said": "Ranger filed Saber's Event \"Ranger for Saber\" (setting ON: window Save true). Admin turned the gear's \"Members may file for other people\" OFF (was true). Ranger then: window on Saber's input Save false, locked true, text \"Only Saber or an admin can change this.\"; typed QQ+Enter -> title \"Ranger for Saber\"; List pencil on that row 0; own Event retitled through window -> \"Own via window\", through pencil -> \"Own via pencil\". After a real reload: Save false, pencil 0. Setting ON again: window Save true; pencil retitle -> \"Back on route\"",
+   "pics": [
+    "desk-s48-off-after-reload.png",
+    "desk-s48-off-list.png"
+   ],
+   "script": "s48-desk.json"
+  },
+  {
+   "n": 50,
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "Ranger on SC AM (07:00-13:00) Fri 17 Jul. Untitled Event 10:00-11:00: hard/DOUBLE_BOOK: SC AM & EVENT clash. Titles Meeting, Training, SC, Brief, Off, Event, OD, Ranger, 08:00 -> Meeting: hard/DOUBLE_BOOK: SC AM & MEETING clash | Training: hard/DOUBLE_BOOK: SC AM & TRAINING clash | SC: hard/DOUBLE_BOOK: SC AM & SC clash | Brief: hard/DOUBLE_BOOK: SC AM & BRIEF clash | Off: hard/DOUBLE_BOOK: SC AM & OFF clash | Event: hard/DOUBLE_BOOK: SC AM & EVENT clash | OD: hard/DOUBLE_BOOK: SC AM & OD clash | Ranger: hard/DOUBLE_BOOK: SC AM & RANGER clash | 08:00: hard/DOUBLE_BOOK: SC AM & 08:00 clash. As a Meeting: adv/SHIFT_SOFT: Ranger is on SC AM (07:00–13:00) and also down for MEETING; titled Training/Event: adv/SHIFT_SOFT: Ranger is on SC AM (07:00–13:00) and also down for TRAINING | adv/SHIFT_SOFT: Ranger is on SC AM (07:00–13:00) and also down for EVENT. Work hours (Insights, Ranger): 20h all the same? true. Differences vs control: none || HOST-READING NOTE: The script's own verdict said CHECK only because its test did not know the grade word 'adv'; read by hand. Event over the SC AM shift: a hard clash 'SC AM & <TITLE> clash' for every one of the nine titles (Meeting, Training, SC, Brief, Off, Event, OD, Ranger, 08:00); as a Meeting: the amber advisory 'Ranger is on SC AM (07:00-13:00) and also down for <TITLE>' for titles Meeting, Training, Event; Ranger's work hours (Insights) 20h in every state; start, end, person and kind unchanged in every state. The SC shift the app builds is SC AM 07:00-13:00 (not 08:00-16:00). Ranger also carries an older crew-rest line from Thursday's flying on that day in every state, titled or not. || EXTRA PICTURES (warning list opened): Event titled \"Meeting\" over the SC AM shift: warning list [\"⚠ 2 issues\",\"· 2 warnings ·\",\"tap to review\",\"Ranger — SC AM & MEETING clash\",\"Ranger — Crew rest breach — Thursday landed 18:10, +2h debrief assumed → ended 20:10 → crew rest clear at 08:10, but SC AM starts 07:00 — only 10h50 rest.\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]. The same input as a Meeting (title \"Training\"; record type Meeting, title Training): warning list [\"⚠ 2 issues\",\"· 1 warning ·\",\"tap to review\",\"Ranger — Crew rest breach — Thursday landed 18:10, +2h debrief assumed → ended 20:10 → crew rest clear at 08:10, but SC AM starts 07:00 — only 10h50 rest.\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for TRAINING\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]",
+   "pics": [
+    "desk-s50-control.png",
+    "desk-s50-meeting-title-Training.png",
+    "desk-s50b-event-titled-Meeting-warnlist.png",
+    "desk-s50b-meeting-titled-Training-warnlist.png"
+   ],
+   "script": "s50.json"
+  },
+  {
+   "n": 53,
+   "size": "desk",
+   "role": "admin — A: Training titled Meeting, then a Meeting",
+   "verdict": "PASS",
+   "said": "[A: Training titled \"Meeting\" first, then a Meeting] Ranger on SC AM 07:00-13:00 Fri 17 Jul, both 10:00-11:00. Records saved 2 (Training \"Meeting\" + Meeting \"\"). After the first alone: hard: SC AM & MEETING clash. After both: hard [SC AM & MEETING clash ; Ranger is on two items called MEETING at once], other [adv: Ranger is on SC AM (07:00–13:00) and also down for MEETING]; \"two items called MEETING at once\" present: true. Warning list on the board: [\"⚠ 4 issues\",\"· 3 warnings ·\",\"tap to review\",\"Ranger — SC AM & MEETING clash\",\"✕\",\"Ranger — Ranger is on two items called MEETING at once\",\"✕\",\"✕\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for MEETING\",\"✕\"]. Day card shows 4 rows: [\"Grit ATT C All day Medically down till 17 Jul Grit · 12 Jul, 14:42\",\"Nomad OD All day Overseas duty — exercise, off island Nomad · 18 Jun, 08:03\",\"Ranger Meeting LATE 10:00–11:00 b53 Saber for Ranger · 9 Oct, 21:36\",\"Ranger Meeting LATE 10:00–11:00 TRAINING a53 Saber for Ranger · 9 Oct, 21:36\"]. Week's Ground Programme rows on Friday: [\"MEETING TRAINING\",\"MEETING\"]. Board name boxes: [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]. Ring: puck sm warn hard boxred | Ranger · IP · instructor pilot · SXO · Conflict (two events at once)",
+   "pics": [
+    "desk-s53-A-warnlist.png",
+    "desk-s53-A-week.png",
+    "desk-s53-A-daycard.png"
+   ],
+   "script": "s53-desk-A.json"
+  },
+  {
+   "n": 53,
+   "size": "desk",
+   "role": "admin — B: a Meeting, then Training titled Meeting (order reversed)",
+   "verdict": "PASS",
+   "said": "[B: a Meeting first, then Training titled \"Meeting\"] Ranger on SC AM 07:00-13:00 Fri 17 Jul, both 10:00-11:00. Records saved 2 (Training \"Meeting\" + Meeting \"\"). After the first alone: adv: Ranger is on SC AM (07:00–13:00) and also down for MEETING. After both: hard [SC AM & MEETING clash ; Ranger is on two items called MEETING at once], other [adv: Ranger is on SC AM (07:00–13:00) and also down for MEETING]; \"two items called MEETING at once\" present: true. Warning list on the board: [\"⚠ 4 issues\",\"· 3 warnings ·\",\"tap to review\",\"Ranger — SC AM & MEETING clash\",\"✕\",\"Ranger — Ranger is on two items called MEETING at once\",\"✕\",\"✕\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for MEETING\",\"✕\"]. Day card shows 4 rows: [\"Grit ATT C All day Medically down till 17 Jul Grit · 12 Jul, 14:42\",\"Nomad OD All day Overseas duty — exercise, off island Nomad · 18 Jun, 08:03\",\"Ranger Meeting LATE 10:00–11:00 TRAINING a53 Saber for Ranger · 9 Oct, 21:36\",\"Ranger Meeting LATE 10:00–11:00 b53 Saber for Ranger · 9 Oct, 21:36\"]. Week's Ground Programme rows on Friday: [\"MEETING\",\"MEETING TRAINING\"]. Board name boxes: [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]. Ring: puck sm warn hard boxred | Ranger · IP · instructor pilot · SXO · Conflict (two events at once)",
+   "pics": [
+    "desk-s53-B-warnlist.png"
+   ],
+   "script": "s53-desk-B.json"
+  },
+  {
+   "n": 53,
+   "size": "desk",
+   "role": "admin — C: two Events titled Same name",
+   "verdict": "PASS",
+   "said": "[C: two separately filed Events titled \"Same name\"] Ranger on SC AM 07:00-13:00 Fri 17 Jul, both 10:00-11:00. Records saved 2 (Event \"Same name\" + Event \"Same name\"). After the first alone: hard: SC AM & SAME NAME clash. After both: hard [SC AM & SAME NAME clash ; Ranger is on two items called SAME NAME at once], other []; \"two items called SAME NAME at once\" present: true. Warning list on the board: [\"⚠ 3 issues\",\"· 3 warnings ·\",\"tap to review\",\"Ranger — SC AM & SAME NAME clash\",\"✕\",\"Ranger — Ranger is on two items called SAME NAME at once\",\"✕\",\"✕\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\"]. Day card shows 4 rows: [\"Grit ATT C All day Medically down till 17 Jul Grit · 12 Jul, 14:42\",\"Nomad OD All day Overseas duty — exercise, off island Nomad · 18 Jun, 08:03\",\"Ranger Same name LATE 10:00–11:00 EVENT b53 Saber for Ranger · 9 Oct, 21:37\",\"Ranger Same name LATE 10:00–11:00 EVENT a53 Saber for Ranger · 9 Oct, 21:37\"]. Week's Ground Programme rows on Friday: [\"SAME NAME EVENT\",\"SAME NAME EVENT\"]. Board name boxes: [\"GROUND SCHOOL - EW\",\"SAME NAME\",\"SAME NAME\",\"AIRCREW ADMIN\"]. Ring: puck sm warn hard boxred | Ranger · IP · instructor pilot · SXO · Conflict (two events at once)",
+   "pics": [
+    "desk-s53-C-warnlist.png"
+   ],
+   "script": "s53-desk-C.json"
+  },
+  {
+   "n": 53,
+   "size": "phone",
+   "role": "admin — A: Training titled Meeting, then a Meeting",
+   "verdict": "PASS",
+   "said": "[A: Training titled \"Meeting\" first, then a Meeting] Ranger on SC AM 07:00-13:00 Fri 17 Jul, both 10:00-11:00. Records saved 2 (Training \"Meeting\" + Meeting \"\"). After the first alone: hard: SC AM & MEETING clash. After both: hard [SC AM & MEETING clash ; Ranger is on two items called MEETING at once], other [adv: Ranger is on SC AM (07:00–13:00) and also down for MEETING]; \"two items called MEETING at once\" present: true. Warning list on the board: [\"▾\",\"⚠ 4 issues\",\"· 3 warnings ·\",\"tap to collapse\",\"Ranger — SC AM & MEETING clash\",\"✕\",\"Ranger — Ranger is on two items called MEETING at once\",\"✕\",\"✕\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for MEETING\"]. Day card shows 4 rows: [\"Grit ATT C All day Medically down till 17 Jul Grit · 12 Jul, 14:42\",\"Nomad OD All day Overseas duty — exercise, off island Nomad · 18 Jun, 08:03\",\"Ranger Meeting LATE 10:00–11:00 b53 Saber for Ranger · 9 Oct, 21:37\",\"Ranger Meeting LATE 10:00–11:00 TRAINING a53 Saber for Ranger · 9 Oct, 21:37\"]. Week's Ground Programme rows on Friday: [\"MEETING TRAINING\",\"MEETING\"]. Board name boxes: [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]. Ring: puck sm warn hard boxred | Ranger · IP · instructor pilot · SXO · Conflict (two events at once)",
+   "pics": [
+    "phone-s53-A-warnlist.png",
+    "phone-s53-A-week.png"
+   ],
+   "script": "s53-phone-A.json"
+  },
+  {
+   "n": 54,
+   "size": "desk",
+   "role": "admin — typed row first, then the Training request",
+   "verdict": "PASS",
+   "said": "[order hand-written row first, then Training request] Friday 17 Jul 10:00-11:00, Ranger on a typed Ground Programme row \"MEETING\" (seated: true) and on Training titled \"Meeting\". Both present: [\"hard/DOUBLE_BOOK: Ranger is on two items called MEETING at once\"]; board name boxes [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]; typed row's people bane. Request renamed \"Renamed away\": [\"hard/DOUBLE_BOOK: MEETING & RENAMED AWAY clash\"]. Renamed back \"Meeting\": [\"hard/DOUBLE_BOOK: Ranger is on two items called MEETING at once\"]; board list [\"⚠ 1 issue\",\"· 1 warning ·\",\"tap to review\",\"Ranger — Ranger is on two items called MEETING at once\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]",
+   "pics": [
+    "desk-s54-o1-board-back.png"
+   ],
+   "script": "s54-o1.json"
+  },
+  {
+   "n": 54,
+   "size": "desk",
+   "role": "admin — Training request first, then the typed row",
+   "verdict": "PASS",
+   "said": "[order Training request first, then the hand-written row] Friday 17 Jul 10:00-11:00, Ranger on a typed Ground Programme row \"MEETING\" (seated: true) and on Training titled \"Meeting\". Both present: [\"hard/DOUBLE_BOOK: Ranger is on two items called MEETING at once\"]; board name boxes [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]; typed row's people bane. Request renamed \"Renamed away\": [\"hard/DOUBLE_BOOK: RENAMED AWAY & MEETING clash\"]. Renamed back \"Meeting\": [\"hard/DOUBLE_BOOK: Ranger is on two items called MEETING at once\"]; board list [\"⚠ 1 issue\",\"· 1 warning ·\",\"tap to review\",\"Ranger — Ranger is on two items called MEETING at once\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]",
+   "pics": [
+    "desk-s54-o2-board-back.png"
+   ],
+   "script": "s54-o2.json"
+  },
+  {
+   "n": 55,
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PARTIAL",
+   "said": "(1) All-day OD, Ranger put on a Friday flying line with take-off and landing blank ({\"to\":\"\",\"ld\":\"\",\"label\":\"WAVE 1\"}): untitled OD -> [\"hard/INPUT_FLY: OD clashes with this line — reason: od55\"]; titled \"Overseas visit\" -> [\"hard/INPUT_FLY: Overseas visit clashes with this line — reason: od55\"]. (2) Timed Event Wed 15 23:00-02:00 (saved {\"s\":1380,\"e\":120,\"date\":\"Jul 15\"}) with Ranger's typed row Thu 01:00-01:30: untitled -> Wed [\"hard/INPUT_FLY: OD clashes with RU BFM — reason: Overseas duty — exercise, off island\"] Thu [\"hard/DOUBLE_BOOK: RU BFM & APPOINTMENT clash\",\"adv/DEBRIEF: Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)\",\"note/LONGDAY: Ranger has a long work day: 19h10, 01:00 → 20:10 (last landing 18:10 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Wednesday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (NIGHT WORK) before the 13:45 report — 1h00 before his Thursday duty ends.\"]; titled \"Night exercise\" -> Wed [\"hard/INPUT_FLY: OD clashes with RU BFM — reason: Overseas duty — exercise, off island\"] Thu [\"hard/DOUBLE_BOOK: RU BFM & APPOINTMENT clash\",\"adv/DEBRIEF: Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)\",\"note/LONGDAY: Ranger has a long work day: 19h10, 01:00 → 20:10 (last landing 18:10 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Wednesday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (NIGHT WORK) before the 13:45 report — 1h00 before his Thursday duty ends.\"]. (3) Sunday 19 23:00-02:00 with Monday 20 01:00-01:30 (next week): untitled Monday -> [\"adv/TURN: Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"hard/INPUT_FLY: Event but tasked — MONDAY NIGHT WORK — reason: sm55\",\"adv/DT_SUM: 2 people are double turning: Ranger, Echo\",\"note/LONGDAY: Ranger has a long work day: 12h55, 01:00 → 13:55 (last landing 11:55 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Sunday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (MONDAY NIGHT WORK) before the 05:40 report — 1h00 before his Monday duty ends.\"]; titled -> [\"adv/TURN: Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"hard/INPUT_FLY: Night exercise but tasked — MONDAY NIGHT WORK — reason: sm55\",\"adv/DT_SUM: 2 people are double turning: Ranger, Echo\",\"note/LONGDAY: Ranger has a long work day: 12h55, 01:00 → 13:55 (last landing 11:55 + 2h debrief assumed)\",\"hard/CREW_REST: Crew rest breach — Sunday ended 02:00 → crew rest clear at 14:00, but his day starts 01:00 (MONDAY NIGHT WORK) before the 05:40 report — 1h00 before his Monday duty ends.\"]; Sunday side titled -> [] || HOST-READING NOTE: Parts 1 (all-day OD on a blank-time flying line: 'Overseas visit clashes with this line') and 3 (Sunday 23:00-02:00 into next week's Monday: 'Night exercise but tasked - MONDAY NIGHT WORK') PASS with the same grades as the untitled control. Part 2 (Wed 23:00-02:00 against Thursday work in the SAME week) is PARTIAL: the only warning is a crew-rest line that names no commitment ('Wednesday ended 02:00 ... his day starts 01:00 (NIGHT WORK)'), untitled or titled, so there is no sentence in which the title could be retained or lost. The script's CHECK verdict came from that.",
+   "pics": [
+    "desk-s55-od-titled-board.png",
+    "desk-s55-night-thu-board.png",
+    "desk-s55-sunmon-titled-board.png"
+   ],
+   "script": "s55.json"
+  },
+  {
+   "n": 57,
+   "size": "desk",
+   "role": "admin (Saber)",
+   "verdict": "PASS",
+   "said": "Calendar Add (window): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List Add form: heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Board Add (+ INPUTS): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (Calendar window, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (List form, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List pencil (date Fri 24 -> Sat 25): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Existing window (shared entry, date Fri 24 -> Sat 25): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}]",
+   "pics": [
+    "desk-s57-ad-dc57-question.png",
+    "desk-s57-ad-df57-question.png"
+   ],
+   "script": "s57-desk-ad.json"
+  },
+  {
+   "n": 57,
+   "size": "desk",
+   "role": "member filer (Ranger)",
+   "verdict": "PASS",
+   "said": "Calendar Add (window): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List Add form: heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (Calendar window, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (List form, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List pencil (date Fri 24 -> Sat 25): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Existing window (shared entry, date Fri 24 -> Sat 25): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || HOST-READING NOTE: The heading names the first person and a count for a shared input (Ranger +1, Weekend exercise), not both names.",
+   "pics": [
+    "desk-s57-us-db57-question.png",
+    "desk-s57-us-dg57-question.png"
+   ],
+   "script": "s57-desk-us.json"
+  },
+  {
+   "n": 57,
+   "size": "phone",
+   "role": "admin (Saber)",
+   "verdict": "PASS",
+   "said": "Calendar Add (window): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List Add form: heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Board Add (+ INPUTS): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (Calendar window, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (List form, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List pencil (date Fri 24 -> Sat 25): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Existing window (shared entry, date Fri 24 -> Sat 25): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || HOST-READING NOTE: Board Add on the phone: the week was brought to 20 Jul through the Jump to a date calendar, then Saturday 25 opened on the board and + INPUTS pressed.",
+   "pics": [
+    "phone-s57-ad-dc57-question.png"
+   ],
+   "script": "s57-phone-ad.json"
+  },
+  {
+   "n": 57,
+   "size": "phone",
+   "role": "member filer (Ranger)",
+   "verdict": "PASS",
+   "said": "Calendar Add (window): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List Add form: heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (Calendar window, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Shared Add (List form, Several people): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || List pencil (date Fri 24 -> Sat 25): heading \"OIL — Ranger, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || Existing window (shared entry, date Fri 24 -> Sat 25): heading \"OIL — Ranger +1, Weekend exercise\"; HO offered true; buttons [\"✕\",\"Yes — credit HO\",\"No OIL\",\"Cancel\",\"Save\"]; Cancel wrote false; asked again true; saved [{\"p\":\"Saber\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}},{\"p\":\"Ranger\",\"date\":\"Jul 25\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-25\":0.5}}] || HOST-READING NOTE: A member has no Board door, so five doors (Calendar Add, List Add, shared Calendar Add, shared List Add, List pencil) plus the shared existing window; the Board Add door is admin only.",
+   "pics": [
+    "phone-s57-us-dd57-question.png",
+    "phone-s57-us-db57-question.png"
+   ],
+   "script": "s57-phone-us.json"
+  },
+  {
+   "n": 58,
+   "size": "desk",
+   "role": "admin then member (Ranger)",
+   "verdict": "PASS",
+   "said": "Fixtures (Sat 18 and Sun 19 Jul, both days then published: [true,true]): Sat Event Ranger answered Yes; Sun Event Ranger answered No; Sat shared Event Ranger+Saber (filer said Yes, Ranger then changed his own to No). Base answers [\"n58:Ranger={\\\"2026-07-19\\\":0}\",\"s58:Ranger={\\\"2026-07-18\\\":0}\",\"s58:Saber={\\\"2026-07-18\\\":0.5}\",\"y58:Ranger={\\\"2026-07-18\\\":0.5}\"]; Leave War cells {\"2026-07-18\":{\"Ranger\":\"HO*\",\"Saber\":\"HO*\"},\"2026-07-19\":{\"Ranger\":\"\",\"Saber\":\"\"}}. Title-only saves — question asked? [[\"window\",false],[\"pencil\",false],[\"shared\",false],[\"member window\",false],[\"member pencil\",false]]. After each stage answers and Leave War cells unchanged: Y retitled in the window=true; N retitled with the pencil=true; S retitled in the shared window=true; after undo 1=true; after undo 2=true; after undo 3=true; after redo 1=true; after redo 2=true; after redo 3=true; after reload=true; after the member retitled his own two=true. Undo/redo presses: [{\"pressed\":true},{\"pressed\":true},{\"pressed\":true},{\"pressed\":true},{\"pressed\":true},{\"pressed\":true}]. Final titles: n58:Ranger:Bravo three | s58:Ranger:Charlie two | s58:Saber:Charlie two | y58:Ranger:Alpha three || HOST-READING NOTE: The picture is the Leave War after all the retitles (HO* for Ranger and Saber on Sat 18). Published days only: Sat 18 and Sun 19 Jul.",
+   "pics": [
+    "desk-s58-final.png"
+   ],
+   "script": "s58.json"
+  },
+  {
+   "n": 59,
+   "size": "desk",
+   "role": "admin",
+   "verdict": "FAIL",
+   "said": "Sat 18 Jul published (day ORIG); Ranger Event titled \"Weekend exercise\", Saber untitled Event, Basher Event titled with 40 characters. In OIL Earn the item cells read [\"SDO\",\"WEEKEND EXERCISE\",\"EVENT\",\"1234567890123456789012345678901234567890\",\"1234567890123456789012345678901234567890\",\"Event\",\"Weekend exercise\"] and the Ground Programme rows' kind tags in the mode [\"none\",\"none\",\"none\"] (Personal Inputs cards: [\"Event\",\"none\",\"Event\"]); same rows with the mode OFF: [\"WEEKEND EXERCISE / Event\",\"EVENT / no kind tag\",\"1234567890123456789012345678901234567890 / Event\"]. Switches before [\"plasma:on\",\"bane:on\",\"stiff:on\",\"glass:on\",\"glass:on\",\"stiff:on\",\"bane:on\"] -> after tapping Ranger [\"plasma:on\",\"bane:off\",\"stiff:on\",\"glass:on\",\"glass:on\",\"stiff:on\",\"bane:off\"]. Records after the tap: [{\"r\":\"o59a\",\"p\":\"Ranger\",\"type\":\"Event\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-18\":0.5}},{\"r\":\"o59b\",\"p\":\"Saber\",\"type\":\"Event\",\"title\":null,\"oil\":{\"2026-07-18\":0.5}},{\"r\":\"o59c\",\"p\":\"Basher\",\"type\":\"Event\",\"title\":\"1234567890123456789012345678901234567890\",\"oil\":{\"2026-07-18\":0.5}}]; after leaving the mode, reopened input shows Title \"Weekend exercise\" Type \"Event\". 40-character title set on Ranger's input and the mode re-entered: cells [\"SDO\",\"1234567890123456789012345678901234567890\",\"EVENT\",\"1234567890123456789012345678901234567890\",\"1234567890123456789012345678901234567890 [CLIPPED]\",\"Event\",\"1234567890123456789012345678901234567890 [CLIPPED]\"]; others unchanged by the tap or the retitle: true || HOST-READING NOTE: FAIL on 'the kind remains discoverable': with OIL Earn OFF the Ground Programme rows show the small kind label (EVENT) under 'WEEKEND EXERCISE' and under the 40-character title; with OIL Earn ON the same rows show only the name, no kind label (compare desk-s59-normal-rows.png with desk-s59-oilearn-before.png). The kind is still visible in the Personal Inputs cards below (EVENT beside the titled names). The item cell does name the title; tapping Ranger's switch changed only his earning.",
+   "pics": [
+    "desk-s59-oilearn-before.png",
+    "desk-s59-normal-rows.png",
+    "desk-s59-oilearn-long.png"
+   ],
+   "script": "s59-desk.json"
+  },
+  {
+   "n": 59,
+   "size": "phone",
+   "role": "admin",
+   "verdict": "FAIL",
+   "said": "Sat 18 Jul published (day ORIG); Ranger Event titled \"Weekend exercise\", Saber untitled Event, Basher Event titled with 40 characters. In OIL Earn the item cells read [\"SDO\",\"WEEKEND EXERCISE\",\"EVENT\",\"1234567890123456789012345678901234567890\",\"1234567890123456789012345678901234567890\",\"Event\",\"Weekend exercise\"] and the Ground Programme rows' kind tags in the mode [\"none\",\"none\",\"none\"] (Personal Inputs cards: [\"Event\",\"none\",\"Event\"]); same rows with the mode OFF: [\"WEEKEND EXERCISE / Event\",\"EVENT / no kind tag\",\"1234567890123456789012345678901234567890 / Event\"]. Switches before [\"plasma:on\",\"bane:on\",\"stiff:on\",\"glass:on\",\"glass:on\",\"stiff:on\",\"bane:on\"] -> after tapping Ranger [\"plasma:on\",\"bane:off\",\"stiff:on\",\"glass:on\",\"glass:on\",\"stiff:on\",\"bane:off\"]. Records after the tap: [{\"r\":\"o59a\",\"p\":\"Ranger\",\"type\":\"Event\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-18\":0.5}},{\"r\":\"o59b\",\"p\":\"Saber\",\"type\":\"Event\",\"title\":null,\"oil\":{\"2026-07-18\":0.5}},{\"r\":\"o59c\",\"p\":\"Basher\",\"type\":\"Event\",\"title\":\"1234567890123456789012345678901234567890\",\"oil\":{\"2026-07-18\":0.5}}]; after leaving the mode, reopened input shows Title \"Weekend exercise\" Type \"Event\". 40-character title set on Ranger's input and the mode re-entered: cells [\"SDO\",\"1234567890123456789012345678901234567890 [CLIPPED]\",\"EVENT\",\"1234567890123456789012345678901234567890 [CLIPPED]\",\"1234567890123456789012345678901234567890 [CLIPPED]\",\"Event\",\"1234567890123456789012345678901234567890 [CLIPPED]\"]; others unchanged by the tap or the retitle: true || HOST-READING NOTE: Same as the desktop: the kind label under the name is there with the mode off (phone-s59-normal-rows.png) and gone with the mode on (phone-s59-oilearn-after-tap.png). On the phone the 40-character name in the mode is cut off on one line (shows about 36 characters); with the mode off it wraps to two lines.",
+   "pics": [
+    "phone-s59-oilearn-after-tap.png",
+    "phone-s59-normal-rows.png"
+   ],
+   "script": "s59-phone.json"
+  },
+  {
+   "n": 60,
+   "size": "desk",
+   "role": "member filer (Ranger), then admin",
+   "verdict": "PASS",
+   "said": "Ranger filed Sat 18 Event for ALL AVAIL and Sun 19 Event for ALL, both titled \"Weekend exercise\"; the OIL question each time: [\"OIL — ALL AVAIL, Weekend exercise ✕\",\"OIL — ALL, Weekend exercise ✕\"]. Admin published both days. Count windows on the Board: ALL AVAIL (Sat 18): head \"⠿ | WEEKEND EXERCISE | Jul 18 · 08:00–12:00\", 0 of 0 earning; tabs []; in OIL Earn dice switched off -> 44 on / 1 off; after retitling to \"Weekend exercise two\": 44 on / 1 off, dice off, same switches as before the retitle: true; head now \"⠿ | WEEKEND EXERCISE TWO | Jul 18 · 08:00–12:00\" || ALL (Sun 19): head \"⠿ | WEEKEND EXERCISE | Jul 19 · 08:00–12:00\", 0 of 0 earning; tabs []; in OIL Earn dice switched off -> 44 on / 1 off; after retitling to \"Weekend exercise two\": 44 on / 1 off, dice off, same switches as before the retitle: true; head now \"⠿ | WEEKEND EXERCISE TWO | Jul 19 · 08:00–12:00\" || HOST-READING NOTE: The script's own CHECK came from a case-sensitive test: the count window's heading is printed in capitals ('WEEKEND EXERCISE'), after the retitle 'WEEKEND EXERCISE TWO'. Read by hand: ALL AVAIL (Sat) and ALL (Sun): 45 men listed, 44 earning HO after the filer answered Yes; Reaper switched off in OIL Earn stays off after the retitle, the other 44 unchanged. The window heading is cut short in the narrow window ('WEEKEND EXERCISE T...'); the Ground Programme row reads 'WEEKEND EXERCISE TWO ... 44 of 45 earn'.",
+   "pics": [
+    "desk-s60-p60a-after-retitle.png",
+    "desk-s60-p60b-after-retitle.png"
+   ],
+   "script": "s60.json"
+  },
+  {
+   "n": 61,
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "Sat 18 Jul: Ranger Event \"Weekend exercise\" + ALL AVAIL Event \"Weekend crowd\", both answered Yes, day published (ORIG). Leave War figures for Ranger and three ALL AVAIL men (Ace, Blade, Cinch) — published {\"Ranger\":\"FO*\",\"Ace\":\"HO*\",\"Blade\":\"HO*\",\"Cinch\":\"HO*\"}; after retitling both (pending) {\"Ranger\":\"FO*\",\"Ace\":\"HO*\",\"Blade\":\"HO*\",\"Cinch\":\"HO*\"}; after the amendment published (AL AL1) {\"Ranger\":\"FO*\",\"Ace\":\"HO*\",\"Blade\":\"HO*\",\"Cinch\":\"HO*\"}; identical: true. Edit Schedule rows: published [\"WEEKEND EXERCISE [Event]\",\"WEEKEND CROWD [Event]\"] -> retitled [\"GAMES AFTERNOON [Event]\",\"GAMES CROWD [Event]\"] (pending chip \"2 pending\") -> after AL [\"GAMES AFTERNOON [Event]\",\"GAMES CROWD [Event]\"] (chip \"(none)\"). View-only: while pending [\"WEEKEND EXERCISE [Event]\",\"WEEKEND CROWD [Event]\"]; after AL [\"GAMES AFTERNOON [Event]\",\"GAMES CROWD [Event]\"]. To go out: \"⠿ Changes · Saturday 18/7 Published · 2 changes waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 2 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 2 changes ALL AVAIL · Games crowd Saber 9/10 21:55 Weekend crowd → Games crowd Ranger · Games afternoon Saber 9/10 21:55 Weekend exercise → Games afternoon Tap a change to go to it. Tap a change to go to it.\"",
+   "pics": [
+    "desk-pendlist-48322.png",
+    "desk-s61-edit-pending.png",
+    "desk-s61-after-AL.png"
+   ],
+   "script": "s61.json"
+  },
+  {
+   "n": 63,
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PARTIAL",
+   "said": "Text <b>Ops</b> \"A&B\" on a Sat Event for Ranger and an ALL AVAIL Event; overlapping Meeting; published both days; retitled to Ops <i>two</i> \"C&D\"; the Ranger input then deleted. OIL question headings: \"OIL — Ranger, <b>Ops</b> \"A&B\"\" / \"OIL — ALL AVAIL, <b>Ops</b> \"A&B\"\" (markup in the heading: \"<b>OIL — Ranger, &lt;b&gt;Ops&lt;/b&gt; \\\"A&amp;B\\\"</b><button class=\\\"x\\\" aria-label=\\\"Close\\\">✕</button>\"). Warning list: [\"⚠ 2 issues\",\"· 1 warning ·\",\"tap to review\",\"Ranger — <B>OPS</B> \\\"A&B\\\" & MEETING clash\",\"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\",\"PLACEHOLDERS · DRAG IN\"]. Count window head: \"⠿ | <B>OPS</B> \"A&B\" | Jul 19 · 08:00–12:00\". To go out: \"⠿ Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 8 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Ranger · Ops <i>two</i> \"C&D\" Saber 9/10 21:54 <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Tap a change to go to it. Tap a change to go to it.\". History: \"⠿ Changes · week of 13/7 15 changes this week ✕ New to you 0 All changes 15 To go out 2 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Sun · Input · ALL AVAIL · Ops <i>two</i> \"C&D\" · 2 21:54 19 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber · 9/10 21:54 <b>Ops</b> \"A&B\" added · 19 Jul (on the programme) Saber · 9/10 21:53 ▾ Sat · Input · Ranger · Ops <i>two</i> \"C&D\" · 2 21:54 18 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber · 9/10 21:54 <b>Ops</b> \"A&B\" added · 18 \". History bubble: null. Export row(s): [\"\\\"ALL AVAIL\\\",\\\"Jul 19\\\",\\\"Jul 19\\\",\\\"08:00\\\",\\\"12:00\\\",\\\"Event\\\",\\\"Ops <i>two</i> \\\"\\\"C&D\\\"\\\"\\\",\\\"x63\\\"\",\"\\\"Ranger\\\",\\\"Jul 18\\\",\\\"Jul 18\\\",\\\"08:00\\\",\\\"12:00\\\",\\\"Event\\\",\\\"Ops <i>two</i> \\\"\\\"C&D\\\"\\\"\\\",\\\"w63\\\"\"] (header ﻿\"Name\",\"From\",\"To\",\"Start\",\"End\",\"Type\",\"Title\",\"Remarks\"). Deletion: toast \" || \", record gone true; To go out after: \"⠿ Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Ranger · <B>OPS</B> \"A&B\" Saber 9/10 21:54 on the programme → deleted Tap a change to go to it.\"; history after: \"⠿ Changes · week of 13/7 16 changes this week ✕ New to you 0 All changes 16 To go out 2 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Sat · Input · Ranger · Event · 3 21:54 Ops <i>two</i> \"C&D\" deleted · 18 Jul Saber · 9/10 21:54 18 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber · 9/10 21:54 <b>Ops</b> \"A&B\" added · 18 Jul (on the programme) Saber · 9/10 21:53 ▾ Sun · Input · ALL AVAIL · Ops <i>two</i> \"C&D\" · 2 21:54 19 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber\". Surfaces: OIL question heading (Ranger): literal=true realTags=0; OIL question heading (ALL AVAIL): literal=true realTags=0; warning list (Saturday board): literal=true realTags=0; ALL AVAIL count window: literal=true realTags=0; To go out (pending list): literal=true realTags=0; changes window (history): literal=true realTags=0; history bubble: literal=false realTags=0; To go out after deletion: literal=true realTags=0; history after deletion: literal=true realTags=0 || HOST-READING NOTE: Every surface reached printed the text literally and made no real bold or italic element (checked in the page); the engine prints names in capitals in the warning, the count window and the To go out line of a deleted row (<B>OPS</B> \"A&B\"), which is its usual style. NOT reached: the history bubble (hovering the edited name box on the board brought no bubble; the board's History button opens the Changes window, which was read), and the deletion toast was not captured (empty).",
+   "pics": [
+    "desk-s63-oil-question.png",
+    "desk-s63-count-window.png",
+    "desk-s63-history-bubble.png",
+    "desk-s63-history-after-delete.png"
+   ],
+   "script": "s63.json"
+  },
+  {
+   "n": 64,
+   "size": "desk",
+   "role": "member (Ranger), admin sets the cut-off",
+   "verdict": "PASS",
+   "said": "Ranger filed Event \"Late test one\" on Fri 20 Nov 2026 (not late: true; placed line \"Placed by Ranger · 9 Oct 26, 21:49\"). Admin set the Inputs gear cut-off to 60 days before the week (was {\"mode\":\"true\",\"lead\":\"14\"}; example \"For the week of Mon 26 Oct, inputs are due by the end of Thu 27 Aug.\"; error \"\"); input right after, nothing edited: late true. Ranger retitled only the title -> \"Late test two\": late true; hover note \"Late input — last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov.\"; day card {\"text\":\"Ranger Late test two LATE 10:00–11:00 EVENT l64 Ranger · 9 Oct, 21:49 · changed by Ranger · 9 Oct, 21:50\",\"late\":{\"text\":\"LATE\",\"title\":\"after the cut-off, Thu 17 Sep\"}}; List row {\"late\":{\"text\":\"LATE\",\"title\":\"Late input — last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov.\"},\"text\":\"Ranger 20 Nov 10:00–11:00 Late test twoEVENT LATEl64 Placed by Ranger · 9 Oct 26, 21:49 · changed by Ranger · 9 Oct 26, 21:50 now ✎ ✕\"}; warnings in the app before 36 / after 36 (a new clash would raise it); window small print \"Placed by Ranger · 9 Oct 26, 21:49 · changed by Ranger · 9 Oct 26, 21:50\". Undo (pressed) -> title \"Late test one\", change stamp 2026-10-09 (before 2026-10-09), late true; List row {\"late\":{\"text\":\"LATE\",\"title\":\"Late input — last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov.\"},\"text\":\"Ranger 20 Nov 10:00–11:00 Late test oneEVENT LATEl64 Placed by Ranger · 9 Oct 26, 21:49 now ✎ ✕\"} || HOST-READING NOTE: The script's FAIL came from comparing LATE before and after undo. Read by hand: the title-only edit wrote the change stamp ('changed by Ranger - 9 Oct 26, 21:50' under the row), the LATE mark carries the explanation 'Late input - last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov', warnings in the app 36 before and 36 after (no new clash), and Undo brought back 'Late test one' and a row with no 'changed by' line (the previous change state). CAVEAT: the input was already LATE the moment the cut-off was moved (before any title edit) because its own stamp is today and the new deadline is in September, so this fixture cannot show the title edit alone making it late. The Inputs gear accepts at most 60 days.",
+   "pics": [
+    "desk-s64-list-late.png",
+    "desk-s64-after-undo.png"
+   ],
+   "script": "s64.json"
+  }
+ ],
+ "consoleErrors": [],
+ "extras": [
+  "Scenario 59 detail, worth the host's eye: in OIL Earn mode the Ground Programme row of a titled input loses its small kind label (EVENT) that the same row shows with the mode off (desk-s59-oilearn-before.png against desk-s59-normal-rows.png; phone-s59-oilearn-after-tap.png against phone-s59-normal-rows.png). The same shows in the ALL / ALL AVAIL rows of scenario 60 (desk-s60-p60a-after-retitle.png).",
+  "Phone List: beside a long title the kind pill breaks letter by letter inside its pill ('EVEN' over 'T' on 'Saber briefing'; 'EV' over 'ENT' on 'Sports afternoon') - phone-s44-list-everyone.png.",
+  "The Scheduler Board's Add dialog (the + INPUTS door) gives its heading and its Title box the same element id (inpEditTitle): a script that asked for the Title box by id got the heading first. No picture - found in the page's own markup while the dialog was open; it matters to anything that finds the box by id.",
+  "Scenario 55, same-week overnight: an Event Wed 23:00-02:00 against Ranger's typed row Thu 01:00-01:30 gives only a crew-rest line that names neither the Event nor its title, while the same Event on Sunday against Monday's typed row (next week) also gives 'Event/Night exercise but tasked - <row>'. Untitled and titled behave the same, so this is not a title fault - desk-s55-night-thu-board.png, desk-s55-sunmon-titled-board.png.",
+  "The changes window after a titled input is deleted: the group's heading reads the kind ('Sat - Input - Ranger - Event - 3') while the lines inside carry the title ('Ops <i>two</i> \"C&D\" deleted') - desk-s63-history-after-delete.png (before the deletion the heading carried the title). Scenario 39 is Walker B's, so this is only a sighting.",
+  "On the board the Personal Inputs card shows only about 37 of a 40-character title in its small name box (the EVENT label takes the room); the Ground Programme row above shows all 40 - desk-s59-oilearn-long.png.",
+  "Scenario 64: the Inputs gear takes a late cut-off of at most 60 days before the week; and because the input's own change stamp is the day it is filed (today in the app), moving the cut-off made it LATE before any title edit, so the scenario's 'edit only its title, then LATE appears' could not be shown in that order.",
+  "Fixture notes, not defects: the List's Add form appends 'till <date>' to a remark when a day is picked (existing wording); the app's own clock is 9 Oct 26 so every July entry wears LATE."
+ ]
+}

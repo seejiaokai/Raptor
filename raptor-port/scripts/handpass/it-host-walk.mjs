@@ -115,7 +115,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     const seen = {}
     for (const t of ['Event', 'Meeting', 'Other', 'OD', 'LL', 'OML']) {
       await page.selectOption('#inpEditType', t)
-      seen[t] = (await page.locator('#inpEditTitle').count()) ? await page.inputValue('#inpEditTitle') : null
+      seen[t] = (await page.locator('#inpEditOwnTitle').count()) ? await page.inputValue('#inpEditOwnTitle') : null
     }
     await page.selectOption('#inpEditType', 'Event')
     const order = await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] .inped-f .inped-k')].map(k => k.textContent))
@@ -125,11 +125,11 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     return { ok, detail: `${JSON.stringify(seen)} · rows: ${order.join(' › ')}` }
   })
   await step('T2 typed over, an emptied box stays empty (its hint says the kind); a kind changed to Duty keeps the typed title', async () => {
-    await page.fill('#inpEditTitle', '')
-    const empty = await page.inputValue('#inpEditTitle'), hint = await page.getAttribute('#inpEditTitle', 'placeholder')
-    await page.fill('#inpEditTitle', 'Sports day')
+    await page.fill('#inpEditOwnTitle', '')
+    const empty = await page.inputValue('#inpEditOwnTitle'), hint = await page.getAttribute('#inpEditOwnTitle', 'placeholder')
+    await page.fill('#inpEditOwnTitle', 'Sports day')
     await page.selectOption('#inpEditType', 'Duty')
-    const kept = await page.inputValue('#inpEditTitle')
+    const kept = await page.inputValue('#inpEditOwnTitle')
     await page.selectOption('#inpEditType', 'Event')
     return { ok: empty === '' && hint === 'Event' && kept === 'Sports day', detail: `emptied "${empty}" hint "${hint}" · after Duty "${kept}"` }
   })
@@ -160,7 +160,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     await openNew(page, '2026-07-15')
     await page.selectOption('#inpEditType', 'Meeting'); await page.selectOption('#inpEditPerson', ranger)
     await page.fill('#inpEditStart', '09:00').catch(() => {}); await page.fill('#inpEditEnd', '10:00').catch(() => {})
-    await page.fill('#inpEditTitle', 'Open house'); await saveWin(page)
+    await page.fill('#inpEditOwnTitle', 'Open house'); await saveWin(page)
     await openNew(page, '2026-07-15')
     await page.selectOption('#inpEditType', 'Training'); await page.selectOption('#inpEditPerson', ranger)
     await page.fill('#inpEditStart', '13:00').catch(() => {}); await page.fill('#inpEditEnd', '14:00').catch(() => {})
@@ -209,7 +209,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     await page.locator(`#inpCal .ib-bar[data-iid="${M.iid}"]`).first().click()
     if (!(await win(page).count())) { const c = page.locator(`[data-testid="idy-row-${M.iid}"] [data-testid="idy-open"]`); if (await c.count()) await c.click() }
     await win(page).waitFor()
-    await page.fill('#inpEditTitle', 'Open house'); await saveWin(page)
+    await page.fill('#inpEditOwnTitle', 'Open house'); await saveWin(page)
     const a = (await recBy(page, { iid: M.iid })).title
     await page.keyboard.press('Escape')
     await page.locator('#undoBtn, [data-testid="undo"]').first().click().catch(() => {}); await page.waitForTimeout(300)
@@ -285,11 +285,11 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     await page.evaluate(() => window.go('inputs')); await month(page, 2026, 7)
     await page.locator(`#inpCal .ib-bar[data-iid="${M.iid}"]`).first().click()
     if (!(await win(page).count())) { const c = page.locator(`[data-testid="idy-row-${M.iid}"] [data-testid="idy-open"]`); if (await c.count()) await c.click() }
-    await win(page).waitFor(); await page.fill('#inpEditTitle', 'Training'); await saveWin(page)
+    await win(page).waitFor(); await page.fill('#inpEditOwnTitle', 'Training'); await saveWin(page)
     const mid = await count()
     await page.locator(`#inpCal .ib-bar[data-iid="${M.iid}"]`).first().click()
     if (!(await win(page).count())) { const c = page.locator(`[data-testid="idy-row-${M.iid}"] [data-testid="idy-open"]`); if (await c.count()) await c.click() }
-    await win(page).waitFor(); await page.fill('#inpEditTitle', 'Open house'); await saveWin(page)
+    await win(page).waitFor(); await page.fill('#inpEditOwnTitle', 'Open house'); await saveWin(page)
     if (await page.locator(DAYWIN).count()) await page.keyboard.press('Escape')
     return { ok: before === mid, detail: `Ranger’s Wednesday warnings before "${before}" · titled "Training" "${mid}"` }
   })
@@ -304,9 +304,9 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
   await step('P1 a phone, the window: the Title box under Type; an Event for ALL AVAIL titled "Sports day" on Sat 18 Jul, and for Ranger an untitled Duty and a Meeting titled "Open house"', async () => {
     await openNew(page, '2026-07-18', true)
     await page.selectOption('#inpEditType', 'Event'); await page.selectOption('#inpEditPerson', 'allavail')
-    await page.fill('#inpEditTitle', 'Sports day')
+    await page.fill('#inpEditOwnTitle', 'Sports day')
     await elShot(page, '[data-testid="win-inputedit"]', 'p1-phone-window')
-    const box = await page.locator('#inpEditTitle').boundingBox(), type = await page.locator('#inpEditType').boundingBox()
+    const box = await page.locator('#inpEditOwnTitle').boundingBox(), type = await page.locator('#inpEditType').boundingBox()
     await saveWin(page, 'yes', true)
     S = await recBy(page, { person: 'allavail', type: 'Event', date: 'Jul 18' })
     await openNew(page, '2026-07-18', true)
@@ -316,7 +316,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     await openNew(page, '2026-07-18', true)
     await page.selectOption('#inpEditType', 'Meeting'); await page.selectOption('#inpEditPerson', ranger)
     await page.fill('#inpEditStart', '16:00').catch(() => {}); await page.fill('#inpEditEnd', '17:00').catch(() => {})
-    await page.fill('#inpEditTitle', 'Open house'); await saveWin(page, 'no', true)
+    await page.fill('#inpEditOwnTitle', 'Open house'); await saveWin(page, 'no', true)
     return { ok: !!S && S.title === 'Sports day' && box.y > type.y && Math.abs(box.x - type.x) < 2 && Math.abs(box.width - type.width) < 2, detail: `the box ${Math.round(box.width)}px wide under Type (${Math.round(type.width)}px) · ${JSON.stringify(S)}` }
   })
   await step('P2 a phone, the opened day: the title is whole (not cut), the kind at the head of the small-print line, the card no taller than the untitled one beside it by more than a line', async () => {
@@ -365,7 +365,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
   await step('M1 a member titles his own Appointment ("Dentist"): saved, named by its title on the month', async () => {
     await openNew(page, '2026-07-16')
     await page.selectOption('#inpEditType', 'Appointment')
-    await page.fill('#inpEditTitle', 'Dentist'); await saveWin(page)
+    await page.fill('#inpEditOwnTitle', 'Dentist'); await saveWin(page)
     const r = await page.evaluate(() => { const x = window.INPUTS.find(i => i.title === 'Dentist'); return x && { iid: x.iid, type: x.type, title: x.title } })
     if (await page.locator(DAYWIN).count()) await page.keyboard.press('Escape')
     const text = r ? (await page.locator(`#inpCal .ib-bar[data-iid="${r.iid}"]`).first().innerText()).replace(/\s+/g, ' ') : ''
@@ -379,7 +379,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
     await page.locator(`#inpCal [data-icday="2026-07-22"]`).click({ position: { x: 8, y: 8 } })
     await page.locator(`[data-testid="idy-row-${iid}"] [data-testid="idy-open"]`).click()
     await win(page).waitFor()
-    const d = await page.evaluate(() => { const b = document.querySelector('#inpEditTitle'); return { title: b && b.value, inert: !!(b && b.closest('[inert]')), save: !!document.querySelector('#inpEditSave') } })
+    const d = await page.evaluate(() => { const b = document.querySelector('#inpEditOwnTitle'); return { title: b && b.value, inert: !!(b && b.closest('[inert]')), save: !!document.querySelector('#inpEditSave') } })
     await elShot(page, '[data-testid="win-inputedit"]', 'm2-member-read-only')
     return { ok: d.title === 'Sports afternoon' && d.inert && !d.save, detail: JSON.stringify(d) }
   })
@@ -396,7 +396,7 @@ const weekRowAt = (p, root, name) => p.evaluate(({ root, name }) => {
   await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#vWeek .day')
   await step('R1 a stored world: an Event titled "Sports day" is still titled after a reload — the record, the month’s bar and the schedule’s row', async () => {
     await openNew(page, '2026-07-15')
-    await page.selectOption('#inpEditType', 'Event'); await page.fill('#inpEditTitle', 'Sports day'); await saveWin(page)
+    await page.selectOption('#inpEditType', 'Event'); await page.fill('#inpEditOwnTitle', 'Sports day'); await saveWin(page)
     const a = await page.evaluate(() => { const x = window.INPUTS.find(i => i.title === 'Sports day'); return x && x.iid })
     await page.reload(); await page.waitForSelector('#vWeek .day, #loginForm')
     if (await page.locator('#loginForm').count()) { await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#vWeek .day') }

@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, isSansAvail, sansLetters } from '../engine/inputs'
+import { dateOrd, INPUTS, inpLabel, inpKindTag, isSansAvail, sansLetters } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -98,7 +98,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   /* …and, for one record of a SHARED input, its group id: the changes window files the men of one filing under one
      item (D663) — a line each is still written, "To go out" finding a line by its man */
   const grp = (a || b || {}).grp
-  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...(grp ? { grp: String(grp) } : {}), ...extra })
+  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...(inpKindTag(a || b) ? { iname: inpLabel(a || b) } : {}), ...(grp ? { grp: String(grp) } : {}), ...extra })
   /* whether it is on the programme is read as the week on screen now shows it: since [DB-READINESS] phase 6 (c) a request's
      row is worked out AFTER its command (state/holderbase.ts, phase 8), so its `acc` in the envelope is the one it had
      before — this line is written at phase 9, after the working-out (Fable's round-3 F4.3) */

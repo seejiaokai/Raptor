@@ -16,7 +16,7 @@ import { SCHED } from '../engine/publish'
 import { dayHTML, rowKindTag } from './html'
 import { boardHTML } from './board'
 import { setSession } from '../state/auth'
-import { setPage, setBoardDay, PIOPEN } from '../state/view'
+import { setPage, setBoardDay, PIOPEN, setOilDay } from '../state/view'
 import { sharedKey, entriesOf } from '../state/inputgroup'
 
 const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS)
@@ -177,3 +177,19 @@ describe('a shared input shares its title (state/inputgroup.ts SHARED_FIELDS)', 
   })
 })
 
+/* THE WALK'S FINDS (walker C, 9 Oct 26 — docs/handpass/2026-10-09-input-title-check.md §5.3) */
+describe('the board in OIL Earn keeps the kind in sight (W1)', () => {
+  it('the titled row’s name cell is the item’s own switch — and its kind still stands under it', () => {
+    const SAT = 5
+    const inp: any = { iid: 'ttS', person: 'split', date: 'Jul 18', yr: 2026, allday: false, s: 600, e: 660, type: 'Event', title: 'Sports day', remarks: '', oil: { '2026-07-18': 0.5 } }
+    INPUTS.push(inp); expect(acceptInput(SAT, inp, 'g')).toBe(true); validate()
+    setBoardDay(SAT); setOilDay(SAT)
+    try {
+      const d = doc(boardHTML(SAT))
+      const row = [...d.querySelectorAll('.sb-arow.c6r')].find(r => /SPORTS DAY/.test(r.textContent || ''))!
+      expect(row, 'the row, in the mode').toBeTruthy()
+      expect(row.querySelector('.oilitem'), 'the name cell is the switch').toBeTruthy()
+      expect(row.querySelector('.sb-nmk .nm-kind')!.textContent).toBe('Event')
+    } finally { setOilDay(null) }
+  })
+})

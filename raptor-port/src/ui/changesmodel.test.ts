@@ -110,6 +110,8 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       [{ key: 'dn:1.0', lbl: 'Day note' }, `${T}|N|dn:1.0`, 'Day note', ''],
       [{ key: 'pn:1.0', lbl: 'Programme notes' }, `${T}|N|pn:1.0`, 'Programme notes', ''],
       [{ key: '', iid: 'in7', sub: 'bane', sect: 'abs', itype: 'LL', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in7`, 'Input · Ranger · LL', ''],   // gone: its line keeps the type (Astra FR-04)
+      /* …and its own TITLE where it had one ([INPUT-OWN-TITLE], the walk's W4: the heading fell back to "Event" over lines that said "Sports day") */
+      [{ key: '', iid: 'in9', sub: 'bane', sect: 'abs', itype: 'Event', iname: 'Sports day', lbl: 'Ranger · Sports day deleted · 14 Jul' }, `${T}|I|in9`, 'Input · Ranger · Sports day', ''],
       [{ key: '', iid: 'in8', sub: 'bane', sect: 'abs', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in8`, 'Input · Ranger', ''],
       [{ key: 'iu:in7', lbl: 'Ranger · LL', from: 'rocky', to: 'bane' }, `${T}|I|in7`, 'Input · Ranger', ''],   // a reassign: named by who holds it now
       [{ key: '', sub: 'rocky', fld: 'q', sect: 'quals', lbl: 'Hex · CAT', from: 'B', to: 'A' }, `${T}|Q|rocky`, 'Quals · Hex', 'CAT'],

@@ -49,7 +49,7 @@ const choose = async (sel: string, v: string) => {
   expect(el, sel).toBeTruthy()
   await act(async () => { el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })) })
 }
-const box = () => $('#inpEditTitle') as HTMLInputElement | null
+const box = () => $('#inpEditOwnTitle') as HTMLInputElement | null
 /* Tue 13 Oct 2026 — a working day, so no OIL question */
 const openNew = async (over: any = {}) => act(async () => {
   setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: me(), type: 'Meeting', date: 'Oct 13', allday: false, s: 600, e: 660, ...over }); notify()
@@ -97,10 +97,23 @@ describe('the window — a Title box under Type (D715)', () => {
     }
   })
 
+  it('its id is its own in every form of the window — the board’s dialog heads itself with another element (W3: the two shared one id)', async () => {
+    /* on the Inputs page it is a floating window; from the schedule and the board it is the dialog, with its own heading */
+    for (const pg of ['inputs', 'editsched'] as const) for (const ctx of ['i', 'g']) {
+      await act(async () => { setPage(pg); setInpEdit({ _new: true, _ctx: ctx, person: me(), type: 'Event', date: 'Oct 13', allday: false, s: 600, e: 660 }); notify() })
+      expect(box(), `${pg} / ${ctx}: the Title box`).toBeTruthy()
+      const ids = [...document.querySelectorAll('[id]')].map(e => e.id).filter(Boolean)
+      const twice = ids.filter((id, i) => ids.indexOf(id) !== i && /^inpEd/.test(id))
+      expect(twice, `${pg} / ${ctx}`).toEqual([])
+      await act(async () => { setInpEdit(null); notify() })
+    }
+    await act(async () => { setPage('inputs'); notify() })
+  })
+
   it('sits straight under Type and above the dates, with its own label', async () => {
     await openNew({ type: 'Event' })
     const rows = [...win()!.querySelectorAll('.inped-f')]
-    const iType = rows.findIndex(r => r.querySelector('#inpEditType')), iTitle = rows.findIndex(r => r.querySelector('#inpEditTitle'))
+    const iType = rows.findIndex(r => r.querySelector('#inpEditType')), iTitle = rows.findIndex(r => r.querySelector('#inpEditOwnTitle'))
     expect(iTitle).toBe(iType + 1)
     expect(rows[iTitle].querySelector('.inped-k')!.textContent).toBe('Title')
     expect(box()!.getAttribute('aria-label')).toBe('Title')
@@ -118,7 +131,7 @@ describe('the window — a Title box under Type (D715)', () => {
 
   it('a typed title is kept when the kind changes to another that takes one, and dropped for one that does not', async () => {
     await openNew({ type: 'Event' })
-    await type('#inpEditTitle', 'Sports day')
+    await type('#inpEditOwnTitle', 'Sports day')
     await choose('#inpEditType', 'Duty')
     expect(box()!.value).toBe('Sports day')
     await choose('#inpEditType', 'LL')
@@ -138,7 +151,7 @@ describe('the window — a Title box under Type (D715)', () => {
 
   it('a typed title is saved, trimmed; Remarks is left alone', async () => {
     await openNew({ type: 'Event' })
-    await type('#inpEditTitle', '  Sports   day ')
+    await type('#inpEditOwnTitle', '  Sports   day ')
     await type('#inpEditRmk', 'bring boots')
     await click($('#inpEditSave'))
     const r = newest()
@@ -151,25 +164,41 @@ describe('the window — a Title box under Type (D715)', () => {
     const r = await filed({ title: 'Sports day' })
     await openOn(r)
     expect(box()!.value).toBe('Sports day')
-    await type('#inpEditTitle', 'event')
+    await type('#inpEditOwnTitle', 'event')
     await click($('#inpEditSave'))
     expect('title' in live(r.iid)).toBe(false)
     await openOn(r)
     expect(box()!.value).toBe('Event')
-    await type('#inpEditTitle', 'Open house')
+    await type('#inpEditOwnTitle', 'Open house')
     await click($('#inpEditSave'))
     expect(live(r.iid).title).toBe('Open house')
     await openOn(r)
-    await type('#inpEditTitle', '   ')
+    await type('#inpEditOwnTitle', '   ')
     await click($('#inpEditSave'))
     expect('title' in live(r.iid)).toBe(false)
+  })
+
+  it('the history line of a titled input records its NAME beside its kind, so its heading survives its deletion (W4)', async () => {
+    const log = ELOG.rows.length
+    await openNew({ type: 'Event' })
+    await type('#inpEditOwnTitle', 'Sports day')
+    await click($('#inpEditSave'))
+    const line = ELOG.rows.slice(log).find(r => r.iid === newest().iid) as any
+    expect(line, 'the filing wrote a line').toBeTruthy()
+    expect([line.itype, line.iname]).toEqual(['Event', 'Sports day'])
+    expect(line.lbl).toContain('Sports day')
+    /* an untitled one records no name of its own */
+    had.add(String(newest().iid))
+    await openNew({ type: 'Duty' }); await click($('#inpEditSave'))
+    const plain = ELOG.rows.find(r => r.iid === newest().iid) as any
+    expect(plain.itype).toBe('Duty'); expect('iname' in plain).toBe(false)
   })
 
   it('an edit of the title alone IS a change: saved, one history line, and Undo takes it back', async () => {
     const r = await filed()
     const log = ELOG.rows.length
     await openOn(r)
-    await type('#inpEditTitle', 'Sports day')
+    await type('#inpEditOwnTitle', 'Sports day')
     await click($('#inpEditSave'))
     expect(win(), 'saved: the window has closed').toBeNull()
     expect(live(r.iid).title).toBe('Sports day')
@@ -190,7 +219,7 @@ describe('the window — a Title box under Type (D715)', () => {
 
   it('an emptied box stays empty for him to type in — it does not snap back to the kind’s name — and shows the kind as its hint', async () => {
     await openNew({ type: 'Event' })
-    await type('#inpEditTitle', '')
+    await type('#inpEditOwnTitle', '')
     expect(box()!.value).toBe('')
     expect(box()!.placeholder).toBe('Event')
     await choose('#inpEditType', 'Duty')
@@ -201,7 +230,7 @@ describe('the window — a Title box under Type (D715)', () => {
   it('"Other" takes the same box; its remarks stay remarks (D716 (3))', async () => {
     await openNew({ type: 'Other' })
     expect(box()!.value).toBe('Other')
-    await type('#inpEditTitle', 'Dentist run')
+    await type('#inpEditOwnTitle', 'Dentist run')
     await type('#inpEditRmk', 'back by 1400')
     await click($('#inpEditSave'))
     const r = newest()
@@ -423,13 +452,13 @@ describe('a shared input and the List’s own OIL question', () => {
     const a = await filed({ person: x, grp: 'gT1', grpBy: admin }), b = await filed({ person: y, grp: 'gT1', grpBy: admin })
     await openOn(a)
     expect(box(), 'the shared window carries the Title box').toBeTruthy()
-    await type('#inpEditTitle', 'Team day')
+    await type('#inpEditOwnTitle', 'Team day')
     await click($('#inpEditSave'))
     expect(win(), 'saved: the window has closed').toBeNull()
     expect([live(a.iid).title, live(b.iid).title]).toEqual(['Team day', 'Team day'])
     await openOn(a)
     expect(box()!.value).toBe('Team day')
-    await type('#inpEditTitle', 'Event')
+    await type('#inpEditOwnTitle', 'Event')
     await click($('#inpEditSave'))
     expect(['title' in live(a.iid), 'title' in live(b.iid)]).toEqual([false, false])
   })

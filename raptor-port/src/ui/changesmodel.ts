@@ -126,15 +126,20 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
   const who = inp ? inp.person : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
   /* gone, it keeps the type its line recorded (`itype` — Astra's final read, FR-04) */
   const type = inp ? inp.type : (r.itype || '')
+  /* …and its NAME: its own title where it has one — off the line once it is gone (`iname`; the check's walk of
+     [INPUT-OWN-TITLE], W4: a deleted "Sports day" was headed "Event" over lines that said "Sports day") */
+  const name = inp ? inpLabel(inp) : (r.iname || type)
   /* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663): keyed by the group its line recorded — never by the input
      as it now stands, so a man since changed alone stays under the filing he was part of. Its title is the kind and how
      many people: those the shared input holds now, or — once it has gone — those its lines name. */
   if (r.grp) {
     const now = (INPUTS as any[]).filter(x => x && x.grp === r.grp).length
     const n = now || new Set(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => x.sub)).size
-    return { id: `${date}|IG|${r.grp}`, title: `Input${type ? ' · ' + type : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
+    /* a shared input's one title (state/inputgroup.ts SHARED_FIELDS), read off any man still in it */
+    const g = (INPUTS as any[]).find(x => x && x.grp === r.grp), gname = g ? inpLabel(g) : name
+    return { id: `${date}|IG|${r.grp}`, title: `Input${gname ? ' · ' + gname : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
   }
-  const title = inp ? `Input · ${csOf(inp.person)} · ${inpLabel(inp)}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
+  const title = inp ? `Input · ${csOf(inp.person)} · ${inpLabel(inp)}` : who ? `Input · ${csOf(who)}${name ? ' · ' + name : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
 }
 

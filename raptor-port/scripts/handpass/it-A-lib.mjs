@@ -14,6 +14,7 @@ export const launch = () => chromium.launch(existsSync(CHROMIUM) ? { executableP
 export const SIZES = {
   desk: { name: 'desktop 1440x900', viewport: { width: 1440, height: 900 }, touch: false },
   short: { name: 'desktop 1440x700', viewport: { width: 1440, height: 700 }, touch: false },
+  kb: { name: 'phone 390x520 (keyboard up)', viewport: { width: 390, height: 520 }, touch: true },
   phone: { name: 'phone 390x844', viewport: { width: 390, height: 844 }, touch: true },
 }
 export const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
@@ -56,8 +57,9 @@ export async function closeDayWin(p) {
 }
 export async function gotoInputs(p) { await p.evaluate(() => window.go('inputs')); await p.waitForTimeout(250) }
 /** the month's "+ Input" on a day, up to the open (new) window */
+export async function toCal(p) { if (!(await p.locator('#inpCal').isVisible().catch(() => false))) { await press(p, p.locator('#inCalBtn')); await p.waitForTimeout(250) } }
 export async function openNew(p, iso) {
-  await gotoInputs(p)
+  await gotoInputs(p); await toCal(p)
   const [y, m] = iso.split('-').map(Number)
   await closeAnyWin(p)
   await month(p, y, m)
@@ -81,12 +83,13 @@ export async function closeAnyWin(p) {
 }
 /** open a saved input from the month: its date's cell, the card's open control */
 export async function openSaved(p, iid, iso) {
-  await gotoInputs(p)
+  await gotoInputs(p); await toCal(p)
   await closeAnyWin(p)
   const [y, m] = iso.split('-').map(Number)
   await month(p, y, m)
   await tapAt(p, p.locator(`#inpCal [data-icday="${iso}"]`), { x: 8, y: 8 })
-  const c = p.locator(`[data-testid="idy-row-${iid}"] [data-testid="idy-open"]`)
+  const ids = Array.isArray(iid) ? iid : [iid]
+  const c = p.locator(ids.map(i => `[data-testid="idy-row-${i}"] [data-testid="idy-open"]`).join(', ')).first()
   await c.waitFor()
   await press(p, c)
   await win(p).waitFor()
@@ -107,17 +110,25 @@ export async function saveWin(p, oil = 'no') {
 export const people = p => p.evaluate(() => Object.fromEntries(Object.keys(window.PEOPLE).map(id => [window.PEOPLE[id].cs, id])))
 export const csId = (p, cs) => p.evaluate(cs => Object.keys(window.PEOPLE).find(id => window.PEOPLE[id].cs === cs), cs)
 /** read-only: the stored inputs matching a filter */
-export const recs = (p, f = {}) => p.evaluate(f => window.INPUTS.filter(x => Object.keys(f).every(k => x[k] === f[k])).map(r => ({ iid: r.iid, person: r.person, type: r.type, title: r.title, hasTitle: 'title' in r && r.title != null, remarks: r.remarks, date: r.date, end: r.end, st: r.sTime, en: r.eTime, acc: r.acc, grp: r.grp, by: r.by })), f)
+export const recs = (p, f = {}) => p.evaluate(f => window.INPUTS.filter(x => Object.keys(f).every(k => x[k] === f[k])).map(r => ({ iid: r.iid, person: r.person, type: r.type, title: r.title, hasTitle: 'title' in r && r.title != null, remarks: r.remarks, date: r.date, end: r.end, st: r.s, en: r.e, allday: r.allday, acc: r.acc, grp: r.grp, by: r.by })), f)
 export const rec = async (p, f) => (await recs(p, f))[0] || null
-export const allRecs = p => p.evaluate(() => window.INPUTS.map(r => ({ iid: r.iid, person: r.person, type: r.type, title: r.title, remarks: r.remarks, date: r.date, end: r.end, grp: r.grp })))
+export const allRecs = p => p.evaluate(() => window.INPUTS.map(r => ({ iid: r.iid, person: r.person, type: r.type, title: r.title, remarks: r.remarks, date: r.date, endDate: r.endDate, s: r.s, e: r.e, grp: r.grp })))
 
 /* the table */
 export function table(name) {
-  const rows = []
+  let rows = []
+  try { rows = JSON.parse(readFileSync(join(ROWS_DIR, `rows-${name}.json`), 'utf8')) } catch {}
   return {
     rows,
-    add(r) { rows.push(r); console.log(`${r.verdict}  #${r.n} ${r.size} ${r.role} — ${r.say.slice(0, 260)}`) },
-    save() { writeFileSync(join(ROWS_DIR, `rows-${name}.json`), JSON.stringify(rows, null, 1)) },
+    add(r) { rows = rows.filter(x => !(x.n === r.n && x.size === r.size && x.role === r.role && (x.sub || '') === (r.sub || ''))); rows.push(r); this.rows = rows; console.log(`${r.verdict}  #${r.n} ${r.size} ${r.role} — ${r.say.slice(0, 260)}`) },
+    save() {
+      let disk = []
+      try { disk = JSON.parse(readFileSync(join(ROWS_DIR, `rows-${name}.json`), 'utf8')) } catch {}
+      const key = r => [r.n, r.size, r.role, r.sub || ''].join('|')
+      const mine = new Map(rows.map(r => [key(r), r]))
+      const merged = [...disk.filter(r => !mine.has(key(r))), ...rows]
+      writeFileSync(join(ROWS_DIR, `rows-${name}.json`), JSON.stringify(merged, null, 1))
+    },
   }
 }
 export function readRows() {

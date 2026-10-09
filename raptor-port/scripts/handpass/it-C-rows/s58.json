@@ -1,0 +1,14 @@
+[
+ {
+  "n": 58,
+  "size": "desk",
+  "role": "admin then member (Ranger)",
+  "verdict": "PASS",
+  "said": "Fixtures (Sat 18 and Sun 19 Jul, both days then published: [true,true]): Sat Event Ranger answered Yes; Sun Event Ranger answered No; Sat shared Event Ranger+Saber (filer said Yes, Ranger then changed his own to No). Base answers [\"n58:Ranger={\\\"2026-07-19\\\":0}\",\"s58:Ranger={\\\"2026-07-18\\\":0}\",\"s58:Saber={\\\"2026-07-18\\\":0.5}\",\"y58:Ranger={\\\"2026-07-18\\\":0.5}\"]; Leave War cells {\"2026-07-18\":{\"Ranger\":\"HO*\",\"Saber\":\"HO*\"},\"2026-07-19\":{\"Ranger\":\"\",\"Saber\":\"\"}}. Title-only saves — question asked? [[\"window\",false],[\"pencil\",false],[\"shared\",false],[\"member window\",false],[\"member pencil\",false]]. After each stage answers and Leave War cells unchanged: Y retitled in the window=true; N retitled with the pencil=true; S retitled in the shared window=true; after undo 1=true; after undo 2=true; after undo 3=true; after redo 1=true; after redo 2=true; after redo 3=true; after reload=true; after the member retitled his own two=true. Undo/redo presses: [{\"pressed\":true},{\"pressed\":true},{\"pressed\":true},{\"pressed\":true},{\"pressed\":true},{\"pressed\":true}]. Final titles: n58:Ranger:Bravo three | s58:Ranger:Charlie two | s58:Saber:Charlie two | y58:Ranger:Alpha three",
+  "pics": [
+   "desk-s58-after-window.png",
+   "desk-s58-after-shared.png",
+   "desk-s58-final.png"
+  ]
+ }
+]

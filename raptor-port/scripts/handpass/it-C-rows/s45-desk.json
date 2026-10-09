@@ -1,0 +1,14 @@
+[
+ {
+  "n": 45,
+  "size": "desk",
+  "role": "member (Ranger) then admin (Saber)",
+  "verdict": "PASS",
+  "said": "switch \"members may file for others\" was ON (left ON). Ranger filed Saber's Event \"Filed by Ranger\" (person Saber, placed-by Ranger); reopened as Ranger: Save true, body locked false, placed line \"Placed by Ranger for Saber · 9 Oct 26, 21:21\"; retitled -> \"Retitled by Ranger\" (placed-by Ranger), reopen line \"Placed by Ranger for Saber · 9 Oct 26, 21:21 · changed by Ranger · 9 Oct 26, 21:21\". Saber signed in: Save true, title box \"Retitled by Ranger\"; retitled -> \"Saber changed it\" placed-by Ranger, person Saber; line \"Placed by Ranger for Saber · 9 Oct 26, 21:21 · changed by Saber · 9 Oct 26, 21:22\". (Saber is an admin, so his right here is also the admin's.)",
+  "pics": [
+   "desk-s45-ranger-reopen.png",
+   "desk-s45-saber-open.png",
+   "desk-s45-saber-after.png"
+  ]
+ }
+]

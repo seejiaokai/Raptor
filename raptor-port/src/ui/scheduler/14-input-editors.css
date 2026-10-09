@@ -112,6 +112,9 @@ input::placeholder,textarea::placeholder{color:var(--ink-3);opacity:.55}
    look inside the Item track, and the control track holds Accept where there
    is one rather than the CX/flag/delete a schedule row carries */
 .sb-arow.inprow .inpty{width:100%;box-sizing:border-box}
+/* a card's name can be a 40-character title now ([INPUT-OWN-TITLE]): where the cell is too narrow for it, it ends in an
+   ellipsis rather than being cut mid-letter (the check's walk, walker C — the full name stands on its programme row) */
+.sb-arow.inprow .inpty{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb-arow.inprow .lctl{justify-content:flex-end}
 .sb-arow.inprow .accs{margin-left:0}
 

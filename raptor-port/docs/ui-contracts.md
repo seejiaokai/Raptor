@@ -9600,7 +9600,7 @@ without it shows a group as separate lines.
 
 - **An input's own title, and its kind kept in sight (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`; the drawing
   of record `docs/mock/input-own-title.html`).** *The Title box* — in the input's window (`inputedit.tsx`,
-  `#inpEditTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`),
+  `#inpEditOwnTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`),
   drawn only for a kind that takes a title. The draft's `title` is NULL until somebody types: the box then SHOWS the
   kind's own name and follows a change of kind; once typed in it is a string — an emptied box stays empty (its
   placeholder says the kind), it never snaps back under the cursor. A change to a kind that takes none clears it. The

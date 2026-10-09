@@ -1,0 +1,15 @@
+[
+ {
+  "n": 48,
+  "size": "desk",
+  "role": "member (Ranger) and admin",
+  "verdict": "PASS",
+  "said": "Ranger filed Saber's Event \"Ranger for Saber\" (setting ON: window Save true). Admin turned the gear's \"Members may file for other people\" OFF (was true). Ranger then: window on Saber's input Save false, locked true, text \"Only Saber or an admin can change this.\"; typed QQ+Enter -> title \"Ranger for Saber\"; List pencil on that row 0; own Event retitled through window -> \"Own via window\", through pencil -> \"Own via pencil\". After a real reload: Save false, pencil 0. Setting ON again: window Save true; pencil retitle -> \"Back on route\"",
+  "pics": [
+   "desk-s48-off-window.png",
+   "desk-s48-off-list.png",
+   "desk-s48-off-after-reload.png",
+   "desk-s48-on-again.png"
+  ]
+ }
+]

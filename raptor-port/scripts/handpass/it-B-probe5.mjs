@@ -1,0 +1,18 @@
+import * as L from './it-B-lib.mjs'
+const W = await L.mk('desk')
+const p = W.page
+const ranger = await L.csId(p, 'Ranger')
+await L.fileInput(W, { iso: '2026-07-15', type: 'Event', person: ranger, s: '09:00', e: '10:00', rmk: 'u' })
+const r = await L.recBy(p, { person: ranger, type: 'Event' })
+await L.pubDay(W, 2)
+await L.retitle(W, r.iid, '2026-07-15', 'Sports day')
+await L.pubDay(W, 2)
+await L.retitle(W, r.iid, '2026-07-15', 'Games afternoon')
+const o = await L.lookIssued(W, 2, 'orig')
+console.log(JSON.stringify(o))
+await L.focusName(p, '#eWeek', 2, 'event|sports|games'); await L.shot(p, 'probe5-orig')
+console.log(await L.backLive(W, 2))
+const o2 = await L.lookIssued(W, 2, 'AL1')
+console.log(JSON.stringify(o2))
+console.log(await L.backLive(W, 2))
+await W.browser.close()

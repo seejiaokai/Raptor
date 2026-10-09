@@ -1,0 +1,97 @@
+{
+ "rows": [
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] taken off (button present: true) then published: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\" || dormant request retitled: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-0published-off-edit.png",
+    "s41-desk-A-0published-off-view.png",
+    "s41-desk-A-1retitled-dormant-edit.png",
+    "s41-desk-A-1retitled-dormant-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\"",
+   "pics": [
+    "s41-desk-A-2undo-edit.png",
+    "s41-desk-A-2undo-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-3redo-edit.png",
+    "s41-desk-A-3redo-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-4reload-edit.png",
+    "s41-desk-A-4reload-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] accepted afterwards (button present: true): edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:30 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-A-2accepted-edit.png",
+    "s41-desk-A-2accepted-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] taken off (button present: true) then published: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\" || dormant request retitled: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Games afternoon\" | Inputs day card names it \"Games afternoon\"",
+   "pics": [
+    "s41-desk-B-0published-off-edit.png",
+    "s41-desk-B-0published-off-view.png",
+    "s41-desk-B-1retitled-dormant-edit.png",
+    "s41-desk-B-1retitled-dormant-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\"",
+   "pics": [
+    "s41-desk-B-2undo-edit.png",
+    "s41-desk-B-2undo-view.png"
+   ]
+  },
+  {
+   "n": "41",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows: unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\" | Inputs day card names it \"Sports day\"",
+   "pics": [
+    "s41-desk-B-4reload-edit.png",
+    "s41-desk-B-4reload-view.png"
+   ]
+  }
+ ],
+ "errs": []
+}

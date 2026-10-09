@@ -1,0 +1,46 @@
+{
+ "rows": [
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "History tab (All changes) after add \"Sports day\" / retitle \"Games afternoon\" / clear: Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Ranger · Event · 3 21:33 15 Jul · title Games afternoon → Event Saber · 9/10 21:33 15 Jul · title Sports day → Games afternoon Saber · 9/10 21:33 Sports day added · 15 Jul (on the programme) Saber · 9/10 21:33 Tap a change to go to it — the window stays open. | saved title now undefined",
+   "pics": [
+    "s42-desk-admin-allchanges.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "the day's change bubble (chip \"n changes\"): chgwin front :: ⠿ Changes · Wednesday 15/7 Not yet published ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 3 21:33 15 Jul · title Games afternoon → Event Saber · 9/10 21:33 15 Jul · title Sports day → Games afternoon Saber · 9/10 21:33 Sports day added · 15 Jul (on the programme) Saber · 9/10 21:33 Tap a change to go to it — the window stays open.",
+   "pics": [
+    "s42-desk-admin-bubble.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "after reload, History tab: Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Ranger · Event · 3 21:33 15 Jul · title Games afternoon → Event Saber · 9/10 21:33 15 Jul · title Sports day → Games afternoon Saber · 9/10 21:33 Sports day added · 15 Jul (on the programme) Saber · 9/10 21:33 Tap a change to go to it — the window stays open.",
+   "pics": [
+    "s42-desk-admin-allchanges-reload.png"
+   ]
+  },
+  {
+   "n": "42",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "member's own Event (saved title now undefined): Changes button on View-only Sched: no; day change chip: yes; window text: ⠿ Changes · Wednesday 15/7 Not yet published ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 3 21:34 15 Jul · title Games afternoon → Event Ranger · 9/10 21:34 15 Jul · title Sports day → Games afternoon Ranger · 9/10 21:34 Sports day added · 15 Jul (on the programme) Ranger · 9/10 21:34 Read only — every change and who made it, for everyo",
+   "pics": [
+    "s42-desk-member-view.png",
+    "s42-desk-member-allchanges.png"
+   ]
+  }
+ ],
+ "errs": []
+}

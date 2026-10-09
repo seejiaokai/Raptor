@@ -598,9 +598,10 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         /* a row that came from a TITLED input says its kind under its name box (D717, html.ts rowKindTag). The row's grid
            places its cells by their order, so the label rides INSIDE the name's own cell — a wrapper drawn only for
-           such a row; every other row keeps the bare box it always had. Not in OIL Earn, where the name cell is the
-           item's own switch. */
-        +(rowKindTag(x)&&!oilModeOn(di)?`<div class="sb-nmk">${sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)}${rowKindTag(x)}</div>`
+           such a row; every other row keeps the bare box it always had. In OIL Earn too, where the name cell is the
+           item's own switch: the kind is what decides OIL, and that is the mode in which the scheduler most needs to
+           read it (the check's walk, walker C — W1: the first cut dropped the label there). */
+        +(rowKindTag(x)?`<div class="sb-nmk">${sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)}${rowKindTag(x)}</div>`
           :sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro))+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)

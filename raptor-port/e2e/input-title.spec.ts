@@ -34,11 +34,11 @@ async function file(page: Page, tap: boolean, type: string, from: string, to: st
   await expect(edWin(page)).toBeVisible()
   await page.selectOption('#inpEditType', type)
   /* the box stands straight under Type and reads the kind's own name */
-  await expect(page.locator('#inpEditTitle')).toHaveValue(type)
+  await expect(page.locator('#inpEditOwnTitle')).toHaveValue(type)
   const order = await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] .inped-f .inped-k')].map(k => k.textContent))
   expect(order.indexOf('Title')).toBe(order.indexOf('Type') + 1)
   await page.fill('#inpEditStart', from); await page.fill('#inpEditEnd', to)
-  if (title != null) await page.fill('#inpEditTitle', title)
+  if (title != null) await page.fill('#inpEditOwnTitle', title)
   await page.locator('#inpEditSave').click()
   await expect(edWin(page)).toHaveCount(0)
 }
@@ -74,6 +74,19 @@ for (const [what, viewport, tap] of [['a desktop', { width: 1440, height: 900 },
     expect(plain.tag, 'a row named by its kind carries no label').toBeNull()
     expect(titled.h, 'the titled row is no taller than the untitled one').toBeLessThanOrEqual(plain.h + 1)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'nothing runs off sideways').toBe(true)
+    /* the List: the title on a line of its own, the kind's pill whole under it — squeezed beside a long title on a phone,
+       the pill broke inside the word ("EVEN" over "T": the check's walk, W2) */
+    await go(page, 'inputs')
+    await page.locator('#inListBtn').click()
+    if (!(await page.locator('#inRangePop').count())) await page.locator('#inRangeBtn').click()
+    await page.locator('#inRangeAll').click()
+    const pill = await page.evaluate(() => {
+      const t = [...document.querySelectorAll('#inBody [data-testid="in-title"]')].find(x => x.textContent === 'Sports day') as HTMLElement
+      const p = t.nextElementSibling as HTMLElement, q = (e: Element) => e.getBoundingClientRect()
+      return { text: p.textContent, under: q(p).top >= q(t).bottom - 1, h: Math.round(q(p).height) }
+    })
+    expect(pill).toMatchObject({ text: 'Event', under: true })
+    expect(pill.h, 'one line tall — never broken inside the word').toBeLessThan(26)
     /* a reload keeps the title, the row's name and its label */
     await page.reload()
     await page.waitForSelector('#vWeek .day, #loginForm')

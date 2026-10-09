@@ -1,0 +1,94 @@
+{
+ "rows": [
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published \"Sports day\" (edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"); changed to SPORTS DAY: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:25 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-A-0published-edit.png",
+    "s32-desk-A-1caps-edit.png",
+    "s32-desk-A-1caps-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] typed \"Sports day\" back: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-A-2back-edit.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-A-2undo-edit.png",
+    "s32-desk-A-2undo-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:25 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-A-3redo-edit.png",
+    "s32-desk-A-3redo-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:25 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-A-4reload-edit.png",
+    "s32-desk-A-4reload-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published \"Sports day\" (edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"); changed to SPORTS DAY: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:26 Sports day → SPORTS DAY} | saved title \"SPORTS DAY\"",
+   "pics": [
+    "s32-desk-B-0published-edit.png",
+    "s32-desk-B-1caps-edit.png",
+    "s32-desk-B-1caps-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-B-2undo-edit.png",
+    "s32-desk-B-2undo-togo.png"
+   ]
+  },
+  {
+   "n": "32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s32-desk-B-4reload-edit.png",
+    "s32-desk-B-4reload-togo.png"
+   ]
+  }
+ ],
+ "errs": []
+}
