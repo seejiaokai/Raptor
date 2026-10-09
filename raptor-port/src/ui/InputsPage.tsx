@@ -687,7 +687,11 @@ export function InputsPage() {
               /* the stripe mirrors the month calendar's chip tones — both
                  read inputTone so the two surfaces can't disagree on a
                  colour (see ui/inputedit.tsx) */
-              const rowCls = ['in-' + inputTone(r.type), ...(flash.indexOf(r) >= 0 ? ['innew'] : [])].join(' ')
+              /* LIT BY ANY RECORD OF ITS ENTRY (the host's own find in the walk's pictures, 10 Oct 26): the page is shown
+                 ONE record of a shared input — whichever the save made first — and this row stands under the entry's
+                 first record A to Z, so a light asked of `r` alone left a just-added shared row dark unless the two
+                 were the same man. The phone's card asks the same question the same way. */
+              const rowCls = ['in-' + inputTone(r.type), ...((team || [r]).some((x: any) => flash.indexOf(x) >= 0) ? ['innew'] : [])].join(' ')
               return (
                 <tr key={inx} className={rowCls} data-iid={r.iid}
                   /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on

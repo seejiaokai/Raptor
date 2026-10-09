@@ -114,4 +114,38 @@ walk. "Carried by a test" is said where the walk did not press it, with the test
 
 ## 4. Sizing the walk (D607 — the order's §7.0)
 
-*(the five lines, written before any walker starts — below, §4 as written at the time)*
+Written by the host (Opus) after the roll-call and before any walker started.
+
+1. **The type of change** (`docs/walk-ledger.md`): **C** — a control replaced (the List's form by "+ Input"), and a
+   control moved (the "?" card into the window); **D** — things drawn in several places, some by their own code (who
+   an input is for and who filed it: the desktop row and two cards; the "till" on two cards and NOT on the row; a
+   bar's words on a desktop, a phone and its dragged copy); **E** — look (the lighter bar, the Name column, the card
+   laid in the window); **F** — words (the settings, the fold, the empty list); **H** at the edges (an admin's and a
+   member's "+ Input"; the posted-out people).
+2. **What only a walk could find here:** whether every thing the form did can be DONE through "+ Input" on the real
+   screen at both sizes — a door, a question, a refusal that the window had for an input started from a day and may
+   not have for one started with no date; whether the card laid in the window can be read and still leaves its buttons
+   in reach on a short phone; whether the lighter bar is painted and can be told from the solid one; whether names
+   wrap and "By" keeps its line; whether a just-saved input is seen. **What the tests and the reads already cover:**
+   the window's own saves (the medical cascades, the OIL sums, a group's one command) were walked three times this
+   week from the calendar's "+ Input" and from a saved row — the same code, the same sheets; the pure rule of "till
+   said once" and of a bar's words; the words themselves.
+3. **What the ledger says:** walks of leading type C found a real fault in 8 of 15; type D in 10 of 10 — every one a
+   place that draws the thing by its own code. Yesterday's two checks on these same screens (the title; the card and
+   the pencil's removal) each used the host's run and three walkers and each found eight to ten faults, most of them
+   a door lost with a removed control or a look only a browser shows.
+4. **The walk chosen — MEDIUM-WIDE.** (a) **The host's own scripted run**, `scripts/handpass/ivet-walk.mjs`, on the
+   production build: 40 steps — a desktop 1440 × 900 as the admin (24: the door list row by row, the row, the empty
+   list, "till", the month, the window's words, the two surfaces that must not change, the gear) and as a member
+   (4), a phone by touch at 390 × 844 and at 390 × 568, the short screen (6 each). (b) **Three Sonnet 5.5 walkers** on
+   a frozen copy of the build, each in its own world, for 60 of Astra's 69 scenarios, one size and one role a
+   scenario: A — the filing door (1–19); B — the questions after Add, what is kept in view, the month and the
+   settings (20, 21, 23, 25, 28–31, 53–63, 67–69); C — the desktop list, the cards and "till", the windows (32–49,
+   51). **Not walked by them, and why:** 22, 24, 26 (two documents; an upchit over later entries; medical refusals —
+   the window's own sheets, unchanged by this build, walked in the input card's check of 10 Oct, and carried by the
+   tests named in §5.4); 27 (a locked week cannot be reached through the app's controls); 50, 52 (Delete from the
+   window; a member taking himself out — walked on 10 Oct, the code unchanged); 64, 65, 66 (the host's A22, A23, A24).
+   No size beyond the phone, the desktop and the short phone: nothing here is a viewport-tall column but the window,
+   which the short phone covers.
+5. **Its row** is added to `docs/walk-ledger.md` at the close.
+

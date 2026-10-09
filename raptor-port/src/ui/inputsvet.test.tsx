@@ -250,6 +250,32 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
     expect(live(r.iid), 'back').toBeTruthy()
     expect(lit()).toEqual([r.iid])
   })
+  /* THE LIGHT FOLLOWS THE ENTRY, NOT ONE MAN'S RECORD (the host's own find, opening the walk's pictures, 10 Oct 26 — and
+     Astra's first-ranked scenario, 29). The page is shown ONE record of a shared input — whichever the save happened to
+     make first — while the desktop row stands under the entry's first record A to Z. Lit by that one record, the row of
+     a shared input just added stayed dark unless the two happened to be the same man (the phone's card already asked
+     every record of the entry). */
+  it('a shared input ADDED through "+ Input" lights its one row — whichever of its people the save made first', async () => {
+    await mount(false)
+    const sorted = [...others()].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
+    const first = sorted[0], last = sorted[sorted.length - 1]
+    for (const order of [[first, last], [last, first]]) {
+      const had = new Set(INPUTS.map((r: any) => r.iid))
+      await click($('#inNew'))
+      await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
+      for (const p of order) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
+      await click($('#inpEdCal [data-cal="2026-07-16"]'))
+      await click($('#inpEditSave'))
+      const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
+      expect(made, 'three records, one entry').toHaveLength(3)
+      const row = trOf(made)
+      expect(row, 'its one row').toBeTruthy()
+      expect(row.classList.contains('innew'), `lit, picked ${order.map(cs).join(' then ')}`).toBe(true)
+      expect(lit(), 'and it alone — the row before it has let go or is the same entry').toContain(row.getAttribute('data-iid'))
+      await act(async () => { await new Promise(r => setTimeout(r, 6200)) })
+      expect(lit(), 'settled').toEqual([])
+    }
+  }, 20000)
   it('a shared input changed through its window lights its ONE row', async () => {
     await mount(false)
     const g = await shared(others().slice(0, 3), { remarks: 'range brief' })
