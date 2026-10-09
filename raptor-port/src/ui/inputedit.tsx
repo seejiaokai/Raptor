@@ -1073,9 +1073,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
-       keeps the name of the Event it used to be. A draft that never knew of a title (a hand-made call, an in-place
-       cell edit seeded by draftOf) carries the record's own, so it is kept. */
-    { const tt = titleOf(draft.type, draft.title); if (tt) r.title = tt; else delete r.title }
+       keeps the name of the Event it used to be. A draft that does not STATE a title (no `title` key at all — a
+       hand-made call; every door of the app seeds one through draftOf, where NULL says "none") leaves the record's
+       own where its kind still takes one: silence is not an instruction to wipe a name. */
+    { const tt = titleOf(draft.type, draft.title === undefined ? r.title : draft.title); if (tt) r.title = tt; else delete r.title }
     /* …and who changed it, and when — `by` and `at` are never touched by a change (D629 — state/inputstamp.ts) */
     stampChanged(r)
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),

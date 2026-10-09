@@ -1,0 +1,12 @@
+import { launch, open, shot, sleep, press } from './it-A-lib.mjs'
+const browser = await launch()
+const { ctx, page } = await open(browser, 'phone')
+await page.evaluate(() => window.go('editsched')); await sleep(page, 500)
+await press(page, page.locator(`#eWeek [data-sbday="2"]:visible`).first())
+await page.waitForSelector('#schedBoard'); await sleep(page, 700)
+await shot(page, 'probe-phone-board')
+console.log(await page.evaluate(() => [...document.querySelectorAll('.sb-addinp')].map(b => { const r = b.getBoundingClientRect(); return [b.className, b.textContent, Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height), b.offsetParent !== null].join('|') })))
+await page.locator('.sb-addinp').first().scrollIntoViewIfNeeded()
+await shot(page, 'probe-phone-board2')
+await page.locator('.sb-addinp').first().tap({ timeout: 5000 }).catch(e => console.log('TAP FAIL', e.message.split('\n').slice(0, 12).join('\n')))
+await browser.close()

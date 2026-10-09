@@ -12,7 +12,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor, oilGate, draftOf } from './inputedit'
+import { InputEditor, oilGate, draftOf, commitInputEdit, setInpField } from './inputedit'
 import { inputRows, csvText } from './export'
 import { oilRequestName } from './oilmode'
 import { dayEntries } from './InputsCal'
@@ -391,6 +391,29 @@ describe('the other places that name an input (both reads of the plan)', () => {
     const t = await filed({ title: 'Regatta', remarks: '' })
     const hit = dayEntries('2026-10-13', { fPerson: 'all', fType: 'all', fSearch: 'regat' })
     expect(hit.inputs.map((r: any) => r.iid)).toEqual([t.iid])
+  })
+})
+
+describe('an edit that does not speak of the title leaves it alone', () => {
+  it('a draft with no title key at all (a hand-made call) keeps the stored title; one that says null removes it', async () => {
+    const r = await filed({ title: 'Sports day' })
+    const { title: _t, ...silent } = draftOf(live(r.iid)) as any
+    await act(async () => { expect(commitInputEdit(live(r.iid), { ...silent, remarks: 'moved to the field' })).toBeTruthy(); notify() })
+    expect(live(r.iid).title).toBe('Sports day')
+    expect(live(r.iid).remarks).toBe('moved to the field')
+    await act(async () => { expect(commitInputEdit(live(r.iid), { ...silent, type: 'LL', allday: true })).toBeTruthy(); notify() })
+    const now = live(r.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
+    expect('title' in now, 'a leave takes no title, stated or not').toBe(false)
+    const s = await filed({ title: 'Open house', date: 'Oct 14' })
+    await act(async () => { expect(commitInputEdit(live(s.iid), { ...draftOf(live(s.iid)), title: null })).toBeTruthy(); notify() })
+    expect('title' in live(s.iid)).toBe(false)
+  })
+  it('the remarks typed in place on a row, and a leave’s remarks editor, both keep the title (they seed the whole draft)', async () => {
+    const r = await filed({ title: 'Sports day' })
+    await act(async () => { expect(setInpField(live(r.iid), 'rmks', 'bring boots')).toBeTruthy(); notify() })
+    expect([live(r.iid).title, live(r.iid).remarks]).toEqual(['Sports day', 'bring boots'])
+    await act(async () => { expect(setInpField(live(r.iid), 'str', '09:30')).toBeTruthy(); notify() })
+    expect(live(r.iid).title).toBe('Sports day')
   })
 })
 

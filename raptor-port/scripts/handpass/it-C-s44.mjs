@@ -38,6 +38,7 @@ const rec = await C.recBy(p, { remarks: 'sab1' })
 // Saber's row in the List: is there a pencil?
 await C.openList(w)
 await C.listRow(p, S.iid).scrollIntoViewIfNeeded().catch(() => {}); await sleep(300)
+await C.listRow(p, S.iid).scrollIntoViewIfNeeded().catch(() => {}); await sleep(300)
 const hasPen = await C.listRow(p, S.iid).locator('[data-edit]').count()
 pics.push(await C.pic(w, 's44-list-everyone'))
 const ownStep = filed && afterWin === 'Mine v2' && afterPen === 'Mine v3'

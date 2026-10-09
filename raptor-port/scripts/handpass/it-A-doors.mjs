@@ -2,6 +2,17 @@
 // (docs/superpowers/briefs/2026-10-09-reads/input-own-title-scenarios-astra.md, the head). Reading uses window.INPUTS only.
 import { press, tapAt, win, DAYWIN, sleep, month, openNew as calOpenNew, openSaved as calOpenSaved, saveWin, gotoInputs, closeAnyWin, closeDayWin, csId, allRecs, norm, shot, elShot } from './it-A-lib.mjs'
 
+export async function setSeveral(p, ids) {
+  const sw = p.locator('[data-testid="pp-several"]'); await sw.waitFor()
+  if ((await sw.getAttribute('aria-checked')) !== 'true') { await press(p, sw); await sleep(p, 250) }
+  const want = new Set(ids)
+  for (const b of await p.locator('button[data-pp]').all()) {
+    const id = await b.getAttribute('data-pp'), on = (await b.getAttribute('aria-pressed')) === 'true'
+    if (want.has(id) !== on) { await b.scrollIntoViewIfNeeded(); await press(p, b); await sleep(p, 80) }
+  }
+  const cnt = await p.locator('[data-testid="pp-count"]').innerText().catch(() => '?')
+  return cnt
+}
 export const T40 = '1234567890123456789012345678901234567890'
 export const LIT = '<b>Ops</b> "A&B"'
 const newRecs = async (p, before) => { const a = await allRecs(p); return a.filter(r => !before.has(r.iid)) }
@@ -46,6 +57,7 @@ export function calDoor() {
       await calOpenNew(p, s.iso)
       if (s.person) await win(p).locator('#inpEditPerson').selectOption(s.person)
       if (s.type) await p.selectOption('#inpEditType', s.type)
+      if (s.several) await setSeveral(p, s.several)
       if (s.st && await p.locator('#inpEditStart').count()) { await p.fill('#inpEditStart', s.st); await p.fill('#inpEditEnd', s.en) }
       if (s.rmk != null) await p.fill('#inpEditRmk', s.rmk)
     },
@@ -79,6 +91,7 @@ export function listDoor() {
       if (s.person) await p.selectOption('#inPerson', s.person)
       await pickDate(p, s.iso)
       if (s.type) await p.selectOption('#inType', s.type)
+      if (s.several) await setSeveral(p, s.several)
       if (s.st && await p.locator('#inStartT').count()) { await p.fill('#inStartT', s.st); await p.fill('#inEndT', s.en) }
       if (s.rmk != null) await p.fill('#inRemarks', s.rmk)
     },
@@ -187,7 +200,7 @@ export function boardDoor(di = 2) {
 export async function closeBoardAny(p) {
   if (await p.locator('#inpEditPop').isVisible().catch(() => false)) { await press(p, p.locator('#inpEditPop #inpEditCancel')); await sleep(p, 250) }
   if (!(await p.locator('#schedBoard').count())) return
-  const x = p.locator('#schedBoard').getByRole('button', { name: /Close|Done/ }).first()
+  const x = p.locator('#sbDone')
   if (await x.count()) { await press(p, x); await sleep(p, 500) } else { await p.keyboard.press('Escape'); await sleep(p, 400) }
 }
 export async function showAll(p) {
@@ -224,7 +237,7 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
   const before = await idset(p)
   let rec = base.rec || null
   /* the form up */
-  if (door.isNewDoor) await door.openNew(p, { iso: base.iso, person: base.person, type: base.type || 'Event', st: base.st, en: base.en, rmk: base.rmk })
+  if (door.isNewDoor) await door.openNew(p, { iso: base.iso, person: base.person, type: base.type || 'Event', st: base.st, en: base.en, rmk: base.rmk, several: base.several })
   else {
     if (!rec) throw new Error('an editing door needs rec')
     await door.openSaved(p, rec)
@@ -282,6 +295,7 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
   else recs = [await recOf(p, rec.iid)]
   need(recs.length === (base.expectCount || 1), `${recs.length} input(s) stored`)
   const stored = recs[0]
+  if (base.several && recs.length > 1) need(recs.every(x => x.grp && x.grp === recs[0].grp && x.title === recs[0].title), `the ${recs.length} rows are one shared entry with one title (grp ${recs[0].grp}, titles ${JSON.stringify(recs.map(x => x.title))})`)
   if (stored) {
     const t = stored.title
     if (want) need(t === want, `stored title "${t}"`)

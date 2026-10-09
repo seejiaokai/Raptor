@@ -304,3 +304,36 @@ export async function checkpoint(W, variant, { n, tag, role = 'admin', read, app
     row(n, size, role, reverted(r4.s) ? 'PASS' : 'FAIL', `[B] Undo then reload: ${r4.text}`, r4.pics)
   }
 }
+
+/* the Scheduler Board of day di (opened from the week's own day button) */
+export async function openBoard(W, di) {
+  const p = W.page
+  await closeBoard(p)
+  await go(p, 'editsched'); await showDay(p, di)
+  const b = p.locator(`#eWeek [data-sbday="${di}"]:visible`).first()
+  await b.evaluate(e => e.scrollIntoView({ block: 'center' }))
+  if (W.mobile) await b.tap(); else await b.click()
+  await p.waitForSelector('#schedBoard'); await sleep(600)
+}
+export async function boardRows(p) {
+  return p.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-arow.c6r')].map(r => {
+    const f = r.querySelector('[data-bfld$=".prog"]'); const k = r.querySelector('.nm-kind')
+    return { name: f ? (f.value || f.textContent || '').trim() : '', kind: k ? k.textContent.trim() : '' }
+  }).filter(x => x.name))
+}
+export async function boardFocus(p, re) {
+  await p.evaluate(re => { const rx = new RegExp(re, 'i'); const r = [...document.querySelectorAll('#schedBoard .sb-arow.c6r')].find(r => { const f = r.querySelector('[data-bfld$=".prog"]'); return f && rx.test(f.value || f.textContent || '') }); if (r) r.scrollIntoView({ block: 'center' }) }, re)
+  await sleep(300)
+}
+
+/* View-only Sched: pick the version whose label matches re, then read the day */
+export async function viewVersion(p, di, re) {
+  await go(p, 'viewsched'); await showDay(p, di, '#vWeek')
+  const sel = p.locator(`#vWeek select[data-vwork="${di}"]:visible, #vWeek select[data-dver="${di}"]:visible`).first()
+  if (!(await sel.count())) return { missing: true }
+  const val = await sel.evaluate((s, re) => { const o = [...s.options].find(o => new RegExp(re, 'i').test(o.text)); return o ? o.value : null }, re)
+  if (val === null) return { missing: true, opts: await sel.evaluate(s => [...s.options].map(o => o.text)) }
+  await sel.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' }))
+  await sel.selectOption(val); await sleep(700)
+  return viewFace(p, di)
+}
