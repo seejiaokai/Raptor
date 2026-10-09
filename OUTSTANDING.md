@@ -1662,6 +1662,7 @@ waive owed reads or authorize a live merge.
 
 **Added 9 Oct 26 (the look at D683):** Escape pressed while typing a planning note in an opened day closes the whole day, where it might be expected to leave only the note box — the window shell’s rule (Escape closes the window in front), older than D683.
 **Added 9 Oct 26 (Astra, scenario 2.4 of the day-window check):** on a shared input’s card in an opened day, each man’s own LATE tag is a tag with a hover title, not a button — a finger on a phone cannot open what it says (the whole-entry LATE tag is a button and can). `raptor-port/src/ui/InputsCal.tsx` (`idy-manlate`). Not fixed: it is the calendar job’s, seen while checking the next job.
+**Still his to answer (carried from the merged calendar job's handoff, 9 Oct 26):** picking several days on the Inputs month opens the new-input window at once, where the drawing had a bar to confirm first — he was shown both and withdrew his answer; keep as built until he says.
 
 ### [GROUP-INPUT-ONE-ROW] On the schedule a group input is ONE row holding everyone (D661 — 7 Oct 26)
 

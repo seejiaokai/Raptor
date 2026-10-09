@@ -577,7 +577,10 @@ for (const width of [390, 375, 360]) test(`a phone ${width} wide: the month’s 
   const page: Page = await context.newPage()
   try {
     await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
-    const box = (sel: string) => page.locator(sel).first().evaluate(n => { const r = n.getBoundingClientRect(); return { left: Math.round(r.left), w: Math.round(r.width), right: Math.round(r.right), mid: Math.round(r.top + r.height / 2) } })
+    /* WHERE a button is, without the press effect: a pressed button is drawn 3% smaller (`.abtn:active`) and a finger's
+       press lingers after a tap - read through that, an arrow just tapped measured 29 wide where it is 30, by timing
+       alone (the gate run of 9 Oct 26; the same race as D693's test, D87) */
+    const box = (sel: string) => page.locator(sel).first().evaluate(n => { const el = n as HTMLElement, t = el.style.transition, f = el.style.transform; el.style.transition = 'none'; el.style.transform = 'none'; const r = el.getBoundingClientRect(); el.style.transform = f; el.style.transition = t; return { left: Math.round(r.left), w: Math.round(r.width), right: Math.round(r.right), mid: Math.round(r.top + r.height / 2) } })
     const nav = async (prev: string, name: string, next: string, today: string) => [await box(prev), await box(name), await box(next), await box(today)].map(b => [b.left, b.w])
     /* through a year the next arrow and Today never move under the finger (the name's box is one width) */
     const still = async (next: string, today: string) => { const seen = new Set<string>(); for (let i = 0; i < 12; i++) { seen.add((await box(next)).left + '/' + (await box(today)).left); await page.locator(next).tap() } for (let i = 0; i < 12; i++) await page.locator(next.replace('Next', 'Prev').replace('sc-next', 'sc-prev')).tap(); return seen.size }
