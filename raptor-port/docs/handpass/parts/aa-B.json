@@ -1,0 +1,59 @@
+{
+ "parts": {
+  "s07-run": {
+   "at": "2026-10-09T08:17:50.586Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": [
+    {
+     "name": "YA",
+     "error": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+     "name": "YB",
+     "error": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+     "name": "NA",
+     "error": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+     "name": "NB",
+     "error": "locator.click: Timeout 30000ms exceeded."
+    }
+   ],
+   "log": [
+    "--- world YA: filer answers yes, order switch-first",
+    "filed {\"iid\":\"imv0owicl9ksheb\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "window base: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "tap1: on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "tap2: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "tap3 (explicit set): on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "ERROR YA locator.click: Timeout 30000ms exceeded.",
+    "--- world YB: filer answers yes, order answer-first",
+    "filed {\"iid\":\"imv0oxin0wyfvrz\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "window base: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "ERROR YB locator.click: Timeout 30000ms exceeded.",
+    "--- world NA: filer answers no, order switch-first",
+    "filed {\"iid\":\"imv0oyh2a66zuww\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"\",\"Anvil\":\"\",\"Basher\":\"\"}",
+    "window base: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "tap1: on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "tap2: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "tap3 (explicit set): on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "ERROR NA locator.click: Timeout 30000ms exceeded.",
+    "--- world NB: filer answers no, order answer-first",
+    "filed {\"iid\":\"imv0ozhekv2qz0s\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"\",\"Anvil\":\"\",\"Basher\":\"\"}",
+    "window base: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "ERROR NB locator.click: Timeout 30000ms exceeded."
+   ]
+  }
+ }
+}

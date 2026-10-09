@@ -1,0 +1,18 @@
+const C = await import('./aa-C-lib.mjs')
+const { world, fileInput, shot, board, sleep, go, pubSat, closeBoard, editWeek, face, fs, cr, crS, altPlan, planMenuItems, pidOf } = C
+const w = await world(); const { page } = w
+await fileInput(page, { iso: '2026-07-18', kind: 'Duty', person: 'allavail', s: '09:00', e: '12:00', rmk: 'S5 duty', oil: 'yes' })
+await go(page, 'editsched'); await sleep(400)
+await editWeek(page)
+console.log('alt', await altPlan(page, 5))
+await sleep(500)
+await shot(page, 'probe7-alt')
+console.log(JSON.stringify(await planMenuItems(page, 5)))
+await page.keyboard.press('Escape')
+await board(page, 5)
+await page.locator('[data-oilmode], #sbOil').first().click(); await sleep(600)
+console.log('oil items', await page.evaluate(() => ({ items: document.querySelectorAll('#schedBoard [data-oilitem]').length, people: document.querySelectorAll('#schedBoard [data-oilp]').length })))
+await page.locator('#schedBoard .oilcount:visible').first().click(); await sleep(600)
+await shot(page, 'probe7-win')
+console.log(await page.evaluate(() => { const w = document.querySelector('.availwin'); return w ? { txt: w.innerText.replace(/\s+/g, ' ').slice(0, 400), oilp: [...w.querySelectorAll('[data-oilp]')].slice(0, 3).map(e => e.outerHTML.slice(0, 250)), tabs: [...w.querySelectorAll('button')].map(b => b.innerText.trim() + '|' + Object.keys(b.dataset).join(',')).slice(0, 12) } : null }))
+await w.browser.close()

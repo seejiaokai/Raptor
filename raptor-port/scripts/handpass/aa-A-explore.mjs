@@ -1,0 +1,18 @@
+import { world, closeAll, toInputs, openNew, pic, T, sleep, signIn, URL_, membersSwitch, observe } from './aa-A-lib.mjs'
+const w = await world({ who: 'us', size: 'p' })
+const A = w.page
+const B = await w.ctx.newPage(); await B.goto(URL_); await signIn(B, 'ad')
+await toInputs(B)
+console.log('admin switch now', await membersSwitch(B, false))
+await sleep(3000)
+await toInputs(A)
+await openNew(A, '2026-07-18')
+console.log('A person options (no reload):', await A.evaluate(() => [...document.querySelectorAll('#inpEditPerson optgroup')].map(g => g.label)), await A.evaluate(() => document.querySelector('#inpEditPerson')?.options.length))
+await pic(A, 'x11-A')
+await A.reload(); await sleep(1000)
+if (await A.locator('#luser').count()) await signIn(A, 'us')
+await toInputs(A)
+await openNew(A, '2026-07-18')
+console.log('A person options (after reload):', await A.evaluate(() => [...document.querySelectorAll('#inpEditPerson optgroup')].map(g => g.label)), await A.evaluate(() => document.querySelector('#inpEditPerson')?.options.length, await A.evaluate(()=>document.querySelector('#inpEditPersonFixed')?.textContent)))
+console.log(await A.evaluate(()=>document.querySelector('#inpEditPersonFixed')?.textContent))
+await closeAll()
