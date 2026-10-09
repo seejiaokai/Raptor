@@ -9454,6 +9454,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+<<<<<<< HEAD
 - **A note in an opened day carries its own pucks (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
   `docs/mock/note-with-pucks.html`).** ONE kind of note: words, people, or both — never neither. "+ Note" is the only button
   in the window's bar ("+ Pucks" is gone). A note's words are one slim line (28px) with its small buttons — a "+" while it
@@ -9478,6 +9479,11 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   the editor's foot, a Medical card and the document viewer keep the full line (D629). A shared input's pucks come
   after that line. A card with a short remark is 51px on a phone where it was 79. Pinned by `ui/placedline.test.ts`,
   `ui/inputsday.test.tsx`, `ui/sansday.test.tsx`, `e2e/inputs-calendar.spec.ts` (D701).
+=======
+- **A card's first line in an opened day (both calendars): the name and what it is take the room the LATE tag and the hours
+  leave — a long kind is cut with "…" where the hours begin, never printed over them** (found on a walk, 9 Oct 26; `.sd-row`
+  is `minmax(0,1fr) auto auto`, 24-sans-calendar.css). Pinned by `e2e/inputs-calendar.spec.ts` ("a long kind…").
+>>>>>>> claude/inputs-sans-calendar
 - **On a phone the Inputs calendar's month arrows, name and Today stand at the LEFT of their row, where the SANS calendar's
   are; the Calendar | List switch is at the row's right end (owner D705, 9 Oct 26).** The row
   is re-drawn by `order` at 820px and under only (`.inputs-top`, 25-inputs-calendar.css): the arrows, the name, Today, then —

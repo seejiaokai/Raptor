@@ -1105,6 +1105,31 @@ test('a phone: a note is written, given five people from its own "+", stands fou
     await expect(page.locator('[data-ichead="2026-10-14"] .ic-pks .ic-pk'), 'the month’s cell shows its people').toHaveCount(4)
     await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
     await expect(page.locator('[data-testid="win-inputsday"] .ic-note .ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(4)
+
+/* A LONG KIND NEVER RUNS UNDER THE HOURS (found on the day-window walk, 9 Oct 26 — the host's look at its picture: an
+   "Other" input is named by its remark, and a long one ran on under "All day" at the right of its card on a phone,
+   the two printed over each other). The kind is cut with "…" where the hours begin. */
+test('a phone: in an opened day a long kind is cut short of the hours — the two are never printed over each other', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 667)
+  try {
+    await page.evaluate(() => {
+      const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
+      w.fileInput({ iid: 'e2e-longkind', person: crew[2], type: 'Other', date: 'Oct 14', yr: 2026, allday: true, remarks: 'A very long custom commitment name that runs on and on past the card' })
+      w.fileInput({ iid: 'e2e-longkind-t', person: crew[3], type: 'Other', date: 'Oct 14', yr: 2026, allday: false, s: 1020, e: 1110, remarks: 'Another long custom commitment name, with hours' })
+    })
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
+    for (const iid of ['e2e-longkind', 'e2e-longkind-t']) {
+      const g = await page.locator(`[data-testid="idy-row-${iid}"]`).evaluate(row => {
+        const b = (s: string) => row.querySelector(s)!.getBoundingClientRect()
+        const kind = b('.idy-kind'), who = b('.idy-who'), when = b('[data-testid="idy-when"]'), r = row.getBoundingClientRect()
+        return { kindRight: kind.right, whenLeft: when.left, whenRight: when.right, whoWhole: who.width > 20, inner: r.right, sameLine: Math.abs(kind.top - when.top) < 8 }
+      })
+      expect(g.sameLine, 'the kind and the hours are on the card’s first line').toBe(true)
+      expect(g.kindRight, `${iid}: the kind ends before the hours begin`).toBeLessThanOrEqual(g.whenLeft - 2)
+      expect(g.whenRight, 'the hours are inside the card').toBeLessThanOrEqual(g.inner)
+      expect(g.whoWhole, 'the name is whole').toBe(true)
+    }
   } finally { await context.close() }
 })
 
