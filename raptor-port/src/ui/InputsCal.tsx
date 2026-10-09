@@ -50,6 +50,7 @@ import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, personFilterPasses } from './inputscal-model'
+import { entryRowsOf } from '../state/inputgroup'
 import { placedLineOf } from './placedline'
 import { InputCard } from './InputCard'
 import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
@@ -742,7 +743,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     /* what the day lists: every input covering it, as the month's own items (a group is one — ui/inputscal-model.ts),
        plus the one just saved where no filter lets it through, so a save is never answered with an empty day */
     const list = itemsOn(iso, items)
-    if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
+    /* …as the WHOLE entry it belongs to (Sol's read of the code, 10 Oct 26): a shared input shown by ONE of its records
+       read as that man's alone, and its Delete took his record and left the others behind out of sight */
+    if (revealed) list.unshift(...monthItems(entryRowsOf(INPUTS, saved), { fPerson: 'all', fType: 'all', fSearch: '' }))
     const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
     const name = dayFacts(iso).name
     const kindWord = !kind ? undefined
@@ -936,8 +939,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const r = it.rows[0]
                   const team = it.rows.length > 1
                   const forAll = team && it.rows.every(x => mayDeleteInput(x))
+                  const when = cardWhen(r, it.b, iso)
                   return (
-                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, cardWhen(r, it.b, iso))} when={cardWhen(r, it.b, iso)}
+                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when}
                       late={lateNoteOf(it.rows, lateWord)} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"

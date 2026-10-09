@@ -51,7 +51,7 @@ export const press = (touch, loc) => (touch ? loc.tap() : loc.click())
 export const csId = (p, cs) => p.evaluate(cs => Object.keys(window.PEOPLE).find(id => window.PEOPLE[id].cs === cs), cs)
 export const count = p => p.evaluate(() => window.INPUTS.length)
 export const ids = p => p.evaluate(() => window.INPUTS.map(r => r.iid))
-export const newest = (p, had) => p.evaluate(had => window.INPUTS.filter(r => !had.includes(r.iid)).map(r => ({ iid: r.iid, person: r.person, cs: window.PEOPLE[r.person]?.cs, type: r.type, title: r.title, remarks: r.remarks, date: r.date, endDate: r.endDate, allday: r.allday, half: r.half, s: r.s, e: r.e, oil: r.oil || null, grp: r.grp || null, by: r.by, byCs: window.PEOPLE[r.by]?.cs, docs: (r.docIds || []).length })), had)
+export const newest = (p, had) => p.evaluate(had => window.INPUTS.filter(r => !had.includes(r.iid)).map(r => ({ iid: r.iid, person: r.person, cs: window.PEOPLE[r.person]?.cs, type: r.type, title: r.title, remarks: r.remarks, date: r.date, endDate: r.endDate, allday: r.allday, half: r.half, s: r.s, e: r.e, oil: r.oil || null, grp: r.grp || null, by: r.by, byCs: window.PEOPLE[r.by]?.cs, docs: (r.docIds || []).length || (r.docId ? 1 : 0) })), had)
 export const toast = p => p.evaluate(() => (document.getElementById('toastEl')?.textContent || '').trim())
 export const clearToast = p => p.evaluate(() => { const t = document.getElementById('toastEl'); if (t) t.textContent = '' })
 export async function month(p, y, m, touch) {

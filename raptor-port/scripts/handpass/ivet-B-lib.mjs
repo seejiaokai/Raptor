@@ -192,6 +192,7 @@ export async function fileInput(p, touch, o) {
   }
   await pick(p, o.d1, touch); if (o.d2) await pick(p, o.d2, touch)
   if (o.span) await press(touch, p.locator(`#inpEditSpan [data-span="${o.span}"]`))
+  if (o.allday && await p.locator('#inpEditAllday').count() && !(await p.locator('#inpEditAllday').isChecked())) await press(touch, p.locator('#inpEditAllday'))
   if (o.start) {
     if (await p.locator('#inpEditAllday').count() && await p.locator('#inpEditAllday').isChecked()) await press(touch, p.locator('#inpEditAllday'))
     if (o.custom) await press(touch, p.locator('#inpEditSpan [data-span="custom"]'))

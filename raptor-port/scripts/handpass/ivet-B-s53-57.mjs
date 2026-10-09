@@ -44,7 +44,7 @@ const idyCards = p => p.evaluate(() => [...document.querySelectorAll('[data-test
     await L.shot(page, 's54-month')
     L.chk('its bar begins "9 ·" and the title, clipped only to fit (the count stays)', bars.length === 1 && /^9 · /.test(bars[0].text) && /C54 Squadron/.test(bars[0].text), JSON.stringify(bars.map(b => ({ text: b.text, clipped: b.clipped, w: b.w }))))
     // open the input from its bar
-    await page.locator(`.ib-bar[data-iid="${ev[0].iid}"], .ib-bar[data-iid="${ev[1].iid}"], .ib-bar[data-iid="${ev[2].iid}"]`).first().tap(); await sleep(600)
+    const evI = await L.grpIids(page, ev[0].grp, ev[0].iid); await page.locator(evI.map(i => `.ib-bar[data-iid="${i}"]`).join(', ')).first().tap(); await sleep(600)
     let w = await page.locator(WIN).count()
     if (!w) { const c = page.locator(DAYWIN).locator('[data-testid="idy-open"]').filter({ hasText: /./ }).first(); L.info('the bar tap opened', await page.evaluate(() => [...document.querySelectorAll('[data-testid^="win-"]')].map(x => x.dataset.testid).join(','))) }
     const open = await page.evaluate(() => { const win = document.querySelector('[data-testid="win-inputedit"]'); return win ? { title: win.querySelector('.win-ttl')?.textContent, ownTitle: document.querySelector('#inpEditOwnTitle')?.value, type: document.querySelector('#inpEditType')?.value, ticked: [...win.querySelectorAll('[data-pp][aria-pressed="true"]')].length } : null })
@@ -117,7 +117,7 @@ const idyCards = p => p.evaluate(() => [...document.querySelectorAll('[data-test
     const mk = {}
     mk.ll = (await L.fileInput(page, T, { type: 'LL', d1: '2026-07-06', rmk: 'S56 allday leave' }))[0]
     mk.llT = (await L.fileInput(page, T, { type: 'LL', d1: '2026-07-07', span: 'custom', start: '10:00', end: '12:00', rmk: 'S56 timed leave' }))[0]
-    mk.mt = (await L.fileInput(page, T, { type: 'Meeting', d1: '2026-07-08', rmk: 'S56 allday meeting' }))[0]
+    mk.mt = (await L.fileInput(page, T, { type: 'Meeting', d1: '2026-07-08', allday: true, rmk: 'S56 allday meeting' }))[0]
     mk.mtT = (await L.fileInput(page, T, { type: 'Meeting', d1: '2026-07-09', start: '09:00', end: '10:30', rmk: 'S56 timed meeting' }))[0]
     mk.am = (await L.fileInput(page, T, { type: 'LL', d1: '2026-07-10', span: 'am', rmk: 'S56 am leave' }))[0]
     L.chk('(setup) all five saved', Object.values(mk).every(Boolean), JSON.stringify(Object.fromEntries(Object.entries(mk).map(([k, v]) => [k, v && [v.type, v.date, v.allday, v.s, v.e]]))))
@@ -127,7 +127,7 @@ const idyCards = p => p.evaluate(() => [...document.querySelectorAll('[data-test
     await L.shot(page, 's56-month')
     const wk = await page.evaluate(() => { const c = document.querySelector('#inpCal [data-icday="2026-07-06"]').getBoundingClientRect(), d = document.querySelector('#inpCal [data-icday="2026-07-10"]').getBoundingClientRect(); return { x: Math.floor(c.left) - 4, y: Math.floor(c.top) - 4, width: Math.ceil(d.right - c.left) + 8, height: Math.ceil(c.height) + 8 } })
     await page.screenshot({ path: L.OUT + '/s56-week-zoom.png', clip: wk })
-    const lum = c => { const m = (c.match(/[\d.]+/g) || []).map(Number); return Math.round(0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) }
+    const lum = c => { const m = (c.match(/[\d.]+/g) || []).map(Number); const k = /srgb/.test(c) ? 255 : 1; return Math.round((0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) * k) }
     const L2 = Object.fromEntries(Object.entries(out).map(([k, b]) => [k, b && { timed: b.timed, tone: b.tone, bg: b.bg, lum: lum(b.bg), shadow: b.shadow, color: b.color, text: b.text }]))
     L.info('painted', JSON.stringify(L2))
     const ok = k => !!out[k]

@@ -42,7 +42,7 @@
   "n": 15,
   "size": "phone 390x844",
   "role": "member Ranger",
-  "status": "FAIL",
+  "status": "PASS",
   "said": "{\"duty\":{\"rec\":{\"t\":\"Duty\",\"d\":\"Aug 10\",\"allday\":false,\"half\":null,\"s\":1320,\"e\":120,\"rmk\":\"till 10 Aug\"},\"start\":\"22:00\",\"end\":\"02:00\"},\"equal\":{\"toast\":\"Give the input a start and end that are not the same time\",\"made\":0,\"open\":true},\"missing\":{\"toast\":\"Give the input a start and end time, or tick All day\",\"made\":0},\"leave\":{\"rec\":{\"t\":\"LL\",\"d\":\"Aug 13\",\"allday\":false,\"half\":null,\"s\":1320,\"e\":120,\"rmk\":\"till 13 Aug\"},\"span\":\"custom\",\"start\":\"22:00\",\"end\":\"02:00\"}}",
   "pics": [
    "S15-phone-duty-overnight-reopened.png",

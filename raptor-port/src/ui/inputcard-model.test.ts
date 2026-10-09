@@ -164,6 +164,15 @@ describe('"till <date>" is said once — by the corner (D728)', () => {
     expect(cardOf([rec({ remarks: 'kit, boots, till 17 Jul' })], P, corner).remark).toBe('kit, boots')
     expect(cardOf([rec({ remarks: 'kit… till 17 Jul' })], P, corner).remark).toBe('kit…')
   })
+  /* …and where the words OPEN the remark (Sol's read of the code, 10 Oct 26 — finding 2): only a separator that stands
+     by itself between the words and what follows is a join; a sign attached to the next word is that word's own */
+  it('the words first, then a typed sign: "till 17 Jul -5°C kit" keeps its minus; "till 17 Jul — Bangkok" loses only the dash that joined them', () => {
+    expect(cardOf([rec({ remarks: 'till 17 Jul -5°C cold-weather kit' })], P, corner).remark).toBe('-5°C cold-weather kit')
+    expect(cardOf([rec({ remarks: ' till 17 Jul -5°C cold-weather kit' })], P, corner).remark).toBe('-5°C cold-weather kit')
+    expect(cardOf([rec({ remarks: 'till 17 Jul — -5°C cold-weather kit' })], P, corner).remark).toBe('-5°C cold-weather kit')
+    expect(cardOf([rec({ remarks: 'till 17 Jul, then home' })], P, corner).remark).toBe('then home')
+    expect(cardOf([rec({ remarks: 'till 17 Jul — Bangkok -' })], P, corner).remark).toBe('Bangkok -')
+  })
   it('a "till" for ANOTHER day is not the corner’s and stays — somebody typed it', () => {
     expect(cardOf([rec({ remarks: 'Course till 30 Jul' })], P, corner).remark).toBe('Course till 30 Jul')
   })

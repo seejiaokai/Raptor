@@ -67,7 +67,9 @@ export function remarkOnce(remark: string, corner: string): string {
      "-5°C cold-weather kit till 17 Jul" lost its minus sign. */
   const before = remark.slice(0, hit.index)
   let after = remark.slice(hit.index + hit[0].length)
-  if (!before.trim()) after = after.replace(new RegExp(`^${SEP}+`), '')
+  /* …and there only a separator that stands BY ITSELF is a join — a comma or a dash followed by a space. A sign attached
+     to the next word is that word's own: "till 17 Jul -5°C kit" keeps its minus (Sol's read of the code, 10 Oct 26). */
+  if (!before.trim()) after = after.replace(/^\s*(?:[,·—–-]\s+)*/, '')
   return (before + after).trim()
 }
 

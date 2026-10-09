@@ -172,7 +172,7 @@ await scen(10, 'desktop 1440x900', 'member Ranger (setting on)', async () => {
   await L.toList(page, T)
   const filterOpts = await page.evaluate(() => [...document.querySelectorAll('#inFPerson option')].filter(o => /all|every/i.test(o.value + ' ' + o.textContent)).map(o => `${o.value}=${o.textContent}`))
   const rowsNames = await page.evaluate(() => [...document.querySelectorAll('#inBody tr')].filter(t => /S10/.test(t.textContent)).map(t => t.querySelector('[data-label="Name"]').textContent.trim()))
-  await page.selectOption('#inFPerson', 'allavail').catch(() => {})
+  await page.selectOption('#inFPerson', 'ph:allavail').catch(() => {})
   const filterValue = await page.locator('#inFPerson').inputValue()
   const nShown = await page.locator('#inBody tr').count()
   pics.push(await L.shot(page, 'S10-desk-list-placeholders'))

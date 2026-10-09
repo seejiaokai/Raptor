@@ -153,6 +153,38 @@ describe('"till <date>" is said ONCE on an input’s card — the corner says it
   })
 })
 
+/* A SHARED INPUT SHOWN ALTHOUGH A FILTER HIDES IT IS STILL THE WHOLE ENTRY (Sol's read of the code, 10 Oct 26 — finding 1;
+   older than this build). An opened day lists the input just saved even where the search lets nothing through — but it
+   listed the ONE record it had been shown: a meeting for three read as one man's, and its Delete took that man's
+   record alone, the other two left behind out of sight. */
+describe('a just-saved shared input on a day whose filter hides it is listed whole', () => {
+  it('all its people on ONE card; Delete asks for everyone and removes every record', async () => {
+    await mount(false, 'cal')
+    await type('#inFSearch', 'ZZZ-no-match')
+    await openDay('2026-10-20')
+    await click($('#icPopAdd'))
+    await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
+    const [b, c] = others()
+    for (const p of [b, c]) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
+    await type('#inpEditRmk', 'range brief')
+    const had = new Set(INPUTS.map((r: any) => r.iid))
+    await click($('#inpEditSave'))
+    const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
+    expect(made, 'three records').toHaveLength(3)
+    const cards = $$('[data-testid="win-inputsday"] [data-testid^="idy-row-"]')
+    expect(cards, 'one card on the day').toHaveLength(1)
+    const names = cards[0].querySelector('[data-testid="idy-who"]')!.textContent!.split(', ')
+    expect(names.sort(), 'every one of its people').toEqual([admin, b, c].map(cs).sort())
+    /* its Delete is the entry's */
+    await act(async () => { cards[0].querySelector('[data-testid="idy-open"]')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true, cancelable: true })) })
+    const ask = $('[data-testid="idy-ask"]')
+    expect(ask, 'the question').toBeTruthy()
+    expect(ask!.textContent, 'for all three').toMatch(/all 3 people/)
+    await click($('[data-testid="idy-del-yes"]'))
+    expect(INPUTS.filter((r: any) => made.some(m => m.iid === r.iid)), 'every record gone').toHaveLength(0)
+  })
+})
+
 describe('the desktop list after the vet (D727, D729)', () => {
   it('the kind KEEPS its pill — on a one-person row and on a shared one (D727: drawing A)', async () => {
     await mount(false)

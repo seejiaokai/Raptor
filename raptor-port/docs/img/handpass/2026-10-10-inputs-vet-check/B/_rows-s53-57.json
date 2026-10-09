@@ -1,0 +1,94 @@
+{
+ "rows": [
+  {
+   "n": 53,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) a two-person and a nine-person Meeting saved — 2 and 9 records",
+    "ok: the bars begin \"2 · Meeting\", \"9 · Meeting\" and \"4 · Meeting\" (no callsign, no \"+N\") — {\"A\":[\"2 · Meeting\"],\"B\":[\"9 · Meeting\"],\"C\":[\"4 · Meeting\"]}",
+    "ok: with the Person filter set to Ranger the shared bars still lead with their whole counts (2, 9, 4) — never 1 — {\"A2\":[\"2 · Meeting\"],\"B2\":[\"9 · Meeting\"],\"C2\":[\"4 · Meeting\"],\"barsOnMonth\":4}"
+   ],
+   "pics": [
+    "s53-month.png",
+    "s53-month-filtered.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 54,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) the nine-person Event saved — 9",
+    "ok: its bar begins \"9 ·\" and the title, clipped only to fit (the count stays) — [{\"text\":\"9 · C54 Squadron photograph and briefing\",\"clipped\":true,\"w\":48}]",
+    "ok: opening it shows the full title, the Event kind and all nine people — {\"title\":\"Ace +8 · 10 Jul\",\"ownTitle\":\"C54 Squadron photograph and briefing\",\"type\":\"Event\",\"ticked\":9}"
+   ],
+   "pics": [
+    "s54-month.png",
+    "s54-opened.png"
+   ],
+   "note": "the scenario names 390px"
+  },
+  {
+   "n": 55,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) a two-person Meeting 26–28 Jul saved — [[\"Echo\",\"Jul 26\",\"Jul 28\"],[\"Saber\",\"Jul 26\",\"Jul 28\"]]",
+    "ok: the bar runs on across the week boundary: two pieces on two week rows, the same count and title words — [{\"text\":\"2 · Meeting\",\"top\":607,\"left\":331,\"w\":50},{\"text\":\"2 · Meeting\",\"top\":732,\"left\":9,\"w\":104}]",
+    "ok: every covered day opens to the same ONE shared entry naming both people — [{\"d\":\"2026-07-26\",\"n\":1,\"who\":\"Echo, Saber\",\"when\":\"06:00–18:00 · till 28 Jul\"},{\"d\":\"2026-07-27\",\"n\":1,\"who\":\"Echo, Saber\",\"when\":\"06:00–18:00 · till 28 Jul\"},{\"d\":\"2026-07-28\",\"n\":1,\"who\":\"Echo, Saber\",\"when\":\"06:00–18:00\"}]"
+   ],
+   "pics": [
+    "s55-month.png",
+    "s55-day-26.png",
+    "s55-day-27.png",
+    "s55-day-28.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 57,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) the timed Meeting 27–29 Jul 09:00–11:00 saved — [{\"iid\":\"imv1kzml9d2ei91\",\"person\":\"stiff\",\"cs\":\"Saber\",\"type\":\"Meeting\",\"title\":\"S57 timed span\",\"remarks\":\"S57 timed\",\"date\":\"Jul 27\",\"endDate\":\"Jul 29\",\"allday\":false,\"s\":540,\"e\":660,\"oil\":null,\"grp\":null,\"by\":\"stiff\",\"byCs\":\"Saber\",\"docs\":0,\"docId\":null}]",
+    "ok: every bar segment is tinted (the timed look) with the solid left edge — [{\"timed\":true,\"bg\":\"color(srgb 0.195471 0.174758 0.130525)\",\"shadow\":\"color(srgb 0.422667 0.331294 0.163137) 3px 0px 0px 0px inset\",\"text\":\"Saber · S57 timed span\"}]",
+    "opened-day cards — [{\"d\":\"2026-07-27\",\"when\":\"09:00–11:00 · till 29 Jul\",\"kind\":\"Meeting\",\"rmk\":\"S57 timed\"},{\"d\":\"2026-07-28\",\"when\":\"09:00–11:00 · till 29 Jul\",\"kind\":\"Meeting\",\"rmk\":\"S57 timed\"},{\"d\":\"2026-07-29\",\"when\":\"09:00–11:00\",\"kind\":\"Meeting\",\"rmk\":\"S57 timed\"}]",
+    "ok: first, middle and last opened days all show the hours (not \"All day\") — [{\"d\":\"2026-07-27\",\"when\":\"09:00–11:00 · till 29 Jul\",\"kind\":\"Meeting\",\"rmk\":\"S57 timed\"},{\"d\":\"2026-07-28\",\"when\":\"09:00–11:00 · till 29 Jul\",\"kind\":\"Meeting\",\"rmk\":\"S57 timed\"},{\"d\":\"2026-07-29\",\"when\":\"09:00–11:00\",\"kind\":\"Meeting\",\"rmk\":\"S57 timed\"}]",
+    "ok: the saved window keeps the span and the hours (Jul 27 → Jul 29, 09:00–11:00, not all day) — {\"read\":\"Jul 27 → Jul 29\",\"start\":\"09:00\",\"end\":\"11:00\",\"allday\":false}"
+   ],
+   "pics": [
+    "s57-month.png",
+    "s57-day-27.png",
+    "s57-day-28.png",
+    "s57-day-29.png",
+    "s57-window.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 56,
+   "size": "desktop 1440x900 (picture scale 2)",
+   "role": "admin Saber (own inputs)",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) all five saved — {\"ll\":[\"LL\",\"Jul 6\",true,0,1439],\"llT\":[\"LL\",\"Jul 7\",false,600,720],\"mt\":[\"Meeting\",\"Jul 8\",true,0,1439],\"mtT\":[\"Meeting\",\"Jul 9\",false,540,630],\"am\":[\"LL\",\"Jul 10\",false,0,720]}",
+    "painted — {\"ll\":{\"timed\":false,\"tone\":\"red\",\"bg\":\"color(srgb 0.458039 0.199373 0.227608)\",\"lum\":65,\"shadow\":\"none\",\"color\":\"rgb(255, 255, 255)\",\"text\":\"Saber · LL\"},\"llT\":{\"timed\":true,\"tone\":\"red\",\"bg\":\"color(srgb 0.207498 0.129904 0.152445)\",\"lum\":38,\"shadow\":\"color(srgb 0.458039 0.199373 0.227608) 3px 0px 0px 0px inset\",\"color\":\"rgb(241, 244, 247)\",\"text\":\"Saber · LL\"},\"mt\":{\"timed\":false,\"tone\":\"amb\",\"bg\":\"color(srgb 0.422667 0.331294 0.163137)\",\"lum\":86,\"shadow\":\"none\",\"color\":\"rgb(255, 255, 255)\",\"text\":\"Saber · Meeting\"},\"mtT\":{\"timed\":true,\"tone\":\"amb\",\"bg\":\"color(srgb 0.195471 0.174758 0.130525",
+    "ok: all-day leave: solid red, no edge; all-day Meeting: solid amber, no edge — [{\"timed\":false,\"tone\":\"red\",\"bg\":\"color(srgb 0.458039 0.199373 0.227608)\",\"lum\":65,\"shadow\":\"none\",\"color\":\"rgb(255, 255, 255)\",\"text\":\"Saber · LL\"},{\"timed\":false,\"tone\":\"amb\",\"bg\":\"color(srgb 0.422667 0.331294 0.163137)\",\"lum\":86,\"shadow\":\"none\",\"color\":\"rgb(255, 255, 255)\",\"text\":\"Saber · Meeting\"}]",
+    "ok: timed Custom leave: lighter red with a solid left edge; timed Meeting: lighter amber with a solid left edge — [{\"timed\":true,\"tone\":\"red\",\"bg\":\"color(srgb 0.207498 0.129904 0.152445)\",\"lum\":38,\"shadow\":\"color(srgb 0.458039 0.199373 0.227608) 3px 0px 0px 0px inset\",\"color\":\"rgb(241, 244, 247)\",\"text\":\"Saber · LL\"},{\"timed\":true,\"tone\":\"amb\",\"bg\":\"color(srgb 0.195471 0.174758 0.130525)\",\"lum\":45,\"shadow\":\"color(srgb 0.422667 0.331294 0.163137) 3px 0px 0px 0px inset\",\"color\":\"rgb(241, 244, 247)\",\"text\":\"Saber · Meeting\"}]",
+    "ok: the half-day (AM) leave uses the timed treatment — {\"timed\":true,\"tone\":\"red\",\"bg\":\"color(srgb 0.207498 0.129904 0.152445)\",\"lum\":38,\"shadow\":\"color(srgb 0.458039 0.199373 0.227608) 3px 0px 0px 0px inset\",\"color\":\"rgb(241, 244, 247)\",\"text\":\"Saber · LL\"}",
+    "\"lighter\": compared as the brightness of the paint colour; the picture shows it — luminance solid red 65 / timed red 38 / solid amber 86 / timed amber 45"
+   ],
+   "pics": [
+    "s56-month.png"
+   ],
+   "note": ""
+  }
+ ],
+ "errs": []
+}
