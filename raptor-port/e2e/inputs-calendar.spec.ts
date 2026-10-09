@@ -1105,6 +1105,8 @@ test('a phone: a note is written, given five people from its own "+", stands fou
     await expect(page.locator('[data-ichead="2026-10-14"] .ic-pks .ic-pk'), 'the month’s cell shows its people').toHaveCount(4)
     await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
     await expect(page.locator('[data-testid="win-inputsday"] .ic-note .ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(4)
+  } finally { await context.close() }
+})
 
 /* A LONG KIND NEVER RUNS UNDER THE HOURS (found on the day-window walk, 9 Oct 26 — the host's look at its picture: an
    "Other" input is named by its remark, and a long one ran on under "All day" at the right of its card on a phone,
