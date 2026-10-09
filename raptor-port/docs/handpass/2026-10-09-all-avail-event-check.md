@@ -299,6 +299,21 @@ To do.
 
 To do.
 
-## 8. His look
+## 8. His look — five minutes on his iPhone, on this branch's preview link
 
-To do.
+Written as what he should expect to see, in the app's own words. The demo already carries a Duty for ALL AVAIL on
+Sat 25 Jul and an Event for ALL on Wed 22 Jul (both filed by Saber).
+
+1. **Inputs → tap a date → "+ Input" → Type "Duty".** The Person list opens with "Whoever is free that day": ALL AVAIL and
+   ALL, above the names. Pick a kind such as "OD" instead and the two are not offered.
+2. **Pick ALL AVAIL on a Saturday and Add.** The OIL question comes up once ("OIL — ALL AVAIL, Duty"). Answer it. The
+   month shows one bar, "ALL AVAIL · Duty"; the day's card says who placed it.
+3. **Edit Schedule → that Saturday → Ground Programme.** The row carries the ALL AVAIL puck with a number beside it — how
+   many are free. Tap the number: the people behind it, pilots and WSOs.
+4. **Open the Scheduler Board for that day → OIL Earn → tap the number → "Who earns OIL".** After a Yes everyone is lit;
+   tap one man to take him off. Change the input's answer to No (its own window → "Change…"): now nobody is lit, each
+   says whose No it is, and a tap credits one man.
+5. **Type "Event".** It is in the type list under "Duty & other commitments"; file one for several people — one bar,
+   "Ranger +1 · Event" — and it lands on the Ground Programme like a Duty.
+
+And the five readings of §0, for a "yes, as you read it" or a correction.
