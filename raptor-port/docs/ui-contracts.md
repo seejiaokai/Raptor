@@ -9491,6 +9491,32 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   the editor's foot, a Medical card and the document viewer keep the full line (D629). A shared input's pucks come
   after that line. A card with a short remark is 51px on a phone where it was 79. Pinned by `ui/placedline.test.ts`,
   `ui/inputsday.test.tsx`, `ui/sansday.test.tsx`, `e2e/inputs-calendar.spec.ts` (D701).
+  **Since 10 Oct 26 this bullet is the SANS day's alone: the Inputs day's input is the card of the next bullet (D723).**
+- **THE INPUT CARD — one card for the Inputs calendar's opened day and for the Inputs list on a phone (owner D718–D724,
+  10 Oct 26; `[INPUT-LIST-AS-DAY-CARD]`; the pictures of record `docs/mock/img/input-card-final/day-final.png`,
+  `list-final.png`; the plan `docs/superpowers/plans/2026-10-10-input-card-plan.md`).** ONE body draws it
+  (`ui/InputCard.tsx`, its facts from the pure `ui/inputcard-model.ts`), so the two screens cannot differ. **Top line:**
+  the colour square (red an absence, amber a duty or commitment), WHO, the KIND in small grey capitals — the kind's own
+  name, always, never a pill (D723) — then LATE and the hours at the right. **A shared input names EVERY person, A to Z,
+  the names wrapping round the LATE-and-hours corner and the card growing downward — never "+N", no row of pucks
+  (D721);** its LATE says once that someone in it is late and, pressed, names who (D646). **The words row:** the input's
+  own TITLE at the left on a row of its own (D722), a remark after it in grey — the remark alone where there is no
+  title; both wrap at the card's full width and nothing is cut by what stands at the right (D719). **The small print is
+  "By Saber" and nothing more (D720) — no "for Ranger", no day, no time: for an input of ONE person only where someone
+  else placed it (D723); for an input of SEVERAL people ALWAYS, even where the filer is one of them (D724); an input for
+  ALL AVAIL or ALL always (its filer is never its person).** Who placed it and when, and its last change, stay whole in
+  the input's window and the change history (D629, narrowed for the card by D723). A card with no title, no remark and
+  no small print is ONE line. A tap anywhere on the card opens the input's window to change or delete it (D718); the
+  card's button is its names and kind. **The SANS day's card is NOT this card** (D723 reading 3; D647, D649 — pucks
+  with the CAT; the bullet above).
+- **THE INPUTS LIST HAS NO EDIT IN PLACE (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
+  live — `ui/usephone.ts`) the list is the input card under a slim heading a day ("SAT 18 JUL · 6 inputs"), in date
+  order; an input of several days stands under its first day. On a desktop it is the table, its columns and sorting as
+  they were, without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
+  the paperclip and the OIL / OIL? chips stay in its last column. Everything the pencil's row did is done in the window
+  (`ui/inputedit.tsx`), which for that reason now carries (a) the two-tap calendar for EVERY saved input its reader may
+  change, not only a shared one (D681's door widened — what D718 left behind of D681's reading 7), and (b) the OIL line
+  for a question nobody has answered yet ("Not answered yet · Answer…"), since a phone's card has no OIL chip.
 - **The Leave War's phone header (D678) holds its two lines in ANY system letters:** line 2 does not wrap; the stage's
   name (`.stagetxt`, `leavewar/ui/chrome.css`) is the one thing that gives way, cut with "…", its arrow kept. Found when
   the pull request's checks ran on GitHub's machines, whose letters are wider (9 Oct 26). Pinned by
