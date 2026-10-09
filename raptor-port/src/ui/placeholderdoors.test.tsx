@@ -203,6 +203,23 @@ describe('read only — walker A\u2019s finds (9 Oct 26)', () => {
     expect(ro).not.toContain('Only ALL AVAIL')
   })
 
+  /* SOL'S READ OF THE CODE (9 Oct 26): W5 fixed the editor's line and missed the keyboard's — Delete on the opened
+     day's card told another member "Only ALL AVAIL or an admin can delete this input" */
+  for (const ph of ['allavail', 'all']) for (const keyName of ['Delete', 'Backspace']) {
+    it(`another member presses ${keyName} on ${ph}'s card in the opened day: refused, naming WHO FILED it — nothing is deleted`, async () => {
+      const r = await filed({ person: ph, by: admin })
+      await as('member')
+      await act(async () => { $('#inpCal [data-icday="2026-10-13"]')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })
+      const btn = $$('[data-testid="idy-open"]').find(b => (b.getAttribute('aria-label') || '').startsWith(PEOPLE[ph].cs + ',')) as HTMLElement | undefined
+      expect(btn, 'the card’s own button in the opened day').toBeTruthy()
+      const was = world(); said.length = 0
+      await act(async () => { btn!.focus(); btn!.dispatchEvent(new KeyboardEvent('keydown', { key: keyName, bubbles: true })) })
+      expect(world()).toBe(was)
+      expect(said.join(' | ')).toContain(`Only ${PEOPLE[admin].cs} — who filed it — or an admin can delete this input`)
+      expect(said.join(' | ')).not.toMatch(/Only ALL( AVAIL)? or an admin/)
+    })
+  }
+
   it('its member filer, the members\u2019 switch since turned off: read only, and NO dead "File it for me only" press', async () => {
     const r = await filed({ by: member })
     await act(async () => { setMembersFile(false); notify() })

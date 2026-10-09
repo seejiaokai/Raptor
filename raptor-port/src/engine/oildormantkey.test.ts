@@ -123,9 +123,14 @@ describe('D327 — archiving a man who was only behind a placeholder leaves the 
     expect(same(pa), 'he was only free that day: his posting is not this day\'s business').toBe(true)
   })
 
-  it('…but his CAT or seat changing still reads as a change — the window draws them (D186)', () => {
+  it('…but his CAT changing still reads as a change — the window draws it (D186)', () => {
     const pa = dayPeopleAttrs(day())
     ;(PEOPLE as any).plasma.q = (PEOPLE as any).plasma.q === 'A' ? 'B' : 'A'
+    expect(same(pa)).toBe(false)
+  })
+  it('…and so does his seat (Sol\'s read: the two were claimed together and only one was proved)', () => {
+    const pa = dayPeopleAttrs(day())
+    ;(PEOPLE as any).plasma.seat = (PEOPLE as any).plasma.seat === 'RCP' ? 'FCP' : 'RCP'
     expect(same(pa)).toBe(false)
   })
 

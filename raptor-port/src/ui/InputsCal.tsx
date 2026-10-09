@@ -764,7 +764,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
         }
         setDelAsk(it.key); return
       }
-      if (!mayDeleteInput(r)) { HOOKS.toast(`Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return }
+      /* an input filed for ALL AVAIL / ALL has no owner to name — the one who may is whoever FILED it (Sol's read of the
+         code, 9 Oct 26: the editor's read-only line was corrected and this keyboard door still said "Only ALL AVAIL …") */
+      if (!mayDeleteInput(r)) {
+        const ph = PEOPLE[r.person] && PEOPLE[r.person].special
+        HOOKS.toast(ph ? `Only ${(r.by != null && PEOPLE[r.by] && PEOPLE[r.by].cs) || 'whoever filed it'} — who filed it — or an admin can delete this input`
+          : `Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return
+      }
       setDelAsk(it.key)
     }
     const doDelete = (it: BarItem) => {

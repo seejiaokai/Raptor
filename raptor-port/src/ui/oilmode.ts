@@ -294,9 +294,13 @@ export function oilHeldClaimHint(di: any, item: string): string {
   const held = heldClaim(evOf(di), item)
   if (!held || (held.ans != null && held.ans > 0)) return ''
   const what = String(held.type || 'request').trim() || 'request'
+  /* IT STATES THE DEFAULT, NEVER "NOBODY EARNS" (Sol's read of the code, 9 Oct 26): once the scheduler has credited one
+     man — or typed one onto the row — a flat "so nobody behind it earns" contradicted the count and the lit puck
+     beside it; and the instruction is the one that is right for a mixed list. */
+  const how = 'Tap an unlit puck to credit a man; tap a lit one to stop his credit.'
   return held.ans == null
-    ? `The OIL question for this ${what} has not been answered yet, so nobody behind it earns. Tap a puck to credit one man.`
-    : `Whoever filed this ${what} answered No to OIL, so nobody behind it earns. Tap a puck to credit one man.`
+    ? `The OIL question for this ${what} has not been answered yet, so by default nobody behind it earns. ${how}`
+    : `Whoever filed this ${what} answered No to OIL, so by default nobody behind it earns. ${how}`
 }
 
 /** What the mode shows on ONE puck: whether it glows, and the man's figure for

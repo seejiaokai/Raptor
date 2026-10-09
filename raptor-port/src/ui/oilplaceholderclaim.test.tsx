@@ -85,7 +85,7 @@ const decision = (id: string) => (((DAYS[SAT] as any).oild || {}).people || {})[
 
 /* a weekend Duty filed by Saber for ALL AVAIL, landed on the Saturday 0900–1200 */
 const landed = (over: any = {}, row: any = {}) => {
-  INPUTS.unshift({ iid: 'rq1', person: 'allavail', by: 'saber', type: 'Duty', date: 'Jul 18', yr: 2026,
+  INPUTS.unshift({ iid: 'rq1', person: 'allavail', by: 'stiff', type: 'Duty', date: 'Jul 18', yr: 2026,
     acc: 'g', allday: false, s: 9 * 60, e: 12 * 60, remarks: '', mod: 'now', oil: YES, ...over })
   ;(DAYS[SAT] as any).ground = [{ prog: 'Duty', str: '0900', end: '1200', who: 'allavail', src: 'rq1', ...row }]
   ensureRowIds(DAYS)
@@ -155,7 +155,7 @@ describe('walker B’s finds (9 Oct 26) — the placeholder is never a switch AN
   })
 
   it('taken off the programme: its name no longer says "tap the count" — there is no count', async () => {
-    INPUTS.unshift({ iid: 'rq1', person: 'allavail', by: 'saber', type: 'Duty', date: 'Jul 18', yr: 2026, acc: 'r', allday: false, s: 540, e: 720, remarks: '', mod: 'now', oil: YES })
+    INPUTS.unshift({ iid: 'rq1', person: 'allavail', by: 'stiff', type: 'Duty', date: 'Jul 18', yr: 2026, acc: 'r', allday: false, s: 540, e: 720, remarks: '', mod: 'now', oil: YES })
     await open(SAT)
     await click(oilBtn())
     const cells = $$('.oilitem').filter(c => /tap the count/.test(c.title))
@@ -197,8 +197,40 @@ describe('after the filer answered NO — a tap GRANTS, a second tap takes the g
     await openWindow()
     const hint = $('.availwin').textContent || ''
     expect(hint).toContain('answered No')
-    expect(hint).toContain('Tap a puck to credit')
+    expect(hint).toContain('by default nobody behind it earns')
+    expect(hint).toContain('Tap an unlit puck to credit a man; tap a lit one to stop his credit')
     expect(hint).not.toContain('Tap a puck to stop a man earning')
+  })
+
+  /* SOL'S READ OF THE CODE (9 Oct 26): the hint said "so nobody behind it earns" — true until the scheduler credits a
+     man, and then it contradicted the count and the lit puck beside it. The tap's own line hid that until the window
+     was closed and opened again. The hint states the DEFAULT, and its instruction is right for a mixed list. */
+  for (const ph of ['allavail', 'all']) {
+    it(`${ph}: No → one man credited → the window closed and reopened: the hint, the count, the lit puck and the credit agree`, async () => {
+      landed({ oil: NO, person: ph }, { who: ph })
+      await openWindow()
+      await click(seatOf('stiff').querySelector('.puck'))
+      expect(paid()).toEqual(['stiff'])
+      await click($('.availwin .win-x'))
+      expect(!$('.availwin') || ($('.availwin') as HTMLElement).hidden, 'closed').toBe(true)
+      await click(groundRowEl().querySelector('.oilcount'))
+      const text = $('.availwin').textContent || ''
+      expect(seatOf('stiff').classList.contains('on'), 'he is lit').toBe(true)
+      expect(text, 'the count').toContain('1 of 2')
+      expect(text).toContain('by default nobody behind it earns')
+      expect(text, 'never a flat "nobody earns" beside a man who does').not.toMatch(/so nobody behind it earns/)
+      expect(text).toContain('tap a lit one to stop his credit')
+      /* and the lit man tapped again goes back to the filer's No */
+      await click(seatOf('stiff').querySelector('.puck'))
+      expect(decision('stiff')).toBeUndefined()
+      expect(paid()).toEqual([])
+    })
+  }
+
+  it('a man typed under the row earns beside a No: the hint still speaks of the default, never of "nobody"', async () => {
+    landed({ oil: NO }, { more: ['divot'] })
+    await openWindow()
+    expect($('.availwin').textContent || '').toContain('by default nobody behind it earns')
   })
 })
 
@@ -212,6 +244,7 @@ describe('with NO ANSWER yet — the same switches, and the true reason', () => 
       expect(s.title).toContain('tap to credit him')
     }
     expect($('.availwin').textContent || '').toContain('has not been answered')
+    expect($('.availwin').textContent || '').toContain('by default nobody behind it earns')
     await click(seatOf('plasma').querySelector('.puck'))
     expect(decision('plasma')).toBe('allow')
     expect(paid()).toEqual(['plasma'])
