@@ -4,6 +4,15 @@ Detail split out of `CLAUDE.md`. Read this before touching rendering,
 drag & drop, or inline text editing. These are guarantees to PRESERVE —
 several are measured and suite-enforced, not preferences.
 
+## Words on screen
+
+**THE APP'S SCREENS ARE NOT WORDY (owner D726, 10 Oct 26 — "I don't like too wordy interface").** A label, a hint or a
+line of small print earns its place or goes: fewer words on screen, the same information. It holds for every screen and
+is weighed on every design choice. A word a man needs in order not to make a mistake is shortened or moved behind the
+screen's own "How this works" fold - never simply dropped. Nothing already built is reworded on the strength of this
+alone: a change of wording is shown to him on a picture first (D541). The same wish, for one screen each, is D644 (the
+Leave War's event sheet) and D646 ("How this works" made shorter).
+
 ## Rendering
 
 > The speed rules these guarantees serve — and every measured round behind them

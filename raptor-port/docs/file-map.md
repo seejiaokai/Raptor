@@ -594,7 +594,9 @@ paperclip and its posted-out people - the doors the list's pencil and paperclip 
 fourteen names wrapping), `e2e/input-title.spec.ts`. The check's walk scripts: `scripts/handpass/icard-look.mjs` (the built
 cards photographed beside the approved pictures), `icard-host-walk.mjs` (the host's 33 steps), `icard-<A|B|C>-*.mjs` (the
 walkers'), `icard-d725-look.mjs` (the window's calendar on a phone before and after D725, and its size at seven
-screens), `mk-card-questions.mjs` (the pictures of `docs/mock/card-questions.html` - the two mock-ups he asked for at
+screens), `inputs-vet-look.mjs` (every state of the Inputs calendar and list photographed, and every word on them
+listed, for the design vet of 10 Oct 26 - `docs/superpowers/briefs/2026-10-10-inputs-vet.md`), `mk-inputs-vet.mjs` (the
+today / drawn pictures of `docs/mock/inputs-vet.html`, the vet's mock-up), `mk-card-questions.mjs` (the pictures of `docs/mock/card-questions.html` - the two mock-ups he asked for at
 the check's close: every name and the kind's look on the desktop table; "till" said once on a several-day card); its break list `scripts/handpass/breaks/icard.json`. `placedline.ts filerOf` / `filerName` - who filed an entry,
 the one answer for the full line and for the card's "By".
 `src/ui/placedline.ts` - who placed an entry and when, the ONE small-print line (plan §3.8, D629): `placedLine(record)`
