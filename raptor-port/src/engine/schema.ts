@@ -194,6 +194,9 @@ export type Input = {
   type: InputType
   /** Free text, may be ''; absent on the demo SANS seed rows — seed; screen. */
   remarks?: string
+  /** The input's own name ([INPUT-OWN-TITLE], owner D715, D716 — 9 Oct 26): present only where its filer typed one that
+   *  differs from its kind's name, on a kind that takes a title (inputs.ts titledKind, titleOf) — demo seed; screen. */
+  title?: string
   /** Last-modified stamp for the lateness mark: ISO 'yyyy-mm-dd', or the literal 'now' the Inputs page writes — seed; screen. */
   mod: string
   /** Landing state — engine (slots.ts acceptInput / unacceptInput). */

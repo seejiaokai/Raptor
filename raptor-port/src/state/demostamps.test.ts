@@ -6,7 +6,7 @@
    not have: who placed an input is what lets a member change one he filed for another man (D655), so no seeded input
    names a member as the filer of someone else's. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, isLateInput, isPlaceholderInput, placeholderProblem, oilAsks } from '../engine/inputs'
+import { INPUTS, isLateInput, isPlaceholderInput, placeholderProblem, oilAsks, titleOf, inpLabel } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { initStore } from './store'
 import { seedDemoGroup, seedDemoPlaceholders, seedDemoStamps } from './demoseed'
@@ -95,6 +95,14 @@ describe('the demo carries an input filed for ALL AVAIL, and an Event filed for 
   const phs = () => (INPUTS as any[]).filter(r => isPlaceholderInput(r))
   it('two of them: a weekend Duty for ALL AVAIL, and an Event for ALL', () => {
     expect(phs().map(r => `${r.person} · ${r.type} · ${r.date}`).sort()).toEqual(['all · Event · Jul 22', 'allavail · Duty · Jul 25'])
+  })
+  it('the Event carries a title of its own, as the app would store one — the one demo input not named by its kind (D715)', () => {
+    const ev = phs().find(r => r.type === 'Event')
+    expect(ev.title).toBe('Sports afternoon')
+    expect(titleOf(ev.type, ev.title), 'stored as the normaliser would store it').toBe(ev.title)
+    expect(inpLabel(ev)).toBe('Sports afternoon')
+    expect(ev.remarks, 'its remark is a remark, not its name over again').not.toBe(ev.title)
+    expect(phs().find(r => r.type === 'Duty').title, 'the other is named by its kind').toBeUndefined()
   })
   it('each is a record the app itself would write: an allowed kind, one day, no group, no names', () => {
     for (const r of phs()) {

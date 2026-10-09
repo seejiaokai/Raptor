@@ -13,7 +13,7 @@
    opened day and the bar a pointer picks up read the same items, so the three cannot disagree about what a day holds.
    A group is made ONE thing here by state/inputgroup.ts entriesOf and nowhere else (the plan's risk 3: a list that
    draws inputs and does not call it shows a group as separate lines). */
-import { dateOrd, inpLabel, isSansAvail, isUnavail, isUpchit } from '../engine/inputs'
+import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { entriesOf } from '../state/inputgroup'
 import type { DayAnswer } from '../state/flyplan-model'
@@ -32,8 +32,10 @@ export interface BarItem {
   who: string
   /** how many more people are in it */
   more: number
-  /** the kind, as the app labels an input everywhere (an Other reads by what was typed) */
+  /** its name, as the app labels an input everywhere: its own title where it has one, else its kind (inpLabel) */
   word: string
+  /** its kind, where it is named by something else — kept in sight small beside the name (D717); '' otherwise */
+  kind: string
   allday: boolean
   /** minutes into the day it starts — 0 for an all-day input */
   s: number
@@ -99,7 +101,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
   const search = (f.fSearch || '').trim().toLowerCase()
   const passes = (r: any) =>
     personFilterPasses(f.fPerson, r.person, people) &&
-    (!search || String(r.remarks || '').toLowerCase().includes(search) || cs(r.person).toLowerCase().includes(search))
+    (!search || String(r.remarks || '').toLowerCase().includes(search) || inpLabel(r).toLowerCase().includes(search) || cs(r.person).toLowerCase().includes(search))
   const out: BarItem[] = []
   for (const e of entriesOf((inputs || []).filter((r: any) => r && !isSansAvail(r.type)), cs)) {
     const r = e.rows[0]
@@ -111,7 +113,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
     const b = b0 != null && b0 > a ? b0 : a
     out.push({
       key: String(r.iid), rows: e.rows, a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type),
-      who: cs(r.person), more: e.rows.length - 1, word: inpLabel(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
+      who: cs(r.person), more: e.rows.length - 1, word: inpLabel(r), kind: inpKindTag(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
     })
   }
   const at = new Map(out.map((it, i) => [it, i] as const))

@@ -106,8 +106,10 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
   if (f.fSearch) {
     const s = f.fSearch.toLowerCase()
+    /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
+       day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5) */
     inputs = inputs.filter((r: any) =>
-      (r.remarks || '').toLowerCase().includes(s) ||
+      (r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) ||
       (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s))
   }
   /* red (absent) above amber (a local commitment) above purple (SANS, not an
@@ -579,7 +581,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     const r = it.rows[0]
     const dates = it.a === it.b ? fmtDay(it.a) : `${fmtDay(it.a)} – ${fmtDay(it.b)}`
     const hours = r.allday ? '' : ` · ${hhmm(r.s)}–${hhmm(r.e)}`
-    return [`${it.rows.map((x: any) => nameOf(x.person)).join(', ')} · ${it.word} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
+    /* a titled input's bar has room for its name only — its kind is said here (D717's row for the month) */
+    return [`${it.rows.map((x: any) => nameOf(x.person)).join(', ')} · ${it.word}${it.kind ? ' · ' + it.kind : ''} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
   }
 
   /* THE DAY POPOVER — a day's inputs, remark and planning notes without
@@ -942,12 +945,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const late = team && !allLate ? '' : lates[0]
                   const forAll = team && it.rows.every(x => mayDeleteInput(x))
                   const placed = placedLineOf(it.rows)
-                  /* an Other is NAMED by its remark (inpLabel) — it is not said a second time under the line */
-                  const rmk = r.remarks && r.remarks !== it.word ? r.remarks : ''
+                  /* a remark is said under the line whatever the input is called: an Other USED TO be named by its
+                     remark, which was then not said twice — since D716 (3) its remarks are plain remarks, and a filer who
+                     typed the same word as title and as remark typed both (Astra's read of the plan — 5) */
+                  const rmk = r.remarks ? String(r.remarks) : ''
                   return (
                     <div key={it.key} className={'sd-row idy-row ' + it.tone} data-popiid={it.key} data-testid={'idy-row-' + it.key}
                       onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) openInput(r) }}>
-                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${when}`} onClick={() => openInput(r)} onKeyDown={onLineKey(it)}>
+                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${it.kind ? it.kind + ', ' : ''}${when}`} onClick={() => openInput(r)} onKeyDown={onLineKey(it)}>
                         <span className="idy-sq" aria-hidden="true" />
                         <b className="idy-who">{who}</b>
                         <span className="idy-kind">{it.word}</span>
@@ -964,8 +969,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           the line's right end; where the two do not fit, the small print goes under the remark, still at the
                           right end (`.sd-foot`, 24-sans-calendar.css). The small print is the SHORT form — the name, the
                           date, the time — with the full "Placed by …" as its title. */}
-                      {(rmk || placed) && (
+                      {/* THE KIND, KEPT IN SIGHT (owner D717, 9 Oct 26 — "Kind kept in sight"): an input named by its own title
+                          says its kind small at the head of this line. The line above has no room for it on a phone — with
+                          the kind beside the title, the LATE mark and the hours, the title was cut to "Sports …". */}
+                      {(it.kind || rmk || placed) && (
                         <span className="sd-foot">
+                          {it.kind && <span className="sd-kindtag" data-testid="idy-kindtag">{it.kind}</span>}
                           {rmk && <span className="sd-rmk">{rmk}</span>}
                           {placed && <span className="sd-placed" data-testid="idy-placed" title={placed}>{placedShort(placed, +iso.slice(0, 4))}</span>}
                         </span>

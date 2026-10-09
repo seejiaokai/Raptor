@@ -146,7 +146,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   all-day record spans the full 1439 minutes and moves nothing. Ending
   late yesterday it starts the clock at its written end (no debrief tail)
   and rides `REST[]`; starting early on a fly-day it binds the anchor, is
-  named in the message via `inpLabel` (an Other reads by its remarks), and
+  named in the message via `inpLabel` (its own title where it has one — an Other no longer reads by its remarks, D716 (3)), and
   the warning anchors on the LEG — an unaccepted input has no board row to
   jump to. The `nx`/`pv` midnight-tail copies in `day.input` are skipped —
   counting an `nx` copy would file today's own meeting as yesterday's end.
@@ -3955,3 +3955,41 @@ The plan and its two reads: `superpowers/plans/2026-10-09-input-all-avail-plan.m
 - Pinned by `engine/placeholderinput.test.ts`, `engine/oilplaceholderclaim.test.ts`, `ui/oilplaceholderclaim.test.tsx`,
   `ui/placeholderdoors.test.tsx`, `ui/placeholderlist.test.tsx`.
 
+## An input's own title (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`)
+
+- **What it is.** An input of a titled kind may carry `title`. Its NAME — everywhere a name is printed — is that title,
+  and the kind's own name where it has none (`engine/inputs.ts inpLabel`, the one body). **The kind goes on deciding
+  every rule**: OIL, clashes, crew rest, what lands on the Ground Programme, who may file it. Nothing reads a rule out
+  of a title's words.
+- **Which kinds (D716 (1)).** `titledKind` — the "Duty & other commitments" ones: Training, CSE, Meeting, Fly with,
+  Personal, Appointment, Duty, Event, OD, Other. Never leave, medical, an upchit or SANS availability.
+- **What is stored.** `titleOf(type, typed)` — trimmed, inner white space collapsed, at most `TITLE_MAX` (40) characters,
+  and NOTHING when it is empty, is the kind's own name in any case, or the kind takes no title. An input whose Title
+  box nobody touched is the record it always was; a title on a record whose kind takes none is ignored on read and
+  dropped at the next save.
+- **"Other" (D716 (3)).** It takes the Title box like the rest; it no longer reads by its remarks. An untitled Other is
+  named "Other" and its remark is a remark — on its row it is in the remarks cell, no longer printed twice.
+- **The row a request lands** is named by the title in capitals (`overlay.ts requestRowFields`) and still carries
+  `srcType`. A change of title alone re-makes the row (`srcvOf` hashes its name).
+- **The kind, kept in sight (D717).** `inpKindTag(inp)` — the kind's own name when the input is named by something else,
+  else `''`. On the schedule it is read OFF THE ROW (`ui/html.ts rowKindTag`: `srcType` against `prog`), so an issued
+  face draws what was issued, a row whose request is gone still says its kind, and a row the scheduler renamed by hand
+  says it too.
+- **Two rows that share a name are still two commitments when a request made either of them** (`events.ts buildDay`
+  `push`, `reqRows`; both reads of the plan). The engine treats "same man, same hours, same name" as one commitment (a
+  man in a row's seat AND under it). A request's row is named by its filer, so a Training titled "Meeting" beside a
+  Meeting was swallowed — its hard clash against a standby shift with it. A request's row now merges only with ITSELF
+  (its key); rows nobody filed keep the old test unchanged. Two different ground rows of one name clash as "X is on two
+  items called NAME at once".
+- **A published day.** The title is in `inpDetailKey` (named only where there is one, so an untitled input's key is
+  unchanged): a title-only edit is ONE pending change and the sign-offs fall (D178, D103) — with or without a row on
+  the day (an OD has none), on every published day the input covers, and for a change of capitals alone. It is not in
+  `oilEvidenceKey`: a title asks no OIL question again and moves no OIL figure.
+- **A warning names an input by its title** — `events.ts mapInp` carries it into the day's input copies, and every
+  sentence that names a commitment goes through `inpLabel`; every classification stays on `type`. The reference's twin
+  (`testing/refwin.ts _il`) mirrors the name rule; the reference carries no title, so cross-engine cases are untitled.
+- A request that is GONE is named from the row it left (`goneRequestName`: the row's own name where it differs from its
+  kind's, else the kind).
+- Pinned by `engine/inputtitle.test.ts`, `engine/scshift-inputs.test.ts` (a title's words decide nothing; two requests of
+  one name), `engine/accept.test.ts`, `engine/dutyrest.test.ts`, `ui/inputtitle.test.tsx`, `ui/inputtitle-row.test.tsx`,
+  `ui/latepub.test.tsx` (the published day), `state/demostamps.test.ts`.

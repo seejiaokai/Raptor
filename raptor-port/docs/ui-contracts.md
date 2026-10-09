@@ -9598,6 +9598,26 @@ Kept as one record a man tied by a group id (`state/inputgroup.ts`; the no-scree
 thing" is made on the Inputs page only — and by ONE function, `entriesOf` / `entryRowsOf`: a screen that draws inputs
 without it shows a group as separate lines.
 
+- **An input's own title, and its kind kept in sight (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`; the drawing
+  of record `docs/mock/input-own-title.html`).** *The Title box* — in the input's window (`inputedit.tsx`,
+  `#inpEditTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`),
+  drawn only for a kind that takes a title. The draft's `title` is NULL until somebody types: the box then SHOWS the
+  kind's own name and follows a change of kind; once typed in it is a string — an emptied box stays empty (its
+  placeholder says the kind), it never snaps back under the cursor. A change to a kind that takes none clears it. The
+  save stores `titleOf`. *Where the name shows* — wherever a name stood: the month's bar, the day's card, the Personal
+  Inputs and Unavailable cards (week and board), the schedule's row, the changes window, the history line and bubble,
+  the OIL question's heading, the toasts, the warning sentences, the Inputs export (a `Title` column beside `Type`).
+  *Where the kind is kept in sight* — only where the name is not the kind's own: `.nm-kind`, small quiet capitals,
+  never editable, never an amendment cell. On the week's row it sits inside the name cell after the editable name —
+  beside it where there is room, UNDER it on a phone, where the row's two times already make two lines (no taller a
+  row); on the Scheduler Board it rides inside the name's own grid cell (`.sb-nmk`, drawn only for such a row — the
+  row's grid places its cells by order, so it is never a cell of its own); on an input's card it rides the item cell's
+  wrapper (`.itemcell`); on the opened day's card it heads the small-print line (`.sd-kindtag`, `idy-kindtag`); the
+  month's bar has no room and says it in its tip ("who · title · kind · dates"); the List prints the title in bold above
+  the kind in the Type cell. A row or card named by its kind emits nothing new — its markup is byte-for-byte what it
+  was (the view week is compared with the reference). A remark is said under the day card's line whatever the input is
+  called — the old "an Other is named by its remark, do not say it twice" test is gone. Search (the List, the month,
+  the opened day) matches the title as well as the remarks.
 - **"ALL AVAIL" and "ALL" as a choice of person (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`).**
   Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
   label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither

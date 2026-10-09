@@ -244,7 +244,9 @@ export function seedDemoPlaceholders() {
   const at = new Date(2026, 5, 26, 9, 15).getTime()
   const recs: any[] = [
     { person: 'allavail', type: 'Duty', date: 'Jul 25', allday: false, s: 540, e: 720, remarks: 'Hangar clean-up', oil: { '2026-07-25': 0.5 } },
-    { person: 'all', type: 'Event', date: 'Jul 22', allday: false, s: 900, e: 1020, remarks: 'Sports afternoon' },
+    /* …and it carries a TITLE of its own ([INPUT-OWN-TITLE], D715): the one demo input that is named by something other
+       than its kind, so a fresh boot shows the title on the month, the day and the schedule, its kind small beside it */
+    { person: 'all', type: 'Event', title: 'Sports afternoon', date: 'Jul 22', allday: false, s: 900, e: 1020, remarks: 'PT kit' },
   ]
   for (const rec of recs) {
     if (INPUTS.some((r: any) => r && r.person === rec.person && r.type === rec.type && r.date === rec.date)) continue

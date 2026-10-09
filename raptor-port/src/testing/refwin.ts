@@ -713,8 +713,12 @@ function refirst(html: string): string {
    availability"; both sides, typed times only). The port's set is
    inputs.ts:restsInput and its label inputs.ts:inpLabel; the reference has
    neither (its type classes are still regex-era), so the patch injects
-   self-contained equivalents: _rt is the type set, _il the Other-reads-by-
-   its-remarks label. Change the rule in restsInput and this regex changes
+   self-contained equivalents: _rt is the type set, _il the input's name —
+   its own title where it is of a titled kind and has one, else its type
+   (inpLabel; "Other" no longer reads by its remarks — owner D716 (3), 9 Oct
+   26, [INPUT-OWN-TITLE]. The reference's own day.input carries no title, so
+   there the name is always the type; the titled cases are the port's own
+   tests). Change the rule in restsInput and this regex changes
    with it — both carry a pointer to the other. Swap A appends the prior-day
    input loop after the text rebrief() emitted (the braced prevFlyLd line);
    swap B retargets the fe reduce refirst() emitted — so reirest sits
@@ -726,7 +730,9 @@ function reirest(html: string): string {
     ["prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });",
      "prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });"
      + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|event|od|other)$/i;"
-     + "const _il=i=>(/^other$/i.test(String(i.type||'').trim())&&String(i.remarks||'').trim())?String(i.remarks).trim():String(i.type||'');"
+     + "const _tk=/^(training|cse|meeting|fly with|personal|appointment|duty|event|od|other)$/i;"
+     + "const _il=i=>{const ty=String(i.type||''),t=String(i.title==null?'':i.title).replace(/\\s+/g,' ').trim().slice(0,40).trim();"
+     + "return _tk.test(ty.trim())&&t&&t.toLowerCase()!==ty.trim().toLowerCase()?t:ty;};"
      + "ev[idx-1].input.forEach(i=>{"
      + "if(i.nx||i.pv||!_rt.test(String(i.type||'').trim()))return;"
      + "if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;"

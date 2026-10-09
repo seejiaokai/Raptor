@@ -6,7 +6,7 @@
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -656,9 +656,9 @@ export function routeClick(e: MouseEvent) {
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
       const said = dest === 'x'
           ? (rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `Accept undone — its row came off ${DAYS[rowDay].dow}'s programme` : 'Accept undone')
-        : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
-        : adopts ? `${cs}'s ${inp.type} is on the ground programme again — its row was already there`
-        : `${cs}'s ${inp.type} added to the ground programme`
+        : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`
+        : adopts ? `${cs}'s ${inpLabel(inp)} is on the ground programme again — its row was already there`
+        : `${cs}'s ${inpLabel(inp)} added to the ground programme`
       /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
          every input against the last committed state, so the filing that moved IS in its envelope and is said once. A
          second writer here doubled it (Fable's final read, F1 — the test that pinned "one line" set its input up raw,
@@ -674,10 +674,10 @@ export function routeClick(e: MouseEvent) {
       /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
          not be read refuses too, and says so rather than guess (never a second row on an unknown) */
       const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null
-      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme`
-        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inp.type} already has a row on another week — load that week first`
-        : away ? `${cs}'s ${inp.type} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
-        : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
+      HOOKS.toast(onProg ? `${cs}'s ${inpLabel(inp)} is already on the programme`
+        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inpLabel(inp)} already has a row on another week — load that week first`
+        : away ? `${cs}'s ${inpLabel(inp)} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
+        : `${cs}'s ${inpLabel(inp)} can't be changed here right now`, 'warn')
     }
     return
   }

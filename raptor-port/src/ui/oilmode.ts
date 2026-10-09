@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inpWin, inpMeta, inpLabel, oilAsks } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel, inpKindTag, oilAsks } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -980,7 +980,9 @@ export function oilRequestName(item: string): string {
   if (!item || !item.startsWith('i:')) return ''
   const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
   const meta: any = r ? inpMeta(r.type) : null
-  return r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+  /* its own title first ([INPUT-OWN-TITLE], D716 (2)): a request the filer named is called that; an untitled one keeps
+     the wording it had */
+  return r ? String(inpKindTag(r) ? inpLabel(r) : ((meta && meta.name) || inpLabel(r) || '')).trim() : ''
 }
 /** WHAT THE HISTORY CALLS AN EVENT — ONE body for the board's line and the
  *  window's (Fable F5, 23 Sep 26: a switch made in the window on a sim row read

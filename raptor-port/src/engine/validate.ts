@@ -569,7 +569,7 @@ function validateCore(){
            Meeting input before a 10:00 report binds the breach exactly as a
            ground row would — while 'Personal', 'SANS Availability', leave,
            medical and all-day records stay out. An input-bound breach names
-           the input in the message (inpLabel, so an Other reads by its
+           the input in the message (inpLabel — its own title where it has one; an Other USED TO read by its
            remarks) but anchors on the LEG's key — an unaccepted input has
            no schedule row for the warning jump to pan to. When nothing else
            starts earlier, first === instructed and every message below is
@@ -783,8 +783,12 @@ function validateCore(){
            wording came out as "VL BFM & VL BFM clash" — which reads like a
            fault in the app rather than a fault in the plan. Name what actually
            happened instead; the two-different-lines wording is unchanged. */
+        /* two DIFFERENT ground rows that happen to share a name (a request titled as another is — [INPUT-OWN-TITLE]) are
+           not "two seats on" one thing: said as two items */
         add('hard','DOUBLE_BOOK',[id],A.label===B.label
-          ?`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${A.label} at once`
+          ?(A.kind==='ground'&&B.kind==='ground'&&A.key!==B.key
+            ?`${PEOPLE[id]?PEOPLE[id].cs:id} is on two items called ${A.label} at once`
+            :`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${A.label} at once`)
           :`${A.label} & ${B.label} clash`,kOf(A)||kOf(B));} });
     /* THE IN-TIME WINDOW (owner, 24 Aug 26 — "have a no brief advisory as well
        if anything cuts or ends between B and TO time for SC main"). An SC MAIN
@@ -863,7 +867,7 @@ function validateCore(){
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
           dn?`Downchit but planned to fly ${named(e.label,'this line')}${why}`
             :lv?`On leave but planned to fly ${named(e.label,'this line')}${why}`
-              :`${inp.type} clashes with ${named(e.label,'this line')}${why}`,e.key);} }));
+              :`${inpLabel(inp)} clashes with ${named(e.label,'this line')}${why}`,e.key);} }));
     /* being unavailable does not only bar flying — a duty, a sim seat or a
        ground slot on the same day is just as wrong, and used to pass. This
        covered leave and downchits only (owner, 4 Aug 26): a Detachment, or a
@@ -917,7 +921,7 @@ function validateCore(){
         { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc); }
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${rowName(e)}${why}`,kOf(e)); }); });
+          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inpLabel(inp)} but tasked`)+` — ${rowName(e)}${why}`,kOf(e)); }); });
     /* …AND THE ROWS THAT NEVER BECAME AN EVENT, because they have no start to make a window from (D605, above;
        events.ts `blank`): a duty desk, a sim seat, a ground or Common Programme row, an AVALON / BB seat or desk
        with no shift times. `abs` is that man's whole-day inputs for THIS day, already cleared of the request the row
@@ -931,13 +935,13 @@ function validateCore(){
         if(b.work&&canWork(inp.type))return;
         const wc=dn?'DNIF_FLY':'LEAVE_FLY';
         markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc);
-        add('hard',wc,[b.id],`${inp.type} but on ${rowName(b)} — ${dn?'medically down':'overseas'}${why}`,b.key);
+        add('hard',wc,[b.id],`${inpLabel(inp)} but on ${rowName(b)} — ${dn?'medically down':'overseas'}${why}`,b.key);
         return;
       }
       if(canWork(inp.type))return;
       { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc); }
       add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[b.id],
-        (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${rowName(b)}${why}`,b.key); }));
+        (dn?'Downchit but tasked':lv?'On leave but tasked':`${inpLabel(inp)} but tasked`)+` — ${rowName(b)}${why}`,b.key); }));
     /* AVALON'S ONE CHECK (owner, 11 Aug 26; three more joined it on 7 Sep 26,
        right below, and BB became AVALON's twin the same day). The wave and its desk keep their
        noconf exemption — nothing on them is cross-checked against tasks, rest or
@@ -959,7 +963,7 @@ function validateCore(){
         markChip(di,sa.id,'C',wc); markRing(di,sa.id,'hard',wc);
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
-          `${inp.type} but on ${sa.role==='DUTY'?rowName({label:sa.label,kind:'duty'}):sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
+          `${inpLabel(inp)} but on ${sa.role==='DUTY'?rowName({label:sa.label,kind:'duty'}):sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
       });
     });
     /* THE THREE AVALON CHECKS OF 7 SEP 26 (owner — "Avalon main will also be
@@ -1286,7 +1290,7 @@ function validateCore(){
                down" are different problems and the scheduler fixes them
                differently */
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
-              `${inp.type} but standing SC SPARE — ${dn?'medically down':'overseas'}`
+              `${inpLabel(inp)} but standing SC SPARE — ${dn?'medically down':'overseas'}`
               +`, ${f.label}${why}`,f.key); }); });
         /* TWO SC SEATS IN THE SAME HOURS (owner, 31 Aug 26 — "give a warning
            conflict if u are planned for MAIN and SPARE in the same time

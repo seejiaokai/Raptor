@@ -54,7 +54,9 @@ describe('the Inputs export (142-inputs.csv)', () => {
     { person: 'bane', type: 'Appointment', date: 'Jul 16', allday: false, s: 1020, e: 1110, remarks: 'PHA' },
   ])
   it('names both ends of the span', () => {
-    expect(rows[0]).toEqual(['Name', 'From', 'To', 'Start', 'End', 'Type', 'Remarks'])
+    /* + Title, beside Type ([INPUT-OWN-TITLE], D715 — two Events exported as "Event" and "Event" could not be told
+       apart; ui/inputtitle.test.tsx pins what the column holds) */
+    expect(rows[0]).toEqual(['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks'])
     expect(rows[1].slice(1, 3)).toEqual(['Jul 20', 'Jul 24'])
   })
   it('a one-day input reads the same date at both ends; a timed one keeps its times', () => {

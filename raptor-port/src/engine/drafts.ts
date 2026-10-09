@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut, dayPendingItems } from './publish'
 import { inputProtected } from './quarantine'
-import { INPUTS, inputCoversDate, inpId, inpLabel } from './inputs'
+import { INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName } from './inputs'
 import { PEOPLE } from './people'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
@@ -95,7 +95,7 @@ const leaveOut = (di: number, nd: any, kept = true) => {
     const inp: any = INPUTS.find((i: any) => inpId(i) === x.id), r: any = x.row || {}
     const pid = inp ? inp.person : r.who
     const who = pid && (PEOPLE as any)[pid] ? (PEOPLE as any)[pid].cs : String(pid || '')
-    const what = inp ? inpLabel(inp) : (inpLabel({ type: r.srcType, remarks: r.rmks } as any) || r.prog || 'A request')
+    const what = inp ? inpLabel(inp) : (goneRequestName(r) || 'A request')
     /* a row whose request stands on ANOTHER week names that day ([REQ-ORPHAN-ROW], 28 Sep 26 — "on Sun 19 Jul's programme") */
     /* …and one whose request covers a saved week that cannot be read is left out on that unknown, and says so (Astra's
        final read #1) — never an empty day name */

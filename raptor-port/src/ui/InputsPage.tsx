@@ -5,7 +5,7 @@
    stack and re-validate the week. */
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, inpLabel, inpKindTag, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -259,6 +259,10 @@ export function InputsPage() {
   const [sTime, setSTime] = useState('06:00')
   const [eTime, setETime] = useState('18:00')
   const [remarks, setRemarks] = useState('')
+  /* the input's own title ([INPUT-OWN-TITLE], D715): null while the box shows the kind's own name and follows the kind,
+     a string once something is typed — the window's own rule (ui/inputedit.tsx draftOf), and the same one normaliser
+     at the save (engine/inputs.ts titleOf) */
+  const [title, setTitle] = useState<string | null>(null)
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
   const [sans, setSans] = useState<any>(null)
@@ -504,7 +508,7 @@ export function InputsPage() {
     /* FOR SEVERAL PEOPLE: one shared input, one command (ui/inputedit.tsx commitGroup) — every refusal asked for every
        man before anything is written; the OIL question asked ONCE, its answer every man's (D660) */
     if (several && team.length > 1) {
-      const d = draftOf({ person: team[0], type, date, endDate, allday, s, e, yr: baseYear(), remarks, ...(!allday && half ? { half } : {}) })
+      const d = draftOf({ person: team[0], type, title: titleOf(type, title), date, endDate, allday, s, e, yr: baseYear(), remarks, ...(!allday && half ? { half } : {}) })
       const go = (dec?: Record<string, number>) => {
         const had = new Set(INPUTS.map((x: any) => x.iid))
         if (!commitGroup(null, d, team, dec)) return
@@ -548,6 +552,8 @@ export function InputsPage() {
          the leave row */
       ...(needsDoc(type) ? docFields(docIds) : {}),
       type, remarks: rem, mod: nowStamp(),
+      /* its own title, where one was typed and the kind takes one (D715, D716) */
+      ...(titleOf(type, title) ? { title: titleOf(type, title) } : {}),
     }))
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
@@ -564,6 +570,7 @@ export function InputsPage() {
       setFlash(f => [row, ...f])
       timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
       setRemarks(withTill('', start, end))
+      setTitle(null)
       setDocIds([])
     }
     const commit = (removals: any[], oilDec?: Record<string, number>) => {
@@ -663,7 +670,7 @@ export function InputsPage() {
       if (plan.length) {
         setOilConf({
           who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
-          typeLabel: type, plan, prev: {},
+          typeLabel: titleOf(type, title) || type, plan, prev: {},
           commit: (dec: Record<string, number>) => commit([], dec),
         })
         return
@@ -701,7 +708,7 @@ export function InputsPage() {
     if (!skipDoc && docGate(draft, editRow) === 'ask') {
       setDocConf({
         who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
-        typeLabel: draft.type,
+        typeLabel: titleOf(draft.type, draft.title) || draft.type,
         resume: () => saveEdit(true),
       })
       return
@@ -787,7 +794,7 @@ export function InputsPage() {
   for (const e of entriesOf(rows)) if (e.rows.length > 1) for (const r of e.rows) entryOf.set(r, e.rows)
   rows = rows.filter((r: any) => personFilterPasses(fPerson, r.person))   // one body with the month and the opened day
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
-  if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
+  if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
   rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
   if (entryOf.size) {
     const seen = new Set<any[]>(), one: any[] = []
@@ -988,6 +995,7 @@ export function InputsPage() {
             <select id="inType" aria-label="Input type" value={type} onChange={e => {
               const t = e.target.value
               setType(t)
+              if (!titledKind(t)) setTitle(null)
               /* the All day tick follows the type's default: OFF for the
                  timed "Duty & other commitments" types, ON for leave, medical
                  and SANS (see defaultAllday). This is the form's default, so
@@ -1010,6 +1018,11 @@ export function InputsPage() {
               so the example only misleads on that type */}
           {/* the mandatory supporting document — drawn for exactly the types
               whose add() refuses without one (needsDoc, one body) */}
+          {/* THE INPUT'S OWN TITLE (owner D715, D716 — 9 Oct 26): the kind's own name until something else is typed; for
+              the "Duty & other commitments" kinds only. The same box as the input's window (ui/inputedit.tsx). */}
+          {titledKind(type) && <div className="ifield"><label>Title</label>
+            <input id="inTitle" aria-label="Title" maxLength={TITLE_MAX} autoComplete="off" value={title == null ? type : title} placeholder={type}
+              onChange={e => setTitle(e.target.value)} onFocus={e => { if (title == null) e.target.select() }} /></div>}
           {needsDoc(type) && <div className="ifield"><label>Document</label>
             <DocField ids={docIds} onIds={setDocIds} /></div>}
           <div className="ifield"><label>Remarks</label><input id="inRemarks" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
@@ -1177,7 +1190,7 @@ export function InputsPage() {
                   <td data-fld="Type"><select aria-label="Type" data-ed="type" value={draft.type}
                     onChange={e => {
                       const t = e.target.value
-                      setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null })
+                      setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null, ...(titledKind(t) ? {} : { title: null }) })
                     }}>
                     {/* GUARD RAIL (owner, 27 Aug 26): a medical row stays
                         medical here too — a downchit edits only within the
@@ -1185,6 +1198,10 @@ export function InputsPage() {
                         cross-group list is kept for every other row. */}
                     {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : notSans)}
                   </select>
+                    {/* its own title, under its kind ([INPUT-OWN-TITLE]) — the window's box, here in the row */}
+                    {titledKind(draft.type) && <input aria-label="Title" data-ed="title" maxLength={TITLE_MAX} autoComplete="off"
+                      value={draft.title == null ? draft.type : draft.title} placeholder={draft.type}
+                      onChange={e => setDraft({ ...draft, title: e.target.value })} />}
                     {/* manage (or first-attach, on a retype into medical) the
                         supporting documents without leaving the row */}
                     {needsDoc(draft.type) && <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />}</td>
@@ -1229,7 +1246,8 @@ export function InputsPage() {
                       back to F/O/A, meaning "offered". The offer's WINDOW is
                       already reflected in the Start/End columns — a timed SANS
                       row reads its span there like any other timed input. */}
-                  <td data-label="Type"><span className="intag">{
+                  <td data-label="Type">{/* a titled input reads by its title, its kind kept beside it (D716 (2), D717) */}
+                    {inpKindTag(r) && <b className="intitle" data-testid="in-title">{inpLabel(r)}</b>}<span className="intag">{
                     isSansAvail(r.type) ? <>SANS Avail<span className="bl">ability</span></>
                       : r.type === 'Appointment' ? <>Appoint<span className="bl">ment</span></>
                         : r.type

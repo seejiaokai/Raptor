@@ -101,9 +101,16 @@ describe('what a bar says', () => {
     expect(barText(one, true)).toBe('Wisp')
     expect(barText(many, true)).toBe('Quill · OML')
   })
-  it('an Other reads by what was typed for it', () => {
-    const [it0] = items([inp('p1', 'Other', 'Jul 8', undefined, { remarks: 'Dental' })])
+  it('an input reads by its own title; an Other without one reads "Other" — no longer by its remarks (D716)', () => {
+    const [it0] = items([inp('p1', 'Other', 'Jul 8', undefined, { title: 'Dental', remarks: 'back by 1400' })])
     expect(barText(it0, false)).toBe('Saber · Dental')
+    expect(it0.kind, 'its kind, for the tip and the day card').toBe('Other')
+    const [it1] = items([inp('p1', 'Other', 'Jul 8', undefined, { remarks: 'Dental' })])
+    expect(barText(it1, false)).toBe('Saber · Other')
+    expect(it1.kind).toBe('')
+    const [it2] = items([inp('p1', 'Event', 'Jul 8', undefined, { title: 'Sports day' })])
+    expect(barText(it2, false)).toBe('Saber · Sports day')
+    expect(it2.kind).toBe('Event')
   })
   it('red for an absence, amber for a duty or a commitment — the List’s own colours', () => {
     const [ll, mtg] = items([inp('p1', 'LL', 'Jul 8'), inp('p2', 'Meeting', 'Jul 9')])

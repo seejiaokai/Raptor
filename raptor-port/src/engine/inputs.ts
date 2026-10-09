@@ -98,6 +98,10 @@ export function inpDetailKey(inp:any):string{
   const all=!!inp.allday;
   return stableJson({person:inp.person||'',type:inp.type||'',
     allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
+    /* its own title is one of the things a reader sees ([INPUT-OWN-TITLE], D715): a title changed after the day was
+       published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
+       input's key is byte-for-byte what it was. */
+    ...(titleOf(inp.type,inp.title)?{title:titleOf(inp.type,inp.title)}:{}),
     sans:inp.sans||null});}
 /* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
    whose details moved, or which appeared or went away. An input absent on one side and TAKEN OFF ('r') on the other is
@@ -538,14 +542,51 @@ export function placeholderProblem(inp:any):string{
      at the save boundary like the other three. */
   if(inp.acc==='u')return `${cs} cannot be filed under Unavailable — that names a real person’s day`;
   return '';}
-/* "Other" is the catch-all: the TYPE says nothing, so what the person actually
-   typed is the name of the thing (owner, Aug 26). Everywhere an input is
-   labelled — the Personal Inputs list, the Unavailable block, the board rows,
-   and the ground row accept creates — an Other reads by its remarks, falling
-   back to the bare type while the box is still empty. */
+/* ---- AN INPUT'S OWN TITLE ([INPUT-OWN-TITLE]; owner D715, D716, D717 — 9 Oct 26; the plan
+   docs/superpowers/plans/2026-10-09-input-own-title-plan.md) -------------------------------------------------------
+   His words: "select the type of input and it gives the user the option to change the name of the input. Not only to
+   event input, most of the inputs title." An input of a titled kind may carry `title`; its NAME — everywhere a name is
+   printed — is that title, and the kind's own name where it has none. THE KIND GOES ON DECIDING EVERY RULE: nothing
+   here, and nothing that calls it, reads a rule out of a title's words.
+
+   WHICH KINDS (D716 (1)): the "Duty & other commitments" ones — the activities and the overseas duty. Never leave or
+   medical (their names are the official codes the Leave War and the medical list read), nor SANS availability, which
+   is filed on its own calendar. ONE predicate: the window, the List's form, the save and the name all ask it. */
+export function titledKind(t:any){const m=inpMeta(t); return !!m&&(m.grp==='act'||m.grp==='duty');}
+/* the schedule's name column is narrow, and a title is a name, not a remark (which has 200) */
+export const TITLE_MAX=40;
+/* WHAT IS STORED: the typed title, trimmed and with its inner runs of white space collapsed — and NOTHING when the box
+   was left as the kind's own name (any case), is empty, or the kind takes no title. So an input whose Title box nobody
+   touched is the record it always was, and a later change of its kind is followed by its name with nothing to keep in
+   step. The one normaliser every door that writes an input calls. */
+export function titleOf(type:any,title:any):string{
+  if(!titledKind(type))return '';
+  const t=String(title==null?'':title).replace(/\s+/g,' ').trim().slice(0,TITLE_MAX).trim();
+  return t&&t.toLowerCase()!==inpType(type).toLowerCase()?t:'';
+}
+/* THE NAME. Everywhere an input is labelled — the month's bar, the day's card, the Personal Inputs list, the
+   Unavailable block, the board rows, the row a request lands on the schedule, the changes window, a warning's
+   sentence — goes through here, so the title reaches them all with no edit of their own.
+   "Other" USED TO read by its remarks (owner, Aug 26: the type says nothing). It takes the Title box like every other
+   titled kind now, and its remarks are plain remarks again (D716 (3)): an Other nobody titled is named "Other", its
+   remark beside it in the remarks cell — no longer printed twice. */
 export function inpLabel(inp:any){
-  const rm=String((inp&&inp.remarks)||'').trim();
-  return (isOther(inp&&inp.type)&&rm)?rm:String((inp&&inp.type)||'');
+  const type=String((inp&&inp.type)||'');
+  return titleOf(type,inp&&inp.title)||type;
+}
+/* THE NAME OF A REQUEST THAT IS GONE, READ OFF THE ROW IT LEFT (the changes window's "… on the programme → deleted"):
+   the row carries what it was made from (`srcType`) and what it was called (`prog`). Where the two differ the row was
+   named by the request's own title — that is its name; otherwise its kind, written as a kind is. */
+export function goneRequestName(row:any):string{
+  const kind=String((row&&row.srcType)||'').trim(), name=String((row&&row.prog)||'').trim();
+  return kind&&name&&name.toLowerCase()!==kind.toLowerCase()?name:(kind||name);
+}
+/* THE KIND, KEPT IN SIGHT (D717 — "Kind kept in sight"): the kind's own name when the input is named by something
+   else, and nothing when it is named by its kind — an untitled input looks exactly as it did. The one answer to "is
+   the kind drawn beside the name here". */
+export function inpKindTag(inp:any):string{
+  const type=String((inp&&inp.type)||'');
+  return inpLabel(inp)!==type?type:'';
 }
 /* The validator's gate. EVERY INPUT NOW COUNTS (owner, 10 Aug 26 — "all will
    automatically go in") — EXCEPT one a scheduler has since REMOVED, which is

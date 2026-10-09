@@ -661,7 +661,7 @@ entryRowsOf` is the entry a record belongs to.
 AN INPUT FILED FOR ALL AVAIL / ALL, AND THE KIND "EVENT" (9 Oct 26 - owner D700, D702, D711-D714; the plan
 `docs/superpowers/plans/2026-10-09-input-all-avail-plan.md`; the rules `docs/engine-rules.md` section "An input filed
 for ALL AVAIL / ALL"). No new source file - the pieces, and their tests: `engine/inputs.ts` - the kind `Event` (one row
-of `INPUT_META`; `eventkind.test.ts`) and `PLACEHOLDER_KINDS` / `placeholderProblem` / `isPlaceholderInput`, the ONE body
+of `INPUT_META`; `eventkind.test.ts`); **an input's own title** (`[INPUT-OWN-TITLE]`, D715–D717): `titledKind` / `titleOf` / `inpLabel` / `inpKindTag` / `goneRequestName` in `engine/inputs.ts` (`inputtitle.test.ts`), the Title box and its saves in `ui/inputedit.tsx` and `ui/InputsPage.tsx` (`ui/inputtitle.test.tsx`), the kind kept in sight on the schedule's row `ui/html.ts rowKindTag` / `inpKindTagHTML` and the board's `.sb-nmk` (`ui/inputtitle-row.test.tsx`), its mock-up maker `scripts/handpass/mk-input-title.mjs` and `PLACEHOLDER_KINDS` / `placeholderProblem` / `isPlaceholderInput`, the ONE body
 for a placeholder input's three rules (`placeholderinput.test.ts`); `engine/oilev.ts claimDefault` - the one OIL
 default for a request, read by the credit and by each man's switch (`oilplaceholderclaim.test.ts`; on screen, with real
 taps, `ui/oilplaceholderclaim.test.tsx`); `state/store.ts placeholderShapeViolation` - the hard check at the save

@@ -100,7 +100,7 @@ export const wholeDay=(i:any)=>!!i&&i.s!=null&&i.e!=null&&i.s<=0&&i.e>=1439;
    but a GROUND ROW that IS a red-list commitment is the commitment, not
    academics. Two recoveries, src first: a row lifted from an input carries the
    source TYPE in row.src (inpKey = person|date|type|s|yr — the only place
-   'Other' survives, its label being the remarks), corroborated by prog===label
+   'Other' survives, its label being its own TITLE — or its remarks, before D716 (3)), corroborated by prog===label
    so a stale or cross-week key can never decide by the wrong row (fail-soft to
    the keywords); a hand-typed row is judged by its own words (shiftHardLabel).
    Programme (a:) rows stay amber always — they cannot be input-derived and the
@@ -444,13 +444,22 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        man added to a duty could fly straight through it unflagged. */
     /* kind matters now: a shift clashing with a duty post is a Warning, with a
        ground event or a programme item only an Advisory. */
+    const reqRows=new Set<any>();
     const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
       const w2=win(st,en); if(!w2){blank.push({id,label,key,src,kind});return;}   // a row with no start — D605, `blank` above
       /* the same man in the row's seat AND in its more[] is one commitment, not
          two — he used to be flagged as clashing with himself */
-      if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label))return;
-      events.push({id,s:w2[0],e:w2[1],label,kind:kind||'other',key});
+      /* …BUT A ROW THAT CAME FROM A REQUEST IS NEVER ONE COMMITMENT WITH ANOTHER ROW ([INPUT-OWN-TITLE], Astra's read of
+         the plan — 1). The test above is "same man, same times, same NAME", and a request's row is named by whatever
+         its filer titled it: an Event titled "Meeting" beside a Meeting at the same hour was swallowed here, and with
+         it the Event's clash — its kind's own grade against a standby shift included. Two rows are the same commitment
+         only when they are the same row (its key); rows nobody filed keep the old test exactly, so nothing the
+         scheduler typed by hand reads differently. `reqRows` is this day's own note of which events a request made. */
+      if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key)))return;
+      const ev:any={id,s:w2[0],e:w2[1],label,kind:kind||'other',key};
+      if(src)reqRows.add(ev);
+      events.push(ev);
     };
     const extras=(r:any)=>(r&&r.more)||[];
     (d.dutywaves||[]).forEach((dw:any,dwi:any)=>dw.rows.forEach((r:any,ri:any)=>{ if(r.cx)return;
@@ -488,7 +497,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        duty row or a night sortie does — see inputs.ts. A record with no usable
        window still comes through with null s/e and stays uncheckable. */
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
-      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks};};
+      /* its own title rides along: a warning names an input as every screen does (inpLabel — [INPUT-OWN-TITLE]) */
+      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks,...(inp.title?{title:inp.title}:{})};};
     const input:any[]=inputsOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);
     /* THE WHOLE-DAY INPUTS OF THIS DAY — what a seat with no hours is judged against (D605). The same gate, the
        same frozen world on a published face, as day.input, asked UNDEFERRED (inpShow's last comment: a landed row

@@ -20,7 +20,9 @@ import { isUpchit, needsDoc } from '../engine/inputs'
 
 /* what every record of an entry says alike; everything else on a record is the man's own (his id and place, his OIL
    answers, where his request is filed, his hand-overs, the late date, the Leave War's mark, who placed and changed it) */
-export const SHARED_FIELDS = ['type', 'date', 'endDate', 'yr', 'allday', 's', 'e', 'half', 'remarks', 'sans'] as const
+/* …and its TITLE ([INPUT-OWN-TITLE], D715): one shared input has one name — a record of it titled differently is not
+   part of the entry, exactly as one with a different remark is not */
+export const SHARED_FIELDS = ['type', 'title', 'date', 'endDate', 'yr', 'allday', 's', 'e', 'half', 'remarks', 'sans'] as const
 
 /* `sans` — which of Fly / OFT / AMT a SANS availability offers — is shared too: an admin files one availability for
    several SANS people (D658), and its ticks are what the one line says. Read as the set of boxes ticked. */

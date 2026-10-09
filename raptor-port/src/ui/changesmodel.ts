@@ -23,7 +23,7 @@ import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { ridKey, posKey } from '../engine/rowids'
 import { PEOPLE } from '../engine/people'
-import { INPUTS, inpById } from '../engine/inputs'
+import { INPUTS, inpById, inpLabel } from '../engine/inputs'
 import { dayApproved, approvedDays } from '../engine/publish'
 import { inVersionLook } from './html'
 
@@ -134,7 +134,7 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
     const n = now || new Set(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => x.sub)).size
     return { id: `${date}|IG|${r.grp}`, title: `Input${type ? ' · ' + type : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
   }
-  const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
+  const title = inp ? `Input · ${csOf(inp.person)} · ${inpLabel(inp)}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
 }
 

@@ -17,7 +17,7 @@ import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { entryRowsOf } from '../state/inputgroup'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -448,6 +448,11 @@ export const draftOf = (r: any) => ({
   start: unfmt(r.date, r.yr), end: r.endDate ? unfmt(r.endDate, r.yr) : '',
   sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
   remarks: r.remarks || '',
+  /* the input's own title ([INPUT-OWN-TITLE], D715): NULL while it is named by its kind — the box then SHOWS the kind's
+     name and follows a change of kind — and a string once somebody has typed in it ('' when he emptied it: the box
+     stays empty for him to type in, rather than snapping back to the kind's name under his cursor). Nothing is stored
+     until what was typed differs from the kind's own name (engine/inputs.ts titleOf). */
+  title: r.title || null,
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
   /* the supporting documents' ids (medical types) — the blobs live in
@@ -693,7 +698,9 @@ export function oilGate(draft: any, prevRow: any, force = false):
   return {
     kind: 'ask',
     who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
-    typeLabel: String(draft.type || ''), plan, prev,
+    /* named as every screen names it — its own title where it has one ([INPUT-OWN-TITLE]); the question itself is
+       asked, and priced, by its KIND and hours */
+    typeLabel: titleOf(draft.type, draft.title) || String(draft.type || ''), plan, prev,
   }
 }
 
@@ -879,6 +886,8 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     /* yr anchors the bare date labels to the year they were picked under —
        fmt leaves the loaded year implicit, and this is what reads it back */
     s, e, date, yr: baseYear(), remarks: String(draft.remarks || '').trim(), mod: nowStamp(),
+    /* its own title, only where one was typed and its kind takes one (D715, D716 — titleOf is the one normaliser) */
+    ...(titleOf(draft.type, draft.title) ? { title: titleOf(draft.type, draft.title) } : {}),
     ...(endDate ? { endDate } : {}),
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
@@ -1062,6 +1071,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const word = redated ? remarksTailWord(rem) : null
     if (word) rem = withRemarksTail(rem, ordISO(dateOrd(date, baseYear())), ordISO(dateOrd(endDate || date, baseYear())), word)
     r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
+    /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
+       was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
+       keeps the name of the Event it used to be. A draft that never knew of a title (a hand-made call, an in-place
+       cell edit seeded by draftOf) carries the record's own, so it is kept. */
+    { const tt = titleOf(draft.type, draft.title); if (tt) r.title = tt; else delete r.title }
     /* …and who changed it, and when — `by` and `at` are never touched by a change (D629 — state/inputstamp.ts) */
     stampChanged(r)
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
@@ -1593,6 +1607,7 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
     return r.type !== draft.type || !!r.allday !== !!draft.allday || r.s !== n.s || r.e !== n.e
       || r.date !== n.date || (r.endDate || '') !== (n.endDate || '') || moved(r) || (r.half || '') !== (n.half || '')
       || String(r.remarks || '') !== rem
+      || String(r.title || '') !== titleOf(draft.type, draft.title)
       || (isSansAvail(draft.type) && sansKey(r.sans) !== sansKey(draft.sans))
   }
   const changed = kept.filter(changes)
@@ -1814,6 +1829,7 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
    a clash on two of the four would be nonsense to read. */
 const WIN_FIELDS: { k: string; label: string; keys: string[] }[] = [
   { k: 'person', label: 'person', keys: ['person'] }, { k: 'type', label: 'kind', keys: ['type'] },
+  { k: 'title', label: 'title', keys: ['title'] },
   { k: 'start', label: 'start date', keys: ['start'] }, { k: 'end', label: 'end date', keys: ['end'] },
   { k: 'hours', label: 'hours', keys: ['allday', 'half', 'sTime', 'eTime'] },
   { k: 'remarks', label: 'remarks', keys: ['remarks'] }, { k: 'sans', label: 'Fly / OFT / AMT', keys: ['sans'] },
@@ -1829,6 +1845,7 @@ function fieldSay(k: string, d: any): string {
   if (k === 'start' || k === 'end') return d[k] ? fmtDay(d[k]) : 'none'
   if (k === 'hours') return d.allday ? 'all day' : d.half ? String(d.half).toUpperCase() : `${d.sTime}–${d.eTime}`
   if (k === 'remarks') return d.remarks ? `“${d.remarks}”` : 'none'
+  if (k === 'title') return `“${titleOf(d.type, d.title) || String(d.type || '')}”`
   if (k === 'sans') return d.sans ? (['f', 'o', 'a'].filter(x => d.sans[x]).map(x => x.toUpperCase()).join(' ') || 'none ticked') : 'none'
   const n = (d.docIds || []).length
   return n ? `${n} document${n > 1 ? 's' : ''}` : 'none'
@@ -2340,6 +2357,9 @@ export function InputEditor() {
                   setDraft({
                     ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }),
                     sans: isSansAvail(t) ? (draft.sans || {}) : null,
+                    /* a typed title stays with a kind that takes one; a leave or a medical kind takes none, and a
+                       title left behind would come back if the kind were changed again ([INPUT-OWN-TITLE]) */
+                    ...(titledKind(t) ? {} : { title: null }),
                     /* re-seed the All day default on a brand-new add only, so the
                        board add agrees with the Inputs form (defaultAllday): a
                        personal commitment opens timed, leave/medical/SANS all-day.
@@ -2348,6 +2368,19 @@ export function InputEditor() {
                   })
                 }}>{typeOptions(typeFilter)}</select>
             </label>}
+          {/* THE INPUT'S OWN TITLE (owner D715, 9 Oct 26 — "select the type of input and it gives the user the option to
+              change the name of the input … if event Is selected, event shows as the title which can be edited"; D716:
+              the "Duty & other commitments" kinds only). The box SHOWS the kind's own name until something else is
+              typed, so choosing a kind fills it in and changing the kind changes it — and a box nobody touched saves
+              nothing (titleOf). The KIND above goes on deciding every rule; this is the name people read. */}
+          {titledKind(draft.type) && ctx !== 's' && ctx !== 'up' && <label className="inped-f">
+            <span className="inped-k">Title</span>
+            <input id="inpEditTitle" aria-label="Title" maxLength={TITLE_MAX} autoComplete="off"
+              value={draft.title == null ? inpType(draft.type) : draft.title} placeholder={inpType(draft.type)}
+              onChange={e => setDraft({ ...draft, title: e.target.value })}
+              onFocus={e => { if (draft.title == null) e.target.select() }}
+              onKeyDown={e => { if (e.key === 'Enter') save(false) }} />
+          </label>}
           {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
               select a date range as well"): the same two-click calendar the
               Inputs page uses, owning the remarks' till-date token the same

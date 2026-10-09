@@ -1,6 +1,7 @@
 /* CSV export — exportCSV and the schedule flattening (schedRows), verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
+import { inpLabel } from '../engine/inputs'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { STORE_CFG } from '../engine'
@@ -42,9 +43,11 @@ export function csvText(rows: any[][]) {
    (a one-day input reads the same in both); 'Start' and 'End' the times, as before. Built here, beside the other
    exporters, so it is testable (the download itself is not — jsdom has no Blob URLs). */
 export function inputRows(list: any[]): any[][] {
-  const out: any[][] = [['Name', 'From', 'To', 'Start', 'End', 'Type', 'Remarks']]
+  /* Title — the input's own name ([INPUT-OWN-TITLE], D715; Astra's read of the plan — 4): two Events exported as "Event"
+     and "Event" could not be told apart. Its kind's name where it has no title of its own, so the column is never blank. */
+  const out: any[][] = [['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks']]
   list.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.endDate || r.date,
-    r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, r.remarks]))
+    r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, inpLabel(r), r.remarks]))
   return out
 }
 export function exportCSV(name: string, rows: any[][]) {

@@ -287,9 +287,9 @@ describe('a duty & commitment INPUT bears crew rest', () => {
     expect(stuffWarns().find((w: any) => w.code === 'CREW_REST')).toBeFalsy()
   })
 
-  it('an Other input reads by its remarks in the message', () => {
+  it('an input reads by its own TITLE in the message (D716 — an Other is named by its title, no longer its remarks)', () => {
     flyStuffAt10()
-    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Other', remarks: 'JPT PLANNING' })
+    plantInput({ person: 'stuff', date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Other', title: 'JPT PLANNING', remarks: 'room 2' })
     validate()
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
     expect(cr).toBeTruthy()

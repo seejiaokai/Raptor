@@ -139,12 +139,15 @@ describe('it lists the day’s inputs', () => {
     await open('2026-10-07')
     expect($$('[data-testid^="idy-row-"]')).toHaveLength(0)
   })
-  it('a remark is said under the line; an Other, which is NAMED by its remark, does not say it twice', async () => {
+  it('a remark is said under the line — an Other’s too, now that it is named by its title and not its remark (D716); and one that repeats the title is still said: he typed both', async () => {
     const a = await file({ type: 'Meeting', allday: false, s: 600, e: 660, remarks: 'Bring the folder' })
     const b = await file({ person: crew()[1], type: 'Other', allday: false, s: 600, e: 660, remarks: 'Dental' })
+    const c = await file({ person: crew()[2], type: 'Other', title: 'Dental', allday: false, s: 600, e: 660, remarks: 'Dental' })
     await open('2026-10-07')
     expect(row(a).querySelector('.sd-rmk')!.textContent).toBe('Bring the folder')
-    expect(row(b).textContent).toContain('Dental'); expect(row(b).querySelector('.sd-rmk')).toBeNull()
+    expect(row(b).querySelector('.idy-kind')!.textContent).toBe('Other')
+    expect(row(b).querySelector('.sd-rmk')!.textContent).toBe('Dental')
+    expect(row(c).querySelector('.idy-kind')!.textContent).toBe('Dental'); expect(row(c).querySelector('.sd-rmk')!.textContent).toBe('Dental')
   })
 })
 
