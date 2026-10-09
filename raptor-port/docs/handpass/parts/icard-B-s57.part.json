@@ -1,0 +1,17 @@
+{
+ "rows": [
+  {
+   "n": 57,
+   "size": "390x844 touch",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "added Zed=pmv1ao0iwq4oe58 Yap=pmv1ao1gorrufbm || Yap's past input: person pmv1ao1gorrufbm; Saber's duty imv1ao6dy6hnzge || Zed archived: true || Person list groups: [\"Whoever is free that day: ALL AVAIL,ALL\",\"Posted out / archived: Zed\"]; Zed offered: 1 || after saving with Zed: person Zed (the archived man) || delete button now says: \"Tap again to delete Yap\"; note: \"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.\" || after the second press, toasts [\"Yap archived\",\"Yap deleted\"] || Yap deleted: false; his past input still stored: true (person pmv1ao1gorrufbm) || window showed: select shows \"Yap\" (value pmv1ao1gorrufbm); after saving only the remark: person pmv1ao1gorrufbm (was pmv1ao1gorrufbm), remark \"remark edited after delete\" || the list card names the person \"Yap\" || checks [true,true,true]",
+   "pics": [
+    "B57-1-person-list.png",
+    "B57-3-delete.png",
+    "B57-2-deleted-persons-input.png"
+   ]
+  }
+ ],
+ "errs": []
+}

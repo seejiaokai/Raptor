@@ -1,0 +1,18 @@
+{
+ "rows": [
+  {
+   "id": 11,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "upchit for Hex: UPCHIT in grey capitals, amber square, under WED 22 JUL, no LATE, no title (day card likewise); the downchit stays an absence card; Undo/Redo fine. Summary read: 142 RAPTOR ↶ ↷ Inputs Inputs SANS Medical 2 1 Medical as of 22 Jul Today MEDICALLY DOWN 0 cannot fly as of 22 Jul Nobody is medically down on this date. PENDING",
+   "pics": [
+    "11-phone-medical-sheet.png",
+    "11-phone-upchit-summary.png",
+    "11-phone-list-upchit.png",
+    "11-phone-day-upchit.png"
+   ]
+  }
+ ],
+ "errs": []
+}

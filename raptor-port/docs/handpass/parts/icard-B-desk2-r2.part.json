@@ -1,0 +1,16 @@
+{
+ "rows": [
+  {
+   "n": 48,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed: Ace:Trio|first remark|Jul 20|600-660 ; Blade:Trio|first remark|Jul 20|600-660 ; Cinch:Trio|first remark|Jul 20|600-660 || window head \"Ace +2 · 20 Jul\"; read \"Jul 21 → Jul 22\"; saved: Ace:Trio two|second remark|Jul 21→Jul 22|780-840 ; Blade:Trio two|second remark|Jul 21→Jul 22|780-840 ; Cinch:Trio two|second remark|Jul 21→Jul 22|780-840 || list rows for it: 1 || delete question: \"Delete this input for all 3 people? Delete Keep\"; after Keep: 3 records, window open 1 || after confirmed Delete: 0 records || after ONE Undo: Ace:Trio two|second remark|Jul 21→Jul 22|780-840 ; Blade:Trio two|second remark|Jul 21→Jul 22|780-840 ; Cinch:Trio two|second remark|Jul 21→Jul 22|780-840 || Redo: 0 records",
+   "pics": [
+    "B48-1-shared-edited.png",
+    "B48-2-delete-question.png"
+   ]
+  }
+ ],
+ "errs": []
+}

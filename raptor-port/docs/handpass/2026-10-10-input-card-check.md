@@ -187,6 +187,8 @@ Saber", D724).
 | W2 | Astra's scenario 60, confirmed by the host in the code and then a test | on a phone nobody could open an input's document from the Inputs list (the card has no paperclip; the window named a document and could not open it), and a member reading another man's medical input could not open it at all there | FIXED, a test red first (`ui/windowdoors.test.tsx`): the window's paperclip button, outside the read-only form; host B2b, C5b; in the change |
 | W3 | Astra's scenario 57, confirmed the same way | an admin could no longer move a saved input to a posted-out / archived person — the pencil's Person list offered them, the window's did not | FIXED, a test red first (the same file): the window's Person list offers the group for a saved input and keeps a deleted man's own name; in the change |
 
+| W4 | the host's picture of the built window (A10), and walker A's extra 3 | on an ordinary desktop (1440 × 900) the window's last row — Delete, Cancel, Save — was cut off at the window's foot and reached only by scrolling inside it; a shared input's "Delete for all?" had its "Keep" under the foot. The window is about 170px taller for the date calendar every saved input now gets; at his PC's 125% it would be worse | FIXED, a browser test red first at two of three sizes (`e2e/inputs-calendar.spec.ts`, "keeps Delete, Cancel and Save in sight" — 1440 × 900, 1280 × 640, a phone 390 × 664): the row is pinned to the window's foot, the form scrolling above it; host A10 and A17 check it; no button changes size (D487). It also closes `[TITLE-CHECK-SEEN]` item 9; in the change |
+
 ### 5.4 The cases carried by a test, each with its test and what it proves
 
 | The case | The test | What it proves | Real controls? |

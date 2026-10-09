@@ -1,0 +1,22 @@
+{
+ "rows": [
+  {
+   "id": 28,
+   "size": "desktop 1440",
+   "role": "admin then member Ranger",
+   "verdict": "PASS",
+   "detail": "admin: INPUTS 53; table rows with the one-entry filter 1; empty note \"No inputs match.\"; export(one filter) 53 data rows, name 142-inputs.csv, toast \"CSV downloaded\"; export(no-match filter) 53 data rows, toast \"CSV downloaded\" ## admin header: ﻿Name | From | To | Start | End | Type | Title | Remarks ## admin span row: Anvil | Jul 20 | Jul 22 | 09:00 | 10:00 | Duty | ZX export span | till 22 Jul ## member: INPUTS 53; table rows with the one-entry filter 1; empty note \"No inputs match.\"; export(one filter) 53 data rows, name 142-inputs.csv, toast \"CSV downloaded\"; export(no-match filter) 53 data rows, toast \"CSV downloaded\" ## member header: ﻿Name | From | To | Start | End | Type | Title | Remarks ## member span row: Anvil | Jul 20 | Jul 22 | 09:00 | 10:00 | Duty | ZX export span | till 22 Jul",
+   "pics": [
+    "28-admin-filter-one.png",
+    "28-admin-one-toast.png",
+    "28-admin-filter-none.png",
+    "28-admin-none-toast.png",
+    "28-member-filter-one.png",
+    "28-member-one-toast.png",
+    "28-member-filter-none.png",
+    "28-member-none-toast.png"
+   ]
+  }
+ ],
+ "errs": []
+}

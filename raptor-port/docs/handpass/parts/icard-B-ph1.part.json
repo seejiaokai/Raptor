@@ -1,0 +1,54 @@
+{
+ "rows": [
+  {
+   "n": 31,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "Duty timed->all day: was ticked false; saved allday true 0-1439; card Duty|All day|title=AllDay test|rmk=null || Duty all day->timed: reopened ticked true; saved allday false 540-600; card Duty|09:00–10:00|title=AllDay test|rmk=null || LL -> AM: was ALL DAY; saved half am 0-720; reopened with \"AM\" selected (times 00:00/12:00); card LL|AM|title=null|rmk=null || LL -> PM: was AM; saved half pm 721-1439; reopened with \"PM\" selected (times 12:01/23:59); card LL|PM|title=null|rmk=null || LL -> Custom: was PM; saved half null 540-660; reopened with \"CUSTOM\" selected (times 09:00/11:00); card LL|09:00–11:00|title=null|rmk=null || LL -> All day: was CUSTOM; saved half null 0-1439; reopened with \"ALL DAY\" selected (times 06:00/18:00); card LL|All day|title=null|rmk=null || PM chosen, then tapped 23 Jul in the calendar: selected span \"PM\", read \"Jul 23\" || saved Jul 23 half pm || checks [true,true,true,true,true,true,true,true]",
+   "pics": [
+    "B31-1-duty-allday.png",
+    "B31-2-span-after-date-tap.png"
+   ]
+  },
+  {
+   "n": 33,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "ERROR(script)",
+   "saw": "locator.waitFor: Timeout 30000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('[data-testid=\"win-inputedit\"]') to be visible\u001b[22m | ",
+   "pics": []
+  },
+  {
+   "n": 35,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "ERROR(script)",
+   "saw": "locator.waitFor: Timeout 30000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('[data-testid=\"win-inputedit\"]') to be visible\u001b[22m | ",
+   "pics": []
+  },
+  {
+   "n": 41,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "filed ATT C Jul 13→Jul 15 remark \"Boots check\" docs \"doc-c1c35a39-f75b-4fab-b56f-31a64e919c29\" || Type choices offered: HL,OML,ATT C,ATT B || after choosing OML: 1 document chip(s), remark box \"Boots check\" || saved: OML Jul 13→Jul 15 remark \"Boots check\" docs \"doc-c1c35a39-f75b-4fab-b56f-31a64e919c29\" || Medical view: cannot fly as of 13 Jul Ranger IP OML till 15 Jul Boots check Placed by Ranger · 10 Oct 26, 02:17 · changed by Ranger · 10 Oct 26, 02:17 || Undo -> ATT C || unrelated choices offered: []",
+   "pics": [
+    "B41-1-retyped.png",
+    "B41-2-medical.png"
+   ]
+  },
+  {
+   "n": 45,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "setup: ATT C Jul 13→Jul 19 ; Upchit Jul 20 || two dates picked: read \"Jul 17 → Jul 18\"; Save -> toasts [\"An upchit is a single date — pick the day he is medically up\"]; summary up 0; saved: unchanged; window open 1 || one date 17 Jul: read \"Jul 17\"; summary: \"Upchit — Ranger, Jul 17 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 19 → now ends Jul 16 Fit for full duty from Jul 17. Cancel Save upchit\" || after confirming: ATT C Jul 13→Jul 16 ; Upchit Jul 17; toasts [\"An upchit is a single date — pick the day he is medically up\",\"Input updated\"] || Undo -> ATT C Jul 13→Jul 19 ; Upchit Jul 20",
+   "pics": [
+    "B45-1-range-refused.png",
+    "B45-2-summary.png"
+   ]
+  }
+ ],
+ "errs": []
+}

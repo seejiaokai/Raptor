@@ -1,0 +1,55 @@
+import * as L from './icard-C-lib.mjs'
+import { readFileSync, writeFileSync } from 'node:fs'
+const { sleep } = L
+const w = await L.world('phone', 'ad')
+const p = w.page
+const parts = [], pics = []
+let verdict = 'PASS'
+const fail = m => { verdict = 'FAIL'; parts.push('FAIL: ' + m) }
+let names
+const state = async () => (await L.recAll(p, { type: 'Duty', date: 'Jul 18' })).filter(r => r.grp).map(r => `${names[r.person]}:${r.s}-${r.e}:${r.oil ? JSON.stringify(r.oil) : 'null'}`).sort().join(' ; ')
+const seatStates = () => p.evaluate(() => [...document.querySelectorAll('#schedBoard .oilpk')].map(s => (s.dataset.oilp) + ':' + ['on', 'off', 'inert'].find(k => s.classList.contains(k))))
+try {
+  names = await p.evaluate(() => { const o = {}; for (const [k, v] of Object.entries(window.PEOPLE)) o[k] = v.cs; return o })
+  await L.fileNew(w, { iso: '2026-07-18', type: 'Duty', title: 'Three on duty', several: ['Ace', 'Ranger', 'Saber'], s: '09:00', e: '12:00', oil: 'yes' })
+  parts.push('filed + answered Yes: ' + await state())
+  await L.openBoard(w, 5)
+  await L.oilMode(w, true)
+  parts.push('OIL Earn seats on Sat 18 before: ' + (await seatStates()).join(' '))
+  const rg = p.locator('#schedBoard .oilpk[data-oilp="bane"]').first()
+  await rg.scrollIntoViewIfNeeded(); await rg.tap(); await sleep(700)
+  parts.push('after tapping the first Ranger seat: ' + (await seatStates()).join(' '))
+  await p.locator('#schedBoard .oilpk[data-oilp="bane"]').first().scrollIntoViewIfNeeded(); await sleep(300); pics.push(await L.pic(w, '73-2-oil-earn-ranger-off'))
+  await L.oilMode(w, false)
+  parts.push('records after switching Ranger off in OIL Earn: ' + await state())
+  await L.closeBoard(p)
+  await L.openByText(w, 'Three on duty')
+  await L.setTimes(p, null, '17:00')
+  const s = await L.saveWin(w)
+  parts.push(`Saber changed the shared hours; question: ${s.asked ? s.head.slice(0, 160) : 'none'}`)
+  if (s.asked) await L.answerOil(w, 'yes'); await sleep(600)
+  const st = await state()
+  parts.push('after the filer answers Yes again: ' + st)
+  const rs = await L.recAll(p, { type: 'Duty', date: 'Jul 18' }).then(a => a.filter(r => r.grp))
+  const yes = r => r.oil && Object.values(r.oil).some(v => v > 0)
+  const ranger = rs.find(r => names[r.person] === 'Ranger')
+  parts.push('(the stored input answers above are the INPUT-side answers; the schedule keeps its own refusal)')
+  if (!rs.filter(r => names[r.person] !== 'Ranger').every(yes)) fail('the others were not credited: ' + st)
+  await L.closeWins(p)
+  await L.openBoard(w, 5); await L.oilMode(w, true)
+  const seats = await seatStates()
+  parts.push('OIL Earn seats on Sat 18 after the filer answered Yes again: ' + seats.join(' '))
+  await p.locator('#schedBoard .oilpk[data-oilp="bane"]').first().scrollIntoViewIfNeeded(); await sleep(300); pics.push(await L.pic(w, '73-4-oil-earn-after-answer'))
+  if (!seats.filter(x => x.startsWith('bane')).every(x => x.endsWith('off'))) fail('Ranger is no longer switched off on the schedule after the filer answer: ' + seats.join(' '))
+  if (!seats.filter(x => /^(stiff|dj):/.test(x)).every(x => x.endsWith('on'))) fail('the others are not on: ' + seats.join(' '))
+  await L.oilMode(w, false)
+  pics.push(await L.pic(w, '73-3-after-answer'))
+} catch (e) { parts.push('ERR ' + String(e).slice(0, 300)); verdict = 'NOT RUN' }
+const j = JSON.parse(readFileSync(L.JSONF, 'utf8'))
+const a = j.rows.find(r => r.n === '73a')
+const finalV = a.verdict === 'FAIL' || verdict === 'FAIL' ? 'FAIL' : (verdict === 'NOT RUN' ? 'PARTIAL (the scheduler-refusal part NOT RUN)' : 'PASS')
+j.rows = j.rows.filter(r => r.n !== '73a' && r.n !== '73')
+j.rows.push({ n: '73', size: 'phone 390x844', role: 'Admin (Saber) and Member (Ranger); Saber in OIL Earn', verdict: finalV, said: a.said + ' || SCHEDULER REFUSAL PART: ' + parts.join(' ; '), pics: [...a.pics, ...pics] })
+writeFileSync(L.JSONF, JSON.stringify(j, null, 1))
+console.log(finalV, parts.join('\n'))
+await w.browser.close()

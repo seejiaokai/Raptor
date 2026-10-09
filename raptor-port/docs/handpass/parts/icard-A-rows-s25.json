@@ -1,0 +1,29 @@
+{
+ "rows": [
+  {
+   "id": 25,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "day/who: windows 1, title \"ZS card title\" ## day/kind: windows 1, title \"ZS card title\" ## day/title: windows 1, title \"ZS card title\" ## day/rmk: windows 1, title \"ZS card title\" ## day/when: windows 1, title \"ZS card title\" ## day/by: windows 1, title \"ZS card title\" ## day/padding: windows 1, title \"ZS card title\" ## day/LATE: note \"after the cut-off, Mon 13 Jul\", windows 0 ## day/keyboard Enter: windows 1, title \"ZS card title\" ## day/keyboard Space: windows 1, title \"ZS card title\" ## list/who: windows 1, title \"ZS card title\" ## list/kind: windows 1, title \"ZS card title\" ## list/title: windows 1, title \"ZS card title\" ## list/rmk: windows 1, title \"ZS card title\" ## list/when: windows 1, title \"ZS card title\" ## list/by: windows 1, title \"ZS card title\" ## list/padding: windows 1, title \"ZS card title\" ## list/LATE: note \"after the cut-off, Mon 13 Jul\", windows 0 ## list/keyboard ",
+   "pics": [
+    "25-phone 390-tap-remark-opens-window.png",
+    "25-phone 390-day-after-keyboard.png",
+    "25-phone 390-delete-question.png"
+   ]
+  },
+  {
+   "id": 25,
+   "size": "desktop 1440",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "day/who: windows 1, title \"ZS card title\" ## day/kind: windows 1, title \"ZS card title\" ## day/title: windows 1, title \"ZS card title\" ## day/rmk: windows 1, title \"ZS card title\" ## day/when: windows 1, title \"ZS card title\" ## day/by: windows 1, title \"ZS card title\" ## day/padding: windows 1, title \"ZS card title\" ## day/LATE: note \"after the cut-off, Mon 13 Jul\", windows 0 ## day/keyboard Enter: windows 1, title \"ZS card title\" ## day/keyboard Space: windows 1, title \"ZS card title\" ## delete question: Delete this input for all 3 people? Delete Keep ## after Keep: 3 records, window open 1 ## after confirm: 0 records ## Undo -> 3, Redo -> 0",
+   "pics": [
+    "25-desktop 1440-tap-remark-opens-window.png",
+    "25-desktop 1440-day-after-keyboard.png",
+    "25-desktop 1440-delete-question.png"
+   ]
+  }
+ ],
+ "errs": []
+}

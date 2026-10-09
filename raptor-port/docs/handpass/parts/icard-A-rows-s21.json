@@ -1,0 +1,17 @@
+{
+ "rows": [
+  {
+   "id": 21,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "20-21 [📅 20 Jul → 21 Jul]: ZW span@Mon 13 Jul(09:00–10:00 · till 22 Jul) ## 13-13 (first date only) [📅 13 Jul → 13 Jul]: ZW span@Mon 13 Jul(09:00–10:00 · till 22 Jul) ## 22-22 (last date only) [📅 22 Jul → 22 Jul]: ZW span@Mon 13 Jul(09:00–10:00 · till 22 Jul) ## 12-12 (day before) [📅 12 Jul → 12 Jul]: none ## 23-23 (day after) [📅 23 Jul → 23 Jul]: none ## 19-19 (Y last date) [📅 19 Jul → 19 Jul]: ZW span@Mon 13 Jul(09:00–10:00 · till 22 Jul), ZW ends19@Fri 17 Jul(09:00–10:00 · till 19 Jul) ## 20-20 (day after Y ends) [📅 20 Jul → 20 Jul]: ZW span@Mon 13 Jul(09:00–10:00 · till 22 Jul) ## 17-17 (Y first date) [📅 17 Jul → 17 Jul]: ZW span@Mon 13 Jul(09:00–10:00 · till 22 Jul), ZW ends19@Fri 17 Jul(09:00–10:00 · till 19 Jul) ## 23-31 (after both) [📅 23 Jul → 31 Jul]: none",
+   "pics": [
+    "21-phone-window-20-21.png",
+    "21-phone-window-13-13.png",
+    "21-phone-window-22-22.png"
+   ]
+  }
+ ],
+ "errs": []
+}

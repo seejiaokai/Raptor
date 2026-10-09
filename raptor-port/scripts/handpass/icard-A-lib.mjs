@@ -57,6 +57,7 @@ export async function month(p, y, m, touch) {
 }
 export async function toCal(p, touch, y = 2026, m = 7) {
   await p.evaluate(() => window.go('inputs'))
+  if (!(await p.locator('#inCalBtn').isVisible().catch(() => false)) && await p.locator('#inMemberMode').count()) { await press(touch, p.locator('#inMemberMode')); await p.waitForTimeout(300) }
   if (await p.locator('#inCalBtn[aria-pressed="false"]').count()) await press(touch, p.locator('#inCalBtn'))
   await month(p, y, m, touch)
 }
@@ -99,7 +100,13 @@ export async function saveWin(p, touch, oil = 'no') {
 /* the date calendar of a NEW input window (if any): tap start then end */
 export async function pickDates(p, touch, from, to) {
   const c = p.locator(`${WIN} #inpEdCal [data-cal="${from}"]`)
-  await c.scrollIntoViewIfNeeded().catch(() => {}); await press(touch, c)
+  /* a NEW input's calendar opens on its day as a one-day range; a tap on that same day would close the range there */
+  const [yy, mm, dd] = from.split('-').map(Number)
+  const lab = `${MONTHS[mm - 1][0].toUpperCase()}${MONTHS[mm - 1].slice(1, 3)} ${dd}`
+  const now = ((await p.locator(`${WIN} .rc-read`).innerText().catch(() => '')) || '').trim()
+  const isNew = (await p.locator(`${WIN} [data-testid="inped-placed"]`).count()) === 0
+  await c.scrollIntoViewIfNeeded().catch(() => {})
+  if (!(isNew && now === lab && to && to !== from)) await press(touch, c)
   if (to && to !== from) { const e = p.locator(`${WIN} #inpEdCal [data-cal="${to}"]`); await e.scrollIntoViewIfNeeded().catch(() => {}); await press(touch, e) }
 }
 /* File an input through the opened day's "+ Input". o: type, who (callsign) | several [callsigns] | allavail, start, end, allday, title, rmk, from, to */
@@ -130,6 +137,7 @@ export const cardFacts = (p, root, tid) => p.locator(`${root} [data-testid^="${t
 export async function toList(p, touch, all = true) {
   await p.evaluate(() => window.go('inputs'))
   if (await p.locator(DAYWIN).count()) { await p.keyboard.press('Escape'); await p.waitForTimeout(200) }
+  if (!(await p.locator('#inListBtn').isVisible().catch(() => false)) && await p.locator('#inMemberMode').count()) { await press(touch, p.locator('#inMemberMode')); await p.waitForTimeout(300) }
   if (await p.locator('#inListBtn[aria-pressed="false"]').count()) await press(touch, p.locator('#inListBtn'))
   if (all) {
     if (!(await p.locator('#inRangePop').count())) await press(touch, p.locator('#inRangeBtn'))

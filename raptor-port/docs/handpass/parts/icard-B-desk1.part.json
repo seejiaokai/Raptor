@@ -1,0 +1,36 @@
+{
+ "rows": [
+  {
+   "n": 30,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed Duty title \"Safety brief Z\" || -> Meeting: title field present, value \"Safety brief Z\"; saved type Meeting title \"Safety brief Z\"; day card: Saber|Meeting|amb|title=Safety brief Z|rmk=null|09:00–10:00 || -> LL: title field absent; saved type LL title undefined; day card: Saber|LL|red|title=null|rmk=null|09:00–10:00 || -> Duty: title field present, value \"Duty\"; saved type Duty title undefined; day card: Saber|Duty|amb|title=null|rmk=null|09:00–10:00 || Undo -> LL \"\"; Redo -> Duty \"\"",
+   "pics": [
+    "B30-meeting.png",
+    "B30-ll.png",
+    "B30-duty-again.png"
+   ]
+  },
+  {
+   "n": 34,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "ERROR(script)",
+   "saw": "locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded. | Call log: | \u001b[2m  - waiting for locator('[data-testid=\"win-inputedit\"] #inpEdCal [data-cal=\"2026-08-02\"]')\u001b[22m | ",
+   "pics": []
+  },
+  {
+   "n": 36,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed: one has remark \"Bring boots and water\", two has remark \"\" || Rmk one: opened remark \"Bring boots and water\"; after Cancel \"Bring boots and water\"; read \"Jul 21 → Jul 22\"; remark box before save \"Bring boots and water\"; saved Jul 21→Jul 22 remark \"Bring boots and water\"; card on 22 Jul: Saber|Duty|amb|title=Rmk one|rmk=Bring boots and water|09:00–10:00 || Rmk two: opened remark \"\"; after Cancel \"\"; read \"Jul 21 → Jul 22\"; remark box before save \"\"; saved Jul 21→Jul 22 remark \"\"; card on 22 Jul: Saber|Duty|amb|title=Rmk two|rmk=null|11:00–12:00 || Undo -> Jul 20",
+   "pics": [
+    "B36-Rmkone-picked.png",
+    "B36-Rmktwo-picked.png"
+   ]
+  }
+ ],
+ "errs": []
+}

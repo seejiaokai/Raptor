@@ -1,0 +1,21 @@
+import * as L from './icard-B-lib.mjs'
+const browser = await L.launch()
+const { ctx, page: p } = await L.open(browser, { width: 1440, height: 900 })
+const sab = await L.csId(p, 'Saber')
+await L.declareHoliday(p, false, 'ph', '2026-07-23', 'Test Holiday')
+await L.declareHoliday(p, false, 'off', '2026-07-24', 'Test Off Day')
+await L.fileInput(p, false, { iso: '2026-07-21', type: 'Event', who: sab, from: '09:00', to: '12:00', title: 'Move test' })
+const ev = (await L.recs(p, { person: sab })).find(r => r.type === 'Event')
+await p.evaluate(() => window.go('leavewar')); await p.waitForTimeout(1500)
+console.log(await p.evaluate(() => [...document.querySelectorAll('[data-testid*="stiff"]')].map(e => e.getAttribute('data-testid')).slice(0, 12).join(',')))
+const cell = async (lab) => {
+  await p.evaluate(() => window.go('leavewar')); await p.waitForTimeout(1000)
+  const t = await p.evaluate(() => { const b = document.querySelector('[data-testid="bal-stiff"]'); return b ? b.innerText.replace(/s+/g, ' ') : 'no bal' })
+  console.log(lab, '=>', t)
+}
+await cell('before')
+await L.openFromList(p, false, ev.iid); await L.tapDate(p, false, '2026-07-23'); await p.click('#inpEditSave'); await p.locator('[data-testid="oilconf"]').waitFor(); await L.answerOil(p, false, 'yes'); await p.waitForTimeout(500)
+await cell('on23')
+await L.openFromList(p, false, ev.iid); await L.tapDate(p, false, '2026-07-24'); await L.saveWin(p, false); await p.waitForTimeout(400)
+await cell('moved24')
+await browser.close()

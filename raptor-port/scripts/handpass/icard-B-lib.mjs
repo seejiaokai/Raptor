@@ -118,9 +118,9 @@ export async function calRead(p) { return (await p.locator(`${WIN} .rc-read`).in
 export async function calMonth(p, touch, y, m) {
   for (let i = 0; i < 40; i++) {
     const head = (await p.locator(`${WIN} #inpEdCal`).innerText()).toLowerCase()
-    const mm = head.match(/(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{4})/)
+    const mm = head.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{4})/)
     if (!mm) return
-    const d = y * 12 + (m - 1) - (+mm[2] * 12 + MONTHS.indexOf(mm[1]))
+    const d = y * 12 + (m - 1) - (+mm[2] * 12 + MONTHS.findIndex(x => x.startsWith(mm[1])))
     if (!d) return
     await press(touch, p.locator(`${WIN} #inpEdCal [aria-label="${d > 0 ? 'Next month' : 'Previous month'}"]`))
   }
@@ -135,6 +135,9 @@ export async function fileInput(p, touch, o) {
   if (o.several) {
     await press(touch, p.locator(`${WIN} [data-testid="pp-several"]`))
     for (const cs of o.several) { const b = p.locator(`${WIN} [data-pp="${await csId(p, cs)}"]`); if ((await b.getAttribute('aria-pressed')) !== 'true') await press(touch, b) }
+    /* the picker starts with the filer himself lit: switch off anyone lit who was not asked for */
+    const want = new Set(); for (const cs of o.several) want.add(await csId(p, cs))
+    for (const b of await p.locator(`${WIN} [data-pp][aria-pressed="true"]`).all()) { const id = await b.getAttribute('data-pp'); if (!want.has(id)) await press(touch, b) }
   } else if (o.who) await p.selectOption('#inpEditPerson', o.who)
   if (o.dates) {
     /* the day the window was opened on is already the pending start; one tap on another day ends the range */
@@ -163,7 +166,7 @@ export function say(num, size, role, verdict, saw, pics = []) {
 }
 export function save(tag) {
   mkdirSync('docs/handpass/parts', { recursive: true })
-  const f = `docs/handpass/parts/icard-B-${tag}.part.json`
+  const f = `docs/handpass/parts/icard-B-${process.env.TAG || tag}.part.json`
   writeFileSync(f, JSON.stringify({ rows, errs: [...new Set(errs)] }, null, 1))
   console.log('saved', f, rows.length, 'rows;', 'errors:', [...new Set(errs)].length)
 }
@@ -171,6 +174,7 @@ export const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 /* a scenario: fn returns {ok: true|false|'NOT RUN', saw, pics}; an exception is reported as a FAIL naming the script miss risk */
 export async function scn(num, size, role, fn) {
+  if (process.env.ONLY && !process.env.ONLY.split(',').includes(String(num))) return
   try {
     const r = await fn()
     say(num, size, role, r.ok === 'NOT RUN' ? 'NOT RUN' : (r.ok ? 'PASS' : 'FAIL'), r.saw, r.pics || [])
@@ -213,8 +217,41 @@ export async function setTimes(p, from, to) {
 /* open a saved input's window from the list (desktop row Name button / phone card) */
 export async function openFromList(p, touch, iid) {
   await toList(p, touch)
-  if (touch) { const c = p.locator(`#inList [data-testid="inl-row-${iid}"]`); await c.scrollIntoViewIfNeeded(); await c.tap() }
+  if (touch) { const c = p.locator(`#inList [data-testid="inl-row-${iid}"]`); await c.scrollIntoViewIfNeeded(); await c.locator('[data-testid="inl-who"]').first().tap() }
   else await p.locator(`#inBody tr[data-iid="${iid}"] [data-testid="in-open"]`).click()
   await p.locator(WIN).waitFor()
 }
 export const toastCount = async p => (await toasts(p)).length
+
+/* what a card says, part by part */
+export const cardFacts = (p, root, tid) => p.locator(`${root} [data-testid^="${tid}-row-"]`).evaluateAll((els, tid) => els.map(c => {
+  const t = k => { const e = c.querySelector(`[data-testid="${tid}-${k}"]`); return e ? e.textContent : null }
+  const b = c.getBoundingClientRect()
+  return { iid: c.getAttribute('data-popiid') || c.getAttribute('data-iid') || c.getAttribute('data-testid').replace(/^.*-row-/, ''), who: t('who'), kind: t('kind'), when: t('when'), title: t('title'), rmk: t('rmk'), by: t('by'), late: !!c.querySelector(`[data-testid="${tid}-late"]`),
+    h: Math.round(b.height), tone: c.className.includes(' red') ? 'red' : 'amb' }
+}), tid)
+const tidl = (p, id) => p.locator(`[data-testid="${id}"]`)
+const HOL_MONTHS = MONTHS
+async function holTap(p, touch, iso) {
+  const at = async () => { const [m, y] = (await tidl(p, 'holcal-month').textContent()).trim().toLowerCase().split(/\s+/); return +y * 12 + HOL_MONTHS.indexOf(m) }
+  let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - await at()
+  for (; d > 0; d--) await press(touch, tidl(p, 'holcal-next-month'))
+  for (; d < 0; d++) await press(touch, tidl(p, 'holcal-prev-month'))
+  await press(touch, tidl(p, `holcal-day-${iso}`))
+}
+/* declare a public holiday ('ph') or an Off day ('off') through the Inputs gear -> Calendar... -> Holidays -> Add */
+export async function declareHoliday(p, touch, kind, iso, name) {
+  await closeAll(p)
+  await p.evaluate(() => window.go('inputs'))
+  await press(touch, p.locator('#inGear')); await press(touch, tidl(p, 'iset-days'))
+  await tidl(p, 'win-days').waitFor()
+  if (await tidl(p, 'days-tabs').count()) await press(touch, tidl(p, 'days-tab-holidays'))
+  await press(touch, tidl(p, 'hol-add'))
+  await press(touch, tidl(p, `hol-kind-${kind}`))
+  await tidl(p, 'hol-name').fill(name)
+  await holTap(p, touch, iso)
+  await press(touch, tidl(p, 'hol-save')); await p.waitForTimeout(600)
+  const err = await tidl(p, 'hol-err').innerText().catch(() => '')
+  for (let i = 0; i < 4; i++) { if (!(await p.locator('[data-testid="win-holiday"], [data-testid="win-days"], [data-testid="win-inputsettings"], .sset').count())) break; await p.keyboard.press('Escape'); await p.waitForTimeout(250) }
+  return err
+}

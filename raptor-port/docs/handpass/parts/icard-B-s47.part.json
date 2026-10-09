@@ -1,0 +1,19 @@
+{
+ "rows": [
+  {
+   "n": 47,
+   "size": "390x844 touch",
+   "role": "Saber (admin) then Ranger (member)",
+   "verdict": "PASS",
+   "saw": "bid made on 27 Jul; Inputs holds LL: null || after Approve, Inputs holds LL: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 27\",\"remarks\":\"on 27 Jul\",\"lw\":\"y2026\",\"half\":null,\"by\":\"stiff\"} || war cells after approve: {\"07-27\":\" act | LL | \",\"07-28\":\" act | | \"} || remark-only edit: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 27\",\"remarks\":\"war remark one\",\"lw\":\"y2026\",\"half\":null,\"by\":\"stiff\"} || war cells after remark: {\"07-27\":\" act | LL | \",\"07-28\":\" act | | \"} || Undo -> remark \"on 27 Jul\"; Redo -> \"war remark one\" || admin date change: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 28\",\"remarks\":\"war remark one\",\"lw\":\"y2026\",\"half\":null,\"by\":\"stiff\"} || war cells after admin date change: {\"07-27\":\" act | | \",\"07-28\":\" act | LL | \"} || Ranger date change: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 29\",\"remarks\":\"war remark one\",\"lw\":null,\"half\":null,\"by\":\"stiff\"} || war cells after Ranger date change: {\"07-28\":\"locked | | \",\"07-29\":\"locked act | LL | \"} || after Delete: null || war cells after delete: {\"07-27\":\"locked | | \",\"07-28\":\"locked | | \",\"07-29\":\"locked | | \"} || Undo of the delete: {\"iid\":\"imv1aut17uli4db\",\"date\":\"Jul 29\",\"remarks\":\"war remark one\",\"lw\":null,\"half\":null,\"by\":\"stiff\"} || checks [true,true,true,true,true,true]",
+   "pics": [
+    "B47-1-bid-made.png",
+    "B47-2-approved.png",
+    "B47-3-war-after-date-change.png",
+    "B47-4-war-after-ranger.png",
+    "B47-5-war-after-delete.png"
+   ]
+  }
+ ],
+ "errs": []
+}

@@ -324,6 +324,14 @@ body.in-cal{padding-bottom:0}
 .floatwin.inpedwin{width:min(430px,calc(100vw - 32px))}
 .floatwin.inpedwin .win-body{padding:0}
 .inped-win{display:flex;flex-direction:column;min-height:0}
+/* ITS BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26). An input is changed in this window now (the list's
+   pencil is gone — D718), and it carries the date calendar for every saved input: about 170px more. On an ordinary
+   desktop its last row — Delete, Cancel, Save — fell below the window's foot and was reached only by scrolling
+   inside it (seen on the first pictures of the built window; worse at his PC's 125%). The row is pinned to the foot
+   of the scrolling body, the form moving above it; what is scrolled into view (a question, a focused field) stops
+   clear of it. Position only — no button changes size (D487). */
+.inped-win > .airpop-foot{position:sticky;bottom:0;z-index:2;background:var(--panel)}
+.floatwin.inpedwin .win-body{scroll-padding-bottom:64px}
 .inped-ask{display:flex;flex-direction:column;gap:8px;margin:10px 12px 0;padding:10px 12px;border:1px solid var(--adv);border-radius:9px;
   background:color-mix(in srgb,var(--adv) 10%,var(--panel));font-size:12.5px;line-height:1.4;color:var(--ink)}
 .inped-ask-h{font-size:12px;font-weight:800}

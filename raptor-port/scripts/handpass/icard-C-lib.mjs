@@ -70,7 +70,7 @@ export async function switchUser(w, who) {
 /* ---- the report rows ---- */
 export const ROWS = []
 export function row(n, size, role, verdict, said, pics = []) {
-  const r = { n: String(n), size, role, verdict, said: String(said).slice(0, 1500), pics }
+  const r = { n: String(n), size, role, verdict, said: String(said).slice(0, 5000), pics }
   ROWS.push(r)
   console.log(`[${n} ${size}/${role}] ${verdict} :: ${String(said).slice(0, 700)}`)
   return r
@@ -78,7 +78,7 @@ export function row(n, size, role, verdict, said, pics = []) {
 export function saveRows(extraErrors = []) {
   let cur = { rows: [], errors: [], extras: [] }
   try { cur = JSON.parse(readFileSync(JSONF, 'utf8')) } catch (e) {}
-  const key = r => r.n + '|' + r.size + '|' + r.role
+  const key = r => r.n + '|' + r.size
   const map = new Map(cur.rows.map(r => [key(r), r]))
   for (const r of ROWS) map.set(key(r), r)
   cur.rows = [...map.values()]
@@ -222,9 +222,18 @@ export async function fileNew(w, o) {
   if (o.s != null || o.e != null) await setTimes(p, o.s, o.e)
   if (o.title != null) await p.fill('#inpEditOwnTitle', o.title)
   if (o.rmk != null) await p.fill('#inpEditRmk', o.rmk)
+  if (o.doc) await attachDoc(w, o.doc)
   const r = await saveWin(w, o.oil)
+  if (o.docq && o.docq !== 'none') { /* a medical question after the save */ }
   await closeWins(p)
   return r
+}
+export const SAMPLE = 'C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor/4fe0a868-4766-4a61-b47c-1e2d7bfe00d0/scratchpad/sample-doc.png'
+export async function attachDoc(w, file = SAMPLE) {
+  const p = w.page
+  const btn = p.locator(WIN).getByRole('button', { name: /Document/ }).first()
+  const [fc] = await Promise.all([p.waitForEvent('filechooser'), press(w, btn)])
+  await fc.setFiles(file); await sleep(500)
 }
 export const REC = r => ({ iid: r.iid, person: r.person, type: r.type, title: r.title, remarks: r.remarks, date: r.date, endDate: r.endDate, s: r.s, e: r.e, oil: r.oil || null, by: r.by, grp: r.grp || null, yr: r.yr, docId: r.docId || null })
 export const recBy = (p, f) => p.evaluate(([f, src]) => { const r = window.INPUTS.find(x => Object.keys(f).every(k => x[k] === f[k])); return r ? { iid: r.iid, person: r.person, type: r.type, title: r.title, remarks: r.remarks, date: r.date, endDate: r.endDate, s: r.s, e: r.e, oil: r.oil || null, by: r.by, grp: r.grp || null, yr: r.yr, docId: r.docId || null } : null }, [f, 0])
@@ -327,6 +336,7 @@ export async function redo(w) { const b = w.page.locator('#redoBtn'); if (await 
 export async function openByText(w, text) {
   const p = w.page
   await toList(w)
+  if (w.who === 'us') await showEveryone(w)
   if (w.touch) {
     const c = p.locator('#inList [data-testid^="inl-row-"]').filter({ hasText: text }).first()
     await c.scrollIntoViewIfNeeded(); await c.tap()
@@ -342,7 +352,14 @@ export async function weekTo(w, page, label) {
   const p = w.page
   await go(p, page)
   const b = p.getByRole('button', { name: label, exact: true })
-  if (await b.count()) { await b.first().click(); await sleep(900) }
+  if (await b.count() && await b.first().isVisible().catch(() => false)) { await b.first().click(); await sleep(900); return }
+  // a phone: the calendar button opens "Jump to a date"; a tap on a day goes to that day's week
+  const day = String(+label.split(' ')[1])
+  await p.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
+  const jump = p.locator('button.wknav-mbtn:visible').first()
+  await jump.tap(); await sleep(600)
+  await p.locator('#weekCal button.rc-d').filter({ hasText: new RegExp('^' + day + '$') }).first().tap(); await sleep(900)
+  if (await p.locator('#weekCal:visible').count()) { await p.keyboard.press('Escape'); await sleep(300) }
 }
 const reqRows = (p, root, di) => p.evaluate(([root, di]) => [...document.querySelectorAll(`${root} .day[data-day="${di}"] .pl-row.gr-frominput`)].map(r => ((r.querySelector(':scope > .nm .ntx') || {}).textContent || '').trim() + ' [' + (((r.querySelector(':scope > .nm .nm-kind') || {}).textContent) || r.innerText.split('\n')[0]) + '] ' + r.innerText.replace(/\s+/g, ' ').slice(0, 70)), [root, di])
 export async function editDay(w, label, di) {
@@ -365,4 +382,67 @@ export async function signAndPublish(w, label, di) {
   const signs = await signDay(p, di)
   const pub = await publishDay(p, di)
   return { signs, pub, head: await head(p, di) }
+}
+/** in the open input window, set dates through its calendar: one tap (a day) or two taps (start, end) */
+export async function calTap(w, ...isos) {
+  const p = w.page
+  for (const iso of isos) {
+    const d = p.locator(`${WIN} #inpEdCal [data-cal="${iso}"]`)
+    await d.scrollIntoViewIfNeeded().catch(() => {})
+    await press(w, d); await sleep(150)
+  }
+  return (await p.locator(`${WIN} .rc-read`).innerText().catch(() => '')).replace(/\s+/g, ' ')
+}
+/** the gear on the Inputs page: "Members may file duties and commitments for other people". Admin only. */
+export async function setMemberFiling(w, on) {
+  const p = w.page
+  await toCal(w)
+  await press(w, p.locator('[data-testid="in-gear"]')); await sleep(500)
+  const cb = p.locator('[data-testid="iset-memberfile"]')
+  const was = await cb.isChecked()
+  if (was !== on) await cb.setChecked(on)
+  await press(w, p.locator('[data-testid="iset-save"]')); await sleep(700)
+  return { was, now: on }
+}
+/* ---- the Scheduler Board and its OIL Earn mode (copied from the earlier walkers' helper) ---- */
+export async function closeBoard(p) {
+  if (!(await p.locator('#schedBoard').count())) return
+  const x = p.locator('#schedBoard').getByRole('button', { name: /Close|Done/ }).first()
+  if (await x.count()) { await x.click(); await sleep(500) } else { await p.keyboard.press('Escape'); await sleep(400) }
+}
+export async function openBoard(w, di) {
+  const p = w.page
+  await closeBoard(p)
+  await go(p, 'editsched')
+  const d = p.locator(`#eWeek [data-sbday="${di}"]:visible`).first()
+  try {
+    await d.scrollIntoViewIfNeeded({ timeout: 4000 })
+    if (w.touch) await d.tap({ timeout: 4000 }); else await d.click({ timeout: 4000 })
+    await p.waitForSelector('#schedBoard', { timeout: 4000 })
+  } catch (e) {
+    const first = p.locator('#eWeek [data-sbday]:visible').first()
+    await first.scrollIntoViewIfNeeded().catch(() => {})
+    if (w.touch) await first.tap(); else await first.click()
+    await p.waitForSelector('#schedBoard'); await sleep(500)
+    for (let i = 0; i < 8; i++) {
+      const cur = await p.evaluate(() => window.SBDAY)
+      if (cur === di) break
+      const arrow = p.locator(cur < di ? '#sbNextDay:visible, button[title="Next day"]:visible' : '#sbPrevDay:visible, button[title="Previous day"]:visible').first()
+      if (w.touch) await arrow.tap(); else await arrow.click()
+      await sleep(500)
+    }
+  }
+  await p.waitForSelector('#schedBoard'); await sleep(600)
+}
+export async function oilMode(w, on = true) {
+  const p = w.page
+  const hit = l => press(w, l)
+  const done = p.locator('#schedBoard button', { hasText: /OIL done/ }).first()
+  const isOn = async () => (await done.count()) && await done.isVisible().catch(() => false)
+  if (on && !(await isOn())) {
+    const b = p.locator('#sbOil:visible').first()
+    if (await b.count()) await hit(b)
+    else { await hit(p.locator('#sbMore').first()); await sleep(450); await hit(p.locator('button:visible', { hasText: /^OIL Earn$/ }).first()) }
+    await sleep(800)
+  } else if (!on && (await isOn())) { await hit(done); await sleep(600) }
 }

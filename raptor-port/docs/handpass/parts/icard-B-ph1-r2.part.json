@@ -1,0 +1,26 @@
+{
+ "rows": [
+  {
+   "n": 33,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "opens on: Jul 20 || tap saved date 20: \"Jul 20\"; then 22: \"Jul 20 → Jul 22\" || saved Jul 20→Jul 22 || later 24: \"Jul 24\"; earlier 21: \"Jul 21\"; end 23: \"Jul 21 → Jul 23\"; painted: 2026-07-21:rc-d s 2026-07-23:rc-d e || saved Jul 21→Jul 23 || Undo -> Jul 20→Jul 22",
+   "pics": [
+    "B33-1-two-taps.png",
+    "B33-2-reversed.png"
+   ]
+  },
+  {
+   "n": 35,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "filed Jul 20→Jul 22 remark \"Travel till 22 Jul Bangkok\" || window remark box: \"Travel till 22 Jul Bangkok\" || read: Jul 20 → Jul 24; remark box before save: \"Travel till 22 Jul Bangkok\" || saved Jul 20→Jul 24 remark \"Travel till 24 Jul Bangkok\" || card on 24 Jul: Duty|09:00–10:00|title=Token test|rmk=Travel till 24 Jul Bangkok || remarks-only edit saved \"Travel till 24 Jul Bangkok and back, bring ID\" Jul 20→Jul 24 || Undo -> \"Travel till 24 Jul Bangkok\"",
+   "pics": [
+    "B35-1-day24.png"
+   ]
+  }
+ ],
+ "errs": []
+}

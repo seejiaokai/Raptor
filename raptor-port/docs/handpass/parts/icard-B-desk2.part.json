@@ -1,0 +1,28 @@
+{
+ "rows": [
+  {
+   "n": 48,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "FAIL",
+   "saw": "filed: Ace:Trio|first remark|Jul 20|600-660 ; Blade:Trio|first remark|Jul 20|600-660 ; Cinch:Trio|first remark|Jul 20|600-660 ; Saber:Trio|first remark|Jul 20|600-660 || window head \"Ace +3 · 20 Jul\"; read \"Jul 21 → Jul 22\"; saved: Ace:Trio two|second remark|Jul 21→Jul 22|780-840 ; Blade:Trio two|second remark|Jul 21→Jul 22|780-840 ; Cinch:Trio two|second remark|Jul 21→Jul 22|780-840 ; Saber:Trio two|second remark|Jul 21→Jul 22|780-840 || list rows for it: 1 || delete question: \"Delete this input for all 4 people? Delete Keep\"; after Keep: 4 records, window open 1 || after confirmed Delete: 0 records || after ONE Undo: Ace:Trio two|second remark|Jul 21→Jul 22|780-840 ; Blade:Trio two|second remark|Jul 21→Jul 22|780-840 ; Cinch:Trio two|second remark|Jul 21→Jul 22|780-840 ; Saber:Trio two|second remark|Jul 21→Jul 22|780-840 || Redo: 0 records",
+   "pics": [
+    "B48-1-shared-edited.png",
+    "B48-2-delete-question.png"
+   ]
+  },
+  {
+   "n": 50,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "date: question up true on top true \"This input has unsaved changes. Open Saber’s input and lose them? Discard and open Keep editing\"; after Keep editing: title \"Input A\", draft Jul 21; after Discard: window shows title \"Input B\" remark \"b remark\" dates \"Jul 22\"; A saved unchanged: Jul 20 a remark person true || person: question up true on top true \"This input has unsaved changes. Open Saber’s input and lose them? Discard and open Keep editing\"; after Keep editing: title \"Input A\", draft bane; after Discard: window shows title \"Input B\" remark \"b remark\" dates \"Jul 22\"; A saved unchanged: Jul 20 a remark person true || remark: question up true on top true \"This input has unsaved changes. Open Saber’s input and lose them? Discard and open Keep editing\"; after Keep editing: title \"Input A\", draft a remark edited; after Discard: window shows title \"Input B\" remark \"b remark\" dates \"Jul 22\"; A saved unchanged: Jul 20 a remark person true || Cancel after a date change: A is Jul 20 || checks [true,true,true,true]",
+   "pics": [
+    "B50-date-question.png",
+    "B50-person-question.png",
+    "B50-remark-question.png"
+   ]
+  }
+ ],
+ "errs": []
+}

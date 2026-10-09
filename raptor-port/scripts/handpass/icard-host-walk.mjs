@@ -229,6 +229,9 @@ const expectSix = cards => {
     const cal = await page.locator(`${WIN} #inpEdCal`).count()
     const on = await page.locator(`${WIN} #inpEdCal [data-cal="2026-07-18"]`).getAttribute('class')
     const hint = await page.locator(`${WIN} .inped-hint`).innerText()
+    /* Delete, Cancel and Save are in sight without scrolling inside the window (pinned to its foot) */
+    const foot = await page.evaluate(() => { const w = document.querySelector('[data-testid="win-inputedit"]').getBoundingClientRect(); return ['#inpEditDel', '#inpEditCancel', '#inpEditSave'].every(sel => { const e = document.querySelector(sel), b = e.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return b.top >= w.top && b.bottom <= w.bottom + 0.5 && b.bottom <= innerHeight && !!hit && (hit === e || e.contains(hit)) }) })
+    if (!foot) throw new Error('Delete / Cancel / Save are not all in sight in the window')
     await shot(page, 'A10-desk-window-dates')
     await page.locator(`${WIN} #inpEdCal [data-cal="2026-07-20"]`).click()
     const read = await page.locator(`${WIN} .rc-read`).innerText()
@@ -314,10 +317,14 @@ const expectSix = cards => {
     const head = await page.locator(`${WIN} .win-ttl`).innerText().catch(() => '')
     await page.locator('#inpEditDel').click()
     const ask = await page.locator('[data-testid="inped-delall"]').innerText().catch(() => '')
+    /* the question and BOTH its answers are in sight, above the window's pinned buttons — no scrolling to find "Keep"
+       (walker A saw it under the window's foot at 1440 × 900 before the buttons were pinned) */
+    const inSight = await page.evaluate(() => { const w = document.querySelector('[data-testid="win-inputedit"]').getBoundingClientRect(); return ['inped-delall-yes', 'inped-delall-no'].every(t => { const e = document.querySelector(`[data-testid="${t}"]`), b = e.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return b.top >= w.top && b.bottom <= w.bottom && b.bottom <= innerHeight && !!hit && (hit === e || e.contains(hit)) }) })
+    await shot(page, 'A17-desk-delete-for-all')
     await page.locator('[data-testid="inped-delall-no"]').click()
     await page.locator('#inpEditCancel').click(); await page.waitForTimeout(200)
     const still = (await page.evaluate(() => window.INPUTS.filter(r => r.title === 'Flight safety brief' && r.date === 'Jul 18').length))
-    return { ok: /\+6/.test(head) && /for all 7 people/.test(ask) && still === 7, detail: `${head} | ${ask.replace(/\s+/g, ' ')} | ${still} records` }
+    return { ok: /\+6/.test(head) && /for all 7 people/.test(ask) && still === 7 && inSight, detail: `${head} | ${ask.replace(/\s+/g, ' ')} | ${still} records | both answers in sight: ${inSight}` }
   })
   await step('A18 every field the pencil’s row changed is changed in the window: kind, title, remarks, hours, the person', async () => {
     const r = await rec(page, { type: 'Other', remarks: 'Collecting a new ID card from the pass office before lunch' })

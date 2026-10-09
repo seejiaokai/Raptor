@@ -1,0 +1,26 @@
+{
+ "10|desktop 1440": {
+  "verdict": "PASS",
+  "detail": "All 22 kinds filed through the form on the desktop (five days, 22 different people, No document where asked) and judged on the opened day: each card shows its own kind in small grey capitals (computed colour 138,150,163, uppercase), a red square for LL, OL, OIL, CCL, PL, FCL, EL, CL, HL, OML, ATT C, ATT B and an amber square for Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, Other; every card's square matches its month bar; no pucks, nothing cut, nothing overlaps; no SANS row or SANS kind in the Inputs table.",
+  "note": "OD: its card square is RED (same red as its month bar) - the scenario text does not say whether OD is an absence or a commitment; I judged it PASS because card and bar agree. Host to rule. Picture 10-desk-day-2026-07-31.png."
+ },
+ "23|phone 390": {
+  "note": "The restrictive-window empty message reads 'No inputs between 10 Aug -> 12 Aug. Change the dates, or pick All dates.' - it names the window and tells him to pick All dates, but it carries no All dates button of its own (the button is in the date picker, which I used and it worked). Judged PASS on the wording; host to rule if a button was meant."
+ },
+ "_extras": [
+  "Phone, after tapping a card to open its window: a teal text-selection band sits across the window (over the calendar rows in 16-deleted-window.png, over the Person/Type labels in 5-phone-window-ranger.png). Probably the emulated touch's double activation; seen with real tap sequences only.",
+  "OD kind: card square red, same as its month bar (10-desk-day-2026-07-31.png); the scenario list does not say which colour OD should be.",
+  "A several-day input prints 'till <date>' twice on its card: in the corner and again as its remark (12-phone-list.png). A cross-year input's remark says 'till 1 Jan' with no year while the corner says 'till 1 Jan 2027' (17-phone-list-cross-year.png).",
+  "Just-saved card kept in view while filters hide it stands ABOVE earlier dates (Tue 4 Aug heading above Tue 21 Jul) in 22-phone-after-add.png - likely by design (brought into view), reported only so the host knows.",
+  "Desktop 1440x900, a shared input's window after pressing Delete: the 'Keep' button of 'Delete this input for all N people?' lies below the window's bottom edge (measured Keep 883-919 px, window bottom 876, screen 900), so it needs a scroll inside the window to reach; Delete itself is visible (25-desktop 1440-delete-question.png, x-explore-keep-visible.png).",
+  "Desktop, a saved shared input's window shows a PERSONNEL strip 'All, Cotter, Ratchet, Widget' as small grey chips that are not the entry's own people (Drifter/Echo/Ranger/Saber, or Anvil/Basher/Cinch) - x-explore-keep-visible.png, 25-desktop 1440-delete-question.png. May be an older strip, not this feature.",
+  "New-input window calendar (not the saved-input two-tap one): the opening day is pre-selected; tapping that same day and then another day gives a one-day input on the second day, while tapping only the other day gives a range (my script learned this on 12; the all-day 20-22 Jul filing first saved as one day). Reported as behaviour seen.",
+  "The Upchit window opens with its Date on 13 Jul although the Medical page was 'as of 22 Jul' (x-explore-upchit1.png).",
+  "The list's date picker pop-over stays open after the end date is tapped, and Escape does not close it (21-phone-window-*.png before my re-run)."
+ ],
+ "_notrun": [
+  "None of my scenarios was left unrun. Scenario 15 was run with Playwright's own clock (context.clock.install at 1 Jun 2026, then setSystemTime to 1 Jul 2026; fastForward by 30 days was refused by the API, 'cannot fast-forward to the past'), no app state written.",
+  "Scenario 12 on a desktop has no list card to judge (the desktop list is the table) - I judged the opened days and the table on the desktop and added an extra phone world for the list card (row '12 (extra...)').",
+  "Scenario 10: all 22 kinds on the desktop opened day; on the phone list 8 kinds (LL, OML, ATT C, CCL, Training, Meeting, Duty, Event)."
+ ]
+}

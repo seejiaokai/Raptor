@@ -1,0 +1,31 @@
+{
+ "rows": [
+  {
+   "n": 49,
+   "size": "390x844 touch",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "ALLAVAIL: start Duty person=allavail \"undefined\" Jul 25 540-720 || window: person select value \"allavail\", Several-people switch present 1; kinds offered: LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Fly with,Personal,Appointment,Duty,Event,OD,Other || read Jul 27 || saved: person=allavail \"Changed title\" \"changed remark\" Jul 27 780-900 || range 27-29 Save: toasts [\"ALL AVAIL is filed one day at a time\"]; sheets 0; saved Jul 27 person=allavail; window open 1 || kind LL: toasts [\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Duty person=allavail || kind ATT C: toasts [\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Duty person=allavail || kind OML: toasts [\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Duty person=allavail || Several people switched on (0 lit), Save: toasts [\"ALL AVAIL is filed on its own — it already stands for whoever is free\"]; saved person=allavail; records titled so: 1 || checks [true,true,true,true,true,true]",
+   "pics": [
+    "B49-ALLAVAIL-window.png",
+    "B49-ALLAVAIL-range.png",
+    "B49-ALL-window.png",
+    "B49-ALL-range.png"
+   ]
+  },
+  {
+   "n": "49b",
+   "size": "390x844 touch",
+   "role": "Saber (admin)",
+   "verdict": "FAIL",
+   "saw": "ALL: start Event person=all \"Sports afternoon\" Jul 22 900-1020 || window: person select value \"all\", Several-people switch present 1; kinds offered: LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Fly with,Personal,Appointment,Duty,Event,OD,Other || read Jul 27 || saved: person=all \"Changed title\" \"changed remark\" Jul 27 780-900 || range 27-29 Save: toasts [\"ALL is filed one day at a time\"]; sheets 0; saved Jul 27 person=all; window open 1 || kind LL: toasts [\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Event person=all || kind ATT C: toasts [\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Event person=all || kind OML: toasts [\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"]; sheet \"\"; saved type Event person=all || Several people switched on (0 lit), Save: toasts [\"ALL is filed on its own — it already stands for whoever is free\"]; saved person=all; records titled so: 2 || checks [true,true,true,true,true,false]",
+   "pics": [
+    "B49-ALLAVAIL-window.png",
+    "B49-ALLAVAIL-range.png",
+    "B49-ALL-window.png",
+    "B49-ALL-range.png"
+   ]
+  }
+ ],
+ "errs": []
+}

@@ -1024,6 +1024,36 @@ for (const view of ['the Calendar', 'the List'] as const) {
   })
 }
 
+/* THE WINDOW'S BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 — found on the host's own picture of the built
+   window and on walker A's). The Inputs list's pencil is gone (owner D718): an input is changed in its window, and that
+   window now carries the date calendar for EVERY saved input — about 170px more. On an ordinary desktop its last row
+   (Delete, Cancel, Save) was cut off at the window's foot and reached only by scrolling inside it; on the owner's PC,
+   whose display runs at 125%, more so. The row is pinned to the window's foot, the form scrolling above it. A real
+   browser alone can say where a row is on the screen. */
+for (const size of [{ name: 'a desktop 1440 × 900', width: 1440, height: 900 }, { name: 'a short desktop 1280 × 640', width: 1280, height: 640 }, { name: 'a phone 390 × 664', width: 390, height: 664 }]) {
+  test(`an input’s window opened from the list keeps Delete, Cancel and Save in sight without scrolling — ${size.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: size.width, height: size.height })
+    await login(page); await go(page, 'inputs'); await page.click('#inListBtn')
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    const iid = await page.evaluate(() => (window as any).INPUTS.find((r: any) => r.type === 'Appointment' && !r.grp)?.iid ?? '')
+    expect(iid, 'the demo holds an ordinary appointment').not.toBe('')
+    await page.locator(`[data-iid="${iid}"]`).first().locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
+    await expect(edWin(page)).toBeVisible()
+    await expect(page.locator('#inpEdCal'), 'the window carries the date calendar').toBeVisible()
+    const m = await page.evaluate(() => {
+      const win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
+      const seen = (sel: string) => { const e = document.querySelector(sel) as HTMLElement; const b = e.getBoundingClientRect(); const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return { inWin: b.top >= win.top - 0.5 && b.bottom <= win.bottom + 0.5, onScreen: b.bottom <= innerHeight + 0.5 && b.top >= 0, hit: !!hit && (hit === e || e.contains(hit)) } }
+      return { save: seen('#inpEditSave'), cancel: seen('#inpEditCancel'), del: seen('#inpEditDel') }
+    })
+    for (const [k, v] of Object.entries(m)) expect(v, `${k}: inside the window, on the screen, and the thing a press there reaches`).toEqual({ inWin: true, onScreen: true, hit: true })
+    /* …and the form still scrolls above the pinned row: its last line can be brought into view, clear of the buttons */
+    const hint = page.locator('#inpEditPop .inped-hint')
+    await hint.scrollIntoViewIfNeeded()
+    const clear = await page.evaluate(() => { const h = document.querySelector('#inpEditPop .inped-hint')!.getBoundingClientRect(), f = document.querySelector('#inpEditPop .airpop-foot')!.getBoundingClientRect(); return h.bottom <= f.top + 0.5 })
+    expect(clear, 'the form’s last line is not hidden under the pinned row').toBe(true)
+  })
+}
+
 /* THE CARD'S WORDS ROW (owner D719, D720, D723 — 10 Oct 26; RESTATED that day from D701's "a short remark shares its line
    with who placed it"). Where a line of words ends is a browser's to say: a short remark and "By Saber" on ONE row;
    under a long remark "By Saber" on a line of its own; at the card's right end in both, and where there is no remark

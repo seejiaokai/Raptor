@@ -1,0 +1,18 @@
+{
+ "rows": [
+  {
+   "id": 17,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "list headings [\"Tue 12 Jan 20271 input\",\"Mon 28 Dec1 input\"], corners \"09:00–10:00\" / \"09:00–10:00 · till 1 Jan 2027\"; both windows open on their own month and year; ",
+   "pics": [
+    "17-phone-list-cross-year.png",
+    "17-phone-list-january.png",
+    "17-phone-window-january.png",
+    "17-phone-window-cross-year.png"
+   ]
+  }
+ ],
+ "errs": []
+}
