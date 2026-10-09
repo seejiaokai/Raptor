@@ -1,6 +1,6 @@
 # An input's own title — the plan ([INPUT-OWN-TITLE]; D715, D716, D717 — 9 Oct 26)
 
-**Status: version 1, for Astra's and Sol's read (each blind). Not built.** Branch `claude/day-window-compact` (it already
+**Status: version 1 was read by Astra and by Sol, each blind — both `CLEAN WITH THESE EXACT CHANGES`; §8 says what each found and what was done. BUILT (commit `fa9463d0`); its FULL check is the evidence sheet `docs/handpass/2026-10-09-input-title-check.md`.** Branch `claude/day-window-compact` (it already
 carries the ALL / ALL AVAIL and Event batch, unmerged — his word: no merge). Builder: Opus 5.5.
 
 ## 1. What he ruled
@@ -170,3 +170,25 @@ failing test first → re-walk → evidence sheet → his look.
 3. Legacy demo Others read "Other" with their remark beside them (§3.3) and may show one pending change on an already
    published demo day.
 4. The kind tag on the schedule is read off the row, so a row the scheduler renamed by hand shows its kind too.
+
+## 8. The two reads of the plan (9 Oct 26) — what each found, and what was done
+Reports: `docs/superpowers/briefs/2026-10-09-reads/input-own-title-plan-astra.md`, `…-plan-sol.md`. Both verdicts:
+CLEAN WITH THESE EXACT CHANGES. Neither reopened a product choice. Where this section and §§2–7 differ, THIS section is
+what was built.
+
+| # | Found by | The failure | What was done |
+|---|---|---|---|
+| 1 | Astra 1, Sol 1 | The engine drops a repeated "same man, same hours, same NAME" as one commitment; a request's row is named by its filer, so a Training titled "Meeting" beside a Meeting was swallowed and its hard clash against a standby shift lost | `events.ts buildDay push`: a row that came from a request merges only with ITSELF (its key). **The builder's narrowing of the readers' fix, with its reason:** both asked for "same row" for EVERY row; rows nobody filed keep the old name test, unchanged — that is the original's own rule (its suite asserts it), and widening it would newly flag hand-typed twin rows that are one event listed twice, a change of behaviour outside this job. The defect needs a request's row, and no request's row can now be merged with another. Two different ground rows of one name clash as "… is on two items called NAME at once" (`validate.ts`) |
+| 2 | Astra 2, Sol 2 | A title-only edit could stay invisible on a published day: an OD has no row, a second covered day has none, and a change of capitals leaves the row's printed name as it was (§3.6's "nothing new is built" was wrong) | the title is in `inpDetailKey` (named only where there is one); `pendlist.ts inputWords` says "Event → Sports day". Pinned in `ui/latepub.test.tsx` |
+| 3 | Astra 3, Sol 3, Sol 4 | §3.2's "every caller prints the title with no edit of its own" was wrong for the callers that copy the input first or name it by `type` directly | `events.ts mapInp` carries the title (and so `whole` and the midnight tails); every warning sentence that names a commitment uses `inpLabel` (classification stays on `type`); the OIL question (`oilGate`, the List's two question builders), `oilmode.ts oilRequestName`, the changes window's heading, the history bubble and the accept / unaccept toasts name it by its title; a request that is gone is named from its row (`goneRequestName`); the board's input card carries the visible kind label in its item cell |
+| 4 | Astra 4, Sol 4 | The Inputs export had nowhere to put a title | `export.ts inputRows`: a `Title` column beside `Type` |
+| 5 | Astra 5, Sol 6 | "Hide the remark when it is the name" would hide a remark a filer typed that repeats his title | removed (`InputsCal.tsx`): a remark is said whatever the input is called |
+| 6 | Astra 6 | `draft.title \|\| draft.type` made an emptied box snap back to the kind's name | the draft's title is NULL until typed, a string after ('' = emptied; the placeholder says the kind) — in all three editors |
+| 7 | Sol 5 | A bar found by its title opened a day that then hid it (`dayEntries` searched remarks and callsign only) | `dayEntries` matches `inpLabel` too |
+| 8 | Sol 7, Astra (negatives) | The reference twin `refwin.ts _il` still named an Other by its remarks | `_il` mirrors `inpLabel`; the reference carries no title, so cross-engine cases are untitled and the titled ones are the port's own tests |
+
+**Also built that the plan did not say:** the board's row carries its label INSIDE the name's own grid cell (`.sb-nmk`),
+because that row's grid places its cells by their order; the title is one of a shared input's shared fields
+(`state/inputgroup.ts SHARED_FIELDS`); the change history writes a "title" line (`state/changelines.ts`); the declared
+record (`engine/schema.ts`) and its check carry the field; the demo's Event for ALL is titled "Sports afternoon".
+
