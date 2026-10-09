@@ -211,7 +211,28 @@ To do.
 
 ### 5.5 The break tests — `scripts/handpass/aa-breaks.mjs`
 
-To do.
+Twenty-seven wires, each cut once on purpose (one exact text swap in one source file), its named test file run, the file
+put back from git. **First run: 24 went RED, 3 did not** — B8 (the editor's own refusal), B9 (the group save's up-front
+refusal) and B26 (the "→ Unavail" button): with each cut, the save boundary behind it still refused, so no door test
+noticed — those three wires had no test of their own, by proof. Each now has one (`placeholderdoors.test.tsx`: the
+editor's body asked directly; the group save's ONE plain sentence, never the boundary's rollback wording; the button
+drawn by `accCtl`), and the three were cut again: **RED. 27 of 27 caught.**
+
+| Break | The wire | Caught by |
+|---|---|---|
+| B1 | the hard check at the save boundary | `placeholderlist`, `placeholderdoors` |
+| B2, B3, B4 | the one OIL default — the credit, each man's switch, the placeholder kept out of the work | `engine/oilplaceholderclaim`, `ui/oilplaceholderclaim` |
+| B5, B6, B7 | the switch's reason, the window's hint, the row's name in OIL Earn | `ui/oilplaceholderclaim` |
+| B8, B9 | the editor's own refusal; the group save's whole-selection refusal | `placeholderdoors` (after the new tests) |
+| B10, B11, B12 | reassign's source; "→ Unavail"; the absence set | `placeholderdoors` |
+| B13, B14 | the bell asks the filer — and only while he may answer | `placeholderdoors` |
+| B15, B16, B27 | the picker's two entries; its line; no "File it for me only" for an admin | `placeholderdoors` |
+| B17, B18, B19 | the List's Add form; the pencil editor's refusal before the document question; its Person list | `placeholderlist` |
+| B20, B21, B22 | the person filter in the List, the opened day and the month | `placeholderlist` |
+| B23 | Event red across a standby shift | `engine/eventkind` |
+| B24 | a seventh kind let through for a placeholder | `engine/placeholderinput` |
+| B25 | the demo's two inputs | `state/demostamps` |
+| B26 | the "→ Unavail" button | `placeholderdoors` (after the new test) |
 
 ## 6. The two reads of the code
 

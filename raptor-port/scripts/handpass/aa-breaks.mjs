@@ -110,6 +110,6 @@ for (const [name, file, from, to, tests] of BREAKS) {
   if (failed) { red++; console.log(`RED    ${name} — ${tests.join(', ')}: ${which}`) }
   else { green++; console.log(`GREEN  ${name} — NOTHING went red in ${tests.join(', ')}: this wire has no test`) }
 }
-console.log(`\n${red} of ${BREAKS.length} breaks caught · ${green} not caught`)
+console.log(`\n${red} of ${red + green} breaks caught · ${green} not caught`)
 if (sh('git status --porcelain -- src').trim()) console.log('WARNING: src/ is not as it was — check `git status`')
 process.exit(green ? 1 : 0)
