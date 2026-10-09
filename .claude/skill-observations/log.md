@@ -3288,3 +3288,48 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** When recording a ruling, search the TEST titles and assertions for its subject as well as the documents; a test that pins the old behaviour is the fastest proof that the app does not yet do what the ruling says, and it must be changed (by the ruling) or the build filed in the same change.
 
 **Principle:** A passing test is a written claim about behaviour; when a decision changes the behaviour, the tests are part of what the old decision left behind.
+
+### Observation 484: A merge that conflicted in a browser-test file must run that file before the full gate set
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** Two branches each appended a test to the end of the same browser-test file; the merge conflicted, both sides were kept by hand, the type check passed, and the full gate set was started. Its browser stage stopped at once on a syntax error: the merge tool had treated the last closing lines as common to both sides, so one test lost its ending. A whole gate run was spent finding it.
+**Skill:** New skill candidate: gate-run preflight (the project's shipping rule and bug-check order)
+**Type:** open-source
+**Phase/Area:** What is run between resolving a merge conflict and starting the long gate set
+
+**Issue:** The project's type check does not cover the browser-test folder, so a broken test file is invisible until the long run reaches it. The resolution looked right because every conflict marker was gone.
+
+**Suggested improvement:** After resolving any conflict by hand, run each conflicted file's own check before the long gate set: the test file itself for a test, the type check for source. Two tests appended at the same place share their trailing lines - read the join, not just the markers.
+
+**Principle:** A hand-resolved conflict is unverified code; the cheapest check that can load each conflicted file comes before the expensive run, never after.
+
+### Observation 485: "Nothing else on the PC during a gate run" includes read-only reviewers and research helpers
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** A full gate run was started while a read-only reviewer (an external model's CLI) and a read-only research helper were both still working. Two tests known to be unsteady under load failed, and the run had to be repeated. The same lesson had been written down earlier in the session for look scripts and preview servers only.
+**Skill:** New skill candidate: gate-run preflight (the project's shipping rule and bug-check order)
+**Type:** open-source
+**Phase/Area:** What may run beside the long gate set
+
+**Issue:** The earlier note named the things that had caused the failure before (browser look scripts), so a different kind of concurrent work - "it only reads files" - was judged safe. Timing-sensitive tests do not care what kind of work takes the processor.
+
+**Suggested improvement:** State the rule by its cause, not its last instance: while the gate set runs, start nothing and let nothing else be running - reviewers, helpers, builds, browsers. Order the night so reviewers run while the builder is fixing, and gates run alone.
+
+**Principle:** Write a lesson as the mechanism that failed, not the example that exposed it; the next instance will not look like the last one.
+
+### Observation 486: A walk script that boots in memory-only mode cannot check what is saved
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** A scripted walk of a feature that changes a saved record included a "reload and it is still there" step. The script opened the app with the switch that keeps everything in memory only (used by look scripts for a clean start), so the reload showed nothing saved and the step failed - then later steps passed vacuously because the thing they checked was absent.
+**Skill:** New skill candidate: scripted walk authoring (the project's bug-check order, the walk section)
+**Type:** open-source
+**Phase/Area:** How a walk script starts the app, and how its steps assert
+
+**Issue:** Two faults in the walk itself: the clean-start switch defeats persistence, and a step phrased as "X is not there" passes when an earlier failure already removed X.
+
+**Suggested improvement:** A walk that includes any saved-data step starts from real storage in a fresh browser profile (clean by construction), never the memory-only switch. Phrase each step so that a missing precondition fails it - assert the thing existed before asserting it went.
+
+**Principle:** A check that can pass for the wrong reason is not a check; make every step depend on evidence that its precondition held.
