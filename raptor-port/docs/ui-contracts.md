@@ -9518,6 +9518,19 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   no small print is ONE line. A tap anywhere on the card opens the input's window to change or delete it (D718); the
   card's button is its names and kind. **The SANS day's card is NOT this card** (D723 reading 3; D647, D649 — pucks
   with the CAT; the bullet above).
+- **THE INPUTS LIST AND CALENDAR AFTER THE DESIGN VET (owner D729, 10 Oct 26 — "Yes to all"; the build: `OUTSTANDING.md`
+  `[INPUTS-VET]`).** (V1) The list has NO form of its own: one "+ Input" button beside its dates button opens the
+  window the calendar opens. (V2) On the desktop table the small print under a remark is "By Saber", only where
+  someone else filed the input or it is for several people; the full stamp is in the input's window. (V3) The window
+  carries no paragraph of instructions; a shared input keeps "Date changes apply to all N." (V4) On the month a shared
+  input's bar reads its count first ("4 · Meeting"); a timed input's bar is lighter than an all-day one, with a solid
+  edge. (V5) The gear's settings, "How this works", the empty list and the phone's filters say the same in fewer
+  words; the table's last column is "Changed"; the colour key reads "duty". The drawings: `docs/mock/inputs-vet.html`.
+- **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
+  corner already says when a several-day input ends, so the card does not print the same words again from its
+  remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
+  schedule's row, the desktop table and the input's window are untouched. Step 2 - the app no longer writing the date
+  into remarks at all - is `OUTSTANDING.md` `[TILL-FROM-DATES]`, not built.
 - **ON THE DESKTOP LIST A SHARED INPUT NAMES EVERYONE, AND THE KIND KEEPS ITS PILL (owner D727, 10 Oct 26 — "A"; NOT BUILT
   YET: `OUTSTANDING.md` `[INPUTS-VET]`).** The table's Name cell is to read every name of a shared input, A to Z, wrapping in
   its column (today it reads the first name and a count, "Drifter +3", the rest in a tooltip); the kind stays in its
