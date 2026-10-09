@@ -15,6 +15,8 @@ reads: Astra and Sol 6.1, each blind (D590).
    showed a note that already had people. *Recommended: keep it; it is the only way to give a written note its
    people.* Nothing waits on it.
 
+**BOTH ANSWERED, 9 Oct 26 — "yes as recommended":** 1 — yes, the delete’s list names the notes, as a small later job (D710); 2 — the small "+" stays (D709).
+
 ## 1. The tier, and what it meant
 
 **Tier: FULL** — question 3 of the checking guide (saved data: what a note record is, and how an older one is read)
