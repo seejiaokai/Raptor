@@ -9,6 +9,11 @@
 //   QUESTION 3 — a several-day input's card says "till 17 Jul" at its right AND in its remark.
 //                drawn: the automatic "till <date>" left out of the remark on the card; other words stay.
 //
+//   THE WHOLE SET  — asked the same day ("if I do A can u show me how the inputs calander desktop and mobile look
+//                like as well as the list. Like wise for b"): Thu 23 Jul opened on the calendar on a desktop and on a
+//                phone, the phone's month and its list, AS BUILT (A and B change the desktop table only) — and the
+//                cards drawn with the table's pill, should he want the pill everywhere.
+//
 //   node scripts/handpass/mk-card-questions.mjs <out dir>          (LOOK_URL — the built bundle; default :4233)
 import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync } from 'node:fs'
@@ -88,6 +93,14 @@ async function world(phone) {
   return { ctx, page, tap, openDay, file, list, shot }
 }
 
+/* "THE PILL EVERYWHERE", drawn: the cards' kind in the table's pill (its own measures; the card's ground is the pill's
+   usual fill, so the pill takes the panel behind it to be seen) */
+const PILL = '.icard-kind{font-size:9.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel);border:1px solid var(--edge);color:var(--ink-2);vertical-align:1px}'
+const pill = (page, on) => page.evaluate(([css, on]) => {
+  document.querySelector('#mockPill')?.remove()
+  if (on) { const st = document.createElement('style'); st.id = 'mockPill'; st.textContent = css; document.head.appendChild(st) }
+}, [PILL, on])
+
 /* ───────────── QUESTION 3 — "till" said twice — a phone ───────────── */
 {
   const { ctx, page, openDay, file, list, shot } = await world(true)
@@ -136,9 +149,17 @@ async function world(phone) {
 
 /* ───────────── QUESTION 2 — the desktop table: "Saber +3" and the pill ───────────── */
 {
-  const { ctx, page, file, list, shot } = await world(false)
+  const { ctx, page, file, list, shot, openDay } = await world(false)
   /* beside the demo's shared meeting of four (Thu 23 Jul): one for nine people, so a long list is seen too */
   await file({ iso: '2026-07-23', type: 'Event', several: ['Ranger', 'Ace', 'Drifter', 'Vapor', 'Blade', 'Cinch', 'Echo', 'Wisp'], title: 'Squadron photo', from: '15:00', to: '15:30' })
+  /* THE WHOLE SET he asked to see for A and for B (10 Oct 26): the Inputs calendar on a desktop, that day opened */
+  await openDay('2026-07-23'); await page.locator(`${DAY} [data-testid^="idy-row-"]`).first().waitFor(); await page.waitForTimeout(3600)
+  await page.mouse.move(2, 2)
+  await page.screenshot({ path: join(OUT, 'set-cal-desk.png') })
+  await shot('set-cal-desk-day', `${DAY}`, 6)
+  await pill(page, true); await page.waitForTimeout(150)
+  await shot('set-cal-desk-day-pill', `${DAY}`, 6)
+  await pill(page, false)
   await list()
   /* only the rows round that day, so the table's own head stands right above them */
   const kept = await page.evaluate(() => {
@@ -172,6 +193,33 @@ async function world(phone) {
   await page.waitForTimeout(200)
   await shot('q2-table-names-grey', '#intbl thead, #inBody tr')
   await shot('q2-table-names-grey-left', '#intbl thead, #inBody tr', 8, 700)   // the columns in question, readable on a phone
+  await ctx.close()
+}
+/* ───────────── THE WHOLE SET, a phone: the same day opened, and the list at that day ───────────── */
+{
+  const { ctx, page, openDay, file, list, shot } = await world(true)
+  await file({ iso: '2026-07-23', type: 'Event', several: ['Ranger', 'Ace', 'Drifter', 'Vapor', 'Blade', 'Cinch', 'Echo', 'Wisp'], title: 'Squadron photo', from: '15:00', to: '15:30' })
+  await openDay('2026-07-23'); await page.locator(`${DAY} [data-testid^="idy-row-"]`).first().waitFor(); await page.waitForTimeout(3600)
+  const DAYBOX = `${DAY} .win-bar, ${DAY} #icPopAdd, ${DAY} [data-testid^="idy-row-"]`
+  await shot('set-cal-phone', DAYBOX, 10)
+  await pill(page, true); await page.waitForTimeout(150)
+  await shot('set-cal-phone-pill', DAYBOX, 10)
+  await pill(page, false)
+  /* the month itself, the day window put away */
+  await page.keyboard.press('Escape'); await page.waitForTimeout(400)
+  await page.screenshot({ path: join(OUT, 'set-cal-phone-month.png') })
+  await list()
+  await page.evaluate(() => {
+    const t = [...document.querySelectorAll('[data-testid="inl-day"]')].find(el => /23 Jul/.test(el.textContent))
+    if (!t) return
+    t.scrollIntoView({ block: 'start' }); window.scrollBy(0, -130)
+    t.setAttribute('data-mockbox', '')
+    for (let n = t.nextElementSibling; n && !n.matches('[data-testid="inl-day"]'); n = n.nextElementSibling) n.setAttribute('data-mockbox', '')
+  })
+  await page.waitForTimeout(3600)
+  await shot('set-list-phone', '[data-mockbox]', 12)
+  await pill(page, true); await page.waitForTimeout(150)
+  await shot('set-list-phone-pill', '[data-mockbox]', 12)
   await ctx.close()
 }
 await browser.close()
