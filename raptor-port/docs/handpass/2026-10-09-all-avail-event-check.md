@@ -5,8 +5,9 @@ ONE check (D485). Host and builder: Opus 5.5. The plan (`docs/superpowers/plans/
 version 2) was read by Astra and by Sol 6.1, each blind, before the build: both "CLEAN WITH THESE EXACT CHANGES". Scenario
 design: Astra. Code reads: Astra and Sol 6.1, each blind (D590).
 
-**STATE OF THIS SHEET: the walk is done and recorded (§5); the gates, the two code reads and his look card (§6–§8) are
-filled as each is done. A section that says "to do" has not been done.**
+**STATE OF THIS SHEET: CLOSED but for his look (§8).** Twelve faults found and fixed, each a failing test first — eight
+by the walk (W1–W8, two of them older faults of a published day that are on `main` too), four by the two blind code
+reads (R1–R4); the gates wholly green on the last code (§7).
 
 ## 0. Questions waiting for him
 
@@ -85,13 +86,13 @@ walk" = not yet.*
 | 10 | The Inputs List — the "OIL?" chip | YES | YES | — | walker A S18 |
 | 11 | The Inputs month — the bar and its tip | YES ("ALL AVAIL · Duty"; a phone's narrow bar shows the name, the kind in its tip) | YES | — | host H3, P2; walker A S37 |
 | 12 | The Inputs month — a drag of the bar to another day / over a second day | YES | YES (a move; no stretch gesture exists) | — | walker A S30 |
-| 13 | The opened day — the card, its small print, its filter | YES — the name as words, as for a man (not a puck: §5.3) | YES | — | host H4; walker A S37 |
+| 13 | The opened day — the card, its small print, its filter | YES — the name as words, as for a man (not a puck: §5.3) | YES (after R4: Delete / Backspace refused for another member, naming the filer) | — | host H4; walker A S37 |
 | 14 | The bell (the filer's; nobody else's) | YES | YES | — | walkers A S17, C S15 |
 | 15 | The schedule's request row — Edit Schedule's week | YES | YES | the count beside the puck | host H7, H8 |
 | 16 | The schedule's request row — the Scheduler Board | YES | YES | the count; the OIL Earn bar | host H9–H11; walker B S39 |
 | 17 | The schedule's request row — View-only Sched (a member, a guest) | YES | read only, as it must be | — | walker C S51 |
 | 18 | The count chip and the ALL AVAIL window — "Who's available" | YES | YES | — | host H8, P3; walker B S40, S41 |
-| 19 | The ALL AVAIL window — "Who earns OIL" (after Yes / No / no answer) | YES | YES | the hint at its foot | host H10, H11; walker B S7–S9 |
+| 19 | The ALL AVAIL window — "Who earns OIL" (after Yes / No / no answer) | YES (after R3: the hint states the default, also once a man is credited and the window is reopened) | YES | the hint at its foot | host H10, H11; walker B S7–S9 |
 | 20 | OIL Earn — the row's name (no whole-row switch) and a typed man's puck | YES (after W2, W3) | YES | — | host H9; walker B S8 |
 | 21 | Personal Inputs on the week and the board (the echo; Accept / Undo; no "→ Unavail") | YES | YES | — | host H13; walker B S32 |
 | 22 | Unavailable (never there) | NO-because: Unavailable names a real person's day — refused, and the button is not drawn | — | — | host H13; walker B S32; `placeholderdoors` |
@@ -118,12 +119,12 @@ walk" = not yet.*
 ### 3c. The doors — every action the data allows, and the control that does it
 | Action | Control | Result |
 |---|---|---|
-| File for ALL AVAIL / ALL | the Person list's two entries (editor, board dialog, List form) | walked — a working control in every case (§5.1, §5.2) |
+| File for ALL AVAIL / ALL | the Person list's two entries (editor, board dialog, List form) | the editor's window and the List's form: walked, a working control (§5.1, §5.2). The board's own dialog: NOT WALKED — its list is drawn by the same shared group; carried by reading only (§5.3) |
 | Answer its OIL question | the question at the save; the bell (filer); the List's "OIL?" chip (admin); the editor's "Change…" | walked — a working control in every case (§5.1, §5.2) |
 | Switch one man | OIL Earn → the row's count → the window → his puck | walked — a working control in every case (§5.1, §5.2) |
 | Change its day / hours / kind / remark | its window; the List's pencil; a drag of its bar; the time cells | walked — a working control in every case (§5.1, §5.2) |
 | Change who it is for (admin) | its window / the pencil — never a drag onto it on the schedule | walked — a working control in every case (§5.1, §5.2) |
-| Take it off the programme / put it back | Personal Inputs: Undo / Accept — never "→ Unavail" | walked — a working control in every case (§5.1, §5.2) |
+| Take it off the programme / put it back | Personal Inputs: Undo / Accept — never "→ Unavail"; and an input already under Unavailable turned into a placeholder's leaves it (R1) | walked — a working control in every case (§5.1, §5.2) |
 | Delete it | its window; the opened day's card; the List | walked — a working control in every case (§5.1, §5.2) |
 | Refuse a wrong kind / two days / a group | the picker's line and one press; the Save's sentence; the save boundary | walked — a working control in every case (§5.1, §5.2) |
 
@@ -291,13 +292,62 @@ drawn by `accCtl`), and the three were cut again: **RED. 27 of 27 caught.**
 | B25 | the demo's two inputs | `state/demostamps` |
 | B26 | the "→ Unavail" button | `placeholderdoors` (after the new test) |
 
-## 6. The two reads of the code
+### 5.6 The re-walk — the final build, after every fix (W1–W8, R1–R4)
+`scripts/handpass/aa-host-walk.mjs` again, on the build the final gate run made, its pictures kept apart from the first
+walk's (`docs/img/handpass/2026-10-09-all-avail-event-check/rewalk/`, 22): **20 of 20 PASS, no console or page error.**
+Opened by the host: `rewalk/h11b-availwin-oil-no-one-credited` — after the filer's No and one tap, Reaper is lit "FO",
+the tab reads "Who earns OIL 1 of 45", the row's chip "1 of 45 earn", and the window says "Reaper earns OIL from duty
+again". What the re-walk did NOT drive again: the walkers' publication orders (W7, W8, R2 are comparisons of a published
+day — carried by `engine/oildormantkey.test.ts`, which calls the comparison directly on fixtures written as the app
+writes them; the walkers' own failing scripts for S14 and S20 are kept, `scripts/handpass/aa-C-s14*.mjs`,
+`aa-C-s20a.mjs`, for whoever wants to see them pass on screen) and R4's keyboard refusal (pressed for real in jsdom,
+`placeholderdoors.test.tsx`).
 
-To do.
+## 6. The two reads of the code (each blind; with this sheet in hand; their reports are kept beside the briefs)
 
-## 7. The gates
+The brief: `docs/superpowers/briefs/2026-10-09-all-avail-event-code-read.md`. Reports:
+`docs/superpowers/briefs/2026-10-09-reads/all-avail-event-code-astra.md`, `…-code-sol.md`. **Both: CHANGES REQUIRED — two
+findings each, all four different, all four real.** Each was reproduced as a failing test before its fix.
 
-To do.
+| # | Reader | The failure | Cause | The fix | Test | New or older |
+|---|---|---|---|---|---|---|
+| R1 | Astra | a named man's "Other" already under Unavailable, turned into an ALL AVAIL / ALL input in an editor, STAYED under Unavailable: no row on the programme, no crowd, and nobody able to earn from the filer's Yes | an edit keeps a request's filing; the three rules did not speak of it | a fourth rule — never under Unavailable — in the one body, so the save boundary holds it; the edit takes such an input back onto the programme | `placeholderinput`, `placeholderdoors`, `placeholderlist` | older filing-keeping code, made reachable by this change's Person choices |
+| R2 | Astra | W7's repair was incomplete: a taken-off request that had ever had ONE MAN switched, then deleted, still read "1 pending" and broke the sign-offs — nobody's OIL moved | a scheduler's switch about a man on a request is dropped on read while the request stands without its row, and counted again once it is deleted | a decision about a request that is dormant or gone is in neither side of the comparison (`oilev.ts keyedDecisions` — the key, the "only the inputs moved" test, and so the signature key); the stored decisions are untouched | `engine/oildormantkey` | older (on main); the half of W7 the first fix missed |
+| R3 | Sol | after the filer's No, with one man credited by the scheduler, the window (closed and opened again) said "so nobody behind it earns" beside "1 of 2" and a lit puck | the hint read the filer's answer alone | it states the DEFAULT ("by default nobody behind it earns") with an instruction right for a mixed list | `ui/oilplaceholderclaim` (No → grant → close → reopen, both placeholders; a typed man; no answer) | new with this change |
+| R4 | Sol | Delete or Backspace on an ALL AVAIL input's card in the opened day told another member "Only ALL AVAIL or an admin can delete this input" | W5 corrected the editor's line and missed the keyboard's | it names whoever filed it | `placeholderdoors` (both keys, both placeholders; seen red with the fix taken out) | an older line, made reachable by this change |
+
+**Their notes on the tests and this sheet, each acted on:** the browser test's reload step proved the input and its answer,
+never its row (Astra) — it now proves the row and its count; the reassign test built a placeholder input under Unavailable,
+a record that may not exist (Astra) — it uses a permitted one, and the forbidden record is tested as a refused write; the
+window fixtures named a filer who is nobody (Sol) — a real one; "CAT or seat" proved CAT only (Sol) — seat has its own
+test; this sheet's door table claimed every filing door was operated while row 4 said the board's dialog was not (Sol) —
+the table now says which were (§3c).
+**Found sound by both, by tracing (their explicit negatives):** the one OIL default and that it reaches the credit, every
+switch, every figure and count; the direction of each tap; a typed man's precedence and no double credit; an issued day
+reading its own frozen answer, crowd and decisions, never live availability; the save boundary's check judging the whole
+saved record for every writer, a restore included; the permissions and the filer's bell; the three distinct filter
+values; Event's flags, the declared types and both twins of the original's suite; W1–W6 and W8.
+**Not repeated by a second round of reads:** the four fixes are small, each pinned by a test that was red, and the gates
+ran on them (§7); a second static round is what the checking order calls review pile-on. The re-walk (§5.6) drove the
+build that carries them.
+
+## 7. The gates — both runs watched, under the PC's lock (`node scripts/gatelock.mjs run`)
+
+| Gate | After the walk's fixes (W1–W8) | FINAL — after both reads' fixes (R1–R4), commit `a5ac64c7` |
+|---|---|---|
+| Unit | 9542 / 9542 (571 files) | **9560 / 9560** (571 files) |
+| Build (typecheck + bundle) | clean | **clean** |
+| The original's own assertions (tfin) | 728 / 0 | **728 / 0** |
+| Browser tests (e2e) | 733 passed, 0 failed | **733 passed, 0 failed, 57 skipped** |
+| Tracker smoke | 445 / 0 | **445 / 0** |
+| Rule coverage | OK | **OK** |
+| Documents | OK | **OK** (over its size tripwire by 25110, deferred — D29: a change under `src/` never trims a document) |
+
+Before this work the branch stood at unit 9397, e2e 728: +163 unit tests and +5 browser tests are this job's.
+`perms.test.ts` and `perms-scan.test.ts` ran green in the unit gate; the permissions table's `Input` row (data-model §11)
+gained the placeholder note.
+
+`Walk: docs/handpass/2026-10-09-all-avail-event-check.md · about 560 pictures (host 44, walkers about 520) · 28 + 9 surfaces · 56 scenarios + 20 host steps · MISSING: 12 fixed (W1–W8, R1–R4), 8 filed ([ALLAVAIL-CHECK-SEEN]), 1 named and not walked (the board's own dialog)`
 
 ## 8. His look — five minutes on his iPhone, on this branch's preview link
 
