@@ -40,7 +40,8 @@ export async function signIn(page, who) {
 }
 /** Sign out through the Logout button and sign in as another user, in the same world. */
 export async function switchUser(page, who) {
-  await page.locator('#logout').click()
+  if (!(await page.locator('#logout').isVisible().catch(() => false))) { await page.locator('#burger').click(); await page.waitForTimeout(500); await page.locator('#drawerLogout').click() }
+  else await page.locator('#logout').click()
   await page.waitForTimeout(500)
   const conf = page.getByRole('button', { name: /^(Logout|Sign out|Yes|Confirm|OK)/ })
   if (!(await page.locator('#luser').isVisible().catch(() => false)) && await conf.count()) { await conf.first().click(); await page.waitForTimeout(500) }
@@ -80,10 +81,11 @@ export async function toMonth(page, year, mon0) {
   }
 }
 export async function closeWins(page) {
-  for (let i = 0; i < 4; i++) {
-    const x = page.locator('[data-testid="win-inputsday-x"]:visible, [data-testid="win-inputedit-x"]:visible').first()
-    if (!(await x.count())) break
-    await x.click().catch(() => {}); await page.waitForTimeout(250)
+  for (let i = 0; i < 8; i++) {
+    const xs = page.locator('[data-testid="win-inputedit-x"], [data-testid="win-inputsday-x"]')
+    let clicked = false
+    for (const x of await xs.all()) { if (await x.isVisible().catch(() => false)) { await x.click({ force: true }).catch(() => {}); await page.waitForTimeout(350); clicked = true; break } }
+    if (!clicked) break
   }
 }
 export async function openDay(page, iso) {
@@ -212,6 +214,8 @@ export async function toast(page) {
 import * as L from './lib.mjs'
 /** Issue a day (four sign-offs + Publish day / Publish AL) through the board's own controls. */
 export async function issue(page, di) {
+  await L.closeBoard(page)
+  await L.go(page, 'inputs')
   await L.board(page, di)
   const r = await L.publish(page, di)
   await page.waitForTimeout(300)

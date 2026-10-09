@@ -875,9 +875,19 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, me
      it is the whole of its key, and a day with no puck on it still keys to ''
      and reads exactly as before. */
   if (!ev.earns) return sent ? `${ev.iso}|||${sent}` : ''
-  const ins = ev.inputs.map(i => insSeg(day, i)).join(',')
+  const ins = keyedInputs(ev).map(i => insSeg(day, i)).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
 }
+/** THE REQUESTS THE COMPARISON IS MEASURED ON — every one but a DORMANT one (owner, D174 / D176, 25 Sep 26: a request
+ *  that was not there when the day was published, filed since and taken off — or taken off at publication and since
+ *  deleted — "is no pending change — the day reads 0"). That held on a working day, where the request axis alone
+ *  speaks; on a day that EARNS this key spoke too, and it carried every request covering the date, a dormant one
+ *  included — which credits nobody (oilInputEligible) — so its mere presence, or its going, read "What this day earns
+ *  changed" and took the four sign-offs down (walker C of the ALL AVAIL check, 9 Oct 26; older than that job — the
+ *  same key is on main). A request that STANDS and is then taken off still moves the key: it is in the issued side and
+ *  in neither side's dormant set (D114). One body for the key and for oilMovedInputsOnly. Pinned by
+ *  oildormantkey.test.ts. */
+const keyedInputs = (ev: OilEvidence): OilInputEv[] => ev.inputs.filter(i => i.acc !== 'r')
 /** one input's part of the key — ONE spelling, shared with oilMovedInputsOnly below */
 const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`
 
@@ -891,8 +901,8 @@ export function oilMovedInputsOnly(now: OilEvidence | null | undefined, nowDay: 
   if (now.earns && oilDecisionsKey(now.d) !== oilDecisionsKey(was.d)) return null
   const iids: string[] = []
   if (now.earns) {
-    const a = new Map(was.inputs.map(i => [String(i.iid), insSeg(wasDay, i)]))
-    const b = new Map(now.inputs.map(i => [String(i.iid), insSeg(nowDay, i)]))
+    const a = new Map(keyedInputs(was).map(i => [String(i.iid), insSeg(wasDay, i)]))
+    const b = new Map(keyedInputs(now).map(i => [String(i.iid), insSeg(nowDay, i)]))
     new Set([...a.keys(), ...b.keys()]).forEach(id => { if (a.get(id) !== b.get(id)) iids.push(id) })
   }
   /* …and WHO a placeholder stands for (D44's frozen crowd): a leave filed by a man in ALL AVAIL's crowd takes him out

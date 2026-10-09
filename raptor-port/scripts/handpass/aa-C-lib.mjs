@@ -328,9 +328,9 @@ export async function jumpWeek(page, iso) {
     const [mm, yy] = (await head()).split(' ')
     const diff = y * 12 + (m - 1) - (+yy * 12 + MON3.indexOf(mm))
     if (!diff) break
-    await page.locator(diff > 0 ? 'button:has-text("›")' : 'button:has-text("‹")').last().click(); await sleep(250)
+    await page.locator('#weekCal ' + (diff > 0 ? 'button:has-text("›")' : 'button:has-text("‹")')).first().click(); await sleep(250)
   }
-  await page.locator('button', { hasText: new RegExp('^' + d + '$') }).filter({ visible: true }).first().click(); await sleep(900)
+  await page.locator('#weekCal button', { hasText: new RegExp('^' + d + '$') }).first().click(); await sleep(900)
 }
 /** Archive a man through Admin -> Users -> his row -> Archive (from today). */
 export async function archivePerson(page, pid) {

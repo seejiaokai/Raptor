@@ -84,6 +84,7 @@ for (const ph of ['allavail', 'all']) {
   await pic(page, `s30-${ph}-7-listadd-crossmonth`)
   // 5) List pencil on a saved one-day input
   await closeWins(page)
+  await page.locator('#inCalBtn').click(); await sleep(500)
   await fileInput(page, { iso: '2026-07-24', type: 'Duty', person: ph, remarks: `walkS30 pencil ${ph}`, start: '09:00', end: '12:00' }).catch(e => console.log('file for pencil failed', String(e).slice(0, 100)))
   await closeWins(page)
   await listAll(page); await listSearch(page, `walkS30 pencil ${ph}`)
