@@ -6,7 +6,7 @@
    "role": "member Ranger (own input)",
    "status": "PASS",
    "said": [
-    "ok: (setup) a timed own Meeting and a timed shared two-day Meeting saved — [\"imv1l3otf7t2ait\",2]",
+    "ok: (setup) a timed own Meeting and a timed shared two-day Meeting saved — [\"imv1l58vtd1l005\",2]",
     "ok: the bar lifts and follows the mouse (a ghost, the date under it lights), legible — {\"ghost1\":1,\"over\":1,\"ghostTxt\":{\"text\":\"Ranger · S58 own\",\"bg\":\"color(srgb 0.195471 0.174758 0.130525)\",\"color\":\"rgb(241, 244, 247)\",\"cls\":\"ib-bar amb timed ic-ghost lift\"}}",
     "ok: dropped on the next day: it moved one day, keeping its hours and (still timed) look — {\"before\":[[\"Jul 7\",\"\",\"540-600\"]],\"after\":[[\"Jul 8\",\"\",\"540-600\"]],\"timed\":true}",
     "ok: the release did not open the input it moved",
@@ -44,21 +44,19 @@
    "n": 59,
    "size": "phone 390x844 (touch)",
    "role": "member Ranger",
-   "status": "NOT RUN",
+   "status": "PASS",
    "said": [
     "ok: a tap on a bar opens THAT input in its window — {\"wins\":[\"win-inputedit\",\"win-inputedit-x\"],\"ttl\":{\"own\":\"S59 own\",\"type\":\"Meeting\"}}",
     "ok: a tap on empty space of its date opens that DAY, whose card agrees with the bar — {\"day\":true,\"edit\":false,\"cards\":[\"S59 own\"]}",
-    "cells showing a \"+N more\" — []",
-    "no crowded day in the demo; crowding Jul 22 by filing four more",
-    "NOT RUN: \"+N more\" — no cell showed a \"+N more\" after crowding: {\"txt\":\"\",\"more\":[]}"
+    "ok: \"+2 more\" opens the intended DAY with all its cards (the month showed the rest) — {\"day\":true,\"edit\":false,\"title\":\"Wed 22 Jul\",\"n\":6}"
    ],
    "pics": [
     "s59-bar-tap.png",
     "s59-empty-space-tap.png",
-    "s59-crowded.png"
+    "s59-crowded.png",
+    "s59-more.png"
    ],
-   "note": "",
-   "hasNotRun": true
+   "note": ""
   },
   {
    "n": "59-desktop",

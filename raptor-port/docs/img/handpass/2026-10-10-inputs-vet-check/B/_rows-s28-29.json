@@ -17,6 +17,7 @@
     "ok: all four together: the new input is in view, FIRST and LIT, and the filters were not changed — {\"row\":{\"at\":0,\"lit\":true,\"onScreen\":true},\"before\":{\"search\":\"zz-no-match\",\"person\":\"Wisp\",\"type\":\"LL\",\"range\":\"📅 5 Oct → 20 Oct\"},\"after\":{\"search\":\"zz-no-match\",\"person\":\"Wisp\",\"type\":\"LL\",\"range\":\"📅 5 Oct → 20 Oct\"},\"nrows\":1}",
     "ok: all four together: when a filter is next touched the filter rules again (the row goes away if the filter hides it) and no light is left — {\"row2\":null,\"lit\":0}",
     "rows lit straight after the filters were reset (earlier saves, filters touched in between) — 3",
+    "lit rows 1.75 s after the heading press — 1",
     "FAIL: with no filter hiding it: lit after the save, light lets go when a column heading is pressed — {\"lit1\":1,\"lit2\":1}"
    ],
    "pics": [
@@ -31,7 +32,8 @@
     "s28-5-all_four_together.png",
     "s28-5-released.png",
     "s28-7-after-reset-lights.png",
-    "s28-8-lit-alone.png"
+    "s28-8-lit-alone.png",
+    "s28-9-after-heading-press.png"
    ],
    "note": "four hiding filters, each alone, then together"
   },

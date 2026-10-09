@@ -1,0 +1,92 @@
+{
+ "rows": [
+  {
+   "n": 63,
+   "size": "phone 390x844 (touch)",
+   "role": "member Ranger (shared inputs he filed himself; the demo four-person one is another man's)",
+   "status": "PASS",
+   "said": [
+    "ok: an editable one-person input: no instruction paragraph — {\"h1\":null,\"paras\":[]}",
+    "ok: saved four-person input: \"Date changes apply to all 4.\" — Date changes apply to all 4.",
+    "with Blade ticked but NOT yet saved the line reads — Date changes apply to all 4.",
+    "ok: after one is added and saved: \"…all 5.\" — Date changes apply to all 5.",
+    "with Ace and Wisp unticked but NOT yet saved the line reads — Date changes apply to all 5.",
+    "ok: after two are removed and saved: \"…all 3.\" — Date changes apply to all 3.",
+    "ok: two people reduced to one: the shared line \"…all 2.\" before, and none once one person remains — {\"ha\":\"Date changes apply to all 2.\",\"hz\":null,\"left\":[\"Ranger\"]}"
+   ],
+   "pics": [
+    "s63-one-person.png",
+    "s63-four.png",
+    "s63-five.png",
+    "s63-three.png",
+    "s63-one-left.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 67,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber, then member Ranger",
+   "status": "PASS",
+   "said": [
+    "settings as first opened — {\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"}",
+    "ok: Cancel keeps the previous saved settings — {\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"}",
+    "ok: closing by the X keeps the previous saved settings — {\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"}",
+    "ok: Escape keeps the previous saved settings — {\"vE\":{\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"},\"stillOpen\":0}",
+    "ok: a valid save is there when reopened (cut-off 9, member filing flipped) — {\"lead\":\"9\",\"mf\":false,\"mode\":\"true\"}",
+    "after the invalid save — {\"toast\":\"\",\"windowStillOpen\":1,\"hintTxt\":\"⠿ Inputs calendar settings admins only ✕ CALENDAR Calendar… Day, night or no-fly dates, and holidays. LATE CUT-OFF FOR INPUTS Days before A weekday Days before the week starts Later than this is LATE. Medical is never late. FILING FOR OTHER PEOPLE Members may file duties for others Never leave, medical or SANS. The number of days must be a whole number from 0 to 60. Cancel Save\"}",
+    "ok: an invalid cut-off is explained and does NOT quietly save the checkbox change — {\"msg\":\"\",\"still\":1,\"vI\":{\"lead\":\"9\",\"mf\":false,\"mode\":\"true\"}}",
+    "Undo once, Undo twice (the cut-off and the member switch) — {\"afterSave\":{\"lead\":\"9\",\"mf\":false,\"mode\":\"true\"},\"u1\":{\"lead\":\"9\",\"mf\":true,\"mode\":\"true\"},\"u2\":{\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"},\"base\":{\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"}}",
+    "ok: the cut-off and the member switch undo as separate steps (one Undo reverses one of them, the second the other) — {\"u1\":{\"lead\":\"9\",\"mf\":true,\"mode\":\"true\"},\"u2\":{\"lead\":\"14\",\"mf\":true,\"mode\":\"true\"}}",
+    "after Redo twice — {\"lead\":\"9\",\"mf\":false,\"mode\":\"true\"}",
+    "ok: with member filing OFF, Ranger's Duty is for himself only (a fixed name, no list, no \"Several people\") — {\"sel\":0,\"fixed\":\"Ranger\",\"several\":0,\"gear\":0}",
+    "ok: with it back ON, Ranger's Duty offers other people (a list and \"Several people\") — {\"sel\":63,\"several\":1}"
+   ],
+   "pics": [
+    "s67-gear-open.png",
+    "s67-before-save.png",
+    "s67-invalid.png",
+    "s67-ranger-switch-off.png",
+    "s67-ranger-switch-on.png"
+   ],
+   "note": "a persisting world, signed in again after a saved change"
+  },
+  {
+   "n": 68,
+   "size": "desktop 1440x900",
+   "role": "admin Saber, then member Ranger",
+   "status": "PASS",
+   "said": [
+    "Logic rows with the settings button — [{\"text\":\"Inputs calendar settings…\",\"row\":\"LEAVE, DOWNCHIT AND PERSONAL INPUTS SETTING An absence is booked as one of 24 things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed. The one exception: an input a scheduler \"},{\"text\":\"SANS calendar settings…\",\"row\":\"LEAVE, DOWNCHIT AND PERSONAL INPUTS SETTING An absence is booked as one of 24 things. Every one of them closes the man for the hours it covers — flying, sims, duties and ground slots alike — from the moment it is typed. The one exception: an input a sc",
+    "ok: the Logic page offers the Inputs settings button on its rows — [\"Inputs calendar settings…\",\"SANS calendar settings…\",\"Inputs calendar settings…\"]",
+    "ok: every Logic row opens the same settings window with the same words as the gear — [{\"i\":0,\"open\":1,\"same\":true},{\"i\":2,\"open\":1,\"same\":true}]",
+    "ok: the shortened helper lines are there through the Logic route — ⠿ Inputs calendar settings admins only ✕ CALENDAR Calendar… Day, night or no-fly dates, and holidays. LATE CUT-OFF FOR INPUTS Days before A weekday Days before the week starts For the week of Mon 26 Oct, inputs are due by the end of Mon 12 Oct. Later than this is LATE. Medical is never late. FILING ",
+    "ok: \"Calendar…\" opens the calendar configuration window — {\"wins\":[\"win-days\",\"win-days-x\",\"win-inputsset\",\"win-inputsset-x\"],\"setOpen\":true,\"ttl\":[\"Calendaradmins only\",\"Inputs calendar settingsadmins only\"]}",
+    "after closing the calendar window the settings window is — gone",
+    "ok: Ranger has no Inputs gear — 0",
+    "ok: Ranger has no working admin settings route through Logic (no Logic buttons, or the window opens without a Save) — {\"lg\":{\"page\":true,\"btns\":0},\"opened\":null}"
+   ],
+   "pics": [
+    "s68-gear.png",
+    "s68-logic-opened.png",
+    "s68-calendar-config.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 69,
+   "size": "phone 390x844",
+   "role": "guest",
+   "status": "NOT RUN",
+   "said": [
+    "NOT RUN: the guest / view-only boundary — the sign-in card offers no guest route — only username, password and \"Sign in\" ([\"|Sign in\"]); no account was created and no unknown name was tried"
+   ],
+   "pics": [
+    "s69-card.png"
+   ],
+   "note": "",
+   "hasNotRun": true
+  }
+ ],
+ "errs": []
+}

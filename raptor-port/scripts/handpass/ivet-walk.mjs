@@ -230,6 +230,35 @@ const rowOf = (p, iid) => p.evaluate(iid => {
     return { ok: made.length === 3 && new Set(made.map(r => r.grp)).size === 1 && !!row && row.name === 'Ace, Saber, Wisp' && row.by === 'By Saber' && row.lit && !!pill && pill.radius > 8 && pill.text === 'Meeting', detail: JSON.stringify({ row, pill, n: made.length }) }
   })
 
+  await step('A8b (the readers’ finds, walked) a shared input picked "Ace, then Wisp" far down a long list is LIT and BROUGHT ON SCREEN; and a remark "-5°C kit" keeps its minus on the card', async () => {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    const had = await ids(page)
+    await plus(page, T)
+    await page.selectOption('#inpEditType', 'Meeting')
+    await page.locator(`${WIN} [data-testid="pp-several"]`).click()
+    for (const cs of ['Ace', 'Wisp']) await page.locator(`${WIN} [data-pp="${await id(cs)}"]`).click()
+    await pick(page, '2026-01-06', T)
+    await page.fill('#inpEditRmk', '-5°C cold-weather kit')
+    await pick(page, '2026-01-08', T)                                  // the second tap: 6–8 Jan
+    const typed = await page.inputValue('#inpEditRmk')
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await page.locator('#inpEditSave').click(); await page.locator(WIN).waitFor({ state: 'hidden' }); await page.waitForTimeout(900)
+    const made = await newest(page, had)
+    const row = made[0] && await rowOf(page, made[0].iid)
+    await shot(page, 'A8b-desk-shared-lit-on-screen')
+    await openDay(page, '2026-07-01', T).catch(() => {})
+    await page.keyboard.press('Escape')
+    /* its card, on the opened day of its first date */
+    await page.evaluate(() => window.go('inputs'))
+    if (await page.locator('#inCalBtn[aria-pressed="false"]').count()) await page.locator('#inCalBtn').click()
+    await month(page, 2026, 1, T)
+    await page.locator('#inpCal [data-icday="2026-01-06"]').click({ position: { x: 8, y: 8 } }); await page.locator(DAYWIN).waitFor(); await page.waitForTimeout(250)
+    const card = await page.evaluate(iids => { const c = [...document.querySelectorAll('[data-testid^="idy-row-"]')].find(e => iids.includes(e.getAttribute('data-popiid'))); return c ? { when: c.querySelector('[data-testid="idy-when"]')?.textContent, rmk: c.querySelector('[data-testid="idy-rmk"]')?.textContent ?? null, who: c.querySelector('[data-testid="idy-who"]')?.textContent } : null }, made.map(r => r.iid))
+    await shot(page, 'A8b-desk-day-minus-kept')
+    await page.keyboard.press('Escape'); await month(page, 2026, 7, T); await toList(page, T)
+    return { ok: made.length === 3 && !!row && row.lit && row.onScreen && /^-5°C cold-weather kit till 8 Jan$/.test(typed) && !!card && card.rmk === '-5°C cold-weather kit' && /till 8 Jan$/.test(card.when) && card.who === 'Ace, Saber, Wisp', detail: JSON.stringify({ typed, row, card }) }
+  })
+
   await step('A9 ALL AVAIL through "+ Input": several days are refused in words and nothing is saved; one day is saved as ONE record, its row reads "ALL AVAIL" and "By Saber"', async () => {
     await plus(page, T)
     await page.selectOption('#inpEditType', 'Duty'); await page.selectOption('#inpEditPerson', 'allavail')
@@ -589,13 +618,13 @@ const rowOf = (p, iid) => p.evaluate(iid => {
     await page.locator('#inpEditCancel').click()
     return { ok: made.length === 1 && made[0].cs === 'Blade' && !!row && row.by === 'By Ranger' && /only for yourself/.test(why) && /only for yourself/.test(refused) && n1 === before, detail: JSON.stringify({ made, row, why: why.replace(/\s+/g, ' ').slice(0, 90), refused }) }
   })
-  await step('B4 another man’s input opens for him READ ONLY: no Save, no Delete, no line of instructions, and the "?" card still opens', async () => {
+  await step('B4 another man’s input opens for him READ ONLY: no Save, no Delete, no line of instructions, and no "?" he could not press', async () => {
     const other = await page.evaluate(() => window.INPUTS.find(r => r.type === 'Appointment' && !r.grp && window.PEOPLE[r.person]?.cs !== 'Ranger' && r.by !== Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].cs === 'Ranger'))?.iid)
     await page.locator(`#inBody tr[data-iid="${other}"] [data-testid="in-open"]`).click(); await page.locator(WIN).waitFor()
-    const m = await page.evaluate(() => ({ save: document.querySelectorAll('#inpEditSave').length, del: document.querySelectorAll('#inpEditDel').length, hint: document.querySelectorAll('[data-testid="win-inputedit"] .inped-hint').length, ro: document.querySelector('[data-testid="inped-ro"]')?.textContent || '', inert: !!document.querySelector('[data-testid="win-inputedit"] .inped-body')?.hasAttribute('inert') }))
+    const m = await page.evaluate(() => ({ save: document.querySelectorAll('#inpEditSave').length, del: document.querySelectorAll('#inpEditDel').length, hint: document.querySelectorAll('[data-testid="win-inputedit"] .inped-hint').length, help: document.querySelectorAll('[data-testid="win-inputedit"] #inTypeHelp').length, ro: document.querySelector('[data-testid="inped-ro"]')?.textContent || '', inert: !!document.querySelector('[data-testid="win-inputedit"] .inped-body')?.hasAttribute('inert') }))
     await shot(page, 'B4-member-read-only')
     await page.locator('#inpEditCancel').click()
-    return { ok: m.save === 0 && m.del === 0 && m.hint === 0 && /can change this/.test(m.ro), detail: JSON.stringify(m) }
+    return { ok: m.save === 0 && m.del === 0 && m.hint === 0 && m.help === 0 && /can change this/.test(m.ro), detail: JSON.stringify(m) }
   })
   await ctx.close()
 }
