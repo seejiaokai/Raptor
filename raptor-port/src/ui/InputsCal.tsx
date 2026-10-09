@@ -38,7 +38,7 @@ import { hhmm } from '../engine/time'
 import { puck } from './html'
 import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
-import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
+import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
 import { isMe, mayDeleteInput, me } from '../state/perms'
@@ -221,7 +221,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      Guarded by identity, so a NEWER reveal set while this calendar unmounts (a save that switches mode) is kept. */
   const spendReveal=()=>{ if(shown.current&&INPREVEAL===shown.current)clearInpReveal(); shown.current=null }
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
-  const showDay=(iso:string|null)=>{ if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso) }
+  const showDay=(iso:string|null)=>{
+    /* A PICKER ENDS WITH ITS DAY (Sol S2): the day closed or changed with the picker up used to leave the picker
+       standing, and its Cancel, Escape or OK then wrote onto a day no longer open. It is settled first, as Cancel
+       settles it — a new note keeps its words once, unconfirmed ticks are dropped. */
+    if(iso!==popIso&&settlePick.current)settlePick.current()
+    if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso)
+  }
+  const settlePick=useRef<(()=>void)|null>(null)
   useEffect(()=>()=>spendReveal(),[])
   const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null);setDelAsk(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
@@ -316,9 +323,53 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   /* THE PICKER'S THREE ENDS, one body each — its Cancel, Escape and OK all come here. A note being WRITTEN is finished
      by its picker whichever way that closes: with the people ticked, or — with none — as its words alone, exactly as
      leaving its box would have made it; no words and no people, no note (a note with neither is not kept, D695). */
-  const shutPick = () => { pickingNew.current = false; setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); setPickWords('') }
+  /* ONE OPENER, AND IT IS OWNED (Sol S1): while a picker is up it belongs to the note it was opened for — a second
+     "+" (the keyboard could reach one under it) is not a take-over; it does nothing until this one has ended. `words`
+     is given for a NEW note (target ''), taken from its box at that moment. The control that opened it gets the
+     keyboard back when it ends. */
+  const pickOpener = useRef<HTMLElement | null>(null)
+  const openPick = (target: string, day: string, words?: string) => {
+    if (pickFor != null) return false
+    pickOpener.current = document.activeElement as HTMLElement | null
+    setPickWords(words || ''); setPickFor(target); setPickIso(day); setPickSel(new Set())
+    return true
+  }
+  const shutPick = () => {
+    pickingNew.current = false; setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); setPickWords('')
+    const back = pickOpener.current; pickOpener.current = null
+    if (back && back.isConnected) setTimeout(() => { if (back.isConnected) back.focus() }, 0)
+  }
   const finishNewNote = (ids: string[]) => { if (pickWords || ids.length) writeInputs(() => addPlanPuck(pickIso, pickWords, ids)) }
   const cancelPick = () => { if (pickFor === '') finishNewNote([]); shutPick() }
+  settlePick.current = pickFor != null ? cancelPick : null
+  /* THE KEYBOARD STAYS IN THE PICKER while it is up (Sol S1): it is a blocking chooser, and Tab used to walk out of it
+     onto the notes beneath. It takes the focus as it opens; Tab and Shift+Tab turn round at its ends. */
+  useEffect(() => {
+    if (pickFor == null) return
+    const box = document.querySelector('.ic-pick') as HTMLElement | null
+    if (box && !box.contains(document.activeElement)) box.focus()
+    const tab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !box) return
+      const stops = [...box.querySelectorAll<HTMLElement>('button:not([disabled]), [href], input, select, [tabindex]:not([tabindex="-1"])')].filter(n => n.offsetParent !== null || n === document.activeElement)
+      if (!stops.length) { e.preventDefault(); return }
+      const first = stops[0], last = stops[stops.length - 1], at = document.activeElement as HTMLElement | null
+      if (!at || !box.contains(at) || at === box) { e.preventDefault(); (e.shiftKey ? last : first).focus() }
+      else if (e.shiftKey && at === first) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus() }
+    }
+    document.addEventListener('keydown', tab, true)
+    return () => document.removeEventListener('keydown', tab, true)
+  }, [pickFor])
+  /* A NOTE CHANGED BY UNDO OR REDO (state/undo-wire.ts → PLANREVEAL; D672, Sol S3): the month has been turned to it; a
+     day window open on ANOTHER day is brought to its day — it stood over the change. With no day open, or its own day
+     open already, nothing is opened or moved. Spent as it is read. */
+  const planReveal = PLANREVEAL
+  useLayoutEffect(() => {
+    if (!planReveal) return
+    clearPlanReveal()
+    if (popIso != null && popIso !== planReveal.iso) { setPopPuckEdit(null); setDelAsk(null); showDay(planReveal.iso) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planReveal])
   const confirmPick = () => {
     const ids = [...pickSel]
     if (pickFor === '') finishNewNote(ids)
@@ -776,7 +827,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const editing = sched && popPuckEdit === p.id
                   const dragCls = secDrag === p.id ? ' dragging'
                     : secDrag && secOver && secOver.id === p.id ? (secOver.after ? ' dragover after' : ' dragover') : ''
-                  const pick = () => { setPickFor(p.id); setPickIso(iso); setPickSel(new Set()) }
+                  const pick = () => { openPick(p.id, iso) }
                   const tools = sched && <>
                     {!ppl && <button type="button" data-pkadd={p.id} className="ic-note-ppl" aria-label="Add people to this note" title="Add people" onClick={pick}>+</button>}
                     <button type="button" data-ppedit={p.id} aria-label={words ? 'Edit note' : 'Add words to this note'} title={words ? 'Edit' : 'Add words'}
@@ -859,7 +910,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                     onChange={e => setPuckDraft(e.target.value)} onBlur={leave} onKeyDown={blurOnEnter} />
                   <button type="button" className="ic-pkadd ic-newnote-ppl" id="icNewNotePpl" aria-label="Add people to this note"
                     onPointerDown={e => e.preventDefault()} onBlur={leave}
-                    onClick={() => { pickingNew.current = true; setPickWords(puckDraft.trim()); setPopPuckEdit(null); setPuckDraft(''); setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ people</button>
+                    onClick={() => { if (!openPick('', iso, puckDraft.trim())) return; pickingNew.current = true; setPopPuckEdit(null); setPuckDraft('') }}>+ people</button>
                 </div>
               )
             })()}
@@ -1002,7 +1053,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     }
     return (
       <div className="ic-pickwrap" onPointerDown={e => { if (e.target === e.currentTarget) close() }}>
-        <div className="ic-pick" role="dialog" aria-label="Add people" onClick={e => e.stopPropagation()}>
+        <div className="ic-pick" role="dialog" aria-modal="true" aria-label="Add people" tabIndex={-1} onClick={e => e.stopPropagation()}>
           <div className="ic-pick-head">
             <b>Add people</b>
             <span className="ic-pick-n">{pickSel.size} picked</span>

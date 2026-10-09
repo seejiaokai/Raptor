@@ -32,7 +32,7 @@ import { weekOf, dayKeyOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
 import { canEditSched } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -168,7 +168,9 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
       const img: any = (dir === 'undo' ? pl.before : pl.after) || pl.after || pl.before
       const raw = pl.id.startsWith('dm:') ? pl.id.slice(3) : img && typeof img === 'object' && typeof img.date === 'string' ? img.date : pl.id
       const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : ''
-      then = () => { clearInpReveal(); setInpMode('member'); setInpView('cal'); if (iso) setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) }) }
+      /* …and the DAY is handed to the calendar: a day window open on ANOTHER day goes to it (Sol S3), as it does for
+         an input (requestInpReveal) */
+      then = () => { clearInpReveal(); setInpMode('member'); setInpView('cal'); if (iso) { setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) }); requestPlanReveal(iso) } }
     }
     else if(m==='inputs') {
       const changes=fwd.filter(c=>c.collection==='inputs')

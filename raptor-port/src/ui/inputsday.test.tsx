@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor } from './inputedit'
 import { initStore, notify, setSession } from '../state/store'
-import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
+import { requestPlanReveal, setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { storeBackend } from '../engine/hooks'
@@ -402,6 +402,63 @@ describe('a note carries its own pucks (D684, D695)', () => {
     expect(notes().find((p: any) => (p.ids || []).length)!.text, 'the new note keeps ITS words').toBe('Note C')
     expect(notes().find((p: any) => (p.ids || []).length)!.ids).toEqual(picked)
     expect(notes().find((p: any) => p.id === b.id)!.ids || [], 'and B gets nobody').toEqual([])
+  })
+  /* SOL'S READ (the day-window check, 9 Oct 26) — S1: the picker belongs to the note it was opened for until it ends.
+     Another note's "+" pressed meanwhile (the keyboard could reach it under the picker) took the picker over and the
+     new note's words were lost. */
+  it('while the picker is up for a new note, another note’s "+" does not take it over: OK still makes the new note, the other is untouched', async () => {
+    await act(async () => { addPlanPuck(D, 'Older note'); notify() })
+    await open(D)
+    const older = notes()[0]
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'The new one')
+    await click($('#icNewNotePpl'))
+    await click(tid('idy-note-' + older.id)!.querySelector('[data-pkadd]'))
+    const picked = await pickFirst(1)
+    expect(notes().find((p: any) => p.id === older.id)!.ids || [], 'the older note gets nobody').toEqual([])
+    expect(notes().filter((p: any) => p.text === 'The new one').map((p: any) => p.ids)).toEqual([picked])
+  })
+  it('…and Cancel after that still leaves the new note its words', async () => {
+    await act(async () => { addPlanPuck(D, 'Older note'); notify() })
+    await open(D)
+    const older = notes()[0]
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'Kept words')
+    await click($('#icNewNotePpl'))
+    await click(tid('idy-note-' + older.id)!.querySelector('[data-pkadd]'))
+    await click($('#icPickCancel'))
+    expect(notes().map((p: any) => p.text).sort()).toEqual(['Kept words', 'Older note'])
+  })
+  /* S2: the picker ends with its day. Closing the day with the picker up left the picker standing, and its Cancel,
+     Escape or OK then wrote a note onto a day that was no longer open. */
+  it('closing the day ends its picker: the new note’s words are kept ONCE, the picker is gone, and nothing is written afterwards', async () => {
+    await open(D)
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'Keep these words')
+    await click($('#icNewNotePpl'))
+    await click($$('.ic-pickp:not(.already)')[0])
+    await click(tid('win-inputsday-x'))
+    expect(win(), 'the day is closed').toBeNull()
+    expect($('.ic-pick'), 'and its picker with it').toBeNull()
+    expect(notes().map((p: any) => [p.text, (p.ids || []).length]), 'the words kept once, the unconfirmed tick dropped').toEqual([['Keep these words', 0]])
+    await act(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(notes().length, 'nothing more is written').toBe(1)
+  })
+  /* S3 (D672): a note undone or redone while ANOTHER day's window is open — the window is brought to the note's day,
+     as it is for an input (the reveal). It stayed on the other day, over the change. */
+  it('a note changed by Undo while another day is open: the day window goes to the note’s day', async () => {
+    await act(async () => { addPlanPuck(D, 'Undone and back'); notify() })
+    await open('2026-10-08')
+    expect(win()!.querySelector('.win-ttl')!.textContent).toContain('8 Oct')
+    await act(async () => { requestPlanReveal(D); notify() })
+    expect(win()!.querySelector('.win-ttl')!.textContent, 'the window shows the note’s day').toContain('7 Oct')
+    expect(win()!.querySelector('.ic-poppuck-txt')!.textContent).toBe('Undone and back')
+    /* its own day already open, or no day open: nothing is opened or moved */
+    await act(async () => { requestPlanReveal(D); notify() })
+    expect(win()!.querySelector('.win-ttl')!.textContent).toContain('7 Oct')
+    await click(tid('win-inputsday-x'))
+    await act(async () => { requestPlanReveal(D); notify() })
+    expect(win(), 'with no day open the month is enough — no window is thrown over it').toBeNull()
   })
   it('emptying the words of a note that has people keeps the note; emptying one that has none changes nothing', async () => {
     const [a] = crew()

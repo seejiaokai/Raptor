@@ -129,6 +129,7 @@ describe('installGlobalUndo() wires the live cutover', () => {
     const made={type:'inputs.batch',scope:{module:'inputs'},forward:[{collection:'plan',id:'pp:n1',before:null,after:{id:'n1',date:'2026-10-14',text:'Brief',ids:['a','b']}}]} as any
     view.setPage('inputs');view.setInpMode('member');view.setInpView('cal');view.setCalMonth({y:2026,m:11})
     _snapView(made,'undo');expect(view.CALMONTH,'undone from November: October, where it was').toEqual({y:2026,m:10})
+    expect(view.PLANREVEAL,'and the calendar is told the day, so an open day window can go to it (Sol S3)').toEqual({iso:'2026-10-14'})
     view.setCalMonth({y:2026,m:12});_snapView(made,'redo');expect(view.CALMONTH).toEqual({y:2026,m:10})
     /* in view already: nothing moves */
     _snapView(made,'undo');expect(view.CALMONTH).toEqual({y:2026,m:10});expect(view.INPMODE).toBe('member')

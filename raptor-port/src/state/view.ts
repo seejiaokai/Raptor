@@ -95,6 +95,12 @@ export let SANSHL:string|null=null
 export function setSansHl(v:string|null){ SANSHL=v }
 export let INPREVEAL:{iid:string,iso:string,mode:'member'|'sans'}|null=null
 export function clearInpReveal(){ INPREVEAL=null }
+/* A PLANNING NOTE (OR A DAY TITLE) CHANGED BY UNDO OR REDO — the day it is on, for the Inputs calendar to bring an OPEN
+   day window to (D672; the day-window check, 9 Oct 26 — Sol S3: with another day's window open the change was
+   restored behind it). Set by the Undo landing (state/undo-wire.ts), spent by the calendar the moment it is read. */
+export let PLANREVEAL:{iso:string}|null=null
+export function requestPlanReveal(iso:string){ PLANREVEAL=/^\d{4}-\d{2}-\d{2}$/.test(iso)?{iso}:null }
+export function clearPlanReveal(){ PLANREVEAL=null }
 export function requestInpReveal(row:any){
   if(!row||!row.iid)return
   const ordinal=dateOrd(row.date,row.yr)
@@ -911,6 +917,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('cal') },
   { name:'INPMODE', scopes:['session'], reset:()=>setInpMode('member') },
   { name:'INPREVEAL', scopes:['session'], reset:clearInpReveal },
+  { name:'PLANREVEAL', scopes:['session'], reset:clearPlanReveal },
   { name:'SANSHL', scopes:['session'], reset:()=>setSansHl(null) },
   { name:'CALMONTH',scopes:['session'], reset:()=>setCalMonth(null) },
   { name:'MEDASOF', scopes:['session'], reset:()=>setMedAsOf(null) },

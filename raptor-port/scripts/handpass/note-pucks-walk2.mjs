@@ -55,6 +55,11 @@ async function open(kind) {
   say(await page.evaluate(() => document.activeElement && document.activeElement.id) === 'icNewNotePpl' && (await w.notes()).length === 0, '2.1 Tab from the words lands on "+ people" and saves nothing yet')
   await page.keyboard.press('Enter'); await page.locator('.ic-pick').waitFor()
   say((await page.locator('[data-testid="ic-pick-for"]').innerText()).includes('Brief at 0800'), '2.1 Enter there opens the people, the note\'s words in sight')
+  /* Sol S1: the keyboard stays in the picker while it is up - forty Tabs and ten Shift+Tabs never leave it */
+  let out = 0
+  for (let i = 0; i < 40; i++) { await page.keyboard.press('Tab'); if (!(await page.evaluate(() => !!document.activeElement && !!document.activeElement.closest('.ic-pick')))) out++ }
+  for (let i = 0; i < 10; i++) { await page.keyboard.press('Shift+Tab'); if (!(await page.evaluate(() => !!document.activeElement && !!document.activeElement.closest('.ic-pick')))) out++ }
+  say(out === 0, 'S1 the keyboard stays inside the people picker: fifty Tabs never reach the notes or the window under it', `${out} escapes`)
   await page.locator('.ic-pick .ic-pickp:not(.already)').nth(2).click(); await page.locator('.ic-pick .ic-pickp:not(.already)').nth(6).click(); await page.locator('#icPickOk').click(); await page.waitForTimeout(300)
   let ns = await w.notes()
   say(ns.length === 1 && ns[0].text === 'Brief at 0800' && ns[0].ids.length === 2, '2.1 made by keyboard: ONE note, its words and its two people', JSON.stringify(ns))
@@ -120,6 +125,12 @@ async function open(kind) {
   say((await w.shown()).startsWith('oct') && (await w.head('2026-10-28')).words.includes(moving), '2.5 Redo pressed while another month shows: October again, the note on the 28th', await w.shown())
   await page.locator('#undoBtn').click(); await page.waitForTimeout(400)
   say((await w.shown()).startsWith('oct'), '2.5 Undo with October already showing: nothing moves (D672)')
+  /* Sol S3: with ANOTHER day's window open, Redo brings that window to the note's day */
+  await w.openDay('2026-10-07')
+  await page.locator('#redoBtn').click(); await page.waitForTimeout(500)
+  const ttl = (await page.locator(`${win} .win-ttl`).innerText()).trim()
+  say(/28 Oct/.test(ttl) && (await w.notes()).some(x => x.text === moving), 'S3 Redo with another day open: its window goes to the day of the note and shows it', ttl)
+  await w.closeDay()
   await shot(page, 'desk-undo-from-another-month')
   await w.ctx.close()
 }
