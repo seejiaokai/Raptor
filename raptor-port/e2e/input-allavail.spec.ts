@@ -164,9 +164,12 @@ test('the kind "Event": in the type list, filed for several people as ONE bar, a
   expect(rows.every(r => r.type === 'Event')).toBe(true)
   expect(rows[0].grp, 'one shared input').toBeTruthy()
   await expect(page.locator('#inpCal .ib-bar').filter({ hasText: '+1' }).filter({ hasText: 'Event' })).toHaveCount(1)
-  /* and the demo's own Event for ALL, in July */
+  /* and the demo's own Event for ALL, in July — named by its own title since [INPUT-OWN-TITLE] (D715, D716: the demo's
+     Event is titled "Sports afternoon"); its kind is said in the bar's tip, the bar having room for the name only */
   await month(page, 2026, 7)
-  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: 'ALL' }).filter({ hasText: 'Event' }).first()).toBeVisible()
+  const demo = page.locator('#inpCal .ib-bar').filter({ hasText: 'ALL' }).filter({ hasText: 'Sports afternoon' }).first()
+  await expect(demo).toBeVisible()
+  expect((await demo.getAttribute('title') || '').split('\n')[0]).toContain('· Sports afternoon · Event ·')
 })
 
 test('a member may choose it too (D702): he files a Meeting for ALL AVAIL, sees it under Everyone, and it is his to change', async ({ page }) => {
