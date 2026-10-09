@@ -201,7 +201,9 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
         {problem && (
           <div className="pp-why" data-testid="pp-why" role="alert">
             <span>{problem.why}</span>
-            {problem.fix.length > 0 && <button type="button" className="abtn" data-testid="pp-fix" onClick={() => onChange(problem.fix, false)}>{problem.fixLabel}</button>}
+            {/* no press on an input already filed that he reads (`lockOne`): its person is a value there, and the press
+                could change nothing (walker A of the ALL AVAIL check, 9 Oct 26 — a dead "File it for me only") */}
+            {problem.fix.length > 0 && !lockOne && <button type="button" className="abtn" data-testid="pp-fix" onClick={() => onChange(problem.fix, false)}>{problem.fixLabel}</button>}
           </div>
         )}
         {several && groups.map(g => {

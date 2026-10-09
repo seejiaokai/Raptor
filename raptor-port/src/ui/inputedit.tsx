@@ -2496,6 +2496,9 @@ export function InputEditor() {
           {mineRow && !takeOut && <button className="abtn" data-testid="inped-takeout" onClick={() => setTakeOut(true)}>Take me out</button>}
           {readOnly && <span className="inped-ro" data-testid="inped-ro">{rows.length > 1
             ? mineRow ? `Only ${filer} — who filed it — or an admin can change this for everyone.` : `Only its people, ${filer} — who filed it — or an admin can change this.`
+            /* an input filed for ALL AVAIL / ALL has no owner to name — "Only ALL AVAIL or an admin can change this"
+               named a puck that is nobody (walker A of its check, 9 Oct 26): the one who may is whoever FILED it */
+            : r && isSpecial(r.person) ? `Only ${(r.by != null && PEOPLE[r.by] && PEOPLE[r.by].cs) || 'whoever filed it'} — who filed it — or an admin can change this.`
             : `Only ${who || 'its owner'} or an admin can change this.`}</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>

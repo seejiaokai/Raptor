@@ -7,7 +7,7 @@ const count = page => page.evaluate(() => window.INPUTS.length)
 const state = async (page, sel) => page.evaluate(q => { const s = document.querySelector(q); return s ? s.selectedOptions[0]?.textContent : null }, sel)
 async function tryKind(page, door, role, ph, kind, { typeSel, personSel, saveSel }) {
   const opts = await page.evaluate(q => [...document.querySelectorAll(q + ' option')].map(o => o.value), typeSel)
-  if (!opts.includes(kind)) { results.push({ door, role, ph, kind, result: 'ABSENT from the list (stays absent)' }); return }
+  if (!opts.includes(kind)) { results.push({ door, role, ph, kind, result: 'ABSENT from the list (stays absent)' }); console.log(JSON.stringify(results[results.length - 1])); return }
   const n0 = await count(page)
   await page.selectOption(typeSel, kind); await sleep(250)
   const whyTxt = await page.locator(T('pp-why')).first().innerText().then(t => t.replace(/\s+/g, ' ')).catch(() => null)
@@ -18,7 +18,7 @@ async function tryKind(page, door, role, ph, kind, { typeSel, personSel, saveSel
   const n1 = await count(page)
   const personNow = await state(page, personSel)
   const msg = ob.msgs.filter(m => /can be filed only|one day|ALL/i.test(m)).join(' | ')
-  results.push({ door, role, ph, kind, saved: n1 > n0, auxQuestionOpened: q, personStillShown: personNow, pickerLine: whyTxt, fix: fixTxt, toast: msg })
+  results.push({ door, role, ph, kind, saved: n1 > n0, auxQuestionOpened: q, personStillShown: personNow, pickerLine: whyTxt, fix: fixTxt, toast: msg }); console.log(JSON.stringify(results[results.length - 1]))
   if (n1 > n0) console.log('!! SAVED', door, role, ph, kind)
   if (q) { await page.keyboard.press('Escape'); await sleep(200) }
 }
@@ -27,7 +27,8 @@ for (const role of ['ad', 'us']) {
   for (const ph of phs) {
     const subset = ph === 'all' ? ['LL', 'HL', 'Personal', 'Upchit'] : KINDS
     const w = await world({ who: role, size: 'd' })
-    const page = w.page
+    const page = w.page; page.setDefaultTimeout(6000)
+    console.log('=== world', role, ph)
     const rm = `walkS29 ${role} ${ph}`
     await toInputs(page)
     // door 1: calendar NEW editor
@@ -38,9 +39,9 @@ for (const role of ['ad', 'us']) {
     await closeWins(page)
     // door 2: calendar EXISTING editor (a valid placeholder Duty first)
     await fileInput(page, { iso: '2026-07-16', type: 'Duty', person: ph, remarks: rm, start: '09:00', end: '12:00' })
-    await openDay(page, '2026-07-16')
-    const bar = page.locator('[data-testid="win-inputsday"] [data-iid]').filter({ hasText: rm }).first()
-    await bar.click({ timeout: 4000 }).catch(() => console.log('existing bar not clickable', role, ph)); await sleep(600)
+    await setPerson(page, 'all'); await openDay(page, '2026-07-16')
+    const bar = page.locator('[data-testid="win-inputsday"] .sd-row').filter({ hasText: rm }).locator('.sd-open').first()
+    await bar.click({ timeout: 4000 }).catch(() => console.log('existing card not clickable', role, ph)); await sleep(600)
     if (await page.locator('#inpEditSave').count()) {
       for (const k of subset) { await page.selectOption('#inpEditType', 'Duty').catch(() => {}); await sleep(120); await tryKind(page, 'calendar-existing', role, ph, k, { typeSel: '#inpEditType', personSel: '#inpEditPerson', saveSel: '#inpEditSave' }) }
       await pic(page, `s29-${role}-${ph}-2-existing-last`)

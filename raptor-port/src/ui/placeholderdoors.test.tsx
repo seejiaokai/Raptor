@@ -192,6 +192,28 @@ describe('filing it — one ordinary input, nobody\'s name copied in', () => {
   })
 })
 
+describe('read only — walker A\u2019s finds (9 Oct 26)', () => {
+  it('another member opens it: the line names WHO FILED it — never "Only ALL AVAIL …", a puck that is nobody', async () => {
+    const r = await filed({ by: admin })
+    await as('member')
+    await openOn(r)
+    expect($('#inpEditSave'), 'read only').toBeNull()
+    const ro = tid('inped-ro')?.textContent || ''
+    expect(ro).toContain(`Only ${PEOPLE[admin].cs} — who filed it — or an admin can change this`)
+    expect(ro).not.toContain('Only ALL AVAIL')
+  })
+
+  it('its member filer, the members\u2019 switch since turned off: read only, and NO dead "File it for me only" press', async () => {
+    const r = await filed({ by: member })
+    await act(async () => { setMembersFile(false); notify() })
+    await as('member')
+    await openOn(r)
+    expect($('#inpEditSave')).toBeNull()
+    expect(tid('pp-fix'), 'a press that could do nothing is not drawn').toBeNull()
+    expect(tid('inped-ro')?.textContent || '').not.toContain('Only ALL AVAIL')
+  })
+})
+
 describe('D711 (2), D712 — a kind that is not allowed is refused, with its sentence, and nothing is saved', () => {
   it('the picker says why the moment the kind changes; Save refuses; what he picked is never substituted', async () => {
     await openNew()
