@@ -2089,6 +2089,8 @@ export function InputEditor() {
   }, [open, win, upConf, medConf, oilConf, docConf])
 
   const close = () => { setInpEdit(null); notify() }
+  /* the "?" card beside Type takes Escape only while this window is the one in front (ui/TypeLegend.tsx) */
+  const legendFront = useRef(() => frontWin() === 'inputedit').current
   /* A REFUSED SAVE KEEPS THE WINDOW, ON THE RECORD, WITH WHAT HE TYPED ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]; the plan
      §3.13: "his Save is refused with the sentence, the window stays"). A refused command puts the list back as new
      objects, so the record this window holds is no longer the one in the list: find it again by its id and hold
@@ -2435,7 +2437,7 @@ export function InputEditor() {
                away under "+ Input". */
             : <div className="inped-f">
               {win && !readOnly
-                ? <span className="inped-kh"><label className="inped-k" htmlFor="inpEditType">Type</label><TypeLegend /></span>
+                ? <span className="inped-kh"><label className="inped-k" htmlFor="inpEditType">Type</label><TypeLegend shut={!!(docConf || upConf || medConf || oilConf)} front={legendFront} /></span>
                 : <label className="inped-k" htmlFor="inpEditType">Type</label>}
               <select id="inpEditType" aria-label="Type" value={draft.type}
                 onChange={e => {

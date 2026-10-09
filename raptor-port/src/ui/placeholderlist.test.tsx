@@ -282,3 +282,75 @@ describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it open
     expect(world()).toBe(was)
   })
 })
+
+describe('THE SAVE BOUNDARY, with no door in front of it (Sol\'s read of the plan)', () => {
+  it('the hard check is registered, and reads neither the role nor where the command came from', () => {
+    expect(invariants('hard').map(i => i.id)).toContain('placeholder-input-shape')
+    const env = (actor: any, origin: string, after: any) => ({ type: 'undo.restore', origin, actor, changes: [{ collection: 'inputs', id: 'x', op: 'put', before: null, after }] }) as any
+    const bad = { iid: 'x', person: 'allavail', type: 'OD', date: 'Oct 13', yr: 2026 }
+    for (const role of ['admin', 'member', 'system'])
+      for (const origin of ['user', 'restore', 'projection'])
+        expect(placeholderShapeViolation(env({ role, personId: admin }, origin, bad)), `${role} · ${origin}`).toContain('ALL AVAIL can be filed only for')
+    expect(placeholderShapeViolation(env({ role: 'admin' }, 'restore', { ...bad, type: 'Duty' }))).toBeNull()
+    expect(placeholderShapeViolation({ changes: [{ collection: 'inputs', id: 'x', op: 'delete', before: bad }] } as any), 'a delete is never judged').toBeNull()
+    expect(placeholderShapeViolation({ changes: [{ collection: 'inputs', id: '__order', op: 'put', after: { order: [] } }] } as any)).toBeNull()
+    expect(placeholderShapeViolation({ changes: [{ collection: 'people', id: 'allavail', op: 'put', after: { person: 'allavail', type: 'OD' } }] } as any), 'only inputs').toBeNull()
+  })
+
+  /* the restore's own command: the same type, origin and store write an Undo or a Redo runs (undo/timeline.ts
+     restoreCommit) — handed a record no door would ever have let through */
+  beforeEach(() => { installGlobalUndo() })   // registers the Undo engine's own command, as the app's boot does
+  const restore = (entries: any[]) => commitAs(
+    { type: 'undo.restore', scope: { module: 'inputs' } as any, apply: (txn: any) => { txn.enlist(schedStore); schedStore.write!(entries, { allowIssued: true, restore: true } as any) } },
+    { actor: deriveActor(), origin: 'restore' as any })
+  const refused: Array<[string, any]> = [['a wrong kind', { type: 'CSE' }], ['two dates', { endDate: 'Oct 15' }], ['a group mark', { grp: 'gZ', grpBy: admin }]]
+  for (const ph of ['allavail', 'all'])
+    for (const [name, over] of refused)
+      it(`a RESTORE that would put back ${PEOPLE[ph].cs} with ${name} is rolled back whole — no record, no history line, no Undo step`, async () => {
+        const r = await put({ person: ph })
+        const was = world()
+        let res: any
+        await act(async () => { res = restore([{ collection: 'inputs', id: r.iid, op: 'put', value: { ...live(r.iid), ...over } }]) })
+        expect(res.ok, 'refused at the boundary').toBe(false)
+        expect(String(res.message)).toContain('placeholder-input-shape')
+        expect(world()).toBe(was)
+        expect(live(r.iid).type).toBe('Meeting')
+      })
+
+  it('a restore of a GOOD placeholder record is kept', async () => {
+    const r = await put({ person: 'all' })
+    let res: any
+    await act(async () => { res = restore([{ collection: 'inputs', id: r.iid, op: 'put', value: { ...live(r.iid), remarks: 'put back' } }]) })
+    expect(res.ok, String(res && res.message)).toBe(true)
+    expect(live(r.iid).remarks).toBe('put back')
+  })
+})
+
+describe('the answer rules are the existing ones — for a placeholder input exactly as for a named man\'s (both readers)', () => {
+  const SAT = '2026-10-17'
+  for (const person of ['allavail', 'all', 'NAMED']) {
+    const who = () => person === 'NAMED' ? others()[0] : person
+    it(`${person}: a No survives a change of hours`, () => {
+      const before = { person: who(), type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 540, e: 720, oil: { [SAT]: 0 } }
+      const after = { ...before, s: 600, e: 1020 }
+      expect((voidedOil(before, after) || {})[SAT]).toBe(0)
+    })
+    it(`${person}: a Yes survives a change that leaves its amount as it was; it is dropped when the amount changes`, () => {
+      const before = { person: who(), type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 540, e: 720, oil: { [SAT]: 0.5 } }
+      expect((voidedOil(before, { ...before, s: 600, e: 780 }) || {})[SAT], 'three hours moved an hour: still half a day').toBe(0.5)
+      expect((voidedOil(before, { ...before, s: 480, e: 1020 }) || {})[SAT], 'nine hours now: the half-day Yes no longer fits').toBeUndefined()
+    })
+    it(`${person}: a change of person voids every answer`, () => {
+      const before = { person: who(), type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 540, e: 720, oil: { [SAT]: 0.5 } }
+      expect(voidedOil(before, { ...before, person: others()[1] }) || {}).toEqual({})
+    })
+  }
+
+  it('through the real save: an ALL AVAIL Duty re-timed by an hour keeps the filer\'s Yes; lengthened past the full-day line, it loses it', async () => {
+    const r = await put({ type: 'Duty', date: 'Oct 17', s: 540, e: 720, oil: { [SAT]: 0.5 } })
+    await act(async () => { commitInputEdit(live(r.iid), { ...draftOf(live(r.iid)), sTime: '10:00', eTime: '13:00' }) })
+    expect(live(r.iid).oil, said.join(' | ')).toEqual({ [SAT]: 0.5 })
+    await act(async () => { commitInputEdit(live(r.iid), { ...draftOf(live(r.iid)), sTime: '08:00', eTime: '17:00' }) })
+    expect((live(r.iid).oil || {})[SAT], 'asked again: the old Yes priced half a day').toBeUndefined()
+  })
+})

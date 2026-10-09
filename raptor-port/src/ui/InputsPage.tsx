@@ -145,6 +145,8 @@ const SORTKEY: any = {
    enough to still be lit by the time a phone user looks up from the form
    this page's own scroll-into-view now carries them to. */
 const FLASH_MS = 6000
+/* an input's row in the List — the desktop table's or the phone's card — by the id it is drawn under */
+const listRow = (iid: string) => `#inBody [data-iid="${iid}"], #inList [data-iid="${iid}"]`
 
 /* THE DATES THE LIST IS SHOWING, IN FEW WORDS — for the line an empty list prints (D729 — V5: "No inputs 10–24 Oct. Try
    All dates."). Two days of one month share the month ("10–24 Oct"); otherwise each says its own ("28 Oct – 3 Nov",
@@ -259,8 +261,13 @@ export function InputsPage() {
     /* MOVED TO THE TOP OF THE LIST ONLY WHEN ITS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already
        in view, undo/redo don't need to snap to view"): an Undo of an input he is looking at used to lift it to the top
        every time. A row brought back by the Undo (it was not drawn a moment ago) is still lifted, so it is found. */
-    if(!rowOnScreen(document.querySelector(`[data-iid="${row.iid}"]`)))setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
-    setJustAddedIid({iid:row.iid})
+    /* THE ROW IT IS DRAWN AS (Astra's read of the code, 10 Oct 26 — finding 2): a shared input stands under its FIRST
+       record A to Z, and the page is shown whichever record the save made first. Asked for by that record's own id,
+       the row was never found: it was pinned and lit, and never brought into view. So the look-up is by the id the
+       List draws the entry under — and inside the List, where the month's bars carry ids of their own. */
+    const shown=(entriesOf(inputsInMode(INPUTS,INPMODE)).find(e=>e.rows.includes(row))?.rows[0])||row
+    if(!rowOnScreen(document.querySelector(listRow(shown.iid))))setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
+    setJustAddedIid({iid:shown.iid})
     /* …AND IT IS LIT (D729 — V1). The List's own add form lit the row it had just added — "so the add is visible even
        from a view that would filter it out" — and was the only thing that did: an input saved through its window was
        brought into view dark. With the form gone the window is the List's one door, so the light is given HERE, to
@@ -272,7 +279,7 @@ export function InputsPage() {
   },[reveal])
   useEffect(() => {
     if (!justAddedIid) return
-    const el = document.querySelector(`[data-iid="${justAddedIid.iid}"]`)
+    const el = document.querySelector(listRow(justAddedIid.iid))
     /* BROUGHT ON SCREEN BY THE LEAST MOVEMENT, CLEAR OF THE TOP BAR (ui/onscreen.ts bringRowOnScreen). The browser's own
        "nearest edge" scroll, which this was until 8 Oct 26, put a row that was ABOVE the screen at the window's very top
        — behind the app's sticky bar: an Undo of an input scrolled out of view lifted it to the head of the list and hid

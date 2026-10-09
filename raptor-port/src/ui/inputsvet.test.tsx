@@ -276,6 +276,29 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       expect(lit(), 'settled').toEqual([])
     }
   }, 20000)
+  /* …AND IS BROUGHT INTO VIEW (Astra's read of the code, 10 Oct 26 — finding 2; older than this build, and the List's
+     one door now). The page looked for the element of the ONE record it had been shown; a shared input's row answers
+     to its first record A to Z, so for any other man the look-up found nothing: the row was lit, pinned — and never
+     scrolled to, with the reader left wherever he was on a long list. */
+  it('a shared input ADDED through "+ Input" is scrolled to — its row, whichever record the save made first', async () => {
+    await mount(false)
+    const sorted = [...others()].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
+    const calls: Element[] = []
+    const orig = (Element.prototype as any).scrollIntoView
+    ;(Element.prototype as any).scrollIntoView = function () { calls.push(this) }
+    try {
+      const had = new Set(INPUTS.map((r: any) => r.iid))
+      await click($('#inNew'))
+      await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
+      for (const p of [sorted[0], sorted[sorted.length - 1]]) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
+      await click($('#inpEdCal [data-cal="2026-07-16"]'))
+      await click($('#inpEditSave'))
+      const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
+      const row = trOf(made)
+      expect(made[0].iid, 'the premise: the record the save made first is NOT the one the row stands under').not.toBe(row.getAttribute('data-iid'))
+      expect(calls, 'the shared row itself was brought into view').toContain(row)
+    } finally { (Element.prototype as any).scrollIntoView = orig }
+  })
   it('a shared input changed through its window lights its ONE row', async () => {
     await mount(false)
     const g = await shared(others().slice(0, 3), { remarks: 'range brief' })
@@ -361,6 +384,29 @@ describe('the "?" beside Type is offered only where it can be pressed', () => {
     expect($('#inTypeHelp'), 'his own input').toBeTruthy()
     await click($('#inTypeHelp'))
     expect($('#inTypePop')).toBeTruthy()
+    await click($('#inpEditCancel'))
+    await click($('#inNew'))
+    expect($('#inTypeHelp'), 'and a new one').toBeTruthy()
+    await click($('#inTypeHelp'))
+    expect($('#inTypePop')!.textContent).toContain('What each type means')
+  })
+  /* THE CARD GIVES WAY TO A QUESTION (Astra's read, finding 4). Add pressed from the keyboard leaves the card open (no
+     press closes it); the document question then stood over the window while the CARD took the first Escape. A
+     question that must be answered owns the keyboard: the card closes as it opens, and Escape is the question's. */
+  it('a question opened over the window closes the "?" card, and Escape then answers the question — not the card', async () => {
+    await mount(false)
+    await click($('#inNew'))
+    await act(async () => { const s = $('#inpEditType') as HTMLSelectElement; s.value = 'ATT C'; s.dispatchEvent(new Event('change', { bubbles: true })) })
+    await click($('#inpEdCal [data-cal="2026-07-14"]'))
+    await click($('#inTypeHelp'))
+    expect($('#inTypePop'), 'the card is open').toBeTruthy()
+    await click($('#inpEditSave'))                 // as the keyboard does it: no press anywhere closes the card first
+    expect($('[data-testid="docconf"]'), 'the document question').toBeTruthy()
+    expect($('#inTypePop'), 'the card has given way').toBeNull()
+    await act(async () => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect($('[data-testid="docconf"]'), 'Escape answered the question').toBeNull()
+    expect($('[data-testid="win-inputedit"]'), 'and the window, with what he chose, is still there').toBeTruthy()
+    expect(($('#inpEditType') as HTMLSelectElement).value).toBe('ATT C')
   })
 })
 
@@ -373,6 +419,6 @@ describe('the phone’s list has the same one button (V1)', () => {
     await click($('#inNew'))
     expect($('[data-testid="win-inputedit"]')).toBeTruthy()
     expect($('#inpEditPop .rc-read')!.textContent).toBe('pick a start date')
-    expect(cs(admin)).toBeTruthy()
+    expect(($('#inpEditPerson') as HTMLSelectElement).selectedOptions[0].textContent, 'filed for whoever is signed in').toBe(cs(admin))
   })
 })

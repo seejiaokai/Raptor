@@ -1,0 +1,64 @@
+[
+ {
+  "n": 8,
+  "size": "desktop 1440x900",
+  "role": "admin Saber",
+  "status": "PASS",
+  "said": "[{\"label\":\"two-without-filer\",\"initial\":[\"Ranger\"],\"want\":[\"Echo\",\"Ranger\"],\"got\":[\"Echo\",\"Ranger\"],\"once\":true,\"grp\":1,\"by\":[\"Saber\"],\"rowName\":\"Echo, Ranger\",\"reopened\":[\"Echo\",\"Ranger\"],\"ok\":true},{\"label\":\"four-with-filer\",\"initial\":[\"Saber\"],\"want\":[\"Ace\",\"Ranger\",\"Saber\",\"Wisp\"],\"got\":[\"Ace\",\"Ranger\",\"Saber\",\"Wisp\"],\"once\":true,\"grp\":1,\"by\":[\"Saber\"],\"rowName\":\"Ace, Ranger, Saber, Wisp\",\"reopened\":[\"Ace\",\"Ranger\",\"Saber\",\"Wisp\"],\"ok\":true},{\"label\":\"four-without-filer\",\"initial\":[\"Wisp\"],\"want\":[\"Ace\",\"Echo\",\"Vapor\",\"Wisp\"],\"got\":[\"Ace\",\"Echo\",\"Vapor\",\"Wisp\"],\"once\":true,\"grp\":1,\"by\":[\"Saber\"],\"rowName\":\"Ace, Echo, Vapor, Wisp\",\"reopened\":[\"Ace\",\"Echo\",\"Vapor\",\"Wisp\"],\"ok\":true}] (the \"member setting on\" part is not needed by an admin; not touched)",
+  "pics": [
+   "S8-desk-two-without-filer-picked.png",
+   "S8-desk-two-without-filer-saved.png",
+   "S8-desk-two-without-filer-reopened.png",
+   "S8-desk-four-with-filer-picked.png",
+   "S8-desk-four-with-filer-saved.png",
+   "S8-desk-four-with-filer-reopened.png",
+   "S8-desk-four-without-filer-picked.png",
+   "S8-desk-four-without-filer-saved.png",
+   "S8-desk-four-without-filer-reopened.png"
+  ]
+ },
+ {
+  "n": 9,
+  "size": "phone 390x844",
+  "role": "admin Saber, then member Ranger (setting on)",
+  "status": "PASS",
+  "said": "{\"adminLL\":{\"several\":1,\"saved\":[\"Echo LL Aug 10\",\"Saber LL Aug 10\"],\"grp\":1},\"adminMed\":{\"pressedBeforeSwitch\":2,\"afterSwitch\":{\"who\":\"\",\"several\":true,\"why\":\"A medical entry is filed for one person at a time — each needs its own document Keep Saber only\"},\"pressedAfter\":[\"Saber\",\"Wisp\"],\"toast\":\"A medical entry is filed for one person at a time — each needs its own document\",\"questions\":{\"doc\":0,\"clash\":0},\"count\":\"55->55\",\"attc\":[\"Grit Jul 13\",\"Static Jan 5\"],\"windowStillOpen\":true},\"memberLL\":{\"who\":\"\",\"several\":true,\"why\":\"You can file leave only for yourself File it for me only\",\"pressed\":[\"Echo\",\"Ranger\"],\"toast\":\"You can file leave only for yourself\",\"count\":\"55->55\",\"allLL\":[\"Echo Aug 10\",\"Saber Aug 10\",\"Quill Jul 14\",\"Tally Jul 24\",\"Gambit Jan 8\"]},\"memberMed\":{\"who\":\"\",\"several\":true,\"why\":\"You can file a medical entry only for yourself File it for me only\",\"pressed\":[\"Echo\",\"Ranger\"],\"toast\":\"You can file a medical entry only for yourself\",\"questions\":{\"doc\":0},\"count\":\"55->55\",\"attc\":[\"Grit Jul 13\",\"Static Jan 5\"]}}",
+  "pics": [
+   "S9-phone-admin-LL-saved.png",
+   "S9-phone-admin-meeting-to-ATTC.png",
+   "S9-phone-admin-ATTC-after-add.png",
+   "S9-phone-member-two-then-LL.png",
+   "S9-phone-member-meeting-to-ATTC.png",
+   "S9-phone-member-ATTC-after-add.png"
+  ]
+ },
+ {
+  "n": 10,
+  "size": "desktop 1440x900",
+  "role": "member Ranger (setting on)",
+  "status": "PASS",
+  "said": "[{\"t\":\"Duty\",\"who\":\"allavail\",\"saved\":1,\"person\":\"allavail\",\"by\":\"Ranger\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL AVAIL\",\"type\":\"Duty\",\"title\":\"Duty\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL AVAIL · 10 Oct 26, 07:04\"}},{\"t\":\"Event\",\"who\":\"all\",\"saved\":1,\"person\":\"all\",\"by\":\"Ranger\",\"title\":\"S10 sports\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL\",\"type\":\"Event\",\"title\":\"S10 sports\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL · 10 Oct 26, 07:04\"}},{\"t\":\"Training\",\"who\":\"allavail\",\"saved\":1,\"person\":\"allavail\",\"by\":\"Ranger\",\"title\":\"S10 training title\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL AVAIL\",\"type\":\"Training\",\"title\":\"S10 training title\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL AVAIL · 10 Oct 26, 07:04\"}},{\"t\":\"Meeting\",\"who\":\"all\",\"saved\":1,\"person\":\"all\",\"by\":\"Ranger\",\"title\":\"S10 meeting title\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL\",\"type\":\"Meeting\",\"title\":\"S10 meeting title\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL · 10 Oct 26, 07:04\"}},{\"t\":\"Appointment\",\"who\":\"allavail\",\"saved\":1,\"person\":\"allavail\",\"by\":\"Ranger\",\"title\":\"S10 appt title\",\"s\":570,\"e\"",
+  "pics": [
+   "S10-desk-Duty-reopened.png",
+   "S10-desk-Event-reopened.png",
+   "S10-desk-list-placeholders.png"
+  ]
+ },
+ {
+  "n": 11,
+  "size": "phone 390x844",
+  "role": "member Ranger (setting on)",
+  "status": "PASS",
+  "said": "{\"allavail\":{\"twoDays\":{\"toast\":\"ALL AVAIL is filed one day at a time\",\"count\":\"53\",\"person\":\"allavail\",\"type\":\"Duty\",\"rmk\":\"S11 allavail words\",\"open\":true},\"oneDay\":\"Aug 17\",\"toLL\":{\"person\":\"\",\"who\":\"ALL AVAIL\",\"why\":\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other File it for me \"},\"LLadd\":{\"toast\":\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\",\"person\":\"\",\"open\":true,\"saved\":true},\"meeting\":{\"person\":\"allavail\",\"severalSwitch\":1,\"afterSev\":{\"who\":\"\",\"why\":\"ALL AVAIL is filed on its own — it already stands for whoever is free File it for ALL AVAIL only\",\"pressed\":[],\"sel\":null}}},\"all\":{\"twoDays\":{\"toast\":\"ALL is filed one day at a time\",\"count\":\"53\",\"person\":\"all\",\"type\":\"Event\",\"rmk\":\"S11 all words\",\"open\":true},\"oneDay\":\"Aug 17\",\"toLL\":{\"person\":\"\",\"who\":\"ALL\",\"why\":\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other File it for me only\"},\"LLadd\":{\"toast\":\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\",\"person\":\"\",\"open\":true,\"saved\":true},\"meeting\":{\"person\":\"all\",\"severalSwitch\":1,\"afterSev\":{\"who\":\"\",\"why\":\"ALL is filed on its own — it already stands for whoever is free File it for ALL only\",\"pressed\":[],\"sel\":null}}}} saved S11 inputs: 0",
+  "pics": [
+   "S11-phone-allavail-two-days.png",
+   "S11-phone-allavail-to-LL.png",
+   "S11-phone-allavail-LL-refused.png",
+   "S11-phone-allavail-several.png",
+   "S11-phone-all-two-days.png",
+   "S11-phone-all-to-LL.png",
+   "S11-phone-all-LL-refused.png",
+   "S11-phone-all-several.png"
+  ]
+ }
+]

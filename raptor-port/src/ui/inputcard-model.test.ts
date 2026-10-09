@@ -153,6 +153,17 @@ describe('"till <date>" is said once — by the corner (D728)', () => {
     expect(cardOf([rec({ remarks: 'Detachment till 17 Jul — Bangkok' })], P, corner).remark).toBe('Detachment — Bangkok')
     expect(cardOf([rec({ remarks: 'Overseas leave — off island, till 17 Jul' })], P, corner).remark).toBe('Overseas leave — off island')
   })
+  /* ONLY THE JOIN IS TIDIED (Astra's read of the code, 10 Oct 26 — finding 1). The first version, having taken the
+     words out, stripped spaces, commas and dashes from BOTH ENDS OF THE WHOLE REMARK: "-5°C cold-weather kit till
+     17 Jul" lost its minus sign on the card. What a person typed stays (D728) — to the character. */
+  it('punctuation that belongs to the typed words is never touched — only the join where the words stood', () => {
+    expect(cardOf([rec({ remarks: '-5°C cold-weather kit till 17 Jul' })], P, corner).remark).toBe('-5°C cold-weather kit')
+    expect(cardOf([rec({ remarks: '— see the notice — till 17 Jul' })], P, corner).remark).toBe('— see the notice')
+    expect(cardOf([rec({ remarks: 'till 17 Jul — Bangkok -' })], P, corner).remark).toBe('Bangkok -')
+    expect(cardOf([rec({ remarks: 'Bring ID till 17 Jul report to desk' })], P, corner).remark).toBe('Bring ID report to desk')
+    expect(cardOf([rec({ remarks: 'kit, boots, till 17 Jul' })], P, corner).remark).toBe('kit, boots')
+    expect(cardOf([rec({ remarks: 'kit… till 17 Jul' })], P, corner).remark).toBe('kit…')
+  })
   it('a "till" for ANOTHER day is not the corner’s and stays — somebody typed it', () => {
     expect(cardOf([rec({ remarks: 'Course till 30 Jul' })], P, corner).remark).toBe('Course till 30 Jul')
   })

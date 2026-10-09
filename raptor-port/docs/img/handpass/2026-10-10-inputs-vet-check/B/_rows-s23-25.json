@@ -1,0 +1,48 @@
+{
+ "rows": [
+  {
+   "n": 23,
+   "size": "phone 390x844 (touch)",
+   "role": "member Ranger (own medical)",
+   "status": "PASS",
+   "said": [
+    "ok: the ATT C 27–31 Jul is saved — [\"ATT C Jul 27–Jul 31\"]",
+    "ok: the upchit summary appears and names the downchit and its new end of 28 July — {\"kind\":\"upconf\",\"words\":\"Upchit — Ranger, Jul 29 ✕ SAVING THIS UPCHIT WILL ATT C Jul 27 – Jul 31 → now ends Jul 28 Fit for full duty from Jul 29. Cancel Save upchit\"}",
+    "ok: nothing is written while the summary is up — [\"ATT C Jul 27–Jul 31\"]",
+    "summary buttons — [\"|✕\",\"|Cancel\",\"upconf-save|Save upchit\"]",
+    "ok: Cancel leaves the downchit intact (27–31), no upchit saved, the draft still in the window — {\"afterCancel\":[\"ATT C Jul 27–Jul 31\"],\"win\":1,\"rmk\":\"S23 up\",\"typ\":\"Upchit\"}",
+    "ok: confirming shows the shortened downchit (to 28 Jul) and the 29 Jul upchit together — [\"ATT C Jul 27–Jul 28\",\"Upchit Jul 29\"]",
+    "cards seen — [\"ATT C till 28 Jul\",\"Upchit All day\"]"
+   ],
+   "pics": [
+    "s23-summary.png",
+    "s23-after-cancel.png",
+    "s23-confirmed-list.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 25,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber (own medical)",
+   "status": "PASS",
+   "said": [
+    "ok: ATT C 27–31 Jul saved — [\"ATT C Jul 27–Jul 31\"]",
+    "clash buttons — [\"BUTTON|✕\",\"BUTTON|ATT B replaces\",\"BUTTON|Remove those days\",\"BUTTON|Keep them\",\"BUTTON|Cancel\",\"medclash-save|Save\"]",
+    "ok: the clash question names both kinds and their dates — {\"kind\":\"medclash\",\"words\":\"ATT B — Saber, Jul 29 – Jul 30 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM ATT C Jul 27 – Jul 31 · both cover Jul 29 – Jul 30 ATT B replaces Left over after it: ATT C Jul 31 — will be removed Remove those days Keep them The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Cancel Save\"}",
+    "ok: nothing is written while the question is up — [\"ATT C Jul 27–Jul 31\"]",
+    "ok: Cancel changes nothing (the ATT C is whole, no ATT B) and the draft stays in the window — {\"afterC\":[\"ATT C Jul 27–Jul 31\"],\"win\":1}",
+    "resolution options — []",
+    "chosen resolution — ATT B replaces",
+    "ok: after confirming, the periods match the chosen resolution with no unexplained overlap, gap or lost dates — [\"ATT B Jul 29–Jul 30\",\"ATT C Jul 27–Jul 28\"] | chosen: ATT B replaces"
+   ],
+   "pics": [
+    "s25-clash.png",
+    "s25-clash-chosen.png",
+    "s25-after-save.png"
+   ],
+   "note": "the cancel, and ONE resolution"
+  }
+ ],
+ "errs": []
+}

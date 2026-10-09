@@ -1,0 +1,53 @@
+[
+ {
+  "n": 16,
+  "size": "desktop 1440x900",
+  "role": "admin Saber",
+  "status": "PASS",
+  "said": "new input: {\"card\":{\"head\":true,\"groups\":[\"Leave\",\"Medical\",\"Duty\"],\"kindsMissing\":[],\"attb\":true,\"inside\":true,\"nRows\":24,\"last\":\"SANS Availabilitynot an absence — the boxes ticked say which events he is available for, a\"},\"lastReachable\":{\"aboveFoot\":true,\"inView\":true},\"addReached\":true,\"byHelp\":{\"card\":0,\"win\":1,\"rmk\":\"new typed words\"},\"byPress\":{\"card\":0,\"win\":1,\"rmk\":\"new typed words\"},\"byEsc\":{\"card\":0,\"win\":1,\"rmk\":\"new typed words\"}}; saved input: {\"card\":{\"head\":true,\"groups\":[\"Leave\",\"Medical\",\"Duty\"],\"kindsMissing\":[],\"attb\":true,\"inside\":true,\"nRows\":24,\"last\":\"SANS Availabilitynot an absence — the boxes ticked say which events he is available for, a\"},\"lastReachable\":{\"aboveFoot\":true,\"inView\":true},\"addReached\":true,\"byHelp\":{\"card\":0,\"win\":1,\"rmk\":\"saved typed words\"},\"byPress\":{\"card\":0,\"win\":1,\"rmk\":\"saved typed words\"},\"byEsc\":{\"card\":0,\"win\":1,\"rmk\":\"saved typed words\"}}",
+  "pics": [
+   "S16-new-card-end.png",
+   "S16-new-after-escape.png",
+   "S16-saved-card-end.png",
+   "S16-saved-after-escape.png"
+  ]
+ },
+ {
+  "n": 17,
+  "size": "phone 390x844",
+  "role": "admin Saber",
+  "status": "PASS",
+  "said": "{\"Event\":{\"defaultTitle\":\"Event\",\"saved\":{\"t\":\"Event\",\"title\":\"A17 sports afternoon\",\"d\":\"Aug 14\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"Bring trainers\",\"oil\":null},\"card\":{\"kind\":\"Event\",\"title\":\"A17 sports afternoon\",\"rmk\":\"Bring trainers\",\"who\":\"Saber\",\"text\":\"LATE06:00–18:00SaberEventA17 sports afternoon · Bring trainers\"},\"reopened\":{\"type\":\"Event\",\"title\":\"A17 sports afternoon\",\"rmk\":\"Bring trainers\"},\"iid\":\"imv1ktrh3gbcntx\"},\"Other\":{\"defaultTitle\":\"Other\",\"saved\":{\"t\":\"Other\",\"title\":\"A17 other thing\",\"d\":\"Aug 17\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"Bring trainers\",\"oil\":null},\"card\":{\"kind\":\"Other\",\"title\":\"A17 other thing\",\"rmk\":\"Bring trainers\",\"who\":\"Saber\",\"text\":\"LATE06:00–18:00SaberOtherA17 other thing · Bring trainers\"},\"reopened\":{\"type\":\"Other\",\"title\":\"A17 other thing\",\"rmk\":\"Bring trainers\"},\"iid\":\"imv1kts47bs0tnp\"},\"eventToLL\":{\"titleBox\":0},\"cleared\":{\"toast\":\"Input updated\",\"win\":0,\"saved\":{\"t\":\"Event\",\"d\":\"Aug 14\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"Bring trainers\",\"oil\":null},\"card\":{\"kind\":\"Event\",\"title\":null,\"rmk\":\"Bring trainers\",\"who\":\"Saber\",\"text\":\"LATE06:00–18:00SaberEventBring trainers\"}}}",
+  "pics": [
+   "S17-phone-Event-reopened.png",
+   "S17-phone-Other-reopened.png",
+   "S17-phone-Event-to-LL.png",
+   "S17-phone-title-cleared.png"
+  ]
+ },
+ {
+  "n": 18,
+  "size": "desktop 1440x900",
+  "role": "member Ranger",
+  "status": "PASS",
+  "said": "{\"first\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the who\",\"after\":{\"n\":0,\"win\":1,\"rmk\":\"S18 weekend\",\"type\":\"Duty\",\"read\":\"Jul 18\",\"sheetGone\":true}},\"retry\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the who\",\"after\":{\"n\":0,\"win\":1,\"rmk\":\"S18 weekend\",\"type\":\"Duty\",\"read\":\"Jul 18\",\"sheetGone\":true}}}",
+  "pics": [
+   "S18-desk-oil-question-first.png",
+   "S18-desk-oil-question-retry.png"
+  ]
+ },
+ {
+  "n": 19,
+  "size": "phone 390x844",
+  "role": "member Ranger (setting on)",
+  "status": "PASS",
+  "said": "{\"yes\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on th\",\"rec\":{\"t\":\"Duty\",\"d\":\"Jul 18\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"S19 yes\",\"oil\":{\"2026-07-18\":1}},\"reopened\":{\"card\":{\"text\":\"LATE06:00–18:00RangerDutyS19 yes\",\"oilChip\":0},\"windowOil\":[\"OIL\"],\"shot\":\"S19-phone-yes-reopened.png\"}},\"no\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on th\",\"rec\":{\"t\":\"Duty\",\"d\":\"Jul 19\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"S19 no\",\"oil\":{\"2026-07-19\":0}},\"reopened\":{\"card\":{\"text\":\"LATE06:00–18:00RangerDutyS19 no\",\"oilChip\":0},\"windowOil\":[\"OIL\",\"no OIL on its non-working day\"],\"shot\":\"S19-phone-no-reopened.png\"}},\"two\":{\"words\":\"OIL — Ranger +1, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 1 AUG (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on \",\"buttons\":[\"=✕\",\"oil-yes=Yes — credit FO\",\"oil-no=No OIL\",\"=Cancel\",\"oilconf-save=Save\"],\"saved\":[{\"cs\":\"Echo\",\"oil\":{\"2026-08-01\":1},\"by\":\"Ranger\",\"grp\":true},{\"cs\":\"Ranger\",\"oil\":{\"2026-08-01\":1},\"by\":\"Ranger\",\"grp\":true}]}}",
+  "pics": [
+   "S19-phone-yes-question.png",
+   "S19-phone-yes-reopened.png",
+   "S19-phone-no-question.png",
+   "S19-phone-no-reopened.png",
+   "S19-phone-two-question.png"
+  ]
+ }
+]

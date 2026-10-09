@@ -1,0 +1,16 @@
+import * as L from './ivet-B-lib.mjs'
+const { WIN, sleep } = L
+const browser = await L.launch()
+const { page } = await L.open(browser, L.PHONE, { who: 'us', pass: 'us', touch: true })
+await L.toList(page, true); await L.plus(page, true)
+await page.fill('#inpEditRmk', 'x')
+const r = () => page.evaluate(() => { const w = document.querySelector('[data-testid="win-inputedit"]').getBoundingClientRect(); const b = document.querySelector('#inNew').getBoundingClientRect(); return { win: [w.left, w.top, w.right, w.bottom].map(Math.round), btn: [b.left, b.top, b.right, b.bottom].map(Math.round), grip: !!document.querySelector('[data-testid="win-inputedit"] .win-grip, [data-testid="win-inputedit"] [class*=grip], [data-testid="win-inputedit"] [class*=drag]') } })
+console.log(await r())
+await page.screenshot({ path: L.OUT + '/probe3.png' })
+const c = await L.cdp(page)
+const t = await page.evaluate(() => { const e = document.querySelector('[data-testid="win-inputedit"] .win-ttl'); const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 } })
+await L.touchSeq(c, [{ x: t.x, y: t.y }, { x: t.x, y: t.y + 400 }], { holdMs: 150 })
+await sleep(400)
+console.log('after dragging the title down 400', await r())
+await page.screenshot({ path: L.OUT + '/probe3b.png' })
+await browser.close()

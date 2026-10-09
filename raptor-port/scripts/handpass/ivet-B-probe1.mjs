@@ -1,0 +1,17 @@
+import * as L from './ivet-B-lib.mjs'
+const { sleep } = L
+const browser = await L.launch()
+const { page } = await L.open(browser, L.DESK, { fresh: true })
+await L.toList(page, false); await L.plus(page, false)
+await page.selectOption('#inpEditType', 'ATT C')
+await L.pick(page, '2026-08-03', false)
+console.log(await page.evaluate(() => document.querySelector('[data-testid="win-inputedit"]').innerText.replace(/\s+/g, ' ')))
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] button, [data-testid="win-inputedit"] input, [data-testid="win-inputedit"] select, [data-testid="win-inputedit"] textarea')].filter(b => b.offsetParent).map(b => (b.id || b.dataset.testid || b.dataset.span || b.className) + '|' + (b.innerText || b.value || b.getAttribute('aria-label') || '').slice(0, 30)).join('\n')))
+console.log(await page.evaluate(() => document.querySelector('.docfield')?.outerHTML.slice(0, 800)))
+await page.locator('#inpEditSave').click(); await sleep(500)
+console.log('docconf', await page.locator('[data-testid="docconf"]').count())
+console.log(await page.evaluate(() => document.querySelector('[data-testid="docconf"]')?.innerText))
+await page.screenshot({ path: L.OUT + '/probe-docconf.png' })
+console.log('INPUTS Saber', await page.evaluate(() => window.INPUTS.length), await page.evaluate(() => Object.entries(window.PEOPLE).slice(0, 40).map(([k, v]) => k + ':' + v.cs).join(' ')))
+console.log(await page.evaluate(() => document.querySelector('#inMedBtn')?.outerHTML))
+await browser.close()

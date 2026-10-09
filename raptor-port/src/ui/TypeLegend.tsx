@@ -31,9 +31,15 @@ function groupRule(ts: string[]) {
   const best = Object.keys(n).sort((a, b) => n[b] - n[a])[0] || ''
   return n[best] > 1 ? best : ''
 }
-export function TypeLegend() {
+/** `shut`: something that must be answered has opened over the form (a question sheet) — the card gives way.
+ *  `front`: is the card's own window the one in front? (it takes Escape only then.) */
+export function TypeLegend({ shut, front }: { shut?: boolean; front?: () => boolean } = {}) {
   const [open, setOpen] = useState(false)
   const box = useRef<any>(null)
+  /* THE CARD GIVES WAY TO A QUESTION (Astra's read of the code, 10 Oct 26 — finding 4): Add pressed from the keyboard
+     leaves the card open — no press closes it — and the document, OIL, upchit or medical question then stood over the
+     window while the card took the first Escape. */
+  useEffect(() => { if (shut) setOpen(false) }, [shut])
   /* mousedown rather than click, for the same reason the date window uses it:
      a click that starts inside and ends outside must not close the popover */
   useEffect(() => {
@@ -42,11 +48,11 @@ export function TypeLegend() {
     /* Escape closes the card and NOTHING ELSE: it stands in the input's window now, whose own Escape closes the window
        and loses what was typed. The window listens on the document as the key goes DOWN the page; this listens on the
        window object itself, which the key reaches first, and stops it there. */
-    const esc = (e: any) => { if (e.key === 'Escape') { e.stopPropagation(); setOpen(false) } }
+    const esc = (e: any) => { if (e.key === 'Escape' && !(front && !front())) { e.stopPropagation(); setOpen(false) } }
     document.addEventListener('mousedown', away)
     window.addEventListener('keydown', esc, true)
     return () => { document.removeEventListener('mousedown', away); window.removeEventListener('keydown', esc, true) }
-  }, [open])
+  }, [open, front])
   return <span className="tylegend" ref={box}>
     <button type="button" className={'tylegend-b' + (open ? ' on' : '')} id="inTypeHelp"
       aria-expanded={open} title="What do these mean?" onClick={() => setOpen(o => !o)}>?</button>

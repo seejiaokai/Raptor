@@ -58,8 +58,17 @@ export function remarkOnce(remark: string, corner: string): string {
   if (!m || !remark) return remark
   /* the corner's year, where it says one, may follow the words; any other year after them was typed, and is his */
   const tok = new RegExp(`${SEP}*\\btill\\s+${m[1]}\\s+${m[2]}\\b${m[3] ? `(?:\\s+${m[3]}\\b)?` : ''}(?!\\s+\\d{4}\\b)`, 'i')
-  if (!tok.test(remark)) return remark
-  return remark.replace(tok, '').replace(new RegExp(`^${SEP}+|${SEP}+$`, 'g'), '').replace(/\s{2,}/g, ' ')
+  const hit = tok.exec(remark)
+  if (!hit) return remark
+  /* ONLY THE JOIN IS TIDIED (Astra's read of the code, 10 Oct 26): `hit` is the words and whatever separators led up to
+     them. What stood before is kept to the character; what stands after is kept too — losing its own leading
+     separators only where the words OPENED the remark ("till 17 Jul — Bangkok" → "Bangkok"). Nothing else of the
+     remark is touched: the first version stripped separators from both ends of the WHOLE remark, and
+     "-5°C cold-weather kit till 17 Jul" lost its minus sign. */
+  const before = remark.slice(0, hit.index)
+  let after = remark.slice(hit.index + hit[0].length)
+  if (!before.trim()) after = after.replace(new RegExp(`^${SEP}+`), '')
+  return (before + after).trim()
 }
 
 /** the facts of one entry's card — `rows` is one record, or the records of one shared input; `corner` is what the

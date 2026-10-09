@@ -18,7 +18,7 @@ export const rows = []
 
 /* one scenario's row; status PASS / FAIL / NOT RUN */
 export function record(n, size, role, status, said, pics = []) {
-  rows.push({ n, size, role, status, said: String(said).slice(0, 1400), pics })
+  rows.push({ n, size, role, status, said: String(said).slice(0, 6000), pics })
   console.log(`#${n} ${size} ${role} ${status} — ${String(said).slice(0, 600)}`)
 }
 export function saveRows(file) { writeFileSync(file, JSON.stringify(rows, null, 1)) }
@@ -103,8 +103,9 @@ export const rowOf = (p, iid) => p.evaluate(iid => {
     head: head?.getAttribute('data-testid') === 'inl-day' ? head.textContent : '', onScreen: b.top >= 0 && b.bottom <= innerHeight, h: Math.round(b.height) }
 }, iid)
 /* open a saved input from the List: its Name button (desktop) or its card (phone) */
-export async function openSaved(p, touch, iid) {
-  const sel = touch ? `[data-testid="inl-row-${iid}"]` : `#inBody tr[data-iid="${iid}"] [data-testid="in-open"]`
+export async function openSaved(p, touch, iidOrList) {
+  const list = [].concat(iidOrList)
+  const sel = list.map(iid => touch ? `[data-testid="inl-row-${iid}"]` : `#inBody tr[data-iid="${iid}"] [data-testid="in-open"]`).join(", ")
   const loc = p.locator(sel).first()
   await loc.scrollIntoViewIfNeeded()
   await press(touch, loc)
@@ -127,4 +128,21 @@ export async function finish(file) {
   console.log(errs.length ? 'ERRORS SEEN:\n' + [...new Set(errs)].join('\n') : 'no page errors, no failed requests')
   writeFileSync(file.replace('.json', '-errors.json'), JSON.stringify([...new Set(errs)], null, 1))
   await browser.close()
+}
+
+/* a reload of the plain address (nothing wiped), signed in again as someone else; leaves the browser on the week */
+export async function reloadAs(page, who, pass) {
+  await page.goto(BASE)
+  const gotCard = await page.waitForSelector('#luser', { timeout: 6000 }).then(() => true, () => false)
+  if (!gotCard) {
+    for (const sel of ['#logout', '#accOut']) { const l = page.locator(sel); if (await l.count() && await l.first().isVisible()) { await l.first().click(); break } }
+    await page.waitForSelector('#luser', { timeout: 10000 })
+  }
+  await signIn(page, who, pass)
+}
+/* the Person filter set to Everyone (a phone: through the filter button) */
+export async function everyone(page, touch) {
+  if (touch && !(await page.locator('#inFPerson').isVisible())) { await page.locator('#inFiltersBtn').tap(); await page.waitForTimeout(250) }
+  await page.selectOption('#inFPerson', 'all'); await page.waitForTimeout(250)
+  if (touch && (await page.locator('#inFPerson').isVisible())) { await page.locator('#inFiltersBtn').tap(); await page.waitForTimeout(250) }
 }
