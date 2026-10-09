@@ -1054,6 +1054,50 @@ for (const size of [{ name: 'a desktop 1440 × 900', width: 1440, height: 900 },
   })
 }
 
+/* ON A PHONE THE DAYS OF THE WINDOW'S CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger"). They measured
+   about 26 × 20 points; the list's pencil calendar, gone with D718, had days about 48 × 34 on a phone, and the window is
+   now the one form that changes an input's dates. The size is his word for this control (D487); a desktop's window is
+   not changed. Only a real browser can measure a button. */
+test('a phone: the days of the calendar in an input’s window are a finger’s size, a saved input’s and a new one’s alike; a desktop’s are as they were (D725)', async ({ browser, baseURL, page }) => {
+  const size = (p: Page) => p.evaluate(() => {
+    const d = document.querySelector('#inpEdCal .rc-d:not(.wk)')!.getBoundingClientRect(), n = document.querySelector('#inpEdCal .rc-nav')!.getBoundingClientRect()
+    const cal = document.querySelector('#inpEdCal')!.getBoundingClientRect(), win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
+    const save = document.querySelector('#inpEditSave')!.getBoundingClientRect()
+    return { w: Math.round(d.width), h: Math.round(d.height), nav: Math.round(n.height), inside: cal.left >= win.left - 0.5 && cal.right <= win.right + 0.5, saveInSight: save.bottom <= win.bottom + 0.5 && save.bottom <= innerHeight + 0.5, wide: document.documentElement.scrollWidth > innerWidth + 1 }
+  })
+  const openSaved = async (p: Page) => {
+    await go(p, 'inputs'); await p.click('#inListBtn'); await p.click('#inRangeBtn'); await p.click('#inRangeAll')
+    const iid = await p.evaluate(() => (window as any).INPUTS.find((r: any) => r.type === 'Appointment' && !r.grp)?.iid ?? '')
+    await p.locator(`[data-iid="${iid}"]`).first().locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
+    await expect(p.locator('#inpEdCal')).toBeVisible()
+  }
+  /* a desktop: unchanged */
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await openSaved(page)
+  const desk = await size(page)
+  expect(desk.h, 'a desktop’s day is the small one it was').toBeLessThan(26)
+  /* a phone */
+  const ph = await phone(browser, baseURL, 844)
+  try {
+    await openSaved(ph.page)
+    const saved = await size(ph.page)
+    expect(saved.h, 'a day is a finger tall').toBeGreaterThanOrEqual(32)
+    expect(saved.w, 'and a finger wide').toBeGreaterThanOrEqual(40)
+    expect(saved.nav, 'the month’s arrows too').toBeGreaterThanOrEqual(28)
+    expect(saved.inside, 'the calendar is inside the window').toBe(true)
+    expect(saved.saveInSight, 'Save is still in sight').toBe(true)
+    expect(saved.wide, 'nothing runs off sideways').toBe(false)
+    await ph.page.locator('#inpEditCancel').click()
+    /* a NEW input's window shares the calendar */
+    await ph.page.click('#inCalBtn')
+    await ph.page.locator('#inpCal [data-icday]').nth(10).tap({ position: { x: 10, y: 10 } })
+    await ph.page.locator('#icPopAdd').tap()
+    await expect(ph.page.locator('#inpEdCal')).toBeVisible()
+    const fresh = await size(ph.page)
+    expect(fresh.h).toBeGreaterThanOrEqual(32); expect(fresh.w).toBeGreaterThanOrEqual(40)
+  } finally { await ph.context.close() }
+})
+
 /* THE CARD'S WORDS ROW (owner D719, D720, D723 — 10 Oct 26; RESTATED that day from D701's "a short remark shares its line
    with who placed it"). Where a line of words ends is a browser's to say: a short remark and "By Saber" on ONE row;
    under a long remark "By Saber" on a line of its own; at the card's right end in both, and where there is no remark

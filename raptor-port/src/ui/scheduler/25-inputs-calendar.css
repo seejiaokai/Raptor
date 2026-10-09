@@ -332,6 +332,16 @@ body.in-cal{padding-bottom:0}
    clear of it. Position only — no button changes size (D487). */
 .inped-win > .airpop-foot{position:sticky;bottom:0;z-index:2;background:var(--panel)}
 .floatwin.inpedwin .win-body{scroll-padding-bottom:64px}
+/* ON A PHONE THE DAYS OF ITS CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger"). They were about
+   26 x 20; the Inputs list's pencil calendar, gone with D718, had these sizes on a phone, and this window is now the
+   one form that changes an input's dates. His word for THIS control (D487) - a desktop's window keeps its small
+   days, and the board's and the week's dialogs are not this window. */
+@media (max-width:820px){
+  .floatwin.inpedwin #inpEdCal{width:100%;max-width:360px;box-sizing:border-box;padding:8px 10px}
+  .floatwin.inpedwin #inpEdCal .rc-d{font-size:13px;padding:8px 0}
+  .floatwin.inpedwin #inpEdCal .rc-x{padding:8px 0}
+  .floatwin.inpedwin #inpEdCal .rc-nav{width:28px;height:28px;font-size:14px}
+}
 .inped-ask{display:flex;flex-direction:column;gap:8px;margin:10px 12px 0;padding:10px 12px;border:1px solid var(--adv);border-radius:9px;
   background:color-mix(in srgb,var(--adv) 10%,var(--panel));font-size:12.5px;line-height:1.4;color:var(--ink)}
 .inped-ask-h{font-size:12px;font-weight:800}

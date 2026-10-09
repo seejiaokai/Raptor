@@ -3423,3 +3423,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Order the steps: (1) reproduce the reported failure in the RUNNING app, by the reported gesture; (2) check the expectation against the governing rule - is the expected behaviour something the app promises?; (3) only then write the failing test, in the environment that can actually hold the failing state (a browser test where the state depends on styles or layout); (4) fix. A red unit test is not a reproduction when the test environment can fabricate a state production cannot reach.
 
 **Principle:** Reproduce where the fault lives before you pin it where it is convenient. A test can go red on a state the product cannot reach, and a fix for an unreachable state is dead code with a green tick.
+
+### Observation 493: A reviewer-facing recommendation was written without re-reading the ruling it touched, and had to be reversed at the mock-up
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Closing a full bug check of a UI change; three follow-up questions were parked for the owner, each with a recommended answer. He asked for mock-ups of two.
+**Skill:** bug-check order (evidence sheet, "Questions waiting for him") / record-decisions (READ IT BEFORE YOU ASK HIM ANYTHING)
+**Type:** internal
+**Phase/Area:** Parking a question with a recommended answer
+
+**Issue:** One parked question recommended keeping a different look for the same element on one screen. When drawing the mock-up the full row of the governing ruling was opened: his own words were to make that element look ONE way everywhere, so the recommendation contradicted his direction. The search before asking had confirmed the question was open, but the RECOMMENDATION was never checked against the full rows. A second, smaller one: a look script took a rule out of the built stylesheet by matching the media condition as written in the source; the build rewrites it to another spelling, so the "before" picture was silently identical to the "after" until the measured sizes were compared.
+
+**Suggested improvement:** In the parked-questions step, add: "open the full row of every ruling the question touches and check the RECOMMENDED ANSWER against his words, not only that the question is unanswered." In the walk-script notes: "a before/after made by removing a rule from the built page must print how many rules it removed and the measured size both sides — zero removed or equal sizes means the before is not a before."
+
+**Principle:** A recommendation is a claim about what the owner wants; it needs the same search of his words as the question itself. And an A/B picture is evidence only when the script proves the two states differ.

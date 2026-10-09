@@ -9531,6 +9531,14 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   just-saved input the filters hide brings its whole day to the head of the list, itself first under it. Pins:
   `ui/windowdoors.test.tsx`, `ui/windowreads.test.tsx`, `ui/groupeditor.test.tsx`, `ui/inputslist.test.tsx`,
   `e2e/inputs-calendar.spec.ts` ("keeps Delete, Cancel and Save in sight").
+  **ON A PHONE THE DAYS OF THE WINDOW'S CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger").** Under
+  821px a day of `#inpEdCal` is 33 tall and as wide as the window gives it — measured 42 on a 390-wide phone, 32 on a
+  320, 47 from 430 up (the calendar stops at 360 wide) — where it was 26 by 20; the month's arrows are 28. The list's
+  pencil calendar had a finger's size on a phone before it went (D718); a new input's and a shared input's window
+  share the calendar, so theirs too. Save stays in sight at every size and nothing runs off sideways
+  (`scripts/handpass/icard-d725-look.mjs` measures them). A desktop's window keeps its small days. It is his word for this control under D487 — nothing else is
+  resized (`25-inputs-calendar.css`, the rule under the window's own; pinned in a real browser by
+  `e2e/inputs-calendar.spec.ts`).
 - **The Leave War's phone header (D678) holds its two lines in ANY system letters:** line 2 does not wrap; the stage's
   name (`.stagetxt`, `leavewar/ui/chrome.css`) is the one thing that gives way, cut with "…", its arrow kept. Found when
   the pull request's checks ran on GitHub's machines, whose letters are wider (9 Oct 26). Pinned by

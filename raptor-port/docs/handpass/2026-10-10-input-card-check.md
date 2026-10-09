@@ -6,21 +6,25 @@ builder: Opus 5.5. The design is his, approved as pictured (D723): `docs/mock/im
 (`docs/superpowers/briefs/2026-10-10-input-card-scenarios-astra.md`, 84 scenarios). Code reads: Astra and Sol 6.1, each
 blind (D590).
 
-**STATE OF THIS SHEET: CLOSED but for his look (§8) and his three answers (§0).** Ten faults found and fixed, each with a test that was red first or a measured browser check — five by the walk and the scenario design (W1–W5), five by Astra's and Sol's reads of the code (R1–R5; two of them older faults this change made easy to reach); ten older small finds filed, not fixed; the gates wholly green on the last code (§7). *(Kept true as the check goes; this line is rewritten at its
+**STATE OF THIS SHEET: CLOSED but for his look (§8) and two of his three answers (§0) — question 1 is answered and built (D725, §9); for 2 and 3 he asked for a mock-up, sent 10 Oct 26.** Ten faults found and fixed, each with a test that was red first or a measured browser check — five by the walk and the scenario design (W1–W5), five by Astra's and Sol's reads of the code (R1–R5; two of them older faults this change made easy to reach); ten older small finds filed, not fixed; the gates wholly green on the last code (§7). *(Kept true as the check goes; this line is rewritten at its
 close.)*
 
 ## 0. Questions waiting for him
 
-1. **In the input's window on a phone the calendar's days are small — about 26 × 20 points.** The list's pencil had a
+1. **ANSWERED — "1 ok bigger" (D725, 10 Oct 26): the days are made bigger on a phone, the size the list's pencil calendar had; §9.** As it was put: **In the input's window on a phone the calendar's days are small — about 26 × 20 points.** The list's pencil had a
    calendar with bigger days on a phone (about 48 × 34); the pencil is gone (D718), and the window's calendar is the
    one a new input and a shared input already used. Not changed here: the size of the app's buttons stays as it is
    without his word (D487). **Recommended:** on a phone, make the window calendar's days the size the pencil's were.
    **What waits on it:** nothing — dates can be changed today, by a careful finger.
-3. **A several-day input says "till 22 Jul" twice on its card** — at the right, where the hours stand, and again as its
+3. **MOCK-UP SENT 10 Oct 26 — he asked for one ("3 show me a mock up"): `docs/mock/card-questions.html`, pictures
+   `docs/mock/img/card-questions/q3-*.png`; not built until he chooses.** As it was put: **A several-day input says "till 22 Jul" twice on its card** — at the right, where the hours stand, and again as its
    remark, where the remark is nothing but the automatic "till <date>". (So did the opened day's old card.)
    **Recommended:** on the card, leave out a remark that says only what the corner already says. **What waits on it:**
    nothing.
-2. **On the DESKTOP list a shared input still reads "Saber +3"** (the names appear on hover) **and the kind is still a
+2. **MOCK-UP SENT 10 Oct 26 — he asked for one ("2 can u show me a mock up"): the same page, pictures `q2-*.png`; not
+   built until he chooses. THE RECOMMENDATION ON THE PILL IS CHANGED there, and he is told: small grey capitals on the
+   table too — "leave the pill", below, went against his own D718 ("I want to standardise how they look").** As it was
+   put: **On the DESKTOP list a shared input still reads "Saber +3"** (the names appear on hover) **and the kind is still a
    pill.** His rulings speak of the card (D721, D723). **Recommended:** name everyone on the desktop row too; leave the
    pill — a column of a table reads well as a pill. **What waits on it:** nothing.
 
@@ -363,8 +367,8 @@ Inputs). Each line is what he should EXPECT, in the app's own words:
    Saber". Tap a card: the input opens.
 2. **Inputs → List → All dates.** The same cards, under a heading a day ("THU 23 JUL · 2 inputs"). No pencil, no
    cross. Tap a card: the input opens; Delete, Cancel and Save are in sight at the foot of the window.
-3. **In that window, tap another date on its small calendar and Save.** The card moves under that day's heading.
-   *(The calendar's days are small on a phone — question 1 above.)*
+3. **In that window, tap another date on its calendar and Save.** The card moves under that day's heading.
+   *(The calendar's days are a finger's size on a phone since D725 — §9.)*
 4. **Open Gambit's OML on 23 Jul and tap the paperclip beside Delete.** His document opens.
 5. **Open a Saturday or Sunday duty** (the ALL AVAIL Duty on Sat 25 Jul): its window says "OIL — credited… Change…";
    one nobody has answered says "Not answered yet" with "Answer…".
@@ -377,3 +381,40 @@ the host opened 16, the walkers at least one behind every scenario) · 9 surface
 (101 orders; 2 more carried by tests, §5.4) · MISSING: 5 doors lost with the pencil and the paperclip, all FIXED (the
 dates, the unanswered OIL line, the document, the posted-out people, the buttons in sight); 10 older finds FILED
 (`[CARD-CHECK-SEEN]`); 3 questions with him (§0).
+
+## 9. After the close — the bigger days of the window's calendar on a phone (D725, 10 Oct 26)
+
+His answer to question 1: *"1 ok bigger"*. **Tier: LOOK** — the eight questions, each NO with its reason: no OIL, no
+published record, nothing stored, no role and no warning is touched; it is one rule of the stylesheet for ONE calendar
+(the one in an input's window, named by its own id — the list's date filter, the OIL sheet's days and the week picker
+share the day's markup and are NOT this calendar: the date filter's day measured 26 by 20 beside it, before and after);
+no new control, gesture or screen — the same tap on a bigger day. So: the gates, a before / after picture, this section.
+
+- **Built:** on a phone (up to 820 wide) the window's calendar fills the window's width up to 360, a day is 33 tall and
+  the month's arrows 28 (`src/ui/scheduler/25-inputs-calendar.css`, the rule under the window's own). Test first:
+  `e2e/inputs-calendar.spec.ts` "a phone: the days of the calendar in an input's window are a finger's size…" — RED
+  before the rule ("a day is a finger tall: expected at least 32, received 20"), green after; it holds a saved input's
+  window, a new input's, Save in sight, nothing off sideways, and a desktop's day unchanged.
+- **The look** (`scripts/handpass/icard-d725-look.mjs`, the built bundle; the "before" is the SAME window with D725's
+  rule taken out of the page's stylesheet): pictures in `docs/img/handpass/2026-10-10-input-card-check/d725/` —
+  `phone-window-saved-before.png` / `-after.png` (opened by the host: the days 26 × 20 → 42 × 33, the calendar the
+  window's width, Delete / Cancel / Save whole at the foot; the hint under the remarks now scrolls under the pinned
+  buttons, as the form is taller), `phone-window-new-after.png`, `phone-320-window.png`, `desktop-window.png`.
+
+  | Screen | A day of the window's calendar | Save in sight | Page wider than the screen |
+  |---|---|---|---|
+  | 320 × 568 phone | 32 × 33 | yes | no |
+  | 390 × 844 phone — before | 26 × 20 | yes | no |
+  | 390 × 844 phone — after | 42 × 33 | yes | no |
+  | 430 × 932 phone | 47 × 33 | yes | no |
+  | 820 wide | 47 × 33 | yes | no |
+  | 821 wide | 26 × 20 (unchanged) | yes | no |
+  | 1440 × 900 desktop | 26 × 20 (unchanged) | yes | no |
+
+  A tap on a day of the bigger calendar still picks it; no console error, page error or 4xx.
+- **The gates, the whole set under the PC's lock, on this code:** unit 9757 / 9757 (578 files) · build clean · tfin 728 / 0 · e2e 740 passed, 0 failed, 57 skipped (one more than the close: D725's own) · smoke 445 / 0 · rulecheck OK · docsize OK — watched, nothing else of the gates running.
+- **Seen, not changed (D487 — no button resized without his word):** the Inputs list's date filter has the same small
+  days on a phone (26 × 20). Told to him as an option.
+
+**Look:** `docs/handpass/2026-10-10-input-card-check.md` §9 · 5 pictures (the host opened the before and the after) ·
+1 surface (the input's window, saved and new) at 7 sizes · MISSING: nothing.
