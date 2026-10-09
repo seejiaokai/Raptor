@@ -580,9 +580,9 @@
     padding: 5px 9px;
   }
 
-  /* LINE 2. Four chips on one row, Legend at the right edge. `flex-wrap` stays as the safety net the Manning row
-     keeps (chrome.css `.card-hd`): a stage name or a count longer than any seen so far drops Legend to a line of its
-     own rather than pushing it off the screen.
+  /* LINE 2. Four chips on one row, Legend at the right edge. It does NOT wrap (it did until 9 Oct 26, as a safety
+     net - which on a device with wider letters was the third line D678 set out to remove): the stage's name gives
+     way instead, below.
 
      THE SIDE PADDING IS 5px, NOT THE 7px OF THE DRAWING, ON PURPOSE. Measured on this PC at 390 wide with 7px the four
      chips needed 371px of the 370 there are, and Legend fell to a third line. With 5px they take 355 — fifteen to
@@ -591,6 +591,7 @@
      because the stage is a label for a member and a button for an admin, and the two do not agree on their own. */
   .filters {
     padding: 3px 10px 7px;
+    flex-wrap: nowrap;
   }
 
   .filters > .fchip {
@@ -598,6 +599,28 @@
     padding: 4px 5px;
     line-height: 13px;
     white-space: nowrap;
+  }
+
+  /* THE LINE HOLDS WHATEVER LETTERS THE DEVICE DRAWS IT IN (9 Oct 26). The spare above is measured in this PC's
+     letters; the app loads no font, and on wider ones (GitHub's machines' are about a seventh wider - the pull
+     request's own check failed there) the four chips no longer fitted and Legend fell to a third line. So the row
+     does not wrap, and ONE thing gives way: the stage's name, cut with an ellipsis - as the callsign is on line 1.
+     Its small arrow (an admin's) stays; the dates, the count and Legend are never cut. */
+  .filters > .fchip:has(> .stagetxt) {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .stagetxt {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .stagebtn::after {
+    flex: 0 0 auto;
   }
 
   .legkey {

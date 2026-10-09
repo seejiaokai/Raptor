@@ -561,6 +561,29 @@ test('on a phone an admin\'s stage button opens his two moves inside the screen,
   }
 })
 
+/* …WHATEVER LETTERS THE DEVICE DRAWS THEM IN. The app loads no font of its own: the same words are drawn in the
+   system's letters, and those differ in width (this PC's are narrow; GitHub's machines' are about a seventh wider, and
+   a phone's are its maker's). With this PC's letters line 2 had 15px to spare, so on wider letters Legend fell to a
+   third line — the pull request's own check on GitHub's machines failed exactly so, 9 Oct 26. The stage's name is the
+   one thing on the line that gives way: it is cut with "…", and the line holds. Wide letters are forced here so this
+   PC sees what another device would. */
+test('with wide letters the top of the Leave War on a phone is still two lines: the stage name gives way, nothing wraps or leaves the screen', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone-size rule (D678)')
+  await lwRole(page, 'admin')
+  await lwView(page, 'slipway')
+  await page.addStyleTag({ content: '#page-leavewar, #page-leavewar * { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
+  for (const [width, height] of PHONES) {
+    await page.setViewportSize({ width, height })
+    await page.waitForTimeout(200)
+    const m = await expectTwoLines(page, LINE1, LINE2, `admin, wide letters, ${width} wide`)
+    expect(m.boxes['stage-now']!.text, 'the words are all there for a reader; only their drawing is cut').toBe('OPEN FOR BIDDING')
+    expect(m.boxes['bid-window']!.text).toBe('1 Jan – 31 Mar')
+  }
+  await lwRole(page, 'member')
+  await page.waitForTimeout(200)
+  await expectTwoLines(page, ['war-picker', 'lw-viewing'], LINE2, 'a member, wide letters, 360 wide')
+})
+
 test('a member on a phone has the same two lines with no "+", and a stage that is a label and opens nothing', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'member')
