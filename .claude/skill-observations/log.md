@@ -3333,3 +3333,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** A walk that includes any saved-data step starts from real storage in a fresh browser profile (clean by construction), never the memory-only switch. Phrase each step so that a missing precondition fails it - assert the thing existed before asserting it went.
 
 **Principle:** A check that can pass for the wrong reason is not a check; make every step depend on evidence that its precondition held.
+
+### Observation 487: A check that sits BEHIND a door hides the door's own missing test — break each layer, and assert the layer's own signature
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** FULL bug check of "an input filed for ALL AVAIL / ALL" and the input kind Event (branch claude/day-window-compact; raptor-port/docs/handpass/2026-10-09-all-avail-event-check.md §5.5).
+**Skill:** raptor-port/docs/bug-check-order.md §8.4 (the break test) — a working guide, not a skill file
+**Type:** internal
+**Phase/Area:** break tests, where a rule is held in two layers (a door's own refusal and a save-boundary invariant)
+
+**Issue:** Three of twenty-seven break tests stayed green. In each, the door's own check had been cut and the save boundary's hard check behind it still refused the write with the SAME sentence, so every door test passed — the door's wire had no test of its own, by proof. The tests asserted "refused, sentence said, nothing saved", which both layers satisfy.
+
+**Suggested improvement:** In §8.4, add: where a rule is held in more than one layer, each layer's test must assert something only THAT layer does (called directly; the exact wording with no rollback tail; one toast, not two; no command attempted) — and the break test cuts each layer separately.
+
+**Principle:** Defence in depth makes the outer layer's absence invisible to an outcome-only test; a layer is proved only by an observation the layer behind it cannot produce.
