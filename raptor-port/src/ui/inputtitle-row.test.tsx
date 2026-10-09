@@ -206,3 +206,25 @@ describe('the next-week peek keeps the kind in sight too (the walk, walker A —
   })
 })
 
+describe('the board shown READ ONLY keeps the kind in sight on an input’s card (Astra’s read of the code, 3)', () => {
+  it('a titled overseas duty under Unavailable and a titled Event under Personal Inputs each say their kind; untitled ones do not', () => {
+    const od: any = { iid: 'ttOD', person: 'vinci', date: 'Jul 15', yr: 2026, allday: true, type: 'OD', title: 'Exercise Darwin', remarks: '' }
+    const plain: any = { iid: 'ttOD2', person: 'stuff', date: 'Jul 15', yr: 2026, allday: true, type: 'OD', remarks: '' }
+    INPUTS.push(od, plain)
+    const ev = landed({ title: 'Sports day' })
+    setBoardDay(WED); PIOPEN.add(WED)
+    try {
+      const d = doc(boardHTML(WED, true))
+      const cards = [...d.querySelectorAll('.sbi-row')] as HTMLElement[]
+      const of = (name: string) => cards.find(c => (c.querySelector('.sbi-ty')?.childNodes[0]?.textContent || '').trim().toLowerCase() === name.toLowerCase())!
+      expect(of('Exercise Darwin'), 'the titled OD’s card').toBeTruthy()
+      expect(of('Exercise Darwin').querySelector('.nm-kind')!.textContent).toBe('OD')
+      expect(of('Sports day'), ev.inp.iid).toBeTruthy()
+      expect(of('Sports day').querySelector('.nm-kind')!.textContent).toBe('Event')
+      expect(of('OD'), 'the untitled OD’s card').toBeTruthy()
+      expect(of('OD').querySelector('.nm-kind')).toBeNull()
+      /* the label rides the name's own cell: a titled card has as many cells as an untitled one */
+      expect(of('Exercise Darwin').children.length).toBe(of('OD').children.length)
+    } finally { PIOPEN.delete(WED) }
+  })
+})

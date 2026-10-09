@@ -1055,3 +1055,18 @@ describe('[INPUT-OWN-TITLE] — a title changed after publishing waits for the a
     expect('title' in inp).toBe(false)
   })
 })
+
+describe('[INPUT-OWN-TITLE] — the kind and the title changed together after publishing (Astra’s read of the code, 1)', () => {
+  it('"To go out" says both: Event → Duty, and Sports day → Guard shift', () => {
+    const inp: any = { person: 'bane', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Event', title: 'Sports day', remarks: '', mod: '2026-07-01' }
+    INPUTS.push(inp); inpId(inp)
+    acceptInput(MON, inp, 'g')
+    publishDay(MON)
+    expect(commitInputEdit(inp, { ...draftOf(inp), type: 'Duty', title: 'Guard shift' })).toBeTruthy()
+    validate()
+    expect(dayPendingItems(MON).length, 'one act').toBe(1)
+    const said = listText(MON)
+    expect(said).toMatch(/Event/); expect(said).toMatch(/Duty/)
+    expect(said).toMatch(/Sports day/); expect(said).toMatch(/Guard shift/)
+  })
+})

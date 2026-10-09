@@ -192,11 +192,68 @@ reading 1), and the walk was run again on that build: 23 of 23.
 
 ### 5.2 The three walkers (Sonnet 5.5, each in its own world, the frozen build)
 
-To do.
+The brief: `docs/superpowers/briefs/2026-10-09-input-own-title-walk-brief.md`. The scenarios: Astra's 64
+(`docs/superpowers/briefs/2026-10-09-reads/input-own-title-scenarios-astra.md`). Each walker drove the frozen copy of the
+build through the app's own controls and opened the pictures it cites; the host opened the pictures of every FAIL and
+placed each find (§5.3). No console or page error in any run.
+
+| Walker | Share | Rows | PASS | FAIL / part | Report · pictures |
+|---|---|---|---|---|---|
+| A — the doors and the display | 5, 6, 7, 9–17, 22, 23, 24, 26, 27, 36, 49 (desktop; a phone for nine of them; a 700-point desktop) | 40 | 36 | 4 | `docs/handpass/parts/it-A.md` · `docs/img/handpass/2026-10-09-input-title-check/A/` |
+| B — publishing and the history | 28–35, 37–43 (desktop; a phone for 28 and 33) | 103 | 101 | 2 | `parts/it-B.md` · `…/B/` |
+| C — roles, warnings, OIL, the late mark | 44–48, 50, 53, 54, 55, 57–61, 63, 64 (desktop; a phone for four) | 26 | 22 | 2 + 2 in part | `parts/it-C.md` · `…/C/` |
+
+**Held on screen, by scenario (the ones the tests could not prove for the screen):** every door's Title states (5–7);
+a refused save keeps the typed title (10); the three "Other" cases (11); a shared input's title through membership and
+date changes (12, 13); a drag and an in-place edit keep it (14); two edits behind an open window (15, 16); the export
+read back — `Name, From, To, Start, End, Type, Title, Remarks`, a quoted title correct (26); no Title box on SANS,
+leave, medical or an upchit (27); publish-then-title, title-then-publish, an amendment, typed back, capitals alone, an
+OD with no row, two covered days, a range across weeks (28–35) — one pending change, the sign-offs down, the issued
+face keeping its name; a member's own, another man's read only, a filer's, an admin's retitle, a right withdrawn
+(44–48); a title of rule words against a standby shift — the grade never moved (50); two inputs of one name, both
+orders, and beside a hand-typed row of that name (53, 54); the warning sentences word for word — "Overseas visit
+clashes with this line", "Night exercise but tasked — …" (55); the OIL question headed by the title at every door, a
+title-only edit asking nothing again and moving no figure, the ALL AVAIL heading, a published OIL result across a title
+amendment (57–61); markup characters printed as text on the OIL heading, a warning, the count window, To go out, the
+history and the export (63).
 
 ### 5.3 What the walk found, and each disposition
 
-To do.
+**Faults of THIS change — each fixed, each with a test that was red first (or, for a look, a measured browser check):**
+
+| # | Found by | The fault | Cause | The fix | Its test |
+|---|---|---|---|---|---|
+| W0 | the host (picture `t10`) | on a desktop the kind label was set beside the name, wrapped under it anyway and stood indented | an inline label with a left margin in a column too narrow for both | the label is under the name at every width; the week's row is no taller (43 / 43, 41 / 41 measured) | `e2e/input-title.spec.ts` (under, flush with the name, the row no taller) |
+| W1 | walker C, 59 | on the Scheduler Board in OIL Earn the titled row lost its kind label — in the one mode where the kind decides what the scheduler is doing | the builder left the label out where the name cell is the item's switch | the label rides the name cell's wrapper in the mode too | `ui/inputtitle-row.test.tsx` (the board in OIL Earn) |
+| W2 | walker C, walker A | on a phone's List the kind's pill broke inside the word beside a title ("EVEN" over "T") | the title was drawn inline before the pill, with no style of its own | the title has a line of its own; the pill sits whole under it | `e2e/input-title.spec.ts` (the pill under the title, one line tall) |
+| W3 | walker C, walker A | in the window opened from the schedule or the board, the Title box and the window's heading shared one id | the box took `inpEditTitle`, which that form of the window already used for its heading | the box is `inpEditOwnTitle` | `ui/inputtitle.test.tsx` (no id twice, in either form of the window) |
+| W4 | walker C | in the changes window a DELETED titled input was headed by its kind over lines that said its title | the heading of a gone input came from the kind its lines recorded | a line records the input's own name beside its kind (`iname`); the heading uses it; a shared input's heading reads its one title | `ui/changesmodel.test.ts`, `ui/inputtitle.test.tsx` (the line carries the name) |
+| W5 | walker A, 24; walker C | on the board's Personal Inputs card a 40-character title ran past its cell over its kind and LATE | the card's name had no rule for a name longer than a kind | it ends in an ellipsis inside its own cell; the full name stands on its programme row | `scripts/handpass/it-rewalk-extras.mjs` X1 (clear of the label and of LATE, desktop and phone) |
+| W6 | walker A, 36 | the next-week peek drew a titled request's row with no kind label | the peek has a row builder of its own | it calls the same one answer (`rowKindTag`) | `ui/inputtitle-row.test.tsx` (the peek) |
+| W7 | walker A | the List's pencil row drew its Title box at the browser's default width, wider than its column | no style | under the Type list, as wide as it | seen in the re-walk's picture |
+
+**Not faults of this change — placed by the host, then filed (`OUTSTANDING.md` `[TITLE-CHECK-SEEN]`), not fixed:**
+the "waiting to go out" list shows a shared input's change a line per man (walker B, 37 — the list never grouped; D663's
+reading (2)); the take-off message "Accept undone" names no input (B, 40 — never did); a request taken off before
+publication, changed, then accepted again reads as a change of words (B, 41); on a phone the "Unsaved changes" question
+is raised behind the day's window (A, 9 — the host drove it with a remarks-only draft: the same, picture
+`rewalk/x5`); Enter in a new input's box saves it and a blank "New input" window opens again (A — the host drove the
+Remarks box, which is not this change's: the same, `it-rewalk-extras.mjs` X4); the pencil row's tick and cross are out
+of Tab's reach and its end-time box is clipped; on a phone's List the OIL button is drawn over the date; in OIL Earn on
+a phone a long item name is cut on one line; a 900-point desktop scrolls to reach Save in a shared window; a member
+cannot switch his own puck off at creation.
+
+**As ruled or as built, not faults:** the peek shows the working copy's name, not the issued one (A, 36b — the peek
+shows the plan, by its contract); a row the scheduler renamed by hand takes the input's new title when the input is
+retitled (B, 43 — a request's row is re-made when the request changes, as for its hours or its remark); the late mark
+measures the last change, so a title edit is a change (C, 64).
+
+**Could not be reached, said plainly:** the history bubble on hover and the deletion toast with markup (C, 63 — every
+other surface printed the markup as text); a real on-screen keyboard (A, 17 — a short screen stood in).
+
+**The sizing, looked at again (the order's §7.0):** every W-fault was a place that DRAWS the name by its own code — the
+board in a mode, the peek, a card, the List on a phone — which is what the sizing step said a walk of this type finds.
+None showed an unproved route outside the walkers' shares; the walk was not widened.
 
 ### 5.5 The break tests — `scripts/handpass/it-breaks.mjs`
 

@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, isSansAvail, sansLetters } from '../engine/inputs'
+import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -127,8 +127,12 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   /* the times as a reader sees them — stored times rewritten under an all-day record are no change to it ([HIST-PHONE-HIDE]
      walk: a Save that changed nothing wrote "times: all day → all day") */
   if (timeWords(b) !== timeWords(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · times`, base({ from: timeWords(b), to: timeWords(a) }))
-  /* its title — the name people read (D715): "title: Event → Sports day"; an untitled side is said by its kind's name */
-  if (!same(inpLabel(b), inpLabel(a)) && same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · title`, base({ from: inpLabel(b), to: inpLabel(a) }))
+  /* its title — the name people read (D715): "title: Event → Sports day"; an untitled side is said by its kind's name.
+     Compared BY ITSELF — the title each side stores, not the name each side shows (Astra's read of the code, 1): the
+     first cut wrote this line only where the kind stood still, so "Sports day" (an Event) saved as "Guard shift" (a
+     Duty) said "Event → Duty" and nothing of the title. Two untitled kinds still write the kind's line alone: their
+     names moved because the kind did, and no title changed. */
+  if (!same(titleOf(b.type, b.title), titleOf(a.type, a.title))) logAction(null, `${who} · ${spanWords(sa)} · title`, base({ from: inpLabel(b), to: inpLabel(a) }))
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))

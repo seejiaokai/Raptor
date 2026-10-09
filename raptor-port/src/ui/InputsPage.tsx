@@ -520,6 +520,10 @@ export function InputsPage() {
           timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
         }
         setRemarks(withTill('', start, end))
+        /* …and the title, as the one-man filing does (finishAdd): left in the form, "Sports day" rode onto the next input
+           whatever its kind (Astra's read of the code, 2). Only after a save — a refusal or a cancelled OIL question
+           keeps the draft. */
+        setTitle(null)
       }
       const g = oilGate(d, null)
       if (g.kind === 'refused') return

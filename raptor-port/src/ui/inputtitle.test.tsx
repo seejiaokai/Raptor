@@ -481,3 +481,76 @@ describe('a shared input and the List’s own OIL question', () => {
   })
 })
 
+/* ASTRA'S READ OF THE CODE (9 Oct 26 — docs/superpowers/briefs/2026-10-09-reads/input-own-title-code-astra.md) */
+describe('the kind and the title changed in ONE save (Astra 1)', () => {
+  const titleLines = (from: number, iid: string) => ELOG.rows.slice(from).filter(r => r.iid === iid && / · title$/.test(r.lbl)) as any[]
+  const typeLines = (from: number, iid: string) => ELOG.rows.slice(from).filter(r => r.iid === iid && / · type$/.test(r.lbl)) as any[]
+  it('"Sports day" (Event) → "Guard shift" (Duty): the history says the kind AND the title', async () => {
+    const r = await filed({ title: 'Sports day' })
+    const log = ELOG.rows.length
+    await openOn(r)
+    await choose('#inpEditType', 'Duty')
+    await type('#inpEditOwnTitle', 'Guard shift')
+    await click($('#inpEditSave'))
+    expect([live(r.iid).type, live(r.iid).title]).toEqual(['Duty', 'Guard shift'])
+    expect(typeLines(log, r.iid).map(l => [l.from, l.to])).toEqual([['Event', 'Duty']])
+    expect(titleLines(log, r.iid).map(l => [l.from, l.to])).toEqual([['Sports day', 'Guard shift']])
+  })
+  it('two untitled kinds: only the kind line — the name moved because the kind did', async () => {
+    const r = await filed()
+    const log = ELOG.rows.length
+    await openOn(r)
+    await choose('#inpEditType', 'Duty')
+    await click($('#inpEditSave'))
+    expect(typeLines(log, r.iid).length).toBe(1)
+    expect(titleLines(log, r.iid)).toEqual([])
+  })
+  it('a titled Event retyped to Training with its title kept: only the kind line', async () => {
+    const r = await filed({ title: 'Sports day' })
+    const log = ELOG.rows.length
+    await openOn(r)
+    await choose('#inpEditType', 'Training')
+    await click($('#inpEditSave'))
+    expect(live(r.iid).title).toBe('Sports day')
+    expect(typeLines(log, r.iid).length).toBe(1)
+    expect(titleLines(log, r.iid)).toEqual([])
+  })
+  it('a titled Event retyped to a leave, which takes no title: the history says the title went', async () => {
+    const r = await filed({ title: 'Sports day' })
+    const log = ELOG.rows.length
+    await openOn(r)
+    await choose('#inpEditType', 'LL')
+    await click($('#inpEditSave'))
+    const now = live(r.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
+    const lines = ELOG.rows.slice(log).filter(l => / · title$/.test(l.lbl)) as any[]
+    expect('title' in now).toBe(false)
+    expect(lines.map(l => [l.from, l.to])).toEqual([['Sports day', 'LL']])
+  })
+})
+
+describe('the List’s form, filed for several people (Astra 2)', () => {
+  it('a shared input’s title does not stay in the form for the next input', async () => {
+    await act(async () => { setInpView('table'); notify() })
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeAll'))
+    await choose('#inType', 'Event')
+    await click($('[data-testid="pp-several"]'))
+    const two = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin).slice(0, 2)
+    for (const id of two) { const b = $(`[data-pp="${id}"]`); if (b && b.getAttribute('aria-pressed') !== 'true') await click(b) }
+    /* a working day of the month the form's calendar shows — no OIL question in the way */
+    const wed = [...document.querySelectorAll('#inCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 3 && !(c as HTMLButtonElement).disabled) as HTMLElement
+    await click(wed); await click(wed)
+    await type('#inTitle', 'Team day')
+    await click($('#inAdd'))
+    const made = INPUTS.filter((r: any) => !had.has(String(r.iid)))
+    expect(made.length, 'one record a man').toBeGreaterThanOrEqual(2)
+    expect(new Set(made.map((r: any) => r.title))).toEqual(new Set(['Team day']))
+    expect(($('#inTitle') as HTMLInputElement).value, 'the box is back to the kind’s name').toBe('Event')
+    for (const r of made) had.add(String(r.iid))
+    await choose('#inType', 'Duty')
+    await click($('#inAdd'))
+    const next = INPUTS.filter((r: any) => !had.has(String(r.iid)))
+    expect(next.length).toBeGreaterThanOrEqual(1)
+    for (const r of next) { expect(r.type).toBe('Duty'); expect('title' in r, 'the next input has no title of the last one').toBe(false) }
+  })
+})

@@ -140,7 +140,7 @@ export function sbInputsHTML(d:any,di:any){
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
                       :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
-      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}${inpKindTagHTML(inp)}</span>`
+      +sbiName(`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`,inp)
       +sbiRmk(inp)+`</div>`;
   };
   const band=(title:any,note:any,cls:any,list:any)=>`<div class="sbi-band ${cls}">${title}<span class="bn">${note}</span></div>`
@@ -306,6 +306,12 @@ const oilRow=(item:any)=>{OILITEM=item||'';return '';};
    own toggle (§2.1 item 5). The board is read-only for schedule editing while
    the mode is on, and a disabled box cannot be tapped, so the name is the
    natural place for the item switch the owner asked for. */
+/* A READ-ONLY CARD'S NAME, WITH ITS KIND WHERE THE NAME IS A TITLE (owner D717; Astra's read of the code, 3). The board
+   shown read only — a look at an issued version, a member's view — draws an input's card by its own short route, and
+   that route named a titled input and dropped its kind: an overseas duty titled "Exercise Darwin" has no programme row
+   to say "OD" for it. The label rides the name's own cell (`.itemcell`), as on the editable card: the card's grid
+   places its cells by their order, so it is never a cell of its own. An untitled card keeps the bare name it had. */
+function sbiName(nameHtml:any,inp:any){const k=inpKindTagHTML(inp); return k?`<span class="itemcell">${nameHtml}${k}</span>`:nameHtml;}
 function sbName(di:any,cls:any,path:any,v:any,ph:any,ro:any,extra?:any){
   if(oilModeOn(di))return oilItemCellHTML(di,OILITEM,v,cls);
   return sbTxt(cls,path,v,ph,ro,extra);
@@ -673,7 +679,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`
-      +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
+      +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`),inp)
       +sbiRmk(inp,dt)+`</div>`;
   }
   const id=inpId(inp);
