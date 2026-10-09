@@ -9608,9 +9608,11 @@ without it shows a group as separate lines.
   Inputs and Unavailable cards (week and board), the schedule's row, the changes window, the history line and bubble,
   the OIL question's heading, the toasts, the warning sentences, the Inputs export (a `Title` column beside `Type`).
   *Where the kind is kept in sight* — only where the name is not the kind's own: `.nm-kind`, small quiet capitals,
-  never editable, never an amendment cell. On the week's row it sits inside the name cell after the editable name —
-  beside it where there is room, UNDER it on a phone, where the row's two times already make two lines (no taller a
-  row); on the Scheduler Board it rides inside the name's own grid cell (`.sb-nmk`, drawn only for such a row — the
+  never editable, never an amendment cell. On the week's row it sits inside the name cell after the editable name,
+  UNDER it at every width (the name column is too narrow for a title and its kind side by side) — and the row is no
+  taller for it (43px with and without on a desktop, 41px on a phone: measured in the check's walk); on the Scheduler
+  Board the row IS one line taller (45px against 34px on a desktop) — the label has a line of its own under the name
+  box. On the Scheduler Board it rides inside the name's own grid cell (`.sb-nmk`, drawn only for such a row — the
   row's grid places its cells by order, so it is never a cell of its own); on an input's card it rides the item cell's
   wrapper (`.itemcell`); on the opened day's card it heads the small-print line (`.sd-kindtag`, `idy-kindtag`); the
   month's bar has no room and says it in its tip ("who · title · kind · dates"); the List prints the title in bold above

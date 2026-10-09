@@ -263,10 +263,11 @@
 /* direct child on purpose — see the note on .ah-row>.nm above */
 .plist .pl-row>.nm{line-height:1.25;padding-top:3px;color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
 /* THE KIND OF A ROW THAT CAME FROM A TITLED INPUT (owner D717, 9 Oct 26 — "Kind kept in sight"; ui/html.ts rowKindTag):
-   small quiet capitals with the row's name — beside it where there is room, wrapping under it where there is not; a
-   phone stacks it under the name, where the row's two times already make two lines (09-week-responsive.css). Never
-   selectable with the name, never a cell of its own. */
-.nm-kind{display:inline-block;margin-left:6px;font-size:8.5px;line-height:1.25;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;user-select:none;vertical-align:baseline}
+   small quiet capitals UNDER the row's name, at every width. The first cut set it beside the name on a desktop; the
+   name column is too narrow to hold a title and its kind side by side, so it wrapped under anyway, indented (the
+   host's walk, picture t10) — and a row is no taller for it: 43px with and without on a desktop (its puck sets the
+   height), 41px on a phone (its two stacked times do). Never selectable with the name, never a cell of its own. */
+.nm-kind{display:block;margin:1px 0 0;font-size:8.5px;line-height:1.25;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap;user-select:none}
 /* ---- single-puck blocks -------------------------------------------------------
    Ground programme (scheduler AND personal inputs), Available, Office, Leave and
    Downchit only ever carry ONE puck on a row, so the two-puck PEOPLE column was

@@ -239,8 +239,6 @@
   .plist .pl-cols>.h-pp{grid-column:3}
   .plist .pl-cols>.h-rk{grid-column:4}
   .plist .pl-row>.nm{grid-column:1;grid-row:1/span 2}
-  /* the kind under the name: no taller a row — its two times are already two lines (D717) */
-  .plist .pl-row>.nm .nm-kind{display:block;margin:1px 0 0}
   .plist .pl-row .t.t-s{grid-column:2;grid-row:1}
   .plist .pl-row .t.t-e{grid-column:2;grid-row:2;padding-top:0}
   .plist .pl-row .t.allday{grid-column:2;grid-row:1/span 2}

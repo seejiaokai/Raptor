@@ -16,7 +16,8 @@ import { SCHED } from '../engine/publish'
 import { dayHTML, rowKindTag } from './html'
 import { boardHTML } from './board'
 import { setSession } from '../state/auth'
-import { setPage, setBoardDay } from '../state/view'
+import { setPage, setBoardDay, PIOPEN } from '../state/view'
+import { sharedKey, entriesOf } from '../state/inputgroup'
 
 const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS)
 const WED = 2
@@ -130,3 +131,49 @@ describe('the Scheduler Board', () => {
     expect(ra.children[1].querySelector('[data-bfld$=".prog"]')).toBeTruthy()
   })
 })
+
+describe('an input’s own card — Personal Inputs on the week and on the board', () => {
+  it('the week: the card is named by the title, its kind small after the name; an untitled card has no label', () => {
+    const a = landed({ title: 'Sports day' }), b = landed({ iid: 'tt2', person: 'vinci', s: 720, e: 780 })
+    PIOPEN.add(WED)
+    try {
+      const d = doc(dayHTML(WED, true))
+      const card = (iid: string) => [...d.querySelectorAll(`[data-inpedit="${iid}"]`)].map(x => x.closest('.nm')!).find(Boolean) as HTMLElement
+      const ca = card(a.inp.iid), cb = card(b.inp.iid)
+      expect(ca, 'the titled card').toBeTruthy(); expect(cb, 'the untitled card').toBeTruthy()
+      expect(ca.querySelector('.inpedit')!.textContent).toBe('Sports day')
+      expect(ca.querySelector('.nm-kind')!.textContent).toBe('Event')
+      expect(ca.querySelector('.inpedit')!.contains(ca.querySelector('.nm-kind')), 'the label is not part of the button that opens the input').toBe(false)
+      expect(cb.querySelector('.inpedit')!.textContent).toBe('Event')
+      expect(cb.querySelector('.nm-kind')).toBeNull()
+    } finally { PIOPEN.delete(WED) }
+  })
+  it('the board: the same card, the same label, riding the item cell', () => {
+    const a = landed({ title: 'Sports day' }), b = landed({ iid: 'tt2', person: 'vinci', s: 720, e: 780 })
+    setBoardDay(WED); PIOPEN.add(WED)
+    try {
+      const d = doc(boardHTML(WED))
+      const card = (iid: string) => d.querySelector(`.inprow [data-inpedit="${iid}"]`)?.closest('.inprow') as HTMLElement
+      const ca = card(a.inp.iid), cb = card(b.inp.iid)
+      expect(ca, 'the titled card').toBeTruthy(); expect(cb, 'the untitled card').toBeTruthy()
+      expect(ca.querySelector('.inpedit')!.textContent).toBe('Sports day')
+      expect(ca.querySelector('.itemcell .nm-kind')!.textContent).toBe('Event')
+      expect(cb.querySelector('.nm-kind')).toBeNull()
+      expect(ca.children.length, 'the card has as many cells as an untitled one').toBe(cb.children.length)
+    } finally { PIOPEN.delete(WED) }
+  })
+})
+
+describe('a shared input shares its title (state/inputgroup.ts SHARED_FIELDS)', () => {
+  const rec = (person: string, over: any = {}) => ({ iid: 'g' + person, person, grp: 'g1', grpBy: 'stiff', type: 'Event', date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, remarks: '', ...over })
+  it('records of one group with one title are one entry; a record titled differently is not part of it', () => {
+    expect(sharedKey(rec('split', { title: 'Sports day' }))).toBe(sharedKey(rec('vinci', { title: 'Sports day' })))
+    expect(sharedKey(rec('split', { title: 'Sports day' }))).not.toBe(sharedKey(rec('vinci', { title: 'Open house' })))
+    expect(sharedKey(rec('split'))).toBe(sharedKey(rec('vinci', { title: '' })))
+    const one = entriesOf([rec('split', { title: 'Sports day' }), rec('vinci', { title: 'Sports day' })], x => x)
+    expect(one.length).toBe(1); expect(one[0].rows.length).toBe(2)
+    const two = entriesOf([rec('split', { title: 'Sports day' }), rec('vinci', { title: 'Open house' })], x => x)
+    expect(two.length).toBe(2)
+  })
+})
+

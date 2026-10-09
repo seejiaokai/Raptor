@@ -162,7 +162,7 @@
    The wrapper takes the name box's place in the row's grid; the box fills it as it filled its cell. */
 .sb-arow .sb-nmk{display:flex;flex-direction:column;align-items:stretch;gap:1px;min-width:0}
 .sb-arow .sb-nmk>.ain{width:100%;min-width:0}
-.sb-arow .sb-nmk>.nm-kind{display:block;margin:0 0 0 7px}
+.sb-arow .sb-nmk>.nm-kind{margin:0 0 0 7px}
 /* THE AMT BOX CREW — a fixed two-column FCP | RCP grid (owner, 13 Aug 26). Seats
    pair left-to-right (FCP left, RCP right) and stack top-to-bottom, positions
    1..n down; an emptied seat keeps its slot (the pax-hole rule) so the pairing
