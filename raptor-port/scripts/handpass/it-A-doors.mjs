@@ -59,8 +59,8 @@ export function calDoor() {
     type: p => win(p).locator('#inpEditType'),
     async openNew(p, s) {
       await calOpenNew(p, s.iso)
-      if (s.person) await win(p).locator('#inpEditPerson').selectOption(s.person)
       if (s.type) await p.selectOption('#inpEditType', s.type)
+      if (s.person) await win(p).locator('#inpEditPerson').selectOption(s.person)
       if (s.several) await setSeveral(p, s.several)
       if (s.st && await p.locator('#inpEditStart').count()) { await p.fill('#inpEditStart', s.st); await p.fill('#inpEditEnd', s.en) }
       if (s.rmk != null) await p.fill('#inpEditRmk', s.rmk)
@@ -95,9 +95,9 @@ export function listDoor() {
     async openNew(p, s) {
       await gotoInputs(p); await closeAnyWin(p)
       await press(p, p.locator('#inListBtn')); await p.waitForSelector('#inAdd', { state: 'visible' })
+      if (s.type) await p.selectOption('#inType', s.type)
       if (s.person) await p.selectOption('#inPerson', s.person)
       await pickDate(p, s.iso)
-      if (s.type) await p.selectOption('#inType', s.type)
       if (s.several) await setSeveral(p, s.several)
       if (s.st && await p.locator('#inStartT').count()) { await p.fill('#inStartT', s.st); await p.fill('#inEndT', s.en) }
       if (s.rmk != null) await p.fill('#inRemarks', s.rmk)
@@ -185,8 +185,8 @@ export function boardDoor(di = 2) {
     async openNew(p, s) {
       await d.openBoard(p)
       await press(p, p.locator('.sb-addinp').first()); await p.locator('#inpEditPop').waitFor({ state: 'visible' }); await sleep(p, 250)
-      if (s.person) await p.selectOption('#inpEditPop #inpEditPerson', s.person)
       if (s.type) await p.selectOption('#inpEditPop #inpEditType', s.type)
+      if (s.person) await p.selectOption('#inpEditPop #inpEditPerson', s.person)
       if (s.st && await p.locator('#inpEditStart').count()) { await p.fill('#inpEditPop #inpEditStart', s.st); await p.fill('#inpEditPop #inpEditEnd', s.en) }
       if (s.rmk != null) await p.fill('#inpEditPop #inpEditRmk', s.rmk)
     },
@@ -345,10 +345,10 @@ export async function runCase(p, door, c, base, tag, opts = {}) {
     try {
       const sh = await door.shown(p, stored)
       if (want) { need(sh.name === want, `screen name "${sh.name}"`); need(sh.kind === finalType, `kind kept in sight "${sh.kind}"`) }
-      else { need(sh.name === 'Event' || (door.key === 'list' && (sh.kind === 'Event')), `screen name "${sh.name}" / kind "${sh.kind}"`); if (door.key !== 'list') need(!sh.kind, `no repeated kind label ("${sh.kind}")`); else need(!sh.titleLine, 'an untitled row has no title line') }
+      else { const listy = door.key === 'list' || door.key === 'pencil'; need(sh.name === 'Event' || (listy && (sh.kind === 'Event')), `screen name "${sh.name}" / kind "${sh.kind}"`); if (!listy) need(!sh.kind, `no repeated kind label ("${sh.kind}")`); else need(!sh.titleLine, 'an untitled row has no title line') }
       if (c === 'T6') need(!sh.html, 'the literal text made no markup')
       if (c === 'T6') { pics.push(null) }
-    } catch (e) { ok = false; say.push('MISSED: could not read the screen: ' + String(e.message).split('\n')[0]) }
+    } catch (e) { ok = false; say.push('MISSED: could not read the screen: ' + String(e.message).split('\n')[0]); await shot(p, `${tag}-${c}-shown-err`).catch(() => {}) }
     /* reopen */
     if (door.key !== 'board' || true) {
       try {

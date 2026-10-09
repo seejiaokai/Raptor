@@ -57,7 +57,7 @@ export async function closeDayWin(p) {
 }
 export async function gotoInputs(p) { await p.evaluate(() => window.go('inputs')); await p.waitForTimeout(250) }
 /** the month's "+ Input" on a day, up to the open (new) window */
-export async function toCal(p) { if (!(await p.locator('#inpCal').isVisible().catch(() => false))) { await press(p, p.locator('#inCalBtn')); await p.waitForTimeout(250) } }
+export async function toCal(p) { if (!(await p.locator('#inpCal').isVisible().catch(() => false))) { if (!(await p.locator('#inCalBtn').isVisible().catch(() => false)) && (await p.locator('#inMemberMode').count())) { await press(p, p.locator('#inMemberMode')); await p.waitForTimeout(250) } await press(p, p.locator('#inCalBtn')); await p.waitForTimeout(250) } }
 export async function openNew(p, iso) {
   await gotoInputs(p); await toCal(p)
   const [y, m] = iso.split('-').map(Number)
@@ -117,7 +117,6 @@ export const allRecs = p => p.evaluate(() => window.INPUTS.map(r => ({ iid: r.ii
 /* the table */
 export function table(name) {
   let rows = []
-  try { rows = JSON.parse(readFileSync(join(ROWS_DIR, `rows-${name}.json`), 'utf8')) } catch {}
   return {
     rows,
     add(r) { rows = rows.filter(x => !(x.n === r.n && x.size === r.size && x.role === r.role && (x.sub || '') === (r.sub || ''))); rows.push(r); this.rows = rows; console.log(`${r.verdict}  #${r.n} ${r.size} ${r.role} — ${r.say.slice(0, 260)}`) },

@@ -91,6 +91,9 @@
    "EVEN" over "T" (the check's walk, walker C — W2). A long title wraps; the pill never breaks. */
 .intitle{display:block;font-weight:700;line-height:1.2;margin-bottom:3px;overflow-wrap:anywhere}
 .intitle + .intag{display:inline-block;white-space:nowrap}
+/* the pencil row's Title box: under the Type list, as wide as it — never wider than its own column (a box at the
+   browser's default width widened the column) */
+.intitle-ed{display:block;width:100%;box-sizing:border-box;min-width:0;margin-top:3px}
 /* the SANS row's F/O/A offer letters — the crew group's purple (--san), the
    same accent the SANS chip/puck wears everywhere, so the two agree at a
    glance. A quiet pill beside the type tag, never replacing it. */

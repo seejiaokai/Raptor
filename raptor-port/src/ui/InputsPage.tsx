@@ -1199,7 +1199,7 @@ export function InputsPage() {
                     {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : notSans)}
                   </select>
                     {/* its own title, under its kind ([INPUT-OWN-TITLE]) — the window's box, here in the row */}
-                    {titledKind(draft.type) && <input aria-label="Title" data-ed="title" maxLength={TITLE_MAX} autoComplete="off"
+                    {titledKind(draft.type) && <input aria-label="Title" data-ed="title" className="intitle-ed" maxLength={TITLE_MAX} autoComplete="off"
                       value={draft.title == null ? draft.type : draft.title} placeholder={draft.type}
                       onChange={e => setDraft({ ...draft, title: e.target.value })} />}
                     {/* manage (or first-attach, on a retype into medical) the

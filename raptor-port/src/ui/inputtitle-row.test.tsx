@@ -15,6 +15,7 @@ import { validate } from '../engine/validate'
 import { SCHED } from '../engine/publish'
 import { dayHTML, rowKindTag } from './html'
 import { boardHTML } from './board'
+import { peekDayHTML } from './peek'
 import { setSession } from '../state/auth'
 import { setPage, setBoardDay, PIOPEN, setOilDay } from '../state/view'
 import { sharedKey, entriesOf } from '../state/inputgroup'
@@ -193,3 +194,15 @@ describe('the board in OIL Earn keeps the kind in sight (W1)', () => {
     } finally { setOilDay(null) }
   })
 })
+
+describe('the next-week peek keeps the kind in sight too (the walk, walker A — it has a row builder of its own)', () => {
+  it('a titled request’s row in the peek carries its kind under its name; an untitled one does not', () => {
+    const a = landed({ title: 'Sports day' }), b = landed({ iid: 'tt2', person: 'vinci', s: 720, e: 780 })
+    const d = doc(peekDayHTML(DAYS[WED], WED, false))
+    const row = (name: string) => [...d.querySelectorAll('.pl-row')].find(r => (r.querySelector('.nm .ntx')?.textContent || '') === name) as HTMLElement
+    expect(row('SPORTS DAY'), a.inp.iid).toBeTruthy(); expect(row('EVENT'), b.inp.iid).toBeTruthy()
+    expect(row('SPORTS DAY').querySelector('.nm .nm-kind')!.textContent).toBe('Event')
+    expect(row('EVENT').querySelector('.nm-kind')).toBeNull()
+  })
+})
+
