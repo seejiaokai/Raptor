@@ -9554,6 +9554,14 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   Pins: `ui/inputsvet.test.tsx`, `inputs.test.tsx`, `windowdoors.test.tsx`, `groupeditor.test.tsx`,
   `inputscal-model.test.ts`, `inputsmonth.test.tsx`, `inputssettings.test.tsx`; in a real browser
   `e2e/inputs-calendar.spec.ts` (the three tests named D729).
+  **ADDED BY ITS CHECK (10 Oct 26 — `docs/handpass/2026-10-10-inputs-vet-check.md` §5.3, §6):** every save of the
+  window is ONE passing note (`doSave` / `doMedSave` inside `HOOKS.toastBatch`) — what the save itself said ("…replaces
+  the LL bid…") and "Input added" together, never the second over the first; the "?" card gives way to any question
+  opened over the window and takes Escape only as the front window's, and is not drawn in a read-only form; the row
+  the List is shown is found, lit and scrolled to BY ITS ENTRY (a shared input stands under its first record A to Z —
+  `listRow`, `shown`), and an opened day lists a just-saved shared input hidden by a filter as the whole entry
+  (`entryRowsOf`); `remarkOnce` tidies only the JOIN where the words stood — a sign or a dash that belongs to the
+  typed words is never touched.
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
