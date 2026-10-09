@@ -128,12 +128,34 @@ const tagWeekBlock = (page, iid) => page.evaluate(iid => {
     kind.textContent = t
   }, { iid, t: TITLE })
   await top(page, DAY, 'e-day-title', 262)
+  /* HIS QUESTION (9 Oct 26): "After the title is changed, how does one know what type of event was selected?" — the kind,
+     small, at the left of the card's own small-print line: no new line, so no added height */
+  const h0 = await page.evaluate(iid => document.querySelector(`[data-testid="idy-row-${iid}"]`).getBoundingClientRect().height, iid)
+  await page.evaluate(iid => {
+    const row = document.querySelector(`[data-testid="idy-row-${iid}"]`), foot = row.querySelector('.sd-foot')
+    const k = document.createElement('span'); k.textContent = 'Event'; k.id = 'mockKind'
+    k.style.cssText = 'margin-right:auto;font-size:inherit;color:var(--ink-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase'
+    foot.style.cssText += ';display:flex;align-items:baseline;width:100%;gap:8px'
+    foot.prepend(k)
+  }, iid)
+  console.log('day card height: title alone', h0, '· with the kind on the small-print line', await page.evaluate(iid => document.querySelector(`[data-testid="idy-row-${iid}"]`).getBoundingClientRect().height, iid))
+  await top(page, DAY, 'e2-day-title-kind', 262)
   await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(600)
   console.log('the schedule block is', await tagWeekBlock(page, iid), 'px tall')
   await page.waitForTimeout(200)
   await el(page, '#mockBlock', 'f-row-today')
   await page.evaluate(t => { document.querySelector('#mockRow .nm .ntx').textContent = t.toUpperCase() }, TITLE)
   await el(page, '#mockBlock', 'g-row-title')
+  /* …and on the schedule's row: the kind, small, under the title — a phone's row is already two lines tall (its two times) */
+  const r0 = await page.evaluate(() => document.getElementById('mockRow').getBoundingClientRect().height)
+  await page.evaluate(() => {
+    const nm = document.querySelector('#mockRow .nm')
+    const k = document.createElement('span'); k.textContent = 'EVENT'
+    k.style.cssText = 'display:block;font-size:10px;line-height:1.2;color:var(--ink-3);font-weight:600;letter-spacing:.06em;margin-top:2px'
+    nm.append(k)
+  })
+  console.log('schedule row height: title alone', r0, '· with the kind under it', await page.evaluate(() => document.getElementById('mockRow').getBoundingClientRect().height))
+  await el(page, '#mockBlock', 'g2-row-title-kind')
   await ctx.close()
 }
 /* 3 — THE MONTH, a desktop (a phone's bar has room for the person only): today, then with the title */
