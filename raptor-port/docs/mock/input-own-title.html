@@ -1,0 +1,132 @@
+<title>Input Title Drawing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
+<style>
+  /* One column: each place an input's name stands, today beside the drawing, then what is settled and what is new.
+     A single dark look, the app's own: its panels, its cyan, its amber. */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0d11; --panel: #14181e; --edge: #2a313b; --ink: #e9edf2; --ink-2: #a8b1bd; --ink-3: #7a8491;
+    --accent: #3bc6e8; --mark: #ffd60a; --done: #57c98a;
+    --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+    --body: Barlow, "Segoe UI", Arial, sans-serif;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; }
+  main { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 28px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 30px; line-height: 1.1; margin: 0; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 21px; margin: 0; text-wrap: balance; }
+  p { margin: 0; color: var(--ink-2); max-width: 62ch; }
+  .lede { color: var(--ink); }
+  .tag { font-family: var(--display); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; color: var(--ink-3); }
+  .tag.new { color: var(--mark); }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; align-items: start; }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  figure button { all: unset; cursor: zoom-in; display: block; border: 1px solid var(--edge); border-radius: 12px; overflow: hidden; background: var(--panel); }
+  figure button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  figure img { display: block; width: 100%; height: auto; }
+  figcaption { display: flex; flex-direction: column; gap: 2px; }
+  figcaption b { font-weight: 600; color: var(--ink); }
+  figcaption span { color: var(--ink-2); font-size: 15px; }
+  section { display: flex; flex-direction: column; gap: 12px; }
+  .q { border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .q b { color: var(--ink); font-weight: 600; }
+  .q span { color: var(--ink-2); }
+  .q .rec { color: var(--accent); font-weight: 600; }
+  .q.done b { color: var(--ink-2); }
+  .q.done .rec { color: var(--done); }
+  dialog { border: 0; padding: 0; background: #000; max-width: 100vw; max-height: 100dvh; width: 100vw; height: 100dvh; overflow: auto; }
+  dialog::backdrop { background: #000; }
+  dialog img { display: block; width: 780px; max-width: none; margin: 0 auto; cursor: zoom-out; }
+  dialog button { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; font: 600 15px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; padding: 8px 14px; }
+</style>
+<main>
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="tag">A drawing · nothing is built yet</span>
+    <h1>An input with a title of its own</h1>
+    <p class="lede">Every picture is the real app, with the title drawn on. The example is a Saturday Event for ALL AVAIL, titled “Sports day”. Tap a picture to see it full size.</p>
+  </header>
+
+  <section>
+    <h2>Filing it</h2>
+    <div class="pair">
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/a-window-today.png" aria-label="Open picture: the input window today"><img src="img/input-own-title/a-window-today.png" alt="The input window today: Person ALL AVAIL, Type Event, the dates, the hours, and Sports day typed in Remarks."></button>
+        <figcaption><span class="tag">Today</span><b>The name goes in Remarks</b><span>The schedule still calls it “Event”.</span></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/b-window-title-filled.png" aria-label="Open picture: the Title box filled in from the kind"><img src="img/input-own-title/b-window-title-filled.png" alt="The drawing: a Title box under Type, already reading Event because Event was chosen."></button>
+        <figcaption><span class="tag new">Drawing · step 1</span><b>Pick the kind, the Title fills in</b><span>Choose “Event” and the Title box reads “Event”. Leave it and nothing changes from today.</span></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/c-window-title-typed.png" aria-label="Open picture: the Title typed over"><img src="img/input-own-title/c-window-title-typed.png" alt="The drawing: the Title box now reads Sports day; Remarks is empty."></button>
+        <figcaption><span class="tag new">Drawing · step 2</span><b>Type over it</b><span>“Sports day”. Remarks is free again for an actual remark.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>On the schedule</h2>
+    <div class="pair">
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/f-row-today.png" aria-label="Open picture: the schedule row today"><img src="img/input-own-title/f-row-today.png" alt="The Ground Programme today: a row named EVENT, 06:00 to 18:00, the ALL AVAIL puck with its count of 45."></button>
+        <figcaption><span class="tag">Today</span><b>The row is named “EVENT”</b></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/g-row-title.png" aria-label="Open picture: the schedule row with the title"><img src="img/input-own-title/g-row-title.png" alt="The drawing: the same Ground Programme row, now named SPORTS DAY."></button>
+        <figcaption><span class="tag new">Drawing</span><b>The row is named “SPORTS DAY”</b><span>Everything else on the row is as it is now.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>In the opened day</h2>
+    <div class="pair">
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/d-day-today.png" aria-label="Open picture: the day's card today"><img src="img/input-own-title/d-day-today.png" alt="The opened Saturday today: one card reading ALL AVAIL, Event, LATE, 06:00 to 18:00."></button>
+        <figcaption><span class="tag">Today</span><b>“ALL AVAIL · Event”</b></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/e-day-title.png" aria-label="Open picture: the day's card with the title"><img src="img/input-own-title/e-day-title.png" alt="The drawing: the same card reading ALL AVAIL, Sports day, LATE, 06:00 to 18:00."></button>
+        <figcaption><span class="tag new">Drawing</span><b>“ALL AVAIL · Sports day”</b><span>On a phone the title stands alone here. See the note below.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>On the month, on a desktop</h2>
+    <div class="stack">
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/h-month-today.png" aria-label="Open picture: the month's bar today"><img src="img/input-own-title/h-month-today.png" alt="The Saturday end of a week on the Inputs month today: an amber bar reading ALL AVAIL, Event."></button>
+        <figcaption><span class="tag">Today</span><b>The bar reads “ALL AVAIL · Event”</b></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-zoom="img/input-own-title/i-month-title.png" aria-label="Open picture: the month's bar with the title"><img src="img/input-own-title/i-month-title.png" alt="The drawing: the same amber bar reading ALL AVAIL, Sports day."></button>
+        <figcaption><span class="tag new">Drawing</span><b>The bar reads “ALL AVAIL · Sports day”</b><span>A phone’s bar has room for the person only, as today.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>One thing the drawing showed</h2>
+    <div class="q"><b>On a phone, the day’s card has no room for the kind beside the title</b><span>With “Sports day · Event”, the LATE mark and the hours all on one line, the title was cut to “Sports …”. <span class="rec">So the drawing shows the title alone there.</span> The card keeps its amber colour, and a tap opens the window, where the kind is shown. On a desktop there is room, and the kind stays small beside the title.</span></div>
+  </section>
+
+  <section>
+    <h2>What is settled</h2>
+    <div class="q done"><b>Which kinds take a title</b><span><span class="rec">Settled.</span> Training, Course, Meeting, Fly with, Personal, Appointment, Duty, Event, OD and Other. Never leave or medical: those keep their official names.</span></div>
+    <div class="q done"><b>Where the title shows</b><span><span class="rec">Settled.</span> Wherever the kind’s name stands as a name today. The kind still decides every rule: OIL, clashes, crew rest.</span></div>
+    <div class="q done"><b>“Other”</b><span><span class="rec">Settled.</span> It takes the same Title box. Its remarks go back to being plain remarks.</span></div>
+    <div class="q done"><b>Remarks</b><span><span class="rec">Settled.</span> Left as they are. Several days still read “till” and the last date; the title is not printed a second time.</span></div>
+  </section>
+</main>
+<dialog id="zoom" aria-label="Picture, full size"><button type="button" id="zoomClose">Close</button><img id="zoomImg" src="img/input-own-title/a-window-today.png" alt="The input window today"></dialog>
+<script>
+  const dlg = document.getElementById('zoom'), big = document.getElementById('zoomImg')
+  document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => {
+    big.src = b.dataset.zoom; big.alt = b.querySelector('img').alt
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '')
+  }))
+  const shut = () => { if (dlg.close) dlg.close(); else dlg.removeAttribute('open') }
+  document.getElementById('zoomClose').addEventListener('click', shut)
+  big.addEventListener('click', shut)
+</script>
