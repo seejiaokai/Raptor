@@ -130,7 +130,10 @@ picker; 4.3, 4.4 — the two mock-up pages now say what he decided.
 
 ## 7. The gates
 
-*(the final run's counts)*
+**The whole set under the PC lock, nothing else running, on `fe4ad82a` (the last code on this branch): WHOLLY GREEN — unit 9397 / 9397 (564 files) · build clean · tfin 728 / 0 · e2e 727 passed, 0 failed, 56 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.**
+Two earlier runs that night were not clean and are not counted: one shared the PC with a reviewer and a research helper (the two known unsteady tests failed, and an older test still expected the long small print — F5); one stopped at once on a test file a merge had left without its closing lines.
+
+`Walk:` FULL tier, sized as §4 — the host's own, by script, real controls on the built app: part 1, 41 steps (a phone with a real finger, a desktop, a member); part 2, 27 steps (Astra's scenarios and Sol's findings); re-run after every fix round, all pass; 28 pictures in `docs/img/handpass/2026-10-09-note-pucks/` and `…/part2/`, the host opened the ones a look could judge (the note with words and people, people only, the typing box, thirty people, the long small print, the SANS card, the desktop) — two faults were found that way (F6, F7). Carried by tests, not walked: the saved record's rules, the small print's forms, a delete's effect on notes (§4).
 
 ## 8. His look — sixty seconds on his iPhone, on this branch's preview link
 

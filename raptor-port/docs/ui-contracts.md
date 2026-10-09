@@ -9469,7 +9469,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   such a day — refused whole, "Not moved: Hex was deleted from 9 Oct — take him off the note first" — and no writer adds
   him there (`state/plan.ts planMoveBlock`, `goneOn`). Before his delete the note moves and keeps him.
 - **A note in an opened day carries its own pucks (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
-  `docs/mock/note-with-pucks.html`).** ONE kind of note: words, people, or both — never neither. "+ Note" is the only button
+  `docs/mock/note-with-pucks.html`; built as its own job, apart from the calendar job — D690).** ONE kind of note: words, people, or both — never neither. "+ Note" is the only button
   in the window's bar ("+ Pucks" is gone). A note's words are one slim line (28px) with its small buttons — a "+" while it
   has no people, the pencil, the cross; its people stand FOUR across straight under, the schedule's own pucks, a dashed "+"
   the last of them (`.inputsday .ic-note`, 25-inputs-calendar.css). The six dots and the box's left edge stand 8px left
