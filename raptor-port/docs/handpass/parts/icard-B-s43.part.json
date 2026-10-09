@@ -1,0 +1,16 @@
+{
+ "rows": [
+  {
+   "n": 43,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "setup: ATT C Jul 27 0-1439 ; LL Jul 23 0-1439 || read: Jul 23 || after Save: toasts [\"Input updated\"]; saved: ATT C Jul 23 am ; LL Jul 23 pm || day 23 cards: AM RangerATT C || LATE PM RangerLL || 10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber || Undo: ATT C Jul 27 0-1439 ; LL Jul 23 0-1439; Redo: ATT C Jul 23 am ; LL Jul 23 pm || (the leave balance itself is not readable: the demo carries no counter on the Leave War; the stored LL became PM, i.e. the morning is returned)",
+   "pics": [
+    "B43-1-after-save-press.png",
+    "B43-2-day23-cards.png"
+   ]
+  }
+ ],
+ "errs": []
+}

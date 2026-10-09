@@ -1,0 +1,310 @@
+[
+ {
+  "n": 1,
+  "name": "the phone list’s card opens nothing (Astra B1)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "flash={team.some((x: any) => flash.indexOf(x) >= 0)} onOpen={() => openInput(r)} />",
+  "put": "flash={team.some((x: any) => flash.indexOf(x) >= 0)} onOpen={() => {}} />",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "the opened day’s card opens nothing (Astra B2)",
+  "file": "src/ui/InputsCal.tsx",
+  "find": "late={lateNoteOf(it.rows, lateWord)} onOpen={() => openInput(r)} onKey={onLineKey(it)}>",
+  "put": "late={lateNoteOf(it.rows, lateWord)} onOpen={() => {}} onKey={onLineKey(it)}>",
+  "tests": [
+   "src/ui/inputsday.test.tsx",
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "the title is printed as the kind (Astra B3)",
+  "file": "src/ui/inputcard-model.ts",
+  "find": "    kind: String(r.type || ''),",
+  "put": "    kind: inpLabel(r),",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/inputtitle.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "the title trails on the top line (Astra B4)",
+  "file": "src/ui/InputCard.tsx",
+  "find": "<span className=\"icard-kind\" data-testid={`${tid}-kind`}>{kind}</span>",
+  "put": "<span className=\"icard-kind\" data-testid={`${tid}-kind`}>{kind}</span>{title && <b> {title}</b>}",
+  "tests": [
+   "src/ui/inputtitle.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "a shared input reads \"+N\" (Astra B6)",
+  "file": "src/ui/inputcard-model.ts",
+  "find": "    names: list.map(x => csOf(x.person, people)).sort(az).join(', '),",
+  "put": "    names: csOf(r.person, people) + (list.length > 1 ? ' +' + (list.length - 1) : ''),",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/sharedline.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "\"By\" on every one-person card (Astra B8)",
+  "file": "src/ui/inputcard-model.ts",
+  "find": "  const said = filer != null && (list.length > 1 || String(filer) !== String(r.person))",
+  "put": "  const said = filer != null",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/inputsday.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "\"By\" hidden where the filer is one of several (Astra B9 — D724)",
+  "file": "src/ui/inputcard-model.ts",
+  "find": "  const said = filer != null && (list.length > 1 || String(filer) !== String(r.person))",
+  "put": "  const said = filer != null && !list.some(x => String(x.person) === String(filer))",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/sharedline.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "the day and time are back on the small print (Astra B10)",
+  "file": "src/ui/InputCard.tsx",
+  "find": "<span className=\"icard-by\" data-testid={`${tid}-by`}>By {by}</span>",
+  "put": "<span className=\"icard-by\" data-testid={`${tid}-by`}>By {by} · 3 Oct, 17:20</span>",
+  "tests": [
+   "src/ui/inputsday.test.tsx",
+   "src/ui/sharedline.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "the small print names the last changer, not the filer (Astra B11)",
+  "file": "src/ui/placedline.ts",
+  "find": "  if ((rows || []).filter(Boolean).length < 2) return stamped[0].by",
+  "put": "  if ((rows || []).filter(Boolean).length < 2) return stamped[0].modBy ?? stamped[0].by",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/inputsday.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "a day’s heading counts a shared input’s people (Astra B12)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "<i>{g.rows.length} input{g.rows.length > 1 ? 's' : ''}</i>",
+  "put": "<i>{g.rows.reduce((n: number, x: any) => n + (entryOf.get(x) || [x]).length, 0)} inputs</i>",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "the phone’s cards follow the desktop’s sort (Astra B13)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "    put(rows.slice(pinCount).sort(byDay), false)",
+  "put": "    put(rows.slice(pinCount), false)",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "LATE also opens the input (Astra B20)",
+  "file": "src/ui/InputCard.tsx",
+  "find": "onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) onOpen() }}>",
+  "put": "onClick={() => { onOpen() }}>",
+  "tests": [
+   "src/ui/inputsday.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "a shared input’s LATE is the first person’s alone (Astra B21)",
+  "file": "src/ui/inputcard-model.ts",
+  "find": "  const lates = list.map(x => ({ who: csOf(x.person, people), note: lateWord(x) })).filter(x => x.note)",
+  "put": "  const lates = list.slice(0, 1).map(x => ({ who: csOf(x.person, people), note: lateWord(x) })).filter(x => x.note)",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/sharedline.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "another year’s heading drops its year (Astra B23)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "(+g.iso.slice(0, 4) !== baseYear() ? ' ' + g.iso.slice(0, 4) : '')",
+  "put": "('')",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "an input running on does not say \"till\" (the card’s corner)",
+  "file": "src/ui/inputcard-model.ts",
+  "find": "  if (last > iso) return (r && r.allday ? '' : hoursOf(r) + ' · ') + 'till ' + dayMon(last, iso)",
+  "put": "  if (last < iso) return (r && r.allday ? '' : hoursOf(r) + ' · ') + 'till ' + dayMon(last, iso)",
+  "tests": [
+   "src/ui/inputcard-model.test.ts",
+   "src/ui/inputsday.test.tsx",
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "the phone draws no cards",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "  const dayGroups = !phone ? [] : (() => {",
+  "put": "  const dayGroups = true ? [] : (() => {",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "the desktop row’s Name opens nothing",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "onClick={() => openInput(r)}>{team ? `${cs} +${team.length - 1}` : cs}</button></td>",
+  "put": "onClick={() => {}}>{team ? `${cs} +${team.length - 1}` : cs}</button></td>",
+  "tests": [
+   "src/ui/inputslist.test.tsx",
+   "src/ui/inputs.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "a press on a desktop row’s OIL chip also opens the window (Astra B45)",
+  "file": "src/ui/InputsPage.tsx",
+  "find": "if (!t.closest('button') && !t.closest('.inact > span')) openInput(r) }}>",
+  "put": "if (!t.closest('button')) openInput(r) }}>",
+  "tests": [
+   "src/ui/inputslist.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "the window’s date calendar is a shared input’s only (Astra B24)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))",
+  "put": "  const datesHere = win && !isNew && rows.length > 1 && !readOnly && ctx !== 'up'",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "one SANS commitment gets the date calendar too",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))",
+  "put": "  const datesHere = win && !isNew && !readOnly && ctx !== 'up'",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "a reader who may not change the input gets the date calendar",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))",
+  "put": "  const datesHere = win && !isNew && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "the window’s hint for one person still says \"for everyone\"",
+  "file": "src/ui/inputedit.tsx",
+  "find": "              ? rows.length > 1\n                ? 'To change its dates for everyone in it,",
+  "put": "              ? rows.length > 0\n                ? 'To change its dates for everyone in it,",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "the unanswered OIL line is gone (Astra B51)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "{!isNew && r && !oilAnswered(r) && unansweredDay && <div className=\"inped-f\" data-testid=\"oil-unanswered\">",
+  "put": "{false && r && !oilAnswered(r) && unansweredDay && <div className=\"inped-f\" data-testid=\"oil-unanswered\">",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "\"Answer…\" is offered to a reader who may not change the input",
+  "file": "src/ui/inputedit.tsx",
+  "find": "              {!readOnly && <button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
+  "put": "              {<button type=\"button\" className=\"abtn ghost\" data-testid=\"oil-answer\"",
+  "tests": [
+   "src/ui/groupeditor.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "the window offers no archived people (Astra B46)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const archivedHere = win && !isNew && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []",
+  "put": "  const archivedHere: string[] = []",
+  "tests": [
+   "src/ui/windowdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "a new input’s window offers archived people too",
+  "file": "src/ui/inputedit.tsx",
+  "find": "  const archivedHere = win && !isNew && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []",
+  "put": "  const archivedHere = win && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []",
+  "tests": [
+   "src/ui/windowdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "a deleted man’s name is not kept as the Person list’s value",
+  "file": "src/ui/PeoplePick.tsx",
+  "find": "(more ? !!moreIds && !moreIds.includes(first) : true)",
+  "put": "(more ? false : true)",
+  "tests": [
+   "src/ui/windowdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "the window’s paperclip is gone (Astra B35)",
+  "file": "src/ui/inputedit.tsx",
+  "find": "{!isNew && r && rowDocIds(r).some(id => !!docGet(id)) && <button type=\"button\" className=\"abtn inped-doc\" data-testid=\"inped-docview\"",
+  "put": "{false && r && rowDocIds(r).some(id => !!docGet(id)) && <button type=\"button\" className=\"abtn inped-doc\" data-testid=\"inped-docview\"",
+  "tests": [
+   "src/ui/windowdoors.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "the window’s paperclip shows where there is no document",
+  "file": "src/ui/inputedit.tsx",
+  "find": "{!isNew && r && rowDocIds(r).some(id => !!docGet(id)) && <button type=\"button\" className=\"abtn inped-doc\" data-testid=\"inped-docview\"",
+  "put": "{!isNew && r && <button type=\"button\" className=\"abtn inped-doc\" data-testid=\"inped-docview\"",
+  "tests": [
+   "src/ui/windowdoors.test.tsx"
+  ]
+ }
+]

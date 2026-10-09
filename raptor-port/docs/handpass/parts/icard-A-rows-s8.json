@@ -1,0 +1,37 @@
+{
+ "rows": [
+  {
+   "id": 8,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "one card, 14 names A-Z each once, By Saber, {\"dayCount\":\"1 INPUT\",\"day\":{\"h\":126,\"lines\":3},\"listHead\":\"Tue 21 Jul1 input\",\"list\":{\"h\":126,\"lines\":3}}; Undo removed all, Redo restored 14",
+   "pics": [
+    "8-390-day.png",
+    "8-390-list.png"
+   ]
+  },
+  {
+   "id": 8,
+   "size": "phone 320",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "intact at 320 {\"dayCount\":\"1 INPUT\",\"day\":{\"h\":163,\"lines\":4},\"listHead\":\"Tue 21 Jul1 input\",\"list\":{\"h\":163,\"lines\":4}}",
+   "pics": [
+    "8-320-day.png",
+    "8-320-list.png"
+   ]
+  },
+  {
+   "id": 8,
+   "size": "desktop 1440",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "one card, 14 names A-Z each once, By Saber, {\"dayCount\":\"1 INPUT\",\"day\":{\"h\":126,\"lines\":3}}; Undo removed all, Redo restored 14",
+   "pics": [
+    "8-desk-day.png"
+   ]
+  }
+ ],
+ "errs": []
+}

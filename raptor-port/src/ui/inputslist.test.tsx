@@ -41,7 +41,15 @@ const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
 const key = async (el: Element, k: string) => act(async () => { el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })) })
 /* the stylesheet's own width for "a phone" — the list asks it as the stylesheet does (ui/usemedia.ts) */
-const asPhone = (on: boolean) => { (window as any).matchMedia = (q: string) => ({ matches: on && /max-width:\s*820px/.test(q), addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }) }
+let phoneNow = false
+const mqHeard = new Set<() => void>()
+const asPhone = (on: boolean) => {
+  phoneNow = on; mqHeard.clear()
+  ;(window as any).matchMedia = (q: string) => ({ get matches() { return phoneNow && /max-width:\s*820px/.test(q) },
+    addEventListener(_: string, f: () => void) { mqHeard.add(f) }, removeEventListener(_: string, f: () => void) { mqHeard.delete(f) }, addListener() {}, removeListener() {} })
+}
+/* the screen changes width while the page is up — a phone turned, a window narrowed: the browser tells whoever asked */
+const turn = async (on: boolean) => act(async () => { phoneNow = on; [...mqHeard].forEach(f => f()) })
 const T = (d: number, h: number, m: number) => new Date(2026, 9, d, h, m).getTime()
 let n = 0
 /* nothing but what a test files: the demo's own inputs are taken away, so a heading's count is the test's own */
@@ -294,6 +302,23 @@ describe('on a desktop the table stays, without the pencil and the cross (D723)'
     expect($$('#inBody tr')).toHaveLength(1)
     await click($('#inBody tr button[data-testid="in-open"]'))
     expect(document.querySelector('[data-testid="win-inputedit"]')!.textContent).toContain(`${cs(g.first)} +2`)
+  })
+})
+
+describe('the list follows the screen’s width while the page is up', () => {
+  it('a desktop table sorted by NAME, then narrowed to a phone: the cards are in DATE order all the same — and widened again, the table is back', async () => {
+    await mount(false)
+    const [a, b] = az(others()).slice(0, 2)
+    const late = await file({ person: a, date: 'Oct 22' })
+    const early = await file({ person: b, date: 'Oct 20' })
+    await click($('#intbl thead th[data-sort="name"]'))
+    expect($$('#inBody tr').map(tr => tr.getAttribute('data-iid')), 'by name: the later date first').toEqual([late.iid, early.iid])
+    await turn(true)
+    expect($('#intbl'), 'no table once it is a phone').toBeNull()
+    const order = $$('[data-testid="inl-day"], [data-testid^="inl-row-"]').map(el => el.getAttribute('data-testid') === 'inl-day' ? el.querySelector('b')!.textContent : el.getAttribute('data-iid'))
+    expect(order).toEqual(['Tue 20 Oct', early.iid, 'Thu 22 Oct', late.iid])
+    await turn(false)
+    expect($('#intbl')).toBeTruthy(); expect($$('[data-testid^="inl-row-"]')).toHaveLength(0)
   })
 })
 

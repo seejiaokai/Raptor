@@ -1,0 +1,20 @@
+import * as L from './icard-C-lib.mjs'
+const { sleep } = L
+const w = await L.world('desk', 'us')
+const p = w.page
+await L.fileNew(w, { iso: '2026-07-20', type: 'Duty', s: '09:00', e: '12:00', oil: 'no' })
+await L.switchUser(w, 'ad')
+await L.go(p, 'editsched')
+await p.getByRole('button', { name: 'Jul 20', exact: true }).click(); await sleep(900)
+console.log(await p.evaluate(() => window.CURWEEK))
+await L.showDay(p, 0)
+console.log(JSON.stringify(await L.head(p, 0)))
+await L.pic(w, 'x4-week2')
+console.log(JSON.stringify(await L.signDay(p, 0)))
+console.log(JSON.stringify(await L.head(p, 0)))
+console.log(JSON.stringify(await L.publishDay(p, 0)))
+console.log(JSON.stringify(await L.head(p, 0)))
+await L.pic(w, 'x4-published')
+console.log(await p.evaluate(() => [...document.querySelectorAll('#eWeek .day[data-day="0"] .pl-row.gr-frominput')].map(r => r.innerText.replace(/\n/g, ' '))))
+console.log(w.errors)
+await w.browser.close()

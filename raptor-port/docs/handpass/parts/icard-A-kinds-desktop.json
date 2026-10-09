@@ -1,0 +1,444 @@
+[
+ {
+  "kind": "LL",
+  "who": "Anvil",
+  "day": "2026-07-27",
+  "ok": true,
+  "iid": "imv19j3fe11vyo9",
+  "card": {
+   "kind": "LL",
+   "who": "Anvil",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "OL",
+  "who": "Basher",
+  "day": "2026-07-28",
+  "ok": true,
+  "iid": "imv19j524y0ysn7",
+  "card": {
+   "kind": "OL",
+   "who": "Basher",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "OIL",
+  "who": "Cotter",
+  "day": "2026-07-29",
+  "ok": true,
+  "iid": "imv19j6oyh05xjy",
+  "card": {
+   "kind": "OIL",
+   "who": "Cotter",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "CCL",
+  "who": "Cutter",
+  "day": "2026-07-30",
+  "ok": true,
+  "iid": "imv19j8ba5qnfym",
+  "card": {
+   "kind": "CCL",
+   "who": "Cutter",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "PL",
+  "who": "Dash",
+  "day": "2026-07-31",
+  "ok": true,
+  "iid": "imv19j9yjbuhjji",
+  "card": {
+   "kind": "PL",
+   "who": "Dash",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "FCL",
+  "who": "Diesel",
+  "day": "2026-07-27",
+  "ok": true,
+  "iid": "imv19jblbmxk5jm",
+  "card": {
+   "kind": "FCL",
+   "who": "Diesel",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "EL",
+  "who": "Fable",
+  "day": "2026-07-28",
+  "ok": true,
+  "iid": "imv19jd84lu73z5",
+  "card": {
+   "kind": "EL",
+   "who": "Fable",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "CL",
+  "who": "Forge",
+  "day": "2026-07-29",
+  "ok": true,
+  "iid": "imv19jeugyo3s59",
+  "card": {
+   "kind": "CL",
+   "who": "Forge",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "HL",
+  "who": "Ghost",
+  "day": "2026-07-30",
+  "ok": true,
+  "iid": "imv19jhhtkqim55",
+  "card": {
+   "kind": "HL",
+   "who": "Ghost",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "OML",
+  "who": "Havoc",
+  "day": "2026-07-31",
+  "ok": true,
+  "iid": "imv19jk1zc1vdtp",
+  "card": {
+   "kind": "OML",
+   "who": "Havoc",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "ATT C",
+  "who": "Hex",
+  "day": "2026-07-27",
+  "ok": true,
+  "iid": "imv19jmjrxuh935",
+  "card": {
+   "kind": "ATT C",
+   "who": "Hex",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "ATT B",
+  "who": "Hunter",
+  "day": "2026-07-28",
+  "ok": true,
+  "iid": "imv19jp0nhwtdny",
+  "card": {
+   "kind": "ATT B",
+   "who": "Hunter",
+   "when": "All day",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "Training",
+  "who": "Jester",
+  "day": "2026-07-29",
+  "ok": true,
+  "iid": "imv19jqi6jl4zb3",
+  "card": {
+   "kind": "Training",
+   "who": "Jester",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "CSE",
+  "who": "Kraken",
+  "day": "2026-07-30",
+  "ok": true,
+  "iid": "imv19js4zeu5f0v",
+  "card": {
+   "kind": "CSE",
+   "who": "Kraken",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "Meeting",
+  "who": "Ledger",
+  "day": "2026-07-31",
+  "ok": true,
+  "iid": "imv19jtszuhf04d",
+  "card": {
+   "kind": "Meeting",
+   "who": "Ledger",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "Fly with",
+  "who": "Marlin",
+  "day": "2026-07-27",
+  "ok": true,
+  "iid": "imv19jvfinmsxbl",
+  "card": {
+   "kind": "Fly with",
+   "who": "Marlin",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "Personal",
+  "who": "Otter",
+  "day": "2026-07-28",
+  "ok": true,
+  "iid": "imv19jx2rrk1axs",
+  "card": {
+   "kind": "Personal",
+   "who": "Otter",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "Appointment",
+  "who": "Outlaw",
+  "day": "2026-07-29",
+  "ok": true,
+  "iid": "imv19jyqhzwnorw",
+  "card": {
+   "kind": "Appointment",
+   "who": "Outlaw",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "Duty",
+  "who": "Piston",
+  "day": "2026-07-30",
+  "ok": true,
+  "iid": "imv19k0f4z964dz",
+  "card": {
+   "kind": "Duty",
+   "who": "Piston",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "OD",
+  "who": "Pixel",
+  "day": "2026-07-31",
+  "ok": true,
+  "iid": "imv19k20la6g7zr",
+  "card": {
+   "kind": "OD",
+   "who": "Pixel",
+   "when": "06:00–18:00",
+   "tone": "red",
+   "sq": "rgb(240, 85, 95)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [
+   "square red (rgb(240, 85, 95)), wanted amb"
+  ],
+  "bar": "color(srgb 0.458039 0.199373 0.227608)"
+ },
+ {
+  "kind": "Other",
+  "who": "Ratchet",
+  "day": "2026-07-27",
+  "ok": true,
+  "iid": "imv19k3mtc1tw17",
+  "card": {
+   "kind": "Other",
+   "who": "Ratchet",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ },
+ {
+  "kind": "Event",
+  "who": "Reaper",
+  "day": "2026-07-28",
+  "ok": true,
+  "iid": "imv19k587qs5q6h",
+  "card": {
+   "kind": "Event",
+   "who": "Reaper",
+   "when": "09:00–10:30",
+   "tone": "amb",
+   "sq": "rgb(229, 168, 59)",
+   "title": null,
+   "rmk": null,
+   "by": "By Saber",
+   "h": 50
+  },
+  "probs": [],
+  "bar": "color(srgb 0.422667 0.331294 0.163137)"
+ }
+]

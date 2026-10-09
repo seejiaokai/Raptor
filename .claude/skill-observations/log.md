@@ -3378,3 +3378,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the handoff's closing step, say: run each check as its own command and read its result before the commit; if a check must be filtered, send it to a file and keep its exit code (`cmd > out.txt 2>&1; echo $?`), or set `pipefail`. Never put a filtered check and `git commit` in one `&&` chain.
 
 **Principle:** A gate guards only what waits on its real exit status. Filtering a gate's output for brevity replaces that status with the filter's — so a gate and the action it guards never share a chain unless the gate's own status is what the chain tests.
+
+### Observation 490: A job that REMOVES a control needs the removed control's door list before it is built
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** building an approved redesign that removed an edit-in-place row editor, its delete cross, and (on one screen size) two small action buttons and a paperclip (Raptor, the input card)
+**Skill:** New skill candidate: door inventory for a removal (or a section of the project's bug-check order, its door check)
+**Type:** open-source
+**Phase/Area:** planning, before the build - sizing the job and its check
+
+**Issue:** The approved design said "the pencil and the cross are not needed - a tap opens the item". The handoff had sized the job as a change of look with a medium check. Reading the removed editor field by field showed it was the ONLY form that changed one kind of record's dates, and the only place a pending question was flagged on a phone; the builder found those two. The independent scenario designer, asked "what could a person do before that he no longer can", found two more the builder had missed (a list of archived people offered only by the removed editor; a document that could only be opened from the removed icon). Four lost capabilities in all, none visible in the approved pictures.
+
+**Suggested improvement:** For any change that removes or hides a control, write - before building - a two-column list from the REMOVED CODE, not from memory: every action that control gave, in every role and at every screen size, and the control that gives it afterwards. An empty right-hand cell is a build item or a question for the owner. Hand the same list to the scenario designer with the question "what is missing from it". Size the check from that list, not from how the change looks.
+
+**Principle:** A picture of the new screen shows what stays; only the code being deleted shows what goes. Inventory the capabilities of what is removed before agreeing how big the job is.
+
+### Observation 491: Remove the control first, run the old tests, and the failures are the list of claims to restate
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** restating 43 tests that drove a removed edit-in-place editor so that they drive the window that replaced it (Raptor, the input card)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** changing behaviour that many existing tests reach through one control
+
+**Issue:** About 130 test lines in thirteen files pressed the removed control, many only as a means (clean-up, set-up) and some as the claim itself. Sorting them by reading would have been slow and error-prone. Removing the control and running those files gave the exact list of 43 failing tests; each was then restated for the new route with its claim kept and a dated note where the claim itself had changed, and none was deleted. Cascading failures (a test that died half-way and left state behind) disappeared once the first cause in each file was fixed.
+
+**Suggested improvement:** When a control many tests use is replaced: (1) write the new route's own tests first; (2) remove the old control; (3) run every file that mentions it and take the failure list as the inventory; (4) give each test file ONE helper for the new route (open, set a field, save, delete) and restate each test through it; (5) never delete a failing test - where its claim no longer holds, rewrite it to the new claim and say in a comment what it used to say and which decision changed it.
+
+**Principle:** The failing tests after a removal are a free, complete list of the promises the removed thing was keeping; restate each promise for the new door instead of deleting the test that held it.

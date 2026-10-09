@@ -580,6 +580,21 @@ tag NF / the holiday's short form; the still-needed pair or nothing; F, O, A as 
 (`sansDayGroups`: every commitment, WSOs to fly, pilots to fly, OFT or AMT only - a man in ONE group, the head-counts
 people; a commitment the count leaves out listed apart with why), with `hoursOf` and `lateWord` (the cut-off a late
 entry missed, D646). Pure; it works nothing out about the day. `sanscal-model.test.ts`.
+`src/ui/InputCard.tsx` - THE INPUT CARD (owner D718–D724, 10 Oct 26 — `[INPUT-LIST-AS-DAY-CARD]`): the one card of the
+Inputs calendar's opened day and of the Inputs list on a phone. A flow of text with the LATE-and-hours corner floated at
+its right, so a shared input's names wrap round it; the card's button is a span with a button's role (a real button is
+a box, and would drop under the corner). `src/ui/inputcard-model.ts` - WHAT A CARD SAYS, pure: `cardOf(rows)` (names A to
+Z, the kind, the title where it is not the kind's name, the remark, "By" for one person only where someone else placed
+it and for several always - D723, D724, the colour), `cardWhen` (hours, or "till <day>"), `lateNoteOf` (one LATE for a
+shared input, naming who where only some are late). Tests: `inputcard-model.test.ts`; on the screens `inputsday.test.tsx`,
+`sharedline.test.tsx`, `inputtitle.test.tsx` (the day), `inputslist.test.tsx` (the phone's list under its day headings,
+the desktop table without pencil or cross, the list following a change of width), `windowdoors.test.tsx` (the window's
+paperclip and its posted-out people - the doors the list's pencil and paperclip took with them); in a real browser
+`e2e/geometry.spec.ts` (the phone's list), `e2e/inputs-calendar.spec.ts` (the words row; a long title, a long remark and
+fourteen names wrapping), `e2e/input-title.spec.ts`. The check's walk scripts: `scripts/handpass/icard-look.mjs` (the built
+cards photographed beside the approved pictures), `icard-host-walk.mjs` (the host's 33 steps), `icard-<A|B|C>-*.mjs` (the
+walkers'); its break list `scripts/handpass/breaks/icard.json`. `placedline.ts filerOf` / `filerName` - who filed an entry,
+the one answer for the full line and for the card's "By".
 `src/ui/placedline.ts` - who placed an entry and when, the ONE small-print line (plan §3.8, D629): `placedLine(record)`
 from the record's `by` / `at` / `modBy` / `modAt`; no line for a record that never recorded it. Drawn so far on the SANS
 calendar's opened day; the Inputs calendar's opened day, the List, the editor, a Medical card and the document viewer

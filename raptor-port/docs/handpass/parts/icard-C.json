@@ -1,0 +1,40 @@
+{
+ "rows": [
+  {
+   "n": "66",
+   "size": "phone 390x844",
+   "role": "Admin (Saber)",
+   "verdict": "PASS",
+   "said": "filed Ranger Duty 09:00-12:00 on Wed 15 Jul, declared 15 Jul a public holiday through Inputs gear > Calendar > Holidays (err: \"\") || window: heading \"OIL\" present=true; unanswered line \"OIL Not answered yet — 15 Jul Answer…\"; Answer button count 1; phone-card OIL chips 0 || Answer… opened: OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 15 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save || after Cancel: saved oil null; line \"OIL Not answered yet — 15 Jul Answer…\" || after answering Yes: saved oil {\"2026-07-15\":0.5}; window still open 0; unanswered line null; Change… buttons 1; text \"credited on its non-working day Change…\" || Change… opened: OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 15 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lan | yes button state: upconf-seg || Undo pressed true: saved oil null || after Undo the window says: OIL Not answered yet — 15 Jul Answer… || Redo pressed true: saved oil {\"2026-07-15\":0.5} || after Redo the window says: change buttons 1, unanswered null",
+   "pics": [
+    "phone-66-1-holiday-declared.png",
+    "phone-66-2-list-card.png",
+    "phone-66-3-window-unanswered.png",
+    "phone-66-4-question.png",
+    "phone-66-5-after-cancel.png",
+    "phone-66-6-answered.png",
+    "phone-66-7-change-question.png",
+    "phone-66-8-after-undo.png",
+    "phone-66-9-after-redo.png"
+   ]
+  },
+  {
+   "n": "61",
+   "size": "phone 390x844",
+   "role": "Member (Ranger), setup by Admin (Saber)",
+   "verdict": "PASS",
+   "said": "Saber filed a Sat 18 Jul Duty 09:00-12:00 for Ace, Ranger, Saber and answered Yes: Ranger:{\"2026-07-18\":0.5} by Saber ; Ace:{\"2026-07-18\":0.5} by Saber ; Saber:{\"2026-07-18\":0.5} by Saber || Ranger's window: Save false, Delete false, date calendar false, group Change… (oil-revise) present true, own Change… 1, Take me out true; read-only line \"Only Saber — who filed it — or an admin can change this for everyone.\" || group-level Change… button (greyed): {\"inert\":true,\"pe\":\"auto\",\"opacity\":\"0.5\"} || own Change… opened: OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War  || after Ranger changes to No: Ranger:{\"2026-07-18\":0} by Saber ; Ace:{\"2026-07-18\":0.5} by Saber ; Saber:{\"2026-07-18\":0.5} by Saber || Take me out opened: [] || after Stay in: Ranger:{\"2026-07-18\":0} by Saber ; Ace:{\"2026-07-18\":0.5} by Saber ; Saber:{\"2026-07-18\":0.5} by Saber (people rows 3) || after Take me out: Ace:{\"2026-07-18\":0.5} by Saber ; Saber:{\"2026-07-18\":0.5} by Saber || Undo (true): 3 rows, Ranger:{\"2026-07-18\":0} by Saber ; Ace:{\"2026-07-18\":0.5} by Saber ; Saber:{\"2026-07-18\":0.5} by Saber || Redo (true): 2 rows || list cards for Sat 18 duty after Redo: []",
+   "pics": [
+    "phone-61-1-window-top.png",
+    "phone-61-2-own-controls.png",
+    "phone-61-3-own-question.png",
+    "phone-61-4-after-own-no.png",
+    "phone-61-5-takeout-question.png",
+    "phone-61-6-after-takeout.png",
+    "phone-61-7-list-after-redo.png"
+   ]
+  }
+ ],
+ "errors": [],
+ "extras": []
+}

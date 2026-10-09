@@ -103,12 +103,17 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
   it('an input of a DELETED man keeps HIS name as the list’s value — never the first man on the list — and is saved as his', async () => {
     const gone = others()[4]
     mark(gone, 'archived', true); mark(gone, 'deleted', true)
+    /* …with ANOTHER man archived, so the list does carry its "Posted out / archived" group: the deleted man is in
+       neither it nor the roster, and his own name must still be the value (the break test found this case unproved
+       while the group was empty — 10 Oct 26) */
+    mark(others()[3], 'archived', true)
     const r = await single({ person: gone, date: 'Sep 1' })
     await openOn(r)
     const sel = $('#inpEditPerson') as HTMLSelectElement
     expect(sel.value).toBe(gone)
     expect(sel.selectedOptions[0].textContent).toBe(cs(gone))
-    expect(groupOf() ? [...groupOf()!.querySelectorAll('option')].map(o => o.getAttribute('value')) : [], 'a deleted man is offered to nobody').not.toContain(gone)
+    expect(groupOf(), 'the group is on the list').toBeTruthy()
+    expect([...groupOf()!.querySelectorAll('option')].map(o => o.getAttribute('value')), 'a deleted man is offered to nobody').not.toContain(gone)
     await click($('#inpEditSave'))
     expect(live(r.iid).person).toBe(gone)
   })
