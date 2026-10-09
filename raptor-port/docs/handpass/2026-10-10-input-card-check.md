@@ -6,7 +6,7 @@ builder: Opus 5.5. The design is his, approved as pictured (D723): `docs/mock/im
 (`docs/superpowers/briefs/2026-10-10-input-card-scenarios-astra.md`, 84 scenarios). Code reads: Astra and Sol 6.1, each
 blind (D590).
 
-**STATE OF THIS SHEET: OPEN — the walk is done (§5); the gates and the two reads are next.** *(Kept true as the check goes; this line is rewritten at its
+**STATE OF THIS SHEET: CLOSED but for his look (§8) and his three answers (§0).** Ten faults found and fixed, each with a test that was red first or a measured browser check — five by the walk and the scenario design (W1–W5), five by Astra's and Sol's reads of the code (R1–R5; two of them older faults this change made easy to reach); ten older small finds filed, not fixed; the gates wholly green on the last code (§7). *(Kept true as the check goes; this line is rewritten at its
 close.)*
 
 ## 0. Questions waiting for him
@@ -24,7 +24,7 @@ close.)*
    pill.** His rulings speak of the card (D721, D723). **Recommended:** name everyone on the desktop row too; leave the
    pill — a column of a table reads well as a pill. **What waits on it:** nothing.
 
-**Readings to tell him with the build** — each follows from his rulings; none changes what he chose:
+**Readings to tell him with the build** — each follows from his rulings; none changes what he chose (ten; 8–10 came from the two reads of the code):
 1. **The window changes a one-person input's dates now** (the two-tap calendar a shared input's window already had —
    D681). The list's pencil was the only form that did; without this, removing it would have left only the drag of a
    bar on the month.
@@ -35,6 +35,14 @@ close.)*
    one, for every reader. The phone's card carries no paperclip; the desktop row keeps its own.
 4. **A shared input's LATE is said once on its card**; where only some of its people are late, pressing it names who
    (the per-man tags went with the row of pucks — D721).
+8. **An OIL answer given by itself no longer marks an input LATE.** Answering or changing OIL in the window, with
+   nothing else changed, saves the answer and leaves the input's late date alone (the desktop's OIL button always
+   did; the window did not until this check).
+9. **A man in a shared input he did not file can now answer his own OIL question from its window**, not only change
+   an answer already given.
+10. **Two faults older than this job were fixed with it, because the window is now where dates are changed:** a
+    medical entry moved from one year into another was not asked about a clash; a member moving his war-approved leave
+    to the same day of another year kept its approval.
 5. **A remark with no "till <date>" in it gets none added when the dates are changed in the window**; a remark that has
    one follows the new last day. The pencil's own calendar used to add one at every pick.
 6. **On a phone the list is always in date order** — it has no column headings to sort by; a just-saved input the
@@ -262,7 +270,7 @@ with the window already over it — not something the app draws.
 
 ### 5.5 The break tests — `scripts/handpass/breaks.mjs scripts/handpass/breaks/icard.json`
 
-**29 deliberate breaks, one at a time; 29 CAUGHT** — each made a named test go red, and every broken line was put
+**40 deliberate breaks in all, one at a time; 40 CAUGHT** (29 before the walkers reported, two more with W5, nine with the readers' five fixes — the nine are the last rows of the table). **Of the first 29** — each made a named test go red, and every broken line was put
 back (`git status` clean of source afterwards). 28 were caught on the first run; **one was NOT** — "a deleted man's
 name is not kept as the Person list's value": its test passed with the rule broken, because the list's "Posted out /
 archived" group was empty in that test and the code took another path. The test was made to hold an archived man as
@@ -279,6 +287,12 @@ a unit test can see, plus the window's doors:
 | the unanswered OIL line gone; "Answer…" offered to a read-only reader | 2 | `groupeditor.test.tsx` |
 | the Person list: no archived people; archived people on a NEW input; a deleted man's name not kept | 3 | `windowdoors.test.tsx` |
 | the window's paperclip: gone; shown where there is no document | 2 | `windowdoors.test.tsx` |
+| W5: the unanswered line judged by the opened record alone; two buttons for the one question | 2 | `groupeditor.test.tsx` |
+| R1: a moved medical date read in the record's old year — in the window, in the shared question body, for an upchit | 3 | `windowreads.test.tsx` |
+| R2: a leave moved to the same day of another year keeps its approval | 1 | `windowreads.test.tsx` |
+| R3: an OIL answer alone moves the late date; an answer WITH a change skips the input's own save | 2 | `windowreads.test.tsx` |
+| R4: a member of a shared input has no "Answer…" of his own | 1 | `windowreads.test.tsx` |
+| R5: a just-saved input's day drawn twice / not first; the input not first inside its day | 2 | `inputslist.test.tsx` |
 
 **What a unit test cannot break, proved in a real browser instead:** the names wrapping round the corner, nothing
 lying over the hours, nothing cut, the hours lined up down the phone's list, the last cell as tall as its row, the
@@ -286,16 +300,80 @@ document viewer in front of the window — `e2e/inputs-calendar.spec.ts`, `e2e/g
 
 ### 5.6 The re-walk
 
-*(Filled at the close.)*
+After every fix (W1–W5, R1–R5) the build was made again and the host's walk run on it, its pictures to a folder of
+their own (`docs/img/handpass/2026-10-10-input-card-check/rewalk/`, and `rewalk-look/` for the cards beside the approved
+pictures): **34 of 34 steps PASS**, no console error, page error or 4xx (the walk gained one step on the way: A7b, the
+app's own no-selection rule). Opened by the host: the phone's window (`rewalk/C3-phone-window-dates.png` — Delete,
+Cancel and Save whole at its foot, W4), the shared "Delete for all?" with both answers in sight, the built cards. What
+the readers' five fixes touched is carried by tests that press the window's real controls (`ui/windowreads.test.tsx`,
+`ui/inputslist.test.tsx`) — the states they need (a record of another year, a war-approved leave, a clock past the
+cut-off, a member inside a shared input) are reached there through the store's own writer; the window's own controls
+do the rest. The walkers' frozen build was the code of `88a74708`; nothing they passed was changed by a later fix
+except where a fix is named (W4, W5, R1–R5).
 
 ## 6. The two reads of the code
 
-*(After the walk — Astra and Sol 6.1, each blind, this sheet in hand.)*
+Each read the code of `b8e3df2b` blind, this sheet in hand, with the finder's brief
+(`docs/superpowers/briefs/2026-10-10-input-card-code-read.md`); neither saw the other's report. Their reports, whole:
+`docs/superpowers/briefs/2026-10-10-reads/input-card-code-astra.md`, `…-sol.md`. **Both: CHANGES REQUIRED.** Five
+findings between them — three were BOTH readers' — every one reproduced by the host in a test that failed before its
+fix (`ui/windowreads.test.tsx`, `ui/inputslist.test.tsx`):
+
+| # | Who | Their severity | What | Against `main` | Disposition |
+|---|---|---|---|---|---|
+| R1 | Astra 1, Sol 1 | HIGH, HIGH | a medical entry moved ACROSS A YEAR in the window: the "which status holds these days" question was worked out in the record's old year while the save wrote in the loaded one — no question, and the other medical entry cut in silence; an upchit's summary likewise | the same mistake is on `main` in the list's pencil and the bar's drag (the shared question body) — OLD CODE this change made the normal way to move a date | FIXED: the question's days are the draft's own whole dates, in the window and in the shared body; 4 tests |
+| R2 | Astra 2, Sol 2 | HIGH, MEDIUM | a member moving his war-approved leave to the SAME day of another year kept its approval | on `main` too (the shared save) | FIXED: the "same leave?" test reads the year the save writes; 2 tests (his move clears it and Undo restores it; remarks alone and an admin's move keep it) |
+| R3 | Astra 3, Sol 4 | MEDIUM, MEDIUM | an OIL answer given alone in the window went through the full save and moved the input's late date — an on-time input turned LATE for answering a question | "Change…" in the window did this on `main`; the desktop chip never did. NEW in effect: the phone's card has no chip, so the window is the phone's only way | FIXED: where nothing of the input differs, the answer is saved by itself (stamped, the late date not moved); with a change, one save of both; 3 tests |
+| R4 | Sol 3 | MEDIUM | a man in a shared input he did not file could revise his OWN OIL answer in its window but not give one never given | on `main` too (the bell was his only way) | FIXED: "Your OIL: not answered yet — <day> · Answer…", outside the read-only form, for his record alone; 3 tests |
+| R5 | Sol 5 | LOW | on the phone's list a just-saved input kept in view made its day appear twice, each heading with half the count | NEW (this change's day headings) | FIXED: one heading a day — the day holding it first, whole, that input first inside it; 1 test |
+
+**Not taken, with the reason:** Sol's step "make the single-record `redated` comparison use resolved dates too" (R2,
+step 2) — that test only decides whether the remark's "till <day>" word is rewritten, and the word carries no year, so
+a move of exactly a year needs no rewrite. **Their explicit negatives** (areas each checked and found right) are in
+their reports; the two agree on: the medical guard rails kept, the document rules, the refusal order (placeholder,
+document, medical, OIL), the date door's `midPick` / saved-day tap / follower, the card's facts, the phone / table
+boundary, the removed selectors having no caller left. **Neither read was run again on the fixes** — each fix is the
+reader's own exact one, pinned by a test that was red first and by a break test (§5.5).
 
 ## 7. The gates
 
-*(Watched, under the PC's lock, on the last code.)*
+Watched, under the PC's lock (`node scripts/gatelock.mjs run`), nothing else running:
+
+| Run | On | unit | build | tfin | e2e | smoke | rulecheck | docsize |
+|---|---|---|---|---|---|---|---|---|
+| after the walk, before the reads | `b8e3df2b` | 9743 / 9743 (577 files) | clean | 728 / 0 | 739 passed, 0 failed, 57 skipped | 445 / 0 | OK | OK |
+| **THE FINAL RUN — after the readers' five fixes** | **`807b8d19`, the last code** | **9757 / 9757 (578 files)** | **clean** | **728 / 0** | **739 passed, 0 failed, 57 skipped** | **445 / 0** | **OK** | **OK** |
+
+The two local-only checks on the same final build: the six adapted probes, all passed (`audit-async` re-pointed — the
+list's rows are counted by the rows, their cross being gone); `npm run perf` 4 of 4 (no DOM ceiling moved — the phone's
+list is cards in place of a restyled table, the desktop's table lost two controls a row). The permissions' two tests
+(`perms.test.ts`, `perms-scan.test.ts`) are in the unit gate and green: no rule about who may do what was changed, and
+no row of `docs/data-model.md` §11 is touched. Nothing new is stored, so `docs/data-schema.md` is unchanged.
+
+`Docs: OUTSTANDING 154 items (+7 −2, −2 all in ARCHIVE) · DECISIONS D1–D724 (new: D709, D710, D711, D712, D713, D714, D715, D716, D717, D718, D719, D720, D721, D722, D723, D724) · homes OK`
+`docsize: OVER by 27777, deferred (D29)`
 
 ## 8. His look
 
-*(Written at the close.)*
+**Five minutes on his iPhone**, on this branch's preview link (the app opens on the week of 13–19 Jul 2026; go to
+Inputs). Each line is what he should EXPECT, in the app's own words:
+
+1. **Inputs → the calendar → tap Thu 23 Jul.** The day's cards read as he approved: the name, the kind in small grey
+   capitals, the hours at the right; a title on its own line; the shared meeting names all four people and says "By
+   Saber". Tap a card: the input opens.
+2. **Inputs → List → All dates.** The same cards, under a heading a day ("THU 23 JUL · 2 inputs"). No pencil, no
+   cross. Tap a card: the input opens; Delete, Cancel and Save are in sight at the foot of the window.
+3. **In that window, tap another date on its small calendar and Save.** The card moves under that day's heading.
+   *(The calendar's days are small on a phone — question 1 above.)*
+4. **Open Gambit's OML on 23 Jul and tap the paperclip beside Delete.** His document opens.
+5. **Open a Saturday or Sunday duty** (the ALL AVAIL Duty on Sat 25 Jul): its window says "OIL — credited… Change…";
+   one nobody has answered says "Not answered yet" with "Answer…".
+
+On a desktop, if he wishes: Inputs → List — the table as before without the pencil and the cross; a click on a row
+opens the input.
+
+**Walk:** `docs/handpass/2026-10-10-input-card-check.md` · about 420 pictures (the host's 44, the walkers' about 373;
+the host opened 16, the walkers at least one behind every scenario) · 9 surfaces · 34 host steps + 67 walker scenarios
+(101 orders; 2 more carried by tests, §5.4) · MISSING: 5 doors lost with the pencil and the paperclip, all FIXED (the
+dates, the unanswered OIL line, the document, the posted-out people, the buttons in sight); 10 older finds FILED
+(`[CARD-CHECK-SEEN]`); 3 questions with him (§0).

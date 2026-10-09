@@ -9517,6 +9517,20 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   (`ui/inputedit.tsx`), which for that reason now carries (a) the two-tap calendar for EVERY saved input its reader may
   change, not only a shared one (D681's door widened — what D718 left behind of D681's reading 7), and (b) the OIL line
   for a question nobody has answered yet ("Not answered yet · Answer…"), since a phone's card has no OIL chip.
+  **As closed by its check (10 Oct 26 — `docs/handpass/2026-10-10-input-card-check.md`), the window also:** (c) says
+  the unanswered line while ANY record of a shared entry is unanswered, naming who, and gives a man in a shared input
+  he did not file his own "Your OIL: not answered yet · Answer…" outside the read-only form; (d) saves an OIL answer
+  given ALONE by itself — who answered and when is stamped, the input's late date is NOT moved (as the desktop row's
+  chip does); with a change of the input it is one save of both; (e) carries a PAPERCLIP button beside its buttons,
+  outside the form, for any saved input with a document — the phone's card has none — for every reader; (f) offers an
+  admin changing a SAVED input the "Posted out / archived" people in its Person list, and keeps a deleted man's own
+  name as its value (`ui/PeoplePick.tsx moreIds`); (g) keeps Delete, Cancel and Save pinned to its foot, the form
+  scrolling above them (`25-inputs-calendar.css .inped-win > .airpop-foot`). **A medical entry's question is asked
+  about the days the save will take** — the draft's own whole dates (`ui/inputedit.tsx isoOrd`, in `save` and in the
+  shared `medAskFor`), never its labels read in the record's old year. **On the phone's list a day has ONE heading**: a
+  just-saved input the filters hide brings its whole day to the head of the list, itself first under it. Pins:
+  `ui/windowdoors.test.tsx`, `ui/windowreads.test.tsx`, `ui/groupeditor.test.tsx`, `ui/inputslist.test.tsx`,
+  `e2e/inputs-calendar.spec.ts` ("keeps Delete, Cancel and Save in sight").
 - **The Leave War's phone header (D678) holds its two lines in ANY system letters:** line 2 does not wrap; the stage's
   name (`.stagetxt`, `leavewar/ui/chrome.css`) is the one thing that gives way, cut with "…", its arrow kept. Found when
   the pull request's checks ran on GitHub's machines, whose letters are wider (9 Oct 26). Pinned by
