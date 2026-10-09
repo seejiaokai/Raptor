@@ -25,6 +25,10 @@
 .rclip{cursor:pointer;display:inline-flex;align-items:center;padding:2px;border-radius:6px;color:var(--ink-3)}
 .rclip:hover{color:var(--ink);background:var(--panel-2)}
 .rclip .btnglyph{width:14px;height:14px}
+/* …and in the input's window, beside its buttons: the same paperclip, for any saved input that has a document (the
+   phone's card carries none — D723, 10 Oct 26). An icon button of the foot's own height. */
+.inped-doc{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-width:40px;align-self:stretch}
+.inped-doc .btnglyph{width:14px;height:14px}
 /* the viewer: a wider box than the input editor — the content IS a page */
 .docviewbox{width:min(720px,94vw)}
 .docview-body{display:flex;flex-direction:column;gap:10px;min-height:0}

@@ -91,7 +91,7 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
   return null
 }
 
-export function PeoplePick({ people, several, type, sansOnly, lockOne, form, more, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, form, more, moreIds, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -103,6 +103,10 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
   form?: boolean
   /** more choices for the one-person list — the form's "Posted out / archived" group */
   more?: ReactNode
+  /** …and who is IN that group, where the caller's first person may be someone on no list at all — a deleted man, whose
+   *  own name must still be the list's value (the List's pencil kept it so; ui/windowdoors.test.tsx). Without it a
+   *  caller that passes `more` is taken to list everyone its first person can be (the List's Add form). */
+  moreIds?: readonly string[]
   onChange: (people: string[], several: boolean) => void
 }) {
   const roster = pickRoster(sansOnly)
@@ -183,7 +187,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, form, mor
           {!several && (others
             ? <select id={form ? 'inPerson' : 'inpEditPerson'} aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
               {/* a man no longer on the list (archived since) still reads as himself, never as the first name on it */}
-              {!more && first != null && !roster.includes(first) && !isSpecial(first) && <option value={first}>{cs(first)}</option>}
+              {first != null && !roster.includes(first) && !isSpecial(first) && (more ? !!moreIds && !moreIds.includes(first) : true) && <option value={first}>{cs(first)}</option>}
               {offerPh && <PlaceholderGroup type={type} current={first} />}
               {roster.map(id => <option key={id} value={id}>{cs(id)}</option>)}
               {more}

@@ -24,7 +24,7 @@ import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
 import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
-import { UploadIcon } from './icons'
+import { ClipIcon, UploadIcon } from './icons'
 import { acceptInput } from '../engine/slots'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
@@ -46,7 +46,7 @@ import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers } from '../state/perms'
-import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
+import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove, setDocView } from './pops'
 import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
@@ -2300,6 +2300,8 @@ export function InputEditor() {
      the document, the upchit's summary, the medical clash, OIL. NOT for one man's SANS commitment, which is on no
      list (D620) and keeps its own way: deleted and added again on the SANS calendar. */
   const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))
+  /* who the window's Person list offers beyond the roster (below) */
+  const archivedHere = win && !isNew && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   const unansweredDay = !isNew && r ? ((rows.length > 1 ? rows : [r]).map(x => oilUnansweredDay(x)).find(Boolean) || '') : ''
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
@@ -2336,6 +2338,13 @@ export function InputEditor() {
             /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
             ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)}
               lockOne={!isNew && !canEditSched()}
+              /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
+                 Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed
+                 for a man who has posted out — [ARCH-STACK] step 4, H5) and the pencil is gone (D718): without this
+                 no form could move a saved input to an archived man. A NEW input's window keeps the list it had — the
+                 List's Add form is where such leave is filed. */
+              more={archivedHere.length ? <optgroup label="Posted out / archived">{archivedHere.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup> : undefined}
+              moreIds={archivedHere.length ? archivedHere : undefined}
               onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
             : canEditSched() && <label className="inped-f">
               <span className="inped-k">Person</span>
@@ -2560,6 +2569,13 @@ export function InputEditor() {
               + Add) — the button is simply absent in that mode */}
           {!isNew && !readOnly && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
           {mineRow && !takeOut && <button className="abtn" data-testid="inped-takeout" onClick={() => setTakeOut(true)}>Take me out</button>}
+          {/* ITS DOCUMENT, OPENED FROM HERE ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 — Astra's scenario 60). The paperclip of the
+              List's row is how a medical input's paperwork is read — by EVERY account (owner, 27 Aug 26) — and a phone's
+              card carries no paperclip (D723): the form above names a document and cannot open it, and for a reader who
+              may not change the input the form is inert besides. So the paperclip stands here, beside the buttons and
+              outside the form, for any saved input that has a document; it opens the same viewer. */}
+          {!isNew && r && rowDocIds(r).some(id => !!docGet(id)) && <button type="button" className="abtn inped-doc" data-testid="inped-docview"
+            aria-label="View the document" title="View the document" onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></button>}
           {readOnly && <span className="inped-ro" data-testid="inped-ro">{rows.length > 1
             ? mineRow ? `Only ${filer} — who filed it — or an admin can change this for everyone.` : `Only its people, ${filer} — who filed it — or an admin can change this.`
             /* an input filed for ALL AVAIL / ALL has no owner to name — "Only ALL AVAIL or an admin can change this"
