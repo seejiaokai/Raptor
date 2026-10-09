@@ -1,6 +1,9 @@
 # Plan — an input filed for "ALL AVAIL" or "ALL" (`[INPUT-ALL-AVAIL]`; owner D700, D702 — 9 Oct 26)
 
-**Status: a PLAN, for Astra's and Sol's read (D708: built that night only if both read it clean). Nothing is built.**
+**Status: READ BY ASTRA AND BY SOL, EACH BLIND, THE NIGHT OF 9 OCT 26 — BOTH: NOT CLEAN. NOT BUILT (D708: built that night only
+if both read it clean). Their reports: `docs/superpowers/briefs/2026-10-09-reads/all-avail-plan-astra.md`, `…-sol.md`. What they
+found is folded into §9 below; §3 is the plan AS FIRST WRITTEN and is wrong where §9 says so. Four choices are the owner's
+(§7, rewritten): until he answers, the parts that hang on them are not designed further and nothing is built.**
 Written by Opus 5.5 the night of 9 Oct 26 from a read of the seams (file and line references below were read that
 night on `claude/day-window-compact`; verify each before building — a line number is a hint, a function name is the claim).
 
@@ -134,15 +137,68 @@ FULL (earned leave, the published record, roles, saved data): the rules sweep (D
 D654–D660, D178, D700, D702), Astra's scenario design, the roll-call above, a walk sized by `docs/walk-ledger.md`,
 the gates, Astra's and Sol's code reads with the evidence sheet, fixes, re-walk, his look.
 
-## 7. Parked for him (each with the recommended answer the build follows meanwhile)
-- **Q1.** ALL / ALL AVAIL for an overseas duty (OD) or a course (CSE)? *Recommended: no — each of those is a fact about
-  one man (he is away; it shows on his Leave War row), which a placeholder cannot carry.*
-- **Q2.** More than one day in one filing? *Recommended: one day at a time for now — the schedule shows a request on
-  its first day only, so a three-day ALL AVAIL would show on one.*
-- **Q3.** Should the Inputs calendar's card show HOW MANY are free, as the schedule's puck does? *Recommended: later —
-  it needs the day's schedule; the schedule and its ALL AVAIL window show who.*
+## 7. Parked for him — his to choose; the work that waits on each is NOT done meanwhile (D596)
+- **Q1. Each man’s own OIL answer.** In a shared input each man may still change HIS OWN answer after the filer’s (D660,
+  D682). An ALL AVAIL input names nobody, so as planned only the filer answers, and the scheduler’s switches sit over
+  it — a man behind it could not change his own. *Is that what he wants for ALL AVAIL (recommended: yes — the filer
+  answers once, the scheduler can switch any one man in OIL Earn; simple, and nobody is asked about a duty he was not
+  named on), or must each man be able to answer for himself from the day (a bigger build: a place to keep each man’s
+  answer, and a way to reach it)?* **Waits on it: all of §3.7.**
+- **Q2. ALL / ALL AVAIL for an overseas duty (OD) or a course (CSE)?** *Recommended: no — each is a fact about one man
+  (he is away; it shows on his Leave War row), which a placeholder cannot carry.* **Waits on it: the list of kinds.**
+- **Q3. More than one day in one filing?** *Recommended: one day at a time for now — the schedule shows a request on its
+  first day only, so a three-day ALL AVAIL would show on one.* **Waits on it: the date rule in the editor.**
+- **Q4. An OIL question nobody answered** (a holiday declared after it was filed): whose bell? "Only on the day and the
+  schedule" says nobody’s; an unanswered question needs someone. *Recommended: the FILER’s bell, and only his — the one
+  exception; if he may no longer answer, the scheduler sees "no OIL answer" on the day.* **Waits on it: §3.5’s "not on
+  any bell" and §3.7’s "Unanswered".**
+- *A limit, not a question:* the Inputs calendar’s card will not show how many are free in the first build; the
+  schedule’s puck and its ALL AVAIL window do.
 
 ## 8. What the reviewers are asked (see the brief)
 Is anything in §3 wrong against the code or against a ruling; what does §4's roll-call miss; is §3.7 safe — can any
 man be credited or lose credit silently, on a working day or an issued one, because of this change; can a refused
 input be written by any door; what would you test that §5 does not.
+
+## 9. What the two reads found (9 Oct 26) — corrections to §3 and §4, to be folded into the build plan once §7 is answered
+
+Both readers, independently: **NOT CLEAN.** Points both made are marked (both).
+
+1. **(both) The OIL switches must share the credit's default.** Changing `oilEarnedWork` alone breaks OIL Earn mode for a
+   placeholder input answered No: the crowd earns nothing, but each man's switch still reads "on by default", so a tap
+   writes a refusal and a second tap removes it — neither grants (against D28: the admin can always override). ONE
+   default calculation for the credit, each man's switch, the whole-row switch and the words that explain it: a man
+   the scheduler typed defaults Yes; a man only in the crowd follows the filer's answer; day, item and per-man overrides
+   stay over the top. Typed men are read from the day's own row and the crowd from the day's saved evidence — both are
+   in an issued snapshot; a man who is both counts once, as typed.
+2. **(both) An answer of 0.5 is not a cap.** A positive answer admits the work; the day's qualifying hours decide the
+   amount. §3.7's open question is closed: no new cap.
+3. **(both) Each man's right to change his own answer (D660, D682) is removed by §3.1 without saying so** — now §7 Q1.
+4. **(both) The save checks in §3.3 miss doors.** The List's own single-person Add form writes its record without the
+   editor's checks (an admin could save a several-day placeholder there); the shared save checks each person and adds
+   the group mark after (a placeholder could be mixed with names — and switching from one person to "Several people"
+   keeps the selection); `inputBreach` skips admins, and replayed changes skip part of it. The placeholder's
+   STRUCTURAL rules — an allowed kind, one date, no shared group — go at the common save boundary, before any role
+   exemption or replay shortcut; permission is checked separately; a refused save leaves no record and no history; a
+   whole group is checked before any member is written.
+5. **(both) `reassignInput` refuses a placeholder as the destination but accepts one as the SOURCE** — a placeholder
+   input moved under Unavailable could be reassigned to one man. Refuse both directions (the scheduler replacing a
+   landed row's name box stays allowed, D470).
+6. **(both) An all-day "Fly with" for a placeholder counts the placeholder as ONE absent person** (`avail.ts dayAway`;
+   the day panel's "Leave / downchit" total rises by one). §4 called this harmless; it is not: placeholders are kept
+   out of both the all-day and the timed absence sets, with a test beside a real man's absence.
+7. **(both) Wording and the filter.** "ALL — everyone" is false: both placeholders stand for whoever is free (and neither
+   takes ground crew) — say "whoever is free" for both. The "Everyone" value of the person filter is the same string as
+   the ALL placeholder's id in THREE places (the List, the month's bars, the opened day): give "Everyone" its own value
+   in all three together, with a test for Everyone, ALL and ALL AVAIL.
+8. **(both) The bell contradicts itself** (§3.5 "nobody's bell" against §3.7 "ask the filer") — now §7 Q4; and a member
+   filer loses the right to answer if the members' switch is turned off afterwards: never show a task its reader
+   cannot do; §3.4 must say his change and delete rights hang on the switch staying on.
+9. **(Astra) Parked recommendations were written as if approved** (the old §7 said "the build follows meanwhile"). D596:
+   only that piece is left undone. §7 is rewritten so.
+10. **More tests than §5 lists (Sol):** real taps on the switches after a No and after no answer; the whole-row switch
+    forced on; a fresh filer answer after a change; the List's Add and the shared save; both reassign directions; a
+    permission changed while a confirmation is open; both placeholder ids; a typed man beside a placeholder; the name
+    box replaced; the row cancelled or made information-only; a holiday declared late; an issued and reloaded version
+    after an answer or the crowd changes — pending keeps the issued credit, clears the sign-offs, and goes on reversal
+    or republication.
