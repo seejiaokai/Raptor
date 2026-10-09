@@ -46,8 +46,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D710 | 9 Oct 26 | Asked, after the night’s check: "When a person is deleted they are taken off notes from that date on, but the delete’s list doesn’t say which notes. Should it? I recommend yes, as a small later job": *"Two small questions on preview 2: yes as recommended"* | **THE LIST A DELETE SHOWS OF WHAT IT TOOK AWAY NAMES THE NOTES THE MAN WAS TAKEN OFF, ONE LINE A NOTE — BUILT AS A SMALL LATER JOB.** Widens D337’s list by that one kind of line. **The agent’s reading, to tell him:** with it, an ordinary change to a note gets a readable line in the changes window too — the same missing piece. | `OUTSTANDING.md` `[DELETE-LIST-CAL-NOTES]` (his yes — D710) |
-| D709 | 9 Oct 26 | Asked, after the night’s check: "A note with words only gets a small third button, “+”, to add people. Keep it? I recommend yes": *"Two small questions on preview 2: yes as recommended"* | **A NOTE OF WORDS ALONE KEEPS ITS SMALL "+" (ADD PEOPLE) BESIDE ITS PENCIL AND CROSS — AS BUILT.** | `raptor-port/docs/ui-contracts.md` (the bullet naming D684 — the "+" kept, D709) |
+| D710 | 9 Oct 26 | THE LIST A DELETE SHOWS OF WHAT IT TOOK AWAY NAMES THE NOTES THE MAN WAS TAKEN OFF, ONE LINE A NOTE — BUILT AS A SMALL LATER JOB. |
+| D709 | 9 Oct 26 | A NOTE OF WORDS ALONE KEEPS ITS SMALL "+" (ADD PEOPLE) BESIDE ITS PENCIL AND CROSS — AS BUILT. |
 | D707 | 9 Oct 26 | ON A PHONE A DAY OPENED ON THE SANS CALENDAR OPENS TALL — NEARLY THE FULL SCREEN — AS A DAY OPENED ON THE INPUTS CALENDAR DOES (D683); ITS TOP BAR STILL BRINGS IT DOWN TO TWO-THIRDS AND BACK. |
 | D706 | 9 Oct 26 | ON A PHONE A WINDOW IS AS TALL AS WHAT IS IN IT, UP TO NEARLY THE WHOLE SCREEN — NEVER A SHORT BOX TO SCROLL INSIDE WHILE THE SCREEN ABOVE IT STANDS EMPTY; A WINDOW WITH LITTLE IN IT STAYS SHORT. THE THREE-QUARTERS LIMIT GOES. |
 | D705 | 9 Oct 26 | ON A PHONE THE INPUTS CALENDAR’S MONTH ARROWS, MONTH NAME AND "TODAY" STAND AT THE LEFT OF THEIR ROW, IN THE SAME PLACES AS ON THE SANS CALENDAR; THE CALENDAR / LIST SWITCH MOVES TO THEIR RIGHT. |
@@ -229,7 +229,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D340 | 28 Sep 26 | The changes window sorts by item and every line is labelled by its item first — the item in bold, the change under it, never the man first; one group per item, the group whose latest change is newest at the top, a sub-line per change inside an item changed more than once; settled by D345's approved mock-up, its calls with it. — changed by D345 |
 | D339 | 28 Sep 26 | History on a phone says it is on and lets the schedule be seen: the hint "History on: Tap a gold dot on the schedule" (D344); "Hide ▾" sends the changes window to a slim bar at the bottom ("Show ▴" brings it back, ✕ turns History off); a gold dot on every detail with a history — as approved with D345's mock-up. — changed by D345, D344 |
 | D338 | 28 Sep 26 | The one changes window's eleven readings stand as built — among them: the change history outlives a sign-out and a reload, what is new kept per person; one count per day; History mode is on while the window is open; the clock icon is on Edit Schedule only; members see the To go out tab, read only. |
-| D337 | 28 Sep 26 | DELETING A MAN LISTS EVERYTHING THE DELETE TOOK AWAY, ONE LINE EACH, AS BUILT |
+| D337 | 28 Sep 26 | DELETING A MAN LISTS EVERYTHING THE DELETE TOOK AWAY, ONE LINE EACH, AS BUILT — changed by D710 |
 | D279 | 27 Sep 26 | A STRUCK NAME LOOKS THE SAME WHETHER A TAP WILL BE REFUSED OR ONLY WARNED — THE WORDS SAY WHICH. |
 | D278 | 27 Sep 26 | A PLACEHOLDER (ALL / ALL AVAIL) MAY STAND ON A ROW TWICE — "ONE MAN, ONCE PER ROW" (D271) IS ABOUT MEN. |
 | D277 | 27 Sep 26 | IN OIL EARN MODE HIS OWN PUCK THAT EARNS NOTHING KEEPS ITS PURPLE "THIS IS YOU" RING, FADED WITH THE PUCK. |
