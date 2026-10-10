@@ -254,8 +254,18 @@ when it is a member row's `who` and that row's request is his; anything in `more
   he leaves the input — its OIL stands on his request, and so do the decisions made about the men behind it; handing it
   to another member would silently drop them (both readers). When it happens the app SAYS so, once, to whoever did it
   ("ALL AVAIL came off Range safety brief with Ranger — drop it on the row again if it still applies": the door's own
-  toast, or `rederive({ live })`'s for a removal made in the input's window — one notice, never both), and on a
-  published day the line that says the man was taken off says the placeholder went with him (§4.8). Reading R10.
+  toast — the scheduler did it and can drop it again), and on a published day the line that says the man was taken
+  off says the placeholder went with him (§4.8). **Asked of Fable on the owner's word (11 Oct 26 —
+  `docs/superpowers/briefs/2026-10-10-reads/group-input-placeholder-fable.md`): keep it so** — it is the only way that
+  never moves OIL unseen and writes no day from an input's command; handing it on, an identity of its own and a
+  companion row were each weighed and are costlier in the part of the app where a miss is silent. Fable's three
+  additions are taken: (a) **the notice must reach the scheduler, not whoever removed himself** — a member taking
+  himself out in the input's window cannot drop a puck, and a scheduler on another device sees no toast — so the fact
+  is written in the removal's own line of the change history (`state/changelines.ts inputLines`, a READ of the day:
+  "ALL AVAIL came off his row · switched off on it: Bane, Comet"), naming the men whose OIL the scheduler had refused
+  under it, which is the one thing lost; no toast from `rederive` for it; (b) the count and (c) the words — §4.8.
+  Undo of the removal brings the puck and every switch back exactly (the holder's stored day still holds them).
+  Reading R10.
 - **OIL for the man added (D738 as D744 narrowed it, 11 Oct 26) — nothing is kept apart on the input.** One pure
   question, `entryOilAnswer(rows)`, over the days the input asks about (`leavewar/sync.ts oilAskPlan`): **`'same'`** —
   every record of the entry carries the same answer for every such day — and he gets a copy of it, written inside the
@@ -365,8 +375,14 @@ that, times its people.** In `engine/publish.ts`, one pure step, `foldEntries(it
   re-timed and one added — 2; taken off the programme whole — 1; deleted whole — 1; all four taken off one by one — 1 (the
   input is gone: D98, the count is the difference from what was issued); a CX on the one row — 1; a shared leave filed
   for four on the Unavailable list — 1 (R6); the whole input moved from one published day to another — 1 on each; a man
-  who carried an ALL AVAIL taken off — 1, as a removed row counts what stood on it today, and its line names both
-  ("Ranger · Range safety brief — taken off · ALL AVAIL came off with him"); an ordinary request with ALL AVAIL in its
+  who carried an ALL AVAIL taken off — 1, and its line names both ("Ranger · Range safety brief — taken off · ALL AVAIL
+  came off with him"). **That 1 needs the existing fold taught one thing (Fable):** the men behind the puck leave the
+  day's membership (`oilev.sent`), which today reads as a second item, "what this day earns", on a weekday too —
+  `oilMovedInputsOnly`'s fold (`publish.ts:252`) wants them among the changed inputs' own people, and they are not. The
+  crowd of an item `i:<id>` whose request is in the moved set and has no live membership left folds into that
+  request's line. The same holds today for ✕ on a one-man request's row that carries a placeholder, and is fixed with
+  it. And `pendlist.ts crowdChange` names a puck that is GONE from the issued day's row (by `src`) and says it went with
+  the man — never "A placeholder … no longer free"; an ordinary request with ALL AVAIL in its
   name box made a group of two — 1.
 - **A small fix that rides with it** (`[CAL-TOGO-ONE-ITEM]`'s "also seen"): after one man left a shared input, "All
   changes" titled the item "2 people" over three names — the title counts the names it lists.
@@ -427,8 +443,10 @@ rather it asked, it is one function.
 - **R9** On a day not yet published, a time typed on a request's row no longer leaves a change mark on that box: the
   change is the input's, and the changes window lists it under the input.
 - **R10** *(new)* An ALL AVAIL (or ALL) on the one row stands on one man's place underneath. If that man leaves the
-  input, it comes off with him and the app says so; drop it on the row again — the OIL switches set for the people
-  behind it start afresh. On a published day that is ONE change waiting, its line naming both. Keeping it there whoever leaves would mean
+  input, it comes off with him; the change history's line says so and names anyone you had switched off on it; drop
+  it on the row again and redo those switches. On a published day that is ONE change waiting, its line naming both.
+  Undo brings the puck and its switches back. Fable, asked on his word, recommends exactly this over handing the puck
+  on or giving it a place of its own; the three options were put to him 11 Oct 26. Keeping it there whoever leaves would mean
   re-keying OIL decisions — its own job, if he wants it.
 - **R11** *(new)* The same rule on every row: hours typed on the Unavailable list's row of an overseas duty also keep a
   Yes at the new amount, with no question.
@@ -488,3 +506,11 @@ member's removal and the place he is put on; the new fields are read by nothing 
 | 27 | Astra 6 | After a re-time no live `srcg` matches the issued one, so an added man lost his hollow tag. | Continuity is asked of the rows' ids (§4.8). |
 | 28 | Both (A7, S4) | After an outward move the source row goes and the place's index shifts: the flash and the busy check hit the next row. | The place is remembered by row id and resolved after the command; its own finish, no second write (§4.5). |
 | 29 | Sol 2 | Making an ordinary request a group moves the name box's occupant in the view — two more units, three changes for one man added. | Recognised exactly and ridden on the added man's item (§4.8). |
+
+### Fable, on the owner's word — the ALL AVAIL on the one row (11 Oct 26)
+His questions: "Is there a better way to do it? Ask fable on this." and "Why must the all avail puck be tied to
+someone". Fable weighed five ways (leave with its man; hand on and carry the switches; an identity of its own; a
+companion row; hand on only from the schedule) against the code: **keep "it leaves with its man"**, with three
+corrections, all taken (§4.5, §4.8) — the count of row 26 was wrong against the code (the crowd's departure is a second
+item today) and is made true by teaching the fold; the words; and where the notice is written. The three options go to
+him in plain words; the plan builds the recommended one unless he says otherwise.
