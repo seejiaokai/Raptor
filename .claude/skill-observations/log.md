@@ -3729,3 +3729,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Turn the notes into a default rather than a warning: edits to an existing file go through the editor tool, never a scripted replace; any script containing a backslash, a quote or non-ASCII text is written with the file tool and then run; a shell-embedded snippet is for read-only one-liners only. Where a harness supports it, a pre-run check that refuses a heredoc holding a backslash-escaped pattern would enforce it. After a scripted replace, re-read the changed lines before the next run.
 
 **Principle:** A warning is not enforcement — when a known trap sits on the most convenient path, change the default path, do not add another note beside it.
+
+### Observation 513: A reading recorded beside a ruling contradicted the built app — found only when the plan traced the code
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** Writing the plan for the schedule's one row for a shared input (rulings D734–D743), from a design note written in an earlier chat.
+**Skill:** New skill candidate: recording-readings-with-rulings (or the project rule file record-decisions.md)
+**Type:** internal
+**Phase/Area:** recording a ruling's "agent's readings"; planning from them
+
+**Issue:** A ruling's full row carried an agent's reading ("no OIL question is asked on the schedule when the hours change — the amount is worked out from the new hours"), told to the owner as settled. Tracing the code for the plan showed the same typed box already exists on another panel and does the opposite (the question opens at once — an owner rule from six weeks earlier, pinned by a test). The reading had been written from the ruling's logic, not from the code, so two recorded positions conflicted and the plan had to put the point back to the owner. A later reading in the same batch (about the LATE mark) HAD been checked in the code and was right.
+
+**Suggested improvement:** In the rule for recording a ruling: a reading that states what the app WILL DO in a case the owner did not name is checked against what the app does today in the nearest existing case (one search), and the row says "read in the code: <where>" or "not checked". A plan written from a design note re-verifies every reading it leans on and lists the ones it could not confirm.
+
+**Principle:** An inference recorded beside a decision inherits the decision's authority in every later reader's eyes; verify it against the running system before recording it, or mark it unverified.
