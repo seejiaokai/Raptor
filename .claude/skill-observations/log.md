@@ -3288,3 +3288,37 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** When recording a ruling, search the TEST titles and assertions for its subject as well as the documents; a test that pins the old behaviour is the fastest proof that the app does not yet do what the ruling says, and it must be changed (by the ruling) or the build filed in the same change.
 
 **Principle:** A passing test is a written claim about behaviour; when a decision changes the behaviour, the tests are part of what the old decision left behind.
+
+## 2026-10-10 (the branch claude/hist-jump-empty-seat, cut from main)
+
+*(Numbered past 504: the branch `claude/day-window-compact`, not merged when this was written, carries 484–504.)*
+
+### Observation 505: A break test that cuts the source ran while an outside reader was reading the same folder
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** A small fix to "tap a change to go to it". An outside model was asked, read-only, for the scenarios the walk had missed. While it read, the builder started its break tests — a script that cuts one line of the source at a time, runs the unit file, and puts the line back.
+**Skill:** New skill candidate: the project's bug-check order (its walk and break-test steps)
+**Type:** open-source
+**Phase/Area:** What may run while a reviewer or a walker is reading or driving the working folder
+
+**Issue:** The reader opened a source file during the minute one line was cut out of it, and reported the cut as a finding ("the last fallback returns nothing"). It was a correct description of what it saw and a false finding about the change. The guide already says nobody rebuilds the build a walker is served; it says nothing of the SOURCE a reader is reading.
+
+**Suggested improvement:** In the checking guide's rule "while they walk, nobody rebuilds the build they are served", add the reader's half: while an outside reader reads the folder, nothing rewrites the source it reads — break tests, a formatter, a mid-flight fix. Run break tests before the read is started or after its report is in; or hand the reader a commit, not a live folder.
+
+**Principle:** A reviewer's report is about the bytes it read. Anything that changes those bytes during the read — even to put them back a minute later — turns part of the review into a review of the experiment.
+
+### Observation 506: A walk's saved world was captured from a start that keeps nothing
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** A scripted walk built its fixture through the app's controls in one browser, saved the browser's storage, and reopened it at phone size and as another role. The first capture came back as the untouched demo world, and every line the walk looked for was absent.
+**Skill:** New skill candidate: the project's scripted-walk helpers (scripts/handpass/lib.mjs)
+**Type:** internal
+**Phase/Area:** Building a fixture once and reopening it at other sizes and roles
+
+**Issue:** The fixture browser was opened with the app's "start fresh" address, which runs the app with nothing saved at all — so there was nothing in storage to capture. Nothing failed: the reopened world was a perfectly valid demo week, and the walk's steps failed with "no such line", which reads like a defect in the app.
+
+**Suggested improvement:** In the walk helper, refuse to save a world from a browser opened on the "start fresh" address (or assert, straight after reopening a saved world, one fact the fixture made — a man on a row — before any step runs). A new browser context already has empty storage, so "fresh" is never needed to get the demo world.
+
+**Principle:** A saved fixture is only as real as the first check made after loading it; assert one thing the fixture did before trusting anything the walk then sees.

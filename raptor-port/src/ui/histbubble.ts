@@ -1,6 +1,10 @@
 import { HOOKS } from '../engine/hooks'
 import { elogAllFor, elogWhen, elogWho, elogVal, elogKeySet, ELOG, rowTouches, dateOfDi } from '../engine/editlog'
 import { ridKey } from '../engine/rowids'
+import { seatRow } from '../engine/keys'
+import { rowPlaces, rowRef } from '../engine/slots'
+import { rowItemKey } from '../engine/oil'
+import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { inpById } from '../engine/inputs'
@@ -181,6 +185,71 @@ export function weekJumpable(key: any) {
   if (!k) return false
   const c = k.indexOf(':')
   return c < 0 ? true : k.slice(0, c) !== 'tr'
+}
+/* WHICH PAGE ALONE DRAWS THIS BOX ([HIST-JUMP-EMPTY-SEAT], the owner's find, 10 Oct 26). The jump's two sentences —
+   "shown on the week, not on the board" and "shown on the scheduler board" — were said of anything it did not find
+   whose row still stood, so an emptied seat (drawn on neither page) was sent from each page to the other. They are
+   said now only of a box that IS on the other page and not on this one, and that is decided here, from the KIND of
+   box, never from "not found":
+     · the week alone draws a Common Programme row's second line (`ap:…​.sub` — board-html.ts keeps the field, not the box);
+     · the board alone draws the B box of a standby line (SC, AVALON, BB) — the week prints such a line with its
+       times only (html.ts, the `sa` branch of a flying line).
+   null — both pages draw it, or it is a seat (findSeatRow below), or nothing is known of it: the jump then says only
+   that it is not shown here. `key` is positional. The list is PROVED, not vouched for: histjump.test.tsx sets every
+   box either page draws, on every day of the demo week and on a day flying all three standby kinds, against what the
+   other draws, and fails on a box this function gets wrong. */
+export function onlyOn(key: any): 'week' | 'board' | null {
+  const k = String(key || '')
+  if (/^ap:.*\.sub$/.test(k)) return 'week'
+  const m = /^ff:(\d+)\.(\d+)\.\d+\.br$/.exec(k)
+  if (m) { const d: any = (DAYS as any)[+m[1]!], w = d && (d.waves || [])[+m[2]!]; if (w && isStandalone(w)) return 'board' }
+  return null
+}
+
+/* THE ROW AN EMPTIED SEAT IS ON ([HIST-JUMP-EMPTY-SEAT]). A row that lists its people — a Common Programme row, a duty
+   desk and its extra people, a sim's passengers, a ground row — draws a seat only while someone is in it, so a change
+   line about a man who has since left names a place nothing draws. The line still has somewhere true to go: the row.
+   In order: the row's own people box (`data-fill`, drawn wherever the schedule is edited — the week and the board
+   alike); else the people cell another man of that row still stands in (View-only Sched draws no box to add to);
+   else the row's name. null: the key is not a seat, or this page draws nothing of its row. `key` is positional — the
+   jump has already resolved the row by its id. */
+const ROW_NAME: Record<string, [string, string]> = { a: ['ap', 'prog'], d: ['dr', 'role'], s: ['sr', 'label'], g: ['gr', 'prog'] }
+export function isSeatKey(key: any) {
+  const k = String(key || ''), c = k.indexOf(':')
+  return c < 0 ? /\.[pw]$/.test(k) : !!ROW_NAME[k.slice(0, c)]
+}
+export function findSeatRow(root: ParentNode, key: string, who?: string): HTMLElement | null {
+  const k = String(key)
+  if (!isSeatKey(k)) return null
+  const c = k.indexOf(':'), live = (e: Element | null | undefined) => (e && !e.closest(LOOK) ? e as HTMLElement : null)
+  /* OIL EARN MODE draws a row read-only — its name an OIL switch, its people plain pucks or a crowd's switches — so
+     nothing on it is a history cell. But the name switch carries its row's own item (`r:<row id>`, oilmode.ts), so
+     the row can still be found: the man himself (`who`) where he stands on it — his switch in a crowd, else his puck —
+     else the row's name. The jump only MARKS what it lands on; it presses nothing, so nobody's OIL moves (Astra's
+     scenario read, 10 Oct 26 — a man in plain sight was "not shown on this page"). */
+  const oilRow = (rid: any): HTMLElement | null => {
+    if (!rid) return null
+    const sw = ([...root.querySelectorAll('[data-oilitem]')] as HTMLElement[]).filter(e => e.dataset.oilitem === rowItemKey(rid) && !e.closest(LOOK))
+    const name = sw.find(e => !e.dataset.oilp); if (!name) return null
+    if (!who) return name
+    const mine = sw.find(e => e.dataset.oilp === who); if (mine) return mine
+    const on = name.closest('.sb-arow,.sb-line,.pl-row,.ah-row,.form')
+    const pk = on ? ([...on.querySelectorAll('[data-person]')] as HTMLElement[]).find(e => e.dataset.person === who) : null
+    return pk ? (pk.closest('.seat') as HTMLElement | null) || pk : name
+  }
+  /* a flying seat is drawn empty wherever the schedule is edited; the read-only page draws only the other seat of the jet */
+  if (c < 0) {
+    const mate = findHistCell(root, k.replace(/[pw]$/, m => (m === 'p' ? 'w' : 'p')))
+    if (mate) return live(mate.parentElement)
+    const a = k.split('.'), d: any = (DAYS as any)[+a[0]!], f = d && ((d.waves || [])[+a[1]!] || {}).formations
+    return oilRow(f && f[+a[2]!] && f[+a[2]!].rid)
+  }
+  const row = seatRow(k), r: any = rowRef(k.slice(0, c), row.slice(c + 1).split('.'))
+  const box = ([...root.querySelectorAll('[data-fill]')] as HTMLElement[]).find(e => e.dataset.fill === row + '.+')
+  if (live(box)) return box!
+  for (const p of rowPlaces(row)) { const at = findHistCell(root, p.key); if (at) return live(at.closest('.ppl')) || live(at.parentElement) }
+  const [np, nf] = ROW_NAME[k.slice(0, c)]!
+  return findHistCell(root, `${np}:${row.slice(c + 1)}.${nf}`) || oilRow(r && r.rid)
 }
 export function histKeyOf(el: HTMLElement) { return keyOf(el) }
 function keyOf(el: HTMLElement) {
