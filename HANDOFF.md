@@ -62,9 +62,11 @@ his ruling — DONE 7 Oct 26 on `claude/docs-tidy-7-oct` (D609: options 1 to 6; 
 
 ## Gate baseline
 
-**Since pull request #488 merged (10 Oct 26, `main` at `8d8caff6`) the first run below is of `main`'s own code** — the merge added nothing to what was run.
+**The latest counts watched — 11 Oct 26, `claude/group-input-one-row` on `f07ce883` (the schedule's one row for a shared input, all six steps, and D747 — NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 10082 / 10082 (589 files) · build clean · tfin 728 / 0 · e2e 766 passed, 1 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. The one failure is the known unsteady Leave War phone test ("Undo and Redo leave the grid where it is…"), which this work does not touch: by itself, three times over, 3 of 3.** `main`'s own counts are the run below.
 
-The latest counts watched — **10 Oct 26 (the evening), `claude/day-window-compact` with `main` merged in (the changes-window fix, pull request #489 — the merge is `5bd3640e`), the whole gate set under the PC lock with nothing else running, in one run: unit 9940 / 9940 (582 files) · build clean · tfin 728 / 0 · e2e 763 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
+**Since pull request #488 merged (10 Oct 26, `main` at `8d8caff6`) the run below is of `main`'s own code** — the merge added nothing to what was run.
+
+Before that, and `main`'s own — **10 Oct 26 (the evening), `claude/day-window-compact` with `main` merged in (the changes-window fix, pull request #489 — the merge is `5bd3640e`), the whole gate set under the PC lock with nothing else running, in one run: unit 9940 / 9940 (582 files) · build clean · tfin 728 / 0 · e2e 763 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN.**
 
 Before that — **10 Oct 26 (later that afternoon), `claude/day-window-compact` on `a942ae0f` (the day's title box taking Escape — D732), the whole gate set under the PC lock, in one run: unit 9886 / 9886 (581 files) · build clean · tfin 728 / 0 · e2e 762 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN. One more unit case (the title box with an input's window up as well) was added after that run and passed with its file, 73 of 73.**
 

@@ -198,11 +198,23 @@ Fixture: file G4 and S1, sign and publish Wed 15 Jul through the app's own sign-
 
 ## 11. The gates
 
-*(filled when the run finishes — see §12)*
+**One run of the whole set, watched, under the PC lock with nothing else running — 11 Oct 26, on `f07ce883`'s code
+(`e24ac6a1` plus documents): unit 10082 / 10082 (589 files) · build clean · tfin 728 / 0 · e2e 766 passed, 1 failed,
+57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.** The one browser failure is the Leave War phone test "Undo
+and Redo leave the grid where it is when the changed day is on screen" — the known unsteady one (the gate baseline of
+10 Oct 26 met it the same way; this job touches nothing of the Leave War): run again by itself, three times over,
+3 of 3 passed. A test to make wait on what it needs (D87) — filed long since; not this job's.
+`perms.test.ts` and `perms-scan.test.ts` are in the unit count (no permission rule moved). NOT run: `npm run
+probes:adapted`, `npm run perf` — owed before the pull request (the row drawing and a stylesheet changed).
 
 ## 12. Where the check stands
 
-*(written at each stopping point)*
+**11 Oct 26, when the walkers were started:** §§1–7 written; the gates run (§11); the PC lock taken for the walk; the
+build served on 4180 is `f07ce883`'s (nobody rebuilds it while they walk); three Sonnet 5.5 walkers started, each
+writing `docs/handpass/parts/gi-w1.md` / `gi-w2.md` / `gi-w3.md` and its pictures. **Next:** the host opens the
+pictures behind every FAIL and every high-consequence PASS (OIL, the published day, the member's face), reproduces
+each finding, fixes with a failing test first, re-walks what the fixes touch, fills §3's marks and §8, adds the
+ledger's row, writes §13. **Owed after that:** Astra's scenario design and the two code reads (D746).
 
 ## 13. His look card
 
