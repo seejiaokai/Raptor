@@ -213,10 +213,26 @@ rulecheck OK · docsize OK.** The one failure this time is a DIFFERENT Leave War
 a window of months over year-wide placeholders…") — the Leave War desktop timing test D84 names: run again by itself,
 three times, 3 of 3. Two runs, two different Leave War timing tests, each passing alone; nothing of this job's failed
 in either. The new phone test of the "Delete for all?" question is among the 767.
+**THE FINAL RUN — after Fable's fixes, on `bf333dfb`, the whole set under the PC lock with nothing else running, in one
+run: unit 10085 / 10085 (589 files) · build clean · tfin 728 / 0 · e2e 768 passed, 0 failed, 57 skipped · smoke 445 / 0 ·
+rulecheck OK · docsize OK — WHOLLY GREEN.** (Fable disclosed that its first scratch run had started the whole unit
+suite by mistake while the second gate run was in flight — the likely load behind that run's one timing failure.)
 `perms.test.ts` and `perms-scan.test.ts` are in the unit count (no permission rule moved). NOT run: `npm run
 probes:adapted`, `npm run perf` — owed before the pull request (the row drawing and a stylesheet changed).
 
 ## 12. Where the check stands
+
+**WHERE IT STANDS NOW (11 Oct 26, the end of the unattended run):** the walk is done (37 scenarios; one fault of this
+job found and fixed), Fable's read is done (§12a: one medium fault fixed with a failing test first, one small wording
+fixed, one older cosmetic filed), the whole gate set is wholly green on the final code (§11), the ledger has its row,
+the look card is §13. **STILL OWED before "merge live":** (1) his answer to §13's first question — a second
+independent reader (a ChatGPT one, after 14 Oct) or merge on Fable alone; (2) his own look, with the two things only he
+or a real device can prove (a held-finger drag on his iPhone; a drag between two shared rows after F1's fix);
+(3) `npm run probes:adapted` and `npm run perf` before the pull request; (4) the pull request itself — NOT opened.
+`Walk: docs/handpass/2026-10-11-group-input-one-row.md · 180+ pictures (w1, w2, w3, and the host's two) · 19 of the
+roll-call's 23 places seen and operated (4 named as not walked, each with its reason) · 37 scenarios, every one with
+Undo, Redo and a reload · MISSING: 1 fixed (the cut-off question), 2 filed ([WEEK-ADD-TAP-PHONE], [ONE-ROW-DRAG-FLASH])`
+*(What follows is the record of the run as it went.)*
 
 **AN UNATTENDED RUN FROM HERE (his word, 11 Oct 26, late: "I actually want to sleep now … So that u can work overnight" —
 D596, D667):** no question stops it; a choice that is his is parked under "Questions waiting for him" in §13; the chat
