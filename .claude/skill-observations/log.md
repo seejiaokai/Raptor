@@ -3759,3 +3759,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** When a change REMOVES or reverses a visible behaviour, select affected tests by the behaviour's observable too (the element, the test id, the words on screen), not only by the functions edited; say in the step's report which search picked the files.
 
 **Principle:** Tests of a removed behaviour are found by what the user would have seen, not by the code that used to produce it.
+
+### Observation 515: A type-check that prints nothing is not a type-check that passed — it checked no file
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW] build, step 2 — pushed after "tsc --noEmit -p ." printed nothing; the hosted preview's build (tsc -b) then failed on a typing mistake in a new test file.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** which command counts as evidence before a push
+
+**Issue:** The repository's root tsconfig only lists project references, so a bare "tsc --noEmit" on it compiles nothing and exits clean. The silence was read as a pass. The same mistake made a test assertion vacuous (it compared undefined with undefined), which the real type-check would have refused.
+
+**Suggested improvement:** Before treating a check's silence as a pass, run the EXACT command the pipeline runs (read it from the build script), or prove the check can fail by pointing it at a known error once per session.
+
+**Principle:** Evidence is the pipeline's own command; a lookalike command that cannot fail is not evidence.
