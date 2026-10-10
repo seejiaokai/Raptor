@@ -52,9 +52,12 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
 
 ## Still to ask
 
-- **With the pictures (D739's reading 5):** whether a scheduler's change made on the schedule after the cut-off makes
-  the input read LATE — the mark measures the input's last change (9 Aug 26) — recommended no: the member did nothing
-  late. The change carries the scheduler's name in the history (D739).
+- **ANSWERED 10 Oct 26 — D741 ("Yeah I recommend no"):** a change the scheduler makes to an input from the schedule
+  after the cut-off never makes it read LATE — a time or remark typed on its row, a man dragged on or off a shared
+  row. A change in the input's own window after the cut-off reads late as today; an input already LATE stays LATE. It
+  narrows the 9 Aug 26 rule ("the mark measures the input's last change"). The change carries the scheduler's name in
+  the history (D739).
+- **Nothing is waiting on him now.** Next for him: the pictures.
 - **To find in the code before asking anything more:** what the row's NAME box holds on a request's row today and
   whether a word typed there should become the input's title (D715–D717: the row is judged by its kind, never by its
   title's words); whether anyone is told when a scheduler changes an input from the schedule.
