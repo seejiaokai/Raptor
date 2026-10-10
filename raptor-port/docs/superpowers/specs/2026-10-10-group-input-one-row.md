@@ -47,13 +47,11 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
 
 | # | Asked | His answer | The ruling |
 |---|---|---|---|
-| 1 | The scheduler types 14:30 in the shared row's time box (or changes its remark): the row only as today (recommended for this job), the input too for shared rows only, or the input too on every request's row | In his own words: "The scheduler changes the input entirely from the original on the schedule" | Asked back with one example ("after 14:30 is typed on the schedule, what does the Inputs calendar show?") — "14:30 - the input changes": **D739** — a time or a remark the scheduler types on a shared input's row changes the input itself, for everyone in it; the schedule and the Inputs calendar always agree; what was filed stays in the change history with the scheduler's name. **Whether a one-man request's row follows: asked again** — he tapped "Same rule, built with this job", then wrote "Sorry explain the 2nd question again"; nothing recorded. |
+| 1 | The scheduler types 14:30 in the shared row's time box (or changes its remark): the row only as today (recommended for this job), the input too for shared rows only, or the input too on every request's row | In his own words: "The scheduler changes the input entirely from the original on the schedule" | Asked back with one example ("after 14:30 is typed on the schedule, what does the Inputs calendar show?") — "14:30 - the input changes": **D739** — a time or a remark the scheduler types on a shared input's row changes the input itself, for everyone in it; the schedule and the Inputs calendar always agree; what was filed stays in the change history with the scheduler's name. **And a one-man request's row — D740:** it follows the same rule, built inside this job as its second step, one merge. Asked twice: he tapped yes, wrote "Sorry explain the 2nd question again", and, explained with Ranger's own Training request (11:00 filed, 10:15 typed on the schedule), tapped "Yes - same rule". It answers `[REQ-ROW-OWN-BOXES]`. |
 | 2 | A man added by a drag onto the row on a weekend or holiday: his OIL | "Takes the input's answer" | **D738** — he takes the OIL answer the input already carries; no question on the schedule; OIL Earn still switches him. It narrows D660's reading 4 for an add made on the schedule. |
 
 ## Still to ask
 
-- **A one-man request's row (asked again, above):** the same rule as D739, built with this job as a second step
-  (recommended — one branch, one check, one merge, D485), or left as today for now (`[REQ-ROW-OWN-BOXES]`).
 - **With the pictures (D739's reading 5):** whether a scheduler's change made on the schedule after the cut-off makes
   the input read LATE — the mark measures the input's last change (9 Aug 26) — recommended no: the member did nothing
   late. The change carries the scheduler's name in the history (D739).
@@ -63,6 +61,16 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
 - **Then pictures** of the row on the real screen — the Ground Programme and the Personal Inputs line, the week and
   the board, a phone and a desktop, a flagged man on it, a change waiting on a published day — for his yes (D541;
   D662's reading 2).
+
+## The job is two steps, one merge (D740)
+
+1. **The shared input's one row** — D661, D734–D738.
+2. **A request's row writes its time and remark through to the request** — D739, and for a one-man request D740.
+   Today the row's boxes are the scheduler's own layer over the request (`raptor-port/src/engine/overlay.ts`;
+   `OUTSTANDING.md` `[REQ-ROW-OWN-BOXES]`). What stays the row's own: a red box, a CX, the info-only flag, a
+   placeholder puck, and on a one-man request's row a man the scheduler adds (D468, D46, D18, D470).
+
+One branch, one FULL check sized by the riskiest part (published days, earned OIL — D485), one merge.
 
 ## The agent's own, for the plan (technical — not his)
 

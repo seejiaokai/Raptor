@@ -3684,3 +3684,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the session-handoff skill's step for removing a merged block, require the residue read to be DONE at removal time (every line marked owed / open / "not filed" / "to tell him" matched to a backlog id, a ruling or a sheet) and never taken from an earlier block's sentence about it; a long block goes to a helper with that exact brief and the host checks its quotes. Add a line to the handoff: name any document-size marker currently carried over, since the next documents-only change must settle it.
 
 **Principle:** "Its leftovers are filed" is a claim about a text, and only a read of that text at the moment of deletion can make it; a summary written by a later author covers what that author happened to be tracking.
+
+### Observation 510: A question with a conditional second part got a tap the owner then took back
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Asking the owner a feature's rules in small tap-to-answer rounds. One round paired "what does the calendar show after X?" with "if you chose the first, should a one-man row do the same? If you chose the second, pick the first option."
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Putting product questions to a non-technical owner (wording of options; follow-up questions)
+
+**Issue:** The second question depended on the first, was phrased in the app's internal distinction ("a ONE-man request's row") with no example, and told the owner which option to tap in the case it did not apply. He tapped the recommended option and then wrote "explain the 2nd question again". Earlier in the same session a free-text answer to a three-option question read two ways and had to be asked back. Both cost a round; both were cured by the same thing - one concrete example with names and times, and a question that asks what the screen should SHOW afterwards rather than which rule applies.
+
+**Suggested improvement:** In the questioning step: one decision per question, never a question whose meaning depends on another answer in the same round (ask it in the next round); every option set is preceded by one worked example in the product's own words (who, what, the two times), and the question asks for the visible outcome. Treat a tap on "Recommended" that is followed by a request to re-explain as no answer, and record nothing until the re-asked question is answered.
+
+**Principle:** A person can only rule on an outcome he can picture; ask what the screen should show in one named case, and a recommendation tapped without that picture is agreement with the asker, not a decision.
