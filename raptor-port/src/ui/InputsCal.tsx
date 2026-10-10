@@ -189,7 +189,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      from what its reader may do NOW: "Delete this input for all 2 people?" asked of the filer, the members' switch
      then turned off (by an admin, elsewhere, once the squadron shares one database) — and the same question read
      "Take yourself out of this input?" under his finger, its button took HIM out. What was asked is what is done; if
-     he may no longer do it, the press is refused in words (ui/inputedit.tsx sharedRefusal) and nothing goes. */
+     he may no longer do it, the press is refused in words (ui/inputedit.tsx sharedRefusal) and nothing goes.
+     BOTH WAYS (`doDelete`): the words on screen AND the action are the question's — a right LOST refuses the wider
+     action, a right GAINED never widens the narrower one. */
   const askedAll = useRef(false)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
@@ -342,16 +344,25 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
 
   /* ESCAPE peels one layer: the people picker (a blocking chooser over the day's window — this handler, which stops the
      key there), then the day's window (the shell's own rule, ui/FloatWindow.tsx: the front window, when the keyboard
-     is in a window or nowhere). It stands down while the input editor is up (that has its own). It never leaves the
-     calendar: the month is a tab's screen, not a layer to close. */
+     is in a window or nowhere). It never leaves the calendar: the month is a tab's screen, not a layer to close.
+     THE PICKER HAS THE KEY FIRST, WHATEVER WINDOW IS ALSO UP (Sol's read of the second batch, 10 Oct 26 — finding 3;
+     Astra's scenario 18). This handler used to stand down whenever an input's editor was open — written when that
+     editor was a blocking pop-up over everything. Since D641 it is a window beside the day, and with both up Escape
+     in the picker did NOTHING: the picker stood down for the window, the window declined (the day was in front), the
+     shell declined (the keyboard was in the picker) — and with the window in front it closed the WINDOW, typing and
+     all, and left the picker up. So the picker listens only while it is open, on the way in (the window, capture —
+     before the editor's own listener), and stops the key. It still gives way to a blocking pop-up in front of it (a
+     question of the editor's: any `.airpop` not `hidden`) — that is the layer the person is looking at. */
   useEffect(() => {
+    if (pickFor == null) return
     const esc = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || INPEDIT) return
+      if (e.key !== 'Escape') return
+      if ([...document.querySelectorAll('.airpop')].some(p => !(p as HTMLElement).hidden && !p.closest('[hidden]'))) return
       /* Escape ends the picker exactly as Cancel does (a new note keeps its words — cancelPick) */
-      if (pickFor != null) { e.stopPropagation(); cancelPick() }
+      e.preventDefault(); e.stopPropagation(); cancelPick()
     }
-    document.addEventListener('keydown', esc, true)
-    return () => document.removeEventListener('keydown', esc, true)
+    window.addEventListener('keydown', esc, true)
+    return () => window.removeEventListener('keydown', esc, true)
   }, [pickFor, pickWords, pickIso])
 
   /* THE PICKER'S THREE ENDS, one body each — its Cancel, Escape and OK all come here. A note being WRITTEN is finished
@@ -817,9 +828,16 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       setDelAsk(null)
       if (it.rows.length > 1) {
         const rows = it.rows.map(x => INPUTS.find((y: any) => y.iid === x.iid)).filter(Boolean) as any[]
-        if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok'); return }
-        /* asked about everyone, and no longer his to do: refused — never turned into taking himself out (`askedAll`) */
-        if (askedAll.current) { HOOKS.toast(sharedRefusal(rows, 'delete this for everyone'), 'warn'); return }
+        /* THE QUESTION'S INTENT IS READ FIRST, AND DECIDES (`askedAll`; Astra's read of this batch, 10 Oct 26 — finding 1).
+           Asked about EVERYONE: everyone goes if that is still his to do, else it is refused in words — never turned
+           into taking himself out. Asked about HIMSELF: only he goes, whatever he may do by now — a right gained while
+           the question stood (the switch turned on again, an admin back in his own view) must not turn "Take me out"
+           into a delete of the whole input. */
+        if (askedAll.current) {
+          if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok') }
+          else HOOKS.toast(sharedRefusal(rows, 'delete this for everyone'), 'warn')
+          return
+        }
         const mine = rows.find(x => isMe(x.person))
         if (mine && removeInput(mine)) HOOKS.toast('You are out of this input', 'ok')
         return

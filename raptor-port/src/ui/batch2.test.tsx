@@ -24,9 +24,11 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
+import { DocViewer } from './DocViewer'
+import { setPage as goPage } from '../state/view'
 import { InputEditor, askOilIfPending, commitGroup, draftOf, oilAnswered, oilDayLabel, oilSummaryOf, removeEntry, FILING_OFF } from './inputedit'
 import { commitChipMove } from './caldrag'
-import { initStore, notify, setSession, writeInputs } from '../state/store'
+import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
 import { INPUTS } from '../engine/inputs'
@@ -302,6 +304,32 @@ describe('A6, D731 (3) — the List’s dates calendar: Escape and a press outsi
     await key($('#inpEditRmk')!, 'Escape')
     expect(tid('win-inputedit'), 'a second Escape is the window’s').toBeNull()
   })
+  /* Astra's read of the code (10 Oct 26 — finding 3): the row's chips are buttons now, so the keyboard can open the
+     document viewer or the OIL question OVER a calendar no press outside ever closed — and the calendar, taking Escape
+     on the way in, kept it from the pop-up in front. A blocking pop-up that is up has the key first. */
+  it('A6: a blocking pop-up opened by the keyboard over the open calendar takes Escape first — the OIL question, then the calendar', async () => {
+    const r = await single({ ...SAT, oil: { '2026-10-17': 1 } })
+    await openPop()
+    await click(tr(r)!.querySelector('[data-oilrev]'))          // Enter on the chip: a click with no pointer press
+    expect($$('[data-testid="oilconf"]')).toHaveLength(1)
+    expect($('#inRangePop'), 'the calendar is still open under it').toBeTruthy()
+    await key(document.body, 'Escape')
+    expect($$('[data-testid="oilconf"]'), 'the question in front went').toHaveLength(0)
+    expect($('#inRangePop'), 'the calendar did not').toBeTruthy()
+    await key(document.body, 'Escape')
+    expect($('#inRangePop'), 'the next Escape is the calendar’s').toBeNull()
+  })
+  it('A6: …and the document viewer the same', async () => {
+    const { id } = docAdd(new File(['x'], 'cert.png', { type: 'image/png' }))
+    const r = await single({ type: 'ATT C', allday: true, docIds: [id] })
+    await act(async () => { root.render(<><InputsPage /><InputEditor /><DocViewer /></>) })
+    await openPop()
+    await click(tr(r)!.querySelector('.rclip'))
+    expect(($('#docViewPop') as HTMLElement).hidden).toBe(false)
+    await key(document.body, 'Escape')
+    expect(($('#docViewPop') as HTMLElement).hidden, 'the viewer in front went').toBe(true)
+    expect($('#inRangePop'), 'the calendar did not').toBeTruthy()
+  })
   /* Astra's scenario 21 (10 Oct 26): the calendar left open and the List left by the KEYBOARD — no press outside ever
      closed it — stays "open" out of sight. It has no claim on a key while it cannot be seen. */
   it('A6: a calendar left open on a List that is no longer shown takes NO Escape — the opened day closes at the first press', async () => {
@@ -527,9 +555,59 @@ describe('D731 (4) — a shared input’s OIL line counts its people where their
     await act(async () => { writeInputs(() => { of(g.grp)[1].oil = { '2026-10-17': 1, '2026-10-18': 0 } }); notify() })
     expect(oilSummaryOf(of(g.grp))).toBe(`credited for 2 of 2 — ${cs(g.rows[1].person)}: 1 of 2 days`)
   })
+  /* Sol's read of the code (10 Oct 26 — finding 2). A request the scheduler has TAKEN OFF the programme keeps its
+     stored answer and earns nothing while it is off — every other reader leaves it out (`oilAnswered`, the bell, the
+     credit pass). The new count read the stored Yes: "credited for 1 of 2" for a man credited with nothing. */
+  it('a man whose request was taken off the programme is not counted as credited — he is named "taken off"', async () => {
+    const g = await shared(three(), { ...SAT, oil: { '2026-10-17': 1 } })
+    await act(async () => { writeInputs(() => { of(g.grp)[0].acc = 'r' }); notify() })
+    expect(oilSummaryOf(of(g.grp))).toBe(`credited for 2 of 3 — ${cs(g.rows[0].person)}: taken off`)
+    await act(async () => { writeInputs(() => { of(g.grp)[2].oil = { '2026-10-17': 0 } }); notify() })
+    expect(oilSummaryOf(of(g.grp))).toBe(`credited for 1 of 3 — ${cs(g.rows[0].person)}: taken off, ${cs(g.rows[2].person)}: no`)
+    await openOn(g.rows[1])
+    expect($('#inpEditPop .inped-oilsum')!.textContent, 'in the window, opened on any record').toBe(`credited for 1 of 3 — ${cs(g.rows[0].person)}: taken off, ${cs(g.rows[2].person)}: no`)
+  })
+  it('…whichever record he is — the LAST one too; and put back on the programme his answer stands again', async () => {
+    const g = await shared(three(), { ...SAT, oil: { '2026-10-17': 1 } })
+    await act(async () => { writeInputs(() => { of(g.grp)[2].acc = 'r' }); notify() })
+    expect(oilSummaryOf(of(g.grp))).toBe(`credited for 2 of 3 — ${cs(g.rows[2].person)}: taken off`)
+    expect(of(g.grp)[2].oil, 'the stored answer is not touched').toEqual({ '2026-10-17': 1 })
+    await act(async () => { writeInputs(() => { of(g.grp)[2].acc = 'g' }); notify() })
+    expect(oilSummaryOf(of(g.grp)), 'everyone alike again: the old words').toBe('credited on its non-working day')
+  })
+  it('everyone still ON the programme answered alike, one man off it: the words are not borrowed from the man who is off', async () => {
+    const g = await shared(others().slice(0, 2), { ...SAT, oil: { '2026-10-17': 0 } })
+    await act(async () => { writeInputs(() => { of(g.grp)[0].acc = 'r'; of(g.grp)[0].oil = { '2026-10-17': 1 } }); notify() })
+    expect(oilSummaryOf(of(g.grp))).toBe(`credited for 0 of 2 — ${cs(g.rows[0].person)}: taken off, ${cs(g.rows[1].person)}: no`)
+  })
   it('THE CONTROL — a one-person input’s line is untouched', async () => {
     const r = await single({ ...SAT, oil: { '2026-10-17': 0 } })
     expect(oilSummaryOf([r])).toBe('no OIL on its non-working day')
+  })
+})
+
+/* Astra's read of the code (10 Oct 26 — finding 2; older than this batch, on the same lines). The schedule's and the
+   board's dialog holds ONE man's row of a shared input and saves one. Its OIL line was his alone — and its "Not answered
+   yet" line named the OTHER men of the entry, with no button there that could answer for them. One scope for both. */
+describe('the schedule’s one-person dialog speaks for its own man — the OIL line AND the "not answered yet" line', () => {
+  it('Ace answered, the other man not: Ace’s dialog says nothing is unanswered; the other man’s names only himself', async () => {
+    const g = await shared(others().slice(0, 2), { ...SAT })
+    await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 1 } }); notify() })
+    await act(async () => { goPage('editsched'); notify() })
+    await openOn(of(g.grp)[0])
+    expect(tid('win-inputedit'), 'the blocking dialog, not the Inputs page’s window').toBeNull()
+    expect($('#inpEditPop .inped-oilsum')!.textContent).toBe('credited on its non-working day')
+    expect(tid('oil-unanswered'), 'nothing of his is unanswered').toBeNull()
+    await closeWin()
+    await openOn(of(g.grp)[1])
+    expect(tid('oil-unanswered')!.querySelector('.inped-oilsum')!.textContent, 'his own day, and no list of other people').toBe('Not answered yet — 17 Oct')
+    expect(tid('oil-answer'), 'and HIS button answers it').toBeTruthy()
+  })
+  it('THE CONTROL — on the Inputs page the window still speaks for the entry and names who is unanswered', async () => {
+    const g = await shared(others().slice(0, 2), { ...SAT })
+    await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 1 } }); notify() })
+    await openOn(of(g.grp)[0])
+    expect(tid('oil-unanswered')!.textContent).toContain(cs(of(g.grp)[1].person))
   })
 })
 
@@ -617,6 +695,34 @@ describe('D731 (8) — the filer, with the members’ switch off, is told the sw
     expect(of(g.grp), 'nobody was taken out').toHaveLength(2)
     expect(said).toEqual([FILING_OFF])
   })
+  /* …and the REVERSE (Astra's read of the code, 10 Oct 26 — finding 1, the serious one, made by the fix above): asked
+     "Take yourself out of this input?" while he could do no more, his right to delete for everyone then comes back
+     (the switch on again) — and "Take me out" deleted EVERYONE: the words on screen were kept, the action was chosen
+     afresh from what he could now do. The question's intent decides both. */
+  it('the day’s "Take yourself out?" question, the switch turned ON while it stands: only HE goes — never everyone; one Undo puts him back', async () => {
+    const g = await shared([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
+    await off()
+    await openDay('2026-10-20')
+    await key(tid('idy-list')!.querySelector('[data-testid^="idy-row-"] [data-testid="idy-open"]')!, 'Delete')
+    expect(tid('idy-ask')!.textContent).toContain('Take yourself out of this input?')
+    await as('admin'); await act(async () => { setMembersFile(true); notify() }); await as('member')
+    expect(tid('idy-ask')!.textContent, 'the question still says what it asked').toContain('Take yourself out of this input?')
+    said.length = 0
+    await click(tid('idy-del-yes'))
+    expect(of(g.grp).map(r => r.person), 'the other man is still in it').toEqual([others()[0]])
+    expect(said).toEqual(['You are out of this input'])
+    await act(async () => { undo(); notify() })
+    expect(of(g.grp).map(r => String(r.person)).sort(), 'Undo restores exactly him').toEqual([member, others()[0]].sort())
+  })
+  it('THE CONTROL — "Delete for all?" asked and still his to do: everyone goes, as asked', async () => {
+    const g = await shared([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
+    await as('member')
+    await openDay('2026-10-20')
+    await key(tid('idy-list')!.querySelector('[data-testid^="idy-row-"] [data-testid="idy-open"]')!, 'Delete')
+    expect(tid('idy-ask')!.textContent).toContain('Delete this input for all 2 people?')
+    await click(tid('idy-del-yes'))
+    expect(of(g.grp)).toHaveLength(0)
+  })
   it('THE CONTROL — the switch ON: the filer changes it as before, and is told nothing', async () => {
     const g = await shared([member, others()[0]], { type: 'Duty' }, member)
     await as('member'); await openOn(g.rows[0])
@@ -674,6 +780,39 @@ describe('D731 (9) — Escape while a note is typed leaves the note box only', (
     await type('.ic-note .ic-poppuck-edit', 'brief him at 0800')
     await act(async () => { ($('.ic-note .ic-poppuck-edit') as HTMLElement).dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
     expect(notes()[0].text).toBe('brief him at 0800')
+  })
+  /* Sol's read of the code (10 Oct 26 — finding 3; an older fault, Astra's scenario 18): with an input's window up as
+     well, Escape in a note's people picker did NOTHING — the picker stood down for the window, the window declined
+     (it is not in front), the shell declined (the keyboard is in the picker). The picker has the key first. */
+  it('the people picker over a note, with an input’s window up and unsaved: Escape closes the PICKER only — the window, its typing and the day stay', async () => {
+    const r = await single({ date: 'Oct 22', remarks: 'as filed' })
+    await act(async () => { writeInputs(() => addPlanPuck(D, 'brief the new guy')); notify() })
+    await openDay(D)
+    await click(tid('idy-row-' + r.iid)!.querySelector('[data-testid="idy-open"]'))
+    await type('#inpEditRmk', 'typed, not saved')
+    await act(async () => { tid('win-inputsday')!.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
+    await click($(`[data-pkadd="${notes()[0].id}"]`))
+    expect($('.ic-pick'), 'the picker is up').toBeTruthy()
+    const e = await key($('.ic-pick')!, 'Escape')
+    expect($('.ic-pick'), 'the picker went').toBeNull()
+    expect(e.defaultPrevented).toBe(true)
+    expect(tid('win-inputsday'), 'the day stayed').toBeTruthy()
+    expect(tid('win-inputedit'), 'the input’s window stayed').toBeTruthy()
+    expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('typed, not saved')
+    expect(notes()[0].ids || [], 'and nobody was added to the note').toHaveLength(0)
+  })
+  it('…and the same with the INPUT’s window in front (the picker opened by the keyboard): the picker, not the window, takes the key', async () => {
+    const r = await single({ date: 'Oct 22', remarks: 'as filed' })
+    await act(async () => { writeInputs(() => addPlanPuck(D, 'brief the new guy')); notify() })
+    await openDay(D)
+    await click(tid('idy-row-' + r.iid)!.querySelector('[data-testid="idy-open"]'))
+    await type('#inpEditRmk', 'typed, not saved')
+    expect(frontWin()).toBe('inputedit')
+    await click($(`[data-pkadd="${notes()[0].id}"]`))             // Enter on the "+": no pointer press, the window stays in front
+    await key($('.ic-pick')!, 'Escape')
+    expect($('.ic-pick')).toBeNull()
+    expect(tid('win-inputedit'), 'the window in front was not closed by the picker’s key').toBeTruthy()
+    expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('typed, not saved')
   })
   it('an EXISTING note being edited: Escape puts its words back', async () => {
     await act(async () => { writeInputs(() => addPlanPuck(D, 'brief the new guy')); notify() })

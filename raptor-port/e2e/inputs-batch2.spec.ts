@@ -331,3 +331,25 @@ test('A6 — Escape closes the List’s dates calendar', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(page.locator('#inRangePop')).toHaveCount(0)
 })
+
+/* A6 and A4 together, with real keys (Astra's read of the code, finding 3): the chips are buttons, so the keyboard can
+   open the OIL question OVER a dates calendar no press outside ever closed. Escape is the question's first. */
+test('A6 — the OIL question opened by the keyboard over the open dates calendar takes Escape first; the next Escape closes the calendar', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs')
+  const [iid] = await file(page, [{ who: 4, type: 'Duty', from: 'Oct 17', more: { oil: { '2026-10-17': 1 } } }])
+  await page.locator('#inListBtn').click()
+  await page.locator('#inRangeBtn').click(); await page.locator('#inRangeAll').click()
+  await page.locator('#inRangeBtn').click()
+  await expect(page.locator('#inRangePop')).toHaveCount(1)
+  await page.locator(`#inBody tr[data-iid="${iid}"] [data-testid="in-open"]`).focus()
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('[data-testid="oilconf"]')).toHaveCount(1)
+  await expect(page.locator('#inRangePop'), 'the calendar is still up under the question').toHaveCount(1)
+  await page.keyboard.press('Escape')
+  await expect(page.locator('[data-testid="oilconf"]'), 'the question in front went').toHaveCount(0)
+  await expect(page.locator('#inRangePop'), 'the calendar did not').toHaveCount(1)
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#inRangePop')).toHaveCount(0)
+})

@@ -227,6 +227,12 @@ the Now block at the top of this file is current.*
 
 ## Deploy — the traps, all still live
 
+- **A NEW BROWSER-TEST FILE MUST BE NAMED IN `playwright.config.ts` (met 10 Oct 26, `[SEEN-BATCH-2]`).** The `raptor`
+  project lists its spec files by name (`testMatch: /(geometry|medical|…)\.spec\.ts/`); a new `e2e/<name>.spec.ts`
+  that is not added to that list is "No tests found" when run alone and is silently NOT RUN by `npm run test:e2e` —
+  a gate that passes without the new tests. Add the name in the same change, then run the file alone once and read
+  its count.
+
 **SUPERSEDED 23 Sep 26 (D59): the repo is PRIVATE, GitHub Pages is GONE and the publish job is OFF — Vercel is the only viewer (`raptor-kai-e2f5.vercel.app`); the Pages traps below are history until `[DEPLOY-DOCS]` rewrites them.** Was: **Two channels since 15 Aug 26 — Vercel for speed, Pages for the official
 site.** The owner's dev loop felt like ~20 min per change; the fix was to stop
 routing every look through the gated Pages deploy.

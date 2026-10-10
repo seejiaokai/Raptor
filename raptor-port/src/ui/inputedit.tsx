@@ -762,15 +762,22 @@ export function oilSummary(row: any): string {
 export function oilSummaryOf(rows: any[]): string {
   const live = (rows || []).filter(Boolean)
   if (live.length < 2) return live.length ? oilSummary(live[0]) : ''
+  /* A REQUEST TAKEN OFF THE PROGRAMME HAS NO STANDING HERE (Sol's read of this batch, 10 Oct 26 — finding 2). Taking a
+     request off keeps its stored answer (`acc: 'r'` — engine/slots.ts unacceptInput: it stands again when the request
+     is accepted again) and it earns nothing while it is off: `oilAnswered`, `oilUnansweredDay`, the bell and the
+     credit pass all leave it out. This count read the stored Yes and said "credited" of a man credited with nothing.
+     Such a man is never counted, never lends the line his words, and is named — "Ace: taken off". */
+  const off = (r: any) => r.acc === 'r'
   const marks = live.map(r => {
     const prev = (r.oil || {}) as Record<string, number>
-    return oilAskPlan(r).map(p => (prev[p.iso] == null ? '?' : prev[p.iso] > 0 ? 'y' : 'n'))
+    return off(r) ? [] : oilAskPlan(r).map(p => (prev[p.iso] == null ? '?' : prev[p.iso] > 0 ? 'y' : 'n'))
   })
-  if (marks.every(m => m.join('') === marks[0].join(''))) return oilSummary(live[0])
+  if (!live.some(off) && marks.every(m => m.join('') === marks[0].join(''))) return oilSummary(live[0])
   const who = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person ?? ''))
   const credited = marks.filter(m => m.includes('y')).length
   const notes = live.map((r, i) => {
     const m = marks[i], yes = m.filter(x => x === 'y').length
+    if (off(r)) return `${who(r)}: taken off`
     if (yes && yes < m.length) return `${who(r)}: ${yes} of ${m.length} days`
     if (!yes && m.length && m.every(x => x === 'n')) return `${who(r)}: no`
     return ''
@@ -2439,13 +2446,16 @@ export function InputEditor() {
   /* …asked of EVERY record of the entry, not of the one the window happens to be opened on (walker C's find, 10 Oct 26 —
      Astra's scenario 69: a shared duty whose first man had answered from his own bell read "no OIL … Change…", with no
      word that another man of it was still unanswered) */
-  const unanswered = !isNew && r ? (rows.length > 1 ? rows : [r]).filter(x => oilUnansweredDay(x)) : []
-  const unansweredDay = unanswered.length ? oilUnansweredDay(unanswered[0]) : ''
-  /* THE RECORDS THE OIL LINE SPEAKS FOR (owner D731 (4)): on the Inputs page a shared input's window holds the ENTRY, and
+  /* THE RECORDS THE OIL LINES SPEAK FOR (owner D731 (4)): on the Inputs page a shared input's window holds the ENTRY, and
      its line counts every man of it (`oilSummaryOf`); the schedule's and the board's dialog holds ONE man's row and
-     saves one, so there the line is his alone, as it was. The line shows while ANY of them has an answer. */
+     saves one, so there the line is his alone, as it was. The line shows while ANY of them has an answer.
+     ONE SCOPE FOR BOTH LINES (Astra's read of this batch, 10 Oct 26 — finding 2): "Not answered yet" was asked of every
+     record of the entry wherever the editor stood, so the schedule's dialog on Ace's row named RANGER as unanswered —
+     beside a button that answers for Ace alone. It is asked of the same records the line above it speaks for. */
   const oilRows = !isNew && r ? (picker && rows.length > 1 ? rows : [r]) : []
   const anyAnswered = oilRows.some(x => oilAnswered(x))
+  const unanswered = oilRows.filter(x => oilUnansweredDay(x))
+  const unansweredDay = unanswered.length ? oilUnansweredDay(unanswered[0]) : ''
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
      says what a Save would write */
@@ -2661,7 +2671,7 @@ export function InputEditor() {
           {!isNew && r && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
-              <span className="inped-oilsum">Not answered yet — {oilDayLabel(unansweredDay)}{rows.length > 1 ? ': ' + unanswered.map(x => csOf(x.person)).join(', ') : ''}</span>
+              <span className="inped-oilsum">Not answered yet — {oilDayLabel(unansweredDay)}{oilRows.length > 1 ? ': ' + unanswered.map(x => csOf(x.person)).join(', ') : ''}</span>
               {!readOnly && !anyAnswered && <button type="button" className="abtn ghost" data-testid="oil-answer"
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Answer…</button>}
             </div>

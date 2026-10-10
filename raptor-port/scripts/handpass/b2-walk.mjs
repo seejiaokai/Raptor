@@ -717,6 +717,131 @@ if (want('F')) {
   await ctx.close(); await browser.close()
 }
 
+/* ══════════════════ G · THE RE-WALK OF WHAT THE TWO READS' FIXES TOUCHED (a desktop, Saber — his admin view and his member view) ══════════════════ */
+if (want('G')) {
+  const browser = await launch()
+  const { ctx, page } = await open(browser, { width: 1440, height: 900 })
+  const DAY = '2026-10-21'
+  let g = []
+  const gear = async on => {
+    await toCal(page, 2026, 10)
+    await page.locator('#inGear').click()
+    const sw = page.locator('[data-testid="iset-memberfile"]')
+    if ((await sw.isChecked()) !== on) await sw.click()
+    await page.locator('[data-testid="iset-save"]').click(); await page.waitForTimeout(300)
+  }
+  const role = async () => (await page.locator('#roleBadge').textContent() || '').trim()
+  const count = () => page.evaluate(ids => window.INPUTS.filter(r => ids.includes(r.iid)).length, g.map(r => r.iid))
+  await step('G1 Astra 9 (a right LOST): as a member Saber is asked "Delete this input for all 2 people?"; the switch goes off while it stands; "Delete" is refused in words — nobody goes', async () => {
+    await page.locator('#roleBadge').click(); await page.waitForTimeout(300)                    // Saber's member view
+    const had = await ids(page)
+    await fileNew(page, DAY, { type: 'Meeting', people: ['Saber', 'Echo'], remarks: 'ask then lose' })
+    g = await fresh(page, had)
+    await openDay(page, DAY)
+    const c = page.locator(`${DAYWIN} [data-testid^="idy-row-"]`).filter({ hasText: 'ask then lose' }).first()
+    await c.locator('[data-testid="idy-open"]').focus(); await page.keyboard.press('Delete')
+    const q1 = await txt(page, '[data-testid="idy-ask"] .idy-ask-q')
+    await page.locator('#roleBadge').click(); await page.waitForTimeout(300)                    // back to the admin view — the day and its question stay
+    const still = await page.locator('[data-testid="idy-ask"]').count()
+    await page.locator('#inGear').click()
+    const sw = page.locator('[data-testid="iset-memberfile"]'); if (await sw.isChecked()) await sw.click()
+    await page.locator('[data-testid="iset-save"]').click(); await page.waitForTimeout(300)
+    await page.locator('#roleBadge').click(); await page.waitForTimeout(300)                    // the member view again
+    const q2 = await txt(page, '[data-testid="idy-ask"] .idy-ask-q'), btn = await txt(page, '[data-testid="idy-del-yes"]')
+    await shot(page, 'G1a-question-kept')
+    await clearToast(page)
+    await page.locator('[data-testid="idy-del-yes"]').click(); await page.waitForTimeout(300)
+    const note = await toast(page), left = await count()
+    await shot(page, 'G1b-refused')
+    return { ok: g.length === 2 && q1 === 'Delete this input for all 2 people?' && still === 1 && q2 === q1 && btn === 'Delete' && note === 'Filing for other people is switched off — an admin can change this.' && left === 2, detail: JSON.stringify({ role: await role(), q1, still, q2, btn, note, left }) }
+  })
+  await step('G2 the reads’ finding 1 (a right GAINED): asked "Take yourself out of this input?" with the switch off; back in his admin view, "Take me out" takes HIM out only — Echo stays; Undo puts him back', async () => {
+    await openDay(page, DAY)
+    const c = page.locator(`${DAYWIN} [data-testid^="idy-row-"]`).filter({ hasText: 'ask then lose' }).first()
+    await c.locator('[data-testid="idy-open"]').focus(); await page.keyboard.press('Delete')
+    const q1 = await txt(page, '[data-testid="idy-ask"] .idy-ask-q')
+    await page.locator('#roleBadge').click(); await page.waitForTimeout(300)                    // the admin view: he may now delete for everyone
+    const q2 = await txt(page, '[data-testid="idy-ask"] .idy-ask-q'), btn = await txt(page, '[data-testid="idy-del-yes"]')
+    await shot(page, 'G2a-take-me-out-kept')
+    await clearToast(page)
+    await page.locator('[data-testid="idy-del-yes"]').click(); await page.waitForTimeout(300)
+    const note = await toast(page), left = await page.evaluate(ids => window.INPUTS.filter(r => ids.includes(r.iid)).map(r => window.PEOPLE[r.person].cs), g.map(r => r.iid))
+    await shot(page, 'G2b-only-him')
+    await page.locator('#undoBtn').click(); await page.waitForTimeout(400)
+    const back = await count()
+    await closeWins(page)
+    return { ok: q1 === 'Take yourself out of this input?' && q2 === q1 && btn === 'Take me out' && note === 'You are out of this input' && left.join() === 'Echo' && back === 2, detail: JSON.stringify({ role: await role(), q1, q2, btn, note, left, back }) }
+  })
+  await step('G3 Sol’s finding 3: an input’s window up with typing in it, a note’s people picker opened in the day — Escape closes the PICKER; the window, its typing and the day stay', async () => {
+    await gear(true)
+    await openDay(page, '2026-10-22')
+    await page.locator('#icAddPuck').click()
+    await page.locator('.ic-newnote .ic-poppuck-edit').fill('picker beside a window')
+    await page.keyboard.press('Enter'); await page.waitForTimeout(200)
+    await page.locator('#icPopAdd').click(); await page.locator(WIN).waitFor()
+    await page.locator('#inpEditRmk').fill('typed, not saved')
+    /* the window may stand over the day: the "+" of the note is reached by the keyboard, as scenario 18 has it */
+    await page.locator(`${DAYWIN} [data-pkadd]`).first().focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(250)
+    const up = await page.locator('.ic-pick').count()
+    await shot(page, 'G3a-picker-and-window')
+    await page.keyboard.press('Escape'); await page.waitForTimeout(250)
+    const m = { up, pick: await page.locator('.ic-pick').count(), win: await page.locator(WIN).count(), day: await page.locator(DAYWIN).count(), val: (await page.locator(WIN).count()) ? await page.locator('#inpEditRmk').inputValue() : null }
+    await shot(page, 'G3b-picker-closed')
+    await closeWins(page)
+    return { ok: m.up === 1 && m.pick === 0 && m.win === 1 && m.day === 1 && m.val === 'typed, not saved', detail: JSON.stringify(m) }
+  })
+  await step('G4 the reads’ finding 3: the document viewer opened by the keyboard over the open dates calendar — Escape closes the viewer first, the calendar next', async () => {
+    await toList(page, false)
+    await page.selectOption('#inFPerson', 'all'); await page.waitForTimeout(250)   // the member view left the List on himself
+    if (!(await page.locator('#inBody .rclip').count())) return { ok: false, detail: 'no document on the List' }
+    await page.locator('#inRangeBtn').click()
+    await page.locator('#inBody .rclip').first().focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(300)
+    const both = { viewer: await page.locator('#docViewPop:not([hidden])').count(), cal: await page.locator('#inRangePop').count() }
+    await shot(page, 'G4a-viewer-over-calendar')
+    await page.keyboard.press('Escape'); await page.waitForTimeout(200)
+    const one = { viewer: await page.locator('#docViewPop:not([hidden])').count(), cal: await page.locator('#inRangePop').count() }
+    await page.keyboard.press('Escape'); await page.waitForTimeout(200)
+    const none = await page.locator('#inRangePop').count()
+    return { ok: both.viewer === 1 && both.cal === 1 && one.viewer === 0 && one.cal === 1 && none === 0, detail: JSON.stringify({ both, one, none }) }
+  })
+  await step('G5 Sol’s finding 2 and Astra’s 2: a Duty on Saturday 18 Jul for Ace and Drifter, both Yes; on the board Ace’s request is taken off — the Inputs window counts "credited for 1 of 2 — Ace: taken off"; the board’s own dialog on Drifter’s row speaks for Drifter alone', async () => {
+    const SAT = '2026-07-18'
+    const had = await ids(page)
+    await fileNew(page, SAT, { type: 'Duty', people: ['Ace', 'Drifter'], remarks: 'saturday watch' })
+    await answerOil(page, 'yes')
+    const made = await fresh(page, had)
+    await closeWins(page)
+    await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(500)
+    await page.locator('#eWeek [data-sbday="5"]:visible').first().click(); await page.locator('#schedBoard').waitFor(); await page.waitForTimeout(500)
+    const rows = () => page.evaluate(() => document.querySelectorAll('#schedBoard .pinp .sb-arow, #schedBoard .pinp .sbi-row').length)
+    if (!(await rows()) && await page.locator('#schedBoard [data-pitog="5"]:visible').count()) { await page.locator('#schedBoard [data-pitog="5"]:visible').first().click(); await page.waitForTimeout(400) }
+    const keyOf = cs => page.evaluate(([cs, ids]) => { const r = window.INPUTS.find(x => ids.includes(x.iid) && window.PEOPLE[x.person].cs === cs); const b = [...document.querySelectorAll('#schedBoard [data-acc="x"][data-acck]')].filter(e => e.offsetParent); const hit = b.find(e => (e.closest('.sb-arow, .sbi-row, .sb-row, tr, li') || e.parentElement.parentElement).textContent.includes(cs)); return { acc: r && r.acc, key: hit ? hit.getAttribute('data-acck') : null } }, [cs, made.map(r => r.iid)])
+    const ace = await keyOf('Ace')
+    if (!ace.key) { await shot(page, 'G5-no-control'); return { ok: false, detail: 'no take-off control for Ace’s request on Saturday’s board: ' + JSON.stringify({ ace, made: made.map(r => [r.cs, r.acc]) }) } }
+    await page.locator(`#schedBoard [data-acc="x"][data-acck="${ace.key}"]:visible`).first().click(); await page.waitForTimeout(300)
+    const off = await toast(page)
+    await shot(page, 'G5a-board-ace-taken-off')
+    /* the board's own dialog on Drifter's row: one man's */
+    const dk = await keyOf('Drifter')
+    let dlg = null
+    if (dk.key && await page.locator(`#schedBoard [data-inpedit="${dk.key}"]:visible`).count()) {
+      await page.locator(`#schedBoard [data-inpedit="${dk.key}"]:visible`).first().click(); await page.waitForTimeout(300)
+      dlg = { title: await txt(page, '#inpEditTitle'), line: await txt(page, '#inpEditPop .inped-oilsum'), un: await page.locator('#inpEditPop [data-testid="oil-unanswered"]').count() }
+      await shot(page, 'G5b-board-dialog-drifter')
+      await page.locator('#inpEditCancel').click(); await page.waitForTimeout(200)
+    }
+    const x = page.locator('#schedBoard').getByRole('button', { name: /Close|Done/ }).first()
+    if (await x.count()) await x.click(); else await page.keyboard.press('Escape')
+    await page.waitForTimeout(400)
+    await openCard(page, SAT, 'saturday watch')
+    const line = await txt(page, '#inpEditPop .inped-oilsum')
+    await shot(page, 'G5c-window-counts-taken-off')
+    await closeWins(page)
+    return { ok: off === "Ace's Duty taken off the programme" && line === 'credited for 1 of 2 — Ace: taken off' && (!dlg || (dlg.line === 'credited on its non-working day' && dlg.un === 0)), detail: JSON.stringify({ off, line, dlg }) }
+  })
+  await ctx.close(); await browser.close()
+}
+
 console.log(`\n${n - bad} of ${n} steps as they should be${bad ? ` — ${bad} NOT` : ''}`)
 console.log(errs.length ? 'ERRORS SEEN:\n  ' + [...new Set(errs)].join('\n  ') : 'no console error, page error or failed request')
 process.exit(bad ? 1 : 0)

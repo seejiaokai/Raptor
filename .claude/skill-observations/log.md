@@ -3483,3 +3483,63 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In a walk or browser test, prove a pop-up is on screen before pressing anything in it (page not scrolled by the script, its box inside the screen, the element at a point on it is the pop-up), then press at a point. When a build removes something from a page, the roll-call lists everything that stood below it and every pop-up on that page placed against the screen.
 
 **Principle:** An automated press proves a control works, not that a person can find it; a test driver that helpfully scrolls or waits removes exactly the obstacle the user would hit. Assert visibility and position from the user's resting view before interacting, and when removing a layout element, check what its presence was silently holding in place.
+
+### Observation 497: Twenty small fixes in one batch — the fix got written before the red was watched; a stash run recovered it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Building `[SEEN-BATCH-2]` (ten small faults and eleven owner answers on the Inputs pages), "each piece a failing test first".
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Red phase, when many small fixes are batched
+
+**Issue:** The tests for the whole batch were written first, but the first edit script of fixes was applied before the test file had been run once. Red was then proved after the fact by stashing only the fix files (`git stash push -- <src files>`), running the new tests on the old code, and popping. Two traps met on the way: (a) tests that import a helper the fix introduces fail on old code for the weak reason "undefined is not a function" — only the tests that drive the screen prove the real red; (b) a browser-test red run needs a BUILD of the old code, and the build typechecks test files, so new unit-test files that import not-yet-existing exports must be moved aside for that run.
+
+**Suggested improvement:** Add to the skill's red phase a "batch" note: write the batch's tests, RUN them before the first fix lands, and keep the output; if a fix slipped in first, the recovery is a path-limited stash of the fix files, never an argument that "it would have failed". Name the two traps.
+
+**Principle:** Red is an observation, not an inference. In a batch the observation is cheap to make once for the lot — and a path-limited stash makes it recoverable — but only tests that go through the screen's own controls prove the red for the right reason.
+
+### Observation 498: A fix that adds a page-wide key listener needs its own roll-call row — "alive but not on screen"
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Same batch. "Escape closes the List's dates calendar" was fixed with a window-level capture listener; the other provider's scenario design found that the calendar could be left "open" under a hidden view (the view switched by keyboard, no outside press), where the listener swallowed the first Escape meant for the window in front.
+**Skill:** New skill candidate: bug-check roll-call (project doc `raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** Roll-call, for a new listener / gesture
+
+**Issue:** The roll-call listed every layer that should take Escape first; it had no row for the states in which the NEW listener is registered while its own surface is not visible. The builder's tests opened the pop-up by its button and pressed Escape — the convenient order. The defect was a side-effect of the fix, invisible to tests of the fix.
+
+**Suggested improvement:** One line for §6 of the checking guide (a guide change — both reviewers first, D70): "a fix that adds a listener above its own component (document or window; a key, a pointer press) lists every state in which the listener is alive while its surface is hidden, covered or not in front, and what the key or press should reach then — with a test for each."
+
+**Principle:** A global listener is a claim on input that outlives the thing it was added for. Ask of every such claim: when is it alive, when is its owner visible, and who is entitled to the input in the gap.
+
+### Observation 499: A check promised to the owner in the tier block before its route was traced had to be withdrawn
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Same batch. The tier block told the owner the walk would read the earned-leave figure on the Leave War beside the changed OIL wording. In the walk it turned out the figure only moves at publication, so the read would have meant walking the publishing flow twice — out of proportion; it was dropped and said so.
+**Skill:** New skill candidate: bug-check tier block (project rule `.claude/rules/bug-check.md` step 3)
+**Type:** internal
+**Phase/Area:** Telling the owner what the tier means, before executing
+
+**Issue:** The tier block is written before the walk is designed, and an "extra" check was added to it on instinct ("the real downstream number") without tracing what makes that number move. The promise was then partly unkeepable at a sensible cost.
+
+**Suggested improvement:** In step 3 of the trigger: for every check named beyond the tier's own list, write in one clause the ROUTE that would prove it (which control, which state) — or word it as "if reachable in N steps". A promise with no route is a guess.
+
+**Principle:** Do not promise evidence until you know how it is obtained. A withdrawn check costs trust even when the withdrawal is right.
+
+### Observation 500: A memory note did not stop the same shell mistake three times in one session
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Same batch. The persistent memory already says "a Bash heredoc with an apostrophe never parses here — write the script with the Write tool". Under load the heredoc was used anyway three times (each failed, each cost a round trip); a fourth class of the same family — a `sed -i` with heavy escaping that silently changed nothing, its check lost because the command ran in the background — cost a full browser-test run.
+**Skill:** update-config (hooks) / New skill candidate: shell-on-Windows discipline
+**Type:** internal
+**Phase/Area:** Environment habits that a note cannot enforce
+
+**Issue:** A rule the agent agrees with and holds in memory is still broken when attention is on the task. The memory note is advice; nothing made the wrong call impossible.
+
+**Suggested improvement:** A PreToolUse hook on Bash that refuses a command containing a here-document whose body contains an apostrophe (and says "write the script with the Write tool"), and a habit line: one-line file edits go through the Edit tool, never `sed -i`, and never in a backgrounded command whose check cannot be read.
+
+**Principle:** When a documented rule keeps being broken under load, stop making it louder — make the wrong action fail fast at the tool boundary.

@@ -328,6 +328,12 @@ export function InputsPage() {
     }
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* NOT WHILE A BLOCKING POP-UP IS IN FRONT (Astra's read of this batch, 10 Oct 26 — finding 3). The row's chips are
+         buttons now, so the keyboard can open the document viewer or the OIL question OVER this calendar with no
+         press outside to close it first — and this listener, first in line, kept Escape from the pop-up the person
+         is looking at. Every blocking pop-up of the app is an `.airpop` that is not `hidden`; while one is up the key
+         is left to it. (An input's WINDOW is not one: it does not block, and the calendar still goes first.) */
+      if ([...document.querySelectorAll('.airpop')].some(p => !(p as HTMLElement).hidden && !p.closest('[hidden]'))) return
       e.preventDefault(); e.stopPropagation()
       setCalOpen(false)
     }

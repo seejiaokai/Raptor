@@ -9584,7 +9584,9 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   - **THE LIST'S DATES CALENDAR (D731 (3), (12); `[SEEN-BATCH-2]` A6).** It stays open after its end date is tapped; a
     press outside closes it — `pointerdown` beside `mousedown`, so a finger's press counts on an iPhone — as do its
     quick buttons and its own button; Escape closes it, taken on the way in (the window, capture) so that with an
-    input's window up as well one Escape closes the calendar and the next the window. On a phone (≤700px) its days are
+    input's window up as well one Escape closes the calendar and the next the window. It takes Escape only while
+    the List is the view shown, and never while a blocking pop-up is in front of it (the document viewer or the OIL
+    question opened by the keyboard from a row's chip — any `.airpop` not `hidden`): that pop-up has the key first. On a phone (≤700px) its days are
     a finger's size and it fills its pop-up — D725's sizes for the calendar in an input's window; on a short phone
     (≤600px tall) the room is found in the padding round it, never in the days. A desktop keeps its small calendar.
   - **A SHARED INPUT'S OIL LINE COUNTS ITS PEOPLE WHERE THEIR ANSWERS DIFFER (D731 (4)).** In its window on the Inputs
@@ -9613,7 +9615,17 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   - **ESCAPE WHILE A NOTE IS TYPED LEAVES THE NOTE BOX ONLY (D731 (9)).** In an opened day the note box (a new note's,
     and an existing note's being edited) takes Escape first: the box is put away, nothing is written — a new note is
     not made, an edited one keeps its words — and the day stays; the next Escape closes the day. Enter and leaving the
-    box still save.
+    box still save. A new note's "+ people" button beside its words is part of the same thing being made and takes
+    Escape the same way. (The day's TITLE box does not: `[DAY-TITLE-ESCAPE]`, his to answer.)
+  - **A DELETE QUESTION DOES WHAT IT ASKED — BOTH WAYS.** In an opened day a shared input's question keeps the words
+    it was asked in while it stands, and its button does THAT (`askedAll`, `InputsCal.tsx doDelete`). Asked "Delete
+    this input for all 2 people?": if the right to delete for everyone goes meanwhile (the members' switch turned
+    off), Delete is refused with the switch-off sentence — it never turns into taking the asker out (Astra's
+    scenario 9). Asked "Take yourself out of this input?": only he goes, even if he may by then delete for everyone —
+    a right gained while the question stood never widens it (Astra's read, finding 1).
+  - **THE SCHEDULE'S ONE-PERSON DIALOG SPEAKS FOR ITS OWN MAN.** On a shared input's row opened from Edit Schedule or
+    the board, the OIL line AND the "Not answered yet" line are that man's alone — one scope, `oilRows`; on the
+    Inputs page both speak for the entry (Astra's read, finding 2).
   - **THE DOCUMENT VIEWER KEEPS ITS BUTTONS IN SIGHT (D731 (10)).** Its foot — "Upchit", "Edit input", "Close" — is
     pinned to the foot of the scrolling box (`16-medical.css`), the page moving above it.
   - **SEVERAL DAYS PICKED ON THE MONTH OPEN THE WINDOW AT ONCE (D731 (11)).** Kept as built; no bar to confirm first.
