@@ -3669,3 +3669,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the shared walk helper, give "fill this field" a short timeout and an error that names the selector and lists the fields the window does have; and note at the head of each walk-specific helper file the date and build it was written against, so a later borrower checks its selectors first.
 
 **Principle:** A helper written for one walk is evidence of that day's screen, not a library; when borrowing one, prove its first step against the present screen before building a fixture on it.
+
+### Observation 509: A handoff block's own claim that its open ends are filed was wrong by six items
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Tidying the handoff after a pull request went live: three merged branches' blocks were to be removed, and the newest block said of an older one that "its one open question" was already in the backlog.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Removing another chat's merged block (the residue check before a block is deleted)
+
+**Issue:** The older block was about 120,000 characters, written across several chats. A helper read it line by line against the backlog, the rulings and the evidence sheets and found six open lines with no other home (two reviews owed and never run, a stale line in a working guide, an old published page to annotate, a seen-not-filed observation, size markers carried over) and three looks nobody had recorded. The later chat that declared the block safe to remove had only tracked the one question it knew about. Also met: size markers that a code change may carry over come due in the first documents-only change, so the tidy-up chat inherited four failing markers nobody had mentioned.
+
+**Suggested improvement:** In the session-handoff skill's step for removing a merged block, require the residue read to be DONE at removal time (every line marked owed / open / "not filed" / "to tell him" matched to a backlog id, a ruling or a sheet) and never taken from an earlier block's sentence about it; a long block goes to a helper with that exact brief and the host checks its quotes. Add a line to the handoff: name any document-size marker currently carried over, since the next documents-only change must settle it.
+
+**Principle:** "Its leftovers are filed" is a claim about a text, and only a read of that text at the moment of deletion can make it; a summary written by a later author covers what that author happened to be tracking.

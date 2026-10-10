@@ -669,7 +669,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   activity types (Training, CSE, Meeting, Fly with, Personal, Appointment,
   **Duty** — a LOCAL duty added 18 Aug 26, identical to Appointment in every
   derived rule — **Event** — added 9 Oct 26 (owner D713, D714: "its work, it can be an official event too … it should
-  clash"), Duty's flags to the letter, pinned by `eventkind.test.ts` — and Other),
+  clash"), Duty's flags to the letter, pinned by `eventkind.test.ts`; the job: `[INPUT-EVENT-KIND]`, archived — and Other),
   which are also exactly the types a scheduler may lift onto the Ground
   Programme (`ground` in the table). Together they partition `INPUT_TYPES` —
   a test pins that nothing falls between them, and a second pins that

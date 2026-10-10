@@ -152,7 +152,11 @@ const FILES = [
      first (2,496 -> 2,062 lines). What is left is 134 open items and their priority list - every one an open job, a
      found-not-fixed or a question for him; none belongs anywhere else, and an open item is never trimmed to fit
      (D141, D29). The backlog is searched, not loaded whole: a chat reads its priority list and the item it works on. */
-  ['OUTSTANDING.md',                     1, 2150],
+  /* 2150 -> 2400, 10 Oct 26 (the documents tidy-up after pull request #488 went live): ten finished items went to the
+     archive first (the Inputs pages' eight and the calendar job's two). What is left is 153 open items - nineteen
+     more than when 2150 was set - and their priority list; a helper's scan found no other item whose own text says it
+     is finished without something still open in it. An open item is never trimmed to fit (D141, D29). */
+  ['OUTSTANDING.md',                     1, 2400],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
@@ -178,8 +182,14 @@ const FILES = [
    are nearly all general rulings — the order to the database, the reviewers, the allowance). No row here is replaced
    or spent yet (D484 and D492 are spent only after the 5 Oct 26 reset — archive them then), and a ruling is never
    trimmed (D136), so the tripwire rises (D390). */
+/* How we work 22000 -> 26000, the scheduler 69000 -> 100000, the Leave War 32000 -> 37000 (10 Oct 26, the documents
+   tidy-up after pull request #488 went live): the Inputs / SANS calendar job and the Inputs pages' work added about 120
+   rulings in four days (D617-D733), all carried over their markers through code changes (D29). No ruling is trimmed
+   (D136); the rows that are spent or replaced are still to be marked and archived - OUTSTANDING.md
+   [RULINGS-SPENT-PASS]. The scheduler's new marker IS the size D611 named for looking again at splitting that file
+   (about 100,000 bytes): crossing it means the question goes back to him, never a further raise. */
 const RULING_BYTES = [
-  ['.claude/rules/decisions/how-we-work.md', 0, 22000],
+  ['.claude/rules/decisions/how-we-work.md', 0, 26000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -187,9 +197,9 @@ const RULING_BYTES = [
      trimmed (D136). Splitting the scheduler's rulings by screen (option 8 of [START-CONTEXT-AUDIT]) was put to him and he
      ruled NO the same day (D611): they stay in one file; this marker is the tripwire that brings the question back
      if the file grows by about half again (about 100,000 bytes). */
-  ['.claude/rules/decisions/scheduler.md', 2, 69000],
+  ['.claude/rules/decisions/scheduler.md', 2, 100000],
   ['.claude/rules/decisions/oil.md',     2, 12000],
-  ['.claude/rules/decisions/leave-war.md', 2, 32000],
+  ['.claude/rules/decisions/leave-war.md', 2, 37000],
   ['.claude/rules/decisions/tracker.md', 2, 19000],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
