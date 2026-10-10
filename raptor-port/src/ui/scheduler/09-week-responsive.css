@@ -242,6 +242,11 @@
   .plist .pl-row .t.t-s{grid-column:2;grid-row:1}
   .plist .pl-row .t.t-e{grid-column:2;grid-row:2;padding-top:0}
   .plist .pl-row .t.allday{grid-column:2;grid-row:1/span 2}
+  /* THE ONE ROW OF A SHARED INPUT KEEPS ITS TWO TIMES TOGETHER AT ITS TOP (owner D743 — the approved picture 2;
+     [GROUP-INPUT-ONE-ROW]). The start sits in the row's first line and the end in its second; with four pucks stacked
+     beside them the row is tall, and two equal lines put the end time halfway down it, far from its start. The first
+     line is as tall as the start time and the second takes the rest, the end time at its top. */
+  .plist .pl-row.gshared{grid-template-rows:auto 1fr}
   .plist .pl-row .ppl{grid-column:3;grid-row:1/span 2;gap:2px}
   .plist .pl-row .rmk{grid-column:4;grid-row:1/span 2;font-size:8.5px;padding-top:2px;overflow:hidden}
   .plist .pl-row .rmk .ntx{min-width:0}

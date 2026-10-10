@@ -1361,6 +1361,9 @@ its user changed and lists a field changed both ways (`ui/editorwindow.test.tsx`
 join that comparison, or it will be saved over what someone else just set.
 
 ## One input filed for several people — the surfaces that make it ONE thing (step 5, 8 Oct 26)
+
+**SINCE 11 Oct 26 THE SCHEDULE DRAWS IT AS ONE TOO (`[GROUP-INPUT-ONE-ROW]`, D661, D743).** The Ground Programme's row on the week, the board and the next-week peek, and the line under Personal Inputs, are ONE for an entry of several — `engine/grouprows.ts` (`groundGroups`, `drawnPeople`) and `state/inputgroup.ts entryLines` are the answers every builder reads; a NEW surface that draws ground rows or Personal Inputs lines must read them too, or it draws a row a man. The Unavailable list stays a row a man (D737). Where this section's list below still says the board and the week are "deliberately NOT" one, that is overtaken for DRAWING by this paragraph; the hands and the count follow in the same job (its steps 5 and 6).
+
 A shared input is one record a man tied by `grp` (`state/inputgroup.ts`). A new surface that LISTS inputs on the Inputs
 page must read entries (`entriesOf` / `entryRowsOf`), or it shows a group as separate lines; a new surface that CHANGES one
 must go through `commitGroup` / `removeEntry`, or it changes the first man's record alone and that man leaves the entry.

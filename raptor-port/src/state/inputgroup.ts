@@ -66,6 +66,21 @@ export function entryRowsOf(inputs: readonly any[], r: any): any[] {
   return entriesOf(inputs).find(e => e.rows.includes(r))?.rows || [r]
 }
 
+/** THE LINES A LIST OF REQUESTS IS DRAWN AS UNDER PERSONAL INPUTS ([GROUP-INPUT-ONE-ROW], owner D661; the plan
+ *  docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md §4.3). An entry of several is ONE line — SPLIT BY WHERE
+ *  EACH MAN'S REQUEST IS FILED (on the programme, taken off, not yet acted on), so a line never claims "accepted" for
+ *  a man who is not, and its one Undo / Accept is true of everyone on it. Each line is its records, A to Z (entriesOf's
+ *  order), where its first record sits; an ordinary input is a line of one. */
+export function entryLines(inputs: readonly any[]): any[][] {
+  const out: any[][] = []
+  for (const e of entriesOf(inputs)) {
+    if (e.rows.length < 2) { out.push(e.rows); continue }
+    const by = new Map<string, any[]>()
+    for (const r of e.rows) { const k = String(r.acc || ''); if (!by.has(k)) { by.set(k, []); out.push(by.get(k)!) } by.get(k)!.push(r) }
+  }
+  return out
+}
+
 /* ---- the check at the write --------------------------------------------------------------------------------------
    Asked only of the groups a command TOUCHED: a fault that lives only in records already stored is not this
    command's to refuse (D56), and an untouched group cannot have been broken by it. */

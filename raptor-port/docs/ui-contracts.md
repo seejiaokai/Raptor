@@ -2123,6 +2123,37 @@ again". Pinned in `inputedit.test.tsx`.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the
 day's must-read.
 
+## A shared input is ONE row on the schedule (owner D661, D743 — built 11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 4)
+
+**The approved pictures are the design of record** (`docs/mock/group-input-one-row.html`, D743); the built screens,
+pictured in the same framing: `docs/handpass/img/2026-10-11-group-input-one-row/` (`scripts/handpass/gi-built.mjs`).
+Underneath a shared input is still one ground row a man (`engine-rules.md`, "The rows of one shared input are known as
+one entry"); the ONE row is made where it is drawn.
+- **One answer, every builder.** `engine/grouprows.ts groundGroups(day)` says which rows are one row and which member
+  leads; `drawnPeople(day, di, group)` gives its pucks — each member row's own man, A to Z by callsign (D727's order),
+  then each row's extras. **Every puck keeps its own row's key** (`g:di.ri`, `g:di.ri.xN`): its flag (a man on leave
+  that day is flagged on the row — D605), its amendment mark, its OIL bar and a tap or drag on it are that man's row's.
+- **The week** (`ui/html.ts`, the ground loop — Edit Schedule, View-only Sched, an issued face): the lead draws one
+  `plRow` with those pucks and one "+ add" (the lead's key); a member that is not the lead draws nothing. The row
+  carries the class `gshared`: on a phone its two times stay together at its top (`09-week-responsive.css` — picture 2),
+  where a tall row's would spread down it. A row that stands alone is byte for byte what it was (the view week is still
+  compared with the reference).
+- **The board** (`ui/board-html.ts sbGroundPanel`): one name box, one pair of time boxes, one remark box, one set of
+  row buttons, one grip — the lead's keys — and the pucks wrapping in the People cell. **In OIL Earn each puck is
+  switched under its OWN request** (`sbGroupPeople` sets the row's OIL address to the puck's own row before each); the
+  row's name is not a switch.
+- **The next-week peek** (`ui/peek.ts peekGround`): the same two functions, read off the rows alone.
+- **Personal Inputs** (the week's `inGrp` for that panel; the board's `sbInputsGroupPanel` / `sbInpRow`): an entry of
+  several is ONE line holding every man's puck — split by where each man's request is filed, so the line never says
+  "accepted" for a man who is not (`state/inputgroup.ts entryLines`). Folded, it counts the input once ("1 input · 1 on
+  programme"). On a desktop the panel takes the Ground Programme's two-puck People column (`04-pucks-sections.css` —
+  picture 5); a phone keeps one puck a line.
+- **The Unavailable list is left as it is: a row a man (D737).**
+- **A jump to a place that is not drawn** — a member row's boxes or "+ add", a non-first record's line under Personal
+  Inputs — lands on the one row: `ui/grouprow.ts leadKeyOf`, asked by `ui/interactions.ts jumpToChange`.
+- Pins: `ui/grouprow-draw.test.tsx`; the geometry, in a real browser, `e2e/grouprow.spec.ts` (two across on a desktop,
+  stacked on a phone, the two times together, inside the People cell on the week and the board, after a reload).
+
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
 **SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark

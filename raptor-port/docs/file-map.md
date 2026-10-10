@@ -13,6 +13,13 @@
 `carryOilRefusal`, and `requestRowFields` / `srcvOf` write the entry's mark `srcg`; `src/state/view.ts` gained
 `armedRowKey`. Touched: `src/engine/slots.ts` (`acceptInput`), `src/engine/daytpl.ts`, `src/engine/schema.ts`,
 `src/state/holderbase.ts`.
+**Step 4 (D661, D743 — 11 Oct 26): drawn as one.** New: `src/ui/grouprow.ts` (`leadKeyOf` — a place on a row that is
+not drawn resolves to the one row), its test `src/ui/grouprow-draw.test.tsx`, the browser test `e2e/grouprow.spec.ts`
+(added to the `raptor` project in `playwright.config.ts`) and `scripts/handpass/gi-built.mjs` (the built screens in the
+approved pictures' own framing). `src/engine/grouprows.ts` gained `drawnPeople`; `src/state/inputgroup.ts` gained
+`entryLines`. Touched: `src/ui/html.ts` (the ground loop, Personal Inputs), `src/ui/board-html.ts` (`sbGroundPanel`,
+`sbGroupPeople`, `sbInpRow`, `sbInputsGroupPanel`), `src/ui/peek.ts`, `src/ui/interactions.ts`,
+`src/ui/scheduler/04-pucks-sections.css`, `src/ui/scheduler/09-week-responsive.css`.
 
 `main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
 the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three

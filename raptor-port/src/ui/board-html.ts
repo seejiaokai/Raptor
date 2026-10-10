@@ -1,5 +1,7 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
+import { groundGroups, drawnPeople } from '../engine/grouprows'
+import { entryLines } from '../state/inputgroup'
 import { INPUTS, inputsOn, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
@@ -589,13 +591,20 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   else{
     s+=C6;
     /* same render-time ordering as the week — keys keep their model index */
+    /* A SHARED INPUT IS ONE ROW HERE TOO (owner D661, D743 — pictures 3 and 4; html.ts's ground loop is the week's twin,
+       engine/grouprows.ts the one answer both read): the lead draws the one name box, the one pair of time boxes, the
+       one remark box, the one set of row buttons and the one grip; the other members draw nothing. Every puck keeps
+       its own row's key. */
+    const grps=groundGroups(d);
     groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
+      const gp=grps[ri], many=!!gp&&gp.members.length>1;
+      if(many&&gp.lead!==ri)return;
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=whoId(x.who);
       /* a ground row that came from an accepted input is addressed by the INPUT,
          not the row — the row is deleted and recreated on every member edit
          ([OIL-AUTO-REMOVE] §7.4). */
       oilRow(groundItemKey(x));
-      const inner=oilModeOn(di)
+      const inner=many?sbGroupPeople(d,di,gp,x,ro):oilModeOn(di)
         /* a row that came from an accepted REQUEST resolves its placeholder
            against the REQUEST's window, not its own times: an all-day request
            lands a row with no times at all ([OIL-SEATS-CAN-EARN] step 6). */
@@ -615,6 +624,16 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
     });
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;
+}
+/* THE PUCKS OF A SHARED INPUT'S ONE ROW (engine/grouprows.ts drawnPeople — the people A to Z, then the extras, each
+   under its own row's key). IN OIL EARN EACH PUCK IS SWITCHED UNDER ITS OWN REQUEST: a man earns through his own
+   record, and a man among a member row's extras through that row's request (D18, D470) — so the row's OIL address
+   (OILITEM, which a seat reads) is set to the puck's OWN row before each one, and put back to the lead's afterwards
+   for the name cell. There is no switch for the whole row (the plan §4.9: a named request's name is not a switch). */
+function sbGroupPeople(d:any,di:any,gp:any,lead:any,ro:any){
+  const s=drawnPeople(d,di,gp).map((p:any)=>{ oilRow(groundItemKey(d.ground[p.ri])); return sbSeat(di,p.key,p.id,ro); }).join('');
+  oilRow(groundItemKey(lead));
+  return s;
 }
 /* AN INPUT ROW ON THE BOARD (owner, 10 Aug 26 — "on personal inputs and
    unavailable in schedule board, they can be editable in the same modality as
@@ -641,8 +660,12 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
    did — see the c6r register comment further down) is a real, fiddly shape
    to re-derive, and the two rows below already carry it correctly for
    whichever future row type needs a badge like this again. */
-function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
+/* `mates` (7th param — [GROUP-INPUT-ONE-ROW], owner D661, D743 pictures 5 and 6): the records of the LINE this row
+   stands for, the first of them `inp` — under Personal Inputs a shared input is one line holding every man's puck
+   (state/inputgroup.ts entryLines; html.ts inGrp is the week's twin). Absent, or a line of one: the row it always was. */
+function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
   const RO=ro??pv;
+  const line:any[]=mates&&mates.length>1?mates:[inp];
   const sb=isSansAvail(inp.type)&&dt?sansBadge(inp.person,dt):'';
   const sbt=sb?`<span class="sansb" title="SANS availability">${esc(sb)}</span>`:'';
   /* THE MODE HAS TO REACH A CLAIM WHEREVER IT IS SHOWN ([OIL-AUTO-REMOVE] §2.4,
@@ -663,15 +686,16 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
      on, and only when the row is actually live (not a read-only/preview
      board). */
   const seatable=!acc&&!RO&&!oilItem;
-  const pk=PEOPLE[inp.person]
+  /* one puck a man of the line — each by his OWN record: in the mode his switch is his own claim's, outside it his bar */
+  const pk=line.map((one:any)=>PEOPLE[one.person]
     ? (oilItem
-      ? oilSeatHTML(di,inp.person,oilItem,(oil:any)=>puck(inp.person,null,true,null,false,null,oil))
+      ? oilSeatHTML(di,one.person,inputItemKey(inpId(one)),(oil:any)=>puck(one.person,null,true,null,false,null,oil))
       /* outside the mode the claim's puck wears the man's day figure like every
          other puck he is on — which is the ONLY place an OD earner is visible.
          It is addressed by the claim's OWN item since O-1, so the figure shows
          here only when this claim is one of the things that earned it. */
-      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,puckMarks(di,inp.person).sev,true,puckMarks(di,inp.person).flag,false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`)
-    : `<span class="itxt">${esc(inp.person)}</span>`;
+      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(one))}"`:''}>${puck(one.person,puckMarks(di,one.person).sev,true,puckMarks(di,one.person).flag,false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`)
+    : `<span class="itxt">${esc(one.person)}</span>`).join('');
   /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP — the week's twin (html.ts, Astra DP-08): an absence line tapped while
      the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,
      not on the board" about a row the board draws). Signed-in readers only, never the drag attribute. */
@@ -736,6 +760,8 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
    showing the buttons. */
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
+  /* a shared input is ONE line here (D661) — split by where each man's request is filed; the folded heading counts it once */
+  const lines:any[][]=entryLines(rows);
   const acRo=ro??pv;
   /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26 — the
      block is the faded audit echo now activity inputs auto-land on ground). The
@@ -743,9 +769,9 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
      read-only board keeps it open — there is nothing to fold away from. */
   const foldable=!acRo;
   if(foldable&&rows.length&&!PIOPEN.has(di)){
-    const onG=rows.filter((r:any)=>r.acc==='g').length;
+    const onG=lines.filter((l:any)=>l[0].acc==='g').length;
     return `<div class="sb-panel pinp"><div class="sb-ph pl-fold" data-pitog="${di}">Personal Inputs `
-      +`<span class="sub">${rows.length} input${rows.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
+      +`<span class="sub">${lines.length} input${lines.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
   }
   /* this panel's own + Add MOVED to the Ground Programme header as "+ Inputs"
      (owner, 19 Aug 26) — an activity input a scheduler adds belongs on the
@@ -760,7 +786,7 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
     if(!acRo)s+=`<div class="sb-pinote">A removed input flags nothing until accepted again — delete it here if it should go entirely.</div>`;
     if(!acRo)s+=C6;
   }
-  rows.forEach((inp:any)=>{ s+=sbInpRow(di,inp,true,acRo,acRo); });
+  lines.forEach((line:any[])=>{ s+=sbInpRow(di,line[0],true,acRo,acRo,undefined,line); });
   return s+`</div></div>`;
 }
 /* Leave, medical and overseas duty close a man's day on their own — nobody

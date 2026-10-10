@@ -276,6 +276,14 @@
    drops to a single puck (still derived from --puck-w; the puck itself never
    changes size, see §1.2) and every pixel that frees goes to NAME.            */
 .plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:minmax(96px,1.4fr) 44px 44px var(--puck-w) minmax(0,1fr)}
+/* PERSONAL INPUTS TAKES THE GROUND PROGRAMME'S TWO-PUCK PEOPLE COLUMN ON A DESKTOP (owner D743 — the approved picture 5;
+   [GROUP-INPUT-ONE-ROW]). A shared input is ONE line there, holding every man's puck (D661): in the one-puck column
+   above, four men stood four lines tall beside a title with room to spare. The same five tracks the Ground Programme
+   uses, so the two blocks' columns line up under each other. A phone keeps its own one-puck column
+   (09-week-responsive.css) — there the pucks stack, as in picture 6. */
+@media(min-width:821px){
+  .plist.one.sec-inp .pl-cols,.plist.one.sec-inp .pl-row{grid-template-columns:minmax(64px,1fr) 44px 44px calc(var(--puck-w)*2 + 10px) minmax(0,1.25fr)}
+}
 .plist .pl-row .t{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);padding-top:4px}
 .plist .pl-row .t.allday{grid-column:2/span 2;letter-spacing:-.02em}
 .plist .pl-row .ppl{display:flex;flex-wrap:wrap;gap:4px;align-content:start}

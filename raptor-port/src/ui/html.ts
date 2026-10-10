@@ -1,3 +1,5 @@
+import { groundGroups, drawnPeople } from '../engine/grouprows'
+import { entryLines } from '../state/inputgroup'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
@@ -1944,7 +1946,23 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          the reference carries the qualifier and html.test.ts normalises both to
          "GRND", tolerating its absence. */
       h+=`<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>`+(grd.length?plCols():'');
+      /* A SHARED INPUT IS ONE ROW (owner D661 — "on the schedule a group input is ONE row holding everyone — not a row
+         for each man"; D743, the approved pictures; [GROUP-INPUT-ONE-ROW], the plan §4.3). Underneath it is still a row a
+         man: engine/grouprows.ts says which rows are one, and whose pucks the one row draws. The LEAD draws it — its
+         name, its times, its remark, its one "+ add" — and the other members draw nothing. Every puck keeps ITS OWN
+         row's key, so its flag, its amendment mark, its OIL bar and a tap or a drag on it are that man's row's. A row
+         that stands alone takes the branch below it and is byte for byte what it was. */
+      const grps=groundGroups(d);
       groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=whoId(x.who), key=`g:${di}.${ri}`;
+        const gp=grps[ri];
+        if(gp&&gp.members.length>1){
+          if(gp.lead!==ri)return;
+          const ppl=drawnPeople(d,di,gp);
+          /* `gshared` — the one row's own class: on a phone its two times stay together at its top, where a tall row's
+             would spread down it (scheduler/09-week-responsive.css — the approved picture 2) */
+          h+=plRow(x.prog,x.str,x.end,lCell(ppl.map((p:any)=>lSeat(di,p.id,p.key,ed)).join(''),key+'.+',ed,ppl.length<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x).replace('class="pl-row','class="pl-row gshared');
+          return;
+        }
         const inner=((id&&PEOPLE[id])?lSeat(di,id,key,ed):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+moreSeats(di,key,ed);
         const n=rowCrew('g',[di,ri]).filter(Boolean).length;
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});
@@ -1986,6 +2004,11 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        Name | Start | End | People.  All-day rows span the two time columns. */
     const inGrp=(title:any,filt:any,cls:any,always?:any,acc?:any)=>{ const rows=dayInputs.filter(filt);
       if(!rows.length&&!always)return'';
+      /* UNDER PERSONAL INPUTS A SHARED INPUT IS ONE LINE (owner D661, D743 — pictures 5 and 6; the plan §4.3): every
+         man's puck, the entry's title, kind, times and remark, one Undo / Accept — split by where each man's request is
+         filed, so the line never says "accepted" for a man who is not (state/inputgroup.ts entryLines). THE UNAVAILABLE
+         LIST IS LEFT AS IT IS — a row a man (D737): every record there is a line of its own. */
+      const lines:any[][]=acc?entryLines(rows):rows.map((r:any)=>[r]);
       /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
          Now that activity inputs auto-land on the ground programme, this block
          is the faded audit echo, not the primary planning surface — so it folds
@@ -1994,9 +2017,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          stays open — it is a live drop target and the day's must-read. */
       const foldable=!!acc&&!!ed;
       if(foldable&&rows.length&&!PIOPEN.has(di)){
-        const onG=rows.filter((r:any)=>r.acc==='g').length;
+        /* the folded line counts the input once, however many people it is for */
+        const onG=lines.filter((l:any)=>l[0].acc==='g').length;
         return `<div class="sub plist one sec ${cls||''}"><div class="sub-h pl-fold" data-pitog="${di}">`
-          +`<span>${title}</span><span class="pl-hint">${rows.length} input${rows.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
+          +`<span>${title}</span><span class="pl-hint">${lines.length} input${lines.length===1?'':'s'}${onG?` · ${onG} on programme`:''} · show ⌄</span></div></div>`;
       }
       /* what is typeable is only discoverable on hover, and half the squadron
          is on a phone where there is no hover — so the block says it once,
@@ -2011,7 +2035,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          section. */
       if(!rows.length)return s+`<div class="pl-nil">Nil</div></div>`;
       s+=plCols();
-      rows.forEach((inp:any)=>{
+      lines.forEach((line:any[])=>{ const inp=line[0];
         /* Unavailable's own puck is a plant/drop target too, so a scheduler can
            tap-arm-then-plant or drag a different name straight onto it — "even
            down to changing the puck" (owner, 14 Aug 26). `acc` here means "this
@@ -2028,9 +2052,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            way back but the top-bar Undo or deleting the man's input. The same Undo the landed rows
            carry; edit surfaces only (ed), so the view page and the parity week are untouched. */
         const unfile=!acc&&ed&&inp.acc==='u'&&isPersonal(inp.type)&&canEditSched();
-        const pk=PEOPLE[inp.person]
-          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),false,null,oilSeatDeco(di,inp.person,'',inputItemKey(inpId(inp))).oil)}</span>`
-          : `<span class="itxt">${esc(inp.person)}</span>`;
+        /* one puck a man of the line — each by his OWN record, so its OIL bar is his own claim's */
+        const pk=line.map((one:any)=>PEOPLE[one.person]
+          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(one))}"`:''}>${puck(one.person,sev(di,one.person),true,chip(di,one.person),false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`
+          : `<span class="itxt">${esc(one.person)}</span>`).join('');
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
         /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP ([DRAFT-PENDING] — Astra DP-08; the absence re-test's R30: a line
@@ -2040,12 +2065,12 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         /* …and under Personal Inputs too: a request waiting there is where its "added" line must land (Fable's final
            read, F5 — it was a button that landed nowhere) */
         const inprow=isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
-        s+=`<div class="pl-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
+        s+=`<div class="pl-row${line.length>1?' gshared':''}${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
           +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpEditLabel(inp,ed,inpLabel(inp),'ntx')+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
-          +`<div class="ppl one">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
+          +`<div class="ppl${line.length>1?'':' one'}">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
     /* THE FOUR CREW WORKING-AID PANELS. In EDIT mode they join the SAME draggable

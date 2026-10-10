@@ -19,6 +19,7 @@
    groundOrder: by start time, or by hand where the list is hand-ordered), where the one row is drawn; `members` —
    every row of it, in that same order, the lead first. A row on its own is its own lead and only member. */
 import { groundOrder } from './order'
+import { PEOPLE, whoId } from './people'
 
 export type RowGroup = { lead: number; members: number[] }
 
@@ -37,4 +38,28 @@ export function groundGroups(d: any): RowGroup[] {
     out[ri] = g
   }
   return out
+}
+
+/* THE PUCKS OF A DRAWN ROW — the one answer every builder reads (the week, the board, the next-week peek), so no two
+   surfaces can draw the one row's people differently (the plan §4.3). For a row of several members: each member row's
+   OWN MAN, in A-to-Z order of callsign (the order the Inputs list names a shared input's people in — D727), then each
+   member row's extras, in member order. EVERY PUCK KEEPS ITS OWN ROW'S KEY (`g:di.ri`, `g:di.ri.xN`): its flag, its
+   amendment mark, its OIL bar and switch, and a tap or a drag on it are that man's row's, exactly as before the rows
+   were drawn as one. `ri` is the member row a puck stands on. A blank place is left out (a row draws nothing for it). */
+export type DrawnPuck = { id: string; key: string; ri: number }
+const callsign = (id: string): string => { const p = (PEOPLE as any)[id]; return p && p.cs ? String(p.cs) : String(id) }
+export function drawnPeople(d: any, di: any, g: RowGroup): DrawnPuck[] {
+  const rows: any[] = (d && d.ground) || []
+  const own: DrawnPuck[] = [], more: DrawnPuck[] = []
+  for (const ri of g.members) {
+    const row = rows[ri]; if (!row) continue
+    const id = whoId(row.who)
+    if (id) own.push({ id: String(id), key: `g:${di}.${ri}`, ri })
+    ;(row.more || []).forEach((v: any, i: number) => { const x = whoId(v); if (x) more.push({ id: String(x), key: `g:${di}.${ri}.x${i}`, ri }) })
+  }
+  if (g.members.length > 1) {
+    const at = new Map(own.map((p, i) => [p, i] as const))
+    own.sort((a, b) => callsign(a.id).localeCompare(callsign(b.id), undefined, { sensitivity: 'base' }) || (at.get(a)! - at.get(b)!))
+  }
+  return own.concat(more)
 }

@@ -3,6 +3,7 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
+import { leadKeyOf } from './grouprow'
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
@@ -183,7 +184,9 @@ export function jumpToChange(key: string | string[], di: any) {
        removal on the desk's OWN man, with his History pinned open (Astra's scenario read, 10 Oct 26). */
     let empty = false, onRow = false
     if (root) for (const k of cands) {
-      el = findHistCell(root, k); if (el) break
+      /* a place on a member row of a shared input that is not drawn — its boxes, its "+ add", its line under Personal
+         Inputs — is the one row's (ui/grouprow.ts leadKeyOf; [GROUP-INPUT-ONE-ROW], the plan §4.3) */
+      el = findHistCell(root, k) || findHistCell(root, leadKeyOf(posKey(k, DAYS) ?? k)); if (el) break
       const pk = posKey(k, DAYS); if (pk == null || !isSeatKey(pk)) continue
       /* "empty" is said only of a seat nobody is in. A man who IS there, on a row this page draws no people on (the
          board's AMT brief and debrief rows), lands on his row all the same, and nothing is said */
