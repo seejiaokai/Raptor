@@ -133,8 +133,12 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
      as it now stands, so a man since changed alone stays under the filing he was part of. Its title is the kind and how
      many people: those the shared input holds now, or — once it has gone — those its lines name. */
   if (r.grp) {
-    const now = (INPUTS as any[]).filter(x => x && x.grp === r.grp).length
-    const n = now || new Set(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => x.sub)).size
+    /* THE TITLE COUNTS THE NAMES THE ITEM LISTS (`[CAL-TOGO-ONE-ITEM]`'s "also seen" — fixed with `[GROUP-INPUT-ONE-ROW]`
+       step 6, the plan §4.8): the men it holds now AND the men its lines name. Counting only those it holds now, an
+       input one man had since left was titled "2 people" over a filing line listing three names. */
+    const named = new Set<string>(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => String(x.sub)))
+    ;(INPUTS as any[]).forEach(x => { if (x && x.grp === r.grp) named.add(String(x.person)) })
+    const n = named.size
     /* a filing's name: the title its men carry (state/inputgroup.ts SHARED_FIELDS) — EVERY one, where a man since changed
        alone carries another (Sol's read of the code, 1: the first record's title was said for everybody, and which it
        was depended on the order the records happened to be stored in). Sorted, so the heading is one thing. */

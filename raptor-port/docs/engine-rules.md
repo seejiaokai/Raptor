@@ -2993,6 +2993,32 @@ stay LIVE (below), which the face draws from today and which never make the day 
   it (`groundOrderMovedOnlyBy`), and the OIL line when the inputs alone moved it — crowd included
   (`oilev.ts oilMovedInputsOnly`; the line says "what the day earns changes with it"). The folded row's place comes with
   it, so the one line in the pending list takes the view to the row (F4); a leave with no row stays a still line.
+- **A SHARED INPUT IS COUNTED ONCE (owner D736 — built 11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 6; register GI16–GI20).**
+  Underneath, a shared input is a record a man and a row a man, so `dayDelta` holds an entry for each — and that is
+  NOT touched: what goes out, the stored `diff` and the sign-offs' binding (D109, D103). The LAST step of
+  `dayPendingItemsIn` is `engine/entryfold.ts foldEntries`, which changes only the unit a person counts in: **the one
+  row counts exactly what a one-man request's row counts for the same act — never that, times its people.** Items fold
+  when they belong to one ENTRY — an input's item by its record (live, else the copy the version froze), by
+  `inputentry.ts entryIdOf`; a request's row with no input beside it, and a mark on a member row's name box, by the
+  row's `srcg` — and are the same ACT: the same kind, the same filing from and to, the same shared fields on each side,
+  the same name-box value once the row's own request id is left out. Edits and the row's marks fold wherever that is
+  the same. ADDS fold only when they are the whole input on the day (every live record of the entry covering it);
+  REMOVALS and take-offs only when every record the issued version held of it is among them — otherwise "one man
+  taken off or added is one each". The folded item is the first of its set and carries `mates` and `people`.
+  So: filed for four since the day went out — 1 (still 1 with a man taken off before it goes out); issued for four,
+  one man taken off — 1, two — 2, one added — 1; re-timed — 1; re-timed and one added — 2; taken off whole, deleted
+  whole, a CX on the row — 1 each; all its people gone one by one — 1 (D98); a shared leave on the Unavailable list —
+  1 (R6); moved whole between two published days — 1 on each. **A group made out of an ordinary request counts the
+  man added and nothing more:** the view's own two person units on that row (its own man back in the name box, the old
+  occupant among its extras) are recognised exactly and ride on the added man's item (`regroupRides`). **"What this
+  day earns" stays its own item** where a one-man request's row leaves it — except **the crowd behind a placeholder
+  that left with its request** (D745): membership that went from an item `i:<id>` whose request's own filing or
+  details moved, and has none left, is that request's change (a man taken out with an ALL AVAIL on his place, ✕ on a
+  one-man request's row carrying one — one act, one line; before this it read a second item, on a weekday too).
+  **"Discard N edits" shares the fold, not the number** (`dayDiscardCount`): the same fold over what a load would
+  really put back — a re-time made on the schedule is one change waiting and none discarded. **The man added to a row
+  the issued day already had keeps his puck's mark** (`state/holderbase.ts requestAddMarks` — asked of the rows' ids,
+  so a re-time before or after does not lose it; D93). Pins: `state/grouprow-count.test.ts`.
 - **The warnings axis** (`warnDelta`, kind `warn`): today's official judgement of the issued day against `snap.w` —
   a quals, posting or rule change, or a neighbour day, that would change what the day flags. Kept OUT of the official
   pass's own gate (`dayDeltaCore`), so the validator never depends on its output. The official pass reads each published

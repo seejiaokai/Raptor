@@ -1371,5 +1371,13 @@ The surfaces that do: the month's bar and its drag (`inputscal-model.ts`, `caldr
 (`InputsCal.tsx`), the List's row and its Add form (`InputsPage.tsx`), the editor window (`inputedit.tsx`), the changes *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 window's item (`changesmodel.ts`). The surfaces that deliberately do NOT (one input a man): the board, the week, the
 warnings, the Leave War, OIL and the bell, a published day's pending count, print, export, the SANS calendar's counts
-and its day list. The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the
+and its day list. *[CHANGED 11 Oct 26 — `[GROUP-INPUT-ONE-ROW]`, D661, D734, D736: THE BOARD, THE WEEK AND A PUBLISHED
+DAY'S PENDING COUNT HAVE LEFT THAT LIST. The schedule draws a shared input as one row (`engine/grouprows.ts`), a hand
+on that row changes the input through ONE door (`ui/grouprow.ts` — a new place that writes a person to a ground row
+must ask it first, or the engine's belt, `slots.ts sharedSeatBar`, refuses the write), a typed box on it saves every
+record (`ui/inputedit.tsx saveFromRow`), and the count folds it (`engine/entryfold.ts`). A new surface that DRAWS
+ground rows must read `groundGroups` / `drawnPeople`, or it draws a row a man; one that COUNTS a published day's
+changes must read `dayPendingItems`, never the raw delta. Still one input a man, on purpose: the Unavailable list
+(D737), the warnings, the Leave War, each man's OIL and his bell, the stored diff and the sign-offs, print, export, the
+SANS calendar.]* The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the
 seed week's pinned warnings, rows and counts do not move.

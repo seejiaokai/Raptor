@@ -31,6 +31,16 @@ DOOR now — `groupPut`, `groupTake`, `groupLeaveTo`, `groupRetarget`, `groupWri
 `src/ui/Shell.tsx`, `src/state/store.ts` (`writeSlot`, `writeFill`), `src/probe-bridge.ts`; the row's buttons
 `src/ui/board.ts`; the line's Accept / Undo and the LATE chip `src/ui/interactions.ts`. Tests rewritten to the ruling:
 `src/leavewar/groupwrite.test.ts` (two), `src/ui/batch2.test.tsx` (one); added to `src/ui/groupeditor.test.tsx`.
+**Step 6 (D736, D745, D93 — 11 Oct 26): a published day counts the input once.** New: `src/engine/entryfold.ts`
+(`foldEntries` — the last step of the one counting body; `regroupRides`) and its test `src/state/grouprow-count.test.ts`.
+Touched: `src/engine/publish.ts` (`dayPendingItemsIn` — the fold, and the crowd behind a placeholder that left with its
+request; `dayDiscardCount`; `PendItem` gained `mates` / `people`), `src/ui/pendlist.ts` (`foldedWords`, `entryName`,
+`wentWith`, the `pl-names` line), `src/state/holderbase.ts` (`requestAddMarks` — the added man's puck mark),
+`src/ui/changesmodel.ts` (the item's title counts the names it lists), `src/ui/scheduler/03-week.css` (`.pl-names`).
+**D747 (11 Oct 26): the board row's coloured line stands clear of the row** — `src/ui/scheduler/12-schedule-editing.css`;
+the browser test is in `e2e/grouprow.spec.ts`, the picture script `scripts/handpass/gi-rail.mjs`.
+The behaviour register: `docs/superpowers/specs/2026-10-11-group-input-one-row-behaviour-register.md` (GI1–GI21,
+`scripts/rulecheck.mjs`).
 
 `main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
 the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three

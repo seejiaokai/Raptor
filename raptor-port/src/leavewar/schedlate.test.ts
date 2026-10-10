@@ -11,7 +11,8 @@
    reading 2); who changed it and when is still recorded (D739).
 
    Runs in the Leave War project (a hostile time zone), with both stores wired, as `whoplaced.test.ts` does: ONE clock,
-   set by day. */
+   set by day.
+   Behaviour register: GI2, GI3. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'

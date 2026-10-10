@@ -8,7 +8,8 @@
    the ENTRY — the people (the picker, lit), then the shared fields; the filer and an admin change both, and Save is one
    command. A man in it who is neither sees it read only with two live controls: "Take me out", and his own OIL answer.
    Anyone else sees it read only: "Only its people, Saber — who filed it — or an admin can change this."
-   D660: "that person filing should answer for all" — the OIL question is asked ONCE, at the save. */
+   D660: "that person filing should answer for all" — the OIL question is asked ONCE, at the save.
+   Behaviour register ([GROUP-INPUT-ONE-ROW]): GI7, GI14. */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'

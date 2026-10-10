@@ -15,7 +15,8 @@
    write that reaches a member's place without it. Driven here through that door, the store's own writers, the board's
    buttons and the typed box's door, on a real saved store (as state/p6c-requestonread.test.ts is) — and, at the foot,
    through the drop itself (ui/drag.ts applyDrop, on a stand-in element carrying the place's key) and an armed place
-   filled by a tap. A real drag and a real right-click are walked in the browser. */
+   filled by a tap. A real drag and a real right-click are walked in the browser.
+   Behaviour register: GI6, GI7, GI8, GI9, GI10, GI11, GI12, GI13, GI15. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId, isLateInput } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'

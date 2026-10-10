@@ -14,7 +14,8 @@
    - an armed place is put down when a row lands above it;
    - a saved day template takes one row for the one row.
    Driven through the app's own doors on a real saved store, as state/p6c-requestonread.test.ts is; a "reload" is a
-   second boot from the same store. */
+   second boot from the same store.
+   Behaviour register: GI4. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'

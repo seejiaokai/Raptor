@@ -11,7 +11,8 @@
    Personal Inputs draws an entry of several as one line too, split by where each man's request is filed, so a line
    never claims what is true of only some; its folded heading counts the input once.
    The geometry — two pucks across on a desktop, stacked on a phone, the two times together — is a browser test
-   (e2e/grouprow.spec.ts): jsdom has no layout. */
+   (e2e/grouprow.spec.ts): jsdom has no layout.
+   Behaviour register: GI5. */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'

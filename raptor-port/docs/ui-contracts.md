@@ -2176,6 +2176,22 @@ The rule and its door: `engine-rules.md`, "On a shared input's row the pucks are
 - Pins: `ui/grouprow-hands.test.tsx`, `ui/groupeditor.test.tsx`; a real drag and a real right-click are walked in the
   browser (the job's bug check).
 
+### Counted once on a published day — the one line (owner D736 — built 11 Oct 26, step 6)
+The rule: `engine-rules.md`, "A shared input is counted once". On screen, every count reads the one folded list — the
+day head's "N pending", the board's head, the Amendments box, the changes window's title and its "To go out" tab, the
+sign-off line, and the published amendment's own count.
+- **The line** (`ui/pendlist.ts foldedWords`): "Range safety brief · 4 people", then the names under it A to Z
+  (`.pl-names` — the changes window's `.cw-names` is its twin), then what changed in the words one man's line would
+  use ("14:00–15:00 → 14:30–15:00") with no man's name in front; who and when as ever; a tap goes to the one row.
+- **One man taken out of a shared input that goes on** is his own line, naming him: "Ranger · Range safety brief —
+  on the programme → taken out"; where an ALL AVAIL stood on his place, "taken out · ALL AVAIL came off with him"
+  (D745). ✕ on a one-man request's row that carried one says the same after its own words.
+- **A man added to a one row the issued day already had** wears the hollow ALn tag on his puck (D93); a whole new one
+  row wears the mark a new row wears, once, on its name (picture 9).
+- **"All changes"** titles a shared input's item with the names it lists: the men it holds now and the men its lines
+  name (`ui/changesmodel.ts` — it read "2 people" over three names once a man had left).
+- Pins: `state/grouprow-count.test.ts`, `ui/changesmodel.test.ts`.
+
 ## On the board a row's coloured line stands clear of the row (owner D747, 11 Oct 26)
 
 *"The orange and blue line on the edit schedule board is cutting the buttons and pucks, can it be move left slightly."*

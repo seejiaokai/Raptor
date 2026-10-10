@@ -276,6 +276,28 @@ const RULES = {
   OWS10: 'a version with no kept values still reads, and raises nothing',
   OWS11: 'sign-offs fall when a later Logic change would alter the OIL of the day they signed',
   OWS12: 'an SC shift with its B (in-time) filled earns OIL from that in-time (D606)',
+  /* [GROUP-INPUT-ONE-ROW] — docs/superpowers/specs/2026-10-11-group-input-one-row-behaviour-register.md (11 Oct 26). */
+  GI1: 'a box typed on a request\'s row changes the request (D739, D740)',
+  GI2: 'no change made from the schedule makes an on-time input read late (D741, D742)',
+  GI3: 'hours typed from the schedule keep a Yes at the new amount, with no question (D739 reading 4)',
+  GI4: 'the rows of one shared input carry one mark and stand together (D661, D735)',
+  GI5: 'a shared input is drawn as one row and one line; the Unavailable list a row a man (D661, D737)',
+  GI6: 'a real person put on the one row is added to the input; his seat keeps him (D734)',
+  GI7: 'the man added takes the input\'s OIL answer while everyone carries the same one, else he is asked (D738, D744)',
+  GI8: 'a man added from the schedule is never marked late (D741)',
+  GI9: 'a man taken off the row leaves the input; the last man is refused (D734)',
+  GI10: 'dragged to another place he leaves the input and lands there in one step (D734)',
+  GI11: 'an ALL AVAIL on the row comes off with its man, and the app says so (D745)',
+  GI12: 'a box typed on the one row is everyone\'s; on the Unavailable list one man\'s (D735, D739, D737)',
+  GI13: 'the row\'s buttons, its drag and its LATE mark act for every row of it',
+  GI14: 'the window opened from the schedule on a shared input is everyone\'s (D748)',
+  GI15: 'the belt refuses a raw write to a member\'s place; a one-man request\'s row is untouched (D18, D470)',
+  GI16: 'a published day counts a shared input once; one man taken off or added is one each (D736)',
+  GI17: 'what goes out is untouched by the count; Discard shares the fold, not the number (D736, D109)',
+  GI18: 'one line naming the input and its people (D736, D663)',
+  GI19: 'a man leaving with an ALL AVAIL on his place is one change waiting (D745)',
+  GI20: 'the man added to an issued one row wears his mark on his puck (D93)',
+  GI21: 'the board row\'s coloured line stands clear of its pucks and buttons (D747)',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

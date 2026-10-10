@@ -14,7 +14,8 @@
    Each case drives the app's own handlers on a real saved store (the Memory backend behind the whiteboard), as
    state/p6c-requestonread.test.ts does; a "reload" is a second boot from the same store. A click and a Tab both leave
    the box through the same blur — the week's focus-out, the board's change — which is what is driven here; the two
-   gestures themselves are walked in the browser. */
+   gestures themselves are walked in the browser.
+   Behaviour register: GI1. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId, inpTimeText, inpLabel, isLateInput } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'

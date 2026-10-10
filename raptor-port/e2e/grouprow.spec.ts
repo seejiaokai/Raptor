@@ -8,7 +8,8 @@ import { login, go } from './app'
    stacked on a phone, inside their People cell on the week and on the board; that on a phone the row's two times stay
    together at its top however tall the pucks make it (the approved picture 2); that Personal Inputs draws the entry as
    one line, two pucks across on a desktop (picture 5); and that all of it is still one row after a reload.
-   The rules are unit tests: engine/grouprows.test.ts, state/grouprow-entry.test.ts, ui/grouprow-draw.test.tsx. */
+   The rules are unit tests: engine/grouprows.test.ts, state/grouprow-entry.test.ts, ui/grouprow-draw.test.tsx.
+   Behaviour register: GI5, and GI21 (the board row's coloured line — D747, at the foot). */
 const WIN = '[data-testid="win-inputedit"]'
 const ISO = '2026-07-15', DI = 2                    // the demo week's Wednesday, a working day (no OIL question)
 const FOUR = ['Drifter', 'Hunter', 'Ranger', 'Tally']
