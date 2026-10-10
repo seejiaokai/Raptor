@@ -1327,6 +1327,59 @@ flagged correctly and still swept the man out of the crew palette.
   flagged against his own row. On a day not yet published the typed box leaves no change mark of its own (reading R9):
   the change is the input's. Pins: `ui/reqrow.test.tsx`; `state/p6c-requestonread.test.ts` (two cases rewritten to the
   ruling).
+- **ON A SHARED INPUT'S ROW THE PUCKS ARE THE INPUT'S PEOPLE — A HAND ON THE ONE ROW CHANGES THE INPUT (owner D734, D735,
+  D738 as D744 narrowed it, D739, D741, D745 — built 11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 5).** Underneath, the one
+  row is a row a man; what a hand does to it is decided at ONE door, `ui/grouprow.ts`, asked before any write of a
+  person to a ground row (`ui/drag.ts applyDrop`, `state/view.ts placeArmed`, the right-click in `ui/Shell.tsx`,
+  `state/store.ts writeSlot` / `writeFill` through `HOOKS.groupRow`, the probe bridge). A SHARED ROW is one predicate —
+  `engine/overlay.ts sharedRowOf(day, row)`: the row carries `srcg` and is its request's standing row (`requestOfBox`);
+  a shared input keeps its group down to one man (reading R3). A puck is one of the input's men when it stands in a
+  member row's own name box; anything among a row's extras is the row's own (D46, D470).
+  - **A real person put anywhere on the row is ADDED to the input** (`groupPut` — the entry's own command,
+    `commitGroup`, as a schedule-side save): the seat he came from keeps him (R4); already in it, refused — "Tally is
+    already on this input" (D271). Inside the same command, on HIS record alone: **his OIL** — `entryOilAnswer(rows)`
+    over the days the question is about: `'same'` (everyone carries the same answer) → a copy of it, no question;
+    `'none'` (nobody answered) → none, the question stays with whoever filed it; `'differ'` → none, and the question
+    opens at once on HIS record for his answer alone (`pops.ts OILOWN`; the editor's `own` sheet, which closes the
+    dialog with it) — nobody else's answer is touched; **his late date** — the earlier of today and his input's own
+    deadline, so he never reads late for having been added from the schedule (D741).
+  - **One of the input's men taken off the row leaves the input** (`groupTake`: dragged to nowhere, right-click, a
+    blank written). **Dragged onto another place, he leaves the input and is put there in ONE command**
+    (`groupLeaveTo`): the place is written INSIDE the input command, a place that refuses him throws and leaves him in
+    the input, the man already there comes off (nobody is swapped INTO the request), and the place is remembered by
+    its row's id and named again after the command (his old row has gone and rows below moved up) for the landing
+    flash and the "is he busy" question; the caller makes no second schedule write. **The LAST man is not taken off
+    that way** (R5) — "Ranger is the last person on this input — use ✕ to take it off the programme, or delete it in
+    its own window".
+  - **A placeholder (ALL / ALL AVAIL) aimed anywhere on the row is the row's own:** re-aimed at the lead's "+ add"
+    (`groupRetarget`), never a man's place. **It leaves with the member whose row carries it** (D745): the door says so
+    to whoever did it ("ALL AVAIL came off Range safety brief with Ranger — drop it on the row again if it still
+    applies"), and the removal's own line of the change history says "ALL AVAIL came off his row · switched off on it:
+    Bane, Comet" — handed in as that line's reason by every door that takes one man out of an entry that goes on
+    (`ui/inputedit.tsx leavingNote`: `commitGroup`'s people taken off, `removeInput` on a record of a shared input); a
+    read of the week on screen. Undo of the removal brings the puck and every switch back.
+  - **A box typed on the one row, or on the one line under Personal Inputs, is the ENTRY's** (D735, D739):
+    `setInpField` / `setInpTitle` save every record alike through `commitGroup(…, { sched: true })` when the input is
+    an activity kind not filed under Unavailable whose entry holds more than one record. **On the Unavailable list a
+    typed box changes that one man's record, as built (D737, R7).**
+  - **The row's buttons act on every member row in one press, one Undo step** (`ui/board.ts`): ✕ takes every member's
+    request off the programme; CX (one question, one reason), the red box and information-only are set alike on each —
+    read BEFORE the mark is made, because the rows are one row only while those marks are alike. Under Personal Inputs,
+    Undo / Accept / "→ Unavail" act on every record of the line (`ui/grouprow.ts lineOf`, `ui/interactions.ts`).
+    **A drag of the row moves all its rows together** (`engine/reorder.ts moveGroundRow` — a whole permutation; a drop
+    after a one row lands after its LAST member). **The LATE mark** of the row or the line shows while ANY of its live
+    records is late and shown, and a tap hides or restores it for all of them (`ui/html.ts lateMates`).
+  - **The dialog opened from the row or the line is the entry's** (`ui/inputedit.tsx`, `picker`): its people in the
+    picker, Save the entry's one command, Delete "for all", its OIL lines counting every man. Its dates stay not
+    editable there. It is the input's own window: it never passes `sched`, so a save there moves the late date as
+    any window save does (D742 reading 3).
+  - **THE BELT** (`engine/slots.ts sharedSeatBar`, asked by `setSlotVal` and `fillSlot` above the mark): a write of
+    anything to a shared row's name box is refused, and so is a REAL person on its "+ add"; a placeholder on "+ add"
+    goes to the extras. The extras' own places, a one-man request's row (D18, D470 — untouched by door and belt), a
+    `kept` row and a read-only request's row are written as before. And a swap never carries a real man back onto a
+    shared row: from one of its extras' places the puck simply moves.
+  - Pins: `ui/grouprow-hands.test.tsx`; `ui/groupeditor.test.tsx` (the dialog, the one-man question);
+    `leavewar/groupwrite.test.ts` and `ui/batch2.test.tsx` (three cases rewritten to the ruling, each saying so).
 - **`dayOff` stays narrow — off for the WHOLE day.** It also feeds the
   day-info "off" tally and the palette's struck-through rank, and a man on AM
   leave is not off for the day. **Known, deliberate consequence: a half-day

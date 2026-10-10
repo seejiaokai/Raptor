@@ -26,7 +26,7 @@ import { ELOG } from '../engine/editlog'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
-import { setInpEdit } from './pops'
+import { setInpEdit, setOilAsk } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -878,5 +878,91 @@ describe('the SANS calendar’s "+ Commitment" for several (D658)', () => {
     expect($('#inpEditPerson')).toBeNull()
     expect($('#inpEditPersonFixed')!.textContent).toBe(cs(x))
     expect($('#inpEditPop [data-testid="pp-several"]')).toBeNull()
+  })
+})
+
+/* THE DIALOG OPENED FROM A SHARED INPUT'S ROW ON THE SCHEDULE IS THE ENTRY'S (`[GROUP-INPUT-ONE-ROW]` step 5; owner D661 —
+   "on the schedule a group input is ONE row holding everyone", D734 — "the same as doing it in the input's own window",
+   D739 — a change made on its row "changes the input itself, for everyone in it"; the plan
+   docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md §4.5: "the dialog opened from the row or the line is
+   the entry's throughout"). The schedule draws ONE row; the dialog a tap on it opened held ONE man's record and saved
+   one — a remark changed there left that man standing as his own row (the re-walk's picture G5b). Its dates stay not
+   editable there, as for every dialog the schedule opens: a moved span would take the row off the day it was opened
+   from. */
+describe('the schedule’s dialog on a shared input holds the ENTRY — as its window on the Inputs page does', () => {
+  const sched = async () => act(async () => { setPage('editsched'); notify() })
+  it('every man of it is lit; a remark changed there and Saved is EVERY record’s — one Undo; nobody stands apart', async () => {
+    const g = await shared(others().slice(0, 3))
+    await sched()
+    await openOn(g.rows[1])
+    expect(win(), 'the blocking dialog, not the Inputs page’s window').toBeNull()
+    expect(lit().sort(), 'the people of the entry').toEqual(g.rows.map((r: any) => r.person).sort())
+    await type('#inpEditRmk', 'bring ID')
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => r.remarks)).toEqual(['bring ID', 'bring ID', 'bring ID'])
+    expect(entriesOf(of(g.grp)).length, 'still one shared input').toBe(1)
+    await act(async () => { undo() })
+    expect(of(g.grp).map(r => r.remarks), 'ONE Undo').toEqual(['brief', 'brief', 'brief'])
+  })
+  it('a man un-picked there leaves the input; Delete asks "for all" and takes the whole input', async () => {
+    const g = await shared(others().slice(0, 3))
+    await sched()
+    await openOn(g.rows[0])
+    await click(puckBtn(g.rows[2].person))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => r.person).sort()).toEqual([g.rows[0].person, g.rows[1].person].sort())
+    await openOn(of(g.grp)[0])
+    await click($('#inpEditDel'))
+    expect(tid('inped-delall')!.textContent).toMatch(/for all 2 people/)
+    await click(tid('inped-delall-yes'))
+    expect(of(g.grp)).toHaveLength(0)
+  })
+  it('no date calendar there, still — the line says where the dates are changed', async () => {
+    const g = await shared(others().slice(0, 2))
+    await sched()
+    await openOn(g.rows[0])
+    expect($('#inpEditPop #inpEdCal')).toBeNull()
+    expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/dates are changed on the Inputs page/i)
+  })
+  it('THE CONTROL — a one-man input’s dialog there is the one Person list it was', async () => {
+    const r = await single()
+    await sched()
+    await openOn(r)
+    expect($('#inpEditPerson')).toBeTruthy()
+    expect($('#inpEditPop [data-testid="pp"]')).toBeNull()
+  })
+})
+
+/* THE OIL QUESTION FOR A MAN ADDED FROM THE SCHEDULE, WHERE THE INPUT'S ANSWERS DIFFER (owner D744, 11 Oct 26 — "If an
+   input has multiple people and different answers for OIL. Any subsequent addition the OIL earned question will be
+   asked"; the plan §4.5). The door (ui/grouprow.ts groupPut) hands the editor HIS record with the question marked as
+   his own: the sheet opens on him, the answer is written on HIS record alone — nobody else's is touched (it is not
+   D682's answer-for-everyone, though an admin gives it) — and the dialog closes with the sheet, answered or not:
+   whoever added him was on the schedule, not in the input's window. */
+describe('the OIL question for one man alone, opened from the schedule (D744)', () => {
+  const SAT = { type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 600, e: 660 }
+  const ask = async (r: any) => act(async () => { setPage('editsched'); setOilAsk(r.iid, true); setInpEdit(live(r.iid)); notify() })
+  it('Yes for him: on his record alone, the others’ answers stand, the dialog has closed', async () => {
+    const g = await shared(others().slice(0, 3), SAT)
+    await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 0.5 }; of(g.grp)[1].oil = { '2026-10-17': 0 } }); notify() })
+    const [a, b, his] = of(g.grp)
+    await ask(his)
+    expect(tid('oilconf'), 'the question is up at once').toBeTruthy()
+    expect(tid('oilconf')!.textContent, 'headed for him — not "X +2"').toContain(cs(his.person))
+    expect(tid('oilconf')!.textContent).not.toMatch(/\+2/)
+    await click(tid('oil-yes'))
+    await click(tid('oilconf-save'))
+    expect(live(his.iid).oil).toEqual({ '2026-10-17': 0.5 })
+    expect([live(a.iid).oil, live(b.iid).oil], 'nobody else’s answer was touched').toEqual([{ '2026-10-17': 0.5 }, { '2026-10-17': 0 }])
+    expect($('#inpEditPop')!.hidden, 'the dialog closed with the answer').toBe(true)
+  })
+  it('the question closed without an answer: he is left unanswered, for his own bell — and the dialog closes too', async () => {
+    const g = await shared(others().slice(0, 3), SAT)
+    await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 0.5 } }); notify() })
+    const his = of(g.grp)[2]
+    await ask(his)
+    await click($('[data-testid="oilconf"] .airpop-head .x'))
+    expect(live(his.iid).oil).toBeUndefined()
+    expect($('#inpEditPop')!.hidden).toBe(true)
   })
 })

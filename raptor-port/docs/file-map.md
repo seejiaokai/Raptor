@@ -20,6 +20,17 @@ approved pictures' own framing). `src/engine/grouprows.ts` gained `drawnPeople`;
 `entryLines`. Touched: `src/ui/html.ts` (the ground loop, Personal Inputs), `src/ui/board-html.ts` (`sbGroundPanel`,
 `sbGroupPeople`, `sbInpRow`, `sbInputsGroupPanel`), `src/ui/peek.ts`, `src/ui/interactions.ts`,
 `src/ui/scheduler/04-pucks-sections.css`, `src/ui/scheduler/09-week-responsive.css`.
+**Step 5 (D734, D735, D738, D739, D741, D744, D745 — 11 Oct 26): hands on the one row.** `src/ui/grouprow.ts` is the
+DOOR now — `groupPut`, `groupTake`, `groupLeaveTo`, `groupRetarget`, `groupWrite` (installed as `HOOKS.groupRow` for
+`state/`), `lineOf`, `placeOnRow`, `isRowMan`, `onSharedRow` — and its test is `src/ui/grouprow-hands.test.tsx`.
+`src/engine/overlay.ts` gained `sharedRowOf`; `src/engine/slots.ts` the belt `sharedSeatBar` (asked by `setSlotVal` and
+`fillSlot`); `src/engine/reorder.ts moveGroundRow` moves the one row's rows as a block; `src/ui/inputedit.tsx` gained
+`entryOilAnswer`, `saveFromRow` (a typed box saves the whole entry), `leavingNote`, a fifth parameter on `commitGroup`
+(`opts`), and the dialog of a shared input is the entry's wherever it is opened; `src/ui/pops.ts` gained `OILOWN`;
+`src/ui/html.ts` gained `lateMates`. Callers of the door: `src/ui/drag.ts`, `src/state/view.ts` (`placeArmed`),
+`src/ui/Shell.tsx`, `src/state/store.ts` (`writeSlot`, `writeFill`), `src/probe-bridge.ts`; the row's buttons
+`src/ui/board.ts`; the line's Accept / Undo and the LATE chip `src/ui/interactions.ts`. Tests rewritten to the ruling:
+`src/leavewar/groupwrite.test.ts` (two), `src/ui/batch2.test.tsx` (one); added to `src/ui/groupeditor.test.tsx`.
 
 `main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
 the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three

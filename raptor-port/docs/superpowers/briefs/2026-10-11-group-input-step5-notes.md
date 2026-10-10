@@ -1,5 +1,10 @@
 # `[GROUP-INPUT-ONE-ROW]` step 5 — what was worked out before the build (11 Oct 26)
 
+**BUILT 11 Oct 26, later the same day** — as worked out below, by the next chat. The drafted tests moved to
+`raptor-port/src/ui/grouprow-hands.test.tsx` (the parked `.draft.tsx.txt` file is gone) and grew the drop, the armed place,
+the typed line and the change-history line; the rule as built is `raptor-port/docs/engine-rules.md`, "On a shared input's
+row the pucks are the input's people". What follows is the note as it was written, for the reasoning.
+
 **What this is:** the builder's notes for step 5 of the plan
 (`raptor-port/docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md` §4.5 and the shared half of §4.4), written
 when the chat that built steps 2 to 4 handed off at 73% of its context. Nothing here is ruled by him and nothing

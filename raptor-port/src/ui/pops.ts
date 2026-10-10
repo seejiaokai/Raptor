@@ -67,7 +67,13 @@ export function setInpEdit(r: any) { INPEDIT = r }
    land after an undo reminted every row, and InputEditor re-resolves through
    inpById at open. One-shot: the editor clears it as it consumes it. */
 export let OILASK: string | null = null
-export function setOilAsk(iid: string | null) { OILASK = iid }
+/* …FOR THAT ONE MAN'S ANSWER ALONE (`[GROUP-INPUT-ONE-ROW]`; owner D744 — a man added to a shared input from the
+   schedule, where its people's answers differ, is asked at once: ui/grouprow.ts groupPut). Set with the hand-off and
+   consumed with it: the editor opens the sheet on his record in its `own` mode — the answer is written on him alone,
+   nobody else's is touched — and the dialog closes when the question is answered or cancelled, because whoever added
+   him was on the schedule, not in the input's window. */
+export let OILOWN = false
+export function setOilAsk(iid: string | null, own = false) { OILASK = iid; OILOWN = !!iid && own }
 /* A MEDICAL MOVED BY A DRAG OR A REASSIGN, waiting on its question (the absence-record re-test, AB4, 26 Sep 26): the
    Inputs calendar's chip drag and the schedule's reassign hand a medical move that would overlap a different-type
    medical — or an upchit — here instead of writing it, and ui/MedMoveConfirm.tsx (mounted at App level, so it opens
@@ -146,6 +152,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DRAFTSEDIT', reset: () => setDraftsEdit(null) },
   { name: 'INPEDIT', reset: () => setInpEdit(null) },
   { name: 'OILASK', reset: () => setOilAsk(null) },
+  { name: 'OILOWN', reset: () => setOilAsk(null) },   // set and cleared with the hand-off above — one setter for the pair
   { name: 'MEDMOVE', reset: () => setMedMove(null) },
   { name: 'DOCVIEW', reset: () => setDocView(null) },
   { name: 'DRAWER', reset: () => setDrawer(false) },

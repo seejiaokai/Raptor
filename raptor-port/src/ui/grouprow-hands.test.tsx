@@ -13,8 +13,9 @@
    ONE DOOR (ui/grouprow.ts) is asked by every place that writes a person to a ground row — a drop, an armed place
    filled, a right-click, the store's writers — and a BELT in the engine (slots.ts setSlotVal / fillSlot) refuses a
    write that reaches a member's place without it. Driven here through that door, the store's own writers, the board's
-   buttons and the typed box's door, on a real saved store (as state/p6c-requestonread.test.ts is). The gestures
-   themselves — a real drag, a real right-click — are walked in the browser. */
+   buttons and the typed box's door, on a real saved store (as state/p6c-requestonread.test.ts is) — and, at the foot,
+   through the drop itself (ui/drag.ts applyDrop, on a stand-in element carrying the place's key) and an armed place
+   filled by a tap. A real drag and a real right-click are walked in the browser. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId, isLateInput } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
@@ -44,12 +45,14 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { _resetDisclosure } from '../state/disclosure'
 import { afterSchedMutate, setPage, setBoardDay, toggleLateOff, lateShown } from '../state/view'
 import * as view from '../state/view'
-import { commitNewInput, commitGroup, draftOf, entryOilAnswer } from './inputedit'
+import { commitNewInput, commitGroup, draftOf, entryOilAnswer, setInpField, setInpTitle } from './inputedit'
 import { reqRowText } from './reqrow'
 import { groupPut, groupTake, groupLeaveTo, groupRetarget } from './grouprow'
 import { boardMbtn, cxCommit } from './board'
 import { routeClick } from './interactions'
 import * as pops from './pops'
+import { applyDrop, setDrag } from './drag'
+import { pendingLand } from './lift'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -291,6 +294,31 @@ describe('a placeholder on the one row (D745)', () => {
     globalUndo()
     expect(ground()[riOf('pike')].more, 'Undo brings the puck back').toEqual(['allavail'])
   })
+
+  /* Fable's (a), taken with D745: the notice must reach the SCHEDULER, not only whoever did it — a man taking himself out
+     in the input's own window cannot drop a puck, and a scheduler on another device sees no passing note. So the fact is
+     in the removal's own line of the change history, naming the men whose OIL the scheduler had switched off under it —
+     the one thing that is lost (Undo of the removal brings the puck and every switch back). */
+  it('the change history’s line for the man who left says the puck came off his row — and names anyone switched off on it', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike'])
+    writeFill(`${keyOf('pike')}.+`, 'allavail')
+    const iid = String(inpId(rec('pike')))
+    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[WED] as any).oild = { people: { [`rocky|i:${iid}`]: 'deny', [`ignite|i:${iid}`]: 'deny' } }; afterSchedMutate() })
+    const before = lines()
+    /* the man himself, in the input's own window ("Take me out"): the same save a puck taken off the row makes */
+    expect(commitGroup({ rows: entryRowsOf(INPUTS, rec('bane')) }, draftOf(rec('bane')), ['bane'])).toBe(true)
+    const said = ELOG.rows.slice(before).map((r: any) => String(r.lbl))
+    expect(said.filter(l => l.includes('deleted')), 'one line for the man who left').toHaveLength(1)
+    expect(said.join(' | ')).toContain(`ALL AVAIL came off his row · switched off on it: ${[cs('ignite'), cs('rocky')].sort().join(', ')}`)
+  })
+  it('THE CONTROL — a man who leaves with nothing on his row leaves a plain line', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike'])
+    const before = lines()
+    expect(groupTake(keyOf('pike'))).toBe('done')
+    expect(ELOG.rows.slice(before).map((r: any) => String(r.lbl)).join(' | ')).not.toContain('came off his row')
+  })
 })
 
 describe('the row’s own boxes and buttons act for everyone on it', () => {
@@ -306,6 +334,31 @@ describe('the row’s own boxes and buttons act for everyone on it', () => {
     expect(recs().map(r => r.remarks)).toEqual(['Bring your ID', 'Bring your ID', 'Bring your ID'])
     globalUndo(); globalUndo()
     expect(recs().map(r => [r.s, r.remarks])).toEqual([[840, 'Bring your logbook'], [840, 'Bring your logbook'], [840, 'Bring your logbook']])
+  })
+
+  it('a box typed on the one LINE under Personal Inputs is the entry’s too — the time, the remark and the name, one Undo each', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike', 'split'])
+    expect(setInpField(rec('pike'), 'end', '1545')).toBe(true)
+    expect(recs().map(r => r.e), 'typed on any man’s record of the line: everyone’s').toEqual([945, 945, 945])
+    expect(setInpField(rec('bane'), 'rmks', 'Room 2')).toBe(true)
+    expect(recs().map(r => r.remarks)).toEqual(['Room 2', 'Room 2', 'Room 2'])
+    expect(setInpTitle(rec('split'), 'Range brief')).toBe(true)
+    const now = INPUTS.filter((x: any) => x.title === 'Range brief') as any[]
+    expect(now.map(r => r.person).sort(), 'the name is the entry’s: still one shared input of three').toEqual(['bane', 'pike', 'split'])
+    expect(entryRowsOf(INPUTS, now[0])).toHaveLength(3)
+    globalUndo(); globalUndo(); globalUndo()
+    expect(recs().map(r => [r.e, r.remarks])).toEqual([[900, 'Bring your logbook'], [900, 'Bring your logbook'], [900, 'Bring your logbook']])
+  })
+
+  it('ON THE UNAVAILABLE LIST a typed box changes that ONE man’s record, as built (D737; reading R7) — the list stays a row a man', async () => {
+    await boot(new MemoryBackend())
+    expect(commitGroup(null, { ...draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise' }) }, ['bane', 'split'])).toBe(true)
+    const od = () => INPUTS.filter((x: any) => x.type === 'OD' && x.date === 'Jul 15' && (x.person === 'bane' || x.person === 'split')) as any[]
+    expect(od(), 'a shared overseas duty: two records').toHaveLength(2)
+    const his = od().find(r => r.person === 'split')
+    expect(setInpField(his, 'rmks', 'Back early')).toBe(true)
+    expect(od().map(r => [r.person, r.remarks]).sort()).toEqual([['bane', 'Exercise'], ['split', 'Back early']])
   })
 
   it('✕ takes the WHOLE input off the programme — every record reads "taken off", one Undo puts them all back', async () => {
@@ -421,5 +474,119 @@ describe('THE BELT in the engine, and what it leaves alone', () => {
     expect([row.who, row.more]).toEqual(['split', ['pike']])
     expect(INPUTS.filter((x: any) => x.remarks === 'solo')).toHaveLength(1)
     expect(solo.grp).toBeUndefined()
+  })
+})
+
+describe('THE DROP ITSELF goes through the door (ui/drag.ts applyDrop) — one drop, one Undo step', () => {
+  /* a stand-in for the drawn place: applyDrop reads only the key off the element it is let go on */
+  const seatEl = (key: string) => { const el = document.createElement('span'); el.className = 'seat'; el.dataset.slot = key; document.body.appendChild(el); return el }
+  const cellEl = (key: string) => { const row = document.createElement('div'); row.className = 'pl-row'; const c = document.createElement('div'); c.className = 'ppl'; c.dataset.fill = key; row.appendChild(c); document.body.appendChild(row); return c }
+  afterEach(() => { document.body.innerHTML = ''; setDrag(null) })
+
+  it('a name from the crew list dropped on a man’s puck, and on the row’s "+ add": he is IN the input — the flash is on HIS OWN place, and one Undo takes him out again', async () => {
+    for (const where of ['puck', 'add'] as const) {
+      resetWorld(); await boot(new MemoryBackend())
+      fileGroup(['bane', 'pike'])
+      setDrag({ kind: 'roster', id: 'split' })
+      expect(applyDrop(where === 'puck' ? seatEl(keyOf('pike')) : cellEl(`${leadKey()}.+`), 0, 0), where).toBe(true)
+      expect(people(), where).toEqual(['bane', 'pike', 'split'])
+      expect(ground()[riOf('pike')].who, 'the man he was dropped on keeps his place').toBe('pike')
+      expect(pendingLand()!.sel, 'the landing flash').toContain(`[data-slot="${keyOf('split')}"]`)
+      globalUndo()
+      expect(people(), 'ONE Undo').toEqual(['bane', 'pike'])
+    }
+  })
+
+  it('a puck dragged from a flying seat onto the row: he is added, and the seat he came from keeps him (reading R4)', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike'])
+    const seat = '2.0.0.0.p', flew = slotVal(seat)
+    setDrag({ kind: 'slot', key: seat })
+    expect(applyDrop(seatEl(keyOf('bane')), 0, 0)).toBe(true)
+    expect(people()).toContain(flew)
+    expect(slotVal(seat), 'still in his seat').toBe(flew)
+    expect(ground()[riOf('bane')].who, 'nobody was swapped out of the input').toBe('bane')
+  })
+
+  it('one of the input’s men dragged onto a flying seat: OUT of the input and IN the seat, in one step — the man who sat there comes off, never into the input; one Undo puts back both', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike', 'split'])
+    const seat = '2.0.0.0.p', flew = slotVal(seat)
+    expect(flew && flew !== 'pike').toBeTruthy()
+    setDrag({ kind: 'slot', key: keyOf('pike') })
+    expect(applyDrop(seatEl(seat), 0, 0)).toBe(true)
+    expect(people()).toEqual(['bane', 'split'])
+    expect(slotVal(seat)).toBe('pike')
+    expect(people(), 'the man he replaced is not in the input').not.toContain(flew)
+    expect(pendingLand()!.sel).toContain(`[data-slot="${seat}"]`)
+    globalUndo()
+    expect([people(), slotVal(seat)], 'ONE Undo: back in the input, and the seat its own man’s').toEqual([['bane', 'pike', 'split'], flew])
+  })
+
+  it('dragged onto the "+ add" of a ground row BELOW his own, with another row under that: the flash names the place AS IT STANDS once his old row has gone', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike', 'split'])
+    expect(commitNewInput(draftOf({ person: 'rocky', type: 'Training', date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, remarks: 'below' }))).toBe(true)
+    expect(commitNewInput(draftOf({ person: 'ignite', type: 'Training', date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, remarks: 'under it' }))).toBe(true)
+    const at = (rmk: string) => ground().findIndex((g: any) => g.rmks === rmk)
+    expect(at('below'), 'below the three').toBeGreaterThan(riOf('split'))
+    expect(at('under it')).toBeGreaterThan(at('below'))
+    const before = at('below')
+    setDrag({ kind: 'slot', key: keyOf('pike') })
+    expect(applyDrop(cellEl(`g:${WED}.${before}.+`), 0, 0)).toBe(true)
+    expect(at('below'), 'his old row has gone: the row moved up one').toBe(before - 1)
+    expect(ground()[at('below')].more).toEqual(['pike'])
+    expect(ground()[at('under it')].more || [], 'never the row under it').toEqual([])
+    expect(pendingLand()!.sel).toContain(`[data-slot="g:${WED}.${at('below')}.x0"]`)
+    expect(people()).toEqual(['bane', 'split'])
+  })
+
+  it('let go on nothing: he leaves the input — and THE LAST MAN is refused and stays', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike'])
+    setDrag({ kind: 'slot', key: keyOf('pike') })
+    expect(applyDrop(document.body, 0, 0)).toBe(true)
+    expect(people()).toEqual(['bane'])
+    setDrag({ kind: 'slot', key: keyOf('bane') })
+    expect(applyDrop(document.body, 0, 0)).toBe(false)
+    expect(people()).toEqual(['bane'])
+    expect(ground()[riOf('bane')].who, 'his name box is never left empty').toBe('bane')
+    expect(SAID[SAID.length - 1]).toContain('is the last person on this input')
+  })
+
+  it('a placeholder dropped on a man’s puck goes to the row’s "+ add" — never into his place; and dragged off again onto a man elsewhere, that man is NOT carried back onto the row', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike'])
+    setDrag({ kind: 'roster', id: 'allavail' })
+    expect(applyDrop(seatEl(keyOf('pike')), 0, 0)).toBe(true)
+    const lead = () => ground()[+leadKey().split('.')[1]!]
+    expect(lead().more).toEqual(['allavail'])
+    expect([ground()[riOf('bane')].who, ground()[riOf('pike')].who]).toEqual(['bane', 'pike'])
+    expect(people()).toEqual(['bane', 'pike'])
+    /* a duty desk with a man on it: the placeholder moves there, he comes off — he is not put among the row's extras */
+    const desk = `d:${WED}.0.0`, man = slotVal(desk)
+    expect(man, 'a named man on a duty desk').toBeTruthy()
+    setDrag({ kind: 'slot', key: `${leadKey()}.x0` })
+    expect(applyDrop(seatEl(desk), 0, 0)).toBe(true)
+    expect(slotVal(desk)).toBe('allavail')
+    expect(lead().more || [], 'nobody was swapped onto the shared row').toEqual([])
+    expect(people()).toEqual(['bane', 'pike'])
+  })
+
+  it('an armed place on the row, filled by a tap on a name: he is added to the input, the place is put down — one Undo', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike'])
+    view.armSlot(`${leadKey()}.+`)
+    expect(view.armedKey()).toBe(`${leadKey()}.+`)
+    expect(view.placeArmed('split')).toBe(true)
+    expect(people()).toEqual(['bane', 'pike', 'split'])
+    expect(view.armedKey()).toBe('')
+    /* already in it: refused, and the place stays armed for the next name */
+    view.armSlot(`${leadKey()}.+`)
+    expect(view.placeArmed('pike')).toBe(false)
+    expect(view.armedKey()).toBe(`${leadKey()}.+`)
+    view.disarmSlot()
+    globalUndo()
+    expect(people()).toEqual(['bane', 'pike'])
   })
 })

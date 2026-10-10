@@ -20,7 +20,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { commandStream } from '../command'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
-import { commitGroup, commitNewInput, removeInput, setInpField } from '../ui/inputedit'
+import { commitGroup, commitInputEdit, commitNewInput, draftOf, removeInput, setInpField } from '../ui/inputedit'
 import { initStore as lwInitStore, lwHistInit, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -453,23 +453,43 @@ describe('one man once an entry, one filer a group — held at the write (§3.13
     expect(cmds()).toBe(n)
     expect(of('rocky')).toHaveLength(1)
   })
-  it('a record changed alone, the same man added again, the first changed back — refused at the last step, by the board\'s cell', () => {
+  /* THE DOOR THAT MAKES THE STRAY IS THE ONE-RECORD SAVE (rewritten 11 Oct 26 — `[GROUP-INPUT-ONE-ROW]` step 5; owner D739:
+     "a time … the scheduler types on a shared input's row … changes the input itself, for everyone in it"). These two
+     used the board's typed cell (setInpField) to change one man's record of a shared MEETING alone — which that cell no
+     longer does: on the schedule a shared activity input is one row, and a box typed on it is the entry's (pinned
+     below, and in ui/grouprow-hands.test.tsx). One man's record can still be changed alone by the save a single input
+     uses (commitInputEdit — the Unavailable list's box reaches it for a shared leave or overseas duty, D737), so the
+     rule under test — one man once an entry, held at the WRITE — is asked of that. The rule itself is unchanged. */
+  const alone = (r: any, end: string) => commitInputEdit(r, { ...draftOf(r), eTime: end })
+  it('a record changed alone, the same man added again, the first changed back — refused at the last step, at the write', () => {
     expect(commitGroup(null, D(), ['bane', 'rocky'])).toBe(true)
     const stray = one('rocky')
-    expect(setInpField(stray, 'end', '11:00'), 'Hex\'s record changed alone').toBe(true)
+    expect(alone(stray, '11:00'), 'Hex\'s record changed alone').toBe(true)
     expect(who(entryOf('bane')), 'it reads as his own input now').toEqual(['bane'])
     expect(commitGroup(entryOf('bane'), D(), ['bane', 'rocky']), 'the same man added to the entry again').toBe(true)
     expect(of('rocky')).toHaveLength(2)
     said = []
-    expect(setInpField(INPUTS.find((r: any) => r.iid === stray.iid), 'end', '10:00'), 'the first changed back').toBe(false)
+    expect(alone(INPUTS.find((r: any) => r.iid === stray.iid), '10:00'), 'the first changed back').toBe(false)
     expect(said.join(' ')).toMatch(/Hex is already on this input/)
     expect(INPUTS.find((r: any) => r.iid === stray.iid).e, 'and it stays as it was').toBe(660)
+  })
+  it('the board\'s typed cell on a shared input cannot make a stray at all: it changes EVERY record of the entry, or nothing (D739)', () => {
+    expect(commitGroup(null, D(), ['bane', 'rocky'])).toBe(true)
+    expect(setInpField(one('rocky'), 'end', '11:00'), 'the scheduler types on the one row').toBe(true)
+    expect([one('bane').e, one('rocky').e]).toEqual([660, 660])
+    expect(who(entryOf('bane')).sort(), 'still one shared input').toEqual(['bane', 'rocky'])
+    /* a man in it who did not file it cannot change it for everyone through that cell either — nothing is written */
+    hex()
+    said = []
+    expect(setInpField(one('rocky'), 'end', '12:00')).toBe(false)
+    expect([one('bane').e, one('rocky').e]).toEqual([660, 660])
+    expect(said.join(' ')).toMatch(/can change this for everyone/)
   })
   it('…and by Undo alike: the step that would put the first record back is refused with the same sentence', () => {
     expect(commitGroup(null, D(), ['bane', 'rocky'])).toBe(true)
     hex()
     const strayId = one('rocky').iid
-    expect(setInpField(one('rocky'), 'end', '11:00'), 'Hex changes his own record').toBe(true)
+    expect(alone(one('rocky'), '11:00'), 'Hex changes his own record').toBe(true)
     asSaberElsewhere(() => { expect(commitGroup(entryOf('bane'), D(), ['bane', 'rocky']), 'Saber adds Hex to the entry again').toBe(true) })
     expect(of('rocky')).toHaveLength(2)
     said = []

@@ -587,21 +587,24 @@ describe('D731 (4) — a shared input’s OIL line counts its people where their
 })
 
 /* Astra's read of the code (10 Oct 26 — finding 2; older than this batch, on the same lines). The schedule's and the
-   board's dialog holds ONE man's row of a shared input and saves one. Its OIL line was his alone — and its "Not answered
-   yet" line named the OTHER men of the entry, with no button there that could answer for them. One scope for both. */
-describe('the schedule’s one-person dialog speaks for its own man — the OIL line AND the "not answered yet" line', () => {
-  it('Ace answered, the other man not: Ace’s dialog says nothing is unanswered; the other man’s names only himself', async () => {
+   board's dialog held ONE man's row of a shared input and saved one, while its "Not answered yet" line named the OTHER
+   men of the entry, with no button there that could answer for them. One scope for both lines and the button.
+   REWRITTEN TO THE RULING (`[GROUP-INPUT-ONE-ROW]` step 5, 11 Oct 26 — owner D661, D734: on the schedule a shared input
+   is ONE row and "the same as doing it in the input's own window"; the plan §4.5 — "the dialog opened from the row
+   or the line is the entry's throughout"). The one scope is now the ENTRY, there as on the Inputs page: the dialog
+   holds every man of it, its lines count them all, and its button answers for them all. What Astra's finding was
+   about still holds — a line never names a man the button beside it cannot answer for. */
+describe('the schedule’s dialog on a shared input speaks for the ENTRY — the OIL line, the "not answered yet" line and the button', () => {
+  it('one man answered, the other not: whichever man’s puck opened it, the lines count both and name who is unanswered', async () => {
     const g = await shared(others().slice(0, 2), { ...SAT })
     await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 1 } }); notify() })
     await act(async () => { goPage('editsched'); notify() })
-    await openOn(of(g.grp)[0])
-    expect(tid('win-inputedit'), 'the blocking dialog, not the Inputs page’s window').toBeNull()
-    expect($('#inpEditPop .inped-oilsum')!.textContent).toBe('credited on its non-working day')
-    expect(tid('oil-unanswered'), 'nothing of his is unanswered').toBeNull()
-    await closeWin()
-    await openOn(of(g.grp)[1])
-    expect(tid('oil-unanswered')!.querySelector('.inped-oilsum')!.textContent, 'his own day, and no list of other people').toBe('Not answered yet — 17 Oct')
-    expect(tid('oil-answer'), 'and HIS button answers it').toBeTruthy()
+    for (const i of [0, 1]) {
+      await openOn(of(g.grp)[i])
+      expect(tid('win-inputedit'), 'the blocking dialog, not the Inputs page’s window').toBeNull()
+      expect(tid('oil-unanswered')!.querySelector('.inped-oilsum')!.textContent, `opened on man ${i}`).toBe(`Not answered yet — 17 Oct: ${cs(of(g.grp)[1].person)}`)
+      await closeWin()
+    }
   })
   it('THE CONTROL — on the Inputs page the window still speaks for the entry and names who is unanswered', async () => {
     const g = await shared(others().slice(0, 2), { ...SAT })

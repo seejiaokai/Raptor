@@ -2154,6 +2154,27 @@ one entry"); the ONE row is made where it is drawn.
 - Pins: `ui/grouprow-draw.test.tsx`; the geometry, in a real browser, `e2e/grouprow.spec.ts` (two across on a desktop,
   stacked on a phone, the two times together, inside the People cell on the week and the board, after a reload).
 
+### What a hand does to the one row (owner D734 — built 11 Oct 26, step 5)
+The rule and its door: `engine-rules.md`, "On a shared input's row the pucks are the input's people". On screen:
+- **A drop** (`ui/drag.ts applyDrop`): a name or a seated puck let go on any puck of the row, on its "+ add" or on the
+  row itself ADDS him to the input — his puck appears on the row in its A-to-Z place, the landing flash is on HIS
+  place, and the seat he came from still shows him. A puck of the row dragged onto another place leaves the input and
+  lands there; let go on nothing, he leaves the input. Each is ONE Undo step: these paths finish through `fin`, which
+  makes no schedule write of its own (`done()` would add a second step). The note says what happened in the app's
+  words ("Tally added to Range safety brief", "Tally taken out of Range safety brief", the last-man refusal).
+- **A placeholder** let go on a man's puck lands on the row's "+ add", never in his place.
+- **The right-click** on a man's puck (`ui/Shell.tsx`) takes him out of the input; **an armed place** on the row filled
+  by a tap on a name (`state/view.ts placeArmed`) adds him and puts the place down — refused (he is already in it),
+  the place stays armed for the next name.
+- **The OIL question for a man added where the input's answers differ** opens at once over the schedule, headed with
+  his callsign alone; answered or closed, the dialog behind it closes with it.
+- **The row's ✕, CX, red box, ⓘ and its grip** are drawn once and act for every row of it; **the LATE chip** is there
+  while any of its people's records is late.
+- **The dialog a tap on the row's name or a line's type opens** shows the people picker with everyone lit, as the
+  input's window on the Inputs page does; a one-man input's dialog keeps its one Person list.
+- Pins: `ui/grouprow-hands.test.tsx`, `ui/groupeditor.test.tsx`; a real drag and a real right-click are walked in the
+  browser (the job's bug check).
+
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
 **SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark

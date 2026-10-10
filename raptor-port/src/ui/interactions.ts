@@ -3,11 +3,11 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { leadKeyOf } from './grouprow'
+import { leadKeyOf, lineOf } from './grouprow'
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -31,7 +31,7 @@ import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
-import { withDaySnap } from './html'
+import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay } from './pan'
@@ -674,7 +674,12 @@ export function routeClick(e: MouseEvent) {
     /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
     const was = inp.acc
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
-    const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    /* A SHARED INPUT'S LINE ACTS FOR EVERYONE ON IT (`[GROUP-INPUT-ONE-ROW]`; owner D661, D736 — the plan §4.5): under
+       Personal Inputs a shared input is ONE line with ONE Undo / Accept / "→ Unavail", so the press is every record's
+       of that line — in this one press, one Undo step. Gathered before anything is written. */
+    const line = lineOf(inp)
+    let ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    for (const mate of line) if (mate !== inp && (dest === 'x' ? unacceptInput(di, mate) : acceptInput(di, mate, dest))) ok = true
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
          same shape as board.ts's act(). Accepting to the ground programme adds
@@ -685,7 +690,8 @@ export function routeClick(e: MouseEvent) {
       /* the callsign rides along with the type — "an LL" says what happened,
          "Bane's LL" says who it happened to, which is the thing the changes
          list is actually for */
-      const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
+      /* …and a shared input is named as the changes window names it: its name and how many people (D663, D736) */
+      const cs = line.length > 1 ? `${line.length} people` : PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
       /* THE TAKE-OFF NAMES IT TOO (owner D731 (5), 10 Oct 26 — "Ranger's Sports day taken off the programme"; walker B of
          the title's check, scenario 40). It said "Accept undone" — whose request, and which, went unsaid, where the
          accept beside it says the whole thing. The same pattern for its two other cases (his reading (b)): a row that
@@ -749,8 +755,12 @@ export function routeClick(e: MouseEvent) {
     const id = ltg.getAttribute('data-lateoff')
     const inp = INPUTS.find((x: any) => inpId(x) === id)
     if (inp) {
-      const shown = view.toggleLateOff(inp)
-      HOOKS.toast(shown ? 'LATE mark shown' : 'LATE mark hidden — the Inputs page still shows it', 'ok')
+      /* THE ONE ROW'S MARK IS EVERYONE'S ON IT (the plan §4.5): a shared input's chip stands for every late record of
+         it (ui/html.ts lateMates), so the tap hides it — or brings it back — for all of them alike */
+      const late = lateMates(inp).filter((r: any) => isLateInput(r))
+      const hide = late.some((r: any) => view.lateShown(r))
+      for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.toggleLateOff(r)
+      HOOKS.toast(hide ? 'LATE mark hidden — the Inputs page still shows it' : 'LATE mark shown', 'ok')
     }
     notify(); return
   }

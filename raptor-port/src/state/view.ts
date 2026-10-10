@@ -9,7 +9,7 @@ import { slotBar, personCount, rowTwice } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
-import { isLead, isInstr, isOcu } from '../engine/people'
+import { isLead, isInstr, isOcu, isSpecial } from '../engine/people'
 import { HOOKS, runSchedEpilogue } from '../engine/hooks'
 import { hideKey } from '../engine/warnhide'
 import { canEditSched } from './auth'
@@ -1179,7 +1179,7 @@ export function armedRowKey():string{ return ARM?ridKey(String(ARM.key).replace(
 /* place a name from the palette into whatever is armed */
 export function placeArmed(id:any){
   if(!ARM||!id)return false;
-  const key=ARM.key, base=String(key).replace(/\.\+$/,'');
+  let key=ARM.key, base=String(key).replace(/\.\+$/,'');
   /* the one refusal left: re-planting the seat's own occupant would write
      nothing and still toast "planned". Reachable since a placeholder-filled
      slot arms (13 Aug 26) — tap the placeholder in the slot, then tap the
@@ -1207,6 +1207,16 @@ export function placeArmed(id:any){
      validate-then-ask shape as drag.ts's barDrop — and the validator rings
      the puck the same instant. */
   const warnBefore=WARN;   // the drop delta's baseline (state/dropflag.ts)
+  /* AN ARMED PLACE ON THE ONE ROW OF A SHARED INPUT (owner D734 — "a puck put on the row adds him to it"; ui/grouprow.ts,
+     lent through HOOKS: state/ may not import ui/). A real man tapped onto it is ADDED TO THE INPUT by the door's own
+     command — no schedule write here, so no second Undo step; refused (he is already in it), the place stays armed,
+     as for the refusals above. A placeholder is the row's own: re-aimed at the row's "+ add" and written as ever. */
+  if(HOOKS.groupRow){
+    if(isSpecial(id)){const k2=HOOKS.groupRow.retarget(key,id); if(k2!==key){key=k2; base=String(key).replace(/\.\+$/,'');}}
+    else{const a=HOOKS.groupRow.write(key,id);
+      if(a==='refused')return false;
+      if(a==='done'){armDrop(); if(isPhone())document.body.classList.remove('ros-open'); paintArm(); flagDrop(warnBefore,keyDay(base)); return true;}}
+  }
   /* the place he LANDED on — the question after the write is asked of it, not of the row's "+ add" (slots.ts
      lastFilled; [CROWD-SWAP-SAYS-BUSY]): asked of the row, an ordinary add would read as a second copy of him */
   let landed:any=base;

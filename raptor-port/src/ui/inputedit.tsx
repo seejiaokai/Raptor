@@ -26,6 +26,8 @@ import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { ClipIcon, UploadIcon } from './icons'
 import { acceptInput } from '../engine/slots'
+import { DAYS } from '../engine/data'
+import { standsOn } from '../engine/overlay'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -46,7 +48,7 @@ import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff } from '../state/perms'
-import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove, setDocView } from './pops'
+import { INPEDIT, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
 import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
@@ -738,6 +740,34 @@ export function oilUnansweredDay(row: any): string {
   const prev = (row.oil || {}) as Record<string, number>
   const p = oilAskPlan(row).find(x => prev[x.iso] == null)
   return p ? p.iso : ''
+}
+/* THE ANSWER A SHARED INPUT CARRIES, FOR A MAN ADDED TO IT FROM THE SCHEDULE (owner D738 as D744 narrowed it, 11 Oct 26 —
+   "If an input has multiple people and different answers for OIL. Any subsequent addition the OIL earned question will
+   be asked"; the plan 2026-10-10-group-input-one-row-plan.md §4.5). ONE pure question, asked of the entry's records
+   over the days its OIL question is about (leavewar/sync.ts oilAskPlan — the days and the hours are every man's alike):
+     'same'   — every record carries the same answer for every such day: the man added takes a copy of it (`oil`), and
+                nothing is asked on the schedule (D738);
+     'none'   — nobody has answered any of them, or no day asks: he has no answer, and the question stays where it is,
+                with whoever filed it (D738 reading 2);
+     'differ' — anything else, a mix of answered and unanswered people included: he is given nobody's answer, and the
+                question is put at once to whoever added him, for him alone (D744).
+   Nothing is kept on the input for this: the records themselves say whether there is one answer to take. */
+export type EntryOil = { kind: 'same'; oil: Record<string, number> } | { kind: 'none' } | { kind: 'differ' }
+export function entryOilAnswer(rows: any[]): EntryOil {
+  const live = (rows || []).filter(Boolean)
+  const first = live[0]
+  if (!first || !oilAsks(first.type)) return { kind: 'none' }
+  const days = oilAskPlan(first).map(p => p.iso)
+  if (!days.length) return { kind: 'none' }
+  const ans = (r: any, iso: string): number | null => { const v = (r.oil || {})[iso]; return v == null ? null : Number(v) }
+  if (live.every(r => days.every(d => ans(r, d) == null))) return { kind: 'none' }
+  const oil: Record<string, number> = {}
+  for (const d of days) {
+    const v = ans(first, d)
+    if (v == null || live.some(r => ans(r, d) !== v)) return { kind: 'differ' }
+    oil[d] = v
+  }
+  return { kind: 'same', oil }
 }
 /* the one-line standing beside the button: how many applicable days the
    record currently credits */
@@ -1520,9 +1550,21 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
      give — NO question opens (D739 reading 4, D740 reading 4; the plan §4.7). That replaces the fourth door's "the
      question follows the save" (Codex rank 6, 22 Sep 26), which stands only where the save was an ordinary one: a
      hand-made call by someone who may not edit the schedule, whose stale Yes was dropped as the window drops it. */
-  const ok = commitInputEdit(inp, d, undefined, undefined, { sched: true })
+  const ok = saveFromRow(inp, d)
   if (ok && !schedSide({ sched: true })) askOilIfPending(inp)
   return ok
+}
+/* ONE ROW, ONE TIME — FOR EVERYONE ON IT (owner D735; D739 — "a time or a remark the scheduler types on a shared input's
+   row … changes the input itself, for everyone in it"; the plan §4.4, the shared half). The schedule draws a shared
+   input as ONE row and under Personal Inputs as ONE line, so a box typed there is the ENTRY's: every record of it is
+   saved alike, in the entry's one command (commitGroup — one Undo step, one line of history), and the rows stay one
+   row. Asked of the same thing the drawing asks: an activity kind, not filed under Unavailable, whose entry holds more
+   than one record. ON THE UNAVAILABLE LIST A TYPED BOX CHANGES THAT MAN'S RECORD ALONE, as built — that list stays a
+   row a man (D737; reading R7), and he then reads as his own input. A one-man input is saved as it always was. */
+function saveFromRow(inp: any, d: any): boolean {
+  const rows = isPersonal(inp.type) && inp.acc !== 'u' ? entryRowsOf(INPUTS, inp) : []
+  if (rows.length > 1) return commitGroup({ rows }, d, rows.map((r: any) => r.person), undefined, { sched: true })
+  return commitInputEdit(inp, d, undefined, undefined, { sched: true })
 }
 /* THE NAME TYPED ON A REQUEST'S ROW IS THE INPUT'S OWN TITLE (owner D739, D740; reading R1, told to him — the plan
    2026-10-10-group-input-one-row-plan.md §4.4): the row's name box on the Ground Programme is reached through
@@ -1534,7 +1576,7 @@ export function setInpTitle(inp: any, text: any) {
   if (!inp) return false
   const d: any = draftOf(inp)
   d.title = String(text == null ? '' : text)
-  return commitInputEdit(inp, d, undefined, undefined, { sched: true })
+  return saveFromRow(inp, d)
 }
 /* Deleting an ACCEPTED input used to leave its ground row on the programme for
    good — nothing pointed at it any more, so it could never be removed and it
@@ -1561,7 +1603,8 @@ export function removeInput(r: any) {
      that was never accepted has no day to pin the removal to. */
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
   /* the save's own answer, never a bare "yes": a delete the commit gate refused is not a delete (saveBatch) */
-  return saveBatch(() => { dropInputRow(r) })
+  /* a man taking himself out of a shared input that goes on: what stood on his place goes with him, and his line says so */
+  return saveBatch(() => { if (entryRowsOf(INPUTS, r).length > 1) elogReason(r.iid, leavingNote(r)); dropInputRow(r) })
 }
 
 /* DELETE A WHOLE SHARED INPUT — every record of the entry, as ONE command and one Undo step (owner D655: "shown and
@@ -1598,6 +1641,33 @@ export function removeEntry(rows: any[]): boolean {
    here WITHDRAWS the leave from the war too, before the splice while the
    row still says what was granted. Without this the next reconcile would
    re-mint the row from the still-approved cells — the snap-back. */
+/* WHAT LEAVES WITH A MAN WHO LEAVES A SHARED INPUT, SAID IN THE CHANGE HISTORY (owner D745 — "an ALL AVAIL or ALL puck on
+   a shared input's row comes off with the man whose place it stood on … the app says so, naming anyone switched off
+   for OIL on it"; Fable's addition (a), taken into the plan 2026-10-10-group-input-one-row-plan.md §4.5). The puck
+   earns through HIS request, so it goes with his row — and the passing note reaches only whoever did it: a man taking
+   himself out in the input's own window cannot drop a puck, and a scheduler on another device sees no note. So the
+   fact rides the removal's own line of the change history ("… deleted · 15 Jul — ALL AVAIL came off his row ·
+   switched off on it: Bane, Comet"), handed in as that line's reason by the doors that take ONE man out of an entry
+   that goes on (commitGroup's people taken off; removeInput on a record of a shared input). The men named are those
+   the scheduler had switched off under it — the one thing lost; Undo of the removal brings the puck and every switch
+   back. A READ of the week on screen, before the record goes: on another week nothing is said here (the day's own
+   pending line says it there once that week is opened). '' where his row carries no placeholder. */
+function leavingNote(r: any): string {
+  const id = String((r && r.iid) || '')
+  if (!id || r.grp == null || r.grp === '') return ''
+  for (const d of DAYS as any[]) {
+    const row = standsOn(d, id, r)
+    if (!row || !row.srcg) continue
+    const csOf = (p: any) => (PEOPLE[p] ? String(PEOPLE[p].cs) : String(p))
+    const pucks = ((row.more || []) as any[]).map(v => whoId(v)).filter(p => p && isSpecial(p)).map(csOf)
+    if (!pucks.length) return ''
+    const sw = (d.oild && d.oild.people) || {}
+    const off = Object.keys(sw).filter(k => k.endsWith(`|i:${id}`) && sw[k] === 'deny').map(k => k.slice(0, k.indexOf('|')))
+      .filter(p => p !== String(r.person)).map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+    return `${pucks.join(', ')} came off his row${off.length ? ` · switched off on it: ${off.join(', ')}` : ''}`
+  }
+  return ''
+}
 function dropInputRow(r: any) {
   /* [ARCH-STACK] step 4: deleting the row IS deleting the absence — the war
      reads it, so there is nothing to withdraw (deliberate delete propagates
@@ -1644,8 +1714,13 @@ function dropInputRow(r: any) {
    never takes an entry from the member who filed it — else that admin. Every man added later takes the entry's
    filer and his own true `by`. An entry of one man is an ordinary input: one person filed alone gets no group at all.
 
+   `opts.sched` — the save comes from the input's ROW ON THE SCHEDULE (`[GROUP-INPUT-ONE-ROW]`; owner D739, D741, D742 —
+   the plan 2026-10-10-group-input-one-row-plan.md §4.5, §4.6): a box typed on the one row, a puck put on it or taken
+   off it. Handed on to each record's own save, where it keeps the late date and a Yes to the OIL question as they
+   are for someone who may edit the schedule (commitInputEdit, above). The input's own window never passes it.
+
    Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
-export function commitGroup(entry: { rows: any[] } | null, draft: any, people: any[], oilDec?: Record<string, number>): boolean {
+export function commitGroup(entry: { rows: any[] } | null, draft: any, people: any[], oilDec?: Record<string, number>, opts?: InputSaveOpts): boolean {
   if (!draft) return false
   const say = HOOKS.toast
   const cs = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
@@ -1748,11 +1823,11 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
         grp = newId('g')
         grpBy = !scheduler ? mine : (rows[0] && rows[0].by != null ? rows[0].by : mine)
       }
-      for (const r of gone) dropInputRow(r)
+      for (const r of gone) { elogReason(r.iid, leavingNote(r)); dropInputRow(r) }
       for (const r of kept) {
         if (grp && !r.grp) { r.grp = grp; r.grpBy = grpBy }
         if (changed.includes(r)) {
-          if (!commitInputEdit(r, { ...d, person: r.person, docIds: rowDocIds(r) })) stop()
+          if (!commitInputEdit(r, { ...d, person: r.person, docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
           if (oilDec) r.oil = { ...oilDec }
         } else if (oilOnly) { r.oil = { ...oilDec }; stampChanged(r) }
         /* THE ANSWER IS EVERY MAN'S (owner D682, 9 Oct 26: "the answer is written for everyone in it - a man's own
@@ -2051,7 +2126,15 @@ export function InputEditor() {
   const [calKey, setCalKey] = useState(0)
   const [datesPicked, setDatesPicked] = useState(false)
   const rows: any[] = r && !isNew ? entryRowsOf(INPUTS, r).filter((x: any) => INPUTS.indexOf(x) >= 0) : []
-  const picker = win && ctx !== 'up'
+  /* …AND WHEREVER A SHARED INPUT IS OPENED FROM (`[GROUP-INPUT-ONE-ROW]`; owner D661, D734 — "the same as doing it in the
+     input's own window"; the plan 2026-10-10-group-input-one-row-plan.md §4.5: "the dialog opened from the row or the
+     line is the entry's throughout"). The schedule draws a shared input as ONE row, and the dialog a tap on it opened
+     was the one-man form: off the Inputs page `picker` was false, so `grouped` was, and Save wrote the one record the
+     dialog happened to hold — that man then stood as a row of his own (the re-walk's picture G5b). The dialog of an
+     entry of several is the ENTRY's now: its people in the picker, Save the entry's one command, Delete "for all",
+     its OIL lines counting every man. Its DATES stay not editable there (`datesHere` asks for the Inputs page): a
+     moved span would take the row off the day it was opened from. A one-man input's dialog is the form it was. */
+  const picker = (win || rows.length > 1) && ctx !== 'up'
   const grouped = picker && (ppl.length > 1 || rows.length > 1)
   const csOf = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
   /* re-seed whenever a different row is opened, never on a repaint — a
@@ -2090,10 +2173,17 @@ export function InputEditor() {
     setPpl(p0); setSeveral(rs.length > 1); basePpl.current = p0; entryIds.current = rs.map((x: any) => x.iid)
     setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
+      /* …or for the ONE man the schedule's door just added to a shared input whose answers differ (owner D744 —
+         ui/grouprow.ts groupPut; pops.ts OILOWN): the question is his alone — written on his record, nobody else's
+         touched — and the dialog shuts with the sheet (`shut`), answered or not: whoever added him was on the
+         schedule, not in the input's window. Nothing to ask after all (the day stopped asking): the dialog is not left
+         standing open for no reason. */
+      const one = OILOWN
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
       /* the bell's question to a man about his OWN record inside a shared input he did not file: his answer alone */
-      if (g.kind === 'ask') setOilConf(rs.length > 1 && isMe(r.person) && !rs.every((x: any) => mayEditInput(x)) ? { ...g, own: r.iid } : g)
+      if (g.kind === 'ask') setOilConf(one ? { ...g, own: r.iid, shut: true } : rs.length > 1 && isMe(r.person) && !rs.every((x: any) => mayEditInput(x)) ? { ...g, own: r.iid } : g)
+      else if (one) { setInpEdit(null); notify() }
     } else if (OILASK && !r) setOilAsk(null)
   }, [r])
   /* THE RECORD BEHIND THE WINDOW. After every paint of the page the window asks what its record now is:
@@ -2835,8 +2925,8 @@ export function InputEditor() {
           first, and was "Ace +2" from the moment it was saved). */}
       {oilConf && <OilConfirm who={!oilConf.own && grouped && ppl.length > 1 ? `${ppl.map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))[0]} +${ppl.length - 1}` : oilConf.who} typeLabel={oilConf.typeLabel}
         plan={oilConf.plan} prev={oilConf.prev}
-        onCancel={() => setOilConf(null)}
-        onSave={dec => { const own = oilConf.own; setOilConf(null); if (own) saveOwnOil(own, dec); else doSave([], dec) }} />}
+        onCancel={() => { const shut = oilConf.shut; setOilConf(null); if (shut) close() }}
+        onSave={dec => { const own = oilConf.own, shut = oilConf.shut; setOilConf(null); if (own) { saveOwnOil(own, dec); if (shut) close() } else doSave([], dec) }} />}
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
           the SAME save through the rest of the pipeline (skipDoc); "Upload"
           dismisses so the filer can attach a certificate and save again */}

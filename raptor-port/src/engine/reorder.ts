@@ -3,6 +3,7 @@ import { markEdit, markMove, dayApproved, SCHED } from './publish'
 import { permuteKeys, moveKeys } from './keys'
 import { ridKey } from './rowids'
 import { groundOrder } from './order'
+import { groundGroups } from './grouprows'
 import { parseHM } from './time'
 import { store } from './hooks'
 import { isStandalone } from './waves'
@@ -241,6 +242,25 @@ export function moveGroundRow(di:any,from:any,to:any){
     d.gman=true; f=newOf[from]; t=newOf[to];
   }
   if(!ok(rows,f,t))return false;
+  /* THE ONE ROW OF A SHARED INPUT MOVES AS ONE (`[GROUP-INPUT-ONE-ROW]`; owner D661 — "ONE row holding everyone", D735 —
+     "the row never splits or joins by itself"; the plan 2026-10-10-group-input-one-row-plan.md §4.5). Underneath it is a
+     row a man (grouprows.ts), and the grip is the lead's: sliding that one row would leave the others behind, drawn
+     where the next-first of them stands. So where the row dragged, or the row it is dropped on, is one of several:
+     the dragged row's members travel TOGETHER, in their order, and land clear of the other — after its LAST member
+     when moving down, before its first when moving up. A whole permutation, keys and all, as the freeze above and
+     sortGround write one. Rows that stand alone take the single slide below, byte for byte as before. */
+  { const gs=groundGroups(d), blk=(i:any):number[]=>(gs[i]&&gs[i].members.length>1)?gs[i].members.slice().sort((a:number,b:number)=>a-b):[i];
+    const src=blk(f), dst=blk(t);
+    if(src.length>1||dst.length>1){
+      if(src.indexOf(t)>=0)return false;                     // dropped on itself
+      const down=src[0]!<dst[0]!, rest:number[]=[]; rows.forEach((_r:any,i:number)=>{if(src.indexOf(i)<0)rest.push(i);});
+      const at=rest.indexOf(down?dst[dst.length-1]!:dst[0]!)+(down?1:0);
+      const oldOf=rest.slice(0,at).concat(src,rest.slice(at));
+      if(isIdentity(oldOf))return false;
+      const moved=oldOf.map((o:any)=>rows[o]); rows.length=0; moved.forEach((r:any)=>rows.push(r));
+      [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
+      return done(`gr:${di}.${oldOf.indexOf(src[0]!)}.prog`,di);
+    } }
   slide(rows,f,t);
   [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>moveKeys(h,0,f,t,rows.length));
   return done(`gr:${di}.${t}.prog`,di);

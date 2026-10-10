@@ -1,5 +1,5 @@
 import { groundGroups, drawnPeople } from '../engine/grouprows'
-import { entryLines } from '../state/inputgroup'
+import { entryLines, entryRowsOf } from '../state/inputgroup'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
@@ -1376,8 +1376,22 @@ export function saRoleHTML(key:any,a:any,ed:any){
    stays reachable. The Inputs page keeps its own mark — see LATEOFF in
    state/view.ts. Gated at the UI, never in the engine: `isLateInput` goes on
    answering, and the mark was never a rule (§Stable decisions). */
+/* THE MARK OF A SHARED INPUT IS ITS ONE ROW'S (`[GROUP-INPUT-ONE-ROW]`; owner D661 — the plan
+   2026-10-10-group-input-one-row-plan.md §4.5: "the LATE chip on the one row or the one line is shown when any of its
+   records reads late, and a tap drops or restores it for all of them"). A shared input is drawn as ONE row on the
+   Ground Programme and ONE line under Personal Inputs, from its first man's record — and a man the scheduler added
+   from the schedule is never late (D741), so the first man's record alone could say "on time" for an input whose
+   other people filed late. `lateMates` is the records one drawn mark speaks for: every live record of the entry, for
+   an activity input not filed under Unavailable (that list stays a row a man — D737 — and each row there keeps its
+   own mark). A copy that is not the live record (the one an issued face holds) and an ordinary input speak for
+   themselves alone. Every helper below asks it, so the passive tag, the board's chip, the promoted row's amber edge
+   and its tooltip agree. */
+export function lateMates(inp:any):any[]{
+  if(!inp||inp.grp==null||inp.grp===''||!isPersonal(inp.type)||inp.acc==='u'||(INPUTS as any[]).indexOf(inp)<0)return [inp];
+  return entryRowsOf(INPUTS as any[],inp);}
+const lateOne=(inp:any):any=>inp?lateMates(inp).find((r:any)=>isLateInput(r)&&lateShown(r))||null:null;
 export function lateTag(inp:any){
-  return (inp&&isLateInput(inp)&&lateShown(inp))?`<span class="latetag" title="${esc(lateNote(inp))}">LATE</span>`:'';}
+  const l=lateOne(inp); return l?`<span class="latetag" title="${esc(lateNote(l))}">LATE</span>`:'';}
 /* THE CLICKABLE LATE CHIP (owner, 21 Aug 26 — "when I click on the late orange
    icon beside the line, it will remove the late icon, if I click the same area
    again it will show"). Unlike lateTag (the passive amber badge the week and
@@ -1387,9 +1401,12 @@ export function lateTag(inp:any){
    carries the input id routeClick toggles; admin-gated there. Nothing on a
    non-late row, so an ordinary row is byte-identical to before. */
 export function lateChip(inp:any){
-  if(!inp||!isLateInput(inp))return '';
-  const off=!lateShown(inp);
-  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(inp))}" aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
+  /* a shared input's chip: there while ANY record of it is late, lit while any of those shows its mark — addressed
+     by the first late one, and the tap acts for them all (ui/interactions.ts) */
+  const late=inp?lateMates(inp).filter((r:any)=>isLateInput(r)):[];
+  if(!late.length)return '';
+  const off=!late.some((r:any)=>lateShown(r));
+  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(late[0]))}" aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
 /* the same mark on a row that CAME from an input — the ground row acceptInput
    builds, which carries the source input's key in `src`. This is what carries
    the mark onto the view-only page for a personal input: accepting it is the
@@ -1409,7 +1426,7 @@ export function lateTagOf(o:any){return lateTag(srcInput(o));}
    inset amber edge, the .redbox idiom) plus the note in its tooltip: no extra
    node, no extra grid item, nothing to knock out of register. The row's own
    INPUT still carries the full chip in the Personal Inputs panel above it. */
-export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?' lateinp':'';}
+export function lateRowCls(o:any){return lateOne(srcInput(o))?' lateinp':'';}
 /* a REMOVED (dormant, acc 'r' — engine/inputs.ts inputDormant) personal input
    reads visibly PARKED (26 Aug 26 bug pass): it flags nothing until accepted
    again, yet its row printed byte-identical to a fresh, counting one sitting
@@ -1418,7 +1435,7 @@ export function lateRowCls(o:any){const inp=srcInput(o); return (inp&&isLateInpu
    faded by CSS; the title says why. */
 export function dormRowCls(inp:any){return inp&&inp.acc==='r'?' inp-dorm':'';}
 export function dormRowTitle(inp:any){return inp&&inp.acc==='r'?' title="Removed from the day — flags nothing until accepted again"':'';}
-export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateInput(inp)&&lateShown(inp))?` title="${esc(lateNote(inp))}"`:'';}
+export function lateRowTitle(o:any){const l=lateOne(srcInput(o)); return l?` title="${esc(lateNote(l))}"`:'';}
 /* =====================================================================
    ONE DAY'S MARKUP
    Extracted verbatim from renderSchedule's DAYS.map body so a single day can be

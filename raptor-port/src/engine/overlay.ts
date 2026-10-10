@@ -259,6 +259,15 @@ export function requestOfBox(d: any, row: any): any {
   if (!r || r.acc === 'r' || inputProtected(r)) return null
   return standsOn(d, id, r) === row ? r : null
 }
+/* A SHARED ROW — a row of the ONE row a shared input is drawn as (`[GROUP-INPUT-ONE-ROW]`, owner D734 — "on a shared
+   input's row the pucks ARE the input's people"; the plan §4.5): it carries its entry's mark (`srcg`) and is its
+   request's standing row, the request one that can be changed from the schedule. Answers that request, else null. ONE
+   predicate for the door that sends a hand on the row to the input (ui/grouprow.ts) and the belt that refuses a raw
+   write to a member's place (slots.ts setSlotVal / fillSlot), so the two cannot disagree about a row. A shared input
+   keeps its mark down to its last man (reading R3), so the row of one man left is still a shared row. */
+export function sharedRowOf(d: any, row: any): any {
+  return row && row.srcg ? requestOfBox(d, row) : null
+}
 
 export type ViewDayInfo = {
   /* the request rows differ from the day handed in (a row made, re-made or taken away — not the deleted strip) */
