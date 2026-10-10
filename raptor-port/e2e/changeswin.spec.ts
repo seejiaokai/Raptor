@@ -269,3 +269,77 @@ test.describe('Group by Item — the window as the mock-up draws it (D340, D345)
     await expect(g.locator('.cw-det').first()).toHaveText(/#1 (FCP|RCP)|FCP|RCP/)
   })
 })
+
+/* [HIST-JUMP-EMPTY-SEAT] — THE OWNER'S FIND (10 Oct 26, his iPhone): a tap on a change whose seat is empty now was
+   answered "shown on the scheduler board" on Edit Schedule and "shown on the week" on the board — each page sent him to
+   the other. A row that lists its people draws a seat only while someone is in it; the tap now lands on the ROW's
+   people box. What only a real browser can prove: the box is brought ON SCREEN on a phone, clear of the bar the window
+   drops to, with nothing drawn over it — under a real finger at a point, not a scripted press that scrolls first.
+   Every kind of row, on both pages, is the loop in src/ui/histjump.test.tsx; the walk is docs/handpass/. */
+test.describe('a change whose seat is empty now lands on its row — a phone, by touch', () => {
+  test.use({ viewport: PHONE, hasTouch: true })
+  const fingerOnLine = async (page: Page, pos: string) => {
+    const show = page.locator('.cw-show:visible')
+    if (await show.count()) { const b = (await show.boundingBox())!; await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(350) }
+    const pt = await page.evaluate(p => {
+      const el = ([...document.querySelectorAll('.chgwin button.cw-l')] as HTMLElement[]).find(e => e.offsetParent && (window as any).posKey(e.dataset.cwkey || '') === p)
+      if (!el) return null
+      const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, hit = document.elementFromPoint(x, y)
+      return { x, y, hit: !!hit && (hit === el || el.contains(hit)), inView: r.top >= 0 && r.bottom <= innerHeight }
+    }, pos)
+    expect(pt, `a line for ${pos} is in the window`).toBeTruthy()
+    expect(pt!.inView && pt!.hit, 'the line is on screen with nothing over it').toBe(true)
+    await page.touchscreen.tap(pt!.x, pt!.y)
+    /* the page glides to the place: measured once it is at rest, while the mark still shows (about 1.4 s) */
+    await expect(page.locator('.chgflash')).toHaveCount(1)
+    let last = ''
+    for (let i = 0; i < 8; i++) {
+      const at = await page.evaluate(() => { const e = document.querySelector('.chgflash'); return e ? Math.round(e.getBoundingClientRect().top) + '' : 'none' })
+      if (at === last) break
+      last = at; await page.waitForTimeout(110)
+    }
+    return page.evaluate(() => {
+      const el = document.querySelector('.chgflash') as HTMLElement | null, t = document.getElementById('toastEl')
+      if (!el) return { said: t ? t.textContent || '' : '', fill: '', inView: false, clear: false, onTop: false }
+      const r = el.getBoundingClientRect(), bar = document.querySelector('.cw-show') as HTMLElement | null
+      const br = bar && bar.offsetParent ? (bar.closest('button') || bar).getBoundingClientRect() : null
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+      return {
+        said: t ? t.textContent || '' : '', fill: el.dataset.fill || '',
+        inView: r.top >= 0 && r.left >= 0 && r.bottom <= innerHeight && r.right <= innerWidth,
+        clear: !br || r.bottom <= br.top || r.top >= br.bottom,
+        onTop: !!hit && (hit === el || el.contains(hit)),
+      }
+    })
+  }
+  test('Edit Schedule, then the Scheduler Board: each lands on SODB\'s people box, on screen, and names no other page', async ({ page }) => {
+    await page.goto('/')
+    await signIn(page, 'ad', 'a')
+    await go(page, 'editsched')
+    /* Ranger moves from FLIGHT SAFETY STAND-DOWN into SODB, then on — both seats stand empty (the engine's own writers;
+       the walk does it with a mouse) */
+    await page.evaluate(() => {
+      const w = window as any, man = w.slotVal('a:0.2.0')
+      w.setSlotVal('a:0.2.0', ''); w.fillSlot('a:0.0.+', man); w.afterSchedMutate()
+      w.setSlotVal('a:0.0.0', ''); w.fillSlot('a:0.3.+', man); w.afterSchedMutate()
+    })
+    await page.click('#histBtn')
+    await page.click('.chgwin .win-tab:has-text("All changes")')
+    const week = await fingerOnLine(page, 'a:0.0.0')
+    expect(week.said).toBe('That seat is empty now')
+    expect(week.fill, 'the mark is on the people box of SODB').toBe('a:0.0.+')
+    expect(week.inView, 'on screen').toBe(true)
+    expect(week.clear, 'clear of the bar the window dropped to').toBe(true)
+    expect(week.onTop, 'nothing is drawn over it').toBe(true)
+
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#sbHist')
+    await page.waitForTimeout(1500)     // the first mark has faded
+    const board = await fingerOnLine(page, 'a:0.0.0')
+    expect(board.said).toBe('That seat is empty now')
+    expect(board.fill).toBe('a:0.0.+')
+    expect(board.inView, 'on screen').toBe(true)
+    expect(board.clear, 'clear of the bar').toBe(true)
+    expect(board.onTop, 'nothing is drawn over it').toBe(true)
+  })
+})

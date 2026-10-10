@@ -6,6 +6,7 @@
    drive the React build unchanged. It changes no behaviour — it only makes
    the existing API reachable — and it weighs a few hundred bytes. */
 import { DAYS } from './engine/data'
+import { posKey } from './engine/rowids'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
@@ -84,6 +85,8 @@ export function installProbeBridge() {
   Object.defineProperty(w, 'CXR_CFG', { get: () => CXR_CFG, configurable: true })
   /* the mutation funnel + validation */
   w.slotVal = slotVal; w.setSlotVal = setSlotVal; w.fillSlot = fillSlot
+  /* a change line carries its place by the row's id; a walk names a place by where it is drawn ([HIST-JUMP-EMPTY-SEAT]) */
+  w.posKey = (k: any) => posKey(k, DAYS)
   w.txtGet = txtGet; w.txtSet = txtSet
   w.validate = validate; w.collectEvents = collectEvents; w.slotBar = slotBar
   w.markEdit = markEdit; w.publishALDay = publishALDay; w.setDayApproved = setDayApproved; w.signOf = signOf
