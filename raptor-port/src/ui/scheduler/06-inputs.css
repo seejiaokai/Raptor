@@ -85,10 +85,16 @@
    was drawn across the middle of the row (seen on the first picture of the built table). As a cell it is as tall as
    its row; the controls sit in it centred, with the same 22px between them. */
 .inact{white-space:nowrap;text-align:center}
-.inact>span{margin:0 11px;vertical-align:middle}
-.inact>span{display:inline-flex;align-items:center;justify-content:center;
+.inact>span,.inact>button{margin:0 11px;vertical-align:middle}
+.inact>span,.inact>button{display:inline-flex;align-items:center;justify-content:center;
   width:30px;height:30px;border-radius:6px;font-size:15px;line-height:1;
   border:1px solid transparent;transition:background .12s,border-color .12s}
+/* THEY ARE BUTTONS NOW (`[SEEN-BATCH-2]` A4, 10 Oct 26 — the paperclip and the OIL chips were <span>s a Tab never
+   reached). Only what a <button> brings of its own is taken off — its grey face and its own typeface — so each looks
+   and measures exactly as the span it replaces (D487: no button changes size; the pin is
+   e2e/inputs-batch2.spec.ts). The keyboard's ring is the row Name's own. */
+.inact>button{background:none;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
+.inact>button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* A ROW OPENS ITS INPUT (D718): the whole row answers a click, and its Name is the button a keyboard and a screen
    reader meet — drawn as the plain name it replaced, with a ring when the keyboard is on it. */
 #inBody tr{cursor:pointer}
@@ -125,6 +131,29 @@
    pushed it a screen down; the form went with D729. Pin: e2e/inputs-calendar.spec.ts "the dates button opens its
    calendar on screen" — pressed by a finger at a point, never a locator's tap (that scrolls the target into view). */
 @media (max-width:700px){.inrange{position:static}.inputs-listtools{position:relative}.inrange-pop{left:8px;right:8px}}
+/* ON A PHONE ITS DAYS ARE A FINGER'S SIZE AND IT FILLS ITS WIDTH (owner D731 (12), 10 Oct 26 — "Yes to all": "make its
+   days the same finger size as the window's, filling the width"). D725 made the days of the calendar in an input's
+   WINDOW a finger's size (25-inputs-calendar.css) and this one — the same calendar, in the List's dates pop-up — was
+   not part of it: its days were about 28 x 23 and it filled half the pop-up. The same sizes here, by his word for this
+   control (D487); the pop-up is already the row's full width on a phone (above), so the calendar takes all of it. A
+   desktop's pop-up keeps its small calendar. Declared after the calendar's own rules, below, would be tidier — it is
+   here beside the pop-up it belongs to, and its two-id selectors outrank them. */
+@media (max-width:700px){
+  #inRangePop #inRangeCal{width:100%;box-sizing:border-box;padding:8px 10px}
+  #inRangePop #inRangeCal .rc-d{font-size:13px;padding:8px 0}
+  #inRangePop #inRangeCal .rc-x{padding:8px 0}
+  #inRangePop #inRangeCal .rc-nav{width:28px;height:28px;font-size:14px}
+}
+/* …and on a SHORT phone (568 tall) the pop-up, with an admin's "Default window" row, ran 11px past the foot of the
+   screen once its days were a finger's size (the batch's own browser test, at three heights). The days keep their
+   size; the room is found in the padding round them. */
+@media (max-width:700px) and (max-height:600px){
+  #inRangePop{padding:6px}
+  #inRangePop #inRangeCal{padding:4px 10px}
+  #inRangePop .rc-read{margin-top:4px}
+  #inRangePop .inrange-btns,#inRangePop .inrange-cfg{margin-top:6px}
+  #inRangePop .inrange-cfg{padding-top:6px}
+}
 /* the two-click range calendar — it stands in the input's window and in the List's dates picker (its place in the
    List's own add form went with that form, D729); (the old note: its grid placement lives with the .ingrid
    tracks above, NOT here: a bare `grid-column:span 2` this far down the file

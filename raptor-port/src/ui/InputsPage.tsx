@@ -11,7 +11,7 @@
    Type → ui/TypeLegend.tsx; an admin's posted-out people for a NEW input; the just-saved row lit). */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, isoLabel } from '../engine/inputs'
+import { INPUTS, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -31,7 +31,7 @@ import { InputsCal } from './InputsCal'
 import { SansCal } from './SansCal'
 /* the draft shape, the OIL question and the new input's seed are the input window's own — see ui/inputedit.tsx */
 import {
-  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay,
+  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel,
   rosterOptions as people, archivedOptions, inputTone, newInputSeed,
 } from './inputedit'
 import { docHas, rowDocIds } from '../state/docs'
@@ -308,15 +308,38 @@ export function InputsPage() {
      next click is nearly always the thing the user opened it to get at, and it
      lands on a page the popover is still covering. Close on any press outside
      the picker — mousedown, so it is gone before that press becomes a click. */
+  /* IT STAYS OPEN AFTER ITS END DATE IS TAPPED (owner D731 (3), 10 Oct 26 — "Yes to all": the range he chose is in
+     sight and a quick button is still one press away). What closes it: a press outside, a quick button, its own
+     button — and ESCAPE, as every pop-up of the app (`[CARD-CHECK-SEEN]` 9: it did nothing). The key is taken on its
+     way IN (the window, before any other listener) and goes no further: with an input's window up as well, one
+     Escape closes this calendar and the next is the window's — never both at once, never what he had typed.
+     A FINGER'S PRESS COUNTS AS A PRESS OUTSIDE: `pointerdown` beside `mousedown` — an iPhone sends no mouse press for
+     a tap on plain page, so there the calendar could only be closed by its own button. */
+  /* ONLY WHILE IT CAN BE SEEN (Astra's scenario design of this batch, 10 Oct 26 — scenario 21). The List can be left by
+     the keyboard — Tab to "Calendar", Enter — with no press outside to close this calendar: it stays "open" under a
+     List that is hidden, and its Escape would then swallow the first Escape meant for whatever IS in front (an opened
+     day stayed up, and the key seemed dead). It listens only while the List is the view shown. */
+  const listShown = tab === 'inputs' && INPVIEW === 'table'
   const rangeRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!calOpen) return
+    if (!calOpen || !listShown) return
     const away = (e: Event) => {
       if (!rangeRef.current || !rangeRef.current.contains(e.target as Node)) setCalOpen(false)
     }
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault(); e.stopPropagation()
+      setCalOpen(false)
+    }
     document.addEventListener('mousedown', away)
-    return () => document.removeEventListener('mousedown', away)
-  }, [calOpen])
+    document.addEventListener('pointerdown', away)
+    window.addEventListener('keydown', esc, true)
+    return () => {
+      document.removeEventListener('mousedown', away)
+      document.removeEventListener('pointerdown', away)
+      window.removeEventListener('keydown', esc, true)
+    }
+  }, [calOpen, listShown])
 
   /* A MEMBER MAY FILE INPUTS (owner, 5 Aug 26). The reference's role gate turned a member away with "View only — ask
      a scheduler"; the squadron's inputs are the crews' OWN leave, downchits and detachments, so the people they belong
@@ -540,7 +563,10 @@ export function InputsPage() {
         aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}>&#9881;</button>
     )}
   </>)
-  const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson(EVERYONE);setFType('all');setFSearch('');notify()}}>Clear filters</button></div>
+  /* the filters put back to none — the summary line's "Clear filters", and the same words in a day opened on the calendar
+     whose inputs they all hide (D731 (2); ui/InputsCal.tsx) */
+  const clearFilters = () => { unpin(); setFPerson(EVERYONE); setFType('all'); setFSearch(''); notify() }
+  const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={clearFilters}>Clear filters</button></div>
 
   return (
     <div className={'inputs-workspace tab-' + tab}>
@@ -704,7 +730,7 @@ export function InputsPage() {
                   /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on
                      one of the row's own controls: its Name button opens it by itself, and the paperclip and the OIL
                      chips of the last cell do their own work. */
-                  onClick={ev => { const t = ev.target as HTMLElement; if (!t.closest('button') && !t.closest('.inact > span')) openInput(r) }}>
+                  onClick={ev => { const t = ev.target as HTMLElement; if (!t.closest('button')) openInput(r) }}>
                   {/* data-same now marks an EMPTY End — an all-day one-day
                       input, whose date already reads once in Start — so the
                       phone card drops it and reads just "13 Jul". A timed
@@ -757,8 +783,11 @@ export function InputsPage() {
                     {/* the paperwork behind a medical row — EVERY account may
                         view it (owner, 27 Aug 26), so this sits ungated where
                         the row's other actions live */}
-                    {rowDocIds(r).some(docHas) && <span className="rclip" data-doc={inx} title="View the document"
-                      onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></span>}
+                    {/* BUTTONS, AS THE ROW'S NAME IS (`[CARD-CHECK-SEEN]` 6, 10 Oct 26): the paperclip and the two OIL chips
+                        were <span>s — a Tab never reached them and a screen reader met nothing. The same look, the same
+                        size (D487: 06-inputs.css `.inact>button`), each with a name of its own. */}
+                    {rowDocIds(r).some(docHas) && <button type="button" className="rclip" data-doc={inx} title="View the document" aria-label="View the document"
+                      onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></button>}
                     {/* Edit and delete are the owner's OWN-INPUT rights for a
                         member (owner, 27 Aug 26): a scheduler works every row,
                         a member only their own — someone else's row is view
@@ -776,8 +805,8 @@ export function InputsPage() {
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
                           change (oilAnswered), same right as editing the row */}
-                      {oilAnswered(r) && <span className="roil" data-oilrev={inx} title="Change the OIL decision"
-                        onClick={() => reviseOil(r)}>OIL</span>}
+                      {oilAnswered(r) && <button type="button" className="roil" data-oilrev={inx} title="Change the OIL decision" aria-label="Change the OIL decision"
+                        onClick={() => reviseOil(r)}>OIL</button>}
                       {/* AND THE SIGN WHEN NOBODY HAS ANSWERED YET (Fable F6,
                           22 Sep 26). The revise control above appears only where
                           an answer EXISTS, so a request whose question was asked
@@ -786,9 +815,10 @@ export function InputsPage() {
                           bell is per-member, so it lights for the man and never
                           for the scheduler who made the change. Same predicate
                           family, same place, and it opens the same sheet. */}
-                      {!oilAnswered(r) && oilUnansweredDay(r) && <span className="roil ask" data-oilask={inx}
-                        title={`Nobody has answered the OIL question for ${isoLabel(oilUnansweredDay(r))} — tap to answer it`}
-                        onClick={() => reviseOil(r)}>OIL?</span>}
+                      {!oilAnswered(r) && oilUnansweredDay(r) && <button type="button" className="roil ask" data-oilask={inx}
+                        title={`Nobody has answered the OIL question for ${oilDayLabel(oilUnansweredDay(r))} — tap to answer it`}
+                        aria-label={`Answer the OIL question for ${oilDayLabel(oilUnansweredDay(r))}`}
+                        onClick={() => reviseOil(r)}>OIL?</button>}
                     </>}
                   </td>
                 </tr>
@@ -811,7 +841,7 @@ export function InputsPage() {
           that has to rebuild the list from scratch */}
       {sansUp && <SansCal />}
       {calUp && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
-        seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} />}
+        seedIso={range.from || isoOf(new Date())} lead={<>{tabsRow}{views}</>} tools={tools} under={filterSummary} onClearFilters={clearFilters} />}
       {tab === 'med' && <MedicalView />}
       {/* the OIL ask (owner, 28 Aug 26) — the desktop row's OIL chip: Save runs the
           stashed commit with the day decisions, Cancel writes nothing */}

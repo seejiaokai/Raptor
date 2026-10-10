@@ -10,6 +10,7 @@ import { initStore, loadWeek } from './store'
 import { setSession } from './auth'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { stashClear, stashPut, rowElsewhere } from '../engine/weekstash'
@@ -207,7 +208,53 @@ describe('the Undo on a request\'s card names the day its row is on', () => {
       routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any)
       b.remove()
     } finally { HOOKS.toast = keep }
-    expect(said.join(' ')).toContain("Accept undone — its row came off Tuesday's programme")
+    /* D731 (5): the take-off names the request, as the accept does — and the day its row stood on, where that is another */
+    expect(said).toEqual([`${PEOPLE.divot.cs}'s Meeting taken off Tuesday's programme`])
     expect(rowsOf(inp)).toEqual([])
+  })
+})
+
+/* THE TAKE-OFF MESSAGE NAMES THE REQUEST (owner D731 (5), 10 Oct 26 — "Ranger's Sports day taken off the programme").
+   It said "Accept undone": whose request, and which, went unsaid, where the accept beside it says the whole thing. */
+describe('D731 (5) — taking a request off names it', () => {
+  const press = async (inp: any, di: number) => {
+    const { HOOKS } = await import('../engine/hooks')
+    const { routeClick } = await import('../ui/interactions')
+    const said: string[] = [], keep = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      const b = document.createElement('button')
+      b.dataset.acc = 'x'; b.dataset.accd = String(di); b.dataset.acck = inpId(inp)
+      document.body.appendChild(b)
+      routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any)
+      b.remove()
+    } finally { HOOKS.toast = keep }
+    return said
+  }
+  it('off the ground programme, on its own day: "<callsign>\'s <its title> taken off the programme"', async () => {
+    const inp: any = { person: 'divot', type: 'Event', title: 'Sports day', date: 'Jul 15', s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(2, inp, 'g')).toBe(true)
+    expect(await press(inp, 2)).toEqual([`${PEOPLE.divot.cs}'s Sports day taken off the programme`])
+    expect(inp.acc).toBe('r')
+    expect(rowsOf(inp)).toEqual([])
+  })
+  it('an input with no title of its own is named by its kind', async () => {
+    const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 15', s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(2, inp, 'g')).toBe(true)
+    expect(await press(inp, 2)).toEqual([`${PEOPLE.divot.cs}'s Meeting taken off the programme`])
+  })
+  it('one filed under Unavailable was never on the programme: "taken out of Unavailable"', async () => {
+    const inp: any = { person: 'divot', type: 'Other', date: 'Jul 15', s: 540, e: 600, remarks: 'dentist', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(2, inp, 'u')).toBe(true)
+    const said = await press(inp, 2)
+    expect(said).toHaveLength(1)
+    expect(said[0]).toMatch(new RegExp(`^${PEOPLE.divot.cs}'s .+ taken out of Unavailable$`))
+  })
+  it('nowhere does it say "Accept undone" any more', async () => {
+    const src = (await import('node:fs')).readFileSync('src/ui/interactions.ts', 'utf8')
+    expect(src).not.toMatch(/['`]Accept undone/)
   })
 })

@@ -1,5 +1,6 @@
 /* The toast — verbatim; wired into the engine's HOOKS.toast at app boot */
 import { VIEW_RESET } from '../state/view'
+import { phoneLayout } from './floatwin'
 const $=(id:any)=>document.getElementById(id)
 export let toastT:any=null;
 /* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26 — the amendment re-test's walker W1: Saturday's "Published AL1 ·
@@ -26,6 +27,23 @@ export function toastBatch<T>(fn:()=>T):T{
   }
   return out!;
 }
+/* WHERE IT STANDS (owner D731 (1), 10 Oct 26 — "on a phone, while a window is open, the passing note is shown at the TOP
+   of the screen, not over the window's buttons at its foot"; walker B of the input card's check: "OIL answer saved" lay
+   between "Take me out" and "Close" for as long as it showed). On a phone a window of the shell (ui/FloatWindow.tsx —
+   a day opened on a calendar, an input, a calendar's settings, "Calendar") is a panel standing on the foot of the
+   screen with its buttons at its own foot — exactly where the note is drawn. So while one is up, on a phone, the note
+   is drawn at the top; a desktop, and a phone with no window up, keep it at the foot as before. Asked again when a
+   window opens (FloatWindow.tsx), so a note already showing moves clear of the buttons that have just arrived under
+   it; NOT when one closes — a note is not moved about while it is being read for no reason.
+   "A window" is the shell's: the Leave War's sheets and the schedule's dialogs are other chassis, not pictured to him
+   for this choice, and keep the note where it was (told to him as a reading). */
+export function placeToast(){
+  const t=$('toastEl'); if(!t)return;
+  const up=phoneLayout()&&!!document.querySelector('.floatwin');
+  t.dataset.at=up?'top':'foot';
+  t.style.top=up?'calc(env(safe-area-inset-top, 0px) + 10px)':'';
+  t.style.bottom=up?'auto':'26px';
+}
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */
 export function toast(msg:any,kind:any){
@@ -44,6 +62,7 @@ export function toast(msg:any,kind:any){
        beats an inline style), so no JS gate is needed for this half. */
     t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease';document.body.appendChild(t);}
   t.textContent=msg; t.style.opacity='1';
+  placeToast();
   /* 'hard' (5 Sep 26) — the drop delta's colour for a breach the validator
      raised at hard severity: same red as the puck's own ring, same hold as
      a warn toast. Anything else keeps the plain face. */
@@ -59,7 +78,8 @@ export function toast(msg:any,kind:any){
   try{
     if(typeof (t as any).animate==='function'&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))
       (t as any).animate(
-        [{transform:'translateX(-50%) translateY(8px)'},{transform:'translateX(-50%)'}],
+        /* it rises into its place at the foot, and drops into it at the top */
+        [{transform:`translateX(-50%) translateY(${t.dataset.at==='top'?-8:8}px)`},{transform:'translateX(-50%)'}],
         {duration:200,easing:'cubic-bezier(.22,.61,.36,1)'})
   }catch(_){/* motion is decoration — a throw here must never eat the toast */}
   /* HOW LONG IT HOLDS — long enough to READ (owner, 21 Sep 26: "the inputs

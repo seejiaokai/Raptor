@@ -676,7 +676,7 @@ export function QualsPage() {
       <div className="qbar">
         <button className="abtn primary" id="qEdit" hidden={qEditing} onClick={() => setEditing(true)}>Enable editing</button>
         <button className="abtn" id="qSave" hidden={!qEditing}
-          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved (prototype — writes to Dataverse in the full build).') }}>Save changes</button>
+          onClick={() => { setEditing(false); setQualsEdit(false); setArmDel(''); HOOKS.toast('Quals saved') }}>Save changes</button>
         {/* the second mode, inside edit mode and admin-only (owner, 5 Aug 26):
             which qualifications the LoX carries, and in which order. Off by
             default every time editing is switched on — reshaping the table is

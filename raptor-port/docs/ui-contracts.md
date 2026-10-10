@@ -9568,16 +9568,62 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
   `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
   calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
-- **RULED, NOT YET BUILT — the small choices of the Inputs pages (owner D731, 10 Oct 26 — "Yes to all"; the build:
-  `OUTSTANDING.md` `[SEEN-BATCH-2]`).** When built, each becomes a line of its own here: on a phone a passing note shows at
-  the TOP of the screen while a window is open; a day whose inputs a filter hides says "No inputs match on this day." with
-  "Clear filters"; the List's dates calendar stays open after its end date (a tap outside or Escape closes it) and its
-  days are a finger's size on a phone, filling its width (as D725's); a shared input's OIL line counts its people where
-  their answers differ ("credited for 2 of 3 — Ranger: no"); taking a request off the programme names it ("Ranger's
-  Sports day taken off the programme"); an OIL answer for a day an input no longer covers stays on the record; with
-  members' filing switched off the filer reads "Filing for other people is switched off — an admin can change this.";
-  Escape in a planning note being typed leaves the note box only; the two-documents viewer keeps "Edit input" and
-  "Close" pinned at its foot; several days picked on the month open the window at once (kept as built).
+- **THE SMALL CHOICES OF THE INPUTS PAGES, AS BUILT (owner D731, 10 Oct 26 — "Yes to all"; `[SEEN-BATCH-2]`; the check
+  `docs/handpass/2026-10-10-batch2-check.md`).** Each is a line of its own below. Tests: `ui/batch2.test.tsx`,
+  `ui/toastplace.test.tsx`, `state/reqorphan.test.ts`, `ui/quals.test.tsx`, and in a real browser
+  `e2e/inputs-batch2.spec.ts`.
+  - **ON A PHONE, WHILE A WINDOW IS UP, THE PASSING NOTE IS AT THE TOP OF THE SCREEN (D731 (1)).** A window of the shell
+    (`ui/FloatWindow.tsx`) stands on the foot of a phone's screen with its buttons at its own foot — where the note was
+    drawn. `ui/toast.ts placeToast` asks "a phone, and a window up?" when a note is said and again when a window opens
+    (a note already showing moves clear); never when one closes. A desktop, and a phone with no window up: the foot, as
+    before. "A window" is the shell's — the Leave War's sheets and the schedule's dialogs keep the note at the foot.
+  - **A DAY WHOSE INPUTS A FILTER HIDES SAYS SO (D731 (2)).** A day opened on the Inputs calendar with nothing listed
+    WHILE it has inputs when no filter is asked reads "No inputs match on this day." with "Clear filters" beside it —
+    the page's own clearing (`InputsPage.tsx clearFilters`). A day with no inputs at all reads "No inputs on this day.
+    Tap + Input to add one.", filter or no filter.
+  - **THE LIST'S DATES CALENDAR (D731 (3), (12); `[SEEN-BATCH-2]` A6).** It stays open after its end date is tapped; a
+    press outside closes it — `pointerdown` beside `mousedown`, so a finger's press counts on an iPhone — as do its
+    quick buttons and its own button; Escape closes it, taken on the way in (the window, capture) so that with an
+    input's window up as well one Escape closes the calendar and the next the window. On a phone (≤700px) its days are
+    a finger's size and it fills its pop-up — D725's sizes for the calendar in an input's window; on a short phone
+    (≤600px tall) the room is found in the padding round it, never in the days. A desktop keeps its small calendar.
+  - **A SHARED INPUT'S OIL LINE COUNTS ITS PEOPLE WHERE THEIR ANSWERS DIFFER (D731 (4)).** In its window on the Inputs
+    page the line speaks for the ENTRY (`inputedit.tsx oilSummaryOf`): alike — exactly the old words; differing —
+    "credited for 2 of 3 — Ranger: no" (each man with no credit named "no", one credited for only some days "1 of 2
+    days"; a man who has not answered is named by the "Not answered yet" line under it, not here). It is drawn while
+    ANY man of the entry has an answer, and then "Change…" is the one button (no second "Answer…"). A reader's line
+    carries no button (A7). In the schedule's and the board's dialog the line is the one man's, as before.
+  - **A GROUP'S OIL QUESTION IS HEADED FOR THE GROUP (A8).** "OIL — Ace +1, Duty": the entry's first name and how many
+    more, the words of the window's own title — decided in ONE place, where the sheet is drawn, for every door (the
+    save, "Change…", "Answer…", the bell, the question that follows a bar's drag). A man's OWN answer inside an input
+    he did not file is headed with his name alone.
+  - **AN OIL DAY IN ANOTHER YEAR SAYS ITS YEAR (A5).** `inputedit.tsx oilDayLabel` — "9 Jan 2027" — is the one label of
+    the question's heading, the window's two "not answered yet" lines and the desktop row's "OIL?" chip.
+  - **TAKING A REQUEST OFF NAMES IT (D731 (5)).** "Ranger's Sports day taken off the programme"; where its row stood on
+    another day, "…taken off Tuesday's programme"; where it was filed under Unavailable, "…taken out of Unavailable"
+    (`interactions.ts`, the week and the board alike). "Accept undone" is said nowhere.
+  - **AN OIL ANSWER FOR A DAY THE INPUT NO LONGER COVERS STAYS ON THE RECORD (D731 (7)).** Left as it is: nothing shows
+    it, nothing is credited for it, and it stands again if the input moves back. Pinned (`batch2.test.tsx`).
+  - **TO THE FILER, WITH THE MEMBERS' SWITCH OFF: "Filing for other people is switched off — an admin can change
+    this." (D731 (8)).** One sentence (`inputedit.tsx FILING_OFF`) wherever he was told "Only <himself> — who filed it
+    — or an admin can …": the window's foot (a shared input, and one he filed for ALL AVAIL / ALL), Delete for
+    everyone, a save, the Delete key on the opened day's line, a bar's drag — every door but the foot through one body,
+    `sharedRefusal`. The reason is asked of `state/perms.ts filerSwitchedOff`, which decides no right: "Take me out"
+    is offered exactly where the rules already offer it.
+  - **ESCAPE WHILE A NOTE IS TYPED LEAVES THE NOTE BOX ONLY (D731 (9)).** In an opened day the note box (a new note's,
+    and an existing note's being edited) takes Escape first: the box is put away, nothing is written — a new note is
+    not made, an edited one keeps its words — and the day stays; the next Escape closes the day. Enter and leaving the
+    box still save.
+  - **THE DOCUMENT VIEWER KEEPS ITS BUTTONS IN SIGHT (D731 (10)).** Its foot — "Upchit", "Edit input", "Close" — is
+    pinned to the foot of the scrolling box (`16-medical.css`), the page moving above it.
+  - **SEVERAL DAYS PICKED ON THE MONTH OPEN THE WINDOW AT ONCE (D731 (11)).** Kept as built; no bar to confirm first.
+  - **THE TEN FAULTS OF LIST A.** The "Unsaved changes" question is asked from the FRONT (the window comes forward
+    when it asks — A1). Enter in a new input's Remarks or Title is used up by the save (`preventDefault` on the key
+    down — it had gone on to press the "+ Input" the keyboard returned to — A2). In a window its reader may not
+    change, the people picker says nothing about what may be picked (A3). The desktop row's paperclip and OIL chips
+    are buttons of the same look and size (A4). A "Changed while this window was open" note goes when the record
+    comes back to the value his change was typed over, and repaints when "theirs" moves again (A10). The Quals save
+    note reads "Quals saved" (A9). A5–A8 are the lines above.
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the

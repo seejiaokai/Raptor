@@ -1066,6 +1066,17 @@ describe('Edit quals', () => {
     } finally { layDown() }
   })
 
+  /* `[CAL-CHECK-SEEN]` (walker D, in passing): the save's note read "Quals saved (prototype — writes to Dataverse in the
+     full build)" — a prototype caveat on screen, against his standing rule that the app's words read production
+     (25 Aug 26). `[SEEN-BATCH-2]` A9, 10 Oct 26. */
+  it('Save changes says "Quals saved" — and nothing about a prototype', async () => {
+    await on()
+    const said: string[] = [], keep = HOOKS.toast
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    try { await click($('#qSave')) } finally { HOOKS.toast = keep }
+    expect(said).toEqual(['Quals saved'])
+  })
+
   it('Save changes puts the table back to reading, and the mode with it', async () => {
     await on()
     await click($('#qSave'))

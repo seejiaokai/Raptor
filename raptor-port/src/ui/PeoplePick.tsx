@@ -91,7 +91,7 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
   return null
 }
 
-export function PeoplePick({ people, several, type, sansOnly, lockOne, more, moreIds, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -99,6 +99,10 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, more, mor
   sansOnly?: boolean
   /** an input already filed, read by a member: its one person is a value — moving it to another man is a scheduler's */
   lockOne?: boolean
+  /** the whole form is one its reader may not change (the input's window, read only): nothing can be picked, so nothing
+   *  is said about what may be picked (`[CARD-CHECK-SEEN]` 4, 10 Oct 26 — a member reading another man's medical entry
+   *  was told "You can file a medical entry only for yourself") */
+  readOnly?: boolean
   /** more choices for the one-person list — an admin's "Posted out / archived" group. (The List's own add form, which
    *  drew this picker with its own field markup and ids, went on 10 Oct 26 — D729; the input's window is its one user.) */
   more?: ReactNode
@@ -116,7 +120,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, more, mor
   /* the switch shows where a group may be filed — and stays while several ARE picked, so a kind that no longer allows
      it never hides what he chose */
   const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditSched())) || several
-  const problem = pickProblem(people, several, type)
+  const problem = readOnly ? null : pickProblem(people, several, type)
   const toggle = (id: string) => {
     if (people.includes(id)) { if (people.length > 1) onChange(people.filter(p => p !== id), true) }
     else onChange([...people, id], true)

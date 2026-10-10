@@ -47,6 +47,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { frontWin, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
+import { placeToast } from './toast'
 
 /* where he left each window, by its id — module state, never component state: the page behind re-renders on every
    keystroke, and component state would throw a window back to its corner mid-drag (floatwin.ts) */
@@ -182,6 +183,9 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     const n = el.current
     if (forward(id)) notify()
     if (n && !n.contains(document.activeElement)) n.focus({ preventScroll: true })
+    /* a passing note already on screen moves clear of the buttons this window has just put at the foot of a phone's
+       screen (D731 (1) — ui/toast.ts placeToast) */
+    placeToast()
     return () => {
       /* the one left comes forward - and is repainted, so it wears the mark */
       if (gone(id)) notify()

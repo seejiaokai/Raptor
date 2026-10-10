@@ -11,7 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
-import { FloatWin } from './FloatWindow'
+import { FloatWin, bringForward } from './FloatWindow'
 import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
@@ -45,7 +45,7 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove, setDocView } from './pops'
 import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
@@ -749,6 +749,41 @@ export function oilSummary(row: any): string {
   if (!yes) return n === 1 ? 'no OIL on its non-working day' : `no OIL on its ${n} non-working days`
   if (n === 1) return 'credited on its non-working day'
   return `credited on ${yes} of ${n} non-working days`
+}
+/* A SHARED INPUT'S LINE COUNTS ITS PEOPLE WHERE THEIR ANSWERS DIFFER (owner D731 (4), 10 Oct 26 — "credited for 2 of 3 —
+   Ranger: no"; walker C of the input card's check, scenario 61). Each man's record carries his OWN answer (D660: the
+   filer answers for all at the save, and a man may still change his own), and the window's line read the answers of
+   the ONE record it happened to be opened on: "credited on its non-working day" for three people of whom one had
+   since said No. Where every man's answers are alike the line reads exactly as it always did — `oilSummary`, above
+   (his reading (b)). Where they differ: how many of them are credited at all, then each man who is not ("no"), and
+   each credited for only some of its days ("1 of 2 days"). A man who has not answered is NOT named here: the window's
+   own "Not answered yet — <day>: <names>" line, straight under this one, names him. Words only — it reads the same
+   stored answers the credit pass reads (leavewar/sync.ts oilAskPlan) and writes nothing. */
+export function oilSummaryOf(rows: any[]): string {
+  const live = (rows || []).filter(Boolean)
+  if (live.length < 2) return live.length ? oilSummary(live[0]) : ''
+  const marks = live.map(r => {
+    const prev = (r.oil || {}) as Record<string, number>
+    return oilAskPlan(r).map(p => (prev[p.iso] == null ? '?' : prev[p.iso] > 0 ? 'y' : 'n'))
+  })
+  if (marks.every(m => m.join('') === marks[0].join(''))) return oilSummary(live[0])
+  const who = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person ?? ''))
+  const credited = marks.filter(m => m.includes('y')).length
+  const notes = live.map((r, i) => {
+    const m = marks[i], yes = m.filter(x => x === 'y').length
+    if (yes && yes < m.length) return `${who(r)}: ${yes} of ${m.length} days`
+    if (!yes && m.length && m.every(x => x === 'n')) return `${who(r)}: no`
+    return ''
+  }).filter(Boolean)
+  return `credited for ${credited} of ${live.length}` + (notes.length ? ' — ' + notes.join(', ') : '')
+}
+/* ONE LABEL FOR AN OIL DAY, wherever one is named (`[CARD-CHECK-SEEN]` 8 — walker C, scenario 78: the question of an
+   input in January 2027 named "9 JAN"). Every other date outside the year in hand says its year — the List's day
+   headings, a card's "till 1 Jan 2027". Used by the question's heading (ui/OilConfirm.tsx), the window's two "not
+   answered yet" lines and the desktop row's "OIL?" chip (ui/InputsPage.tsx). */
+export function oilDayLabel(iso: any): string {
+  const s = isoLabel(iso)
+  return s && +String(iso).slice(0, 4) !== baseYear() ? `${s} ${String(iso).slice(0, 4)}` : s
 }
 
 /* The default type a board panel's + Add opens on — a personal (activity) type
@@ -1494,13 +1529,24 @@ export function removeInput(r: any) {
    edited as one thing"; the plan §3.13: Delete "for all 4 people" is the filer's or an admin's). All or nothing: asked
    of the one rule for EVERY record before anything goes. A man in it who is neither takes HIMSELF out — removeInput on
    his own record, which is still his. */
+/* WHO MAY CHANGE A SHARED INPUT, SAID TO SOMEONE WHO MAY NOT — one body for every door that says it (the window's foot
+   has its own two sentences and asks the same question first): Delete for everyone, a save, the Delete key on the
+   opened day's line (ui/InputsCal.tsx), a bar's drag (ui/caldrag.ts). "Only Saber — who filed it — or an admin can
+   <do this>". TO THE FILER HIMSELF, WITH THE MEMBERS' SWITCH OFF (owner D731 (8), 10 Oct 26): that sentence named HIM as
+   the one who could — "Only Ranger — who filed it — or an admin can change this", read by Ranger. He is told what is
+   true: the switch is off. No right is decided here (state/perms.ts filerSwitchedOff — the reason, never the rule). */
+export const FILING_OFF = 'Filing for other people is switched off — an admin can change this.'
+export function sharedRefusal(rows: any[], what: string): string {
+  if (filerSwitchedOff(rows)) return FILING_OFF
+  const by = rows.find(r => r && r.grpBy)?.grpBy ?? rows.find(r => r && r.by)?.by
+  return `Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can ${what}`
+}
 export function removeEntry(rows: any[]): boolean {
   const live = (rows || []).filter(r => INPUTS.indexOf(r) >= 0)
   if (!live.length) { HOOKS.toast('That input is no longer there', 'warn'); return false }
   if (protectedInput(...live)) return false
   if (!live.every(r => mayDeleteInput(r))) {
-    const by = live.find(r => r.grpBy)?.grpBy ?? live.find(r => r.by)?.by
-    HOOKS.toast(`Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can delete this for everyone`, 'warn')
+    HOOKS.toast(sharedRefusal(live, 'delete this for everyone'), 'warn')
     return false
   }
   return saveBatch(() => { for (const r of live) dropInputRow(r) })
@@ -1638,7 +1684,7 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
       || (isSansAvail(draft.type) && sansKey(r.sans) !== sansKey(draft.sans))
   }
   const changed = kept.filter(changes)
-  const whole = `Only ${cs(rows.find(r => r.grpBy)?.grpBy ?? rows.find(r => r.by)?.by ?? '') || 'whoever filed it'} — who filed it — or an admin can change this for everyone`
+  const whole = sharedRefusal(rows, 'change this for everyone')
   for (const r of changed) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
   for (const r of gone) if (!mayDeleteInput(r)) { say(whole, 'warn'); return false }
 
@@ -1930,6 +1976,15 @@ export function InputEditor() {
   const base = useRef<any>(null)
   const shown = useRef<any>(null)
   const [clash, setClash] = useState<string[]>([])
+  /* WHAT HIS CHANGE WAS MADE OVER, per field (`[CAL-CHECK-SEEN]`, the editor — walker G's X-08, 10 Oct 26). `base` moves
+     with every change behind the window, so once a field was in dispute nothing remembered the value he had typed his
+     change over: a bar's drag rewrote a leave's "till" word under his typed remark — rightly listed — and when the
+     drag was UNDONE the note stayed, "theirs" now the very value the window had opened on. A field whose record is
+     back to what his change was made over is not in dispute: it is an ordinary unsaved change again. Kept from the
+     first change behind him until the field is settled the other way (he takes theirs, both become the same, the
+     window is seeded afresh). */
+  const madeOver = useRef<Record<string, any>>({})
+  const [, redraw] = useState(0)
   const [swap, setSwap] = useState<any>(null)
   const swapOk = useRef(false)
   /* WHO IT IS FOR (owner D654–D656; the plan §3.13). On the Inputs page the Person field is the people picker
@@ -1978,11 +2033,17 @@ export function InputEditor() {
     const pplTouched = ppl.length !== basePpl.current.length || ppl.some(id => !basePpl.current.includes(id))
     if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
+      /* ...AND IT ASKS FROM THE FRONT (`[TITLE-CHECK-SEEN]` 4, 10 Oct 26). The press that asked for the other input landed
+         on another window first — a card of the opened day — and that window took the front, as any pressed window
+         does: this one put its question up BEHIND it. On a phone the day's window is nearly the whole screen, so
+         nobody saw a question at all until the day was closed. The window that asks comes forward. */
+      bringForward('inputedit')
       return
     }
     swapOk.current = false
     shown.current = r
     base.current = r ? draftOf(r) : null
+    madeOver.current = {}
     setClash([]); setSwap(null)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     const rs = r && !r._new ? entryRowsOf(INPUTS, r) : []
@@ -2041,13 +2102,22 @@ export function InputEditor() {
       if (fieldSame(f, cur, b)) continue                                   // not changed behind him
       /* a date he has TAPPED is his, even where the tap was on the day already saved (`datesPicked`, above) */
       const tapped = datesPicked && (f.k === 'start' || f.k === 'end')
-      if (!tapped && fieldSame(f, draft, b)) next = { ...next, ...fieldPart(f, cur) } // he has not touched it: theirs, silently
-      else if (!fieldSame(f, draft, cur)) hit.add(f.k)                     // changed both ways
-      else hit.delete(f.k)                                                 // both made the same change
+      if (!tapped && fieldSame(f, draft, b)) { next = { ...next, ...fieldPart(f, cur) }; delete madeOver.current[f.k] } // he has not touched it: theirs, silently
+      else if (!fieldSame(f, draft, cur)) {                                // changed both ways…
+        if (!madeOver.current[f.k]) madeOver.current[f.k] = b
+        /* …unless the record is BACK to what his change was made over (`madeOver`, above): nothing is in dispute */
+        if (fieldSame(f, cur, madeOver.current[f.k])) hit.delete(f.k)
+        else hit.add(f.k)
+      }
+      else { hit.delete(f.k); delete madeOver.current[f.k] }               // both made the same change
     }
     base.current = cur
     if (next !== draft) setDraft(next)
     if (hit.size !== clash.length || [...hit].some(k => !clash.includes(k))) setClash([...hit])
+    /* …and where the same fields stay in dispute, the note is drawn again: it prints "theirs" from `base`, which has
+       just moved, and nothing else would repaint it — a second change behind him left the first value on screen
+       (found by this batch's own control test, 10 Oct 26). Once: the next pass finds the record as `base` and stops. */
+    else if (hit.size) redraw(n => n + 1)
   })
   /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
      have been changed behind the window while the question stood */
@@ -2245,7 +2315,7 @@ export function InputEditor() {
       if (gates.some(x => x.kind === 'refused')) return
       const g = gates.find(x => x.kind === 'ask') || gates[0]!
       if (g.kind === 'refused') return
-      if (g.kind === 'ask') { setOilConf(ppl.length > 1 ? { ...g, who: `${csOf(ppl[0])} +${ppl.length - 1}` } : g); return }
+      if (g.kind === 'ask') { setOilConf(g); return }
       doSave([])
       return
     }
@@ -2371,6 +2441,11 @@ export function InputEditor() {
      word that another man of it was still unanswered) */
   const unanswered = !isNew && r ? (rows.length > 1 ? rows : [r]).filter(x => oilUnansweredDay(x)) : []
   const unansweredDay = unanswered.length ? oilUnansweredDay(unanswered[0]) : ''
+  /* THE RECORDS THE OIL LINE SPEAKS FOR (owner D731 (4)): on the Inputs page a shared input's window holds the ENTRY, and
+     its line counts every man of it (`oilSummaryOf`); the schedule's and the board's dialog holds ONE man's row and
+     saves one, so there the line is his alone, as it was. The line shows while ANY of them has an answer. */
+  const oilRows = !isNew && r ? (picker && rows.length > 1 ? rows : [r]) : []
+  const anyAnswered = oilRows.some(x => oilAnswered(x))
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
      says what a Save would write */
@@ -2404,7 +2479,7 @@ export function InputEditor() {
             : picker
             /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
             ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)}
-              lockOne={!isNew && !canEditSched()}
+              lockOne={!isNew && !canEditSched()} readOnly={readOnly}
               /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
                  Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed
                  for a man who has posted out — [ARCH-STACK] step 4, H5) and the pencil is gone (D718): without this
@@ -2467,6 +2542,10 @@ export function InputEditor() {
               the "Duty & other commitments" kinds only). The box SHOWS the kind's own name until something else is
               typed, so choosing a kind fills it in and changing the kind changes it — and a box nobody touched saves
               nothing (titleOf). The KIND above goes on deciding every rule; this is the name people read. */}
+          {/* ENTER IS USED UP BY THE SAVE (`[TITLE-CHECK-SEEN]` 5, 10 Oct 26 — here and in Remarks, below). The save closes
+              the window and the keyboard goes back to the button that opened it ("+ Input"); the SAME key press, still
+              in flight, then pressed that button, and a blank "New input" opened again. `preventDefault` on the key
+              down is what stops the browser handing the press on (seen in a real browser: e2e/inputs-batch2.spec.ts). */}
           {titledKind(draft.type) && ctx !== 's' && ctx !== 'up' && <label className="inped-f">
             <span className="inped-k">Title</span>
             {/* its id is NOT `inpEditTitle`: that is the dialog's own heading where this editor opens from the schedule or
@@ -2475,7 +2554,7 @@ export function InputEditor() {
               value={draft.title == null ? inpType(draft.type) : draft.title} placeholder={inpType(draft.type)}
               onChange={e => setDraft({ ...draft, title: e.target.value })}
               onFocus={e => { if (draft.title == null) e.target.select() }}
-              onKeyDown={e => { if (e.key === 'Enter') save(false) }} />
+              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
           </label>}
           {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
               select a date range as well"): the same two-click calendar the
@@ -2553,7 +2632,7 @@ export function InputEditor() {
             <span className="inped-k">Remarks</span>
             <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
-              onKeyDown={e => { if (e.key === 'Enter') save(false) }} />
+              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
           </label>
           {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No
               OIL" used to be revisable only by nudging the input's times).
@@ -2561,12 +2640,15 @@ export function InputEditor() {
               priced off the CURRENT draft (oilGate force — a half-edited time
               asks what the save would credit); the sheet's Save runs the same
               doSave as the gate, one batch, one undo step. */}
-          {!isNew && r && oilAnswered(r) && <div className="inped-f">
+          {/* NO "CHANGE…" FOR A READER (`[CAL-CHECK-SEEN]`, the editor — 10 Oct 26): his form is inert, so the button was
+              one that is seen and cannot be pressed — as the "?" beside Type was until D729. The line still says what
+              stands. A man in a shared input he did not file has his OWN line, and its own live button, below. */}
+          {anyAnswered && <div className="inped-f">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
-              <span className="inped-oilsum">{oilSummary(r)}</span>
-              <button type="button" className="abtn ghost" data-testid="oil-revise"
-                onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>
+              <span className="inped-oilsum">{oilSummaryOf(oilRows)}</span>
+              {!readOnly && <button type="button" className="abtn ghost" data-testid="oil-revise"
+                onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>}
             </div>
           </div>}
           {/* …AND THE QUESTION NOBODY HAS ANSWERED YET (the plan docs/superpowers/plans/2026-10-10-input-card-plan.md
@@ -2579,8 +2661,8 @@ export function InputEditor() {
           {!isNew && r && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
-              <span className="inped-oilsum">Not answered yet — {isoLabel(unansweredDay)}{rows.length > 1 ? ': ' + unanswered.map(x => csOf(x.person)).join(', ') : ''}</span>
-              {!readOnly && !oilAnswered(r) && <button type="button" className="abtn ghost" data-testid="oil-answer"
+              <span className="inped-oilsum">Not answered yet — {oilDayLabel(unansweredDay)}{rows.length > 1 ? ': ' + unanswered.map(x => csOf(x.person)).join(', ') : ''}</span>
+              {!readOnly && !anyAnswered && <button type="button" className="abtn ghost" data-testid="oil-answer"
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Answer…</button>}
             </div>
           </div>}
@@ -2636,7 +2718,7 @@ export function InputEditor() {
                 same question, for his record alone (`own`); where he has answered one day and not another, "Change…"
                 above is the one button. */}
             {oilUnansweredDay(mineRow) && <div className="inped-oil" data-testid="oil-unanswered-own">
-              <span className="inped-oilsum">Your OIL: not answered yet — {isoLabel(oilUnansweredDay(mineRow))}</span>
+              <span className="inped-oilsum">Your OIL: not answered yet — {oilDayLabel(oilUnansweredDay(mineRow))}</span>
               {!oilAnswered(mineRow) && <button type="button" className="abtn ghost" data-testid="oil-answer-own"
                 onClick={() => { const g = oilGate(draftOf(mineRow), mineRow, true); if (g.kind === 'ask') setOilConf({ ...g, own: mineRow.iid }) }}>Answer…</button>}
             </div>}
@@ -2669,10 +2751,14 @@ export function InputEditor() {
           {!isNew && r && rowDocIds(r).some(id => !!docGet(id)) && <button type="button" className="abtn inped-doc" data-testid="inped-docview"
             aria-label="View the document" title="View the document" onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></button>}
           {readOnly && <span className="inped-ro" data-testid="inped-ro">{rows.length > 1
-            ? mineRow ? `Only ${filer} — who filed it — or an admin can change this for everyone.` : `Only its people, ${filer} — who filed it — or an admin can change this.`
+            /* to the FILER, kept out by the members' switch alone: that the switch is off (D731 (8) — `sharedRefusal`,
+               above, says the same at the other doors). "Take me out" beside it is whatever the rules already give. */
+            ? filerSwitchedOff(rows) ? FILING_OFF
+            : mineRow ? `Only ${filer} — who filed it — or an admin can change this for everyone.` : `Only its people, ${filer} — who filed it — or an admin can change this.`
             /* an input filed for ALL AVAIL / ALL has no owner to name — "Only ALL AVAIL or an admin can change this"
                named a puck that is nobody (walker A of its check, 9 Oct 26): the one who may is whoever FILED it */
-            : r && isSpecial(r.person) ? `Only ${(r.by != null && PEOPLE[r.by] && PEOPLE[r.by].cs) || 'whoever filed it'} — who filed it — or an admin can change this.`
+            /* …and to that filer himself, kept out by the members' switch alone, that the switch is off (D731 (8)) */
+            : r && isSpecial(r.person) ? sharedRefusal([r], 'change this.')
             : `Only ${who || 'its owner'} or an admin can change this.`}</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>
@@ -2696,7 +2782,16 @@ export function InputEditor() {
         onSave={(choices, keepTail) => { setMedConf(null); doMedSave(choices, keepTail) }} />}
       {/* the OIL ask, same layer and same contract — Save commits the input
           with the day decisions in one batch, Cancel returns to the form */}
-      {oilConf && <OilConfirm who={oilConf.who} typeLabel={oilConf.typeLabel}
+      {/* HEADED FOR WHOEVER THE ANSWER IS WRITTEN FOR (`[CAL-CHECK-SEEN]`, the editor — 10 Oct 26). A shared input's
+          question is asked once and its answer goes on every man's record (D660, D682): the save's own door headed it
+          "Saber +2", while "Change…", "Answer…", the bell and the question that follows a bar's drag headed it with
+          the one man whose record the window happened to hold. ONE place decides it now, for every door: the group —
+          its first name and how many more, the words of the window's own title — unless the question is a man's own
+          (`own`: his record alone, inside an input he did not file). */}
+      {/* …and the first name is the entry's first A TO Z, whatever order its people were picked in — the name the saved
+          input's title leads with (the walk's find, 10 Oct 26: a NEW group asked as "Ranger +2", the man picked
+          first, and was "Ace +2" from the moment it was saved). */}
+      {oilConf && <OilConfirm who={!oilConf.own && grouped && ppl.length > 1 ? `${ppl.map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))[0]} +${ppl.length - 1}` : oilConf.who} typeLabel={oilConf.typeLabel}
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => setOilConf(null)}
         onSave={dec => { const own = oilConf.own; setOilConf(null); if (own) saveOwnOil(own, dec); else doSave([], dec) }} />}
@@ -2732,7 +2827,7 @@ export function InputEditor() {
                   <button type="button" className="abtn" data-testid={'inped-clash-mine-' + k} onClick={() => setClash(c => c.filter(x => x !== k))}>Keep mine</button>
                   <button type="button" className="abtn" data-testid={'inped-clash-theirs-' + k}
                     onClick={() => {
-                      setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k))
+                      setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k)); delete madeOver.current[k]
                       /* dates taken back from the record are a FINISHED range again: the next tap is a new start, not
                          the end of a pick he has just given up (Astra's read of the date door, 9 Oct 26 - A4) */
                       if (k === 'start' || k === 'end') { setMidPick(false); if (!clash.some(x => x !== k && (x === 'start' || x === 'end'))) setDatesPicked(false) }

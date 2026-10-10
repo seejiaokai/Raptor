@@ -31,6 +31,13 @@
 .inped-doc .btnglyph{width:14px;height:14px}
 /* the viewer: a wider box than the input editor — the content IS a page */
 .docviewbox{width:min(720px,94vw)}
+/* ITS BUTTONS STAY IN SIGHT (owner D731 (10), 10 Oct 26 — "keep the two buttons pinned in sight at the foot, the way an
+   input's own window keeps Cancel and Save"; walker B of the input card's check, scenario 46). The box scrolls as a
+   whole (`.airpop-box`: at most 80% of the screen's height), and with two documents — a pager row more — it was a
+   little taller than that on a 1440 x 900 desktop: "Edit input" and "Close" lay half under its lower edge until it was
+   scrolled. The foot is pinned to the foot of the scrolling box, the page moving above it — the input window's own
+   way (25-inputs-calendar.css). Position only: no button changes size (D487). */
+.docviewbox > .airpop-foot{position:sticky;bottom:0;z-index:2;background:var(--panel);border-radius:0 0 14px 14px}
 .docview-body{display:flex;flex-direction:column;gap:10px;min-height:0}
 .docview-sub{color:var(--ink-2);font-size:12px}
 /* the episode pager (owner, 1 Sep 26) — steps a person's overlapping documents

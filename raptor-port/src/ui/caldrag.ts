@@ -20,7 +20,7 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor } from './inputedit'
+import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor, sharedRefusal } from './inputedit'
 import { entryRowsOf } from '../state/inputgroup'
 import { movePlanPuck, planMoveBlock } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
@@ -105,9 +105,9 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   const rows = entryRowsOf(INPUTS, r)
   const whole = rows.length > 1
   if (whole ? !rows.every(x => mayEditInput(x)) : !mayEditInput(r)) {
-    const by = whole ? rows.find(x => x.grpBy)?.grpBy ?? rows.find(x => x.by)?.by : null
-    HOOKS.toast(whole ? `Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can move this for everyone`
-      : "Only a scheduler can move someone else's input", 'warn')
+    /* a shared input's refusal is one body with every other door's (ui/inputedit.tsx sharedRefusal — to its FILER, with
+       the members' switch off, it says the switch is off: D731 (8)) */
+    HOOKS.toast(whole ? sharedRefusal(rows, 'move this for everyone') : "Only a scheduler can move someone else's input", 'warn')
     return false
   }
 

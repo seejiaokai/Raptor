@@ -42,6 +42,11 @@
 .sd-acts .sd-add{flex:1 1 auto;min-height:40px;font-weight:700}
 .sd-acts .sd-days{flex:0 0 auto;min-height:40px}
 .sd-empty{margin:14px 0;font-size:13px;color:var(--ink-3);text-align:center}
+/* …and where a filter is what hides the day's inputs, the words with "Clear filters" beside them (D731 (2)) — on one
+   line, the button wrapping under the words only where the window is too narrow for both */
+.sd-empty.sd-empty-f{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px}
+.sd-empty.sd-empty-f .abtn{min-height:36px}
+@media (max-width:620px){.sd-empty.sd-empty-f .abtn{min-height:44px}}
 .sd-gh{margin:12px 0 6px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .sd-group:first-child .sd-gh{margin-top:4px}
 /* ONE COMMITMENT: the puck and the letters (the line's button), the LATE tag, the hours at the right; under them the

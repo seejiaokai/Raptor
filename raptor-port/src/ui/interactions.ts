@@ -641,6 +641,8 @@ export function routeClick(e: MouseEvent) {
        request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
        ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
     const rowDay = dest === 'x' ? acceptedDay(inp) : -1
+    /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
+    const was = inp.acc
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
@@ -654,8 +656,15 @@ export function routeClick(e: MouseEvent) {
          "Bane's LL" says who it happened to, which is the thing the changes
          list is actually for */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
+      /* THE TAKE-OFF NAMES IT TOO (owner D731 (5), 10 Oct 26 — "Ranger's Sports day taken off the programme"; walker B of
+         the title's check, scenario 40). It said "Accept undone" — whose request, and which, went unsaid, where the
+         accept beside it says the whole thing. The same pattern for its two other cases (his reading (b)): a row that
+         stood on ANOTHER day names that day ([REQ-DOOR-WORDS] 2), and one filed under Unavailable is "taken out of
+         Unavailable" — it was never on the programme. */
       const said = dest === 'x'
-          ? (rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `Accept undone — its row came off ${DAYS[rowDay].dow}'s programme` : 'Accept undone')
+          ? was === 'u' ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
+          : rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `${cs}'s ${inpLabel(inp)} taken off ${DAYS[rowDay].dow}'s programme`
+          : `${cs}'s ${inpLabel(inp)} taken off the programme`
         : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`
         : adopts ? `${cs}'s ${inpLabel(inp)} is on the ground programme again — its row was already there`
         : `${cs}'s ${inpLabel(inp)} added to the ground programme`

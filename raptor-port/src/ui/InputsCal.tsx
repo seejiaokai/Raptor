@@ -45,7 +45,7 @@ import { isMe, mayDeleteInput } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry } from './inputedit'
+import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry, sharedRefusal } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
@@ -133,7 +133,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   return { inputs, pucks }
 }
 
-export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under }:
+export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under, onClearFilters }:
   { fPerson: string, fType: string, fSearch: string, seedIso?: string,
     /** the Inputs page's three tabs — drawn at the head of this calendar's own top row, so a desktop has ONE row of
      *  controls above the month and a phone the tabs and one tools row (the plan §3.6) */
@@ -141,7 +141,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     /** the page's own tools for the Inputs tab — the Calendar | List switch and the filters — after the month's arrows */
     tools?: ReactNode,
     /** a line of the page's own under the top row (what the filters are set to) */
-    under?: ReactNode }) {
+    under?: ReactNode,
+    /** puts the page's filters back to none — "Clear filters" in a day whose inputs they all hide (D731 (2)) */
+    onClearFilters?: () => void }) {
   const mode = 'member' as const
   useVersion()
   useWarFacts()
@@ -182,6 +184,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   const wantFocus = useRef<string | null>(null)
   /* which input of the opened day Delete has asked about (its entry's key) */
   const [delAsk, setDelAsk] = useState<string | null>(null)
+  /* WHAT THE DELETE QUESTION ASKED, kept from the moment it was put (Astra's scenario design of the second batch,
+     10 Oct 26 — scenario 9; an older fault of this door). The question's words were worked out again at every paint
+     from what its reader may do NOW: "Delete this input for all 2 people?" asked of the filer, the members' switch
+     then turned off (by an admin, elsewhere, once the squadron shares one database) — and the same question read
+     "Take yourself out of this input?" under his finger, its button took HIM out. What was asked is what is done; if
+     he may no longer do it, the press is refused in words (ui/inputedit.tsx sharedRefusal) and nothing goes. */
+  const askedAll = useRef(false)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
   const shown=useRef<typeof INPREVEAL>(null)
@@ -237,6 +246,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   useEffect(()=>()=>spendReveal(),[])
   const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null);setDelAsk(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
+  /* ESCAPE WHILE A NOTE IS TYPED LEAVES THE NOTE BOX ONLY (owner D731 (9), 10 Oct 26). The shell's rule is "Escape closes
+     the window in front", and the note box is IN the day's window: Escape to give up on a note closed the whole day.
+     The box takes the key first: it is put away with nothing written — a new note is not made, an edited one keeps its
+     words — and the day stays; the next Escape, with no box open, is the window's as before. `noteGone`: the box's
+     own blur SAVES what was typed (leaving it is how a note is finished), and some browsers send a blur as a focused
+     box is taken off the page — that blur is this Escape's, and writes nothing. It is cleared when a box next opens. */
+  const noteGone = useRef(false)
+  useEffect(() => { if (popPuckEdit != null) noteGone.current = false }, [popPuckEdit])
+  const noteEsc = (e: ReactKeyboardEvent) => {
+    if (e.key !== 'Escape') return
+    e.preventDefault(); e.stopPropagation()
+    noteGone.current = true
+    setPopPuckEdit(null); setPuckDraft('')
+  }
+  /* the words' own box: Enter finishes the note (its blur saves it), Escape gives it up. A new note's "+ people"
+     button beside the box is part of the same thing being made (a Tab between the two saves nothing — below), so it
+     takes Escape the same way (`noteEsc` alone: Enter on a button is the button's — Astra's scenario 16). */
+  const noteKey = (e: ReactKeyboardEvent) => {
+    if (e.key === 'Enter') { (e.target as HTMLElement).blur(); return }
+    noteEsc(e)
+  }
   /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
   const [how, setHow] = useState(false)
   /* which late input's note is showing in the opened day (its entry's key) */
@@ -746,6 +776,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     /* …as the WHOLE entry it belongs to (Sol's read of the code, 10 Oct 26): a shared input shown by ONE of its records
        read as that man's alone, and its Delete took his record and left the others behind out of sight */
     if (revealed) list.unshift(...monthItems(entryRowsOf(INPUTS, saved), { fPerson: 'all', fType: 'all', fSearch: '' }))
+    /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
+    const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(INPUTS, { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
     const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
     const name = dayFacts(iso).name
     const kindWord = !kind ? undefined
@@ -763,18 +795,22 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
          asked about himself; anyone else is told who can */
       if (it.rows.length > 1) {
         if (!it.rows.every(x => mayDeleteInput(x)) && !it.rows.some(x => isMe(x.person))) {
-          const by = it.rows.find(x => x.grpBy)?.grpBy ?? it.rows.find(x => x.by)?.by
-          HOOKS.toast(`Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can delete this for everyone`, 'warn'); return
+          /* one body with every other door's (ui/inputedit.tsx sharedRefusal; to its filer, the switch off: D731 (8)) */
+          HOOKS.toast(sharedRefusal(it.rows, 'delete this for everyone'), 'warn'); return
         }
+        askedAll.current = it.rows.every(x => mayDeleteInput(x))
         setDelAsk(it.key); return
       }
       /* an input filed for ALL AVAIL / ALL has no owner to name — the one who may is whoever FILED it (Sol's read of the
          code, 9 Oct 26: the editor's read-only line was corrected and this keyboard door still said "Only ALL AVAIL …") */
       if (!mayDeleteInput(r)) {
         const ph = PEOPLE[r.person] && PEOPLE[r.person].special
-        HOOKS.toast(ph ? `Only ${(r.by != null && PEOPLE[r.by] && PEOPLE[r.by].cs) || 'whoever filed it'} — who filed it — or an admin can delete this input`
+        /* …and to that filer himself, with the members' switch off, that the switch is off (D731 (8) — the roll-call's
+           find: a member files for ALL AVAIL only while it is on, D702) — `sharedRefusal`, the one body */
+        HOOKS.toast(ph ? sharedRefusal([r], 'delete this input')
           : `Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return
       }
+      askedAll.current = false
       setDelAsk(it.key)
     }
     const doDelete = (it: BarItem) => {
@@ -782,6 +818,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       if (it.rows.length > 1) {
         const rows = it.rows.map(x => INPUTS.find((y: any) => y.iid === x.iid)).filter(Boolean) as any[]
         if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok'); return }
+        /* asked about everyone, and no longer his to do: refused — never turned into taking himself out (`askedAll`) */
+        if (askedAll.current) { HOOKS.toast(sharedRefusal(rows, 'delete this for everyone'), 'warn'); return }
         const mine = rows.find(x => isMe(x.person))
         if (mine && removeInput(mine)) HOOKS.toast('You are out of this input', 'ok')
         return
@@ -859,12 +897,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           <input className="ic-poppuck-edit" autoFocus value={puckDraft}
                             aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
                             onBlur={() => {
+                              if (noteGone.current) return                     // Escape put the box away: nothing is written
                               /* emptied, a note WITH people loses its words and stays (D695); one without is left as it was */
                               const t = puckDraft.trim()
                               if (t !== words && (t || ppl)) writeInputs(() => editPlanPuck(p.id, t))
                               setPopPuckEdit(null)
                             }}
-                            onKeyDown={blurOnEnter} />
+                            onKeyDown={noteKey} />
                         ) : words ? <span className="ic-poppuck-txt">{words}</span> : null}
                         {(words || editing) && tools}
                         {ppl && (
@@ -908,6 +947,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
             {sched && popPuckEdit === '' && (() => {
               const leave = (e: { relatedTarget: EventTarget | null }) => {
                 const to = e.relatedTarget as HTMLElement | null
+                if (noteGone.current) return                                   // Escape put the box away: nothing is written
                 if (pickingNew.current || (to && to.closest && to.closest('.ic-newnote'))) return
                 const t = puckDraft.trim()
                 if (t) writeInputs(() => addPlanPuck(iso, t))
@@ -917,9 +957,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                 <div className="ic-newnote">
                   <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
                     placeholder="e.g. brief the new guy"
-                    onChange={e => setPuckDraft(e.target.value)} onBlur={leave} onKeyDown={blurOnEnter} />
+                    onChange={e => setPuckDraft(e.target.value)} onBlur={leave} onKeyDown={noteKey} />
                   <button type="button" className="ic-pkadd ic-newnote-ppl" id="icNewNotePpl" aria-label="Add people to this note"
-                    onPointerDown={e => e.preventDefault()} onBlur={leave}
+                    onPointerDown={e => e.preventDefault()} onBlur={leave} onKeyDown={noteEsc}
                     onClick={() => { if (!openPick('', iso, puckDraft.trim())) return; pickingNew.current = true; setPopPuckEdit(null); setPuckDraft('') }}>+ people</button>
                 </div>
               )
@@ -930,15 +970,24 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                 list draws on a phone too, so the two cannot differ. A shared input names everyone (D721) — its row of
                 pucks and their own LATE tags went with that; who placed it is "By Saber" where the card says it at all
                 (D723, D724), and the day and the time of it stay in the input's window. */}
+            {/* A DAY WHOSE INPUTS A FILTER HIDES SAYS SO (owner D731 (2), 10 Oct 26 — "No inputs match on this day." with a
+                "Clear filters" button beside it). It said "No inputs on this day. Tap + Input to add one." while
+                inputs the filter left out stood on it (walker C of the input card's check, scenario 81) — nothing told
+                him the filter was the reason. `hidden`: the day has inputs when no filter is asked. A day with none at
+                all says what it always said, whatever the filters are. */}
             {list.length === 0 ? (
-              <p className="sd-empty" data-testid="idy-empty">No inputs on this day. Tap + Input to add one.</p>
+              hidden
+                ? <p className="sd-empty sd-empty-f" data-testid="idy-empty"><span>No inputs match on this day.</span>
+                  {onClearFilters && <button type="button" className="abtn ghost" data-testid="idy-clear" onClick={onClearFilters}>Clear filters</button>}</p>
+                : <p className="sd-empty" data-testid="idy-empty">No inputs on this day. Tap + Input to add one.</p>
             ) : (
               <>
                 <h3 className="sd-gh" data-testid="idy-count">{list.length} input{list.length > 1 ? 's' : ''}</h3>
                 {list.map(it => {
                   const r = it.rows[0]
                   const team = it.rows.length > 1
-                  const forAll = team && it.rows.every(x => mayDeleteInput(x))
+                  /* the question standing on THIS line keeps the words it was asked in (`askedAll`, above) */
+                  const forAll = team && (delAsk === it.key ? askedAll.current : it.rows.every(x => mayDeleteInput(x)))
                   const when = cardWhen(r, it.b, iso)
                   return (
                     <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when}

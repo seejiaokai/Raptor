@@ -1,5 +1,19 @@
 # The file map — where each source file lives and what it does
 
+`[SEEN-BATCH-2]` (D730, D731 — 10 Oct 26): the small faults and choices of the Inputs pages, one batch. No new source
+file. `src/ui/inputedit.tsx` gained `oilSummaryOf` (a shared input's OIL line), `oilDayLabel` (an OIL day's one
+label), `sharedRefusal` and `FILING_OFF` (who may change a shared input, said at every door) and `madeOver` (when a
+field of the window is in dispute); `src/state/perms.ts` gained `filerSwitchedOff` (the reason, never the rule);
+`src/ui/toast.ts` gained `placeToast` (where the passing note stands), called again by `FloatWindow.tsx` when a
+window opens; `InputsPage.tsx` — the dates calendar's Escape and finger press, the row's chips as buttons,
+`clearFilters`; `InputsCal.tsx` — `noteKey` (a note box's Escape), the hidden-by-a-filter line; `PeoplePick.tsx` —
+`readOnly`; `OilConfirm.tsx`, `caldrag.ts`, `interactions.ts`, `QualsPage.tsx` — words. Styles: `06-inputs.css`,
+`16-medical.css`, `24-sans-calendar.css`. Tests: `src/ui/batch2.test.tsx` (what jsdom can see of every piece),
+`src/ui/toastplace.test.tsx` (where the note is placed), `e2e/inputs-batch2.spec.ts` (what only a real browser can —
+registered in `playwright.config.ts`, whose `raptor` project lists its spec files by name: a new spec file that is
+not added there is "No tests found"), and new cases in `src/state/reqorphan.test.ts` and `src/ui/quals.test.tsx`.
+The walk: `scripts/handpass/b2-walk.mjs`; the record: `docs/handpass/2026-10-10-batch2-check.md`.
+
 His find of 10 Oct 26 (on a phone the Inputs List's dates calendar opened below the foot of the screen): the fix is one
 rule in `src/ui/scheduler/06-inputs.css` (the row of buttons is the box the calendar is placed against on a phone); pinned
 by `e2e/inputs-calendar.spec.ts` ("the dates button opens its calendar on screen", three phone heights, pressed by a

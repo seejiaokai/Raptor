@@ -22,11 +22,14 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
+import { oilDayLabel } from './inputedit'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const iso = (y: number, m: number, d: number) =>
   `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
-const dLabel = (v: string) => `${+v.slice(8, 10)} ${MON[+v.slice(5, 7) - 1]}`
+/* the day the question is about, with its year where that is not the year in hand — the one label every place that
+   names an OIL day uses (ui/inputedit.tsx oilDayLabel; `[CARD-CHECK-SEEN]` 8: "9 Jan" for a day of 2027) */
+const dLabel = (v: string) => oilDayLabel(v)
 
 /* the multi-select month grid — only `days` are live, everything else inert */
 function OilDayCal({ days, sel, onToggle }: {
