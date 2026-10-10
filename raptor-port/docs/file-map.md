@@ -38,6 +38,12 @@ finger at a point). `scripts/handpass/rng-repro.mjs` is the walk, run before the
 `docs/handpass/2026-10-10-list-dates-picker.md`. `scripts/handpass/b2-pics.mjs` takes the pictures of
 `docs/mock/batch2-choices.html` — the small choices of `[SEEN-BATCH-2]` put to him, each on the real screen.
 
+`[GROUP-INPUT-ONE-ROW]` (10 Oct 26 — a drawing; nothing built): `docs/mock/group-input-one-row.html` is the pictures page
+put to him for his yes — the schedule's one row for a shared input, today beside new, on the Ground Programme and under
+Personal Inputs, the week and the board, a phone and a desktop, a published day, ten people; its pictures are
+`docs/mock/img/group-input-one-row/`. `scripts/handpass/gi-mock.mjs` draws them (with `gi-lib.mjs`): it drives the built
+app through its own controls, pictures it, then re-arranges the rows ON THE PAGE into one (`MERGE`) and pictures it again.
+
 `[OIL-WORK-START]` (D591, D592, 6 Oct 26): a flying line's OIL counts from its entered In-time / Rally, and a published
 day keeps the OIL it went out with. The fixes are in `src/engine/oil.ts` (`dayOilWork`'s flying branch reads
 `reporting.ts resolveReporting`; `OilRuleVals`, the `rv` every walk can be handed), `src/engine/oilev.ts` (the evidence

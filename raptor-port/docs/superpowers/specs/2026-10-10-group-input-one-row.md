@@ -57,6 +57,13 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
   row. A change in the input's own window after the cut-off reads late as today; an input already LATE stays LATE. It
   narrows the 9 Aug 26 rule ("the mark measures the input's last change"). The change carries the scheduler's name in
   the history (D739).
+- **CONFIRMED FOR EVERY KIND OF INPUT, 10 Oct 26 — D742** (his question while the pictures were drawn: "for all types of
+  input if the scheduler changes the input on the schedule the input will change too? But it will not show as late…"):
+  yes to both. Read in the code first: a time or a remark typed on an input's row under Personal Inputs or on the
+  Unavailable list already changes the input (`ui/inputedit.tsx setInpField` → the input's own save), and that save
+  stamps the day of the change, so TODAY it reads LATE after the cut-off. **So the LATE half is new work for those rows
+  too** — leave, an overseas duty, a course — not only for the Ground Programme's request rows. A change made in the
+  input's own window still reads late (D741's reading 3).
 - **Nothing is waiting on him now.** Next for him: the pictures.
 - **To find in the code before asking anything more:** what the row's NAME box holds on a request's row today and
   whether a word typed there should become the input's title (D715–D717: the row is judged by its kind, never by its
@@ -64,6 +71,32 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
 - **Then pictures** of the row on the real screen — the Ground Programme and the Personal Inputs line, the week and
   the board, a phone and a desktop, a flagged man on it, a change waiting on a published day — for his yes (D541;
   D662's reading 2).
+
+## The pictures — sent 10 Oct 26, waiting for his yes
+
+The page: `raptor-port/docs/mock/group-input-one-row.html` (published to him as https://claude.ai/artifact/9L5jorxWtevLyMZkHmreDc);
+drawn by `raptor-port/scripts/handpass/gi-mock.mjs` — the built app driven through its own controls and pictured, then
+the rows re-arranged on the page into one and pictured again, with only the app's own row and puck. Ten numbered
+pictures: the Ground Programme (1–4: the week and the board, a desktop and a phone, today beside new, a man on leave
+flagged on the row), Personal Inputs (5, 6), a published day (7 the count 4 → 1, 8 the list of what is waiting as one
+line naming the four, 9 the row's own mark), ten people (10).
+
+**What drawing it found, for the plan:**
+- **The list of what is waiting to go out is a line a man today** ("Drifter · Range safety brief" × 4), not one item —
+  the "All changes" tab already groups it (D663). `[CAL-TOGO-ONE-ITEM]` is real work in this job (D736).
+- **Four places say the count** and must agree: the day's "N pending", the Amendments box's "Wed · N changes", the
+  changes window's title and its "To go out" tab.
+- **A row with several pucks already exists** (a sim row; a ground row with a second man): on the week the People
+  column is two pucks wide on a desktop and one on a phone; on the board the pucks wrap. Nothing new to style for the
+  Ground Programme. Personal Inputs' People column is one puck wide at every size.
+- **The app keeps one empty line under the pucks when they exactly fill their line** (the hidden "+ add" place wraps) —
+  on every row today; left as it is.
+- **The count on screen is written with a no-break space** ("4 pending") — a test that looks for it with a typed space
+  finds nothing.
+
+**The agent's own, shown in the pictures and told to him (technical — not his):** the pucks run A to Z; on a phone the
+row's two times stay together at its top (today they spread down a tall row); on a desktop Personal Inputs gets the
+Ground Programme's two-puck People column; Personal Inputs' folded line counts the input once.
 
 ## The job is two steps, one merge (D740)
 

@@ -3699,3 +3699,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the questioning step: one decision per question, never a question whose meaning depends on another answer in the same round (ask it in the next round); every option set is preceded by one worked example in the product's own words (who, what, the two times), and the question asks for the visible outcome. Treat a tap on "Recommended" that is followed by a request to re-explain as no answer, and record nothing until the re-asked question is answered.
 
 **Principle:** A person can only rule on an outcome he can picture; ask what the screen should show in one named case, and a recommendation tapped without that picture is agreement with the asker, not a decision.
+
+### Observation 511: A mock-up drawn by re-arranging the built app's own page finds real facts the plan needs
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** [GROUP-INPUT-ONE-ROW] — pictures of the schedule's one row for a shared input, for the owner's yes before the plan
+**Skill:** New skill candidate: mock-up on the live build (could also sit in `brainstorming` / `impeccable` as a method)
+**Type:** open-source
+**Phase/Area:** design pictures before a plan
+
+**Issue:** The proposed screen was not drawn from scratch. The built app was driven through its own controls to the "today" state and pictured; then one small in-page step moved the existing rows into the proposed shape, using only markup and styles the app already had (a row with several pucks existed elsewhere), and it was pictured again at the same size. Doing it this way surfaced three facts no hand-drawn comp would have: a list that was assumed to be grouped already was still one line a person; four separate places printed the same count and all had to change together; the count's text used a no-break space, which silently defeats a text match. It also showed which parts needed no new styling at all.
+
+**Suggested improvement:** Add a short method: (1) drive the real build to the before-state through its controls, in a throwaway data world, with a fixed clock where the date colours the screen; (2) picture it; (3) apply ONE named transform on the page that only moves or removes existing nodes — any new style is listed as a design decision to tell the owner; (4) picture it again at the same size and crop; (5) write down everything the transform had to touch that the design note did not name — that list goes into the plan. Present before and after side by side, numbered, so the owner answers by number.
+
+**Principle:** A proposal drawn out of the product's own parts is both a truer picture and a cheap probe — every extra node the transform must touch is a requirement the plan had not written down yet.
+
+### Observation 512: A trap written down as a note still recurs when the convenient tool is the one that springs it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** [GROUP-INPUT-ONE-ROW] — writing and patching the picture script on Windows
+**Skill:** task-observer (enforcement of known traps); project memory notes on shell and Python edits
+**Type:** open-source
+**Phase/Area:** editing files and one-off scripts from a shell
+
+**Issue:** Three known, already-recorded traps cost about six failed runs in one session: a Python one-liner edit read and wrote a UTF-8 file in the platform's default encoding and corrupted a dash; scripts passed through a shell heredoc lost their backslashes, twice, turning a regular expression into a literal; a patch script silently replaced a line that should have been kept. Each had a note saying "write the script to a file with the file tool". The notes were loaded and still not applied, because the shell one-liner was the nearest tool at each moment.
+
+**Suggested improvement:** Turn the notes into a default rather than a warning: edits to an existing file go through the editor tool, never a scripted replace; any script containing a backslash, a quote or non-ASCII text is written with the file tool and then run; a shell-embedded snippet is for read-only one-liners only. Where a harness supports it, a pre-run check that refuses a heredoc holding a backslash-escaped pattern would enforce it. After a scripted replace, re-read the changed lines before the next run.
+
+**Principle:** A warning is not enforcement — when a known trap sits on the most convenient path, change the default path, do not add another note beside it.

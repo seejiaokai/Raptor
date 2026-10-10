@@ -1,0 +1,200 @@
+<title>One row for a shared input</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column of numbered pictures; each sets the real screen as it is today beside the same screen as ruled */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --shot:#0c1014;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:62ch;margin:8px 0 0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:62ch;margin:0}
+.how b{color:var(--accent)}
+h2{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:14px 0 0}
+.item{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;min-width:1.3em}
+h3{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.note .lab{color:var(--warn)}
+.mine{background:var(--ok-soft);border-radius:6px;padding:12px 14px}
+.mine .lab{color:var(--ok)}
+ul{margin:4px 0 0;padding-left:20px;max-width:68ch}
+li{margin:3px 0}
+.shots{min-width:0;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+figure{margin:0;flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:6px}
+figure.desk{flex-basis:100%}
+figure.half{flex:1 1 300px}
+.zoom{display:block;width:100%;padding:0;border:1px solid var(--edge);border-radius:8px;background:var(--shot);cursor:zoom-in;overflow:hidden}
+.zoom:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.zoom img{display:block;width:100%;height:auto}
+.zoom.crop{aspect-ratio:var(--ar,16/9)}
+.zoom.crop img{height:100%;object-fit:cover;object-position:var(--pos,50% 0%)}
+figcaption{font-size:14px;color:var(--ink-2);line-height:1.35}
+figcaption b{color:var(--ink)}
+.tag{display:inline-block;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:1px 8px;border-radius:999px;margin-right:6px;background:var(--edge);color:var(--ink)}
+.tag.new{background:var(--ok-soft);color:var(--ok)}
+.tap{font-size:13px;color:var(--ink-2)}
+#lb{position:fixed;inset:0;background:rgba(4,6,8,.94);z-index:10;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));cursor:zoom-out;text-align:center}
+#lb img{max-width:none;width:min(100%,1100px);height:auto;border-radius:6px}
+#lb.big img{width:auto;max-width:none}
+#lbx{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:11;font:600 15px var(--body);padding:10px 16px;border-radius:999px;border:1px solid #5b6672;background:#151b22;color:#e9eef3}
+@media (max-width:720px){ .item{padding:14px} h3{font-size:22px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>One row for a shared input</h1>
+    <p class="lede">A meeting, “Range safety brief”, 14:00 to 15:00, filed for four men: Drifter, Hunter, Ranger and Tally. Hunter is on leave that day. Each picture is the real screen. <b>Today</b> is the app as it is; <b>New</b> is the same screen with the one row you ruled. Tap any picture to see it full size.</p>
+  </header>
+  <p class="how"><b>How to answer:</b> reply “yes”, or give the number of any picture you want drawn differently.</p>
+
+  <h2>Ground Programme</h2>
+
+  <section class="item">
+    <div class="head"><span class="num">1</span><h3>Edit Schedule, on a desktop</h3></div>
+    <p>Four rows become one. The pucks sit two across, in A to Z order. Hunter, on leave, stays on the row with his red flag, as he does on any row today.</p>
+    <div class="shots">
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/a-desk-week-ground-1today.png" alt="Edit Schedule on a desktop today: the Ground Programme lists Range safety brief four times, one row for each man"></button><figcaption><span class="tag">Today</span>one row for each man.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/a-desk-week-ground-2new.png" alt="The same Ground Programme with one Range safety brief row holding the four pucks, Hunter flagged red"></button><figcaption><span class="tag new">New</span>one row, four pucks.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="head"><span class="num">2</span><h3>Edit Schedule, on a phone</h3></div>
+    <p>On a phone the People column is one puck wide, so the four stack. The row is a third of the height the four rows take today.</p>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/1130"><img src="img/group-input-one-row/a-phone-week-ground-1today.png" alt="Edit Schedule on a phone today: four Range safety brief rows fill the Ground Programme"></button><figcaption><span class="tag">Today</span></figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/1130"><img src="img/group-input-one-row/a-phone-week-ground-2new.png" alt="The same phone screen with one row, its four pucks stacked, Hunter flagged red"></button><figcaption><span class="tag new">New</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="head"><span class="num">3</span><h3>Scheduler Board, on a desktop</h3></div>
+    <p>One row with one set of boxes: one title, one time, one remark, one CX, one ✕. What is typed in the time or the remark box changes the input for all four.</p>
+    <div class="shots">
+      <figure class="desk"><button class="zoom" type="button"><img src="img/group-input-one-row/a-desk-board-ground-1today.png" alt="The Scheduler Board on a desktop today: four Range safety brief rows, each with its own boxes and buttons"></button><figcaption><span class="tag">Today</span>four rows, four sets of boxes.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="img/group-input-one-row/a-desk-board-ground-2new.png" alt="The Scheduler Board with one Range safety brief row holding four pucks"></button><figcaption><span class="tag new">New</span>one row.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="head"><span class="num">4</span><h3>Scheduler Board, on a phone</h3></div>
+    <p>The biggest saving. Today the meeting takes more than a full screen; as one row it takes a quarter of that.</p>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="img/group-input-one-row/a-phone-board-ground-1today.png" alt="The Scheduler Board on a phone today: the four rows of the meeting run past the bottom of the screen"></button><figcaption><span class="tag">Today</span></figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="img/group-input-one-row/a-phone-board-ground-2new.png" alt="The Scheduler Board on a phone with the meeting as one row, pucks two across"></button><figcaption><span class="tag new">New</span></figcaption></figure>
+    </div>
+  </section>
+
+  <h2>Personal Inputs</h2>
+
+  <section class="item">
+    <div class="head"><span class="num">5</span><h3>Edit Schedule: desktop and phone</h3></div>
+    <p>The same one row in the Personal Inputs panel, with one Undo for the whole input. Today this panel lists the meeting four times too.</p>
+    <div class="shots">
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/a-desk-week-inputs-2new.png" alt="Personal Inputs on Edit Schedule on a desktop: one accepted row with four pucks and one Undo"></button><figcaption><span class="tag new">New</span>desktop.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/640"><img src="img/group-input-one-row/a-phone-week-inputs-2new.png" alt="Personal Inputs on Edit Schedule on a phone: one accepted row with four stacked pucks"></button><figcaption><span class="tag new">New</span>phone.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="head"><span class="num">6</span><h3>Scheduler Board: desktop and phone</h3></div>
+    <div class="shots">
+      <figure class="desk"><button class="zoom" type="button"><img src="img/group-input-one-row/a-desk-board-inputs-2new.png" alt="Personal Inputs on the Scheduler Board on a desktop: one row with four pucks and one Undo"></button><figcaption><span class="tag new">New</span>desktop.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/720"><img src="img/group-input-one-row/a-phone-board-inputs-2new.png" alt="Personal Inputs on the Scheduler Board on a phone: one row with four pucks two across"></button><figcaption><span class="tag new">New</span>phone.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>On a published day</h2>
+
+  <section class="item">
+    <div class="head"><span class="num">7</span><h3>The count of changes waiting reads 1, not 4</h3></div>
+    <p>Wednesday is published, then the meeting is filed. Today the day reads “4 pending” and the Amendments box “4 changes”. As ruled it is one change.</p>
+    <div class="shots">
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-desk-pub-head-1today.png" alt="A published Wednesday on a desktop today: the Amendments box reads 4 changes and the day reads 4 pending"></button><figcaption><span class="tag">Today</span>desktop.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-desk-pub-head-2new.png" alt="The same published Wednesday reading 1 change and 1 pending"></button><figcaption><span class="tag new">New</span>desktop.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-phone-pub-head-1today.png" alt="The published Wednesday on a phone today reading 4 pending"></button><figcaption><span class="tag">Today</span>phone.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-phone-pub-head-2new.png" alt="The published Wednesday on a phone reading 1 pending"></button><figcaption><span class="tag new">New</span>phone.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="head"><span class="num">8</span><h3>The list of what is waiting: one line naming the four</h3></div>
+    <p>A tap on the count opens the list. Today it has a line for each man. As ruled it is one line, with the names under it.</p>
+    <div class="shots">
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-desk-pub-list-1today.png" alt="The changes window today: four lines waiting to go out, one for each man"></button><figcaption><span class="tag">Today</span>desktop.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-desk-pub-list-2new.png" alt="The changes window with one line: Range safety brief, 4 people, the four names under it"></button><figcaption><span class="tag new">New</span>desktop.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-phone-pub-list-1today.png" alt="The changes window on a phone today with a line for each man"></button><figcaption><span class="tag">Today</span>phone.</figcaption></figure>
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-phone-pub-list-2new.png" alt="The changes window on a phone with one line naming the four"></button><figcaption><span class="tag new">New</span>phone.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="head"><span class="num">9</span><h3>The row itself while it waits</h3></div>
+    <p>It wears the mark a new row wears today on a published day: the dotted line under its title, once.</p>
+    <div class="shots">
+      <figure class="half"><button class="zoom" type="button"><img src="img/group-input-one-row/c-desk-week-ground-2new.png" alt="The one row on a published day on a desktop, its title underlined with a dotted line"></button><figcaption><span class="tag new">New</span>Edit Schedule, desktop.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/1010"><img src="img/group-input-one-row/c-phone-board-ground-2new.png" alt="The one row on a published day on the Scheduler Board on a phone, its title box outlined with a dotted line"></button><figcaption><span class="tag new">New</span>Scheduler Board, phone.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>A big one</h2>
+
+  <section class="item">
+    <div class="head"><span class="num">10</span><h3>Ten people on the one row</h3></div>
+    <p>Everyone is shown, none hidden behind “+6”. The row grows downward. Vapor has another event at 14:00, so he is flagged.</p>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/960"><img src="img/group-input-one-row/b-phone-week-ground-ten.png" alt="Edit Schedule on a phone: one row with ten pucks stacked in the People column"></button><figcaption><span class="tag new">New</span>Edit Schedule, phone.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/960;--pos:50% 20%"><img src="img/group-input-one-row/b-phone-board-ground-ten.png" alt="The Scheduler Board on a phone: one row with ten pucks, two across"></button><figcaption><span class="tag new">New</span>Scheduler Board, phone.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="img/group-input-one-row/b-desk-board-ground-ten.png" alt="The Scheduler Board on a desktop: one row with ten pucks, three across"></button><figcaption><span class="tag new">New</span>Scheduler Board, desktop.</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="mine">
+    <span class="lab">Small things I decided, shown in the pictures</span>
+    <ul>
+      <li>The pucks run A to Z, as the Inputs list names a shared input’s people.</li>
+      <li>On a phone the row’s two times stay together at its top. Today, on a tall row, they drift apart.</li>
+      <li>On a desktop, Personal Inputs gets room for two pucks side by side, as the Ground Programme has.</li>
+      <li>Personal Inputs counts it as “1 input”, not 4.</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <span class="lab">One thing you may notice</span>
+    When the pucks exactly fill their line, the row keeps one empty line under them. Every row in the app does this today. It is where a puck dragged onto the row lands.
+  </div>
+
+  <p class="tap">How these were made: the real app was driven through its own buttons, pictured as it is, and then the four rows were re-arranged on the page into one, using only the app’s own row and puck. View-only Sched will show the same row without the boxes and buttons. The Unavailable list is not in these pictures: there it stays a row for each man, as you ruled.</p>
+</div>
+
+<div id="lb" hidden></div>
+<button id="lbx" type="button" hidden>Close ✕</button>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.appendChild(document.createElement('img')), x=document.getElementById('lbx'), last=null
+  function shut(){ lb.hidden=true; x.hidden=true; lb.classList.remove('big'); if(last) last.focus() }
+  document.querySelectorAll('.zoom').forEach(function(b){
+    b.addEventListener('click',function(){ var s=b.querySelector('img'); last=b; im.src=s.src; im.alt=s.alt; lb.hidden=false; x.hidden=false; lb.scrollTop=0; x.focus() })
+  })
+  im.addEventListener('click',function(e){ e.stopPropagation(); lb.classList.toggle('big') })
+  lb.addEventListener('click',shut); x.addEventListener('click',shut)
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) shut() })
+})()
+</script>
