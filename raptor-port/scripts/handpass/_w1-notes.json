@@ -1,0 +1,20 @@
+{
+  "verdict": {},
+  "notes": {
+    "1": "No hand act here, so Undo took back the last thing filed (S1, Anvil's training) and Redo put it back - the four-man row never moved. The one-line read: week row, week line, board row and board line each hold exactly one entry with the four names A to Z.",
+    "2": "Undo took Anvil out of the row, the line and INPUTS (4 records); Redo put him back (5); reload kept 5.",
+    "3": "The refused second drop raised the note and left no undo entry: the one Undo took Blade out, not a phantom step.",
+    "6": "The seat's old man (Trident) is nowhere on the row and not in the input; Undo put Trident back in the seat and Hunter back in the input. The landing flash (class lift-land) was on the seat itself at the instant of the drop (picture s6-week-landing-flash).",
+    "7": "The Wednesday Ground Programme has no row BELOW the one row in the seed (it is last at 14:00), so a blank row was added with the board's own '+ Item' button and Drifter was dropped on that. Flash: on the seat he landed on, inside the row he landed on, not the one beside it, both times.",
+    "9": "Typed on all four surfaces (week row, board row, week Personal Inputs line, board Personal Inputs line), each in a fresh world; after every typed edit one Undo put the previous value back in the box, INPUTS (all four records) and the day card, and Redo re-applied it; the Inputs calendar day card always showed ONE card for the input. On the Personal Inputs line there is no typed box for the NAME (the name is a button that opens the input's window), so the name step was done on the two ground rows only - see Could not do. The remark typed on a row replaces the automatic 'till 15 Jul' text; INPUTS then carries 'Bring ID' for all four records.",
+    "11": "OBSERVATION (not in the EXPECT): after the grip drag the landing flash was drawn on the NAV-SYS TRIAL PREP row (the row now standing where the one row used to be), not on the moved row, which now stood at the top - pictures s11-board-move1-flash.png. Auto sort puts the rows in start-time order; three rows tie at 14:00 so the one row stays ahead of NAV-SYS (the sort keeps tied rows where they are) - still one row with four pucks.",
+    "13": "The warning list line reads 'Tally - On leave but tasked - RANGE SAFETY BRIEF - reason: till 15 Jul'. Clicking it lit Tally's puck on the one row (and on his Personal Inputs line and his Unavailable row) and dimmed every other puck; Undo removed the leave and the flag, Redo brought both back.",
+    "14": "The week-before view is not undoable (loading a week is not a change): Undo/Redo took back and re-did the last filing (S1) and the 13-19 Jul peek was unaffected. After the reload the app returned to the current week (13 Jul), so 13-19 Jul no longer shows as a peek - the week view is not kept over a reload.",
+    "15": "FAIL against the EXPECT: dropped on Hunter's puck the ALL AVAIL puck did land at the row's end as an extra (g:2.2.x0), Hunter untouched, nobody added to the input - but when Hunter was taken off, the note said only 'Hunter taken out of Range safety brief' and the ALL AVAIL puck STAYED on the row (36/37 shown). Tried three ways, same result each time: drag Hunter off to empty page, right-click Hunter, ALL AVAIL dropped on the + add zone then Hunter dragged off. Undo put Hunter back; ALL AVAIL never left."
+  },
+  "could": [
+    "W1-9, name on the Personal Inputs line (week and board): the line has typed boxes for the start, the end and the remark but NO typed box for the name - it is a button that opens the input's window. I typed the name on the two ground rows only. (A way to rename for everyone exists in the window; W2-5 covers that window.)",
+    "W1-7, 'a ground row BELOW it': the seed Wednesday has none below the one row (it is last), so I made one with the board's own '+ Item' button; the drop on that blank row worked.",
+    "W1-14: Undo / Redo have nothing of this scenario to take back (loading a week is not a change); they acted on the last filing instead (said in the note)."
+  ]
+}

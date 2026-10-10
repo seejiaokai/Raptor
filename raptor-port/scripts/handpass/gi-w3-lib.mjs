@@ -307,7 +307,7 @@ export function nums(o) {
   const z = x => (x == null ? 0 : x)
   const a = z(first(o.a, /(\d+)\s*pending/i))
   const b = z(first(o.b, /(\d+)\s*pending/i))
-  const c = /No pending changes/i.test(o.c || '') ? 0 : z(first(o.c, /Wed\s*·\s*(\d+)\s*change/i) ?? first(o.c, /(\d+)\s+change/i))
+  const c = /No pending changes/i.test(o.c || '') ? 0 : z(first(o.c, /(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*·\s*(\d+)\s*change/i) ?? first(o.c, /(\d+)\s+change/i))
   const d = z(first(o.d, /(\d+)\s+changes?\s+waiting/i))
   const e = z(first(o.e, /·\s*(\d+)\s+change/i) ?? first(o.tabLabel, /(\d+)\s*$/))
   return [a, b, c, d, e]
@@ -397,7 +397,7 @@ export async function lookAt(p, which = 'Original', di = DI) {
   await toWeek(p)
   await p.locator('[data-planmenu="' + di + '"]').first().scrollIntoViewIfNeeded()
   await p.locator('[data-planmenu="' + di + '"]').first().click(); await p.waitForTimeout(500)
-  await p.locator('.wavemenu button, .wavemenu [role=menuitem], .wavemenu div', { hasText: new RegExp('^' + which) }).first().click(); await p.waitForTimeout(900)
+  await p.locator('.wavemenu button', { hasText: new RegExp('^' + which) }).first().click(); await p.waitForTimeout(900)
 }
 export async function pressLoad(p) {
   const b = p.locator('.dprev-restore').first()

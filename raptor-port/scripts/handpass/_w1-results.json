@@ -2,7 +2,7 @@
  "1": {
   "n": 1,
   "did": "filed G4 (and S1) through + Input; opened the week and the board; opened Personal Inputs; read every surface",
-  "saw": "week row [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] / line [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; board row [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] / line [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; folded week header read: \"⠿\nPERSONAL INPUTS\n2 input  · 2 on programme ·  how ⌄\" (S1 also filed, so 2 inputs; G4 counts once); with G4 filed alone in a clean world the folded header reads: \"⠿ PERSONAL INPUTS 1 input · 1 on programme · show ⌄\"",
+  "saw": "week row [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] / line [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; board row [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] / line [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; folded week header read: \"⠿ PERSONAL INPUTS 2 inputs · 2 on programme · show ⌄\" (S1 also filed, so 2 inputs; G4 counts once); with G4 filed alone in a clean world the folded header reads: \"⠿ PERSONAL INPUTS 1 input · 1 on programme · show ⌄\"",
   "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
   "done": {
    "undo": {
@@ -54,7 +54,7 @@
        "Jul 15"
       ],
       "grp": [
-       "\"gmv2wbftqmrbrgr\""
+       "\"gmv2wi5q4vgnifw\""
       ]
      }
     },
@@ -109,7 +109,7 @@
        "Jul 15"
       ],
       "grp": [
-       "\"gmv2wbftqmrbrgr\""
+       "\"gmv2wi5q4vgnifw\""
       ]
      }
     },
@@ -161,7 +161,7 @@
        "Jul 15"
       ],
       "grp": [
-       "\"gmv2wbftqmrbrgr\""
+       "\"gmv2wi5q4vgnifw\""
       ]
      }
     },
@@ -1421,7 +1421,7 @@
        "Jul 15"
       ],
       "grp": [
-       "\"gmv2w4o6qkz3rqd\""
+       "\"gmv2wdex9a30xva\""
       ]
      }
     },
@@ -1476,7 +1476,7 @@
        "Jul 15"
       ],
       "grp": [
-       "\"gmv2w4o6qkz3rqd\""
+       "\"gmv2wdex9a30xva\""
       ]
      }
     },
@@ -1528,7 +1528,7 @@
        "Jul 15"
       ],
       "grp": [
-       "\"gmv2w4o6qkz3rqd\""
+       "\"gmv2wdex9a30xva\""
       ]
      }
     },
@@ -1588,7 +1588,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w4o6qkz3rqd\""
+         "\"gmv2wdex9a30xva\""
         ]
        }
       },
@@ -1643,7 +1643,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w4o6qkz3rqd\""
+         "\"gmv2wdex9a30xva\""
         ]
        }
       },
@@ -1695,7 +1695,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w4o6qkz3rqd\""
+         "\"gmv2wdex9a30xva\""
         ]
        }
       },
@@ -1755,7 +1755,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w5kd1l566yr\""
+         "\"gmv2webjsd6i2ts\""
         ]
        }
       },
@@ -1810,7 +1810,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w5kd1l566yr\""
+         "\"gmv2webjsd6i2ts\""
         ]
        }
       },
@@ -1862,7 +1862,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w5kd1l566yr\""
+         "\"gmv2webjsd6i2ts\""
         ]
        }
       },
@@ -1922,7 +1922,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w6ork9inrc1\""
+         "\"gmv2wfgawu6jvir\""
         ]
        }
       },
@@ -1977,7 +1977,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w6ork9inrc1\""
+         "\"gmv2wfgawu6jvir\""
         ]
        }
       },
@@ -2029,7 +2029,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w6ork9inrc1\""
+         "\"gmv2wfgawu6jvir\""
         ]
        }
       },
@@ -2089,7 +2089,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w7d1lt0j55n\""
+         "\"gmv2wg4qxaza1e9\""
         ]
        }
       },
@@ -2144,7 +2144,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w7d1lt0j55n\""
+         "\"gmv2wg4qxaza1e9\""
         ]
        }
       },
@@ -2196,7 +2196,7 @@
          "Jul 15"
         ],
         "grp": [
-         "\"gmv2w7d1lt0j55n\""
+         "\"gmv2wg4qxaza1e9\""
         ]
        }
       },

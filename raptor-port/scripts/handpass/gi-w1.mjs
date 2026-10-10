@@ -105,7 +105,7 @@ S[1] = async () => {
   const p = W.page, pics = []
   await goWeek(p); await hideToast(p)
   const fold = p.locator(`#eWeek .day:not(.peek) [data-pitog="${DI}"]`).first()
-  const foldTxt = (await fold.innerText()).replace(/s+/g, ' ')
+  const foldTxt = (await fold.innerText()).replace(/\s+/g, ' ')
   await openFold(p, 'week')
   await scrollWeek(p, 'ground'); await p.waitForTimeout(300)
   pics.push(await shotEl(p.locator(WKSEL('ground')).first(), 's1-week-ground'))
@@ -354,6 +354,7 @@ async function typedEdits(where) {
   try {
   const edits = [['start', '14:30', r => r.start === '14:30' && r.inp.clock.join() === '14:30-15:00' && r.card.includes('14:30–15:00')], ['rmk', 'Bring ID', r => /Bring ID/.test(r.rmk) && r.inp.rmk.every(x => /Bring ID/.test(x)) && /Bring ID/.test(r.card)], ['name', 'Range brief', r => (r.name || '').toLowerCase() === 'range brief' && r.inp.titles.join() === 'Range brief' && /Range brief/.test(r.card)]]
   let allOk = true
+  const lastKind = edits.filter(([k]) => !(k === 'name' && !boxes[where].name)).pop()[0]
   for (const [kind, text, ok] of edits) {
     if (kind === 'name' && !boxes[where].name) { log.push('name: no typed box for the name on this line (the name is a button that opens the input window)'); continue }
     await (surface === 'board' ? scrollBoard(p, where === 'boardG' ? 'ground' : 'inputs') : scrollWeek(p, where === 'weekG' ? 'ground' : 'inputs')); await p.waitForTimeout(300)
@@ -361,7 +362,7 @@ async function typedEdits(where) {
     const m = await toastMark(p)
     await typeBox(p, boxes[where][kind](row), text)
     const tst = await toastsSince(p, m)
-    const after = await readAll(p, where, surface, kind === 'name' ? `s9-${where}-card-after-three` : null)
+    const after = await readAll(p, where, surface, kind === lastKind ? `s9-${where}-card-after-three` : null)
     const good = ok(after) && after.rows === 1 && after.inp.n === 4 && after.cards === 1 && after.men && after.men.length === 4
     const mu = await toastMark(p); const u = await undoRedo(p, 'undo'); const tu = await toastsSince(p, mu)
     const undone = await readAll(p, where, surface, null)

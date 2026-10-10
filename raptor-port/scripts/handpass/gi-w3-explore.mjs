@@ -1,20 +1,21 @@
 import * as L from './gi-w3-lib.mjs'
-const { world, DESK, errs, shot, press, counts, fmt } = L
-const { ctx, page } = await world(DESK, false)
-await L.toBoard(page)
-// open Personal Inputs on the board if folded
-const rows = () => page.evaluate(() => document.querySelectorAll('#schedBoard .pinp .sb-arow').length)
-if (!(await rows())) { await page.locator('#schedBoard [data-pitog="2"]').first().click(); await page.waitForTimeout(500) }
-console.log('pinp rows', await rows())
-const ie = page.locator('#schedBoard .sb-panel.pinp .sb-arow.inprow .inpedit', { hasText: 'Range safety brief' }).first()
-console.log('inpedit', await ie.innerText())
-await ie.scrollIntoViewIfNeeded(); await ie.click(); await page.waitForTimeout(900)
-console.log('WIN', await page.evaluate(() => [...document.querySelectorAll('[data-testid], .modal, [role=dialog]')].filter(e => e.offsetParent !== null && /win-|modal|dialog/i.test((e.dataset.testid || '') + e.className)).map(e => (e.dataset.testid || e.className) + ': ' + e.innerText.replace(/s+/g, ' ').slice(0, 500))))
-console.log('BTNS', await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent !== null && /delete|save|cancel|undo/i.test(b.textContent + b.id)).map(b => b.id + '|' + (b.dataset.testid || '') + '|' + b.textContent.trim().slice(0, 40) + '|' + (b.closest('[class*=win],[class*=modal],[role=dialog]')?.className || '').slice(0, 30))))
-await shot(page, 'explore-win')
-await page.locator('#inpEditDel').click(); await page.waitForTimeout(700)
-console.log('AFTER DEL', await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent !== null && /delete|keep|cancel|yes|nob/i.test(b.textContent + b.id)).map(b => b.id + '|' + (b.dataset.testid || '') + '|' + b.textContent.trim().slice(0, 50))))
-console.log('TXT', await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"], .inpedwin, .win')].map(e => e.innerText.replace(/s+/g, ' ').slice(-300))))
-await shot(page, 'explore-del2')
+const { open, fileInput, DESK, errs, shot, counts, fmt, toWeek, toBoard, csId } = L
+const { ctx, page } = await open(DESK)
+await fileInput(page, { type: 'Duty', people: ['Drifter', 'Ranger'], from: '2026-07-18', to: '2026-07-18', timed: ['09:00', '12:00'], title: 'Range duty', oil: 'yes' })
+await toWeek(page)
+const sat = () => page.locator('#eWeek .day:not(.peek)').nth(5).locator('.sec-grnd .pl-row', { hasText: 'RANGE DUTY' }).locator('.puck', { hasText: 'Drifter' }).first()
+await L.dragNameOnto(page, 'Hunter', sat())
+console.log('toast', await L.toastText(page), '| question?', await page.locator('[data-testid="oilconf"]').count())
+console.log('Hunter rec', await page.evaluate(() => window.INPUTS.filter(i => i.title === 'Range duty').map(i => window.PEOPLE[i.person].cs + ':' + JSON.stringify(i.oil))))
+console.log('row', JSON.stringify(await page.evaluate(() => { const d = [...document.querySelectorAll('#eWeek .day:not(.peek)')][5]; return [...d.querySelectorAll('.sec-grnd .pl-row')].map(r => [...r.querySelectorAll('.puck .nm')].map(n => n.textContent.trim())) })))
+console.log('publish sat', JSON.stringify(await L.signAndPublish(page, 5)))
+const ids = await Promise.all(['Drifter', 'Hunter', 'Ranger'].map(c => csId(page, c)))
+console.log('lw', JSON.stringify(await (async () => {
+  await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1500)
+  const mon = page.locator('[data-testid="month-JUL"]'); if (await mon.count()) { await mon.first().click(); await page.waitForTimeout(1200) }
+  return page.evaluate(([ids, d]) => Object.fromEntries(ids.map(id => { const c = document.querySelector(`[data-testid="cell-${id}-${d}"]`); return [window.PEOPLE[id].cs, c ? { text: c.innerText.trim(), cls: c.className.slice(0, 80) } : 'NO CELL'] })), [ids, '2026-07-18'])
+})()))
+await shot(page, 'explore-lw')
+console.log('LW buttons', await page.evaluate(() => [...document.querySelectorAll('#page-leavewar button, #page-leavewar [role=tab]')].map(b => (b.dataset.testid || '') + '|' + b.textContent.trim().slice(0, 20)).filter(x => /oil|track|award/i.test(x))))
 console.log('errs', errs)
 process.exit(0)

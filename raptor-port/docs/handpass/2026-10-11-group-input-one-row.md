@@ -223,6 +223,17 @@ job's (the window carries the people picker since D748) — a fix and a phone br
 walk; (b) on the WEEK on a phone a tap on a row's "+ add" arms nothing when the row's first place is filled — the same
 on a one-man row, the board's tap works: older than this job by the walker's control; to file, not reproduced on
 `main` by the host. W1 and W3 were still walking.
+**W1 (the hands, desktop) reported: 14 PASS, 1 FAIL, no browser errors** (`docs/handpass/parts/gi-w1.md`; each scenario
+in its own browser world). As the host reads it: **W1-15's FAIL is the HOST'S scenario, not the app** — the scenario
+expected ALL AVAIL to leave with Hunter because it was dropped on Hunter's puck; by the rule as ruled (D745, the plan
+§4.5) a placeholder dropped anywhere on the row stands on the LEAD's row (the walker read it at `g:2.2.x0`, the lead's
+extras), so it leaves when the LEAD leaves, with the note naming him. The drop itself did as ruled (the row's own,
+Hunter untouched, nobody added). **OWED: a re-walk that takes the LEAD off and reads the note** — and a line for him
+on the look card: nothing on screen says which man the puck stands on (it is whoever was filed first). **One find the
+EXPECT lines did not ask for (W1-11):** after the one row was dragged by its grip to the top of the list, the landing
+flash was on the row now standing where it had been, not on the moved row (`w1/s11-board-move1-flash.png` — NOT yet
+opened or reproduced by the host; to settle whether a first hand-move of a single row does the same, i.e. older).
+W3 (the published day) was still walking.
 
 **11 Oct 26, when the walkers were started:** §§1–7 written; the gates run (§11); the PC lock taken for the walk; the
 build served on 4180 is `f07ce883`'s (nobody rebuilds it while they walk); three Sonnet 5.5 walkers started, each
