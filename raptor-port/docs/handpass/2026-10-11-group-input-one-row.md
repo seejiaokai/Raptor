@@ -207,6 +207,12 @@ Fixture: file G4 and S1, sign and publish Wed 15 Jul through the app's own sign-
 and Redo leave the grid where it is when the changed day is on screen" — the known unsteady one (the gate baseline of
 10 Oct 26 met it the same way; this job touches nothing of the Leave War): run again by itself, three times over,
 3 of 3 passed. A test to make wait on what it needs (D87) — filed long since; not this job's.
+**A SECOND whole run, after the walk's one fix (`199707f2`'s code), under the lock — while Fable's read was running on
+the same PC: unit 10082 / 10082 · build clean · tfin 728 / 0 · e2e 767 passed, 1 failed, 57 skipped · smoke 445 / 0 ·
+rulecheck OK · docsize OK.** The one failure this time is a DIFFERENT Leave War test, on the desktop ("the grid draws
+a window of months over year-wide placeholders…") — the Leave War desktop timing test D84 names: run again by itself,
+three times, 3 of 3. Two runs, two different Leave War timing tests, each passing alone; nothing of this job's failed
+in either. The new phone test of the "Delete for all?" question is among the 767.
 `perms.test.ts` and `perms-scan.test.ts` are in the unit count (no permission rule moved). NOT run: `npm run
 probes:adapted`, `npm run perf` — owed before the pull request (the row drawing and a stylesheet changed).
 
