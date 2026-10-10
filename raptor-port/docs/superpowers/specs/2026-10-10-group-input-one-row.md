@@ -43,12 +43,17 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
 - A placeholder puck (ALL / ALL AVAIL) may still stand on the row and earns by default (D46, D43); it is the row's own,
   never one of the input's people.
 
+## Round 2 — 10 Oct 26
+
+| # | Asked | His answer | The ruling |
+|---|---|---|---|
+| 1 | The scheduler types 14:30 in the shared row's time box (or changes its remark): the row only as today (recommended for this job), the input too for shared rows only, or the input too on every request's row | In his own words: "The scheduler changes the input entirely from the original on the schedule" | **NOT RECORDED YET** — two readings: the change on the schedule rewrites the input itself; or the schedule stands apart from the original input. Asked back with one example ("after 14:30 is typed on the schedule, what does the Inputs calendar show?") and whether a one-man request's row follows. |
+| 2 | A man added by a drag onto the row on a weekend or holiday: his OIL | "Takes the input's answer" | **D738** — he takes the OIL answer the input already carries; no question on the schedule; OIL Earn still switches him. It narrows D660's reading 4 for an add made on the schedule. |
+
 ## Still to ask
 
-- **Round 2:** a time or a remark typed in the shared row's own boxes — the row's own, as on a one-man request's row
-  today (`OUTSTANDING.md` `[REQ-ROW-OWN-BOXES]`, the same question for one man, still open), or the input's; and the
-  OIL answer of a man the scheduler adds by dragging his puck onto the row on a weekend or holiday (D660's reading 4:
-  "answered for by whoever adds him, at that save").
+- **The row's boxes, asked back (above).** If the input is to follow the schedule: whether a scheduler's change after
+  the cut-off makes the input read LATE (the mark measures the input's last change), and whose name the change carries.
 - **Then pictures** of the row on the real screen — the Ground Programme and the Personal Inputs line, the week and
   the board, a phone and a desktop, a flagged man on it, a change waiting on a published day — for his yes (D541;
   D662's reading 2).
