@@ -91,7 +91,7 @@ async function s6b() {
   const c1 = await togo(page, 're-time only', rec)
   await L.lookAt(page, 'Original')
   rec.look = await L.pressLoad(page); log('  look', JSON.stringify(rec.look))
-  rec.pics.push(await shotHead(page, 's6b-desk-look-retime-only'))
+  rec.pics.push(await shot(page, 's6b-desk-look-toast')); rec.pics.push(await shotHead(page, 's6b-desk-look-retime-only'))
   rec.discardN = (/Discard (\d+) edit/i.exec(JSON.stringify(rec.look.after)) || [])[1] ?? 'no Discard button'
   const keep = page.locator('.dprev-cancel').first(); if (await keep.count()) await keep.click().catch(() => {}); await page.waitForTimeout(500); await L.lookAt(page, 'Live working copy').catch(e => log('  exit look failed', String(e).slice(0, 80))); rec.did.push('left the look with Keep editing, then chose Live working copy from the plan menu')
   const rr = await ritual(page, false, rec)

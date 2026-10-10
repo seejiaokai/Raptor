@@ -173,6 +173,9 @@ test('a phone: the window opened from the Personal Inputs line asks "Delete for 
   await fileGroup(page, true)
   await go(page, 'editsched')
   await page.evaluate(di => (window as any).openScheduler(di), DI)
+  /* Personal Inputs is folded to one line by default: open it, as a person would */
+  const fold = page.locator(`#schedBoard [data-pitog="${DI}"]`).first()
+  if (await fold.count() && /show/.test(await fold.innerText())) await fold.tap()
   const type = page.locator('#schedBoard .sb-panel.pinp .sb-arow.inprow .inpedit').first()
   await type.scrollIntoViewIfNeeded(); await type.tap()
   await expect(page.locator('#inpEditPop [data-pp][aria-pressed="true"]'), 'the window shows everyone in it (D748)').toHaveCount(4)

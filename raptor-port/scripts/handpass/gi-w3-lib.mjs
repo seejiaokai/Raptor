@@ -170,11 +170,11 @@ export async function allTags(p) {
 }
 
 /* ---------- Undo / Redo ---------- */
-export const undoBtn = p => p.locator('#sbUndo:visible, #undoBtn:visible').first()
-export const redoBtn = p => p.locator('#sbRedo:visible, #redoBtn:visible').first()
+export const undoBtn = async p => ((await p.locator('#schedBoard #sbUndo:visible').count()) ? p.locator('#schedBoard #sbUndo').first() : p.locator('#undoBtn:visible').first())
+export const redoBtn = async p => ((await p.locator('#schedBoard #sbRedo:visible').count()) ? p.locator('#schedBoard #sbRedo').first() : p.locator('#redoBtn:visible').first())
 export async function undoOnce(p, touch = false) {
   if (!(await p.locator('#sbUndo:visible, #undoBtn:visible').count())) await toWeek(p)
-  const b = undoBtn(p)
+  const b = await undoBtn(p)
   const was = await b.isDisabled().catch(() => null)
   if (was) return 'Undo button is disabled (nothing to undo)'
   await press(touch, b); await p.waitForTimeout(700)
@@ -182,7 +182,7 @@ export async function undoOnce(p, touch = false) {
 }
 export async function redoOnce(p, touch = false) {
   if (!(await p.locator('#sbRedo:visible, #redoBtn:visible').count())) await toWeek(p)
-  const b = redoBtn(p)
+  const b = await redoBtn(p)
   const was = await b.isDisabled().catch(() => null)
   if (was) return 'Redo button is disabled (nothing to redo)'
   await press(touch, b); await p.waitForTimeout(700)

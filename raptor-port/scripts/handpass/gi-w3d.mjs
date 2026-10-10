@@ -94,9 +94,26 @@ async function s12() {
   rec.cells = await cells(); log('  Leave War cells at 18 Jul:', JSON.stringify(rec.cells))
   rec.pics.push(await shot(page, 's12-desk-leavewar-grid'))
   await page.locator('[data-testid="oil-tracker"]').first().click(); await page.waitForTimeout(1200); rec.did.push('opened the Leave War\'s OIL tracker')
-  rec.tracker = await page.evaluate(() => { const els = [...document.querySelectorAll('[role=dialog], .modal, .sheet, [class*=tracker]')].filter(e => e.offsetParent !== null); els.sort((a, b) => b.innerText.length - a.innerText.length); return els[0] ? els[0].innerText.replace(/\s+/g, ' ').slice(0, 1500) : 'nothing opened' })
-  log('  tracker:', rec.tracker.slice(0, 600))
-  rec.pics.push(await shot(page, 's12-desk-oil-tracker'))
+  rec.trackerRows = {}
+  for (const nm of ['Drifter', 'Hunter', 'Ranger']) {
+    rec.trackerRows[nm] = await page.evaluate(nm => {
+      const w = [...document.querySelectorAll('.oil-name .who')].find(e => e.textContent.trim() === nm)
+      if (!w) return 'no name cell found'
+      w.scrollIntoView({ block: 'center' })
+      const row = w.closest('tr.oil-row')
+      return row ? row.innerText.replace(/\s+/g, ' ').slice(0, 400) : 'no row'
+    }, nm)
+    log('  tracker row', nm, ':', rec.trackerRows[nm])
+    await page.waitForTimeout(300)
+    rec.pics.push(await shot(page, 's12-desk-oil-tracker-' + nm.toLowerCase()))
+  }
+  // Undo once / Redo / reload — with the Saturday's five counts and the Leave War's cells for the three men read after each
+  const lwRead = async () => { await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1500); const mon = page.locator('[data-testid="month-JUL"]'); if (await mon.count()) { await mon.first().click({ timeout: 4000 }).catch(() => {}); await page.waitForTimeout(1200) } return cells() }
+  await toWeek(page)
+  rec.undo = await undoOnce(page); const u = await togo(page, 'Undo once', rec); rec.undoCells = await lwRead(); log('  UNDO ->', rec.undo, JSON.stringify(rec.undoCells))
+  await toWeek(page)
+  rec.redo = await redoOnce(page); const r = await togo(page, 'Redo', rec); rec.redoCells = await lwRead(); log('  REDO ->', rec.redo, JSON.stringify(rec.redoCells))
+  await reload(page); const x = await togo(page, 'after reload', rec); rec.reloadCells = await lwRead(); log('  RELOAD ->', JSON.stringify(rec.reloadCells))
   rec.verdict = rec.question === 0 && /Hunter.*HO|HO.*Hunter/.test(JSON.stringify(rec.cells)) && rec.cells.Hunter?.text?.startsWith('HO') ? 'PASS' : 'CHECK'
   save('s12', { rec, c1 }); await ctx.close()
 }

@@ -233,7 +233,23 @@ on the look card: nothing on screen says which man the puck stands on (it is who
 EXPECT lines did not ask for (W1-11):** after the one row was dragged by its grip to the top of the list, the landing
 flash was on the row now standing where it had been, not on the moved row (`w1/s11-board-move1-flash.png` — NOT yet
 opened or reproduced by the host; to settle whether a first hand-move of a single row does the same, i.e. older).
-W3 (the published day) was still walking.
+**W3 (the published day) reported: 11 PASS, 1 FAIL, no browser errors** (`docs/handpass/parts/gi-w3.md`; steps 1–3 at
+desktop and phone size, 4–12 at desktop; 69 pictures). **The five counts — the day head, the board's head, the
+Amendments box, the changes window's title and its "To go out" head — agreed with each other at every step, and again
+after every Undo, Redo and reload.** Its FAIL (scenario 10) is the same HOST scenario as W1-15 — and its own probe
+"10x" IS the re-walk owed above, through the real controls on the built bundle: with ALL AVAIL on the row, the LEAD
+(Drifter) taken off gives the note "ALL AVAIL came off Range safety brief with Drifter — drop it on the row again if
+it still applies", 1 everywhere, and the To go out line "… taken out · ALL AVAIL came off with him". With Hunter taken
+off instead the puck stays, the count is 1 and his line adds "what the day earns changes with it" — true: Hunter is
+free at that hour now, so the crowd behind the puck gained him (the fold names it on his line). W3-12: Hunter, added
+by a drop with everyone answering Yes, read HO on 18 Jul in the Leave War as Drifter and Ranger did, once Saturday was
+published. Read, not faults: with nothing waiting the day head shows the history count, not "0 pending" (as before this
+job); the published amendment says "1 item"; a whole new one row's mark says "Edited — goes out as AL1" on its name.
+**THE WALK'S TOTALS: 37 scenarios, 34 PASS; of the 3 FAILs two are one host scenario written against the rule (re-walked
+right by W3's probe: PASS), one an older behaviour (the week's tap on "+ add" on a phone). Faults of THIS job found by
+the walk: ONE** — the phone's cut-off "Delete for all?" question — **FIXED:** `e2e/grouprow.spec.ts` ("a phone: the
+window opened from the Personal Inputs line asks…") seen FAILING with the fix switched off ("inped-delall-no can be
+pressed where it is drawn"), 5 of 5 in the file with it on. Still to settle: W1-11's landing flash (above).
 
 **11 Oct 26, when the walkers were started:** §§1–7 written; the gates run (§11); the PC lock taken for the walk; the
 build served on 4180 is `f07ce883`'s (nobody rebuilds it while they walk); three Sonnet 5.5 walkers started, each
