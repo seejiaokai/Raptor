@@ -68,6 +68,10 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
 - **To find in the code before asking anything more:** what the row's NAME box holds on a request's row today and
   whether a word typed there should become the input's title (D715–D717: the row is judged by its kind, never by its
   title's words); whether anyone is told when a scheduler changes an input from the schedule.
+  **FOUND 11 Oct 26 (the plan, §2, §4.4, §7):** the name box holds the input's name in capitals (its title, else its
+  kind) and a word typed there changes the row only, until the request next changes — the plan makes it the input's own
+  title (reading R1, told to him). Nobody is told: the change history's line and the card's small print are the only
+  traces — filed as a question for him, `OUTSTANDING.md` `[INPUT-CHANGED-TELL]`.
 - **Then pictures** of the row on the real screen — the Ground Programme and the Personal Inputs line, the week and
   the board, a phone and a desktop, a flagged man on it, a change waiting on a published day — for his yes (D541;
   D662's reading 2).
@@ -110,6 +114,10 @@ Ground Programme's two-puck People column; Personal Inputs' folded line counts t
    placeholder puck, and on a one-man request's row a man the scheduler adds (D468, D46, D18, D470).
 
 One branch, one FULL check sized by the riskiest part (published days, earned OIL — D485), one merge.
+
+**THE PLAN (11 Oct 26):** `raptor-port/docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md` — three steps
+in the order built: the LATE mark from the schedule, a one-man request's boxes writing the request, the one row. Its
+readers' brief: `raptor-port/docs/superpowers/briefs/2026-10-10-group-input-one-row-plan-read.md`.
 
 ## The agent's own, for the plan (technical — not his)
 
