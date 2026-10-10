@@ -10,7 +10,10 @@ built screens beside the approved pictures (D743, D624) were pictured at step 4:
 were written by the host before any walker started. **§8 onward says how far the check has got.** Two parts are OWED
 and NOT substituted: Astra's scenario design and the two independent code reads (Astra, Sol 6.1) wait for his ChatGPT
 allowance (D746 — asked of it on 11 Oct 26: "usage limit … try again at Oct 14th, 2026 3:59 PM"). Nothing merges
-before them.
+before them. **CHANGED THE SAME DAY BY HIS WORD (D749 — "Fable now and u can try sol 6.1 right now see if it works"):
+Fable reads the code as an independent reader, once the walk's fixes are in; Sol 6.1 was tried at once and did not
+answer (the same limit, until 14 Oct). So the job has ONE independent reader for now — whether it merges on Fable
+alone or waits for a ChatGPT reader is his to say, with Fable's report in front of him.**
 
 ## 1. The eight questions and the tier
 

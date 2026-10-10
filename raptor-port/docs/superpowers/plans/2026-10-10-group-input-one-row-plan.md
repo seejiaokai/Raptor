@@ -423,6 +423,8 @@ OIL).
 **The two readers wait for ChatGPT (D746, 11 Oct 26 — "Ok if u need chat gpt pause"):** his ChatGPT allowance was at zero
 when the build resumed. The build, the gates and the walk go ahead; the work PAUSES before the two code reads, which stay
 Astra's and Sol's — Fable is not called in their place without his word. Nothing merges meanwhile.
+*(His word came the same day — D749, 11 Oct 26: Fable reads the code now as an independent reader; Sol 6.1, tried at
+once, did not answer. The check's sheet says where that stands.)*
 
 ## 7. For him — nothing waits on him; what he is told
 
