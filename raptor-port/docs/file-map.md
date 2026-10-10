@@ -1,5 +1,12 @@
 # The file map — where each source file lives and what it does
 
+His find of 10 Oct 26 (on a phone the Inputs List's dates calendar opened below the foot of the screen): the fix is one
+rule in `src/ui/scheduler/06-inputs.css` (the row of buttons is the box the calendar is placed against on a phone); pinned
+by `e2e/inputs-calendar.spec.ts` ("the dates button opens its calendar on screen", three phone heights, pressed by a
+finger at a point). `scripts/handpass/rng-repro.mjs` is the walk, run before the fix and after it; the record:
+`docs/handpass/2026-10-10-list-dates-picker.md`. `scripts/handpass/b2-pics.mjs` takes the pictures of
+`docs/mock/batch2-choices.html` — the small choices of `[SEEN-BATCH-2]` put to him, each on the real screen.
+
 `[OIL-WORK-START]` (D591, D592, 6 Oct 26): a flying line's OIL counts from its entered In-time / Rally, and a published
 day keeps the OIL it went out with. The fixes are in `src/engine/oil.ts` (`dayOilWork`'s flying branch reads
 `reporting.ts resolveReporting`; `OilRuleVals`, the `rv` every walk can be handed), `src/engine/oilev.ts` (the evidence

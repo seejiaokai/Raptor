@@ -1342,3 +1342,52 @@ test('a phone: the List opens on its cards under ONE "+ Input"; the "?" card ope
     await expect(edWin(page), 'closing the card leaves the window').toBeVisible()
   } finally { await context.close() }
 })
+
+/* THE LIST'S DATES CALENDAR OPENS UNDER ITS OWN ROW ON A PHONE (his find, 10 Oct 26: "When I click on the calander to see
+   the dates it shows me this and I can't select the dates"). On a phone the picker was placed against the SCREEN — one
+   screen's height down the page — so the button lit and nothing appeared. It had worked only by luck, while the List's own
+   add form stood above the row and pushed it down; that form went (D729) and the calendar was left below the fold.
+   Every press here is a finger at a point on the screen — never a locator's tap, which scrolls its target into view first
+   and is how four older tests pressed this picker on a phone and saw nothing wrong. */
+for (const height of [844, 667, 568]) {
+  test(`a phone ${height} tall, the List: the dates button opens its calendar on screen, under its row; a finger picks two dates and "All dates" on it`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL, height)
+    try {
+      await page.locator('#inListBtn').tap()
+      await page.locator('#inRangeBtn').tap()
+      await expect(page.locator('#inRangePop')).toHaveCount(1)
+      const at = (sel: string, n = 0) => page.evaluate(([sel, n]) => {
+        const e = document.querySelectorAll(sel as string)[n as number]!, r = e.getBoundingClientRect(), pop = document.getElementById('inRangePop')
+        const x = r.left + r.width / 2, y = r.top + r.height / 2, hit = document.elementFromPoint(x, y)
+        return { x, y, top: r.top, bottom: r.bottom, left: r.left, right: r.right, reached: !!hit && (hit === e || e.contains(hit)), inPop: !!pop && !!hit && pop.contains(hit) }
+      }, [sel, n] as const)
+      const m = await page.evaluate(() => {
+        const pop = document.getElementById('inRangePop')!.getBoundingClientRect(), row = document.querySelector('.inputs-listtools')!.getBoundingClientRect()
+        return { top: pop.top, bottom: pop.bottom, left: pop.left, right: pop.right, rowBottom: row.bottom, vw: innerWidth, vh: innerHeight, scrolled: scrollY, wide: document.documentElement.scrollWidth }
+      })
+      expect(m.scrolled, 'the page was not moved to find it').toBe(0)
+      expect(m.top, 'it opens straight under the row of buttons').toBeGreaterThanOrEqual(m.rowBottom - 1)
+      expect(m.top - m.rowBottom, 'and close to it').toBeLessThanOrEqual(12)
+      expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      expect(m.left).toBeGreaterThanOrEqual(0)
+      expect(m.right).toBeLessThanOrEqual(m.vw)
+      expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+      /* a finger on a date meets that date, and two presses set the window of dates */
+      const before = (await page.locator('#inRangeBtn').innerText()).trim()
+      const d1 = await at('#inRangePop .rc-d', 8)
+      expect(d1.reached, 'a date is what a finger on it reaches').toBe(true)
+      await page.touchscreen.tap(d1.x, d1.y)
+      await expect(page.locator('#inRangePop .rc-read')).toContainText('pick an end date')
+      const d2 = await at('#inRangePop .rc-d', 11)
+      await page.touchscreen.tap(d2.x, d2.y)
+      await expect(page.locator('#inRangeBtn')).not.toHaveText(before)
+      await expect(page.locator('#inRangeBtn')).toContainText('→')
+      /* the quick button under the month is reached by a finger too, and closes the calendar */
+      const all = await at('#inRangeAll')
+      expect(all.reached && all.bottom <= height, '"All dates" is on the screen and is what a finger reaches').toBe(true)
+      await page.touchscreen.tap(all.x, all.y)
+      await expect(page.locator('#inRangePop')).toHaveCount(0)
+      await expect(page.locator('#inRangeBtn')).toContainText('All dates')
+    } finally { await context.close() }
+  })
+}

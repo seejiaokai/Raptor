@@ -118,8 +118,13 @@
   border:1px solid var(--edge);color:var(--ink);border-radius:8px;padding:4px 8px;
   font:inherit;font-size:13px;text-align:center}
 .inrange-cfg .la-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2)}
-/* on a phone the filter bar wraps, so the popover must not hang off the edge */
-@media (max-width:700px){.inrange{position:static}.inrange-pop{left:8px;right:8px}}
+/* on a phone the filter bar wraps, so the popover must not hang off the edge: it spans the ROW OF BUTTONS, not its own
+   button — so the ROW is the box it is placed against. Until 10 Oct 26 nothing was: with `.inrange` static and no
+   placed ancestor, "top:100%" meant one SCREEN's height down the page, and the calendar opened below the fold (his find
+   — the button lit and nothing appeared). It had looked right only while the List's add form stood above this row and
+   pushed it a screen down; the form went with D729. Pin: e2e/inputs-calendar.spec.ts "the dates button opens its
+   calendar on screen" — pressed by a finger at a point, never a locator's tap (that scrolls the target into view). */
+@media (max-width:700px){.inrange{position:static}.inputs-listtools{position:relative}.inrange-pop{left:8px;right:8px}}
 /* the two-click range calendar — it stands in the input's window and in the List's dates picker (its place in the
    List's own add form went with that form, D729); (the old note: its grid placement lives with the .ingrid
    tracks above, NOT here: a bare `grid-column:span 2` this far down the file
