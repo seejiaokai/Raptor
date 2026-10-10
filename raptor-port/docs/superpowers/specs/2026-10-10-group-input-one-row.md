@@ -72,7 +72,10 @@ schedule only") is withdrawn for people. It does NOT settle the row's time and r
   the board, a phone and a desktop, a flagged man on it, a change waiting on a published day — for his yes (D541;
   D662's reading 2).
 
-## The pictures — sent 10 Oct 26, waiting for his yes
+## The pictures — APPROVED 10 Oct 26 ("Yes for all" — D743): the design of record
+
+**All ten are approved as drawn.** The build is checked against them: in its bug check each picture is set beside the
+built screen at the same size (D624's practice). Nothing is waiting on him; next is the plan.
 
 The page: `raptor-port/docs/mock/group-input-one-row.html` (published to him as https://claude.ai/artifact/9L5jorxWtevLyMZkHmreDc);
 drawn by `raptor-port/scripts/handpass/gi-mock.mjs` — the built app driven through its own controls and pictured, then
