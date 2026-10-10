@@ -264,6 +264,36 @@ pictures behind every FAIL and every high-consequence PASS (OIL, the published d
 each finding, fixes with a failing test first, re-walks what the fixes touch, fills §3's marks and §8, adds the
 ledger's row, writes §13. **Owed after that:** Astra's scenario design and the two code reads (D746).
 
+## 12a. Fable's independent read of the code (his word, D749) — and what was done
+
+Report: `docs/superpowers/briefs/2026-10-11-reads/group-input-code-fable.md`. **Verdict: CLEAN WITH THESE EXACT
+CHANGES.** Its explicit negatives, area by area: OIL — nothing found (a Yes is never dropped or turned into a No by a
+schedule-side change; a man added gets no answer nobody gave; a refusal is copied only as a refusal, only where no
+decision stands); the published record — nothing found (the fold runs only at the end of the count and in the
+discard count; what goes out, the stored record and the sign-offs' binding are untouched; never zero while something
+would go out; two different inputs, an ordinary request or a medical never fold); the door and the belt — every
+writer listed, no false refusal, the one gap is F1; saved data and the view — nothing found; roles — nothing found.
+
+| # | Severity | The finding | Disposition |
+|---|---|---|---|
+| F1 | medium — NEW in this job; reproduced by Fable | One of an input's men dragged onto ANOTHER shared input's row was added to the second input and STAYED in the first (the drop asked the target's door first, whose "the seat he came from keeps him" is for a seat elsewhere) | **FIXED, a failing test first** — `ui/grouprow.ts groupMove` (out of the first, into the second, one command, one Undo; the last man and a man already in the second are refused whole), asked by `ui/drag.ts applyDrop` before the target's door, on a puck and on "+ add". `ui/grouprow-hands.test.tsx` ("…moves — he is never in both"): 3 of 3 seen failing, then 40 of 40 in the file. Register GI10. |
+| F2 | low — OLDER (`ui/rowdrag.ts` carries a "KNOWN GAP" note of 6 Sep 26); read | The walk's W1-11: on a day's FIRST hand move of a ground row the landing flash is painted on the drop target's old address — any single row does it on `main`; this job adds a case (the one row dragged DOWN lands its lead above the address the flash is aimed at: no flash) | **FILED, not fixed** — `OUTSTANDING.md` `[ONE-ROW-DRAG-FLASH]`, with Fable's cause and its exact fix (the engine names the landed row; the drag reads it). Cosmetic: nothing is saved wrongly. |
+| F3 | low — new; read | A scheduler's own man standing among a member's extras leaves with that member's row as a placeholder does; the note called him "it" and the change-history line named placeholders only | **FIXED** — the note says "put them on the row again if they still apply" where a man is among them; `leavingNote` names every puck that stood under the row. The placeholder-only wording and its test are unchanged. |
+
+**Roll-call rows Fable says were missing — the host's answers:** *two one rows on one day* — F1, fixed, row added here
+by this table; *the Inputs calendar's date drag on a shared bar, seen from the schedule* — the bar's drag moves every
+record through the entry's own save (unchanged by this job), and each row follows its request by the re-make rule
+proved in `state/grouprow-entry.test.ts` ("re-made when ANY shared field moves") — NOT walked; *a person's delete or
+archive in the middle of a shared input* — unchanged doors; the remaining rows still carry the entry's mark (a group
+down to one man stays a shared row — GI9) — NOT walked; *kept rows of a deleted shared input after a version load* —
+a kept row is never drawn as one row (`engine/grouprows.ts`), and the load's count folds them (`grouprow-count.test.ts`,
+"deleted whole … one edit") — NOT walked. The three "not walked" are named so the second reader, or his look, can
+choose to press them.
+
+**F1 on screen:** the fix sits inside the one drop handler the walk drove by real mouse and by a held finger (W1-6,
+W1-7, W2-2, W2-4); the test drives that same handler with the place's key. A real drag between two shared rows on the
+built bundle was NOT walked after the fix — **on his look card.**
+
 ## 13. His look card — five minutes, on the preview of `claude/group-input-one-row`
 
 **Questions waiting for him** (parked during the unattended run — D596; nothing else waits on them):
@@ -287,3 +317,5 @@ ledger's row, writes §13. **Owed after that:** Astra's scenario design and the 
 - **A published day:** publish the Wednesday, type a new time on the row. The day reads ONE change waiting; the
   changes window's "To go out" shows one line, "… · 4 people", with the names under it.
 - **Scheduler Board on your phone, Monday:** the blue and orange lines sit left of the pucks and buttons.
+- **Two shared inputs on one day** (the one case fixed after the walk): drag a man from one's row onto the other's. He
+  should be on the second row only — gone from the first — and one Undo puts him back.

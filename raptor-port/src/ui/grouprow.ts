@@ -124,23 +124,53 @@ export function groupPut(key: any, id: any): RowAnswer {
   const rows = entryRowsOf(INPUTS, p.inp)
   if (rows.some((r: any) => String(r.person) === pid)) { HOOKS.toast(`${csOf(pid)} is already on this input`, 'warn'); return 'refused' }
   const carried = entryOilAnswer(rows)
-  let hisId = ''
-  const { out, spoke } = quietly(() => saveBatchX(() => {
-    if (!commitGroup({ rows }, draftOf(rows[0]), [...rows.map((r: any) => r.person), pid], undefined, { sched: true })) return false
-    const his = entryRowsOf(INPUTS, rows[0]).find((r: any) => String(r.person) === pid)
-    if (!his) throw new CmdRefused('the man added is not in the entry')
-    if (carried.kind === 'same') his.oil = { ...carried.oil }
-    const due = inputOwnDueISO(his), now = nowStamp()
-    his.mod = due && due < now ? due : now
-    hisId = String(inpId(his))
-    return true
-  }))
+  let hisId: string | false = false
+  const { out, spoke } = quietly(() => saveBatchX(() => { hisId = addInside(rows, pid, carried); return hisId !== false }))
   if (!out.ok) return 'refused'
   if (!spoke) HOOKS.toast(`${csOf(pid)} added to ${inpLabel(p.inp)}`, 'ok')
-  if (carried.kind === 'differ') {
-    const his = (INPUTS as any[]).find(r => r && String(inpId(r)) === hisId)
-    if (his) { setOilAsk(his.iid, true); setInpEdit(his) }
-  }
+  askHim(carried, hisId)
+  notify()
+  return 'done'
+}
+/* the adding itself — INSIDE a command that is already open: the entry's own save, then his OIL and his late date on
+   his record alone (the head of groupPut says why). His record's id, or false when the save refused (it said why). */
+function addInside(rows: any[], pid: string, carried: ReturnType<typeof entryOilAnswer>): string | false {
+  if (!commitGroup({ rows }, draftOf(rows[0]), [...rows.map((r: any) => r.person), pid], undefined, { sched: true })) return false
+  const his = entryRowsOf(INPUTS, rows[0]).find((r: any) => String(r.person) === pid)
+  if (!his) throw new CmdRefused('the man added is not in the entry')
+  if (carried.kind === 'same') his.oil = { ...carried.oil }
+  const due = inputOwnDueISO(his), now = nowStamp()
+  his.mod = due && due < now ? due : now
+  return String(inpId(his))
+}
+/* …and, afterwards, the question for him alone where the input's answers differ (D744) */
+function askHim(carried: ReturnType<typeof entryOilAnswer>, hisId: string | false): void {
+  if (carried.kind !== 'differ' || !hisId) return
+  const his = (INPUTS as any[]).find(r => r && String(inpId(r)) === hisId)
+  if (his) { setOilAsk(his.iid, true); setInpEdit(his) }
+}
+
+/* ONE OF AN INPUT'S MEN DRAGGED ONTO ANOTHER SHARED INPUT'S ROW MOVES — HE IS NEVER IN BOTH (Fable's read of the job's
+   code, F1 — 11 Oct 26; reading R4, D734: a man dragged from the one row onto another place "LEAVES the input and is
+   put there, in one step"). The drop asked the TARGET's door first, and groupPut's "the seat he came from keeps him"
+   is right for a flying seat and wrong for a member's own place: he was added to the second input and stayed in the
+   first — two inputs at the same hour, by one gesture that reads as a move. So the drop asks THIS first when its
+   source is one of an input's men: he leaves the first and joins the second in ONE command (one Undo), taking the
+   second's OIL answer by its own rule and never marked late. Refused whole — he stays where he was — when he is the
+   first input's last man (R5) or is already in the second. 'none' when the target is no shared row, or is his own
+   input's row (groupPut then says he is already on it). */
+export function groupMove(fromKey: any, toKey: any): RowAnswer {
+  const a = placeOf(fromKey), b = placeOf(toKey)
+  if (!a || !isMember(a) || !b) return 'none'
+  const rowsB = entryRowsOf(INPUTS, b.inp)
+  if (rowsB.includes(a.inp)) return 'none'
+  if (!canEditSched()) return 'refused'
+  const pid = String(a.inp.person)
+  if (rowsB.some((r: any) => String(r.person) === pid)) { HOOKS.toast(`${csOf(pid)} is already on this input`, 'warn'); return 'refused' }
+  const carried = entryOilAnswer(rowsB)
+  let hisId: string | false = false
+  if (!leave(a, () => { hisId = addInside(rowsB, pid, carried); return hisId !== false }, `${csOf(pid)} moved to ${inpLabel(b.inp)}`)) return 'refused'
+  askHim(carried, hisId)
   notify()
   return 'done'
 }
@@ -151,22 +181,27 @@ export function groupPut(key: any, id: any): RowAnswer {
    with as recommended"): an ALL AVAIL or ALL among his row's extras earns through HIS request, so it leaves with his
    row and is not handed to another man — and the app SAYS so, to whoever did it, who can drop it on the row again.
    `then` runs INSIDE the command, after his record has gone; a `false` from it refuses the whole command. */
-function leave(p: Place, then?: () => boolean | void): boolean {
+function leave(p: Place, then?: () => boolean | void, said?: string): boolean {
   const rows = entryRowsOf(INPUTS, p.inp), cs = csOf(p.inp.person), name = inpLabel(p.inp)
   if (rows.length < 2) {
     HOOKS.toast(`${cs} is the last person on this input — use ✕ to take it off the programme, or delete it in its own window`, 'warn')
     return false
   }
   const rest = rows.filter((r: any) => r !== p.inp)
-  const went: string[] = ((p.row.more || []) as any[]).map(v => whoId(v)).filter(x => x && PEOPLE[x]).map(csOf)
+  const extras: string[] = ((p.row.more || []) as any[]).map(v => String(whoId(v) || '')).filter(x => x && PEOPLE[x])
+  const went = extras.map(csOf), men = extras.some(x => !isSpecial(x))
   const { out, spoke } = quietly(() => saveBatchX(() => {
     if (!commitGroup({ rows }, draftOf(rest[0]), rest.map((r: any) => r.person), undefined, { sched: true })) return false
     if (then && then() === false) throw new CmdRefused('the place he was put on refused him')
     return true
   }))
   if (!out.ok) return false
-  if (went.length) HOOKS.toast(`${went.join(', ')} came off ${name} with ${cs} — drop it on the row again if it still applies`, 'warn')
-  else if (!spoke) HOOKS.toast(`${cs} taken out of ${name}`, 'ok')
+  /* a man of the scheduler's who stood among his row's extras goes with the row as a puck does — said as a man is
+     (Fable F3: the note called him "it") */
+  if (went.length) HOOKS.toast(men || went.length > 1
+    ? `${went.join(', ')} came off ${name} with ${cs} — put them on the row again if they still apply`
+    : `${went[0]} came off ${name} with ${cs} — drop it on the row again if it still applies`, 'warn')
+  else if (!spoke) HOOKS.toast(said || `${cs} taken out of ${name}`, 'ok')
   return true
 }
 

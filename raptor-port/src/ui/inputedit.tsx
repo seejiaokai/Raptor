@@ -1659,7 +1659,9 @@ function leavingNote(r: any): string {
     const row = standsOn(d, id, r)
     if (!row || !row.srcg) continue
     const csOf = (p: any) => (PEOPLE[p] ? String(PEOPLE[p].cs) : String(p))
-    const pucks = ((row.more || []) as any[]).map(v => whoId(v)).filter(p => p && isSpecial(p)).map(csOf)
+    /* every puck that stood under his row — a placeholder, and a man of the scheduler's too (Fable F3: he leaves with
+       the row as the placeholder does, and the line said nothing of him) */
+    const pucks = ((row.more || []) as any[]).map(v => whoId(v)).filter(p => p && PEOPLE[p]).map(csOf)
     if (!pucks.length) return ''
     const sw = (d.oild && d.oild.people) || {}
     const off = Object.keys(sw).filter(k => k.endsWith(`|i:${id}`) && sw[k] === 'deny').map(k => k.slice(0, k.indexOf('|')))

@@ -1348,7 +1348,10 @@ flagged correctly and still swept the man out of the crew palette.
     (`groupLeaveTo`): the place is written INSIDE the input command, a place that refuses him throws and leaves him in
     the input, the man already there comes off (nobody is swapped INTO the request), and the place is remembered by
     its row's id and named again after the command (his old row has gone and rows below moved up) for the landing
-    flash and the "is he busy" question; the caller makes no second schedule write. **The LAST man is not taken off
+    flash and the "is he busy" question; the caller makes no second schedule write. **Onto ANOTHER shared input's row
+    he MOVES** (`groupMove`, asked by the drop before the target's own door — Fable's read, F1): out of the first
+    input and into the second in one command, never in both; the last man, and a man already in the second, are
+    refused whole. **The LAST man is not taken off
     that way** (R5) — "Ranger is the last person on this input — use ✕ to take it off the programme, or delete it in
     its own window".
   - **A placeholder (ALL / ALL AVAIL) aimed anywhere on the row is the row's own:** re-aimed at the lead's "+ add"

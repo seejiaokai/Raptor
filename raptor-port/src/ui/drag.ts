@@ -14,7 +14,7 @@ import { notify } from '../state/store'
 import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
-import { groupPut, groupTake, groupLeaveTo, groupRetarget, isRowMan, onSharedRow, placeOnRow } from './grouprow'
+import { groupPut, groupTake, groupLeaveTo, groupMove, groupRetarget, isRowMan, onSharedRow, placeOnRow } from './grouprow'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
@@ -323,6 +323,13 @@ export function applyDrop(el: any, x: any, y: any) {
     /* a placeholder aimed at a man's puck on the one row is never put in his place: it goes to the row's "+ add" */
     const aimed = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
     if (groupRetarget(targetKey, aimed) !== targetKey) return onCell(groupRetarget(targetKey, aimed))
+    /* one of an input's men onto ANOTHER shared input's row: he MOVES — out of the first, into the second, one command
+       (Fable F1; asked before the target's own door, whose "the seat he came from keeps him" is for a seat elsewhere) */
+    if (DRAG.kind === 'slot' && DRAG.key !== targetKey) {
+      const mv = groupMove(DRAG.key, targetKey)
+      if (mv === 'refused') return no()
+      if (mv === 'done') return fin(placeOnRow(targetKey, aimed) || targetKey, aimed)
+    }
     if (DRAG.kind === 'roster' || DRAG.key !== targetKey) {
       const put = groupPut(targetKey, aimed)
       if (put === 'refused') return no()
@@ -398,6 +405,11 @@ export function applyDrop(el: any, x: any, y: any) {
     /* the one row of a shared input (the block above): a placeholder goes to the row's own "+ add" (the lead's — the
        one drawn); a real man is ADDED to the input, the place he came from keeping him */
     const fillKey = groupRetarget(fillKey0, moving)
+    if (DRAG.kind === 'slot') {                      // from one shared input's row onto another's: a move (Fable F1)
+      const mv = groupMove(DRAG.key, fillKey)
+      if (mv === 'refused') return no()
+      if (mv === 'done') return fin(placeOnRow(fillKey, moving) || fillKey, moving)
+    }
     { const put = groupPut(fillKey, moving)
       if (put === 'refused') return no()
       if (put === 'done') return fin(placeOnRow(fillKey, moving) || fillKey, moving) }

@@ -48,7 +48,7 @@ import { afterSchedMutate, setPage, setBoardDay, toggleLateOff, lateShown } from
 import * as view from '../state/view'
 import { commitNewInput, commitGroup, draftOf, entryOilAnswer, setInpField, setInpTitle } from './inputedit'
 import { reqRowText } from './reqrow'
-import { groupPut, groupTake, groupLeaveTo, groupRetarget } from './grouprow'
+import { groupPut, groupTake, groupLeaveTo, groupRetarget, groupMove } from './grouprow'
 import { boardMbtn, cxCommit } from './board'
 import { routeClick } from './interactions'
 import * as pops from './pops'
@@ -589,5 +589,46 @@ describe('THE DROP ITSELF goes through the door (ui/drag.ts applyDrop) — one d
     view.disarmSlot()
     globalUndo()
     expect(people()).toEqual(['bane', 'pike'])
+  })
+})
+
+/* FROM ONE SHARED INPUT'S ROW ONTO ANOTHER'S (Fable's read of the job's code, F1 — 11 Oct 26; reading R4, D734: "a man
+   dragged from the one row onto another place LEAVES the input and is put there, in one step"). The drop asked the
+   TARGET's door first, whose rule for a man from a seat elsewhere is "the seat he came from keeps him" — right for a
+   flying seat, wrong for a member's own place on another shared row: he was added to the second input and STAYED in
+   the first, booked twice at the same hour. He moves: out of the first, into the second, one command, one Undo. */
+describe('one of an input’s men dragged onto ANOTHER shared input’s row moves — he is never in both (Fable F1)', () => {
+  const seatEl = (key: string) => { const el = document.createElement('span'); el.className = 'seat'; el.dataset.slot = key; document.body.appendChild(el); return el }
+  const cellEl = (key: string) => { const row = document.createElement('div'); row.className = 'pl-row'; const c = document.createElement('div'); c.className = 'ppl'; c.dataset.fill = key; row.appendChild(c); document.body.appendChild(row); return c }
+  afterEach(() => { document.body.innerHTML = ''; setDrag(null) })
+  const T2 = 'Second brief'
+  const second = () => expect(commitGroup(null, DRAFT(WED, { title: T2 }), ['rocky', 'ignite'])).toBe(true)
+  const recs2 = () => INPUTS.filter((x: any) => x.title === T2 && x.date === 'Jul 15') as any[]
+  const people2 = () => recs2().map(r => r.person).sort()
+  const key2 = (p: string) => `g:${WED}.${ground().findIndex((g: any) => g && g.src === String(inpId(recs2().find(r => r.person === p))))}`
+
+  for (const where of ['puck', 'add'] as const) {
+    it(`dropped on the other row’s ${where === 'puck' ? 'puck' : '"+ add"'}: out of the first input, in the second — one Undo puts back both`, async () => {
+      await boot(new MemoryBackend())
+      fileGroup(['bane', 'pike', 'split']); second()
+      setDrag({ kind: 'slot', key: keyOf('pike') })
+      expect(applyDrop(where === 'puck' ? seatEl(key2('rocky')) : cellEl(`${key2('rocky')}.+`), 0, 0)).toBe(true)
+      expect(people(), 'he has LEFT the first').toEqual(['bane', 'split'])
+      expect(people2(), 'and is in the second').toEqual(['ignite', 'pike', 'rocky'])
+      globalUndo()
+      expect([people(), people2()], 'ONE Undo').toEqual([['bane', 'pike', 'split'], ['ignite', 'rocky']])
+    })
+  }
+  it('the door itself: the LAST man of the first input is refused and joins nothing; a man already in the second is refused and leaves nothing', async () => {
+    await boot(new MemoryBackend())
+    fileGroup(['bane', 'pike']); second()
+    expect(groupTake(keyOf('pike'))).toBe('done')
+    expect(groupMove(keyOf('bane'), key2('rocky')), 'the last man stays').toBe('refused')
+    expect([people(), people2()]).toEqual([['bane'], ['ignite', 'rocky']])
+    expect(groupPut(key2('rocky'), 'bane')).toBe('done')              // from the crew list: in both, as a name from the list is
+    expect(groupPut(keyOf('bane'), 'split')).toBe('done')
+    expect(groupMove(keyOf('bane'), key2('rocky')), 'already in the second').toBe('refused')
+    expect(people(), 'and he has not left the first').toEqual(['bane', 'split'])
+    expect(groupMove(keyOf('bane'), keyOf('split')), 'the same input: not this door’s').toBe('none')
   })
 })
