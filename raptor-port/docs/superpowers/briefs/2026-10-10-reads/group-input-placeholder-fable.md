@@ -3,6 +3,7 @@
 Asked on the owner's word ("4. Is there a better way to do it? Ask fable on this." / "Why must the all avail puck be
 tied to someone") of the plan `docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md`, version 3 (§4.5, R10).
 Read-only; one question; the report as returned.
+**His choice, the same day — D745 ("Ok go with as recommended"): option 1 of §4 below; the puck comes off with its man.**
 
 ## 1. Recommendation
 
