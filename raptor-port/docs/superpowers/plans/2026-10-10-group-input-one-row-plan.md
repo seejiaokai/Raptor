@@ -259,7 +259,7 @@ when it is a member row's `who` and that row's request is his; anything in `more
   `docs/superpowers/briefs/2026-10-10-reads/group-input-placeholder-fable.md`): keep it so** — it is the only way that
   never moves OIL unseen and writes no day from an input's command; handing it on, an identity of its own and a
   companion row were each weighed and are costlier in the part of the app where a miss is silent. Fable's three
-  additions are taken: (a) **the notice must reach the scheduler, not whoever removed himself** — a member taking
+  additions are taken (and the owner chose it — D745, 11 Oct 26): (a) **the notice must reach the scheduler, not whoever removed himself** — a member taking
   himself out in the input's window cannot drop a puck, and a scheduler on another device sees no toast — so the fact
   is written in the removal's own line of the change history (`state/changelines.ts inputLines`, a READ of the day:
   "ALL AVAIL came off his row · switched off on it: Bane, Comet"), naming the men whose OIL the scheduler had refused
@@ -446,7 +446,8 @@ rather it asked, it is one function.
   input, it comes off with him; the change history's line says so and names anyone you had switched off on it; drop
   it on the row again and redo those switches. On a published day that is ONE change waiting, its line naming both.
   Undo brings the puck and its switches back. Fable, asked on his word, recommends exactly this over handing the puck
-  on or giving it a place of its own; the three options were put to him 11 Oct 26. Keeping it there whoever leaves would mean
+  on or giving it a place of its own; the three options were put to him 11 Oct 26 — **HIS RULING, D745: "Ok go with as
+  recommended"** — so this is no longer a reading but the rule. Keeping it there whoever leaves would mean
   re-keying OIL decisions — its own job, if he wants it.
 - **R11** *(new)* The same rule on every row: hours typed on the Unavailable list's row of an overseas duty also keep a
   Yes at the new amount, with no question.
