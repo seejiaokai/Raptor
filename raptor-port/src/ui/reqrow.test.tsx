@@ -181,12 +181,12 @@ describe('a time, a remark or a name typed on a request’s row changes the requ
     it(`${where}: a box left as it reads writes nothing — no change, no history line`, async () => {
       await boot(new MemoryBackend())
       const iid = file()
-      const r = reqOf(iid), before = JSON.stringify(r), lines = ELOG.length
+      const r = reqOf(iid), before = JSON.stringify(r), lines = ELOG.rows.length
       type(`gr:${WED}.${riOf(iid)}.str`, '11:00')
       type(`gr:${WED}.${riOf(iid)}.rmks`, 'as filed')
       type(`gr:${WED}.${riOf(iid)}.prog`, 'TRAINING')
       expect(JSON.stringify(reqOf(iid))).toBe(before)
-      expect(ELOG.length).toBe(lines)
+      expect(ELOG.rows.length).toBe(lines)
     })
   }
 
