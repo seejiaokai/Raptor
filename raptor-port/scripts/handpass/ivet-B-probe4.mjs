@@ -1,0 +1,18 @@
+import * as L from './ivet-B-lib.mjs'
+const { sleep } = L
+const browser = await L.launch()
+const ctx = await browser.newContext({ viewport: L.DESK }); const pg = await ctx.newPage()
+await pg.goto(L.BASE + '?fresh=1'); await sleep(800)
+console.log('LOGIN CARD:', await pg.evaluate(() => document.querySelector('#loginForm')?.closest('div')?.innerText.replace(/\s+/g, ' ').slice(0, 400)))
+console.log(await pg.evaluate(() => [...document.querySelectorAll('button, a')].filter(b => b.offsetParent).map(b => (b.id || '') + '|' + b.innerText.trim().slice(0, 40)).join('\n')))
+await browser.close()
+const b2 = await L.launch()
+const { page } = await L.open(b2, L.DESK, { fresh: true })
+await L.toCal(page, false)
+await page.locator('#inGear').click(); const w = page.locator('[data-testid="win-inputsset"]'); await w.waitFor()
+console.log('GEAR:', await w.evaluate(el => el.innerText.replace(/\s+/g, ' ')))
+console.log(await w.evaluate(el => [...el.querySelectorAll('input, button, select')].map(b => (b.id || b.dataset.testid || '') + '|' + (b.type || '') + '|' + (b.value || b.innerText || '').slice(0, 30)).join('\n')))
+await page.keyboard.press('Escape'); await sleep(300)
+await page.evaluate(() => window.go('logic')); await sleep(800)
+console.log('LOGIC:', await page.evaluate(() => [...document.querySelectorAll('#page-logic *')].filter(e => e.children.length === 0 && /nput/i.test(e.textContent)).map(e => (e.id||e.className||e.tagName) + ':' + e.textContent.trim().slice(0, 120)).slice(0, 25).join('\n')))
+await b2.close()

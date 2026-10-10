@@ -2,7 +2,7 @@
 /* The Inputs page — tfin's inputs assertions plus the B26/B48 model rules
    driven through the page: role-gated add/delete, the undo stack, and the
    week revalidating when an input lands. */
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -27,22 +27,55 @@ const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 /* The table is sorted by start date now (owner, Aug 5), so DOM row order is
    no longer INPUTS order. A test that means "the row for INPUTS[n]" has to say
-   so — its buttons carry the model index, so find it by that. */
-const rowFor = (inx: number) => $$('#inBody tr').find(tr =>
-  tr.querySelector(`[data-edit="${inx}"],[data-inx="${inx}"],[data-save="${inx}"]`))!
+   so — a row carries its input's own id (the pencil and the cross that used to
+   carry the model index are gone: below). */
+const rowFor = (inx: number) => {
+  const r = INPUTS[inx]
+  /* a record a test pushed straight into the list has no id until a command mints one */
+  if (!r.iid) { inpId(r); act(() => { notify() }) }
+  return $$('#inBody tr').find(tr => tr.dataset.iid === String(r.iid))!
+}
+/* THE LIST HAS NO PENCIL AND NO CROSS (owner D718, D723 — 10 Oct 26: "the edit and cross is not needed because … u can
+   click on it to edit it or delete it"; the plan docs/superpowers/plans/2026-10-10-input-card-plan.md §2.3, §5). Every
+   test below that pressed the row's ✎, its ✓ or its ✕ is RESTATED for the door that does that work now — the row
+   opens the input's own window, which changes it and deletes it. The claims are the same; only the door moved. */
+const D = (sel: string) => document.querySelector(sel) as HTMLElement
+/* the window itself (the closed dialog's empty shell, `#inpEditPop`, stays in the page — so that is never the test) */
+const W = () => document.querySelector('[data-testid="win-inputedit"]') as HTMLElement | null
+const openRow = async (inx: number) => {
+  const row = rowFor(inx)
+  expect(row, 'the row is on the page').toBeTruthy()
+  await click(row.querySelector('[data-testid="in-open"]'))
+  expect(W(), 'the input’s window opened').toBeTruthy()
+}
+const delRow = async (inx: number) => { await openRow(inx); await click(D('#inpEditDel')) }
+const setWin = async (sel: string, v: string) => act(async () => {
+  const el = D(sel) as any
+  const isSel = el instanceof window.HTMLSelectElement
+  Object.getOwnPropertyDescriptor((isSel ? window.HTMLSelectElement : window.HTMLInputElement).prototype, 'value')!.set!.call(el, v)
+  el.dispatchEvent(new Event(isSel ? 'change' : 'input', { bubbles: true }))
+})
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
 }
 
-/* the add form's type dropdown, for the tests that need a type with (or
-   without) the AM/PM span picker */
-const setType = async (v: string) => act(async () => {
-  const sel = $('#inType') as unknown as HTMLSelectElement
-  const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-  setter.call(sel, v)
-  sel.dispatchEvent(new Event('change', { bubbles: true }))
-})
+/* THE LIST HAS NO ADD FORM OF ITS OWN (owner D729 — the design vet's V1, 10 Oct 26: "one '+ Input' button … opens the
+   same window the calendar opens"; the plan docs/superpowers/plans/2026-10-10-inputs-vet-plan.md §2, §3). Every test
+   below that drove the form — its Person, its calendar, How long, the two times, Type and its "?", Title, Remarks,
+   "Add input" — is RESTATED for that window: the claim is the same, only the door moved. Two things differ by the
+   door itself and are said where they matter: the window opens FRESH each time (the form kept its dates and its kind
+   for the next add), and it opens on the calendar's first kind, a duty, where the form opened on LL. */
+const openNew = async () => {
+  await click($('#inNew'))
+  expect(W(), 'the new input’s window opened').toBeTruthy()
+}
+const cancelNew = async () => { if (W()) await click(D('#inpEditCancel')) }
+/* a day of July 2026 on the window's own calendar (it opens on that month while no date is picked) */
+const calDay = (iso: string) => D(`#inpEdCal [data-cal="${iso}"]`)
+/* the window's type list, for the tests that need a type with (or without) the AM/PM span picker */
+const setType = async (v: string) => setWin('#inpEditType', v)
+const addNow = async () => click(D('#inpEditSave'))
 
 /* The table opens on a today → +2-months window (owner, Aug 5). The seeded
    demo inputs are July 2026, so with the default window every assertion about
@@ -73,14 +106,37 @@ describe('the Inputs page (tfin)', () => {
     expect($$('#inBody tr').length).toBeGreaterThanOrEqual(4)
   })
 
-  it('no TDY, and the retired types are gone', () => {
-    const opts = [...($('#inType') as unknown as HTMLSelectElement).options].map(o => o.value)
+  /* the form is gone, and one button stands in its place — at the left of the dates button (D729 — V1) */
+  it('the list has no add form of its own: one "+ Input" button, first in its row of tools', async () => {
+    for (const gone of ['.inbar', '.ingrid', '#inAdd', '#inType', '#inRemarks', '#inCal', '#inStartT', '#inEndT', '#inSpan', '#inAllday', '#inPerson', '#inPersonFixed', '#inTitle', '#inDates'])
+      expect($(gone), gone + ' went with the form').toBeFalsy()
+    const btn = $('#inNew')
+    expect(btn, 'the button').toBeTruthy()
+    expect(btn.textContent).toBe('+ Input')
+    expect(btn.classList.contains('primary'), 'the page’s one filled button').toBe(true)
+    const tools = [...btn.parentElement!.children].filter(c => !(c as HTMLElement).hidden)
+    expect(tools[0], 'it comes first').toBe(btn)
+    expect(tools[1].contains($('#inRangeBtn')), 'the dates button is next').toBe(true)
+    expect(W(), 'nothing is open until it is pressed').toBeFalsy()
+    await openNew()
+    expect(D('[data-testid="win-inputedit"] .fw-title, [data-testid="win-inputedit"] .win-title, [data-testid="win-inputedit"]')!.textContent).toContain('New input')
+    expect(D('#inpEdCal'), 'the window carries the date calendar').toBeTruthy()
+    expect(D('#inpEditPop .rc-read')!.textContent, 'and no date is picked for him').toBe('pick a start date')
+    expect((D('#inpEditPerson') as unknown as HTMLSelectElement).value, 'filed for whoever is signed in, until he picks').toBe(ME)
+    await cancelNew()
+    expect(W()).toBeFalsy()
+  })
+
+  it('no TDY, and the retired types are gone', async () => {
+    await openNew()
+    const opts = [...(D('#inpEditType') as unknown as HTMLSelectElement).options].map(o => o.value)
     expect(opts).not.toContain('TDY')
     /* removed Aug 26 — Office was a desk marker nobody read, and the two
        "Available" types were offers rather than commitments */
     for (const dead of ['Office', 'Available fly', 'Available duty'])
       expect(opts).not.toContain(dead)
     expect(opts).toContain('OD')
+    await cancelNew()
   })
 
   /* THE REPEAT-WEEKS FEATURE IS GONE (owner, 22 Aug 26 — "remove repeated
@@ -91,45 +147,30 @@ describe('the Inputs page (tfin)', () => {
   it('no Repeat wks field, no Recurring column, and an add writes no recur', async () => {
     expect($('#inRepeat'), 'the Repeat wks field is gone').toBeFalsy()
     expect($('#intbl thead th[data-sort="recur"]'), 'the Recurring heading is gone').toBeFalsy()
-    /* the add needs a start date — pick one on the form's own calendar
-       rather than leaning on a date some earlier test happened to leave.
-       TWICE, completing a one-day range: a single click leaves the picker
-       half-open, and the next test's first click would then silently
-       complete THIS range instead of starting its own */
-    await click($('#inCal [data-cal]'))
-    await click($('#inCal [data-cal]'))
+    /* the add needs a start date — picked on the window's own calendar */
+    await openNew()
+    await click(D('#inpEdCal [data-cal]'))
     const n = INPUTS.length
-    await click($('#inAdd'))
+    await addNow()
     expect(INPUTS.length).toBe(n + 1)
     expect('recur' in INPUTS[0], 'a fresh record carries no recur field').toBe(false)
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
     expect(INPUTS.length).toBe(n)
   })
 
-  /* All day owns the whole window, so the two time fields go out of play. They
-     were always `disabled`; the `dim` class is what makes that visible, so the
-     field is not aimed at first and ignored second (owner, Aug 5). */
-  it('All day dims the two time fields, and Custom restores them', async () => {
-    const st = () => $('#inStartT') as HTMLInputElement
-    const en = () => $('#inEndT') as HTMLInputElement
-    const dim = (el: HTMLElement) => el.closest('.ifield')!.classList.contains('dim')
-    /* the form opens all-day, so they start out of play */
-    expect(st().disabled, 'start time disabled under All day').toBe(true)
-    expect(en().disabled, 'end time disabled under All day').toBe(true)
-    expect(dim(st()), 'start time reads as out of play').toBe(true)
-    expect(dim(en()), 'end time reads as out of play').toBe(true)
-
-    /* the form opens on LL, a leave type, so it carries the four-way span
-       picker rather than the tick (owner, 10 Aug 26) */
-    await click($('#inSpan [data-span="custom"]'))
-    expect(st().disabled, 'start time live under Custom').toBe(false)
-    expect(en().disabled, 'end time live under Custom').toBe(false)
-    expect(dim(st()), 'the fade lifts with the span').toBe(false)
-    expect(dim(en()), 'the fade lifts with the span').toBe(false)
-
-    await click($('#inSpan [data-span="all"]'))   // back to all-day for the tests below
-    expect(st().disabled).toBe(true)
-    expect(dim(st())).toBe(true)
+  /* All day owns the whole window, so the two time boxes go out of play (owner, Aug 5). The List's form DIMMED them;
+     the window, which is the one door now, PUTS THEM AWAY — a box that cannot be typed in is not drawn at all. */
+  it('All day puts the two time boxes away, and Custom brings them back', async () => {
+    await openNew()
+    await setType('LL')            // a leave type carries the four-way span picker rather than the tick (owner, 10 Aug 26)
+    const times = () => D('#inpEditStart')!.closest('.inped-t') as HTMLElement
+    expect(D('#inpEditSpan [data-span="all"]')!.getAttribute('aria-pressed'), 'leave opens all-day').toBe('true')
+    expect(times().hidden, 'the two times are out of play under All day').toBe(true)
+    await click(D('#inpEditSpan [data-span="custom"]'))
+    expect(times().hidden, 'and back under Custom').toBe(false)
+    await click(D('#inpEditSpan [data-span="all"]'))
+    expect(times().hidden).toBe(true)
+    await cancelNew()
   })
 
   /* THE HALF-DAYS. AM and PM fill in the two time fields the form already had
@@ -137,29 +178,31 @@ describe('the Inputs page (tfin)', () => {
      leave and medical types only, because the rest already take an exact
      range, which is finer than a half. */
   it('AM and PM fill the window, and only leave and medical are offered them', async () => {
-    const st = () => $('#inStartT') as HTMLInputElement
-    const en = () => $('#inEndT') as HTMLInputElement
-    await click($('#inSpan [data-span="am"]'))
+    const st = () => D('#inpEditStart') as HTMLInputElement
+    const en = () => D('#inpEditEnd') as HTMLInputElement
+    await openNew()
+    await setType('LL')
+    await click(D('#inpEditSpan [data-span="am"]'))
     expect([st().value, en().value]).toEqual(['00:00', '12:00'])
-    await click($('#inSpan [data-span="pm"]'))
+    await click(D('#inpEditSpan [data-span="pm"]'))
     expect([st().value, en().value]).toEqual(['12:01', '23:59'])
     /* the minutes reach the model, and the half rides along as a label */
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inAdd'))
+    await click(calDay('2026-07-13'))
+    await addNow()
     expect(INPUTS[0].allday).toBe(false)
     expect([INPUTS[0].s, INPUTS[0].e]).toEqual([721, 1439])
     expect(INPUTS[0].half).toBe('pm')
     await act(async () => { undo() })
     /* an activity type keeps the plain tick, and carries no half */
+    await openNew()
     await setType('Training')
-    expect($('#inSpan')).toBeFalsy()
-    expect($('#inAllday')).toBeTruthy()
-    await click($('#inAdd'))
+    expect(D('#inpEditSpan')).toBeFalsy()
+    expect(D('#inpEditAllday')).toBeTruthy()
+    await click(calDay('2026-07-13'))
+    await addNow()
     expect(INPUTS[0].type).toBe('Training')
     expect(INPUTS[0].half).toBeUndefined()
     await act(async () => { undo() })
-    await setType('LL')
-    await click($('#inSpan [data-span="all"]'))
   })
 
   /* the All day default follows the type (owner, 22 Aug 26): every "Duty &
@@ -167,43 +210,53 @@ describe('the Inputs page (tfin)', () => {
      leave, medical and SANS keep it ticked. It is a default, re-seeded on each
      type change, so the record written by an untouched form proves it. */
   it('unticks All day by default for Duty & other commitments, but not SANS or leave', async () => {
+    await openNew()
     /* every timed "Duty & other commitments" type opens with the plain tick
        UP and UNCHECKED — the whole group bar SANS (the record a timed window
        actually lands from is pinned in boardaddinput.test.tsx's Meeting add) */
     for (const t of ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'OD', 'Other']) {
       await setType(t)
-      expect($('#inSpan'), `${t} takes the plain tick, not the span picker`).toBeFalsy()
-      expect(($('#inAllday') as HTMLInputElement).checked, `${t} opens unticked`).toBe(false)
+      expect(D('#inpEditSpan'), `${t} takes the plain tick, not the span picker`).toBeFalsy()
+      expect((D('#inpEditAllday') as HTMLInputElement).checked, `${t} opens unticked`).toBe(false)
     }
-    /* SANS Availability — the group's one carve-out — is no longer offered on this form (owner D620, 7 Oct 26: it is
-       filed on the SANS calendar only); that it opens all-day with the span picker is pinned on that calendar's own
+    /* SANS Availability — the group's one carve-out — is not offered by the Inputs tab's window (owner D620, 7 Oct 26: it
+       is filed on the SANS calendar only); that it opens all-day with the span picker is pinned on that calendar's own
        form, ui/sansform.test.tsx */
-    expect(Array.from(($('#inType') as unknown as HTMLSelectElement).options).map(o => o.value)).not.toContain('SANS Availability')
+    expect(Array.from((D('#inpEditType') as unknown as HTMLSelectElement).options).map(o => o.value)).not.toContain('SANS Availability')
     /* a leave type is unchanged — still opens all-day */
     await setType('LL')
-    expect(($('#inSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'leave opens all-day').toBe('true')
+    expect((D('#inpEditSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'leave opens all-day').toBe('true')
+    await cancelNew()
   })
 
   /* switching away from a half-capable type must not strand an invisible half
      on the record — the row would claim a window nobody could see or change */
   it('changing to a type with no halves clears the half', async () => {
-    await click($('#inSpan [data-span="am"]'))
+    await openNew()
+    await setType('LL')
+    await click(D('#inpEditSpan [data-span="am"]'))
     await setType('Appointment')
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inAdd'))
+    await click(calDay('2026-07-13'))
+    await addNow()
     expect(INPUTS[0].half).toBeUndefined()
     await act(async () => { undo() })
-    await setType('LL')
-    await click($('#inSpan [data-span="all"]'))
   })
 
   /* the legend the owner asked for: a button by the type field, generated from
      the same table the rules come off, so it cannot describe a rule the engine
      does not apply */
-  it('the type legend opens, names every type, and closes on an outside click', async () => {
-    expect($('#inTypePop'), 'closed to start with').toBeFalsy()
-    await click($('#inTypeHelp'))
-    const pop = $('#inTypePop')!
+  /* IT STANDS BESIDE "TYPE" IN THE INPUT'S WINDOW NOW (D729 — V1; ui/TypeLegend.tsx): it lived only in the List's form,
+     and it is the one place that says ATT B may still stand a duty */
+  it('the type legend opens beside Type in the window, names every type, and closes on an outside click', async () => {
+    await openNew()
+    expect(D('#inTypePop'), 'closed to start with').toBeFalsy()
+    const help = D('#inTypeHelp')
+    expect(help, 'the "?" is in the window').toBeTruthy()
+    expect(W()!.contains(help), 'inside the window itself').toBe(true)
+    expect(help.closest('.inped-f')!.contains(D('#inpEditType')), 'in the Type field').toBe(true)
+    expect(help.closest('label'), 'and not inside the field’s label — a press on it is never a press on the list').toBeNull()
+    await click(help)
+    const pop = D('#inTypePop')!
     expect(pop, 'opens on the ?').toBeTruthy()
     for (const t of INPUT_TYPES) expect(pop.textContent, t).toContain(t)
     /* and it says what each one DOES, not just what it stands for */
@@ -211,7 +264,23 @@ describe('the Inputs page (tfin)', () => {
     expect(pop.textContent).toContain('no flying')
     expect(pop.textContent).toContain('overseas')
     await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
-    expect($('#inTypePop'), 'closes on a press outside').toBeFalsy()
+    expect(D('#inTypePop'), 'closes on a press outside').toBeFalsy()
+    expect(W(), 'the window is still open').toBeTruthy()
+    /* Escape closes the card and nothing else — the window, and what is typed in it, stay */
+    await click(D('#inTypeHelp'))
+    expect(D('#inTypePop')).toBeTruthy()
+    await act(async () => { D('#inTypeHelp').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(D('#inTypePop'), 'Escape closed the card').toBeFalsy()
+    expect(W(), '…and not the window').toBeTruthy()
+    await cancelNew()
+  })
+  it('a SAVED input’s window carries the same "?"', async () => {
+    await openRow(0)
+    expect(D('#inTypeHelp'), 'there too').toBeTruthy()
+    await click(D('#inTypeHelp'))
+    expect(D('#inTypePop')!.textContent).toContain('What each type means')
+    await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
+    await click(D('#inpEditCancel'))
   })
 
   it('every type in the legend shows the shared inputRuleText — the same source the Logic page reads', async () => {
@@ -220,11 +289,13 @@ describe('the Inputs page (tfin)', () => {
        engine/inputs.ts inputRuleText, so this guard fails a gate the moment
        either surface stops reading the shared source — the same shape as the
        wave-kind guard in logic.test. */
-    await click($('#inTypeHelp'))
-    const pop = $('#inTypePop')!
+    await openNew()
+    await click(D('#inTypeHelp'))
+    const pop = D('#inTypePop')!
     const missing = INPUT_TYPES.filter((t: string) => pop.textContent!.indexOf(inputRuleText(t)) < 0)
     expect(missing, missing.join(',')).toEqual([])
     await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
+    await cancelNew()
   })
 
   /* The "all people" option used to read "Personnel"; that word now names the
@@ -237,14 +308,11 @@ describe('the Inputs page (tfin)', () => {
 
   it('an admin add lands in INPUTS, the table, and the undo stack', async () => {
     const n = INPUTS.length
-    await click($('#inCal [data-cal="2026-07-13"]'))   // a start date is required now
-    await act(async () => {
-      const rm = $('#inRemarks') as HTMLInputElement
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-      setter.call(rm, 'PHASE4C TEST')
-      rm.dispatchEvent(new Event('input', { bubbles: true }))
-    })
-    await click($('#inAdd'))
+    await openNew()
+    await click(calDay('2026-07-13'))   // a start date is required
+    await setWin('#inpEditRmk', 'PHASE4C TEST')
+    await addNow()
+    expect(W(), 'added: the window has closed').toBeFalsy()
     expect(INPUTS.length).toBe(n + 1)
     expect(INPUTS[0].remarks).toBe('PHASE4C TEST')
     expect($$('#inBody tr').length).toBeGreaterThanOrEqual(5)
@@ -253,25 +321,20 @@ describe('the Inputs page (tfin)', () => {
     expect(INPUTS.length).toBe(n)
   })
 
-  /* the timing fields (owner, Aug 26): an untouched form still writes the old
-     06:00–18:00 window, All day still writes 0–1439, and unticking All day
-     frees the two time fields so the stated minutes land on the input */
+  /* the timing fields (owner, Aug 26): All day writes 0–1439, and Custom frees the two time
+     boxes so the stated minutes land on the input */
   it('a timed add stores the stated minutes; all-day stays 0–1439', async () => {
-    const setV = async (el: any, v: string) => act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-      setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
-    })
-    await click($('#inCal [data-cal="2026-07-13"]'))   // a start date is required now
-    await click($('#inAdd'))
+    const fresh = async () => { await openNew(); await setType('LL'); await click(calDay('2026-07-13')) }
+    await fresh()
+    await addNow()
     expect(INPUTS[0].s).toBe(0)
     expect(INPUTS[0].e).toBe(1439)
     await act(async () => { undo() })
-    expect(($('#inStartT') as HTMLInputElement).disabled).toBe(true)
-    await click($('#inSpan [data-span="custom"]'))
-    expect(($('#inStartT') as HTMLInputElement).disabled).toBe(false)
-    await setV($('#inStartT'), '10:20')
-    await setV($('#inEndT'), '11:35')
-    await click($('#inAdd'))
+    await fresh()
+    await click(D('#inpEditSpan [data-span="custom"]'))
+    await setWin('#inpEditStart', '10:20')
+    await setWin('#inpEditEnd', '11:35')
+    await addNow()
     expect(INPUTS[0].allday).toBe(false)
     expect(INPUTS[0].s).toBe(620)
     expect(INPUTS[0].e).toBe(695)
@@ -281,24 +344,33 @@ describe('the Inputs page (tfin)', () => {
        since the port (owner, 11 Aug 26). It reaches the model as typed and the
        engine rolls it. Only an end EQUAL to the start is refused, being a
        zero-length absence. */
-    await setV($('#inEndT'), '09:00')
+    await fresh()
+    await click(D('#inpEditSpan [data-span="custom"]'))
+    await setWin('#inpEditStart', '10:20')
+    await setWin('#inpEditEnd', '09:00')
     const n = INPUTS.length
-    await click($('#inAdd'))
+    await addNow()
     expect(INPUTS.length).toBe(n + 1)
     expect(INPUTS[0].s).toBe(620)
     expect(INPUTS[0].e).toBe(540)
     await act(async () => { undo() })
-    await setV($('#inEndT'), '10:20')                 // equal to the start
+    await fresh()
+    await click(D('#inpEditSpan [data-span="custom"]'))
+    await setWin('#inpEditStart', '10:20')
+    await setWin('#inpEditEnd', '10:20')                 // equal to the start
     const n2 = INPUTS.length
-    await click($('#inAdd'))
+    await addNow()
     expect(INPUTS.length).toBe(n2)
-    await click($('#inSpan [data-span="all"]'))       // back to all-day for later tests
+    expect(W(), 'refused: the window stays, with what he typed').toBeTruthy()
+    await cancelNew()
   })
 
-  it('the ✕ deletes a row, and undo resurrects it', async () => {
+  it('the window’s Delete removes a row’s input, and undo resurrects it', async () => {
     const n = INPUTS.length
     const first = INPUTS[0]
-    await click(rowFor(0).querySelector('.rmx'))
+    expect($$('#inBody .rmx, #inBody [data-inx], #inBody [data-edit]'), 'no cross and no pencil on any row').toHaveLength(0)
+    await delRow(0)
+    expect(W(), 'deleted: the window has closed').toBeFalsy()
     expect(INPUTS.length).toBe(n - 1)
     expect(INPUTS[0]).not.toBe(first)
     await act(async () => { undo() })
@@ -311,29 +383,40 @@ describe('the Inputs page (tfin)', () => {
   it('a member may add and delete too', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     const n = INPUTS.length
-    await click($('#inAdd'))
+    await openNew()
+    await click(calDay('2026-07-13'))
+    await addNow()
     expect(INPUTS.length, 'the add went through').toBe(n + 1)
-    await click($('#inBody .rmx'))
+    /* his own input opens to be CHANGED — Save and Delete are his (the third gate that used to refuse) */
+    await openRow(0)
+    expect(D('#inpEditSave'), 'the window offers Save').toBeTruthy()
+    await click(D('#inpEditDel'))
     expect(INPUTS.length, 'and so did the delete').toBe(n)
-    /* the pencil opens for them as well — the third gate that used to refuse */
-    await click($('#inBody [data-edit]'))
-    expect($('#inBody [data-cancel]'), 'the row opened as fields').toBeTruthy()
-    await click($('#inBody [data-cancel]'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
   /* [ARCH-STACK] step 4 (H5, owner answer C, 20 Sep 26): an admin files
      clearing leave for someone who has posted out — the archived body is in
      the admin's person picker, in its own group, and nowhere else. */
-  it('an admin can pick a posted-out (archived) person on the form, in their own group', async () => {
-    const id = Object.keys(PEOPLE).find(k => !PEOPLE[k].special && !PEOPLE[k].archived)!
+  it('an admin can pick a posted-out (archived) person for a NEW input, in their own group — and file it for him', async () => {
+    const id = Object.keys(PEOPLE).find(k => !PEOPLE[k].special && !PEOPLE[k].archived && !PEOPLE[k].san)!
     await act(async () => { PEOPLE[id].archived = true; notify() })
     try {
-      const grp = $('#inPerson optgroup') as unknown as HTMLOptGroupElement
+      await openNew()
+      const grp = D('#inpEditPerson optgroup[label="Posted out / archived"]') as unknown as HTMLOptGroupElement
       expect(grp, 'the posted-out group is there').toBeTruthy()
       expect([...grp.querySelectorAll('option')].map(o => o.value)).toContain(id)
-      expect(grp.label).toBe('Posted out / archived')
+      /* …and the leave is filed for him (clearing leave — H5): the door the List's form was */
+      await setType('LL')
+      await setWin('#inpEditPerson', id)
+      await click(calDay('2026-07-13'))
+      const n = INPUTS.length
+      await addNow()
+      expect(INPUTS.length, 'filed').toBe(n + 1)
+      expect(INPUTS[0].person, 'for the posted-out man').toBe(id)
+      await act(async () => { undo() })
     } finally {
+      await cancelNew()
       await act(async () => { PEOPLE[id].archived = false; notify() })
     }
   })
@@ -344,33 +427,45 @@ describe('the Inputs page (tfin)', () => {
      view-as person, printed as a value rather than offered as a choice — the
      rule the calendar's add dialog already applied, now on the page's own
      form too. */
-  it('a member files for the view-as person only, and the fixed Person follows View-as', async () => {
+  /* (The form read who is signed in LIVE, at its Add; the window reads it as it opens — nobody's sign-in changes under
+     an open window: a sign-in reloads the page.) */
+  it('a member files a leave for himself only — whoever is signed in — and his Person is a value, not a list', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
-    expect($('#inPerson'), 'the roster select is a scheduler\'s').toBeFalsy()
-    expect($('#inPersonFixed').textContent, 'the value is the view-as callsign').toBe(PEOPLE[ME].cs)
-    /* switch who is being viewed as — the fixed value follows LIVE, and so
-       does what the add actually writes (filedFor reads ME at commit, not a
-       state seeded when the page mounted) */
+    await openNew()
+    await setType('LL')            // a leave: a kind a member never files for anyone else (D655)
+    expect(D('#inpEditPerson'), 'the roster list is a scheduler’s').toBeFalsy()
+    expect(D('#inpEditPersonFixed').textContent, 'the value is his own callsign').toBe(PEOPLE[ME].cs)
+    await cancelNew()
+    /* someone else signed in: the window opens on HIM, and that is who the add is filed for */
     await act(async () => { setMe('dj'); notify() })
-    expect($('#inPersonFixed').textContent).toBe(PEOPLE.dj.cs)
+    await openNew()
+    await setType('LL')
+    expect(D('#inpEditPersonFixed').textContent).toBe(PEOPLE.dj.cs)
+    await click(calDay('2026-07-13'))
     const n = INPUTS.length
-    await click($('#inAdd'))
+    await addNow()
     expect(INPUTS.length, 'the add went through').toBe(n + 1)
-    expect(INPUTS[0].person, 'and landed on the view-as person').toBe('dj')
-    await click(rowFor(0).querySelector('.rmx'))
+    expect(INPUTS[0].person, 'and landed on the signed-in person').toBe('dj')
+    await delRow(0)
     expect(INPUTS.length).toBe(n)
     await act(async () => { setMe('bane'); setSession({ user: 'a', role: 'admin' }); notify() })
-    expect(($('#inPerson') as unknown as HTMLSelectElement), 'admin gets the roster select back').toBeTruthy()
+    await openNew()
+    expect((D('#inpEditPerson') as unknown as HTMLSelectElement), 'an admin gets the roster list').toBeTruthy()
+    await cancelNew()
   })
 
-  it('a member\'s row editor keeps the person as plain text', async () => {
+  it('a member changing his own leave keeps the person as plain text — no list to move it to another man', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
-    await click($('#inBody [data-edit]'))
-    const ed = $('#inBody tr.ined')
-    expect(ed, 'the row opened as fields').toBeTruthy()
-    expect(ed.querySelector('select[data-ed="person"]'), 'no Person select for a member').toBeFalsy()
-    expect(ed.querySelector('[data-fld="Person"]')!.textContent, 'the name still prints').toBeTruthy()
-    await click($('#inBody [data-cancel]'))
+    /* a leave: a kind a member never files for anyone else (D655), so its window offers no people to pick */
+    await act(async () => {
+      const { writeInputs } = await import('../state/store')
+      writeInputs(() => INPUTS.unshift({ person: ME, type: 'LL', date: 'Jul 14', allday: true, remarks: 'own leave', mod: '' }))
+    })
+    await openRow(0)
+    expect(D('#inpEditSave'), 'it is his to change').toBeTruthy()
+    expect(D('#inpEditPerson'), 'no Person list for a member').toBeFalsy()
+    expect(D('#inpEditPersonFixed').textContent, 'the name still prints').toBe(PEOPLE[ME].cs)
+    await click(D('#inpEditDel'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
@@ -498,17 +593,12 @@ describe('the SANS Availability sub-form on the add form', () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
   })
-  const setPerson = async (v: string) => act(async () => {
-    const sel = $('#inPerson') as unknown as HTMLSelectElement
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-    setter.call(sel, v)
-    sel.dispatchEvent(new Event('change', { bubbles: true }))
-  })
+  const setPerson = async (v: string) => setWin('#inpEditPerson', v)
   /* the sans checkboxes carry no id — found by their own label text, in
      SANS_ROWS' own Fly / AMT / OFT display order */
   const sansCk = (label: string) =>
     $$('#inSans .sanspick-ck').find(l => l.textContent?.includes(label))!.querySelector('input[type="checkbox"]') as HTMLInputElement
-  const originalPerson = () => ($('#inPerson') as unknown as HTMLSelectElement).value
+  const originalPerson = () => (D('#inpEditPerson') as unknown as HTMLSelectElement).value
   const toasts: string[] = []
   const withToast = async (fn: () => Promise<void>) => {
     toasts.length = 0
@@ -521,16 +611,20 @@ describe('the SANS Availability sub-form on the add form', () => {
      mode remove sans avail and move that function to sans calendar solely"). Each is RE-POINTED at the form that now
      does that job, the SANS calendar's "+ Commitment" (ui/sansform.test.tsx): the three ticks beside the standard span
      picker, SANS aircrew only, no empty tick set, the flags under All day, AM, and a custom window. */
-  it('the form no longer offers SANS availability, nor its Fly / AMT / OFT ticks', async () => {
-    expect(Array.from(($('#inType') as unknown as HTMLSelectElement).options).map(o => o.value)).not.toContain('SANS Availability')
-    expect($('#inSans')).toBeFalsy()
+  it('the Inputs tab’s window does not offer SANS availability, nor its Fly / AMT / OFT ticks', async () => {
+    await openNew()
+    expect(Array.from((D('#inpEditType') as unknown as HTMLSelectElement).options).map(o => o.value)).not.toContain('SANS Availability')
+    expect(D('#inSans')).toBeFalsy(); expect(D('#inpEditSans')).toBeFalsy()
     void setV; void setPerson; void sansCk; void originalPerson; void withToast
+    await cancelNew()
   })
 
   it('the type legend carries the SANS "not an absence" sentence', async () => {
-    await click($('#inTypeHelp'))
-    expect($('#inTypePop')!.textContent).toContain('not an absence')
+    await openNew()
+    await click(D('#inTypeHelp'))
+    expect(D('#inTypePop')!.textContent).toContain('not an absence')
     await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
+    await cancelNew()
   })
 })
 
@@ -538,17 +632,21 @@ describe('the SANS Availability sub-form on the add form', () => {
    boxes. First click starts, second ends, and a second click BEFORE the start
    cannot make a backwards range — it becomes the new start instead. */
 describe('the range calendar', () => {
-  const day = (d: string) => $(`#inCal [data-cal="2026-07-${d}"]`)
-  const readout = () => $('#inDates').textContent
+  /* the window's own calendar — the same component the List's form used; its readout speaks the window's own
+     month-first voice ("Jul 14"), where the form's said "14 Jul" */
+  const day = (d: string) => D(`#inpEdCal [data-cal="2026-07-${d}"]`)
+  const readout = () => D('#inpEditPop .rc-read')!.textContent
+  beforeAll(openNew)
+  afterAll(cancelNew)
 
   it('replaced the two date inputs', () => {
     expect($('#inStart')).toBeFalsy()
     expect($('#inEnd')).toBeFalsy()
-    expect($('#inCal'), 'the calendar renders').toBeTruthy()
+    expect(D('#inpEdCal'), 'the calendar renders').toBeTruthy()
   })
 
   it('starts on Monday and marks the weekend', () => {
-    const dow = $$('#inCal .rc-dow span').map(x => x.textContent)
+    const dow = [...document.querySelectorAll('#inpEdCal .rc-dow span')].map(x => x.textContent)
     expect(dow).toEqual(['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
     // 18 Jul 2026 is a Saturday
     expect(day('18').classList.contains('wk')).toBe(true)
@@ -557,34 +655,34 @@ describe('the range calendar', () => {
 
   it('two clicks make a range, and the days between are marked', async () => {
     await click(day('14'))
-    expect(readout()).toBe('14 Jul')
+    expect(readout()).toBe('Jul 14')
     expect(day('14').classList.contains('s')).toBe(true)
     await click(day('17'))
-    expect(readout()).toBe('14 Jul → 17 Jul')
+    expect(readout()).toBe('Jul 14 → Jul 17')
     expect(day('17').classList.contains('e')).toBe(true)
     expect(day('15').classList.contains('mid')).toBe(true)
   })
 
   it('a backwards second click becomes the new start instead', async () => {
     await click(day('20'))                 // fresh range
-    expect(readout()).toBe('20 Jul')
+    expect(readout()).toBe('Jul 20')
     await click(day('16'))                 // earlier — cannot be an end
-    expect(readout()).toBe('16 Jul')
+    expect(readout()).toBe('Jul 16')
     expect(day('16').classList.contains('s')).toBe(true)
-    expect($$('#inCal .rc-d.e').length).toBe(0)
+    expect(document.querySelectorAll('#inpEdCal .rc-d.e').length).toBe(0)
     await click(day('17'))                 // now it can close
-    expect(readout()).toBe('16 Jul → 17 Jul')
+    expect(readout()).toBe('Jul 16 → Jul 17')
   })
 
   it('a third click begins a fresh range rather than sticking', async () => {
     await click(day('21'))
-    expect(readout()).toBe('21 Jul')
+    expect(readout()).toBe('Jul 21')
   })
 
   it('the picked range is what Add writes', async () => {
     await click(day('14')); await click(day('16'))
     const n = INPUTS.length
-    await click($('#inAdd'))
+    await addNow()
     expect(INPUTS.length).toBe(n + 1)
     expect(INPUTS[0].date).toBe('Jul 14')
     expect(INPUTS[0].endDate).toBe('Jul 16')
@@ -629,31 +727,26 @@ describe('the End cell marks itself data-same on a one-day input', () => {
   })
 })
 
-/* the pencil edits the row in place */
+/* a row opens the input's window, and the window edits it (the pencil that edited the row in place is gone — D718) */
 describe('editing an input from its own line', () => {
-  it('opens on the pencil, commits on ✓, and joins the undo stack', async () => {
-    const row0 = () => rowFor(0)
-    await click(row0().querySelector('[data-edit]'))
-    expect($('#inBody tr.ined'), 'the row became fields').toBeTruthy()
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-    await act(async () => { setter.call(rm, 'EDITED IN PLACE'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    const inx = +($('#inBody tr.ined [data-save]') as HTMLElement).dataset.save!
-    const was = INPUTS[inx].remarks
-    await click($('#inBody tr.ined [data-save]'))
-    expect($('#inBody tr.ined'), 'the row closed').toBeFalsy()
-    expect(INPUTS[inx].remarks).toBe('EDITED IN PLACE')
+  it('opens from its row, commits on Save, and joins the undo stack', async () => {
+    const target = INPUTS[0], was = target.remarks
+    await openRow(0)
+    expect($('#inBody tr.ined'), 'no row turns into fields any more').toBeFalsy()
+    await setWin('#inpEditRmk', 'EDITED IN ITS WINDOW')
+    await click(D('#inpEditSave'))
+    expect(W(), 'saved: the window closed').toBeFalsy()
+    expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe('EDITED IN ITS WINDOW')
     await act(async () => { undo() })
-    expect(INPUTS[inx].remarks).toBe(was)
+    expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe(was)
   })
 
   it('cancel leaves the row untouched', async () => {
     const before = JSON.stringify(INPUTS[0])
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-    await act(async () => { setter.call(rm, 'THROWN AWAY'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    await click($('#inBody tr.ined [data-cancel]'))
+    await openRow(0)
+    await setWin('#inpEditRmk', 'THROWN AWAY')
+    await click(D('#inpEditCancel'))
+    expect(W()).toBeFalsy()
     expect(JSON.stringify(INPUTS[0])).toBe(before)
   })
 })
@@ -697,13 +790,9 @@ beforeAll(async () => {
     const nGround = DAYS[0].ground.length
     expect(DAYS[0].ground.some((r: any) => r.src === inpId(inp))).toBe(true)
 
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const ty = $('#inBody tr.ined [data-ed="type"]') as HTMLSelectElement
-    await act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
-      setter.call(ty, 'Appointment'); ty.dispatchEvent(new Event('change', { bubbles: true }))
-    })
-    await click($('#inBody tr.ined [data-save]'))
+    await openRow(0)
+    await setWin('#inpEditType', 'Appointment')
+    await click(D('#inpEditSave'))
 
     expect(inp.type).toBe('Appointment')
     expect(DAYS[0].ground.length, 'no duplicate row left behind').toBe(nGround)
@@ -715,20 +804,19 @@ beforeAll(async () => {
   })
 
   /* the editor used to hold a model INDEX; adding a row renumbers INPUTS and
-     the draft then committed onto whoever had shifted into that slot */
+     the draft then committed onto whoever had shifted into that slot. The window holds the RECORD, by its id. */
   it('commits onto the right row even after the list renumbers underneath', async () => {
     const target = INPUTS[0]
     const wasOther = INPUTS[1] ? { ...INPUTS[1] } : null
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    await setV(rm, 'STAYS ON TARGET')
+    await openRow(0)
+    await setV(D('#inpEditRmk'), 'STAYS ON TARGET')
     // something else lands at the top of the list while the editor is open
     await act(async () => {
       const { writeInputs } = await import('../state/store')
       writeInputs(() => INPUTS.unshift({ person: 'yeti', date: 'Jul 14', allday: true, type: 'LL', remarks: 'jumped the queue', mod: '' }))
     })
-    await click($('#inBody tr.ined [data-save]'))
-    expect(target.remarks).toBe('STAYS ON TARGET')
+    await click(D('#inpEditSave'))
+    expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe('STAYS ON TARGET')
     expect(INPUTS[0].remarks).toBe('jumped the queue')   // the interloper is untouched
     if (wasOther) expect(INPUTS.find((x: any) => x.remarks === wasOther.remarks)).toBeTruthy()
     await act(async () => { undo() })
@@ -749,8 +837,8 @@ describe('accepted rows are never stranded', () => {
     const before = groundRows().filter(r => r.src === inpId(inp)).length
     expect(before).toBe(1)
 
-    await click(rowFor(0).querySelector('[data-edit]'))
-    await click($('#inBody tr.ined [data-save]'))                  // change nothing
+    await openRow(0)
+    await click(D('#inpEditSave'))                                 // change nothing
 
     const after = groundRows().filter(r => r.src === inpId(inp))
     expect(after.length, 'still exactly one row').toBe(1)
@@ -764,7 +852,7 @@ describe('accepted rows are never stranded', () => {
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
     const key = inpId(inp)
     expect(groundRows().some(r => r.src === key)).toBe(true)
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(groundRows().some(r => r.src === key), 'no row left behind').toBe(false)
     await act(async () => { undo() })
@@ -782,17 +870,13 @@ describe('accepted rows are never stranded', () => {
     })
     const inp = INPUTS[0]
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    await act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
-      setter.call(rm, 'CHANGED'); rm.dispatchEvent(new Event('input', { bubbles: true }))
-    })
+    await openRow(0)
+    await setWin('#inpEditRmk', 'CHANGED')
     /* the bug was that ONE ✓ pushed TWO snapshots — unacceptInput's markEdit
        fired mid-way, so the first Undo landed on old fields that were already
        un-accepted, a state the user never created */
     const depth = HIST.stack.length
-    await click($('#inBody tr.ined [data-save]'))
+    await click(D('#inpEditSave'))
     expect(INPUTS[0].remarks).toBe('CHANGED')
     expect(HIST.stack.length - depth, 'one action, one undo step').toBe(1)
     await act(async () => { undo() })
@@ -800,13 +884,35 @@ describe('accepted rows are never stranded', () => {
     expect(INPUTS.find((x: any) => x.person === 'salsa' && x.remarks === 'one step')).toBeTruthy()
   })
 
+  /* the window "+ Input" opens has NO date until one is picked (D729 — V1): the readout says so, and Add agrees — in
+     the form's own old sentence, before any question (OIL, a document) is asked about a day nobody chose */
   it('Add refuses to invent a date when none was picked', async () => {
-    // a fresh page state has no pick; the readout says so and Add must agree
-    const n = INPUTS.length
-    await click($('#inCal [data-cal="2026-07-14"]'))
-    await click($('#inAdd'))
-    expect(INPUTS.length).toBe(n + 1)
-    await act(async () => { undo() })
+    const said: string[] = []
+    const orig = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      const n = INPUTS.length
+      await openNew()
+      expect(D('#inpEditPop .rc-read')!.textContent).toBe('pick a start date')
+      await addNow()
+      expect(INPUTS.length, 'nothing was dated for him').toBe(n)
+      expect(said).toEqual(['Pick a start date on the calendar first'])
+      expect(document.querySelector('[data-testid="oilconf"]'), 'and no question was asked').toBeNull()
+      expect(W(), 'the window stays').toBeTruthy()
+      /* a kind that asks a document, then a kind that asks OIL: still refused first, nothing asked */
+      for (const t of ['OML', 'Duty']) {
+        said.length = 0
+        await setType(t)
+        await addNow()
+        expect(said, t).toEqual(['Pick a start date on the calendar first'])
+        expect(INPUTS.length, t).toBe(n)
+      }
+      await setType('Training')
+      await click(calDay('2026-07-14'))
+      await addNow()
+      expect(INPUTS.length).toBe(n + 1)
+      await act(async () => { undo() })
+    } finally { HOOKS.toast = orig; await cancelNew() }
   })
 })
 
@@ -816,12 +922,15 @@ describe('accepted rows are never stranded', () => {
    of it is kept — `LL till 15 Jul`. The tail belongs to the calendar, so it is
    rewritten and removed by picking, never duplicated. */
 describe('the picked date writes itself into Remarks', () => {
-  const day = (d: string) => $(`#inCal [data-cal="2026-07-${d}"]`)
-  const rm = () => $('#inRemarks') as HTMLInputElement
+  const day = (d: string) => D(`#inpEdCal [data-cal="2026-07-${d}"]`)
+  const rm = () => D('#inpEditRmk') as HTMLInputElement
   const typeInto = async (el: any, v: string) => act(async () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     setter.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true }))
   })
+  /* one new input's window for the picking tests below; the last of them adds, which closes it */
+  beforeAll(openNew)
+  afterAll(cancelNew)
 
   it('a lone start already reads till <that day>; the end then moves the date', async () => {
     await click(day('13'))
@@ -860,30 +969,46 @@ describe('the picked date writes itself into Remarks', () => {
     expect(rm().value).toBe('till 18 Jul Bangkok')
   })
 
-  it('Add clears the note but keeps the tail, because the dates stay on the form', async () => {
+  /* CHANGED BY THE DOOR (D729 — V1; a reading told to him): the List's form kept its dates — and so the tail — for the
+     next add. The window closes at Add and opens FRESH: no note, no date, nothing carried onto the next input. */
+  it('Add writes the note with its tail; the next new input starts with no note and no date', async () => {
     await click(day('14')); await click(day('16'))
     await typeInto(rm(), 'LL till 16 Jul')
     const n = INPUTS.length
-    await click($('#inAdd'))
+    await addNow()
     expect(INPUTS[0].remarks).toBe('LL till 16 Jul')
-    expect(rm().value).toBe('till 16 Jul')
+    expect(W(), 'the window closed at Add').toBeFalsy()
+    await openNew()
+    expect(rm().value, 'no note carried over').toBe('')
+    expect(D('#inpEditPop .rc-read')!.textContent, 'and no date').toBe('pick a start date')
+    await cancelNew()
     await act(async () => { undo() })
     expect(INPUTS.length).toBe(n)
   })
 
-  it('the row editor writes the same tail — but only from a click', async () => {
-    await click(rowFor(0).querySelector('[data-edit]'))
-    const ed = () => $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
-    expect(ed().value, 'opening the editor rewrites nothing').toBe(INPUTS[0].remarks || '')
-    await typeInto(ed(), 'LL')
-    /* Jul 12 is before every date in the demo week, so this always lands as a
-       bare start whatever range the row opened with — and a bare start now
-       carries its own one-day "till" */
-    await click($('#inedCal [data-cal="2026-07-12"]'))
-    expect(ed().value).toBe('LL till 12 Jul')
-    await click($('#inedCal [data-cal="2026-07-14"]'))
-    expect(ed().value).toBe('LL till 14 Jul')
-    await click($('#inBody tr.ined [data-cancel]'))
+  /* RESTATED 10 Oct 26 with the pencil's row gone (D718). The row's own calendar rewrote the remark box at every pick,
+     adding a "till" even where the remark had none. The window's calendar (D681; a one-person input's too, since this
+     change) leaves the box alone while he picks — a remark the picker had touched would read as HIS change to a window
+     that follows the record behind it — and the SAVE makes a "till" the remark carries follow the new last day
+     (commitInputEdit; D189: the wording is the app's own). What is no longer done: a "till" is not ADDED to a remark
+     that carried none. */
+  it('the window’s calendar leaves the remark box alone; the save makes its "till" follow the new dates', async () => {
+    await act(async () => {
+      const { writeInputs } = await import('../state/store')
+      writeInputs(() => INPUTS.unshift({ person: 'sufa', type: 'LL', date: 'Jul 13', endDate: 'Jul 14', allday: true, remarks: 'Bangkok till 14 Jul', mod: '' }))
+    })
+    const target = INPUTS[0]
+    await openRow(0)
+    const ed = () => D('#inpEditRmk') as HTMLInputElement
+    expect(ed().value, 'opening the window rewrites nothing').toBe('Bangkok till 14 Jul')
+    await click(D('#inpEdCal [data-cal="2026-07-13"]'))
+    await click(D('#inpEdCal [data-cal="2026-07-16"]'))
+    expect(ed().value, 'nor does picking').toBe('Bangkok till 14 Jul')
+    await click(D('#inpEditSave'))
+    const saved = INPUTS.find((x: any) => x.iid === target.iid)
+    expect([saved.date, saved.endDate]).toEqual(['Jul 13', 'Jul 16'])
+    expect(saved.remarks, 'the tail followed the calendar').toBe('Bangkok till 16 Jul')
+    await act(async () => { undo(); undo() })
   })
 })
 
@@ -1101,13 +1226,12 @@ describe('a new input announces itself', () => {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value')!.set!
     setter.call(sel, v); sel.dispatchEvent(new Event('change', { bubbles: true }))
   })
-  /* twice, so the pick lands on Jul 13 whatever range the form was left in:
-     two clicks on one day always end with that day as the start */
+  /* through the window "+ Input" opens — the List's one door since D729; the page keeps what it adds in view */
   const addOne = async (remark: string) => {
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await setV($('#inRemarks'), remark, window.HTMLInputElement)
-    await click($('#inAdd'))
+    await openNew()
+    await click(calDay('2026-07-13'))
+    await setV(D('#inpEditRmk'), remark, window.HTMLInputElement)
+    await addNow()
   }
   const reset = async () => {
     await setFType('all')
@@ -1117,7 +1241,7 @@ describe('a new input announces itself', () => {
   it('rides the top row even when the filter and the window both exclude it', async () => {
     const n = INPUTS.length
     await useDefaultRange()          // Jul 2026 is behind us — outside the window
-    await setFType('OML')            // and the add below is an LL, not an OML
+    await setFType('OML')            // and the add below is a duty, not an OML
     await addOne('SHOUTS FROM THE TOP')
     expect(INPUTS.length).toBe(n + 1)
     expect($$('#inBody tr')[0].textContent).toContain('SHOUTS FROM THE TOP')
@@ -1165,7 +1289,7 @@ describe('a new input announces itself', () => {
   /* the owner's phone complaint, literally: "once an input is made, the view
      will snap to the input u just made" — it did not. The row carries a
      stable data-iid (the same identity the pin/flash lists already use) and
-     add() scrolls it into view once React has painted it. */
+     the page scrolls it into view once React has painted it. */
   it('scrolls the just-added row into view, by its stable iid', async () => {
     const n = INPUTS.length
     const calls: any[] = []
@@ -1202,20 +1326,19 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     try { await fn() } finally { HOOKS.toast = orig }
   }
 
-  it('saving and deleting the inline row editor both say so', async () => {
+  it('saving and deleting from the row’s window both say so', async () => {
     const n = INPUTS.length
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inCal [data-cal="2026-07-13"]'))
-    await click($('#inAdd'))
+    await openNew()
+    await click(calDay('2026-07-13'))
+    await withToast(async () => { await addNow() })
+    expect(toasts, 'an add says so').toContain('Input added')
     await withToast(async () => {
-      await click(rowFor(0).querySelector('[data-edit]'))
-      await click($('#inBody tr.ined [data-save]'))
+      await openRow(0)
+      await click(D('#inpEditSave'))
     })
-    expect(toasts, 'the ✓ says the same words the dialog\'s own ✓ does').toContain('Input updated')
-    await withToast(async () => {
-      await click(rowFor(0).querySelector('.rmx'))
-    })
-    expect(toasts, 'and the ✕ says the same words the dialog\'s own delete does').toContain('Input deleted')
+    expect(toasts, 'a save says so').toContain('Input updated')
+    await withToast(async () => { await delRow(0) })
+    expect(toasts, 'and a delete says so').toContain('Input deleted')
     expect(INPUTS.length, 'the add and the delete cancel out').toBe(n)
   })
 
@@ -1280,16 +1403,16 @@ describe('a request with an OIL day nobody has answered says so on its row', () 
 describe('Edit history hears an add made on this page', () => {
   /* since [DRAFT-PENDING] (28 Sep 26) the line comes from the change history's ONE writer (state/changelines.ts —
      Astra DP-03): "<callsign> · <type> added · <days>", exactly once */
-  it('Add input writes ONE "<callsign> · <type> added" line', async () => {
-    await click($('#inCal [data-cal]'))
-    await click($('#inCal [data-cal]'))
+  it('"+ Input" and Add write ONE "<callsign> · <type> added" line', async () => {
+    await openNew()
+    await click(D('#inpEdCal [data-cal]'))
     const before = ELOG.rows.length
-    await click($('#inAdd'))
+    await addNow()
     const r = INPUTS[0]
     const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
     const mine = ELOG.rows.slice(before).filter((x: any) => x.iid === r.iid)
     expect(mine.length, 'exactly one line').toBe(1)
     expect(mine[0]!.lbl).toContain(`${cs} · ${r.type} added`)
-    await click(rowFor(0).querySelector('.rmx'))
+    await delRow(0)
   })
 })

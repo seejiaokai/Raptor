@@ -61,7 +61,9 @@ test('the day’s figure and class reach the SANS date, a commitment is filed fr
   await expect(tid(page,'sc-need-'+DATE)).toHaveText(`${after.p}${after.w}`)
   await expect(tid(page,'sc-f-'+DATE)).toHaveText(seat==='p'?'F10':'F01')
   await expect(tid(page,'win-sansday').locator('[data-testid="sd-hours"]')).toHaveText('10:00–11:00')
-  await expect(tid(page,'win-sansday').locator('[data-testid="sd-placed"]')).toContainText('Placed by')
+  /* short in an opened day (D701): the name, the date and the time — the full "Placed by …" is its title */
+  await expect(tid(page,'win-sansday').locator('[data-testid="sd-placed"]')).toHaveAttribute('title',/^Placed by /)
+  await expect(tid(page,'win-sansday').locator('[data-testid="sd-placed"]')).not.toContainText('Placed by')
   await page.reload();await login(page);await go(page,'inputs');await page.click('#inSansMode');await month(page,2026,10)
   await expect(tid(page,'sc-need-'+DATE)).toHaveText(`${after.p}${after.w}`)
   await expect(tid(page,'sc-f-'+DATE)).toHaveText(seat==='p'?'F10':'F01')
@@ -389,38 +391,44 @@ test('a member keeps the Calendar and List doors of the Inputs tab',async({page}
    snap into view"). Until that day the list lifted the changed input to its head EVERY time. Which of the two happens
    hangs on where the row is on the screen, and jsdom lays nothing out (there the page moves as it always did) — so only
    a real browser can say. The rule's arithmetic is ui/onscreen.test.ts; this is the list itself, at desktop and phone
-   size: the change made through the row's own editor, the Undo and Redo pressed in the app's top bar. */
+   size: the change made in the input's window, opened from its row (the row's own editor went with the list's pencil —
+   D718, 10 Oct 26; on a phone the list is cards under day headings — D723), the Undo and Redo pressed in the app's
+   top bar. */
 for (const size of [{ name: 'a desktop', width: 1280, height: 720 }, { name: 'a phone', width: 390, height: 844 }]) {
   test(`Undo and Redo on the Inputs list leave the page still when the changed input is on screen, and bring it up only when it is not — ${size.name}`, async ({ page }) => {
     await page.setViewportSize({ width: size.width, height: size.height })
     await login(page); await go(page, 'inputs'); await page.click('#inListBtn')
     await page.click('#inRangeBtn'); await page.click('#inRangeAll')
-    const rows = page.locator('#inBody tr[data-iid]')
+    /* a row of the list: a table row on a desktop, a card on a phone — each carries its input's id */
+    const ROW = size.width <= 820 ? '#inList [data-iid]' : '#inBody tr[data-iid]'
+    const rows = page.locator(ROW)
     await expect(rows.nth(20)).toBeAttached()                 // a list long enough for a row to be far off the screen
     /* an ordinary appointment from the middle of the list: a save of its remarks asks nothing (no OIL question, no
        medical document) and leaves it where its date puts it */
-    const iid = await page.evaluate(() => [...document.querySelectorAll('#inBody tr[data-iid]')].slice(8, 34)
-      .map(r => r.getAttribute('data-iid')!).find(id => (window as any).INPUTS.find((r: any) => r.iid === id)?.type === 'Appointment') ?? '')
+    const iid = await page.evaluate(sel => [...document.querySelectorAll(sel)].slice(8, 34)
+      .map(r => r.getAttribute('data-iid')!).find(id => (window as any).INPUTS.find((r: any) => r.iid === id)?.type === 'Appointment') ?? '', ROW)
     expect(iid, 'the demo list holds an appointment between its 9th and 34th rows').not.toBe('')
-    const row = page.locator(`#inBody tr[data-iid="${iid}"]`)
+    const row = page.locator(`${ROW}[data-iid="${iid}"]`)
     const remark = () => page.evaluate(id => (window as any).INPUTS.find((r: any) => r.iid === id).remarks ?? '', iid)
     const was = await remark()
     /* where the row is: its place in the list, where the page is scrolled to, and whether the row is wholly on screen */
-    const where = () => page.evaluate(id => {
-      const all = [...document.querySelectorAll('#inBody tr[data-iid]')]
+    const where = () => page.evaluate(([id, sel]) => {
+      const all = [...document.querySelectorAll(sel)]
       const el = all.find(r => r.getAttribute('data-iid') === id)!
       const b = el.getBoundingClientRect(), bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
       return { index: all.indexOf(el), scrollY: Math.round(scrollY), top: Math.round(b.top), onScreen: b.height > 0 && b.top >= bar - 0.5 && b.bottom <= innerHeight + 0.5 }
-    }, iid)
+    }, [iid, ROW])
     const centre = () => row.evaluate(el => el.scrollIntoView({ block: 'center' }))
     const still = async () => { let a = await where(); for (let i = 0; i < 40; i++) { await page.waitForTimeout(60); const b = await where(); if (b.scrollY === a.scrollY && b.top === a.top && i > 3) return b; a = b } return a }
 
-    /* the change: its remarks, typed in the row's own editor */
+    /* the change: its remarks, typed in the input's window — opened from its row */
     await centre()
     const home = (await where()).index                       // its own place in the list, by its dates
-    await row.locator('[data-edit]').click()
-    await page.locator(`#inBody tr.ined[data-iid="${iid}"] [data-ed="remarks"]`).fill('D672 browser check')
-    await page.locator(`#inBody tr.ined[data-iid="${iid}"] [data-save]`).click()
+    await row.locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
+    await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+    await page.locator('#inpEditRmk').fill('D672 browser check')
+    await page.locator('#inpEditSave').click()
+    await expect(page.locator('[data-testid="win-inputedit"]')).toHaveCount(0)
     await expect.poll(remark).toBe('D672 browser check')
     /* a SAVE shows the saved input by the same rule: on screen, it stays in its own place in the list */
     expect((await still()).index, 'a saved input that was on screen was lifted to the head of the list').toBe(home)
@@ -575,7 +583,10 @@ for (const width of [390, 375, 360]) test(`a phone ${width} wide: the month’s 
   const page: Page = await context.newPage()
   try {
     await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
-    const box = (sel: string) => page.locator(sel).first().evaluate(n => { const r = n.getBoundingClientRect(); return { left: Math.round(r.left), w: Math.round(r.width), right: Math.round(r.right), mid: Math.round(r.top + r.height / 2) } })
+    /* WHERE a button is, without the press effect: a pressed button is drawn 3% smaller (`.abtn:active`) and a finger's
+       press lingers after a tap - read through that, an arrow just tapped measured 29 wide where it is 30, by timing
+       alone (the gate run of 9 Oct 26; the same race as D693's test, D87) */
+    const box = (sel: string) => page.locator(sel).first().evaluate(n => { const el = n as HTMLElement, t = el.style.transition, f = el.style.transform; el.style.transition = 'none'; el.style.transform = 'none'; const r = el.getBoundingClientRect(); el.style.transform = f; el.style.transition = t; return { left: Math.round(r.left), w: Math.round(r.width), right: Math.round(r.right), mid: Math.round(r.top + r.height / 2) } })
     const nav = async (prev: string, name: string, next: string, today: string) => [await box(prev), await box(name), await box(next), await box(today)].map(b => [b.left, b.w])
     /* through a year the next arrow and Today never move under the finger (the name's box is one width) */
     const still = async (next: string, today: string) => { const seen = new Set<string>(); for (let i = 0; i < 12; i++) { seen.add((await box(next)).left + '/' + (await box(today)).left); await page.locator(next).tap() } for (let i = 0; i < 12; i++) await page.locator(next.replace('Next', 'Prev').replace('sc-next', 'sc-prev')).tap(); return seen.size }

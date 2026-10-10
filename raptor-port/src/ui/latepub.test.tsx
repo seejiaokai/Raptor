@@ -975,3 +975,98 @@ describe('D605 on a published day — the warning on a seat with no times freeze
   })
 })
 
+/* AN INPUT'S OWN TITLE, CHANGED AFTER THE DAY WAS PUBLISHED ([INPUT-OWN-TITLE]; owner D715, D716 — 9 Oct 26; both reads of
+   the plan — Astra 2, Sol 2). A title is one of the things a reader sees of an input, so a title-only edit is a pending
+   change like a changed remark (D178) and the four sign-offs fall (D103) — whether or not the input has a row on the
+   day: an overseas duty has none, a second covered day has none, and a change of capitals alone leaves the row's
+   printed name as it was. The first cut compared the row's name only, and each of those three read "0 pending". */
+describe('[INPUT-OWN-TITLE] — a title changed after publishing waits for the admin', () => {
+  const TUE = 1
+  const landedEvent = (over: any = {}) => {
+    const inp: any = { person: 'bane', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Event', remarks: '', mod: '2026-07-01', ...over }
+    INPUTS.push(inp); inpId(inp)
+    acceptInput(MON, inp, 'g')
+    return inp
+  }
+
+  it('a landed Event titled after publishing: ONE change everywhere, the four fall, the issued face keeps "EVENT"; the amendment carries the title out', () => {
+    const inp = landedEvent()
+    publishDay(MON); signBound(MON)
+    expect(daySigned(MON)).toBe(true)
+    expect(commitInputEdit(inp, { ...draftOf(inp), title: 'Sports day' })).toBeTruthy()
+    validate()
+    expect(dayPendingItems(MON).length, 'the input change and its re-made row are one act').toBe(1)
+    expect(counts(MON)).toEqual({ engine: 1, week: 1, board: 1, info: 1, list: 1 })
+    expect(listText(MON), 'said in words').toMatch(/Event.*Sports day/)
+    expect(daySigned(MON), 'the four fall (D103)').toBe(false)
+    expect(weekEdit(MON).textContent, 'the working copy shows the title').toContain('SPORTS DAY')
+    expect(issuedFace(MON).textContent, 'the issued face keeps the issued name').not.toContain('SPORTS DAY')
+    signBound(MON); publishALDay(MON); validate()
+    expect(counts(MON).engine, 'republished: nothing waits').toBe(0)
+    const face = issuedFace(MON)
+    expect(face.textContent).toContain('SPORTS DAY')
+    expect([...face.querySelectorAll('.nm-kind')].map(x => x.textContent), 'its kind kept in sight on the issued face').toContain('Event')
+  })
+
+  it('…and typed back to what was published, nothing waits and the sign-offs stand again (D98)', () => {
+    const inp = landedEvent({ title: 'Sports day' })
+    publishDay(MON); signBound(MON)
+    expect(commitInputEdit(inp, { ...draftOf(inp), title: 'Open house' })).toBeTruthy()
+    validate()
+    expect(counts(MON).engine).toBe(1)
+    expect(daySigned(MON)).toBe(false)
+    expect(commitInputEdit(inp, { ...draftOf(inp), title: 'Sports day' })).toBeTruthy()
+    validate()
+    expect(counts(MON).engine).toBe(0)
+    expect(daySigned(MON)).toBe(true)
+  })
+
+  it('a change of capitals alone is still a change — the row’s printed name did not move, the input’s title did', () => {
+    const inp = landedEvent({ title: 'Sports day' })
+    publishDay(MON); signBound(MON)
+    expect(commitInputEdit(inp, { ...draftOf(inp), title: 'SPORTS DAY' })).toBeTruthy()
+    validate()
+    expect(inp.title).toBe('SPORTS DAY')
+    expect(counts(MON)).toEqual({ engine: 1, week: 1, board: 1, info: 1, list: 1 })
+    expect(daySigned(MON)).toBe(false)
+  })
+
+  it('an overseas duty has no row on the programme: its title changed after publishing is one pending change on EVERY published day it covers', () => {
+    const od: any = { person: 'bane', date: 'Jul 13', endDate: 'Jul 14', allday: true, type: 'OD', remarks: '', mod: '2026-07-01' }
+    INPUTS.push(od); inpId(od)
+    validate()
+    publishDay(MON); signBound(MON); publishDay(TUE); signBound(TUE)
+    expect(commitInputEdit(od, { ...draftOf(od), title: 'Exercise in Darwin' })).toBeTruthy()
+    validate()
+    for (const di of [MON, TUE]) {
+      expect(counts(di), 'day ' + di).toEqual({ engine: 1, week: 1, board: 1, info: 1, list: 1 })
+      expect(daySigned(di), 'day ' + di).toBe(false)
+      expect(listText(di)).toMatch(/OD.*Exercise in Darwin/)
+    }
+  })
+
+  it('an untitled input saved again with nothing changed is no change at all', () => {
+    const inp = landedEvent()
+    publishDay(MON); signBound(MON)
+    expect(commitInputEdit(inp, { ...draftOf(inp) })).toBeTruthy()
+    validate()
+    expect(counts(MON).engine).toBe(0)
+    expect(daySigned(MON)).toBe(true)
+    expect('title' in inp).toBe(false)
+  })
+})
+
+describe('[INPUT-OWN-TITLE] — the kind and the title changed together after publishing (Astra’s read of the code, 1)', () => {
+  it('"To go out" says both: Event → Duty, and Sports day → Guard shift', () => {
+    const inp: any = { person: 'bane', date: 'Jul 13', allday: false, s: 540, e: 600, type: 'Event', title: 'Sports day', remarks: '', mod: '2026-07-01' }
+    INPUTS.push(inp); inpId(inp)
+    acceptInput(MON, inp, 'g')
+    publishDay(MON)
+    expect(commitInputEdit(inp, { ...draftOf(inp), type: 'Duty', title: 'Guard shift' })).toBeTruthy()
+    validate()
+    expect(dayPendingItems(MON).length, 'one act').toBe(1)
+    const said = listText(MON)
+    expect(said).toMatch(/Event/); expect(said).toMatch(/Duty/)
+    expect(said).toMatch(/Sports day/); expect(said).toMatch(/Guard shift/)
+  })
+})

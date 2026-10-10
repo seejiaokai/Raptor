@@ -74,28 +74,39 @@ afterEach(async () => {
 })
 
 describe('a day opened: a shared input is one line', () => {
-  it('one line, not one a man — its people as the schedule’s pucks, A to Z; the kind, the hours, who placed it for how many', async () => {
+  it('one card, not one a man — EVERY name, A to Z, as words (D721: never "+N", no row of pucks); the kind, the hours, and who filed it', async () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c])
     await open('2026-10-07')
     const lines = $$('[data-testid^="idy-row-"]').filter(el => of(g.grp).some(r => el.getAttribute('data-popiid') === r.iid))
-    expect(lines, 'one line').toHaveLength(1)
-    const pucks = [...lines[0].querySelectorAll('[data-testid="idy-people"] .puck')].map(p => p.getAttribute('data-person'))
-    expect(pucks).toEqual(az([a, b, c]))
-    expect(lines[0].textContent).toContain('Meeting')
+    expect(lines, 'one card').toHaveLength(1)
+    expect(lines[0].querySelector('[data-testid="idy-who"]')!.textContent).toBe(az([a, b, c]).map(cs).join(', '))
+    expect(lines[0].textContent).not.toMatch(/\+\d/)
+    expect(lines[0].querySelector('.puck'), 'the pucks stay in the input’s window').toBeNull()
+    expect(lines[0].querySelector('[data-testid="idy-kind"]')!.textContent).toBe('Meeting')
     expect(lines[0].querySelector('[data-testid="idy-when"]')!.textContent).toContain('10:00')
-    expect(lines[0].querySelector('[data-testid="idy-placed"]')!.textContent).toContain(`Placed by ${cs(admin)} for 3 people`)
+    /* "By Saber" and no more (D720, D723): how many it is for is the names themselves; the day and time are in its window */
+    expect(lines[0].querySelector('[data-testid="idy-by"]')!.textContent).toBe(`By ${cs(admin)}`)
     expect(tid('idy-count')!.textContent).toBe('1 input')
   })
-  it('LATE stands beside the man whose own record is late — not on the others', async () => {
+  it('several people: who filed it is ALWAYS said — even where the filer is one of them (D724)', async () => {
+    const [a, b] = others()
+    const g = await shared([admin, a, b])
+    await open('2026-10-07')
+    expect(g.line().querySelector('[data-testid="idy-who"]')!.textContent).toContain(cs(admin))
+    expect(g.line().querySelector('[data-testid="idy-by"]')!.textContent).toBe(`By ${cs(admin)}`)
+  })
+  it('one man late and the others not: the card says LATE once and, pressed, names who — the late date is each man’s own', async () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c], {}, { [c]: { mod: '2026-10-06' } })
     await open('2026-10-07')
     const line = g.line()
-    expect(line, 'still one line: the late date is each man’s own').toBeTruthy()
-    expect(line.querySelector(`[data-testid="idy-late-${c}"]`), cs(c)).toBeTruthy()
-    expect(line.querySelector(`[data-testid="idy-late-${a}"]`)).toBeNull()
-    expect(line.querySelector(`[data-testid="idy-late-${b}"]`)).toBeNull()
+    expect(line, 'still one card').toBeTruthy()
+    expect(line.querySelectorAll('[data-testid="idy-late"]')).toHaveLength(1)
+    await click(line.querySelector('[data-testid="idy-late"]'))
+    const note = g.line().querySelector('[data-testid="idy-latenote"]')!.textContent!
+    expect(note.startsWith(`${cs(c)}: after the cut-off`), note).toBe(true)
+    expect(note).not.toContain(cs(a)); expect(note).not.toContain(cs(b))
   })
   it('every man late alike: the line says LATE once, as an ordinary input does — not once a man', async () => {
     const g = await shared(others().slice(0, 3), { mod: '2026-10-06' })
@@ -148,21 +159,33 @@ describe('the List: a shared input is one line', () => {
   const LATER = { date: 'Oct 14' }
   const listUp = async () => act(async () => { setInpView('table'); notify() })
   const rowsOf = (grp: string) => $$('#inBody tr[data-iid]').filter(tr => of(grp).some(r => r.iid === tr.getAttribute('data-iid')))
-  it('one row, its Name reading the first callsign and how many more — the title lists everyone', async () => {
+  /* EVERY NAME, A TO Z — NEVER "ACE +2" (owner D727, 10 Oct 26 — drawing A of the desktop list: "On the desktop Inputs
+     list a shared input names everyone in it"). Until then the Name read the first callsign and "+2", the rest behind
+     a hover. And its small print is "By Saber" — the card's own words (the design vet's V2, D729) — where it read
+     "Placed by Saber for 3 people · 1 Sep 26, 14:32". */
+  it('one row, its Name naming EVERYONE, A to Z — never "+N" (D727); its small print "By <the filer>" (D729)', async () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c], LATER)
     await listUp()
     const rows = rowsOf(g.grp)
     expect(rows).toHaveLength(1)
     const name = rows[0].querySelector('[data-label="Name"]')!
-    expect(name.textContent).toBe(`${cs(g.first)} +2`)
-    expect(name.querySelector('[title]')!.getAttribute('title')).toBe(az([a, b, c]).map(cs).join(', '))
-    expect(rows[0].querySelector('[data-testid="in-placed"]')!.textContent).toContain('for 3 people')
+    expect(name.textContent).toBe(az([a, b, c]).map(cs).join(', '))
+    expect(name.textContent, 'no count standing in for a name').not.toMatch(/\+\d/)
+    expect(rows[0].querySelector('[data-testid="in-placed"]')!.textContent).toBe(`By ${cs(admin)}`)
   })
-  it('its ✎ opens the editor window on the entry — never the row’s edit in place', async () => {
+  it('a big group is still named whole — nine people, nine names, in order', async () => {
+    const nine = others().slice(0, 9)
+    const g = await shared(nine, LATER)
+    await listUp()
+    const name = rowsOf(g.grp)[0].querySelector('[data-label="Name"]')!
+    expect(name.textContent!.split(', ')).toEqual(az(nine).map(cs))
+  })
+  /* the row's own button since D718 (10 Oct 26) — the ✎ a shared row carried is gone with every row's pencil */
+  it('its row opens the editor window on the entry — nothing is edited in place', async () => {
     const g = await shared(others().slice(0, 3), LATER)
     await listUp()
-    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
     expect($('#inBody tr.ined')).toBeNull()
     expect(tid('win-inputedit')!.textContent).toContain(`${cs(g.first)} +2`)
   })
@@ -175,13 +198,13 @@ describe('the List: a shared input is one line', () => {
     const g = await shared([x, y], LATER)
     await listUp()
     expect(rowsOf(g.grp)).toHaveLength(1)
-    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
     await click($(`#inpEditPop .pp-pucks button[aria-label="${cs(z)}"]`))
     await click($('#inpEditSave'))
     expect(of(g.grp), 'three records saved').toHaveLength(3)
     const rows = rowsOf(g.grp)
     expect(rows, 'one row for the one filing').toHaveLength(1)
-    expect(rows[0].querySelector('[data-label="Name"]')!.textContent).toBe(`${cs(z)} +2`)
+    expect(rows[0].querySelector('[data-label="Name"]')!.textContent, 'every name, A to Z — his first').toBe(az([z, x, y]).map(cs).join(', '))
   })
   it('its row has no ✕ and no OIL chip of one man’s: deleting it, and its OIL answer, are in its window — for everyone', async () => {
     const g = await shared(others().slice(0, 3), { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
@@ -189,13 +212,17 @@ describe('the List: a shared input is one line', () => {
     const row = rowsOf(g.grp)[0]
     expect(row.querySelector('.rmx')).toBeNull()
     expect(row.querySelector('.roil')).toBeNull()
-    expect(row.querySelector('[data-edit]')).toBeTruthy()
+    expect(row.querySelector('[data-edit]'), 'nor a pencil: the row itself opens it').toBeNull()
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect(tid('win-inputedit'), 'its window').toBeTruthy()
+    expect($('#inpEditDel'), 'Delete is in the window').toBeTruthy()
+    expect($('#inpEditPop [data-testid="oil-revise"]'), 'and its OIL answer').toBeTruthy()
   })
   it('a man who may change nothing of it still opens it, to read', async () => {
     const g = await shared(others().slice(0, 3), LATER)
     await as('member')
     await listUp()
-    await click(rowsOf(g.grp)[0].querySelector('[data-edit]'))
+    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
     expect(tid('inped-ro')).toBeTruthy()
   })
   it('filtered to ONE of its people the line still shows — as the whole entry', async () => {
@@ -208,9 +235,12 @@ describe('the List: a shared input is one line', () => {
     await act(async () => { sel.value = last; sel.dispatchEvent(new Event('change', { bubbles: true })) })
     const rows = rowsOf(g.grp)
     expect(rows).toHaveLength(1)
-    expect(rows[0].querySelector('[data-label="Name"]')!.textContent).toBe(`${cs(g.first)} +2`)
+    expect(rows[0].querySelector('[data-label="Name"]')!.textContent, 'all three named, not only the one filtered to').toBe(az([a, b, c]).map(cs).join(', '))
   })
-  it('an ordinary input keeps its row as it was — ✎ in place, ✕, its own name', async () => {
+  /* RESTATED 10 Oct 26 (owner D718, D723): this used to say "an ordinary input keeps its row as it was — ✎ in place, ✕,
+     its own name". The pencil and the cross are gone from EVERY row; an ordinary input's row opens its window as a
+     shared one's does, and keeps its own name. */
+  it('an ordinary input’s row opens its window too — no pencil, no cross, its own name', async () => {
     const a = others()[0]
     /* a date the List still shows: it opens on today onward, and 8 Oct 26 - the date written here first - went
        red the night the calendar turned to the 9th (the calendar job's bug check) */
@@ -218,35 +248,39 @@ describe('the List: a shared input is one line', () => {
     await listUp()
     const row = $('#inBody tr[data-iid="solo1"]')!
     expect(row.querySelector('[data-label="Name"]')!.textContent).toBe(cs(a))
-    expect(row.querySelector('.rmx')).toBeTruthy()
-    await click(row.querySelector('[data-edit]'))
-    expect($('#inBody tr.ined')).toBeTruthy()
-    expect(tid('win-inputedit')).toBeNull()
+    expect(row.querySelector('.rmx, [data-edit], [data-inx]')).toBeNull()
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect($('#inBody tr.ined')).toBeNull()
+    expect(tid('win-inputedit')!.textContent).toContain(cs(a))
+    expect(tid('win-inputedit')!.textContent, 'one man’s: no "+N"').not.toMatch(/\+\d/)
   })
 })
 
-/* THE LIST'S OWN ADD FORM carries the same picker (the plan §3.13: the picker is "used by the editor … and by the
-   List's Add form; both save through commitGroup"). Its one-person list is the form's own, as it was. */
-describe('the List’s Add form files for several people too', () => {
+/* THE LIST'S "+ INPUT" OPENS THE WINDOW, WHICH CARRIES THE PICKER (the plan §3.13: the picker is "used by the editor … and
+   by the List's Add form; both save through commitGroup"). The List's own form went on 10 Oct 26 (owner D729 — the
+   design vet's V1); its three tests are RESTATED for the window its "+ Input" opens — the same picker, the same save. */
+describe('the List’s "+ Input" files for several people too', () => {
   const listUp = async () => act(async () => { setInpView('table'); notify() })
   const choose = async (sel: string, v: string) => {
     const el = $(sel) as HTMLSelectElement
     expect(el, sel).toBeTruthy()
     await act(async () => { el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })) })
   }
-  const form = () => $('.ingrid [data-testid="pp"]') as HTMLElement
-  const pickDate = async () => { await click($('#inCal [data-cal]')); await click($('#inCal [data-cal]')) }
-  it('an admin: the form’s Person list as it was, with "Several people" beside it — three picked, one Add, one shared input', async () => {
-    await listUp()
-    expect($('#inPerson'), 'the form’s own list').toBeTruthy()
-    await choose('#inType', 'Meeting')
+  const W = '[data-testid="win-inputedit"]'
+  const plus = async () => { await listUp(); await click($('#inNew')); expect($(W), 'the new input’s window').toBeTruthy() }
+  const form = () => $(`${W} [data-testid="pp"]`) as HTMLElement
+  const pickDate = async () => { await click($('#inpEdCal [data-cal]')) }
+  it('an admin: the Person list, with "Several people" beside it — three picked, one Add, one shared input', async () => {
+    await plus()
+    expect($('#inpEditPerson'), 'the one-person list').toBeTruthy()
+    await choose('#inpEditType', 'Meeting')
     const sw = form().querySelector('[data-testid="pp-several"]')
     await click(sw)
     const [b, c] = others()
     await click(form().querySelector(`[data-pp="${b}"]`)); await click(form().querySelector(`[data-pp="${c}"]`))
     await pickDate()
     const before = INPUTS.length, had = new Set(INPUTS.map((r: any) => r.iid))
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
     expect(INPUTS.length).toBe(before + 3)
     expect(new Set(made.map(r => r.grp)).size).toBe(1)
@@ -258,26 +292,26 @@ describe('the List’s Add form files for several people too', () => {
   })
   it('a member: on a duty or commitment he may pick another man; on leave his own callsign, and no switch', async () => {
     await as('member')
-    await listUp()
-    await choose('#inType', 'Meeting')
-    expect($('#inPerson'), 'a list, starting on himself').toBeTruthy()
-    expect(($('#inPerson') as HTMLSelectElement).value).toBe(member)
-    expect(document.querySelector('.ingrid [data-testid="pp-several"]')).toBeTruthy()
-    await choose('#inType', 'LL')
-    expect($('#inPerson')).toBeNull()
-    expect($('#inPersonFixed')!.textContent).toBe(cs(member))
-    expect(document.querySelector('.ingrid [data-testid="pp-several"]')).toBeNull()
+    await plus()
+    await choose('#inpEditType', 'Meeting')
+    expect($('#inpEditPerson'), 'a list, starting on himself').toBeTruthy()
+    expect(($('#inpEditPerson') as HTMLSelectElement).value).toBe(member)
+    expect(document.querySelector(`${W} [data-testid="pp-several"]`)).toBeTruthy()
+    await choose('#inpEditType', 'LL')
+    expect($('#inpEditPerson')).toBeNull()
+    expect($('#inpEditPersonFixed')!.textContent).toBe(cs(member))
+    expect(document.querySelector(`${W} [data-testid="pp-several"]`)).toBeNull()
   })
   it('a member picks two, then turns it into leave: Add is refused with the sentence and files nothing', async () => {
     await as('member')
-    await listUp()
-    await choose('#inType', 'Meeting')
+    await plus()
+    await choose('#inpEditType', 'Meeting')
     await click(form().querySelector('[data-testid="pp-several"]'))
-    await click(document.querySelector(`.ingrid [data-pp="${others()[0]}"]`))
-    await choose('#inType', 'LL')
+    await click(document.querySelector(`${W} [data-pp="${others()[0]}"]`))
+    await choose('#inpEditType', 'LL')
     await pickDate()
     const before = INPUTS.length
-    await click($('#inAdd'))
+    await click($('#inpEditSave'))
     expect(said.join(' | ')).toContain('You can file leave only for yourself')
     expect(INPUTS.length).toBe(before)
   })

@@ -1,0 +1,59 @@
+{
+ "rows": [
+  {
+   "n": 28,
+   "size": "desktop 1440x900",
+   "role": "admin Saber",
+   "status": "FAIL",
+   "said": [
+    "ok: search \"zz-no-match\": the new input is in view, FIRST and LIT, and the filters were not changed — {\"row\":{\"at\":0,\"lit\":true,\"onScreen\":true},\"before\":{\"search\":\"zz-no-match\",\"person\":\"Everyone\",\"type\":\"All types\",\"range\":\"📅 All dates\"},\"after\":{\"search\":\"zz-no-match\",\"person\":\"Everyone\",\"type\":\"All types\",\"range\":\"📅 All dates\"},\"nrows\":1}",
+    "ok: search \"zz-no-match\": when a filter is next touched the filter rules again (the row goes away if the filter hides it) and no light is left — {\"row2\":null,\"lit\":0}",
+    "ok: Person = Wisp: the new input is in view, FIRST and LIT, and the filters were not changed — {\"row\":{\"at\":0,\"lit\":true,\"onScreen\":true},\"before\":{\"search\":\"\",\"person\":\"Wisp\",\"type\":\"All types\",\"range\":\"📅 All dates\"},\"after\":{\"search\":\"\",\"person\":\"Wisp\",\"type\":\"All types\",\"range\":\"📅 All dates\"},\"nrows\":2}",
+    "ok: Person = Wisp: when a filter is next touched the filter rules again (the row goes away if the filter hides it) and no light is left — {\"row2\":null,\"lit\":0}",
+    "ok: Type = LL: the new input is in view, FIRST and LIT, and the filters were not changed — {\"row\":{\"at\":0,\"lit\":true,\"onScreen\":true},\"before\":{\"search\":\"\",\"person\":\"Everyone\",\"type\":\"LL\",\"range\":\"📅 All dates\"},\"after\":{\"search\":\"\",\"person\":\"Everyone\",\"type\":\"LL\",\"range\":\"📅 All dates\"},\"nrows\":4}",
+    "ok: Type = LL: when a filter is next touched the filter rules again (the row goes away if the filter hides it) and no light is left — {\"row2\":null,\"lit\":0}",
+    "ok: dates = 5–20 Oct: the new input is in view, FIRST and LIT, and the filters were not changed — {\"row\":{\"at\":0,\"lit\":true,\"onScreen\":true},\"before\":{\"search\":\"\",\"person\":\"Everyone\",\"type\":\"All types\",\"range\":\"📅 5 Oct → 20 Oct\"},\"after\":{\"search\":\"\",\"person\":\"Everyone\",\"type\":\"All types\",\"range\":\"📅 5 Oct → 20 Oct\"},\"nrows\":1}",
+    "ok: dates = 5–20 Oct: when a filter is next touched the filter rules again (the row goes away if the filter hides it) and no light is left — {\"row2\":null,\"lit\":0}",
+    "ok: all four together: the new input is in view, FIRST and LIT, and the filters were not changed — {\"row\":{\"at\":0,\"lit\":true,\"onScreen\":true},\"before\":{\"search\":\"zz-no-match\",\"person\":\"Wisp\",\"type\":\"LL\",\"range\":\"📅 5 Oct → 20 Oct\"},\"after\":{\"search\":\"zz-no-match\",\"person\":\"Wisp\",\"type\":\"LL\",\"range\":\"📅 5 Oct → 20 Oct\"},\"nrows\":1}",
+    "ok: all four together: when a filter is next touched the filter rules again (the row goes away if the filter hides it) and no light is left — {\"row2\":null,\"lit\":0}",
+    "rows lit straight after the filters were reset (earlier saves, filters touched in between) — 3",
+    "lit rows 1.75 s after the heading press — 1",
+    "FAIL: with no filter hiding it: lit after the save, light lets go when a column heading is pressed — {\"lit1\":1,\"lit2\":1}"
+   ],
+   "pics": [
+    "s28-1-search_zz_no_match_.png",
+    "s28-1-released.png",
+    "s28-2-Person_Wisp.png",
+    "s28-2-released.png",
+    "s28-3-Type_LL.png",
+    "s28-3-released.png",
+    "s28-4-dates_5_20_Oct.png",
+    "s28-4-released.png",
+    "s28-5-all_four_together.png",
+    "s28-5-released.png",
+    "s28-7-after-reset-lights.png",
+    "s28-8-lit-alone.png",
+    "s28-9-after-heading-press.png"
+   ],
+   "note": "four hiding filters, each alone, then together"
+  },
+  {
+   "n": 29,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "ok: first save (Saber, Echo): ONE card, both names, lit, in view, under its own day heading once, the hiding search still on — {\"cardsTotal\":1,\"mine\":1,\"who\":\"Echo, Saber\",\"lit\":true,\"first\":true,\"head\":\"Wed 29 Jul1 input\",\"heads\":[\"Wed 29 Jul1 input\"],\"onScreen\":true,\"srch\":\"zz-no-match\"}",
+    "people ticked in the reopened window — [\"SaberIP\",\"EchoIW\"]",
+    "ok: after Ace is added: still ONE card, now naming Ace, Echo, Saber, lit, in view and first; no duplicate; the search still on — {\"c2\":{\"cardsTotal\":1,\"mine\":1,\"who\":\"Ace, Echo, Saber\",\"lit\":true,\"first\":true,\"head\":\"Wed 29 Jul1 input\",\"heads\":[\"Wed 29 Jul1 input\"],\"onScreen\":true,\"srch\":\"zz-no-match\"},\"grpIds\":[\"Ace\",\"Echo\",\"Saber\"]}",
+    "ok: the day heading appears once and counts the shared entry once (\"1 input\") — [\"Wed 29 Jul1 input\"]"
+   ],
+   "pics": [
+    "s29-first-save.png",
+    "s29-second-save.png"
+   ],
+   "note": "hiding filter; Saber then Echo; then Ace added"
+  }
+ ],
+ "errs": []
+}

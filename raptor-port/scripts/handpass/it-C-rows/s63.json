@@ -1,0 +1,19 @@
+[
+ {
+  "n": 63,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "CHECK",
+  "said": "Text <b>Ops</b> \"A&B\" on a Sat Event for Ranger and an ALL AVAIL Event; overlapping Meeting; published both days; retitled to Ops <i>two</i> \"C&D\"; the Ranger input then deleted. OIL question headings: \"OIL — Ranger, <b>Ops</b> \"A&B\"\" / \"OIL — ALL AVAIL, <b>Ops</b> \"A&B\"\" (markup in the heading: \"<b>OIL — Ranger, &lt;b&gt;Ops&lt;/b&gt; \\\"A&amp;B\\\"</b><button class=\\\"x\\\" aria-label=\\\"Close\\\">✕</button>\"). Warning list: [\"⚠ 2 issues\",\"· 1 warning ·\",\"tap to review\",\"Ranger — <B>OPS</B> \\\"A&B\\\" & MEETING clash\",\"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\",\"PLACEHOLDERS · DRAG IN\"]. Count window head: \"⠿ | <B>OPS</B> \"A&B\" | Jul 19 · 08:00–12:00\". To go out: \"⠿ Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 8 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Ranger · Ops <i>two</i> \"C&D\" Saber 9/10 21:54 <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Tap a change to go to it. Tap a change to go to it.\". History: \"⠿ Changes · week of 13/7 15 changes this week ✕ New to you 0 All changes 15 To go out 2 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Sun · Input · ALL AVAIL · Ops <i>two</i> \"C&D\" · 2 21:54 19 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber · 9/10 21:54 <b>Ops</b> \"A&B\" added · 19 Jul (on the programme) Saber · 9/10 21:53 ▾ Sat · Input · Ranger · Ops <i>two</i> \"C&D\" · 2 21:54 18 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber · 9/10 21:54 <b>Ops</b> \"A&B\" added · 18 \". History bubble: null. Export row(s): [\"\\\"ALL AVAIL\\\",\\\"Jul 19\\\",\\\"Jul 19\\\",\\\"08:00\\\",\\\"12:00\\\",\\\"Event\\\",\\\"Ops <i>two</i> \\\"\\\"C&D\\\"\\\"\\\",\\\"x63\\\"\",\"\\\"Ranger\\\",\\\"Jul 18\\\",\\\"Jul 18\\\",\\\"08:00\\\",\\\"12:00\\\",\\\"Event\\\",\\\"Ops <i>two</i> \\\"\\\"C&D\\\"\\\"\\\",\\\"w63\\\"\"] (header ﻿\"Name\",\"From\",\"To\",\"Start\",\"End\",\"Type\",\"Title\",\"Remarks\"). Deletion: toast \" || \", record gone true; To go out after: \"⠿ Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Ranger · <B>OPS</B> \"A&B\" Saber 9/10 21:54 on the programme → deleted Tap a change to go to it.\"; history after: \"⠿ Changes · week of 13/7 16 changes this week ✕ New to you 0 All changes 16 To go out 2 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Sat · Input · Ranger · Event · 3 21:54 Ops <i>two</i> \"C&D\" deleted · 18 Jul Saber · 9/10 21:54 18 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber · 9/10 21:54 <b>Ops</b> \"A&B\" added · 18 Jul (on the programme) Saber · 9/10 21:53 ▾ Sun · Input · ALL AVAIL · Ops <i>two</i> \"C&D\" · 2 21:54 19 Jul · title <b>Ops</b> \"A&B\" → Ops <i>two</i> \"C&D\" Saber\". Surfaces: OIL question heading (Ranger): literal=true realTags=0; OIL question heading (ALL AVAIL): literal=true realTags=0; warning list (Saturday board): literal=true realTags=0; ALL AVAIL count window: literal=true realTags=0; To go out (pending list): literal=true realTags=0; changes window (history): literal=true realTags=0; history bubble: literal=false realTags=0; To go out after deletion: literal=true realTags=0; history after deletion: literal=true realTags=0",
+  "pics": [
+   "desk-s63-oil-question.png",
+   "desk-s63-warning.png",
+   "desk-s63-count-window.png",
+   "desk-s63-to-go-out.png",
+   "desk-s63-history.png",
+   "desk-s63-history-bubble.png",
+   "desk-s63-after-delete.png",
+   "desk-s63-history-after-delete.png"
+  ]
+ }
+]

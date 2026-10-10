@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { setSession } from './auth'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, addPuckRow, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from './plan'
+import { PEOPLE } from '../engine/people'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, movePlanPuck, removePlanPuck, clearPlan, planMoveBlock, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from './plan'
 import { INPVIEW, CALMONTH, setInpView, setCalMonth } from './view'
 import { undo, redo, histInit, HIST, histApply, resetSession, writeInputs } from './store'
 import { histSnap } from './history'
@@ -62,7 +63,7 @@ describe('setDayRemark / addPlanPuck refuse blank text', () => {
     expect(PLANPUCKS.length).toBe(0)
   })
 
-  it('editPlanPuck refuses to empty out a puck — delete is removePlanPuck\'s job', () => {
+  it('editPlanPuck refuses to empty out a note that has no people — delete is removePlanPuck\'s job', () => {
     addPlanPuck('2026-08-24', 'brief')
     const id = PLANPUCKS[0].id
     expect(editPlanPuck(id, '   ')).toBe(false)
@@ -112,41 +113,66 @@ describe('resetSession resets the calendar view and keeps the plan', () => {
   })
 })
 
-describe('the pucks-row sections (owner, 22 Aug 26)', () => {
-  it('addPuckRow appends an empty pucks section; togglePuckPerson adds, then removal leaves a GAP', () => {
-    expect(addPuckRow('2026-08-24')).toBe(true)
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
-    expect(sec.kind).toBe('pucks')
-    expect(sec.ids).toEqual([])
-
+/* A NOTE CARRIES ITS OWN PUCKS (owner D684, 9 Oct 26 — "For the +note, perhaps just have a function to add pucks on the
+   text written, instead of a +pucks button"; D695 — a note may hold people and no words). ONE kind of section: words,
+   people, or both — and one with neither is not kept. What the old pucks row did (his asks of 22–24 Aug 26: a gap
+   where a man is taken off, a swap, a batch from the picker) a note's people do. */
+describe('a note carries its own pucks (D684, D695)', () => {
+  const last = () => PLANPUCKS[0]
+  it('a note is made with words, with people, or with both — never with neither', () => {
+    expect(addPlanPuck('2026-08-24', 'brief the new guys', ['bane', 'yeti', 'bane'])).toBe(true)
+    expect(last().text).toBe('brief the new guys')
+    expect(last().ids, 'the picker’s batch, each man once').toEqual(['bane', 'yeti'])
+    expect(last().kind, 'one kind of section: no kind is written').toBeUndefined()
+    expect(addPlanPuck('2026-08-24', '', ['vinci'])).toBe(true)          // people and no words (D695)
+    expect(last().text).toBe(''); expect(last().ids).toEqual(['vinci'])
+    expect(addPlanPuck('2026-08-24', '  ', [])).toBe(false)              // neither: not kept
+    expect(addPlanPuck('2026-08-24', '', ['', ''])).toBe(false)
+    expect(PLANPUCKS.length).toBe(2)
+  })
+  it('people are added to a note that was written, and removal leaves a GAP', () => {
+    addPlanPuck('2026-08-24', 'a note')
+    const sec = last()
     expect(togglePuckPerson(sec.id, 'bane')).toBe(true)
-    expect(sec.ids).toEqual(['bane'])
     expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
     expect(sec.ids).toEqual(['bane', 'yeti'])
-    /* removing a NON-last person blanks its slot so the survivors keep their
-       grid positions (owner, 24 Aug 26) — the gap stays, it does not close */
+    /* removing a NON-last person blanks its slot so the survivors keep their grid positions (owner, 24 Aug 26) */
     expect(togglePuckPerson(sec.id, 'bane')).toBe(true)
     expect(sec.ids).toEqual(['', 'yeti'])
-    /* removing the last real person trims the now-trailing blanks — row empties */
+    /* the last man off a note WITH words: the note stays, its words alone */
     expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
     expect(sec.ids).toEqual([])
+    expect(PLANPUCKS.includes(sec)).toBe(true)
+    expect(togglePuckPerson(sec.id, '')).toBe(false)
   })
-
+  it('the last man off a note with NO words takes the note with him — one with neither is not kept', () => {
+    addPlanPuck('2026-08-24', '', ['bane', 'yeti'])
+    const sec = last()
+    expect(togglePuckPerson(sec.id, 'bane')).toBe(true)
+    expect(PLANPUCKS.includes(sec)).toBe(true)
+    expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)
+    expect(PLANPUCKS.includes(sec)).toBe(false)
+  })
+  it('the words of a note with people may be taken away, and put back later (D695: "the pencil adds words later")', () => {
+    addPlanPuck('2026-08-24', 'words', ['bane'])
+    const sec = last()
+    expect(editPlanPuck(sec.id, '   ')).toBe(true)
+    expect(sec.text).toBe(''); expect(sec.ids).toEqual(['bane'])
+    expect(editPlanPuck(sec.id, 'words again')).toBe(true)
+    expect(sec.text).toBe('words again')
+  })
   it('togglePuckPerson keeps an internal gap but trims a trailing one', () => {
-    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    addPlanPuck('2026-08-24', 'n', ['bane', 'yeti', 'vinci'])
+    const sec = last()
     expect(togglePuckPerson(sec.id, 'yeti')).toBe(true)     // middle → gap kept
     expect(sec.ids).toEqual(['bane', '', 'vinci'])
     expect(togglePuckPerson(sec.id, 'vinci')).toBe(true)    // now-last → trailing blanks trimmed
     expect(sec.ids).toEqual(['bane'])
   })
-
-  /* dragging one puck onto another SWAPS them; dragging onto an empty slot MOVES
-     it there (owner, 24 Aug 26 — "shift the pucks around … move pucks over each
-     other it will swap the crew"). movePuckPerson is the model behind the drag. */
+  /* dragging one puck onto another SWAPS them; dragging onto an empty slot MOVES it there (owner, 24 Aug 26) */
   it('movePuckPerson swaps two slots, and moving onto a blank rides the gap back', () => {
-    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    addPlanPuck('2026-08-24', '', ['bane', 'yeti', 'vinci'])
+    const sec = last()
     expect(movePuckPerson(sec.id, 0, 2)).toBe(true)         // swap the ends
     expect(sec.ids).toEqual(['vinci', 'yeti', 'bane'])
     togglePuckPerson(sec.id, 'yeti')                        // blank the middle
@@ -157,61 +183,64 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     expect(movePuckPerson(sec.id, 1, 9)).toBe(false)        // out of range → no-op
     expect(sec.ids).toEqual(['', 'vinci', 'bane'])
   })
-
   it('movePuckPerson trims a trailing blank when the last puck moves earlier', () => {
-    addPuckRow('2026-08-24', ['bane', 'yeti', 'vinci'])
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+    addPlanPuck('2026-08-24', 'n', ['bane', 'yeti', 'vinci'])
+    const sec = last()
     togglePuckPerson(sec.id, 'yeti')                        // ['bane','','vinci']
     expect(movePuckPerson(sec.id, 2, 1)).toBe(true)         // last onto the middle gap
     expect(sec.ids).toEqual(['bane', 'vinci'])              // slot 2 empties, trailing → trimmed
   })
-
-  /* the multi-select picker (owner, 23 Aug 26) lands a whole batch at once —
-     addPuckRow may carry an initial roster, and addPuckPeople tops up an
-     existing row. Both dedupe: the picker's category buttons can pick the same
-     person twice, and re-adding an already-seated person must be a no-op. */
-  it('addPuckRow can seed a row from the picker, deduping the ids', () => {
-    expect(addPuckRow('2026-08-24', ['bane', 'yeti', 'bane'])).toBe(true)
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
-    expect(sec.kind).toBe('pucks')
-    expect(sec.ids).toEqual(['bane', 'yeti'])
-  })
-
-  it('addPuckPeople adds only the not-yet-seated, and reports whether anything landed', () => {
-    addPuckRow('2026-08-24', ['bane'])
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
-    expect(addPuckPeople(sec.id, ['yeti', 'bane', 'vinci'])).toBe(true)  // bane already on → skipped
-    expect(sec.ids).toEqual(['bane', 'yeti', 'vinci'])
-    expect(addPuckPeople(sec.id, ['yeti', 'vinci'])).toBe(false)         // all present → no-op
-    expect(sec.ids).toEqual(['bane', 'yeti', 'vinci'])
+  it('addPuckPeople adds only the not-yet-seated, to any note, and reports whether anything landed', () => {
+    addPlanPuck('2026-08-24', 'a note that had no people')
+    const sec = last()
+    expect(addPuckPeople(sec.id, ['yeti', 'bane', 'yeti'])).toBe(true)
+    expect(sec.ids).toEqual(['yeti', 'bane'])
+    expect(addPuckPeople(sec.id, ['yeti', 'bane'])).toBe(false)          // all present → no-op
     expect(addPuckPeople('no-such-row', ['bane'])).toBe(false)
   })
-
-  it('togglePuckPerson refuses a note section and an empty person', () => {
-    addPlanPuck('2026-08-24', 'a note')
-    const note = PLANPUCKS[0]
-    expect(togglePuckPerson(note.id, 'bane')).toBe(false)
-    addPuckRow('2026-08-24')
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
-    expect(togglePuckPerson(sec.id, '')).toBe(false)
+  it('a record saved as the old pucks row (kind "pucks") is a note with people and no words — it still loads and works (D56)', () => {
+    PLANPUCKS.push({ id: 'ppOld', date: '2026-08-24', kind: 'pucks', ids: ['bane', 'yeti'] })
+    expect(addPuckPeople('ppOld', ['vinci'])).toBe(true)
+    expect(editPlanPuck('ppOld', 'now with words')).toBe(true)
+    const sec = PLANPUCKS.find((p: any) => p.id === 'ppOld')
+    expect(sec.ids).toEqual(['bane', 'yeti', 'vinci']); expect(sec.text).toBe('now with words')
   })
-
-  it('a member is refused by all three new mutators', () => {
-    addPuckRow('2026-08-24')
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
+  /* Astra's read, 9 Oct 26 (D299): no writer puts a deleted man on a day on or after his delete */
+  it('a deleted man is not put on a note on or after his delete — by a move, by a new note, or by an add', () => {
+    const was = { ...PEOPLE.bane }
+    try {
+      addPlanPuck('2026-08-20', 'before', ['bane', 'yeti'])
+      const before = last()
+      Object.assign(PEOPLE.bane, { deleted: true, deletedFrom: '2026-08-24', archived: true })
+      expect(planMoveBlock(before.id, '2026-08-24')).toBe('bane')
+      expect(movePlanPuck(before.id, '2026-08-25')).toBe(false)
+      expect(before.date).toBe('2026-08-20')
+      expect(planMoveBlock(before.id, '2026-08-23')).toBe(null)
+      expect(addPlanPuck('2026-08-26', 'after', ['bane', 'yeti'])).toBe(true)
+      expect(last().ids, 'he is left out of a new note after his delete').toEqual(['yeti'])
+      expect(addPuckPeople(last().id, ['bane', 'vinci'])).toBe(true)
+      expect(last().ids).toEqual(['yeti', 'vinci'])
+      expect(togglePuckPerson(last().id, 'bane'), 'nor added one at a time').toBe(false)
+      expect(addPlanPuck('2026-08-26', '', ['bane']), 'a note of him alone is no note').toBe(false)
+    } finally { for (const k of Object.keys(PEOPLE.bane)) delete (PEOPLE.bane as any)[k]; Object.assign(PEOPLE.bane, was) }
+  })
+  it('a member is refused by every mutator of a note’s people', () => {
+    addPlanPuck('2026-08-24', 'n', ['bane', 'yeti'])
+    const sec = last()
     setSession({ user: 'user', role: 'main' })
-    expect(addPuckRow('2026-08-25')).toBe(false)
-    expect(addPuckPeople(sec.id, ['bane'])).toBe(false)
+    expect(addPlanPuck('2026-08-25', '', ['bane'])).toBe(false)
+    expect(addPuckPeople(sec.id, ['vinci'])).toBe(false)
     expect(togglePuckPerson(sec.id, 'bane')).toBe(false)
     expect(movePuckPerson(sec.id, 0, 1)).toBe(false)
     expect(movePlanSection(sec.id, null)).toBe(false)
+    expect(sec.ids).toEqual(['bane', 'yeti'])
   })
 
   it('movePlanSection reorders within one day and refuses a cross-day target', () => {
     /* three sections on one day (note, note, pucks), one on another */
     addPlanPuck('2026-08-24', 'first')   // unshifts
     addPlanPuck('2026-08-24', 'second')  // unshifts above it
-    addPuckRow('2026-08-24')             // appends
+    PLANPUCKS.push({ id: 'ppRow', date: '2026-08-24', text: '', ids: ['bane'], kind: 'pucks' })   // a people-only section, at the end
     addPlanPuck('2026-08-25', 'other day')
     const day = () => PLANPUCKS.filter((p: any) => p.date === '2026-08-24').map((p: any) => p.text || p.kind)
     expect(day()).toEqual(['second', 'first', 'pucks'])
@@ -242,18 +271,19 @@ describe('the pucks-row sections (owner, 22 Aug 26)', () => {
     expect(PLANPUCKS.filter((p: any) => p.date === '2026-08-25').length).toBe(1)
   })
 
-  it('a pucks row rides the undo snapshot like every other planning write', () => {
+  it('a note’s people ride the undo snapshot like every other planning write', () => {
     histInit()
-    writeInputs(() => addPuckRow('2026-08-24'))
-    const sec = PLANPUCKS[PLANPUCKS.length - 1]
-    writeInputs(() => togglePuckPerson(sec.id, 'bane'))
-    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')!.ids).toEqual(['bane'])
+    writeInputs(() => addPlanPuck('2026-08-24', 'n'))
+    const id = PLANPUCKS[0].id
+    writeInputs(() => togglePuckPerson(id, 'bane'))
+    const sec = () => PLANPUCKS.find((p: any) => p.id === id)
+    expect(sec()!.ids).toEqual(['bane'])
     undo()
-    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')!.ids).toEqual([])
+    expect(sec()!.ids || []).toEqual([])
     undo()
-    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')).toBeUndefined()
+    expect(sec()).toBeUndefined()
     redo(); redo()
-    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks')!.ids).toEqual(['bane'])
+    expect(sec()!.ids).toEqual(['bane'])
   })
 })
 

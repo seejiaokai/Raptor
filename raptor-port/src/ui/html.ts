@@ -2,7 +2,7 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
@@ -730,12 +730,29 @@ export function lCell(inner:any,fillKey:any,ed:any,cls:any){
 /* base+nf give the row its text paths (base='dr:0.1.2', nf='role'); o is the model
    row itself, which supplies the CX / red-flag decoration. Both are optional, so
    any caller that hasn't been converted still renders exactly as before. */
+/* THE KIND OF A ROW THAT CAME FROM A TITLED INPUT, KEPT IN SIGHT (owner D717, 9 Oct 26 — "Kind kept in sight";
+   [INPUT-OWN-TITLE], the plan §3.5). A request's row is named by the input's own title ("SPORTS DAY"); the kind that
+   goes on deciding its rules ("Event") is drawn small with the name — under it where the row's two times stack (a
+   phone), beside it where there is room (scheduler/04-pucks-sections.css, 09-week-responsive.css).
+   READ OFF THE ROW, never the live input: `srcType` is what the row was made from and `prog` what it is called, so an
+   issued face draws what was issued, a row whose request has since been deleted still says its kind, and a row the
+   scheduler renamed by hand says it too. A row named by its kind — every row there was before this — emits nothing,
+   so its markup is byte-for-byte what it was (the view week is compared with the reference). Outside the editable
+   name: never typed in, never an amendment cell. */
+export function rowKindTag(o:any){
+  if(!o||!o.src||!o.srcType)return '';
+  const name=String(o.prog||'').trim(), kind=String(o.srcType).trim();
+  return name&&kind&&name.toLowerCase()!==kind.toLowerCase()?`<span class="nm-kind">${esc(kind)}</span>`:'';
+}
+/* …and the same label for an INPUT's own card (Personal Inputs, Unavailable — the week and the board): there the input
+   is in hand, so it is read from it (engine/inputs.ts inpKindTag — the one answer). */
+export function inpKindTagHTML(inp:any){const k=inpKindTag(inp); return k?`<span class="nm-kind">${esc(k)}</span>`:'';}
 export function plRow(name:any,str:any,end:any,pplHtml:any,base:any,nf:any,ed:any,o:any,rmkTxt?:any){
   const nmi=base?ted(base+'.'+nf,name,ed,'ntx'):esc(name);
   /* t-s / t-e let the phone stack the two times into a single TIME column */
   const t=(v:any,f:any)=>{const c='t t-'+(f==='str'?'s':'e');
     return base?ted(base+'.'+f,v,ed,c):`<span class="${c}">${v?esc(fmtT(v)):''}</span>`;};
-  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt,lateTagOf(o))}</div>`;}
+  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${nmi}${rowKindTag(o)}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt,lateTagOf(o))}</div>`;}
 /* RMKS cell — column 5 on desktop, a full-width strip under the row on a phone.
    Rows addressable through a text key (duties / sims / ground) get an editable cell;
    read-only rows (personal inputs) get a plain one. An empty cell is dropped on the
@@ -2027,7 +2044,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
-          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpEditLabel(inp,ed,inpLabel(inp),'ntx')}</span>${inpTimeCells(inp,ed)}`
+          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpEditLabel(inp,ed,inpLabel(inp),'ntx')+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl one">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
@@ -2165,7 +2182,9 @@ export function accCtl(di:any,inp:any){
   }
   const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
-    +(/^Other$/i.test(String(inp.type))
+    /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
+       ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
+    +(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
       ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
       : b('g','Accept','Accept into the ground programme'))
     +`</span>`;

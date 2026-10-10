@@ -157,7 +157,7 @@ export type Person = {
 export const INPUT_TYPES = [
   'LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'CL',
   'HL', 'OML', 'ATT C', 'ATT B', 'Upchit',
-  'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'OD', 'Other',
+  'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'OD', 'Other',
   'SANS Availability',
 ] as const
 export type InputType = (typeof INPUT_TYPES)[number]
@@ -194,6 +194,9 @@ export type Input = {
   type: InputType
   /** Free text, may be ''; absent on the demo SANS seed rows — seed; screen. */
   remarks?: string
+  /** The input's own name ([INPUT-OWN-TITLE], owner D715, D716 — 9 Oct 26): present only where its filer typed one that
+   *  differs from its kind's name, on a kind that takes a title (inputs.ts titledKind, titleOf) — demo seed; screen. */
+  title?: string
   /** Last-modified stamp for the lateness mark: ISO 'yyyy-mm-dd', or the literal 'now' the Inputs page writes — seed; screen. */
   mod: string
   /** Landing state — engine (slots.ts acceptInput / unacceptInput). */
@@ -629,31 +632,26 @@ export type RetiredEntry = {
    The planning layer — src/state/plan.ts
    --------------------------------------------------------------------------- */
 
-/** A free-text note dropped on a calendar day; `kind` absent means note. */
+/** A NOTE dropped on a calendar day — its words, its people, or both; never neither (owner D684, D695, 9 Oct 26: a
+ *  note carries its own pucks). ONE kind of record since then. */
 export type PlanNote = {
   /** Minted 'pp' + n — screen. */
   id: string
   /** ISO 'yyyy-mm-dd' — screen. */
   date: string
-  kind?: 'note'
-  /** The note text — screen. */
-  text: string
+  /** The note's words, '' where it holds people alone — screen. */
+  text?: string
+  /** Its people: PEOPLE ids, '' for a gap a removed man left (his place is held) — screen. */
+  ids?: string[]
+  /** Not written any more. A record saved before D684 may carry 'pucks' (the old pucks row: people, no words) or
+   *  'note'; nothing reads it — a section is read by its `text` and its `ids`. */
+  kind?: 'note' | 'pucks'
   /** Its place in the calendar's list — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `PlanningPuck.sortIndex`). */
   ord?: number
 }
-/** A pucks row on a calendar day. */
-export type PuckRow = {
-  /** Minted 'pp' + n — screen. */
-  id: string
-  /** ISO 'yyyy-mm-dd' — screen. */
-  date: string
-  kind: 'pucks'
-  /** PEOPLE ids, '' for a gap — screen. */
-  ids: string[]
-  /** Its place in the calendar's list — state (`mintOrd`, phase 2). */
-  ord?: number
-}
-export type PlanPuck = PlanNote | PuckRow
+/** The old name of a note of people and no words; kept for the declarations that hold it. */
+export type PuckRow = PlanNote
+export type PlanPuck = PlanNote
 
 /** ISO 'yyyy-mm-dd' → the day's free-text title — screen. */
 export type DayRmk = Record<string, string>

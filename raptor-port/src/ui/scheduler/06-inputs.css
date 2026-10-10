@@ -1,49 +1,12 @@
 /* ============ INPUTS PAGE ============ */
-.inbar{padding:16px 20px;background:rgba(59,198,232,.05);border-bottom:1px solid var(--edge)}
-/* The calendar is ~3 field-rows tall, so it gets its own fixed column and the
-   eight remaining fields flow in a 4-wide track beside it — two tidy rows of
-   four. Every track is an equal `1fr` and every control fills its cell, so
-   START TIME and END TIME are the same width (they were `1fr` and `auto`
-   before, which is why the row read ragged). */
-.ingrid{display:grid;grid-template-columns:212px repeat(4,minmax(0,1fr));gap:12px 14px;align-items:start}
-.ifield.cal{grid-column:1;grid-row:1/span 3}
-/* the fixed eight-column track forced a ~930px document, so on a phone the whole
-   app was scaled down to 41% and half the form sat off the right edge */
+/* THE LIST'S OWN ADD FORM WENT ON 10 OCT 26 (owner D729 — the design vet's V1: one "+ Input" button opens the window the
+   calendar opens), and its rules with it: the bar it stood in, its grid of fields, the fields' own look, the dimmed
+   time boxes, and a member's fixed Person. What a new input is typed into is the input's window
+   (14-input-editors.css, `.inped-*`). */
 @media (max-width:820px){
-  .ingrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .ingrid>.ifield.chk{align-items:flex-start}
   .inwrap{overflow-x:auto}
   .intbl{min-width:640px}
 }
-@media (max-width:430px){ .ingrid{grid-template-columns:minmax(0,1fr)} }
-/* Below 820px the calendar stops being a column of its own and simply spans the
-   row. `1/-1` spans the EXPLICIT tracks — `span 2` would have invented an
-   implicit second column in the one-column phone layout, and that implicit
-   track is `auto`, not `1fr`: that is what made the phone form two ragged
-   columns (173px / 181px) instead of the single column it was written to be. */
-@media (max-width:820px){ .ifield.cal{grid-column:1/-1;grid-row:auto} }
-.ifield{display:flex;flex-direction:column;gap:4px;min-width:0}
-.ifield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ifield input,.ifield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:8px 9px;border-radius:8px}
-/* one shared height + full-bleed width for every control, so the row lines up
-   whatever the intrinsic width of a date/time/number widget happens to be */
-.ifield>input,.ifield>select,.ifield>button{width:100%;min-width:0;box-sizing:border-box;height:36px}
-.ifield>button{height:36px}
-/* A field the current mode has taken out of play — today that is START/END
-   TIME once All day is ticked. The control is genuinely `disabled`; this is
-   what makes that readable, label included, so nobody aims at it first. */
-.ifield.dim{opacity:.4;transition:opacity .15s ease}
-.ifield.dim>input,.ifield.dim>select{cursor:not-allowed}
-/* the All-day checkbox keeps its natural size and sits on the control line */
-.ifield.chk{justify-content:flex-start}
-.ifield.chk>input[type=checkbox]{width:18px;height:18px;min-width:18px;accent-color:var(--accent);margin:9px 0}
-/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 — a member
-   files for whoever they are viewing as; only a scheduler picks anyone).
-   Printed as plain text on the same 36px control line the selects sit on —
-   deliberately NOT drawn as a boxed input, so it cannot read as a control
-   that stopped working (the SANS fixed-type precedent, .inped-v). */
-.inper-fixed{height:36px;line-height:36px;font-weight:600;font-size:12.5px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .infilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
 .infilter select,.infilter input{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
 /* table-layout:fixed so ONE long remark cannot widen the whole page. A remark
@@ -65,11 +28,14 @@
    ~142px with padding) so it gets the room to say it on one line; Remarks
    — the only free-text column — takes everything left over. The header row
    is what fixed layout sizes from, so the widths live on the th. */
-.intbl thead th:nth-child(1){width:90px}   /* Name */
+/* NAME: every person of a shared input, A to Z, wrapping in the column — never "Drifter +3" (owner D727, 10 Oct 26;
+   250px is the drawing's own, docs/mock/img/inputs-vet/desk-list-drawn.png: a meeting of four on one line, a group of
+   nine on two). Remarks still takes what is left. */
+.intbl thead th:nth-child(1){width:250px}  /* Name */
 .intbl thead th:nth-child(2){width:150px}  /* Start */
 .intbl thead th:nth-child(3){width:115px}  /* End */
 .intbl thead th:nth-child(4){width:160px}  /* Type — SANS AVAILABILITY, the widest chip, measures 129px + the cell's 24px padding, and must not wrap */
-.intbl thead th:nth-child(6){width:104px}  /* Last modified */
+.intbl thead th:nth-child(6){width:104px}  /* Changed ("Last modified" until D729) */
 .intbl thead th:nth-child(7){width:96px}   /* actions */
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
 /* the row stripe, coloured from inputTone (ui/inputedit.tsx) — one source
@@ -86,12 +52,19 @@
 #inBody tr.in-amb>td:first-child{box-shadow:inset 3px 0 0 var(--adv)}
 #inBody tr.in-san>td:first-child{box-shadow:inset 3px 0 0 var(--san)}
 .intag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+/* A TITLED INPUT'S NAME, above its kind's pill ([INPUT-OWN-TITLE], D716 (2)): a line of its own, so the pill sits under it
+   whole. Drawn inline at first, the pill was squeezed beside a long title on a phone and broke inside the word —
+   "EVEN" over "T" (the check's walk, walker C — W2). A long title wraps; the pill never breaks. */
+.intitle{display:block;font-weight:700;line-height:1.2;margin-bottom:3px;overflow-wrap:anywhere}
+.intitle + .intag{display:inline-block;white-space:nowrap}
+/* the pencil row's Title box: under the Type list, as wide as it — never wider than its own column (a box at the
+   browser's default width widened the column) */
+.intitle-ed{display:block;width:100%;box-sizing:border-box;min-width:0;margin-top:3px}
 /* the SANS row's F/O/A offer letters — the crew group's purple (--san), the
    same accent the SANS chip/puck wears everywhere, so the two agree at a
    glance. A quiet pill beside the type tag, never replacing it. */
 #inBody .foa{display:inline-block;margin-left:6px;font-size:8.5px;font-weight:700;letter-spacing:.04em;color:var(--san);border:1px solid rgba(178,77,234,.45);border-radius:999px;padding:1px 6px;vertical-align:middle;white-space:nowrap}
 .inwrap{padding:6px 20px 40px}
-.rmx{color:var(--hard);cursor:pointer;font-weight:800}
 /* Every heading sorts (owner, Aug 5). The arrow is a fixed-width column of its
    own so the heading text does not shuffle sideways as the arrow appears. */
 /* the sortable-heading idiom, shared by the Inputs and Quals tables — one
@@ -103,23 +76,32 @@
 .intbl thead th.insort:hover,.qtbl thead th.insort:hover{color:var(--ink);background:rgba(255,255,255,.04)}
 .intbl thead th.insort.on,.qtbl thead th.insort.on{color:var(--accent)}
 .inarrow{display:inline-block;width:11px;margin-left:4px;font-size:8.5px;vertical-align:middle}
-/* The pencil sits beside the ✕, and both stay on one line. They are DELIBERATELY
-   far apart and finger-sized (owner, Aug 5 — the ✕ was being hit instead of the
-   pencil, and deleting an input is not an easy thing to undo by hand). 30px is
-   above the 24px minimum for a pointer target, and the 22px gap is wider than
-   the buttons' own centres are from their edges, so a near miss lands on
-   nothing rather than on the wrong one. */
-.inact{white-space:nowrap;display:flex;gap:22px;align-items:center;justify-content:center}
-.inact>span{display:inline-flex;align-items:center;justify-content:center;
+/* THE ROW'S LAST CELL: the paperclip and the OIL chips — what acts on a record WITHOUT opening it. The pencil and the ✕
+   that stood here are gone (owner D718, D723 — 10 Oct 26): a click on the row opens the input's window, where it is
+   changed and deleted. The controls stay finger-sized and well apart (owner, Aug 5): 30px is above the 24px minimum
+   for a pointer target, and the 22px gap means a near miss lands on nothing rather than on the wrong one. */
+/* A REAL TABLE CELL (10 Oct 26). It was a flex box, which is not a table cell: its bottom border was drawn at its OWN
+   height, and with the pencil and the ✕ gone most rows hold nothing here — the cell shrank to its padding and its line
+   was drawn across the middle of the row (seen on the first picture of the built table). As a cell it is as tall as
+   its row; the controls sit in it centred, with the same 22px between them. */
+.inact{white-space:nowrap;text-align:center}
+.inact>span,.inact>button{margin:0 11px;vertical-align:middle}
+.inact>span,.inact>button{display:inline-flex;align-items:center;justify-content:center;
   width:30px;height:30px;border-radius:6px;font-size:15px;line-height:1;
   border:1px solid transparent;transition:background .12s,border-color .12s}
-/* scoped to the inputs table: a bare .red also matches the board's
-   .mbtn.red flag button, whose hover this was overriding */
-.inact .red{color:var(--accent);cursor:pointer;font-weight:800}
-.inact .red:hover{filter:brightness(1.25);background:rgba(93,168,255,.14);border-color:rgba(93,168,255,.45)}
-.inact .rmx:hover{background:rgba(240,85,95,.16);border-color:rgba(240,85,95,.5)}
-.inact .rok:hover{background:rgba(87,217,163,.16);border-color:rgba(87,217,163,.5)}
-.rok{color:var(--ok,#57D9A3);cursor:pointer;font-weight:800}
+/* THEY ARE BUTTONS NOW (`[SEEN-BATCH-2]` A4, 10 Oct 26 — the paperclip and the OIL chips were <span>s a Tab never
+   reached). Only what a <button> brings of its own is taken off — its grey face and its own typeface — so each looks
+   and measures exactly as the span it replaces (D487: no button changes size; the pin is
+   e2e/inputs-batch2.spec.ts). The keyboard's ring is the row Name's own. */
+.inact>button{background:none;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
+.inact>button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* A ROW OPENS ITS INPUT (D718): the whole row answers a click, and its Name is the button a keyboard and a screen
+   reader meet — drawn as the plain name it replaced, with a ring when the keyboard is on it. */
+#inBody tr{cursor:pointer}
+/* its names wrap (D727): the button is the cell's own text, so a long list of people breaks at its commas and spaces */
+.in-open{background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;font-weight:inherit;text-align:left;cursor:pointer;border-radius:4px;overflow-wrap:anywhere;white-space:normal;line-height:1.35}
+.in-open:hover{text-decoration:underline;text-underline-offset:3px}
+.in-open:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 /* the date-window picker: a button in the filter bar that drops the same
    two-click calendar the add form uses */
 .inrange{position:relative}
@@ -142,9 +124,38 @@
   border:1px solid var(--edge);color:var(--ink);border-radius:8px;padding:4px 8px;
   font:inherit;font-size:13px;text-align:center}
 .inrange-cfg .la-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2)}
-/* on a phone the filter bar wraps, so the popover must not hang off the edge */
-@media (max-width:700px){.inrange{position:static}.inrange-pop{left:8px;right:8px}}
-/* the two-click range calendar — its grid placement lives with the .ingrid
+/* on a phone the filter bar wraps, so the popover must not hang off the edge: it spans the ROW OF BUTTONS, not its own
+   button — so the ROW is the box it is placed against. Until 10 Oct 26 nothing was: with `.inrange` static and no
+   placed ancestor, "top:100%" meant one SCREEN's height down the page, and the calendar opened below the fold (his find
+   — the button lit and nothing appeared). It had looked right only while the List's add form stood above this row and
+   pushed it a screen down; the form went with D729. Pin: e2e/inputs-calendar.spec.ts "the dates button opens its
+   calendar on screen" — pressed by a finger at a point, never a locator's tap (that scrolls the target into view). */
+@media (max-width:700px){.inrange{position:static}.inputs-listtools{position:relative}.inrange-pop{left:8px;right:8px}}
+/* ON A PHONE ITS DAYS ARE A FINGER'S SIZE AND IT FILLS ITS WIDTH (owner D731 (12), 10 Oct 26 — "Yes to all": "make its
+   days the same finger size as the window's, filling the width"). D725 made the days of the calendar in an input's
+   WINDOW a finger's size (25-inputs-calendar.css) and this one — the same calendar, in the List's dates pop-up — was
+   not part of it: its days were about 28 x 23 and it filled half the pop-up. The same sizes here, by his word for this
+   control (D487); the pop-up is already the row's full width on a phone (above), so the calendar takes all of it. A
+   desktop's pop-up keeps its small calendar. Declared after the calendar's own rules, below, would be tidier — it is
+   here beside the pop-up it belongs to, and its two-id selectors outrank them. */
+@media (max-width:700px){
+  #inRangePop #inRangeCal{width:100%;box-sizing:border-box;padding:8px 10px}
+  #inRangePop #inRangeCal .rc-d{font-size:13px;padding:8px 0}
+  #inRangePop #inRangeCal .rc-x{padding:8px 0}
+  #inRangePop #inRangeCal .rc-nav{width:28px;height:28px;font-size:14px}
+}
+/* …and on a SHORT phone (568 tall) the pop-up, with an admin's "Default window" row, ran 11px past the foot of the
+   screen once its days were a finger's size (the batch's own browser test, at three heights). The days keep their
+   size; the room is found in the padding round them. */
+@media (max-width:700px) and (max-height:600px){
+  #inRangePop{padding:6px}
+  #inRangePop #inRangeCal{padding:4px 10px}
+  #inRangePop .rc-read{margin-top:4px}
+  #inRangePop .inrange-btns,#inRangePop .inrange-cfg{margin-top:6px}
+  #inRangePop .inrange-cfg{padding-top:6px}
+}
+/* the two-click range calendar — it stands in the input's window and in the List's dates picker (its place in the
+   List's own add form went with that form, D729); (the old note: its grid placement lives with the .ingrid
    tracks above, NOT here: a bare `grid-column:span 2` this far down the file
    outranked every breakpoint rule (same specificity, later source) and was
    what forced the implicit second column on phones. */
@@ -227,159 +238,11 @@
 /* a flash is decoration; for anyone who has asked for less motion the row is
    simply already settled */
 @media (prefers-reduced-motion:reduce){.innew>td{animation:none}}
-/* the inline-edit row */
-.ined>td{background:rgba(59,198,232,.05);vertical-align:top}
-.ined-ad{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;color:var(--ink-2);margin-top:4px}
-.ined-t{display:inline-flex;gap:4px;margin-left:8px}
-.ined-t input{width:78px}
-/* On a phone the inputs table is a stack of CARDS, not a sideways-scrolling
-   eight-column grid. The old fixed 640px table gave the inline editor's calendar
-   only 2 of 8 columns, so it overflowed and the Type/Remarks cells printed on
-   top of it (owner, 18 Aug 26 — "the OL is cutting into the calendar"). As a
-   card stack each read row labels its own values and the editor gets the full
-   width, calendar and all. Desktop, where the columns have the room, is
-   untouched. 820px is where the table was already forced to scroll. */
-@media (max-width:820px){
-  #intbl{ min-width:0; display:block; }
-  #intbl thead{ display:none; }                 /* the header moves into per-cell labels */
-  #intbl tbody{ display:block; }
-  #intbl tbody tr{
-    border:1px solid var(--edge); border-radius:12px;
-    margin:0 0 8px; background:var(--panel);
-  }
-  /* A READ row is a GRID of aligned columns, not a wrap (owner, 22 Aug 26 —
-     "u can put callsign. Then. Leave some space then align the reason, then
-     the date… then below the callsign u can put the remarks"). The old
-     flex-wrap let each card's intrinsic chip width push its own date around,
-     so nothing lined up down the list. Three fixed-start columns now:
-     callsign (70px — "Sidewinder", the roster's longest, measures ~66px in
-     Inter Tight bold), the type chip (90px — APPOINTMENT, the longest label
-     once SANS wears its phone short form, measures ~87px incl. the pill),
-     and the date taking the rest, so every chip and every date starts at
-     the same x on every card. A multi-day End sits UNDER the Start in the
-     same date column; remarks (LATE chip first) are their own full-width
-     line below the callsign; the modified stamp closes the card (the
-     Recurring column left with the repeat-weeks feature, 22 Aug 26).
-     The DOM stays the desktop table's column order — tests address Name and
-     Start by td position — and grid-template-areas does ALL the reordering.
-     The EDIT row below keeps its stacked form — a calendar needs the width. */
-  /* the actions stay PINNED to the card's top-right corner (owner, 21 Aug 26
-     and re-blessed 22 Aug 26 — "the icons… are aligned"): the 88px right
-     reserve is the two 30px targets + their 22px gap + margin, kept clear on
-     every line so neither the date nor the modified stamp slides under them.
-     The two targets keep their deliberate size and distance (the Aug-5 rule
-     — delete is not undoable). */
-  #intbl tbody tr:not(.ined){
-    position:relative;
-    display:grid;
-    grid-template-columns:78px 76px minmax(0,1fr);
-    grid-template-areas:
-      "name type start"
-      ".    .    end"
-      "rmk  rmk  rmk"
-      "mod  mod  mod";
-    align-items:center;
-    column-gap:7px; row-gap:0; padding:8px 88px 9px 12px;
-  }
-  /* the chip is mildly COMPRESSED here and the two spaceless labels wear
-     their .bl short forms (SANS AVAIL / APPOINT — the InputsPage markup),
-     because the three columns must share a 390px card: name 78 =
-     "Sidewinder", the roster's longest, measured 76; the widest chip left
-     after the short forms, SANS AVAIL, measures 74 at this size so 76
-     holds every label whole (no chip ever wraps or truncates); and the
-     date column keeps ≥82, which holds the widest time run "12:01–23:59"
-     (75) so a timed span wraps at its space, never mid-token. All
-     measured in the built bundle, not estimated. */
-  #intbl .intag{ font-size:9px; padding:2px 5px; letter-spacing:.02em }
-  /* a time range is one token: '13 Jul' / '12:01–23:59' wraps at the space,
-     never after the en-dash mid-range (phone only — the desktop Start column
-     holds the whole run, and nowrap there could fight a narrower window) */
-  #intbl .tnw{ white-space:nowrap }
-  #intbl tbody tr:not(.ined) td{
-    display:block; border-bottom:none; padding:0; text-align:left;
-    overflow-wrap:anywhere; min-width:0;
-  }
-  #intbl tbody tr:not(.ined) td[data-label="Name"]{ grid-area:name; font-weight:700 }
-  #intbl tbody tr:not(.ined) td[data-label="Type"]{ grid-area:type }
-  #intbl tbody tr:not(.ined) td[data-label="Start"]{ grid-area:start }
-  /* row-gap is 0 and the later lines carry their own margin instead, so a
-     line that is absent (a one-day End, an empty remarks cell —
-     display:none below) costs 0px rather than leaving a stack of gaps */
-  #intbl tbody tr:not(.ined) td[data-label="End"]{ grid-area:end; margin-top:2px }
-  /* the phone chip short form: the .bl tail (today only SANS Availability's
-     "ability") is hidden here and only here, the board day-name idiom — the
-     desktop chip and the DOM text stay the full type string */
-  #intbl .intag .bl{ display:none }
-  /* the F/O/A pill rides the type line on the phone card too, a touch smaller
-     so it sits with the shortened chip rather than pushing the row wider */
-  #inBody .foa{ font-size:8px; margin-left:4px; padding:1px 5px }
-  /* the range joiner; a one-day input reads once, never "Jul 13 → Jul 13" —
-     the row marks its End cell data-same when it repeats the start */
-  #intbl tbody tr:not(.ined) td[data-label="End"]::before{
-    content:'→'; color:var(--ink-3); margin-right:9px;
-  }
-  #intbl tbody tr:not(.ined) td[data-label="End"][data-same]{ display:none }
-  #intbl tbody tr:not(.ined) td.inact{
-    position:absolute; top:6px; right:12px;
-    display:flex; gap:22px; margin:0; padding:0; border-top:none;
-  }
-  #intbl tbody tr:not(.ined) td[data-label="Remarks"]{ grid-area:rmk; margin-top:3px }
-  /* modified hugs the card's right edge, same stamp as before */
-  #intbl tbody tr:not(.ined) td[data-label="Modified"]{
-    grid-area:mod; text-align:right;
-    margin-top:3px; font-size:10.5px; color:var(--ink-3);
-  }
-  #intbl tbody tr:not(.ined) td[data-label="Modified"]::before{
-    content:attr(data-label) ' '; font-size:9px; font-weight:600;
-    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3);
-  }
-  #intbl tbody tr td:empty{ display:none; }      /* a blank modified tail adds nothing */
-  /* the just-added flash moves to the ROW here: the compact cells carry no
-     padding for an inset ring to sit in, and on this surface the tr owns the
-     card's border/background so its shadow is not clipped by cell paint */
-  #intbl tbody tr.innew{ animation:inflash 6s ease-out 1; }
-  #intbl tbody tr.innew>td{ animation:none; }
-  /* the tone stripe moves to the tr here for the same reason the flash
-     did just above: the tr IS the card (its own border/radius/background),
-     and the Name cell only fills the card's top-left corner now, not its
-     full left edge — the desktop td:first-child rule would draw a short
-     stub instead of one edge-to-edge bar. Cancel that rule and shadow the
-     tr instead, which at this width is a real display:grid box (not a
-     table row), so a plain box-shadow paints normally and follows the
-     card's own border-radius. */
-  #inBody tr.in-red>td:first-child,#inBody tr.in-amb>td:first-child,#inBody tr.in-san>td:first-child{ box-shadow:none; }
-  #inBody tr.in-red{ box-shadow:inset 3px 0 0 var(--hard); }
-  #inBody tr.in-amb{ box-shadow:inset 3px 0 0 var(--adv); }
-  #inBody tr.in-san{ box-shadow:inset 3px 0 0 var(--san); }
-
-  /* the inline EDIT row is a tinted form card: fields stacked and full-width,
-     each labelled from its column, the calendar roomy for a thumb, the
-     read-only modified cell dropped. */
-  tr.ined{
-    display:block; padding:3px 2px;
-    background:rgba(59,198,232,.06); border-color:rgba(59,198,232,.35);
-    box-shadow:0 10px 26px rgba(0,0,0,.4);
-  }
-  tr.ined>td{
-    display:block; border-bottom:none; padding:6px 14px; text-align:left;
-    overflow-wrap:anywhere;
-  }
-  tr.ined>td.inact{
-    display:flex; justify-content:flex-end; gap:26px;
-    margin-top:2px; padding-top:10px; border-top:1px solid var(--edge);
-  }
-  tr.ined>td[data-fld]::before{
-    content:attr(data-fld); display:block; margin:0 0 5px;
-    font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
-  }
-  tr.ined>td>select,
-  tr.ined>td>input{ width:100%; box-sizing:border-box; height:38px; }
-  tr.ined .rangecal{ width:100%; max-width:360px; box-sizing:border-box; padding:8px 10px; }
-  tr.ined .rc-d{ font-size:13px; padding:8px 0; }
-  tr.ined .rc-nav{ width:28px; height:28px; font-size:14px; }
-  tr.ined>td.ined-sec{ display:none; }
-  tr.ined>td.inact>span{ width:40px; height:40px; font-size:17px; }
-}
+/* ON A PHONE THE LIST IS NOT THIS TABLE (owner D718, D723 — 10 Oct 26). Under 820px `ui/InputsPage.tsx` draws the input
+   card under a heading a day (ui/InputCard.tsx; its styles are 25-inputs-calendar.css `.icard…`) and no table at all —
+   so the rules that restyled each table row into a card there (18 and 22 Aug 26), and the inline editor's phone
+   layout, went with the table's pencil. `.inlist` is the cards' box. */
+.inlist{padding:0 2px 24px}
 
 /* the Inputs page's top row — the three tabs, the Calendar | List switch, the filters — is 25-inputs-calendar.css
    (the mode pair and the view trio they replaced went with their buttons, D620 / D626) */

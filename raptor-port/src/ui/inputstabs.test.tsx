@@ -152,22 +152,28 @@ describe('the gear (D635, D639)', () => {
 
 describe('SANS availability is filed on the SANS calendar and nowhere else (D620)', () => {
   const SANS = 'SANS Availability'
-  it('the List’s add form does not offer it, nor its filter', async () => {
+  /* the List's own add form went on 10 Oct 26 (D729 — V1): its "+ Input" opens the input's window, which is asked instead */
+  it('the window the List’s "+ Input" opens does not offer it, nor does the List’s filter', async () => {
     await click('#inListBtn')
-    expect(options('#inType').length).toBeGreaterThan(5)
-    expect(options('#inType')).not.toContain(SANS)
+    await click('#inNew')
+    expect(options('#inpEditType').length).toBeGreaterThan(5)
+    expect(options('#inpEditType')).not.toContain(SANS)
     expect(options('#inFType')).not.toContain(SANS)
-    expect($('#inSans'), 'no Fly / OFT / AMT ticks on the List’s form').toBeNull()
+    expect($('#inSans'), 'no Fly / OFT / AMT ticks').toBeNull()
+    expect($('#inpEditSans'), 'nor in the window').toBeNull()
+    await click('#inpEditCancel')
   })
-  it('the List’s edit in place does not offer it', async () => {
+  /* the List's edit in place is gone (D718, 10 Oct 26): its row opens the input's window, which is asked instead */
+  it('the window a List row opens does not offer it', async () => {
     await click('#inListBtn')
     const row = INPUTS.find((r: any) => r.type === 'Meeting' || r.type === 'Appointment' || r.type === 'Personal')!
     expect(row, 'the demo data has an ordinary commitment').toBeTruthy()
     /* every date, so the row is on the List whatever today's window is */
     await click('#inRangeBtn'); await click('#inRangeAll')
-    await click(`#inBody [data-iid="${row.iid}"] [data-edit]`)
-    expect(options('#inBody [data-ed="type"]').length).toBeGreaterThan(5)
-    expect(options('#inBody [data-ed="type"]')).not.toContain(SANS)
+    await click(`#inBody [data-iid="${row.iid}"] [data-testid="in-open"]`)
+    expect(INPEDIT && INPEDIT.iid, 'the row opened its window').toBe(row.iid)
+    expect(options('#inpEditType').length).toBeGreaterThan(5)
+    expect(options('#inpEditType')).not.toContain(SANS)
   })
   it('"+ Input" on the Inputs calendar does not offer it', async () => {
     await act(async () => { $('[data-icday="2026-10-23"]')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })

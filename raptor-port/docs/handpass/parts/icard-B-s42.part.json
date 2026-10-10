@@ -1,0 +1,21 @@
+{
+ "rows": [
+  {
+   "n": 42,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "calendar read \"Jul 22 → Jul 24\"; sheet: \"ATT C — Saber, Jul 22 – Jul 24 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM OML Jul 23 – Jul 25 · both cover Jul 23 – Jul 24 ATT C replaces Keep OML till Jul 25 The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Choose for each clash above Cancel Save\"; saved while sheet up: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25; after Cancel: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25; window still open 1 || sheet after choosing \"ATT C replaces\": \"ATT C — Saber, Jul 22 – Jul 24 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM OML Jul 23 – Jul 25 · both cover Jul 23 – Jul 24 ATT C replaces Keep OML till Jul 25 Left over after it: OML Jul 25 — will be removed Remove those days Keep them The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Cancel Save\"; after replaces + Keep them: ATT C Jul 22→Jul 24 ; OML Jul 25 || day 25 Saber cards: All day SaberOML till 25 Jul || 09:00–12:00 ALL AVAILDUTY Hangar clean-up By Saber ; day 23 Saber cards: till 24 Jul SaberATT C till 24 Jul || 10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber || ONE Undo: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25; Redo: ATT C Jul 22→Jul 24 ; OML Jul 25 || replaces + Remove those days: ATT C Jul 22→Jul 24 || Undo: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25 || sheet after \"Keep OML\": \"ATT C — Saber, Jul 22 – Jul 24 ✕ DAYS COVERED BY ANOTHER STATUS — CHOOSE WHO HOLDS THEM OML Jul 23 – Jul 25 · both cover Jul 23 – Jul 24 ATT C replaces Keep OML till Jul 25 The days each status keeps stay exactly as chosen — every day holds one status, and the new entry is filed around whatever you keep. Cancel Save\"; result: ATT C Jul 22 ; OML Jul 23→Jul 25 || Undo: ATT C Jul 20→Jul 21 ; OML Jul 23→Jul 25",
+   "pics": [
+    "B42-1-clash-sheet.png",
+    "B42-2-after-cancel.png",
+    "B42-3-replaces-keep-them.png",
+    "B42-4-day25-oml-tail.png",
+    "B42-5-day23.png",
+    "B42-6-replaces-remove.png",
+    "B42-7-keep-oml.png"
+   ]
+  }
+ ],
+ "errs": []
+}

@@ -1,0 +1,297 @@
+<title>Input Card A</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
+<style>
+  /* Layout: one column — switches that stay in reach; a whole busy day drawn in the day's own window; the same cards on
+     the list; then every state of the card, one by one. All LIVE: the cards wrap on the viewer's own screen. The cards
+     use the app's own colours, sizes and font stack; the page around them is quieter. */
+  :root {
+    color-scheme: dark;
+    --bg: #0B0D10; --panel: #14181D; --panel-2: #1A1F26; --raised: #20262E; --edge: #2A313A; --edge-2: #39424D;
+    --ink: #F1F4F7; --ink-2: #B6C0CB; --ink-3: #8A96A3; --accent: #3BC6E8; --accent-ink: #052A34;
+    --adv: #E5A83B; --hard: #F0555F; --mark: #ffd60a; --good: #57c98a;
+    --fcp: #6E6A2E; --rcp: #1F6E52; --q-ip: #9F4ADF; --q-a: #CA4750; --q-b: #E5A83B; --q-c: #3BC6E8; --q-d: #3673DD;
+    --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+    --body: Barlow, "Segoe UI", Arial, sans-serif;
+    --app: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; }
+  main { max-width: 560px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 56px; display: flex; flex-direction: column; gap: 26px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 30px; line-height: 1.1; margin: 0; text-wrap: balance; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: 21px; line-height: 1.15; margin: 0; text-wrap: balance; }
+  p { margin: 0; color: var(--ink-2); max-width: 60ch; }
+  .lede { color: var(--ink); }
+  .tag { font-family: var(--display); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; color: var(--ink-3); }
+  section { display: flex; flex-direction: column; gap: 10px; }
+  header { display: flex; flex-direction: column; gap: 8px; }
+
+  .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; gap: 6px 12px;
+    margin-inline: -16px; padding: 8px 16px; background: color-mix(in srgb, var(--bg) 92%, transparent); border-bottom: 1px solid var(--edge); backdrop-filter: blur(6px); }
+  .sw { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .sw > span { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+  .seg { display: inline-flex; border: 1px solid var(--edge-2); border-radius: 9px; overflow: hidden; }
+  .seg button { all: unset; cursor: pointer; font: 600 13px var(--body); color: var(--ink-2); padding: 6px 9px; min-height: 22px; white-space: nowrap; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  .meas { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .meas b { color: var(--ink); font-weight: 600; }
+  .meas .less { color: var(--good); font-weight: 600; }
+  .meas .more { color: var(--adv); font-weight: 600; }
+
+  /* the day's own window, drawn (its head and its two controls are a picture of the app's, not controls) */
+  .win { font-family: var(--app); border: 1px solid var(--edge-2); border-radius: 12px; background: var(--panel); overflow: hidden; margin-inline: auto; width: 100%; }
+  .win.w320 { width: 320px; max-width: 100%; }
+  .win .head { display: flex; align-items: center; gap: 10px; padding: 9px 10px 9px 12px; border-bottom: 1px solid var(--edge); background: var(--panel-2); }
+  .win .grip { width: 8px; height: 14px; background-image: radial-gradient(var(--ink-3) 1.1px, transparent 1.4px); background-size: 4px 5px; flex: 0 0 auto; }
+  .win .ttl { font-weight: 800; font-size: 14px; margin-right: auto; }
+  .win .ghost { border: 1px solid var(--edge-2); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 700; color: var(--ink); }
+  .win .body { padding: 9px 12px 8px; }
+  .win .dt { border: 1px solid var(--edge-2); border-radius: 8px; padding: 7px 10px; font-size: 15px; font-weight: 800; color: #4A545F; background: #0B0D10; }
+  .win .add { margin-top: 8px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); text-align: center; font-weight: 700; font-size: 13px; padding: 9px; }
+  .win .count { margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid var(--edge); font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: var(--ink-3); }
+  .frame { border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); padding: 10px 10px 6px; }
+  .fold { border-top: 1px dashed var(--accent); margin: 2px 0 6px; position: relative; height: 0; }
+  .fold::after { content: 'the bottom of a phone’s screen'; position: absolute; right: 0; top: -9px; font: 600 10px var(--body); letter-spacing: .04em; color: var(--accent); background: var(--panel); padding: 0 4px; }
+
+  /* ---------- the cards: the app's own values ---------- */
+  .card { font-family: var(--app); border: 1px solid var(--edge); border-radius: 8px; padding: 5px 9px; margin-bottom: 4px; background: var(--panel-2); min-width: 0; }
+  .card.hi { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .sq { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 2px; background: var(--adv); align-self: center; }
+  .red .sq { background: var(--hard); }
+  .who { font-size: 13.5px; font-weight: 800; color: var(--ink); white-space: nowrap; }
+  .name { font-size: 13px; color: var(--ink-2); }
+  .late { background: var(--adv); color: #2A1B00; border-radius: 4px; font-size: 10px; font-weight: 800; line-height: 1; letter-spacing: .06em; padding: 4px 6px; white-space: nowrap; }
+  .hrs { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .small { font-size: 11.5px; line-height: 1.35; color: var(--ink-3); overflow-wrap: anywhere; }
+  .kind { font-size: 10.5px; line-height: 1.35; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+  .pill .kind { font-size: 9px; font-weight: 700; letter-spacing: .04em; line-height: 1.2; padding: 2px 7px; border-radius: 999px; background: var(--panel); border: 1px solid var(--edge-2); color: var(--ink-2); }
+  .note { font-size: 11.5px; line-height: 1.35; color: var(--adv); font-weight: 700; }
+  .people { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 3px; }
+  .pk { display: inline-flex; align-items: center; width: 74px; height: 15px; border-radius: 3px; background: var(--fcp); color: #fff; font-size: 9px; font-weight: 700; padding-left: 5px; overflow: hidden; }
+  .pk.w { background: var(--rcp); }
+  .pk i { margin-left: auto; width: 16px; height: 15px; display: grid; place-items: center; font-style: normal; font-size: 8px; font-weight: 800; background: var(--q-ip); }
+  .pk i.a { background: var(--q-a); } .pk i.d { background: var(--q-d); } .pk i.c { background: var(--q-c); color: #052A34; }
+
+  /* TODAY */
+  .t-now { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; column-gap: 8px; row-gap: 1px; }
+  .t-now .head { display: inline-flex; align-items: center; gap: 7px; min-width: 0; min-height: 22px; padding: 0; border: 0; background: none; }
+  .t-now .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .t-now .foot, .t-now .note, .t-now .people { grid-column: 1 / -1; }
+  .t-now .foot { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 1px; min-width: 0; }
+  .t-now .foot .placed { margin-left: auto; text-align: right; }
+
+  /* IDEA A — a line of facts, then the words at the card's full width */
+  .t-a .facts { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 7px; min-height: 22px; }
+  .t-a .facts .right { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; }
+  .t-a .words:empty { display: none; }
+  .t-a .words { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 1px; min-width: 0; }
+  .t-a .words .text { flex: 1 1 auto; min-width: 0; font-size: 13px; line-height: 1.3; color: var(--ink-2); overflow-wrap: anywhere; }
+  .t-a .words .text b { color: var(--ink); font-weight: 600; }
+  .t-a .words .text .rm { color: var(--ink-3); font-size: 12px; }
+  .t-a .words .placed { margin-left: auto; text-align: right; }
+
+  /* A · ONE LINE — the title joins the top line and runs on under it only when it is long; the hours keep the corner */
+  .t-a1 { display: flow-root; }
+  .card .top { font-size: 13px; line-height: 1.7; color: var(--ink); overflow-wrap: break-word; }
+  .card .corner { float: right; display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; min-height: 22px; }
+  .card .top .sq { display: inline-block; margin-right: 7px; }
+  /* the square never stands alone: it belongs to the first word of the name */
+  .card .lead { font-size: 13.5px; font-weight: 800; margin-right: 7px; }
+  .card .top .kind { margin-right: 7px; }
+  /* the title moves down WHOLE when it does not fit beside the name — never split after its first word */
+  .card .top b { font-weight: 600; display: inline-block; max-width: 100%; vertical-align: top; }
+  .t-a1 .words { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 1px; min-width: 0; clear: both; }
+  .t-a1 .words:empty { display: none; }
+  .t-a1 .words .rm { flex: 1 1 auto; min-width: 0; font-size: 12px; line-height: 1.35; color: var(--ink-3); overflow-wrap: anywhere; }
+  .t-a1 .words .placed { margin-left: auto; text-align: right; }
+
+  .state { display: flex; flex-direction: column; gap: 4px; }
+  .state > span { font-size: 14px; color: var(--ink-2); }
+  .state > span b { color: var(--ink); font-weight: 600; }
+  .state .hts { font-style: normal; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .states { display: flex; flex-direction: column; gap: 14px; }
+  .q { border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .q b { color: var(--ink); font-weight: 600; }
+  .q span { color: var(--ink-2); }
+  .q .rec { color: var(--accent); font-weight: 600; }
+</style>
+<main>
+  <header>
+    <span class="tag">Idea A in full · a working drawing, nothing is built</span>
+    <h1>The input card: one line of facts, then the words</h1>
+    <p class="lede">A whole busy Saturday with sixteen inputs of every kind, the same cards on the list, then each state of the card one by one. The cards are live: they wrap on your own screen. In A the title always starts at the left on a row of its own. “A · one line” (the title trailing on the top line) and “Today” are kept only to compare.</p>
+  </header>
+
+  <div class="bar" role="group" aria-label="What to show">
+    <div class="sw"><div class="seg" id="segCard" role="group" aria-label="Which card"><button type="button" data-v="a" aria-pressed="true">A</button><button type="button" data-v="a1" aria-pressed="false">A · one line</button><button type="button" data-v="now" aria-pressed="false">Today</button></div></div>
+    <div class="sw"><span>Kind</span><div class="seg" id="segKind"><button type="button" data-v="grey" aria-pressed="true">Grey</button><button type="button" data-v="pill" aria-pressed="false">Pill</button></div></div>
+    <div class="sw"><span>By</span><div class="seg" id="segBy"><button type="button" data-v="other" aria-pressed="true">Others only</button><button type="button" data-v="when" aria-pressed="false">With date</button><button type="button" data-v="none" aria-pressed="false">None</button></div></div>
+  </div>
+
+  <section>
+    <span class="tag">1 · The opened day</span>
+    <h2>A busy Saturday, sixteen inputs</h2>
+    <div class="meas" id="m-day"></div>
+    <div class="sw"><span>Several people as</span><div class="seg" id="segPpl"><button type="button" data-v="all" aria-pressed="true">All names</button><button type="button" data-v="names" aria-pressed="false">3 names +N</button><button type="button" data-v="pucks" aria-pressed="false">Pucks</button></div></div>
+    <div class="sw"><span>Draw it on</span><div class="seg" id="segW"><button type="button" data-v="full" aria-pressed="true">This screen</button><button type="button" data-v="w320" aria-pressed="false">A small phone</button></div></div>
+    <div class="win" id="w-day">
+      <div class="head" aria-hidden="true"><span class="grip"></span><span class="ttl">Sat 18 Jul</span><span class="ghost">+ Note</span><span class="ghost">✕</span></div>
+      <div class="body">
+        <div aria-hidden="true"><div class="dt">Day title…</div><div class="add">+ Input</div></div>
+        <div class="count" id="c-day"></div>
+        <div id="f-day"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="tag">A shared input, as it grows</span>
+    <h2>Two, four, eight and fourteen people</h2>
+    <p>The same meeting filed for more and more people, drawn three ways. In “All names” every name is shown: they wrap round the hours and the card grows downward, as you asked.</p>
+    <div class="states" id="grow"></div>
+  </section>
+
+  <section>
+    <span class="tag">2 · The Inputs list</span>
+    <h2>The same card, with its date</h2>
+    <p>The only difference from the day is the date before the hours. A tap opens the input; there is no pencil and no cross.</p>
+    <div class="meas" id="m-list"></div>
+    <div class="frame" id="f-list"></div>
+  </section>
+
+  <section>
+    <span class="tag">3 · Every state of the card</span>
+    <h2>One by one</h2>
+    <div class="states" id="states"></div>
+  </section>
+
+  <section>
+    <h2>What to look for</h2>
+    <div class="q"><b>Does a plain input stay short?</b><span>A man’s own untitled input with no remark is <span class="rec">one line</span> with “Others only”. Today it is two.</span></div>
+    <div class="q"><b>Is anything cut off?</b><span>Flip to “Today” and look at the 40-letter title and the Appointment: they end in “…”. In A they wrap.</span></div>
+    <div class="q"><b>Is the kind in one place?</b><span>In A it always follows the person’s name. Today it is the name on a plain card and small print on a titled one.</span></div>
+    <div class="q"><b>Yours to choose</b><span><span class="rec">A or not</span>; the kind as <span class="rec">grey or pill</span>; the small print <span class="rec">others only, with date, or none</span>.</span></div>
+  </section>
+</main>
+<script>
+  /* a busy Saturday, in the order the app lists a day: absences first, all-day before timed, then by start */
+  const DAY = [
+    { who: 'Cobra', kind: 'OL', red: 1, rm: 'Overseas leave, off island', hrs: 'All day', by: 'Saber', when: '22 Jun, 11:21' },
+    { who: 'Gambit', kind: 'OIL', red: 1, hrs: 'All day', by: 'Gambit', when: '1 Jul, 08:00' },
+    { who: 'Grit', kind: 'ATT C', red: 1, rm: 'Medically down till 21 Jul', hrs: 'till 21 Jul', by: 'Grit', when: '12 Jul, 14:42' },
+    { who: 'Nomad', kind: 'OD', red: 1, title: 'Exercise in Darwin', rm: 'Off island, back on the 25th', hrs: 'till 24 Jul', by: 'Nomad', when: '18 Jun, 08:03' },
+    { who: 'Tally', kind: 'LL', red: 1, hrs: 'AM', late: 1, by: 'Tally', when: '10 Jul, 12:31' },
+    { who: 'ALL AVAIL', kind: 'Event', title: 'Sports day', rm: 'bring boots', hrs: '06:00–18:00', late: 1, by: 'Saber', when: '9 Oct, 22:31' },
+    { who: 'Hunter', kind: 'Fly with', rm: 'Keen for any wave', hrs: '08:00–12:00', by: 'Hunter', when: '20 Jun, 09:00' },
+    { who: 'Saber', kind: 'Event', title: 'Squadron family day and open house visit', hrs: '09:00–16:00', late: 1, by: 'Saber', when: '9 Oct, 22:40' },
+    { who: 'ALL', kind: 'Duty', title: 'Hangar clean-up', hrs: '09:00–12:00', by: 'Saber', when: '26 Jun, 09:15' },
+    { who: 'Ranger +3', kind: 'Meeting', title: 'Flight safety brief', hrs: '10:00–11:00', by: 'Saber', when: '25 Jun, 14:32', people: [['Ranger', 'IP', ''], ['Ace', 'A', 'a'], ['Drifter', 'A', 'a'], ['Vapor', 'D', 'd']] },
+    { who: 'Vapor', kind: 'Appointment', rm: 'Medical / PHA', hrs: '10:00–12:00', by: 'Vapor', when: '6 Jul, 11:24' },
+    { who: 'Sidewinder', kind: 'Appointment', title: 'Annual medical and dental check', rm: 'At the base clinic. Bring the yellow booklet and last year’s results.', hrs: '10:00–12:00', late: 1, by: 'Sidewinder', when: '6 Jul, 11:24' },
+    { who: 'Wisp', kind: 'Other', rm: 'Collecting a new ID card from the pass office before lunch', hrs: '11:00–12:00', by: 'Wisp', when: '2 Jul, 16:10' },
+    { who: 'Ranger', kind: 'Duty', hrs: '13:00–15:00', late: 1, by: 'Saber', when: '9 Oct, 22:31' },
+    { who: 'Blade', kind: 'Training', title: 'CRM refresher', hrs: '14:00–16:00', by: 'Blade', when: '30 Jun, 10:05' },
+    { who: 'Bolt', kind: 'Personal', hrs: '15:00–16:00', by: 'Bolt', when: '3 Jul, 19:48' },
+  ]
+  const LIST = [
+    { ...DAY[14], date: '16 Jul' }, { ...DAY[10], date: '17 Jul' }, { ...DAY[5], date: '18 Jul' }, { ...DAY[7], date: '18 Jul' },
+    { ...DAY[3], date: '18–24 Jul', hrs: 'All day' }, { ...DAY[13], date: '18 Jul' }, { ...DAY[12], date: '20 Jul' }, { ...DAY[15], date: '21 Jul' },
+  ]
+  const STATES = [
+    ['A plain input a man filed himself', 'One line.', DAY[15]],
+    ['A plain input someone else placed', 'The small print says who.', DAY[13]],
+    ['A title of its own', 'The kind stays on the top line; the title has the line below.', DAY[14]],
+    ['A title and a remark', 'They share the words line, the remark in grey.', DAY[5]],
+    ['A 40-letter title', 'Whole, on one line of its own.', DAY[7]],
+    ['A long remark, no title', 'It wraps; nothing stands in its way.', DAY[12]],
+    ['A long title and a long remark', 'The card grows downward, as far as it needs.', DAY[11]],
+    ['An absence', 'A red square; “All day”, “AM” or “till 21 Jul” where the hours go.', DAY[2]],
+    ['A shared input', 'One card; its people as the schedule’s own pucks.', DAY[9]],
+    ['LATE, tapped', 'The reason opens under the card’s top line.', { ...DAY[4], note: 'after the cut-off, Mon 29 Jun' }],
+    ['The card just opened', 'A cyan edge, as now.', { ...DAY[8], hi: 1 }],
+  ]
+  const CREW = [['Ranger', 'IP', ''], ['Ace', 'A', 'a'], ['Drifter', 'A', 'a'], ['Vapor', 'D', 'd'], ['Blade', 'IP', ''], ['Cinch', 'IP', ''], ['Comet', 'IP', ''],
+    ['Forge', 'IP', ''], ['Hunter', 'IP', ''], ['Piston', 'IP', ''], ['Sidewinder', 'IP', ''], ['Trident', 'IP', ''], ['Vandal', 'IP', ''], ['Warden', 'IP', '']]
+  const grown = n => ({ who: `Ranger +${n - 1}`, kind: 'Meeting', title: 'Flight safety brief', hrs: '10:00–11:00', by: 'Saber', when: '25 Jun, 14:32', people: CREW.slice(0, n) })
+  const state = { card: 'a', kind: 'grey', by: 'other', w: 'full', ppl: 'all' }
+  /* several people: the schedule's pucks under the card, or their names where the one name stands (three, then "+N") */
+  const names = (r, m) => !r.people ? r.who : m === 'all' ? r.people.map(x => x[0]).join(', ')
+    : r.people.slice(0, 3).map(x => x[0]).join(', ') + (r.people.length > 3 ? ' +' + (r.people.length - 3) : '')
+  const whoOf = r => state.card === 'now' || state.ppl === 'pucks' ? r.who : names(r, state.ppl)
+  /* every name shown: the names run on and wrap ROUND the hours in the corner, and the card grows downward */
+  const flows = r => !!r.people && state.card !== 'now' && state.ppl === 'all'
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  const hrs = r => esc(r.date ? r.date + (r.hrs === 'All day' ? '' : ' · ' + r.hrs) : r.hrs)
+  const late = r => r.late ? '<span class="late">LATE</span>' : ''
+  const kind = r => `<span class="kind">${esc(r.kind)}</span>`
+  const own = r => r.who.split(' +')[0] === r.by
+  /* today's small print as built: "Saber for Ranger · 9 Oct, 22:31"; the idea's: "By Saber", by the switch */
+  const byNow = r => esc((own(r) ? r.by : `${r.by} for ${r.who.replace(/ \+\d+$/, ' and others')}`) + ' · ' + r.when)
+  const byA = r => state.by === 'none' || (state.by === 'other' && own(r)) ? '' : esc('By ' + r.by + (state.by === 'when' ? ' · ' + r.when : ''))
+  const people = r => r.people && (state.card === 'now' || state.ppl === 'pucks') ? `<div class="people">${r.people.map(([n, q, c]) => `<span class="pk">${esc(n)}<i class="${c}">${q}</i></span>`).join('')}</div>` : ''
+  const note = r => r.note ? `<div class="note">${esc(r.note)}</div>` : ''
+  const cls = (t, r) => `card ${t}${r.red ? ' red' : ''}${r.hi ? ' hi' : ''}${state.kind === 'pill' ? ' pill' : ''}`
+  const draw = {
+    now: r => `<div class="${cls('t-now', r)}"><span class="head"><span class="sq"></span><span class="who">${esc(r.who)}</span><span class="name">${esc(r.title || r.kind)}</span></span>${late(r) || '<span></span>'}<span class="hrs">${hrs(r)}</span>`
+      + note(r) + `<span class="foot">${r.title ? kind(r) : ''}${r.rm ? `<span class="small">${esc(r.rm)}</span>` : ''}<span class="small placed">${byNow(r)}</span></span>${people(r)}</div>`,
+    a1: r => { const b = byA(r); return `<div class="${cls('t-a1', r)}"><div class="top"><span class="corner">${late(r)}<span class="hrs">${hrs(r)}</span></span><span class="lead"><span class="sq"></span>${esc(whoOf(r))}</span>${kind(r)}${r.title ? `<b>${esc(r.title)}</b>` : ''}</div>`
+      + note(r) + `<div class="words">${r.rm ? `<span class="rm">${esc(r.rm)}</span>` : ''}${b ? `<span class="small placed">${b}</span>` : ''}</div>${people(r)}</div>` },
+    a: r => { const b = byA(r); return `<div class="${cls('t-a', r)}">` + (flows(r)
+        ? `<div class="top"><span class="corner">${late(r)}<span class="hrs">${hrs(r)}</span></span><span class="lead"><span class="sq"></span>${esc(whoOf(r))}</span>${kind(r)}</div>`
+        : `<div class="facts"><span class="sq"></span><span class="who">${esc(whoOf(r))}</span>${kind(r)}<span class="right">${late(r)}<span class="hrs">${hrs(r)}</span></span></div>`)
+      + note(r) + `<div class="words">${r.title || r.rm ? `<span class="text">${r.title ? `<b>${esc(r.title)}</b>` : ''}${r.title && r.rm ? ' <span class="rm">· ' : r.rm ? '<span class="rm">' : ''}${r.rm ? esc(r.rm) + '</span>' : ''}</span>` : ''}${b ? `<span class="small placed">${b}</span>` : ''}</div>${people(r)}</div>` },
+  }
+  const heights = (rows, k) => { const t = document.createElement('div'); t.style.cssText = 'position:absolute;visibility:hidden;left:0;right:0'; t.innerHTML = rows.map(draw[k]).join(''); return t }
+  /* measured in place: the same rows drawn both ways inside the same box, so the comparison is at this screen's width */
+  function measure(host, rows) {
+    const out = {}
+    for (const k of ['now', state.card === 'now' ? 'a1' : state.card]) {
+      const t = heights(rows, k); host.style.position = 'relative'; host.append(t)
+      const hs = [...t.children].map(c => c.getBoundingClientRect().height + 4)
+      out[k === 'now' ? 'now' : 'a'] = { all: Math.round(hs.reduce((x, y) => x + y, 0)), hs, cut: [...t.querySelectorAll('.name')].filter(n => n.scrollWidth > n.clientWidth + 1).length }
+      t.remove()
+    }
+    return out
+  }
+  const fits = (hs, room) => { let y = 0, n = 0; for (const h of hs) { if (y + h > room) break; y += h; n++ } return n }
+  function render() {
+    const k = state.card
+    document.getElementById('w-day').className = 'win' + (state.w === 'w320' ? ' w320' : '')
+    const fd = document.getElementById('f-day'), fl = document.getElementById('f-list')
+    fd.innerHTML = DAY.map(draw[k]).join('')
+    fl.innerHTML = LIST.map(draw[k]).join('')
+    document.getElementById('c-day').textContent = DAY.length + ' INPUTS'
+    /* a phone's opened day: about 600 points of list under its head, its title box and its + Input */
+    const ROOM = 600, md = measure(fd, DAY), ml = measure(fl, LIST)
+    const nA = fits(md.a.hs, ROOM), nN = fits(md.now.hs, ROOM), dd = md.a.all - md.now.all, dl = ml.a.all - ml.now.all
+    const vs = d => d === 0 ? 'the same height' : `<span class="${d < 0 ? 'less' : 'more'}">${Math.abs(d)} ${d < 0 ? 'shorter' : 'taller'}</span>`
+    const nm = state.card === 'a' ? 'A' : 'A · one line'
+    document.getElementById('m-day').innerHTML = `<span>${nm}: <b>${md.a.all}</b> for all sixteen · today <b>${md.now.all}</b> · ${vs(dd)}</span><span>On one phone screen: <b>${nA}</b> inputs · <b>${nN}</b> today</span><span>Titles cut short: <b>0</b> · <b>${md.now.cut}</b> today</span>`
+    document.getElementById('m-list').innerHTML = `<span>${nm}: <b>${ml.a.all}</b> for these eight · today’s card <b>${ml.now.all}</b> · ${vs(dl)}</span><span>Titles cut short: <b>0</b> · <b>${ml.now.cut}</b> today</span>`
+    /* the line where a phone's screen ends, drawn into the day's list */
+    const kids = [...fd.children]; let y = 0, at = -1
+    kids.forEach((c, i) => { const h = c.getBoundingClientRect().height + 4; if (at < 0 && y + h > ROOM) at = i; y += h })
+    if (at > 0) { const f = document.createElement('div'); f.className = 'fold'; fd.insertBefore(f, kids[at]) }
+    /* the growth, each way, whatever the switch above says — and each card's measured height */
+    const g = document.getElementById('grow'), kk = k === 'now' ? 'a1' : k, was = state.ppl
+    g.innerHTML = [['all', 'All names, wrapping', 'Nobody is hidden. The card grows downward with the number of people.'], ['pucks', 'Pucks', 'Nobody is hidden either. Grows fastest; shows each man’s CAT.'], ['names', 'Three names, then “+N”', 'Never grows, but hides who the rest are.']].map(([m, t, d]) => {
+      state.ppl = m
+      const cards = [2, 4, 8, 14].map(n => draw[kk](grown(n))).join('')
+      return `<div class="state" data-m="${m}"><span><b>${t}.</b> ${d} <i class="hts"></i></span>${cards}</div>`
+    }).join('')
+    state.ppl = was
+    for (const b of g.children) b.querySelector('.hts').textContent = 'Heights: ' + [...b.querySelectorAll('.card')].map(c => Math.round(c.getBoundingClientRect().height)).join(' · ')
+    document.getElementById('states').innerHTML = STATES.map(([t, d, r]) => `<div class="state"><span><b>${esc(t)}.</b> ${esc(d)}</span>${draw[k](r)}</div>`).join('')
+  }
+  for (const [id, key] of [['segCard', 'card'], ['segKind', 'kind'], ['segBy', 'by'], ['segW', 'w'], ['segPpl', 'ppl']]) {
+    document.getElementById(id).addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return
+      state[key] = b.dataset.v
+      for (const x of b.parentElement.children) x.setAttribute('aria-pressed', String(x === b))
+      render()
+    })
+  }
+  render()
+  addEventListener('resize', render)
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(render)
+</script>

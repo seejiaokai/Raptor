@@ -6,7 +6,7 @@
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -668,6 +668,8 @@ export function routeClick(e: MouseEvent) {
        request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
        ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
     const rowDay = dest === 'x' ? acceptedDay(inp) : -1
+    /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
+    const was = inp.acc
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
@@ -681,11 +683,18 @@ export function routeClick(e: MouseEvent) {
          "Bane's LL" says who it happened to, which is the thing the changes
          list is actually for */
       const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
+      /* THE TAKE-OFF NAMES IT TOO (owner D731 (5), 10 Oct 26 — "Ranger's Sports day taken off the programme"; walker B of
+         the title's check, scenario 40). It said "Accept undone" — whose request, and which, went unsaid, where the
+         accept beside it says the whole thing. The same pattern for its two other cases (his reading (b)): a row that
+         stood on ANOTHER day names that day ([REQ-DOOR-WORDS] 2), and one filed under Unavailable is "taken out of
+         Unavailable" — it was never on the programme. */
       const said = dest === 'x'
-          ? (rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `Accept undone — its row came off ${DAYS[rowDay].dow}'s programme` : 'Accept undone')
-        : dest === 'u' ? `${cs}'s ${inp.type} filed under Unavailable`
-        : adopts ? `${cs}'s ${inp.type} is on the ground programme again — its row was already there`
-        : `${cs}'s ${inp.type} added to the ground programme`
+          ? was === 'u' ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
+          : rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `${cs}'s ${inpLabel(inp)} taken off ${DAYS[rowDay].dow}'s programme`
+          : `${cs}'s ${inpLabel(inp)} taken off the programme`
+        : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`
+        : adopts ? `${cs}'s ${inpLabel(inp)} is on the ground programme again — its row was already there`
+        : `${cs}'s ${inpLabel(inp)} added to the ground programme`
       /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
          every input against the last committed state, so the filing that moved IS in its envelope and is said once. A
          second writer here doubled it (Fable's final read, F1 — the test that pinned "one line" set its input up raw,
@@ -701,10 +710,10 @@ export function routeClick(e: MouseEvent) {
       /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
          not be read refuses too, and says so rather than guess (never a second row on an unknown) */
       const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null
-      HOOKS.toast(onProg ? `${cs}'s ${inp.type} is already on the programme`
-        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inp.type} already has a row on another week — load that week first`
-        : away ? `${cs}'s ${inp.type} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
-        : `${cs}'s ${inp.type} can't be changed here right now`, 'warn')
+      HOOKS.toast(onProg ? `${cs}'s ${inpLabel(inp)} is already on the programme`
+        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inpLabel(inp)} already has a row on another week — load that week first`
+        : away ? `${cs}'s ${inpLabel(inp)} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
+        : `${cs}'s ${inpLabel(inp)} can't be changed here right now`, 'warn')
     }
     return
   }

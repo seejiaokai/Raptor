@@ -1,0 +1,110 @@
+{
+ "rows": [
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] 22-23 Jul Event published both days, retitled: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"} :: WED edit rows REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] / view rows TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT]; THU edit rows MEETING|MEETING|MEETING|MEETING / view rows MEETING|MEETING|MEETING|MEETING",
+   "pics": [
+    "s34-desk-A-2retitled-wed-edit.png",
+    "s34-desk-A-2retitled-wed-togo.png",
+    "s34-desk-A-2retitled-wed-view.png",
+    "s34-desk-A-2retitled-thu-edit.png",
+    "s34-desk-A-2retitled-thu-togo.png",
+    "s34-desk-A-2retitled-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: WED edit{pend:0 nys:no rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} || THU edit{pend:0 nys:no rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} || saved {\"t\":\"Two-day session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-A-2undo-wed-edit.png",
+    "s34-desk-A-2undo-wed-togo.png",
+    "s34-desk-A-2undo-wed-view.png",
+    "s34-desk-A-2undo-thu-edit.png",
+    "s34-desk-A-2undo-thu-togo.png",
+    "s34-desk-A-2undo-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-A-3redo-wed-edit.png",
+    "s34-desk-A-3redo-wed-togo.png",
+    "s34-desk-A-3redo-wed-view.png",
+    "s34-desk-A-3redo-thu-edit.png",
+    "s34-desk-A-3redo-thu-togo.png",
+    "s34-desk-A-3redo-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:26 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-A-4reload-wed-edit.png",
+    "s34-desk-A-4reload-wed-togo.png",
+    "s34-desk-A-4reload-wed-view.png",
+    "s34-desk-A-4reload-thu-edit.png",
+    "s34-desk-A-4reload-thu-togo.png",
+    "s34-desk-A-4reload-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] 22-23 Jul Event published both days, retitled: WED edit{pend:1 pending nys:YES rows:REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:27 Two-day session → Revised session Tap a change to go to it.} || THU edit{pend:1 pending nys:YES rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Revised session Saber 9/10 21:27 Two-day session → Revised session} || saved {\"t\":\"Revised session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"} :: WED edit rows REVISED SESSION[EVENT]|SPORTS AFTERNOON[EVENT] / view rows TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT]; THU edit rows MEETING|MEETING|MEETING|MEETING / view rows MEETING|MEETING|MEETING|MEETING",
+   "pics": [
+    "s34-desk-B-2retitled-wed-edit.png",
+    "s34-desk-B-2retitled-wed-togo.png",
+    "s34-desk-B-2retitled-wed-view.png",
+    "s34-desk-B-2retitled-thu-edit.png",
+    "s34-desk-B-2retitled-thu-togo.png",
+    "s34-desk-B-2retitled-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: WED edit{pend:0 nys:no rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} || THU edit{pend:0 nys:no rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} || saved {\"t\":\"Two-day session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-B-2undo-wed-edit.png",
+    "s34-desk-B-2undo-wed-togo.png",
+    "s34-desk-B-2undo-wed-view.png",
+    "s34-desk-B-2undo-thu-edit.png",
+    "s34-desk-B-2undo-thu-togo.png",
+    "s34-desk-B-2undo-thu-view.png"
+   ]
+  },
+  {
+   "n": "34",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: WED edit{pend:0 nys:no rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: signedLn:stands} view{rows:TWO-DAY SESSION[EVENT]|SPORTS AFTERNOON[EVENT] unav: pend:0} || THU edit{pend:0 nys:no rows:MEETING|MEETING|MEETING|MEETING unav:OML signedLn:stands} view{rows:MEETING|MEETING|MEETING|MEETING unav:OML pend:0} || saved {\"t\":\"Two-day session\",\"d\":\"Jul 22\",\"e\":\"Jul 23\"}",
+   "pics": [
+    "s34-desk-B-4reload-wed-edit.png",
+    "s34-desk-B-4reload-wed-togo.png",
+    "s34-desk-B-4reload-wed-view.png",
+    "s34-desk-B-4reload-thu-edit.png",
+    "s34-desk-B-4reload-thu-togo.png",
+    "s34-desk-B-4reload-thu-view.png"
+   ]
+  }
+ ],
+ "errs": []
+}

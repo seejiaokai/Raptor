@@ -348,7 +348,9 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   await p.click('#inRangeBtn'); await p.waitForTimeout(200)
   await p.click('#inRangeAll'); await p.waitForTimeout(300)
   {
-    const rows = () => p.evaluate(() => document.querySelectorAll('#inBody [data-inx]').length)
+    /* RE-POINTED 10 Oct 26 (owner D718, D723): the List's rows are counted by the rows themselves — the delete cross
+       they were counted by is gone from every row; a row opens the input's window. */
+    const rows = () => p.evaluate(() => document.querySelectorAll('#inBody tr[data-iid]').length)
     const n0 = await p.evaluate(() => INPUTS.length), r0 = await rows()
     const marker = 'audit Inputs scope / Undo'
     const filters = () => p.evaluate(() => ({ page: CURPAGE, range: document.querySelector('#inRangeBtn')?.textContent,
@@ -361,14 +363,14 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
       fileInput({ person: 'bane', date: 'Jan 1', yr: 2027, allday: true, type: 'Personal', remarks })
       return { id: INPUTS.find(i => i.remarks === remarks)?.iid, scope: lastEnvelope()?.scope }
     }, marker)
-    await p.waitForFunction(want => document.querySelectorAll('#inBody [data-inx]').length === want, r0 + 1)
+    await p.waitForFunction(want => document.querySelectorAll('#inBody tr[data-iid]').length === want, r0 + 1)
     const r1 = await rows()
     const matching = () => p.locator('#inBody tr').filter({ hasText: marker }).count()
     T('12 · the input has a stable id', !!added.id, true)
     T('12 · the command owns the Inputs screen', added.scope?.module, 'inputs')
     T('12 · exactly the matching row appears', await matching(), 1)
     await p.evaluate(() => undo())
-    await p.waitForFunction(want => CURPAGE === 'inputs' && document.querySelectorAll('#inBody [data-inx]').length === want, r0)
+    await p.waitForFunction(want => CURPAGE === 'inputs' && document.querySelectorAll('#inBody tr[data-iid]').length === want, r0)
     const n2 = await p.evaluate(() => INPUTS.length), r2 = await rows()
     console.log(`   12 · inputs ${n0}/${r0} → ${n0 + 1}/${r1} → ${n2}/${r2}`)
     T('12 · the added row really appears', r1, r0 + 1)
@@ -384,7 +386,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     T('12 · Undo removed the matching row', await matching(), 0)
     T('12 · Undo kept page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
     await p.evaluate(() => redo())
-    await p.waitForFunction(want => document.querySelectorAll('#inBody [data-inx]').length === want, r1)
+    await p.waitForFunction(want => document.querySelectorAll('#inBody tr[data-iid]').length === want, r1)
     T('12 · Redo restores the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), true)
     T('12 · Redo restores exactly the matching row', await matching(), 1)
     T('12 · Redo keeps page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))

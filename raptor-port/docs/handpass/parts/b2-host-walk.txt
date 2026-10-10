@@ -1,0 +1,49 @@
+PASS  A1 D731 (4)/A8 a Duty on Saturday 18 Jul for Ranger, Ace and Drifter, through "+ Input": ONE question, headed for the group — {"head":"OIL — Ace +2, Duty","g":[["Drifter",{"2026-07-18":1}],["Ace",{"2026-07-18":1}],["Ranger",{"2026-07-18":1}]]}
+PASS  A2 opened by the admin: the OIL line reads as it always did while everyone is alike, with "Change…" — {"line":"credited on its non-working day","btn":1}
+PASS  A3 A8 "Change…" by the admin: the question is headed "Ace +2", as the window’s title is — {"head":"OIL — Ace +2, Duty","title":"Ace +2 · 18 Jul"}
+PASS  A5 A7 Ranger signs in and opens it: read only, the entry’s line has NO "Change…", his own line has one — {"ro":"Only Saber — who filed it — or an admin can change this for everyone.","line":"credited on its non-working day","dead":0,"own":"Your OIL: credited on its non-working day","ownBtn":1,"why":0}
+PASS  A6 A8 his own "Change…": the question is headed with HIS name alone; he answers No; the note says so — {"head":"OIL — Ranger, Duty","note":"OIL answer saved"}
+PASS  A7 D731 (4) the entry’s line now COUNTS: "credited for 2 of 3 — Ranger: no" — to Ranger, in the window still open — {"line":"credited for 2 of 3 — Ranger: no","own":"Your OIL: no OIL on its non-working day"}
+PASS  A8 D731 (4) …and to the admin, whichever card he opens it from; "Change…" is still the one button — {"line":"credited for 2 of 3 — Ranger: no","btns":1}
+PASS  A10 D731 (7) another answered duty, on Saturday 17 Oct: its bar dragged to Tuesday 20 Oct and back, by a real mouse — the answer is kept, and nobody is asked again — {"away":{"person":"dj","date":"Oct 20","oil":{"2026-10-17":1},"remarks":"october watch"},"asked1":0,"back":{"person":"dj","date":"Oct 17","oil":{"2026-10-17":1},"remarks":"october watch"},"asked2":0}
+PASS  A11 A5 a Duty on Saturday 9 Jan 2027: its question names "9 Jan 2027"; cancelled, the window’s line and the List’s chip say 2027 too — {"head":"OIL — Ace, Duty","q":"This input falls on a non-working day — 9 Jan 2027 (weekend / PH)","chip":{"tag":"BUTTON","title":"Change the OIL decision","text":"OIL"}}
+PASS  B1 Ranger files a Meeting for himself and Echo on Wed 21 Oct (the switch on, as it starts) — ["Echo","Ranger"]
+PASS  B2 THE CONTROL the switch on: his window offers Save, and says nothing about who may change it — {"ro":0,"save":1}
+PASS  B3 the admin turns "members may file for other people" off, behind the gear — was true
+PASS  B4 D731 (8) Ranger opens his own input: "Filing for other people is switched off — an admin can change this." — and "Take me out" is still his — {"ro":"Filing for other people is switched off — an admin can change this.","out":1,"save":0,"del":0}
+PASS  B5 D731 (8) his bar on the month does not lift (he may not move it for everyone) and nothing moves — {"ghost":0,"note":"","date":"Oct 21"}
+PASS  B6 the Delete key on the day’s line asks him only about HIMSELF ("Take yourself out…"), as the rules already say — Take yourself out of this input?
+PASS  B7 THE CONTROL the admin turns the switch on again: Ranger’s window offers Save again — {"ro":0,"save":1}
+PASS  B8 A3 Ranger opens another man’s medical input from the List: read only, no yellow box about filing — {"ro":"Only Static or an admin can change this.","why":0,"title":"Static · 5 Jan"}
+PASS  C1 D731 (2) a day whose one input the Person filter hides: "No inputs match on this day." and "Clear filters", on one line — {"line":"No inputs match on this day.","b":{"x":1296.5625,"y":283,"top":265,"bottom":301,"left":1251,"right":1343,"w":92,"h":36,"reached":true,"vh":900,"vw":1440},"rows":1,"f":"all"}
+PASS  C2 THE CONTROL a day with no inputs at all, under a filter: "No inputs on this day. Tap + Input to add one." and no "Clear filters" — {"line":"No inputs on this day. Tap + Input to add one.","clear":0}
+PASS  C3 D731 (9) Escape while a new note is typed: the box goes, nothing is made, the day stays; the next Escape closes the day — {"box":0,"day":1,"notes":0,"day2":0}
+PASS  C4 D731 (9) an existing note being edited: Escape puts its words back; Enter still saves a change — {"kept":"brief the new guy","day":1,"saved":"brief the new guy at 0800"}
+PASS  C5 D731 (9) the people picker over a new note still takes Escape first, and the day stays (the older rule, unbroken) — {"up":1,"pick":0,"day":1}
+PASS  C6 D731 (11) three days dragged across on the month: the new-input window opens at once, with the three days — New input · Oct 6 → Oct 8
+PASS  C7 D731 (3)/A6 the List’s dates calendar: two dates tapped and it is still up; Escape closes it; a click outside closes it — {"still":1,"label":"📅 9 Oct → 13 Oct","esc":0,"out":0}
+PASS  C8 A6 Escape with the dates calendar AND an input’s window up: the calendar first, the window (and what was typed) next — {"pop":0,"win":1,"val":"typed, not saved","win2":0}
+PASS  C9 A2 Enter in a new input’s Title box (from the List’s "+ Input"): one input, no second window, its row lit — {"made":1,"win":0}
+PASS  C10 A4 the row’s chips: buttons a Tab reaches, drawn as before (30 high, the app’s typeface, no button face) — {"tag":"BUTTON","oil":true,"h":30,"bg":"rgba(0, 0, 0, 0)","font":true,"text":"OIL"}
+PASS  C11 A10 a meeting’s window, new dates tapped in it; its bar dragged a week on behind it — the note names both; the drag UNDONE — the note goes, his dates stay; REDONE — it is back (Astra 12) — {"moved":"Oct 19","note1":"Changed while this window was openstart date — theirs 19 Oct, yours 14 OctKeep mineTake theirs","back":"Oct 12","note2":0,"read":"Oct 14 → Oct 15","again":"Oct 19","note3":"Changed while this window was openstart date — theirs 19 Oct, yours 14 OctKeep mineTake theirs"}
+PASS  C12 D731 (5) the Scheduler Board, Wednesday: Ranger’s "Sports day" on the ground programme is taken off — the note names it; accepted again; under Unavailable and out again — {"before":["g"],"made":1,"key":"imv1ytk3e4bvas5","off":"Ranger's Sports day taken off the programme","on":"Ranger's Sports day added to the ground programme"}
+PASS  C13 A9 Quals: Enable editing, Save changes — the note says "Quals saved" and nothing more — Quals saved
+PASS  C14 D731 (10) the viewer of an input with two documents (1440 × 900): "Edit input" and "Close" in sight, the page scrolling above them — {"count":"1 of 2","done":[771,799,true],"box":[90,810]}
+PASS  D1 D731 (10) at 125%: the viewer of the demo’s own medical document — its buttons inside the box and reached — {"done":[712,739],"box":[114,750],"vh":864}
+PASS  D2 D731 (3) at 125%: the List’s dates calendar keeps its small desktop days and stays on the screen — {"day":20,"pop":[179,458],"vh":864}
+PASS  D3 A4 at 125%: a row with a chip measures exactly as it does with a <span> put in the button’s place (the look it had) — {"was":{"w":37.01250076293945,"h":30,"color":"rgb(159, 220, 238)","border":"rgba(59, 198, 232, 0.45)","font":"\"Inter Tight\", system-ui, sans-serif","size":"11px","pad":"8px"},"now":{"w":37.01250076293945,"h":30,"color":"rgb(159, 220, 238)","border":"rgba(59, 198, 232, 0.45)","font":"\"Inter Tight\", system-ui, sans-serif","size":"11px","pad":"8px"},"rowA":48.79999923706055,"rowB":48.79999923706055}
+PASS  E1 D731 (1) a note said with an input’s window up is at the TOP, clear of Cancel and Add — {"n":{"at":"top","top":10,"bottom":64,"shown":true,"text":"Pick a start date on the calendar first"},"cancel":[793,821]}
+PASS  E2 D731 (1) "Input added" after a save from the opened day: at the top while the day’s window is still up — {"n":{"at":"top","top":10,"bottom":48,"shown":true,"text":"Input added"},"day":1}
+PASS  E3 D731 (1) THE CONTROL with every window closed the next note is at the foot again — {"at":"foot","top":788,"bottom":826,"shown":true,"text":"a note with no window up"}
+PASS  E4 D731 (12) the List’s dates calendar: days a finger’s size, the calendar as wide as its pop-up, all on the screen; a finger picks two dates and it stays — {"day":[43,33],"cal":336,"pop":[358,214,573],"still":1,"label":"📅 9 Jul → 13 Jul","out":0}
+PASS  E5 D731 (2) on the phone: the filtered day’s line and its "Clear filters", a finger’s target — {"line":"No inputs match on this day.","b":[92,44],"rows":1}
+PASS  E6 A1 a saved input’s window with typing in it; the day’s bar tapped, then another card: the question is in FRONT and "Keep editing" answers it — {"viaBar":true,"q":1,"front":true,"keep":[186,230,true],"val":"typed, not saved"}
+PASS  E7 D731 (10) on the phone: the viewer of a document — "Close" in sight and reached — {"done":[579,607,true],"box":[226,618]}
+PASS  E8 D731 (1) another window of the same shell — the Inputs calendar settings: a note said while it is up is at the top too — {"up":1,"n":{"at":"top","top":2,"bottom":56,"shown":true,"text":"a note with the settings window up"},"save":[775,819]}
+PASS  F1 D731 (12) at 568 tall: the dates calendar — finger-size days — and its two quick buttons and an admin’s "Default window" all on the screen — {"day":[44,33],"pop":[214,555],"all":505,"cfg":548}
+PASS  F1b D731 (12) at 568 tall, a SIX-week month (Aug 2026), "Default window" opened too: the dates and both quick buttons are on the screen; what runs past the foot is reached by scrolling the page (Astra 39) — {"rows":6,"last":{"bottom":477,"reached":true},"all":534,"cfgBefore":[577,true],"cfgAfterScroll":[568,true],"save":[561,true],"wide":390}
+PASS  F2 D731 (1) at 568 tall: the note at the top with a window up — {"n":{"at":"top","top":10,"bottom":64,"shown":true,"text":"Pick a start date on the calendar first"},"cancel":[517,545]}
+
+45 of 45 steps as they should be
+no console error, page error or failed request
+exit 0

@@ -1,0 +1,20 @@
+{
+ "rows": [
+  {
+   "n": 46,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed ATT C with 1 document: stored docs 1 || window: 1 document chip(s) || paperclip: viewer true, 1 document element(s) || after Add: 2 chip(s) || saved: stored docs 3 || next document: \"Saber · ATT C · Jul 20 ✕ medically down — cannot report to work · sample-doc2.png Placed by Saber · 10 Oct 26, 02:14 · c\" || reopened: 2 chips; viewer shows 1 document element(s), text \"Saber · ATT C · Jul 20 ✕ medically down — cannot report to work · sample-doc.png\" || after removing one: 1 chip(s) || reopened after removing one: 1 chip(s) || saved: stored docs 1 || after removing the last: 0 chip(s) || Save with no file left: toasts [\"Keep at least one document on this entry — add the replacement before removing the last file\"]; sheet \"\"; window open 1; stored docs 1 || retype Duty -> ATT C with no document: question \"No medical document — Saber, ATT C ✕ THIS ATT C HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload\"; saved type while asked Duty || after cancelling the question: saved type Duty; window open 1 || after \"No document\": saved type ATT C, docs 0",
+   "pics": [
+    "B46-1-viewer-one.png",
+    "B46-2-two-chips.png",
+    "B46-3-viewer-two.png",
+    "B46-3b-viewer-second.png",
+    "B46-4-remove-last.png",
+    "B46-5-retype-question.png"
+   ]
+  }
+ ],
+ "errs": []
+}

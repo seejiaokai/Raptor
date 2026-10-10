@@ -56,6 +56,13 @@ describe('raw inputs are graded by type against SC MAIN', () => {
       expect(w[0].msg, t).toContain(`${t} but tasked — SC AM`)
     }
   })
+  it('a titled input is named by its title in that sentence — and graded by its kind, whatever the title says (D716)', () => {
+    addSC(P); inp('Training', { title: 'Meeting' })
+    const w = mine('INPUT_FLY')
+    expect(w.length).toBe(1)
+    expect(w[0].sev).toBe('hard')
+    expect(w[0].msg).toContain('Meeting but tasked — SC AM')
+  })
   it('an ALL-DAY red-list input counts too', () => {
     addSC(P); inp('Training', { allday: true, s: undefined, e: undefined })
     const w = mine('INPUT_FLY')
@@ -126,15 +133,73 @@ describe('accepted ground rows are graded by their source type', () => {
     expect(all.filter((x: any) => x.code === 'DOUBLE_BOOK' && /SC AM & TRAINING clash/.test(x.msg)).length).toBe(1)
     expect(all.filter((x: any) => x.code === 'INPUT_FLY').length, 'the raw copy stays deferred to its row').toBe(0)
   })
-  it("an accepted 'Other' stays hard via its source type, though its label is the remarks", () => {
+  it("an accepted 'Other' stays hard via its source type, though its label is its own title (D716)", () => {
     addSC(P)
-    const i = INPUTS[inp('Other', { remarks: 'ESCORT VISIT' }) - 1]
+    const i = INPUTS[inp('Other', { title: 'Escort visit' }) - 1]
     expect(acceptInput(TUE, i, 'g')).toBe(true)
     expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & ESCORT VISIT clash/.test(x.msg)).length).toBe(1)
   })
+  /* A TITLE'S WORDS NEVER DECIDE A RULE ([INPUT-OWN-TITLE], the plan §3.6): the row of a titled input is graded by the
+     input's KIND, whatever its title happens to say — a Meeting titled with a red-list word stays the amber advisory,
+     and a Training titled "Meeting" stays the hard clash. Hand-typed rows are still judged by their own words (below). */
+  it('a MEETING titled "Training day" stays the amber advisory — the title’s red-list word decides nothing', () => {
+    addSC(P)
+    const i = INPUTS[inp('Meeting', { title: 'Training day' }) - 1]
+    expect(acceptInput(TUE, i, 'g')).toBe(true)
+    expect((DAYS[TUE] as any).ground.find((g: any) => g.src === i.iid).prog).toBe('TRAINING DAY')
+    expect(mine('SHIFT_SOFT').length).toBe(1)
+    expect(mine('DOUBLE_BOOK').length).toBe(0)
+  })
+  it('a TRAINING titled "Meeting" stays the hard clash — the title’s soft word softens nothing', () => {
+    addSC(P)
+    const i = INPUTS[inp('Training', { title: 'Meeting' }) - 1]
+    expect(acceptInput(TUE, i, 'g')).toBe(true)
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & MEETING clash/.test(x.msg)).length).toBe(1)
+    expect(mine('SHIFT_SOFT').length).toBe(0)
+  })
+  it('…and each keeps its grade after the input is deleted: the row remembers its kind, not its words', () => {
+    addSC(P)
+    const m = INPUTS[inp('Meeting', { title: 'Training day' }) - 1]
+    expect(acceptInput(TUE, m, 'g')).toBe(true)
+    INPUTS.splice(INPUTS.indexOf(m), 1)
+    expect(mine('SHIFT_SOFT').length).toBe(1)
+    expect(mine('DOUBLE_BOOK').length).toBe(0)
+  })
+  /* TWO REQUESTS THAT SHARE A NAME ARE STILL TWO COMMITMENTS (both reads of the plan — Astra 1, Sol 1). The engine drops a
+     repeated "same man, same hours, same NAME" as one commitment (a man in a row's seat AND under it). A request's row is
+     named by its filer's title, so a Training titled "Meeting" beside a real Meeting at the same hour was swallowed —
+     and with it the Training's hard clash against the standby shift. In either order. */
+  for (const order of ['the Meeting first', 'the Training first']) {
+    it(`a Meeting and a Training titled "Meeting", same man and hour (${order}): both stand — the hard clash is not lost`, () => {
+      addSC(P)
+      const mk = (t: string, extra: any = {}) => INPUTS[inp(t, extra) - 1]
+      const pair = order === 'the Meeting first' ? [mk('Meeting'), mk('Training', { title: 'Meeting' })] : [mk('Training', { title: 'Meeting' }), mk('Meeting')]
+      for (const i of pair) expect(acceptInput(TUE, i, 'g')).toBe(true)
+      expect((DAYS[TUE] as any).ground.filter((g: any) => g.prog === 'MEETING' && g.src).length).toBe(2)
+      expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & MEETING clash/.test(x.msg)).length, 'the Training’s hard clash against the shift').toBe(1)
+      expect(mine('SHIFT_SOFT').length, 'the Meeting’s advisory').toBe(1)
+      /* …and the two against each other: one man, two items, the same hour — said as two items, not "two seats" */
+      const each = mine('DOUBLE_BOOK').filter((x: any) => /two items called MEETING/.test(x.msg))
+      expect(each.length).toBe(1)
+      expect(each[0].msg).not.toMatch(/two seats/)
+    })
+  }
+  it('…and it holds after the titled request is deleted: its row is still a request’s row', () => {
+    addSC(P)
+    const m = INPUTS[inp('Meeting') - 1], t = INPUTS[inp('Training', { title: 'Meeting' }) - 1]
+    expect(acceptInput(TUE, m, 'g')).toBe(true); expect(acceptInput(TUE, t, 'g')).toBe(true)
+    INPUTS.splice(INPUTS.indexOf(t), 1)
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & MEETING clash/.test(x.msg)).length).toBe(1)
+  })
+  it('two rows the scheduler typed by hand with one name and one hour are still read as one commitment, as before', () => {
+    const cs = PEOPLE[P].cs
+    ;(DAYS[TUE] as any).ground.push({ prog: 'SQN BRIEF', who: cs, str: '0900', end: '1000' })
+    ;(DAYS[TUE] as any).ground.push({ prog: 'SQN BRIEF', who: cs, str: '0900', end: '1000' })
+    expect(mine('DOUBLE_BOOK').length).toBe(0)
+  })
   it("an accepted 'Other' KEEPS its hard grade after the input is deleted (ARCH-STACK step 4 §8.1)", () => {
     addSC(P)
-    const i = INPUTS[inp('Other', { remarks: 'ESCORT VISIT' }) - 1]
+    const i = INPUTS[inp('Other', { title: 'Escort visit' }) - 1]
     expect(acceptInput(TUE, i, 'g')).toBe(true)
     INPUTS.splice(INPUTS.indexOf(i), 1)   // the input goes; the landed row stays
     expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & ESCORT VISIT clash/.test(x.msg)).length).toBe(1)

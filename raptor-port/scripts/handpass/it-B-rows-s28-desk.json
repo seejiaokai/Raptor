@@ -1,0 +1,69 @@
+{
+ "rows": [
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published then retitled: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:13 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-A-1retitled-edit.png",
+    "s28-desk-A-1retitled-togo.png",
+    "s28-desk-A-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Undo: edit{pend:0 nys:no rows:EVENT unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0}",
+   "pics": [
+    "s28-desk-A-2undo-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] Redo: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:13 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-A-3redo-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:13 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-A-4reload-edit.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published then retitled: edit{pend:1 pending nys:YES rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:14 Event → Sports day Tap a change to go to it.}",
+   "pics": [
+    "s28-desk-B-1retitled-edit.png",
+    "s28-desk-B-1retitled-togo.png",
+    "s28-desk-B-1retitled-view.png"
+   ]
+  },
+  {
+   "n": "28",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:EVENT unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:EVENT unav: pend:0}",
+   "pics": [
+    "s28-desk-B-4reload-edit.png"
+   ]
+  }
+ ],
+ "errs": []
+}

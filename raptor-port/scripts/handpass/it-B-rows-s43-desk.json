@@ -1,0 +1,74 @@
+{
+ "rows": [
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "row renamed on Edit Schedule: week row \"Scheduler wording[EVENT]\"; reopened input's Title box \"Sports day\"; saved title \"Sports day\"",
+   "pics": [
+    "s43-desk-1week-renamed.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "row renamed on the Board: board row {\"name\":\"Board wording\",\"kind\":\"Event\"}; week row \"Board wording[EVENT]\"; reopened input's Title box \"Sports day\"; saved title \"Sports day\"",
+   "pics": [
+    "s43-desk-2board-renamed.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "published with the hand-named row: edit{pend:0 nys:no rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} || input then retitled \"Games afternoon\": edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:33 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\"",
+   "pics": [
+    "s43-desk-3published-edit.png",
+    "s43-desk-4retitled-edit.png",
+    "s43-desk-4retitled-togo.png",
+    "s43-desk-4retitled-view.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} | saved title \"Sports day\"",
+   "pics": [
+    "s43-desk-2undo-edit.png",
+    "s43-desk-2undo-togo.png",
+    "s43-desk-2undo-view.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:33 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\"",
+   "pics": [
+    "s43-desk-3redo-edit.png",
+    "s43-desk-3redo-togo.png",
+    "s43-desk-3redo-view.png"
+   ]
+  },
+  {
+   "n": "43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows:GAMES AFTERNOON[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:Board wording[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Games afternoon Saber 9/10 21:33 Sports day → Games afternoon Tap a change to go to it.} | saved title \"Games afternoon\"",
+   "pics": [
+    "s43-desk-4reload-edit.png",
+    "s43-desk-4reload-togo.png",
+    "s43-desk-4reload-view.png"
+   ]
+  }
+ ],
+ "errs": []
+}

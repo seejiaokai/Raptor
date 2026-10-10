@@ -4,6 +4,15 @@ Detail split out of `CLAUDE.md`. Read this before touching rendering,
 drag & drop, or inline text editing. These are guarantees to PRESERVE —
 several are measured and suite-enforced, not preferences.
 
+## Words on screen
+
+**THE APP'S SCREENS ARE NOT WORDY (owner D726, 10 Oct 26 — "I don't like too wordy interface").** A label, a hint or a
+line of small print earns its place or goes: fewer words on screen, the same information. It holds for every screen and
+is weighed on every design choice. A word a man needs in order not to make a mistake is shortened or moved behind the
+screen's own "How this works" fold - never simply dropped. Nothing already built is reworded on the strength of this
+alone: a change of wording is shown to him on a picture first (D541). The same wish, for one screen each, is D644 (the
+Leave War's event sheet) and D646 ("How this works" made shorter).
+
 ## Rendering
 
 > The speed rules these guarantees serve — and every measured round behind them
@@ -329,6 +338,12 @@ not passing for the wrong reason.
 
 ## The Inputs add form (`ui/InputsPage.tsx`, owner 10 Aug 26)
 
+> **GONE — 10 Oct 26 (owner D729, the design vet's V1: "the list's own add form becomes one '+ Input' button").** The
+> List has no form of its own: "+ Input" opens the input's window (`ui/inputedit.tsx InputEditor`), the one the
+> calendar opens. This section is kept as the record of what the form was; what the screens do now is "THE INPUTS LIST
+> AND CALENDAR AFTER THE DESIGN VET", near the end of this file. The "?" legend it describes lives on, beside Type in
+> that window (`ui/TypeLegend.tsx`).
+
 The form is a CSS grid, `.ingrid`: column 1 is a fixed 212px track owned
 entirely by the calendar (`grid-row:1/span 3`), and the remaining eight fields
 auto-flow into four `1fr` tracks as two tidy rows of four. **Anything added
@@ -356,7 +371,7 @@ two 10 Aug additions took one:
 - **The All day tick opens OFF for a "Duty & other commitments" type, ON for
   everything else** (owner, 22 Aug 26). A brand-new input re-seeds its All day
   state from `defaultAllday(type)` on every type change: the timed group
-  (Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, OD, Other)
+  (Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, OD, Other)
   starts UNTICKED with the 06:00–18:00 window live, because those are
   commitments the aircrew states real hours for; leave, medical and **SANS
   Availability** keep All day ON. It is a default only — a user is free to
@@ -364,7 +379,7 @@ two 10 Aug additions took one:
   default drives the board's + Inputs / + Add seed (`interactions.ts`) and its
   dialog's type dropdown (new adds only), so the two entry points agree.
 
-All three type dropdowns (add form, filter, row editor) carry the same three
+All three type dropdowns (add form, filter, row editor) carry the same three *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 `<optgroup>`s, from `TYPE_GROUPS`/`typeGroup`. Twenty flat options is not a
 list anyone can pick from.
 
@@ -392,7 +407,7 @@ Owner, Aug 5. Three things, all view-only — none of them touches the model:
   today → +`DEFAULT_SPAN_MONTHS` (2) window it is labelled after. Membership is
   **overlap**, not "starts inside": a span that began before today and has not
   ended is still live and must stay on screen. `#inRangeBtn` drops the same
-  two-click `RangeCal` the add form uses; `#inRangeDef` restores the default
+  two-click `RangeCal` the add form uses; `#inRangeDef` restores the default *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   and `#inRangeAll` clears the window entirely.
 - **Sort.** Every `<th data-sort>` sorts; a repeat click inverts, and the first
   click on any column is always ascending. Default is `start` ascending.
@@ -2213,7 +2228,7 @@ page's job. **Person now IS, for a scheduler** (owner, 14 Aug 26 — "allow
 Unavailable to be editable too… even down to changing the puck"): a
 `canEditSched()`-gated `<select>` sits above the Type field, offering
 `rosterOptions()` — the same sorted-by-callsign roster list the Inputs
-page's add form and row editor now call too, so all three can never
+page's add form and row editor now call too, so all three can never *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 disagree on who is offered or in what order. Reassigning changes WHOSE row
 this is, not which day it sits on, so it stays inside what the dialog
 already keeps in view, unlike a date move — the row you are looking at is
@@ -2610,10 +2625,10 @@ beside every badge.
   else; the one window is the SAME All day / AM / PM / Custom SpanPicker +
   time fields every half-capable type uses (`half:true` in `INPUT_META`).
   This IS the phone-bug fix: clearing a timing is one tap on All day, not a
-  fight with a native time input's segments. All three editors (add form,
+  fight with a native time input's segments. All three editors (add form, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   in-table row, dialog) keep the shared shape; `sansFlags` normalises the
   payload so none of them can write the old per-event `{s,e}` values. *(Since 8 Oct 26 SANS
-  availability is filed from the SANS calendar's "+ Commitment" and the board's + Add; the Inputs tab's add form and
+  availability is filed from the SANS calendar's "+ Commitment" and the board's + Add; the Inputs tab's add form and *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   row editor no longer offer it — D620, "The SANS calendar".)*
 - **The palette section — `.rall.rsans` (`palette-html.ts`, `sansAvailHTML`).**
   One full-width band below the three seat columns, callsign-sorted, every
@@ -5654,7 +5669,7 @@ refusal), `medclash.test.tsx` (the chips through the real editor) and
 ### The upchit, medical-clash and OIL sheets, revising OIL, and the bell
 
 **The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
-27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
+27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 in-table row editor, or the shared `InputEditor` (where it paints one layer
 above the dialog, `.upconf-pop` z 470 over airpop's 460) — opens this sheet
 before anything is written. Top section: what the save will do, one boxed
@@ -5703,8 +5718,8 @@ on it; the answer rides `keepTail` into the write.
 user if the duty and commitment deserves an applicable OIL") is the third
 sibling in this recipe — same `.upconf-*` layer classes plus `.oilconf-pop`.
 Saving a duty-&-commitments input (`oilAsks` — exactly the `restsInput`
-eight: Training, CSE, Meeting, Fly with, Appointment, Duty, OD, Other;
-Personal and SANS Availability excluded) whose span covers a weekend or
+set — eight until 9 Oct 26, nine with Event (D713): Training, CSE, Meeting, Fly with, Appointment, Duty, Event, OD,
+Other; Personal and SANS Availability excluded) whose span covers a weekend or
 public holiday opens it from all three form paths — `InputEditor.save()`,
 `InputsPage.add()` and `InputsPage.saveEdit()` — through ONE gate body,
 `inputedit.tsx:oilGate`, which runs the shared refusals first (a bad draft
@@ -5775,7 +5790,7 @@ No acknowledgment = no credit, structurally.
 
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
-green once attached) renders in all three editors — the Inputs add form,
+green once attached) renders in all three editors — the Inputs add form, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 the in-table row editor, the board/modal editor — exactly when
 `needsDoc(type)` says the commit will demand it (one body, no drift). A
 documented row wears a paperclip (`.rclip`, `ClipIcon`) in the Inputs
@@ -9456,7 +9471,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   (`INPMODE`, `INPVIEW`); one is selected (`aria-selected`), the arrows move along them. Under the Inputs tab ONE switch,
   Calendar | List, and the filters (the Inputs tab's alone). **Medical is a tab IN THE PAGE**: it has no close cross
   and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
-  Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already
+  Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
 - **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
   drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
@@ -9489,6 +9504,222 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
   two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
   the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
+- **The people picker of a day is OWNED by the note it was opened for, and ends with its day (the day-window check, 9 Oct 26 —
+  Sol's read).** One opener (`openPick`, `ui/InputsCal.tsx`): while it is up a second "+" does nothing. A NEW note's words
+  are taken when its "+ people" is pressed and shown in the picker; Escape, the cross and Cancel are one ending (the words
+  alone become the note; nobody is added); OK makes the note, words and people together. Closing or changing the day
+  settles the picker first, as Cancel does — nothing is written to a day that is no longer open. The keyboard stays in
+  the picker (Tab turns round at its ends) and goes back to the control that opened it. A new note's box and its
+  "+ people" are one thing being made: focus moving between the two saves nothing; leaving the pair saves the words.
+- **A note changed by Undo or Redo is brought into view (D672):** the calendar turns to its month when another shows, and a
+  day window open on ANOTHER day goes to its day (`state/undo-wire.ts` → `PLANREVEAL` → `InputsCal`), as for an input;
+  with its day in view already, or no day open, nothing moves.
+- **A deleted man is never put on a note on or after his delete (D299; Astra's read):** a note holding him is not moved to
+  such a day — refused whole, "Not moved: Hex was deleted from 9 Oct — take him off the note first" — and no writer adds
+  him there (`state/plan.ts planMoveBlock`, `goneOn`). Before his delete the note moves and keeps him.
+- **A note in an opened day carries its own pucks (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
+  `docs/mock/note-with-pucks.html`; built as its own job, apart from the calendar job — D690).** ONE kind of note: words, people, or both — never neither. "+ Note" is the only button
+  in the window's bar ("+ Pucks" is gone). A note's words are one slim line (28px) with its small buttons — a "+" while it
+  has no people (kept on his word, D709), the pencil, the cross; its people stand FOUR across straight under, the schedule's own pucks, a dashed "+"
+  the last of them (`.inputsday .ic-note`, 25-inputs-calendar.css). The six dots and the box's left edge stand 8px left
+  and the box is padded alike both sides, so the fourth puck is as far from the right border as the first from the left
+  (D694). A note of people and no words draws no line of words: its people three across, then the pencil — which adds
+  words — and the cross. A NEW note's box has "+ people" beside it: the picker's OK makes the note, words and people
+  together, in one step; closed with nobody ticked it leaves the words alone, or nothing. A man is taken off as before
+  (D689): dragged off the note (anywhere outside its box), onto another to swap, or a right-click; his place is held
+  as a gap (24 Aug 26); the last man off a note with no words takes the note with him. The buttons are drawn small on
+  his word and answer a finger by a press area reaching up and sideways — never down over the pucks. The month's cell
+  shows a note's words and, under them, its people as tiny pucks. Members read both and have no button. The record:
+  `state/plan.ts`, `docs/data-schema.md`. Pinned by `state/plan.test.ts`, `ui/inputsday.test.tsx`,
+  `e2e/inputs-calendar.spec.ts` (D684–D695). Do not bring back a separate row of pucks or a second kind of section.
+- **An input in an opened day is two rows where its remark is short (owner D696, D699, D701 — drawing B; both the Inputs
+  day and the SANS day).** The remark and who-placed-it share ONE wrapping line (`.sd-foot`, 24-sans-calendar.css): side
+  by side where both fit, the small print on a line of its own under a long remark — pushed to the card's RIGHT end
+  either way, and where there is no remark. The small print is the SHORT form, made FROM the full line
+  (`ui/placedline.ts placedShort`): no "Placed by", no year for a moment in the open day's own year — "Grit · 12 Jul,
+  14:42", "Saber for 4 people · …", "… · changed by Ranger · 8 Oct, 09:10" — with the full line as its title. The List,
+  the editor's foot, a Medical card and the document viewer keep the full line (D629). A shared input's pucks come
+  after that line. A card with a short remark is 51px on a phone where it was 79. Pinned by `ui/placedline.test.ts`,
+  `ui/inputsday.test.tsx`, `ui/sansday.test.tsx`, `e2e/inputs-calendar.spec.ts` (D701).
+  **Since 10 Oct 26 this bullet is the SANS day's alone: the Inputs day's input is the card of the next bullet (D723).**
+- **THE INPUT CARD — one card for the Inputs calendar's opened day and for the Inputs list on a phone (owner D718–D724,
+  10 Oct 26; `[INPUT-LIST-AS-DAY-CARD]`; the pictures of record `docs/mock/img/input-card-final/day-final.png`,
+  `list-final.png`; the plan `docs/superpowers/plans/2026-10-10-input-card-plan.md`).** ONE body draws it
+  (`ui/InputCard.tsx`, its facts from the pure `ui/inputcard-model.ts`), so the two screens cannot differ. **Top line:**
+  the colour square (red an absence, amber a duty or commitment), WHO, the KIND in small grey capitals — the kind's own
+  name, always, never a pill (D723) — then LATE and the hours at the right. **A shared input names EVERY person, A to Z,
+  the names wrapping round the LATE-and-hours corner and the card growing downward — never "+N", no row of pucks
+  (D721);** its LATE says once that someone in it is late and, pressed, names who (D646). **The words row:** the input's
+  own TITLE at the left on a row of its own (D722), a remark after it in grey — the remark alone where there is no
+  title; both wrap at the card's full width and nothing is cut by what stands at the right (D719). **The small print is
+  "By Saber" and nothing more (D720) — no "for Ranger", no day, no time: for an input of ONE person only where someone
+  else placed it (D723); for an input of SEVERAL people ALWAYS, even where the filer is one of them (D724); an input for
+  ALL AVAIL or ALL always (its filer is never its person).** Who placed it and when, and its last change, stay whole in
+  the input's window and the change history (D629, narrowed for the card by D723). A card with no title, no remark and
+  no small print is ONE line. A tap anywhere on the card opens the input's window to change or delete it (D718); the
+  card's button is its names and kind. **The SANS day's card is NOT this card** (D723 reading 3; D647, D649 — pucks
+  with the CAT; the bullet above).
+- **THE INPUTS LIST AND CALENDAR AFTER THE DESIGN VET (owner D729, 10 Oct 26 — "Yes to all"; the build: `OUTSTANDING.md`
+  `[INPUTS-VET]`; BUILT 10 Oct 26 — the plan `docs/superpowers/plans/2026-10-10-inputs-vet-plan.md`, the check
+  `docs/handpass/2026-10-10-inputs-vet-check.md`).** (V1) The list has NO form of its own: one "+ Input" button beside its dates button opens the
+  window the calendar opens. (V2) On the desktop table the small print under a remark is "By Saber", only where
+  someone else filed the input or it is for several people; the full stamp is in the input's window. (V3) The window
+  carries no paragraph of instructions; a shared input keeps "Date changes apply to all N." (V4) On the month a shared
+  input's bar reads its count first ("4 · Meeting"); a timed input's bar is lighter than an all-day one, with a solid
+  edge. (V5) The gear's settings, "How this works", the empty list and the phone's filters say the same in fewer
+  words; the table's last column is "Changed"; the colour key reads "duty". The drawings: `docs/mock/inputs-vet.html`.
+  **AS BUILT.** *V1:* `#inNew` ("+ Input", the row's one filled button, first in `.inputs-listtools`) calls
+  `ui/inputedit.tsx newInputSeed()` — the ONE seed of a new input on this page, the calendar's too — with NO date: the
+  window says "pick a start date" and its Save refuses "Pick a start date on the calendar first" before any question
+  (OIL, a document) is asked. Three things only the form did were moved first (the door inventory, the plan's §2): the
+  "?" beside Type (`ui/TypeLegend.tsx`, in the window on the Inputs page, a new input and a saved one alike — its card
+  is laid in the flow of the form, and Escape closes the card, not the window); an admin's "Posted out / archived"
+  people for a NEW input (`archivedHere`); and the just-shown row LIT (`InputsPage.tsx`, the reveal effect — an input
+  added, changed, or put back by Undo). The form's own `add()` and its copies of the upchit, medical-clash and
+  document questions are gone; the window asks them. What does not carry over: the form kept its dates and its kind
+  for the next add — the window opens fresh each time, on the calendar's first kind. *V2:* the row asks the card's own
+  `cardOf` for `names` and `by` — so the desktop list, the phone's list and the opened day cannot differ; `.in-placed`
+  is inline after the remark. *V3:* in the window on the Inputs page `.inped-hint` is drawn only where there is a line
+  to say — a saved shared input's "Date changes apply to all N."; the SANS calendar's lines and every line of the
+  schedule's and the board's dialogs are as they were. *V4:* `inputscal-model.ts barText` — a shared bar is
+  `${n} · ${word}` at every width; the bar carries `timed` where the input is not all-day (a half day too) and
+  `25-inputs-calendar.css` paints it as 34% of its own colour over the panel with a 3px solid edge inside its left
+  side (`--ib-c` is the tone's solid colour, said once). *V5:* `ui/InputsSettings.tsx`, the fold in `ui/InputsCal.tsx`
+  (four lines), `rangeWords` for the empty list, no `<span>` over the three filter boxes (each keeps its `aria-label`).
+  Pins: `ui/inputsvet.test.tsx`, `inputs.test.tsx`, `windowdoors.test.tsx`, `groupeditor.test.tsx`,
+  `inputscal-model.test.ts`, `inputsmonth.test.tsx`, `inputssettings.test.tsx`; in a real browser
+  `e2e/inputs-calendar.spec.ts` (the three tests named D729).
+  **ADDED BY ITS CHECK (10 Oct 26 — `docs/handpass/2026-10-10-inputs-vet-check.md` §5.3, §6):** every save of the
+  window is ONE passing note (`doSave` / `doMedSave` inside `HOOKS.toastBatch`) — what the save itself said ("…replaces
+  the LL bid…") and "Input added" together, never the second over the first; the "?" card gives way to any question
+  opened over the window and takes Escape only as the front window's, and is not drawn in a read-only form; the row
+  the List is shown is found, lit and scrolled to BY ITS ENTRY (a shared input stands under its first record A to Z —
+  `listRow`, `shown`), and an opened day lists a just-saved shared input hidden by a filter as the whole entry
+  (`entryRowsOf`); `remarkOnce` tidies only the JOIN where the words stood — a sign or a dash that belongs to the
+  typed words is never touched.
+- **THE LIST'S DATES CALENDAR ON A PHONE OPENS UNDER ITS ROW OF BUTTONS (his find, 10 Oct 26 — fixed).** At 700 points
+  wide and under, the pop-up spans the row of buttons ("+ Input", the dates button, Export), so that ROW is the box it is
+  placed against (`scheduler/06-inputs.css`). Placed against nothing it opened one screen's height down the page — the
+  button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
+  `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
+  calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
+- **THE SMALL CHOICES OF THE INPUTS PAGES, AS BUILT (owner D731, 10 Oct 26 — "Yes to all"; `[SEEN-BATCH-2]`; the check
+  `docs/handpass/2026-10-10-batch2-check.md`).** Each is a line of its own below. Tests: `ui/batch2.test.tsx`,
+  `ui/toastplace.test.tsx`, `state/reqorphan.test.ts`, `ui/quals.test.tsx`, and in a real browser
+  `e2e/inputs-batch2.spec.ts`.
+  - **ON A PHONE, WHILE A WINDOW IS UP, THE PASSING NOTE IS AT THE TOP OF THE SCREEN (D731 (1)).** A window of the shell
+    (`ui/FloatWindow.tsx`) stands on the foot of a phone's screen with its buttons at its own foot — where the note was
+    drawn. `ui/toast.ts placeToast` asks "a phone, and a window up?" when a note is said and again when a window opens
+    (a note already showing moves clear); never when one closes. A desktop, and a phone with no window up: the foot, as
+    before. "A window" is the shell's — the Leave War's sheets and the schedule's dialogs keep the note at the foot.
+  - **A DAY WHOSE INPUTS A FILTER HIDES SAYS SO (D731 (2)).** A day opened on the Inputs calendar with nothing listed
+    WHILE it has inputs when no filter is asked reads "No inputs match on this day." with "Clear filters" beside it —
+    the page's own clearing (`InputsPage.tsx clearFilters`). A day with no inputs at all reads "No inputs on this day.
+    Tap + Input to add one.", filter or no filter.
+  - **THE LIST'S DATES CALENDAR (D731 (3), (12); `[SEEN-BATCH-2]` A6).** It stays open after its end date is tapped; a
+    press outside closes it — `pointerdown` beside `mousedown`, so a finger's press counts on an iPhone — as do its
+    quick buttons and its own button; Escape closes it, taken on the way in (the window, capture) so that with an
+    input's window up as well one Escape closes the calendar and the next the window. It takes Escape only while
+    the List is the view shown, and never while a blocking pop-up is in front of it (the document viewer or the OIL
+    question opened by the keyboard from a row's chip — any `.airpop` not `hidden`): that pop-up has the key first. On a phone (≤700px) its days are
+    a finger's size and it fills its pop-up — D725's sizes for the calendar in an input's window; on a short phone
+    (≤600px tall) the room is found in the padding round it, never in the days. A desktop keeps its small calendar.
+  - **A SHARED INPUT'S OIL LINE COUNTS ITS PEOPLE WHERE THEIR ANSWERS DIFFER (D731 (4)).** In its window on the Inputs
+    page the line speaks for the ENTRY (`inputedit.tsx oilSummaryOf`): alike — exactly the old words; differing —
+    "credited for 2 of 3 — Ranger: no" (each man with no credit named "no", one credited for only some days "1 of 2
+    days"; a man who has not answered is named by the "Not answered yet" line under it, not here). It is drawn while
+    ANY man of the entry has an answer, and then "Change…" is the one button (no second "Answer…"). A reader's line
+    carries no button (A7). In the schedule's and the board's dialog the line is the one man's, as before.
+  - **A GROUP'S OIL QUESTION IS HEADED FOR THE GROUP (A8).** "OIL — Ace +1, Duty": the entry's first name and how many
+    more, the words of the window's own title — decided in ONE place, where the sheet is drawn, for every door (the
+    save, "Change…", "Answer…", the bell, the question that follows a bar's drag). A man's OWN answer inside an input
+    he did not file is headed with his name alone.
+  - **AN OIL DAY IN ANOTHER YEAR SAYS ITS YEAR (A5).** `inputedit.tsx oilDayLabel` — "9 Jan 2027" — is the one label of
+    the question's heading, the window's two "not answered yet" lines and the desktop row's "OIL?" chip.
+  - **TAKING A REQUEST OFF NAMES IT (D731 (5)).** "Ranger's Sports day taken off the programme"; where its row stood on
+    another day, "…taken off Tuesday's programme"; where it was filed under Unavailable, "…taken out of Unavailable"
+    (`interactions.ts`, the week and the board alike). "Accept undone" is said nowhere.
+  - **AN OIL ANSWER FOR A DAY THE INPUT NO LONGER COVERS STAYS ON THE RECORD (D731 (7)).** Left as it is: nothing shows
+    it, nothing is credited for it, and it stands again if the input moves back. Pinned (`batch2.test.tsx`).
+  - **TO THE FILER, WITH THE MEMBERS' SWITCH OFF: "Filing for other people is switched off — an admin can change
+    this." (D731 (8)).** One sentence (`inputedit.tsx FILING_OFF`) wherever he was told "Only <himself> — who filed it
+    — or an admin can …": the window's foot (a shared input, and one he filed for ALL AVAIL / ALL), Delete for
+    everyone, a save, the Delete key on the opened day's line, a bar's drag — every door but the foot through one body,
+    `sharedRefusal`. The reason is asked of `state/perms.ts filerSwitchedOff`, which decides no right: "Take me out"
+    is offered exactly where the rules already offer it.
+  - **ESCAPE WHILE A NOTE IS TYPED LEAVES THE NOTE BOX ONLY (D731 (9)).** In an opened day the note box (a new note's,
+    and an existing note's being edited) takes Escape first: the box is put away, nothing is written — a new note is
+    not made, an edited one keeps its words — and the day stays; the next Escape closes the day. Enter and leaving the
+    box still save. A new note's "+ people" button beside its words is part of the same thing being made and takes
+    Escape the same way. **The day's TITLE box does the same (owner D732, 10 Oct 26 — "Yes"; built that day):** Escape
+    there puts the title back as last saved, takes the keyboard out of the box and writes nothing — the blur that
+    Escape causes is its own, and saves nothing (`titleGone`, as the note box's `noteGone`) — and the day stays; the
+    next Escape closes the day. Enter and leaving the box still save, and are a phone's only routes. A member has no
+    title box, only the words. Pins: `batch2.test.tsx` (D732), `e2e/inputs-batch2.spec.ts` (D732).
+  - **A DELETE QUESTION DOES WHAT IT ASKED — BOTH WAYS.** In an opened day a shared input's question keeps the words
+    it was asked in while it stands, and its button does THAT (`askedAll`, `InputsCal.tsx doDelete`). Asked "Delete
+    this input for all 2 people?": if the right to delete for everyone goes meanwhile (the members' switch turned
+    off), Delete is refused with the switch-off sentence — it never turns into taking the asker out (Astra's
+    scenario 9). Asked "Take yourself out of this input?": only he goes, even if he may by then delete for everyone —
+    a right gained while the question stood never widens it (Astra's read, finding 1).
+  - **THE SCHEDULE'S ONE-PERSON DIALOG SPEAKS FOR ITS OWN MAN.** On a shared input's row opened from Edit Schedule or
+    the board, the OIL line AND the "Not answered yet" line are that man's alone — one scope, `oilRows`; on the
+    Inputs page both speak for the entry (Astra's read, finding 2).
+  - **THE DOCUMENT VIEWER KEEPS ITS BUTTONS IN SIGHT (D731 (10)).** Its foot — "Upchit", "Edit input", "Close" — is
+    pinned to the foot of the scrolling box (`16-medical.css`), the page moving above it.
+  - **SEVERAL DAYS PICKED ON THE MONTH OPEN THE WINDOW AT ONCE (D731 (11)).** Kept as built; no bar to confirm first.
+  - **THE TEN FAULTS OF LIST A.** The "Unsaved changes" question is asked from the FRONT (the window comes forward
+    when it asks — A1). Enter in a new input's Remarks or Title is used up by the save (`preventDefault` on the key
+    down — it had gone on to press the "+ Input" the keyboard returned to — A2). In a window its reader may not
+    change, the people picker says nothing about what may be picked (A3). The desktop row's paperclip and OIL chips
+    are buttons of the same look and size (A4). A "Changed while this window was open" note goes when the record
+    comes back to the value his change was typed over, and repaints when "theirs" moves again (A10). The Quals save
+    note reads "Quals saved" (A9). A5–A8 are the lines above.
+- **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
+  corner already says when a several-day input ends, so the card does not print the same words again from its
+  remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the
+  schedule's row, the desktop table and the input's window are untouched. Step 2 - the app no longer writing the date
+  into remarks at all - is `OUTSTANDING.md` `[TILL-FROM-DATES]`, not built.
+  **AS BUILT (10 Oct 26).** `ui/inputcard-model.ts remarkOnce(remark, corner)`, asked by `cardOf(rows, people, corner)`
+  — both cards hand in what their corner prints (`cardWhen`). Only a "till" for the corner's OWN day goes (with the
+  corner's year where it says one: "till 1 Jan" beside "till 1 Jan 2027"); a "till" for another day, a year the corner
+  does not say, and a card whose corner says no "till" (a one-day input; an input shown under its last day) keep the
+  remark whole. Pins: `ui/inputcard-model.test.ts`, `ui/inputsvet.test.tsx`.
+- **ON THE DESKTOP LIST A SHARED INPUT NAMES EVERYONE, AND THE KIND KEEPS ITS PILL (owner D727, 10 Oct 26 — "A"; BUILT
+  10 Oct 26 with `[INPUTS-VET]`).** The table's Name cell reads every name of a shared input, A to Z, wrapping in
+  its column — 250px wide, the drawing's own (until then it read the first name and a count, "Drifter +3", the rest in a tooltip); the kind stays in its
+  pill (`.intag`) on the table - the cards keep their small grey capitals (D723), so the kind has two looks by his
+  choice, which narrows D718's "one look everywhere" for this screen. The drawing: `docs/mock/card-questions.html`.
+- **THE INPUTS LIST HAS NO EDIT IN PLACE (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
+  live — `ui/usephone.ts`) the list is the input card under a slim heading a day ("SAT 18 JUL · 6 inputs"), in date
+  order; an input of several days stands under its first day. On a desktop it is the table, its columns and sorting as
+  they were, without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
+  the paperclip and the OIL / OIL? chips stay in its last column. Everything the pencil's row did is done in the window
+  (`ui/inputedit.tsx`), which for that reason now carries (a) the two-tap calendar for EVERY saved input its reader may
+  change, not only a shared one (D681's door widened — what D718 left behind of D681's reading 7), and (b) the OIL line
+  for a question nobody has answered yet ("Not answered yet · Answer…"), since a phone's card has no OIL chip.
+  **As closed by its check (10 Oct 26 — `docs/handpass/2026-10-10-input-card-check.md`), the window also:** (c) says
+  the unanswered line while ANY record of a shared entry is unanswered, naming who, and gives a man in a shared input
+  he did not file his own "Your OIL: not answered yet · Answer…" outside the read-only form; (d) saves an OIL answer
+  given ALONE by itself — who answered and when is stamped, the input's late date is NOT moved (as the desktop row's
+  chip does); with a change of the input it is one save of both; (e) carries a PAPERCLIP button beside its buttons,
+  outside the form, for any saved input with a document — the phone's card has none — for every reader; (f) offers an
+  admin changing a SAVED input the "Posted out / archived" people in its Person list, and keeps a deleted man's own
+  name as its value (`ui/PeoplePick.tsx moreIds`); (g) keeps Delete, Cancel and Save pinned to its foot, the form
+  scrolling above them (`25-inputs-calendar.css .inped-win > .airpop-foot`). **A medical entry's question is asked
+  about the days the save will take** — the draft's own whole dates (`ui/inputedit.tsx isoOrd`, in `save` and in the
+  shared `medAskFor`), never its labels read in the record's old year. **On the phone's list a day has ONE heading**: a
+  just-saved input the filters hide brings its whole day to the head of the list, itself first under it. Pins:
+  `ui/windowdoors.test.tsx`, `ui/windowreads.test.tsx`, `ui/groupeditor.test.tsx`, `ui/inputslist.test.tsx`,
+  `e2e/inputs-calendar.spec.ts` ("keeps Delete, Cancel and Save in sight").
+  **ON A PHONE THE DAYS OF THE WINDOW'S CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger").** Under
+  821px a day of `#inpEdCal` is 33 tall and as wide as the window gives it — measured 42 on a 390-wide phone, 32 on a
+  320, 47 from 430 up (the calendar stops at 360 wide) — where it was 26 by 20; the month's arrows are 28. The list's
+  pencil calendar had a finger's size on a phone before it went (D718); a new input's and a shared input's window
+  share the calendar, so theirs too. Save stays in sight at every size and nothing runs off sideways
+  (`scripts/handpass/icard-d725-look.mjs` measures them). A desktop's window keeps its small days. It is his word for this control under D487 — nothing else is
+  resized (`25-inputs-calendar.css`, the rule under the window's own; pinned in a real browser by
+  `e2e/inputs-calendar.spec.ts`).
 - **The Leave War's phone header (D678) holds its two lines in ANY system letters:** line 2 does not wrap; the stage's
   name (`.stagetxt`, `leavewar/ui/chrome.css`) is the one thing that gives way, cut with "…", its arrow kept. Found when
   the pull request's checks ran on GitHub's machines, whose letters are wider (9 Oct 26). Pinned by
@@ -9596,6 +9827,52 @@ Kept as one record a man tied by a group id (`state/inputgroup.ts`; the no-scree
 thing" is made on the Inputs page only — and by ONE function, `entriesOf` / `entryRowsOf`: a screen that draws inputs
 without it shows a group as separate lines.
 
+- **An input's own title, and its kind kept in sight (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`; the drawing
+  of record `docs/mock/input-own-title.html`).** *The Title box* — in the input's window (`inputedit.tsx`,
+  `#inpEditOwnTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`), *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
+  drawn only for a kind that takes a title. The draft's `title` is NULL until somebody types: the box then SHOWS the
+  kind's own name and follows a change of kind; once typed in it is a string — an emptied box stays empty (its
+  placeholder says the kind), it never snaps back under the cursor. A change to a kind that takes none clears it. The
+  save stores `titleOf`. *Where the name shows* — wherever a name stood: the month's bar, the day's card, the Personal
+  Inputs and Unavailable cards (week and board), the schedule's row, the changes window, the history line and bubble,
+  the OIL question's heading, the toasts, the warning sentences, the Inputs export (a `Title` column beside `Type`).
+  *Where the kind is kept in sight* — only where the name is not the kind's own: `.nm-kind`, small quiet capitals,
+  never editable, never an amendment cell. On the week's row it sits inside the name cell after the editable name,
+  UNDER it at every width (the name column is too narrow for a title and its kind side by side) — and the row is no
+  taller for it (43px with and without on a desktop, 41px on a phone: measured in the check's walk); on the Scheduler
+  Board the row IS one line taller (45px against 34px on a desktop) — the label has a line of its own under the name
+  box. On the Scheduler Board it rides inside the name's own grid cell (`.sb-nmk`, drawn only for such a row — the
+  row's grid places its cells by order, so it is never a cell of its own); on an input's card it rides the item cell's
+  wrapper (`.itemcell`); on the opened day's card it heads the small-print line (`.sd-kindtag`, `idy-kindtag`); the
+  month's bar has no room and says it in its tip ("who · title · kind · dates"); the List prints the title in bold above
+  the kind in the Type cell. A row or card named by its kind emits nothing new — its markup is byte-for-byte what it
+  was (the view week is compared with the reference). A remark is said under the day card's line whatever the input is
+  called — the old "an Other is named by its remark, do not say it twice" test is gone. Search (the List, the month,
+  the opened day) matches the title as well as the remarks.
+- **"ALL AVAIL" and "ALL" as a choice of person (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`).**
+  Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
+  label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither
+  takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add / *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
+  edit dialog and the List's pencil editor. Offered for the six kinds `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
+  may pick another person for that kind (an admin; a member while the members' switch is on), never on the SANS
+  calendar, never as a puck under "Several people". **A placeholder already chosen is ALWAYS listed, whatever the kind
+  becomes** — with no option the box drew the first man on the list over an ALL AVAIL input. The picker's own line
+  (`pp-why`) says why a pick cannot be saved and offers one press: a kind it may not carry → the kinds named, "File it
+  for me only"; "Several people" switched on with a placeholder picked → "ALL AVAIL is filed on its own — it already
+  stands for whoever is free", "File it for ALL AVAIL only". Save says the same sentence FIRST — before the document
+  question, the medical sheets and the OIL question — and "… is filed one day at a time" for a range. On the schedule
+  the input's row is the request row D46 already draws: the placeholder puck in the name box, its count, the ALL AVAIL
+  window; `→ Unavail` is not drawn for it. **In OIL Earn** its row offers no whole-row switch and says so ("This request
+  follows the answer of whoever filed it — tap the count to switch one person"); in the window each man behind it starts
+  where the filer's answer puts him, and an off puck says whose word it is ("whoever filed this Duty answered No to OIL;
+  tap to credit him anyway" / "the OIL question for this Duty has not been answered yet; tap to credit him"), with the
+  window's hint above the list saying the same.
+  **The person filter (the List, the month, the opened day — ONE body, `inputscal-model.ts personFilterPasses`):**
+  "Everyone" keeps its value `'all'` (walk scripts and browser tests choose it by that value); a placeholder's value in
+  a filter is `'ph:' + id` (`personFilterValue`), so Everyone, ALL and ALL AVAIL are three different choices and the
+  ALL placeholder's own id never reads as "Everyone". A member's List opens on his own inputs: an ALL AVAIL input is
+  nobody's "mine" and shows under Everyone (D702). Tests: `placeholderdoors.test.tsx`, `placeholderlist.test.tsx`,
+  `oilplaceholderclaim.test.tsx`, `peoplepick.test.tsx`.
 - **The people picker (`ui/PeoplePick.tsx`, D656, D659).** One person from the A-to-Z list by default; a "Several people"
   switch (`pp-several`, `role="switch"`) shows the schedule's own pucks (`html.ts puck()`, never a look-alike) as buttons
   (`data-pp`, `aria-pressed`) in groups — Pilots, WSOs, SANS, and Personnel only where the roster holds ground crew — each
@@ -9608,7 +9885,7 @@ without it shows a group as separate lines.
   sideways is the picker's and may then run down into other rows; with a mouse any drag picks. A plain press is
   still the button's click; the click a browser sends after a drag is swallowed. It holds no state: its owner keeps the
   people in the order picked (the first is the one kept on the way back to one person). **Where it shows:** the editor
-  window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids,
+  window on the Inputs page (ids `inpEditPerson` / `inpEditPersonFixed`), and the List's own Add form (its own ids, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   `inPerson` / `inPersonFixed`, and its posted-out group kept). The board's and the week's dialogs keep their one list.
   **So the page holds TWO pickers when the editor is open** (the form's is under the calendar): a test asks for
   `#inpEditPop [data-testid="pp…"]`.

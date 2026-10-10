@@ -1,0 +1,17 @@
+[
+ {
+  "n": 59,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "CHECK",
+  "said": "Sat 18 Jul published (day ORIG); Ranger Event titled \"Weekend exercise\", Saber untitled Event, Basher Event titled with 40 characters. In OIL Earn the item cells read [\"SDO\",\"WEEKEND EXERCISE\",\"EVENT\",\"1234567890123456789012345678901234567890\",\"1234567890123456789012345678901234567890\",\"Event\",\"Weekend exercise\"] and the Ground Programme rows' kind tags in the mode [\"none\",\"none\",\"none\"] (Personal Inputs cards: [\"Event\",\"none\",\"Event\"]); same rows with the mode OFF: [\"WEEKEND EXERCISE / Event\",\"EVENT / no kind tag\",\"1234567890123456789012345678901234567890 / Event\"]. Switches before [\"plasma:on\",\"bane:on\",\"stiff:on\",\"glass:on\",\"glass:on\",\"stiff:on\",\"bane:on\"] -> after tapping Ranger [\"plasma:on\",\"bane:off\",\"stiff:on\",\"glass:on\",\"glass:on\",\"stiff:on\",\"bane:off\"]. Records after the tap: [{\"r\":\"o59a\",\"p\":\"Ranger\",\"type\":\"Event\",\"title\":\"Weekend exercise\",\"oil\":{\"2026-07-18\":0.5}},{\"r\":\"o59b\",\"p\":\"Saber\",\"type\":\"Event\",\"title\":null,\"oil\":{\"2026-07-18\":0.5}},{\"r\":\"o59c\",\"p\":\"Basher\",\"type\":\"Event\",\"title\":\"1234567890123456789012345678901234567890\",\"oil\":{\"2026-07-18\":0.5}}]; after leaving the mode, reopened input shows Title \"Weekend exercise\" Type \"Event\". 40-character title set on Ranger's input and the mode re-entered: cells [\"SDO\",\"1234567890123456789012345678901234567890\",\"EVENT\",\"1234567890123456789012345678901234567890\",\"1234567890123456789012345678901234567890 [CLIPPED]\",\"Event\",\"1234567890123456789012345678901234567890 [CLIPPED]\"]; others unchanged by the tap or the retitle: true",
+  "pics": [
+   "desk-s59-oilearn-before.png",
+   "desk-s59-oilearn-inputs-panel.png",
+   "desk-s59-oilearn-after-tap.png",
+   "desk-s59-normal-rows.png",
+   "desk-s59-reopened.png",
+   "desk-s59-oilearn-long.png"
+  ]
+ }
+]

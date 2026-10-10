@@ -1,0 +1,15 @@
+[
+ {
+  "n": 53,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "PASS",
+  "said": "[C: two separately filed Events titled \"Same name\"] Ranger on SC AM 07:00-13:00 Fri 17 Jul, both 10:00-11:00. Records saved 2 (Event \"Same name\" + Event \"Same name\"). After the first alone: hard: SC AM & SAME NAME clash. After both: hard [SC AM & SAME NAME clash ; Ranger is on two items called SAME NAME at once], other []; \"two items called SAME NAME at once\" present: true. Warning list on the board: [\"⚠ 3 issues\",\"· 3 warnings ·\",\"tap to review\",\"Ranger — SC AM & SAME NAME clash\",\"✕\",\"Ranger — Ranger is on two items called SAME NAME at once\",\"✕\",\"✕\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\"]. Day card shows 4 rows: [\"Grit ATT C All day Medically down till 17 Jul Grit · 12 Jul, 14:42\",\"Nomad OD All day Overseas duty — exercise, off island Nomad · 18 Jun, 08:03\",\"Ranger Same name LATE 10:00–11:00 EVENT b53 Saber for Ranger · 9 Oct, 21:37\",\"Ranger Same name LATE 10:00–11:00 EVENT a53 Saber for Ranger · 9 Oct, 21:37\"]. Week's Ground Programme rows on Friday: [\"SAME NAME EVENT\",\"SAME NAME EVENT\"]. Board name boxes: [\"GROUND SCHOOL - EW\",\"SAME NAME\",\"SAME NAME\",\"AIRCREW ADMIN\"]. Ring: puck sm warn hard boxred | Ranger · IP · instructor pilot · SXO · Conflict (two events at once)",
+  "pics": [
+   "desk-s53-C-board.png",
+   "desk-s53-C-warnlist.png",
+   "desk-s53-C-daycard.png",
+   "desk-s53-C-week.png"
+  ]
+ }
+]

@@ -1,0 +1,20 @@
+{
+ "rows": [
+  {
+   "id": 22,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "filtered Ranger+LL+July: [\"Ranger LL@Tue 21 Jul\"] ## added: [\"Event\",\"Aug 4\",\"stiff\"] toast: Input added + Saving… > Input added ## after add: [\"Saber Event@Tue 4 Aug\",\"Ranger LL@Tue 21 Jul\"] ## after changing the type filter away and back: [\"Ranger LL@Tue 21 Jul\"] ## Meeting filter, before: [\"Ranger, Saber\"] ## after adding Anvil: [\"Anvil, Ranger, Saber@Tue 28 Jul\"] ## LL filter again: [\"Ranger LL\"] ## Undo: shared meeting records 2; Redo: 3",
+   "pics": [
+    "22-phone-filtered.png",
+    "22-phone-after-add.png",
+    "22-phone-save-toast.png",
+    "22-phone-added-card.png",
+    "22-phone-after-filter-change.png",
+    "22-phone-after-anvil.png"
+   ]
+  }
+ ],
+ "errs": []
+}

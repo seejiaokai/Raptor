@@ -1,0 +1,17 @@
+[
+ {
+  "n": 50,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "CHECK",
+  "said": "Ranger on SC AM (07:00-13:00) Fri 17 Jul. Untitled Event 10:00-11:00: hard/DOUBLE_BOOK: SC AM & EVENT clash. Titles Meeting, Training, SC, Brief, Off, Event, OD, Ranger, 08:00 -> Meeting: hard/DOUBLE_BOOK: SC AM & MEETING clash | Training: hard/DOUBLE_BOOK: SC AM & TRAINING clash | SC: hard/DOUBLE_BOOK: SC AM & SC clash | Brief: hard/DOUBLE_BOOK: SC AM & BRIEF clash | Off: hard/DOUBLE_BOOK: SC AM & OFF clash | Event: hard/DOUBLE_BOOK: SC AM & EVENT clash | OD: hard/DOUBLE_BOOK: SC AM & OD clash | Ranger: hard/DOUBLE_BOOK: SC AM & RANGER clash | 08:00: hard/DOUBLE_BOOK: SC AM & 08:00 clash. As a Meeting: adv/SHIFT_SOFT: Ranger is on SC AM (07:00–13:00) and also down for MEETING; titled Training/Event: adv/SHIFT_SOFT: Ranger is on SC AM (07:00–13:00) and also down for TRAINING | adv/SHIFT_SOFT: Ranger is on SC AM (07:00–13:00) and also down for EVENT. Work hours (Insights, Ranger): 20h all the same? true. Differences vs control: none",
+  "pics": [
+   "desk-s50-control.png",
+   "desk-s50-title-Meeting.png",
+   "desk-s50-title-Off.png",
+   "desk-s50-meeting-control.png",
+   "desk-s50-meeting-title-Training.png",
+   "desk-s50-meeting-title-Event.png"
+  ]
+ }
+]

@@ -1,0 +1,20 @@
+{
+ "rows": [
+  {
+   "id": 23,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "nothing-word: {\"text\":\"No inputs match.\",\"btns\":[]} headings 0 ## isolated: [{\"day\":\"Wed 22 Jul\",\"count\":\"1 input\",\"cards\":[{\"iid\":\"imv1agua8ac0t92\",\"title\":\"Sports afternoon\"}]}] ## after delete: gone true headings 0 empty {\"text\":\"No inputs match.\",\"btns\":[]} ## after Undo: [{\"day\":\"Wed 22 Jul\",\"count\":\"1 input\",\"cards\":[{\"iid\":\"imv1agua8ac0t92\",\"title\":\"Sports afternoon\"}]}] ## after Redo: headings 0 {\"text\":\"No inputs match.\",\"btns\":[]} ## restrictive window: {\"text\":\"No inputs between 10 Aug → 12 Aug. Change the dates, or pick “All dates”.\",\"btns\":[]} headings 0 button 📅 10 Aug → 12 Aug ## NOTE: the message offers All dates in words (\"pick All dates\"); it carries no button of its own (buttons in the message: []) ## after All dates in the picker: headings 32",
+   "pics": [
+    "23-phone-nothing-word.png",
+    "23-phone-isolated.png",
+    "23-phone-after-delete.png",
+    "23-phone-after-undo.png",
+    "23-phone-after-redo.png",
+    "23-phone-restrictive-window.png"
+   ]
+  }
+ ],
+ "errs": []
+}

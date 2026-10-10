@@ -1,0 +1,15 @@
+[
+ {
+  "n": 64,
+  "size": "desk",
+  "role": "member (Ranger), admin sets the cut-off",
+  "verdict": "FAIL",
+  "said": "Ranger filed Event \"Late test one\" on Fri 20 Nov 2026 (not late: true; placed line \"Placed by Ranger · 9 Oct 26, 21:49\"). Admin set the Inputs gear cut-off to 60 days before the week (was {\"mode\":\"true\",\"lead\":\"14\"}; example \"For the week of Mon 26 Oct, inputs are due by the end of Thu 27 Aug.\"; error \"\"); input right after, nothing edited: late true. Ranger retitled only the title -> \"Late test two\": late true; hover note \"Late input — last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov.\"; day card {\"text\":\"Ranger Late test two LATE 10:00–11:00 EVENT l64 Ranger · 9 Oct, 21:49 · changed by Ranger · 9 Oct, 21:50\",\"late\":{\"text\":\"LATE\",\"title\":\"after the cut-off, Thu 17 Sep\"}}; List row {\"late\":{\"text\":\"LATE\",\"title\":\"Late input — last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov.\"},\"text\":\"Ranger 20 Nov 10:00–11:00 Late test twoEVENT LATEl64 Placed by Ranger · 9 Oct 26, 21:49 · changed by Ranger · 9 Oct 26, 21:50 now ✎ ✕\"}; warnings in the app before 36 / after 36 (a new clash would raise it); window small print \"Placed by Ranger · 9 Oct 26, 21:49 · changed by Ranger · 9 Oct 26, 21:50\". Undo (pressed) -> title \"Late test one\", change stamp 2026-10-09 (before 2026-10-09), late true; List row {\"late\":{\"text\":\"LATE\",\"title\":\"Late input — last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov.\"},\"text\":\"Ranger 20 Nov 10:00–11:00 Late test oneEVENT LATEl64 Placed by Ranger · 9 Oct 26, 21:49 now ✎ ✕\"}",
+  "pics": [
+   "desk-s64-before-late.png",
+   "desk-s64-after-retitle.png",
+   "desk-s64-list-late.png",
+   "desk-s64-after-undo.png"
+  ]
+ }
+]

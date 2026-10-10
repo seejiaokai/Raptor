@@ -1,0 +1,54 @@
+[
+ {
+  "n": 12,
+  "size": "desktop 1440x900",
+  "role": "admin Saber, then member Ranger",
+  "status": "PASS",
+  "said": "Ridge archived on Admin -> Users (true); admin's \"Posted out / archived\" group lists [\"Ridge\"]; saved [{\"cs\":\"Ridge\",\"t\":\"Meeting\",\"d\":\"Aug 5\",\"by\":\"Saber\"}]; reopened window person \"Ridge\", read \"Aug 5\"; Ranger's Person list: group false, Ridge listed false, 62 options",
+  "pics": [
+   "S12-desk-admin-users-archived.png",
+   "S12-desk-archived-picked.png",
+   "S12-desk-archived-reopened.png",
+   "S12-desk-ranger-picker.png"
+  ]
+ },
+ {
+  "n": 13,
+  "size": "phone 390x844",
+  "role": "admin Saber",
+  "status": "PASS",
+  "said": "[[\"27\",{\"read\":\"Jul 27\",\"rmk\":\"till 27 Jul\",\"sel\":1}],[\"29\",{\"read\":\"Jul 27 → Jul 29\",\"rmk\":\"till 29 Jul\",\"sel\":2}],[\"again 29\",{\"read\":\"Jul 29\",\"rmk\":\"till 29 Jul\",\"sel\":1}],[\"27 (backwards)\",{\"read\":\"Jul 27\",\"rmk\":\"till 27 Jul\",\"sel\":1}],[\"30\",{\"read\":\"Jul 27 → Jul 30\",\"rmk\":\"till 30 Jul\",\"sel\":2}]]; saved {\"t\":\"LL\",\"d\":\"Jul 27\",\"ed\":\"Jul 30\",\"allday\":true,\"half\":null,\"s\":0,\"e\":1439,\"rmk\":\"till 30 Jul\"}",
+  "pics": [
+   "S13-phone-27-29.png",
+   "S13-phone-backwards.png",
+   "S13-phone-27-30.png"
+  ]
+ },
+ {
+  "n": 14,
+  "size": "desktop 1440x900",
+  "role": "member Ranger",
+  "status": "PASS",
+  "said": "[{\"sp\":\"all\",\"draft\":{\"span\":\"all\",\"hours\":{\"sVis\":false,\"eVis\":false,\"s\":\"06:00\",\"e\":\"18:00\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 3\",\"allday\":true,\"half\":null,\"s\":0,\"e\":1439,\"rmk\":\"till 3 Aug\"},\"re\":{\"span\":\"all\",\"hours\":{\"sVis\":false,\"eVis\":false,\"s\":\"06:00\",\"e\":\"18:00\",\"dis\":false}}},{\"sp\":\"am\",\"draft\":{\"span\":\"am\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"00:00\",\"e\":\"12:00\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 4\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"rmk\":\"till 4 Aug\"},\"re\":{\"span\":\"am\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"00:00\",\"e\":\"12:00\",\"dis\":false}}},{\"sp\":\"pm\",\"draft\":{\"span\":\"pm\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"12:01\",\"e\":\"23:59\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 5\",\"allday\":false,\"half\":\"pm\",\"s\":721,\"e\":1439,\"rmk\":\"till 5 Aug\"},\"re\":{\"span\":\"pm\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"12:01\",\"e\":\"23:59\",\"dis\":false}}},{\"sp\":\"custom\",\"draft\":{\"span\":\"custom\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"09:15\",\"e\":\"11:45\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 6\",\"allday\":false,\"half\":null,\"s\":555,\"e\":705,\"rmk\":\"till 6 Aug\"},\"re\":{\"span\":\"custom\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"09:15\",\"e\":\"11:45\",\"dis\":false}}}]; AM draft switched to Duty {\"span\":null,\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"00:00\",\"e\":\"12:00\",\"dis\":false},\"allday\":false}, saved {\"t\":\"Duty\",\"d\":\"Aug 7\",\"allday\":false,\"half\":null,\"s\":0,\"e\":720,\"rmk\":\"till 7 Aug\"}",
+  "pics": [
+   "S14-desk-all-reopened.png",
+   "S14-desk-am-reopened.png",
+   "S14-desk-pm-reopened.png",
+   "S14-desk-custom-reopened.png",
+   "S14-desk-AM-to-Duty.png"
+  ]
+ },
+ {
+  "n": 15,
+  "size": "phone 390x844",
+  "role": "member Ranger",
+  "status": "PASS",
+  "said": "{\"duty\":{\"rec\":{\"t\":\"Duty\",\"d\":\"Aug 10\",\"allday\":false,\"half\":null,\"s\":1320,\"e\":120,\"rmk\":\"till 10 Aug\"},\"start\":\"22:00\",\"end\":\"02:00\"},\"equal\":{\"toast\":\"Give the input a start and end that are not the same time\",\"made\":0,\"open\":true},\"missing\":{\"toast\":\"Give the input a start and end time, or tick All day\",\"made\":0},\"leave\":{\"rec\":{\"t\":\"LL\",\"d\":\"Aug 13\",\"allday\":false,\"half\":null,\"s\":1320,\"e\":120,\"rmk\":\"till 13 Aug\"},\"span\":\"custom\",\"start\":\"22:00\",\"end\":\"02:00\"}}",
+  "pics": [
+   "S15-phone-duty-overnight-reopened.png",
+   "S15-phone-equal-hours.png",
+   "S15-phone-missing-time.png",
+   "S15-phone-leave-overnight-reopened.png"
+  ]
+ }
+]

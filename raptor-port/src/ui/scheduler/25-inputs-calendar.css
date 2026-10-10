@@ -44,7 +44,7 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
-.inputs-top .inputs-filterfields label>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* (the three boxes carry no words over them since D729 — "Person", "Type", "Search" went; each box names itself) */
 .inputs-filter-summary{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--ink-2);font-size:12px;min-width:0}
 .inputs-filter-summary>span{flex:1;min-width:0;overflow-wrap:anywhere}
 .inputs-filter-summary .abtn{flex-shrink:0;min-height:44px;padding:8px;font-size:12px}
@@ -109,7 +109,6 @@
     background:var(--accent);color:#04222b;font-size:10px;font-weight:800;line-height:16px;text-align:center}
   .inputs-top .inputs-filterfields.open label{flex:1 1 calc(50% - 8px)}
   .inputs-top .inputs-filterfields.open label.inputs-search{flex-basis:100%}
-  .inputs-top .inputs-filterfields.open label>span{position:static;width:auto;height:auto;clip:auto}
 }
 /* AND ON A DESKTOP (the calendar job's bug check, 8 Oct 26 - seen by three of its walkers and in D624's pairs): the tabs,
    the tools and both months ran to the very edge of the screen - the gear and the colour key's last word flush against
@@ -172,6 +171,18 @@ body.in-cal{padding-bottom:0}
   cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}
 .ib-bar.red{background:#6E2F3A;background:color-mix(in srgb,var(--hard) 44%,var(--panel))}
 .ib-bar.amb{background:#6B5320;background:color-mix(in srgb,var(--adv) 42%,var(--panel))}
+/* A TIMED INPUT IS LIGHTER THAN AN ALL-DAY ONE (owner D729 — the design vet's V4, 10 Oct 26; the drawing
+   docs/mock/img/inputs-vet/desk-month-drawn.png, whose measures these are): a one-hour appointment was drawn as heavy
+   as a whole day of leave. An all-day bar stays solid; a bar with hours is a TINT of its own colour — 34% of it over
+   the panel — with a solid 3px edge of that colour at its left, and the page's ink for its words. `--ib-c` is the
+   bar's solid colour, said once per tone so the tint and the edge cannot drift from it. */
+.ib-bar.red{--ib-c:#6E2F3A}
+.ib-bar.amb{--ib-c:#6B5320}
+@supports (background:color-mix(in srgb,red 50%,blue)){
+  .ib-bar.red{--ib-c:color-mix(in srgb,var(--hard) 44%,var(--panel))}
+  .ib-bar.amb{--ib-c:color-mix(in srgb,var(--adv) 42%,var(--panel))}
+}
+.ib-bar.timed{background:var(--panel-2);background:color-mix(in srgb,var(--ib-c) 34%,var(--panel));box-shadow:inset 3px 0 0 var(--ib-c);color:var(--ink)}
 .ib-bar.is-cont{margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0}
 .ib-bar.is-on{margin-right:0;border-top-right-radius:0;border-bottom-right-radius:0}
 .ib-bar:hover{filter:brightness(1.18)}
@@ -221,12 +232,39 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-title-edit:focus{outline:none;border-color:var(--accent)}
 .inputsday .ic-title-ro{font-size:14px;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
 .inputsday .ic-secs{margin-bottom:10px}
-/* a line: the square of its colour (red an absence, amber a duty or a commitment), the callsign, the kind */
-.idy-row .sd-open{gap:7px}
-.idy-sq{flex:0 0 auto;width:9px;height:9px;border-radius:2px;background:var(--adv)}
-.idy-row.red .idy-sq{background:var(--hard)}
-.idy-who{font-size:13.5px;font-weight:800;color:var(--ink);white-space:nowrap}
-.idy-kind{font-size:13px;color:var(--ink-2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ---- THE INPUT CARD (owner D718–D724, 10 Oct 26 — ui/InputCard.tsx; the pictures of record
+   docs/mock/img/input-card-final/). ONE card for this day and for the Inputs list on a phone. The SANS day's `.sd-row`
+   (24-sans-calendar.css) is NOT this card and is not touched (D723: pucks with the CAT there — D647, D649); the LATE
+   tag and its note are the two days' shared ones (`.sd-late`, `.sd-latenote`), so LATE looks the same on both.
+   THE TOP LINE is a flow of text with the LATE-and-hours corner FLOATED at its right: a shared input's names wrap and
+   run on under the corner at the card's full width (D721), which no grid or flex row can do. THE WORDS ROW wraps at
+   the card's full width (D719), "By Saber" pushed to its right end and falling under the words where the two do not
+   fit. Sizes are the mock-up's, measured on his pictures: a two-line card is 51px on a phone. ---- */
+.icard{border:1px solid var(--edge);border-radius:8px;padding:5px 9px;margin-bottom:4px;background:var(--panel-2);min-width:0;cursor:pointer;text-align:left}
+.icard:hover{border-color:var(--edge-2)}
+.icard-top{display:flow-root;font-size:13px;line-height:1.5;padding:1px 0;overflow-wrap:break-word}
+.icard-corner{float:right;display:inline-flex;align-items:center;gap:8px;margin-left:10px;min-height:20px}
+.icard-sq{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--adv);margin-right:7px}
+.icard.red .icard-sq{background:var(--hard)}
+.icard-open{margin-right:7px;border-radius:4px;cursor:pointer}
+.icard-open:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icard-who{font-size:13.5px;font-weight:800;color:var(--ink)}
+.icard-kind{font-size:10.5px;line-height:1.35;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.icard-hrs{font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.icard-words{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:1px;min-width:0}
+.icard-text{flex:1 1 auto;min-width:0;font-size:13px;line-height:1.3;color:var(--ink-2);overflow-wrap:anywhere}
+.icard-title{color:var(--ink);font-weight:600}
+.icard-rmk{color:var(--ink-3);font-size:12px}
+.icard-by{margin-left:auto;text-align:right;font-size:11.5px;line-height:1.35;color:var(--ink-3);white-space:nowrap}
+.icard-latenote{display:block}
+/* just saved on the list: the row's own flash (06-inputs.css @keyframes inflash) */
+.icard.innew{animation:inflash 6s ease-out 1}
+@media (prefers-reduced-motion:reduce){.icard.innew{animation:none}}
+/* THE LIST'S DAY HEADING on a phone (D723): "SAT 18 JUL" and, at the right, how many inputs stand under it */
+.icard-day{display:flex;align-items:baseline;gap:8px;margin:14px 2px 6px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.icard-day:first-child{margin-top:4px}
+.icard-day b{color:var(--ink);font-weight:800}
+.icard-day i{font-style:normal;margin-left:auto;font-weight:600;letter-spacing:.04em;text-transform:none;font-size:11.5px}
 @media (min-width:1100px){
   .inputs-workspace:has(.floatwin.inputsday:not([data-placed])){padding-right:462px}
 }
@@ -280,7 +318,14 @@ body.in-cal{padding-bottom:0}
 /* ---- WHO PLACED IT, AND WHEN (owner D629: "a small one") — the one small-print line, on the other places an entry is
    listed or opened: the List (under the remark), the editor's foot, a Medical card, the document viewer. The opened
    days carry it as `.sd-placed` (24-sans-calendar.css). ---- */
-.in-placed{display:block;margin-top:2px;font-size:10.5px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere;white-space:normal}
+/* "BY SABER" ON THE REMARK'S OWN LINE (owner D729 — the design vet's V2, 10 Oct 26; the drawing
+   docs/mock/img/inputs-vet/desk-list-drawn.png, whose measures these are): the full "Placed by … · date, time" stood
+   on a line of its own under every remark and made every row two lines. It is the name alone now, only where someone
+   else filed the input or it is for several people, and it follows the remark on its line. */
+.in-placed{display:inline;margin-left:12px;font-size:10.5px;line-height:1.35;color:var(--ink-3);white-space:nowrap}
+/* a row with no remark and no LATE: nothing stands before it, so it starts at the cell's edge (the row says so —
+   a stylesheet cannot see whether text stands before an element) */
+.in-placed.alone{margin-left:0}
 .inped-placed,.docview-placed{font-size:11px;line-height:1.35;color:var(--ink-3);overflow-wrap:anywhere}
 .docview-placed{margin:2px 0 6px}
 /* on a Medical card the line NEVER WIDENS THE CARD: a card hugs its puck and its dates (owner, 28 Aug 26 — "the box
@@ -297,6 +342,24 @@ body.in-cal{padding-bottom:0}
 .floatwin.inpedwin{width:min(430px,calc(100vw - 32px))}
 .floatwin.inpedwin .win-body{padding:0}
 .inped-win{display:flex;flex-direction:column;min-height:0}
+/* ITS BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26). An input is changed in this window now (the list's
+   pencil is gone — D718), and it carries the date calendar for every saved input: about 170px more. On an ordinary
+   desktop its last row — Delete, Cancel, Save — fell below the window's foot and was reached only by scrolling
+   inside it (seen on the first pictures of the built window; worse at his PC's 125%). The row is pinned to the foot
+   of the scrolling body, the form moving above it; what is scrolled into view (a question, a focused field) stops
+   clear of it. Position only — no button changes size (D487). */
+.inped-win > .airpop-foot{position:sticky;bottom:0;z-index:2;background:var(--panel)}
+.floatwin.inpedwin .win-body{scroll-padding-bottom:64px}
+/* ON A PHONE THE DAYS OF ITS CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger"). They were about
+   26 x 20; the Inputs list's pencil calendar, gone with D718, had these sizes on a phone, and this window is now the
+   one form that changes an input's dates. His word for THIS control (D487) - a desktop's window keeps its small
+   days, and the board's and the week's dialogs are not this window. */
+@media (max-width:820px){
+  .floatwin.inpedwin #inpEdCal{width:100%;max-width:360px;box-sizing:border-box;padding:8px 10px}
+  .floatwin.inpedwin #inpEdCal .rc-d{font-size:13px;padding:8px 0}
+  .floatwin.inpedwin #inpEdCal .rc-x{padding:8px 0}
+  .floatwin.inpedwin #inpEdCal .rc-nav{width:28px;height:28px;font-size:14px}
+}
 .inped-ask{display:flex;flex-direction:column;gap:8px;margin:10px 12px 0;padding:10px 12px;border:1px solid var(--adv);border-radius:9px;
   background:color-mix(in srgb,var(--adv) 10%,var(--panel));font-size:12.5px;line-height:1.4;color:var(--ink)}
 .inped-ask-h{font-size:12px;font-weight:800}
@@ -350,11 +413,6 @@ body.in-cal{padding-bottom:0}
   .pp-puck{min-height:36px;align-items:center}
 }
 
-/* A SHARED INPUT'S PEOPLE on an opened day (D655): the schedule's own pucks, compact, wrapping under the line; LATE
-   beside the man whose own record is late */
-.idy-people{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:3px}
-.idy-man{display:inline-flex;align-items:center;gap:3px}
-.idy-manlate{cursor:default}
 /* a man's own two things in a shared input he did not file, under the read-only form */
 .inped-own{display:flex;flex-direction:column;gap:8px;margin:8px 12px 0}
 .inped-own .inped-ask{margin:0}
@@ -371,3 +429,55 @@ body.in-cal{padding-bottom:0}
   .inputs-top .ic-nav #icToday{width:46px;min-width:46px}
   .ib .ic-mon,#inpCal .ic-mon{flex-basis:88px;width:88px}
 }
+
+/* ============================================================================================================
+   A NOTE THAT CARRIES ITS OWN PUCKS, in a day opened on the Inputs calendar (ui/InputsCal.tsx; the design of record
+   `docs/mock/note-with-pucks.html` — `c-compact.png`, `e-people-only.png`).
+   Owner D684 (9 Oct 26): "For the +note, perhaps just have a function to add pucks on the text written, instead of a
+   +pucks button". D688: "more compact … there will be many inputs too I don't want people to scroll massively down".
+   D692 — drawing A: the words on ONE line no taller than the box a note is typed in (28px), its small buttons
+   beside them; the people FOUR across straight under, the schedule's own pucks, a dashed "+" the last of them.
+   D694: the six dots and the box's left edge stand a little left and the box is padded alike on both sides, each
+   puck held inside its quarter — so the fourth puck is as far from the right border as the first from the left.
+   D695: a note of people and no words has no line of words at all — the people (three across), then the pencil and
+   the cross at the end of the first row.
+   The buttons are DRAWN small on his word; each still answers a finger by a press area larger than it (reaching up
+   and sideways — never down over the pucks, which are dragged).
+   ============================================================================================================ */
+.inputsday .ic-sec{gap:2px;margin-left:-8px}
+.inputsday .ic-sechandle{flex:0 0 14px;width:14px;padding:7px 1px;text-align:center;box-sizing:border-box}
+.inputsday .ic-note{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:3px 2px;padding:2px 8px;min-height:0}
+.inputsday .ic-note.has-ppl{padding-bottom:6px}
+.inputsday .ic-note .ic-poppuck-txt{flex:1 1 0;min-width:0;padding-left:2px;line-height:1.3}
+.inputsday .ic-note>button{position:relative;flex:0 0 auto;min-width:28px;min-height:28px;width:28px;height:28px;padding:0;font-size:13px;line-height:1}
+.inputsday .ic-note>button::after{content:'';position:absolute;inset:-8px -1px -3px}
+.inputsday .ic-note .ic-poppuck-edit{flex:1 1 0;min-width:0;width:auto;min-height:28px;height:28px}
+.inputsday .ic-note .ic-secpucks{flex:1 0 100%;min-width:0;display:block;min-height:0}
+.inputsday .ic-note .ic-secpk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%;align-items:stretch}
+.inputsday .ic-note .ic-secpk{min-width:0;display:flex}
+.inputsday .ic-note .ic-secpk .seat,.inputsday .ic-note .ic-secpk .puck{min-width:0;max-width:100%;width:100%}
+.inputsday .ic-note .ic-pkadd{min-height:var(--puck-h);height:auto;width:100%;padding:0;font:700 14px/1 inherit;border:1px dashed var(--edge-2);border-radius:5px;
+  background:transparent;color:var(--ink-2);cursor:pointer}
+.inputsday .ic-note .ic-pkadd:hover,.inputsday .ic-note .ic-pkadd:focus-visible{border-color:var(--accent);color:var(--accent)}
+/* people and no words (D695): the people take the row, three across; the pencil and the cross end it */
+.inputsday .ic-note.no-words{flex-wrap:nowrap;align-items:flex-start;padding:6px 4px 6px 8px;gap:4px}
+.inputsday .ic-note.no-words .ic-secpucks{flex:1 1 auto}
+.inputsday .ic-note.no-words .ic-secpk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.inputsday .ic-note.no-words>button{min-width:32px;width:32px;min-height:32px;height:32px}
+.inputsday .ic-note.no-words>button::after{inset:-6px -1px}
+/* a new note being written: its box, and "+ people" beside it */
+.inputsday .ic-newnote{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.inputsday .ic-newnote .ic-poppuck-edit{flex:1 1 0;min-width:0;width:auto;min-height:30px}
+/* THE BOX A NOTE IS TYPED IN wears the day title's skin (it was the browser's bare box — a white ring on a grey field,
+   seen on the walk's first picture); its letters are 16px on a phone, where smaller ones make an iPhone zoom the page
+   in on the box */
+.inputsday .ic-poppuck-edit{box-sizing:border-box;background:var(--bg);border:1px solid var(--edge-2);border-radius:8px;color:var(--ink);
+  font:inherit;font-size:13px;padding:4px 9px}
+.inputsday .ic-poppuck-edit:focus{outline:none;border-color:var(--accent)}
+@media (max-width:820px){.inputsday .ic-poppuck-edit{font-size:16px;padding:2px 9px}}
+.inputsday .ic-newnote-ppl{flex:0 0 auto;min-height:36px;padding:0 10px;border:1px dashed var(--edge-2);border-radius:7px;background:transparent;color:var(--ink-2);
+  font:700 12px/1 inherit;white-space:nowrap;cursor:pointer}
+.inputsday .ic-newnote-ppl:hover,.inputsday .ic-newnote-ppl:focus-visible{border-color:var(--accent);color:var(--accent)}
+/* the picker opened for a note being written says which words it is for */
+.ic-pick-for{padding:6px 12px 0;font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}
+.ic-pick-for b{color:var(--ink);font-weight:700}

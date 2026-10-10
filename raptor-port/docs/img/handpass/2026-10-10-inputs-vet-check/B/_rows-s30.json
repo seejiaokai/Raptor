@@ -1,0 +1,32 @@
+{
+ "rows": [
+  {
+   "n": 30,
+   "size": "desktop 1440x900",
+   "role": "member Ranger (own filings)",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) the upchit filing shortened the downchit and added the upchit — {\"s0\":[\"ATT C Jul 27–Jul 31\"],\"s1\":[\"ATT C Jul 27–Jul 28\",\"Upchit Jul 29\"]}",
+    "ok: Undo takes back the WHOLE upchit filing: the upchit goes and the downchit is whole again (27–31) — [\"ATT C Jul 27–Jul 31\"]",
+    "ok: Redo restores both together (downchit to 28 Jul, upchit 29 Jul) and the upchit row is in view and lit — {\"s3\":[\"ATT C Jul 27–Jul 28\",\"Upchit Jul 29\"],\"up\":{\"lit\":true,\"top\":376}}",
+    "ok: (setup) the clash filing split the periods — {\"c0\":[\"ATT C Aug 24–Aug 28\"],\"c1\":[\"ATT B Aug 26–Aug 27\",\"ATT C Aug 24–Aug 25\"]}",
+    "ok: Undo takes back the WHOLE clash filing: no ATT B, the ATT C 24–28 Aug is whole again — [\"ATT C Aug 24–Aug 28\"]",
+    "ok: Redo restores the same periods as the first time — [\"ATT B Aug 26–Aug 27\",\"ATT C Aug 24–Aug 25\"]",
+    "ok: (setup) the save under the hiding search is revealed and lit — {\"at\":0,\"lit\":true}",
+    "ok: Undo removes it; Redo brings it back REVEALED (first, in view) and LIT although the search still hides it — {\"dark\":0,\"gone\":true,\"r2\":{\"at\":0,\"lit\":true,\"onScreen\":true}}",
+    "ok: the List choice stayed on the List through every Undo and Redo — 1",
+    "ok: a fresh \"+ Input\": no date picked, no carried title / remark / attachment, no paragraph; kind \"Training\" (the brief; the scenario text says Duty), person Ranger — {\"read\":\"pick a start date\",\"type\":\"Training\",\"rmk\":\"\",\"title\":\"Training\",\"who\":\"Ranger\",\"chips\":0,\"hint\":0}"
+   ],
+   "pics": [
+    "s30-a-undo.png",
+    "s30-a-redo.png",
+    "s30-b-undo.png",
+    "s30-b-redo.png",
+    "s30-c-redo-hidden.png",
+    "s30-d-fresh-window.png"
+   ],
+   "note": "undo/redo after a 23-type filing (upchit), a 25-type filing (clash) and a hidden-by-filter save"
+  }
+ ],
+ "errs": []
+}

@@ -3,6 +3,7 @@ import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
+import { PEOPLE, isSpecial } from './people'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -97,6 +98,10 @@ export function inpDetailKey(inp:any):string{
   const all=!!inp.allday;
   return stableJson({person:inp.person||'',type:inp.type||'',
     allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
+    /* its own title is one of the things a reader sees ([INPUT-OWN-TITLE], D715): a title changed after the day was
+       published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
+       input's key is byte-for-byte what it was. */
+    ...(titleOf(inp.type,inp.title)?{title:titleOf(inp.type,inp.title)}:{}),
     sans:inp.sans||null});}
 /* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
    whose details moved, or which appeared or went away. An input absent on one side and TAKEN OFF ('r') on the other is
@@ -241,6 +246,16 @@ export const INPUT_META:any={
      (overseas duty, grp:'duty' — out of reach). Placed AFTER the medical block
      so the leave/med indices the suite pins stay put. */
   'Duty':       {name:'duty',                     grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
+  /* EVENT (owner, D713 + D714, 9 Oct 26 — "should I add a new input called event … sports, night out with, games").
+     Ruled a COMMITMENT LIKE THE OTHERS, not a softer social kind: "Ask it [the OIL question], its work, it can be an
+     official event too … It should be like a ground programme so yes it should clash … it shows directly on the
+     schedule unless taken out by an admin" (D713), and across a standby shift "a clash like that, not the meeting
+     softer amber" (D714). So: Duty's flags to the letter — grp:'act' lands it on the Ground Programme and makes a
+     man on it busy for an ALL AVAIL crowd, shiftHard makes it red across SC MAIN, and restsInput / oilAsks take it
+     in by construction (every act kind but Personal). Placed straight after Duty, before OD, so the leave / medical
+     indices the suite pins stay put. DRIFT SEAM, walked with this row: testing/refwin.ts reshift (the hand-typed
+     label list) and reirest (the crew-rest set), engine/schema.ts. Pinned by eventkind.test.ts. */
+  'Event':      {name:'event',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
@@ -413,7 +428,10 @@ export function offWord(inp:any){const m=inpMeta(inp.type);
      legend; a type that is already an ordinary word ("Training") would only
      read as "training (Training)", so it does not */
   const t=inpType(inp.type), abbr=m.name.toLowerCase()!==t.toLowerCase();
-  return `${m.name}${abbr?` (${t})`:''}${half}`+(inp.remarks?' — '+inp.remarks:'');}
+  /* its own title leads, where it has one ([INPUT-OWN-TITLE]; Sol's read of the code, 2): "Exercise Darwin — overseas
+     duty (OD)" — the kind's words stay, they are the reason the slot is closed */
+  const tt=titleOf(inp.type,inp.title);
+  return `${tt?tt+' — ':''}${m.name}${abbr?` (${t})`:''}${half}`+(inp.remarks?' — '+inp.remarks:'');}
 /* "Office", "Available fly" and "Available duty" are gone (owner decision, Aug 26).
    The first was a desk marker nobody read off the programme; the other two were
    OFFERS — a man saying what he WANTED rather than where he had to be. With them
@@ -496,14 +514,82 @@ export function restsInput(t:any){const m=inpMeta(t);
    so the two rules can diverge later without a hunt; today one delegates. */
 export function oilAsks(t:any){return restsInput(t);}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
-/* "Other" is the catch-all: the TYPE says nothing, so what the person actually
-   typed is the name of the thing (owner, Aug 26). Everywhere an input is
-   labelled — the Personal Inputs list, the Unavailable block, the board rows,
-   and the ground row accept creates — an Other reads by its remarks, falling
-   back to the bare type while the box is still empty. */
+/* ---- AN INPUT FILED FOR A PLACEHOLDER — "ALL AVAIL" OR "ALL" ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 —
+   9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.1, §3.2) ---------------------------
+   His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments"
+   (D700). It is an ORDINARY SINGLE INPUT whose `person` is one of the two placeholder people (people.ts `special`):
+   nobody's name is stored in it — who stands behind it is worked out on the day, as for a placeholder dropped on a row
+   (D702, D44). So no man behind it has a record of his own, and none has an OIL answer of his own (D711 (1)).
+   THREE STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
+   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" or "Personal" (D712), and the new
+   Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); (c) alone — never a group
+   member: it already stands for whoever is free. `placeholderProblem` answers '' or the sentence the screen says; every
+   save door asks it first (ui/inputedit.tsx normalizeInputDraft, commitGroup; ui/InputsPage.tsx add; ui/PeoplePick.tsx)
+   and the save boundary's hard check asks it of what a command really changed, whoever ran it (state/store.ts
+   wireStore — `placeholder-input-shape`). Pinned by placeholderinput.test.ts. */
+export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Appointment','Duty','Event','Other'];
+export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
+export function isPlaceholderInput(inp:any){return !!inp&&inp.person!=null&&isSpecial(inp.person);}
+export function placeholderProblem(inp:any):string{
+  if(!isPlaceholderInput(inp))return '';
+  const cs=String(PEOPLE[inp.person].cs);
+  if(!placeholderKind(inp.type))return `${cs} can be filed only for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} or ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
+  if(inp.endDate&&String(inp.endDate)!==String(inp.date)){const a=dateOrd(inp.date,inp.yr),b=dateOrd(inp.endDate,inp.yr);
+    if(a==null||b==null||a!==b)return `${cs} is filed one day at a time`;}
+  if(inp.grp!=null||inp.grpBy!=null)return `${cs} is filed on its own — it already stands for whoever is free`;
+  /* …and NEVER UNDER UNAVAILABLE (Astra's read of the code, 9 Oct 26). "Unavailable" names a real person's day; a
+     placeholder input filed there lands no row, so it has no crowd and nobody behind it can earn from the filer's Yes.
+     The accept door refuses to file one there (slots.ts acceptInput) — but an EDIT keeps a request's filing, so a named
+     man's input already under Unavailable, turned into a placeholder's through the new Person choices, stayed there.
+     The edit now takes it back onto the programme (ui/inputedit.tsx commitInputEdit); this is the rule behind it, held
+     at the save boundary like the other three. */
+  if(inp.acc==='u')return `${cs} cannot be filed under Unavailable — that names a real person’s day`;
+  return '';}
+/* ---- AN INPUT'S OWN TITLE ([INPUT-OWN-TITLE]; owner D715, D716, D717 — 9 Oct 26; the plan
+   docs/superpowers/plans/2026-10-09-input-own-title-plan.md) -------------------------------------------------------
+   His words: "select the type of input and it gives the user the option to change the name of the input. Not only to
+   event input, most of the inputs title." An input of a titled kind may carry `title`; its NAME — everywhere a name is
+   printed — is that title, and the kind's own name where it has none. THE KIND GOES ON DECIDING EVERY RULE: nothing
+   here, and nothing that calls it, reads a rule out of a title's words.
+
+   WHICH KINDS (D716 (1)): the "Duty & other commitments" ones — the activities and the overseas duty. Never leave or
+   medical (their names are the official codes the Leave War and the medical list read), nor SANS availability, which
+   is filed on its own calendar. ONE predicate: the window, the List's form, the save and the name all ask it. */
+export function titledKind(t:any){const m=inpMeta(t); return !!m&&(m.grp==='act'||m.grp==='duty');}
+/* the schedule's name column is narrow, and a title is a name, not a remark (which has 200) */
+export const TITLE_MAX=40;
+/* WHAT IS STORED: the typed title, trimmed and with its inner runs of white space collapsed — and NOTHING when the box
+   was left as the kind's own name (any case), is empty, or the kind takes no title. So an input whose Title box nobody
+   touched is the record it always was, and a later change of its kind is followed by its name with nothing to keep in
+   step. The one normaliser every door that writes an input calls. */
+export function titleOf(type:any,title:any):string{
+  if(!titledKind(type))return '';
+  const t=String(title==null?'':title).replace(/\s+/g,' ').trim().slice(0,TITLE_MAX).trim();
+  return t&&t.toLowerCase()!==inpType(type).toLowerCase()?t:'';
+}
+/* THE NAME. Everywhere an input is labelled — the month's bar, the day's card, the Personal Inputs list, the
+   Unavailable block, the board rows, the row a request lands on the schedule, the changes window, a warning's
+   sentence — goes through here, so the title reaches them all with no edit of their own.
+   "Other" USED TO read by its remarks (owner, Aug 26: the type says nothing). It takes the Title box like every other
+   titled kind now, and its remarks are plain remarks again (D716 (3)): an Other nobody titled is named "Other", its
+   remark beside it in the remarks cell — no longer printed twice. */
 export function inpLabel(inp:any){
-  const rm=String((inp&&inp.remarks)||'').trim();
-  return (isOther(inp&&inp.type)&&rm)?rm:String((inp&&inp.type)||'');
+  const type=String((inp&&inp.type)||'');
+  return titleOf(type,inp&&inp.title)||type;
+}
+/* THE NAME OF A REQUEST THAT IS GONE, READ OFF THE ROW IT LEFT (the changes window's "… on the programme → deleted"):
+   the row carries what it was made from (`srcType`) and what it was called (`prog`). Where the two differ the row was
+   named by the request's own title — that is its name; otherwise its kind, written as a kind is. */
+export function goneRequestName(row:any):string{
+  const kind=String((row&&row.srcType)||'').trim(), name=String((row&&row.prog)||'').trim();
+  return kind&&name&&name.toLowerCase()!==kind.toLowerCase()?name:(kind||name);
+}
+/* THE KIND, KEPT IN SIGHT (D717 — "Kind kept in sight"): the kind's own name when the input is named by something
+   else, and nothing when it is named by its kind — an untitled input looks exactly as it did. The one answer to "is
+   the kind drawn beside the name here". */
+export function inpKindTag(inp:any):string{
+  const type=String((inp&&inp.type)||'');
+  return inpLabel(inp)!==type?type:'';
 }
 /* The validator's gate. EVERY INPUT NOW COUNTS (owner, 10 Aug 26 — "all will
    automatically go in") — EXCEPT one a scheduler has since REMOVED, which is

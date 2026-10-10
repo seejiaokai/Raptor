@@ -1,0 +1,15 @@
+const C = await import('./aa-C-lib.mjs')
+const { world, shot, sleep, go, fileInput, declarePH, removePH, pubSat, closeBoard, editWeek, closeWins } = C
+const w = await world(); const { page } = w
+await fileInput(page, { iso: '2026-07-15', kind: 'Duty', person: 'allavail', s: '09:00', e: '12:00', rmk: 'S15 duty' })
+await declarePH(page, '2026-07-15')
+await go(page, 'editsched'); await sleep(300)
+await page.locator('button.bellbtn:visible').first().click(); await sleep(600)
+await page.locator('[data-testid="oil-yes"]').click(); await page.locator('[data-testid="oilconf-save"]').click(); await sleep(500); await closeWins(page)
+await go(page, 'editsched'); await pubSat(page, 2); await closeBoard(page)
+await removePH(page, '15 Jul')
+await go(page, 'editsched'); await editWeek(page); await sleep(500)
+await page.locator('#eWeek [data-pendlist="2"]:visible').first().click(); await sleep(800)
+console.log(await page.evaluate(() => [...document.querySelectorAll('.floatwin, [class*=chgw], [data-testid*="win-chg"], [data-testid*="changes"]')].filter(e => e.offsetParent).map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 500)).join(' || ')))
+await shot(page, 'S15-A5-pending-explained')
+await w.browser.close()

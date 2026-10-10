@@ -38,7 +38,7 @@ import { weekBundle } from '../engine/weeks-data'
 import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
-import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
+import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText, rowKindTag } from './html'
 import { fltNoLen, fltNoLenMsg, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { hideKey } from '../engine/warnhide'
 import { dayHidesIn } from '../engine/weekctx'
@@ -69,11 +69,14 @@ function peekPucks(a: any): string { return `<span class="pucks">${peekSeat(a.p)
 /* a plain text row cell — plRow's shape (nm/time/time/people/rmk) without its
    `base`-keyed ted()/alAttr() calls, which is exactly what would reach into
    the live week's SCHED. `o` only supplies the cx/flag/src decoration, read
-   straight off the object handed in (rowCls/cxTag/flagTag are pure). */
+   straight off the object handed in (rowCls/cxTag/flagTag are pure) — and the
+   kind of a row that came from a TITLED input, under its name as on the week
+   (rowKindTag — [INPUT-OWN-TITLE], D717; this builder is the peek's own, and
+   the check's walk found the label missing here: walker A, scenario 36). */
 function peekRow(name: any, str: any, end: any, peopleHtml: string, rmks: any, o: any): string {
   const t = (v: any) => v ? esc(fmtT(v)) : ''
   const fy = fyiTag(o)
-  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}<span class="ntx">${esc(name || '')}</span></span>`
+  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}<span class="ntx">${esc(name || '')}</span>${rowKindTag(o)}</span>`
     + `<span class="t t-s">${t(str)}</span><span class="t t-e">${t(end)}</span>`
     + `${peopleHtml || '<div class="ppl one"></div>'}`
     + `<span class="rmk${rmks ? '' : ' rk-e'}${fy ? ' has-late' : ''}">${fy}<span class="ntx">${esc(rmks || '')}</span></span></div>`

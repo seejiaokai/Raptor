@@ -1,0 +1,188 @@
+{
+  "s44-desk.json": {
+    "picsOnly": [
+      "desk-s44-saber-readonly.png",
+      "desk-s44-list-everyone.png"
+    ]
+  },
+  "s44-phone.json": {
+    "picsOnly": [
+      "phone-s44-saber-readonly.png",
+      "phone-s44-list-everyone.png"
+    ]
+  },
+  "s45-desk.json": {
+    "picsOnly": [
+      "desk-s45-saber-after.png"
+    ],
+    "note": "Saber is an admin, so his right to edit it is also the admin's; a non-admin subject was not available (Saber is the only seeded admin and Ranger the only member account)."
+  },
+  "s45-phone.json": {
+    "picsOnly": [
+      "phone-s45-saber-after.png"
+    ],
+    "note": "Extra size (the brief asked desktop only for 45)."
+  },
+  "s46-desk.json": {
+    "picsOnly": [
+      "desk-s46-takeout-ask.png"
+    ]
+  },
+  "s47-desk.json": {
+    "picsOnly": [
+      "desk-s47-ranger-reopen.png",
+      "desk-s47-history-admin.png"
+    ]
+  },
+  "s48-desk.json": {
+    "picsOnly": [
+      "desk-s48-off-after-reload.png",
+      "desk-s48-off-list.png"
+    ]
+  },
+  "s50.json": {
+    "verdict": "PASS",
+    "picsOnly": [
+      "desk-s50-control.png",
+      "desk-s50-meeting-title-Training.png"
+    ],
+    "note": "The script's own verdict said CHECK only because its test did not know the grade word 'adv'; read by hand. Event over the SC AM shift: a hard clash 'SC AM & <TITLE> clash' for every one of the nine titles (Meeting, Training, SC, Brief, Off, Event, OD, Ranger, 08:00); as a Meeting: the amber advisory 'Ranger is on SC AM (07:00-13:00) and also down for <TITLE>' for titles Meeting, Training, Event; Ranger's work hours (Insights) 20h in every state; start, end, person and kind unchanged in every state. The SC shift the app builds is SC AM 07:00-13:00 (not 08:00-16:00). Ranger also carries an older crew-rest line from Thursday's flying on that day in every state, titled or not."
+  },
+  "s50b.json": {
+    "mergeInto": "s50.json",
+    "pics": [
+      "desk-s50b-event-titled-Meeting-warnlist.png",
+      "desk-s50b-meeting-titled-Training-warnlist.png"
+    ]
+  },
+  "s53-desk-A.json": {
+    "picsOnly": [
+      "desk-s53-A-warnlist.png",
+      "desk-s53-A-week.png",
+      "desk-s53-A-daycard.png"
+    ],
+    "role": "admin — A: Training titled Meeting, then a Meeting"
+  },
+  "s53-desk-B.json": {
+    "picsOnly": [
+      "desk-s53-B-warnlist.png"
+    ],
+    "role": "admin — B: a Meeting, then Training titled Meeting (order reversed)"
+  },
+  "s53-desk-C.json": {
+    "picsOnly": [
+      "desk-s53-C-warnlist.png"
+    ],
+    "role": "admin — C: two Events titled Same name"
+  },
+  "s53-phone-A.json": {
+    "picsOnly": [
+      "phone-s53-A-warnlist.png",
+      "phone-s53-A-week.png"
+    ],
+    "role": "admin — A: Training titled Meeting, then a Meeting"
+  },
+  "s54-o1.json": {
+    "picsOnly": [
+      "desk-s54-o1-board-back.png"
+    ],
+    "role": "admin — typed row first, then the Training request"
+  },
+  "s54-o2.json": {
+    "picsOnly": [
+      "desk-s54-o2-board-back.png"
+    ],
+    "role": "admin — Training request first, then the typed row"
+  },
+  "s55.json": {
+    "verdict": "PARTIAL",
+    "picsOnly": [
+      "desk-s55-od-titled-board.png",
+      "desk-s55-night-thu-board.png",
+      "desk-s55-sunmon-titled-board.png"
+    ],
+    "note": "Parts 1 (all-day OD on a blank-time flying line: 'Overseas visit clashes with this line') and 3 (Sunday 23:00-02:00 into next week's Monday: 'Night exercise but tasked - MONDAY NIGHT WORK') PASS with the same grades as the untitled control. Part 2 (Wed 23:00-02:00 against Thursday work in the SAME week) is PARTIAL: the only warning is a crew-rest line that names no commitment ('Wednesday ended 02:00 ... his day starts 01:00 (NIGHT WORK)'), untitled or titled, so there is no sentence in which the title could be retained or lost. The script's CHECK verdict came from that."
+  },
+  "s57-desk-ad.json": {
+    "picsOnly": [
+      "desk-s57-ad-dc57-question.png",
+      "desk-s57-ad-df57-question.png"
+    ]
+  },
+  "s57-desk-us.json": {
+    "picsOnly": [
+      "desk-s57-us-db57-question.png",
+      "desk-s57-us-dg57-question.png"
+    ],
+    "note": "The heading names the first person and a count for a shared input (Ranger +1, Weekend exercise), not both names."
+  },
+  "s57-phone-ad.json": {
+    "picsOnly": [
+      "phone-s57-ad-dc57-question.png"
+    ],
+    "note": "Board Add on the phone: the week was brought to 20 Jul through the Jump to a date calendar, then Saturday 25 opened on the board and + INPUTS pressed."
+  },
+  "s57-phone-us.json": {
+    "picsOnly": [
+      "phone-s57-us-dd57-question.png",
+      "phone-s57-us-db57-question.png"
+    ],
+    "note": "A member has no Board door, so five doors (Calendar Add, List Add, shared Calendar Add, shared List Add, List pencil) plus the shared existing window; the Board Add door is admin only."
+  },
+  "s58.json": {
+    "picsOnly": [
+      "desk-s58-final.png"
+    ],
+    "note": "The picture is the Leave War after all the retitles (HO* for Ranger and Saber on Sat 18). Published days only: Sat 18 and Sun 19 Jul."
+  },
+  "s59-desk.json": {
+    "verdict": "FAIL",
+    "picsOnly": [
+      "desk-s59-oilearn-before.png",
+      "desk-s59-normal-rows.png",
+      "desk-s59-oilearn-long.png"
+    ],
+    "note": "FAIL on 'the kind remains discoverable': with OIL Earn OFF the Ground Programme rows show the small kind label (EVENT) under 'WEEKEND EXERCISE' and under the 40-character title; with OIL Earn ON the same rows show only the name, no kind label (compare desk-s59-normal-rows.png with desk-s59-oilearn-before.png). The kind is still visible in the Personal Inputs cards below (EVENT beside the titled names). The item cell does name the title; tapping Ranger's switch changed only his earning."
+  },
+  "s59-phone.json": {
+    "verdict": "FAIL",
+    "picsOnly": [
+      "phone-s59-oilearn-after-tap.png",
+      "phone-s59-normal-rows.png"
+    ],
+    "note": "Same as the desktop: the kind label under the name is there with the mode off (phone-s59-normal-rows.png) and gone with the mode on (phone-s59-oilearn-after-tap.png). On the phone the 40-character name in the mode is cut off on one line (shows about 36 characters); with the mode off it wraps to two lines."
+  },
+  "s60.json": {
+    "verdict": "PASS",
+    "picsOnly": [
+      "desk-s60-p60a-after-retitle.png",
+      "desk-s60-p60b-after-retitle.png"
+    ],
+    "note": "The script's own CHECK came from a case-sensitive test: the count window's heading is printed in capitals ('WEEKEND EXERCISE'), after the retitle 'WEEKEND EXERCISE TWO'. Read by hand: ALL AVAIL (Sat) and ALL (Sun): 45 men listed, 44 earning HO after the filer answered Yes; Reaper switched off in OIL Earn stays off after the retitle, the other 44 unchanged. The window heading is cut short in the narrow window ('WEEKEND EXERCISE T...'); the Ground Programme row reads 'WEEKEND EXERCISE TWO ... 44 of 45 earn'."
+  },
+  "s61.json": {
+    "picsOnly": [
+      "desk-pendlist-48322.png",
+      "desk-s61-edit-pending.png",
+      "desk-s61-after-AL.png"
+    ]
+  },
+  "s63.json": {
+    "verdict": "PARTIAL",
+    "picsOnly": [
+      "desk-s63-oil-question.png",
+      "desk-s63-count-window.png",
+      "desk-s63-history-bubble.png",
+      "desk-s63-history-after-delete.png"
+    ],
+    "note": "Every surface reached printed the text literally and made no real bold or italic element (checked in the page); the engine prints names in capitals in the warning, the count window and the To go out line of a deleted row (<B>OPS</B> \"A&B\"), which is its usual style. NOT reached: the history bubble (hovering the edited name box on the board brought no bubble; the board's History button opens the Changes window, which was read), and the deletion toast was not captured (empty)."
+  },
+  "s64.json": {
+    "verdict": "PASS",
+    "picsOnly": [
+      "desk-s64-list-late.png",
+      "desk-s64-after-undo.png"
+    ],
+    "note": "The script's FAIL came from comparing LATE before and after undo. Read by hand: the title-only edit wrote the change stamp ('changed by Ranger - 9 Oct 26, 21:50' under the row), the LATE mark carries the explanation 'Late input - last changed 9 Oct, after the 17 Sep deadline for its week of 16 Nov', warnings in the app 36 before and 36 after (no new clash), and Undo brought back 'Late test one' and a row with no 'changed by' line (the previous change state). CAVEAT: the input was already LATE the moment the cut-off was moved (before any title edit) because its own stamp is today and the new deadline is in September, so this fixture cannot show the title edit alone making it late. The Inputs gear accepts at most 60 days."
+  }
+}

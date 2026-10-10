@@ -1,0 +1,26 @@
+import { launch, open, shot, sleep, press, openNew, saveWin, csId, win, rec, gotoInputs } from './it-A-lib.mjs'
+const browser = await launch()
+const { ctx, page } = await open(browser, 'desk')
+const ranger = await csId(page, 'Ranger')
+await openNew(page, '2026-07-22')
+await page.selectOption('#inpEditPerson', ranger)
+await page.selectOption('#inpEditType', 'Event')
+await page.fill('#inpEditStart', '14:00'); await page.fill('#inpEditEnd', '15:00')
+await page.fill('#inpEditTitle', 'Sports day')
+console.log('head', await saveWin(page))
+const r = await rec(page, { person: ranger, type: 'Event' })
+console.log(JSON.stringify(r))
+await page.keyboard.press('Escape')
+// OD
+await openNew(page, '2026-07-22')
+await page.selectOption('#inpEditPerson', ranger)
+await page.selectOption('#inpEditType', 'OD')
+await page.fill('#inpEditTitle', 'Overseas visit')
+console.log('head2', await saveWin(page))
+await page.keyboard.press('Escape')
+// week
+await page.evaluate(() => window.go('editsched')); await sleep(page, 500)
+// next week? the demo week is 13-19 Jul; 22 Jul is next week
+console.log('nav', JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => /week|next|prev|‹|›/i.test((b.getAttribute('aria-label') || '') + b.textContent + b.id)).map(b => b.id + '|' + (b.getAttribute('aria-label') || '') + '|' + b.textContent.trim().slice(0, 20)).slice(0, 20))))
+await shot(page, 'probe-editsched')
+await browser.close()

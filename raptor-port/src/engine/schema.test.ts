@@ -93,7 +93,7 @@ const PERSON: Spec = {
 }
 const inputSpec = (booted: boolean): Spec => ({
   iid: booted ? 'string' : 'string?', person: 'string', date: 'string', endDate: 'string?', yr: 'number?', allday: 'boolean',
-  s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?',
+  s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?', title: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
   ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)

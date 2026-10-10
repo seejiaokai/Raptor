@@ -1,0 +1,13 @@
+[
+ {
+  "n": 54,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "PASS",
+  "said": "[order hand-written row first, then Training request] Friday 17 Jul 10:00-11:00, Ranger on a typed Ground Programme row \"MEETING\" (seated: true) and on Training titled \"Meeting\". Both present: [\"hard/DOUBLE_BOOK: Ranger is on two items called MEETING at once\"]; board name boxes [\"GROUND SCHOOL - EW\",\"MEETING\",\"MEETING\",\"AIRCREW ADMIN\"]; typed row's people bane. Request renamed \"Renamed away\": [\"hard/DOUBLE_BOOK: MEETING & RENAMED AWAY clash\"]. Renamed back \"Meeting\": [\"hard/DOUBLE_BOOK: Ranger is on two items called MEETING at once\"]; board list [\"⚠ 1 issue\",\"· 1 warning ·\",\"tap to review\",\"Ranger — Ranger is on two items called MEETING at once\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]",
+  "pics": [
+   "desk-s54-o1-board.png",
+   "desk-s54-o1-board-back.png"
+  ]
+ }
+]

@@ -469,6 +469,10 @@ export function acceptInput(di:any,inp:any,dest:any){
      never offers the control for these; this guard keeps any future call
      site honest. */
   if(isUnavail(inp.type))return false;
+  /* "UNAVAILABLE" DESCRIBES A REAL PERSON'S DAY ([INPUT-ALL-AVAIL]): an input filed for ALL AVAIL / ALL has no day to
+     describe, and under Unavailable its person cell is a drop target that would turn it into one man's input. The
+     button is not drawn for one (ui/html.ts accBtns); this is the door behind it. */
+  if(dest==='u'&&isSpecial(inp.person))return false;
   if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
   /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
      was the content key inpKey). Content keys are not unique — two inputs

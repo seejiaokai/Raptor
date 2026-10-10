@@ -20,9 +20,9 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor } from './inputedit'
+import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor, sharedRefusal } from './inputedit'
 import { entryRowsOf } from '../state/inputgroup'
-import { movePlanPuck, PLANPUCKS } from '../state/plan'
+import { movePlanPuck, planMoveBlock } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
@@ -73,13 +73,20 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   if (entry.kind === 'puck') {
     /* movePlanPuck carries its own canEditSched() gate; asking again here
        would just be a second copy of the same check that could one day
-       disagree with the first. Read what it decided instead. The caption
-       names the section's KIND (22 Aug 26) — a pucks row dragged to another
-       day is not a "note", and this toast is the move's one visible word. */
-    const kind = PLANPUCKS.find((p: any) => p.id === entry.pid)?.kind === 'pucks' ? 'Pucks row' : 'Note'
+       disagree with the first. Read what it decided instead. There is ONE
+       kind of section since D684 (9 Oct 26) — a note, with words, people or
+       both — so the toast, the move's one visible word, says "Note". */
+    /* a note holding a DELETED man does not move to a day on or after his delete (D299; state/plan.ts planMoveBlock) —
+       refused whole, saying who and what to do; before that day it moves as any note */
+    const gone = canEditSched() ? planMoveBlock(entry.pid, toIso) : null
+    if (gone) {
+      const p: any = (PEOPLE as any)[gone], d = String(p.deletedFrom || ''), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      HOOKS.toast(`Not moved: ${p.cs} was deleted from ${+d.slice(8, 10)} ${MON[+d.slice(5, 7) - 1]} — take him off the note first`, 'warn')
+      return false
+    }
     let did = false
     writeInputs(() => { did = movePlanPuck(entry.pid, toIso) })
-    if (did) HOOKS.toast(`${kind} moved`, 'ok')
+    if (did) HOOKS.toast('Note moved', 'ok')
     else if (!canEditSched()) HOOKS.toast('Only a scheduler can move planning sections', 'warn')
     return did
   }
@@ -98,9 +105,9 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   const rows = entryRowsOf(INPUTS, r)
   const whole = rows.length > 1
   if (whole ? !rows.every(x => mayEditInput(x)) : !mayEditInput(r)) {
-    const by = whole ? rows.find(x => x.grpBy)?.grpBy ?? rows.find(x => x.by)?.by : null
-    HOOKS.toast(whole ? `Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can move this for everyone`
-      : "Only a scheduler can move someone else's input", 'warn')
+    /* a shared input's refusal is one body with every other door's (ui/inputedit.tsx sharedRefusal — to its FILER, with
+       the members' switch off, it says the switch is off: D731 (8)) */
+    HOOKS.toast(whole ? sharedRefusal(rows, 'move this for everyone') : "Only a scheduler can move someone else's input", 'warn')
     return false
   }
 

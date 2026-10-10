@@ -19,6 +19,7 @@
    THE PUCK is ui/html.ts puck() itself — never a look-alike — so the seat's colour, the CAT chip and the SANS edge are
    the schedule's by construction (a test asserts the edge's class is there). Only its tab stop is taken off: the line
    it stands on is the button. */
+import { placedShort } from './placedline'
 import { useState } from 'react'
 import { PEOPLE } from '../engine/people'
 import { isAdmin } from '../state/perms'
@@ -84,8 +85,14 @@ export function SansDay({ iso, hi, onClose }: {
         <span className="sd-hours" data-testid="sd-hours">{e.hours}</span>
         {e.late && lateOpen === iid && <span className="sd-latenote" data-testid="sd-latenote" role="status">{e.late}</span>}
         {e.why && <span className="sd-why" data-testid="sd-why">{e.why}</span>}
-        {e.r.remarks && <span className="sd-rmk">{e.r.remarks}</span>}
-        {e.placed && <span className="sd-placed" data-testid="sd-placed">{e.placed}</span>}
+        {/* the remark and the small print share one line, the small print short — as on the Inputs calendar's day
+            (owner D701, 9 Oct 26: "B and sans day should follow"; InputsCal.tsx has the whole of it) */}
+        {(e.r.remarks || e.placed) && (
+          <span className="sd-foot">
+            {e.r.remarks && <span className="sd-rmk">{e.r.remarks}</span>}
+            {e.placed && <span className="sd-placed" data-testid="sd-placed" title={e.placed}>{placedShort(e.placed, +iso.slice(0, 4))}</span>}
+          </span>
+        )}
       </div>
     )
   }

@@ -1,0 +1,37 @@
+{
+ "rows": [
+  {
+   "id": 4,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "day card 119px high, list ok; Undo removed it, Redo restored it",
+   "pics": [
+    "4-390-day.png",
+    "4-390-list.png"
+   ]
+  },
+  {
+   "id": 4,
+   "size": "phone 320",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "list and day cards intact at 320",
+   "pics": [
+    "4-320-list.png",
+    "4-320-day.png"
+   ]
+  },
+  {
+   "id": 4,
+   "size": "desktop 1440",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "day card 102px high; Undo/Redo fine",
+   "pics": [
+    "4-desk-day.png"
+   ]
+  }
+ ],
+ "errs": []
+}

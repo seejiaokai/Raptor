@@ -45,7 +45,7 @@
    reader the issued schedule's green edge shares.
    ===================================================================== */
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inpWin, inpMeta, inpLabel, oilAsks } from '../engine/inputs'
+import { INPUTS, inpId, inpWin, inpMeta, inpLabel, inpKindTag, inputOn, oilAsks } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -260,19 +260,57 @@ function effectiveDefault(di: any, ev: OilEvidence, person: string, item: string
  *               pass (Fable R2-10) — without it the mode would spend the rest of
  *               the build telling an admin a man "earns nothing from this event
  *               — tap to put him back on it" about a man who was never on it.
- *  `off`      — anything else (ordinary schedule work switched off). */
-export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'never' | 'off'
+ *  `off`      — anything else (ordinary schedule work switched off).
+ *  `filerNo` / `filerUnasked` — a man behind an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL], D711 (1)): he has
+ *               no answer of his own; whoever FILED it answered No, or has not answered yet. Without these two he fell
+ *               to `never` — "this kind of event earns nothing by default" — which is false of a Duty. */
+export type OilOffWhy = 'denied' | 'declined' | 'unasked' | 'never' | 'off' | 'filerNo' | 'filerUnasked'
+/** WHAT AN OIL EXPLANATION CALLS A CLAIM ([INPUT-OWN-TITLE]; Sol's read of the code, 2): its own title, in quotes, where
+ *  it has one — "answered No for this “Sports day”" — and its kind where it has none, exactly as before. The name is
+ *  looked up HERE, for the words only, from the input as the day being read holds it (`inputOn`: an issued face reads
+ *  its frozen copy). The OIL evidence itself never learns a title: it is no part of what is compared or priced. */
+export function oilClaimWhat(di: any, claim: { iid?: any, type?: any } | null | undefined): string {
+  const kind = String((claim && claim.type) || '').trim()
+  const d: any = di == null ? null : DAYS[+di]
+  const inp: any = claim && claim.iid != null ? inputOn(String(claim.iid), d ? d.dt : null) : null
+  return inp && inpKindTag(inp) ? `“${inpLabel(inp)}”` : kind
+}
 export function oilOffReason(di: any, person: any, item: string): { why: OilOffWhy, what: string } {
   const ev = evOf(di)
   const dec = personDecision(ev, String(person), item)
   if (dec === 'deny') return { why: 'denied', what: '' }
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
   if (inp) {
-    const what = String(inp.type || '').trim()
+    const what = oilClaimWhat(di, inp)
     return { why: inp.ans == null ? 'unasked' : 'declined', what }
   }
+  const held = heldClaim(ev, item)
+  if (held && !itemDefaultFor(di, ev, String(person), item))
+    return { why: held.ans == null ? 'filerUnasked' : 'filerNo', what: oilClaimWhat(di, held) }
   if (!itemDefaultFor(di, ev, String(person), item)) return { why: 'never', what: '' }
   return { why: 'off', what: '' }
+}
+
+/** THE REQUEST BEHIND THIS ITEM WHEN A PLACEHOLDER HOLDS IT — an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL]) —
+ *  else undefined. Read off the day's own evidence, so an issued day answers from what it went out with. */
+function heldClaim(ev: OilEvidence, item: string) {
+  return item && item.startsWith('i:') ? ev.inputs.find(i => inputItemKey(i.iid) === item && isSpecial(i.person)) : undefined
+}
+/** …and what the ALL AVAIL window says above its "Who earns OIL" list for such a request, or '' when the ordinary hint
+ *  is the true one (the filer answered Yes; any other kind of row). The men behind it start where the FILER's answer
+ *  puts them (D711 (1)), so "Tap a puck to stop a man earning" over a list of men who earn nothing would invite a tap
+ *  that does the opposite of what it says. */
+export function oilHeldClaimHint(di: any, item: string): string {
+  const held = heldClaim(evOf(di), item)
+  if (!held || (held.ans != null && held.ans > 0)) return ''
+  const what = oilClaimWhat(di, held) || 'request'
+  /* IT STATES THE DEFAULT, NEVER "NOBODY EARNS" (Sol's read of the code, 9 Oct 26): once the scheduler has credited one
+     man — or typed one onto the row — a flat "so nobody behind it earns" contradicted the count and the lit puck
+     beside it; and the instruction is the one that is right for a mixed list. */
+  const how = 'Tap an unlit puck to credit a man; tap a lit one to stop his credit.'
+  return held.ans == null
+    ? `The OIL question for this ${what} has not been answered yet, so by default nobody behind it earns. ${how}`
+    : `Whoever filed this ${what} answered No to OIL, so by default nobody behind it earns. ${how}`
 }
 
 /** What the mode shows on ONE puck: whether it glows, and the man's figure for
@@ -541,6 +579,14 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
       ? (evOf(di).inputs || []).find((i: any) => String(i.iid) === String(item).slice(2))
       : null
     if (claim && (claim.stand === 'active' || claim.stand === 'unlanded')) {
+      /* AN INPUT FILED FOR ALL AVAIL / ALL HAS NO PUCK OF A MAN ON ITS ROW TO TAP ([INPUT-ALL-AVAIL]): the people behind
+         it are in the window its count opens (D38), each starting where the filer's answer puts him (D711 (1)) */
+      /* …and one TAKEN OFF the programme has no row and so no count to tap (walker B, 9 Oct 26: its Personal Inputs
+         line still said "tap the count") — it says what is true of it */
+      if (isSpecial(claim.person))
+        return claim.acc === 'r'
+          ? `<span class="${cls} oilitem none" title="This request is off the programme, so nobody earns from it">${esc(txt) || '&nbsp;'}</span>`
+          : `<span class="${cls} oilitem none" title="This request follows the answer of whoever filed it — tap the count to switch one person">${esc(txt) || '&nbsp;'}</span>`
       return `<span class="${cls} oilitem none" title="A request is answered for each person on it — tap a puck on this row, not the row itself">${esc(txt) || '&nbsp;'}</span>`
     }
     /* A START AND NO END ([ALLAVAIL-OPEN-ROW], D360): not "nothing can earn" — it could, once it has an end. Its crowd is
@@ -621,7 +667,7 @@ export function inertWhy(di: any, item: string): string {
   const iid = item.slice(2)
   const inp = (evOf(di).inputs || []).find((i: any) => String(i.iid) === iid)
   if (!inp) return oilNoAskWhy(di, item) || plain
-  const what = String(inp.type || 'request').trim() || 'request'
+  const what = oilClaimWhat(di, inp) || 'request'
   const row = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
   const when = row && row.date ? ` on ${String(row.date)}` : ''
   if (inp.stand === 'cx') return `his ${what}'s row${when} is cancelled, so nothing is earned from it`
@@ -639,6 +685,12 @@ export function inertWhy(di: any, item: string): string {
 export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) => string): string {
   const p = (PEOPLE as any)[person]
   if (!p) return ''
+  /* A PLACEHOLDER IS NEVER A SWITCH ([INPUT-ALL-AVAIL]; walker B of its check, 9 Oct 26). An input filed for ALL AVAIL /
+     ALL carries the placeholder as its PERSON, and the request's own line under Personal Inputs draws that person's
+     puck through here — so it came out as a man's switch: "ALL AVAIL earns nothing yet — tap to take him off this
+     event". It is nobody, it is never credited (engine/oilev.ts oilEarnedWork), and a tap wrote a decision about
+     nobody. Its puck is drawn; the men behind it are switched in the window its count opens. */
+  if (isSpecial(person)) return `<span class="seat oilpk inert" title="${esc(p.cs)} — the people behind it are switched in the window its count opens">${pk(null)}</span>`
   const eligible = oilEligible(di, person, item)
   if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(inertWhy(di, item))}">${pk(null)}</span>`
   /* UNDER A MASK THE PUCK IS NOT A CONTROL. The old markup left it tappable and
@@ -672,6 +724,11 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
              scheduler did. This is the spare standing by at home, the AVALON or
              BB line, the AVALON desk — and the owner's words for the way out are
              exactly this tap ("the admin can just easily click credit OIL"). */
+          /* a man behind an input filed for ALL AVAIL / ALL: the answer is the FILER's, never his own (D711 (1)) */
+          : why === 'filerNo'
+            ? `${p.cs} — whoever filed ${thing} answered No to OIL; tap to credit him anyway`
+            : why === 'filerUnasked'
+              ? `${p.cs} — the OIL question for ${thing} has not been answered yet; tap to credit him`
           : why === 'never'
             ? `${p.cs} — this kind of event earns nothing by default; tap to credit him`
             : `${p.cs} earns nothing from this event — tap to put him back on it`
@@ -933,7 +990,9 @@ export function oilRequestName(item: string): string {
   if (!item || !item.startsWith('i:')) return ''
   const r = (INPUTS as any[]).find(x => x && String(inpId(x)) === item.slice(2))
   const meta: any = r ? inpMeta(r.type) : null
-  return r ? String((meta && meta.name) || inpLabel(r) || '').trim() : ''
+  /* its own title first ([INPUT-OWN-TITLE], D716 (2)): a request the filer named is called that; an untitled one keeps
+     the wording it had */
+  return r ? String(inpKindTag(r) ? inpLabel(r) : ((meta && meta.name) || inpLabel(r) || '')).trim() : ''
 }
 /** WHAT THE HISTORY CALLS AN EVENT — ONE body for the board's line and the
  *  window's (Fable F5, 23 Sep 26: a switch made in the window on a sim row read

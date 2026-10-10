@@ -1,0 +1,37 @@
+[
+ {
+  "n": 5,
+  "size": "phone 390x844",
+  "role": "member Ranger (Saber set the setting)",
+  "status": "PASS",
+  "said": "setting on (box true); Saber's saved input survived the second sign-in (1); Ranger's Person list offered 63 choices; saved [{\"for\":\"Echo\",\"by\":\"Ranger\",\"t\":\"Duty\",\"d\":\"Jul 27\",\"s\":600,\"e\":660}]; card {\"at\":41,\"lit\":true,\"text\":\"LATE10:00–11:00EchoDutyS5 first remarkBy Ranger\",\"name\":\"Echo\",\"by\":\"By Ranger\",\"rmk\":\"S5 first remark\",\"when\":\"10:00–11:00\",\"head\":\"Mon 27 Jul1 input\",\"onScreen\":false,\"h\":51}; reopened: person Echo, \"Placed by Ranger for Echo · 10 Oct 26, 07:11\", Save present 1; after the change {\"cs\":\"Echo\",\"by\":\"Ranger\",\"rmk\":\"S5 changed remark\",\"type\":\"Duty\"}",
+  "pics": [
+   "S5-phone-echo-draft.png",
+   "S5-phone-echo-saved.png",
+   "S5-phone-echo-reopened.png"
+  ]
+ },
+ {
+  "n": 6,
+  "size": "desktop 1440x900",
+  "role": "member Ranger (Saber set the setting)",
+  "status": "PASS",
+  "said": "Echo duty by Ranger filed (Echo/Ranger) and his own meeting; Saber's box now false; both inputs still present (2); Ranger's new window per kind {\"Duty\":{\"list\":false,\"n\":0,\"fixed\":\"Ranger\",\"several\":false,\"ph\":false,\"why\":\"\"},\"Meeting\":{\"list\":false,\"n\":0,\"fixed\":\"Ranger\",\"several\":false,\"ph\":false,\"why\":\"\"},\"Event\":{\"list\":false,\"n\":0,\"fixed\":\"Ranger\",\"several\":false,\"ph\":false,\"why\":\"\"}}; Echo's duty reopened: Save 0, Delete 0, words \"Only Echo or an admin can change this.\"; his own reopened: Save 1, Delete 1, changed remark saved: S6 ranger own changed",
+  "pics": [
+   "S6-desk-new-after-off.png",
+   "S6-desk-echo-after-off.png",
+   "S6-desk-own-after-off.png"
+  ]
+ },
+ {
+  "n": 7,
+  "size": "phone 390x844",
+  "role": "member Ranger (setting on)",
+  "status": "PASS",
+  "said": "(a) new draft Echo/Duty->LL: window then showed person \"Echo\", words \"You can file leave only for yourself File it for me only\"; Add said \"You can file leave only for yourself\", inputs 53->53, window open true, person still \"Echo\"; (b) saved Echo duty turned to LL then Save said \"You can file leave only for yourself\", person in window \"Echo\", inputs 54->54, original now {\"cs\":\"Echo\",\"type\":\"Duty\",\"date\":\"Aug 5\"}; LLs for Ranger: 0",
+  "pics": [
+   "S7-phone-new-LL-for-echo.png",
+   "S7-phone-saved-duty-to-LL.png"
+  ]
+ }
+]

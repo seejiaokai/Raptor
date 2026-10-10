@@ -1,0 +1,15 @@
+import { launch, open, shot, sleep, press, enableMemberFiling, asMember, people, openNew } from './it-A-lib.mjs'
+import { setSeveral } from './it-A-doors.mjs'
+const browser = await launch()
+const { ctx, page } = await open(browser, 'desk')
+const P = await people(page)
+await enableMemberFiling(page); await asMember(page, 'Ranger')
+await openNew(page, '2026-07-21')
+await page.selectOption('#inpEditType', 'Event')
+const sw = page.locator('[data-testid="pp-several"]:visible'); await press(page, sw); await sleep(page, 300)
+console.log('on at start', await page.evaluate(() => [...document.querySelectorAll('button[data-pp].on, button[data-pp][aria-pressed="true"]')].filter(b => b.offsetParent).map(b => b.getAttribute('aria-label'))))
+console.log(await setSeveral(page, [P.Saber, P.Vapor]))
+console.log('on after', await page.evaluate(() => [...document.querySelectorAll('button[data-pp][aria-pressed="true"]')].filter(b => b.offsetParent).map(b => b.getAttribute('aria-label'))))
+console.log('why', await page.locator('[data-testid="pp-why"]').allInnerTexts())
+await shot(page, 'probe9-member-several')
+await browser.close()

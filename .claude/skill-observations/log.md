@@ -3289,6 +3289,321 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 
 **Principle:** A passing test is a written claim about behaviour; when a decision changes the behaviour, the tests are part of what the old decision left behind.
 
+### Observation 484: A merge that conflicted in a browser-test file must run that file before the full gate set
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** Two branches each appended a test to the end of the same browser-test file; the merge conflicted, both sides were kept by hand, the type check passed, and the full gate set was started. Its browser stage stopped at once on a syntax error: the merge tool had treated the last closing lines as common to both sides, so one test lost its ending. A whole gate run was spent finding it.
+**Skill:** New skill candidate: gate-run preflight (the project's shipping rule and bug-check order)
+**Type:** open-source
+**Phase/Area:** What is run between resolving a merge conflict and starting the long gate set
+
+**Issue:** The project's type check does not cover the browser-test folder, so a broken test file is invisible until the long run reaches it. The resolution looked right because every conflict marker was gone.
+
+**Suggested improvement:** After resolving any conflict by hand, run each conflicted file's own check before the long gate set: the test file itself for a test, the type check for source. Two tests appended at the same place share their trailing lines - read the join, not just the markers.
+
+**Principle:** A hand-resolved conflict is unverified code; the cheapest check that can load each conflicted file comes before the expensive run, never after.
+
+### Observation 485: "Nothing else on the PC during a gate run" includes read-only reviewers and research helpers
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** A full gate run was started while a read-only reviewer (an external model's CLI) and a read-only research helper were both still working. Two tests known to be unsteady under load failed, and the run had to be repeated. The same lesson had been written down earlier in the session for look scripts and preview servers only.
+**Skill:** New skill candidate: gate-run preflight (the project's shipping rule and bug-check order)
+**Type:** open-source
+**Phase/Area:** What may run beside the long gate set
+
+**Issue:** The earlier note named the things that had caused the failure before (browser look scripts), so a different kind of concurrent work - "it only reads files" - was judged safe. Timing-sensitive tests do not care what kind of work takes the processor.
+
+**Suggested improvement:** State the rule by its cause, not its last instance: while the gate set runs, start nothing and let nothing else be running - reviewers, helpers, builds, browsers. Order the night so reviewers run while the builder is fixing, and gates run alone.
+
+**Principle:** Write a lesson as the mechanism that failed, not the example that exposed it; the next instance will not look like the last one.
+
+### Observation 486: A walk script that boots in memory-only mode cannot check what is saved
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** A scripted walk of a feature that changes a saved record included a "reload and it is still there" step. The script opened the app with the switch that keeps everything in memory only (used by look scripts for a clean start), so the reload showed nothing saved and the step failed - then later steps passed vacuously because the thing they checked was absent.
+**Skill:** New skill candidate: scripted walk authoring (the project's bug-check order, the walk section)
+**Type:** open-source
+**Phase/Area:** How a walk script starts the app, and how its steps assert
+
+**Issue:** Two faults in the walk itself: the clean-start switch defeats persistence, and a step phrased as "X is not there" passes when an earlier failure already removed X.
+
+**Suggested improvement:** A walk that includes any saved-data step starts from real storage in a fresh browser profile (clean by construction), never the memory-only switch. Phrase each step so that a missing precondition fails it - assert the thing existed before asserting it went.
+
+**Principle:** A check that can pass for the wrong reason is not a check; make every step depend on evidence that its precondition held.
+
+### Observation 487: A check that sits BEHIND a door hides the door's own missing test — break each layer, and assert the layer's own signature
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** FULL bug check of "an input filed for ALL AVAIL / ALL" and the input kind Event (branch claude/day-window-compact; raptor-port/docs/handpass/2026-10-09-all-avail-event-check.md §5.5).
+**Skill:** raptor-port/docs/bug-check-order.md §8.4 (the break test) — a working guide, not a skill file
+**Type:** internal
+**Phase/Area:** break tests, where a rule is held in two layers (a door's own refusal and a save-boundary invariant)
+
+**Issue:** Three of twenty-seven break tests stayed green. In each, the door's own check had been cut and the save boundary's hard check behind it still refused the write with the SAME sentence, so every door test passed — the door's wire had no test of its own, by proof. The tests asserted "refused, sentence said, nothing saved", which both layers satisfy.
+
+**Suggested improvement:** In §8.4, add: where a rule is held in more than one layer, each layer's test must assert something only THAT layer does (called directly; the exact wording with no rollback tail; one toast, not two; no command attempted) — and the break test cuts each layer separately.
+
+**Principle:** Defence in depth makes the outer layer's absence invisible to an outcome-only test; a layer is proved only by an observation the layer behind it cannot produce.
+
+### Observation 488: A coded, switchable mock-up answered three design questions that two rounds of re-lettered screenshots could not
+
+**Status:** OPEN
+**Date:** 2026-10-09
+**Session context:** Designing a shorter input card and one look for an input's kind (branch claude/day-window-compact; OUTSTANDING.md [INPUT-LIST-AS-DAY-CARD]; the mock-ups raptor-port/docs/mock/input-list-as-day-card.html, input-card-ideas.html, input-card-a.html).
+**Skill:** the mock-up step of a visual change (raptor-port/CLAUDE.md "Ideate before building non-trivial UX"; the artifact-design guide) - a working guide, not a skill file
+**Type:** open-source
+**Phase/Area:** how a layout idea is shown to a non-technical owner before it is built
+
+**Issue:** The first mock-up re-arranged real screenshots of the built app. It showed one arrangement of one case, and the owner asked for "a more proper mock up" and then three follow-up questions (long text, what a small-print line costs, whether it is needed at all). Each needed another round of pictures. The second mock-up drew the card as live HTML with the app's own style values, the same six inputs under every idea, switches for the open choices, and each idea's height MEASURED on the viewer's own screen. Every follow-up became a switch position rather than a new round; and a first local look at it was wrong because the file was opened in a mobile-emulated browser without a viewport tag (laid out 980 wide), which a width assertion would have caught.
+
+**Suggested improvement:** Where the open question is a LAYOUT's behaviour over a range of content (long and short text, optional parts), build the mock-up as working markup with (a) the same varied sample set under every option, including the worst case, (b) a switch per open choice, (c) a measured figure per option computed in the page, and (d) a today/proposed toggle. Keep re-lettered screenshots for "what will this exact screen look like". When checking such a page locally, assert the layout width first.
+
+**Principle:** A picture answers the question it was drawn for; a working drawing with switches answers the next three as well - show behaviour, not an instance, when the design question is about behaviour.
+
+### Observation 489: A check piped into a filter cannot stop the commit that follows it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** recording a ruling and writing a handoff at the end of a long chat (Raptor, branch claude/day-window-compact)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the closing commit — "run the document check, then commit and push"
+
+**Issue:** One command chained the rulings script, the document check, the commit and the push with `&&`, and each check was piped into `head` / `grep` to keep the output short. The rulings script REFUSED the new row and the document check FAILED, yet the commit and the push went through: a pipeline reports the status of its LAST command (the filter), so the `&&` saw success. The failing state sat on the pushed branch until the next command read the output.
+
+**Suggested improvement:** In the handoff's closing step, say: run each check as its own command and read its result before the commit; if a check must be filtered, send it to a file and keep its exit code (`cmd > out.txt 2>&1; echo $?`), or set `pipefail`. Never put a filtered check and `git commit` in one `&&` chain.
+
+**Principle:** A gate guards only what waits on its real exit status. Filtering a gate's output for brevity replaces that status with the filter's — so a gate and the action it guards never share a chain unless the gate's own status is what the chain tests.
+
+### Observation 490: A job that REMOVES a control needs the removed control's door list before it is built
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** building an approved redesign that removed an edit-in-place row editor, its delete cross, and (on one screen size) two small action buttons and a paperclip (Raptor, the input card)
+**Skill:** New skill candidate: door inventory for a removal (or a section of the project's bug-check order, its door check)
+**Type:** open-source
+**Phase/Area:** planning, before the build - sizing the job and its check
+
+**Issue:** The approved design said "the pencil and the cross are not needed - a tap opens the item". The handoff had sized the job as a change of look with a medium check. Reading the removed editor field by field showed it was the ONLY form that changed one kind of record's dates, and the only place a pending question was flagged on a phone; the builder found those two. The independent scenario designer, asked "what could a person do before that he no longer can", found two more the builder had missed (a list of archived people offered only by the removed editor; a document that could only be opened from the removed icon). Four lost capabilities in all, none visible in the approved pictures.
+
+**Suggested improvement:** For any change that removes or hides a control, write - before building - a two-column list from the REMOVED CODE, not from memory: every action that control gave, in every role and at every screen size, and the control that gives it afterwards. An empty right-hand cell is a build item or a question for the owner. Hand the same list to the scenario designer with the question "what is missing from it". Size the check from that list, not from how the change looks.
+
+**Principle:** A picture of the new screen shows what stays; only the code being deleted shows what goes. Inventory the capabilities of what is removed before agreeing how big the job is.
+
+### Observation 491: Remove the control first, run the old tests, and the failures are the list of claims to restate
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** restating 43 tests that drove a removed edit-in-place editor so that they drive the window that replaced it (Raptor, the input card)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** changing behaviour that many existing tests reach through one control
+
+**Issue:** About 130 test lines in thirteen files pressed the removed control, many only as a means (clean-up, set-up) and some as the claim itself. Sorting them by reading would have been slow and error-prone. Removing the control and running those files gave the exact list of 43 failing tests; each was then restated for the new route with its claim kept and a dated note where the claim itself had changed, and none was deleted. Cascading failures (a test that died half-way and left state behind) disappeared once the first cause in each file was fixed.
+
+**Suggested improvement:** When a control many tests use is replaced: (1) write the new route's own tests first; (2) remove the old control; (3) run every file that mentions it and take the failure list as the inventory; (4) give each test file ONE helper for the new route (open, set a field, save, delete) and restate each test through it; (5) never delete a failing test - where its claim no longer holds, rewrite it to the new claim and say in a comment what it used to say and which decision changed it.
+
+**Principle:** The failing tests after a removal are a free, complete list of the promises the removed thing was keeping; restate each promise for the new door instead of deleting the test that held it.
+
+### Observation 492: A walker's FAIL is reproduced in the running app before any test or fix is written for it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** a helper walking the running app reported one FAIL ("dragging across a row's text opens the item instead of selecting the text"); the host wrote a failing unit test and a fix from the report, and only then tried it in the real browser (Raptor, the input card check)
+**Skill:** systematic-debugging (and the project's bug-check order, "the host reproduces every finding")
+**Type:** open-source
+**Phase/Area:** handling a finding handed back by a helper or a reviewer
+
+**Issue:** The unit test was written first, as the tests-first rule asks, and went red and then green. But the test environment has no stylesheet: it built a text selection that the real app can never hold, because the app switches text selection off everywhere outside form fields by a standing rule. In the real browser the "fix" changed nothing, and the scenario's expectation turned out to be the scenario designer's assumption, not a promise of the app. The fix, its tests and three break tests had to be taken out again.
+
+**Suggested improvement:** Order the steps: (1) reproduce the reported failure in the RUNNING app, by the reported gesture; (2) check the expectation against the governing rule - is the expected behaviour something the app promises?; (3) only then write the failing test, in the environment that can actually hold the failing state (a browser test where the state depends on styles or layout); (4) fix. A red unit test is not a reproduction when the test environment can fabricate a state production cannot reach.
+
+**Principle:** Reproduce where the fault lives before you pin it where it is convenient. A test can go red on a state the product cannot reach, and a fix for an unreachable state is dead code with a green tick.
+
+### Observation 493: A reviewer-facing recommendation was written without re-reading the ruling it touched, and had to be reversed at the mock-up
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Closing a full bug check of a UI change; three follow-up questions were parked for the owner, each with a recommended answer. He asked for mock-ups of two.
+**Skill:** bug-check order (evidence sheet, "Questions waiting for him") / record-decisions (READ IT BEFORE YOU ASK HIM ANYTHING)
+**Type:** internal
+**Phase/Area:** Parking a question with a recommended answer
+
+**Issue:** One parked question recommended keeping a different look for the same element on one screen. When drawing the mock-up the full row of the governing ruling was opened: his own words were to make that element look ONE way everywhere, so the recommendation contradicted his direction. The search before asking had confirmed the question was open, but the RECOMMENDATION was never checked against the full rows. A second, smaller one: a look script took a rule out of the built stylesheet by matching the media condition as written in the source; the build rewrites it to another spelling, so the "before" picture was silently identical to the "after" until the measured sizes were compared.
+
+**Suggested improvement:** In the parked-questions step, add: "open the full row of every ruling the question touches and check the RECOMMENDED ANSWER against his words, not only that the question is unanswered." In the walk-script notes: "a before/after made by removing a rule from the built page must print how many rules it removed and the measured size both sides — zero removed or equal sizes means the before is not a before."
+
+**Principle:** A recommendation is a claim about what the owner wants; it needs the same search of his words as the question itself. And an A/B picture is evidence only when the script proves the two states differ.
+
+### Observation 494: "Typecheck without writing output" checked nothing — the project is a solution of sub-projects
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** An unattended build (Raptor, the design vet's changes to the Inputs screens). After each batch of edits the host ran a no-output typecheck with the project flag and read its silence as "clean"; one real error (a name used and never imported) sat unseen through three such runs until the build's own typecheck was run.
+**Skill:** verification-before-completion (and the project's guide, "the host fixing in parallel typechecks without writing output")
+**Type:** open-source
+**Phase/Area:** The quick check between edits
+
+**Issue:** The repository's root type configuration only lists sub-projects. The single-project form of the type checker, pointed at that root, has no files of its own and exits clean in a second whatever the code says. Only the build-mode form (the one the real build runs) checks the sub-projects. A check that cannot fail was read as a pass, three times.
+
+**Suggested improvement:** In verification-before-completion: before trusting a quick check, make it fail once on purpose (or confirm it is the very command the build runs). In the project guide's "typecheck without writing output" line, name the exact command that works for this repository's layout.
+
+**Principle:** A check earns trust only after you have seen it go red. Silence from a command that has nothing to check is not a result.
+
+### Observation 495: Edit scripts carried in the shell lost their backslashes and failed on apostrophes — again
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** The same build. Edit scripts were first passed to the interpreter inline through the shell; one silently turned a regular expression's escapes into control characters (the tests caught it), and three later ones failed to parse because the text contained an apostrophe. Both traps are already written in this user's memory notes.
+**Skill:** New skill candidate: scripted-multi-file-edits (or a line in executing-plans)
+**Type:** open-source
+**Phase/Area:** Applying many exact replacements across large files
+
+**Issue:** Knowing the trap did not prevent it: the inline form is the habit, and it works often enough to be tried again. The reliable form — write the script to a file with the file tool, then run the file — was used only after each failure.
+
+**Suggested improvement:** Make the reliable form the only form in the recipe: "an edit script is always written to a file first; never passed inline", with the two failure signatures named (escapes turned into control characters; a parse error at an apostrophe).
+
+**Principle:** A known trap that is avoided by judgement each time will be hit again under load; remove the choice.
+
+### Observation 496: A scripted press that scrolls its target into view hid a pop-up no person could find
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** The owner reported from his phone that a dates button lit and no calendar appeared, the morning after a FULL bug check of that screen (walkers, browser tests, two code reads) had passed.
+**Skill:** Project guide: raptor-port/docs/bug-check-order.md (the walk, §7.2; the roll-call, §6) — a proposal is filed in OUTSTANDING.md [WALK-FINGER-NOT-LOCATOR]; the guide itself is unchanged until both reviewers read it (D70)
+**Type:** internal
+**Phase/Area:** Walk scripts and browser tests of pop-ups on a phone
+
+**Issue:** The pop-up was placed against the screen instead of its own button, so on a phone it opened one screen down the page. It had looked right only while a tall form above it pushed its row down; the build removed the form. Four existing browser tests and every walker pressed the pop-up's buttons with a locator press, which scrolls the target into view first — so each press worked and each step passed. A second gap: the roll-call asked what the removal took away (its doors), not what it MOVED.
+
+**Suggested improvement:** In a walk or browser test, prove a pop-up is on screen before pressing anything in it (page not scrolled by the script, its box inside the screen, the element at a point on it is the pop-up), then press at a point. When a build removes something from a page, the roll-call lists everything that stood below it and every pop-up on that page placed against the screen.
+
+**Principle:** An automated press proves a control works, not that a person can find it; a test driver that helpfully scrolls or waits removes exactly the obstacle the user would hit. Assert visibility and position from the user's resting view before interacting, and when removing a layout element, check what its presence was silently holding in place.
+
+### Observation 497: Twenty small fixes in one batch — the fix got written before the red was watched; a stash run recovered it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Building `[SEEN-BATCH-2]` (ten small faults and eleven owner answers on the Inputs pages), "each piece a failing test first".
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Red phase, when many small fixes are batched
+
+**Issue:** The tests for the whole batch were written first, but the first edit script of fixes was applied before the test file had been run once. Red was then proved after the fact by stashing only the fix files (`git stash push -- <src files>`), running the new tests on the old code, and popping. Two traps met on the way: (a) tests that import a helper the fix introduces fail on old code for the weak reason "undefined is not a function" — only the tests that drive the screen prove the real red; (b) a browser-test red run needs a BUILD of the old code, and the build typechecks test files, so new unit-test files that import not-yet-existing exports must be moved aside for that run.
+
+**Suggested improvement:** Add to the skill's red phase a "batch" note: write the batch's tests, RUN them before the first fix lands, and keep the output; if a fix slipped in first, the recovery is a path-limited stash of the fix files, never an argument that "it would have failed". Name the two traps.
+
+**Principle:** Red is an observation, not an inference. In a batch the observation is cheap to make once for the lot — and a path-limited stash makes it recoverable — but only tests that go through the screen's own controls prove the red for the right reason.
+
+### Observation 498: A fix that adds a page-wide key listener needs its own roll-call row — "alive but not on screen"
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Same batch. "Escape closes the List's dates calendar" was fixed with a window-level capture listener; the other provider's scenario design found that the calendar could be left "open" under a hidden view (the view switched by keyboard, no outside press), where the listener swallowed the first Escape meant for the window in front.
+**Skill:** New skill candidate: bug-check roll-call (project doc `raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** Roll-call, for a new listener / gesture
+
+**Issue:** The roll-call listed every layer that should take Escape first; it had no row for the states in which the NEW listener is registered while its own surface is not visible. The builder's tests opened the pop-up by its button and pressed Escape — the convenient order. The defect was a side-effect of the fix, invisible to tests of the fix.
+
+**Suggested improvement:** One line for §6 of the checking guide (a guide change — both reviewers first, D70): "a fix that adds a listener above its own component (document or window; a key, a pointer press) lists every state in which the listener is alive while its surface is hidden, covered or not in front, and what the key or press should reach then — with a test for each."
+
+**Principle:** A global listener is a claim on input that outlives the thing it was added for. Ask of every such claim: when is it alive, when is its owner visible, and who is entitled to the input in the gap.
+
+### Observation 499: A check promised to the owner in the tier block before its route was traced had to be withdrawn
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Same batch. The tier block told the owner the walk would read the earned-leave figure on the Leave War beside the changed OIL wording. In the walk it turned out the figure only moves at publication, so the read would have meant walking the publishing flow twice — out of proportion; it was dropped and said so.
+**Skill:** New skill candidate: bug-check tier block (project rule `.claude/rules/bug-check.md` step 3)
+**Type:** internal
+**Phase/Area:** Telling the owner what the tier means, before executing
+
+**Issue:** The tier block is written before the walk is designed, and an "extra" check was added to it on instinct ("the real downstream number") without tracing what makes that number move. The promise was then partly unkeepable at a sensible cost.
+
+**Suggested improvement:** In step 3 of the trigger: for every check named beyond the tier's own list, write in one clause the ROUTE that would prove it (which control, which state) — or word it as "if reachable in N steps". A promise with no route is a guess.
+
+**Principle:** Do not promise evidence until you know how it is obtained. A withdrawn check costs trust even when the withdrawal is right.
+
+### Observation 500: A memory note did not stop the same shell mistake three times in one session
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Same batch. The persistent memory already says "a Bash heredoc with an apostrophe never parses here — write the script with the Write tool". Under load the heredoc was used anyway three times (each failed, each cost a round trip); a fourth class of the same family — a `sed -i` with heavy escaping that silently changed nothing, its check lost because the command ran in the background — cost a full browser-test run.
+**Skill:** update-config (hooks) / New skill candidate: shell-on-Windows discipline
+**Type:** internal
+**Phase/Area:** Environment habits that a note cannot enforce
+
+**Issue:** A rule the agent agrees with and holds in memory is still broken when attention is on the task. The memory note is advice; nothing made the wrong call impossible.
+
+**Suggested improvement:** A PreToolUse hook on Bash that refuses a command containing a here-document whose body contains an apostrophe (and says "write the script with the Write tool"), and a habit line: one-line file edits go through the Edit tool, never `sed -i`, and never in a backgrounded command whose check cannot be read.
+
+**Principle:** When a documented rule keeps being broken under load, stop making it louder — make the wrong action fail fast at the tool boundary.
+
+### Observation 501: A fix that froze a question's WORDS but not its ACTION made a worse fault in the opposite order
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[SEEN-BATCH-2]`. A scenario designer's finding (a delete question changed meaning when a right was LOST while it stood) was fixed by remembering what was asked — for the wording and for one branch of the action. Both code readers then found, independently, that with a right GAINED the kept wording ("Take me out") sat over an action still chosen from current rights (delete everyone).
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** Fixing a reviewer's finding about state that changes under an open confirmation
+
+**Issue:** The fix was written against the one direction the scenario named and tested in that direction only. Capturing intent in one place (the label) and deciding the effect in another (live permissions) is exactly the split the finding was about; the fix moved the split instead of removing it. It also moved the batch into deletion logic without the builder re-asking what tier of check that needs — the first reader had to say so.
+
+**Suggested improvement:** Add to the skill: when a finding is "X changed while a confirmation stood", the fix captures the INTENT once and dispatches the action from it, and its tests cover BOTH directions of the change (gained and lost) plus the no-change control. And: after applying any reviewer-driven fix, re-ask the risk questions against the fix itself — a fix can raise the tier of the change it belongs to.
+
+**Principle:** A confirmation is a contract: what was asked is the only thing that may be done. Test every state change in both directions, and re-size the check when a fix reaches a more dangerous kind of code than the change it repairs.
+
+### Observation 502: Scenarios set aside as "older behaviour, not touched" held two real faults
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[SEEN-BATCH-2]`. Of forty scenarios from the other provider, the host walked or tested the ones naming a new place and listed about eight as "older behaviour this batch does not touch — not walked". The blind second code read then established two faults among exactly those (Escape in a people picker beside an open window; the schedule's one-person dialog on a shared input).
+**Skill:** New skill candidate: bug-check sizing (project doc `raptor-port/docs/walk-ledger.md`, the sizing step)
+**Type:** open-source
+**Phase/Area:** Dispositioning a scenario designer's list before the walk
+
+**Issue:** "Older, not touched" was decided by whether the changed LINES were on that path, not by whether the change altered the path's neighbours. The batch changed who takes Escape first in the same window family and made the OIL lines of the same dialog scope-aware — so those "untouched" scenarios were in fact one step from the change. Setting them aside saved perhaps ten walk steps and cost a second review round.
+
+**Suggested improvement:** In the sizing step, a designed scenario may be left unwalked only with one of three written reasons — carried by a named test, walked on unchanged code within N days, or unreachable — and "older behaviour" is not one of them when the change touches the same listener family, the same component, or the same scope rule. Otherwise drive it once; a scripted step is cheaper than a review round.
+
+**Principle:** A scenario from an independent designer is evidence about where the builder's blind spots are. Declining it needs a reason about the scenario, not about the diff.
+
+### Observation 503: A scripted check read "what was saved" from a guessed place on the screen — four right steps called wrong, and the same wrong read sat in the new browser test
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[DAY-TITLE-ESCAPE]` (D732) — a five-step host walk of one key in one box. To prove "nothing was written" in screen terms, the walk read the title the month prints on the date. The locator was built from the date cell's attribute (`data-icday`) when the title is drawn under a sibling element (`data-ichead`). The first run reported 4 of 5 steps FAIL on a build that was right; the picture showed the title in place. The new e2e case, written minutes earlier, carried the same locator and would have failed inside the fifteen-minute gate run.
+**Skill:** New skill candidate: bug-check sizing / walk scripts (project doc `raptor-port/docs/bug-check-order.md` §7.2, §7.8)
+**Type:** open-source
+**Phase/Area:** Writing a walk step or a browser test that reads a result off the screen
+
+**Issue:** The read was written from memory of how the cell "ought" to be built, not from the rendering code two screens away in the same file. Because the walk ran before the gates, the cost was one minute; had the gates run first it would have been a red gate and a re-run. The order's rule "a scripted gesture that fails is looked at on its picture before it is called a defect" worked exactly as written — the picture settled it at once.
+
+**Suggested improvement:** Two small lines for the walk guidance: (1) a locator that READS a result is copied from the markup that draws it (or from an existing test of that element), never composed from a neighbour's attribute; (2) when a new walk script and a new browser test share a read, run the walk (seconds) before the gate set (minutes) — the walk is the cheap place to find out the read is wrong.
+
+**Principle:** A check has two halves, the action and the read; a wrong read fails a right build just as loudly as a real fault. Take the read from the source, and put the cheapest run of it first.
+
+### Observation 504: A launch trap already written in the guide was walked into again, because the tool's own usage line suggests the wrong form
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[DAY-TITLE-ESCAPE]`. The whole gate set was started from inside `raptor-port/` with `gatelock.mjs run --from raptor-port`; all seven gates "FAILED" in 0 seconds with empty logs. `raptor-port/docs/gates-and-deploy.md` documents exactly this (met 7 Oct 26). It was met again three days later: the script's own header and its usage message both print `run [--from raptor-port]`, which is what gets copied.
+**Skill:** New skill candidate: gate running (project tool `raptor-port/scripts/gatelock.mjs`; project doc `raptor-port/docs/gates-and-deploy.md`)
+**Type:** internal
+**Phase/Area:** Starting the full check set
+
+**Issue:** A written warning in a reference doc did not stop the second occurrence; the tool's inline example outranked it. The failure is cheap (one minute) but reads, for a moment, like seven red gates.
+
+**Suggested improvement:** Make the tool refuse instead of the doc warn: `gatelock.mjs run` checks that its `from` folder holds a `package.json` and, if not, exits before taking the lock with one line naming the folder it looked in and the fix ("leave --from out when already inside raptor-port"). Change the usage line to show the form that works from both places.
+
+**Principle:** A trap met twice despite being documented needs a guard in the tool, not a louder note — and a tool's own usage text is the documentation people actually follow.
+
 ## 2026-10-10 (the branch claude/hist-jump-empty-seat, cut from main)
 
 *(Numbered past 504: the branch `claude/day-window-compact`, not merged when this was written, carries 484–504.)*
@@ -3322,3 +3637,35 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the walk helper, refuse to save a world from a browser opened on the "start fresh" address (or assert, straight after reopening a saved world, one fact the fixture made — a man on a row — before any step runs). A new browser context already has empty storage, so "fresh" is never needed to get the demo world.
 
 **Principle:** A saved fixture is only as real as the first check made after loading it; assert one thing the fixture did before trusting anything the walk then sees.
+
+## 2026-10-10 (the branch claude/day-window-compact, bringing main in after pull request #489)
+
+### Observation 507: An item filed on two branches cannot be archived at their merge without a declared allowance
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Merging main into a feature branch. The same backlog item had been filed on the feature branch ("not built") and rewritten on the other branch ("built and checked"); the other branch's handoff block said which copy to keep.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The "when the two branches meet" note a handoff block leaves for the later merge
+
+**Issue:** The handoff note said to keep one copy and drop the other, and that the document check fails on a doubled item. It did not say that dropping the older copy ALSO fails the check: the archive script measures the item's lines against the base, the dropped copy's heading has no equal in the kept copy, and the script put both files back. The way through (the `DOCSGUARD_ALLOW` environment setting for the script, then a `Docs-guard-allow: [ID]` trailer on the merge commit) had to be found by reading the checker. A first attempt had also edited the kept copy's heading to say "live", which would have failed the same check against main once the merge was committed; the fix was to leave the kept copy byte for byte and say "live" in an ADDED line.
+
+**Suggested improvement:** Where a handoff block leaves a "when the two branches meet" instruction for a doubled backlog item, have it name the three steps: drop the older copy, leave the kept copy's own lines untouched (add a line, never edit one), and declare the dropped heading with `Docs-guard-allow: [ID]` on the merge commit (the same value in `DOCSGUARD_ALLOW` while the archive script runs before the commit exists).
+
+**Principle:** An instruction left for a later merge should name the guard it will trip and the declared way through it; "keep this copy, drop that one" is only half of the step when a checker counts every line that leaves.
+
+### Observation 508: A borrowed walk helper named a field by the id it had before the feature was finished
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Writing a short scripted walk for a merge; the fixture borrowed a "file an input" helper from an earlier walk's own helper file.
+**Skill:** New skill candidate: the project's scripted-walk helpers (scripts/handpass/lib.mjs)
+**Type:** internal
+**Phase/Area:** Reusing a helper from an earlier walk's private helper file
+
+**Issue:** The helper filled the input window's title box by an id the box no longer has (it was renamed while that feature was still being built). The helper waited thirty seconds and failed with a bare timeout; every later step then failed for want of the fixture, so the first run read as nine failures. One look at the window's fields found the cause. Each walk's private helper file is frozen at the day of its walk and nothing says so.
+
+**Suggested improvement:** In the shared walk helper, give "fill this field" a short timeout and an error that names the selector and lists the fields the window does have; and note at the head of each walk-specific helper file the date and build it was written against, so a later borrower checks its selectors first.
+
+**Principle:** A helper written for one walk is evidence of that day's screen, not a library; when borrowing one, prove its first step against the present screen before building a fixture on it.

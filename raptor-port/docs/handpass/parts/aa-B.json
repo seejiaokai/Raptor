@@ -1,0 +1,2126 @@
+{
+ "parts": {
+  "s07-run": {
+   "at": "2026-10-09T08:29:03.977Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": [
+    {
+     "name": "YA",
+     "ans": "yes",
+     "order": "switch-first",
+     "c0": {
+      "Reaper": "HO*",
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "base": {
+      "on": 45,
+      "total": 45,
+      "P": "on"
+     },
+     "tap1": "off",
+     "tap2": "on",
+     "tap3": "off",
+     "afterA": {
+      "on": 0,
+      "P": "off",
+      "M": "off"
+     },
+     "afterB": {
+      "on": 44,
+      "P": "off",
+      "M": "on"
+     },
+     "c1": {
+      "Reaper": "",
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "errors": []
+    },
+    {
+     "name": "YB",
+     "ans": "yes",
+     "order": "answer-first",
+     "c0": {
+      "Reaper": "HO*",
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "base": {
+      "on": 45,
+      "total": 45,
+      "P": "on"
+     },
+     "afterA": {
+      "on": 0,
+      "P": "off",
+      "M": "off"
+     },
+     "tap1": "on",
+     "tap2": "off",
+     "tap3": "on",
+     "c1": {
+      "Reaper": "HO*",
+      "Anvil": "",
+      "Basher": ""
+     },
+     "errors": []
+    },
+    {
+     "name": "NA",
+     "ans": "no",
+     "order": "switch-first",
+     "c0": {
+      "Reaper": "",
+      "Anvil": "",
+      "Basher": ""
+     },
+     "base": {
+      "on": 0,
+      "total": 45,
+      "P": "off"
+     },
+     "tap1": "on",
+     "tap2": "off",
+     "tap3": "on",
+     "afterA": {
+      "on": 45,
+      "P": "on",
+      "M": "on"
+     },
+     "afterB": {
+      "on": 1,
+      "P": "on",
+      "M": "off"
+     },
+     "c1": {
+      "Reaper": "HO*",
+      "Anvil": "",
+      "Basher": ""
+     },
+     "errors": []
+    },
+    {
+     "name": "NB",
+     "ans": "no",
+     "order": "answer-first",
+     "c0": {
+      "Reaper": "",
+      "Anvil": "",
+      "Basher": ""
+     },
+     "base": {
+      "on": 0,
+      "total": 45,
+      "P": "off"
+     },
+     "afterA": {
+      "on": 45,
+      "P": "on",
+      "M": "on"
+     },
+     "tap1": "off",
+     "tap2": "on",
+     "tap3": "off",
+     "c1": {
+      "Reaper": "",
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "errors": []
+    }
+   ],
+   "log": [
+    "--- world YA: filer answers yes, order switch-first",
+    "filed {\"iid\":\"imv0pc07jlb946h\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "window base: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "tap1: on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "tap2: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "tap3 (explicit set): on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "filer answered no",
+    "after answer no : on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "filer answered yes",
+    "after answer yes : on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits after AL {\"Reaper\":\"\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "--- world YB: filer answers yes, order answer-first",
+    "filed {\"iid\":\"imv0pcso2tphdws\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "window base: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "filer answered no",
+    "after answer no : on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "tap1: on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "tap2: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "tap3: on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits after AL {\"Reaper\":\"HO*\",\"Anvil\":\"\",\"Basher\":\"\"}",
+    "--- world NA: filer answers no, order switch-first",
+    "filed {\"iid\":\"imv0pdfpnj4px4i\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"\",\"Anvil\":\"\",\"Basher\":\"\"}",
+    "window base: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "tap1: on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "tap2: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "tap3 (explicit set): on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "filer answered yes",
+    "after answer yes : on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "filer answered no",
+    "after answer no : on=1/45 P=on M=off W=off tabs=Who’s available 45 | Who earns OIL 1 of 45",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits after AL {\"Reaper\":\"HO*\",\"Anvil\":\"\",\"Basher\":\"\"}",
+    "--- world NB: filer answers no, order answer-first",
+    "filed {\"iid\":\"imv0pe8gtovla7o\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"\",\"Anvil\":\"\",\"Basher\":\"\"}",
+    "window base: on=0/45 P=off M=off W=off tabs=Who’s available 45 | Who earns OIL 0 of 45",
+    "filer answered yes",
+    "after answer yes : on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "tap1: on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "tap2: on=45/45 P=on M=on W=on tabs=Who’s available 45 | Who earns OIL 45 of 45",
+    "tap3: on=44/45 P=off M=on W=on tabs=Who’s available 45 | Who earns OIL 44 of 45",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits after AL {\"Reaper\":\"\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}"
+   ]
+  },
+  "s08-run": {
+   "at": "2026-10-09T08:45:11.655Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "a": {
+     "initial": {
+      "Prow": "on",
+      "Pin": "not in window",
+      "W": "off",
+      "M": "off",
+      "on": 0,
+      "total": 44,
+      "tab": "Who earns OIL 0 of 44"
+     },
+     "afterYes": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "on",
+      "on": 44,
+      "total": 44,
+      "tab": "Who earns OIL 44 of 44"
+     },
+     "undo": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "off",
+      "on": 1,
+      "total": 44,
+      "tab": "Who earns OIL 1 of 44"
+     },
+     "redo": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "on",
+      "on": 44,
+      "total": 44,
+      "tab": "Who earns OIL 44 of 44"
+     },
+     "reload": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "on",
+      "on": 44,
+      "total": 44,
+      "tab": "Who earns OIL 44 of 44"
+     },
+     "credits": {
+      "Reaper": "",
+      "Basher": "HO*",
+      "Anvil": "HO*"
+     },
+     "errors": []
+    },
+    "b": {
+     "initial": {
+      "Prow": "on",
+      "Pin": "not in window",
+      "W": "off",
+      "M": "off",
+      "on": 0,
+      "total": 44,
+      "tab": "Who earns OIL 0 of 44"
+     },
+     "afterYes": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "on",
+      "on": 44,
+      "total": 44,
+      "tab": "Who earns OIL 44 of 44"
+     },
+     "undo": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "off",
+      "on": 1,
+      "total": 44,
+      "tab": "Who earns OIL 1 of 44"
+     },
+     "redo": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "on",
+      "on": 44,
+      "total": 44,
+      "tab": "Who earns OIL 44 of 44"
+     },
+     "reload": {
+      "Prow": "off",
+      "Pin": "not in window",
+      "W": "on",
+      "M": "on",
+      "on": 44,
+      "total": 44,
+      "tab": "Who earns OIL 44 of 44"
+     },
+     "credits": {
+      "Reaper": "",
+      "Basher": "HO*",
+      "Anvil": "HO*"
+     },
+     "errors": []
+    }
+   },
+   "log": [
+    "--- a: typed P extras",
+    "put P under the row: dice",
+    "row pucks [\"allavail:ALL AVAIL:\",\"dice:Reaper:oilbar+oilbar-ho\"]",
+    "initial {\"Prow\":\"on\",\"Pin\":\"not in window\",\"W\":\"off\",\"M\":\"off\",\"on\":0,\"total\":44,\"tab\":\"Who earns OIL 0 of 44\"}",
+    "P switch after tap {\"cls\":\"off\",\"title\":\"Reaper was taken off this event — tap to put him back on it\"}",
+    "W after tap on tab Who earns OIL 1 of 44",
+    "filer answered Yes",
+    "afterYes {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"on\",\"on\":44,\"total\":44,\"tab\":\"Who earns OIL 44 of 44\"}",
+    "undo {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"off\",\"on\":1,\"total\":44,\"tab\":\"Who earns OIL 1 of 44\"}",
+    "redo {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"on\",\"on\":44,\"total\":44,\"tab\":\"Who earns OIL 44 of 44\"}",
+    "reload {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"on\",\"on\":44,\"total\":44,\"tab\":\"Who earns OIL 44 of 44\"}",
+    "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits {\"Reaper\":\"\",\"Basher\":\"HO*\",\"Anvil\":\"HO*\"}",
+    "--- b: typed P main",
+    "put P in the name box: dice",
+    "put the placeholder under the row: allavail",
+    "row pucks [\"dice:Reaper:oilbar+oilbar-ho\",\"allavail:ALL AVAIL:\"]",
+    "initial {\"Prow\":\"on\",\"Pin\":\"not in window\",\"W\":\"off\",\"M\":\"off\",\"on\":0,\"total\":44,\"tab\":\"Who earns OIL 0 of 44\"}",
+    "P switch after tap {\"cls\":\"off\",\"title\":\"Reaper was taken off this event — tap to put him back on it\"}",
+    "W after tap on tab Who earns OIL 1 of 44",
+    "filer answered Yes",
+    "afterYes {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"on\",\"on\":44,\"total\":44,\"tab\":\"Who earns OIL 44 of 44\"}",
+    "undo {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"off\",\"on\":1,\"total\":44,\"tab\":\"Who earns OIL 1 of 44\"}",
+    "redo {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"on\",\"on\":44,\"total\":44,\"tab\":\"Who earns OIL 44 of 44\"}",
+    "reload {\"Prow\":\"off\",\"Pin\":\"not in window\",\"W\":\"on\",\"M\":\"on\",\"on\":44,\"total\":44,\"tab\":\"Who earns OIL 44 of 44\"}",
+    "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits {\"Reaper\":\"\",\"Basher\":\"HO*\",\"Anvil\":\"HO*\"}"
+   ]
+  },
+  "s09-run": {
+   "at": "2026-10-09T08:32:36.433Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "setup": {
+     "P": "on",
+     "W": "off",
+     "M": "on",
+     "on": 44,
+     "text": " HO Relay HO Scope HO Static HO Cinder HO Rune HO Cutter HO Dash HO Ghost HO Grit HO Hex HO Ryder HO Vector HO Wisp HO who is free as things stand now Tap a puck to stop a man earning from this event."
+    },
+    "c0": {
+     "Reaper": "HO*",
+     "Basher": "",
+     "Anvil": "HO*"
+    },
+    "off1": {
+     "on": 0,
+     "text": "Relay — Scope — Static — Cinder — Rune — Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one."
+    },
+    "off2": {
+     "on": 0,
+     "text": "Relay — Scope — Static — Cinder — Rune — Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one."
+    },
+    "off3": {
+     "on": 0,
+     "text": "Relay — Scope — Static — Cinder — Rune — Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one."
+    },
+    "c1": {
+     "Reaper": "",
+     "Basher": "",
+     "Anvil": ""
+    },
+    "on1": {
+     "P": "on",
+     "W": "off",
+     "M": "on",
+     "on": 44,
+     "text": " HO Relay HO Scope HO Static HO Cinder HO Rune HO Cutter HO Dash HO Ghost HO Grit HO Hex HO Ryder HO Vector HO Wisp HO who is free as things stand now Tap a puck to stop a man earning from this event."
+    },
+    "c2": {
+     "Reaper": "HO*",
+     "Basher": "",
+     "Anvil": "HO*"
+    },
+    "errors": []
+   },
+   "log": [
+    "No world: tapped P (explicit grant)",
+    "filer -> Yes",
+    "Yes world: tapped W (explicit deny)",
+    "setup state P=on W=off M=on on=44/45 | Who earns OIL 44 of 45 | hint: O Rune HO Cutter HO Dash HO Ghost HO Grit HO Hex HO Ryder HO Vector HO Wisp HO who is free as things stand now Tap a puck to stop a man earning from this event.",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG {\"Reaper\":\"HO*\",\"Basher\":\"\",\"Anvil\":\"HO*\"}",
+    "blanket button text Nothing today earns",
+    "blanket button now mbtn daybtn blank on | Nothing today earns | Let this day earn again",
+    "blanket OFF P=undefined W=undefined M=undefined on=0/1 | Who earns OIL 0 of 45 | hint:  Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one.",
+    "seats offered under the blanket: 45 | P seat: 0",
+    "after tapping P and W under the blanket P=undefined W=undefined M=undefined on=0/1 | Who earns OIL 0 of 45 | hint:  Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one.",
+    "filer -> No",
+    "filer -> Yes",
+    "blanket OFF after filer re-answers P=undefined W=undefined M=undefined on=0/1 | Who earns OIL 0 of 45 | hint:  Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one.",
+    "publish AL (blanket off) {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits blanket-off AL {\"Reaper\":\"\",\"Basher\":\"\",\"Anvil\":\"\"}",
+    "blanket button Nothing today earns",
+    "blanket button after restore Nothing today earns",
+    "blanket RESTORED P=on W=off M=on on=44/45 | Who earns OIL 44 of 45 | hint: O Rune HO Cutter HO Dash HO Ghost HO Grit HO Hex HO Ryder HO Vector HO Wisp HO who is free as things stand now Tap a puck to stop a man earning from this event.",
+    "publish AL (restored) {\"published\":true,\"version\":\"AL2\",\"signSelects\":4}",
+    "credits restored AL {\"Reaper\":\"HO*\",\"Basher\":\"\",\"Anvil\":\"HO*\"}"
+   ]
+  },
+  "s43-run": {
+   "at": "2026-10-09T08:32:36.569Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "duty crowd with P on named Event 10-11": {
+     "n": 44,
+     "P": false
+    },
+    "duty crowd with Event moved to 13-14": {
+     "n": 45,
+     "P": true
+    },
+    "duty crowd with Event back on 10-11": {
+     "n": 44,
+     "P": false
+    },
+    "duty crowd with a placeholder Event overlapping": {
+     "n": 44,
+     "P": false
+    },
+    "placeholder Event crowd": {
+     "n": 44,
+     "P": false
+    },
+    "warnAfter": [
+     "⚠ 1 issue",
+     "·",
+     "tap to review",
+     "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out",
+     "✕",
+     "PLACEHOLDERS · DRAG IN",
+     "ALL AVAIL",
+     "ALL",
+     "PILOTS · 28 FREE",
+     "Ace",
+     "A",
+     "Anvil",
+     "IP",
+     "Blade"
+    ],
+    "warnBefore": [
+     "⚠ 1 issue",
+     "·",
+     "tap to review",
+     "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out",
+     "✕",
+     "PLACEHOLDERS · DRAG IN",
+     "ALL AVAIL",
+     "ALL",
+     "PILOTS · 28 FREE",
+     "Ace",
+     "A",
+     "Anvil",
+     "IP",
+     "Blade"
+    ],
+    "errors": []
+   },
+   "log": [
+    "filed duty {\"iid\":\"imv0pj0o2xmuow5\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"} event {\"iid\":\"imv0pj291v3es21\",\"person\":\"dice\",\"type\":\"Event\",\"s\":600,\"e\":660,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "count shown on duty row 44",
+    "duty crowd with P on named Event 10-11 {\"n\":44,\"P\":false}",
+    "event moved to 780-840",
+    "count shown on duty row after move 45",
+    "duty crowd with Event moved to 13-14 {\"n\":45,\"P\":true}",
+    "duty crowd with Event back on 10-11 {\"n\":44,\"P\":false}",
+    "warnings before placeholder Event [\"⚠ 1 issue\",\"·\",\"tap to review\",\"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\",\"✕\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 28 FREE\",\"Ace\",\"A\",\"Anvil\",\"IP\",\"Blade\"]",
+    "placeholder event {\"iid\":\"imv0pja6656jvs8\",\"person\":\"allavail\",\"type\":\"Event\",\"s\":600,\"e\":660,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "counts: duty 44 placeholder event 44",
+    "duty crowd with a placeholder Event overlapping {\"n\":44,\"P\":false}",
+    "placeholder Event crowd {\"n\":44,\"P\":false}",
+    "warnings after [\"⚠ 1 issue\",\"·\",\"tap to review\",\"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\",\"✕\",\"PLACEHOLDERS · DRAG IN\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 28 FREE\",\"Ace\",\"A\",\"Anvil\",\"IP\",\"Blade\"]"
+   ]
+  },
+  "s21-run": {
+   "at": "2026-10-09T08:36:55.449Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "pSeat": {
+     "cls": "on",
+     "title": "Reaper earns a full day — tap to take him off this event"
+    },
+    "pTitle": "Reaper earns a full day — tap to take him off this event",
+    "wTitle": "Basher earns half a day — tap to take him off this event",
+    "c0": {
+     "Reaper": "FO*",
+     "Basher": "HO*"
+    },
+    "pre": {
+     "Reaper": "FO*",
+     "Basher": "HO*"
+    },
+    "c1": {
+     "Reaper": "HO*",
+     "Basher": "HO*"
+    },
+    "errors": []
+   },
+   "log": [
+    "added row g:5.1",
+    "row slot now g:5.1",
+    "put P: dice",
+    "P on his own row {\"cls\":\"on\",\"title\":\"Reaper earns a full day — tap to take him off this event\"}",
+    "crowd window P=on W=on Who earns OIL 45 of 45",
+    "P title: Reaper earns a full day — tap to take him off this event",
+    "W title: Basher earns half a day — tap to take him off this event",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits after ORIG (expect P full day, W half) {\"Reaper\":\"FO*\",\"Basher\":\"HO*\"}",
+    "deleted P's later row; remaining [\"S21\"]",
+    "credits before AL (should still be issued figures) {\"Reaper\":\"FO*\",\"Basher\":\"HO*\"}",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits after AL (expect P half) {\"Reaper\":\"HO*\",\"Basher\":\"HO*\"}"
+   ]
+  },
+  "s24-run": {
+   "at": "2026-10-09T08:42:06.182Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "P": {
+     "cls": "off",
+     "title": "Reaper answered No for this Duty — tap to put him on it anyway"
+    },
+    "G": {
+     "cls": "on",
+     "title": "Ratchet earns half a day — tap to take him off this event"
+    },
+    "win": {
+     "M": "on",
+     "W": "on",
+     "tab": "Who earns OIL 44 of 44"
+    },
+    "c0": {
+     "Reaper": "",
+     "Ratchet": "HO*",
+     "Anvil": "HO*",
+     "Basher": "HO*"
+    },
+    "c1": {
+     "Reaper": "",
+     "Ratchet": "HO*",
+     "Anvil": "",
+     "Basher": ""
+    },
+    "errors": []
+   },
+   "log": [
+    "named duty filed {\"iid\":\"imv0pv55dlnnex5\",\"person\":\"dice\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "slot g:5.0",
+    "placeholder under the row: allavail",
+    "typed G: torque",
+    "row pucks [\"dice:Reaper:\",\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "P seat {\"cls\":\"off\",\"title\":\"Reaper answered No for this Duty — tap to put him on it anyway\"} G seat {\"cls\":\"on\",\"title\":\"Ratchet earns half a day — tap to take him off this event\"}",
+    "count chip 44 | All 44 earn half a day — tap to see each one (who is free as things stand now)",
+    "window M=on W=on P=not in window Who earns OIL 44 of 44",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG (expect P none; G,M,W HO) {\"Reaper\":\"\",\"Ratchet\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "row pucks after removing the placeholder [\"dice:Reaper:\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits AL (expect P none, G HO, M,W none) {\"Reaper\":\"\",\"Ratchet\":\"HO*\",\"Anvil\":\"\",\"Basher\":\"\"}"
+   ]
+  },
+  "s22-run": {
+   "at": "2026-10-09T08:42:16.629Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "c0": {
+     "Reaper": "HO*",
+     "Ratchet": "HO*",
+     "Anvil": "HO*",
+     "Basher": "HO*"
+    },
+    "row": [
+     "shaft:Anvil:oilbar+oilbar-ho",
+     "dice:Reaper:oilbar+oilbar-ho",
+     "torque:Ratchet:oilbar+oilbar-ho"
+    ],
+    "pre": {
+     "Reaper": "HO*",
+     "Ratchet": "HO*",
+     "Anvil": "HO*",
+     "Basher": "HO*"
+    },
+    "c1": {
+     "Reaper": "HO*",
+     "Ratchet": "HO*",
+     "Anvil": "HO*",
+     "Basher": ""
+    },
+    "errors": []
+   },
+   "log": [
+    "typed P: dice",
+    "typed G (ground crew): torque",
+    "row pucks [\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG (expect P,G,R,X all HO) {\"Reaper\":\"HO*\",\"Ratchet\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "putMain P (already typed) -> FAILED [data-slot=\"g:5.0\"]",
+    "row pucks [\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "replace main placeholder by R: shaft",
+    "row pucks after replace [\"shaft:Anvil:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "placeholder count chip on the row 0",
+    "add ALL in the extras: all",
+    "row pucks with ALL [\"shaft:Anvil:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\",\"all:ALL:oilbar+oilbar-ho\"]",
+    "after dragging ALL off [\"shaft:Anvil:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "credits before AL (issued figures must hold) {\"Reaper\":\"HO*\",\"Ratchet\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "pending chip 2 pending",
+    "after UNDO row [\"shaft:Anvil:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\",\"all:ALL:oilbar+oilbar-ho\"]",
+    "after REDO row [\"shaft:Anvil:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\",\"torque:Ratchet:oilbar+oilbar-ho\"]",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits AL (expect P,G,R HO; X none) {\"Reaper\":\"HO*\",\"Ratchet\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"\"}"
+   ]
+  },
+  "s25-run": {
+   "at": "2026-10-09T08:42:13.251Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "win": {
+     "tab": "Who earns OIL 44 of 44",
+     "total": 44,
+     "Plisted": false
+    },
+    "c0": {
+     "Reaper": "HO*",
+     "Anvil": "HO*",
+     "Basher": "HO*"
+    },
+    "c1": {
+     "Reaper": "HO*",
+     "Anvil": "HO*",
+     "Basher": "HO*"
+    },
+    "errors": []
+   },
+   "log": [
+    "ALL in extras: all",
+    "ALL AVAIL repeated in extras: allavail",
+    "typed P: dice",
+    "P on the second row: dice",
+    "row 1 pucks [\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"all:ALL:oilbar+oilbar-ho\",\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"dice:Reaper:oilbar+oilbar-ho\"]",
+    "row 2 pucks [\"dice:Reaper:oilbar+oilbar-ho\"]",
+    "count chips on rows [\"44|All 44 earn half a day — tap to see each one (who is free as things stand now)\",\"44|All 44 earn half a day — tap to see each one (who is free as things stand now)\",\"44|All 44 earn half a day — tap to see each one (who is free as things stand now)\"]",
+    "window P=not listed (typed) M=on Who earns OIL 44 of 44 total=44",
+    "P seat row1 {\"cls\":\"on\",\"title\":\"Reaper earns half a day — tap to take him off this event\"} row2 {\"cls\":\"on\",\"title\":\"Reaper earns half a day — tap to take him off this event\"}",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG (P once, half a day) {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "typed P removed from row 1: [\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"all:ALL:oilbar+oilbar-ho\",\"allavail:ALL AVAIL:oilbar+oilbar-ho\"]",
+    "ALL removed: [\"allavail:ALL AVAIL:oilbar+oilbar-ho\",\"allavail:ALL AVAIL:oilbar+oilbar-ho\"]",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits AL (P keeps half a day via the placeholder that remains) {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}"
+   ]
+  },
+  "s23-run": {
+   "at": "2026-10-09T08:40:41.191Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "INFO": {
+     "rowAfter": "⠿ ALL AVAIL + ADD CXⓘ■✕",
+     "oilItems": [],
+     "countChips": 0,
+     "c1": {
+      "Anvil": "",
+      "Basher": ""
+     },
+     "c2": {
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "c0": {
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "errors": []
+    },
+    "TAKEOFF": {
+     "rowAfter": "Event LATE ALL AVAIL ACCEPT",
+     "oilItems": [],
+     "countChips": 0,
+     "c1": {
+      "Anvil": "",
+      "Basher": ""
+     },
+     "c2": {
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "c0": {
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "errors": []
+    }
+   },
+   "log": [
+    "--- CX",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "row after ⠿ ALL AVAIL 45 + ADD CXⓘ■✕",
+    "ERROR CX locator.click: Timeout 30000ms exceeded.",
+    "--- INFO",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "row after ⠿ ALL AVAIL + ADD CXⓘ■✕",
+    "OIL items for the row []",
+    "no count chip on the row",
+    "after UNDO row row present: sb-arow c6r gr-frominput lateinp",
+    "after REDO row present: sb-arow c6r fyi gr-frominput lateinp",
+    "after RELOAD row present: sb-arow c6r fyi gr-frominput lateinp",
+    "credits before AL (issued must hold) {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits AL (disabling amendment: expect none) {\"Anvil\":\"\",\"Basher\":\"\"}",
+    "row restored present: ⠿ ALL AVAIL 45 + ADD CXⓘ■✕",
+    "publish AL2 {\"published\":true,\"version\":\"AL2\",\"signSelects\":4}",
+    "credits AL2 (expect HO back) {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "--- TAKEOFF",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "row after Event LATE ALL AVAIL ACCEPT",
+    "OIL items for the row []",
+    "no count chip on the row",
+    "after UNDO row row present: sb-arow c6r gr-frominput lateinp",
+    "after REDO row present: sb-arow c6r inprow inp-dorm",
+    "after RELOAD row absent",
+    "credits before AL (issued must hold) {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits AL (disabling amendment: expect none) {\"Anvil\":\"\",\"Basher\":\"\"}",
+    "restore buttons [\"g:ACCEPT\"]",
+    "row restored present: ⠿ ALL AVAIL 45 + ADD CXⓘ■✕",
+    "publish AL2 {\"published\":true,\"version\":\"AL2\",\"signSelects\":4}",
+    "credits AL2 (expect HO back) {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}"
+   ]
+  },
+  "s27-run": {
+   "at": "2026-10-09T08:40:59.375Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "t0": "Reaper IR 1 + 1 +1 9 Oct S27 manual award 1 left ",
+    "c0": {
+     "Reaper": "HO*"
+    },
+    "t1": "Reaper IR 1.5 + 1.5 +0.5 18 Jul AUTO Duty input Duty · 09:00–12:00 0.5 left +1 9 Oct S27 manual award 1 left ",
+    "c1": {
+     "Reaper": ""
+    },
+    "t2": "Reaper IR 1 + 1 +1 9 Oct S27 manual award 1 left ",
+    "c2": {
+     "Reaper": "HO*"
+    },
+    "t3": "Reaper IR 1.5 + 1.5 +0.5 18 Jul AUTO Duty input Duty · 09:00–12:00 0.5 left +1 9 Oct S27 manual award 1 left ",
+    "errors": []
+   },
+   "log": [
+    "tracker, Reaper — after the manual award : Reaper IR 1 + 1 +1 9 Oct S27 manual award 1 left ",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "Leave War Sat 18 Jul cell {\"Reaper\":\"HO*\"}",
+    "tracker, Reaper — after ORIG : Reaper IR 1.5 + 1.5 +0.5 18 Jul AUTO Duty input Duty · 09:00–12:00 0.5 left +1 9 Oct S27 manual award 1 left ",
+    "publish AL1 (request taken off) {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "Leave War cell {\"Reaper\":\"\"}",
+    "tracker, Reaper — after request taken off + AL1 : Reaper IR 1 + 1 +1 9 Oct S27 manual award 1 left ",
+    "restore buttons [\"g:ACCEPT\"]",
+    "publish AL2 (restored) {\"published\":true,\"version\":\"AL2\",\"signSelects\":4}",
+    "Leave War cell {\"Reaper\":\"HO*\"}",
+    "tracker, Reaper — after restore + AL2 : Reaper IR 1.5 + 1.5 +0.5 18 Jul AUTO Duty input Duty · 09:00–12:00 0.5 left +1 9 Oct S27 manual award 1 left "
+   ]
+  },
+  "s23-runCX": {
+   "at": "2026-10-09T08:43:54.279Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "CX": {
+     "rowAfter": "⠿ ALL AVAIL + ADD CXⓘ■✕",
+     "oilItems": [],
+     "countChips": 0,
+     "c1": {
+      "Anvil": "",
+      "Basher": ""
+     },
+     "c2": {
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "c0": {
+      "Anvil": "HO*",
+      "Basher": "HO*"
+     },
+     "errors": []
+    }
+   },
+   "log": [
+    "--- CX",
+    "publish ORIG {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits ORIG {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "row after ⠿ ALL AVAIL + ADD CXⓘ■✕",
+    "OIL items for the row []",
+    "no count chip on the row",
+    "after UNDO row row present: sb-arow c6r gr-frominput lateinp",
+    "after REDO row present: sb-arow c6r cx gr-frominput lateinp",
+    "after RELOAD row present: sb-arow c6r cx gr-frominput lateinp",
+    "credits before AL (issued must hold) {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}",
+    "publish AL {\"published\":true,\"version\":\"AL1\",\"signSelects\":4}",
+    "credits AL (disabling amendment: expect none) {\"Anvil\":\"\",\"Basher\":\"\"}",
+    "row restored present: ⠿ ALL AVAIL 45 + ADD CXⓘ■✕",
+    "publish AL2 {\"published\":true,\"version\":\"AL2\",\"signSelects\":4}",
+    "credits AL2 (expect HO back) {\"Anvil\":\"HO*\",\"Basher\":\"HO*\"}"
+   ]
+  },
+  "s46-run": {
+   "at": "2026-10-09T08:44:38.249Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "meeting": {
+     "head": "⚠ 1 issue · tap to review",
+     "items": [
+      {
+       "cls": "wln adv",
+       "text": "Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · tap to review Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP A Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL ·"
+    },
+    "meetingRing": "puck sm warn | Reaper · IR · instrument rating exmr · SXO · Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability",
+    "event": {
+     "head": "⚠ 1 issue · 1 warning · tap to review",
+     "items": [
+      {
+       "cls": "wln hard",
+       "text": "Reaper — SC AM & EVENT clash ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · 1 warning · tap to review Reaper — SC AM & EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widg"
+    },
+    "eventRing": "puck sm warn hard boxred | Reaper · IR · instrument rating exmr · SXO · Conflict (two events at once)",
+    "moved": {
+     "head": "No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN",
+     "items": [
+      {
+       "cls": "wln ok",
+       "text": "No conflicts flagged for this day ✓"
+      }
+     ],
+     "raw": "No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widge"
+    },
+    "row EVENT": {
+     "head": "⚠ 1 issue · 1 warning · tap to review",
+     "items": [
+      {
+       "cls": "wln hard on",
+       "text": "Reaper — SC AM & EVENT clash ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · 1 warning · tap to review Reaper — SC AM & EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widg"
+    },
+    "row EVENT moved": {
+     "head": "No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN",
+     "items": [
+      {
+       "cls": "wln ok",
+       "text": "No conflicts flagged for this day ✓"
+      }
+     ],
+     "raw": "No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widge"
+    },
+    "row Sports EVENT": {
+     "head": "⚠ 1 issue · 1 warning · tap to review",
+     "items": [
+      {
+       "cls": "wln hard on",
+       "text": "Reaper — SC AM & Sports EVENT clash ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · 1 warning · tap to review Reaper — SC AM & Sports EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratch"
+    },
+    "row Sports EVENT moved": {
+     "head": "⚠ 1 issue · 1 warning · tap to review",
+     "items": [
+      {
+       "cls": "wln hard on",
+       "text": "Reaper — EVENT & Sports EVENT clash ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · 1 warning · tap to review Reaper — EVENT & Sports EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratch"
+    },
+    "row MEETING": {
+     "head": "⚠ 1 issue · tap to review",
+     "items": [
+      {
+       "cls": "wln adv on",
+       "text": "Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · tap to review Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP A Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL ·"
+    },
+    "row MEETING moved": {
+     "head": "⚠ 1 issue · 1 warning · tap to review",
+     "items": [
+      {
+       "cls": "wln hard on",
+       "text": "Reaper — EVENT & MEETING clash ✕"
+      }
+     ],
+     "raw": "⚠ 1 issue · 1 warning · tap to review Reaper — EVENT & MEETING clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Wi"
+    },
+    "errors": []
+   },
+   "log": [
+    "P into SC MAIN (07:00-13:00): dice",
+    "no input yet {\"head\":\"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN\",\"items\":[{\"cls\":\"wln ok\",\"text\":\"No conflicts flagged for this day ✓\"}],\"raw\":\"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widge\"}",
+    "P puck on the SC seat puck sm | Reaper · IR · instrument rating exmr · SXO",
+    "Meeting filed {\"iid\":\"imv0pyakj6a6eer\",\"person\":\"dice\",\"type\":\"Meeting\",\"s\":600,\"e\":660,\"acc\":\"g\"}",
+    "with the Meeting {\"head\":\"⚠ 1 issue · tap to review\",\"items\":[{\"cls\":\"wln adv\",\"text\":\"Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕\"}],\"raw\":\"⚠ 1 issue · tap to review Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP A Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL ·\"}",
+    "ring puck sm warn | Reaper · IR · instrument rating exmr · SXO · Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability",
+    "kind now Event",
+    "with the same input as an Event {\"head\":\"⚠ 1 issue · 1 warning · tap to review\",\"items\":[{\"cls\":\"wln hard\",\"text\":\"Reaper — SC AM & EVENT clash ✕\"}],\"raw\":\"⚠ 1 issue · 1 warning · tap to review Reaper — SC AM & EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widg\"}",
+    "ring puck sm warn hard boxred | Reaper · IR · instrument rating exmr · SXO · Conflict (two events at once)",
+    "after clicking the warning line, selected pucks 0",
+    "Event moved to 14:00-15:00 {\"head\":\"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN\",\"items\":[{\"cls\":\"wln ok\",\"text\":\"No conflicts flagged for this day ✓\"}],\"raw\":\"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widge\"}",
+    "ring puck sm | Reaper · IR · instrument rating exmr · SXO",
+    "row EVENT slot g:4.3 put P: dice",
+    "typed EVENT overlapping the shift {\"head\":\"⚠ 1 issue · 1 warning · tap to review\",\"items\":[{\"cls\":\"wln hard on\",\"text\":\"Reaper — SC AM & EVENT clash ✕\"}],\"raw\":\"⚠ 1 issue · 1 warning · tap to review Reaper — SC AM & EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widg\"}",
+    "P SC puck puck sm warn hard boxred flagnew wfoc | Reaper · IR · instrument rating exmr · SXO · Conflict (two events at once)",
+    "typed EVENT moved clear (14:00-15:00) {\"head\":\"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN\",\"items\":[{\"cls\":\"wln ok\",\"text\":\"No conflicts flagged for this day ✓\"}],\"raw\":\"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Widge\"}",
+    "row Sports EVENT slot g:4.3 put P: dice",
+    "typed Sports EVENT overlapping the shift {\"head\":\"⚠ 1 issue · 1 warning · tap to review\",\"items\":[{\"cls\":\"wln hard on\",\"text\":\"Reaper — SC AM & Sports EVENT clash ✕\"}],\"raw\":\"⚠ 1 issue · 1 warning · tap to review Reaper — SC AM & Sports EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratch\"}",
+    "P SC puck puck sm warn hard boxred flagnew wfoc | Reaper · IR · instrument rating exmr · SXO · Conflict (two events at once)",
+    "typed Sports EVENT moved clear (14:00-15:00) {\"head\":\"⚠ 1 issue · 1 warning · tap to review\",\"items\":[{\"cls\":\"wln hard on\",\"text\":\"Reaper — EVENT & Sports EVENT clash ✕\"}],\"raw\":\"⚠ 1 issue · 1 warning · tap to review Reaper — EVENT & Sports EVENT clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratch\"}",
+    "row MEETING slot g:4.3 put P: dice",
+    "typed MEETING overlapping the shift {\"head\":\"⚠ 1 issue · tap to review\",\"items\":[{\"cls\":\"wln adv on\",\"text\":\"Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕\"}],\"raw\":\"⚠ 1 issue · tap to review Reaper — Reaper is on SC AM (07:00–13:00) and also down for MEETING ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP A Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL ·\"}",
+    "P SC puck puck sm warn flagnew | Reaper · IR · instrument rating exmr · SXO · Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability",
+    "typed MEETING moved clear (14:00-15:00) {\"head\":\"⚠ 1 issue · 1 warning · tap to review\",\"items\":[{\"cls\":\"wln hard on\",\"text\":\"Reaper — EVENT & MEETING clash ✕\"}],\"raw\":\"⚠ 1 issue · 1 warning · tap to review Reaper — EVENT & MEETING clash ✕ PLACEHOLDERS · DRAG IN ALL AVAIL ALL PILOTS · 23 FREE Ace A Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Ranger IP Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Anvil IP C Reaper IR Ridge C Saber IP Wildcard O Nomad C WSOS · 17 FREE Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C Grit C SANS AVAIL Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL · 3 FREE Cotter Ratchet Wi\"}"
+   ]
+  },
+  "s44-run": {
+   "at": "2026-10-09T08:47:48.109Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "startOnly": {
+     "info": {
+      "chip": "46 | None of these 46 earn OIL today — tap to see each one (who is free as things stand now)",
+      "puck": true
+     },
+     "win": {
+      "tabs": [],
+      "one": "Who’s available 46",
+      "tail": "C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.",
+      "head": "⠿ S44start Jul 18 · 18:30–19:30 · no end time, an hour assumed ✕ Who’s available 46 PILOTS · 28 Reaper IR Anvil IP Blade"
+     }
+    },
+    "noStart": {
+     "info": {
+      "chip": "? | No start time — give it a time to count who can attend",
+      "puck": true
+     },
+     "win": {
+      "tabs": [],
+      "one": "Who’s available —",
+      "tail": "⠿ S44none Jul 18 · 19:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now",
+      "head": "⠿ S44none Jul 18 · 19:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out for"
+     }
+    },
+    "equal": {
+     "info": {
+      "chip": "? | It starts and ends at the same time — give it an end to count who can attend",
+      "puck": true
+     },
+     "win": {
+      "tabs": [],
+      "one": "Who’s available —",
+      "tail": "⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now",
+      "head": "⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out"
+     }
+    },
+    "startOil": {
+     "info": {
+      "chip": "46 | None of these 46 earn OIL today — tap to see each one (who is free as things stand now)",
+      "puck": true
+     },
+     "win": {
+      "tabs": [
+       "Who’s available 46",
+       "Who earns OIL 0 of 46"
+      ],
+      "tail": "isman O Wildcard O WSOS · 0 EARN Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now No OIL worked out — this row has no end time.",
+      "head": "⠿ S44start Jul 18 · 18:30–19:30 · no end time, an hour assumed ✕ Who’s available 46 Who earns OIL 0 of 46 PILOTS · 0 EAR"
+     }
+    },
+    "noStartOil": {
+     "info": {
+      "chip": "? | No start time — give it a time to count who can attend",
+      "puck": true
+     },
+     "win": {
+      "tabs": [
+       "Who’s available —",
+       "Who earns OIL —"
+      ],
+      "tail": "⠿ S44none Jul 18 · 19:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now",
+      "head": "⠿ S44none Jul 18 · 19:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody can b"
+     }
+    },
+    "eqOil": {
+     "info": {
+      "chip": "? | It starts and ends at the same time — give it an end to count who can attend",
+      "puck": true
+     },
+     "win": {
+      "tabs": [
+       "Who’s available —",
+       "Who earns OIL —"
+      ],
+      "tail": "⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now",
+      "head": "⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody c"
+     }
+    },
+    "startAfterLogic": {
+     "info": {
+      "chip": "46 | None of these 46 earn OIL today — tap to see each one (who is free as things stand now)",
+      "puck": true
+     },
+     "win": {
+      "tabs": [],
+      "one": "Who’s available 46",
+      "tail": "C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.",
+      "head": "⠿ S44start Jul 18 · 18:30–21:30 · no end time, 3 hours assumed ✕ Who’s available 46 PILOTS · 28 Reaper IR Anvil IP Blade"
+     }
+    },
+    "c0": {
+     "Anvil": "",
+     "Basher": ""
+    },
+    "errors": []
+   },
+   "log": [
+    "S44start (18:30→-) placeholder put: allavail",
+    "start only, OIL off row chip: {\"chip\":\"46 | None of these 46 earn OIL today — tap to see each one (who is free as things stand now)\",\"puck\":true}",
+    "start only, OIL off window: {\"tabs\":[],\"one\":\"Who’s available 46\",\"tail\":\"C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\",\"head\":\"⠿ S44start Jul 18 · 18:30–19:30 · no end time, an hour assumed ✕ Who’s available 46 PILOTS · 28 Reaper IR Anvil IP Blade\"}",
+    "S44none (-→19:30) placeholder put: allavail",
+    "no start (end only), OIL off row chip: {\"chip\":\"? | No start time — give it a time to count who can attend\",\"puck\":true}",
+    "no start (end only), OIL off window: {\"tabs\":[],\"one\":\"Who’s available —\",\"tail\":\"⠿ S44none Jul 18 · 19:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now\",\"head\":\"⠿ S44none Jul 18 · 19:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out for\"}",
+    "S44eq (18:30→18:30) placeholder put: allavail",
+    "start = end, OIL off row chip: {\"chip\":\"? | It starts and ends at the same time — give it an end to count who can attend\",\"puck\":true}",
+    "start = end, OIL off window: {\"tabs\":[],\"one\":\"Who’s available —\",\"tail\":\"⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now\",\"head\":\"⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — This row has no usable start and end times, so nobody can be worked out\"}",
+    "start only, OIL Earn on row chip: {\"chip\":\"46 | None of these 46 earn OIL today — tap to see each one (who is free as things stand now)\",\"puck\":true}",
+    "start only, OIL Earn on window: {\"tabs\":[\"Who’s available 46\",\"Who earns OIL 0 of 46\"],\"tail\":\"isman O Wildcard O WSOS · 0 EARN Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now No OIL worked out — this row has no end time.\",\"head\":\"⠿ S44start Jul 18 · 18:30–19:30 · no end time, an hour assumed ✕ Who’s available 46 Who earns OIL 0 of 46 PILOTS · 0 EAR\"}",
+    "no start, OIL Earn on row chip: {\"chip\":\"? | No start time — give it a time to count who can attend\",\"puck\":true}",
+    "no start, OIL Earn on window: {\"tabs\":[\"Who’s available —\",\"Who earns OIL —\"],\"tail\":\"⠿ S44none Jul 18 · 19:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now\",\"head\":\"⠿ S44none Jul 18 · 19:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody can b\"}",
+    "equal, OIL Earn on row chip: {\"chip\":\"? | It starts and ends at the same time — give it an end to count who can attend\",\"puck\":true}",
+    "equal, OIL Earn on window: {\"tabs\":[\"Who’s available —\",\"Who earns OIL —\"],\"tail\":\"⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody can be worked out for it. who is free as things stand now\",\"head\":\"⠿ S44eq Jul 18 · 18:30–18:30 ✕ Who’s available — Who earns OIL — This row has no usable start and end times, so nobody c\"}",
+    "logic edit input visible: 1",
+    "logic value now 3h | sentence: SETTING\nA row with a start time and no end time is assumed to run 3h.\nWithout th",
+    "start only after Assumed length changed to 3h row chip: {\"chip\":\"46 | None of these 46 earn OIL today — tap to see each one (who is free as things stand now)\",\"puck\":true}",
+    "start only after Assumed length changed to 3h window: {\"tabs\":[],\"one\":\"Who’s available 46\",\"tail\":\"C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\",\"head\":\"⠿ S44start Jul 18 · 18:30–21:30 · no end time, 3 hours assumed ✕ Who’s available 46 PILOTS · 28 Reaper IR Anvil IP Blade\"}",
+    "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits (crowd of the unusable rows) {\"Anvil\":\"\",\"Basher\":\"\"}"
+   ]
+  },
+  "s54-run": {
+   "at": "2026-10-09T08:50:32.857Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "rows": [
+     {
+      "label": "flying FCP seat (pick)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "5.0.0.0.p",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning FCP · | cannot crew a jet; name the people flying it | cannot crew a jet; name the people flying it | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat"
+     },
+     {
+      "label": "flying RCP seat (pick)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "5.0.0.0.w",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning RCP · | PERSONNEL · 3 FREE"
+     },
+     {
+      "label": "flying FCP seat (pick)",
+      "pid": "all",
+      "how": "pick",
+      "armed": "5.0.0.0.p",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning FCP · | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat"
+     },
+     {
+      "label": "flying RCP seat (pick)",
+      "pid": "all",
+      "how": "pick",
+      "armed": "5.0.0.0.w",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning RCP · | PERSONNEL · 3 FREE"
+     },
+     {
+      "label": "flying FCP seat (drag)",
+      "pid": "allavail",
+      "how": "drag",
+      "armed": null,
+      "offered": null,
+      "placed": 0,
+      "toast": "ALL AVAIL — cannot crew a jet; name the people flying it"
+     },
+     {
+      "label": "duty desk new row",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": null,
+      "offered": 1,
+      "placed": 0,
+      "toast": ""
+     },
+     {
+      "label": "AMT seat",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": null,
+      "offered": 1,
+      "placed": 0,
+      "toast": ""
+     },
+     {
+      "label": "AMT second seat / passenger",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "s:5.amt.0.w",
+      "offered": 1,
+      "placed": 1,
+      "toast": "5 changes | ? | ⚠ 2 issues | · 1 warning · | the AMT sim has no usable times — nobody on it earns OIL for this day | the AMT sim has no usable times — nobody on it earns OIL for this day"
+     },
+     {
+      "label": "OFT seat",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": null,
+      "offered": 1,
+      "placed": 0,
+      "toast": ""
+     },
+     {
+      "label": "ground row main (empty row)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "g:5.0.+",
+      "offered": 1,
+      "placed": 1,
+      "toast": "8 changes | ALL AVAIL planned"
+     },
+     {
+      "label": "ground row extras (after first)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "g:5.0.+",
+      "offered": 1,
+      "placed": 1,
+      "toast": "9 changes"
+     },
+     {
+      "label": "common programme row",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": null,
+      "offered": 1,
+      "placed": 0,
+      "toast": ""
+     }
+    ],
+    "final": [
+     "s:5.amt.0.w allavail",
+     "g:5.0 allavail",
+     "g:5.0.x0 allavail",
+     "g:5.0.x1 allavail"
+    ],
+    "errors": []
+   },
+   "log": [
+    "{\"label\":\"flying FCP seat (pick)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"5.0.0.0.p\",\"offered\":1,\"placed\":0,\"toast\":\"Planning FCP · | cannot crew a jet; name the people flying it | cannot crew a jet; name the people flying it | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat\"}",
+    "{\"label\":\"flying RCP seat (pick)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"5.0.0.0.w\",\"offered\":1,\"placed\":0,\"toast\":\"Planning RCP · | PERSONNEL · 3 FREE\"}",
+    "{\"label\":\"flying FCP seat (pick)\",\"pid\":\"all\",\"how\":\"pick\",\"armed\":\"5.0.0.0.p\",\"offered\":1,\"placed\":0,\"toast\":\"Planning FCP · | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat\"}",
+    "{\"label\":\"flying RCP seat (pick)\",\"pid\":\"all\",\"how\":\"pick\",\"armed\":\"5.0.0.0.w\",\"offered\":1,\"placed\":0,\"toast\":\"Planning RCP · | PERSONNEL · 3 FREE\"}",
+    "{\"label\":\"flying FCP seat (drag)\",\"pid\":\"allavail\",\"how\":\"drag\",\"armed\":null,\"offered\":null,\"placed\":0,\"toast\":\"ALL AVAIL — cannot crew a jet; name the people flying it\"}",
+    "duty row added new zones: [\"fill:d:5.0.1.+\"]",
+    "{\"label\":\"duty desk new row\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":null,\"offered\":1,\"placed\":0,\"toast\":\"\"}",
+    "AMT row added new zones: [\"fill:s:5.amt.0.+\",\"slot:s:5.amt.0.p\",\"slot:s:5.amt.0.w\"]",
+    "sim zones now [\"fill:s:5.amt.0.+\",\"slot:s:5.amt.0.p\",\"slot:s:5.amt.0.w\"]",
+    "{\"label\":\"AMT seat\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":null,\"offered\":1,\"placed\":0,\"toast\":\"\"}",
+    "{\"label\":\"AMT second seat / passenger\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"s:5.amt.0.w\",\"offered\":1,\"placed\":1,\"toast\":\"5 changes | ? | ⚠ 2 issues | · 1 warning · | the AMT sim has no usable times — nobody on it earns OIL for this day | the AMT sim has no usable times — nobody on it earns OIL for this day\"}",
+    "OFT row added new zones: [\"fill:s:5.oft.0.+\",\"slot:s:5.oft.0.p\",\"slot:s:5.oft.0.w\"]",
+    "{\"label\":\"OFT seat\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":null,\"offered\":1,\"placed\":0,\"toast\":\"\"}",
+    "ground row added new zones: [\"fill:g:5.1.+\"]",
+    "{\"label\":\"ground row main (empty row)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"g:5.0.+\",\"offered\":1,\"placed\":1,\"toast\":\"8 changes | ALL AVAIL planned\"}",
+    "{\"label\":\"ground row extras (after first)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"g:5.0.+\",\"offered\":1,\"placed\":1,\"toast\":\"9 changes\"}",
+    "programme item added new zones: [\"fill:a:5.0.+\"]",
+    "{\"label\":\"common programme row\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":null,\"offered\":1,\"placed\":0,\"toast\":\"\"}",
+    "placeholder pucks now sitting in: [\"s:5.amt.0.w allavail\",\"g:5.0 allavail\",\"g:5.0.x0 allavail\",\"g:5.0.x1 allavail\"]"
+   ]
+  },
+  "s47-run": {
+   "at": "2026-10-09T08:48:12.230Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "dir1Event": {
+     "thu": [],
+     "fri": [
+      "wln hard :: Reaper — Crew rest breach — Thursday ended 23:00 → crew rest clear at 11:00, but told to report 04:40 — only 5h40 rest. ✕"
+     ],
+     "thuMoved": [],
+     "friMoved": [
+      "wln ok :: No conflicts flagged for this day ✓"
+     ],
+     "errors": []
+    },
+    "dir1Training": {
+     "thu": [],
+     "fri": [
+      "wln hard :: Reaper — Crew rest breach — Thursday ended 23:00 → crew rest clear at 11:00, but told to report 04:40 — only 5h40 rest. ✕"
+     ],
+     "thuMoved": [],
+     "friMoved": [
+      "wln ok :: No conflicts flagged for this day ✓"
+     ],
+     "errors": []
+    },
+    "dir2Event": {
+     "thu": [
+      "wln ok :: No conflicts flagged for this day ✓"
+     ],
+     "fri": [],
+     "errors": []
+    },
+    "dir2Training": {
+     "thu": [
+      "wln ok :: No conflicts flagged for this day ✓"
+     ],
+     "fri": [],
+     "errors": []
+    }
+   },
+   "log": [
+    "--- direction 1: late Event Thu 21:00-23:00, flying Fri 07:00",
+    "flying wave Fri, P seated: dice",
+    "filed {\"iid\":\"imv0q2606kqnix9\",\"person\":\"dice\",\"type\":\"Event\",\"s\":1260,\"e\":1380,\"acc\":\"g\"}",
+    "Event Thu warnings []",
+    "Event Fri warnings [\"wln hard :: Reaper — Crew rest breach — Thursday ended 23:00 → crew rest clear at 11:00, but told to report 04:40 — only 5h40 rest. ✕\"]",
+    "Event moved to 14:00-15:00, Thu []",
+    "Event moved, Fri [\"wln ok :: No conflicts flagged for this day ✓\"]",
+    "--- direction 1: late Training Thu 21:00-23:00, flying Fri 07:00",
+    "flying wave Fri, P seated: dice",
+    "filed {\"iid\":\"imv0q2lxt7rasz0\",\"person\":\"dice\",\"type\":\"Training\",\"s\":1260,\"e\":1380,\"acc\":\"g\"}",
+    "Training Thu warnings []",
+    "Training Fri warnings [\"wln hard :: Reaper — Crew rest breach — Thursday ended 23:00 → crew rest clear at 11:00, but told to report 04:40 — only 5h40 rest. ✕\"]",
+    "Training moved to 14:00-15:00, Thu []",
+    "Training moved, Fri [\"wln ok :: No conflicts flagged for this day ✓\"]",
+    "--- direction 2: flying Fri 20:00-21:30, then Event Sat 04:00-05:00",
+    "flying wave Thu, P seated: dice",
+    "filed {\"iid\":\"imv0q32c31ce31l\",\"person\":\"dice\",\"type\":\"Event\",\"s\":240,\"e\":300,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "Event Fri (flying) warnings [\"wln ok :: No conflicts flagged for this day ✓\"]",
+    "Event Sat warnings []",
+    "--- direction 2: flying Fri 20:00-21:30, then Training Sat 04:00-05:00",
+    "flying wave Thu, P seated: dice",
+    "filed {\"iid\":\"imv0q3c9g8wgzzy\",\"person\":\"dice\",\"type\":\"Training\",\"s\":240,\"e\":300,\"oil\":{\"2026-07-18\":0},\"acc\":\"g\"}",
+    "Training Fri (flying) warnings [\"wln ok :: No conflicts flagged for this day ✓\"]",
+    "Training Sat warnings []"
+   ]
+  },
+  "s32-run": {
+   "at": "2026-10-09T08:47:42.677Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "accepted": {
+     "row": "sb-arow c6r inprow accd",
+     "buttons": [
+      ":Duty",
+      ":LATE",
+      "x:UNDO"
+     ],
+     "unavailHead": "⠿ UNAVAILABLE leave, medical and overseas duty — times and remarks type in place, clear a time for all day + ADD",
+     "unavailRows": [
+      "OL Cobra IP",
+      "ATT C Grit C",
+      "OD C Nomad C",
+      "OIL C Gambit C"
+     ]
+    },
+    "off": {
+     "row": "sb-arow c6r inprow inp-dorm",
+     "buttons": [
+      ":Duty",
+      ":LATE",
+      "g:ACCEPT"
+     ],
+     "unavailHead": "⠿ UNAVAILABLE leave, medical and overseas duty — times and remarks type in place, clear a time for all day + ADD",
+     "unavailRows": [
+      "OL Cobra IP",
+      "ATT C Grit C",
+      "OD C Nomad C",
+      "OIL C Gambit C"
+     ]
+    },
+    "reassign": {
+     "before": "taipan",
+     "after": "taipan"
+    },
+    "errors": []
+   },
+   "log": [
+    "placeholder Duty Wed 15 Jul {\"iid\":\"imv0q2odba5okpc\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"acc\":\"g\"}",
+    "accepted row {\"row\":\"sb-arow c6r inprow accd\",\"buttons\":[\":Duty\",\":LATE\",\"x:UNDO\"],\"unavailHead\":\"⠿ UNAVAILABLE leave, medical and overseas duty — times and remarks type in place, clear a time for all day + ADD\",\"unavailRows\":[\"OL Cobra IP\",\"ATT C Grit C\",\"OD C Nomad C\",\"OIL C Gambit C\"]}",
+    "taken off row {\"row\":\"sb-arow c6r inprow inp-dorm\",\"buttons\":[\":Duty\",\":LATE\",\"g:ACCEPT\"],\"unavailHead\":\"⠿ UNAVAILABLE leave, medical and overseas duty — times and remarks type in place, clear a time for all day + ADD\",\"unavailRows\":[\"OL Cobra IP\",\"ATT C Grit C\",\"OD C Nomad C\",\"OIL C Gambit C\"]}",
+    "unavailable seats with the reassign gesture: 4",
+    "armed iu:imv0q2meh7nsqle",
+    "placeholder offered to arm onto this seat: 1",
+    "leave input owner before taipan after taipan",
+    "lines on screen [\"View-only Sched\",\"ALL AVAIL\",\"ALL AVAIL\"]"
+   ]
+  },
+  "s39-rundesk": {
+   "at": "2026-10-09T08:48:13.871Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "same-wed": {
+     "weekBoard": true,
+     "weekView": true
+    },
+    "same-sat": {
+     "weekBoard": true,
+     "weekView": true
+    },
+    "c": {
+     "Reaper": "HO*",
+     "Anvil": "HO*"
+    },
+    "res": {
+     "edit-wed": {
+      "n": 1,
+      "info": [
+       {
+        "text": "36",
+        "title": "36 with nothing else on at that time — tap to see them (who is free as things stand now)",
+        "inPers": false,
+        "inGround": false,
+        "win": {
+         "n": 36,
+         "tab": ""
+        }
+       }
+      ]
+     },
+     "edit-sat": {
+      "n": 1,
+      "info": [
+       {
+        "text": "45",
+        "title": "All 45 earn half a day — tap to see each one (who is free as things stand now)",
+        "inPers": false,
+        "inGround": false,
+        "win": {
+         "n": 45,
+         "tab": ""
+        }
+       }
+      ]
+     },
+     "board-wed": {
+      "n": 1,
+      "info": [
+       {
+        "text": "36",
+        "title": "36 with nothing else on at that time — tap to see them (who is free as things stand now)",
+        "inPers": false,
+        "inGround": true,
+        "win": {
+         "n": 36,
+         "tab": ""
+        }
+       }
+      ]
+     },
+     "board-sat": {
+      "n": 1,
+      "info": [
+       {
+        "text": "45",
+        "title": "All 45 earn half a day — tap to see each one (who is free as things stand now)",
+        "inPers": false,
+        "inGround": true,
+        "win": {
+         "n": 45,
+         "tab": ""
+        }
+       }
+      ]
+     },
+     "view-wed": {
+      "n": 1,
+      "info": [
+       {
+        "text": "36",
+        "title": "36 with nothing else on at that time — tap to see them (who is free as things stand now)",
+        "inPers": false,
+        "inGround": false,
+        "win": {
+         "n": 36,
+         "tab": ""
+        }
+       }
+      ]
+     },
+     "view-sat": {
+      "n": 1,
+      "info": [
+       {
+        "text": "45",
+        "title": "All 45 earn half a day — tap to see each one (who was free when this day was issued)",
+        "inPers": false,
+        "inGround": false,
+        "win": {
+         "n": 45,
+         "tab": ""
+        }
+       }
+      ]
+     }
+    },
+    "errors": []
+   },
+   "log": [
+    "filed imv0q3077lc7s4f imv0q31sl5pukd9",
+    "EDIT WEEK wed counts found: 1 [{\"text\":\"36\",\"title\":\"36 with nothing else on at that time — tap to see them (who is free as things stand now)\",\"inPers\":false,\"inGround\":false,\"win\":{\"n\":36,\"tab\":\"\"}}]",
+    "EDIT WEEK sat counts found: 1 [{\"text\":\"45\",\"title\":\"All 45 earn half a day — tap to see each one (who is free as things stand now)\",\"inPers\":false,\"inGround\":false,\"win\":{\"n\":45,\"tab\":\"\"}}]",
+    "BOARD wed counts found: 1 [{\"text\":\"36\",\"title\":\"36 with nothing else on at that time — tap to see them (who is free as things stand now)\",\"inPers\":false,\"inGround\":true,\"win\":{\"n\":36,\"tab\":\"\"}}]",
+    "BOARD sat counts found: 1 [{\"text\":\"45\",\"title\":\"All 45 earn half a day — tap to see each one (who is free as things stand now)\",\"inPers\":false,\"inGround\":true,\"win\":{\"n\":45,\"tab\":\"\"}}]",
+    "publish Sat {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "VIEW-ONLY wed counts found: 1 [{\"text\":\"36\",\"title\":\"36 with nothing else on at that time — tap to see them (who is free as things stand now)\",\"inPers\":false,\"inGround\":false,\"win\":{\"n\":36,\"tab\":\"\"}}]",
+    "VIEW-ONLY sat counts found: 1 [{\"text\":\"45\",\"title\":\"All 45 earn half a day — tap to see each one (who was free when this day was issued)\",\"inPers\":false,\"inGround\":false,\"win\":{\"n\":45,\"tab\":\"\"}}]",
+    "wed same crowd — week/board: true week/view-only: true sizes 36 36 36",
+    "sat same crowd — week/board: true week/view-only: true sizes 45 45 45",
+    "Sat credits after issue {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\"}"
+   ]
+  },
+  "s41-runphone": {
+   "at": "2026-10-09T08:50:38.008Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "open": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523,
+     "bottom": 832,
+     "resize": "both",
+     "cols": [
+      {
+       "x": 21,
+       "w": 170,
+       "head": "PILOTS · 28",
+       "pucks": 28,
+       "ys": [
+        410,
+        430,
+        450,
+        470
+       ]
+      },
+      {
+       "x": 199,
+       "w": 170,
+       "head": "WSOS · 17",
+       "pucks": 17,
+       "ys": [
+        410,
+        430,
+        450,
+        470
+       ]
+      }
+     ],
+     "scrollH": 591,
+     "clientH": 392
+    },
+    "last": [
+     {
+      "id": "bapster",
+      "y": 950,
+      "bottom": 967,
+      "vis": false
+     },
+     {
+      "id": "shrek",
+      "y": 730,
+      "bottom": 747,
+      "vis": true
+     }
+    ],
+    "low": {
+     "last": "shrek",
+     "before": "on",
+     "after": "off"
+    },
+    "moved": {
+     "from": 309,
+     "to": 145
+    },
+    "errors": []
+   },
+   "log": [
+    "filed {\"iid\":\"imv0q68i3uu94qx\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "OIL Earn button found: 1",
+    "opened {\"x\":12,\"y\":309,\"w\":366,\"h\":523,\"bottom\":832,\"resize\":\"both\",\"cols\":[{\"x\":21,\"w\":170,\"head\":\"PILOTS · 28\",\"pucks\":28,\"ys\":[410,430,450,470]},{\"x\":199,\"w\":170,\"head\":\"WSOS · 17\",\"pucks\":17,\"ys\":[410,430,450,470]}],\"scrollH\":591,\"clientH\":392} | viewport 390x844, height fraction 0.62",
+    "tabs [\"Who’s available 45\",\"Who earns OIL 45 of 45\"]",
+    "after finger scrolls: window geometry {\"y\":309,\"h\":523}",
+    "last man of each column reachable [{\"id\":\"bapster\",\"y\":950,\"bottom\":967,\"vis\":false},{\"id\":\"shrek\",\"y\":730,\"bottom\":747,\"vis\":true}]",
+    "lowest man in the list shrek switch on -> off | Who earns OIL 44 of 45",
+    "after dragging the grip upward: y 309 -> 145"
+   ]
+  },
+  "s42-run": {
+   "at": "2026-10-09T08:51:06.975Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "logic": [
+     "Step before take-off 1h",
+     "Dekit after landing 30 min",
+     "Flight brief before T/O 2h20",
+     "Nominal report before T/O (also the time the + In-time / Rally button fills in) 3h",
+     "Step before take-off 1h",
+     "Flight debrief after land 2h",
+     "Nominal report before T/O (also the time the + In-time / Rally button fills in) 3h",
+     "EP sim brief 15 min",
+     "Sim debrief 30 min",
+     "AMT debrief 30 min",
+     "ATT C medically down — cannot report to work — cannot be planned, and cannot stand an SC SPARE"
+    ],
+    "A": {
+     "n": 43,
+     "hasP": true,
+     "why": "atic IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — nothing else on the programme at that time."
+    },
+    "B": {
+     "n": 42,
+     "hasP": true,
+     "why": "C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — No time for the AA1 ACM flight brief — DUTY sits inside 09:40–12:00 (brief 09:40)"
+    },
+    "C": {
+     "n": 42,
+     "hasP": false,
+     "why": null
+    },
+    "D": {
+     "n": 41,
+     "hasP": true,
+     "why": " C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — Not enough time to attend the AA1 ACM debrief — DUTY sits inside 13:30–15:30 (land + 2h)"
+    },
+    "AtoC": {
+     "n": 42,
+     "hasP": false,
+     "why": null
+    },
+    "AtoB": {
+     "n": 42,
+     "hasP": true,
+     "why": "C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — No time for the AA1 ACM flight brief — DUTY sits inside 09:40–12:00 (brief 09:40)"
+    },
+    "errors": []
+   },
+   "log": [
+    "Logic settings [\"Step before take-off 1h\",\"Dekit after landing 30 min\",\"Flight brief before T/O 2h20\",\"Nominal report before T/O (also the time the + In-time / Rally button fills in) 3h\",\"Step before take-off 1h\",\"Flight debrief after land 2h\",\"Nominal report before T/O (also the time the + In-time / Rally button fills in) 3h\",\"EP sim brief 15 min\",\"Sim debrief 30 min\",\"AMT debrief 30 min\",\"ATT C medically down — cannot report to work — cannot be planned, and cannot stand an SC SPARE\"]",
+    "P in the front seat: dice",
+    "request 08:00-09:00 N = 43 | P counted: true | window says: atic IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — nothing else on the programme at that time.",
+    "request 09:30-10:30 N = 42 | P counted: true | window says: C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — No time for the AA1 ACM flight brief — DUTY sits inside 09:40–12:00 (brief 09:40)",
+    "request 11:30-12:30 N = 42 | P counted: false ",
+    "request 14:15-14:45 N = 41 | P counted: true | window says:  C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — Not enough time to attend the AA1 ACM debrief — DUTY sits inside 13:30–15:30 (land + 2h)",
+    "request A changed to 11:30-12:30 N = 42 | P counted: false ",
+    "request A changed to 09:30-10:30 N = 42 | P counted: true | window says: C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Reaper — No time for the AA1 ACM flight brief — DUTY sits inside 09:40–12:00 (brief 09:40)"
+   ]
+  },
+  "s54b-run": {
+   "at": "2026-10-09T08:51:21.325Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "rows": [
+     {
+      "label": "flying FCP seat (pick)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "5.0.0.0.p",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning FCP · | cannot crew a jet; name the people flying it | cannot crew a jet; name the people flying it | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat"
+     },
+     {
+      "label": "flying RCP seat (pick)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "5.0.0.0.w",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning RCP · | PERSONNEL · 3 FREE"
+     },
+     {
+      "label": "flying FCP seat (pick)",
+      "pid": "all",
+      "how": "pick",
+      "armed": "5.0.0.0.p",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning FCP · | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat"
+     },
+     {
+      "label": "flying RCP seat (pick)",
+      "pid": "all",
+      "how": "pick",
+      "armed": "5.0.0.0.w",
+      "offered": 1,
+      "placed": 0,
+      "toast": "Planning RCP · | PERSONNEL · 3 FREE"
+     },
+     {
+      "label": "flying FCP seat (drag)",
+      "pid": "allavail",
+      "how": "drag",
+      "armed": null,
+      "offered": null,
+      "placed": 0,
+      "toast": "ALL AVAIL — cannot crew a jet; name the people flying it"
+     },
+     {
+      "label": "duty desk new row",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "d:5.0.1.+",
+      "offered": 1,
+      "placed": 1,
+      "toast": "4 changes | ? | ⚠ 2 issues | · 1 warning · | Duty has no usable times — nobody on it earns OIL for this day | Duty has no usable times — nobody on it earns OIL for this day"
+     },
+     {
+      "label": "AMT first seat",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "s:5.amt.0.p",
+      "offered": 1,
+      "placed": 1,
+      "toast": "6 changes | Duty and the AMT sim have no usable times — nobody on them earns OIL for this day | Duty and the AMT sim have no usable times — nobody on them earns OIL for this day"
+     },
+     {
+      "label": "AMT second seat",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "s:5.amt.0.w",
+      "offered": 1,
+      "placed": 1,
+      "toast": "7 changes | ALL AVAIL planned"
+     },
+     {
+      "label": "OFT first seat",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "s:5.oft.0.p",
+      "offered": 1,
+      "placed": 1,
+      "toast": "9 changes | Duty, the AMT sim and the OFT sim have no usable times — nobody on them earns OIL for this day | Duty, the AMT sim and the OFT sim have no usable times — nobody on them earns OIL for this "
+     },
+     {
+      "label": "OFT second seat",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "s:5.oft.0.w",
+      "offered": 1,
+      "placed": 1,
+      "toast": "10 changes | ALL AVAIL planned"
+     },
+     {
+      "label": "ground row main (empty row)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "g:5.0.+",
+      "offered": 1,
+      "placed": 1,
+      "toast": "12 changes"
+     },
+     {
+      "label": "ground row extras (after first)",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "g:5.0.+",
+      "offered": 1,
+      "placed": 1,
+      "toast": "13 changes"
+     },
+     {
+      "label": "common programme row",
+      "pid": "allavail",
+      "how": "pick",
+      "armed": "a:5.0.+",
+      "offered": 1,
+      "placed": 1,
+      "toast": "15 changes | Duty, the AMT sim, the OFT sim and the common programme have no usable times — nobody on them earns OIL for this day | Duty, the AMT sim, the OFT sim and the common programme have no usab"
+     }
+    ],
+    "final": [
+     "a:5.0.0 allavail",
+     "d:5.0.1 allavail",
+     "s:5.amt.0.p allavail",
+     "s:5.amt.0.w allavail",
+     "s:5.oft.0.p allavail",
+     "s:5.oft.0.w allavail",
+     "g:5.0 allavail",
+     "g:5.0.x0 allavail",
+     "g:5.0.x1 allavail"
+    ],
+    "errors": []
+   },
+   "log": [
+    "{\"label\":\"flying FCP seat (pick)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"5.0.0.0.p\",\"offered\":1,\"placed\":0,\"toast\":\"Planning FCP · | cannot crew a jet; name the people flying it | cannot crew a jet; name the people flying it | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat\"}",
+    "{\"label\":\"flying RCP seat (pick)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"5.0.0.0.w\",\"offered\":1,\"placed\":0,\"toast\":\"Planning RCP · | PERSONNEL · 3 FREE\"}",
+    "{\"label\":\"flying FCP seat (pick)\",\"pid\":\"all\",\"how\":\"pick\",\"armed\":\"5.0.0.0.p\",\"offered\":1,\"placed\":0,\"toast\":\"Planning FCP · | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat | WSO — cannot fly front seat\"}",
+    "{\"label\":\"flying RCP seat (pick)\",\"pid\":\"all\",\"how\":\"pick\",\"armed\":\"5.0.0.0.w\",\"offered\":1,\"placed\":0,\"toast\":\"Planning RCP · | PERSONNEL · 3 FREE\"}",
+    "{\"label\":\"flying FCP seat (drag)\",\"pid\":\"allavail\",\"how\":\"drag\",\"armed\":null,\"offered\":null,\"placed\":0,\"toast\":\"ALL AVAIL — cannot crew a jet; name the people flying it\"}",
+    "duty row added new zones: [\"fill:d:5.0.1.+\"]",
+    "{\"label\":\"duty desk new row\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"d:5.0.1.+\",\"offered\":1,\"placed\":1,\"toast\":\"4 changes | ? | ⚠ 2 issues | · 1 warning · | Duty has no usable times — nobody on it earns OIL for this day | Duty has no usable times — nobody on it earns OIL for this day\"}",
+    "AMT row added new zones: [\"fill:s:5.amt.0.+\",\"slot:s:5.amt.0.p\",\"slot:s:5.amt.0.w\"]",
+    "sim zones now [\"fill:s:5.amt.0.+\",\"slot:s:5.amt.0.p\",\"slot:s:5.amt.0.w\"]",
+    "{\"label\":\"AMT first seat\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"s:5.amt.0.p\",\"offered\":1,\"placed\":1,\"toast\":\"6 changes | Duty and the AMT sim have no usable times — nobody on them earns OIL for this day | Duty and the AMT sim have no usable times — nobody on them earns OIL for this day\"}",
+    "{\"label\":\"AMT second seat\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"s:5.amt.0.w\",\"offered\":1,\"placed\":1,\"toast\":\"7 changes | ALL AVAIL planned\"}",
+    "OFT row added new zones: [\"fill:s:5.oft.0.+\",\"slot:s:5.oft.0.p\",\"slot:s:5.oft.0.w\"]",
+    "{\"label\":\"OFT first seat\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"s:5.oft.0.p\",\"offered\":1,\"placed\":1,\"toast\":\"9 changes | Duty, the AMT sim and the OFT sim have no usable times — nobody on them earns OIL for this day | Duty, the AMT sim and the OFT sim have no usable times — nobody on them earns OIL for this \"}",
+    "{\"label\":\"OFT second seat\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"s:5.oft.0.w\",\"offered\":1,\"placed\":1,\"toast\":\"10 changes | ALL AVAIL planned\"}",
+    "ground row added new zones: [\"fill:g:5.1.+\"]",
+    "{\"label\":\"ground row main (empty row)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"g:5.0.+\",\"offered\":1,\"placed\":1,\"toast\":\"12 changes\"}",
+    "{\"label\":\"ground row extras (after first)\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"g:5.0.+\",\"offered\":1,\"placed\":1,\"toast\":\"13 changes\"}",
+    "programme item added new zones: [\"fill:a:5.0.+\"]",
+    "{\"label\":\"common programme row\",\"pid\":\"allavail\",\"how\":\"pick\",\"armed\":\"a:5.0.+\",\"offered\":1,\"placed\":1,\"toast\":\"15 changes | Duty, the AMT sim, the OFT sim and the common programme have no usable times — nobody on them earns OIL for this day | Duty, the AMT sim, the OFT sim and the common programme have no usab\"}",
+    "placeholder pucks now sitting in: [\"a:5.0.0 allavail\",\"d:5.0.1 allavail\",\"s:5.amt.0.p allavail\",\"s:5.amt.0.w allavail\",\"s:5.oft.0.p allavail\",\"s:5.oft.0.w allavail\",\"g:5.0 allavail\",\"g:5.0.x0 allavail\",\"g:5.0.x1 allavail\"]"
+   ]
+  },
+  "s41-runphoneus": {
+   "at": "2026-10-09T08:53:37.581Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "open": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523,
+     "bottom": 832,
+     "resize": "both",
+     "cols": [
+      {
+       "x": 21,
+       "w": 170,
+       "head": "PILOTS · 28",
+       "pucks": 28,
+       "ys": [
+        412,
+        432,
+        452,
+        472
+       ]
+      },
+      {
+       "x": 199,
+       "w": 170,
+       "head": "WSOS · 17",
+       "pucks": 17,
+       "ys": [
+        412,
+        432,
+        452,
+        472
+       ]
+      }
+     ],
+     "scrollH": 591,
+     "clientH": 390
+    },
+    "last": [
+     {
+      "id": "bapster",
+      "y": 751,
+      "bottom": 768,
+      "vis": true
+     },
+     {
+      "id": "shrek",
+      "y": 531,
+      "bottom": 548,
+      "vis": true
+     }
+    ],
+    "moved": {
+     "from": 309,
+     "to": 145
+    },
+    "errors": []
+   },
+   "log": [
+    "filed {\"iid\":\"imv0qa9i8mewll5\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "opened {\"x\":12,\"y\":309,\"w\":366,\"h\":523,\"bottom\":832,\"resize\":\"both\",\"cols\":[{\"x\":21,\"w\":170,\"head\":\"PILOTS · 28\",\"pucks\":28,\"ys\":[412,432,452,472]},{\"x\":199,\"w\":170,\"head\":\"WSOS · 17\",\"pucks\":17,\"ys\":[412,432,452,472]}],\"scrollH\":591,\"clientH\":390} | viewport 390x844, height fraction 0.62",
+    "tabs []",
+    "after finger scrolls: window geometry {\"y\":309,\"h\":523}",
+    "last man of each column reachable [{\"id\":\"bapster\",\"y\":751,\"bottom\":768,\"vis\":true},{\"id\":\"shrek\",\"y\":531,\"bottom\":548,\"vis\":true}]",
+    "after dragging the grip upward: y 309 -> 145"
+   ]
+  },
+  "s09b-run": {
+   "at": "2026-10-09T08:53:50.301Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "log": [
+    "blanket now: mbtn daybtn blank on | Let this day earn again",
+    "seats under the blanket {\"n\":45,\"first\":\"<span class=\\\"seat oilpk inert\\\" title=\\\"Reaper — nothing on this day earns, so this cannot be changed here\\\"><span class=\\\"puck sm oildim\\\" tabindex=\\\"0\\\" data-person=\\\"dice\\\" title=\\\"Reaper · IR · instrument rating exmr · SXO\\\"><span class=\\\"nm\\\">Reaper</span><span class=\\\"role oilno\\\" title=\\\"Earns nothing from t\",\"text\":\"Relay — Scope — Static — Cinder — Rune — Cutter — Dash — Ghost — Grit — Hex — Ryder — Vector — Wisp — who is free as things stand now Nothing on this day earns. Turn that off to switch men one by one.\"}",
+    "earn tab before/after tapping a man under the blanket: Who earns OIL 0 of 45 -> Who earns OIL 0 of 45",
+    "blanket lifted:  Who earns OIL 45 of 45 | decisions: on 45 of 45"
+   ],
+   "errors": []
+  },
+  "s54c-run": {
+   "at": "2026-10-09T08:54:27.148Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "log": [
+    "placed on a separate row: allavail",
+    "chips [\"45 | None of these 45 earn OIL today — tap to see each one (who is free as things stand now)\",\"45 | All 45 earn half a day — tap to see each one (who is free as things stand now)\"]",
+    "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+    "credits (Reaper, Anvil, ground man Ratchet): separate 3h row Yes by default; the No request pays none; ground crew stay out {\"Reaper\":\"HO*\",\"Anvil\":\"HO*\",\"Ratchet\":\"\"}",
+    "RCP seat holds a placeholder? false",
+    "words on screen [\"cannot crew a jet; name the people flying it\",\"cannot crew a jet; name the people flying it\",\"ALL AVAIL — cannot crew a jet; name the people flying it\"]"
+   ],
+   "errors": []
+  },
+  "s41-runphonead": {
+   "at": "2026-10-09T08:55:54.443Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "open": {
+     "x": 12,
+     "y": 309,
+     "w": 366,
+     "h": 523,
+     "bottom": 832,
+     "resize": "both",
+     "cols": [
+      {
+       "x": 21,
+       "w": 170,
+       "head": "PILOTS · 28",
+       "pucks": 28,
+       "ys": [
+        410,
+        430,
+        450,
+        470
+       ]
+      },
+      {
+       "x": 199,
+       "w": 170,
+       "head": "WSOS · 17",
+       "pucks": 17,
+       "ys": [
+        410,
+        430,
+        450,
+        470
+       ]
+      }
+     ],
+     "scrollH": 591,
+     "clientH": 392
+    },
+    "last": [
+     {
+      "id": "bapster",
+      "y": 751,
+      "bottom": 768,
+      "vis": true
+     },
+     {
+      "id": "shrek",
+      "y": 531,
+      "bottom": 548,
+      "vis": true
+     }
+    ],
+    "low": {
+     "last": "shrek",
+     "before": "on",
+     "after": "off"
+    },
+    "moved": {
+     "from": 309,
+     "to": 145
+    },
+    "errors": []
+   },
+   "log": [
+    "filed {\"iid\":\"imv0qd2nbge6v0q\",\"person\":\"allavail\",\"type\":\"Duty\",\"s\":540,\"e\":720,\"oil\":{\"2026-07-18\":0.5},\"acc\":\"g\"}",
+    "OIL Earn button found: 1",
+    "opened {\"x\":12,\"y\":309,\"w\":366,\"h\":523,\"bottom\":832,\"resize\":\"both\",\"cols\":[{\"x\":21,\"w\":170,\"head\":\"PILOTS · 28\",\"pucks\":28,\"ys\":[410,430,450,470]},{\"x\":199,\"w\":170,\"head\":\"WSOS · 17\",\"pucks\":17,\"ys\":[410,430,450,470]}],\"scrollH\":591,\"clientH\":392} | viewport 390x844, height fraction 0.62",
+    "tabs [\"Who’s available 45\",\"Who earns OIL 45 of 45\"]",
+    "after finger scrolls: window geometry {\"y\":309,\"h\":523}",
+    "last man of each column reachable [{\"id\":\"bapster\",\"y\":751,\"bottom\":768,\"vis\":true},{\"id\":\"shrek\",\"y\":531,\"bottom\":548,\"vis\":true}]",
+    "earn tab seats: 45 | active tab: Who earns OIL 45 of 45",
+    "lowest man in the list shrek switch on -> off | Who earns OIL 44 of 45",
+    "after dragging the grip upward: y 309 -> 145"
+   ]
+  },
+  "s40n2-run": {
+   "at": "2026-10-09T08:56:22.529Z",
+   "base": "http://localhost:4232/",
+   "table": [],
+   "out": {
+    "logout": {
+     "b": {
+      "win": 1,
+      "login": 0,
+      "page": "editsched",
+      "week": "13/07/2026"
+     },
+     "a": {
+      "win": 0,
+      "login": 1,
+      "page": "viewsched",
+      "week": "13/07/2026"
+     }
+    }
+   },
+   "log": [
+    "logout before {\"win\":1,\"login\":0,\"page\":\"editsched\",\"week\":\"13/07/2026\"} after {\"win\":0,\"login\":1,\"page\":\"viewsched\",\"week\":\"13/07/2026\"}"
+   ]
+  }
+ },
+ "rows": [
+  {
+   "id": "S7",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS (Yes, No) — unanswered NOT WALKED",
+   "saw": "Four worlds, 09:00–12:00 placeholder Duty, issued ORIG then AL1. Yes: one tap takes P off (44 of 45), second puts him back; No: first tap credits him (1 of 45), second clears it. Switch-first then the filer answers again (Yes→No→Yes; No→Yes→No): P's tap survives both answers. Answer-first then switch: same. Credits after each AL: Yes/deny P, answers No→Yes: P none, Anvil HO, Basher HO; Yes→No then grant P: P HO, others none; No/grant P then Yes then No: P HO, others none; No→Yes then deny P: P none, others HO. BLOCKED step for the unanswered default: cancelling the OIL question (calendar, board Add, member too) keeps the editor open and saves nothing, so no control I could reach leaves a saved unanswered placeholder input.",
+   "pictures": "desk-s7YA-05-afterB, desk-s7NB-20-lw, desk-s7YB-09-tap1"
+  },
+  {
+   "id": "S8",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "No-answer Duty, P typed under the row (and again with P in the name box and the placeholder under it): P's own switch on the row starts ON, window of 44 starts all OFF; P is not in the window (once only). After deny P, grant W, filer Yes: P off, W on, M on; Undo: M off (back to No), W on, P off; Redo: all back; after a real reload: same; ORIG credits P none, Basher HO, Anvil HO.",
+   "pictures": "desk-s8a-02-win-initial, desk-s8a-04-win-afterYes, desk-s8a-05-win-undo"
+  },
+  {
+   "id": "S9",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Explicit grant P and deny W kept through filer No→Yes. Blanket \"Nothing today earns\" on: window says \"Nothing on this day earns. Turn that off to switch men one by one.\" and shows 0 of 45; every man's seat is inert with \"nothing on this day earns, so this cannot be changed here\"; a tap changes nothing. AL with blanket on: nobody credited. Blanket off again: P on, W off, Anvil on retained; AL2: P HO, Anvil HO, Basher none.",
+   "pictures": "desk-s9-04-blanket-off, desk-s9b-01-tap-under-blanket"
+  },
+  {
+   "id": "S21",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "09:00–12:00 Yes + P on a 15:00–16:00 row: ORIG gives Reaper FO (full day, gap counted), Basher HO. Titles \"earns a full day\" / \"earns half a day\". Deleting the later row leaves issued figures FO until AL1, then Reaper HO.",
+   "pictures": "desk-s21-02-win, desk-s21-04-lw1"
+  },
+  {
+   "id": "S22",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Typed P and ground man G (Ratchet) under a Yes placeholder: ORIG gives P, G, Anvil, Basher HO. Putting P in the name box again is refused (already on the row, no change). Replacing the main placeholder with Anvil removes the count chip; a second placeholder (ALL) added in the extras and dragged off again; 2 pending; Undo/Redo restore and remove ALL. AL1: P, G, Anvil HO; Basher (former crowd) none. The input's own person stays ALL AVAIL.",
+   "pictures": "desk-s22-r3 pictures replaced, all-removed, lw"
+  },
+  {
+   "id": "S23",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Yes placeholder Event, three runs. CX (Cancel line), Information only, Take off: no count chip, nothing greens; the item's tip says \"Nothing on this row can earn OIL, so there is nothing to switch off\" (CX, ⓘ: \"Info only — … earns no OIL\"). Undo/Redo/reload keep the state; issued credits HO until the AL, then none; restoring through the same control and AL2 brings HO back.",
+   "pictures": "desk-s23INFO-03-oil-mode, desk-s23TAKEOFF-09-oil-mode, desk-s23CX-*"
+  },
+  {
+   "id": "S24",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Named P Duty answered No, placeholder and typed G added: P's seat \"answered No … tap to put him on it anyway\" (off), G on, window 44 of 44 on. ORIG: P none, G HO, Anvil HO, Basher HO. Placeholder dragged off, AL1: Anvil and Basher none, G HO, P none.",
+   "pictures": "desk-s24-*-win, lw"
+  },
+  {
+   "id": "S25",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Both placeholders, a repeated ALL AVAIL, typed P on two overlapping rows: three counts (44 each); P typed (on) on both rows and not in the window. ORIG: Reaper HO once. After removing typed P, the second row and ALL, AL1 keeps Reaper HO (still in the crowd).",
+   "pictures": "desk-s25-02-win"
+  },
+  {
+   "id": "S27",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Manual 1 day awarded in the tracker (reason \"S27 manual award\"). After ORIG the tracker row shows 1.5 = AUTO Duty input 0.5 (18 Jul) + manual 1. After take-off + AL1: 1 (manual stays). After restore + AL2: 1.5.",
+   "pictures": "tracker-* pictures"
+  },
+  {
+   "id": "S31",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS (silent refusal; reverse gesture absent)",
+   "saw": "Arm the genuine leave row seat (Unavailable, Cobra) then pick ALL AVAIL by tap and by drag: owner stays Cobra. No words on screen say why (the arm banner just clears). The placeholder Duty is on the Ground Programme and has no reassign seat (0 seats), so named←placeholder has no gesture to try. Ordinary name-box replacement works and leaves the input's person ALL AVAIL (typed man earns by the typed-man rule, S22).",
+   "pictures": "desk-s31-01-leave-pick, desk-s31-02-leave-drag"
+  },
+  {
+   "id": "S32",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS (board only)",
+   "saw": "Placeholder Duty in Personal Inputs offers UNDO (take off) and, once off, ACCEPT; no \"→ Unavail\" in either state; the Unavailable panel keeps its 4 genuine rows. Edit-week's own Personal Inputs echo not separately walked.",
+   "pictures": "desk-s32-01-board-accepted, desk-s32-02-board-taken-off"
+  },
+  {
+   "id": "S39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS (phone NOT WALKED)",
+   "saw": "Placeholder Event Wed 15 Jul and placeholder Duty Sat 18 Jul. Edit week, Board and View-only each draw one count per request: Wed 36 / Sat 45 on all three; the three windows list the same men. The Personal Inputs echo draws the placeholder puck without a count. Saturday issued: Reaper and Anvil HO. Phone: the filing setup for the second input was blocked by the day window left open (script), nothing walked.",
+   "pictures": "desk-s39desk-*"
+  },
+  {
+   "id": "S40",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Opens 212 wide; moves by the six dots; resizes wider (372) and stops at 186; stays open on a click behind it; OIL Earn off: tapping P lights 13 pucks of him elsewhere and the window says \"Reaper — nothing else on the programme at that time.\"; OIL Earn on: his switch flips and nothing is selected. Closes on page change (View-only Sched, Inputs), on week change and on logout; stays open after the board's Done.",
+   "pictures": "desk-s40-02-moved, desk-s40-*-tap-off/on, desk-s40n*"
+  },
+  {
+   "id": "S41",
+   "size": "phone",
+   "role": "admin / member",
+   "verdict": "PASS",
+   "saw": "62% tall bottom panel (523 of 844), pilots left and WSOs right, one puck per row; a finger drag started on a puck scrolls the list to its end (last pilot and last WSO reached); admin sees both tabs and switched the lowest WSO off; member sees one tab and no earning control; grip drag moves the panel (y 309 to 145). Computed style says resize:both and a 1-2 px speck sits at the corner; no usable corner.",
+   "pictures": "phone-s41phonead-01-open, phone-s41-corner-zoom, phone-s41phoneus-*"
+  },
+  {
+   "id": "S42",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS (flying only)",
+   "saw": "Logic: step 1h, dekit 30 min, brief 2h20, debrief 2h. P on a 12:00–13:30 line: request over report/brief only (09:30–10:30): P counted, window says \"No time for the … flight brief\"; over step-to-dekit (11:30–12:30): P left out (42 of 43 ish); over debrief only (14:15–14:45): P counted, \"Not enough time to attend the … debrief\". Changing the request's time through the board moves P in and out. Sim repeat and issuing the variants were not walked.",
+   "pictures": "desk-s42-*"
+  },
+  {
+   "id": "S43",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "P on a named Event 10:00–11:00 under a 09:00–12:00 placeholder Duty: count 44, P not listed; Event moved to 13:00–14:00: 45, P listed; back: 44. A placeholder Event on top: both placeholder crowds stay 44, no new warning.",
+   "pictures": "desk-s43-*"
+  },
+  {
+   "id": "S44",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Start only 18:30: count 46 over \"18:30–19:30 · no end time, an hour assumed\"; OIL Earn says \"No OIL worked out — this row has no end time.\" No start (end only): \"?\" with \"No start time — give it a time…\"; start = end: \"?\" with \"It starts and ends at the same time\". Logic \"Assumed length, no end time\" 1h to 3h: window now \"18:30–21:30 · 3 hours assumed\". Issued: crowd got nothing.",
+   "pictures": "desk-s44-*"
+  },
+  {
+   "id": "S46",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "P on SC AM (07:00–13:00), Meeting 10:00–11:00: amber advisory line \"…on SC AM … and also down for MEETING\", puck ring amber. Same input as Event: red line \"Reaper — SC AM & EVENT clash\", puck ring red, puck lit on the board; moved to 14:00–15:00: \"No conflicts\".",
+   "pictures": "desk-s46-02-meeting, desk-s46-03-event, desk-s46-04-event-jump"
+  },
+  {
+   "id": "S47",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Event Thu 21:00–23:00 then flying Fri 07:00 (report 04:40): \"Crew rest breach — … only 5h40 rest\", identical to a Training control; moving it to 14:00–15:00 clears both. (Moving it only to 17:00–18:00 still breached, 10h40 of 12h, same for both.) Reverse (flying Fri 20:00–21:30, Event Sat 04:00–05:00): no breach for either Event or Training.",
+   "pictures": "desk-s47-*"
+  },
+  {
+   "id": "S48",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Typed EVENT and \"Sports EVENT\" on a row over the SC shift: red \"SC AM & EVENT clash\" / \"SC AM & Sports EVENT clash\"; typed MEETING: amber advisory. Moved to 14:00–15:00 the SC clash goes (the later rows then clash with the row left behind, as two events at once).",
+   "pictures": "desk-s46-06-row-EVENT, -07, -08"
+  },
+  {
+   "id": "S54",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "saw": "Placeholders refused on both cockpit seats of a flying line (tap and drag, ALL AVAIL and ALL): \"cannot crew a jet; name the people flying it\". Accepted on a duty row, both AMT and both OFT seats, ground row main and extras and a common programme row. A separate 3h ground row placed beside a No request earns by default (HO for Reaper and Anvil); ground man Ratchet not in the crowd, but earns when typed (S22).",
+   "pictures": "desk-s54b-*, desk-s54c-*"
+  }
+ ]
+}

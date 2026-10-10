@@ -156,7 +156,10 @@ describe('the commitments', () => {
     const row = within(t('sd-row-' + r.iid))
     expect(row.getByTestId('sd-letters').textContent).toBe('F · O')
     expect(row.getByTestId('sd-hours').textContent).toBe('10:00–15:00')
-    expect(row.getByTestId('sd-placed').textContent).toBe(`Placed by ${PEOPLE[sansW[0]].cs} · 28 Sep 26, 09:14`)
+    /* short in an opened day, as on the Inputs calendar's (owner D701, 9 Oct 26 — "B and sans day should follow") */
+    expect(row.getByTestId('sd-placed').textContent).toBe(`${PEOPLE[sansW[0]].cs} · 28 Sep, 09:14`)
+    expect(row.getByTestId('sd-placed').getAttribute('title')).toBe(`Placed by ${PEOPLE[sansW[0]].cs} · 28 Sep 26, 09:14`)
+    expect(t('sd-row-' + r.iid).querySelector('.sd-foot')!.contains(row.getByTestId('sd-placed'))).toBe(true)
   })
   it('a record that never recorded who placed it shows no small-print line', () => {
     const r = commit(sansW[0])

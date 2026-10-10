@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { InputsPage } from './InputsPage'
+import { InputEditor } from './inputedit'
 import { initStore, setSession, notify, writeInputs } from '../state/store'
 import { INPUTS } from '../engine/inputs'
 import { removeInput } from './inputedit'
@@ -43,7 +44,8 @@ beforeAll(async () => {
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)
-  await act(async () => { root.render(<InputsPage />) })
+  /* with the input's window: a row's edit and delete are done there since D718 (10 Oct 26) */
+  await act(async () => { root.render(<><InputsPage /><InputEditor /></>) })
 })
 
 /* Unmount before the file ends: a render task left queued by the last test
@@ -166,12 +168,16 @@ describe('DOM-vs-model addressing under sort and a narrowed window', () => {
     })
   })
 
+  /* RESTATED 10 Oct 26 — the row's ✕ and ✎ are gone (owner D718, D723): the row opens the input's window, and the
+     window's Delete and Save act on the input the ROW stood for, whatever the sort and whatever shifts underneath. */
+  const D = (sel: string) => document.querySelector(sel) as HTMLElement
   it('delete hits the row clicked after sorting by name descending', async () => {
     await click($('#intbl thead th[data-sort="name"]'))
     await click($('#intbl thead th[data-sort="name"]'))   // descending
     const row = $$('#inBody tr').find(tr => (tr.textContent || '').includes('A-YETI'))!
     const n = INPUTS.length
-    await click(row.querySelector('[data-inx]'))
+    await click(row.querySelector('[data-testid="in-open"]'))
+    await click(D('#inpEditDel'))
     expect(INPUTS.length).toBe(n - 1)
     expect(INPUTS.some((r: any) => r.remarks === 'A-YETI'), 'the clicked row went').toBe(false)
     expect(INPUTS.some((r: any) => r.remarks === 'A-BANE'), 'its neighbours stayed').toBe(true)
@@ -180,16 +186,16 @@ describe('DOM-vs-model addressing under sort and a narrowed window', () => {
 
   it('edit + save hits the row clicked even after a lower-indexed input is deleted mid-edit', async () => {
     const row = $$('#inBody tr').find(tr => (tr.textContent || '').includes('A-BANE'))!
-    await click(row.querySelector('[data-edit]'))
-    expect($('#inBody tr.ined')).toBeTruthy()
-    /* a DIFFERENT input is deleted while the editor is open — every model
+    await click(row.querySelector('[data-testid="in-open"]'))
+    expect(D('#inpEditRmk'), 'the input’s editor opened').toBeTruthy()
+    /* a DIFFERENT input is deleted while the window is open — every model
        index below it shifts down one */
     const victim = INPUTS.find((r: any) => r.remarks === 'A-STIFF')
     await act(async () => { removeInput(victim) })
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    const rm = D('#inpEditRmk') as HTMLInputElement
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     await act(async () => { setter.call(rm, 'A-BANE EDITED'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    await click($('#inBody tr.ined [data-save]'))
+    await click(D('#inpEditSave'))
     expect(INPUTS.some((r: any) => r.remarks === 'A-BANE EDITED'), 'the edit landed on the opened row').toBe(true)
     expect(INPUTS.some((r: any) => r.remarks === 'A-YETI EDITED' || r.remarks === 'A-STIFF EDITED'), 'and nowhere else').toBe(false)
     await act(async () => { clean('A-') })
@@ -198,21 +204,28 @@ describe('DOM-vs-model addressing under sort and a narrowed window', () => {
 })
 
 /* ---- the two calendars on the page are separate state ---- */
-describe('the add form\'s calendar and the window picker do not share state', () => {
-  it('picking a table window leaves the add form\'s pick alone, and vice versa', async () => {
-    /* pick dates on the add form */
-    await click($('#inCal [data-cal="2026-07-14"]'))
-    await click($('#inCal [data-cal="2026-07-16"]'))
-    expect($('#inDates').textContent).toBe('14 Jul → 16 Jul')
-    /* now narrow the table window on the other calendar */
+/* RESTATED 10 Oct 26 (owner D729 — the design vet's V1): the List's own add form, whose calendar this was, is gone; the
+   calendar a new input is dated on is the one in the window "+ Input" opens. It and the List's dates picker are still
+   two calendars on one page, and still must not move each other. */
+describe('a new input\'s calendar and the List\'s dates picker do not share state', () => {
+  it('picking the List\'s dates leaves the new input\'s pick alone, and vice versa', async () => {
+    /* pick dates for a new input, in its window */
+    await click($('#inNew'))
+    const D = (sel: string) => document.querySelector(sel) as HTMLElement
+    const read = () => D('#inpEditPop .rc-read').textContent
+    await click(D('#inpEdCal [data-cal="2026-07-14"]'))
+    await click(D('#inpEdCal [data-cal="2026-07-16"]'))
+    expect(read()).toBe('Jul 14 → Jul 16')
+    /* now narrow the List's dates on the other calendar — the window stays up while the page behind it works */
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeCal [data-cal="2026-07-20"]'))
     await click($('#inRangeCal [data-cal="2026-07-22"]'))
-    expect($('#inDates').textContent, 'the form pick is untouched').toBe('14 Jul → 16 Jul')
+    expect(read(), 'the new input’s pick is untouched').toBe('Jul 14 → Jul 16')
     expect($('#inRangeBtn').textContent).toContain('20 Jul')
-    /* and re-picking on the form does not move the window */
-    await click($('#inCal [data-cal="2026-07-17"]'))
-    expect($('#inRangeBtn').textContent, 'the window is untouched').toContain('20 Jul')
+    /* and re-picking in the window does not move the List's dates */
+    await click(D('#inpEdCal [data-cal="2026-07-17"]'))
+    expect($('#inRangeBtn').textContent, 'the List’s dates are untouched').toContain('20 Jul')
+    await click(D('#inpEditCancel'))
     await showAllDates()
   })
 })

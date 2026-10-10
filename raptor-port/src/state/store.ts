@@ -22,13 +22,13 @@ import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, placeholderProblem } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
-import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup } from './demoseed'
+import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup, seedDemoPlaceholders } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
@@ -53,6 +53,7 @@ import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPip
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
+import type { CommitEnvelope } from '../command/types'
 import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
@@ -211,8 +212,33 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
    (ok:false, incl. the silent CmdRefused) reverted the model in phase-6 but ran
    no latched repaint, so repaint the reverted grid here and report false. */
 function batchResult(r: CommitResult): boolean {
-  if ((r as any).ok === false) { view.armDrop(); HOOKS.renderInputs(); HOOKS.reflow(); return false }
+  if ((r as any).ok === false) {
+    /* the placeholder check's refusal is a sentence a person can read (below) — said here, once, for any door that did
+       not say it first */
+    const msg = String((r as any).message || '')
+    if (msg.startsWith(PLACEHOLDER_SHAPE + ': ')) HOOKS.toast(msg.slice(PLACEHOLDER_SHAPE.length + 2), 'warn')
+    view.armDrop(); HOOKS.renderInputs(); HOOKS.reflow(); return false
+  }
   return true
+}
+
+/* AN INPUT FILED FOR "ALL AVAIL" / "ALL" KEEPS ITS SHAPE, WHOEVER SAVES IT AND BY WHATEVER DOOR ([INPUT-ALL-AVAIL]; owner
+   D700, D711, D712, D713 — 9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2). One of six
+   kinds, one day, never in a group: engine/inputs.ts placeholderProblem is the one body, and every save door asks it
+   first, with its sentence. THIS is the layer behind the doors — a HARD check on what a command really changed, kept
+   beside the member's ownership check (wireStore below). It reads no role, so an admin is held as a member is (the
+   ownership check skips admins — which is how the first plan would have let an admin's List form save a several-day
+   one); it runs for every command, so an Undo / Redo, the Leave War's door and the test bridge are held too; and it
+   judges only records the command PUT, so an untouched stored record is never judged (D56). A breach rolls the whole
+   command back: no record, no history line, no Undo step, no half-filed group. */
+const PLACEHOLDER_SHAPE = 'placeholder-input-shape'
+export function placeholderShapeViolation(env: CommitEnvelope): string | null {
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
+    const why = placeholderProblem(c.after)
+    if (why) return why
+  }
+  return null
 }
 
 /* personal inputs (the Inputs page): mutate INPUTS, then the reference's
@@ -727,6 +753,8 @@ export function wireStore() {
   /* and what a member's command actually changed — never another person's record
      (perms.ts ownershipViolation; a HARD invariant, so a breach rolls it back) */
   defineInvariant({ id: 'member-writes-own', cls: 'hard', check: ownershipViolation })
+  /* …and an input filed for ALL AVAIL / ALL keeps its shape, whoever saves it (placeholderShapeViolation above) */
+  defineInvariant({ id: PLACEHOLDER_SHAPE, cls: 'hard', check: placeholderShapeViolation })
   /* the reference's editMode(): the edit page is open. The reference also
      ANDed its #editToggle switch here; that toggle was removed 9 Aug 26
      (owner) — being on Edit Schedule is the intent to edit, and View-only
@@ -891,6 +919,8 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
     seedDemoMedical(docAdd)
     /* one input filed for several people, so every list shows a shared input from the first look (state/demoseed.ts) */
     seedDemoGroup()
+    /* an input filed for ALL AVAIL and an Event filed for ALL, so both are on every list from the first look */
+    seedDemoPlaceholders()
     /* who placed each demo input, and when — made up, as they are (D629; state/demoseed.ts says why and what it never
        does). After the seeds above, so every one of their rows is there to stamp. */
     seedDemoStamps()

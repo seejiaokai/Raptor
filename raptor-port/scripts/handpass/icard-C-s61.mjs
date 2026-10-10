@@ -1,0 +1,95 @@
+import * as L from './icard-C-lib.mjs'
+const { sleep } = L
+const w = await L.world('phone', 'ad')
+const p = w.page
+const parts = [], pics = []
+let verdict = 'PASS'
+const fail = m => { verdict = 'FAIL'; parts.push('FAIL: ' + m) }
+const grp = async () => {
+  const rs = await L.recAll(p, { type: 'Duty', date: 'Jul 18' })
+  const nm = {}; for (const id of Object.keys(await p.evaluate(() => window.PEOPLE))) { }
+  return rs.map(r => ({ who: r.person, oil: r.oil, by: r.by, grp: r.grp }))
+}
+const names = async () => p.evaluate(() => { const o = {}; for (const [k, v] of Object.entries(window.PEOPLE)) o[k] = v.cs; return o })
+const show = async () => { const n = await names(); return (await grp()).map(r => `${n[r.who]}:${JSON.stringify(r.oil)}${r.by ? ' by ' + n[r.by] : ''}`).join(' ; ') }
+try {
+  await L.fileNew(w, { iso: '2026-07-18', type: 'Duty', several: ['Ace', 'Ranger', 'Saber'], s: '09:00', e: '12:00', oil: 'yes' })
+  parts.push('Saber filed a Sat 18 Jul Duty 09:00-12:00 for Ace, Ranger, Saber and answered Yes: ' + await show())
+  await L.switchUser(w, 'us')
+  await L.openByText(w, 'Ace, Ranger, Saber')
+  pics.push(await L.pic(w, '61-1-window-top'))
+  const f = await L.winFacts(p)
+  parts.push(`Ranger's window: Save ${f.save}, Delete ${f.del}, date calendar ${f.cal}, group Change… (oil-revise) present ${f.revise}, own Change… ${await p.locator('[data-testid="oil-revise-own"]').count()}, Take me out ${f.takeout}; read-only line "${f.ro}"`)
+  const grpBtn = await p.locator('[data-testid="oil-revise"]').first().evaluate(e => { const r = e.getBoundingClientRect(); const x = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { inert: !(x === e || e.contains(x)), pe: getComputedStyle(e).pointerEvents, opacity: getComputedStyle(e).opacity } }).catch(() => null)
+  parts.push('group-level Change… button (greyed): ' + JSON.stringify(grpBtn))
+  if (f.save || f.del || f.cal) fail('whole-group edit controls present')
+  if (!f.takeout || !(await p.locator('[data-testid="oil-revise-own"]').count())) fail('own Change… / Take me out missing')
+  // own Change… -> No
+  await p.locator('[data-testid="oil-revise-own"]').scrollIntoViewIfNeeded()
+  pics.push(await L.pic(w, '61-2-own-controls'))
+  await p.locator('[data-testid="oil-revise-own"]').tap(); await sleep(500)
+  const q = await L.oilText(p)
+  parts.push('own Change… opened: ' + (q || '').slice(0, 180))
+  pics.push(await L.pic(w, '61-3-own-question'))
+  if (!q) fail('own Change… did not open a question')
+  await L.answerOil(w, 'no'); await sleep(500)
+  const afterNo = await show()
+  parts.push('after Ranger changes to No: ' + afterNo)
+  const n = await names(); const rs = await L.recAll(p, { type: 'Duty', date: 'Jul 18' })
+  const byName = nm => rs.find(r => n[r.person] === nm)
+  const okNo = byName('Ranger') && !(byName('Ranger').oil && Object.values(byName('Ranger').oil).some(v => v > 0)) && Object.values(byName('Ace').oil || {}).some(v => v > 0) && Object.values(byName('Saber').oil || {}).some(v => v > 0)
+  if (!okNo) fail("Ranger's No did not change only his own answer: " + afterNo)
+  pics.push(await L.pic(w, '61-4-after-own-no'))
+  // reopen if closed
+  if (!(await L.win(p).count())) await L.openByText(w, 'Ace, Ranger, Saber')
+  // Take me out -> Stay in
+  await p.locator('[data-testid="inped-takeout"]').scrollIntoViewIfNeeded()
+  await p.locator('[data-testid="inped-takeout"]').tap(); await sleep(600)
+  const vis = await p.evaluate(() => [...document.querySelectorAll('.airpop, [role=dialog], .floatwin')].filter(e => e.offsetParent).map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 250)))
+  parts.push('Take me out opened: ' + JSON.stringify(vis.slice(-1)))
+  pics.push(await L.pic(w, '61-5-takeout-question'))
+  const stay = p.getByRole('button', { name: /Stay in/i }).first()
+  const sc = await stay.count()
+  if (!sc) fail('no "Stay in" button on the removal question')
+  else { await stay.tap(); await sleep(500) }
+  const afterStay = await show()
+  parts.push('after Stay in: ' + afterStay + ' (people rows ' + (await L.recAll(p, { type: 'Duty', date: 'Jul 18' })).length + ')')
+  if ((await L.recAll(p, { type: 'Duty', date: 'Jul 18' })).length !== 3) fail('Stay in changed the membership')
+  if (!(await L.win(p).count())) await L.openByText(w, 'Ace, Ranger, Saber')
+  await p.locator('[data-testid="inped-takeout"]').scrollIntoViewIfNeeded()
+  await p.locator('[data-testid="inped-takeout"]').tap(); await sleep(600)
+  const out = p.getByRole('button', { name: /Take me out|Yes, take me out|Remove me|Take out/i }).filter({ hasNot: p.locator('[data-testid="inped-takeout"]') })
+  console.log('out buttons', await p.evaluate(() => [...document.querySelectorAll('button')].filter(e => e.offsetParent).map(e => e.innerText.trim()).filter(Boolean).slice(-8)))
+  const confirm = p.locator('[data-testid="inped-takeout-yes"], [data-testid="takeout-yes"], [data-testid="inped-takeout-confirm"]').first()
+  if (await confirm.count()) await confirm.tap()
+  else await p.getByRole('button', { name: /^(Take me out|Yes, take me out)/i }).last().tap()
+  await sleep(700)
+  const afterOut = await show()
+  parts.push('after Take me out: ' + afterOut)
+  const rs2 = await L.recAll(p, { type: 'Duty', date: 'Jul 18' })
+  const n2 = await names()
+  const left = rs2.map(r => n2[r.person]).sort().join(',')
+  if (left !== 'Ace,Saber') fail('after Take me out the people left are ' + left)
+  if (!rs2.every(r => n2[r.by] === 'Saber')) fail('filer no longer Saber')
+  pics.push(await L.pic(w, '61-6-after-takeout'))
+  // Undo / Redo
+  await L.closeWins(p)
+  const u = await L.undo(w)
+  const rsU = await L.recAll(p, { type: 'Duty', date: 'Jul 18' })
+  parts.push(`Undo (${u}): ${rsU.length} rows, ${await show()}`)
+  if (rsU.length !== 3) fail('Undo did not bring Ranger back (' + rsU.length + ')')
+  const r = await L.redo(w)
+  const rsR = await L.recAll(p, { type: 'Duty', date: 'Jul 18' })
+  parts.push(`Redo (${r}): ${rsR.length} rows`)
+  if (rsR.length !== 2) fail('Redo did not take him out again')
+  await L.toList(w)
+  pics.push(await L.pic(w, '61-7-list-after-redo'))
+  const cards = await L.cardFacts(p, '#inList', 'inl')
+  parts.push('list cards for Sat 18 duty after Redo: ' + JSON.stringify(cards.filter(c => c.kind === 'Duty' || (c.kind || '').startsWith('DUTY')).map(c => [c.who, c.by])))
+  L.row(61, 'phone 390x844', 'Member (Ranger), setup by Admin (Saber)', verdict, parts.join(' || '), pics)
+} catch (e) {
+  console.log('ERR', e)
+  pics.push(await L.pic(w, '61-err'))
+  L.row(61, 'phone 390x844', 'Member (Ranger), setup by Admin (Saber)', 'NOT RUN', 'script stopped: ' + String(e).slice(0, 400) + ' || ' + parts.join(' || '), pics)
+}
+await L.finish(w)

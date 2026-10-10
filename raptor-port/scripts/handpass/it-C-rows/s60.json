@@ -1,0 +1,17 @@
+[
+ {
+  "n": 60,
+  "size": "desk",
+  "role": "member filer (Ranger), then admin",
+  "verdict": "CHECK",
+  "said": "Ranger filed Sat 18 Event for ALL AVAIL and Sun 19 Event for ALL, both titled \"Weekend exercise\"; the OIL question each time: [\"OIL — ALL AVAIL, Weekend exercise ✕\",\"OIL — ALL, Weekend exercise ✕\"]. Admin published both days. Count windows on the Board: ALL AVAIL (Sat 18): head \"⠿ | WEEKEND EXERCISE | Jul 18 · 08:00–12:00\", 0 of 0 earning; tabs []; in OIL Earn dice switched off -> 44 on / 1 off; after retitling to \"Weekend exercise two\": 44 on / 1 off, dice off, same switches as before the retitle: true; head now \"⠿ | WEEKEND EXERCISE TWO | Jul 18 · 08:00–12:00\" || ALL (Sun 19): head \"⠿ | WEEKEND EXERCISE | Jul 19 · 08:00–12:00\", 0 of 0 earning; tabs []; in OIL Earn dice switched off -> 44 on / 1 off; after retitling to \"Weekend exercise two\": 44 on / 1 off, dice off, same switches as before the retitle: true; head now \"⠿ | WEEKEND EXERCISE TWO | Jul 19 · 08:00–12:00\"",
+  "pics": [
+   "desk-s60-p60a-count.png",
+   "desk-s60-p60a-earn-off.png",
+   "desk-s60-p60a-after-retitle.png",
+   "desk-s60-p60b-count.png",
+   "desk-s60-p60b-earn-off.png",
+   "desk-s60-p60b-after-retitle.png"
+  ]
+ }
+]

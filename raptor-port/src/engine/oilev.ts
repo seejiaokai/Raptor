@@ -282,6 +282,10 @@ export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: b
 export function spanDefault(day: any, ev: OilEvidence, person: string, item: string): boolean {
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === person)
   if (inp) return inp.ans != null && inp.ans > 0
+  /* a request HELD BY A PLACEHOLDER answers for everyone on its row through the one body below ([INPUT-ALL-AVAIL],
+     D711 (1)) — a crowd man follows the filer's answer, so his switch must start where his credit does */
+  const held = ev.inputs.find(i => inputItemKey(i.iid) === item && isSpecial(i.person))
+  if (held) return claimDefault(day, ev, held, person)
   const spans = (oilDayWork(day, ev)[person] || []).filter(w => String(w.item || '') === item)
   return spans.length ? spans.every(w => w.dflt !== false) : true
 }
@@ -871,8 +875,39 @@ export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, me
      it is the whole of its key, and a day with no puck on it still keys to ''
      and reads exactly as before. */
   if (!ev.earns) return sent ? `${ev.iso}|||${sent}` : ''
-  const ins = ev.inputs.map(i => insSeg(day, i)).join(',')
-  return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
+  const ins = keyedInputs(ev).map(i => insSeg(day, i)).join(',')
+  return `${ev.iso}|${oilDecisionsKey(keyedDecisions(ev))}|${ins}|${sent}`
+}
+/** THE REQUESTS THE COMPARISON IS MEASURED ON — every one but a DORMANT one (owner, D174 / D176, 25 Sep 26: a request
+ *  that was not there when the day was published, filed since and taken off — or taken off at publication and since
+ *  deleted — "is no pending change — the day reads 0"). That held on a working day, where the request axis alone
+ *  speaks; on a day that EARNS this key spoke too, and it carried every request covering the date, a dormant one
+ *  included — which credits nobody (oilInputEligible) — so its mere presence, or its going, read "What this day earns
+ *  changed" and took the four sign-offs down (walker C of the ALL AVAIL check, 9 Oct 26; older than that job — the
+ *  same key is on main). A request that STANDS and is then taken off still moves the key: it is in the issued side and
+ *  in neither side's dormant set (D114). One body for the key and for oilMovedInputsOnly. Pinned by
+ *  oildormantkey.test.ts. */
+const keyedInputs = (ev: OilEvidence): OilInputEv[] => ev.inputs.filter(i => i.acc !== 'r')
+/** …AND THE DECISIONS THE COMPARISON IS MEASURED ON — every one but a decision about a REQUEST that is not among those
+ *  (Astra's read of the code, 9 Oct 26: the repair above was incomplete). A scheduler's switch about one man on a
+ *  request (`people['<man>|i:<request>']`), or about the request itself (`items['i:<request>']`), decides nothing once
+ *  the request is off the programme or gone — and it was read two ways: dropped on read while the request stood without
+ *  its row (pruneHandedOverDecisions), kept once the request was deleted (an orphan). So deleting a taken-off request
+ *  that had ever had a man switched read "1 pending" and broke the sign-offs with nobody's OIL moved. In the COMPARISON
+ *  such a decision is in neither side. The stored decisions are not touched: an Undo, or putting the request back on
+ *  the programme, finds them as they were. A decision about an ordinary row (`r:`) is never filtered. */
+function keyedDecisions(ev: OilEvidence): OilDecisions {
+  const d = ev.d || {}
+  if (!d.items && !d.people) return d
+  const live = new Set(keyedInputs(ev).map(i => inputItemKey(i.iid)))
+  const gone = (item: string) => item.startsWith('i:') && !live.has(item)
+  const pick = (m: any, itemOf: (k: string) => string) => {
+    if (!m) return m
+    const out: any = {}
+    for (const k of Object.keys(m)) if (!gone(itemOf(k))) out[k] = m[k]
+    return out
+  }
+  return { ...d, items: pick(d.items, k => k), people: pick(d.people, k => k.slice(k.indexOf('|') + 1)) }
 }
 /** one input's part of the key — ONE spelling, shared with oilMovedInputsOnly below */
 const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`
@@ -884,11 +919,11 @@ const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.
  *  line into those inputs' own lines; null when anything else moved, which stays its own OIL line. */
 export function oilMovedInputsOnly(now: OilEvidence | null | undefined, nowDay: any, was: OilEvidence | null | undefined, wasDay: any, mem = true): { iids: string[], people: string[] } | null {
   if (!now || !was || !!now.earns !== !!was.earns) return null
-  if (now.earns && oilDecisionsKey(now.d) !== oilDecisionsKey(was.d)) return null
+  if (now.earns && oilDecisionsKey(keyedDecisions(now)) !== oilDecisionsKey(keyedDecisions(was))) return null
   const iids: string[] = []
   if (now.earns) {
-    const a = new Map(was.inputs.map(i => [String(i.iid), insSeg(wasDay, i)]))
-    const b = new Map(now.inputs.map(i => [String(i.iid), insSeg(nowDay, i)]))
+    const a = new Map(keyedInputs(was).map(i => [String(i.iid), insSeg(wasDay, i)]))
+    const b = new Map(keyedInputs(now).map(i => [String(i.iid), insSeg(nowDay, i)]))
     new Set([...a.keys(), ...b.keys()]).forEach(id => { if (a.get(id) !== b.get(id)) iids.push(id) })
   }
   /* …and WHO a placeholder stands for (D44's frozen crowd): a leave filed by a man in ALL AVAIL's crowd takes him out
@@ -1112,6 +1147,31 @@ export function landedExtras(day: any, iid: string, owner: string, crowd?: strin
   return out
 }
 
+/** DOES THIS MAN EARN BY DEFAULT FROM THIS REQUEST — the ONE answer, before any decision of the scheduler's is applied.
+ *  Read by the credit (`oilEarnedWork`, just below) and by each man's switch (`spanDefault` → ui/oilmode.ts), so the
+ *  screen and the credit cannot answer it two ways.
+ *
+ *  · THE HOLDER — the man the request is filed for: his own answer (§2.2), as always.
+ *  · ANYONE ELSE ON A NAMED MAN'S REQUEST — a man the scheduler typed onto its row (D18, D470) or one of the crowd of a
+ *    placeholder the scheduler dropped there (D46): YES, as always.
+ *  · A REQUEST HELD BY A PLACEHOLDER — an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL]; owner D702, D711 (1),
+ *    9 Oct 26: "the filer answers the OIL question once and the scheduler may switch any one man — a man behind it does
+ *    not change his own answer"). Nobody behind it has a record, so nobody has an answer of his own: a man the
+ *    SCHEDULER typed onto the row still defaults YES (he was put there by name), and a man who is there only as one of
+ *    the crowd follows the FILER's answer for the day — more than 0, he earns; 0 or not answered yet, he does not. A
+ *    man who is both counts as typed. The answer is no cap on the amount: it admits the work, and the man's own day
+ *    decides half or full (oilAmount).
+ *
+ *  Both halves it reads are inside an issued day's own record — the typed men on the day's row, the answer in the
+ *  block's `inputs` — so a published day answers from what it went out with (D44, D142). `typed` lets a caller that
+ *  asks about many men hand over the row's typed men once. Pinned by oilplaceholderclaim.test.ts. */
+export function claimDefault(day: any, ev: OilEvidence, claim: OilInputEv, person: string, typed?: string[]): boolean {
+  const own = claim.ans != null && claim.ans > 0
+  if (String(claim.person) === String(person)) return own
+  if (!isSpecial(claim.person)) return true
+  return (typed || landedExtras(day, claim.iid, String(claim.person))).includes(String(person)) || own
+}
+
 export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork[]> {
   const out: Record<string, OilWork[]> = {}
   if (!ev.earns) return out
@@ -1145,7 +1205,12 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
     /* the man who FILED it: his own answer is the default, and the admin's
        three-state sits over the top (§2.2 / OIL10) */
     const own = inp.ans != null && inp.ans > 0
-    if (earnsFrom(ev, inp.person, item, own)) put(inp.person, span(own))
+    /* A PLACEHOLDER THAT HOLDS THE REQUEST IS NOT A MAN, AND IS NEVER PUT INTO THE WORK ([INPUT-ALL-AVAIL]): an input
+       filed for ALL AVAIL / ALL names nobody. It used to be put here on a Yes and dropped later by the credit's own
+       people filter (leavewar/sync.ts) — and anything between that read the work (a figure, a count) saw a man called
+       ALL AVAIL earning half a day. */
+    const held = isSpecial(inp.person)
+    if (!held && earnsFrom(ev, inp.person, item, own)) put(inp.person, span(own))
     /* D18 (owner, 21 Sep 26 — "for 2 he should earn"): a second man the
        SCHEDULER puts on the row earns from it, the same as the man who filed
        it. Until now the claim owned the row and the schedule half skipped every
@@ -1166,9 +1231,14 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
        ([OIL-SEATS-CAN-EARN] step 6, D46 — no carve-outs). It is resolved from
        the day's own written-down membership, so an issued day credits the people it
        went out with and not whoever happens to be free when it is read. */
+    /* …AND EACH OF THEM ON THE ONE DEFAULT (`claimDefault` above): yes for all of them on a named man's request, as it
+       always was; on a request the placeholder itself holds, yes for a man the scheduler typed and the FILER's answer
+       for a man who is there only as one of the crowd (D711 (1)). */
+    const typed = held ? landedExtras(day, inp.iid, inp.person) : undefined
     for (const extra of landedExtras(day, inp.iid, inp.person, ev.sent[item])) {
-      if (!earnsFrom(ev, extra, item, true)) continue
-      put(extra, span(true))
+      const dflt = claimDefault(day, ev, inp, extra, typed)
+      if (!earnsFrom(ev, extra, item, dflt)) continue
+      put(extra, span(dflt))
     }
   }
   return out

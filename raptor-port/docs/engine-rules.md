@@ -140,13 +140,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   "everything in duty and commitments affects crew rest… do not include
   personal, sans availability"; "use the timings u see"): an input whose
   type passes `inputs.ts:restsInput` (Training, CSE, Meeting, Fly with,
-  Appointment, Duty, OD, Other — NOT the type spelled 'Personal', not SANS
+  Appointment, Duty, Event — D713, 9 Oct 26 — OD, Other — NOT the type spelled 'Personal', not SANS
   Availability, and no leave or medical type) counts exactly like a
   scheduled event, on BOTH sides, provided it carries TYPED times: an
   all-day record spans the full 1439 minutes and moves nothing. Ending
   late yesterday it starts the clock at its written end (no debrief tail)
   and rides `REST[]`; starting early on a fly-day it binds the anchor, is
-  named in the message via `inpLabel` (an Other reads by its remarks), and
+  named in the message via `inpLabel` (its own title where it has one — an Other no longer reads by its remarks, D716 (3)), and
   the warning anchors on the LEG — an unaccepted input has no board row to
   jump to. The `nx`/`pv` midnight-tail copies in `day.input` are skipped —
   counting an `nx` copy would file today's own meeting as yesterday's end.
@@ -564,7 +564,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   against `kind==='shift'` (an SC MAIN) the grading is **per TYPE** (owner,
   26 Aug 26 — the shift may launch the man):
   - **Red-list commitments — Training, CSE, Fly with, Personal, Appointment,
-    Duty, Other — hard-flag the shift** (`INPUT_FLY` "Training but tasked —
+    Duty, Event (owner D714, 9 Oct 26: "a clash like that, not the meeting softer amber"), Other — hard-flag the
+    shift** (`INPUT_FLY` "Training but tasked —
     SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
     `shiftHardInput()` — one body for the validator, the ground-row upgrade
     and the crew picker. All-day and timed alike.
@@ -607,7 +608,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   nothing else to go on and fails closed. A hand-typed row is likewise
   judged by its own words
   (`shiftHardLabel`, a regex DERIVED from the same `shiftHard` flags —
-  TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, OTHER, word-bounded,
+  TRAINING, CSE, FLY WITH, PERSONAL, APPOINTMENT, DUTY, EVENT (since D713 / D714, 9 Oct 26 — the word follows the
+  kind's flag by construction; told to him as a reading), OTHER, word-bounded,
   case-blind). The owner chose those keywords knowing they are common words:
   a hand-typed "DUTY OFFICER HANDOVER" goes red on purpose. A row matching
   neither — MEETING, ACADEMICS, anything else — stays the amber
@@ -666,7 +668,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   nothing else. `isUnavail` = leave + medical + OD; `isPersonal` = the
   activity types (Training, CSE, Meeting, Fly with, Personal, Appointment,
   **Duty** — a LOCAL duty added 18 Aug 26, identical to Appointment in every
-  derived rule — and Other),
+  derived rule — **Event** — added 9 Oct 26 (owner D713, D714: "its work, it can be an official event too … it should
+  clash"), Duty's flags to the letter, pinned by `eventkind.test.ts` — and Other),
   which are also exactly the types a scheduler may lift onto the Ground
   Programme (`ground` in the table). Together they partition `INPUT_TYPES` —
   a test pins that nothing falls between them, and a second pins that
@@ -1590,7 +1593,7 @@ truthy, seed raises zero).
 
 **The type is restricted to SANS aircrew, and all three editors refuse
 through one function.** `sansRefusal(person,sans)` (`inputedit.tsx`) is what
-`commitInputEdit` and the add form's own `add()` (`InputsPage.tsx`) both call
+`commitInputEdit` and the add form's own `add()` (`InputsPage.tsx`) both call *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 before any write — a non-SANS person is refused with "SANS Availability is
 for SANS aircrew only" (the owner reconfirmed the restriction on the rework
 day: "only SANS can input the availability"), and an empty tick set with
@@ -1612,7 +1615,7 @@ give-both-times-or-neither refusal is gone with the per-event windows — the
 one window's own validation rides the STANDARD path every half-capable type
 already uses. `commitInputEdit` returns `false` on a refusal, so the editor
 stays open with the typing still in it (house convention). All three editors
-— the add form, the in-table row editor and the modal — share one
+— the add form, the in-table row editor and the modal — share one *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 `SansPicker` component (`inputedit.tsx`, a plain Fly/AMT/OFT checkbox row
 since the rework — the window controls are the standard SpanPicker + time
 fields, not SANS-special).
@@ -1778,7 +1781,7 @@ the input that caused them — one undo step):
   filer ticked logs "removed with the upchit" (`applyMedPlan`'s `why`).
 
 **The upchit save-time summary** (owner, 27 Aug 26 — "ask at save time").
-An upchit is NEVER saved silently from a form: the Inputs page's add form,
+An upchit is NEVER saved silently from a form: the Inputs page's add form, *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 its row editor and the shared `InputEditor` dialog all open
 `ui/UpchitConfirm.tsx` before writing. The sheet lists exactly what the
 upchit will trim or remove (from `upchitEffects` — the same body the write
@@ -2101,7 +2104,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     window drops him, **EXCEPT ATT B**, the one type that says "no flying, may
     still work" (`canWork`);
   - a **COMMITMENT** overlapping the window drops him (Training, CSE, Meeting,
-    Fly with, Personal, Appointment, Duty, Other). One the scheduler took off the
+    Fly with, Personal, Appointment, Duty, Event, Other — `isPersonal`). One the scheduler took off the
     programme (`acc === 'r'`) is dormant and drops nothing;
   - anything he is **NAMED** for on the day's own schedule that overlaps the
     window drops him (`avail.ts:personBusy` — the same occupancy the validator
@@ -3603,7 +3606,7 @@ user account they can only input their own self. Which is whoever they are
 viewing as"; since `[ACCOUNTS]` "whoever they are" is the signed-in person — D166).** An admin picks anyone, on the
 Inputs page's form and the month calendar alike; a member's input always lands on the signed-in person
 (`perms.ts me()`), read live at commit; a guest files nothing. The Person control is therefore a scheduler's
-on every editor — the page's add form and row editor print a member's
+on every editor — the page's add form and row editor print a member's *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 person as a plain value, the shared dialog hides the field
 (`inputedit.tsx`, `canEditSched()`-gated) — and the write paths repeat the
 gate: `commitNewInput` pins a non-scheduler's draft onto `ME`,
@@ -3908,3 +3911,85 @@ calendar's colours. The war's half (a holiday, who is available): `.claude/rules
   warning and count towards no "under-manned" figure.
 - **Who counts as committed to fly** (`state/flyplan.ts sansFly`): a SANS person with a SANS availability on the date
   offering Fly, counted once however many he filed (D572) — never a man no longer SANS, never one archived.
+
+## An input filed for ALL AVAIL / ALL (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`)
+
+His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."
+The plan and its two reads: `superpowers/plans/2026-10-09-input-all-avail-plan.md`.
+
+- **The record** is an ordinary single input whose `person` is one of the two placeholder people (`allavail`, `all`). No
+  name is stored: who stands behind it is the crowd `leavewar/sync.ts availableFor` works out for the request's own
+  window — live on a working day, written into the day's evidence (`ev.sent['i:<iid>']`) and frozen at publication,
+  exactly as for a placeholder a scheduler drops on a request's row (D44, D46). It lands its row on read like any
+  request, the placeholder's puck in the name box.
+- **Three structural rules, ONE body — `inputs.ts placeholderProblem`:** one of six kinds (`PLACEHOLDER_KINDS`: Training,
+  Meeting, Appointment, Duty, Event, Other — never an overseas duty or a course, D711 (2); never "Fly with" or
+  "Personal", D712); ONE day (D711 (3)); never in a group. Asked first at every save door, with its sentence
+  (`ui/inputedit.tsx placeholderRefused` — inside `normalizeInputDraft`, and before the document question in the three
+  save handlers; `commitGroup` judges the whole selection; `ui/PeoplePick.tsx pickProblem`), and by the HARD check
+  `placeholder-input-shape` at the save boundary (`state/store.ts placeholderShapeViolation`): it reads no role and no
+  origin, judges every input record a command PUT, and a breach rolls the whole command back — an admin, a restore and
+  the test bridge are held as a member is.
+- **The doors that refuse one outright:** the schedule's reassign, in BOTH directions (`reassignInput` — a placeholder is
+  neither the destination nor the source); `→ Unavail` (`slots.ts acceptInput(…, 'u')`, and the button is not drawn):
+  "Unavailable" describes a real person's day. Replacing the name box of its landed row stays a scheduler's ordinary act
+  (D470).
+- **It is nobody's absence and nobody's warning.** `avail.ts dayAway` leaves a placeholder out of both absence sets;
+  `availableFor` matches inputs by person, so it makes nobody busy; every validator loop matches a real man's id.
+- **OIL — ONE default, `oilev.ts claimDefault`** (D711 (1): "the filer answers the OIL question once and the scheduler
+  may switch any one man — a man behind it does not change his own answer"), read by the credit (`oilEarnedWork`) and by
+  each man's switch (`spanDefault` → `ui/oilmode.ts`): the placeholder itself is never credited and never put into the
+  work; a man the scheduler TYPED onto the row defaults yes (D18, D470); a man there only as one of the crowd follows
+  the FILER's answer for the day — more than 0, he earns; 0 or not answered yet, he does not; a man who is both counts
+  once, as typed; the day blanket and the scheduler's switch for one man stay over the top (D28), so after a No a tap
+  GRANTS (`allow`) and after a Yes a tap refuses (`deny`). An answer of 0.5 is no cap: it admits the work, and the man's
+  own day decides half or full. A NAMED man's request is untouched — his own answer for him, yes for everyone else on
+  his row, a placeholder dropped there included (D46; `oilclaimcrowd.test.ts`).
+- **The answer rules are the existing ones** (`oil.ts voidedOil`, `inputedit.tsx oilGate`): a change of person voids the
+  answers; a change of hours drops only a positive answer whose amount changed; a No stays; new dates ask for the days
+  that have no answer.
+- **The bell (D711 (4)):** `sync.ts oilPendingFor(person)` also returns a placeholder input HE filed (`by`) with a
+  non-working day unanswered — only while he may still answer it (`perms.ts mayEditInput`); nobody behind it is ever
+  asked. Where the filer no longer may (a member filer, the members' switch since turned off), the scheduler meets it on
+  the Inputs List's "OIL?" chip and in OIL Earn, where the window says the question has no answer yet.
+- Pinned by `engine/placeholderinput.test.ts`, `engine/oilplaceholderclaim.test.ts`, `ui/oilplaceholderclaim.test.tsx`,
+  `ui/placeholderdoors.test.tsx`, `ui/placeholderlist.test.tsx`.
+
+## An input's own title (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`)
+
+- **What it is.** An input of a titled kind may carry `title`. Its NAME — everywhere a name is printed — is that title,
+  and the kind's own name where it has none (`engine/inputs.ts inpLabel`, the one body). **The kind goes on deciding
+  every rule**: OIL, clashes, crew rest, what lands on the Ground Programme, who may file it. Nothing reads a rule out
+  of a title's words.
+- **Which kinds (D716 (1)).** `titledKind` — the "Duty & other commitments" ones: Training, CSE, Meeting, Fly with,
+  Personal, Appointment, Duty, Event, OD, Other. Never leave, medical, an upchit or SANS availability.
+- **What is stored.** `titleOf(type, typed)` — trimmed, inner white space collapsed, at most `TITLE_MAX` (40) characters,
+  and NOTHING when it is empty, is the kind's own name in any case, or the kind takes no title. An input whose Title
+  box nobody touched is the record it always was; a title on a record whose kind takes none is ignored on read and
+  dropped at the next save.
+- **"Other" (D716 (3)).** It takes the Title box like the rest; it no longer reads by its remarks. An untitled Other is
+  named "Other" and its remark is a remark — on its row it is in the remarks cell, no longer printed twice.
+- **The row a request lands** is named by the title in capitals (`overlay.ts requestRowFields`) and still carries
+  `srcType`. A change of title alone re-makes the row (`srcvOf` hashes its name).
+- **The kind, kept in sight (D717).** `inpKindTag(inp)` — the kind's own name when the input is named by something else,
+  else `''`. On the schedule it is read OFF THE ROW (`ui/html.ts rowKindTag`: `srcType` against `prog`), so an issued
+  face draws what was issued, a row whose request is gone still says its kind, and a row the scheduler renamed by hand
+  says it too.
+- **Two rows that share a name are still two commitments when a request made either of them** (`events.ts buildDay`
+  `push`, `reqRows`; both reads of the plan). The engine treats "same man, same hours, same name" as one commitment (a
+  man in a row's seat AND under it). A request's row is named by its filer, so a Training titled "Meeting" beside a
+  Meeting was swallowed — its hard clash against a standby shift with it. A request's row now merges only with ITSELF
+  (its key); rows nobody filed keep the old test unchanged. Two different ground rows of one name clash as "X is on two
+  items called NAME at once".
+- **A published day.** The title is in `inpDetailKey` (named only where there is one, so an untitled input's key is
+  unchanged): a title-only edit is ONE pending change and the sign-offs fall (D178, D103) — with or without a row on
+  the day (an OD has none), on every published day the input covers, and for a change of capitals alone. It is not in
+  `oilEvidenceKey`: a title asks no OIL question again and moves no OIL figure.
+- **A warning names an input by its title** — `events.ts mapInp` carries it into the day's input copies, and every
+  sentence that names a commitment goes through `inpLabel`; every classification stays on `type`. The reference's twin
+  (`testing/refwin.ts _il`) mirrors the name rule; the reference carries no title, so cross-engine cases are untitled.
+- A request that is GONE is named from the row it left (`goneRequestName`: the row's own name where it differs from its
+  kind's, else the kind).
+- Pinned by `engine/inputtitle.test.ts`, `engine/scshift-inputs.test.ts` (a title's words decide nothing; two requests of
+  one name), `engine/accept.test.ts`, `engine/dutyrest.test.ts`, `ui/inputtitle.test.tsx`, `ui/inputtitle-row.test.tsx`,
+  `ui/latepub.test.tsx` (the published day), `state/demostamps.test.ts`.

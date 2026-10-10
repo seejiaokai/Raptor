@@ -1,0 +1,96 @@
+{
+ "rows": [
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published \"Sports day\", then deleted: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 2 21:30 Sports day deleted · 15 Jul Saber · 9/10 21:30 Sports day added · 15 Jul (on the programme) Sabe",
+   "pics": [
+    "s39-desk-A-1deleted-edit.png",
+    "s39-desk-A-1deleted-togo.png",
+    "s39-desk-A-1deleted-view.png",
+    "s39-desk-A-1deleted-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | input exists: true | history window: Changes · week of 13/7 8 changes this week ✕ New to you 0 All changes 8 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · The day · 6 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original Saber · 9/10 21:29 Signed · APPROVED BY · Anvil Saber · 9/10 21:29 Sign",
+   "pics": [
+    "s39-desk-A-2undo-edit.png",
+    "s39-desk-A-2undo-togo.png",
+    "s39-desk-A-2undo-view.png",
+    "s39-desk-A-2undo-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after Redo: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 7 21:30 Redo — a personal input Saber · 9/10 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original ",
+   "pics": [
+    "s39-desk-A-3redo-edit.png",
+    "s39-desk-A-3redo-togo.png",
+    "s39-desk-A-3redo-view.png",
+    "s39-desk-A-3redo-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] after reload: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 7 21:30 Redo — a personal input Saber · 9/10 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original ",
+   "pics": [
+    "s39-desk-A-4reload-edit.png",
+    "s39-desk-A-4reload-togo.png",
+    "s39-desk-A-4reload-view.png",
+    "s39-desk-A-4reload-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published \"Sports day\", then deleted: edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · SPORTS DAY Saber 9/10 21:30 on the programme → deleted} | input exists: false | history window: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Ranger · Event · 2 21:30 Sports day deleted · 15 Jul Saber · 9/10 21:30 Sports day added · 15 Jul (on the programme) Sabe",
+   "pics": [
+    "s39-desk-B-1deleted-edit.png",
+    "s39-desk-B-1deleted-togo.png",
+    "s39-desk-B-1deleted-view.png",
+    "s39-desk-B-1deleted-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] after Undo: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | input exists: true | history window: Changes · week of 13/7 8 changes this week ✕ New to you 0 All changes 8 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · The day · 6 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original Saber · 9/10 21:30 Signed · APPROVED BY · Anvil Saber · 9/10 21:30 Sign",
+   "pics": [
+    "s39-desk-B-2undo-edit.png",
+    "s39-desk-B-2undo-togo.png",
+    "s39-desk-B-2undo-view.png",
+    "s39-desk-B-2undo-history.png"
+   ]
+  },
+  {
+   "n": "39",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] Undo then reload: edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} | input exists: true | history window: Changes · week of 13/7 8 changes this week ✕ New to you 0 All changes 8 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · The day · 6 21:30 Undo — a personal input Saber · 9/10 21:30 Published — the Original Saber · 9/10 21:30 Signed · APPROVED BY · Anvil Saber · 9/10 21:30 Sign",
+   "pics": [
+    "s39-desk-B-4reload-edit.png",
+    "s39-desk-B-4reload-togo.png",
+    "s39-desk-B-4reload-view.png",
+    "s39-desk-B-4reload-history.png"
+   ]
+  }
+ ],
+ "errs": []
+}

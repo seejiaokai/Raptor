@@ -13,7 +13,7 @@
    opened day and the bar a pointer picks up read the same items, so the three cannot disagree about what a day holds.
    A group is made ONE thing here by state/inputgroup.ts entriesOf and nowhere else (the plan's risk 3: a list that
    draws inputs and does not call it shows a group as separate lines). */
-import { dateOrd, inpLabel, isSansAvail, isUnavail, isUpchit } from '../engine/inputs'
+import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { entriesOf } from '../state/inputgroup'
 import type { DayAnswer } from '../state/flyplan-model'
@@ -32,8 +32,10 @@ export interface BarItem {
   who: string
   /** how many more people are in it */
   more: number
-  /** the kind, as the app labels an input everywhere (an Other reads by what was typed) */
+  /** its name, as the app labels an input everywhere: its own title where it has one, else its kind (inpLabel) */
   word: string
+  /** its kind, where it is named by something else — kept in sight small beside the name (D717); '' otherwise */
+  kind: string
   allday: boolean
   /** minutes into the day it starts — 0 for an all-day input */
   s: number
@@ -60,10 +62,37 @@ export interface WeekBars {
 }
 export interface CalFilter { fPerson: string; fType: string; fSearch: string }
 
+/* ---- THE PERSON FILTER'S VALUES — ONE BODY FOR THE LIST, THE MONTH AND THE OPENED DAY ([INPUT-ALL-AVAIL], 9 Oct 26) ----
+   The filter's "Everyone" has always been the string 'all' — which is also the id of the ALL placeholder (people.ts),
+   and since an input can be filed FOR that placeholder (D700) the two meet: three places each compared the filter's
+   value with a record's person by hand, so choosing ALL would have shown everyone, and there was no way to ask for the
+   ALL inputs alone (both first-round readers of the plan).
+
+   WHICH SIDE MOVED, AND WHY. "Everyone" keeps 'all': seventeen walk scripts and three browser tests choose it by that
+   value, and had it changed each of them would have gone on choosing — silently — the ALL placeholder instead. So it is
+   the PLACEHOLDER's value in a filter that is its own: 'ph:' + its id. A named person's value is his id, as always.
+   Every reader asks `personFilterPasses`; nothing compares the filter with a person by hand any more. */
+export const EVERYONE = 'all'
+const PH = 'ph:'
+/** the value a person carries in a person filter */
+export const personFilterValue = (pid: any, people: Record<string, any> = PEOPLE): string => {
+  const id = String(pid ?? ''), p = people[id]
+  return p && p.special ? PH + id : id
+}
+/** the person a filter value names ('' for Everyone) */
+export const personFilterId = (fPerson: any): string => {
+  const v = String(fPerson ?? '')
+  return v === EVERYONE ? '' : v.startsWith(PH) ? v.slice(PH.length) : v
+}
+/** does a record of this person pass the filter? */
+export const personFilterPasses = (fPerson: any, pid: any, people: Record<string, any> = PEOPLE): boolean =>
+  String(fPerson ?? EVERYONE) === EVERYONE || personFilterValue(pid, people) === String(fPerson)
+
 const two = (n: number) => String(n).padStart(2, '0')
 const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${two(Math.floor(o / 100) % 100)}-${two(o % 100)}`
 const TONE_ORDER = { red: 0, amb: 1 } as const
-const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
+/** red for an absence, amber for a duty or a commitment (an upchit too) — the month's bar and the input card read it */
+export const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
 
 /** Every input the Inputs month may show, as ENTRIES (a group is one), filtered as the List filters its rows — an
  *  entry stays when ANY of its people passes — in the order a day lists them: absences, then commitments; all-day
@@ -72,8 +101,8 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
   const cs = (p: any): string => { const x = people[String(p)]; return x && x.cs ? String(x.cs) : String(p ?? '') }
   const search = (f.fSearch || '').trim().toLowerCase()
   const passes = (r: any) =>
-    (f.fPerson === 'all' || String(r.person) === String(f.fPerson)) &&
-    (!search || String(r.remarks || '').toLowerCase().includes(search) || cs(r.person).toLowerCase().includes(search))
+    personFilterPasses(f.fPerson, r.person, people) &&
+    (!search || String(r.remarks || '').toLowerCase().includes(search) || inpLabel(r).toLowerCase().includes(search) || cs(r.person).toLowerCase().includes(search))
   const out: BarItem[] = []
   for (const e of entriesOf((inputs || []).filter((r: any) => r && !isSansAvail(r.type)), cs)) {
     const r = e.rows[0]
@@ -85,7 +114,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
     const b = b0 != null && b0 > a ? b0 : a
     out.push({
       key: String(r.iid), rows: e.rows, a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type),
-      who: cs(r.person), more: e.rows.length - 1, word: inpLabel(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
+      who: cs(r.person), more: e.rows.length - 1, word: inpLabel(r), kind: inpKindTag(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
     })
   }
   const at = new Map(out.map((it, i) => [it, i] as const))
@@ -134,11 +163,16 @@ export function layoutBars(week: readonly (string | null)[], items: readonly Bar
   return { segs, more, lanes }
 }
 
-/** What a bar says: the callsign (and how many more, for a group) and the kind. On a phone a bar one day wide has room
- *  for the callsign alone — its kind is one tap away, in the opened day. */
+/** What a bar says: the callsign and the kind. On a phone a bar one day wide has room for the callsign alone — its
+ *  kind is one tap away, in the opened day.
+ *  A SHARED INPUT'S BAR SAYS HOW MANY, FIRST (owner D729 — the design vet's V4, 10 Oct 26: "4 · Meeting"). It used to
+ *  lead with whoever comes first in the alphabet ("Drifter +3 · Meeting"): Saber's own meeting did not show his name,
+ *  and a bar cut short by its day lost the "+3". Now the count leads — so a cut-off bar never loses it — then what it
+ *  is; who is in it is the opened day's to say (every name — D721) and the bar's tooltip's. On a phone too: a count
+ *  alone would say nothing, so a shared bar always carries its word. */
 export function barText(it: BarItem, narrow: boolean): string {
-  const who = it.more > 0 ? `${it.who} +${it.more}` : it.who
-  return narrow && it.a === it.b && !it.more ? who : `${who} · ${it.word}`
+  if (it.more > 0) return `${it.more + 1} · ${it.word}`
+  return narrow && it.a === it.b ? it.who : `${it.who} · ${it.word}`
 }
 
 /** THE PHONE'S LINES (D653, D664): the week rows share `fillPx` — the height from the month's top to the foot of the

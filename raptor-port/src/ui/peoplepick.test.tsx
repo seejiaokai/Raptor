@@ -64,10 +64,21 @@ describe('one person — the default, as today (D656)', () => {
     await mount({ people: [pilots()[0]] })
     const sel = $('#inpEditPerson') as HTMLSelectElement
     expect(sel, 'the list').toBeTruthy()
-    expect([...sel.options].map(o => o.value)).toEqual(az(live()))
+    /* since D700 (9 Oct 26) a duty or commitment also offers the two placeholders, in a group of their own above the
+       names (placeholderdoors.test.tsx); the names are the A-to-Z list they always were */
+    expect([...sel.options].map(o => o.value)).toEqual(['allavail', 'all', ...az(live())])
+    expect([...sel.querySelectorAll(':scope > option')].map(o => (o as HTMLOptionElement).value), 'the names themselves').toEqual(az(live()))
     expect(sel.value).toBe(pilots()[0])
     expect($$('[data-pp]')).toHaveLength(0)
     expect(tid('pp-several')!.getAttribute('aria-checked')).toBe('false')
+  })
+  it('for a leave the list is the names alone — no placeholder is offered (D700: duties and commitments only)', async () => {
+    await mount({ people: [pilots()[0]], type: 'LL' })
+    expect([...($('#inpEditPerson') as HTMLSelectElement).options].map(o => o.value)).toEqual(az(live()))
+  })
+  it('the SANS calendar’s picker never offers a placeholder', async () => {
+    await mount({ people: [sans()[0]], type: 'Meeting', sansOnly: true })
+    expect([...($('#inpEditPerson') as HTMLSelectElement).options].some(o => PEOPLE[o.value].special)).toBe(false)
   })
   it('picking another man from the list files it for him', async () => {
     await mount({ people: [pilots()[0]] })

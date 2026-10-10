@@ -1,0 +1,16 @@
+{
+ "rows": [
+  {
+   "n": 58,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "before Undo/Redo: Saber|Duty|Persist one edited|P58 second|Jul 22|660-750|docs 0 ;; Ace|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Blade|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Cinch|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Saber|ATT C|undefined|P58 med|Jul 24|0-1439|docs 2 || Undo brought back \"Persist del\": true; Redo -> state same as before: true || after reload: Saber|Duty|Persist one edited|P58 second|Jul 22|660-750|docs 0 ;; Ace|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Blade|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Cinch|Meeting|Persist trio edited|P58 trio|Jul 21|840-900|docs 0 ;; Saber|ATT C|undefined|P58 med|Jul 24|0-1439|docs 2 || list rows after reload (All dates): {\"Persist one edited\":1,\"Persist trio edited\":1,\"Persist del\":0}; the medical row has a paperclip: 1 || medical window after reload: 2 document chip(s); viewer counter 1 of 2",
+   "pics": [
+    "B58-1-list-after-reload.png",
+    "B58-2-documents-after-reload.png"
+   ]
+  }
+ ],
+ "errs": []
+}

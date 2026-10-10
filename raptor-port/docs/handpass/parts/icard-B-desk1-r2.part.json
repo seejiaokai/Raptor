@@ -1,0 +1,17 @@
+{
+ "rows": [
+  {
+   "n": 34,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filed Jul 29→Jul 31 || window opens on: Jul 29 → Jul 31 || after two taps: Aug 2 → Aug 4 || saved Aug 2→Aug 4 (OIL question asked true) || Range-test cards per day: {\"2026-07-29\":0,\"2026-07-30\":0,\"2026-07-31\":0,\"2026-08-02\":1,\"2026-08-03\":1,\"2026-08-04\":1} || list rows for it: 1 — \"Saber 2 Aug 09:00 4 Aug 10:00 Range test DUTY LATEtill 4 Aug Placed by Saber · 10 Oct 26, 02:10 · changed by Saber · 10 \" || Undo -> Jul 29→Jul 31; Redo -> Aug 2→Aug 4 || after one tap: Aug 3 || shortened -> Aug 3 (OIL asked false) || cards per day: {\"2026-08-02\":0,\"2026-08-03\":1,\"2026-08-04\":0} || Undo -> Aug 2→Aug 4; Redo -> Aug 3",
+   "pics": [
+    "B34-1-range-picked.png",
+    "B34-2-aug4-card.png",
+    "B34-3-list.png"
+   ]
+  }
+ ],
+ "errs": []
+}

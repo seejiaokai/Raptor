@@ -1,0 +1,20 @@
+import * as L from './it-B-lib.mjs'
+const W = await L.newWorld()
+const p = W.page
+const ranger = await L.csId(p, 'Ranger')
+const out = {}
+await L.openNew(W, '2026-07-22')
+out.winFields = await p.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] input, [data-testid="win-inputedit"] select, [data-testid="win-inputedit"] textarea, [data-testid="win-inputedit"] button')].map(e => (e.tagName + '#' + e.id + '[' + (e.type || '') + '] ' + (e.getAttribute('data-testid') || '') + ' ' + (e.innerText || '').slice(0, 30).replace(/\n/g, ' '))))
+await p.selectOption('#inpEditType', 'OD')
+await p.selectOption('#inpEditPerson', ranger)
+await p.fill('#inpEditTitle', 'Overseas visit')
+await L.saveWin(W)
+await L.closeWins(p)
+await L.editWeek(p)
+out.weekBtns = await p.evaluate(() => [...document.querySelectorAll('button')].filter(b => /^Jul \d\d$/.test(b.innerText.trim())).map(b => b.outerHTML.slice(0, 160)))
+await p.getByRole('button', { name: 'Jul 20', exact: true }).first().click(); await L.sleep(800)
+await L.showDay(p, 2)
+out.unav = await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="2"]'); const els = [...d.querySelectorAll('*')].filter(e => /Overseas visit|OD\b/.test(e.textContent) && e.children.length < 4 && e.textContent.length < 120); return els.slice(0, 12).map(e => e.tagName + '.' + e.className + ' :: ' + e.textContent.replace(/\s+/g, ' ')) })
+await L.shot(p, 'probe3-od-week')
+console.log(JSON.stringify(out, null, 1))
+await W.browser.close()

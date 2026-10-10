@@ -1,0 +1,28 @@
+const C = await import('./aa-C-lib.mjs')
+const { world, fileInput, rec, shot, board, signDay, pubSat, sleep, go, lw, L } = C
+const w = await world()
+const { page } = w
+const r = await fileInput(page, { iso: '2026-07-18', kind: 'Duty', person: 'allavail', s: '09:00', e: '12:00', rmk: 'S4 duty', oil: 'yes' })
+console.log('asked', r, JSON.stringify(await rec(page, 'S4 duty')))
+await go(page, 'editsched')
+await sleep(500)
+// the week: Saturday's count
+console.log('counts', JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('#eWeek .oilcount')].map(e => ({ t: e.innerText, d: e.dataset.oilsent })))))
+await board(page, 5)
+await shot(page, 'probe-board-sat')
+console.log('head', JSON.stringify(await C.head(page, 5)))
+const p = await pubSat(page, 5)
+console.log('pub', JSON.stringify(p))
+console.log('head2', JSON.stringify(await C.head(page, 5)))
+await shot(page, 'probe-board-sat-pub')
+await C.closeBoard(page)
+// crowd names from the window
+await go(page, 'editsched')
+await page.locator('#eWeek .oilcount').first().click().catch(e => console.log('click fail', e.message))
+await sleep(500)
+console.log('win', await page.evaluate(() => { const w = document.querySelector('.availwin'); return w ? w.innerText.replace(/\s+/g, ' ').slice(0, 500) : null }))
+await shot(page, 'probe-win')
+const ids = await page.evaluate(() => Object.keys(window.PEOPLE).slice(0, 40))
+console.log(JSON.stringify(ids))
+console.log('errors', JSON.stringify(w.errors))
+await w.browser.close()

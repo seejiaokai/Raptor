@@ -205,11 +205,15 @@ it('the same for the SANS day closed by its own button',async()=>{
   expect(tid('win-sansday')).toBeNull()
   expect(tid('sc-month')?.textContent).toContain('November')
 })
-it('the new-input hint speaks of "available hours" on the SANS calendar only',async()=>{
+/* THE INPUTS CALENDAR'S NEW INPUT SAYS NOTHING UNDER ITS FORM (owner D729 — the design vet's V3, 10 Oct 26; D726): "Choose
+   the dates and the hours. Save adds one input covering the whole date range." went — the line under the calendar
+   already shows what will be written. The SANS calendar's own window is not part of that vet and keeps its line. */
+it('a new input on the Inputs calendar has no line of instructions; the SANS calendar’s keeps its "available hours"',async()=>{
   await openDate();await click('#icPopAdd')
   const hint=()=>host.querySelector('.inped-hint')?.textContent||''
-  expect(hint()).not.toMatch(/available hours/i)
-  expect(hint()).toMatch(/one input covering the whole date range/i)
+  expect(document.querySelector('[data-testid="win-inputedit"]'),'the window is up').toBeTruthy()
+  expect(document.querySelector('.inped-hint'),'no instructions under a new input').toBeNull()
+  expect(document.querySelector('[data-testid="win-inputedit"]')!.textContent).not.toMatch(/Choose the dates|whole date range|available hours/i)
   await act(async()=>{setInpEdit(null);notify()})
   await click('#inSansMode');await openDate();await click(addBtn())
   expect(hint()).toMatch(/available hours/i)

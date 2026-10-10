@@ -1,0 +1,509 @@
+[
+ {
+  "n": 5,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Board \"+ Inputs\" window and the saved input’s editor on the Board: T2 title kept, kind Event; T3 emptied box stayed empty (hint \"Event\"), saved as plain Event with no second label; T5 typed and pasted: exactly 40 characters, nothing overlapped; T6 literal text, no markup; T8 new picker offers only Training CSE Meeting Fly with Personal Appointment Duty Event Other, the saved editor took Event to Training (title kept), to LL (no Title box) and back to Event (box \"Event\", old title not back). Dialog sits above the Board.",
+  "pictures_opened": [
+   "s5-d-ex-T8.png"
+  ],
+  "pictures_taken_not_opened": 23,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 (typed and pasted) T6 T8 all behaved at the Board’s new window and at the saved input’s editor · new-window kinds offered: Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, Other"
+ },
+ {
+  "n": 5,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Same as desktop at 390 wide with taps: all five cases held at the Board’s new window and at the saved input’s editor; the 40 characters sit in the box with nothing overlapping.",
+  "pictures_opened": [
+   "s5-p-new-T5a.png"
+  ],
+  "pictures_taken_not_opened": 23,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 (typed and pasted) T6 T8 all behaved at the Board’s new window and at the saved input’s editor · new-window kinds offered: Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, Other"
+ },
+ {
+  "n": 6,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Shared Event for Ranger and Saber through the Calendar window and the List’s Add form, then retitled in the saved shared window: T2 T3 T5 T6 T8 held; both rows carry one group and one title; the List shows ONE entry; Ranger’s and Saber’s person filters show the same Event rows.",
+  "pictures_opened": [
+   "s6-d-a-filter-saber.png"
+  ],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held at the Calendar window and List Add (creation) and at the saved shared window: both people carry one title, one shared group · person filter, Event rows of Ranger vs Saber identical (dates, titles): true (Ranger 18 Event rows, Saber 18)"
+ },
+ {
+  "n": 6,
+  "size": "desktop 1440x900",
+  "role": "member filer (Ranger)",
+  "result": "PASS",
+  "said": "Same through a member filer (Ranger, filing for others switched on): all cases held; one shared group, one title. (The member’s own puck cannot be switched off while filing - see extras.)",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held at the Calendar window and List Add (creation) and at the saved shared window: both people carry one title, one shared group · person filter, Event rows of Ranger vs Saber identical (dates, titles): true (Ranger 18 Event rows, Saber 18)"
+ },
+ {
+  "n": 6,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Same at 390 wide: all cases held, one shared entry, same title for both people.",
+  "pictures_opened": [
+   "s6-p-a-cal-new-T5a.png"
+  ],
+  "pictures_taken_not_opened": 35,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held at the Calendar window and List Add (creation) and at the saved shared window: both people carry one title, one shared group · person filter, Event rows of Ranger vs Saber identical (dates, titles): true (Ranger 18 Event rows, Saber 18)"
+ },
+ {
+  "n": 6,
+  "size": "phone 390x844",
+  "role": "member filer (Ranger)",
+  "result": "PASS",
+  "said": "Same at 390 wide as a member filer: all cases held, one shared entry.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held at the Calendar window and List Add (creation) and at the saved shared window: both people carry one title, one shared group · person filter, Event rows of Ranger vs Saber identical (dates, titles): true (Ranger 18 Event rows, Saber 18)"
+ },
+ {
+  "n": 7,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "ALL AVAIL through Calendar window, List Add, List pencil and Board Add: T2 T3 T5 T6 T8 held, the placeholder stayed; saving it as LL was refused with \"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\"; back to Event the cleared title did not return.",
+  "pictures_opened": [
+   "s7-d-a-aa-cal-T8-LL-refused.png"
+  ],
+  "pictures_taken_not_opened": 48,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL AVAIL at the Calendar window, List Add, List pencil and Board Add; the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Same for ALL (all four doors); placeholder stayed; LL refused.",
+  "pictures_opened": [
+   "s7-d-a-all-board-T6.png"
+  ],
+  "pictures_taken_not_opened": 47,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL at the Calendar window, List Add, List pencil and Board Add; the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "desktop 1440x900",
+  "role": "member filer (Ranger) · ALL AVAIL",
+  "result": "PASS",
+  "said": "Member filer: ALL AVAIL through Calendar window, List Add, List pencil (a member has no Board): all cases held, LL refused.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL AVAIL at the Calendar window, List Add, List pencil (a member has no Board); the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "desktop 1440x900",
+  "role": "member filer (Ranger) · ALL",
+  "result": "PASS",
+  "said": "Member filer: ALL through the three doors a member has: all cases held, LL refused.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL at the Calendar window, List Add, List pencil (a member has no Board); the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "ALL AVAIL at 390 wide through all four doors: all cases held, LL refused.",
+  "pictures_opened": [
+   "s7-p-a-aa-board-T5a.png"
+  ],
+  "pictures_taken_not_opened": 47,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL AVAIL at the Calendar window, List Add, List pencil and Board Add; the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "ALL at 390 wide through all four doors: all cases held.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 48,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL at the Calendar window, List Add, List pencil and Board Add; the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "phone 390x844",
+  "role": "member filer (Ranger) · ALL AVAIL",
+  "result": "PASS",
+  "said": "Member filer at 390 wide, ALL AVAIL: all cases held, LL refused with the sentence on screen.",
+  "pictures_opened": [
+   "s7-p-m-aa-list-T8-LL-refused.png"
+  ],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL AVAIL at the Calendar window, List Add, List pencil (a member has no Board); the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 7,
+  "size": "phone 390x844",
+  "role": "member filer (Ranger) · ALL",
+  "result": "PASS",
+  "said": "Member filer at 390 wide, ALL: all cases held.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 36,
+  "script_verdict": "PASS",
+  "script_detail": "T2 T3 T5 T6 T8 held for ALL at the Calendar window, List Add, List pencil (a member has no Board); the placeholder stayed; LL refused for it"
+ },
+ {
+  "n": 9,
+  "size": "desktop 1440x900",
+  "role": "member (Ranger)",
+  "result": "PASS",
+  "said": "Title-only draft, then another input clicked behind: \"This input has unsaved changes. Open Ranger’s input and lose them?\" appeared with Discard and open / Keep editing; Keep editing kept \"Unsaved title\"; Discard and open showed the other input (Training, Title \"Training\"); the first input’s saved title unchanged and its box reads \"Event\".",
+  "pictures_opened": [
+   "s9-desk-2-question.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "PASS",
+  "script_detail": "another input was reached behind the window and the \"Unsaved changes\" question was raised · question text \"This input has unsaved changes. Open Ranger’s input and lose them? Discard and open Keep editing\" · Keep editing: the draft title is \"Unsaved title\" and the question has gone · Discard and open: the window now shows the other input - Type Training, Title \"Training\" (the draft title was not lent to it) · the other input stored no title (undefined) · the first input's saved title is unchanged (undefined) · reopened: the first input's Title box reads \"Event\""
+ },
+ {
+  "n": 9,
+  "size": "phone 390x844",
+  "role": "member (Ranger)",
+  "result": "FAIL",
+  "said": "The question is raised but NOT SEEN: tapping the other input’s card in the day window brings the day window in front of the edit window, so the question and both its buttons are hidden behind it until the day window is closed. After closing it, Keep editing and Discard and open both worked as on desktop (Discard showed the other input, Title \"Training\", no draft lent; first input unchanged).",
+  "pictures_opened": [
+   "s9-phone-2-question.png",
+   "s9-phone-3-other-opened.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "FAIL",
+  "script_detail": "another input was reached behind the window and the \"Unsaved changes\" question was raised · question text \"This input has unsaved changes. Open Ranger’s input and lose them? Discard and open Keep editing\" · MISSED: the question is in the DOM but NOT on screen: the tap raised the day window in front of the edit window, hiding the question and both its buttons until the day window is closed · Keep editing: the draft title is \"Unsaved title\" and the question has gone · Discard and open: the window now shows the other input - Type Training, Title \"Training\" (the draft title was not lent to it) · the other input stored no title (undefined) · the first input's saved title is unchanged (undefined) · reopened: the first input's Title box reads \"Event\""
+ },
+ {
+  "n": 10,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "In all six title editors (Calendar window new and saved, List Add, List pencil, Board + Inputs new, Board saved-input editor): \"Must stay here\" with equal start and end was refused (\"Give the input a start and end that are not the same time\"), the form stayed open with the draft, nothing added or changed; corrected times saved with the title; Cancel left the previous saved title.",
+  "pictures_opened": [
+   "s10-pencil-existing-1-refused.png"
+  ],
+  "pictures_taken_not_opened": 20,
+  "script_verdict": "PASS",
+  "script_detail": "[Calendar window - new: ok]  [Calendar window - existing: ok]  [List Add form: ok]  [List pencil editor: ok]  [Board + Inputs - new: ok]  [Board Personal Inputs editor - existing: ok] "
+ },
+ {
+  "n": 11,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Three Others: titled + remark = \"Dental visit\" / \"Bring letter\"; untitled with remark \"Dental visit\" = \"Other\" with the remark shown; titled with the same remark = \"Dental visit\" with the remark shown. Opened day and List agree; every typed remark stays visible.",
+  "pictures_opened": [
+   "s11-desk-day.png"
+  ],
+  "pictures_taken_not_opened": 1,
+  "script_verdict": "PASS",
+  "script_detail": "case a: stored Other, title \"Dental visit\", remark \"Bring letter\" · case b: stored Other, title undefined, remark \"Dental visit\" · case c: stored Other, title \"Dental visit\", remark \"Dental visit\" · opened day, case a: named \"Dental visit\", kind tag \"Other\", remark shown \"Bring letter\" (wanted \"Dental visit\" / \"Bring letter\") · opened day, case b: named \"Other\", kind tag null, remark shown \"Dental visit\" (wanted \"Other\" / \"Dental visit\") · opened day, case c: named \"Dental visit\", kind tag \"Other\", remark shown \"Dental visit\" (wanted \"Dental visit\" / \"Dental visit\") · List, case a: title line \"Dental visit\", kind \"Other\", remarks cell \"LATEBring letterPlaced by Saber for Ranger · 9 Oct 26, 21:31\" · List, case b: title line null, kind \"Other\", remarks cell \"LATEDental visitPlaced by Saber for Ranger · 9 Oct 26, 21:31\" · List, case c: title line \"Dental visit\", kind \"Other\", remarks cell \"LATEDental visitPlaced by Saber for Ranger · 9 Oct 26, 21:31\""
+ },
+ {
+  "n": 11,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Same at 390 wide (opened day and List).",
+  "pictures_opened": [
+   "s11-phone-list.png"
+  ],
+  "pictures_taken_not_opened": 1,
+  "script_verdict": "PASS",
+  "script_detail": "case a: stored Other, title \"Dental visit\", remark \"Bring letter\" · case b: stored Other, title undefined, remark \"Dental visit\" · case c: stored Other, title \"Dental visit\", remark \"Dental visit\" · opened day, case a: named \"Dental visit\", kind tag \"Other\", remark shown \"Bring letter\" (wanted \"Dental visit\" / \"Bring letter\") · opened day, case b: named \"Other\", kind tag null, remark shown \"Dental visit\" (wanted \"Other\" / \"Dental visit\") · opened day, case c: named \"Dental visit\", kind tag \"Other\", remark shown \"Dental visit\" (wanted \"Dental visit\" / \"Dental visit\") · List, case a: title line \"Dental visit\", kind \"Other\", remarks cell \"LATEBring letterPlaced by Saber for Ranger · 9 Oct 26, 21:31\" · List, case b: title line null, kind \"Other\", remarks cell \"LATEDental visitPlaced by Saber for Ranger · 9 Oct 26, 21:31\" · List, case c: title line \"Dental visit\", kind \"Other\", remarks cell \"LATEDental visitPlaced by Saber for Ranger · 9 Oct 26, 21:32\""
+ },
+ {
+  "n": 12,
+  "size": "desktop 1440x900",
+  "role": "member filer (Ranger)",
+  "result": "PASS",
+  "said": "Member filer: shared Event \"Team session\" retitled \"Team review\" with a third person added in one save; the first-sorting callsign (Ace) removed: one entry \"Team review\" of three people; Undo restored Ace with the title, Redo removed him again; after a reload one entry \"Ranger +2 · Team review\".",
+  "pictures_opened": [
+   "s12-6-after-reload.png"
+  ],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "filed one shared Event (the member's own callsign cannot be switched off in the picker, so Ranger is in it with Saber and Vapor): Ranger:Team session, Saber:Team session, Vapor:Team session · reopened: Title \"Team session\" · after the save (Ranger stayed in his own entry; Ace added): Ace:Team review, Ranger:Team review, Saber:Team review, Vapor:Team review · after removing Ace: Ranger:Team review, Saber:Team review, Vapor:Team review (one entry, 3 people) · Undo: Ace:Team review, Ranger:Team review, Saber:Team review, Vapor:Team review · Redo: Ranger:Team review, Saber:Team review, Vapor:Team review · after a reload: Ranger:Team review, Saber:Team review, Vapor:Team review"
+ },
+ {
+  "n": 13,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Shared Event 30-31 Jul \"July session\": window dates changed to 31 Jul-1 Aug, retitled \"Summer session\", a person added: all three rows carry the new dates and name, the month shows one bar over 31 Jul and 1 Aug and none on 30 Jul, remarks \"till 1 Aug\" without the title, the List holds one entry.",
+  "pictures_opened": [
+   "s13-2-window-edited.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "PASS",
+  "script_detail": "created: Saber Jul 30→Jul 31 \"July session\" remark \"till 31 Jul\" | Ranger Jul 30→Jul 31 \"July session\" remark \"till 31 Jul\" (the form wrote \"till 31 Jul\" into Remarks) · the saved shared window has its own range calendar · the window's date line reads \"Jul 31 → Aug 1\" · after the save: Vapor Jul 31→Aug 1 \"Summer session\" | Saber Jul 31→Aug 1 \"Summer session\" | Ranger Jul 31→Aug 1 \"Summer session\" · remarks [\"till 1 Aug\",\"till 1 Aug\",\"till 1 Aug\"]: the generated till names the new last date and carries no title · month bars over 30 Jul [], over 31 Jul [\"Ranger +2 · Summer session\"] · the 30th no longer carries the entry and the 31st shows it under the new name · 1 Aug carries [\"Ranger +2 · Summer session\"] · List: [{\"n\":\"Ranger +2\",\"d\":\"31 Jul 14:00\",\"t\":\"Summer session\"}] · the List holds ONE entry \"Summer session\" (1)"
+ },
+ {
+  "n": 14,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "\"Sports day\": dragged on the month (the ghost followed the pointer) from 15 to 16 Jul, hours and remark edited in place on the Board; the week row and the reopened window still say \"Sports day\"; same after a reload.",
+  "pictures_opened": [
+   "s14-2-mid-drag.png"
+  ],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "created: \"Sports day\" on Jul 15 · after the drag the input is on Jul 16 and still titled \"Sports day\" · the Board card named \"Sports day\" before and \"Sports day\" after · after editing the hours and remark on the Board: title \"Sports day\", 600-690 (600-690 wanted), remark \"bring boots\" · the week's row reads {\"name\":\"SPORTS DAY\",\"kind\":\"Event\"} · reopened: Title \"Sports day\" · after a reload: {\"t\":\"Sports day\",\"d\":\"Jul 16\",\"s\":600,\"e\":690,\"r\":\"bring boots\"} · reload then reopen: Title \"Sports day\""
+ },
+ {
+  "n": 15,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Window draft \"Window choice\" with the List pencil saving \"List choice\" behind it: the window shows \"Changed while this window was open\" naming title with both values; Save before choosing refused (\"Choose which to keep first...\"); Keep mine saved \"Window choice\", Take theirs saved \"List choice\" (two separate inputs).",
+  "pictures_opened": [
+   "s15-mine-1-notice.png"
+  ],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "mine: the window stayed open and shows \"Changed while this window was open\" · mine: the notice reads \"Changed while this window was open title — theirs “List choice”, yours “Window choice” Keep mine Take theirs\" · mine: Save before choosing was refused - stored title stays \"List choice\", the notice stays (toast \"Choose which to keep first — your change, or the one made while this window was open\") · mine: after choosing, the Title box reads \"Window choice\" · mine: saved - stored title \"Window choice\" · mine: the window closed on the save · theirs: the window stayed open and shows \"Changed while this window was open\" · theirs: the notice reads \"Changed while this window was open title — theirs “List choice”, yours “Window choice” Keep mine Take theirs\" · theirs: Save before choosing was refused - stored title stays \"List choice\", the notice stays (toast \"Choose which to keep first — your change, or the one made while this window was open\") · theirs: after choosing, the Title box reads \"List choice\" · theirs: saved - stored title \"List choice\" · theirs: the window closed on the save"
+ },
+ {
+  "n": 16,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Remark changed behind the window: no conflict notice, the window’s Remarks box showed the new remark, Save kept both the title and the remark.",
+  "pictures_opened": [
+   "s16-1-window-after-remark-change.png"
+  ],
+  "pictures_taken_not_opened": 1,
+  "script_verdict": "PASS",
+  "script_detail": "the window stayed open and shows no conflict notice (notice visible: false) · the draft title is still \"Window choice\" · the window's Remarks box now reads \"Remark behind\" · after the window's Save: title \"Window choice\", remark \"Remark behind\" - both kept"
+ },
+ {
+  "n": 17,
+  "size": "desktop 1440x700",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Title, Type, Remarks, Save and Cancel reachable in the window and in the List pencil row (in view or reached by scrolling); typing kept the Title box in view; the save result shown (\"Input updated\"); Enter in the Title box saved once (no duplicate). Notes: Tab reaches Save and Cancel in the window but NOT in the List pencil row; after Enter a blank \"New input\" window opens again (see extras).",
+  "pictures_opened": [
+   "s17-short-a-enter-new.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "PASS",
+  "script_detail": "window: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:in view at open, type:in view at open, rmk:in view at open, save:in view at open, cancel:in view at open) · NOTE window: Tab from the Title box reached both Save and Cancel: inpEditAllday > inpEditStart > inpEditEnd > inpEditRmk > inpEditDel > inpEditCancel > inpEditSave · NOTE window: Tab stops that were off screen: none · window: the active Title box is on screen while typing (top 307, bottom 340, screen 700px) · window: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · List pencil: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:in view at open, type:in view at open, rmk:in view at open, save:in view at open, cancel:in view at open) · NOTE List pencil: Tab from the Title box did NOT reach Save and Cancel: remarks > BODY · NOTE List pencil: Tab stops that were off screen: none · List pencil: the active Title box is on screen while typing (top 353, bottom 374, screen 700px) · List pencil: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · Enter in the new window's Title box added 1 input titled \"Enter once\" (53 to 54 inputs) · NOTE after that one Enter a window is open again () - a blank New input · Enter on a saved input's window saved it once, no second input (54 inputs, title \"Enter twice?\")"
+ },
+ {
+  "n": 17,
+  "size": "desktop 1440x700",
+  "role": "member (Ranger)",
+  "result": "PASS",
+  "said": "Same as Ranger on the 700px screen.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "window: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:in view at open, type:in view at open, rmk:in view at open, save:in view at open, cancel:in view at open) · NOTE window: Tab from the Title box reached both Save and Cancel: inpEditAllday > inpEditStart > inpEditEnd > inpEditRmk > inpEditDel > inpEditCancel > inpEditSave · NOTE window: Tab stops that were off screen: none · window: the active Title box is on screen while typing (top 307, bottom 340, screen 700px) · window: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · List pencil: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:in view at open, type:in view at open, rmk:in view at open, save:in view at open, cancel:in view at open) · NOTE List pencil: Tab from the Title box did NOT reach Save and Cancel: remarks > BODY · NOTE List pencil: Tab stops that were off screen: none · List pencil: the active Title box is on screen while typing (top 578, bottom 599, screen 700px) · List pencil: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · Enter in the new window's Title box added 1 input titled \"Enter once\" (53 to 54 inputs) · NOTE after that one Enter a window is open again () - a blank New input · Enter on a saved input's window saved it once, no second input (54 inputs, title \"Enter twice?\")"
+ },
+ {
+  "n": 17,
+  "size": "phone 390x520 (keyboard up)",
+  "role": "admin",
+  "result": "PASS",
+  "said": "At 520px tall (keyboard up): everything reachable by scrolling (Save by scrolling in the window, Title by scrolling in the pencil row); Enter saved once.",
+  "pictures_opened": [
+   "s17-kb-a-win-typing.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "PASS",
+  "script_detail": "window: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:in view at open, type:in view at open, rmk:in view at open, save:scrolled to, cancel:in view at open) · NOTE window: Tab from the Title box reached both Save and Cancel: inpEditAllday > inpEditStart > inpEditEnd > inpEditRmk > inpEditDel > inpEditCancel > inpEditSave · NOTE window: Tab stops that were off screen: none · window: the active Title box is on screen while typing (top 202, bottom 235, screen 520px) · window: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · List pencil: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:scrolled to, type:in view at open, rmk:in view at open, save:in view at open, cancel:in view at open) · NOTE List pencil: Tab from the Title box did NOT reach Save and Cancel: remarks > BODY · NOTE List pencil: Tab stops that were off screen: none · List pencil: the active Title box is on screen while typing (top 241, bottom 279, screen 520px) · List pencil: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · Enter in the new window's Title box added 1 input titled \"Enter once\" (53 to 54 inputs) · NOTE after that one Enter a window is open again () - a blank New input · Enter on a saved input's window saved it once, no second input (54 inputs, title \"Enter twice?\")"
+ },
+ {
+  "n": 17,
+  "size": "phone 390x520 (keyboard up)",
+  "role": "member (Ranger)",
+  "result": "PASS",
+  "said": "Same as Ranger at 520px tall.",
+  "pictures_opened": [
+   "s17-kb-m-pen-typing.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "PASS",
+  "script_detail": "window: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:in view at open, type:in view at open, rmk:in view at open, save:scrolled to, cancel:in view at open) · NOTE window: Tab from the Title box reached both Save and Cancel: inpEditAllday > inpEditStart > inpEditEnd > inpEditRmk > inpEditDel > inpEditCancel > inpEditSave · NOTE window: Tab stops that were off screen: none · window: the active Title box is on screen while typing (top 202, bottom 235, screen 520px) · window: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · List pencil: after scrolling, every one of Title, Type, Remarks, Save, Cancel is on screen and is what a press lands on (title:scrolled to, type:in view at open, rmk:in view at open, save:in view at open, cancel:in view at open) · NOTE List pencil: Tab from the Title box did NOT reach Save and Cancel: remarks > BODY · NOTE List pencil: Tab stops that were off screen: none · List pencil: the active Title box is on screen while typing (top 241, bottom 279, screen 520px) · List pencil: saved - stored title \"Short screen title\"; the screen said \"Input updated\" (on screen) · Enter in the new window's Title box added 1 input titled \"Enter once\" (53 to 54 inputs) · NOTE after that one Enter a window is open again () - a blank New input · Enter on a saved input's window saved it once, no second input (54 inputs, title \"Enter twice?\")"
+ },
+ {
+  "n": 22,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Personal Inputs cards, week and Board: titled card \"Sports day\" with small Event, untitled card \"Event\" with no tag; each opens the right input (Title, Person, Type).",
+  "pictures_opened": [
+   "s22-d-week-cards.png"
+  ],
+  "pictures_taken_not_opened": 3,
+  "script_verdict": "PASS",
+  "script_detail": "week: titled card reads \"Sports day\" with kind \"Event\"; untitled card reads \"Event\" with kind null · week: nothing overlaps on the cards ([], []) · week: the titled card opens the right input - Title \"Sports day\", Person \"Ranger\", Type Event · week: the untitled card opens the right input - Title \"Event\", Person \"Anvil\", Type Event · Board: titled card reads \"Sports day\" with kind \"Event\"; untitled card reads \"Event\" with kind null · Board: nothing overlaps on the cards ([], []) · Board: the titled card opens the right input - Title \"Sports day\", Person \"Ranger\", Type Event · Board: the untitled card opens the right input - Title \"Event\", Person \"Anvil\", Type Event"
+ },
+ {
+  "n": 22,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Same at 390 wide (week and Board).",
+  "pictures_opened": [
+   "s22-p-week-cards.png"
+  ],
+  "pictures_taken_not_opened": 3,
+  "script_verdict": "PASS",
+  "script_detail": "week: titled card reads \"Sports day\" with kind \"Event\"; untitled card reads \"Event\" with kind null · week: nothing overlaps on the cards ([], []) · week: the titled card opens the right input - Title \"Sports day\", Person \"Ranger\", Type Event · week: the untitled card opens the right input - Title \"Event\", Person \"Anvil\", Type Event · Board: titled card reads \"Sports day\" with kind \"Event\"; untitled card reads \"Event\" with kind null · Board: nothing overlaps on the cards ([], []) · Board: the titled card opens the right input - Title \"Sports day\", Person \"Ranger\", Type Event · Board: the untitled card opens the right input - Title \"Event\", Person \"Anvil\", Type Event"
+ },
+ {
+  "n": 23,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Unavailable cards, week and Board: \"Overseas visit\" with small OD; untitled \"OD\"; each opens the right input; no Ground Programme row for either OD.",
+  "pictures_opened": [
+   "s23-d-Board-cards.png"
+  ],
+  "pictures_taken_not_opened": 1,
+  "script_verdict": "PASS",
+  "script_detail": "week: titled OD card reads \"Overseas visit\" with kind \"OD\"; untitled OD card reads \"OD\" with kind null · week: the titled OD card opens the right input - Title \"Overseas visit\", Person \"Ranger\", Type OD · week: the untitled OD card opens the right input - Title \"OD\", Person \"Anvil\", Type OD · Board: titled OD card reads \"Overseas visit\" with kind \"OD\"; untitled OD card reads \"OD\" with kind null · Board: the titled OD card opens the right input - Title \"Overseas visit\", Person \"Ranger\", Type OD · Board: the untitled OD card opens the right input - Title \"OD\", Person \"Anvil\", Type OD · neither OD has a Ground Programme row (rows for the titled OD 0, untitled OD 0) · the week's Ground Programme request rows are [\"1234567890123456789012345678901234567890\",\"EVENT\",\"TRAINING\",\"TRAINING\",\"SPORTS DAY\",\"EVENT\"] - no OD row"
+ },
+ {
+  "n": 23,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Same at 390 wide.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 2,
+  "script_verdict": "PASS",
+  "script_detail": "week: titled OD card reads \"Overseas visit\" with kind \"OD\"; untitled OD card reads \"OD\" with kind null · week: the titled OD card opens the right input - Title \"Overseas visit\", Person \"Ranger\", Type OD · week: the untitled OD card opens the right input - Title \"OD\", Person \"Anvil\", Type OD · Board: titled OD card reads \"Overseas visit\" with kind \"OD\"; untitled OD card reads \"OD\" with kind null · Board: the titled OD card opens the right input - Title \"Overseas visit\", Person \"Ranger\", Type OD · Board: the untitled OD card opens the right input - Title \"OD\", Person \"Anvil\", Type OD · neither OD has a Ground Programme row (rows for the titled OD 0, untitled OD 0) · the week's Ground Programme request rows are [\"1234567890123456789012345678901234567890\",\"EVENT\",\"TRAINING\",\"TRAINING\",\"SPORTS DAY\",\"EVENT\"] - no OD row"
+ },
+ {
+  "n": 24,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "FAIL",
+  "said": "Calendar day, List, week and Board Ground Programme rows hold up (the 40-character title wraps, or is cut by an ellipsis on the day card; the editor shows all 40; no overlaps) BUT on the Board’s Personal Inputs card the 40-character title runs on past its box and over the small Event label and the LATE chip - the kind is not readable there.",
+  "pictures_opened": [
+   "s24b-desk-Board-card.png",
+   "s24-d-day.png",
+   "s24-d-list.png",
+   "s24b-desk-week-card.png"
+  ],
+  "pictures_taken_not_opened": 4,
+  "script_verdict": "PASS",
+  "script_detail": "warnings on the two men's Wednesday: [\"DOUBLE_BOOK:hard\",\"DOUBLE_BOOK:hard\"] · Calendar day: {\"t\":{\"name\":\"1234567890123456789012345678901234567890\",\"clip\":true,\"tag\":\"Event\",\"late\":false,\"ov\":[],\"h\":98,\"rmk\":\"Bring the long list of kit, the signed forms and the spare radio batteries to the briefing room before the start please\"},\"u\":{\"name\":\"Event\",\"clip\":false,\"tag\":null,\"late\":false,\"ov\":[],\"h\":83,\"rmk\":\"Bring the long list of kit, the signed forms and the spare radio batteries to the briefing room before the start please\"}} · Calendar day: the 40-character title carries its kind tag, the untitled control has none, nothing overlaps (the title text is cut by an ellipsis on the card - see the picture; the editor shows all 40) · List: {\"t\":{\"title\":\"1234567890123456789012345678901234567890\",\"clip\":false,\"kind\":\"Event\",\"late\":true,\"ov\":[\"title/kind\"]},\"u\":{\"title\":null,\"clip\":null,\"kind\":\"Event\",\"late\":true,\"ov\":[]}} · List: the title is whole above the kind; the untitled control shows one kind label (boxes of the wrapped title and the kind pill overlap by measure: judged on the picture) · List pencil editor: the Title box holds 40 characters, its text is 301px wide in a 173px box - CLIPPED, scrolls inside the box · window editor: the Title box holds 40 characters; text 396px in a 396px box · week rows: [{\"name\":\"1234567890123456789012345678901234567890\",\"clip\":false,\"kind\":\"Event\",\"ov\":false,\"h\":80},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":80},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":43}] · week: the 40-character name row carries its kind tag with no overlap (found true, kind Event, overlap false, name clipped false) · week: the untitled control row reads EVENT with no second label · Board rows: [{\"name\":\"1234567890123456789012345678901234567890\",\"clip\":false,\"kind\":\"Event\",\"ov\":false,\"h\":57},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":57},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":34}] · Board: the 40-character name row carries its kind tag with no overlap (found true, kind Event, overlap false, name clipped false) · Board: the untitled control row reads EVENT with no second label"
+ },
+ {
+  "n": 24,
+  "size": "phone 390x844",
+  "role": "admin",
+  "result": "FAIL",
+  "said": "Same at 390 wide, worse: on the Board’s Personal Inputs card the title digits print over the Event label and the LATE chip, and a stray digit lands beside the end-time box. The week card and the Ground Programme rows are fine.",
+  "pictures_opened": [
+   "s24b-phone-Board-card.png",
+   "s24-p-week.png",
+   "s24b-phone-week-card.png"
+  ],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "warnings on the two men's Wednesday: [\"DOUBLE_BOOK:hard\",\"DOUBLE_BOOK:hard\"] · Calendar day: {\"t\":{\"name\":\"1234567890123456789012345678901234567890\",\"clip\":true,\"tag\":\"Event\",\"late\":false,\"ov\":[],\"h\":98,\"rmk\":\"Bring the long list of kit, the signed forms and the spare radio batteries to the briefing room before the start please\"},\"u\":{\"name\":\"Event\",\"clip\":false,\"tag\":null,\"late\":false,\"ov\":[],\"h\":83,\"rmk\":\"Bring the long list of kit, the signed forms and the spare radio batteries to the briefing room before the start please\"}} · Calendar day: the 40-character title carries its kind tag, the untitled control has none, nothing overlaps (the title text is cut by an ellipsis on the card - see the picture; the editor shows all 40) · List: {\"t\":{\"title\":\"1234567890123456789012345678901234567890\",\"clip\":false,\"kind\":\"Event\",\"late\":true,\"ov\":[\"title/kind\"]},\"u\":{\"title\":null,\"clip\":null,\"kind\":\"Event\",\"late\":true,\"ov\":[]}} · List: the title is whole above the kind; the untitled control shows one kind label (boxes of the wrapped title and the kind pill overlap by measure: judged on the picture) · List pencil editor: the Title box holds 40 characters, its text is 301px wide in a 296px box - CLIPPED, scrolls inside the box · window editor: the Title box holds 40 characters; text 324px in a 324px box · week rows: [{\"name\":\"1234567890123456789012345678901234567890\",\"clip\":false,\"kind\":\"Event\",\"ov\":false,\"h\":110},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":110},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":41}] · week: the 40-character name row carries its kind tag with no overlap (found true, kind Event, overlap false, name clipped false) · week: the untitled control row reads EVENT with no second label · Board rows: [{\"name\":\"1234567890123456789012345678901234567890\",\"clip\":false,\"kind\":\"Event\",\"ov\":false,\"h\":160},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":138},{\"name\":\"EVENT\",\"clip\":false,\"kind\":null,\"ov\":false,\"h\":90}] · Board: the 40-character name row carries its kind tag with no overlap (found true, kind Event, overlap false, name clipped false) · Board: the untitled control row reads EVENT with no second label"
+ },
+ {
+  "n": 26,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "The export downloaded (read through the browser’s download event): header Name, From, To, Start, End, Type, Title, Remarks; rows Event / Sports day, Event / Event and Event / Ops, \"A&B\" (quoted correctly); every row 8 cells.",
+  "pictures_opened": [
+   "s26-admin-list.png"
+  ],
+  "pictures_taken_not_opened": 0,
+  "script_verdict": "PASS",
+  "script_detail": "downloaded \"142-inputs.csv\", 55 data rows; header: Name | From | To | Start | End | Type | Title | Remarks · a Title column stands beside Type (Type at 5, Title at 6) · row 1: Type \"Event\", Title \"Sports day\" · row 2 (untitled): Type \"Event\", Title \"Event\" · row 3: Type \"Event\", Title \"Ops, \\\"A&B\\\"\" · every row has the same number of cells (8) - the comma and quotes shifted nothing · the quoted row's cells: [\"Ranger\",\"Jul 22\",\"Jul 22\",\"09:00\",\"10:00\",\"Event\",\"Ops, \\\"A&B\\\"\",\"third, remark \\\"quoted\\\"\"] · the quoted row as written in the file: \"Ranger\",\"Jul 22\",\"Jul 22\",\"09:00\",\"10:00\",\"Event\",\"Ops, \"\"A&B\"\"\",\"third, remark \"\"quoted\"\"\""
+ },
+ {
+  "n": 26,
+  "size": "desktop 1440x900",
+  "role": "member (Ranger)",
+  "result": "PASS",
+  "said": "Same file as Ranger (all inputs exported): Title beside Type, the quoted title kept in its own cell.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 1,
+  "script_verdict": "PASS",
+  "script_detail": "downloaded \"142-inputs.csv\", 55 data rows; header: Name | From | To | Start | End | Type | Title | Remarks · a Title column stands beside Type (Type at 5, Title at 6) · row 1: Type \"Event\", Title \"Sports day\" · row 2 (untitled): Type \"Event\", Title \"Event\" · row 3: Type \"Event\", Title \"Ops, \\\"A&B\\\"\" · every row has the same number of cells (8) - the comma and quotes shifted nothing · the quoted row's cells: [\"Ranger\",\"Jul 22\",\"Jul 22\",\"09:00\",\"10:00\",\"Event\",\"Ops, \\\"A&B\\\"\",\"third, remark \\\"quoted\\\"\"] · the quoted row as written in the file: \"Ranger\",\"Jul 22\",\"Jul 22\",\"09:00\",\"10:00\",\"Event\",\"Ops, \"\"A&B\"\"\",\"third, remark \"\"quoted\"\"\""
+ },
+ {
+  "n": 27,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "No Title control on LL, OML, ATT C, Upchit (opened in their window) nor on SANS \"+ Commitment\"; Events titled LL, ATT B, SANS Availability stayed Events (stored kinds changed by exactly 3 Events), the Medical counts did not move, no SANS offer on that day.",
+  "pictures_opened": [
+   "s27-admin-sans-editor.png"
+  ],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "LL (Jul 14) opened in its window as admin: Type \"LL\", Title controls found 0 · OML (Jul 13) opened in its window as admin: Type \"OML\", Title controls found 0 · ATT C (Jul 13) opened in its window as admin: Type \"ATT C\", Title controls found 0 · Upchit (Jun 20) opened in its window as admin: Type \"Upchit\", Title controls found 0 · SANS \"+ Commitment\" editor as admin: Title controls found 0 · NOTE the demo has 6 SANS availability input(s) · after filing Events titled LL, ATT B and SANS Availability the stored kinds changed by {\"Event\":3} (only 3 Events wanted) · the three are Event \"SANS Availability\", Event \"ATT B\", Event \"LL\" · tab badges before \"Medical21\" after \"Medical21\" · the Medical tab's counts did not move (\"Medical21\" before, \"Medical21\" after) · the SANS day window for 22 Jul lists 0 commitment row(s) · no SANS offer was made by an Event titled \"SANS Availability\" (rows 0)"
+ },
+ {
+  "n": 27,
+  "size": "desktop 1440x900",
+  "role": "member (Ranger)",
+  "result": "PASS",
+  "said": "As Ranger: no Title control on the same leave, medical and Upchit windows; the SANS \"+ Commitment\" button is disabled for a member (so there is no editor to look at); the three titled Events stayed Events.",
+  "pictures_opened": [],
+  "pictures_taken_not_opened": 5,
+  "script_verdict": "PASS",
+  "script_detail": "LL (Jul 14) opened in its window as member: Type \"LL\", Title controls found 0 · OML (Jul 13) opened in its window as member: Type \"OML\", Title controls found 0 · ATT C (Jul 13) opened in its window as member: Type \"ATT C\", Title controls found 0 · Upchit (Jun 20) opened in its window as member: Type \"Upchit\", Title controls found 0 · NOTE the SANS \"+ Commitment\" button is disabled for member (SANS aircrew add their availability here.), so no SANS editor opens - nothing to look at there · NOTE the demo has 6 SANS availability input(s) · after filing Events titled LL, ATT B and SANS Availability the stored kinds changed by {\"Event\":3} (only 3 Events wanted) · the three are Event \"SANS Availability\", Event \"ATT B\", Event \"LL\" · tab badges before \"Medical21\" after \"Medical21\" · the Medical tab's counts did not move (\"Medical21\" before, \"Medical21\" after) · the SANS day window for 22 Jul lists 0 commitment row(s) · no SANS offer was made by an Event titled \"SANS Availability\" (rows 0)"
+ },
+ {
+  "n": 36,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "FAIL",
+  "said": "Next-week peek (7 days after Sunday): the titled Event is drawn \"SPORTS DAY\" but WITHOUT the small Event label under it (the week itself has it); and after publishing next week’s Wednesday and retitling the input to \"Games afternoon\", the peek reads GAMES AFTERNOON while View-only Sched (the issued face) still reads SPORTS DAY. (ui-contracts says the peek shows the planned programme only, \"no publish/AL state\"; the scenario expects the issued name.) Phone: 0 peek nodes at 390 wide (drawn only above 820px) - not walkable there.",
+  "pictures_opened": [
+   "s36-1-peek-unpublished.png",
+   "s36-3-peek-published-retitled.png"
+  ],
+  "pictures_taken_not_opened": 3,
+  "script_verdict": "FAIL",
+  "script_detail": "the preceding week (\"13/07/2026\") shows 7 next-week peek days after its Sunday · peek Wednesday mentions: null; peek Thursday mentions: null · the peek's Wednesday request rows (nothing published yet): [{\"n\":\"SPORTS DAY\",\"k\":null},{\"n\":\"SPORTS AFTERNOON\",\"k\":null},{\"n\":\"EVENT\",\"k\":null}] · the peek names the titled Event SPORTS DAY · MISSED: the peek keeps the small kind label (Event) under the titled name, as the week does · the titled name is drawn · crossed into the week \"20/07/2026\" · sign-offs {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"} · publish: {\"pressed\":true,\"label\":\"Publish day\"} · Wednesday's head after publishing: {\"tag\":\"ORIG\",\"pending\":\"7 changes\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"} · the next week's Wednesday was signed and published through its own controls · after the retitle, Wednesday's head: {\"tag\":\"ORIG\",\"pending\":\"7 changes\"} · View-only Sched, Wednesday's request rows: [{\"n\":\"SPORTS DAY\",\"k\":\"Event\"},{\"n\":\"SPORTS AFTERNOON\",\"k\":\"Event\"},{\"n\":\"EVENT\"}] · the issued face of the published Wednesday still reads SPORTS DAY · the peek's Wednesday request rows: [{\"n\":\"GAMES AFTERNOON\",\"k\":null},{\"n\":\"SPORTS AFTERNOON\",\"k\":null},{\"n\":\"EVENT\",\"k\":null}] · back on week \"13/07/2026\"; peek Wednesday mentions: [\"GAMES AFTERNOON\",\"SPORTS AFTERNOON\",\"EVENT\"] · MISSED: the peek of the PUBLISHED Wednesday shows the issued name SPORTS DAY, not the live title GAMES AFTERNOON · inside that week, Wednesday's request rows: [{\"n\":\"GAMES AFTERNOON\",\"k\":\"Event\"},{\"n\":\"SPORTS AFTERNOON\",\"k\":\"Event\"},{\"n\":\"EVENT\"}] · inside the week the working copy shows GAMES AFTERNOON (with its pending change) · peek Thursday (OD days) before publishing: \"Thursday Jul 23 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:00 07:15 WAVE 1 CS MSN B TO LD FCP / RCP RMKS VL BFM 05:10 07:30 08:55 Saint B Rune B 1B: EARLY — CREW REST TIGHT 2 TKS Gambit C Dash C 2A: BFM // MED DOWN 2 \""
+ },
+ {
+  "n": 49,
+  "size": "desktop 1440x900",
+  "role": "admin",
+  "result": "PASS",
+  "said": "Retitled row 38 of 44 in the List: Undo and Redo with it in view left it where it was (same top, same page scroll); with it scrolled far out of view Undo and Redo brought it on screen below the top bar showing the right title; Calendar: Undo of an in-month retitle kept July and the tab (viewing August, Undo returned to July).",
+  "pictures_opened": [
+   "s49-4-undo-out-of-view.png"
+  ],
+  "pictures_taken_not_opened": 7,
+  "script_verdict": "PASS",
+  "script_detail": "the retitled row is 38 of 44, fully on screen (top 425, bottom 476, screen 900, top bar ends 57), reads \"Mid retitle\" · Undo with the row in view: the row now reads kind \"Event\" with no title and stayed where it was (top 425 to 425, page scroll 1866 to 1866) · Redo with the row in view: it reads \"Mid retitle\" and stayed where it was (top 425 to 425, page scroll 1866 to 1866) · out of view: the row is below the screen (top 2291, screen 900) · Undo with the row out of view: the row was brought on screen below the top bar (top 447, bottom 498, top bar ends 57) and reads kind \"Event\", title null · Redo with the row out of view: brought on screen (top 447, bottom 498) reading \"Mid retitle\" · Calendar Undo: month \"JULY 2026\" to \"JULY 2026\", page \"inputs\", calendar still showing true, stored title back to \"Mid retitle\" · NOTE viewing AUGUST 2026 and pressing Undo of a July retitle: the month shows \"JULY 2026\", page \"inputs\""
+ }
+]

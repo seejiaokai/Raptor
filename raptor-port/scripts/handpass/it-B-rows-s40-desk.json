@@ -1,0 +1,29 @@
+{
+ "rows": [
+  {
+   "n": "40",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "published \"Sports day\": edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}; after Take off (button \"UNDO / Undo — removes the ground-programme row this created\"): edit{pend:1 pending nys:YES rows: unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0} togo{Waiting to go out as AL1 · 1 change Ranger · Sports day Saber 9/10 21:28 on the programme → taken off}; after Accept (button \"ACCEPT / Accept into the ground programme\"): edit{pend:0 nys:no rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL signedLn:stands} view{rows:SPORTS DAY[EVENT] unav:OL|ATT C|OD|OIL pend:0}; saved title \"Sports day\"",
+   "pics": [
+    "s40-desk-1takeoff-edit.png",
+    "s40-desk-1takeoff-togo.png",
+    "s40-desk-1takeoff-view.png",
+    "s40-desk-2accepted-edit.png"
+   ]
+  },
+  {
+   "n": "40",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "FAIL",
+   "said": "the messages shown (toasts): after Take off [\"Accept undone\"]; after Accept [\"Ranger's Sports day added to the ground programme\"] — expected each to name \"Sports day\"",
+   "pics": [
+    "s40-desk-1takeoff-board.png",
+    "s40-desk-2accept-board.png"
+   ]
+  }
+ ],
+ "errs": []
+}

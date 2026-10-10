@@ -158,6 +158,11 @@
    extra DETAIL column (its own `cprog` grid), but the owner dropped it (22 Aug 26)
    so every board list is now the one shape — nothing here is non-c6r any more. */
 .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:18px 1.3fr 52px 52px minmax(96px,1.2fr) 1fr 92px}
+/* the name cell of a row that came from a TITLED input: its name box, and its kind small under it (D717 — board-html.ts).
+   The wrapper takes the name box's place in the row's grid; the box fills it as it filled its cell. */
+.sb-arow .sb-nmk{display:flex;flex-direction:column;align-items:stretch;gap:1px;min-width:0}
+.sb-arow .sb-nmk>.ain{width:100%;min-width:0}
+.sb-arow .sb-nmk>.nm-kind{margin:0 0 0 7px}
 /* THE AMT BOX CREW — a fixed two-column FCP | RCP grid (owner, 13 Aug 26). Seats
    pair left-to-right (FCP left, RCP right) and stack top-to-bottom, positions
    1..n down; an emptied seat keeps its slot (the pax-hole rule) so the pairing

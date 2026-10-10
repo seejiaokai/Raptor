@@ -123,6 +123,24 @@ describe('installGlobalUndo() wires the live cutover', () => {
     view.setInpView('table');_snapView(cls,'undo')
     expect(view.INPVIEW).toBe('cal');expect(view.INPMODE).toBe('sans');expect(view.CALMONTH).toEqual({y:2026,m:11})
   })
+  /* ASTRA'S SCENARIO 2.5 (the day-window check, 9 Oct 26). D672: the screen moves to the change only when it is out of
+     view. A note undone or redone while the calendar showed ANOTHER month changed nothing a person could see. */
+  it('a note undone or redone turns the calendar to ITS month when another is showing, and leaves a month that shows it alone (D672)',()=>{
+    const made={type:'inputs.batch',scope:{module:'inputs'},forward:[{collection:'plan',id:'pp:n1',before:null,after:{id:'n1',date:'2026-10-14',text:'Brief',ids:['a','b']}}]} as any
+    view.setPage('inputs');view.setInpMode('member');view.setInpView('cal');view.setCalMonth({y:2026,m:11})
+    _snapView(made,'undo');expect(view.CALMONTH,'undone from November: October, where it was').toEqual({y:2026,m:10})
+    expect(view.PLANREVEAL,'and the calendar is told the day, so an open day window can go to it (Sol S3)').toEqual({iso:'2026-10-14'})
+    view.setCalMonth({y:2026,m:12});_snapView(made,'redo');expect(view.CALMONTH).toEqual({y:2026,m:10})
+    /* in view already: nothing moves */
+    _snapView(made,'undo');expect(view.CALMONTH).toEqual({y:2026,m:10});expect(view.INPMODE).toBe('member')
+    /* a note moved to another month: Undo goes where it came from, Redo where it went */
+    const moved={type:'inputs.batch',scope:{module:'inputs'},forward:[{collection:'plan',id:'pp:n1',before:{id:'n1',date:'2026-10-30',text:'Brief'},after:{id:'n1',date:'2026-11-02',text:'Brief'}}]} as any
+    view.setCalMonth({y:2026,m:7});_snapView(moved,'undo');expect(view.CALMONTH).toEqual({y:2026,m:10})
+    view.setCalMonth({y:2026,m:7});_snapView(moved,'redo');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    /* a day title is the same: its day is in its id */
+    const title={type:'inputs.batch',scope:{module:'inputs'},forward:[{collection:'plan',id:'dm:2027-01-05',before:null,after:'Exercise'}]} as any
+    view.setCalMonth({y:2026,m:7});_snapView(title,'undo');expect(view.CALMONTH).toEqual({y:2027,m:1})
+  })
   it('planning Undo and Redo leave SANS for the Member calendar where the note lives',()=>{
     const entry={scope:{module:'inputs'},forward:[{collection:'plan',id:'2026-07-22',before:null,after:{rmk:'Planning note'}}]} as any
     view.setPage('inputs');view.setInpMode('sans');view.setInpView('table')

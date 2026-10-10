@@ -448,20 +448,29 @@ describe('inputs clash with every kind of tasking', () => {
   })
 })
 
-/* "Other" says nothing on its own, so what the person typed IS the name of the
-   thing (owner, Aug 26) — in the lists and on the row accept creates. */
-describe('an Other input reads by its remarks', () => {
-  it('labels by remarks, and the accepted ground row takes that as its title', () => {
-    INPUTS.push({ person: 'vinci', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Other', remarks: 'Range clearance run' })
+/* "Other" says nothing on its own, so it USED TO read by its remarks (owner, Aug 26). Since D716 (3), 9 Oct 26, it takes
+   the Title box like every other commitment — the title is its name, in the lists and on the row accept creates — and
+   its remarks are plain remarks again ([INPUT-OWN-TITLE]; the full pins: engine/inputtitle.test.ts). */
+describe('an Other input reads by its TITLE, and its remarks are remarks', () => {
+  it('labels by its title, and the accepted ground row takes that as its name; the remark lands in the remarks cell', () => {
+    INPUTS.push({ person: 'vinci', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Other', title: 'Range clearance run', remarks: 'bring ear defenders' })
     const inp = INPUTS[INPUTS.length - 1]
     expect(inpLabel(inp)).toBe('Range clearance run')
     expect(acceptInput(0, inp, 'g')).toBe(true)
     const row = DAYS[0].ground[DAYS[0].ground.length - 1]
     expect(row.prog).toBe('RANGE CLEARANCE RUN')
-    expect(row.rmks).toBe('Range clearance run')
+    expect(row.rmks).toBe('bring ear defenders')
+    expect(row.srcType).toBe('Other')
   })
 
-  it('falls back to the bare type while the remarks box is still empty', () => {
+  it('with no title it is named "Other" — its remark is no longer its name, and is not printed twice on its row', () => {
+    INPUTS.push({ person: 'vinci', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Other', remarks: 'Range clearance run' })
+    const inp = INPUTS[INPUTS.length - 1]
+    expect(inpLabel(inp)).toBe('Other')
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    const row = DAYS[0].ground[DAYS[0].ground.length - 1]
+    expect(row.prog).toBe('OTHER')
+    expect(row.rmks).toBe('Range clearance run')
     expect(inpLabel({ type: 'Other', remarks: '' })).toBe('Other')
     expect(inpLabel({ type: 'Other' })).toBe('Other')
   })

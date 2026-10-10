@@ -1,0 +1,16 @@
+{
+ "rows": [
+  {
+   "n": 39,
+   "size": "390x844 touch",
+   "role": "Ranger (member), own inputs",
+   "verdict": "PASS",
+   "saw": "setup: LL Jul 21 540-660 ; LL Jul 22 0-1439 || read: Jul 21 || after Save at 10:00-12:00: toasts [\"Ranger already has LL on 21 Jul (09:00–11:00) — LL can't overlap it\"]; window still open 1; draft times [\"10:00\",\"12:00\"]; saved: LL Jul 21 540-660 ; LL Jul 22 0-1439 || after retry 11:00-12:00: toasts [\"Input updated\"]; saved: LL Jul 21 540-660 ; LL Jul 21 660-720 || Undo: LL Jul 21 540-660 ; LL Jul 22 0-1439; Redo: LL Jul 21 540-660 ; LL Jul 21 660-720",
+   "pics": [
+    "B39-1-refused.png",
+    "B39-2-retry.png"
+   ]
+  }
+ ],
+ "errs": []
+}

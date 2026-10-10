@@ -1,0 +1,17 @@
+{
+ "rows": [
+  {
+   "id": 5,
+   "size": "phone 390",
+   "role": "admin setup, member Ranger viewing",
+   "verdict": "PASS",
+   "detail": "list card and day card read Ranger / DUTY / title / remark / \"By Saber\" only; window says: Placed by Saber for Ranger · 10 Oct 26, 01:49",
+   "pics": [
+    "5-phone-list-ranger.png",
+    "5-phone-day-ranger.png",
+    "5-phone-window-ranger.png"
+   ]
+  }
+ ],
+ "errs": []
+}

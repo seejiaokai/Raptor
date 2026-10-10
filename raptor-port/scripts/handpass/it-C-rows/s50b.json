@@ -1,0 +1,13 @@
+[
+ {
+  "n": 50,
+  "size": "desk",
+  "role": "admin (extra pictures: warning list opened)",
+  "verdict": "PASS",
+  "said": "Event titled \"Meeting\" over the SC AM shift: warning list [\"⚠ 2 issues\",\"· 2 warnings ·\",\"tap to review\",\"Ranger — SC AM & MEETING clash\",\"Ranger — Crew rest breach — Thursday landed 18:10, +2h debrief assumed → ended 20:10 → crew rest clear at 08:10, but SC AM starts 07:00 — only 10h50 rest.\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]. The same input as a Meeting (title \"Training\"; record type Meeting, title Training): warning list [\"⚠ 2 issues\",\"· 1 warning ·\",\"tap to review\",\"Ranger — Crew rest breach — Thursday landed 18:10, +2h debrief assumed → ended 20:10 → crew rest clear at 08:10, but SC AM starts 07:00 — only 10h50 rest.\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for TRAINING\",\"ALL AVAIL\",\"ALL\",\"PILOTS · 23 FREE\"]",
+  "pics": [
+   "desk-s50b-event-titled-Meeting-warnlist.png",
+   "desk-s50b-meeting-titled-Training-warnlist.png"
+  ]
+ }
+]

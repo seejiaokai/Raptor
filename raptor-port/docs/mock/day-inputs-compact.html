@@ -39,9 +39,10 @@
   dialog img { display: block; width: 780px; max-width: none; margin: 0 auto; cursor: zoom-out; }
   dialog button { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; font: 600 15px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; padding: 8px 14px; }
 </style>
+<!-- the design he chose from: drawing B is the one built (owner D699, D701, 9 Oct 26) -->
 <main>
   <header style="display:flex;flex-direction:column;gap:8px">
-    <span class="tag">A drawing · nothing here is built</span>
+    <span class="tag">The drawing you chose from · B is built on its own branch, not merged</span>
     <h1>Inputs that take less height in an opened day</h1>
     <p class="lede">Your idea, drawn on the real day window on a small phone, with a busy day of nine inputs. Count how many inputs you can see whole before scrolling. Tap a picture to see it full size.</p>
   </header>
@@ -78,10 +79,10 @@
   </section>
 
   <section>
-    <h2>What I need from you</h2>
-    <div class="q"><b>1. A or B?</b><span><span class="rec">I recommend B.</span> It shows two more inputs than today, and the name and date still say who placed it and when. If you want the words “Placed by” kept, choose A.</span></div>
-    <div class="q"><b>2. The same on the SANS day?</b><span><span class="rec">I recommend yes.</span> Its commitments are laid out the same way, so the two days would keep reading as one.</span></div>
-    <div class="q"><b>3. When?</b><span><span class="rec">I recommend after “merge live”,</span> together with the note that carries its own pucks — both change this same window.</span></div>
+    <h2>What you decided</h2>
+    <div class="q done"><b>A or B</b><span><span class="rec">Settled — B,</span> your idea with the shorter small print.</span></div>
+    <div class="q done"><b>The SANS day</b><span><span class="rec">Settled — it follows,</span> laid out the same way.</span></div>
+    <div class="q done"><b>When</b><span><span class="rec">Built on its own branch,</span> not merged — it waits for your look.</span></div>
   </section>
 </main>
 <dialog id="zoom" aria-label="Picture, full size"><button type="button" id="zoomClose">Close</button><img id="zoomImg" src="img/day-inputs-compact/a-today.png" alt="The opened day today"></dialog>

@@ -138,8 +138,17 @@ describe('members filing for other people (D654, D655)', () => {
   })
   it('it says in words what the switch allows and what it never does', () => {
     render(<InputsSettings />); open()
-    expect(t('win-inputsset').textContent).toContain('Members may file duties and commitments for other people')
-    expect(t('win-inputsset').textContent).toMatch(/never leave, medical or SANS availability/i)
+    /* one short line each since the design vet (owner D729 — V5, 10 Oct 26; D726) */
+    expect(t('win-inputsset').textContent).toContain('Members may file duties for others')
+    expect(t('win-inputsset').textContent).toContain('Never leave, medical or SANS.')
+  })
+  it('each of its three settings is explained in ONE short line (D729 — V5; D726: fewer words, the same information)', () => {
+    render(<InputsSettings />); open()
+    const hints = [...t('win-inputsset').querySelectorAll('.sset-hint')].map(h => h.textContent)
+    expect(hints).toContain('Day, night or no-fly dates, and holidays.')
+    expect(hints).toContain('Later than this is LATE. Medical is never late.')
+    expect(hints).toContain('Never leave, medical or SANS.')
+    for (const h of hints) expect(h!.length, h!).toBeLessThanOrEqual(60)
   })
   it('both changed in one Save are two steps — one each, so each can be taken back alone', () => {
     render(<InputsSettings />); open()

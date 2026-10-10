@@ -1,0 +1,52 @@
+[
+ {
+  "n": 1,
+  "size": "phone 390x844",
+  "role": "admin Saber",
+  "status": "PASS",
+  "said": "list tools row {\"nNew\":1,\"word\":\"+ Input\",\"filled\":\"rgb(59, 198, 232)\",\"leftOfDates\":true,\"first\":true,\"kids\":[\"inNew\",\"inrange\",\"inExport\"],\"form\":0}; window: {\"read\":\"pick a start date\",\"who\":\"Saber\",\"type\":\"Training\",\"save\":\"Add\",\"hints\":0,\"picked\":0}. (Astra's text says the fresh kind is Duty; the ruling list in the brief says Training — Training is what the screen shows.)",
+  "pics": [
+   "S1-phone-list.png",
+   "S1-phone-window.png"
+  ]
+ },
+ {
+  "n": 2,
+  "size": "desktop 1440x900",
+  "role": "member Ranger",
+  "status": "PASS",
+  "said": "groups [\"Leave: LL,OL,OIL,CCL,PL,FCL,EL,CL\",\"Medical: HL,OML,ATT C,ATT B,Upchit\",\"Duty & other commitments: Training,CSE,Meeting,Fly with,Personal,Appointment,Duty,Event,OD,Other\"]; no SANS kind: true; controls {\"LL\":{\"span\":true,\"title\":false,\"allday\":false,\"start\":false,\"doc\":false,\"person\":\"Ranger\"},\"ATTC\":{\"span\":true,\"title\":false,\"allday\":false,\"start\":false,\"doc\":true,\"person\":\"Ranger\"},\"Duty\":{\"span\":false,\"title\":true,\"allday\":true,\"start\":true,\"doc\":false,\"person\":\"list\"}}; AM draft switched to Duty: span control null, hours 00:00-12:00, saved [{\"t\":\"Duty\",\"allday\":false,\"s\":0,\"e\":720}] oil question 0; ATT C switched to Meeting: document row false, document question 0, saved [{\"t\":\"Meeting\",\"docs\":0}]",
+  "pics": [
+   "S2-desk-LL.png",
+   "S2-desk-ATTC.png",
+   "S2-desk-Duty.png",
+   "S2-desk-AM-then-Duty.png",
+   "S2-desk-ATTC-then-Meeting.png"
+  ]
+ },
+ {
+  "n": 3,
+  "size": "phone 390x844",
+  "role": "member Ranger",
+  "status": "PASS",
+  "said": "saved [{\"cs\":\"Ranger\",\"t\":\"Meeting\",\"title\":\"A3 briefing\",\"rmk\":\"Bring ID\",\"d\":\"Jul 27\",\"s\":600,\"e\":660}]; card right after save {\"at\":2,\"lit\":true,\"text\":\"LATE10:00–11:00RangerMeetingA3 briefing · Bring ID\",\"name\":\"Ranger\",\"by\":\"\",\"rmk\":\"Bring ID\",\"when\":\"10:00–11:00\",\"head\":\"Mon 27 Jul1 input\",\"onScreen\":true,\"h\":51}; lit six seconds later: false; reopened window {\"who\":\"Ranger\",\"type\":\"Meeting\",\"title\":\"A3 briefing\",\"rmk\":\"Bring ID\",\"start\":\"10:00\",\"end\":\"11:00\",\"read\":\"Jul 27\"}",
+  "pics": [
+   "S3-phone-saved-lit.png",
+   "S3-phone-saved-settled.png",
+   "S3-phone-reopened.png"
+  ]
+ },
+ {
+  "n": 4,
+  "size": "desktop 1440x900",
+  "role": "admin Saber",
+  "status": "PASS",
+  "said": "nothing saved: true (52->52); [{\"t\":\"Duty\",\"who\":\"stiff\",\"type\":\"Duty\",\"rmk\":\"duty words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true},{\"t\":\"ATT C\",\"who\":\"stiff\",\"type\":\"ATT C\",\"rmk\":\"attc words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true},{\"t\":\"Upchit\",\"who\":\"stiff\",\"type\":\"Upchit\",\"rmk\":\"upchit words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true},{\"t\":\"Duty\",\"who\":\"allavail\",\"type\":\"Duty\",\"rmk\":\"allavail words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true}]",
+  "pics": [
+   "S4-desk-Duty-stiff.png",
+   "S4-desk-ATTC-stiff.png",
+   "S4-desk-Upchit-stiff.png",
+   "S4-desk-Duty-allavail.png"
+  ]
+ }
+]

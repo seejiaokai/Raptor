@@ -149,35 +149,38 @@ interface Filing {
   end?: string
 }
 
-/** File one input through the REAL Inputs page form, the way a person does. */
+/** File one input through the REAL Inputs page, the way a person does.
+ *  SINCE 10 OCT 26 (owner D729 — the design vet's V1) the List has no form of its own: its "+ Input" opens the input's
+ *  window, the one the calendar opens — so that is the door driven here. The window opens fresh each time, with no
+ *  date picked; one left open by a refused filing is put away before the next. */
 async function fileOnInputsPage(page: Page, f: Filing) {
   await go(page, 'inputs')
-  // D580: the preserved List form now has an explicit secondary-view door.
+  // D580: the List is the Inputs tab's secondary view.
   await page.locator('#inListBtn').click()
-  await page.waitForSelector('#inAdd')
-  if (f.person) await page.selectOption('#inPerson', f.person)
-  await page.selectOption('#inType', f.type)
+  if (await page.locator('[data-testid="win-inputedit"]').count()) await page.locator('#inpEditCancel').click()
+  await page.locator('#inNew').click()
+  await page.waitForSelector('#inpEditSave')
+  await page.selectOption('#inpEditType', f.type)
+  if (f.person) await page.selectOption('#inpEditPerson', f.person)
   const walkTo = async (iso: string) => {
-    for (let i = 0; i < 36 && !(await page.locator(`#inCal [data-cal="${iso}"]`).count()); i++) {
-      const [m, y] = (await page.locator('#inCal .rc-mon').textContent())!.split(' ')
+    for (let i = 0; i < 36 && !(await page.locator(`#inpEdCal [data-cal="${iso}"]`).count()); i++) {
+      const [m, y] = (await page.locator('#inpEdCal .rc-mon').textContent())!.split(' ')
       const at = `${y}-${String(MON.indexOf(m!) + 1).padStart(2, '0')}`
-      await page.locator(`#inCal button[aria-label="${at < iso.slice(0, 7) ? 'Next' : 'Previous'} month"]`).click()
+      await page.locator(`#inpEdCal button[aria-label="${at < iso.slice(0, 7) ? 'Next' : 'Previous'} month"]`).click()
     }
-    await page.locator(`#inCal [data-cal="${iso}"]`).click()
+    await page.locator(`#inpEdCal [data-cal="${iso}"]`).click()
   }
-  // a fresh range every time: a finished range is restarted by the next tap
   await walkTo(f.from)
-  if ((await page.locator('#inDates').textContent())!.includes('→')) await walkTo(f.from)
   if (f.to && f.to !== f.from) await walkTo(f.to)
   const span = f.span ?? 'all'
-  if (await page.locator('#inSpan').count()) await page.locator(`#inSpan [data-span="${span}"]`).click()
+  if (await page.locator('#inpEditSpan').count()) await page.locator(`#inpEditSpan [data-span="${span}"]`).click()
   if (span === 'custom') {
-    await page.locator('#inStartT').fill(f.start!)
-    await page.locator('#inEndT').fill(f.end!)
+    await page.locator('#inpEditStart').fill(f.start!)
+    await page.locator('#inpEditEnd').fill(f.end!)
   }
   await clearToast(page)
   const before = await page.evaluate(() => (window as any).INPUTS.length as number)
-  await page.locator('#inAdd').click()
+  await page.locator('#inpEditSave').click()
   /* The add decides inside the click, one of three ways: a medical with no
      certificate ASKS first, or it files, or it is refused on the toast. Wait
      for whichever it was. (A fixed 150ms look for the question used to sit

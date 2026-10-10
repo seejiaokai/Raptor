@@ -1,0 +1,48 @@
+{
+ "rows": [
+  {
+   "n": 51,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "window opens on Jul 20 || window moved from y=96 to y=196 || bar dragged to 22 Jul: saved record now Jul 22; window still open 1; its calendar reads \"Jul 22\"; remark box \"typed while behind\" || after Save: Jul 22 remark \"typed while behind\" || Undo -> Jul 22 \"\"",
+   "pics": [
+    "B51-1-after-bar-drag.png"
+   ]
+  },
+  {
+   "n": 52,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "[mine-after-new-date] tapped 21 Jul (window reads \"Jul 21\"), then bar dragged to 23 Jul: saved is Jul 23; clash shown true: \"Changed while this window was open start date — theirs 23 Jul, yours 21 Jul Keep mine Take theirs\" || [mine-after-new-date] Save with the clash outstanding: toasts [\"Choose which to keep first — your change, or the one made while this window was open\"]; saved Jul 23; window open 1; clash still up 1 || [mine-after-new-date] chose mine: window read \"Jul 21\", final Jul 21 || [theirs-after-new-date] tapped 21 Jul (window reads \"Jul 21\"), then bar dragged to 23 Jul: saved is Jul 23; clash shown true: \"Changed while this window was open start date — theirs 23 Jul, yours 21 Jul Keep mine Take theirs\" || [theirs-after-new-date] Save with the clash outstanding: toasts [\"Choose which to keep first — your change, or the one made while this window was open\"]; saved Jul 23; window open 1; clash still up 1 || [theirs-after-new-date] chose theirs: window read \"Jul 23\", final Jul 23 || [saved-day-tap] tapped 20 Jul (window reads \"Jul 20\"), then bar dragged to 23 Jul: saved is Jul 23; clash shown true: \"Changed while this window was open start date — theirs 23 Jul, yours 20 Jul Keep mine Take theirs\" || [saved-day-tap] Save with the clash outstanding: toasts [\"Choose which to keep first — your change, or the one made while this window was open\"]; saved Jul 23; window open 1; clash still up 1 || checks [true,true,true,true,true,true]",
+   "pics": [
+    "B52-mine-after-new-date-clash.png",
+    "B52-theirs-after-new-date-clash.png",
+    "B52-saved-day-tap-clash.png"
+   ]
+  },
+  {
+   "n": 53,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "Undo with the editor open: editor closed true; input gone true; message(s) [\"That input was removed while its window was open — the window has closed\"]; INPUTS 53 -> 52 || Redo: input back true; remark \"saved remark\"; window open 0; INPUTS 53 || explained=true",
+   "pics": [
+    "B53-1-after-undo.png",
+    "B53-2-after-redo.png"
+   ]
+  },
+  {
+   "n": 55,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "FAIL",
+   "saw": "Name: windows 1 opened on \"Cell test\" || Start: windows 1 opened on \"Cell test\" || End: windows 1 opened on \"Cell test\" || Type: windows 1 opened on \"Cell test\" || Remarks: windows 1 opened on \"Cell test\" || Last modified: no such cell || title text: windows 1 || drag-select over the remark: selection \"\"; window opened 0; clipboard after Ctrl+C \"\" || record unchanged: true; INPUTS still 2 of 2 || checks [true,true,true,true,true,false,true,false,true]",
+   "pics": [
+    "B55-1-text-selected.png"
+   ]
+  }
+ ],
+ "errs": []
+}

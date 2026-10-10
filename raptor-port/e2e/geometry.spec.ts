@@ -4837,14 +4837,15 @@ test('the desktop checks panel resizes by its grip', async ({ page }) => {
   expect(after, 'dragging the grip down grows the checks panel').toBeGreaterThan(before + 40)
 })
 
-/* The Inputs list is a grid of ALIGNED columns on a phone (owner, 22 Aug 26 —
-   "u can put callsign. Then. Leave some space then align the reason, then the
-   date… below the callsign u can put the remarks"). The old flex-wrap let each
-   card's own chip width push its date around, and jsdom cannot see a column
-   line up across separate cards — this page had no e2e at all until now. Also
-   pins the SANS chip's phone short form: the .bl tail ("ability") hides under
-   820px so the chip reads SANS AVAIL, while the DOM text stays the full type. */
-test('the phone Inputs cards align their type and date columns', async ({ page }) => {
+/* ON A PHONE THE INPUTS LIST IS THE INPUT CARD UNDER A HEADING A DAY (owner D718, D723 — 10 Oct 26; ui/InputCard.tsx).
+   RESTATED that day: this test used to pin the table-as-cards of 22 Aug 26 ("align the reason, then the date… below
+   the callsign u can put the remarks") — every type chip at one x, every date at one x, the remarks under the
+   callsign. The card he approved has no chip and no date of its own (the heading says the day), so what lines up down
+   the list now is what a browser alone can say of THIS card: every card as wide as the list, every hours corner ending
+   at the same x, the kind on the name's own line, the words under the top line from the card's left edge — and no
+   table, no pencil, no cross. (The SANS chip's phone short form, pinned here too, went with the chip: SANS
+   availability left the list with D620, and a card carries no chip.) */
+test('the phone Inputs list is the input card under a heading a day — the hours line up, the words sit under the top line', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page); await go(page, 'inputs')
   await page.click('#inListBtn') // D580: these assertions concern the secondary List.
@@ -4853,31 +4854,40 @@ test('the phone Inputs cards align their type and date columns', async ({ page }
      exactly as a user is told by the empty state */
   await page.click('#inRangeBtn')
   await page.click('#inRangeAll')
-  await page.waitForSelector('#inBody tr .intag')
+  await page.waitForSelector('#inList [data-testid^="inl-row-"]')
   const m = await page.evaluate(() => {
-    const rows = [...document.querySelectorAll('#inBody tr:not(.ined)')] as HTMLElement[]
-    const chipX = rows.map(r => r.querySelector('.intag')?.getBoundingClientRect().left).filter(x => x != null) as number[]
-    const dateX = rows.map(r => (r.querySelector('td[data-label="Start"]') as HTMLElement).getBoundingClientRect().left)
-    const bl = document.querySelector('#inBody .intag .bl') as HTMLElement | null
-    /* remarks sit BELOW the callsign, starting at the card's left edge */
-    const withRk = rows.find(r => { const rk = r.querySelector('td[data-label="Remarks"]') as HTMLElement | null; return !!rk && rk.offsetHeight > 0 })
+    const cards = [...document.querySelectorAll('#inList [data-testid^="inl-row-"]')] as HTMLElement[]
+    const box = (el: Element) => el.getBoundingClientRect()
+    const heads = [...document.querySelectorAll('#inList [data-testid="inl-day"]')] as HTMLElement[]
+    const withWords = cards.find(c => c.querySelector('.icard-words'))
     let below: any = null
-    if (withRk) {
-      const name = withRk.querySelector('td[data-label="Name"]')!.getBoundingClientRect()
-      const rk = withRk.querySelector('td[data-label="Remarks"]')!.getBoundingClientRect()
-      below = { nameBottom: name.bottom, rkTop: rk.top, nameLeft: name.left, rkLeft: rk.left }
+    if (withWords) {
+      const top = box(withWords.querySelector('.icard-top')!), words = box(withWords.querySelector('.icard-words')!), sq = box(withWords.querySelector('.icard-sq')!)
+      below = { topBottom: top.bottom, wordsTop: words.top, wordsLeft: words.left, sqLeft: sq.left }
     }
-    return { n: chipX.length, chipX, dateX, sansTail: bl ? getComputedStyle(bl).display : null, below }
+    return {
+      n: cards.length, table: !!document.querySelector('#intbl'),
+      old: document.querySelectorAll('#inList [data-edit], #inList [data-inx], #inList .rmx, #inList .roil').length,
+      left: cards.map(c => box(c).left), right: cards.map(c => box(c).right),
+      hrsRight: cards.map(c => box(c.querySelector('.icard-hrs')!).right),
+      kindOnNameLine: cards.filter(c => !c.querySelector('.icard-who')!.textContent!.includes(',')).every(c => Math.abs(box(c.querySelector('.icard-kind')!).bottom - box(c.querySelector('.icard-who')!).bottom) < 6),
+      heads: heads.length, headFirst: heads.length ? heads[0].compareDocumentPosition(cards[0]) & Node.DOCUMENT_POSITION_FOLLOWING : 0,
+      scrollX: document.documentElement.scrollWidth > window.innerWidth, below,
+    }
   })
+  expect(m.table, 'no table on a phone').toBe(false)
+  expect(m.old, 'no pencil, no cross, no OIL chip on a card').toBe(0)
   expect(m.n, 'enough cards on screen to prove alignment').toBeGreaterThan(3)
-  for (const x of m.chipX) expect(Math.abs(x - m.chipX[0]), 'every type chip starts at the same x').toBeLessThan(1.5)
-  for (const x of m.dateX) expect(Math.abs(x - m.dateX[0]), 'every date starts at the same x').toBeLessThan(1.5)
-  await page.click('#inSansMode')
-  const sansTail=await page.locator('#inBody .intag .bl').first().evaluate(el=>getComputedStyle(el).display)
-  expect(sansTail, 'the SANS tail is hidden on a phone — the chip reads SANS AVAIL').toBe('none')
-  expect(m.below, 'a card carrying remarks exists in the demo data').toBeTruthy()
-  expect(m.below.rkTop, 'remarks sit below the callsign line').toBeGreaterThanOrEqual(m.below.nameBottom - 0.5)
-  expect(Math.abs(m.below.rkLeft - m.below.nameLeft), 'and start under it').toBeLessThan(1.5)
+  expect(m.heads, 'a heading a day').toBeGreaterThan(1)
+  expect(m.headFirst, 'the first heading stands above the first card').toBeTruthy()
+  for (const x of m.left) expect(Math.abs(x - m.left[0]), 'every card starts at the same x').toBeLessThan(1.5)
+  for (const x of m.right) expect(Math.abs(x - m.right[0]), 'every card ends at the same x').toBeLessThan(1.5)
+  for (const x of m.hrsRight) expect(Math.abs(x - m.hrsRight[0]), 'every hours corner ends at the same x').toBeLessThan(1.5)
+  expect(m.kindOnNameLine, 'the kind stands on the name’s own line').toBe(true)
+  expect(m.scrollX, 'nothing runs off sideways').toBe(false)
+  expect(m.below, 'a card carrying a title or a remark exists in the demo data').toBeTruthy()
+  expect(m.below.wordsTop, 'the words sit below the top line').toBeGreaterThanOrEqual(m.below.topBottom - 0.5)
+  expect(Math.abs(m.below.wordsLeft - m.below.sqLeft), 'and start at the card’s left edge, under the colour square').toBeLessThan(1.5)
 })
 
 /* --------------------------------------------------------------------------

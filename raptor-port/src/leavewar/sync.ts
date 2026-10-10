@@ -22,7 +22,7 @@ import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPer
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput } from '../state/perms'
 import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
@@ -795,15 +795,25 @@ export function oilAskPlan(row: { person?: any; date: string; endDate?: string; 
    object — undo re-mints rows). */
 export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
   const out: { iid: string; iso: string }[] = []
-  if (!personId) return out
+  /* a placeholder is nobody: there is no bell to light for ALL AVAIL itself ([INPUT-ALL-AVAIL]) */
+  if (!personId || (PEOPLE[personId] && PEOPLE[personId].special)) return out
   /* a protected (quarantined) day is never asked (P2-QREV-06/Fable-6): the OIL
      pass already treats it as "credit stands", and the answer write would be
      rolled back by the input funnel — so the bell would stay lit forever. Skip
      those days from the scan. */
   const prot = protectedDates()
   const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
+  /* AND AN INPUT HE FILED FOR ALL AVAIL / ALL ([INPUT-ALL-AVAIL]; owner D711 (4), 9 Oct 26: "an OIL question nobody
+     answered goes to the filer's bell, and only his"). Nobody stands behind such an input by name, so nobody else can be
+     asked; the men behind it never are (D702: "only on the day and the schedule"). ONLY WHILE HE MAY STILL ANSWER — a
+     task is never shown to someone who cannot do it (both plan readers): a member filer whose right went with the
+     members' switch is not asked, and the scheduler meets the unanswered question on the Inputs List and in OIL Earn.
+     Asked of the one permissions module, for the person signed in. */
+  const session = me()
+  const filedByHim = (row: any) => !!PEOPLE[row.person] && !!PEOPLE[row.person].special && row.by != null && String(row.by) === String(personId)
+    && (session == null || String(session) === String(personId)) && mayEditInput(row)
   for (const row of INPUTS) {
-    if (row.person !== personId || !oilAsks(row.type) || row.acc === 'r') continue
+    if ((row.person !== personId && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue
     const answered = (row.oil ?? {}) as Record<string, number>
     const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })

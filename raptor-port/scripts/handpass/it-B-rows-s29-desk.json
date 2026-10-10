@@ -1,0 +1,29 @@
+{
+ "rows": [
+  {
+   "n": "29",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "published after titling: week EVENT[]|SPORTS DAY[EVENT] | view-only EVENT[]|SPORTS DAY[EVENT] | board EVENT[]|SPORTS DAY[EVENT] | pending 0 | not-yet-signed no",
+   "pics": [
+    "s29-desk-1published-edit.png",
+    "s29-desk-1published-view.png",
+    "s29-desk-1published-board.png"
+   ]
+  },
+  {
+   "n": "29",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "after reload: week EVENT[]|SPORTS DAY[EVENT] | view-only EVENT[]|SPORTS DAY[EVENT] | board EVENT[]|SPORTS DAY[EVENT] | pending 0",
+   "pics": [
+    "s29-desk-2reload-edit.png",
+    "s29-desk-2reload-view.png",
+    "s29-desk-2reload-board.png"
+   ]
+  }
+ ],
+ "errs": []
+}

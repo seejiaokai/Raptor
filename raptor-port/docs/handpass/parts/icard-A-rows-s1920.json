@@ -1,0 +1,33 @@
+{
+ "rows": [
+  {
+   "id": 19,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "Everyone: Mon 27 Jul[2 inputs]: ZQ saber duty / ZQ ranger duty || Tue 28 Jul[1 input]: ZQ shared meeting || Wed 29 Jul[2 inputs]: ZQ all event / ZQ anvil event || Thu 30 Jul[1 input]: ZQ allavail duty ## ALL: Wed 29 Jul[1 input]: ZQ all event ## ALL AVAIL: Thu 30 Jul[1 input]: ZQ allavail duty ## Ranger: Mon 27 Jul[1 input]: ZQ ranger duty || Tue 28 Jul[1 input]: ZQ shared meeting ## Ranger also shows: nothing else ## Saber: Mon 27 Jul[1 input]: ZQ saber duty || Tue 28 Jul[1 input]: ZQ shared meeting ## Saber also shows: nothing else",
+   "pics": [
+    "19-phone-everyone.png",
+    "19-phone-all.png",
+    "19-phone-allavail.png",
+    "19-phone-ranger.png",
+    "19-phone-saber.png"
+   ]
+  },
+  {
+   "id": 20,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "Event: Wed 29 Jul[2 inputs]: ZQ all event / ZQ anvil event ## Meeting: Tue 28 Jul[1 input]: ZQ shared meeting ## \"ZQ anvil event\": Wed 29 Jul[1 input]: ZQ anvil event ## \"ZQ ANVIL EVENT\": Wed 29 Jul[1 input]: ZQ anvil event ## \"quokka\": Mon 27 Jul[1 input]: ZQ ranger duty ## \"QUOKKA\": Mon 27 Jul[1 input]: ZQ ranger duty ## \"zulu\": Tue 28 Jul[1 input]: ZQ shared meeting ## \"ZULU\": Tue 28 Jul[1 input]: ZQ shared meeting ## ZQ + Ranger + Meeting: Tue 28 Jul[1 input]: ZQ shared meeting ## ZQ + Ranger + Event:  ## empty list says: No inputs match. ## ZQ + ALL + Event: Wed 29 Jul[1 input]: ZQ all event",
+   "pics": [
+    "20-phone-event.png",
+    "20-phone-meeting.png",
+    "20-phone-search-zulu.png",
+    "20-phone-combined-ranger-meeting.png",
+    "20-phone-combined-empty.png"
+   ]
+  }
+ ],
+ "errs": []
+}

@@ -7,7 +7,7 @@ import { rowItemKey } from '../engine/oil'
 import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { inpById } from '../engine/inputs'
+import { inpById, inpLabel } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
 
@@ -338,7 +338,7 @@ function paint(all: ELogRow[]) {
   /* an input's own row is headed by the input — "Ranger · LL" — its lines the story under it (Fable F1) */
   const iid = anchor && keyOf(anchor).startsWith('iu:') ? keyOf(anchor).slice(3) : ''
   const inp: any = iid ? inpById(iid) : null
-  b.innerHTML = `<div class="hb-what">${esc(inp ? `${csOf(inp.person)} · ${inp.type}` : row.lbl)}</div>`
+  b.innerHTML = `<div class="hb-what">${esc(inp ? `${csOf(inp.person)} · ${inpLabel(inp)}` : row.lbl)}</div>`
     + `<ol class="hb-all">` + rows.map(r =>
       `<li><span class="hb-chg">${chgHTML(r)}</span>`
       + `<span class="hb-who">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`

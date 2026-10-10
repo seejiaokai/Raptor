@@ -1,0 +1,318 @@
+{
+ "walker": "A",
+ "build": "http://localhost:4231/",
+ "date": "2026-10-10",
+ "share": "1-19",
+ "counts": {
+  "PASS": 19,
+  "FAIL": 0,
+  "NOT RUN": 0,
+  "ERROR": 0
+ },
+ "rows": [
+  {
+   "n": 1,
+   "size": "phone 390x844",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": "list tools row {\"nNew\":1,\"word\":\"+ Input\",\"filled\":\"rgb(59, 198, 232)\",\"leftOfDates\":true,\"first\":true,\"kids\":[\"inNew\",\"inrange\",\"inExport\"],\"form\":0}; window: {\"read\":\"pick a start date\",\"who\":\"Saber\",\"type\":\"Training\",\"save\":\"Add\",\"hints\":0,\"picked\":0}. (Astra's text says the fresh kind is Duty; the ruling list in the brief says Training — Training is what the screen shows.)",
+   "pics": [
+    "S1-phone-list.png",
+    "S1-phone-window.png"
+   ]
+  },
+  {
+   "n": 2,
+   "size": "desktop 1440x900",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": "groups [\"Leave: LL,OL,OIL,CCL,PL,FCL,EL,CL\",\"Medical: HL,OML,ATT C,ATT B,Upchit\",\"Duty & other commitments: Training,CSE,Meeting,Fly with,Personal,Appointment,Duty,Event,OD,Other\"]; no SANS kind: true; controls {\"LL\":{\"span\":true,\"title\":false,\"allday\":false,\"start\":false,\"doc\":false,\"person\":\"Ranger\"},\"ATTC\":{\"span\":true,\"title\":false,\"allday\":false,\"start\":false,\"doc\":true,\"person\":\"Ranger\"},\"Duty\":{\"span\":false,\"title\":true,\"allday\":true,\"start\":true,\"doc\":false,\"person\":\"list\"}}; AM draft switched to Duty: span control null, hours 00:00-12:00, saved [{\"t\":\"Duty\",\"allday\":false,\"s\":0,\"e\":720}] oil question 0; ATT C switched to Meeting: document row false, document question 0, saved [{\"t\":\"Meeting\",\"docs\":0}]",
+   "pics": [
+    "S2-desk-LL.png",
+    "S2-desk-ATTC.png",
+    "S2-desk-Duty.png",
+    "S2-desk-AM-then-Duty.png",
+    "S2-desk-ATTC-then-Meeting.png"
+   ]
+  },
+  {
+   "n": 3,
+   "size": "phone 390x844",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": "saved [{\"cs\":\"Ranger\",\"t\":\"Meeting\",\"title\":\"A3 briefing\",\"rmk\":\"Bring ID\",\"d\":\"Jul 27\",\"s\":600,\"e\":660}]; card right after save {\"at\":2,\"lit\":true,\"text\":\"LATE10:00–11:00RangerMeetingA3 briefing · Bring ID\",\"name\":\"Ranger\",\"by\":\"\",\"rmk\":\"Bring ID\",\"when\":\"10:00–11:00\",\"head\":\"Mon 27 Jul1 input\",\"onScreen\":true,\"h\":51}; lit six seconds later: false; reopened window {\"who\":\"Ranger\",\"type\":\"Meeting\",\"title\":\"A3 briefing\",\"rmk\":\"Bring ID\",\"start\":\"10:00\",\"end\":\"11:00\",\"read\":\"Jul 27\"}",
+   "pics": [
+    "S3-phone-saved-lit.png",
+    "S3-phone-saved-settled.png",
+    "S3-phone-reopened.png"
+   ]
+  },
+  {
+   "n": 4,
+   "size": "desktop 1440x900",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": "nothing saved: true (52->52); [{\"t\":\"Duty\",\"who\":\"stiff\",\"type\":\"Duty\",\"rmk\":\"duty words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true},{\"t\":\"ATT C\",\"who\":\"stiff\",\"type\":\"ATT C\",\"rmk\":\"attc words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true},{\"t\":\"Upchit\",\"who\":\"stiff\",\"type\":\"Upchit\",\"rmk\":\"upchit words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true},{\"t\":\"Duty\",\"who\":\"allavail\",\"type\":\"Duty\",\"rmk\":\"allavail words\",\"toast\":\"Pick a start date on the calendar first\",\"questions\":0,\"open\":true}]",
+   "pics": [
+    "S4-desk-Duty-stiff.png",
+    "S4-desk-ATTC-stiff.png",
+    "S4-desk-Upchit-stiff.png",
+    "S4-desk-Duty-allavail.png"
+   ]
+  },
+  {
+   "n": 5,
+   "size": "phone 390x844",
+   "role": "member Ranger (Saber set the setting)",
+   "status": "PASS",
+   "said": "setting on (box true); Saber's saved input survived the second sign-in (1); Ranger's Person list offered 63 choices; saved [{\"for\":\"Echo\",\"by\":\"Ranger\",\"t\":\"Duty\",\"d\":\"Jul 27\",\"s\":600,\"e\":660}]; card {\"at\":41,\"lit\":true,\"text\":\"LATE10:00–11:00EchoDutyS5 first remarkBy Ranger\",\"name\":\"Echo\",\"by\":\"By Ranger\",\"rmk\":\"S5 first remark\",\"when\":\"10:00–11:00\",\"head\":\"Mon 27 Jul1 input\",\"onScreen\":false,\"h\":51}; reopened: person Echo, \"Placed by Ranger for Echo · 10 Oct 26, 07:11\", Save present 1; after the change {\"cs\":\"Echo\",\"by\":\"Ranger\",\"rmk\":\"S5 changed remark\",\"type\":\"Duty\"}",
+   "pics": [
+    "S5-phone-echo-draft.png",
+    "S5-phone-echo-saved.png",
+    "S5-phone-echo-reopened.png"
+   ]
+  },
+  {
+   "n": 6,
+   "size": "desktop 1440x900",
+   "role": "member Ranger (Saber set the setting)",
+   "status": "PASS",
+   "said": "Echo duty by Ranger filed (Echo/Ranger) and his own meeting; Saber's box now false; both inputs still present (2); Ranger's new window per kind {\"Duty\":{\"list\":false,\"n\":0,\"fixed\":\"Ranger\",\"several\":false,\"ph\":false,\"why\":\"\"},\"Meeting\":{\"list\":false,\"n\":0,\"fixed\":\"Ranger\",\"several\":false,\"ph\":false,\"why\":\"\"},\"Event\":{\"list\":false,\"n\":0,\"fixed\":\"Ranger\",\"several\":false,\"ph\":false,\"why\":\"\"}}; Echo's duty reopened: Save 0, Delete 0, words \"Only Echo or an admin can change this.\"; his own reopened: Save 1, Delete 1, changed remark saved: S6 ranger own changed",
+   "pics": [
+    "S6-desk-new-after-off.png",
+    "S6-desk-echo-after-off.png",
+    "S6-desk-own-after-off.png"
+   ]
+  },
+  {
+   "n": 7,
+   "size": "phone 390x844",
+   "role": "member Ranger (setting on)",
+   "status": "PASS",
+   "said": "(a) new draft Echo/Duty->LL: window then showed person \"Echo\", words \"You can file leave only for yourself File it for me only\"; Add said \"You can file leave only for yourself\", inputs 53->53, window open true, person still \"Echo\"; (b) saved Echo duty turned to LL then Save said \"You can file leave only for yourself\", person in window \"Echo\", inputs 54->54, original now {\"cs\":\"Echo\",\"type\":\"Duty\",\"date\":\"Aug 5\"}; LLs for Ranger: 0",
+   "pics": [
+    "S7-phone-new-LL-for-echo.png",
+    "S7-phone-saved-duty-to-LL.png"
+   ]
+  },
+  {
+   "n": 8,
+   "size": "desktop 1440x900",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": "[{\"label\":\"two-without-filer\",\"initial\":[\"Ranger\"],\"want\":[\"Echo\",\"Ranger\"],\"got\":[\"Echo\",\"Ranger\"],\"once\":true,\"grp\":1,\"by\":[\"Saber\"],\"rowName\":\"Echo, Ranger\",\"reopened\":[\"Echo\",\"Ranger\"],\"ok\":true},{\"label\":\"four-with-filer\",\"initial\":[\"Saber\"],\"want\":[\"Ace\",\"Ranger\",\"Saber\",\"Wisp\"],\"got\":[\"Ace\",\"Ranger\",\"Saber\",\"Wisp\"],\"once\":true,\"grp\":1,\"by\":[\"Saber\"],\"rowName\":\"Ace, Ranger, Saber, Wisp\",\"reopened\":[\"Ace\",\"Ranger\",\"Saber\",\"Wisp\"],\"ok\":true},{\"label\":\"four-without-filer\",\"initial\":[\"Wisp\"],\"want\":[\"Ace\",\"Echo\",\"Vapor\",\"Wisp\"],\"got\":[\"Ace\",\"Echo\",\"Vapor\",\"Wisp\"],\"once\":true,\"grp\":1,\"by\":[\"Saber\"],\"rowName\":\"Ace, Echo, Vapor, Wisp\",\"reopened\":[\"Ace\",\"Echo\",\"Vapor\",\"Wisp\"],\"ok\":true}] (the \"member setting on\" part is not needed by an admin; not touched)",
+   "pics": [
+    "S8-desk-two-without-filer-picked.png",
+    "S8-desk-two-without-filer-saved.png",
+    "S8-desk-two-without-filer-reopened.png",
+    "S8-desk-four-with-filer-picked.png",
+    "S8-desk-four-with-filer-saved.png",
+    "S8-desk-four-with-filer-reopened.png",
+    "S8-desk-four-without-filer-picked.png",
+    "S8-desk-four-without-filer-saved.png",
+    "S8-desk-four-without-filer-reopened.png"
+   ]
+  },
+  {
+   "n": 9,
+   "size": "phone 390x844",
+   "role": "admin Saber, then member Ranger (setting on)",
+   "status": "PASS",
+   "said": "{\"adminLL\":{\"several\":1,\"saved\":[\"Echo LL Aug 10\",\"Saber LL Aug 10\"],\"grp\":1},\"adminMed\":{\"pressedBeforeSwitch\":2,\"afterSwitch\":{\"who\":\"\",\"several\":true,\"why\":\"A medical entry is filed for one person at a time — each needs its own document Keep Saber only\"},\"pressedAfter\":[\"Saber\",\"Wisp\"],\"toast\":\"A medical entry is filed for one person at a time — each needs its own document\",\"questions\":{\"doc\":0,\"clash\":0},\"count\":\"55->55\",\"attc\":[\"Grit Jul 13\",\"Static Jan 5\"],\"windowStillOpen\":true},\"memberLL\":{\"who\":\"\",\"several\":true,\"why\":\"You can file leave only for yourself File it for me only\",\"pressed\":[\"Echo\",\"Ranger\"],\"toast\":\"You can file leave only for yourself\",\"count\":\"55->55\",\"allLL\":[\"Echo Aug 10\",\"Saber Aug 10\",\"Quill Jul 14\",\"Tally Jul 24\",\"Gambit Jan 8\"]},\"memberMed\":{\"who\":\"\",\"several\":true,\"why\":\"You can file a medical entry only for yourself File it for me only\",\"pressed\":[\"Echo\",\"Ranger\"],\"toast\":\"You can file a medical entry only for yourself\",\"questions\":{\"doc\":0},\"count\":\"55->55\",\"attc\":[\"Grit Jul 13\",\"Static Jan 5\"]}}",
+   "pics": [
+    "S9-phone-admin-LL-saved.png",
+    "S9-phone-admin-meeting-to-ATTC.png",
+    "S9-phone-admin-ATTC-after-add.png",
+    "S9-phone-member-two-then-LL.png",
+    "S9-phone-member-meeting-to-ATTC.png",
+    "S9-phone-member-ATTC-after-add.png"
+   ]
+  },
+  {
+   "n": 10,
+   "size": "desktop 1440x900",
+   "role": "member Ranger (setting on)",
+   "status": "PASS",
+   "said": "[{\"t\":\"Duty\",\"who\":\"allavail\",\"saved\":1,\"person\":\"allavail\",\"by\":\"Ranger\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL AVAIL\",\"type\":\"Duty\",\"title\":\"Duty\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL AVAIL · 10 Oct 26, 07:13\"}},{\"t\":\"Event\",\"who\":\"all\",\"saved\":1,\"person\":\"all\",\"by\":\"Ranger\",\"title\":\"S10 sports\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL\",\"type\":\"Event\",\"title\":\"S10 sports\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL · 10 Oct 26, 07:13\"}},{\"t\":\"Training\",\"who\":\"allavail\",\"saved\":1,\"person\":\"allavail\",\"by\":\"Ranger\",\"title\":\"S10 training title\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL AVAIL\",\"type\":\"Training\",\"title\":\"S10 training title\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL AVAIL · 10 Oct 26, 07:13\"}},{\"t\":\"Meeting\",\"who\":\"all\",\"saved\":1,\"person\":\"all\",\"by\":\"Ranger\",\"title\":\"S10 meeting title\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL\",\"type\":\"Meeting\",\"title\":\"S10 meeting title\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL · 10 Oct 26, 07:13\"}},{\"t\":\"Appointment\",\"who\":\"allavail\",\"saved\":1,\"person\":\"allavail\",\"by\":\"Ranger\",\"title\":\"S10 appt title\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL AVAIL\",\"type\":\"Appointment\",\"title\":\"S10 appt title\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL AVAIL · 10 Oct 26, 07:13\"}},{\"t\":\"Other\",\"who\":\"all\",\"saved\":1,\"person\":\"all\",\"by\":\"Ranger\",\"title\":\"S10 other title\",\"s\":570,\"e\":645,\"grp\":null,\"stillOpen\":0,\"toast\":\"Input added\",\"reopen\":{\"whoValue\":\"\",\"who\":\"ALL\",\"type\":\"Other\",\"title\":\"S10 other title\",\"start\":\"09:30\",\"end\":\"10:45\",\"placed\":\"Placed by Ranger for ALL · 10 Oct 26, 07:13\"}}]; Person filter's placeholder entries [\"all=Everyone\",\"ph:allavail=ALL AVAIL\",\"ph:all=ALL\",\"nick=Tally\"]; names on the rows [\"ALL AVAIL\",\"ALL\",\"ALL AVAIL\",\"ALL\",\"ALL AVAIL\",\"Saber\",\"ALL\"]; filter set to ALL AVAIL took value \"ph:allavail\" and showed 4 rows",
+   "pics": [
+    "S10-desk-Duty-reopened.png",
+    "S10-desk-Event-reopened.png",
+    "S10-desk-list-placeholders.png"
+   ]
+  },
+  {
+   "n": 11,
+   "size": "phone 390x844",
+   "role": "member Ranger (setting on)",
+   "status": "PASS",
+   "said": "{\"allavail\":{\"twoDays\":{\"toast\":\"ALL AVAIL is filed one day at a time\",\"count\":\"53\",\"person\":\"allavail\",\"type\":\"Duty\",\"rmk\":\"S11 allavail words\",\"open\":true},\"oneDay\":\"Aug 17\",\"toLL\":{\"person\":\"\",\"who\":\"ALL AVAIL\",\"why\":\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other File it for me \"},\"LLadd\":{\"toast\":\"ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\",\"person\":\"\",\"open\":true,\"saved\":true},\"meeting\":{\"person\":\"allavail\",\"severalSwitch\":1,\"afterSev\":{\"who\":\"\",\"why\":\"ALL AVAIL is filed on its own — it already stands for whoever is free File it for ALL AVAIL only\",\"pressed\":[],\"sel\":null}}},\"all\":{\"twoDays\":{\"toast\":\"ALL is filed one day at a time\",\"count\":\"53\",\"person\":\"all\",\"type\":\"Event\",\"rmk\":\"S11 all words\",\"open\":true},\"oneDay\":\"Aug 17\",\"toLL\":{\"person\":\"\",\"who\":\"ALL\",\"why\":\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other File it for me only\"},\"LLadd\":{\"toast\":\"ALL can be filed only for Training, Meeting, Appointment, Duty, Event or Other\",\"person\":\"\",\"open\":true,\"saved\":true},\"meeting\":{\"person\":\"all\",\"severalSwitch\":1,\"afterSev\":{\"who\":\"\",\"why\":\"ALL is filed on its own — it already stands for whoever is free File it for ALL only\",\"pressed\":[],\"sel\":null}}}} saved S11 inputs: 0",
+   "pics": [
+    "S11-phone-allavail-two-days.png",
+    "S11-phone-allavail-to-LL.png",
+    "S11-phone-allavail-LL-refused.png",
+    "S11-phone-allavail-several.png",
+    "S11-phone-all-two-days.png",
+    "S11-phone-all-to-LL.png",
+    "S11-phone-all-LL-refused.png",
+    "S11-phone-all-several.png"
+   ]
+  },
+  {
+   "n": 12,
+   "size": "desktop 1440x900",
+   "role": "admin Saber, then member Ranger",
+   "status": "PASS",
+   "said": "Ridge archived on Admin -> Users (true); admin's \"Posted out / archived\" group lists [\"Ridge\"]; saved [{\"cs\":\"Ridge\",\"t\":\"Meeting\",\"d\":\"Aug 5\",\"by\":\"Saber\"}]; reopened window person \"Ridge\", read \"Aug 5\"; Ranger's Person list: group false, Ridge listed false, 62 options",
+   "pics": [
+    "S12-desk-admin-users-archived.png",
+    "S12-desk-archived-picked.png",
+    "S12-desk-archived-reopened.png",
+    "S12-desk-ranger-picker.png"
+   ]
+  },
+  {
+   "n": 13,
+   "size": "phone 390x844",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": "[[\"27\",{\"read\":\"Jul 27\",\"rmk\":\"till 27 Jul\",\"sel\":1}],[\"29\",{\"read\":\"Jul 27 → Jul 29\",\"rmk\":\"till 29 Jul\",\"sel\":2}],[\"again 29\",{\"read\":\"Jul 29\",\"rmk\":\"till 29 Jul\",\"sel\":1}],[\"27 (backwards)\",{\"read\":\"Jul 27\",\"rmk\":\"till 27 Jul\",\"sel\":1}],[\"30\",{\"read\":\"Jul 27 → Jul 30\",\"rmk\":\"till 30 Jul\",\"sel\":2}]]; saved {\"t\":\"LL\",\"d\":\"Jul 27\",\"ed\":\"Jul 30\",\"allday\":true,\"half\":null,\"s\":0,\"e\":1439,\"rmk\":\"till 30 Jul\"}",
+   "pics": [
+    "S13-phone-27-29.png",
+    "S13-phone-backwards.png",
+    "S13-phone-27-30.png"
+   ]
+  },
+  {
+   "n": 14,
+   "size": "desktop 1440x900",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": "[{\"sp\":\"all\",\"draft\":{\"span\":\"all\",\"hours\":{\"sVis\":false,\"eVis\":false,\"s\":\"06:00\",\"e\":\"18:00\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 3\",\"allday\":true,\"half\":null,\"s\":0,\"e\":1439,\"rmk\":\"till 3 Aug\"},\"re\":{\"span\":\"all\",\"hours\":{\"sVis\":false,\"eVis\":false,\"s\":\"06:00\",\"e\":\"18:00\",\"dis\":false}}},{\"sp\":\"am\",\"draft\":{\"span\":\"am\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"00:00\",\"e\":\"12:00\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 4\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"rmk\":\"till 4 Aug\"},\"re\":{\"span\":\"am\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"00:00\",\"e\":\"12:00\",\"dis\":false}}},{\"sp\":\"pm\",\"draft\":{\"span\":\"pm\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"12:01\",\"e\":\"23:59\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 5\",\"allday\":false,\"half\":\"pm\",\"s\":721,\"e\":1439,\"rmk\":\"till 5 Aug\"},\"re\":{\"span\":\"pm\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"12:01\",\"e\":\"23:59\",\"dis\":false}}},{\"sp\":\"custom\",\"draft\":{\"span\":\"custom\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"09:15\",\"e\":\"11:45\",\"dis\":false}},\"rec\":{\"t\":\"LL\",\"d\":\"Aug 6\",\"allday\":false,\"half\":null,\"s\":555,\"e\":705,\"rmk\":\"till 6 Aug\"},\"re\":{\"span\":\"custom\",\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"09:15\",\"e\":\"11:45\",\"dis\":false}}}]; AM draft switched to Duty {\"span\":null,\"hours\":{\"sVis\":true,\"eVis\":true,\"s\":\"00:00\",\"e\":\"12:00\",\"dis\":false},\"allday\":false}, saved {\"t\":\"Duty\",\"d\":\"Aug 7\",\"allday\":false,\"half\":null,\"s\":0,\"e\":720,\"rmk\":\"till 7 Aug\"}",
+   "pics": [
+    "S14-desk-all-reopened.png",
+    "S14-desk-am-reopened.png",
+    "S14-desk-pm-reopened.png",
+    "S14-desk-custom-reopened.png",
+    "S14-desk-AM-to-Duty.png"
+   ]
+  },
+  {
+   "n": 15,
+   "size": "phone 390x844",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": "{\"duty\":{\"rec\":{\"t\":\"Duty\",\"d\":\"Aug 10\",\"allday\":false,\"half\":null,\"s\":1320,\"e\":120,\"rmk\":\"till 10 Aug\"},\"start\":\"22:00\",\"end\":\"02:00\"},\"equal\":{\"toast\":\"Give the input a start and end that are not the same time\",\"made\":0,\"open\":true},\"missing\":{\"toast\":\"Give the input a start and end time, or tick All day\",\"made\":0},\"leave\":{\"rec\":{\"t\":\"LL\",\"d\":\"Aug 13\",\"allday\":false,\"half\":null,\"s\":1320,\"e\":120,\"rmk\":\"till 13 Aug\"},\"span\":\"custom\",\"start\":\"22:00\",\"end\":\"02:00\"}}",
+   "pics": [
+    "S15-phone-duty-overnight-reopened.png",
+    "S15-phone-equal-hours.png",
+    "S15-phone-missing-time.png",
+    "S15-phone-leave-overnight-reopened.png"
+   ]
+  },
+  {
+   "n": 16,
+   "size": "desktop 1440x900",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": "new input: {\"card\":{\"head\":true,\"groups\":[\"Leave\",\"Medical\",\"Duty\"],\"kindsMissing\":[],\"attb\":true,\"inside\":true,\"nRows\":24,\"last\":\"SANS Availabilitynot an absence — the boxes ticked say which events he is available for, a\"},\"lastReachable\":{\"aboveFoot\":true,\"inView\":true},\"addReached\":true,\"byHelp\":{\"card\":0,\"win\":1,\"rmk\":\"new typed words\"},\"byPress\":{\"card\":0,\"win\":1,\"rmk\":\"new typed words\"},\"byEsc\":{\"card\":0,\"win\":1,\"rmk\":\"new typed words\"}}; saved input: {\"card\":{\"head\":true,\"groups\":[\"Leave\",\"Medical\",\"Duty\"],\"kindsMissing\":[],\"attb\":true,\"inside\":true,\"nRows\":24,\"last\":\"SANS Availabilitynot an absence — the boxes ticked say which events he is available for, a\"},\"lastReachable\":{\"aboveFoot\":true,\"inView\":true},\"addReached\":true,\"byHelp\":{\"card\":0,\"win\":1,\"rmk\":\"saved typed words\"},\"byPress\":{\"card\":0,\"win\":1,\"rmk\":\"saved typed words\"},\"byEsc\":{\"card\":0,\"win\":1,\"rmk\":\"saved typed words\"}}",
+   "pics": [
+    "S16-new-card-end.png",
+    "S16-new-after-escape.png",
+    "S16-saved-card-end.png",
+    "S16-saved-after-escape.png"
+   ]
+  },
+  {
+   "n": 17,
+   "size": "phone 390x844",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": "{\"Event\":{\"defaultTitle\":\"Event\",\"saved\":{\"t\":\"Event\",\"title\":\"A17 sports afternoon\",\"d\":\"Aug 14\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"Bring trainers\",\"oil\":null},\"card\":{\"kind\":\"Event\",\"title\":\"A17 sports afternoon\",\"rmk\":\"Bring trainers\",\"who\":\"Saber\",\"text\":\"LATE06:00–18:00SaberEventA17 sports afternoon · Bring trainers\"},\"reopened\":{\"type\":\"Event\",\"title\":\"A17 sports afternoon\",\"rmk\":\"Bring trainers\"},\"iid\":\"imv1l0hp4mwn8iu\"},\"Other\":{\"defaultTitle\":\"Other\",\"saved\":{\"t\":\"Other\",\"title\":\"A17 other thing\",\"d\":\"Aug 17\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"Bring trainers\",\"oil\":null},\"card\":{\"kind\":\"Other\",\"title\":\"A17 other thing\",\"rmk\":\"Bring trainers\",\"who\":\"Saber\",\"text\":\"LATE06:00–18:00SaberOtherA17 other thing · Bring trainers\"},\"reopened\":{\"type\":\"Other\",\"title\":\"A17 other thing\",\"rmk\":\"Bring trainers\"},\"iid\":\"imv1l0ibs8842fn\"},\"eventToLL\":{\"titleBox\":0},\"cleared\":{\"toast\":\"Input updated\",\"win\":0,\"saved\":{\"t\":\"Event\",\"d\":\"Aug 14\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"Bring trainers\",\"oil\":null},\"card\":{\"kind\":\"Event\",\"title\":null,\"rmk\":\"Bring trainers\",\"who\":\"Saber\",\"text\":\"LATE06:00–18:00SaberEventBring trainers\"}}}",
+   "pics": [
+    "S17-phone-Event-reopened.png",
+    "S17-phone-Other-reopened.png",
+    "S17-phone-Event-to-LL.png",
+    "S17-phone-title-cleared.png"
+   ]
+  },
+  {
+   "n": 18,
+   "size": "desktop 1440x900",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": "{\"first\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the who\",\"after\":{\"n\":0,\"win\":1,\"rmk\":\"S18 weekend\",\"type\":\"Duty\",\"read\":\"Jul 18\",\"sheetGone\":true}},\"retry\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the who\",\"after\":{\"n\":0,\"win\":1,\"rmk\":\"S18 weekend\",\"type\":\"Duty\",\"read\":\"Jul 18\",\"sheetGone\":true}}}",
+   "pics": [
+    "S18-desk-oil-question-first.png",
+    "S18-desk-oil-question-retry.png"
+   ]
+  },
+  {
+   "n": 19,
+   "size": "phone 390x844",
+   "role": "member Ranger (setting on)",
+   "status": "PASS",
+   "said": "{\"yes\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on th\",\"rec\":{\"t\":\"Duty\",\"d\":\"Jul 18\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"S19 yes\",\"oil\":{\"2026-07-18\":1}},\"reopened\":{\"card\":{\"text\":\"LATE06:00–18:00RangerDutyS19 yes\",\"oilChip\":0},\"windowOil\":[\"OIL\"],\"shot\":\"S19-phone-yes-reopened.png\"}},\"no\":{\"words\":\"OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on th\",\"rec\":{\"t\":\"Duty\",\"d\":\"Jul 19\",\"allday\":false,\"s\":360,\"e\":1080,\"rmk\":\"S19 no\",\"oil\":{\"2026-07-19\":0}},\"reopened\":{\"card\":{\"text\":\"LATE06:00–18:00RangerDutyS19 no\",\"oilChip\":0},\"windowOil\":[\"OIL\",\"no OIL on its non-working day\"],\"shot\":\"S19-phone-no-reopened.png\"}},\"two\":{\"words\":\"OIL — Ranger +1, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 1 AUG (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on \",\"buttons\":[\"=✕\",\"oil-yes=Yes — credit FO\",\"oil-no=No OIL\",\"=Cancel\",\"oilconf-save=Save\"],\"saved\":[{\"cs\":\"Echo\",\"oil\":{\"2026-08-01\":1},\"by\":\"Ranger\",\"grp\":true},{\"cs\":\"Ranger\",\"oil\":{\"2026-08-01\":1},\"by\":\"Ranger\",\"grp\":true}]}}",
+   "pics": [
+    "S19-phone-yes-question.png",
+    "S19-phone-yes-reopened.png",
+    "S19-phone-no-question.png",
+    "S19-phone-no-reopened.png",
+    "S19-phone-two-question.png"
+   ]
+  }
+ ],
+ "errors": [],
+ "extras": [
+  {
+   "what": "The saved row stays lit after a column heading is pressed, and after a hiding filter (Person, Type or search) is cleared back — the row only goes out of the lit state when a filter change hides it again (then it is simply not in the list). The brief says it \"lets go when a filter or a column heading is next touched\". Six cases, one fresh world each (ivet-A-extra2.mjs): heading Start, heading Name, Person Wisp→Everyone, Type LL→All types, search cleared: all stay lit (1→1). Host to judge whether \"lets go\" meant the pinned reveal rather than the light.",
+   "pics": [
+    "X-desk-after-person-change.png",
+    "X-phone-after-person-change.png"
+   ]
+  },
+  {
+   "what": "Scenario 1: Astra's text says the fresh kind is Duty; the screen opens on Training, as the brief's list says. Followed the brief.",
+   "pics": [
+    "S1-phone-window.png"
+   ]
+  },
+  {
+   "what": "Scenarios 4 and 15: the refusal words match the scenarios but without the final full stop (\"Pick a start date on the calendar first\", \"Give the input a start and end that are not the same time\", \"Give the input a start and end time, or tick All day\"). Judged PASS; flagged in case the full stop matters.",
+   "pics": [
+    "S4-desk-Upchit-stiff.png",
+    "S15-phone-missing-time.png"
+   ]
+  },
+  {
+   "what": "The \"?\" card lists \"SANS Availability\" (last entry) although no SANS kind can be picked in this window; and Training, Personal, Appointment, Duty, Event and Other have a name but no words beside them.",
+   "pics": [
+    "S16-new-card-end.png"
+   ]
+  },
+  {
+   "what": "Turning a one-day LL draft (AM chosen) into Duty keeps the AM hours as visible Duty hours (12:00 am – 12:00 pm) and the automatic remark \"till 27 Jul\" stays in Remarks of a one-day Duty; saved with no half-day mark.",
+   "pics": [
+    "S2-desk-AM-then-Duty.png"
+   ]
+  },
+  {
+   "what": "The OIL question for a two-person weekend duty is titled \"OIL — Ranger +1, Duty\": it does not name the second person.",
+   "pics": [
+    "S19-phone-two-question.png"
+   ]
+  },
+  {
+   "what": "Phone pictures show a pale teal block painted over a window where the finger had pressed the card or button underneath (the tap highlight stays on): S1-phone-window (over the Person box), S19-phone-yes-reopened (over the calendar). Probably the emulation, not the app; not judged.",
+   "pics": [
+    "S1-phone-window.png",
+    "S19-phone-yes-reopened.png"
+   ]
+  },
+  {
+   "what": "A member's Inputs list opens with the Person filter already on himself (\"Ranger\", a filter badge and \"Clear filters\" on a phone), so an input he files for Echo is hidden until the filter is cleared (it is then brought in and lit by the save, as intended).",
+   "pics": [
+    "S3-phone-saved-lit.png"
+   ]
+  }
+ ]
+}

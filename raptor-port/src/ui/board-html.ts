@@ -13,7 +13,7 @@ import { canEditSched } from '../state/auth'
 import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
-import { oilSeatDeco } from './html'
+import { rowKindTag, inpKindTagHTML, oilSeatDeco } from './html'
 import { ORD, puck, puckMarks, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
@@ -140,7 +140,7 @@ export function sbInputsHTML(d:any,di:any){
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
                       :`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
-      +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
+      +sbiName(`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`,inp)
       +sbiRmk(inp)+`</div>`;
   };
   const band=(title:any,note:any,cls:any,list:any)=>`<div class="sbi-band ${cls}">${title}<span class="bn">${note}</span></div>`
@@ -306,6 +306,12 @@ const oilRow=(item:any)=>{OILITEM=item||'';return '';};
    own toggle (§2.1 item 5). The board is read-only for schedule editing while
    the mode is on, and a disabled box cannot be tapped, so the name is the
    natural place for the item switch the owner asked for. */
+/* A READ-ONLY CARD'S NAME, WITH ITS KIND WHERE THE NAME IS A TITLE (owner D717; Astra's read of the code, 3). The board
+   shown read only — a look at an issued version, a member's view — draws an input's card by its own short route, and
+   that route named a titled input and dropped its kind: an overseas duty titled "Exercise Darwin" has no programme row
+   to say "OD" for it. The label rides the name's own cell (`.itemcell`), as on the editable card: the card's grid
+   places its cells by their order, so it is never a cell of its own. An untitled card keeps the bare name it had. */
+function sbiName(nameHtml:any,inp:any){const k=inpKindTagHTML(inp); return k?`<span class="itemcell">${nameHtml}${k}</span>`:nameHtml;}
 function sbName(di:any,cls:any,path:any,v:any,ph:any,ro:any,extra?:any){
   if(oilModeOn(di))return oilItemCellHTML(di,OILITEM,v,cls);
   return sbTxt(cls,path,v,ph,ro,extra);
@@ -596,7 +602,13 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
         ? oilRowPeople(di,[x.who,...(x.more||[])],groundItemKey(x),x.src?oilClaimWin(di,x.src):oilWin(x)).map((pid:any)=>sbSeat(di,base,pid,ro)).join('')
         : ((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
-        +sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
+        /* a row that came from a TITLED input says its kind under its name box (D717, html.ts rowKindTag). The row's grid
+           places its cells by their order, so the label rides INSIDE the name's own cell — a wrapper drawn only for
+           such a row; every other row keeps the bare box it always had. In OIL Earn too, where the name cell is the
+           item's own switch: the kind is what decides OIL, and that is the mode in which the scheduler most needs to
+           read it (the check's walk, walker C — W1: the first cut dropped the label there). */
+        +(rowKindTag(x)?`<div class="sb-nmk">${sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)}${rowKindTag(x)}</div>`
+          :sbName(di,'ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro))+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
         +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro),true)+`</div>`;
@@ -667,7 +679,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`
-      +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
+      +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`),inp)
       +sbiRmk(inp,dt)+`</div>`;
   }
   const id=inpId(inp);
@@ -704,7 +716,8 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
   return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}${inprow}>`
     +sbGrip(true)
-    +(lc?`<span class="itemcell">${itemCell}${lc}</span>`:itemCell)
+    /* a titled input's kind rides the same wrapper, for the same reason (D717 — html.ts inpKindTagHTML) */
+    +(lc||inpKindTagHTML(inp)?`<span class="itemcell">${itemCell}${inpKindTagHTML(inp)}${lc||''}</span>`:itemCell)
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')

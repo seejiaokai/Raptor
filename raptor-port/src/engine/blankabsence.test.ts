@@ -144,6 +144,15 @@ describe('D605 — a whole-day absence is flagged on a seat with no times, exact
     })
   }
 
+  it('an overseas duty with a title of its own is named by it in that sentence; its kind still decides that it is said (D716)', () => {
+    const s = flyLine(); s.seat(); file('OD', { title: 'Exercise in Darwin' })
+    const a = abs()
+    expect(a.length).toBe(1)
+    expect(a[0].code).toBe('INPUT_FLY')
+    expect(a[0].msg).toContain('Exercise in Darwin clashes with this line')
+    expect(a[0].msg).not.toMatch(/^OD clashes/)
+  })
+
   it('a leave, a downchit and an overseas duty each say so on a blank flying line — the red line, the ring, the C chip', () => {
     for (const [type, code, words] of [['LL', 'LEAVE_FLY', 'On leave but planned to fly this line'],
       ['OL', 'LEAVE_FLY', 'On leave but planned to fly this line'], ['ATT C', 'DNIF_FLY', 'Downchit but planned to fly this line'],
@@ -179,7 +188,7 @@ describe('the oracle — what each input type says on each kind of seat, with no
     [['HL', 'OML', 'ATT C'], M, M, M, M, M, M],                                            // medically down: nothing
     [['ATT B'], M, M, M, M, NONE, NONE],                                                   // grounded, not absent: no jet seat, any desk
     [['OD'], I, I, L, L, I, L],                                                            // overseas duty: out of reach (a standby place words it as its own look does)
-    [['Training', 'CSE', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Other'], I, I, NONE, NONE, I, NONE],
+    [['Training', 'CSE', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'Other'], I, I, NONE, NONE, I, NONE],   // Event joined 9 Oct 26 (D713, D714): red, as these
     [['Meeting'], I, SOFT, NONE, NONE, I, NONE],                                           // the one soft type on an SC MAIN
     [['SANS Availability'], NONE, NONE, NONE, NONE, NONE, NONE],                           // an offer, not an absence
     [['Upchit'], NONE, NONE, NONE, NONE, NONE, NONE],                                      // a paperwork record: fit again

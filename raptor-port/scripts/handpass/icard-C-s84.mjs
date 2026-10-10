@@ -1,0 +1,105 @@
+import * as L from './icard-C-lib.mjs'
+const { sleep } = L
+const parts = [], pics = []
+let verdict = 'PASS'
+const fail = m => { verdict = 'FAIL'; parts.push('FAIL: ' + m) }
+const hs = h => h ? `tag ${h.tag}; chip "${h.pending}"; working selects [${h.signs.join('/')}]; mark "${h.nys}"; AL button "${h.alpub}"` : 'none'
+const fmt = r => r ? `${r.type} ${r.date}${r.endDate ? '>' + r.endDate : ''} ${r.s}-${r.e} oil ${JSON.stringify(r.oil)}` : 'GONE'
+const errs = []
+const badge = async p => ((await p.locator('#roleBadge').innerText().catch(() => '')) || '').trim()
+try {
+  // ================= world A: 74's move, kept through reloads and account changes
+  let w = await L.world('desk', 'us', { fresh: false })
+  let p = w.page
+  await L.fileNew(w, { iso: '2026-07-20', type: 'Duty', s: '09:00', e: '12:00', oil: 'no' })
+  const rec = await L.recBy(p, { type: 'Duty', date: 'Jul 20' })
+  await L.switchUser(w, 'ad')
+  const sp = await L.signAndPublish(w, 'Jul 20', 0)
+  await L.signDay(p, 0, 1)
+  parts.push(`A: Ranger filed a Duty on Mon 20 Jul; Saber signed and published Monday (${JSON.stringify(sp.pub)}) and signed the working boxes again`)
+  await L.switchUser(w, 'us')
+  await L.openFromList(w, rec.iid)
+  await p.locator(`${L.WIN} #inpEdCal [data-cal="2026-07-21"]`).click()
+  await L.saveWin(w); await L.closeWins(p)
+  const u = await L.undo(w); const d1 = (await L.recId(p, rec.iid)).date
+  const r = await L.redo(w); const d2 = (await L.recId(p, rec.iid)).date
+  parts.push(`A: Ranger moved it to 21 Jul; Undo ${u} -> ${d1}; Redo ${r} -> ${d2}`)
+  if (d1 !== 'Jul 20' || d2 !== 'Jul 21') fail('A: undo/redo of the move wrong')
+  await L.reload(w)
+  const afterReload = await L.recId(p, rec.iid)
+  parts.push('A: after a reload (Ranger signed in again): ' + fmt(afterReload))
+  if (!afterReload || afterReload.date !== 'Jul 21') fail('A: the move did not survive a reload: ' + fmt(afterReload))
+  await L.switchUser(w, 'ad')
+  const mon = await L.editDay(w, 'Jul 20', 0)
+  const tue = await L.editDay(w, 'Jul 20', 1)
+  const iss = await L.issuedDay(w, 'Jul 20', 0)
+  pics.push(await L.pic(w, '84-A-1-issued-after-reload'))
+  parts.push(`A: Saber after the reload — Mon: ${hs(mon.head)}; Mon request rows ${JSON.stringify(mon.rows.filter(x => /DUTY/i.test(x)))}; Tue rows ${JSON.stringify(tue.rows.filter(x => /DUTY/i.test(x)))}; ISSUED Mon (View-only) rows ${JSON.stringify(iss.rows.filter(x => /DUTY/i.test(x)))} tag ${iss.tag}`)
+  if (!/pending/i.test(mon.head.pending) || !/Publish AL/i.test(mon.head.alpub)) fail('A: pending change lost across the reload: ' + hs(mon.head))
+  if (mon.head.tag !== 'ORIG') fail('A: the reload published something: tag ' + mon.head.tag)
+  if (mon.rows.some(x => /DUTY/i.test(x))) fail('A: the removed input came back on the working Monday')
+  if (!iss.rows.some(x => /DUTY/i.test(x))) fail('A: the issued face of Monday lost the issued duty')
+  // a second reload as admin, then the member view by the badge
+  await L.reload(w)
+  const mon2 = await L.editDay(w, 'Jul 20', 0)
+  parts.push(`A: second reload as admin — Mon: ${hs(mon2.head)}`)
+  if (!/pending/i.test(mon2.head.pending) || mon2.head.tag !== 'ORIG') fail('A: second reload changed the pending/published state')
+  await p.locator('#roleBadge').click(); await sleep(700)
+  parts.push(`A: Saber switched to member view (badge "${await badge(p)}")`)
+  const issM = await L.issuedDay(w, 'Jul 20', 0)
+  parts.push(`A: member view, View-only Mon 20 rows ${JSON.stringify(issM.rows.filter(x => /DUTY/i.test(x)))}`)
+  if (!issM.rows.some(x => /DUTY/i.test(x))) fail('A: member view of the issued face lost the duty')
+  await L.toList(w); await L.showEveryone(w)
+  const rowM = await p.locator(`#inBody tr[data-iid="${rec.iid}"]`).innerText().catch(() => '')
+  parts.push('A: member view list row: ' + rowM.replace(/\s+/g, ' ').slice(0, 80))
+  if (!/21 Jul/.test(rowM)) fail('A: member view list does not show the moved date')
+  await p.locator('#roleBadge').click(); await sleep(500)
+  errs.push(...w.errors); await w.browser.close()
+
+  // ================= world B: 77's answers, kept through reloads and account changes
+  w = await L.world('desk', 'ad', { fresh: false })
+  p = w.page
+  await L.fileNew(w, { iso: '2026-07-18', type: 'Duty', s: '09:00', e: '12:00', oil: 'yes' })
+  const duty = await L.recBy(p, { type: 'Duty', date: 'Jul 18' })
+  await L.signAndPublish(w, 'Jul 13', 5)
+  await L.weekTo(w, 'editsched', 'Jul 13'); await L.showDay(p, 5); await L.signDay(p, 5, 1)
+  await L.openFromList(w, duty.iid)
+  await L.setTimes(p, null, '17:00')
+  const s = await L.saveWin(w); if (s.asked) await L.answerOil(w, 'yes')
+  await L.closeWins(p)
+  const uB = await L.undo(w); const rUB = await L.recId(p, duty.iid)
+  const rB = await L.redo(w); const rRB = await L.recId(p, duty.iid)
+  parts.push(`B: Saber published Sat 18 (HO), then changed the hours to 17:00 and answered Yes (FO); Undo ${uB}: ${fmt(rUB)}; Redo ${rB}: ${fmt(rRB)}`)
+  if (rUB.e !== 720 || rRB.e !== 1020) fail('B: undo/redo of hours+answer wrong')
+  await L.reload(w)
+  const afterB = await L.recId(p, duty.iid)
+  const sat = await L.editDay(w, 'Jul 13', 5)
+  const iss5 = await L.issuedDay(w, 'Jul 13', 5)
+  const lw = await L.lwCellText(w, 'Saber')
+  pics.push(await L.pic(w, '84-B-2-leave-war-after-reload'))
+  parts.push(`B: after the reload — saved ${fmt(afterB)}; Sat: ${hs(sat.head)}; issued face Duty rows ${JSON.stringify(iss5.rows.filter(x => /DUTY/i.test(x)))}; Leave War cell ${JSON.stringify(lw)}`)
+  if (afterB.e !== 1020 || !afterB.oil || afterB.oil['2026-07-18'] !== 1) fail('B: the changed hours/answer did not survive the reload: ' + fmt(afterB))
+  if (!/pending/i.test(sat.head.pending) || sat.head.tag !== 'ORIG') fail('B: pending lost / published by the reload: ' + hs(sat.head))
+  if (!iss5.rows.some(x => /09:00\s*12:00/.test(x))) fail('B: the issued face no longer shows the issued 09:00-12:00')
+  if (!/HO/.test(lw.text || '')) fail('B: the issued earned leave changed by the reload: ' + JSON.stringify(lw))
+  // member view, then Ranger
+  await p.locator('#roleBadge').click(); await sleep(700)
+  const lwM = await L.lwCellText(w, 'Saber')
+  const recM = await L.recId(p, duty.iid)
+  parts.push(`B: Saber in member view — Leave War cell ${JSON.stringify(lwM)}; saved ${fmt(recM)}`)
+  await p.locator('#roleBadge').click(); await sleep(500)
+  await L.switchUser(w, 'us')
+  const recR = await L.recId(p, duty.iid)
+  const issR = await L.issuedDay(w, 'Jul 13', 5)
+  parts.push(`B: Ranger signed in — sees the input ${fmt(recR)}; issued face Duty rows ${JSON.stringify(issR.rows.filter(x => /DUTY/i.test(x)))}`)
+  if (!recR || recR.e !== 1020 || recR.oil['2026-07-18'] !== 1) fail('B: Ranger sees different data')
+  if (!issR.rows.some(x => /09:00\s*12:00/.test(x))) fail('B: Ranger sees a changed issued face')
+  pics.push(await L.pic(w, '84-B-3-ranger-issued'))
+  errs.push(...w.errors)
+  L.row(84, 'desktop 1440x900', 'Admin (Saber) and Member (Ranger)', verdict, parts.join(' || '), pics)
+  await w.browser.close()
+} catch (e) {
+  console.log('ERR', e)
+  L.row(84, 'desktop 1440x900', 'Admin / Member', 'NOT RUN', 'script stopped: ' + String(e).slice(0, 500) + ' || ' + parts.join(' || '), pics)
+}
+L.saveRows(errs)

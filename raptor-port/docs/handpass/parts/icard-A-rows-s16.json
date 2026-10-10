@@ -1,0 +1,20 @@
+{
+ "rows": [
+  {
+   "id": 16,
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "past input (15 Jul) kept the callsign Wlkrone on its list card and opened its window on him while archived, after restore and after deletion; before {\"who\":\"Wlkrone\",\"kind\":\"Meeting\",\"title\":\"Wlkr briefing\",\"win\":{\"sel\":\"Wlkrone\",\"val\":\"pmv19xme8o8onq1\",\"fixed\":null,\"head\":\"Wlkrone · 15 Jul\"}} ; archived {\"who\":\"Wlkrone\",\"kind\":\"Meeting\",\"title\":\"Wlkr briefing\",\"win\":{\"sel\":\"Wlkrone\",\"val\":\"pmv19xme8o8onq1\",\"fixed\":null,\"head\":\"Wlkrone · 15 Jul\"}} ; deleted {\"who\":\"Wlkrone\",\"kind\":\"Meeting\",\"title\":\"Wlkr briefing\",\"win\":{\"sel\":\"Wlkrone\",\"val\":\"pmv19xme8o8onq1\",\"fixed\":null,\"head\":\"Wlkrone · 15 Jul\"}}",
+   "pics": [
+    "16-before-list.png",
+    "16-before-window.png",
+    "16-archived-list.png",
+    "16-archived-window.png",
+    "16-deleted-list.png",
+    "16-deleted-window.png"
+   ]
+  }
+ ],
+ "errs": []
+}

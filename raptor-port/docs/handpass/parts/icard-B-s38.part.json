@@ -1,0 +1,18 @@
+{
+ "rows": [
+  {
+   "n": 38,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "declared PH 23 Jul (err \"\") and Off 24 Jul (err \"\") || Event filed: Event Jul 21 oil=null || PH move: question asked true: \"OIL — Saber, Move test ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 23 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work o\"; saved while asked: Event Jul 21 oil=null || after answering Yes: Event Jul 23 oil={\"2026-07-23\":0.5} || Undo: Event Jul 21 oil=null; Redo: Event Jul 23 oil={\"2026-07-23\":0.5} || Off-day move: OIL question asked false; saved: Event Jul 24 oil={\"2026-07-23\":0.5} || on the Off day (24 Jul): row OIL chip count 0 \"\"; window OIL line \"\"; window text near OIL: OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr || Undo: Event Jul 23 oil={\"2026-07-23\":0.5}; Redo: Event Jul 24 oil={\"2026-07-23\":0.5} || a second weekday Event (22 Jul) moved straight onto the Off day 24 Jul: OIL question asked false; saved date Jul 24, oil null || OBSERVATION: the saved record still carries oil={2026-07-23:0.5} (read from window.INPUTS) although it now sits on 24 Jul; no chip and no OIL line is drawn",
+   "pics": [
+    "B38-1-ph-question.png",
+    "B38-2-off-day.png",
+    "B38-3-off-day-window.png",
+    "B38-4-second-event-off-day.png"
+   ]
+  }
+ ],
+ "errs": []
+}

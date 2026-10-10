@@ -1,0 +1,18 @@
+{
+ "rows": [
+  {
+   "n": 44,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "filing summary: Upchit — Saber, Jul 20 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 22 → now ends Jul 19 Fit for full duty from Jul 20. STILL ON FILE AFTER IT — CHOOSE FOR EACH OML Jul 25 – Jul 27 Keep Remove Choose Keep or Remove for each entry above Cancel Save upchit || after filing the upchit on 20 Jul (Keep OML): ATT C Jul 13→Jul 19 [till 19 Jul] ; OML Jul 25→Jul 27 [till 27 Jul] ; Upchit Jul 20 || calendar Jul 20 -> Jul 17; summary before saving: \"Upchit — Saber, Jul 17 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 19 → now ends Jul 16 Fit for full duty from Jul 17. STILL ON FILE AFTER IT — CHOOSE FOR EACH OML Jul 25 – Jul 27 Keep Remove Choose Keep or Remove for each entry above Cancel Save upchit\"; saved while summary up: unchanged || after Cancel: unchanged; window open 1 || after confirming (Keep): ATT C Jul 13→Jul 16 [till 16 Jul] ; OML Jul 25→Jul 27 [till 27 Jul] ; Upchit Jul 17 || medical tab, Saber lines: cannot fly as of 13 Jul Saber IP ATT C till 16 Jul 2 documents || 2 documents Placed by Saber · 10 Oct 26, 01:56 · changed by Saber · 10 Oct 26, 01:56 Grit C ATT C till 17 Jul ; headers: MEDICALLY DOWN, PENDING UPCHIT, UPCHIT COMPLETE || list rows: Saber 13 Jul 16 Jul ATT C till 16 Jul Placed by Saber · 10 Oct 26, 01:56 · changed by Sabe | Saber 17 Jul UPCHIT Placed by Saber · 10 Oct 26, 01:56 · changed by Saber · 10 Oct 26, 01: | Saber 25 Jul 27 Jul OML till 27 Jul Placed by Saber · 10 Oct 26, 01:56 now  || Undo: back to before the move || Redo: same as confirmed",
+   "pics": [
+    "B44-1-summary-before-save.png",
+    "B44-2-summary-keep-chosen.png",
+    "B44-3-medical-tab.png",
+    "B44-4-list.png"
+   ]
+  }
+ ],
+ "errs": []
+}

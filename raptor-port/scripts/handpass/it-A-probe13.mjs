@@ -1,0 +1,15 @@
+import { launch, open, shot, sleep, press, enableMemberFiling, asMember, people, allRecs, gotoInputs, closeAnyWin } from './it-A-lib.mjs'
+import { listDoor, showAll, mateIds } from './it-A-doors.mjs'
+const browser = await launch()
+const { ctx, page } = await open(browser, 'desk')
+const P = await people(page)
+await enableMemberFiling(page); await asMember(page, 'Ranger')
+const L = listDoor(); const before = new Set((await allRecs(page)).map(r => r.iid))
+await L.openNew(page, { iso: '2026-07-28', type: 'Event', st: '14:00', en: '15:00', several: [P.Ranger, P.Saber] })
+await page.fill('#inTitle', 'Sports day'); await L.submit(page)
+const fx = (await allRecs(page)).filter(r => !before.has(r.iid)); console.log(fx.map(r => r.iid + ' ' + r.person))
+await closeAnyWin(page); await gotoInputs(page); await press(page, page.locator('#inListBtn')); await showAll(page)
+console.log(await page.evaluate(() => [...document.querySelectorAll('#inBody tr[data-iid]')].map(t => t.getAttribute('data-iid') + ' ' + t.children[0].textContent + ' ' + t.children[1].textContent.slice(0, 12))))
+console.log('filter', await page.evaluate(() => [document.querySelector('#inFPerson') && document.querySelector('#inFPerson').value, document.querySelector('#inRangeBtn') && document.querySelector('#inRangeBtn').textContent]))
+await shot(page, 'probe13')
+await browser.close()

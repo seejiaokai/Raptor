@@ -184,20 +184,22 @@ describe('the doors other screens call', () => {
 })
 
 describe('the Inputs List', () => {
-  it('an edit in place that asks the OIL question: refused, it says so, changes nothing and stays in edit', async () => {
+  /* RESTATED 10 Oct 26 — the List's edit in place and its ✕ are gone (owner D718, D723); a row opens the input's window,
+     so the two refusals below are asked of that route: the row, then the window's Save and its Delete. */
+  it('opened from its row, a change that asks the OIL question: refused, it says so, changes nothing and the window stays with what he typed', async () => {
     const id = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 540, e: 600 })
     await openList()
-    await click($(`tr[data-iid="${id}"] [data-edit]`))
-    await setV($('#inBody tr.ined input[data-ed="remarks"]'), 'typed in the list')
-    await click($('#inBody tr.ined [data-save]'))
+    await click($(`tr[data-iid="${id}"] [data-testid="in-open"]`))
+    await setV($('#inpEditRmk'), 'typed in the window')
+    await click($('#inpEditSave'))
     await click($('[data-testid="oil-yes"]'))
     await refusing(async () => { await click($('[data-testid="oilconf-save"]')) })
     expect(said(/Input updated/), 'never "Input updated"').toBe(false)
     expect(said(/not saved/i)).toBe(true)
     expect(byId(id).remarks).toBe('saysok')
     expect(byId(id).oil).toBeUndefined()
-    expect($('#inBody tr.ined'), 'the row is still being edited').toBeTruthy()
-    expect(($('#inBody tr.ined input[data-ed="remarks"]') as HTMLInputElement).value, 'with what he typed').toBe('typed in the list')
+    expect($('[data-testid="win-inputedit"]'), 'the window is still open').toBeTruthy()
+    expect(($('#inpEditRmk') as HTMLInputElement).value, 'with what he typed').toBe('typed in the window')
   })
   it('the row\'s OIL chip: a refused answer never says "OIL decision updated"', async () => {
     const id = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', endDate: 'Jul 19', s: 0, e: 1439, oil: { '2026-07-18': 1, '2026-07-19': 0 } })
@@ -209,10 +211,11 @@ describe('the Inputs List', () => {
     expect(said(/not saved/i)).toBe(true)
     expect(byId(id).oil).toEqual({ '2026-07-18': 1, '2026-07-19': 0 })
   })
-  it('its ✕: a refused delete never says "Input deleted"', async () => {
+  it('opened from its row, Delete: a refused delete never says "Input deleted"', async () => {
     const id = plant({ person: 'bane', type: 'Meeting', date: 'Jul 14', allday: false, s: 540, e: 600 })
     await openList()
-    await refusing(async () => { await click($(`tr[data-iid="${id}"] .rmx`)) })
+    await click($(`tr[data-iid="${id}"] [data-testid="in-open"]`))
+    await refusing(async () => { await click($('#inpEditDel')) })
     expect(said(/Input deleted/)).toBe(false)
     expect(byId(id)).toBeTruthy()
   })

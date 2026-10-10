@@ -1,0 +1,31 @@
+{
+ "rows": [
+  {
+   "id": 12,
+   "size": "desktop 1440",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "20/21/22 Jul each show both cards; {\"2026-07-20\":{\"a\":\"till 22 Jul\",\"b\":\"09:00–10:30 · till 22 Jul\"},\"2026-07-21\":{\"a\":\"till 22 Jul\",\"b\":\"09:00–10:30 · till 22 Jul\"},\"2026-07-22\":{\"a\":\"All day\",\"b\":\"09:00–10:30\"}}; table rows [\"Anvil 20 Jul 22 Jul DUTY LATEtill 22 Jul Placed by Saber for Anvil · 10 Oct 26, 01:59 now \",\"Basher 20 Jul 09:00 22 Jul 10:30 DUTY LATEtill 22 Jul Placed by Saber for Basher · 10 Oct 26, 01:59 now \"]",
+   "pics": [
+    "12-desk-day-20.png",
+    "12-desk-day-21.png",
+    "12-desk-day-22.png",
+    "12-desk-table.png"
+   ]
+  },
+  {
+   "id": "12 (extra: phone list + days)",
+   "size": "phone 390",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "list: one card each under MON 20 JUL; corners \"till 22 Jul\" / \"09:00–10:30 · till 22 Jul\"; days {\"2026-07-20\":{\"a\":\"till 22 Jul\",\"b\":\"09:00–10:30 · till 22 Jul\"},\"2026-07-21\":{\"a\":\"till 22 Jul\",\"b\":\"09:00–10:30 · till 22 Jul\"},\"2026-07-22\":{\"a\":\"All day\",\"b\":\"09:00–10:30\"}}",
+   "pics": [
+    "12-phone-list.png",
+    "12-phone-day-20.png",
+    "12-phone-day-21.png",
+    "12-phone-day-22.png"
+   ]
+  }
+ ],
+ "errs": []
+}

@@ -1,0 +1,19 @@
+{
+ "rows": [
+  {
+   "id": 14,
+   "size": "desktop 1440",
+   "role": "admin",
+   "verdict": "PASS",
+   "detail": "setting: Days before A weekday Days before the week starts For the week of Mon 26 Oct, inputs are due by the end of Mon 12 Oct. An input last changed after its cut-off is marked LATE. Downchits and upchits are; Duty LATE pressed -> \"after the cut-off, Mon 6 Jul\", editor not opened, 2nd press closed it; downchit and upchit cards and rows carry no LATE; Undo/Redo fine",
+   "pics": [
+    "14-desk-cutoff-setting.png",
+    "14-desk-day-before-late.png",
+    "14-desk-day-late-pressed.png",
+    "14-desk-day-late-closed.png",
+    "14-desk-table.png"
+   ]
+  }
+ ],
+ "errs": []
+}

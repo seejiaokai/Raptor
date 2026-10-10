@@ -11,7 +11,7 @@ import { App } from './App'
 import { initStore, setSession, notify, undo, writeInputs } from '../state/store'
 import { INPUTS, inpId, defaultAllday } from '../engine/inputs'
 import { INPVIEW, CALMONTH, setCalMonth } from '../state/view'
-import { DAYRMK, PLANPUCKS, addPlanPuck, addPuckPeople, addPuckRow, removePlanPuck } from '../state/plan'
+import { DAYRMK, PLANPUCKS, addPlanPuck, removePlanPuck } from '../state/plan'
 import { LIFT_LAND_MS, markLand, pendingLand } from './lift'
 import { ME } from '../state/auth'
 import { PEOPLE, QORDER } from '../engine/people'
@@ -233,15 +233,18 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
   /* the multi-select puck picker (owner, 23 Aug 26; reworked 24 Aug 26 — a
      category "just … fade those pucks so that I know which puck is applicable.
      Not select them", pucks grouped by seat like the palette). */
-  it('+ Pucks opens the picker; a category FADES the rest without selecting; tapping pucks selects; OK adds them; right-click and ✕ remove', async () => {
+  /* the picker is reached from a NOTE since D684 (9 Oct 26 — "a function to add pucks on the text written, instead of a
+     +pucks button"): "+ Note", then the "+ people" beside its box; with no words typed its OK makes a note of people */
+  it('a new note’s "+ people" opens the picker; a category FADES the rest without selecting; tapping pucks selects; OK makes the note; right-click removes', async () => {
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
     await tap(cell, 10, 10)
     expect($('[data-testid="win-inputsday"]')).toBeTruthy()
 
-    await click($('#icAddPucks'))
-    expect($('.ic-pick'), 'the picker opened instead of making an empty row').toBeTruthy()
-    expect(PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso), 'no row until OK').toBeFalsy()
+    expect($('#icAddPucks'), 'the separate "+ Pucks" button is gone (D684)').toBeFalsy()
+    await click($('#icAddPuck')); await click($('#icNewNotePpl'))
+    expect($('.ic-pick'), 'the picker opened instead of making an empty note').toBeTruthy()
+    expect(PLANPUCKS.find((p: any) => p.date === iso), 'no note until OK').toBeFalsy()
     /* the roster is grouped by seat, the way the palette lays it out */
     expect($('.ic-pick-body .ic-pick-grp'), 'pucks are grouped by seat').toBeTruthy()
     let sec: any
@@ -268,11 +271,14 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       for (const b of pickTwo) await click(b)
       expect(host.querySelectorAll('.ic-pickp.on').length).toBe(2)
       expect(($('#icPickOk') as HTMLButtonElement).textContent).toContain('2')
-      /* OK creates ONE new pucks row carrying the two picks */
+      /* OK creates ONE new note carrying the two picks — people and no words (D695) */
       await click($('#icPickOk'))
       expect($('.ic-pick'), 'the picker closed on OK').toBeFalsy()
-      sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
-      expect(sec, 'a pucks row was created').toBeTruthy()
+      expect(PLANPUCKS.filter((p: any) => p.date === iso).length, 'one note, not two').toBe(1)
+      sec = PLANPUCKS.find((p: any) => p.date === iso)
+      expect(sec, 'a note was created').toBeTruthy()
+      expect(sec.text, 'with no words').toBe('')
+      expect($('.ic-poppuck-edit'), 'and the new-note box is closed').toBeFalsy()
       expect(sec.ids.length).toBe(2)
       expect(sec.ids, 'the hand-picked people are on it').toEqual(expect.arrayContaining(pickedIds))
       expect($(`[data-secpucks="${sec.id}"] .puck`), 'the row draws real pucks').toBeTruthy()
@@ -289,7 +295,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
       expect(sec.ids[0], 'the removed slot is blanked, not closed').toBe('')
       expect($(`[data-secpucks="${sec.id}"] .ic-secpk-gap`), 'a gap cell holds the position').toBeTruthy()
     } finally {
-      sec = PLANPUCKS.find((p: any) => p.kind === 'pucks' && p.date === iso)
+      sec = PLANPUCKS.find((p: any) => p.date === iso)
       if (sec) await act(async () => { removePlanPuck(sec.id); notify() })
       if ($('[data-testid="win-inputsday-x"]')) await click($('[data-testid="win-inputsday-x"]'))
     }
@@ -302,7 +308,7 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
     const iso = '2026-07-09'
     const cell = $(`[data-icday="${iso}"]`)!
     await tap(cell, 10, 10)
-    await click($('#icAddPucks'))
+    await click($('#icAddPuck')); await click($('#icNewNotePpl'))
     expect($('.ic-pick'), 'the picker opened').toBeTruthy()
     try {
       const grp = (label: string) => $$('.ic-pick-body .ic-pick-grp')
@@ -389,7 +395,7 @@ describe('member session — reduced controls, same reach to add and to open a c
       expect($('[data-testid="win-inputsday"]')).toBeTruthy()
       expect($('#icRmkEdit'), 'no title editor for a member').toBeFalsy()
       expect($('#icAddPuck'), 'no +Note for a member').toBeFalsy()
-      expect($('#icAddPucks'), 'no +Pucks for a member').toBeFalsy()
+      expect($('#icNewNotePpl'), 'nor a way to add people to one').toBeFalsy()
       expect($('#icPopAdd'), '+Input stays available to everyone').toBeTruthy()
       await click($('[data-testid="win-inputsday-x"]'))
 
@@ -432,15 +438,14 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
     for (const id of dayIds(iso)) removePlanPuck(id)
     notify()
   })
-  /* two seated pucks on a fresh row, straight through the store — the picker
+  /* two seated pucks on a fresh note, straight through the store — the picker
      route is already pinned above and is not what is under test here */
   const seatTwo = async (iso: string) => {
     const [a, b] = Object.keys(PEOPLE)
     let rowId = ''
     await act(async () => {
-      addPuckRow(iso)
-      rowId = PLANPUCKS.find((p: any) => p.date === iso && p.kind === 'pucks')!.id
-      addPuckPeople(rowId, [a, b])
+      addPlanPuck(iso, '', [a, b])
+      rowId = PLANPUCKS.find((p: any) => p.date === iso && !p.text)!.id
       notify()
     })
     return { rowId, a, b }

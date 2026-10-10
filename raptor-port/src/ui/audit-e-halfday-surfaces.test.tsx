@@ -167,11 +167,12 @@ describe('three editors, one list', () => {
     if (!$('#inRangePop')) await click($('#inRangeBtn'))
     await click($('#inRangeAll'))
     const row = $$('#inBody tr').find(tr => (tr.textContent || '').includes('from the page'))!
-    await click(row.querySelector('[data-edit]'))
-    const rm = $('#inBody tr.ined [data-ed="remarks"]') as HTMLInputElement
+    /* the row opens the input's window — the List's pencil is gone (D718, 10 Oct 26) */
+    await click(row.querySelector('[data-testid="in-open"]'))
+    const rm = $('#inpEditRmk') as HTMLInputElement
     const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
     await act(async () => { setter.call(rm, 'edited on the page'); rm.dispatchEvent(new Event('input', { bubbles: true })) })
-    await click($('#inBody tr.ined [data-save]'))
+    await click($('#inpEditSave'))
     expect(inp.remarks).toBe('edited on the page')
     await page('editsched')
     expect(cell(inp, 'rmks').textContent, 'the week cell reads the page\'s edit').toBe('edited on the page')

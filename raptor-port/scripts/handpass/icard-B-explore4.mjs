@@ -1,0 +1,11 @@
+import * as L from './icard-B-lib.mjs'
+const browser = await L.launch()
+const { ctx, page: p } = await L.open(browser, { width: 1440, height: 900 })
+await p.evaluate(() => window.go('inputs'))
+const attrs = () => p.evaluate(() => ['inMemberMode', 'inSansMode', 'inMedBtn', 'inCalBtn', 'inListBtn'].map(id => { const e = document.getElementById(id); return id + ':' + (e ? [...e.attributes].map(a => a.name + '=' + a.value).join(',') : 'none') }).join('\n'))
+console.log(await attrs())
+await p.click('#inMedBtn'); await p.waitForTimeout(500)
+console.log('--- med'); console.log(await attrs())
+await L.shot(p, 'x4-med')
+console.log((await p.evaluate(() => document.body.innerText)).slice(0, 1500))
+await browser.close()

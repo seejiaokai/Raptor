@@ -160,7 +160,7 @@ export function overlayDeletedWeek(v: string, days: any[], book?: { sign?: any; 
    ==== */
 
 /* THE SIX FIELDS A REQUEST WRITES ON ITS ROW — the one body acceptInput (a scheduler's Accept, the board's "+ Inputs"), a
-   landing on read and a re-made row share, so the three cannot mint a row two ways. Title is the TYPE (an Other reads by
+   landing on read and a re-made row share, so the three cannot mint a row two ways. Title is the input's NAME — its own title, else its TYPE (inpLabel; an Other USED TO read by
    its remarks), the submitter's remarks land in the row's remarks cell, `who` is the stable person id. */
 export function requestRowFields(inp: any) {
   return {

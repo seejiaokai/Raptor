@@ -1,0 +1,15 @@
+import { launch, open, shot, sleep, press, enableMemberFiling, asMember, people, openNew, saveWin, allRecs, tapAt, closeAnyWin } from './it-A-lib.mjs'
+import { setSeveral } from './it-A-doors.mjs'
+const browser = await launch()
+const { ctx, page } = await open(browser, 'desk')
+const P = await people(page)
+await enableMemberFiling(page); await asMember(page, 'Ranger')
+await openNew(page, '2026-07-21')
+await page.selectOption('#inpEditType', 'Event'); await page.fill('#inpEditStart', '14:00'); await page.fill('#inpEditEnd', '15:00')
+await setSeveral(page, [P.Saber, P.Vapor]); await page.fill('#inpEditTitle', 'Team session'); await saveWin(page)
+console.log((await allRecs(page)).filter(r => r.grp).map(r => r.iid + ' ' + r.person + ' ' + r.date))
+await closeAnyWin(page)
+await tapAt(page, page.locator('#inpCal [data-icday="2026-07-21"]'), { x: 8, y: 8 }); await sleep(page, 300)
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid^="idy-row-"]')].map(e => e.getAttribute('data-testid') + ' ' + e.innerText.replace(/\s+/g, ' ').slice(0, 80))))
+await shot(page, 'probe10')
+await browser.close()

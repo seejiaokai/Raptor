@@ -431,13 +431,15 @@ test('on a phone the opened day is a panel on the foot of the screen: it opens T
     await expect(win, 'it opens tall (D683)').toHaveClass(/is-tall/)
     const first = (await win.boundingBox())!
     expect(first.y).toBeLessThanOrEqual(12); expect(first.height).toBeGreaterThan(844 * 0.9); expect(first.y + first.height).toBeLessThanOrEqual(844)
-    /* the two buttons in the bar, after the date and before the cross — each a finger's size, none over another */
+    /* "+ Note" in the bar, after the date and before the cross — a finger's size, over nothing ("+ Pucks" stood beside
+       it until D684, 9 Oct 26: a note carries its own pucks now) */
+    await expect(page.locator('#icAddPucks')).toHaveCount(0)
     const bar = await page.evaluate(() => {
       const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
-      const t = r('[data-testid="win-inputsday"] .win-ttl'), n = r('#icAddPuck'), k = r('#icAddPucks'), x = r('[data-testid="win-inputsday-x"]'), b = r('[data-testid="win-inputsday"] .win-bar')
-      return { order: t.right <= n.left + 1 && n.right <= k.left + 1 && k.right <= x.left + 1, inBar: n.top >= b.top && n.bottom <= b.bottom && k.top >= b.top && k.bottom <= b.bottom, h: Math.min(n.height, k.height), w: Math.min(n.width, k.width), title: t.width }
+      const t = r('[data-testid="win-inputsday"] .win-ttl'), n = r('#icAddPuck'), x = r('[data-testid="win-inputsday-x"]'), b = r('[data-testid="win-inputsday"] .win-bar')
+      return { order: t.right <= n.left + 1 && n.right <= x.left + 1, inBar: n.top >= b.top && n.bottom <= b.bottom, h: n.height, w: n.width, title: t.width }
     })
-    expect(bar.order, 'the date, + Note, + Pucks, the cross — in that order, none over another').toBe(true)
+    expect(bar.order, 'the date, + Note, the cross — in that order, none over another').toBe(true)
     expect(bar.inBar).toBe(true); expect(bar.h).toBeGreaterThanOrEqual(36); expect(bar.w).toBeGreaterThanOrEqual(44)
     expect(bar.title, 'the date is still read whole').toBeGreaterThan(80)
     /* a tap on one of them is the button's, not the bar's: the note box opens and the window keeps its height */
@@ -574,7 +576,7 @@ test('"How this works" opens above the month, which re-fits under it; the legend
   expect(Math.abs((how.y + how.height / 2) - (legend.y + legend.height / 2)), 'the fold’s button and the legend share a line').toBeLessThanOrEqual(8)
   expect(legend.x + legend.width).toBeLessThanOrEqual(390)
   await page.locator('[data-testid="ib-how"]').click()
-  await expect(page.locator('[data-testid="ib-how-list"] li')).toHaveCount(5)
+  await expect(page.locator('[data-testid="ib-how-list"] li')).toHaveCount(4)
   await expect(page.locator('[data-testid="ib-how-cut"]')).toHaveText('File at least 14 days before the week starts.')
   const list = (await page.locator('[data-testid="ib-how-list"]').boundingBox())!
   await expect.poll(async () => (await grid())!.y, { message: 'the month moves down under the opened fold' }).toBeGreaterThan(before.y + 40)
@@ -684,10 +686,11 @@ test('a member files a meeting for himself and another man from the month: ONE b
   const made = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => ({ iid: r.iid, person: r.person, grp: r.grp, grpBy: r.grpBy })), had)
   expect(made).toHaveLength(2)
   expect(made[0].grp, 'one shared input').toBeTruthy(); expect(made[1].grp).toBe(made[0].grp)
-  /* ONE bar on the month for the two of them, saying the first and "+1" */
-  const bars = page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })
+  /* ONE bar on the month for the two of them, saying how many and what — "2 · Meeting" (the count first since the
+     design vet, D729 V4; it said the first man and "+1" until then) */
+  const bars = page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Meeting$/ })
   await expect(bars).toHaveCount(1)
-  await expect(bars).toContainText('Meeting')
+  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /\+\d/ }), 'no bar hides a man behind "+N"').toHaveCount(0)
   /* opened: the entry — both lit — and it is his to change, as its filer */
   await bars.click()
   await expect(edWin(page)).toBeVisible()
@@ -701,7 +704,7 @@ test('a member files a meeting for himself and another man from the month: ONE b
   const left = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => r.person), had)
   expect(left).toHaveLength(1)
   expect(left[0]).not.toBe(other)
-  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: '+1' })).toHaveCount(0)
+  await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Meeting$/ }), 'his own again: no count on its bar').toHaveCount(0)
 })
 
 /* THE CALENDAR JOB'S BUG CHECK (8 Oct 26 — docs/handpass/2026-10-08-inputs-sans-calendar-check.md, findings W1 to W5).
@@ -736,7 +739,8 @@ test('one more person picked in a shared input, nothing else touched: a press on
   /* the demo's shared input: a meeting for four on Thu 23 Jul */
   await cell(page, '2026-07-23').focus()
   await page.keyboard.press('Enter')
-  await dayWin(page).locator('[data-testid="idy-people"]').first().click()
+  /* the shared input's card (its names, several — D721: the row of pucks it used to be pressed by is gone) */
+  await dayWin(page).locator('[data-testid^="idy-row-"]').filter({ has: page.locator('[data-testid="idy-who"]', { hasText: ',' }) }).first().locator('[data-testid="idy-open"]').click()
   await expect(edWin(page)).toBeVisible()
   const picked = page.locator('#inpEditPop .pp-pucks button[aria-pressed="true"]')
   await expect(picked).toHaveCount(4)
@@ -809,7 +813,7 @@ test('one holiday, one word: "ND" for a National Day on the "Calendar" month, th
    the calendar fits the window's width and Save can still be reached under it. The rules are `ui/groupeditor.test.tsx`. */
 const sharedMeeting = (p: Page, from: string) => file(p, [0, 1, 2].map(who => ({ who, type: 'Meeting', from, timed: [600, 660] as [number, number],
   more: { grp: 'e2e-g681', grpBy: 'stiff', by: 'stiff', at: '2026-09-01T08:00:00.000Z', remarks: 'range brief' } })))
-const sharedBar = (p: Page) => p.locator('.ib-bar[data-iid]').filter({ hasText: /\+2 · Meeting/ })
+const sharedBar = (p: Page) => p.locator('.ib-bar[data-iid]').filter({ hasText: /^3 · Meeting/ })
 test('a saved shared input: its window carries the calendar; two presses and Save move the ONE bar for every man; one Undo puts it back (D681)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   const ids = await sharedMeeting(page, 'Oct 13')
@@ -1021,30 +1025,369 @@ for (const view of ['the Calendar', 'the List'] as const) {
   })
 }
 
-/* A LONG KIND NEVER RUNS UNDER THE HOURS (found on the day-window walk, 9 Oct 26 — the host's look at its picture: an
-   "Other" input is named by its remark, and a long one ran on under "All day" at the right of its card on a phone,
-   the two printed over each other). The kind is cut with "…" where the hours begin. */
-test('a phone: in an opened day a long kind is cut short of the hours — the two are never printed over each other', async ({ browser, baseURL }) => {
+/* THE WINDOW'S BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 — found on the host's own picture of the built
+   window and on walker A's). The Inputs list's pencil is gone (owner D718): an input is changed in its window, and that
+   window now carries the date calendar for EVERY saved input — about 170px more. On an ordinary desktop its last row
+   (Delete, Cancel, Save) was cut off at the window's foot and reached only by scrolling inside it; on the owner's PC,
+   whose display runs at 125%, more so. The row is pinned to the window's foot, the form scrolling above it. A real
+   browser alone can say where a row is on the screen. */
+for (const size of [{ name: 'a desktop 1440 × 900', width: 1440, height: 900 }, { name: 'a short desktop 1280 × 640', width: 1280, height: 640 }, { name: 'a phone 390 × 664', width: 390, height: 664 }]) {
+  test(`an input’s window opened from the list keeps Delete, Cancel and Save in sight without scrolling — ${size.name}`, async ({ page }) => {
+    await page.setViewportSize({ width: size.width, height: size.height })
+    await login(page); await go(page, 'inputs'); await page.click('#inListBtn')
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    const iid = await page.evaluate(() => (window as any).INPUTS.find((r: any) => r.type === 'Appointment' && !r.grp)?.iid ?? '')
+    expect(iid, 'the demo holds an ordinary appointment').not.toBe('')
+    await page.locator(`[data-iid="${iid}"]`).first().locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
+    await expect(edWin(page)).toBeVisible()
+    await expect(page.locator('#inpEdCal'), 'the window carries the date calendar').toBeVisible()
+    const m = await page.evaluate(() => {
+      const win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
+      const seen = (sel: string) => { const e = document.querySelector(sel) as HTMLElement; const b = e.getBoundingClientRect(); const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return { inWin: b.top >= win.top - 0.5 && b.bottom <= win.bottom + 0.5, onScreen: b.bottom <= innerHeight + 0.5 && b.top >= 0, hit: !!hit && (hit === e || e.contains(hit)) } }
+      return { save: seen('#inpEditSave'), cancel: seen('#inpEditCancel'), del: seen('#inpEditDel') }
+    })
+    for (const [k, v] of Object.entries(m)) expect(v, `${k}: inside the window, on the screen, and the thing a press there reaches`).toEqual({ inWin: true, onScreen: true, hit: true })
+    /* …and the form still scrolls above the pinned row: its last line can be brought into view, clear of the buttons */
+    /* (its last line was the paragraph of instructions until the design vet took it out — D729, V3; it is whatever the
+       form ends with now: who placed the input, or its Remarks box) */
+    const hint = page.locator('#inpEditPop .inped-body > *').last()
+    await hint.scrollIntoViewIfNeeded()
+    const clear = await page.evaluate(() => { const all = document.querySelectorAll('#inpEditPop .inped-body > *'); const h = all[all.length - 1]!.getBoundingClientRect(), f = document.querySelector('#inpEditPop .airpop-foot')!.getBoundingClientRect(); return h.bottom <= f.top + 0.5 })
+    await expect(page.locator('#inpEditPop .inped-hint'), 'no paragraph of instructions under a one-person input (D729)').toHaveCount(0)
+    expect(clear, 'the form’s last line is not hidden under the pinned row').toBe(true)
+  })
+}
+
+/* ON A PHONE THE DAYS OF THE WINDOW'S CALENDAR ARE A FINGER'S SIZE (owner D725, 10 Oct 26 — "ok bigger"). They measured
+   about 26 × 20 points; the list's pencil calendar, gone with D718, had days about 48 × 34 on a phone, and the window is
+   now the one form that changes an input's dates. The size is his word for this control (D487); a desktop's window is
+   not changed. Only a real browser can measure a button. */
+test('a phone: the days of the calendar in an input’s window are a finger’s size, a saved input’s and a new one’s alike; a desktop’s are as they were (D725)', async ({ browser, baseURL, page }) => {
+  const size = (p: Page) => p.evaluate(() => {
+    const d = document.querySelector('#inpEdCal .rc-d:not(.wk)')!.getBoundingClientRect(), n = document.querySelector('#inpEdCal .rc-nav')!.getBoundingClientRect()
+    const cal = document.querySelector('#inpEdCal')!.getBoundingClientRect(), win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
+    const save = document.querySelector('#inpEditSave')!.getBoundingClientRect()
+    return { w: Math.round(d.width), h: Math.round(d.height), nav: Math.round(n.height), inside: cal.left >= win.left - 0.5 && cal.right <= win.right + 0.5, saveInSight: save.bottom <= win.bottom + 0.5 && save.bottom <= innerHeight + 0.5, wide: document.documentElement.scrollWidth > innerWidth + 1 }
+  })
+  const openSaved = async (p: Page) => {
+    await go(p, 'inputs'); await p.click('#inListBtn'); await p.click('#inRangeBtn'); await p.click('#inRangeAll')
+    const iid = await p.evaluate(() => (window as any).INPUTS.find((r: any) => r.type === 'Appointment' && !r.grp)?.iid ?? '')
+    await p.locator(`[data-iid="${iid}"]`).first().locator('[data-testid="in-open"], [data-testid="inl-open"]').click()
+    await expect(p.locator('#inpEdCal')).toBeVisible()
+  }
+  /* a desktop: unchanged */
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await openSaved(page)
+  const desk = await size(page)
+  expect(desk.h, 'a desktop’s day is the small one it was').toBeLessThan(26)
+  /* a phone */
+  const ph = await phone(browser, baseURL, 844)
+  try {
+    await openSaved(ph.page)
+    const saved = await size(ph.page)
+    expect(saved.h, 'a day is a finger tall').toBeGreaterThanOrEqual(32)
+    expect(saved.w, 'and a finger wide').toBeGreaterThanOrEqual(40)
+    expect(saved.nav, 'the month’s arrows too').toBeGreaterThanOrEqual(28)
+    expect(saved.inside, 'the calendar is inside the window').toBe(true)
+    expect(saved.saveInSight, 'Save is still in sight').toBe(true)
+    expect(saved.wide, 'nothing runs off sideways').toBe(false)
+    await ph.page.locator('#inpEditCancel').click()
+    /* a NEW input's window shares the calendar */
+    await ph.page.click('#inCalBtn')
+    await ph.page.locator('#inpCal [data-icday]').nth(10).tap({ position: { x: 10, y: 10 } })
+    await ph.page.locator('#icPopAdd').tap()
+    await expect(ph.page.locator('#inpEdCal')).toBeVisible()
+    const fresh = await size(ph.page)
+    expect(fresh.h).toBeGreaterThanOrEqual(32); expect(fresh.w).toBeGreaterThanOrEqual(40)
+  } finally { await ph.context.close() }
+})
+
+/* THE CARD'S WORDS ROW (owner D719, D720, D723 — 10 Oct 26; RESTATED that day from D701's "a short remark shares its line
+   with who placed it"). Where a line of words ends is a browser's to say: a short remark and "By Saber" on ONE row;
+   under a long remark "By Saber" on a line of its own; at the card's right end in both, and where there is no remark
+   at all. The small print is "By <who>" and no more — and only where someone else placed the input. */
+test('a phone: in an opened day a short remark shares its row with "By Saber"; under a long remark that goes to a line of its own — at the card’s right end either way (D719, D723)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 667)
+  try {
+    const at = new Date(2026, 9, 2, 9, 10).getTime()
+    const [short, long, bare, own, filer] = await page.evaluate(async ([at]) => {
+      const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
+      const mk = (i: number, remarks: string, by: string) => { const iid = 'e2e-foot-' + i; w.fileInput({ iid, person: crew[i], type: 'Appointment', date: 'Oct 14', yr: 2026, allday: false, s: 540 + i * 60, e: 600 + i * 60, remarks, by, at, modBy: by, modAt: at }); return iid }
+      return [mk(1, 'Dental', crew[0]), mk(2, 'Safety council, wing HQ — back for the 1600 brief if it ends on time', crew[0]), mk(3, '', crew[0]), mk(4, '', crew[4]), P[crew[0]].cs]
+    }, [at])
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
+    const read = (iid: string) => page.locator(`[data-testid="idy-row-${iid}"]`).evaluate(row => {
+      const r = (s: string) => { const n = row.querySelector(s); if (!n) return null; const b = n.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } }
+      const cs = getComputedStyle(row)
+      return { h: Math.round(row.getBoundingClientRect().height), inner: row.getBoundingClientRect().right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth), rmk: r('[data-testid="idy-rmk"]'), by: r('[data-testid="idy-by"]'), words: row.querySelector('[data-testid="idy-by"]')?.textContent ?? null, all: row.textContent }
+    })
+    const a = await read(short), b = await read(long), c = await read(bare), d = await read(own)
+    expect(a.words, 'the small print is "By <who>" and no more').toBe(`By ${filer}`)
+    expect(a.all, 'no day or time of the placing on the card').not.toMatch(/2 Oct|09:10/)
+    expect(Math.abs(a.by!.top - a.rmk!.top), 'a short remark and the small print share a row').toBeLessThanOrEqual(3)
+    expect(a.by!.left, 'and the small print stands after the remark').toBeGreaterThan(a.rmk!.right)
+    expect(Math.abs(a.by!.right - a.inner), 'at the card’s right end').toBeLessThanOrEqual(1.5)
+    expect(a.h, 'two rows, not three').toBeLessThanOrEqual(56)
+    expect(b.by!.top, 'under a long remark the small print has a line of its own').toBeGreaterThanOrEqual(b.rmk!.bottom - 1)
+    expect(Math.abs(b.by!.right - b.inner), 'still at the card’s right end').toBeLessThanOrEqual(1.5)
+    expect(c.rmk, 'no remark, no remark').toBeNull()
+    expect(Math.abs(c.by!.right - c.inner), 'and with no remark it is at the right end too').toBeLessThanOrEqual(1.5)
+    expect(c.h).toBeLessThanOrEqual(56)
+    expect(d.by, 'his own input says nothing of who placed it').toBeNull()
+    expect(d.h, 'and is ONE line').toBeLessThanOrEqual(38)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
+  } finally { await context.close() }
+})
+
+/* A NOTE CARRIES ITS OWN PUCKS (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
+   `docs/mock/note-with-pucks.html`). What only a real browser can say: where its pucks stand (four across, the fourth
+   as far from the right border as the first from the left — D694), how tall it is on a small phone (D688, D692), a
+   real finger dragging a man off it (D689), and that what was made is there after a reload. The record's rules are
+   state/plan.test.ts; the window's, ui/inputsday.test.tsx; the whole walk, scripts/handpass/note-pucks-walk.mjs. */
+test('a phone: a note is written, given five people from its own "+", stands four across with even room, loses a man to a finger’s drag, and is still there after a reload (D684–D695)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 667)
+  try {
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    const win = page.locator('[data-testid="win-inputsday"]'); await expect(win).toBeVisible()
+    await page.locator('#icAddPuck').tap()
+    await page.locator('.ic-newnote .ic-poppuck-edit').fill('Brief the new guys, 0800')
+    await page.locator('.ic-newnote .ic-poppuck-edit').press('Enter')
+    const note = win.locator('.ic-note'); await expect(note).toHaveCount(1)
+    await expect(note.locator('.ic-poppuck-txt')).toHaveText('Brief the new guys, 0800')
+    expect((await note.boundingBox())!.height, 'a note of words alone is one slim line').toBeLessThanOrEqual(36)
+    /* its own "+" — the picker — five people — OK: they land on THIS note */
+    await note.locator('[data-pkadd]').tap(); await expect(page.locator('.ic-pick')).toBeVisible()
+    for (const i of [3, 9, 14, 20, 26]) await page.locator('.ic-pick .ic-pickp').nth(i).tap()
+    await page.locator('#icPickOk').tap()
+    await expect(win.locator('.ic-note')).toHaveCount(1)
+    await expect(note.locator('.ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(5)
+    const g = await note.evaluate(box => {
+      const b = box.getBoundingClientRect(), pk = [...box.querySelectorAll('.ic-secpk:not(.ic-secpk-gap) .puck')].map(p => p.getBoundingClientRect())
+      const row1 = pk.filter(p => Math.abs(p.top - pk[0].top) < 3), add = box.querySelector('.ic-secpk-grid .ic-pkadd')!
+      return { h: b.height, across: row1.length, left: pk[0].left - b.left, right: b.right - row1[row1.length - 1].right, addLast: add === add.parentElement!.lastElementChild, wide: document.documentElement.scrollWidth }
+    })
+    expect(g.across, 'four across').toBe(4)
+    expect(g.addLast, 'the dashed "+" is the last of them').toBe(true)
+    expect(Math.abs(g.left - g.right), `even room: ${g.left} left of the first puck, ${g.right} right of the fourth (D694)`).toBeLessThanOrEqual(1.5)
+    expect(g.h, 'compact: the drawing he chose is 77 tall (D692)').toBeLessThanOrEqual(82)
+    expect(g.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+    /* a real finger drags the second man off the note: he is taken off, his place held (D689; his 24 Aug rule) */
+    const from = (await note.locator('.ic-secpk[data-pkidx="1"]').boundingBox())!, w = (await win.boundingBox())!
+    const cdp = await context.newCDPSession(page), touch = (type: string, x?: number, y?: number) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: x == null ? [] : [{ x, y: y!, id: 1 }] } as any)
+    const fx = from.x + from.width / 2, fy = from.y + from.height / 2, ty = Math.min(w.y + w.height - 30, fy + 220)
+    await touch('touchStart', fx, fy); for (let i = 1; i <= 8; i++) await touch('touchMove', fx, fy + (ty - fy) * i / 8); await touch('touchEnd')
+    await expect(note.locator('.ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(4)
+    await expect(note.locator('.ic-secpk-gap[data-pkidx="1"]'), 'his place is held').toHaveCount(1)
+    /* saved: after a reload the note, its words and its four people are there */
+    await page.waitForTimeout(600); await page.reload(); await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+    await expect(page.locator('[data-ichead="2026-10-14"] .ic-chip.plan')).toHaveText('Brief the new guys, 0800')
+    await expect(page.locator('[data-ichead="2026-10-14"] .ic-pks .ic-pk'), 'the month’s cell shows its people').toHaveCount(4)
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    await expect(page.locator('[data-testid="win-inputsday"] .ic-note .ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(4)
+  } finally { await context.close() }
+})
+
+/* NOTHING IS CUT, AND NOTHING IS PRINTED OVER THE HOURS (owner D719, 9 Oct 26 — "allow remarks that maybe potentially
+   long as well as title that maybe potentially long text be able to not look like it's being blocked by the item on the
+   right and allowed to grow vertically"; D721 — every name of a shared input, wrapping). RESTATED 10 Oct 26: until the
+   card of D723 a long kind was CUT with "…" where the hours begin (the day-window walk's fix of 9 Oct 26, which D719
+   set aside). Now a long title and a long remark wrap at the card's full width, a shared input's names wrap round the
+   LATE-and-hours corner, and the hours stay on the first line, inside the card, with no word lying over them. */
+test('a phone: in an opened day a long title, a long remark and fourteen names all wrap — nothing is cut, and nothing lies over the hours (D719, D721)', async ({ browser, baseURL }) => {
   const { context, page } = await phone(browser, baseURL, 667)
   try {
     await page.evaluate(() => {
       const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
-      w.fileInput({ iid: 'e2e-longkind', person: crew[2], type: 'Other', date: 'Oct 14', yr: 2026, allday: true, remarks: 'A very long custom commitment name that runs on and on past the card' })
-      w.fileInput({ iid: 'e2e-longkind-t', person: crew[3], type: 'Other', date: 'Oct 14', yr: 2026, allday: false, s: 1020, e: 1110, remarks: 'Another long custom commitment name, with hours' })
+      w.fileInput({ iid: 'e2e-longwords', person: crew[2], type: 'Event', title: 'Squadron family day and open house', date: 'Oct 14', yr: 2026, allday: true, remarks: 'A very long remark that runs on and on past the card, to the next line and beyond it' })
+      w.fileInput({ iid: 'e2e-longrmk', person: crew[3], type: 'Other', date: 'Oct 14', yr: 2026, allday: false, s: 1020, e: 1110, remarks: 'Collecting a new ID card from the pass office before lunch, then the bank' })
+      crew.slice(4, 18).forEach((p: string, i: number) => w.fileInput({ iid: 'e2e-many-' + i, person: p, type: 'Meeting', date: 'Oct 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '', grp: 'e2e-many', grpBy: crew[0], by: crew[0], at: Date.UTC(2026, 8, 1) }))
     })
     await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
     await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
-    for (const iid of ['e2e-longkind', 'e2e-longkind-t']) {
+    const many = await page.evaluate(() => (document.querySelector('[data-testid^="idy-row-e2e-many-"]') as HTMLElement).getAttribute('data-testid')!.replace('idy-row-', ''))
+    for (const iid of ['e2e-longwords', 'e2e-longrmk', many]) {
       const g = await page.locator(`[data-testid="idy-row-${iid}"]`).evaluate(row => {
-        const b = (s: string) => row.querySelector(s)!.getBoundingClientRect()
-        const kind = b('.idy-kind'), who = b('.idy-who'), when = b('[data-testid="idy-when"]'), r = row.getBoundingClientRect()
-        return { kindRight: kind.right, whenLeft: when.left, whenRight: when.right, whoWhole: who.width > 20, inner: r.right, sameLine: Math.abs(kind.top - when.top) < 8 }
+        const r = row.getBoundingClientRect(), corner = row.querySelector('.icard-corner')!.getBoundingClientRect(), when = row.querySelector('[data-testid="idy-when"]')!.getBoundingClientRect()
+        /* every painted line of every piece of text on the card, against the corner's box */
+        const texts = [...row.querySelectorAll('.icard-who, .icard-kind, .icard-title, .icard-rmk, .icard-by')]
+        const over = texts.flatMap(el => [...el.getClientRects()]).filter(b => b.width > 0 && b.left < corner.right - 0.5 && b.right > corner.left + 0.5 && b.top < corner.bottom - 0.5 && b.bottom > corner.top + 0.5).length
+        const cut = texts.filter(el => (el as HTMLElement).scrollWidth > (el as HTMLElement).clientWidth + 1 && getComputedStyle(el).overflow !== 'visible').length
+        const outside = texts.flatMap(el => [...el.getClientRects()]).filter(b => b.width > 0 && (b.left < r.left - 0.5 || b.right > r.right + 0.5)).length
+        return { over, cut, outside, whenFirstLine: when.top - r.top < 16, whenInside: when.right <= r.right + 0.5, h: Math.round(r.height), names: row.querySelector('.icard-who')!.textContent!.split(', ').length, lines: new Set([...row.querySelector('.icard-who')!.getClientRects()].map(b => Math.round(b.top))).size }
       })
-      expect(g.sameLine, 'the kind and the hours are on the card’s first line').toBe(true)
-      expect(g.kindRight, `${iid}: the kind ends before the hours begin`).toBeLessThanOrEqual(g.whenLeft - 2)
-      expect(g.whenRight, 'the hours are inside the card').toBeLessThanOrEqual(g.inner)
-      expect(g.whoWhole, 'the name is whole').toBe(true)
+      expect(g.over, `${iid}: no word lies over the LATE-and-hours corner`).toBe(0)
+      expect(g.cut, `${iid}: nothing is cut`).toBe(0)
+      expect(g.outside, `${iid}: nothing runs outside the card`).toBe(0)
+      expect(g.whenFirstLine, `${iid}: the hours are on the card’s first line`).toBe(true)
+      expect(g.whenInside, `${iid}: and inside the card`).toBe(true)
+      if (iid === many) { expect(g.names, 'all fourteen are named').toBe(14); expect(g.lines, 'on more than one line').toBeGreaterThan(1) }
     }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
   } finally { await context.close() }
 })
 
+
+/* THE DESIGN VET'S CHANGES, IN THE BUILT APP (owner D726–D729, 10 Oct 26 — the plan
+   docs/superpowers/plans/2026-10-10-inputs-vet-plan.md; the drawings docs/mock/inputs-vet.html, card-questions.html).
+   What only a real browser can say: that a timed bar is PAINTED lighter than an all-day one and wears its solid edge
+   (a class switched on proves nothing — the checking guide's anti-pattern 21); that the List opens on its list, the one
+   "+ Input" button first in its row and the cards straight under it on a phone; that a shared input's names wrap inside
+   their column and "By Saber" shares the remark's line; and that the "?" card opened in the window stays inside the
+   window, readable, with the window's own buttons still in reach. The rules are unit tests (ui/inputsvet.test.tsx,
+   ui/inputs.test.tsx, ui/inputscal-model.test.ts). */
+const vetWorld = (p: Page) => file(p, [
+  { who: 0, type: 'LL', from: 'Oct 13' },
+  { who: 1, type: 'Appointment', from: 'Oct 13', timed: [600, 660] },
+  ...[2, 3, 4, 5, 6, 7, 8, 9, 10].map(who => ({ who, type: 'Event', from: 'Oct 14', timed: [900, 930] as [number, number],
+    /* `at` is a moment, as the app stamps one (state/inputstamp.ts) — a record with no readable moment has no filer (D56) */
+    more: { grp: 'e2e-vet9', grpBy: 'stiff', by: 'stiff', at: Date.UTC(2026, 8, 1, 8), title: 'Squadron photo', remarks: 'outside the hangar' } })),
+])
+/* how bright a painted colour is, 0–255, whichever way the browser writes it ("rgb(…)" or "color(srgb …)") */
+const LUM = `(c => { const m = c.match(/[\\d.]+/g).map(Number); const k = /srgb/.test(c) ? 255 : 1; return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) * k })`
+test('the month: a timed bar is painted lighter than an all-day one, with a solid edge at its left; a shared bar reads its count first (D729)', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [day, timed] = await vetWorld(page)
+  const paint = (iid: string) => page.locator(`.ib-bar[data-iid="${iid}"]`).first().evaluate((el, LUM) => {
+    const cs = getComputedStyle(el)
+    return { bg: cs.backgroundColor, lum: (0, eval)(LUM)(cs.backgroundColor) as number, shadow: cs.boxShadow }
+  }, LUM)
+  const solid = await paint(day!), light = await paint(timed!)
+  expect(solid.shadow, 'an all-day bar has no edge of its own').toBe('none')
+  expect(light.shadow, 'a timed bar wears a solid edge inside its left side').toMatch(/inset/)
+  expect(light.shadow).toMatch(/3px 0px 0px 0px/)
+  expect(light.bg, 'and a different fill').not.toBe(solid.bg)
+  /* on this dark page "lighter" is the weaker fill — nearer the panel behind it: measured against a solid bar of the
+     timed bar's own colour */
+  const amber = await page.evaluate(LUM => { const b = document.createElement('div'); b.className = 'ib-bar amb'; document.querySelector('.ib-lanes')!.appendChild(b); const c = getComputedStyle(b).backgroundColor; b.remove(); return (0, eval)(LUM)(c) as number }, LUM)
+  expect(light.lum, 'the timed amber is weaker than the solid amber').toBeLessThan(amber - 8)
+  await expect(page.locator('.ib-bar', { hasText: /^9 · Squadron photo$/ }), 'the shared bar: how many, then what').toHaveCount(1)
+  await expect(page.locator('.ib-bar', { hasText: /\+\d/ }), 'no bar hides people behind "+N"').toHaveCount(0)
+  await expect(page.locator('[data-testid="ib-legend"]')).toHaveText(/absence\s*duty$/)
+})
+test('the desktop list: "+ Input" first in its row and the table straight under it; nine names wrap inside the Name column; "By" shares the remark’s line (D727, D729)', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  await vetWorld(page)
+  await page.click('#inListBtn'); await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+  await expect(page.locator('.inbar'), 'no form over the list').toHaveCount(0)
+  const m = await page.evaluate(() => {
+    const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect()
+    const add = box('#inNew'), range = box('#inRangeBtn'), table = box('#intbl')
+    const row = [...document.querySelectorAll('#inBody tr')].find(tr => /Squadron photo/.test(tr.textContent || ''))!
+    const name = row.querySelector('[data-label="Name"]')!, btn = name.querySelector('.in-open')!
+    const rmk = row.querySelector('[data-label="Remarks"]')!, by = rmk.querySelector('.in-placed')!
+    const range0 = document.createRange(); range0.selectNodeContents(btn)
+    const lines = new Set([...range0.getClientRects()].map(r => Math.round(r.top))).size
+    const text = [...rmk.childNodes].find(n => n.nodeType === 3 && (n.textContent || '').trim())!
+    const tr = document.createRange(); tr.selectNodeContents(text)
+    const one = [...document.querySelectorAll('#inBody tr')].find(tr => !tr.querySelector('.intitle') && !/,/.test(tr.querySelector('[data-label="Name"]')!.textContent || ''))!
+    return {
+      addLeft: add.right <= range.left + 1, sameRow: Math.abs((add.top + add.height / 2) - (range.top + range.height / 2)) <= 6,
+      tableTop: table.top - add.bottom, names: btn.textContent, lines, inCol: btn.getBoundingClientRect().right <= name.getBoundingClientRect().right + 0.5,
+      nameW: Math.round(name.getBoundingClientRect().width), by: by.textContent,
+      bySameLine: Math.abs(by.getBoundingClientRect().top - tr.getBoundingClientRect().top) <= 6, byAfter: by.getBoundingClientRect().left >= tr.getBoundingClientRect().right + 8,
+      pill: getComputedStyle(row.querySelector('.intag')!).borderTopLeftRadius, oneLineRow: Math.round(one.getBoundingClientRect().height),
+      wide: document.documentElement.scrollWidth <= innerWidth,
+    }
+  })
+  expect(m.addLeft && m.sameRow, '"+ Input" stands at the left of the dates button, on its line').toBe(true)
+  expect(m.tableTop, 'the table starts straight under the tools — no form between').toBeLessThan(40)
+  expect(m.names!.split(', '), 'every name').toHaveLength(9)
+  expect(m.lines, 'wrapping in its column').toBeGreaterThanOrEqual(2)
+  expect(m.inCol, 'and inside it').toBe(true)
+  expect(m.nameW).toBe(250)
+  expect(m.by).toBe('By Saber')
+  expect(m.bySameLine && m.byAfter, '"By Saber" follows the remark on its own line, with air before it').toBe(true)
+  expect(parseFloat(m.pill), 'the kind keeps its pill on this list').toBeGreaterThan(8)
+  expect(m.oneLineRow, 'a plain row is ONE line tall').toBeLessThanOrEqual(42)
+  expect(m.wide, 'nothing runs off sideways').toBe(true)
+})
+test('a phone: the List opens on its cards under ONE "+ Input"; the "?" card opens inside the window, readable, with Add still in reach (D729)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await page.locator('#inListBtn').tap()
+    await expect(page.locator('.inbar')).toHaveCount(0)
+    const top = await page.evaluate(() => {
+      const add = document.querySelector('#inNew')!.getBoundingClientRect()
+      const first = document.querySelector('[data-testid="inl-day"], #inEmpty:not([hidden])')!.getBoundingClientRect()
+      return { addH: Math.round(add.height), addOnScreen: add.top >= 0 && add.bottom <= innerHeight, listTop: Math.round(first.top), h: innerHeight }
+    })
+    expect(top.addH, 'a finger’s size').toBeGreaterThanOrEqual(44)
+    expect(top.addOnScreen).toBe(true)
+    expect(top.listTop, 'the list starts in the top half of the screen — it used to start below a screen of form').toBeLessThan(top.h / 2)
+    await page.locator('#inNew').tap()
+    await expect(edWin(page)).toBeVisible()
+    await expect(page.locator('#inpEditPop .rc-read')).toHaveText('pick a start date')
+    await expect(page.locator('#inpEditPop .inped-hint')).toHaveCount(0)
+    await page.locator('#inTypeHelp').tap()
+    await expect(page.locator('#inTypePop')).toBeVisible()
+    const card = await page.evaluate(() => {
+      const win = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect(), pop = document.querySelector('#inTypePop')!.getBoundingClientRect()
+      const save = document.querySelector('#inpEditSave')!.getBoundingClientRect()
+      const hit = document.elementFromPoint(save.left + save.width / 2, save.top + save.height / 2)
+      return { inside: pop.left >= win.left - 0.5 && pop.right <= win.right + 0.5, w: Math.round(pop.width), saveReached: !!hit && !!hit.closest('#inpEditSave'), wide: document.documentElement.scrollWidth }
+    })
+    expect(card.inside, 'the card is inside the window').toBe(true)
+    expect(card.w, 'and wide enough to read').toBeGreaterThanOrEqual(280)
+    expect(card.saveReached, 'Add is still the thing a press on it reaches').toBe(true)
+    expect(card.wide).toBeLessThanOrEqual(390)
+    /* its last line can be scrolled to, above the pinned buttons */
+    const last = page.locator('#inTypePop .tylegend-r').last()
+    await last.scrollIntoViewIfNeeded()
+    const clear = await page.evaluate(() => { const rows = document.querySelectorAll('#inTypePop .tylegend-r'); const r = rows[rows.length - 1]!.getBoundingClientRect(), f = document.querySelector('#inpEditPop .airpop-foot')!.getBoundingClientRect(); return r.bottom <= f.top + 0.5 })
+    expect(clear, 'the card’s last line is not hidden under the pinned buttons').toBe(true)
+    await page.locator('#inTypeHelp').scrollIntoViewIfNeeded()
+    await page.locator('#inTypeHelp').tap()
+    await expect(page.locator('#inTypePop')).toHaveCount(0)
+    await expect(edWin(page), 'closing the card leaves the window').toBeVisible()
+  } finally { await context.close() }
+})
+
+/* THE LIST'S DATES CALENDAR OPENS UNDER ITS OWN ROW ON A PHONE (his find, 10 Oct 26: "When I click on the calander to see
+   the dates it shows me this and I can't select the dates"). On a phone the picker was placed against the SCREEN — one
+   screen's height down the page — so the button lit and nothing appeared. It had worked only by luck, while the List's own
+   add form stood above the row and pushed it down; that form went (D729) and the calendar was left below the fold.
+   Every press here is a finger at a point on the screen — never a locator's tap, which scrolls its target into view first
+   and is how four older tests pressed this picker on a phone and saw nothing wrong. */
+for (const height of [844, 667, 568]) {
+  test(`a phone ${height} tall, the List: the dates button opens its calendar on screen, under its row; a finger picks two dates and "All dates" on it`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL, height)
+    try {
+      await page.locator('#inListBtn').tap()
+      await page.locator('#inRangeBtn').tap()
+      await expect(page.locator('#inRangePop')).toHaveCount(1)
+      const at = (sel: string, n = 0) => page.evaluate(([sel, n]) => {
+        const e = document.querySelectorAll(sel as string)[n as number]!, r = e.getBoundingClientRect(), pop = document.getElementById('inRangePop')
+        const x = r.left + r.width / 2, y = r.top + r.height / 2, hit = document.elementFromPoint(x, y)
+        return { x, y, top: r.top, bottom: r.bottom, left: r.left, right: r.right, reached: !!hit && (hit === e || e.contains(hit)), inPop: !!pop && !!hit && pop.contains(hit) }
+      }, [sel, n] as const)
+      const m = await page.evaluate(() => {
+        const pop = document.getElementById('inRangePop')!.getBoundingClientRect(), row = document.querySelector('.inputs-listtools')!.getBoundingClientRect()
+        return { top: pop.top, bottom: pop.bottom, left: pop.left, right: pop.right, rowBottom: row.bottom, vw: innerWidth, vh: innerHeight, scrolled: scrollY, wide: document.documentElement.scrollWidth }
+      })
+      expect(m.scrolled, 'the page was not moved to find it').toBe(0)
+      expect(m.top, 'it opens straight under the row of buttons').toBeGreaterThanOrEqual(m.rowBottom - 1)
+      expect(m.top - m.rowBottom, 'and close to it').toBeLessThanOrEqual(12)
+      expect(m.bottom, 'the whole calendar is on the screen').toBeLessThanOrEqual(m.vh)
+      expect(m.left).toBeGreaterThanOrEqual(0)
+      expect(m.right).toBeLessThanOrEqual(m.vw)
+      expect(m.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+      /* a finger on a date meets that date, and two presses set the window of dates */
+      const before = (await page.locator('#inRangeBtn').innerText()).trim()
+      const d1 = await at('#inRangePop .rc-d', 8)
+      expect(d1.reached, 'a date is what a finger on it reaches').toBe(true)
+      await page.touchscreen.tap(d1.x, d1.y)
+      await expect(page.locator('#inRangePop .rc-read')).toContainText('pick an end date')
+      const d2 = await at('#inRangePop .rc-d', 11)
+      await page.touchscreen.tap(d2.x, d2.y)
+      await expect(page.locator('#inRangeBtn')).not.toHaveText(before)
+      await expect(page.locator('#inRangeBtn')).toContainText('→')
+      /* the quick button under the month is reached by a finger too, and closes the calendar */
+      const all = await at('#inRangeAll')
+      expect(all.reached && all.bottom <= height, '"All dates" is on the screen and is what a finger reaches').toBe(true)
+      await page.touchscreen.tap(all.x, all.y)
+      await expect(page.locator('#inRangePop')).toHaveCount(0)
+      await expect(page.locator('#inRangeBtn')).toContainText('All dates')
+    } finally { await context.close() }
+  })
+}

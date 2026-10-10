@@ -1,0 +1,14 @@
+[
+ {
+  "n": 61,
+  "size": "desk",
+  "role": "admin",
+  "verdict": "PASS",
+  "said": "Sat 18 Jul: Ranger Event \"Weekend exercise\" + ALL AVAIL Event \"Weekend crowd\", both answered Yes, day published (ORIG). Leave War figures for Ranger and three ALL AVAIL men (Ace, Blade, Cinch) — published {\"Ranger\":\"FO*\",\"Ace\":\"HO*\",\"Blade\":\"HO*\",\"Cinch\":\"HO*\"}; after retitling both (pending) {\"Ranger\":\"FO*\",\"Ace\":\"HO*\",\"Blade\":\"HO*\",\"Cinch\":\"HO*\"}; after the amendment published (AL AL1) {\"Ranger\":\"FO*\",\"Ace\":\"HO*\",\"Blade\":\"HO*\",\"Cinch\":\"HO*\"}; identical: true. Edit Schedule rows: published [\"WEEKEND EXERCISE [Event]\",\"WEEKEND CROWD [Event]\"] -> retitled [\"GAMES AFTERNOON [Event]\",\"GAMES CROWD [Event]\"] (pending chip \"2 pending\") -> after AL [\"GAMES AFTERNOON [Event]\",\"GAMES CROWD [Event]\"] (chip \"(none)\"). View-only: while pending [\"WEEKEND EXERCISE [Event]\",\"WEEKEND CROWD [Event]\"]; after AL [\"GAMES AFTERNOON [Event]\",\"GAMES CROWD [Event]\"]. To go out: \"⠿ Changes · Saturday 18/7 Published · 2 changes waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 2 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 2 changes ALL AVAIL · Games crowd Saber 9/10 21:55 Weekend crowd → Games crowd Ranger · Games afternoon Saber 9/10 21:55 Weekend exercise → Games afternoon Tap a change to go to it. Tap a change to go to it.\"",
+  "pics": [
+   "desk-pendlist-48322.png",
+   "desk-s61-edit-pending.png",
+   "desk-s61-after-AL.png"
+  ]
+ }
+]

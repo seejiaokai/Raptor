@@ -71,19 +71,23 @@ function Body() {
         <div className="sset-sec">Calendar</div>
         <div className="sset-line">
           <button type="button" className="abtn" data-testid="iset-days" onClick={openDays}>Calendar…</button>
-          <span className="sset-hint">Day flying, night flying or no fly for each date, and the year’s holidays.</span>
+          {/* ONE SHORT LINE A SETTING (owner D729 — the design vet's V5, 10 Oct 26; D726: "I don't like too wordy
+              interface"): each of the three helper lines here says what it said, in fewer words — as drawn,
+              docs/mock/img/inputs-vet/desk-gear-drawn.png. The worked example under the cut-off stays: it is what
+              makes "14" clear. */}
+          <span className="sset-hint">Day, night or no-fly dates, and holidays.</span>
         </div>
 
         <div className="sset-sec">Late cut-off for inputs</div>
         <CutFields set="inputs" prefix="iset" draft={cut} onChange={d => { setCut(d); setErr('') }} noun="inputs" />
-        <p className="sset-hint">An input last changed after its cut-off is marked LATE. Downchits and upchits are never late.</p>
+        <p className="sset-hint">Later than this is LATE. Medical is never late.</p>
 
         <div className="sset-sec">Filing for other people</div>
         <label className="sset-check">
           <input type="checkbox" data-testid="iset-memberfile" checked={members} onChange={e => { setMembers(e.target.checked); setErr('') }} />
-          <span>Members may file duties and commitments for other people</span>
+          <span>Members may file duties for others</span>
         </label>
-        <p className="sset-hint">Off, a member files for himself only. On or off, never leave, medical or SANS availability — those are filed by the person himself or by an admin.</p>
+        <p className="sset-hint">Never leave, medical or SANS.</p>
 
         {err && <p className="sset-err" data-testid="iset-err" role="alert">{err}</p>}
         <div className="sset-foot">

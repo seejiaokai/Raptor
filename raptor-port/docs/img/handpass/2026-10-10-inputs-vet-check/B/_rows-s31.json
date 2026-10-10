@@ -1,0 +1,35 @@
+{
+ "rows": [
+  {
+   "n": 31,
+   "size": "phone 390x844 (touch)",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": [
+    "window dragged down by its title with a finger; \"+ Input\" reachable now — {\"top\":208,\"w\":66,\"hit\":\"inNew\",\"onNew\":true}",
+    "ok: an unsaved-changes question appears (new draft) — This input has unsaved changes. Open a new input and lose them? Discard and open Keep editing",
+    "ok: Keep editing preserves every change (type, people, dates, title, remark) — {\"f0\":{\"read\":\"Jul 27 → Jul 28\",\"rmk\":\"S31 remark typed\",\"title\":\"S31 title\",\"type\":\"Meeting\",\"ticked\":[\"Ranger\",\"Echo\"]},\"f1\":{\"read\":\"Jul 27 → Jul 28\",\"rmk\":\"S31 remark typed\",\"title\":\"S31 title\",\"type\":\"Meeting\",\"ticked\":[\"Ranger\",\"Echo\"]}}",
+    "ok: Discard and open: ONE fresh undated window, nothing saved — {\"f2\":{\"read\":\"pick a start date\",\"rmk\":\"\",\"title\":\"Training\",\"type\":\"Training\",\"ticked\":[]},\"n0\":52,\"n1\":52,\"wins\":1}",
+    "the window had kept its dragged-down place; a finger drags it back up — top was 432",
+    "window dragged down by its title with a finger; \"+ Input\" reachable now — {\"top\":208,\"w\":66,\"hit\":\"inNew\",\"onNew\":true}",
+    "ok: from a changed saved input an unsaved-changes question appears",
+    "ok: Keep editing keeps the edit — {\"read\":\"Jul 30\",\"rmk\":\"S31 saved EDITED\",\"title\":\"S31 saved title\",\"type\":\"Meeting\",\"ticked\":[]}",
+    "ok: Discard and open: a fresh undated window and the saved record is unchanged — {\"g2\":{\"read\":\"pick a start date\",\"rmk\":\"\",\"title\":\"Training\",\"type\":\"Training\",\"ticked\":[]},\"rec\":\"S31 saved\"}",
+    "the window had kept its dragged-down place; a finger drags it back up — top was 481",
+    "shared input filed — [\"Echo\",\"Ranger\"]",
+    "window dragged down by its title with a finger; \"+ Input\" reachable now — {\"top\":208,\"w\":66,\"hit\":\"inNew\",\"onNew\":true}",
+    "ok: with ONLY the people changed (Ace ticked) the question appears",
+    "ok: Keep editing keeps the ticked people — [\"Ace\",\"Ranger\",\"Echo\"]",
+    "ok: Discard and open: fresh window; the saved group is unchanged (no Ace) — {\"grpNow\":[\"Echo\",\"Ranger\"],\"read\":\"pick a start date\"}"
+   ],
+   "pics": [
+    "s31-1-question.png",
+    "s31-2-discarded.png",
+    "s31-3-saved-question.png",
+    "s31-4-people-only-question.png"
+   ],
+   "note": "+ Input pressed while a window holds unsaved changes"
+  }
+ ],
+ "errs": []
+}

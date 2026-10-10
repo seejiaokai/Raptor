@@ -1,0 +1,151 @@
+{
+ "rows": [
+  {
+   "n": 58,
+   "size": "desktop 1440x900 (mouse)",
+   "role": "member Ranger (own input)",
+   "status": "PASS",
+   "said": [
+    "ok: (setup) a timed own Meeting and a timed shared two-day Meeting saved — [\"imv1l58vtd1l005\",2]",
+    "ok: the bar lifts and follows the mouse (a ghost, the date under it lights), legible — {\"ghost1\":1,\"over\":1,\"ghostTxt\":{\"text\":\"Ranger · S58 own\",\"bg\":\"color(srgb 0.195471 0.174758 0.130525)\",\"color\":\"rgb(241, 244, 247)\",\"cls\":\"ib-bar amb timed ic-ghost lift\"}}",
+    "ok: dropped on the next day: it moved one day, keeping its hours and (still timed) look — {\"before\":[[\"Jul 7\",\"\",\"540-600\"]],\"after\":[[\"Jul 8\",\"\",\"540-600\"]],\"timed\":true}",
+    "ok: the release did not open the input it moved",
+    "ok: Undo puts it back on 7 Jul — [[\"Jul 7\",\"\",\"540-600\"]]",
+    "ok: a cancelled drag (Escape, then brought home) causes no move — [[\"Jul 7\",\"\",\"540-600\"]]",
+    "ok: the shared timed span moved as a whole (both people, same length and hours, still timed) — {\"beforeS\":[[\"Jul 14\",\"Jul 15\",\"540-600\"],[\"Jul 14\",\"Jul 15\",\"540-600\"]],\"afterS\":[[\"Jul 15\",\"Jul 16\",\"540-600\"],[\"Jul 15\",\"Jul 16\",\"540-600\"]],\"texts\":[\"2 · Meeting\"]}",
+    "ok: Undo restores the shared span's original dates — [[\"Jul 14\",\"Jul 15\",\"540-600\"],[\"Jul 14\",\"Jul 15\",\"540-600\"]]"
+   ],
+   "pics": [
+    "s58-lifted.png",
+    "s58-moved.png",
+    "s58-shared-lifted.png",
+    "s58-shared-moved.png"
+   ],
+   "note": "phone half follows below"
+  },
+  {
+   "n": "58-phone",
+   "size": "phone 390x844 (finger over CDP)",
+   "role": "admin Saber (own input)",
+   "status": "PASS",
+   "said": [
+    "ok: held still the bar lifts; dragged by finger it follows; dropped it moved one day with hours kept and the timed look — {\"ghost\":1,\"before\":[[\"Jul 7\",\"\",\"540-600\"]],\"after\":[[\"Jul 8\",\"\",\"540-600\"]]}",
+    "ok: the release did not open the input",
+    "ok: Undo restores 7 Jul — [[\"Jul 7\",\"\",\"540-600\"]]"
+   ],
+   "pics": [
+    "s58-phone-held.png",
+    "s58-phone-dragged.png",
+    "s58-phone-moved.png"
+   ],
+   "note": "the phone half of 58"
+  },
+  {
+   "n": 59,
+   "size": "phone 390x844 (touch)",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": [
+    "ok: a tap on a bar opens THAT input in its window — {\"wins\":[\"win-inputedit\",\"win-inputedit-x\"],\"ttl\":{\"own\":\"S59 own\",\"type\":\"Meeting\"}}",
+    "ok: a tap on empty space of its date opens that DAY, whose card agrees with the bar — {\"day\":true,\"edit\":false,\"cards\":[\"S59 own\"]}",
+    "ok: \"+2 more\" opens the intended DAY with all its cards (the month showed the rest) — {\"day\":true,\"edit\":false,\"title\":\"Wed 22 Jul\",\"n\":6}"
+   ],
+   "pics": [
+    "s59-bar-tap.png",
+    "s59-empty-space-tap.png",
+    "s59-crowded.png",
+    "s59-more.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": "59-desktop",
+   "size": "desktop 1440x900",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": [
+    "the tooltip (the bar's title text) — Drifter, Echo, Ranger, Saber · Meeting · 23 Jul · 10:00–11:00\nPlaced by Saber for 4 people · 25 Jun 26, 14:32",
+    "ok: a shared titled bar's tooltip names every person, the kind, the dates (and hours / filing detail), not just the clipped words — Drifter, Echo, Ranger, Saber · Meeting · 23 Jul · 10:00–11:00\nPlaced by Saber for 4 people · 25 Jun 26, 14:32",
+    "ok: it carries filing details (\"Placed by …\") — Drifter, Echo, Ranger, Saber · Meeting · 23 Jul · 10:00–11:00\nPlaced by Saber for 4 people · 25 Jun 26, 14:32"
+   ],
+   "pics": [
+    "s59-tooltip-hover.png"
+   ],
+   "note": "the tooltip half of 59"
+  },
+  {
+   "n": 60,
+   "size": "desktop 1440x900",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "the four lines — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
+    "ok: the fold has four items — 4",
+    "ok: item 1 = tap a day/bar and drag; item 2 = several days; item 3 = NF / holiday / Off day; item 4 = the filing cut-off — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
+    "ok: the key reads \"absence\" and \"duty\" and the fold has no red/amber explanation — {\"key\":[\"absence\",\"duty\"]}",
+    "ok: nothing runs off the screen (no sideways page scroll) — {\"right\":1428,\"bottom\":265,\"h\":900,\"w\":1440,\"wide\":1440}",
+    "ok: it closes again — 0"
+   ],
+   "pics": [
+    "s60-fold.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": "60-phone",
+   "size": "phone 390x844 (extra, the scenario says especially 390)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "the four lines — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
+    "ok: the fold has four items — 4",
+    "ok: item 1 = tap a day/bar and drag; item 2 = several days; item 3 = NF / holiday / Off day; item 4 = the filing cut-off — [\"Tap a day to open it. Tap a bar to edit it, drag to move it.\",\"Several days: drag across them (phone: hold, then drag).\",\"NF no-fly · green public holiday · grey Off day.\",\"File at least 14 days before the week starts.\"]",
+    "ok: the key reads \"absence\" and \"duty\" and the fold has no red/amber explanation — {\"key\":[\"absence\",\"duty\"]}",
+    "ok: nothing runs off the screen (no sideways page scroll) — {\"right\":382,\"bottom\":292,\"h\":844,\"w\":390,\"wide\":390}",
+    "ok: it closes again — 0"
+   ],
+   "pics": [
+    "s60-phone-fold.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 61,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber",
+   "status": "PASS",
+   "said": [
+    "ok: opened: no words (Person, Type, Search) stand over the three boxes; each box says what it is by its value / placeholder — {\"spans\":0,\"text\":\"Everyone ALL AVAIL ALL Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Widget Wildcard Wisp Zenith Zulu All types LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other\",\"ph\":\"Search inputs\",\"aria\":[",
+    "accessible names of the three boxes — [\"Person\",\"Type\",\"Search inputs\"]",
+    "ok: the filter button and the gear did not jump when the fields opened — {\"p0\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]],\"p1\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]]}",
+    "ok: closed and reopened: the values are kept (Ranger · Meeting · \"Flight\") and the buttons stay put — {\"back\":{\"person\":\"Ranger\",\"type\":\"Meeting\",\"search\":\"Flight\"},\"sum1\":{\"btn\":\"Filters 3|3\",\"cards\":1,\"foot\":[\"2\",\"1\",\"3\",\"Ranger · Meeting · Search: FlightClear filters\"]},\"p2\":[[\"#inFiltersBtn\",306,106],[\"#inGear\",344,106],[\"#inCalBtn\",234,106],[\"#inListBtn\",268,106]]}",
+    "ok: switching Calendar and List and back keeps the filter values; cards agree with them — {\"person\":\"Ranger\",\"type\":\"Meeting\",\"search\":\"Flight\",\"cards\":1}"
+   ],
+   "pics": [
+    "s61-closed.png",
+    "s61-open.png",
+    "s61-closed-with-values.png",
+    "s61-after-switch.png"
+   ],
+   "note": ""
+  },
+  {
+   "n": 62,
+   "size": "desktop 1440x900",
+   "role": "member Ranger",
+   "status": "PASS",
+   "said": [
+    "ok: \"+ Input\" in the opened 27 Jul gives that day, the \"?\" and no instruction paragraph — {\"read\":\"Jul 27\",\"help\":1,\"hint\":0,\"type\":\"Training\",\"save\":\"Add\",\"instr\":[]}",
+    "ok: a mouse drag over 27–29 Jul opens a new input with that span, same controls and \"?\", no paragraph — {\"read\":\"Jul 27 → Jul 29\",\"help\":1,\"hint\":0,\"type\":\"Training\",\"save\":\"Add\",\"instr\":[]}",
+    "ok: \"+ Input\" on the List supplies no date; same controls and \"?\"; no paragraph — {\"read\":\"pick a start date\",\"help\":1,\"hint\":0,\"type\":\"Training\",\"save\":\"Add\",\"instr\":[]}"
+   ],
+   "pics": [
+    "s62-day-plus.png",
+    "s62-drag-span.png",
+    "s62-list-plus.png"
+   ],
+   "note": ""
+  }
+ ],
+ "errs": []
+}

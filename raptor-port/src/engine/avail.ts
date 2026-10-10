@@ -73,7 +73,10 @@ export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE
    asks about sixty people and sixty scans of the same list is the shape this
    is replacing, not the shape to grow into. */
 export function dayAway(d:any){const all=new Set(), tw:any={};
-  inputsOn(d.dt).forEach((inp:any)=>{ if(!isAway(inp)||!PEOPLE[inp.person])return;
+  /* A PLACEHOLDER IS NOBODY'S ABSENCE ([INPUT-ALL-AVAIL]; both first-round plan readers): an input filed for ALL AVAIL /
+     ALL names no man, so it must never put "one man" into either set — the day panel's "Leave / downchit" total and the
+     palette read them. The save refuses the kinds that could (D711 (2), D712); this is the reader's own guard. */
+  inputsOn(d.dt).forEach((inp:any)=>{ if(!isAway(inp)||!PEOPLE[inp.person]||PEOPLE[inp.person].special)return;
     if(awayAllDay(inp)){all.add(inp.person);return;}
     const w2=win(inp.s,inp.e); if(w2)(tw[inp.person]=tw[inp.person]||[]).push(w2); });
   return {all,tw};}

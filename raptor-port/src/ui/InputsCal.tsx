@@ -30,28 +30,31 @@
    THE FIRST CALENDAR WAS A LAYER OVER THE WHOLE SCREEN (22 Aug 26); since the calendar-first Inputs (D574 / D580) it
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
+import { INPUTS, inputCoversDate, inpLabel, isSansAvail, sansLetters } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
-import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
+import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { isMe, mayDeleteInput, me } from '../state/perms'
+import { isMe, mayDeleteInput } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, firstPersonalType, removeInput, removeEntry } from './inputedit'
+import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry, sharedRefusal } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
-import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
+import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, personFilterPasses } from './inputscal-model'
+import { entryRowsOf } from '../state/inputgroup'
 import { placedLineOf } from './placedline'
-import { cutParts, dayWord, hoursOf, lateWord } from './sanscal-model'
+import { InputCard } from './InputCard'
+import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
+import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
@@ -102,12 +105,14 @@ export function monthCells(y: number, m: number): (string | null)[] {
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
   let inputs = inputsInMode(INPUTS, mode).filter((r: any) => inputCoversDate(r, label))
-  if (f.fPerson !== 'all') inputs = inputs.filter((r: any) => r.person === f.fPerson)
+  inputs = inputs.filter((r: any) => personFilterPasses(f.fPerson, r.person))   // one body with the List and the month
   if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
   if (f.fSearch) {
     const s = f.fSearch.toLowerCase()
+    /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
+       day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5) */
     inputs = inputs.filter((r: any) =>
-      (r.remarks || '').toLowerCase().includes(s) ||
+      (r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) ||
       (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s))
   }
   /* red (absent) above amber (a local commitment) above purple (SANS, not an
@@ -128,7 +133,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   return { inputs, pucks }
 }
 
-export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under }:
+export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under, onClearFilters }:
   { fPerson: string, fType: string, fSearch: string, seedIso?: string,
     /** the Inputs page's three tabs — drawn at the head of this calendar's own top row, so a desktop has ONE row of
      *  controls above the month and a phone the tabs and one tools row (the plan §3.6) */
@@ -136,7 +141,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     /** the page's own tools for the Inputs tab — the Calendar | List switch and the filters — after the month's arrows */
     tools?: ReactNode,
     /** a line of the page's own under the top row (what the filters are set to) */
-    under?: ReactNode }) {
+    under?: ReactNode,
+    /** puts the page's filters back to none — "Clear filters" in a day whose inputs they all hide (D731 (2)) */
+    onClearFilters?: () => void }) {
   const mode = 'member' as const
   useVersion()
   useWarFacts()
@@ -177,6 +184,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   const wantFocus = useRef<string | null>(null)
   /* which input of the opened day Delete has asked about (its entry's key) */
   const [delAsk, setDelAsk] = useState<string | null>(null)
+  /* WHAT THE DELETE QUESTION ASKED, kept from the moment it was put (Astra's scenario design of the second batch,
+     10 Oct 26 — scenario 9; an older fault of this door). The question's words were worked out again at every paint
+     from what its reader may do NOW: "Delete this input for all 2 people?" asked of the filer, the members' switch
+     then turned off (by an admin, elsewhere, once the squadron shares one database) — and the same question read
+     "Take yourself out of this input?" under his finger, its button took HIM out. What was asked is what is done; if
+     he may no longer do it, the press is refused in words (ui/inputedit.tsx sharedRefusal) and nothing goes.
+     BOTH WAYS (`doDelete`): the words on screen AND the action are the question's — a right LOST refuses the wider
+     action, a right GAINED never widens the narrower one. */
+  const askedAll = useRef(false)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
   const shown=useRef<typeof INPREVEAL>(null)
@@ -221,15 +237,44 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      Guarded by identity, so a NEWER reveal set while this calendar unmounts (a save that switches mode) is kept. */
   const spendReveal=()=>{ if(shown.current&&INPREVEAL===shown.current)clearInpReveal(); shown.current=null }
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
-  const showDay=(iso:string|null)=>{ if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso) }
+  const showDay=(iso:string|null)=>{
+    /* A PICKER ENDS WITH ITS DAY (Sol S2): the day closed or changed with the picker up used to leave the picker
+       standing, and its Cancel, Escape or OK then wrote onto a day no longer open. It is settled first, as Cancel
+       settles it — a new note keeps its words once, unconfirmed ticks are dropped. */
+    if(iso!==popIso&&settlePick.current)settlePick.current()
+    if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso)
+  }
+  const settlePick=useRef<(()=>void)|null>(null)
   useEffect(()=>()=>spendReveal(),[])
   const pickDate=(iso:string)=>{ showDay(iso);setPopPuckEdit(null);setDelAsk(null) }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
+  /* ESCAPE WHILE A NOTE IS TYPED LEAVES THE NOTE BOX ONLY (owner D731 (9), 10 Oct 26). The shell's rule is "Escape closes
+     the window in front", and the note box is IN the day's window: Escape to give up on a note closed the whole day.
+     The box takes the key first: it is put away with nothing written — a new note is not made, an edited one keeps its
+     words — and the day stays; the next Escape, with no box open, is the window's as before. `noteGone`: the box's
+     own blur SAVES what was typed (leaving it is how a note is finished), and some browsers send a blur as a focused
+     box is taken off the page — that blur is this Escape's, and writes nothing. It is cleared when a box next opens. */
+  const noteGone = useRef(false)
+  useEffect(() => { if (popPuckEdit != null) noteGone.current = false }, [popPuckEdit])
+  const noteEsc = (e: ReactKeyboardEvent) => {
+    if (e.key !== 'Escape') return
+    e.preventDefault(); e.stopPropagation()
+    noteGone.current = true
+    setPopPuckEdit(null); setPuckDraft('')
+  }
+  /* the words' own box: Enter finishes the note (its blur saves it), Escape gives it up. A new note's "+ people"
+     button beside the box is part of the same thing being made (a Tab between the two saves nothing — below), so it
+     takes Escape the same way (`noteEsc` alone: Enter on a button is the button's — Astra's scenario 16). */
+  const noteKey = (e: ReactKeyboardEvent) => {
+    if (e.key === 'Enter') { (e.target as HTMLElement).blur(); return }
+    noteEsc(e)
+  }
   /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
   const [how, setHow] = useState(false)
   /* which late input's note is showing in the opened day (its entry's key) */
-  const [lateOpen, setLateOpen] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
+  /* the title box's own Escape is in flight: the blur it causes writes nothing (D732 — `titleKey`, in the opened day) */
+  const titleGone = useRef(false)
   const [puckDraft, setPuckDraft] = useState('')
   /* the section being DRAGGED to a new position in the popover (owner, 22 Aug
      26 — "shift these up and down by drag and dropping"), and which section
@@ -257,6 +302,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      belongs to; `pickSel` is the people ticked so far. */
   const [pickFor, setPickFor] = useState<string | null>(null)
   const [pickIso, setPickIso] = useState<string>('')
+  /* THE WORDS OF THE NOTE THE PICKER IS FOR, when it is a NEW one (pickFor === ''): taken the moment its "+ people" is
+     pressed — so nothing typed or opened elsewhere while the picker is up can become this note's words (the day-window
+     check, Astra's scenario 2.2: the one shared draft could have lent a new note another note's words) */
+  const [pickWords, setPickWords] = useState('')
+  /* true from the press of a new note's "+ people" until its picker closes: the button's own blur must not finish the note */
+  const pickingNew = useRef(false)
   const [pickSel, setPickSel] = useState<Set<string>>(new Set())
   /* the picker's HIGHLIGHT is a pure visual filter, NOT a selection (owner,
      24 Aug 26 — "when I mentioned highlight, it just means u will fade those
@@ -295,16 +346,83 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
 
   /* ESCAPE peels one layer: the people picker (a blocking chooser over the day's window — this handler, which stops the
      key there), then the day's window (the shell's own rule, ui/FloatWindow.tsx: the front window, when the keyboard
-     is in a window or nowhere). It stands down while the input editor is up (that has its own). It never leaves the
-     calendar: the month is a tab's screen, not a layer to close. */
+     is in a window or nowhere). It never leaves the calendar: the month is a tab's screen, not a layer to close.
+     THE PICKER HAS THE KEY FIRST, WHATEVER WINDOW IS ALSO UP (Sol's read of the second batch, 10 Oct 26 — finding 3;
+     Astra's scenario 18). This handler used to stand down whenever an input's editor was open — written when that
+     editor was a blocking pop-up over everything. Since D641 it is a window beside the day, and with both up Escape
+     in the picker did NOTHING: the picker stood down for the window, the window declined (the day was in front), the
+     shell declined (the keyboard was in the picker) — and with the window in front it closed the WINDOW, typing and
+     all, and left the picker up. So the picker listens only while it is open, on the way in (the window, capture —
+     before the editor's own listener), and stops the key. It still gives way to a blocking pop-up in front of it (a
+     question of the editor's: any `.airpop` not `hidden`) — that is the layer the person is looking at. */
   useEffect(() => {
+    if (pickFor == null) return
     const esc = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || INPEDIT) return
-      if (pickFor != null) { e.stopPropagation(); setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
+      if (e.key !== 'Escape') return
+      if ([...document.querySelectorAll('.airpop')].some(p => !(p as HTMLElement).hidden && !p.closest('[hidden]'))) return
+      /* Escape ends the picker exactly as Cancel does (a new note keeps its words — cancelPick) */
+      e.preventDefault(); e.stopPropagation(); cancelPick()
     }
-    document.addEventListener('keydown', esc, true)
-    return () => document.removeEventListener('keydown', esc, true)
+    window.addEventListener('keydown', esc, true)
+    return () => window.removeEventListener('keydown', esc, true)
+  }, [pickFor, pickWords, pickIso])
+
+  /* THE PICKER'S THREE ENDS, one body each — its Cancel, Escape and OK all come here. A note being WRITTEN is finished
+     by its picker whichever way that closes: with the people ticked, or — with none — as its words alone, exactly as
+     leaving its box would have made it; no words and no people, no note (a note with neither is not kept, D695). */
+  /* ONE OPENER, AND IT IS OWNED (Sol S1): while a picker is up it belongs to the note it was opened for — a second
+     "+" (the keyboard could reach one under it) is not a take-over; it does nothing until this one has ended. `words`
+     is given for a NEW note (target ''), taken from its box at that moment. The control that opened it gets the
+     keyboard back when it ends. */
+  const pickOpener = useRef<HTMLElement | null>(null)
+  const openPick = (target: string, day: string, words?: string) => {
+    if (pickFor != null) return false
+    pickOpener.current = document.activeElement as HTMLElement | null
+    setPickWords(words || ''); setPickFor(target); setPickIso(day); setPickSel(new Set())
+    return true
+  }
+  const shutPick = () => {
+    pickingNew.current = false; setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); setPickWords('')
+    const back = pickOpener.current; pickOpener.current = null
+    if (back && back.isConnected) setTimeout(() => { if (back.isConnected) back.focus() }, 0)
+  }
+  const finishNewNote = (ids: string[]) => { if (pickWords || ids.length) writeInputs(() => addPlanPuck(pickIso, pickWords, ids)) }
+  const cancelPick = () => { if (pickFor === '') finishNewNote([]); shutPick() }
+  settlePick.current = pickFor != null ? cancelPick : null
+  /* THE KEYBOARD STAYS IN THE PICKER while it is up (Sol S1): it is a blocking chooser, and Tab used to walk out of it
+     onto the notes beneath. It takes the focus as it opens; Tab and Shift+Tab turn round at its ends. */
+  useEffect(() => {
+    if (pickFor == null) return
+    const box = document.querySelector('.ic-pick') as HTMLElement | null
+    if (box && !box.contains(document.activeElement)) box.focus()
+    const tab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !box) return
+      const stops = [...box.querySelectorAll<HTMLElement>('button:not([disabled]), [href], input, select, [tabindex]:not([tabindex="-1"])')].filter(n => n.offsetParent !== null || n === document.activeElement)
+      if (!stops.length) { e.preventDefault(); return }
+      const first = stops[0], last = stops[stops.length - 1], at = document.activeElement as HTMLElement | null
+      if (!at || !box.contains(at) || at === box) { e.preventDefault(); (e.shiftKey ? last : first).focus() }
+      else if (e.shiftKey && at === first) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && at === last) { e.preventDefault(); first.focus() }
+    }
+    document.addEventListener('keydown', tab, true)
+    return () => document.removeEventListener('keydown', tab, true)
   }, [pickFor])
+  /* A NOTE CHANGED BY UNDO OR REDO (state/undo-wire.ts → PLANREVEAL; D672, Sol S3): the month has been turned to it; a
+     day window open on ANOTHER day is brought to its day — it stood over the change. With no day open, or its own day
+     open already, nothing is opened or moved. Spent as it is read. */
+  const planReveal = PLANREVEAL
+  useLayoutEffect(() => {
+    if (!planReveal) return
+    clearPlanReveal()
+    if (popIso != null && popIso !== planReveal.iso) { setPopPuckEdit(null); setDelAsk(null); showDay(planReveal.iso) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planReveal])
+  const confirmPick = () => {
+    const ids = [...pickSel]
+    if (pickFor === '') finishNewNote(ids)
+    else if (ids.length && pickFor) writeInputs(() => addPuckPeople(pickFor, ids))
+    shutPick()
+  }
 
   /* Seed the add-input modal exactly the way a board's "+ Add" does
      (interactions.ts ~592-608) — same fields, same defaults — but with NO
@@ -314,10 +432,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
      hidden inside the dialog (inputedit.tsx ~695, canEditSched-gated), so
      the ME seed here is exactly what ends up saved regardless of who opened
      it. */
+  /* ONE SEED WITH THE LIST'S "+ Input" SINCE D729 (ui/inputedit.tsx newInputSeed) — the same window, opened the same
+     way; this door hands in the day (or the days dragged across), the List's hands in none. */
   const openAdd = (from: string, until?:string) => {
-    const [iso,end]=until&&until<from?[until,from]:[from,until]
-    const t = firstPersonalType()
-    setInpEdit({ _new: true, _calendar:true, _ctx: 'i', person: me(), type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080 })
+    setInpEdit(newInputSeed(from, until))
     notify()
   }
   const closePop = () => { showDay(null); setPopPuckEdit(null); setDelAsk(null) }
@@ -330,10 +448,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       return
     }
     showDay(entry.fromIso)
-    /* a NOTE opens already in its own edit box; a PUCKS row has no text to edit, so its tap just opens the day (its
-       people are edited through the row's own picker there) */
+    /* a note with WORDS opens already in its own edit box; one that holds people and no words has none to edit, so
+       its tap just opens the day (its people are changed on the note there) */
     const sec = PLANPUCKS.find((p: any) => p.id === entry.pid)
-    if (sec && sec.kind === 'pucks') { setPopPuckEdit(null) }
+    if (sec && !String(sec.text || '').trim()) { setPopPuckEdit(null) }
     else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
   }
   const live = useRef({ tapEntry, pickDate, openAdd, step: (_n: number) => {} })
@@ -508,7 +626,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     const r = it.rows[0]
     const dates = it.a === it.b ? fmtDay(it.a) : `${fmtDay(it.a)} – ${fmtDay(it.b)}`
     const hours = r.allday ? '' : ` · ${hhmm(r.s)}–${hhmm(r.e)}`
-    return [`${it.rows.map((x: any) => nameOf(x.person)).join(', ')} · ${it.word} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
+    /* a titled input's bar has room for its name only — its kind is said here (D717's row for the month) */
+    return [`${it.rows.map((x: any) => nameOf(x.person)).join(', ')} · ${it.word}${it.kind ? ' · ' + it.kind : ''} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
   }
 
   /* THE DAY POPOVER — a day's inputs, remark and planning notes without
@@ -527,6 +646,21 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        commits (rather than a second copy of the write), so there is exactly
        one place per field that decides what "commit" means. */
     const blurOnEnter = (e: ReactKeyboardEvent) => { if (e.key === 'Enter') (e.target as HTMLElement).blur() }
+    /* ESCAPE WHILE THE DAY'S TITLE IS TYPED PUTS THE TITLE BACK AND LEAVES THE DAY OPEN (owner D732, 10 Oct 26 — the
+       note box's manners, D731 (9); the roll-call's MISSING row of that batch's check). The title box is IN the day's
+       window, and the shell's rule is "Escape closes the window in front": Escape to give up on a title closed the
+       whole day. The box takes the key first: the title as last saved shows again, the keyboard leaves the box, and
+       nothing is written; the next Escape, with the keyboard nowhere, is the window's as before. `titleGone`: leaving
+       the box is how a title is SAVED, and the blur this Escape causes still holds what was typed — it is that
+       Escape's, and writes nothing. Cleared by that blur, and by the next focus or keystroke in the box (a key
+       pressed with the keyboard elsewhere is followed by no blur). */
+    const titleKey = (e: ReactKeyboardEvent) => {
+      if (e.key !== 'Escape') { blurOnEnter(e); return }
+      e.preventDefault(); e.stopPropagation()
+      titleGone.current = true
+      setRmkDraft(DAYRMK[iso] || '')
+      ;(e.target as HTMLElement).blur()
+    }
     /* SECTION DRAG (admin) — the Matrix roster drag's shape scaled down: the
        handle starts it, elementFromPoint + the row-half rule track it, and
        the release resolves "after X" to "before whatever follows X" in this
@@ -667,15 +801,16 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     /* what the day lists: every input covering it, as the month's own items (a group is one — ui/inputscal-model.ts),
        plus the one just saved where no filter lets it through, so a save is never answered with an empty day */
     const list = itemsOn(iso, items)
-    if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
+    /* …as the WHOLE entry it belongs to (Sol's read of the code, 10 Oct 26): a shared input shown by ONE of its records
+       read as that man's alone, and its Delete took his record and left the others behind out of sight */
+    if (revealed) list.unshift(...monthItems(entryRowsOf(INPUTS, saved), { fPerson: 'all', fType: 'all', fSearch: '' }))
+    /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
+    const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(INPUTS, { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
     const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
     const name = dayFacts(iso).name
     const kindWord = !kind ? undefined
       : kind.kind === 'nf' ? 'No fly'
         : (kind.kind === 'ph' ? 'Public holiday' : 'Off day') + (name && !/^(ph|off day|off)$/i.test(name.trim()) ? ' · ' + name : '')
-    /* when an input is, said the way the approved day says it: its hours, "All day", or — for one that runs on past
-       this day — the day it runs till */
-    const whenOf = (it: BarItem) => (it.b > iso ? (it.allday ? '' : hoursOf(it.rows[0]) + ' · ') + 'till ' + fmtDay(it.b) : hoursOf(it.rows[0]))
     const openInput = (r: any) => { setInpEdit(r); notify() }
     /* DELETE on a line removes that input — ASKING FIRST (D621): a key pressed by a slip must not take a man's leave
        away. Only where its reader may delete it (the write path's own rule, perms.ts — the screen mirrors it and says
@@ -688,19 +823,38 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
          asked about himself; anyone else is told who can */
       if (it.rows.length > 1) {
         if (!it.rows.every(x => mayDeleteInput(x)) && !it.rows.some(x => isMe(x.person))) {
-          const by = it.rows.find(x => x.grpBy)?.grpBy ?? it.rows.find(x => x.by)?.by
-          HOOKS.toast(`Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can delete this for everyone`, 'warn'); return
+          /* one body with every other door's (ui/inputedit.tsx sharedRefusal; to its filer, the switch off: D731 (8)) */
+          HOOKS.toast(sharedRefusal(it.rows, 'delete this for everyone'), 'warn'); return
         }
+        askedAll.current = it.rows.every(x => mayDeleteInput(x))
         setDelAsk(it.key); return
       }
-      if (!mayDeleteInput(r)) { HOOKS.toast(`Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return }
+      /* an input filed for ALL AVAIL / ALL has no owner to name — the one who may is whoever FILED it (Sol's read of the
+         code, 9 Oct 26: the editor's read-only line was corrected and this keyboard door still said "Only ALL AVAIL …") */
+      if (!mayDeleteInput(r)) {
+        const ph = PEOPLE[r.person] && PEOPLE[r.person].special
+        /* …and to that filer himself, with the members' switch off, that the switch is off (D731 (8) — the roll-call's
+           find: a member files for ALL AVAIL only while it is on, D702) — `sharedRefusal`, the one body */
+        HOOKS.toast(ph ? sharedRefusal([r], 'delete this input')
+          : `Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return
+      }
+      askedAll.current = false
       setDelAsk(it.key)
     }
     const doDelete = (it: BarItem) => {
       setDelAsk(null)
       if (it.rows.length > 1) {
         const rows = it.rows.map(x => INPUTS.find((y: any) => y.iid === x.iid)).filter(Boolean) as any[]
-        if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok'); return }
+        /* THE QUESTION'S INTENT IS READ FIRST, AND DECIDES (`askedAll`; Astra's read of this batch, 10 Oct 26 — finding 1).
+           Asked about EVERYONE: everyone goes if that is still his to do, else it is refused in words — never turned
+           into taking himself out. Asked about HIMSELF: only he goes, whatever he may do by now — a right gained while
+           the question stood (the switch turned on again, an admin back in his own view) must not turn "Take me out"
+           into a delete of the whole input. */
+        if (askedAll.current) {
+          if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok') }
+          else HOOKS.toast(sharedRefusal(rows, 'delete this for everyone'), 'warn')
+          return
+        }
         const mine = rows.find(x => isMe(x.person))
         if (mine && removeInput(mine)) HOOKS.toast('You are out of this input', 'ok')
         return
@@ -718,19 +872,22 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
         tools={sched ? <>
           <button type="button" className="abtn sm" id="icAddPuck"
             onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
-          <button type="button" className="abtn sm" id="icAddPucks"
-            onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ Pucks</button>
         </> : null}>
         {/* PINNED: the day's title and "+ Input" stay while the list scrolls under them */}
         <div className="sd-top">
           {/* the day TITLE (owner, 22 Aug 26 — "beside the date, I can input free text there, and it will show up as the
-              title on the calendar view"). A scheduler edits it in place (commit on Enter / blur); a member reads it. */}
+              title on the calendar view"). A scheduler edits it in place (commit on Enter / blur; Escape gives up what
+              was typed and leaves the day open — D732, `titleKey`); a member reads it. */}
           {sched ? (
             <input id="icRmkEdit" className="ic-title-edit" placeholder="Day title…"
               aria-label="Day title" value={rmkDraft}
-              onChange={e => setRmkDraft(e.target.value)}
-              onBlur={() => writeInputs(() => setDayRemark(iso, rmkDraft))}
-              onKeyDown={blurOnEnter} />
+              onFocus={() => { titleGone.current = false }}
+              onChange={e => { titleGone.current = false; setRmkDraft(e.target.value) }}
+              onBlur={() => {
+                if (titleGone.current) { titleGone.current = false; return }      // Escape put the title back: nothing is written
+                writeInputs(() => setDayRemark(iso, rmkDraft))
+              }}
+              onKeyDown={titleKey} />
           ) : hasRmk ? (
             <span className="ic-title-ro">{DAYRMK[iso]}</span>
           ) : null}
@@ -740,18 +897,32 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
           </div>
         </div>
         <div className="sd-list" data-testid="idy-list">
-            {/* THE SECTIONS (owner, 22 Aug 26): each section is a full-width block — a note is free text, a pucks row is
-                people — and an admin drags the ⠿ handle to rearrange them. Members read them, nothing more. Their two
-                small buttons, + Note and + Pucks, are in the window's bar beside the date since D683 (above). */}
+            {/* THE NOTES (owner D684, 9 Oct 26 — "For the +note, perhaps just have a function to add pucks on the text
+                written, instead of a +pucks button"; D688 "more compact"; D692 drawing A; D694; D695). ONE kind of
+                section: a note holds words, people, or both. Its words are one slim line with a small pencil and
+                cross; its people stand four across straight under them, the schedule's own pucks, a dashed "+" the
+                last of them; a note of people and no words has no line of words at all — the people, the "+", then
+                the pencil (which adds words) and the cross. An admin drags the ⠿ handle to rearrange notes; members
+                read them, nothing more. A person is taken off as before (D689): his puck dragged off the note, or
+                onto another to swap; a right-click removes too. "+ Note" is in the window's bar (D683). */}
             {entries.pucks.length > 0 && (
               <div className="ic-secs">
                 {entries.pucks.map((p: any) => {
-                  /* an EMPTY pucks row is a scheduler's work-in-progress; a
-                     member would see only a bare band with nothing in it and
-                     nothing to do — skip it for them (review fix, 22 Aug 26) */
-                  if (!sched && p.kind === 'pucks' && !(p.ids || []).some(Boolean)) return null
+                  const ids: string[] = Array.isArray(p.ids) ? p.ids : []
+                  const ppl = ids.some(Boolean), words = String(p.text || '').trim()
+                  /* a note with neither is not kept (state/plan.ts) — one saved empty before D684 draws nothing */
+                  if (!words && !ppl) return null
+                  const editing = sched && popPuckEdit === p.id
                   const dragCls = secDrag === p.id ? ' dragging'
                     : secDrag && secOver && secOver.id === p.id ? (secOver.after ? ' dragover after' : ' dragover') : ''
+                  const pick = () => { openPick(p.id, iso) }
+                  const tools = sched && <>
+                    {!ppl && <button type="button" data-pkadd={p.id} className="ic-note-ppl" aria-label="Add people to this note" title="Add people" onClick={pick}>+</button>}
+                    <button type="button" data-ppedit={p.id} aria-label={words ? 'Edit note' : 'Add words to this note'} title={words ? 'Edit' : 'Add words'}
+                      onClick={() => { setPopPuckEdit(p.id); setPuckDraft(words) }}>✏</button>
+                    <button type="button" data-ppdel={p.id} aria-label="Delete note" title="Delete this note"
+                      onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
+                  </>
                   return (
                     <div key={p.id} className={'ic-sec' + dragCls} data-sec={p.id}>
                       {sched && (
@@ -759,137 +930,108 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           style={{ touchAction: 'none' }}
                           onPointerDown={e => startSecDrag(e, p.id)}>⠿</span>
                       )}
-                      {p.kind === 'pucks' ? (
-                        /* a full-width row of the app's own canonical pucks;
-                           the picker adds one per pick, its ✕ drops one, and
-                           the trailing ✕ deletes the whole row (always drawn
-                           for a scheduler — review fix, 22 Aug 26: it used to
-                           appear only once the row was emptied, which made a
-                           filled row look undeletable). Clicks STOP here: the
-                           injected puck() markup matches the document-level
-                           routeClick's `.puck[data-person]` branch, which
-                           would silently toggle the schedule pages' selection
-                           from inside this overlay. */
-                        <div className="ic-secpucks" data-secpucks={p.id} onClick={e => e.stopPropagation()}>
-                          {/* the pucks sit in a fixed 3-column grid (owner, 24 Aug
-                              26 — "3 pucks per row"). A removed puck BLANKS its slot
-                              rather than closing the gap (togglePuckPerson), so an
-                              empty cell holds the position and the survivors never
-                              shift; only trailing blanks are trimmed. data-pkidx is
-                              the slot's index, read by startPkDrag to swap one puck
-                              onto another (or onto an empty slot). */}
-                          <div className="ic-secpk-grid">
-                            {(p.ids || []).map((id: string, i: number) => !id ? (
-                              <span key={'g' + i} className="ic-secpk ic-secpk-gap" data-pkidx={i} aria-hidden="true" />
-                            ) : (
-                              /* a seated puck carries NO ✕ (owner, 24 Aug 26): drag
-                                 it onto another puck to SWAP, onto an empty slot to
-                                 MOVE, or off the row to REMOVE; a right-click also
-                                 removes (desktop). touchAction:none so the drag
-                                 doesn't scroll the sheet under the finger. */
-                              <span key={id} className="ic-secpk" data-pkidx={i} style={sched ? { touchAction: 'none' } : undefined}
-                                onPointerDown={sched ? (e => startPkDrag(e, p.id, id, i)) : undefined}
-                                onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
-                                title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag to swap, off the row to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
-                                <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
-                              </span>
-                            ))}
+                      {/* `data-secpucks` is the whole note: a puck let go anywhere on it is a swap or a cancel, and only
+                          one let go OUTSIDE it is taken off (startPkDrag) */}
+                      <div className={'ic-poppuck ic-note' + (ppl ? ' has-ppl' : '') + (!words && !editing ? ' no-words' : '')} data-secpucks={p.id} data-testid={'idy-note-' + p.id}>
+                        {editing ? (
+                          <input className="ic-poppuck-edit" autoFocus value={puckDraft}
+                            aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
+                            onBlur={() => {
+                              if (noteGone.current) return                     // Escape put the box away: nothing is written
+                              /* emptied, a note WITH people loses its words and stays (D695); one without is left as it was */
+                              const t = puckDraft.trim()
+                              if (t !== words && (t || ppl)) writeInputs(() => editPlanPuck(p.id, t))
+                              setPopPuckEdit(null)
+                            }}
+                            onKeyDown={noteKey} />
+                        ) : words ? <span className="ic-poppuck-txt">{words}</span> : null}
+                        {(words || editing) && tools}
+                        {ppl && (
+                          /* the app's own canonical pucks. Clicks STOP here: the injected puck() markup matches the
+                             document-level routeClick's `.puck[data-person]` branch, which would silently toggle the
+                             schedule pages' selection from inside this window. A removed puck BLANKS its slot rather
+                             than closing the gap (togglePuckPerson), so an empty cell holds the position and the
+                             survivors never shift; data-pkidx is the slot's index, read by startPkDrag. */
+                          <div className="ic-secpucks" onClick={e => e.stopPropagation()}>
+                            <div className="ic-secpk-grid">
+                              {ids.map((id: string, i: number) => !id ? (
+                                <span key={'g' + i} className="ic-secpk ic-secpk-gap" data-pkidx={i} aria-hidden="true" />
+                              ) : (
+                                /* a seated puck carries NO ✕ (owner, 24 Aug 26): drag it onto another puck to SWAP, onto
+                                   an empty slot to MOVE, or off the note to REMOVE; a right-click also removes (desktop).
+                                   touchAction:none so the drag doesn't scroll the window under the finger. */
+                                <span key={id} className="ic-secpk" data-pkidx={i} style={sched ? { touchAction: 'none' } : undefined}
+                                  onPointerDown={sched ? (e => startPkDrag(e, p.id, id, i)) : undefined}
+                                  onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
+                                  title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag to swap, off the note to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
+                                  <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
+                                </span>
+                              ))}
+                              {sched && <button type="button" className="ic-pkadd" data-pkadd={p.id} aria-label="Add people to this note" title="Add people" onClick={pick}>+</button>}
+                            </div>
                           </div>
-                          {sched && (
-                            <button type="button" className="ic-pkadd" data-pkadd={p.id}
-                              onClick={() => { setPickFor(p.id); setPickIso(iso); setPickSel(new Set()) }}>+ add</button>
-                          )}
-                          {sched && <button type="button" data-ppdel={p.id}
-                            className="ic-pkdel ic-rowdel" aria-label="Delete pucks row" title="Delete this pucks row"
-                            onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>}
-                        </div>
-                      ) : sched && popPuckEdit === p.id ? (
-                        <input className="ic-poppuck-edit" autoFocus value={puckDraft}
-                          aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
-                          onBlur={() => {
-                            const t = puckDraft.trim()
-                            if (t && t !== p.text) writeInputs(() => editPlanPuck(p.id, t))
-                            setPopPuckEdit(null)
-                          }}
-                          onKeyDown={blurOnEnter} />
-                      ) : (
-                        <div className="ic-poppuck">
-                          <span className="ic-poppuck-txt">{p.text}</span>
-                          {sched && <>
-                            <button type="button" data-ppedit={p.id} aria-label="Edit note"
-                              onClick={() => { setPopPuckEdit(p.id); setPuckDraft(p.text) }}>✏</button>
-                            <button type="button" data-ppdel={p.id} aria-label="Delete note"
-                              onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
-                          </>}
-                        </div>
-                      )}
+                        )}
+                        {!words && !editing && tools}
+                      </div>
                     </div>
                   )
                 })}
               </div>
             )}
-            {sched && popPuckEdit === '' && (
-              <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
-                placeholder="e.g. brief the new guy"
-                onChange={e => setPuckDraft(e.target.value)}
-                onBlur={() => {
-                  const t = puckDraft.trim()
-                  if (t) writeInputs(() => addPlanPuck(iso, t))
-                  setPopPuckEdit(null); setPuckDraft('')
-                }}
-                onKeyDown={blurOnEnter} />
-            )}
+            {/* A NEW NOTE: its words, and "+ people" beside the box — so a note of people and no words can be made
+                (D695). The box and its button are ONE thing being made: the keyboard moving between the two saves
+                nothing (a Tab from the words used to save them as a note of their own and take the button away before
+                it could be pressed — the day-window check, Astra's scenario 2.1); leaving the pair saves the words.
+                "+ people" hands the words to the picker and closes the box: the picker's OK makes the note, words
+                and people together, in one step. */}
+            {sched && popPuckEdit === '' && (() => {
+              const leave = (e: { relatedTarget: EventTarget | null }) => {
+                const to = e.relatedTarget as HTMLElement | null
+                if (noteGone.current) return                                   // Escape put the box away: nothing is written
+                if (pickingNew.current || (to && to.closest && to.closest('.ic-newnote'))) return
+                const t = puckDraft.trim()
+                if (t) writeInputs(() => addPlanPuck(iso, t))
+                setPopPuckEdit(null); setPuckDraft('')
+              }
+              return (
+                <div className="ic-newnote">
+                  <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
+                    placeholder="e.g. brief the new guy"
+                    onChange={e => setPuckDraft(e.target.value)} onBlur={leave} onKeyDown={noteKey} />
+                  <button type="button" className="ic-pkadd ic-newnote-ppl" id="icNewNotePpl" aria-label="Add people to this note"
+                    onPointerDown={e => e.preventDefault()} onBlur={leave} onKeyDown={noteEsc}
+                    onClick={() => { if (!openPick('', iso, puckDraft.trim())) return; pickingNew.current = true; setPopPuckEdit(null); setPuckDraft('') }}>+ people</button>
+                </div>
+              )
+            })()}
 
-            {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). One line each: who, the kind and
-                when; a remark under it; the LATE tag, which says the cut-off it missed when pressed (D646); and in
-                small print who placed it and when (D629). The line's BUTTON is the name and the kind — what a keyboard
-                and a screen reader meet; a press anywhere else on the line opens the input too. */}
+            {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). Each is THE INPUT CARD (owner
+                D718–D724, 10 Oct 26 — ui/InputCard.tsx, its words from ui/inputcard-model.ts): the one card the Inputs
+                list draws on a phone too, so the two cannot differ. A shared input names everyone (D721) — its row of
+                pucks and their own LATE tags went with that; who placed it is "By Saber" where the card says it at all
+                (D723, D724), and the day and the time of it stay in the input's window. */}
+            {/* A DAY WHOSE INPUTS A FILTER HIDES SAYS SO (owner D731 (2), 10 Oct 26 — "No inputs match on this day." with a
+                "Clear filters" button beside it). It said "No inputs on this day. Tap + Input to add one." while
+                inputs the filter left out stood on it (walker C of the input card's check, scenario 81) — nothing told
+                him the filter was the reason. `hidden`: the day has inputs when no filter is asked. A day with none at
+                all says what it always said, whatever the filters are. */}
             {list.length === 0 ? (
-              <p className="sd-empty" data-testid="idy-empty">No inputs on this day. Tap + Input to add one.</p>
+              hidden
+                ? <p className="sd-empty sd-empty-f" data-testid="idy-empty"><span>No inputs match on this day.</span>
+                  {onClearFilters && <button type="button" className="abtn ghost" data-testid="idy-clear" onClick={onClearFilters}>Clear filters</button>}</p>
+                : <p className="sd-empty" data-testid="idy-empty">No inputs on this day. Tap + Input to add one.</p>
             ) : (
               <>
                 <h3 className="sd-gh" data-testid="idy-count">{list.length} input{list.length > 1 ? 's' : ''}</h3>
                 {list.map(it => {
                   const r = it.rows[0]
-                  const who = it.more > 0 ? `${it.who} +${it.more}` : it.who
-                  const when = whenOf(it)
-                  /* a shared input's late tags are each man's own, beside his puck — a man added later can be late alone */
                   const team = it.rows.length > 1
-                  /* …unless EVERY man is late alike: then the line says LATE once, as an ordinary input does */
-                  const lates = it.rows.map(x => lateWord(x))
-                  const allLate = team && lates.every(w => w && w === lates[0])
-                  const late = team && !allLate ? '' : lates[0]
-                  const forAll = team && it.rows.every(x => mayDeleteInput(x))
-                  const placed = placedLineOf(it.rows)
-                  /* an Other is NAMED by its remark (inpLabel) — it is not said a second time under the line */
-                  const rmk = r.remarks && r.remarks !== it.word ? r.remarks : ''
+                  /* the question standing on THIS line keeps the words it was asked in (`askedAll`, above) */
+                  const forAll = team && (delAsk === it.key ? askedAll.current : it.rows.every(x => mayDeleteInput(x)))
+                  const when = cardWhen(r, it.b, iso)
                   return (
-                    <div key={it.key} className={'sd-row idy-row ' + it.tone} data-popiid={it.key} data-testid={'idy-row-' + it.key}
-                      onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) openInput(r) }}>
-                      <button type="button" className="sd-open" data-testid="idy-open" aria-label={`${who}, ${it.word}, ${when}`} onClick={() => openInput(r)} onKeyDown={onLineKey(it)}>
-                        <span className="idy-sq" aria-hidden="true" />
-                        <b className="idy-who">{who}</b>
-                        <span className="idy-kind">{it.word}</span>
-                      </button>
-                      {late ? (
-                        <button type="button" className="sd-late" data-testid="idy-late" aria-expanded={lateOpen === it.key} title={late}
-                          onClick={() => setLateOpen(o => (o === it.key ? null : it.key))}>LATE</button>
-                      ) : <span />}
-                      <span className="sd-hours" data-testid="idy-when">{when}</span>
-                      {late && lateOpen === it.key && <span className="sd-latenote" data-testid="idy-latenote" role="status">{late}</span>}
-                      {rmk && <span className="sd-rmk">{rmk}</span>}
-                      {/* ITS PEOPLE, as the schedule's own pucks (ui/html.ts puck() — D649), compact, A to Z */}
-                      {team && (
-                        <span className="idy-people" data-testid="idy-people">
-                          {it.rows.map(x => (
-                            <span key={x.iid} className="idy-man">
-                              <span className="sd-puck" aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(x.person, false, true, false).replace(' tabindex="0"', '') }} />
-                              {!allLate && lateWord(x) && <span className="sd-late idy-manlate" data-testid={'idy-late-' + x.person} title={lateWord(x)}>LATE</span>}
-                            </span>
-                          ))}
-                        </span>
-                      )}
-                      {placed && <span className="sd-placed" data-testid="idy-placed">{placed}</span>}
+                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when}
+                      late={lateNoteOf(it.rows, lateWord)} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
@@ -898,7 +1040,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>{team && !forAll ? 'Stay in' : 'Keep'}</button>
                         </span>
                       )}
-                    </div>
+                    </InputCard>
                   )
                 })}
               </>
@@ -910,8 +1052,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
 
   /* THE MULTI-SELECT PUCK PICKER (owner, 23 Aug 26 — "a placeholder view to
      select a few pucks at 1 go by clicking a few then press ok"). Opens from
-     + Pucks (pickFor='' → a NEW row is made on OK) or a row's + add (pickFor is
-     that row's id → the ticks are added to it). The category buttons LIGHT UP
+     a note's "+" (pickFor is that note's id → the ticks are added to it) or the "+ people" of a note being written
+     (pickFor='' → the note is made on OK, its words and its people together — D684, D695). The category buttons LIGHT UP
      everyone in a category at once (personMatchesCat, the same predicate the
      highlight chips use), toggling the whole group. People already on the
      target row are shown ticked-and-locked so a re-pick can't double them. */
@@ -929,15 +1071,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        as the schedule pages' highlight (matchesHiSet, state/view.ts), so the
        picker and the strip can't disagree. */
     const matchesHi = (id: string) => matchesHiSet(PEOPLE[id], pickHi)
-    const close = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
-    const confirm = () => {
-      const ids = [...pickSel]
-      if (ids.length) {
-        if (pickFor === '') writeInputs(() => addPuckRow(pickIso, ids))
-        else writeInputs(() => addPuckPeople(pickFor!, ids))
-      }
-      close()
-    }
+    const close = cancelPick, confirm = confirmPick     // the picker's ends are the component's (above): Escape uses them too
     /* the roster is grouped by seat, the way the aircrew palette lays its crew
        out (owner, 24 Aug 26 — "arrange them just like how the placeholders
        arranges them"): Pilots, WSOs, then SANS — split the SAME pilots-then-WSOs
@@ -976,12 +1110,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     }
     return (
       <div className="ic-pickwrap" onPointerDown={e => { if (e.target === e.currentTarget) close() }}>
-        <div className="ic-pick" role="dialog" aria-label="Add people" onClick={e => e.stopPropagation()}>
+        <div className="ic-pick" role="dialog" aria-modal="true" aria-label="Add people" tabIndex={-1} onClick={e => e.stopPropagation()}>
           <div className="ic-pick-head">
             <b>Add people</b>
             <span className="ic-pick-n">{pickSel.size} picked</span>
             <button type="button" className="x" id="icPickClose" aria-label="Close" onClick={close}>✕</button>
           </div>
+          {/* a NEW note's words, in sight while its people are picked (its box has handed over to this picker) */}
+          {pickFor === '' && pickWords && <div className="ic-pick-for" data-testid="ic-pick-for">For the note: <b>{pickWords}</b></div>}
           {/* the CAT/Type/Quals tabs — the SAME grouped strip as the schedule
               (owner, 24 Aug 26: "apply these to all pages"). A chip tap FADES
               everyone NOT in the lit categories so the applicable pucks stand
@@ -1034,26 +1170,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
           </div>
           {tools}
         </div>
-        {/* "HOW THIS WORKS" AND THE LEGEND — one quiet line under the tools. The fold is five short lines (owner D646:
-            "abit wordy" — cut, "the same on the Inputs calendar"); its last states the late cut-off AS IT IS SET, from
-            the setting, so it changes when the setting does (D628) — no worked date and no "later is marked LATE"; the
-            date an input missed is said by its own LATE tag, in the opened day. The legend names the two colours of a
-            bar — the List's own: an absence, a duty or commitment — for everyone. */}
+        {/* "HOW THIS WORKS" AND THE LEGEND — one quiet line under the tools. The fold is FOUR short lines (owner D646:
+            "abit wordy" — cut, "the same on the Inputs calendar"; and again by the design vet, D729 — V5, 10 Oct 26: the
+            line about red and amber went, because the colour key beside the fold says it, and the other three say the
+            same in fewer words); its last states the late cut-off AS IT IS SET, from the setting, so it changes when
+            the setting does (D628) — no worked date and no "later is marked LATE"; the date an input missed is said by
+            its own LATE tag, in the opened day. The legend names the two colours of a bar — the List's own: an
+            absence, a duty ("duty or commitment" until D729) — for everyone. */}
         <div className="ib-sub">
           <button type="button" className="sc-how" data-testid="ib-how" aria-expanded={how} aria-controls="ibHowList" onClick={() => setHow(h => !h)}>
             <span className="sc-how-v" aria-hidden="true" />How this works
           </button>
           <span className="ib-legend" data-testid="ib-legend">
             <span className="ib-key red">absence</span>
-            <span className="ib-key amb">duty or commitment</span>
+            <span className="ib-key amb">duty</span>
           </span>
         </div>
         {how && (
           <ol className="sc-how-list" id="ibHowList" data-testid="ib-how-list">
-            <li>Tap a day to see its inputs and add one. Tap a <b>bar</b> to open it; drag it to move it.</li>
-            <li>A bar runs across the days an input covers: <b>red</b> is an absence, <b>amber</b> a duty or another commitment.</li>
-            <li>To file for <b>several days</b>, drag across them — on a phone, hold first, then drag.</li>
-            <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
+            <li>Tap a day to open it. Tap a <b>bar</b> to edit it, drag to move it.</li>
+            <li><b>Several days:</b> drag across them (phone: hold, then drag).</li>
+            <li><b>NF</b> no-fly · green public holiday · grey Off day.</li>
             {/* the cut-off itself in bold (D691) - the same bold the lines above give "bar" and "several days" */}
             <li><span data-testid="ib-how-cut">{(p => <>{p.before}<b>{p.cut}</b>{p.after}</>)(cutParts('inputs', 'File'))}</span></li>
           </ol>
@@ -1098,20 +1235,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                         {tag && <span className={'ib-tag k-' + tag.kind} data-testid={'ib-tag-' + iso}>{tag.text}</span>}
                       </div>
                       {rmk && <div className="ic-rmk" title={rmk}>{rmk}</div>}
-                      {pucks.map((p: any) => p.kind === 'pucks' ? (
-                        /* a pucks section as a row of TINY person chips, styled like the app's standard puck (owner,
-                           23 Aug 26): the CATEGORY a colour line on the right, a SANS person a purple line on the left */
-                        <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
-                          {(p.ids || []).filter(Boolean).map((id: string) => {
-                            const per = PEOPLE[id]
-                            const cat = per && QCOLOR[per.q]
-                            return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
-                              style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
-                          })}
-                        </div>
-                      ) : (
-                        <div key={'p' + p.id} className="ic-chip plan" data-pid={p.id} data-icdrag>{p.text}</div>
-                      ))}
+                      {/* a note: its words as a chip, and its people as a row of TINY person chips, styled like the app's
+                          standard puck (owner, 23 Aug 26): the CATEGORY a colour line on the right, a SANS person a
+                          purple line on the left. One note may draw both (D684); either is the note, and drags it. */}
+                      {pucks.map((p: any) => {
+                        const who = (Array.isArray(p.ids) ? p.ids : []).filter(Boolean), words = String(p.text || '').trim()
+                        return (
+                          <Fragment key={'p' + p.id}>
+                            {words && <div className="ic-chip plan" data-pid={p.id} data-icdrag>{words}</div>}
+                            {who.length > 0 && (
+                              <div className="ic-pks" data-pid={p.id} data-icdrag>
+                                {who.map((id: string) => {
+                                  const per = PEOPLE[id]
+                                  const cat = per && QCOLOR[per.q]
+                                  return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
+                                    style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
+                                })}
+                              </div>
+                            )}
+                          </Fragment>
+                        )
+                      })}
                     </div>
                   )
                 })}
@@ -1120,7 +1264,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   the day, where every input is listed and reached */}
               <div className="ib-lanes">
                 {wk.segs.map(sg => (
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on')}
+                  /* `timed`: an input with hours (a half day too) is drawn LIGHTER than one that takes the whole day — a tint
+                     of its colour with a solid edge (D729, V4: "a one-hour appointment looks as heavy as a whole day
+                     of leave"; 25-inputs-calendar.css) */
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on')}
                     data-iid={sg.item.key} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}

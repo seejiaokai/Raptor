@@ -1,0 +1,17 @@
+{
+ "rows": [
+  {
+   "id": 15,
+   "size": "phone 390",
+   "role": "admin (Playwright clock moved: 1 Jun -> 1 Jul 2026)",
+   "verdict": "PASS",
+   "detail": "clock at filing 2026-06-01T04:00 ## filed: 2 records ## before the cut-off: day card [[\"Anvil, Basher\",false]] ## clock after fastForward 2026-07-01T04:00 ## after adding Cinch: 3 records ## day: who \"Anvil, Basher, Cinch\", LATE buttons 1 ## day LATE explanation: \"Cinch: after the cut-off, Mon 29 Jun\" ## list: who \"Anvil, Basher, Cinch\", LATE buttons 1 ## list LATE explanation: \"Cinch: after the cut-off, Mon 29 Jun\" ## Undo -> 2, Redo -> 3",
+   "pics": [
+    "15-phone-day-before-cutoff.png",
+    "15-phone-day-late-pressed.png",
+    "15-phone-list-late-pressed.png"
+   ]
+  }
+ ],
+ "errs": []
+}

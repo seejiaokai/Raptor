@@ -1,0 +1,16 @@
+{
+ "rows": [
+  {
+   "n": 40,
+   "size": "1440x900",
+   "role": "Saber (admin)",
+   "verdict": "PASS",
+   "saw": "setup: ATT C Jul 21 540-660 ; LL Jul 22 0-1439 || overlapping 10:00-12:00: toasts [\"Saber is on ATT C on 21 Jul (09:00–11:00) — leave can't go over a medical\"]; window open 1; saved: ATT C Jul 21 540-660 ; LL Jul 22 0-1439 || non-overlapping 11:00-12:00: toasts [\"Input updated\"]; saved: ATT C Jul 21 540-660 ; LL Jul 21 660-720 || Undo: ATT C Jul 21 540-660 ; LL Jul 22 0-1439; Redo: ATT C Jul 21 540-660 ; LL Jul 21 660-720",
+   "pics": [
+    "B40-1-refused.png",
+    "B40-2-retry.png"
+   ]
+  }
+ ],
+ "errs": []
+}

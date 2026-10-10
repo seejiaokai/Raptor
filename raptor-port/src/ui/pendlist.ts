@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE } from '../engine/people'
-import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
+import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -120,7 +120,7 @@ function requestWords(e: any, row?: any, was?: any): { where: string, from: stri
    remarks). ONE body for every line that names a request, so they cannot word it two ways. */
 function requestName(inp: any, row?: any): string {
   if (inp) { const who = cs(inp.person); return `${who ? who + ' · ' : ''}${inpLabel(inp)}` }
-  const who = row ? cs(row.who) : '', what = row ? (inpLabel({ type: row.srcType, remarks: row.rmks }) || row.prog || '') : ''
+  const who = row ? cs(row.who) : '', what = row ? goneRequestName(row) : ''
   return what ? `${who ? who + ' · ' : ''}${what}` : 'A request'
 }
 const rowRequestName = (row: any) => requestName(INPUTS.find((x: any) => inpId(x) === row.src), row)
@@ -185,6 +185,10 @@ function inputWords(di: number, it: PendItem): Words {
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
   pair(cs(was.person), cs(now.person))
   pair(String(was.type || ''), String(now.type || ''))
+  /* its own title (D715): "Event → Sports day" — compared by itself, the title each side stores (Astra's read of the
+     code, 1: said only where the kind stood still, a kind and a title changed together lost the title). Two untitled
+     kinds are the line above alone. */
+  if (titleOf(was.type, was.title) !== titleOf(now.type, now.title)) pair(inpLabel(was), inpLabel(now))
   /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
   if (String(was.remarks || '') !== String(now.remarks || '')) { from.push(`“${clip(was.remarks)}”`); to.push(`“${clip(now.remarks)}”`) }

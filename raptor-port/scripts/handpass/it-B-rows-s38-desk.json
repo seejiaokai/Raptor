@@ -1,0 +1,53 @@
+{
+ "rows": [
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[A] after both retitles: all:Town hall,allavail:Games afternoon | Undo: all:Open house,allavail:Games afternoon | Redo: all:Town hall,allavail:Games afternoon | reload: all:Town hall,allavail:Games afternoon",
+   "pics": []
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[A] published ALL (Wed) and ALL AVAIL (Sat), then the member retitled: BEFORE WED(ALL): pend 0 nys no rows OPEN HOUSE[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"OPEN HOUSEEvent09:0010:00ALL36+ addLATEall one\"] togo  || SAT(ALL AVAIL): pend 0 nys no rows SPORTS DAY[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"SPORTS DAYEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo  || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"OPEN HOUSE :: ⠿OPEN HOUSEEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"SPORTS DAY :: ⠿SPORTS DAYEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Sports day:oil={\\\"2026-07-18\\\":0.5}\",\"all:Open house:oil=null\"] || AFTER WED(ALL): pend 1 pending nys YES rows TOWN HALL[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"TOWN HALLEvent09:0010:00ALL36+ addLATEall one\"] togo Waiting to go out as AL1 · 1 change ALL · Town hall Ranger 9/10 21:36 Open house → Town hall Tap a change to go to it. || SAT(ALL AVAIL): pend 1 pending nys YES rows GAMES AFTERNOON[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"GAMES AFTERNOONEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo Waiting to go out as AL1 · 1 change ALL AVAIL · Games afternoon Ranger 9/10 21:36 Sports day → Games afternoon Tap a change to go to it. || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"TOWN HALL :: ⠿TOWN HALLEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"GAMES AFTERNOON :: ⠿GAMES AFTERNOONEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Games afternoon:oil={\\\"2026-07-18\\\":0.5}\",\"all:Town hall:oil=null\"] || OIL question on retitle: [\"\",\"\"]",
+   "pics": [
+    "s38-desk-A-1published-wed-edit.png",
+    "s38-desk-A-2retitled-wed-edit.png",
+    "s38-desk-A-2retitled-wed-togo.png",
+    "s38-desk-A-2retitled-sat-edit.png",
+    "s38-desk-A-2retitled-sat-togo.png",
+    "s38-desk-A-2retitled-wed-board.png",
+    "s38-desk-A-2retitled-sat-board.png"
+   ]
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "member",
+   "verdict": "PASS",
+   "said": "[B] after both retitles then Undo (reverts the LAST one, the ALL one) then reload: all:Open house,allavail:Games afternoon",
+   "pics": []
+  },
+  {
+   "n": "38",
+   "size": "desk",
+   "role": "admin",
+   "verdict": "PASS",
+   "said": "[B] published ALL (Wed) and ALL AVAIL (Sat), then the member retitled: BEFORE WED(ALL): pend 0 nys no rows OPEN HOUSE[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"OPEN HOUSEEvent09:0010:00ALL36+ addLATEall one\"] togo  || SAT(ALL AVAIL): pend 0 nys no rows SPORTS DAY[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"SPORTS DAYEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo  || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"OPEN HOUSE :: ⠿OPEN HOUSEEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"SPORTS DAY :: ⠿SPORTS DAYEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Sports day:oil={\\\"2026-07-18\\\":0.5}\",\"all:Open house:oil=null\"] || AFTER WED(ALL): pend 0 nys no rows OPEN HOUSE[EVENT] view OPEN HOUSE[EVENT] counts [\"36\"] rowtext [\"OPEN HOUSEEvent09:0010:00ALL36+ addLATEall one\"] togo  || SAT(ALL AVAIL): pend 1 pending nys YES rows GAMES AFTERNOON[EVENT] view SPORTS DAY[EVENT] counts [\"45\"] rowtext [\"GAMES AFTERNOONEvent09:0012:00ALL AVAIL45+ addLATEallavail one\"] togo Waiting to go out as AL1 · 1 change ALL AVAIL · Games afternoon Ranger 9/10 21:37 Sports day → Games afternoon Tap a change to go to it. || BOARD WED {\"counts\":[\"36\"],\"rows\":[\"OPEN HOUSE :: ⠿OPEN HOUSEEventALL36+ addall oneCXⓘ■✕\"]} BOARD SAT {\"counts\":[\"45\"],\"rows\":[\"GAMES AFTERNOON :: ⠿GAMES AFTERNOONEventALL AVAIL45+ addallavail oneCXⓘ■✕\"]} || records [\"allavail:Games afternoon:oil={\\\"2026-07-18\\\":0.5}\",\"all:Open house:oil=null\"] || OIL question on retitle: [\"\",\"\"]",
+   "pics": [
+    "s38-desk-B-1published-wed-edit.png",
+    "s38-desk-B-2retitled-wed-edit.png",
+    "s38-desk-B-2retitled-wed-togo.png",
+    "s38-desk-B-2retitled-sat-edit.png",
+    "s38-desk-B-2retitled-sat-togo.png",
+    "s38-desk-B-2retitled-wed-board.png",
+    "s38-desk-B-2retitled-sat-board.png"
+   ]
+  }
+ ],
+ "errs": []
+}

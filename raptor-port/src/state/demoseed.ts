@@ -217,3 +217,40 @@ export function seedDemoGroup() {
     grp: DEMO_GRP, grpBy: admin, by: admin, at, modBy: admin, modAt: at,
   })
 }
+
+/* ---- TWO PLACEHOLDER INPUTS, AND THE KIND "EVENT" ([INPUT-ALL-AVAIL], [INPUT-EVENT-KIND] — owner D700, D702, D711, D713;
+   the checking order's §7.1: the everything-day "lives in the demo seed … extended in the same change whenever a new
+   kind arrives") --------------------------------------------------------------------------------------------------------
+   A fresh demo with neither would show an input filed for ALL AVAIL, and an Event, on no screen until somebody filed one.
+   So the demo carries: a weekend DUTY for ALL AVAIL (Saturday — it asks the OIL question, answered Yes by its filer, so
+   the count, the window and OIL Earn all have something to show), and a weekday EVENT for ALL (a sports afternoon — the
+   new kind, and the second placeholder).
+
+   FILED BY THE ADMIN, never by a member (the rule above the stamps: who placed an input is what lets a member change
+   one he filed for someone else, and a made-up filer would hand out a made-up right) — and on a placeholder input the
+   filer is also whose OIL answer everyone behind it follows (D711 (1)).
+
+   NOT IN THE SEED WEEK, on purpose, exactly as the shared input above: that week's warnings, rows and counts are what
+   the comparison with the original, the DOM ceilings and many tests pin. The week after is read by the seed week for
+   its Monday alone. Each record is what the app itself would write: one input, the placeholder as its person, no names,
+   no group, one day (engine/inputs.ts placeholderProblem).
+
+   Same boot-only home and idempotence as the seeds above: a fresh store only, pushed before the ids are minted, skipped
+   where it is already there. */
+export function seedDemoPlaceholders() {
+  const live = (id: string) => PEOPLE[id] && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
+  const admin = Object.keys(PEOPLE).find(id => PEOPLE[id].cs === 'Saber' && live(id))
+  if (!admin || !PEOPLE.allavail || !PEOPLE.all) return
+  const at = new Date(2026, 5, 26, 9, 15).getTime()
+  const recs: any[] = [
+    { person: 'allavail', type: 'Duty', date: 'Jul 25', allday: false, s: 540, e: 720, remarks: 'Hangar clean-up', oil: { '2026-07-25': 0.5 } },
+    /* …and it carries a TITLE of its own ([INPUT-OWN-TITLE], D715): the one demo input that is named by something other
+       than its kind, so a fresh boot shows the title on the month, the day and the schedule, its kind small beside it */
+    { person: 'all', type: 'Event', title: 'Sports afternoon', date: 'Jul 22', allday: false, s: 900, e: 1020, remarks: 'PT kit' },
+  ]
+  for (const rec of recs) {
+    if (INPUTS.some((r: any) => r && r.person === rec.person && r.type === rec.type && r.date === rec.date)) continue
+    INPUTS.push({ ...rec, mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
+  }
+}
+

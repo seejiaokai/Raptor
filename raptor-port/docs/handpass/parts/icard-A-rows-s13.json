@@ -1,0 +1,20 @@
+{
+ "rows": [
+  {
+   "id": 13,
+   "size": "phone 390",
+   "role": "member Ranger",
+   "verdict": "PASS",
+   "detail": "cards said AM, then PM, then 09:00–11:00 on both the day and the list; no stale AM/PM; Undo/Redo fine ([{\"label\":\"AM\",\"day\":\"AM\",\"list\":\"AM\"},{\"label\":\"PM\",\"day\":\"PM\",\"list\":\"PM\"},{\"label\":\"custom\",\"day\":\"09:00–11:00\",\"list\":\"09:00–11:00\"}])",
+   "pics": [
+    "13-AM-day.png",
+    "13-AM-list.png",
+    "13-PM-day.png",
+    "13-PM-list.png",
+    "13-custom-day.png",
+    "13-custom-list.png"
+   ]
+  }
+ ],
+ "errs": []
+}

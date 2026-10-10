@@ -3,6 +3,7 @@
    groupings (Item = one group per item, every line item-first — D340, D345, [CHG-BY-ITEM]; Who = by person and
    sitting), what is new to you, and the counts the day chip and the admin's icon show. */
 import { PEOPLE } from '../engine/people'
+import { INPUTS } from '../engine/inputs'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ELOG, elogClear, type ELogRow } from '../engine/editlog'
 import { setCurWeek } from '../engine/waves'
@@ -110,6 +111,8 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       [{ key: 'dn:1.0', lbl: 'Day note' }, `${T}|N|dn:1.0`, 'Day note', ''],
       [{ key: 'pn:1.0', lbl: 'Programme notes' }, `${T}|N|pn:1.0`, 'Programme notes', ''],
       [{ key: '', iid: 'in7', sub: 'bane', sect: 'abs', itype: 'LL', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in7`, 'Input · Ranger · LL', ''],   // gone: its line keeps the type (Astra FR-04)
+      /* …and its own TITLE where it had one ([INPUT-OWN-TITLE], the walk's W4: the heading fell back to "Event" over lines that said "Sports day") */
+      [{ key: '', iid: 'in9', sub: 'bane', sect: 'abs', itype: 'Event', iname: 'Sports day', lbl: 'Ranger · Sports day deleted · 14 Jul' }, `${T}|I|in9`, 'Input · Ranger · Sports day', ''],
       [{ key: '', iid: 'in8', sub: 'bane', sect: 'abs', lbl: 'Ranger · LL added · 14 Jul' }, `${T}|I|in8`, 'Input · Ranger', ''],
       [{ key: 'iu:in7', lbl: 'Ranger · LL', from: 'rocky', to: 'bane' }, `${T}|I|in7`, 'Input · Ranger', ''],   // a reassign: named by who holds it now
       [{ key: '', sub: 'rocky', fld: 'q', sect: 'quals', lbl: 'Hex · CAT', from: 'B', to: 'A' }, `${T}|Q|rocky`, 'Quals · Hex', 'CAT'],
@@ -402,5 +405,32 @@ describe('a group filing is one item (D663)', () => {
   it('an ordinary input keeps its own item, as before', () => {
     put(row({ key: '', iid: 'in7', sub: 'bane', sect: 'abs', itype: 'LL', date: T, lbl: 'Ranger · LL added · 14 Jul' }))
     expect(itemOf(ELOG.rows[0]!, T).id).toBe(`${T}|I|in7`)
+  })
+})
+
+describe('[INPUT-OWN-TITLE] a shared filing whose men now carry different titles (Sol’s read of the code, 1)', () => {
+  const T = '2026-07-14'
+  it('its heading names both titles, the same whichever record is stored first — never the first record’s as everybody’s', () => {
+    const rec = (iid: string, person: string, title: string) => ({ iid, person, grp: 'gT', grpBy: 'stiff', type: 'Event', title, date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '' })
+    const line: any = { key: '', iid: 'inA', sub: 'bane', sect: 'abs', itype: 'Event', iname: 'Sports day', grp: 'gT', date: T, lbl: 'Ranger · Sports day added · 14 Jul', t: 1, who: 'Saber', pid: 'stiff', di: 1, from: '', to: '', seq: 1, lineId: 'x1' }
+    const seed = JSON.stringify(INPUTS)
+    try {
+      INPUTS.push(rec('inA', 'bane', 'Sports day'), rec('inB', 'stiff', 'Open house'))
+      const a = itemOf(line, T).title
+      INPUTS.splice(INPUTS.length - 2, 2)
+      INPUTS.push(rec('inB', 'stiff', 'Open house'), rec('inA', 'bane', 'Sports day'))
+      const b = itemOf(line, T).title
+      expect(a).toBe(b)
+      expect(a).toContain('Open house'); expect(a).toContain('Sports day'); expect(a).toContain('2 people')
+    } finally { INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed)) }
+  })
+  it('one title for all of them is said once', () => {
+    const rec = (iid: string, person: string) => ({ iid, person, grp: 'gU', grpBy: 'stiff', type: 'Event', title: 'Sports day', date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '' })
+    const line: any = { key: '', iid: 'inC', sub: 'bane', sect: 'abs', itype: 'Event', grp: 'gU', date: T, lbl: 'x', t: 1, who: 'Saber', pid: 'stiff', di: 1, from: '', to: '', seq: 1, lineId: 'x2' }
+    const seed = JSON.stringify(INPUTS)
+    try {
+      INPUTS.push(rec('inC', 'bane'), rec('inD', 'stiff'))
+      expect(itemOf(line, T).title).toBe('Input · Sports day · 2 people')
+    } finally { INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed)) }
   })
 })

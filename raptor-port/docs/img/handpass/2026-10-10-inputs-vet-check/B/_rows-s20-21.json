@@ -1,0 +1,55 @@
+{
+ "rows": [
+  {
+   "n": 20,
+   "size": "desktop 1440x900",
+   "role": "admin Saber (own input)",
+   "status": "PASS",
+   "said": [
+    "ok: ATT C: Add asks the document question before anything is saved — No medical document — Saber, ATT C ✕ THIS ATT C HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload",
+    "ok: ATT C: \"No document\" saves it, right kind and dates, no document attached — {\"iid\":\"imv1klmox6dxsgs\",\"person\":\"stiff\",\"cs\":\"Saber\",\"type\":\"ATT C\",\"remarks\":\"till 4 Aug\",\"date\":\"Aug 3\",\"endDate\":\"Aug 4\",\"allday\":true,\"s\":0,\"e\":1439,\"oil\":null,\"grp\":null,\"by\":\"stiff\",\"byCs\":\"Saber\",\"docs\":0,\"docId\":null}",
+    "ok: ATT C: the reopened window does not claim a document — {\"chips\":0,\"text\":\"Document\",\"allText\":false}",
+    "ok: ATT C: the row shows no paperclip — clips 0",
+    "ok: OML: Add asks the document question before anything is saved — No medical document — Saber, OML ✕ THIS OML HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload",
+    "ok: OML: \"No document\" saves it, right kind and dates, no document attached — {\"iid\":\"imv1klnt90fzqit\",\"person\":\"stiff\",\"cs\":\"Saber\",\"type\":\"OML\",\"remarks\":\"till 11 Aug\",\"date\":\"Aug 10\",\"endDate\":\"Aug 11\",\"allday\":true,\"s\":0,\"e\":1439,\"oil\":null,\"grp\":null,\"by\":\"stiff\",\"byCs\":\"Saber\",\"docs\":0,\"docId\":null}",
+    "ok: OML: the reopened window does not claim a document — {\"chips\":0,\"text\":\"Document\",\"allText\":false}",
+    "ok: OML: the row shows no paperclip — clips 0"
+   ],
+   "pics": [
+    "s20-ATTC-docquestion.png",
+    "s20-ATTC-saved-list.png",
+    "s20-ATTC-reopened.png",
+    "s20-OML-docquestion.png",
+    "s20-OML-saved-list.png",
+    "s20-OML-reopened.png"
+   ],
+   "note": "ATT C and OML only"
+  },
+  {
+   "n": 21,
+   "size": "phone 390x844 (touch)",
+   "role": "admin Saber (own input)",
+   "status": "PASS",
+   "said": [
+    "ok: Upload returns to the intact draft (nothing saved, type, remark and dates kept) — {\"n\":52,\"win\":1,\"type\":\"ATT C\",\"rmk\":\"S21 remark kept\",\"q\":0,\"read\":\"Aug 17 → Aug 18\"}",
+    "ok: the attachment appears in the window before saving — s21-cert-1.pdf ✕ Add | DOCUMENT s21-cert-1.pdf ✕ Add",
+    "ok: Add again saves with no second document question (no loop) — {\"loop\":0,\"made\":[{\"iid\":\"imv1klqyx1b311a\",\"person\":\"stiff\",\"cs\":\"Saber\",\"type\":\"ATT C\",\"remarks\":\"S21 remark kept\",\"date\":\"Aug 17\",\"endDate\":\"Aug 18\",\"allday\":true,\"s\":0,\"e\":1439,\"oil\":null,\"grp\":null,\"by\":\"stiff\",\"byCs\":\"Saber\",\"docs\":1,\"docId\":\"doc-8c46f490-3123-4d12-915d-a5c901b5814a\"}]}",
+    "the list card for the saved input has a paperclip/document control — 0",
+    "ok: the Medical tab lists the saved medical entry with its document control — docs 1",
+    "ok: tapping the card opens the document (a viewer comes up) — {\"title\":\"Tap to view the document\",\"iframe\":1,\"wins\":[],\"words\":\"\"}",
+    "ok: attached before the first Add: no document question, saved with 1 document — {\"loop2\":0,\"made2\":[{\"iid\":\"imv1klwao8u4dit\",\"person\":\"stiff\",\"cs\":\"Saber\",\"type\":\"ATT C\",\"remarks\":\"till 25 Aug\",\"date\":\"Aug 24\",\"endDate\":\"Aug 25\",\"allday\":true,\"s\":0,\"e\":1439,\"oil\":null,\"grp\":null,\"by\":\"stiff\",\"byCs\":\"Saber\",\"docs\":1,\"docId\":\"doc-13d881c9-1531-4281-9380-19094372ebaa\"}]}"
+   ],
+   "pics": [
+    "s21-r1-question.png",
+    "s21-r1-after-upload-press.png",
+    "s21-r1-attached.png",
+    "s21-r1-saved-list.png",
+    "s21-r1-document-open.png",
+    "s21-r2-attached-before.png",
+    "s21-r2-saved.png"
+   ],
+   "note": ""
+  }
+ ],
+ "errs": []
+}
