@@ -164,7 +164,7 @@ One table a thing. "Has it" = changed and proved (the proof is named); "must not
 | The people picker over a note | had it already | walk C5 (unbroken) |
 | A card's "Delete this input?" question | had it already | — |
 | The List's dates calendar | has it — and only while the List is shown | `batch2.test.tsx` (three cases, Astra 20, 21); e2e; walk C7, C8 |
-| The day's TITLE box | **MISSING — filed** | Escape there closes the day, and a title half typed is lost; not ruled — §7, for him |
+| The day's TITLE box | has it — **built after this check closed (D732, §11)**; it was MISSING, and filed, when the check closed | `batch2.test.tsx` (four cases); e2e; walk T1–T3, T5 (§11). A member has no box there, only the words — T4 |
 | The "?" card beside Type, the document viewer, the OIL question | had it already | untouched |
 
 **2.7 The two-tap calendar (D731 (12))**
@@ -329,7 +329,7 @@ fix. That run IS the break test of each wired row of §2: the wire taken out, a 
 | 5 | Escape on a new note's "+ people" button closed the whole day | Astra's scenario 16 | FIXED, red first |
 | 6 | A dates calendar left open on a List no longer shown swallowed the first Escape — a side-effect of this batch's A6 | Astra's scenario 21 | FIXED, red first |
 | 7 | The day's "Delete this input for all N people?" question took the asker out when the right went while it stood (older) | Astra's scenario 9 | FIXED, red first (`askedAll`) |
-| 8 | **MISSING row of §2.6:** Escape while the day's TITLE is typed closes the day and loses the typing | the roll-call | FILED for him — `OUTSTANDING.md` `[DAY-TITLE-ESCAPE]`, with a recommended answer; not ruled, so not built. *(He answered "Yes" after this check closed — D732, 10 Oct 26: ruled, to be built as the next small job with its own test and check.)* |
+| 8 | **MISSING row of §2.6:** Escape while the day's TITLE is typed closes the day and loses the typing | the roll-call | FILED for him — `OUTSTANDING.md` `[DAY-TITLE-ESCAPE]`, with a recommended answer; not ruled, so not built. *(He answered "Yes" after this check closed — D732, 10 Oct 26: ruled, to be built as the next small job with its own test and check.)* **BUILT the same day, red first, with its own small check — §11.** |
 | 9 | On a 568-point phone, in a six-week month, an admin's "Default window" button is 9 points past the foot (the page scrolls to it); the dates and both quick buttons are on the screen | the walk (F1b; Astra 39) | LEFT, told to him (§0 reading 7): the days keep the size he asked for |
 | 10 | On a phone the note at the top lies over the top strip of a TALL window — its title, never its ✕ in the pictures; a press goes through the note to what is under it | the host, opening E6b | LEFT, told to him on the look card: it is where he asked the note to be |
 | 11 | **"Take yourself out of this input?" deleted EVERYONE** when the right to delete for all came back while the question stood — made by fix 7 above, which kept the question's words and not its action | **BOTH readers, each blind** (Astra 1, Sol 1 — P1) | FIXED, red first: the question's intent is read first, both ways (`doDelete`); re-walked G1, G2. In this batch — not on `main` |
@@ -381,11 +381,101 @@ The walk's row is in `docs/walk-ledger.md` (10 Oct 26, `[SEEN-BATCH-2]`).
 5. **On his PC: Edit Schedule → a day's board → Personal Inputs → "Undo" on an accepted request.** The note names it:
    "Ranger's Sports day taken off the programme".
 
-And two things to know, not to do: with a TALL window up on the phone the note sits over the top strip of that window
-for the few seconds it shows; and Escape in the "Day title…" box still closes the day — that one is his to answer
-(`[DAY-TITLE-ESCAPE]`).
+6. **On his PC (added with §11, D732): Inputs → Calendar → open a day → type in "Day title…" → Escape.** The title is back
+   as it was and the day is still open; Escape again closes the day. Enter, or a click elsewhere, still saves a title.
 
-`Walk: docs/handpass/2026-10-10-batch2-check.md · 57 pictures · 35 surfaces · 50 orders · MISSING: 1 filed ([DAY-TITLE-ESCAPE])`
+And one thing to know, not to do: with a TALL window up on the phone the note sits over the top strip of that window
+for the few seconds it shows.
+
+`Walk: docs/handpass/2026-10-10-batch2-check.md · 66 pictures · 36 surfaces · 55 orders · MISSING: 1 fixed ([DAY-TITLE-ESCAPE], D732 — §11)`
+
+*(As the check first closed, before D732 was built: 57 pictures · 35 surfaces · 50 orders · MISSING: 1 filed. §11 adds 9 pictures, the title box as one more surface, and 5 orders.)*
 
 (35 surfaces = the 25 roll-call rows of §2.1–2.7 marked "has it" and the ten things of §2.8, each seen and operated or carried by the proof its row names; 50 orders = the walk's 45 steps and
 the re-walk's 5. Results carried by a test are §5's, apart.)
+
+## 11. `[DAY-TITLE-ESCAPE]` — built after the check closed (owner D732, 10 Oct 26 — "2. Yes"); its own small check
+
+**What was built.** In a day opened on the Inputs calendar, the "Day title…" box takes Escape first: what was typed is
+given up, the title as last saved shows again, the keyboard leaves the box, nothing is written, and the day stays open;
+the next Escape closes the day. Enter and leaving the box save, as before. One key handler on that one box
+(`src/ui/InputsCal.tsx`), a failing test first.
+
+**11.1 The eight questions, and the tier.** OIL — no: a day's title earns nothing and no count reads it. The published
+schedule — no: the title is the planning calendar's, not a day's issued content. What is saved — no: nothing new is
+stored, and the one risk (the blur an Escape causes writing what was typed) is pinned by a test and walked. A mark drawn
+in several places — no: one box. **A new control or key — YES.** A new surface — no. Roles — no: a member has no title
+box (pinned before this change, `inputscal.test.tsx`; walked, T4). The warning list — no. **Tier: WALK.** No outside
+reader: the tier asks for none, and the handler copies the note box's, which both readers read in §4–§7 of this sheet.
+
+**11.2 The rulings that bind it.** D732 (this); D731 (9) — the note box's manners, unchanged (T3); D641 — Escape peels
+one layer at a time (T1, T3); D726 — no word was added to the screen.
+
+**11.3 The roll-call — every place the day's title is drawn or written**
+
+| The place | Escape puts the title back? | What else is there | Proof |
+|---|---|---|---|
+| The "Day title…" box of the opened day (an admin's) — the ONE writer | has it | the note boxes under it keep their own Escape | `batch2.test.tsx` D732 (four cases); e2e D732; walk T1, T2, T3, T5 |
+| The same day opened by a member | must not — he has no box, only the title's words; Escape closes his day at once | — | `inputscal.test.tsx` ("no title editor for a member"); walk T4 |
+| The title printed on the date in the month | must not — it is read only; it shows what is SAVED, and is how the walk reads "nothing was written" | — | walk T1, T2 |
+| A day opened on the SANS calendar | must not — it has no title box | — | the code: one box in the app (`#icRmkEdit`) |
+
+**The door check.** Escape (give up) — the box, built here. Enter (save) and leaving the box (save) — as before, and the
+only routes on a phone, which has no Escape key: T5.
+
+**11.4 The sizing step**
+
+1. **The type of change:** C — one key in one box.
+2. **What only a walk could find here:** whether a real browser's own blur, sent as the keyboard leaves the box, saves
+   what was typed after all (leaving the box is how a title IS saved); whether the next Escape really reaches the day's
+   window; whether the phone's only routes still save. The tests cover the handler's logic; jsdom has no real blur order.
+3. **What the ledger says:** of 15 walks of type C, 8 found a real fault — and this morning's walk of the note box (the
+   same key, the same window) found none of its own in that part.
+4. **The walk chosen:** the host alone, by script (`scripts/handpass/d732-walk.mjs`), five steps: a desktop 1440 × 900
+   as the admin (three steps), the same desktop as a member by the app's own sign-out and sign-in, and a phone 390 × 844
+   by touch with a keyboard attached. No size beyond the required two: nothing of the layout changed (so no 125% start,
+   no short screen). No case left to a test alone.
+5. **After the walk:** its row is in `docs/walk-ledger.md` (10 Oct 26, `[DAY-TITLE-ESCAPE]`).
+
+**11.5 The walk — the built app, real keys; "saved" read off the date in the month**
+
+| # | What was done | What the screen said | Result | Pictures |
+|---|---|---|---|---|
+| T1 | Admin, 22 Oct: "Sports day" typed, Enter; the box clicked, " — cancelled" typed; Escape; Escape | after Enter the date reads "Sports day"; after the first Escape the box reads "Sports day", the keyboard is out of it, the day is open, the date still "Sports day"; the second Escape closes the day | PASS | `T1a`, `T1b`, `T1c` |
+| T2 | Admin, 23 Oct (no title): "half a tit" typed; Escape; then "Range day" typed and the box left by a click in the day's list | after Escape the box is empty and the date has no title, the day open; after leaving the box the date reads "Range day" | PASS | `T2a`, `T2b` |
+| T3 | THE OTHER ORDER — admin, 22 Oct: the box clicked and Escape with nothing typed; then "+ Note", words typed, Escape; Escape | the box is left and the day stays; the note box goes, no note is made, the title untouched, the day stays; the last Escape closes the day | PASS | `T3` |
+| T4 | A MEMBER (Ranger), signed in through the app after the admin's writes: 22 Oct opened; Escape | the title is words ("Sports day"), no box; the day closes at the first Escape, as before | PASS | `T4a` |
+| T5 | A PHONE, by touch: the title typed and the box left by a tap in the day's list; then (a keyboard attached) typed over and Escape | saved by leaving the box — the phone's own route, unchanged; after Escape the title is back and the day is open | PASS | `T5a`, `T5b` |
+
+Five steps as they should be; no console error, page error or failed request. Nine pictures, all nine opened:
+`docs/img/handpass/2026-10-10-batch2-check/d732/`.
+
+**The break test.** The wire was broken before it existed: with the handler absent the three D732 cases of
+`batch2.test.tsx` were red ("the day is still open: expected null to be truthy") and its control case green; with it,
+all four green.
+
+**11.6 What was NOT walked, and why.** His iPhone or an iPad with a keyboard — the walk's browser is Chromium; the one
+line only his device could prove is that Safari, too, sends the box's blur AFTER the Escape key is handled (if it sent
+none at all, nothing would be saved either — the fault could only be a title wrongly saved, and the handler does not
+depend on the blur arriving). A phone on its side and his PC's 125% — nothing of the layout changed. Escape in the title
+box with an input's window ALSO up was not walked; it is carried by a test that presses the key through the app's own
+handlers (`batch2.test.tsx`, "with an input’s window up and in front…"): the input's window stands down for a key typed
+in a box outside it, the title box takes it, and the window and what was typed in it stay.
+
+**11.7 What it found.** Nothing in the app. One fault in the walk's own script, not the app's: its first run read the
+saved title from the wrong part of the date and called four right steps wrong; the picture showed the title where it
+should be, the read was corrected (the same wrong read was in the new browser test, corrected before the gates), and the
+run repeated — the five results above are that second run.
+
+**11.8 The gates.** The whole gate set, under the PC's checks lock, wholly green in one run on the title box's code
+(`a942ae0f`): unit 9886 / 9886 (581 files) · build clean · the original's comparison 728 / 0 · browser tests 762 passed,
+0 failed, 57 skipped · Tracker smoke 445 / 0 · rule check OK · document check OK. Against the batch's last run (9882
+unit, 761 browser): +4 unit cases and +1 browser case, all D732's. The fifth unit case (an input's window up as well,
+§11.6) was added while that run was in its later stages and passed with its file, 73 of 73 — the next whole run will
+count 9887. *(A first start of the run "failed" all seven gates in 0 seconds with empty logs: started from the wrong
+folder — a launch fault the gates guide already names, not a result.)* Pull request #488's own checks were all green
+on the commit before this one when read, and none was running when this was pushed (D151).
+
+**11.9 His look.** Step 6 of §10, on his PC.
+
+`Walk: docs/handpass/2026-10-10-batch2-check.md §11 · 9 pictures · 1 surface (the title box; a member's words and the date's title seen beside it) · 5 orders · MISSING: 0`

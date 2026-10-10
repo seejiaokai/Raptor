@@ -3573,3 +3573,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the sizing step, a designed scenario may be left unwalked only with one of three written reasons — carried by a named test, walked on unchanged code within N days, or unreachable — and "older behaviour" is not one of them when the change touches the same listener family, the same component, or the same scope rule. Otherwise drive it once; a scripted step is cheaper than a review round.
 
 **Principle:** A scenario from an independent designer is evidence about where the builder's blind spots are. Declining it needs a reason about the scenario, not about the diff.
+
+### Observation 503: A scripted check read "what was saved" from a guessed place on the screen — four right steps called wrong, and the same wrong read sat in the new browser test
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[DAY-TITLE-ESCAPE]` (D732) — a five-step host walk of one key in one box. To prove "nothing was written" in screen terms, the walk read the title the month prints on the date. The locator was built from the date cell's attribute (`data-icday`) when the title is drawn under a sibling element (`data-ichead`). The first run reported 4 of 5 steps FAIL on a build that was right; the picture showed the title in place. The new e2e case, written minutes earlier, carried the same locator and would have failed inside the fifteen-minute gate run.
+**Skill:** New skill candidate: bug-check sizing / walk scripts (project doc `raptor-port/docs/bug-check-order.md` §7.2, §7.8)
+**Type:** open-source
+**Phase/Area:** Writing a walk step or a browser test that reads a result off the screen
+
+**Issue:** The read was written from memory of how the cell "ought" to be built, not from the rendering code two screens away in the same file. Because the walk ran before the gates, the cost was one minute; had the gates run first it would have been a red gate and a re-run. The order's rule "a scripted gesture that fails is looked at on its picture before it is called a defect" worked exactly as written — the picture settled it at once.
+
+**Suggested improvement:** Two small lines for the walk guidance: (1) a locator that READS a result is copied from the markup that draws it (or from an existing test of that element), never composed from a neighbour's attribute; (2) when a new walk script and a new browser test share a read, run the walk (seconds) before the gate set (minutes) — the walk is the cheap place to find out the read is wrong.
+
+**Principle:** A check has two halves, the action and the read; a wrong read fails a right build just as loudly as a real fault. Take the read from the source, and put the cheapest run of it first.
+
+### Observation 504: A launch trap already written in the guide was walked into again, because the tool's own usage line suggests the wrong form
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[DAY-TITLE-ESCAPE]`. The whole gate set was started from inside `raptor-port/` with `gatelock.mjs run --from raptor-port`; all seven gates "FAILED" in 0 seconds with empty logs. `raptor-port/docs/gates-and-deploy.md` documents exactly this (met 7 Oct 26). It was met again three days later: the script's own header and its usage message both print `run [--from raptor-port]`, which is what gets copied.
+**Skill:** New skill candidate: gate running (project tool `raptor-port/scripts/gatelock.mjs`; project doc `raptor-port/docs/gates-and-deploy.md`)
+**Type:** internal
+**Phase/Area:** Starting the full check set
+
+**Issue:** A written warning in a reference doc did not stop the second occurrence; the tool's inline example outranked it. The failure is cheap (one minute) but reads, for a moment, like seven red gates.
+
+**Suggested improvement:** Make the tool refuse instead of the doc warn: `gatelock.mjs run` checks that its `from` folder holds a `package.json` and, if not, exits before taking the lock with one line naming the folder it looked in and the fix ("leave --from out when already inside raptor-port"). Change the usage line to show the form that works from both places.
+
+**Principle:** A trap met twice despite being documented needs a guard in the tool, not a louder note — and a tool's own usage text is the documentation people actually follow.
