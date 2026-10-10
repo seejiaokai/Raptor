@@ -160,3 +160,34 @@ for (const [what, viewport, tap] of [['a desktop', { width: 1440, height: 900 },
     await context.close()
   })
 }
+
+/* THE SCHEDULE'S WINDOW ON A SHARED INPUT, ON A PHONE: "DELETE FOR ALL?" IS SHOWN WITH BOTH ITS ANSWERS (found by the
+   job's bug check — walker W2, scenario 5, 11 Oct 26; D748 — the window opened from the schedule shows everyone, so
+   it carries the people picker and is taller than a phone's screen). The question opened at the window's foot with
+   only the red "Delete" in sight and "Keep" below the edge. Only a real browser can say what is in sight. */
+test('a phone: the window opened from the Personal Inputs line asks "Delete for all 4 people?" with Delete AND Keep in sight (D748)', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+  const page = await context.newPage()
+  const errs = noErrors(page)
+  await login(page)
+  await fileGroup(page, true)
+  await go(page, 'editsched')
+  await page.evaluate(di => (window as any).openScheduler(di), DI)
+  const type = page.locator('#schedBoard .sb-panel.pinp .sb-arow.inprow .inpedit').first()
+  await type.scrollIntoViewIfNeeded(); await type.tap()
+  await expect(page.locator('#inpEditPop [data-pp][aria-pressed="true"]'), 'the window shows everyone in it (D748)').toHaveCount(4)
+  const del = page.locator('#inpEditDel')
+  await del.scrollIntoViewIfNeeded(); await del.tap()
+  await expect(page.locator('[data-testid="inped-delall"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const seen = await page.evaluate(() => ['inped-delall-yes', 'inped-delall-no'].map(id => {
+    const b = document.querySelector(`[data-testid="${id}"]`) as HTMLElement, r = b.getBoundingClientRect()
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+    return { id, inView: r.top >= 0 && r.bottom <= innerHeight, hit: !!hit && (hit === b || b.contains(hit)) }
+  }))
+  for (const b of seen) { expect(b.inView, `${b.id} is on the screen`).toBe(true); expect(b.hit, `${b.id} can be pressed where it is drawn`).toBe(true) }
+  await page.locator('[data-testid="inped-delall-no"]').tap()
+  await expect.poll(() => page.evaluate(t => (window as any).INPUTS.filter((r: any) => r.title === t).length, TITLE), { message: 'Keep keeps it' }).toBe(4)
+  expect(errs).toEqual([])
+  await context.close()
+})

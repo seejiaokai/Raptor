@@ -2112,6 +2112,13 @@ export function InputEditor() {
   const basePpl = useRef<string[]>([])
   const entryIds = useRef<string[]>([])
   const [delAll, setDelAll] = useState(false)
+  /* THE "DELETE FOR ALL?" QUESTION IS SHOWN WHOLE WHEN IT OPENS (`[GROUP-INPUT-ONE-ROW]`, the job's bug check — walker W2,
+     scenario 5, 11 Oct 26). The schedule's dialog on a shared input carries the people picker since D748, so on a phone
+     it is taller than the screen and scrolls: the question opened at its foot with only the red "Delete" in sight,
+     and "Keep" below the edge until a finger found the scroll — a question showing only its destructive answer. It
+     is brought into view as it opens, both answers with it. */
+  const delAsk = useRef<HTMLDivElement>(null)
+  useEffect(() => { const el = delAsk.current; if (delAll && el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'end' }) }, [delAll])
   const [takeOut, setTakeOut] = useState(false)
   /* a saved shared input's dates, being re-picked in the window (D681): true between the tap for the new start and the
      tap for the new end — see `datesHere`, below */
@@ -2867,7 +2874,7 @@ export function InputEditor() {
           </div>
         )}
         {delAll && (
-          <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?">
+          <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?" ref={delAsk}>
             <span className="inped-ask-q">Delete this input for all {rows.length} people?</span>
             <button type="button" className="abtn danger" data-testid="inped-delall-yes" autoFocus onClick={delEntry}>Delete</button>
             <button type="button" className="abtn ghost" data-testid="inped-delall-no" onClick={() => setDelAll(false)}>Keep</button>

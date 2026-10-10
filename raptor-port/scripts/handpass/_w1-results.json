@@ -1,0 +1,3247 @@
+{
+ "1": {
+  "n": 1,
+  "did": "filed G4 (and S1) through + Input; opened the week and the board; opened Personal Inputs; read every surface",
+  "saw": "week row [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] / line [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; board row [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] / line [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; folded week header read: \"⠿\nPERSONAL INPUTS\n2 input  · 2 on programme ·  how ⌄\" (S1 also filed, so 2 inputs; G4 counts once); with G4 filed alone in a clean world the folded header reads: \"⠿ PERSONAL INPUTS 1 input · 1 on programme · show ⌄\"",
+  "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#sbUndo",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2wbftqmrbrgr\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#sbRedo",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2wbftqmrbrgr\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2wbftqmrbrgr\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s1-week-ground.png",
+   "s1-week-inputs.png",
+   "s1-board-ground.png",
+   "s1-board-inputs.png"
+  ],
+  "note": "No hand act in this scenario: Undo took back the last filing (S1, Anvil) and Redo restored it."
+ },
+ "2": {
+  "n": 2,
+  "did": "week: mouse-drag Anvil from the crew list onto Hunter's puck on the one row",
+  "saw": "row before [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]], after [[\"Anvil\",\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; Personal Inputs line [[\"Anvil\",\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]; toast \"Anvil added to Range safety brief\"; Inputs calendar bar for 15 Jul reads \"5 · Range safety brief\"",
+  "inputs": "5 rec: Anvil,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w25wv2zf0lj\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "5 rec: Anvil,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 5,
+      "people": [
+       "Anvil",
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w25wv2zf0lj\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "5 rec: Anvil,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 5,
+      "people": [
+       "Anvil",
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w25wv2zf0lj\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s2-week-after-drop.png"
+  ]
+ },
+ "3": {
+  "n": 3,
+  "did": "board: mouse-drag Blade from the board crew list onto the row's + add; then drag Blade again onto Hunter's puck on the row",
+  "saw": "after add: [[\"Blade\",\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]] toast \"Blade added to Range safety brief\"; calendar bar \"5 · Range safety brief\"; second drop toast \"Blade is already on this input\", row [[\"Blade\",\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]",
+  "inputs": "5 rec: Blade,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"] | after 2nd drop: 5 rec: Blade,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#sbUndo",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w2hak5zgu55\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#sbRedo",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Blade",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Blade",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "5 rec: Blade,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 5,
+      "people": [
+       "Blade",
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w2hak5zgu55\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Blade",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Blade",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "5 rec: Blade,Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 5,
+      "people": [
+       "Blade",
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w2hak5zgu55\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s3-board-after-add.png",
+   "s3-board-blade-again.png"
+  ]
+ },
+ "4": {
+  "n": 4,
+  "did": "week: mouse-drag Tally's puck off the one row and let go on empty page (the blank toolbar space)",
+  "saw": "row now [[\"Drifter\",\"Hunter\",\"Ranger\"]], line [[\"Drifter\",\"Hunter\",\"Ranger\"]]; toast \"Tally taken out of Range safety brief\"; Inputs calendar bar \"3 · Range safety brief\"",
+  "inputs": "3 rec: Drifter,Hunter,Ranger @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w2w6n5c331e\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Hunter,Ranger @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w2w6n5c331e\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Hunter,Ranger @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w2w6n5c331e\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s4-week-tally-off.png"
+  ]
+ },
+ "5": {
+  "n": 5,
+  "did": "week: right-click Ranger's puck on the one row",
+  "saw": "row now [[\"Drifter\",\"Hunter\",\"Tally\"]], line [[\"Drifter\",\"Hunter\",\"Tally\"]]; toast \"Ranger taken out of Range safety brief\"; Inputs calendar bar \"3 · Range safety brief\"",
+  "inputs": "3 rec: Drifter,Hunter,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w37fq8z2wal\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Hunter,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w37fq8z2wal\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Hunter,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w37fq8z2wal\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s5-week-ranger-off.png"
+  ]
+ },
+ "6": {
+  "n": 6,
+  "did": "week: mouse-drag Hunter's puck from the one row onto the first-wave seat 2.0.0.0.p (rolling the wheel mid-drag to bring it in view)",
+  "saw": "seat before: Trident; after: Hunter; row now [[\"Drifter\",\"Ranger\",\"Tally\"]]; line [[\"Drifter\",\"Ranger\",\"Tally\"]]; toast \"Relay — 1 person is double turning: Relay\"; flash at drop: [{\"tag\":\"span\",\"cls\":\"seat lift-land\",\"slot\":\"2.0.0.0.p\",\"text\":\"Hunter IP\",\"row\":null}]; (first-wave seats: 2.0.0.0.p:Trident, 2.0.0.0.w:Relay, 2.0.0.1.p:Gambit, 2.0.0.1.w:Hex, 2.0.1.0.p:Torch, 2.0.1.0.w:Cutter)",
+  "inputs": "3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w3ien7w2nyw\""
+      ]
+     }
+    },
+    "probe": "seat 2.0.0.0.p holds Trident"
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w3ien7w2nyw\""
+      ]
+     }
+    },
+    "probe": "seat 2.0.0.0.p holds Hunter"
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w3ien7w2nyw\""
+      ]
+     }
+    },
+    "probe": "seat 2.0.0.0.p holds Hunter"
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s6-week-ground-after.png",
+   "s6-week-landing-flash"
+  ]
+ },
+ "7": {
+  "n": 7,
+  "did": "board: clicked + Item to add a blank ground row at the foot; mouse-dragged Drifter from the one row onto the TRAINING (S1) row, Undo, then onto the blank row below",
+  "saw": "A (onto S1 row): [TRAINING: Anvil,Drifter] [MAINT CONF @ ENG WING: Ace] [NAV-SYS TRIAL PREP: Vapor] [RANGE SAFETY BRIEF: Hunter,Ranger,Tally] [(blank): ]; toast \"Drifter taken out of Range safety brief\"; flash on row(s) [\"TRAINING\"] elements [\"g:2.5.x0\"]; INPUTS Hunter,Ranger,Tally. Undo A: [TRAINING: Anvil] [MAINT CONF @ ENG WING: Ace] [NAV-SYS TRIAL PREP: Vapor] [RANGE SAFETY BRIEF: Drifter,Hunter,Ranger,Tally] [(blank): ] INPUTS Drifter,Hunter,Ranger,Tally toast \"Undid: a personal input\". B (onto blank row below): [TRAINING: Anvil] [MAINT CONF @ ENG WING: Ace] [NAV-SYS TRIAL PREP: Vapor] [RANGE SAFETY BRIEF: Hunter,Ranger,Tally] [(blank): Drifter]; toast \"Drifter taken out of Range safety brief\"; flash on row idx [4] (target idx 4) [\"g:2.6\"]; INPUTS Hunter,Ranger,Tally",
+  "inputs": "after B: 3 rec: Hunter,Ranger,Tally",
+  "done": {
+   "undo": {
+    "ctl": "#sbUndo",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w3sn3dbkgr4\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#sbRedo",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w3sn3dbkgr4\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w3sn3dbkgr4\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s7-board-onto-S1-after.png",
+   "s7-board-onto-S1-flash",
+   "s7-board-onto-below-after.png",
+   "s7-board-onto-below-flash"
+  ]
+ },
+ "8": {
+  "n": 8,
+  "did": "week: took Tally off by drag, Ranger by right-click, Hunter by drag (Drifter left); then tried the last by drag and by right-click",
+  "saw": "drag Tally off -> row [Drifter,Hunter,Ranger] INPUTS [Drifter,Hunter,Ranger] toast \"Tally taken out of Range safety brief\" ;; right-click Ranger -> row [Drifter,Hunter] INPUTS [Drifter,Hunter] toast \"Ranger taken out of Range safety brief\" ;; drag Hunter off -> row [Drifter] INPUTS [Drifter] toast \"Hunter taken out of Range safety brief\" ;; drag the last (Drifter) off -> row [Drifter] INPUTS [Drifter] toast \"Drifter is the last person on this input — use ✕ to take it off the programme, or delete it in its own window\" ;; right-click the last (Drifter) -> row [Drifter] INPUTS [Drifter] toast \"Drifter is the last person on this input — use ✕ to take it off the programme, or delete it in its own window\"",
+  "inputs": "Drifter",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter"
+       ]
+      ]
+     },
+     "inputs": "2 rec: Drifter,Hunter @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 2,
+      "people": [
+       "Drifter",
+       "Hunter"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w470awv53ow\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter"
+       ]
+      ]
+     },
+     "inputs": "1 rec: Drifter @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 1,
+      "people": [
+       "Drifter"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w470awv53ow\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter"
+       ]
+      ]
+     },
+     "inputs": "1 rec: Drifter @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 1,
+      "people": [
+       "Drifter"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w470awv53ow\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s8-week-one-left.png",
+   "s8-week-last-by-drag.png",
+   "s8-week-last-by-rightclick.png"
+  ]
+ },
+ "9": {
+  "n": 9,
+  "did": "typed 14:30 over the start, then a remark \"Bring ID\", then the name \"Range brief\" into the boxes of the one row (week, board) and of the Personal Inputs line (week, board), each in a fresh world; read the row, INPUTS and the Inputs calendar day card after each; one Undo and a Redo after each",
+  "saw": "[weekG] start \"14:30\": box now \"14:30\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · till 15 Jul By Saber\"; toast \"\" => ok | Undo once: box \"14:00\", INPUTS @ 14:00-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"14:30\" => ok ;; rmk \"Bring ID\": box now \"Bring ID\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · Bring ID By Saber\"; toast \"\" => ok | Undo once: box \"till 15 Jul\", INPUTS @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"Bring ID\" => ok ;; name \"Range brief\": box now \"RANGE BRIEF\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range brief · Bring ID By Saber\"; toast \"\" => ok | Undo once: box \"RANGE SAFETY BRIEF\", INPUTS @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"RANGE BRIEF\" => ok\n[boardG] start \"14:30\": box now \"14:30\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · till 15 Jul By Saber\"; toast \"\" => ok | Undo once: box \"14:00\", INPUTS @ 14:00-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"14:30\" => ok ;; rmk \"Bring ID\": box now \"Bring ID\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · Bring ID By Saber\"; toast \"\" => ok | Undo once: box \"till 15 Jul\", INPUTS @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"Bring ID\" => ok ;; name \"Range brief\": box now \"RANGE BRIEF\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range brief · Bring ID By Saber\"; toast \"\" => ok | Undo once: box \"RANGE SAFETY BRIEF\", INPUTS @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"RANGE BRIEF\" => ok\n[weekI] start \"14:30\": box now \"14:30\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · till 15 Jul By Saber\"; toast \"\" => ok | Undo once: box \"14:00\", INPUTS @ 14:00-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"14:30\" => ok ;; rmk \"Bring ID\": box now \"Bring ID\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · Bring ID By Saber\"; toast \"\" => ok | Undo once: box \"till 15 Jul\", INPUTS @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"Bring ID\" => ok ;; name: no typed box for the name on this line (the name is a button that opens the input window)\n[boardI] start \"14:30\": box now \"14:30\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · till 15 Jul By Saber\"; toast \"\" => ok | Undo once: box \"14:00\", INPUTS @ 14:00-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"14:30\" => ok ;; rmk \"Bring ID\": box now \"Bring ID\", rows 1, men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"], INPUTS 4 rec @ 14:30-15:00 rmk=[\"Bring ID\"] titles=[\"Range safety brief\"]; card (1 card): \"aber LATE 14:30–15:00 Drifter, Hunter, Ranger, TallyMEETING Range safety brief · Bring ID By Saber\"; toast \"\" => ok | Undo once: box \"till 15 Jul\", INPUTS @ 14:30-15:00 rmk=[\"till 15 Jul\"] titles=[\"Range safety brief\"], toast \"Undid: 4 inputs\" => ok | Redo: box \"Bring ID\" => ok ;; name: no typed box for the name on this line (the name is a button that opens the input window)",
+  "inputs": "weekG: after reload 4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"] | boardG: after reload 4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"] | weekI: after reload 4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"] | boardI: after reload 4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: 4 inputs",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "870-900"
+      ],
+      "clock": [
+       "14:30-15:00"
+      ],
+      "rmk": [
+       "Bring ID"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w4o6qkz3rqd\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: 4 inputs",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "870-900"
+      ],
+      "clock": [
+       "14:30-15:00"
+      ],
+      "rmk": [
+       "Bring ID"
+      ],
+      "titles": [
+       "Range brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w4o6qkz3rqd\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "870-900"
+      ],
+      "clock": [
+       "14:30-15:00"
+      ],
+      "rmk": [
+       "Bring ID"
+      ],
+      "titles": [
+       "Range brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w4o6qkz3rqd\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "doneAll": [
+   {
+    "where": "weekG",
+    "done": {
+     "undo": {
+      "ctl": "#undoBtn",
+      "ok": true,
+      "toast": "Undid: 4 inputs",
+      "snap": {
+       "surface": "week",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w4o6qkz3rqd\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "redo": {
+      "ctl": "#redoBtn",
+      "ok": true,
+      "toast": "Redid: 4 inputs",
+      "snap": {
+       "surface": "week",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w4o6qkz3rqd\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "reload": {
+      "snap": {
+       "surface": "week",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w4o6qkz3rqd\""
+        ]
+       }
+      },
+      "probe": null
+     }
+    }
+   },
+   {
+    "where": "boardG",
+    "done": {
+     "undo": {
+      "ctl": "#sbUndo",
+      "ok": true,
+      "toast": "Undid: 4 inputs",
+      "snap": {
+       "surface": "board",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w5kd1l566yr\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "redo": {
+      "ctl": "#sbRedo",
+      "ok": true,
+      "toast": "Redid: 4 inputs",
+      "snap": {
+       "surface": "board",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w5kd1l566yr\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "reload": {
+      "snap": {
+       "surface": "board",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w5kd1l566yr\""
+        ]
+       }
+      },
+      "probe": null
+     }
+    }
+   },
+   {
+    "where": "weekI",
+    "done": {
+     "undo": {
+      "ctl": "#undoBtn",
+      "ok": true,
+      "toast": "Undid: 4 inputs",
+      "snap": {
+       "surface": "week",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "till 15 Jul"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w6ork9inrc1\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "redo": {
+      "ctl": "#redoBtn",
+      "ok": true,
+      "toast": "Redid: 4 inputs",
+      "snap": {
+       "surface": "week",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w6ork9inrc1\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "reload": {
+      "snap": {
+       "surface": "week",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w6ork9inrc1\""
+        ]
+       }
+      },
+      "probe": null
+     }
+    }
+   },
+   {
+    "where": "boardI",
+    "done": {
+     "undo": {
+      "ctl": "#sbUndo",
+      "ok": true,
+      "toast": "Undid: 4 inputs",
+      "snap": {
+       "surface": "board",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "till 15 Jul"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w7d1lt0j55n\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "redo": {
+      "ctl": "#sbRedo",
+      "ok": true,
+      "toast": "Redid: 4 inputs",
+      "snap": {
+       "surface": "board",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w7d1lt0j55n\""
+        ]
+       }
+      },
+      "probe": null
+     },
+     "reload": {
+      "snap": {
+       "surface": "board",
+       "rows": {
+        "ground": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ],
+        "line": [
+         [
+          "Drifter",
+          "Hunter",
+          "Ranger",
+          "Tally"
+         ]
+        ]
+       },
+       "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:30-15:00 rmk=[\"Bring ID\"] title=[\"Range safety brief\"]",
+       "raw": {
+        "n": 4,
+        "people": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "times": [
+         "870-900"
+        ],
+        "clock": [
+         "14:30-15:00"
+        ],
+        "rmk": [
+         "Bring ID"
+        ],
+        "titles": [
+         "Range safety brief"
+        ],
+        "dates": [
+         "Jul 15"
+        ],
+        "grp": [
+         "\"gmv2w7d1lt0j55n\""
+        ]
+       }
+      },
+      "probe": null
+     }
+    }
+   }
+  ],
+  "pass": true,
+  "pics": [
+   "s9-weekG-after-three.png",
+   "s9-weekG-card-after-three",
+   "s9-boardG-after-three.png",
+   "s9-boardG-card-after-three",
+   "s9-weekI-after-three.png",
+   "s9-weekI-card-after-three",
+   "s9-boardI-after-three.png",
+   "s9-boardI-card-after-three"
+  ]
+ },
+ "10": {
+  "n": 10,
+  "did": "board row buttons on the one row, each then Undo: the cross, CX (typed a reason in the question, pressed Cancel line), the red box, the information-only mark; the last one then Undo / Redo / reload",
+  "saw": "before: rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r gr-frominput lateinp\" puck opacity [\"1\",\"1\",\"1\",\"1\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00\nX: toast \"Ground item removed — back under Personal Inputs — RANGE SAFETY BRIEF, 14:00–15:00, 4 people\"; rows 0 men null class \"null\" puck opacity [] boxes []; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O ACCEPT\" buttons [\"Range safety brief\",\"LATE\",\"Accept\"]; INPUTS 4 rec acc=r @ 14:00-15:00 => ok\n  Undo: toast \"Undid: a change to the schedule\"; rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r gr-frominput lateinp\" puck opacity [\"1\",\"1\",\"1\",\"1\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00 => ok\nCX: questions open 1 (\"Cancel this item ✕ CX DUE Reads CX DUE <reason> on the line. Leave it blank for a plain CX. WX OPS LOGS ✎ Edit Cancel line\"); typed \"weather\"; toast \"CX DUE weather\"; rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r cx gr-frominput lateinp\" puck opacity [\"0.55\",\"0.55\",\"0.55\",\"0.55\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00 => ok\n  Undo: toast \"Undid: a change to the schedule\"; rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r gr-frominput lateinp\" puck opacity [\"1\",\"1\",\"1\",\"1\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00 => ok\nred box: toast \"Red box — flagged for the next scheduler\"; rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r redbox gr-frominput lateinp\" puck opacity [\"1\",\"1\",\"1\",\"1\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00 => ok\n  Undo: toast \"Undid: a change to the schedule\"; rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r gr-frominput lateinp\" puck opacity [\"1\",\"1\",\"1\",\"1\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00 => ok\ninfo only: toast \"Info only — this item is no longer checked against the rules, and earns nobody any OIL\"; rows 1 men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"] class \"sb-arow c6r fyi gr-frominput lateinp\" puck opacity [\"0.75\",\"0.75\",\"0.75\",\"0.75\"] boxes [\"RANGE SAFETY BRIEF\",\"14:00\",\"15:00\",\"till 15 Jul\"]; line 1 \"Range safety brief MEETING LATE Drifter A Hunter IP Ranger IP Tally O UNDO\" buttons [\"Range safety brief\",\"LATE\",\"Undo\"]; INPUTS 4 rec acc=g @ 14:00-15:00 => ok",
+  "inputs": "4 rec, acc g",
+  "done": {
+   "undo": {
+    "ctl": "#sbUndo",
+    "ok": true,
+    "toast": "Undid: a change to the schedule",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w88s63vm5mv\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#sbRedo",
+    "ok": true,
+    "toast": "Redid: a change to the schedule",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w88s63vm5mv\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w88s63vm5mv\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s10-x-line-after.png",
+   "s10-x-ground-after.png",
+   "s10-cx-question.png",
+   "s10-cx-ground-after.png",
+   "s10-redbox-ground-after.png",
+   "s10-info-ground-after.png"
+  ]
+ },
+ "11": {
+  "n": 11,
+  "did": "board: mouse-dragged the one row by its grip above the TRAINING row, then below the MAINT CONF row, then pressed the Ground Programme's Auto sort",
+  "saw": "before: TRAINING[1] > MAINT CONF @ ENG WING[1] > NAV-SYS TRIAL PREP[1] > RANGE SAFETY BRIEF[4]\n1) grip dragged above TRAINING: RANGE SAFETY BRIEF[4] > TRAINING[1] > MAINT CONF @ ENG WING[1] > NAV-SYS TRIAL PREP[1]; four men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]; toast \"\"; flash [\"NAV-SYS TRIAL PREP\",\"NAV-SYS TRIAL PREP\"]; INPUTS 4 rec => ok\n2) grip dragged below MAINT CONF: TRAINING[1] > MAINT CONF @ ENG WING[1] > RANGE SAFETY BRIEF[4] > NAV-SYS TRIAL PREP[1]; four men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]; toast \"\"; flash []; INPUTS 4 rec => ok\n3) Auto sort: TRAINING[1] > MAINT CONF @ ENG WING[1] > RANGE SAFETY BRIEF[4] > NAV-SYS TRIAL PREP[1] (start times [\"10:00\",\"14:00\",\"14:00\",\"14:00\"] - non-decreasing, three rows tie at 14:00); four men [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]; toast \"Ground programme back to time order\"; INPUTS 4 rec => ok",
+  "inputs": "4 rec: Drifter,Hunter,Ranger,Tally",
+  "done": {
+   "undo": {
+    "ctl": "#sbUndo",
+    "ok": true,
+    "toast": "Undid: a change to the schedule",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w8qldgm2f9j\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#sbRedo",
+    "ok": true,
+    "toast": "Redid: a change to the schedule",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w8qldgm2f9j\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w8qldgm2f9j\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s11-board-moved-above-S1.png",
+   "s11-board-move1-flash",
+   "s11-board-moved-below-MAINT.png",
+   "s11-board-move2-flash",
+   "s11-board-after-auto-sort.png"
+  ]
+ },
+ "12": {
+  "n": 12,
+  "did": "filed an overseas duty (OD) for Drifter and Hunter on Thu 16 Jul through the + Input window (Several people); looked at Thursday's Unavailable list; typed the remark \"Range deployment\" into Drifter's row box",
+  "saw": "after filing: 2 OD rows for them, [\"Hunter 06:00-18:00\",\"Drifter 06:00-18:00\"]; toast \"Input added for 2 people\"; INPUTS Drifter:\"till 16 Jul\" / Hunter:\"till 16 Jul\". After typing on Drifter's row: rows [\"Hunter:\\\"till 16 Jul\\\"\",\"Drifter:\\\"Range deployment\\\"\"]; INPUTS Drifter:\"Range deployment\" / Hunter:\"till 16 Jul\"; toast \"\"",
+  "inputs": "Drifter:\"Range deployment\" / Hunter:\"till 16 Jul\"",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w94v8wrppab\""
+      ]
+     }
+    },
+    "probe": "OD rows [\"Hunter:till 16 Jul\",\"Drifter:till 16 Jul\"]; INPUTS Drifter:\"till 16 Jul\" / Hunter:\"till 16 Jul\""
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w94v8wrppab\""
+      ]
+     }
+    },
+    "probe": "OD rows [\"Hunter:till 16 Jul\",\"Drifter:Range deployment\"]; INPUTS Drifter:\"Range deployment\" / Hunter:\"till 16 Jul\""
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w94v8wrppab\""
+      ]
+     }
+    },
+    "probe": "OD rows [\"Hunter:till 16 Jul\",\"Drifter:Range deployment\"]; INPUTS Drifter:\"Range deployment\" / Hunter:\"till 16 Jul\""
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s12-week-unavailable-after-filing.png",
+   "s12-week-unavailable-after-remark.png"
+  ]
+ },
+ "13": {
+  "n": 13,
+  "did": "filed a leave (LL) for Tally on 15 Jul through the + Input window, while he is in the meeting; read the one row on the week and the board; clicked his line in the board's warning list",
+  "saw": "week row pucks [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally[flag ring]\"]; Tally puck class \"puck r sm warn hard boxred san\"; board row pucks [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally[flag ring]\"]; warning list lines naming Tally: [\"Tally — On leave but tasked — RANGE SAFETY BRIEF — reason: till 15 Jul\",\"Tally\"]; clicking it lit these pucks on the Ground Programme (warning-focus ring): [\"RANGE SAFETY BRIEF:Tally\"] (all lit places on the board: [\"grnd:RANGE SAFETY BRIEF\",\"pinp:till 15 Jul\",\"unav:till 15 Jul\"]); 6 other pucks on the Ground Programme dimmed; filing toast \"Input added\"",
+  "inputs": "LL for Tally: 1",
+  "done": {
+   "undo": {
+    "ctl": "#sbUndo",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w9fcj5j2rxo\""
+      ]
+     }
+    },
+    "probe": "Tally puck on the board not flagged (puck r sm san); leave records for Tally 15 Jul: 0"
+   },
+   "redo": {
+    "ctl": "#sbRedo",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w9fcj5j2rxo\""
+      ]
+     }
+    },
+    "probe": "Tally puck on the board FLAGGED (puck r sm warn hard boxred san wfoc); leave records for Tally 15 Jul: 1"
+   },
+   "reload": {
+    "snap": {
+     "surface": "board",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w9fcj5j2rxo\""
+      ]
+     }
+    },
+    "probe": "Tally puck on the board FLAGGED (puck r sm warn hard boxred san); leave records for Tally 15 Jul: 1"
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s13-week-tally-flag.png",
+   "s13-board-warning-clicked.png",
+   "s13-board-ground-warning-clicked.png"
+  ]
+ },
+ "14": {
+  "n": 14,
+  "did": "week: clicked the Jul 06 week chip so 13-19 Jul shows as next week's peek; read the peek's Wednesday Ground Programme",
+  "saw": "peek {\"head\":\"WednesdayJul 154 X 4Common Pro\",\"n\":1,\"men\":[[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]],\"editable\":[0]}; the peek's row has 0 controls (editable boxes / drop targets / buttons)",
+  "inputs": "4 records of the input",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [],
+      "line": []
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w9sd0om9i7m\""
+      ]
+     }
+    },
+    "probe": "peek Wednesday: 1 row(s) [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]"
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [],
+      "line": []
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w9sd0om9i7m\""
+      ]
+     }
+    },
+    "probe": "peek Wednesday: 1 row(s) [[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]]"
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2w9sd0om9i7m\""
+      ]
+     }
+    },
+    "probe": "peek Wednesday: 0 row(s) []"
+   }
+  },
+  "pass": true,
+  "pics": [
+   "s14-peek-wednesday-ground.png"
+  ]
+ },
+ "15": {
+  "n": 15,
+  "did": "week: mouse-drag the ALL AVAIL placeholder from the crew drawer onto Hunter's puck on the one row; then mouse-drag Hunter's puck off onto empty page",
+  "saw": "after the drop: row [\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"] seats [\"g:2.2:Drifter\",\"g:2.3:Hunter\",\"g:2.4:Ranger\",\"g:2.5:Tally\",\"g:2.2.x0:ALL AVAIL\"]; INPUTS 4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]; toast \"\"; flash [\"g:2.2.+\"]. After taking Hunter off: row [\"Drifter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"]; INPUTS 3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]; toast \"Hunter taken out of Range safety brief\". Tried again in clean worlds: variant \"Hunter taken off by right-click\": row after Hunter off [\"Drifter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"]; INPUTS Drifter,Ranger,Tally; toast \"Hunter taken out of Range safety brief\" ;; variant \"ALL AVAIL dropped on the + add zone, Hunter dragged off\": row after Hunter off [\"Drifter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"]; INPUTS Drifter,Ranger,Tally; toast \"Hunter taken out of Range safety brief\"",
+  "inputs": "3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+  "done": {
+   "undo": {
+    "ctl": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "4 rec: Drifter,Hunter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 4,
+      "people": [
+       "Drifter",
+       "Hunter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2wa1o824ckd6\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "redo": {
+    "ctl": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input",
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2wa1o824ckd6\""
+      ]
+     }
+    },
+    "probe": null
+   },
+   "reload": {
+    "snap": {
+     "surface": "week",
+     "rows": {
+      "ground": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Ranger",
+        "Tally"
+       ]
+      ]
+     },
+     "inputs": "3 rec: Drifter,Ranger,Tally @ 14:00-15:00 rmk=[\"till 15 Jul\"] title=[\"Range safety brief\"]",
+     "raw": {
+      "n": 3,
+      "people": [
+       "Drifter",
+       "Ranger",
+       "Tally"
+      ],
+      "times": [
+       "840-900"
+      ],
+      "clock": [
+       "14:00-15:00"
+      ],
+      "rmk": [
+       "till 15 Jul"
+      ],
+      "titles": [
+       "Range safety brief"
+      ],
+      "dates": [
+       "Jul 15"
+      ],
+      "grp": [
+       "\"gmv2wa1o824ckd6\""
+      ]
+     }
+    },
+    "probe": null
+   }
+  },
+  "pass": false,
+  "pics": [
+   "s15-week-allavail-dropped.png",
+   "s15-week-hunter-off.png"
+  ]
+ },
+ "_errs": []
+}

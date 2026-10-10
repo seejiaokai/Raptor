@@ -212,6 +212,18 @@ probes:adapted`, `npm run perf` — owed before the pull request (the row drawin
 
 ## 12. Where the check stands
 
+**AN UNATTENDED RUN FROM HERE (his word, 11 Oct 26, late: "I actually want to sleep now … So that u can work overnight" —
+D596, D667):** no question stops it; a choice that is his is parked under "Questions waiting for him" in §13; the chat
+compacts by itself if it fills; nothing merges, nothing touches `main`; one notification at the end.
+**W2 (the phone) reported: 9 PASS, 1 FAIL, no browser errors** (`docs/handpass/parts/gi-w2.md`). Its two finds, as the
+host has them so far: (a) the schedule's window on a shared input, on a phone — "Delete this input for all 4 people?"
+opened with only Delete in sight and Keep below the edge (picture `w2/s5-delete-confirm.png`, opened by the host): THIS
+job's (the window carries the people picker since D748) — a fix and a phone browser test are written
+(`ui/inputedit.tsx` `delAsk`; `e2e/grouprow.spec.ts`), NOT yet built or seen red-then-green: no rebuild while W1 and W3
+walk; (b) on the WEEK on a phone a tap on a row's "+ add" arms nothing when the row's first place is filled — the same
+on a one-man row, the board's tap works: older than this job by the walker's control; to file, not reproduced on
+`main` by the host. W1 and W3 were still walking.
+
 **11 Oct 26, when the walkers were started:** §§1–7 written; the gates run (§11); the PC lock taken for the walk; the
 build served on 4180 is `f07ce883`'s (nobody rebuilds it while they walk); three Sonnet 5.5 walkers started, each
 writing `docs/handpass/parts/gi-w1.md` / `gi-w2.md` / `gi-w3.md` and its pictures. **Next:** the host opens the
