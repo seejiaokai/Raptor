@@ -1809,6 +1809,7 @@ it rides with `[SKILL-FUSION]`, D70). **Context:** `raptor-port/docs/superpowers
 §8. **Place:** the draft now (light work, D484); the check and the pointer with `[SKILL-FUSION]`, after the reset.
 
 ### [CODE-TIDY-AUDIT] One tidiness audit of the code before the database step — a report for him, nothing restructured on its word (D486, 2 Oct 26)
+**Asked by him, 11 Oct 26 ("are there non applicable tests, because the app had changed so much") — to add to this audit's brief, his to confirm:** a sweep of the TESTS themselves for ones that no longer apply — a test that still passes but checks something no screen can reach any more (a function kept only for its tests, a path only a made-up event reaches), and the browser tests that are skipped (57 in the run of 11 Oct 26, a number steady for days and not read one by one). What he was told: tests whose RULE changed are rewritten to the new ruling in the same change, each saying so (never deleted or loosened); a leftover test of unreachable code wastes time but hides no fault; nobody has swept the whole set for them.
 The "thermo-nuclear" rubric, read at its source, is a reviewer's checklist for ONE change; the audit is our adaptation of it to
 the standing code. One reader, Astra first (D353), never the model that wrote the code (D67); it reads the files that are both
 large and often changed (nineteen files are over 1,000 lines; the table is in the context doc), reports at most ten restructures
