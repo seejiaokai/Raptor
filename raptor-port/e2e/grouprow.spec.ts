@@ -120,3 +120,42 @@ for (const [what, viewport, tap] of [['a desktop', { width: 1440, height: 900 },
     await context.close()
   })
 }
+
+/* ON THE BOARD A ROW'S COLOURED LINE STANDS CLEAR OF THE ROW (owner D747, 11 Oct 26 — sending a picture of his phone: "The
+   orange and blue line on the edit schedule board is cutting the buttons and pucks, can it be move left slightly such
+   that the visuals don't look so ugly"). The blue line of a row that came from an input and the amber line of a late
+   one were painted INSIDE the row's left edge, where a phone's pucks and its CX / info / red box / ✕ buttons start.
+   Only a real browser can say where a line is painted: for every such row of the seed Monday's Ground Programme, the
+   line's right edge is left of everything the row draws, and the line is inside its panel (which clips what leaves
+   it). */
+for (const [what, viewport, tap] of [['a desktop', { width: 1440, height: 900 }, false], ['a phone', { width: 390, height: 844 }, true]] as const) {
+  test(`${what}: the board row's coloured line is left of its pucks and buttons, never through them (D747)`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, viewport, ...(tap ? { isMobile: true, hasTouch: true } : {}) })
+    const page = await context.newPage()
+    const errs = noErrors(page)
+    await login(page)
+    await go(page, 'editsched')
+    await page.evaluate(() => (window as any).openScheduler(0))
+    await page.waitForSelector('#schedBoard .sb-panel.grnd .sb-arow.gr-frominput')
+    const rows = await page.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-panel.grnd .sb-arow.gr-frominput')].map(row => {
+      const line = getComputedStyle(row, '::before'), box = row.getBoundingClientRect()
+      const left = box.left + parseFloat(line.left), right = left + parseFloat(line.width)
+      const drawn = [...row.querySelectorAll('.puck, .mbtn, input, textarea, .sb-grip')].map(e => e.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0)
+      return { late: row.classList.contains('lateinp'), content: line.content, colour: line.backgroundColor, shadow: getComputedStyle(row).boxShadow,
+        left, right, first: Math.min(...drawn.map(r => r.left)), panel: row.closest('.sb-panel')!.getBoundingClientRect().left, things: drawn.length }
+    }))
+    expect(rows.length, 'the seed Monday has rows that came from inputs').toBeGreaterThan(1)
+    expect(rows.some(r => r.late), '…and a late one among them (amber)').toBe(true)
+    expect(rows.some(r => !r.late), '…and one on time (blue)').toBe(true)
+    for (const r of rows) {
+      expect(r.content, 'the line is drawn').not.toBe('none')
+      expect(r.things, 'the row draws its pucks and buttons').toBeGreaterThan(2)
+      expect(r.right, `the ${r.late ? 'amber' : 'blue'} line ends left of everything the row draws`).toBeLessThanOrEqual(r.first - 1)
+      expect(r.left, 'and stands inside its panel, not clipped by it').toBeGreaterThanOrEqual(r.panel + 1)
+      expect(r.shadow, 'no line is painted inside the row any more').toBe('none')
+    }
+    expect(new Set(rows.map(r => `${r.late}|${r.colour}`)).size, 'amber for late, blue otherwise').toBe(2)
+    expect(errs).toEqual([])
+    await context.close()
+  })
+}

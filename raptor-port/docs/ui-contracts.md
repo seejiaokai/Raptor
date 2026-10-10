@@ -2171,9 +2171,29 @@ The rule and its door: `engine-rules.md`, "On a shared input's row the pucks are
 - **The row's ✕, CX, red box, ⓘ and its grip** are drawn once and act for every row of it; **the LATE chip** is there
   while any of its people's records is late.
 - **The dialog a tap on the row's name or a line's type opens** shows the people picker with everyone lit, as the
-  input's window on the Inputs page does; a one-man input's dialog keeps its one Person list.
+  input's window on the Inputs page does (owner D748, 11 Oct 26 — never one man's form); a one-man input's dialog
+  keeps its one Person list. Its dates are not changed there.
 - Pins: `ui/grouprow-hands.test.tsx`, `ui/groupeditor.test.tsx`; a real drag and a real right-click are walked in the
   browser (the job's bug check).
+
+## On the board a row's coloured line stands clear of the row (owner D747, 11 Oct 26)
+
+*"The orange and blue line on the edit schedule board is cutting the buttons and pucks, can it be move left slightly."*
+A Scheduler Board row can wear a coloured line down its left: **blue** for a row that came from an input
+(`gr-frominput`), **red** for a cancelled row (`cx`), **amber** for a late input's promoted row (`lateinp` — amber wins
+where two apply). Until D747 each was an INSET shadow, painted inside the row's own left edge — and on a phone the
+row's pucks and its CX / ⓘ / red box / ✕ buttons start at that edge, so the line ran through them.
+- **Now it is a strip drawn a little to the LEFT of the row** — `.sb-arow.<state>::before`, absolutely placed 6px
+  outside the row's left edge (7px for the 3px amber), in the room between the row and its panel's edge
+  (`scheduler/12-schedule-editing.css`). Out of flow: it adds no grid item, so the row's seven-track register is
+  untouched, and it is no longer a `box-shadow`, so the lift and the 6-second fresh-add box have no state edge to
+  out-rank on these three.
+- **Nothing else of the row moves** — no puck, box or button changes size or place (D487); the row's faint coloured
+  wash stays inside the row.
+- **The week's rows keep their inset line** (Edit Schedule, View-only Sched): there it meets no puck. A cancelled
+  FLYING line on the board (`.sb-line.cx`) keeps its inset line too — another row shape, not named by him.
+- Pin: `e2e/grouprow.spec.ts` — at phone and desktop width, for a row from an input and for a late one, the line's
+  right edge is left of every puck and button of the row, and inside its panel.
 
 ## Editing an input from the schedule (owner, 10 Aug 26)
 

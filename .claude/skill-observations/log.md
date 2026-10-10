@@ -3774,3 +3774,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Before treating a check's silence as a pass, run the EXACT command the pipeline runs (read it from the build script), or prove the check can fail by pointing it at a known error once per session.
 
 **Principle:** Evidence is the pipeline's own command; a lookalike command that cannot fail is not evidence.
+
+### Observation 516: A handoff that parks DRAFTED FAILING TESTS beside its notes lets the next chat start at "see them fail"
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW] step 5, picked up from a chat that handed off at 73% context with the step designed but not built.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** What a handoff leaves for unfinished, already-designed work
+
+**Issue:** The previous chat had read the code and designed the step but had no room to build it. Instead of only describing the design, it left (a) a short notes file with the door's shape, each caller and the reasons, and (b) the tests already written, parked as a non-compiled text file (they import functions that do not exist, and the preview build type-checks test files). The next chat moved the file into the source tree, watched 26 of 26 fail, and built to them; the notes' function names and answers matched the tests, so no design was re-derived. One cost: the notes go stale the moment the step is built and need a "BUILT" line added.
+
+**Suggested improvement:** In the handoff skill's "unfinished work" guidance, add: where the next step is designed but not built, prefer leaving the failing tests (parked under a name the build does not compile) plus a one-page note of the shapes they call, over a prose-only description; and tell the next chat to mark the note as built when it is.
+
+**Principle:** Hand over executable intent, not only prose: a parked failing test carries the design's exact contract across a context boundary and gives the receiver an unambiguous first action.

@@ -2133,7 +2133,10 @@ export function InputEditor() {
      dialog happened to hold — that man then stood as a row of his own (the re-walk's picture G5b). The dialog of an
      entry of several is the ENTRY's now: its people in the picker, Save the entry's one command, Delete "for all",
      its OIL lines counting every man. Its DATES stay not editable there (`datesHere` asks for the Inputs page): a
-     moved span would take the row off the day it was opened from. A one-man input's dialog is the form it was. */
+     moved span would take the row off the day it was opened from. A one-man input's dialog is the form it was.
+     HIS OWN RULE SINCE D748 (11 Oct 26), on seeing the one-man form over a line of four pucks: "when I click on personal
+     inputs it just shows a single user to be selected for an input that had multiple inputs. Shouldn't it be the
+     same? That it shows multiple inputs to edit from there". */
   const picker = (win || rows.length > 1) && ctx !== 'up'
   const grouped = picker && (ppl.length > 1 || rows.length > 1)
   const csOf = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))

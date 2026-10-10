@@ -209,7 +209,9 @@
    rides `box-shadow`, which is ONE property, and a board row very often owns it
    already: `.sb-fresh` (the blue box every add wears for 6s), `.redbox` (a hard
    conflict), `.lateinp` (a late input's amber left edge), `.cx` (a cancelled
-   line), `.gr-frominput` (a ground row promoted from an input). Measured in
+   line), `.gr-frominput` (a ground row promoted from an input). *(Since D747, 11 Oct 26, the last three no longer own
+   it on a board ROW: their left-edge line is a strip drawn clear of the row — 12-schedule-editing.css — so a lifted
+   row keeps its coloured line beside the lift. `.sb-line.cx` and the two boxes still do.)* Measured in
    Chromium: `.sb-arow.redbox.lift` painted RED only, `.sb-arow.lateinp.lift`
    AMBER only, `.sb-arow.sb-fresh.lift` BLUE only — the bare `.lift` above is
    (0,1,0), so it loses to every `.sb-arow.<state>` pair (0,2,0) and TIES with

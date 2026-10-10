@@ -1369,7 +1369,8 @@ flagged correctly and still swept the man out of the crew palette.
     **A drag of the row moves all its rows together** (`engine/reorder.ts moveGroundRow` — a whole permutation; a drop
     after a one row lands after its LAST member). **The LATE mark** of the row or the line shows while ANY of its live
     records is late and shown, and a tap hides or restores it for all of them (`ui/html.ts lateMates`).
-  - **The dialog opened from the row or the line is the entry's** (`ui/inputedit.tsx`, `picker`): its people in the
+  - **The dialog opened from the row or the line is the entry's** (`ui/inputedit.tsx`, `picker` — and his own rule since
+    D748, 11 Oct 26: "Shouldn't it be the same? That it shows multiple inputs to edit from there"): its people in the
     picker, Save the entry's one command, Delete "for all", its OIL lines counting every man. Its dates stay not
     editable there. It is the input's own window: it never passes `sched`, so a save there moves the late date as
     any window save does (D742 reading 3).
