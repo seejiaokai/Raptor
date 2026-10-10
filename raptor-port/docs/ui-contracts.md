@@ -9616,7 +9616,9 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     and an existing note's being edited) takes Escape first: the box is put away, nothing is written — a new note is
     not made, an edited one keeps its words — and the day stays; the next Escape closes the day. Enter and leaving the
     box still save. A new note's "+ people" button beside its words is part of the same thing being made and takes
-    Escape the same way. (The day's TITLE box does not: `[DAY-TITLE-ESCAPE]`, his to answer.)
+    Escape the same way. **The day's TITLE box — RULED, NOT YET BUILT (owner D732, 10 Oct 26 — "Yes"):** Escape there is to
+    put the title back as it was and leave the day open, a second Escape closing the day; until it is built Escape in
+    that box still closes the day (`OUTSTANDING.md` `[DAY-TITLE-ESCAPE]`).
   - **A DELETE QUESTION DOES WHAT IT ASKED — BOTH WAYS.** In an opened day a shared input's question keeps the words
     it was asked in while it stands, and its button does THAT (`askedAll`, `InputsCal.tsx doDelete`). Asked "Delete
     this input for all 2 people?": if the right to delete for everyone goes meanwhile (the members' switch turned
