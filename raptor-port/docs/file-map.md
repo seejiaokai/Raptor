@@ -1,5 +1,15 @@
 # The file map — where each source file lives and what it does
 
+`[HIST-JUMP-EMPTY-SEAT]` (his find, 10 Oct 26; D733): a tap on a change whose seat is empty now lands on its row. The
+fix is in `src/ui/interactions.ts` (`jumpToChange` — each place in turn, the row landing, the sentences) and
+`src/ui/histbubble.ts` (`findSeatRow`, `isSeatKey`, `onlyOn`); `src/probe-bridge.ts` gained `posKey` for the walk.
+Pinned by `src/ui/histjump.test.tsx` (the roll-call of every kind of seat, on both pages and View-only Sched; To go
+out; an older-version look; OIL Earn; the boxes one page alone draws) and one real-finger case in
+`e2e/changeswin.spec.ts`. `scripts/handpass/hj-walk.mjs` is the host's walk (its checks are the right behaviour, so
+running it again is the re-walk); `scripts/handpass/hj-breaks.mjs` cuts each wire of the fix once and names the test
+that goes red. The record: `docs/handpass/2026-10-10-hist-jump-empty-seat.md`; Astra's brief and report:
+`docs/superpowers/briefs/2026-10-10-hist-jump-empty-seat-scenarios.md`, `docs/handpass/2026-10-10-hist-jump-empty-seat-astra.md`.
+
 `[SEEN-BATCH-2]` (D730, D731 — 10 Oct 26): the small faults and choices of the Inputs pages, one batch. No new source
 file. `src/ui/inputedit.tsx` gained `oilSummaryOf` (a shared input's OIL line), `oilDayLabel` (an OIL day's one
 label), `sharedRefusal` and `FILING_OFF` (who may change a shared input, said at every door) and `madeOver` (when a

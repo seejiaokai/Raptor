@@ -32,7 +32,7 @@ import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firs
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
-import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
+import { hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
@@ -147,8 +147,11 @@ export function jumpToChange(key: string | string[], di: any) {
   const onBoard = view.SBDAY != null
   if (onBoard && di != null && view.SBDAY !== +di) boardTab(+di)
   /* a day being looked at as an older version draws no working cells to land on — the change lives on the live
-     copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail) */
-  if (!onBoard && di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
+     copy, so go back to it first (Fable F6: the jump said "no longer on this day" about a live detail). ON THE BOARD
+     TOO ([HIST-JUMP-EMPTY-SEAT], Astra's scenario read, 10 Oct 26): the board's look is the same record, and left
+     standing it had the tap say a seat was empty while the board went on showing the man in it. Only the look is
+     left — nothing of the older version is loaded or changed. */
+  if (di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
   /* a request still waiting under Personal Inputs sits in a panel that is folded by default: open it on that day, so
      the row the line is about is drawn to land on (Fable's final read, F5) */
   for (const k of cands) {
@@ -169,21 +172,45 @@ export function jumpToChange(key: string | string[], di: any) {
       ? document.querySelector('.sb-boardwrap')
       : document.querySelector(`#${warnWeekId()} .day[data-day="${di}"]`)
     let el: HTMLElement | null = null
-    if (root) for (const k of cands) { el = findHistCell(root, k); if (el) break }
+    /* THE SEAT IS EMPTY NOW ([HIST-JUMP-EMPTY-SEAT] — the owner's find, 10 Oct 26: "It says the detail is shown on the
+       scheduler board. But when I go to the schedule board and click the same thing it says the detail is shown on the
+       week"). A row that lists its people draws a seat only while someone is in it, so the place a "moved in / moved
+       out" line names is on NEITHER page once he has left. The row still stands, and that is where the tap goes — its
+       people box, marked like any other landing — with one short sentence for why no puck is there. No History bubble:
+       the box it lands on is not the seat, and a bubble there would tell another detail's story.
+       EACH PLACE IN TURN, its own row before the next place: a To go out line lists several (canonical.ts placeJump —
+       the place's first cell, its main seat, its row's name), and trying them all as cells first landed an extra man's
+       removal on the desk's OWN man, with his History pinned open (Astra's scenario read, 10 Oct 26). */
+    let empty = false, onRow = false
+    if (root) for (const k of cands) {
+      el = findHistCell(root, k); if (el) break
+      const pk = posKey(k, DAYS); if (pk == null || !isSeatKey(pk)) continue
+      /* "empty" is said only of a seat nobody is in. A man who IS there, on a row this page draws no people on (the
+         board's AMT brief and debrief rows), lands on his row all the same, and nothing is said */
+      const who = slotVal(pk), vacant = !who
+      el = findSeatRow(root, pk, who)
+      if (el) { onRow = true; empty = vacant; break }
+      empty = empty || vacant
+    }
     if (!el) {
-      /* why it is not here: its row was deleted since (today's words), or this surface does not draw it */
+      /* why it is not here: its row was deleted since (today's words); its seat is empty and this page draws nothing of
+         its row to land on (View-only Sched, a row nobody is left on); or this page does not draw that box — and only
+         a box the OTHER page is known to draw is sent there (histbubble.ts onlyOn) */
       const gone = cands.every(k => posKey(k, DAYS) == null)
+      const other = onBoard ? 'week' : 'board'
       HOOKS.toast(gone ? 'That detail is no longer on this day'
-        : onBoard ? 'That detail is shown on the week, not on the board'
+        : empty ? 'That seat is empty now'
         /* an input's own row: it is simply not drawn on this day (Fable F5) */
         : cands.every(k => k.startsWith('iu:')) ? 'That input is not shown on this day'
         /* View-only Sched has no board to send anyone to (a member has none at all) */
-        : view.CURPAGE === 'viewsched' ? 'That detail is not shown on this page'
+        : view.CURPAGE === 'viewsched' || !cands.some(k => onlyOn(posKey(k, DAYS)) === other) ? 'That detail is not shown on this page'
+        : onBoard ? 'That detail is shown on the week, not on the board'
         : 'That detail is shown on the scheduler board — open the day there to see it', 'warn')
       return
     }
+    if (onRow && empty) HOOKS.toast('That seat is empty now', 'warn')
     if (onBoard) {
-      pinHistBubAt(el)
+      if (!onRow) pinHistBubAt(el)
       /* the bubble is already up, so the smooth scroll's own events re-anchor it
          the whole way in (histbubble's document-level scroll listener).
          GUARDED because jsdom does not implement scrollIntoView at all — it has

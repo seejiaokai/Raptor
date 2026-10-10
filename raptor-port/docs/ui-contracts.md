@@ -990,7 +990,42 @@ pinned (the 11 Aug jump, unchanged). On Edit Schedule: it NEVER opens the board 
 into view (a phone shows one day at a time) and the cell scrolled in, by the warning jump's own recipe
 (`highlights.ts bringIntoView`); a day under a version preview goes back to its live copy first. Either way the cell
 wears a brief ring in the colour of the AL it goes out as (`.chgflash`, ~1.4 s, then gone). A change the surface does
-not draw says so on screen, and differently from a change whose row has since gone. Edit history's rows are buttons
+not draw says so on screen, and differently from a change whose row has since gone. A change whose place ANOTHER man
+has since taken lands on that place, whoever stands there now, and says nothing more — the line tapped already names
+who moved (D733, 10 Oct 26).
+
+**A CHANGE WHOSE SEAT IS EMPTY NOW LANDS ON ITS ROW (`[HIST-JUMP-EMPTY-SEAT]` — the owner's find, 10 Oct 26: Edit
+Schedule said "shown on the scheduler board", the board said "shown on the week").** A row that lists its people — a
+Common Programme row, a duty desk and its extra people, a sim's passengers, a ground row — draws a seat only while
+someone is in it, so the place a "moved in / moved out / taken off" line names is drawn on NEITHER page once he has
+left. As built (`interactions.ts jumpToChange`, `histbubble.ts findSeatRow` / `isSeatKey` / `onlyOn`):
+- **Where it lands, in order:** the seat itself where the page draws it empty (a flying seat's "+ FCP" on both pages
+  that edit; a sim's seats and passengers on the board) — nothing said; else the row's people box (`data-fill`, the
+  "+ add" box of Edit Schedule and the board); else, on View-only Sched (no box to add to), the people cell another
+  man of that row still stands in; else the row's name (the board's AMT brief and debrief rows draw no people); in
+  OIL Earn mode, where the row is drawn as OIL switches, the man's own puck if he is there, else the row's name
+  switch — the tap only marks, it presses nothing. Each landing is brought on screen and wears the same brief ring.
+- **What it says:** "That seat is empty now" — once, and only of a seat nobody is in. A man who is there on a row
+  that page draws no people on lands on his row and nothing is said. No History bubble on a row landing: the box is
+  not the seat, and a bubble there would tell another detail's story.
+- **Where nothing of the row can be marked** — View-only Sched, a row nobody is left on — the sentence alone is said.
+- **Each place of a line in turn, its own row before the next place.** A To go out line carries several
+  (`canonical.ts placeJump`); tried all as cells first, an extra man's removal landed on the desk's own man with his
+  History pinned open.
+- **A look at an older version is left first, on the board as on the week** — only the look; nothing is loaded.
+- **"Shown on the week, not on the board" / "shown on the scheduler board" are said only where they are TRUE** —
+  of a box the other page alone draws (`onlyOn`: the programme's second line is the week's; a standby line's B box is
+  the board's). Anything else not drawn here says only "That detail is not shown on this page"; a row deleted since
+  keeps "That detail is no longer on this day".
+- **THE ROLL-CALL OF ANY CHANGE TO "TAP A CHANGE TO GO TO IT"** (the checking guide's §11 — his find costs the method
+  a line): every kind of seat a line can name — flying, duty desk and its extras, sim seat, passengers and extras,
+  an AMT brief row, ground row and its extras, Common Programme — with **the place the change names EMPTY now**,
+  refilled by another man, and its row deleted; on Edit Schedule, the Scheduler Board and View-only Sched; on a
+  phone; from All changes AND To go out; with OIL Earn on; with the board looking at an older version. The loop is
+  `src/ui/histjump.test.tsx` (its `KINDS`); the walk that drives it is `scripts/handpass/hj-walk.mjs`; one cut per
+  wire, `scripts/handpass/hj-breaks.mjs`. A new kind of row adds a line to `KINDS` in the same change.
+
+Edit history's rows are buttons
 where the page the jump lands on can show them (`histJumpable` on the board, `weekJumpable` on the week).
 
 **The two-state marker (D97).** Beside the version tag on a published day's working copy: "Not yet signed" while any
