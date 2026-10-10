@@ -38,7 +38,7 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
-import { voidedOil } from '../engine/oil'
+import { voidedOil, repricedOil } from '../engine/oil'
 import { newId } from '../engine/newid'
 import { CmdRefused } from '../command'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
@@ -1022,8 +1022,18 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    week's row re-made, taken away or landed on its new day), so the edit goes ahead and that week shows it when it is
    opened; the refusal, and its "can't tell" twin for an unreadable saved week, went with it. */
 
-export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
+/* `opts.sched` — THE SAVE COMES FROM A ROW ON THE SCHEDULE (owner D741, D742, D739 reading 4 — 10 Oct 26; the plan
+   docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md §4.6, §4.7): a time or a remark typed on the input's
+   row, a different man dropped on it. For someone who may edit the schedule, such a save does NOT move the late date
+   (`mod` — "no change made there makes an input that was on time read LATE"), and keeps a Yes to the OIL question at
+   what the new hours give instead of dropping it. Who changed it, and when, is still stamped. Asked of the ROLE here,
+   not trusted from the caller: a hand-made call by anyone else is an ordinary save. The input's own window never
+   passes it, wherever it was opened from (D742 reading 3). */
+export type InputSaveOpts = { sched?: boolean }
+export const schedSide = (opts?: InputSaveOpts): boolean => !!(opts && opts.sched) && canEditSched()
+export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any, opts?: InputSaveOpts) {
   if (!r || !draft) return false
+  const sched = schedSide(opts)
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
@@ -1137,7 +1147,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const redated = date !== r.date || (endDate || '') !== (r.endDate || '')
     const word = redated ? remarksTailWord(rem) : null
     if (word) rem = withRemarksTail(rem, ordISO(dateOrd(date, baseYear())), ordISO(dateOrd(endDate || date, baseYear())), word)
-    r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
+    r.s = s; r.e = e; r.date = date; r.remarks = rem
+    /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
+    if (!sched) r.mod = nowStamp()
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
        keeps the name of the Event it used to be. A draft that does not STATE a title (no `title` key at all — a
@@ -1192,7 +1204,8 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     /* …and the per-day rule further down (a positive answer the new hours no longer price). ONE function says all of
        it — engine/oil.ts voidedOil — shared with the check on what a member's command really changed (state/perms.ts,
        the plan §3.13): what a save did not answer afresh must be exactly what this leaves. */
-    const keptOil = voidedOil({ person: wasPerson, oil: r.oil }, r)
+    /* …from a row on the schedule a Yes is KEPT, at what the new hours give — engine/oil.ts repricedOil (D739 reading 4) */
+    const keptOil = (sched ? repricedOil : voidedOil)({ person: wasPerson, oil: r.oil }, r)
     if (keptOil) r.oil = keptOil; else delete r.oil
     /* ...and the SCHEDULER's own override on this request dies with the
        assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
@@ -1393,7 +1406,9 @@ export function reassignInput(iid: any, personId: any) {
     notify()
     return false
   }
-  if (!commitInputEdit(r, draft)) return false
+  /* from a row on the schedule: the late date is not moved (D742 reading 3). The new holder's OIL answer is void all
+     the same — he has not answered — and the question below still follows (the plan §4.7: not touched). */
+  if (!commitInputEdit(r, draft, undefined, undefined, { sched: true })) return false
   HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
   /* THE SECOND DOOR ONTO THE SAME BUG (Fable M2, 22 Sep 26). This helper goes
      straight to commitInputEdit, so the gate's own person-change rule never
@@ -1413,6 +1428,9 @@ export function reassignInput(iid: any, personId: any) {
  *  Three doors reach it: the drag-reassign above, the calendar's date drag, and
  *  the two in-place time cells (both of which go through `setInpField`, so
  *  neither the board's handler nor the week's contenteditable can bypass this).
+ *  *(11 Oct 26 — owner D739 reading 4, D740 reading 4: the in-place cells no longer reach it for a scheduler. Hours
+ *  typed on a row of the schedule keep a Yes at the new amount and open nothing — engine/oil.ts repricedOil; the
+ *  drag-reassign and the calendar's drag still do.)*
  *  Each of them correctly voids an answer their edit made stale — a new holder
  *  has not answered, a moved date was never answered for, hours that no longer
  *  price an answer kill it — and each of them then relied on the member's
@@ -1497,11 +1515,13 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
       d.allday = false; d.sTime = hhmm(s); d.eTime = hhmm(e); d.half = halfOf(s, e)
     }
   }
-  const ok = commitInputEdit(inp, d)
-  /* the FOURTH door (Codex rank 6): the reprice rule above has just voided any
-     answer these hours no longer price, so the question follows the save rather
-     than waiting on a bell the scheduler cannot even see */
-  if (ok) askOilIfPending(inp)
+  /* THIS DOOR IS REACHED ONLY FROM A ROW ON THE SCHEDULE (the week's `data-inp`, the board's `data-ifld`), so its save
+     is a schedule-side one (D741, D742): the late date stays, and a Yes to the OIL question stays at what the new hours
+     give — NO question opens (D739 reading 4, D740 reading 4; the plan §4.7). That replaces the fourth door's "the
+     question follows the save" (Codex rank 6, 22 Sep 26), which stands only where the save was an ordinary one: a
+     hand-made call by someone who may not edit the schedule, whose stale Yes was dropped as the window drops it. */
+  const ok = commitInputEdit(inp, d, undefined, undefined, { sched: true })
+  if (ok && !schedSide({ sched: true })) askOilIfPending(inp)
   return ok
 }
 /* Deleting an ACCEPTED input used to leave its ground row on the programme for

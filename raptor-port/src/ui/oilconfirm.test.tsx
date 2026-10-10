@@ -496,23 +496,56 @@ describe('a refusal must not survive a hand-over made while its week is off scre
   })
 })
 
-/* CODEX RANK 6 (22 Sep 26) — the in-place time cells are the FOURTH door onto
-   job 1's bug. Both of them — the board's field handler and the week's
-   contenteditable — go through `setInpField`, which goes straight to
-   commitInputEdit. The reprice rule correctly deletes an answer whose hours no
-   longer price it, and then nothing asks: the day reads unanswered and pays
-   nothing until somebody notices the member's bell. There is already a test
-   pinning the deletion; none required the question. */
-describe('editing a request’s times in place raises the OIL question it just invalidated', () => {
+/* HOURS TYPED ON THE SCHEDULE KEEP THE ANSWER AND MOVE THE AMOUNT — NO QUESTION (owner D739 reading 4, D740 reading 4,
+   10 Oct 26: "no OIL question is asked on the schedule when the hours change — the answer the input carries stays and
+   the amount is worked out from the new hours"; the plan docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md
+   §4.7). Both in-place time cells — the board's field handler and the week's contenteditable — go through
+   `setInpField`. Until this job that door dropped a Yes the new hours no longer priced (the owner's rule of 28 Aug 26)
+   and then opened the question for the scheduler (Codex rank 6, 22 Sep 26 — this describe pinned it). The 28 Aug rule
+   stands whole for a change made in the input's OWN WINDOW (the control below); from a row on the schedule a Yes stays
+   a Yes at what the new hours give, a No stays a No, and nothing opens. A new holder is still asked (reassignInput,
+   above — a man who has not answered). */
+describe('hours typed on the schedule keep the OIL answer and move its amount — no question (D739, D740)', () => {
   const plant = (r: any) => { const row: any = { allday: false, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
   afterEach(() => { setOilAsk(null) })
 
-  it('stretching an answered half-day to a full one asks again (Codex rank 6)', () => {
+  it('stretching an answered half-day to a full one: Yes for a full day, and no sheet', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
     setOilAsk(null)
     expect(setInpField(r, 'end', '1800')).toBe(true)
-    expect(r.oil, 'the answer no longer prices the hours, so it is void').toBeUndefined()
-    expect(OILASK, 'and the question comes up rather than waiting on a bell').toBe(r.iid)
+    expect(r.oil, 'the Yes stays, at what the new hours give').toEqual({ '2026-07-18': 1 })
+    expect(OILASK, 'no question on the schedule').toBe(null)
+  })
+
+  it('…and back down: a full day cut to two hours is a Yes for a half day', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 18 * 60, oil: { '2026-07-18': 1 } })
+    expect(setInpField(r, 'end', '1000')).toBe(true)
+    expect(r.oil).toEqual({ '2026-07-18': 0.5 })
+    expect(OILASK).toBe(null)
+  })
+
+  it('a No stays a No, and an unanswered day stays unanswered — with no sheet for either', () => {
+    const no = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0 } })
+    expect(setInpField(no, 'end', '1800')).toBe(true)
+    expect(no.oil).toEqual({ '2026-07-18': 0 })
+    const open = plant({ person: 'ace', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60 })
+    setOilAsk(null)
+    expect(setInpField(open, 'end', '1800')).toBe(true)
+    expect(open.oil).toBeUndefined()
+    expect(OILASK, 'the question stays where it is — with the man, or whoever filed it').toBe(null)
+  })
+
+  it('a time cleared makes it all day: the Yes is a full day', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
+    expect(setInpField(r, 'str', '')).toBe(true)
+    expect(r.allday).toBe(true)
+    expect(r.oil).toEqual({ '2026-07-18': 1 })
+  })
+
+  it('THE WINDOW IS AS IT WAS — the same change saved in the input’s own window drops the Yes (28 Aug 26)', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5 } })
+    expect(commitInputEdit(r, { ...draftOf(r), eTime: '18:00' })).toBe(true)
+    expect(r.oil, 'the answer no longer prices the hours, so it is void — the window asks again').toBeUndefined()
   })
 
   it('THE CONTROL — a remarks-only edit asks nothing', () => {

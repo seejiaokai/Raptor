@@ -122,6 +122,22 @@ export function voidedOil(before:any,after:any):Record<string,number>|undefined{
   for(const k of Object.keys(was)){ if(was[k]>0&&was[k]!==now)continue; out[k]=was[k]; }
   return Object.keys(out).length?out:undefined;
 }
+/* …AND ITS TWIN FOR A CHANGE MADE FROM A ROW ON THE SCHEDULE (owner D739 reading 4, D740 reading 4, 10 Oct 26 — "no OIL
+   question is asked on the schedule when the hours change — the answer the input carries stays and the amount is worked
+   out from the new hours"; the plan docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md §4.7). The same first
+   rule — retyped out of the kinds that ask, or handed to ANOTHER man, every answer is void (a new holder has not
+   answered) — and then the difference: a Yes STAYS a Yes, at what the new hours give; a No stays a No. A schedule-side
+   change never DELETES a Yes: hours that price nothing leave the stored amount as it was (the credit is worked out from
+   the hours, so it earns nothing meanwhile, and the next hours re-price it). The 28 Aug 26 rule above is the input's
+   own window's. One caller: ui/inputedit.tsx commitInputEdit, for a scheduler's save made from a row. */
+export function repricedOil(before:any,after:any):Record<string,number>|undefined{
+  const was=before&&before.oil;
+  if(!was||!after)return undefined;
+  if(!oilAsks(after.type)||after.person!==before.person)return undefined;
+  const now=inputOilAmt(after.allday,after.s,after.e), out:Record<string,number>={};
+  for(const k of Object.keys(was))out[k]=(was[k]>0&&now!=null)?now:was[k];
+  return Object.keys(out).length?out:undefined;
+}
 
 /* WHAT KIND of work a span was — the word the OIL tracker shows as the
    credit's reason (owner, 2 Sep 26: "be slightly more specific, like SIM,

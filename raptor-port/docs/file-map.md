@@ -918,3 +918,5 @@ save callbacks carry the actual retained row; `undo-wire.ts` requests the
 directional image before restore, validated by the live renderer afterward.
 Final fresh R2 brief/report: `docs/superpowers/briefs/2026-10-05-inputs-sans-astra-final-r2.md`
 and `docs/handpass/2026-10-05-inputs-sans-astra-final-r2.md`; immutable after dispatch.
+`src/leavewar/schedlate.test.ts` (11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 1 — D741, D742): a change made from a row on the
+schedule (`setInpField`, `reassignInput`) leaves the late date alone for a scheduler; the window still stamps it.

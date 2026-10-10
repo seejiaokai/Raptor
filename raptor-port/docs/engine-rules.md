@@ -1849,6 +1849,18 @@ and one last changed after that deadline is marked `LATE` wherever it is
 drawn. `engine/inputs.ts` owns the whole thing — `inputWeekStartISO`,
 `inputOwnDueISO`, `inputDueISO`, `inputStampISO`, `isLateInput`, `lateNote`.
 
+- **A CHANGE MADE FROM A ROW ON THE SCHEDULE IS NOT A LATE CHANGE (owner D741, D742, 11 Oct 26 build — "it will not show
+  as late if the input initially was on time and the change was done inside the late window").** The mark reads the
+  record's `mod`, and until this build every save stamped it — so a scheduler typing a time or a remark on an input's
+  row under Personal Inputs or on the Unavailable list (`ui/inputedit.tsx setInpField`), or dropping a different man on
+  an Unavailable row (`reassignInput`), turned an input filed in good time LATE. Those doors are reached only from a row
+  on the schedule; they pass `{ sched: true }` to the one save (`commitInputEdit`), which, for someone who may edit the
+  schedule (`schedSide` — asked of the role there, never trusted from the caller), leaves `mod` as it was. Who changed
+  it and when (`modBy`, `modAt`) is still stamped. So: an on-time input stays on time, one already LATE stays LATE, and
+  a change in the input's OWN WINDOW — whoever makes it, wherever the window was opened from — reads late exactly as
+  before. It narrows "measures the input's last change" below to changes made in the input's own window. Pins:
+  `leavewar/schedlate.test.ts`.
+
 - **The deadline is relative, not a date.** Week Monday − `inputLead`. At the
   standard 14, an input for the week of Mon 17 Aug is due by Mon 3 Aug. The
   arithmetic runs through a real date, so it steps back over month and year
@@ -2149,6 +2161,15 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   inherit); kept on time/remark edits — the save gate re-asks when the plan
   goes stale, and the credit pass re-checks coverage and non-working LIVE,
   so a moved input or a revoked PH leaves a stale yes inert.
+  **FROM A ROW ON THE SCHEDULE THE ANSWER STAYS AND THE AMOUNT FOLLOWS — NO QUESTION (owner D739 reading 4, D740
+  reading 4, built 11 Oct 26).** A scheduler's time typed on an input's row (`setInpField` → `commitInputEdit` with
+  `{ sched: true }`) keeps a Yes at what the new hours give — `engine/oil.ts repricedOil`, `voidedOil`'s twin: a No
+  stays a No, an unanswered day stays unanswered, hours that price nothing leave the stored amount as it was (a
+  schedule-side change never deletes a Yes), and a retype or a hand-over still voids every answer — and
+  `askOilIfPending` is not called. The "dropped, and asked again" rule above (28 Aug 26) is the input's own window's
+  from here on; the 22 Sep 26 "the question follows an in-place edit" is replaced. A new holder (`reassignInput`) has
+  not answered and is still asked at once. Pins: `ui/oilconfirm.test.tsx` ("hours typed on the schedule keep the OIL
+  answer…").
 - **A placeholder on a request row whose request NEVER ASKS is COUNTED, and earns nobody anything
   (`[OIL-PERSONAL-PLACEHOLDER]`, `[DB-READINESS]` group A phase 7, 1 Oct 26).** "Personal" lands a row like any
   activity and is the one landed kind outside `oilAsks`. The day's work walk skips every request row, and the request
