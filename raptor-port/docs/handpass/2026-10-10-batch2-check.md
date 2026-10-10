@@ -30,7 +30,14 @@ were told to him when he answered.)
 6. **A group's OIL question is headed "Ace +2"** — the first name A to Z and how many more, the words of the window's own
    title — where his list said "Ranger +1" as an example of the form.
 7. **On a short phone (568 points tall) the List's dates calendar keeps its finger-size days**, and the room is found
-   in the padding round it; nothing else changed size.
+   in the padding round it; nothing else changed size. In a six-week month there, an admin's "Default window" button
+   is a few points below the foot of the screen and the page scrolls to it.
+8. **Choice 4, one more case:** a man whose request the scheduler has TAKEN OFF the programme is not counted as
+   credited and is named — "credited for 1 of 2 — Ace: taken off". (His stored answer is kept, as everywhere else,
+   and stands again if the request goes back on.)
+9. **A delete question in an opened day now does exactly what it asked, even if the asker's rights change while it
+   is on screen** — it is refused in words if he may no longer do it, and "Take me out" never grows into deleting
+   for everyone. Found by the reviewers; no choice of his was needed.
 
 ## 1. The tier, and what it meant
 
@@ -47,8 +54,40 @@ The eight questions of the checking guide (§5), against this batch:
 | 7 | Roles | **NO** | `state/perms.ts` gains one question that decides no right (`filerSwitchedOff` — which sentence a refused door says); `perms.test.ts` and `perms-scan.test.ts` are green, and no row of the permissions table (§11 of the data model) moved. Three pieces change what a READER is shown (no dead button, no yellow box, a truer sentence) — each is walked as the admin, the member and the filer. |
 | 8 | The warning list | NO | Untouched. |
 
-**Tier: WALK** (4 and 5), checked as ONE batch (D485). Done beyond the tier, because of rows 1 and 7: Astra designed
-the scenarios (one designer — D353), and Astra reads the finished code with this sheet in hand.
+**Tier at the start: WALK** (4 and 5), checked as ONE batch (D485). Done beyond the tier, because of rows 1 and 7:
+Astra designed the scenarios (one designer — D353), and Astra read the finished code with this sheet in hand.
+
+**THE TIER WAS RAISED TO FULL AFTER ASTRA'S READ — and the agent says so plainly.** Fixing Astra's scenario 9 put a
+change into what a DELETE confirmation removes (`InputsCal.tsx doDelete`). That is no longer "words and buttons": a
+wrong result there silently deletes records — the checking guide's own test for calling BOTH readers (§4: "delete"),
+and Astra's read proved the point by finding that very fix deleted everyone in one order. Astra's report said the
+batch should be reassessed as FULL; the agent agreed. What FULL added, all done: **Sol 6.1 read the code second and
+blind** (D590, D601 — it never saw Astra's report; it read the commit Astra read); the rules sweep (§1a); every
+finding of both readers reproduced by a failing test, fixed, and its surface re-walked (§4.3); the gate set run again
+on the final code (§8); his look (§10).
+
+## 1a. The rules sweep — every ruling that binds what this batch touched, checked against the running build
+
+| Ruling | What it requires here | Result |
+|---|---|---|
+| D731 (1)–(5), (8)–(10), (12) | each answer as worded | PASS — §2, §4 (one line each in `docs/ui-contracts.md`) |
+| D731 (7), (11) | left as they are | PASS — pinned by a test (7); walked (11, C6) |
+| D730 | list A, with its own tests and check | PASS |
+| D726, D729 | no words on screen beyond those ruled | PASS — five sentences changed, each ruled or following D731's pattern (§0 readings 2, 3, 8); none added elsewhere |
+| D487 | no button changes size but the one ruled (the List calendar's days on a phone) | PASS — the row's chips measured against a `<span>` in their place, identical (D3); the viewer's and window's buttons unchanged |
+| D725 | the window's calendar keeps its finger-size days | PASS — the List's is measured AGAINST it (`e2e/inputs-batch2.spec.ts`) |
+| D641, 4 Sep 26 | a window does not block the page; a small pop-up closes on a press outside; Escape peels one layer | PASS — the dates calendar, a note box, the picker, a blocking pop-up and a window each take Escape in turn (§2.6; C3–C5, C7, C8, G3, G4) |
+| D655, D658 | who may change a shared input: its filer (switch on), an admin; a man in it takes himself out | PASS — no right moved; `perms.test.ts`, `perms-scan.test.ts` green; B4–B7, G1, G2 |
+| D660, D682, D711 | the filer answers a group's OIL question once, for everyone; a man may change his own | PASS — the heading now says which of the two each question is (A1, A3, A6) |
+| D702 | a member files for ALL AVAIL only while the switch is on | PASS — and is told so (reading 4) |
+| D718, D723 | a row or a card opens the input; the chips act without opening it | PASS — C10; `batch2.test.tsx` A4 |
+| D672 | Undo and Redo leave the view where it is | not touched; C11 undid and redid a drag with a window up |
+| D2, D142, D25 | OIL is earned leave; only a published day earns | not touched — no file of the calculation changed (§6) |
+| 2 Sep 26 | a control tapped repeatedly does not move | PASS — the calendar's days keep their place as it stays open |
+| 25 Aug 26 | the app's words read production | PASS — "Quals saved" (A9) |
+| D56 | no check, fix or finding for harm that lives only in stored data | PASS — none raised; said in all three briefs |
+
+**No ruling was found to contradict or narrow another.**
 
 ## 2. The roll-call — every place each changed thing is drawn
 
@@ -177,6 +216,12 @@ One table a thing. "Has it" = changed and proved (the proof is named); "must not
    does not lift; a refused save is not offered); the stale OIL answer on every kind of move.
 5. **Its row** is added to the ledger at the close (§9).
 
+**The size was looked at again when the evidence changed** (the order's §7.0): the two reads found five faults, three
+of them on surfaces the first walk had counted as "older, not touched" (the people picker beside a window; the
+schedule's one-person dialog; a request taken off). Opus widened the walk by ONE block — G, five steps, a desktop as
+Saber in his admin and his member view — covering exactly the surfaces the five fixes touch (§4.3), and kept the rest:
+no finding pointed at a phone-only or a role-only surface the first walk had not already driven.
+
 ## 4. The walk — the host, by script, on the built app
 
 `scripts/handpass/b2-walk.mjs`, on the build served locally; its last whole run: `docs/handpass/parts/b2-host-walk.txt` —
@@ -221,6 +266,20 @@ then took HIM out).
 | **The one body covers it, the door itself not driven** | 2, 23 and 24 (the "Unsaved changes" question is one effect for every door — the bell, a month's bar, a List row, the viewer's "Edit input", the SANS day; driven through the day's card, in jsdom and on a phone); 5 (the filer's group answer replacing a man's own is D682's, `groupeditor.test.tsx`; this batch changed its heading only); 11 (one man left: the line is `oilRows`' one-record branch, the control test) |
 | **Older behaviour this batch does not touch — not walked** | 1 (the schedule's one-person dialog: it holds one man's row, and its heading and line are his, by the same `grouped` test as before); 6 (the scheduler's refusal in OIL Earn); 8 (the switch changed under an OPEN window — walked with the window reopened, B3–B7, not left open); 18, 22 (Escape between other layers); 30's Space key; 31 (a chip's identity after a sort); 34 (the viewer's paging and its rights) |
 
+### 4.3 The re-walk — what the two reads' fixes touched (block G)
+
+On the final build, a desktop, Saber in his admin view and his member view (the app's own switch on his name badge —
+the one road on which a right changes while a question stands): **5 of 5**, no error; pictures under
+`docs/img/handpass/2026-10-10-batch2-check/rewalk/` (the host opened G2a and G5b).
+
+| Step | What it drove | Result |
+|---|---|---|
+| G1 | asked "Delete this input for all 2 people?" as a member; the switch turned off while it stood; "Delete" | refused: "Filing for other people is switched off — an admin can change this."; both records still there; the question kept its words |
+| G2 | asked "Take yourself out of this input?" with the switch off; back in the admin view; "Take me out" | only Saber went, Echo stayed; "You are out of this input"; one Undo put him back |
+| G3 | an input's window up with typing in it; a note's people picker opened by the keyboard; Escape | the picker closed; the window, its typing and the day stayed |
+| G4 | the document viewer opened by the keyboard over the open dates calendar; Escape, Escape | the viewer first, the calendar next |
+| G5 | a Duty for Ace and Drifter on a Saturday, both Yes; on the board Ace's request taken off | the note "Ace's Duty taken off the programme"; the Inputs window "credited for 1 of 2 — Ace: taken off"; the board's own dialog on Drifter's row "credited on its non-working day", no "not answered yet" line |
+
 ## 5. The cases carried by a test, and the break tests
 
 **Red first.** Every test below was run against the code as it stood before its fix and failed there: the first run of
@@ -253,5 +312,80 @@ fix. That run IS the break test of each wired row of §2: the wire taken out, a 
 - **A real iPhone.** Two lines only his phone can prove are on his look card (§10): that a finger's press on the page
   closes the dates calendar (an iPhone sends no mouse press there — the reason `pointerdown` was added), and where
   the note sits against the top of his screen.
-- **The schedule's and the board's own input dialog** — not changed but for Enter's key press being used up there too
-  (the same form).
+- **The schedule's and the board's own input dialog** — changed in two small ways only (Enter's key press is used up
+  there too; its "not answered yet" line now speaks for its own man — G5). **Seen there and FILED, not fixed:** opened
+  on one man's row of a shared input it is still titled for the group ("Ace +1 · 18 Jul" over Drifter's row — picture
+  G5b) and its Delete asks about everyone, while its Save and its OIL lines are the one man's. That mix is the
+  schedule's single row for a group input, ruled and not yet built: `OUTSTANDING.md` `[GROUP-INPUT-ONE-ROW]` (D661).
+
+## 7. What the check found, and each disposition
+
+| # | The find | Who found it | Disposition |
+|---|---|---|---|
+| 1 | A new group's OIL question led with the man picked first, not the group's first name A to Z | the walk (A1) | FIXED, red first (`batch2.test.tsx` "the save of a NEW group") |
+| 2 | The dates pop-up 11 points past the foot of a 568-point phone once its days were finger-size | the batch's own browser test | FIXED (the padding round the calendar); `e2e/inputs-batch2.spec.ts` at three heights |
+| 3 | An input a member filed for ALL AVAIL told him "Only Ranger — who filed it — …" with the switch off | the roll-call (§2.5) | FIXED, red first |
+| 4 | The clash note did not repaint when "theirs" moved a second time | the control test of A10 | FIXED, red first |
+| 5 | Escape on a new note's "+ people" button closed the whole day | Astra's scenario 16 | FIXED, red first |
+| 6 | A dates calendar left open on a List no longer shown swallowed the first Escape — a side-effect of this batch's A6 | Astra's scenario 21 | FIXED, red first |
+| 7 | The day's "Delete this input for all N people?" question took the asker out when the right went while it stood (older) | Astra's scenario 9 | FIXED, red first (`askedAll`) |
+| 8 | **MISSING row of §2.6:** Escape while the day's TITLE is typed closes the day and loses the typing | the roll-call | FILED for him — `OUTSTANDING.md` `[DAY-TITLE-ESCAPE]`, with a recommended answer; not ruled, so not built |
+| 9 | On a 568-point phone, in a six-week month, an admin's "Default window" button is 9 points past the foot (the page scrolls to it); the dates and both quick buttons are on the screen | the walk (F1b; Astra 39) | LEFT, told to him (§0 reading 7): the days keep the size he asked for |
+| 10 | On a phone the note at the top lies over the top strip of a TALL window — its title, never its ✕ in the pictures; a press goes through the note to what is under it | the host, opening E6b | LEFT, told to him on the look card: it is where he asked the note to be |
+| 11 | **"Take yourself out of this input?" deleted EVERYONE** when the right to delete for all came back while the question stood — made by fix 7 above, which kept the question's words and not its action | **BOTH readers, each blind** (Astra 1, Sol 1 — P1) | FIXED, red first: the question's intent is read first, both ways (`doDelete`); re-walked G1, G2. In this batch — not on `main` |
+| 12 | The List's dates calendar kept Escape from a blocking pop-up opened over it by the keyboard (the viewer, the OIL question) — reachable because the chips are buttons now | **BOTH readers** (Astra 3, Sol 4) | FIXED, red first; a real-keyboard browser test; re-walked G4. In this batch |
+| 13 | The new "credited for N of M" counted the stored Yes of a request TAKEN OFF the programme | Sol 2 | FIXED, red first: not counted, named "taken off" (§0 reading 8); re-walked G5. In this batch |
+| 14 | The schedule's one-person dialog named the OTHER men of a shared input as "not answered yet" beside a button that answers for its own man | Astra 2 | FIXED, red first: one scope for both lines; re-walked G5. Older than this batch (the input card's job, on this branch — not on `main`) |
+| 15 | Escape did nothing in a note's people picker while an input's window was up — or closed the window | Sol 3 (Astra's scenario 18, which the first walk had left as "older, not walked") | FIXED, red first: the picker has the key first; re-walked G3. Older — on `main` too |
+| 16 | The schedule's dialog on one man's row of a shared input is titled for the group and its Delete asks about everyone | the host, opening picture G5b | FILED under `[GROUP-INPUT-ONE-ROW]` (D661's single row is where it is settled) |
+
+**The two reads, side by side.** Astra: 3 findings (1 P1, 2 P2), no false alarm. Sol, blind: 4 findings (1 P1, 2 P2,
+1 P3), no false alarm. Two were found by BOTH (11, 12); one each alone (13 Sol; 14 Astra); Sol's 15 was Astra's own
+scenario 18 from the design step, which the host had wrongly set aside as untouched older behaviour. Both said, by
+name, what they checked and found sound: `madeOver` (no hidden conflict, no loop), the OIL heading and who it is
+written for, `filerSwitchedOff` (decides no right), `noteGone`, the passing note's placement, the take-off's `was`, the
+styles' reach. Both noted `filerSwitchedOff` can answer true for a member who still has his right — harmless as called
+(only after a real refusal), and its comment says so. The reports: `docs/superpowers/briefs/2026-10-10-batch2-reads/`.
+
+**No finding was a problem of data already stored (D56) — none was raised.**
+
+## 8. The gates
+
+The whole gate set, under the PC's checks lock, twice — both runs wholly green in one go:
+
+| Run | On | unit | build | the original's comparison | browser tests | Tracker smoke | rule check | document check |
+|---|---|---|---|---|---|---|---|---|
+| 1 | the batch as first committed (`1a806aa0`) — before the two reads | 9871 / 9871 (581 files) | clean | 728 / 0 | 760 passed, 0 failed, 57 skipped | 445 / 0 | OK | OK |
+| 2 | **the final code (`e5c3e809`) — with the reads' five fixes** | **9882 / 9882** (581 files) | clean | 728 / 0 | **761 passed, 0 failed**, 57 skipped | 445 / 0 | OK | OK |
+
+Against the morning's baseline (9803 unit, 746 browser): +79 unit tests (`batch2.test.tsx` 68, `toastplace.test.tsx` 6,
+five more in `reqorphan.test.ts` and `quals.test.tsx`) and +15 browser tests (`e2e/inputs-batch2.spec.ts`).
+`perms.test.ts` and `perms-scan.test.ts` are in the unit run and green: no row of the permissions table moved.
+The rule check names one older rule now covered by a test (AM39d) — its own housekeeping, not this batch's.
+
+## 9. The ledger
+
+The walk's row is in `docs/walk-ledger.md` (10 Oct 26, `[SEEN-BATCH-2]`).
+
+## 10. His look — five minutes, on his iPhone unless said
+
+1. **Inputs → List → "+ Input", then "Add" without picking a date.** The note "Pick a start date on the calendar
+   first" shows at the TOP of the screen — Cancel and Add stay clear. *(Only his phone can say how it sits against
+   the top of his screen.)*
+2. **Inputs → List → the dates button.** The days are a finger's size and the calendar fills its box. Tap two dates: it
+   stays open. Tap the list behind it: it closes. *(That last tap is the one thing only an iPhone can prove.)*
+3. **Inputs → Calendar → the funnel → pick one person; open a day that has other people's inputs.** It says "No inputs
+   match on this day." with "Clear filters" beside it — and that button brings them back.
+4. **On his PC: Inputs → open a shared input on a weekend where one man said No to OIL.** Its OIL line reads "credited
+   for 2 of 3 — Ranger: no"; "Change…" asks the question headed for the group ("Ace +2").
+5. **On his PC: Edit Schedule → a day's board → Personal Inputs → "Undo" on an accepted request.** The note names it:
+   "Ranger's Sports day taken off the programme".
+
+And two things to know, not to do: with a TALL window up on the phone the note sits over the top strip of that window
+for the few seconds it shows; and Escape in the "Day title…" box still closes the day — that one is his to answer
+(`[DAY-TITLE-ESCAPE]`).
+
+`Walk: docs/handpass/2026-10-10-batch2-check.md · 57 pictures · 35 surfaces · 50 orders · MISSING: 1 filed ([DAY-TITLE-ESCAPE])`
+
+(35 surfaces = the 25 roll-call rows of §2.1–2.7 marked "has it" and the ten things of §2.8, each seen and operated or carried by the proof its row names; 50 orders = the walk's 45 steps and
+the re-walk's 5. Results carried by a test are §5's, apart.)

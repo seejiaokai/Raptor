@@ -3543,3 +3543,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** A PreToolUse hook on Bash that refuses a command containing a here-document whose body contains an apostrophe (and says "write the script with the Write tool"), and a habit line: one-line file edits go through the Edit tool, never `sed -i`, and never in a backgrounded command whose check cannot be read.
 
 **Principle:** When a documented rule keeps being broken under load, stop making it louder — make the wrong action fail fast at the tool boundary.
+
+### Observation 501: A fix that froze a question's WORDS but not its ACTION made a worse fault in the opposite order
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[SEEN-BATCH-2]`. A scenario designer's finding (a delete question changed meaning when a right was LOST while it stood) was fixed by remembering what was asked — for the wording and for one branch of the action. Both code readers then found, independently, that with a right GAINED the kept wording ("Take me out") sat over an action still chosen from current rights (delete everyone).
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** Fixing a reviewer's finding about state that changes under an open confirmation
+
+**Issue:** The fix was written against the one direction the scenario named and tested in that direction only. Capturing intent in one place (the label) and deciding the effect in another (live permissions) is exactly the split the finding was about; the fix moved the split instead of removing it. It also moved the batch into deletion logic without the builder re-asking what tier of check that needs — the first reader had to say so.
+
+**Suggested improvement:** Add to the skill: when a finding is "X changed while a confirmation stood", the fix captures the INTENT once and dispatches the action from it, and its tests cover BOTH directions of the change (gained and lost) plus the no-change control. And: after applying any reviewer-driven fix, re-ask the risk questions against the fix itself — a fix can raise the tier of the change it belongs to.
+
+**Principle:** A confirmation is a contract: what was asked is the only thing that may be done. Test every state change in both directions, and re-size the check when a fix reaches a more dangerous kind of code than the change it repairs.
+
+### Observation 502: Scenarios set aside as "older behaviour, not touched" held two real faults
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** `[SEEN-BATCH-2]`. Of forty scenarios from the other provider, the host walked or tested the ones naming a new place and listed about eight as "older behaviour this batch does not touch — not walked". The blind second code read then established two faults among exactly those (Escape in a people picker beside an open window; the schedule's one-person dialog on a shared input).
+**Skill:** New skill candidate: bug-check sizing (project doc `raptor-port/docs/walk-ledger.md`, the sizing step)
+**Type:** open-source
+**Phase/Area:** Dispositioning a scenario designer's list before the walk
+
+**Issue:** "Older, not touched" was decided by whether the changed LINES were on that path, not by whether the change altered the path's neighbours. The batch changed who takes Escape first in the same window family and made the OIL lines of the same dialog scope-aware — so those "untouched" scenarios were in fact one step from the change. Setting them aside saved perhaps ten walk steps and cost a second review round.
+
+**Suggested improvement:** In the sizing step, a designed scenario may be left unwalked only with one of three written reasons — carried by a named test, walked on unchanged code within N days, or unreachable — and "older behaviour" is not one of them when the change touches the same listener family, the same component, or the same scope rule. Otherwise drive it once; a scripted step is cheaper than a review round.
+
+**Principle:** A scenario from an independent designer is evidence about where the builder's blind spots are. Declining it needs a reason about the scenario, not about the diff.
