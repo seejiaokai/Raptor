@@ -258,6 +258,26 @@ pictures behind every FAIL and every high-consequence PASS (OIL, the published d
 each finding, fixes with a failing test first, re-walks what the fixes touch, fills §3's marks and §8, adds the
 ledger's row, writes §13. **Owed after that:** Astra's scenario design and the two code reads (D746).
 
-## 13. His look card
+## 13. His look card — five minutes, on the preview of `claude/group-input-one-row`
 
-*(written when the walk closes)*
+**Questions waiting for him** (parked during the unattended run — D596; nothing else waits on them):
+1. **One independent reader, or two?** Sol 6.1 did not answer (ChatGPT's limit, until 14 Oct). *Recommended:* read
+   Fable's report first; if it is clean or its finds are small and fixed, merging on Fable alone is a reasonable
+   risk before the database step; if it finds something in OIL or the count, wait for one ChatGPT read. *Waits on
+   it:* the merge only.
+2. **The puck stands on the first man filed, not the man it was dropped on.** An ALL AVAIL dropped anywhere on the
+   one row is kept under the man who was filed FIRST; it comes off (with the note) only when THAT man is taken off —
+   nothing on screen says which man it is. *Recommended:* leave it as built (D745's rule, and the simplest); the note
+   and the To go out line name him when it happens. *Waits on it:* nothing.
+
+**Look here** (what you should see, in the app's words):
+- **Edit Schedule, Wednesday, Ground Programme:** file a Meeting for four on the Inputs page. It is ONE row with four
+  pucks. Drag a fifth name onto it: he is on the row, and the Inputs calendar shows five. Drag one puck off to empty
+  space: he is gone from both. On your iPhone, do the same with a held finger — that is the one thing only your phone
+  can prove.
+- **Personal Inputs:** tap the input's name. The window shows everyone lit, not one name. Press Delete: you should see
+  the question with BOTH Delete and Keep.
+- **Type 14:30 over the row's start time:** the Inputs calendar reads 14:30 for everyone, and it is not marked LATE.
+- **A published day:** publish the Wednesday, type a new time on the row. The day reads ONE change waiting; the
+  changes window's "To go out" shows one line, "… · 4 people", with the names under it.
+- **Scheduler Board on your phone, Monday:** the blue and orange lines sit left of the pucks and buttons.
