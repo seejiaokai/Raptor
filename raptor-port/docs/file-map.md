@@ -12,7 +12,9 @@ window opens; `InputsPage.tsx` — the dates calendar's Escape and finger press,
 `src/ui/toastplace.test.tsx` (where the note is placed), `e2e/inputs-batch2.spec.ts` (what only a real browser can —
 registered in `playwright.config.ts`, whose `raptor` project lists its spec files by name: a new spec file that is
 not added there is "No tests found"), and new cases in `src/state/reqorphan.test.ts` and `src/ui/quals.test.tsx`.
-The walk: `scripts/handpass/b2-walk.mjs`; the record: `docs/handpass/2026-10-10-batch2-check.md`.
+The walk: `scripts/handpass/b2-walk.mjs`; the record: `docs/handpass/2026-10-10-batch2-check.md`. The day's title
+box taking Escape (D732, built after that check closed): the same two test files, its own short walk
+`scripts/handpass/d732-walk.mjs`, and §11 of the same record.
 
 His find of 10 Oct 26 (on a phone the Inputs List's dates calendar opened below the foot of the screen): the fix is one
 rule in `src/ui/scheduler/06-inputs.css` (the row of buttons is the box the calendar is placed against on a phone); pinned

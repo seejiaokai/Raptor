@@ -10,6 +10,7 @@ import { login, go } from './app'
      D731 (10)  the viewer of an input with two documents keeps "Edit input" and "Close" in sight
      D731 (2)   a day whose inputs a filter hides says so, and "Clear filters" is a finger's target
      D731 (9)   Escape while a note is typed leaves the note box only; the next closes the day
+     D732       Escape while the day's title is typed puts the title back; the next closes the day
      A1  the "Unsaved changes" question is seen — in front of the day's window — on a phone
      A2  Enter in a new input's Remarks saves ONE input, and no second window opens
      A4  Tab reaches the row's OIL chip, which measures as the span it replaced
@@ -217,6 +218,31 @@ test('D731 (9) — Escape while a note is typed leaves the note box only; the ne
   await expect(page.locator('[data-testid^="idy-note-"]'), 'and no note was made').toHaveCount(0)
   await page.keyboard.press('Escape')
   await expect(page.locator('[data-testid="win-inputsday"]')).toHaveCount(0)
+})
+
+/* D732, with real keys: the day's TITLE box takes Escape the same way — and the blur a real browser sends as the
+   keyboard leaves the box (which is how a title is saved) writes nothing. */
+test('D732 — Escape while the day’s title is typed puts the title back and leaves the day open; the next Escape closes the day', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const day = page.locator('[data-testid="win-inputsday"]'), title = page.locator('#icRmkEdit')
+  /* what is SAVED is what the month prints on the date behind the window */
+  const saved = () => page.locator('#inpCal [data-ichead="2026-10-22"] .ic-rmk').allInnerTexts().then(t => t.join('|'))
+  await page.locator('#inpCal [data-icday="2026-10-22"]').click()
+  await expect(day).toHaveCount(1)
+  await title.fill('Sports day')
+  await page.keyboard.press('Enter')
+  expect(await saved(), 'Enter saves, as before').toBe('Sports day')
+  await title.click()
+  await page.keyboard.type(' — cancelled')
+  await page.keyboard.press('Escape')
+  await expect(day, 'the day is still open').toHaveCount(1)
+  await expect(title).toHaveValue('Sports day')
+  await expect(title, 'the keyboard is out of the box').not.toBeFocused()
+  expect(await saved(), 'and nothing was written').toBe('Sports day')
+  await page.keyboard.press('Escape')
+  await expect(day).toHaveCount(0)
+  expect(await saved()).toBe('Sports day')
 })
 
 /* A1, on a phone: the day's window is nearly the whole screen, the input's window stands at its foot. A finger on a

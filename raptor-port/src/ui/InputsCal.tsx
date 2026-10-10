@@ -273,6 +273,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   const [how, setHow] = useState(false)
   /* which late input's note is showing in the opened day (its entry's key) */
   const [rmkDraft, setRmkDraft] = useState('')
+  /* the title box's own Escape is in flight: the blur it causes writes nothing (D732 — `titleKey`, in the opened day) */
+  const titleGone = useRef(false)
   const [puckDraft, setPuckDraft] = useState('')
   /* the section being DRAGGED to a new position in the popover (owner, 22 Aug
      26 — "shift these up and down by drag and dropping"), and which section
@@ -644,6 +646,21 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        commits (rather than a second copy of the write), so there is exactly
        one place per field that decides what "commit" means. */
     const blurOnEnter = (e: ReactKeyboardEvent) => { if (e.key === 'Enter') (e.target as HTMLElement).blur() }
+    /* ESCAPE WHILE THE DAY'S TITLE IS TYPED PUTS THE TITLE BACK AND LEAVES THE DAY OPEN (owner D732, 10 Oct 26 — the
+       note box's manners, D731 (9); the roll-call's MISSING row of that batch's check). The title box is IN the day's
+       window, and the shell's rule is "Escape closes the window in front": Escape to give up on a title closed the
+       whole day. The box takes the key first: the title as last saved shows again, the keyboard leaves the box, and
+       nothing is written; the next Escape, with the keyboard nowhere, is the window's as before. `titleGone`: leaving
+       the box is how a title is SAVED, and the blur this Escape causes still holds what was typed — it is that
+       Escape's, and writes nothing. Cleared by that blur, and by the next focus or keystroke in the box (a key
+       pressed with the keyboard elsewhere is followed by no blur). */
+    const titleKey = (e: ReactKeyboardEvent) => {
+      if (e.key !== 'Escape') { blurOnEnter(e); return }
+      e.preventDefault(); e.stopPropagation()
+      titleGone.current = true
+      setRmkDraft(DAYRMK[iso] || '')
+      ;(e.target as HTMLElement).blur()
+    }
     /* SECTION DRAG (admin) — the Matrix roster drag's shape scaled down: the
        handle starts it, elementFromPoint + the row-half rule track it, and
        the release resolves "after X" to "before whatever follows X" in this
@@ -859,13 +876,18 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
         {/* PINNED: the day's title and "+ Input" stay while the list scrolls under them */}
         <div className="sd-top">
           {/* the day TITLE (owner, 22 Aug 26 — "beside the date, I can input free text there, and it will show up as the
-              title on the calendar view"). A scheduler edits it in place (commit on Enter / blur); a member reads it. */}
+              title on the calendar view"). A scheduler edits it in place (commit on Enter / blur; Escape gives up what
+              was typed and leaves the day open — D732, `titleKey`); a member reads it. */}
           {sched ? (
             <input id="icRmkEdit" className="ic-title-edit" placeholder="Day title…"
               aria-label="Day title" value={rmkDraft}
-              onChange={e => setRmkDraft(e.target.value)}
-              onBlur={() => writeInputs(() => setDayRemark(iso, rmkDraft))}
-              onKeyDown={blurOnEnter} />
+              onFocus={() => { titleGone.current = false }}
+              onChange={e => { titleGone.current = false; setRmkDraft(e.target.value) }}
+              onBlur={() => {
+                if (titleGone.current) { titleGone.current = false; return }      // Escape put the title back: nothing is written
+                writeInputs(() => setDayRemark(iso, rmkDraft))
+              }}
+              onKeyDown={titleKey} />
           ) : hasRmk ? (
             <span className="ic-title-ro">{DAYRMK[iso]}</span>
           ) : null}

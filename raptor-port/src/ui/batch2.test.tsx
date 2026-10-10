@@ -18,7 +18,7 @@
      B4  D731 (4) a shared input's OIL line counts its people where their answers differ
      B7  D731 (7) an OIL answer for a day the input no longer covers stays on the record
      B8  D731 (8) the filer, with the members' switch off, is told the switch is off
-     B9  D731 (9) Escape while a note is typed leaves the note box only
+     B9  D731 (9) Escape while a note is typed leaves the note box only   ·   D732: the day's title box, the same
    B1's and A9's own files: ui/toastplace.test.ts, ui/quals.test.tsx; B5's: state/reqorphan.test.ts. */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
@@ -34,7 +34,7 @@ import { setMe } from '../state/auth'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
-import { PLANPUCKS, addPlanPuck } from '../state/plan'
+import { PLANPUCKS, DAYRMK, addPlanPuck, setDayRemark } from '../state/plan'
 import { setMembersFile } from '../state/memberfile'
 import { docAdd } from '../state/docs'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -831,5 +831,81 @@ describe('D731 (9) — Escape while a note is typed leaves the note box only', (
     await type('.ic-newnote .ic-poppuck-edit', 'kept')
     await act(async () => { ($('.ic-newnote .ic-poppuck-edit') as HTMLElement).dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
     expect(notes().map((p: any) => p.text)).toEqual(['kept'])
+  })
+})
+
+/* D732 — the "Day title…" box at the head of the same opened day was not a note and was not on his picture: Escape
+   there still closed the whole day, and a title half typed was lost (the roll-call's MISSING row of the batch's check,
+   §2.6). His answer, 10 Oct 26 — "Yes": the same manners as a note's box. Escape puts the title back as last saved,
+   takes the keyboard out of the box, writes nothing, and the day stays; the next Escape is the day's. */
+describe('D732 — Escape while the day’s title is typed puts the title back and leaves the day open', () => {
+  const D = '2026-10-22'
+  const title = () => $('#icRmkEdit') as HTMLInputElement
+  const leave = async () => act(async () => { title().dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+  afterEach(async () => { await act(async () => { delete DAYRMK[D]; notify() }) })
+  it('a saved title typed over: Escape puts it back, saves nothing, and the day stays; the next Escape closes the day', async () => {
+    await act(async () => { writeInputs(() => setDayRemark(D, 'Sports day')); notify() })
+    await openDay(D)
+    expect(title().value).toBe('Sports day')
+    await act(async () => { title().focus() })
+    await type('#icRmkEdit', 'Sports da')
+    const e = await key(title(), 'Escape')
+    expect(tid('win-inputsday'), 'the day is still open').toBeTruthy()
+    expect(e.defaultPrevented, 'the box took the key').toBe(true)
+    expect(title().value, 'the title as last saved shows again').toBe('Sports day')
+    expect(DAYRMK[D], 'and nothing was written').toBe('Sports day')
+    expect(document.activeElement, 'the keyboard is out of the box').not.toBe(title())
+    await key(tid('win-inputsday')!, 'Escape')
+    expect(tid('win-inputsday'), 'the second Escape closes the day').toBeNull()
+  })
+  it('a day with no title, one half typed: Escape leaves it with none', async () => {
+    await openDay(D)
+    await act(async () => { title().focus() })
+    await type('#icRmkEdit', 'half a tit')
+    await key(title(), 'Escape')
+    expect(tid('win-inputsday')).toBeTruthy()
+    expect(title().value).toBe('')
+    expect(Object.prototype.hasOwnProperty.call(DAYRMK, D), 'no title was made').toBe(false)
+  })
+  it('after an Escape the NEXT edit of the title saves as it always did', async () => {
+    await act(async () => { writeInputs(() => setDayRemark(D, 'Sports day')); notify() })
+    await openDay(D)
+    await type('#icRmkEdit', 'given up')
+    await key(title(), 'Escape')                                  // pressed with the keyboard elsewhere: no blur follows it
+    await type('#icRmkEdit', 'Sports day, 0800')
+    await leave()
+    expect(DAYRMK[D]).toBe('Sports day, 0800')
+  })
+  /* An input's window does not block the page (D641), and its own Escape listens ahead of every box on the page. It
+     stands down for a key typed in a box outside it, so the title box still has the key first: the window in front,
+     and what was typed in it, stay. */
+  it('with an input’s window up and IN FRONT, Escape in the title box puts the title back — the window, its typing and the day stay', async () => {
+    const r = await single({ date: 'Oct 22', remarks: 'as filed' })
+    await act(async () => { writeInputs(() => setDayRemark(D, 'Sports day')); notify() })
+    await openDay(D)
+    await click(tid('idy-row-' + r.iid)!.querySelector('[data-testid="idy-open"]'))
+    await type('#inpEditRmk', 'typed, not saved')
+    expect(frontWin()).toBe('inputedit')
+    await act(async () => { title().focus() })                    // by the keyboard: no press, so the input's window stays in front
+    await type('#icRmkEdit', 'Sports da')
+    const e = await key(title(), 'Escape')
+    expect(e.defaultPrevented, 'the box took the key').toBe(true)
+    expect(title().value).toBe('Sports day')
+    expect(DAYRMK[D]).toBe('Sports day')
+    expect(tid('win-inputsday'), 'the day stayed').toBeTruthy()
+    expect(tid('win-inputedit'), 'the input’s window stayed').toBeTruthy()
+    expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('typed, not saved')
+  })
+  it('THE CONTROL — Enter still saves the title, and leaving the box still saves it', async () => {
+    await openDay(D)
+    await act(async () => { title().focus() })
+    await type('#icRmkEdit', 'Range day')
+    const e = await key(title(), 'Enter')
+    expect(DAYRMK[D], 'Enter saves').toBe('Range day')
+    expect(e.defaultPrevented, 'Enter is not taken from anything else').toBe(false)
+    expect(tid('win-inputsday')).toBeTruthy()
+    await type('#icRmkEdit', 'Range day, pm')
+    await leave()
+    expect(DAYRMK[D], 'leaving the box saves').toBe('Range day, pm')
   })
 })
