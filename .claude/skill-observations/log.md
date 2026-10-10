@@ -3468,3 +3468,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Make the reliable form the only form in the recipe: "an edit script is always written to a file first; never passed inline", with the two failure signatures named (escapes turned into control characters; a parse error at an apostrophe).
 
 **Principle:** A known trap that is avoided by judgement each time will be hit again under load; remove the choice.
+
+### Observation 496: A scripted press that scrolls its target into view hid a pop-up no person could find
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** The owner reported from his phone that a dates button lit and no calendar appeared, the morning after a FULL bug check of that screen (walkers, browser tests, two code reads) had passed.
+**Skill:** Project guide: raptor-port/docs/bug-check-order.md (the walk, §7.2; the roll-call, §6) — a proposal is filed in OUTSTANDING.md [WALK-FINGER-NOT-LOCATOR]; the guide itself is unchanged until both reviewers read it (D70)
+**Type:** internal
+**Phase/Area:** Walk scripts and browser tests of pop-ups on a phone
+
+**Issue:** The pop-up was placed against the screen instead of its own button, so on a phone it opened one screen down the page. It had looked right only while a tall form above it pushed its row down; the build removed the form. Four existing browser tests and every walker pressed the pop-up's buttons with a locator press, which scrolls the target into view first — so each press worked and each step passed. A second gap: the roll-call asked what the removal took away (its doors), not what it MOVED.
+
+**Suggested improvement:** In a walk or browser test, prove a pop-up is on screen before pressing anything in it (page not scrolled by the script, its box inside the screen, the element at a point on it is the pop-up), then press at a point. When a build removes something from a page, the roll-call lists everything that stood below it and every pop-up on that page placed against the screen.
+
+**Principle:** An automated press proves a control works, not that a person can find it; a test driver that helpfully scrolls or waits removes exactly the obstacle the user would hit. Assert visibility and position from the user's resting view before interacting, and when removing a layout element, check what its presence was silently holding in place.

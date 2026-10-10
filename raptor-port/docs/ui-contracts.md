@@ -9562,6 +9562,22 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   `listRow`, `shown`), and an opened day lists a just-saved shared input hidden by a filter as the whole entry
   (`entryRowsOf`); `remarkOnce` tidies only the JOIN where the words stood — a sign or a dash that belongs to the
   typed words is never touched.
+- **THE LIST'S DATES CALENDAR ON A PHONE OPENS UNDER ITS ROW OF BUTTONS (his find, 10 Oct 26 — fixed).** At 700 points
+  wide and under, the pop-up spans the row of buttons ("+ Input", the dates button, Export), so that ROW is the box it is
+  placed against (`scheduler/06-inputs.css`). Placed against nothing it opened one screen's height down the page — the
+  button lit and nothing appeared, once the List's add form no longer stood above the row (D729). Pin:
+  `e2e/inputs-calendar.spec.ts` "the dates button opens its calendar on screen" — the page not scrolled, the whole
+  calendar inside the screen, pressed by a finger at a point. The record: `docs/handpass/2026-10-10-list-dates-picker.md`.
+- **RULED, NOT YET BUILT — the small choices of the Inputs pages (owner D731, 10 Oct 26 — "Yes to all"; the build:
+  `OUTSTANDING.md` `[SEEN-BATCH-2]`).** When built, each becomes a line of its own here: on a phone a passing note shows at
+  the TOP of the screen while a window is open; a day whose inputs a filter hides says "No inputs match on this day." with
+  "Clear filters"; the List's dates calendar stays open after its end date (a tap outside or Escape closes it) and its
+  days are a finger's size on a phone, filling its width (as D725's); a shared input's OIL line counts its people where
+  their answers differ ("credited for 2 of 3 — Ranger: no"); taking a request off the programme names it ("Ranger's
+  Sports day taken off the programme"); an OIL answer for a day an input no longer covers stays on the record; with
+  members' filing switched off the filer reads "Filing for other people is switched off — an admin can change this.";
+  Escape in a planning note being typed leaves the note box only; the two-documents viewer keeps "Edit input" and
+  "Close" pinned at its foot; several days picked on the month open the window at once (kept as built).
 - **THE CARD'S REMARK LEAVES OUT THE AUTOMATIC "TILL <DATE>" (owner D728, 10 Oct 26 — "1 now, 2 later").** The card's
   corner already says when a several-day input ends, so the card does not print the same words again from its
   remark; what a person typed stays, and a remark that was only the automatic words shows none. The record, the

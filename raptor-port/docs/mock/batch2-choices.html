@@ -1,0 +1,228 @@
+<title>Inputs small choices</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column of numbered choices; each is a short statement beside the real screen that shows it */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --shot:#0c1014;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:62ch;margin:8px 0 0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:62ch}
+.how b{color:var(--accent)}
+h2{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:14px 0 0}
+.item{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+.item.wide{grid-template-columns:minmax(0,1fr)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:10px}
+.head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;min-width:1.3em}
+h3{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.rec{background:var(--ok-soft);border-radius:6px;padding:10px 12px}
+.rec .lab{color:var(--ok)}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.note .lab{color:var(--warn)}
+.where{color:var(--ink-2);font-size:14px}
+.shots{min-width:0;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+figure{margin:0;flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:6px}
+figure.desk{flex-basis:100%}
+.zoom{display:block;width:100%;padding:0;border:1px solid var(--edge);border-radius:8px;background:var(--shot);cursor:zoom-in;overflow:hidden}
+.zoom:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.zoom img{display:block;width:100%;height:auto}
+.zoom.crop{aspect-ratio:var(--ar,16/9)}
+.zoom.crop img{height:100%;object-fit:cover;object-position:var(--pos,50% 100%)}
+figcaption{font-size:14px;color:var(--ink-2);line-height:1.35}
+figcaption b{color:var(--ink)}
+.tap{font-size:13px;color:var(--ink-2)}
+#lb{position:fixed;inset:0;background:rgba(4,6,8,.94);z-index:10;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));cursor:zoom-out;text-align:center}
+#lb img{max-width:none;width:min(100%,1100px);height:auto;border-radius:6px}
+#lb.big img{width:auto;max-width:none}
+#lbx{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:11;font:600 15px var(--body);padding:10px 16px;border-radius:999px;border:1px solid #5b6672;background:#151b22;color:#e9eef3}
+@media (max-width:720px){ .item{grid-template-columns:minmax(0,1fr);padding:14px} h3{font-size:22px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>The small choices on the Inputs pages</h1>
+    <p class="lede">Each one shows the real screen as it is today, what is wrong with it, and what I recommend. Tap any picture to see it full size.</p>
+  </header>
+  <p class="how"><b>How to answer:</b> reply “yes to all”, or give the numbers you want done differently. The numbers match the list I sent you in the chat.</p>
+
+  <h2>Your find this morning — fixed, waiting for your look</h2>
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">✓</span><h3>The dates button lit up and no calendar appeared</h3></div>
+      <p><span class="lab">What was wrong</span>On a phone the calendar opened one screen’s height down the page, below the bottom of the screen. The button turned blue and nothing else seemed to happen.</p>
+      <p class="rec"><span class="lab">Fixed</span>The calendar now opens straight under the row of buttons. A finger can pick two dates and press “All dates”. Checked at three phone heights, as an admin and as a member.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="img/batch2-choices/00-bug-before.png" alt="The Inputs list on a phone with the dates button lit and no calendar in sight"></button><figcaption><b>Before</b> — what you saw.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="img/batch2-choices/00-bug-after.png" alt="The same screen with the dates calendar open under the row of buttons"></button><figcaption><b>After</b> — the calendar under the buttons.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>The choices</h2>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">1</span><h3>A passing note covers the buttons at the foot of a window</h3></div>
+      <p><span class="lab">What happens now</span>On a phone, notes such as “OIL answer saved” or “Input updated” appear at the bottom of the screen. That is exactly where an open window keeps its buttons, so for a few seconds the note sits on top of them.</p>
+      <p class="rec"><span class="lab">Recommended</span>On a phone, while a window is open, show the note at the top of the screen instead.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/520;--pos:50% 100%"><img src="img/batch2-choices/01-note-over-foot.png" alt="A window on a phone with the note OIL answer saved lying over the words and buttons at its foot"></button><figcaption>“OIL answer saved” lies over the sentence and sits between “Take me out” and “Close”.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">2</span><h3>A filtered day says it has no inputs when it does</h3></div>
+      <p><span class="lab">What happens now</span>With a filter on (here: one person), a day that has inputs for other people opens saying “No inputs on this day. Tap + Input to add one.” Nothing tells you the filter is hiding them.</p>
+      <p class="rec"><span class="lab">Recommended</span>Say “No inputs match on this day.” with a “Clear filters” button beside it.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/640;--pos:50% 0%"><img src="img/batch2-choices/02-day-no-filter.png" alt="Monday 20 July opened with no filter, showing its inputs"></button><figcaption><b>No filter</b> — the day has inputs.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/640;--pos:50% 0%"><img src="img/batch2-choices/02-day-under-filter.png" alt="The same day opened under a person filter, saying No inputs on this day"></button><figcaption><b>Filter on</b> — the same day claims to be empty.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">3</span><h3>The dates calendar stays open after the second date</h3></div>
+      <p><span class="lab">What happens now</span>On the List, after you tap a start date and an end date, the calendar stays up. It closes when you tap outside it or press one of its two quick buttons.</p>
+      <p class="rec"><span class="lab">Recommended</span>Leave it open. You can see the range you chose and still press “Next 2 weeks” or “All dates”. A tap outside closes it. (Escape will close it too — that part needs no choice.)</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/1010;--pos:50% 0%"><img src="img/batch2-choices/03-picker-still-open.png" alt="The dates calendar still open after 13 Oct and 19 Oct were tapped"></button><figcaption>Both dates tapped; the list behind already shows 13 → 19 Oct, the calendar is still up.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">4</span><h3>A shared input’s OIL line shows only the first man’s answer</h3></div>
+      <p><span class="lab">What happens now</span>An input for three people says “credited on its non-working day” — the first man’s answer. One of the three has since answered No for himself, and the main line still reads as if everyone is credited.</p>
+      <p class="rec"><span class="lab">Recommended</span>Have the line count them: “credited for 2 of 3 — Ranger: no”.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/360;--pos:50% 88%"><img src="img/batch2-choices/01-note-over-foot.png" alt="The OIL line reads credited, while the line under it says Your OIL: no OIL"></button><figcaption>Top line: “credited”. Further down, for the man looking: “Your OIL: no OIL”.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">5</span><h3>Taking a request off the programme says only “Accept undone”</h3></div>
+      <p><span class="lab">What happens now</span>When a scheduler takes a member’s request off the programme, the note reads “Accept undone”. It does not say whose request or which one. Accepting it says the full thing: “Ranger’s Sports day added to the ground programme”.</p>
+      <p class="rec"><span class="lab">Recommended</span>“Ranger’s Sports day taken off the programme”.</p>
+    </div>
+    <div class="shots">
+      <figure class="desk"><button class="zoom crop" type="button" style="--ar:1440/330;--pos:50% 100%"><img src="img/batch2-choices/05-accept-undone.png" alt="The Scheduler Board with the note Accept undone at the bottom"></button><figcaption>The Scheduler Board straight after the request was taken off: “Accept undone”.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">6</span><h3>A member filing for several people could not leave himself out</h3></div>
+      <p class="note"><span class="lab">No choice needed</span>I tried this on today’s build to take its picture, and it already works: with another man picked, a member can tap his own puck off. I am taking this one off the list.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/700;--pos:50% 0%"><img src="img/batch2-choices/06-member-cannot-unpick.png" alt="A member's new input with Anvil picked and the member's own puck, Ranger, not picked"></button><figcaption>Signed in as Ranger: Anvil is picked, Ranger is not.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item wide">
+    <div class="txt">
+      <div class="head"><span class="num">7</span><h3>An old OIL answer stays on record after the input’s dates move</h3></div>
+      <p><span class="lab">What happens now</span>An input covers a Saturday and its OIL question is answered. The input is then moved to weekdays. The Saturday answer stays stored with the input. Nothing on any screen shows it and no OIL is credited for it. If the input is moved back onto that Saturday, the old answer stands again. There is no picture because nothing on screen changes.</p>
+      <p class="rec"><span class="lab">Recommended</span>Leave it as it is.</p>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">8</span><h3>With “file for other people” switched off, the filer gets a muddled message</h3></div>
+      <p><span class="lab">What happens now</span>Ranger filed an input for himself and Echo. An admin then switched off members filing for other people. Ranger opens his input and reads “Only Ranger — who filed it — or an admin can change this for everyone.” He is Ranger, and he cannot. He is also offered “Take me out”.</p>
+      <p class="rec"><span class="lab">Recommended</span>“Filing for other people is switched off — an admin can change this.”</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:430/250;--pos:50% 100%"><img src="img/batch2-choices/08-switched-off.png" alt="The foot of the window reading Only Ranger, who filed it, or an admin can change this for everyone, beside Take me out"></button><figcaption>The foot of Ranger’s own window.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">9</span><h3>Escape while typing a note closes the whole day</h3></div>
+      <p><span class="lab">What happens now</span>In a day opened on the Inputs calendar, you press “+ Note” and start typing. Pressing Escape to give up on the note closes the whole day window, not just the note box.</p>
+      <p class="rec"><span class="lab">Recommended</span>Escape leaves the note box only. A second Escape closes the day.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/640;--pos:50% 0%"><img src="img/batch2-choices/09-note-being-typed.png" alt="A day window with a note being typed"></button><figcaption><b>Typing a note</b> in the opened day.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/640;--pos:50% 0%"><img src="img/batch2-choices/09-after-escape.png" alt="The month, with the day window gone after Escape"></button><figcaption><b>After Escape</b> — the day is gone.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">10</span><h3>The two-documents viewer cuts off its own buttons</h3></div>
+      <p><span class="lab">What happens now</span>On a laptop-sized screen, an input with two documents opens a viewer slightly taller than its box. “Edit input” and “Close” sit half hidden on its bottom edge until you scroll inside it.</p>
+      <p class="rec"><span class="lab">Recommended</span>Keep the two buttons pinned in sight at the foot, the way an input’s own window keeps Cancel and Save.</p>
+    </div>
+    <div class="shots">
+      <figure class="desk"><button class="zoom crop" type="button" style="--ar:1440/520;--pos:50% 92%"><img src="img/batch2-choices/10-two-documents.png" alt="The document viewer with Edit input and Close cut off at its bottom edge"></button><figcaption>Bottom edge of the viewer: “Edit input” and “Close” are cut in half.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">11</span><h3>Dragging across several days opens the window at once</h3></div>
+      <p><span class="lab">What happens now</span>On the month, dragging across 7, 8 and 9 July opens “New input · Jul 7 → Jul 9” the moment you let go. The original drawing had a small bar to confirm the days first.</p>
+      <p class="rec"><span class="lab">Recommended</span>Keep it as built. It is one step shorter, and the window shows the dates so a wrong drag is plain to see and Cancel undoes it.</p>
+    </div>
+    <div class="shots">
+      <figure class="desk"><button class="zoom" type="button"><img src="img/batch2-choices/11-window-at-once.png" alt="The Inputs month with the New input window open for 7 to 9 July"></button><figcaption>Straight after the drag: the window is already open with the three days set.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>New — seen while fixing your find</h2>
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">12</span><h3>The days in the List’s dates calendar are small for a finger</h3></div>
+      <p><span class="lab">What happens now</span>You had the days in an input’s window made bigger on a phone. The List’s own dates calendar was not part of that, so its days are still small and it uses about half the width it has.</p>
+      <p class="rec"><span class="lab">Recommended</span>Make its days the same finger size as the window’s, filling the width. I have not changed it, because the size of the app’s buttons stays as it is without your word.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom crop" type="button" style="--ar:780/1010;--pos:50% 0%"><img src="img/batch2-choices/12-list-picker-days.png" alt="The List's dates calendar on a phone with small days"></button><figcaption><b>The List’s calendar</b> — small days.</figcaption></figure>
+      <figure><button class="zoom crop" type="button" style="--ar:780/1010;--pos:50% 62%"><img src="img/batch2-choices/12-window-days.png" alt="The calendar in an input's window on a phone with bigger days"></button><figcaption><b>An input’s window</b> — the size you approved.</figcaption></figure>
+    </div>
+  </section>
+
+  <p class="tap">Pictures 1, 4, 5, 8 and 10 were taken by the checks of the last three nights; the rest were taken today on the current build.</p>
+</div>
+
+<div id="lb" hidden></div>
+<button id="lbx" type="button" hidden>Close ✕</button>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.appendChild(document.createElement('img')), x=document.getElementById('lbx'), last=null
+  function shut(){ lb.hidden=true; x.hidden=true; lb.classList.remove('big'); if(last) last.focus() }
+  document.querySelectorAll('.zoom').forEach(function(b){
+    b.addEventListener('click',function(){ var s=b.querySelector('img'); last=b; im.src=s.src; im.alt=s.alt; lb.hidden=false; x.hidden=false; lb.scrollTop=0; x.focus() })
+  })
+  im.addEventListener('click',function(e){ e.stopPropagation(); lb.classList.toggle('big') })
+  lb.addEventListener('click',shut); x.addEventListener('click',shut)
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) shut() })
+})()
+</script>
