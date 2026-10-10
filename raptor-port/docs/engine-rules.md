@@ -1286,6 +1286,28 @@ flagged correctly and still swept the man out of the crew palette.
   no longer covers the day goes (unless `kept` — D363); a row whose request changed is re-made in place (its id, place and
   every field the scheduler set kept; D271). A never-published day's landing makes no mark (its zero state, live and at
   load alike). `autoAcceptInput` / `autoAcceptSeedInputs` are no longer the app's path (the second is gone).)*
+- **A REQUEST'S ROW: ITS NAME, ITS TWO TIMES AND ITS REMARK ARE THE REQUEST'S (owner D739, D740 — built 11 Oct 26:
+  "The scheduler changes the input entirely from the original on the schedule"; for a one-man request, "Yes - same
+  rule").** Until this build those four boxes of a request's row on the Ground Programme were the scheduler's own layer:
+  typing there changed the ROW, the request and the Inputs calendar kept what was filed, and the member's next edit
+  wrote over the scheduler's words (`[REQ-ROW-OWN-BOXES]`). Now every writer of a typed box asks ONE door first —
+  `ui/reqrow.ts reqRowText(path, text)`: the week's focus-out, the board's change, `state/store.ts writeText` (through
+  `HOOKS.reqRowText`) and the probe bridge. Its three answers: `'none'` (not a request's box — written as before),
+  `'saved'`, `'refused'` (nothing saved; the box heals; never on to `txtSet`). A time or a remark goes through the body
+  the Personal Inputs boxes use (`ui/inputedit.tsx setInpField` — a time typed alone fills the other end, a time
+  CLEARED makes the request all day); a name becomes the input's own title, as typed (`setInpTitle`, through `titleOf`
+  — the kind's own name is no title). ONE input command: one Undo step, one history line in the scheduler's name, the
+  filed value in its "from"; the row is then re-made by the rule above (its id, place, people, CX, red box and
+  information-only kept — D468, D46). It is a schedule-side save: the late date stays (D741) and a Yes to the OIL
+  question stays at what the new hours give (D739 reading 4). WHOSE a box is, is one predicate —
+  `engine/overlay.ts requestOfBox(day, row)`: the request, when the row is its standing row, not `kept`, the request not
+  taken off and not read-only. **The belt:** `engine/slots.ts txtSet` refuses a write to `prog` / `str` / `end` / `rmks`
+  of such a row (false, no mark) — so no forgotten door can leave the schedule and the request apart. A hand-built row,
+  a `kept` row, a row whose request is gone or taken off, and a read-only request's row are written as before.
+  `[REQ-ROW-SELF-CLASH]` went with it: times typed on an all-day request's row make the REQUEST timed, so its man is not
+  flagged against his own row. On a day not yet published the typed box leaves no change mark of its own (reading R9):
+  the change is the input's. Pins: `ui/reqrow.test.tsx`; `state/p6c-requestonread.test.ts` (two cases rewritten to the
+  ruling).
 - **`dayOff` stays narrow — off for the WHOLE day.** It also feeds the
   day-info "off" tally and the palette's struck-through rank, and a man on AM
   leave is not off for the day. **Known, deliberate consequence: a half-day

@@ -1524,6 +1524,18 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
   if (ok && !schedSide({ sched: true })) askOilIfPending(inp)
   return ok
 }
+/* THE NAME TYPED ON A REQUEST'S ROW IS THE INPUT'S OWN TITLE (owner D739, D740; reading R1, told to him — the plan
+   2026-10-10-group-input-one-row-plan.md §4.4): the row's name box on the Ground Programme is reached through
+   ui/reqrow.ts, and what is typed there becomes the title, in the letters typed — through the one normaliser inside
+   the save (engine/inputs.ts titleOf: 40 characters; the kind's own name, in any case, is no title and takes one
+   away). Like setInpField it is reached only from a row on the schedule, so its save is a schedule-side one: the late
+   date stays (D741). A name does not price OIL, so nothing follows it. */
+export function setInpTitle(inp: any, text: any) {
+  if (!inp) return false
+  const d: any = draftOf(inp)
+  d.title = String(text == null ? '' : text)
+  return commitInputEdit(inp, d, undefined, undefined, { sched: true })
+}
 /* Deleting an ACCEPTED input used to leave its ground row on the programme for
    good — nothing pointed at it any more, so it could never be removed and it
    still printed and validated as a real commitment. */

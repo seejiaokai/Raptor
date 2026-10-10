@@ -223,6 +223,10 @@ add form / row editor / week cell / board cell / board panel adds *[GONE 10 Oct 
     pass call it; published days and leave/medical are no-ops)         → BOARD/WEEK
   → or a scheduler ACCEPTS/UNDOES it by hand: acceptInput()/unacceptInput()
     (`acceptedDay`, inert amendment keys — the round-trip is unchanged)  → BOARD/WEEK
+  → or a scheduler TYPES on its row on the Ground Programme — its name, a time, its remark (D739, D740, 11 Oct 26):
+    `ui/reqrow.ts reqRowText` sends it to the REQUEST (one input command), and the row is re-made from it
+                                                     → INPUTS CALENDAR / LIST / PERSONAL INPUTS / BOARD / WEEK
+    a NEW writer of a typed box must ask that door first; `slots.ts txtSet` refuses a raw write there (the belt)
   → ONE REQUEST, ONE ROW reads the STORED weeks too (`weekstash.ts rowElsewhere`, 28 Sep 26 — [REQ-ORPHAN-ROW]):
     acceptInput refuses a second row, an 'r' request whose row stands on a loaded day is adopted, a load / plan
     switch leaves out a row standing elsewhere; a delete from another week is refused and names the day, and a

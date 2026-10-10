@@ -1,5 +1,12 @@
 # The file map — where each source file lives and what it does
 
+`[GROUP-INPUT-ONE-ROW]` step 2 (D739, D740 — 11 Oct 26): a request's boxes write the request. New: `src/ui/reqrow.ts`
+(`reqRowText` — the one door every writer of a typed box asks first; it installs itself as `HOOKS.reqRowText` for
+`state/store.ts writeText`) and its test `src/ui/reqrow.test.tsx`. `src/engine/overlay.ts` gained `requestOfBox` and
+`REQ_BOX` (whose a row's four boxes are — shared by the door and the belt in `src/engine/slots.ts txtSet`);
+`src/ui/inputedit.tsx` gained `setInpTitle` (a name typed on the row becomes the input's title). Callers:
+`src/ui/textedit.ts`, `src/ui/board.ts`, `src/state/store.ts`, `src/probe-bridge.ts`.
+
 `main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
 the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three
 pages (its checks are the right behaviour, so running it again is the re-walk); the record:

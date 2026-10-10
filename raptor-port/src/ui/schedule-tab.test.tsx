@@ -354,9 +354,13 @@ describe('W11 a Tab pass through a box holding a doubled space changes nothing',
 /* W12 (the Codex stack check, 5 Oct 26): a save that opens a window. Changing a weekend duty request's start time on
    Edit Schedule and pressing Tab saved it and opened the OIL question — and the route had already put the caret in
    the next box BEHIND that window, where typed characters and further Tabs went on editing the schedule unseen. The
-   route stops when the save it caused asks for a window, never walks while one is up, and the window takes the keys. */
-describe('W12 a save that opens a window stops the Tab route there', () => {
-  it('Tab out of a weekend duty request’s time: the OIL question opens, the caret is not behind it, and the window holds the keys', async () => {
+   route stops when the save it caused asks for a window, never walks while one is up, and the window takes the keys.
+   REWRITTEN TO HIS RULING, 11 Oct 26 (D739 reading 4, D740 reading 4 — the shared-row job's step 1): hours typed on a
+   row of the schedule open NO question — an unanswered day stays unanswered, for its own bell — so the save that used
+   to raise this window no longer does, and the Tab simply moves on. The guard itself is kept and still pinned: a text
+   box behind a window that IS up is not on the route (the window opened here by its own door, as the bell opens it). */
+describe('W12 the Tab route and the OIL question', () => {
+  it('Tab out of a weekend duty request’s time saves it and opens NO question (D739 (4)); a box behind a window that is up is not on the route', async () => {
     const pops = await import('./pops')
     const { inpId } = await import('../engine/inputs')
     const row: any = { ...structuredClone(INPUTS.find((r: any) => r.person === 'bane' && r.s != null)!), iid: 'iw12duty', type: 'Duty', date: 'Jul 18', remarks: 'w12', s: 480, e: 720 }
@@ -370,12 +374,19 @@ describe('W12 a save that opens a window stops the Tab route there', () => {
     document.addEventListener('focusin', spy, true)
     const e = await tab(start); await tick()
     document.removeEventListener('focusin', spy, true)
-    expect(touched, 'no schedule box took the caret, even for a moment').toBe(0)
     expect(e.defaultPrevented).toBe(true)
-    expect(INPUTS.find((r: any) => r.iid === 'iw12duty')!.s, 'the time was saved once').toBe(540)
-    expect(pops.INPEDIT, 'the request’s window was asked for').toBeTruthy()
+    const saved: any = INPUTS.find((r: any) => r.iid === 'iw12duty')!
+    expect(saved.s, 'the time was saved once').toBe(540)
+    expect(saved.oil, 'the day nobody answered stays unanswered').toBeUndefined()
+    expect(pops.INPEDIT, 'no window was asked for').toBeFalsy()
+    expect(document.querySelector('[data-testid="oilconf"]'), 'no OIL question on the schedule').toBeNull()
+    expect(touched, 'the route moved on to the next box').toBeGreaterThan(0)
+    await act(async () => { (document.activeElement as HTMLElement)?.blur() }); await tick()
+    /* the question, opened by its own door — the way the bell opens it */
+    await act(async () => { pops.setOilAsk('iw12duty'); pops.setInpEdit(saved); notify() }); await tick()
     const sheet = document.querySelector<HTMLElement>('[data-testid="oilconf"]')
     expect(sheet, 'the OIL question is up').toBeTruthy()
+    await act(async () => { (sheet!.querySelector('button, [tabindex]') as HTMLElement)?.focus() })
     expect(editingText(), 'no caret in a schedule box behind the window').toBe(false)
     expect(sheet!.contains(document.activeElement), 'the window holds the keyboard').toBe(true)
     /* a text box behind an open window is not on the route: a Tab there goes back INTO the window (RF2 — the sheet
@@ -385,7 +396,7 @@ describe('W12 a save that opens a window stops the Tab route there', () => {
     await tab(behind)
     expect(sheet!.contains(document.activeElement), 'a Tab behind the window comes back into it').toBe(true)
     expect(editingText(), 'and never on to the next schedule box').toBe(false)
-    await act(async () => { (document.activeElement as HTMLElement)?.blur(); pops.setInpEdit(null); notify() }); await tick()
+    await act(async () => { (document.activeElement as HTMLElement)?.blur(); pops.setOilAsk(null); pops.setInpEdit(null); notify() }); await tick()
     /* and with the window closed the route is back */
     await focus(behind)
     expect((await tab(behind)).defaultPrevented).toBe(true)

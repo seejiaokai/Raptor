@@ -171,8 +171,10 @@ export function requestRowFields(inp: any) {
   }
 }
 /* `srcv` — what a row was last made or re-made from: a short hash of those six fields. A row whose `srcv` differs from its
-   request's is re-made (rule 6); a scheduler's own edit of the row's cells leaves `srcv` alone, so it is not undone until
-   the request itself changes (today's relink rule). Not canonical (restore.ts dayKeys never names it): it moves no digest,
+   request's is re-made (rule 6). *(Until 11 Oct 26 a scheduler could type in the row's own cells, which left `srcv`
+   alone, so his words stood until the request itself changed — "today's relink rule". Those four cells are the
+   request's now — owner D739, D740; requestOfBox below — so a typed time or remark moves the request, and with it
+   `srcv`.)* Not canonical (restore.ts dayKeys never names it): it moves no digest,
    count or signature. */
 export function srcvOf(inp: any): string {
   const f = requestRowFields(inp)
@@ -226,6 +228,25 @@ export function standsOn(d: any, id: any, r?: any): any {
   if (!want || !d) return undefined
   const req = r !== undefined ? r : (INPUTS as any[]).find((x: any) => x && String(x.iid || '') === want)
   return ((d.ground || []) as any[]).find((g: any) => g && String(g.src || '') === want && standingRow(g, req, d.dt))
+}
+
+/* THE FOUR BOXES OF ITS ROW THAT ARE THE REQUEST'S (owner D739, D740 — 10 Oct 26: "a time or a remark the scheduler types
+   on a request's row changes the request itself"; the plan docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md
+   §4.4). The row's name, its two times and its remark are what the request writes on it (requestRowFields) — so a hand
+   that types there is changing the REQUEST, and the row follows by the re-make rule. `requestOfBox` answers, for one
+   row of one day, WHOSE they are: the request, when this is its standing row and the request can be changed from the
+   schedule — else null, and the boxes are the row's own, written as any ground row's are: a row nobody filed, a dead
+   `kept` row (D363), a row whose request is gone, a request taken off the programme whose row stands again (a version
+   loaded, a plan switched in — rule 4 leaves it as it is), and a read-only request's. ONE predicate for the door that
+   sends the typing to the request (ui/reqrow.ts) and the belt that refuses a raw write (slots.ts txtSet), so the two
+   cannot disagree about a row. What stays the row's own on every row: its people, CX, red box, information only. */
+export const REQ_BOX = /^(prog|str|end|rmks)$/
+export function requestOfBox(d: any, row: any): any {
+  if (!d || !row || !row.src || row.kept) return null
+  const id = String(row.src)
+  const r = (INPUTS as any[]).find((x: any) => x && String(x.iid || '') === id)
+  if (!r || r.acc === 'r' || inputProtected(r)) return null
+  return standsOn(d, id, r) === row ? r : null
 }
 
 export type ViewDayInfo = {

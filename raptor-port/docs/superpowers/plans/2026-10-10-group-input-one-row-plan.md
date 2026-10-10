@@ -420,6 +420,10 @@ reload after each. A phone and a desktop; his PC's 125% display. Each approved p
 same size (D743 (11)). The walk is sized before it starts (`docs/walk-ledger.md`); two code readers (published records,
 OIL).
 
+**The two readers wait for ChatGPT (D746, 11 Oct 26 — "Ok if u need chat gpt pause"):** his ChatGPT allowance was at zero
+when the build resumed. The build, the gates and the walk go ahead; the work PAUSES before the two code reads, which stay
+Astra's and Sol's — Fable is not called in their place without his word. Nothing merges meanwhile.
+
 ## 7. For him — nothing waits on him; what he is told
 
 **Q1 of version 1 is WITHDRAWN** (told to him 11 Oct 26): both readers hold that D739's and D740's reading 4 already

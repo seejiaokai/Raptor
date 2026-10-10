@@ -23,6 +23,7 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
 import { setInpField } from './inputedit'
+import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
 import { commit, isOk } from '../command'
@@ -1200,6 +1201,15 @@ export function boardChange(e: Event) {
      The finding-#5 disarm this used to feed still works: REORDERED_DI is set
      by every mover and sorter, and afterSchedMutate() below still reads it —
      this path simply never sets it now. */
+  /* A REQUEST'S ROW: ITS NAME, ITS TIMES AND ITS REMARK ARE THE REQUEST'S (owner D739, D740 — ui/reqrow.ts), asked
+     before the funnel as the week's focus-out asks it. The box is set to what the row now reads either way — a refusal
+     is never left on screen looking saved, and a save is shown as the request holds it (10:15 for a typed 1015). */
+  const rq = reqRowText(p, f.value)
+  if (rq !== 'none') {
+    f.value = txtGet(p)
+    if (rq === 'saved') notify()
+    return
+  }
   if (txtSet(p, f.value)) {
     markEdit()
     afterSchedMutate()

@@ -1288,7 +1288,9 @@ D450–D452:
      **Built 1 Oct 26 (`[DB-READINESS]` group A phase 6 (c) v3 — plan `superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`
      §3 (c)):** a filing, any edit of a request (the hand-over included), a delete and their Undo / Redo write the `Input`
      alone (the "Load the week of …" refusal is gone). The day's own rows are the holder's: a landed row keeps its place, its
-     hand-set times and its extras, and carries `srcv` (what it was made from — it is re-made in place when the request has
+     hand-set times *(CORRECTED 11 Oct 26 — D739, D740: there are none any more; a time, a remark or a name typed on a
+     request's row changes the `Input` itself, and the row follows — `engine-rules.md`, "A request's row: its name, its two
+     times and its remark are the request's")* and its extras, and carries `srcv` (what it was made from — it is re-made in place when the request has
      changed since) and `kept` (a row a loaded version or a switched-in plan brought back although its request is gone, off
      the day or filed under Unavailable — D363; such a row is NEVER the request's row — not for its money, its filing, its
      placement or its marks — on screen, where the view clears the mark once the request can stand there, and in an issued

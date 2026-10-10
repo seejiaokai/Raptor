@@ -2125,6 +2125,15 @@ day's must-read.
 
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
+**SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark
+of a request's row on the Ground Programme — the week's `data-txt="gr:di.ri.{prog|str|end|rmks}"`, the board's
+`data-bfld` — are the REQUEST's boxes: typing there changes the request (and so its Personal Inputs line and the Inputs
+calendar), through `ui/reqrow.ts reqRowText`, asked before the text funnel. After the door has answered, the box is
+brought to what the row now reads — after a save as after a refusal (a name retyped in other letters re-makes the same
+capitals, and nothing else would repaint the typed text). The row's people, CX, red box and information-only stay the
+row's own. Rule and belt: `engine-rules.md`, "A request's row: its name, its two times and its remark are the
+request's".
+
 Build two of the leave-types work: times, type, remarks and delete, reachable
 from Edit Schedule and from the schedule board, writing back to the Inputs
 page. The commit is the Inputs page's own — both call `commitInputEdit` /

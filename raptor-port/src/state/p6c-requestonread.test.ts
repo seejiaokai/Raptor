@@ -42,6 +42,7 @@ import { _resetDisclosure } from './disclosure'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { commitNewInput, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
+import '../ui/reqrow'      // the door a typed box of a request's row goes through (D739, D740) — it installs itself for the store's writer
 import { deletePerson } from './person-delete'
 
 
@@ -151,19 +152,25 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     expect(rowOf(iid, WED)!.row.rmks, 'after a reload').toBe('p6c changed')
   })
 
-  it('the scheduler re-timed the row by hand; the member then edits only the remarks — the row is re-made (today\'s relink rule), its id kept', async () => {
+  /* REWRITTEN TO HIS RULING, 11 Oct 26 (D739, D740 — "a time or a remark the scheduler types on a request's row changes
+     the request itself"; ui/reqrow.ts). As written on 1 Oct 26 the scheduler's hand-set time was the ROW's alone, and
+     the member's next edit of his remarks wrote the request's own 10:00 back over it ("today's relink rule") — the very
+     loss `[REQ-ROW-OWN-BOXES]` filed. The time typed on the row is the request's now, so it STAYS through his edit. */
+  it('the scheduler re-timed the row; the member then edits only the remarks — the scheduler\'s time stays, for it is the request\'s now (D739, D740); the row\'s id kept', async () => {
     const be = new MemoryBackend()
     await boot(be)
     const iid = file({})
     const { row } = rowOf(iid, WED)!
     const rid = row.rid
     writeText(`gr:${WED}.${(DAYS[WED] as any).ground.indexOf(row)}.str`, '07:00')
+    expect(reqOf(iid).s, 'the request itself was re-timed').toBe(7 * 60)
     edit(iid, { remarks: 'p6c again' })
     const now = rowOf(iid, WED)!.row
-    expect(now.str, 'the request\'s own time again').toBe('10:00')
+    expect(now.str, 'the time the scheduler typed').toBe('07:00')
+    expect(now.rmks).toBe('p6c again')
     expect(now.rid, 'the same row').toBe(rid)
     await reload(be)
-    expect(rowOf(iid, WED)!.row.str).toBe('10:00')
+    expect(rowOf(iid, WED)!.row.str).toBe('07:00')
     expect(rowOf(iid, WED)!.row.rid).toBe(rid)
   })
 
@@ -641,19 +648,25 @@ describe('phase 6 (c) — the FULL check\'s walk: a request\'s new row on a publ
     const rid2 = rowOf(iid, WED)!.row.rid
     expect(dayKeysOf(SCHED.pending, WED), 'Accept\'s marks, the same shape').toEqual([`gr:${WED}.${rid2}.prog`])
   })
-  it('a field the scheduler set apart from the request keeps its mark; the member\'s edit of the request re-makes the rest unmarked', async () => {
+  /* REWRITTEN TO HIS RULING, 11 Oct 26 (D739, D740; ui/reqrow.ts). As written the scheduler's words were the ROW's own
+     field, wearing a mark of their own beside the add's, until the member's edit re-made the row. A remark typed on a
+     request's row is the request's remark now: the row is re-made from the request at once, so the new row on the
+     published day wears its ONE mark — the add — before and after the member's own edit. */
+  it('a remark the scheduler types on the new row is the request\'s (D739, D740): the row wears the add\'s mark alone, before and after the member\'s own edit', async () => {
     const be = new MemoryBackend()
     await boot(be)
     publish(WED)
     const iid = file({})
     const at = rowOf(iid, WED)!
     const ri = (DAYS[WED] as any).ground.indexOf(at.row)
-    writeText(`gr:${WED}.${ri}.rmks`, 'SCHEDULER WORDS')           // the holder's own words on the row
+    writeText(`gr:${WED}.${ri}.rmks`, 'SCHEDULER WORDS')           // typed on the row: the request's remark now
     const rid = at.row.rid
-    expect(dayKeysOf(SCHED.pending, WED)).toEqual([`gr:${WED}.${rid}.prog`, `gr:${WED}.${rid}.rmks`].sort())
-    edit(iid, { remarks: 'member words' })                      // re-made: the six fields from the request again
+    expect(reqOf(iid).remarks).toBe('SCHEDULER WORDS')
+    expect(rowOf(iid, WED)!.row.rmks).toBe('SCHEDULER WORDS')
+    expect(dayKeysOf(SCHED.pending, WED), 'the add alone').toEqual([`gr:${WED}.${rid}.prog`])
+    edit(iid, { remarks: 'member words' })
     expect(rowOf(iid, WED)!.row.rmks).toBe('member words')
-    expect(dayKeysOf(SCHED.pending, WED), 'back to the add alone').toEqual([`gr:${WED}.${rid}.prog`])
+    expect(dayKeysOf(SCHED.pending, WED), 'still the add alone').toEqual([`gr:${WED}.${rid}.prog`])
   })
 })
 

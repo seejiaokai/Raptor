@@ -105,6 +105,11 @@ export function writeFill(key: any, id: any) {
 
 /* an inline text field; txtSet reports whether the model actually moved */
 export function writeText(path: any, v: any) {
+  /* a request's row: its name, its times and its remark are the REQUEST's (owner D739, D740) — the door is asked first
+     (ui/reqrow.ts, lent through HOOKS: state/ may not import ui/), and its answer is this writer's: the request moved,
+     or nothing did. Never on to txtSet, which refuses such a box (the belt). */
+  const rq = HOOKS.reqRowText ? HOOKS.reqRowText(path, v) : 'none'
+  if (rq !== 'none') return rq === 'saved'
   return commitSchedValue(SCHED_TYPES.text, () => {
     const moved = txtSet(path, v)
     if (moved) afterSchedMutate()

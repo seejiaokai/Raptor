@@ -10,7 +10,7 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
 import { rowElsewhere } from './weekstash'
-import { requestRowFields, srcvOf, standsOn, standingRow } from './overlay'
+import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -315,6 +315,14 @@ export function txtGet(path:any){const r=txtRef(path);return (r&&r.o&&r.o[r.k]!=
 /* returns true when the model actually moved, so callers can skip a re-render */
 export function txtSet(path:any,v:any){
   const r=txtRef(path); if(!r||!r.o)return false;
+  /* THE BELT (owner D739, D740 — 10 Oct 26; the plan 2026-10-10-group-input-one-row-plan.md §4.4): the name, the two
+     times and the remark of a request's standing row are the REQUEST's — the typing goes to the request through its
+     door (ui/reqrow.ts reqRowText) and the row is re-made from it. A write that reaches the row itself would leave the
+     schedule and the Inputs calendar saying two different things until the member's next edit wrote over it, so it is
+     refused here, above the mark: nothing written, nothing marked, and the caller's own false-return heal puts the box
+     back. Held in the engine so no door forgotten today, and none added later, can do it. The view makes and re-makes
+     these rows by Object.assign (overlay.ts), never through here. */
+  if(String(path).indexOf('gr:')===0&&REQ_BOX.test(String(r.k))&&requestOfBox(DAYS[+String(path).slice(3).split('.')[0]],r.o))return false;
   v=String(v==null?'':v).replace(/\s+/g,' ').trim();
   if(v==='—')v='';                                       // the empty-field placeholder
   /* A TIME CELL TAKES A TIME, OR NOTHING (audit, 12 Aug 26). Until this, an
