@@ -1,8 +1,11 @@
 # The schedule's one row for a shared input — the plan (`[GROUP-INPUT-ONE-ROW]`; D661, D662, D734–D743 — 10 Oct 26)
 
-**Status: VERSION 2 (11 Oct 26). Version 1 was read by Astra and by Sol 6.1, each blind — both `NOT CLEAN`, twenty-two
-findings between them, none reopening a ruling or a picture; §8 says what each found and what this version does about
-it. NOT built.** Branch `claude/group-input-one-row`, cut from `main` at `8d8caff6`. Builder: Opus 5.5. The design note:
+**Status: VERSION 3 (11 Oct 26) — the version that is built. Version 1 was read by Astra and by Sol 6.1, each blind —
+both `NOT CLEAN`, twenty-two findings between them, none reopening a ruling or a picture. Version 2 was read again by
+both, the changed parts only: Sol `CLEAN WITH THESE EXACT CHANGES` (four), Astra `NOT CLEAN` (seven, all technical, none
+for the owner). §8 says what each found in both rounds and what this version does about it. No third read of the plan
+(three versions is the cap): what remains is held by the build's failing-first tests and the two code reads of the FULL
+check. NOT built.** Branch `claude/group-input-one-row`, cut from `main` at `8d8caff6`. Builder: Opus 5.5. The design note:
 `docs/superpowers/specs/2026-10-10-group-input-one-row.md`; the approved pictures (D743, the design of record):
 `docs/mock/group-input-one-row.html`, images under `docs/mock/img/group-input-one-row/`.
 
@@ -134,16 +137,25 @@ next-week peek and another week's read need no input lookup, and rows that are n
 One helper in `engine/overlay.ts`, **`placeRequestRow(day, row)`**, used by BOTH doors that put a request's row on a
 day — `landRequests` and `slots.ts acceptInput`: where the day already holds a standing row with the same non-empty
 `srcg` (the person is NOT part of the match), the new row is inserted straight after the LAST of them and takes that
-row's `cx`, `cxr`, `flag` and `info`; otherwise it goes where it goes today. Rows below it move one index; nothing on
-screen moves, and marks are keyed by `rid`. Everything else about landing — the start day, the published-day rule
+row's `cx`, `cxr`, `flag` and `info`; otherwise it goes where it goes today. **A row that is being put BACK where a
+published version had it is not "new":** `acceptInput`'s restore of an issued row — its issued `rid`, beside its issued
+neighbours (`slots.ts:511-526`) — runs first and is left exactly as it is, so a whole input taken off a published day and
+accepted again reads no reorder; the sibling placement is for a row the issued day never held. The helper returns the
+index it used, and Accept's own marks and bookkeeping use that. Rows below a new row move one index; nothing on screen
+moves, and marks are keyed by `rid`. Everything else about landing — the start day, the published-day rule
 (`overlay.ts:336-339`), oldest first — is unchanged.
 
 **A grouped row's name box is its own man's.** `reconcileRequestRows`: for a row whose request carries a non-empty
 entry id, the keep-the-scheduler's-man branch (`overlay.ts:290-292`) does not apply — `who` is the request's person. A
 placeholder or a scheduler's man that stood in the name box when the request BECAME part of a group (a one-man request
 with ALL AVAIL in its name box, then a second man added in the input's window) is moved to that same row's `more`, never
-dropped — unless he is himself one of the entry's people, whose own row lands (D271). The row, its request and so its
-OIL item are the same, so no decision about him moves.
+dropped. The row, its request and so its OIL item are the same, so no decision about him moves. **The one case where
+his item DOES change:** he is himself made one of the entry's people in that save — then he comes off the other man's
+row (D271) and his own row lands, under his own request. A scheduler's refusal of his OIL on that day
+(`oild.people['<him>|i:<the old request>'] = 'deny'`) is carried to his own item in the same pass of the view, where he
+has no decision there yet — never weakened, never anybody else's, never an issued snapshot's — the way the view already
+edits a day's OIL switches for a deleted man (`overlay.ts stripOilSwitches`). On a published day it reads pending as any
+change to what the day earns does.
 
 **A transient place does not survive a row moving under it.** After the view is installed (`state/holderbase.ts
 rederive`), an armed place whose row is no longer the row it was armed on (its `rid` at that index changed) is put down
@@ -227,6 +239,11 @@ when it is a member row's `who` and that row's request is his; anything in `more
   the request. (The scheduler's store is enlisted in every input command — `state/sched-commit.ts commitInputsWith` — and
   the place must be written INSIDE the command, which re-reads its baseline as it opens. A failing test proves the one
   step first; if the command layer will not carry both, the build STOPS and reports — it does not fall back to a copy.)
+  A place that refuses him THROWS inside the command (`CmdRefused`) — a writer that merely returned false would leave
+  him out of the input. **The place he landed on is remembered by its row's id, not its position:** the command's own
+  pass takes his old row away and every row below it moves up one, so the flash, the "is he busy" check (`barDrop`) and
+  the armed-seat comparison resolve the place again AFTER the command, and this path has its own finish that makes no
+  second schedule write (`drag.ts applyDrop`'s `done()` would add an Undo step).
 - **The LAST man is not taken off that way** — as the input's own window will not save an input with nobody in it, which
   is the measure D734 names. Refused, saying how: "Ranger is the last person on this input — use ✕ to take it off the
   programme, or delete it in its own window" (reading R5).
@@ -235,20 +252,28 @@ when it is a member row's `who` and that row's request is his; anything in `more
   he leaves the input — its OIL stands on his request, and so do the decisions made about the men behind it; handing it
   to another member would silently drop them (both readers). When it happens the app SAYS so, once, to whoever did it
   ("ALL AVAIL came off Range safety brief with Ranger — drop it on the row again if it still applies": the door's own
-  toast, and `rederive({ live })`'s for a removal made in the input's window), and on a published day it is its own
-  change waiting. Reading R10.
-- **OIL for the man added (D738) — the filer's last answer, kept on the input.** A new field on each record of a group,
-  **`oilAll`**: the last answer given FOR THE ENTRY — written by `commitGroup` whenever whoever may change the input for
-  everyone answers its OIL question (a new group filing; its `forAll` path; its answer-only path), the same on every
-  record, copied to every man added later. A man answering for HIMSELF (`saveOwnOil`, `reviseOil`) never touches it.
-  When the entry's hours change it follows the records' own answers: dropped by `voidedOil`'s rule in the window,
-  re-priced on the schedule (§4.7). The man the schedule adds gets `oil = { ...oilAll }` and the same `oilAll`, written
-  inside the one command beside `commitNewInput` — NOT through `commitGroup`'s `oilDec`, whose `forAll` path would
-  overwrite the others' own answers. No `oilAll` (nobody has answered for the entry): he has no answer, and the question
-  stays where it is (D738 reading 2). Not a shared field (`sharedKey` does not read it), not in `inpDetailKey`.
-  `state/perms.ts`'s check on what a member's command changed holds `oilAll` as it holds `oil` (well-formed, written only
-  by someone who may change the entry); `engine/schema.ts`, `docs/data-schema.md`, `docs/data-model.md` gain it (D473).
-  No sheet opens on the schedule. OIL Earn switches him as any man.
+  toast, or `rederive({ live })`'s for a removal made in the input's window — one notice, never both), and on a
+  published day the line that says the man was taken off says the placeholder went with him (§4.8). Reading R10.
+- **OIL for the man added (D738) — the filer's last answer, kept on the input.** Two new fields on each record that
+  carries a group, **`oilAll`** (the last answer given FOR THE ENTRY, a map by day as `oil` is) and **`oilAllAt`** (when
+  it was given — the command's own clock, as `modAt` is). ONE writer, `setEntryOil(rows, answer)`, called wherever
+  someone who may change the input for EVERYONE answers its OIL question: a new group filing, `commitGroup`'s `forAll`
+  and answer-only paths, AND the editor's own single-record branches (`InputEditor saveNow`) when the record still
+  carries its group though it is down to one man — the editor judges "shared" by the group it carries there, not by a
+  head-count. It writes both fields alike on every current record of the entry. A man answering for HIMSELF
+  (`saveOwnOil`, `reviseOil`) never touches them; a record handed to another man loses its own `oil` (as today) and
+  keeps the entry's two fields. When the entry's hours change `oilAll` follows the records' own answers — dropped by
+  `voidedOil`'s rule in the window, re-priced on the schedule (§4.7) — with its stamp unmoved. **Read by one resolver:**
+  the entry's answer is the `oilAll` with the latest `oilAllAt` among its records (records that were changed apart and
+  match again can carry two; the latest answer is the one that counts, D682). The man the schedule adds gets
+  `oil = { ...that }`, and both fields, written inside the one command beside `commitNewInput` — NOT through
+  `commitGroup`'s `oilDec`, whose `forAll` path would overwrite the others' own answers. No `oilAll` anywhere (nobody
+  has answered for the entry): he has no answer, and the question stays where it is (D738 reading 2). Neither is a
+  shared field (`sharedKey` does not read them) nor in `inpDetailKey`; OIL's evidence, the Leave War's credit, the bell
+  and the summary line go on reading each man's `oil`. In `state/perms.ts inputBreach` the check on the two fields sits
+  BEFORE its "this is his own record" return — owning a record in a shared input gives no right over the entry's answer
+  — and keeps the verified-replay exception for Undo / Redo. `engine/schema.ts`, `docs/data-schema.md`,
+  `docs/data-model.md` gain them (D473). No sheet opens on the schedule. OIL Earn switches him as any man.
 - **His late date (D741):** his record's `mod` is the EARLIER of today and his input's own deadline
   (`inputOwnDueISO`) — he can never read late for having been added from the schedule; the row still shows LATE where
   its other records are late. Who placed him and when (`by`, `at`) are true. Nobody else's record is touched.
@@ -283,8 +308,12 @@ stays late. Downchits and upchits are exempt as ever.
 Version 1 kept today's behaviour and put the point back to him as "Q1"; **both readers hold that the record already
 answers it, and it does.** For a save made from a row on the schedule (`{ sched: true }`, a scheduler):
 - a No stays No, an unanswered day stays unanswered, and **a Yes stays a Yes at what the new hours give**
-  (`inputOilAmt` of the new hours; hours that price nothing leave that day unanswered) — one new function beside
-  `voidedOil`, `repricedOil(before, after)`, applied to `oil` and to `oilAll` alike;
+  (`inputOilAmt` of the new hours) — one new function beside `voidedOil`, `repricedOil(before, after)`, applied to
+  `oil` and to `oilAll` alike. **A schedule-side change never DELETES a Yes:** where the new hours price nothing the
+  stored amount is left as it was (the credit is worked out from the hours, so it earns nothing meanwhile, and the next
+  hours re-price it). The boxes cannot save a start equal to its end at all — `normalizeInputDraft` refuses it and the
+  box heals (`inputedit.tsx:554`) — so re-timing by two boxes passes through no state that loses the answer; the tests
+  type both orders, clear to all day and cross midnight;
 - `askOilIfPending` is not called: no sheet opens on the schedule.
 This holds for every typed box that goes through `setInpField` — the Ground Programme's row, the Personal Inputs line
 and the Unavailable list's row (an overseas duty) — so no box does two things (D740 (3)). **It narrows the 28 Aug 26
@@ -299,6 +328,13 @@ scheduler's own refusals on the day; the input's own window.
 **The rule the count follows: the one row counts exactly what a one-man request's row counts for the same act — never
 that, times its people.** In `engine/publish.ts`, one pure step, `foldEntries(items, ctx)`, applied at the end of
 `dayPendingItemsIn`.
+- **A group made out of an ordinary request counts the man added, and nothing more.** When a one-man request whose name
+  box held a placeholder or a scheduler's man is made a group (§4.2), the view puts its own man back in the name box and
+  moves the occupant to the extras — two person units of the same row (`canonical.ts canonicalUnits`: a reseat, and a
+  man appearing in the primary seat) that nobody's hand made. They are recognised exactly — the same row (`rid`), which
+  had no `srcg` in the issued day and has one now; the request's own man in `who`; the issued occupant in that row's
+  `more`, each placeholder matched one for one — and ride on the added man's item. A deliberate move of an occupant, or
+  any other change to the extras, is never taken.
 - **Which items belong to an entry.** An item of an input (it has `inp` or `val`, or is a lone `input` item) is its
   record's — the live record, else the version's frozen copy (`snap.inp`) — by `entryIdOf`. A structural unit of a
   request's row with NO input beside it (the row added or removed while its filing and details stand — a whole input
@@ -325,8 +361,10 @@ that, times its people.** In `engine/publish.ts`, one pure step, `foldEntries(it
   A to Z (a new `pl-names` line, as the changes window's `cw-names`), then the lead's own "from → to" without a man's name
   in front; who and when as today; a tap goes to the one row.
 - **A man added to a row the issued day already had wears his mark on his puck** — the hollow ALn tag (D93):
-  `state/holderbase.ts requestAddMarks` keeps the puck's mark for a new member row whose one row was issued (a row with
-  its `srcg` is in the issued day), where today it drops it. A whole new one row wears the mark a new row wears, once, on
+  `state/holderbase.ts requestAddMarks` keeps the puck's mark for a new member row whose one row was issued, where today
+  it drops it. "Was issued" is asked of the ROWS, not of `srcg` (a re-time changes every member's `srcg`): the drawn
+  group the new row belongs to holds at least one row whose `rid` is in the issued day. Re-time then add, and add then
+  re-time, both keep his tag. A whole new one row wears the mark a new row wears, once, on
   its name (picture 9).
 - **The counts, each a test, on a day that earns no OIL** (and again on a Saturday, where each reads one more only where
   a one-man request's row would): filed for four since the day went out — 1; then one man taken off before it goes out —
@@ -334,7 +372,9 @@ that, times its people.** In `engine/publish.ts`, one pure step, `foldEntries(it
   re-timed and one added — 2; taken off the programme whole — 1; deleted whole — 1; all four taken off one by one — 1 (the
   input is gone: D98, the count is the difference from what was issued); a CX on the one row — 1; a shared leave filed
   for four on the Unavailable list — 1 (R6); the whole input moved from one published day to another — 1 on each; a man
-  who carried an ALL AVAIL taken off — 2 (he, and the placeholder: R10).
+  who carried an ALL AVAIL taken off — 1, as a removed row counts what stood on it today, and its line names both
+  ("Ranger · Range safety brief — taken off · ALL AVAIL came off with him"); an ordinary request with ALL AVAIL in its
+  name box made a group of two — 1.
 - **A small fix that rides with it** (`[CAL-TOGO-ONE-ITEM]`'s "also seen"): after one man left a shared input, "All
   changes" titled the item "2 people" over three names — the title counts the names it lists.
 
@@ -350,10 +390,10 @@ that a named request's name is not a switch. No stored record or row is converte
 |---|---|---|---|
 | 1 | **The LATE mark and the OIL amount, from the schedule** (§4.6, §4.7) | `ui/inputedit.tsx`, `engine/oil.ts` | A leave, an OD and a Training each typed on from their schedule row after the cut-off stay on time; the same change in the window reads LATE; a late one stays late; a member's hand-made `sched` call still stamps; `reassignInput` after the cut-off. A Saturday duty's Yes for a half day, its hours typed to eight on the schedule: Yes for a full day, no sheet; a No stays No; unanswered stays; the same change in the window drops the answer and asks; `reassignInput` still asks (D739 (4), D741, D742) |
 | 2 | **A request's boxes write the request** (§4.4) | `ui/reqrow.ts` (new), `ui/textedit.ts`, `ui/board.ts`, `state/store.ts`, `src/probe-bridge.ts`, `engine/slots.ts`, `ui/inputedit.tsx` (`setInpTitle`) | Week and board, click and Tab: 10:15 typed on Ranger's Training row → the request, the Inputs calendar and the Personal Inputs line read 10:15, after a reload too; the remark; the name → its title; an unreadable time heals and never reaches the row; the row keeps its second man, CX, red box; ONE Undo; a published day reads 1 pending and the issued face keeps the old time; not LATE; a raw `txtSet` on the row is refused; a `kept` row, a taken-off request's row and a hand-built row still write the row; `[REQ-ROW-SELF-CLASH]` gone (D739, D740) |
-| 3 | **The entry on the row** (§4.1, §4.2) | `engine/inputentry.ts` (new), `engine/overlay.ts`, `engine/slots.ts` (`acceptInput`), `engine/grouprows.ts` (new), `engine/schema.ts`, `state/holderbase.ts`, `state/view.ts`, `engine/daytpl.ts` | An ordinary request's row and `srcv` unchanged byte for byte; a group's rows carry one `srcg` and stand together; two entries of one group with the same title and times but different end dates are TWO rows; a man added later lands after the last of them with their CX and its reason, red box, info-only — by landing AND by Accept, with rows below, before and after a reload; a one-man request with ALL AVAIL in its name box made a group: its man is in the name box, ALL AVAIL in the extras, its switches unmoved; an armed place below is put down when a row lands above it; a template saved from a one row has one row; `groundGroups` |
+| 3 | **The entry on the row** (§4.1, §4.2) | `engine/inputentry.ts` (new), `engine/overlay.ts`, `engine/slots.ts` (`acceptInput`), `engine/grouprows.ts` (new), `engine/schema.ts`, `state/holderbase.ts`, `state/view.ts`, `engine/daytpl.ts` | An ordinary request's row and `srcv` unchanged byte for byte; a group's rows carry one `srcg` and stand together; two entries of one group with the same title and times but different end dates are TWO rows; a man added later lands after the last of them with their CX and its reason, red box, info-only — by landing AND by Accept, with rows below, before and after a reload; a whole group filed out of A-to-Z order, published, taken off and accepted again: no reorder waiting, with and without a hand-set order and with another row beside it; a one-man request with ALL AVAIL in its name box made a group: its man is in the name box, ALL AVAIL in the extras, its switches unmoved; the same with a scheduler's man whose OIL had been refused, made one of the people: still refused under his own request, after a reload and an Undo; an armed place below is put down when a row lands above it; a template saved from a one row has one row; `groundGroups` |
 | 4 | **Drawn as one** (§4.3) | `ui/html.ts`, `ui/board-html.ts`, `ui/peek.ts`, the stylesheets, `ui/interactions.ts` (`leadKeyOf`) | Unit: one row, pucks A to Z each with its own key, one "+ add"; a flagged man's puck flagged (D605); ten people; View-only and an issued face; the peek; Personal Inputs' one line and "1 input"; the Unavailable list still a row a man (D737). Browser (`e2e/`): the row's geometry at phone and desktop on the week and the board — pucks two across / stacked / wrapping, the two times together on a phone |
-| 5 | **Hands on the one row** (§4.5, §4.4's shared half) | `ui/grouprow.ts` (new), `ui/drag.ts`, `state/view.ts`, `ui/Shell.tsx`, `ui/board.ts`, `ui/interactions.ts`, `engine/reorder.ts`, `engine/slots.ts`, `ui/inputedit.tsx`, `state/perms.ts`, `src/probe-bridge.ts` | A puck dropped on → in the input, on the Inputs calendar, one history line, not LATE whether the input was late or not, his OIL answer the filer's last one — with three men having since said No for themselves, on a tie, with the filer not among the people, with nobody having answered (D734, D738, D741); taken off → out of it; dragged to a flying seat → out of the input and in the seat, ONE Undo, a refused seat leaves him in; the last man refused; already in it refused; from a seat → added, the seat kept; a placeholder → the row's own, and gone with its member, said; 14:30 typed → every record 14:30 (D739); ✕ / CX / red box / info / Undo / Accept for all in one Undo step; the row dragged → its rows together; each puck's OIL switch his own; the LATE chip for all; the dialog saves the entry; raw `setSlotVal` / `fillSlot` on a member row refused; a one-man request's row unchanged (D18, D470) |
-| 6 | **The count and its list** (§4.8) | `engine/publish.ts`, `ui/pendlist.ts`, `state/holderbase.ts`, `ui/changesmodel.ts`, the stylesheet | The counts of §4.8, each asserted on the day head, the Amendments box, the window's title, the "To go out" tab and its head and the published amendment's item count; "Discard N edits" asserted APART (a re-time: 1 waiting, 0 discarded; a whole take-off: 1 and 1); the same on a Saturday beside a one-man request's row doing the same act; the move between two published days, its Undo, an amendment issued then unpublished (D101); the line's words and names; the stored `diff` and the sign-off binding identical with and without the fold; never zero while the delta is not; the added man's hollow tag |
+| 5 | **Hands on the one row** (§4.5, §4.4's shared half) | `ui/grouprow.ts` (new), `ui/drag.ts`, `state/view.ts`, `ui/Shell.tsx`, `ui/board.ts`, `ui/interactions.ts`, `engine/reorder.ts`, `engine/slots.ts`, `ui/inputedit.tsx`, `state/perms.ts`, `src/probe-bridge.ts` | A puck dropped on → in the input, on the Inputs calendar, one history line, not LATE whether the input was late or not, his OIL answer the filer's last one — with three men having since said No for themselves, on a tie, with the filer not among the people, with nobody having answered, after the input was cut to one man and its filer answered again, and after two records changed apart came back together (D734, D738, D741); a member's own command cannot write the entry's answer; taken off → out of it; dragged to a flying seat → out of the input and in the seat, ONE Undo, a refused seat leaves him in; dragged to a ground row BELOW his own with another row under it → the flash and the busy check are on the row he landed on, week and board, on a seat and on "+ add"; the last man refused; already in it refused; from a seat → added, the seat kept; a placeholder → the row's own, and gone with its member, said; 14:30 typed → every record 14:30 (D739); ✕ / CX / red box / info / Undo / Accept for all in one Undo step; the row dragged → its rows together; each puck's OIL switch his own; the LATE chip for all; the dialog saves the entry; raw `setSlotVal` / `fillSlot` on a member row refused; a one-man request's row unchanged (D18, D470) |
+| 6 | **The count and its list** (§4.8) | `engine/publish.ts`, `ui/pendlist.ts`, `state/holderbase.ts`, `ui/changesmodel.ts`, the stylesheet | The counts of §4.8, each asserted on the day head, the Amendments box, the window's title, the "To go out" tab and its head and the published amendment's item count; "Discard N edits" asserted APART (a re-time: 1 waiting, 0 discarded; a whole take-off: 1 and 1); the same on a Saturday beside a one-man request's row doing the same act; the move between two published days, its Undo, an amendment issued then unpublished (D101); the line's words and names; the stored `diff` and the sign-off binding identical with and without the fold; never zero while the delta is not; the added man's hollow tag, re-time then add and add then re-time; the made-a-group count with a placeholder and with a named man in the name box, weekday and Saturday |
 | 7 | **The records** — in the same change as the code they describe | `docs/engine-rules.md` (the landing paragraph, §The late-input mark, the OIL question's rule, the pending count's unit), `docs/ui-contracts.md`, `docs/feature-impact.md` ("One input filed for several people": the board, the week and the count leave the "deliberately do NOT" list), `docs/data-schema.md`, `docs/data-model.md` (`srcg`, `oilAll`), `docs/file-map.md`, the behaviour register; the comments that state the 28 Aug and 22 Sep rules (D201) | `npm run docsize`, `npm run rulecheck` |
 
 Steps 1 and 2 stand alone and are the smallest; 3 to 6 are the one row. One branch, one merge (D740, D485).
@@ -394,7 +434,8 @@ rather it asked, it is one function.
 - **R9** On a day not yet published, a time typed on a request's row no longer leaves a change mark on that box: the
   change is the input's, and the changes window lists it under the input.
 - **R10** *(new)* An ALL AVAIL (or ALL) on the one row stands on one man's place underneath. If that man leaves the
-  input, it comes off with him and the app says so; drop it on the row again. Keeping it there whoever leaves would mean
+  input, it comes off with him and the app says so; drop it on the row again — the OIL switches set for the people
+  behind it start afresh. On a published day that is ONE change waiting, its line naming both. Keeping it there whoever leaves would mean
   re-keying OIL decisions — its own job, if he wants it.
 - **R11** *(new)* The same rule on every row: hours typed on the Unavailable list's row of an overseas duty also keep a
   Yes at the new amount, with no question.
@@ -428,5 +469,23 @@ findings. Each was checked against the code before it was taken.
 | 18 | Sol (note) | The typed-box door must tell "refused" from "not a request's box". | Three answers (§4.4). |
 | 19 | Both (notes) | The CSV export and the print list no ground rows. | Out of the roll-call's "follow it" (§4.3). |
 
-A second, short read of the CHANGED parts only (§3, §4.1, §4.2, §4.4's belt, §4.5, §4.7, §4.8) is asked of both before
-the build — a new saved field and a changed OIL rule are in it.
+### The second read — version 2's changed parts (11 Oct 26)
+Astra: `…/2026-10-10-reads/group-input-plan2-astra.md` — NOT CLEAN, 7 findings; she now accepts the last-man refusal
+and the "what this day earns" answer. Sol 6.1: `…/group-input-plan2-sol.md` — CLEAN WITH THESE EXACT CHANGES, 4; all ten
+of his first findings closed or closed by the answer. Both confirm: `entryIdOf` is the same test as `entriesOf`; the
+belts refuse no legitimate writer (the view, Accept / un-accept, a person's delete, a version load, a plan switch, a
+template, Undo / Redo and a rename do not go through the three guarded functions); one input command can carry the
+member's removal and the place he is put on; the new fields are read by nothing that should not read them.
+
+| # | Found by | The finding | What version 3 says |
+|---|---|---|---|
+| 20 | Both (A2 first half, S1) | A group cut to one man is saved by the editor's single-record branch, which never wrote `oilAll` — the next man added got a stale answer. | One writer, `setEntryOil`, called from the editor's single-record branches too; "shared" is the group the record carries (§4.5). |
+| 21 | Astra 2 (second half) | Records changed apart and matching again can carry two different `oilAll`. | `oilAllAt`, and one resolver: the latest (§4.5). |
+| 22 | Both (A2, S1) | The permission check on the entry's answer must sit before `inputBreach`'s own-record return. | So placed (§4.5). |
+| 23 | Astra 1 | Re-timing by two boxes can pass through hours that price nothing, deleting the Yes for good. | A schedule-side change never deletes a Yes; and the boxes refuse a start equal to its end today (§4.7). Sol read it the other way ("omit"); keeping it is the safe side of the same ruling. |
+| 24 | Astra 3 (and Sol's note) | "Always after the last member" overrode Accept's put-back of an ISSUED row beside its issued neighbours — a false reorder. | The restore runs first, untouched; sibling placement is for a row the issued day never held (§4.2). |
+| 25 | Astra 4 | A scheduler's man in a name box, refused OIL, then made one of the people: the refusal stayed under the old request. | Carried to his own item in the view (§4.2). |
+| 26 | Both (A5, S3) | The plan promised a separate change for a placeholder leaving with its member; the units give one. | The promise is withdrawn, not the units changed: one change, as a removed row counts what stood on it today, its line naming both (§4.8, R10). Both readers asked for two items; the planner keeps one act, one line (D114's reason) — theirs to challenge in the code read. |
+| 27 | Astra 6 | After a re-time no live `srcg` matches the issued one, so an added man lost his hollow tag. | Continuity is asked of the rows' ids (§4.8). |
+| 28 | Both (A7, S4) | After an outward move the source row goes and the place's index shifts: the flash and the busy check hit the next row. | The place is remembered by row id and resolved after the command; its own finish, no second write (§4.5). |
+| 29 | Sol 2 | Making an ordinary request a group moves the name box's occupant in the view — two more units, three changes for one man added. | Recognised exactly and ridden on the added man's item (§4.8). |
