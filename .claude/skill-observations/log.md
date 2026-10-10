@@ -3744,3 +3744,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the rule for recording a ruling: a reading that states what the app WILL DO in a case the owner did not name is checked against what the app does today in the nearest existing case (one search), and the row says "read in the code: <where>" or "not checked". A plan written from a design note re-verifies every reading it leans on and lists the ones it could not confirm.
 
 **Principle:** An inference recorded beside a decision inherits the decision's authority in every later reader's eyes; verify it against the running system before recording it, or mark it unverified.
+
+### Observation 514: A step's "affected tests" picked by the functions it changed missed the test of the behaviour it removed
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW] build, step 2 — running the tests that touch the doors step 2 changed found one test left red by step 1 (the Tab-route test that expected the OIL question to open after hours typed on the schedule).
+**Skill:** test-driven-development (and the project's "while iterating run only the affected test file" rule)
+**Type:** open-source
+**Phase/Area:** choosing which tests to run between full gate runs
+
+**Issue:** Step 1 removed a behaviour (a question no longer opens after a typed time) and ran the test files that named the functions it edited. A test in another file asserted the removed behaviour through the screen (the sheet's test id), named none of those functions, and stayed red unseen until the next step widened the search.
+
+**Suggested improvement:** When a change REMOVES or reverses a visible behaviour, select affected tests by the behaviour's observable too (the element, the test id, the words on screen), not only by the functions edited; say in the step's report which search picked the files.
+
+**Principle:** Tests of a removed behaviour are found by what the user would have seen, not by the code that used to produce it.

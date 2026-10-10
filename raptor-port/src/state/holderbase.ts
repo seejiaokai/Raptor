@@ -32,6 +32,7 @@ import { inputProtected } from '../engine/quarantine'
 import { isPreservedWeek } from '../engine/weekstash'
 import { PEOPLE, whoId } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
+import { armedRowKey, disarmSlot } from './view'
 import type { Change } from '../command'
 
 type Marks = { p: Record<string, any>; c: Record<string, any>; ad: Record<string, any> }
@@ -151,6 +152,7 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
      `DAYS[di]` across a command writes to the day on screen, not to a copy no one reads); its fields are the view's. The
      screen before the pass is kept, shallow, for the messages below. */
   const prev = DAYS.map((d: any) => (d ? { ...d } : d))
+  const armWas = armedRowKey()
   let changed = JSON.stringify([SCHED.sign, SCHED.signBind, SCHED.drafts]) !== bookWas
   for (let di = 0; di < days.length; di++) {
     if (JSON.stringify(days[di]) === JSON.stringify(DAYS[di])) continue
@@ -164,6 +166,10 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
     }
     changed = true
   }
+  /* AN ARMED PLACE DOES NOT SURVIVE A ROW MOVING UNDER IT (view.ts armedRowKey): the row now standing at the armed
+     position is not the row the scheduler armed — a row landed or went above it — so the place is put down, rather
+     than let his next tap on a name plant into another row */
+  if (armWas && armedRowKey() !== armWas) { disarmSlot(); changed = true }
   /* the marks, per day (Astra 2): the request rows unchanged from the base → the base's marks, exactly; changed on a
      PUBLISHED day → rebuilt from the view against its current issued version (a target state — A → B → A, an Undo, a
      delete → Undo all come back to the base's marks); changed on a day NOT published → the base's marks less any whose

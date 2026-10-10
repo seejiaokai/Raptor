@@ -286,6 +286,11 @@ export type GroundRow = AllhandsRow & {
   /** What the row was last made or re-made from — a short hash of the six fields its request writes ([DB-READINESS] phase 6
    *  (c); engine/overlay.ts srcvOf); a row re-made on read when it differs. Not canonical (restore.ts dayKeys). */
   srcv?: string
+  /** For a row from a record of a SHARED input only: its entry's own identity — the group's id and a short hash of every
+   *  shared field (engine/inputentry.ts entryIdOf; [GROUP-INPUT-ONE-ROW], D661). Rows of one day carrying the same one,
+   *  with the scheduler's marks alike, are drawn as ONE row (engine/grouprows.ts). Absent on an ordinary request's row.
+   *  Not canonical (restore.ts dayKeys): it adds no unit to a published day's comparison and binds no sign-off. */
+  srcg?: string
   /** A row a whole-day replacement (a version loaded, a plan switched in) brought back although its request is gone or cannot
    *  stand on the day — the holder's to keep (D363); cleared in the view once its request can stand there again (phase 6 (c);
    *  engine/drafts.ts markKept). Not canonical. */

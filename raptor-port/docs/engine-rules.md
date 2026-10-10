@@ -1286,6 +1286,25 @@ flagged correctly and still swept the man out of the crew palette.
   no longer covers the day goes (unless `kept` — D363); a row whose request changed is re-made in place (its id, place and
   every field the scheduler set kept; D271). A never-published day's landing makes no mark (its zero state, live and at
   load alike). `autoAcceptInput` / `autoAcceptSeedInputs` are no longer the app's path (the second is gone).)*
+- **THE ROWS OF ONE SHARED INPUT ARE KNOWN AS ONE ENTRY, AND KEPT TOGETHER — IN THE VIEW (`[GROUP-INPUT-ONE-ROW]` step 3,
+  11 Oct 26; owner D661, D735; D450).** A shared input stays one record a man and one ground row a man; every reader of a
+  row goes on reading one man's. What a request writes on its row gains a seventh field for a record of a shared input
+  only — `srcg`, the entry's identity (`engine/inputentry.ts entryIdOf`: the group's id and a hash of `sharedKey`, the
+  very test `state/inputgroup.ts entriesOf` groups by) — and that record's `srcv` carries it, so its row is re-made when
+  ANY shared field moves. An ordinary request's row and `srcv` are byte for byte what they were.
+  `engine/grouprows.ts groundGroups(day)` says which rows are drawn as one: same non-empty `srcg`, from a request, not
+  `kept`, and CX with its reason, red box and information-only alike — read off the ROWS, never the live input; the lead
+  is the first member in the day's display order. ONE helper puts a request's new row on its day
+  (`engine/overlay.ts placeRequestRow`, used by a landing on read and by `slots.ts acceptInput`): at the end, or — where
+  its entry already stands there — straight after the last of its rows, taking their CX, red box and information-only.
+  Accept's put-back of a row an ISSUED version held runs first and is untouched (no reorder waiting). **A shared
+  input's row keeps its own man in its name box:** whoever stood there when the request became part of a group (a
+  placeholder, a scheduler's man) moves to that row's extras, never dropped — and a man among a member row's extras
+  who is himself one of the input's people, with his own row that day, comes off the extras (D271), a scheduler's
+  refusal of his OIL copied to his own item (`entryPeopleOnce` / `carryOilRefusal`; only a refusal, only where he has
+  no decision there). An armed place whose row moved under it is put down (`state/view.ts armedRowKey`, asked by
+  `state/holderbase.ts rederive`). A day template takes one row for each row as drawn (`engine/daytpl.ts`). Pins:
+  `engine/grouprows.test.ts`, `state/grouprow-entry.test.ts`.
 - **A REQUEST'S ROW: ITS NAME, ITS TWO TIMES AND ITS REMARK ARE THE REQUEST'S (owner D739, D740 — built 11 Oct 26:
   "The scheduler changes the input entirely from the original on the schedule"; for a one-man request, "Yes - same
   rule").** Until this build those four boxes of a request's row on the Ground Programme were the scheduler's own layer:

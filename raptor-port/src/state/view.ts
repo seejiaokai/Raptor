@@ -2,6 +2,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inpId, dateOrd, isSansAvail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
+import { ridKey } from '../engine/rowids'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, rowTwice } from '../engine/avail'
@@ -1168,6 +1169,13 @@ export function armSlot(key:any,el?:any){
   if(isPhone())document.body.classList.add('ros-open');   // the palette IS the picker
 }
 export function disarmSlot(){ if(!ARM)return; ARM=null; paintArm(); renderRosters(); }
+/* THE ARMED PLACE, NAMED BY ITS ROW'S ID rather than by where the row stands ([GROUP-INPUT-ONE-ROW], the plan §4.2; Astra's
+   read of it, 10). An armed place is kept as a position (`g:2.5.+`); a row that lands ABOVE it — a man added to a shared
+   input joins his entry's rows mid-list — leaves that position pointing at another row, and the next tap on a name
+   would plant him there. The after-command pass (state/holderbase.ts rederive) asks this before and after it installs
+   the day, and puts the place down when the answer moved. '' when nothing is armed; the position itself where a row
+   on the way carries no id (then nothing is concluded). */
+export function armedRowKey():string{ return ARM?ridKey(String(ARM.key).replace(/\.\+$/,''),DAYS):''; }
 /* place a name from the palette into whatever is armed */
 export function placeArmed(id:any){
   if(!ARM||!id)return false;

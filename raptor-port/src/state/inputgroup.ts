@@ -18,22 +18,11 @@
 import { PEOPLE } from '../engine/people'
 import { isUpchit, needsDoc } from '../engine/inputs'
 
-/* what every record of an entry says alike; everything else on a record is the man's own (his id and place, his OIL
-   answers, where his request is filed, his hand-overs, the late date, the Leave War's mark, who placed and changed it) */
-/* …and its TITLE ([INPUT-OWN-TITLE], D715): one shared input has one name — a record of it titled differently is not
-   part of the entry, exactly as one with a different remark is not */
-export const SHARED_FIELDS = ['type', 'title', 'date', 'endDate', 'yr', 'allday', 's', 'e', 'half', 'remarks', 'sans'] as const
-
-/* `sans` — which of Fly / OFT / AMT a SANS availability offers — is shared too: an admin files one availability for
-   several SANS people (D658), and its ticks are what the one line says. Read as the set of boxes ticked. */
-const ticks = (v: any): any => {
-  if (v == null || typeof v !== 'object') return v == null || v === '' ? null : v
-  const on = Object.keys(v).filter(k => v[k]).sort()
-  return on.length ? on.join(',') : null
-}
-const norm = (f: string, v: any): any => f === 'allday' ? !!v : f === 'sans' ? ticks(v) : (v == null || v === '') ? null : v
-/** The shared fields of a record as one comparable string — a blank end date, half or remark reads the same as none. */
-export const sharedKey = (r: any): string => JSON.stringify(SHARED_FIELDS.map(f => norm(f, r && r[f])))
+/* WHAT THE RECORDS OF ONE ENTRY SAY ALIKE, and the one comparable string of them — MOVED, unchanged, to the engine on
+   11 Oct 26 (engine/inputentry.ts: the schedule's rows need the same test, and the engine may not import state/), and
+   re-exported here, where every caller already finds them. */
+import { SHARED_FIELDS, sharedKey } from '../engine/inputentry'
+export { SHARED_FIELDS, sharedKey }
 
 export interface InputEntry {
   /** the group id, or null for an ordinary input */

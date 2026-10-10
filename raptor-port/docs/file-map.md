@@ -6,6 +6,13 @@
 `REQ_BOX` (whose a row's four boxes are — shared by the door and the belt in `src/engine/slots.ts txtSet`);
 `src/ui/inputedit.tsx` gained `setInpTitle` (a name typed on the row becomes the input's title). Callers:
 `src/ui/textedit.ts`, `src/ui/board.ts`, `src/state/store.ts`, `src/probe-bridge.ts`.
+**Step 3 (D661, D735 — 11 Oct 26): the entry on the row.** New: `src/engine/inputentry.ts` (`SHARED_FIELDS` and
+`sharedKey`, moved unchanged from `src/state/inputgroup.ts`, which re-exports them; `entryIdOf`) and
+`src/engine/grouprows.ts` (`groundGroups` — which rows of a day are drawn as one); tests `src/engine/grouprows.test.ts`,
+`src/state/grouprow-entry.test.ts`. `src/engine/overlay.ts` gained `placeRequestRow`, `entryPeopleOnce` and
+`carryOilRefusal`, and `requestRowFields` / `srcvOf` write the entry's mark `srcg`; `src/state/view.ts` gained
+`armedRowKey`. Touched: `src/engine/slots.ts` (`acceptInput`), `src/engine/daytpl.ts`, `src/engine/schema.ts`,
+`src/state/holderbase.ts`.
 
 `main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
 the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three
