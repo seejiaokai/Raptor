@@ -3637,3 +3637,35 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the walk helper, refuse to save a world from a browser opened on the "start fresh" address (or assert, straight after reopening a saved world, one fact the fixture made — a man on a row — before any step runs). A new browser context already has empty storage, so "fresh" is never needed to get the demo world.
 
 **Principle:** A saved fixture is only as real as the first check made after loading it; assert one thing the fixture did before trusting anything the walk then sees.
+
+## 2026-10-10 (the branch claude/day-window-compact, bringing main in after pull request #489)
+
+### Observation 507: An item filed on two branches cannot be archived at their merge without a declared allowance
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Merging main into a feature branch. The same backlog item had been filed on the feature branch ("not built") and rewritten on the other branch ("built and checked"); the other branch's handoff block said which copy to keep.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The "when the two branches meet" note a handoff block leaves for the later merge
+
+**Issue:** The handoff note said to keep one copy and drop the other, and that the document check fails on a doubled item. It did not say that dropping the older copy ALSO fails the check: the archive script measures the item's lines against the base, the dropped copy's heading has no equal in the kept copy, and the script put both files back. The way through (the `DOCSGUARD_ALLOW` environment setting for the script, then a `Docs-guard-allow: [ID]` trailer on the merge commit) had to be found by reading the checker. A first attempt had also edited the kept copy's heading to say "live", which would have failed the same check against main once the merge was committed; the fix was to leave the kept copy byte for byte and say "live" in an ADDED line.
+
+**Suggested improvement:** Where a handoff block leaves a "when the two branches meet" instruction for a doubled backlog item, have it name the three steps: drop the older copy, leave the kept copy's own lines untouched (add a line, never edit one), and declare the dropped heading with `Docs-guard-allow: [ID]` on the merge commit (the same value in `DOCSGUARD_ALLOW` while the archive script runs before the commit exists).
+
+**Principle:** An instruction left for a later merge should name the guard it will trip and the declared way through it; "keep this copy, drop that one" is only half of the step when a checker counts every line that leaves.
+
+### Observation 508: A borrowed walk helper named a field by the id it had before the feature was finished
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Writing a short scripted walk for a merge; the fixture borrowed a "file an input" helper from an earlier walk's own helper file.
+**Skill:** New skill candidate: the project's scripted-walk helpers (scripts/handpass/lib.mjs)
+**Type:** internal
+**Phase/Area:** Reusing a helper from an earlier walk's private helper file
+
+**Issue:** The helper filled the input window's title box by an id the box no longer has (it was renamed while that feature was still being built). The helper waited thirty seconds and failed with a bare timeout; every later step then failed for want of the fixture, so the first run read as nine failures. One look at the window's fields found the cause. Each walk's private helper file is frozen at the day of its walk and nothing says so.
+
+**Suggested improvement:** In the shared walk helper, give "fill this field" a short timeout and an error that names the selector and lists the fields the window does have; and note at the head of each walk-specific helper file the date and build it was written against, so a later borrower checks its selectors first.
+
+**Principle:** A helper written for one walk is evidence of that day's screen, not a library; when borrowing one, prove its first step against the present screen before building a fixture on it.

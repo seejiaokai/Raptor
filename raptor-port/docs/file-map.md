@@ -1,5 +1,10 @@
 # The file map — where each source file lives and what it does
 
+`main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
+the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three
+pages (its checks are the right behaviour, so running it again is the re-walk); the record:
+`docs/handpass/2026-10-10-main-into-day-window.md`.
+
 `[HIST-JUMP-EMPTY-SEAT]` (his find, 10 Oct 26; D733): a tap on a change whose seat is empty now lands on its row. The
 fix is in `src/ui/interactions.ts` (`jumpToChange` — each place in turn, the row landing, the sentences) and
 `src/ui/histbubble.ts` (`findSeatRow`, `isSeatKey`, `onlyOn`); `src/probe-bridge.ts` gained `posKey` for the walk.
