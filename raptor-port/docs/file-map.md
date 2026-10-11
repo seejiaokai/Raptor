@@ -1,5 +1,12 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]`, planning only (11–12 Oct 26): NO source file added or changed. Two look scripts, not gates and
+asserting nothing: `scripts/handpass/oilown-look.mjs` (real phone screens of the OIL question for a shared input — the
+filer's, one man's own, the filer's window afterwards) and `scripts/handpass/oilown-comps.mjs` (the two ways that are
+not built, drawn by editing the rendered page); their pictures `docs/mock/img/one-rule-oil/`, the page shown to him
+`docs/mock/one-rule-oil.html` (D762). The plan names the files the BUILD will add and remove
+(`docs/superpowers/plans/2026-10-11-one-rule-plan.md` §5 — step 6 lists what goes).
+
 `[GROUP-INPUT-ONE-ROW]` step 2 (D739, D740 — 11 Oct 26): a request's boxes write the request. New: `src/ui/reqrow.ts`
 (`reqRowText` — the one door every writer of a typed box asks first; it installs itself as `HOOKS.reqRowText` for
 `state/store.ts writeText`) and its test `src/ui/reqrow.test.tsx`. `src/engine/overlay.ts` gained `requestOfBox` and
