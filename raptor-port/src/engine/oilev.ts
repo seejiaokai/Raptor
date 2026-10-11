@@ -376,6 +376,13 @@ export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off'
  *    · a row found — its own state, the same as a loaded one. */
 function landedStanding(row: any): OilInputEv['stand'] {
   const acc = String(row.acc || '')
+  /* THE INPUT'S OWN MARKS DECIDE, FOR EVERY DAY IT COVERS — AND FIRST (step 4 of the one-rule build — owner D760 reading
+     1: "a cancelled input earns nobody OIL"; the plan §4.7: `stand` from the input itself, with no row lookup). They
+     were the ROW's until then, read off whichever loaded day its one row stood on. Before "under Unavailable" too: a
+     cancelled input filed there has no row, read 'unlanded', and earned again on the member's own answer (found by the
+     re-expressed tests, 12 Oct 26). */
+  if (row.cx) return 'cx'
+  if (row.info) return 'info'
   if (acc === 'r' || acc === 'u') return 'unlanded'       // dormant, or a kind that never lands
   const key = String(inpId(row))
   for (let i = 0; i < DAYS.length; i++) {

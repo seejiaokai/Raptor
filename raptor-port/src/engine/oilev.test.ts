@@ -54,6 +54,15 @@ const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 
 const publish = (di: number) => { sign(di); setDayApproved(di, true) }
 const groundRow = (di: number, r: any) => { DAYS[di].ground = (DAYS[di].ground || []).concat([r]); ensureRowIds(DAYS); return DAYS[di].ground[DAYS[di].ground.length - 1] }
 const claim = (r: any) => { INPUTS.unshift({ allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r }); return INPUTS[0] }
+/* A SCHEDULER'S MARK ON A REQUEST'S ROW IS THE REQUEST'S OWN (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX
+   the scheduler puts on a row that came from an input cancels the input itself"; reading 1: "a cancelled input earns
+   nobody OIL … as a cancelled row today"). Until then the cases below wrote `cx` / `info` on the ROW, whose standing
+   decided. The mark goes on the RECORD now, and on its row as the copy the row's own body writes
+   (overlay.ts requestRowFields) — which is what the board's button leaves behind (ui/reqdoor.ts rowMark). A direct
+   engine fixture, as this file's method is. */
+const markInput = (inp: any, row: any, m: { cx?: boolean; info?: boolean }) => {
+  for (const o of [inp, row]) if (o) for (const k of ['cx', 'info'] as const) if (k in m) { if (m[k]) o[k] = true; else delete o[k] }
+}
 /* THE FIGURE AS THE CREDIT SEES IT: on a published day, off the ISSUED
    SNAPSHOT — which is the whole point of the block — and off the live working
    copy before it goes out. The same choice leavewar/sync.ts makes. */
@@ -306,24 +315,66 @@ describe('the snapshot the signature was validated against is the one frozen (§
    the decisions by REPLACING the record where the board mutates it in place —
    the same blindness that hid the aliasing bug found by hand. */
 describe('the bug check (Fable + Astra, 21 Sep 26)', () => {
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (D760, step 4): the CX is the REQUEST's — set on the record and copied
+     to its row (the helper `markInput`) where this case wrote it on the row alone. Taking it off brings the credit
+     back (D760 reading 1: "taking the CX off brings it back"). */
   it('OIL28, OIL31 — a CANCELLED landed row earns nothing, and `allow` cannot resurrect it', () => {
     const c = claim({ iid: 'cx1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
       allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
     const row = groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: c.iid })
     expect(figure(SAT, 'bane'), 'the claim earns while its row stands').toBe('FO')
-    row.cx = true
+    markInput(c, row, { cx: true })
     expect(figure(SAT, 'bane'), 'the schedule itself says it did not happen').toBeNull()
     /* an allow is permission to count REAL work, never permission to invent it */
     ;(DAYS[SAT] as any).oild = { people: { [`bane|${inputItemKey(c.iid)}`]: 'allow' } }
     expect(figure(SAT, 'bane'), 'allow cannot outrank a cancelled row').toBeNull()
+    ;(DAYS[SAT] as any).oild = undefined
+    markInput(c, row, { cx: false })
+    expect(figure(SAT, 'bane'), 'un-cancelled: it earns again').toBe('FO')
   })
 
+  /* (1) the rule survives, on a rebuilt fixture (D760): "information only" is the request's too */
   it('OIL28 — an ⓘ info-only landed row earns nothing either', () => {
     const c = claim({ iid: 'inf1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
       allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
     const row = groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: c.iid })
-    row.info = true
+    markInput(c, row, { info: true })
     expect(figure(SAT, 'bane'), 'an ⓘ row gives a man nothing, so it earns him nothing').toBeNull()
+  })
+
+  /* A PRODUCT FAULT, REPORTED — THIS CASE FAILS on the build as it stands (step 4, 12 Oct 26) and is left failing for
+     the builder: `landedStanding` answers 'unlanded' for `acc: 'u'` before it reads the input's own `cx` / `info`, and
+     an unlanded request is credited on its own answer. (Its twin through the app's own buttons:
+     ui/inputmarks-scenarios.test.tsx.)
+     ADDED (step 4, the second pass) — A CANCELLED REQUEST FILED UNDER UNAVAILABLE. A scheduler cancels a request on its
+     row (the CX is the request's — D760), takes it off the programme with ✕ and files it under Unavailable with the
+     Personal Inputs line's "→ Unavail" (`acc: 'u'`): it has no row any more, and no button anywhere takes the CX off.
+     D760 reading 1 — "a cancelled input earns nobody OIL … taking the CX off brings it back" — is about the INPUT, so
+     it must earn nothing there either. The control beside it: the same request, not cancelled, does earn under
+     Unavailable on its own answer (it stands on its answer, having no row to contradict it). */
+  it('D760 — a CANCELLED request filed under Unavailable earns nothing; the same request not cancelled earns on its answer', () => {
+    const c = claim({ iid: 'cxu', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'u',
+      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    expect(figure(SAT, 'bane'), 'the control: under Unavailable, on its Yes').toBe('FO')
+    markInput(c, null, { cx: true })
+    expect(figure(SAT, 'bane'), 'cancelled: nobody earns').toBeNull()
+    markInput(c, null, { cx: false, info: true })
+    expect(figure(SAT, 'bane'), 'information only: nobody earns').toBeNull()
+  })
+
+  /* ADDED (step 4, the second pass) — THE INPUT'S OWN MARK DECIDES, WITH NO ROW TO ASK (the plan §4.7: "`stand` from the
+     input itself (`acc`, `cx`, `info`) with no row lookup"): the record alone says cancelled, its row not yet re-made
+     to say so (a holder's stored day, read before its next pass) — nobody earns. */
+  it('D760 — the request itself cancelled or information-only earns nothing, whatever its row still says', () => {
+    for (const m of [{ cx: true }, { info: true }]) {
+      const c = claim({ iid: 'own1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
+        allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+      groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: c.iid })
+      expect(figure(SAT, 'bane')).toBe('FO')
+      markInput(c, null, m)                                  // the record only
+      expect(figure(SAT, 'bane'), JSON.stringify(m)).toBeNull()
+      INPUTS.shift(); DAYS[SAT].ground = (DAYS[SAT].ground || []).filter((g: any) => g.src !== 'own1')
+    }
   })
 
   it('a landed row DELETED out from under its claim earns nothing', () => {
@@ -379,17 +430,25 @@ describe('a multi-day request credits on every day it was answered for (job 2)',
     expect(figure(6, 'bane'), 'answered no for the Sunday').toBe(null)
   })
 
-  it("the one row's standing governs every covered day — a CANCELLED anchor credits nothing anywhere", () => {
-    span()
+  /* (2) A NAMED RULING CHANGED THE RULE — D760 (step 4 of the one-rule build): this was "the one ROW's standing governs
+     every covered day": the CX stood on the row, on the request's first day, and the credit of every other day went
+     and read it there. A CX on the row now cancels the REQUEST ("a cancelled input earns nobody OIL" — reading 1), so
+     it is the request's own mark that says so on every day it covers (the plan §4.7) — the same answer, from the
+     record. The Sunday is asserted too now, on a Yes of its own. */
+  it("the request's own CX governs every covered day — CANCELLED on its row, it credits nothing anywhere (D760)", () => {
+    const c = span({ oil: { '2026-07-18': 1, '2026-07-19': 1 } })
     const row = groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
-    row.cx = true
-    expect(figure(SAT, 'bane'), 'the scheduler cancelled the row, so the claim earns nothing').toBe(null)
+    expect([figure(SAT, 'bane'), figure(6, 'bane')], 'the control: both days earn while it stands').toEqual(['FO', 'FO'])
+    markInput(c, row, { cx: true })
+    expect(figure(SAT, 'bane'), 'the scheduler cancelled it, so the claim earns nothing').toBe(null)
+    expect(figure(6, 'bane'), 'nor on its last day').toBe(null)
   })
 
-  it('an INFO-ONLY anchor credits nothing anywhere either', () => {
-    span()
+  /* (2) the same change for "information only" (D760: it goes with the input too) */
+  it('INFORMATION ONLY on its row credits nothing anywhere either (D760)', () => {
+    const c = span()
     const row = groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
-    row.info = true
+    markInput(c, row, { info: true })
     expect(figure(SAT, 'bane')).toBe(null)
   })
 
@@ -494,14 +553,17 @@ describe('a second person in the input earns on the input\'s ONE answer (D755, D
     expect(figure(SAT, 'bane'), 'the No still stands for him').toBe(null)
   })
 
+  /* (1) the rule survives, on a rebuilt fixture (D760, step 4): the mark is the input's, copied to its row */
   it('a CANCELLED or info-only row credits neither of them', () => {
     const row = landed(1)
-    row.cx = true
+    markInput(INPUTS[0], row, { cx: true })
     expect(figure(SAT, 'bane')).toBe(null)
     expect(figure(SAT, 'stiff')).toBe(null)
-    row.cx = undefined; row.info = true
+    markInput(INPUTS[0], row, { cx: false, info: true })
     expect(figure(SAT, 'bane')).toBe(null)
     expect(figure(SAT, 'stiff')).toBe(null)
+    markInput(INPUTS[0], row, { info: false })
+    expect([figure(SAT, 'bane'), figure(SAT, 'stiff')], 'both marks off: both earn again').toEqual(['FO', 'FO'])
   })
 
   it('an ALL-DAY request credits the second person too — the row carries no times (Fable M6)', () => {
@@ -535,6 +597,8 @@ describe('a day issued before the one-rule build keeps the OIL it went out with 
     expect(oilEarnedWork(frozenDay(), frozenEv(1)).bane.length, 'the requester in the input half only').toBe(1)
   })
 
+  /* (3) OLD DATA, kept as a legacy case (step 4, D760): on a day ISSUED before the build the CX was the frozen ROW's
+     own and its claim carries `stand: 'cx'` — read as it went out. */
   it('a refusal frozen with the day took the extra off without touching the requester; a cancelled row credited neither', () => {
     expect(paid(frozenDay(), frozenEv(1, {}, { people: { [`stiff|${ITEM18}`]: 'deny' } }))).toEqual(['bane'])
     expect(paid(frozenDay({ cx: true }), frozenEv(1, { stand: 'cx' }))).toEqual([])
@@ -586,6 +650,11 @@ describe('F3 — an older frozen block must not manufacture a pending amendment'
    whose row was cancelled would start CREDITING, with no amendment and the frozen
    schedule still saying the work did not happen. OIL out of nowhere on a
    published record, which is worse than the phantom it replaced. */
+/* (3) OLD DATA — these two describes are kept as LEGACY cases through step 4 of the one-rule build (D760). Their
+   subject is a day ISSUED long before it, whose frozen block has no `stand` and whose CX / information-only mark was the
+   frozen ROW's own — exactly how the fixture writes it (on the row, then published, then aged). The credit of an issued
+   day is read off its own snapshot (D48), so that old shape must go on reading as it went out. (A mark made SINCE the
+   build is on the request: the cases above, and ui/inputmarks.test.tsx.) */
 describe('an issued block written before `stand` must not start crediting (Codex rank 1)', () => {
   const published = (mark: 'cx' | 'info') => {
     claim({ iid: 'leg1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
@@ -728,20 +797,31 @@ describe('an anchor row cancelled in a week nobody has loaded stops the credit',
     if (row) days[5].ground = [row]
     stashPut(XW_WEEK, JSON.stringify({ d: days }))
   }
-  const crossWeekClaim = () => claim({ iid: 'xw', person: 'stiff', type: 'Training', date: 'Jul 11',
-    endDate: 'Jul 18', acc: '', allday: false, s: 8 * 60, e: 18 * 60, oil: { [SAT_ISO]: 1 } })
+  const crossWeekClaim = (over: any = {}) => claim({ iid: 'xw', person: 'stiff', type: 'Training', date: 'Jul 11',
+    endDate: 'Jul 18', acc: '', allday: false, s: 8 * 60, e: 18 * 60, oil: { [SAT_ISO]: 1 }, ...over })
 
   afterEach(() => { stashClear() })
 
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (D760, step 4): a request cancelled on its row in a week that is not on
+     screen stops the credit a week later. The CX is the REQUEST's now — requests are not week-scoped, so the record
+     itself says it, and the stashed row carries the copy the row's body wrote. */
   it('a CANCELLED anchor row credits nothing on the Saturday a week later', () => {
-    crossWeekClaim()
-    stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', cx: true })
+    crossWeekClaim({ cx: true, cxr: 'WX' })
+    stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', cx: true, cxr: 'WX' })
     expect(figure(SAT, 'stiff'), 'the schedule says the training did not happen').toBe(null)
   })
 
+  /* (1) the same, for "information only" */
   it('an INFO-ONLY anchor row credits nothing either', () => {
-    crossWeekClaim()
+    crossWeekClaim({ info: true })
     stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', info: true })
+    expect(figure(SAT, 'stiff')).toBe(null)
+  })
+
+  /* ADDED (step 4, the second pass): the request's own mark needs no stashed week to be read — cancelled, with its
+     first week never opened on this device, it still earns nothing (the plan §4.7: no row lookup) */
+  it('D760 — a CANCELLED request whose first week nobody has opened earns nothing either: the record says it', () => {
+    crossWeekClaim({ cx: true, cxr: 'WX' })                  // no stash entry at all for 06/07/2026
     expect(figure(SAT, 'stiff')).toBe(null)
   })
 

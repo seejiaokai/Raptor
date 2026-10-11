@@ -181,6 +181,13 @@ export function requestRowFields(inp: any) {
   }
   const rest = idsOf(inp).slice(1)
   if (rest.length) f.more = rest
+  /* …AND THE SCHEDULER'S MARKS (step 4 of that build — owner D760: "a CX the scheduler puts on a row that came from an
+     input cancels the input itself … the red box and 'information only' go with the input too"). Written as a row
+     has always carried them, and only where set — the re-make takes each key away where the input has none (as it
+     does `more`). So a request moved to another day arrives with them, and nothing stays behind (D468 as changed). */
+  if (inp.cx) { f.cx = true; f.cxr = String(inp.cxr || '') }
+  if (inp.flag) f.flag = true
+  if (inp.info) f.info = true
   return f
 }
 /* `srcv` — what a row was last made or re-made from: a short hash of those six fields. A row whose `srcv` differs from its
@@ -194,7 +201,11 @@ export function srcvOf(inp: any): string {
   /* EVERYTHING the request writes, people included — and a mark of the build that made the row a whole copy (`2`), so
      every row made before it is re-made ONCE, at its first read: whoever a scheduler had put on an old request's row
      without putting him in the input comes off it then (stored demo rows only — D56; told to him, the plan's R6). */
-  const s = '2|' + [f.prog, f.str, f.end, f.who, f.rmks, f.srcType].map(x => String(x ?? '')).join('|') + '|' + (f.more || []).join(',')
+  /* (`3`: the marks are the input's since step 4 — D760 — so a row made before it is re-made once more, and a CX, red
+     box or "information only" a scheduler had put on the ROW of an old request comes off: the input never carried it.
+     Stored demo rows only — D56.) */
+  const s = '3|' + [f.prog, f.str, f.end, f.who, f.rmks, f.srcType].map(x => String(x ?? '')).join('|') + '|' + (f.more || []).join(',')
+    + '|' + [f.cx ? 'cx:' + f.cxr : '', f.flag ? 'f' : '', f.info ? 'i' : ''].join('|')
   let h = 0x811c9dc5
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) }
   return (h >>> 0).toString(36)
@@ -314,16 +325,19 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
       if (r.acc === 'r') continue                                                                                 // 4.
       const sv = srcvOf(r)
       if (row.srcv === sv) continue
-      /* 5 + 6. RE-MADE IN PLACE, WHOLE (step 2 (b) of the one-rule build — the plan §4.3): its id, its place in the list
-         and the marks only a scheduler makes (CX, red box, information only) are kept; everything the request writes —
-         its name, times, remark, and EVERYONE on it — is written over the stored row. So a person the holder's stored
+      /* 5 + 6. RE-MADE IN PLACE, WHOLE (step 2 (b) of the one-rule build — the plan §4.3): its id and its place in the
+         list are kept; everything the request writes — its name, times, remark, EVERYONE on it, and since step 4 the
+         marks a scheduler makes (CX with its reason, red box, information only — D760) — is written over the stored row. So a person the holder's stored
          day still carries under the row, after he was put in the input or taken out of it, cannot show twice or
          linger: the re-make owns the row's people. A row with no hash at all (made before hashes) is re-made too.
          `reqChanged` only where something a reader sees moved — a row re-made to the very same words is no change. */
       const f: any = requestRowFields(r)
-      const shows = (x: any) => JSON.stringify([x.prog, x.str, x.end, whoId(x.who) || x.who || '', x.rmks, x.srcType, (x.more || []).map((v: any) => whoId(v) || v || '').filter(Boolean)])
+      const shows = (x: any) => JSON.stringify([x.prog, x.str, x.end, whoId(x.who) || x.who || '', x.rmks, x.srcType, (x.more || []).map((v: any) => whoId(v) || v || '').filter(Boolean), !!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info])
       const was = shows(row)
       if (!f.more) delete row.more
+      if (!f.cx) { delete row.cx; delete row.cxr }
+      if (!f.flag) delete row.flag
+      if (!f.info) delete row.info
       delete row.srcg
       Object.assign(row, f); row.srcv = sv
       if (shows(row) !== was) info[di].reqChanged = true

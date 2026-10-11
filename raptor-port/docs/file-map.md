@@ -1,5 +1,17 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 4 (12 Oct 26 — the scheduler's marks on an input's row are the input's; D760): no new
+source file. `src/ui/reqdoor.ts` gains `rowMark` (CX with its reason, the red box, information only — the input changed
+in one command); `src/ui/board.ts`'s three buttons ask it on an input's row (`askCx`'s `via`); `src/engine/overlay.ts
+requestRowFields` writes the marks on the row and the re-make takes them away; `src/engine/oilev.ts landedStanding` and
+`src/engine/inputs.ts inputFlags` / `inpDetailKey` read them off the input; `src/state/perms.ts inputBreach` bars a
+member from setting them; `src/state/changelines.ts` writes their line. New tests: `src/ui/inputmarks.test.tsx` (the builder's) and `src/ui/inputmarks-scenarios.test.tsx` (the second scenario pass
+of the helper who re-expressed the older tests). `src/engine/inputs.ts` gains `inputSilent` — the one answer to "is it
+cancelled or information only?", asked by the rules' cross-week reads, the seven-day run and the ALL AVAIL crowd too.
+Mock-ups for his look before steps 5 and 7 (not gates, not built): `scripts/handpass/onerule-mock-cancelled.mjs`,
+`scripts/handpass/onerule-mock-bell.mjs` — they draw a proposed look on the real screens by injection; their pictures
+are `docs/mock/2026-10-12-one-rule/`, their questions the plan's §8 (Q2–Q4).
+
 `[ALL-AVAIL-AS-MEMBER]` step 3 (12 Oct 26 — ALL AVAIL / ALL as one of an input's own people; D750, D753, D755, D757): no
 new source file. `src/engine/inputs.ts placeholderProblem` loses "filed on its own" and says the plan's shorter words;
 `src/ui/PeoplePick.tsx` draws the two placeholders as pucks of their own in "Several people" (`phWhy` — the window's

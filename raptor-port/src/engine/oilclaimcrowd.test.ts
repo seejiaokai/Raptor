@@ -357,15 +357,21 @@ describe('the screen and the credit ask the SAME body', () => {
 })
 
 describe('the controls', () => {
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX the
+     scheduler puts on a row that came from an input cancels the input itself"; reading 1: "a cancelled input earns
+     nobody OIL"). The two cases wrote the mark on the ROW after landing; it is the INPUT's now — on the record, and on
+     the row as the copy `landed` makes of it. Taken off, everyone earns again. */
   it('a CANCELLED row credits nobody — not the named man, not the crowd', () => {
-    const row = landed()
-    row.cx = true
+    const row = landed(undefined, { cx: true, cxr: 'WX' })
+    expect([row.cx, row.cxr], 'the row is the copy of its input').toEqual([true, 'WX'])
     expect(paidNames(SAT)).toEqual([])
+    INPUTS[0].cx = false; delete INPUTS[0].cxr; delete row.cx; delete row.cxr
+    expect(paidNames(SAT), 'un-cancelled: the named man and the crowd').toEqual(['bane', 'plasma', 'stiff'])
   })
 
   it('an INFORMATION-ONLY row is the same answer', () => {
-    const row = landed()
-    row.info = true
+    const row = landed(undefined, { info: true })
+    expect(row.info).toBe(true)
     expect(paidNames(SAT)).toEqual([])
   })
 

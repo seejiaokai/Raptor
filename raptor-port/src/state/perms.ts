@@ -619,6 +619,14 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
   const own = ownPart(pid, b, f)
   if (!own && !filedForOther(pid, b, f)) return `another person's input`
   if (replayed || !f) return null
+  /* THE SCHEDULER'S MARKS ARE NEVER A MEMBER'S TO SET (step 4 of the one-rule build — owner D760 reading 2: "only a
+     scheduler puts a CX on or takes it off — the member sees it and is told, he does not set it"). The cancel mark with
+     its reason, the red box and "information only" ride an input he may otherwise change in full: a record he changes
+     keeps them exactly; one he creates carries none — unless it is a piece the app cut from a record this same command
+     changed (one man split out of a cancelled input), which carries that record's. */
+  { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info] : [false, '', false, false])
+    const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
+    if (mk(f) !== mk(src)) return `a scheduler's mark on an input` }
   /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
      to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
   if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`

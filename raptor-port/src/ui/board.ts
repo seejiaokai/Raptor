@@ -23,6 +23,7 @@ import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } 
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
+import { onInputRow, rowMark } from './reqdoor'
 import { setInpField } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
@@ -589,9 +590,11 @@ export function dayTabsHTML(di: number) {
    The dialog now reads CXR_CFG; nothing here owns the list any more. */
 export let CXT: any = null
 export function setCxt(v: any) { CXT = v }
-export function askCx(o: any, key: any, label: any, after?: any) {
+/* `via` — where the line is not the day's own to mark: a row that came from an input, whose CX is the INPUT's (owner
+   D760; ui/reqdoor.ts rowMark). cxCommit then hands the answer to it and writes nothing itself. */
+export function askCx(o: any, key: any, label: any, after?: any, via?: (cancel: boolean, reason: string) => boolean) {
   if (!o) return
-  CXT = { o, key, after: after || null, label: label || 'this line' }
+  CXT = { o, key, after: after || null, label: label || 'this line', via: via || null }
   notify()
 }
 export function cxCommit(cancel: boolean, reason: string) {
@@ -607,7 +610,15 @@ export function cxCommit(cancel: boolean, reason: string) {
      there), same defence-in-depth framing as the rest of this task — but
      it is the last write path of this family with no check at all. */
   if (!canEditSched() || !HOOKS.editMode()) { CXT = null; notify(); return }
-  const { o, key, after, label } = CXT
+  const { o, key, after, label, via } = CXT
+  if (via) {
+    /* the INPUT is cancelled or brought back, by its own door's one command: its own line of the change history, its
+       own Undo step — and the row follows */
+    CXT = null
+    if (via(cancel, reason)) toast(cancel ? cxText({ cx: true, cxr: String(reason).trim() }) : 'Restored')
+    else notify()
+    return
+  }
   if (cancel) { o.cx = true; o.cxr = String(reason).trim() }
   else { o.cx = false; delete o.cxr }
   CXT = null
@@ -1119,8 +1130,11 @@ export function boardMbtn(e: MouseEvent) {
      never splits or joins by itself"): the rows of a shared input are one row only while these marks are alike
      (engine/grouprows.ts), so a mark made on the lead alone would split it. One question and one reason for CX; each
      press is one Undo step. A row that stands alone is written exactly as before. */
+  /* …AND ON A ROW THAT CAME FROM AN INPUT ALL THREE ARE THE INPUT'S (step 4 of the one-rule build — owner D760): asked of
+     the row's door first, which changes the input in one command; the row follows as the copy it is. */
   if (ds.grcx != null) {
     const [di, ri] = ds.grcx.split('.').map(Number); const lead = DAYS[di].ground[ri]
+    if (onInputRow(`g:${di}.${ri}`)) return askCx(lead, null, 'this item', undefined, (cancel, reason) => rowMark(`g:${di}.${ri}`, 'cx', cancel, reason) === 'done')
     const others = oneRow(di, ri).filter(i => i !== ri)
     return askCx(lead, `gr:${di}.${ri}.prog`, 'this item', others.length ? () => {
       for (const i of others) { const x = DAYS[di].ground[i]; if (!x) continue; if (lead.cx) { x.cx = true; x.cxr = lead.cxr } else { x.cx = false; delete x.cxr } markEdit(`gr:${di}.${i}.prog`) }
@@ -1128,6 +1142,11 @@ export function boardMbtn(e: MouseEvent) {
   }
   if (ds.grflag != null) {
     const [di, ri] = ds.grflag.split('.').map(Number); const x = DAYS[di].ground[ri]
+    if (onInputRow(`g:${di}.${ri}`)) {
+      const on = !x.flag
+      if (rowMark(`g:${di}.${ri}`, 'flag', on) !== 'done') return
+      return toast(on ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    }
     const mates = oneRow(di, ri)                // read before the mark is made: rows are one row only while alike
     x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`)
     for (const i of mates) if (i !== ri && DAYS[di].ground[i]) { DAYS[di].ground[i].flag = x.flag; markEdit(`gr:${di}.${i}.prog`) }
@@ -1137,6 +1156,11 @@ export function boardMbtn(e: MouseEvent) {
   /* ⓘ info-only, ground twin of ds.pinfo above */
   if (ds.grinfo != null) {
     const [di, ri] = ds.grinfo.split('.').map(Number); const x = DAYS[di].ground[ri]
+    if (onInputRow(`g:${di}.${ri}`)) {
+      const on = !x.info
+      if (rowMark(`g:${di}.${ri}`, 'info', on) !== 'done') return
+      return toast(on ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
+    }
     const mates = oneRow(di, ri)                // read before the mark is made: rows are one row only while alike
     x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`)
     for (const i of mates) if (i !== ri && DAYS[di].ground[i]) { DAYS[di].ground[i].info = x.info; markEdit(`gr:${di}.${i}.prog`) }

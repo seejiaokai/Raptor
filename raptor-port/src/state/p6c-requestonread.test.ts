@@ -43,6 +43,7 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { commitNewInput, commitInputEdit, commitInput, draftOf, removeInput } from '../ui/inputedit'
 import '../ui/reqrow'      // the door a typed box of a request's row goes through (D739, D740) — it installs itself for the store's writer
+import { rowMark } from '../ui/reqdoor'      // …and the door a scheduler's CX / red box / information-only on a request's row goes through (D760)
 import { deletePerson } from './person-delete'
 
 
@@ -519,15 +520,39 @@ function deadKeptRow(iid: string, di: number, awayIso: string, backIso: string) 
 }
 
 describe('phase 6 (c) v3, round 3 — a dead kept row is never the request\'s row', () => {
+  /* (2) A NAMED RULING CHANGED THE RULE — D760 (11 Oct 26; built at step 4 of the one-rule build, 12 Oct 26), which
+     changes D468 for a request's row. This case's fixture WAS D468: the scheduler's CX was the Saturday ROW's own, it
+     "stays with the old day", and the request moved back onto Sunday "arrives there as its member filed it" — so the
+     dead kept row was cancelled and the live one was not, by the move alone. Now a CX on the row cancels the REQUEST
+     and "goes with the input if it moves": the Sunday landing arrives CANCELLED, and earns nobody (pinned below — the
+     new rule). What Astra's finding 1 is about survives, on the fixture the new rule can still make: the scheduler
+     brings the request back (un-cancels it); the dead `kept` row on Saturday keeps what its version went out with
+     (D363 — a kept row is nobody's request, the plan §4.3), still cancelled; and that dead cancelled row must not stop
+     the live Sunday landing earning. */
   it('Astra 1 — OIL: a dead CANCELLED row on Saturday does not stop the live Sunday landing earning', async () => {
     const be = new MemoryBackend()
     await boot(be)
     const iid = file({ type: 'Training', date: 'Jul 18', remarks: 'weekend course' })
-    schedWrite(SCHED_TYPES.mutate, () => { const r = rowOf(iid, SAT)!.row; r.cx = true; afterSchedMutate() })
+    const keyOn = (di: number) => `g:${di}.${((DAYS[di] as any).ground || []).findIndex((g: any) => g && g.src === iid && !g.kept)}`
+    expect(rowMark(keyOn(SAT), 'cx', true, 'WX'), 'the scheduler\'s CX, by the row\'s door: the REQUEST is cancelled').toBe('done')
+    expect([reqOf(iid).cx, rowOf(iid, SAT)!.row.cx]).toEqual([true, true])
     deadKeptRow(iid, SAT, '2026-07-25', '2026-07-19')
     expect(rowOf(iid, SAT)!.row.cx, 'the dead row is the cancelled one').toBe(true)
     expect(rowOf(iid, SUN), 'the real row, on Sunday').toBeTruthy()
     const ev = () => projectOilInputs('2026-07-19').find((x: any) => x.iid === iid)
+    /* D760 — the CX went WITH the request: nothing of it "stays behind" for the move to shed */
+    expect([rowOf(iid, SUN)!.row.cx, rowOf(iid, SUN)!.row.cxr], 'the Sunday landing arrives cancelled, with its reason').toEqual([true, 'WX'])
+    expect(ev()!.stand, 'and a cancelled request earns nobody').toBe('cx')
+    /* brought back: the live row is un-cancelled, the dead one keeps what it was issued with */
+    expect(rowMark(keyOn(SUN), 'cx', false), 'un-cancelled on its live row').toBe('done')
+    expect(rowOf(iid, SAT)!.row.kept, 'the Saturday row is still the dead kept one').toBe(true)
+    expect(rowOf(iid, SAT)!.row.cx, '…and still the cancelled one').toBe(true)
+    /* …and the door does not answer for it: a mark pressed on the dead row is that row's own, never the request's
+       (the plan §4.3 — "rows this does not own … a hand on them writes the row as on any ground row") */
+    const dead = `g:${SAT}.${((DAYS[SAT] as any).ground || []).findIndex((g: any) => g && g.src === iid && g.kept)}`
+    expect(rowMark(dead, 'cx', false), 'the dead row is nobody\'s request').toBe('none')
+    expect(!!reqOf(iid).cx, 'the request was not touched by asking').toBe(false)
+    expect(!!rowOf(iid, SUN)!.row.cx).toBe(false)
     expect(ev()!.stand, 'Sunday\'s claim stands on its live row').toBe('active')
     await reload(be)
     expect(ev()!.stand).toBe('active')

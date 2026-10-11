@@ -22,7 +22,7 @@ import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { acceptInput, acceptedDay, unacceptInput } from '../engine/slots'
 import { commitInputEdit, commitNewInput, reassignInput, removeInput, setInpField, draftOf } from './inputedit'
-import { rowPut } from './reqdoor'
+import { rowPut, rowMark } from './reqdoor'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
 import { setMe, DEFAULT_ME } from '../state/auth'
@@ -213,8 +213,14 @@ describe('removeInput — filed copies and undo coherence', () => {
    row survive an input edit` — which pinned that crew a scheduler wrote onto the row as the ROW'S OWN (`more`, in no
    input) were carried across an edit of the source input. Nobody on such a row is the row's own any more: a hand puts
    him there through the door (ui/reqdoor.ts), which puts him IN the input, and the row is a whole copy of the input,
-   re-made in place. He survives an edit because he is in what is edited. The red box is still the row's (it moves to
-   the input in a later step — D760) and the re-make keeps it.
+   re-made in place. He survives an edit because he is in what is edited.
+   THE RED BOX — re-expressed at step 4 of the one-rule build (12 Oct 26; owner D760: "the red box and 'information
+   only' go with the input too"). These cases wrote it on the ROW (`row.flag = 1`) and pinned that the re-make KEPT it
+   (D468: what the scheduler added to the row was the row's). It is the input's now: a mark written on the row alone
+   comes off at the next re-make, the input never having carried it. Choice (1) of the four — THE RULE SURVIVES on a
+   rebuilt fixture: the red box is set as a scheduler sets it, through the row's door (ui/reqdoor.ts rowMark), and it
+   is still there after the edit, on the input and on its row (`true`, as the door writes it, where the hand-written
+   fixture said `1`).
    What D755 (3) changed with it: once a scheduler has put someone in beside him, the member's own change of the
    request for everyone ends — the edit that used to throw the scheduler's work away is now refused. */
 const live = (inp: any): any => INPUTS.find((r: any) => r.iid === inp.iid)
@@ -232,9 +238,9 @@ describe('a person put on the row through the door is in the input — he and th
     scheduler()
     expect(rowPut(`${keyOfRow(inp)}.+`, 'bane'), 'Ranger put on the row’s "+ add"').toBe('done')
     expect(idsOf(live(inp)), 'he is IN the input').toEqual(['stiff', 'bane'])
-    const row = rowsFor(inp)[0].row, rid = row.rid
-    row.flag = 1
-    afterSchedMutate()
+    const rid = rowsFor(inp)[0].row.rid
+    expect(rowMark(keyOfRow(inp), 'flag', true), 'the red box, by the row’s door — the input’s own (D760)').toBe('done')
+    expect([live(inp).flag, rowsFor(inp)[0].row.flag], 'on the input, and on its row').toEqual([true, true])
     setSession(null); setMe(DEFAULT_ME)                         // the edit itself, as every commitInputEdit case above drives it
     const d = draftOf(live(inp)); d.remarks = 'probe — retouched'
     expect(commitInputEdit(live(inp), d)).toBe(true)
@@ -242,7 +248,7 @@ describe('a person put on the row through the door is in the input — he and th
     expect(fresh.rmks, 'the edit itself landed').toBe('probe — retouched')
     expect(idsOf(live(inp)), 'the person the door put in is still in the input').toEqual(['stiff', 'bane'])
     expect([fresh.who, fresh.more], 'and on its row, under the first to join').toEqual(['stiff', ['bane']])
-    expect(fresh.flag, 'the red flag survived the re-make').toBe(1)
+    expect([live(inp).flag, fresh.flag], 'the red box is still the input’s, and on its re-made row').toEqual([true, true])
     expect(fresh.rid, 're-made in place: the same row').toBe(rid)
     expect(rowsFor(inp).length, 'exactly one row').toBe(1)
     scrap(live(inp))
@@ -259,8 +265,7 @@ describe('a person put on the row through the door is in the input — he and th
     expect(rowsFor(inp)[0].row.rmks).toBe('mine — first')
     scheduler()
     expect(rowPut(`${keyOfRow(inp)}.+`, 'boosh'), 'the scheduler puts Havoc on its row').toBe('done')
-    rowsFor(inp)[0].row.flag = 1
-    afterSchedMutate()
+    expect(rowMark(keyOfRow(inp), 'flag', true), 'and red-boxes it — the input’s own mark (D760)').toBe('done')
     member('bane')
     TOASTS = []
     d = draftOf(live(inp)); d.remarks = 'mine — retouched'
@@ -269,7 +274,7 @@ describe('a person put on the row through the door is in the input — he and th
     expect(live(inp).remarks, 'nothing was saved').toBe('mine — first')
     expect(idsOf(live(inp)), 'Havoc is still in the input').toEqual(['bane', 'boosh'])
     expect(onRow(inp), 'and on its row').toEqual(['bane', 'boosh'])
-    expect(rowsFor(inp)[0].row.flag, 'the red flag is where it was').toBe(1)
+    expect([live(inp).flag, rowsFor(inp)[0].row.flag], 'the red box is where it was').toEqual([true, true])
     scheduler()
     scrap(live(inp))
   })
@@ -307,13 +312,14 @@ describe('a person already in the input is never on its row twice (D271)', () =>
   })
   it('one of its people swapped for a man NOT in it: the newcomer takes his place in the list — the others, the row and its red box stay', () => {
     const inp = three('swap')
-    const row = rowsFor(inp)[0].row, rid = row.rid
-    row.flag = 1
-    afterSchedMutate()
+    const rid = rowsFor(inp)[0].row.rid
+    /* (1) the rule survives on a rebuilt fixture (D760): the red box is the input's, set by the row's door */
+    expect(rowMark(keyOfRow(inp), 'flag', true)).toBe('done')
     expect(reassignInput(inp.iid, 'pike'), 'Nomad for Saber, the first to join').toBe(true)
     expect(idsOf(live(inp))).toEqual(['pike', 'bane', 'boosh'])
     const fresh = rowsFor(inp)[0].row
-    expect([fresh.who, fresh.more, fresh.rid, fresh.flag]).toEqual(['pike', ['bane', 'boosh'], rid, 1])
+    expect([fresh.who, fresh.more, fresh.rid, fresh.flag]).toEqual(['pike', ['bane', 'boosh'], rid, true])
+    expect(live(inp).flag, 'and the input carries it still').toBe(true)
     expect(rowsFor(inp).length, 'still exactly one row').toBe(1)
     expect(TOASTS.join('|')).not.toMatch(/kept once/)
     scrap(live(inp))

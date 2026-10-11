@@ -580,16 +580,21 @@ describe('the mode shuts the crew panels too (fix 5)', () => {
    inert puck on the Saturday and says only that there is nothing to earn — so
    the scheduler looks around the Saturday, where there is nothing to find. */
 describe('an inert claim names the row that made it inert', () => {
-  const crossWeekClaim = () => {
+  const crossWeekClaim = (over: any = {}) => {
     const row: any = { iid: 'xf', person: 'bane', type: 'Training', date: 'Jul 17', endDate: 'Jul 18',
-      acc: 'g', allday: false, s: 8 * 60, e: 18 * 60, remarks: '', mod: 'now', yr: 2026, oil: { [SAT_ISO]: 1 } }
+      acc: 'g', allday: false, s: 8 * 60, e: 18 * 60, remarks: '', mod: 'now', yr: 2026, oil: { [SAT_ISO]: 1 }, ...over }
     INPUTS.unshift(row); return row
   }
   const titleOf = (sel: string) => ($(sel) as HTMLElement | null)?.getAttribute('title') || ''
 
+  /* THE TWO MARK CASES — choice (1), THE RULE SURVIVES on a rebuilt fixture (step 4 of the one-rule build, 12 Oct 26 —
+     owner D760: "a CX the scheduler puts on a row that came from an input cancels the input itself … 'information only'
+     go[es] with the input too"). Each wrote its mark on the Friday ROW alone; the mark is the request's own now — on
+     the record, and on its row as the copy of it. The inert puck on the Saturday still says where the row is and why
+     nothing is earned. */
   it('names the anchor day and says the row was cancelled', async () => {
-    crossWeekClaim()
-    const r = addRow(4, { prog: 'TRAINING', str: '0800', end: '1800', who: 'bane', src: 'xf', cx: true })
+    crossWeekClaim({ cx: true, cxr: 'WX' })
+    const r = addRow(4, { prog: 'TRAINING', str: '0800', end: '1800', who: 'bane', src: 'xf', cx: true, cxr: 'WX' })
     expect(r.cx).toBe(true)
     await open(SAT)
     await click(oilBtn())
@@ -599,7 +604,7 @@ describe('an inert claim names the row that made it inert', () => {
   })
 
   it('an INFO-ONLY anchor says that instead', async () => {
-    crossWeekClaim()
+    crossWeekClaim({ info: true })
     addRow(4, { prog: 'TRAINING', str: '0800', end: '1800', who: 'bane', src: 'xf', info: true })
     await open(SAT)
     await click(oilBtn())

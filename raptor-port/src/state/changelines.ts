@@ -154,6 +154,14 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
+  /* THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760: "a CX the scheduler puts on a
+     row that came from an input cancels the input itself"; the red box and "information only" go with it). Until then
+     the board logged a sentence against the DAY ("CX — WX — this item"); the change is the input's now, so its line is
+     written here, once, with the rest of what an input's change says — one line a mark that moved, the reason in it. */
+  { const cxW = (x: any) => (x.cx ? `cancelled${x.cxr ? ' — ' + String(x.cxr) : ''}` : 'not cancelled')
+    if (cxW(b) !== cxW(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · CX`, base({ from: cxW(b), to: cxW(a) }))
+    if (!!b.flag !== !!a.flag) logAction(null, `${who} · ${what} ${spanWords(sa)} · red box`, base({ from: b.flag ? 'on' : 'off', to: a.flag ? 'on' : 'off' }))
+    if (!!b.info !== !!a.info) logAction(null, `${who} · ${what} ${spanWords(sa)} · information only`, base({ from: b.info ? 'yes' : 'no', to: a.info ? 'yes' : 'no' })) }
   /* WHAT A SANS AVAILABILITY OFFERS (found building D629, 7 Oct 26 — the plan §3.8): a change to the Fly / OFT / AMT
      ticks alone wrote no line at all — the one thing a person reads on that record that the list above never compared.
      Only where both sides are a SANS availability: a change of type is the type line's to say. */

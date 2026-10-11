@@ -71,7 +71,7 @@ import { _resetDisclosure } from './disclosure'
 import { afterSchedMutate, setPage } from './view'
 import * as view from './view'
 import { commitNewInput, commitInput, draftOf } from '../ui/inputedit'
-import { rowPut, rowTake } from '../ui/reqdoor'
+import { rowPut, rowTake, rowMark } from '../ui/reqdoor'
 import * as pops from '../ui/pops'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -136,8 +136,19 @@ const file = (ppl: string[], title = TITLE) => expect(commitInput(null, DRAFT(ti
 const setPeople = (ppl: string[], title = TITLE) => expect(commitInput(rec(title), draftOf(rec(title)), ppl)).toBe(true)
 /* an input of one person beside it, by its own title */
 const fileOne = (p: string, title: string) => expect(commitNewInput({ ...DRAFT(title, { sTime: '14:00', eTime: '15:00' }), person: p, type: 'Meeting' })).toBe(true)
-const mark = (o: any, title = TITLE) => schedWrite(SCHED_TYPES.mutate, () => { Object.assign(rowOf(title), o); afterSchedMutate() })
+/* A SCHEDULER'S MARKS — THE INPUT'S OWN since step 4 of the one-rule build (12 Oct 26; owner D760: "a CX the scheduler
+   puts on a row that came from an input cancels the input itself … the red box and 'information only' go with the
+   input too"). Until then this helper wrote them on the ROW (they were the row's, and the re-make kept them — D468);
+   a mark written on the row alone is now taken off by the next re-make, the input never having carried it. So they are
+   set as a scheduler sets them: through the row's door (ui/reqdoor.ts rowMark), one command each. */
+const mark = (o: { cx?: boolean; cxr?: string; flag?: boolean; info?: boolean }, title = TITLE) => {
+  if ('cx' in o) expect(rowMark(rowKey(title), 'cx', !!o.cx, o.cxr), 'CX, by the door').toBe('done')
+  if ('flag' in o) expect(rowMark(rowKey(title), 'flag', !!o.flag), 'the red box, by the door').toBe('done')
+  if ('info' in o) expect(rowMark(rowKey(title), 'info', !!o.info), 'information only, by the door').toBe('done')
+}
 const marksOf = (title = TITLE) => { const r = rowOf(title); return { cx: r.cx, cxr: r.cxr, flag: r.flag, info: r.info } }
+/* …and what the INPUT itself carries — the row is only its copy */
+const inpMarks = (title = TITLE) => { const r = rec(title); return { cx: r.cx, cxr: r.cxr, flag: r.flag, info: r.info } }
 const publish = (di: number) => { sign(di); commitSetDayApproved(di, true) }
 /* ✕ on the row — the input off the programme — and a scheduler's Accept */
 const off = (title = TITLE) => schedWrite(SCHED_TYPES.mutate, () => { expect(unacceptInput(WED, rec(title))).toBe(true); afterSchedMutate() })
@@ -182,6 +193,10 @@ describe('an input is ONE row — a whole copy of the input (D755, D756; the pla
 })
 
 describe('the row follows who is in the input — the same row, never another (D755; D734 widened)', () => {
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (step 4, D760): the CX with its reason, the red box and "information
+     only" are still there after people join — but as the INPUT's, set through the row's door, where this case used to
+     write them on the row and pin "the row's, kept" by the re-make (D468). Both are asserted now: the input carries
+     them, and the row says what its input says. */
   it('a person added later — in the input’s own window, or put on the row — is on the SAME row, under the people already there, with what the scheduler set on it; after a reload too', async () => {
     const be = new MemoryBackend()
     await boot(be)
@@ -197,14 +212,18 @@ describe('the row follows who is in the input — the same row, never another (D
     expect(onRow()).toEqual(['bane', 'pike', 'split', 'ignite'])
     expect([rowOf().rid, riOf()], 'the same row, where it stood').toEqual([rid, at])
     expect(order(), 'no second row; the row filed since still below it').toEqual([TITLE.toUpperCase(), 'FILED SINCE'])
-    expect(marksOf(), 'CX and its reason, the red box, information only: the row’s, kept').toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
+    expect(inpMarks(), 'CX and its reason, the red box, information only: the INPUT’s (D760)').toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
+    expect(marksOf(), '…and on its row, kept as people join').toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
     await reload(be)
     expect(onRow(), 'after a reload').toEqual(['bane', 'pike', 'split', 'ignite'])
     expect([rowOf().rid, riOf()]).toEqual([rid, at])
+    expect(inpMarks(), 'saved with the input').toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
     expect(marksOf()).toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
     expect(order()).toEqual([TITLE.toUpperCase(), 'FILED SINCE'])
   })
 
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (step 4, D760): the red box is still there when people are taken out —
+     the input's own now, set by the door (the helper `mark`), where it was written on the row. */
   it('a person taken out leaves the row standing — the others in their order; the first to join gone, the next takes the name box', async () => {
     const be = new MemoryBackend()
     await boot(be)
@@ -220,11 +239,15 @@ describe('the row follows who is in the input — the same row, never another (D
     expect(rowOf().who).toBe('split')
     expect('more' in rowOf(), 'down to one: nothing is kept under the name box').toBe(false)
     expect([rowOf().rid, riOf(), rowOf().flag], 'the same row throughout, its red box kept').toEqual([rid, at, true])
+    expect(rec().flag, 'the red box is the input’s (D760)').toBe(true)
     expect(ground().filter((g: any) => g && g.src === iidOf())).toHaveLength(1)
     await reload(be)
-    expect([onRow(), rowOf().rid]).toEqual([['split'], rid])
+    expect([onRow(), rowOf().rid, rowOf().flag]).toEqual([['split'], rid, true])
   })
 
+  /* (1) THE RULE SURVIVES, and is wider (step 4, D760; the plan §4.4 "the row's ✕ … its people and marks stay IN the
+     input, so Accept or Undo brings the row back as it was"): the red box rides the input through a ✕, so ACCEPT brings
+     it back too — until this step only Undo did, the mark going with the row it was written on. */
   it('Accept after ✕ brings the row back with everyone on it; Undo of a ✕ brings back the very row, with what the scheduler set on it', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike', 'split'])
@@ -241,6 +264,10 @@ describe('the row follows who is in the input — the same row, never another (D
     globalUndo()
     expect(onRow(), 'Undo: everyone on it').toEqual(['bane', 'pike', 'split'])
     expect([rowOf().rid, rowOf().flag], 'the very row, its red box with it').toEqual([rid, true])
+    off()
+    expect(rec().flag, 'off the programme, the input still carries its red box').toBe(true)
+    on()
+    expect(rowOf().flag, 'Accept: the row is made from the input, its red box with it (D760)').toBe(true)
   })
 
   for (const hand of [false, true]) {
@@ -310,7 +337,9 @@ describe('ALL AVAIL / ALL is one of the people the row follows — the same row,
 
   /* (2) D745 — "comes off with the man whose place it stood on" — is set aside by D755; D757: it STAYS. And the plan's
      "the first to join leaves: the next takes the name box" holds for a placeholder as for a person: where it is the
-     next to have joined, it holds the name box. */
+     next to have joined, it holds the name box.
+     (Its red box — step 4, D760 — is choice (1): the rule survives on a rebuilt fixture; the mark is the input's, set
+     by the row's door, and is still on the row whoever leaves.) */
   it('a person taken out leaves ALL AVAIL standing; the FIRST to join taken out, and ALL AVAIL — the next to have joined — holds the name box; the same row throughout', async () => {
     const be = new MemoryBackend()
     await boot(be)
@@ -326,8 +355,9 @@ describe('ALL AVAIL / ALL is one of the people the row follows — the same row,
     expect(rowOf().who).toBe(A)
     expect('more' in rowOf(), 'down to one: nothing is kept under the name box').toBe(false)
     expect([rowOf().rid, riOf(), rowOf().flag], 'the same row, its red box kept').toEqual([rid, at, true])
+    expect(rec().flag, 'the red box is the input’s (D760)').toBe(true)
     await reload(be)
-    expect([onRow(), rowOf().rid]).toEqual([[A], rid])
+    expect([onRow(), rowOf().rid, rowOf().flag]).toEqual([[A], rid, true])
   })
 
   /* (1) "Accept after ✕ brings the row back with everyone on it" (D114) and "back where the published version had it,

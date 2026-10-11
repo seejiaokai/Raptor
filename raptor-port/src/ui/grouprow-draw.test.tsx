@@ -70,6 +70,7 @@ import { dayHTML, lSeat } from './html'
 import { boardHTML } from './board'
 import { peekDayHTML } from './peek'
 import { leadKeyOf } from './grouprow'
+import { rowMark } from './reqdoor'
 import * as pops from './pops'
 
 const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS), PSNAP = JSON.stringify(PEOPLE)
@@ -332,13 +333,50 @@ describe('Edit Schedule’s week', () => {
     expect(seated(rows[0]!)).toEqual([`allavail@${rowKey()}`])
     expect(rowPeopleDrawn(DAYS[WED], WED, riOf()).map(p => `${p.id}@${p.key}`)).toEqual([`allavail@${rowKey()}`])
   })
-  it('a CX is the row’s — one row, one set of marks: nobody is drawn apart', () => {
+  /* (2) A NAMED RULING CHANGED THE RULE — D760 (11 Oct 26; built at step 4 of the one-rule build, 12 Oct 26): "a CX the
+     scheduler puts on a row that came from an input cancels the input itself". This case was "a CX is the ROW's": it
+     wrote `cx` / `cxr` on the ground row and pinned the drawing. The CX is the INPUT's now — set through the row's door
+     (ui/reqdoor.ts rowMark), carried by the record, copied to the row. What is DRAWN is what a cancelled row has
+     always been (the row struck through, "CX DUE WX" on it, its people all still on it) — kept; and it is now checked
+     on every surface that draws the row: Edit Schedule's week, View-only Sched, the Scheduler Board, the next-week
+     peek. */
+  it('a CX is the input’s — one row, one set of marks, drawn cancelled wherever the row is drawn: nobody is drawn apart (D760)', () => {
     file(FOUR)
-    ground()[riOf()].cx = true; ground()[riOf()].cxr = 'WX'; validate()
+    expect(rowMark(rowKey(), 'cx', true, 'WX'), 'the scheduler’s CX, by the row’s door').toBe('done')
+    validate()
+    expect([rec().cx, rec().cxr], 'the INPUT is cancelled, with its reason').toEqual([true, 'WX'])
+    expect([ground()[riOf()].cx, ground()[riOf()].cxr], 'and its row says what it says').toEqual([true, 'WX'])
     const rows = weekRows(true)
     expect(rows).toHaveLength(1)
     expect(rows[0]!.classList.contains('cx')).toBe(true)
     expect(slots(rows[0]!)).toHaveLength(4)
+    expect(rows[0]!.querySelector('.cxtag')!.textContent, 'the reason is on the row').toBe('CX DUE WX')
+    const view1 = weekRows(false)
+    expect([view1.length, view1[0]!.classList.contains('cx')], 'View-only Sched').toEqual([1, true])
+    const b = boardRows()
+    expect([b.length, b[0]!.classList.contains('cx'), seated(b[0]!).length], 'the Scheduler Board: one cancelled row, its four people on it').toEqual([1, true, 4])
+    expect(b[0]!.querySelectorAll('[data-grcx]'), 'and still ONE CX button, to bring it back').toHaveLength(1)
+    const p = peekRows(JSON.parse(JSON.stringify(DAYS[WED])))
+    expect([p.length, p[0]!.classList.contains('cx')], 'the next-week peek').toEqual([1, true])
+    /* brought back: no surface goes on drawing it cancelled */
+    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    validate()
+    expect([weekRows(true)[0]!.classList.contains('cx'), boardRows()[0]!.classList.contains('cx'), weekRows(true)[0]!.querySelector('.cxtag')]).toEqual([false, false, null])
+  })
+  /* ADDED (step 4, the second pass): the red box and "information only" are the input's too (D760 — "shown on the
+     schedule only"), and the row wears them as any row does — on a row holding several people AND ALL AVAIL, where
+     nobody and no placeholder is drawn apart for them. */
+  it('the red box and "information only" on a row holding several people and ALL AVAIL: the ONE row wears both, everyone still on it (D760)', () => {
+    file(['split', 'bane', 'allavail', 'pike'])
+    expect(rowMark(rowKey(), 'flag', true)).toBe('done')
+    expect(rowMark(rowKey(), 'info', true)).toBe('done')
+    validate()
+    expect([rec().flag, rec().info], 'the input’s').toEqual([true, true])
+    for (const [where, rows] of [['Edit Schedule', weekRows(true)], ['View-only Sched', weekRows(false)], ['the board', boardRows()], ['the peek', peekRows(JSON.parse(JSON.stringify(DAYS[WED])))]] as Array<[string, HTMLElement[]]>) {
+      expect(rows, where).toHaveLength(1)
+      expect([rows[0]!.classList.contains('fyi'), rows[0]!.classList.contains('redbox')], where).toEqual([true, true])
+      expect(names(rows[0]!), `${where}: the named people A to Z, then ALL AVAIL`).toEqual([...az(['split', 'bane', 'pike']).map(cs), 'ALL AVAIL'])
+    }
   })
   it('an ordinary one-person request beside it is the row it always was', () => {
     file(FOUR)

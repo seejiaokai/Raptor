@@ -237,11 +237,19 @@ export type Input = {
    *  engine/oilev.ts), so a refusal made for one holding reads as nothing once the request moves on — even when it
    *  comes back to the same man ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9). */
   hand?: number
-  /** THE OLD SHAPE ONLY (a record with `people` says this on each entry's `h`).
-   *  Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
-   *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
+  /** Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
+   *  commitInputEdit) and, since step 3 of the one-rule build, whenever a person is taken out of an input's list
+   *  (engine/inputown.ts takePerson, swapPerson — dropped again when he is put back, his entry's `h` saying it then). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
    *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
   leftAt?: Record<string, number>
+  /** THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760): cancelled, with its reason
+   *  (`cx` false and no `cxr` once un-cancelled); the red box; information only. Written only by a scheduler, through
+   *  the row's door (ui/reqdoor.ts rowMark); the row carries a copy (engine/overlay.ts requestRowFields) — engine
+   *  (inputs.ts inputFlags, oilev.ts landedStanding) and screen. */
+  cx?: boolean
+  cxr?: string
+  flag?: boolean
+  info?: boolean
   /** Who PLACED it: the signed-in person (a PEOPLE id) who filed it — which can differ from `person`, the man it is
    *  for (an admin filing for a member, an approval on the Leave War). Absent on a record filed before 7 Oct 26, or
    *  with nobody signed in — it then shows no "placed by" line. Never changed by an edit; a piece cut from a record

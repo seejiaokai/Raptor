@@ -3969,3 +3969,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** A brief for parallel helpers names a scratch SUB-folder per helper (or a file prefix), as it already names which source files are whose.
 
 **Principle:** Shared state between parallel workers includes their scratch space; partition it in the brief as the source files are partitioned.
+
+### Observation 529: A failing-first test file left in the tree breaks a gate run already in flight
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Building a multi-step feature unattended; the next step's failing tests were written while the previous step's full gate set was still running in the background.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED step, when another verification run shares the working tree
+
+**Issue:** The test for the next step imported a function that did not exist yet. That is correct for a RED test, but the project's build gate type-checks every file in the tree, test files included, and the gate run for the PREVIOUS step had not reached its build stage. The file had to be moved out of the tree mid-run to keep that run honest. Nothing in the TDD skill says a red test that does not compile is a hazard to any other check sharing the tree.
+
+**Suggested improvement:** In the RED step add one line: "If a full verification run is in flight in the same tree, write the new failing test outside the tree (or wait) until that run has passed its compile / type-check stage — a test that does not compile fails checks that have nothing to do with it."
+
+**Principle:** A deliberately broken file is safe only while nothing else is reading the tree; staged work and in-flight verification must not share a compile unit.
+
+### Observation 530: Re-expressing the old tests by helpers who did not write the build finds what the builder's new tests cannot — and what makes the brief work
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** A rule changed in a feature step; the builder wrote about 60 new tests (all green), then three helpers re-expressed every older test that pinned the old rule.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Briefing helpers for test work after a rule change
+
+**Issue:** The builder's own tests found one fault; the helpers found eight more (a screen offering an action the save refused, two state bugs that depended on the ORDER of actions, three wrong sentences, a regression of an old behaviour). Second time running on this job (twelve faults the step before). Three parts of the brief did the work: (a) four allowed outcomes per old case — rule survives / a named decision changed it / old data kept as a legacy case / subject gone — so no case could be quietly dropped; (b) "a product fault is reported, never pinned: write the test for what SHOULD happen and leave it failing"; (c) "then a second scenario pass of your own area". Two helpers also reported old cases that were passing VACUOUSLY after a selector had changed — a class of defect only someone re-reading old tests sees.
+
+**Suggested improvement:** Add a worked brief for "re-express the old tests after a rule change" to the skill: disjoint file lists per helper, the four outcomes, report-never-pin, the second scenario pass, one file run at a time, no git writes, and "say which old cases were passing vacuously".
+
+**Principle:** The author of a change tests the behaviour they intended; the old tests encode the behaviour everyone else relied on. Having someone else translate the old tests onto the new rule turns them from an obstacle into a second, independent specification.

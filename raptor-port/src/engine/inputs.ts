@@ -203,6 +203,13 @@ export function inpDetailKey(inp:any):string{
        published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
        input's key is byte-for-byte what it was. */
     ...(titleOf(inp.type,inp.title)?{title:titleOf(inp.type,inp.title)}:{}),
+    /* THE SCHEDULER'S MARKS ON IT ARE PART OF WHAT IT SAYS (step 4 of the one-rule build — owner D760: a CX on the row
+       cancels the INPUT; reading 3: "on a published day a CX put on or taken off reads as a change waiting"). NORMALISED
+       (Fable's read of the plan, F14): a CX put on and taken off leaves `cx:false` where a record never cancelled has
+       nothing — compared raw the day would read pending for ever. Named only where set, so an unmarked input's key is
+       byte for byte what it was. NOT the red box: a scheduler-to-scheduler mark is no part of what a member's input
+       says; it rides the row's content. */
+    ...(inp.cx?{cx:String(inp.cxr||'')}:{}),...(inp.info?{info:true}:{}),
     sans:inp.sans||null});}
 /* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
    whose details moved, or which appeared or went away. An input absent on one side and TAKEN OFF ('r') on the other is
@@ -758,7 +765,19 @@ export function inpKindTag(inp:any):string{
 /* An UPCHIT never flags: it is a paperwork record, not a commitment, and this
    gate is ALSO refwin's reference seed filter — the reference simply never
    receives one, so parity cannot diverge (the dormancy precedent). */
-export function inputFlags(inp:any){return !inputDormant(inp)&&!isUpchit(inp.type)&&!(inp.acc==='g'&&!inp.allday);}
+/* …NOR DOES A CANCELLED OR INFORMATION-ONLY INPUT (step 4 of the one-rule build — owner D760 reading 1: "a cancelled
+   input earns nobody OIL and is not checked against the rules, as a cancelled row today"). The marks are the input's
+   now, so an all-day request — whose row carries no event and which therefore speaks here — is silent while it is
+   cancelled, where the row's own CX used to leave it flagging. The seeds carry neither mark, so the reference is fed
+   exactly what it was. */
+export function inputFlags(inp:any){return !inputDormant(inp)&&!isUpchit(inp.type)&&!(inp.acc==='g'&&!inp.allday)&&!inputSilent(inp);}
+/* THE ONE ANSWER TO "IS IT CANCELLED OR INFORMATION ONLY?" — asked by every body that would otherwise let such an input
+   speak: the gate above, the cross-week reads that pass it by (events.ts inpShow), the seven-day run's "did he work
+   that day" (weekctx.ts), who is kept out of an ALL AVAIL crowd (leavewar/sync.ts availableFor) and OIL's standing
+   (oilev.ts landedStanding). Found by the re-expressed tests, 12 Oct 26: three of those asked only "is it off the
+   programme", so a cancelled Sunday input still counted as a day worked in next week's run and still raised crew rest
+   on the Monday. */
+export function inputSilent(inp:any){return !!inp&&(!!inp.cx||!!inp.info);}
 /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — tested the SC-grading
    preview, removed an accepted Training back to Personal Inputs and it still
    flagged: "if it goes there, stop it from flagging anything, until its

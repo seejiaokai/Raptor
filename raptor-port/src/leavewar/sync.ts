@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -907,6 +907,9 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
        `inputDormant` has always defined every removed input as silent; this
        is the one reader that applied it to half the types. */
     if (!inp || inp.acc === 'r') return false
+    /* …and so is a CANCELLED or information-only one (step 4 of the one-rule build — owner D760: the scheduler's CX on
+       its row cancels the input itself): its people are free for whoever else needs them */
+    if (inputSilent(inp)) return false
     const away = isAway(inp) && !canWork(inp.type)
     const commit = isPersonal(inp.type)
     if (!away && !commit) return false

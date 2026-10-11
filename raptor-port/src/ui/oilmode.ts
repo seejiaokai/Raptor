@@ -678,8 +678,10 @@ export function inertWhy(di: any, item: string): string {
   const what = oilClaimWhat(di, inp) || 'request'
   const row = (INPUTS as any[]).find(r => r && String(inpId(r)) === iid)
   const when = row && row.date ? ` on ${String(row.date)}` : ''
-  if (inp.stand === 'cx') return `his ${what}'s row${when} is cancelled, so nothing is earned from it`
-  if (inp.stand === 'info') return `his ${what}'s row${when} is information only, so nothing is earned from it`
+  /* (the INPUT is cancelled, not its row — owner D760; it said "his Training's row … is cancelled" until step 4 of the
+     one-rule build) */
+  if (inp.stand === 'cx') return `his ${what}${when} is cancelled, so nothing is earned from it`
+  if (inp.stand === 'info') return `his ${what}${when} is information only, so nothing is earned from it`
   if (inp.stand === 'gone') return `his ${what}'s row has been taken off the programme, so nothing is earned from it`
   if (inp.stand === 'elsewhere') return `his ${what}'s row is in a week that cannot be read, so nothing is earned from it until that week is opened`
   return plain

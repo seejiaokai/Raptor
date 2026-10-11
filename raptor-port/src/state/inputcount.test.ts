@@ -241,8 +241,16 @@ describe('"Discard N edits" counts what a load of the issued version would reall
     deleteWhole()
     expect([waiting(), dayDiscardCount(WED)], 'deleted whole: the load puts the version\'s row back — one edit').toEqual([1, 1])
     globalUndo()
+    /* (2) A NAMED RULING CHANGED THE RULE — D760 (built at step 4 of the one-rule build, 12 Oct 26): "a CX the scheduler
+       puts on a row that came from an input cancels the INPUT itself". This line was `[1, 1]`: the CX was the ROW's
+       own, so a load of the issued version put the un-cancelled row back — one edit discarded. The CX is the input's
+       now, and "a load never changes an input" (the plan §4.8, Loads; D759 reading 3): the version's row is installed
+       and the next pass re-makes it from the LIVE input, still cancelled. So it is ONE waiting and NONE discarded —
+       the very answer a re-time made on the schedule gets in this case's first line, for the same reason. To take the
+       CX back the scheduler un-cancels it (or Undo); "Discard" must not promise what a load cannot do. */
     cx()
-    expect([waiting(), dayDiscardCount(WED)]).toEqual([1, 1])
+    expect(rec().cx, 'the input is cancelled').toBe(true)
+    expect([waiting(), dayDiscardCount(WED)]).toEqual([1, 0])
   })
   it('a person added since: ONE waiting, NONE discarded — a load never changes who is in an input (D759 reading 3)', async () => {
     await boot(); file(FOUR); publish(WED)

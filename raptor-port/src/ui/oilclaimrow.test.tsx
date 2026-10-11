@@ -136,9 +136,13 @@ describe('a claim row and the puck beside it agree about OIL', () => {
     mine.forEach(r => expect(r.cell, r.row).toMatch(PER_PERSON))
   })
 
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX the
+     scheduler puts on a row that came from an input cancels the input itself"). The fixture cancelled the ROW alone; the
+     CX is the claim's own now, so the record carries it with its reason and the row is the copy of it. The inert
+     switch and its wording are what they were. */
   it('a CANCELLED claim keeps the ordinary inert wording — it is true there', async () => {
-    claim()
-    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', cx: true })
+    claim({ cx: true, cxr: 'WX' })
+    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', cx: true, cxr: 'WX' })
     await openMode()
     const mine = pairs().filter(r => /TRAINING/i.test(r.row))
     expect(mine.length, 'the cancelled claim row is on screen').toBeGreaterThan(0)

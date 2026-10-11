@@ -593,8 +593,36 @@ through by the build, not ruled.)
 
 *(R4 of version 1 is now Q1.)*
 
-**Pictures owed to him before their step:** the cancelled input's card, bar and List row (step 5); the bell's list
-(step 7).
+**Pictures owed to him before their step — DRAWN 12 Oct 26, waiting for his look (D541, D766):** the cancelled input's
+card, bar and List row (step 5); the bell's list (step 7). Throwaway comps on the real screens of the running build, a
+phone and a desktop, sharp: `docs/mock/2026-10-12-one-rule/` (37 pictures), drawn by
+`scripts/handpass/onerule-mock-cancelled.mjs` and `onerule-mock-bell.mjs` — the cancelled input in them is real (filed
+and cancelled by real presses, step 4's build); only its look on the Inputs pages, and the whole bell list, are drawn.
+Neither screen is built until he answers.
+
+**Q2 — a cancelled input on the Inputs calendar: which look?** Two were drawn, each on the month's bar, the opened
+day's card and the List's row. **A** (the plan's words): the title struck through, "CANCELLED — WX" in red where the
+remark sits, the bar struck through and faded. **B** (quieter): a small red "CX" tag before the title — the schedule's
+own tag — and the reason after it; nothing struck through. What the drawing showed: on a phone's narrow bar B loses the
+title ("CX · 2 ·…") where A still reads "2 · Ran…"; on a phone's card A costs a third line ("By Saber" drops down)
+where B stays at two; the schedule itself says "CX", not "CANCELLED". *Recommended:* **B on the card and the List's
+row, A on the bar** — the same red CX the schedule shows wherever there is room for it, and the struck-through title
+where there is not. Waits on it: step 5.
+
+**Q3 — where does a cancelled input sit in a crowded day on a phone?** A phone's month shows three bars a day; in the
+drawing the cancelled one fell behind "+2 more". *Recommended:* leave the order alone (a cancelled input is still
+somebody's day — he opens the day to see it); the other answer is "cancelled sorts last", which hides it sooner. Waits
+on it: step 5.
+
+**Q4 — the bell's list: which wording, and what when an OIL question waits too?** Drawn: the plan's sentences ("Saber
+changed the time of your Meeting to 10:00–11:00" — wraps to two lines at both sizes), and a shorter form that leads
+with the input in bold and its date, then what happened and who ("**Range brief** Wed 15 Jul — Cancelled — WX · Saber"),
+the age at the right — every notice fits two lines, and it leads with the item as the changes window does (D340).
+*Recommended:* the shorter form. And today the bell opens no list at all — a tap goes straight to the one thing
+waiting (an access request, a bug report, an OIL question, in that order): the plan keeps those "first, as now".
+*Recommended:* as the plan has it — a tap still goes straight to one of those where one waits, and opens the list
+otherwise; the other answer (drawn as `bell-desk-list-oil-first.png`) makes the OIL question the first line of the one
+list, so the bell behaves one way. Waits on it: step 7's list on screen (its record and wiring are built without it).
 
 **Waiting on him:** nothing before the build. **D764:** the build starts on Fable's read alone; at the merge he is
 asked, beside the gates and the check, whether to wait for a ChatGPT read of the finished code.

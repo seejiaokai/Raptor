@@ -228,9 +228,29 @@ describe('D28, D43 — the scheduler can still switch any one man, both ways', (
   })
 })
 
+/* THE TWO MARK CASES — re-expressed at step 4 of the one-rule build (12 Oct 26; owner D760: "a CX the scheduler puts on
+   a row that came from an input cancels the input itself … 'information only' go[es] with the input too"; reading 1:
+   "a cancelled input earns nobody OIL"). Choice (1) of the four — THE RULE SURVIVES on a rebuilt fixture: each wrote its
+   mark on the ROW after landing; the mark is the INPUT's now, so it is on the record and `landed` copies it to the row
+   as the row's own body does. "The row's own state" of this heading is, for these two, the input's own state. */
 describe('the row\'s own state decides before any answer (R-2, §3.3)', () => {
-  it('a cancelled row credits nobody', () => { const r = landed({ oil: YES }, ['allavail', 'divot']); r.cx = true; expect(paidNames(SAT)).toEqual([]) })
-  it('an information-only row credits nobody', () => { const r = landed({ oil: YES }, ['allavail', 'divot']); r.info = true; expect(paidNames(SAT)).toEqual([]) })
+  it('a cancelled row credits nobody', () => {
+    const r = landed({ oil: YES, cx: true, cxr: 'WX' }, ['allavail', 'divot'])
+    expect([r.cx, r.cxr], 'the row is the copy of its input').toEqual([true, 'WX'])
+    expect(paidNames(SAT)).toEqual([])
+  })
+  it('an information-only row credits nobody', () => {
+    const r = landed({ oil: YES, info: true }, ['allavail', 'divot'])
+    expect(r.info).toBe(true)
+    expect(paidNames(SAT)).toEqual([])
+  })
+  /* the control the two above never had: the very same input with neither mark does credit — the named man and the
+     men ALL AVAIL stands for — so "nobody" is the mark's doing */
+  it('THE CONTROL — the same input with neither mark credits its people', () => {
+    landed({ oil: YES }, ['allavail', 'divot'])
+    expect(paidNames(SAT).length).toBeGreaterThan(0)
+    expect(paidNames(SAT)).toContain('divot')
+  })
   it('a request taken off the programme credits nobody', () => {
     landed({ oil: YES, acc: 'r' })
     expect(paidNames(SAT)).toEqual([])

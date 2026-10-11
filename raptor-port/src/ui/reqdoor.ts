@@ -55,6 +55,7 @@ import { lastFilled } from '../engine/slots'
 import { CmdRefused } from '../command'
 import { canEditSched } from '../state/auth'
 import { me } from '../state/perms'
+import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
 import { oilAskPlan } from '../leavewar/sync'
 import { commitInput, commitInputEdit, draftOf, saveBatchX, askOilIfPending } from './inputedit'
@@ -231,6 +232,31 @@ export function rowMove(fromKey: any, toKey: any): RowAnswer {
   if (people(b.inp).includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
   if (!leave(a, () => commitInput(b.inp, draftOf(b.inp), [...people(b.inp), pid], { sched: true }), `${csOf(pid)} moved to ${inpLabel(b.inp)}`)) return 'refused'
   askOilIfPending(b.inp, true)
+  notify()
+  return 'done'
+}
+
+/** A SCHEDULER'S MARK ON AN INPUT'S ROW IS THE INPUT'S (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX the
+ *  scheduler puts on a row that came from an input cancels the input itself … and it goes with the input if it moves;
+ *  the red box and 'information only' go with the input too"; the plan §4.4). The board's three buttons ask this before
+ *  they write (ui/board.ts): on an input's row the INPUT is changed, in ONE command — one Undo step — and the row
+ *  follows as the copy it is (engine/overlay.ts requestRowFields); the caller makes no schedule write of its own.
+ *  `what`: 'cx' with its reason (`on` false takes it off, and its reason with it), 'flag' — the red box — or 'info'.
+ *  A schedule-side save: nobody reads late for it (D741). Only a scheduler (D760 reading 2) — and behind this door the
+ *  member's commit gate refuses a mark he sets by any other way (state/perms.ts inputBreach). */
+export function rowMark(key: any, what: 'cx' | 'flag' | 'info', on: boolean, reason?: string): RowAnswer {
+  const p = placeOf(key)
+  if (!p) return 'none'
+  if (!canEditSched()) return 'refused'
+  const inp = p.inp
+  const out = saveBatchX(() => {
+    if (what === 'cx') { if (on) { inp.cx = true; inp.cxr = String(reason ?? '').trim() } else { inp.cx = false; delete inp.cxr } }
+    else if (on) inp[what] = true
+    else delete inp[what]
+    stampChanged(inp)
+    return true
+  })
+  if (!out.ok) return 'refused'
   notify()
   return 'done'
 }

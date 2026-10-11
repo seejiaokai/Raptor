@@ -9,7 +9,9 @@
    what the scheduler had typed (`[REQ-ROW-OWN-BOXES]`). Now the four boxes are the request's: the typing goes to the
    request through the one door (ui/reqrow.ts reqRowText), the row is re-made from it by the rule that exists, and a
    raw write to those boxes is refused in the engine (engine/slots.ts txtSet) so no door this plan forgot can leave the
-   two apart. What stays the row's own: its second man, a CX, a red box, information only (D468, D46).
+   two apart. (As that plan stood: "what stays the row's own: its second man, a CX, a red box, information only (D468,
+   D46)". NOTHING is the row's own since the one-rule build: its second man is in the input (D755), and its CX, red box
+   and information-only mark are the input's (D760, step 4, 12 Oct 26) — the case below that pinned them says so.)
 
    Each case drives the app's own handlers on a real saved store (the Memory backend behind the whiteboard), as
    state/p6c-requestonread.test.ts does; a "reload" is a second boot from the same store. A click and a Tab both leave
@@ -47,6 +49,7 @@ import { commitNewInput, commitInputEdit, draftOf } from './inputedit'
 import { routeFocusOut } from './textedit'
 import { boardChange } from './board'
 import { reqRowText } from './reqrow'
+import { rowMark } from './reqdoor'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -202,16 +205,32 @@ describe('a time, a remark or a name typed on a request’s row changes the requ
     expect([rowOf(iid).str, rowOf(iid).end], 'from 09:00, to the end of the day').toEqual(['09:00', '23:59'])
   })
 
-  it('what the scheduler set on the row stays the row’s: its second man, its red box and its information-only mark (D468, D46)', async () => {
+  /* (2) A NAMED RULING CHANGED THE RULE — D760 (11 Oct 26, built at step 4 of the one-rule build, 12 Oct 26): "a CX the
+     scheduler puts on a row that came from an input cancels the input itself … the red box and 'information only' go
+     with the input too". This case was "what the scheduler set on the row stays the ROW's … (D468, D46)": it wrote the
+     red box and information-only on the row and pinned that a time typed on the row — which re-makes it from the
+     request — KEPT them as the row's own. They are the INPUT's now (as its second man has been since D755): set by the
+     row's door, carried by the request, and written on the re-made row from it. What the scheduler sees is unchanged —
+     a re-time loses nothing — and that is still pinned; whose they are is new. */
+  it('what the scheduler set on the row is the request’s, and a time typed on the row loses none of it: its second man, its red box and its information-only mark (D755, D760 — D468 as changed)', async () => {
     await boot(new MemoryBackend())
     const iid = file()
     const rid = rowOf(iid).rid
     writeFill(`g:${WED}.${riOf(iid)}.+`, 'pike')
-    schedWrite(SCHED_TYPES.mutate, () => { const row = rowOf(iid); row.flag = true; row.info = true; afterSchedMutate() })
+    expect(rowMark(`g:${WED}.${riOf(iid)}`, 'flag', true), 'the red box, by the row’s door').toBe('done')
+    expect(rowMark(`g:${WED}.${riOf(iid)}`, 'info', true), 'information only, by the row’s door').toBe('done')
+    expect({ flag: reqOf(iid).flag, info: reqOf(iid).info }, 'the REQUEST carries them').toEqual({ flag: true, info: true })
     typeWeek(`gr:${WED}.${riOf(iid)}.str`, '1015')
     const row = rowOf(iid)
     expect(row.str).toBe('10:15')
     expect({ rid: row.rid, more: row.more, flag: row.flag, info: row.info }).toEqual({ rid, more: ['pike'], flag: true, info: true })
+    expect({ flag: reqOf(iid).flag, info: reqOf(iid).info }, 'and still does, after the re-time').toEqual({ flag: true, info: true })
+    /* …and the old way round is gone: a mark written on the ROW alone is not the request's, and the next re-make takes it
+       off (D760 — "nothing the scheduler put on it" is the row's own any more) */
+    expect(rowMark(`g:${WED}.${riOf(iid)}`, 'flag', false)).toBe('done')
+    schedWrite(SCHED_TYPES.mutate, () => { rowOf(iid).flag = true; afterSchedMutate() })
+    typeWeek(`gr:${WED}.${riOf(iid)}.str`, '1030')
+    expect([rowOf(iid).str, rowOf(iid).flag, reqOf(iid).flag], 'a hand-written mark on the row does not stand').toEqual(['10:30', undefined, undefined])
   })
 
   it('ONE Undo takes the typed time back — the request and its row together', async () => {

@@ -1,6 +1,6 @@
 import { parseReportingLines, resolveReporting, flightBrief, scIntime, type ReportingLine } from './reporting'
 import { DAYS } from './data'
-import { INPUTS, inputLinesOn, inputReadPass, inputOn, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
+import { INPUTS, inputLinesOn, inputReadPass, inputOn, inputCoversDate, inputFlags, inputDormant, inputSilent, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
@@ -59,6 +59,7 @@ export const inpShow=(inp:any,dt:any,xweek?:any,undeferred?:any)=>{
   if(filingActive()){
     const eff=inp.iid?fileAcc(dt,inp.iid,inp.acc):'r';
     if(eff==='r')return false;                    // dormant, or absent when this date was signed
+    if(inputSilent(inp))return false;             // cancelled or information only (D760) — on a face, as its issued copy says
     if(xweek||undeferred)return true;             // `undeferred`: the comment at the foot of this function
     if(!isUpchit(inp.type)&&!(eff==='g'&&!inp.allday))return true;   // not a timed accepted input → a live flag
     /* a timed accept speaks as its landed ground row: find that row on the SWAPPED DAYS
@@ -68,6 +69,9 @@ export const inpShow=(inp:any,dt:any,xweek?:any,undeferred?:any)=>{
     return di<0||(DAYS[di]||{}).dt!==dt;
   }
   if(inputDormant(inp))return false;
+  /* …NOR A CANCELLED OR INFORMATION-ONLY ONE (step 4 of the one-rule build — owner D760 reading 1), asked HERE because
+     the cross-week read below answers before inputFlags is ever reached */
+  if(inputSilent(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,

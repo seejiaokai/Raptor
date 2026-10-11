@@ -177,11 +177,21 @@ describe('what it does NOT change', () => {
     expect(earners()).toEqual([])
   })
 
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX the
+     scheduler puts on a row that came from an input cancels the input itself", reading 1: "a cancelled input earns
+     nobody OIL"). The case wrote the CX and the information-only mark on the ROW alone; they are the INPUT's now, so
+     the fixture puts them on the record and the row is the copy `requestRowFields` writes of it — as `landed` already
+     builds it. Both marks off, everyone earns again. */
   it('a CANCELLED or information-only row earns nobody — the man in the box included', () => {
-    landed(['stiff', 'bane'], {}, { cx: 1 })
+    landed(['stiff', 'bane'], { cx: true, cxr: 'WX' })
+    expect([row().cx, row().cxr], 'the row is the copy of its input').toEqual([true, 'WX'])
     expect(earners()).toEqual([])
-    row().cx = undefined; row().info = 1
+    const remake = () => { const r = row(); delete r.cx; delete r.cxr; delete r.info; Object.assign(r, requestRowFields(INPUTS[0])) }
+    INPUTS[0].cx = false; delete INPUTS[0].cxr; INPUTS[0].info = true; remake()
+    expect([!!row().cx, row().info]).toEqual([false, true])
     expect(earners()).toEqual([])
+    delete INPUTS[0].info; remake()
+    expect(earners(), 'neither mark: both earn again').toEqual(['bane', 'stiff'])
   })
 
   it('a request that never asks (Personal) earns nobody anything, whoever is in its box', () => {
