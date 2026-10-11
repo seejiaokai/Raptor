@@ -45,7 +45,7 @@ import { isMe, mayDeleteInput } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry, sharedRefusal, commitInput, draftOf } from './inputedit'
+import { fmt, fmtDay, inputTone, newInputSeed, removeInput, sharedRefusal, commitInput, draftOf } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
@@ -854,8 +854,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
            the question stood (the switch turned on again, an admin back in his own view) must not turn "Take me out"
            into a delete of the whole input. */
         if (askedAll.current) {
-          /* (gone meanwhile: removeEntry says so) */
-          if (!live || mayDeleteInput(live)) { if (removeEntry(live ? [live] : [])) HOOKS.toast(`Input deleted for ${everyoneIn(it)}`, 'ok') }
+          /* (gone meanwhile: said so) */
+          if (!live) HOOKS.toast('That input is no longer there', 'warn')
+          else if (mayDeleteInput(live)) { if (removeInput(live)) HOOKS.toast(`Input deleted for ${everyoneIn(it)}`, 'ok') }
           else HOOKS.toast(sharedRefusal([live], 'delete this for everyone'), 'warn')
           return
         }

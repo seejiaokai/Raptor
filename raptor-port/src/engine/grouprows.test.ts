@@ -22,18 +22,27 @@
    door could yet make such an input; the doors do now, so the answer is pinned from every side here: ALL as well as
    ALL AVAIL, a placeholder that joined first, the hash moving with it, and which rows the builders draw as a row of
    several (`inputRowSeveral`). Nothing in this file pinned the old rule ("filed on its own") — that was the doors'.
-   `groundGroups` is dead code until step 6 of the build takes its callers out (reorder.ts, board.ts, daytpl.ts): what
-   it answers meanwhile — every row its own — is pinned in one case, so a caller cannot be handed a group again.
+   RETIRED with step 2 (g): "it is the SAME test the Inputs pages group by" — an entry is its record now, so the Inputs
+   pages group nothing; inputs saved before the build with a group id read as the one-person inputs they are (D759
+   reading 10).
 
-   What is KEPT, unchanged: `entryIdOf`'s own three cases — the published day's reader still asks it of the copies an
-   issued version froze before the build (engine/entryfold.ts). RETIRED with step 2 (g): "it is the SAME test the Inputs
-   pages group by" — an entry is its record now, so the Inputs pages group nothing (state/inputgroup.ts answers every
-   record as its own entry); inputs saved before the build with a group id read as the one-person inputs they are
-   (D759 reading 10). */
+   RETIRED WITH THE DEAD CODE (step 6 of the build, 12 Oct 26 — `groundGroups`, `drawnPeople` and engine/inputentry.ts
+   are gone; nothing reached them). Each case below pinned only the inside of a removed function:
+   - "entryIdOf — an ordinary input has none; nor has a medical entry or an upchit, whatever group fields it carries",
+     "entryIdOf — the records of one entry share it, whoever they are for — and a blank end date, half or remark reads
+     as none", "entryIdOf — ANY shared field that differs makes it another entry — a date or a half the row does not
+     even show": the entry mark has no reader left (the published day's fold that asked it of frozen copies went with
+     it). What is true in its place was already pinned here — "NO ENTRY MARK" — and is pinned once more for the rows
+     themselves, below ("OLD DATA — rows stored with the old entry mark");
+   - "`drawnPeople` is the same answer under its old name, for the builders not yet moved": the old name is gone; the
+     answer is `rowPeopleDrawn`'s, pinned by every case of its block;
+   - "groundGroups — one answer a row — its own lead and only member — whatever an old stored row still carries":
+     RE-EXPRESSED on the live answer, as that old-data case — no row lends its pucks to another;
+   - "groundGroups — a day with no ground rows answers with nothing": said of `rowPeopleDrawn` already ("a row that is
+     not there, and a day with no ground rows, answer with nothing"). */
 import { describe, expect, it } from 'vitest'
-import { entryIdOf } from './inputentry'
 import { requestRowFields, srcvOf } from './overlay'
-import { groundGroups, rowPeopleDrawn, drawnPeople, inputRowSeveral } from './grouprows'
+import { rowPeopleDrawn, inputRowSeveral } from './grouprows'
 import { PEOPLE } from './people'
 
 const base = { iid: 'a1', person: 'bane', type: 'Training', date: 'Jul 15', yr: 2026, allday: false, s: 660, e: 720, remarks: 'range' }
@@ -48,28 +57,6 @@ const oldSrcv = (f: any) => {
   return (h >>> 0).toString(36)
 }
 const cs = (id: string) => String((PEOPLE as any)[id].cs)
-
-describe('entryIdOf — the identity of an entry of the old grouped shape (read off copies frozen before the build)', () => {
-  it('an ordinary input has none; nor has a medical entry or an upchit, whatever group fields it carries', () => {
-    expect(entryIdOf(base)).toBe('')
-    expect(entryIdOf({ ...base, grp: '' })).toBe('')
-    expect(entryIdOf({ ...base, grp: 'g1', type: 'ATT C' })).toBe('')
-    expect(entryIdOf({ ...base, grp: 'g1', type: 'Upchit' })).toBe('')
-    expect(entryIdOf(null)).toBe('')
-  })
-  it('the records of one entry share it, whoever they are for — and a blank end date, half or remark reads as none', () => {
-    const a = entryIdOf({ ...base, grp: 'g1', grpBy: 'stiff' })
-    expect(a).toMatch(/^g1~/)
-    expect(entryIdOf({ ...base, iid: 'a2', person: 'pike', grp: 'g1', grpBy: 'stiff', endDate: '', half: '', oil: { x: 1 }, acc: 'g' })).toBe(a)
-  })
-  it('ANY shared field that differs makes it another entry — a date or a half the row does not even show', () => {
-    const one = { ...base, grp: 'g1' }, a = entryIdOf(one)
-    for (const change of [{ endDate: 'Jul 16' }, { date: 'Jul 16' }, { s: 600 }, { remarks: 'other' }, { title: 'Range brief' }, { type: 'Meeting' }, { allday: true }, { yr: 2027 }]) {
-      expect(entryIdOf({ ...one, ...change }), JSON.stringify(change)).not.toBe(a)
-    }
-    expect(entryIdOf({ ...one, grp: 'g2' }), 'another group').not.toBe(a)
-  })
-})
 
 describe('what a request writes on its row — a whole copy of the input (D755, D756; the plan §4.3)', () => {
   it('AN INPUT OF ONE PERSON: its name, its two times, its person, its remark and its kind — and no `more`', () => {
@@ -209,23 +196,16 @@ describe('rowPeopleDrawn — the pucks of a row, the one answer every builder re
     expect(rowPeopleDrawn({}, WED, 0)).toEqual([])
     expect(rowPeopleDrawn(null, WED, 0)).toEqual([])
   })
-  it('`drawnPeople` is the same answer under its old name, for the builders not yet moved', () => {
-    const d = { ground: [row('z'), row('split', ['bane', 'allavail', 'pike'], { src: 'i1' })] }
-    expect(drawnPeople(d, WED, groundGroups(d)[1]!)).toEqual(rowPeopleDrawn(d, WED, 1))
-  })
-})
-
-describe('groundGroups — every row is its own (dead code until step 6 of the build takes its callers out)', () => {
-  const row = (rid: string, o: any = {}) => ({ prog: 'TRAINING', str: '11:00', end: '12:00', who: rid, rmks: '', rid, ...o })
-  const shape = (d: any) => groundGroups(d).map(g => `${g.lead}:${g.members.join('+')}`)
-  it('one answer a row — its own lead and only member — whatever an old stored row still carries', () => {
-    /* rows as a day stored before the build holds them: one a man, the same entry mark — never gathered again */
-    const d = { ground: [row('a', { src: 'i1', srcg: 'g1~x' }), row('z'), row('b', { src: 'i2', srcg: 'g1~x' }), row('c', { src: 'i3', srcg: 'g1~x', kept: true }), row('e', { srcg: 'g1~x' })] }
-    expect(shape(d)).toEqual(['0:0', '1:1', '2:2', '3:3', '4:4'])
-    expect(shape({ ...d, gman: true }), 'on a hand-ordered list too').toEqual(['0:0', '1:1', '2:2', '3:3', '4:4'])
-  })
-  it('a day with no ground rows answers with nothing', () => {
-    expect(groundGroups({})).toEqual([])
-    expect(groundGroups(null)).toEqual([])
+  /* OLD DATA (was: "groundGroups — one answer a row — its own lead and only member — whatever an old stored row still
+     carries"; D755, D756, D759 reading 10 — stored data only, D56). A day stored before the build holds a shared input
+     as one row a man, each carrying the same entry mark (`srcg`), and until step 2 those rows were DRAWN as one: the
+     lead drew everyone. Nothing reads the mark any more, so each such row is its own — it draws its own man on its own
+     key, lends no puck to another row, and is a row of one. Said of the live answer every builder reads. */
+  it('OLD DATA — rows stored with the old entry mark are each their own: every row draws its own man on its own key, on a hand-ordered list too, and none is a row of several', () => {
+    const d = { ground: [row('bane', undefined, { src: 'i1', srcg: 'g1~x' }), row('rocky'), row('pike', undefined, { src: 'i2', srcg: 'g1~x' }), row('split', undefined, { src: 'i3', srcg: 'g1~x', kept: true }), row('vinci', undefined, { srcg: 'g1~x' })] }
+    const each = [[`bane@${k(0)}`], [`rocky@${k(1)}`], [`pike@${k(2)}`], [`split@${k(3)}`], [`vinci@${k(4)}`]]
+    expect(d.ground.map((_r, ri) => drawn(d, ri))).toEqual(each)
+    expect(d.ground.map((_r, ri) => drawn({ ...d, gman: true }, ri)), 'on a hand-ordered list too').toEqual(each)
+    expect(d.ground.map(r => inputRowSeveral(r)), 'no row holds the others').toEqual([false, false, false, false, false])
   })
 })

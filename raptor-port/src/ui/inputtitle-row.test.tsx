@@ -18,7 +18,7 @@ import { boardHTML } from './board'
 import { peekDayHTML } from './peek'
 import { setSession } from '../state/auth'
 import { setPage, setBoardDay, PIOPEN, setOilDay } from '../state/view'
-import { sharedKey } from '../state/inputgroup'
+import { requestRowFields, srcvOf } from '../engine/overlay'
 
 const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS)
 const WED = 2
@@ -173,13 +173,24 @@ describe('an input’s own card — Personal Inputs on the week and on the board
    nothing left to compare — the one title is one field of the one record. Pinned in its place, on this file's own
    subject (the row a request lands on the schedule): the one record's one row carries the title for everyone in it;
    and records stored in the old shape are each their own input, with one title or with two (D759 reading 10). */
-describe('a shared input has one title — it is one record (D756; was: state/inputgroup.ts SHARED_FIELDS)', () => {
+describe('a shared input has one title — it is one record (D756; was: SHARED_FIELDS, gone with the dead code)', () => {
   const rec = (person: string, over: any = {}) => ({ iid: 'g' + person, person, grp: 'g1', grpBy: 'stiff', type: 'Event', date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, remarks: '', ...over })
   const rowsOf = (iid: string) => DAYS[WED].ground.filter((g: any) => g.src === iid)
-  it('the title is one of the things a record says: the same title reads the same, another title reads different, none reads as a blank one', () => {
-    expect(sharedKey(rec('split', { title: 'Sports day' }))).toBe(sharedKey(rec('vinci', { title: 'Sports day' })))
-    expect(sharedKey(rec('split', { title: 'Sports day' }))).not.toBe(sharedKey(rec('vinci', { title: 'Open house' })))
-    expect(sharedKey(rec('split'))).toBe(sharedKey(rec('vinci', { title: '' })))
+  /* THE SUBJECT IS GONE (step 6 of the one-rule build, 12 Oct 26 — `sharedKey`, the one comparable string of "what the
+     records of an entry say alike", went with engine/inputentry.ts and state/inputgroup.ts: nothing compares two
+     records any more). This case asked it three things about the title. What is true NOW, on this file's own subject —
+     what a request writes on its row (engine/overlay.ts): the title is what NAMES the row, so the same title names it
+     the same, another title names it differently, and a blank title is no title — the row is named by its kind, exactly
+     as with none; and the row's own hash moves with the title, so a re-titled input's row is re-made. */
+  it('the title is one of the things a record says ON ITS ROW: the same title names the row the same, another title differently, and a blank one reads as none', () => {
+    const name = (r: any) => (requestRowFields(r) as any).prog
+    expect(name(rec('split', { title: 'Sports day' }))).toBe('SPORTS DAY')
+    expect(name(rec('vinci', { title: 'Sports day' }))).toBe(name(rec('split', { title: 'Sports day' })))
+    expect(name(rec('vinci', { title: 'Open house' }))).not.toBe(name(rec('split', { title: 'Sports day' })))
+    expect([name(rec('split')), name(rec('split', { title: '' }))], 'no title, and a blank one: the kind\'s own name').toEqual(['EVENT', 'EVENT'])
+    expect(srcvOf(rec('split', { title: '' })), 'a blank title re-makes nothing').toBe(srcvOf(rec('split')))
+    expect(srcvOf(rec('split', { title: 'Sports day' })), 'a title does').not.toBe(srcvOf(rec('split')))
+    expect(srcvOf(rec('split', { title: 'Open house' })), 'and so does another title').not.toBe(srcvOf(rec('split', { title: 'Sports day' })))
   })
   it('ONE record for two people with one title is one input: one row on the programme, named by the title, the kind small, both men on it', () => {
     const inp: any = { iid: 'ttG', people: [{ p: 'split', by: 'stiff', at: 1 }, { p: 'vinci', by: 'stiff', at: 1 }], by: 'stiff', at: 1,

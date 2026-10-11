@@ -28,11 +28,12 @@
    - "rows whose marks differ are drawn apart: a CX on one man's row alone is his own row" (D735) — RETIRED: there is
      one row, so one set of marks; what is left of it is pinned as "a CX is the row's — nobody is drawn apart";
    - "leadKeyOf — a member row's text box and its '+ add' go to the lead's" — RETIRED: no row is left undrawn; every
-     ground key is its own (pinned as changed);
+     ground key is its own. (`leadKeyOf` itself went with the dead code at step 6; its two cases are the last block
+     of this file, said of the screen: every place of the row is drawn, once, on its own key);
    - "entryLines: the records of one entry in one filing state are one line … split by where each request is filed" —
      RETIRED (step 2 (g)): one record has ONE filing, so there is nothing to split; the line is the record's people;
    - "a line under Personal Inputs: any of its people's inputs resolves to the line's first" — RETIRED: a line is one
-     record with one id; every `iu:` key is its own (pinned as changed).
+     record with one id (old records under a group id: a line each — the last block of this file).
    Personal Inputs' one line and the Unavailable list's row a man (D737) are here on the one record too.
    THE ORDER the pucks are drawn in — A to Z, the one answer of engine/grouprows.ts rowPeopleDrawn — has a block of its
    own, a case a surface, apart from "which pucks, on which keys": so a surface that draws the right people in another
@@ -69,7 +70,7 @@ import { commitInput, commitNewInput, draftOf } from './inputedit'
 import { dayHTML, lSeat } from './html'
 import { boardHTML } from './board'
 import { peekDayHTML } from './peek'
-import { leadKeyOf } from './grouprow'
+import { findHistCell, histKeyOf, HIST_CELLS } from './histbubble'
 import { rowMark } from './reqdoor'
 import * as pops from './pops'
 
@@ -526,16 +527,50 @@ describe('the Unavailable list is left as it is — a row a man (D737)', () => {
   })
 })
 
-describe('leadKeyOf — every place is its own: no row is left undrawn, and no line gathers records', () => {
-  it('a ground row’s text box, its "+ add" and its pucks all come back unchanged', () => {
-    file(FOUR)
+/* THE SUBJECT IS GONE (step 6 of the one-rule build, 12 Oct 26 — the dead code out). This block was "leadKeyOf — every
+   place is its own: no row is left undrawn, and no line gathers records": two cases that handed `leadKeyOf` a list of
+   keys and expected each back unchanged. `leadKeyOf` (ui/grouprow.ts) existed because a member row of a shared input
+   drew no boxes of its own, so a jump that named one had to be sent to the lead's; it had become "return what you were
+   given" and went with its file. What it stood for is said here of the SCREEN, by the question the jump itself asks
+   (ui/histbubble.ts findHistCell — the changes window's tap and History's gold dot land on the cell this finds):
+   every place of an input's row is drawn, once, on its own key — so there is nothing to redirect. (The tap itself,
+   through the real jump on the mounted app: ui/histjump.test.tsx.) */
+describe('every place of an input’s row is DRAWN on its own key — the jump lands where it is sent (was: leadKeyOf)', () => {
+  /* every cell of a page that answers for a key (the same cells, the same question, as findHistCell) */
+  const cells = (root: ParentNode, key: string) => ([...root.querySelectorAll(HIST_CELLS)] as HTMLElement[]).filter(e => histKeyOf(e) === key)
+  /* was: "a ground row’s text box, its "+ add" and its pucks all come back unchanged" */
+  it('a ground row’s text boxes and its four pucks: each is ONE cell of the one row, on the week and on the board; View-only Sched draws the pucks', () => {
+    file(FOUR); validate()
     const at = `${WED}.${riOf()}`
-    for (const k of [`gr:${at}.str`, `gr:${at}.prog`, `g:${at}.+`, `g:${at}`, `g:${at}.x0`, `g:${at}.x2`, 'fr:0.0.0.0', `gr:${WED}.99.str`]) expect(leadKeyOf(k), k).toBe(k)
+    const boxes = ['prog', 'str', 'end', 'rmks'].map(f => `gr:${at}.${f}`)
+    const pucks = [`g:${at}`, `g:${at}.x0`, `g:${at}.x1`, `g:${at}.x2`]
+    for (const [where, root] of [['the week', doc(dayHTML(WED, true))], ['the board', doc(boardHTML(WED))]] as const) {
+      for (const k of [...boxes, ...pucks]) {
+        const at1 = findHistCell(root, k)
+        expect(at1, `${where}: ${k} is drawn`).toBeTruthy()
+        expect(cells(root, k), `${where}: ${k} — one cell answers for it`).toHaveLength(1)
+        expect(at1!.closest('.pl-row, .sb-arow')!.outerHTML.includes(UP), `${where}: ${k} is on the input’s own row`).toBe(true)
+      }
+      /* the four pucks are four different cells — nobody's place is another man's */
+      expect(new Set(pucks.map(k => findHistCell(root, k))).size, where).toBe(4)
+    }
+    const ro = doc(dayHTML(WED, false))
+    for (const k of pucks) expect(findHistCell(ro, k), `View-only Sched: ${k}`).toBeTruthy()
+    /* a row that is not there answers nothing — and is sent nowhere else */
+    for (const root of [doc(dayHTML(WED, true)), doc(boardHTML(WED))]) expect(findHistCell(root, `gr:${WED}.99.str`)).toBeNull()
   })
-  it('an `iu:` key is its own too — the one record’s, one man’s row of it, a record saved before the build with a group id, one that is gone', () => {
-    file(FOUR)
+  /* OLD DATA (D759 reading 10; D56) — was: "an `iu:` key is its own too — … a record saved before the build with a group
+     id, one that is gone". Two records saved under one group id used to be ONE line under Personal Inputs, and a jump to
+     the second man's was sent to the first's. They are two inputs: each has a line and an address of its own. */
+  it('OLD DATA — two records saved before the build under one group id are two lines under Personal Inputs, each with its own address; an input that is gone has none', () => {
     for (const p of ['rocky', 'ignite']) INPUTS.push({ iid: 'gi_' + p, person: p, grp: 'g1', grpBy: 'stiff', type: 'Meeting', date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, remarks: '' })
-    const id = String(inpId(rec()))
-    for (const k of [`iu:${id}`, `iu:${id}~pike`, 'iu:gi_rocky', 'iu:gi_ignite', 'iu:nobody']) expect(leadKeyOf(k), k).toBe(k)
+    validate(); PIOPEN.add(WED)
+    for (const [where, root] of [['the week', doc(dayHTML(WED, true))], ['the board', doc(boardHTML(WED))]] as const) {
+      const a = findHistCell(root, 'iu:gi_rocky'), b = findHistCell(root, 'iu:gi_ignite')
+      expect(a, `${where}: Hex’s own line`).toBeTruthy(); expect(b, `${where}: the other man’s own line`).toBeTruthy()
+      expect(a, `${where}: two lines, not one`).not.toBe(b)
+      expect([...a!.querySelectorAll('.ppl [data-person]')].map(p => (p as HTMLElement).dataset.person), `${where}: one puck on it — his`).toEqual(['rocky'])
+      expect(findHistCell(root, 'iu:nobody'), where).toBeNull()
+    }
   })
 })

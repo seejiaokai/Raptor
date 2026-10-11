@@ -3,7 +3,6 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { leadKeyOf, lineOf } from './grouprow'
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
@@ -30,11 +29,11 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { iuParts } from '../engine/keys'
-import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
-import { hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
+import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
@@ -185,9 +184,9 @@ export function jumpToChange(key: string | string[], di: any) {
        removal on the desk's OWN man, with his History pinned open (Astra's scenario read, 10 Oct 26). */
     let empty = false, onRow = false
     if (root) for (const k of cands) {
-      /* a place on a member row of a shared input that is not drawn — its boxes, its "+ add", its line under Personal
-         Inputs — is the one row's (ui/grouprow.ts leadKeyOf; [GROUP-INPUT-ONE-ROW], the plan §4.3) */
-      el = findHistCell(root, k) || findHistCell(root, leadKeyOf(posKey(k, DAYS) ?? k)); if (el) break
+      /* the exact cell; else, for an input's line, the line of that INPUT whoever of its people it is addressed by
+         (ui/histbubble.ts findInputCell) */
+      el = findHistCell(root, k) || findHistCell(root, posKey(k, DAYS) ?? k) || (k.startsWith('iu:') ? findInputCell(root, k) : null); if (el) break
       const pk = posKey(k, DAYS); if (pk == null || !isSeatKey(pk)) continue
       /* "empty" is said only of a seat nobody is in. A man who IS there, on a row this page draws no people on (the
          board's AMT brief and debrief rows), lands on his row all the same, and nothing is said */
@@ -675,10 +674,6 @@ export function routeClick(e: MouseEvent) {
     /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
     const was = inp.acc
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
-    /* A SHARED INPUT'S LINE ACTS FOR EVERYONE ON IT (`[GROUP-INPUT-ONE-ROW]`; owner D661, D736 — the plan §4.5): under
-       Personal Inputs a shared input is ONE line with ONE Undo / Accept / "→ Unavail", so the press is every record's
-       of that line — in this one press, one Undo step. Gathered before anything is written. */
-    const line = lineOf(inp)
     /* AN ARMED PLACE DOES NOT SURVIVE A ROW MOVING UNDER IT — here too. This door writes the day itself, BEFORE the
        after-command pass takes its own picture of the armed row (state/holderbase.ts), so a row an Accept put back
        ABOVE an armed "+ add" left the arm pointing at another row: the next tap on a name planted him there — and,
@@ -687,7 +682,6 @@ export function routeClick(e: MouseEvent) {
        the row that was armed → the place is put down. */
     const armWas = view.armedRowKey()
     let ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
-    for (const mate of line) if (mate !== inp && (dest === 'x' ? unacceptInput(di, mate) : acceptInput(di, mate, dest))) ok = true
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -702,8 +696,8 @@ export function routeClick(e: MouseEvent) {
       /* …and a shared input is named as the changes window names it: its name and how many people (D663, D736) — how
          many are IN it, the record's own list (owner D756: an input is one record with its people; engine/inputs.ts
          idsOf), where it was how many records its line gathered; an input of one is named by its one person (leadOf) */
-      const many = Math.max(line.length, idsOf(inp).length), one = leadOf(inp)
-      const cs = many > 1 ? `${many} people` : PEOPLE[one] ? PEOPLE[one].cs : one
+      const many = idsOf(inp).length, one = leadOf(inp)
+      const cs = many > 1 ? howMany(idsOf(inp)) : PEOPLE[one] ? PEOPLE[one].cs : one
       /* THE TAKE-OFF NAMES IT TOO (owner D731 (5), 10 Oct 26 — "Ranger's Sports day taken off the programme"; walker B of
          the title's check, scenario 40). It said "Accept undone" — whose request, and which, went unsaid, where the
          accept beside it says the whole thing. The same pattern for its two other cases (his reading (b)): a row that
@@ -727,8 +721,8 @@ export function routeClick(e: MouseEvent) {
          input whose row is already on the programme, or on a locked week, used to do nothing at
          all — a control that looks dead. Say why. */
       /* (named as the note of a press that worked names it, above: how many where it holds several, else its one person) */
-      const many = Math.max(line.length, idsOf(inp).length), one = leadOf(inp)
-      const cs = many > 1 ? `${many} people` : PEOPLE[one] ? PEOPLE[one].cs : one
+      const many = idsOf(inp).length, one = leadOf(inp)
+      const cs = many > 1 ? howMany(idsOf(inp)) : PEOPLE[one] ? PEOPLE[one].cs : one
       const onProg = dest !== 'x' && DAYS.some((d: any) => !!standsOn(d, k, inp))
       /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
          not be read refuses too, and says so rather than guess (never a second row on an unknown) */

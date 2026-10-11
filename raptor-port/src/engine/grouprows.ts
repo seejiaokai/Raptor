@@ -1,33 +1,9 @@
-/* WHICH GROUND ROWS OF A DAY ARE DRAWN AS ONE (`[GROUP-INPUT-ONE-ROW]`; owner D661 — "on the schedule a group input is
-   ONE row holding everyone — not a row for each man", D735 — "the row never splits or joins by itself"; the plan
-   docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md §3, §4.1).
-
-   The bet of that plan: a shared input stays one record a man AND one ground row a man — the warnings, crew rest, each
-   man's OIL claim, the amendment's stored diff and the sign-offs go on reading one man's row — and the ONE row is made
-   where a person meets it: where it is drawn, where a hand writes to it, and where a published day counts it. This is
-   the one answer all three ask.
-
-   Two rows are the same one row when both came from a request (`src`), neither is a dead `kept` row (D363), they carry
-   the same non-empty `srcg` (the entry's own identity — engine/inputentry.ts entryIdOf, written by the request on its
-   row), and the marks only a scheduler makes are alike: CX and its reason, the red box, information only. Rows that
-   are not alike are honestly drawn apart, never papered over.
-
-   READ OFF THE ROWS, NEVER THE LIVE INPUT (the rowKindTag precedent, ui/html.ts): an issued face, the next-week peek
-   and another week's read need no input lookup, and draw what their own rows say.
-
-   Returns one answer PER ROW INDEX: `lead` — the member that stands first in the day's own display order (order.ts
-   groundOrder: by start time, or by hand where the list is hand-ordered), where the one row is drawn; `members` —
-   every row of it, in that same order, the lead first. A row on its own is its own lead and only member. */
-/* *(SINCE THE ONE-RULE BUILD, STEP 2 (b) — 12 Oct 26, owner D755, D756: an input is ONE record and its row ONE ground
-   row, so nothing is drawn "as one" any more: `groundGroups` answers every row as its own lead and only member, and
-   its callers are taken out with the dead code in step 6 of that build. What is left here that is live is the ONE
-   answer to "whose pucks does a row draw, in what order" — rowPeopleDrawn.)* */
+/* WHOSE PUCKS A GROUND ROW DRAWS, AND IN WHAT ORDER — the one answer every builder reads (the one-rule build, step 2 (b),
+   12 Oct 26 — owner D755, D756: an input is ONE record and its row ONE ground row). Until step 6 of that build this file
+   also said which rows of a day were "drawn as one" (`groundGroups` — a shared input was a row a man, tied by an entry
+   mark, `[GROUP-INPUT-ONE-ROW]`, D661): nothing is drawn as one any more, and that answer, its callers and its entry
+   mark went with the dead code. */
 import { PEOPLE, whoId, isSpecial } from './people'
-
-export type RowGroup = { lead: number; members: number[] }
-export function groundGroups(d: any): RowGroup[] {
-  return (((d && d.ground) || []) as any[]).map((_r, ri) => ({ lead: ri, members: [ri] }))
-}
 
 /* THE PUCKS OF A GROUND ROW — the one answer every builder reads (the week, the board, the next-week peek, print), so no
    two surfaces can draw a row's people differently (the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3).
@@ -49,7 +25,6 @@ export function rowPeopleDrawn(d: any, di: any, ri: number): DrawnPuck[] {
   const ph = (p: DrawnPuck) => (isSpecial(p.id) ? 1 : 0)
   return out.sort((a, b) => ph(a) - ph(b) || (ph(a) ? 0 : callsign(a.id).localeCompare(callsign(b.id), undefined, { sensitivity: 'base' })) || (at.get(a)! - at.get(b)!))
 }
-export function drawnPeople(d: any, di: any, g: RowGroup): DrawnPuck[] { return rowPeopleDrawn(d, di, g.lead) }
 /** IS THIS AN INPUT'S ROW THAT HOLDS SEVERAL — the row every builder draws through rowPeopleDrawn (A to Z, then the
  *  placeholder) and, on a phone, with the one row's own layout (`gshared` — the approved picture 2, D743). A row of
  *  one person, a row nobody filed and a dead `kept` row are drawn as they always were. */

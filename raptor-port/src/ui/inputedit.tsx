@@ -741,34 +741,6 @@ export function oilUnansweredDay(row: any): string {
   const p = oilAskPlan(row).find(x => prev[x.iso] == null)
   return p ? p.iso : ''
 }
-/* THE ANSWER A SHARED INPUT CARRIES, FOR A MAN ADDED TO IT FROM THE SCHEDULE (owner D738 as D744 narrowed it, 11 Oct 26 —
-   "If an input has multiple people and different answers for OIL. Any subsequent addition the OIL earned question will
-   be asked"; the plan 2026-10-10-group-input-one-row-plan.md §4.5). ONE pure question, asked of the entry's records
-   over the days its OIL question is about (leavewar/sync.ts oilAskPlan — the days and the hours are every man's alike):
-     'same'   — every record carries the same answer for every such day: the man added takes a copy of it (`oil`), and
-                nothing is asked on the schedule (D738);
-     'none'   — nobody has answered any of them, or no day asks: he has no answer, and the question stays where it is,
-                with whoever filed it (D738 reading 2);
-     'differ' — anything else, a mix of answered and unanswered people included: he is given nobody's answer, and the
-                question is put at once to whoever added him, for him alone (D744).
-   Nothing is kept on the input for this: the records themselves say whether there is one answer to take. */
-export type EntryOil = { kind: 'same'; oil: Record<string, number> } | { kind: 'none' } | { kind: 'differ' }
-export function entryOilAnswer(rows: any[]): EntryOil {
-  const live = (rows || []).filter(Boolean)
-  const first = live[0]
-  if (!first || !oilAsks(first.type)) return { kind: 'none' }
-  const days = oilAskPlan(first).map(p => p.iso)
-  if (!days.length) return { kind: 'none' }
-  const ans = (r: any, iso: string): number | null => { const v = (r.oil || {})[iso]; return v == null ? null : Number(v) }
-  if (live.every(r => days.every(d => ans(r, d) == null))) return { kind: 'none' }
-  const oil: Record<string, number> = {}
-  for (const d of days) {
-    const v = ans(first, d)
-    if (v == null || live.some(r => ans(r, d) !== v)) return { kind: 'differ' }
-    oil[d] = v
-  }
-  return { kind: 'same', oil }
-}
 /* the one-line standing beside the button: how many applicable days the
    record currently credits */
 export function oilSummary(row: any): string {
@@ -779,40 +751,6 @@ export function oilSummary(row: any): string {
   if (!yes) return n === 1 ? 'no OIL on its non-working day' : `no OIL on its ${n} non-working days`
   if (n === 1) return 'credited on its non-working day'
   return `credited on ${yes} of ${n} non-working days`
-}
-/* A SHARED INPUT'S LINE COUNTS ITS PEOPLE WHERE THEIR ANSWERS DIFFER (owner D731 (4), 10 Oct 26 — "credited for 2 of 3 —
-   Ranger: no"; walker C of the input card's check, scenario 61). Each man's record carries his OWN answer (D660: the
-   filer answers for all at the save, and a man may still change his own), and the window's line read the answers of
-   the ONE record it happened to be opened on: "credited on its non-working day" for three people of whom one had
-   since said No. Where every man's answers are alike the line reads exactly as it always did — `oilSummary`, above
-   (his reading (b)). Where they differ: how many of them are credited at all, then each man who is not ("no"), and
-   each credited for only some of its days ("1 of 2 days"). A man who has not answered is NOT named here: the window's
-   own "Not answered yet — <day>: <names>" line, straight under this one, names him. Words only — it reads the same
-   stored answers the credit pass reads (leavewar/sync.ts oilAskPlan) and writes nothing. */
-export function oilSummaryOf(rows: any[]): string {
-  const live = (rows || []).filter(Boolean)
-  if (live.length < 2) return live.length ? oilSummary(live[0]) : ''
-  /* A REQUEST TAKEN OFF THE PROGRAMME HAS NO STANDING HERE (Sol's read of this batch, 10 Oct 26 — finding 2). Taking a
-     request off keeps its stored answer (`acc: 'r'` — engine/slots.ts unacceptInput: it stands again when the request
-     is accepted again) and it earns nothing while it is off: `oilAnswered`, `oilUnansweredDay`, the bell and the
-     credit pass all leave it out. This count read the stored Yes and said "credited" of a man credited with nothing.
-     Such a man is never counted, never lends the line his words, and is named — "Ace: taken off". */
-  const off = (r: any) => r.acc === 'r'
-  const marks = live.map(r => {
-    const prev = (r.oil || {}) as Record<string, number>
-    return off(r) ? [] : oilAskPlan(r).map(p => (prev[p.iso] == null ? '?' : prev[p.iso] > 0 ? 'y' : 'n'))
-  })
-  if (!live.some(off) && marks.every(m => m.join('') === marks[0].join(''))) return oilSummary(live[0])
-  const who = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person ?? ''))
-  const credited = marks.filter(m => m.includes('y')).length
-  const notes = live.map((r, i) => {
-    const m = marks[i], yes = m.filter(x => x === 'y').length
-    if (off(r)) return `${who(r)}: taken off`
-    if (yes && yes < m.length) return `${who(r)}: ${yes} of ${m.length} days`
-    if (!yes && m.length && m.every(x => x === 'n')) return `${who(r)}: no`
-    return ''
-  }).filter(Boolean)
-  return `credited for ${credited} of ${live.length}` + (notes.length ? ' — ' + notes.join(', ') : '')
 }
 /* ONE LABEL FOR AN OIL DAY, wherever one is named (`[CARD-CHECK-SEEN]` 8 — walker C, scenario 78: the question of an
    input in January 2027 named "9 JAN"). Every other date outside the year in hand says its year — the List's day
@@ -1649,7 +1587,9 @@ export function removeInput(r: any) {
      schedule — not the role literal 'member', which no account carries and
      which left this gate inert in production. */
   if (!mayDeleteInput(r)) {   // [ACCOUNTS]: the one rule, perms.ts
-    HOOKS.toast('You can only delete your own inputs', 'warn')
+    /* an input of several, or one for ALL AVAIL, is deleted for everyone by whoever filed it or an admin — said in the
+       shared sentence (the old removeEntry's, folded in here with the dead code, step 6 of the one-rule build) */
+    HOOKS.toast(idsOf(r).length > 1 || isPlaceholderInput(r) ? sharedRefusal([r], 'delete this for everyone') : 'You can only delete your own inputs', 'warn')
     return false
   }
   /* WHAT was deleted, and which day it logs against — captured before the
@@ -1682,17 +1622,6 @@ export function sharedRefusal(rows: any[], what: string): string {
   const by = rows.find(r => r && r.grpBy)?.grpBy ?? rows.find(r => r && r.by)?.by
   return `Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can ${what}`
 }
-export function removeEntry(rows: any[]): boolean {
-  const live = (rows || []).filter(r => INPUTS.indexOf(r) >= 0)
-  if (!live.length) { HOOKS.toast('That input is no longer there', 'warn'); return false }
-  if (protectedInput(...live)) return false
-  if (!live.every(r => mayDeleteInput(r))) {
-    HOOKS.toast(sharedRefusal(live, 'delete this for everyone'), 'warn')
-    return false
-  }
-  return saveBatch(() => { for (const r of live) dropInputRow(r) })
-}
-
 /* THE one per-row removal body — removeInput above (one row, its own batch)
    and clearHistoryBefore below (bulk, one batch) both run exactly this, so
    the bulk sweep can never drift from what a single delete does.
@@ -1710,53 +1639,6 @@ function dropInputRow(r: any) {
      request "taken off" whose own row stands again (a plan switched in — [REQ-ORPHAN-ROW] 3) needs nothing of its own
      either: rule 1 takes that row too. */
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
-}
-
-/* ---- ONE SAVE FOR A WHOLE GROUP (owner D654, D655, D658, D660 — 7 Oct 26; the build plan
-   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13, "The writer") ---------------------------------
-   His ruling is "one shared group input, shown and edited as one thing". It is KEPT as one record per man tied by a
-   group id (state/inputgroup.ts — every reader of an input reads one man's record and stays as it is), so "one thing"
-   is made here, at the save: ONE command files, changes or trims every record of the entry alike.
-
-   `entry` — the records the editor was opened on (state/inputgroup.ts entriesOf), or null for a new filing.
-   `draft` — the editor's own draft; its `person` is not read. `people` — who the entry should now hold.
-   `oilDec` — the filer's answer to the OIL question, asked ONCE for the entry (D660: "that person filing should answer
-   for all" — the days and the hours are the same for every man, so the amounts are): it is written onto every record
-   this save files or changes; with nothing else changed, onto every record of the entry (the filer revising it for all).
-
-   IT RUNS THE PER-RECORD BODIES A SINGLE INPUT ALREADY USES — commitNewInput for each man added, commitInputEdit for
-   each record kept WHOSE SHARED FIELDS ACTUALLY CHANGE, dropInputRow for each man taken off — inside one outer batch,
-   so every per-record rule (the remark's date token, the voiding of an OIL answer the hours no longer price, the late
-   date `mod`, who placed and changed it, the absence rules at the door) runs for each man exactly as for a single
-   input, and the whole is ONE Undo step.
-
-   A CHANGE TO THE PEOPLE ALONE TOUCHES NOBODY ELSE (both plan readers' finding G6): commitInputEdit stamps the late
-   date on every save, whatever changed — so a record kept with its shared fields as they were is NOT passed through
-   it. Adding or taking off a man after the cut-off leaves the others' late date and stamps alone; only the man added
-   can be late.
-
-   ALL OR NOTHING. Every refusal a single input can meet is asked for EVERY man before anything is written, and the
-   sentence names the man where it is his alone; a refusal that only shows inside the batch (the absence rules — no
-   leave over leave, none over a medical; the check on what a member's command changed) throws and rolls the whole
-   command back. A half-filed group cannot exist. Leave over recorded work is NOT a refusal (his ruling of 20 Sep 26):
-   it is filed and flagged, for a group as for one man, in ONE note naming every man it applies to.
-
-   WHO THE ENTRY'S FILER IS (`grpBy`, finding G4). A group made from nothing: whoever files it. A single input made a
-   group by a MEMBER: that member. By an ADMIN: the single input's own filer (`by`) where it has one — an admin's hand
-   never takes an entry from the member who filed it — else that admin. Every man added later takes the entry's
-   filer and his own true `by`. An entry of one man is an ordinary input: one person filed alone gets no group at all.
-
-   `opts.sched` — the save comes from the input's ROW ON THE SCHEDULE (`[GROUP-INPUT-ONE-ROW]`; owner D739, D741, D742 —
-   the plan 2026-10-10-group-input-one-row-plan.md §4.5, §4.6): a box typed on the one row, a puck put on it or taken
-   off it. Handed on to each record's own save, where it keeps the late date and a Yes to the OIL question as they
-   are for someone who may edit the schedule (commitInputEdit, above). The input's own window never passes it.
-
-   Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
-export function commitGroup(entry: { rows: any[] } | null, draft: any, people: any[], oilDec?: Record<string, number>, opts?: InputSaveOpts): boolean {
-  /* SINCE THE ONE-RULE BUILD (step 2 (g), 12 Oct 26) AN INPUT IS ONE RECORD, AND THIS IS THE OLD NAME OF ITS ONE WRITER:
-     the entry is its record, the filer's one answer the input's own (D762). Its callers are moved onto commitInput and
-     the name is taken out with the rest of the dead code (step 6 of that build). */
-  return commitInput(entry && entry.rows && entry.rows.length ? entry.rows[0] : null, draft, people, oilDec ? { ...(opts || {}), oil: oilDec } : opts)
 }
 
 /* ---- THE ONE WRITER OF AN INPUT ([ALL-AVAIL-AS-MEMBER] step 2 (a), 12 Oct 26 — owner D756: "an input is stored as ONE
@@ -2592,7 +2474,7 @@ export function InputEditor() {
   const delEntry = () => {
     const n = howMany(recPpl)
     setDelAll(false)
-    if (removeEntry(rows)) { HOOKS.toast(`Input deleted for ${n}`, 'ok'); close() } else stay()
+    if (removeInput(r)) { HOOKS.toast(`Input deleted for ${n}`, 'ok'); close() } else stay()
   }
   /* WHO THE WINDOW IS TITLED BY: its one person; for several, the first A TO Z and how many more — never whoever joined
      first (the card and the OIL question in this same window name them A to Z — D721, D727; found re-expressing the

@@ -61,6 +61,11 @@ import { rowPut, rowTake, rowMove, onInputRow, isRowMan } from './reqdoor'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
 import { pendingLand } from './lift'
+import { boardMbtn, cxCommit } from './board'
+import { routeClick } from './interactions'
+import { addDayTpl, applyDayTpl, dayTplReset } from '../engine/daytpl'
+import { applyMove } from '../engine/reorder'
+import { groundOrder } from '../engine/order'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -771,6 +776,232 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       expect(said[0]).toContain(cs('pike'))
       expect(said[0]).not.toMatch(/ALL AVAIL|came off/i)
       expect(people(), 'and ALL AVAIL is still in it').toEqual(['bane', A])
+    })
+  })
+})
+
+/* ==== THE DOORS THAT USED TO ASK "WHICH ROWS ARE ONE ROW" — the second pass after the dead code went out (step 6 of the
+   one-rule build, 12 Oct 26). Until step 2 a shared input was a row a man DRAWN as one, and five bodies asked
+   engine/grouprows.ts `groundGroups` so that a hand on the one row reached every row of it: a day template took the
+   lead's row only, a drag moved the rows together, the row's ✕ took every man's request off in one press, and CX, the
+   red box and "information only" were set alike on every row. An input is ONE row now (D755, D756), `groundGroups` and
+   every "…as one" branch are gone, and nothing a person sees should have moved. Each case here is that hand, through
+   the app's own door, on a real saved store — on an input of several, and on the scheduler's OWN row beside it (which
+   the removed branches also passed through). ==== */
+describe('after the dead code went out — one row, one hand (D755, D756; D661 as it stands; D736, D760)', () => {
+  const THU = 3
+  const UP = TITLE.toUpperCase()
+  const press = (data: Record<string, string>) => { const b = document.createElement('button'); b.className = 'mbtn'; Object.assign(b.dataset, data); document.body.appendChild(b); boardMbtn({ target: b } as any); b.remove() }
+  /* Accept / "→ Unavail" / Undo on the input's line under Personal Inputs — the one control, as the week and the board draw it */
+  const acc = (dest: 'g' | 'u' | 'x', di = WED) => { const b = document.createElement('button'); b.dataset.acc = dest; b.dataset.accd = String(di); b.dataset.acck = String(inpId(rec())); document.body.appendChild(b); routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any); b.remove() }
+  const named = (rows: any[]) => (rows || []).filter((g: any) => g && g.prog === UP)
+  const rids = (di = WED) => ground(di).map((g: any) => g.rid)
+  beforeEach(() => { dayTplReset() })
+  afterEach(() => { dayTplReset() })
+
+  describe('a day template', () => {
+    it('taken from a day holding an input of four: ONE row for it — its name and times, nobody on it, nothing tying it to the input; applied to another day it is the scheduler\'s own row, and the input is untouched', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split', 'rocky'])
+      const was = JSON.stringify(rec())
+      const t = addDayTpl(WED, 'Wed')!
+      expect(named(t.d.ground), 'one row in the template — not a row a person').toHaveLength(1)
+      const tr: any = named(t.d.ground)[0]
+      expect([tr.str, tr.end], 'the shape of the day: its times').toEqual(['14:00', '15:00'])
+      expect([tr.who, ...(tr.more || [])].filter(Boolean), 'a template names nobody').toEqual([])
+      for (const k of ['src', 'srcv', 'srcg', 'kept', 'rid']) expect(k in tr, `no \`${k}\`: a template's row is nobody's request`).toBe(false)
+      expect(t.d.ground, 'and it took no row away: one a row of the day').toHaveLength(ground().length)
+      expect(named(ground(THU)), 'Thursday has no such row yet').toHaveLength(0)
+      expect(applyDayTpl(THU, t.id)).toBe(true); view.afterSchedMutate()
+      const on = named(ground(THU))
+      expect(on, 'ONE row on the day it is applied to').toHaveLength(1)
+      const ri = ground(THU).indexOf(on[0])
+      expect(onInputRow(`g:${THU}.${ri}`), 'the scheduler\'s own row — no input stands behind it').toBe(false)
+      expect(rowPeopleDrawn(DAYS[THU], THU, ri), 'nobody is drawn on it').toEqual([])
+      expect([on[0].str, on[0].end]).toEqual(['14:00', '15:00'])
+      expect(JSON.stringify(rec()), 'the input itself is not touched').toBe(was)
+      expect(onRow(), 'and its own row still stands on Wednesday, everyone on it').toEqual(['pike', 'bane', 'split', 'rocky'])
+      expect(INPUTS.filter((x: any) => x.title === TITLE), 'no second input was made').toHaveLength(1)
+    })
+    it('…and one with ALL AVAIL among its people is one row too, with nobody and no placeholder on it', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'allavail', 'bane'])
+      const t = addDayTpl(WED, 'Wed')!
+      expect(named(t.d.ground)).toHaveLength(1)
+      const tr: any = named(t.d.ground)[0]
+      expect([tr.who, ...(tr.more || [])].filter(Boolean)).toEqual([])
+    })
+  })
+
+  describe('a drag to reorder on the board', () => {
+    it('the row of an input of four dragged onto another row\'s place is ONE move — the row whole, everyone still on it, the other rows in their order — and ONE Undo puts it back', async () => {
+      await boot(new MemoryBackend())
+      const FOUR = ['pike', 'bane', 'split', 'rocky']
+      file(FOUR)
+      expect(ground().length, 'the day has other ground rows to move among').toBeGreaterThanOrEqual(3)
+      expect(rids().every(Boolean), 'every row has its hidden id').toBe(true)
+      const was = rids(), mine = rowOf().rid, recWas = JSON.stringify(rec())
+      /* the order the board draws them in (by start time until a hand orders the list) — what the drag is seen against */
+      const shown = groundOrder(ground()).map((x: any) => x.row.rid)
+      const f = shown.indexOf(mine), t = f === 0 ? shown.length - 1 : 0
+      const want = shown.slice(); want.splice(f, 1); want.splice(t, 0, mine)
+      const target = ground().findIndex((g: any) => g.rid === shown[t])
+      expect(applyMove(`mv:g.${WED}.${riOf()}`, `mv:g.${WED}.${target}`), 'the drop').toBe(true); view.afterSchedMutate()
+      expect(rids(), 'the one row took the place it was dropped on; nothing else changed places').toEqual(want)
+      expect(ground().filter((g: any) => g.src === String(inpId(rec()))), 'still ONE row of the input').toHaveLength(1)
+      expect(onRow(), 'everyone still on it, as they joined').toEqual(FOUR)
+      expect(rowPeopleDrawn(DAYS[WED], WED, riOf()).map(p => p.key).sort(), 'its pucks are on the keys of the row where it stands NOW').toEqual([rowKey(), `${rowKey()}.x0`, `${rowKey()}.x1`, `${rowKey()}.x2`])
+      for (const p of FOUR) expect(slotVal(keyOf(p)), `${p}'s place answers for him`).toBe(p)
+      expect(JSON.stringify(rec()), 'a move is the schedule\'s: the input is not changed').toBe(recWas)
+      globalUndo()
+      expect(rids(), 'ONE Undo: the whole day\'s order as it was').toEqual(was)
+      expect(onRow()).toEqual(FOUR)
+    })
+    it('another row dragged ONTO the input\'s row lands in its place, and the input\'s row slides one place whole', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split'])
+      const mine = rowOf().rid
+      const shown = groundOrder(ground()).map((x: any) => x.row.rid)
+      const t = shown.indexOf(mine), f = t === 0 ? shown.length - 1 : 0
+      const want = shown.slice(); const [moved] = want.splice(f, 1); want.splice(t, 0, moved)
+      const from = ground().findIndex((g: any) => g.rid === shown[f])
+      expect(applyMove(`mv:g.${WED}.${from}`, `mv:g.${WED}.${riOf()}`)).toBe(true); view.afterSchedMutate()
+      expect(rids()).toEqual(want)
+      expect(onRow()).toEqual(['pike', 'bane', 'split'])
+      for (const p of ['pike', 'bane', 'split']) expect(slotVal(keyOf(p))).toBe(p)
+    })
+  })
+
+  describe('the row\'s ✕', () => {
+    /* D736 — "a shared input … taken off the programme … is ONE change waiting — one line, naming its people"; D663:
+       named by its name and HOW MANY people. Until step 2 of the build the ✕ said "… — RANGE SAFETY BRIEF,
+       14:00–15:00, 3 people". */
+    it('on an input of three: the WHOLE input comes off the programme in one press — everyone with it, back under Personal Inputs — one note, one line of history, ONE Undo', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split'])
+      SAID = []
+      const before = lines()
+      setBoardDay(WED); press({ grdel: `${WED}.${riOf()}` })
+      expect(riOf(), 'no row of it is left on the programme').toBe(-1)
+      expect(ground().some((g: any) => g.prog === UP), 'not even a row a man').toBe(false)
+      expect(rec().acc, 'taken off — for everyone at once').toBe('r')
+      expect(people(), 'nobody was taken out of the input').toEqual(['pike', 'bane', 'split'])
+      expect(SAID, 'ONE note for the one press').toHaveLength(1)
+      expect(SAID[0]).toMatch(/^Ground item removed — back under Personal Inputs — /)
+      expect(lines() - before, 'one act, one change (D114)').toBe(1)
+      globalUndo()
+      expect(onRow(), 'ONE Undo brings the one row back, everyone on it').toEqual(['pike', 'bane', 'split'])
+      expect(rec().acc).not.toBe('r')
+    })
+    /* THE WORDS OF THAT NOTE — a product fault, reported and NOT pinned (the two cases below fail until it is fixed). The
+       app says "…, Nomad +2": the first to join and a count of "the rest" — the shorthand of a scheduler's own row —
+       where an input of several is named by HOW MANY people it holds (D663, D736), as the same take-off says from the
+       Personal Inputs line ("3 people's Range safety brief taken off the programme"); and it counts ALL AVAIL as one of
+       "the rest". The sentence that said it lived in the branch for "the rows drawn as one", which stopped being
+       reached at step 2 (b) of the build and was deleted with the dead code at step 6. */
+    it('…and the note says HOW MANY people: "…, 3 people"', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split'])
+      SAID = []
+      setBoardDay(WED); press({ grdel: `${WED}.${riOf()}` })
+      expect(SAID, 'one note, naming how many').toEqual([`Ground item removed — back under Personal Inputs — ${UP}, 14:00–15:00, 3 people`])
+    })
+    it('with ALL AVAIL in it the count is of the PEOPLE: "2 people and ALL AVAIL"', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'allavail', 'bane'])
+      SAID = []
+      setBoardDay(WED); press({ grdel: `${WED}.${riOf()}` })
+      expect(riOf()).toBe(-1)
+      expect(people()).toEqual(['pike', 'allavail', 'bane'])
+      expect(SAID).toEqual([`Ground item removed — back under Personal Inputs — ${UP}, 14:00–15:00, 2 people and ALL AVAIL`])
+    })
+    it('THE CONTROL — on an input of ONE person the note names him', async () => {
+      await boot(new MemoryBackend())
+      file(['pike'])
+      SAID = []
+      setBoardDay(WED); press({ grdel: `${WED}.${riOf()}` })
+      expect(SAID).toEqual([`Ground item removed — back under Personal Inputs — ${UP}, 14:00–15:00, ${cs('pike')}`])
+    })
+  })
+
+  describe('CX, the red box and "information only" on a row the scheduler made himself', () => {
+    it('each is written to THAT row, one Undo each — and the input\'s row beside it, and the input, are not touched', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split'])
+      setBoardDay(WED)
+      press({ gradd: String(WED) })
+      const n = ground().length - 1, own = () => ground()[n]
+      expect(onInputRow(`g:${WED}.${n}`), 'his own row: no input behind it').toBe(false)
+      expect(writeSlot(`g:${WED}.${n}`, 'rocky'), 'and a man put on it is the row\'s').not.toBe(false)
+      const recWas = JSON.stringify(rec())
+      const clean = () => { expect([rowOf().cx, rowOf().flag, rowOf().info].map(Boolean), 'the input\'s row').toEqual([false, false, false]); expect(JSON.stringify(rec()), 'the input').toBe(recWas) }
+
+      SAID = []
+      press({ grflag: `${WED}.${n}` })
+      expect(!!own().flag, 'the red box is on his row').toBe(true)
+      expect(SAID).toEqual(['Red box — flagged for the next scheduler'])
+      clean()
+      globalUndo(); expect(!!own().flag, 'one Undo').toBe(false)
+
+      SAID = []
+      press({ grinfo: `${WED}.${n}` })
+      expect(!!own().info).toBe(true)
+      expect(SAID).toEqual(['Info only — this item is no longer checked against the rules, and earns nobody any OIL'])
+      clean()
+      globalUndo(); expect(!!own().info, 'one Undo').toBe(false)
+
+      press({ grcx: `${WED}.${n}` }); cxCommit(true, 'WX')
+      expect([!!own().cx, own().cxr], 'the CX and its reason are on his row').toEqual([true, 'WX'])
+      expect(own().who, 'his man is still on it').toBe('rocky')
+      clean()
+      globalUndo(); expect(!!own().cx, 'one Undo').toBe(false)
+    })
+  })
+
+  describe('Accept, "→ Unavail" and Undo on the line of an input of several under Personal Inputs', () => {
+    it('Undo takes the WHOLE input off the programme in one press, and Accept puts it back — one row, everyone on it; each is one step of the top bar\'s Undo; the note says how many', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split'])
+      SAID = []
+      const before = lines()
+      acc('x')
+      expect([riOf(), rec().acc], 'off for everyone').toEqual([-1, 'r'])
+      expect(SAID).toEqual([`3 people's ${TITLE} taken off the programme`])
+      /* ONE line of history for the one act (D114, D736) — the input's, filed under its first to join: the place the
+         changes window's tap is sent to (ui/histjump.test.tsx) */
+      const hist = ELOG.rows.slice(before) as any[]
+      expect(hist.map(r => [r.iid, r.sub]), 'one line, the input\'s').toEqual([[String(inpId(rec())), 'pike']])
+      SAID = []
+      acc('g')
+      expect(ground().filter((g: any) => g.src === String(inpId(rec()))), 'ONE row again').toHaveLength(1)
+      expect(onRow()).toEqual(['pike', 'bane', 'split'])
+      expect(SAID).toEqual([`3 people's ${TITLE} added to the ground programme`])
+      globalUndo()
+      expect([riOf(), rec().acc], 'one Undo: the Accept alone').toEqual([-1, 'r'])
+      globalUndo()
+      expect(onRow(), 'a second: the take-off').toEqual(['pike', 'bane', 'split'])
+    })
+    it('"→ Unavail" files the one input under Unavailable for everyone in it, in one press — and its Undo takes all of them back out', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'bane', 'split'])
+      acc('x')
+      SAID = []
+      acc('u')
+      expect(rec().acc, 'ONE filing, for all three').toBe('u')
+      expect(riOf(), 'no row on the programme').toBe(-1)
+      expect(SAID).toEqual([`3 people's ${TITLE} filed under Unavailable`])
+      expect(people()).toEqual(['pike', 'bane', 'split'])
+      SAID = []
+      acc('x')
+      expect(rec().acc).toBe('r')
+      expect(SAID).toEqual([`3 people's ${TITLE} taken out of Unavailable`])
+    })
+    it('with ALL AVAIL in it the note counts the people: "2 people and ALL AVAIL\'s …"', async () => {
+      await boot(new MemoryBackend())
+      file(['pike', 'allavail', 'bane'])
+      SAID = []
+      acc('x')
+      expect(SAID).toEqual([`2 people and ALL AVAIL's ${TITLE} taken off the programme`])
     })
   })
 })

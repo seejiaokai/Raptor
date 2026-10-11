@@ -314,12 +314,61 @@ describe('whose input it is (§3.13 "Who the entry\'s filer is" — one filing, 
     expect(mayDeleteInput(the())).toBe(false)
     said = []
     expect(removeInput(the()), 'the Delete door').toBe(false)
-    expect(said.join(' ')).toMatch(/You can only delete your own inputs/)
+    /* WHAT HE IS TOLD is the shared sentence now (step 6 of the one-rule build, 12 Oct 26 — the dead code out). An input
+       of several was always refused in these words at the window's "Delete for everyone" (the old `removeEntry`); only
+       this bare door still said "You can only delete your own inputs" of an input that is NOT one man's own. The two
+       are one door since `removeEntry` was folded into `removeInput`, so it says what the window says — and, a
+       scheduler having added a man, that is D755 (3)'s sentence, the same one his refused change gets
+       (onerecord-perms.test.ts). "Your own inputs" is kept for an input of ONE person: pinned two cases below. */
+    expect(said, 'one sentence, the shared one').toEqual(['A scheduler has changed who is in this — ask an admin to change it for everyone'])
+    expect(said.join(' ')).not.toMatch(/only delete your own/)
     expect(raw(() => { INPUTS.splice(INPUTS.indexOf(the()), 1) }), 'nor by a hand-made call').toBe(false)
     expect(copy(the())).toEqual(was)
     saber()
     expect(removeInput(the()), 'an admin deletes it for everyone').toBe(true)
     expect(feb()).toHaveLength(0)
+  })
+  /* THE ONE DELETE, FROM EVERY SIDE (added with step 6 of the one-rule build: `removeEntry` — "delete a whole shared
+     input" — was folded into `removeInput`, so this door now answers for an input of several by itself; D655, D763, the
+     one-rule plan §4.9). Who may: whoever filed it, or an admin. A person in it who did not file it is refused in the
+     shared sentence, naming who can — he takes HIMSELF out instead (onerecord-write.test.ts). One command, one Undo. */
+  it('deleting an input of several: a person in it who did not file it is refused, in words naming who can; its filer deletes it for everyone in ONE step that Undo brings back whole; an admin deletes it', () => {
+    ranger()
+    expect(commitInput(null, D(), THREE)).toBe(true)
+    const was = copy(the())
+    hex()
+    expect(mayDeleteInput(the())).toBe(false)
+    said = []
+    expect(removeInput(the()), 'Hex is in it, and did not file it').toBe(false)
+    expect(said).toEqual(['Only Ranger — who filed it — or an admin can delete this for everyone'])
+    expect(copy(the()), 'nothing of it went — not even his own place').toEqual(was)
+    ranger()
+    const n = cmds()
+    expect(removeInput(the()), 'its filer').toBe(true)
+    expect(feb(), 'gone for all three at once').toHaveLength(0)
+    expect(cmds() - n, 'ONE command').toBe(1)
+    expect(globalUndo()).toBeTruthy()
+    expect(copy(the()), 'one Undo brings the whole input back, everyone in it').toEqual(was)
+    saber()
+    expect(removeInput(the()), 'an admin').toBe(true)
+    expect(feb()).toHaveLength(0)
+  })
+  it('…and the sentence follows what the input IS: one man\'s own input says "your own inputs"; one filed for ALL AVAIL alone is nobody\'s own and says who filed it', () => {
+    expect(commitInput(null, D(), ['rocky'])).toBe(true)           // Saber files for Hex alone
+    outlaw()
+    said = []
+    expect(removeInput(the()), 'another man\'s one-person input').toBe(false)
+    expect(said).toEqual(['You can only delete your own inputs'])
+    hex()
+    expect(removeInput(the()), 'his own request, whoever filed it').toBe(true)
+    saber()
+    expect(commitInput(null, D(), ['allavail']), said.join(' | ')).toBe(true)
+    expect(idsOf(the())).toEqual(['allavail'])
+    hex()
+    said = []
+    expect(removeInput(the()), 'an input for ALL AVAIL is not his').toBe(false)
+    expect(said).toEqual(['Only Saber — who filed it — or an admin can delete this for everyone'])
+    expect(idsOf(the()), 'still there').toEqual(['allavail'])
   })
   it('an input of one made an input of several by an admin keeps the member who filed it as its filer', () => {
     ranger()

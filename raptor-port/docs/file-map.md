@@ -1,5 +1,14 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 6 (12 Oct 26 — the dead code out; D755, D756, D762): **REMOVED** `src/ui/grouprow.ts`,
+`src/engine/entryfold.ts`, `src/state/inputgroup.ts`, `src/engine/inputentry.ts` — the leftovers of "one record a
+person, several rows drawn as one". `src/engine/grouprows.ts` keeps `rowPeopleDrawn` and `inputRowSeveral` only
+(`groundGroups`, `drawnPeople` gone); `src/ui/inputedit.tsx` loses `commitGroup`, `removeEntry` (folded into
+`removeInput`, which says the shared sentence for an input of several), `oilSummaryOf` and `entryOilAnswer`; their
+callers in `ui/interactions.ts`, `ui/board.ts`, `ui/InputsCal.tsx`, `engine/daytpl.ts`, `engine/reorder.ts` are
+simplified. **Every mention of those four files further down this page is history** — how each step of the earlier
+jobs was built. Which tests went or were re-expressed: the plan's §10, Step 6.
+
 `[ALL-AVAIL-AS-MEMBER]` step 4 (12 Oct 26 — the scheduler's marks on an input's row are the input's; D760): no new
 source file. `src/ui/reqdoor.ts` gains `rowMark` (CX with its reason, the red box, information only — the input changed
 in one command); `src/ui/board.ts`'s three buttons ask it on an input's row (`askCx`'s `via`); `src/engine/overlay.ts

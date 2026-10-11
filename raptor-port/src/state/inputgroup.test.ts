@@ -5,8 +5,9 @@
    UNTIL THE ONE-RULE BUILD this file pinned the old keeping: one record per man tied by a group id (`grp`), an ENTRY
    worked out on read — the records sharing a group AND the same shared fields — and the check that kept a man on it
    once (`groupBreach`, `groupSnapshot`, `groupsTouched`). All of that is gone with the group:
-     · the list of inputs IS the list of entries — `entriesOf`, `entryRowsOf` and `entryLines` answer every record as its
-       own, for the screens that still ask them (they go with the dead code, step 6 of the build);
+     · the list of inputs IS the list of inputs — nothing gathers records (the three readers that answered "every record
+       its own entry" — `entriesOf`, `entryRowsOf`, `entryLines` — went with state/inputgroup.ts and the rest of the dead
+       code, step 6 of the build, 12 Oct 26; this file keeps its name, and its cases are said of the live readers);
      · who is in an input is the record's own list (engine/inputs.ts peopleOf) — never worked out from a group id;
      · a record stored BEFORE the build that carries a `grp` reads as the one-person input it is — D759 reading 10:
        "old shared demo inputs come back as one-person inputs"; nothing is converted (D56);
@@ -15,11 +16,16 @@
 
    Who is in an input, either shape, and each sentence of shapeProblem: engine/onerecord.test.ts. The one writer and the
    same boundary through the real doors over both stores: leavewar/onerecord-write.test.ts. This file keeps the cases
-   the old grouping covered, said as they are true now. */
+   the old grouping covered, said as they are true now.
+
+   STEP 6 (the dead code out): every case that asked `entriesOf` / `entryRowsOf` / `entryLines` pinned the inside of a
+   removed function ("each record its own entry"). Each is kept, under its own name where the name still holds, with
+   what is true NOW in its place, asked of the readers the app really uses: who is in a record (`idsOf`), the lines the
+   rules about one man's day read (`inputLines` — one a named person, each still naming ITS record) and the faces a
+   screen draws a puck for (`facesOf`). Nothing here is retired without a case. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { HOOKS } from '../engine/hooks'
-import { INPUTS, idsOf, inputLines, shapeProblem } from '../engine/inputs'
-import { entriesOf, entryLines, entryRowsOf } from './inputgroup'
+import { INPUTS, facesOf, idsOf, inputLines, shapeProblem } from '../engine/inputs'
 import { initStore, writeInputs } from './store'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -43,41 +49,46 @@ beforeEach(() => {
 })
 afterEach(() => { HOOKS.toast = toast; INPUTS.splice(0, INPUTS.length, ...JSON.parse(ISNAP)) })
 
-describe('every record is its own entry (D756; the plan §5 step 2 (g))', () => {
-  it('a list of inputs is the list of entries, one a record, in the order the list holds them', () => {
+/* (the subject is gone — step 6: these four asked `entriesOf`, `entryRowsOf`, `entryLines`. Said now of the live readers.) */
+describe('every record is its own input (D756; the plan §5 step 2 (g))', () => {
+  /* was: "a list of inputs is the list of entries, one a record, in the order the list holds them" */
+  it('a list of inputs is the list of inputs — three records are three inputs, in the order the list holds them, each with its own people', () => {
     const a = rec(['bane']), b = rec(['stiff', 'rocky', 'casper']), c = old('rocky')
-    const es = entriesOf([a, b, c])
-    expect(es.map(e => e.rows)).toEqual([[a], [b], [c]])
-    expect(es.every(e => e.grp == null), 'no entry carries a group id any more').toBe(true)
-    expect(entryLines([a, b, c]), 'one line a record under Personal Inputs').toEqual([[a], [b], [c]])
-    for (const r of [a, b, c]) expect(entryRowsOf([a, b, c], r), 'the records of a record\'s entry: itself').toEqual([r])
+    expect([a, b, c].map(idsOf)).toEqual([['bane'], ['stiff', 'rocky', 'casper'], ['rocky']])
+    expect(inputLines([a, b, c]).map((l: any) => [l.iid, l.person]), 'one line a named person — each still naming ITS record, in the list\'s order')
+      .toEqual([[a.iid, 'bane'], [b.iid, 'stiff'], [b.iid, 'rocky'], [b.iid, 'casper'], [c.iid, 'rocky']])
+    expect([a, b, c].map(r => facesOf(r).map((f: any) => [f.iid, f.person])), 'and a screen draws each record\'s own people, never another\'s')
+      .toEqual([[[a.iid, 'bane']], [[b.iid, 'stiff'], [b.iid, 'rocky'], [b.iid, 'casper']], [[c.iid, 'rocky']]])
   })
-  it('an input for several people is ONE entry of one record — its people are the record\'s own list, in the order they joined', () => {
+  it('an input for several people is ONE record — its people are the record\'s own list, in the order they joined', () => {
     const r = rec(['stiff', 'bane', 'casper', 'rocky'])
-    const es = entriesOf([r])
-    expect(es).toHaveLength(1)
-    expect(es[0].rows).toEqual([r])
-    expect(idsOf(es[0].rows[0]), 'never re-ordered A to Z: the first to join stands first').toEqual(['stiff', 'bane', 'casper', 'rocky'])
+    expect(idsOf(r), 'never re-ordered A to Z: the first to join stands first').toEqual(['stiff', 'bane', 'casper', 'rocky'])
+    expect(new Set(inputLines([r]).map((l: any) => l.iid)), 'four lines, one record').toEqual(new Set([r.iid]))
+    expect(inputLines([r]).map((l: any) => l.person)).toEqual(['stiff', 'bane', 'casper', 'rocky'])
   })
   it('nothing joins two records: the same day, hours, kind and remark are still two inputs', () => {
     const a = rec(['stiff', 'bane']), b = rec(['rocky'])
-    expect(entriesOf([a, b]).map(e => idsOf(e.rows[0]))).toEqual([['stiff', 'bane'], ['rocky']])
+    expect([a, b].map(idsOf)).toEqual([['stiff', 'bane'], ['rocky']])
+    expect(inputLines([a, b]).map((l: any) => [l.iid, l.person]), 'Hex\'s line is his own record\'s — not a third man of the other').toEqual([[a.iid, 'stiff'], [a.iid, 'bane'], [b.iid, 'rocky']])
+    expect(facesOf(a).map((f: any) => f.several), 'the input of two says it holds several…').toEqual([true, true])
+    expect(facesOf(b).map((f: any) => f.several), '…and the one beside it does not').toEqual([false])
   })
-  it('an empty list, or a hole in it, makes no entry', () => {
-    expect(entriesOf([])).toEqual([])
-    expect(entriesOf([null, rec(['bane']), undefined] as any[])).toHaveLength(1)
-    expect(entryRowsOf([], null)).toEqual([])
+  it('an empty list, or a hole in it, makes no input', () => {
+    expect(inputLines([])).toEqual([])
+    expect(inputLines([null, rec(['bane']), undefined] as any[])).toHaveLength(1)
+    expect(idsOf(null)).toEqual([])
+    expect(facesOf(null)).toEqual([])
   })
 })
 
 describe('a record stored before the build with a group id reads as a one-person input (D759 reading 10; D56)', () => {
-  it('four records of one old group: four entries, each one man\'s own — the group id joins nothing', () => {
+  /* OLD DATA, kept as a legacy case (was asked of `entriesOf`: "four entries … es.map(e => e.grp) all null") */
+  it('four records of one old group: four inputs, each one man\'s own — the group id joins nothing', () => {
     const rows = [old('stiff', G), old('bane', G), old('casper', G), old('rocky', G)]
-    const es = entriesOf(rows)
-    expect(es, 'was ONE entry of four until the build').toHaveLength(4)
-    expect(es.map(e => idsOf(e.rows[0]))).toEqual([['stiff'], ['bane'], ['casper'], ['rocky']])
-    expect(es.map(e => e.grp)).toEqual([null, null, null, null])
+    expect(rows.map(idsOf), 'was ONE entry of four until the build').toEqual([['stiff'], ['bane'], ['casper'], ['rocky']])
+    expect(rows.map(r => facesOf(r).map((f: any) => [f.person, f.several])), 'each draws its one man, and none says it holds several').toEqual([[['stiff', false]], [['bane', false]], [['casper', false]], [['rocky', false]]])
     expect(inputLines(rows).map((l: any) => l.person), 'and the rules about one man\'s day read each as before').toEqual(['stiff', 'bane', 'casper', 'rocky'])
+    expect(inputLines(rows).map((l: any) => l.iid), 'each line its own record\'s').toEqual(rows.map(r => r.iid))
   })
   it('it breaks no rule of what a record may hold — its old group fields are not this build\'s to judge', () => {
     for (const r of [old('bane', G), old('bane', { grp: 'g1' }), old('bane', { grpBy: 'stiff' }), old('bane', { ...G, type: 'OML', allday: true })])
@@ -91,7 +102,7 @@ describe('a record stored before the build with a group id reads as a one-person
     expect(writeInputs(() => { INPUTS.unshift(old('bane', G)) })).toBe(true)
     expect(writeInputs(() => { INPUTS.unshift(old('bane', G)) }), 'no "Ranger is already on this input"').toBe(true)
     expect(said.join(' ')).not.toMatch(/already on this input/)
-    expect(entriesOf(INPUTS.filter((r: any) => r.grp === 'g1'))).toHaveLength(2)
+    expect(INPUTS.filter((r: any) => r.grp === 'g1').map(idsOf), 'two inputs, each his alone').toEqual([['bane'], ['bane']])
   })
 })
 
