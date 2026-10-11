@@ -951,3 +951,67 @@ Earn's hint on an input's row said "answered for each person on it" (one answer 
 say `leftAt` is "written by the hand-over" — it is written when any person leaves, too.
 
 **The whole gate set after all of it (12 Oct 26):** unit 10468 / 10468 (600 files) · build clean · tfin 728 / 0 · e2e 769 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. **Step 3 is built; the run goes on to step 4 (D766).**
+
+### Step 4 — the scheduler's marks on an input's row are the input's (12 Oct 26; D760)
+
+**Built as §5 step 4 says — the data, and the schedule's buttons through the door; nothing new on the Inputs pages.**
+Tests: `src/ui/inputmarks.test.tsx` (the builder's, 21 — T20 among them), `src/ui/inputmarks-scenarios.test.tsx` (the
+helper's second pass, 34).
+
+- **The record** carries `cx` (true; `false` once un-cancelled), `cxr` (the reason, only while cancelled), `flag`
+  (the red box), `info`. `engine/schema.ts`, `docs/data-schema.md`, `docs/data-model.md` (the fields and §11) in the
+  same change (D473, D200).
+- **The row** (`engine/overlay.ts requestRowFields`) carries a copy, written only where set; the re-make takes each
+  away where the input has none; `srcvOf` hashes them under build mark `3` — **every row made before this step is
+  re-made once, and a CX, red box or "information only" that stood on the ROW of an old request comes off** (the input
+  never carried it; stored demo rows only — D56; R23).
+- **The door** (`ui/reqdoor.ts rowMark`): one command, one Undo step, a schedule-side save; `ui/board.ts`'s three
+  buttons ask it on an input's row (`askCx`'s `via` hands the reason over) and write a scheduler's own row exactly as
+  before. Only a scheduler: `state/perms.ts inputBreach` refuses a member's command that changes a mark, on his own
+  input too (D760 reading 2); what his cancelled input SAYS is still his to change.
+- **What it says to a published day** (`inputs.ts inpDetailKey`): `cx` with its reason and `info`, only where set
+  (F14: a CX put on and taken off reads nothing pending), never the red box — that rides the row's content as before.
+- **Silent while cancelled or information only** — ONE answer, `inputs.ts inputSilent`: the rules' gate
+  (`inputFlags`), the cross-week reads that pass it by (`events.ts inpShow`), the seven-day run (`weekctx.ts`), who
+  is kept out of an ALL AVAIL crowd (`leavewar/sync.ts availableFor`); OIL's standing (`oilev.ts landedStanding`)
+  reads the input's own marks first, for every day it covers.
+- **The change history** (`state/changelines.ts`): the input's own line a mark — "… · CX: not cancelled → cancelled —
+  WX", "· red box", "· information only" — where the board logged a sentence against the day.
+
+**Where step 4 left the plan's letter:** (1) §4.7 says `stand` comes from the input "with no row lookup":
+`landedStanding` asks the input FIRST and still falls back to the row for everything else (`'gone'`, `'elsewhere'`,
+a row issued before the build) — those go with step 6 or stay as the legacy reader's. (2) The marks are named in the
+detail key only where set, not as `cx: false` on every input — the same comparison, and an unmarked input's key is
+byte for byte what it was. (3) §4.4's "the CX / red box / info handlers go through the door" is the board's three
+buttons; nothing else writes those marks, and the engine has no belt for them (a raw mark on the row is taken away at
+the row's next re-make, not refused).
+
+**Found by the older tests, re-expressed by a helper who did not write the build (the four-choice brief; twelve files),
+each fixed and pinned by its case:** a cancelled input filed under Unavailable earned OIL again (it read "never
+landed" before its own CX was asked); a cancelled Sunday input still counted as a day worked in next week's seven-day
+run; and still raised crew rest on the Monday — both asked only "is it off the programme". Also: OIL Earn said "his
+Training's row is cancelled" (the input is). The helper's count change, by ruling: "Discard" for a CX on a published
+day is 0, not 1 — a load never changes an input (§4.8).
+
+**Readings to tell him:**
+- R23. A CX, red box or "information only" a scheduler had put on the row of a request BEFORE this build comes off
+  that row the first time it is read (the input never carried it) — stored demo rows only.
+- R24. A cancelled or information-only input's people are free again: they are counted behind ALL AVAIL elsewhere, the
+  day does not count as worked for the seven-day run, and it raises no crew-rest or clash warning — on the day and
+  across the week's edge alike.
+- R25. A cancelled input filed under Unavailable earns nobody OIL either.
+- R26. "Discard N edits" on a published day does not take a CX off an input — the mark is the input's, and the
+  scheduler takes it off where he put it on.
+
+**Not settled, his or step 5's:** the schedule's own Personal Inputs line of a cancelled input shows nothing of the CX
+(its Ground Programme row does) — put to him with Q2. **Not covered by a test:** a member split out of a cancelled
+shared absence (a leave cannot be cancelled this way — only a request's row carries the button).
+
+**The look at this stop:** the mock-up script filed an input and cancelled it by real presses on the board, a desktop
+and a phone, on step 4's build — `docs/mock/2026-10-12-one-rule/cancelled-real-{desk,phone}-schedule-row.png` (no
+injection): the row reads "CX DUE WX", struck through and faded, its people and LATE mark in place. Opened by the
+builder. Un-cancel, the red box and information only were NOT looked at on screen at this stop (tests press the
+board's own buttons in jsdom); the job's walk does.
+
+**The gates:** the affected test files green and `npx tsc -b` clean at this step, as §5 asks; the whole gate set is run
+after step 6, for steps 4 and 6 together.
