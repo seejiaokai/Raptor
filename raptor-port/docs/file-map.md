@@ -1,5 +1,28 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 2 (b) to (i) (12 Oct 26 — one row an input, the door, OIL, the count, who may, the
+pages, the Leave War's writers, the seed; D755, D756, D762, D763): NEW `src/ui/reqdoor.ts` (THE DOOR OF AN INPUT'S ROW —
+what a hand on a puck does where the row came from an input: `rowPut`, `rowTake`, `rowLeaveTo`, `rowMove`; it installs
+`HOOKS.inputRow` for `state/store.ts` and `state/view.ts`; the belt behind it is `engine/slots.ts inputSeatBar`). It
+takes over from `src/ui/grouprow.ts`, which keeps only `leadKeyOf` and `lineOf` until the dead code goes (the plan's
+step 6 — with `engine/grouprows.ts groundGroups`, `engine/inputentry.ts`, `engine/entryfold.ts`,
+`state/inputgroup.ts`, whose three readers now answer every record as its own entry). `src/engine/grouprows.ts` gains
+`rowPeopleDrawn` and `inputRowSeveral` (whose pucks a ground row draws, in what order); `src/engine/inputs.ts` gains
+`facesOf` / `facesDrawn` (one per-person view of a record for DRAWING), `iuTail`, and `src/engine/keys.ts` `iuParts`
+(the one parser of an Unavailable row's address, `iu:<iid>` or `iu:<iid>~<person>`); `src/engine/oilev.ts`
+`claimPeople`, `claimPh`, `legacyClaim` (a claim in either shape; the reader for a day issued before the build);
+`src/state/perms.ts` `ownPart`, `filedWhole`, `byAfterLeaving`; `src/state/view.ts` `armStale`. New tests:
+`src/ui/reqdoor.test.tsx` (in place of `grouprow-hands.test.tsx`, removed), `src/state/inputcount.test.ts` (in place of
+`grouprow-count.test.ts`, removed), `src/leavewar/onerecord-perms.test.ts`. Re-expressed on the one record, same
+files: the OIL tests of a request's row (`engine/oilclaimcrowd`, `oilnamebox`, `oilplaceholderclaim`,
+`oilpersonalcrowd`, `oilev`, `oilsent`, `state/p6a-oilstamp`, and their `ui/` twins with `ui/pendcrowd-request`), the
+rows (`engine/grouprows.test.ts`, `ui/grouprow-draw.test.tsx`, `state/grouprow-entry.test.ts`,
+`ui/audit-e-commit-relink.test.tsx`), the Inputs pages' and the Leave War's shared-input tests. What each letter
+built: the plan's §10. The look at this stop: `scripts/handpass/onerule-step2-look.mjs` (one input through its life by
+real presses, a desktop and a phone), its sheet `docs/handpass/2026-10-12-one-rule-step2.md` and pictures
+`docs/handpass/2026-10-12-one-rule-step2/`. Added afterwards: `ui/inputedit.tsx inputWho` (who an input is called by
+in a title or a question), `state/perms.ts takesOn` (the one person of an input making it an input of several).
+
 `[ALL-AVAIL-AS-MEMBER]` step 2 (a) (12 Oct 26 — the record, its one writer, and the bodies that would otherwise read
 nobody; D756, D762, D755 (3), D763): NEW `src/engine/inputown.ts` (the writes to who is in an input — `toPeople`,
 `putPerson`, `takePerson`, `swapPerson`, and `ownInputOf`: one man of a shared input given an input of his own; a

@@ -3909,3 +3909,63 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In a survey brief for a shape change, ask for three columns per call site, not one: what it reads, what it RETURNS or passes on, and who consumes that (a writer, an identity comparison, an editor). Classify as a reader only when nothing downstream writes to, compares, or looks up the object it was handed. Then freeze the derived view in tests, so the misses that remain throw.
 
 **Principle:** Whether a call site is safe to hand a copy depends on where the object goes next, not on what the site itself does with it; classify by the whole path, and make a wrong classification loud.
+
+### Observation 525: Re-expressing old tests on a changed rule finds faults the new tests did not - give that work to a reader who did not write the build
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the one-rule build, step 2 (one record an input): the host wrote new tests first for each part, then handed the tests that pinned the old shape to three helpers with a brief of four choices per case
+**Skill:** New skill candidate: migrating a test suite across a deliberate rule change (the project's build steps; briefs for test-migration helpers)
+**Type:** open-source
+**Phase/Area:** build steps that change a data shape or a ruling; briefs for helpers
+
+**Issue:** The host's own new tests passed at first run for the row and the door. A helper re-expressing the OLD drawing tests on the new record then found four product faults the new tests had not: people drawn in joined order instead of A to Z on three screens (the one helper written for it was called by nothing), an armed place left pointing at another row after an Accept, two toasts saying "undefined's", and a save that did nothing in silence while moving a date. Each came from an old case whose SITUATION the builder had not thought to carry over.
+
+**Suggested improvement:** In a build that changes a rule, brief the migration of the old tests as four explicit choices per case - the rule survives (rebuild the fixture), the rule changed (re-express and name the ruling), the old rule still holds for old data (keep it as a legacy case), the subject is gone (pin what is true now and name what was retired) - forbid skip / todo / loosened assertions, and tell the helper to STOP and report on anything that looks like a product fault rather than pin it. Read the reports for the faults before the pass counts.
+
+**Principle:** Old tests are a list of situations somebody once found worth pinning; re-expressing them under the new rule, by someone who did not write the new code, is a second scenario pass that costs less than a walk and finds what the builder's own tests share his blind spots about.
+
+### Observation 526: A script typed into the shell loses its backslashes - an edit that needs an exact string goes in a script FILE
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session; a here-document holding Python replacements with escaped apostrophes failed its own match, twice, on Windows Git Bash
+**Skill:** the project's working notes (HANDOFF `Gates` line; memory `bash-heredoc-apostrophes-fail`)
+**Type:** open-source
+**Phase/Area:** mechanical multi-file edits
+
+**Issue:** A replacement script passed through a here-document arrived with `\\'` collapsed, so its exact-match assertion failed (harmlessly - it asserts before it writes). The memory note already says to write scripts with the file tool; the lapse came from a script that had no apostrophe in its first version and grew one.
+
+**Suggested improvement:** Make it the default, not the fallback: any edit script goes to the scratchpad by the file tool and is run from there; and every replacement asserts its match count before anything is written, so a mangled script fails loudly and changes nothing.
+
+**Principle:** An edit script should fail closed: assert the exact match first, write last - then the worst a transport fault can do is nothing.
+
+### Observation 527: A reader-class guard that lists FILES misses the readers of a record's saved IMAGES
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the one-rule build, step 2: a guard test lists every file that reads the live input list and classes it; three bodies that read a change's before/after images (the change history's Leave War lines, the published day's freeze of who was on it) still read the old single-person field and were found only by old tests re-run on newly shaped records
+**Skill:** New skill candidate: migrating a stored record's shape (the project's build steps)
+**Type:** open-source
+**Phase/Area:** data-shape migrations; guard tests
+
+**Issue:** The guard covered every reader of the LIVE collection, so the builder took it as proof nothing read the old field. Readers of the command stream's recorded images, of frozen published blocks and of test-harness lookups were outside it; each kept reading `.person` on a record that no longer carries one, silently (a filter that finds nothing, a name that reads undefined).
+
+**Suggested improvement:** When a field is retired from a record, grep for the FIELD across the source, not only for readers of the collection - and class every hit (a per-person view, an old-shape fallback, or a fault). Add the image readers and frozen-block readers to the guard's lists.
+
+**Principle:** A guard keyed on who reads a collection does not cover who reads its copies - change images, frozen snapshots, exports. Retiring a field needs a sweep keyed on the field.
+
+### Observation 528: Parallel helpers given one scratch folder overwrite each other's output files
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session: three test-migration helpers were pointed at one scratchpad directory; two chose the same output file name and one lost its first run's output
+**Skill:** the project's briefs for parallel helpers
+**Type:** open-source
+**Phase/Area:** delegation briefs
+
+**Issue:** No harm reached the repo, and each helper noticed and moved - but each spent a run rediscovering its own result.
+
+**Suggested improvement:** A brief for parallel helpers names a scratch SUB-folder per helper (or a file prefix), as it already names which source files are whose.
+
+**Principle:** Shared state between parallel workers includes their scratch space; partition it in the brief as the source files are partitioned.

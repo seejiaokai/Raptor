@@ -8,6 +8,15 @@ shared input…", "A request's row: its name…", "On a shared input's row the p
 input is counted once"); the screens: `../../ui-contracts.md` §A shared input is ONE row on the schedule. The check:
 `../../handpass/2026-10-11-group-input-one-row.md`.
 
+**CHANGED BY THE ONE-RULE BUILD (`[ALL-AVAIL-AS-MEMBER]`, step 2 — 12 Oct 26; owner D755, D756, D762).** An input is ONE
+record and ONE row now, and every input's row is the input — not a shared input's alone. The rows below are as they
+were written on 11 Oct 26; what each reads as now is its line in `scripts/rulecheck.mjs`, and its proof has moved:
+GI6, GI8–GI10, GI12, GI13, GI15 → `src/ui/reqdoor.test.tsx`; GI16–GI18, GI20 → `src/state/inputcount.test.ts`
+(`grouprow-hands.test.tsx` and `grouprow-count.test.ts` are gone). **GI11 and GI19 are SET ASIDE** (D745 → D755: the
+placeholder is one of the input's own people and is tied to no man); their ids are not re-used. **GI7** (D738, D744 →
+D762): a person added follows the input's ONE answer; nobody is asked for himself. This register is rewritten with the
+rest of the records in step 8 of that build (`../plans/2026-10-11-one-rule-plan.md` §5, §10).
+
 | ID | The behaviour | Ruling | Named proof |
 |---|---|---|---|
 | GI1 | A name, a time or a remark typed on a request's row on the Ground Programme — one man's or a shared input's — changes the REQUEST: the Inputs calendar and the Personal Inputs line read the same; a time typed alone fills the other end, a time cleared makes it all day; the name becomes the input's own title; one Undo; a raw write to those boxes is refused | D739, D740 (R1, R2) | `ui/reqrow.test.tsx` |

@@ -581,6 +581,15 @@ through by the build, not ruled.)
 - R13. Taking ALL AVAIL off an input ends the switch-offs made for the people behind it; dropping it back starts
   fresh. A named person leaving does not touch them.
 - R14. A man dragged from a flying seat onto the only person's puck SWAPS with him — the man replaced takes that seat.
+- R15 (step 2, 12 Oct 26). A member who adds people to HIS OWN input that a scheduler filed for him becomes the one
+  who filed it — as before the build, where the group he made named him its filer — so he can go on changing who is in
+  it; that the scheduler put HIM in does not take it away (`state/perms.ts takesOn`, `allPutBy`).
+- R16 (step 2). A member never hands an input a scheduler filed for him to another person (himself out, another in, in
+  one save): "Only a scheduler can move an input to another person" — he may add people, or take himself out.
+- R17 (step 2). A person the input's own window adds to an input whose late date has passed reads LATE at once — only
+  he does (the plan's "only the person added can be late"); a person added from the schedule never does (D741).
+- R18 (step 2). The OIL question raised by putting a person on an input's row on the schedule closes its dialog with
+  the sheet, answered or not — unanswered, it waits on the filer's bell.
 
 *(R4 of version 1 is now Q1.)*
 
@@ -737,3 +746,105 @@ placeholder, everyone in it earning on its one answer (`oilev.ts`), a member's c
 
 *Not in (a), by its own lettering:* permissions in full and §11 (f) — the entries' `by` tests, `by` passing when
 the filer leaves (F13); the swap's void and ask (d, c); the legacy claim reader (d); `iuParts` (g).
+
+**(b) to (i) — BUILT 12 Oct 26, in the order (b)+(c), (e), (d), (f), then (g)+(h)+(i) with the flip.** What each built,
+and where it left this plan's letter:
+
+- **(b) the whole row.** `requestRowFields` writes the name box and everyone under it from the input's list; `srcvOf`
+  carries a build mark (`2|`), so EVERY row made before the build is re-made once at its first read and whoever
+  stood on it without being in the input comes off (R6); the re-make owns the row's people (`reqChanged` only where
+  something a reader sees moved); `placeRequestRow` puts a row at the end; `sharedRowOf`, `entryPeopleOnce`,
+  `carryOilRefusal` and `srcg` are gone. `canonical.ts placeOf`: the people of an input's row are ONE list place.
+  `engine/grouprows.ts`: `groundGroups` answers every row as its own (its callers go in step 6); **`rowPeopleDrawn`**
+  is the one answer to "whose pucks, in what order" — A to Z, then the placeholder — and `inputRowSeveral` says which
+  rows the week, the board and the peek draw through it. *Found by the re-expressed tests, fixed:* the builders had
+  been left drawing in joined order.
+- **(c) the door and the belt.** `ui/reqdoor.ts` (`rowPut`, `rowTake`, `rowLeaveTo`, `rowMove`, `onInputRow`,
+  `isRowMan`, `placeOnRow`; `HOOKS.inputRow`) answers for EVERY input's row; `slots.ts inputSeatBar` refuses a raw
+  write to any place of it. `ui/grouprow.ts` keeps `leadKeyOf` / `lineOf` only (step 6). **A placeholder on an input's
+  row is REFUSED until step 3** — with the input's own sentence — because (b) and the belt take away "the row's own
+  placeholder" (D46) and step 3 is what makes it one of the people: told to him at the stop before step 3.
+  *Found by the re-expressed tests, fixed:* an armed "+ add" left pointing at another row when an Accept put a row
+  back above it — the armed row is now remembered by its id (`state/view.ts armStale`) and every schedule change's
+  epilogue puts a stale arm down.
+- **(d) OIL.** New claims carry `people` and `ph` and NO `person`; `claimPeople` / `claimPh` read either shape;
+  `legacyClaim` / `legacyDefault` / `legacyEarned` are the reader for a block frozen before the build (yesterday's
+  rule, off that day's own frozen row) — the only place `landedExtras` is still read. ONE default (`claimDefault`):
+  everyone the input reaches follows its one answer. The crowd is written for a claim that HAS a placeholder, never
+  containing a named person; a crowd man's switch is read against the placeholder's own holding (F11). OIL Earn's
+  reasons: a man's own one-person input keeps his words; an input of several and the men behind ALL AVAIL say
+  whoever filed it. The membership-only pass for a placeholder on a "Personal" request's row is gone (a Personal
+  input holds none — all six placeholder kinds ask). The swap's void and the ask-on-the-spot are in the door (c).
+- **(e) the count.** The people step in `publish.ts dayPendingItemsIn` (and `personUnitSrc`); `entryfold.ts` is not
+  called any more (step 6 removes it); the OIL fold's who-set is the named people of both copies; `frozenInputMatch`
+  pairs a man split out of an input with that input's change (`pieces`); a person's own line in the pending list
+  (`pp`), an input of several named with its people.
+- **(f) who may.** `perms.ts`: `ownPart` (and Undo's use of it), `filedWhole`, `byAfterLeaving` (F13 — one body for
+  the writer and the gate), the list's own tests in `inputBreach` (nobody's entry forged or re-stamped; taking
+  yourself out is yours, putting yourself in is not), `groupStood` gone (D763). §11 of `docs/data-model.md` and
+  `INPUT_FILER_NOTE` changed together (D200). The window's sentence for a list a scheduler has changed is
+  `sharedRefusal`'s.
+- **(g) the pages, with THE FLIP.** `commitNewInput` writes `people`; `commitGroup` is the old name of `commitInput`
+  and `removeEntry` of the one delete; `state/inputgroup.ts` answers every record as its own entry and the group's
+  write check is gone (step 6 removes the three names). The window (`InputEditor`) holds the one record: "Your OIL",
+  a man's own answer and `saveOwnOil` are out; "Take me out" is `commitInput` without him. The schedule's lists draw
+  from **faces** (`inputs.ts facesOf` / `facesDrawn` — one frozen per-person view for DRAWING; a placeholder has a
+  face, unlike a line). The Unavailable row's address: `iu:<iid>~<person>` for one man's row of an input that holds
+  several — `inputs.ts iuTail` writes it, `keys.ts iuParts` is the one parser; a box typed on such a row, and a
+  puck dropped on it (`reassignInput`), change HIS part (`ownInputOf`) or replace HIM in the list. The change
+  history writes one line a person put in or taken out (`one`, filed under him).
+- **(h) one man's part.** `leavewar/inputgate.ts` reads lines and splits a man out of a shared leave before sick
+  leave cuts it; a delete's and a posting's trims (`state/person-delete.ts`) take him out of a list, or split him
+  out where the input spans his cutoff; the war's own leaves are written with their list. `cutDates` and the war's
+  remark sheet act on war-approved leaves, which hold one person — no split is needed there.
+- **(i) the seed and the declared shape.** `state/demoseed.ts`: the shared demo input is one record of four, the two
+  placeholder inputs carry their list, and "already seeded?" knows both shapes. `schema.ts`: `people` / `InputPerson`,
+  `person` optional (the old shape).
+
+**Tests.** New: `engine/onerecord.test.ts`, `leavewar/onerecord-write.test.ts`, `leavewar/onerecord-perms.test.ts`,
+`ui/reqdoor.test.tsx` (replaces `grouprow-hands.test.tsx`), `state/inputcount.test.ts` (replaces
+`grouprow-count.test.ts`). **Every test that pinned one-record-a-man was re-expressed on the one record, not deleted:**
+where the rule survived, the fixture was rebuilt; where a ruling changed the rule (D18, D46, D470 → D755, D762; D744,
+D731 (4) → D762; D745 set aside), the case says so by name; where the old rule still holds for a day issued before
+the build, it is kept as a case on a hand-built frozen block; where the subject cannot exist any more (a placeholder
+on a Personal request's row; rows of one input drawn as one), the file pins what is true now and names what it
+retired. The helpers that did this work were given that brief; the host read their reports and fixed the four
+product faults they turned up.
+
+**Waiting for step 3 (a placeholder beside named people on a row, on the screens):** the requester's own puck beside
+ALL AVAIL and its counter; a tap in the ALL AVAIL window leaving the requester untouched; a named person beside ALL
+AVAIL following the input's one answer as his own switch; ALL AVAIL under a named person's request, its crowd off on
+the input's No; a crowd change on a row holding both. Each is pinned today as "refused in this step", and those pins
+flip in step 3. The ENGINE rule for it is already built and tested (`engine/oilclaimcrowd.test.ts` and its
+neighbours put such a record straight into the list).
+
+**Found re-expressing the old tests on the one record, after the letters were built (12 Oct 26) — each fixed, each
+pinned by the case that found it.** The remaining tests that pinned one-record-a-man — the Inputs pages', the Leave
+War's, the browser tests' — were re-expressed by five helpers under the four-choice brief (rule survives / ruling
+changed it, named / old data, kept as a legacy case / subject gone, what is true now pinned), with "stop and report a
+product fault, never pin it". They reported, and the host fixed:
+- **The only person of an input someone else filed could not add a person** — the door let him, the check on what a
+  member's command changed refused him with "Not saved — that change is not yours to make" (§4.9 says its people are
+  his to change). `state/perms.ts takesOn`: his own one-person input made an input of several, the filing passing to
+  him in the same change (`ui/inputedit.tsx commitInput`); `allPutBy` no longer asks who put HIM in (R15). A hand-over
+  to another person by a member is refused in words (R16). `docs/data-model.md` §11 and `INPUT_FILER_NOTE` say it.
+- **The change history lost the Leave War's lines** for an approved leave (approved / moved / taken back / deleted, one
+  line a decision): `state/changelines.ts warInputLines` and `crossLines` read the record's one `person`; they read
+  its people now (`leavewar/changelines-lw.test.ts`, ten cases).
+- **A man on a published day only through a newly filed input was left out of the day's freeze** — his CAT changed
+  after publishing read 0 pending (D186, D179): `engine/publish.ts dayPeopleAttrs` read `.person` (`ui/latepub.test.tsx`).
+- **The window's title led with whoever joined first**, its OIL question and the cards with the first A to Z:
+  `ui/inputedit.tsx inputWho` — one body for the title and for the "open the other input and lose them?" question,
+  which had said "the other's input" of every input filed since the build.
+- **An OIL question closed without an answer left a dialog standing on the schedule** that nobody had opened:
+  `askOilIfPending(r, shut)`, passed by the row's door (`ui/reqdoor.ts`) — R18.
+- **A shared input could be turned into an ALL AVAIL input** by un-picking its people and picking the placeholder in one
+  save (refused before the build): refused again in `commitInput`, with the other "filed on its own" refusals, until
+  step 3.
+**Left for step 6 (the dead code):** `ui/inputedit.tsx oilSummaryOf`, `entryOilAnswer` (no door reaches them; five
+passing cases of `ui/batch2.test.tsx` still pin the first on old-shaped records and go with it). **For step 3's
+wording:** the picker says "ALL AVAIL is filed on its own…" where the save says "This input already has ALL AVAIL" of
+ALL AVAIL beside ALL — one sentence for both.
+
+**The whole gate set, watched once after all of it (12 Oct 26):** unit 10208 / 10208 (597 files) · build clean · tfin 728 / 0 · e2e 768 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. The look at this stop, and what was
+not checked: `../../handpass/2026-10-12-one-rule-step2.md`. **Step 2 is built; he is shown it before step 3.**
