@@ -304,14 +304,20 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
        (`i:<id>`); when that request leaves the day — its man taken out of a shared input, ✕ on a one-man request's
        row — the men behind the puck leave the day's membership with it. They are nobody's changed input, so the rule
        below read a SECOND change, "what this day earns", for the one act, on a weekday too. Membership that went
-       from an item whose request's own filing or details moved, and has none left, is that request's. */
+       from an item whose request's own filing or details moved, and has none left, is that request's.
+       …AND SO IS THE CROWD THAT ARRIVES WITH ONE (step 3 of the one-rule build, 12 Oct 26 — owner D736: "one man taken
+       off its row or added to it is ONE CHANGE EACH"; D755: ALL AVAIL on an input's row is one of the input's people;
+       the plan 2026-10-11-one-rule-plan.md §4.8, T16). ALL AVAIL dropped on an input's row, or an input filed holding
+       it, brings membership to an item that had none: the men behind it are nobody's changed input either, and the one
+       act read TWO — the placeholder added, and "what this day earns" — on a weekday too. Membership that came to an
+       item which had none, whose request's own filing or details moved, is that request's — the mirror of the above. */
     const wasSent:any=(w&&w.sent)||{}, nowSent:any=((oilEvidence(di)||{}) as any).sent||{};
     let via:string='';
     const crowdOK=!moved||!mem||[...new Set([...Object.keys(wasSent),...Object.keys(nowSent)])].every((k:any)=>{
       const x=new Set<string>((wasSent[k]||[]).map(String)), y=new Set<string>((nowSent[k]||[]).map(String));
       const ch=[...x].filter((p:any)=>!y.has(p)).concat([...y].filter((p:any)=>!x.has(p)));
       if(!ch.length)return true;
-      if(String(k).indexOf('i:')===0&&!y.size){const g=byId.get(String(k).slice(2)); if(g&&(g.val||g.fil)){via=via||String(k).slice(2);return true;}}
+      if(String(k).indexOf('i:')===0&&(!y.size||!x.size)){const g=byId.get(String(k).slice(2)); if(g&&(g.val||g.fil)){via=via||String(k).slice(2);return true;}}
       return ch.every((p:any)=>who.has(String(p)));});
     const fold=!!moved&&moved.iids.every((id:string)=>{const g=byId.get(id); return !!(g&&(g.val||(via&&g.fil)));})&&crowdOK;
     if(!fold)oil.forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));

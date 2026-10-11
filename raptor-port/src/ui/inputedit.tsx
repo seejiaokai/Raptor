@@ -929,13 +929,19 @@ export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, ent
    save). A draft carries ISO `start` / `end`; a record carries `date` / `endDate`. The save boundary's hard check
    (state/store.ts) is behind them all. */
 export function placeholderRefused(d: any): boolean {
-  if (!d || !isSpecial(d.person)) return false
+  const why = placeholderWhy(d)
+  if (why) HOOKS.toast(why, 'warn')
+  return !!why
+}
+/** …and the sentence itself, said by nobody: '' where the draft's `person` is no placeholder, or is one this input may
+ *  hold. Since step 3 of the one-rule build (D750, D753) a placeholder may stand beside other people, so this asks
+ *  only what is the placeholder's own — its kind and its one day; the people picker greys its two pucks by it. */
+export function placeholderWhy(d: any): string {
+  if (!d || !isSpecial(d.person)) return ''
   const iso = d.start != null || d.end != null
   const date = iso ? (d.start ? fmt(d.start) : '') : d.date
   const endDate = iso ? (d.end && d.end !== d.start ? fmt(d.end) : undefined) : d.endDate
-  const why = placeholderProblem({ person: d.person, type: d.type, date, endDate, yr: d.yr ?? baseYear(), grp: d.grp, grpBy: d.grpBy })
-  if (why) HOOKS.toast(why, 'warn')
-  return !!why
+  return placeholderProblem({ person: d.person, type: d.type, date, endDate, yr: d.yr ?? baseYear(), acc: d.acc })
 }
 
 /* WHY A MEMBER MAY NOT FILE THIS KIND FOR ANOTHER MAN, in a sentence — one wording for the new-input door, the edit door
@@ -1829,14 +1835,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   /* WHAT ONE RECORD MAY HOLD — the same body the save boundary holds every command to (state/store.ts) */
   const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec ? rec.acc : undefined, people: next.map(p => ({ p })) })
   if (shape) { say(shape, 'warn'); return false }
-  /* IN THIS STEP a placeholder never TAKES OVER an input of several — its people un-picked and ALL AVAIL picked in one
-     save (refused before the build as "a placeholder taking over an entry that is a group"; a list holding the
-     placeholder alone is a sound shape, so shapeProblem above says nothing). Step 3 of the one-rule build makes the
-     placeholder one of an input's people, and this goes with the other "filed on its own" refusals. */
-  if (rec && have.length > 1) {
-    const ph = added.find(p => isPlaceholderInput({ people: [{ p }] }))
-    if (ph) { say(`${cs(ph)} is filed on its own — it already stands for whoever is free`, 'warn'); return false }
-  }
+  /* (A PLACEHOLDER IS ONE OF AN INPUT'S PEOPLE since step 3 of the one-rule build — owner D750, D753, D755: it may be
+     put in beside them, be left alone when they go, or take the input over in one save. Until then every one of those
+     was refused here as "filed on its own".) */
   if (protectedInput(...(rec ? [rec] : []), normDest(first, draft.yr))) return false
 
   /* does what it SAYS change? (the dates compared as dates, not as their labels — a label carries no year) */
@@ -2203,6 +2204,10 @@ export function InputEditor() {
   const picker = (win || recPpl.length > 1) && ctx !== 'up'
   const grouped = picker && (ppl.length > 1 || recPpl.length > 1)
   const csOf = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
+  /* MAY THIS INPUT HOLD A PLACEHOLDER? — the one body, asked of the draft as it stands: its kind, its dates, and where
+     the saved input is filed. The picker greys its two placeholder pucks by it and the Save refuses with the same
+     sentence (step 3 of the one-rule build — owner D750, D753). */
+  const phWhy = (id: string) => (draft ? placeholderWhy({ ...draft, person: id, acc: r && !r._new ? r.acc : undefined }) : '')
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
      hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
@@ -2477,11 +2482,11 @@ export function InputEditor() {
     if (isNew && r._calendar && draft && !draft.start) { HOOKS.toast('Pick a start date on the calendar first', 'warn'); return }
     /* an input for ALL AVAIL / ALL that may not be saved is refused FIRST — before the picker's own line, the document
        question and every sheet ([INPUT-ALL-AVAIL]) */
-    if (draft && placeholderRefused(several && picker ? { ...draft, person: ppl.find(p => isSpecial(p)) ?? draft.person, grp: ppl.some(p => isSpecial(p)) ? 1 : undefined } : draft)) return
+    if (draft && placeholderRefused(several && picker ? { ...draft, person: ppl.find(p => isSpecial(p)) ?? draft.person } : draft)) return
     if (picker && draft) {
       /* nothing is substituted for what he picked: people he may not file this kind for refuse the save, in the
          picker's own sentence */
-      const pb = pickProblem(ppl, several, draft.type)
+      const pb = pickProblem(ppl, several, draft.type, phWhy)
       if (pb) { HOOKS.toast(pb.why, 'warn'); return }
     }
     if (grouped && draft) {
@@ -2673,6 +2678,7 @@ export function InputEditor() {
                  List's Add form — where such leave was filed — went (D729; `archivedHere`, above). */
               more={archivedHere.length ? <optgroup label="Posted out / archived">{archivedHere.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup> : undefined}
               moreIds={archivedHere.length ? archivedHere : undefined}
+              phWhy={phWhy}
               onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
             : canEditSched() && <label className="inped-f">
               <span className="inped-k">Person</span>

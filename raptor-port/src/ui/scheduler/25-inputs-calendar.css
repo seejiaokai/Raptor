@@ -407,6 +407,11 @@ body.in-cal{padding-bottom:0}
 .pp-puck .puck{pointer-events:none;flex:1 1 auto;min-width:0;max-width:100%}
 .pp-puck.on{opacity:1;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 @media (hover:hover){.pp-puck:hover{opacity:.85}.pp-puck.on:hover{opacity:1}}
+/* ALL AVAIL / ALL among "Several people" (D750, D753): where this input cannot hold one — longer than a day, another
+   kind — the two are greyed past the ordinary "not picked" dimming, and the reason sits under them */
+.pp-puck:disabled{opacity:.22;cursor:not-allowed}
+@media (hover:hover){.pp-puck:disabled:hover{opacity:.22}}
+.pp-phwhy{font-size:12px;line-height:1.35;color:var(--ink-3)}
 @media (max-width:620px){
   .pp-pucks{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
   .pp-sw,.pp-why .abtn{min-height:44px}

@@ -1,5 +1,14 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 3 (12 Oct 26 — ALL AVAIL / ALL as one of an input's own people; D750, D753, D755, D757): no
+new source file. `src/engine/inputs.ts placeholderProblem` loses "filed on its own" and says the plan's shorter words;
+`src/ui/PeoplePick.tsx` draws the two placeholders as pucks of their own in "Several people" (`phWhy` — the window's
+answer to "may this input hold one?", `src/ui/inputedit.tsx placeholderWhy`); `src/ui/reqdoor.ts` lets one join, leave
+and move; `src/engine/publish.ts` counts the crowd that arrives with an input as that input's change. New tests:
+`src/engine/phmember.test.ts`, `src/ui/phmember.test.tsx` (the doors, OIL, the published count, his two routes — the
+plan's T1, T3, T16, T17), `src/ui/phpick.test.tsx` (the picker). What was built and found: the plan's §10
+(`docs/superpowers/plans/2026-10-11-one-rule-plan.md`).
+
 `[ALL-AVAIL-AS-MEMBER]` step 2 (b) to (i) (12 Oct 26 — one row an input, the door, OIL, the count, who may, the
 pages, the Leave War's writers, the seed; D755, D756, D762, D763): NEW `src/ui/reqdoor.ts` (THE DOOR OF AN INPUT'S ROW —
 what a hand on a puck does where the row came from an input: `rowPut`, `rowTake`, `rowLeaveTo`, `rowMove`; it installs

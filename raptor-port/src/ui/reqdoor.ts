@@ -38,8 +38,12 @@
    added him; where its answer is No, the note says he is not counted. A REPLACEMENT voids the answer — it was the first
    man's own (D762 reading 1; Fable F7) — and asks again.
 
-   ALL AVAIL / ALL on an input's row is step 3 of the build (D753): until then the placeholder is refused here with the
-   input's own sentence, as the input's window refuses it. */
+   ALL AVAIL / ALL IS ONE OF THE INPUT'S PEOPLE (step 3 of the build, 12 Oct 26 — owner D750, D753, D755, D757): put
+   anywhere on the row it JOINS — it never replaces anyone, and a named person put on ITS puck joins beside it; taken
+   off, it leaves, and it STAYS when anyone else leaves ("ALL AVAIL stays when anyone leaves"). Where it cannot apply the
+   input's own save refuses with the one body's sentence (engine/inputs.ts placeholderProblem, shapeProblem): a second
+   placeholder, an input longer than a day, a kind that is not one of the six. Its crowd's OIL switches end with its
+   holding: taken off and dropped back it is a new one (inputown.ts putPerson — Fable F11). */
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { idsOf, inpLabel, oilAsks } from '../engine/inputs'
@@ -71,6 +75,9 @@ function placeOf(key: any): Place | null {
   return { di, ri, rest, d, row, inp, at: at ? String(at) : '' }
 }
 const csOf = (id: any): string => (PEOPLE[id] ? String(PEOPLE[id].cs) : String(id ?? ''))
+/* already in it — one sentence a placeholder, whichever door says it (inputs.ts shapeProblem says the same of ALL beside
+   ALL AVAIL) */
+const alreadyOn = (id: string): string => (isSpecial(id) ? `This input already has ${csOf(id)}` : `${csOf(id)} is already on this input`)
 /** is this place on a row that came from an input (any place of it — a puck's, its "+ add") */
 export const onInputRow = (key: any): boolean => !!placeOf(key)
 /** does someone of the input stand on this place — its name box or a place under it, a placeholder included (F8: the
@@ -153,9 +160,9 @@ export function rowPut(key: any, id: any, seat?: (was: string) => boolean | void
   if (!p || !pid || !PEOPLE[pid]) return 'none'
   if (!canEditSched()) return 'refused'
   const ids = people(p.inp)
-  if (ids.includes(pid)) { HOOKS.toast(`${csOf(pid)} is already on this input`, 'warn'); return 'refused' }
-  /* a placeholder: never replaces anyone — it joins, where the input may hold one (step 3; refused with the input's
-     own sentence until then) */
+  if (ids.includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
+  /* a placeholder: never replaces anyone — it joins, where the input may hold one (the input's own save says why
+     where it may not) */
   if (isSpecial(pid)) return join(p, pid)
   if (p.at && ids.length === 1 && !isSpecial(p.at))
     return replace(p, pid, seat, seat ? was => `${csOf(pid)} and ${csOf(was)} swapped` : undefined)
@@ -221,7 +228,7 @@ export function rowMove(fromKey: any, toKey: any): RowAnswer {
   if (!a || !a.at || !b || a.inp === b.inp) return 'none'
   if (!canEditSched()) return 'refused'
   const pid = a.at
-  if (people(b.inp).includes(pid)) { HOOKS.toast(`${csOf(pid)} is already on this input`, 'warn'); return 'refused' }
+  if (people(b.inp).includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
   if (!leave(a, () => commitInput(b.inp, draftOf(b.inp), [...people(b.inp), pid], { sched: true }), `${csOf(pid)} moved to ${inpLabel(b.inp)}`)) return 'refused'
   askOilIfPending(b.inp, true)
   notify()

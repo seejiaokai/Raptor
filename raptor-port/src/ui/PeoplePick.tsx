@@ -15,10 +15,10 @@
    correction (`pickProblem` — the editor's Save refuses with the same sentence).
 
    The picker holds no state and writes nothing: its owner keeps `people` (in the order picked — the first is the one
-   kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitGroup. */
+   kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitInput. */
 import { useRef, type ReactNode } from 'react'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { isUpchit, needsDoc, placeholderKind, placeholderProblem } from '../engine/inputs'
+import { isUpchit, needsDoc, placeholderKind, placeholderProblem, shapeProblem } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
 import { mayFileGroup, mayFileInputFor, me } from '../state/perms'
 import { fileForOtherRefusal, rosterOptions } from './inputedit'
@@ -42,10 +42,16 @@ const GROUPS: Array<{ k: string; label: string; has: (p: any) => boolean }> = [
 /* ---- "ALL AVAIL" AND "ALL" AS A CHOICE ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 — 9 Oct 26) ------------
    His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."
    The schedule's two placeholders are offered in the ONE-PERSON list, under a heading that says what both mean (D702:
-   each "stands for whoever is free" — and neither takes ground crew, D52, so "everyone" would be false). Never in
-   "Several people": a placeholder input is filed on its own. Which kinds may carry one, that it is one day and never a
-   group, is ONE body — engine/inputs.ts placeholderProblem — asked here, at every save door and by the save boundary's
-   hard check. */
+   each "stands for whoever is free" — and neither takes ground crew, D52, so "everyone" would be false). Which kinds
+   may carry one, and that it is one day, is ONE body — engine/inputs.ts placeholderProblem — asked here, at every save
+   door and by the save boundary's hard check.
+   AND IN "SEVERAL PEOPLE" TOO (step 3 of the one-rule build, 12 Oct 26 — owner D750: "'Several people' takes ALL AVAIL
+   / ALL, so the puck is one of the input's own people"; D753: "offered only where the input is a single day; and an
+   input takes ALL or ALL AVAIL, never both"; the plan 2026-10-11-one-rule-plan.md §4.5). Until then a placeholder was
+   filed on its own and "Several people" refused one. Now the two are pucks of their own above the groups, under the
+   same heading: one may be picked beside the people; where this input cannot hold one — longer than a day, or not one
+   of the six kinds — they are drawn greyed with the reason under them (`phWhy`: the window's own answer, of its
+   draft's kind and dates). */
 export const PLACEHOLDER_IDS = (): string[] => Object.keys(PEOPLE).filter(id => PEOPLE[id].special)
 export const PLACEHOLDER_HEADING = 'Whoever is free that day'
 /** The two entries, as a group of a person list. `type`: the kind being filed — offered only for one a placeholder may
@@ -64,16 +70,19 @@ export function PlaceholderGroup({ type, current, all, value }: { type?: any; cu
 const mayPickOthers = (type: any): boolean => canEditSched() || mayFileInputFor('\u0000another', type)
 
 /** What is wrong with the people picked for this kind, and the one press that corrects it — or null. */
-export function pickProblem(people: readonly string[], several: boolean, type: any): { why: string; fix: string[]; fixLabel: string } | null {
+export function pickProblem(people: readonly string[], several: boolean, type: any, phWhy?: (id: string) => string): { why: string; fix: string[]; fixLabel: string } | null {
   const mine = me()
-  /* A PLACEHOLDER PICKED ([INPUT-ALL-AVAIL]). With "Several people" on — he switched it on after choosing ALL AVAIL, and
-     the switch keeps what was chosen — it is refused with its one press back to ALL AVAIL alone. With a kind it may not
-     carry, the kinds are named; the press files it for himself instead. (Its dates are not known here: the one-day rule
-     is said at the save, by the same body — ui/inputedit.tsx placeholderRefused.) */
-  const ph = people.find(p => isSpecial(p))
+  /* A PLACEHOLDER PICKED ([INPUT-ALL-AVAIL]; one of an input's people since step 3 of the one-rule build — D750, D753).
+     Where this input cannot hold one — a kind it may not carry, or longer than a day (`phWhy`, where the caller knows
+     its dates; the kind alone where it does not, and the save says the rest by the same body) — the sentence is the
+     one body's. The one press: beside other people, it is taken out; alone, a MEMBER files it for himself. Never both
+     of them (D753), however that came about. */
+  const phs = people.filter(p => isSpecial(p))
+  const ph = phs[0]
+  if (phs.length > 1) return { why: shapeProblem({ type, people: people.map(p => ({ p })) }) || `This input already has ${cs(ph)}`, fix: people.filter(p => p !== phs[1]), fixLabel: `Take ${cs(phs[1])} out` }
   if (ph != null) {
-    if (several || people.length > 1) return { why: placeholderProblem({ person: ph, type: 'Duty', grp: 1 }), fix: [ph], fixLabel: `File it for ${cs(ph)} only` }
-    const why = placeholderProblem({ person: ph, type })
+    const why = phWhy ? phWhy(ph) : placeholderProblem({ person: ph, type })
+    if (why && people.length > 1) return { why, fix: people.filter(p => p !== ph), fixLabel: `Take ${cs(ph)} out` }
     /* the one press is a MEMBER's ("File it for me only" — what he may always do); an admin is offered none: he
        picks the name it is really for from the list (Astra's scenario design, 9 Oct 26 — the admin was being offered
        to file another kind's input for HIMSELF) */
@@ -86,12 +95,12 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
     }
     return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [people[0]], fixLabel: 'File it for me only' }
   }
-  const other = people.find(p => !mayFileInputFor(p, type))
+  const other = people.find(p => !isSpecial(p) && !mayFileInputFor(p, type))
   if (other != null && !canEditSched()) return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [], fixLabel: 'File it for me only' }
   return null
 }
 
-export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, phWhy, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -110,6 +119,9 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
    *  own name must still be the list's value (the List's pencil kept it so; ui/windowdoors.test.tsx). Without it a
    *  caller that passes `more` is taken to list everyone its first person can be. */
   moreIds?: readonly string[]
+  /** may THIS input hold a placeholder? — '' or the sentence, from the window that knows its dates as well as its kind
+   *  (engine/inputs.ts placeholderProblem, the one body). Without it the kind alone is asked. */
+  phWhy?: (id: string) => string
   onChange: (people: string[], several: boolean) => void
 }) {
   const roster = pickRoster(sansOnly)
@@ -120,7 +132,17 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   /* the switch shows where a group may be filed — and stays while several ARE picked, so a kind that no longer allows
      it never hides what he chose */
   const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditSched())) || several
-  const problem = readOnly ? null : pickProblem(people, several, type)
+  const problem = readOnly ? null : pickProblem(people, several, type, phWhy)
+  /* THE TWO PLACEHOLDERS, IN "SEVERAL PEOPLE" (D750, D753): one of them, beside the people. `phBar` — why this input
+     cannot hold one ('' where it can); one already picked stays lit and can be let go whatever the bar says. */
+  const phIds = offerPh && several ? PLACEHOLDER_IDS() : []
+  const phBar = (id: string) => (phWhy ? phWhy(id) : placeholderProblem({ person: id, type }))
+  const picked = people.filter(p => isSpecial(p))
+  const named = people.length - picked.length
+  const togglePh = (id: string) => {
+    if (people.includes(id)) { if (people.length > 1) onChange(people.filter(p => p !== id), true) }
+    else if (!phBar(id)) onChange([...people.filter(p => !isSpecial(p)), id], true)
+  }
   const toggle = (id: string) => {
     if (people.includes(id)) { if (people.length > 1) onChange(people.filter(p => p !== id), true) }
     else onChange([...people, id], true)
@@ -196,7 +218,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
               {more}
             </select>
             : <span className="inped-v" id="inpEditPersonFixed">{cs(first)}</span>)}
-          {several && <span className="pp-count" data-testid="pp-count" aria-live="polite">{people.length} picked</span>}
+          {/* the count is of the PEOPLE; a placeholder is nobody to count and is said beside it (as on the month's bar) */}
+          {several && <span className="pp-count" data-testid="pp-count" aria-live="polite">{[named || !picked.length ? `${named} picked` : '', ...picked.map(cs)].filter(Boolean).join(' + ')}</span>}
           {showSwitch && (
             <button type="button" className={'pp-sw' + (several ? ' on' : '')} role="switch" aria-checked={several} data-testid="pp-several"
               onClick={() => onChange(several ? people.slice(0, 1) : people.slice(), !several)}>
@@ -209,7 +232,25 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
             <span>{problem.why}</span>
             {/* no press on an input already filed that he reads (`lockOne`): its person is a value there, and the press
                 could change nothing (walker A of the ALL AVAIL check, 9 Oct 26 — a dead "File it for me only") */}
-            {problem.fix.length > 0 && !lockOne && <button type="button" className="abtn" data-testid="pp-fix" onClick={() => onChange(problem.fix, false)}>{problem.fixLabel}</button>}
+            {problem.fix.length > 0 && !lockOne && <button type="button" className="abtn" data-testid="pp-fix" onClick={() => onChange(problem.fix, several && problem.fix.length > 1)}>{problem.fixLabel}</button>}
+          </div>
+        )}
+        {phIds.length > 0 && (
+          <div className="pp-group" data-ppgroup="ph" role="group" aria-label={PLACEHOLDER_HEADING}>
+            <div className="pp-gh"><b>{PLACEHOLDER_HEADING}</b></div>
+            <div className="pp-pucks">
+              {phIds.map(id => {
+                const on = people.includes(id)
+                return (
+                  <button key={id} type="button" className={'pp-puck' + (on ? ' on' : '')} data-ph={id} disabled={!on && !!phBar(id)}
+                    aria-pressed={on} aria-label={cs(id)} onClick={() => togglePh(id)}>
+                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(id, false, true, false).replace(' tabindex="0"', '') }} />
+                  </button>
+                )
+              })}
+            </div>
+            {/* why they are greyed — said once, here, unless the line above already says it of one that is picked */}
+            {!problem && !picked.length && !!phBar(phIds[0]!) && <div className="pp-phwhy" data-testid="pp-phwhy">{phBar(phIds[0]!)}</div>}
           </div>
         )}
         {several && groups.map(g => {

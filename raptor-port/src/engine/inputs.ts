@@ -629,13 +629,18 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    (D700). It is an ORDINARY SINGLE INPUT whose `person` is one of the two placeholder people (people.ts `special`):
    nobody's name is stored in it — who stands behind it is worked out on the day, as for a placeholder dropped on a row
    (D702, D44). So no man behind it has a record of his own, and none has an OIL answer of his own (D711 (1)).
-   THREE STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
+   ITS STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
    overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" or "Personal" (D712), and the new
-   Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); (c) alone — never a group
-   member: it already stands for whoever is free. `placeholderProblem` answers '' or the sentence the screen says; every
-   save door asks it first (ui/inputedit.tsx normalizeInputDraft, commitGroup; ui/InputsPage.tsx add; ui/PeoplePick.tsx)
-   and the save boundary's hard check asks it of what a command really changed, whoever ran it (state/store.ts
-   wireStore — `placeholder-input-shape`). Pinned by placeholderinput.test.ts. */
+   Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); and never under
+   Unavailable (below). `placeholderProblem` answers '' or the sentence the screen says; every save door asks it
+   first (ui/inputedit.tsx normalizeInputDraft, commitInput; ui/PeoplePick.tsx; the row's door, ui/reqdoor.ts) and the
+   save boundary's hard check asks it of what a command really changed, whoever ran it (state/store.ts wireStore —
+   `placeholder-input-shape`). Pinned by placeholderinput.test.ts and phmember.test.ts.
+   IT MAY BE ONE OF AN INPUT'S PEOPLE (step 3 of the one-rule build, 12 Oct 26 — owner D750: "'Several people' takes ALL
+   AVAIL / ALL, so the puck is one of the input's own people and is tied to no man"; D753; D755). Until then there was a
+   third rule, "(c) alone — never a group member": a placeholder was filed on its own. It is gone. What D753 keeps is
+   (b) — "offered only where the input is a single day" — and "ALL or ALL AVAIL, never both" (shapeProblem, below).
+   The words are the plan's (§4.4), as short as can be understood (D726, D765). */
 export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Appointment','Duty','Event','Other'];
 export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
 export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
@@ -643,12 +648,9 @@ export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
   const ph=placeholderOf(inp).p;
   const cs=String((PEOPLE[ph]||{cs:ph}).cs);
-  if(!placeholderKind(inp.type))return `${cs} can be filed only for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} or ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
+  if(!placeholderKind(inp.type))return `${cs} is for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} and ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
   if(inp.endDate&&String(inp.endDate)!==String(inp.date)){const a=dateOrd(inp.date,inp.yr),b=dateOrd(inp.endDate,inp.yr);
-    if(a==null||b==null||a!==b)return `${cs} is filed one day at a time`;}
-  /* (…"never in a group": the old shape's group id, and — until ALL AVAIL may be one of an input's people, step 3 of the
-     one-rule build, D753 — anyone else in the new shape's list) */
-  if(inp.grp!=null||inp.grpBy!=null||peopleOf(inp).length>1)return `${cs} is filed on its own — it already stands for whoever is free`;
+    if(a==null||b==null||a!==b)return `${cs} is for one day`;}
   /* …and NEVER UNDER UNAVAILABLE (Astra's read of the code, 9 Oct 26). "Unavailable" names a real person's day; a
      placeholder input filed there lands no row, so it has no crowd and nobody behind it can earn from the filer's Yes.
      The accept door refuses to file one there (slots.ts acceptInput) — but an EDIT keeps a request's filing, so a named
@@ -662,8 +664,9 @@ export function placeholderProblem(inp:any):string{
    placeholder check) and of every record an Undo / Redo restores; never of a record nobody touched (D56). '' or the
    sentence the screen says. An old-shaped record is a one-person input and breaks none of these but the placeholder's
    own rules, which it always answered to.
-     · at least one person; nobody twice; never two placeholders (D753: "ALL or ALL AVAIL, never both");
-     · a placeholder's own rules (placeholderProblem, above);
+     · at least one person; nobody twice; never two placeholders (D753: "ALL or ALL AVAIL, never both" — and the same
+       one never twice: one sentence for both, "This input already has ALL AVAIL");
+     · a placeholder's own rules (placeholderProblem, above) — first, as every door says them first;
      · a medical entry or an upchit is one person's — each needs its own document (D655 reading 4);
      · a Personal input is one person's own (D755 (4)).
    (SANS availability holds SANS people only — asked per person at the doors, ui/inputedit.tsx sansRefusal: it reads the
@@ -673,10 +676,10 @@ export function shapeProblem(inp:any):string{
   const ids=idsOf(inp), cs=(p:any)=>String((PEOPLE[p]||{cs:p}).cs);
   /* (asked of a record that CARRIES its list: an old-shaped record that names nobody is not this build's to judge — D56) */
   if(!ids.length)return Array.isArray(inp.people)?'An input needs at least one person':'';
-  const seen=new Set<string>();
-  for(const p of ids){const k=String(p); if(seen.has(k))return `${cs(p)} is already on this input`; seen.add(k);}
   const phs=ids.filter((p:any)=>isPh(p));
   if(phs.length>1)return `This input already has ${cs(phs[0])}`;
+  const seen=new Set<string>();
+  for(const p of ids){const k=String(p); if(seen.has(k))return `${cs(p)} is already on this input`; seen.add(k);}
   const why=placeholderProblem(inp); if(why)return why;
   if(ids.length>1&&(isDownchit(inp.type)||isUpchit(inp.type)))return `${isUpchit(inp.type)?'An upchit':'A medical entry'} is one person’s — each needs its own document`;
   if(ids.length>1&&/^Personal$/i.test(String(inp.type==null?'':inp.type).trim()))return 'A Personal input is one person’s own';
