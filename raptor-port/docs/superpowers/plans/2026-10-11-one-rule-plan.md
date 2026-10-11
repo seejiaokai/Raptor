@@ -203,6 +203,11 @@ belt); `sharedRowOf` goes. Its three answers stay: `none` / `done` / `refused`.
 | CX, the red box, information only | changes the INPUT (D760); CX asks its reason as today | as today |
 | The row's ✕ | takes the input off the programme (`acc: 'r'`), as built (D114); its people and marks stay IN the input, so Accept or Undo brings the row back as it was | as built |
 
+**The words of this build are held to D726 and D765 (reading 5):** every note, refusal and bell line above is the
+shortest that is still understood — the wording in the table is the upper limit, never a floor — and no screen this
+job does not otherwise touch is redesigned by it; the look-and-feel pass is its own job afterwards
+(`OUTSTANDING.md` `[UI-SLEEK-PASS]`).
+
 Every person refusal a save in the input's own window can meet (leave over leave, a SANS-only kind, the absence
 rules) is asked for the one person being added, and said with his callsign — the per-person half of today's
 `normalizeInputDraft`, run for him alone.
