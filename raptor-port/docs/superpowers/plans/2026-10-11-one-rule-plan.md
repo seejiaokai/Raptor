@@ -1,0 +1,448 @@
+# One rule for every input's row, one record for every input — the plan (`[ALL-AVAIL-AS-MEMBER]`; D750, D753–D762 — 11 Oct 26)
+
+**Status: VERSION 1 — written by Opus 5.5 on `claude/all-avail-as-member` (= `main` at `7c1fcdc0` plus records). NOT
+BUILT. To be read by Fable before any build, on his word (D758); the ChatGPT reader D758 names is out until about
+1 Nov 26 (D761 — `OUTSTANDING.md` `[NO-ASTRA-LIST]`), and whether the build may start on one reader is HIS word, not
+yet given.** Written from the design note (`../specs/2026-10-11-all-avail-as-member-design-note.md` — §7 is the
+walk-through he agreed, D757) and the survey (`../specs/2026-10-11-all-avail-as-member-survey.md` — the app as it
+stands; this plan does not repeat it). Tier: HEAVY; its check is FULL (OIL, the published record, saved data,
+permissions, a new gesture).
+
+## 1. What he ruled
+
+| Ruling | The rule |
+|---|---|
+| **D755** | A row that came from an input IS the input: whoever stands on it — a named person or ALL AVAIL / ALL, whoever put them there, whether the input began with one person or several — is in the input; the schedule and the Inputs calendar always show the same people, time and remark. With it: (1) OIL is one answer per input, the scheduler may switch any one person; adding someone where it is unanswered asks the scheduler on the spot, and where it is No the note says they are not counted; (2) a man dropped on the ONLY man's puck replaces him, and the input becomes the new man's; (3) the member is told by his bell when the scheduler adds people to his request, swaps him out or changes it; he may always withdraw himself, and changing it for everyone, once the scheduler has added others, is the scheduler's; (4) where it cannot apply the drop is refused with its reason — ALL AVAIL on an input longer than a day or of another kind, other people on a Personal input. |
+| **D756, D759** | An input is stored as ONE record with the list of its people, changed in this job, built in steps — the first step changes nothing on screen. Nothing stored is converted (D56); an old-shaped record must not break a load; the table list says the same in the same change (D473). |
+| **D753** | Where ALL AVAIL / ALL is one of an input's people: the men behind it follow the input's OIL answer; it is offered only where the input is a single day; an input takes ALL or ALL AVAIL, never both; the six kinds an ALL AVAIL input takes today (D712, D713). |
+| **D757** | The walk-through in words (the note's §7) is the behaviour the plan is written to. |
+| **D760** | A CX on a row that came from an input cancels the INPUT: the Inputs calendar shows it cancelled with its reason, the member's bell tells him, it goes with the input if it moves; the red box and "information only" go with the input too, shown on the schedule only. |
+| **D762** | One OIL answer for everyone in an input, given by whoever filed it or an admin; no man gives an answer of his own, the filer does not pick people out; only the scheduler leaves one person out, in OIL Earn on the day. |
+| **D759's readings** | The ten things that follow by themselves, told to him (its full row): one man off the programme is out of the input; a moved request takes its people; a load never changes who is in an input; an absence for several stays one row a man on the Unavailable list and a change to one man's part alone gives him an input of his own; a person added to a several-day input is on every day of it; a deleted or posted-out man leaves the input; "by Ranger" passes to the scheduler who takes him out; the bell's notice is new, with a picture first; Undo is per input; old shared demo inputs come back as one-person inputs. |
+
+**Rulings that change when this is built (each already marked "as built until then" in its full row):** D18, D43, D46, D470
+(a man or a placeholder the scheduler puts on a request's row joins the input and follows its answer — on a row that
+came from an INPUT only; the scheduler's own rows are untouched), D734 (widened to every input's row), D745 (set aside),
+D468 (nothing stays behind on the old day), D660 reading 3, D655 reading 2, D682 reading 2, D744, D731 (4) (no answer of
+a man's own). **Unchanged and leaned on:** D737, D735, D736, D739–D742, D711, D712, D713, D702, D271, D278 (on the
+scheduler's own rows), D363, D175, D98, D103, D109, D113, D114, D174–D178, D44, D45, D48, D142, D148, D450, D56, D22.
+
+## 2. The bet — attack it
+
+**ONE record AND ONE ground row, and nothing in between.** Yesterday's plan bet the opposite ("one record a man AND
+one ground row a man; the ONE row is made where a person meets it") and paid for it with a layer of read-time glue
+(the survey's §1 lists it). This plan deletes that layer:
+
+- the input is one stored record carrying its people, its one OIL answer, its one filing and its marks;
+- its row on the schedule is ONE ground row, a COPY of the input written by one body and re-made whenever the input
+  differs — nothing on a row that came from an input is "the row's own" any more;
+- the rules about ONE MAN'S DAY (clashes, crew rest, who is away, the ALL AVAIL crowd, the Leave War's absences, SANS
+  availability, the medical tracker) go on reading one line per person — but as a DERIVED view of the one record
+  (`inputLines()`), never as stored copies.
+
+Why the reason given yesterday against one real row no longer holds: it was "a row would hold several REQUESTS, so
+the OIL key would move whenever the first man left". With one record there is ONE request: `row.src` is the input's
+one id, the OIL item is `i:<iid>` whoever leaves, and a person's switch is `<person>|i:<iid>` — the grammar the app
+already has (the survey's §4).
+
+**What the bet costs, and where each cost is paid:** every reader of an input changes how it reads (§4.2 — one
+accessor and one view, so the change is mechanical and a miss is LOUD: a frozen line throws on a write, an old-shaped
+record still reads); the published count loses its "one each" unit and gets a new one (§4.8); the writers that today
+change one man's copy must split him out (§4.6); Undo's conflict test is per input (§4.11).
+
+**Where it could fail silently — the readers are asked to attack these first:** (1) a class-A reader left on the raw
+list, which would see an input and not its people (§4.2's guard); (2) OIL on an issued day frozen in the old shape
+(§4.7's legacy reader); (3) a hand that writes a row that came from an input directly, to be overwritten by the next
+re-make (§4.4's belt); (4) the count on a published day a several-day input covers but whose row stands elsewhere (§4.8).
+
+## 3. The app today
+
+The survey, whole. Its §2 table is the list of differences between a one-person request's row and a shared input's
+row that this plan removes; its §3 sorts every reader into A (one man's day), B (the input) and C (writers of one
+man's part); its §8 is what the design note's first pass missed.
+
+## 4. The design
+
+### 4.1 The record
+
+```
+Input {
+  iid, ord                                   // identity and place — unchanged
+  type, title, date, endDate, yr, allday, s, e, half, remarks, sans     // what the input says — unchanged
+  people: Array<{ p, by?, at?, mod?, h? }>   // NEW — in the order they joined
+  oil?:   { [iso]: 0 | 0.5 | 1 }             // the ONE answer (D762) — was each man's own
+  acc?:   'g' | 'u' | 'r'                    // the ONE filing — was each man's own
+  cx?, cxr?, flag?, info?                    // NEW on the input (D760) — were the row's
+  by, at, modBy, modAt                       // who filed it, who last changed it — `by` IS the filer; `grpBy` goes
+  mod                                        // the late date of the input's own window (unchanged meaning)
+  hand                                       // a counter, bumped each time a person is put in (see `h`)
+  lw?, lwMoved?, docId?, docIds?             // unchanged — only ever on an input of one person
+}
+```
+
+- `p` is a PEOPLE id, or `allavail` / `all`. `by` / `at` — who put THIS person in and when (today's per-record `by` /
+  `at`). `mod` — this person's own late date, kept only where it is later than the input's (today: "only the man
+  added can be late" — `commitGroup`'s G6); a person added from the schedule gets the earlier of today and his due
+  date, so he never reads late (D741). `h` — the value of `hand` when he was put in: the stamp a scheduler's OIL
+  switch about him is made under (`oild.pa`), so a switch made about a man who left and came back does not revive.
+- `person`, `grp`, `grpBy`, `leftAt` leave the record. Nothing else is renamed: the field names every engine body
+  reads (`type`, `date`, `s`, `e`, `acc`, `oil`…) stay, so the engine's verbatim bodies change only where they read
+  WHO.
+- **Invariants, held at the write (the inputs door and the Undo / Redo restore, where `groupBreach` and
+  `placeholderShapeViolation` stand today):** at least one entry; no person twice; at most ONE placeholder entry, and
+  only on a single-day input of the six kinds, never filed under Unavailable (D753; `placeholderProblem` loses its
+  rule (c) "never in a group" and keeps the rest); a medical kind or an upchit has exactly one person (D655 reading
+  4); a Personal input has exactly one person and no placeholder (D755 (4)); SANS availability holds SANS people only
+  (`sansRefusal`, per person).
+- **One input has one time and one filing.** To give one man another time, or to take him off the programme alone, he
+  is taken out of the input (D735, D759 reading 1).
+
+### 4.2 Reading it — one accessor, one view
+
+- `peopleOf(r)` — the list; for a record with no `people` (an OLD-shaped record, wherever it is met) it answers
+  `[{ p: r.person, by: r.by, at: r.at, mod: r.mod }]`. Every reader of who is in an input goes through it, so an old
+  record reads as a one-person input everywhere and can never break a load (D756). `namedOf(r)` — its real people;
+  `placeholderOf(r)` — its `allavail` / `all` entry or null.
+- `inputLines(list = INPUTS)` — the view for class A: one FLAT, FROZEN object per NAMED person — every field of the
+  record copied, plus `person` (his id) and `mod` (his late date) — in the record's order, people in joined order. A
+  placeholder entry makes no line (today a placeholder's record "never matches" a person in those readers — the same
+  answer). Built fresh at each call (no cache to go stale; a caller that asks inside a loop over people hoists it —
+  `leavewar/sync.ts availableFor` is the one such loop found). FROZEN so that a body that still writes to "the
+  record" it was handed throws in every test instead of losing the write. `JSON.stringify` of a line is today's
+  record shape, which is what the parity tests push into the reference page (`testing/refwin.ts syncInputs` — it
+  changes to `inputLines().filter(inputFlags)`).
+- **Class A moves to lines, class B to the record** — the survey's §3 is the list, site by site. The rule of thumb the
+  build follows and the readers check: a body that asks "is THIS MAN busy / away / owed / late" reads lines; a body
+  that draws, files, counts, freezes, saves or permits the INPUT reads the record.
+- **The guard against a missed reader:** `rulecheck`-style source test `inputs-readers.test.ts` — every non-test file
+  that names `INPUTS` is on ONE of two lists in the test (reads lines / reads records, with the functions named), and
+  the test fails for a file on neither. A new reader must be put on a list, by a person, in review.
+- `inpDetailKey` (what "the same input" means to a published day) carries the people's ids SORTED, the placeholder,
+  and `cx` / `cxr` / `info` — not `flag` (a scheduler-to-scheduler mark was never part of what a member's input
+  says; it still rides the row's content, §4.3). `frozenInputMatch`'s "pair by man" step pairs by the first named
+  person, else the placeholder.
+
+### 4.3 The row — one body writes it, whole
+
+`requestRowFields(inp)` writes EVERYTHING a row that came from an input shows:
+
+```
+prog, str, end, rmks, srcType      // as today
+who  = people[0].p                 // the first to join still in it
+more = people[1..].p               // the rest, joined order (a placeholder is one of them)
+cx, cxr, flag, info                // from the input (D760)
+```
+
+- `srcv` hashes all of it; `srcg` goes. The re-make (reconcile rule 6) writes all of it over the stored row and keeps
+  only the row's id and its place in the list. So: a person the holder's stored day still carries in `more` after he
+  was moved into the input cannot show twice (the survey's §8.10) — the re-make owns the whole row.
+- **Drawn** in one order on every surface (the week, the board, the peek, print): named people A-to-Z by callsign
+  (D727, as the one row draws today), then the placeholder; each puck keeps its positional key (`g:di.ri`,
+  `g:di.ri.xN`) for its flag, its mark, its OIL bar and switch. ONE helper (`rowPeopleDrawn`, replacing
+  `grouprows.ts drawnPeople`) so no two surfaces differ. `groundGroups` goes: a row is a row.
+- **It stands on the input's START day only**, as today (`landRequests`); the people are in the input for every day
+  it covers (D759 reading 5).
+- **Rows this does not own — left exactly as they are, and a hand on them writes the row as on any ground row (as
+  built, `requestOfBox` answers null):** a dead `kept` row (D363), a row whose request is gone, a read-only request's
+  row. *A request taken off the programme (`acc: 'r'`) whose row stands again (a version loaded, a plan switched in —
+  rule 4):* as built too — and the day reads pending for it, as today.
+- **A request moved to another day** lands there from the input alone — which now holds its people and its marks, so
+  they arrive with it (D760, D759 reading 2). No code of its own: it falls out of the one body.
+- **A man deleted** (`overlay.ts hisLanded` / `stripPersonFromDay`): from his cutoff on he leaves the input's list
+  where others remain (the request's own trim, §4.6) and the row is re-made without him; the row goes whole only
+  where he was its only person. The strip no longer special-cases a `src` row's name box.
+
+### 4.4 The hands — one door, one writer
+
+**The door** (`ui/reqdoor.ts`, replacing `ui/grouprow.ts`): asked by every place that writes a person to a ground row
+BEFORE it writes — the same callers the survey's §2 lists for today's door (`drag.ts applyDrop`, `state/view.ts
+placeArmed`, `Shell.tsx`'s right-click remove, `state/store.ts writeSlot` / `writeFill`, the probe bridge), through
+the one `HOOKS` entry. It answers for ANY row `overlay.ts requestOfBox` answers for (one predicate, shared with the
+belt); `sharedRowOf` goes. Its three answers stay: `none` / `done` / `refused`.
+
+| The hand | What happens | The words |
+|---|---|---|
+| A named person put anywhere on the row — on "+ add", on a puck where the row holds several, by an armed tap | he JOINS the input (appended) — D755 | "Tally added to Training" |
+| A named person dropped ON THE ONLY PERSON'S puck | he REPLACES him: the list becomes [him], `by` passes to whoever did it — D755 (2) | "Tally is on Training instead of Ranger" |
+| ALL AVAIL / ALL put anywhere on the row | it JOINS (never replaces anyone) | "ALL AVAIL added to Training" |
+| A puck taken off — dragged to nowhere, right-click, written blank | that person or placeholder LEAVES the input | "Ranger taken out of Training" |
+| The LAST entry taken off with nobody put in his place | REFUSED — D757 | "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window" |
+| A person dragged from the row to another place on the schedule | he leaves the input and is put there, ONE command (as built — `groupLeaveTo`); refused whole if he is the last | as built |
+| A person dragged from one input's row to another's | he MOVES: leaves the first, joins the second, ONE command (as built — `groupMove`) | as built |
+| A person dragged from a seat that is NOT an input's row onto the row | he joins; the seat he came from keeps him (as built — reading R4 of yesterday's plan) | as built |
+| Already in it; a second placeholder; ALL with ALL AVAIL | REFUSED (D271; D753) | "Tally is already on this input" / "This input already has ALL AVAIL" |
+| ALL AVAIL / ALL onto an input longer than a day, or not one of the six kinds | REFUSED — D753, D755 (4) | "ALL AVAIL is for one day." / "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other." |
+| Anyone onto a Personal input; a second person onto a medical kind or an upchit | REFUSED — D755 (4); D655 reading 4 | "A Personal input is one person's own." / "A medical entry is one person's — each needs its own document." |
+| A time, a remark or the title typed on the row | changes the input (as built — `ui/reqrow.ts`, D739, D740, D742) | as built |
+| CX, the red box, information only | changes the INPUT (D760); CX asks its reason as today | as today |
+| The row's ✕ | takes the input off the programme (`acc: 'r'`), as built (D114); its people and marks stay IN the input, so Accept or Undo brings the row back as it was | as built |
+
+Every person refusal a save in the input's own window can meet (leave over leave, a SANS-only kind, the absence
+rules) is asked for the one person being added, and said with his callsign — the per-person half of today's
+`normalizeInputDraft`, run for him alone.
+
+**The belt** (`slots.ts`, replacing `sharedSeatBar`): `setSlotVal` / `fillSlot` REFUSE a raw write of a person to
+`who` or `more` of a row `requestOfBox` answers for; `txtSet`'s refusal for the four typed boxes stays; the CX / red
+box / info handlers (`board.ts`) go through the door too. So a door forgotten today, or added later, cannot leave a
+row saying what its input does not.
+
+**The writer** (`commitInput`, replacing the trio `commitNewInput` / `commitInputEdit` / `commitGroup` for everything
+but the medical plans, which keep their own bodies and call it): ONE function that takes the record (or null), the
+draft of what it should say, who it should hold, and options (`sched` — the save comes from the schedule: the late
+date is not moved, a Yes is re-priced not voided, as built). It runs every refusal first — for every person, before
+anything is written — then ONE command: one record put. One Undo step, one line of the change history per thing that
+changed. `removeEntry` / `removeInput` become "delete the input" and "take one person out" of the same writer.
+
+**OIL at the add (D755 (1), D762):** the person added follows the input's answer — nothing is written for him. Where
+the input asks the OIL question, covers a weekend or holiday and has NO answer for it, the question opens at once,
+for the INPUT, for whoever added him (the sheet as it is today, `OilConfirm`; closing it unanswered leaves the input
+unanswered and the question on the filer's bell). Where the answer is No, the add's note ends "— not counted for OIL".
+
+### 4.5 The Inputs pages
+
+- `entriesOf` / `entryRowsOf` / `entryLines` go; a list of inputs IS the list of entries. The month's bar, the opened
+  day's card, the List's row, the window, the picker, the changes window's item and a bar's drag read the one record
+  (`people`), and write through `commitInput`.
+- **The picker ("Several people")** offers ALL AVAIL and ALL — one of them — where the input is a single day of the
+  six kinds; where it is not, the two are shown greyed with the reason under them ("ALL AVAIL is for one day." /
+  the kinds), as an ALL AVAIL input says "filed one day at a time" today (D753 reading 2). `pickProblem` loses its
+  "placeholder + several → refused".
+- **Names and counts:** a card names every named person A-to-Z, then "ALL AVAIL" (D721, D727); a bar's count ("4 ·
+  Meeting") counts named people and says "+ ALL AVAIL" (`inputscal-model.ts barText`); the CSV export writes one line
+  per named person and one for the placeholder. The person filter passes an input when any of its people passes, or
+  its placeholder does (`ph:`).
+- **"By Saber"** (D724, D729): the input's `by`. It passes to the scheduler who replaces the only person (the swap) or
+  takes the filer out of an input he filed for himself (D759 reading 7) — so the bell's OIL question and "who may
+  change it" go to someone still involved.
+- **The OIL line in the window (D762):** the input's one answer and its Change… button, for whoever may change the
+  input. "Your OIL", its Change… / Answer… buttons, `saveOwnOil`, `entryOilAnswer`'s "differ" and `oilSummaryOf`'s "2
+  of 3" go. A man in it who may not change it reads the line and has "Take me out".
+- **A cancelled input (D760)** — on the card, the bar and the List's row: its title struck through and "CANCELLED —
+  <reason>" in the remark's place; still listed (it is not deleted). **Its exact look is shown to him as a picture
+  before step 5 is built (D541).**
+- **The late mark:** an input is late when its `mod` is; a person in it is late when HIS line's `mod` is later still
+  (`lateNoteOf` names them, as today).
+
+### 4.6 One man's part — the split, and the Unavailable list
+
+An input that lands under Unavailable (a kind that is an absence, or `acc: 'u'`) is drawn ONE ROW A MAN there (D737)
+— from the record's people. Its address is `iu:<iid>` for an input of one person and `iu:<iid>~<person>` where it
+holds several (the slot grammar gains that one form; `leadKeyOf` goes).
+
+- **A puck moved onto a man's Unavailable row** (`reassignInput`): he is REPLACED in the list by the person dropped —
+  the swap, as built for one record; refused for a placeholder either way, as built.
+- **Any change to ONE man's part of an input that holds several** first gives him an input of his own, in the same
+  command — `ownInputOf(input, person)`: the input itself where he is alone; else a NEW record (a new id; every field
+  of the input copied; `people: [his entry]`; `by` and `at` the input's) with him taken out of the original. This is
+  what happens today by a record "no longer matching its group" — said in the data instead of worked out on read. The
+  callers (the survey's §3 C): a time or remark typed on his own Unavailable row (`saveFromRow` under Unavailable);
+  the Leave War's sick-cuts-leave, approve-extend and `cutDates`; a delete's and a posting's trims of HIS dates
+  (where the trim would end his part earlier than the others'). An OIL answer never splits (it is the input's).
+- The Leave War keeps reading and writing one man's absence: its index is built from `inputLines()`; where it must
+  WRITE, it asks `ownInputOf` first. A leave it approves itself is an input of one person, as today.
+
+### 4.7 OIL
+
+- **One claim per input** (`projectOilInputs`): `{ iid, type, acc, win, ans, stand, people: [named ids], ph }` — `ans`
+  the input's answer for the day; `stand` from the input itself (`acc`, `cx`, `info`) with no row lookup, for every
+  day it covers (today the one row's state is already what decides every day — `oilInputEligible`).
+- **Who earns** (`oilEarnedWork`, `claimDefault`, `spanDefault` — ONE default for everybody): every named person of the
+  claim, and every man of the crowd behind its placeholder who is not named in it, earns through item `i:<iid>` when
+  the input's answer for the day is more than 0 — unless the scheduler's switch says otherwise (`earnsFrom`,
+  `<person>|i:<iid>`, unchanged). `landedExtras`, `landedHasSentinel`, the holder / extras split and the "typed man
+  on a placeholder's row defaults yes" branch go. On a row that is NOT from an input nothing changes (D43).
+- **The crowd** is resolved as today, over the input's window, written into `sent['i:<iid>']` and frozen at
+  publication (D44). A man named in the input is never in its crowd: `availableFor` reads lines, and his own line is
+  a commitment over the window (`sync.ts:905`) — the survey's §4. The placeholder makes no line, so it blocks nobody.
+- **An ISSUED day frozen in the OLD shape** (a claim with `person` and no `people`): read by a small legacy reader —
+  the holder, plus the extras and crowd of that day's frozen row, on yesterday's defaults — so a day that has gone out
+  keeps the OIL it went out with (D48, D142) and nothing is swept from the Leave War at the first boot. It is the
+  only old-shape code kept beside `peopleOf`.
+- **Pending on a published day:** the evidence key (`oilEvidenceKey`, `insSeg`) carries each claim's people sorted and
+  its placeholder; a person added to an input therefore reads pending on every published day it earns on, as any
+  change to what a day earns does (D45).
+- **The switch-offs of a person who leaves** are dropped by the existing prune (`pruneHandedOverDecisions`, by his
+  `h`); ALL AVAIL's stay when any man leaves, because they are keyed by the input (D750's second question; D757 step 4).
+- **OIL Earn's screens** (`oilmode.ts`): one reason for "off" where there were four (`declined` / `unasked` /
+  `filerNo` / `filerUnasked` → the input said No / the input is unanswered / switched off here).
+
+### 4.8 A published day
+
+- **The snapshot** (`daySnap`): the day's rows (with the row's people — a copy of the input's at issue), `inp` (the
+  input records, new shape), `fil`, the evidence block. An issued face reads its own rows and its own `inp`, never the
+  live input (as today).
+- **The comparison** (`dayDelta`, what goes out and what the sign-offs are bound to): unchanged in kind — content,
+  filing, details, OIL. Details now see the people (§4.2).
+- **The count — the unit D736 rules, with no fold left to make:**
+  - an input filed, taken off the programme, cancelled or un-cancelled, or re-timed / re-worded is ONE (its item,
+    with its row's units riding on it — as a one-person request counts today, D114);
+  - each person or placeholder added to it or taken out of it is ONE EACH — worked out from the PEOPLE THEMSELVES
+    (the issued copy's list against the live one), on every published day the input covers, whether or not its row
+    stands on that day; the row's own person units for that input's row ride on them and are never counted twice;
+  - a swap of the only person (one out, one in, nobody else) is ONE (D113's "a replacement in one seat");
+  - to make the row's units line up with that, `canonical.ts placeOf` treats `who` and `more` of a row that came
+    from an input as ONE list place — so the first person leaving, and the next taking the name box, is one man off
+    and nothing more.
+  `engine/entryfold.ts` goes; `dayPendingItemsIn` gains the people step in its place. "Never zero while the delta is
+  not" (`pendunits.test.ts`) stays the invariant.
+- **Loads** (D363, D175, D98): a version or a plan installs its rows as today; the next pass re-makes each row that
+  came from an input from the LIVE input — all of it now, people and marks included. So a load never changes an
+  input, and a day whose inputs are as they were at issue comes back to "nothing pending" exactly (D98). `kept` rows
+  keep what they had.
+- **A day template** is unchanged (its rows are nobody's request).
+
+### 4.9 Who may — `state/perms.ts` and `docs/data-model.md` §11, changed together (D200)
+
+- **Change the input for everyone** (its fields, its people, its OIL answer, delete it): an admin; or its filer (`by`)
+  while every entry of its list was put in by him — and, where it holds anyone but himself, only for the kinds a
+  member may file for others and while "members file for others" is on (as today). Once a scheduler has put someone
+  in, the filer's change-for-everyone ends (D755 (3)) and the window says so in today's sentence ("Only Saber — who
+  filed it — or an admin can change this for everyone", `by` now being Saber where Saber took it over; else "A
+  scheduler has changed who is in this — ask an admin to change it for everyone").
+- **Take himself out:** anyone in it, always (D755 (3)). Nothing else is his: no OIL answer of his own (D762).
+- **From the schedule:** every hand of §4.4 needs `canEditSched()`.
+- **The member commit gate** (`inputBreach`), rewritten on the one record: a member's command may put or change an
+  input only as the first rule allows, or change it by removing exactly HIS OWN entry and nothing else; a forged
+  `by`, another person's entry stamped as put in by someone else, and an OIL answer on an input he may not change are
+  refused. `groupStood`'s "a member may add a man to an entry he did not file" ENDS with this (the survey's §8.8):
+  adding people to someone else's input is its filer's or a scheduler's.
+
+### 4.10 The bell tells him — `[INPUT-CHANGED-TELL]` (D755 (3), D760)
+
+A NEW saved record, one per person told (`notices/<id>`: `to`, `by`, `at`, `iid`, `what`, the words' parts), written
+INSIDE the command that made the change (so Undo takes it back with the change) through the command layer — a
+registered record with its own mapper, never a store of its own (`docs/undo-contract.md` §5).
+
+- **Who is told:** every NAMED person in the input before or after the change, and its filer — never whoever made the
+  change, never the crowd behind a placeholder.
+- **What tells:** someone else added him, took him out or swapped him out; added or took out anyone else, or ALL
+  AVAIL; changed its dates, times, title or remark; cancelled it or brought it back (D760); took it off the
+  programme or put it back; deleted it.
+- **The bell** lights while he has one unread; a tap opens a short list, newest first — "Saber added Tally to your
+  Training, Sat 17 Oct" — a tap on a line opens the input (or says it is gone) and marks it read; "Mark all read".
+  The four triggers the bell has today keep their own behaviour and come first, as now.
+- **Its look — the list, a line, the empty state — is a picture shown to him before step 7 is built (D541).**
+
+### 4.11 Storage, undo, old data, the seeds
+
+- **Stored:** one row `inputs/<iid>` per input, the record of §4.1 — the mapper is unchanged (it writes the record
+  whole). A shared input is one row where it was N.
+- **Old data:** nothing is converted and nothing is wiped. An old-shaped row loads and reads as a one-person input
+  (`peopleOf`); it is written in the new shape the first time a command changes it. So shared inputs saved before
+  this build come back as separate one-person inputs, and a published demo day that held one reads pending until
+  republished — demo data, D56 (told to him: D759 reading 10). Old `srcg` on stored rows is ignored and dropped at
+  the row's next re-make; old `grp` on stored change-history lines still groups those old lines in the changes
+  window (read-only).
+- **Undo:** a record is `inputs/<iid>`, before and after whole — unchanged. Its OWNER for "whose step is this"
+  (`undo/derive.ts`) is the command's actor, as for every record; the conflict test stays per record (D148), which
+  is now per input (D759 reading 9).
+- **The seeds** are left in the old shape where they are verbatim literals (`inputs.ts`, `weeks-data.ts`, `week2.ts`,
+  the Leave War's demo world) — `peopleOf` reads them — and `state/demoseed.ts`'s shared demo input and its two
+  placeholder inputs are rewritten in the new shape (one record of four people; D401's precedent). `schema.ts Input`
+  and `schema.test.ts` declare the new shape with `person` allowed as the old form.
+- **The probe bridge's `fileInput`** keeps taking a raw row in either shape (the browser tests and walk scripts file
+  old-shaped rows by the hundred); a group of N raw rows with one `grp` is NOT merged — a test that wants a shared
+  input files one record with `people`.
+
+### 4.12 What is deliberately NOT changed
+
+The scheduler's own rows (not from an input) — a placeholder there earns by default (D43), may stand twice (D278),
+and CX / red box / info are the row's. The Unavailable list's one row a man (D737). What a typed box does (D739–D742).
+The LATE mark's rules. How the crowd is worked out and frozen (D36, D44, D702). The Leave War's rules of record. A
+day template. The medical plans. No stored record is converted; no store is wiped.
+
+## 5. The build order — a failing test first at every step; rulings named in the tests (`npm run rulecheck`)
+
+Each step ends with the affected test files green, then `npx tsc -b`; the whole gate set runs through the lock
+(`scripts/gatelock.mjs run`) at the end of steps 1, 2 and 8.
+
+1. **The reader, with nothing changed on screen.** `peopleOf`, `namedOf`, `placeholderOf`, `inputLines()`; every
+   class-A reader of the survey's §3 moved to lines; `inputs-readers.test.ts` (§4.2's guard); `refwin.ts`. The store
+   still holds old-shaped records, of which a line is a copy — so every existing test, the parity gates and the
+   browser suite must pass UNCHANGED. That is this step's proof.
+2. **One record, one row, one rule** — the heart, in this order, each with its red tests: (a) the record and its
+   invariants at the write; `commitInput`; `ownInputOf`; (b) `requestRowFields` whole, the re-make, `canonical.ts`'s
+   one list place, `grouprows.ts` / `srcg` / `entryPeopleOnce` / `carryOilRefusal` / `placeRequestRow`'s sibling
+   placing out; (c) the door and the belt for NAMED people on every input's row — join, leave, the swap, the last
+   one, the moves; (d) OIL: one claim, one default, the legacy reader, the ask-on-the-spot and the "not counted"
+   note, OIL Earn's reasons; (e) the published count's people step, `entryfold.ts` out; loads; (f) permissions and §11;
+   (g) the Inputs pages on one record, "Your OIL" out; the Unavailable list's addresses and its swap; (h) the Leave
+   War's writers, a delete's and a posting's trims, through `ownInputOf`; (i) the demo seed, `schema.ts`.
+3. **ALL AVAIL / ALL as one of the people:** the invariant relaxed; the picker; the door's placeholder rows of §4.4;
+   the crowd minus the named; the two-routes test (§6, T1).
+4. **The marks on the input** (D760) — the data and the schedule's buttons through the door; nothing new on the
+   Inputs pages yet.
+5. **A cancelled input on the Inputs pages** — after his look at its picture.
+6. **Dead code and words out:** `ui/grouprow.ts`, `engine/grouprows.ts`, `engine/inputentry.ts`, `state/inputgroup.ts`,
+   `engine/entryfold.ts`, `leavingNote`; `docs/file-map.md` in the same change.
+7. **The bell's notices** — after his look at its picture.
+8. **The records:** `docs/engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `data-schema.md`, `data-model.md`
+   (§Input, the row tables, §9 rule 9, §11), `undo-contract.md`, the behaviour registers, `raptor-port/CLAUDE.md`'s
+   slot grammar (`iu:<iid>~<person>`); every passage the survey's §7 names; D201's sweep for each ruling of §1's
+   "change" list. Then the FULL check.
+
+## 6. Tests the plan carries (named so the readers can ask for the missing one)
+
+- **T1 — his two routes (the note's §5).** Route 1: an input filed for ALL AVAIL. Route 2: an input filed for Ranger,
+  ALL AVAIL dropped on its row, Ranger dragged off. Then: the same row, the same card, the same bar, the same OIL
+  claim and crowd, the same pending count on a published day; the two records equal but for `iid`, `ord`, the stamps
+  and the history.
+- **T2 — the walk-through, step by step (D757):** each of its five steps, the two OIL variants, the three refusals
+  and the swap, asserted on the schedule, the Inputs calendar and the OIL work.
+- **T3 — nobody earns twice:** a man named in an input that also holds ALL AVAIL is not in its crowd, earns once, and
+  switching him off switches him off.
+- **T4 — an issued day keeps what it went out with:** publish; add a person; the issued face, its OIL and the Leave
+  War's credit unchanged, the day reads 1 pending; republish; Undo each. And the same for an old-shaped issued block.
+- **T5 — the counts:** the twelve of yesterday's plan (§4.8 there) re-run on one record, plus: the first person
+  leaves (1); the swap (1); two people added (2); a re-time and a person added (2); a several-day input's second
+  published day when a person is added (1 there too); a cancel (1).
+- **T6 — old data:** a store holding old-shaped records — a one-person request, a group of three, a placeholder input,
+  a published day with a shared row — loads, draws, validates and earns without a throw; the first edit of one writes
+  the new shape.
+- **T7 — one man's part:** sick cuts ONE man's leave out of a leave filed for three; the other two are untouched; one
+  Undo puts it back.
+- **T8 — the belt:** a raw `setSlotVal` / `fillSlot` on a row that came from an input is refused; every door of §4.4
+  reaches the input.
+- **T9 — permissions:** the table of §4.9 against `perms.ts`, row by row (the existing `perms.test.ts` pattern).
+- **T10 — the readers' guard** (§4.2), and a frozen line throwing on a write.
+
+## 7. The roll-call for the bug check — FULL tier
+
+Every place the app draws, counts or writes the thing; none may be blank on the evidence sheet: Edit Schedule's week
+and the Scheduler Board (the Ground Programme row, Personal Inputs, the Unavailable list, the crew list's reasons),
+View-only Sched and a published face, the next-week peek, print and the PDF, the CSV export; the Inputs calendar (the
+bar, the opened day, its card), the List (phone card, desktop row), the input's window (as filer, as a man in it, as
+an admin), the picker; the SANS calendar and its day; the changes window (To go out, History), the day's "N pending",
+the Amendments panel, "Discard N edits"; OIL Earn (the row's switches, the ALL AVAIL window's OIL tab), the Leave War
+grid (an FO / HO cell, a shared leave's cells for each man) and its OIL tracker; the bell; Undo / Redo; a reload; a
+second sign-in (the member's view); Admin → Users' delete and a posting out; a load of an older version, a saved
+plan, a day template. Sizes: a phone and a desktop for every screen that has both.
+
+## 8. For him
+
+**Readings he has not been told, to put to him with the report (none changes a ruling):**
+- R1. A named person dropped on a puck where the row holds SEVERAL joins the input; only on the ONLY person's puck
+  does he replace him (D755 (2), D757 — and how the one row works today).
+- R2. A swap of the only person counts as ONE change waiting on a published day (D113); a person out and another in
+  on a row of several is two (D736).
+- R3. With D762, the window's OIL line for a shared input reads the one answer; "credited for 2 of 3" goes. Who the
+  scheduler switched off on a day shows in OIL Earn.
+- R4. A member may no longer add a person to an input he did not file (allowed today) — it is the filer's or a
+  scheduler's.
+- R5. On the Unavailable list, a time or remark typed on ONE man's row of an absence filed for several gives him an
+  input of his own (as it effectively does today).
+- R6. Old data: nothing is wiped; old shared demo inputs come back as separate one-person inputs (D759 reading 10).
+- R7. The filer's "change it for everyone" ends when a scheduler puts someone in (D755 (3)); he can still take
+  himself out.
+- R8. A cancelled input stays listed on the Inputs calendar, struck through with its reason — not removed.
+
+**Pictures owed to him before their step:** the cancelled input's card, bar and List row (step 5); the bell's list
+(step 7).
+
+**Waiting on him:** whether the build may start on Fable's read alone, ChatGPT being out until about 1 Nov 26 (D758
+reading 3, D761).
+
+## 9. The reads of this plan
+
+*(None yet. Fable's report goes to `../briefs/2026-10-11-reads/one-rule-plan-fable.md`; what each finding did to this
+plan is written here.)*
