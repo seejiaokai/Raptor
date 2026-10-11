@@ -5,6 +5,7 @@
    if the file were written as Latin-1. */
 import { describe, expect, it } from 'vitest'
 import { csvText, schedRows, inputRows } from './export'
+import { PEOPLE } from '../engine/people'
 
 const bytes = (s: string) => Array.from(new TextEncoder().encode(s))
 
@@ -62,5 +63,20 @@ describe('the Inputs export (142-inputs.csv)', () => {
   it('a one-day input reads the same date at both ends; a timed one keeps its times', () => {
     expect(rows[2].slice(1, 3)).toEqual(['Jul 22', 'Jul 22'])
     expect(rows[3].slice(1, 5)).toEqual(['Jul 16', 'Jul 16', '17:00', '18:30'])
+  })
+  /* AN INPUT IS ONE RECORD WITH THE LIST OF ITS PEOPLE (owner D756, 11 Oct 26; the one-rule plan §4.5: "the CSV export
+     writes one line per named person and one for the placeholder") — so the file still has a line a person, each with
+     that callsign in the Name column, as it had while a shared input was a record a man */
+  it('an input of several people is a line a named person, in the order they joined, then one for its placeholder', () => {
+    const cs = (id: string) => (PEOPLE as any)[id].cs
+    const out = inputRows([{ type: 'Meeting', date: 'Jul 16', allday: false, s: 600, e: 660, remarks: 'brief', by: 'stiff',
+      people: [{ p: 'stiff' }, { p: 'allavail' }, { p: 'bane' }] }])
+    expect(out.slice(1).map(r => r[0])).toEqual([cs('stiff'), cs('bane'), cs('allavail')])
+    expect(out.slice(1).every(r => r.slice(1).join('|') === 'Jul 16|Jul 16|10:00|11:00|Meeting|Meeting|brief'), 'every line says the same input').toBe(true)
+  })
+  it('a one-person record in the OLD shape and one in the new write the same one line', () => {
+    const says = { type: 'LL', date: 'Jul 20', endDate: 'Jul 24', allday: true, s: 0, e: 1439, remarks: 'Bali' }
+    expect(inputRows([{ ...says, people: [{ p: 'bapster' }] }])).toEqual(inputRows([{ ...says, person: 'bapster' }]))
+    expect(inputRows([{ ...says, person: 'bapster' }])).toHaveLength(2)
   })
 })

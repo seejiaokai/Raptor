@@ -9,7 +9,7 @@
    Board — and each is read here. A row named by its kind is byte-for-byte what it was. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf, inputLines } from '../engine/inputs'
 import { acceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { SCHED } from '../engine/publish'
@@ -18,7 +18,7 @@ import { boardHTML } from './board'
 import { peekDayHTML } from './peek'
 import { setSession } from '../state/auth'
 import { setPage, setBoardDay, PIOPEN, setOilDay } from '../state/view'
-import { sharedKey, entriesOf } from '../state/inputgroup'
+import { sharedKey } from '../state/inputgroup'
 
 const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS)
 const WED = 2
@@ -165,16 +165,50 @@ describe('an input’s own card — Personal Inputs on the week and on the board
   })
 })
 
-describe('a shared input shares its title (state/inputgroup.ts SHARED_FIELDS)', () => {
+/* A SHARED INPUT HAS ONE TITLE. Until the one-rule build a shared input was ONE RECORD A MAN tied by a group id, and "one
+   entry" was worked out on read: the records of a group whose shared fields — the title among them — said the same
+   (state/inputgroup.ts entriesOf). This block pinned that two such records with one title were one entry of two.
+   THAT SUBJECT IS RETIRED (owner D756, D759 — 11 Oct 26; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md
+   §4.1): an input is ONE stored record with the list of its people, so "the records of one entry agree on a title" has
+   nothing left to compare — the one title is one field of the one record. Pinned in its place, on this file's own
+   subject (the row a request lands on the schedule): the one record's one row carries the title for everyone in it;
+   and records stored in the old shape are each their own input, with one title or with two (D759 reading 10). */
+describe('a shared input has one title — it is one record (D756; was: state/inputgroup.ts SHARED_FIELDS)', () => {
   const rec = (person: string, over: any = {}) => ({ iid: 'g' + person, person, grp: 'g1', grpBy: 'stiff', type: 'Event', date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, remarks: '', ...over })
-  it('records of one group with one title are one entry; a record titled differently is not part of it', () => {
+  const rowsOf = (iid: string) => DAYS[WED].ground.filter((g: any) => g.src === iid)
+  it('the title is one of the things a record says: the same title reads the same, another title reads different, none reads as a blank one', () => {
     expect(sharedKey(rec('split', { title: 'Sports day' }))).toBe(sharedKey(rec('vinci', { title: 'Sports day' })))
     expect(sharedKey(rec('split', { title: 'Sports day' }))).not.toBe(sharedKey(rec('vinci', { title: 'Open house' })))
     expect(sharedKey(rec('split'))).toBe(sharedKey(rec('vinci', { title: '' })))
-    const one = entriesOf([rec('split', { title: 'Sports day' }), rec('vinci', { title: 'Sports day' })], x => x)
-    expect(one.length).toBe(1); expect(one[0].rows.length).toBe(2)
-    const two = entriesOf([rec('split', { title: 'Sports day' }), rec('vinci', { title: 'Open house' })], x => x)
-    expect(two.length).toBe(2)
+  })
+  it('ONE record for two people with one title is one input: one row on the programme, named by the title, the kind small, both men on it', () => {
+    const inp: any = { iid: 'ttG', people: [{ p: 'split', by: 'stiff', at: 1 }, { p: 'vinci', by: 'stiff', at: 1 }], by: 'stiff', at: 1,
+      date: 'Jul 15', yr: 2026, allday: false, s: 600, e: 660, type: 'Event', title: 'Sports day', remarks: '' }
+    INPUTS.push(inp)
+    expect(acceptInput(WED, inp, 'g')).toBe(true)
+    validate()
+    expect(idsOf(inp), 'still the one input of two').toEqual(['split', 'vinci'])
+    /* every man's line says the one title — there is no second copy of it to fall out of step */
+    expect(inputLines([inp]).map((l: any) => [l.person, l.title])).toEqual([['split', 'Sports day'], ['vinci', 'Sports day']])
+    const rows = rowsOf('ttG')
+    expect(rows, 'one row, not a row a man').toHaveLength(1)
+    expect(rows[0].prog).toBe('SPORTS DAY')
+    expect([rows[0].who, ...(rows[0].more || [])].slice().sort(), 'both men stand on it').toEqual(['split', 'vinci'])
+    const el = weekRow(true, 'ttG')
+    expect(el.querySelector(':scope > .nm .ntx')!.textContent).toBe('SPORTS DAY')
+    expect(el.querySelector(':scope > .nm .nm-kind')!.textContent).toBe('Event')
+  })
+  it('OLD-SHAPE records tied by a group id (D759 reading 10): each is its own input and lands a row of its own — with one title between them, or with two', () => {
+    const a = rec('split', { title: 'Sports day' }), b = rec('vinci', { title: 'Sports day' }), c = rec('bane', { title: 'Open house' })
+    for (const r of [a, b, c]) { INPUTS.push(r); expect(acceptInput(WED, r, 'g')).toBe(true) }
+    validate()
+    for (const r of [a, b, c]) expect(idsOf(r), 'a one-person input').toEqual([r.person])
+    for (const r of [a, b, c]) {
+      const rows = rowsOf(r.iid)
+      expect(rows, `${r.person}: a row of his own`).toHaveLength(1)
+      expect([rows[0].who, ...(rows[0].more || [])], `${r.person}: alone on it`).toEqual([r.person])
+      expect(rows[0].prog).toBe(String(r.title).toUpperCase())
+    }
   })
 })
 

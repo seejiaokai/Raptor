@@ -10,7 +10,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT } from './pops'
 import { docAdd, rowDocIds } from '../state/docs'
@@ -55,7 +55,7 @@ const openMedAdd = async (over: any = {}) => {
     notify()
   })
 }
-const meds = () => INPUTS.filter((r: any) => r.person === 'bane' && r.type === 'ATT C')
+const meds = () => INPUTS.filter((r: any) => holds(r, 'bane') && r.type === 'ATT C')
 
 describe('the medical-document prompt gates a bare new medical save', () => {
   it('Save with no document opens the ask instead of writing — never the old hard refusal', async () => {

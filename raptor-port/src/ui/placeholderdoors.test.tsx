@@ -13,7 +13,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor, commitGroup, commitInputEdit, commitNewInput, draftOf, normalizeInputDraft, reassignInput } from './inputedit'
+import { InputEditor, commitInput, commitInputEdit, commitNewInput, draftOf, normalizeInputDraft, reassignInput } from './inputedit'
 import { accCtl } from './html'
 import { pickProblem } from './PeoplePick'
 import { initStore, notify, setSession, undo, redo, writeInputs } from '../state/store'
@@ -21,7 +21,7 @@ import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
 import { me, mayEditInput, mayDeleteInput, mayFileInputFor } from '../state/perms'
 import { setMembersFile } from '../state/memberfile'
-import { INPUTS, PLACEHOLDER_KINDS, INPUT_TYPES } from '../engine/inputs'
+import { INPUTS, PLACEHOLDER_KINDS, INPUT_TYPES, idsOf, namedOf, holds } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { acceptInput } from '../engine/slots'
@@ -150,17 +150,22 @@ describe('filing it — one ordinary input, nobody\'s name copied in', () => {
       expect(win(), 'saved: the window has closed').toBeNull()
       const made = INPUTS.filter((r: any) => r.remarks === 'whole sqn') as any[]
       expect(made).toHaveLength(1)
-      expect(String(made[0].person)).toBe(ph)
+      /* THE ONE RECORD (owner D756 — the one-rule build, step 2): a new input is written with its list of people, and
+         an input for a placeholder is ONE record whose list is the placeholder alone */
+      expect(idsOf(made[0])).toEqual([ph])
       expect(made[0].grp).toBeUndefined()
       expect(made[0].grpBy).toBeUndefined()
       expect(String(made[0].by), 'who placed it').toBe(admin)
       expect(made[0].endDate).toBeUndefined()
-      expect(Object.keys(made[0]).some(k => /people|names|crowd/i.test(k)), 'no list of names is stored').toBe(false)
+      /* nobody's name is copied in (D702): the record's own list (`people`, D756) names no real person, and it keeps
+         no other list of who stands behind it */
+      expect(namedOf(made[0]), 'no name is stored in its list').toEqual([])
+      expect(Object.keys(made[0]).some(k => /names|crowd/i.test(k)), 'no list of names is stored').toBe(false)
       expect(ELOG.rows.some(x => x.iid === made[0].iid), 'its line in the change history').toBe(true)
       await act(async () => { undo(); notify() })
       expect(INPUTS.length, 'one Undo step').toBe(before)
       await act(async () => { redo(); notify() })
-      expect(INPUTS.filter((r: any) => r.remarks === 'whole sqn' && r.person === ph)).toHaveLength(1)
+      expect(INPUTS.filter((r: any) => r.remarks === 'whole sqn' && holds(r, ph))).toHaveLength(1)
     })
   }
 
@@ -357,13 +362,23 @@ describe('never in a group — it already stands for whoever is free', () => {
     expect(pickProblem(['allavail'], false, 'Meeting')).toBeNull()
   })
 
-  it('the group save itself refuses a placeholder among several — before ANY man is written', async () => {
-    for (const want of [['allavail', others()[0]], [others()[0], 'all', others()[1]], ['allavail', 'all']]) {
+  /* RE-EXPRESSED ON THE ONE RECORD (the one-rule build, step 2): the save is the input's one writer (commitInput — the
+     group save is only its old name). A placeholder beside named people is still refused in this step, in the same
+     sentence. THE TWO PLACEHOLDERS TOGETHER are refused in the sentence of the ruling that covers them now — owner
+     D753, "an input takes ALL or ALL AVAIL, never both" (the plan 2026-10-11-one-rule-plan.md §4.4: "This input
+     already has ALL AVAIL"). */
+  it('the save itself refuses a placeholder among several — before ANY man is written; the two placeholders together by D753', async () => {
+    const cases: Array<[string[], string]> = [
+      [['allavail', others()[0]], 'ALL AVAIL is filed on its own — it already stands for whoever is free'],
+      [[others()[0], 'all', others()[1]], 'ALL is filed on its own — it already stands for whoever is free'],
+      [['allavail', 'all'], 'This input already has ALL AVAIL'],
+    ]
+    for (const [want, sentence] of cases) {
       const was = world(); said.length = 0
       let ok = true
-      await act(async () => { ok = commitGroup(null, draftOf({ person: want[0], type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'x' }), want) })
+      await act(async () => { ok = commitInput(null, draftOf({ person: want[0], type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'x' }), want) })
       expect(ok, want.join('+')).toBe(false)
-      expect(said.join(' | '), want.join('+')).toContain('filed on its own')
+      expect(said.join(' | '), want.join('+')).toBe(sentence)
       /* refused BEFORE any man is written: the plain sentence, said once — not the save boundary's rollback with its
          "nothing was saved for anyone" tail (the break test B9, 9 Oct 26: with the up-front check gone the boundary
          still refused, so nothing here went red) */
@@ -373,13 +388,16 @@ describe('never in a group — it already stands for whoever is free', () => {
     }
   })
 
+  /* THE FIXTURE IS THE ONE RECORD NOW (owner D756): a shared input is one record with its two people — not two records
+     tied by a group id — and the save is its one writer. The rule pinned is the one this case always pinned. */
   it('a shared input cannot be turned into ALL AVAIL by taking its people off and picking the placeholder', async () => {
-    const grp = 'gP1', people = [others()[0], others()[1]]
-    await act(async () => { writeInputs(() => { INPUTS.push(...people.map((p, i) => ({ iid: `${grp}-${i}`, person: p, type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'brief', mod: '2026-09-01', grp, grpBy: admin, by: admin }))) }); notify() })
-    const rows = INPUTS.filter((r: any) => r.grp === grp)
+    const people = [others()[0], others()[1]]
+    await act(async () => { writeInputs(() => { INPUTS.push({ iid: 'gP1', people: people.map(p => ({ p, by: admin, at: '2026-09-01T08:00:00.000Z' })), type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'brief', mod: '2026-09-01', by: admin, at: '2026-09-01T08:00:00.000Z' }) }); notify() })
+    const rec = live('gP1')
+    expect(idsOf(rec), 'the fixture: one record, two people').toEqual(people)
     const was = world(); said.length = 0
     let ok = true
-    await act(async () => { ok = commitGroup({ rows }, draftOf(rows[0]), ['allavail']) })
+    await act(async () => { ok = commitInput(rec, draftOf(rec), ['allavail']) })
     expect(ok).toBe(false)
     expect(said.join(' | ')).toContain('filed on its own')
     expect(world()).toBe(was)

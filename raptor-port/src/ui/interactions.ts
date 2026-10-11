@@ -7,7 +7,7 @@ import { leadKeyOf, lineOf } from './grouprow'
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -699,8 +699,11 @@ export function routeClick(e: MouseEvent) {
       /* the callsign rides along with the type — "an LL" says what happened,
          "Bane's LL" says who it happened to, which is the thing the changes
          list is actually for */
-      /* …and a shared input is named as the changes window names it: its name and how many people (D663, D736) */
-      const cs = line.length > 1 ? `${line.length} people` : PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
+      /* …and a shared input is named as the changes window names it: its name and how many people (D663, D736) — how
+         many are IN it, the record's own list (owner D756: an input is one record with its people; engine/inputs.ts
+         idsOf), where it was how many records its line gathered; an input of one is named by its one person (leadOf) */
+      const many = Math.max(line.length, idsOf(inp).length), one = leadOf(inp)
+      const cs = many > 1 ? `${many} people` : PEOPLE[one] ? PEOPLE[one].cs : one
       /* THE TAKE-OFF NAMES IT TOO (owner D731 (5), 10 Oct 26 — "Ranger's Sports day taken off the programme"; walker B of
          the title's check, scenario 40). It said "Accept undone" — whose request, and which, went unsaid, where the
          accept beside it says the whole thing. The same pattern for its two other cases (his reading (b)): a row that
@@ -723,7 +726,9 @@ export function routeClick(e: MouseEvent) {
       /* A REFUSED PRESS IS NEVER SILENT ([HUMAN-RETEST] walk W4-F3, 24 Sep 26): "→ Ground" on an
          input whose row is already on the programme, or on a locked week, used to do nothing at
          all — a control that looks dead. Say why. */
-      const cs = PEOPLE[inp.person] ? PEOPLE[inp.person].cs : inp.person
+      /* (named as the note of a press that worked names it, above: how many where it holds several, else its one person) */
+      const many = Math.max(line.length, idsOf(inp).length), one = leadOf(inp)
+      const cs = many > 1 ? `${many} people` : PEOPLE[one] ? PEOPLE[one].cs : one
       const onProg = dest !== 'x' && DAYS.some((d: any) => !!standsOn(d, k, inp))
       /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
          not be read refuses too, and says so rather than guess (never a second row on an unknown) */

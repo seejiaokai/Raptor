@@ -58,12 +58,24 @@ const file = async (over: any = {}) => {
   await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
   return live(row.iid)
 }
+/* A SHARED INPUT IS ONE RECORD HOLDING ITS PEOPLE, in the order they joined (the one-rule build, step 2 — owner D756,
+   D759; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1). Until that build this fixture was a record a
+   man tied by a group id — which is read, now and for ever, as so many one-person inputs (D759 reading 10): the case
+   "OLD-SHAPE records tied by a group id" below keeps that. */
 const shared = async (people: string[], over: any = {}) => {
-  const grp = 'gI' + (++n)
+  const iid = 'gI' + (++n)
+  const row = { iid, people: people.map(p => ({ p, by: admin, at: T(1, 9, 0) })), type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660,
+    remarks: '', mod: '2026-09-01', by: admin, at: T(1, 9, 0), ...over }
+  await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
+  return { rows: [live(iid)], first: az(people)[0] }
+}
+/* …and the same people as the OLD shape kept them: a record a man, tied by a group id */
+const oldGroup = async (people: string[], over: any = {}) => {
+  const grp = 'gO' + (++n)
   const rows = people.map((p, i) => ({ iid: `${grp}-${i}`, person: p, type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660,
     remarks: '', mod: '2026-09-01', grp, grpBy: admin, by: admin, at: T(1, 9, 0), ...over }))
   await act(async () => { writeInputs(() => { INPUTS.push(...rows) }); notify() })
-  return { grp, rows: rows.map(r => live(r.iid)), first: az(people)[0] }
+  return rows.map(r => live(r.iid))
 }
 const card = (r: any) => $(`[data-testid="inl-row-${r.iid}"]`)
 const part = (r: any, k: string) => card(r)!.querySelector(`[data-testid="inl-${k}"]`) as HTMLElement | null
@@ -216,6 +228,14 @@ describe('the list’s card says what the opened day’s card says — one card,
     expect($('[data-testid="inl-day"] i')!.textContent, 'a shared input counts once').toBe('1 input')
     await click(c)
     expect(document.querySelector('[data-testid="win-inputedit"]')!.textContent, 'the tap opens the ENTRY').toContain(`${cs(g.first)} +2`)
+  })
+  it('OLD-SHAPE records tied by a group id (D759 reading 10): each is its own input — a card a man, his own name on it, each counted', async () => {
+    await mount(true)
+    const [a, b] = others()
+    const rows = await oldGroup([admin, b, a])
+    expect($$('[data-testid^="inl-row-"]'), 'a card for each of the three').toHaveLength(3)
+    for (const r of rows) expect(part(r, 'who')!.textContent).toBe(cs(r.person))
+    expect($('[data-testid="inl-day"] i')!.textContent, 'three inputs, counted as three').toBe('3 inputs')
   })
   it('an input for ALL AVAIL: its own name, and who filed it', async () => {
     await mount(true)

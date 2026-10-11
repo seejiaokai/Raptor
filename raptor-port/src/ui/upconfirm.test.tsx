@@ -10,7 +10,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT } from './pops'
 import { docAdd } from '../state/docs'
@@ -61,7 +61,7 @@ const openUpchitAdd = async (date: string) => {
     notify()
   })
 }
-const upchits = () => INPUTS.filter((r: any) => r.person === 'bane' && r.type === 'Upchit')
+const upchits = () => INPUTS.filter((r: any) => holds(r, 'bane') && r.type === 'Upchit')
 
 describe('the sheet gates every upchit save', () => {
   it('Save opens the summary INSTEAD of writing; Cancel leaves the record untouched', async () => {

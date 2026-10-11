@@ -11,7 +11,7 @@
 // notify does in the app (sync.ts `wireLeaveWarSync`).
 
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds, idsOf } from '../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { commandStream } from '../command'
 import { balanceOf, figureParts, FIGURES } from './engine'
@@ -59,7 +59,8 @@ describe('approving turns the bids into the ONE Input', () => {
     approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
     const rows = lwInputs()
     expect(rows).toHaveLength(1)
-    expect(rows[0]).toMatchObject({ person: 'ammo', type: 'LL', date: 'Feb 2', endDate: 'Feb 4', allday: true, lw: 'y2026' })
+    expect(idsOf(rows[0]), 'one record, its one person in its list').toEqual(['ammo'])
+    expect(rows[0]).toMatchObject({ type: 'LL', date: 'Feb 2', endDate: 'Feb 4', allday: true, lw: 'y2026' })
     expect(rows[0].remarks).toBe('till 4 Feb')
     for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) {
       expect(raw('ammo', d)).toEqual([])                       // nothing approved is stored on the war
@@ -72,7 +73,7 @@ describe('approving turns the bids into the ONE Input', () => {
     approve('ammo', ['2026-02-02'])
     expect(lwInputs()[0].remarks).toBe('on 2 Feb')
     approve('rocky', ['2026-02-10'], '*LL')
-    expect(INPUTS.find((r: any) => r.person === 'rocky' && r.lw)).toMatchObject({ allday: false, half: 'am', s: 0, e: 720 })
+    expect(INPUTS.find((r: any) => holds(r, 'rocky') && r.lw)).toMatchObject({ allday: false, half: 'am', s: 0, e: 720 })
     expect(getState().grid.rocky['2026-02-10']).toBe('*LL')
   })
 
@@ -99,7 +100,7 @@ describe('approving turns the bids into the ONE Input', () => {
     INPUTS.push({ person: 'ammo', date: 'Feb 2', yr: 2026, allday: true, type: 'OL', remarks: '', mod: '2026-06-01', iid: 'olx' })
     syncAbsences()
     setBidState('ammo', '2026-02-02', 'approved')
-    expect(INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL')).toHaveLength(0)
+    expect(INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL')).toHaveLength(0)
   })
 })
 
@@ -165,7 +166,7 @@ describe('leave filed on the Inputs page shows on the war', () => {
 
   it('deleting the Input empties the day — nothing to withdraw', () => {
     file({ person: 'ammo', date: 'Feb 10', allday: true, type: 'LL' })
-    const row = INPUTS.find((r: any) => r.person === 'ammo' && r.date === 'Feb 10')
+    const row = INPUTS.find((r: any) => holds(r, 'ammo') && r.date === 'Feb 10')
     removeInput(row)
     syncAbsences()
     expect(getState().grid.ammo?.['2026-02-10']).toBeUndefined()
@@ -191,7 +192,7 @@ describe('leave filed on the Inputs page shows on the war', () => {
     const before = balance()
     file({ person: 'pain', date: 'Feb 10', allday: true, type: 'LL' })
     expect(balance()).toBe(before - 1)
-    removeInput(INPUTS.find((r: any) => r.person === 'pain' && r.date === 'Feb 10'))
+    removeInput(INPUTS.find((r: any) => holds(r, 'pain') && r.date === 'Feb 10'))
     syncAbsences()
     expect(balance()).toBe(before)
   })
@@ -249,12 +250,12 @@ describe('edits on the Inputs page (design §5.4, owner §13 Q1)', () => {
     expect(commitInputEdit(row, draft)).toBe(true)
     syncAbsences()
     expect(getState().grid.ammo['2026-02-05']).toBe('LL')
-    expect(INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL')).toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL')).toHaveLength(1)
   })
 
   it('editing the type carries across — LL becomes OL on the grid', () => {
     file({ person: 'ammo', date: 'Feb 10', allday: true, type: 'LL' })
-    const row = INPUTS.find((r: any) => r.person === 'ammo' && r.date === 'Feb 10')
+    const row = INPUTS.find((r: any) => holds(r, 'ammo') && r.date === 'Feb 10')
     const d = draftOf(row); d.type = 'OL'
     expect(commitInputEdit(row, d)).toBe(true)
     syncAbsences()

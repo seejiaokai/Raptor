@@ -7,7 +7,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId, idsOf } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
@@ -413,7 +413,8 @@ describe('the Inputs page (tfin)', () => {
       const n = INPUTS.length
       await addNow()
       expect(INPUTS.length, 'filed').toBe(n + 1)
-      expect(INPUTS[0].person, 'for the posted-out man').toBe(id)
+      /* a new input is ONE record with its people — no `person` field (the one-rule build, D756): his, and his alone */
+      expect(idsOf(INPUTS[0]), 'for the posted-out man').toEqual([id])
       await act(async () => { undo() })
     } finally {
       await cancelNew()
@@ -445,7 +446,7 @@ describe('the Inputs page (tfin)', () => {
     const n = INPUTS.length
     await addNow()
     expect(INPUTS.length, 'the add went through').toBe(n + 1)
-    expect(INPUTS[0].person, 'and landed on the signed-in person').toBe('dj')
+    expect(idsOf(INPUTS[0]), 'and landed on the signed-in person').toEqual(['dj'])
     await delRow(0)
     expect(INPUTS.length).toBe(n)
     await act(async () => { setMe('bane'); setSession({ user: 'a', role: 'admin' }); notify() })
@@ -497,7 +498,7 @@ describe('the Inputs page (tfin)', () => {
       ok = commitNewInput({ person: '', type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
     })
     expect(ok).toBe(true)
-    expect(INPUTS[0].person, 'a draft naming nobody is his own').toBe(ME)
+    expect(idsOf(INPUTS[0]), 'a draft naming nobody is his own').toEqual([ME])
     await act(async () => { removeInput(INPUTS[0]) })
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
@@ -1409,7 +1410,11 @@ describe('Edit history hears an add made on this page', () => {
     const before = ELOG.rows.length
     await addNow()
     const r = INPUTS[0]
-    const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
+    /* whose it is, read off the one record (a new input carries `people`, never `person` — D756): one man's */
+    expect(idsOf(r), 'filed for one person').toHaveLength(1)
+    const who = idsOf(r)[0]
+    expect(PEOPLE[who], 'a person on the roster').toBeTruthy()
+    const cs = PEOPLE[who].cs
     const mine = ELOG.rows.slice(before).filter((x: any) => x.iid === r.iid)
     expect(mine.length, 'exactly one line').toBe(1)
     expect(mine[0]!.lbl).toContain(`${cs} · ${r.type} added`)

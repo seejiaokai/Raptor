@@ -109,7 +109,7 @@ function afterPut(inp: any, said: string, spoke: boolean): void {
     if (plan.length && plan.every((p: any) => ans[p.iso] === 0)) tail = ' — not counted for OIL'
   }
   if (!spoke) HOOKS.toast(said + tail, 'ok')
-  askOilIfPending(inp)
+  askOilIfPending(inp, true)
 }
 
 /* SOMEONE JOINS — appended to the input's list, by the input's own save. */
@@ -139,7 +139,7 @@ function replace(p: Place, pid: string, then?: (was: string) => boolean | void, 
   }))
   if (!out.ok) return 'refused'
   if (!spoke) HOOKS.toast(said ? said(was) : `${csOf(pid)} is on ${name} instead of ${csOf(was)}`, 'ok')
-  askOilIfPending(p.inp)
+  askOilIfPending(p.inp, true)
   notify()
   return 'done'
 }
@@ -223,7 +223,7 @@ export function rowMove(fromKey: any, toKey: any): RowAnswer {
   const pid = a.at
   if (people(b.inp).includes(pid)) { HOOKS.toast(`${csOf(pid)} is already on this input`, 'warn'); return 'refused' }
   if (!leave(a, () => commitInput(b.inp, draftOf(b.inp), [...people(b.inp), pid], { sched: true }), `${csOf(pid)} moved to ${inpLabel(b.inp)}`)) return 'refused'
-  askOilIfPending(b.inp)
+  askOilIfPending(b.inp, true)
   notify()
   return 'done'
 }

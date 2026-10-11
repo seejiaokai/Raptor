@@ -23,7 +23,7 @@ async function month(p: Page, y: number, m: number) {
 }
 const ids = (p: Page) => p.evaluate(() => (window as any).INPUTS.map((r: any) => r.iid))
 const made = (p: Page, had: string[]) => p.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid))
-  .map((r: any) => ({ iid: r.iid, person: r.person, type: r.type, date: r.date, endDate: r.endDate, grp: r.grp, by: r.by, oil: r.oil, acc: r.acc })), had)
+  .map((r: any) => ({ iid: r.iid, people: (r.people || [{ p: r.person }]).map((e: any) => e.p), type: r.type, date: r.date, endDate: r.endDate, by: r.by, oil: r.oil, acc: r.acc })), had)
 const noErrors = (p: Page) => { const errs: string[] = []; p.on('pageerror', e => errs.push(String(e))); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()) }); return errs }
 
 /* Saturday 18 July 2026 is in the demo week, so the request's row stands on a schedule that is on screen */
@@ -53,8 +53,8 @@ async function fileForAllAvail(page: Page, tap: boolean) {
   await expect(edWin(page)).toHaveCount(0)
   const rows = await made(page, had)
   expect(rows, 'ONE record').toHaveLength(1)
-  expect(rows[0]).toMatchObject({ person: 'allavail', type: 'Duty', date: 'Jul 18' })
-  expect(rows[0].grp, 'no group').toBeUndefined()
+  expect(rows[0]).toMatchObject({ type: 'Duty', date: 'Jul 18' })
+  expect(rows[0].people, 'the placeholder is its one person — no name copied in').toEqual(['allavail'])
   expect(rows[0].endDate).toBeUndefined()
   expect(Object.values(rows[0].oil || {}).some((v: any) => v > 0), 'the filer said Yes').toBe(true)
   return rows[0]
@@ -94,9 +94,9 @@ test('a desktop: an admin files a weekend Duty for ALL AVAIL from the month — 
   await page.reload()
   await page.waitForSelector('#vWeek .day, #loginForm')
   if (await page.locator('#loginForm').count()) await login(page)
-  const kept = await page.evaluate(iid => { const w = window as any; const r = w.INPUTS.find((x: any) => x.iid === iid); return r ? { person: r.person, oil: r.oil } : null }, row.iid)
+  const kept = await page.evaluate(iid => { const w = window as any; const r = w.INPUTS.find((x: any) => x.iid === iid); return r ? { people: (r.people || [{ p: r.person }]).map((e: any) => e.p), oil: r.oil } : null }, row.iid)
   expect(kept, 'still there after a reload').toBeTruthy()
-  expect(kept!.person).toBe('allavail')
+  expect(kept!.people).toEqual(['allavail'])
   expect(Object.values(kept!.oil || {}).some((v: any) => v > 0)).toBe(true)
   /* …and its ROW on the schedule, with its count (Astra's read of the code, 9 Oct 26: the reload proved the input and
      its answer, never the row it stands on) */
@@ -113,7 +113,7 @@ test('a phone: the same filing by a finger — the list offers the two, the edit
   const errs = noErrors(page)
   await login(page)
   const row = await fileForAllAvail(page, true)
-  expect(row.person).toBe('allavail')
+  expect(row.people).toEqual(['allavail'])
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'nothing runs off sideways').toBe(true)
   const bar = page.locator(`#inpCal .ib-bar`).filter({ hasText: 'ALL AVAIL' })
   await expect(bar.first()).toBeVisible()
@@ -160,9 +160,11 @@ test('the kind "Event": in the type list, filed for several people as ONE bar, a
   await page.locator('#inpEditSave').click()
   await expect(edWin(page)).toHaveCount(0)
   const rows = await made(page, had)
-  expect(rows).toHaveLength(2)
-  expect(rows.every(r => r.type === 'Event')).toBe(true)
-  expect(rows[0].grp, 'one shared input').toBeTruthy()
+  /* ONE record for the two of them — an input is stored once, with the list of its people (owner D756) */
+  expect(rows, 'one shared input').toHaveLength(1)
+  expect(rows[0].type).toBe('Event')
+  expect(rows[0].people).toHaveLength(2)
+  expect(rows[0].people).toContain(other)
   /* ONE bar for the two of them: how many, then what (the count first since the design vet — D729, V4) */
   await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Event$/ })).toHaveCount(1)
   /* and the demo's own Event for ALL, in July — named by its own title since [INPUT-OWN-TITLE] (D715, D716: the demo's
@@ -186,7 +188,7 @@ test('a member may choose it too (D702): he files a Meeting for ALL AVAIL, sees 
   await expect(edWin(page)).toHaveCount(0)
   const rows = await made(page, had)
   expect(rows).toHaveLength(1)
-  expect(rows[0].person).toBe('allavail')
+  expect(rows[0].people).toEqual(['allavail'])
   /* nobody's "mine": his own filter does not list it; Everyone does */
   await page.selectOption('#inFPerson', 'all')
   const bar = page.locator('#inpCal .ib-bar').filter({ hasText: 'ALL AVAIL' }).filter({ hasText: 'Meeting' })

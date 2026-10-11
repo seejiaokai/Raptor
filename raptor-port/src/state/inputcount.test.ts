@@ -127,7 +127,7 @@ const deleteWhole = (di = WED) => expect(removeInput(rec(di))).toBe(true)
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date(2026, 6, 13, 9, 0, 0)); resetWorld(); HOOKS.toast = () => {} })
 afterEach(() => { HOOKS.toast = toast; HOOKS.oilEarningDay = earning; HOOKS.oilSentinel = sentinel; HOOKS.oilDayISO = dayISO; _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null })
 
-describe('the counts — on a day that earns no OIL (D736; the plan\'s T5)', () => {
+describe('the counts — on a day that earns no OIL (D736; the plan\'s T5) (GI16)', () => {
   it('FILED for four since the day went out: ONE change waiting — and still one after a person is taken out before it goes out', async () => {
     await boot(); publish(WED)
     file(FOUR)
@@ -243,7 +243,7 @@ describe('"Discard N edits" counts what a load of the issued version would reall
   })
 })
 
-describe('what goes out is the count the day head showed', () => {
+describe('what goes out is the count the day head showed (GI17)', () => {
   it('the published amendment\'s own item count; its record holds the whole difference', async () => {
     await boot(); file(FOUR); publish(WED)
     retime()
@@ -287,7 +287,7 @@ describe('the whole input moved from one published day to another, and an amendm
   })
 })
 
-describe('the line: one line, naming its people (D736, D663)', () => {
+describe('the line: one line, naming its people (D736, D663) (GI18)', () => {
   it('"Range safety brief · 4 people", the names under it A to Z, then what changed — with no person\'s name in front', async () => {
     await boot(); file(FOUR); publish(WED)
     retime()
@@ -324,7 +324,7 @@ describe('the line: one line, naming its people (D736, D663)', () => {
   })
 })
 
-describe('a person added to a row the issued day already had wears his mark on his puck (D93)', () => {
+describe('a person added to a row the issued day already had wears his mark on his puck (D93) (GI20)', () => {
   const tag = (p: string) => !!SCHED.pending[ridKey(keyOf(p), DAYS)]
   it('added: the hollow tag is on HIS puck; the others wear none', async () => {
     await boot(); file(FOUR); publish(WED)

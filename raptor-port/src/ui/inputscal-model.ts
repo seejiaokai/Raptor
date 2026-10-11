@@ -127,6 +127,15 @@ const TONE_ORDER = { red: 0, amb: 1 } as const
 /** red for an absence, amber for a duty or a commitment (an upchit too) — the month's bar and the input card read it */
 export const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
 
+/** HOW MANY AN INPUT OF SEVERAL HOLDS, in words — for the question a delete asks and the note that answers it: "4
+ *  people"; with a placeholder among them the count is of the NAMED people and the placeholder is said beside it, as on
+ *  the bar ("3 people and ALL AVAIL"; one named person keeps his callsign, "Saber and ALL AVAIL") — ALL AVAIL stands
+ *  for whoever is free on the day (D702), so it is nobody to count. */
+export function everyoneIn(it: Pick<BarItem, 'people' | 'ph' | 'who'>): string {
+  const n = it.people.length - (it.ph ? 1 : 0)
+  return it.ph ? `${n === 1 ? it.who : n + ' people'} and ${it.ph}` : `${n} people`
+}
+
 /** Every input the Inputs month may show — one item a record — filtered as the List filters its rows (an input stays
  *  when ANY of its people passes), in the order a day lists them: absences, then commitments; all-day before timed;
  *  the earlier start; then the callsign. */

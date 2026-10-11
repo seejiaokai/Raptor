@@ -282,21 +282,22 @@ const RULES = {
   GI3: 'hours typed from the schedule keep a Yes at the new amount, with no question (D739 reading 4)',
   GI4: 'the rows of one shared input carry one mark and stand together (D661, D735)',
   GI5: 'a shared input is drawn as one row and one line; the Unavailable list a row a man (D661, D737)',
-  GI6: 'a real person put on the one row is added to the input; his seat keeps him (D734)',
+  GI6: 'a person put on an input\'s row joins the input; the seat he came from keeps him (D755; first D734)',
   GI7: 'the man added takes the input\'s OIL answer while everyone carries the same one, else he is asked (D738, D744)',
   GI8: 'a man added from the schedule is never marked late (D741)',
-  GI9: 'a man taken off the row leaves the input; the last man is refused (D734)',
-  GI10: 'dragged to another place he leaves the input and lands there in one step (D734)',
-  GI11: 'an ALL AVAIL on the row comes off with its man, and the app says so (D745)',
-  GI12: 'a box typed on the one row is everyone\'s; on the Unavailable list one man\'s (D735, D739, D737)',
-  GI13: 'the row\'s buttons, its drag and its LATE mark act for every row of it',
+  GI9: 'a person taken off an input\'s row leaves the input; the last one is refused (D755, D757)',
+  GI10: 'dragged to another place he leaves the input and lands there in one step (D755)',
+  /* GI11 (D745 - an ALL AVAIL on the row comes off with its man) and GI19 (that leaving is one change waiting) were
+     SET ASIDE by D755 with the one-rule build, 12 Oct 26: the placeholder is one of the input's own people and is
+     tied to no man. The ids are not re-used. */
+  GI12: 'a box typed on an input\'s row is everyone\'s; on the Unavailable list one man\'s part (D735, D739, D737)',
+  GI13: 'an input is ONE row: its buttons, its drag and its LATE mark are that row\'s (D755, D756)',
   GI14: 'the window opened from the schedule on a shared input is everyone\'s (D748)',
-  GI15: 'the belt refuses a raw write to a member\'s place; a one-man request\'s row is untouched (D18, D470)',
-  GI16: 'a published day counts a shared input once; one man taken off or added is one each (D736)',
-  GI17: 'what goes out is untouched by the count; Discard shares the fold, not the number (D736, D109)',
+  GI15: 'the belt refuses a raw write to any place of an input\'s row; a row nobody filed is written as ever (D755)',
+  GI16: 'a published day counts an input once; one person taken out or added is one each (D736)',
+  GI17: 'what goes out is the count the day head showed; Discard counts what a load would put back (D736, D109)',
   GI18: 'one line naming the input and its people (D736, D663)',
-  GI19: 'a man leaving with an ALL AVAIL on his place is one change waiting (D745)',
-  GI20: 'the man added to an issued one row wears his mark on his puck (D93)',
+  GI20: 'a person added to a row the issued day held wears his mark on his puck (D93)',
   GI21: 'the board row\'s coloured line stands clear of its pucks and buttons (D747)',
 }
 
@@ -310,7 +311,7 @@ const RULES = {
    register's §Coverage): most are pinned in PART, AM7 and AM44 by nothing. Named-by-nothing is the honest
    state, so they are baselined here to stay visible; shrink the list as each gains a whole-rule test. */
 const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q15', 'OIL19', 'OIL26',
-  'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM39d', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g',
+  'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g',
   /* AM55: a long bubble scrolling is layout, which the test browser does not have: the walk proves it (25 Sep 26) */
   'AM55'])
 

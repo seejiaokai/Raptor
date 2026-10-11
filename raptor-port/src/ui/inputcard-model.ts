@@ -21,7 +21,7 @@
    record's people (never `person`, never how many records), its filer is its `by`, and a person's own late date rides
    his entry — read through engine/inputs.ts facesOf, one frozen view a person, for words only. A record stored before
    that build (one `person`) reads as the one-person input it is. */
-import { facesOf, idsOf, inpKindTag, inpLabel, isPlaceholderInput, placeholderOf } from '../engine/inputs'
+import { facesOf, idsOf, inpKindTag, inpLabel, placeholderOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { namesOf, toneOf } from './inputscal-model'
 import { filerName, filerOf } from './placedline'
@@ -123,7 +123,9 @@ export function cardWhen(r: any, last: string, iso: string): string {
  *  — the record's fields with his id and his own late date), the placeholder's too: ALL AVAIL is late with the input. */
 export function lateNoteOf(rows: readonly any[], lateWord: (r: any) => string, people: Record<string, any> = PEOPLE): string {
   const list = (rows || []).filter(Boolean).flatMap(x => facesOf(x))
-  const lates = list.map(x => ({ who: csOf(x.person, people), ph: isPlaceholderInput(x) && String(placeholderOf(x).p) === String(x.person), note: lateWord(x) })).filter(x => x.note)
+  /* is this face the input's placeholder? (a face carries its record's fields, so the record's own reader answers) */
+  const isPh = (f: any) => { const ph = placeholderOf(f); return !!ph && String(ph.p) === String(f.person) }
+  const lates = list.map(f => ({ who: csOf(f.person, people), ph: isPh(f), note: lateWord(f) })).filter(x => x.note)
   if (!lates.length) return ''
   const same = lates.every(x => x.note === lates[0].note)
   if (same && lates.length === list.length) return lates[0].note

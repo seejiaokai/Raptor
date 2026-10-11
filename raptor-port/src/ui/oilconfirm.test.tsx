@@ -12,7 +12,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST, loadWeek } from '../state/store'
-import { INPUTS, oilAsks, inpId } from '../engine/inputs'
+import { INPUTS, oilAsks, inpId, holds } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { inputItemKey, oilEvidence } from '../engine/oilev'
@@ -72,7 +72,7 @@ const openAdd = async (seed: any) => {
   })
 }
 /* only the rows THIS suite files — the seed already carries bane activity rows */
-const mine = () => INPUTS.filter((r: any) => r.person === 'bane' && oilAsks(r.type) && /oiltest/.test(r.remarks || ''))
+const mine = () => INPUTS.filter((r: any) => holds(r, 'bane') && oilAsks(r.type) && /oiltest/.test(r.remarks || ''))
 
 describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
   it('Save opens the sheet INSTEAD of writing; Cancel leaves everything unwritten', async () => {

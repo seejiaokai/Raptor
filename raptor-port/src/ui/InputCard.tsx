@@ -23,7 +23,7 @@ import { useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } fr
 import type { CardFacts } from './inputcard-model'
 
 export function InputCard({ id, facts, when, late, tid, row, onOpen, onKey, flash, children }: {
-  /** the entry's address — its first record's id */
+  /** the input's address — its record's id */
   id: string
   facts: CardFacts
   /** its hours, as the corner says them (inputcard-model.ts cardWhen) */

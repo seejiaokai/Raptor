@@ -17,6 +17,7 @@
      page", "suspending Outlaw's sign-in" (Fable 3e, S23).
 
    The bubble prepends "Undid: " / "Redid: "; this returns the bare label. */
+import { leadOf } from '../engine/inputs'
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
@@ -224,7 +225,9 @@ function lwLabel(entry: UndoEntry): string {
   const rows = entry.forward.filter(c => c.collection === 'inputs' && c.id !== '__order')
   if (rows.length) {
     const r: any = rows[0].before || rows[0].after || {}
-    const who = rows.every(c => ((c.before || c.after || {}) as any).person === r.person) && r.person ? nameOf(String(r.person)) : null
+    /* (its one person, read from the record's own list — a record in either shape: engine/inputs.ts leadOf) */
+    const one = leadOf(r)
+    const who = one != null && rows.every(c => String(leadOf((c.before || c.after || {}) as any)) === String(one)) ? nameOf(String(one)) : null
     const what = r.type ? String(r.type) : 'leave'
     const gone = rows.every(c => c.before && !c.after)
     return who ? `${gone ? 'removing ' : ''}${who}’s ${what}` : gone ? 'removing leave on the Leave War' : 'leave on the Leave War'

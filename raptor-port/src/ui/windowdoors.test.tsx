@@ -19,7 +19,7 @@ import { InputEditor } from './inputedit'
 import { initStore, notify, setSession, writeInputs } from '../state/store'
 import { setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { docAdd } from '../state/docs'
@@ -132,7 +132,8 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
     const had = new Set(INPUTS.map((r: any) => r.iid))
     await click($('#inpEditSave'))
     const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
-    expect(made.map(r => [r.person, r.type]), 'the clearing leave is filed for him').toEqual([[gone, 'LL']])
+    /* a NEW input is written with its list of people (the one record — D756): he is the one person in it */
+    expect(made.map(r => [idsOf(r), r.type]), 'the clearing leave is filed for him').toEqual([[[gone], 'LL']])
   })
   it('…but not the SANS calendar’s "+ Commitment", which never offered it', async () => {
     mark(others()[3], 'archived', true)

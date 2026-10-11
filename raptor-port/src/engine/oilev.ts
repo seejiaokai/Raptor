@@ -1154,6 +1154,10 @@ export function landedExtras(day: any, iid: string, owner: string, crowd?: strin
  *  Read by the credit (`oilEarnedWork`, just below) and by each man's switch (`spanDefault` → ui/oilmode.ts), so the
  *  screen and the credit cannot answer it two ways.
  *
+ *  SINCE THE ONE-RULE BUILD (step 2 (d), 12 Oct 26 — owner D762, D753, D755) THERE IS ONE DEFAULT: everyone the input
+ *  reaches — its people, and the men behind its placeholder — follows the input's ONE answer for the day. The three
+ *  cases below are how a claim FROZEN BEFORE that build still answers (legacyClaim → legacyDefault), and nothing else:
+ *
  *  · THE HOLDER — the man the request is filed for: his own answer (§2.2), as always.
  *  · ANYONE ELSE ON A NAMED MAN'S REQUEST — a man the scheduler typed onto its row (D18, D470) or one of the crowd of a
  *    placeholder the scheduler dropped there (D46): YES, as always.

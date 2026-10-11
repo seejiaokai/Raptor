@@ -26,12 +26,12 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { DocViewer } from './DocViewer'
 import { setPage as goPage } from '../state/view'
-import { InputEditor, askOilIfPending, commitGroup, draftOf, oilAnswered, oilDayLabel, oilSummaryOf, removeEntry, FILING_OFF } from './inputedit'
+import { InputEditor, askOilIfPending, commitInput, draftOf, oilAnswered, oilDayLabel, oilSummaryOf, removeEntry, FILING_OFF } from './inputedit'
 import { commitChipMove } from './caldrag'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { PLANPUCKS, DAYRMK, addPlanPuck, setDayRemark } from '../state/plan'
@@ -39,6 +39,8 @@ import { setMembersFile } from '../state/memberfile'
 import { docAdd } from '../state/docs'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
+import { oilAskPlan } from '../leavewar/sync'
+import { setOilPlan } from '../state/inputgate-hook'
 import { _resetFloatWins } from './FloatWindow'
 import { frontWin } from './floatwin'
 import { setInpEdit } from './pops'
@@ -84,6 +86,20 @@ const shared = async (people: string[], over: any = {}, by: string = admin) => {
   await act(async () => { writeInputs(() => { INPUTS.push(...rows) }); notify() })
   return { grp, rows: rows.map(r => live(r.iid)) }
 }
+/* A SHARED INPUT AS IT IS KEPT SINCE THE ONE-RULE BUILD (owner D756, D759 — `[ALL-AVAIL-AS-MEMBER]` step 2): ONE record
+   with the list of its people, one filer, one OIL answer for everyone in it (D762). `shared`, above, makes the OLD
+   shape — one record a man, tied by a group id — which is read for ever as so many ONE-PERSON inputs (D759 reading 10:
+   stored data only, D56); it is kept for the cases that say they are about old data, and for the cases of the old
+   count line (`oilSummaryOf`) that were not red. */
+const sharedRec = async (people: string[], over: any = {}, by: string = admin) => {
+  const at = new Date(2026, 8, 1, 8, 0).getTime()
+  const rec: any = { iid: 'gR' + (++n), type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'brief', mod: '2026-09-01', by, at, ...over }
+  rec.people = people.map(p => ({ p, by: rec.by, at }))
+  await act(async () => { writeInputs(() => { INPUTS.push(rec) }); notify() })
+  return live(rec.iid)
+}
+/* the first of some people A to Z by callsign — the name an input of several leads with on every screen (D721, D727) */
+const az1 = (ids: string[]) => ids.map(cs).sort((a, b) => a.localeCompare(b))[0]
 const single = async (over: any = {}) => {
   const row = { iid: 'bs' + (++n), person: others()[0], type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'solo', mod: '2026-09-01', ...over }
   await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
@@ -352,11 +368,20 @@ describe('A7 — a reader’s OIL line carries no "Change…"', () => {
     expect($('#inpEditPop .inped-oilsum')!.textContent).toBe('credited on its non-working day')
     expect(tid('oil-revise')).toBeNull()
   })
-  it('a man in a shared input he did not file: the entry’s line has no button; HIS OWN line keeps its "Change…"', async () => {
-    const g = await shared([member, others()[0]], { ...SAT, oil: { '2026-10-17': 1 } })
-    await as('member'); await openOn(g.rows[0])
-    expect(tid('oil-revise'), 'the entry’s line: nothing to press').toBeNull()
-    expect(tid('oil-revise-own'), 'his own answer is his to change').toBeTruthy()
+  /* RE-EXPRESSED ON THE ONE RECORD, AND ITS SECOND HALF RETIRED (owner D762, 11 Oct 26 — "one answer for all, nothing
+     more"; the one-rule plan §4.5). This case ended "…HIS OWN line keeps its 'Change…'": a man in an input of several
+     gives no OIL answer of his own any more, so "Your OIL" and its two buttons are gone. What stands in their place:
+     he READS the input's one answer, nothing in the window lets him change it, and what is his is "Take me out". */
+  it('a man in a shared input he did not file: the input’s line has no button — and there is no "Your OIL" line of his own (D762)', async () => {
+    const rec = await sharedRec([member, others()[0]], { ...SAT, oil: { '2026-10-17': 1 } })
+    await as('member'); await openOn(rec)
+    expect(tid('inped-ro'), 'the input is not his to change').toBeTruthy()
+    expect($('#inpEditPop .inped-oilsum')!.textContent, 'the line still says what stands').toBe('credited on its non-working day')
+    expect(tid('oil-revise'), 'the input’s line: nothing to press').toBeNull()
+    expect(tid('oil-revise-own'), 'no answer of his own to change (D762)').toBeNull()
+    expect(tid('oil-answer-own'), 'and none to give').toBeNull()
+    expect($('#inpEditPop')!.textContent, 'no "Your OIL" line').not.toMatch(/Your OIL/)
+    expect(tid('inped-takeout'), 'what is his: to take himself out').toBeTruthy()
   })
   it('THE CONTROL — whoever may change the input still gets "Change…"', async () => {
     const r = await single({ ...SAT, oil: { '2026-10-17': 1 } })
@@ -370,24 +395,28 @@ describe('A7 — a reader’s OIL line carries no "Change…"', () => {
    drag onto a weekend was headed with ONE man's name while its answer was written on every record. One body now. */
 describe('A8 — a group’s OIL question is headed for the group, by every door', () => {
   const head = () => $('[data-testid="oilconf"] .airpop-head b')!.textContent
-  /* the entry's first name, A to Z — the name the window's own title leads with */
-  const first = (rows: any[]) => rows.map(r => cs(r.person)).sort((a, b) => a.localeCompare(b))[0]
+  /* the input's first name, A to Z — the name the window's own title leads with (az1, above).
+     THE THREE DOORS, ON THE ONE RECORD (D756): the fixture is one record with its people; the rule is the one these
+     cases always pinned — the question is the input's, headed for everyone in it. */
   it('"Change…" on a shared duty already answered', async () => {
-    const g = await shared(others().slice(0, 2), { ...SAT, oil: { '2026-10-17': 1 } })
-    await openOn(g.rows[0]); await click(tid('oil-revise'))
-    expect(head()).toBe(`OIL — ${first(g.rows)} +1, Duty`)
-    expect(tid('win-inputedit')!.getAttribute('aria-label'), 'the same words as the window’s title').toContain(`${first(g.rows)} +1`)
+    const ppl = others().slice(0, 2)
+    const rec = await sharedRec(ppl, { ...SAT, oil: { '2026-10-17': 1 } })
+    await openOn(rec); await click(tid('oil-revise'))
+    expect(head()).toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    expect(tid('win-inputedit')!.getAttribute('aria-label'), 'the same words as the window’s title').toContain(`${az1(ppl)} +1`)
   })
   it('"Answer…" on a shared duty nobody answered', async () => {
-    const g = await shared(others().slice(0, 3), { ...SAT })
-    await openOn(g.rows[0]); await click(tid('oil-answer'))
-    expect(head()).toBe(`OIL — ${first(g.rows)} +2, Duty`)
+    const ppl = others().slice(0, 3)
+    const rec = await sharedRec(ppl, { ...SAT })
+    await openOn(rec); await click(tid('oil-answer'))
+    expect(head()).toBe(`OIL — ${az1(ppl)} +2, Duty`)
   })
   it('the question that follows a move onto a weekend (a bar’s drag)', async () => {
-    const g = await shared(others().slice(0, 2), { ...SAT })
-    await act(async () => { askOilIfPending(of(g.grp)[0]) })
+    const ppl = others().slice(0, 2)
+    const rec = await sharedRec(ppl, { ...SAT })
+    await act(async () => { askOilIfPending(live(rec.iid)) })
     expect($$('[data-testid="oilconf"]')).toHaveLength(1)
-    expect(head()).toBe(`OIL — ${first(g.rows)} +1, Duty`)
+    expect(head()).toBe(`OIL — ${az1(ppl)} +1, Duty`)
   })
   /* the walk's own find (10 Oct 26): a NEW group's question at the save led with whoever was PICKED first ("Ranger +2"),
      and the same input, once saved, was "Ace +2" at its title and at every other door */
@@ -401,10 +430,26 @@ describe('A8 — a group’s OIL question is headed for the group, by every door
     await click($('#inpEditSave'))
     expect(head()).toBe(`OIL — ${az[0]} +2, Duty`)
   })
-  it('THE CONTROL — a man’s OWN answer inside a shared input is headed with his name alone', async () => {
-    const g = await shared([member, others()[0]], { ...SAT, oil: { '2026-10-17': 1 } })
-    await as('member'); await openOn(g.rows[0]); await click(tid('oil-revise-own'))
-    expect(head()).toBe(`OIL — ${cs(member)}, Duty`)
+  /* RETIRED BY D762, AND WHAT STANDS IN ITS PLACE. This was "THE CONTROL — a man's OWN answer inside a shared input is
+     headed with his name alone": no man in an input of several gives an answer of his own now. The answer is the
+     INPUT's — so the member who FILED it, himself one of its people, is asked for everyone under the same heading as
+     at every other door, and what he answers is written once, for everyone in it. */
+  it('THE CONTROL (D762) — the filer, himself one of its people: his "Change…" is the input’s question, headed for everyone — never his name alone', async () => {
+    const ppl = [member, others()[0]]
+    const rec = await sharedRec(ppl, { ...SAT, oil: { '2026-10-17': 1 } }, member)
+    await as('member'); await openOn(rec)
+    expect(tid('oil-revise-own'), 'no button of his own').toBeNull()
+    await click(tid('oil-revise'))
+    expect(head()).toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    /* a MEMBER's answer passes the check on what his command changed (state/perms.ts — "0 or exactly what the record's
+       hours price"), which asks the Leave War which days ask the question. The app installs that at boot
+       (leavewar/sync.ts wireLeaveWarSync → setOilPlan(oilAskPlan)); this file's harness wires no war, so the one line
+       of it is installed here, for this save, and taken out again. */
+    setOilPlan(oilAskPlan)
+    try { await click(tid('oil-no')); await click(tid('oilconf-save')) } finally { setOilPlan(null) }
+    expect(said.filter(m => /not saved|nothing was saved/i.test(m)), 'his answer is his to give: nothing is refused').toEqual([])
+    expect(live(rec.iid).oil, 'one answer, on the one record').toEqual({ '2026-10-17': 0 })
+    expect(idsOf(live(rec.iid)), 'for both of its people').toEqual(ppl)
   })
   it('THE CONTROL — an ordinary one-person input is headed with its person', async () => {
     const r = await single({ ...SAT, oil: { '2026-10-17': 1 } })
@@ -522,18 +567,31 @@ describe('D731 (4) — a shared input’s OIL line counts its people where their
     await act(async () => { writeInputs(() => { for (const r of of(g.grp)) r.oil = { '2026-10-17': 0 } }); notify() })
     expect(oilSummaryOf(of(g.grp))).toBe('no OIL on its non-working day')
   })
-  it('one of three has said No for himself: "credited for 2 of 3 — <his name>: no" — in the window', async () => {
-    const g = await shared(three(), { ...SAT, oil: { '2026-10-17': 1 } })
-    await act(async () => { writeInputs(() => { of(g.grp)[2].oil = { '2026-10-17': 0 } }); notify() })
-    await openOn(g.rows[0])
-    expect($('#inpEditPop .inped-oilsum')!.textContent).toBe(`credited for 2 of 3 — ${cs(g.rows[2].person)}: no`)
+  /* RETIRED BY D762 (11 Oct 26 — "one answer for all, nothing more"; the ruling's own row: it "changes D731 (4)'s
+     line"). This was "one of three has said No for himself: 'credited for 2 of 3 — <his name>: no' — in the window".
+     No man of an input says No for himself any more, so the people of one input cannot carry different answers: the
+     window's line states the input's ONE answer (D762 reading 5 — whom the scheduler switched off on a day shows in
+     OIL Earn, where it is set). */
+  it('D762 — an input of three: the window’s line is the input’s ONE answer, for all three — never a count of its people', async () => {
+    const rec = await sharedRec(three(), { ...SAT, oil: { '2026-10-17': 1 } })
+    await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent)).toEqual(['credited on its non-working day'])
+    await closeWin()
+    await act(async () => { writeInputs(() => { live(rec.iid).oil = { '2026-10-17': 0 } }); notify() })
+    await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent)).toEqual(['no OIL on its non-working day'])
   })
-  it('…and it is the same line whichever of its records the window was opened on — the one who said No included', async () => {
+  /* THE OLD SHAPE, KEPT AS AN OLD-DATA CASE (owner D759 reading 10 — "shared inputs saved before this build are read as
+     one-person inputs"; stored data only, D56). This was "…and it is the same line whichever of its records the window
+     was opened on": records tied by a group id are not joined any more, so each opens as its OWN input, and the line
+     in its window is its own answer. */
+  it('OLD DATA (D759 reading 10) — three records saved under one group id, one of them answered No: each opens as its own one-person input, with its own line', async () => {
     const g = await shared(three(), { ...SAT, oil: { '2026-10-17': 1 } })
     await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 0 } }); notify() })
-    for (const r of g.rows) {
+    for (const [i, r] of g.rows.entries()) {
       await openOn(r)
-      expect($('#inpEditPop .inped-oilsum')!.textContent, 'opened on ' + cs(r.person)).toBe(`credited for 2 of 3 — ${cs(g.rows[0].person)}: no`)
+      expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent), 'opened on ' + cs(r.person)).toEqual([i === 0 ? 'no OIL on its non-working day' : 'credited on its non-working day'])
+      expect(tid('win-inputedit')!.getAttribute('aria-label'), 'one man’s input: no "+2" in its title').not.toMatch(/\+\d/)
       await closeWin()
     }
   })
@@ -542,12 +600,21 @@ describe('D731 (4) — a shared input’s OIL line counts its people where their
     await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 0 }; of(g.grp)[1].oil = { '2026-10-17': 0 } }); notify() })
     expect(oilSummaryOf(of(g.grp))).toBe(`credited for 1 of 3 — ${cs(g.rows[0].person)}: no, ${cs(g.rows[1].person)}: no`)
   })
-  it('one answered Yes, one never answered: the line counts, the "not answered yet" line names him, and ONE button opens the question', async () => {
-    const g = await shared(others().slice(0, 2), { ...SAT })
-    await act(async () => { writeInputs(() => { of(g.grp)[1].oil = { '2026-10-17': 1 } }); notify() })
-    await openOn(g.rows[0])
-    expect($('#inpEditPop .inped-oilsum')!.textContent).toBe('credited for 1 of 2')
-    expect(tid('oil-unanswered')!.textContent).toMatch(new RegExp(`Not answered yet — 17 Oct: ${cs(g.rows[0].person)}`))
+  /* RETIRED BY D762: "one answered Yes, one never answered" cannot be — the question has ONE answer, for everyone in the
+     input. This case counted the two ("credited for 1 of 2") and named the unanswered man. What stands in its place:
+     the input is answered or not as one thing — unanswered, the window says so for the INPUT, naming nobody, with ONE
+     button; answered, the one line with ONE button. (The half that never changed: one button opens the question.) */
+  it('D762 — a shared duty is answered, or not, as ONE thing: "Not answered yet — 17 Oct" names nobody and has ONE button; answered, the one line and ONE button', async () => {
+    const ppl = others().slice(0, 2)
+    const rec = await sharedRec(ppl, { ...SAT })
+    await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent), 'no "credited" line, and nobody named').toEqual(['Not answered yet — 17 Oct'])
+    expect($$('#inpEditPop [data-testid="oil-answer"], #inpEditPop [data-testid="oil-revise"]')).toHaveLength(1)
+    await click(tid('oil-answer')); await click(tid('oil-yes')); await click(tid('oilconf-save'))
+    expect(live(rec.iid).oil, 'the one answer, for both').toEqual({ '2026-10-17': 1 })
+    await closeWin(); await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent)).toEqual(['credited on its non-working day'])
+    expect(tid('oil-unanswered')).toBeNull()
     expect($$('#inpEditPop [data-testid="oil-answer"], #inpEditPop [data-testid="oil-revise"]')).toHaveLength(1)
   })
   it('two days, one man credited for one of them only: he is named with his days', async () => {
@@ -558,14 +625,26 @@ describe('D731 (4) — a shared input’s OIL line counts its people where their
   /* Sol's read of the code (10 Oct 26 — finding 2). A request the scheduler has TAKEN OFF the programme keeps its
      stored answer and earns nothing while it is off — every other reader leaves it out (`oilAnswered`, the bell, the
      credit pass). The new count read the stored Yes: "credited for 1 of 2" for a man credited with nothing. */
-  it('a man whose request was taken off the programme is not counted as credited — he is named "taken off"', async () => {
-    const g = await shared(three(), { ...SAT, oil: { '2026-10-17': 1 } })
-    await act(async () => { writeInputs(() => { of(g.grp)[0].acc = 'r' }); notify() })
-    expect(oilSummaryOf(of(g.grp))).toBe(`credited for 2 of 3 — ${cs(g.rows[0].person)}: taken off`)
-    await act(async () => { writeInputs(() => { of(g.grp)[2].oil = { '2026-10-17': 0 } }); notify() })
-    expect(oilSummaryOf(of(g.grp))).toBe(`credited for 1 of 3 — ${cs(g.rows[0].person)}: taken off, ${cs(g.rows[2].person)}: no`)
-    await openOn(g.rows[1])
-    expect($('#inpEditPop .inped-oilsum')!.textContent, 'in the window, opened on any record').toBe(`credited for 1 of 3 — ${cs(g.rows[0].person)}: taken off, ${cs(g.rows[2].person)}: no`)
+  /* SOL'S FINDING, RE-EXPRESSED ON THE ONE RECORD (owner D756; D759 reading 1 — "one man taken off the programme alone
+     is out of the input — there is no 'in the input but off the schedule' for one man of several"; D762). This was "a
+     man whose request was taken off the programme is not counted as credited — he is named 'taken off'": being taken
+     off is the INPUT's state now, one for everyone in it, so no ONE man of it can be "taken off" beside the others and
+     the count that named him is retired. What the finding was about still holds, for the input: taken off, it keeps
+     its stored answer, earns nothing, and the window does not say "credited"; put back, the answer stands again.
+     (The old count's own words — "<name>: taken off", on records of the old shape — stay pinned by the two cases
+     below, which were not red: "…whichever record he is — the LAST one too" and "everyone still ON the programme
+     answered alike, one man off it".) */
+  it('an input of three TAKEN OFF the programme is not said to be credited — its stored answer is kept, and stands again when it is put back (D759 reading 1)', async () => {
+    const rec = await sharedRec(three(), { ...SAT, oil: { '2026-10-17': 1 } })
+    await act(async () => { writeInputs(() => { live(rec.iid).acc = 'r' }); notify() })
+    expect(oilAnswered(live(rec.iid)), 'nothing is credited or shown for it while it is off').toBe(false)
+    await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum'), 'the window claims no credit for it').toHaveLength(0)
+    expect(live(rec.iid).oil, 'the stored answer is not touched').toEqual({ '2026-10-17': 1 })
+    await closeWin()
+    await act(async () => { writeInputs(() => { live(rec.iid).acc = 'g' }); notify() })
+    await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent), 'back on the programme: the old words').toEqual(['credited on its non-working day'])
   })
   it('…whichever record he is — the LAST one too; and put back on the programme his answer stands again', async () => {
     const g = await shared(three(), { ...SAT, oil: { '2026-10-17': 1 } })
@@ -595,22 +674,32 @@ describe('D731 (4) — a shared input’s OIL line counts its people where their
    holds every man of it, its lines count them all, and its button answers for them all. What Astra's finding was
    about still holds — a line never names a man the button beside it cannot answer for. */
 describe('the schedule’s dialog on a shared input speaks for the ENTRY — the OIL line, the "not answered yet" line and the button', () => {
-  it('one man answered, the other not: whichever man’s puck opened it, the lines count both and name who is unanswered', async () => {
-    const g = await shared(others().slice(0, 2), { ...SAT })
-    await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 1 } }); notify() })
+  /* RE-EXPRESSED TO D762 (11 Oct 26 — one OIL answer for everyone in an input) ON THE ONE RECORD (D756). These two said
+     "one man answered, the other not … the lines count both and name who is unanswered": the people of one input can no
+     longer differ, so there is nobody to count and nobody to name. The dialog still speaks for the INPUT, and what
+     Astra's finding was about holds in its plainest form — the line names no man, and the ONE button beside it answers
+     for everyone in it. */
+  it('a shared duty nobody has answered, opened from the schedule: the line is the input’s — it names nobody — and its ONE button answers for everyone (D762)', async () => {
+    const ppl = others().slice(0, 2)
+    const rec = await sharedRec(ppl, { ...SAT })
     await act(async () => { goPage('editsched'); notify() })
-    for (const i of [0, 1]) {
-      await openOn(of(g.grp)[i])
-      expect(tid('win-inputedit'), 'the blocking dialog, not the Inputs page’s window').toBeNull()
-      expect(tid('oil-unanswered')!.querySelector('.inped-oilsum')!.textContent, `opened on man ${i}`).toBe(`Not answered yet — 17 Oct: ${cs(of(g.grp)[1].person)}`)
-      await closeWin()
-    }
+    await openOn(rec)
+    expect(tid('win-inputedit'), 'the blocking dialog, not the Inputs page’s window').toBeNull()
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent)).toEqual(['Not answered yet — 17 Oct'])
+    expect($$('#inpEditPop [data-testid="oil-answer"], #inpEditPop [data-testid="oil-revise"]')).toHaveLength(1)
+    await click(tid('oil-answer'))
+    expect($('[data-testid="oilconf"] .airpop-head b')!.textContent, 'asked for both').toBe(`OIL — ${az1(ppl)} +1, Duty`)
+    await click(tid('oil-yes')); await click(tid('oilconf-save'))
+    expect(live(rec.iid).oil, 'one answer, on the one record').toEqual({ '2026-10-17': 1 })
+    expect(idsOf(live(rec.iid)), 'for both of its people').toEqual(ppl)
   })
-  it('THE CONTROL — on the Inputs page the window still speaks for the entry and names who is unanswered', async () => {
-    const g = await shared(others().slice(0, 2), { ...SAT })
-    await act(async () => { writeInputs(() => { of(g.grp)[0].oil = { '2026-10-17': 1 } }); notify() })
-    await openOn(of(g.grp)[0])
-    expect(tid('oil-unanswered')!.textContent).toContain(cs(of(g.grp)[1].person))
+  it('THE CONTROL — on the Inputs page the window says the same line for the input, and names nobody: there is no one man to name (D762)', async () => {
+    const ppl = others().slice(0, 2)
+    const rec = await sharedRec(ppl, { ...SAT })
+    await openOn(rec)
+    expect(tid('win-inputedit'), 'the Inputs page’s own window').toBeTruthy()
+    expect(tid('oil-unanswered')!.querySelector('.inped-oilsum')!.textContent).toBe('Not answered yet — 17 Oct')
+    for (const p of ppl) expect(tid('oil-unanswered')!.textContent, cs(p)).not.toContain(cs(p))
   })
 })
 
@@ -635,33 +724,39 @@ describe('D731 (7) — an OIL answer for a day the input no longer covers stays 
    changes (his reading (c)): "Take me out" is offered exactly where the rules already offer it. */
 describe('D731 (8) — the filer, with the members’ switch off, is told the switch is off', () => {
   const off = async () => { await as('admin'); await act(async () => { setMembersFile(false); notify() }); await as('member') }
+  /* THE FIXTURES OF THIS BLOCK ARE THE ONE RECORD NOW (owner D756): a shared input is one record with its people and its
+     one filer — two records tied by a group id are two one-person inputs since the build (D759 reading 10), and the
+     first of them was simply the member's OWN input, which he may always change. The rule each case pins is unchanged
+     (D731 (8); who may: the one-rule plan §4.9). */
   it('the window’s foot: "Filing for other people is switched off — an admin can change this."', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty' }, member)
-    await off(); await openOn(g.rows[0])
+    const rec = await sharedRec([member, others()[0]], { type: 'Duty' }, member)
+    await off(); await openOn(rec)
     expect(tid('inped-ro')!.textContent).toBe(FILING_OFF)
     expect(FILING_OFF).toBe('Filing for other people is switched off — an admin can change this.')
     expect(tid('inped-takeout'), 'he is in it: he may still take himself out, as the rules already say').toBeTruthy()
     expect($('#inpEditSave'), 'and nothing lets him change it for everyone').toBeNull()
   })
   it('a filer who is NOT one of its people reads the same sentence, and is offered nothing', async () => {
-    const g = await shared(others().slice(0, 2), { type: 'Duty' }, member)
-    await off(); await openOn(g.rows[0])
+    const rec = await sharedRec(others().slice(0, 2), { type: 'Duty' }, member)
+    await off(); await openOn(rec)
     expect(tid('inped-ro')!.textContent).toBe(FILING_OFF)
     expect(tid('inped-takeout')).toBeNull()
   })
   it('the other doors say it too: Delete for everyone, a bar’s drag, a save', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty' }, member)
+    const ppl = [member, others()[0]]
+    const rec = await sharedRec(ppl, { type: 'Duty' }, member)
     await off()
     said.length = 0
-    await act(async () => { removeEntry(of(g.grp)) })
+    await act(async () => { removeEntry([live(rec.iid)]) })
     expect(said, 'Delete for everyone').toEqual([FILING_OFF])
     said.length = 0
-    await act(async () => { commitChipMove({ kind: 'input', iid: g.rows[0].iid }, '2026-10-13', '2026-10-14') })
+    await act(async () => { commitChipMove({ kind: 'input', iid: rec.iid }, '2026-10-13', '2026-10-14') })
     expect(said, 'a bar’s drag').toEqual([FILING_OFF])
     said.length = 0
-    await act(async () => { commitGroup({ rows: of(g.grp) }, { ...draftOf(of(g.grp)[0]), remarks: 'changed' }, of(g.grp).map(r => String(r.person))) })
+    /* the save is the input's one writer (commitInput — "the group save" is only its old name) */
+    await act(async () => { commitInput(live(rec.iid), { ...draftOf(live(rec.iid)), remarks: 'changed' }, idsOf(live(rec.iid))) })
     expect(said, 'a save').toEqual([FILING_OFF])
-    expect(of(g.grp).map(r => r.remarks), 'and nothing was written by any of them').toEqual(['brief', 'brief'])
+    expect([live(rec.iid).remarks, live(rec.iid).date, idsOf(live(rec.iid))], 'and nothing was written by any of them').toEqual(['brief', 'Oct 13', ppl])
   })
   /* the roll-call's own find (10 Oct 26): an input filed for ALL AVAIL / ALL names its FILER the same way — "Only Ranger —
      who filed it — or an admin can change this" — and a member files one only while the switch is on (D702) */
@@ -677,17 +772,22 @@ describe('D731 (8) — the filer, with the members’ switch off, is told the sw
     expect(said).toEqual([FILING_OFF])
     expect(tid('idy-ask'), 'and nothing is asked: there is nothing he may delete').toBeNull()
   })
+  /* ITS SENTENCE IS THE ONE EVERY INPUT BEYOND ONE NAMED PERSON SAYS NOW (the one-rule plan §4.9, owner D755 (3) — "Only
+     Saber — who filed it — or an admin can change this for everyone"; one body with every other door, ui/inputedit.tsx
+     sharedRefusal). It ended "…can change this." before the build. The rule the control pins is unchanged: with the
+     switch off, a member is still told WHO filed it — never that the switch is off, which is said to the filer alone. */
   it('THE CONTROL — an ALL AVAIL input an ADMIN filed still names him to a member', async () => {
     const ph = Object.keys(PEOPLE).find(id => PEOPLE[id].special)!
     const r = await single({ person: ph, type: 'Duty', date: 'Oct 20', by: admin, remarks: '' })
     await off(); await openOn(r)
-    expect(tid('inped-ro')!.textContent).toBe(`Only ${cs(admin)} — who filed it — or an admin can change this.`)
+    expect(tid('inped-ro')!.textContent).toBe(`Only ${cs(admin)} — who filed it — or an admin can change this for everyone.`)
   })
   /* Astra's scenario 9 (10 Oct 26), an older fault on the same door: the opened day asks "Delete this input for all 2
      people?"; the switch is turned off while the question stands; "Delete" then took HIM out — an answer to a question
      nobody had asked. What was asked is what is done, or it is refused in words. */
   it('the day’s "Delete for all?" question, the switch turned off while it stands: Delete is refused — it never becomes "take me out"', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
+    const ppl = [member, others()[0]]
+    const rec = await sharedRec(ppl, { type: 'Duty', date: 'Oct 20' }, member)
     await as('member')
     await openDay('2026-10-20')
     await key(tid('idy-row-' + tid('idy-list')!.querySelector('[data-testid^="idy-row-"]')!.getAttribute('data-popiid'))!.querySelector('[data-testid="idy-open"]')!, 'Delete')
@@ -695,7 +795,7 @@ describe('D731 (8) — the filer, with the members’ switch off, is told the sw
     await off()
     said.length = 0
     await click(tid('idy-del-yes'))
-    expect(of(g.grp), 'nobody was taken out').toHaveLength(2)
+    expect(idsOf(live(rec.iid)), 'nobody was taken out').toEqual(ppl)
     expect(said).toEqual([FILING_OFF])
   })
   /* …and the REVERSE (Astra's read of the code, 10 Oct 26 — finding 1, the serious one, made by the fix above): asked
@@ -703,7 +803,7 @@ describe('D731 (8) — the filer, with the members’ switch off, is told the sw
      (the switch on again) — and "Take me out" deleted EVERYONE: the words on screen were kept, the action was chosen
      afresh from what he could now do. The question's intent decides both. */
   it('the day’s "Take yourself out?" question, the switch turned ON while it stands: only HE goes — never everyone; one Undo puts him back', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
+    const rec = await sharedRec([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
     await off()
     await openDay('2026-10-20')
     await key(tid('idy-list')!.querySelector('[data-testid^="idy-row-"] [data-testid="idy-open"]')!, 'Delete')
@@ -712,29 +812,29 @@ describe('D731 (8) — the filer, with the members’ switch off, is told the sw
     expect(tid('idy-ask')!.textContent, 'the question still says what it asked').toContain('Take yourself out of this input?')
     said.length = 0
     await click(tid('idy-del-yes'))
-    expect(of(g.grp).map(r => r.person), 'the other man is still in it').toEqual([others()[0]])
+    expect(idsOf(live(rec.iid)), 'the other man is still in it').toEqual([others()[0]])
     expect(said).toEqual(['You are out of this input'])
     await act(async () => { undo(); notify() })
-    expect(of(g.grp).map(r => String(r.person)).sort(), 'Undo restores exactly him').toEqual([member, others()[0]].sort())
+    expect(idsOf(live(rec.iid)).map(String).sort(), 'Undo restores exactly him').toEqual([member, others()[0]].sort())
   })
   it('THE CONTROL — "Delete for all?" asked and still his to do: everyone goes, as asked', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
+    const rec = await sharedRec([member, others()[0]], { type: 'Duty', date: 'Oct 20' }, member)
     await as('member')
     await openDay('2026-10-20')
     await key(tid('idy-list')!.querySelector('[data-testid^="idy-row-"] [data-testid="idy-open"]')!, 'Delete')
     expect(tid('idy-ask')!.textContent).toContain('Delete this input for all 2 people?')
     await click(tid('idy-del-yes'))
-    expect(of(g.grp)).toHaveLength(0)
+    expect(live(rec.iid), 'the input is gone — for both').toBeUndefined()
   })
   it('THE CONTROL — the switch ON: the filer changes it as before, and is told nothing', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty' }, member)
-    await as('member'); await openOn(g.rows[0])
+    const rec = await sharedRec([member, others()[0]], { type: 'Duty' }, member)
+    await as('member'); await openOn(rec)
     expect(tid('inped-ro')).toBeNull()
     expect($('#inpEditSave')).toBeTruthy()
   })
   it('THE CONTROL — a man in it who did NOT file it is still told who did', async () => {
-    const g = await shared([member, others()[0]], { type: 'Duty' })                 // filed by the admin
-    await off(); await openOn(g.rows[0])
+    const rec = await sharedRec([member, others()[0]], { type: 'Duty' })           // filed by the admin
+    await off(); await openOn(rec)
     expect(tid('inped-ro')!.textContent).toBe(`Only ${cs(admin)} — who filed it — or an admin can change this for everyone.`)
   })
 })

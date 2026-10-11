@@ -27,7 +27,7 @@ import { deriveActor } from '../command/actor'
 import { invariants } from '../command/harness'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
@@ -263,7 +263,8 @@ describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it open
     const before = INPUTS.length
     await click($('#inpEditSave'))
     expect(INPUTS.length, said.join(' | ')).toBe(before + 1)
-    expect(INPUTS[0].person).toBe('allavail')
+    /* ONE record whose only entry is the placeholder (the one record — D756): nobody's name beside it, no group mark */
+    expect(idsOf(INPUTS[0])).toEqual(['allavail'])
     expect(INPUTS[0].grp).toBeUndefined()
     expect(INPUTS[0].endDate).toBeUndefined()
     expect(String(INPUTS[0].by)).toBe(admin)

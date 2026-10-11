@@ -3,7 +3,7 @@
    REAL commitNewInput/commitInputEdit over the real store, the
    boardaddinput/sync harness idiom. */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, dateOrd } from '../engine/inputs'
+import { INPUTS, dateOrd, holds } from '../engine/inputs'
 import { HIST, initStore, setSession, writeInputsBatch } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { commitNewInput, commitInputEdit, draftOf, medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, docGate } from './inputedit'
@@ -27,7 +27,7 @@ beforeEach(() => {
 
 const plant = (r: any) => { writeInputsBatch(() => { INPUTS.unshift({ allday: true, remarks: '', mod: 'now', yr: 2026, ...r }) }); return INPUTS[0] }
 const newDraft = (over: any) => ({ person: 'bane', type: 'ATT C', allday: true, half: '', start: '2026-07-10', end: '2026-07-13', sTime: '', eTime: '', remarks: '', sans: null, docId: freshDoc(), ...over })
-const mine = () => INPUTS.filter((r: any) => r.person === 'bane' && r.type !== 'Upchit' && /ATT|OML|HL/.test(r.type))
+const mine = () => INPUTS.filter((r: any) => holds(r, 'bane') && r.type !== 'Upchit' && /ATT|OML|HL/.test(r.type))
 
 describe('the refusals', () => {
   it('same-type overlap is refused with the edit-instead message', () => {
@@ -79,7 +79,7 @@ describe('a different-type overlap overwrites (trims) the older entry', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13' })
     expect(commitNewInput(newDraft({ type: 'ATT B', start: '2026-07-12', end: '2026-07-15' }))).toBe(true)
     expect(c.endDate).toBe('Jul 11')
-    const b = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'ATT B')
+    const b = INPUTS.find((r: any) => holds(r, 'bane') && r.type === 'ATT B')
     expect(b && b.date).toBe('Jul 12')
     expect(b.endDate).toBe('Jul 15')
   })
@@ -105,12 +105,12 @@ describe('the medical document — now a UI PROMPT, not a commit refusal (owner,
     // commitNewInput and it files with none — for a record that isn't available.
     expect(commitNewInput(newDraft({ docId: null }))).toBe(true)
     expect(TOASTS.join(' ')).not.toContain('Attach the medical document')
-    const r = INPUTS.find((x: any) => x.person === 'bane' && x.type === 'ATT C')
+    const r = INPUTS.find((x: any) => holds(x, 'bane') && x.type === 'ATT C')
     expect(r, 'the bare medical filed').toBeTruthy()
     expect(rowDocIds(r).length, 'with no document').toBe(0)
     // …and with a document it still lands, carrying the id.
     expect(commitNewInput(newDraft({ start: '2026-08-01', end: '2026-08-02' }))).toBe(true)
-    const withDoc = INPUTS.find((x: any) => x.person === 'bane' && x.type === 'ATT C' && x.date === 'Aug 1')
+    const withDoc = INPUTS.find((x: any) => holds(x, 'bane') && x.type === 'ATT C' && x.date === 'Aug 1')
     expect(withDoc && typeof withDoc.docId).toBe('string')
   })
   it('editing an already-medical row that has no document still saves (pre-feature rows)', () => {
@@ -174,7 +174,7 @@ describe('the overnight-pass guards (27 Aug 26)', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 20', docId: 'doc-c', remarks: 'ward stay till 20 Jul' })
     expect(commitNewInput(newDraft({ type: 'ATT B', start: '2026-07-12', end: '2026-07-14' }))).toBe(true)
     expect(c.endDate, 'the head ends the day before the new input').toBe('Jul 11')
-    const tail = INPUTS.find((r: any) => r !== c && r.person === 'bane' && r.type === 'ATT C')
+    const tail = INPUTS.find((r: any) => r !== c && holds(r, 'bane') && r.type === 'ATT C')
     expect(tail, 'the days past the new input stay on record').toBeTruthy()
     expect(tail.date).toBe('Jul 15')
     expect(tail.endDate).toBe('Jul 20')
@@ -227,7 +227,7 @@ describe('the overnight-pass guards (27 Aug 26)', () => {
   })
   it('a document does not ride a type switch onto a non-medical row', () => {
     expect(commitNewInput(newDraft({ type: 'LL', start: '2026-07-10', end: '2026-07-11' }))).toBe(true)
-    const r = INPUTS.find((x: any) => x.person === 'bane' && x.type === 'LL')
+    const r = INPUTS.find((x: any) => holds(x, 'bane') && x.type === 'LL')
     expect(r && r.docId, 'the stray certificate id was dropped').toBeUndefined()
   })
 })
@@ -239,7 +239,7 @@ describe('the owner\'s layered-status scenarios (27 Aug 26)', () => {
   it('ATT C 10–15, feels better → ATT B 13–15, upchit 14 → C 10–12, B 13 only, flies on the 14th', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15' })
     expect(commitNewInput(newDraft({ type: 'ATT B', start: '2026-07-13', end: '2026-07-15' }))).toBe(true)
-    const b = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'ATT B')
+    const b = INPUTS.find((r: any) => holds(r, 'bane') && r.type === 'ATT B')
     expect(c.endDate).toBe('Jul 12')
     expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-14', end: '' }))).toBe(true)
     expect(c.endDate, 'the C is history — untouched by the upchit').toBe('Jul 12')
@@ -250,7 +250,7 @@ describe('the owner\'s layered-status scenarios (27 Aug 26)', () => {
   it('the mirror: ATT B 10–15, worse → ATT C 13–15, upchit 14 → B 10–12, C 13 only', () => {
     const b = plant({ person: 'bane', type: 'ATT B', date: 'Jul 10', endDate: 'Jul 15' })
     expect(commitNewInput(newDraft({ type: 'ATT C', start: '2026-07-13', end: '2026-07-15' }))).toBe(true)
-    const c = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'ATT C' && r !== b)
+    const c = INPUTS.find((r: any) => holds(r, 'bane') && r.type === 'ATT C' && r !== b)
     expect(b.endDate).toBe('Jul 12')
     expect(commitNewInput(newDraft({ type: 'Upchit', start: '2026-07-14', end: '' }))).toBe(true)
     expect(b.endDate).toBe('Jul 12')
@@ -265,7 +265,7 @@ describe('the owner\'s layered-status scenarios (27 Aug 26)', () => {
    passes nothing and keeps every tail (the safety default above still holds —
    the mid-span split test proves it). */
 describe('the leftover Remove/Keep past a middle takeover (owner, 28 Aug 26)', () => {
-  const tailOf = (c: any) => INPUTS.find((r: any) => r !== c && r.person === 'bane' && r.type === 'ATT C')
+  const tailOf = (c: any) => INPUTS.find((r: any) => r !== c && holds(r, 'bane') && r.type === 'ATT C')
   it('the Remove default drops the leftover — head only, fit on the days past it', () => {
     const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15', docId: 'doc-c' })
     // an empty keepTail is the sheet's default: nothing kept, the 14–15 leftover goes

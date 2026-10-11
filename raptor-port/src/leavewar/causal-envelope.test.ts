@@ -5,7 +5,7 @@
    user edit landing at idle (the pre-P3 bug C1). Also: a multi-day leave mints ONE
    spanned input in ONE envelope (N1). Runs in the LW project (fixed TZ). */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import {
@@ -53,7 +53,7 @@ describe('F1 — an LW approval files its Raptor input in the SAME envelope', ()
     const pid = getState().people[0].id
     const seen = approveWatched(pid, ['2026-02-02', '2026-02-03', '2026-02-04'])
     // the leave landed as an lw-tagged Raptor input
-    expect(INPUTS.some((r: any) => r.lw && r.person === pid)).toBe(true)
+    expect(INPUTS.some((r: any) => r.lw && holds(r, pid))).toBe(true)
     const both = seen.find(e => e.changes.some(c => c.collection === 'inputs') && e.changes.some(c => c.collection === 'lw.cell'))
     expect(both).toBeDefined()
     // a person's decision (a user command), not a projection landing later

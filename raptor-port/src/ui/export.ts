@@ -1,7 +1,7 @@
 /* CSV export — exportCSV and the schedule flattening (schedRows), verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { inpLabel } from '../engine/inputs'
+import { inpLabel, namedOf, placeholderOf } from '../engine/inputs'
 import { hhmm, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { STORE_CFG } from '../engine'
@@ -46,8 +46,17 @@ export function inputRows(list: any[]): any[][] {
   /* Title — the input's own name ([INPUT-OWN-TITLE], D715; Astra's read of the plan — 4): two Events exported as "Event"
      and "Event" could not be told apart. Its kind's name where it has no title of its own, so the column is never blank. */
   const out: any[][] = [['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks']]
-  list.forEach((r: any) => out.push([PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person, r.date, r.endDate || r.date,
-    r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, inpLabel(r), r.remarks]))
+  /* ONE LINE A PERSON (the one-rule build, 12 Oct 26 — owner D756: an input is one record with the list of its people;
+     the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5): a line for each named person, in the order they
+     joined, then one for its placeholder (ALL AVAIL / ALL), each with that callsign in the Name column — so the file
+     reads as it did when a shared input was a record a man, and a spreadsheet can still be filtered by name. A record
+     stored before that build answers as its one person (engine/inputs.ts peopleOf). */
+  list.forEach((r: any) => {
+    const ph = placeholderOf(r)
+    const who = namedOf(r).map((e: any) => e.p).concat(ph ? [ph.p] : [])
+    who.forEach((p: any) => out.push([PEOPLE[p] ? PEOPLE[p].cs : p, r.date, r.endDate || r.date,
+      r.allday ? 'all day' : hhmm(r.s), r.allday ? 'all day' : hhmm(r.e), r.type, inpLabel(r), r.remarks]))
+  })
   return out
 }
 export function exportCSV(name: string, rows: any[][]) {

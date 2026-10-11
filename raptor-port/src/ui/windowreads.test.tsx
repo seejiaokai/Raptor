@@ -11,7 +11,12 @@
    R3 (both readers)        an OIL answer alone, given in the window, moved the input's late date — an on-time input
                              turned LATE for answering a question (the desktop row's chip never did that).
    R4 (Sol)                 a man in a shared input he did not file could not answer his own unanswered OIL question
-                             from its window — only revise one already given. */
+                             from its window — only revise one already given.
+                             RETIRED BY D762 (11 Oct 26 — "one answer for all, nothing more"), built with the one
+                             record (`[ALL-AVAIL-AS-MEMBER]` step 2): no man in an input of several gives an OIL answer
+                             of his own, so "Your OIL" and its two buttons are gone. What stands in R4's place is
+                             pinned in its block below: the question is the INPUT's, and whoever may change the input
+                             answers it from the window, once, for everyone. */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -20,7 +25,7 @@ import { InputEditor, draftOf, medAskFor } from './inputedit'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
-import { INPUTS, baseYear, isLateInput, nowStamp } from '../engine/inputs'
+import { INPUTS, baseYear, holds, idsOf, isLateInput, nowStamp, peopleOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -41,7 +46,6 @@ const cs = (id: any) => PEOPLE[id].cs as string
 const admin = 'stiff', member = 'bane'
 const others = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)
 const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
-const of = (grp: string) => INPUTS.filter((r: any) => r.grp === grp) as any[]
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
 const type = async (sel: string, v: string) => {
   const el = $(sel) as HTMLInputElement
@@ -53,12 +57,15 @@ const single = async (over: any = {}) => {
   await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
   return live(row.iid)
 }
+/* a shared input as it is kept since the one-rule build: ONE record with the list of its people, one filer, one OIL
+   answer for everyone in it (owner D756, D762) — a duty on Saturday 17 Oct 26, filed by the admin */
 const shared = async (people: string[], over: any = {}) => {
-  const grp = 'gR' + (++n)
-  const rows = people.map((p, i) => ({ iid: `${grp}-${i}`, person: p, type: 'Duty', date: 'Oct 17', yr: 2026, allday: true, s: 0, e: 1439,
-    remarks: '', mod: '2026-09-01', grp, grpBy: admin, by: admin, at: new Date(2026, 8, 1, 8, 0).getTime(), ...over }))
-  await act(async () => { writeInputs(() => { INPUTS.push(...rows) }); notify() })
-  return { grp, rows: rows.map(r => live(r.iid)) }
+  const at = new Date(2026, 8, 1, 8, 0).getTime()
+  const rec: any = { iid: 'gR' + (++n), type: 'Duty', date: 'Oct 17', yr: 2026, allday: true, s: 0, e: 1439,
+    remarks: '', mod: '2026-09-01', by: admin, at, ...over }
+  rec.people = people.map(p => ({ p, by: admin, at }))
+  await act(async () => { writeInputs(() => { INPUTS.push(rec) }); notify() })
+  return live(rec.iid)
 }
 const openOn = async (r: any) => act(async () => { setInpEdit(live(r.iid)); notify() })
 const as = async (who: 'admin' | 'member') => act(async () => {
@@ -100,7 +107,7 @@ describe('R1 — a medical entry moved across a year is asked about in the year 
     expect($('[data-testid="medclash"]')!.textContent, 'about the days of 2026').toMatch(/Jan 16/)
     expect([live(attb.iid).date, live(attb.iid).endDate], 'the other medical entry is untouched until he chooses').toEqual(['Jan 15', 'Jan 19'])
     expect([live(attc.iid).date, live(attc.iid).yr], 'and so is the one being moved').toEqual(['Jan 10', 2027])
-    expect(INPUTS.filter((r: any) => r.person === who && r.type === 'ATT B'), 'nothing was split').toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, who) && r.type === 'ATT B'), 'nothing was split').toHaveLength(1)
   })
   it('the shared question body (the calendar’s drag and the schedule’s hand-over use it too) reads the same year', async () => {
     const who = others()[0]
@@ -196,38 +203,55 @@ describe('R3 — an OIL answer given alone in the window does not move the input
   })
 })
 
-describe('R4 — a man in a shared input he did not file answers his OWN unanswered OIL question from its window', () => {
-  it('"Your OIL: not answered yet" with "Answer…", outside the read-only form; his answer goes on his record alone', async () => {
+/* R4, AS IT STANDS SINCE D762 (see the head of this file). The describe keeps its tag; its three cases are re-expressed:
+     · "'Your OIL: not answered yet' with 'Answer…' … his answer goes on his record alone" — RETIRED: he has no answer of
+       his own. In its place: he reads the input's unanswered line and is offered nothing to press; whoever may change
+       the input answers it from the same window, ONCE, for everyone — and nobody's late date moves (R3, still).
+     · "once he has answered, the line is 'Your OIL: …' with 'Change…'" — RETIRED: in its place, once the input is
+       answered he reads its ONE answer, with no button and no line of his own.
+     · THE CONTROL — a reader who is not in it gets neither: unchanged, on the one record. */
+describe('R4 — the OIL question of a shared input is the INPUT’s: a man in it who did not file it has none of his own (D762)', () => {
+  it('unanswered: he reads "Not answered yet — 17 Oct" with nothing to press — no "Your OIL", no "Answer…" of his own; whoever may change the input answers it from its window, once, for everyone', async () => {
     const [a] = others()
-    const g = await shared([a, member])
+    const rec = await shared([a, member])
     await as('member')
-    await openOn(g.rows[0])
-    expect($('#inpEditSave'), 'the entry is not his to change').toBeNull()
-    const b = tid('oil-answer-own')!
-    expect(b.closest('[inert]'), 'it can be pressed').toBeNull()
-    expect(b.closest('.inped-own')!.textContent).toMatch(/Your OIL: not answered yet — 17 Oct/)
-    await click(b)
+    await openOn(rec)
+    expect($('#inpEditSave'), 'the input is not his to change').toBeNull()
+    expect(tid('oil-unanswered')!.querySelector('.inped-oilsum')!.textContent, 'he reads that it is unanswered').toBe('Not answered yet — 17 Oct')
+    expect(tid('oil-answer-own'), 'no answer of his own to give (D762)').toBeNull()
+    expect(tid('oil-answer'), 'and the input’s question is not his to answer').toBeNull()
+    expect(win()!.textContent, 'no "Your OIL" line').not.toMatch(/Your OIL/)
+    expect(tid('inped-takeout'), 'what is his: to take himself out').toBeTruthy()
+    expect(live(rec.iid).oil, 'nothing was written').toBeFalsy()
+    await act(async () => { setInpEdit(null); notify() })
+    /* …and the one who may change it — here the admin who filed it — answers from the same window */
+    await as('admin')
+    await openOn(rec)
+    await click(tid('oil-answer'))
     expect($$('[data-testid="oilconf"]')).toHaveLength(1)
     await click(tid('oil-yes')); await click(tid('oilconf-save'))
-    const mine = of(g.grp).find(r => r.person === member)!, his = of(g.grp).find(r => r.person === a)!
-    expect(mine.oil).toEqual({ '2026-10-17': 1 })
-    expect(his.oil, 'the other man is not answered for').toBeFalsy()
-    expect([mine.mod, his.mod], 'and nobody’s late date moves').toEqual(['2026-09-01', '2026-09-01'])
+    expect(live(rec.iid).oil, 'ONE answer, on the one record').toEqual({ '2026-10-17': 1 })
+    expect(idsOf(live(rec.iid)), 'for both of its people').toEqual([a, member])
+    expect([live(rec.iid).mod, ...peopleOf(live(rec.iid)).map((e: any) => e.mod)], 'and nobody’s late date moves').toEqual(['2026-09-01', undefined, undefined])
   })
-  it('once he has answered, the line is "Your OIL: …" with "Change…", as before — and no "Answer…"', async () => {
+  it('answered: he reads the input’s ONE answer — no "Change…", no "Answer…", and no line of his own', async () => {
     const [a] = others()
-    const g = await shared([a, member])
-    await act(async () => { writeInputs(() => { of(g.grp).find(r => r.person === member)!.oil = { '2026-10-17': 0 } }); notify() })
+    const rec = await shared([a, member], { oil: { '2026-10-17': 0 } })
     await as('member')
-    await openOn(g.rows[0])
-    expect(tid('oil-revise-own')).toBeTruthy()
+    await openOn(rec)
+    expect($$('#inpEditPop .inped-oilsum').map(x => x.textContent)).toEqual(['no OIL on its non-working day'])
+    expect(tid('oil-revise'), 'the input’s answer is not his to change').toBeNull()
+    expect(tid('oil-revise-own'), 'and he has none of his own (D762)').toBeNull()
     expect(tid('oil-answer-own')).toBeNull()
+    expect(tid('oil-answer')).toBeNull()
   })
   it('THE CONTROL — a reader who is not in it gets neither', async () => {
     const [a, b] = others()
-    const g = await shared([a, b])
+    const rec = await shared([a, b])
     await as('member')
-    await openOn(g.rows[0])
+    await openOn(rec)
     expect(tid('oil-answer-own')).toBeNull(); expect(tid('oil-revise-own')).toBeNull()
+    expect(tid('oil-answer'), 'nor the input’s own button').toBeNull()
+    expect(tid('inped-takeout'), 'and he is not in it: nothing to take himself out of').toBeNull()
   })
 })

@@ -217,9 +217,10 @@ function crossLines(env: CommitEnvelope): void {
   const covered = new Set<string>()
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.id === '__order' || !c.after) continue
-    const s = spanOf(c.after), p = (c.after as any).person
-    if (!s || !p) continue
-    for (let d = s.date; d <= s.end; d = nextIso(d)) covered.add(`${p}|${d}`)
+    /* everyone the input names (one record an input, with the list of its people — the one-rule build, step 2) */
+    const s = spanOf(c.after), ps = idsOf(c.after)
+    if (!s || !ps.length) continue
+    for (const p of ps) for (let d = s.date; d <= s.end; d = nextIso(d)) covered.add(`${p}|${d}`)
   }
   for (const c of env.changes) {
     if (c.collection !== 'lw.cell') continue
@@ -267,10 +268,12 @@ function warInputLines(env: CommitEnvelope): WarInputs {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.id === '__order') continue
     const ref: any = c.after || c.before
-    if (!ref || !ref.person) continue
-    const k = `${ref.person}|${ref.type}`
+    /* whose leave it is: the record's one person, in either stored shape (leave is always one person's) */
+    const man = ref ? leadOf(ref) : null
+    if (man == null || man === '') continue
+    const k = `${man}|${ref.type}`
     let g = groups.get(k)
-    if (!g) { g = { p: String(ref.person), t: String(ref.type), was: new Set(), now: new Set(), changes: [] }; groups.set(k, g) }
+    if (!g) { g = { p: String(man), t: String(ref.type), was: new Set(), now: new Set(), changes: [] }; groups.set(k, g) }
     const bd = c.before ? daysOf(c.before) : [], ad = c.after ? daysOf(c.after) : []
     g.changes.push({ c, b: bd, a: ad })
     bd.forEach(d => g!.was.add(d)); ad.forEach(d => g!.now.add(d))

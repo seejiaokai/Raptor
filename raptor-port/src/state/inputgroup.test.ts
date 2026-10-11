@@ -27,11 +27,11 @@ const toast = HOOKS.toast
 let said: string[] = []
 let n = 0
 /* a record as it was stored before the build — one `person`, and (for a group filing) the group's id and its filer */
-const old = (person: string, o: Record<string, any> = {}) => ({
+const old = (person: string, o: Record<string, any> = {}): any => ({
   iid: `i${++n}`, person, type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: 'brief', ...o,
 })
 /* a record as it is stored now — its people, in the order they joined */
-const rec = (people: string[], o: Record<string, any> = {}) => ({
+const rec = (people: string[], o: Record<string, any> = {}): any => ({
   iid: `i${++n}`, type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: 'brief', mod: '2026-01-15',
   by: 'stiff', at: 1, people: people.map(p => ({ p, by: 'stiff', at: 1 })), ...o,
 })

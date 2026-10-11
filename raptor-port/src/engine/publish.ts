@@ -680,7 +680,11 @@ export function dayPeopleAttrs(d:any,inp?:any):any{const out:any={};
   walk(d,'');
   /* the named men FIRST (the walk above, then each frozen input's own man), so a man who is both named and in a crowd
      is kept as named; the crowds last */
-  Object.keys(inp||{}).forEach((id:any)=>{ const r=(inp||{})[id]; if(r&&r.person)put(r.person); });
+  /* (EVERY named person of it — an input is one record with the list of its people since the one-rule build, step 2;
+     reading its one `person` left a man who is on the day only through a newly filed input out of the freeze: his CAT
+     changed after publishing read 0 pending — found re-expressing ui/latepub.test.tsx, 12 Oct 26. Its placeholder is a
+     crowd, recorded below.) */
+  Object.keys(inp||{}).forEach((id:any)=>{ const r=(inp||{})[id]; if(r)namedOf(r).forEach((e:any)=>{ if(e&&e.p!=null&&e.p!=='')put(e.p); }); });
   const sent=(d&&d.oilev&&d.oilev.sent)||{}; Object.keys(sent).forEach((it:any)=>([] as any[]).concat(sent[it]||[]).forEach(putCrowd));
   return out;}
 /* the men a version recorded, as the roster draws them TODAY — the comparison reads the version's own list of men (its

@@ -112,7 +112,7 @@ const cellEl = (key: string) => { const row = document.createElement('div'); row
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date(2026, 5, 1, 9, 0, 0)); resetWorld(); SAID = []; HOOKS.toast = (m: any) => { SAID.push(String(m)) } })
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null; document.body.innerHTML = ''; setDrag(null) })
 
-describe('an input is ONE row, a whole copy of the input (D755, D756 — the plan §4.3)', () => {
+describe('an input is ONE row, a whole copy of the input (D755, D756 — the plan §4.3) (GI13)', () => {
   it('an input for three lands ONE row: the first to join in the name box, the others under it — drawn A to Z', async () => {
     await boot(new MemoryBackend())
     file(['pike', 'bane', 'split'])
@@ -142,7 +142,7 @@ describe('an input is ONE row, a whole copy of the input (D755, D756 — the pla
   })
 })
 
-describe('a person put on the row JOINS the input (D755)', () => {
+describe('a person put on the row JOINS the input (D755) (GI6)', () => {
   it('on "+ add", on a puck where the row holds several, on a place under it: he is IN the input — the same record, the same row', async () => {
     for (const where of ['add', 'puck', 'under'] as const) {
       resetWorld(); await boot(new MemoryBackend())
@@ -157,7 +157,7 @@ describe('a person put on the row JOINS the input (D755)', () => {
       expect(onRow(), where).toEqual(['bane', 'pike', 'split'])
       expect(lines() - before, 'one line in the change history').toBe(1)
       expect(SAID.join(' | ')).toContain(`${cs('split')} added to ${TITLE}`)
-      expect(isLateInput(rec()), 'nobody reads late for it (D741)').toBe(false)
+      expect(isLateInput(rec()), 'nobody reads late for it (D741) (GI8)').toBe(false)
       globalUndo()
       expect(people(), 'ONE Undo').toEqual(['bane', 'pike'])
       expect(onRow()).toEqual(['bane', 'pike'])
@@ -239,7 +239,7 @@ describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the pl
   })
 })
 
-describe('a puck taken off the row takes that person out of the input (D755)', () => {
+describe('a puck taken off the row takes that person out of the input (D755) (GI9)', () => {
   it('dragged to nowhere, right-clicked, written blank: he leaves; the others and the row stay', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike', 'split'])
@@ -266,7 +266,7 @@ describe('a puck taken off the row takes that person out of the input (D755)', (
     expect(JSON.stringify(INPUTS)).toBe(was)
     expect(onRow()).toEqual(['bane'])
   })
-  it('dragged onto a flying seat: OUT of the input and IN the seat, one step; refused whole where he is the last', async () => {
+  it('dragged onto a flying seat: OUT of the input and IN the seat, one step; refused whole where he is the last (GI10)', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike', 'split'])
     const seat = '2.0.0.0.p', flew = String(slotVal(seat))
@@ -300,7 +300,7 @@ describe('a person dragged from one input\'s row onto another\'s MOVES — he is
   })
 })
 
-describe('THE BELT in the engine, and the doors that reach the input (the plan\'s T8)', () => {
+describe('THE BELT in the engine, and the doors that reach the input (the plan\'s T8) (GI15)', () => {
   it('a raw write to ANY place of an input\'s row is refused: nothing written, no mark', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike'])
@@ -353,7 +353,7 @@ describe('THE BELT in the engine, and the doors that reach the input (the plan\'
   })
 })
 
-describe('a box typed on the row changes the input — one record, for everyone in it (D739, D740)', () => {
+describe('a box typed on the row changes the input — one record, for everyone in it (D739, D740) (GI12)', () => {
   it('a time typed: the one record moves, everyone on it with it, and nobody reads late', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike', 'split'])

@@ -204,7 +204,7 @@ async function plant(page: Page, row: Record<string, unknown>) {
   return page.evaluate(r => (window as any).fileInput({ yr: 2026, ...r }), row)
 }
 const inputsOf = (page: Page, p: string) =>
-  page.evaluate(p => (window as any).INPUTS.filter((r: any) => r.person === p)
+  page.evaluate(p => (window as any).INPUTS.filter((r: any) => (r.people ? r.people.some((e: any) => e.p === p) : r.person === p))
     .map((r: any) => `${r.type} ${r.date}${r.endDate ? 'â€“' + r.endDate : ''}${r.allday ? '' : ` ${r.half ?? ''}${r.s}-${r.e}`}`).sort(), p)
 
 /* ---- the war's own gestures ---------------------------------------------- */
@@ -657,7 +657,7 @@ test('a reload (not ?fresh) keeps every filed leave, cut, notice and post-out â€
     return page.evaluate(([who, figs, pick]) => {
       return {
         cells: pick.map(([p, d]) => { const td = document.querySelector(`[data-testid="cell-${p}-${d}"]`); return `${p}@${d}=${td?.textContent}` }),
-        inputs: (window as any).INPUTS.filter((r: any) => (who as string[]).includes(r.person)).map((r: any) => `${r.person}:${r.type}:${r.date}:${r.endDate ?? ''}:${r.s}-${r.e}`).sort(),
+        inputs: (window as any).INPUTS.map((r: any) => ({ ...r, person: r.people ? r.people[0]?.p : r.person })).filter((r: any) => (who as string[]).includes(r.person)).map((r: any) => `${r.person}:${r.type}:${r.date}:${r.endDate ?? ''}:${r.s}-${r.e}`).sort(),
         total: (window as any).INPUTS.length,
         figs,
       }

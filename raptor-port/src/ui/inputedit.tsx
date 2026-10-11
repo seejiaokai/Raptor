@@ -16,7 +16,7 @@ import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem, idsOf, leadOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -1520,8 +1520,12 @@ export function reassignInput(iid: any, personId: any) {
  *  The editor is mounted at App level, so the sheet opens over whatever surface
  *  the gesture happened on — no navigation, unlike the bell, which is taking a
  *  member somewhere. */
-export function askOilIfPending(r: any): boolean {
+export function askOilIfPending(r: any, shut = false): boolean {
   if (!r || !oilAsks(r.type)) return false
+  /* `shut` — the question was raised from the input's ROW on the schedule (ui/reqdoor.ts): the dialog it opens in closes
+     with the sheet, answered or not — whoever put the person on the row was on the schedule, not in the input's window
+     (found re-expressing the editor's tests, 12 Oct 26: the mark went unset when the question became the input's one
+     answer, and an unanswered question left a dialog standing on the schedule that nobody had opened). */
   /* OF EVERY MAN OF A SHARED ENTRY, NOT OF THE ONE RECORD THE GESTURE HELD (Sol's read of the calendar job's bug check,
      8 Oct 26 — seen failing in `groupeditor.test.tsx` before this): the first man's standing No said nothing about a
      man beside him with no answer, who was then left to his own bell — what D660 rules out. The sheet opens on the
@@ -1530,7 +1534,7 @@ export function askOilIfPending(r: any): boolean {
      to ask of) */
   const live = INPUTS.find((x: any) => x.iid === r.iid) || r
   if ((oilGate(draftOf(live), live) as any).kind !== 'ask') return false
-  setOilAsk(live.iid); setInpEdit(live); notify()
+  setOilAsk(live.iid, shut); setInpEdit(live); notify()
   return true
 }
 
@@ -1773,11 +1777,20 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
    the input's own late date — with a late date of his own: only the person added can be late; the input's own date and
    everyone else's entry are left alone.
 
-   Until every reader has moved (the letters of step 2), a filing for ONE person is still written in the old shape by
-   commitNewInput — it reads the same (inputs.ts peopleOf) — and is rewritten with its list the first time who is in it
-   changes.
+   A filing for ONE person is written with its list of one too (commitNewInput — step 2 (g)); a record stored in the old
+   shape reads the same (inputs.ts peopleOf) and is rewritten with its list the first time who is in it changes.
 
    Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
+/** who an input is CALLED BY in a title or a question: its one person; for several, the first A to Z and how many more
+ *  ("Ace +2") — a placeholder never leads while a named person is in it. '' for a record naming nobody. */
+export function inputWho(rec: any): string {
+  const ids = rec ? idsOf(rec) : []
+  if (!ids.length) return ''
+  const cs = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
+  if (ids.length === 1) return cs(ids[0])
+  const named = namedOf(rec).map((e: any) => cs(e.p)).sort((a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+  return `${named.length ? named[0] : cs(ids[0])} +${ids.length - 1}`
+}
 export function commitInput(rec: any | null, draft: any, people: any[], opts?: InputSaveOpts): boolean {
   if (!draft) return false
   const say = HOOKS.toast
@@ -1816,6 +1829,14 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   /* WHAT ONE RECORD MAY HOLD — the same body the save boundary holds every command to (state/store.ts) */
   const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec ? rec.acc : undefined, people: next.map(p => ({ p })) })
   if (shape) { say(shape, 'warn'); return false }
+  /* IN THIS STEP a placeholder never TAKES OVER an input of several — its people un-picked and ALL AVAIL picked in one
+     save (refused before the build as "a placeholder taking over an entry that is a group"; a list holding the
+     placeholder alone is a sound shape, so shapeProblem above says nothing). Step 3 of the one-rule build makes the
+     placeholder one of an input's people, and this goes with the other "filed on its own" refusals. */
+  if (rec && have.length > 1) {
+    const ph = added.find(p => isPlaceholderInput({ people: [{ p }] }))
+    if (ph) { say(`${cs(ph)} is filed on its own — it already stands for whoever is free`, 'warn'); return false }
+  }
   if (protectedInput(...(rec ? [rec] : []), normDest(first, draft.yr))) return false
 
   /* does what it SAYS change? (the dates compared as dates, not as their labels — a label carries no year) */
@@ -1830,6 +1851,11 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
 
   /* WHO MAY — asked before anything is written, of the one module (state/perms.ts) */
   for (const p of added) if (!mayFileInputFor(p, draft.type)) { say(fileForOtherRefusal(draft.type), 'warn'); return false }
+  /* a member never hands an input someone else filed for him to another person — he may add people to it, or take
+     himself out; moving it is a scheduler's (commitInputEdit says the same of one person's input) */
+  if (rec && !scheduler && mine != null && added.length && gone.includes(String(mine)) && String(rec.by ?? '') !== String(mine)) {
+    say('Only a scheduler can move an input to another person', 'warn'); return false
+  }
   if (rec) {
     const selfOut = !scheduler && mine != null && gone.length === 1 && gone[0] === String(mine) && !added.length && !says && !answers
     if (!selfOut && (says || answers || gone.length || added.length) && !mayEditInput(rec)) {
@@ -1861,6 +1887,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
            the input's (a change from the schedule never makes anyone read late — D741) */
         if (st && !schedSide(opts)) { const today = nowStamp(); if (String(inputStampISO(r) || '') < today) st.mod = today }
         for (const p of added) putPerson(r, p, st)
+        /* THE ONE PERSON OF AN INPUT WHO MAKES IT AN INPUT OF SEVERAL IS WHO FILED THAT (state/perms.ts takesOn — as before
+           the build, where the group he made named him its filer): so he can go on changing who is in it, and its OIL
+           question comes to his bell. An admin's add leaves who filed it alone. */
+        if (!scheduler && mine != null && added.length && !gone.length && have.length === 1 && have[0] === String(mine) && String(r.by ?? '') !== String(mine)) r.by = String(mine)
         if (gone.length || added.length) stampChanged(r)
       }
       if (opts && opts.oil && JSON.stringify(r.oil || {}) !== JSON.stringify(opts.oil)) { r.oil = { ...opts.oil }; stampChanged(r) }
@@ -2541,7 +2571,10 @@ export function InputEditor() {
     setDelAll(false)
     if (removeEntry(rows)) { HOOKS.toast(`Input deleted for ${n} people`, 'ok'); close() } else stay()
   }
-  const who = recPpl.length > 1 ? `${csOf(recPpl[0])} +${recPpl.length - 1}`
+  /* WHO THE WINDOW IS TITLED BY: its one person; for several, the first A TO Z and how many more — never whoever joined
+     first (the card and the OIL question in this same window name them A to Z — D721, D727; found re-expressing the
+     tests, 12 Oct 26: the list is kept in joined order since the one record, and the title had followed it). */
+  const who = recPpl.length > 1 ? inputWho(r)
     : r ? csOf(isNew ? r.person : leadOf(r)) : ''
   /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
      another man's input — the calendar's chip, the day popover's row — was shown Delete and Save, each refused only
@@ -2943,7 +2976,7 @@ export function InputEditor() {
         {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
         {swap && (
           <div className="inped-ask" data-testid="inped-swap" role="alertdialog" aria-label="Unsaved changes">
-            <span className="inped-ask-q">This input has unsaved changes. Open {swap._new ? 'a new input' : `${PEOPLE[swap.person] ? PEOPLE[swap.person].cs : 'the other'}’s input`} and lose them?</span>
+            <span className="inped-ask-q">This input has unsaved changes. Open {swap._new ? 'a new input' : `${inputWho(swap) || 'the other'}’s input`} and lose them?</span>
             <button type="button" className="abtn danger" data-testid="inped-swap-go"
               onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
             <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>

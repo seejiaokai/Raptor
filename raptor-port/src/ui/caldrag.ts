@@ -20,14 +20,13 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor, sharedRefusal } from './inputedit'
-import { entryRowsOf } from '../state/inputgroup'
+import { draftOf, commitInputEdit, commitInput, fmtDay, askOilIfPending, medAskFor, sharedRefusal } from './inputedit'
 import { movePlanPuck, planMoveBlock } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
 import { mayEditInput } from '../state/perms'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
@@ -99,15 +98,15 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
      times), a scheduler may move anyone's — and, since the group input (D655),
      a member a duty or commitment he FILED for another man: the one rule,
      perms.ts mayEditInput, which takes the record. */
-  /* A SHARED INPUT MOVES AS ONE THING (D655; the plan §3.13): its bar is the entry's, so the move is every record's —
-     one command, for whoever may change EVERY record of it (its filer, an admin). A man in it who did not file it does
-     not move it, his own record included: taken alone it would leave the entry. */
-  const rows = entryRowsOf(INPUTS, r)
-  const whole = rows.length > 1
-  if (whole ? !rows.every(x => mayEditInput(x)) : !mayEditInput(r)) {
+  /* A SHARED INPUT MOVES AS ONE THING (D655; the plan §3.13) — and since the one-rule build it IS one thing (owner D756,
+     11 Oct 26: one record with the list of its people; the plan 2026-10-11-one-rule-plan.md §4.5): the bar is the
+     record's, the move is the record's, for whoever may change it for everyone (its filer, an admin — perms.ts). A man
+     in it who did not file it does not move it: one input has one time (D735). "Several people" is how many are IN it. */
+  const whole = idsOf(r).length > 1
+  if (!mayEditInput(r)) {
     /* a shared input's refusal is one body with every other door's (ui/inputedit.tsx sharedRefusal — to its FILER, with
        the members' switch off, it says the switch is off: D731 (8)) */
-    HOOKS.toast(whole ? sharedRefusal(rows, 'move this for everyone') : "Only a scheduler can move someone else's input", 'warn')
+    HOOKS.toast(whole ? sharedRefusal([r], 'move this for everyone') : "Only a scheduler can move someone else's input", 'warn')
     return false
   }
 
@@ -139,7 +138,9 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   if (ask === 'refused') return false
   if (ask) { setMedMove({ iid: r.iid, draft: d, ask, via: 'drag', said: 'Moved to ' + fmtDay(d.start) }); notify(); return false }
 
-  const ok = whole ? commitGroup({ rows }, d, rows.map(x => x.person)) : commitInputEdit(r, d)
+  /* the one writer for an input of several — its people as they are, so only what it SAYS changes; one person's goes
+     through the body every single input's fields are saved by, as it always did */
+  const ok = whole ? commitInput(r, d, idsOf(r)) : commitInputEdit(r, d)
   /* commitInputEdit already toasts every refusal it can produce (a SANS
      clash, a backwards range, a row deleted underneath the edit) — adding a
      second toast on failure here would double up on the same news. Only the
@@ -284,7 +285,7 @@ export function initCalDrag(root: HTMLElement, opts: {
        makes (commitChipMove: a scheduler moves anyone's, a member his own; a planning section is a scheduler's), asked
        at the press, so the gesture is never offered. A tap still opens it. */
     const row = entry.kind === 'input' ? INPUTS.find((x: any) => x.iid === entry.iid) : null
-    const fixed = entry.kind === 'puck' ? !canEditSched() : (!!row && !entryRowsOf(INPUTS, row).every(x => mayEditInput(x)))
+    const fixed = entry.kind === 'puck' ? !canEditSched() : (!!row && !mayEditInput(row))
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,

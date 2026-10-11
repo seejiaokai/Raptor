@@ -13,7 +13,7 @@
 // moving it would land a second live bid on one half). Scenarios: Fable's list,
 // docs/superpowers/specs/2026-09-27-lw-move-standard-scenarios-fable.md (S1–S8, S27–S32).
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
@@ -58,7 +58,7 @@ const bidsAt = (p: string, d: string) => recsAt(p, d).filter((r: any) => r.kind 
 /* an award is a ledger entry drawn on its day ([OIL-AWARD-IS-A-GRANT]) — never a war record */
 const awardAt = (p: string, d: string) => awardsOnDay(p, d).length > 0
 const one = (p: string, d: string) => [{ personId: p, date: d }]
-const lwRows = (p: string) => INPUTS.filter((r: any) => r.person === p && r.lw)
+const lwRows = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw)
 
 describe('a bid beneath an OIL award (Vector’s 3 Jan — D265)', () => {
   beforeEach(() => {
@@ -161,7 +161,7 @@ describe('two things that can move on one day (D266 — only by halves)', () => 
     expect(movableRecords(one('ammo', '2026-02-10')).map(x => x.kind)).toEqual(['request'])
     expect(moveCells(one('ammo', '2026-02-10'), 2)).toBe('moved')
     expect(bidsAt('ammo', '2026-02-12').map((r: any) => r.code)).toEqual(['LL*'])
-    expect(INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL' && r.date === 'Feb 10')).toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL' && r.date === 'Feb 10')).toHaveLength(1)
     const cells = one('ammo', '2026-02-10')
     expect(stayingIn(cells, [])).toEqual([expect.objectContaining({ what: 'filed' })])
   })
@@ -171,7 +171,7 @@ describe('two things that can move on one day (D266 — only by halves)', () => 
     expect(setCell('ammo', '2026-02-10', 'LL*')).toBe(true)
     expect(moveCells(one('ammo', '2026-02-10'), 1)).toBe('moved')
     expect(bidsAt('ammo', '2026-02-11').map((r: any) => r.code)).toEqual(['LL*'])
-    expect(INPUTS.some((r: any) => r.person === 'ammo' && r.type === 'ATT C' && r.date === 'Feb 10')).toBe(true)
+    expect(INPUTS.some((r: any) => holds(r, 'ammo') && r.type === 'ATT C' && r.date === 'Feb 10')).toBe(true)
   })
 })
 

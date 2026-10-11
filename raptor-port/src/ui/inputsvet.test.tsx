@@ -25,7 +25,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { globalUndo } from '../undo'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -62,15 +62,19 @@ const file = async (over: any = {}) => {
   await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
   return live(row.iid)
 }
+/* A SHARED INPUT IS ONE RECORD HOLDING ITS PEOPLE, in the order they joined (the one-rule build, step 2 — owner D756,
+   D759; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1, §4.5). Until that build this fixture was a
+   record a man tied by a group id, which is read now as so many one-person inputs (D759 reading 10). */
 const shared = async (people: string[], over: any = {}) => {
-  const grp = 'gV' + (++n)
-  const rows = people.map((p, i) => ({ iid: `${grp}-${i}`, person: p, type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660,
-    remarks: '', mod: '2026-09-01', grp, grpBy: admin, by: admin, at: T(1, 9, 0), ...over }))
-  await act(async () => { writeInputs(() => { INPUTS.push(...rows) }); notify() })
-  return { grp, rows: rows.map(r => live(r.iid)) }
+  const iid = 'gV' + (++n)
+  const row = { iid, people: people.map(p => ({ p, by: admin, at: T(1, 9, 0) })), type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660,
+    remarks: '', mod: '2026-09-01', by: admin, at: T(1, 9, 0), ...over }
+  await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
+  return { rows: [live(iid)] }
 }
 const tr = (r: any) => $(`#inBody tr[data-iid="${r.iid}"]`)
-/* a shared input's ONE row — it stands under its first record, A to Z, whichever that is */
+/* a shared input's ONE row — the row of its one record (it stood under the entry's first record, A to Z, while an entry
+   was a record a man) */
 const trOf = (rows: any[]) => $$('#inBody tr[data-iid]').find(x => rows.some(r => r.iid === x.getAttribute('data-iid')))!
 const allDates = async () => { if (!$('#inRangePop')) await click($('#inRangeBtn')); await click($('#inRangeAll')) }
 const mount = async (phone: boolean, view: 'table' | 'cal' = 'table') => {
@@ -158,7 +162,10 @@ describe('"till <date>" is said ONCE on an input’s card — the corner says it
    listed the ONE record it had been shown: a meeting for three read as one man's, and its Delete took that man's
    record alone, the other two left behind out of sight. */
 describe('a just-saved shared input on a day whose filter hides it is listed whole', () => {
-  it('all its people on ONE card; Delete asks for everyone and removes every record', async () => {
+  /* THE RULE CHANGED (owner D756, D759 — the one-rule build): the save for three people makes ONE record holding the
+     three, where it made a record a man. What Sol's finding guards is unchanged — the day's card names everyone, its
+     Delete asks for everyone, and nobody's part is left behind out of sight. */
+  it('all its people on ONE card; Delete asks for everyone and leaves nothing of it behind (one record for the three — D756)', async () => {
     await mount(false, 'cal')
     await type('#inFSearch', 'ZZZ-no-match')
     await openDay('2026-10-20')
@@ -170,7 +177,8 @@ describe('a just-saved shared input on a day whose filter hides it is listed who
     const had = new Set(INPUTS.map((r: any) => r.iid))
     await click($('#inpEditSave'))
     const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
-    expect(made, 'three records').toHaveLength(3)
+    expect(made, 'one record').toHaveLength(1)
+    expect(idsOf(made[0]).map(String).sort(), 'holding the three').toEqual([admin, b, c].sort())
     const cards = $$('[data-testid="win-inputsday"] [data-testid^="idy-row-"]')
     expect(cards, 'one card on the day').toHaveLength(1)
     const names = cards[0].querySelector('[data-testid="idy-who"]')!.textContent!.split(', ')
@@ -181,7 +189,8 @@ describe('a just-saved shared input on a day whose filter hides it is listed who
     expect(ask, 'the question').toBeTruthy()
     expect(ask!.textContent, 'for all three').toMatch(/all 3 people/)
     await click($('[data-testid="idy-del-yes"]'))
-    expect(INPUTS.filter((r: any) => made.some(m => m.iid === r.iid)), 'every record gone').toHaveLength(0)
+    expect(INPUTS.filter((r: any) => made.some(m => m.iid === r.iid)), 'the record gone').toHaveLength(0)
+    expect(INPUTS.map((r: any) => r.iid).sort(), 'and nothing made in its place — no man was split out into an input of his own').toEqual([...had].sort())
   })
 })
 
@@ -286,8 +295,11 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
      Astra's first-ranked scenario, 29). The page is shown ONE record of a shared input — whichever the save happened to
      make first — while the desktop row stands under the entry's first record A to Z. Lit by that one record, the row of
      a shared input just added stayed dark unless the two happened to be the same man (the phone's card already asked
-     every record of the entry). */
-  it('a shared input ADDED through "+ Input" lights its one row — whichever of its people the save made first', async () => {
+     every record of the entry).
+     SINCE THE ONE-RULE BUILD (owner D756, D759) the save makes ONE record for everyone picked, so "whichever record the
+     save made first" is "whichever order its people were picked in": both orders are still driven, and the one row of
+     the one record must be lit either way. */
+  it('a shared input ADDED through "+ Input" lights its one row — whichever order its people were picked in (one record — D756)', async () => {
     await mount(false)
     const sorted = [...others()].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
     const first = sorted[0], last = sorted[sorted.length - 1]
@@ -299,7 +311,8 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       await click($('#inpEdCal [data-cal="2026-07-16"]'))
       await click($('#inpEditSave'))
       const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
-      expect(made, 'three records, one entry').toHaveLength(3)
+      expect(made, 'one record').toHaveLength(1)
+      expect(idsOf(made[0]).map(String).sort(), 'for the three').toEqual([admin, first, last].sort())
       const row = trOf(made)
       expect(row, 'its one row').toBeTruthy()
       expect(row.classList.contains('innew'), `lit, picked ${order.map(cs).join(' then ')}`).toBe(true)
@@ -311,8 +324,12 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
   /* …AND IS BROUGHT INTO VIEW (Astra's read of the code, 10 Oct 26 — finding 2; older than this build, and the List's
      one door now). The page looked for the element of the ONE record it had been shown; a shared input's row answers
      to its first record A to Z, so for any other man the look-up found nothing: the row was lit, pinned — and never
-     scrolled to, with the reader left wherever he was on a long list. */
-  it('a shared input ADDED through "+ Input" is scrolled to — its row, whichever record the save made first', async () => {
+     scrolled to, with the reader left wherever he was on a long list.
+     RETIRED WITH THE RECORD-A-MAN SHAPE (owner D756, D759 — the one-rule build): this case's premise was that the record
+     the save made first was NOT the one the row stood under. A shared input is ONE record now, so there is no second
+     record for the row to stand under — the premise is pinned as its opposite (one record, and the row is its row), and
+     what the case was for stays: the shared row itself is brought into view. */
+  it('a shared input ADDED through "+ Input" is scrolled to — the one row of its one record (D756)', async () => {
     await mount(false)
     const sorted = [...others()].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
     const calls: Element[] = []
@@ -326,8 +343,12 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       await click($('#inpEdCal [data-cal="2026-07-16"]'))
       await click($('#inpEditSave'))
       const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
+      expect(made, 'one record for the three').toHaveLength(1)
+      expect(idsOf(made[0]).map(String).sort()).toEqual([admin, sorted[0], sorted[sorted.length - 1]].sort())
+      const rows = $$('#inBody tr[data-iid]').filter(x => x.getAttribute('data-iid') === String(made[0].iid))
+      expect(rows, 'one row, and it is that record’s').toHaveLength(1)
       const row = trOf(made)
-      expect(made[0].iid, 'the premise: the record the save made first is NOT the one the row stands under').not.toBe(row.getAttribute('data-iid'))
+      expect(row).toBe(rows[0])
       expect(calls, 'the shared row itself was brought into view').toContain(row)
     } finally { (Element.prototype as any).scrollIntoView = orig }
   })

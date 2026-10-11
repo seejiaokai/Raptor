@@ -43,7 +43,8 @@ async function fileGroup(p: Page, tap: boolean) {
   await p.fill('#inpEditOwnTitle', TITLE)
   await press('#inpEditSave')
   await expect(p.locator(WIN)).toHaveCount(0)
-  await expect.poll(() => p.evaluate(t => (window as any).INPUTS.filter((r: any) => r.title === t).length, TITLE)).toBe(4)
+  /* ONE record holding the four (owner D756 — an input is stored once, with the list of its people) */
+  await expect.poll(() => p.evaluate(t => (window as any).INPUTS.filter((r: any) => r.title === t).map((r: any) => (r.people || []).length), TITLE)).toEqual([4])
 }
 
 /* every row a surface draws for the shared input, measured: the row, its People cell, its pucks in the order drawn */
@@ -190,7 +191,7 @@ test('a phone: the window opened from the Personal Inputs line asks "Delete for 
   }))
   for (const b of seen) { expect(b.inView, `${b.id} is on the screen`).toBe(true); expect(b.hit, `${b.id} can be pressed where it is drawn`).toBe(true) }
   await page.locator('[data-testid="inped-delall-no"]').tap()
-  await expect.poll(() => page.evaluate(t => (window as any).INPUTS.filter((r: any) => r.title === t).length, TITLE), { message: 'Keep keeps it' }).toBe(4)
+  await expect.poll(() => page.evaluate(t => (window as any).INPUTS.filter((r: any) => r.title === t).map((r: any) => (r.people || []).length), TITLE), { message: 'Keep keeps it' }).toEqual([4])
   expect(errs).toEqual([])
   await context.close()
 })

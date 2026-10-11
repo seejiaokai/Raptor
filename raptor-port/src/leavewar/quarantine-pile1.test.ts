@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { HIST, initStore, writeInputsBatch } from '../state/store'
@@ -31,8 +31,8 @@ function approve(dates: string[], person = 'ammo') {
   if (getState().period.stage === 'open') advanceStage()
   dates.forEach(d => setBidState(person, d, 'approved'))
 }
-const mine = () => INPUTS.filter((r: any) => r.person === 'ammo' && r.lw)
-const oml = () => INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'OML')
+const mine = () => INPUTS.filter((r: any) => holds(r, 'ammo') && r.lw)
+const oml = () => INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'OML')
 // the week of Mon 9 Feb 2026 is stashed as an unreadable book → its dates are protected
 const freeze = () => stashPut('09/02/2026', 'null')
 
@@ -104,7 +104,7 @@ describe('Pile 1 approvals across a locked boundary', () => {
     expect(rows[0].date).toBe('Feb 6')
     expect(rows[0].endDate).toBe('Feb 8')                         // grew over the open days only
     expect(getState().states.ammo['2026-02-09']?.state).toBe('pending')   // the locked day stays a request
-    expect(INPUTS.filter((r: any) => r.person === 'rocky' && r.lw)).toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, 'rocky') && r.lw)).toHaveLength(1)
   })
 
   it('shortening leave that reaches into a locked week is refused whole', () => {
@@ -115,7 +115,7 @@ describe('Pile 1 approvals across a locked boundary', () => {
     approve(['2026-02-05'], 'rocky')
     expect(JSON.stringify(mine())).toBe(before)
     expect(getState().states.ammo['2026-02-07']?.state).toBe('approved')
-    expect(INPUTS.filter((r: any) => r.person === 'rocky' && r.lw)).toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, 'rocky') && r.lw)).toHaveLength(1)
   })
 })
 
@@ -132,7 +132,7 @@ describe('Pile 1 live-war history reconciliation', () => {
     histApply(ix + 1)
     expect(getState().grid.ammo?.['2026-02-02']).toBeUndefined()
     histApply(ix)
-    expect(INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL' && r.date === 'Feb 2')).toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL' && r.date === 'Feb 2')).toHaveLength(1)
     expect(getState().grid.ammo['2026-02-02']).toBe('LL')
     expect(getState().grid.ammo['2026-02-03']).toBe('LL')
   })

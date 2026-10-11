@@ -10,7 +10,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT } from './pops'
 import { docAdd } from '../state/docs'
@@ -61,7 +61,7 @@ const openMedAdd = async (type: string, date: string, endDate?: string) => {
     notify()
   })
 }
-const rows = (type: string) => INPUTS.filter((r: any) => r.person === 'bane' && r.type === type)
+const rows = (type: string) => INPUTS.filter((r: any) => holds(r, 'bane') && r.type === type)
 const spanOf = (r: any) => r.date + (r.endDate ? '-' + r.endDate : '')
 
 describe('the clash sheet gates a different-type overlap', () => {

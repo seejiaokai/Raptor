@@ -31,7 +31,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, inpLabel, isSansAvail, sansLetters } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -45,12 +45,11 @@ import { isMe, mayDeleteInput } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry, sharedRefusal } from './inputedit'
+import { fmt, fmtDay, inputTone, newInputSeed, removeInput, removeEntry, sharedRefusal, commitInput, draftOf } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
-import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, personFilterPasses } from './inputscal-model'
-import { entryRowsOf } from '../state/inputgroup'
+import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
 import { placedLineOf } from './placedline'
 import { InputCard } from './InputCard'
 import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
@@ -105,16 +104,13 @@ export function monthCells(y: number, m: number): (string | null)[] {
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
   let inputs = inputsInMode(INPUTS, mode).filter((r: any) => inputCoversDate(r, label))
-  inputs = inputs.filter((r: any) => personFilterPasses(f.fPerson, r.person))   // one body with the List and the month
+  /* one body with the List and the month (ui/inputscal-model.ts): an input passes when ANY of its people does, or its
+     placeholder — it is one record with the list of its people (owner D756; the one-rule plan §4.5) */
+  inputs = inputs.filter((r: any) => inputPassesPerson(f.fPerson, r))
   if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
-  if (f.fSearch) {
-    const s = f.fSearch.toLowerCase()
-    /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
-       day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5) */
-    inputs = inputs.filter((r: any) =>
-      (r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) ||
-      (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s))
-  }
+  /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
+     day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5); and by the callsign of anyone in it */
+  if (f.fSearch) inputs = inputs.filter((r: any) => inputMatchesSearch(r, f.fSearch))
   /* red (absent) above amber (a local commitment) above purple (SANS, not an
      absence at all) — the same read order the table's row stripes imply,
      then all-day before timed, then earliest start, then callsign. */
@@ -125,8 +121,8 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
     if (a.allday !== b.allday) return a.allday ? -1 : 1
     const sa = a.allday ? 0 : (a.s ?? 0), sb = b.allday ? 0 : (b.s ?? 0)
     if (sa !== sb) return sa - sb
-    const csA = PEOPLE[a.person] ? PEOPLE[a.person].cs : String(a.person)
-    const csB = PEOPLE[b.person] ? PEOPLE[b.person].cs : String(b.person)
+    /* its first callsign — of its people A to Z, as the month's own order reads it (monthItems `who`) */
+    const csA = namesOf(a)[0] || '', csB = namesOf(b)[0] || ''
     return csA.localeCompare(csB)
   })
   const pucks = PLANPUCKS.filter((p: any) => p.date === iso)
@@ -627,7 +623,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     const dates = it.a === it.b ? fmtDay(it.a) : `${fmtDay(it.a)} – ${fmtDay(it.b)}`
     const hours = r.allday ? '' : ` · ${hhmm(r.s)}–${hhmm(r.e)}`
     /* a titled input's bar has room for its name only — its kind is said here (D717's row for the month) */
-    return [`${it.rows.map((x: any) => nameOf(x.person)).join(', ')} · ${it.word}${it.kind ? ' · ' + it.kind : ''} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
+    /* …and EVERYONE in it — the named people A to Z, then its placeholder (D721, D727; the item's own `people`) */
+    return [`${it.people.map(nameOf).join(', ')} · ${it.word}${it.kind ? ' · ' + it.kind : ''} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
   }
 
   /* THE DAY POPOVER — a day's inputs, remark and planning notes without
@@ -798,12 +795,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       window.addEventListener('pointercancel', cancel)
       dragCancelRef.current = cancel        // popover close → cancel, don't drop/swap
     }
-    /* what the day lists: every input covering it, as the month's own items (a group is one — ui/inputscal-model.ts),
+    /* what the day lists: every input covering it, as the month's own items (one a record — ui/inputscal-model.ts),
        plus the one just saved where no filter lets it through, so a save is never answered with an empty day */
     const list = itemsOn(iso, items)
-    /* …as the WHOLE entry it belongs to (Sol's read of the code, 10 Oct 26): a shared input shown by ONE of its records
-       read as that man's alone, and its Delete took his record and left the others behind out of sight */
-    if (revealed) list.unshift(...monthItems(entryRowsOf(INPUTS, saved), { fPerson: 'all', fType: 'all', fSearch: '' }))
+    /* …as the WHOLE input (Sol's read of the code, 10 Oct 26: a shared input shown by ONE of its records read as that
+       man's alone, and its Delete took his record and left the others behind out of sight). It IS one record now
+       (owner D756), so the saved record is the whole of it. */
+    if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
     /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
     const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(INPUTS, { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
     const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
@@ -819,47 +817,56 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       if (e.key !== 'Delete' && e.key !== 'Backspace') return
       e.preventDefault()
       const r = it.rows[0]
-      /* A SHARED INPUT (the plan §3.13): its filer or an admin is asked about everyone; a man in it who is neither is
-         asked about himself; anyone else is told who can */
-      if (it.rows.length > 1) {
-        if (!it.rows.every(x => mayDeleteInput(x)) && !it.rows.some(x => isMe(x.person))) {
+      /* AN INPUT OF SEVERAL PEOPLE (the plan §3.13; on the one record — owner D756, D755 (3): a person in it "may always
+         withdraw himself" — the one-rule plan §4.9): whoever may delete it for everyone (its filer, an admin —
+         perms.ts mayDeleteInput, asked of the RECORD) is asked about everyone; a person IN it who may not is asked
+         about himself; anyone else is told who can. "Several" is how many are in it — never how many records. */
+      if (it.people.length > 1) {
+        const all = mayDeleteInput(r)
+        if (!all && !it.people.some(p => isMe(p))) {
           /* one body with every other door's (ui/inputedit.tsx sharedRefusal; to its filer, the switch off: D731 (8)) */
-          HOOKS.toast(sharedRefusal(it.rows, 'delete this for everyone'), 'warn'); return
+          HOOKS.toast(sharedRefusal([r], 'delete this for everyone'), 'warn'); return
         }
-        askedAll.current = it.rows.every(x => mayDeleteInput(x))
+        askedAll.current = all
         setDelAsk(it.key); return
       }
       /* an input filed for ALL AVAIL / ALL has no owner to name — the one who may is whoever FILED it (Sol's read of the
          code, 9 Oct 26: the editor's read-only line was corrected and this keyboard door still said "Only ALL AVAIL …") */
       if (!mayDeleteInput(r)) {
-        const ph = PEOPLE[r.person] && PEOPLE[r.person].special
         /* …and to that filer himself, with the members' switch off, that the switch is off (D731 (8) — the roll-call's
-           find: a member files for ALL AVAIL only while it is on, D702) — `sharedRefusal`, the one body */
-        HOOKS.toast(ph ? sharedRefusal([r], 'delete this input')
-          : `Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return
+           find: a member files for ALL AVAIL only while it is on, D702) — `sharedRefusal`, the one body. An input of
+           one named person names him: its one person, the first of its people (engine/inputs.ts leadOf). */
+        const one = leadOf(r)
+        HOOKS.toast(isPlaceholderInput(r) ? sharedRefusal([r], 'delete this input')
+          : `Only ${PEOPLE[one] ? PEOPLE[one].cs : 'its owner'} or an admin can delete this input`, 'warn'); return
       }
       askedAll.current = false
       setDelAsk(it.key)
     }
     const doDelete = (it: BarItem) => {
       setDelAsk(null)
-      if (it.rows.length > 1) {
-        const rows = it.rows.map(x => INPUTS.find((y: any) => y.iid === x.iid)).filter(Boolean) as any[]
+      /* found again by its id: an Undo under the open question may have handed back another object for the same input */
+      const live = INPUTS.find((x: any) => x.iid === it.rows[0].iid)
+      if (it.people.length > 1) {
         /* THE QUESTION'S INTENT IS READ FIRST, AND DECIDES (`askedAll`; Astra's read of this batch, 10 Oct 26 — finding 1).
            Asked about EVERYONE: everyone goes if that is still his to do, else it is refused in words — never turned
            into taking himself out. Asked about HIMSELF: only he goes, whatever he may do by now — a right gained while
            the question stood (the switch turned on again, an admin back in his own view) must not turn "Take me out"
            into a delete of the whole input. */
         if (askedAll.current) {
-          if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok') }
-          else HOOKS.toast(sharedRefusal(rows, 'delete this for everyone'), 'warn')
+          /* (gone meanwhile: removeEntry says so) */
+          if (!live || mayDeleteInput(live)) { if (removeEntry(live ? [live] : [])) HOOKS.toast(`Input deleted for ${everyoneIn(it)}`, 'ok') }
+          else HOOKS.toast(sharedRefusal([live], 'delete this for everyone'), 'warn')
           return
         }
-        const mine = rows.find(x => isMe(x.person))
-        if (mine && removeInput(mine)) HOOKS.toast('You are out of this input', 'ok')
+        /* HE TAKES HIMSELF OUT — the one writer, with everyone but him (ui/inputedit.tsx commitInput: the one change a
+           person in an input may always make, D755 (3)); the input goes on for the others. Where he is the only one
+           left in it by now, it is his own input and taking himself out is deleting it. */
+        if (!live || !idsOf(live).some((p: any) => isMe(p))) return
+        const rest = idsOf(live).map(String).filter(p => !isMe(p))
+        if (rest.length ? commitInput(live, draftOf(live), rest) : removeInput(live)) HOOKS.toast('You are out of this input', 'ok')
         return
       }
-      const live = INPUTS.find((x: any) => x.iid === it.rows[0].iid)
       if (live && removeInput(live)) HOOKS.toast('Input deleted', 'ok')
     }
     return (
@@ -1025,9 +1032,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                 <h3 className="sd-gh" data-testid="idy-count">{list.length} input{list.length > 1 ? 's' : ''}</h3>
                 {list.map(it => {
                   const r = it.rows[0]
-                  const team = it.rows.length > 1
+                  /* several PEOPLE in it — the record's own list (D756), never how many records */
+                  const team = it.people.length > 1
                   /* the question standing on THIS line keeps the words it was asked in (`askedAll`, above) */
-                  const forAll = team && (delAsk === it.key ? askedAll.current : it.rows.every(x => mayDeleteInput(x)))
+                  const forAll = team && (delAsk === it.key ? askedAll.current : mayDeleteInput(r))
                   const when = cardWhen(r, it.b, iso)
                   return (
                     <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when}
@@ -1035,7 +1043,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
-                          <span className="idy-ask-q">{!team ? 'Delete this input?' : forAll ? `Delete this input for all ${it.rows.length} people?` : 'Take yourself out of this input?'}</span>
+                          <span className="idy-ask-q">{!team ? 'Delete this input?' : forAll ? `Delete this input for ${it.ph ? '' : 'all '}${everyoneIn(it)}?` : 'Take yourself out of this input?'}</span>
                           <button type="button" className="abtn danger" data-testid="idy-del-yes" autoFocus onClick={() => doDelete(it)}>{team && !forAll ? 'Take me out' : 'Delete'}</button>
                           <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>{team && !forAll ? 'Stay in' : 'Keep'}</button>
                         </span>

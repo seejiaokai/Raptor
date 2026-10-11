@@ -6,33 +6,34 @@
    not have: who placed an input is what lets a member change one he filed for another man (D655), so no seeded input
    names a member as the filer of someone else's. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS, isLateInput, isPlaceholderInput, placeholderProblem, oilAsks, titleOf, inpLabel } from '../engine/inputs'
+import { INPUTS, idsOf, inputLines, isLateInput, isPlaceholderInput, leadOf, onlyNamed, peopleOf, placeholderProblem, oilAsks, titleOf, inpLabel } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { initStore } from './store'
 import { seedDemoGroup, seedDemoPlaceholders, seedDemoStamps } from './demoseed'
-import { entriesOf } from './inputgroup'
 import { memberFilesForOthers } from './perms'
 import { placedLine } from '../ui/placedline'
 
 const SNAP = JSON.stringify(INPUTS)
 beforeEach(() => { INPUTS.splice(0, INPUTS.length, ...JSON.parse(SNAP)); initStore() })
 const admin = () => Object.keys(PEOPLE).find(id => PEOPLE[id].cs === 'Saber')!
+/* who an input is for, for a failure's message — read through the one reader, so a record in either shape answers */
+const who = (r: any) => idsOf(r).join('+')
 
 describe('the demo inputs say who placed them', () => {
   it('every seeded input has a filer and a moment, and so a line to show', () => {
     expect(INPUTS.length).toBeGreaterThan(10)
     for (const r of INPUTS as any[]) {
-      expect(r.by, `${r.person} ${r.type} ${r.date}`).toBeTruthy()
+      expect(r.by, `${who(r)} ${r.type} ${r.date}`).toBeTruthy()
       expect(typeof r.at).toBe('number')
-      expect(placedLine(r), `${r.person} ${r.type} ${r.date}`).toMatch(/^Placed by /)
+      expect(placedLine(r), `${who(r)} ${r.type} ${r.date}`).toMatch(/^Placed by /)
     }
   })
-  it('each is placed by the person himself, or by the admin for him — never by another member', () => {
+  it('each is placed by a person it is for, or by the admin for him — never by another member', () => {
     const a = admin()
     let forHim = 0
     for (const r of INPUTS as any[]) {
-      expect([String(r.person), a], `${r.person} ${r.type} ${r.date} is placed by ${r.by}`).toContain(String(r.by))
-      if (String(r.by) !== String(r.person)) forHim++
+      expect([...idsOf(r).map(String), a], `${who(r)} ${r.type} ${r.date} is placed by ${r.by}`).toContain(String(r.by))
+      if (onlyNamed(r) != null && String(r.by) !== String(onlyNamed(r))) forHim++
     }
     expect(forHim, 'some are shown as filed for a man by the admin, so that wording is seen too').toBeGreaterThan(0)
   })
@@ -42,7 +43,7 @@ describe('the demo inputs say who placed them', () => {
     for (const r of INPUTS as any[]) {
       if (!/^\d{4}-\d{2}-\d{2}/.test(String(r.mod))) continue
       const d = new Date(r.at)
-      expect(`${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`, `${r.person} ${r.type}`).toBe(String(r.mod).slice(0, 10))
+      expect(`${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`, `${who(r)} ${r.type}`).toBe(String(r.mod).slice(0, 10))
       read++
     }
     expect(read).toBeGreaterThan(0)
@@ -59,32 +60,63 @@ describe('the demo inputs say who placed them', () => {
 })
 
 /* ONE SHARED INPUT IN THE DEMO (the plan §3.13: "The demo seed carries one group input, so every list is seen with one
-   from the first walk"). Filed by the admin for himself and three others — never by a member for another man. */
+   from the first walk"). Filed by the admin for himself and three others — never by a member for another man.
+
+   ON THE ONE RECORD (owner D756, 11 Oct 26: "an input is stored as ONE record with the list of its people"; the one-rule
+   plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.11: "`state/demoseed.ts`'s shared demo input … rewritten in
+   the new shape (one record of four people)" — step 2 (i) of that build). The demo's shared input is found by what it
+   SAYS — the Flight safety brief of 23 Jul — and its people read through the one reader (engine/inputs.ts peopleOf), so
+   no case reads a record's old `person` / `grp`; the FIRST one is the rule itself: a seed that still wrote one record a
+   man tied by a group id would read as four one-person inputs (D759 reading 10) — a fresh demo with no shared input at
+   all — and fails it. */
 describe('the demo carries one shared input', () => {
-  const team = () => INPUTS.filter((r: any) => r.grp) as any[]
-  it('four records, one group, the same day, hours, kind and remark — each man once', () => {
+  const team = () => (INPUTS as any[]).filter(r => r.type === 'Meeting' && r.date === 'Jul 23' && r.remarks === 'Flight safety brief')
+  const everyone = () => team().flatMap(r => peopleOf(r))
+  it('ONE record holding four people, each man once — the same day, hours, kind and remark (D756)', () => {
     const t = team()
-    expect(t).toHaveLength(4)
-    expect(new Set(t.map(r => r.grp)).size).toBe(1)
-    expect(new Set(t.map(r => String(r.person))).size).toBe(4)
-    expect(entriesOf(t)).toHaveLength(1)
+    expect(t, 'one input is one record — not one a man').toHaveLength(1)
+    expect(idsOf(t[0])).toHaveLength(4)
+    expect(new Set(idsOf(t[0]).map(String)).size, 'each man once').toBe(4)
+    for (const k of ['person', 'grp', 'grpBy']) expect(k in t[0], `the old shape's \`${k}\` is not written`).toBe(false)
     expect(memberFilesForOthers(t[0].type), 'a duty or a commitment').toBe(true)
   })
-  it('filed by the admin, with each record saying who placed it and when', () => {
+  it('filed by the admin, with each man\'s entry saying who put him in and when', () => {
+    expect(team().length).toBeGreaterThan(0)
     for (const r of team()) {
-      expect(String(r.grpBy)).toBe(admin())
-      expect(String(r.by)).toBe(admin())
+      expect(String(r.by), 'who filed it').toBe(admin())
       expect(typeof r.at).toBe('number')
       expect(r.iid, 'its own id').toBeTruthy()
     }
-    expect(team().some(r => String(r.person) === admin()), 'the admin is in it').toBe(true)
+    expect(everyone()).toHaveLength(4)
+    for (const e of everyone()) { expect(String(e.by), String(e.p)).toBe(admin()); expect(typeof e.at, String(e.p)).toBe('number') }
+    expect(everyone().some(e => String(e.p) === admin()), 'the admin is in it').toBe(true)
   })
   it('it is not late: the demo’s one shared input is not also its LATE example', () => {
-    for (const r of team()) expect(isLateInput(r), PEOPLE[r.person].cs).toBe(false)
+    const lines = inputLines(team())
+    expect(lines).toHaveLength(4)
+    for (const l of lines) expect(isLateInput(l), PEOPLE[l.person].cs).toBe(false)
   })
   it('seeded once: a second boot adds no second one', () => {
+    const before = JSON.stringify(team())
     seedDemoGroup()
-    expect(team()).toHaveLength(4)
+    expect(JSON.stringify(team())).toBe(before)
+    expect(everyone(), 'still four people, each once').toHaveLength(4)
+  })
+  /* …AND AN OLD STORE IS NOT SEEDED A SECOND TIME (the one-rule plan §4.11: the seed's "already seeded?" test "learns the
+     new shape so an old store is not seeded twice"). A browser that booted before the build holds the brief as four
+     records tied by the old group id; they read as four one-person inputs (D759 reading 10, D56) and nothing converts
+     them — but a fifth, shared one beside them would be the brief twice over. */
+  it('a store that still holds the brief in the old shape — four records of one group — is given no second one', () => {
+    const [now] = team()
+    const olds = idsOf(now).map((person: any, i: number) => ({
+      iid: `old-brief-${i}`, person, type: now.type, date: now.date, allday: now.allday, s: now.s, e: now.e, remarks: now.remarks, mod: now.mod,
+      grp: 'g-demo-brief', grpBy: now.by, by: now.by, at: now.at, modBy: now.by, modAt: now.at,
+    }))
+    INPUTS.splice(INPUTS.indexOf(now), 1, ...olds)
+    seedDemoGroup()
+    expect(team(), 'the four old records, and no new one').toHaveLength(4)
+    expect(team().every(r => !Array.isArray(r.people)), 'nothing converted (D56)').toBe(true)
+    expect(inputLines(team()).map((l: any) => String(l.person)).sort(), 'each still reads as that man\'s own input').toEqual(idsOf(now).map(String).sort())
   })
 })
 
@@ -94,7 +126,7 @@ describe('the demo carries one shared input', () => {
 describe('the demo carries an input filed for ALL AVAIL, and an Event filed for ALL', () => {
   const phs = () => (INPUTS as any[]).filter(r => isPlaceholderInput(r))
   it('two of them: a weekend Duty for ALL AVAIL, and an Event for ALL', () => {
-    expect(phs().map(r => `${r.person} · ${r.type} · ${r.date}`).sort()).toEqual(['all · Event · Jul 22', 'allavail · Duty · Jul 25'])
+    expect(phs().map(r => `${leadOf(r)} · ${r.type} · ${r.date}`).sort()).toEqual(['all · Event · Jul 22', 'allavail · Duty · Jul 25'])
   })
   it('the Event carries a title of its own, as the app would store one — the one demo input not named by its kind (D715)', () => {
     const ev = phs().find(r => r.type === 'Event')
@@ -106,7 +138,8 @@ describe('the demo carries an input filed for ALL AVAIL, and an Event filed for 
   })
   it('each is a record the app itself would write: an allowed kind, one day, no group, no names', () => {
     for (const r of phs()) {
-      expect(placeholderProblem(r), `${r.person} ${r.type}`).toBe('')
+      expect(placeholderProblem(r), `${who(r)} ${r.type}`).toBe('')
+      expect(idsOf(r), 'the placeholder alone — nobody named beside it').toHaveLength(1)
       expect(r.grp).toBeUndefined()
       expect(r.endDate).toBeUndefined()
       expect(r.iid, 'its own id').toBeTruthy()

@@ -6,12 +6,25 @@
    over both wired stores, never the rule called by hand (that half is state/perms.test.ts). `raw` is a hand-made
    call: it writes the list directly inside an input command, which is what the commit gate exists to judge.
 
+   ON THE ONE RECORD (the one-rule build, step 2 — owner D756, 11 Oct 26: "an input is stored as ONE record with the list
+   of its people"; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1, §4.9). A filing for another man is
+   one record whose one person is he: who it is for is read through engine/inputs.ts (idsOf, holds, peopleOf) — never a
+   record's `person` — and "who placed it" is said twice, on the record (`by` / `at`: who FILED it) and on his entry of
+   its list (who put HIM in, and when). A hand-made record is written as the app writes one now (`rec`); `oldRec` is a
+   record as it was stored BEFORE the build, which still reads as a one-person input and is judged by the same gate
+   (D759 reading 10, D56). Where a ruling changed the rule itself the case says so:
+     D763 — who is in an input is changed only by whoever filed it or by a scheduler: a person who did not file it
+            adds nobody; its filer changes who is in it, each entry in his own name;
+     D755 (3) — once a scheduler has put someone in, changing it for everyone is the scheduler's;
+     D762 — one OIL answer for everyone in an input (the cases here are inputs of ONE person, whose own request it is).
+   The filer's rules on an input of SEVERAL, row by row: leavewar/onerecord-perms.test.ts; the writer: groupwrite.test.ts.
+
    Runs in the Leave War project: which days ask the OIL question is the war's to say. Ranger (`bane`), Hex (`rocky`)
    and Outlaw (`casper`) are members; Saber (`stiff`) is the admin. 10 Feb 26 is a Tuesday, 14 and 15 Feb a weekend. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { INPUTS, dateOrd, nowStamp } from '../engine/inputs'
+import { INPUTS, dateOrd, holds, idsOf, nowStamp, peopleOf } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, switchRoleView, writeInputs } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { setMembersFile } from '../state/memberfile'
@@ -20,7 +33,7 @@ import { schedStore, resyncSchedBaseline } from '../state/sched-commit'
 import { commit } from '../command'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
-import { commitNewInput, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
+import { commitInput, commitNewInput, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
 import { initStore as lwInitStore, lwHistInit, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -45,7 +58,7 @@ const switchOn = () => { saber(); expect(setMembersFile(true).ok).toBe(true) }
 const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_memberfile']; else mem['sqn142_memberfile'] = 'false' }
 
 const SAT = '2026-02-14', SUN = '2026-02-15', TUE = '2026-02-10'
-const mine = (p: string, type = 'Meeting', mon = 'Feb') => INPUTS.filter((r: any) => r.person === p && r.type === type && String(r.date).startsWith(mon))
+const mine = (p: string, type = 'Meeting', mon = 'Feb') => INPUTS.filter((r: any) => holds(r, p) && r.type === type && String(r.date).startsWith(mon))
   .sort((a: any, b: any) => (dateOrd(a.date, a.yr) as number) - (dateOrd(b.date, b.yr) as number))
 const one = (p: string, type = 'Meeting', mon = 'Feb') => { const l = mine(p, type, mon); expect(l, `${p} has one ${type}`).toHaveLength(1); return l[0] }
 const none = (p: string, type = 'Meeting') => expect(mine(p, type), `${p} has no ${type}`).toHaveLength(0)
@@ -54,9 +67,16 @@ const add = (person: string, type: string, iso: string, end = '', extra: Record<
   person, type, allday: false, half: '', start: iso, end, sTime: '09:00', eTime: '10:00', remarks: '', sans: null, docIds: [], ...extra,
 })
 const edit = (r: any, patch: Record<string, any>) => commitInputEdit(r, { ...draftOf(r), ...patch })
-/* a record as a hand-made call would write it */
+/* a record as a hand-made call would write it — in the shape the app writes now: its one person on its list, his entry
+   saying who put him in and when where the record says who filed it (`by` / `at`) */
 let seq = 0
 const rec = (person: string, o: Record<string, any> = {}) => ({
+  iid: `zz${++seq}`, people: [{ p: person, ...(o.by != null ? { by: o.by } : {}), ...(o.at != null ? { at: o.at } : {}) }],
+  type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: '', mod: nowStamp(), ...o,
+})
+/* …and one as it was stored BEFORE the one-rule build: one `person`, and for a group filing its id and its filer. It
+   reads as a one-person input (engine/inputs.ts peopleOf) and is judged by the same gate */
+const oldRec = (person: string, o: Record<string, any> = {}) => ({
   iid: `zz${++seq}`, person, type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: '', mod: nowStamp(), ...o,
 })
 const raw = (fn: () => void): boolean => writeInputs(fn)
@@ -92,12 +112,15 @@ beforeEach(() => {
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); resetSession(null) })
 
 describe('a member files for another man — a duty or a commitment, and nothing else (D655, D658)', () => {
-  it('a Meeting for another man is filed: his record, placed by the filer', () => {
+  it('a Meeting for another man is filed: one record whose one person is he, placed by the filer', () => {
     ranger()
     const t = T(9)
     expect(add('rocky', 'Meeting', TUE)).toBe(true)
     const r = one('rocky')
-    expect(r).toMatchObject({ person: 'rocky', by: 'bane', at: t, modBy: 'bane', modAt: t })
+    expect(idsOf(r), 'the man it is for — and nobody else').toEqual(['rocky'])
+    expect(r).toMatchObject({ by: 'bane', at: t, modBy: 'bane', modAt: t })
+    expect(peopleOf(r), 'his entry says who put him in, and when').toEqual([{ p: 'rocky', by: 'bane', at: t }])
+    for (const k of ['person', 'grp', 'grpBy']) expect(k in r, `no \`${k}\` of the old shape`).toBe(false)
     none('bane')
   })
   it('a leave, each medical kind, an upchit and a SANS availability are refused — with a sentence, nothing written, nothing re-pointed at himself', () => {
@@ -163,7 +186,7 @@ describe('a member files for another man — a duty or a commitment, and nothing
   it('a record he did not file is not his: filed by an admin, by another member, or before filers were recorded', () => {
     add('rocky', 'Meeting', TUE)                         // Saber files it
     outlaw(); add('rocky', 'Meeting', '2026-02-11')     // Outlaw files another
-    saber(); const old = rec('rocky', { date: 'Feb 12' }); raw(() => { INPUTS.unshift(old) })   // no `by` at all
+    saber(); const old = oldRec('rocky', { date: 'Feb 12' }); raw(() => { INPUTS.unshift(old) })   // stored before filers were recorded: no `by` at all
     ranger()
     for (const { iid, date } of mine('rocky').map((r: any) => ({ iid: r.iid, date: r.date }))) {
       const was = copy(byId(iid))
@@ -176,18 +199,35 @@ describe('a member files for another man — a duty or a commitment, and nothing
     hex()
     expect(edit(byId(old.iid), { remarks: 'the man himself' }), 'no filer recorded: the man').toBe(true)
   })
-  it('he cannot retype what he filed to a leave, nor move it to another man', () => {
+  /* THE RULE CHANGED IN ITS SECOND HALF (owner D763, 11 Oct 26: "who is in an input is changed only by whoever filed it
+     or by a scheduler"; the one-rule plan §4.9 — its filer changes "its fields, its people, its OIL answer"). This case
+     was "he cannot retype what he filed to a leave, nor move it to another man — not even onto himself: a move is a
+     scheduler's". The retype is refused as ever. A HAND-OVER through the one-field save is still a scheduler's. But WHO
+     IS IN what he filed is now his to change, through the input's one writer, each entry in his own name — and never
+     in anybody else's. */
+  it('he cannot retype what he filed to a leave; who is in it is his to change — in his own name, never by the hand-over door (D763)', () => {
     ranger()
+    const t1 = T(9)
     add('rocky', 'Meeting', TUE)
     const id = one('rocky').iid, was = copy(one('rocky'))
     said = []
     expect(edit(byId(id), { type: 'LL', allday: true }), 'the door: a leave').toBe(false)
     expect(said.join(' ')).toMatch(/only for yourself/)
-    expect(edit(byId(id), { person: 'casper' }), 'the door: another man').toBe(false)
     expect(chg(id, r => { r.type = 'LL' }), 'a hand-made retype').toBe(false)
-    expect(chg(id, r => { r.person = 'casper' }), 'a hand-made move').toBe(false)
-    expect(chg(id, r => { r.person = 'bane' }), 'not even onto himself — a move is a scheduler\'s').toBe(false)
-    expect(copy(one('rocky'))).toEqual(was)
+    said = []
+    expect(edit(byId(id), { person: 'casper' }), 'the one-field save: a hand-over is a scheduler\'s').toBe(false)
+    expect(said.join(' ')).toMatch(/Only a scheduler can move an input to another person/)
+    expect(chg(id, r => { r.people = [{ p: 'casper', by: 'stiff', at: 1 }] }), 'a hand-made swap, the new man put in under another person\'s name').toBe(false)
+    expect(chg(id, r => { r.people = [{ p: 'casper' }] }), '…or under no name at all').toBe(false)
+    expect(copy(byId(id))).toEqual(was)
+    const t2 = T(10)
+    expect(commitInput(byId(id), draftOf(byId(id)), ['casper']), 'the input\'s writer: Hex out, Outlaw in').toBe(true)
+    expect(idsOf(byId(id))).toEqual(['casper'])
+    expect(peopleOf(byId(id))[0], 'put in by him, now').toMatchObject({ p: 'casper', by: 'bane', at: t2 })
+    expect(byId(id), 'the same record, still his filing of that moment').toMatchObject({ by: 'bane', at: t1 })
+    none('rocky')
+    expect(chg(id, r => { r.people = [{ p: 'bane', by: 'bane', at: t2 }] }), 'by a hand-made call alike — onto himself too').toBe(true)
+    expect(idsOf(byId(id))).toEqual(['bane'])
   })
   it('a guest, a pending person and an account switched off change nothing', () => {
     for (const s of [{ user: 'principal:g', role: 'guest', pid: null, name: 'g' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
@@ -231,46 +271,84 @@ describe('who placed it is never forged — on his own records too, with the swi
       expect(chg(id, r => { r.by = 'bane' }), 'himself named').toBe(false)
       expect(chg(id, r => { delete r.by }), 'the name taken off').toBe(false)
       expect(chg(id, r => { r.at = 5 }), 'the moment').toBe(false)
+      expect(chg(id, r => { r.people[0].by = 'bane' }), 'who put him in, on his entry').toBe(false)
+      expect(chg(id, r => { r.people[0].at = 5 }), 'and when').toBe(false)
       expect(copy(one('bane'))).toEqual(was)
       expect(chg(id, r => { r.remarks = 'his own change' })).toBe(true)
     })
   }
-  it('for ANOTHER man a record must name him — a filing with no name on it is refused', () => {
+  it('for ANOTHER man a record must name him — a filing with no name on it is refused, on the record or on the man\'s entry', () => {
     ranger()
-    const hidden = rec('rocky', { grp: 'gH', grpBy: 'bane' })
-    expect(raw(() => { INPUTS.unshift(hidden) })).toBe(false)
+    const hidden = rec('rocky')
+    expect(raw(() => { INPUTS.unshift(hidden) }), 'no filer at all').toBe(false)
     expect(has(hidden.iid)).toBe(false)
+    const half = { ...rec('rocky', { by: 'bane', at: 1 }), people: [{ p: 'rocky' }] }
+    expect(raw(() => { INPUTS.unshift(half) }), 'filed in his name, the man put in under no name').toBe(false)
+    expect(has(half.iid)).toBe(false)
+    const old = oldRec('rocky', { grp: 'gH', grpBy: 'bane' })
+    expect(raw(() => { INPUTS.unshift(old) }), 'the same of a record in the old shape: a group\'s filer is not who placed it').toBe(false)
+    expect(has(old.iid)).toBe(false)
   })
-  it('the group\'s filer is never forged either: his to take when he makes a group, never another man\'s name', () => {
+  /* A RECORD IN THE OLD SHAPE, WRITTEN BY HAND. No door writes `grp` / `grpBy` any more (the one-rule build: `by` IS the
+     filer), but a hand-made command still can, and the gate still refuses a forged one: such a record names its maker
+     as the group's filer or is refused, and what it carries is never changed afterwards. */
+  it('the group\'s filer of an old-shaped record is never forged either: his to name when he writes one, never another man\'s', () => {
     ranger()
-    const forged = rec('bane', { by: 'bane', at: 1, grp: 'gF', grpBy: 'casper' })
+    const forged = oldRec('bane', { by: 'bane', at: 1, grp: 'gF', grpBy: 'casper' })
     expect(raw(() => { INPUTS.unshift(forged) }), 'a new group naming another man as its filer').toBe(false)
-    const half = rec('bane', { date: 'Feb 11', by: 'bane', at: 1, grpBy: 'bane' })
+    const half = oldRec('bane', { date: 'Feb 11', by: 'bane', at: 1, grpBy: 'bane' })
     expect(raw(() => { INPUTS.unshift(half) }), 'a filer with no group').toBe(false)
-    const own = rec('bane', { date: 'Feb 12', by: 'bane', at: 1, grp: 'gO', grpBy: 'bane' })
+    const own = oldRec('bane', { date: 'Feb 12', by: 'bane', at: 1, grp: 'gO', grpBy: 'bane' })
     expect(raw(() => { INPUTS.unshift(own) }), 'his own new group').toBe(true)
     expect(chg(own.iid, r => { r.grpBy = 'casper' }), 'the filer changed').toBe(false)
     expect(chg(own.iid, r => { r.grp = 'gOther' }), 'the group changed').toBe(false)
     expect(chg(own.iid, r => { delete r.grp; delete r.grpBy }), 'the group taken off').toBe(false)
     expect(byId(own.iid)).toMatchObject({ grp: 'gO', grpBy: 'bane' })
+    expect(idsOf(byId(own.iid)), 'and it reads as the one-person input it is (D759 reading 10)').toEqual(['bane'])
   })
-  it('a single input becomes a group in the hand of the member who makes it one — his admin-filed own input included', () => {
+  /* RE-EXPRESSED ON THE ONE RECORD. "A single input becomes a group in the hand of the member who makes it one — his
+     admin-filed own input included": there is no group to make now; an input of one becomes an input of several when a
+     person is put in its list. For the ONLY named person of an input — his own request, whoever filed it — that is
+     his to do (the one-rule plan §4.9: he changes it "in full … its fields, its people"; D763 reading 2: "the one
+     person of a one-person input may always change it, whoever filed it"), the man he adds put in under HIS name and
+     nobody else's. The door half: groupwrite.test.ts, "a member makes his admin-filed input an input of several". */
+  it('an input of one becomes an input of several in the hand of the man whose own request it is — his admin-filed own input included — never in another man\'s name', () => {
     add('bane', 'Meeting', TUE)                          // Saber files it for Ranger
     ranger()
-    const id = one('bane').iid
-    expect(chg(id, r => { r.grp = 'gM'; r.grpBy = 'casper' }), 'never in another man\'s name').toBe(false)
-    expect(chg(id, r => { r.grp = 'gM'; r.grpBy = 'bane' })).toBe(true)
-    expect(one('bane')).toMatchObject({ by: 'stiff', grp: 'gM', grpBy: 'bane' })
+    const id = one('bane').iid, was = copy(one('bane'))
+    expect(chg(id, r => { r.people.push({ p: 'rocky', by: 'casper', at: 5 }) }), 'never in another man\'s name').toBe(false)
+    expect(chg(id, r => { r.people.push({ p: 'rocky' }) }), 'nor under no name').toBe(false)
+    expect(copy(byId(id))).toEqual(was)
+    /* …and who filed the input of several is HE, in the same change (state/perms.ts takesOn — as the group he made named
+       him its filer before the build): a write that adds the man and leaves it the scheduler's filing is refused */
+    expect(chg(id, r => { r.people.push({ p: 'rocky', by: 'bane', at: 5 }) }), 'the filing must pass to him').toBe(false)
+    expect(copy(byId(id))).toEqual(was)
+    expect(chg(id, r => { r.people.push({ p: 'rocky', by: 'bane', at: 5 }); r.by = 'bane' }), 'in his own').toBe(true)
+    expect(idsOf(byId(id))).toEqual(['bane', 'rocky'])
+    expect(byId(id).by, 'he filed the input of several').toBe('bane')
+    expect(peopleOf(byId(id))[0], 'who put HIM in is unchanged — Saber').toEqual(was.people[0])
   })
-  it('a man added to an entry that was there before takes that entry\'s filer and the adder\'s own name', () => {
+  /* THE RULE CHANGED (owner D763, 11 Oct 26: "a person who is in a shared input he did not file does not add anyone to
+     it" — and still less a person who is not in it). This case had Ranger add Hex to OUTLAW's entry, in his own name
+     with Outlaw kept as the entry's filer, and pass. He is refused now, in either shape; the entry's filer adds the man
+     himself — and the whole of it is still his to change. */
+  it('a man is added to an input only by whoever filed it (or a scheduler): another member adds nobody to it, in his own name or the filer\'s (D763)', () => {
     outlaw()
-    const a = rec('casper', { by: 'casper', at: 1, grp: 'gE', grpBy: 'casper' })
-    expect(raw(() => { INPUTS.unshift(a) })).toBe(true)
+    expect(add('casper', 'Meeting', TUE)).toBe(true)
+    const id = one('casper').iid, was = copy(one('casper'))
     ranger()
-    const b = rec('rocky', { by: 'bane', at: 2, grp: 'gE', grpBy: 'casper' })
-    expect(raw(() => { INPUTS.unshift(b) }), 'Ranger adds Hex to Outlaw\'s entry').toBe(true)
+    expect(chg(id, r => { r.people.push({ p: 'rocky', by: 'bane', at: 2 }) }), 'Ranger adds Hex to Outlaw\'s input, in his own name').toBe(false)
+    expect(chg(id, r => { r.people.push({ p: 'rocky', by: 'casper', at: 2 }) }), 'or in Outlaw\'s').toBe(false)
+    expect(commitInput(byId(id), draftOf(byId(id)), ['casper', 'rocky']), 'or by the door').toBe(false)
+    const b = oldRec('rocky', { by: 'bane', at: 2, grp: 'gE', grpBy: 'casper' })
+    expect(raw(() => { INPUTS.unshift(b) }), 'nor by an old-shaped record that joins Outlaw\'s group').toBe(false)
+    expect(copy(byId(id))).toEqual(was)
+    none('rocky')
     outlaw()
-    expect(edit(byId(b.iid), { remarks: 'Outlaw filed the entry: the whole of it is his to change' })).toBe(true)
+    expect(commitInput(byId(id), draftOf(byId(id)), ['casper', 'rocky']), 'Outlaw filed it: he adds Hex').toBe(true)
+    expect(peopleOf(byId(id))[1]).toMatchObject({ p: 'rocky', by: 'casper' })
+    expect(commitInput(byId(id), { ...draftOf(byId(id)), remarks: 'Outlaw filed it: the whole of it is his to change' }, ['casper', 'rocky'])).toBe(true)
+    expect(byId(id).remarks).toBe('Outlaw filed it: the whole of it is his to change')
   })
 })
 
@@ -365,24 +443,26 @@ describe('the filer\'s Undo and Redo — his own step, though the record is anot
     expect(globalRedo().ok).toBe(true)
     expect(copy(one('rocky'))).toEqual(now)
   })
-  it('of a deletion of a record someone ELSE placed and answered — Undo puts back exactly what was there', () => {
-    /* Ranger's entry; Saber added Hex to it, and Hex answered his own OIL question */
+  /* RE-EXPRESSED UNDER THE NEW RULES (D755 (3), D762). This case was "Ranger's entry; Saber added Hex to it, and Hex
+     answered his own OIL question; the entry's filer takes him off, and Undo puts back exactly what was there". Once a
+     scheduler has put someone in, the delete is no longer the filer's (D755 (3) — groupwrite.test.ts, "an admin adds a
+     man to a member's input"), and a man in a shared input gives no answer of his own (D762). What survives is the
+     Undo's rule: a filer's Undo of his own delete puts back, to the letter, a record carrying something he did NOT
+     write — here the answer the man himself gave to his own request — which a forward command of his never could. */
+  it('of a deletion of a record the man himself has answered since — Undo puts back exactly what was there', () => {
     ranger()
-    const mineRec = rec('bane', { date: 'Feb 14', by: 'bane', at: 1, grp: 'gU', grpBy: 'bane' })
-    raw(() => { INPUTS.unshift(mineRec) })
-    saber()
-    const his = rec('rocky', { date: 'Feb 14', by: 'stiff', at: 2, modBy: 'stiff', modAt: 2, grp: 'gU', grpBy: 'bane' })
-    raw(() => { INPUTS.unshift(his) })
+    expect(add('rocky', 'Meeting', SAT)).toBe(true)
+    const id = one('rocky').iid
     hex()
-    raw(() => { byId(his.iid).oil = { [SAT]: 0.5 } })
-    const was = copy(byId(his.iid))
+    expect(chg(id, r => { r.oil = { [SAT]: 0.5 } }), 'Hex answers his own request').toBe(true)
+    const was = copy(byId(id))
     ranger()
-    expect(removeInput(byId(his.iid)), 'the entry\'s filer takes him off').toBe(true)
-    expect(has(his.iid)).toBe(false)
+    expect(removeInput(byId(id)), 'its filer deletes it').toBe(true)
+    expect(has(id)).toBe(false)
     expect(globalUndo().ok, 'and takes that back').toBe(true)
-    expect(copy(byId(his.iid)), 'placed by Saber, answered by Hex — as recorded').toEqual(was)
+    expect(copy(byId(id)), 'filed by Ranger, answered by Hex — as recorded').toEqual(was)
     expect(globalRedo().ok).toBe(true)
-    expect(has(his.iid)).toBe(false)
+    expect(has(id)).toBe(false)
   })
   it('of a change of hours that had voided the man\'s answer — the answer comes back', () => {
     ranger()
@@ -439,7 +519,7 @@ describe('the filer\'s Undo and Redo — his own step, though the record is anot
     ranger()
     /* a record for Outlaw naming Saber as the one who placed it - exactly what a true Undo may put back, and a
        forward command never may */
-    const forged = rec('casper', { by: 'stiff', at: 2, grp: 'gZ', grpBy: 'bane' })
+    const forged = rec('casper', { by: 'stiff', at: 2 })
     const r: any = commit({
       type: 'undo.restore', scope: { module: 'inputs' },
       apply: (txn: any) => { txn.enlist(schedStore); INPUTS.unshift(forged); resyncSchedBaseline() },
@@ -447,7 +527,7 @@ describe('the filer\'s Undo and Redo — his own step, though the record is anot
     expect(r.ok).toBe(false)
     expect(has(forged.iid)).toBe(false)
     /* and the same record under his own name is an ordinary filing */
-    const fair = rec('casper', { by: 'bane', at: 2, grp: 'gZ', grpBy: 'bane' })
+    const fair = rec('casper', { by: 'bane', at: 2 })
     const r2: any = commit({
       type: 'undo.restore', scope: { module: 'inputs' },
       apply: (txn: any) => { txn.enlist(schedStore); INPUTS.unshift(fair); resyncSchedBaseline() },
