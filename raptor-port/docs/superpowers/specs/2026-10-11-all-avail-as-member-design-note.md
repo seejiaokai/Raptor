@@ -52,6 +52,18 @@ consistent with how named men behave there; making the dropped puck part of the 
 ask the same of a dropped man, which changes D18 and D470. **Recommended to him: leave the one-person row as it is in
 this job.**
 
+**Asked of Fable on his word, 11 Oct 26** — *"Ask fable. Should we make it consistent like anything the scheduler changes
+on the scheduler after that input is filed will reflect the schedule and input the same thing?"* Fable's answer, whole:
+`raptor-port/docs/superpowers/briefs/2026-10-11-reads/all-avail-member-consistency-fable.md`. **Its advice: leave the
+one-person row as it is in this job.** What the scheduler TYPES on any request's row already changes the input (D740,
+D742), and everyone on a SHARED row is the input's (D734); making a puck dropped on a ONE-person request join it would
+turn the member's own request into a shared input he filed — the man or the crowd added would then earn only on the
+member's own OIL answer (today they earn by default: D18, D43, D46, D470), the member could lose the power to change
+his own request while "members file for others" is off, a name could no longer be swapped in the row's name box
+(D470), and a man added to a several-day request would be on every day of it. A cheap middle it offers: the input's
+card SAYS who the scheduler put beside it ("on the programme with: …") — a display only, its own small job. **Put to
+him with the host's own view (the same); NOT ruled yet.**
+
 ## 4. What the plan must settle (the builder's, not his)
 
 - The rule "a placeholder is filed on its own — never a group member" (`raptor-port/src/engine/inputs.ts
