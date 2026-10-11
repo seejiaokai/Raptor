@@ -3819,3 +3819,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Where a tooling trap has a strictly safer alternative that costs nothing extra, record it as the DEFAULT method ("scripts are always written with the file tool"), not as a condition to check ("unless it contains an apostrophe"); a condition has to be evaluated every time, a default does not.
 
 **Principle:** Record a recurring trap as an unconditional safer default rather than a conditional warning: rules that need a per-use judgment are the ones that get skipped once the risky path has succeeded a few times.
+
+### Observation 519: A record that names a to-be-archived item as its home breaks at the archive step, at merge time
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** Merging [GROUP-INPUT-ONE-ROW] on the owner's "merge live"; the four finished backlog items were archived by the script as the last step before the merge. Numbered on claude/all-avail-as-member (cut from main after the merge) — other open branches' logs were not read.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Closing a job: moving finished items out of the live backlog
+
+**Issue:** Fourteen decision records named the job's backlog item as one of their homes ("the build, filed"). The archive script moved the item, the document gate then failed — a decision's named home no longer mentioned it — and the move was rolled back. The fix (point those home cells at the archive) was mechanical but had to be worked out under a waiting merge, and it forced one more full check run on the pull request because the records commit could not be pushed while checks were running.
+
+**Suggested improvement:** In the closing checklist, before "open the pull request": rehearse the archive of every item the job will finish (the script's dry run plus the document gate), and fix what it reports then — so the merge-time step is a no-op that is already in the checked commit. And when recording a decision, name a backlog item as a home only as "the build, filed", never as a place the decision's number must be found.
+
+**Principle:** Rehearse the irreversible-order steps of a release (archive, renumber, handoff state) before the last checked commit, not after approval: anything discovered at merge time costs a full verification cycle, and a pointer to a thing that is about to move should be written to survive the move.

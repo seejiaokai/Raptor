@@ -137,6 +137,42 @@ brings him the ones that are his (rounds of at most four, with pictures):**
 | Telling the member (`[INPUT-CHANGED-TELL]`) | nobody is told | rides with this job (D755 (3)) | ruled |
 | The scheduler's own rows — not from an input | a placeholder earns by default (D43) | unchanged: there is no input and no OIL question there | told to him |
 
-**The process this job gets:** HEAVY — a plan red-teamed by two readers before any build (D590; ChatGPT is back on
-14 Oct 26), built in steps on this branch, one FULL check (earned leave, the published record, saved data, roles, a
+**The process this job gets:** HEAVY — Opus surveys, plans and builds; **Fable is the independent reviewer, on his word
+(D758)** — it reads the plan before any build and the finished code — and one ChatGPT reader joins after 14 Oct 26 so the
+job has its two (D590); built in steps on this branch, one FULL check (earned leave, the published record, saved data, roles, a
 new gesture: five of the eight questions are YES).
+
+## 7. The walk-through he agreed to — D757 (*"Ok agreed on the plan."*, 11 Oct 26)
+
+The behaviour the plan is written to, as shown to him in words. Exact wording of notes, bell lines and refusals is the
+plan's; a visual change gets its picture first.
+
+**Ranger files a Training, Saturday 09:00–12:00, OIL: Yes.**
+
+1. **As filed.** Schedule, Ground Programme: `TRAINING 09:00 12:00 [Ranger]`. Inputs calendar: `Ranger · TRAINING ·
+   09:00–12:00`. OIL: Ranger earns.
+2. **The scheduler drags Tally onto the row.** Schedule: `[Ranger] [Tally]`. Inputs calendar: `Ranger, Tally · TRAINING
+   … · by Ranger`. OIL: Tally earns, because the input's answer is Yes — no question asked. Ranger's bell: "Saber added
+   Tally to your Training, Sat." *(Today: Tally shows on the schedule only, and earns whatever Ranger answered.)*
+3. **The scheduler drops ALL AVAIL on the row.** Schedule: `[Ranger] [Tally] [ALL AVAIL 34]`. Inputs calendar: `Ranger,
+   Tally, ALL AVAIL · TRAINING …`. OIL: the 34 behind it earn, the same answer; any one can be switched off in OIL
+   Earn. *(Today: the puck is filed under Ranger and earns by default.)*
+4. **The scheduler drags Ranger off.** Schedule: `[Tally] [ALL AVAIL 35]`. Inputs calendar: `Tally, ALL AVAIL · TRAINING
+   …`. ALL AVAIL STAYS, its switch-offs intact; Ranger is free now, so the count rises by one. Ranger's bell: "Saber
+   took you off Training, Sat." *(Today: ALL AVAIL would come off with Ranger.)*
+5. **The scheduler types 10:00 over the start.** Schedule and Inputs calendar both read 10:00 for everyone; not marked
+   LATE (as built).
+
+**Where the OIL answer differs.** Ranger never answered: at step 2 the scheduler is asked on the spot — "Does this count
+for OIL? Yes / No" — once, for the input. Ranger answered No: Tally is added with a note, "Not counted for OIL"; the
+scheduler may change the input's answer or switch Tally on.
+
+**Refusals, each with its reason.** ALL AVAIL onto a three-day input: "ALL AVAIL is for one day." Anyone onto a Personal
+input: "A Personal input is one person's own." The last person dragged off with nobody put in his place: refused — the
+✕ on the row takes the input off the programme.
+
+**A swap.** Tally dropped ONTO Ranger's puck while Ranger is alone: Tally replaces him; schedule and Inputs calendar
+both show Tally; Ranger is told.
+
+**The stored shape (D756) shows nothing on screen:** one record for the Training with its list — Ranger, Tally, ALL AVAIL
+— where today there would be a copy a person kept in step.
