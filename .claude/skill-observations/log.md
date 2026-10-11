@@ -3834,3 +3834,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the closing checklist, before "open the pull request": rehearse the archive of every item the job will finish (the script's dry run plus the document gate), and fix what it reports then — so the merge-time step is a no-op that is already in the checked commit. And when recording a decision, name a backlog item as a home only as "the build, filed", never as a place the decision's number must be found.
 
 **Principle:** Rehearse the irreversible-order steps of a release (archive, renumber, handoff state) before the last checked commit, not after approval: anything discovered at merge time costs a full verification cycle, and a pointer to a thing that is about to move should be written to survive the move.
+
+### Observation 520: A comp of a way that is not built is fastest drawn on the running app itself
+
+**Status:** OPEN
+**Date:** 11 Oct 26
+**Session context:** planning the one-rule job; the owner answered a multiple-choice question with a question of his own ("show me what he will see exactly") and a third idea
+**Skill:** brainstorming (the picture-first step); New skill candidate: "comp on the live page"
+**Type:** open-source
+**Phase/Area:** mock-ups for a product choice
+
+**Issue:** The owner would not choose between two written options until he saw the real screens. The built option needed real screenshots; the two unbuilt options needed comps. Driving the built bundle with a short browser script, then editing the rendered page's DOM in place (cloning the app's own nodes, removing one line) and screenshotting, produced comps in the app's own stylesheet in minutes — no throwaway stylesheet, no drift from the real look. His question also surfaced a third option better than either written one; he then chose neither recommended one.
+
+**Suggested improvement:** In the picture-first step: (1) photograph the built behaviour first; (2) draw each unbuilt option by editing the live page's DOM after it renders, reusing the app's own elements, and say on the page which pictures are real and which are drawings; (3) when the answer to a choice is a question, treat it as a request for the picture, not for more words.
+
+**Principle:** When someone cannot choose between described behaviours, show the running thing and draw the alternatives onto it; a comp built from the product's own rendered elements is both the cheapest and the most faithful.
+
+### Observation 521: Before reusing a preview server another session started, prove it serves this build
+
+**Status:** OPEN
+**Date:** 11 Oct 26
+**Session context:** the same session; the harness refused a new preview server (five already belonged to other chats)
+**Skill:** New skill candidate: running the built app for a look (the project's own walk guidance)
+**Type:** internal
+**Phase/Area:** standing up the live view
+
+**Issue:** A server on the wanted port was already running from another chat. Reusing it blind risks photographing another branch's build. Comparing the bundle's hashed entry file name in the freshly built index page with the one the server returned proved in one command that it was serving this exact build.
+
+**Suggested improvement:** Where a walk or look guide says "start the preview", add: if the port is already served, compare the served index page's hashed bundle name with the local build's before using it; use it only on a match, and start nothing new.
+
+**Principle:** A shared resource found already running is usable only once its identity is checked against what you just built; the check is one comparison of a content hash.
