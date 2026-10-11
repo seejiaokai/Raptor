@@ -29,6 +29,7 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
+import { iuParts } from '../engine/keys'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
@@ -157,7 +158,7 @@ export function jumpToChange(key: string | string[], di: any) {
      the row the line is about is drawn to land on (Fable's final read, F5) */
   for (const k of cands) {
     if (!k.startsWith('iu:') || di == null) continue
-    const inp: any = INPUTS.find((x: any) => inpId(x) === k.slice(3))
+    const inp: any = INPUTS.find((x: any) => inpId(x) === (iuParts(k) || { iid: '' }).iid)
     if (inp && inp.acc !== 'u' && inp.acc !== 'g') view.PIOPEN.add(+di)
   }
   /* …and View-only Sched shows a PUBLISHED day's issued face by default, which draws nothing to land on (it is the
@@ -678,8 +679,16 @@ export function routeClick(e: MouseEvent) {
        Personal Inputs a shared input is ONE line with ONE Undo / Accept / "→ Unavail", so the press is every record's
        of that line — in this one press, one Undo step. Gathered before anything is written. */
     const line = lineOf(inp)
+    /* AN ARMED PLACE DOES NOT SURVIVE A ROW MOVING UNDER IT — here too. This door writes the day itself, BEFORE the
+       after-command pass takes its own picture of the armed row (state/holderbase.ts), so a row an Accept put back
+       ABOVE an armed "+ add" left the arm pointing at another row: the next tap on a name planted him there — and,
+       since a row that came from an input IS the input (D755), into the wrong INPUT (found re-expressing the rows'
+       tests on the one record, 12 Oct 26). The same rule the pass keeps: the row at the armed position is no longer
+       the row that was armed → the place is put down. */
+    const armWas = view.armedRowKey()
     let ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     for (const mate of line) if (mate !== inp && (dest === 'x' ? unacceptInput(di, mate) : acceptInput(di, mate, dest))) ok = true
+    if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
          same shape as board.ts's act(). Accepting to the ground programme adds

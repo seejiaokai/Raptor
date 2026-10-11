@@ -137,8 +137,8 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
     const out = B.filter(p => !A.includes(p)), inn = A.filter(p => !B.includes(p))
     if (A.length === 1 && B.length === 1 && out.length === 1) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(B[0]), to: cs(A[0]) }))
     else {
-      for (const p of inn) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · added${tail}`, base({ sub: p }))
-      for (const p of out) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · taken out${tail}`, base({ sub: p }))
+      for (const p of inn) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · added${tail}`, base({ sub: p, one: 1 }))
+      for (const p of out) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · taken out${tail}`, base({ sub: p, one: 1 }))
     } }
   if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type) }))
   if (!same(sa, sb)) logAction(null, `${who} · ${what}${tail} · dates`, base({ from: spanWords(sb), to: spanWords(sa) }))

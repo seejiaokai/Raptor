@@ -14,15 +14,39 @@ const P: Record<string, any> = {
 }
 const T = new Date(2026, 6, 10, 9, 30).getTime()
 const rec = (over: any) => ({ iid: 'i' + Math.random(), person: 'r', type: 'Duty', date: 'Jul 18', yr: 2026, allday: false, s: 780, e: 900, by: 'r', at: T, ...over })
+/* AN INPUT FOR SEVERAL PEOPLE IS ONE RECORD (owner D756, 11 Oct 26; the one-rule plan §4.5). These fixtures used to build
+   a shared input as one record a man tied by a group id (`grp` / `grpBy`); they build the ONE record now — `people` in
+   the order they joined, each entry with who put him in (`by`) and, where he has one, his own late date (`mod`). The
+   card is still handed a list: the list of that one record. Every assertion keeps its substance. */
+const shared = (people: Array<string | { p: string; by?: string; mod?: string }>, over: any = {}) => {
+  const r: any = rec({ by: 's', ...over })
+  delete r.person
+  r.people = people.map(x => (typeof x === 'string' ? { p: x, by: r.by } : { by: r.by, ...x }))
+  return [r]
+}
 
 describe('who it is for', () => {
   it('one person: his callsign', () => {
     expect(cardOf([rec({})], P).names).toBe('Ranger')
   })
-  it('a shared input names EVERYONE, A to Z, whatever order the records come in — never "+N" (D721)', () => {
-    const rows = ['s', 'z', 'a', 'r', 'b'].map(person => rec({ person, grp: 'g1', grpBy: 's', by: 's' }))
+  it('a shared input names EVERYONE, A to Z, whatever order they joined in — never "+N" (D721)', () => {
+    const rows = shared(['s', 'z', 'a', 'r', 'b'])
     expect(cardOf(rows, P).names).toBe('Ace, Blade, Ranger, Saber, zulu')
     expect(cardOf(rows, P).names).not.toMatch(/\+\d/)
+  })
+  /* a record stored before the one-rule build — one `person`, no list — is the one-person input it always was (D756) */
+  it('a one-person record in the OLD shape reads the same card as one in the new', () => {
+    const old = rec({ person: 'r', by: 's', remarks: 'bring boots', type: 'Event', title: 'Sports day' })
+    const [neu] = shared(['r'], { remarks: 'bring boots', type: 'Event', title: 'Sports day' })
+    expect(cardOf([old], P)).toEqual(cardOf([neu], P))
+    expect(cardOf([old], P)).toMatchObject({ names: 'Ranger', by: 'Saber', title: 'Sports day', remark: 'bring boots' })
+  })
+  /* …and records of an OLD group filing are each a one-person input now — nothing joins them (D759 reading 10) */
+  it('a record that still carries an old group id is its one person’s card', () => {
+    expect(cardOf([rec({ person: 'a', grp: 'g1', grpBy: 's', by: 's' })], P)).toMatchObject({ names: 'Ace', by: 'Saber' })
+  })
+  it('named people and ALL AVAIL in one input: the names A to Z, then the placeholder last (D727; the one-rule plan §4.5)', () => {
+    expect(cardOf(shared(['allavail', 's', 'a']), P).names).toBe('Ace, Saber, ALL AVAIL')
   })
   it('an input for ALL AVAIL or ALL reads the placeholder’s own name', () => {
     expect(cardOf([rec({ person: 'allavail', by: 's' })], P).names).toBe('ALL AVAIL')
@@ -62,23 +86,22 @@ describe('"By Saber" — who placed it (D720, D723, D724)', () => {
     expect(cardOf([rec({ person: 'r', by: 's' })], P).by).toBe('Saber')
   })
   it('several people: ALWAYS — even where the filer is one of them (D724)', () => {
-    const rows = ['a', 's', 'r'].map(person => rec({ person, grp: 'g1', grpBy: 's', by: 's' }))
-    expect(cardOf(rows, P).by).toBe('Saber')
+    expect(cardOf(shared(['a', 's', 'r']), P).by).toBe('Saber')
   })
   it('several people, filed by someone outside it', () => {
-    const rows = ['a', 'r'].map(person => rec({ person, grp: 'g1', grpBy: 's', by: 's' }))
-    expect(cardOf(rows, P).by).toBe('Saber')
+    expect(cardOf(shared(['a', 'r']), P).by).toBe('Saber')
   })
-  it('a shared input’s filer is the entry’s own (`grpBy`) — not whoever added a man later', () => {
-    const rows = [rec({ person: 'a', grp: 'g1', grpBy: 's', by: 's' }), rec({ person: 'r', grp: 'g1', grpBy: 's', by: 'b' })]
-    expect(cardOf(rows, P).by).toBe('Saber')
+  /* (the filer was the entry's own `grpBy`; on the one record it is the input's `by` — and the man added later carries
+     who put HIM in on his own entry, which the card does not read) */
+  it('a shared input’s filer is the input’s own (`by`) — not whoever added a man later', () => {
+    expect(cardOf(shared(['a', { p: 'r', by: 'b' }]), P).by).toBe('Saber')
   })
   it('an input for ALL AVAIL always says it — its filer is never its person', () => {
     expect(cardOf([rec({ person: 'allavail', by: 's' })], P).by).toBe('Saber')
   })
   it('a record that never recorded who placed it says nothing (D56) — one person or several', () => {
     expect(cardOf([rec({ person: 'r', by: undefined, at: undefined })], P).by).toBe('')
-    expect(cardOf(['a', 'r'].map(person => rec({ person, grp: 'g1', by: undefined, at: undefined })), P).by).toBe('')
+    expect(cardOf(shared(['a', 'r'], { by: undefined, at: undefined }), P).by).toBe('')
   })
   it('a filer since taken off every list is still said, in words', () => {
     expect(cardOf([rec({ person: 'r', by: 'gone' })], P).by).toBe('someone no longer listed')
@@ -112,26 +135,38 @@ describe('when it is', () => {
   })
 })
 
+/* ON THE ONE RECORD (the one-rule plan §4.5 "The late mark"): an input is late when its own `mod` — the day it was last
+   changed in its own window — is after its cut-off; a person in it is late when HIS entry's `mod` is later still. The
+   sentence is asked once a PERSON (engine/inputs.ts facesOf: the record's fields with his id and his own late date), so
+   the stand-in below reads what the app's own sentence reads — the day it is handed — where it used to read a made-up
+   `late` flag on each man's record. The wording rules are unchanged. */
 describe('the LATE note (D646)', () => {
-  const late = (r: any) => (r.late ? 'after the cut-off, Wed 1 Jul' : '')
+  const ON_TIME = '2026-06-30', LATE = '2026-07-02', LATER = '2026-07-09'
+  const late = (f: any) => (f.mod > '2026-07-01' ? 'after the cut-off, Wed 1 Jul' : '')
   it('nobody late: no note, so no tag', () => {
-    expect(lateNoteOf([rec({})], late, P)).toBe('')
+    expect(lateNoteOf([rec({ mod: ON_TIME })], late, P)).toBe('')
+    expect(lateNoteOf(shared(['a', 'r'], { mod: ON_TIME }), late, P)).toBe('')
   })
-  it('one person late: the cut-off he missed', () => {
-    expect(lateNoteOf([rec({ late: true })], late, P)).toBe('after the cut-off, Wed 1 Jul')
+  it('one person late: the cut-off he missed — a record in the old shape and one in the new alike', () => {
+    expect(lateNoteOf([rec({ mod: LATE })], late, P)).toBe('after the cut-off, Wed 1 Jul')
+    expect(lateNoteOf(shared(['r'], { mod: LATE }), late, P)).toBe('after the cut-off, Wed 1 Jul')
   })
   it('a shared input, everyone late alike: the one sentence', () => {
-    const rows = ['a', 'r'].map(person => rec({ person, late: true }))
-    expect(lateNoteOf(rows, late, P)).toBe('after the cut-off, Wed 1 Jul')
+    expect(lateNoteOf(shared(['a', 'r'], { mod: LATE }), late, P)).toBe('after the cut-off, Wed 1 Jul')
   })
   it('a shared input where only some are late names who — a man added later can be late alone', () => {
-    const rows = [rec({ person: 'a' }), rec({ person: 'r', late: true }), rec({ person: 'b', late: true })]
+    const rows = shared(['a', { p: 'r', mod: LATE }, { p: 'b', mod: LATE }], { mod: ON_TIME })
     expect(lateNoteOf(rows, late, P)).toBe('Blade, Ranger: after the cut-off, Wed 1 Jul')
   })
   it('…and where their cut-offs differ, each with his own', () => {
-    const l2 = (r: any) => (r.late ? `after the cut-off, ${r.late}` : '')
-    const rows = [rec({ person: 'a', late: 'Wed 1 Jul' }), rec({ person: 'r', late: 'Wed 8 Jul' })]
+    const l2 = (f: any) => (f.mod > '2026-07-08' ? 'after the cut-off, Wed 8 Jul' : f.mod > '2026-07-01' ? 'after the cut-off, Wed 1 Jul' : '')
+    const rows = shared([{ p: 'a', mod: LATE }, { p: 'r', mod: LATER }], { mod: ON_TIME })
     expect(lateNoteOf(rows, l2, P)).toBe('Ace: after the cut-off, Wed 1 Jul · Ranger: after the cut-off, Wed 8 Jul')
+  })
+  it('the placeholder is late with its input, and is named last where only some are', () => {
+    expect(lateNoteOf(shared(['allavail'], { mod: LATE }), late, P)).toBe('after the cut-off, Wed 1 Jul')
+    const rows = shared(['s', { p: 'allavail', mod: LATE }, { p: 'a', mod: LATE }], { mod: ON_TIME })
+    expect(lateNoteOf(rows, late, P)).toBe('Ace, ALL AVAIL: after the cut-off, Wed 1 Jul')
   })
 })
 
@@ -193,7 +228,7 @@ describe('"till <date>" is said once — by the corner (D728)', () => {
     expect(cardOf([rec({ remarks: 'TILL 17 JUL' })], P, corner).remark).toBe('')
   })
   it('a shared input’s remark is treated the same', () => {
-    expect(cardOf([rec({ person: 'a', remarks: 'Range week till 17 Jul' }), rec({ person: 'b', remarks: 'Range week till 17 Jul' })], P, corner).remark).toBe('Range week')
+    expect(cardOf(shared(['a', 'b'], { remarks: 'Range week till 17 Jul' }), P, corner).remark).toBe('Range week')
   })
   it('nothing else of the card changes', () => {
     const plain = cardOf([rec({ remarks: 'Medically down till 17 Jul', title: 'Sports day' })], P)

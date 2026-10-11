@@ -30,13 +30,12 @@
 */
 import type { EnlistableStore, RecordEntry, Scope, CommitResult, Command } from '../command'
 import { inputGate, publishGate } from './inputgate-hook'
-import { groupSnapshot, groupsTouched, groupBreach } from './inputgroup'
 import {
   commit, commitProjection, definePermission, anyone, registerRecord, registerGuardedStore,
   registerEffectContext, installBaselineInvariants, cmdDeferEffect, CmdRefused,
 } from '../command'
 import { DAYS } from '../engine/data'
-import { INPUTS, mintInpIds } from '../engine/inputs'
+import { INPUTS, mintInpIds, namedOf } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds, rowsOf } from '../engine/rowids'
 import { SCHED, setDayApproved, publishALDay, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
@@ -225,7 +224,6 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
      clears a dangling 'g' and re-files a row the day image restored, and NEVER pushes
      a new row (which would land another person's input outside auth/revisions). */
   const restore = !!opts?.restore
-  const grpBefore = restore ? groupSnapshot(INPUTS) : null
   const touchedDays = new Set<number>()
   const restoredIids = new Set<string>(), restoredPersons = new Set<string>()
   const versionOf = (id: string) => {
@@ -281,8 +279,8 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         const ix = INPUTS.findIndex((r: any) => r.iid === e.id)
         if (restore) {
           restoredIids.add(e.id)
-          if (ix >= 0 && INPUTS[ix]?.person) restoredPersons.add(String(INPUTS[ix].person))
-          if (e.op !== 'delete' && (e.value as any)?.person) restoredPersons.add(String((e.value as any).person))
+          if (ix >= 0) for (const p of namedOf(INPUTS[ix])) restoredPersons.add(String(p.p))
+          if (e.op !== 'delete') for (const p of namedOf(e.value as any)) restoredPersons.add(String(p.p))
         }
         if (e.op === 'delete') { if (ix >= 0) INPUTS.splice(ix, 1) }
         else {
@@ -329,13 +327,8 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
      rules as every other door: a restore that would put two leaves on the same
      time, or leave over a medical, is refused with the blocker named */
   if (restore && restoredIids.size) inputGate()?.vetRestore(restoredIids, restoredPersons)
-  /* …and the group input's own rule (plan §3.13, finding G5): a restore that would put a man on one shared input twice
-     — his record changed alone, the same man added to the entry again, then an Undo of that first change — is refused
-     with the sentence the inputs door gives (state/store.ts runInputWrite), for the groups this restore touched */
-  if (grpBefore) {
-    const breach = groupBreach(INPUTS, groupsTouched(grpBefore, INPUTS))
-    if (breach) throw new CmdRefused(breach)
-  }
+  /* (what one record may hold is held for a restore as for every command — the save boundary's hard check,
+     state/store.ts placeholderShapeViolation; the group's own check went with the group, one-rule build step 2 (g)) */
   applyEnd()   // one ensureRowIds/mintInpIds + advance SCHED_BASELINE
   // HOOKS.reflow = validate() + notify(); HOOKS.histPush persists — both released
   // at the transaction boundary (never on a half-applied multi-store world).

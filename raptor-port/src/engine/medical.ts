@@ -17,7 +17,7 @@
 
    An unparseable date FAILS CLOSED here — the row is skipped, never guessed
    at and never deleted on a guess (the missing-input doctrine).           */
-import { INPUTS, inpType, isDownchit, isUpchit, dateOrd } from './inputs';
+import { INPUTS, inpType, isDownchit, isUpchit, dateOrd, holds, leadOf } from './inputs';
 
 const DAY_MS=86400000;
 const ordMs=(o:any)=>Date.UTC(Math.floor(o/10000),Math.floor(o/100)%100-1,o%100);
@@ -40,8 +40,10 @@ export function ordLabel(o:any,yr:any){
 export function medStartOrd(r:any){return dateOrd(r&&r.date,r&&r.yr);}
 export function medEndOrd(r:any){return dateOrd((r&&(r.endDate||r.date)),r&&r.yr);}
 
-const medRows=(person?:any)=>INPUTS.filter((r:any)=>isDownchit(r.type)&&(person==null||r.person===person));
-const upRows=(person?:any)=>INPUTS.filter((r:any)=>isUpchit(r.type)&&(person==null||r.person===person));
+/* (a medical entry holds ONE person — inputs.ts shapeProblem; he is read through the record's own list, so a record in
+   either shape answers — the one-rule build, step 2) */
+const medRows=(person?:any)=>INPUTS.filter((r:any)=>isDownchit(r.type)&&(person==null||holds(r,person)));
+const upRows=(person?:any)=>INPUTS.filter((r:any)=>isUpchit(r.type)&&(person==null||holds(r,person)));
 
 /* MEDICALLY DOWN as of a date: every downchit input covering it, one entry
    per input (the trim rules keep a person to one live row in practice, but a
@@ -50,7 +52,7 @@ export function medDownAsOf(asOf:any){
   const out:any=[];
   for(const r of medRows()){const a=medStartOrd(r),b=medEndOrd(r);
     if(a==null||b==null)continue;
-    if(a<=asOf&&asOf<=b)out.push({person:r.person,row:r,endOrd:b});}
+    if(a<=asOf&&asOf<=b)out.push({person:leadOf(r),row:r,endOrd:b});}
   return out.sort((x:any,y:any)=>String(x.person).localeCompare(String(y.person)));
 }
 /* PENDING UPCHIT: the person's LATEST-ended downchit that has expired, still
@@ -68,7 +70,7 @@ export function pendingUpchits(asOf:any){
   const by:any={};
   for(const r of medRows()){const a=medStartOrd(r),b=medEndOrd(r);
     if(a==null||b==null)continue;
-    const p=r.person,e=by[p]=by[p]||{covered:false,latest:null,starts:[]};
+    const p=leadOf(r),e=by[p]=by[p]||{covered:false,latest:null,starts:[]};
     e.starts.push(a);
     if(a<=asOf&&asOf<=b){e.covered=true;continue;}
     if(b<asOf&&(!e.latest||b>e.latest.endOrd))e.latest={person:p,row:r,endOrd:b};}
@@ -88,7 +90,7 @@ export function upchitsWithin(asOf:any,days:any=30){
   if(from==null)return out;   // an unreadable as-of answers nothing, never everything
   for(const r of upRows()){const o=medStartOrd(r);
     if(o==null||o>asOf||o<=from)continue;
-    out.push({person:r.person,row:r,ord:o});}
+    out.push({person:leadOf(r),row:r,ord:o});}
   return out.sort((x:any,y:any)=>y.ord-x.ord||String(x.person).localeCompare(String(y.person)));
 }
 /* ONE MEDICAL EPISODE'S PAPERWORK (owner, 1 Sep 26 — "see the documents
@@ -112,7 +114,7 @@ export function upchitsWithin(asOf:any,days:any=30){
    reads them); picking which to show is the view's job. */
 export function medEpisode(row:any){
   if(!row)return [] as any[];
-  const person=row.person, a0=medStartOrd(row), b0=medEndOrd(row);
+  const person=leadOf(row), a0=medStartOrd(row), b0=medEndOrd(row);
   if(a0==null||b0==null)return [row];
   const downs=medRows(person).map((r:any)=>({r,a:medStartOrd(r),b:medEndOrd(r)}))
     .filter((x:any)=>x.a!=null&&x.b!=null);

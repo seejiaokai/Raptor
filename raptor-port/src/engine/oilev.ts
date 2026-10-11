@@ -599,34 +599,10 @@ function oilEvidenceNow(di: any, day?: any): OilEvidence {
     const named = claimPeople(inp)
     sent[inputItemKey(inp.iid)] = (HOOKS.oilSentinel(iso as string, inp.win, d) || []).filter((p: any) => !named.includes(String(p)))
   }
-  /* AND A REQUEST THAT NEVER ASKS THE OIL QUESTION ([OIL-PERSONAL-PLACEHOLDER] — [DB-READINESS] group A, phase 7). The
-     loop above runs over the requests that ASK (`projectOilInputs` → `oilAsks`), and "Personal" lands a row like any
-     activity while never asking — so a placeholder on its row was written down nowhere: no count, no window, nothing
-     frozen at publication, on any day (D27, D37: the count shows wherever the puck lands; D44: frozen on every day).
-
-     MEMBERSHIP ONLY. Nothing here reaches the credit: `inputs` (what the request half credits from) is not touched, and the
-     schedule half skips every request row — so the crowd earns nothing, exactly as a NAMED man on a Personal row earns
-     nothing (D43: a placeholder behaves like named people). Pinned by oilpersonalcrowd.test.ts.
-
-     The same conditions as the loop above, read off the request itself: it covers this day, it is not taken off, its
-     row stands (landedRow — not `kept`, cancelled or information only), and its own window measures something (an
-     all-day request's row carries no times — the REQUEST's window, never the row's). `r.iid`, never `inpId`: a read
-     must not mint an id. */
-  { const ord = +String(iso).replace(/-/g, '')
-    for (const g of ((d && d.ground) || []) as any[]) {
-      if (!g || !g.src) continue
-      const iid = String(g.src), item = inputItemKey(iid)
-      if (Object.prototype.hasOwnProperty.call(sent, item)) continue
-      const r = (INPUTS as any[]).find(x => x && String(x.iid || '') === iid)
-      if (!r || !placeholderOf(r) || !landedRow(d, iid) || oilAsks(r.type) || String(r.acc || '') === 'r') continue
-      const a = dateOrd(r.date, r.yr)
-      if (a == null) continue
-      const b = r.endDate ? dateOrd(r.endDate, r.yr) ?? a : a
-      if (ord < a || ord > b) continue
-      const w = inpWin(r)
-      if (!w || !(w[1] > w[0])) continue
-      sent[item] = HOOKS.oilSentinel(iso as string, [w[0], w[1]], d)
-    } }
+  /* (A REQUEST THAT NEVER ASKS THE OIL QUESTION HOLDS NO PLACEHOLDER any more — the one-rule build, step 2 (d): the
+     placeholder is one of an input's own people, offered only for the six kinds that all ask (inputs.ts
+     PLACEHOLDER_KINDS; owner D712, D753, D755 (4)), so the membership-only pass that counted a puck dropped on a
+     "Personal" request's row — [OIL-PERSONAL-PLACEHOLDER], phase 7 — has nothing left to read and is gone.) */
   /* A DAY THAT EARNS NOBODY ANYTHING STILL KNOWS WHO IS BEHIND ITS PUCKS
      ([OIL-SEATS-CAN-EARN] step 9; D27, D44). The count is a SCHEDULING fact —
      dropped anywhere, a placeholder works out who would attend — and until now

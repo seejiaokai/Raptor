@@ -125,17 +125,45 @@ describe('what a bar says', () => {
   })
 })
 
+/* AN INPUT FOR SEVERAL PEOPLE IS ONE RECORD (owner D756, 11 Oct 26 — "an input is stored as ONE record with the list of
+   its people"; the one-rule plan §4.5). These fixtures used to build a shared input as one record a man tied by a group
+   id (`grp` / `grpBy`), which the month joined on read; they build the ONE record now — its `people` in the order they
+   joined — and every assertion keeps its substance. What changed with the rule: who is in a bar is read from the bar's
+   `people` (ids A to Z by callsign, the placeholder last), where it was read from the entry's records. */
 describe('a group filing is ONE bar (D655)', () => {
-  const grp = (people: string[], over: any = {}) => people.map(p => inp(p, 'Meeting', 'Jul 8', undefined, { grp: 'g1', grpBy: 'p1', allday: false, ...over }))
+  const grp = (people: string[], over: any = {}) => {
+    const r: any = inp('', 'Meeting', 'Jul 8', undefined, { by: 'p1', allday: false, ...over })
+    delete r.person
+    r.people = people.map(p => ({ p, by: 'p1' }))
+    return [r]
+  }
   /* THE COUNT FIRST (owner D729 — the design vet's V4, 10 Oct 26: "4 · Meeting"). The bar used to lead with whoever
      comes first in the alphabet — "Anvil +3 · Meeting" — so Saber's own meeting did not show his name, and a bar cut
      short lost the "+3". It says how many and what; the opened day names everyone. */
   it('one bar for the entry: HOW MANY first, then what it is — never one callsign and "+N" (D729)', () => {
     const its = items(grp(['p1', 'p2', 'p3', 'p4']))
     expect(its).toHaveLength(1)
-    expect(its[0].rows.map((r: any) => r.person)).toEqual(['p4', 'p2', 'p1', 'p3'])   // Anvil, Ranger, Saber, Wisp
+    expect(its[0].rows, 'the bar carries its ONE record').toHaveLength(1)
+    expect(its[0].people).toEqual(['p4', 'p2', 'p1', 'p3'])   // Anvil, Ranger, Saber, Wisp — whatever order they joined in
+    expect([its[0].who, its[0].more]).toEqual(['Anvil', 3])
     expect(barText(its[0], false)).toBe('4 · Meeting')
     expect(layoutBars(W2, its, 7).segs).toHaveLength(1)
+  })
+  /* A RECORD STORED BEFORE THE ONE-RULE BUILD — one `person`, no list — reads as the one-person input it is (D756) */
+  it('a one-person record in the OLD shape reads the same as one in the new', () => {
+    const old = inp('p3', 'Meeting', 'Jul 8', undefined, { allday: false })
+    const [neu] = grp(['p3'], { iid: old.iid })
+    const [a] = items([old]), [b] = items([neu])
+    expect(a.people).toEqual(['p3'])
+    expect({ ...a, rows: 0 }).toEqual({ ...b, rows: 0 })
+    expect(barText(a, false)).toBe('Wisp · Meeting')
+    expect(barText(a, true)).toBe('Wisp')
+  })
+  /* …and one that still carries an old group id is one man's input: nothing joins records any more (D759 reading 10 —
+     "old shared demo inputs come back as one-person inputs"; nothing stored is converted, D56) */
+  it('records of an old group filing — one a man, tied by a group id — are each their own bar', () => {
+    const rows = ['p1', 'p2'].map(p => inp(p, 'Meeting', 'Jul 8', undefined, { grp: 'g1', grpBy: 'p1', allday: false }))
+    expect(items(rows).map(i => barText(i, false)).sort()).toEqual(['Ranger · Meeting', 'Saber · Meeting'])
   })
   it('…by its own title where it has one, and the same on a phone’s one-day bar — the count is never dropped', () => {
     const [photo] = items(grp(['p1', 'p2', 'p3'], { type: 'Event', title: 'Squadron photo' }))
@@ -149,9 +177,10 @@ describe('a group filing is ONE bar (D655)', () => {
     const [it0] = monthItems([inp('allavail', 'Duty', 'Jul 8')], ALL, P2)
     expect(barText(it0, false)).toBe('ALL AVAIL · Duty')
   })
-  it('a man whose record was changed alone reads as his own input beside the entry', () => {
-    const rows = grp(['p1', 'p2', 'p3'])
-    rows[1].e = 900
+  /* (one input has one time — D735: a man given a time of his own is taken out of it and has a record of his own. The
+     fixture used to change one man's record of the group; it is now the two records that leaves.) */
+  it('a man with a time of his own has an input of his own, and reads as that beside the shared one', () => {
+    const rows = [...grp(['p1', 'p3']), inp('p2', 'Meeting', 'Jul 8', undefined, { allday: false, e: 900 })]
     const its = items(rows)
     expect(its).toHaveLength(2)
     expect(its.map(i => barText(i, false)).sort()).toEqual(['2 · Meeting', 'Ranger · Meeting'])
@@ -159,8 +188,24 @@ describe('a group filing is ONE bar (D655)', () => {
   it('the Person filter shows an entry when ANY of its people passes; the bar still names them all', () => {
     const its = items(grp(['p1', 'p2', 'p3']), { ...ALL, fPerson: 'p3' })
     expect(its).toHaveLength(1)
-    expect(its[0].rows).toHaveLength(3)
+    expect(its[0].people).toHaveLength(3)
     expect(items(grp(['p1', 'p2']), { ...ALL, fPerson: 'p5' })).toEqual([])
+  })
+  it('…and the search finds it by the callsign of ANYONE in it, not only the first', () => {
+    expect(items(grp(['p1', 'p2', 'p3']), { ...ALL, fSearch: 'wis' })).toHaveLength(1)
+    expect(items(grp(['p1', 'p2']), { ...ALL, fSearch: 'wis' })).toEqual([])
+  })
+  /* THE PLACEHOLDER AS ONE OF ITS PEOPLE (owner D753, D755; the one-rule plan §4.5): named people A to Z, then ALL AVAIL
+     last; the bar's count is of NAMED people and says "+ ALL AVAIL"; the placeholder's own filter value finds it */
+  it('an input that holds named people and ALL AVAIL: the names first, the placeholder last, and the count is of the named', () => {
+    const P2 = { ...PEOPLE, allavail: { cs: 'ALL AVAIL', special: true } }
+    const [it0] = monthItems(grp(['allavail', 'p1', 'p4', 'p2']), ALL, P2)
+    expect(it0.people).toEqual(['p4', 'p2', 'p1', 'allavail'])
+    expect(barText(it0, false)).toBe('3 + ALL AVAIL · Meeting')
+    const [it1] = monthItems(grp(['p1', 'allavail']), ALL, P2)
+    expect(barText(it1, true)).toBe('Saber + ALL AVAIL · Meeting')
+    expect(monthItems(grp(['p1', 'allavail']), { ...ALL, fPerson: 'ph:allavail' }, P2)).toHaveLength(1)
+    expect(monthItems(grp(['p1', 'p2']), { ...ALL, fPerson: 'ph:allavail' }, P2)).toEqual([])
   })
 })
 

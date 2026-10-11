@@ -119,6 +119,28 @@ const linesOf=(src:any):any[]=>{const out:any[]=[];
       const line:any={...r,person:e.p}; if(e.mod!=null)line.mod=e.mod;
       out.push(Object.freeze(line)); } }
   return Object.freeze(out) as any[];};
+/* ONE FACE A PERSON — FOR A BODY THAT DRAWS AN INPUT ONCE PER PERSON (step 2 (g) of the one-rule build, 12 Oct 26 — the
+   plan §4.6): the schedule's Unavailable list is one row a man (owner D737), and an input's line under Personal Inputs
+   draws a puck a person. A face is the record's fields plus `person` (and his own late date, where he has one) —
+   frozen, as a line is: a drawing never writes, and a hand on what it drew finds the RECORD by its id. Unlike a line
+   (the rules' view), a PLACEHOLDER has a face: ALL AVAIL is drawn. `several` says the record holds more than one, so
+   the row's address names its man — iuTail, below. */
+export function facesOf(r:any):any[]{
+  if(!r||typeof r!=='object')return [];
+  const es=peopleOf(r).filter((e:any)=>e&&e.p!=null&&e.p!=='');
+  /* its id is minted on the RECORD where it has none yet (as the builders always did, by asking inpId of the record
+     they drew): a face is frozen, and an id minted on a face would be lost with it */
+  if(es.length&&!r.iid&&!Object.isFrozen(r))inpId(r);
+  return es.map((e:any)=>{const f:any={...r,person:e.p,several:es.length>1}; if(e.mod!=null)f.mod=e.mod; return Object.freeze(f);});}
+/* …and the faces in the order an input's people are NAMED on every screen: A to Z by callsign, then the placeholder
+   (owner D721, D727) — for a line that draws a puck a person (Personal Inputs). */
+export function facesDrawn(r:any):any[]{
+  const cs=(p:any)=>String((PEOPLE[p]||{cs:p}).cs), f=facesOf(r), at=new Map(f.map((x:any,i:number)=>[x,i] as [any,number]));
+  return f.slice().sort((a:any,b:any)=>(isPh(a.person)?1:0)-(isPh(b.person)?1:0)||(isPh(a.person)?0:cs(a.person).localeCompare(cs(b.person),undefined,{sensitivity:'base'}))||(at.get(a)!-at.get(b)!));}
+/* AN UNAVAILABLE ROW'S ADDRESS, after its `iu:` — the input's id for an input of one person, `<iid>~<person>` for one
+   man's row of an input that holds several (engine/keys.ts iuParts is the one parser). Asked of a face or a record. */
+export function iuTail(f:any):string{const id=String((f&&f.iid)||'');
+  return f&&f.several&&f.person!=null?`${id}~${f.person}`:id;}
 /* WORKED OUT ONCE PER PASS, NEVER KEPT ACROSS A WRITE (Fable F10). The rules pass asks for a day's inputs several times
    and the crew list asks four times a man a paint (avail.ts slotBar), so a fresh set of copies at every ask would be a
    cost on a phone. Inside inputReadPass — the rules pass, the day and board builders, the crew list's paint, a day's OIL

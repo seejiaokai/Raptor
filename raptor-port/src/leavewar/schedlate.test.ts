@@ -16,7 +16,7 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { INPUTS, isLateInput, inputOwnDueISO } from '../engine/inputs'
+import { INPUTS, holds, idsOf, isLateInput, inputOwnDueISO } from '../engine/inputs'
 import { elogClear } from '../engine/editlog'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
@@ -47,7 +47,7 @@ const AFTER = '2026-09-17'
 const add = (person: string, type: string, extra: Record<string, any> = {}) => commitNewInput({
   person, type, allday: true, half: '', start: DAY, end: '', sTime: '06:00', eTime: '18:00', remarks: '', sans: null, docIds: [], ...extra,
 })
-const one = (p: string, type: string) => { const l = INPUTS.filter((r: any) => r.person === p && r.type === type && String(r.date).startsWith('Sep')); expect(l, `${p} has one ${type}`).toHaveLength(1); return l[0] }
+const one = (p: string, type: string) => { const l = INPUTS.filter((r: any) => holds(r, p) && r.type === type && String(r.date).startsWith('Sep')); expect(l, `${p} has one ${type}`).toHaveLength(1); return l[0] }
 
 beforeAll(() => { vi.useFakeTimers({ toFake: ['Date'] }); PEOPLE0 = JSON.stringify(PEOPLE) })
 afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
@@ -121,7 +121,7 @@ describe('a change made from a row on the schedule does not move the late date (
     const filed = r.mod
     on(AFTER)
     expect(reassignInput(r.iid, 'rocky')).toBe(true)
-    expect(r.person).toBe('rocky')
+    expect(idsOf(r), 'the one record, re-pointed').toEqual(['rocky'])
     expect(r.mod).toBe(filed)
     expect(isLateInput(r)).toBe(false)
   })

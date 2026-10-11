@@ -15,7 +15,7 @@
      group's head-count is people, and equals the figure the date shows. A commitment of a man the count leaves out
      (no longer SANS, archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so
      this window is the only place such a record can be reached and removed. */
-import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleText } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleText, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -137,17 +137,26 @@ export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people
   const label = sansDateLabel(iso)
   if (!label) return out
   const others = new Set<string>()
+  /* ONE LINE A PERSON OF EACH RECORD (the one-rule build, 12 Oct 26 — owner D756: an input is one record with the list
+     of its people; D658: an admin may file SANS availability for several SANS people at once). Each line still carries
+     its RECORD — the window a tap opens changes the input, never one man's copy of it. His late sentence is asked of
+     the record with HIS late date where he has one (a man added after the cut-off is late alone — the one-rule plan
+     §4.5 "The late mark"): a copy made for the words, never handed on. A placeholder is nobody's offer: only named
+     people are listed (engine/inputs.ts namedOf — a record stored before that build answers as its one person). */
   for (const r of rows) {
-    if (!r || !r.person || !isSansAvail(r.type) || !inputCoversDate(r, label)) continue
-    const id = String(r.person), man = people[id]
-    const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(r), placed: placedLine(r, people) }
-    if (!counted.has(id)) {
-      /* the count's own reasons, in its order (state/flyplan.ts sansCommittedOn) */
-      const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived' : !man.san ? 'no longer SANS'
-        : man.seat !== 'FCP' && man.seat !== 'RCP' ? 'not aircrew' : 'no activity chosen'
-      out.out.push({ ...e, why })
-    } else if (flies.has(id)) (man.seat === 'FCP' ? out.p : out.w).push(e)
-    else { out.other.push(e); others.add(id) }
+    if (!r || !isSansAvail(r.type) || !inputCoversDate(r, label)) continue
+    for (const en of namedOf(r)) {
+      if (!en || !en.p) continue
+      const id = String(en.p), man = people[id]
+      const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(r, people) }
+      if (!counted.has(id)) {
+        /* the count's own reasons, in its order (state/flyplan.ts sansCommittedOn) */
+        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived' : !man.san ? 'no longer SANS'
+          : man.seat !== 'FCP' && man.seat !== 'RCP' ? 'not aircrew' : 'no activity chosen'
+        out.out.push({ ...e, why })
+      } else if (flies.has(id)) (man.seat === 'FCP' ? out.p : out.w).push(e)
+      else { out.other.push(e); others.add(id) }
+    }
   }
   out.flyP = com.f.p.length; out.flyW = com.f.w.length; out.otherN = others.size
   return out

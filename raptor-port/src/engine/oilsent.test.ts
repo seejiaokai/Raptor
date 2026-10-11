@@ -146,12 +146,26 @@ describe('the issued day holds its people still (D44)', () => {
   })
 })
 
-describe('a request row\'s crowd is written down the same way (step 6)', () => {
-  it('on a weekday as well as a weekend', () => {
-    INPUTS.unshift({ iid: 'rq9', person: 'bane', type: 'Training', date: 'Jul 14', yr: 2026,
-      acc: 'g', allday: false, s: 9 * 60, e: 17 * 60, remarks: '', mod: 'now', oil: {} })
-    ;(DAYS[TUE] as any).ground = [{ prog: 'Training', str: '0900', end: '1700', who: 'bane', src: 'rq9', more: ['allavail'] }]
+/* SINCE THE ONE-RULE BUILD THE PLACEHOLDER ON A REQUEST'S ROW IS ONE OF THE INPUT'S OWN PEOPLE (owner D755, 11 Oct 26:
+   "a row that came from an input IS the input: whoever stands on it … is in the input"; D753), so it is the INPUT that
+   is asked, not its row (oilev.ts oilEvidence) — and a man NAMED in the input is never in its crowd: he is there as
+   himself (D762; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.7). The record is put straight into
+   INPUTS: the doors refuse a placeholder beside named people until step 3 of that build. */
+describe('an input\'s crowd is written down the same way — under the input\'s own address (step 6; D753, D755)', () => {
+  const filed = (ids: string[]) => {
+    INPUTS.unshift({ iid: 'rq9', type: 'Training', date: 'Jul 14', yr: 2026, acc: 'g', allday: false, s: 9 * 60, e: 17 * 60,
+      remarks: '', mod: 'now', oil: {}, people: ids.map(p => ({ p })) })
+    ;(DAYS[TUE] as any).ground = [{ prog: 'TRAINING', str: '0900', end: '1700', who: ids[0], more: ids.slice(1), src: 'rq9' }]
     ensureRowIds(DAYS)
+  }
+
+  it('on a weekday as well as a weekend — an input for ALL AVAIL alone: everyone who is free', () => {
+    filed(['allavail'])
     expect(oilEvidence(TUE).sent[inputItemKey('rq9')]).toEqual(CROWD)
+  })
+
+  it('…and beside a named man: he is in the input as himself, never in its crowd', () => {
+    filed(['bane', 'allavail'])
+    expect(oilEvidence(TUE).sent[inputItemKey('rq9')]).toEqual(['stiff', 'plasma'])
   })
 })

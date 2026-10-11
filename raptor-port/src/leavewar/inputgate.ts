@@ -35,7 +35,8 @@
 
 import { CmdRefused } from '../command'
 import { HOOKS } from '../engine/hooks'
-import { INPUTS, inpId, isLeave, nowStamp } from '../engine/inputs'
+import { INPUTS, inpId, isLeave, nowStamp, idsOf, namedOf, holds, leadOf, inputLines } from '../engine/inputs'
+import { ownInputOf } from '../engine/inputown'
 import { PEOPLE } from '../engine/people'
 import { SESSION } from '../state/auth'
 import { isMe, me } from '../state/perms'
@@ -61,7 +62,7 @@ const typeLabel = (code: string) => (code === 'ATTC' ? 'ATT C' : code === 'ATTB'
 /** The fields that decide what an Input claims on the war: who, what, when. A
  *  remark, a document, the `lw` provenance or an acceptance mark is not a new
  *  claim, so it is not re-judged. */
-const claimKey = (r: any) => JSON.stringify([r.person, r.type, r.date, r.endDate ?? null, r.yr ?? null, !!r.allday, r.half ?? null, r.s ?? null, r.e ?? null])
+const claimKey = (r: any) => JSON.stringify([idsOf(r).join('+'), r.type, r.date, r.endDate ?? null, r.yr ?? null, !!r.allday, r.half ?? null, r.s ?? null, r.e ?? null])
 
 function refuse(msg: string): never {
   HOOKS.toast(msg, 'warn')
@@ -90,13 +91,23 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
        the man for an afternoon he was free for. */
     const medWins = new Map<string, Win[]>()
     const medHalves = new Map<string, Win[]>()
-    for (const [d, c] of contribsOfInput(med)) {
+    /* (a medical entry is one person's; the absence reader is handed his LINE — one man's absences, leavewar/absences.ts) */
+    const man = String(leadOf(med) ?? '')
+    const lineOf = (r: any) => (inputLines([r]) as any[]).find(l => String(l.person) === man) || null
+    const medLine = lineOf(med)
+    if (!man || !medLine) continue
+    for (const [d, c] of contribsOfInput(medLine)) {
       medWins.set(d, [...(medWins.get(d) ?? []), ...winsOf(c)])
       medHalves.set(d, [...(medHalves.get(d) ?? []), c.win])
     }
-    for (const leave of INPUTS.slice()) {
-      if (!leave || leave === med || String(leave.person) !== String(med.person) || !isLeave(leave.type)) continue
-      if (changedIds.has(String(leave.iid))) continue   // judged by the invariant instead
+    for (const leave0 of INPUTS.slice()) {
+      if (!leave0 || leave0 === med || !holds(leave0, man) || !isLeave(leave0.type)) continue
+      if (changedIds.has(String(leave0.iid))) continue   // judged by the invariant instead
+      /* HIS part of the leave: where it is filed for several, the cut is worked out on his line first, and only if it
+         cuts anything is he given a leave of his own to cut (engine/inputown.ts ownInputOf — the one-rule plan §4.6:
+         "sick cuts ONE man's leave out of a leave filed for three; the other two are untouched"). */
+      let leave: any = lineOf(leave0)
+      if (!leave) continue
       const own = new Map<string, Win>()
       /* an overnight leave's tail, keyed by the date it STARTED on (H6: the
          tail counts on the next date, so a next-morning medical cuts it) */
@@ -138,6 +149,8 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
         } else shapes.push([d, { sh: 'drop' }])
       }
       if (!cutDays.length) continue
+      leave = ownInputOf(leave0, man)
+      if (!leave) continue
       const runs: Array<{ sh: Shape; from: string; to: string }> = []
       const sameShape = (a: Shape, b: Shape) => a.sh === b.sh && a.s === b.s && a.e === b.e
       for (const [d, sh] of shapes) {
@@ -168,7 +181,7 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
       }
       INPUTS.splice(INPUTS.indexOf(leave), 1, ...pieces)
       const span = cutDays.length > 1 ? `${dm(cutDays[0]!)}–${dm(cutDays[cutDays.length - 1]!)}` : dm(cutDays[0]!)
-      said.push(`${cs(String(leave.person))}'s ${typeLabel(warCodeOf(leave.type))} on ${span} is cut for the ${med.type} — that leave goes back to the balance`)
+      said.push(`${cs(man)}'s ${typeLabel(warCodeOf(leave.type))} on ${span} is cut for the ${med.type} — that leave goes back to the balance`)
     }
   }
   return said
@@ -181,7 +194,7 @@ function sickCutsLeave(changed: any[], changedIds: Set<string>): string[] {
 function vet(persons: ReadonlySet<string>, changedIds: ReadonlySet<string>, withWork: boolean): string[] {
   const workNotes: string[] = []
   for (const p of persons) {
-    const rows = INPUTS.filter((r: any) => r && String(r.person) === p && r.iid && warVisible(r.type))
+    const rows = (inputLines(INPUTS.filter((r: any) => r && r.iid && warVisible(r.type) && holds(r, p))) as any[]).filter(l => String(l.person) === p)
     const byDate = buildAbsenceIndex(rows).get(p)
     if (!byDate) continue
     for (const [d, list] of byDate) {
@@ -329,8 +342,9 @@ function replaceBids(changed: any[]): string[] {
     /* a medical claims the hours it really covers, not the whole half it is
        drawn in (owner, 20 Sep 26) — an afternoon bid survives a two-hour
        morning appointment */
-    for (const [d, c] of contribsOfInput(row) as Array<[string, Contrib]>)
-      for (const w of winsOf(c)) claims.push({ person: String(row.person), date: d, win: w, byType: String(row.type) })
+    for (const line of inputLines([row]) as any[])
+      for (const [d, c] of contribsOfInput(line) as Array<[string, Contrib]>)
+        for (const w of winsOf(c)) claims.push({ person: String(line.person), date: d, win: w, byType: String(row.type) })
   }
   return replaceClashingBids(claims, who, own)
 }
@@ -346,14 +360,14 @@ function apply(before: unknown): void {
   const prior = before as Map<string, string>
   const changed: any[] = []
   for (const r of INPUTS) {
-    if (!r || !r.person || !warVisible(r.type)) continue
+    if (!r || !namedOf(r).length || !warVisible(r.type)) continue
     inpId(r)
     if (prior.get(String(r.iid)) !== claimKey(r)) changed.push(r)
   }
   if (!changed.length) return
   const changedIds = new Set(changed.map(r => String(r.iid)))
   const cut = sickCutsLeave(changed, changedIds)
-  const overWork = vet(new Set(changed.map(r => String(r.person))), changedIds, true)
+  const overWork = vet(new Set(changed.flatMap(r => namedOf(r).map((e: any) => String(e.p)))), changedIds, true)
   const replaced = inDoor() ? [] : replaceBids(changed)
   const msgs = [...cut, ...overWork, ...(replaced.length ? [`This replaces ${replaced.join(', ')} on the Leave War`] : [])]
   /* AMBER, BECAUSE THESE ARE WARNINGS (owner, 21 Sep 26). They went out on the

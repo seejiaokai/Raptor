@@ -15,9 +15,8 @@ import { FloatWin, bringForward } from './FloatWindow'
 import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
-import { entryRowsOf } from '../state/inputgroup'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem, idsOf, leadOf, holds, isPlaceholderInput, shapeProblem, inputStampISO } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem, idsOf, leadOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -26,6 +25,7 @@ import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { ClipIcon, UploadIcon } from './icons'
 import { acceptInput } from '../engine/slots'
+import { iuParts } from '../engine/keys'
 import { ownInputOf, toPeople, putPerson, takePerson, swapPerson } from '../engine/inputown'
 import { DAYS } from '../engine/data'
 import { standsOn } from '../engine/overlay'
@@ -48,7 +48,7 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
 import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
@@ -420,7 +420,6 @@ export function medKeptSegments(aOrd: any, bOrd: any, clashes: any[], choices: s
    writeInputsBatch so the whole resolution is one undo step. */
 export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd?: any) {
   if (medSegmentsProtected(base, segs, keepTail, entryEnd)) { medicalLocked(); return false }
-  const cs = PEOPLE[base.person] ? PEOPLE[base.person].cs : base.person
   for (const g of segs) {
     const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: nowStamp() }
     delete t.iid          // its own address, minted below — never a copy
@@ -434,7 +433,7 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
     stampChanged(t)
     INPUTS.push(t)
     elogReason(t.iid, 'a kept piece of a split medical entry')
-    applyMedPlan(newMedTrimPlan(t.person, t.type, g.startOrd, g.endOrd, t, keepTail, entryEnd))
+    applyMedPlan(newMedTrimPlan(leadOf(t), t.type, g.startOrd, g.endOrd, t, keepTail, entryEnd))
   }
 }
 
@@ -918,7 +917,7 @@ const medicalLocked = () => HOOKS.toast('This week is locked — it was publishe
    run this before committing segment one; the sibling writer also guards itself. */
 export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, entryEnd?: any, except = base) =>
   segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
-    medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
+    medPlanProtected(newMedTrimPlan(leadOf(base), base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
 
 /* IS THIS DRAFT A PLACEHOLDER INPUT THAT MAY NOT BE SAVED? ([INPUT-ALL-AVAIL] — owner D700, D711, D712, D713; the plan
    docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2.) An input for ALL AVAIL / ALL is one of six kinds, ONE
@@ -976,8 +975,11 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   if (protectedInput(normDest(n, draft.yr))) return false   // read-only quarantine, NORMALIZED destination (P2-REREVIEW-01/02)
   const { s, e, date, endDate, half } = n
   const flags = isSansAvail(draft.type) ? sansFlags(draft.sans) : {}
+  /* WRITTEN WITH ITS PEOPLE (the one-rule build, step 2 — owner D756: "an input is stored as ONE record with the list
+     of its people"): a filing for one person is a list of one. The entry takes who placed it and when from the
+     filing's own stamp, below. */
   const row: any = {
-    person: draft.person, type: draft.type, allday: !!draft.allday,
+    people: [{ p: draft.person }], type: draft.type, allday: !!draft.allday,
     /* yr anchors the bare date labels to the year they were picked under —
        fmt leaves the loaded year implicit, and this is what reads it back */
     s, e, date, yr: baseYear(), remarks: String(draft.remarks || '').trim(), mod: nowStamp(),
@@ -998,13 +1000,14 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   inpId(row)
   /* who placed it, and when (D629 — state/inputstamp.ts): the signed-in person, whoever it is filed FOR */
   stampPlaced(row)
+  { const e = row.people[0]; if (row.by != null) e.by = row.by; if (row.at != null) e.at = row.at }
   /* the medical trim cascade, computed and PREFLIGHTED before the batch (P2-QREV-01):
      it mutates existing rows and fires Leave War withdrawals the funnel cannot undo,
      so a plan touching a protected-date row is refused whole, before anything runs. */
   const medPlan = isDownchit(row.type)
-    ? newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd)
+    ? newMedTrimPlan(draft.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd)
     : isUpchit(row.type)
-      ? upchitTrimPlan(row.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
+      ? upchitTrimPlan(draft.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
       : null
   if (medPlan && medPlanProtected(medPlan)) {
     HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
@@ -1090,7 +1093,16 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      is their own row and still passes; a sessionless test/boot context is not
      a member and is not gated. */
   if (!mayEditInput(r)) {   // [ACCOUNTS]: the one rule, perms.ts (the man, whoever filed it for him, an admin — no one else)
-    HOOKS.toast('You can only edit your own inputs', 'warn')
+    /* an input of several, or one a scheduler has since changed, says who CAN (sharedRefusal — one body with the window) */
+    HOOKS.toast(idsOf(r).length > 1 || isPlaceholderInput(r) ? sharedRefusal([r], 'change this for everyone') : 'You can only edit your own inputs', 'warn')
+    return false
+  }
+  /* WHO IS IN AN INPUT OF SEVERAL IS NEVER CHANGED HERE (the one-rule build, step 2): this body saves what an input
+     SAYS, and re-points an input of ONE person; commitInput changes the list, reassignInput one man's Unavailable row.
+     A draft naming someone else for an input that holds several is refused — it used to be passed over in silence,
+     saving nothing of it and moving the late date all the same. */
+  if (idsOf(r).length > 1 && draft.person != null && draft.person !== '' && !holds(r, draft.person)) {
+    HOOKS.toast('Who is in this input is changed in its own window', 'warn')
     return false
   }
   /* write-path role backstop (owner, 22 Aug 26): moving an input onto a
@@ -1416,8 +1428,13 @@ export function reassignInput(iid: any, personId: any) {
      commitInputEdit, which a member may legitimately reach to edit their OWN
      input's times/remarks. */
   if (!canEditSched()) return false
-  const r = INPUTS.find((i: any) => i.iid === iid)
+  /* `iid` is the row's address after its `iu:` — the input's id, or `<iid>~<person>` for one man's row of an input
+     that holds several (engine/keys.ts iuParts — the one parser) */
+  const at = iuParts('iu:' + String(iid)) || { iid: String(iid), person: null }
+  const r = INPUTS.find((i: any) => i.iid === at.iid)
   if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
+  /* whose row it is: the man it names, else the input's one person */
+  const from = at.person != null && holds(r, at.person) ? at.person : leadOf(r)
   if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
   /* the roster PALETTE (unlike rosterOptions() above) still carries the
      SPECIALS — sentinel placeholders like ALL AVAIL, never real aircrew — so
@@ -1431,9 +1448,20 @@ export function reassignInput(iid: any, personId: any) {
   /* …AND A PLACEHOLDER IS NEVER THE SOURCE EITHER ([INPUT-ALL-AVAIL]; both first-round plan readers, 9 Oct 26). An input
      filed for ALL AVAIL / ALL carries the filer's one OIL answer for everyone behind it (D711 (1)); dragging a man onto
      it would turn it into that man's own input by a gesture that asks nothing. Its own window is the one door. */
-  if (isSpecial(r.person)) { HOOKS.toast(`An input for ${PEOPLE[r.person].cs} is changed in its own window — open it to change who it is for`, 'warn'); return false }
-  if (r.person === personId) return false           // dropped back on themselves — nothing to say
-  const was = PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')
+  if (isSpecial(from)) { HOOKS.toast(`An input for ${PEOPLE[from].cs} is changed in its own window — open it to change who it is for`, 'warn'); return false }
+  if (from === personId) return false           // dropped back on themselves — nothing to say
+  const was = PEOPLE[from] ? PEOPLE[from].cs : String(from || '')
+  /* ONE MAN OF SEVERAL REPLACED IN THE LIST (the one-rule build, step 2 (g); the plan §4.6 — "he is REPLACED in the list
+     by the person dropped — the swap, as built for one record"): the input, its time and its filing are everyone's and
+     stay; only who stands in his place changes. Every refusal a save can meet is asked for the newcomer alone. */
+  if (idsOf(r).length > 1) {
+    if (holds(r, personId)) { HOOKS.toast(`${PEOPLE[personId].cs} is already on this input`, 'warn'); return false }
+    if (!normalizeInputDraft({ ...draftOf(r), person: personId }, r)) return false
+    if (!saveBatch(() => { swapPerson(r, from, personId, stampOf()); stampChanged(r) })) return false
+    HOOKS.toast(isPersonal(r.type) && r.acc !== 'u' ? `${PEOPLE[personId].cs} is on ${inpLabel(r)} instead of ${was}` : `${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
+    askOilIfPending(r)
+    return true
+  }
   const draft = draftOf(r)
   draft.person = personId
   /* a MEDICAL handed to a man who already carries a different medical there (or an upchit) is asked about first,
@@ -1498,11 +1526,11 @@ export function askOilIfPending(r: any): boolean {
      8 Oct 26 — seen failing in `groupeditor.test.tsx` before this): the first man's standing No said nothing about a
      man beside him with no answer, who was then left to his own bell — what D660 rules out. The sheet opens on the
      first record that needs an answer. */
+  /* (since the one-rule build the question is the INPUT's — one answer for everyone in it, D762 — so there is one record
+     to ask of) */
   const live = INPUTS.find((x: any) => x.iid === r.iid) || r
-  const rows = entryRowsOf(INPUTS, live)
-  const need = (rows.length ? rows : [live]).find((x: any) => (oilGate(draftOf(x), x) as any).kind === 'ask')
-  if (!need) return false
-  setOilAsk(need.iid); setInpEdit(need); notify()
+  if ((oilGate(draftOf(live), live) as any).kind !== 'ask') return false
+  setOilAsk(live.iid); setInpEdit(live); notify()
   return true
 }
 
@@ -1530,7 +1558,7 @@ export function askOilIfPending(r: any): boolean {
    on a half get it, anything else clears it, so the printed "(AM)" can never
    describe a window that is no longer a half. */
 const halfOf = (s:number, e:number) => (s === 0 && e === 720) ? 'am' : (s === 721 && e === 1439) ? 'pm' : ''
-export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) {
+export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any, who?: any) {
   if (!inp) return false
   const d: any = draftOf(inp)
   if (field === 'rmks') { d.remarks = String(text == null ? '' : text) }
@@ -1560,7 +1588,7 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
      give — NO question opens (D739 reading 4, D740 reading 4; the plan §4.7). That replaces the fourth door's "the
      question follows the save" (Codex rank 6, 22 Sep 26), which stands only where the save was an ordinary one: a
      hand-made call by someone who may not edit the schedule, whose stale Yes was dropped as the window drops it. */
-  const ok = saveFromRow(inp, d)
+  const ok = saveFromRow(inp, d, who)
   if (ok && !schedSide({ sched: true })) askOilIfPending(inp)
   return ok
 }
@@ -1571,10 +1599,19 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
    row. Asked of the same thing the drawing asks: an activity kind, not filed under Unavailable, whose entry holds more
    than one record. ON THE UNAVAILABLE LIST A TYPED BOX CHANGES THAT MAN'S RECORD ALONE, as built — that list stays a
    row a man (D737; reading R7), and he then reads as his own input. A one-man input is saved as it always was. */
-function saveFromRow(inp: any, d: any): boolean {
-  const rows = isPersonal(inp.type) && inp.acc !== 'u' ? entryRowsOf(INPUTS, inp) : []
-  if (rows.length > 1) return commitGroup({ rows }, d, rows.map((r: any) => r.person), undefined, { sched: true })
-  return commitInputEdit(inp, d, undefined, undefined, { sched: true })
+/* …SINCE THE ONE-RULE BUILD (step 2 (g); the plan 2026-10-11-one-rule-plan.md §4.6): the input is ONE record, so a box
+   typed on its row or its Personal Inputs line saves that record — for everyone in it. ON THE UNAVAILABLE LIST one
+   man's row of an input that holds SEVERAL is his part alone (`who` — the row names him: engine/keys.ts iuParts): he is
+   first given an input of his own, in the same command (engine/inputown.ts ownInputOf), and the box changes that —
+   what "a record changed alone leaves the entry" did by itself before, said in the data (D737, D759 reading 4; told
+   to him as R5). */
+function saveFromRow(inp: any, d: any, who?: any): boolean {
+  const mine = who != null && who !== '' && idsOf(inp).length > 1 && holds(inp, who) && !(isPersonal(inp.type) && inp.acc !== 'u')
+  if (!mine) return commitInputEdit(inp, d, undefined, undefined, { sched: true })
+  return saveBatch(() => {
+    const own = ownInputOf(inp, who)
+    return !!own && commitInputEdit(own, { ...d, person: who }, undefined, undefined, { sched: true })
+  })
 }
 /* THE NAME TYPED ON A REQUEST'S ROW IS THE INPUT'S OWN TITLE (owner D739, D740; reading R1, told to him — the plan
    2026-10-10-group-input-one-row-plan.md §4.4): the row's name box on the Ground Programme is reached through
@@ -1614,7 +1651,7 @@ export function removeInput(r: any) {
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
   /* the save's own answer, never a bare "yes": a delete the commit gate refused is not a delete (saveBatch) */
   /* a man taking himself out of a shared input that goes on: what stood on his place goes with him, and his line says so */
-  return saveBatch(() => { if (entryRowsOf(INPUTS, r).length > 1) elogReason(r.iid, leavingNote(r)); dropInputRow(r) })
+  return saveBatch(() => { dropInputRow(r) })
 }
 
 /* DELETE A WHOLE SHARED INPUT — every record of the entry, as ONE command and one Undo step (owner D655: "shown and
@@ -1630,6 +1667,8 @@ export function removeInput(r: any) {
 export const FILING_OFF = 'Filing for other people is switched off — an admin can change this.'
 export function sharedRefusal(rows: any[], what: string): string {
   if (filerSwitchedOff(rows)) return FILING_OFF
+  /* an input whose list a scheduler has changed is no longer wholly its filer's (owner D755 (3); the one-rule plan §4.9) */
+  { const r = rows.find(x => x && Array.isArray(x.people)); if (r && r.by != null && !filedWhole(r)) return 'A scheduler has changed who is in this — ask an admin to change it for everyone' }
   const by = rows.find(r => r && r.grpBy)?.grpBy ?? rows.find(r => r && r.by)?.by
   return `Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can ${what}`
 }
@@ -1651,35 +1690,6 @@ export function removeEntry(rows: any[]): boolean {
    here WITHDRAWS the leave from the war too, before the splice while the
    row still says what was granted. Without this the next reconcile would
    re-mint the row from the still-approved cells — the snap-back. */
-/* WHAT LEAVES WITH A MAN WHO LEAVES A SHARED INPUT, SAID IN THE CHANGE HISTORY (owner D745 — "an ALL AVAIL or ALL puck on
-   a shared input's row comes off with the man whose place it stood on … the app says so, naming anyone switched off
-   for OIL on it"; Fable's addition (a), taken into the plan 2026-10-10-group-input-one-row-plan.md §4.5). The puck
-   earns through HIS request, so it goes with his row — and the passing note reaches only whoever did it: a man taking
-   himself out in the input's own window cannot drop a puck, and a scheduler on another device sees no note. So the
-   fact rides the removal's own line of the change history ("… deleted · 15 Jul — ALL AVAIL came off his row ·
-   switched off on it: Bane, Comet"), handed in as that line's reason by the doors that take ONE man out of an entry
-   that goes on (commitGroup's people taken off; removeInput on a record of a shared input). The men named are those
-   the scheduler had switched off under it — the one thing lost; Undo of the removal brings the puck and every switch
-   back. A READ of the week on screen, before the record goes: on another week nothing is said here (the day's own
-   pending line says it there once that week is opened). '' where his row carries no placeholder. */
-function leavingNote(r: any): string {
-  const id = String((r && r.iid) || '')
-  if (!id || r.grp == null || r.grp === '') return ''
-  for (const d of DAYS as any[]) {
-    const row = standsOn(d, id, r)
-    if (!row || !row.srcg) continue
-    const csOf = (p: any) => (PEOPLE[p] ? String(PEOPLE[p].cs) : String(p))
-    /* every puck that stood under his row — a placeholder, and a man of the scheduler's too (Fable F3: he leaves with
-       the row as the placeholder does, and the line said nothing of him) */
-    const pucks = ((row.more || []) as any[]).map(v => whoId(v)).filter(p => p && PEOPLE[p]).map(csOf)
-    if (!pucks.length) return ''
-    const sw = (d.oild && d.oild.people) || {}
-    const off = Object.keys(sw).filter(k => k.endsWith(`|i:${id}`) && sw[k] === 'deny').map(k => k.slice(0, k.indexOf('|')))
-      .filter(p => p !== String(r.person)).map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-    return `${pucks.join(', ')} came off his row${off.length ? ` · switched off on it: ${off.join(', ')}` : ''}`
-  }
-  return ''
-}
 function dropInputRow(r: any) {
   /* [ARCH-STACK] step 4: deleting the row IS deleting the absence — the war
      reads it, so there is nothing to withdraw (deliberate delete propagates
@@ -1733,138 +1743,10 @@ function dropInputRow(r: any) {
 
    Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
 export function commitGroup(entry: { rows: any[] } | null, draft: any, people: any[], oilDec?: Record<string, number>, opts?: InputSaveOpts): boolean {
-  if (!draft) return false
-  const say = HOOKS.toast
-  const cs = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
-  const want: string[] = []
-  for (const p of people || []) { const id = p == null ? '' : String(p); if (id && !want.includes(id)) want.push(id) }
-  const rows: any[] = entry ? (entry.rows || []).filter((r: any) => INPUTS.indexOf(r) >= 0) : []
-  if (entry && !rows.length) { say('That input is no longer there — nothing was saved', 'warn'); return false }
-  if (!want.length) { say('Pick at least one person', 'warn'); return false }
-  const scheduler = canEditSched(), mine = me()
-  if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
-  /* A PLACEHOLDER IS FILED ON ITS OWN ([INPUT-ALL-AVAIL] — the plan §3.2). The WHOLE selection is judged before any man
-     is written: a placeholder among several people, the two placeholders together, or a placeholder taking over an
-     entry that is a group. (Hiding the two in "Several people" is not enough — switching from one person to several
-     keeps what was chosen; both first-round plan readers.) */
-  const ph = want.find(p => isSpecial(p))
-  if (ph != null && (want.length > 1 || rows.some(r => r.grp != null || r.grpBy != null) || rows.length > 1)) {
-    say(placeholderProblem({ person: ph, type: 'Duty', grp: 1 }), 'warn'); return false
-  }
-  const kept = rows.filter(r => want.includes(String(r.person)))
-  const gone = rows.filter(r => !want.includes(String(r.person)))
-  const have = new Set(rows.map(r => String(r.person)))
-  const added = want.filter(p => !have.has(p))
-
-  /* WHO MAY — asked before anything else, of the one module (state/perms.ts) */
-  const many = kept.length + added.length > 1
-  if (many && scheduler && needsDoc(draft.type)) {
-    say(`${isUpchit(draft.type) ? 'An upchit' : 'A medical entry'} is filed for one person at a time — each needs its own document`, 'warn'); return false
-  }
-  for (const p of added) if (!mayFileInputFor(p, draft.type)) { say(fileForOtherRefusal(draft.type), 'warn'); return false }
-
-  /* EVERY REFUSAL A SINGLE INPUT CAN MEET, FOR EVERY MAN, BEFORE ANYTHING IS WRITTEN. Asked quietly, then said once:
-     as it is where every man meets the same one (a missing time), with his callsign where it is one man's alone */
-  const norm = new Map<string, NonNullable<ReturnType<typeof normalizeInputDraft>>>()
-  const refused: Array<[string, string]> = []
-  for (const p of want) {
-    const r = kept.find(x => String(x.person) === p) || null
-    let why = ''
-    HOOKS.toast = (m: any) => { if (!why) why = String(m) }
-    let n: ReturnType<typeof normalizeInputDraft>
-    try { n = normalizeInputDraft({ ...draft, person: p }, r) } finally { HOOKS.toast = say }
-    if (!n) refused.push([p, why || 'This input could not be saved'])
-    else norm.set(p, n)
-  }
-  if (refused.length) {
-    const same = refused.length === want.length && refused.every(x => x[1] === refused[0][1])
-    say(same ? refused[0][1] : `${cs(refused[0][0])} — ${refused[0][1]}`, 'warn')
-    return false
-  }
-  const first = norm.get(want[0])!
-  if (protectedInput(...rows, normDest(first, draft.yr))) return false
-
-  /* which of the records kept actually change: only those are saved (G6) */
-  const sansKey = (x: any) => Object.keys(sansFlags(x)).sort().join(',')
-  /* THE DATES ARE COMPARED AS DATES, NOT AS THEIR LABELS (Astra's read of the date door, 9 Oct 26 - A1). A label
-     carries no year inside the loaded one, so a shared input moved by exactly a year - 13 Oct 2027 to 13 Oct 2026 -
-     read 'Oct 13' on both sides: nothing was written, and the window closed saying "Input updated". */
-  const wantEnd = draft.end && draft.end !== draft.start ? draft.end : ''
-  const moved = (r: any): boolean => unfmt(r.date, r.yr) !== draft.start || (r.endDate ? unfmt(r.endDate, r.yr) : '') !== wantEnd
-  /* ONE REMARK FOR EVERY MAN OF THE ENTRY (both reads of the date door - Astra A2, Sol 2). When the dates change, the
-     save rewrites the remark's "till <last day>" word on each record it CHANGES (commitInputEdit) - and a man ADDED in
-     the same save took the remark as typed, old last day and all. Remarks are part of what makes the records one
-     entry, so one shared input came out as two. The effective remark is worked out HERE, once, and is what every
-     man - kept or added - is saved with; the picker itself still never touches the remark. */
-  const redated = kept.some(r => r.date !== first.date || (r.endDate || '') !== (first.endDate || '') || moved(r))
-  let rem = String(draft.remarks || '').trim()
-  const tail = redated ? remarksTailWord(rem) : null
-  if (tail) rem = withRemarksTail(rem, ordISO(dateOrd(first.date, baseYear())), ordISO(dateOrd(first.endDate || first.date, baseYear())), tail)
-  const d = rem === String(draft.remarks || '') ? draft : { ...draft, remarks: rem }
-  const changes = (r: any): boolean => {
-    const n = norm.get(String(r.person))!
-    return r.type !== draft.type || !!r.allday !== !!draft.allday || r.s !== n.s || r.e !== n.e
-      || r.date !== n.date || (r.endDate || '') !== (n.endDate || '') || moved(r) || (r.half || '') !== (n.half || '')
-      || String(r.remarks || '') !== rem
-      || String(r.title || '') !== titleOf(draft.type, draft.title)
-      || (isSansAvail(draft.type) && sansKey(r.sans) !== sansKey(draft.sans))
-  }
-  const changed = kept.filter(changes)
-  const whole = sharedRefusal(rows, 'change this for everyone')
-  for (const r of changed) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
-  for (const r of gone) if (!mayDeleteInput(r)) { say(whole, 'warn'); return false }
-
-  const regroup = many && kept.some(r => !r.grp)
-  const oilOnly = !!oilDec && !added.length && !gone.length && !changed.length
-  if (oilOnly) for (const r of kept) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
-  /* a fresh OIL answer is EVERY man's (D682, below) - when it is given by someone who may change the input for
-     everyone: its filer, an admin. A man who may only ADD somebody (this door lets a member add a man to an entry he
-     did not file) answers for the man he adds and for nobody else - the others' answers are not his to replace. */
-  const forAll = !!oilDec && kept.every(r => mayEditInput(r))
-  if (!added.length && !gone.length && !changed.length && !regroup && !oilOnly) return true
-
-  /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
-  const heard: string[] = []
-  HOOKS.toast = (m: any) => { for (const part of String(m).split(' · ')) if (part && !heard.includes(part)) heard.push(part) }
-  let ok = false
-  try {
-    ok = writeInputsBatch(() => {
-      const stop = (): never => { throw new CmdRefused(heard[heard.length - 1] || 'refused') }
-      let grp: any = rows.find(r => r.grp)?.grp, grpBy: any = rows.find(r => r.grpBy)?.grpBy
-      if (!grp && many) {
-        grp = newId('g')
-        grpBy = !scheduler ? mine : (rows[0] && rows[0].by != null ? rows[0].by : mine)
-      }
-      for (const r of gone) { elogReason(r.iid, leavingNote(r)); dropInputRow(r) }
-      for (const r of kept) {
-        if (grp && !r.grp) { r.grp = grp; r.grpBy = grpBy }
-        if (changed.includes(r)) {
-          if (!commitInputEdit(r, { ...d, person: r.person, docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
-          if (oilDec) r.oil = { ...oilDec }
-        } else if (oilOnly) { r.oil = { ...oilDec }; stampChanged(r) }
-        /* THE ANSWER IS EVERY MAN'S (owner D682, 9 Oct 26: "the answer is written for everyone in it - a man's own
-           earlier answer, a No included, is replaced"; Sol's read of the date door - 1). A man added or taken off
-           brings the question back for "X +2", and the filer's answer went on the ADDED man's record alone: the sheet
-           had asked about all of them, and a man's own earlier No stood against the filer's fresh Yes. A record
-           whose answer is already this one is not touched (no "changed" stamp for nothing). */
-        else if (forAll && JSON.stringify(r.oil || {}) !== JSON.stringify(oilDec)) { r.oil = { ...oilDec }; stampChanged(r) }
-      }
-      for (const p of added) {
-        let row: any = null
-        if (!commitNewInput({ ...d, person: p }, false, undefined, undefined, x => { row = x }) || !row) stop()
-        if (grp) { row.grp = grp; row.grpBy = grpBy }
-        if (oilDec) row.oil = { ...oilDec }
-      }
-    })
-  } finally { HOOKS.toast = say }
-  if (!ok) {
-    const why = heard[0]
-    say(why ? `${why} — nothing was saved${want.length > 1 ? ' for anyone: take that person off the list, or change it' : ''}` : 'Not saved — that change is not yours to make', 'warn')
-    return false
-  }
-  /* what went through and wants telling — leave over recorded work, a bid replaced — as ONE note */
-  if (heard.length) say(heard.join(' · '), 'warn')
-  return true
+  /* SINCE THE ONE-RULE BUILD (step 2 (g), 12 Oct 26) AN INPUT IS ONE RECORD, AND THIS IS THE OLD NAME OF ITS ONE WRITER:
+     the entry is its record, the filer's one answer the input's own (D762). Its callers are moved onto commitInput and
+     the name is taken out with the rest of the dead code (step 6 of that build). */
+  return commitInput(entry && entry.rows && entry.rows.length ? entry.rows[0] : null, draft, people, oilDec ? { ...(opts || {}), oil: oilDec } : opts)
 }
 
 /* ---- THE ONE WRITER OF AN INPUT ([ALL-AVAIL-AS-MEMBER] step 2 (a), 12 Oct 26 — owner D756: "an input is stored as ONE
@@ -1926,7 +1808,8 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   }
   if (refused.length) {
     const same = refused.length === next.length && refused.every(x => x[1] === refused[0][1])
-    say(same ? refused[0][1] : `${cs(refused[0][0])} — ${refused[0][1]}`, 'warn')
+    const [who, why] = refused[0]
+    say(same || why.startsWith(cs(who)) ? why : `${cs(who)} — ${why}`, 'warn')
     return false
   }
   const first = norm.get(next[0])!
@@ -1965,9 +1848,13 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       let r: any = rec
       if (!r) {
         if (!commitNewInput({ ...draft, person: next[0] }, false, undefined, undefined, x => { r = x }) || !r) stop()
-        if (next.length > 1) { toPeople(r); for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) }) }
+        for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) })
       } else {
         if (says && !commitInputEdit(r, { ...draft, person: leadOf(r), docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
+        /* who filed it passes on with its filer (state/perms.ts byAfterLeaving — Fable F13): to the scheduler who takes
+           him out (D759 reading 7); to whoever put in the newest entry not his own, when he takes himself out */
+        const filer = r.by == null ? null : String(r.by)
+        if (filer && gone.includes(filer)) { toPeople(r); const by = scheduler && mine != null ? String(mine) : byAfterLeaving(r, filer); if (by != null) r.by = by }
         for (const p of gone) takePerson(r, p)
         const st: any = added.length ? stampOf() : null
         /* only the person added can be late: his own date, where this save is the input's own window and falls after
@@ -2267,7 +2154,11 @@ export function InputEditor() {
      saved" read as "not touched": a move made behind the window then replaced his start without a word (Sol 3). */
   const [calKey, setCalKey] = useState(0)
   const [datesPicked, setDatesPicked] = useState(false)
-  const rows: any[] = r && !isNew ? entryRowsOf(INPUTS, r).filter((x: any) => INPUTS.indexOf(x) >= 0) : []
+  /* THE INPUT IS ONE RECORD WITH ITS PEOPLE (the one-rule build, step 2 (g) — owner D756): `rows` is that record while
+     it is live (one, or none), and `recPpl` who is in it. "Several people" is asked of the PEOPLE, never of a count of
+     records. */
+  const rows: any[] = r && !isNew && INPUTS.indexOf(r) >= 0 ? [r] : []
+  const recPpl: string[] = rows.length ? idsOf(r).map(String) : []
   /* …AND WHEREVER A SHARED INPUT IS OPENED FROM (`[GROUP-INPUT-ONE-ROW]`; owner D661, D734 — "the same as doing it in the
      input's own window"; the plan 2026-10-10-group-input-one-row-plan.md §4.5: "the dialog opened from the row or the
      line is the entry's throughout"). The schedule draws a shared input as ONE row, and the dialog a tap on it opened
@@ -2279,8 +2170,8 @@ export function InputEditor() {
      HIS OWN RULE SINCE D748 (11 Oct 26), on seeing the one-man form over a line of four pucks: "when I click on personal
      inputs it just shows a single user to be selected for an input that had multiple inputs. Shouldn't it be the
      same? That it shows multiple inputs to edit from there". */
-  const picker = (win || rows.length > 1) && ctx !== 'up'
-  const grouped = picker && (ppl.length > 1 || rows.length > 1)
+  const picker = (win || recPpl.length > 1) && ctx !== 'up'
+  const grouped = picker && (ppl.length > 1 || recPpl.length > 1)
   const csOf = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
@@ -2313,9 +2204,9 @@ export function InputEditor() {
     madeOver.current = {}
     setClash([]); setSwap(null)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
-    const rs = r && !r._new ? entryRowsOf(INPUTS, r) : []
-    const p0 = rs.length ? rs.map((x: any) => String(x.person)) : r ? [String(r.person ?? '')] : []
-    setPpl(p0); setSeveral(rs.length > 1); basePpl.current = p0; entryIds.current = rs.map((x: any) => x.iid)
+    /* who it is for: a saved input's own list; a new one's seed names its one person */
+    const p0 = !r ? [] : r._new ? [String(r.person ?? '')] : idsOf(r).map(String)
+    setPpl(p0); setSeveral(p0.length > 1); basePpl.current = p0; entryIds.current = r && !r._new ? [r.iid] : []
     setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       /* …or for the ONE man the schedule's door just added to a shared input whose answers differ (owner D744 —
@@ -2327,7 +2218,9 @@ export function InputEditor() {
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
       /* the bell's question to a man about his OWN record inside a shared input he did not file: his answer alone */
-      if (g.kind === 'ask') setOilConf(one ? { ...g, own: r.iid, shut: true } : rs.length > 1 && isMe(r.person) && !rs.every((x: any) => mayEditInput(x)) ? { ...g, own: r.iid } : g)
+      /* (the question is the INPUT's — one answer, given by whoever may change it: owner D762. Nobody in it has an
+         answer of his own any more.) */
+      if (g.kind === 'ask') setOilConf(one ? { ...g, shut: true } : g)
       else if (one) { setInpEdit(null); notify() }
     } else if (OILASK && !r) setOilAsk(null)
   }, [r])
@@ -2348,16 +2241,12 @@ export function InputEditor() {
     if (shown.current !== r) return
     const now = INPUTS.find((x: any) => x.iid === r.iid)
     if (!now) {
-      /* the record this window was opened on left a shared input that lives on: the window holds the rest of it */
-      const rest = entryIds.current.length > 1 ? entryIds.current.map(id => INPUTS.find((x: any) => x.iid === id)).find(x => x && x.grp) : null
-      if (rest) { keepDraft.current = true; setInpEdit(rest); notify(); return }
       HOOKS.toast('That input was removed while its window was open — the window has closed', 'warn'); close(); return
     }
     if (now !== r) { keepDraft.current = true; setInpEdit(now); notify(); return }
     /* THE PEOPLE, FOLLOWED: a man added or taken off behind the window is added or taken off in it, and said once */
-    const liveRows = entryRowsOf(INPUTS, now)
-    const liveP = liveRows.map((x: any) => String(x.person)), bp = basePpl.current
-    entryIds.current = liveRows.map((x: any) => x.iid)
+    const liveP: string[] = idsOf(now).map(String), bp = basePpl.current
+    entryIds.current = [now.iid]
     if (liveP.join('\u0000') !== bp.join('\u0000')) {
       const added = liveP.filter(p => !bp.includes(p)), removed = bp.filter(p => !liveP.includes(p))
       basePpl.current = liveP
@@ -2466,9 +2355,9 @@ export function InputEditor() {
        once, written for every man (D660) */
     if (grouped) {
       const had = new Set(INPUTS.map((x: any) => x.iid))
-      const entry = isNew ? null : { rows: entryRowsOf(INPUTS, r) }
-      if (commitGroup(entry, draft, ppl, oilDec)) {
-        const row = (entry && entry.rows.find((x: any) => INPUTS.indexOf(x) >= 0)) || INPUTS.find((x: any) => !had.has(x.iid))
+      const rec = isNew ? null : r
+      if (commitInput(rec, draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
+        const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
         if (row) revealInput(row)
         HOOKS.toast(isNew ? (ppl.length > 1 ? `Input added for ${ppl.length} people` : 'Input added') : 'Input updated', 'ok'); close()
       } else stay()
@@ -2578,16 +2467,10 @@ export function InputEditor() {
         HOOKS.toast('A medical entry is one person’s own. Take the other people out and save first — then change its kind.', 'warn')
         return
       }
-      const first = rows.find(x => ppl.includes(String(x.person))) || null
-      const adds = !!first && ppl.some(p => !rows.some(x => String(x.person) === p))
-      /* ASKED OF EVERY MAN KEPT, NOT OF THE FIRST ALONE (Astra's read of the calendar job's bug check, 8 Oct 26 — seen
-         failing in `groupeditor.test.tsx` before this): each man's record carries his OWN answer, and the first man's
-         standing No said nothing about the others — their answers were voided by the new hours and nobody was asked,
-         which is the bell D660 rules out. The question opens while ANY of them needs one. */
-      const kept = rows.filter(x => ppl.includes(String(x.person)))
-      const gates = (kept.length ? kept : [first]).map(x => oilGate({ ...draft, person: x ? x.person : ppl[0] }, x, adds))
-      if (gates.some(x => x.kind === 'refused')) return
-      const g = gates.find(x => x.kind === 'ask') || gates[0]!
+      /* ONE QUESTION, ONE ANSWER, FOR THE INPUT (owner D762): asked of the one record against the new hours. Someone
+         ADDED follows the answer the input carries — nothing is asked for him where it is answered (D755 (1)). */
+      const rec = rows[0] || null
+      const g = oilGate({ ...draft, person: rec ? leadOf(rec) : ppl[0] }, rec)
       if (g.kind === 'refused') return
       if (g.kind === 'ask') { setOilConf(g); return }
       doSave([])
@@ -2650,38 +2533,31 @@ export function InputEditor() {
   }
   /* a shared input is deleted for everyone only after it is asked (the day's own question — the plan §3.13) */
   const del = () => {
-    if (rows.length > 1) { setDelAll(true); return }
+    if (recPpl.length > 1) { setDelAll(true); return }
     if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay()
   }
   const delEntry = () => {
-    const live = entryRowsOf(INPUTS, r)
+    const n = recPpl.length
     setDelAll(false)
-    if (removeEntry(live)) { HOOKS.toast(`Input deleted for ${live.length} people`, 'ok'); close() } else stay()
+    if (removeEntry(rows)) { HOOKS.toast(`Input deleted for ${n} people`, 'ok'); close() } else stay()
   }
-  /* a man's own OIL answer inside a shared input he did not file: his record alone, and never its late date */
-  const saveOwnOil = (iid: string, dec: Record<string, number>) => {
-    const row = INPUTS.find((x: any) => x.iid === iid)
-    if (!row) return
-    const s = saveBatchX(() => { row.oil = { ...dec }; stampChanged(row); return true })
-    if (s.ok) HOOKS.toast('OIL answer saved', 'ok'); else if (s.refused) stay()
-  }
-
-  const who = rows.length > 1 ? `${csOf(rows[0].person)} +${rows.length - 1}`
-    : r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
+  const who = recPpl.length > 1 ? `${csOf(recPpl[0])} +${recPpl.length - 1}`
+    : r ? csOf(isNew ? r.person : leadOf(r)) : ''
   /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
      another man's input — the calendar's chip, the day popover's row — was shown Delete and Save, each refused only
      when pressed. The write path's own rule (perms.ts mayEditInput), asked before the form is drawn: he may still
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
-  const canAll = rows.length > 1 ? rows.every(x => mayEditInput(x)) : true
-  const readOnly = !isNew && !!r && (rows.length > 1 ? !canAll : !mayEditInput(r))
+  const canAll = rows.length ? mayEditInput(r) : true
+  const readOnly = !isNew && !!r && !mayEditInput(r)
   /* A MAN IN A SHARED INPUT WHO DID NOT FILE IT (D655, reading 2) reads it, and has exactly two things of his own: take
      himself out, and his own OIL answer. Anyone else only reads it. */
-  const mineRow = rows.length > 1 && !canAll ? rows.find(x => isMe(x.person)) || null : null
-  const filer = rows.length > 1 ? csOf(rows.find(x => x.grpBy)?.grpBy ?? rows.find(x => x.by)?.by ?? '') || 'whoever filed it' : ''
+  /* (since the one-rule build: ONE thing of his own — take himself out. The OIL answer is the input's, given by
+     whoever may change it; no man gives an answer of his own — owner D762, D755 (3).) */
+  const mineRow = recPpl.length > 1 && !canAll && recPpl.some(p => isMe(p)) ? r : null
   const takeMeOut = () => {
-    const mine = mineRow && INPUTS.find((x: any) => x.iid === mineRow.iid)
+    const live = mineRow && INPUTS.indexOf(mineRow) >= 0 ? mineRow : null
     setTakeOut(false)
-    if (mine && removeInput(mine)) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()
+    if (live && commitInput(live, draftOf(live), idsOf(live).map(String).filter(p => !isMe(p)))) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()
   }
   /* THE DATES OF A SAVED SHARED INPUT ARE CHANGED HERE (owner D681, 9 Oct 26 — `[CAL-SHARED-DATES]`, found by Astra's
      read of the calendar job's bug check). "One shared input, shown and edited as one thing" (D655) — and no door
@@ -2701,7 +2577,7 @@ export function InputEditor() {
      (`commitInputEdit`) always took the dates from the draft, and `save` asks every question the pencil's row asked —
      the document, the upchit's summary, the medical clash, OIL. NOT for one man's SANS commitment, which is on no
      list (D620) and keeps its own way: deleted and added again on the SANS calendar. */
-  const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(rows.length < 2 && !!r && isSansAvail(r.type))
+  const datesHere = win && !isNew && !readOnly && ctx !== 'up' && !(recPpl.length < 2 && !!r && isSansAvail(r.type))
   /* who the window's Person list offers beyond the roster (below) */
   /* …AND FOR A NEW INPUT OF THE INPUTS PAGE, since the List's own add form went (D729 — V1, 10 Oct 26): that form was
      "where such leave is filed" — its Person list carried this group — and the window a new input opens in did not,
@@ -2719,7 +2595,7 @@ export function InputEditor() {
      ONE SCOPE FOR BOTH LINES (Astra's read of this batch, 10 Oct 26 — finding 2): "Not answered yet" was asked of every
      record of the entry wherever the editor stood, so the schedule's dialog on Ace's row named RANGER as unanswered —
      beside a button that answers for Ace alone. It is asked of the same records the line above it speaks for. */
-  const oilRows = !isNew && r ? (picker && rows.length > 1 ? rows : [r]) : []
+  const oilRows = !isNew && r ? [r] : []
   const anyAnswered = oilRows.some(x => oilAnswered(x))
   const unanswered = oilRows.filter(x => oilUnansweredDay(x))
   const unansweredDay = unanswered.length ? oilUnansweredDay(unanswered[0]) : ''
@@ -2923,7 +2799,7 @@ export function InputEditor() {
           {anyAnswered && <div className="inped-f">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
-              <span className="inped-oilsum">{oilSummaryOf(oilRows)}</span>
+              <span className="inped-oilsum">{oilSummary(r)}</span>
               {!readOnly && <button type="button" className="abtn ghost" data-testid="oil-revise"
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>}
             </div>
@@ -2938,14 +2814,14 @@ export function InputEditor() {
           {!isNew && r && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
-              <span className="inped-oilsum">Not answered yet — {oilDayLabel(unansweredDay)}{oilRows.length > 1 ? ': ' + unanswered.map(x => csOf(x.person)).join(', ') : ''}</span>
+              <span className="inped-oilsum">Not answered yet — {oilDayLabel(unansweredDay)}</span>
               {!readOnly && !anyAnswered && <button type="button" className="abtn ghost" data-testid="oil-answer"
                 onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Answer…</button>}
             </div>
           </div>}
           {/* who placed this input and when, and its last change — the editor's small print (owner D629; the one line
               is ui/placedline.ts). Not on a new input, which nobody has placed yet. */}
-          {!isNew && r && (rows.length > 1 ? placedLineOf(rows) : placedLine(r)) && <div className="inped-placed" data-testid="inped-placed">{rows.length > 1 ? placedLineOf(rows) : placedLine(r)}</div>}
+          {!isNew && r && placedLineOf([r]) && <div className="inped-placed" data-testid="inped-placed">{placedLineOf([r])}</div>}
           {/* a shared input its reader may NOT change for everyone says nothing here about dates: the line beside the
               buttons already says who can change it, and "changed on the Inputs page" sent him to the page he is on */}
           {/* …and since the window carries the dates of EVERY saved input (D718), no reader of another person's input is
@@ -2975,7 +2851,7 @@ export function InputEditor() {
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
             : datesHere
-              ? rows.length > 1 ? `Date changes apply to all ${rows.length}.` : ''
+              ? recPpl.length > 1 ? `Date changes apply to all ${recPpl.length}.` : ''
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
@@ -2985,23 +2861,9 @@ export function InputEditor() {
         {/* HIS OWN TWO THINGS in a shared input he did not file — outside the read-only form, so they are live */}
         {mineRow && draft && (
           <div className="inped-own">
-            {oilAnswered(mineRow) && <div className="inped-oil">
-              <span className="inped-oilsum">Your OIL: {oilSummary(mineRow)}</span>
-              <button type="button" className="abtn ghost" data-testid="oil-revise-own"
-                onClick={() => { const g = oilGate(draftOf(mineRow), mineRow, true); if (g.kind === 'ask') setOilConf({ ...g, own: mineRow.iid }) }}>Change…</button>
-            </div>}
-            {/* …and where HIS question was never answered (Sol's read of the input card's check, 10 Oct 26): he could
-                revise an answer here but not give one — the bell was his only way, and a phone's card has no chip. The
-                same question, for his record alone (`own`); where he has answered one day and not another, "Change…"
-                above is the one button. */}
-            {oilUnansweredDay(mineRow) && <div className="inped-oil" data-testid="oil-unanswered-own">
-              <span className="inped-oilsum">Your OIL: not answered yet — {oilDayLabel(oilUnansweredDay(mineRow))}</span>
-              {!oilAnswered(mineRow) && <button type="button" className="abtn ghost" data-testid="oil-answer-own"
-                onClick={() => { const g = oilGate(draftOf(mineRow), mineRow, true); if (g.kind === 'ask') setOilConf({ ...g, own: mineRow.iid }) }}>Answer…</button>}
-            </div>}
             {takeOut && (
               <div className="inped-ask" data-testid="inped-takeout-ask" role="alertdialog" aria-label="Take yourself out?">
-                <span className="inped-ask-q">Take yourself out of this input? It stays for the other {rows.length - 1 === 1 ? 'person' : `${rows.length - 1} people`}.</span>
+                <span className="inped-ask-q">Take yourself out of this input? It stays for the other {recPpl.length - 1 === 1 ? 'person' : `${recPpl.length - 1} people`}.</span>
                 <button type="button" className="abtn danger" data-testid="inped-takeout-yes" autoFocus onClick={takeMeOut}>Take me out</button>
                 <button type="button" className="abtn ghost" data-testid="inped-takeout-no" onClick={() => setTakeOut(false)}>Stay in</button>
               </div>
@@ -3010,7 +2872,7 @@ export function InputEditor() {
         )}
         {delAll && (
           <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?" ref={delAsk}>
-            <span className="inped-ask-q">Delete this input for all {rows.length} people?</span>
+            <span className="inped-ask-q">Delete this input for all {recPpl.length} people?</span>
             <button type="button" className="abtn danger" data-testid="inped-delall-yes" autoFocus onClick={delEntry}>Delete</button>
             <button type="button" className="abtn ghost" data-testid="inped-delall-no" onClick={() => setDelAll(false)}>Keep</button>
           </div>
@@ -3027,15 +2889,11 @@ export function InputEditor() {
               outside the form, for any saved input that has a document; it opens the same viewer. */}
           {!isNew && r && rowDocIds(r).some(id => !!docGet(id)) && <button type="button" className="abtn inped-doc" data-testid="inped-docview"
             aria-label="View the document" title="View the document" onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></button>}
-          {readOnly && <span className="inped-ro" data-testid="inped-ro">{rows.length > 1
-            /* to the FILER, kept out by the members' switch alone: that the switch is off (D731 (8) — `sharedRefusal`,
-               above, says the same at the other doors). "Take me out" beside it is whatever the rules already give. */
-            ? filerSwitchedOff(rows) ? FILING_OFF
-            : mineRow ? `Only ${filer} — who filed it — or an admin can change this for everyone.` : `Only its people, ${filer} — who filed it — or an admin can change this.`
-            /* an input filed for ALL AVAIL / ALL has no owner to name — "Only ALL AVAIL or an admin can change this"
-               named a puck that is nobody (walker A of its check, 9 Oct 26): the one who may is whoever FILED it */
-            /* …and to that filer himself, kept out by the members' switch alone, that the switch is off (D731 (8)) */
-            : r && isSpecial(r.person) ? sharedRefusal([r], 'change this.')
+          {readOnly && <span className="inped-ro" data-testid="inped-ro">{recPpl.length > 1 || (!!r && isPlaceholderInput(r))
+            /* an input of several, or one for ALL AVAIL, names whoever may change it for everyone — its filer, or (once
+               a scheduler has changed who is in it — D755 (3)) an admin; to the FILER, kept out by the members' switch
+               alone, that the switch is off (D731 (8)). One body with every other door: `sharedRefusal`, above. */
+            ? sharedRefusal([r], 'change this for everyone') + (/[.!]$/.test(sharedRefusal([r], 'change this for everyone')) ? '' : '.')
             : `Only ${who || 'its owner'} or an admin can change this.`}</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>
@@ -3068,10 +2926,10 @@ export function InputEditor() {
       {/* …and the first name is the entry's first A TO Z, whatever order its people were picked in — the name the saved
           input's title leads with (the walk's find, 10 Oct 26: a NEW group asked as "Ranger +2", the man picked
           first, and was "Ace +2" from the moment it was saved). */}
-      {oilConf && <OilConfirm who={!oilConf.own && grouped && ppl.length > 1 ? `${ppl.map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))[0]} +${ppl.length - 1}` : oilConf.who} typeLabel={oilConf.typeLabel}
+      {oilConf && <OilConfirm who={grouped && ppl.length > 1 ? `${ppl.map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))[0]} +${ppl.length - 1}` : oilConf.who} typeLabel={oilConf.typeLabel}
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => { const shut = oilConf.shut; setOilConf(null); if (shut) close() }}
-        onSave={dec => { const own = oilConf.own, shut = oilConf.shut; setOilConf(null); if (own) { saveOwnOil(own, dec); if (shut) close() } else doSave([], dec) }} />}
+        onSave={dec => { setOilConf(null); doSave([], dec) }} />}
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
           the SAME save through the rest of the pipeline (skipDoc); "Upload"
           dismisses so the filer can attach a certificate and save again */}

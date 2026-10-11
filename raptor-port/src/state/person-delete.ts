@@ -50,7 +50,8 @@ import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
 import { slotVal, whoArr } from '../engine/slots'
 import { logEdit } from '../engine/editlog'
-import { INPUTS, dateOrd, withRemarksTail, nowStamp } from '../engine/inputs'
+import { INPUTS, dateOrd, withRemarksTail, nowStamp, holds as inInput, idsOf } from '../engine/inputs'
+import { ownInputOf, takePerson } from '../engine/inputown'
 import { ordShift, ordLabel } from '../engine/medical'
 import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
 import { stripPersonFromDay, trimTail, hisLanded } from '../engine/overlay'
@@ -193,13 +194,18 @@ export function applyDelete(id: string, cutoff: string): void {
   dropAccountOfPid(id)
   /* 4a. his inputs — which go, which end the day before (decided before anything moves: a landed row is found by the
      input's own id, `src`) */
-  const mine = INPUTS.filter((r: any) => r && r.person === id)
-  const gone: any[] = [], ended: any[] = []
+  /* (THE RECORDS — a writer finds the record, never a per-person line: Fable's read of the one-rule plan, F1. An input
+     that holds OTHER PEOPLE TOO is not his to delete or to end: from his cutoff on he leaves its LIST and the input
+     carries on for the others (`left`); where it spans his cutoff he is first given an input of his own for the days
+     he was there (engine/inputown.ts ownInputOf — the plan §4.6), and that is what ends the day before.) */
+  const mine = INPUTS.filter((r: any) => r && inInput(r, id))
+  const gone: any[] = [], ended: any[] = [], left: any[] = [], split: any[] = []
   for (const r of mine) {
     const a = dateOrd(r.date, r.yr); if (a == null) continue
     const b = r.endDate ? dateOrd(r.endDate, r.yr) : a
-    if (a >= cut) gone.push(r)
-    else if (b != null && b >= cut) ended.push(r)
+    const alone = idsOf(r).length === 1
+    if (a >= cut) (alone ? gone : left).push(r)
+    else if (b != null && b >= cut) (alone ? ended : split).push(r)
   }
   /* 3. the loaded week, from the cutoff. NOT CHANGED INSIDE THE COMMAND ([DB-READINESS] group A, phase 6 (d) —
      data-model.md §9 rule 9; D450): in the database a day is saved only by the scheduler holding it, and a delete (or the
@@ -222,6 +228,10 @@ export function applyDelete(id: string, cutoff: string): void {
      and the posting pass — leavewar/sync.ts). */
   /* 4b. then the inputs themselves */
   for (const r of gone) { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }
+  /* out of every input he shared from his cutoff on: the others keep it, and its row is re-made without him */
+  for (const r of left) { takePerson(r, id); stampChanged(r) }
+  /* …and one that spans his cutoff: his own part of it, which ends the day before like any input of his */
+  for (const r of split) { const own = ownInputOf(r, id); if (own) { stampChanged(r); ended.push(own) } }
   for (const r of ended) {
     const a = dateOrd(r.date, r.yr) as number
     const end = ordShift(cut, -1) as number
@@ -279,7 +289,7 @@ export function deletedRestoreProblem(changes: any[]): string | null {
         const [wk, di] = rid.split('#')
         if (wk && di != null && /^[0-6]$/.test(di)) { try { const row = typeof v === 'string' ? JSON.parse(v) : v; hit = dayIso(wk, +di) >= cut && (holds(row && row.d, id) || holds(row && row.sg, id) || holds(row && row.dr, id)) } catch (_e) { hit = false } }
       }
-      else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
+      else if (ch.collection === 'inputs') { const a = v && inInput(v, id) ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
       /* one calendar row per record since phase 2 (`plan/pp:<id>`); its day is its `date` */
       else if (ch.collection === 'plan') hit = !!v && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD

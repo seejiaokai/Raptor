@@ -28,6 +28,7 @@ import { ensureRowIds } from './rowids'
 import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilEvidenceKey, oilSignKey, oilDecisionsKey, oilWouldEarn, inputItemKey, rowItemKey, groundItemKey } from './oilev'
 import { envMin, uniformOil } from './oil'
 import { stashPut, stashClear } from './weekstash'
+import { requestRowFields } from './overlay'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -421,63 +422,139 @@ describe('a multi-day request credits on every day it was answered for (job 2)',
   })
 })
 
-/* JOB 8 — the owner's ruling D18: "for 2 he should earn". A second man the
-   scheduler puts on a member's landed request row earns from it, the same as
-   the man who filed it. Until now the claim OWNED the row and the schedule half
-   skipped every src row, so the second man wore no bar, was inert in the mode,
-   and his tooltip said nothing about OIL at all.
+/* JOB 8 — the owner's ruling D18: "for 2 he should earn" — AS THE ONE-RULE BUILD LEFT IT ([ALL-AVAIL-AS-MEMBER]
+   step 2 (d), 12 Oct 26; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.7).
 
-   THE MIRROR, which is why this is not simply "stop skipping src rows" (Codex):
-   feeding the row through the schedule half would put the REQUESTER through it
-   too, where the default is YES — overriding his own No and crediting him twice.
-   So the row is split. The requester stays in the input half, governed by his
-   own answer. The extras are ordinary scheduled work on the same item. */
-describe('a second man on a landed request row earns from it (D18, job 8)', () => {
-  const landed = (oilAns: any, more: any[] = []) => {
-    claim({ iid: 'd18', person: 'bane', type: 'Training', date: 'Jul 18', acc: 'g',
-      allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: oilAns } })
-    return groundRow(SAT, { prog: 'Training', str: '0900', end: '1700', who: 'bane', src: 'd18', more })
+   D18 (21 Sep 26) made a second man the scheduler puts on a member's landed request row earn from it, the same as the
+   man who filed it. Until then the claim OWNED the row and the schedule half skipped every src row, so the second man
+   wore no bar, was inert in the mode, and his tooltip said nothing about OIL at all. It was built as a SPLIT (Codex:
+   feeding the row through the schedule half would put the REQUESTER through it too, where the default is YES —
+   overriding his own No and crediting him twice): the requester stayed in the input half, on his own answer; the
+   extras were ordinary scheduled work on the same item, default yes.
+
+   WHAT HE RULED SINCE. D755 (11 Oct 26): "a row that came from an input IS the input: whoever stands on it … is in the
+   input". D762: the OIL question has ONE answer, for everyone in the input; only the scheduler leaves one person out,
+   in OIL Earn on the day. So the second man is one of the input's PEOPLE, and earns "the same as the man who filed
+   it" more exactly than before — on the input's one answer. What is gone is the split's other half: on the input's No,
+   or before it is answered, he no longer earns as "ordinary work". Nobody is credited twice, because there is one
+   claim an input and each person is in it once. A day issued before the build keeps the split it went out with — the
+   describe after this one. */
+describe('a second person in the input earns on the input\'s ONE answer (D755, D762 — D18, job 8, as changed)', () => {
+  /* ONE Training for the Saturday holding `ids`, landed; its row is the copy of it the row's own body writes */
+  const landed = (oilAns: any, ids: string[] = ['bane', 'stiff'], over: any = {}) => {
+    const r = claim({ iid: 'd18', type: 'Training', date: 'Jul 18', acc: 'g', allday: false, s: 9 * 60, e: 17 * 60,
+      oil: oilAns == null ? {} : { [SAT_ISO]: oilAns }, people: ids.map(p => ({ p })), ...over })
+    return groundRow(SAT, { ...requestRowFields(r), src: 'd18' })
   }
 
-  it('the extra man earns the same as the man who filed it', () => {
-    landed(1, ['stiff'])
-    expect(figure(SAT, 'bane'), 'the requester, on his own answer').toBe('FO')
-    expect(figure(SAT, 'stiff'), 'the second man, on the same row').toBe('FO')
+  it('YES: both earn — the second the same as the first', () => {
+    const row = landed(1)
+    expect([row.who, row.more], 'the first to join in the name box, the second under him').toEqual(['bane', ['stiff']])
+    expect(figure(SAT, 'bane'), 'the first, on the input\'s answer').toBe('FO')
+    expect(figure(SAT, 'stiff'), 'the second, on the same answer').toBe('FO')
   })
 
-  it("the requester's own No is never overridden by the split — but the extra still earns", () => {
-    landed(0, ['stiff'])
-    expect(figure(SAT, 'bane'), 'he said No for himself and that stands').toBe(null)
-    expect(figure(SAT, 'stiff'), 'the scheduler put him there; it is ordinary work').toBe('FO')
+  it('NO: neither — the answer is the input\'s, for everyone in it (the split is gone)', () => {
+    /* until the one-rule build: "the requester's own No is never overridden by the split — but the extra still earns" */
+    landed(0)
+    expect(figure(SAT, 'bane')).toBe(null)
+    expect(figure(SAT, 'stiff'), 'he is in the input: its No is his too').toBe(null)
   })
 
-  it('the requester is not credited TWICE — he is in the input half only', () => {
-    landed(1, ['stiff'])
-    const ev = oilEvidence(SAT)
-    const work = oilEarnedWork(DAYS[SAT], ev)
-    expect((work['bane'] || []).length, 'one span, not one per half').toBe(1)
-  })
-
-  it('a scheduler can take the extra man off without touching the requester', () => {
-    landed(1, ['stiff'])
-    DAYS[SAT].oild = { people: { [`stiff|${inputItemKey('d18')}`]: 'deny' } }
-    expect(figure(SAT, 'stiff')).toBe(null)
-    expect(figure(SAT, 'bane'), 'untouched').toBe('FO')
-  })
-
-  it('a CANCELLED or info-only row credits neither of them', () => {
-    const row = landed(1, ['stiff'])
-    row.cx = true
+  it('NOT ANSWERED: neither, until it is', () => {
+    landed(null)
     expect(figure(SAT, 'bane')).toBe(null)
     expect(figure(SAT, 'stiff')).toBe(null)
   })
 
-  it('an ALL-DAY request credits the extra man too — the row carries no times (Fable M6)', () => {
-    claim({ iid: 'd18b', person: 'bane', type: 'Training', date: 'Jul 18', acc: 'g',
-      allday: true, s: 0, e: 1439, oil: { [SAT_ISO]: 1 } })
-    groundRow(SAT, { prog: 'Training', str: '', end: '', who: 'bane', src: 'd18b', more: ['stiff'] })
+  it('nobody is credited TWICE — one claim an input, one span a person', () => {
+    landed(1)
+    const ev = oilEvidence(SAT)
+    expect(ev.inputs.filter(i => i.iid === 'd18').length, 'ONE claim, naming both').toBe(1)
+    expect((ev.inputs.find(i => i.iid === 'd18') as any).people).toEqual(['bane', 'stiff'])
+    const work = oilEarnedWork(DAYS[SAT], ev)
+    expect((work['bane'] || []).length, 'one span, not one per half').toBe(1)
+    expect((work['stiff'] || []).length).toBe(1)
+  })
+
+  it('the scheduler\'s switch for one leaves the other — either of them', () => {
+    landed(1)
+    DAYS[SAT].oild = { people: { [`stiff|${inputItemKey('d18')}`]: 'deny' } }
+    expect(figure(SAT, 'stiff')).toBe(null)
+    expect(figure(SAT, 'bane'), 'untouched').toBe('FO')
+    DAYS[SAT].oild = { people: { [`bane|${inputItemKey('d18')}`]: 'deny' } }
+    expect(figure(SAT, 'bane')).toBe(null)
+    expect(figure(SAT, 'stiff'), 'untouched').toBe('FO')
+  })
+
+  it('…and switches one ON over the input\'s No', () => {
+    landed(0)
+    DAYS[SAT].oild = { people: { [`stiff|${inputItemKey('d18')}`]: 'allow' } }
+    expect(figure(SAT, 'stiff')).toBe('FO')
+    expect(figure(SAT, 'bane'), 'the No still stands for him').toBe(null)
+  })
+
+  it('a CANCELLED or info-only row credits neither of them', () => {
+    const row = landed(1)
+    row.cx = true
+    expect(figure(SAT, 'bane')).toBe(null)
+    expect(figure(SAT, 'stiff')).toBe(null)
+    row.cx = undefined; row.info = true
+    expect(figure(SAT, 'bane')).toBe(null)
+    expect(figure(SAT, 'stiff')).toBe(null)
+  })
+
+  it('an ALL-DAY request credits the second person too — the row carries no times (Fable M6)', () => {
+    const row = landed(1, ['bane', 'stiff'], { allday: true, s: 0, e: 1439 })
+    expect([row.str, row.end]).toEqual(['', ''])
     expect(figure(SAT, 'bane')).toBe('FO')
     expect(figure(SAT, 'stiff'), 'the claim carries the window, not the row').toBe('FO')
+  })
+})
+
+/* THE OLD RULE, WHERE IT IS STILL TRUE (D48: an issued day keeps what it went out with when a rule changes under it;
+   D142: a day's OIL comes from its latest published version). A day published before the one-rule build carries a
+   block whose claims name one `person` and no `people`, and a frozen row on which a second man really was the
+   scheduler's own extra. It went out under D18's split and is read by it, from its own record (oilev.ts legacyClaim /
+   legacyEarned / landedExtras); nothing made since reaches it. The block is built by hand — no door of this build can
+   make one. */
+describe('a day issued before the one-rule build keeps the OIL it went out with (D48, D142)', () => {
+  const ITEM18 = inputItemKey('d18')
+  /* stripped of the seed Saturday's own work, so "who earned" is the request's people alone */
+  const frozenDay = (row: any = {}) => ({ ...JSON.parse(JSON.stringify(DAYS[SAT])), waves: [], dutywaves: [], sims: {}, allhands: [],
+    ground: [{ rid: 'rold', prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', more: ['stiff'], src: 'd18', ...row }] })
+  const frozenEv = (ans: number | null, over: any = {}, d: any = {}): any => ({ iso: SAT_ISO, earns: true, d,
+    inputs: [{ iid: 'd18', person: 'bane', type: 'Training', asks: true, acc: 'g', stand: 'active', win: [9 * 60, 17 * 60], ans, ...over }],
+    sent: {}, mem: 1 })
+  const paid = (day: any, ev: any) => Object.keys(oilEarnedWork(day, ev)).sort()
+
+  it('D18 as it stood: the extra man earned the same as the man who filed it — and on the requester\'s own No, alone', () => {
+    expect(paid(frozenDay(), frozenEv(1))).toEqual(['bane', 'stiff'])
+    expect(paid(frozenDay(), frozenEv(0)), 'the scheduler put him there; it was ordinary work').toEqual(['stiff'])
+    expect(paid(frozenDay(), frozenEv(null))).toEqual(['stiff'])
+    expect(oilEarnedWork(frozenDay(), frozenEv(1)).bane.length, 'the requester in the input half only').toBe(1)
+  })
+
+  it('a refusal frozen with the day took the extra off without touching the requester; a cancelled row credited neither', () => {
+    expect(paid(frozenDay(), frozenEv(1, {}, { people: { [`stiff|${ITEM18}`]: 'deny' } }))).toEqual(['bane'])
+    expect(paid(frozenDay({ cx: true }), frozenEv(1, { stand: 'cx' }))).toEqual([])
+  })
+
+  it('an all-day request: the frozen row carries no times, and the extra earned over the claim\'s window', () => {
+    const work = oilEarnedWork(frozenDay({ str: '', end: '' }), frozenEv(1, { win: [0, 1439] }))
+    expect([work.stiff[0].s, work.stiff[0].e]).toEqual([0, 1439])
+  })
+
+  it('…and a day PUBLISHED with a block of that shape reads as unchanged by the build: nothing pending, the same OIL', () => {
+    claim({ iid: 'old18', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g', allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
+    groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'old18' })
+    publish(SAT)
+    expect(dayHasChanges(SAT), 'freshly published, nothing pending').toBe(false)
+    /* age the issued block the way a book published before the build really is: a claim names its one `person` */
+    const snap: any = daySnapOf(SAT, dayCurVer(SAT))
+    for (const i of snap.d.oilev.inputs) { i.person = i.people.length ? i.people[0] : i.ph; delete i.people; delete i.ph }
+    expect(dayHasChanges(SAT), 'nothing underneath changed, so nothing may be pending').toBe(false)
+    expect(figure(SAT, 'bane'), 'and the man it credited is still credited').toBe('FO')
   })
 })
 
@@ -588,9 +665,14 @@ describe('rank 4 — the BINDING half: a signature given before `stand` existed'
   /* EXACTLY the string the old build wrote, reproduced here and not taken from
      production, so this test defines what "an old binding" is rather than
      agreeing with whatever the current serialiser happens to do. */
+  /* (THAT BUILD'S CLAIM NAMED ONE `person` — the man, or the placeholder that held the request. A claim made since the
+     one-rule build ([ALL-AVAIL-AS-MEMBER] step 2 (d), 12 Oct 26) carries `people` and `ph` instead, so the day as it
+     stands is written the way that build wrote it: its one person. The string is the same one, character for
+     character — which is the point of the test.) */
+  const onePerson = (i: any) => i.person ?? (i.ph || (i.people || [])[0])
   const oldBuildKey = (ev: any) => {
     if (!ev || !ev.earns) return ''
-    const ins = ev.inputs.map((i: any) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+    const ins = ev.inputs.map((i: any) => `${i.iid}:${onePerson(i)}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
     const sent = Object.keys(ev.sent).sort().map((k: string) => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
     return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
   }

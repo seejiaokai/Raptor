@@ -2,8 +2,8 @@ import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
-import { shiftKeys, seatRow } from './keys'
+import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
@@ -432,7 +432,7 @@ export function armTargetExists(key:any){
        INPUT by iid, not a schedule row — rowRef knows nothing of that grammar,
        so it is answered here directly: the arm is live exactly as long as the
        input record it names still exists. */
-    if(k.indexOf('iu:')===0)return INPUTS.some((i:any)=>i.iid===k.slice(3));
+    if(k.indexOf('iu:')===0){const p=iuParts(k); return !!p&&INPUTS.some((i:any)=>i.iid===p.iid&&(!p.person||holds(i,p.person)));}
     return rowRef(k.slice(0,k.indexOf(':')),k.slice(k.indexOf(':')+1).split('.'))!=null;
   }catch(_){ return false; }}
 /* ---- board line / wave / panel controls --------------------------------
@@ -466,7 +466,7 @@ export const rollCx=(f:any)=>{f.cx=f.aircraft.length>0&&f.aircraft.every((a:any)
    record from this year's card. The RAW field, never baseYear(): a fallback
    that moved with the loaded week would change the key on every week switch
    and orphan the ground rows that store it as `src`. */
-export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}|${inp.yr==null?'':inp.yr}`;}
+export function inpKey(inp:any){return `${leadOf(inp)}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}|${inp.yr==null?'':inp.yr}`;}
 /* A FILING IS COUNTED FROM THE FILING, NEVER MARKED ON THE DAYS ([DB-READINESS] group A, phase 6 (b); data-model.md §3
    ScheduleWeek — the `inp:` marks are "not stored at all — worked out on read"). Filing under Unavailable, its undo and
    the adoption of a standing row used to write an `inp:<di>.<id>` mark into the book of EVERY loaded day the request
@@ -500,7 +500,7 @@ export function acceptInput(di:any,inp:any,dest:any){
   /* "UNAVAILABLE" DESCRIBES A REAL PERSON'S DAY ([INPUT-ALL-AVAIL]): an input filed for ALL AVAIL / ALL has no day to
      describe, and under Unavailable its person cell is a drop target that would turn it into one man's input. The
      button is not drawn for one (ui/html.ts accBtns); this is the door behind it. */
-  if(dest==='u'&&isSpecial(inp.person))return false;
+  if(dest==='u'&&isPlaceholderInput(inp))return false;
   if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
   /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
      was the content key inpKey). Content keys are not unique — two inputs

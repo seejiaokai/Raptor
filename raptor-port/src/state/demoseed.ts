@@ -41,7 +41,7 @@
    "NaN:NaN" there — found via inputs.test.tsx's sort-inversion test once
    this seed added its first two half-day rows. Writing the real shape the
    UI itself produces is the fix, not a test workaround. */
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, leadOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 
 const DEMO_SANS: any[] = [
@@ -200,9 +200,17 @@ export function seedDemoStamps() {
 
    Same boot-only home and idempotence as the seeds above: a fresh (un-hydrated) store only, pushed before the ids are
    minted, and skipped where the group is already there or the roster cannot give four people. */
+/* ONE RECORD WITH ITS FOUR PEOPLE since the one-rule build (step 2 (i), 12 Oct 26 — owner D756: "an input is stored as
+   ONE record with the list of its people"; D401's precedent: only the demo seed is rewritten, no stored record is
+   converted). Each entry says who put that person in — the admin, at the filing. "ALREADY SEEDED?" knows both shapes:
+   the one record (by its own moment and words), and the old group id a store seeded before this build still carries —
+   so an old store is never seeded twice (Fable's read of the plan). */
 const DEMO_GRP = 'g-demo-brief'
+const DEMO_BRIEF_AT = new Date(2026, 5, 25, 14, 32).getTime()
+const isDemoBrief = (r: any) => !!r && (r.grp === DEMO_GRP
+  || (r.type === 'Meeting' && r.date === 'Jul 23' && r.remarks === 'Flight safety brief' && r.at === DEMO_BRIEF_AT))
 export function seedDemoGroup() {
-  if (INPUTS.some((r: any) => r && r.grp === DEMO_GRP)) return
+  if (INPUTS.some(isDemoBrief)) return
   const live = (id: string) => PEOPLE[id] && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers
   const admin = Object.keys(PEOPLE).find(id => PEOPLE[id].cs === 'Saber' && live(id))
   if (!admin) return
@@ -211,10 +219,10 @@ export function seedDemoGroup() {
   const team = [admin, ...pilots, ...wso]
   if (team.length < 4) return
   /* filed four weeks ahead — well inside the cut-off, so the demo's one shared input is not also its LATE example */
-  const at = new Date(2026, 5, 25, 14, 32).getTime()
-  for (const person of team) INPUTS.push({
-    person, type: 'Meeting', date: 'Jul 23', allday: false, s: 600, e: 660, remarks: 'Flight safety brief', mod: '2026-06-25',
-    grp: DEMO_GRP, grpBy: admin, by: admin, at, modBy: admin, modAt: at,
+  const at = DEMO_BRIEF_AT
+  INPUTS.push({
+    people: team.map(p => ({ p, by: admin, at })), type: 'Meeting', date: 'Jul 23', allday: false, s: 600, e: 660, remarks: 'Flight safety brief', mod: '2026-06-25',
+    by: admin, at, modBy: admin, modAt: at,
   })
 }
 
@@ -243,14 +251,16 @@ export function seedDemoPlaceholders() {
   if (!admin || !PEOPLE.allavail || !PEOPLE.all) return
   const at = new Date(2026, 5, 26, 9, 15).getTime()
   const recs: any[] = [
-    { person: 'allavail', type: 'Duty', date: 'Jul 25', allday: false, s: 540, e: 720, remarks: 'Hangar clean-up', oil: { '2026-07-25': 0.5 } },
+    { ph: 'allavail', type: 'Duty', date: 'Jul 25', allday: false, s: 540, e: 720, remarks: 'Hangar clean-up', oil: { '2026-07-25': 0.5 } },
     /* …and it carries a TITLE of its own ([INPUT-OWN-TITLE], D715): the one demo input that is named by something other
        than its kind, so a fresh boot shows the title on the month, the day and the schedule, its kind small beside it */
-    { person: 'all', type: 'Event', title: 'Sports afternoon', date: 'Jul 22', allday: false, s: 900, e: 1020, remarks: 'PT kit' },
+    { ph: 'all', type: 'Event', title: 'Sports afternoon', date: 'Jul 22', allday: false, s: 900, e: 1020, remarks: 'PT kit' },
   ]
-  for (const rec of recs) {
-    if (INPUTS.some((r: any) => r && r.person === rec.person && r.type === rec.type && r.date === rec.date)) continue
-    INPUTS.push({ ...rec, mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
+  /* each written as the app writes an input since the one-rule build — the placeholder its one entry (step 2 (i)); a
+     store seeded before it carries the old shape, which the test below reads too */
+  for (const { ph, ...rec } of recs) {
+    if (INPUTS.some((r: any) => r && String(leadOf(r)) === ph && r.type === rec.type && r.date === rec.date)) continue
+    INPUTS.push({ ...rec, people: [{ p: ph, by: admin, at }], mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
   }
 }
 

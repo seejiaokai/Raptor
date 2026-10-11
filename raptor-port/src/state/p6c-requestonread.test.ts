@@ -11,7 +11,7 @@
    real saved store (the Memory backend behind the whiteboard) and reads what reached storage; a "reload" is a second boot
    from the same store. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, idsOf, inpId } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -41,7 +41,7 @@ import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
 import { afterSchedMutate } from './view'
 import * as view from './view'
-import { commitNewInput, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
+import { commitNewInput, commitInputEdit, commitInput, draftOf, removeInput } from '../ui/inputedit'
 import '../ui/reqrow'      // the door a typed box of a request's row goes through (D739, D740) — it installs itself for the store's writer
 import { deletePerson } from './person-delete'
 
@@ -748,7 +748,13 @@ function bringBack(di: number, a: any) {
   expect(reqOf(String(((DAYS[di] as any).ground.find((g: any) => g && g.kept) || {}).src)).acc, 'filed under Unavailable').toBe('u')
 }
 describe('phase 6 (c) — the FULL check\'s final read: a kept row on a day its request covers is not its row', () => {
-  it('Astra final #1 — OIL: a second man on the dead row of a request filed under Unavailable earns nothing from it', async () => {
+  /* RE-EXPRESSED ON THE ONE RECORD (the one-rule build, step 2 — owner D755: "a row that came from an input IS the input:
+     whoever stands on it … is in the input"; D762: one OIL answer for everyone in it). Until then a second man was put on
+     the request's row by hand (`more`) and earned from the ROW (D18). A man on an input's row is now one of the input's
+     people, put there through its one writer, and earns on the INPUT's answer — so "a second man on the dead row" is a
+     man who has since been taken OUT of the input, whose puck a parked plan still carries. The rule under test is
+     unchanged: a row that carries `kept` is never the request's row, and nobody earns from it. */
+  it('Astra final #1 — OIL: a man still drawn on the dead row of a request filed under Unavailable, and no longer in the request, earns nothing from it (D755, D762)', async () => {
     await boot(new MemoryBackend())
     /* an earning Saturday, as the OIL tests make one (in the app a Leave War period covering it does — D19) */
     const earning = HOOKS.oilEarningDay, iso = HOOKS.oilDayISO
@@ -756,17 +762,24 @@ describe('phase 6 (c) — the FULL check\'s final read: a kept row on a day its 
     HOOKS.oilDayISO = (di: number) => (di === SAT ? '2026-07-18' : '2026-07-15')
     try {
     const iid = file({ type: 'Training', date: 'Jul 18', s: 540, e: 1020, remarks: 'weekend course' })
-    schedWrite(SCHED_TYPES.mutate, () => { reqOf(iid).oil = { '2026-07-18': 1 }; afterSchedMutate() })   // his answer: yes
-    const earnsFromIt = () => (oilEarnedWork(DAYS[SAT], oilEvidenceOf(SAT))['yeti'] || []).filter((w: any) => w.item === 'i:' + iid)
-    const ri = (DAYS[SAT] as any).ground.findIndex((g: any) => g && g.src === iid)
-    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[SAT] as any).ground[ri].more = ['yeti']; afterSchedMutate() })
-    expect(earnsFromIt().length, 'the premise: on the request\'s standing row Bolt earns (D18)').toBeGreaterThan(0)
-    const a = deadUnavailRow(iid, SAT)
+    schedWrite(SCHED_TYPES.mutate, () => { reqOf(iid).oil = { '2026-07-18': 1 }; afterSchedMutate() })   // the input's answer: yes
+    const earnsFromIt = (p = 'yeti') => (oilEarnedWork(DAYS[SAT], oilEvidenceOf(SAT))[p] || []).filter((w: any) => w.item === 'i:' + iid)
+    /* the scheduler puts Bolt on the request's row: he joins the input (its one writer, from the schedule) */
+    expect(commitInput(reqOf(iid), draftOf(reqOf(iid)), ['bane', 'yeti'], { sched: true })).toBe(true)
+    expect(idsOf(reqOf(iid)), 'one record, both in it').toEqual(['bane', 'yeti'])
+    expect(rowOf(iid, SAT)!.row.more, 'and the row shows him').toEqual(['yeti'])
+    expect(earnsFromIt().length, 'the premise: in the input, Bolt earns on its one answer (D762)').toBeGreaterThan(0)
+    const a = deadUnavailRow(iid, SAT)                                // Plan A parked with the row — Bolt on it
+    /* Bolt is taken out of the input: the parked plan's row is the only place that still draws him */
+    expect(commitInput(reqOf(iid), draftOf(reqOf(iid)), ['bane'], { sched: true })).toBe(true)
+    expect(idsOf(reqOf(iid))).toEqual(['bane'])
     bringBack(SAT, a)
     const dead = rowOf(iid, SAT)!.row
     expect(dead.kept, 'the dead row is back').toBe(true)
     expect(dead.more, 'with Bolt on it').toContain('yeti')
     expect(earnsFromIt(), 'Bolt earns nothing from a row that is not the request\'s').toEqual([])
+    /* the control: the claim itself is alive — the request's own man still earns on its answer, so "nothing" is the dead row's */
+    expect(earnsFromIt('bane').length, 'Ranger, who IS in it, still earns').toBeGreaterThan(0)
     } finally { HOOKS.oilEarningDay = earning; HOOKS.oilDayISO = iso }
   })
   it('Astra final #2 — a version issued with that dead row and "Unavailable": Accepted since, the load puts both back (D98)', async () => {

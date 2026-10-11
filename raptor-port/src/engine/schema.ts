@@ -168,14 +168,35 @@ export type InputAcc = 'g' | 'u' | 'r'
 /** Which SANS events a SANS Availability input offers: fly, OFT, AMT. */
 export type SansOffer = { f?: true; o?: true; a?: true }
 
+/** One of an input's people (`Input.people`). */
+export type InputPerson = {
+  /** A PEOPLE id, or a placeholder (`allavail` / `all` — at most one in an input, D753). */
+  p: string
+  /** Who put THIS person in (a PEOPLE id), and when (ms) — the filer for the people an input was filed with. */
+  by?: string
+  at?: number
+  /** His OWN late date, kept only where it is later than the input's `mod` — only a person added later can be late. */
+  mod?: string
+  /** The input's `hand` when he was put in: a scheduler's OIL switch about him made under an earlier holding reads as
+   *  nothing (engine/oilev.ts pruneHandedOverDecisions). Absent = 0, in it from the filing. */
+  h?: number
+}
+
 /** One filed input (leave / away / medical / activity). */
 export type Input = {
   /** Stable opaque id (`newId('i')`, engine/newid.ts), minted at creation — engine (`mintInpIds` at boot, `inpId` on add). What filing/accept/undo/edit address by (13 Sep 26, ARCH-STACK 1A). Absent only inside a seed literal before boot. */
   iid?: string
   /** Its place in the list of requests — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `Input.sortIndex`). Absent only inside a seed literal before boot. */
   ord?: number
-  /** A PEOPLE id — seed; screen. */
-  person: string
+  /** WHO IS IN IT — the list of its people, in the order they joined ([ALL-AVAIL-AS-MEMBER], owner D756, D759 — 12 Oct
+   *  26: "an input is stored as ONE record with the list of its people"). Every input a command writes carries it — an
+   *  input for one person is a list of one. Read through engine/inputs.ts peopleOf, never directly — screen
+   *  (ui/inputedit.tsx commitInput, commitNewInput; engine/inputown.ts; the demo seed). */
+  people?: InputPerson[]
+  /** THE OLD SHAPE — a record stored before the one-rule build, and every verbatim seed literal: its one person (a
+   *  PEOPLE id, or a placeholder). It reads as a one-person input for ever (peopleOf) and is rewritten with `people`
+   *  the first time who is in it changes; nothing stored is converted (D56). A record has `people` or `person`. */
+  person?: string
   /** First day, display form 'Jul 13'; carries a trailing year ('Jan 3 2027') when outside the anchor year — seed; screen. */
   date: string
   /** Last day of a span, same format — seed; screen. */
@@ -211,12 +232,13 @@ export type Input = {
   oil?: Record<string, 0 | 0.5 | 1>
   /** SANS Availability only: which events are offered — screen. */
   sans?: SansOffer
-  /** How many times the request has changed hands — +1 at every change of `person` (ui/inputedit.tsx commitInputEdit);
-   *  absent = 0, never handed on. An OIL decision about its holder records the holding it was made under (`oild.pa`,
+  /** A counter, +1 each time a person is PUT IN after the filing (engine/inputown.ts putPerson, swapPerson; for a record
+   *  in the old shape, at every change of `person` — ui/inputedit.tsx commitInputEdit); absent = 0, never handed on. An OIL decision about its holder records the holding it was made under (`oild.pa`,
    *  engine/oilev.ts), so a refusal made for one holding reads as nothing once the request moves on — even when it
    *  comes back to the same man ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9). */
   hand?: number
-  /** Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
+  /** THE OLD SHAPE ONLY (a record with `people` says this on each entry's `h`).
+   *  Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
    *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
    *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
   leftAt?: Record<string, number>
@@ -233,7 +255,9 @@ export type Input = {
   /** When it was last changed, ms; equal to `at` on a record nobody has changed. Beside `mod`, never instead of it:
    *  `mod` is the DATE the late rule reads and is written exactly as before — screen (state/inputstamp.ts). */
   modAt?: number
-  /** A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. The
+  /** NOT WRITTEN ANY MORE (the one-rule build, D756): an input filed for several is ONE record with `people`. A record
+   *  stored before it may still carry the two fields below; it reads as a one-person input (D759 reading 10).
+   *  A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. The
    *  group is kept as one record per man (every reader reads one man's), and an "entry" is worked out on read: the
    *  records sharing a `grp` AND the same shared fields (state/inputgroup.ts entriesOf; owner D654, D655). */
   grp?: string

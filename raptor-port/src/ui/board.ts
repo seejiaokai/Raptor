@@ -19,7 +19,7 @@ import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, d
 import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
-import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
+import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
@@ -1213,12 +1213,14 @@ export function boardChange(e: Event) {
      screen looking saved. */
   const inf = (e.target as HTMLElement).closest('[data-ifld]') as HTMLInputElement | null
   if (inf) {
-    const [id, field] = inf.dataset.ifld!.split('.')
+    const [tail, field] = inf.dataset.ifld!.split('.')
+    /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
+    const at = iuParts('iu:' + tail), id = at ? at.iid : tail
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
     const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
     if (RO) return back()
-    if (setInpField(inp, field as any, inf.value)) notify()
+    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) notify()
     else back()
     return
   }
@@ -1842,8 +1844,8 @@ export function boardTab(n: number) {
       let want = iv
       if (ae.dataset.bfld != null) want = txtGet(ae.dataset.bfld)
       else {
-        const [id, field] = ae.dataset.ifld.split('.')
-        const inp = inpById(id)
+        const [tail, field] = ae.dataset.ifld.split('.')
+        const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)
         if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
       }
       /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —

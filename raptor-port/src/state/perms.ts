@@ -220,6 +220,26 @@ const filerOf = (pid: string, row: any): boolean =>
    person — that stays a scheduler's); he is its filer, read from the record as it WAS on a change or a delete, as it
    IS on a filing; and its kind on both sides is one he may file for others. The commit gate asks it of what a command
    changed; Undo asks it of a step's recorded images, under the switch and the kinds as they stand NOW. */
+/* EVERY ENTRY OF ITS LIST WAS PUT IN BY THIS PERSON (the one-rule build, step 2 (f) — owner D755 (3): "changing it for
+   everyone, once the scheduler has added others, is the scheduler's"; the plan §4.9). An entry with no `by` of its own
+   is the filing's (a record rewritten from the old shape; a filing's first people). */
+const allPutBy = (pid: string, x: any): boolean => peopleOf(x).every((e: any) => !!e && String(e.by ?? x.by ?? '') === pid)
+/** did whoever filed it put in everyone who is in it — is it still wholly its filer's? (for the screens' words) */
+export const filedWhole = (row: any): boolean => !!row && row.by != null && allPutBy(String(row.by), row)
+/* WHO FILED IT ONCE THIS PERSON HAS LEFT IT (Fable's read of the one-rule plan, F13; the plan §4.5 "By Saber"): unchanged
+   unless he is its filer; then whoever put in the NEWEST entry that is not his own — so "who may change it" and the
+   bell's OIL question go to someone still involved. Where every entry left is his own filing, it stays his: he filed
+   it for others and may still change it. ONE body for the writer (ui/inputedit.tsx commitInput) and the check on what
+   a member's command changed (ownPart, below). */
+export function byAfterLeaving(rec: any, pid: string): any {
+  if (!rec || String(rec.by ?? '') !== String(pid)) return rec ? rec.by : undefined
+  let pick: any = null
+  for (const e of peopleOf(rec)) {
+    if (!e || String(e.p) === String(pid) || e.by == null || String(e.by) === String(pid)) continue
+    if (!pick || Number(e.at || 0) >= Number(pick.at || 0)) pick = e
+  }
+  return pick ? pick.by : rec.by
+}
 export function filedForOther(pid: string, before: any, after: any): boolean {
   if (!before && !after) return false
   if (!pid || !membersFileOn()) return false
@@ -227,6 +247,9 @@ export function filedForOther(pid: string, before: any, after: any): boolean {
      re-people, and what he may do to the list is the list's own test, inputBreach below) */
   if (before && after && !Array.isArray(before.people) && !Array.isArray(after.people) && String(before.person) !== String(after.person)) return false
   if (!filerOf(String(pid), before || after)) return false
+  /* …and, for a record that carries its people, every entry of the list AS IT WAS (as it IS, on a filing) was put in
+     by him: once a scheduler has put someone in, changing it for everyone is the scheduler's (D755 (3)) */
+  if (Array.isArray((before || after).people) && !allPutBy(String(pid), before || after)) return false
   return (!before || memberFilesForOthers(before.type)) && (!after || memberFilesForOthers(after.type))
 }
 /* may he file an input of this kind for this man? An admin: anyone, any kind. A member: himself, any kind, as
@@ -271,7 +294,7 @@ export function filerSwitchedOff(rows: readonly any[]): boolean {
 }
 /* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
    (D200: "the server's rules at the database step are a translation of an agreed list") */
-export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED for him (`filedBy` or `groupFiledBy` = my person; D654, D655, D658): I may create, change and delete it, and answer its OIL question for him (D660); never move it to another person; an input filed for ALL AVAIL / ALL counts as filed for another person — one of six kinds, one day, never in a group (D700, D711, D712, D713)'
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); an input filed for ALL AVAIL / ALL counts as filed for another person — one of six kinds, one day (D700, D711, D712, D713)'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
@@ -518,8 +541,8 @@ const personOfInput = (v: any): string | null => { const p = v ? leadOf(v) : nul
    of a change (undo/derive.ts). What a save stamps beside the list — who last changed it and when — is no part of the
    comparison; everything the input SAYS is. */
 const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand'])
-const saysSame = (a: any, b: any): boolean => {
-  const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k)))
+const saysSame = (a: any, b: any, skip?: string): boolean => {
+  const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k) && k !== skip))
   for (const k of ks) if (JSON.stringify(a[k] ?? null) !== JSON.stringify(b[k] ?? null)) return false
   return true
 }
@@ -533,6 +556,9 @@ export function ownPart(pid: string, before: any, after: any): boolean {
   if (more.length !== less.length + 1) return false
   const rest = more.filter((e: any) => !(e && String(e.p) === String(pid)))
   if (rest.length !== less.length || JSON.stringify(rest) !== JSON.stringify(less)) return false
+  /* who filed it may have passed on with him (byAfterLeaving): that, and nothing else, may differ */
+  const withHim = a.length > b.length ? before : after, without = withHim === before ? after : before
+  if ((without.by ?? null) === (byAfterLeaving(withHim, pid) ?? null)) return saysSame(before, after, 'by')
   return saysSame(before, after)
 }
 /* THE SCHEDULE'S OWN RECORDS. A member changes none of them, by any command ([DB-READINESS] group A, phase 6 (c), 1 Oct 26 —
@@ -582,6 +608,20 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
   const own = ownPart(pid, b, f)
   if (!own && !filedForOther(pid, b, f)) return `another person's input`
   if (replayed || !f) return null
+  /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
+     to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
+  if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`
+  /* NOBODY'S ENTRY IS FORGED: one he puts in names him as who put it in; one that was there is left exactly as it was */
+  { const was = new Map<string, any>(peopleOf(b).map((e: any) => [String(e && e.p), e] as [string, any]))
+    for (const e of (Array.isArray(f.people) ? f.people : [])) {
+      if (!e) continue
+      const old = was.get(String(e.p))
+      if (b && Array.isArray(b.people) && old) { if (JSON.stringify(old) !== JSON.stringify(e)) return `who put a person in an input`; continue }
+      if (old) continue                                        // the record's first rewrite with its list: his entry is the old filing's
+      const piece = env.changes.some(o => o !== c && isInputChange(o) && o.before != null && peopleOf(o.before).some((x: any) => x && JSON.stringify(x) === JSON.stringify(e)))
+      if (!piece && e.by != null && String(e.by) !== pid) return `a person put in an input in another person's name`
+      if (!piece && e.by == null && !own) return `a person put in an input with no name to it`
+    } }
   if (!b) {
     /* a piece the app cut from a record of the same man this command changed or deleted */
     const piece = env.changes.some(o => o !== c && isInputChange(o) && o.before != null
@@ -590,10 +630,15 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
       if (own ? (f.by != null && String(f.by) !== pid) : String(f.by ?? '') !== pid) return `an input placed in another person's name`
       const g = f.grp ?? null, gb = f.grpBy ?? null
       if ((g == null) !== (gb == null)) return `a shared input without its filer`
-      if (g != null && String(gb) !== pid && !groupStood(env, g, gb)) return `a shared input filed in another person's name`
+      /* (the old group fields are written by no door any more; a hand-made record carrying them names its maker as the
+         filer or is refused — "it joins a group that already stood" went with D763: a person in a shared input he did
+         not file adds nobody) */
+      if (g != null && String(gb) !== pid) return `a shared input filed in another person's name`
     }
   } else {
-    if (!same(b.by, f.by) || !same(b.at, f.at)) return `who placed an input`
+    /* (who filed it passes on when its filer takes himself out — byAfterLeaving, the one body) */
+    const passed = own && holds(b, pid) && !holds(f, pid) && same(f.by, byAfterLeaving(b, pid))
+    if ((!same(b.by, f.by) && !passed) || !same(b.at, f.at)) return `who placed an input`
     if (!same(b.grp, f.grp) || !same(b.grpBy, f.grpBy)) {
       const made = b.grp == null && b.grpBy == null && f.grp != null && f.grp !== '' && String(f.grpBy ?? '') === pid
       /* …or the record was rewritten with its PEOPLE, where the old group fields go (engine/inputown.ts toPeople) */
@@ -615,18 +660,6 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
   }
   return null
 }
-/* did this group stand, with this filer, BEFORE the command — a record of it the command did not create? */
-function groupStood(env: CommitEnvelope, grp: any, grpBy: any): boolean {
-  const made = new Set<string>()
-  for (const o of env.changes) {
-    if (!isInputChange(o)) continue
-    if (o.before == null) { made.add(o.id); continue }
-    const was: any = o.before
-    if (same(was.grp, grp) && same(was.grpBy, grpBy)) return true
-  }
-  return (INPUTS as any[]).some(r => r && r.iid && !made.has(String(r.iid)) && same(r.grp, grp) && same(r.grpBy, grpBy))
-}
-
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null

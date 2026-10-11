@@ -1,23 +1,48 @@
 // @vitest-environment jsdom
-/* THE ENTRY ON THE ROW, KEPT AS THE ENTRY'S ROWS (`[GROUP-INPUT-ONE-ROW]` step 3; owner D661 — "on the schedule a group
-   input is ONE row holding everyone", D735 — "the row never splits or joins by itself", D450 — a day is saved only by its
-   holder; the plan docs/superpowers/plans/2026-10-10-group-input-one-row-plan.md §4.1, §4.2).
+/* AN INPUT'S ONE ROW, KEPT AS THE INPUT CHANGES ([ALL-AVAIL-AS-MEMBER] step 2 (b), (c); the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3, §4.4). His rulings:
+   D755 — "a row that came from an input IS the input: whoever stands on it … is in the input";
+   D756 — an input is ONE record with the list of its people, so its row is ONE ground row, a whole copy of it;
+   D734 widened — a puck put on the row adds that person to the input, a puck taken off takes him out — on EVERY
+           input's row now, an input of one person included;
+   D98 — a day back to what was published has nothing waiting; D114 — ✕ takes the input off the programme;
+   D271 — one person once on a row; D450 — a day is saved only by its holder (the row is worked out on read).
 
-   A shared input is still one record a man and one ground row a man. This step makes those rows KNOWN as one entry and
-   keeps them alike, in the view — never by a write to the day:
-   - every row of one entry carries one mark, `srcg`, and a man added later lands straight after the last of them
-     with their CX and its reason, red box and information-only — by landing AND by a scheduler's Accept;
-   - a row put BACK where a published version had it goes back there (no reorder waiting);
-   - a grouped row's name box is its own man's: whoever stood there when the request became part of a group moves to
-     that row's extras — and, if he is himself made one of the people, comes off it and stands on his own row, a
-     scheduler's refusal of his OIL carried with him;
-   - an armed place is put down when a row lands above it;
-   - a saved day template takes one row for the one row.
+   What this file holds, on the one record and the one row:
+   - an input filed for several lands ONE row — the first to join in its name box, the rest under it — and no row
+     carries an entry mark;
+   - a person added later is on the SAME row (the same row id, the same place in the list), under the people already
+     there, and the row keeps what the scheduler set on it; a person taken out leaves the row standing;
+   - Accept after ✕ brings the row back with everyone on it; on a published day it goes back where the published
+     version had it, so nothing is waiting (D98);
+   - a row made before the build, carrying someone who is not in its input — a scheduler's man, a placeholder — is
+     re-made once, whole, without him (the plan's R6: stored demo rows only, D56 — told to the owner);
+   - an armed place is put down when a row lands or goes above it; a saved day template takes one row for the input's
+     row and nothing of the request.
+
+   IT REPLACES the `[GROUP-INPUT-ONE-ROW]` step 3 file of this name (D661, D735 — one record a man and one ground row a
+   man, known as one entry by a mark `srcg` and kept alike in the view). RETIRED, each because D755 / D756 took its
+   subject away — there is one record and one row, so there are no sibling rows to place, mark or part:
+   - "a group filed for three: three rows, one `srcg` … side by side, and read as ONE row" — the ENTRY MARK: here as
+     one row, and no mark;
+   - "BY LANDING: he lands straight after the last of them … with their CX and its reason, red box and
+     information-only" and "BY ACCEPT: a man taken off the programme and accepted again goes back after the last of
+     them" — SIBLING PLACEMENT: a person added stands on the row itself, and one man is never taken off the programme
+     alone (one input, one filing); here as "the SAME row" and "Accept after ✕";
+   - "a man whose own record is changed alone is his own row again — the rows are honestly drawn apart" (D735) — there
+     is no record of his own to change;
+   - "a one-man request with ALL AVAIL in its name box, made a group: … ALL AVAIL among its extras, nothing dropped"
+     (D46, D745) — a placeholder no longer rides one man's place: D745 is set aside by D755, and ALL AVAIL as one of an
+     input's people is step 3 of the build; here as R6 (it comes off);
+   - "a scheduler's man in the name box, his OIL refused, then made one of the people: he stands on his OWN row" and
+     "…and Undo of that save" (D470 as changed by D755) — there is no row of his own: here he joins the one row, once;
+   - "a man standing among a member's extras who is made one of the people comes off the extras" — the row has no
+     extras of its own: here as "the row is exactly the input's people".
    Driven through the app's own doors on a real saved store, as state/p6c-requestonread.test.ts is; a "reload" is a
    second boot from the same store.
    Behaviour register: GI4. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, idsOf } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -25,11 +50,9 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { SCHED, signOf, dayShownPendCount } from '../engine/publish'
 import { acceptInput, unacceptInput } from '../engine/slots'
-import { entryIdOf } from '../engine/inputentry'
-import { groundGroups } from '../engine/grouprows'
 import { tplFromDay } from '../engine/daytpl'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { initStore, weekStashSnap, weekDirty, loadWeek, writeSlot, writeFill } from './store'
+import { initStore, weekStashSnap, weekDirty, loadWeek } from './store'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from './sched-commit'
 import { setSession, setMe, DEFAULT_ME } from './auth'
 import { hydrate, wirePersist } from './persist'
@@ -44,7 +67,9 @@ import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
 import { afterSchedMutate, setPage } from './view'
 import * as view from './view'
-import { commitNewInput, commitGroup, draftOf } from '../ui/inputedit'
+import { commitNewInput, commitInput, draftOf } from '../ui/inputedit'
+import { rowPut, rowTake } from '../ui/reqdoor'
+import * as pops from '../ui/pops'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -67,6 +92,7 @@ function resetWorld() {
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
   SCHED.signBind = {}; SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
   view.WARNOFF.clear(); view.disarmSlot()
+  pops.setInpEdit(null); pops.setOilAsk(null)
   stashClear()
 }
 async function boot(be: MemoryBackend): Promise<Whiteboard> {
@@ -86,203 +112,262 @@ async function boot(be: MemoryBackend): Promise<Whiteboard> {
 }
 async function reload(be: MemoryBackend): Promise<Whiteboard> { await vi.advanceTimersByTimeAsync(1000); resetWorld(); return boot(be) }
 
+const TITLE = 'Range safety brief'
 const ground = () => ((DAYS[WED] as any).ground || []) as any[]
-const riOf = (iid: string) => ground().findIndex((g: any) => g && g.src === iid)
-const rowOf = (iid: string) => ground().find((g: any) => g && g.src === iid)
-const rec = (p: string, type = 'Training') => INPUTS.find((x: any) => x.person === p && x.type === type && x.date === 'Jul 15') as any
-const iidOf = (p: string, type = 'Training') => String(inpId(rec(p, type)))
-/* the row order of the day's requests, by who they are for — hand-built rows of the seed are left out */
-const order = () => ground().filter((g: any) => g && g.src).map((g: any) => String(g.who))
-const DRAFT = () => draftOf({ person: 'bane', type: 'Training', date: 'Jul 15', yr: 2026, allday: false, s: 660, e: 720, remarks: 'range safety brief' })
-/* a shared input filed for these people, in this order — the Inputs calendar's own save */
-const fileGroup = (people: string[]) => expect(commitGroup(null, DRAFT(), people)).toBe(true)
-const entry = (p: string) => ({ rows: INPUTS.filter((x: any) => x.grp && x.grp === rec(p).grp && x.type === 'Training') })
-const setPeople = (of: string, people: string[]) => expect(commitGroup(entry(of), DRAFT(), people)).toBe(true)
-/* an ordinary one-man request beside it */
-const fileOne = (p: string, type = 'Meeting') => expect(commitNewInput(draftOf({ person: p, type, date: 'Jul 15', yr: 2026, allday: false, s: 840, e: 900, remarks: '' }))).toBe(true)
-const mark = (iids: string[], o: any) => schedWrite(SCHED_TYPES.mutate, () => { for (const id of iids) Object.assign(rowOf(id), o); afterSchedMutate() })
+const rec = (title = TITLE) => { const l = INPUTS.filter((x: any) => x.title === title && x.date === 'Jul 15') as any[]; expect(l, `ONE record: ${title}`).toHaveLength(1); return l[0] }
+const iidOf = (title = TITLE) => String(inpId(rec(title)))
+const people = (title = TITLE) => idsOf(rec(title)).map(String)
+const riOf = (title = TITLE) => ground().findIndex((g: any) => g && g.src === iidOf(title))
+const rowOf = (title = TITLE) => ground()[riOf(title)]
+const rowKey = (title = TITLE) => `g:${WED}.${riOf(title)}`
+/* who stands on the input's row: its name box, then the places under it */
+const onRow = (title = TITLE) => [rowOf(title).who, ...(rowOf(title).more || [])].filter(Boolean)
+/* the place a person stands on, on the input's row */
+const keyOf = (p: string, title = TITLE) => { const r = rowOf(title), k = rowKey(title); if (r.who === p) return k; const n = (r.more || []).indexOf(p); expect(n, `${p} is on the row`).toBeGreaterThanOrEqual(0); return `${k}.x${n}` }
+/* the day's rows that came from an input, in the list's order, by the input's name — hand-built rows of the seed are left out */
+const order = () => ground().filter((g: any) => g && g.src).map((g: any) => String(g.prog))
+const DRAFT = (title = TITLE, over: any = {}) => ({ ...draftOf({ person: 'bane', type: 'Training', title, date: 'Jul 15', yr: 2026, allday: false, s: 660, e: 720, remarks: 'bring your kit' }), ...over })
+/* ONE input filed for these people, in this order — the one writer (ui/inputedit.tsx commitInput) */
+const file = (ppl: string[], title = TITLE) => expect(commitInput(null, DRAFT(title), ppl)).toBe(true)
+/* …and who it holds changed in its own window */
+const setPeople = (ppl: string[], title = TITLE) => expect(commitInput(rec(title), draftOf(rec(title)), ppl)).toBe(true)
+/* an input of one person beside it, by its own title */
+const fileOne = (p: string, title: string) => expect(commitNewInput({ ...DRAFT(title, { sTime: '14:00', eTime: '15:00' }), person: p, type: 'Meeting' })).toBe(true)
+const mark = (o: any, title = TITLE) => schedWrite(SCHED_TYPES.mutate, () => { Object.assign(rowOf(title), o); afterSchedMutate() })
+const marksOf = (title = TITLE) => { const r = rowOf(title); return { cx: r.cx, cxr: r.cxr, flag: r.flag, info: r.info } }
 const publish = (di: number) => { sign(di); commitSetDayApproved(di, true) }
-const off = (p: string) => schedWrite(SCHED_TYPES.mutate, () => { expect(unacceptInput(WED, rec(p))).toBe(true); afterSchedMutate() })
-const on = (p: string) => schedWrite(SCHED_TYPES.mutate, () => { expect(acceptInput(WED, rec(p), 'g')).toBe(true); afterSchedMutate() })
+/* ✕ on the row — the input off the programme — and a scheduler's Accept */
+const off = (title = TITLE) => schedWrite(SCHED_TYPES.mutate, () => { expect(unacceptInput(WED, rec(title))).toBe(true); afterSchedMutate() })
+const on = (title = TITLE) => schedWrite(SCHED_TYPES.mutate, () => { expect(acceptInput(WED, rec(title), 'g')).toBe(true); afterSchedMutate() })
+/* a row as a day stored before the build carries it: people on it who are not in its input, the old hash, the old
+   entry mark — written by its holder, as that day was */
+const asStoredBefore = (who: string, more: string[], title = TITLE) => schedWrite(SCHED_TYPES.mutate, () => {
+  const r = rowOf(title)
+  r.who = who; if (more.length) r.more = more; else delete r.more
+  r.srcv = 'old'; r.srcg = 'g1~old'
+  afterSchedMutate()
+})
 
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date(2026, 6, 13, 9, 0, 0)); resetWorld(); HOOKS.toast = () => {} })
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null })
 
-describe('the rows of one shared input carry one mark and stand together (D661)', () => {
-  it('a group filed for three: three rows, one `srcg` — the entry’s own — side by side, and read as ONE row', async () => {
+describe('an input is ONE row — a whole copy of the input (D755, D756; the plan §4.3)', () => {
+  it('an input filed for three: ONE row — the first to join in the name box, the others under it, no entry mark — and the same row after a reload', async () => {
     const be = new MemoryBackend()
     await boot(be)
-    fileGroup(['rocky', 'bane', 'pike'])
-    const ids = ['rocky', 'bane', 'pike'].map(p => iidOf(p))
-    const marks = ids.map(id => rowOf(id).srcg)
-    expect(marks[0], 'the entry’s own identity').toBe(entryIdOf(rec('bane')))
-    expect(new Set(marks).size).toBe(1)
-    const at = ids.map(riOf).sort((a, b) => a - b)
-    expect(at[2]! - at[0]!, 'side by side').toBe(2)
-    const g = groundGroups(DAYS[WED])[at[0]!]!
-    expect(g.members.slice().sort((a, b) => a - b)).toEqual(at)
+    file(['rocky', 'bane', 'pike'])
+    expect(INPUTS.filter((x: any) => x.title === TITLE), 'one record').toHaveLength(1)
+    expect(ground().filter((g: any) => g && g.src === iidOf()), 'one row').toHaveLength(1)
+    expect(people()).toEqual(['rocky', 'bane', 'pike'])
+    expect([rowOf().who, rowOf().more]).toEqual(['rocky', ['bane', 'pike']])
+    expect('srcg' in rowOf()).toBe(false)
+    const rid = rowOf().rid
+    expect(rid, 'the row has its id').toBeTruthy()
     await reload(be)
-    expect(['rocky', 'bane', 'pike'].map(p => rowOf(iidOf(p)).srcg), 'after a reload').toEqual(marks)
+    expect([rowOf().who, rowOf().more, rowOf().rid], 'after a reload').toEqual(['rocky', ['bane', 'pike'], rid])
+    expect('srcg' in rowOf()).toBe(false)
   })
 
-  it('an ordinary request’s row carries no such mark', async () => {
+  it('an input of one person: one row, nobody under it — and no entry mark either', async () => {
     await boot(new MemoryBackend())
-    fileOne('bane')
-    expect('srcg' in rowOf(iidOf('bane', 'Meeting'))).toBe(false)
-  })
-
-  it('a man whose own record is changed alone is his own row again — the rows are honestly drawn apart (D735)', async () => {
-    await boot(new MemoryBackend())
-    fileGroup(['bane', 'pike'])
-    const a = rowOf(iidOf('bane')).srcg
-    expect(commitGroup({ rows: [rec('pike')] }, { ...DRAFT(), end: '2026-07-16' }, ['pike']), 'his record alone, another last day').toBe(true)
-    const pk = INPUTS.find((x: any) => x.person === 'pike' && x.type === 'Training') as any
-    const row = ground().find((g: any) => g && g.src === String(inpId(pk)))
-    expect(row.srcg, 'another entry of the same group').not.toBe(a)
-    expect([row.prog, row.str, row.end], 'though the row shows the same name and times').toEqual(['TRAINING', '11:00', '12:00'])
-    const groups = groundGroups(DAYS[WED])
-    expect(groups[riOf(iidOf('bane'))]!.members).toHaveLength(1)
-    expect(groups[ground().indexOf(row)]!.members).toHaveLength(1)
+    fileOne('bane', 'Solo check')
+    const row = rowOf('Solo check')
+    expect(row.who).toBe('bane')
+    expect('more' in row, 'no key where there is nobody to put in it').toBe(false)
+    expect('srcg' in row).toBe(false)
   })
 })
 
-describe('a man added later joins the rows where they stand, with what the scheduler set on them (the plan §4.2)', () => {
-  it('BY LANDING: he lands straight after the last of them — above a row filed since — with their CX and its reason, red box and information-only; after a reload too', async () => {
+describe('the row follows who is in the input — the same row, never another (D755; D734 widened)', () => {
+  it('a person added later — in the input’s own window, or put on the row — is on the SAME row, under the people already there, with what the scheduler set on it; after a reload too', async () => {
     const be = new MemoryBackend()
     await boot(be)
-    fileGroup(['bane', 'pike'])
-    fileOne('rocky')                                      // a row below the two
-    expect(order()).toEqual(['bane', 'pike', 'rocky'])
-    mark([iidOf('bane'), iidOf('pike')], { cx: true, cxr: 'WX', flag: true, info: true })
-    setPeople('bane', ['bane', 'pike', 'split'])
-    expect(order(), 'after the last of his entry, not at the end').toEqual(['bane', 'pike', 'split', 'rocky'])
-    const row = rowOf(iidOf('split'))
-    expect({ cx: row.cx, cxr: row.cxr, flag: row.flag, info: row.info }).toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
-    expect(groundGroups(DAYS[WED])[riOf(iidOf('bane'))]!.members, 'so the three are still one row').toHaveLength(3)
+    file(['bane', 'pike'])
+    fileOne('rocky', 'Filed since')                        // a row below it
+    expect(order()).toEqual([TITLE.toUpperCase(), 'FILED SINCE'])
+    mark({ cx: true, cxr: 'WX', flag: true, info: true })
+    const rid = rowOf().rid, at = riOf()
+    setPeople(['bane', 'pike', 'split'])
+    expect(onRow(), 'under the people already there').toEqual(['bane', 'pike', 'split'])
+    expect(rowPut(`${rowKey()}.+`, 'ignite'), 'and one put on the row’s "+ add"').toBe('done')
+    expect(people()).toEqual(['bane', 'pike', 'split', 'ignite'])
+    expect(onRow()).toEqual(['bane', 'pike', 'split', 'ignite'])
+    expect([rowOf().rid, riOf()], 'the same row, where it stood').toEqual([rid, at])
+    expect(order(), 'no second row; the row filed since still below it').toEqual([TITLE.toUpperCase(), 'FILED SINCE'])
+    expect(marksOf(), 'CX and its reason, the red box, information only: the row’s, kept').toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
     await reload(be)
-    expect(order(), 'after a reload').toEqual(['bane', 'pike', 'split', 'rocky'])
-    const again = rowOf(iidOf('split'))
-    expect({ cx: again.cx, cxr: again.cxr, flag: again.flag, info: again.info }).toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
+    expect(onRow(), 'after a reload').toEqual(['bane', 'pike', 'split', 'ignite'])
+    expect([rowOf().rid, riOf()]).toEqual([rid, at])
+    expect(marksOf()).toEqual({ cx: true, cxr: 'WX', flag: true, info: true })
+    expect(order()).toEqual([TITLE.toUpperCase(), 'FILED SINCE'])
   })
 
-  it('BY ACCEPT: a man taken off the programme and accepted again goes back after the last of them, with their marks', async () => {
+  it('a person taken out leaves the row standing — the others in their order; the first to join gone, the next takes the name box', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    file(['bane', 'pike', 'split', 'rocky'])
+    mark({ flag: true })
+    const rid = rowOf().rid, at = riOf()
+    expect(rowTake(keyOf('pike')), 'his puck taken off the row').toBe('done')
+    expect(people()).toEqual(['bane', 'split', 'rocky'])
+    expect(onRow()).toEqual(['bane', 'split', 'rocky'])
+    setPeople(['split', 'rocky'])                          // the first to join, taken out in the input’s own window
+    expect([rowOf().who, rowOf().more]).toEqual(['split', ['rocky']])
+    expect(rowTake(keyOf('rocky'))).toBe('done')
+    expect(rowOf().who).toBe('split')
+    expect('more' in rowOf(), 'down to one: nothing is kept under the name box').toBe(false)
+    expect([rowOf().rid, riOf(), rowOf().flag], 'the same row throughout, its red box kept').toEqual([rid, at, true])
+    expect(ground().filter((g: any) => g && g.src === iidOf())).toHaveLength(1)
+    await reload(be)
+    expect([onRow(), rowOf().rid]).toEqual([['split'], rid])
+  })
+
+  it('Accept after ✕ brings the row back with everyone on it; Undo of a ✕ brings back the very row, with what the scheduler set on it', async () => {
     await boot(new MemoryBackend())
-    fileGroup(['bane', 'pike', 'split'])
-    fileOne('rocky')
-    off('pike')
-    expect(order()).toEqual(['bane', 'split', 'rocky'])
-    mark([iidOf('bane'), iidOf('split')], { flag: true })
-    on('pike')
-    expect(order()).toEqual(['bane', 'split', 'pike', 'rocky'])
-    expect(rowOf(iidOf('pike')).flag).toBe(true)
+    file(['bane', 'pike', 'split'])
+    off()
+    expect(riOf(), '✕: the row goes').toBe(-1)
+    expect(people(), 'and its people stay in the input').toEqual(['bane', 'pike', 'split'])
+    on()
+    expect(ground().filter((g: any) => g && g.src === iidOf()), 'one row again').toHaveLength(1)
+    expect(onRow(), 'everyone on it, in the order they joined').toEqual(['bane', 'pike', 'split'])
+    mark({ flag: true })
+    const rid = rowOf().rid
+    off()
+    expect(riOf()).toBe(-1)
+    globalUndo()
+    expect(onRow(), 'Undo: everyone on it').toEqual(['bane', 'pike', 'split'])
+    expect([rowOf().rid, rowOf().flag], 'the very row, its red box with it').toEqual([rid, true])
   })
 
   for (const hand of [false, true]) {
-    it(`a whole group filed out of A-to-Z order, published, taken off and accepted again${hand ? ' — on a hand-ordered list' : ''}: nothing is waiting (D98) — each row is back where the published version had it`, async () => {
+    it(`an input for three filed between two others, published, taken off and accepted again${hand ? ' — on a hand-ordered list' : ''}: nothing is waiting (D98) — its row is back where the published version had it, everyone on it`, async () => {
       await boot(new MemoryBackend())
-      fileOne('ignite')
-      fileGroup(['rocky', 'bane', 'pike'])
-      fileOne('split')
+      fileOne('ignite', 'Filed before')
+      file(['rocky', 'bane', 'pike'])                      // out of A-to-Z order on purpose
+      fileOne('split', 'Filed after')
       if (hand) schedWrite(SCHED_TYPES.mutate, () => { (DAYS[WED] as any).gman = true; afterSchedMutate() })
       const was = order()
+      expect(was).toEqual(['FILED BEFORE', TITLE.toUpperCase(), 'FILED AFTER'])
       publish(WED)
       expect(dayShownPendCount(WED)).toBe(0)
-      for (const p of ['rocky', 'bane', 'pike']) off(p)
+      off()
       expect(dayShownPendCount(WED), 'taken off: something is waiting').toBeGreaterThan(0)
-      for (const p of ['pike', 'rocky', 'bane']) on(p)      // put back in another order than it was issued in
+      on()
       expect(order(), 'the published order').toEqual(was)
+      expect(onRow(), 'everyone on it, as published').toEqual(['rocky', 'bane', 'pike'])
       expect(dayShownPendCount(WED), 'back to what was published').toBe(0)
     })
   }
 })
 
-describe('a grouped row’s name box is its own man’s (the plan §4.2)', () => {
-  it('a one-man request with ALL AVAIL in its name box, made a group: its man is in the name box, ALL AVAIL among its extras, nothing dropped', async () => {
+describe('a row made before the build is re-made once, whole — whoever stood on it without being in the input comes off (the plan’s R6)', () => {
+  it('ALL AVAIL in the name box of a one-person request’s row: the request’s own person is back in it, the placeholder gone — and the input holds him alone', async () => {
     const be = new MemoryBackend()
     await boot(be)
-    expect(commitNewInput(DRAFT())).toBe(true)
-    const iid = iidOf('bane')
-    writeSlot(`g:${WED}.${riOf(iid)}`, 'allavail')
-    expect(rowOf(iid).who, 'the placeholder stands in the name box (D46)').toBe('allavail')
-    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[WED] as any).oild = { people: { [`comet|i:${iid}`]: 'deny' } }; afterSchedMutate() })
-    expect(commitGroup({ rows: [rec('bane')] }, DRAFT(), ['bane', 'pike'])).toBe(true)
-    const row = rowOf(iid)
-    expect(row.who, 'its own man').toBe('bane')
-    expect(row.more, 'the placeholder moved to the row’s extras').toEqual(['allavail'])
-    expect((DAYS[WED] as any).oild.people, 'the switches made under it are where they were').toEqual({ [`comet|i:${iid}`]: 'deny' })
-    expect(order(), 'and the man added stands beside him').toEqual(['bane', 'pike'])
+    fileOne('bane', 'Solo check')
+    const rid = rowOf('Solo check').rid
+    asStoredBefore('allavail', ['bane'], 'Solo check')     // the placeholder in the name box (D46), its man pushed under it
+    expect(onRow('Solo check')).toEqual(['bane'])
+    expect('srcg' in rowOf('Solo check')).toBe(false)
+    expect(rowOf('Solo check').rid, 're-made in place: the same row').toBe(rid)
+    expect(people('Solo check'), 'nothing was written to the input').toEqual(['bane'])
     await reload(be)
-    expect([rowOf(iid).who, rowOf(iid).more]).toEqual(['bane', ['allavail']])
+    expect(onRow('Solo check'), 'a reload agrees').toEqual(['bane'])
   })
 
-  /* the scheduler's man (D470) stands in the name box of Ranger's request, his OIL refused there; he is then made one of
-     the input's people in its own window */
-  const refusedThenAdded = () => {
-    expect(commitNewInput(DRAFT())).toBe(true)
-    const iid = iidOf('bane')
-    writeSlot(`g:${WED}.${riOf(iid)}`, 'pike')
-    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[WED] as any).oild = { people: { [`pike|i:${iid}`]: 'deny' } }; afterSchedMutate() })
-    expect(commitGroup({ rows: [rec('bane')] }, DRAFT(), ['bane', 'pike'])).toBe(true)
-    return iid
-  }
-  const onHisOwnRow = (iid: string) => {
-    const his = iidOf('pike')
-    expect(rowOf(iid).who, 'the request’s own man is back in his name box').toBe('bane')
-    expect(rowOf(iid).more || [], 'and the other man is not kept on it a second time (D271)').toEqual([])
-    expect(rowOf(his).who).toBe('pike')
-    expect((DAYS[WED] as any).oild.people[`pike|i:${his}`], 'the refusal went with him').toBe('deny')
-  }
-  it('a scheduler’s man in the name box, his OIL refused, then made one of the people: he stands on his OWN row — still refused, under his own request; a reload agrees', async () => {
-    const be = new MemoryBackend()
-    await boot(be)
-    const iid = refusedThenAdded()
-    onHisOwnRow(iid)
-    await reload(be)
-    onHisOwnRow(iid)
+  it('a scheduler’s man on another man’s request row — in its name box, or under it — comes off; put in through the door he stands on that row ONCE (D271), and Undo takes him out again', async () => {
+    for (const where of ['name box', 'under it'] as const) {
+      resetWorld(); const be = new MemoryBackend(); await boot(be)
+      fileOne('bane', 'Solo check')
+      const rid = rowOf('Solo check').rid
+      if (where === 'name box') asStoredBefore('pike', [], 'Solo check'); else asStoredBefore('bane', ['pike'], 'Solo check')
+      expect(onRow('Solo check'), where).toEqual(['bane'])
+      expect(people('Solo check'), where).toEqual(['bane'])
+      expect(rowPut(`${rowKey('Solo check')}.+`, 'pike'), 'he joins, by the door').toBe('done')
+      expect(people('Solo check')).toEqual(['bane', 'pike'])
+      expect(onRow('Solo check'), 'once on the row').toEqual(['bane', 'pike'])
+      expect(rowOf('Solo check').rid, 'the same row — never one of his own').toBe(rid)
+      expect(ground().filter((g: any) => g && g.src && [g.who, ...(g.more || [])].includes('pike')), 'and on no other row from an input').toHaveLength(1)
+      globalUndo()
+      expect(people('Solo check'), 'Undo').toEqual(['bane'])
+      expect(onRow('Solo check'), 'and what the old row carried does not come back').toEqual(['bane'])
+      expect(rowPut(`${rowKey('Solo check')}.+`, 'pike')).toBe('done')
+      await reload(be)
+      expect(onRow('Solo check'), 'a reload agrees').toEqual(['bane', 'pike'])
+      expect(rowOf('Solo check').rid).toBe(rid)
+    }
   })
 
-  it('…and Undo of that save puts everything back: the scheduler’s man in the name box, his refusal where it was made', async () => {
+  it('strays under the row of an input of several — a placeholder, a man — when one of them is put in the input’s window: the row is exactly the input’s people', async () => {
     await boot(new MemoryBackend())
-    const iid = refusedThenAdded()
-    globalUndo()
-    expect(rowOf(iid).who).toBe('pike')
-    expect((DAYS[WED] as any).oild.people).toEqual({ [`pike|i:${iid}`]: 'deny' })
-    expect(order(), 'one row again').toEqual(['pike'])
-  })
-
-  it('a man standing among a member’s extras who is made one of the people comes off the extras — one man, once on the row (D271)', async () => {
-    await boot(new MemoryBackend())
-    fileGroup(['bane', 'split'])
-    writeFill(`g:${WED}.${riOf(iidOf('bane'))}.+`, 'allavail')
-    schedWrite(SCHED_TYPES.mutate, () => { rowOf(iidOf('bane')).more = ['allavail', 'pike']; afterSchedMutate() })
-    setPeople('bane', ['bane', 'split', 'pike'])
-    expect(rowOf(iidOf('bane')).more, 'the placeholder stays; the man now in the input does not stand twice').toEqual(['allavail'])
-    expect(order()).toEqual(['bane', 'split', 'pike'])
+    file(['bane', 'split'])
+    asStoredBefore('bane', ['split', 'allavail', 'pike'])
+    expect(onRow(), 're-made: the strays are off').toEqual(['bane', 'split'])
+    setPeople(['bane', 'split', 'pike'])
+    expect(onRow(), 'the man now in the input stands once (D271); the placeholder is not on it').toEqual(['bane', 'split', 'pike'])
+    expect(onRow()).toEqual(people())
   })
 })
 
-describe('what stands around the rows', () => {
-  it('an armed place BELOW is put down when a row lands above it — the next tap on a name must not plant into another row; one above stays armed', async () => {
+describe('what stands around the row', () => {
+  it('an armed place BELOW is put down when a row goes from above it, and when Undo puts that row back above it — the next tap on a name must not plant into another row', async () => {
     await boot(new MemoryBackend())
-    fileGroup(['bane', 'pike'])
-    fileOne('rocky')
-    view.armSlot(`g:${WED}.${riOf(iidOf('rocky', 'Meeting'))}.+`)
+    file(['bane', 'pike'])
+    fileOne('rocky', 'Filed after')
+    view.armSlot(`${rowKey('Filed after')}.+`)
     expect(view.ARM, 'armed').toBeTruthy()
-    setPeople('bane', ['bane', 'pike', 'split'])
-    expect(view.ARM, 'put down: its row moved').toBeNull()
-    view.armSlot(`g:${WED}.${riOf(iidOf('bane'))}.+`)
-    setPeople('bane', ['bane', 'pike', 'split', 'ignite'])
-    expect(view.ARM && view.ARM.key, 'a place above the new row is the same row still').toBe(`g:${WED}.${riOf(iidOf('bane'))}.+`)
+    off()                                                  // ✕ on the input's row: the row under it moves up
+    expect(view.ARM, 'put down: the row above it went').toBeNull()
+    view.armSlot(`${rowKey('Filed after')}.+`)
+    globalUndo()                                           // the input's row is back above it
+    expect(order()).toEqual([TITLE.toUpperCase(), 'FILED AFTER'])
+    expect(view.ARM, 'put down: a row came back above it').toBeNull()
   })
 
-  it('a day template saved from a day with a one row takes ONE row for it — and nothing of the request', async () => {
+  /* THE OTHER DOOR THAT LANDS A ROW ABOVE ANOTHER. A landing on read goes to the END of the list now (one row an input —
+     until the one-rule build a man added to a shared input landed mid-list, after his entry's last row, and that was
+     the case this file pinned). What still puts a row ABOVE a row that stands is a scheduler's Accept on a published
+     day: the row goes back where the published version had it (D98). The armed place under it is named by position,
+     so it must be put down there too — or the next tap on a name puts that person in the WRONG input. */
+  it('an armed place BELOW is put down when a scheduler’s Accept puts a row back above it — a published day, the row back where the published version had it', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', 'pike'])
+    fileOne('rocky', 'Filed after')
+    publish(WED)
+    off()
+    view.armSlot(`${rowKey('Filed after')}.+`)
+    expect(view.ARM, 'armed, on the row filed after').toBeTruthy()
+    on()
+    expect(order(), 'the row is back above it').toEqual([TITLE.toUpperCase(), 'FILED AFTER'])
+    expect(view.ARM, 'put down: the armed position is another row’s now').toBeNull()
+    expect(view.placeArmed('ignite'), 'so a tap on a name plants nobody').toBe(false)
+    expect(people(), 'least of all into the input whose row came back').toEqual(['bane', 'pike'])
+  })
+
+  it('an armed place stays armed when a row lands BELOW it, and when someone joins the armed row itself — it is the same row still', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', 'pike'])
+    view.armSlot(`${rowKey()}.+`)
+    const armed = `${rowKey()}.+`
+    fileOne('rocky', 'Filed after')
+    expect(view.ARM && view.ARM.key, 'a row landed below').toBe(armed)
+    setPeople(['bane', 'pike', 'split'])
+    expect(view.ARM && view.ARM.key, 'someone joined the row').toBe(armed)
+    expect(`${rowKey()}.+`).toBe(armed)
+  })
+
+  it('a day template saved from a day with an input’s row takes ONE row for it — and nothing of the request', async () => {
     await boot(new MemoryBackend())
     const before = tplFromDay(WED, 't').d.ground.length
-    fileGroup(['bane', 'pike', 'split'])
-    fileOne('rocky')
+    file(['bane', 'pike', 'split'])
+    fileOne('rocky', 'Solo check')
     const t = tplFromDay(WED, 't').d.ground
-    expect(t.length, 'one for the shared input, one for the ordinary request').toBe(before + 2)
-    expect(t.filter((r: any) => r.prog === 'TRAINING')).toHaveLength(1)
-    expect(t.some((r: any) => 'srcg' in r || 'src' in r || 'srcv' in r)).toBe(false)
+    expect(t.length, 'one for the input of three, one for the input of one').toBe(before + 2)
+    const rows = t.filter((r: any) => r.prog === TITLE.toUpperCase())
+    expect(rows).toHaveLength(1)
+    expect(t.some((r: any) => 'srcg' in r || 'src' in r || 'srcv' in r), 'no link to any request').toBe(false)
+    expect([rows[0].who, (rows[0].more || []).filter(Boolean)], 'and none of its people').toEqual(['', []])
+    expect([rows[0].str, rows[0].end], 'its shape is kept').toEqual(['11:00', '12:00'])
   })
 })

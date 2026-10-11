@@ -29,7 +29,7 @@ import { linesFor, byWho, byItem, whoEntry, dayCounts, weekRows, type CLine, typ
 import { weekDates, elogWhen } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
+import { INPUTS, inpId, inputCoversDate, idsOf, holds } from '../engine/inputs'
 import { posKey } from '../engine/rowids'
 import { standsOn } from '../engine/overlay'
 import { dayApproved, dayPendingItems, nextSeq } from '../engine/publish'
@@ -68,6 +68,8 @@ export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: s
       if (standsOn(d, l.iid, inp) || (d.dt && inputCoversDate(inp, d.dt))) on.add(di)
     })
     if (!on.size) return null
+    /* one man's row of an input that holds several is named with him (engine/keys.ts iuParts) — the line's own man */
+    { const sub = String((l as any).sub || ''); if (sub && idsOf(inp).length > 1 && holds(inp, sub)) keys.push(`iu:${l.iid}~${sub}`) }
     keys.push(`iu:${l.iid}`)
     const pi = pick ? days.indexOf(pick) : -1
     const di = on.has(pi) ? pi : on.has(di0) ? di0 : Math.min(...on)

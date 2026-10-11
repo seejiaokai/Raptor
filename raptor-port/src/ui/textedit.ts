@@ -6,6 +6,7 @@
 import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { inpById, inpTimeText } from '../engine/inputs'
+import { iuParts } from '../engine/keys'
 import { setInpField } from './inputedit'
 import { reqRowText } from './reqrow'
 import { markEdit } from '../engine/publish'
@@ -120,7 +121,9 @@ export function routeFocusOut(e: FocusEvent) {
      from the model, exactly as a rejected txtSet does. */
   const ip = t.closest('[data-inp]') as HTMLElement | null
   if (ip) {
-    const [id, field] = ip.dataset.inp!.split('.')
+    const [tail, field] = ip.dataset.inp!.split('.')
+    /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
+    const at = iuParts('iu:' + tail), id = at ? at.iid : tail, who = at ? at.person : null
     const inp = inpById(id)
     if (!inp) return                       // deleted or undone from under the caret
     /* LEFT AS IT WAS, NOTHING IS SAVED ([HIST-PHONE-HIDE] walk, 28 Sep 26): a tap in and out of an empty "all day" cell —
@@ -128,7 +131,7 @@ export function routeFocusOut(e: FocusEvent) {
        and 23:59, still all day) and a history line "times: all day → all day", a change nobody made */
     const shown = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
     if (String(ip.textContent || '').trim() === String(shown).trim()) return
-    const ok = setInpField(inp, field as any, ip.textContent)
+    const ok = setInpField(inp, field as any, ip.textContent, who)
     if (ok) txtCommit()
     else heal(ip, field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field))
     return
@@ -326,8 +329,8 @@ export function routeKeyDown(e: KeyboardEvent) {
   if (ic) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ic.blur() }
     else if (e.key === 'Escape') {
-      const [id, field] = ic.dataset.inp!.split('.')
-      const inp = inpById(id); e.preventDefault()
+      const [tail, field] = ic.dataset.inp!.split('.')
+      const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
       if (inp) ic.textContent = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
       ic.blur()
     }

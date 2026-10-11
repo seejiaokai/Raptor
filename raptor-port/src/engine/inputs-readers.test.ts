@@ -58,7 +58,6 @@ const RECORDS: Record<string, string> = {
   'leavewar/ui/Matrix.tsx': 'a comment only',
   'state/changelines.ts': 'the change history\'s line for an input',
   'state/docs.ts': 'a medical input\'s documents',
-  'state/inputgroup.ts': 'a shared input\'s records',
   'state/perms.ts': 'who may change an input',
   'state/plan.ts': 'a comment only',
   'state/view.ts': 'UI state that names a request',

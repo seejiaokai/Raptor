@@ -12,7 +12,7 @@
    earlier holding reads as nothing — with no week written by any hand-over. Each case drives the app's own doors on a
    real saved store (the Memory backend behind the whiteboard) and reads what reached storage. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, idsOf, onlyNamed } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -40,6 +40,7 @@ import * as view from './view'
 import { labelToISO } from '../leavewar/absences'
 import { toggleOilPerson, oilFigureFor } from '../ui/oilmode'
 import { commitInputEdit, draftOf } from '../ui/inputedit'
+import { rowPut, rowTake } from '../ui/reqdoor'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -151,7 +152,7 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
     expect(globalUndo().ok, 'the Undo button reverses it').toBe(true)
     expect(weekWrites(), 'the Undo writes no week either').toEqual([])
     loadWeek(W1)
-    expect(reqOf(iid).person, 'the request is his again').toBe('bane')
+    expect(onlyNamed(reqOf(iid)), 'the request is his again').toBe('bane')
     expect(seen(5, `bane|${item}`), 'and so is the refusal').toBe('deny')
     expect(oilFigureFor(5, 'bane', item)).toBe(null)
   })
@@ -167,7 +168,7 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
     resetWorld()
     await boot(be)                                            // the reload: everything read back from storage
     const back = reqOf(iid)
-    expect(back.person).toBe('stiff')
+    expect(onlyNamed(back)).toBe('stiff')
     handTo(back, 'bane')
     writeInputsBatch(() => { back.oil = { '2026-07-18': 1 } })
     expect(seen(5, `bane|${item}`), 'made under his first holding, before the reload').toBeUndefined()
@@ -186,26 +187,37 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
     expect(oilFigureFor(5, 'bane', item)).toBe(null)
   })
 
-  /* FABLE'S RED TEAM OF THE PHASE-6 PLAN, F2 (30 Sep 26): a refusal about a man the scheduler put on the request's ROW as
-     an extra (D18) is about him on that row, not about a holding of the request — handed to him, he is kept once, as its
-     holder (D271), and the refusal must still stand. Stamped with the holding it was tapped under, it read as stale. */
-  it("an EXTRA's refusal stands when the request is then handed to him (Fable F2)", async () => {
+  /* FABLE'S RED TEAM OF THE PHASE-6 PLAN, F2 (30 Sep 26) — AS IT READS ON THE ONE RECORD ([ALL-AVAIL-AS-MEMBER] step 2,
+     12 Oct 26). It was: a refusal about a man the scheduler put on the request's ROW as an extra (D18) is about him on
+     that row, not about a holding of the request — handed to him, he is kept once, as its holder (D271), and the refusal
+     must still stand. Stamped with the holding it was tapped under, it read as stale.
+     Owner, D755 (11 Oct 26): "a row that came from an input IS the input: whoever stands on it … is in the input". So a
+     man put on the row JOINS the input, through the row's door (ui/reqdoor.ts), and earns on its ONE answer (D762) — he
+     is nobody's "extra"; and an input that holds two is not "handed" to one of them: the first man is TAKEN OUT and it
+     is the second's alone. The rule F2 asked for is the same: the refusal is about HIM in this input. It is stamped
+     with the holding it was tapped under (`oild.pa`) and read against the holding HE was put in at (his entry's `h` —
+     engine/inputown.ts), which nobody else's joining or leaving moves. */
+  const rowOf = (iid: string): any => ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === iid)
+  const rowKey = (iid: string) => `g:5.${((DAYS[5] as any).ground || []).indexOf(rowOf(iid))}`
+  /* the place a person stands on, on the input's row: its name box, or a place under it */
+  const placeOf = (iid: string, p: string) => { const row = rowOf(iid); if (row.who === p) return rowKey(iid); const n = (row.more || []).indexOf(p); expect(n, `${p} is on the row`).toBeGreaterThanOrEqual(0); return `${rowKey(iid)}.x${n}` }
+  const inIt = (iid: string) => idsOf(reqOf(iid)).map(String)
+  it("a refusal about a second person PUT IN the input stands when the first man leaves and it is his alone (D755 — Fable F2, as changed)", async () => {
     await boot(new MemoryBackend())
     const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
     const iid = String(r.iid), item = inputItemKey(iid)
-    schedWrite(SCHED_TYPES.mutate, () => {
-      /* on Saturday the moment it was filed — worked out on read ([DB-READINESS] phase 6 (c)); the scheduler adds the extra */
-      const row: any = ((DAYS[5] as any).ground || []).find((g: any) => g && g.src === iid)
-      expect(row, 'landed on Saturday').toBeTruthy()
-      row.more = ['stiff']
-      afterSchedMutate()
-    })
-    expect(oilFigureFor(5, 'stiff', item), 'the extra earns from the row (D18)').toBe('FO')
+    /* on Saturday the moment it was filed — worked out on read ([DB-READINESS] phase 6 (c)) */
+    expect(rowOf(iid), 'landed on Saturday').toBeTruthy()
+    expect(rowPut(`${rowKey(iid)}.+`, 'stiff'), 'the scheduler puts a second man on the row: he joins the input').toBe('done')
+    expect(inIt(iid)).toEqual(['bane', 'stiff'])
+    expect(oilFigureFor(5, 'stiff', item), 'he is in the input, and earns on its one answer (D762 — D18 as changed)').toBe('FO')
     toggleOilPerson(5, 'stiff', item)
-    expect(oilFigureFor(5, 'stiff', item), 'the scheduler takes the extra off').toBe(null)
-    handTo(r, 'stiff')
-    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })   // his own answer as the holder: Yes
-    expect(seen(5, `stiff|${item}`), 'the refusal was about him on this row — it stands').toBe('deny')
+    expect(oilFigureFor(5, 'stiff', item), 'the scheduler takes him off').toBe(null)
+    expect(oilFigureFor(5, 'bane', item), 'him alone').toBe('FO')
+    expect(rowTake(placeOf(iid, 'bane')), 'the first man is taken out').toBe('done')
+    expect(inIt(iid), 'the input is the second man\'s alone').toEqual(['stiff'])
+    writeInputsBatch(() => { reqOf(iid).oil = { '2026-07-18': 1 } })   // the input's answer: Yes
+    expect(seen(5, `stiff|${item}`), 'the refusal was about him in this input — it stands').toBe('deny')
     expect(oilFigureFor(5, 'stiff', item), 'so he still earns nothing from it').toBe(null)
   })
 
@@ -230,18 +242,41 @@ describe('phase 6 (a) — a refusal belongs to the holding it was made under', (
     expect(seen(5, `stiff|${item}`), 'it left him in between — the refusal died with that').toBeUndefined()
     expect(oilFigureFor(5, 'stiff', item)).toBe('FO')
   })
-  it('an extra refused keeps the refusal while the request passes between OTHER men, and when it finally comes to him', async () => {
+  /* (as it reads on the one record — D755: the request does not "pass between other men" while he stands on its row;
+     OTHER people join the input and leave it, and his refusal is his own entry's, which none of that moves) */
+  it('a person refused keeps the refusal while OTHER people join the input and leave it, and when at last it is his alone (D755 — as changed)', async () => {
     await boot(new MemoryBackend())
     const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
-    const item = inputItemKey(String(r.iid))
-    landWithExtra(r, 'stiff')
+    const iid = String(r.iid), item = inputItemKey(iid)
+    expect(rowPut(`${rowKey(iid)}.+`, 'stiff')).toBe('done')
     toggleOilPerson(5, 'stiff', item)
-    handTo(r, 'pike')
-    expect(seen(5, `stiff|${item}`), 'still on the row as an extra — his refusal stands').toBe('deny')
-    handTo(r, 'stiff')
-    writeInputsBatch(() => { r.oil = { '2026-07-18': 1 } })
+    expect(rowPut(`${rowKey(iid)}.+`, 'pike'), 'a third man joins').toBe('done')
+    expect(inIt(iid)).toEqual(['bane', 'stiff', 'pike'])
+    expect(seen(5, `stiff|${item}`), 'still in the input — his refusal stands').toBe('deny')
+    expect(oilFigureFor(5, 'pike', item), 'and it is his alone: the newcomer earns on the input\'s answer').toBe('FO')
+    expect(rowTake(placeOf(iid, 'bane')), 'the first man leaves').toBe('done')
+    expect(seen(5, `stiff|${item}`)).toBe('deny')
+    expect(rowTake(placeOf(iid, 'pike')), 'and the third').toBe('done')
+    expect(inIt(iid), 'the input is his alone').toEqual(['stiff'])
+    writeInputsBatch(() => { reqOf(iid).oil = { '2026-07-18': 1 } })
     expect(seen(5, `stiff|${item}`), 'it never left him').toBe('deny')
     expect(oilFigureFor(5, 'stiff', item)).toBe(null)
+  })
+  /* …and the other order, at the row's own door: taken OUT of the input and put back, he is in it under a new holding —
+     the old refusal does not come back with him (his entry's `h`; the engine half is onerecord.test.ts) */
+  it('a person refused, taken out of the input and put back: the refusal is void — he was put in anew (D755, D762)', async () => {
+    await boot(new MemoryBackend())
+    const r = plant({ person: 'bane', type: 'Training', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const iid = String(r.iid), item = inputItemKey(iid)
+    expect(rowPut(`${rowKey(iid)}.+`, 'stiff')).toBe('done')
+    toggleOilPerson(5, 'stiff', item)
+    expect(seen(5, `stiff|${item}`)).toBe('deny')
+    expect(rowTake(placeOf(iid, 'stiff')), 'taken off the row: he leaves the input').toBe('done')
+    expect(seen(5, `stiff|${item}`), 'a decision about a man who is not in the input decides nothing').toBeUndefined()
+    expect(rowPut(`${rowKey(iid)}.+`, 'stiff'), 'and dropped back on it').toBe('done')
+    writeInputsBatch(() => { reqOf(iid).oil = { '2026-07-18': 1 } })
+    expect(seen(5, `stiff|${item}`), 'it left him in between — the refusal died with that').toBeUndefined()
+    expect(oilFigureFor(5, 'stiff', item)).toBe('FO')
   })
 
   it('a decision about a DIFFERENT request is untouched by the hand-over (the other control)', async () => {

@@ -1,13 +1,13 @@
 import { HOOKS } from '../engine/hooks'
 import { elogAllFor, elogWhen, elogWho, elogVal, elogKeySet, ELOG, rowTouches, dateOfDi } from '../engine/editlog'
 import { ridKey } from '../engine/rowids'
-import { seatRow } from '../engine/keys'
+import { seatRow, iuParts } from '../engine/keys'
 import { rowPlaces, rowRef } from '../engine/slots'
 import { rowItemKey } from '../engine/oil'
 import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { inpById, inpLabel } from '../engine/inputs'
+import { inpById, inpLabel, idsOf } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
 
@@ -283,8 +283,12 @@ export function storyOf(el: HTMLElement): ELogRow[] {
   const key = keyOf(el)
   if (!key) return []
   if (key.startsWith('iu:')) {
-    const iid = key.slice(3), day = dayOfCell(el)
-    return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day)))
+    /* ONE MAN'S ROW of an input that holds several (`iu:<iid>~<person>`) tells the input's story and HIS — a line about
+       one person put in or taken out (`one`) is on that person's row alone; a line written before the build, which
+       says `iu:<iid>` with its man in `sub`, lands on his row the same way (Fable's read of the one-rule plan, F16) */
+    const at = iuParts(key)!, iid = at.iid, day = dayOfCell(el)
+    return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day))
+      && (!at.person || !(r as any).one || String(r.sub || '') === at.person))
   }
   return elogAllFor(key)
 }
@@ -336,9 +340,10 @@ function paint(all: ELogRow[]) {
   const rows = showAll ? all : all.slice(-3)
   b.className = 'histbub' + (rows.length > 1 ? ' open' : '')
   /* an input's own row is headed by the input — "Ranger · LL" — its lines the story under it (Fable F1) */
-  const iid = anchor && keyOf(anchor).startsWith('iu:') ? keyOf(anchor).slice(3) : ''
+  const at = anchor ? iuParts(keyOf(anchor)) : null, iid = at ? at.iid : ''
   const inp: any = iid ? inpById(iid) : null
-  b.innerHTML = `<div class="hb-what">${esc(inp ? `${csOf(inp.person)} · ${inpLabel(inp)}` : row.lbl)}</div>`
+  const whose = inp ? (at && at.person ? csOf(at.person) : idsOf(inp).map(csOf).join(', ')) : ''
+  b.innerHTML = `<div class="hb-what">${esc(inp ? `${whose} · ${inpLabel(inp)}` : row.lbl)}</div>`
     + `<ol class="hb-all">` + rows.map(r =>
       `<li><span class="hb-chg">${chgHTML(r)}</span>`
       + `<span class="hb-who">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`

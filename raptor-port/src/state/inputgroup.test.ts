@@ -1,155 +1,136 @@
-/* AN INPUT FILED FOR A GROUP — what an "entry" is, and the one check that keeps a man on it once (owner D654, D655,
-   7 Oct 26; the build plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13, "Records").
+/* AN ENTRY IS ITS RECORD — what is left of "an input filed for a group" once an input is ONE record with the list of its
+   people (owner D756, D759 — 11 Oct 26; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1, §4.11, and
+   §5 step 2 (g)).
 
-   A group is kept as ONE RECORD PER MAN, tied by `grp`. An ENTRY is worked out on read: the live records that share a
-   `grp` AND the same shared fields. Nothing is written to keep a group in step, so a record changed alone simply reads
-   as that man's own input from then on — and reads as part of the entry again if it later matches. */
-import { describe, expect, it } from 'vitest'
-import { entriesOf, groupBreach, groupSnapshot, groupsTouched, sharedKey, SHARED_FIELDS } from './inputgroup'
+   UNTIL THE ONE-RULE BUILD this file pinned the old keeping: one record per man tied by a group id (`grp`), an ENTRY
+   worked out on read — the records sharing a group AND the same shared fields — and the check that kept a man on it
+   once (`groupBreach`, `groupSnapshot`, `groupsTouched`). All of that is gone with the group:
+     · the list of inputs IS the list of entries — `entriesOf`, `entryRowsOf` and `entryLines` answer every record as its
+       own, for the screens that still ask them (they go with the dead code, step 6 of the build);
+     · who is in an input is the record's own list (engine/inputs.ts peopleOf) — never worked out from a group id;
+     · a record stored BEFORE the build that carries a `grp` reads as the one-person input it is — D759 reading 10:
+       "old shared demo inputs come back as one-person inputs"; nothing is converted (D56);
+     · what one record may hold is refused at the save boundary (engine/inputs.ts shapeProblem, asked by
+       state/store.ts of every record a command put) — where "one man once an entry, one filer a group" stood.
 
-const cs: Record<string, string> = { bane: 'Ranger', stiff: 'Saber', rocky: 'Hex', casper: 'Outlaw', wisp: 'Wisp' }
-const nameOf = (p: string) => cs[p] ?? p
+   Who is in an input, either shape, and each sentence of shapeProblem: engine/onerecord.test.ts. The one writer and the
+   same boundary through the real doors over both stores: leavewar/onerecord-write.test.ts. This file keeps the cases
+   the old grouping covered, said as they are true now. */
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { HOOKS } from '../engine/hooks'
+import { INPUTS, idsOf, inputLines, shapeProblem } from '../engine/inputs'
+import { entriesOf, entryLines, entryRowsOf } from './inputgroup'
+import { initStore, writeInputs } from './store'
+
+const ISNAP = JSON.stringify(INPUTS)
+const toast = HOOKS.toast
+let said: string[] = []
 let n = 0
-const rec = (person: string, o: Record<string, any> = {}) => ({
+/* a record as it was stored before the build — one `person`, and (for a group filing) the group's id and its filer */
+const old = (person: string, o: Record<string, any> = {}) => ({
   iid: `i${++n}`, person, type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: 'brief', ...o,
 })
+/* a record as it is stored now — its people, in the order they joined */
+const rec = (people: string[], o: Record<string, any> = {}) => ({
+  iid: `i${++n}`, type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: 'brief', mod: '2026-01-15',
+  by: 'stiff', at: 1, people: people.map(p => ({ p, by: 'stiff', at: 1 })), ...o,
+})
 const G = { grp: 'g1', grpBy: 'stiff' }
-const people = (e: { rows: any[] }) => e.rows.map(r => r.person)
 
-describe('entriesOf — one entry for the records of a group that still say the same thing', () => {
-  it('a record with no group is its own entry, in the order the list holds it', () => {
-    const a = rec('bane'), b = rec('stiff'), c = rec('rocky')
-    const es = entriesOf([a, b, c], nameOf)
+beforeEach(() => {
+  INPUTS.splice(0, INPUTS.length, ...JSON.parse(ISNAP)); initStore()
+  said = []; HOOKS.toast = (m: any) => { said.push(String(m)) }
+})
+afterEach(() => { HOOKS.toast = toast; INPUTS.splice(0, INPUTS.length, ...JSON.parse(ISNAP)) })
+
+describe('every record is its own entry (D756; the plan §5 step 2 (g))', () => {
+  it('a list of inputs is the list of entries, one a record, in the order the list holds them', () => {
+    const a = rec(['bane']), b = rec(['stiff', 'rocky', 'casper']), c = old('rocky')
+    const es = entriesOf([a, b, c])
     expect(es.map(e => e.rows)).toEqual([[a], [b], [c]])
-    expect(es.every(e => e.grp == null)).toBe(true)
+    expect(es.every(e => e.grp == null), 'no entry carries a group id any more').toBe(true)
+    expect(entryLines([a, b, c]), 'one line a record under Personal Inputs').toEqual([[a], [b], [c]])
+    for (const r of [a, b, c]) expect(entryRowsOf([a, b, c], r), 'the records of a record\'s entry: itself').toEqual([r])
   })
-  it('one group: one entry, its people A to Z by callsign', () => {
-    const rows = [rec('stiff', G), rec('bane', G), rec('casper', G), rec('rocky', G)]
-    const es = entriesOf(rows, nameOf)
+  it('an input for several people is ONE entry of one record — its people are the record\'s own list, in the order they joined', () => {
+    const r = rec(['stiff', 'bane', 'casper', 'rocky'])
+    const es = entriesOf([r])
     expect(es).toHaveLength(1)
-    expect(es[0].grp).toBe('g1')
-    expect(people(es[0]), 'Hex, Outlaw, Ranger, Saber').toEqual(['rocky', 'casper', 'bane', 'stiff'])
+    expect(es[0].rows).toEqual([r])
+    expect(idsOf(es[0].rows[0]), 'never re-ordered A to Z: the first to join stands first').toEqual(['stiff', 'bane', 'casper', 'rocky'])
   })
-  it('a record with no group never joins, though every field matches', () => {
-    const rows = [rec('stiff', G), rec('bane', G), rec('rocky')]
-    const es = entriesOf(rows, nameOf)
-    expect(es).toHaveLength(2)
-    expect(people(es[0])).toEqual(['bane', 'stiff'])
-    expect(people(es[1])).toEqual(['rocky'])
+  it('nothing joins two records: the same day, hours, kind and remark are still two inputs', () => {
+    const a = rec(['stiff', 'bane']), b = rec(['rocky'])
+    expect(entriesOf([a, b]).map(e => idsOf(e.rows[0]))).toEqual([['stiff', 'bane'], ['rocky']])
   })
-  it('one record changed alone leaves the entry — and returns when it matches again', () => {
-    const a = rec('stiff', G), b = rec('bane', G), c = rec('rocky', G)
-    b.e = 660
-    let es = entriesOf([a, b, c], nameOf)
-    expect(es.map(people)).toEqual([['rocky', 'stiff'], ['bane']])
-    expect(es[1].grp, 'it still carries its group id').toBe('g1')
-    b.e = 600
-    es = entriesOf([a, b, c], nameOf)
-    expect(es.map(people)).toEqual([['rocky', 'bane', 'stiff']])
+  it('an empty list, or a hole in it, makes no entry', () => {
+    expect(entriesOf([])).toEqual([])
+    expect(entriesOf([null, rec(['bane']), undefined] as any[])).toHaveLength(1)
+    expect(entryRowsOf([], null)).toEqual([])
   })
-  it('each shared field tells records apart; a man\'s own fields never do', () => {
-    for (const f of SHARED_FIELDS) {
-      const a = rec('stiff', G), b = rec('bane', G)
-      ;(b as any)[f] = f === 'allday' ? true : f === 'yr' ? 2027 : f === 's' || f === 'e' ? 615 : 'x'
-      expect(entriesOf([a, b], nameOf), `shared: ${f}`).toHaveLength(2)
+})
+
+describe('a record stored before the build with a group id reads as a one-person input (D759 reading 10; D56)', () => {
+  it('four records of one old group: four entries, each one man\'s own — the group id joins nothing', () => {
+    const rows = [old('stiff', G), old('bane', G), old('casper', G), old('rocky', G)]
+    const es = entriesOf(rows)
+    expect(es, 'was ONE entry of four until the build').toHaveLength(4)
+    expect(es.map(e => idsOf(e.rows[0]))).toEqual([['stiff'], ['bane'], ['casper'], ['rocky']])
+    expect(es.map(e => e.grp)).toEqual([null, null, null, null])
+    expect(inputLines(rows).map((l: any) => l.person), 'and the rules about one man\'s day read each as before').toEqual(['stiff', 'bane', 'casper', 'rocky'])
+  })
+  it('it breaks no rule of what a record may hold — its old group fields are not this build\'s to judge', () => {
+    for (const r of [old('bane', G), old('bane', { grp: 'g1' }), old('bane', { grpBy: 'stiff' }), old('bane', { ...G, type: 'OML', allday: true })])
+      expect(shapeProblem(r), JSON.stringify({ grp: r.grp, grpBy: r.grpBy, type: r.type })).toBe('')
+  })
+  /* THE RULE CHANGED WITH THE SHAPE (D756, D759 reading 10). "One man once an entry" was held across the RECORDS of a
+     group (`groupBreach`: "Ranger is already on this input"); a man is now in an input once because the record's own list
+     holds him once (below). Two old records of one man with one group id are two one-person inputs, as two Meetings a
+     man files for himself always were — the save boundary has nothing to refuse. */
+  it('the same man on two records of one old group is two inputs of his, and the save takes them — where the group\'s check refused the second', () => {
+    expect(writeInputs(() => { INPUTS.unshift(old('bane', G)) })).toBe(true)
+    expect(writeInputs(() => { INPUTS.unshift(old('bane', G)) }), 'no "Ranger is already on this input"').toBe(true)
+    expect(said.join(' ')).not.toMatch(/already on this input/)
+    expect(entriesOf(INPUTS.filter((r: any) => r.grp === 'g1'))).toHaveLength(2)
+  })
+})
+
+describe('what one record may hold is refused at the save boundary (shapeProblem; the plan §4.1 — D655 reading 4)', () => {
+  const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
+  it('a person twice, nobody, two people on a medical entry or an upchit: refused whole, each with its sentence', () => {
+    for (const [bad, sentence] of [
+      [rec(['bane', 'rocky', 'bane']), /Ranger is already on this input/],
+      [rec([]), /An input needs at least one person/],
+      [rec(['bane', 'rocky'], { type: 'OML', allday: true }), /A medical entry is one person’s — each needs its own document/],
+      [rec(['bane', 'rocky'], { type: 'Upchit', allday: true }), /An upchit is one person’s — each needs its own document/],
+    ] as Array<[any, RegExp]>) {
+      said = []
+      expect(shapeProblem(bad), 'the rule itself').toMatch(sentence)
+      expect(writeInputs(() => { INPUTS.unshift(bad) }), `${bad.type} ${JSON.stringify(idsOf(bad))}`).toBe(false)
+      expect(live(bad.iid), 'nothing of it was kept').toBeUndefined()
+      expect(said.join(' | '), 'and it says why').toMatch(sentence)
     }
-    const a = rec('stiff', G), b = rec('bane', { ...G, oil: { '2026-02-14': 1 }, acc: 'u', hand: 2, leftAt: { x: 1 }, mod: '2026-02-01', lw: 'w1', by: 'bane', at: 5, modBy: 'bane', modAt: 9, ord: 7 })
-    expect(entriesOf([a, b], nameOf), 'his own answers, filing, stamps and place').toHaveLength(1)
   })
-  it('a SANS availability\'s ticks are shared: the same boxes read the same, a different set is a different entry', () => {
-    const a = rec('stiff', { ...G, type: 'SANS Availability', sans: { f: true, o: true } })
-    const b = rec('bane', { ...G, type: 'SANS Availability', sans: { o: true, f: true, a: false } })
-    const c = rec('rocky', { ...G, type: 'SANS Availability', sans: { f: true } })
-    expect(sharedKey(a)).toBe(sharedKey(b))
-    expect(entriesOf([a, b, c], nameOf).map(people)).toEqual([['bane', 'stiff'], ['rocky']])
+  it('the same records sound are saved: several people on a Meeting, one on a medical entry', () => {
+    const a = rec(['bane', 'rocky']), b = rec(['bane'], { type: 'OML', allday: true, date: 'Feb 12' })
+    expect(writeInputs(() => { INPUTS.unshift(a); INPUTS.unshift(b) })).toBe(true)
+    expect(idsOf(live(a.iid))).toEqual(['bane', 'rocky'])
+    expect(idsOf(live(b.iid))).toEqual(['bane'])
   })
-  it('a blank end date, half or remark reads the same as none', () => {
-    const a = rec('stiff', G), b = rec('bane', { ...G, endDate: undefined, half: '', remarks: 'brief' })
-    expect(sharedKey(a)).toBe(sharedKey(b))
-    expect(entriesOf([a, b], nameOf)).toHaveLength(1)
+  it('a record already saved that a later command would break is put back as it was — a man added twice, its last person taken out', () => {
+    const a = rec(['bane', 'rocky'])
+    expect(writeInputs(() => { INPUTS.unshift(a) })).toBe(true)
+    const was = JSON.stringify(live(a.iid))
+    expect(writeInputs(() => { live(a.iid).people.push({ p: 'rocky', by: 'stiff', at: 2 }) }), 'Hex a second time').toBe(false)
+    expect(said.join(' ')).toMatch(/Hex is already on this input/)
+    expect(writeInputs(() => { live(a.iid).people = [] }), 'nobody left in it').toBe(false)
+    expect(JSON.stringify(live(a.iid)), 'the record as it was saved').toBe(was)
   })
-  it('a group of one reads as one entry of one man', () => {
-    const es = entriesOf([rec('stiff', G)], nameOf)
-    expect(es).toHaveLength(1)
-    expect(people(es[0])).toEqual(['stiff'])
-  })
-  it('two groups on one day are two entries', () => {
-    const rows = [rec('stiff', G), rec('bane', G), rec('rocky', { grp: 'g2', grpBy: 'bane' }), rec('casper', { grp: 'g2', grpBy: 'bane' })]
-    expect(entriesOf(rows, nameOf).map(people)).toEqual([['bane', 'stiff'], ['rocky', 'casper']])
-  })
-  it('does no tidying of its own: the same man twice is shown twice — the write is what refuses it', () => {
-    const rows = [rec('bane', G), rec('bane', G), rec('stiff', G)]
-    const es = entriesOf(rows, nameOf)
-    expect(es).toHaveLength(1)
-    expect(people(es[0])).toEqual(['bane', 'bane', 'stiff'])
-  })
-  it('an entry sits where its first record sits in the list', () => {
-    const lone = rec('rocky'), a = rec('stiff', G), mid = rec('casper'), b = rec('bane', G)
-    expect(entriesOf([lone, a, mid, b], nameOf).map(people)).toEqual([['rocky'], ['bane', 'stiff'], ['casper']])
-  })
-})
-
-/* ASTRA'S READ of the calendar job's bug check (8 Oct 26), R5. "A medical entry or an upchit is never a group - each man's
-   needs his own document" was held on screen and at the group's save only. Two men of a shared meeting, each retyped
-   SEPARATELY from Edit Schedule into the same medical kind, kept their group fields and - their shared fields matching
-   again - came back on the Inputs page as ONE shared medical entry. The rule is held where a group is worked out. */
-describe('entriesOf — a medical entry or an upchit is never part of a group, whatever its record carries', () => {
-  for (const type of ['OML', 'ATT C', 'Upchit']) {
-    it(`two records of one group, both ${type}: two entries, each a man's own`, () => {
-      const es = entriesOf([rec('bane', { ...G, type }), rec('stiff', { ...G, type })], nameOf)
-      expect(es).toHaveLength(2)
-      expect(es.map(e => e.grp)).toEqual([null, null])
-      expect(es.map(people)).toEqual([['bane'], ['stiff']])
-    })
-  }
-  it('the same two as a Meeting are still one entry', () => {
-    expect(entriesOf([rec('bane', { ...G, type: 'Meeting' }), rec('stiff', { ...G, type: 'Meeting' })], nameOf)).toHaveLength(1)
-  })
-})
-
-describe('groupBreach — one man once an entry, one filer a group; asked of the groups a command touched', () => {
-  it('a sound group breaks nothing', () => {
-    const rows = [rec('stiff', G), rec('bane', G)]
-    expect(groupBreach(rows, new Set(['g1']), nameOf)).toBeNull()
-  })
-  it('the same man twice with the same shared fields is refused, naming him', () => {
-    const rows = [rec('stiff', G), rec('bane', G), rec('bane', G)]
-    expect(groupBreach(rows, new Set(['g1']), nameOf)).toBe('Ranger is already on this input')
-  })
-  it('the same man twice is allowed while his two records say different things', () => {
-    const rows = [rec('stiff', G), rec('bane', G), rec('bane', { ...G, e: 700 })]
-    expect(groupBreach(rows, new Set(['g1']), nameOf)).toBeNull()
-  })
-  it('two filers in one group are refused', () => {
-    const rows = [rec('stiff', G), rec('bane', { grp: 'g1', grpBy: 'bane' })]
-    expect(groupBreach(rows, new Set(['g1']), nameOf)).toMatch(/one person who filed it/)
-  })
-  it('a record with a group and no filer, or a filer and no group, is refused', () => {
-    expect(groupBreach([rec('stiff', { grp: 'g1' })], new Set(['g1']), nameOf)).toMatch(/one person who filed it/)
-  })
-  it('only the groups named are judged — a group nobody touched is left alone (D56)', () => {
-    const rows = [rec('bane', G), rec('bane', G), rec('stiff', { grp: 'g2', grpBy: 'stiff' })]
-    expect(groupBreach(rows, new Set(['g2']), nameOf)).toBeNull()
-  })
-})
-
-describe('groupsTouched — which groups a command changed', () => {
-  it('a record added to a group, changed in one, or given one — and nothing for a record left as it was', () => {
-    const a = rec('stiff', G), b = rec('bane', G), lone = rec('rocky'), other = rec('casper', { grp: 'g2', grpBy: 'bane' })
-    const before = groupSnapshot([a, b, lone, other])
-    expect([...groupsTouched(before, [a, b, lone, other])]).toEqual([])
-    b.e = 700
-    expect([...groupsTouched(before, [a, b, lone, other])]).toEqual(['g1'])
-    b.e = 600
-    Object.assign(lone, { grp: 'g3', grpBy: 'rocky' })
-    expect([...groupsTouched(before, [a, b, lone, other])]).toEqual(['g3'])
-    const added = rec('wisp', { grp: 'g2', grpBy: 'bane' })
-    expect([...groupsTouched(before, [a, b, lone, other, added])].sort()).toEqual(['g2', 'g3'])
-  })
-  it('a change to a man\'s own fields alone touches no group', () => {
-    const a = rec('stiff', G), b = rec('bane', G)
-    const before = groupSnapshot([a, b])
-    ;(b as any).oil = { '2026-02-14': 1 }; (b as any).modAt = 99
-    expect([...groupsTouched(before, [a, b])]).toEqual([])
+  it('only what a command put is judged — a bad record nobody touched does not stop a save beside it (D56)', () => {
+    /* stored data: placed in the list outside every command, as an old store would hand it over */
+    const stale = rec(['bane', 'bane'])
+    INPUTS.unshift(stale); initStore()
+    expect(writeInputs(() => { INPUTS.unshift(rec(['rocky'])) })).toBe(true)
+    expect(live(stale.iid), 'left as it is').toBeTruthy()
   })
 })

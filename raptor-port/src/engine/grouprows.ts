@@ -50,3 +50,8 @@ export function rowPeopleDrawn(d: any, di: any, ri: number): DrawnPuck[] {
   return out.sort((a, b) => ph(a) - ph(b) || (ph(a) ? 0 : callsign(a.id).localeCompare(callsign(b.id), undefined, { sensitivity: 'base' })) || (at.get(a)! - at.get(b)!))
 }
 export function drawnPeople(d: any, di: any, g: RowGroup): DrawnPuck[] { return rowPeopleDrawn(d, di, g.lead) }
+/** IS THIS AN INPUT'S ROW THAT HOLDS SEVERAL — the row every builder draws through rowPeopleDrawn (A to Z, then the
+ *  placeholder) and, on a phone, with the one row's own layout (`gshared` — the approved picture 2, D743). A row of
+ *  one person, a row nobody filed and a dead `kept` row are drawn as they always were. */
+export const inputRowSeveral = (row: any): boolean =>
+  !!row && !!row.src && !row.kept && [row.who, ...(row.more || [])].filter((v: any) => !!whoId(v)).length > 1

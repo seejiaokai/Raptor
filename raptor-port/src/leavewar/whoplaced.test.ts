@@ -12,7 +12,7 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { INPUTS, dateOrd, nowStamp } from '../engine/inputs'
+import { INPUTS, dateOrd, holds, nowStamp } from '../engine/inputs'
 import { medClashes } from '../engine/medical'
 import { ELOG, elogClear } from '../engine/editlog'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputs, writeInputsBatch } from '../state/store'
@@ -46,7 +46,7 @@ const stamps = (r: any) => ({ by: r.by, at: r.at, modBy: r.modBy, modAt: r.modAt
 const placed = (who: string, t: number) => ({ by: who, at: t, modBy: who, modAt: t })
 const span = (r: any) => `${r.date}-${r.endDate ?? r.date}`
 /* a man's inputs of one kind in the test's own months (the demo's own rows are in July) */
-const mine = (p: string, type: string, mon = 'Feb') => INPUTS.filter((r: any) => r.person === p && r.type === type && String(r.date).startsWith(mon))
+const mine = (p: string, type: string, mon = 'Feb') => INPUTS.filter((r: any) => holds(r, p) && r.type === type && String(r.date).startsWith(mon))
   .sort((a: any, b: any) => (dateOrd(a.date, a.yr) as number) - (dateOrd(b.date, b.yr) as number))
 const one = (p: string, type: string, mon = 'Feb') => { const l = mine(p, type, mon); expect(l, `${p} has one ${type}`).toHaveLength(1); return l[0] }
 /* the editor's own save for a new input */
@@ -321,7 +321,7 @@ describe('Undo and Redo put a record back as recorded — never stamped as a new
 
 describe('…and so for every door: Undo reads as before it, Redo as it left things — at a later hour, with no new stamp', () => {
   /* every record of a man in the test's month, with its stamps — what Undo must put back, to the letter */
-  const snap = (p: string) => JSON.stringify(INPUTS.filter((r: any) => r.person === p && String(r.date).startsWith('Feb'))
+  const snap = (p: string) => JSON.stringify(INPUTS.filter((r: any) => holds(r, p) && String(r.date).startsWith('Feb'))
     .map((r: any) => ({ iid: r.iid, type: r.type, span: span(r), ...stamps(r) })).sort((a: any, b: any) => (a.iid < b.iid ? -1 : 1)))
   const roundTrip = (p: string, door: () => void) => {
     const before = snap(p)

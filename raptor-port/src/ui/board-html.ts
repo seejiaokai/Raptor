@@ -1,8 +1,7 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
-import { groundGroups, drawnPeople } from '../engine/grouprows'
-import { entryLines } from '../state/inputgroup'
-import { INPUTS, inputsOn, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge } from '../engine/inputs'
+import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
+import { INPUTS, inputsOn, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -131,7 +130,7 @@ function sbiRmk(inp:any,dt?:any){
    removed; the live Personal Inputs / Unavailable / SANS panels carry the
    data). Kept as a pure builder because probe-bridge still exposes it. */
 export function sbInputsHTML(d:any,di:any){
-  const rows=inputsOn(d.dt);
+  const rows=inputsOn(d.dt).flatMap((r:any)=>facesOf(r));
   let h=`<div class="sbi-h"><b>Inputs · ${esc(d.dow)} ${esc(d.dt)}</b>`
    +`<span class="sbi-n">${rows.length} entr${rows.length===1?'y':'ies'} · morning → late</span></div>`;
   if(!rows.length)return h+`<div class="sbi-empty">No personal inputs submitted for this day.</div>`;
@@ -595,16 +594,16 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
        engine/grouprows.ts the one answer both read): the lead draws the one name box, the one pair of time boxes, the
        one remark box, the one set of row buttons and the one grip; the other members draw nothing. Every puck keeps
        its own row's key. */
-    const grps=groundGroups(d);
     groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
-      const gp=grps[ri], many=!!gp&&gp.members.length>1;
-      if(many&&gp.lead!==ri)return;
+      /* (since the one-rule build an input is one row: the row of an input that holds several draws its people by
+         the ONE answer — engine/grouprows.ts rowPeopleDrawn, A to Z then the placeholder) */
+      const many=inputRowSeveral(x);
       const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=whoId(x.who);
       /* a ground row that came from an accepted input is addressed by the INPUT,
          not the row — the row is deleted and recreated on every member edit
          ([OIL-AUTO-REMOVE] §7.4). */
       oilRow(groundItemKey(x));
-      const inner=many?sbGroupPeople(d,di,gp,x,ro):oilModeOn(di)
+      const inner=many?sbGroupPeople(d,di,ri,x,ro):oilModeOn(di)
         /* a row that came from an accepted REQUEST resolves its placeholder
            against the REQUEST's window, not its own times: an all-day request
            lands a row with no times at all ([OIL-SEATS-CAN-EARN] step 6). */
@@ -630,10 +629,10 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
    record, and a man among a member row's extras through that row's request (D18, D470) — so the row's OIL address
    (OILITEM, which a seat reads) is set to the puck's OWN row before each one, and put back to the lead's afterwards
    for the name cell. There is no switch for the whole row (the plan §4.9: a named request's name is not a switch). */
-function sbGroupPeople(d:any,di:any,gp:any,lead:any,ro:any){
-  const s=drawnPeople(d,di,gp).map((p:any)=>{ oilRow(groundItemKey(d.ground[p.ri])); return sbSeat(di,p.key,p.id,ro); }).join('');
-  oilRow(groundItemKey(lead));
-  return s;
+function sbGroupPeople(d:any,di:any,ri:any,row:any,ro:any){
+  /* one row, one OIL address — the input's own (`i:<iid>`): every puck is its own switch under it (D762) */
+  oilRow(groundItemKey(row));
+  return rowPeopleDrawn(d,di,ri).map((p:any)=>sbSeat(di,p.key,p.id,ro)).join('');
 }
 /* AN INPUT ROW ON THE BOARD (owner, 10 Aug 26 — "on personal inputs and
    unavailable in schedule board, they can be editable in the same modality as
@@ -694,19 +693,21 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
          other puck he is on — which is the ONLY place an OD earner is visible.
          It is addressed by the claim's OWN item since O-1, so the figure shows
          here only when this claim is one of the things that earned it. */
-      : `<span class="seat"${seatable?` data-inpseat="${esc(inpId(one))}"`:''}>${puck(one.person,puckMarks(di,one.person).sev,true,puckMarks(di,one.person).flag,false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`)
+      : `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${puck(one.person,puckMarks(di,one.person).sev,true,puckMarks(di,one.person).flag,false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`)
     : `<span class="itxt">${esc(one.person)}</span>`).join('');
   /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP — the week's twin (html.ts, Astra DP-08): an absence line tapped while
      the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,
      not on the board" about a row the board draws). Signed-in readers only, never the drag attribute. */
-  const inprow=isMember()?` data-inprow="${esc(inpId(inp))}"`:'';   // the Personal Inputs rows too (Fable F5)
+  const inprow=isMember()?` data-inprow="${esc(iuTail(inp))}"`:'';   // the Personal Inputs rows too (Fable F5)
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`
       +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`),inp)
       +sbiRmk(inp,dt)+`</div>`;
   }
-  const id=inpId(inp);
+  /* (one man's row of an input that holds several names its man — engine/inputs.ts iuTail — so a box typed on it
+     changes HIS part: ui/inputedit.tsx setInpField) */
+  const id=iuTail(inp);
   /* THE MODE IS READ-ONLY, AND THAT HAD TO REACH THIS ROW TOO (fix 5, hand pass
      §6 row 5). The read-only branch just above is deliberately SKIPPED for a
      claim carrying an OIL switch, because the switch has to be drawn — and the
@@ -761,7 +762,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
   const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
   /* a shared input is ONE line here (D661) — split by where each man's request is filed; the folded heading counts it once */
-  const lines:any[][]=entryLines(rows);
+  const lines:any[][]=rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length);
   const acRo=ro??pv;
   /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26 — the
      block is the faded audit echo now activity inputs auto-land on ground). The
@@ -794,7 +795,7 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
    editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type));
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type)).flatMap((r:any)=>facesOf(r));
   /* + Add stays here (owner, Aug 26; reworked 19 Aug 26): the dialog now
      offers only leave/medical/OD types and carries a DATE RANGE, whose till
      date lands in remarks the way the Inputs page's calendar writes it */
@@ -818,7 +819,7 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
    shape this panel no longer draws; a card opens the input-edit dialog
    instead, so the hint now points at that. */
 export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type));
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
   /* + Add (owner, 19 Aug 26 — SANS availability left the other panels' type
      lists, so it gets its own add HERE, "likewise"): opens the same dialog,
      locked to the SANS type and offering SANS aircrew only */

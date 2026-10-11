@@ -92,7 +92,9 @@ const PERSON: Spec = {
   ord: 'number?',   // the roster's order, on each person ([DB-READINESS] group A, phase 2)
 }
 const inputSpec = (booted: boolean): Spec => ({
-  iid: booted ? 'string' : 'string?', person: 'string', date: 'string', endDate: 'string?', yr: 'number?', allday: 'boolean',
+  iid: booted ? 'string' : 'string?', person: 'string?', date: 'string',
+  /* its people (the one-rule build, D756): a record has `people`, or — in the old shape, every verbatim seed — `person` */
+  people: { $opt: [{ p: 'string', by: 'string?', at: 'number?', mod: 'string?', h: 'number?' }] }, endDate: 'string?', yr: 'number?', allday: 'boolean',
   s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?', title: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
@@ -119,7 +121,8 @@ const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }
 /* [OIL-AUTO-REMOVE] — the day's OIL decisions (stored day content) and, on an
    ISSUED SNAPSHOT'S day copy only, the frozen evidence block. engine/oilev.ts. */
 const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } }, pa: { $opt: { $map: 'number' } } }
-const OILINP: Spec = { iid: 'string', person: 'string', type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
+/* a claim: its people and placeholder since the one-rule build; `person` on a block frozen before it */
+const OILINP: Spec = { iid: 'string', person: 'string?', people: { $opt: ['string'] }, ph: { $opt: { $or: ['string', 'null'] } }, type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
 const OILEV: Spec = { iso: 'string', earns: 'boolean', d: OILDEC, inputs: [OILINP], sent: { $map: ['string'] }, mem: { $opt: { $lit: [1] } } }
 const DAY: Spec = {
   dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: [{ rid: 'string?', t: 'string' }], allhands: [ALLHANDS], waves: [WAVE],

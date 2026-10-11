@@ -9,22 +9,33 @@
    granted him anything. The admin could not override (against D28). So here the switches are pressed for real, in the
    window where they live (D38), after a No, after no answer and after a Yes, and the credit is read after each press.
 
+   SINCE THE ONE-RULE BUILD ([ALL-AVAIL-AS-MEMBER] step 2; owner D755, D762 — 11 Oct 26; the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.4, §4.7): a row that came from an input IS the input, with ONE
+   OIL answer for everyone in it and for the men behind its placeholder. Three cases here stood a NAMED man on the
+   placeholder's row, or the placeholder under a named man's, by writing the row directly — and pinned that he, or the
+   crowd, earned by default whatever the answer was (D18, D470, D46). That rule is gone, and the row can no longer be
+   written that way (the re-make sweeps it, the engine's belt refuses it). In THIS step no door stands a placeholder
+   beside named people either — "ALL AVAIL is filed on its own" — so those cases pin what is true now, the refusal and
+   that nothing changes; a named man beside the placeholder, following the input's one answer, comes with step 3 (D753).
+
    jsdom has no layout engine: this proves the markup, the wiring and the words; what it LOOKS like is the walk. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, writeFill } from '../state/store'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED } from '../engine/publish'
 import { ensureRowIds } from '../engine/rowids'
+import { fillSlot } from '../engine/slots'
 import { inputItemKey } from '../engine/oil'
 import { oilEvidence, oilEarnedWork } from '../engine/oilev'
 import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
 import { setOilBlanket } from './oilmode'
+import { rowPut } from './reqdoor'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -95,6 +106,28 @@ const openWindow = async () => {
   await click(oilBtn())
   await click(groundRowEl().querySelector('.oilcount'))
 }
+/* the request's row is the only one on the Saturday's Ground Programme: its name box, and its "+ add" */
+const BOX = `g:${SAT}.0`, ADD = `g:${SAT}.0.+`
+const rowOf = () => (DAYS[SAT] as any).ground[0]
+/* A HAND ON THE ROW THAT THE INPUT REFUSES — asked of the row's door (ui/reqdoor.ts), of the store's writer that goes
+   through it, and (for its "+ add") of the engine's belt behind both. What was said is handed back; nothing may have
+   changed. */
+const refusedOnRow = async (key: string, id: string): Promise<string> => {
+  const say = HOOKS.toast, said: string[] = []
+  const inputs = JSON.stringify(INPUTS), row = JSON.stringify(rowOf())
+  HOOKS.toast = (m: any) => { said.push(String(m)) }
+  try {
+    await act(async () => {
+      expect(rowPut(key, id), 'the row\'s door').toBe('refused')
+      writeFill(key, id)
+      if (key === ADD) expect(fillSlot(key, id), 'the engine\'s belt, for a raw write').toBe(false)
+      notify()
+    })
+  } finally { HOOKS.toast = say }
+  expect(JSON.stringify(INPUTS), 'the input is as it was').toBe(inputs)
+  expect(JSON.stringify(rowOf()), 'and so is its row').toBe(row)
+  return said.join(' | ')
+}
 
 describe('the row itself — the placeholder is never a switch', () => {
   it('the ALL AVAIL puck stands in the name box with its count; it is offered no OIL switch of its own', async () => {
@@ -119,15 +152,25 @@ describe('the row itself — the placeholder is never a switch', () => {
     expect(cell.title).not.toContain('Nothing on this row can earn')
   })
 
-  it('a man the scheduler typed under the row is ON whatever the filer answered, and is his own switch', async () => {
-    landed({ oil: NO }, { more: ['divot'] })
-    await open(SAT)
-    await click(oilBtn())
-    const seat = () => ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).find(s => s.dataset.oilp === 'divot')!
-    expect(seat().classList.contains('on'), 'typed there by name: default yes').toBe(true)
-    await click(seat().querySelector('.puck'))
-    expect(decision('divot')).toBe('deny')
-    expect(paid()).toEqual([])
+  /* A NAMED MAN UNDER THE PLACEHOLDER'S ROW, AS D762 CHANGED IT. Until 11 Oct 26 this read "a man the scheduler typed
+     under the row is ON whatever the filer answered, and is his own switch" (D18, D470: the row's own extra, default
+     yes). There is no such man under the one rule: whoever stands on the row is IN the input and follows its ONE
+     answer (D755, D762) — and in this step no door stands a named man beside ALL AVAIL at all (step 3 opens it; he
+     will then start where the filer's answer puts him, his own switch, as the crowd does below). So this pins what is
+     true now: the hand is refused with the input's own sentence, nothing is written, the row draws no switch for him,
+     and nobody earns beside the filer's No — the window's hint still speaking of the default. */
+  it('D762, D755 (was D18 / D470) — a named man put under the placeholder\'s row is refused in this step: no switch of his on the row, and nobody earns beside the filer\'s No', async () => {
+    landed({ oil: NO })
+    expect(await refusedOnRow(ADD, 'divot')).toMatch(/filed on its own/i)
+    await openWindow()
+    expect(([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).map(s => s.dataset.oilp).filter(Boolean), 'no man\'s switch on the row').toEqual([])
+    expect(inWin().map(s => s.dataset.oilp), 'nor is he one of the people behind it').not.toContain('divot')
+    expect(decision('divot'), 'no decision about him').toBeUndefined()
+    expect(paid(), 'the filer said No: nobody earns from it by default').toEqual([])
+    /* (this was a case of its own — "a man typed under the row earns beside a No: the hint still speaks of the
+       default, never of nobody". Nobody typed there earns beside a No any more; the one way a man does is the
+       scheduler's own credit, and the hint beside THAT is pinned further down, "No → one man credited → …") */
+    expect($('.availwin').textContent || '').toContain('by default nobody behind it earns')
   })
 })
 
@@ -147,8 +190,13 @@ describe('walker B’s finds (9 Oct 26) — the placeholder is never a switch AN
     }
   })
 
-  it('the name box replaced by a named man: still no switch for the placeholder on the request’s own echo', async () => {
-    landed({}, { who: 'divot' })
+  /* (until the one-rule build the row's name box could hold a named man while the request stayed the placeholder's —
+     written straight onto the row. The name box IS the input's first person now (D755), and a named man put on the
+     placeholder's own puck is refused in this step — step 3 lets him join beside it. The echo's rule is unchanged.) */
+  it('a named man put on the placeholder’s own puck is refused in this step — and there is still no switch for the placeholder on the request’s own echo', async () => {
+    landed()
+    expect(await refusedOnRow(BOX, 'divot')).toMatch(/filed on its own/i)
+    expect(rowOf().who, 'the placeholder still stands in its name box').toBe('allavail')
     await open(SAT)
     await click(oilBtn())
     expect($$('[data-oilp="allavail"]')).toHaveLength(0)
@@ -227,11 +275,6 @@ describe('after the filer answered NO — a tap GRANTS, a second tap takes the g
     })
   }
 
-  it('a man typed under the row earns beside a No: the hint still speaks of the default, never of "nobody"', async () => {
-    landed({ oil: NO }, { more: ['divot'] })
-    await openWindow()
-    expect($('.availwin').textContent || '').toContain('by default nobody behind it earns')
-  })
 })
 
 describe('with NO ANSWER yet — the same switches, and the true reason', () => {
@@ -293,16 +336,32 @@ describe('under the day blanket nothing is written', () => {
   })
 })
 
-describe('THE CONTROL — a named man\'s request with ALL AVAIL under it reads exactly as before (D46)', () => {
-  it('the crowd starts ON over the holder\'s own No, with the old words', async () => {
+/* THE CONTROL, AS D762 CHANGED IT. Until 11 Oct 26 this pinned D46 — a named man's request with ALL AVAIL dropped under
+   it "reads exactly as before": "the crowd starts ON over the holder's own No, with the old words". Both halves are
+   gone. An input has ONE OIL answer, for everyone in it and for the men behind its placeholder (D762, D753), so a
+   crowd never again earns over the input's No by default; and in this step of the build no door stands ALL AVAIL
+   beside a named man (the input's own sentence refuses it — step 3 opens it, and its crowd will then start OFF on a
+   No, each man his own switch, in the words pinned above). What is still true of a NAMED man's own request, and is the
+   control for everything above: its switches are the pucks on its row, the words are HIS — "answered No", never
+   "whoever filed it" — and it has no counter. */
+describe('THE CONTROL — a named man\'s own request: his answer in his own words, and no crowd on its row in this step (was D46; D762, D755)', () => {
+  it('ALL AVAIL put under it is refused: no counter, nobody earning over his No — and his own puck says he answered No', async () => {
     INPUTS.unshift({ iid: 'rq1', person: 'bane', type: 'Training', date: 'Jul 18', yr: 2026, acc: 'g', allday: false,
       s: 9 * 60, e: 12 * 60, remarks: '', mod: 'now', oil: NO })
-    ;(DAYS[SAT] as any).ground = [{ prog: 'Training', str: '0900', end: '1200', who: 'bane', src: 'rq1', more: ['allavail'] }]
+    ;(DAYS[SAT] as any).ground = [{ prog: 'Training', str: '0900', end: '1200', who: 'bane', src: 'rq1' }]
     ensureRowIds(DAYS)
-    await openWindow()
-    for (const s of inWin()) expect(s.classList.contains('on')).toBe(true)
+    expect(await refusedOnRow(ADD, 'allavail')).toMatch(/filed on its own/i)
+    await open(SAT)
+    await click(oilBtn())
+    expect(groundRowEl().querySelector('.oilcount'), 'no placeholder on the row, so no counter and no window').toBeNull()
+    expect(groundRowEl().querySelector('.puck.allavail')).toBeNull()
     const cell = groundRowEl().querySelector('.oilitem') as HTMLElement
     expect(cell.title).toContain('tap a puck on this row')
-    expect($('.availwin').textContent || '').toContain('Tap a puck to stop a man earning')
+    const own = ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).find(s => s.dataset.oilp === 'bane')!
+    expect(own, 'his own puck is the switch').toBeTruthy()
+    expect(own.classList.contains('off'), 'his own No stands').toBe(true)
+    expect(own.title).toContain('answered No for this Training')
+    expect(own.title, 'never the words for an input of several').not.toContain('whoever filed')
+    expect(paid(), 'and nobody earns from it').toEqual([])
   })
 })

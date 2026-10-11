@@ -11,26 +11,32 @@
 
    PURE — no screen, no store. The month (ui/InputsCal.tsx) hands it the list of inputs and draws what comes back; the
    opened day and the bar a pointer picks up read the same items, so the three cannot disagree about what a day holds.
-   A group is made ONE thing here by state/inputgroup.ts entriesOf and nowhere else (the plan's risk 3: a list that
-   draws inputs and does not call it shows a group as separate lines). */
-import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit } from '../engine/inputs'
+   SINCE THE ONE-RULE BUILD (owner D756, 11 Oct 26 — "an input is stored as ONE record with the list of its people"; the
+   plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5) AN INPUT IS ITS RECORD: a list of inputs IS the list of
+   bars, and who is in one is the record's own list, read through engine/inputs.ts (namedOf / placeholderOf) — never
+   `person`, never how many records. A record stored before that build (one `person`) reads as the one-person input it
+   is; one that still carries an old group id is one man's input too (D759 reading 10 — nothing is converted). */
+import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { entriesOf } from '../state/inputgroup'
 import type { DayAnswer } from '../state/flyplan-model'
 
 export interface BarItem {
-  /** the entry's address: its first record's id (a group's first man A to Z) */
+  /** the input's address: its record's id */
   key: string
-  /** the entry's records — one for an ordinary input; a group's in A-to-Z order of callsign */
+  /** the input's record, as a list of one — the screens hand it to the card, the window and the writers */
   rows: any[]
+  /** everyone in it — ids: the named people A to Z by callsign, then its placeholder (ALL AVAIL / ALL) last (D721, D727) */
+  people: string[]
+  /** its placeholder's callsign ("ALL AVAIL"), '' where it has none */
+  ph: string
   /** its first and last day, yyyy-mm-dd */
   a: string
   b: string
   /** red for an absence, amber for a duty or a commitment — the List's own row colours */
   tone: 'red' | 'amb'
-  /** the first callsign */
+  /** the first callsign of `people` */
   who: string
-  /** how many more people are in it */
+  /** how many more are in it — `people.length - 1`; "several people" is this, never how many records */
   more: number
   /** its name, as the app labels an input everywhere: its own title where it has one, else its kind (inpLabel) */
   word: string
@@ -88,33 +94,59 @@ export const personFilterId = (fPerson: any): string => {
 export const personFilterPasses = (fPerson: any, pid: any, people: Record<string, any> = PEOPLE): boolean =>
   String(fPerson ?? EVERYONE) === EVERYONE || personFilterValue(pid, people) === String(fPerson)
 
+/* ---- WHO IS IN AN INPUT, AS A SCREEN SAYS IT — ONE BODY FOR THE MONTH, THE OPENED DAY, THE LIST AND THE CARD (the
+   one-rule build, 12 Oct 26 — the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5 "Names and counts") -----
+   A card, a List row and a tooltip name every NAMED person A to Z by callsign, then the placeholder's callsign last
+   (owner D721: "Instead of doing a +1 hiding the info"; D727: never "Drifter +3"). The person filter passes an input
+   when ANY of its people passes, or its placeholder does (`ph:`), and the search matches any of their callsigns —
+   asked here by all three lists, so a filter can never show an input on one and hide it on another. */
+const csIn = (people: Record<string, any>) => (p: any): string => { const x = people[String(p)]; return x && x.cs ? String(x.cs) : String(p ?? '') }
+/** everyone in an input — ids: the named people A to Z by callsign, then its placeholder last */
+export function peopleAZ(r: any, people: Record<string, any> = PEOPLE): string[] {
+  const cs = csIn(people)
+  const named = namedOf(r).map((e: any) => e.p).filter((p: any) => p != null && p !== '').map(String)
+    .sort((a: string, b: string) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
+  const ph = placeholderOf(r)
+  return ph && ph.p != null ? [...named, String(ph.p)] : named
+}
+/** their callsigns, in that order — what a card, a List row and a tooltip print */
+export const namesOf = (r: any, people: Record<string, any> = PEOPLE): string[] => peopleAZ(r, people).map(csIn(people))
+/** does an input pass the person filter? — when ANY of its people does (its placeholder by its own `ph:` value) */
+export const inputPassesPerson = (fPerson: any, r: any, people: Record<string, any> = PEOPLE): boolean =>
+  String(fPerson ?? EVERYONE) === EVERYONE || peopleAZ(r, people).some(p => personFilterPasses(fPerson, p, people))
+/** does an input match the search box? — a word in its remarks, its name, or the callsign of anyone in it */
+export function inputMatchesSearch(r: any, fSearch: any, people: Record<string, any> = PEOPLE): boolean {
+  const s = String(fSearch || '').trim().toLowerCase()
+  return !s || String(r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) ||
+    namesOf(r, people).some(n => n.toLowerCase().includes(s))
+}
+
 const two = (n: number) => String(n).padStart(2, '0')
 const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${two(Math.floor(o / 100) % 100)}-${two(o % 100)}`
 const TONE_ORDER = { red: 0, amb: 1 } as const
 /** red for an absence, amber for a duty or a commitment (an upchit too) — the month's bar and the input card read it */
 export const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
 
-/** Every input the Inputs month may show, as ENTRIES (a group is one), filtered as the List filters its rows — an
- *  entry stays when ANY of its people passes — in the order a day lists them: absences, then commitments; all-day
- *  before timed; the earlier start; then the callsign. */
+/** Every input the Inputs month may show — one item a record — filtered as the List filters its rows (an input stays
+ *  when ANY of its people passes), in the order a day lists them: absences, then commitments; all-day before timed;
+ *  the earlier start; then the callsign. */
 export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<string, any> = PEOPLE): BarItem[] {
-  const cs = (p: any): string => { const x = people[String(p)]; return x && x.cs ? String(x.cs) : String(p ?? '') }
-  const search = (f.fSearch || '').trim().toLowerCase()
-  const passes = (r: any) =>
-    personFilterPasses(f.fPerson, r.person, people) &&
-    (!search || String(r.remarks || '').toLowerCase().includes(search) || inpLabel(r).toLowerCase().includes(search) || cs(r.person).toLowerCase().includes(search))
+  const cs = csIn(people)
   const out: BarItem[] = []
-  for (const e of entriesOf((inputs || []).filter((r: any) => r && !isSansAvail(r.type)), cs)) {
-    const r = e.rows[0]
+  for (const r of (inputs || [])) {
+    if (!r || isSansAvail(r.type)) continue
     if (f.fType !== 'all' && r.type !== f.fType) continue
-    if (!e.rows.some(passes)) continue
+    if (!inputPassesPerson(f.fPerson, r, people) || !inputMatchesSearch(r, f.fSearch, people)) continue
+    const who = peopleAZ(r, people)
+    const ph = placeholderOf(r)
     const a = dateOrd(r.date, r.yr)
     if (a == null) continue                                  // a date no calendar can read is on no day of a month
     const b0 = r.endDate ? dateOrd(r.endDate, r.yr) : null
     const b = b0 != null && b0 > a ? b0 : a
     out.push({
-      key: String(r.iid), rows: e.rows, a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type),
-      who: cs(r.person), more: e.rows.length - 1, word: inpLabel(r), kind: inpKindTag(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
+      key: String(r.iid), rows: [r], people: who, ph: ph && ph.p != null ? cs(ph.p) : '',
+      a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type),
+      who: who.length ? cs(who[0]) : '', more: Math.max(0, who.length - 1), word: inpLabel(r), kind: inpKindTag(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
     })
   }
   const at = new Map(out.map((it, i) => [it, i] as const))
@@ -169,9 +201,15 @@ export function layoutBars(week: readonly (string | null)[], items: readonly Bar
  *  lead with whoever comes first in the alphabet ("Drifter +3 · Meeting"): Saber's own meeting did not show his name,
  *  and a bar cut short by its day lost the "+3". Now the count leads — so a cut-off bar never loses it — then what it
  *  is; who is in it is the opened day's to say (every name — D721) and the bar's tooltip's. On a phone too: a count
- *  alone would say nothing, so a shared bar always carries its word. */
+ *  alone would say nothing, so a shared bar always carries its word.
+ *  THE COUNT IS OF NAMED PEOPLE, AND A PLACEHOLDER IS SAID BESIDE IT (the one-rule plan §4.5: the bar's count "counts
+ *  named people and says '+ ALL AVAIL'" — ALL AVAIL stands for whoever is free on the day, D702, so it is nobody to
+ *  count): "3 + ALL AVAIL · Meeting"; one named person beside it keeps his callsign, "Saber + ALL AVAIL · Meeting". */
 export function barText(it: BarItem, narrow: boolean): string {
-  if (it.more > 0) return `${it.more + 1} · ${it.word}`
+  if (it.more > 0) {
+    if (!it.ph) return `${it.more + 1} · ${it.word}`
+    return `${it.more > 1 ? it.more : it.who} + ${it.ph} · ${it.word}`
+  }
   return narrow && it.a === it.b ? it.who : `${it.who} · ${it.word}`
 }
 
