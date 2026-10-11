@@ -22,7 +22,7 @@ import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, placeholderProblem } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -245,7 +245,10 @@ const PLACEHOLDER_SHAPE = 'placeholder-input-shape'
 export function placeholderShapeViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
-    const why = placeholderProblem(c.after)
+    /* …AND EVERYTHING ELSE ONE RECORD MAY HOLD (step 2 (a) of the one-rule build — engine/inputs.ts shapeProblem, which
+       asks the placeholder's rules first): at least one person, nobody twice, one placeholder at most, a medical
+       entry or a Personal input one person's. The same layer, for the same reason: whoever saves it, by whatever door. */
+    const why = shapeProblem(c.after)
     if (why) return why
   }
   return null

@@ -102,6 +102,17 @@ export function peopleOf(r:any):any[]{
   return Array.isArray(r.people)?r.people:[{p:r.person,by:r.by,at:r.at,mod:r.mod}];}
 export function namedOf(r:any):any[]{return peopleOf(r).filter((e:any)=>e&&!isPh(e.p));}
 export function placeholderOf(r:any):any{return peopleOf(r).find((e:any)=>e&&isPh(e.p))||null;}
+/* THE SMALL QUESTIONS EVERY BODY ABOUT THE INPUT ASKS OF ITS PEOPLE (step 2 (a), 12 Oct 26 — the plan §4.1; Fable F3, F4).
+   Each reads through peopleOf, so a record in the old shape answers as the one-person input it is.
+   idsOf — everyone in it, a placeholder included, in the order they joined. leadOf — the first of them: who stands in
+   the name box of its row, and whom a one-person body (a medical plan, the Leave War's approval, a form's Person box)
+   means by "its person". onlyNamed — the man whose own request it is: its ONE named person (F4: "the man himself,
+   whoever filed it", D655 — an input for ALL AVAIL alone, or for several, is nobody's own). holds — is this id in it. */
+export function idsOf(r:any):any[]{return peopleOf(r).filter((e:any)=>e&&e.p!=null&&e.p!=='').map((e:any)=>e.p);}
+export function leadOf(r:any):any{const ids=idsOf(r);return ids.length?ids[0]:undefined;}
+export function onlyNamed(r:any):any{const n=namedOf(r);return n.length===1&&n[0].p!=null&&n[0].p!==''?n[0].p:null;}
+export function holds(r:any,id:any):boolean{return id!=null&&id!==''&&idsOf(r).some((p:any)=>String(p)===String(id));}
+export function entryOf(r:any,id:any):any{return peopleOf(r).find((e:any)=>e&&String(e.p)===String(id))||null;}
 const linesOf=(src:any):any[]=>{const out:any[]=[];
   for(const r of (src||[])){ if(!r||typeof r!=='object')continue;
     for(const e of peopleOf(r)){ if(!e||isPh(e.p))continue;
@@ -152,10 +163,16 @@ export const stableJson=(v:any):string=>{
   if(v==null||typeof v!=='object')return JSON.stringify(v===undefined?null:v);
   if(Array.isArray(v))return '['+v.map(stableJson).join(',')+']';
   return '{'+Object.keys(v).filter((k:any)=>v[k]!==undefined).sort().map((k:any)=>JSON.stringify(k)+':'+stableJson(v[k])).join(',')+'}';};
+/* WHO IS IN IT is part of what it says (step 2 (a), 12 Oct 26 — the plan §4.2): the named people's ids SORTED — the order
+   they joined in is no part of what a day shows — then the placeholder. Under the key `person`, and for an input of one
+   it is that one id: a record rewritten in the new shape, saying the same, is byte for byte the same key, so a day
+   published before the build reads nothing pending for it. */
+const whoKey=(inp:any):string=>{const ph=placeholderOf(inp);
+  return namedOf(inp).map((e:any)=>String(e.p)).sort().concat(ph?[String(ph.p)]:[]).join('+');};
 export function inpDetailKey(inp:any):string{
   if(!inp)return '';
   const all=!!inp.allday;
-  return stableJson({person:inp.person||'',type:inp.type||'',
+  return stableJson({person:whoKey(inp),type:inp.type||'',
     allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
     /* its own title is one of the things a reader sees ([INPUT-OWN-TITLE], D715): a title changed after the day was
        published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
@@ -176,6 +193,7 @@ export function inpDetailKey(inp:any):string{
    leftover filed for the same man, of the same type or both downchits, are ONE edit, carried with both records so the
    words read one change), then stands alone (filed / gone). An UPCHIT is out altogether: it draws nothing and flags
    nothing — the downchit it trims is the change (Fable Q6). */
+const manOf=(r:any):string=>{const n=namedOf(r)[0]||placeholderOf(r);return n&&n.p!=null?String(n.p):'';};
 export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any,nowId?:string}>,same:Array<[string,string]>}{
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
@@ -198,7 +216,8 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
      with no filing state (a downchit, a leave — never a request, whose filing the filing axis words by its own id, so
      pairing two requests would read one edit AND one filing for two acts) */
   for(let i=W.length-1;i>=0;i--){const w=W[i]; if(String(w.r.acc||'')!=='')continue;
-    const j=N.findIndex((n:any)=>String(n.r.acc||'')===''&&n.r.person===w.r.person&&(n.r.type===w.r.type||(isDownchit(n.r.type)&&isDownchit(w.r.type))));
+    /* "the same man" is the first named person of each, else its placeholder (step 2 (a) — the plan §4.2) */
+    const j=N.findIndex((n:any)=>String(n.r.acc||'')===''&&manOf(n.r)===manOf(w.r)&&(n.r.type===w.r.type||(isDownchit(n.r.type)&&isDownchit(w.r.type))));
     if(j>=0){out.push({id:w.id,was:w.r,now:N[j].r,nowId:N[j].id});W.splice(i,1);N.splice(j,1);}}
   /* 5 — gone, or filed since; a request taken off on the one side and absent on the other shows on neither face (D174, D176) */
   W.forEach((w:any)=>{ if(String(w.r.acc||'')!=='r')out.push({id:w.id,was:w.r,now:null}); });
@@ -588,14 +607,17 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    wireStore — `placeholder-input-shape`). Pinned by placeholderinput.test.ts. */
 export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Appointment','Duty','Event','Other'];
 export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
-export function isPlaceholderInput(inp:any){return !!inp&&inp.person!=null&&isSpecial(inp.person);}
+export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
 export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
-  const cs=String(PEOPLE[inp.person].cs);
+  const ph=placeholderOf(inp).p;
+  const cs=String((PEOPLE[ph]||{cs:ph}).cs);
   if(!placeholderKind(inp.type))return `${cs} can be filed only for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} or ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
   if(inp.endDate&&String(inp.endDate)!==String(inp.date)){const a=dateOrd(inp.date,inp.yr),b=dateOrd(inp.endDate,inp.yr);
     if(a==null||b==null||a!==b)return `${cs} is filed one day at a time`;}
-  if(inp.grp!=null||inp.grpBy!=null)return `${cs} is filed on its own — it already stands for whoever is free`;
+  /* (…"never in a group": the old shape's group id, and — until ALL AVAIL may be one of an input's people, step 3 of the
+     one-rule build, D753 — anyone else in the new shape's list) */
+  if(inp.grp!=null||inp.grpBy!=null||peopleOf(inp).length>1)return `${cs} is filed on its own — it already stands for whoever is free`;
   /* …and NEVER UNDER UNAVAILABLE (Astra's read of the code, 9 Oct 26). "Unavailable" names a real person's day; a
      placeholder input filed there lands no row, so it has no crowd and nobody behind it can earn from the filer's Yes.
      The accept door refuses to file one there (slots.ts acceptInput) — but an EDIT keeps a request's filing, so a named
@@ -603,6 +625,30 @@ export function placeholderProblem(inp:any):string{
      The edit now takes it back onto the programme (ui/inputedit.tsx commitInputEdit); this is the rule behind it, held
      at the save boundary like the other three. */
   if(inp.acc==='u')return `${cs} cannot be filed under Unavailable — that names a real person’s day`;
+  return '';}
+/* WHAT ONE INPUT MAY HOLD — the invariants of the one record, held at the write (step 2 (a), 12 Oct 26 — the plan §4.1;
+   owner D756, D753, D755 (4), D655 reading 4). Asked of every record a command PUT (state/store.ts, beside the
+   placeholder check) and of every record an Undo / Redo restores; never of a record nobody touched (D56). '' or the
+   sentence the screen says. An old-shaped record is a one-person input and breaks none of these but the placeholder's
+   own rules, which it always answered to.
+     · at least one person; nobody twice; never two placeholders (D753: "ALL or ALL AVAIL, never both");
+     · a placeholder's own rules (placeholderProblem, above);
+     · a medical entry or an upchit is one person's — each needs its own document (D655 reading 4);
+     · a Personal input is one person's own (D755 (4)).
+   (SANS availability holds SANS people only — asked per person at the doors, ui/inputedit.tsx sansRefusal: it reads the
+   roster as it stands, which a stored record is never judged by.) */
+export function shapeProblem(inp:any):string{
+  if(!inp||typeof inp!=='object')return '';
+  const ids=idsOf(inp), cs=(p:any)=>String((PEOPLE[p]||{cs:p}).cs);
+  /* (asked of a record that CARRIES its list: an old-shaped record that names nobody is not this build's to judge — D56) */
+  if(!ids.length)return Array.isArray(inp.people)?'An input needs at least one person':'';
+  const seen=new Set<string>();
+  for(const p of ids){const k=String(p); if(seen.has(k))return `${cs(p)} is already on this input`; seen.add(k);}
+  const phs=ids.filter((p:any)=>isPh(p));
+  if(phs.length>1)return `This input already has ${cs(phs[0])}`;
+  const why=placeholderProblem(inp); if(why)return why;
+  if(ids.length>1&&(isDownchit(inp.type)||isUpchit(inp.type)))return `${isUpchit(inp.type)?'An upchit':'A medical entry'} is one person’s — each needs its own document`;
+  if(ids.length>1&&/^Personal$/i.test(String(inp.type==null?'':inp.type).trim()))return 'A Personal input is one person’s own';
   return '';}
 /* ---- AN INPUT'S OWN TITLE ([INPUT-OWN-TITLE]; owner D715, D716, D717 — 9 Oct 26; the plan
    docs/superpowers/plans/2026-10-09-input-own-title-plan.md) -------------------------------------------------------

@@ -19,7 +19,7 @@
 import { PEOPLE, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
-import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd } from './inputs'
+import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed } from './inputs'
 import { hhmm } from './time'
 import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
@@ -99,7 +99,10 @@ export function stripSign(sign: any, bind: any, id: string): boolean {
 export const hisLanded = (d: any, id: string) => new Set<string>(((d && d.ground) || []).filter((r: any) => {
   if (!r || !r.src) return false
   const inp: any = (INPUTS as any[]).find(x => x && String(inpId(x)) === String(r.src))
-  return inp ? String(inp.person || '') === id : whoId(r.who) === id
+  /* HIS where he is the input's ONLY named person (step 2 (a) of the one-rule build — the plan §4.3): from an input that
+     holds others he leaves the LIST (the delete's own trim) and the row is re-made without him; the row goes whole only
+     where it was his alone. An old-shaped record is a one-person input, so it answers as it always did. */
+  return inp ? String(onlyNamed(inp) || '') === id && idsOf(inp).length === 1 : whoId(r.who) === id
 }).map((r: any) => String(r.src)))
 
 /* ---- the deleted men, with the first day each is gone ---- */
@@ -171,9 +174,15 @@ export function requestRowFields(inp: any) {
   const f: any = {
     prog: inpLabel(inp).toUpperCase(),
     str: inp.allday ? '' : hhmm(inp.s), end: inp.allday ? '' : hhmm(inp.e),
-    who: inp.person,
+    who: leadOf(inp),
     rmks: inp.remarks || '', srcType: inp.type,
   }
+  /* …AND ITS PEOPLE, WHERE IT HOLDS SEVERAL (step 2 (a) of the one-rule build, 12 Oct 26 — owner D755: "a row that came
+     from an input IS the input"; the plan §4.3): the first to join stands in the name box, the rest under it, in the
+     order they joined. Written only where there is more than one, so a one-person input's row — and its hash — is byte
+     for byte what it was, in either shape. */
+  const rest = idsOf(inp).slice(1)
+  if (rest.length) f.more = rest
   const g = entryIdOf(inp)
   if (g) f.srcg = g
   return f
@@ -190,6 +199,7 @@ export function srcvOf(inp: any): string {
      the row does not show included, and a row saved before this build is re-made, and marked, at its first read. An
      ordinary request's hash is the six fields alone, as it always was: no ordinary row is re-made by this build. */
   const s = [f.prog, f.str, f.end, f.who, f.rmks, f.srcType].map(x => String(x ?? '')).join('|') + (f.srcg ? '|g:' + f.srcg : '')
+    + (f.more ? '|m:' + f.more.join(',') : '')
   let h = 0x811c9dc5
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) }
   return (h >>> 0).toString(36)
@@ -328,6 +338,14 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
          the box by a hand-over (the request's `leftAt` names him) gives way to the new one. Free text, or an id the roster
          no longer holds, is not somebody the scheduler placed: the request's man is written, as before. (Known edge: a
          former holder dragged back into the box deliberately is replaced at the next edit — the extras are his place.) */
+      /* AN INPUT THAT CARRIES ITS PEOPLE WRITES ITS ROW'S PEOPLE WHOLE (step 2 (a) — the plan §4.3): its name box and
+         what stands under it are the input's list, so nobody on the row is "the scheduler's own" to keep. */
+      if (Array.isArray(r.people)) {
+        if (!f.more) delete row.more
+        delete row.srcg
+        Object.assign(row, f); row.srcv = sv; info[di].reqChanged = true
+        continue
+      }
       const w = whoId(row.who)
       const other = !!w && w !== String(r.person) && !(r.leftAt && r.leftAt[w] != null) && (isSpecial(w) || !!(PEOPLE as any)[w])
       /* …BUT A SHARED INPUT'S ROW KEEPS ITS OWN MAN IN ITS NAME BOX (`[GROUP-INPUT-ONE-ROW]`, owner D734 — "on a shared

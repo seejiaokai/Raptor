@@ -18,7 +18,7 @@
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
 import { useSyncExternalStore } from 'react'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, isPlaceholderInput } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -812,12 +812,18 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
      members' switch is not asked, and the scheduler meets the unanswered question on the Inputs List and in OIL Earn.
      Asked of the one permissions module, for the person signed in. */
   const session = me()
-  const filedByHim = (row: any) => !!PEOPLE[row.person] && !!PEOPLE[row.person].special && row.by != null && String(row.by) === String(personId)
+  /* …AND AN INPUT HE FILED FOR SEVERAL PEOPLE (owner D762, 11 Oct 26 — "for an input with several people the OIL
+     question has one answer, for everyone in it: whoever filed it, or an admin, gives it; no man in it gives an answer
+     of his own"; step 2 (a) of the one-rule build). So "an input he answers for" is ONE test: its only person is he —
+     his own request, whoever filed it — or it holds anyone else (several people, ALL AVAIL) and he is its filer, while
+     he may still change it. A man who is merely IN a shared input is not asked. */
+  const filedByHim = (row: any) => (idsOf(row).length > 1 || isPlaceholderInput(row)) && row.by != null && String(row.by) === String(personId)
     && (session == null || String(session) === String(personId)) && mayEditInput(row)
+  const ownOf = (row: any) => idsOf(row).length === 1 && onlyNamed(row) === personId
   /* the RECORDS, not the per-person lines (engine/inputs.ts): this asks who ANSWERS for an input — its own man, or
      whoever filed it for ALL AVAIL, an input that has no line at all — and hands back the input's id for the editor */
   for (const row of INPUTS) {
-    if ((row.person !== personId && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue
+    if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue
     const answered = (row.oil ?? {}) as Record<string, number>
     const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })

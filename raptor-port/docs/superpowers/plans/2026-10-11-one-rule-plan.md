@@ -689,3 +689,51 @@ moves files between them; (b) the four readers of point 1 read `.person` on the 
 record's `people` array, by reference — decide in step 2 (a) whether the view drops it; (d) two readers had no test
 before this step and have one now (`state/roster-restore-inputs.test.ts`, `ui/inputsdeleted.test.tsx`), each with a
 case for a man who is one of several people in an input.
+
+### Step 2 — one record, one row, one rule (begun 12 Oct 26; built letter by letter, a failing test first)
+
+**(a) — the record, its one writer, and every body that would otherwise read nobody. BUILT 12 Oct 26.** Tests:
+`src/engine/onerecord.test.ts` (19), `src/leavewar/onerecord-write.test.ts` (14). The whole unit suite after it:
+10159 of 10159 (one Tracker focus test failed once under the full run's load and passes by itself, three times).
+
+*What it built:* the accessors every body about the INPUT asks through (`idsOf`, `leadOf`, `onlyNamed`, `holds`,
+`entryOf` — `engine/inputs.ts`); what one record may hold (`shapeProblem`), held at the save boundary for every
+command, an Undo included (`state/store.ts`, where the placeholder's check stood); the writes to the list
+(`engine/inputown.ts` — `toPeople`, `putPerson`, `takePerson`, `swapPerson`, `ownInputOf`); the one writer
+(`ui/inputedit.tsx commitInput`); and, in the same commit (F3): one OIL claim an input with its people and
+placeholder, everyone in it earning on its one answer (`oilev.ts`), a member's command judged by `ownPart`
+(`perms.ts`), Undo's "may he reverse it" and the owner of a change, the bell's OIL question, a deleted man's row
+(`hisLanded`), the row's name box and the people under it (`requestRowFields`), and `inpDetailKey`.
+
+*Where (a) left the plan's letter, and why — for the letters that follow:*
+
+1. **THE STORE HOLDS BOTH SHAPES UNTIL THE LAST LETTER.** A record carries `people` only once a body of
+   `inputown.ts` has changed who is in it, or it was filed for several by `commitInput`. A filing for ONE person is
+   still written with `person` by `commitNewInput` — it reads the same everywhere (`peopleOf`) — so the app works at
+   every commit while the readers move, letter by letter. **The flip — `commitNewInput` writing `people`, and the
+   three old save bodies' callers moved to `commitInput` — is the LAST thing step 2 does, with (i).** Until then
+   `commitGroup`, `entriesOf` and the screens that call them are untouched and still file the old grouped shape.
+2. **`commitInputEdit` and `commitNewInput` STAY, as the one body an input's FIELDS are saved by** (the remark's date
+   word, the late date, the OIL voiding, the stamps, the medical plans): `commitInput` calls them for what the input
+   SAYS and changes the LIST itself. §4.4's "replacing the trio" is true of the callers; the two bodies are the
+   "medical plans keep their own bodies" of that paragraph, kept whole rather than copied.
+3. **A new claim still carries `person`** (the first named person, else the placeholder) beside `people` and `ph`, so
+   every reader of a claim not yet moved — OIL Earn's screens above all — answers as before for an input of one.
+   `claimPeople(c)` / `claimPh(c)` read a claim in either shape; (d) moves the rest onto them, adds the legacy reader
+   and drops `person` from new claims. The key segment of a claim of one is byte for byte what it was, so no
+   published day reads pending for the build.
+4. **The row's hash is unchanged for an input of one** (`srcvOf` adds the people only where there are several), so no
+   existing row is re-made by (a). The re-make of every old row once, and the row's people written whole for EVERY
+   input, are (b)'s — with the door (c), since between them a scheduler's man on a one-person request's row would be
+   swept at the input's next change.
+5. **`shapeProblem` judges "nobody in it" only of a record that carries `people`** — an old-shaped record naming
+   nobody (two test fixtures; no door of the app makes one) is not this build's to judge (D56).
+6. **A person in an input who did not file it adds nobody — already so in `commitInput`** (D763): every change but
+   "take me out" asks `mayEditInput`. The old door (`commitGroup`) still lets him until its callers move.
+7. **`ownPart` ignores what a save stamps beside the list** (`modBy`, `modAt`, `hand`) and compares everything the
+   input says.
+8. **The late date of a person added** rides his entry (`mod`), written only where the save is the input's own window
+   and falls after the input's own date; from the schedule nobody is ever late (D741).
+
+*Not in (a), by its own lettering:* permissions in full and §11 (f) — the entries' `by` tests, `by` passing when
+the filer leaves (F13); the swap's void and ask (d, c); the legacy claim reader (d); `iuParts` (g).

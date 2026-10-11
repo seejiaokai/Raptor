@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -223,7 +223,9 @@ const filerOf = (pid: string, row: any): boolean =>
 export function filedForOther(pid: string, before: any, after: any): boolean {
   if (!before && !after) return false
   if (!pid || !membersFileOn()) return false
-  if (before && after && String(before.person) !== String(after.person)) return false
+  /* (a record in the OLD shape — one `person` — stays the same man's; one that carries its PEOPLE is its filer's to
+     re-people, and what he may do to the list is the list's own test, inputBreach below) */
+  if (before && after && !Array.isArray(before.people) && !Array.isArray(after.people) && String(before.person) !== String(after.person)) return false
   if (!filerOf(String(pid), before || after)) return false
   return (!before || memberFilesForOthers(before.type)) && (!after || memberFilesForOthers(after.type))
 }
@@ -248,7 +250,9 @@ function mayChangeInput(row: any, act: Act): boolean {
   const who = roleOf()
   if (who === null) return true
   if (!row) return false
-  if (allows(who, T.input, act, row.person, identityOf(who))) return true  // an admin; the man himself, in full
+  /* an admin; the man himself, in full — "himself" is the input's ONLY NAMED PERSON, whoever filed it (owner D655, D762
+     reading 1; Fable's read of the one-rule plan, F4): an input for several people, or for ALL AVAIL, is nobody's own */
+  if (allows(who, T.input, act, onlyNamed(row), identityOf(who))) return true
   const pid = who === 'member' ? me() : null
   return pid != null && filedForOther(pid, row, row)
 }
@@ -503,7 +507,34 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
    pending person's own access request — ONE new `accessreq:<id>` row under his own sign-in name
    ([DB-READINESS] group A, phase 4.4: the requests are one row each, so his command may add his and touch no other). */
 const INPUT_ORDER = '__order'
-const personOfInput = (v: any): string | null => (v && v.person != null ? String(v.person) : null)
+const personOfInput = (v: any): string | null => { const p = v ? leadOf(v) : null; return p != null ? String(p) : null }
+/* IS THIS CHANGE "HIS OWN PART" OF AN INPUT — ONE predicate ([ALL-AVAIL-AS-MEMBER] step 2 (a), 12 Oct 26; Fable's read of
+   the one-rule plan, F5; the plan §4.9). True when
+     (i)  both images, where present, are an input whose only person is he — his own request, as always; or
+     (ii) the two images differ ONLY in his own entry standing in one list and not in the other: he took himself out
+          (owner D755 (3): "he may always withdraw himself") — or his own Undo is putting him back.
+   Three bodies decided ownership by a record's one `person` and would have refused a member's Undo of his own "take me
+   out": the commit gate below, Undo's "may he reverse it" (undo/timeline.ts, through state/undo-wire.ts) and the owner
+   of a change (undo/derive.ts). What a save stamps beside the list — who last changed it and when — is no part of the
+   comparison; everything the input SAYS is. */
+const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand'])
+const saysSame = (a: any, b: any): boolean => {
+  const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k)))
+  for (const k of ks) if (JSON.stringify(a[k] ?? null) !== JSON.stringify(b[k] ?? null)) return false
+  return true
+}
+export function ownPart(pid: string, before: any, after: any): boolean {
+  if (!pid || (!before && !after)) return false
+  const alone = (x: any) => x == null || (idsOf(x).length === 1 && String(onlyNamed(x) ?? '') === String(pid))
+  if (alone(before) && alone(after)) return true
+  if (!before || !after) return false
+  const a = peopleOf(before), b = peopleOf(after)
+  const [more, less] = a.length > b.length ? [a, b] : [b, a]
+  if (more.length !== less.length + 1) return false
+  const rest = more.filter((e: any) => !(e && String(e.p) === String(pid)))
+  if (rest.length !== less.length || JSON.stringify(rest) !== JSON.stringify(less)) return false
+  return saysSame(before, after)
+}
 /* THE SCHEDULE'S OWN RECORDS. A member changes none of them, by any command ([DB-READINESS] group A, phase 6 (c), 1 Oct 26 —
    data-model.md §11; D450: a day is saved only by the scheduler holding it). They were his to change as the landing of his
    own input, inside his input command; that landing is now worked out after the command, on read (state/holderbase.ts),
@@ -547,13 +578,14 @@ const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) 
 const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
 function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: boolean): string | null {
   const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : (c.after ?? null)
-  const own = (b == null || personOfInput(b) === pid) && (f == null || personOfInput(f) === pid)
+  /* his own part — asked FIRST, before the filer's rule, in the forward and the replayed path alike (F5) */
+  const own = ownPart(pid, b, f)
   if (!own && !filedForOther(pid, b, f)) return `another person's input`
   if (replayed || !f) return null
   if (!b) {
     /* a piece the app cut from a record of the same man this command changed or deleted */
     const piece = env.changes.some(o => o !== c && isInputChange(o) && o.before != null
-      && personOfInput(o.before) === personOfInput(f) && filed(o.before, f))
+      && personOfInput(f) != null && holds(o.before, personOfInput(f)) && filed(o.before, f))
     if (!piece) {
       if (own ? (f.by != null && String(f.by) !== pid) : String(f.by ?? '') !== pid) return `an input placed in another person's name`
       const g = f.grp ?? null, gb = f.grpBy ?? null
@@ -564,7 +596,9 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
     if (!same(b.by, f.by) || !same(b.at, f.at)) return `who placed an input`
     if (!same(b.grp, f.grp) || !same(b.grpBy, f.grpBy)) {
       const made = b.grp == null && b.grpBy == null && f.grp != null && f.grp !== '' && String(f.grpBy ?? '') === pid
-      if (!made) return `who filed a shared input`
+      /* …or the record was rewritten with its PEOPLE, where the old group fields go (engine/inputown.ts toPeople) */
+      const listed = Array.isArray(f.people) && f.grp == null && f.grpBy == null
+      if (!made && !listed) return `who filed a shared input`
     }
   }
   if (own) return null

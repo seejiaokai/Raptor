@@ -89,6 +89,7 @@ const RECORDS: Record<string, string> = {
 
 const WRITERS: Record<string, string> = {
   'engine/slots.ts': 'files a request on the programme, under Unavailable, or takes it off (acceptInput, unacceptInput)',
+  'engine/inputown.ts': 'who is in an input: a person put in, taken out or replaced, and one man given an input of his own (ownInputOf)',
   'state/holderbase.ts': 'the filing a holder\'s day carries',
   'state/store.ts': 'the inputs door (runInputWrite), the week load',
   'state/sched-commit.ts': 'Undo and Redo\'s restore',

@@ -1,5 +1,19 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 2 (a) (12 Oct 26 — the record, its one writer, and the bodies that would otherwise read
+nobody; D756, D762, D755 (3), D763): NEW `src/engine/inputown.ts` (the writes to who is in an input — `toPeople`,
+`putPerson`, `takePerson`, `swapPerson`, and `ownInputOf`: one man of a shared input given an input of his own; a
+WRITER's file on the readers' guard). `src/engine/inputs.ts` gains the small questions about an input's people
+(`idsOf`, `leadOf`, `onlyNamed`, `holds`, `entryOf`) and `shapeProblem` (what one record may hold — held at the save
+boundary by `state/store.ts`, beside the placeholder's own rules); `inpDetailKey` and `frozenInputMatch` read the
+people. `src/ui/inputedit.tsx` gains `commitInput` (THE ONE WRITER: files, changes and re-peoples the one record in one
+command). Read on the one record now: `engine/overlay.ts` (`requestRowFields` — the name box and everyone under it;
+`hisLanded`), `engine/oilev.ts` (one claim an input, `claimPeople` / `claimPh`; everyone in it on its one answer),
+`state/perms.ts` (`ownPart`; "the man himself" is the input's only named person), `undo/derive.ts`, `undo/timeline.ts`
+and `state/undo-wire.ts` (whose step a change to a shared input is), `leavewar/sync.ts` (`oilPendingFor` — the bell
+asks whoever answers for the input). New tests: `src/engine/onerecord.test.ts`, `src/leavewar/onerecord-write.test.ts`.
+No file removed yet (the plan's step 6 lists what goes).
+
 `[ALL-AVAIL-AS-MEMBER]` step 1 (12 Oct 26 — the reader; nothing changed on screen; D755, D756, D759): `src/engine/inputs.ts`
 gains who is in an input whatever shape it is stored in (`peopleOf`, `namedOf`, `placeholderOf`), the per-person view
 of the inputs (`inputLines`, and `inputLinesOn(dt)` — a published face's own copies where the date is frozen) and its

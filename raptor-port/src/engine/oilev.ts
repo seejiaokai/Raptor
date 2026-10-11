@@ -41,7 +41,7 @@
    Ordinary TS style — a new file, not a ported engine body.
    ===================================================================== */
 import { DAYS } from './data'
-import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx, inputReadPass } from './inputs'
+import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx, inputReadPass, idsOf, namedOf, placeholderOf, entryOf, leadOf } from './inputs'
 import { weekKeyOfOrd } from './weeks-data'
 import { CURWEEK } from './waves'
 import { stashHas, standingRowIn } from './weekstash'
@@ -93,7 +93,14 @@ export interface OilDecisions {
 export interface OilInputEv {
   /** the input's own stable id: the decision address that survives an edit (§7.4) */
   iid: string
+  /** the first named person of the input, else its placeholder — what a block frozen before the one-rule build carries
+   *  alone (one claim a man); read through `claimPeople` / `claimPh` below, never directly, by anything new */
   person: string
+  /** EVERY NAMED PERSON IN THE INPUT, in the order they joined (step 2 (a) of the one-rule build, 12 Oct 26 — owner D762:
+   *  one answer for everyone in it; the plan §4.7). Absent on a block frozen before it. */
+  people?: string[]
+  /** its ALL AVAIL / ALL entry, or null */
+  ph?: string | null
   type: string
   /** does the TYPE ask for OIL at all (`oilAsks`) */
   asks: boolean
@@ -280,7 +287,7 @@ export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: b
  *  rules produced. A man with no span at all defaults to yes, which is what the
  *  input half's D18 extras rely on. */
 export function spanDefault(day: any, ev: OilEvidence, person: string, item: string): boolean {
-  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === person)
+  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && claimPeople(i).includes(String(person)))
   if (inp) return inp.ans != null && inp.ans > 0
   /* a request HELD BY A PLACEHOLDER answers for everyone on its row through the one body below ([INPUT-ALL-AVAIL],
      D711 (1)) — a crowd man follows the filer's answer, so his switch must start where his credit does */
@@ -412,11 +419,21 @@ function stashStanding(first: number | null, key: string): OilInputEv['stand'] {
   return hit ? (hit.row.cx ? 'cx' : hit.row.info ? 'info' : 'active') : 'unlanded'
 }
 
+/* WHO A CLAIM NAMES — ONE reader for a claim in either shape (the plan §4.7): a claim made since the one-rule build
+   carries its people; one frozen before it carries its one `person`, a man or a placeholder. */
+export const claimPeople = (c: any): string[] =>
+  !c ? [] : Array.isArray(c.people) ? c.people.map(String) : (c.person != null && c.person !== '' && !isSpecial(c.person) ? [String(c.person)] : [])
+export const claimPh = (c: any): string | null =>
+  !c ? null : c.ph !== undefined ? (c.ph == null ? null : String(c.ph)) : (c.person != null && isSpecial(c.person) ? String(c.person) : null)
+/* …and its part of a key: the named ids sorted, then the placeholder — for a claim of one it is that one id, so a day
+   issued before the build keeps the key it went out with */
+const claimWho = (c: any): string => { const ph = claimPh(c); return claimPeople(c).slice().sort().concat(ph ? [ph] : []).join('+') }
+
 export function projectOilInputs(iso: string): OilInputEv[] {
   const ord = +String(iso).replace(/-/g, '')
   const out: OilInputEv[] = []
   for (const row of INPUTS as any[]) {
-    if (!row || !row.person || !oilAsks(row.type)) continue
+    if (!row || !idsOf(row).length || !oilAsks(row.type)) continue
     const a = dateOrd(row.date, row.yr)
     if (a == null) continue
     const b = row.endDate ? dateOrd(row.endDate, row.yr) ?? a : a
@@ -425,7 +442,9 @@ export function projectOilInputs(iso: string): OilInputEv[] {
     const ans = (row.oil || {})[iso]
     out.push({
       iid: String(inpId(row)),
-      person: String(row.person),
+      person: String((namedOf(row)[0] || placeholderOf(row)).p),
+      people: namedOf(row).map((e: any) => String(e.p)),
+      ph: placeholderOf(row) ? String(placeholderOf(row).p) : null,
       type: String(row.type || ''),
       asks: true,
       acc: String(row.acc || ''),
@@ -473,14 +492,19 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
        refusal — it never left him (Fable's red team, F2). An Undo of the hand-over puts `leftAt` back with the person. */
     const left = inp.leftAt && inp.leftAt[person]
     if (left != null && Number((dec.pa && dec.pa[k]) || 0) < Number(left)) { drop(k); continue }
-    if (String(inp.person || '') === person) continue        // the man who holds it
+    /* A PERSON IN THE INPUT'S OWN LIST (step 2 (a) of the one-rule build — the plan §4.1, §4.7): his entry carries `h`,
+       the input's holding when he was put in, so a decision made about him under an EARLIER holding — he left and was
+       put back — reads as nothing; one made since stands. (`leftAt`, above, says the same for a record in the old shape.) */
+    const ent = Array.isArray(inp.people) ? entryOf(inp, person) : null
+    if (ent) { if (Number((dec.pa && dec.pa[k]) || 0) < Number(ent.h || 0)) drop(k); continue }
+    if (!Array.isArray(inp.people) && String(inp.person || '') === person) continue        // the man who holds it
     /* AND ANYONE THE SCHEDULER PUT ON ITS ROW (D18, 22 Sep 26). This used to
        assume only the requester could carry a decision about a request, which
        was true until a second man on the row started earning from it. Left as
        it was, taking that second man off did nothing: the prune deleted his
        refusal on the way out and he was credited anyway. Caught by job 8's own
        test, which is the only place the two fixes meet. */
-    if (landedExtras(day, iid, String(inp.person || '')).includes(person)) continue
+    if (landedExtras(day, iid, String(leadOf(inp) || '')).includes(person)) continue
     /* AND EVERY DECISION ON A ROW THAT CARRIES A PLACEHOLDER
        ([OIL-SEATS-CAN-EARN] step 6). Who a placeholder stands for is worked out
        from who is free, so it changes as people file leave — and a decision must
@@ -915,7 +939,7 @@ function keyedDecisions(ev: OilEvidence): OilDecisions {
   return { ...d, items: pick(d.items, k => k), people: pick(d.people, k => k.slice(k.indexOf('|') + 1)) }
 }
 /** one input's part of the key — ONE spelling, shared with oilMovedInputsOnly below */
-const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${i.person}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`
+const insSeg = (day: any, i: OilInputEv) => `${i.iid}:${claimWho(i)}:${i.type}:${i.acc}:${standEarns(standIn(day, i)) ? 'y' : 'n'}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`
 
 /** WHEN ONLY THE INPUTS MOVED THE OIL KEY ([LEAVE-LATE-PUBLISHED], D109 / D114's "one act, one change"). A request
  *  edited after publishing moves its own window in the block's input projection, so the OIL comparison reads a change
@@ -994,7 +1018,7 @@ export function oilOldBlockCrowd(issued: OilEvidence | null | undefined, live: O
  *  two live keys, and never written anywhere new. */
 export function oilKeyBeforeStand(ev: OilEvidence | null | undefined): string {
   if (!ev || !ev.earns) return ''
-  const ins = ev.inputs.map(i => `${i.iid}:${i.person}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
+  const ins = ev.inputs.map(i => `${i.iid}:${claimWho(i)}:${i.type}:${i.acc}:${i.win ? i.win.join('-') : ''}:${i.ans == null ? '' : i.ans}`).join(',')
   const sent = Object.keys(ev.sent).sort().map(k => `${k}=${[...ev.sent[k]].sort().join('+')}`).join(',')
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
 }
@@ -1172,7 +1196,8 @@ export function landedExtras(day: any, iid: string, owner: string, crowd?: strin
  *  asks about many men hand over the row's typed men once. Pinned by oilplaceholderclaim.test.ts. */
 export function claimDefault(day: any, ev: OilEvidence, claim: OilInputEv, person: string, typed?: string[]): boolean {
   const own = claim.ans != null && claim.ans > 0
-  if (String(claim.person) === String(person)) return own
+  /* anyone IN the input follows its one answer (D762) — the holder of an old-shaped claim is its one person */
+  if (claimPeople(claim).includes(String(person))) return own
   if (!isSpecial(claim.person)) return true
   return (typed || landedExtras(day, claim.iid, String(claim.person))).includes(String(person)) || own
 }
@@ -1216,6 +1241,13 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
        ALL AVAIL earning half a day. */
     const held = isSpecial(inp.person)
     if (!held && earnsFrom(ev, inp.person, item, own)) put(inp.person, span(own))
+    /* …AND EVERYONE ELSE IN THE INPUT, ON THE SAME ONE ANSWER (owner D762, 11 Oct 26 — "for an input with several people
+       the OIL question has one answer, for everyone in it"; step 2 (a) of the one-rule build, the plan §4.7): each named
+       person of the claim earns through the input's own item when its answer for the day is more than 0, with the
+       scheduler's switch for him over the top. They also stand on the input's row (its name box and under it), where
+       the gathering of "extras" below would find them and default them YES — so they are left out of it there. */
+    const named = claimPeople(inp)
+    for (const p of named) { if (p === String(inp.person)) continue; if (earnsFrom(ev, p, item, own)) put(p, span(own)) }
     /* D18 (owner, 21 Sep 26 — "for 2 he should earn"): a second man the
        SCHEDULER puts on the row earns from it, the same as the man who filed
        it. Until now the claim owned the row and the schedule half skipped every
@@ -1241,6 +1273,7 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
        for a man who is there only as one of the crowd (D711 (1)). */
     const typed = held ? landedExtras(day, inp.iid, inp.person) : undefined
     for (const extra of landedExtras(day, inp.iid, inp.person, ev.sent[item])) {
+      if (named.includes(extra)) continue
       const dflt = claimDefault(day, ev, inp, extra, typed)
       if (!earnsFrom(ev, extra, item, dflt)) continue
       put(extra, span(dflt))

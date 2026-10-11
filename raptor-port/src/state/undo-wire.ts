@@ -25,7 +25,7 @@ import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay } from '../undo/timeline'
-import { filedForOther, setInputReplayCheck } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { weekOf, dayKeyOf } from '../undo/derive'
@@ -380,6 +380,8 @@ export function installGlobalUndo(): void {
     /* the group input (plan §3.13): a member reverses his own step though it holds an input that is another man's —
        one he FILED for him. The one rule, asked of the step's recorded images (state/perms.ts filedForOther) */
     filerMay: (cur, before, after) => cur.personId != null && filedForOther(String(cur.personId), before, after),
+    /* …and his own part of an input he shares: himself taken out, or put back by his own Undo (perms.ts ownPart) */
+    ownPart: (cur, before, after) => cur.personId != null && ownPart(String(cur.personId), before, after),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */

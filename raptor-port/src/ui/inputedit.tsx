@@ -17,7 +17,7 @@ import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { entryRowsOf } from '../state/inputgroup'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem, idsOf, leadOf, holds, isPlaceholderInput, shapeProblem, inputStampISO } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -26,6 +26,7 @@ import { DocConfirm } from './DocConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { ClipIcon, UploadIcon } from './icons'
 import { acceptInput } from '../engine/slots'
+import { ownInputOf, toPeople, putPerson, takePerson, swapPerson } from '../engine/inputown'
 import { DAYS } from '../engine/data'
 import { standsOn } from '../engine/overlay'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
@@ -238,7 +239,7 @@ export function sansOverlapRefusal(person: any, date: any, endDate: any, except:
   const na = dateOrd(date), nb = dateOrd(endDate || date)
   if (na == null || nb == null) return ''
   const clash = INPUTS.some((x: any) => {
-    if (x === except || x.person !== person || !isSansAvail(x.type)) return false
+    if (x === except || !holds(x, person) || !isSansAvail(x.type)) return false
     /* each existing record's labels resolve through ITS anchor year — a
        record for this month/day LAST year is not a clash (24 Aug 26) */
     const a = dateOrd(x.date, x.yr), b = dateOrd(x.endDate || x.date, x.yr)
@@ -259,7 +260,7 @@ export function medOverlapRefusal(person: any, type: any, date: any, endDate: an
   if (na == null || nb == null) return ''
   const t = inpType(type)
   const clash = INPUTS.some((x: any) => {
-    if (x === except || x.person !== person || !isDownchit(x.type) || inpType(x.type) !== t) return false
+    if (x === except || !holds(x, person) || !isDownchit(x.type) || inpType(x.type) !== t) return false
     const a = dateOrd(x.date, x.yr), b = dateOrd(x.endDate || x.date, x.yr)
     return a != null && b != null && na <= b && a <= nb
   })
@@ -284,7 +285,7 @@ export function upchitRefusal(person: any, date: any, endDate: any, except: any)
      day-after closer) */
   let running = false, latestEnd: any = null
   for (const r of INPUTS) {
-    if (!isDownchit(r.type) || r.person !== person) continue
+    if (!isDownchit(r.type) || !holds(r, person)) continue
     const a = dateOrd(r.date, r.yr), b = dateOrd(r.endDate || r.date, r.yr)
     if (a == null || b == null || a > x) continue
     if (b >= x) { running = true; break }
@@ -293,13 +294,13 @@ export function upchitRefusal(person: any, date: any, endDate: any, except: any)
   if (!running && latestEnd == null) return 'There is no medical-down entry to upchit — file the medical input first'
   if (!running) {
     const answered = INPUTS.some((r: any) => {
-      if (r === except || r.person !== person || !isUpchit(r.type)) return false
+      if (r === except || !holds(r, person) || !isUpchit(r.type)) return false
       const o = dateOrd(r.date, r.yr)
       return o != null && o >= latestEnd
     })
     if (answered) return 'That medical-down period is already closed — edit the existing upchit instead'
   }
-  const dup = INPUTS.some((r: any) => r !== except && r.person === person && isUpchit(r.type) && dateOrd(r.date, r.yr) === x)
+  const dup = INPUTS.some((r: any) => r !== except && holds(r, person) && isUpchit(r.type) && dateOrd(r.date, r.yr) === x)
   return dup ? 'An upchit is already filed for that day — edit that entry instead' : ''
 }
 
@@ -316,7 +317,7 @@ export function downOverUpchitRefusal(person: any, date: any, endDate: any): str
   const na = dateOrd(date), nb = dateOrd(endDate || date)
   if (na == null || nb == null) return ''
   const hit = INPUTS.find((r: any) => {
-    if (r.person !== person || !isUpchit(r.type)) return false
+    if (!holds(r, person) || !isUpchit(r.type)) return false
     const o = dateOrd(r.date, r.yr)
     return o != null && o > na && o <= nb
   })
@@ -345,7 +346,7 @@ export const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(
    end-trim moves none of them, so no accepted-row relink is needed. */
 export function applyMedPlan(plan: any[]) {
   if (medPlanProtected(plan)) { medicalLocked(); return false }
-  const cs = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person)
+  const cs = (r: any) => { const p = leadOf(r); return PEOPLE[p] ? PEOPLE[p].cs : p }
   for (const p of plan || []) {
     const r = p.row
     /* The surviving TAIL of a row the new input only partly covered — minted
@@ -454,7 +455,7 @@ export const typeOptions = (allow?: (t: string) => boolean) => TYPE_GROUPS.map((
 
 /* The draft is held apart from the model so Cancel is a real cancel. */
 export const draftOf = (r: any) => ({
-  person: r.person, type: r.type, allday: !!r.allday, half: r.half || '',
+  person: leadOf(r), type: r.type, allday: !!r.allday, half: r.half || '',
   start: unfmt(r.date, r.yr), end: r.endDate ? unfmt(r.endDate, r.yr) : '',
   sTime: r.allday ? '06:00' : hhmm(r.s), eTime: r.allday ? '18:00' : hhmm(r.e),
   remarks: r.remarks || '',
@@ -702,7 +703,7 @@ export function oilGate(draft: any, prevRow: any, force = false):
      the request handed to Ace, Ace's published Saturday blank and Talisman's
      back. A person change is therefore ALWAYS stale, and the sheet opens with
      NO ticks pre-loaded — the new holder answers for himself. */
-  const prev = (prevRow && prevRow.person === draft.person && prevRow.oil) || {}
+  const prev = (prevRow && holds(prevRow, draft.person) && prevRow.oil) || {}
   const stale = plan.some(p => prev[p.iso] == null || (prev[p.iso] !== 0 && prev[p.iso] !== p.amt))
   if (!force && prevRow && !stale) return { kind: 'none' }
   return {
@@ -1059,8 +1060,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    what the new hours give instead of dropping it. Who changed it, and when, is still stamped. Asked of the ROLE here,
    not trusted from the caller: a hand-made call by anyone else is an ordinary save. The input's own window never
    passes it, wherever it was opened from (D742 reading 3). */
-export type InputSaveOpts = { sched?: boolean }
+/* `opts.oil` — THE INPUT'S ONE OIL ANSWER, given with this save (owner D762; commitInput below): written on the record,
+   for everyone in it. */
+export type InputSaveOpts = { sched?: boolean; oil?: Record<string, number> }
 export const schedSide = (opts?: InputSaveOpts): boolean => !!(opts && opts.sched) && canEditSched()
+/* who is putting a person in, and when — the running command's own person and moment (state/inputstamp.ts) */
+const stampOf = (): { by?: string; at?: number } => { const t: any = stampPlaced({}); return { by: t.by, at: t.at } }
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any, opts?: InputSaveOpts) {
   if (!r || !draft) return false
   const sched = schedSide(opts)
@@ -1095,7 +1100,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      this; it refuses the hand-made call. Editing their own row's times,
      type or remarks stays theirs (draftOf seeds person from the row, so an
      untouched person sails through). */
-  if (!canEditSched() && draft.person !== r.person) {
+  if (!canEditSched() && draft.person !== leadOf(r)) {
     HOOKS.toast('Only a scheduler can move an input to another person', 'warn')
     return false
   }
@@ -1155,7 +1160,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     /* …compared in the year the save WRITES (`baseYear()` — the labels above were made against it): read in the record's
        old year, a leave moved to the same day of another year looked unchanged and kept its approval (both readers of
        the input card's check, 10 Oct 26) */
-    const leaveSame = leaveKey(r) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: baseYear(), allday: draft.allday, half, s, e })
+    const leaveSame = leaveKey({ ...r, person: leadOf(r) }) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: baseYear(), allday: draft.allday, half, s, e })
     if (r.lw && !leaveSame && !canEditSched()) delete r.lw
     /* THE EDIT WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (c) — D450; plan §3 (c) §6). Its row — on the
        week on screen or on any other — is worked out from the request after this command and whenever its week is read
@@ -1166,8 +1171,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        filing: a 'taken off' record retyped counts again (below), and one filed under Unavailable stays filed unless it is
        retyped to a kind never filed there. */
     /* captured for the filing rules below — the writes overwrite r.type */
-    const wasDormant = r.acc === 'r', wasType = r.type, wasPerson = r.person
-    r.person = draft.person; r.type = draft.type; r.allday = draft.allday
+    const wasDormant = r.acc === 'r', wasType = r.type, wasPerson = leadOf(r)
+    /* WHO IT IS FOR — its one person, replaced (a hand-over). A record that carries its people is written in its list
+       (engine/inputown.ts swapPerson: the entry replaced, the holding moved on); one in the old shape, in `person`, as
+       always. An input of SEVERAL is never re-pointed here: who is in it is changed by commitInput, below. */
+    const handed = draft.person !== wasPerson && idsOf(r).length <= 1
+    if (handed) { if (Array.isArray(r.people)) swapPerson(r, wasPerson, draft.person, stampOf()); else r.person = draft.person }
+    r.type = draft.type; r.allday = draft.allday
     /* THE REMARK'S DATE TOKEN FOLLOWS THE DATES (the absence-record re-test's final code reads — Fable F1, Astra 3,
        26 Sep 26): "till <last day>" / "on <day>" is the app's own wording (D189). The form's pickers rewrite it as the
        dates are picked; the calendar's drag and the upchit's date box did not, so a moved leave kept its old last day.
@@ -1235,7 +1245,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        it — engine/oil.ts voidedOil — shared with the check on what a member's command really changed (state/perms.ts,
        the plan §3.13): what a save did not answer afresh must be exactly what this leaves. */
     /* …from a row on the schedule a Yes is KEPT, at what the new hours give — engine/oil.ts repricedOil (D739 reading 4) */
-    const keptOil = (sched ? repricedOil : voidedOil)({ person: wasPerson, oil: r.oil }, r)
+    const keptOil = (sched ? repricedOil : voidedOil)({ person: wasPerson, oil: r.oil }, { ...r, person: leadOf(r) })
     if (keptOil) r.oil = keptOil; else delete r.oil
     /* ...and the SCHEDULER's own override on this request dies with the
        assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
@@ -1246,7 +1256,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        day (D450) — but counted: the request's holding moves on, and every
        decision made under an earlier one reads as nothing (engine/oilev.ts
        pruneHandedOverDecisions). The same record, so one undo puts it back. */
-    if (r.person !== wasPerson) {
+    if (handed && !Array.isArray(r.people)) {
       r.hand = Number(r.hand || 0) + 1
       /* …and when it LEFT him: every decision about him made under an earlier holding is void from now on — on every
          day, in every week, with no day written (engine/oilev.ts pruneHandedOverDecisions). The old write-side clear
@@ -1287,7 +1297,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     /* …and except an input turned into a PLACEHOLDER's ([INPUT-ALL-AVAIL]; Astra's read of the code, 9 Oct 26): an input
        filed for ALL AVAIL / ALL is never under Unavailable (engine/inputs.ts placeholderProblem) — it goes back onto
        the programme, where its row, its crowd and its OIL are (state/holderbase.ts lands it after this command). */
-    if (r.acc === 'u' && isSpecial(r.person)) delete r.acc
+    if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
   })
   /* the funnel backstop rolled the batch back — report failure so the editor
      stays open and nothing typed is lost (P2-QREV-04) */
@@ -1856,6 +1866,129 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
   if (heard.length) say(heard.join(' · '), 'warn')
   return true
 }
+
+/* ---- THE ONE WRITER OF AN INPUT ([ALL-AVAIL-AS-MEMBER] step 2 (a), 12 Oct 26 — owner D756: "an input is stored as ONE
+   record with the list of its people"; D762: one OIL answer for everyone in it; D755 (3): a person in it "may always
+   withdraw himself"; D763: "who is in an input is changed only by whoever filed it or by a scheduler"; the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.4 "The writer") -------------------------------------------------
+   `rec` — the input's record, or null for a new filing. `draft` — what it should say (its `person` is not read).
+   `people` — who it should hold, in the order wanted; someone already in it keeps his place and his entry, someone new
+   is appended. `opts.sched` — the save comes from the input's row on the schedule (the late date is not moved, a Yes to
+   the OIL question is re-priced, not dropped — commitInputEdit). `opts.oil` — the input's one OIL answer.
+
+   IT RUNS EVERY REFUSAL FIRST — who may, what one record may hold (engine/inputs.ts shapeProblem), and every refusal a
+   single person's input can meet, asked for EVERY person and said with his callsign where it is his alone — and then
+   ONE command: one record put. One Undo step. What the input SAYS is saved by the one body every input's fields go
+   through (commitNewInput for a filing, commitInputEdit for a change — the remark's date word, the late date, the
+   voiding of an OIL answer the hours no longer price, the stamps, the absence rules at the door), so no rule of a
+   single input can be missed for one of several.
+
+   WHO MAY (state/perms.ts — the one module): an admin; the input's only named person; its filer, for a kind he may file
+   for others. ANYONE IN IT may take HIMSELF out, and nothing else (D755 (3)); a person in it who did not file it adds
+   nobody (D763).
+
+   A PERSON PUT IN LATER is stamped with who put him in and when, and — where the save is the input's own window, after
+   the input's own late date — with a late date of his own: only the person added can be late; the input's own date and
+   everyone else's entry are left alone.
+
+   Until every reader has moved (the letters of step 2), a filing for ONE person is still written in the old shape by
+   commitNewInput — it reads the same (inputs.ts peopleOf) — and is rewritten with its list the first time who is in it
+   changes.
+
+   Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
+export function commitInput(rec: any | null, draft: any, people: any[], opts?: InputSaveOpts): boolean {
+  if (!draft) return false
+  const say = HOOKS.toast
+  const cs = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
+  const want: string[] = []
+  for (const p of people || []) { const id = p == null ? '' : String(p); if (id && !want.includes(id)) want.push(id) }
+  if (rec && INPUTS.indexOf(rec) < 0) { say('That input is no longer there — nothing was saved', 'warn'); return false }
+  if (!want.length) { say('Pick at least one person', 'warn'); return false }
+  const scheduler = canEditSched(), mine = me()
+  if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
+  const have: string[] = rec ? idsOf(rec).map(String) : []
+  const gone = have.filter(p => !want.includes(p))
+  const added = want.filter(p => !have.includes(p))
+  /* his list, in the record's own order, then whoever is new */
+  const next = have.filter(p => want.includes(p)).concat(added)
+
+  /* EVERY REFUSAL A SINGLE PERSON'S INPUT CAN MEET, FOR EVERY PERSON, BEFORE ANYTHING IS WRITTEN — asked quietly, then
+     said once: as it is where everyone meets the same one (a missing time), with his callsign where it is one's alone */
+  const norm = new Map<string, NonNullable<ReturnType<typeof normalizeInputDraft>>>()
+  const refused: Array<[string, string]> = []
+  for (const p of next) {
+    let why = ''
+    HOOKS.toast = (m: any) => { if (!why) why = String(m) }
+    let n: ReturnType<typeof normalizeInputDraft>
+    try { n = normalizeInputDraft({ ...draft, person: p }, rec) } finally { HOOKS.toast = say }
+    if (!n) refused.push([p, why || 'This input could not be saved'])
+    else norm.set(p, n)
+  }
+  if (refused.length) {
+    const same = refused.length === next.length && refused.every(x => x[1] === refused[0][1])
+    say(same ? refused[0][1] : `${cs(refused[0][0])} — ${refused[0][1]}`, 'warn')
+    return false
+  }
+  const first = norm.get(next[0])!
+  /* WHAT ONE RECORD MAY HOLD — the same body the save boundary holds every command to (state/store.ts) */
+  const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec ? rec.acc : undefined, people: next.map(p => ({ p })) })
+  if (shape) { say(shape, 'warn'); return false }
+  if (protectedInput(...(rec ? [rec] : []), normDest(first, draft.yr))) return false
+
+  /* does what it SAYS change? (the dates compared as dates, not as their labels — a label carries no year) */
+  const sansKey = (x: any) => Object.keys(sansFlags(x)).sort().join(',')
+  const wantEnd = draft.end && draft.end !== draft.start ? draft.end : ''
+  const says = !!rec && (rec.type !== draft.type || !!rec.allday !== !!draft.allday || rec.s !== first.s || rec.e !== first.e
+    || unfmt(rec.date, rec.yr) !== draft.start || (rec.endDate ? unfmt(rec.endDate, rec.yr) : '') !== wantEnd
+    || (rec.half || '') !== (first.half || '') || String(rec.remarks || '') !== String(draft.remarks || '').trim()
+    || String(rec.title || '') !== titleOf(draft.type, draft.title === undefined ? rec.title : draft.title)
+    || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans)))
+  const answers = !!opts && !!opts.oil && (!rec || JSON.stringify(rec.oil || {}) !== JSON.stringify(opts.oil))
+
+  /* WHO MAY — asked before anything is written, of the one module (state/perms.ts) */
+  for (const p of added) if (!mayFileInputFor(p, draft.type)) { say(fileForOtherRefusal(draft.type), 'warn'); return false }
+  if (rec) {
+    const selfOut = !scheduler && mine != null && gone.length === 1 && gone[0] === String(mine) && !added.length && !says && !answers
+    if (!selfOut && (says || answers || gone.length || added.length) && !mayEditInput(rec)) {
+      say(sharedRefusal([rec], 'change this for everyone'), 'warn'); return false
+    }
+  }
+  if (rec && !says && !answers && !gone.length && !added.length) return true
+
+  /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
+  const heard: string[] = []
+  HOOKS.toast = (m: any) => { for (const part of String(m).split(' · ')) if (part && !heard.includes(part)) heard.push(part) }
+  let ok = false
+  try {
+    ok = writeInputsBatch(() => {
+      const stop = (): never => { throw new CmdRefused(heard[heard.length - 1] || 'refused') }
+      let r: any = rec
+      if (!r) {
+        if (!commitNewInput({ ...draft, person: next[0] }, false, undefined, undefined, x => { r = x }) || !r) stop()
+        if (next.length > 1) { toPeople(r); for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) }) }
+      } else {
+        if (says && !commitInputEdit(r, { ...draft, person: leadOf(r), docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
+        for (const p of gone) takePerson(r, p)
+        const st: any = added.length ? stampOf() : null
+        /* only the person added can be late: his own date, where this save is the input's own window and falls after
+           the input's (a change from the schedule never makes anyone read late — D741) */
+        if (st && !schedSide(opts)) { const today = nowStamp(); if (String(inputStampISO(r) || '') < today) st.mod = today }
+        for (const p of added) putPerson(r, p, st)
+        if (gone.length || added.length) stampChanged(r)
+      }
+      if (opts && opts.oil && JSON.stringify(r.oil || {}) !== JSON.stringify(opts.oil)) { r.oil = { ...opts.oil }; stampChanged(r) }
+    })
+  } finally { HOOKS.toast = say }
+  if (!ok) {
+    const why = heard[0]
+    say(why ? `${why} — nothing was saved${next.length > 1 ? ' for anyone: take that person off the list, or change it' : ''}` : 'Not saved — that change is not yours to make', 'warn')
+    return false
+  }
+  if (heard.length) say(heard.join(' · '), 'warn')
+  return true
+}
+/* one man's own input, for the bodies of this file that change his part alone (engine/inputown.ts) */
+export { ownInputOf }
 
 /* ---- CLEAR OLD DATA / CLEAR EDIT HISTORY (owner, 25 Aug 26 — "an option on
    the admin page to clear a set date of history data … so that the app stays

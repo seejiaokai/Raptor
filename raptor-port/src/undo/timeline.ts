@@ -86,6 +86,10 @@ export interface UndoHooks {
      switch on now? `before` / `after` are the record as the step found and left it (null: created / deleted). Through
      a hook so the timeline stays free of the permission module's roster and settings; none installed = never. */
   filerMay?(cur: Actor, before: unknown, after: unknown): boolean
+  /* IS THIS CHANGE TO AN INPUT HIS OWN PART OF IT — his own one-person request, or himself taken out of (put back
+     into) an input he shares (state/perms.ts ownPart; the one-rule plan §4.9, Fable F5)? None installed: the record's
+     one `person`, as before. */
+  ownPart?(cur: Actor, before: unknown, after: unknown): boolean
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -476,8 +480,9 @@ function isOwn(entry: UndoEntry, cur: Actor): boolean {
 const inputOf = (x: unknown): any => (x && typeof x === 'object' ? x : null)
 function othersInputs(entry: UndoEntry, cur: Actor): Change[] {
   const his = (x: any) => x == null || x.person == null || String(x.person) === cur.personId
+  const own = (b: any, a: any) => (hooks.ownPart ? hooks.ownPart(cur, b, a) || (b == null && a == null) : his(b) && his(a))
   return entry.forward.filter(ch => ch.collection === 'inputs' && ch.id !== '__order'
-    && !(his(inputOf(ch.before)) && his(ch.op === 'delete' ? null : inputOf(ch.after))))
+    && !own(inputOf(ch.before), ch.op === 'delete' ? null : inputOf(ch.after)))
 }
 export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
   /* an admin may reverse only his own (D148 — the change-recording plan B6.1: "admin may reverse anything" is gone) */
