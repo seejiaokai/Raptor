@@ -189,6 +189,10 @@ missed). Put to him with the cost of the stored shape:
 - **D760 — *"The input itself (Recommended)"*:** a CX on a row that came from an input cancels the INPUT — the Inputs
   calendar shows it cancelled with its reason, the member's bell tells him, it goes with the input if it moves; the
   red box and "information only" go with the input too, shown on the schedule only. D468 changes with it.
-- **Still his, asked and not yet answered:** may one man of an input with several people still give his own OIL answer,
-  different from the input's? He asked first whether the filer can choose who gets OIL at the filing, and to be shown
-  exactly what a man would see — pictures are owed to him before he answers.
+- **D762 — *"C - one answer for all, nothing more"*:** asked whether one man of an input with several people may still
+  give his own OIL answer, he asked first whether the filer can choose who gets OIL, and to be shown exactly what a man
+  would see. Shown three ways on the app's real phone screens (`raptor-port/docs/mock/one-rule-oil.html`: A — each man
+  answers for himself, as built; B — the filer picks who, his own idea, recommended; C — one answer and nothing more), he
+  chose C: ONE answer for everyone in the input, given by whoever filed it or an admin; no man gives his own, the filer
+  does not pick people out, and only the scheduler leaves one person out, in OIL Earn on the day. This note's §5 (1) is
+  now exact, and its §6 "his own OIL answer … a line of that list" no longer holds.
