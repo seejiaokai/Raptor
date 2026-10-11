@@ -43,7 +43,9 @@ const SAT = 5, SAT_ISO = '2026-07-18'
 const DSNAP = JSON.stringify(DAYS)
 const INERT = /nothing on this row can earn/i
 const EARNS = /earns (a full day|half a day)/i
-const PER_PERSON = /answered for each person on it/i
+/* (the words until step 3 of the one-rule build were "answered for each person on it" — D762 gave an input ONE answer
+   for everyone in it; what the hint is FOR is unchanged: the switch is on the pucks, not on the row) */
+const PER_PERSON = /one answer for everyone on it — tap a puck on this row/i
 let host: HTMLDivElement
 let root: Root
 /* the page the suite stands on once signed in */

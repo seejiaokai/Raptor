@@ -106,11 +106,14 @@ export function placeholderOf(r:any):any{return peopleOf(r).find((e:any)=>e&&isP
    Each reads through peopleOf, so a record in the old shape answers as the one-person input it is.
    idsOf — everyone in it, a placeholder included, in the order they joined. leadOf — the first of them: who stands in
    the name box of its row, and whom a one-person body (a medical plan, the Leave War's approval, a form's Person box)
-   means by "its person". onlyNamed — the man whose own request it is: its ONE named person (F4: "the man himself,
-   whoever filed it", D655 — an input for ALL AVAIL alone, or for several, is nobody's own). holds — is this id in it. */
+   means by "its person". onlyNamed — the man whose own request it is: its ONE person, with nobody and nothing beside
+   him (F4: "the man himself, whoever filed it", D655 — an input for ALL AVAIL alone, or for several, is nobody's own;
+   AND SO IS ONE THAT HOLDS A MAN AND ALL AVAIL, step 3 of the one-rule build, 12 Oct 26: it reaches everyone behind the
+   puck, and D755 (3) leaves changing it for everyone to whoever filed it or a scheduler — found by the re-expressed
+   tests, where the window offered the man Save and the save refused him). holds — is this id in it. */
 export function idsOf(r:any):any[]{return peopleOf(r).filter((e:any)=>e&&e.p!=null&&e.p!=='').map((e:any)=>e.p);}
 export function leadOf(r:any):any{const ids=idsOf(r);return ids.length?ids[0]:undefined;}
-export function onlyNamed(r:any):any{const n=namedOf(r);return n.length===1&&n[0].p!=null&&n[0].p!==''?n[0].p:null;}
+export function onlyNamed(r:any):any{const n=namedOf(r);return n.length===1&&idsOf(r).length===1&&n[0].p!=null&&n[0].p!==''?n[0].p:null;}
 export function holds(r:any,id:any):boolean{return id!=null&&id!==''&&idsOf(r).some((p:any)=>String(p)===String(id));}
 export function entryOf(r:any,id:any):any{return peopleOf(r).find((e:any)=>e&&String(e.p)===String(id))||null;}
 const linesOf=(src:any):any[]=>{const out:any[]=[];

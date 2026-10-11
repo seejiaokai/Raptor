@@ -21,7 +21,7 @@
    plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5 "By Saber") the four facts are the INPUT's: one filer
    (`by` — D724, D729, D720), one moment, one last change. Who it is for is read from its people (engine/inputs.ts
    idsOf) — a record stored before that build, with its one `person`, reads as the one-person input it is. */
-import { idsOf } from '../engine/inputs'
+import { idsOf, namedOf, placeholderOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -46,7 +46,11 @@ export function placedLine(r: any, people: Record<string, any> = PEOPLE): string
   /* for whom: nothing where its one person filed it himself; his name where someone else did; how many where it holds
      several — the names are the card's to say (D721), and the filer may be one of them (D724) */
   const ids = idsOf(r)
-  const forWhom = ids.length > 1 ? ` for ${ids.length} people`
+  /* the PEOPLE are counted and a placeholder is said beside them — ALL AVAIL is nobody to count (D702; the wording of
+     the month's bar and of ui/inputedit.tsx howMany: "for 2 people and ALL AVAIL", "for Ranger and ALL AVAIL") */
+  const named = namedOf(r), ph = placeholderOf(r)
+  const many = [named.length === 1 ? nameOf(named[0].p, people) : named.length ? `${named.length} people` : '', ph ? nameOf(ph.p, people) : ''].filter(Boolean).join(' and ')
+  const forWhom = ids.length > 1 ? ` for ${many}`
     : ids.length === 1 && String(ids[0]) !== String(r.by) ? ` for ${nameOf(ids[0], people)}` : ''
   let out = `Placed by ${nameOf(r.by, people)}${forWhom} · ${when}`
   const changed = stampText(r.modAt)

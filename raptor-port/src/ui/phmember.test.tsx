@@ -442,7 +442,7 @@ describe('T1 — HIS TWO ROUTES END THE SAME (owner, 11 Oct 26; D755 reading (a)
   /* what an input IS, less what only its history can differ in: its id and place, who filed it and when, the stamps of
      who put whom in */
   const says = (r: any) => {
-    const { iid: _i, ord: _o, by: _b, at: _a, modBy: _mb, modAt: _ma, mod: _m, hand: _h, people: ppl, ...rest } = JSON.parse(JSON.stringify(r))
+    const { iid: _i, ord: _o, by: _b, at: _a, modBy: _mb, modAt: _ma, mod: _m, hand: _h, leftAt: _l, people: ppl, ...rest } = JSON.parse(JSON.stringify(r))
     return { ...rest, people: (ppl || []).map((e: any) => e.p) }
   }
   const rowSays = (di: number) => { const { rid: _r, src: _s, srcv: _v, ...rest } = JSON.parse(JSON.stringify(rowOf(di))); return rest }

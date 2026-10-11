@@ -16,7 +16,14 @@
    pruneHandedOverDecisions; ui/oilmode.ts stamps a switch with the input's `hand` when it is made). `hand` counts every
    time a person is PUT IN after the filing; his entry's `h` is its value when he was put in. So a switch made about a
    man who left and was put back (`pa` < his `h`) reads as nothing, and nobody's switch moves when someone ELSE joins or
-   leaves. */
+   leaves.
+   …AND `leftAt` — THE HOLDING AT WHICH THE INPUT LEFT A PERSON (step 3, 12 Oct 26; the stamp the one-person hand-over has
+   written since [DB-READINESS] phase 6 (a)). A man taken OUT has no entry left to carry an `h`, and where the input
+   also holds ALL AVAIL he may now stand BEHIND it: a switch made about him while he was in it was then read against
+   the placeholder's holding and lived on, or came back after the app had voided it — and the same people reached in
+   two orders earned differently (found by the re-expressed OIL tests). So leaving is a holding of its own: `hand`
+   moves on and `leftAt[him]` says where; a switch about him made before that reads as nothing, one made after it —
+   about him as a man of the crowd — stands. Put back in, his entry's `h` says the same and the stamp is dropped. */
 import { INPUTS, idsOf, entryOf, holds } from './inputs'
 import { newId } from './newid'
 
@@ -36,6 +43,17 @@ export function toPeople(r: any): any {
   delete r.person; delete r.grp; delete r.grpBy; delete r.leftAt
   return r
 }
+/* he has left: the holding moves on, and says where (above) */
+const left = (r: any, p: any): void => {
+  r.hand = Number(r.hand || 0) + 1
+  r.leftAt = { ...(r.leftAt || {}), [String(p)]: r.hand }
+}
+/* he is back in: his entry's `h` carries it now */
+const back = (r: any, p: any): void => {
+  if (!r.leftAt || !(String(p) in r.leftAt)) return
+  const { [String(p)]: _gone, ...rest } = r.leftAt
+  if (Object.keys(rest).length) r.leftAt = rest; else delete r.leftAt
+}
 const entry = (r: any, p: any, st?: PutStamp): any => {
   const e: any = { p }
   if (st && st.by != null) e.by = st.by
@@ -51,6 +69,7 @@ export function putPerson(r: any, p: any, st?: PutStamp): boolean {
   if (holds(r, p)) return false
   r.hand = Number(r.hand || 0) + 1
   r.people.push(entry(r, p, st))
+  back(r, p)
   return true
 }
 /** Take a person OUT. The record keeps everyone else, in their order. (Taking the last one out is refused by the
@@ -59,6 +78,7 @@ export function takePerson(r: any, p: any): boolean {
   if (!r || !holds(r, p)) return false
   toPeople(r)
   r.people = r.people.filter((e: any) => !(e && String(e.p) === String(p)))
+  left(r, p)
   return true
 }
 /** One person REPLACED by another, in his place in the list: a hand-over of a one-person input, the Unavailable row's
@@ -69,6 +89,8 @@ export function swapPerson(r: any, from: any, to: any, st?: PutStamp): boolean {
   toPeople(r)
   r.hand = Number(r.hand || 0) + 1
   r.people = r.people.map((e: any) => (e && String(e.p) === String(from) ? entry(r, to, st) : e))
+  r.leftAt = { ...(r.leftAt || {}), [String(from)]: r.hand }
+  back(r, to)
   return true
 }
 

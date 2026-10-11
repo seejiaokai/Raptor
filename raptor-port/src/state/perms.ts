@@ -551,7 +551,7 @@ const personOfInput = (v: any): string | null => { const p = v ? leadOf(v) : nul
    out": the commit gate below, Undo's "may he reverse it" (undo/timeline.ts, through state/undo-wire.ts) and the owner
    of a change (undo/derive.ts). What a save stamps beside the list — who last changed it and when — is no part of the
    comparison; everything the input SAYS is. */
-const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand'])
+const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand', 'leftAt'])
 const saysSame = (a: any, b: any, skip?: string): boolean => {
   const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k) && k !== skip))
   for (const k of ks) if (JSON.stringify(a[k] ?? null) !== JSON.stringify(b[k] ?? null)) return false

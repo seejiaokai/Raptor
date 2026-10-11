@@ -1844,7 +1844,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   }
   const first = norm.get(next[0])!
   /* WHAT ONE RECORD MAY HOLD — the same body the save boundary holds every command to (state/store.ts) */
-  const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec ? rec.acc : undefined, people: next.map(p => ({ p })) })
+  /* (an input under Unavailable that now holds a placeholder is taken back onto the programme by this save, below —
+     so where it is filed TODAY is not held against the placeholder) */
+  const offU = !!rec && rec.acc === 'u' && next.some(p => isSpecial(p))
+  const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec && !offU ? rec.acc : undefined, people: next.map(p => ({ p })) })
   if (shape) { say(shape, 'warn'); return false }
   /* (A PLACEHOLDER IS ONE OF AN INPUT'S PEOPLE since step 3 of the one-rule build — owner D750, D753, D755: it may be
      put in beside them, be left alone when they go, or take the input over in one save. Until then every one of those
@@ -1899,6 +1902,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
            the input's (a change from the schedule never makes anyone read late — D741) */
         if (st && !schedSide(opts)) { const today = nowStamp(); if (String(inputStampISO(r) || '') < today) st.mod = today }
         for (const p of added) putPerson(r, p, st)
+        /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
+           same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) */
+        if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
         /* THE ONE PERSON OF AN INPUT WHO MAKES IT AN INPUT OF SEVERAL IS WHO FILED THAT (state/perms.ts takesOn — as before
            the build, where the group he made named him its filer): so he can go on changing who is in it, and its OIL
            question comes to his bell. An admin's add leaves who filed it alone. */
@@ -2215,10 +2221,11 @@ export function InputEditor() {
   const picker = (win || recPpl.length > 1) && ctx !== 'up'
   const grouped = picker && (ppl.length > 1 || recPpl.length > 1)
   const csOf = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
-  /* MAY THIS INPUT HOLD A PLACEHOLDER? — the one body, asked of the draft as it stands: its kind, its dates, and where
-     the saved input is filed. The picker greys its two placeholder pucks by it and the Save refuses with the same
-     sentence (step 3 of the one-rule build — owner D750, D753). */
-  const phWhy = (id: string) => (draft ? placeholderWhy({ ...draft, person: id, acc: r && !r._new ? r.acc : undefined }) : '')
+  /* MAY THIS INPUT HOLD A PLACEHOLDER? — the one body, asked of the draft as it stands: its kind and its dates. The
+     picker greys its two placeholder pucks by it and the Save refuses with the same sentence (step 3 of the one-rule
+     build — owner D750, D753). NOT where the saved input is filed: one under Unavailable that takes a placeholder goes
+     back onto the programme at the save (commitInputEdit, commitInput), as it always has. */
+  const phWhy = (id: string) => (draft ? placeholderWhy({ ...draft, person: id }) : '')
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
      hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
@@ -2976,7 +2983,7 @@ export function InputEditor() {
       {/* …and the first name is the entry's first A TO Z, whatever order its people were picked in — the name the saved
           input's title leads with (the walk's find, 10 Oct 26: a NEW group asked as "Ranger +2", the man picked
           first, and was "Ace +2" from the moment it was saved). */}
-      {oilConf && <OilConfirm who={grouped && ppl.length > 1 ? `${ppl.map(csOf).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))[0]} +${ppl.length - 1}` : oilConf.who} typeLabel={oilConf.typeLabel}
+      {oilConf && <OilConfirm who={grouped && ppl.length > 1 ? inputWho({ people: ppl.map(p => ({ p })) }) : oilConf.who} typeLabel={oilConf.typeLabel}
         plan={oilConf.plan} prev={oilConf.prev}
         onCancel={() => { const shut = oilConf.shut; setOilConf(null); if (shut) close() }}
         onSave={dec => { setOilConf(null); doSave([], dec) }} />}

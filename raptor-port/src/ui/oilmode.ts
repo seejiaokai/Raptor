@@ -592,7 +592,10 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
         return claim.acc === 'r'
           ? `<span class="${cls} oilitem none" title="This request is off the programme, so nobody earns from it">${esc(txt) || '&nbsp;'}</span>`
           : `<span class="${cls} oilitem none" title="This request follows the answer of whoever filed it — tap the count to switch one person">${esc(txt) || '&nbsp;'}</span>`
-      return `<span class="${cls} oilitem none" title="A request is answered for each person on it — tap a puck on this row, not the row itself">${esc(txt) || '&nbsp;'}</span>`
+      /* ONE ANSWER FOR EVERYONE ON IT (owner D762) — it said "answered for each person on it" until step 3 of the
+         one-rule build, which predates D762; and where the row holds named people AND a placeholder (D753, D755) the
+         count is a door too */
+      return `<span class="${cls} oilitem none" title="This request has one answer for everyone on it — tap a puck on this row${claimPh(claim) ? ', or the count,' : ''} to switch one person, not the row itself">${esc(txt) || '&nbsp;'}</span>`
     }
     /* A START AND NO END ([ALLAVAIL-OPEN-ROW], D360): not "nothing can earn" — it could, once it has an end. Its crowd is
        counted over an assumed hour; here, where OIL is decided, the admin is told none is worked out, and why. */

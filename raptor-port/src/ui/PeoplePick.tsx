@@ -250,7 +250,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
               })}
             </div>
             {/* why they are greyed — said once, here, unless the line above already says it of one that is picked */}
-            {!problem && !picked.length && !!phBar(phIds[0]!) && <div className="pp-phwhy" data-testid="pp-phwhy">{phBar(phIds[0]!)}</div>}
+            {!readOnly && !problem && !picked.length && !!phBar(phIds[0]!) && <div className="pp-phwhy" data-testid="pp-phwhy">{phBar(phIds[0]!)}</div>}
           </div>
         )}
         {several && groups.map(g => {
