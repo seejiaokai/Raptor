@@ -15,6 +15,17 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/all-avail-as-member -->
+### `claude/all-avail-as-member` — ALL AVAIL / ALL AS ONE OF A SHARED INPUT'S OWN PEOPLE (`[ALL-AVAIL-AS-MEMBER]`, D750, D753): HIS THREE CHOICES ARE ANSWERED, THE DESIGN NOTE IS WRITTEN — NOT PLANNED, NOT BUILT — written 11 Oct 26 — verify before use
+- **Where it started:** his idea on 11 Oct 26, on seeing an ALL AVAIL puck come off a shared row with the first man filed (D745); D750 — "leave it for now, plan idea 1 after the merge"; the shared-row job merged the same day (pull request #490).
+- **Shipped:** nothing of the app. Records only: D753 (his three answers) and the design note `raptor-port/docs/superpowers/specs/2026-10-11-all-avail-as-member-design-note.md`.
+- **Unfinished:** (1) one question put to him, not answered: should an ALL AVAIL the scheduler drops on a ONE-person request's row become part of that input too (the note's §3 — recommended: leave it); (2) the written plan from the note (its §4 lists what the builder must settle); two readers where two are to be had (D590) — ChatGPT is back on 14 Oct 26; then the build and its own FULL check.
+- **Branch:** `claude/all-avail-as-member`, cut from `main` at `7c1fcdc0`; no pull request. A fresh chat continuing this picks `claude/all-avail-as-member` in the new-chat picker — no new worktree, and not `main`.
+- **Gates:** §Gate baseline below; nothing of the app has changed on this branch.
+- **Open questions for him:** (1) above; and, older: renew ChatGPT or work with Claude alone (asked 11 Oct 26, not decided).
+- **Pick up here:** read the design note; get his answer to (1) if he has not given it; write the plan (`raptor-port/docs/superpowers/plans/`), opening `.claude/rules/decisions/scheduler.md`, `oil.md` and `people-accounts.md` first.
+<!-- /now -->
+
 <!-- now:claude/group-input-one-row -->
 ### `claude/group-input-one-row` — MERGED ON HIS "MERGE LIVE" OF 11 OCT 26 (PULL REQUEST #490): THE SCHEDULE'S ONE ROW FOR A SHARED INPUT (D661, D662, D734–D752) AND THE RING COLOURS HE FOUND (D751) — THIS BLOCK IS REMOVED AT THE NEXT HANDOFF — written 11 Oct 26, at the merge — verify before use
 - **Where it started:** his word to build the one row and run its FULL check; then, on 11 Oct 26, his find of the wrong ring colours on its preview, his three answers (D750 — the ALL AVAIL puck stays as built for now; D751 — a long work day is grey; D752 — one reader will do) and his "merge live".
