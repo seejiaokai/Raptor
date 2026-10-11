@@ -64,6 +64,11 @@ his own request while "members file for others" is off, a name could no longer b
 card SAYS who the scheduler put beside it ("on the programme with: …") — a display only, its own small job. **Put to
 him with the host's own view (the same); NOT ruled yet.**
 
+**His reply — D754 (11 Oct 26):** *"I don't care how it is currently. Don't take the easy way out. I want it to be
+intuitive and it make sense for workflow and less bugs and also similar behaviour so with that what do y think should be
+the way"* — the advice above weighed the wrong thing (how little changes). The question is re-answered for him on those
+four tests; what he then rules is §5.
+
 ## 4. What the plan must settle (the builder's, not his)
 
 - The rule "a placeholder is filed on its own — never a group member" (`raptor-port/src/engine/inputs.ts

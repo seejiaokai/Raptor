@@ -59,6 +59,7 @@ his explicit "merge live" (2 Sep 26 — `../.claude/rules/shipping.md`) — neve
 unprompted.
 
 - **Ideate before building non-trivial UX:** restate the problem behind the ask, offer 2–3 directions with a case, rough effort and a recommendation, and let him pick (small unambiguous asks go straight to building); a visual direction gets a PICTURE first — a throwaway comp in the app's own stylesheet, at phone and desktop widths · full text: docs/guide-full.md §Ideate before building non-trivial UX
+- **Recommend the RIGHT design, not the easy one** (owner, 11 Oct 26 — D754): judge a direction by whether it is intuitive, fits the workflow, behaves the same everywhere and leaves fewer places for a bug — never by how little it changes or how close it stays to the app as built; tell him its cost and which earlier rulings it changes, and let him decide.
 - **Challenge a risky ask in a sentence or two**: the underlying user
   problem, any unnecessary complexity, a simpler alternative, a wrong
   assumption — then build what the owner decides, without relitigating.
