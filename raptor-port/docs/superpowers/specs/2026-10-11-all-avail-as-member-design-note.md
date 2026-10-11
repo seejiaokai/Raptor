@@ -82,9 +82,9 @@ four tests; what he then rules is §5.
   no conversion; say so.
 - It is OIL and the published day: an important plan (two readers — D590; ChatGPT is back on 14 Oct 26) and a FULL check.
 
-## 5. The direction put to him after D754 — ONE RULE (11 Oct 26; NOT ruled yet)
+## 5. ONE RULE — ruled, D755 (*"Go with one rule."*, 11 Oct 26)
 
-**Recommended by the agent on his four tests (intuitive, the workflow, fewer bugs, the same behaviour):** a row that came
+**Ruled (D755), as recommended on his four tests (intuitive, the workflow, fewer bugs, the same behaviour):** a row that came
 from an input IS the input, and whoever is on the row is in the input — whoever put them there, a named person or ALL
 AVAIL / ALL, an input that began with one person or with several. Candidate B of Fable's report, with what must come
 with it so nothing happens silently:
@@ -111,3 +111,32 @@ the Inputs calendar and the same OIL rule. What may differ is history only: the 
 first filed (the late mark's stamp) and the OIL answer already given. Who is named as having placed it once the
 original person is out is the builder's to settle so that the two behave alike (recommended: it passes to the
 scheduler who made the change, so its bell and its OIL question go to someone still involved).
+
+## 6. The stored shape, and what else should follow — D756 (*"Yeah the stores shape should change as well. And see what else should follow."*)
+
+**Ruled (D756):** an input is stored as ONE record with the list of its people — not one record a person kept in step —
+and the shape changes in this job, not at the database step. What is one person's own stays his, as a line of that
+list. No stored record is converted (demo data, D56); an old-shaped record must not break a load; the table list for
+the IT side says the same in the same change (D473).
+
+**He ruled before the cost was laid out — the plan owes it to him, and he may change his mind on reading it.**
+
+**"See what else should follow" — the FIRST PASS, from what the agent knows; the plan verifies each against the app and
+brings him the ones that are his (rounds of at most four, with pictures):**
+
+| What | Today | What the one rule suggests | Whose call |
+|---|---|---|---|
+| A CX (cancelled) or a red box the scheduler puts on an input's row | the scheduler's own mark on the schedule; it stays with the old day if the request moves (D468) | it is the input's — a cancelled row is a cancelled input, shown on the Inputs calendar too, and it moves with the input | his |
+| The only person dragged OFF an input's row with nobody put in his place | on a shared row the last man is refused; a one-person row is taken off the programme by its ✕ | one answer for every input's row — refused with the reason, the ✕ takes the input off the programme | his (recommended: as stated) |
+| An input for several people that lands under Unavailable (an overseas duty, a course) | one row a man (D737) | still drawn a row a man, from the ONE record; a puck moved there changes the input | his only if he wants D737 looked at again |
+| A person dragged from an input's row onto another place on the schedule | on a shared row he leaves the input and is put there, one step | the same on every input's row | builder |
+| Loading an older version, a saved plan, a day template | they hold the rows of the day, the scheduler's additions with them (D175, D363) | they cannot change who is in an input: the input's people are the input's, and a difference from what was issued reads as a change waiting (D45) | builder — the published record: to prove |
+| OIL's records for a published day | filed under each person's own request | filed under the input and the person; an issued day keeps what it went out with (D48, D142) | builder — where a slip is silent |
+| Who may add people to someone's input | the scheduler adds beside it; the input is untouched | the scheduler changes the input; `state/perms.ts` and the permissions table (`docs/data-model.md` §11) say so together (D200) | builder |
+| The day lock designed for the database (D355, D450) | the people beside a request are part of the DAY | they are part of the INPUT — who must hold the day to add a person to an input's row is settled before the database step | builder, flagged to him |
+| Telling the member (`[INPUT-CHANGED-TELL]`) | nobody is told | rides with this job (D755 (3)) | ruled |
+| The scheduler's own rows — not from an input | a placeholder earns by default (D43) | unchanged: there is no input and no OIL question there | told to him |
+
+**The process this job gets:** HEAVY — a plan red-teamed by two readers before any build (D590; ChatGPT is back on
+14 Oct 26), built in steps on this branch, one FULL check (earned leave, the published record, saved data, roles, a
+new gesture: five of the eight questions are YES).

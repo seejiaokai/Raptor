@@ -45,7 +45,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 | D606 | 7 Oct 26 | AN SC SHIFT'S TYPED B (ITS IN-TIME), WHERE FILLED, COUNTS AS WORK: THE SHIFT'S OIL IS WORKED OUT FROM THAT IN-TIME TO THE SHIFT'S END, AND ITS WORK HOURS COUNT FROM IT TOO; A BLANK B LEAVES THE SHIFT ITS WRITTEN START TO END. |
 | D592 | 5 Oct 26 | D591'S DETAILS: OIL USES THE EARLIEST IN-TIME / RALLY THAT APPLIES TO THE FORMATION, THE NOMINAL TIME WHERE NONE IS TYPED; AN EVENING-BEFORE REPORT LENGTHENS THE LINE'S OWN DAY ONLY; A PUBLISHED DAY KEEPS ITS OIL UNTIL PUBLISHED AGAIN — A LATER TIME OR LOGIC CHANGE READS AS PENDING; THE DAY COUNTS FIRST EVENT TO LAST END, BREAKS INCLUDED. |
 | D591 | 5 Oct 26 | A FLYING LINE'S EARNED LEAVE (OIL) IS WORKED OUT FROM ITS EARLIEST APPLICABLE ENTERED IN-TIME / RALLY — THE NOMINAL REPORT TIME ONLY WHERE NONE IS ENTERED (DETAILS: D592). |
-| D470 | 1 Oct 26 | A MAN THE SCHEDULER PUTS IN THE NAME BOX OF ANOTHER MAN'S REQUEST ROW EARNS OIL FROM IT, AS A MAN ADDED UNDER THE ROW DOES (D18); THE MEMBER WHO FILED IT STILL EARNS ON HIS OWN ANSWER, AND EITHER CAN BE TAPPED OFF IN OIL EARN. |
+| D470 | 1 Oct 26 | A MAN THE SCHEDULER PUTS IN THE NAME BOX OF ANOTHER MAN'S REQUEST ROW EARNS OIL FROM IT, AS A MAN ADDED UNDER THE ROW DOES (D18); THE MEMBER WHO FILED IT STILL EARNS ON HIS OWN ANSWER, AND EITHER CAN BE TAPPED OFF IN OIL EARN. — changed by D755 |
 | D402 | 29 Sep 26 | EVERY OIL AWARD GIVEN BY HAND SHOWS ON THE LEAVE WAR GRID ON ITS DATE, WHEREVER IT WAS GIVEN — TYPED ON THE GRID OR CREDITED FROM THE OIL TRACKER — AS AN FO OR HO BOX; A TAP SAYS WHO GAVE IT AND WHY. |
 | D401 | 29 Sep 26 | THE OIL AWARD FIX CONVERTS NO STORED AWARD: WHAT IS SAVED TODAY IS DEMO DATA, WIPED BEFORE THE DATABASE (D54, D56), SO ONLY THE DEMO SEED IS REWRITTEN IN THE NEW ONE KIND OF AWARD — AND A RECORD IN THE OLD SHAPE MUST STILL NOT BREAK A LOAD. |
 | D400 | 29 Sep 26 | OIL'S "EARNED" COUNTS ONLY WHAT THE APP CREDITED ITSELF — THE PUBLISHED SCHEDULE OR AN ACCEPTED DUTY INPUT — AND EVERY OIL AN ADMIN GIVES BY HAND, TYPED ON THE WAR GRID OR CREDITED FROM THE TRACKER, IS SHOWN APART AS "AWARDED". |
@@ -60,8 +60,8 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 | D52 | 22 Sep 26 | Three OIL behaviours are correct as built and not in conflict: a ground crewman NAMED on a weekend duty earns; a placeholder on it earns for the men it stands for unless switched off; ALL / ALL AVAIL do not include ground crew — nothing to build. |
 | D49 | 22 Sep 26 | A FLYING LINE WHOSE WRITTEN TAKE-OFF AND LANDING ARE THE SAME STILL EARNS. |
 | D48 | 22 Sep 26 | AN ISSUED DAY KEEPS THE MONEY IT WENT OUT WITH WHEN A RULE CHANGES UNDER IT. |
-| D46 | 22 Sep 26 | THE PLACEHOLDER IS ALLOWED ON AN ACCEPTED REQUEST ROW AND CREDITS BY DEFAULT. NO EXCEPTION TO D43 ANYWHERE. |
-| D43 | 22 Sep 26 | THE PLACEHOLDER PUCKS BEHAVE EXACTLY LIKE NAMED PEOPLE: ON BY DEFAULT, EVERYWHERE THEY CAN LAND. |
+| D46 | 22 Sep 26 | THE PLACEHOLDER IS ALLOWED ON AN ACCEPTED REQUEST ROW AND CREDITS BY DEFAULT. NO EXCEPTION TO D43 ANYWHERE. — changed by D755 |
+| D43 | 22 Sep 26 | THE PLACEHOLDER PUCKS BEHAVE EXACTLY LIKE NAMED PEOPLE: ON BY DEFAULT, EVERYWHERE THEY CAN LAND. — changed by D755 |
 | D42 | 22 Sep 26 | AN OVERNIGHT LINE EARNS ON THE DAY IT SITS ON, AND THE HOURS SPILLING PAST MIDNIGHT EARN THE NEXT DAY NOTHING. |
 | D35 | 22 Sep 26 | Re-confirms D24 and makes its template half explicit: the four exempt kinds offer the OIL switch (off by default), and so does a duty block minted from an AVALON template — the same seat, one answer. |
 | D32 | 22 Sep 26 | One list, not two: wherever a placeholder puck is allowed to land, it also offers the OIL switch — landing and earning are one decision; on by default there, like named people (D43). — changed by D43 |
@@ -73,7 +73,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 | D21 | 22 Sep 26 | AN "OFF DAY" DOES NOT EARN OIL. Settled; do not reopen. |
 | D20 | 22 Sep 26 | AVALON flying lines, AVALON duty desks and BB flying lines — and a duty block made from an AVALON template — earn no OIL by default; they offer the switch, so an activated one can be credited (D24). — changed by D24 |
 | D19 | 22 Sep 26 | A weekend or holiday that no Leave War period covers must NAME the reason and offer the way out, not just refuse. |
-| D18 | 21 Sep 26 | All five hand-pass findings accepted as real, and finding 2 settled his way: a second man the scheduler puts on a member's landed request row EARNS from it, the same as the man who filed it. |
+| D18 | 21 Sep 26 | All five hand-pass findings accepted as real, and finding 2 settled his way: a second man the scheduler puts on a member's landed request row EARNS from it, the same as the man who filed it. — changed by D755 |
 | D15 | 21 Sep 26 | The feature's acceptance criteria, in his words: flying lines, SC MAIN, Common Programme, Standard and SC-shift duty desks and ground rows earn; SC SPARE, AVALON/BB lines and desks and ⓘ rows do not by default — SC SPARE, AVALON and BB offer the switch (D24). — changed by D24 |
 | D3 | 21 Sep 26 | The two OIL bugs found beside R-1 (D2) are fixed on that branch, not filed — they share its root cause. |
 | D2 | 21 Sep 26 | Only the issued (published) schedule earns OIL, both directions: a holiday declared after publication waits for a republication and the day says so; revoking one no longer removes OIL silently. |
