@@ -29,18 +29,29 @@
    claim that names one `person` and no `people` — is still read by D46 as it stood, off that day's own frozen row
    (oilev.ts legacyClaim / legacyEarned / landedExtras). The last describe pins that.
 
-   THE ENGINE RULE IS PINNED AHEAD OF THE DOOR. In this step of the build the doors still refuse a placeholder beside
-   named people (inputs.ts placeholderProblem — the door opens in step 3), so these fixtures put the record straight
-   into INPUTS; its row is written as the row's own body writes it (overlay.ts requestRowFields). */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+   THE ENGINE RULE WAS PINNED AHEAD OF THE DOOR, AND THE DOOR HAS OPENED (step 3 of the build, 12 Oct 26 — owner D750,
+   D753, D755, D757). In step 2 the doors still refused a placeholder beside named people ("filed on its own"), so
+   these fixtures put the record straight into INPUTS, its row written as the row's own body writes it (overlay.ts
+   requestRowFields). That stays this file's method for the RULE — a fixture names exactly the record a case is
+   about. What step 3 adds is the last two describes: the record the DOORS make (ui/inputedit.tsx commitInput,
+   ui/reqdoor.ts rowPut / rowTake) is the very record these fixtures put in, and earns the same; and the cases only
+   real hands can make — a switch stamped by the app's own writers while people and ALL AVAIL come and go. */
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS } from './inputs'
+import { INPUTS, inpId, idsOf } from './inputs'
 import { HOOKS } from './hooks'
 import { SCHED, dayApproved, setDayApproved, signOf, dayCurVer, daySnapOf } from './publish'
 import { ensureRowIds } from './rowids'
 import { envMin, uniformOil, inputItemKey } from './oil'
-import { oilEvidence, oilEvidenceOf, oilEarnedWork, landedExtras, spanDefault, claimDefault, earnsFrom, type OilEvidence } from './oilev'
+import { oilEvidence, oilEvidenceOf, oilEarnedWork, landedExtras, spanDefault, claimDefault, earnsFrom, projectOilInputs, oilEvidenceKey, type OilEvidence } from './oilev'
 import { requestRowFields } from './overlay'
+import { putPerson, takePerson } from './inputown'
+import { initStore } from '../state/store'
+import { setSession, setMe, DEFAULT_ME } from '../state/auth'
+import { commitInput, draftOf } from '../ui/inputedit'
+import { rowPut, rowTake } from '../ui/reqdoor'
+import { toggleOilPerson } from '../ui/oilmode'
+import { setOilAsk, setInpEdit } from '../ui/pops'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -194,6 +205,31 @@ describe('what the crowd is resolved against, and what holds it still', () => {
     expect(figure(SAT, 'plasma')).toBe('FO')
     expect(Object.keys(oilEarnedWork(DAYS[SAT], oilEvidence(SAT))), 'the working copy already reads the No').toEqual([])
   })
+
+  /* SECOND PASS, WITH STEP 3 — the placeholder itself arrives, or goes, AFTER the day went out. The issued day is the
+     record (D44, D48, D142): it credits the people it was issued with until it goes out again, and what would go out
+     is no longer what went out (D45 — the pending mark; its count is ui/phmember.test.tsx's). */
+  it('ALL AVAIL put into the input AFTER the Saturday was published: the issued day still credits the named man alone', () => {
+    landed(['bane'])
+    publish(SAT)
+    const issued = () => { const d = (daySnapOf(SAT, dayCurVer(SAT)) as any).d; return oilEvidenceOf(SAT, d) }
+    const was = oilEvidenceKey(issued())
+    expect(paidNames(SAT)).toEqual(['bane'])
+    expect(putPerson(INPUTS[0], 'allavail')).toBe(true)
+    expect(paidNames(SAT), 'nobody behind the puck is credited by a day that went out without it').toEqual(['bane'])
+    expect(figure(SAT, 'stiff')).toBe(null)
+    expect(oilEvidenceKey(issued()), 'the issued record has not moved').toBe(was)
+    expect(Object.keys(oilEarnedWork(DAYS[SAT], oilEvidence(SAT))).sort(), 'the working copy shows what WILL go out').toEqual(['bane', 'plasma', 'stiff'])
+    expect(oilEvidenceKey(oilEvidence(SAT)), 'and that differs from what went out — a change waiting').not.toBe(was)
+  })
+
+  it('…and ALL AVAIL TAKEN OUT after it was published: the issued day still credits the crowd it went out with', () => {
+    landed()
+    publish(SAT)
+    expect(takePerson(INPUTS[0], 'allavail')).toBe(true)
+    expect(paidNames(SAT), 'the issued record is what they are owed against').toEqual(['bane', 'plasma', 'stiff'])
+    expect(Object.keys(oilEarnedWork(DAYS[SAT], oilEvidence(SAT))), 'the working copy: the named man alone').toEqual(['bane'])
+  })
 })
 
 describe('the scheduler can still decide man by man (D753, D762 — "only the scheduler leaves one person out")', () => {
@@ -247,6 +283,47 @@ describe('the scheduler can still decide man by man (D753, D762 — "only the sc
     landed()
     ;(DAYS[SAT] as any).oild = { items: { [ITEM]: 0 } }
     expect(paidNames(SAT), 'nobody earns from it').toEqual([])
+  })
+
+  /* SECOND PASS, WITH STEP 3 — the answer changes under switches already made. A switch is the scheduler's own word on
+     the day; the input's answer is only the DEFAULT it is read over (D762: "the scheduler's refusal on the day still
+     wins"; D28). So a new answer moves everyone who has no switch, and nobody who has one. */
+  it('the answer changed from Yes to No, and back, with a deny and an allow already made: each switch still decides its own man', () => {
+    landed()
+    ;(DAYS[SAT] as any).oild = { people: { [`stiff|${ITEM}`]: 'deny', [`bane|${ITEM}`]: 'deny' } }
+    expect(paidNames(SAT), 'on the Yes: everyone but the two refused').toEqual(['plasma'])
+    INPUTS[0].oil = NO
+    expect(paidNames(SAT), 'the No is for everyone').toEqual([])
+    ;(DAYS[SAT] as any).oild.people[`plasma|${ITEM}`] = 'allow'
+    expect(paidNames(SAT), 'one man credited over the No').toEqual(['plasma'])
+    INPUTS[0].oil = YES
+    expect(paidNames(SAT), 'back on Yes: the two refusals still stand; the allow has become the default').toEqual(['plasma'])
+    expect(oilEarnedWork(DAYS[SAT], oilEvidence(SAT)).plasma.length, 'and he is credited once').toBe(1)
+  })
+
+  /* SECOND PASS — WHOSE HOLDING A SWITCH IS READ AGAINST (the plan §4.7; engine/inputown.ts: "nobody's switch moves when
+     someone ELSE joins or leaves"). The people are put in and taken out by the input's own writers, so the stamps are
+     the app's; a switch carries the holding it was made under, as ui/oilmode.ts toggleOilPerson writes it. */
+  it('a NAMED man\'s switch does not move when ALL AVAIL joins, or leaves', () => {
+    landed(['bane'])
+    ;(DAYS[SAT] as any).oild = { people: { [`bane|${ITEM}`]: 'deny' }, pa: { [`bane|${ITEM}`]: Number(INPUTS[0].hand || 0) } }
+    expect(paidNames(SAT)).toEqual([])
+    expect(putPerson(INPUTS[0], 'allavail')).toBe(true)
+    expect((oilEvidence(SAT).d.people || {})[`bane|${ITEM}`], 'still his, beside the placeholder').toBe('deny')
+    expect(paidNames(SAT), 'the crowd earns on the Yes; he does not — as himself, or as one of the crowd he would be in').toEqual(['plasma', 'stiff'])
+    expect(takePerson(INPUTS[0], 'allavail')).toBe(true)
+    expect((oilEvidence(SAT).d.people || {})[`bane|${ITEM}`], 'and still his when it has gone').toBe('deny')
+    expect(paidNames(SAT)).toEqual([])
+  })
+
+  it('a CROWD man\'s switch does not move when a named person joins, or leaves (D750, D757 step 4: "its switch-offs intact")', () => {
+    landed()
+    ;(DAYS[SAT] as any).oild = { people: { [`plasma|${ITEM}`]: 'deny' }, pa: { [`plasma|${ITEM}`]: Number(INPUTS[0].hand || 0) } }
+    expect(putPerson(INPUTS[0], 'divot')).toBe(true)
+    expect(paidNames(SAT), 'divot joins on the Yes; plasma is still off').toEqual(['bane', 'divot', 'stiff'])
+    expect(takePerson(INPUTS[0], 'bane')).toBe(true)
+    expect(oilEvidence(SAT).sent[ITEM], 'the man taken out is free now: one of the crowd (D757 step 4: "the count rises by one")').toEqual(['bane', 'stiff', 'plasma'])
+    expect(paidNames(SAT), 'plasma is STILL off').toEqual(['bane', 'divot', 'stiff'])
   })
 })
 
@@ -344,5 +421,160 @@ describe('a day issued before the one-rule build keeps the OIL it went out with 
   it('a decision frozen with the day still takes one man off, and a row with no placeholder on it gathers no crowd', () => {
     expect(paid(frozenDay({ more: ['allavail'] }), frozenEv(1, { people: { [`stiff|${ITEM}`]: 'deny' } }))).toEqual(['bane', 'plasma'])
     expect(paid(frozenDay({ more: ['divot'] }), frozenEv(1)), 'D28').toEqual(['bane', 'divot'])
+  })
+})
+
+/* ---- THROUGH THE DOORS (step 3 of the one-rule build, 12 Oct 26 — owner D750, D753, D755, D757) ---------------------
+   Until this step no door could make the record the fixtures above put in. Now the input's one writer files it
+   (ui/inputedit.tsx commitInput) and the row's door changes it (ui/reqdoor.ts rowPut / rowTake) — and a switch made
+   between two such hands is stamped by the app itself (ui/oilmode.ts toggleOilPerson), not by a fixture's guess at
+   the stamp. Kept LAST in the file: the store is wired here, and nothing above needs it. */
+describe('THE DOORS make the record these fixtures put in — and it earns the same (step 3; D753, D755, D762)', () => {
+  const toast = HOOKS.toast
+  let SAID: string[] = []
+  beforeAll(() => { initStore() })
+  beforeEach(() => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff'); SAID = []; HOOKS.toast = (m: any) => { SAID.push(String(m)) } })
+  afterEach(() => { HOOKS.toast = toast; setOilAsk(null); setInpEdit(null); setSession(null); setMe(DEFAULT_ME) })
+
+  /* a Training on the Saturday 0900–1700, FILED for `ppl` — its row lands from it */
+  const file = (ppl: string[], oil: Record<string, number> | null = YES): any => {
+    const had = new Set((INPUTS as any[]).map(r => String(inpId(r))))
+    expect(commitInput(null, draftOf({ person: ppl[0], type: 'Training', date: 'Jul 18', yr: 2026, allday: false, s: 9 * 60, e: 17 * 60, remarks: '' }), ppl, oil ? { oil } : undefined), 'filed').toBe(true)
+    const made = (INPUTS as any[]).filter(r => !had.has(String(inpId(r))))
+    expect(made, 'ONE record').toHaveLength(1)
+    return made[0]
+  }
+  const rowOf = (r: any) => (DAYS[SAT].ground || []).find((g: any) => g && String(g.src) === String(inpId(r)))
+  const keyOf = (r: any, who?: string) => {
+    const ri = (DAYS[SAT].ground || []).indexOf(rowOf(r)), row = rowOf(r)
+    if (who == null) return `g:${SAT}.${ri}.+`
+    if (String(row.who) === who) return `g:${SAT}.${ri}`
+    const n = (row.more || []).indexOf(who)
+    expect(n, `${who} is on the row`).toBeGreaterThanOrEqual(0)
+    return `g:${SAT}.${ri}.x${n}`
+  }
+  const itemOf = (r: any) => inputItemKey(String(inpId(r)))
+  const paidNow = () => Object.keys(oilEarnedWork(DAYS[SAT], oilEvidence(SAT))).sort()
+
+  it('filed for a named man and ALL AVAIL in one go: one record, one claim that names nobody twice, the crowd without him', () => {
+    const r = file(['bane', 'allavail'])
+    expect(idsOf(r).map(String)).toEqual(['bane', 'allavail'])
+    expect('person' in r, 'the new shape: its people, no one `person`').toBe(false)
+    const c: any = projectOilInputs(SAT_ISO).find(i => i.iid === String(inpId(r)))
+    expect({ people: c.people, ph: c.ph, ans: c.ans, stand: c.stand, win: c.win }, 'the claim the fixtures above project').toEqual({ people: ['bane'], ph: 'allavail', ans: 1, stand: 'active', win: [9 * 60, 17 * 60] })
+    expect('person' in c).toBe(false)
+    expect([rowOf(r).who, rowOf(r).more], 'its row is the copy the row\'s own body writes').toEqual([requestRowFields(r).who, requestRowFields(r).more])
+    expect([rowOf(r).who, rowOf(r).more]).toEqual(['bane', ['allavail']])
+    expect(oilEvidence(SAT).sent[itemOf(r)]).toEqual(['stiff', 'plasma'])
+    expect(paidNow()).toEqual(['bane', 'plasma', 'stiff'])
+    expect(oilEarnedWork(DAYS[SAT], oilEvidence(SAT)).bane.length, 'once').toBe(1)
+  })
+
+  it('…and ALL AVAIL dropped on a one-man request\'s row ends at the same record — whichever came first (D755 reading (a))', () => {
+    const r = file(['bane'])
+    expect(paidNow()).toEqual(['bane'])
+    expect(rowPut(keyOf(r), 'allavail')).toBe('done')
+    expect(idsOf(r).map(String)).toEqual(['bane', 'allavail'])
+    expect(SAID.join(' | ')).toContain('ALL AVAIL added to')
+    expect(paidNow()).toEqual(['bane', 'plasma', 'stiff'])
+    expect(oilEvidence(SAT).sent[itemOf(r)]).toEqual(['stiff', 'plasma'])
+  })
+
+  it('ALL beside a named man, filed and dropped: the same people earn (D753 — "ALL AVAIL or ALL")', () => {
+    const r = file(['bane', 'all'])
+    expect(paidNow()).toEqual(['bane', 'plasma', 'stiff'])
+    expect(rowTake(keyOf(r, 'all'))).toBe('done')
+    expect(paidNow()).toEqual(['bane'])
+    expect(rowPut(keyOf(r), 'all')).toBe('done')
+    expect(paidNow()).toEqual(['bane', 'plasma', 'stiff'])
+    expect(oilEarnedWork(DAYS[SAT], oilEvidence(SAT)).all, 'the placeholder is in nobody\'s work').toBeUndefined()
+  })
+
+  it('an input filed with NO answer: nobody earns, the crowd is gathered all the same — and answered Yes, everyone does', () => {
+    const r = file(['bane', 'allavail'], null)
+    expect(r.oil == null || r.oil[SAT_ISO] == null, 'unanswered').toBe(true)
+    expect(paidNow()).toEqual([])
+    expect(oilEvidence(SAT).sent[itemOf(r)], 'who is behind the puck is a scheduling fact (D27)').toEqual(['stiff', 'plasma'])
+    expect(commitInput(r, draftOf(r), ['bane', 'allavail'], { oil: YES })).toBe(true)
+    expect(paidNow()).toEqual(['bane', 'plasma', 'stiff'])
+  })
+
+  it('the scheduler\'s switches, made with the app\'s own hand, across people and ALL AVAIL coming and going', () => {
+    const r = file(['bane'])
+    toggleOilPerson(SAT, 'bane', itemOf(r))
+    expect(paidNow(), 'bane switched off on his own request').toEqual([])
+    expect(rowPut(keyOf(r), 'allavail')).toBe('done')
+    expect(paidNow(), 'ALL AVAIL beside him: the crowd earns, he is still off').toEqual(['plasma', 'stiff'])
+    toggleOilPerson(SAT, 'plasma', itemOf(r))
+    expect(paidNow()).toEqual(['stiff'])
+    expect(rowPut(keyOf(r), 'divot')).toBe('done')
+    expect(paidNow(), 'a named man joins on the Yes; nobody else\'s switch moved').toEqual(['divot', 'stiff'])
+    expect(rowTake(keyOf(r, 'divot'))).toBe('done')
+    expect(paidNow(), 'and leaves again: the same').toEqual(['stiff'])
+  })
+})
+
+/* A SWITCH ACROSS THE LINE BETWEEN "NAMED" AND "ONE OF THE CROWD" — new ground with step 3: only now can one man be
+   both, one after the other, on one input. The plan's own words are the measure (§4.7): "the switch-offs of a person
+   who leaves are dropped by the existing prune (by his `h`)", and a switch made under an earlier holding "does not
+   silently come back" (Fable F11) — the stamp is what stops a revival. And D755 reading (a): two routes to the same
+   people give the same OIL rule; only the history may differ.
+   THESE CASES SAY WHAT SHOULD HAPPEN BY THOSE WORDS. Where one fails, it is REPORTED as a product fault with this
+   re-expression, not adjusted to pass. */
+describe('a switch does not cross between a man NAMED in the input and the same man as one of its crowd (the plan §4.7; D755 reading (a))', () => {
+  const toast = HOOKS.toast
+  beforeAll(() => { initStore() })
+  /* bane is free on the Saturday (CROWD names him): taken out of the input he is one of the men behind ALL AVAIL */
+  beforeEach(() => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff'); HOOKS.toast = () => {} })
+  afterEach(() => { HOOKS.toast = toast; setOilAsk(null); setInpEdit(null); setSession(null); setMe(DEFAULT_ME) })
+  const file = (ppl: string[]): any => {
+    const had = new Set((INPUTS as any[]).map(r => String(inpId(r))))
+    expect(commitInput(null, draftOf({ person: ppl[0], type: 'Training', date: 'Jul 18', yr: 2026, allday: false, s: 9 * 60, e: 17 * 60, remarks: '' }), ppl, { oil: YES })).toBe(true)
+    return (INPUTS as any[]).find(r => !had.has(String(inpId(r))))
+  }
+  const place = (r: any, who?: string) => {
+    const row = (DAYS[SAT].ground || []).find((g: any) => g && String(g.src) === String(inpId(r))), ri = (DAYS[SAT].ground || []).indexOf(row)
+    if (who == null) return `g:${SAT}.${ri}.+`
+    return String(row.who) === who ? `g:${SAT}.${ri}` : `g:${SAT}.${ri}.x${(row.more || []).indexOf(who)}`
+  }
+  const paidNow = () => Object.keys(oilEarnedWork(DAYS[SAT], oilEvidence(SAT))).sort()
+
+  /* the same four hands in two orders, ending at the same people: divot and ALL AVAIL in the input, bane taken out of
+     it and free — one of the crowd — having been switched OFF by the scheduler while he was named in it */
+  const route = (switchFirst: boolean) => {
+    const r = file(['bane', 'divot'])
+    const item = inputItemKey(String(inpId(r)))
+    if (switchFirst) toggleOilPerson(SAT, 'bane', item)
+    expect(rowPut(place(r), 'allavail')).toBe('done')
+    if (!switchFirst) toggleOilPerson(SAT, 'bane', item)
+    expect(paidNow(), 'while he is named: off, either way').toEqual(['divot', 'plasma', 'stiff'])
+    expect(rowTake(place(r, 'bane'))).toBe('done')
+    expect(idsOf(r).map(String)).toEqual(['divot', 'allavail'])
+    expect(oilEvidence(SAT).sent[item], 'he is one of the crowd now').toEqual(['bane', 'stiff', 'plasma'])
+    return paidNow()
+  }
+  it('a named man switched off, then taken out of an input that holds ALL AVAIL: what he earns as one of its crowd does not depend on WHEN ALL AVAIL was dropped on', () => {
+    const a = route(true)
+    /* the second route on a clean day */
+    DAYS[SAT].ground = []; (DAYS[SAT] as any).oild = undefined
+    INPUTS.length = 0; JSON.parse(ISNAP).forEach((x: any) => INPUTS.push(x))
+    const b = route(false)
+    expect(b, 'two routes to the same people: the same OIL (D755 reading (a))').toEqual(a)
+    /* …and by the plan's words it is THIS: "the switch-offs of a person who leaves are dropped" — he left, so he
+       follows the input's Yes like any man behind the puck */
+    expect(a, 'switched off BEFORE ALL AVAIL joined').toEqual(['bane', 'divot', 'plasma', 'stiff'])
+    expect(b, 'switched off AFTER ALL AVAIL joined').toEqual(['bane', 'divot', 'plasma', 'stiff'])
+  })
+
+  it('a crowd man switched off, then NAMED in (his switch is void — a new holding), then taken out again: the void switch does not come back', () => {
+    const r = file(['divot', 'allavail'])
+    const item = inputItemKey(String(inpId(r)))
+    toggleOilPerson(SAT, 'plasma', item)
+    expect(paidNow(), 'plasma, one of the crowd, switched off').toEqual(['bane', 'divot', 'stiff'])
+    expect(rowPut(place(r), 'plasma')).toBe('done')
+    expect(paidNow(), 'put in by name he follows the input\'s Yes — "nothing is written for him" (the plan §4.4)').toEqual(['bane', 'divot', 'plasma', 'stiff'])
+    expect(rowTake(place(r, 'plasma'))).toBe('done')
+    expect(oilEvidence(SAT).sent[item]).toEqual(['bane', 'stiff', 'plasma'])
+    expect(paidNow(), 'taken out again he is one of the crowd, on the input\'s Yes — a switch the app had already voided does not silently come back (F11)').toEqual(['bane', 'divot', 'plasma', 'stiff'])
   })
 })

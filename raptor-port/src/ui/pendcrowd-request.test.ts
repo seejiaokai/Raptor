@@ -8,12 +8,14 @@
 
    RE-BUILT ON THE ONE RULE ([ALL-AVAIL-AS-MEMBER] step 2; owner D755, D753, D712 — the plan
    docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3, §4.7). A request's row has a crowd only where the
-   placeholder is one of the INPUT's own people — in this step of the build, an input FILED for ALL AVAIL alone (ALL
-   AVAIL under a NAMED man's request, which this file used to write straight onto the row, is step 3: no door makes
-   one yet, and a raw write is swept by the re-make). The row is landed from the input by the engine's own body
-   (overlay.ts viewOfWeek), never written by hand. And a Personal request's row holds no placeholder at all (D755 (4):
-   "a Personal input is one person's own") — phase 7's "a Personal row reaches the line too" went with that: what is
-   pinned for it now is that the hand is refused, and that such a row has no crowd to change. */
+   placeholder is one of the INPUT's own people: an input FILED for ALL AVAIL alone, and — since step 3 of the build
+   (12 Oct 26; D750, D753, D755, D757) — ALL AVAIL BESIDE a named man in his request, which is the case this file was
+   first written for. Then it wrote the puck straight onto the man's row (`more: ['allavail']` — the row's own extra,
+   D46); a raw write is swept by the re-make now, and the door makes one instead: it is put in the input, by the row's
+   door or held in the record's list, and the row is landed from the input by the engine's own body (overlay.ts
+   viewOfWeek), never written by hand. And a Personal request's row holds no placeholder at all (D755 (4): "a Personal
+   input is one person's own") — phase 7's "a Personal row reaches the line too" went with that: what is pinned for it
+   now is that the hand is refused, and that such a row has no crowd to change. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS, idsOf, placeholderOf } from '../engine/inputs'
@@ -84,10 +86,62 @@ describe('a request row\'s crowd change is named by its row and can be tapped (F
     expect(html, 'and it is a line you can tap to go there').toMatch(/<button class="pl-item" data-plix="\d+"/)
   })
 
+  /* ALL AVAIL UNDER A NAMED MAN'S REQUEST — the case this file began with ("a Training request's row", `who: 'ignite',
+     more: ['allavail']`, written by hand). A NAMED RULING CHANGED THE RULE (2): then the puck was the row's own extra
+     (D46) and its crowd was filed under the man's request; D755 makes it one of the INPUT's people ("a named person or
+     ALL AVAIL / ALL, whoever put them there"), D750 ties it to no man. What the case pinned survives: the crowd's
+     change is named by the row and can be tapped. Made the two ways the app makes it — held in the record's list (an
+     input filed for a man and ALL AVAIL), and put on the man's row through its door. */
+  it.each([
+    ['filed for him and ALL AVAIL together', (): void => { request({ type: 'Training', people: [{ p: 'ignite', by: 'stiff', at: 1 }, { p: 'allavail', by: 'stiff', at: 1 }] }) }],
+    ['ALL AVAIL put on his row through the row\'s door', (): void => {
+      const row = request({ type: 'Training', people: [{ p: 'ignite', by: 'stiff', at: 1 }] })
+      expect([row.who, row.more], 'as he filed it: his row, him alone').toEqual(['ignite', undefined])
+      setSession({ user: 'ad', role: 'admin', name: 'ad' })
+      expect(rowPut(`g:${TUE}.${((DAYS[TUE] as any).ground as any[]).indexOf(row)}.+`, 'allavail'), 'the row\'s door').toBe('done')
+      viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
+      ensureRowIds(DAYS)
+    }],
+  ])('a NAMED man\'s Training request with ALL AVAIL beside him — %s (D755, D750)', (_how, make) => {
+    HOOKS.toast = () => {}
+    make()
+    const rows = ((DAYS[TUE] as any).ground as any[]).filter(g => g && g.src === 'rq1')
+    expect(rows, 'ONE row').toHaveLength(1)
+    expect(idsOf(INPUTS.find((r: any) => r.iid === 'rq1')).map(String), 'it is IN the input').toEqual(['ignite', 'allavail'])
+    expect([rows[0].prog, rows[0].who, rows[0].more], 'the man in the name box, the placeholder under him').toEqual(['TRAINING', 'ignite', ['allavail']])
+    publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
+    CROWD = ['bane', 'stiff']
+    expect(dayHasChanges(TUE), 'the crowd changed: the day reads pending').toBe(true)
+    const html = pendListHTML(TUE)
+    expect(html).toContain('TRAINING · who it stands for')
+    expect(html, 'never the nameless line').not.toContain('A placeholder')
+    expect(html, 'and it is a line you can tap to go there').toMatch(/<button class="pl-item" data-plix="\d+"/)
+  })
+
+  /* …and the man NAMED in the input is never one of the men behind its ALL AVAIL (the plan §4.7: the crowd written
+     down never holds a named person) — so whether he reads "free" or not is no change to who the puck stands for:
+     nothing is waiting, and no line is drawn for it. */
+  it('the man named beside ALL AVAIL is not behind it: his own coming and going from "who is free" is nothing waiting on the published day', () => {
+    CROWD = ['ignite', 'bane', 'stiff', 'plasma']
+    request({ type: 'Training', people: [{ p: 'ignite', by: 'stiff', at: 1 }, { p: 'allavail', by: 'stiff', at: 1 }] })
+    publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
+    CROWD = ['bane', 'stiff', 'plasma']
+    expect(dayHasChanges(TUE), 'he was never one of them').toBe(false)
+    expect(pendListHTML(TUE)).not.toContain('who it stands for')
+    CROWD = ['bane', 'stiff']
+    expect(dayHasChanges(TUE), 'THE CONTROL: a man who IS behind it going is a change').toBe(true)
+    expect(pendListHTML(TUE)).toContain('TRAINING · who it stands for')
+  })
+
   /* A PERSONAL REQUEST'S ROW — the subject phase 7 added here ("a Personal row reaches it too") cannot exist: ALL AVAIL
      put on it is refused at the store's writer, at the row's door and at the engine's belt, so the row has no crowd,
      and a change in who is free is nothing waiting on its published day — no line, named or nameless. (The drop
-     itself, and the row's missing count chip, are ui/oilpersonalcrowd.test.tsx.) */
+     itself, and the row's missing count chip, are ui/oilpersonalcrowd.test.tsx.) THE REFUSAL'S WORDS CHANGED WITH STEP 3
+     (2): "ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other" was the sentence of an
+     input FILED for the placeholder; now that it is one of an input's people the six kinds are said as the plan's
+     table says them (§4.4; D753 reading 3, D755 (4)) — one sentence at every door, each hand saying it once. */
   it('a Personal request\'s row holds no placeholder (D755 (4)): ALL AVAIL put on it is refused, so it has no crowd change to name', () => {
     const row = request({ type: 'Personal', person: 'ignite' })
     const ri = ((DAYS[TUE] as any).ground as any[]).indexOf(row), add = `g:${TUE}.${ri}.+`
@@ -99,7 +153,8 @@ describe('a request row\'s crowd change is named by its row and can be tapped (F
     expect(rowPut(add, 'allavail'), 'the row\'s door').toBe('refused')
     expect(fillSlot(add, 'allavail'), 'the engine\'s belt: a raw write to its "+ add"').toBe(false)
     expect(setSlotVal(`g:${TUE}.${ri}`, 'allavail'), '…and to its name box').toBe(false)
-    expect(said.join(' | '), 'refused with its reason').toContain('can be filed only for Training, Meeting, Appointment, Duty, Event or Other')
+    const WHY = 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other'
+    expect(said, 'refused with its reason — once by the store\'s writer, once by the door; the belt is silent').toEqual([WHY, WHY])
     expect(JSON.stringify([INPUTS, row]), 'nothing changed').toBe(was)
     expect(idsOf(INPUTS[0]).map(String)).toEqual(['ignite'])
     expect(placeholderOf(INPUTS[0]), 'no placeholder in the input').toBeFalsy()

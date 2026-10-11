@@ -7,7 +7,15 @@
    crew, shown only where the roster holds ground crew. D655: a member files for others only duties and commitments;
    D658: never SANS availability. The plan: switching back to one person keeps the first one picked; NOTHING is ever
    substituted for what he picked — where a change of kind leaves people picked that he may not file that kind for, the
-   picker keeps them shown, says why in one line, and one press offers the correction. */
+   picker keeps them shown, says why in one line, and one press offers the correction.
+
+   SINCE STEP 3 OF THE ONE-RULE BUILD (12 Oct 26 — owner D750: "'Several people' takes ALL AVAIL / ALL, so the puck is one
+   of the input's own people"; D753: one day, never both; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md
+   §4.5 "The picker") the two placeholders stand in "Several people" too, as pucks of their own above the groups. The
+   builder's cases for that are ui/phpick.test.tsx (the picker handed the window's own answer about the dates). ONE case
+   of this file pinned the old rule — "the placeholder pucks are never offered" — and is re-expressed where it stood;
+   the cases added at the foot are what phpick does not ask: the picker as THIS file mounts it (the kind alone, no
+   dates), "All" on a heading and a drag with a placeholder picked, a member, and a reader. */
 import { act, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -38,16 +46,21 @@ const pucksIn = (k: string) => [...(group(k)?.querySelectorAll('[data-pp]') || [
 const puckBtn = (id: string) => $(`[data-pp="${id}"]`)!
 
 let got: { people: string[]; several: boolean }
-function Harness({ people, several, type, sansOnly }: { people: string[]; several: boolean; type: string; sansOnly?: boolean }) {
+/* `readOnly` and `phWhy` are passed only by the cases added for step 3 (at the foot): left out, the picker is mounted
+   exactly as every older case of this file mounts it */
+type Extra = { readOnly?: boolean; phWhy?: (id: string) => string }
+function Harness({ people, several, type, sansOnly, readOnly, phWhy }: { people: string[]; several: boolean; type: string; sansOnly?: boolean } & Extra) {
   const [st, setSt] = useState({ people, several })
   got = st
-  return <PeoplePick people={st.people} several={st.several} type={type} sansOnly={sansOnly}
+  return <PeoplePick people={st.people} several={st.several} type={type} sansOnly={sansOnly} readOnly={readOnly} phWhy={phWhy}
     onChange={(p, s) => setSt({ people: p, several: s })} />
 }
 /* the member Ranger (`bane`); the admin is Saber (`stiff`) */
 const asMember = () => { setSession({ user: 'bane', role: 'main' }); setMe('bane') }
-const mount = async (p: { people: string[]; several?: boolean; type?: string; sansOnly?: boolean }) =>
-  act(async () => { root.render(<Harness people={p.people} several={!!p.several} type={p.type || 'Meeting'} sansOnly={p.sansOnly} />) })
+const mount = async (p: { people: string[]; several?: boolean; type?: string; sansOnly?: boolean } & Extra) =>
+  act(async () => { root.render(<Harness people={p.people} several={!!p.several} type={p.type || 'Meeting'} sansOnly={p.sansOnly} readOnly={p.readOnly} phWhy={p.phWhy} />) })
+/* the two placeholder pucks of "Several people" — pucks of their own (`data-ph`), never a person's (`data-pp`) */
+const phBtn = (id: string) => $(`[data-ph="${id}"]`) as HTMLButtonElement | null
 
 beforeEach(() => {
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
@@ -86,12 +99,21 @@ describe('one person — the default, as today (D656)', () => {
     await act(async () => { sel.value = wsos()[1]; sel.dispatchEvent(new Event('change', { bubbles: true })) })
     expect(got).toEqual({ people: [wsos()[1]], several: false })
   })
-  it('an archived man and the placeholder pucks are never offered', async () => {
+  /* A RULING CHANGED HALF OF THIS CASE (owner D750, D753 — step 3 of the one-rule build). It was 'an archived man and the
+     placeholder pucks are never offered'. The archived man: the rule survives. The placeholder pucks: "'Several people'
+     takes ALL AVAIL / ALL" — they ARE offered now, for a kind that may carry one. What still holds, and is what the
+     old assertion really guarded: neither is ever one of the PEOPLE's pucks (`data-pp`) — so no heading lists one, no
+     "All" picks one and no drag sweeps one up. */
+  it('an archived man is never offered; the placeholders are — as pucks of their own, never among the people\'s (D750, D753)', async () => {
     const gone = pilots()[2]
     PEOPLE[gone].archived = true
     await mount({ people: [pilots()[0]], several: true })
     expect(puckBtn(gone)).toBeNull()
-    expect($$('[data-pp]').some(b => PEOPLE[b.getAttribute('data-pp')!].special)).toBe(false)
+    expect($$('[data-pp]').some(b => PEOPLE[b.getAttribute('data-pp')!].special), 'not among the people').toBe(false)
+    expect($$('[data-ph]').map(b => b.getAttribute('data-ph')), 'offered, both, in a group of their own').toEqual(['allavail', 'all'])
+    expect(group('ph')!.contains(phBtn('allavail'))).toBe(true)
+    for (const k of ['pilots', 'wsos', 'sans', 'personnel']) expect(group(k)!.querySelector('[data-ph]'), k).toBeNull()
+    expect(phBtn('allavail')!.disabled, 'a Meeting may carry one').toBe(false)
   })
 })
 
@@ -311,5 +333,147 @@ describe('a drag across the pucks picks every one it passes (D685)', () => {
     expect(got.people).toEqual([wsos()[0], row[1], row[2], row[5]])
     await click(puckBtn(row[5]))
     expect(got.people).toEqual([wsos()[0], row[1], row[2]])
+  })
+
+  /* ADDED FOR STEP 3 (D750 — a placeholder is one of the picked; D685 is about the people's pucks). */
+  it('with ALL AVAIL picked, a drag that lets go of every man it passes may let them ALL go: ALL AVAIL is still who it is for', async () => {
+    row = pilots()
+    await mount({ people: [row[0], row[1], 'allavail'], several: true }); lay()
+    await drag(0, 1)
+    expect(got.people, 'never an input for nobody — the placeholder holds it').toEqual(['allavail'])
+    expect(tid('pp-count')!.textContent).toBe('ALL AVAIL')
+  })
+  it('a drag begun on a placeholder\'s puck picks nothing: it is not one of the pucks a drag runs across', async () => {
+    await mount({ people: [wsos()[0]], several: true }); lay()
+    const start = phBtn('allavail')!
+    await ptr('pointerdown', start, at(1), 5)
+    await ptr('pointermove', start, at(1) + 4, 5); await ptr('pointermove', start, at(3), 5)
+    await ptr('pointerup', start, at(3), 5)
+    expect(got.people).toEqual([wsos()[0]])
+    /* …and its own press is still a press, straight after */
+    await click(start)
+    expect(got.people).toEqual([wsos()[0], 'allavail'])
+  })
+  it('a drag across the men leaves a picked placeholder as it was, and adds them after it', async () => {
+    await mount({ people: ['allavail'], several: true }); lay()
+    await drag(1, 3)
+    expect(got.people).toEqual(['allavail', row[1], row[2], row[3]])
+    expect(tid('pp-count')!.textContent).toBe('3 picked + ALL AVAIL')
+  })
+})
+
+/* ADDED FOR STEP 3 OF THE ONE-RULE BUILD (12 Oct 26) — "SEVERAL PEOPLE" WITH A PLACEHOLDER, AS THIS FILE MOUNTS THE PICKER:
+   the kind alone decides (no window is there to say the dates), a heading's "All", a member, and a reader. Owner D750,
+   D753 ("an input takes ALL or ALL AVAIL, never both"), D702 ("members can choose too"), D655 reading 6 (one switch puts
+   filing for others back to admins only), D712 / D713 (the six kinds). */
+describe('"Several people" with ALL AVAIL / ALL — the kind, "All", a member, a reader (D750, D753, D702)', () => {
+  const KINDS = 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other'
+
+  it('with no dates to go by, the KIND alone greys them: a leave for several shows both greyed with the reason; a Duty shows both live', async () => {
+    await mount({ people: [pilots()[0], wsos()[0]], several: true, type: 'LL' })
+    expect(phBtn('allavail')!.disabled).toBe(true)
+    expect(phBtn('all')!.disabled).toBe(true)
+    expect(tid('pp-phwhy')!.textContent).toBe(KINDS)
+    await click(phBtn('allavail'))
+    expect(got.people, 'a press on a greyed puck does nothing').toEqual([pilots()[0], wsos()[0]])
+    await mount({ people: [pilots()[0], wsos()[0]], several: true, type: 'Duty' })
+    expect(phBtn('allavail')!.disabled).toBe(false)
+    expect(tid('pp-phwhy')).toBeNull()
+  })
+
+  it('"All" on a heading keeps a picked placeholder; clearing the heading that holds every man picked leaves the placeholder alone', async () => {
+    await mount({ people: ['allavail'], several: true })
+    await click(tid('pp-all-pilots'))
+    expect(got.people).toEqual(['allavail', ...pilots()])
+    expect(tid('pp-count')!.textContent).toBe(`${pilots().length} picked + ALL AVAIL`)
+    expect(phBtn('allavail')!.getAttribute('aria-pressed')).toBe('true')
+    await click(tid('pp-all-pilots'))
+    expect(got.people, 'the pilots go; ALL AVAIL is still who it is for').toEqual(['allavail'])
+    expect(tid('pp-count')!.textContent).toBe('ALL AVAIL')
+  })
+
+  it('"All" never picks a placeholder: every heading pressed, and neither of the two is in the pick', async () => {
+    await mount({ people: [pilots()[0]], several: true })
+    for (const k of ['pilots', 'wsos', 'personnel']) await click(tid('pp-all-' + k))
+    expect(got.people.some(p => PEOPLE[p].special)).toBe(false)
+    expect(tid('pp-count')!.textContent).toBe(`${got.people.length} picked`)
+  })
+
+  it('the other placeholder pressed takes the first one\'s place and keeps its people — never both (D753)', async () => {
+    await mount({ people: [pilots()[0], 'all', wsos()[0]], several: true })
+    await click(phBtn('allavail'))
+    expect(got.people).toEqual([pilots()[0], wsos()[0], 'allavail'])
+    expect(phBtn('all')!.getAttribute('aria-pressed')).toBe('false')
+    expect(tid('pp-count')!.textContent).toBe('2 picked + ALL AVAIL')
+  })
+
+  it('both of them picked, however that came about: the line says "This input already has ALL AVAIL" and one press takes the second out', async () => {
+    await mount({ people: [pilots()[0], 'allavail', 'all'], several: true })
+    expect(tid('pp-why')!.textContent).toContain('This input already has ALL AVAIL')
+    expect(tid('pp-fix')!.textContent).toBe('Take ALL out')
+    await click(tid('pp-fix'))
+    expect(got).toEqual({ people: [pilots()[0], 'allavail'], several: true })
+    expect(tid('pp-why')).toBeNull()
+  })
+
+  it('back to one person from ALL AVAIL and people, ALL AVAIL picked first: the one-person list shows ALL AVAIL', async () => {
+    await mount({ people: ['allavail', pilots()[0], wsos()[0]], several: true })
+    await click(tid('pp-several'))
+    expect(got).toEqual({ people: ['allavail'], several: false })
+    expect(($('#inpEditPerson') as HTMLSelectElement).value).toBe('allavail')
+  })
+
+  it('a MEMBER, the members\' switch on: he is offered both, and picks one beside himself and another man (D702)', async () => {
+    asMember()
+    const other = pilots().find(p => p !== me())!
+    await mount({ people: [me()!, other], several: true, type: 'Meeting' })
+    expect(phBtn('allavail')!.disabled).toBe(false)
+    await click(phBtn('allavail'))
+    expect(got.people).toEqual([me()!, other, 'allavail'])
+    expect(tid('pp-why'), 'nothing is wrong with that').toBeNull()
+    expect(pickProblem([me()!, other, 'allavail'], true, 'Meeting')).toBeNull()
+  })
+
+  it('a MEMBER, the kind turned to leave under himself, another man and ALL AVAIL: the placeholder\'s own sentence is said first, with its press', async () => {
+    asMember()
+    const other = pilots().find(p => p !== me())!
+    await mount({ people: [me()!, other, 'allavail'], several: true, type: 'LL' })
+    expect(phBtn('allavail')!.getAttribute('aria-pressed'), 'nothing is substituted').toBe('true')
+    expect(tid('pp-why')!.textContent).toContain(KINDS)
+    expect(tid('pp-fix')!.textContent).toBe('Take ALL AVAIL out')
+    await click(tid('pp-fix'))
+    /* …and then the next thing wrong with what is left: leave is filed for himself only (D655) */
+    expect(got.people).toEqual([me()!, other])
+    expect(tid('pp-why')!.textContent).toContain('You can file leave only for yourself')
+    expect(tid('pp-fix')!.textContent).toBe('File it for me only')
+  })
+
+  it('a MEMBER, the switch turned off under a pick of himself and ALL AVAIL: it stays shown, the line says filing for others is off, and one press files it for him only (D655 reading 6)', async () => {
+    setMembersFile(false)                 // the switch is an admin's: turned off before the member signs in
+    asMember()
+    await mount({ people: [me()!, 'allavail'], several: true, type: 'Meeting' })
+    expect(phBtn('allavail')!.getAttribute('aria-pressed')).toBe('true')
+    expect(tid('pp-why')!.textContent).toContain('Filing for other people is switched off')
+    expect(tid('pp-fix')!.textContent).toBe('File it for me only')
+    await click(tid('pp-fix'))
+    expect(got).toEqual({ people: [me()!], several: false })
+  })
+})
+
+/* ---- A PRODUCT FAULT FOUND WRITING THE CASES ABOVE (12 Oct 26) — REPORTED, NOT PINNED ----------------------------------
+   The case says what SHOULD happen and is RED on the build as it stands; it is not to be made green by changing it. */
+describe('STEP 3 — a product fault, reported and left red: a READER is told what ALL AVAIL may be filed for', () => {
+  /* `readOnly` — ui/PeoplePick.tsx: "the whole form is one its reader may not change: nothing can be picked, so nothing
+     is said about what may be picked" (`[CARD-CHECK-SEEN]` 4, 10 Oct 26 — a member reading another man's medical entry
+     was told "You can file a medical entry only for yourself"). The line under the two greyed placeholder pucks is a
+     sentence about what may be picked, and it is drawn for a reader too: a member who opens another crew's three-day
+     Training, or a course filed for several, reads "ALL AVAIL is for one day" / "ALL AVAIL is for Training, Meeting, …"
+     in a window where he can pick nobody. */
+  it('a read-only picker says nothing under the two placeholder pucks — for a kind that bars them, and for an input longer than a day', async () => {
+    await mount({ people: [pilots()[0], wsos()[0]], several: true, type: 'CSE', readOnly: true })
+    expect(tid('pp-why'), 'the control: the picker\'s own line is already silent for a reader').toBeNull()
+    expect(tid('pp-phwhy'), 'a kind that bars them').toBeNull()
+    await mount({ people: [pilots()[0], wsos()[0]], several: true, type: 'Training', readOnly: true, phWhy: () => 'ALL AVAIL is for one day' })
+    expect(tid('pp-phwhy'), 'an input longer than a day').toBeNull()
   })
 })

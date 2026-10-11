@@ -17,6 +17,11 @@
    - "rows carrying the same entry mark are one row", "the LEAD is the first member in the day's own display order":
      there are no member rows to gather or to lead — one input, one row;
    - "rows whose scheduler's marks differ are honestly drawn apart" (D735): there is one row, so one set of marks.
+   ALL AVAIL / ALL AS ONE OF THE PEOPLE (step 3 of the one-rule build, 12 Oct 26 — owner D750, D753, D755, D757). The
+   pure answer was built for it at step 2 — "a placeholder is one of them", "then its placeholder, last" — while no
+   door could yet make such an input; the doors do now, so the answer is pinned from every side here: ALL as well as
+   ALL AVAIL, a placeholder that joined first, the hash moving with it, and which rows the builders draw as a row of
+   several (`inputRowSeveral`). Nothing in this file pinned the old rule ("filed on its own") — that was the doors'.
    `groundGroups` is dead code until step 6 of the build takes its callers out (reorder.ts, board.ts, daytpl.ts): what
    it answers meanwhile — every row its own — is pinned in one case, so a caller cannot be handed a group again.
 
@@ -28,7 +33,7 @@
 import { describe, expect, it } from 'vitest'
 import { entryIdOf } from './inputentry'
 import { requestRowFields, srcvOf } from './overlay'
-import { groundGroups, rowPeopleDrawn, drawnPeople } from './grouprows'
+import { groundGroups, rowPeopleDrawn, drawnPeople, inputRowSeveral } from './grouprows'
 import { PEOPLE } from './people'
 
 const base = { iid: 'a1', person: 'bane', type: 'Training', date: 'Jul 15', yr: 2026, allday: false, s: 660, e: 720, remarks: 'range' }
@@ -84,6 +89,25 @@ describe('what a request writes on its row — a whole copy of the input (D755, 
     const alone: any = requestRowFields(withPeople(['allavail']))
     expect([alone.who, 'more' in alone], 'filed for ALL AVAIL alone: the placeholder holds the name box').toEqual(['allavail', false])
   })
+  /* step 3 of the build (D750, D755): the placeholder is one of the people the request writes — ALL as ALL AVAIL, and
+     in the place it JOINED in, the name box included: the stored row is the order they joined, never the order drawn */
+  it('A PLACEHOLDER AMONG THEM is written where it joined — ALL as ALL AVAIL; joined first, it holds the name box with the people under it', () => {
+    expect(requestRowFields(withPeople(['bane', 'all', 'pike'])).more).toEqual(['all', 'pike'])
+    const first: any = requestRowFields(withPeople(['allavail', 'pike', 'bane']))
+    expect([first.who, first.more]).toEqual(['allavail', ['pike', 'bane']])
+    const last: any = requestRowFields(withPeople(['pike', 'bane', 'allavail']))
+    expect([last.who, last.more]).toEqual(['pike', ['bane', 'allavail']])
+  })
+  it('…and THE HASH MOVES WITH IT: put in, taken out, ALL for ALL AVAIL, the only person for it — so the re-make keeps the row saying what its input says', () => {
+    const two = srcvOf(withPeople(['bane', 'pike']))
+    const withIt = srcvOf(withPeople(['bane', 'pike', 'allavail']))
+    expect(withIt, 'ALL AVAIL joins').not.toBe(two)
+    expect(srcvOf(withPeople(['bane', 'pike', 'all'])), 'ALL is not ALL AVAIL').not.toBe(withIt)
+    expect(srcvOf(withPeople(['bane', 'allavail'])), 'a person leaves from beside it').not.toBe(withIt)
+    expect(srcvOf(withPeople(['allavail'])), 'the only person, for ALL AVAIL').not.toBe(srcvOf(withPeople(['bane'])))
+    expect(srcvOf(withPeople(['allavail', 'bane'])), 'and the first to join leaving — ALL AVAIL takes the name box').not.toBe(srcvOf(withPeople(['bane', 'allavail'])))
+    expect(srcvOf(withPeople(['bane', 'pike', 'allavail'])), 'steady: the same people, the same hash').toBe(withIt)
+  })
   it('an all-day input writes no times; its own title is the row’s name, the kind kept beside it', () => {
     const f: any = requestRowFields(withPeople(['bane', 'pike'], { allday: true, type: 'Meeting', title: 'Range safety brief' }))
     expect([f.prog, f.str, f.end, f.srcType]).toEqual(['RANGE SAFETY BRIEF', '', '', 'Meeting'])
@@ -135,6 +159,31 @@ describe('rowPeopleDrawn — the pucks of a row, the one answer every builder re
     expect(drawn(under, 0)).toEqual([`pike@${k(0)}`, `bane@${k(0, 1)}`, `allavail@${k(0, 0)}`])
     const first = { ground: [row('allavail', ['pike', 'bane'], { src: 'i1' })] }
     expect(drawn(first, 0)).toEqual([`pike@${k(0, 0)}`, `bane@${k(0, 1)}`, `allavail@${k(0)}`])
+  })
+  /* step 3 of the build: ALL is drawn as ALL AVAIL is; and the two orders are independent — the people keep their
+     A-to-Z order whatever place the placeholder joined in */
+  it('ALL is drawn last too; and one person beside a placeholder is drawn before it whichever of them joined first', () => {
+    expect(drawn({ ground: [row('pike', ['all', 'bane'], { src: 'i1' })] }, 0)).toEqual([`pike@${k(0)}`, `bane@${k(0, 1)}`, `all@${k(0, 0)}`])
+    expect(drawn({ ground: [row('bane', ['allavail'], { src: 'i1' })] }, 0)).toEqual([`bane@${k(0)}`, `allavail@${k(0, 0)}`])
+    expect(drawn({ ground: [row('allavail', ['bane'], { src: 'i1' })] }, 0)).toEqual([`bane@${k(0, 0)}`, `allavail@${k(0)}`])
+  })
+  /* OLD DATA: a row stored before the build could hold a placeholder twice (D278) or both of them; an input never does
+     (D753), and the re-make sweeps such a row at its first read — but the pure answer is asked of whatever it is
+     handed, and must not lose a puck or a key: both go last, in their stored order */
+  it('a stored row that carries two placeholders (old data — D278; an input holds one, D753): both drawn last, in stored order, each on its own key', () => {
+    const d = { ground: [row('allavail', ['pike', 'all', 'bane'], { src: 'i1' })] }
+    expect(drawn(d, 0)).toEqual([`pike@${k(0, 0)}`, `bane@${k(0, 2)}`, `allavail@${k(0)}`, `all@${k(0, 1)}`])
+  })
+  it('`inputRowSeveral` — which rows the week, the board and the peek draw through this answer: an input’s row holding more than one, a placeholder counted as one of them', () => {
+    expect(inputRowSeveral(row('bane', ['allavail'], { src: 'i1' })), 'a person and ALL AVAIL').toBe(true)
+    expect(inputRowSeveral(row('allavail', ['bane'], { src: 'i1' })), 'whichever joined first').toBe(true)
+    expect(inputRowSeveral(row('bane', ['pike'], { src: 'i1' }))).toBe(true)
+    expect(inputRowSeveral(row('allavail', undefined, { src: 'i1' })), 'ALL AVAIL alone is a row of one').toBe(false)
+    expect(inputRowSeveral(row('bane', undefined, { src: 'i1' }))).toBe(false)
+    expect(inputRowSeveral(row('bane', ['', ''], { src: 'i1' })), 'blank places are nobody').toBe(false)
+    expect(inputRowSeveral(row('bane', ['allavail'])), 'a row nobody filed is drawn as it always was').toBe(false)
+    expect(inputRowSeveral(row('bane', ['allavail'], { src: 'i1', kept: true })), 'and a dead `kept` row (D363)').toBe(false)
+    expect(inputRowSeveral(null)).toBe(false)
   })
   it('an input of one person, and one filed for ALL AVAIL alone: one puck, on the name box’s key', () => {
     expect(drawn({ ground: [row('bane', undefined, { src: 'i1' })] }, 0)).toEqual([`bane@${k(0)}`])

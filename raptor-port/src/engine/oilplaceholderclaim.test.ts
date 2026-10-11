@@ -31,17 +31,27 @@
    whose one `person` is the placeholder — is still read by "typed: yes; crowd: the filer's answer", off that day's own
    frozen row (oilev.ts legacyClaim / legacyDefault / legacyEarned). The last describe pins that.
 
-   In this step of the build the doors still refuse a placeholder beside named people (inputs.ts placeholderProblem —
-   the door opens in step 3), so a fixture that needs one puts the record straight into INPUTS. */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+   THE DOOR HAS OPENED (step 3 of the build, 12 Oct 26 — owner D750, D753, D755). In step 2 the doors still refused a
+   placeholder beside named people ("filed on its own" — inputs.ts placeholderProblem has lost that clause), so a
+   fixture that needed one put the record straight into INPUTS. That is still how this file states the RULE: each
+   fixture is exactly the record its case is about. The last describe drives the same rule through the row's door
+   (ui/reqdoor.ts rowPut) — a named man put on the row of an input filed for ALL AVAIL — for a Yes, a No and no
+   answer, with what the door itself says and asks (the plan §4.4, "OIL at the add"). */
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS, shapeProblem } from './inputs'
+import { INPUTS, shapeProblem, inpId, idsOf } from './inputs'
+import { PEOPLE } from './people'
 import { HOOKS } from './hooks'
 import { SCHED, dayApproved, setDayApproved, signOf, dayCurVer, daySnapOf } from './publish'
 import { ensureRowIds } from './rowids'
 import { envMin, uniformOil, inputItemKey } from './oil'
 import { oilEvidence, oilEvidenceOf, oilEarnedWork, spanDefault, claimDefault, earnsFrom, projectOilInputs, landedExtras, type OilEvidence } from './oilev'
 import { requestRowFields } from './overlay'
+import { initStore } from '../state/store'
+import { setSession, setMe, DEFAULT_ME } from '../state/auth'
+import { commitInput, draftOf } from '../ui/inputedit'
+import { rowPut, rowTake } from '../ui/reqdoor'
+import * as pops from '../ui/pops'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -337,5 +347,68 @@ describe('a day issued before the one-rule build keeps the OIL it went out with 
     expect(spanDefault(day, ev, 'stiff', ITEM), 'the crowd of a placeholder the scheduler dropped: yes').toBe(true)
     expect(spanDefault(day, ev, 'divot', ITEM)).toBe(true)
     expect(paid(day, ev)).toEqual(['divot', 'plasma', 'stiff'])
+  })
+})
+
+/* ---- THROUGH THE ROW'S DOOR (step 3 of the one-rule build, 12 Oct 26 — owner D750, D753, D755, D762) ----------------
+   "A man put on the row beside the placeholder is IN the input, and follows its ONE answer" is pinned above on a record
+   put straight in, because in step 2 the door refused the hand. It lets him join now, so the same three answers are
+   walked with the hand itself: what he earns, what the door SAYS (the plan §4.4: on a No the note ends "— not counted
+   for OIL") and what it ASKS (no answer: the question opens at once, for the INPUT). Kept last: the store is wired
+   here, and nothing above needs it. */
+describe('a named man put on the row of an input filed for ALL AVAIL, by the door: he joins, and follows its ONE answer (step 3; D753, D755 (1), D762)', () => {
+  const toast = HOOKS.toast
+  let SAID: string[] = []
+  beforeAll(() => { initStore() })
+  beforeEach(() => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff'); SAID = []; HOOKS.toast = (m: any) => { SAID.push(String(m)) } })
+  afterEach(() => { HOOKS.toast = toast; pops.setOilAsk(null); pops.setInpEdit(null); setSession(null); setMe(DEFAULT_ME) })
+  /* the weekend Duty of the fixtures above, 0900–1200, FILED for `ppl` by the input's one writer — its row lands from it */
+  const file = (ppl: string[], oil?: Record<string, number>): any => {
+    const had = new Set((INPUTS as any[]).map(r => String(inpId(r))))
+    expect(commitInput(null, draftOf({ person: ppl[0], type: 'Duty', date: 'Jul 18', yr: 2026, allday: false, s: 9 * 60, e: 12 * 60, remarks: '' }), ppl, oil ? { oil } : undefined), 'filed').toBe(true)
+    const made = (INPUTS as any[]).filter(r => !had.has(String(inpId(r))))
+    expect(made, 'ONE record').toHaveLength(1)
+    return made[0]
+  }
+  const add = (r: any) => `g:${SAT}.${(DAYS[SAT].ground || []).findIndex((g: any) => g && String(g.src) === String(inpId(r)))}.+`
+  const box = (r: any) => add(r).replace(/\.\+$/, '')
+
+  for (const [name, oil, got, said, asked] of [
+    ['Yes', YES, 'HO', '', false],
+    ['No', NO, null, ' — not counted for OIL', false],
+    ['no answer', undefined, null, '', true],
+  ] as Array<[string, any, any, string, boolean]>) {
+    it(`the input's answer being ${name}: ${got ? 'he earns, as the crowd does' : 'he does not, and neither does the crowd'}${asked ? ' — and the question is asked on the spot' : ''}`, () => {
+      const r = file(['allavail'], oil)
+      SAID = []
+      expect(rowPut(add(r), 'divot')).toBe('done')
+      expect(idsOf(r).map(String), 'he joined beside it').toEqual(['allavail', 'divot'])
+      expect(SAID.length, 'one note').toBe(1)
+      expect(SAID[0], 'his callsign, the input\'s name — and on a No that he is not counted').toBe(`${String((PEOPLE as any).divot.cs)} added to Duty${said}`)
+      expect(figure(SAT, 'divot')).toBe(got)
+      expect(figure(SAT, 'stiff'), 'the crowd: the same answer').toBe(got)
+      expect(paidNames(SAT)).toEqual(got ? ['bane', 'divot', 'plasma', 'stiff'] : [])
+      expect(pops.OILASK, asked ? 'no answer: the question opens at once, for the INPUT' : 'answered: nothing is asked').toBe(asked ? String(inpId(r)) : null)
+      const item = inputItemKey(String(inpId(r)))
+      const ev = oilEvidence(SAT), c = ev.inputs.find(i => i.iid === String(inpId(r)))!
+      expect(claimDefault(DAYS[SAT], ev, c, 'divot'), 'the one body, for the switch and the credit').toBe(!!got)
+      expect(spanDefault(DAYS[SAT], ev, 'divot', item)).toBe(!!got)
+    })
+  }
+
+  it('a man of the crowd put on by name counts ONCE, as himself — and ALL AVAIL taken off then leaves the input his alone', () => {
+    const r = file(['allavail'], YES)
+    const item = inputItemKey(String(inpId(r)))
+    expect(oilEvidence(SAT).sent[item]).toEqual(['bane', 'stiff', 'plasma'])
+    expect(rowPut(box(r), 'stiff'), 'on the placeholder\'s own puck: he joins, nobody is replaced').toBe('done')
+    expect(idsOf(r).map(String)).toEqual(['allavail', 'stiff'])
+    expect(oilEvidence(SAT).sent[item], 'named in it, so no longer one of its crowd').toEqual(['bane', 'plasma'])
+    expect(paidNames(SAT)).toEqual(['bane', 'plasma', 'stiff'])
+    const { d, ev } = dayAndEv(SAT)
+    expect(oilEarnedWork(d, ev).stiff.length, 'one span, not two').toBe(1)
+    expect(rowTake(box(r)), 'ALL AVAIL taken off its own name box').toBe('done')
+    expect(idsOf(r).map(String)).toEqual(['stiff'])
+    expect(paidNames(SAT), 'a Yes cannot conjure a crowd the input no longer stands for').toEqual(['stiff'])
+    expect(oilEvidence(SAT).sent[item]).toBeUndefined()
   })
 })

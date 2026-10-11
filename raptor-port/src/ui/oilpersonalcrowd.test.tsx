@@ -14,6 +14,13 @@
    (state/store.ts writeFill) — changes nothing and says why; the row draws no count chip, on the board and on the edit
    week; and inside OIL Earn the requester's own puck still says why it earns nothing.
 
+   STEP 3 OF THAT BUILD (12 Oct 26 — owner D750, D753, D755) made ALL AVAIL / ALL one of an input's own people on the
+   six kinds that may hold one. NOTHING OF THIS FILE'S RULE MOVED — a Personal input still holds none — but two things
+   around it did, and the cases say so: the refusal's SENTENCE is the plan's shorter one (§4.4's table: "ALL AVAIL is
+   for Training, Meeting, Appointment, Duty, Event and Other" — D726, D765; it read "… can be filed only for … or
+   Other"), and the refusal is now about the KIND alone, never about standing beside a man — so a control drops the
+   same puck on the same man's Training row, where it joins.
+
    jsdom has no layout engine: this proves the markup and the wiring; a real drag is walked in the browser. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
@@ -120,6 +127,9 @@ const snap = (di: number) => ({ inputs: JSON.stringify(INPUTS), row: JSON.string
 
 describe('ALL AVAIL / ALL dropped on a Personal request\'s row changes nothing (D755 (4), D712)', () => {
   for (const ph of ['allavail', 'all']) {
+    /* CHOICE 1 — THE RULE SURVIVES (D755 (4), D712: a Personal input holds no placeholder). Only its sentence changed,
+       with step 3: the one body (engine/inputs.ts placeholderProblem) says the plan's shorter words (§4.4; D726, D765)
+       — "ALL AVAIL is for …", where it said "ALL AVAIL can be filed only for … or Other". Said ONCE, and nothing else. */
     it(`${ph} — THE DROP, on its "+ add" and on the man's own puck: refused, saying why`, async () => {
       await filed(TUE)
       const was = snap(TUE)
@@ -129,7 +139,8 @@ describe('ALL AVAIL / ALL dropped on a Personal request\'s row changes nothing (
         let took: boolean | undefined
         await act(async () => { took = applyDrop(el, 0, 0); notify() })
         expect(took, 'the drop is refused').toBe(false)
-        expect(SAID.join(' | '), 'with the reason on screen').toContain(`${cs(ph)} can be filed only for Training, Meeting, Appointment, Duty, Event or Other`)
+        expect(SAID, 'with the reason on screen — the one sentence, once').toEqual([`${cs(ph)} is for Training, Meeting, Appointment, Duty, Event and Other`])
+        expect(SAID.join(' '), 'never the sentence step 3 retired').not.toMatch(/filed on its own|can be filed only/)
         asItWas(TUE, was)
       }
     })
@@ -146,6 +157,29 @@ describe('ALL AVAIL / ALL dropped on a Personal request\'s row changes nothing (
       })
       asItWas(TUE, was)
       expect(JSON.stringify(SCHED.pending), 'and no mark was raised').toBe('{}')
+    })
+  }
+
+  /* THE CONTROL, NEW WITH STEP 3 (D750, D753, D755): it is the KIND that refuses — the same puck, dropped the same way
+     on the same man's row, joins where the input is one of the six kinds. Without this the refusals above would pass
+     just as well on a build that still refused every placeholder beside a man. */
+  for (const ph of ['allavail', 'all']) {
+    it(`${ph} — THE CONTROL: the same drop on the same man's TRAINING row joins the input, and its row wears the count`, async () => {
+      await act(async () => {
+        expect(commitInput(null, draftOf({ person: 'ignite', type: 'Training', date: 'Jul 14', yr: 2026,
+          allday: false, s: 9 * 60, e: 17 * 60, remarks: '' }), ['ignite']), 'filed').toBe(true)
+        notify()
+      })
+      setDrag({ kind: 'roster', id: ph })
+      let took: boolean | undefined
+      await act(async () => { took = applyDrop(cellEl(`${rowKey(TUE)}.+`), 0, 0); notify() })
+      expect(took, 'the drop is taken').not.toBe(false)
+      expect(idsOf(rec()).map(String), 'it is one of the input\'s people now, beside him').toEqual(['ignite', ph])
+      expect(String(placeholderOf(rec()).p)).toBe(ph)
+      expect([rowOf(TUE).who, rowOf(TUE).more], 'and stands on its row').toEqual(['ignite', [ph]])
+      expect(SAID.join(' | ')).toContain(`${cs(ph)} added to`)
+      await open(TUE)
+      expect(groundRowEl().querySelector('.oilcount'), 'the board: the count chip, on a weekday too (D27)').toBeTruthy()
     })
   }
 })

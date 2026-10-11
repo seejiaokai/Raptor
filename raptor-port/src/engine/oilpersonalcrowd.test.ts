@@ -11,7 +11,13 @@
    · every kind that MAY hold one asks the OIL question, so the crowd of any placeholder is written down by the asking
      half of the day's record (oilsent.test.ts, oilclaimcrowd.test.ts) — the non-asking half had this one case;
    · and such a record, if it were forced in, projects no claim and earns nobody anything (D43: like named people — a
-     named man on a Personal row never earned either). */
+     named man on a Personal row never earned either).
+
+   STEP 3 OF THAT BUILD (12 Oct 26 — owner D750, D753, D755) let a placeholder be ONE OF an input's people on the six
+   kinds. Nothing here moved but the words and the reason: the one body says the plan's shorter sentence (§4.4 —
+   "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other"; D726, D765), and a placeholder beside a
+   man on a Personal input is refused for its KIND — the clause "filed on its own" is gone, so the control beside it
+   is the same pair on a Training, which is sound. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS, PLACEHOLDER_KINDS, oilAsks, placeholderProblem, shapeProblem } from './inputs'
@@ -43,14 +49,26 @@ const personal = (ids: string[], over: any = {}) => ({ iid: 'rq1', type: 'Person
   allday: false, s: 9 * 60, e: 17 * 60, remarks: '', mod: 'now', by: 'ignite', people: ids.map(p => ({ p })), ...over })
 
 describe('a Personal input never holds ALL AVAIL / ALL (D712, D753, D755 (4))', () => {
+  /* CHOICE 1 — THE RULE SURVIVES (D712, D755 (4)); its sentence is the one step 3 gave the one body (the plan §4.4's
+     table; D726, D765) — it read "… can be filed only for Training, Meeting, Appointment, Duty, Event or Other". */
   it('the write refuses it — the placeholder alone, beside its man, and in a record of the old shape', () => {
     for (const ph of ['allavail', 'all']) {
-      expect(placeholderProblem(personal([ph])), ph).toMatch(/can be filed only for/i)
-      expect(shapeProblem(personal([ph])), ph).toMatch(/can be filed only for/i)
-      expect(shapeProblem(personal(['ignite', ph])), `${ph} beside its man`).not.toBe('')
-      expect(placeholderProblem({ ...personal([]), people: undefined, person: ph }), `${ph}, the old shape`).toMatch(/can be filed only for/i)
+      const why = `${ph === 'all' ? 'ALL' : 'ALL AVAIL'} is for Training, Meeting, Appointment, Duty, Event and Other`
+      expect(placeholderProblem(personal([ph])), ph).toBe(why)
+      expect(shapeProblem(personal([ph])), ph).toBe(why)
+      expect(shapeProblem(personal(['ignite', ph])), `${ph} beside its man: the placeholder's own rule is said first`).toBe(why)
+      expect(placeholderProblem({ ...personal([]), people: undefined, person: ph }), `${ph}, the old shape`).toBe(why)
     }
     expect(shapeProblem(personal(['ignite'])), 'THE CONTROL: one man\'s own Personal input is fine').toBe('')
+  })
+
+  /* NEW WITH STEP 3 (D750, D753, D755): it is the KIND that refuses, never the company — the same man and placeholder
+     in one of the six kinds is a sound input, and no sentence anywhere says "filed on its own" */
+  it('THE CONTROL: the same man beside the same placeholder on a Training is sound — the refusal is about Personal', () => {
+    for (const ph of ['allavail', 'all']) {
+      expect(shapeProblem(personal(['ignite', ph], { type: 'Training' })), ph).toBe('')
+      expect(shapeProblem(personal(['ignite', ph])), ph).not.toMatch(/filed on its own/)
+    }
   })
 
   it('every kind that MAY hold one asks the OIL question — Personal is not among them, and does not ask', () => {

@@ -95,14 +95,34 @@ describe('what one input may hold — held at the write (the plan §4.1; D753, D
     expect(shapeProblem(several(['bane', 'plasma'], { type: 'Personal' }))).toMatch(/one person/i)
     expect(shapeProblem(several(['bane'], { type: 'Personal' }))).toBe('')
   })
+  /* THE RULES SURVIVE; THEIR WORDS CHANGED in step 3 of the build (the plan §4.4 — D726, as short as is still understood):
+     "can be filed only for … or Other" is "is for … and Other", "is filed one day at a time" is "is for one day". The
+     whole sentences are pinned now — a pattern would have let the next rewording through unread. */
   it('a placeholder input keeps its rules in the new shape — six kinds, one day, never under Unavailable', () => {
     expect(placeholderProblem(several(['allavail']))).toBe('')
-    expect(placeholderProblem(several(['allavail'], { type: 'LL' }))).toMatch(/can be filed only for/i)
-    expect(placeholderProblem(several(['allavail'], { endDate: 'Jul 19' }))).toMatch(/one day at a time/i)
+    expect(placeholderProblem(several(['allavail'], { type: 'LL' }))).toBe('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+    expect(placeholderProblem(several(['allavail'], { endDate: 'Jul 19' }))).toBe('ALL AVAIL is for one day')
     expect(placeholderProblem(several(['allavail'], { acc: 'u' }))).toMatch(/Unavailable/)
-    expect(shapeProblem(several(['allavail'], { type: 'LL' }))).toMatch(/can be filed only for/i)
-    /* two placeholders never stand in one input (D753: "an input takes ALL or ALL AVAIL, never both") */
-    expect(shapeProblem(several(['allavail', 'all']))).not.toBe('')
+    expect(shapeProblem(several(['allavail'], { type: 'LL' }))).toBe('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+    /* two placeholders never stand in one input (D753: "an input takes ALL or ALL AVAIL, never both") — in the plan's
+       sentence, naming the one that is already in it */
+    expect(shapeProblem(several(['allavail', 'all']))).toBe('This input already has ALL AVAIL')
+    expect(shapeProblem(several(['all', 'allavail']))).toBe('This input already has ALL')
+  })
+  /* STEP 3 (owner D750, D753, D755 — the plan §4.1): the invariant "a placeholder is filed on its own" left the list. In
+     the new shape a placeholder is ONE ENTRY of the list like any other — and the old shape, which holds one `person`,
+     can only ever be a placeholder alone, so it reads as it always did. */
+  it('a placeholder beside named people breaks nothing; each of its rules still bars the whole input', () => {
+    expect(shapeProblem(several(['plasma', 'bane', 'allavail']))).toBe('')
+    expect(shapeProblem(several(['all', 'plasma']))).toBe('')
+    expect(shapeProblem(several(['plasma', 'allavail'], { endDate: 'Jul 19' }))).toBe('ALL AVAIL is for one day')
+    expect(shapeProblem(several(['plasma', 'bane'], { endDate: 'Jul 19' })), 'the same input without it runs two days').toBe('')
+    expect(shapeProblem(several(['plasma', 'allavail'], { type: 'OD' }))).toBe('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+    expect(shapeProblem(several(['plasma', 'bane'], { type: 'OD' }))).toBe('')
+    /* a medical kind: the placeholder's own rule is said first, as at every door — never the document sentence */
+    expect(shapeProblem(several(['plasma', 'allavail'], { type: 'OML' }))).toBe('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+    /* a named person twice is still refused with a placeholder in it */
+    expect(shapeProblem(several(['bane', 'allavail', 'bane']))).toMatch(/already on this input/i)
   })
 })
 

@@ -32,8 +32,11 @@
    - "a man whose own record is changed alone is his own row again — the rows are honestly drawn apart" (D735) — there
      is no record of his own to change;
    - "a one-man request with ALL AVAIL in its name box, made a group: … ALL AVAIL among its extras, nothing dropped"
-     (D46, D745) — a placeholder no longer rides one man's place: D745 is set aside by D755, and ALL AVAIL as one of an
-     input's people is step 3 of the build; here as R6 (it comes off);
+     (D46, D745) — a placeholder no longer rides one man's place: D745 is set aside by D755. Here TWICE since step 3 of
+     the build (12 Oct 26; D750, D753, D755, D757), which makes ALL AVAIL one of an input's own people: as R6 for a row
+     STORED BEFORE the build whose placeholder is not in its input (old data — it comes off), and, in the block "ALL
+     AVAIL / ALL is one of the people the row follows", as the rule stands now for one that IS in the input — it is
+     kept, whoever joins or leaves beside it;
    - "a scheduler's man in the name box, his OIL refused, then made one of the people: he stands on his OWN row" and
      "…and Undo of that save" (D470 as changed by D755) — there is no row of his own: here he joins the one row, once;
    - "a man standing among a member's extras who is made one of the people comes off the extras" — the row has no
@@ -261,7 +264,123 @@ describe('the row follows who is in the input — the same row, never another (D
   }
 })
 
+/* ==== ALL AVAIL / ALL IS ONE OF THE PEOPLE THE ROW FOLLOWS (step 3 of the one-rule build, 12 Oct 26). His rulings:
+   D750 — the puck "is one of the input's own people and is tied to no man"; D755 — whoever stands on the row, "a named
+   person or ALL AVAIL / ALL, whoever put them there", is in the input; D757 — "ALL AVAIL stays when anyone leaves";
+   D753 — one of them, once. The plan §4.3: `who` is the first to join STILL IN IT, `more` the rest in joined order —
+   "a placeholder is one of them". Each case says which of four it is: (1) the rule survives on a rebuilt fixture;
+   (2) a named ruling changed the rule; (3) old data; (4) the subject is gone. ==== */
+describe('ALL AVAIL / ALL is one of the people the row follows — the same row, kept as the input changes (D750, D755, D757; the plan §4.3)', () => {
+  const A = 'allavail'
+  /* (1) "an input filed for three: ONE row … and the same row after a reload" — with a placeholder among the three */
+  it('an input filed for two people and ALL AVAIL: ONE row, the placeholder under the name box where it joined — and the same row after a reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    file(['rocky', A, 'pike'])
+    expect(ground().filter((g: any) => g && g.src === iidOf()), 'one row').toHaveLength(1)
+    expect(people()).toEqual(['rocky', A, 'pike'])
+    expect([rowOf().who, rowOf().more]).toEqual(['rocky', [A, 'pike']])
+    const rid = rowOf().rid
+    await reload(be)
+    expect(people(), 'after a reload: still in the input').toEqual(['rocky', A, 'pike'])
+    expect([rowOf().who, rowOf().more, rowOf().rid], 'and on the very row').toEqual(['rocky', [A, 'pike'], rid])
+  })
+
+  /* (2) the old file's "a one-man request with ALL AVAIL in its name box, made a group: its man is in the name box, ALL
+     AVAIL among its extras, nothing dropped … the switches made under it are where they were" (D46, D745). D755: the
+     placeholder is put IN the one-person input, by the row's door, and stands beside its man; a person added
+     afterwards joins after both. What the case pinned survives: nothing is dropped, the row is the same row, and what
+     the scheduler switched off under the input for the day is where it was. */
+  it('a one-person request with ALL AVAIL put on its row, then a person added in its window: the SAME row holds all three, nothing dropped — the day’s OIL switches where they were; after a reload too', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    fileOne('bane', 'Solo check')
+    const rid = rowOf('Solo check').rid, iid = iidOf('Solo check')
+    expect(rowPut(`${rowKey('Solo check')}.+`, A), 'the row’s door').toBe('done')
+    expect(people('Solo check'), 'IN the input, beside its man').toEqual(['bane', A])
+    expect([rowOf('Solo check').who, rowOf('Solo check').more]).toEqual(['bane', [A]])
+    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[WED] as any).oild = { people: { [`plasma|i:${iid}`]: 'deny' } }; afterSchedMutate() })
+    setPeople(['bane', A, 'pike'], 'Solo check')
+    expect([rowOf('Solo check').who, rowOf('Solo check').more], 'the man added stands after both').toEqual(['bane', [A, 'pike']])
+    expect(rowOf('Solo check').rid, 'the same row').toBe(rid)
+    expect((DAYS[WED] as any).oild.people, 'the switch made under it is where it was').toEqual({ [`plasma|i:${iid}`]: 'deny' })
+    await reload(be)
+    expect([onRow('Solo check'), rowOf('Solo check').rid], 'a reload agrees').toEqual([['bane', A, 'pike'], rid])
+  })
+
+  /* (2) D745 — "comes off with the man whose place it stood on" — is set aside by D755; D757: it STAYS. And the plan's
+     "the first to join leaves: the next takes the name box" holds for a placeholder as for a person: where it is the
+     next to have joined, it holds the name box. */
+  it('a person taken out leaves ALL AVAIL standing; the FIRST to join taken out, and ALL AVAIL — the next to have joined — holds the name box; the same row throughout', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    file(['bane', A, 'pike', 'split'])
+    mark({ flag: true })
+    const rid = rowOf().rid, at = riOf()
+    expect(rowTake(keyOf('pike')), 'a person from under it').toBe('done')
+    expect(onRow()).toEqual(['bane', A, 'split'])
+    expect(rowTake(keyOf('bane')), 'the first to join').toBe('done')
+    expect([rowOf().who, rowOf().more], 'the placeholder holds the name box').toEqual([A, ['split']])
+    expect(people()).toEqual([A, 'split'])
+    expect(rowTake(keyOf('split')), 'the last named person — ALL AVAIL is not the last on the row while he stands').toBe('done')
+    expect(rowOf().who).toBe(A)
+    expect('more' in rowOf(), 'down to one: nothing is kept under the name box').toBe(false)
+    expect([rowOf().rid, riOf(), rowOf().flag], 'the same row, its red box kept').toEqual([rid, at, true])
+    await reload(be)
+    expect([onRow(), rowOf().rid]).toEqual([[A], rid])
+  })
+
+  /* (1) "Accept after ✕ brings the row back with everyone on it" (D114) and "back where the published version had it,
+     so nothing is waiting" (D98) — everyone includes the placeholder, and the men behind it come back as they went */
+  it('✕ and Accept, and Undo of a ✕: the row is back with everyone on it, ALL AVAIL among them; on a published day nothing is waiting (D98)', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', A, 'pike'])
+    off()
+    expect(riOf(), '✕: the row goes').toBe(-1)
+    expect(people(), 'and its people, the placeholder with them, stay in the input').toEqual(['bane', A, 'pike'])
+    on()
+    expect(onRow(), 'Accept').toEqual(['bane', A, 'pike'])
+    const rid = rowOf().rid
+    off()
+    globalUndo()
+    expect([onRow(), rowOf().rid], 'Undo of the ✕: the very row').toEqual([['bane', A, 'pike'], rid])
+    publish(WED)
+    expect(dayShownPendCount(WED)).toBe(0)
+    off()
+    expect(dayShownPendCount(WED), 'taken off: something is waiting').toBeGreaterThan(0)
+    on()
+    expect(onRow(), 'everyone on it, as published').toEqual(['bane', A, 'pike'])
+    expect(dayShownPendCount(WED), 'back to what was published').toBe(0)
+  })
+
+  /* (3) OLD DATA — the plan's R6, for a row stored before the build that carries BOTH a stray and a placeholder: what is
+     in the input is kept, what is not comes off. (The step-2 cases below are the same rule where the placeholder
+     itself is the stray: an old row's ALL AVAIL was never in its input.) */
+  it('a row stored before the build, its input holding ALL AVAIL: re-made whole — the placeholder IN the input is kept, a stray man under it comes off, and nobody stands twice', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', 'split', A])
+    asStoredBefore('bane', ['split', A, 'pike', A])        // a stray man, and the placeholder a second time (D278 let it stand twice on a row)
+    expect(onRow(), 're-made: exactly the input’s people').toEqual(['bane', 'split', A])
+    setPeople(['bane', 'split', A, 'pike'])
+    expect(onRow(), 'the man now in the input stands once (D271)').toEqual(['bane', 'split', A, 'pike'])
+    expect(onRow()).toEqual(people())
+  })
+
+  /* (1) "a saved day template takes one row for the input's row and nothing of the request" — its people are the
+     request's, the placeholder among them */
+  it('a day template saved from a day whose input’s row holds ALL AVAIL takes one row for it and none of its people — not the placeholder either', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', A])
+    const rows = tplFromDay(WED, 't').d.ground.filter((r: any) => r.prog === TITLE.toUpperCase())
+    expect(rows).toHaveLength(1)
+    expect([rows[0].who, (rows[0].more || []).filter(Boolean)]).toEqual(['', []])
+    expect('src' in rows[0] || 'srcv' in rows[0], 'no link to the request').toBe(false)
+  })
+})
+
 describe('a row made before the build is re-made once, whole — whoever stood on it without being in the input comes off (the plan’s R6)', () => {
+  /* (3) OLD DATA, kept as a legacy case: the row is as a day STORED BEFORE the build carries it — its placeholder was
+     the row's own (D46) and never in the input. A placeholder that IS in the input is kept (the block above). */
   it('ALL AVAIL in the name box of a one-person request’s row: the request’s own person is back in it, the placeholder gone — and the input holds him alone', async () => {
     const be = new MemoryBackend()
     await boot(be)

@@ -21,10 +21,15 @@
    holds (ui/inputedit.tsx commitInput) and its row lands from it; a hand on the row goes through its door
    (ui/reqdoor.ts).
 
-   WHAT WAITS FOR THE NEXT STEP OF THE BUILD (D753): a placeholder BESIDE named people on one row. In this step the
-   doors still refuse it — "ALL AVAIL is filed on its own" — so the crowd's drawing, counting and tapping are proven
-   here on the nearest thing that is true now, an input filed for ALL AVAIL alone; "the requester keeps his puck on the
-   row beside the placeholder" comes back with step 3.
+   A PLACEHOLDER BESIDE NAMED PEOPLE ON ONE ROW — BACK SINCE STEP 3 OF THAT BUILD (12 Oct 26; owner D750, D753, D755,
+   D757). In step 2 the doors still refused it ("ALL AVAIL is filed on its own" — a sentence that is gone), so the
+   crowd's drawing, counting and tapping were proven on the nearest thing then true, an input filed for ALL AVAIL
+   alone, and three cases said "the requester beside the placeholder needs the next step". The doors make that row
+   now, so each of those cases is back on the row it was written for — "the requester keeps his puck on the row beside
+   the placeholder", "a tap in the window leaves the requester untouched", the all-day request — the fixture rebuilt
+   through the input's own writer; the stand-in cases for ALL AVAIL alone are kept beside them, because they are true
+   too. What did change under them is WHY the crowd earns: no longer "by default yes" (D46) but on the input's ONE
+   answer (D753, D762) — said where a case leans on it.
 
    jsdom has no layout engine, so what this proves is the markup and the wiring;
    what it LOOKS like is the walk of the running app. */
@@ -36,13 +41,15 @@ import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, idsOf } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
-import { SCHED } from '../engine/publish'
+import { SCHED, signOf, dayApproved, dayCurVer, daySnapOf, dayPendingItems } from '../engine/publish'
 import { ensureRowIds } from '../engine/rowids'
 import { inputItemKey } from '../engine/oil'
+import { oilEvidence, oilEvidenceOf, oilEarnedWork } from '../engine/oilev'
+import { commitSetDayApproved } from '../state/sched-commit'
 import { openScheduler } from './board'
-import { setOilDay } from '../state/view'
+import { setOilDay, afterSchedMutate } from '../state/view'
 import { commitInput, draftOf } from './inputedit'
-import { rowPut } from './reqdoor'
+import { rowPut, rowTake } from './reqdoor'
 import { setOilAsk, setInpEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -104,6 +111,9 @@ const rowIx = () => ((DAYS[SAT] as any).ground || []).findIndex((g: any) => g &&
 const rowOf = () => (DAYS[SAT] as any).ground[rowIx()]
 const rowKey = () => `g:${SAT}.${rowIx()}`
 const YES = { [SAT_ISO]: 1 }
+/* who earns FROM THIS INPUT on the working copy — the seed Saturday carries flying and duty work of its own */
+const paid = () => Object.entries(oilEarnedWork(DAYS[SAT], oilEvidence(SAT)))
+  .filter(([, spans]) => (spans as any[]).some(w => String(w.item || '') === item())).map(([p]) => p).sort()
 
 /* a Training on the Saturday, FILED for the people it holds — its row lands from it (D755). `people` is whoever it is
    for: named people, or ALL AVAIL alone */
@@ -118,11 +128,41 @@ const filed = async (people: string[], over: any = {}, oil: Record<string, numbe
 describe('the crowd on a request row is drawn, and every man in it is tappable', () => {
   /* [ALL-AVAIL-WINDOW] (D38) — the crowd behind a placeholder moved OUT of the
      row and into the window. A REQUEST ROW is its own seat kind and gets its own
-     mark in the roll-call: the placeholder keeps its puck on the row with its
-     counter, and the counter is the door to the men it stands for.
-     (Until step 3 of the one-rule build the placeholder stands on such a row ALONE — an input filed for ALL AVAIL;
-     "the requester stays on the row beside it" needs the next step, see the head of this file.) */
-  it('ALL AVAIL filed on its own keeps its puck and its counter on the row — and the counter is the door (beside a named requester: the next step)', async () => {
+     mark in the roll-call: the requester keeps his puck on the row where he
+     always was, the placeholder beside him keeps its counter, and the counter is
+     the door to the men it stands for. */
+  /* CHOICE 1 — THE RULE SURVIVES; the fixture is rebuilt. On main this was "the requester stays on the row; the
+     placeholder keeps its counter", on a row written by hand (bane's request, ALL AVAIL in its extras). In step 2 no
+     door could make that row and the case shrank to ALL AVAIL alone (kept, next). Since step 3 the input is FILED for
+     the two (D750, D755) and the case is whole again. What moved under it: the crowd is lit because the input's ONE
+     answer is Yes (D753, D762), no longer by default (D46). */
+  it('the requester stays on the row; the placeholder beside him keeps its counter — and the counter is the door', async () => {
+    await filed(['bane', 'allavail'])
+    expect([rowOf().who, rowOf().more], 'the row is the input, whole (D755)').toEqual(['bane', ['allavail']])
+    await open(SAT)
+    await click(oilBtn())
+    const el = groundRowEl()
+    expect(el.querySelector('.puck.allavail'), 'the placeholder STAYS a placeholder now').toBeTruthy()
+    const seats = [...el.querySelectorAll('.seat.oilpk')] as HTMLElement[]
+    expect(seats.map(s => s.dataset.oilp).filter(Boolean), 'the man who filed it keeps his own puck — and his is the only man\'s switch on the row').toEqual(['bane'])
+    const own = seats.find(s => s.dataset.oilp === 'bane')!
+    expect(own.classList.contains('inert'), 'and he may not be inert — the credit pass is crediting him').toBe(false)
+    expect(own.classList.contains('on'), 'the input\'s Yes is his').toBe(true)
+    const chip = el.querySelector('.oilcount') as HTMLElement
+    expect(chip, 'the placeholder has a counter — this IS the door').toBeTruthy()
+    expect((chip.textContent || '').trim(), 'it counts the men behind the puck — never the requester beside it').toBe('2')
+    await click(chip)
+    const w = $('.availwin')
+    expect(w, 'and it opens the window').toBeTruthy()
+    const inWin = ([...w.querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    expect(inWin.map(s => s.dataset.oilp).sort(), 'the two he stands beside').toEqual(['plasma', 'stiff'])
+    expect(inWin.filter(s => s.classList.contains('inert')).length,
+      'NONE of them may be inert — the credit pass is crediting them').toBe(0)
+    expect(w.textContent || '', 'the window counts the crowd alone').toContain('2 of 2')
+  })
+
+  /* (step 2's stand-in for the case above — true then and true now, so it stays: an input filed for ALL AVAIL alone) */
+  it('ALL AVAIL filed on its own keeps its puck and its counter on the row — and the counter is the door', async () => {
     await filed(['allavail'])
     await open(SAT)
     await click(oilBtn())
@@ -141,16 +181,49 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
       'NONE of them may be inert — the credit pass is crediting them').toBe(0)
   })
 
-  it('the row does not claim nothing on it can earn', async () => {
-    await filed(['bane'])
+  /* CHOICE 1 — THE RULE SURVIVES. On main this was asked of the row holding the requester AND the placeholder; step 2
+     could only ask it of a one-man request. Both are asked now: neither row may say nothing on it can earn, and each
+     points at the puck there is to tap. (What the name says of the COUNT on a row holding both is not pinned here —
+     reported with this re-expression, not ruled.) */
+  for (const ppl of [['bane', 'allavail'], ['bane']]) {
+    it(`the row does not claim nothing on it can earn (${ppl.length > 1 ? 'the requester and ALL AVAIL' : 'a one-man request'})`, async () => {
+      await filed(ppl)
+      await open(SAT)
+      await click(oilBtn())
+      const cell = groundRowEl().querySelector('.oilitem') as HTMLElement
+      expect(cell.title, 'a request is switched person by person, not by a row switch').toContain('tap a puck on this row')
+      expect(cell.dataset.oilitem, 'a request offers no whole-row switch').toBeUndefined()
+      expect(cell.title).not.toContain('Nothing on this row can earn')
+    })
+  }
+
+  /* CHOICE 1 — THE RULE SURVIVES; the fixture is rebuilt, and the half that waited for step 3 is back: the REQUESTER,
+     who is on the row rather than in the window, is untouched by a tap in the window. */
+  it('tapping one man in the window takes HIM off and leaves the rest alone — the requester on the row too', async () => {
+    await filed(['bane', 'allavail'])
     await open(SAT)
     await click(oilBtn())
-    const cell = groundRowEl().querySelector('.oilitem') as HTMLElement
-    expect(cell.title, 'a request is answered per person, not by a row switch').toContain('tap a puck on this row')
-    expect(cell.title).not.toContain('Nothing on this row can earn')
+    await click(groundRowEl().querySelector('.oilcount'))
+    const inWin = () => ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    await click(inWin().find(s => s.dataset.oilp === 'plasma')!.querySelector('.puck'))
+    expect((DAYS[SAT] as any).oild.people[`plasma|${item()}`], 'a decision about that one man').toBe('deny')
+    expect(inWin().find(s => s.dataset.oilp === 'plasma')!.classList.contains('off'), 'he is off').toBe(true)
+    expect(inWin().find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'the other man is untouched').toBe(true)
+    expect(Object.keys((DAYS[SAT] as any).oild.people), 'and nothing was written about anybody else').toEqual([`plasma|${item()}`])
+    /* and the REQUESTER, who is on the row rather than in the window, is untouched too — he earns from the input he
+       is named in, on its answer (D762) */
+    const onRow = ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    expect(onRow.find(s => s.dataset.oilp === 'bane')!.classList.contains('on'), 'and so is the requester').toBe(true)
+    expect(paid(), 'the credit says the same').toEqual(['bane', 'stiff'])
+    /* …and the other way: the requester tapped on the ROW is a decision about him alone — the window does not move */
+    await click(onRow.find(s => s.dataset.oilp === 'bane')!.querySelector('.puck'))
+    expect((DAYS[SAT] as any).oild.people[`bane|${item()}`]).toBe('deny')
+    expect(inWin().find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'the crowd man still on').toBe(true)
+    expect(paid()).toEqual(['stiff'])
   })
 
-  it('tapping one man in the window takes HIM off and leaves the rest alone', async () => {
+  /* (step 2's stand-in, kept: the same tap where ALL AVAIL stands alone) */
+  it('…and where ALL AVAIL was filed on its own: one man off, nobody else written about', async () => {
     await filed(['allavail'])
     await open(SAT)
     await click(oilBtn())
@@ -161,19 +234,93 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
     expect(inWin().find(s => s.dataset.oilp === 'plasma')!.classList.contains('off'), 'he is off').toBe(true)
     expect(inWin().find(s => s.dataset.oilp === 'stiff')!.classList.contains('on'), 'the other man is untouched').toBe(true)
     expect(Object.keys((DAYS[SAT] as any).oild.people), 'and nothing was written about anybody else').toEqual([`plasma|${item()}`])
-    /* (the REQUESTER on the row beside the placeholder, untouched by a tap in the window, needs the next step: no door
-       stands a named man beside ALL AVAIL yet) */
   })
 
-  it('AN ALL-DAY REQUEST still reaches its crowd — the row carries no times at all', async () => {
-    await filed(['allavail'], { allday: true, s: 0, e: 0 })
-    expect([rowOf().str, rowOf().end], 'an all-day request lands a row with no times').toEqual(['', ''])
+  /* CHOICE 1 — THE RULE SURVIVES; on main this was bane's all-day request with ALL AVAIL under it, and it is again */
+  for (const ppl of [['bane', 'allavail'], ['allavail']]) {
+    it(`AN ALL-DAY REQUEST still reaches its crowd — the row carries no times at all (${ppl.length > 1 ? 'a named man and ALL AVAIL' : 'ALL AVAIL alone'})`, async () => {
+      await filed(ppl, { allday: true, s: 0, e: 0 })
+      expect([rowOf().str, rowOf().end], 'an all-day request lands a row with no times').toEqual(['', ''])
+      await open(SAT)
+      await click(oilBtn())
+      await click(groundRowEl().querySelector('.oilcount'))
+      const inWin = ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
+      expect(inWin.map(s => s.dataset.oilp).sort(), 'the REQUEST window resolves the crowd, not the row window')
+        .toEqual(['plasma', 'stiff'])
+    })
+  }
+
+  /* A CROWD CHANGE ON A ROW HOLDING BOTH (waiting for step 3 — the plan §10). Who stands behind the puck is worked out
+     live (D702): a man of the crowd who becomes busy drops out of it. On a row that holds the requester AND the
+     placeholder that moves the counter and the window, and nothing else — the requester is in the input by name, and
+     is no part of the crowd that changed. */
+  it('a man drops out of the crowd on a row holding the requester and ALL AVAIL: the counter and the window follow; the requester does not move', async () => {
+    await filed(['bane', 'allavail'])
     await open(SAT)
     await click(oilBtn())
-    await click(groundRowEl().querySelector('.oilcount'))
-    const inWin = ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
-    expect(inWin.map(s => s.dataset.oilp).sort(), 'the REQUEST window resolves the crowd, not the row window')
-      .toEqual(['plasma', 'stiff'])
+    const chip = () => groundRowEl().querySelector('.oilcount') as HTMLElement
+    await click(chip())
+    const inWin = () => ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    expect((chip().textContent || '').trim()).toBe('2')
+    await act(async () => { HOOKS.oilSentinel = () => ['stiff']; afterSchedMutate(); notify() })
+    expect((chip().textContent || '').trim(), 'the counter').toBe('1')
+    expect(inWin().map(s => s.dataset.oilp), 'the window').toEqual(['stiff'])
+    const own = ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).find(s => s.dataset.oilp === 'bane')!
+    expect(own.classList.contains('on'), 'the requester is still on, on the row').toBe(true)
+    expect(paid()).toEqual(['bane', 'stiff'])
+    /* …and the requester HIMSELF becoming free changes nothing: he is in the input as himself, never in its crowd */
+    await act(async () => { HOOKS.oilSentinel = () => ['bane', 'stiff', 'plasma']; afterSchedMutate(); notify() })
+    expect((chip().textContent || '').trim(), 'counted behind the puck: the two who are not named in it').toBe('2')
+    expect(inWin().map(s => s.dataset.oilp).sort()).toEqual(['plasma', 'stiff'])
+    expect($$('#sbBoard .sb-panel.grnd [data-oilp="bane"]'), 'one switch for him — on the row').toHaveLength(1)
+    const work = oilEarnedWork(DAYS[SAT], oilEvidence(SAT))
+    expect((work.bane || []).filter((w: any) => String(w.item) === item()), 'and one credit').toHaveLength(1)
+  })
+
+  /* HIS WALK-THROUGH, STEP 4, ON SCREEN (owner D757, 11 Oct 26 — design note §7: "The scheduler drags Ranger off.
+     Schedule: [Tally] [ALL AVAIL 35] … ALL AVAIL STAYS, its switch-offs intact; Ranger is free now, so the count rises
+     by one"). Until the one-rule build ALL AVAIL came off WITH Ranger (D745, set aside by D755). */
+  it('D757 step 4 — the requester dragged off a row holding him, another man and ALL AVAIL: ALL AVAIL stays, its switch-off intact, and the count rises by one', async () => {
+    /* Ranger is free on the Saturday when nothing holds him */
+    HOOKS.oilSentinel = () => ['bane', 'stiff', 'plasma']
+    await filed(['bane', 'divot', 'allavail'])
+    await open(SAT)
+    await click(oilBtn())
+    const chip = () => groundRowEl().querySelector('.oilcount') as HTMLElement
+    const inWin = () => ([...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[])
+    await click(chip())
+    await click(inWin().find(s => s.dataset.oilp === 'plasma')!.querySelector('.puck'))
+    expect((chip().textContent || '').trim(), 'two behind the puck, one switched off').toBe('1 of 2 earn')
+    /* dragged off: his puck leaves the input (ui/reqdoor.ts rowTake) */
+    await act(async () => { expect(rowTake(rowKey()), 'Ranger, in the name box').toBe('done'); notify() })
+    expect(idsOf(rec()).map(String), 'ALL AVAIL stays when anyone leaves').toEqual(['divot', 'allavail'])
+    expect(groundRowEl().querySelector('.puck.allavail'), 'its puck is still on the row').toBeTruthy()
+    expect(inWin().map(s => s.dataset.oilp).sort(), 'Ranger is free now: he is one of the people behind it').toEqual(['bane', 'plasma', 'stiff'])
+    expect((chip().textContent || '').trim(), 'the count rises by one').toBe('2 of 3 earn')
+    expect(inWin().find(s => s.dataset.oilp === 'plasma')!.classList.contains('off'), 'its switch-off is intact').toBe(true)
+    expect((DAYS[SAT] as any).oild.people[`plasma|${item()}`]).toBe('deny')
+    expect(([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).map(s => s.dataset.oilp).filter(Boolean), 'the other named man keeps his switch on the row').toEqual(['divot'])
+    expect(paid()).toEqual(['bane', 'divot', 'stiff'])
+  })
+
+  /* …AND ON A DAY THAT HAS GONE OUT the crowd is frozen (D44): the same change reads as a change WAITING, the issued
+     face keeps the people — and the OIL — it went out with (D45, D142). */
+  it('the same crowd change after the Saturday was published: a change waiting; the issued day still credits the man who dropped out', async () => {
+    await filed(['bane', 'allavail'])
+    await act(async () => {
+      const g = signOf(SAT); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      commitSetDayApproved(SAT, true); notify()
+    })
+    expect(dayApproved(SAT)).toBe(true)
+    expect(dayPendingItems(SAT), 'nothing waiting').toHaveLength(0)
+    const issued = () => { const d = (daySnapOf(SAT, dayCurVer(SAT)) as any).d; return { ev: oilEvidenceOf(SAT, d), d } }
+    const issuedPaid = () => { const { ev, d } = issued(); return Object.entries(oilEarnedWork(d, ev)).filter(([, sp]) => (sp as any[]).some(w => String(w.item) === item())).map(([p]) => p).sort() }
+    expect(issuedPaid()).toEqual(['bane', 'plasma', 'stiff'])
+    await act(async () => { HOOKS.oilSentinel = () => ['stiff']; afterSchedMutate(); notify() })
+    expect(dayPendingItems(SAT).length, 'who stands behind the puck changed: it waits for the scheduler').toBe(1)
+    expect(issued().ev.sent[item()], 'the issued day keeps the people it went out with').toEqual(['stiff', 'plasma'])
+    expect(issuedPaid(), 'and their OIL').toEqual(['bane', 'plasma', 'stiff'])
+    expect(paid(), 'the working copy shows today\'s answer').toEqual(['bane', 'stiff'])
   })
 
   /* THE CONTROL, under the one rule: the second man is not "the scheduler's extra" on bane's row — he is IN the input

@@ -20,10 +20,11 @@
    the one record filed by `commitInput`. What changed, and what is gone:
    - "each puck addressed by its own row" → each puck on the key of its own PLACE on the one row;
    - "in OIL Earn each puck is switched under ITS OWN request" → under the input's one item: one item, not one a man;
-   - "an extra on a member's row — a placeholder — is drawn after the people, with its own place's key": a placeholder
-     BESIDE named people cannot be made through the doors until step 3 of the build (D753) — the puck on its own
-     place's key is pinned here for an input filed for ALL AVAIL alone; "after the people" is pinned on the pure
-     answer (engine/grouprows.test.ts) and waits for step 3 on the screens;
+   - "an extra on a member's row — a placeholder — is drawn after the people, with its own place's key": the
+     placeholder is one of the INPUT's people now (D755, D750 — step 3 of the build), made by the input's own save,
+     never written onto a man's row. Pinned on every screen in the block "ALL AVAIL / ALL beside named people" — its
+     puck last, on its own place's key, with its counter — and for an input filed for ALL AVAIL alone; the pure answer
+     is engine/grouprows.test.ts;
    - "rows whose marks differ are drawn apart: a CX on one man's row alone is his own row" (D735) — RETIRED: there is
      one row, so one set of marks; what is left of it is pinned as "a CX is the row's — nobody is drawn apart";
    - "leadKeyOf — a member row's text box and its '+ add' go to the lead's" — RETIRED: no row is left undrawn; every
@@ -45,13 +46,14 @@ import { INPUTS, inpId, idsOf } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
-import { SCHED } from '../engine/publish'
+import { SCHED, signOf } from '../engine/publish'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { inputItemKey } from '../engine/oil'
 import { rowPeopleDrawn } from '../engine/grouprows'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { initStore, weekStashSnap, weekDirty, loadWeek } from '../state/store'
+import { commitSetDayApproved } from '../state/sched-commit'
 import { setSession, setMe, DEFAULT_ME } from '../state/auth'
 import { hydrate, wirePersist } from '../state/persist'
 import { bootStorage } from '../storage/boot'
@@ -160,6 +162,133 @@ describe('the pucks of the one row — the one answer every builder reads (rowPe
     expect(ppl.map(p => p.id)).toEqual(az(FOUR))
     expect(ppl.map(p => `${p.id}@${p.key}`)).toEqual(placed(az(FOUR)))
     expect(ppl.map(p => p.key).sort()).toEqual([rowKey(), `${rowKey()}.x0`, `${rowKey()}.x1`, `${rowKey()}.x2`])
+  })
+})
+
+/* ==== ALL AVAIL / ALL BESIDE NAMED PEOPLE, ON EVERY SCREEN (step 3 of the one-rule build, 12 Oct 26 — owner D750, D753,
+   D755, D757 step 3: "Schedule: [Ranger] [Tally] [ALL AVAIL 34]"; the plan §4.3: "named people A-to-Z by callsign,
+   then the placeholder; each puck keeps its positional key … for its flag, its mark, its OIL bar and switch").
+   A NAMED RULING CHANGED THE RULE (2). Before the one-rule build this file pinned "an extra on a member's row — a
+   placeholder — is drawn after the people, with its own place's key": the puck was written straight onto one man's
+   row (`more: ['allavail']`), the row's own extra (D46). D755 makes it one of the INPUT's people; step 2 could only
+   pin it for an input filed for ALL AVAIL alone, because no door made one beside named people. Now the input's own
+   save does, and every screen is here: the puck LAST, on the key of the place it stands on, WITH ITS COUNTER — the
+   men it stands for, less anyone the input names (the plan §4.7). It joined SECOND on purpose, so "last" is the
+   drawing's doing, never the order it was stored in. ==== */
+describe('ALL AVAIL / ALL beside named people — its puck last, on its own place’s key, with its counter (D755, D757; the plan §4.3)', () => {
+  const A = 'allavail'
+  const NAMED = ['split', 'bane', 'pike']                        // Vandal, Ranger, Nomad
+  const MIX = ['split', A, 'bane', 'pike']
+  /* who ALL AVAIL would stand for. `bane` is in it and is NAMED in the input: he is not counted behind the puck */
+  const CROWD = ['bane', 'stiff', 'plasma']
+  const HKS = HOOKS.oilSentinel
+  beforeEach(() => { HOOKS.oilSentinel = () => CROWD.slice(); HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : '2026-07-15') })
+  afterEach(() => { HOOKS.oilSentinel = HKS })
+  const persons = (row: Element) => [...row.querySelectorAll('.ppl [data-person]')].map(p => (p as HTMLElement).dataset.person)
+  /* the counter: ONE on the row, inside the placeholder's own seat — the row's LAST — and addressed by the INPUT */
+  const counter = (row: Element, di = WED) => {
+    const chips = [...row.querySelectorAll('.oilcount')] as HTMLElement[]
+    expect(chips, 'one counter on the row').toHaveLength(1)
+    const seat = chips[0]!.closest('.seat') as HTMLElement, seats = [...row.querySelectorAll('.ppl .seat')]
+    expect(seats.indexOf(seat), 'in the LAST seat of the row').toBe(seats.length - 1)
+    expect(seat.querySelector('.puck.allavail'), 'which is the placeholder’s').toBeTruthy()
+    expect(chips[0]!.dataset.oilsent, 'addressed by the input, not by a man').toBe(inputItemKey(inpId(rec(di))))
+    return chips[0]!
+  }
+
+  it('the one answer: stored where it joined, drawn LAST — every puck on the key of the place it stands on', () => {
+    file(MIX); validate()
+    expect([ground()[riOf()].who, ground()[riOf()].more], 'stored in the order they joined').toEqual(['split', [A, 'bane', 'pike']])
+    const ppl = rowPeopleDrawn(DAYS[WED], WED, riOf())
+    expect(ppl.map(p => p.id)).toEqual([...az(NAMED), A])
+    expect(ppl.map(p => `${p.id}@${p.key}`)).toEqual(placed([...az(NAMED), A]))
+    expect(keyOf(A), 'its own place: the first under the name box').toBe(`${rowKey()}.x0`)
+  })
+  it('Edit Schedule’s week: the named people A to Z, then ALL AVAIL with its counter; one "+ add"; the one row’s own layout class for a phone', () => {
+    file(MIX); validate()
+    const rows = weekRows(true)
+    expect(rows).toHaveLength(1)
+    expect(seated(rows[0]!)).toEqual(placed([...az(NAMED), A]))
+    expect(counter(rows[0]!).textContent, 'the three it would stand for, less the one the input names').toBe('2')
+    expect(rows[0]!.querySelectorAll('.addz')).toHaveLength(1)
+    expect(rows[0]!.querySelector('.ppl')!.getAttribute('data-fill')).toBe(`${rowKey()}.+`)
+    /* a phone: the row's two times stay together at its top (`gshared` — the approved picture 2, D743); the geometry
+       itself is a browser test (e2e/grouprow.spec.ts) */
+    expect(rows[0]!.classList.contains('gshared')).toBe(true)
+  })
+  it('the requester’s own puck beside ALL AVAIL, and its counter: two pucks, drawn as a row of several — never the one-puck cell', () => {
+    file(['bane', A]); validate()
+    const row = weekRows(true)[0]!
+    expect(seated(row)).toEqual(placed(['bane', A]))
+    expect(counter(row).textContent, 'Ranger is named: not one of the men behind it').toBe('2')
+    expect(row.querySelector('.ppl')!.classList.contains('one')).toBe(false)
+    expect(row.classList.contains('gshared')).toBe(true)
+    /* …and whichever of the two joined first, the man is drawn first (a second input, beside the first) */
+    file([A, 'bane'], WED, undefined, { title: 'Second brief' }); validate()
+    const k = `g:${WED}.${riOf(WED, 'Second brief')}`
+    expect(seated(weekRows(true, WED, 'SECOND BRIEF')[0]!)).toEqual([`bane@${k}.x0`, `${A}@${k}`])
+  })
+  it('ALL beside named people is drawn the same way', () => {
+    file(['split', 'all', 'bane']); validate()
+    const row = weekRows(true)[0]!
+    expect(persons(row)).toEqual([...az(['split', 'bane']), 'all'])
+    expect(row.querySelectorAll('.oilcount'), 'with its counter').toHaveLength(1)
+  })
+  it('View-only Sched: the same order and the counter — nothing to type in, no "+ add"; and the same on the day once it is published', () => {
+    file(MIX); validate(); setPage('sched')
+    let rows = weekRows(false)
+    expect(rows).toHaveLength(1)
+    expect(names(rows[0]!)).toEqual([...az(NAMED).map(cs), 'ALL AVAIL'])
+    expect(seated(rows[0]!)).toEqual(placed([...az(NAMED), A]))
+    expect(counter(rows[0]!).textContent).toBe('2')
+    expect(rows[0]!.querySelector('.addz')).toBeNull()
+    expect(rows[0]!.querySelector('[contenteditable]')).toBeNull()
+    const g = signOf(WED); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    commitSetDayApproved(WED, true); validate()
+    rows = weekRows(false)
+    expect(rows, 'published').toHaveLength(1)
+    expect(names(rows[0]!), 'published').toEqual([...az(NAMED).map(cs), 'ALL AVAIL'])
+    expect(counter(rows[0]!).textContent, 'the men it went out with').toBe('2')
+  })
+  it('the next-week peek: read off the rows alone — the named people A to Z, then ALL AVAIL', () => {
+    file(MIX)
+    const d = JSON.parse(JSON.stringify(DAYS[WED]))
+    INPUTS.length = 0                                      // the peek never looks an input up
+    const rows = peekRows(d)
+    expect(rows).toHaveLength(1)
+    expect(names(rows[0]!)).toEqual([...az(NAMED).map(cs), 'ALL AVAIL'])
+    expect([...rows[0]!.querySelectorAll('.ppl .puck')].pop()!.classList.contains('allavail')).toBe(true)
+  })
+  it('the Scheduler Board: one row — the named people A to Z, then ALL AVAIL with its counter; one "+ add", one set of buttons', () => {
+    file(MIX); validate()
+    const rows = boardRows()
+    expect(rows).toHaveLength(1)
+    expect(seated(rows[0]!)).toEqual(placed([...az(NAMED), A]))
+    expect(counter(rows[0]!).textContent).toBe('2')
+    expect(rows[0]!.querySelectorAll('.addz')).toHaveLength(1)
+    expect(rows[0]!.querySelector('.ppl')!.getAttribute('data-fill')).toBe(`${rowKey()}.+`)
+    for (const b of ['grcx', 'grinfo', 'grflag', 'grdel']) expect(rows[0]!.querySelectorAll(`[data-${b}]`), b).toHaveLength(1)
+  })
+  it('the Scheduler Board in OIL Earn: a switch a NAMED person, A to Z, all under the input’s one item; then ALL AVAIL — no man’s switch — with the counter that opens the men behind it (D762, D753)', () => {
+    saturdayEarns()
+    file(MIX, SAT, { [SAT_ISO]: 0.5 }); validate()
+    setBoardDay(SAT); setOilDay(SAT)
+    const rows = boardRows(SAT)
+    expect(rows).toHaveLength(1)
+    expect(persons(rows[0]!)).toEqual([...az(NAMED), A])
+    const taps = [...rows[0]!.querySelectorAll('[data-oilp]')] as HTMLElement[]
+    expect(taps.map(t => t.dataset.oilp), 'the named people, and only they').toEqual(az(NAMED))
+    expect(taps.map(t => t.dataset.oilitem)).toEqual(NAMED.map(() => inputItemKey(inpId(rec(SAT)))))
+    expect(counter(rows[0]!, SAT).closest('[data-oilp]'), 'the placeholder’s puck is nobody’s switch').toBeNull()
+    expect(rows[0]!.querySelectorAll('[data-oilitem]:not([data-oilp])'), 'and there is still no switch for the whole row').toHaveLength(0)
+  })
+  it('the input’s line under Personal Inputs, on the week and on the board: the named people A to Z, then ALL AVAIL — one line, one Undo', () => {
+    file(MIX); validate(); PIOPEN.add(WED)
+    for (const [where, lines] of [['the week', piWeek()], ['the board', piBoard()]] as const) {
+      expect(lines, where).toHaveLength(1)
+      expect(names(lines[0]!), where).toEqual([...az(NAMED).map(cs), 'ALL AVAIL'])
+      expect(lines[0]!.querySelectorAll('[data-acc]'), where).toHaveLength(1)
+    }
   })
 })
 

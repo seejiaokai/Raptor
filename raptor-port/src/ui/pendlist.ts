@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf } from '../engine/inputs'
+import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf, placeholderOf } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -299,8 +299,11 @@ function entryName(di: number, it: PendItem): string {
   const live = INPUTS.find((x: any) => inpId(x) === row.src) || (snap && snap.inp && snap.inp[row.src])
   return live ? inpLabel(live) : goneRequestName(row) || 'A shared input'
 }
-/* THE PUCK THAT WENT WITH A MAN (owner D745): the placeholders that stood on the row the issued day held for him */
-const wentWith = (row: any): string => { const p = ((row && row.more) || []).map((v: any) => whoId(v)).filter((x: any) => x && isSpecial(x)).map(cs); return p.length ? ` · ${p.join(', ')} came off with him` : '' }
+/* THE PUCK THAT WENT WITH A MAN (owner D745) — FOR A ROW ISSUED BEFORE THE ONE-RULE BUILD ONLY (`srcg`, below): the
+   placeholders that stood on the row the issued day held for him. D755 set D745 aside (12 Oct 26, step 3 of that
+   build): on every row made since, ALL AVAIL is one of the input's own people — it rides no man's place, so nothing
+   "comes off with him", and a line about such an input names it among its people like anyone else. */
+const wentWith =(row: any): string => { const p = ((row && row.more) || []).map((v: any) => whoId(v)).filter((x: any) => x && isSpecial(x)).map(cs); return p.length ? ` · ${p.join(', ')} came off with him` : '' }
 export function pendItemWords(di: number, it: PendItem): Words {
   /* an input of several: one line, led by the input and naming its people (D736) — never a person's own line (`pp`) */
   if ((it.mates && it.mates.length) || (it.people && it.people.length > 1 && !it.pp)) return foldedWords(di, it)
@@ -362,8 +365,9 @@ export function pendItemWords(di: number, it: PendItem): Words {
       return { where: was ? requestName(was) : requestName(null, row), from: 'on the programme', to: `taken out${wentWith(row)}${earns}`, ...whoWhen(editRowOf(di, it)), jump: false }
     }
     { const w = requestWords(it.inp, row)
-      /* …and ✕ on a request's row that carried a placeholder: the puck went with the row (D745, the same act) */
-      if (it.kind === 'delete' && row && wentWith(row)) w.to += wentWith(row)
+      /* (✕ on a request's row that carried a placeholder used to add "· ALL AVAIL came off with him" — D745. The
+         placeholder is one of the input's people now, D755: the input was taken off, with everyone in it, and the line
+         says only that — the same whichever of them joined first. Found by the re-expressed tests, 12 Oct 26.) */
       return { ...w, ...whoWhen(editRowOf(di, it)), jump: it.kind === 'add' && jump } }
   }
   /* A REQUEST'S ROW WITH NO FILING CHANGE BESIDE IT — the request moved to another day's programme (✕ here, Accept
@@ -448,12 +452,19 @@ function crowdChange(di: number): CrowdRow[] | null {
   const d: any = DAYS[di]
   return diff.map(x => {
     const row = rowByItem(d, di, x.item)
-    /* A PUCK THAT IS GONE WITH ITS REQUEST'S ROW (owner D745): the live day has no row for it, so it is named from the
-       row the issued day held — whose place it stood on — and said as what happened: it came off with him. Never "A
-       placeholder … no longer free", which names nothing and reads as if the men had become busy. */
-    if (!row && String(x.item).startsWith('i:') && !x.on.length) {
-      const was = ((snap.d.ground || []) as any[]).find((r: any) => r && String(r.src || '') === String(x.item).slice(2))
-      if (was) return { where: `${was.prog || 'A request'} · the puck on ${cs(was.who) || 'its'} place`, from: names(x.off), to: `came off with ${cs(was.who) || 'its row'}`, keys: [] }
+    /* THE MEN BEHIND A PUCK THAT IS GONE — with its input's row, or taken out of the input: named from the row the
+       issued day held, and said as what happened. Never "A placeholder … no longer free", which names nothing and
+       reads as if the men had become busy. (Until step 3 of the one-rule build this said "the puck on Ranger place …
+       came off with Ranger" — D745, a puck riding one man's place. D755 set that aside: the puck is one of the
+       input's own people, named by its own callsign, whoever else is in it.) */
+    if (String(x.item).startsWith('i:') && !x.on.length) {
+      const iid = String(x.item).slice(2)
+      const was = ((snap.d.ground || []) as any[]).find((r: any) => r && String(r.src || '') === iid)
+      const ph = was ? [was.who, ...(was.more || [])].map((v: any) => whoId(v)).find((p: any) => p && isSpecial(p)) : null
+      const what = `who ${ph ? cs(ph) : 'its puck'} stood for`
+      if (!row && was) return { where: `${was.prog || 'A request'} · ${what}`, from: names(x.off), to: 'gone with it', keys: [] }
+      const live: any = INPUTS.find((r: any) => inpId(r) === iid)
+      if (row && ph && live && !placeholderOf(live)) return { where: `${row.name} · ${what}`, from: names(x.off), to: `${cs(ph)} taken out`, keys: row.keys }
     }
     return { where: (row ? row.name : 'A placeholder') + ' · who it stands for', from: names(x.off),
       to: x.on.length ? names(x.on) : 'no longer free', keys: row ? row.keys : [] }
