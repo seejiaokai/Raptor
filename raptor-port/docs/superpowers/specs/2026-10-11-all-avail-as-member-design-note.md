@@ -176,3 +176,19 @@ both show Tally; Ranger is told.
 
 **The stored shape (D756) shows nothing on screen:** one record for the Training with its list — Ranger, Tally, ALL AVAIL
 — where today there would be a copy a person kept in step.
+
+## 8. The survey, and his answers to it (11 Oct 26)
+
+The survey D756 asked for is done and kept whole: `2026-10-11-all-avail-as-member-survey.md` (this folder) — the §6
+table above was its first pass, from memory; where the two differ the survey is right (its §8 lists what this note
+missed). Put to him with the cost of the stored shape:
+
+- **D759 — *"Go ahead, in steps (Recommended)"*:** the stored shape of D756 is confirmed now that he has its cost — one
+  record per input with its people, built in steps, the first changing nothing on screen. The ten things that follow
+  by themselves, told to him with the question, are in D759's full row.
+- **D760 — *"The input itself (Recommended)"*:** a CX on a row that came from an input cancels the INPUT — the Inputs
+  calendar shows it cancelled with its reason, the member's bell tells him, it goes with the input if it moves; the
+  red box and "information only" go with the input too, shown on the schedule only. D468 changes with it.
+- **Still his, asked and not yet answered:** may one man of an input with several people still give his own OIL answer,
+  different from the input's? He asked first whether the filer can choose who gets OIL at the filing, and to be shown
+  exactly what a man would see — pictures are owed to him before he answers.
