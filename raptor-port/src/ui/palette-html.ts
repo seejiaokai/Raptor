@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { INPUTS, isAway, inputCoversDate, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
+import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { sevOf, chipOf } from '../engine/validate'
@@ -22,7 +22,10 @@ export function paletteDay(){ return ARM&&ARM.di>=0?ARM.di:(DAYS[ROSDAY]?ROSDAY:
    an ATT B man who is also on leave is properly away. */
 const groundedOnly=(id:any,di:any)=>{
   const d=DAYS[di]; if(!d)return false;
-  const away=INPUTS.filter((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id&&inputCoversDate(i,d.dt));
+  /* LINES — one a named person of each input on the day (engine/inputs.ts inputLinesOn), the same read dayOff makes
+     (avail.ts dayAway), which is who this is asked about. Worked out once a paint (paletteHTML opens the pass), not
+     once a man. The crew list is never drawn inside a published face, so this is the working copy's inputs, as before. */
+  const away=inputLinesOn(d.dt).filter((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id);
   return away.length>0&&away.every((i:any)=>canWork(i.type));
 };
 export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any,hideWhy?:any){
@@ -67,7 +70,7 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
    day is gone, which reads as a bug in the rule rather than in the sentence. */
 export function offReason(id:any,di:any){
   const d=DAYS[di]; if(!d)return '';
-  const x=INPUTS.find((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id&&inputCoversDate(i,d.dt));
+  const x=inputLinesOn(d.dt).find((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id);
   return x?offWord(x):'';
 }
 export function armStripHTML(){
@@ -81,7 +84,11 @@ export function armStripHTML(){
     +`<button class="x" data-disarm="1" title="Cancel">✕</button></div>`;
 }
 /* the shared body of both palettes */
-export function paletteHTML(di:any,opts?:any){
+/* ONE PAINT READS EACH DAY'S INPUTS ONCE (engine/inputs.ts inputReadPass; Fable's read of the one-rule plan, F10): the
+   list asks why each man may or may not take the armed place — four reads of a day's inputs a man (avail.ts slotBar) —
+   and the builder writes nothing, which is the shape a pass requires. */
+export function paletteHTML(di:any,opts?:any){ return inputReadPass(()=>paletteHTMLBody(di,opts)); }
+function paletteHTMLBody(di:any,opts?:any){
   const o=opts||{}, d=DAYS[di]||{};
   /* the armed key AS ARMED — a "+ add" keeps its `.+`, which slotBar reads as a NEW place (its one-man-one-place-on-a-
      row check, [CROWD-SWAP-SAYS-BUSY] W3's walk: a man already in the crowd struck from its own "+ add"); slotRules

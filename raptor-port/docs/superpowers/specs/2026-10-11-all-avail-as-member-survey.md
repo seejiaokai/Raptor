@@ -72,6 +72,20 @@ name `INPUTS`; 323 lines read `.person` across `src`, not all of them an input's
 posting's trims (`state/person-delete.ts:196-235`)" here. They are WRITERS — `applyDelete` finds a man's records, then
 `INPUTS.indexOf` / `splice` and assigns to them — and belong in C below, where they already stood. A writer handed
 lines would delete the wrong record.)*
+*(CORRECTED AGAIN 12 Oct 26 by the build of step 1 — each opened at the source by the host. FOUR of the readers this
+line lists do not read "one line a person", and were left reading the RECORD: (1) **the medical tracker**
+(`medical.ts`) tells its rows apart by identity (`r===except`, `keepTail.indexOf(c.row)`) and hands the very records to
+the one applier that trims them (`ui/inputedit.tsx applyMedPlan`) — the same fault as F1, in a second place; a medical
+kind holds one person, so it reads the record and, from step 2, its one named person. (2) **"The bell's unanswered
+OIL"** (`sync.ts oilPendingFor`) also answers for an input filed for ALL AVAIL — which has no line — asks who may
+change the input, and hands back its id for the editor: it is about who ANSWERS for an input, and step 2 (a) rewrites
+it on the record. (3) **"SANS availability and its counts"** is two things: the count (`state/flyplan.ts
+sansCommittedOn`) reads lines; the lookup of one man's offer (`inputs.ts sansAvailOn`) and the opened day's list
+(`ui/sanscal-model.ts sansDayGroups`) hand the RECORD on — to a test that holds it as the record it is, and to the
+window that changes it — so they find the record by who is IN it. (4) **The CSV export** (`export.ts`) is "one row an
+input as stored" and is to write a line for the placeholder too (the plan's §4.5): the Inputs pages' step. And ONE
+reader this line missed, moved with the rest: the Inputs List's "Deleted" group — the deleted men who still have an
+input (`ui/InputsPage.tsx DeletedGroup`). The lists as built: `src/engine/inputs-readers.test.ts`.)*
 **The parity tests need a flat per-person list too:** `src/testing/refwin.ts:142-145` pushes the port's inputs into the
 reference page, which reads one `person` a record and compares `day.input` in order (HOST-CHECKED). `node
 reference/tfin.js` itself does not see the port's inputs.

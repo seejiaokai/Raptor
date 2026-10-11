@@ -3864,3 +3864,48 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Where a walk or look guide says "start the preview", add: if the port is already served, compare the served index page's hashed bundle name with the local build's before using it; use it only on a match, and start nothing new.
 
 **Principle:** A shared resource found already running is usable only once its identity is checked against what you just built; the check is one comparison of a content hash.
+
+### Observation 522: A change that must alter nothing on screen is proved by recording the running app twice and comparing byte for byte
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** `[ALL-AVAIL-AS-MEMBER]` step 1 — moving a dozen readers onto a derived view with the promise "nothing on screen changes"
+**Skill:** New skill candidate: the no-visible-change proof (belongs with the project's bug-check order, §7 the walk, as the walk for a refactor)
+**Type:** open-source
+**Phase/Area:** verifying a refactor in the running app
+
+**Issue:** "Every test passes" does not show that a refactor left the screens alone, and pictures cannot be compared by eye across a whole app. What worked: one script drives the built bundle with the clock held still and the random numbers seeded (so every minted id and time stamp repeats), saves each screen's markup and each rule's output as text, on several worlds (plain, published, the next week, a phone, another role); a second script compares two such folders byte for byte. Two runs of the SAME build were compared first — identical — which is what proves the comparison sees only the code. Before against after then came out identical over 5.2 million characters, and the one deliberate difference was saved apart and shown rather than hidden.
+
+**Suggested improvement:** Add to the walk guidance a "refactor walk": (1) make the world deterministic (fixed clock, seeded randomness); (2) prove determinism by comparing two runs of the unchanged build; (3) record before and after on the worst realistic world; (4) set any intended difference apart in its own record so "identical but for X" is literal; (5) still open the pictures (see the next observation).
+
+**Principle:** To prove sameness, make the system deterministic and compare its whole output as text; first prove the comparison itself is quiet on unchanged code, or a difference means nothing and an equality means less.
+
+### Observation 523: Two equal records prove sameness, not coverage — open the pictures and assert where the fixture landed
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session; the before/after recorder for the SANS calendar
+**Skill:** New skill candidate: the no-visible-change proof (the project's walk scripts, `scripts/handpass/`)
+**Type:** open-source
+**Phase/Area:** walk scripts that navigate to a month, a day or a tab
+
+**Issue:** The recorder stepped "back three months" on a calendar that does not open on today's month, landed on an empty April and recorded it. Before and after were both equally empty, so the byte comparison passed — while proving nothing about the screen it was meant to cover. It was found only because the picture was opened and showed the wrong month and zeros everywhere.
+
+**Suggested improvement:** In any walk or recording script: navigate by reading the screen's own heading until it says the wanted thing, never by a fixed number of steps; write what was reached into the run's log ("calendar on: July 2026", "day opened: 3 commitments"); and open the pictures of a before/after record even when the comparison is green.
+
+**Principle:** A comparison between two runs cannot see a fixture that missed its target in both; say in the record where each step landed, and look at it.
+
+### Observation 524: A survey that sorts code into "readers" and "writers" must look at what each function hands back, not only what it reads
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session; the pre-build survey had listed class-A "per-person readers", and an independent read had already caught one writer among them
+**Skill:** New skill candidate: surveying a code base before a data-shape change (briefs for read-only survey helpers; the project's planning step)
+**Type:** open-source
+**Phase/Area:** survey briefs; classifying call sites before a refactor
+
+**Issue:** Four more "readers" on the survey's list turned out, at the source, to hand the stored object itself onward — to code that trims it, to a test that holds it by identity, to the window that edits it. Handing them frozen copies would have broken a medical trim and an editor. Each was found by reading the function's return value and its callers, and two by an existing test that compared identity. A grep for the field being read cannot tell these apart from a pure reader.
+
+**Suggested improvement:** In a survey brief for a shape change, ask for three columns per call site, not one: what it reads, what it RETURNS or passes on, and who consumes that (a writer, an identity comparison, an editor). Classify as a reader only when nothing downstream writes to, compares, or looks up the object it was handed. Then freeze the derived view in tests, so the misses that remain throw.
+
+**Principle:** Whether a call site is safe to hand a copy depends on where the object goes next, not on what the site itself does with it; classify by the whole path, and make a wrong classification loud.

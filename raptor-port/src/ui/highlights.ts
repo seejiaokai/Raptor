@@ -5,6 +5,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags } from '../state/view'
 import { isMe } from '../state/perms'
 import { slotBar } from '../engine/avail'
+import { inputReadPass } from '../engine/inputs'
 import { slotVal } from '../engine/slots'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -239,7 +240,10 @@ export function paintSelRings(){
   const id=SELID;
   if(!id||!HOOKS.editMode()||isSpecial(id))return;
   if(!SELRINGS||SELRINGS.id!==id||SELRINGS.warn!==WARN)SELRINGS={id,warn:WARN,map:new Map()};
-  document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
+  /* one read of each day's inputs for the whole paint (engine/inputs.ts inputReadPass): slotBar is asked of EVERY place
+     on screen for this one man, and each ask reads his day's inputs four times; the paint writes classes, never the
+     inputs. */
+  inputReadPass(()=>document.querySelectorAll('[data-slot],[data-fill]').forEach((el:any)=>{
     if(el.classList.contains('armed'))return;
     const raw=el.dataset.slot||el.dataset.fill; if(!raw)return;
     let why=SELRINGS.map.get(raw);
@@ -254,7 +258,7 @@ export function paintSelRings(){
     if(el.dataset.slot){try{occ=slotVal(String(raw).replace(/\.\+$/,''))}catch(_){return}}
     if(occ===id)return;
     el.classList.add(occ?'oktake-f':'oktake');
-  });
+  }));
 }
 /* The element carrying the warning's anchor key — the seat (or append cell) of
    the LINE that caused the flag. Segment-safe prefix match: a full key matches

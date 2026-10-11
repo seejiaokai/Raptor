@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
 import { briefLeadShown } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
+import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL } from '../engine/reporting'
@@ -63,7 +63,9 @@ const afterSchedMutate = () => view.afterSchedMutate()
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv))) }
+/* …and the inputs' per-person lines once a date ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputReadPass): the
+   same contract, the same reason. */
+export function boardHTML(di: number, pv?: boolean) { return inputReadPass(() => oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv)))) }
 function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the

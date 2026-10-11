@@ -11,7 +11,7 @@
    Type → ui/TypeLegend.tsx; an admin's posted-out people for a NEW input; the just-saved row lit). */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp } from '../engine/inputs'
+import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -71,7 +71,8 @@ function ArchivedGroup() {
    picker — D287). (The row's own editor, which kept his name as the row's value, went with the List's pencil — D718,
    10 Oct 26; the input's window keeps it the same way.) */
 function DeletedGroup() {
-  const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && INPUTS.some((r: any) => r && r.person === id))
+  const lines = inputLines()   // one line a named person of each input (engine/inputs.ts) — read once, not once a man
+  const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
   if (!ids.length) return null
   return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
 }

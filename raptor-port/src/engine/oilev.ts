@@ -41,7 +41,7 @@
    Ordinary TS style — a new file, not a ported engine body.
    ===================================================================== */
 import { DAYS } from './data'
-import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx } from './inputs'
+import { INPUTS, inpId, inpWin, oilAsks, dateOrd, dateIx, inputReadPass } from './inputs'
 import { weekKeyOfOrd } from './weeks-data'
 import { CURWEEK } from './waves'
 import { stashHas, standingRowIn } from './weekstash'
@@ -497,6 +497,11 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
 }
 
 export function oilEvidence(di: any, day?: any): OilEvidence {
+  /* one read of the inputs' per-person lines for the whole block (inputs.ts inputReadPass): the ALL AVAIL crowd is
+     worked out once a placeholder on the day (leavewar/sync.ts availableFor), and nothing in here writes the inputs */
+  return inputReadPass(() => oilEvidenceNow(di, day))
+}
+function oilEvidenceNow(di: any, day?: any): OilEvidence {
   di = +di
   const d = day || DAYS[di]
   const iso = HOOKS.oilDayISO(di)

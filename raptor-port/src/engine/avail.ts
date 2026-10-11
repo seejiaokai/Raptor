@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
-import { INPUTS, inputsOn, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
+import { inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -76,7 +76,8 @@ export function dayAway(d:any){const all=new Set(), tw:any={};
   /* A PLACEHOLDER IS NOBODY'S ABSENCE ([INPUT-ALL-AVAIL]; both first-round plan readers): an input filed for ALL AVAIL /
      ALL names no man, so it must never put "one man" into either set — the day panel's "Leave / downchit" total and the
      palette read them. The save refuses the kinds that could (D711 (2), D712); this is the reader's own guard. */
-  inputsOn(d.dt).forEach((inp:any)=>{ if(!isAway(inp)||!PEOPLE[inp.person]||PEOPLE[inp.person].special)return;
+  /* read as LINES — one a named person (inputs.ts inputLinesOn), like every reader of a man's day in this file */
+  inputLinesOn(d.dt).forEach((inp:any)=>{ if(!isAway(inp)||!PEOPLE[inp.person]||PEOPLE[inp.person].special)return;
     if(awayAllDay(inp)){all.add(inp.person);return;}
     const w2=win(inp.s,inp.e); if(w2)(tw[inp.person]=tw[inp.person]||[]).push(w2); });
   return {all,tw};}
@@ -345,7 +346,10 @@ export function rowTwice(id:any,key:any,fromKey?:any):string{
   const di=keyDay(ks), ev=di>=0?dayEvents(di,id).find((e:any)=>selfKey(e.slot||e.key)===row):null;
   return (ev&&ev.s!=null&&ev.e!=null?`already on ${ev.label} ${hm24(ev.s)}–${hm24(ev.e)}`:'already on this row')+' · not added twice';
 }
-export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
+/* ONE ASK READS EACH DAY'S INPUTS ONCE (inputs.ts inputReadPass): the absence blocks and the commitment scan below ask
+   for the same day's inputs up to five times, and the ask only reads — it answers a sentence and writes nothing. */
+export function slotBar(id:any,key:any,rules?:any,fromKey?:any){ return inputReadPass(()=>slotBarNow(id,key,rules,fromKey)); }
+function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
   const p=PEOPLE[id]; if(!p)return '';
   /* THE ONE HARD REFUSAL (D33). A placeholder is silent on every seat it is
      allowed on — it is not a person and no rule measures it — but on a jet it
@@ -481,7 +485,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
     const spareLike=!!(r.sc&&r.scSpare)||!!r.avJet||!!r.avDuty;
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
-    const off=inputsOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
+    const off=inputLinesOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>!kn||awayAllDay(x)||inpHits(x,0));
@@ -494,7 +498,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        all-day (or thin) record covering the whole shifted day so it always
        overlaps a past-midnight window. */
     const nd=kn&&r.slotEnd>1440&&r.di>=0?DAYS[r.di+1]:null;
-    const off2=!nd?[]:inputsOn(nd.dt).filter((x:any)=>isAway(x)&&x.person===id)
+    const off2=!nd?[]:inputLinesOn(nd.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>awayAllDay(x)||inpHits(x,1440));
@@ -507,7 +511,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        at a meeting the night before, and the warning list stayed silent too, so
        the two agreed only by both being wrong. */
     const pdv=kn&&r.slotStart<0&&r.di>0?DAYS[r.di-1]:null;
-    const off3=!pdv?[]:inputsOn(pdv.dt).filter((x:any)=>isAway(x)&&x.person===id)
+    const off3=!pdv?[]:inputLinesOn(pdv.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>awayAllDay(x)||inpHits(x,-1440));
@@ -521,7 +525,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        an ordinary all-day absence yesterday says nothing whatever about today.
        So only records whose rolled window genuinely passes midnight qualify. */
     const pdo=kn&&r.di>0?DAYS[r.di-1]:null;
-    const off4=!pdo?[]:inputsOn(pdo.dt).filter((x:any)=>isAway(x)&&x.person===id)
+    const off4=!pdo?[]:inputLinesOn(pdo.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
       .filter((x:any)=>{const w2=inpWin(x); return !!w2&&w2[1]>1440&&inpHits(x,-1440);});
@@ -608,7 +612,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
        midnight shifts so the two cannot disagree across a day boundary either
        (the validator's day.input carries the nx/pv tails). */
     const flying=String(key).indexOf(':')<0;
-    const cand=(dt:any,pred:(x:any)=>boolean)=>inputsOn(dt).find((x:any)=>
+    const cand=(dt:any,pred:(x:any)=>boolean)=>inputLinesOn(dt).find((x:any)=>
       !isAway(x)&&isPersonal(x.type)&&inpShow(x,dt)&&x.person===id
       &&!(canWork(x.type)&&!flying)&&pred(x));
     const iHit=(x:any,shift:number)=>{const w2=inpWin(x);

@@ -1,5 +1,23 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 1 (12 Oct 26 — the reader; nothing changed on screen; D755, D756, D759): `src/engine/inputs.ts`
+gains who is in an input whatever shape it is stored in (`peopleOf`, `namedOf`, `placeholderOf`), the per-person view
+of the inputs (`inputLines`, and `inputLinesOn(dt)` — a published face's own copies where the date is frozen) and its
+once-per-pass memo (`inputReadPass`). Moved onto the view, each a body about ONE MAN'S DAY: `engine/events.ts` (a day's
+inputs as the rules read them, and both midnight tails), `engine/avail.ts` (who is away; "may he take it?"),
+`engine/weekctx.ts` (who worked a neighbour day), `leavewar/sync.ts` (the absence index, the absences a restore will
+leave, the ALL AVAIL crowd, "has he a past here"), `ui/palette-html.ts` (the crew list's reasons), `state/flyplan.ts`
+(the SANS men committed on a date), `state/roster-restore.ts` (is he still named in an input), `ui/InputsPage.tsx` (the
+deleted men who still have an input), `testing/refwin.ts` (what the parity tests push into the reference page). The
+passes are opened in `engine/validate.ts`, `engine/events.ts`, `engine/avail.ts`, `engine/oilev.ts`, `ui/html.ts`,
+`ui/board.ts`, `ui/palette-html.ts` and `ui/highlights.ts`. New tests: `src/engine/inputlines.test.ts` (the view),
+`src/engine/inputs-readers.test.ts` (THE GUARD — every file that reaches the inputs is on one of three lists: lines,
+records, writers; a new file stays red until a person lists it), `src/state/roster-restore-inputs.test.ts` and
+`src/ui/inputsdeleted.test.tsx` (two readers that had no test, found by blanking the view on purpose). New scripts, not
+gates: `scripts/handpass/onerule-surfaces.mjs` (records every screen and rule output of a build, the clock held still),
+`onerule-compare.mjs` (two such records, byte for byte), `onerule-timing.mjs` and `onerule-timing-table.mjs` (the
+timings of `docs/performance.md` ledger 27). No file removed. Its check: `docs/handpass/2026-10-12-one-rule-step1.md`.
+
 `[ALL-AVAIL-AS-MEMBER]`, planning only (11–12 Oct 26): NO source file added or changed. Two look scripts, not gates and
 asserting nothing: `scripts/handpass/oilown-look.mjs` (real phone screens of the OIL question for a shared input — the
 filer's, one man's own, the filer's window afterwards) and `scripts/handpass/oilown-comps.mjs` (the two ways that are

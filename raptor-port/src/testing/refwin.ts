@@ -24,7 +24,7 @@
    dormancy rule needs no reference-side rewrite at all. */
 import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
-import { INPUTS, inputFlags } from '../engine/inputs'
+import { inputLines, inputFlags } from '../engine/inputs'
 import { noteText } from '../engine/note'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -138,10 +138,15 @@ export function reday(w: any) {
    the page never reads. An indirect eval resolves the real binding.
 
    Mutated in place rather than reassigned, because the reference's own history
-   restore does `INPUTS.length=0; …push(…)` and holds references to the array. */
+   restore does `INPUTS.length=0; …push(…)` and holds references to the array.
+
+   THE PORT'S PER-PERSON LINES ARE WHAT IS PUSHED ([ALL-AVAIL-AS-MEMBER] step 1, 12 Oct 26 — engine/inputs.ts inputLines):
+   the reference knows one `person` a record and compares each day's inputs in order, and a line is exactly that — one
+   flat object a named person, in the port's own order — whatever shape the port stores an input in. While the port
+   still stores one record a person, the text pushed is byte for byte what it was. */
 export function syncInputs(w: any) {
   w.eval('INPUTS.length=0;INPUTS.push.apply(INPUTS,JSON.parse('
-    + JSON.stringify(JSON.stringify(INPUTS.filter(inputFlags))) + '))')
+    + JSON.stringify(JSON.stringify(inputLines().filter(inputFlags))) + '))')
 }
 
 /* Fifth structural divergence, closed the same way as INPUTS. The week's

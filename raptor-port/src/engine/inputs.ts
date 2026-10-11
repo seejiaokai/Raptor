@@ -78,6 +78,65 @@ export function inputsOn(dt:any):any[]{
 export function inputOn(iid:any,dt:any):any{
   if(FZ&&dt!=null){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f.find((r:any)=>r.iid===iid)||null;}
   return inpById(iid);}
+/* WHO IS IN AN INPUT, AND ONE LINE A PERSON ([ALL-AVAIL-AS-MEMBER] step 1, 12 Oct 26 — owner D755, D756, D759: "an input
+   is stored as ONE record with the list of its people"; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.2).
+   Three kinds of body reach the inputs, and each reads its own thing:
+     · a body about ONE MAN'S DAY — is he busy, away, owed, late (the clash and crew-rest rules, who is away, the ALL
+       AVAIL crowd, the Leave War's absences, SANS availability) — reads LINES: one flat object a NAMED person, every
+       field of the record plus `person` (his id) and `mod` (his own late date where he has one);
+     · a body about THE INPUT — it draws, files, counts, freezes, saves or permits it — reads the RECORD;
+     · a body that WRITES finds the RECORD by id and never touches a line.
+   peopleOf is the ONE reader of who is in an input: a record with no `people` — every record stored before the one-rule
+   build, and every seed — answers as a one-person input, so an old-shaped record reads the same everywhere and can never
+   break a load (D756). A placeholder entry (ALL AVAIL / ALL) names nobody and makes NO line: who stands behind it is
+   worked out on the day (D753, D702), and every per-person reader already turned such a record away by hand.
+   A line is FROZEN, and so is the list: a body that still writes to "the record" it was handed throws in every test,
+   where on a plain copy the write would be lost without a word; and a writer handed lines would not find its line in
+   the list and would splice the LAST input out instead (Fable's read of the plan, F1) — which is why the three kinds
+   are pinned file by file in inputs-readers.test.ts. While every stored record is still one a person (step 1) a line is
+   a copy of its record, so JSON.stringify of a line is the record's own text — what the parity tests push into the
+   reference page (testing/refwin.ts). */
+const isPh=(id:any)=>id==='all'||id==='allavail'||isSpecial(id);
+export function peopleOf(r:any):any[]{
+  if(!r||typeof r!=='object')return [];
+  return Array.isArray(r.people)?r.people:[{p:r.person,by:r.by,at:r.at,mod:r.mod}];}
+export function namedOf(r:any):any[]{return peopleOf(r).filter((e:any)=>e&&!isPh(e.p));}
+export function placeholderOf(r:any):any{return peopleOf(r).find((e:any)=>e&&isPh(e.p))||null;}
+const linesOf=(src:any):any[]=>{const out:any[]=[];
+  for(const r of (src||[])){ if(!r||typeof r!=='object')continue;
+    for(const e of peopleOf(r)){ if(!e||isPh(e.p))continue;
+      const line:any={...r,person:e.p}; if(e.mod!=null)line.mod=e.mod;
+      out.push(Object.freeze(line)); } }
+  return Object.freeze(out) as any[];};
+/* WORKED OUT ONCE PER PASS, NEVER KEPT ACROSS A WRITE (Fable F10). The rules pass asks for a day's inputs several times
+   and the crew list asks four times a man a paint (avail.ts slotBar), so a fresh set of copies at every ask would be a
+   cost on a phone. Inside inputReadPass — the rules pass, the day and board builders, the crew list's paint, a day's OIL
+   evidence: bodies that write nothing — one date under one frozen frame is worked out once, and so is the whole list.
+   Outside a pass every ask is fresh. NOTHING INSIDE MAY WRITE THE INPUTS. Never a long-lived cache keyed on the list:
+   state/holderbase.ts writes a request's filing and a week load clears it outside the inputs door, so no counter could
+   tell a stale view from a fresh one. The same shape as publish.ts publishReadPass and oilev.ts oilReadPass: a pass
+   inside a pass shares the outer one and only the outermost ends it. Keyed by the FRAME as well as the date, so a
+   published face entered inside a pass (withFrozenInputs) is never served the working copy's answer, nor the reverse. */
+const LIVE_FRAME={};
+let LINE_PASS:{all:any[]|null,by:Map<any,Map<number,any[]>>}|null=null;
+export function inputReadPass<T>(fn:()=>T):T{const outer=LINE_PASS; if(!outer)LINE_PASS={all:null,by:new Map()};
+  try{return fn();}finally{if(!outer)LINE_PASS=null;}}
+/* every named person's line — of the live inputs, or of a list handed in (the absences a restore will leave, a test's
+   own rows): the record's order, its people in the order they joined */
+export function inputLines(list?:any):any[]{
+  if(list!==undefined)return linesOf(list);
+  if(!LINE_PASS)return linesOf(INPUTS);
+  return LINE_PASS.all||(LINE_PASS.all=linesOf(INPUTS));}
+/* THE LINES OF ONE DATE, AS THE DOCUMENT BEING READ HOLDS THEM — the per-person view of inputsOn(dt), so a published
+   face's rules read the people of the copies it was issued with (Fable F2: the clash, crew-rest and "away" readers do
+   not read the live list — they read through this funnel's twin, and a shared input on an issued face would otherwise
+   flag nobody). A date no calendar can parse is never memoised: inputsOn matches it by its words, not its ordinal. */
+export function inputLinesOn(dt:any):any[]{
+  if(!LINE_PASS)return linesOf(inputsOn(dt));
+  const k=dateOrd(dt); if(k==null)return linesOf(inputsOn(dt));
+  const fr=FZ&&FZ.has(k)?FZ:LIVE_FRAME; let m=LINE_PASS.by.get(fr); if(!m)LINE_PASS.by.set(fr,m=new Map());
+  let v=m.get(k); if(!v)m.set(k,v=linesOf(inputsOn(dt)));
+  return v;}
 /* WHAT AN INPUT SAYS ON A SCHEDULE, for "has it changed since the day was issued?" (D178: every member input change
    counts; Fable's scenario design Q4/Q5, 25 Sep 26). What the schedule draws or judges ON THIS DAY: whose, what type,
    all day / half / the times, the remarks, the SANS offer. NOT its dates (Fable's code read F1, 26 Sep 26): whether it
@@ -752,7 +811,10 @@ export function dateIx(lbl:any,yr?:any){
    = not offered) and the ONE shared window lives in the row's own standard
    allday / half / s / e fields, read through sansWindow below. */
 export function sansAvailOn(id:any,dt:any){
-  return inputsOn(dt).find((x:any)=>x.person===id&&isSansAvail(x.type))||null;
+  /* the RECORD, found by who is IN it ([ALL-AVAIL-AS-MEMBER] step 1 — namedOf, above): what is handed back is the input's
+     own window, letters and remark — the same for everyone an admin files one offer for (D658) — and its callers hold it
+     as the record it is (state/demosans.test.ts: "one span record answers for BOTH covered days"). */
+  return inputsOn(dt).find((x:any)=>isSansAvail(x.type)&&namedOf(x).some((e:any)=>e.p===id))||null;
 }
 /* the record's one offered window in minutes, [s,e]. AM/PM are the same
    halves the standard template writes (HALF_AM/HALF_PM in ui/inputedit.tsx —

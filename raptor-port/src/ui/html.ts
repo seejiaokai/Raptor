@@ -4,7 +4,7 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
@@ -1595,7 +1595,7 @@ export function dayStatHTML(di:any,ed:any){
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function dayHTML(di:any,ed:any,vsel?:any){ return oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
+export function dayHTML(di:any,ed:any,vsel?:any){ return inputReadPass(()=>oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel)))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
 function dayHTMLBody(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
      and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the

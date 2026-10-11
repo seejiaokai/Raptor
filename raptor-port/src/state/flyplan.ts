@@ -24,7 +24,7 @@
    through the one join (leavewar/sync.ts flyAnswer / flyMonth). A two-figure colour record that build left in a
    browser's storage reads here as the defaults; a `sansday:` row is read by nothing. */
 import { store, HOOKS } from '../engine/hooks'
-import { INPUTS, isSansAvail, inputCoversDate } from '../engine/inputs'
+import { inputLines, isSansAvail, inputCoversDate } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { newId } from '../engine/newid'
 import { cmdDeferEffect, type CommitResult } from '../command'
@@ -199,12 +199,14 @@ const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
 export function sansDateLabel(iso: string): string {
   return validIso(iso) ? `${MONTH_LABELS[+iso.slice(5, 7) - 1]} ${+iso.slice(8, 10)} ${+iso.slice(0, 4)}` : ''
 }
-export function sansCommittedOn(iso: string, rows: readonly any[] = INPUTS, people: Record<string, any> = PEOPLE): SansCommitted {
+export function sansCommittedOn(iso: string, rows?: readonly any[], people: Record<string, any> = PEOPLE): SansCommitted {
   const out: SansCommitted = { f: { p: [], w: [] }, o: { p: [], w: [] }, a: { p: [], w: [] } }
   if (!validIso(iso)) return out
   const label = sansDateLabel(iso)
   const seen = { f: new Set<string>(), o: new Set<string>(), a: new Set<string>() }
-  for (const r of rows) {
+  /* one LINE a named person of each input ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputLines): an offer an
+     admin files for several SANS men counts each of them; the live inputs where no rows are handed in */
+  for (const r of inputLines(rows)) {
     if (!r || !r.person || !r.sans || !isSansAvail(r.type) || !inputCoversDate(r, label)) continue
     const id = String(r.person), p = people[id]
     if (!p || !p.san || p.archived || p.deleted || p.special || p.pers) continue

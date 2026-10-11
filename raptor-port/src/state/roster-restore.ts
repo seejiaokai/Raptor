@@ -14,7 +14,7 @@
    Role comparisons on account records stay in accounts.ts (perms-scan.test.ts): this module never compares a role. */
 import { PEOPLE } from '../engine/people'
 import { DAYS } from '../engine/data'
-import { INPUTS } from '../engine/inputs'
+import { inputLines } from '../engine/inputs'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { PLANPUCKS } from './plan'
 import { accountsRestoreProblem, accountsAfter, requestsAfter } from './accounts'
@@ -58,7 +58,7 @@ const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?
 function stillNamed(id: string): boolean {
   if (holds(DAYS, id)) return true
   for (const k of stashKeys()) if (holds(stashGet(k), id)) return true
-  if ((INPUTS as any[]).some(r => r && String(r.person) === id)) return true
+  if (inputLines().some((r: any) => r && String(r.person) === id)) return true   // one line a named person of each input
   if (PLANPUCKS.some(e => e && Array.isArray(e.ids) && e.ids.includes(id))) return true
   try { if (lwState().wars.some((w: any) => w && w.recs && w.recs[id])) return true } catch (_e) { return true }
   return false

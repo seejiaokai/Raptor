@@ -1,7 +1,7 @@
 # One rule for every input's row, one record for every input — the plan (`[ALL-AVAIL-AS-MEMBER]`; D750, D753–D762 — 11 Oct 26)
 
-**Status: VERSION 2 — written by Opus 5.5 on `claude/all-avail-as-member` (= `main` at `7c1fcdc0` plus records). NOT
-BUILT. Version 1 was read by Fable on his word (D758): "CLEAN WITH THESE EXACT CHANGES" — sixteen, each checked by the
+**Status: VERSION 2 — written by Opus 5.5 on `claude/all-avail-as-member` (= `main` at `7c1fcdc0` plus records). **STEP 1
+OF EIGHT IS BUILT (12 Oct 26 — §10: what was built and where it left this plan's letter); steps 2 to 8 are not.** Version 1 was read by Fable on his word (D758): "CLEAN WITH THESE EXACT CHANGES" — sixteen, each checked by the
 host at the source and all taken (§9); version 2 is version 1 with them in. The ChatGPT reader D758 names is out until
 about 1 Nov 26 (D761 — `OUTSTANDING.md` `[NO-ASTRA-LIST]`). **THE BUILD MAY START — D764 (*"Start now, decide at the
 merge"*): on Fable's read alone, in steps on this branch; Fable also reads the finished code; at the merge he decides
@@ -624,3 +624,68 @@ named as test infrastructure in step 1 (§5); the survey's line `sync.ts:1673` i
 there). **Its twenty-one missing scenarios** are the walk's starting list (§7).
 
 **Not read by a ChatGPT reader** — out until about 1 Nov 26 (D761); on `OUTSTANDING.md` `[NO-ASTRA-LIST]`.
+
+## 10. The build, step by step — what was built, and where it left the plan's letter
+
+### Step 1 — the reader, with nothing changed on screen (12 Oct 26; its check: `../../handpass/2026-10-12-one-rule-step1.md`)
+
+**Built as §5 step 1 says:** `peopleOf`, `namedOf`, `placeholderOf`, `inputLines()`, `inputLinesOn(dt)` and the pass
+memo (`inputReadPass`) in `engine/inputs.ts`; the readers of one man's day moved onto lines; the guard
+(`engine/inputs-readers.test.ts`); `testing/refwin.ts` feeds the reference page from lines. No stored record changed
+shape, no writer was touched, and NO existing test file was changed.
+
+**The proof it changes nothing:** every existing test passes unchanged; and the built app was recorded before and
+after — the week's events, the warning list, why each person may or may not take each place of the week, each day's
+OIL evidence, and every drawn screen, on the demo week, the week after it, a published Monday with inputs filed after
+it went out, a phone, the member view — and the two records are identical byte for byte, but for the one thing §4.2
+drops on purpose (below). Two runs of the build before were compared first and are identical, so the comparison sees
+only the code.
+
+**Where the build left the plan's letter, each for a reason found at the source:**
+
+1. **Four readers §4.2 inherits from the survey as "class A" read the RECORD, and were left reading it** — the medical
+   tracker (it hands its records to the applier that trims them and tells them apart by identity: F1's fault in a
+   second place), the bell's OIL question (`oilPendingFor` — it also answers for an input filed for ALL AVAIL, which
+   has no line; step 2 (a) rewrites it), one man's SANS offer and the SANS day's list (`sansAvailOn`,
+   `sansDayGroups` — each hands the record on, to a test that holds it as the record and to the window that changes
+   it; they find the record by who is IN it, through `namedOf`), and the CSV export (the Inputs pages' step). The
+   survey is corrected where it listed them (§3 A). One reader the survey missed was moved: the Inputs List's
+   "Deleted" group.
+2. **A line is never written to — and one reader wrote.** `events.ts inpShow` asked `slots.ts acceptedDay`, which
+   mints an id on a request that has none; on a frozen line that throws (one existing test caught it — the frozen line
+   doing its job). `inpShow` now asks only where the request has an id; one with none stands on no row, so the answer
+   is the same and nothing is written — as the official branch of the same function has always read it.
+3. **More passes than §4.2 names, each for a measured cost** (`docs/performance.md` ledger 27): the plan names the
+   rules pass, the crew list's paint, a day's OIL evidence and the after-command pass. The after-command pass WRITES
+   (`state/view.ts rawSchedEpilogue` — the marks, the history), so it is not a pass; the rules pass inside it is. Added:
+   the day and board builders (already read-only passes for OIL and the published comparison), one "may he take it?"
+   (`avail.ts slotBar`), the week read into events (`collectEvents`), and the green rings on every place a picked man
+   may take (`highlights.ts paintSelRings`).
+4. **Two readers pick the RECORDS first and make lines of those**, not of the whole list: the ALL AVAIL crowd
+   (`availableFor` — the inputs that could keep anyone out of the window are picked once for the whole walk; §4.2 asked
+   only that its one call be hoisted, and hoisting alone measured 2.8 times slower on a Saturday's OIL) and the Leave
+   War's re-read on every repaint (only the kinds the war shows are copied). The crew list's two reasons read the DAY's
+   lines (`inputLinesOn`), as `dayOff` does, not the whole live list.
+5. **The guard is stricter than §4.2 asks:** a file on the "lines" list may not name the stored list at all (the plan
+   named four calls); a file that changes the list must be on "writers"; the three funnel files of F2 may not read a
+   day's records; and the list of names it searches for includes `inputLines(`, so a file that reaches the inputs only
+   through the view is listed too.
+
+**The one thing dropped on purpose (§4.2: "a placeholder entry makes no line"):** before step 1, an input filed for
+ALL AVAIL / ALL that kept its own voice — an all-day one, whose row has no times, or a timed one read across the week's
+edge — stood in the rules' list of a day's inputs under the placeholder's own id. No rule ever matched that id to a
+man, and no screen drew it. It is no longer in that list. The record shows it: five such entries, from two inputs, in
+the build before, none after, and every warning, reason, OIL figure and screen identical around them.
+
+**The timings (§4.2, F10):** `docs/performance.md` ledger 27 — on a phone's width at four times' slowdown, 8 runs
+before against 5 after: the rules pass 16.6 → 15.3 ms on the demo and 45.8 → 39.5 ms with 303 inputs; the crew list
+with a seat armed 17.1 → 10.0 and 68.7 → 42.9; a puck dropped on a seat, to the screen, 251 → 247 and 385 → 375; the
+whole week redrawn level. One cost left: a single "may he take it?" asked on its own is about a tenth of a millisecond
+slower with 303 inputs.
+
+**For step 2 to know:** (a) the lists of `inputs-readers.test.ts` are the map of what reads what — each letter of step 2
+moves files between them; (b) the four readers of point 1 read `.person` on the record and must go through
+`namedOf` when the record's shape changes (three already do); (c) a line of a new-shaped record still carries the
+record's `people` array, by reference — decide in step 2 (a) whether the view drops it; (d) two readers had no test
+before this step and have one now (`state/roster-restore-inputs.test.ts`, `ui/inputsdeleted.test.tsx`), each with a
+case for a man who is one of several people in an input.
