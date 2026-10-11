@@ -10,7 +10,7 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
 import { rowElsewhere } from './weekstash'
-import { requestRowFields, srcvOf, standsOn, standingRow } from './overlay'
+import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, sharedRowOf } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -146,6 +146,22 @@ export function sentinelSeatOK(key:any,id:any):boolean{
   const k=String(key).replace(/\.\+$/,'');
   return k.indexOf(':')>=0;                            // no prefix = a flying seat
 }
+/* THE BELT OF THE ONE ROW (`[GROUP-INPUT-ONE-ROW]`; owner D734 — "on a shared input's row the pucks ARE the input's
+   people: a puck taken off the row takes that man out of the input itself, and a puck put on the row adds him to it";
+   the plan 2026-10-10-group-input-one-row-plan.md §4.5). The name box of a member row is its own man's — the row is
+   drawn from it, and his OIL is his request's — so a hand that puts a man on the row, or takes one off, changes the
+   INPUT, through its door (ui/grouprow.ts). A write that reaches the row itself would leave a stranger in one man's
+   request, or a member's name box empty with the man still in the input. So, held here where no door forgotten today
+   and none added later can pass it: a write of ANYTHING — a man, a placeholder, a blank — to a shared row's name box
+   is refused, and so is a REAL man on its "+ add". A placeholder on "+ add" is the row's own (D46) and goes to its
+   extras; the extras' own places (`.xN`), a one-man request's row (D18, D470), a `kept` row and a read-only request's
+   are written as before. The view makes these rows by Object.assign (overlay.ts); Accept, a version load, an Undo and
+   a person's delete do not come through here. `own`: the name box itself; else the row's "+ add". */
+export function sharedSeatBar(key:any,id:any):boolean{
+  const m=/^g:(\d+)\.(\d+)(\.\+)?$/.exec(String(key)); if(!m)return false;
+  const d=DAYS[+m[1]!],row=d&&(d.ground||[])[+m[2]!]; if(!sharedRowOf(d,row))return false;
+  return m[3]?!!(id&&PEOPLE[id]&&!isSpecial(id)):true;
+}
 /* THE RETURN VALUE SAYS ONE THING ONLY: `false` means the write was REFUSED
    (D33) and nothing at all was written — no value, no pending mark, no edit-log
    line. `true` means the write proceeded exactly as it always has, which
@@ -162,6 +178,7 @@ export function setSlotVal(key:any,id:any):boolean{
      It must sit above the mark: a pending mark with no change behind it reaches
      the next amendment as an unexplained item (Fable M4). */
   if(!sentinelSeatOK(key,id))return false;
+  if(sharedSeatBar(key,id))return false;         // a member's place on the one row of a shared input: the input's door
   if(c<0&&!flyRef(key))return true;              // a stale flying key: nothing to write, nothing to mark
   /* dropping someone onto the seat they already occupy is not a change — it
      used to raise a pending mark, an undo step and a line in the next AL */
@@ -217,6 +234,7 @@ export function fillSlot(key:any,id:any):boolean{
   /* the belt, ahead of every branch — so the append doors cannot reach a
      cockpit by a route the preflight was not asked about */
   if(!sentinelSeatOK(key,id))return false;
+  if(sharedSeatBar(key,id))return false;         // a real man on a shared input's "+ add": the input's door (above)
   /* …and ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26). An append puts him on the row at a NEW place, so any place he
      already holds there refuses it and nothing is written. The doors ask first, with their own words (avail.ts
      rowTwice, called by drag.ts applyDrop and state/view.ts placeArmed — a move clears the place he leaves BEFORE this
@@ -315,6 +333,14 @@ export function txtGet(path:any){const r=txtRef(path);return (r&&r.o&&r.o[r.k]!=
 /* returns true when the model actually moved, so callers can skip a re-render */
 export function txtSet(path:any,v:any){
   const r=txtRef(path); if(!r||!r.o)return false;
+  /* THE BELT (owner D739, D740 — 10 Oct 26; the plan 2026-10-10-group-input-one-row-plan.md §4.4): the name, the two
+     times and the remark of a request's standing row are the REQUEST's — the typing goes to the request through its
+     door (ui/reqrow.ts reqRowText) and the row is re-made from it. A write that reaches the row itself would leave the
+     schedule and the Inputs calendar saying two different things until the member's next edit wrote over it, so it is
+     refused here, above the mark: nothing written, nothing marked, and the caller's own false-return heal puts the box
+     back. Held in the engine so no door forgotten today, and none added later, can do it. The view makes and re-makes
+     these rows by Object.assign (overlay.ts), never through here. */
+  if(String(path).indexOf('gr:')===0&&REQ_BOX.test(String(r.k))&&requestOfBox(DAYS[+String(path).slice(3).split('.')[0]],r.o))return false;
   v=String(v==null?'':v).replace(/\s+/g,' ').trim();
   if(v==='—')v='';                                       // the empty-field placeholder
   /* A TIME CELL TAKES A TIME, OR NOTHING (audit, 12 Aug 26). Until this, an
@@ -534,8 +560,12 @@ export function acceptInput(di:any,inp:any,dest:any){
      row mint them the same way), and `srcv` records what the row was made from ([DB-READINESS] phase 6 (c)): a later edit
      of the request re-makes it, a scheduler's own edit of the row does not */
   const row:any={...requestRowFields(inp), src:key, srcv:srcvOf(inp)};
-  if(rid)row.rid=rid;
-  d.ground.splice(ri,0,row);
+  /* a row an issued version held goes back beside its issued neighbours (above) — a round trip, left exactly as it is; a
+     row the day never held goes where a request's new row goes: at the end, or — a record of a SHARED input whose entry
+     already stands here — straight after the last of its rows, with their CX, red box and information-only
+     (overlay.ts placeRequestRow, the one body a landing on read shares; [GROUP-INPUT-ONE-ROW], the plan §4.2) */
+  if(rid){row.rid=rid; d.ground.splice(ri,0,row);}
+  else ri=placeRequestRow(d,row);
   inp.acc='g';
   if(rid){
     /* the restored row is the ISSUED one, not a draft addition: mark the edit (so the funnel's

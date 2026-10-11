@@ -1,3 +1,4 @@
+import { groundGroups } from './grouprows'
 import { DAYS } from './data'
 import { SCHED, dayApproved, protectedWeek } from './publish'
 import { keyDay } from './keys'
@@ -102,7 +103,11 @@ function mintBlob(d: any): DayTplBlob {
   const waves: any[] = JSON.parse(JSON.stringify(d.waves || []))
   const sims: Record<string, any[]> = JSON.parse(JSON.stringify(d.sims || {}))
   const dutywaves: any[] = JSON.parse(JSON.stringify(d.dutywaves || []))
-  const ground: any[] = JSON.parse(JSON.stringify(d.ground || []))
+  /* ONE ROW FOR EACH ROW AS IT IS DRAWN ([GROUP-INPUT-ONE-ROW], owner D661; Astra's read of its plan, 9): the rows of a
+     shared input are one row on screen (grouprows.ts), and a template is the shape of what the scheduler sees — taking
+     a row a man would hand the next day four TRAINING rows for one. The lead's row is the one kept. */
+  const groups = groundGroups(d)
+  const ground: any[] = JSON.parse(JSON.stringify((d.ground || []).filter((_r: any, ri: number) => groups[ri]!.lead === ri)))
 
   /* CX / red-flag marks are stripped everywhere they can appear (owner ask):
      a template is a clean plan offered for a FUTURE day, not a record of one
@@ -149,7 +154,7 @@ function mintBlob(d: any): DayTplBlob {
     delete r.src
     /* …and what rides with the link: what the row was made from, and the holder's "kept" ([DB-READINESS] phase 6 (c) —
        Fable's round-3 F5): a template's row is nobody's request */
-    delete r.srcv; delete r.kept
+    delete r.srcv; delete r.kept; delete r.srcg
     if (Array.isArray(r.more)) r.more = r.more.map(() => '')
   })
 

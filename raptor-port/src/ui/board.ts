@@ -14,6 +14,7 @@ import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { standsOn } from '../engine/overlay'
+import { groundGroups } from '../engine/grouprows'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, publishReadPass } from '../engine/publish'
 import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
@@ -23,6 +24,7 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
 import { setInpField } from './inputedit'
+import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
 import { commit, isOk } from '../command'
@@ -753,6 +755,10 @@ const whoText = (row: any) => {
   return names.length > 1 ? `${names[0]} +${names.length - 1}` : names[0]
 }
 
+/* the rows a ground row is DRAWN with as one row — the members of a shared input's one row, read BEFORE anything is
+   written (engine/grouprows.ts; owner D661); itself alone otherwise */
+const oneRow = (di: number, ri: number): number[] => { const g = groundGroups(DAYS[di])[ri]; return g && g.members.length > 1 ? g.members.slice() : [ri] }
+
 /* the board's delegated .mbtn click handler, verbatim bodies */
 export function boardMbtn(e: MouseEvent) {
   /* previewing a published version: the panels render no controls, but a stale
@@ -1066,6 +1072,20 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.grdel != null) {
     const [di, ri] = ds.grdel.split('.').map(Number)
     const row = DAYS[di].ground[ri]
+    /* THE ONE ROW OF A SHARED INPUT COMES OFF WHOLE (owner D736 — "a shared input … taken off the programme … is ONE
+       change waiting"; D114; the plan 2026-10-10-group-input-one-row-plan.md §4.5): the ✕ is drawn once, for the row
+       of everyone, so every member's request is taken off, in this one press — one Undo step. The requests are
+       gathered FIRST: each take-off cuts its row out and moves the others up. */
+    const mates = oneRow(di, ri)
+    if (mates.length > 1) {
+      const reqs = mates.map(i => DAYS[di].ground[i]).map((x: any) => (x && x.src && standsOn(DAYS[di], x.src) === x ? srcInput(x) : null)).filter(Boolean)
+      let n = 0
+      for (const q of reqs) if (unacceptInput(di, q)) n++
+      if (n) {
+        afterSchedMutate(); notify()
+        return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), `${n} people`))
+      }
+    }
     /* An auto-landed / accepted input row carries a `src` back-link. The plain
        splice below would strip the ROW but leave its input still marked
        accepted (inp.acc) with nothing behind it — an orphan the validator reads
@@ -1093,16 +1113,32 @@ export function boardMbtn(e: MouseEvent) {
     dropRowMarks([rid])
     markDeletion(di, 'ground', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
-  if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }
+  /* CX, THE RED BOX AND INFORMATION-ONLY ARE THE ONE ROW'S — SET ALIKE ON EVERY ROW OF IT (the plan §4.5; D735 — "the row
+     never splits or joins by itself"): the rows of a shared input are one row only while these marks are alike
+     (engine/grouprows.ts), so a mark made on the lead alone would split it. One question and one reason for CX; each
+     press is one Undo step. A row that stands alone is written exactly as before. */
+  if (ds.grcx != null) {
+    const [di, ri] = ds.grcx.split('.').map(Number); const lead = DAYS[di].ground[ri]
+    const others = oneRow(di, ri).filter(i => i !== ri)
+    return askCx(lead, `gr:${di}.${ri}.prog`, 'this item', others.length ? () => {
+      for (const i of others) { const x = DAYS[di].ground[i]; if (!x) continue; if (lead.cx) { x.cx = true; x.cxr = lead.cxr } else { x.cx = false; delete x.cxr } markEdit(`gr:${di}.${i}.prog`) }
+    } : undefined)
+  }
   if (ds.grflag != null) {
     const [di, ri] = ds.grflag.split('.').map(Number); const x = DAYS[di].ground[ri]
-    x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
+    const mates = oneRow(di, ri)                // read before the mark is made: rows are one row only while alike
+    x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`)
+    for (const i of mates) if (i !== ri && DAYS[di].ground[i]) { DAYS[di].ground[i].flag = x.flag; markEdit(`gr:${di}.${i}.prog`) }
+    afterSchedMutate(); notify()
     return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
   }
   /* ⓘ info-only, ground twin of ds.pinfo above */
   if (ds.grinfo != null) {
     const [di, ri] = ds.grinfo.split('.').map(Number); const x = DAYS[di].ground[ri]
-    x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
+    const mates = oneRow(di, ri)                // read before the mark is made: rows are one row only while alike
+    x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`)
+    for (const i of mates) if (i !== ri && DAYS[di].ground[i]) { DAYS[di].ground[i].info = x.info; markEdit(`gr:${di}.${i}.prog`) }
+    afterSchedMutate(); notify()
     return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
   }
 }
@@ -1200,6 +1236,15 @@ export function boardChange(e: Event) {
      The finding-#5 disarm this used to feed still works: REORDERED_DI is set
      by every mover and sorter, and afterSchedMutate() below still reads it —
      this path simply never sets it now. */
+  /* A REQUEST'S ROW: ITS NAME, ITS TIMES AND ITS REMARK ARE THE REQUEST'S (owner D739, D740 — ui/reqrow.ts), asked
+     before the funnel as the week's focus-out asks it. The box is set to what the row now reads either way — a refusal
+     is never left on screen looking saved, and a save is shown as the request holds it (10:15 for a typed 1015). */
+  const rq = reqRowText(p, f.value)
+  if (rq !== 'none') {
+    f.value = txtGet(p)
+    if (rq === 'saved') notify()
+    return
+  }
   if (txtSet(p, f.value)) {
     markEdit()
     afterSchedMutate()

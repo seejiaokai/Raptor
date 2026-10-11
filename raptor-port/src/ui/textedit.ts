@@ -7,6 +7,7 @@ import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { inpById, inpTimeText } from '../engine/inputs'
 import { setInpField } from './inputedit'
+import { reqRowText } from './reqrow'
 import { markEdit } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
 import { intimeFold } from '../engine/events'
@@ -97,6 +98,16 @@ export function routeFocusOut(e: FocusEvent) {
        tab-through — the edit would never reach the stream. txtCommit still runs
        for the caret-safe repaint; the baseline is now current, so its backstop
        command is a no-op. Same shape for the four sibling branches below. */
+    /* A REQUEST'S ROW: ITS NAME, ITS TIMES AND ITS REMARK ARE THE REQUEST'S (owner D739, D740 — ui/reqrow.ts). Asked
+       before the funnel: the typing changes the request through its own command, and the row is re-made from it. The
+       box is brought to what the row now reads either way — after a save too, because a name that differs from the
+       old one only in its letters' case re-makes the same capitals, and nothing would repaint the typed text. */
+    const rq = reqRowText(p, tx.textContent)
+    if (rq !== 'none') {
+      if (rq === 'saved') txtCommit()
+      const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
+      return
+    }
     if (txtSet(p, tx.textContent)) { commitText(p, () => markEdit()); txtCommit() }
     else { const v = txtGet(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v)) }
     return

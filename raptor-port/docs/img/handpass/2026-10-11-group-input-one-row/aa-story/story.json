@@ -1,0 +1,35 @@
+{
+ "log": [
+  {
+   "name": "1-row",
+   "what": "the shared input is one row with its four people",
+   "row": "[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\"]",
+   "toast": "Input added for 4 people"
+  },
+  {
+   "name": "2-dropped",
+   "what": "ALL AVAIL dropped on Hunter",
+   "row": "[\"Drifter\",\"Hunter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"]",
+   "toast": "Input added for 4 people"
+  },
+  {
+   "name": "3-hunter-off",
+   "what": "Hunter taken off — the man it was dropped on",
+   "row": "[\"Drifter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"]",
+   "toast": "Hunter taken out of Range safety brief"
+  },
+  {
+   "name": "4-drifter-off",
+   "what": "Drifter taken off — the man filed first",
+   "row": "[\"Ranger\",\"Tally\"]",
+   "toast": "ALL AVAIL came off Range safety brief with Drifter — drop it on the row again if it still applies"
+  },
+  {
+   "name": "5-undo",
+   "what": "one Undo",
+   "row": "[\"Drifter\",\"Ranger\",\"Tally\",\"ALL AVAIL\"]",
+   "toast": "Undid: a personal input"
+  }
+ ],
+ "errs": []
+}

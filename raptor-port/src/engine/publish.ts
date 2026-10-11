@@ -7,6 +7,7 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
+import { foldEntries } from './entryfold'
 import type { DeltaEntry, PendUnit } from './canonical'
 import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
@@ -207,7 +208,10 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
    the units of the request row that edit re-landed, folded into it; `was` / `now`: the two records the details entry
    compares — the frozen copy and the live one, which may be ANOTHER record of the same man's (a medical takeover's tail,
    inputs.ts frozenInputMatch step 4, Fable's code read F2), so the words read one edit */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any };
+/* `mates` / `people`: A SHARED INPUT COUNTED ONCE (owner D736 — entryfold.ts foldEntries, the last step below): the
+   other items of the same entry and the same act that this one stands for, and the people of them all — for the one
+   line's words ("Range safety brief · 4 people"), its names and its tap. The record keeps every entry (D109). */
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any, mates?: PendItem[], people?: string[] };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -249,10 +253,25 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
     const moved=oilMovedInputsOnly(oilEvidence(di),DAYS[di],w,snap.d,mem);
     const who=new Set<string>(); ax.changed.forEach((x:any)=>{if(x.was)who.add(String(x.was.person)); if(x.now)who.add(String(x.now.person));});
-    const fold=!!moved&&moved.iids.every((id:string)=>{const g=byId.get(id); return !!(g&&g.val);})&&moved.people.every((p:string)=>who.has(p));
+    /* …AND THE CROWD BEHIND A PLACEHOLDER THAT LEFT WITH ITS REQUEST IS THAT REQUEST'S CHANGE (owner D745 — "an ALL AVAIL
+       … puck on a shared input's row comes off with the man whose place it stood on"; Fable's read for him, 11 Oct 26;
+       the plan 2026-10-10-group-input-one-row-plan.md §4.8). A puck on a request's row is addressed by its request
+       (`i:<id>`); when that request leaves the day — its man taken out of a shared input, ✕ on a one-man request's
+       row — the men behind the puck leave the day's membership with it. They are nobody's changed input, so the rule
+       below read a SECOND change, "what this day earns", for the one act, on a weekday too. Membership that went
+       from an item whose request's own filing or details moved, and has none left, is that request's. */
+    const wasSent:any=(w&&w.sent)||{}, nowSent:any=((oilEvidence(di)||{}) as any).sent||{};
+    let via:string='';
+    const crowdOK=!moved||!mem||[...new Set([...Object.keys(wasSent),...Object.keys(nowSent)])].every((k:any)=>{
+      const x=new Set<string>((wasSent[k]||[]).map(String)), y=new Set<string>((nowSent[k]||[]).map(String));
+      const ch=[...x].filter((p:any)=>!y.has(p)).concat([...y].filter((p:any)=>!x.has(p)));
+      if(!ch.length)return true;
+      if(String(k).indexOf('i:')===0&&!y.size){const g=byId.get(String(k).slice(2)); if(g&&(g.val||g.fil)){via=via||String(k).slice(2);return true;}}
+      return ch.every((p:any)=>who.has(String(p)));});
+    const fold=!!moved&&moved.iids.every((id:string)=>{const g=byId.get(id); return !!(g&&(g.val||(via&&g.fil)));})&&crowdOK;
     if(!fold)oil.forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
     /* the record keeps the OIL entry; the line the admin reads says it moves with the input (D45: he SEES it) */
-    else{const first:any=items.find((u:any)=>!!u.val); if(first)first.oilFold=true;}}
+    else{const first:any=(via&&items.find((u:any)=>idOf(u.val||u.inp||{})===via))||items.find((u:any)=>!!u.val); if(first)first.oilFold=true;}}
   oilAll.forEach((e:any)=>{ if(String(e.addr).startsWith('oilrv:'))items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}); });
   /* …and the warnings the issued face froze, when today's judgement of the issued day differs (the live book only —
      a stashed week has no official pass of its own) */
@@ -266,7 +285,9 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
      one too (the walk, 1 Oct 26 — carrying the warning's seat, such a line could not be tapped, and one with a seat
      lit the seat and left the list shut) */
   if(sc===SCHED)hidePending(di).forEach((x:any)=>items.push({kind:'hide',addr:'',jump:[`warnline:${x.k}`],keys:[],entry:x.entry,axis:'hide'}));
-  return items;}
+  /* A SHARED INPUT IS COUNTED ONCE (owner D736 — entryfold.ts): the last step, on the finished list — what goes out
+     (dayDeltaIn) and the sign-offs' binding never pass through it */
+  return foldEntries(items,{di,issuedD:snap.d,liveD:DAYS[di],frozen:snap.inp||{}});}
 /* the request a content unit belongs to, when the unit is on a field an input's re-landing writes — its ground row's
    words, times, remarks or holder (restore.ts dayKeys: gr:di.ri.{prog,str,end,rmks}, g:di.ri) — '' otherwise. A removal
    reads the issued day's row, anything else the live day's. Extras (g:di.ri.xN) are a scheduler's own and never fold. */
@@ -771,9 +792,10 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      check's walk K2: counted against the worked-out day, the filing it puts back went uncounted and the button said the
      day "is already at" its version) */
   const asIssued=(()=>{const left=rowsLeftOut(di,snap.d);const c=JSON.parse(JSON.stringify(snap.d));return left.length?leaveRowsOut(c,left.map((x:any)=>x.id)):c;})();
+  const filOf=(p:any)=>({addr:`inp:${di}.${inpId(p.inp)}`,kind:'input',from:String(p.want||''),to:String(p.inp.acc||'')});
   const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
-    if(u){u.inp=true;return false;}
+    if(u){u.inp=filOf(p);return false;}
     return true;});
   /* …and each PENDING hide the load will undo: it puts the day's hides back to the LOADED version's (drafts.ts
      loadVersionToWorkingCopy, D98), so a hide or a flag-again not yet published is an edit it replaces — unless that
@@ -782,7 +804,12 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
   const tsnap:any=toVer==null||String(toVer)===String(ver)?snap:(String(toVer).slice(0,2)==='d:'?null:daySnapOf(di,toVer));
   const twas=tsnap&&tsnap.w?new Set<string>(((tsnap.w.wo||[]) as any[]).map(String)):null;
   const hides=twas?hidePending(di).filter((x:any)=>twas.has(x.k)!==x.hidden).length:0;
-  return units.length+decDrop+lone.length+hides;}
+  /* …AND IN THE SAME UNIT AS THE DAY HEAD FOR A SHARED INPUT (owner D736; the plan §4.8 — "Discard N edits shares the
+     fold, not the number"): the same fold over what THIS load would really put back. A whole one row taken off since
+     is ONE edit discarded; a re-time made on the schedule is none (the load re-makes the row from the live request)
+     while it is one change waiting. */
+  const its:any[]=units.map((u:any)=>({...u,axis:'content'})).concat(lone.map((p:any)=>({kind:'input',axis:'filing',addr:'',jump:[],keys:[],entry:filOf(p)})));
+  return foldEntries(its,{di,issuedD:after,liveD:DAYS[di],frozen:snap.inp||{},keptToo:true}).length+decDrop+hides;}
 /* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
    same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state
    the version froze (`fil`, snapshot's filing fingerprint; absent = fresh), set only where it can be true without

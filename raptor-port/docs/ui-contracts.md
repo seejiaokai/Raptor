@@ -2123,7 +2123,104 @@ again". Pinned in `inputedit.test.tsx`.
 Unavailable is deliberately left OPEN — it is a live plant/drop target and the
 day's must-read.
 
+## A shared input is ONE row on the schedule (owner D661, D743 — built 11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 4)
+
+**The approved pictures are the design of record** (`docs/mock/group-input-one-row.html`, D743); the built screens,
+pictured in the same framing: `docs/handpass/img/2026-10-11-group-input-one-row/` (`scripts/handpass/gi-built.mjs`).
+Underneath a shared input is still one ground row a man (`engine-rules.md`, "The rows of one shared input are known as
+one entry"); the ONE row is made where it is drawn.
+- **One answer, every builder.** `engine/grouprows.ts groundGroups(day)` says which rows are one row and which member
+  leads; `drawnPeople(day, di, group)` gives its pucks — each member row's own man, A to Z by callsign (D727's order),
+  then each row's extras. **Every puck keeps its own row's key** (`g:di.ri`, `g:di.ri.xN`): its flag (a man on leave
+  that day is flagged on the row — D605), its amendment mark, its OIL bar and a tap or drag on it are that man's row's.
+- **The week** (`ui/html.ts`, the ground loop — Edit Schedule, View-only Sched, an issued face): the lead draws one
+  `plRow` with those pucks and one "+ add" (the lead's key); a member that is not the lead draws nothing. The row
+  carries the class `gshared`: on a phone its two times stay together at its top (`09-week-responsive.css` — picture 2),
+  where a tall row's would spread down it. A row that stands alone is byte for byte what it was (the view week is still
+  compared with the reference).
+- **The board** (`ui/board-html.ts sbGroundPanel`): one name box, one pair of time boxes, one remark box, one set of
+  row buttons, one grip — the lead's keys — and the pucks wrapping in the People cell. **In OIL Earn each puck is
+  switched under its OWN request** (`sbGroupPeople` sets the row's OIL address to the puck's own row before each); the
+  row's name is not a switch.
+- **The next-week peek** (`ui/peek.ts peekGround`): the same two functions, read off the rows alone.
+- **Personal Inputs** (the week's `inGrp` for that panel; the board's `sbInputsGroupPanel` / `sbInpRow`): an entry of
+  several is ONE line holding every man's puck — split by where each man's request is filed, so the line never says
+  "accepted" for a man who is not (`state/inputgroup.ts entryLines`). Folded, it counts the input once ("1 input · 1 on
+  programme"). On a desktop the panel takes the Ground Programme's two-puck People column (`04-pucks-sections.css` —
+  picture 5); a phone keeps one puck a line.
+- **The Unavailable list is left as it is: a row a man (D737).**
+- **A jump to a place that is not drawn** — a member row's boxes or "+ add", a non-first record's line under Personal
+  Inputs — lands on the one row: `ui/grouprow.ts leadKeyOf`, asked by `ui/interactions.ts jumpToChange`.
+- Pins: `ui/grouprow-draw.test.tsx`; the geometry, in a real browser, `e2e/grouprow.spec.ts` (two across on a desktop,
+  stacked on a phone, the two times together, inside the People cell on the week and the board, after a reload).
+
+### What a hand does to the one row (owner D734 — built 11 Oct 26, step 5)
+The rule and its door: `engine-rules.md`, "On a shared input's row the pucks are the input's people". On screen:
+- **A drop** (`ui/drag.ts applyDrop`): a name or a seated puck let go on any puck of the row, on its "+ add" or on the
+  row itself ADDS him to the input — his puck appears on the row in its A-to-Z place, the landing flash is on HIS
+  place, and the seat he came from still shows him. A puck of the row dragged onto another place leaves the input and
+  lands there; let go on nothing, he leaves the input. Each is ONE Undo step: these paths finish through `fin`, which
+  makes no schedule write of its own (`done()` would add a second step). The note says what happened in the app's
+  words ("Tally added to Range safety brief", "Tally taken out of Range safety brief", the last-man refusal).
+- **A placeholder** let go on a man's puck lands on the row's "+ add", never in his place.
+- **The right-click** on a man's puck (`ui/Shell.tsx`) takes him out of the input; **an armed place** on the row filled
+  by a tap on a name (`state/view.ts placeArmed`) adds him and puts the place down — refused (he is already in it),
+  the place stays armed for the next name.
+- **The OIL question for a man added where the input's answers differ** opens at once over the schedule, headed with
+  his callsign alone; answered or closed, the dialog behind it closes with it.
+- **The row's ✕, CX, red box, ⓘ and its grip** are drawn once and act for every row of it; **the LATE chip** is there
+  while any of its people's records is late.
+- **The dialog a tap on the row's name or a line's type opens** shows the people picker with everyone lit, as the
+  input's window on the Inputs page does (owner D748, 11 Oct 26 — never one man's form); a one-man input's dialog
+  keeps its one Person list. Its dates are not changed there.
+- Pins: `ui/grouprow-hands.test.tsx`, `ui/groupeditor.test.tsx`; a real drag and a real right-click are walked in the
+  browser (the job's bug check).
+
+### Counted once on a published day — the one line (owner D736 — built 11 Oct 26, step 6)
+The rule: `engine-rules.md`, "A shared input is counted once". On screen, every count reads the one folded list — the
+day head's "N pending", the board's head, the Amendments box, the changes window's title and its "To go out" tab, the
+sign-off line, and the published amendment's own count.
+- **The line** (`ui/pendlist.ts foldedWords`): "Range safety brief · 4 people", then the names under it A to Z
+  (`.pl-names` — the changes window's `.cw-names` is its twin), then what changed in the words one man's line would
+  use ("14:00–15:00 → 14:30–15:00") with no man's name in front; who and when as ever; a tap goes to the one row.
+- **One man taken out of a shared input that goes on** is his own line, naming him: "Ranger · Range safety brief —
+  on the programme → taken out"; where an ALL AVAIL stood on his place, "taken out · ALL AVAIL came off with him"
+  (D745). ✕ on a one-man request's row that carried one says the same after its own words.
+- **A man added to a one row the issued day already had** wears the hollow ALn tag on his puck (D93); a whole new one
+  row wears the mark a new row wears, once, on its name (picture 9).
+- **"All changes"** titles a shared input's item with the names it lists: the men it holds now and the men its lines
+  name (`ui/changesmodel.ts` — it read "2 people" over three names once a man had left).
+- Pins: `state/grouprow-count.test.ts`, `ui/changesmodel.test.ts`.
+
+## On the board a row's coloured line stands clear of the row (owner D747, 11 Oct 26)
+
+*"The orange and blue line on the edit schedule board is cutting the buttons and pucks, can it be move left slightly."*
+A Scheduler Board row can wear a coloured line down its left: **blue** for a row that came from an input
+(`gr-frominput`), **red** for a cancelled row (`cx`), **amber** for a late input's promoted row (`lateinp` — amber wins
+where two apply). Until D747 each was an INSET shadow, painted inside the row's own left edge — and on a phone the
+row's pucks and its CX / ⓘ / red box / ✕ buttons start at that edge, so the line ran through them.
+- **Now it is a strip drawn a little to the LEFT of the row** — `.sb-arow.<state>::before`, absolutely placed 6px
+  outside the row's left edge (7px for the 3px amber), in the room between the row and its panel's edge
+  (`scheduler/12-schedule-editing.css`). Out of flow: it adds no grid item, so the row's seven-track register is
+  untouched, and it is no longer a `box-shadow`, so the lift and the 6-second fresh-add box have no state edge to
+  out-rank on these three.
+- **Nothing else of the row moves** — no puck, box or button changes size or place (D487); the row's faint coloured
+  wash stays inside the row.
+- **The week's rows keep their inset line** (Edit Schedule, View-only Sched): there it meets no puck. A cancelled
+  FLYING line on the board (`.sb-line.cx`) keeps its inset line too — another row shape, not named by him.
+- Pin: `e2e/grouprow.spec.ts` — at phone and desktop width, for a row from an input and for a late one, the line's
+  right edge is left of every puck and button of the row, and inside its panel.
+
 ## Editing an input from the schedule (owner, 10 Aug 26)
+
+**SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark
+of a request's row on the Ground Programme — the week's `data-txt="gr:di.ri.{prog|str|end|rmks}"`, the board's
+`data-bfld` — are the REQUEST's boxes: typing there changes the request (and so its Personal Inputs line and the Inputs
+calendar), through `ui/reqrow.ts reqRowText`, asked before the text funnel. After the door has answered, the box is
+brought to what the row now reads — after a save as after a refusal (a name retyped in other letters re-makes the same
+capitals, and nothing else would repaint the typed text). The row's people, CX, red box and information-only stay the
+row's own. Rule and belt: `engine-rules.md`, "A request's row: its name, its two times and its remark are the
+request's".
 
 Build two of the leave-types work: times, type, remarks and delete, reachable
 from Edit Schedule and from the schedule board, writing back to the Inputs
@@ -3401,9 +3498,18 @@ saying which row had done it. All four emit `on` by the same test now —
 the next day's warning. The panel closes itself on the click (its own
 contract), so its mark shows on reopen.
 
+**Each lit man wears the colour of HIS OWN item (his find on his phone, 11 Oct 26; D751 — a long work day is grey wherever the app shows it, lit or at rest, never amber).** A day's list, opened by its
+bar, lights every man its shown lines name — each in the colour of the WORST shown line that names him: red (bare
+`wfoc`), amber (`advf`, an advisory) or grey (`notef`, a note — a long work day), the colour that line carries in the
+list and his puck's own ring carries at rest. A tapped line lights its crew in that line's colour, by the same step
+(`ui/highlights.ts litSev`; the per-man level is `sevs` in `state/view.ts warnFocusMap`). Until then an open list kept
+ONE level for the whole day — its worst — so one clash turned every listed man red, and anything not red lit amber. The
+boxes a warning addresses (`.badtm`) keep red or amber. Pinned by `src/ui/warnopen-colour.test.tsx`; walked on the
+three surfaces (`docs/handpass/2026-10-11-group-input-one-row.md` §14).
+
 **The click's LIGHTING is deliberately the warning colours, not blue (owner,
 7 Aug 26 — considered and declined).** A clicked warning lights every person
-it names — all four of a double-turning crew — in `wfoc` red or amber and
+it names — all four of a double-turning crew — in `wfoc` red, amber or a note's grey (the paragraph above) and
 fades the rest; painting the first-named in the selection blue was proposed,
 built and rolled back the same day. Blue means one thing in this app: the
 puck-click selection (which also narrows the lists to that person; the row

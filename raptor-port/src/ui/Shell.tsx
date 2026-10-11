@@ -26,6 +26,7 @@ import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
+import { groupTake } from './grouprow'
 import { afterSchedMutate } from '../state/view'
 import { toast } from './toast'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -226,6 +227,9 @@ export function Shell() {
       const key = s.dataset.slot!, id = slotVal(key)
       e.preventDefault()
       if (!id) return
+      /* one of a shared input's men, on its one row: he leaves the INPUT (owner D734) — the door's own command, its own
+         words; the last man is refused there, saying how (ui/grouprow.ts) */
+      if (groupTake(key) !== 'none') return
       setSlotVal(key, '')
       afterSchedMutate()
       HOOKS.toast((PEOPLE[id] ? PEOPLE[id].cs : id) + ' removed')

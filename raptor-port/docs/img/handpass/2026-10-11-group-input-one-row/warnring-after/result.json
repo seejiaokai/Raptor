@@ -1,0 +1,139 @@
+{
+ "base": "http://localhost:4180/",
+ "label": "after",
+ "rows": [
+  {
+   "where": "View-only Sched · phone · list open",
+   "lit": 23,
+   "colours": "red+amber",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · phone · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · phone · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · phone · a tapped grey line",
+   "lit": 4,
+   "colours": "grey",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · phone · list open",
+   "lit": 25,
+   "colours": "red+amber",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · phone · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · phone · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · phone · a tapped grey line",
+   "lit": 4,
+   "colours": "grey",
+   "bad": []
+  },
+  {
+   "where": "Scheduler Board · phone · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "Scheduler Board · phone · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "Scheduler Board · phone · a tapped grey line",
+   "lit": 4,
+   "colours": "grey",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · desktop · list open",
+   "lit": 23,
+   "colours": "red+amber",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · desktop · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · desktop · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · desktop · a tapped grey line",
+   "lit": 4,
+   "colours": "grey",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · desktop · list open",
+   "lit": 25,
+   "colours": "red+amber",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · desktop · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · desktop · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · desktop · a tapped grey line",
+   "lit": 4,
+   "colours": "grey",
+   "bad": []
+  },
+  {
+   "where": "Scheduler Board · desktop · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "Scheduler Board · desktop · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "Scheduler Board · desktop · a tapped grey line",
+   "lit": 4,
+   "colours": "grey",
+   "bad": []
+  }
+ ],
+ "errs": []
+}

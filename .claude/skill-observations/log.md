@@ -3669,3 +3669,153 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the shared walk helper, give "fill this field" a short timeout and an error that names the selector and lists the fields the window does have; and note at the head of each walk-specific helper file the date and build it was written against, so a later borrower checks its selectors first.
 
 **Principle:** A helper written for one walk is evidence of that day's screen, not a library; when borrowing one, prove its first step against the present screen before building a fixture on it.
+
+### Observation 509: A handoff block's own claim that its open ends are filed was wrong by six items
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Tidying the handoff after a pull request went live: three merged branches' blocks were to be removed, and the newest block said of an older one that "its one open question" was already in the backlog.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Removing another chat's merged block (the residue check before a block is deleted)
+
+**Issue:** The older block was about 120,000 characters, written across several chats. A helper read it line by line against the backlog, the rulings and the evidence sheets and found six open lines with no other home (two reviews owed and never run, a stale line in a working guide, an old published page to annotate, a seen-not-filed observation, size markers carried over) and three looks nobody had recorded. The later chat that declared the block safe to remove had only tracked the one question it knew about. Also met: size markers that a code change may carry over come due in the first documents-only change, so the tidy-up chat inherited four failing markers nobody had mentioned.
+
+**Suggested improvement:** In the session-handoff skill's step for removing a merged block, require the residue read to be DONE at removal time (every line marked owed / open / "not filed" / "to tell him" matched to a backlog id, a ruling or a sheet) and never taken from an earlier block's sentence about it; a long block goes to a helper with that exact brief and the host checks its quotes. Add a line to the handoff: name any document-size marker currently carried over, since the next documents-only change must settle it.
+
+**Principle:** "Its leftovers are filed" is a claim about a text, and only a read of that text at the moment of deletion can make it; a summary written by a later author covers what that author happened to be tracking.
+
+### Observation 510: A question with a conditional second part got a tap the owner then took back
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** Asking the owner a feature's rules in small tap-to-answer rounds. One round paired "what does the calendar show after X?" with "if you chose the first, should a one-man row do the same? If you chose the second, pick the first option."
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Putting product questions to a non-technical owner (wording of options; follow-up questions)
+
+**Issue:** The second question depended on the first, was phrased in the app's internal distinction ("a ONE-man request's row") with no example, and told the owner which option to tap in the case it did not apply. He tapped the recommended option and then wrote "explain the 2nd question again". Earlier in the same session a free-text answer to a three-option question read two ways and had to be asked back. Both cost a round; both were cured by the same thing - one concrete example with names and times, and a question that asks what the screen should SHOW afterwards rather than which rule applies.
+
+**Suggested improvement:** In the questioning step: one decision per question, never a question whose meaning depends on another answer in the same round (ask it in the next round); every option set is preceded by one worked example in the product's own words (who, what, the two times), and the question asks for the visible outcome. Treat a tap on "Recommended" that is followed by a request to re-explain as no answer, and record nothing until the re-asked question is answered.
+
+**Principle:** A person can only rule on an outcome he can picture; ask what the screen should show in one named case, and a recommendation tapped without that picture is agreement with the asker, not a decision.
+
+### Observation 511: A mock-up drawn by re-arranging the built app's own page finds real facts the plan needs
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** [GROUP-INPUT-ONE-ROW] — pictures of the schedule's one row for a shared input, for the owner's yes before the plan
+**Skill:** New skill candidate: mock-up on the live build (could also sit in `brainstorming` / `impeccable` as a method)
+**Type:** open-source
+**Phase/Area:** design pictures before a plan
+
+**Issue:** The proposed screen was not drawn from scratch. The built app was driven through its own controls to the "today" state and pictured; then one small in-page step moved the existing rows into the proposed shape, using only markup and styles the app already had (a row with several pucks existed elsewhere), and it was pictured again at the same size. Doing it this way surfaced three facts no hand-drawn comp would have: a list that was assumed to be grouped already was still one line a person; four separate places printed the same count and all had to change together; the count's text used a no-break space, which silently defeats a text match. It also showed which parts needed no new styling at all.
+
+**Suggested improvement:** Add a short method: (1) drive the real build to the before-state through its controls, in a throwaway data world, with a fixed clock where the date colours the screen; (2) picture it; (3) apply ONE named transform on the page that only moves or removes existing nodes — any new style is listed as a design decision to tell the owner; (4) picture it again at the same size and crop; (5) write down everything the transform had to touch that the design note did not name — that list goes into the plan. Present before and after side by side, numbered, so the owner answers by number.
+
+**Principle:** A proposal drawn out of the product's own parts is both a truer picture and a cheap probe — every extra node the transform must touch is a requirement the plan had not written down yet.
+
+### Observation 512: A trap written down as a note still recurs when the convenient tool is the one that springs it
+
+**Status:** OPEN
+**Date:** 2026-10-10
+**Session context:** [GROUP-INPUT-ONE-ROW] — writing and patching the picture script on Windows
+**Skill:** task-observer (enforcement of known traps); project memory notes on shell and Python edits
+**Type:** open-source
+**Phase/Area:** editing files and one-off scripts from a shell
+
+**Issue:** Three known, already-recorded traps cost about six failed runs in one session: a Python one-liner edit read and wrote a UTF-8 file in the platform's default encoding and corrupted a dash; scripts passed through a shell heredoc lost their backslashes, twice, turning a regular expression into a literal; a patch script silently replaced a line that should have been kept. Each had a note saying "write the script to a file with the file tool". The notes were loaded and still not applied, because the shell one-liner was the nearest tool at each moment.
+
+**Suggested improvement:** Turn the notes into a default rather than a warning: edits to an existing file go through the editor tool, never a scripted replace; any script containing a backslash, a quote or non-ASCII text is written with the file tool and then run; a shell-embedded snippet is for read-only one-liners only. Where a harness supports it, a pre-run check that refuses a heredoc holding a backslash-escaped pattern would enforce it. After a scripted replace, re-read the changed lines before the next run.
+
+**Principle:** A warning is not enforcement — when a known trap sits on the most convenient path, change the default path, do not add another note beside it.
+
+### Observation 513: A reading recorded beside a ruling contradicted the built app — found only when the plan traced the code
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** Writing the plan for the schedule's one row for a shared input (rulings D734–D743), from a design note written in an earlier chat.
+**Skill:** New skill candidate: recording-readings-with-rulings (or the project rule file record-decisions.md)
+**Type:** internal
+**Phase/Area:** recording a ruling's "agent's readings"; planning from them
+
+**Issue:** A ruling's full row carried an agent's reading ("no OIL question is asked on the schedule when the hours change — the amount is worked out from the new hours"), told to the owner as settled. Tracing the code for the plan showed the same typed box already exists on another panel and does the opposite (the question opens at once — an owner rule from six weeks earlier, pinned by a test). The reading had been written from the ruling's logic, not from the code, so two recorded positions conflicted and the plan had to put the point back to the owner. A later reading in the same batch (about the LATE mark) HAD been checked in the code and was right.
+
+**Suggested improvement:** In the rule for recording a ruling: a reading that states what the app WILL DO in a case the owner did not name is checked against what the app does today in the nearest existing case (one search), and the row says "read in the code: <where>" or "not checked". A plan written from a design note re-verifies every reading it leans on and lists the ones it could not confirm.
+
+**Principle:** An inference recorded beside a decision inherits the decision's authority in every later reader's eyes; verify it against the running system before recording it, or mark it unverified.
+
+### Observation 514: A step's "affected tests" picked by the functions it changed missed the test of the behaviour it removed
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW] build, step 2 — running the tests that touch the doors step 2 changed found one test left red by step 1 (the Tab-route test that expected the OIL question to open after hours typed on the schedule).
+**Skill:** test-driven-development (and the project's "while iterating run only the affected test file" rule)
+**Type:** open-source
+**Phase/Area:** choosing which tests to run between full gate runs
+
+**Issue:** Step 1 removed a behaviour (a question no longer opens after a typed time) and ran the test files that named the functions it edited. A test in another file asserted the removed behaviour through the screen (the sheet's test id), named none of those functions, and stayed red unseen until the next step widened the search.
+
+**Suggested improvement:** When a change REMOVES or reverses a visible behaviour, select affected tests by the behaviour's observable too (the element, the test id, the words on screen), not only by the functions edited; say in the step's report which search picked the files.
+
+**Principle:** Tests of a removed behaviour are found by what the user would have seen, not by the code that used to produce it.
+
+### Observation 515: A type-check that prints nothing is not a type-check that passed — it checked no file
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW] build, step 2 — pushed after "tsc --noEmit -p ." printed nothing; the hosted preview's build (tsc -b) then failed on a typing mistake in a new test file.
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** which command counts as evidence before a push
+
+**Issue:** The repository's root tsconfig only lists project references, so a bare "tsc --noEmit" on it compiles nothing and exits clean. The silence was read as a pass. The same mistake made a test assertion vacuous (it compared undefined with undefined), which the real type-check would have refused.
+
+**Suggested improvement:** Before treating a check's silence as a pass, run the EXACT command the pipeline runs (read it from the build script), or prove the check can fail by pointing it at a known error once per session.
+
+**Principle:** Evidence is the pipeline's own command; a lookalike command that cannot fail is not evidence.
+
+### Observation 516: A handoff that parks DRAFTED FAILING TESTS beside its notes lets the next chat start at "see them fail"
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW] step 5, picked up from a chat that handed off at 73% context with the step designed but not built.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** What a handoff leaves for unfinished, already-designed work
+
+**Issue:** The previous chat had read the code and designed the step but had no room to build it. Instead of only describing the design, it left (a) a short notes file with the door's shape, each caller and the reasons, and (b) the tests already written, parked as a non-compiled text file (they import functions that do not exist, and the preview build type-checks test files). The next chat moved the file into the source tree, watched 26 of 26 fail, and built to them; the notes' function names and answers matched the tests, so no design was re-derived. One cost: the notes go stale the moment the step is built and need a "BUILT" line added.
+
+**Suggested improvement:** In the handoff skill's "unfinished work" guidance, add: where the next step is designed but not built, prefer leaving the failing tests (parked under a name the build does not compile) plus a one-page note of the shapes they call, over a prose-only description; and tell the next chat to mark the note as built when it is.
+
+**Principle:** Hand over executable intent, not only prose: a parked failing test carries the design's exact contract across a context boundary and gives the receiver an unambiguous first action.
+
+### Observation 517: A scratch file copied into a repo folder overwrote a tracked file of the same name
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW], a small walk script being debugged; numbered on claude/group-input-one-row only — other open branches' logs were not read.
+**Skill:** New skill candidate: scripted-browser walks in a repo (working name)
+**Type:** open-source
+**Phase/Area:** Temporary files placed inside the project tree
+
+**Issue:** A one-off debug script had to sit inside the project (its imports resolve from there), so it was copied in under a throwaway name, run, and deleted. The name was already a TRACKED file. The copy overwrote it and the delete removed it; only a later `git status` showing an unexpected deletion revealed it, and `git checkout` restored it.
+
+**Suggested improvement:** Before writing a temporary file into a tracked folder, check the name is free (`git ls-files --error-unmatch <path>` fails, and the file does not exist), or use a name that cannot collide (a session-unique suffix); and read `git status` after cleaning up, expecting no deletions.
+
+**Principle:** A temporary name inside a shared tree is a write to shared state: prove the name is unused before the write, and verify the tree afterwards, because overwrite-then-delete leaves no error to notice.
+
+### Observation 518: A written-down tooling trap was repeated under load, because the note is a reminder and not a gate
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** Same session; a multi-line script passed to the shell as a here-document failed on an apostrophe — a trap already recorded in the agent's memory and in the branch's handoff block.
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** What turns a recorded lesson into changed behaviour
+
+**Issue:** The trap ("a here-document whose body holds an apostrophe never parses here; write the script with the file tool and run the file") was loaded at the start of the session in two places. Three here-documents without apostrophes then worked, which made the fourth — with apostrophes in its prose — feel safe. It failed, and the script was rewritten through the file tool. The cost was one round trip, but the pattern is general: a remembered caution loses to a method that has just worked several times.
+
+**Suggested improvement:** Where a tooling trap has a strictly safer alternative that costs nothing extra, record it as the DEFAULT method ("scripts are always written with the file tool"), not as a condition to check ("unless it contains an apostrophe"); a condition has to be evaluated every time, a default does not.
+
+**Principle:** Record a recurring trap as an unconditional safer default rather than a conditional warning: rules that need a per-use judgment are the ones that get skipped once the risky path has succeeded a few times.

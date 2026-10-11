@@ -95,12 +95,25 @@
    from a hand-authored programme item without shouting. Deliberately BEFORE the
    .cx block below so a cancelled input-derived row still reads cancelled (red
    wins the cascade). */
-.pl-row.gr-frominput,.sb-arow.gr-frominput{
-  box-shadow:inset 2px 0 0 rgba(59,198,232,.42);background:rgba(59,198,232,.05)}
+.pl-row.gr-frominput,.sb-arow.gr-frominput{background:rgba(59,198,232,.05)}
+.pl-row.gr-frominput{box-shadow:inset 2px 0 0 rgba(59,198,232,.42)}
 .form.cx,.acrow.cx,.rmkcell.cx,.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx{
   position:relative;opacity:.55}
-.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx,.form.cx{
-  box-shadow:inset 2px 0 0 rgba(240,85,95,.55);background:rgba(240,85,95,.045)}
+.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx,.form.cx{background:rgba(240,85,95,.045)}
+.pl-row.cx,.ah-row.cx,.sb-line.cx,.form.cx{box-shadow:inset 2px 0 0 rgba(240,85,95,.55)}
+/* ON THE BOARD THE ROW'S COLOURED LINE STANDS CLEAR OF THE ROW (owner D747, 11 Oct 26 — "The orange and blue line on the
+   edit schedule board is cutting the buttons and pucks, can it be move left slightly"). A board row's left-edge line —
+   blue for a row that came from an input, red for a cancelled one, amber for a late input (the rule below) — was an
+   INSET shadow, painted inside the row's own left edge. On a phone the row's pucks and its CX / info / red box / ✕
+   buttons start AT that edge (13-board-rows-responsive.css: the People cell and the controls span the whole row), so
+   the line ran through them. It is drawn 6px to the LEFT of the row now — in the room between the row and its
+   panel's edge — as an out-of-flow strip (no grid item, so the seven-track register lateRowCls protects is untouched;
+   no box-shadow, so the lift and the fresh-add box no longer have a state edge to out-rank on these three). Nothing
+   else of the row moves (D487). The week's rows keep their inset line: there it meets no puck. */
+.sb-arow.gr-frominput,.sb-arow.lateinp{position:relative}
+.sb-arow.gr-frominput::before,.sb-arow.cx::before,.sb-arow.lateinp::before{content:'';position:absolute;left:-6px;top:0;bottom:0;
+  width:2px;pointer-events:none;background:rgba(59,198,232,.42)}
+.sb-arow.cx::before{background:rgba(240,85,95,.55)}
 .acrow.cx,.rmkcell.cx{background:rgba(240,85,95,.045)}
 /* the strike, on leaf text only */
 .cx .ntx,.cx .t,.cx .itxt,.cx .sub,.cx .rmk,.cx .areacell,.cx .timecell,
@@ -221,8 +234,9 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
   font-size:8.5px;font-weight:600;color:var(--san);white-space:nowrap;margin-right:4px}
 /* the board's promoted ground row cannot take a chip without adding an eighth
    grid item to a seven-track template (see lateRowCls in ui/html.ts), so it
-   wears an inset amber edge instead — the .redbox idiom, no node, no track. */
-.sb-arow.lateinp{box-shadow:inset 3px 0 0 var(--adv)}
+   wears an amber edge instead — no node, no track. *(Until 11 Oct 26 an inset shadow, the .redbox idiom; since D747
+   the strip above, clear of the row's pucks and buttons — amber wins over the blue and the red, as it did.)* */
+.sb-arow.lateinp::before{left:-7px;width:3px;background:var(--adv)}
 /* D49's MARK ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL 3): the
    take-off and landing boxes of a line typed with the SAME time for both. The
    line still earns — that is the ruling — so this is the advisory colour and an

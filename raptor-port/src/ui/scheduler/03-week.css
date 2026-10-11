@@ -424,6 +424,8 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .cw-out .pl-sub:hover,.cw-out .pl-sub:focus-visible{background:rgba(229,194,74,.10);outline:none}
 .cw-out .pl-sub:disabled{cursor:default}
 .cw-out .pl-where{font-weight:600;color:var(--ink)}
+/* the people of a shared input's one line, under its name (owner D736 — the changes window's .cw-names is its twin) */
+.cw-out .pl-names{grid-column:1/2;font-size:11px;color:var(--ink-3);overflow-wrap:anywhere}
 .cw-out .pl-chg{grid-column:1/2;color:var(--ink-2)}
 .cw-out .pl-chg s{color:var(--ink-3)}
 .cw-out .pl-chg b{color:#F2D699;font-weight:600}

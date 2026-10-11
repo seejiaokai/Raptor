@@ -27,6 +27,7 @@
    ordinary repaint (perf-B). ViewWeek/EditWeek mount the cached markup as
    trailing children of the same `.week` container their own live-day diff
    loop never touches, so a one-day edit still rewrites only that day's node. */
+import { groundGroups, drawnPeople } from '../engine/grouprows'
 import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
 import { noteText } from '../engine/note'
 import { isStandalone, mColor, dayCount, CURWEEK } from '../engine/waves'
@@ -217,7 +218,15 @@ function peekSims(d: any): string {
 function peekGround(d: any): string {
   if (!d.ground || !d.ground.length) return ''
   let h = `<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>` + plCols()
-  groundOrder(d.ground, d.gman).forEach(({ row: x }: any) => {
+  /* a shared input is one row here too (D661 — engine/grouprows.ts, read off the rows alone: the peek looks no input up) */
+  const grps = groundGroups(d)
+  groundOrder(d.ground, d.gman).forEach(({ row: x, ri }: any) => {
+    const gp = grps[ri]
+    if (gp && gp.members.length > 1) {
+      if (gp.lead !== ri) return
+      h += peekRow(x.prog, x.str, x.end, peekCrewCell(drawnPeople(d, 0, gp).map(p => p.id), ''), x.rmks, x)
+      return
+    }
     /* whoId can come back undefined for a value it does not resolve (free text) —
        fall back to the raw text itself (peekCrewCell's own itxt path) rather than
        silently dropping the row's only crew mention, matching html.ts's own

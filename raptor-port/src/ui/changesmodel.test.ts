@@ -381,6 +381,20 @@ describe('a group filing is one item (D663)', () => {
     expect(own.names).toBeUndefined()
     expect(g.entries.find(e => e.names)!.names).toHaveLength(4)
   })
+  /* `[CAL-TOGO-ONE-ITEM]`'s "also seen", fixed with `[GROUP-INPUT-ONE-ROW]` step 6 (the plan §4.8): after one man left a
+     shared input, the item was titled "2 people" — those it holds NOW — over a filing line that lists three names. The
+     title counts the names its lines list, with whoever it holds now. */
+  it('one man has since left: the title counts the names the item lists — "3 people" over its three names, never "2 people"', () => {
+    const was = JSON.stringify(INPUTS)
+    try {
+      put(filed('g1', 'bane'), filed('g2', 'stiff'), filed('g3', 'casper'))
+      INPUTS.push({ iid: 'g1', person: 'bane', type: 'Meeting', date: 'Jul 14', yr: 2026, grp: 'gA', grpBy: 'stiff' } as any,
+        { iid: 'g2', person: 'stiff', type: 'Meeting', date: 'Jul 14', yr: 2026, grp: 'gA', grpBy: 'stiff' } as any)
+      const g = byItem(linesFor([T], () => false), false, [T]).find(x => x.key.includes('|IG|'))!
+      expect(g.entries[0]!.names).toHaveLength(3)
+      expect(g.title).toBe('Input · Meeting · 3 people')
+    } finally { INPUTS.length = 0; JSON.parse(was).forEach((r: any) => INPUTS.push(r)) }
+  })
   it('the same words written at ANOTHER time are another line: two filings an hour apart are never merged', () => {
     put(filed('g1', 'bane'), filed('g2', 'stiff'))
     put(filed('g3', 'casper', {}, 2_000_000 + 3_600_000), filed('g4', 'dj', {}, 2_000_000 + 3_600_000))

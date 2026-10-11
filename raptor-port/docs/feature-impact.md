@@ -223,6 +223,10 @@ add form / row editor / week cell / board cell / board panel adds *[GONE 10 Oct 
     pass call it; published days and leave/medical are no-ops)         → BOARD/WEEK
   → or a scheduler ACCEPTS/UNDOES it by hand: acceptInput()/unacceptInput()
     (`acceptedDay`, inert amendment keys — the round-trip is unchanged)  → BOARD/WEEK
+  → or a scheduler TYPES on its row on the Ground Programme — its name, a time, its remark (D739, D740, 11 Oct 26):
+    `ui/reqrow.ts reqRowText` sends it to the REQUEST (one input command), and the row is re-made from it
+                                                     → INPUTS CALENDAR / LIST / PERSONAL INPUTS / BOARD / WEEK
+    a NEW writer of a typed box must ask that door first; `slots.ts txtSet` refuses a raw write there (the belt)
   → ONE REQUEST, ONE ROW reads the STORED weeks too (`weekstash.ts rowElsewhere`, 28 Sep 26 — [REQ-ORPHAN-ROW]):
     acceptInput refuses a second row, an 'r' request whose row stands on a loaded day is adopted, a load / plan
     switch leaves out a row standing elsewhere; a delete from another week is refused and names the day, and a
@@ -1357,6 +1361,9 @@ its user changed and lists a field changed both ways (`ui/editorwindow.test.tsx`
 join that comparison, or it will be saved over what someone else just set.
 
 ## One input filed for several people — the surfaces that make it ONE thing (step 5, 8 Oct 26)
+
+**SINCE 11 Oct 26 THE SCHEDULE DRAWS IT AS ONE TOO (`[GROUP-INPUT-ONE-ROW]`, D661, D743).** The Ground Programme's row on the week, the board and the next-week peek, and the line under Personal Inputs, are ONE for an entry of several — `engine/grouprows.ts` (`groundGroups`, `drawnPeople`) and `state/inputgroup.ts entryLines` are the answers every builder reads; a NEW surface that draws ground rows or Personal Inputs lines must read them too, or it draws a row a man. The Unavailable list stays a row a man (D737). Where this section's list below still says the board and the week are "deliberately NOT" one, that is overtaken for DRAWING by this paragraph; the hands and the count follow in the same job (its steps 5 and 6).
+
 A shared input is one record a man tied by `grp` (`state/inputgroup.ts`). A new surface that LISTS inputs on the Inputs
 page must read entries (`entriesOf` / `entryRowsOf`), or it shows a group as separate lines; a new surface that CHANGES one
 must go through `commitGroup` / `removeEntry`, or it changes the first man's record alone and that man leaves the entry.
@@ -1364,5 +1371,13 @@ The surfaces that do: the month's bar and its drag (`inputscal-model.ts`, `caldr
 (`InputsCal.tsx`), the List's row and its Add form (`InputsPage.tsx`), the editor window (`inputedit.tsx`), the changes *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 window's item (`changesmodel.ts`). The surfaces that deliberately do NOT (one input a man): the board, the week, the
 warnings, the Leave War, OIL and the bell, a published day's pending count, print, export, the SANS calendar's counts
-and its day list. The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the
+and its day list. *[CHANGED 11 Oct 26 — `[GROUP-INPUT-ONE-ROW]`, D661, D734, D736: THE BOARD, THE WEEK AND A PUBLISHED
+DAY'S PENDING COUNT HAVE LEFT THAT LIST. The schedule draws a shared input as one row (`engine/grouprows.ts`), a hand
+on that row changes the input through ONE door (`ui/grouprow.ts` — a new place that writes a person to a ground row
+must ask it first, or the engine's belt, `slots.ts sharedSeatBar`, refuses the write), a typed box on it saves every
+record (`ui/inputedit.tsx saveFromRow`), and the count folds it (`engine/entryfold.ts`). A new surface that DRAWS
+ground rows must read `groundGroups` / `drawnPeople`, or it draws a row a man; one that COUNTS a published day's
+changes must read `dayPendingItems`, never the raw delta. Still one input a man, on purpose: the Unavailable list
+(D737), the warnings, the Leave War, each man's OIL and his bell, the stored diff and the sign-offs, print, export, the
+SANS calendar.]* The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the
 seed week's pinned warnings, rows and counts do not move.

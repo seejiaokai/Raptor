@@ -1,5 +1,47 @@
 # The file map — where each source file lives and what it does
 
+`[GROUP-INPUT-ONE-ROW]` step 2 (D739, D740 — 11 Oct 26): a request's boxes write the request. New: `src/ui/reqrow.ts`
+(`reqRowText` — the one door every writer of a typed box asks first; it installs itself as `HOOKS.reqRowText` for
+`state/store.ts writeText`) and its test `src/ui/reqrow.test.tsx`. `src/engine/overlay.ts` gained `requestOfBox` and
+`REQ_BOX` (whose a row's four boxes are — shared by the door and the belt in `src/engine/slots.ts txtSet`);
+`src/ui/inputedit.tsx` gained `setInpTitle` (a name typed on the row becomes the input's title). Callers:
+`src/ui/textedit.ts`, `src/ui/board.ts`, `src/state/store.ts`, `src/probe-bridge.ts`.
+**Step 3 (D661, D735 — 11 Oct 26): the entry on the row.** New: `src/engine/inputentry.ts` (`SHARED_FIELDS` and
+`sharedKey`, moved unchanged from `src/state/inputgroup.ts`, which re-exports them; `entryIdOf`) and
+`src/engine/grouprows.ts` (`groundGroups` — which rows of a day are drawn as one); tests `src/engine/grouprows.test.ts`,
+`src/state/grouprow-entry.test.ts`. `src/engine/overlay.ts` gained `placeRequestRow`, `entryPeopleOnce` and
+`carryOilRefusal`, and `requestRowFields` / `srcvOf` write the entry's mark `srcg`; `src/state/view.ts` gained
+`armedRowKey`. Touched: `src/engine/slots.ts` (`acceptInput`), `src/engine/daytpl.ts`, `src/engine/schema.ts`,
+`src/state/holderbase.ts`.
+**Step 4 (D661, D743 — 11 Oct 26): drawn as one.** New: `src/ui/grouprow.ts` (`leadKeyOf` — a place on a row that is
+not drawn resolves to the one row), its test `src/ui/grouprow-draw.test.tsx`, the browser test `e2e/grouprow.spec.ts`
+(added to the `raptor` project in `playwright.config.ts`) and `scripts/handpass/gi-built.mjs` (the built screens in the
+approved pictures' own framing). `src/engine/grouprows.ts` gained `drawnPeople`; `src/state/inputgroup.ts` gained
+`entryLines`. Touched: `src/ui/html.ts` (the ground loop, Personal Inputs), `src/ui/board-html.ts` (`sbGroundPanel`,
+`sbGroupPeople`, `sbInpRow`, `sbInputsGroupPanel`), `src/ui/peek.ts`, `src/ui/interactions.ts`,
+`src/ui/scheduler/04-pucks-sections.css`, `src/ui/scheduler/09-week-responsive.css`.
+**Step 5 (D734, D735, D738, D739, D741, D744, D745 — 11 Oct 26): hands on the one row.** `src/ui/grouprow.ts` is the
+DOOR now — `groupPut`, `groupTake`, `groupLeaveTo`, `groupRetarget`, `groupWrite` (installed as `HOOKS.groupRow` for
+`state/`), `lineOf`, `placeOnRow`, `isRowMan`, `onSharedRow` — and its test is `src/ui/grouprow-hands.test.tsx`.
+`src/engine/overlay.ts` gained `sharedRowOf`; `src/engine/slots.ts` the belt `sharedSeatBar` (asked by `setSlotVal` and
+`fillSlot`); `src/engine/reorder.ts moveGroundRow` moves the one row's rows as a block; `src/ui/inputedit.tsx` gained
+`entryOilAnswer`, `saveFromRow` (a typed box saves the whole entry), `leavingNote`, a fifth parameter on `commitGroup`
+(`opts`), and the dialog of a shared input is the entry's wherever it is opened; `src/ui/pops.ts` gained `OILOWN`;
+`src/ui/html.ts` gained `lateMates`. Callers of the door: `src/ui/drag.ts`, `src/state/view.ts` (`placeArmed`),
+`src/ui/Shell.tsx`, `src/state/store.ts` (`writeSlot`, `writeFill`), `src/probe-bridge.ts`; the row's buttons
+`src/ui/board.ts`; the line's Accept / Undo and the LATE chip `src/ui/interactions.ts`. Tests rewritten to the ruling:
+`src/leavewar/groupwrite.test.ts` (two), `src/ui/batch2.test.tsx` (one); added to `src/ui/groupeditor.test.tsx`.
+**Step 6 (D736, D745, D93 — 11 Oct 26): a published day counts the input once.** New: `src/engine/entryfold.ts`
+(`foldEntries` — the last step of the one counting body; `regroupRides`) and its test `src/state/grouprow-count.test.ts`.
+Touched: `src/engine/publish.ts` (`dayPendingItemsIn` — the fold, and the crowd behind a placeholder that left with its
+request; `dayDiscardCount`; `PendItem` gained `mates` / `people`), `src/ui/pendlist.ts` (`foldedWords`, `entryName`,
+`wentWith`, the `pl-names` line), `src/state/holderbase.ts` (`requestAddMarks` — the added man's puck mark),
+`src/ui/changesmodel.ts` (the item's title counts the names it lists), `src/ui/scheduler/03-week.css` (`.pl-names`).
+**D747 (11 Oct 26): the board row's coloured line stands clear of the row** — `src/ui/scheduler/12-schedule-editing.css`;
+the browser test is in `e2e/grouprow.spec.ts`, the picture script `scripts/handpass/gi-rail.mjs`.
+The behaviour register: `docs/superpowers/specs/2026-10-11-group-input-one-row-behaviour-register.md` (GI1–GI21,
+`scripts/rulecheck.mjs`).
+
 `main` brought into `claude/day-window-compact` (10 Oct 26, D78): no new source file. `scripts/handpass/mj-walk.mjs` is
 the short walk of what only the two together draw — a tap on a change of a row made from a titled input, on the three
 pages (its checks are the right behaviour, so running it again is the re-walk); the record:
@@ -37,6 +79,12 @@ by `e2e/inputs-calendar.spec.ts` ("the dates button opens its calendar on screen
 finger at a point). `scripts/handpass/rng-repro.mjs` is the walk, run before the fix and after it; the record:
 `docs/handpass/2026-10-10-list-dates-picker.md`. `scripts/handpass/b2-pics.mjs` takes the pictures of
 `docs/mock/batch2-choices.html` — the small choices of `[SEEN-BATCH-2]` put to him, each on the real screen.
+
+`[GROUP-INPUT-ONE-ROW]` (10 Oct 26 — a drawing; nothing built): `docs/mock/group-input-one-row.html` is the pictures page
+he approved as drawn ("Yes for all" — D743: the design of record) — the schedule's one row for a shared input, today beside new, on the Ground Programme and under
+Personal Inputs, the week and the board, a phone and a desktop, a published day, ten people; its pictures are
+`docs/mock/img/group-input-one-row/`. `scripts/handpass/gi-mock.mjs` draws them (with `gi-lib.mjs`): it drives the built
+app through its own controls, pictures it, then re-arranges the rows ON THE PAGE into one (`MERGE`) and pictures it again.
 
 `[OIL-WORK-START]` (D591, D592, 6 Oct 26): a flying line's OIL counts from its entered In-time / Rally, and a published
 day keeps the OIL it went out with. The fixes are in `src/engine/oil.ts` (`dayOilWork`'s flying branch reads
@@ -391,6 +439,7 @@ in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old opt
 | `src/state/warnmute.test.ts` | Hiding a warning — the set and its key (Aug 26; WH10, WH11) — the hide keyed by content hides the exact warning but re-appears the instant its day/code/people/message change (the auto-re-arm is a property of the key), tapping again flags it again, and only a scheduler may hide (`canEditSched` at the write path). |
 | `src/engine/warnhide.ts`, `src/engine/hidedetail.ts`, `src/engine/markcheck.ts`, `src/testing/marks-guard.ts` | **`[WARN-HIDE-KEPT]` (1 Oct 26 — D469, D471, D472, D475).** `warnhide.ts`: the ONE key of a hidden warning (`hideKey` — day, rule, the men named, the words with callsigns folded to ids) and the ONE count (`shownWarns`). `hidedetail.ts`: what one ✕ / ↺ did, as its command carries it to the change history and Undo's label (no imports). `markcheck.ts`: `markOrphans` — every ring, chip, dash and next-day mark must belong to a warning of its own day and rule (no imports). `marks-guard.ts`: the test setup that runs that check after EVERY `validate()` of both suites (`vite.config.ts` setupFiles; the Leave War suite's setup imports it). The rest of the build is in `engine/validate.ts` (`marks`, `traces`, `shownOf`, `rawWarn`, the face under a version's own hides, `HOOKS.hideNow`), `engine/publish.ts` (`hidePending`), `engine/weekctx.ts` (`dayHidesIn`, `nextMondayHides`), `state/view.ts`, `state/store.ts`. |
 | `src/ui/insights-published.test.tsx` | **`[INSIGHTS-WHICH-COPY]`'s tests** (rule IN1; D477, D478, 1 Oct 26) — a hide, a seat, a cancelled formation and a leave waiting on a published day move no figure of the Insights window, on any page, until the amendment is out, then all move together; a day not yet published moves at once; the issues tile reads the same count as the lists; "Not on the flying programme" follows the published days' own rosters. |
+| `src/ui/warnopen-colour.test.tsx`, `scripts/handpass/warnring-walk.mjs` | **An open issues list lights each man in his own item's colour** (his find, 11 Oct 26 — `docs/ui-contracts.md` §Each lit man wears the colour of HIS OWN item): the test clicks the day's bar in the mounted app and reads each lit puck's colour against the worst line naming him; the walk script does the same on the built bundle, reading the PAINTED outline colour, on View-only Sched, Edit Schedule's week and the Scheduler Board at phone and desktop width (`node scripts/handpass/warnring-walk.mjs <url> <label>`; evidence: `docs/handpass/2026-10-11-group-input-one-row.md` §14). `scripts/handpass/gi-aa-story.mjs` takes the five step-by-step pictures of an ALL AVAIL puck on a shared input's row (D745) he asked for. |
 | `src/engine/warnhide.test.ts`, `src/state/warnhide-kept.test.ts`, `src/state/warnhide-published.test.ts`, `src/ui/warnmute-week.test.ts`, `src/ui/warnhide-readers.test.tsx`, `e2e/warnhide.spec.ts` | **`[WARN-HIDE-KEPT]`'s tests** (register `docs/superpowers/specs/2026-10-01-warn-hide-behaviour-register.md`, WH1–WH13). Engine: nothing hidden = the raw bundle, the forced replay rebuilds the maps, a hidden warning's flag goes and nobody else's, the key under a rename. State (a real saved store): a reload, the next edit, a sign-in, a member, Undo / Redo. Published: one pending change on every count, the four, the amendment's item count, the face before and after, Unpublish, Load, a look at an older version, the history line, the week-edge mark and the next-week preview. Lists: the struck line in place, the counts, every issue hidden, View-only Sched, the board, the ⓘ popup (rewritten — it pinned the Aug 26 "N hidden" fold). Readers (the roll-call's rows past the maps, each cut once by the break tests — the sheet's §6): an exempt desk and an exempt flying line, the ALL AVAIL window's reason, a puck's tap and "also flagged on", the names lit by an open box, the drop message, Insights by day and by type. Browser: painted struck, the ↺ on top, the puck plain, read back after a reload, a member — desktop and phone. The walk's own drivers: `scripts/handpass/wh-lib.mjs` (the lists as painted, the ✕ / ↺, a man's pucks, the table), `wh-look1.mjs` (a finished example), `wh-mock.mjs` (the mock-up's pictures), `wh-a-*` / `wh-b-*` / `wh-c-*` (the three walkers' own). |
 | `src/ui/boardwrap.test.tsx` | The board's text boxes wrap and grow (20 Aug 26, 8 tests) — every remarks box and every name/role box is a `<textarea>`, every TIME cell is still an `<input>` (the deliberate exclusion, pinned so a later pass does not "finish the job"), a value round-trips through textarea content unchanged (the leading-newline trick), and Enter still COMMITS while Shift+Enter is left alone and Escape restores. jsdom reports every rect 0×0, so the box actually GROWING — and a long unbroken word breaking rather than overflowing — is measured in `e2e/geometry.spec.ts` instead. |
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
@@ -912,3 +961,5 @@ save callbacks carry the actual retained row; `undo-wire.ts` requests the
 directional image before restore, validated by the live renderer afterward.
 Final fresh R2 brief/report: `docs/superpowers/briefs/2026-10-05-inputs-sans-astra-final-r2.md`
 and `docs/handpass/2026-10-05-inputs-sans-astra-final-r2.md`; immutable after dispatch.
+`src/leavewar/schedlate.test.ts` (11 Oct 26, `[GROUP-INPUT-ONE-ROW]` step 1 — D741, D742): a change made from a row on the
+schedule (`setInpField`, `reassignInput`) leaves the late date alone for a scheduler; the window still stamps it.
