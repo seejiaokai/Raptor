@@ -1078,6 +1078,7 @@ export function personMatchesHL(p:any){
    turn split over midnight — is visible without hunting for it. With no single
    warning focused, every expanded day box lights all of the people flagged that
    day, scoped per day, and nothing echoes. */
+const SEVRANK:any={hard:3,adv:2,note:1};
 export function warnFocusMap(){
   /* a focused warning always owns the highlight, even inside a person focus —
      the box stays narrowed to the clicked person, the lighting follows the
@@ -1099,17 +1100,23 @@ export function warnFocusMap(){
     const g=displayedByDay(WFOCUS.di), ws=(g&&g.warns)||[]
     const live=ws.some((w:any)=>w.code===WFOCUS.code&&String(w.key||'')===String(WFOCUS.key||''))
     if(!live)return null
-    const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sev:WFOCUS.sev});
+    const m=new Map();m.set(WFOCUS.di,{ids:new Set(WFOCUS.ids),sevs:new Map(WFOCUS.ids.map((id:any)=>[id,WFOCUS.sev]))});
     return {map:m,echo:new Set(WFOCUS.ids),sev:WFOCUS.sev};}
   if(PFOCUS)return null;          // a clicked puck alone uses the ordinary selection highlight
   if(!DWOPEN.size)return null;
   const m=new Map();
   DWOPEN.forEach((di:any)=>{const g=displayedByDay(di); if(!g||!g.warns||!g.warns.length)return;   /* per displayed version (Codex R3-004) */
-    const ids=new Set(); let sev='adv';
+    const ids=new Set(), sevs=new Map();
     /* an open box lights the men its SHOWN warnings name — a hidden warning lights nobody (D469); a TAPPED hidden line
        still lights its crew through WFOCUS above, so what was hidden can be found */
-    g.warns.forEach((w:any)=>{ if(w.off)return; (w.who||[]).forEach((id:any)=>ids.add(id)); if(w.sev==='hard')sev='hard';});
-    if(ids.size)m.set(di,{ids,sev});});
+    /* EACH MAN IN THE COLOUR OF HIS OWN WORST ITEM (his find on his phone, 11 Oct 26). This kept ONE severity for the
+       whole day — the worst on it — so a day with a single red clash lit every man its list named in red: three men
+       whose only item was a long work day wore the ring of a double booking, and closing the list (each puck back to
+       its own flag) was what showed the open list to be the part that lied. `sevs` is per man — the worst of the
+       shown items that name HIM: red, amber, or the grey of a note (a long work day), the colour its line in the list
+       and his own ring already carry; ui/highlights.ts turns it into the ring. */
+    g.warns.forEach((w:any)=>{ if(w.off)return; (w.who||[]).forEach((id:any)=>{ids.add(id); if(!sevs.has(id)||SEVRANK[w.sev]>SEVRANK[sevs.get(id)])sevs.set(id,w.sev);});});
+    if(ids.size)m.set(di,{ids,sevs});});
   return m.size?{map:m,echo:null,sev:null}:null;
 }
 /* ---- FRESHLY ADDED FLASH (owner, 14 Aug 26) -------------------------------

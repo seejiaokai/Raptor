@@ -3789,3 +3789,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the handoff skill's "unfinished work" guidance, add: where the next step is designed but not built, prefer leaving the failing tests (parked under a name the build does not compile) plus a one-page note of the shapes they call, over a prose-only description; and tell the next chat to mark the note as built when it is.
 
 **Principle:** Hand over executable intent, not only prose: a parked failing test carries the design's exact contract across a context boundary and gives the receiver an unambiguous first action.
+
+### Observation 517: A scratch file copied into a repo folder overwrote a tracked file of the same name
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** [GROUP-INPUT-ONE-ROW], a small walk script being debugged; numbered on claude/group-input-one-row only — other open branches' logs were not read.
+**Skill:** New skill candidate: scripted-browser walks in a repo (working name)
+**Type:** open-source
+**Phase/Area:** Temporary files placed inside the project tree
+
+**Issue:** A one-off debug script had to sit inside the project (its imports resolve from there), so it was copied in under a throwaway name, run, and deleted. The name was already a TRACKED file. The copy overwrote it and the delete removed it; only a later `git status` showing an unexpected deletion revealed it, and `git checkout` restored it.
+
+**Suggested improvement:** Before writing a temporary file into a tracked folder, check the name is free (`git ls-files --error-unmatch <path>` fails, and the file does not exist), or use a name that cannot collide (a session-unique suffix); and read `git status` after cleaning up, expecting no deletions.
+
+**Principle:** A temporary name inside a shared tree is a write to shared state: prove the name is unused before the write, and verify the tree afterwards, because overwrite-then-delete leaves no error to notice.
+
+### Observation 518: A written-down tooling trap was repeated under load, because the note is a reminder and not a gate
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** Same session; a multi-line script passed to the shell as a here-document failed on an apostrophe — a trap already recorded in the agent's memory and in the branch's handoff block.
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** What turns a recorded lesson into changed behaviour
+
+**Issue:** The trap ("a here-document whose body holds an apostrophe never parses here; write the script with the file tool and run the file") was loaded at the start of the session in two places. Three here-documents without apostrophes then worked, which made the fourth — with apostrophes in its prose — feel safe. It failed, and the script was rewritten through the file tool. The cost was one round trip, but the pattern is general: a remembered caution loses to a method that has just worked several times.
+
+**Suggested improvement:** Where a tooling trap has a strictly safer alternative that costs nothing extra, record it as the DEFAULT method ("scripts are always written with the file tool"), not as a condition to check ("unless it contains an apostrophe"); a condition has to be evaluated every time, a default does not.
+
+**Principle:** Record a recurring trap as an unconditional safer default rather than a conditional warning: rules that need a per-use judgment are the ones that get skipped once the risky path has succeeded a few times.

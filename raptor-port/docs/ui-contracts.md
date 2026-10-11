@@ -3498,9 +3498,18 @@ saying which row had done it. All four emit `on` by the same test now —
 the next day's warning. The panel closes itself on the click (its own
 contract), so its mark shows on reopen.
 
+**Each lit man wears the colour of HIS OWN item (his find on his phone, 11 Oct 26).** A day's list, opened by its
+bar, lights every man its shown lines name — each in the colour of the WORST shown line that names him: red (bare
+`wfoc`), amber (`advf`, an advisory) or grey (`notef`, a note — a long work day), the colour that line carries in the
+list and his puck's own ring carries at rest. A tapped line lights its crew in that line's colour, by the same step
+(`ui/highlights.ts litSev`; the per-man level is `sevs` in `state/view.ts warnFocusMap`). Until then an open list kept
+ONE level for the whole day — its worst — so one clash turned every listed man red, and anything not red lit amber. The
+boxes a warning addresses (`.badtm`) keep red or amber. Pinned by `src/ui/warnopen-colour.test.tsx`; walked on the
+three surfaces (`docs/handpass/2026-10-11-group-input-one-row.md` §14).
+
 **The click's LIGHTING is deliberately the warning colours, not blue (owner,
 7 Aug 26 — considered and declined).** A clicked warning lights every person
-it names — all four of a double-turning crew — in `wfoc` red or amber and
+it names — all four of a double-turning crew — in `wfoc` red, amber or a note's grey (the paragraph above) and
 fades the rest; painting the first-named in the selection blue was proposed,
 built and rolled back the same day. Blue means one thing in this app: the
 puck-click selection (which also narrows the lists to that person; the row

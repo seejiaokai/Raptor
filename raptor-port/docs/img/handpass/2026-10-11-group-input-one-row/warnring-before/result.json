@@ -1,0 +1,157 @@
+{
+ "base": "http://localhost:4180/",
+ "label": "before",
+ "rows": [
+  {
+   "where": "View-only Sched · phone · list open",
+   "lit": 23,
+   "colours": "red",
+   "bad": [
+    "Wildcard: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Wildcard: painted red, his worst item is amber",
+    "Tally: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber"
+   ]
+  },
+  {
+   "where": "View-only Sched · phone · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · phone · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · phone · a tapped grey line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": [
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey"
+   ]
+  },
+  {
+   "where": "Edit Schedule · phone · list open",
+   "lit": 25,
+   "colours": "red",
+   "bad": [
+    "Wildcard: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Wildcard: painted red, his worst item is amber",
+    "Tally: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber",
+    "Tally: painted red, his worst item is amber"
+   ]
+  },
+  {
+   "where": "Edit Schedule · phone · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · phone · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · phone · a tapped grey line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": [
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey"
+   ]
+  },
+  {
+   "where": "View-only Sched · desktop · list open",
+   "lit": 23,
+   "colours": "red",
+   "bad": [
+    "Wildcard: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Wildcard: painted red, his worst item is amber",
+    "Tally: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber"
+   ]
+  },
+  {
+   "where": "View-only Sched · desktop · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · desktop · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "View-only Sched · desktop · a tapped grey line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": [
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey"
+   ]
+  },
+  {
+   "where": "Edit Schedule · desktop · list open",
+   "lit": 25,
+   "colours": "red",
+   "bad": [
+    "Wildcard: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber",
+    "Echo: painted red, his worst item is amber",
+    "Wildcard: painted red, his worst item is amber",
+    "Tally: painted red, his worst item is amber",
+    "Relay: painted red, his worst item is amber",
+    "Tally: painted red, his worst item is amber"
+   ]
+  },
+  {
+   "where": "Edit Schedule · desktop · a tapped red line",
+   "lit": 4,
+   "colours": "red",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · desktop · a tapped amber line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": []
+  },
+  {
+   "where": "Edit Schedule · desktop · a tapped grey line",
+   "lit": 4,
+   "colours": "amber",
+   "bad": [
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey",
+    "Saber: painted amber, his worst item is grey"
+   ]
+  }
+ ],
+ "errs": []
+}

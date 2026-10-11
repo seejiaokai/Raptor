@@ -36,6 +36,10 @@ export function warnWeekId(){return CURPAGE==='editsched'?'eWeek':'vWeek';}
    (SchedBoard.tsx uses hidden={!open}), so querying for it would say "open"
    with the board shut. */
 export function warnOnBoard(){return SBDAY!=null&&!!WFOCUS&&WFOCUS.di===SBDAY;}
+/* THE LIT RING WEARS THE ITEM'S OWN COLOUR (his find, 11 Oct 26): red is the bare `wfoc`; an advisory adds `advf`
+   (amber); a note — a long work day — adds `notef`, the grey its line in the list and the man's resting ring carry.
+   Anything that was not red used to light amber, so three men with a long work day and nothing else read as advised. */
+const litSev=(el:any,sev:any)=>{ if(sev==='note')el.classList.add('notef'); else if(sev!=='hard')el.classList.add('advf'); };
 export function refreshHighlights(){
   const wf=warnFocusMap();
   const hlActive=HLSET.size>0||!!SEARCH;
@@ -49,7 +53,7 @@ export function refreshHighlights(){
      visits only the ~660 pucks. The loop stays. */
   document.querySelectorAll('.puck[data-person]').forEach((el:any)=>{
     const id=el.dataset.person, p=PEOPLE[id];
-    el.classList.remove('me','sel','hl','dim','wfoc','advf','echo','flagnew');
+    el.classList.remove('me','sel','hl','dim','wfoc','advf','notef','echo','flagnew');
     if(!p)return;
     /* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has
        just flagged blinks on its own day for a moment — the day the rule
@@ -75,9 +79,10 @@ export function refreshHighlights(){
       /* the board renders one day, so there is no .day[data-day] to read and no
          echo to paint — warnOnBoard() has already established it is WFOCUS's day */
       const g=onBoard?wf.map.get(WFOCUS.di):(()=>{const d=el.closest('.day[data-day]');return d?wf.map.get(+d.dataset.day):null;})();
-      if(g&&g.ids.has(id)){el.classList.add('wfoc'); if(g.sev!=='hard')el.classList.add('advf');}
+      /* the colour is the man's own (g.sevs, state/view.ts warnFocusMap) — never the day's worst */
+      if(g&&g.ids.has(id)){el.classList.add('wfoc'); litSev(el,g.sevs.get(id));}
       /* same aircrew, a different day — dashed, so you can trace what fed into it */
-      else if(!onBoard&&wf.echo&&wf.echo.has(id)){el.classList.add('wfoc','echo'); if(wf.sev!=='hard')el.classList.add('advf');}
+      else if(!onBoard&&wf.echo&&wf.echo.has(id)){el.classList.add('wfoc','echo'); litSev(el,wf.sev);}
       /* dim the rest on the board too — it is denser than the week, and finding
          the puck is the whole point of having clicked the warning */
       else el.classList.add('dim');

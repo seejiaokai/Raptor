@@ -318,11 +318,15 @@
 /* the puck (or pucks) that caused the focused warning */
 .puck.wfoc{outline:2px solid var(--hard);outline-offset:1px;box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(240,85,95,.55);z-index:5;position:relative}
 .puck.wfoc.advf{outline-color:var(--adv);box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(229,168,59,.5)}
+/* a NOTE's crew (a long work day) lights in the note's own grey — the bar of its line in the list, the ring the puck
+   wears at rest (04-pucks-sections.css .puck.warn.note) — never the advisory amber (his find, 11 Oct 26) */
+.puck.wfoc.notef{outline-color:#8A96A3;box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(138,150,163,.5)}
 /* B14 · the SAME aircrew on the other days of the week — dashed and quieter, so
    a cause sitting on the day before (crew rest, a late land, a double turn) is
    traceable without competing with the puck that actually raised the warning */
 .puck.wfoc.echo{outline-style:dashed;outline-offset:1px;box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(240,85,95,.28);opacity:.92}
 .puck.wfoc.echo.advf{box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(229,168,59,.26)}
+.puck.wfoc.echo.notef{box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(138,150,163,.26)}
 /* the callsign chip shown on a day box that was opened by clicking a puck */
 .dwbox.pfoc .daywarn{border-style:dashed}
 .daywarn .dwwho{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800;

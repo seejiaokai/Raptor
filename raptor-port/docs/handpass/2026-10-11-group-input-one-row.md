@@ -222,6 +222,7 @@ probes:adapted`, `npm run perf` — owed before the pull request (the row drawin
 
 ## 12. Where the check stands
 
+**WHERE IT STANDS ON 11 OCT 26, THE AFTERNOON:** the two probe runs owed in (3) below are DONE and green; his find of the wrong ring colours, older than this job, is fixed and checked on this branch (§14); his two answers (§13) and his look are still owed, and the pull request is NOT opened. What follows is the night's own record.
 **WHERE IT STANDS NOW (11 Oct 26, the end of the unattended run):** the walk is done (37 scenarios; one fault of this
 job found and fixed), Fable's read is done (§12a: one medium fault fixed with a failing test first, one small wording
 fixed, one older cosmetic filed), the whole gate set is wholly green on the final code (§11), the ledger has its row,
@@ -335,3 +336,65 @@ built bundle was NOT walked after the fix — **on his look card.**
 - **Scheduler Board on your phone, Monday:** the blue and orange lines sit left of the pucks and buttons.
 - **Two shared inputs on one day** (the one case fixed after the walk): drag a man from one's row onto the other's. He
   should be on the second row only — gone from the first — and one Undo puts him back.
+
+## 14. His find on the preview (11 Oct 26) — the open issues list lit every man in the day's worst colour
+
+**What he saw, on his iPhone, on this branch's preview:** with a day's issues list open, every puck the list names
+wore one colour — amber on a day whose only items were long work days, red on a day with one clash, the men with only a
+long work day included — and with the list closed each puck was right again. *"Is this a new bug or had been there all
+along"*: **there all along** — the one colour for the whole day dates from 31 Jul 26 (`state/view.ts warnFocusMap`),
+and a note lighting amber is as old as the lighting itself; `main` does the same. It is NOT this job's — it is fixed
+here because he found it on this preview (D23), as its own small check.
+
+**The cause:** an open list kept ONE level for the whole day — the worst on it — and anything that was not red lit
+amber. **The fix:** each lit man wears the colour of the worst shown item that names HIM — red, amber, or the grey of a
+note (a long work day): the colour its line in the list and his own ring at rest already carry. A tap on one line
+lights its crew the same way. `state/view.ts` (`warnFocusMap` — `sevs`, per man), `ui/highlights.ts` (`litSev`),
+`ui/scheduler/08-windows-tools.css` (`.puck.wfoc.notef`). **The agent's reading, told to him and his to overrule:** a
+long work day lights GREY, not amber — his "amber … inaccurate" on the day of three long work days; the written
+contract said "red or amber" (`docs/ui-contracts.md`, 7 Aug 26), which was about not using the selection's blue.
+
+**The eight questions:** earned leave — no (nothing counted moves); the published record — no (nothing is stored or
+sent out; the lighting is the viewer's own); saved data — no; **a shared drawer — YES** (one routine lights the pucks of
+View-only Sched, Edit Schedule's week, the Scheduler Board and a look at a published version); a new gesture — no; a
+new surface — no; roles — no; the warning list — no: no line's words, level or count moves, only the colour of the
+light on the pucks. **Tier: WALK.**
+
+**The roll-call — every place a warning lights a puck:**
+
+| Place | The open list lights it | A tapped line lights it | Mark |
+|---|---|---|---|
+| View-only Sched, the week | has it | has it | SEEN and OPERATED, phone and desktop |
+| Edit Schedule, the week | has it | has it | SEEN and OPERATED, phone and desktop |
+| Scheduler Board | must not — the board's list lights nothing by being opened; only a tapped line does (as before) | has it | SEEN and OPERATED, phone and desktop |
+| The same man on the week's other days (the dashed ring) | must not — only a tapped line has an echo | has it — same routine, same colour | carried by the code path walked (one function, `litSev`); NOT separately pictured |
+| A look at a published version (D187) | has it — the same routine, that version's own list | has it | NOT walked — same routine and same list-reading; named so his look can press it |
+| A box a warning addresses (a line's timing fault) | must not — it names no man | has it — red or amber, unchanged | not touched |
+| The crew palettes, the ALL AVAIL window | must not — never lit by a warning (a palette puck is a drag source) | must not | not touched |
+| The resting ring and the flag on a puck | — | — | not touched: they were right, which is how he saw the lit ones were wrong |
+
+**The sizing (D607):** (1) type D and E — one mark drawn in several places by ONE routine, and a new colour of it;
+(2) only a walk can show the colour as PAINTED on each surface and at each size, and that the board still lights
+nothing by opening its list; the unit test already proves which class each man gets, through the app's real bar and
+lines; (3) the ledger's rows of type E and D: small host walks found the painted faults (a mark asserted as painted,
+anti-pattern 21); (4) **chosen: the host alone, one scripted browser, 22 checks** — three surfaces, phone (390 wide)
+and desktop (1440), the list opened on a day that mixes levels, then one tapped line of each colour — each lit puck's
+PAINTED outline colour read and compared with the worst line that names him; no short screen (nothing is laid out
+anew); (5) the ledger's row is added.
+
+**The walk — `scripts/handpass/warnring-walk.mjs`, on the built bundle:** on the build BEFORE the fix **8 of 16 PASS**
+— the list open: men an amber item names painted red, on both weeks at both sizes; a tapped long-work-day line: amber
+where its line is grey (pictures `docs/img/handpass/2026-10-11-group-input-one-row/warnring-before/`). On the fixed
+build **22 of 22 PASS, no browser error** (`…/warnring-after/`; the board's six are the tapped lines). Pictures opened
+by the host: `Edit Schedule-phone-lit1.png` before and after (Wildcard, named by an amber item, red before and amber
+after, beside three men a clash names, red in both), `Edit Schedule-phone-tapped-note.png` (the grey ring).
+**The break test:** `src/ui/warnopen-colour.test.tsx` — the bar clicked in the mounted app — seen FAILING before the
+fix ("bapster:RED, freak:RED, dirty:RED, nick:RED" where amber was due), 4 of 4 after; the files beside it (the hidden
+warning's readers, the week's interactions, the box a warning lights, the lift's styles) 118 of 118.
+**Not walked:** the look at a published version and the dashed ring on other days (the table above); his own exact
+day (a shared Training row beside a Common Programme row) — the demo week's mixed day stood in for it.
+**The method line his find costs (the order's §11):** OWED, not made here — a change to the checking guide is read by
+Astra and Sol before he approves it (D70), and ChatGPT is out until 14 Oct: filed as `OUTSTANDING.md`
+`[METHOD-LIT-COLOUR]`.
+**The gates on the fixed code (11 Oct 26, the afternoon; the whole set under the PC lock, nothing else running, one run):** unit 10089 / 10089 (590 files) · build clean · tfin 728 / 0 · e2e 767 passed, 1 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. The one failure is the Leave War phone test "several Required cells are picked with a drag and given one number…", at its month-button step — the unsteady one already filed (`OUTSTANDING.md` `[LW-REQ-PICK-MONTH-UNSTEADY]`, 8 Oct 26), nothing of this work: by itself, three times over, 3 of 3. `npm run probes:adapted` 36 / 0 and `npm run perf` 4 / 0 (both DOM ceilings held) on the same build — the two owed before the pull request by §11. The ring walk run again on that build: 22 of 22.
+`Walk: docs/handpass/2026-10-11-group-input-one-row.md §14 · 36 pictures (warnring-before, warnring-after) · 3 of the roll-call's places seen and operated at phone and desktop width (2 named as not walked, each with its reason) · 22 checks: the list opened, and one tapped line of each colour · MISSING: 0`
