@@ -622,7 +622,7 @@ the age at the right — every notice fits two lines, and it leads with the item
 waiting (an access request, a bug report, an OIL question, in that order): the plan keeps those "first, as now".
 *Recommended:* as the plan has it — a tap still goes straight to one of those where one waits, and opens the list
 otherwise; the other answer (drawn as `bell-desk-list-oil-first.png`) makes the OIL question the first line of the one
-list, so the bell behaves one way. Waits on it: step 7's list on screen (its record and wiring are built without it).
+list, so the bell behaves one way. Waits on it: step 7, whole — its record and wiring are NOT built ahead of the look (D766 reading 1, corrected 12 Oct 26: the record sits in the command layer, is proved only with its list on screen, and this answer can change what a notice holds).
 
 **Waiting on him:** nothing before the build. **D764:** the build starts on Fable's read alone; at the merge he is
 asked, beside the gates and the check, whether to wait for a ChatGPT read of the finished code.
@@ -1015,3 +1015,72 @@ board's own buttons in jsdom); the job's walk does.
 
 **The gates:** the affected test files green and `npx tsc -b` clean at this step, as §5 asks; the whole gate set is run
 after step 6, for steps 4 and 6 together.
+
+### Step 6 — the dead code out (12 Oct 26) — built BEFORE step 5, whose screen waits for his look (D766)
+
+**Removed, as §5 step 6 lists:** `src/ui/grouprow.ts` (`leadKeyOf`, `lineOf` — each had become "return what you were
+given"), `src/engine/entryfold.ts`, `src/state/inputgroup.ts` (`entriesOf`, `entryRowsOf`, `entryLines`),
+`src/engine/inputentry.ts` (`SHARED_FIELDS`, `sharedKey`, `entryIdOf` — the old entry mark); `engine/grouprows.ts`
+`groundGroups`, `RowGroup`, `drawnPeople` — the file stays for `rowPeopleDrawn` and `inputRowSeveral`, which the plan's
+list had going with it; `ui/inputedit.tsx` `commitGroup`, `removeEntry`, `oilSummaryOf`, `entryOilAnswer`.
+`leavingNote` was already gone. The callers simplified: `ui/interactions.ts` (the jump, the Personal Inputs line's
+press), `ui/board.ts` (the ✕, CX, red box and information only no longer act on "the rows of one row"),
+`ui/InputsCal.tsx`, `engine/daytpl.ts`, `engine/reorder.ts`. `docs/file-map.md` in the same change.
+
+**One thing folded rather than dropped:** `removeEntry` said the shared sentence when a person who may not delete an
+input of several tried to; `removeInput` says it now for an input of several or of ALL AVAIL ("Only Saber — who filed
+it — or an admin can delete this for everyone"), and "You can only delete your own inputs" for an input of one.
+
+**Not removed, and why:** `engine/oilev.ts`'s `'gone'` / `'elsewhere'` standings and `landedExtras` /
+`landedHasSentinel` — §4.7 has them going, but they are what the legacy reader of a block issued before the build
+still reads (D48, D142: an issued day keeps the OIL it went out with); `ui/pendlist.ts wentWith` likewise, for a row
+issued before the build.
+
+**Tests.** Six files leaned on the removed code; a helper who did not write the build re-expressed them (the
+four-choice brief): where a case pinned behaviour that still exists it is on the live function now (`rowPeopleDrawn`,
+`removeInput`, `oilSummary`, the real jump); five cases that pinned only a removed function's internals are retired
+BY NAME at the head of `engine/grouprows.test.ts` (the three `entryIdOf` cases, "`drawnPeople` … old name",
+"groundGroups — no ground rows"); `state/inputgroup.test.ts` keeps its name though its module is gone — it pins the
+one record's shape at the write and its per-person views. Eighteen cases added in a second pass (a day template, a
+reorder drag, the row's ✕, the marks on a scheduler's own row, the Personal Inputs line, the changes window's jump).
+
+**Found by that pass — two faults left by STEP 2, fixed here, each pinned by its case:** (1) the ✕ on the row of an
+input of several said "…, Nomad +2" where it had said "3 people" — it names how many again, a placeholder said beside
+them (`ui/board.ts`); (2) a tap in the changes window on a change of an input of several waiting under Personal
+Inputs answered "That input is not shown on this day", its line in plain sight, wherever its first to join was not
+its first A to Z — the line is addressed by the first DRAWN, the tap named the first to JOIN
+(`ui/histbubble.ts findInputCell`: the line of that input, whoever of its people it is addressed by).
+
+**Also here:** `state/perms.ts INPUT_FILER_NOTE` carries D760's clause, word for word what `docs/data-model.md` §11
+says (D200) — the test that pairs the two was red from step 4's document change until this commit.
+
+**The whole gate set after steps 4 and 6 (12 Oct 26):** unit 10545 / 10545 (602 files) · build clean · tfin 728 / 0 · e2e 768 passed, 1 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. The one failure is the Leave War desktop timing test ("the grid draws a window of months…", D84), which this work does not touch: by itself, three times over, 3 of 3. **Steps 1 to 4 and 6 are built and gated; steps 5 and 7 wait for his look at their pictures (§8, Q2–Q4); the job's FULL check and Fable's read wait for those two screens.**
+
+### Step 8, first pass — the records for what is built (12 Oct 26); a second pass is owed after steps 5 and 7
+
+**The reference documents were swept by a helper** (documents only; every change a dated correction beside the old
+text, with its D-numbers — nothing trimmed, nothing reworded; `npm run docsize` OK) **and its list of changes read by
+the host**, who sampled the new passages against the source:
+`docs/engine-rules.md` (the landing paragraph — D468 as D760 changed it; the shared-row and entry paragraphs headed
+"no longer exists" with what replaced them; a new bullet stating the one rule as built; OIL — "One answer for everyone
+in an input", D762; the people step of the published count; who may; ALL AVAIL as one of the people; information only
+on an input's row), `docs/ui-contracts.md` (the one row; the Unavailable row's `iu:<iid>~<person>`; the input's
+window on `commitInput`, one OIL answer, "Take me out"; the picker's two placeholder pucks and their words),
+`docs/feature-impact.md` (a surface row for the one rule, the flows, nine new drift seams — the row is a copy of the
+input, the marks on the input, `leftAt` at a leaving, `inputSilent` among them), `docs/data-schema.md` and
+`docs/data-model.md` (the `people` list and each superseded field; an `InputPerson` child list PROPOSED for the IT
+side — theirs to settle; §9 rule 9; §11's `Input` row is the builder's own change, paired with `perms.ts`),
+`docs/undo-contract.md` (one record an input: the conflict test is per input now), the group-input and OIL-seats
+behaviour registers, and `raptor-port/CLAUDE.md`'s slot grammar (one sentence for `iu:<iid>~<person>`).
+
+**One correction the sweep made to this plan's letter:** §4.11 says the owner of an input's change "is the command's
+actor". As built (`undo/derive.ts`), a change to an input is owned by the input's one person where it has exactly one,
+and has no single owner otherwise — the step's actor decides whose Undo step it is. The documents say what the source
+does.
+
+**Left for the second pass** (with steps 5 and 7): source comments that still name the removed code (`commitGroup` and
+`oilSummaryOf` in `ui/inputedit.tsx`'s comments; about fifteen comments pointing at the four deleted files) — a tidy
+of words, no behaviour; `docs/ui-contracts.md` §A member edits only their own personal inputs and §Editing an input
+from the schedule, not read in depth by the sweep; the new behaviours have no behaviour-register ids of their own yet
+(an id needs its line in `scripts/rulecheck.mjs`); the cancelled input's look and the bell, once built. **And then the
+FULL check** (§7) and Fable's read of the finished code (D764).

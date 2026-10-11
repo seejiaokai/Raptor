@@ -144,7 +144,8 @@ reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
   input's own id, no day component (one input can cover several loaded
   days, and none is more "its" day than another); addresses `INPUTS`, not a
   schedule row, so it never runs through `slotVal`/`setSlotVal`/`fillSlot` —
-  `reassignInput` (`ui/inputedit.tsx`) is its one write path.
+  `reassignInput` (`ui/inputedit.tsx`) is its one write path. One man's row of an input
+  that holds several is `iu:<iid>~<person>` — one parser, `engine/keys.ts iuParts` (D755, D737).
 - Text keys: `dn:` day note · scheduler notes `pn:` programme, `dtn:` duties,
   `sn:` sims, `gn:` ground · `ap:` programme · `wl:`
   wave label · `ff:` formation · `fr:` flight remarks · `it:` in-times ·

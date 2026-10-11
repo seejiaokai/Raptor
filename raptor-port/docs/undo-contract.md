@@ -329,6 +329,29 @@ barrier from its undo's restore (`undoneSeq`). A step blocked by such a sticky b
 next press takes, then is passed over — still guarding older steps (the plan's §11.5; on his look card). In one browser
 another person's change never reaches the list (it empties at every sign-in); the unit models are `timeline-cr.test.ts`.
 
+**An input is ONE record — since the one-rule build (12 Oct 26, `[ALL-AVAIL-AS-MEMBER]`; owner D756, D759 reading 9;
+the plan `superpowers/plans/2026-10-11-one-rule-plan.md` §4.9, §4.11).** An input filed for several people was one
+record a person (a command over N records); it is now the one record `inputs/<iid>`, its before and after images
+whole, the list of its people (`people`) inside them. What follows for Undo:
+- **The conflict test is unchanged in kind — per record (D148) — and is therefore per INPUT:** an Undo of a change to
+  an input is refused once someone else has changed that same input, where before it was refused only when they had
+  changed the same man's record. Two people changing their own parts of one input now change one record.
+- **Whose record it is** (`undo/derive.ts ownerOfChange`): the input's ONE person, where it holds exactly one named
+  person and nothing beside him (`engine/inputs.ts onlyNamed`); an input for several, or one that holds ALL AVAIL /
+  ALL, has no single owner. Whose STEP a change to it is, is the step's own actor (`undo/timeline.ts isOwn`).
+- **What a member may reverse of it** is asked of the step's recorded images by the ONE predicate the commit gate
+  uses for "this change is his own part" — `state/perms.ts ownPart` (`othersInputs`, through `hooks.ownPart`): his
+  own one-person input, or the two images differing only in his own entry being in one list and not the other — so
+  his Undo of his own "Take me out" is his. Anything else of another person's asks the filer's rule (`hooks.filerMay`),
+  as before.
+- **What one record may hold is held at the restore too:** `engine/inputs.ts shapeProblem` runs at the save boundary
+  for every command, an Undo's and a Redo's included (`state/store.ts`).
+- **One hand on an input's row is one step.** A person put on, taken off, replaced or moved on the row, and a CX,
+  red box or "information only" set there, is ONE input command (`ui/reqdoor.ts`): the place he was dragged to, or
+  the seat the man replaced takes, is written INSIDE it, so one Undo puts back both. The row itself is never part
+  of the step — it is worked out from the input after the command, as §0 says of every request's row.
+- **A stored record in the old shape** (`person`, no `people`) restores as it was; nothing is converted (D56).
+
 **What the one undo does NOT take back yet (owner, D350, 28 Sep 26 — "4 ok"):** adding a person, Archive, Restore /
 Restore as, Delete (never — D287) and a posting — each writes the Leave War's posting record (`lw.postouts`), deferred
 since CMDL-FINISH (CMDLF-002); `OUTSTANDING.md` `[UNDO-POSTING-RECORD]`. Every other roster and settings change is
