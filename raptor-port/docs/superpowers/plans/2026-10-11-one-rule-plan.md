@@ -848,3 +848,9 @@ ALL AVAIL beside ALL — one sentence for both.
 
 **The whole gate set, watched once after all of it (12 Oct 26):** unit 10208 / 10208 (597 files) · build clean · tfin 728 / 0 · e2e 768 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. The look at this stop, and what was
 not checked: `../../handpass/2026-10-12-one-rule-step2.md`. **Step 2 is built; he is shown it before step 3.**
+
+### Step 3 — ALL AVAIL / ALL as one of an input's people (12 Oct 26)
+
+**His word for the run (D766, 12 Oct 26):** shown step 2, he asked for step 3 with a stop before step 4; going to sleep
+while it was being built he lifted that stop — the job runs on unattended through step 8, and what needs his answer
+waits for him (the pictures of steps 5 and 7 among it).

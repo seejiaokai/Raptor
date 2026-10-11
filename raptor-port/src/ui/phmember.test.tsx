@@ -47,9 +47,9 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { _resetDisclosure } from '../state/disclosure'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
-import { commitInput, draftOf } from './inputedit'
+import { commitInput, draftOf, howMany } from './inputedit'
 import { rowPut, rowTake, rowMove } from './reqdoor'
-import { monthItems, barText, namesOf } from './inputscal-model'
+import { monthItems, barText, namesOf, everyoneIn } from './inputscal-model'
 import { toggleOilPerson } from './oilmode'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
@@ -347,6 +347,27 @@ describe('OIL: one answer for everyone in it, the men behind ALL AVAIL with them
     toggleOilPerson(SAT, 'plasma', item())
     expect(rowTake(keyOf('pike', SAT))).toBe('done')
     expect(paid(), 'plasma is still off').toEqual(['bane', 'stiff'])
+  })
+})
+
+describe('HOW MANY an input holds, in words — ALL AVAIL is nobody to count (D702; found by the look at step 3, 12 Oct 26)', () => {
+  /* the note after a filing read "Input added for 3 people" for two people and ALL AVAIL. The window's sentences — added,
+     deleted, "delete for all…?", "it stays for the other…", "date changes apply to…" — count the PEOPLE and say the
+     placeholder beside them, as the month's bar and the calendar's own delete question do (inputscal-model everyoneIn) */
+  it('the people counted, the placeholder said beside them; one person keeps his callsign', async () => {
+    await boot()
+    expect(howMany(['bane', 'pike', 'split'])).toBe('3 people')
+    expect(howMany(['bane', 'pike', 'allavail'])).toBe('2 people and ALL AVAIL')
+    expect(howMany(['allavail', 'bane'])).toBe(`${cs('bane')} and ALL AVAIL`)
+    expect(howMany(['all'])).toBe('ALL')
+    expect(howMany(['bane'])).toBe(cs('bane'))
+  })
+  it('…and it is the calendar\'s own wording, for every mix', async () => {
+    await boot()
+    for (const ids of [['bane', 'pike', 'allavail'], ['bane', 'allavail'], ['bane', 'pike', 'split', 'all']]) {
+      const it0 = monthItems([{ iid: 'x', type: 'Meeting', date: 'Jul 15', yr: 2026, people: ids.map(p => ({ p })) }], { fType: 'all', fPerson: 'all', fSearch: '' } as any)[0]!
+      expect(howMany(ids), ids.join('+')).toBe(everyoneIn(it0))
+    }
   })
 })
 

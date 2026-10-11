@@ -1797,6 +1797,17 @@ export function inputWho(rec: any): string {
   const named = namedOf(rec).map((e: any) => cs(e.p)).sort((a: string, b: string) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
   return `${named.length ? named[0] : cs(ids[0])} +${ids.length - 1}`
 }
+/** HOW MANY AN INPUT HOLDS, IN WORDS, for the window's own sentences — "Input added for …", "Delete this input for …?",
+ *  "It stays for …": the PEOPLE are counted and a placeholder is said beside them ("2 people and ALL AVAIL"; one named
+ *  person keeps his callsign, "Ranger and ALL AVAIL") — ALL AVAIL stands for whoever is free on the day (D702), so it is
+ *  nobody to count. The wording of the calendar's own delete question (ui/inputscal-model.ts everyoneIn); pinned equal
+ *  to it by ui/phmember.test.tsx. (Found by the look at step 3 of the one-rule build, 12 Oct 26: "Input added for 3
+ *  people" for two people and ALL AVAIL.) */
+export function howMany(ids: readonly any[]): string {
+  const cs = (p: any) => (PEOPLE[p] ? String(PEOPLE[p].cs) : String(p ?? ''))
+  const named = ids.filter(p => !isSpecial(p)), phs = ids.filter(p => isSpecial(p)).map(cs)
+  return [named.length === 1 ? cs(named[0]) : named.length ? `${named.length} people` : '', ...phs].filter(Boolean).join(' and ')
+}
 export function commitInput(rec: any | null, draft: any, people: any[], opts?: InputSaveOpts): boolean {
   if (!draft) return false
   const say = HOOKS.toast
@@ -2394,7 +2405,7 @@ export function InputEditor() {
       if (commitInput(rec, draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
         const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
         if (row) revealInput(row)
-        HOOKS.toast(isNew ? (ppl.length > 1 ? `Input added for ${ppl.length} people` : 'Input added') : 'Input updated', 'ok'); close()
+        HOOKS.toast(isNew ? (ppl.length > 1 ? `Input added for ${howMany(ppl)}` : 'Input added') : 'Input updated', 'ok'); close()
       } else stay()
       return
     }
@@ -2572,9 +2583,9 @@ export function InputEditor() {
     if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay()
   }
   const delEntry = () => {
-    const n = recPpl.length
+    const n = howMany(recPpl)
     setDelAll(false)
-    if (removeEntry(rows)) { HOOKS.toast(`Input deleted for ${n} people`, 'ok'); close() } else stay()
+    if (removeEntry(rows)) { HOOKS.toast(`Input deleted for ${n}`, 'ok'); close() } else stay()
   }
   /* WHO THE WINDOW IS TITLED BY: its one person; for several, the first A TO Z and how many more — never whoever joined
      first (the card and the OIL question in this same window name them A to Z — D721, D727; found re-expressing the
@@ -2890,7 +2901,7 @@ export function InputEditor() {
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
             : datesHere
-              ? recPpl.length > 1 ? `Date changes apply to all ${recPpl.length}.` : ''
+              ? recPpl.length > 1 ? (recPpl.some(p => isSpecial(p)) ? `Date changes apply to ${howMany(recPpl)}.` : `Date changes apply to all ${recPpl.length}.`) : ''
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
@@ -2902,7 +2913,7 @@ export function InputEditor() {
           <div className="inped-own">
             {takeOut && (
               <div className="inped-ask" data-testid="inped-takeout-ask" role="alertdialog" aria-label="Take yourself out?">
-                <span className="inped-ask-q">Take yourself out of this input? It stays for the other {recPpl.length - 1 === 1 ? 'person' : `${recPpl.length - 1} people`}.</span>
+                <span className="inped-ask-q">Take yourself out of this input? It stays for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl.filter(p => !isMe(p))) : `the other ${recPpl.length - 1 === 1 ? 'person' : `${recPpl.length - 1} people`}`}.</span>
                 <button type="button" className="abtn danger" data-testid="inped-takeout-yes" autoFocus onClick={takeMeOut}>Take me out</button>
                 <button type="button" className="abtn ghost" data-testid="inped-takeout-no" onClick={() => setTakeOut(false)}>Stay in</button>
               </div>
@@ -2911,7 +2922,7 @@ export function InputEditor() {
         )}
         {delAll && (
           <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?" ref={delAsk}>
-            <span className="inped-ask-q">Delete this input for all {recPpl.length} people?</span>
+            <span className="inped-ask-q">Delete this input for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl) : `all ${recPpl.length} people`}?</span>
             <button type="button" className="abtn danger" data-testid="inped-delall-yes" autoFocus onClick={delEntry}>Delete</button>
             <button type="button" className="abtn ghost" data-testid="inped-delall-no" onClick={() => setDelAll(false)}>Keep</button>
           </div>

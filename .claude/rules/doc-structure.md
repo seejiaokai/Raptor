@@ -74,7 +74,7 @@ on his "merge live"; he sometimes runs two worktrees in parallel and merges both
   undone, and everything else carries on. One notification at the end or when truly blocked; nothing merges, nothing
   touches `main`. **And a full chat does not stop it (D667, 8 Oct 26 — "since I can't be there to help u hand off maybe u
   can self compact and continue working"):** with nobody there to start a fresh chat, the agent keeps `HANDOFF.md` and the
-  backlog true at every commit, lets the chat compact, and carries on. (That it holds for every unattended run, not only that night's, is the agent's reading of his words.)
+  backlog true at every commit, lets the chat compact, and carries on. (That it holds for every unattended run, not only that night's, is the agent's reading of his words.) **And the compaction is a SMART one (D766, 12 Oct 26 — "Smart compact be specific on what u need and dont need so that u dont waste context"):** the state is in the repo first, and the compaction is told exactly what the remaining work needs — the step in hand, the files it touches, the open faults, the questions parked for him — and what to drop.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
 - **The Claudex loop** (Opus 5.5 builds; Astra reviews, Sol 6.1 second where two readers are required, Fable on call only — D67, D590): plans and review logs are tier-3 docs (the
