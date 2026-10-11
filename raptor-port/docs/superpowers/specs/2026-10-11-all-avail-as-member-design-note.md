@@ -81,3 +81,33 @@ four tests; what he then rules is §5.
 - What happens to an ALL AVAIL already standing on a shared row under D745 when this ships — demo data only (D56), so
   no conversion; say so.
 - It is OIL and the published day: an important plan (two readers — D590; ChatGPT is back on 14 Oct 26) and a FULL check.
+
+## 5. The direction put to him after D754 — ONE RULE (11 Oct 26; NOT ruled yet)
+
+**Recommended by the agent on his four tests (intuitive, the workflow, fewer bugs, the same behaviour):** a row that came
+from an input IS the input, and whoever is on the row is in the input — whoever put them there, a named person or ALL
+AVAIL / ALL, an input that began with one person or with several. Candidate B of Fable's report, with what must come
+with it so nothing happens silently:
+
+1. OIL is one answer per input; everyone on the row follows it and the scheduler may switch any one person. Adding
+   someone where the question is unanswered asks the scheduler on the spot; where the answer is No, the note says they
+   are not counted.
+2. A swap stays: a man dropped on the only man's puck replaces him, and the input becomes the new man's.
+3. The member is told by his bell when the scheduler adds people to his request, swaps him out or changes it
+   (`OUTSTANDING.md` `[INPUT-CHANGED-TELL]` rides with this job). He may always withdraw himself; changing it for
+   everyone, once the scheduler has added others, is the scheduler's.
+4. Where it cannot apply the drop is refused with the reason: ALL AVAIL on an input longer than a day or of another
+   kind (D753); other people on a Personal input.
+
+**Told to him as its cost:** it changes earlier rulings — a person or ALL AVAIL the scheduler adds under a request
+earns by default today (D18, D43, D46, D470) and would follow the input's answer; a person added to a several-day
+input is on every day of it; it is one bigger job (a plan, two readers, a FULL check), built as ONE job and not as
+"shared inputs first, the rest later".
+
+**A test the plan must carry — his question, 11 Oct 26:** *"will an input that has all avail vs an inital input that
+has just a person and an all avail was put on it and the inital person removed show the same in schedule and input?"*
+**Under the one rule: yes, and the plan pins it** — two routes to the same people give the same row, the same card on
+the Inputs calendar and the same OIL rule. What may differ is history only: the change history's lines, when it was
+first filed (the late mark's stamp) and the OIL answer already given. Who is named as having placed it once the
+original person is out is the builder's to settle so that the two behave alike (recommended: it passes to the
+scheduler who made the change, so its bell and its OIL question go to someone still involved).
