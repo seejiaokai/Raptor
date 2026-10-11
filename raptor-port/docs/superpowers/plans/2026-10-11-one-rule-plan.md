@@ -854,3 +854,72 @@ not checked: `../../handpass/2026-10-12-one-rule-step2.md`. **Step 2 is built; h
 **His word for the run (D766, 12 Oct 26):** shown step 2, he asked for step 3 with a stop before step 4; going to sleep
 while it was being built he lifted that stop — the job runs on unattended through step 8, and what needs his answer
 waits for him (the pictures of steps 5 and 7 among it).
+
+**Built as §5 step 3 says — the invariant relaxed, the picker, the door's placeholder rows, the crowd less the named,
+the two-routes test.** Tests: `src/engine/phmember.test.ts`, `src/ui/phmember.test.tsx` (T1, T3, T16, T17 and the
+placeholder rows of §4.4's table, through the doors), `src/ui/phpick.test.tsx`. The check at this stop:
+`../../handpass/2026-10-12-one-rule-step3.md`.
+
+- **The invariant** (`engine/inputs.ts placeholderProblem`): "filed on its own" is gone; the six kinds, one day and
+  never under Unavailable stay. `shapeProblem`: two placeholders, or the same one twice, are one sentence.
+- **The writer** (`ui/inputedit.tsx commitInput`): a placeholder may be put in beside people, be left alone when they
+  go, or take an input over in one save. An input under Unavailable that takes one goes back onto the programme at
+  the save, as the one-person save always did.
+- **The door** (`ui/reqdoor.ts`): a placeholder put anywhere on the row joins — it never replaces anyone, and a named
+  person put on ITS puck joins beside it; taken off it leaves; it stays when anyone else leaves; alone it is the last.
+- **The picker** (`ui/PeoplePick.tsx`): the two as pucks of their own in "Several people" (`data-ppgroup="ph"`), one
+  of them; greyed with the reason under them where the input is longer than a day or not one of the six kinds
+  (`phWhy` — the window's answer, `inputedit.tsx placeholderWhy`); one already picked stays lit, with the sentence and
+  "Take ALL AVAIL out". A reader is told nothing.
+- **OIL** was built in step 2 (d); step 3 proved it through the doors and found the two faults below.
+
+**The words, as short as can be understood (D726, D765 reading 5) — one body says them at every door:** "ALL AVAIL is
+for one day" (was "… is filed one day at a time"); "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and
+Other" (was "… can be filed only for … or Other"); "This input already has ALL AVAIL" (a second one, or ALL beside it —
+the one sentence §10 asked for); "ALL AVAIL added to Training" / "ALL AVAIL taken out of Training"; "2 picked + ALL
+AVAIL" in the picker; "for 2 people and ALL AVAIL" wherever a sentence counts who is in it.
+
+**Where step 3 left the plan's letter, and why:**
+
+1. **"The man himself" is an input's ONE person, with nobody and nothing beside him** (`inputs.ts onlyNamed`). §4.9
+   says "the ONLY named person … in full". An input that holds a man AND ALL AVAIL reaches everyone behind the puck;
+   D755 (3) leaves changing it for everyone to whoever filed it or a scheduler, and the commit gate already refused
+   him — so the window offered a Save the save then refused. He reads it and may take himself out. Told to him (R19).
+2. **Leaving an input is a holding of its own** (`engine/inputown.ts`): `hand` moves on and `leftAt[him]` — the stamp
+   the one-person hand-over has written since phase 6 (a) — says where; put back in, his entry's `h` says it and the
+   stamp is dropped. §4.7 has "the switch-offs of a person who leaves are dropped by the existing prune (by his `h`)":
+   a man taken OUT has no entry left to carry an `h`, and beside ALL AVAIL his old switch was read against the
+   placeholder's holding — it lived on, or came back after the app had voided it, and the same people reached in two
+   orders earned differently. `perms.ts ownPart` ignores `leftAt` as it ignores `hand`.
+3. **The crowd that ARRIVES with an input is that input's change** (`engine/publish.ts`, beside the crowd that leaves
+   with one): ALL AVAIL put on a row, or an input filed holding it, read two changes waiting — the placeholder, and
+   "what this day earns" — on a weekday too. §4.8 names the fold only for a man who leaves a crowd.
+4. **A placeholder on a Personal input is told its own rule** ("ALL AVAIL is for Training, …"), a named person the
+   Personal one ("A Personal input is one person's own") — the placeholder's rule is said first at every door.
+5. **Named beside ALL AVAIL is "several"** for the door: a person dropped on the puck of the one named man of such an
+   input JOINS; only on the puck of an input's ONLY entry does he replace him (R1, as built).
+
+**Found after the build, by the look and by the older tests re-expressed (three helpers who did not write the build,
+the four-choice brief of step 2, a second scenario pass each; about 190 cases added) — each fixed, each pinned by the
+case that found it:** the window's sentences counted ALL AVAIL as a person ("Input added for 3 people" —
+`inputedit.tsx howMany`, the look); the member offered a Save the save refused (1 above); the two OIL switch-offs
+(2 above); an input under Unavailable turned into ALL AVAIL's refused in its window; the OIL question headed "ALL AVAIL
++1"; "Placed by Saber for 2 people" (`ui/placedline.ts`); the picker's reason shown to a reader; the To go out list
+still saying "ALL AVAIL came off with him" and "the puck on Ranger place … came off with Ranger" (D745, set aside by
+D755 — `ui/pendlist.ts`; `wentWith` stays for a row issued before the build only). Brought up to date beside them: OIL
+Earn's hint on an input's row said "answered for each person on it" (one answer for everyone since D762).
+
+**Readings to tell him, beside R1–R18 (none changes a ruling):**
+- R19. A man who is the only named person beside ALL AVAIL does not change the input for everyone — he reads it and
+  may take himself out; whoever filed it, or a scheduler, changes it.
+- R20. A scheduler's OIL switch-off about a person ends when he leaves the input — also where he then stands behind its
+  ALL AVAIL; switched off again after that, it stands.
+- R21. A person or ALL AVAIL dragged from one input's row onto another's is TWO changes waiting on a published day (two
+  inputs changed — D736), as built in step 2 for a person.
+- R22. The next-week peek draws no counter on ALL AVAIL (it never has, on any row).
+
+**Left for step 8 (the records):** `docs/ui-contracts.md` still describes the picker refusing a placeholder under
+"Several people" (its lines on "filed on its own" and "one day at a time"); `docs/data-schema.md` / `data-model.md`
+say `leftAt` is "written by the hand-over" — it is written when any person leaves, too.
+
+**The whole gate set after all of it (12 Oct 26):** unit 10468 / 10468 (600 files) · build clean · tfin 728 / 0 · e2e 769 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. **Step 3 is built; the run goes on to step 4 (D766).**
