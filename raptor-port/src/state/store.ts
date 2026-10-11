@@ -95,7 +95,7 @@ export function writeSlot(key: any, id: any) {
   /* a member's place on the one row of a shared input: the INPUT changes, through its door (owner D734 — ui/grouprow.ts,
      lent through HOOKS as the typed box's door is). Its answer is this writer's: never on to setSlotVal, which
      refuses such a place (the belt). */
-  if (HOOKS.groupRow && HOOKS.groupRow.write(key, id) !== 'none') return
+  if (HOOKS.inputRow && HOOKS.inputRow.write(key, id) !== 'none') return
   /* [ARCH-STACK] Step 2 (additive): the identical write, now inside commit() —
      enlist snapshot, run setSlotVal+afterSchedMutate exactly as before, emit the
      record-level change. The legacy histPush/persistAll/undo stack still run. */
@@ -104,7 +104,7 @@ export function writeSlot(key: any, id: any) {
 
 /* a people cell ("first free seat, else add one more") */
 export function writeFill(key: any, id: any) {
-  if (HOOKS.groupRow && HOOKS.groupRow.write(key, id) !== 'none') return     // a man on a shared input's row: the input's door (D734)
+  if (HOOKS.inputRow && HOOKS.inputRow.write(key, id) !== 'none') return     // someone on an input's row: the input's door (D755)
   commitSchedVoid(SCHED_TYPES.fill, () => { fillSlot(key, id); afterSchedMutate() })
 }
 

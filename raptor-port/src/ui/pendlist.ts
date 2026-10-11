@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate } from '../engine/inputs'
+import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -119,7 +119,8 @@ function requestWords(e: any, row?: any, was?: any): { where: string, from: stri
 /* whose · what — from the request while it exists, from its row once it is gone (the row carries who, the type and the
    remarks). ONE body for every line that names a request, so they cannot word it two ways. */
 function requestName(inp: any, row?: any): string {
-  if (inp) { const who = cs(inp.person); return `${who ? who + ' · ' : ''}${inpLabel(inp)}` }
+  /* (an input of one is named by its person; one of several by itself — its people are named under its line) */
+  if (inp) { const ids = idsOf(inp), who = ids.length === 1 ? cs(ids[0]) : ''; return `${who ? who + ' · ' : ''}${inpLabel(inp)}` }
   const who = row ? cs(row.who) : '', what = row ? goneRequestName(row) : ''
   return what ? `${who ? who + ' · ' : ''}${what}` : 'A request'
 }
@@ -181,9 +182,13 @@ function inputWords(di: number, it: PendItem): Words {
     return { where: name, from: '', to: f && f.to === 'u' ? 'filed under Unavailable' : f && f.to === 'g' ? 'filed — on the programme' : 'filed', ...none }
   }
   if (!here) return { where: name, from: '', to: now ? 'moved off this day' : 'deleted', ...none }
+  /* ONE PERSON put in or taken out — his own line (owner D736: "one man taken off its row or added to it is one change
+     each"; engine/publish.ts, the people step) */
+  if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
-  pair(cs(was.person), cs(now.person))
+  /* whose — said here only where the people are not counted apart (a swap of the only person: "Ranger → Tally") */
+  if (!it.pplApart) pair(idsOf(was).map(cs).join(', '), idsOf(now).map(cs).join(', '))
   pair(String(was.type || ''), String(now.type || ''))
   /* its own title (D715): "Event → Sports day" — compared by itself, the title each side stores (Astra's read of the
      code, 1: said only where the kind stood still, a kind and a title changed together lost the title). Two untitled
@@ -280,7 +285,7 @@ function foldedWords(di: number, it: PendItem): Words & { names: string[] } {
   const w = pendItemWords(di, { ...it, mates: undefined, people: undefined } as PendItem)
   const ids = it.people && it.people.length ? it.people : []
   const names = ids.map(cs).filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-  return { ...w, where: `${entryName(di, it)} · ${names.length || (it.mates!.length + 1)} people`, names }
+  return { ...w, where: `${entryName(di, it)} · ${names.length || ((it.mates || []).length + 1)} people`, names }
 }
 /* what a shared input is called on its one line: its own name (title, else kind) — from the live record, else the copy
    the issued version froze, else the row that carried it */
@@ -297,7 +302,8 @@ function entryName(di: number, it: PendItem): string {
 /* THE PUCK THAT WENT WITH A MAN (owner D745): the placeholders that stood on the row the issued day held for him */
 const wentWith = (row: any): string => { const p = ((row && row.more) || []).map((v: any) => whoId(v)).filter((x: any) => x && isSpecial(x)).map(cs); return p.length ? ` · ${p.join(', ')} came off with him` : '' }
 export function pendItemWords(di: number, it: PendItem): Words {
-  if (it.mates && it.mates.length) return foldedWords(di, it)
+  /* an input of several: one line, led by the input and naming its people (D736) — never a person's own line (`pp`) */
+  if ((it.mates && it.mates.length) || (it.people && it.people.length > 1 && !it.pp)) return foldedWords(di, it)
   const e: any = it.entry || {}
   if (it.val) {
     /* a request whose filing moved too — filed, taken off, deleted — keeps the request's own words below ("on the

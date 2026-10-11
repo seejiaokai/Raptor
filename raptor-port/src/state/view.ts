@@ -1218,11 +1218,12 @@ export function placeArmed(id:any){
      lent through HOOKS: state/ may not import ui/). A real man tapped onto it is ADDED TO THE INPUT by the door's own
      command — no schedule write here, so no second Undo step; refused (he is already in it), the place stays armed,
      as for the refusals above. A placeholder is the row's own: re-aimed at the row's "+ add" and written as ever. */
-  if(HOOKS.groupRow){
-    if(isSpecial(id)){const k2=HOOKS.groupRow.retarget(key,id); if(k2!==key){key=k2; base=String(key).replace(/\.\+$/,'');}}
-    else{const a=HOOKS.groupRow.write(key,id);
-      if(a==='refused')return false;
-      if(a==='done'){armDrop(); if(isPhone())document.body.classList.remove('ros-open'); paintArm(); flagDrop(warnBefore,keyDay(base)); return true;}}
+  /* (…since the one-rule build, step 2 (c): EVERY input's row, and a placeholder asks the same door — it is no longer
+     re-aimed at anybody's extras; ui/reqdoor.ts, through HOOKS.inputRow) */
+  if(HOOKS.inputRow){
+    const a=HOOKS.inputRow.write(key,id);
+    if(a==='refused')return false;
+    if(a==='done'){armDrop(); if(isPhone())document.body.classList.remove('ros-open'); paintArm(); flagDrop(warnBefore,keyDay(base)); return true;}
   }
   /* the place he LANDED on — the question after the write is asked of it, not of the row's "+ add" (slots.ts
      lastFilled; [CROWD-SWAP-SAYS-BUSY]): asked of the row, an ordinary add would read as a second copy of him */

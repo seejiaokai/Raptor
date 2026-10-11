@@ -7,9 +7,8 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
-import { foldEntries } from './entryfold'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson } from './inputs'
+import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -211,7 +210,10 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
 /* `mates` / `people`: A SHARED INPUT COUNTED ONCE (owner D736 — entryfold.ts foldEntries, the last step below): the
    other items of the same entry and the same act that this one stands for, and the people of them all — for the one
    line's words ("Range safety brief · 4 people"), its names and its tap. The record keeps every entry (D109). */
-export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any, mates?: PendItem[], people?: string[] };
+export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any, mates?: PendItem[], people?: string[],
+  /* `pp`: ONE PERSON put in (`on`) or taken out (`off`) of an input — its own item (the people step, below; D736);
+     `pplApart`: an input's own item whose people are counted apart, beside it — its words then say nothing of them */
+  pp?: { p: string, role: 'on'|'off' }, pplApart?: boolean };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -237,6 +239,9 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     let item:any=null;
     if(g.fil){const pair=requestRowUnit(items,id,String(g.fil.from||''),String(g.fil.to||''),snap.d,DAYS[di]); if(pair){pair.inp=g.fil; item=pair;}}
     if(!item){item={kind:'input',addr:'',jump:[],keys:[],entry:(g.fil||g.val)!,axis:g.fil?'filing':'input'}; items.push(item);}
+    /* an input of SEVERAL names its people on its one line (D736 — "one line, naming its people"): the live record's,
+       else the copy the issued version froze */
+    {const r0:any=(INPUTS as any[]).find((r:any)=>r&&String(r.iid||'')===id)||(snap.inp||{})[id]; if(r0&&idsOf(r0).length>1)item.people=idsOf(r0).map(String);}
     if(g.val){item.val=g.val;
       const ch=ax.changed.find((x:any)=>x.id===id); if(ch){item.was=ch.was; item.now=ch.now;}
       for(let i=items.length-1;i>=0;i--){const u:any=items[i];
@@ -247,12 +252,52 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
           /* …and its place on the schedule: the one line takes the view to the row (Fable's code read F4 — the folded
              line was drawn "still", with the row right there) */
           item.jump=(item.jump||[]).concat(u.jump||[]); item.keys=(item.keys||[]).concat(u.keys||[]);}}}});
+  /* THE PEOPLE STEP ([ALL-AVAIL-AS-MEMBER] step 2 (e), 12 Oct 26 — owner D736: "a shared input filed, taken off the
+     programme or re-timed is ONE change waiting, and one man taken off its row or added to it is ONE CHANGE EACH";
+     D113: "a replacement in one seat is one pending change"; the plan
+     docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.8 — Fable F6 (b)). An input is one record with its people, so
+     there is nothing to fold back to one: the unit is worked out from the PEOPLE THEMSELVES — the issued copy's list
+     against the live one — on every published day the input covers, whether or not its row stands on that day.
+       · an input filed, gone, re-dated off the day: ONE — its item, as ever (no two lists to compare);
+       · a swap of its only person, nobody else: ONE — the item itself;
+       · otherwise each person or placeholder put in or taken out is ONE EACH, and the input's own item stands beside
+         them only where something else it says moved too (its time, its words, its filing).
+     THIS STEP OWNS THE ROW'S PERSON UNITS: the name box and the places under it of the input's row are one list place
+     (canonical.ts placeOf), and every unit there is consumed here — it rides the item, for the tap — so a person
+     joining or leaving is never counted once from the lists and again from the row. */
+  items.slice().forEach((item:any)=>{
+    if(!item.val||!item.was||!item.now)return;
+    const id=idOf(item.val);
+    for(let i=items.length-1;i>=0;i--){const u:any=items[i];
+      if(u===item||u.axis!=='content'||u.inp||u.val||(u.kind!=='people'&&u.kind!=='reseat'))continue;
+      if(personUnitSrc(u,snap.d,DAYS[di])!==id)continue;
+      items.splice(i,1);(item.rows=item.rows||[]).push(u);
+      item.jump=(item.jump||[]).concat(u.jump||[]); item.keys=(item.keys||[]).concat(u.keys||[]);}
+    const A=idsOf(item.was).map(String), B=idsOf(item.now).map(String);
+    const off=A.filter((p:string)=>!B.includes(p)), on=B.filter((p:string)=>!A.includes(p));
+    if(!off.length&&!on.length)return;
+    if(A.length===1&&B.length===1)return;                                    // the only person replaced: ONE (D113)
+    /* does it say anything else differently? — the two copies compared with their people set aside */
+    const bare=(x:any)=>inpDetailKey({...x,person:'',people:[]});
+    const other=bare(item.was)!==bare(item.now)||!!item.inp;
+    const row=((DAYS[di]||{}).ground||[]).findIndex((g:any)=>g&&!g.kept&&String(g.src||'')===id);
+    const at=(p:string)=>{ if(row<0)return item.jump||[]; const g=DAYS[di].ground[row];
+      if(String(g.who||'')===p)return [`g:${di}.${row}`]; const n=(g.more||[]).map(String).indexOf(p);
+      return n>=0?[`g:${di}.${row}.x${n}`]:[`g:${di}.${row}`,`gr:${di}.${row}.prog`]; };
+    const units=off.map((p:string)=>({p,role:'off'})).concat(on.map((p:string)=>({p,role:'on'})));
+    const made:PendItem[]=units.map((pp:any)=>({kind:'input' as const,addr:'',jump:at(pp.p),keys:[],entry:item.val,axis:'input' as const,val:item.val,was:item.was,now:item.now,pp}));
+    item.pplApart=true;
+    const ix=items.indexOf(item);
+    if(other)items.splice(ix+1,0,...made); else items.splice(ix,1,...made);
+  });
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
   /* (the Logic-values entry — `oilrv:` — is never folded: it is nobody's input, and its own act; it is pushed below) */
   const oilAll=oilDelta(di,snap.d), oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
     const moved=oilMovedInputsOnly(oilEvidence(di),DAYS[di],w,snap.d,mem);
-    const who=new Set<string>(); ax.changed.forEach((x:any)=>{if(x.was)who.add(String(x.was.person)); if(x.now)who.add(String(x.now.person));});
+    /* (the named people of BOTH copies' lists — Fable F6 (a): read off one `person`, a man added to an input that also
+       carries ALL AVAIL, who thereby leaves its crowd, read as a second change, "what this day earns") */
+    const who=new Set<string>(); ax.changed.forEach((x:any)=>{for(const r of [x.was,x.now])if(r)namedOf(r).forEach((e:any)=>who.add(String(e.p)));});
     /* …AND THE CROWD BEHIND A PLACEHOLDER THAT LEFT WITH ITS REQUEST IS THAT REQUEST'S CHANGE (owner D745 — "an ALL AVAIL
        … puck on a shared input's row comes off with the man whose place it stood on"; Fable's read for him, 11 Oct 26;
        the plan 2026-10-10-group-input-one-row-plan.md §4.8). A puck on a request's row is addressed by its request
@@ -285,9 +330,9 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
      one too (the walk, 1 Oct 26 — carrying the warning's seat, such a line could not be tapped, and one with a seat
      lit the seat and left the list shut) */
   if(sc===SCHED)hidePending(di).forEach((x:any)=>items.push({kind:'hide',addr:'',jump:[`warnline:${x.k}`],keys:[],entry:x.entry,axis:'hide'}));
-  /* A SHARED INPUT IS COUNTED ONCE (owner D736 — entryfold.ts): the last step, on the finished list — what goes out
-     (dayDeltaIn) and the sign-offs' binding never pass through it */
-  return foldEntries(items,{di,issuedD:snap.d,liveD:DAYS[di],frozen:snap.inp||{}});}
+  /* (a shared input is counted from its own lists — the people step, above; the fold that put one-record-a-man back
+     together, engine/entryfold.ts, is not asked any more) */
+  return items;}
 /* the request a content unit belongs to, when the unit is on a field an input's re-landing writes — its ground row's
    words, times, remarks or holder (restore.ts dayKeys: gr:di.ri.{prog,str,end,rmks}, g:di.ri) — '' otherwise. A removal
    reads the issued day's row, anything else the live day's. Extras (g:di.ri.xN) are a scheduler's own and never fold. */
@@ -297,6 +342,16 @@ function groundOrderMovedOnlyBy(issuedD:any,liveD:any,id:string):boolean{
   const ids=(d:any)=>(((d&&d.ground)||[]) as any[]).filter((r:any)=>r&&String(r.src||'')!==id).map((r:any)=>r.rid||'');
   const a=ids(issuedD), b=ids(liveD), both=new Set(a.filter((x:any)=>b.includes(x)));
   return a.filter((x:any)=>both.has(x)).join('|')===b.filter((x:any)=>both.has(x)).join('|');}
+/* …and the request a PERSON unit belongs to: a unit on the people of a row that came from an input — its name box or a
+   place under it — resolved by its row (the unit's place, else its address). '' for a row nobody filed and a dead
+   `kept` row, whose people are the row's own. */
+function personUnitSrc(u:any,issuedD:any,liveD:any):string{
+  const ks=[u&&u.place,u&&u.addr,u&&u.to,u&&u.from,...((u&&u.jump)||[])].map((k:any)=>String(k||''));
+  for(const k of ks){const m=/^g:\d+\.(\d+)(?:\.x\d+)?$/.exec(k); if(!m)continue;
+    const r=((liveD||{}).ground||[])[+m[1]]; if(r&&r.src&&!r.kept)return String(r.src);}
+  const fi=String((u&&u.fromIssued)||''), m=/^g:\d+\.(\d+)(?:\.x\d+)?$/.exec(fi);
+  if(m){const r=((issuedD||{}).ground||[])[+m[1]]; if(r&&r.src&&!r.kept)return String(r.src);}
+  return '';}
 function unitRequestSrc(u:any,issuedD:any,liveD:any):string{
   const a=String((u&&u.entry&&u.entry.addr)||(u&&u.addr)||'');
   const m=/^gr:\d+\.(\d+)\.(?:prog|str|end|rmks)$/.exec(a)||/^g:\d+\.(\d+)$/.exec(a);
@@ -546,6 +601,7 @@ function inputAxes(di:any,snap:any):{fil:DeltaEntry[],val:DeltaEntry[],changed:A
   if(!snap||!snap.inp)return {fil:fil0,val:[],changed:[]};
   const m=frozenInputMatch(snap.inp,(DAYS[di]||{}).dt), gone=new Set<string>();
   m.same.forEach(([a,b])=>{gone.add(a);gone.add(b);});
+  (m.pieces||[]).forEach((id:string)=>gone.add(id));     // a man split out of an input: that input's change, no filing of its own
   const idOf=(e:any)=>String(e.addr||'').split('.').slice(1).join('.');
   return {fil:fil0.filter((e:any)=>!gone.has(idOf(e))),
     val:m.diffs.map((x:any)=>({addr:`inv:${di}.${x.id}`,kind:'input' as const,from:x.was?fp(inpDetailKey(x.was)):'',to:x.now?fp(inpDetailKey(x.now)):''})),
@@ -809,7 +865,8 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      is ONE edit discarded; a re-time made on the schedule is none (the load re-makes the row from the live request)
      while it is one change waiting. */
   const its:any[]=units.map((u:any)=>({...u,axis:'content'})).concat(lone.map((p:any)=>({kind:'input',axis:'filing',addr:'',jump:[],keys:[],entry:filOf(p)})));
-  return foldEntries(its,{di,issuedD:after,liveD:DAYS[di],frozen:snap.inp||{},keptToo:true}).length+decDrop+hides;}
+  /* (an input is one row now — the one-rule build, step 2 (e): there is nothing left to fold) */
+  return its.length+decDrop+hides;}
 /* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
    same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state
    the version froze (`fil`, snapshot's filing fingerprint; absent = fresh), set only where it can be true without

@@ -194,7 +194,7 @@ export function inpDetailKey(inp:any):string{
    words read one change), then stands alone (filed / gone). An UPCHIT is out altogether: it draws nothing and flags
    nothing — the downchit it trims is the change (Fable Q6). */
 const manOf=(r:any):string=>{const n=namedOf(r)[0]||placeholderOf(r);return n&&n.p!=null?String(n.p):'';};
-export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any,nowId?:string}>,same:Array<[string,string]>}{
+export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any,nowId?:string}>,same:Array<[string,string]>,pieces?:string[]}{
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
@@ -212,6 +212,15 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
      only a dormant request woken back to a live one is a change) */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
     if(j>=0){if(!(String(W[i].r.acc||'')==='r'&&String(N[j].r.acc||'')==='r'))out.push({id:W[i].id,was:W[i].r,now:N[j].r});W.splice(i,1);N.splice(j,1);}}
+  /* 3b — ONE MAN SPLIT OUT OF AN INPUT IS THAT INPUT'S ONE CHANGE (step 2 (e) of the one-rule build — the plan §4.6;
+     Fable's read of it, F6 (c)): sick leave cuts Z out of a leave filed for X, Y and Z — the live input holds [X, Y]
+     and a NEW record holds [Z] (engine/inputown.ts ownInputOf). That new record has no frozen twin; its person stood
+     in a frozen record's list and is out of that record's live twin, and it is the same kind: it is part of THAT
+     input's change (already in `out`, above), not a filing of its own — `pieces` tells the filing axis to drop it. */
+  const pieces:string[]=[];
+  for(let j=N.length-1;j>=0;j--){const n=N[j], man=manOf(n.r); if(!man||idsOf(n.r).length!==1)continue;
+    const d=out.find((x:any)=>x.was&&x.now&&holds(x.was,man)&&!holds(x.now,man)&&(x.was.type===n.r.type||(isDownchit(x.was.type)&&isDownchit(n.r.type))));
+    if(d){pieces.push(n.id);N.splice(j,1);}}
   /* 4 — one man's record gone and another of his filed, of the same type or both downchits: one edit (F2). Only records
      with no filing state (a downchit, a leave — never a request, whose filing the filing axis words by its own id, so
      pairing two requests would read one edit AND one filing for two acts) */
@@ -222,7 +231,7 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
   /* 5 — gone, or filed since; a request taken off on the one side and absent on the other shows on neither face (D174, D176) */
   W.forEach((w:any)=>{ if(String(w.r.acc||'')!=='r')out.push({id:w.id,was:w.r,now:null}); });
   N.forEach((n:any)=>{ if(String(n.r.acc||'')!=='r')out.push({id:n.id,was:null,now:n.r}); });
-  return {diffs:out,same};}
+  return {diffs:out,same,pieces};}
 export function frozenInputDiffs(frozen:any,dt:any):Array<{id:string,was:any,now:any}>{return frozenInputMatch(frozen,dt).diffs;}
 /* …and where the caller has a row but not its date (a request's row carries its input's id in `src`): while a frozen
    version is being drawn, the copy that version holds (or null — it never held it); otherwise the live record */

@@ -18,48 +18,35 @@
    Returns one answer PER ROW INDEX: `lead` — the member that stands first in the day's own display order (order.ts
    groundOrder: by start time, or by hand where the list is hand-ordered), where the one row is drawn; `members` —
    every row of it, in that same order, the lead first. A row on its own is its own lead and only member. */
-import { groundOrder } from './order'
-import { PEOPLE, whoId } from './people'
+/* *(SINCE THE ONE-RULE BUILD, STEP 2 (b) — 12 Oct 26, owner D755, D756: an input is ONE record and its row ONE ground
+   row, so nothing is drawn "as one" any more: `groundGroups` answers every row as its own lead and only member, and
+   its callers are taken out with the dead code in step 6 of that build. What is left here that is live is the ONE
+   answer to "whose pucks does a row draw, in what order" — rowPeopleDrawn.)* */
+import { PEOPLE, whoId, isSpecial } from './people'
 
 export type RowGroup = { lead: number; members: number[] }
-
-const alike = (r: any): string => JSON.stringify([!!r.cx, String(r.cxr || ''), !!r.flag, !!r.info])
-
 export function groundGroups(d: any): RowGroup[] {
-  const rows: any[] = (d && d.ground) || []
-  const out: RowGroup[] = new Array(rows.length)
-  const byKey = new Map<string, RowGroup>()
-  for (const { row, ri } of groundOrder(rows, d && d.gman) as Array<{ row: any; ri: number }>) {
-    const one = !row || !row.src || row.kept || !row.srcg
-    const k = one ? '' : `${row.srcg}\u0000${alike(row)}`
-    let g = one ? undefined : byKey.get(k)
-    if (!g) { g = { lead: ri, members: [] }; if (!one) byKey.set(k, g) }
-    g.members.push(ri)
-    out[ri] = g
-  }
-  return out
+  return (((d && d.ground) || []) as any[]).map((_r, ri) => ({ lead: ri, members: [ri] }))
 }
 
-/* THE PUCKS OF A DRAWN ROW — the one answer every builder reads (the week, the board, the next-week peek), so no two
-   surfaces can draw the one row's people differently (the plan §4.3). For a row of several members: each member row's
-   OWN MAN, in A-to-Z order of callsign (the order the Inputs list names a shared input's people in — D727), then each
-   member row's extras, in member order. EVERY PUCK KEEPS ITS OWN ROW'S KEY (`g:di.ri`, `g:di.ri.xN`): its flag, its
-   amendment mark, its OIL bar and switch, and a tap or a drag on it are that man's row's, exactly as before the rows
-   were drawn as one. `ri` is the member row a puck stands on. A blank place is left out (a row draws nothing for it). */
+/* THE PUCKS OF A GROUND ROW — the one answer every builder reads (the week, the board, the next-week peek, print), so no
+   two surfaces can draw a row's people differently (the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3).
+   A row that came from an input (`src`, not a dead `kept` row): its named people A to Z by callsign (the order the
+   Inputs pages name an input's people in — D727), then its placeholder. Any other row: as stored — the name box, then
+   what stands under it. EVERY PUCK KEEPS ITS POSITIONAL KEY (`g:di.ri`, `g:di.ri.xN`): its flag, its amendment mark,
+   its OIL bar and switch, and a tap or a drag on it are that place's. A blank place is left out. */
 export type DrawnPuck = { id: string; key: string; ri: number }
 const callsign = (id: string): string => { const p = (PEOPLE as any)[id]; return p && p.cs ? String(p.cs) : String(id) }
-export function drawnPeople(d: any, di: any, g: RowGroup): DrawnPuck[] {
-  const rows: any[] = (d && d.ground) || []
-  const own: DrawnPuck[] = [], more: DrawnPuck[] = []
-  for (const ri of g.members) {
-    const row = rows[ri]; if (!row) continue
-    const id = whoId(row.who)
-    if (id) own.push({ id: String(id), key: `g:${di}.${ri}`, ri })
-    ;(row.more || []).forEach((v: any, i: number) => { const x = whoId(v); if (x) more.push({ id: String(x), key: `g:${di}.${ri}.x${i}`, ri }) })
-  }
-  if (g.members.length > 1) {
-    const at = new Map(own.map((p, i) => [p, i] as const))
-    own.sort((a, b) => callsign(a.id).localeCompare(callsign(b.id), undefined, { sensitivity: 'base' }) || (at.get(a)! - at.get(b)!))
-  }
-  return own.concat(more)
+export function rowPeopleDrawn(d: any, di: any, ri: number): DrawnPuck[] {
+  const row = (((d && d.ground) || []) as any[])[ri]
+  if (!row) return []
+  const out: DrawnPuck[] = []
+  const id = whoId(row.who)
+  if (id) out.push({ id: String(id), key: `g:${di}.${ri}`, ri })
+  ;(row.more || []).forEach((v: any, i: number) => { const x = whoId(v); if (x) out.push({ id: String(x), key: `g:${di}.${ri}.x${i}`, ri }) })
+  if (!row.src || row.kept || out.length < 2) return out
+  const at = new Map(out.map((p, i) => [p, i] as const))
+  const ph = (p: DrawnPuck) => (isSpecial(p.id) ? 1 : 0)
+  return out.sort((a, b) => ph(a) - ph(b) || (ph(a) ? 0 : callsign(a.id).localeCompare(callsign(b.id), undefined, { sensitivity: 'base' })) || (at.get(a)! - at.get(b)!))
 }
+export function drawnPeople(d: any, di: any, g: RowGroup): DrawnPuck[] { return rowPeopleDrawn(d, di, g.lead) }

@@ -26,7 +26,7 @@ import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
 import { collectEvents, scSeatHit, avSeatHit } from './engine/events'
 import { reqRowText } from './ui/reqrow'
-import { groupWrite } from './ui/grouprow'
+import { rowWrite } from './ui/reqdoor'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff, dayAway, sansGate, SANS_LABEL } from './engine/avail'
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
@@ -89,8 +89,8 @@ export function installProbeBridge() {
   /* a person written to a place goes through the one row's door first, as every door of the app does (owner D734 —
      ui/grouprow.ts): on a shared input's row the INPUT changes; anywhere else the write is the engine's, as before */
   w.slotVal = slotVal
-  w.setSlotVal = (k: any, id: any) => { const g = groupWrite(k, id); return g === 'none' ? setSlotVal(k, id) : g === 'done' }
-  w.fillSlot = (k: any, id: any) => { const g = groupWrite(k, id); return g === 'none' ? fillSlot(k, id) : g === 'done' }
+  w.setSlotVal = (k: any, id: any) => { const g = rowWrite(k, id); return g === 'none' ? setSlotVal(k, id) : g === 'done' }
+  w.fillSlot = (k: any, id: any) => { const g = rowWrite(k, id); return g === 'none' ? fillSlot(k, id) : g === 'done' }
   /* a change line carries its place by the row's id; a walk names a place by where it is drawn ([HIST-JUMP-EMPTY-SEAT]) */
   w.posKey = (k: any) => posKey(k, DAYS)
   /* a request's row: its name, its times and its remark are the request's (owner D739, D740) — a probe that types there

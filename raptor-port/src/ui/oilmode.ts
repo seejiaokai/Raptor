@@ -50,7 +50,7 @@ import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { dayOilWork, oilCapableItems, openEndRows, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilAmount, oilKeptVals, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { landedExtras, claimPeople, claimPh, legacyClaim, oilEvidence, oilEvidenceOf, oilEarnedWork, oilAmount, oilKeptVals, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { parseHM, win, hm24 } from '../engine/time'
 import { VCONF } from '../engine/rules'
@@ -279,11 +279,16 @@ export function oilOffReason(di: any, person: any, item: string): { why: OilOffW
   const ev = evOf(di)
   const dec = personDecision(ev, String(person), item)
   if (dec === 'deny') return { why: 'denied', what: '' }
-  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
-  if (inp) {
+  /* A MAN'S OWN INPUT — he is its only person: the answer is HIS, and the words say so ("answered No", "has not
+     answered yet"). An input of several, and the men behind ALL AVAIL, follow ONE answer that is whoever filed it's
+     or an admin's (owner D762): the words say that, never that the man refused (the one-rule build, step 2 (d)). */
+  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && claimPeople(i).includes(String(person)))
+  if (inp && claimPeople(inp).length === 1 && !claimPh(inp)) {
     const what = oilClaimWhat(di, inp)
     return { why: inp.ans == null ? 'unasked' : 'declined', what }
   }
+  if (inp && !itemDefaultFor(di, ev, String(person), item))
+    return { why: inp.ans == null ? 'filerUnasked' : 'filerNo', what: oilClaimWhat(di, inp) }
   const held = heldClaim(ev, item)
   if (held && !itemDefaultFor(di, ev, String(person), item))
     return { why: held.ans == null ? 'filerUnasked' : 'filerNo', what: oilClaimWhat(di, held) }
@@ -294,7 +299,7 @@ export function oilOffReason(di: any, person: any, item: string): { why: OilOffW
 /** THE REQUEST BEHIND THIS ITEM WHEN A PLACEHOLDER HOLDS IT — an input filed for ALL AVAIL / ALL ([INPUT-ALL-AVAIL]) —
  *  else undefined. Read off the day's own evidence, so an issued day answers from what it went out with. */
 function heldClaim(ev: OilEvidence, item: string) {
-  return item && item.startsWith('i:') ? ev.inputs.find(i => inputItemKey(i.iid) === item && isSpecial(i.person)) : undefined
+  return item && item.startsWith('i:') ? ev.inputs.find(i => inputItemKey(i.iid) === item && !!claimPh(i)) : undefined
 }
 /** …and what the ALL AVAIL window says above its "Who earns OIL" list for such a request, or '' when the ordinary hint
  *  is the true one (the filer answered Yes; any other kind of row). The men behind it start where the FILER's answer
@@ -583,7 +588,7 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
          it are in the window its count opens (D38), each starting where the filer's answer puts him (D711 (1)) */
       /* …and one TAKEN OFF the programme has no row and so no count to tap (walker B, 9 Oct 26: its Personal Inputs
          line still said "tap the count") — it says what is true of it */
-      if (isSpecial(claim.person))
+      if (claimPh(claim) && !claimPeople(claim).length)
         return claim.acc === 'r'
           ? `<span class="${cls} oilitem none" title="This request is off the programme, so nobody earns from it">${esc(txt) || '&nbsp;'}</span>`
           : `<span class="${cls} oilitem none" title="This request follows the answer of whoever filed it — tap the count to switch one person">${esc(txt) || '&nbsp;'}</span>`
@@ -748,7 +753,7 @@ export function oilEligible(di: any, person: any, item: string): boolean {
   /* a claim-derived item is eligible when the claim itself is live — ONE body
      decides that, shared with the credit (oilInputEligible), so the mode can
      never offer a toggle on a claim the credit path has already ruled out. */
-  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && i.person === String(person))
+  const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && claimPeople(i).includes(String(person)))
   if (inp) return oilInputEligible(d, inp)
   /* D18's EXTRAS — the second man the scheduler stood on a claim's row. The
      fallback below asks `dayOilWork`, whose ground walk skips every `src` row
@@ -763,8 +768,11 @@ export function oilEligible(di: any, person: any, item: string): boolean {
      this item", and it must not move when somebody switches him off, or his
      puck would go inert and he could never be switched back on. */
   const claim = ev.inputs.find(i => inputItemKey(i.iid) === item)
-  if (claim && claim.win && oilInputEligible(d, claim)
-      && landedExtras(d, claim.iid, String(claim.person), ev.sent[item]).includes(String(person))) return true
+  /* …since the one-rule build the men behind an input's own placeholder (its crowd, as the day wrote it down); a man
+     on its row is IN the input, and was answered above. A block frozen before it is read by yesterday's rule. */
+  if (claim && claim.win && oilInputEligible(d, claim) && (legacyClaim(claim)
+    ? landedExtras(d, claim.iid, String(claim.person), ev.sent[item]).includes(String(person))
+    : !!claimPh(claim) && (ev.sent[item] || []).map(String).includes(String(person)))) return true
   const work = dayOilWork(d, { expandAll: (win, it) => oilSentinelPeople(di, it, win), rv: oilKeptVals(ev) })
   return (work[String(person)] || []).some(w => String(w.item || '') === item)
 }

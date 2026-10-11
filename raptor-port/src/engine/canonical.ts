@@ -319,12 +319,18 @@ export function isPersonAddr(a: any): boolean {
   return p === 'a' || p === 'd' || p === 's' || p === 'g'
 }
 /* a SEAT's place is its own address; a LIST's ends in .L (extras / a who-list) or .P (a sim's passengers) */
-function placeOf(k: string): string {
+/* …AND THE PEOPLE OF A ROW THAT CAME FROM AN INPUT ARE ONE LIST PLACE — its name box and everyone under it ([ALL-AVAIL-AS-
+   MEMBER] step 2 (b), 12 Oct 26 — the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.8): they are the
+   input's people in the order they joined, so the first one leaving and the next taking the name box is ONE person
+   off and nothing more — never "one off the box, one off the list, one on the box". `inputRows` — the ids of the
+   ground rows that carry `src` on either day being compared (a dead `kept` row is the holder's own and keeps a seat
+   and a list, as any ground row does). */
+function placeOf(k: string, inputRows?: Set<string>): string {
   const c = k.indexOf(':'); if (c < 0) return k            // a flying seat
   const p = k.slice(0, c), a = k.slice(c + 1).split('.')
   if (p === 'a') return `a:${a[0]}.${a[1]}.L`
   if (p === 'd') return a[3] != null ? `d:${a[0]}.${a[1]}.${a[2]}.L` : `d:${a[0]}.${a[1]}.${a[2]}`
-  if (p === 'g') return a[2] != null ? `g:${a[0]}.${a[1]}.L` : `g:${a[0]}.${a[1]}`
+  if (p === 'g') return a[2] != null || (inputRows && inputRows.has(String(a[1]))) ? `g:${a[0]}.${a[1]}.L` : `g:${a[0]}.${a[1]}`
   if (p === 's') return (a[3] === 'p' || a[3] === 'w') ? k : a[3] === 'pax' ? `s:${a[0]}.${a[1]}.${a[2]}.P` : `s:${a[0]}.${a[1]}.${a[2]}.L`
   return k
 }
@@ -349,12 +355,17 @@ function placeJump(pl: string, arr: any[]): string[] {
   return cand.map(k => posKey(k, arr)).filter((k: any): k is string => !!k)
 }
 /* per place, its cells (rid key → value) on one day */
-function peopleOf(d: any, di: number): Map<string, Map<string, string>> {
+const inputRowIds = (...days: any[]): Set<string> => {
+  const s = new Set<string>()
+  for (const d of days) for (const g of ((d && d.ground) || []) as any[]) if (g && g.src && !g.kept && g.rid) s.add(String(g.rid))
+  return s
+}
+function peopleOf(d: any, di: number, inputRows?: Set<string>): Map<string, Map<string, string>> {
   const arr: any[] = []; arr[di] = d
   const out = new Map<string, Map<string, string>>()
   dayKeys(d, di).forEach((v: any, k: any) => {
     if (!isPersonAddr(k)) return
-    const rk = ridKey(k, arr), pl = placeOf(rk)
+    const rk = ridKey(k, arr), pl = placeOf(rk, inputRows)
     let m = out.get(pl); if (!m) { m = new Map(); out.set(pl, m) }
     m.set(rk, String(v == null ? '' : v))
   })
@@ -387,7 +398,8 @@ export function canonicalUnits(prevD: any, newD: any, di: any): PendUnit[] {
   })
   if (!personEntries.length) return out
 
-  const was = peopleOf(prevD, di), now = peopleOf(newD, di)
+  const inputRows = inputRowIds(prevD, newD)
+  const was = peopleOf(prevD, di, inputRows), now = peopleOf(newD, di, inputRows)
   const rowIds = (d: any) => new Set(rowsOf(d).map((r: any) => r && r.rid).filter(Boolean))
   const wasRows = rowIds(prevD), nowRows = rowIds(newD)
   /* which side(s) a place's row is on; a row with no id (a legacy day) pairs by position,
