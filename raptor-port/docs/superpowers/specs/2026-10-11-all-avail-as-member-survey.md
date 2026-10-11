@@ -66,8 +66,12 @@ name `INPUTS`; 323 lines read `.person` across `src`, not all of them an input's
 `inp.person === id`), the 7-day run seed (`weekctx.ts:144-149`), SANS availability and its counts (`inputs.ts:754`,
 `state/flyplan.ts:207-217`, `ui/sanscal-model.ts:140-150`), the medical tracker (`medical.ts`), the palette's reasons
 (`palette-html.ts:25, 70`), the Leave War's absence index and its day view (`leavewar/sync.ts:172-224`,
-`absences.ts:172-222`), the bell's unanswered OIL (`sync.ts:796-821`), the CSV export (`export.ts:49`), a delete's and a
-posting's trims (`state/person-delete.ts:196-235`, `sync.ts:1673`), `roster-restore.ts:61`, the seeds' de-dupe.
+`absences.ts:172-222`), the bell's unanswered OIL (`sync.ts:796-821`), the CSV export (`export.ts:49`), the posting's
+"is this day past on the war" read (`sync.ts:1673 pastOnWar`), `roster-restore.ts:61`, the seeds' de-dupe.
+*(CORRECTED 11 Oct 26 by Fable's read of the plan, F1 — HOST-CHECKED: this line first listed "a delete's and a
+posting's trims (`state/person-delete.ts:196-235`)" here. They are WRITERS — `applyDelete` finds a man's records, then
+`INPUTS.indexOf` / `splice` and assigns to them — and belong in C below, where they already stood. A writer handed
+lines would delete the wrong record.)*
 **The parity tests need a flat per-person list too:** `src/testing/refwin.ts:142-145` pushes the port's inputs into the
 reference page, which reads one `person` a record and compares `day.input` in order (HOST-CHECKED). `node
 reference/tfin.js` itself does not see the port's inputs.
