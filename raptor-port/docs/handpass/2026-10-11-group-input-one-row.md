@@ -14,6 +14,8 @@ before them. **CHANGED THE SAME DAY BY HIS WORD (D749 — "Fable now and u can t
 Fable reads the code as an independent reader, once the walk's fixes are in; Sol 6.1 was tried at once and did not
 answer (the same limit, until 14 Oct). So the job has ONE independent reader for now — whether it merges on Fable
 alone or waits for a ChatGPT reader is his to say, with Fable's report in front of him.**
+**HE SAID, 11 Oct 26 (D752): "One reader will do" — the job goes ahead on Fable's read; the pull request is opened;
+nothing merges without his "merge live".**
 
 ## 1. The eight questions and the tier
 
@@ -317,11 +319,15 @@ built bundle was NOT walked after the fix — **on his look card.**
 1. **One independent reader, or two?** Sol 6.1 did not answer (ChatGPT's limit, until 14 Oct). *Recommended:* read
    Fable's report first; if it is clean or its finds are small and fixed, merging on Fable alone is a reasonable
    risk before the database step; if it finds something in OIL or the count, wait for one ChatGPT read. *Waits on
-   it:* the merge only.
+   it:* the merge only. **ANSWERED 11 Oct 26 — D752: *"One reader will do"*: the job goes ahead on Fable's read;
+   the pull request is opened and waits for his look and his "merge live".**
 2. **The puck stands on the first man filed, not the man it was dropped on.** An ALL AVAIL dropped anywhere on the
    one row is kept under the man who was filed FIRST; it comes off (with the note) only when THAT man is taken off —
    nothing on screen says which man it is. *Recommended:* leave it as built (D745's rule, and the simplest); the note
-   and the To go out line name him when it happens. *Waits on it:* nothing.
+   and the To go out line name him when it happens. *Waits on it:* nothing. **ANSWERED 11 Oct 26 — D750: *"leave it
+   for now, plan idea 1 after the merge"*** — as built for now; his idea ("Several people" takes ALL AVAIL / ALL, the
+   puck tied to no man) is planned after the merge: `OUTSTANDING.md` `[ALL-AVAIL-AS-MEMBER]`. The pictures he asked
+   for: `docs/img/handpass/2026-10-11-group-input-one-row/aa-story/`.
 
 **Look here** (what you should see, in the app's words):
 - **Edit Schedule, Wednesday, Ground Programme:** file a Meeting for four on the Inputs page. It is ONE row with four
@@ -353,6 +359,7 @@ lights its crew the same way. `state/view.ts` (`warnFocusMap` — `sevs`, per ma
 `ui/scheduler/08-windows-tools.css` (`.puck.wfoc.notef`). **The agent's reading, told to him and his to overrule:** a
 long work day lights GREY, not amber — his "amber … inaccurate" on the day of three long work days; the written
 contract said "red or amber" (`docs/ui-contracts.md`, 7 Aug 26), which was about not using the selection's blue.
+**CONFIRMED by him the same day — D751:** *"I thought it's always grey for long work day"*.
 
 **The eight questions:** earned leave — no (nothing counted moves); the published record — no (nothing is stored or
 sent out; the lighting is the viewer's own); saved data — no; **a shared drawer — YES** (one routine lights the pucks of

@@ -425,6 +425,8 @@ when the build resumed. The build, the gates and the walk go ahead; the work PAU
 Astra's and Sol's — Fable is not called in their place without his word. Nothing merges meanwhile.
 *(His word came the same day — D749, 11 Oct 26: Fable reads the code now as an independent reader; Sol 6.1, tried at
 once, did not answer. The check's sheet says where that stands.)*
+*(And D752, 11 Oct 26 — "One reader will do": the job goes ahead on Fable's read alone and does not wait for a ChatGPT
+reader; it merges only on his "merge live".)*
 
 ## 7. For him — nothing waits on him; what he is told
 

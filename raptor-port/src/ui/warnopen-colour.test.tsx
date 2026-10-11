@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-/* AN OPEN ISSUES LIST LIGHTS EACH MAN IN HIS OWN COLOUR (owner's find on his phone, 11 Oct 26).
+/* AN OPEN ISSUES LIST LIGHTS EACH MAN IN HIS OWN COLOUR (owner's find on his phone, 11 Oct 26; D751 — a long work day
+   is grey wherever the app shows it, lit or at rest, never amber).
    A day's list, opened by its bar, lights every man its shown warnings name. It lit them all in ONE colour — the
    day's worst: with one red clash on the day, three men whose only item was a long work day wore the red ring too,
    and the rings read as five men double-booked. Closing the list put each puck back to its own flag, which is how he

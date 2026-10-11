@@ -3498,7 +3498,7 @@ saying which row had done it. All four emit `on` by the same test now —
 the next day's warning. The panel closes itself on the click (its own
 contract), so its mark shows on reopen.
 
-**Each lit man wears the colour of HIS OWN item (his find on his phone, 11 Oct 26).** A day's list, opened by its
+**Each lit man wears the colour of HIS OWN item (his find on his phone, 11 Oct 26; D751 — a long work day is grey wherever the app shows it, lit or at rest, never amber).** A day's list, opened by its
 bar, lights every man its shown lines name — each in the colour of the WORST shown line that names him: red (bare
 `wfoc`), amber (`advf`, an advisory) or grey (`notef`, a note — a long work day), the colour that line carries in the
 list and his puck's own ring carries at rest. A tapped line lights its crew in that line's colour, by the same step

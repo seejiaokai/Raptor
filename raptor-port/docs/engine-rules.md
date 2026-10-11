@@ -1355,7 +1355,7 @@ flagged correctly and still swept the man out of the crew palette.
     that way** (R5) — "Ranger is the last person on this input — use ✕ to take it off the programme, or delete it in
     its own window".
   - **A placeholder (ALL / ALL AVAIL) aimed anywhere on the row is the row's own:** re-aimed at the lead's "+ add"
-    (`groupRetarget`), never a man's place. **It leaves with the member whose row carries it** (D745): the door says so
+    (`groupRetarget`), never a man's place. **It leaves with the member whose row carries it** (D745; kept so for now by D750, 11 Oct 26 — his idea of letting "Several people" take ALL AVAIL / ALL, so the puck is one of the input's own people and tied to no man, is PLANNED after this job merges: `OUTSTANDING.md` `[ALL-AVAIL-AS-MEMBER]`): the door says so
     to whoever did it ("ALL AVAIL came off Range safety brief with Ranger — drop it on the row again if it still
     applies"), and the removal's own line of the change history says "ALL AVAIL came off his row · switched off on it:
     Bane, Comet" — handed in as that line's reason by every door that takes one man out of an entry that goes on
