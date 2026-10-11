@@ -3,8 +3,9 @@
 **Status: VERSION 2 — written by Opus 5.5 on `claude/all-avail-as-member` (= `main` at `7c1fcdc0` plus records). NOT
 BUILT. Version 1 was read by Fable on his word (D758): "CLEAN WITH THESE EXACT CHANGES" — sixteen, each checked by the
 host at the source and all taken (§9); version 2 is version 1 with them in. The ChatGPT reader D758 names is out until
-about 1 Nov 26 (D761 — `OUTSTANDING.md` `[NO-ASTRA-LIST]`), and whether the build may start on one reader is HIS word,
-not yet given. One choice is his before step 2 (f): §8, Q1.** Written from the design note (`../specs/2026-10-11-all-avail-as-member-design-note.md` — §7 is the
+about 1 Nov 26 (D761 — `OUTSTANDING.md` `[NO-ASTRA-LIST]`). **THE BUILD MAY START — D764 (*"Start now, decide at the
+merge"*): on Fable's read alone, in steps on this branch; Fable also reads the finished code; at the merge he decides
+whether to wait for a ChatGPT read of it. Q1 is answered — D763.** Written from the design note (`../specs/2026-10-11-all-avail-as-member-design-note.md` — §7 is the
 walk-through he agreed, D757) and the survey (`../specs/2026-10-11-all-avail-as-member-survey.md` — the app as it
 stands; this plan does not repeat it). Tier: HEAVY; its check is FULL (OIL, the published record, saved data,
 permissions, a new gesture).
@@ -379,10 +380,9 @@ dot and the changes window's tap land on his row.
 - **The member commit gate** (`inputBreach`), rewritten on the one record: a member's command may put or change an
   input only as the first rule allows, or by `ownPart`; a forged `by`, another person's entry stamped as put in by
   someone else, and an OIL answer on an input he may not change are refused.
-- **A man who is IN a shared input he did not file adding another person to it — HIS CHOICE, §8 Q1 (Fable F12).** The
-  app allows it today (`commitGroup`'s people-only save; `groupStood` in the gate). This plan recommends ending it —
-  who is in an input is changed by its filer or a scheduler, one rule — and builds that ONLY on his word; until he
-  answers, step 2 (f) keeps today's allowance.
+- **A man who is IN a shared input he did not file does NOT add another person to it — D763 (Fable F12 put it to
+  him; *"No - the filer or a scheduler"*).** The app allows it today (`commitGroup`'s people-only save; `groupStood`
+  in the gate); both go in step 2 (f). Who is in an input is changed by whoever filed it or a scheduler.
 
 ### 4.10 The bell tells him — `[INPUT-CHANGED-TELL]` (D755 (3), D760)
 
@@ -547,8 +547,8 @@ D757 and his two routes (T1). The walk is sized before it starts (`docs/walk-led
 
 ## 8. For him
 
-**Q1 — HIS CHOICE, before step 2 (f) (Fable F12):** may a man who is IN a shared input he did not file ADD another
-person to it? Today he may (for the kinds a member may file for others, with the switch on). Recommended: no — who is
+**Q1 — ANSWERED, D763 (*"No - the filer or a scheduler (Recommended)"*).** As it was put (Fable F12): may a man who is
+IN a shared input he did not file ADD another person to it? Today he may (for the kinds a member may file for others, with the switch on). Recommended: no — who is
 in an input is changed by whoever filed it or a scheduler; he may always take himself out. It is the one place this
 plan would take something from a member that no ruling of his has yet taken, so it is not built without his word.
 (D655's reading 2 already says a man in a shared input "cannot change it for the others"; adding a person was let
@@ -582,8 +582,8 @@ through by the build, not ruled.)
 **Pictures owed to him before their step:** the cancelled input's card, bar and List row (step 5); the bell's list
 (step 7).
 
-**Waiting on him:** whether the build may start on Fable's read alone, ChatGPT being out until about 1 Nov 26 (D758
-reading 3, D761).
+**Waiting on him:** nothing before the build. **D764:** the build starts on Fable's read alone; at the merge he is
+asked, beside the gates and the check, whether to wait for a ChatGPT read of the finished code.
 
 ## 9. The reads of this plan
 
@@ -606,7 +606,7 @@ before it was taken (the file and function each names were read and found as des
 | F9 | Reading a notice would block the maker's Undo; the new record's wiring was not named | `undo/timeline.ts` 193, 598–608; `docs/undo-contract.md` 340–395 | §4.10; T18; R11, R12 |
 | F10 | "Built fresh at each call" behind `inputsOn` is an unmeasured cost on a phone | `avail.ts` 484–524 (four calls a man) | §4.2 the pass memo and the measurement |
 | F11 | ALL AVAIL's crowd switch-offs would come back when it is taken off and dropped again | `oilev.ts` 506–512 (the prune works on a copy) | §4.7; T17; R13 |
-| F12 | Ending a non-filer's right to add a person is his choice, not a reading | `perms.ts` 561, 585–594 (`groupStood`) | §8 Q1; §4.9 keeps today's allowance until he answers |
+| F12 | Ending a non-filer's right to add a person is his choice, not a reading | `perms.ts` 561, 585–594 (`groupStood`) | Put to him: **D763** — no, the filer or a scheduler; §4.9, §8 Q1 |
 | F13 | When the filer takes himself out, `by` stayed his and the OIL question went to nobody | `leavewar/sync.ts` 804–818 | §4.5 "By Saber"; T19 |
 | F14 | A CX put on and taken off would read pending for ever | `board.ts` 1120–1126 (`cx = false; delete cxr`) | §4.2 `inpDetailKey` normalised; T20 |
 | F15 | The guard missed a reader that never names `INPUTS` | the funnels of F2 | §4.2 the guard greps five names |
