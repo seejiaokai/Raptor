@@ -34,13 +34,23 @@ pushed and waiting for him — the normal end state, not unfinished business.
 - **Only your own block.** It sits between `<!-- now:<branch> -->` and
   `<!-- /now -->`; rewrite it WHOLE (never append to it — a block that
   accumulates becomes a changelog, and `git log` already is one). Newest block
-  first under `## Now`.
+  first under `## Now`. Change it with the editor tool, between its two
+  markers. A script that cuts or replaces a block matches each marker anchored
+  to the start of its own line — never as a substring: a block may quote a
+  marker, and text the same script has just inserted may repeat an anchor —
+  and `npm run docsize` runs before the commit (it checks the file's markers
+  and its three headings).
 - **Another chat's block** is removed only when `git fetch` shows its work
   merged into `main` AND anything it left open is already an `OUTSTANDING.md`
   item. Otherwise leave it exactly as it is — a parallel chat (a second
   worktree) owns it, and the later merge keeps both (D78). The document gate
   warns when a block's branch is already merged, and fails two blocks for one
-  branch.
+  branch. The residue check is a READ of that block, made when it is removed:
+  every line it marks owed, open, "not filed" or "to tell him" is matched to a
+  backlog id, a ruling or an evidence sheet — never taken from a later block's
+  sentence that "its leftovers are filed" (one such sentence was wrong by six
+  items). A long block goes to a helper with that exact brief, and the host
+  checks its quotes.
 - **Open residue goes to the backlog, not the block:** anything still open
   becomes (or updates) an `OUTSTANDING.md` item with its place in the priority
   list; the block names it in one line. A standing item already in the backlog
@@ -51,6 +61,24 @@ pushed and waiting for him — the normal end state, not unfinished business.
 - Print the same block in chat, and give him the **ready-to-paste opening line**
   for the fresh chat: which branch to pick in the new-chat picker, and "Read
   `HANDOFF.md` — the `claude/<branch>` block under `## Now` — then …".
+  For a NEW job in a fresh worktree on `main` the line says "run
+  `git fetch origin` and check this branch is level with `origin/main`" —
+  never "git pull", which pulls nothing on a branch with no upstream; "git
+  pull" is for a chat continuing a pushed branch. For a design or question job
+  the line says why the job is due now and what he will get from it (pictures
+  and questions; nothing in the app changes). And tell him to TYPE a word of his own after pasting it
+  ("go"; "I'm away — run it"): a first message that is only pasted text may
+  be held for his confirmation, which stalls a start he meant to leave
+  unattended.
+- **Say in so many words whether he ticks "worktree"** in the new-chat picker
+  (owner, D368; and 13 Oct 26, D811 — picking the branch is usually automatic
+  there, the worktree box is not: "u need to tell me if I need to tick or
+  not"). A NEW job: tick it, based on `main`. A fresh chat that continues THIS
+  chat's branch: tick it too, and pick `claude/<name>` — git allows a branch in
+  one folder at a time, so first check everything is pushed and release the
+  branch here (`git switch --detach`). Never "no new worktree — reuse this
+  folder": the app offers the main folder or a NEW worktree, nothing else. A
+  branch that has just merged: never picked at all.
 
 **Either way, it has to be COMMITTED AND PUSHED to the designated branch —
 and NEVER merged by you.** SUPERSEDED 2 Sep 26 (`.claude/rules/shipping.md`,
@@ -99,6 +127,15 @@ deliberately stopped on, or a PR left under `subscribe_pr_activity` watch.
    report.
 4. **Plan file**, if one drove the session (the harness's `plans/` folder:
    `~/.claude/plans/` on a desktop, `/root/.claude/plans/` in a web container).
+5. **What is still running, and what the next chat is told to use.** Helpers, a
+   served build, the check lock, a background run: for each, who receives its
+   report and who releases it — and that this chat does NOTHING further once a
+   new chat picks the block up (or exactly what it will finish). Every result
+   that so far lives only in this chat or its scratch folder is copied into
+   the repo before the block is committed. A job the block gives to a named
+   model or tool is probed once, by the route the next chat will use; the
+   working command — or "not reachable from here, because …" — goes in the
+   block.
 
 Nothing further — no broad Glob sweeps, no filesystem audit. If you did not
 touch it this session, it does not belong in the handoff. (Step 3's check is
@@ -136,6 +173,13 @@ whose branch merged is removed once its open residue is filed (Step 1). A
 "current state" section must hold nothing already done, and the staleness an
 earlier session left sits in lines your diff never touched.
 
+**Merged between chats — sweep for it, whoever merged.** He merges on his own
+word, often after the chat that built the thing has ended. For every `## Now`
+block and every line of `OUTSTANDING.md`'s priority list that says "waiting
+for … merge", read the named pull request's state now
+(`gh pr view <n> --json state`): one that has merged is retired or rewritten
+in the same change, or named to him if its residue is unclear.
+
 For each path it reports, confirm — by reading the live record that holds it
 (`HANDOFF.md`, `OUTSTANDING.md` or `raptor-port/docs/file-map.md`), not from
 memory:
@@ -150,7 +194,12 @@ memory:
   deliverable the item ever named — its oldest blocks included — and mark
   each done, filed as its own item, or dropped by a ruling: a status line's
   "the only thing left is X" is a summary, not a check (24 Sep 26: one missed
-  a second leftover). Its contract goes to the right
+  a second leftover). Search the full rulings rows (`.claude/decisions-full/`)
+  for the item's id named as a HOME, too: point each at
+  `OUTSTANDING-ARCHIVE.md` first, or the gate refuses the move. On a pull
+  request that carries code, archive what the job finishes BEFORE its last
+  checked commit — a refusal met after his "merge live" costs another whole
+  check run (D151). Its contract goes to the right
   structured doc first (`engine-rules`, `ui-contracts`, `feature-impact`,
   `performance`); its story goes in the commit message — that is what makes
   `git log` the changelog. **A known issue CREATED** → an `OUTSTANDING.md`
@@ -228,9 +277,36 @@ stable structure is the point.
   (not in CI, so a UI or validation change shipped without them is Unfinished, not a footnote).
   Run from `raptor-port/`; a fresh checkout needs `npm ci` first.
 - **Open questions for him:** <question> — <context needed to answer it> (or "none")
+- **Running when written:** <helper / served build / lock / background run — who receives its report, who releases it> (or "none")
 - **Pick up here:** <1-2 sentences: the single most likely next action; a plan file that drove the session first>
+- **Opening line:** <the exact line he was given for the fresh chat — the next chat compares its first message with it>
 <!-- /now -->
 ```
+
+**What makes the block something the next chat can act on** — each line from
+a handoff that could not be:
+
+- Every step the next chat is told to RUN names its command, and what that
+  runs is committed (check each path with `git ls-files`). A list of cases to
+  run goes into the repo as data beside its runner, not as a sentence.
+- A "to build" list that turns a ruling into code names says "the agent's
+  reading". The ruling's own words stay the spec: the next chat re-derives the
+  list from them against the code.
+- Work designed but not built: leave its failing tests, parked under a name
+  the build does not compile, and a one-page note of the shapes they call —
+  and tell the next chat to mark the note "built" when it is.
+- A trap is written from what was measured, with how it was measured; a trap
+  that was only inferred is marked a guess.
+- A job that resumes an unmerged branch: beside "where the branch meets
+  `main`", list what the rulings recorded since the branch forked leave stale
+  ON it (`git grep <subject> origin/<branch>`) — the chat that recorded them
+  on `main` could not reach that text.
+- Chats started side by side each get, in the block, a ruling-number range
+  and an observation-number range. A chat joining others reads every open
+  branch's block for claimed ranges before announcing one — a pushed block
+  beats a message.
+- Name any document-size marker carried over (`docsize: OVER by <n>,
+  deferred`): the next documents-only change must settle it.
 
 ## Rules
 

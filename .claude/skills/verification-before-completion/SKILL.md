@@ -56,6 +56,12 @@ Skip any step = lying, not verifying
 | Clean / nothing found / never happened | The verdict names what was examined AND what was not — which files, which kinds (binaries? the history?), which terms | "Clean", with its scope left for the reader to assume |
 | Removed everywhere (a name, a secret, an identifier) | A sweep for everything that identifies it — synonyms, variants, codes, not only the words you were given — and the file kinds the sweep could not read, named | A search for the literal strings you were given |
 | It passes on another machine, or in CI | That environment's own run of the exact commit | A green run on another operating system or checkout — a fault arranged through the platform (a read-only file, a lock) may fault on one only |
+| A typecheck or lint is clean | The pipeline's own command (read it from the build script), or this checker seen to report a planted error in this repo | Silence from a lookalike command — a root config that lists no files of its own checks nothing and exits clean |
+| A background run passed | The tree was committed and untouched from the run's start to its end (`git status --short` empty, read in the same command) | A run during which source was edited, a break test ran, or a test file that does not compile was added — it describes no revision: discard it, never triage it |
+| My edits landed (a batch; a write sent together with the run that depends on it) | After ANY refusal or error inside the batch, each intended change read back; the write confirmed before its run is believed | No error on the other calls; a run that exited 0 — it may have run the old file |
+| A count from a new audit script | One of its hits checked by hand, and the number compared with any earlier count | A surprising number taken as a finding — check the instrument first |
+| A mechanical rewrite across many files is right | The ADDED lines read (doubled words, the rule's own statement reworded), every renamed test title searched for in the docs, and evidence files — reviewers' reports, briefs after their run, archives — excluded by path | "The bundle is byte-identical": that proves no code moved, not that the words are right |
+| A check deferred to the end still holds | Each deferred suite that reads the surface a step changed was run at that step — or the step's record names which of its assertions will need re-pointing | "They ride the final check": a stale check and a real failure look the same until someone investigates |
 
 ## Red Flags - STOP
 

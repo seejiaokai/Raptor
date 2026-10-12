@@ -48,7 +48,10 @@ is the agent's job, answered out of §5.
    written down, the answer is YES.
 3. **Tell him in one short block what that tier means you are about to do** — the checks, the size
    of the walk and why (§7.0), and roughly how long. He reads it; he does not choose it. If he wants less, he will say so, and that
-   is his call to make, not the agent's to assume.
+   is his call to make, not the agent's to assume. Name no check beyond the tier's own list unless its route is traced —
+   which control, in which state, proves it — and quote a duration from the last recorded run (`HANDOFF.md` §Gate baseline,
+   the walk ledger), or say it is not measured: a check withdrawn later, or an hour that turns out to be fourteen
+   minutes, costs trust.
 4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
 
 **If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
@@ -125,7 +128,7 @@ and by how many, is decided per change in the sizing step (§7.0, D607):
 | **Rules and logic** | The rules sweep: list every applicable ruling, walk it against the behaviour; a ruling about something SHOWN gets one mark per surface, a ruling about MONEY one per order | A rule quietly doing a job a later ruling took away. A rule that holds on one screen and not another. |
 | **Money or entitlement** | FULL tier: both models read the code independently, plus the walk, plus the real downstream number checked — not just the screen | Money decided from live state instead of the issued record. |
 | **Published or signed records** | Both orders across the publish boundary; undo of a publish; the amendment and the signature checked each time | A change that moves money without an amendment, or an amendment that moves none. |
-| **Saved data / storage** | Reload, leave and return, and the reset path walked; older saved data read | A write that never persists. Data that cannot be read back after an upgrade. |
+| **Saved data / storage** | Reload, leave and return, and the reset path walked; older saved data read — data the OLD build really wrote, with a mechanical check on every step (`docs/walk-scripts.md` §When nothing on screen should change) | A write that never persists. Data that cannot be read back after an upgrade. |
 | **Permissions and roles** | Every role walked on every affected surface, including the read-only viewer | A control offered to someone who cannot use it, or hidden from someone who needs it. |
 | **Cross-app seams** (Leave War, Tracker, the shared data) | Walk the change on BOTH sides of the seam and confirm the two agree; the order's "both arrive" rule for anything that can be true on both sides | Two screens telling the same person different things. |
 | **Cross-platform / phone vs desktop** | Both widths on every walked surface, always; a real touch target, not just a visible one | Something legible on a desktop and clipped, unreachable or two rows tall on a phone. |
@@ -276,10 +279,36 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 
 **Never show either model the other's conclusions before both reports exist.**
 
+**Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
+
+- Every sentence of its promise that states a behaviour touching OIL, the published record, roles or saved data is
+  copied from the ruling's FULL row and cites it. A sentence with no row behind it is marked "the host's reading", so
+  the reader treats it as a question, not a requirement.
+- A scenario's EXPECTED line gets the same check before it goes to a walker: one that names a COUNT, a REFUSAL or a
+  PUBLISHED-DAY state is read against the rulings and `main`, and rewritten "RECORD exactly what it says" where the
+  host cannot say what the right answer is. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job
+  before, were the host's own expected line contradicting an older ruling.)
+- A recommended answer to a question parked for him is checked against his words in the full rows — not only that
+  the question is still open.
+- A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
+  owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
+  design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: both for an
+  important plan, one otherwise), never a second scenarios-only run.
+- Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
+  the exact input it would run; the host runs every such case before dispositioning the finding.
+
 **What to do with what they hand back** — this is the requesting agent's job, not theirs:
 
-1. Reproduce each finding through the real production route on the exact revision.
-2. Check it against the governing ruling.
+1. Reproduce each finding through the real production route on the exact revision — its stated REASON as well as its
+   symptom: where a finding says something is "unchanged" or "invisible", probe every reader of that state (what
+   draws it, what validates it, who is available because of it, what consumes it downstream). A finding that fails
+   there is dispositioned a false positive (item 5), marked "checked", with the reader that disproves it, and the
+   right behaviour is pinned by a test.
+2. Check it against the governing ruling. Then search the tests, the code comments and the records for a decision that
+   pins as INTENDED either the behaviour the finding calls a defect, or any behaviour the fix would change beyond the
+   rule the finding cites. If the finding's own behaviour is pinned, it goes to him as a question and is not fixed; if
+   only the wider behaviour is, fix the cited defect and put the rest to him. Either way with a safe interim (the
+   action SAYS what it does).
 3. **Compare against `main` before calling anything newly introduced.** Severity depends on it, and
    the two models disagreed about this on three findings here.
 4. Record user impact, reachability and provenance SEPARATELY. "Pre-existing" never erases severity
@@ -294,12 +323,19 @@ by one helper; if the chosen pass is long, D16 requires parallel helpers, as bel
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
 helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
 copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
-rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
+rediscover it. (Where the harness's limit of five preview servers a folder — its preview tool counts every chat's —
+leaves none free, walkers share ONE server of the frozen build, each in its own fresh browser context: what keeps two worlds
+apart is the browser's storage, not the port. A chat stops the servers it started when its walk ends.) The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
 so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
 evidence sheet. **While they walk, nobody rebuilds the build they are served** (23 Sep 26): a rebuild swaps the
 bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host fixing in parallel typechecks
-without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
-walkers' reports.
+without writing output (`npx tsc --noEmit -p tsconfig.app.json` — the root config lists no files and checks nothing)
+and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the walkers' reports.
+**Each walk ROUND is served from its own folder**, named for the app's commit, made once and never written again — a
+later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next round, under a walker of the last).
+**And the reader's half: while a reader reads the folder, nothing rewrites the source it reads** — a break test, a
+mid-flight fix, the next step's build. Break in a separate worktree, or hand the reader a commit (10 Oct 26: a
+reader reported a line a break test had cut out for one minute).
 
 **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
@@ -313,7 +349,8 @@ the sizing step still lets the host run a short walk itself (§7.0, D608). Every
 conditions: the host opens the pictures behind every FAIL and every high-consequence PASS (OIL, a published day, a role,
 saved data); a scenario with an EXPECTED line is judged PASS or FAIL — "RECORDED" is only for scenarios the host marks
 so, and the host re-judges any RECORDED row that has an EXPECTED line; a walker's conclusion is a finding only after the
-host reproduces it. One building trial is still to run: ONE small low-risk fix
+host reproduces it. How the brief and the walk scripts are written, and what each trap in them has cost:
+`docs/walk-scripts.md`. One building trial is still to run: ONE small low-risk fix
 (`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
 requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
 also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a
@@ -444,6 +481,16 @@ pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow
 regression: a step whose premise the fix itself consumed (nothing unsaved is left to test; a refusal now drawn
 on top of the window it used to hide behind) is walked again with a fresh premise, not reported.
 
+**A fix is new code** (28 Sep 26). When a read's fix rewrites logic — more than a one-line guard — the fix commit gets
+its own narrow read ("is each fix right and complete, and what did it break beside it") by a fresh Opus reader that did
+not write the fix and is handed only the fix commit and the findings it answers (D790 — never the chat that wrote it; a
+further Fable read of a fix round is on his word), repeated on each round's fixes for at most about three rounds (the
+agent's cap, borrowed from the plan-review one, §4a); the sheet says which round was last and what carries the rest. "All
+findings fixed" is a claim about the findings, not about the fixes. And for a finding of the form "X is written
+outside the rules", ask first — and write the answer in its disposition — whether X should be written at all, by this
+actor, from this copy, before making the write conform (30 Sep 26: a bare write was wrapped to satisfy the check,
+when the write itself was the defect).
+
 ---
 
 ## 6. The roll-call — the defence against "never wired up"
@@ -484,6 +531,37 @@ inside the puck, over exactly the strip the mark occupies (column 3).
   shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
   existed both times this failed.
 
+**And more rows, each from a fault a roll-call missed (24 Sep – 12 Oct 26):**
+
+- **A navigating action gets one row per OPENER** — every call site of the jump, the "go to", the link — with "is the
+  person still on the page they started from: YES / NO, because…". A reused handler inherits its first surface's
+  assumptions (his find: a tap in the changes list, opened from a second page, left that page).
+- **A changed quantity is listed where it is SHOWN and where it is BRANCHED on.** Map each surface a ruling names to
+  the function that computes its number — a sibling that works the same number out by itself never sees the change —
+  and list every early exit, "nothing to do" message and confirm gate that tests it: each one's sentence must still
+  be true.
+- **A rule is asked of every SURFACE that draws the thing, by that surface's own builder** (week, board, preview,
+  print) — not of the one file where the rule is written: a surface that never called the rule is written MISSING,
+  never left out. A new mechanism built "like X" is plugged in at every place X is (search X's entry points).
+- **A change that REMOVES or replaces a control, a form or panel, an event or a way out** lists, from the removed CODE
+  and not from memory: every action it gave, in each role and at each size, with the control that gives it afterwards
+  (an empty cell is a build item or a question for him — and the check is sized from this list, not from how the
+  change looks); everything that stood BELOW it on the page, and every pop-up there
+  placed against the screen rather than against its own button (his find, 10 Oct 26: a calendar opened one screen
+  down once the form above it was gone); what else ran on the event it removes — a deferred paint, a save, a
+  tidy-up: still runs / now triggered here / no longer needed, because…; and, for a way out, the surface's own
+  positioning rules, with a real-browser test that presses the new way out.
+- **A fix that changes when a writer reports "nothing happened"** — its return value, its no-change condition — lists
+  every caller that reads the return or compares again after the call.
+- **A listener added above its own component** (the document or the window; a key, a press) lists every state in
+  which it is alive while its surface is hidden, covered or not in front, and who is entitled to the input then —
+  with a test for each.
+- **A component that gains a second home on a page** (a hidden form kept mounted counts) has its tests' queries
+  scoped to their container in the same change.
+- **A storage change adds a column per writer:** on its FIRST write, and when it re-places a list, does it write ONLY
+  what its own action changed? Any answer but a plain yes gets a two-tab step, the second tab opened before the first
+  write.
+
 ---
 
 ## 7. The walk
@@ -514,6 +592,12 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   the sizing assumed, and write down its decision: widen the walk where the finding shows a surface, a state, a
   route or a shared cause of THIS change that has no proof; otherwise record the finding's disposition and why the
   scope still holds. An older fault met in passing does not by itself enlarge the walk.
+- **A scenario an independent designer wrote is set aside only with its reason written beside it in the sheet** — a
+  named test carries it (as above), it cannot be reached, it was walked on code this change leaves as it was (name that
+  walk), or the sizing lines say what makes a walk of it unable to find anything here. "Older behaviour this change does
+  not touch" is never that reason when the change touches the same listener family, the same component or the same scope
+  rule (10 Oct 26: two real faults sat among eight scenarios set aside that way) — drive those once: a scripted step is
+  cheaper than a second round of reads.
 - **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
   reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
   before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
@@ -527,7 +611,8 @@ row, a zero-length row; a Common Programme row with ALL AVAIL and one with named
 answered yes, one answered no, one taken off the programme; an overseas duty under Unavailable; a
 SANS man on the programme and a hidden one; a named ground-crew man; a man posted out since the day
 was published; a man wearing a warning chip; a man on four rows where two count; a parked plan; an
-amendment pending.
+amendment pending; a day whose issues list mixes all three levels — a red item, an amber one and a note — with a
+man each names alone.
 
 **It lives in the demo seed**, so a fresh boot shows it, the owner's look starts on it, and the next
 session does not rebuild it from memory. Extended in the same change whenever a new kind arrives.
@@ -551,6 +636,12 @@ finding.
   window — for any surface built as a viewport-tall column, and measure EVERY edge-docked control against the
   screen edges, not only the one being changed. (Room to scroll past the end goes inside the scroll box as a
   spacer, never as padding on it: padding sets the box's smallest height.)
+- **On a phone, what a press opens is proved ON SCREEN before anything in it is pressed** (his find, 10 Oct 26): the
+  page not scrolled by the script, the pop-up's box inside the screen, a finger at a point on it meeting it — and
+  its controls are then pressed at a point. A scripted press that scrolls its target into view first can work on a
+  pop-up nobody could find: four browser tests and every walker passed a calendar drawn below the foot of the screen.
+- **How a walk script, a walker's brief and a break-test list are written — and what each trap in them has cost —
+  is `docs/walk-scripts.md`.** Read it before writing one; every walker's brief names it.
 
 **7.3 Walk the surfaces, not the rulings.** This is the difference that cost the OIL build three
 defects. A ruling about something SHOWN or TAPPED gets **one mark per surface**. A ruling about
@@ -561,7 +652,11 @@ MONEY gets **one recorded result per required order**, saying whether the walk o
 actions in BOTH orders, on a published day and an unpublished one; after each, undo, redo, reload; every
 action with an opposite, in the opposite direction AFTER publishing, because that is where money
 freezes. Every line of that list gets a result. Each distinct order on screen is DRIVEN; repeated cases
-may be carried by a test within §7.0's limits, and the sheet says which is which.
+may be carried by a test within §7.0's limits, and the sheet says which is which. **A control that holds state
+between presses gets its state table too** (9 Oct 26: a walk of a new date picker passed 16 of 16, and two reads then
+found six faults, every one an order of action): each state × each event that can arrive in it — its own presses,
+the record changed behind it, another record opened, each answer to each question — a walk step where it needs the
+screen, a test otherwise; and the readers are asked the same in their brief.
 
 **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
 has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
@@ -601,7 +696,10 @@ and put it on the owner's look card.
 ## 8. Making the checks FIND rather than CONFIRM
 
 1. **Tests loop over the roll-call, never over one fixture.** A test of a mark walks every KIND of
-   seat and asserts each by name.
+   seat and asserts each by name. Where an invariant must hold for every output of one central function, attach
+   it to the function instead of to new fixtures: a checker the global test set-up installs on a hook that does
+   nothing in production, so every existing test's own input is checked the moment it is built — with one test
+   that feeds the checker a broken example.
 2. **The fixture is the everything day.** A test that sets up a duty desk and a ground row tests a
    duty desk and a ground row.
 3. **Fixtures write the way the app writes.** A test that replaces an object where the app changes
@@ -611,7 +709,11 @@ and put it on the owner's look card.
 4. **Red first, and the break test.** Before a fix goes in, a test must fail on the bug. And for
    every surface the roll-call marks as wired, break that wire once on purpose and watch a named
    test go red. If nothing goes red, **that surface has no test, by proof** — write one before
-   continuing. Two or three minutes per surface.
+   continuing. Two or three minutes per surface. The runners are `scripts/handpass/breaks.mjs` (unit tests) and
+   `scripts/handpass/breaks-browser.mjs` (what only a browser can see): a job writes a LIST for them, never
+   another copy of the loop. And before writing the missing test, rule out the other readings of a break that
+   stayed green — it never met a test able to see it, the wire is invisible to that test world, or the line
+   decides nothing (`docs/walk-scripts.md` §Break tests).
 5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
    the feature and share its blind spots.
 6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
@@ -619,13 +721,23 @@ and put it on the owner's look card.
    pin the unchanged half with a test against today's behaviour, so the new half cannot absorb it. (Last Flown
    worked out from the flights marked done would have overwritten a day typed by hand the moment any OLDER
    flight was marked — the ruling had kept that half as it was.)
+8. **A new writer is tested on what it SAVED, and a new kind of record on its whole life** (27 Sep – 12 Oct 26).
+   At least one test of every new writer — a command, a pass, a door — reads the stored copy, not the live model
+   (seventeen tests of a delete all read memory; the delete was never saved). A new kind of record gets one round
+   trip first — make it, undo it, redo it, reload it — because each registration list it was left out of fails a
+   different leg. And a new optional stored field gets one seeded record that carries it, or the structural tests
+   that walk real records never meet it.
 
 ---
 
 ## 9. The evidence, and the owner's sixty-second check
 
 One file per build, mostly tables, plus a folder of pictures, written DURING the walk:
-`docs/handpass/<date>-<feature>.md`, pictures in `docs/img/handpass/<date>-<feature>/`.
+`docs/handpass/<date>-<feature>.md`, pictures in `docs/img/handpass/<date>-<feature>/`. Lay down every section
+below as an empty heading when the sheet is created, with the roll-call table drawn — one row per surface — so a
+row nobody walked shows as a blank during the walk, not at the close. Before the sheet goes to a reader, every
+test or file that a "proved by" cell names is checked to exist: a plan's "proved by" is a promise, the sheet's
+must be a fact.
 
 It holds: the eight answers and the tier · the roll-call table · **the five sizing lines (§7.0)** · the
 orders walked, with what the screen said and what the money said · **the cases carried by a test, each
@@ -704,7 +816,9 @@ Use these names in reviews and reports.
     picture that showed the defect, and its step asserted only that a class was switched on. A mark,
     an outline or a highlight is asserted as PAINTED (a computed style on each element it must cover —
     a pinned column paints its own background over a row's outline), and every picture a step saves
-    is opened before the step counts as looked at.
+    is opened before the step counts as looked at. A mark with more than one colour is asserted per man as
+    PAINTED — its computed colour against that man's own item — never only that the mark is on *(his find,
+    11 Oct 26: an open issues list lit every man it named in the day's worst colour)*.
 22. **The walk by habit** *(owner, D607, 7 Oct 26)* — the same number of walkers and scenarios whatever the
     change: five walkers on a rule inside one calculation, 2.24 million tokens, no fault found in the rule
     (`[OIL-WORK-START]`, 6–7 Oct 26). The sizing step (§7.0) is the answer.
@@ -726,6 +840,10 @@ should.
   words — never a list of cases to work through.
 - He answers the product questions the walk raises, and nothing else. "Leave it" is an answer and is
   recorded with its date, so it is never re-fixed later as a bug.
+- **A change to the LOOK or LAYOUT of a surface he uses daily is shown to him before it is built** — the whole
+  screen, before and after — whoever filed it, and even when it reached the list as a defect (27 Sep 26: one was
+  built, walked, read and gated, and he chose the old look on sight). The look card then carries only questions
+  about behaviour. The method: `.claude/skills/brainstorming/mockups-on-the-real-app.md`.
 - He never picks the tier, reads code, or runs a gate.
 - **Every defect he finds costs the method a line.** A find of his is, by definition, something every
   check missed — so it is a method failure before it is a bug, and it adds a roll-call row, an order

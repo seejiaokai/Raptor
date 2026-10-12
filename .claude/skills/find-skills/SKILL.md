@@ -69,6 +69,7 @@ For example:
 1. **Install count** — Prefer skills with 1K+ installs. Be cautious with anything under 100.
 2. **Source reputation** — Official sources (`vercel-labs`, `anthropics`, `microsoft`) are more trustworthy than unknown authors.
 3. **GitHub stars** — Check the source repository. A skill from a repo with <100 stars should be treated with skepticism.
+4. **The skill's own text** — Fetch its `SKILL.md` and read it before any install / fuse / skip advice (say which bundled files you did NOT read), note its licence, and compare it line by line with any installed skill that covers the same step — naming clashes, not only overlaps. A verdict given from a description or an article is labelled provisional.
 
 ### Step 5: Present Options to the User
 

@@ -341,7 +341,9 @@ treat it as session-only. Provenance and opt-out:
   7 Aug 26):** a throwaway HTML comp in the app's own stylesheet,
   screenshotted at phone and desktop widths — pixel-faithful because it IS
   the real palette — so the owner approves what it looks like, not a
-  description of it.
+  description of it. For a change to a screen that already EXISTS, draw the
+  change on the running app instead — the method and its traps:
+  `.claude/skills/brainstorming/mockups-on-the-real-app.md`.
 
 ### UI quality is a decision axis on every change
 

@@ -102,6 +102,38 @@ part on its own:
 Where two reviewers disagree on a fact, measure the fact — never settle it by
 majority or by whichever report is more detailed.
 
+**A batch of claims from a read that ran nothing** is a list of hypotheses:
+write one failing test per claim, through the real entry points, BEFORE
+judging any of them by plausibility; print the real output where a claim is
+about wording or a count; and report the reader's hit rate — that rate, not
+its confidence, says what its next "this is sound" is worth.
+
+**Before applying a reviewer's fix**, however exact its steps:
+
+- A cited path or line that does not exist means every claim in that report
+  is re-derived on the real code before any is acted on.
+- If the fix REPLACES a mechanism, list the orders of actions the old code
+  was protecting (its tests, its comments) and check the fix against each —
+  including any order the reviewer calls "today's behaviour": verify that
+  claim before pinning it.
+- If it drops, skips or filters a RECORD because one field is missing, list
+  every quantity the rule derives from that record and what each one needs;
+  pin the cases that work today from the record's other fields, and watch
+  them stay green. A missing field invalidates the values that depend on it,
+  not the record.
+- If you swap the reviewer's narrow fix for a broader mechanism (one shared
+  signal in place of three observers), list every existing consumer of that
+  mechanism and say for each whether its reaction is wanted here — or take
+  the narrow fix.
+- A finding of the form "X changed while a confirmation stood": capture what
+  was ASKED once and act from that, and test the change in both directions
+  (a right gained, a right lost) plus the no-change control.
+- A fix to a count or a comparison gets, beside the reported case, its zero
+  case and its already-settled case (a difference that is not the user's) —
+  written before the fix.
+- Then re-ask the risk questions against the fix itself: a fix can reach a
+  more dangerous kind of code than the change it repairs.
+
 ### Two of a Kind Is a Family
 
 Two findings of the same class are a sample, not the population. State the
@@ -112,7 +144,9 @@ each, and fix the whole list — another review round would only sample again.
 
 Declining a finding as theoretical needs a positive argument: what would have
 to be true for it to fire, and why no real path makes that true. "I couldn't
-think of how" is not that argument.
+think of how" is not that argument. The argument lists EVERY branch of each
+definition it rests on and argues each one — and a test pins the case anyway:
+the branch you did not list is where the next reviewer, or the bug, will be.
 
 ## YAGNI Check for "Professional" Features
 

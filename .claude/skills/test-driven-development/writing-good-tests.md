@@ -38,6 +38,12 @@ expect(buildSearchQuery({ tag: 'urgent' })).toBe(expected);
 expect(buildSearchQuery({ tag: 'urgent' })).toBe('tag:"urgent"');
 ```
 
+A test of the form "the new path behaves like the old one" is the same
+mirror one step removed: it proves the new path copies the old, faults
+included. Beside every such loop write the absolute table — one expected
+value per cell, taken from the rule, not from the code — and assert that the
+table names every member of the set, so a new member cannot be skipped.
+
 **No change detectors.** If only intentional decisions can fail a test —
 a constant's value, exact message wording, private structure — it fires
 on redesign and sleeps through bugs. Test the behavior that depends on
@@ -49,6 +55,14 @@ it.** Two common stand-ins pass while the behaviour is broken: asserting
 that an identifier or address EXISTS instead of that something RESOLVES it,
 and asserting a global count as a stand-in for one local fact. Ask what could
 break while the assertion still passes — then break exactly that and watch.
+Three more that pass while the behaviour is broken: on a single-slot surface
+(a toast, a banner, a status line), asserting that a message was RAISED
+instead of what the slot is left showing — a later message in the same action
+wins; "before and after are equal" when the set-up can already have produced
+the after — take the before from something the set-up cannot have touched;
+and a query for a test id over the whole page once the component has a second
+home — scope it to the container the behaviour belongs to, because a hidden
+mounted twin matches first.
 
 **Behavior, not text.** Asserting that a script, skill, or config
 contains an exact line proves only that the source is the source. Run
@@ -123,13 +137,30 @@ record in place, mutate in place — assigning a fresh object hides aliasing
 bugs. If the app stores `18:00`, write `18:00`: copy the format of a real
 stored value, because the input form's accepted format is not the stored one.
 Where you can, set the state up through the entry point a user's action goes
-through, so a rule is pinned where a user can actually reach it.
+through, so a rule is pinned where a user can actually reach it. A test that
+must reach past the door — calling an internal builder, or handing in a
+hand-made record — copies the real caller's arguments (read the call site)
+and asserts one fact proving it drew the intended mode; and one test through
+the real door asserts that what really arrives has that shape. Set-up runs the
+same start-up path the app runs: a loader the test calls by hand hides a
+loader nothing calls at boot. Where the system derives its changes by
+comparing state before and after a command, a fixture never edits live state
+outside a command if the test goes on to undo, replay or reload — the next
+command records that edit as its own.
 
 **Pick the fixture for THIS test.** One borrowed from another test carries
 that test's assumptions. When a test asserts which result LEADS, choose the
 fixture by querying the data for one with nothing else going on, and say why
 in a comment. When one fact lives in two records, read one of each before
-writing code that treats them as the same shape.
+writing code that treats them as the same shape. Where the system groups or
+merges neighbours (dates, ranges, same-named records), pick a key well clear
+of the seed's. A snapshot restored between cases is taken AFTER start-up has
+minted ids and filled defaults — an earlier copy is not a state the system
+could have produced, and its own integrity checks will read the difference as
+somebody's change. After a refused command, hold the record's ID and find it
+again: a rollback replaces every object, so a kept reference is a ghost. A
+test of "X may, Y may not" first asserts its two actors resolve to two
+DIFFERENT people.
 
 **Counting calls into a module whose exports are reassigned** (live
 bindings): wrap the real module — a Proxy over its namespace that swaps only

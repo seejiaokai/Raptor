@@ -56,7 +56,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **A question for him, found while building the phone's two lines (8 Oct 26):** [LW-HEAD-BIG-PHONE] — between 431 and about 700 wide (the largest iPhones are 440) the top of the Leave War is at its TALLEST; D679 keeps everything wider than a phone as it is. Should those screens get the phone's two lines?
 
-**NOW, his word (13 Oct 26 — D794: beside the Calendar job), its own documents-only chat:** [SKILL-OBS-REVIEW] — review the skill-observation backlog (about 200 open, last reviewed 24 Sep 26).
+**Filed by the skill-notes review (13 Oct 26) — the agent's placing: after the Calendar job, a small job each:** [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed straight into the command line (his go to build it: D811). [CHECK-TOOLS-HARDEN] — small hardening of the checking tools. [HWW-RULINGS-SIZE] — the general rulings file is at its size marker: the one-off permissions of merged jobs to be read and archived.
 
 **A test to steady, any time (found 8 Oct 26):** [LW-REQ-PICK-MONTH-UNSTEADY] — one Leave War browser test (the Required panel, phone size) failed once in a full run at its month-button step and passes alone and in the next whole run.
 
@@ -80,13 +80,11 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 **His question, answered — his to act on or leave (12 Oct 26):** [SIMILAR-APPS-LOOK] — what other apps like ours do, from a search of the public web: eleven products, eight lessons, what ours has that they lack and the reverse; nothing built from it.
 **His direction for AFTER the one-rule build (D765, 12 Oct 26) — his to place:** [UI-SLEEK-PASS] — the interface made more minimal, intuitive and sleek: fewer words, where buttons sit, how things move, what colours mean, icons, the flow; the Raptor look kept, never at a cost of speed. Questions and pictures first (D541).
 **Kept for when ChatGPT is back — not before 1 Nov 26 (his word, D761):** [NO-ASTRA-LIST] — the one list of every job that went ahead without Astra or Sol 6.1, to put to him then.
-**Owed to the checking guide (11 Oct 26) — when ChatGPT is back:** [METHOD-LIT-COLOUR] — the line his find of the wrong ring colours costs the method, to be read by Astra and Sol first (D70).
 **Found by the calendar job's bug check (8 Oct 26) — after its merge, his to place:** [CAL-UNDO-OTHERS] (reproduce first), [CAL-CHECK-SEEN] — small, none loses data or OIL. ([CAL-TOGO-ONE-ITEM] was built with the one row — archived 11 Oct 26.)
 **Found by the title's check (9 Oct 26) — older than that job, his to place:** [TITLE-CHECK-SEEN] — ten small finds; the phone's hidden "Unsaved changes" question is the one a person would trip on.
 **LIVE since 10 Oct 26 (pull request #488, on his "merge live"; its eight items are in `OUTSTANDING-ARCHIVE.md`):** the Inputs pages' work — the day window's two jobs, ALL / ALL AVAIL and the kind Event, an input's own title, the input card, the design vet's changes, the second batch of small finds and the day's title box (D684–D732). **What it left open — readings he has not answered, his looks on his iPhone, three unconfirmed observations:** [INPUTS-LIVE-LEFT]. **Its own job, after [GROUP-INPUT-ONE-ROW] (the agent's placing — before the Tracker batch unless he says otherwise):** [TILL-FROM-DATES] — the app stops writing "till <date>" into remarks (D728, step 2); questions to him first.
 
 **Filed 10 Oct 26 by the tidy-up after that merge — documents only, none a fault in the app:** [CAL-JOB-LEFT] — six lines the calendar job's handoff block still owed (a stale line in the Codex guide, two reads never run, an old mock-ups page, three looks nobody recorded); [RULINGS-SPENT-PASS] — the rulings files grew past their size markers: archive the spent rows in a documents-only chat, then the scheduler file's size goes back to him (D611).
-**Proposed 10 Oct 26, after his find of that morning — the agent's, with the next change to the checking guide:** [WALK-FINGER-NOT-LOCATOR] — two lines for the bug-check order (a pop-up on a phone is proved on screen before it is pressed; a removal lists what it moved); read by Astra and Sol 6.1 first (D70).
 **Found by the ALL AVAIL / Event check (9 Oct 26) — older than that job, his to place:** [ALLAVAIL-CHECK-SEEN] — small, none loses data or OIL; rides with the next Inputs or amendment batch.
 
 **With step 5 of the calendar job, the Inputs calendar (found 8 Oct 26):** [INPUTS-LIST-NEXT-YEAR] — the Inputs list shows a next year's input among this year's dates, without its year, until it is edited (seen on the demo's 15 Feb 2027 OIL; the cause read in the code, to reproduce first).
@@ -1668,9 +1666,6 @@ waive owed reads or authorize a live merge.
 **Found, NOT FIXED — a question for him.** Deleting a person takes him off every planning note from the delete’s date on (a gap where he stood; a note left with neither words nor people is dropped — `raptor-port/src/state/person-delete.ts`), but the readable lines of the change history (`raptor-port/src/state/changelines.ts`) have none for a `plan` record, so the delete’s list (D337 — "lists everything the delete took away, one line each, as built") says nothing of them. It never did for the old rows of pucks either: D337 confirmed the list AS BUILT, so this is put to him, not assumed. **To put to him:** should the list carry a line a note ("taken off the note ‘Brief the new guys’ on 14 Oct")? Recommended yes, as its own small job — and with it, readable lines for ordinary note changes in the changes window (they have none today either). Evidence: the day-window check’s sheet `raptor-port/docs/handpass/2026-10-09-day-window-compact-check.md` §0 and §5. **As filed:** small.
 **HE SAID YES (D710, 9 Oct 26 — "yes as recommended"): build it, as a small later job** — one line a note in the delete’s list, and readable lines for ordinary note changes in the changes window with it.
 
-### [WALK-FINGER-NOT-LOCATOR] Two lines for the checking guide, from his find of 10 Oct 26 — a proposal, NOT yet in the guide
-**Status: PROPOSED — a change to a working guide is read by Astra and Sol 6.1 before he approves it (D70); nothing in `raptor-port/docs/bug-check-order.md` is changed.** His find (the List's dates calendar drawn below the foot of a phone's screen — `raptor-port/docs/handpass/2026-10-10-list-dates-picker.md` §1) passed a FULL check the night before: four browser tests and every walker pressed that calendar with a scripted press that scrolls its target into view first, so the buttons worked and nobody saw that a person could not find them. **Proposed line 1 (§7.2, beside "the driver moves the view the way a person does"):** on a phone, a pop-up, menu or window that a press opens is proved ON SCREEN before anything in it is pressed — the page not scrolled by the script, the pop-up's box inside the screen, a finger at a point on it meeting it — and its controls are then pressed at a point; a scripted press that scrolls first can hide a pop-up nobody could find. **Proposed line 2 (§6, the roll-call):** a build that REMOVES something from a page lists what moved because of it — everything that stood below it — and every pop-up on that page placed against the screen rather than against its own button. **Until it is read and approved** the two are followed by this branch's own tests (`raptor-port/e2e/inputs-calendar.spec.ts`, "the dates button opens its calendar on screen") and nothing else is claimed. **Place:** the agent's — with the next change to the checking guide, one round each by Astra and Sol 6.1, then his approval.
-
 ### [TITLE-CHECK-SEEN] Older small finds met by the title's check (9 Oct 26) — none caused by the title; filed, not fixed
 **Fixed 10 Oct 26 by `[SEEN-BATCH-2]` (on `claude/day-window-compact` — live since 10 Oct 26, PR #488):** (2) the take-off message names the request (D731 (5)); (4) the "Unsaved changes" question comes to the front; (5) Enter in Remarks or Title no longer opens a second "New input". (10) was withdrawn — a member can leave himself out. **Still open here:** (1), (3), (8).
 **The title's list, placed by him (D730, 10 Oct 26):** the finds here that need no choice from him are fixed as a second batch after `[INPUTS-VET]`'s build, with its own tests and check; those that need his choice are listed for him.
@@ -1738,20 +1733,67 @@ the TOP AREA only (one width in two places — `leavewar/ui/phone.ts PHONE_QUERY
 browser test's three sizes), leaving the grid's own widths alone; a picture first, drawn into the running build at 440
 and 600 wide (D634). **Place:** his to set — small, the Leave War's own; it does not wait for the calendar job.
 
-### [SKILL-OBS-REVIEW] Review the skill-observation backlog — he asked for it "soon" (8 Oct 26)
+### [SHELL-SCRIPT-GUARD] A guard that refuses a script typed into the shell — eighteen skill notes ask for it (filed 13 Oct 26 by the skill-notes review; his go to build it given the same day — D811)
 
-Told that the observation backlog had not been reviewed since 24 Sep 26 (about 200 open entries in
-`.claude/skill-observations/log.md`), he said: *"Yeah we should review the skill soon too"*. **To do:** run the review as
-its own job, in a fresh chat, documents only — the way this repo runs it is `.claude/skills/TASK-OBSERVER-VENDORED.md`
-and the skill's `references/weekly-review.md`; a change to a working guide that comes out of it is read by Astra and
-Sol 6.1 before his approval (D70), and merges only on his "merge live". **Place:** his "soon" — offer it at the next
-handoff; it needs no code and can run beside the calendar job in its own worktree on `main`.
+**What keeps happening.** On this PC a script handed to the shell inline (a here-document, `node -e`, `python -c`)
+loses its backslashes or fails on an apostrophe, often with no error: a regular expression arrives as a backspace
+character, a test asserts the wrong pattern, a file is written with real line breaks inside a string. The rule
+("write the script to a file with the file tool, then run the file") has been in memory since 28 Sep 26
+(`bash-heredoc-apostrophes-fail`, `node-e-in-git-bash-mangles-escapes`, `python-edits-crlf-trap`) and in several
+handoffs — and the same mistake was logged again in twelve later chats, three times in the chat after a note said
+"stop adding notes and build the guard" (observations 246, 259, 402, 411, 415, 469, 472, 495, 500, 512, 518, 526; in
+part 248, 311, 328). The same family: an in-place stream edit (`sed -i`) that rewrote a whole file's line endings
+(403, 460).
 
-**HIS WORD, 13 Oct 26 — D794 (*"1"*, of three orders put to him): it is run NOW, in its own documents-only chat, beside the
-Calendar-on-a-phone job (`[CAL-PHONE-SWIPE-FIT]`, D786) — neither waits for the other.** About 270 notes are open (541 is
-the newest). **To put to him before any guide is changed (asked 13 Oct 26, not answered):** who reads the guide changes
-that come out of it while Astra and Sol 6.1 are out (D70) — A, Fable on his word, the missing ChatGPT read on the one list
-(`[NO-ASTRA-LIST]`) — recommended; or B, every guide change held unmerged until ChatGPT is back.
+**To build (small; no app code):** a check that runs before every shell command, as the background-command guard
+does (`.claude/hooks/bg-cwd-guard.mjs`, D162), and REFUSES, with the sentence "write the script with the Write tool
+and run the file": (1) a here-document, or an inline `-e` / `-c` script, whose body holds a backslash followed by a
+letter or an apostrophe and which writes or edits a file; (2) `sed -i` on a tracked file ("use the editor tool").
+**Conditions from two notes about writing such a guard:** it is wired `if …; then …; else exit 0; fi` — the
+`test && run || exit 0` form turns its own refusal into "allowed" (270) — and proved live with one refused and one
+allowed command; what it assumes about the harness is MEASURED first and written at its head, and its tests take the
+environment as an input (285). **A cheaper alternative, if he prefers no new guard:** one committed helper that
+applies a list of exact find-and-replace pairs read from a file, so no script is typed at all (469).
+**Place:** allowed by him (D811, "Approve all"). The agent's placing: a small job on its own branch, read by a fresh
+Opus reader, after the Calendar job unless he says sooner; it removes the commonest lost round trip of every chat.
+
+### [CHECK-TOOLS-HARDEN] Small hardening of the checking tools, asked for by seventeen skill notes (filed 13 Oct 26 by the skill-notes review; none urgent)
+
+Each line is a place where a tool allowed a mistake that a guide now only warns about. Scripts under
+`raptor-port/scripts/` — no app code.
+
+- **The walk helpers (`scripts/handpass/lib.mjs`, `trk-lib.mjs`).** Refuse to save a world from a page opened on the
+  "start fresh" address (237, 506). One setting for a run's output folder, and a refusal to write a picture or a
+  step log over a file git already tracks unless the run is named a re-walk (239, 247, 338). "Fill this field"
+  with a short wait and an error that names the selector and lists the fields the window does have (508). A
+  `pressLeave` helper for the Leave War that answers "tap the same leave again" (313). The "N pending" chip's
+  selector, which now also matches "N changes" (443).
+- **The check lock (`scripts/gatelock.mjs`).** A heartbeat from the run it protects, so "stale" means no heartbeat —
+  not two hours of age, and not the process id of the command that took it (342). `run` records its own process, so
+  the next taker can tell a stopped run from a live one (391). `run` checks its `--from` folder holds a
+  `package.json` before taking the lock, and its usage line shows the form that works from both folders (504). Its
+  header still says "one test file needs no lock" — bring it in step with the corrected rule (444).
+- **The break-test runners (`scripts/handpass/breaks.mjs`, `breaks-browser.mjs`).** Check every entry of a list
+  before the first break, and restore the true build on every way out, an error included (471). A subset chosen by
+  a pattern, and the result written as a table into the evidence folder (540).
+- **The document check (`scripts/docsize.mjs`, `backlog-archive.mjs`).** Refuse a REPLACED or SPENT mark written in
+  the wrong cell of a ruling's row instead of reading it as a narrowing (407). Its message lists every mark word it
+  accepts, ANSWERED among them (408). A branch name in backticks in a ruling's home cell is not read as a missing
+  file (314). A search of the walk scripts' write paths for an absolute worktree path (298).
+- **The browser tests (`playwright.config.ts`).** Refuse to build while another run holds the check lock (444).
+
+**Place:** his to place. The agent's recommendation: one small tools job, any time, its own branch; the gates and a
+fresh Opus read of the scripts; no walk (nothing of the app changes).
+
+### [HWW-RULINGS-SIZE] The general rulings file is at its size marker — the one-off permissions of merged jobs to be read and archived (found 13 Oct 26 by the skill-notes review)
+
+`.claude/rules/decisions/how-we-work.md`, the rulings every chat loads, stands at 27,949 of its 28,000 bytes after D810 and
+D811. A rulings file is never trimmed (D136); what leaves is a ruling REPLACED or a one-off permission SPENT. Several
+one-off permissions of jobs since merged look spent — who read the shared-row job and the one-rule job, and what each
+went live on (D746, D749, D752, D758, D764, D779, D784), and D810 and D811 themselves once this review is live — but
+each row must be read sentence by sentence first: any "if", "until" or "still" in it that no live ruling carries keeps
+it live (`DECISIONS.md` step 2). **To do:** that read, then the marks and `backlog-archive.mjs --rulings`; a documents-only
+job. **Place:** the agent's — with the next records tidy, before the next ruling that would cross the marker.
 
 ### [INPUTS-LIST-NEXT-YEAR] The Inputs list reads a next-year input as this year's (found 8 Oct 26) — OPEN, not started
 
@@ -2131,19 +2173,17 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 |---|---|---|
 | `[GROUP-INPUT-ONE-ROW]` — the schedule's one row for a shared input; LIVE since 11 Oct 26 (pull request #490) | its PLAN: Astra and Sol 6.1, two rounds; its finished CODE: Fable alone, on his word (D749, D752) | Astra's and Sol 6.1's reads of the finished code (`raptor-port/docs/handpass/2026-10-11-group-input-one-row.md`) |
 | The ring colours he found (D751) — fixed on the same branch, LIVE with it | walked and gated (the sheet's §14, WALK tier); no model read of its own | any ChatGPT read |
-| `[METHOD-LIT-COLOUR]` — the line his find costs the checking guide | nobody: NOT made | the guide change's two reads (D70) — it waits whole |
+| `[METHOD-LIT-COLOUR]` — the line his find costs the checking guide | MADE 13 Oct 26 with the skill-notes review, on that review's one fresh Opus read, on his word (D811) | the guide change's two reads (D70) |
 | `[CAL-JOB-LEFT]` (1) and (2) — `AGENTS.md`'s stale paragraph; the one sentence added to `.claude/rules/doc-structure.md` (D667); Astra's meaning read of the short ruling lines D658–D665, D676–D679 and D734–D741 | nobody | D70's two reads; Astra's D138 read |
 | The short ruling lines D742–D761 (recorded 10–11 Oct 26) | the host, at the writing | Astra's D138 meaning read, as for the lines above |
 | `[ALL-AVAIL-AS-MEMBER]` — the one-rule job: the advice on a one-person request's row (11 Oct 26) | Fable, on his word | a second reader (it was advice for a ruling of his — D755 has since been made) |
 | `[ALL-AVAIL-AS-MEMBER]` — its FINISHED CODE, with `[PERSONAL-SEVERAL]` and `[OIL-ASK-LIST-SEVERAL]`; LIVE on his "merge live" of 12 Oct 26 (D779) | Fable, three times (the walked build, the nine fixes, the last round); a fresh Opus reader once, blind, as a trial — not an independent read (D67) | a ChatGPT read of the finished code (`raptor-port/docs/handpass/2026-10-12-one-rule.md` §10g, §14) |
 | `[ALL-AVAIL-AS-MEMBER]` — its PLAN (`raptor-port/docs/superpowers/plans/2026-10-11-one-rule-plan.md`) | Fable, on his word (D758) | the one ChatGPT reader D758 names. **His word on the build is given — D764: it starts on Fable's read alone, and at the merge he decides whether to wait for a ChatGPT read of the finished code.** |
 | `[OIL-ASK-NOTIFY]` — a day made a holiday afterwards, the one list, a swap whose OIL question is not answered; BUILT and FULL-checked 13 Oct 26 | its PLAN: Fable, 12 Oct 26 (ten findings, all taken — the plan's §5a); its finished CODE: Fable, 13 Oct 26, on his word (D784 — three findings, all fixed), and a fresh Opus reader beside it, blind (the one test of D789 — eight findings, all dispositioned; NOT an independent read, D67): `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` §12 | Astra’s and Sol 6.1’s reads of the plan and of the finished code. **His word at the merge — D791 (13 Oct 26, "Merge live"): it goes live on Fable’s read and the fresh Opus read, without waiting.** |
+| `[SKILL-OBS-REVIEW]` — the guide changes drafted by the skill-notes review of 13 Oct 26 (branch `claude/skill-observation-review-258b48`), and with them the two lines `[WALK-FINGER-NOT-LOCATOR]` proposed for the checking guide (D811); installed 13 Oct 26 on his "Approve all" | one fresh, blind Opus reader — an Opus that did not write them — on his word (D810: "u can use opus to do the review solely"); not Fable | D70's two reads of a changed working guide (Astra's and Sol 6.1's) |
 
 ### [SCHEDULER-RULINGS-SIZE] The scheduler's rulings file has reached the size D611 said to look again at — one file, or an area of its own for the Inputs pages? (11 Oct 26 — a question for him)
 **Due, not decided.** On 7 Oct 26 he ruled the scheduler's rulings stay in ONE file, not split by screen (D611): the saving was not worth the risk of a ruling sitting in a part that was not loaded — "look again only if that file grows by about half again". It has: `.claude/rules/decisions/scheduler.md` crossed its marker of 100,000 bytes with D753 (11 Oct 26). What grew it: the Inputs and SANS calendar jobs, the input card, ALL AVAIL inputs and the shared row — about 130 rulings in four days, nearly all about the Inputs pages. **The two ways:** (1) keep one file and raise the marker — every scheduler job goes on loading all of it (about 25 thousand tokens now), and nothing can be missed; (2) give the Inputs pages (the Inputs calendar and list, the SANS calendar, an input's window and card) an area file of their own, loaded by itself with those screens' files and named in the scheduler file's "Also read" for the rulings that reach the schedule (the shared row, ALL AVAIL) — a scheduler-only job loads roughly half as much, at the risk D611 named. **The agent's recommendation:** (2), with the paths chosen generously (D68: a ruling missed costs more than one loaded) and the shared-row and ALL AVAIL rulings KEPT in the scheduler's file. **Until he says:** the marker was raised by 3,000 bytes with its reason (`raptor-port/scripts/docsize.mjs` `RULING_BYTES`) — room for rulings made meanwhile, not an answer. Done by `backlog-archive.mjs --rulings --move-rows`, in a docs-only change read by one reviewer (D138).
-
-### [METHOD-LIT-COLOUR] The checking guide gains a line from his find of 11 Oct 26: a mark's COLOUR is checked per man, on a day that mixes levels (owed — a guide change, read by Astra and Sol first, D70)
-**Owed, NOT made.** On 11 Oct 26 he found, on his phone, that a day's open issues list lit every man it named in the day's worst colour — older than any walk (31 Jul 26), fixed on `claude/group-input-one-row` (`raptor-port/docs/handpass/2026-10-11-group-input-one-row.md` §14). Every defect he finds costs the method a line (`raptor-port/docs/bug-check-order.md` §11). **The line proposed, for the two readers:** in §7.1's everything-day, "a day whose issues list mixes all three levels — a red item, an amber one and a note — with a man each names alone"; and under anti-pattern 21 (the picture taken, not looked at), "a mark with more than one colour is asserted per man as PAINTED — its computed colour against that man's own item — never only that the mark is on". **Why not made with the fix:** a change to a working guide is read by Astra and Sol 6.1 before he approves it (D70), and his ChatGPT allowance is out until 14 Oct 26. **As filed:** small; do it with the next guide change after 14 Oct.
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
