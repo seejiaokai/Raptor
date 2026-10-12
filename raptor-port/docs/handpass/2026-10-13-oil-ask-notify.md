@@ -189,9 +189,9 @@ S = setup, A = action, E = expected, D = what would disprove.
 ## 9a. The two code reads, side by side — the ONE test he asked for (D788, D789, 13 Oct 26)
 
 His word: *"We test more to see if opus can hold up alone …"* (D788), then *"Just test it once and ask me after we get the
-results to know how we go from here."* (D789). So on this job’s finished code TWO readers read blind to each other and to the
-walk’s findings list: Fable (the independent reader, D784) and a fresh Opus reader (Opus wrote the code — D67 — so its read is
-the thing on trial, never the job’s independent read). Same brief (`docs/superpowers/briefs/2026-10-13-oil-ask-notify-code-read.md`).
+results to know how we go from here."* (D789). So on this job’s finished code TWO readers read blind to each other, with the
+SAME brief and this sheet as it stood after the walk’s fixes (§11): Fable (the independent reader, D784) and a fresh Opus
+reader (Opus wrote the code — D67 — so its read is the thing on trial, never the job’s independent read). Same brief (`docs/superpowers/briefs/2026-10-13-oil-ask-notify-code-read.md`).
 Every claim of either is written as a failing test before it is believed. **The table — what each found, what each missed,
 false alarms, tokens — is filled in below when both reports are in, and put to him with what is published about the two
 models; no further trial is run before his answer (D789).**
@@ -203,3 +203,87 @@ uses the swap's words; R3 the admin who made the holiday gets the bell line too;
 unanswered days in the holiday only; R5 a line at nothing left is gone; R6 D783's own four. **New from the build:**
 R7 "the schedulers" are the people with an admin sign-in — a man with no sign-in of his own is told nothing (**CONFIRMED by him, 13 Oct 26 — D785: "Schedulers will be admins … don't test a scenario where a scheduler is not an admin"**); R8 a tap
 on a card's name in the list opens that input's own window.
+
+## 11. The walk (13 Oct 26) — five Sonnet walkers on the frozen build `index-Bv5bvisT.js` (`d17287535`), port 4231
+
+The brief: `docs/superpowers/briefs/2026-10-13-oil-ask-notify-walk-brief.md`. Each walker's table and data:
+`docs/handpass/parts/on-A.md` … `on-E.md` (`.json`); pictures `docs/img/handpass/2026-10-13-oil-ask-notify/A` … `E`;
+scripts `scripts/handpass/on-<L>-*.mjs`. The host opened the pictures behind every FAIL and behind the OIL,
+published-day and role PASSes (named below) and judged every FAIL against the rulings before it was called a fault.
+No console error, page error or failed request in any world.
+
+| Share | Lines | PASS | FAIL | Other | Tokens |
+|---|---|---|---|---|---|
+| A — the hands on the board and the week, desktop | 18 | 13 | 1 | 4 RECORD | about 379k |
+| B — a phone by touch, the short screens | (see §11.4) | | | | |
+| C — published days, the Unavailable row, the calendar's drag | 7 | 3 | 3 | 1 NOT WALKED | about 402k |
+| D — the holiday, the one list, the bell | 13 | 13 | 0 | — | about 268k |
+| E — the other doors that make a holiday; who is told | 20 | 18 | 1 | 1 RECORD | about 376k |
+
+### 11.1 What the walk found — faults, each fixed with a test that was red first
+
+| # | Found by | What a person saw | Cause | Fix and its test |
+|---|---|---|---|---|
+| W1 | E8 | With the admin's own "view as member" switch on (D292), the bell still listed the holiday's line and stayed lit by it; a tap on the line closed the bell's list and opened nothing | the notice is addressed to the admin's person; the list it opens is a scheduler's and refused him | a holiday's line is live for a scheduler only, asked in the ONE body (`state/notices.ts noticeLive`) — the list, the unread count and the bell's tap follow. `leavewar/holnotice.test.tsx` "the admin’s own member view is a member while it is on…" |
+| W2 | C3 (and A's, D's notes; pictures `C/C3-two-2a-flash-100ms.png`, `A/A3-2-flash-bar-week.png`) | A passing note ("Input added", "Schedule updated") was drawn ON the bar that stays, over its words and half its "Answer OIL" button | both stand at the foot of the screen; the note is the layer above; the bar has no timer | while the bar is up the note sits above it, and one already showing moves up as the bar arrives (`ui/toast.ts placeToast`, `ui/OilWaitSheet.tsx`). `ui/oilwait.test.tsx` "a passing note never lands on the bar…" |
+| W3 | C2 | On the Unavailable row, a man dragged from a SEAT: left unanswered, only the row's man flashed — his own puck on the seat did not ("both pucks flash", D783 (2)) | that door is handed a person, never the seat he was dragged from | the drag hands the seat to the wait (`ui/oilwait.ts oilWaitAlso`, `ui/drag.ts`). `ui/oilwait.test.tsx` "the Unavailable row, dragged onto from a seat…" |
+| W4 | E1 (picture `E/E1a-3-list-over-leavewar.png`) | A holiday made with the Leave War's "PH" button and no name: the list read "PH is now a public holiday." under "Public holiday · PH" | a nameless holiday is saved under the preset's own word, and the word was used as its name | its name is kept as ''; the list names the day ("Fri 17 Jul is now a public holiday."), the bell's line says "Public holiday" (`leavewar/sync.ts tellHoliday`, `ui/OilDayList.tsx`, `state/notices.ts`). `leavewar/holnotice.test.tsx` "a holiday with no name of its own…" |
+| W5 | the host, reading the plan's A6 against the code while fixing W1 | "Mark all read" read a holiday's line that was not shown (nothing left to answer) — it came back already read when an input on it needed an answer again | Mark all read took every notice of his, shown or not | it reads only what is shown (`state/noticeseen.ts`). `leavewar/holnotice.test.tsx` "\"Mark all read\" reads only the lines that are shown…" |
+
+### 11.2 Walker FAILs that are NOT faults — the host's expected line was wrong against a ruling already made
+
+| Row | What the screen did | Why it is right |
+|---|---|---|
+| C1 (S3) | a swap from a seat on a PUBLISHED Saturday, answered: "2 pending", two lines — "Ranger → Tally · what the day earns changes with it" and "Ranger: RANGE BRIEF · extras → Hangar open day" | as told to him on the last job (its sheet's R45; D109, D113): the input's change is one, the seat the man replaced went to is one. `engine/publish.ts` is not in this job's diff. Nothing was pending and the four sign-offs stood until the answer — the point of the scenario — PASS |
+| C5 (S32) | a PUBLISHED Friday made a holiday: at once "1 pending — what this day earns changed", "Not yet signed", the four boxes emptied; an answer given in the list then adds no line of its own | D2 (21 Sep 26): "a holiday declared after publication waits for a republication and the day says so" — every man working that Friday now earns, so what the day earns HAS changed (D103: something waiting means sign again). The list's answer is part of the same one line. Not in this job's diff. **To tell him (R9).** |
+| A6 (S8) | a man on leave dropped on a Saturday duty desk is seated with the red line "On leave but tasked", not refused | D605: a man on leave is FLAGGED the moment he is seated; the app has never refused it. No OIL question was put — the point of the scenario — PASS |
+| E1n | an unknown word typed on the Event row ("National Day") makes a note, not a holiday | as built before this job: a holiday is a tagged event (the PH preset, or "Other… → Public holiday") |
+
+### 11.3 Recorded for him (no ruling) and what could not be walked
+
+- **A12 (S35) — two waiting changes in a row.** A second swap started while the bar of the first is up: there is ONE
+  bar, it says "Not swapped — OIL not answered" without naming either, and "Answer OIL" offers the LATER swap only; the
+  first can no longer be answered from the bar (drag it again). **To tell him (R10).**
+- **E2 — a re-tagged event type that makes TWO separate runs ask:** every scheduler gets one bell line a run; the list
+  opens by itself for the EARLIER run only, the other is reached from the bell. **To tell him (R11).**
+- **A14:** the bar is in front of the changes window and its buttons work; behind the input's own window (a blocking
+  window with a dimmed page) it is dimmed with the page and cannot be pressed until that window is closed — as any
+  control of the page.
+- **D5:** a run of two days also lists the demo's own inputs standing on those days (an Appointment asks the OIL
+  question on a holiday — D713's kinds).
+- **NOT WALKED — C6 (S30), a locked week.** No control makes a week locked: it is a saved week the app cannot read
+  (quarantined). A read-only look at an issued version is not it — there the list and the line appeared, rightly.
+  **Carried by a test, not a walk:** `leavewar/holnotice.test.tsx` "a day of a week the app holds locked is never
+  listed, and making it a holiday tells nobody" — it calls the lister and the war's own door on a week planted as
+  locked; it proves the rule, and there is no screen route to prove.
+- **Seen in passing, older, not this job (filed `[OIL-NOTIFY-SEEN]`):** the Undo note after a swap reads "Undid: a
+  personal input"; a puck dragged off a row gives no note; on the week the crew list's ALL AVAIL chip scrolls out of
+  reach when a lower day is in view; an input's own window deletes at once with no "are you sure".
+
+### 11.4 Share B — the phone and the short screens
+
+*(added when its report is in)*
+
+### 11.5 The roll-call's marks after the walk (§4's "NOT YET SEEN" rows)
+
+| Row | Seen and operated by | Mark |
+|---|---|---|
+| R2 the week's drag | A3 (question, bar, swap, Undo — measured on the week) | HAS |
+| R3 crew list onto the only puck | A4, on the week and on the board ("Putting Hex in place of Ranger"; Ranger on no row after) | HAS |
+| R4 "+ add" / a puck of several | A5, A7, A8 | HAS |
+| R5 the armed tap | §11.4 | |
+| R7 a move between two inputs' rows | A8 ("Moving Ranger to Safety board"; one Undo) | HAS |
+| R8 ALL AVAIL on an unanswered row | A5 ("Adding ALL AVAIL to Range brief"; refused on a two-day input with NO question) — and now a test by name (`ui/oilwait.test.tsx`) | HAS |
+| R9 the Unavailable row | C2 by the mouse, from the crew list and from a seat (the flash: W3, fixed); the armed tap: §11.4 | HAS |
+| R10 the calendar's drag — a chip and a BAR | C3 (the member), C4 (the admin): both ask first; the two-day BAR flashes where it was — the selector is proved on screen | HAS |
+| R12, R13 must not ask | A13 (a time and a remark typed, a right-click, a drag off) | MUST NOT — holds |
+| R14 the bar over each surface | the board (A1), the week (A3), the Inputs calendar (C3) — each measured inside the screen and on top; in front of the changes window, behind a blocking window (A14); the Leave War page: it cannot be there — it leaves with the page (A11) | HAS |
+| R15 short screens | §11.4 | |
+| R16 the list from the Holidays list | D1 (and D2–D12) | HAS |
+| R17 the list from the Leave War's Event row | E1: the PH preset, a typed "PH", a band — the list opens over the Leave War page at once, measured on top | HAS |
+| R18, R19 the two bells | D4 (the top bar's), D13 (the Scheduler Board's own, its list and the one list over the board) | HAS |
+| R20 the bell on a phone | §11.4 | |
+| R21 who must not be told | E3 (the member who filed, a man merely in a shared input, a guest), E5, E6 — and W1, the admin's own member view | MUST NOT — holds since W1 |
+| R22 the "OIL?" tag after a holiday | D2 (the unanswered card still wears it; the answered three do not) | unchanged |
+| R23 the downstream OIL figure | C7 (Ranger and Hunter each credited half a day on the Leave War once Friday is published, nothing before; the input answered No credits nobody), D2 and A2 (OIL Earn: HO on the men of a Yes, a dash on a No) | HAS |
+| R24 a published Friday made a holiday | C5 — as D2 has it (§11.2) | as ruled |

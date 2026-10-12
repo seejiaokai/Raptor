@@ -92,6 +92,8 @@ const BREAKS = [
     "    same: x => idsOf(x).map(String).join(',') === people && x.date === date0 && (x.endDate || '') === end0,\n", "    same: () => true,\n", SIB],
   /* ---- the sheet and the bar (R14) ---- */
   ['B41 the question has no first line and no words of its own', SH, "    lead={w.lead} noLabel={words.no} yesLabel={words.yes}\n", "", DOOR],
+  /* (B42 is NOT caught, and is left as a belt: the bar is cleared whenever a question is held — ui/oilwait.ts holdForOil,
+     oilBarAgain — so the two never stand together and this guard decides nothing today) */
   ['B42 the bar shows while the question is up', SH, "  if (!b || OILWAIT) return null\n", "  if (!b) return null\n", DOOR],
   ['B43 the bar\'s "Answer OIL" does nothing', SH, "onClick={oilBarAgain}", "onClick={() => {}}", DOOR],
   ['B44 the question\'s left button does not leave the change', SH, "onCancel={leaveOilWait}", "onCancel={() => {}}", DOOR],
@@ -139,8 +141,8 @@ const BREAKS = [
   ['B70 a dead holiday line lights the bell', 'src/state/noticeseen.ts', "  if (!noticeLive(n)) return false\n", "", HOL],
   ['B71 a scheduler\'s own input on the holiday takes the bell\'s tap', TB,
     "oilPendingFor(mine).find(h => !(sched && holidayLineOn(mine, h.iso))) || null : null", "oilPendingFor(mine)[0] || null : null", HOL],
-  ['B72 a MEMBER whose input a line covers is sent to the list too (the admin\'s member view)', TB,
-    "!(sched && holidayLineOn(mine, h.iso))", "!(holidayLineOn(mine, h.iso))", HOL],
+  /* (B72 — "a MEMBER whose input a line covers is sent to the list too": the bell's own `sched &&` decided nothing once a
+     holiday's line was made live for a scheduler only — B89 — and was removed; the member view is pinned by B89's test) */
   ['B73 a tap on the line does not open the list', TB,
     "    setOilList({ from: String(hol.a), to: String(hol.b || hol.a), name: n.name, fresh: false })\n", "", HOL],
   ['B74 a tap on the line does not read it', TB, "    markNoticeRead(n.id)\n    setBellList(false)\n", "    setBellList(false)\n", HOL],
