@@ -2254,6 +2254,9 @@ row's pucks and its CX / ⓘ / red box / ✕ buttons start at that edge, so the 
 
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
+**"Delete" in an input's own window deletes at once and asks nothing (owner D792, 13 Oct 26 — "No need to show are you
+sure").** As built, on the Inputs pages and from the schedule alike; Undo brings the input back. No confirm step is added.
+
 **SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark
 of a request's row on the Ground Programme — the week's `data-txt="gr:di.ri.{prog|str|end|rmks}"`, the board's
 `data-bfld` — are the REQUEST's boxes: typing there changes the request (and so its Personal Inputs line and the Inputs
@@ -4470,6 +4473,10 @@ Three things stay decided:
   notice and one list; and a newer notice whose live days hold all of an older one's takes its place. A live holiday
   line is never one of the lines the bell cuts at thirty — the bell's tap leaves a scheduler's own question on that
   day to it.
+- **TO BE BUILT — one more door (owner D793, 13 Oct 26 — "Yes it should wait on it"):** an input taken off the
+  programme whose day has since become a holiday, put back by the scheduler's Accept, waits on its OIL question as a
+  swap does — the question first, put back only on an answer, the bar if it is left unanswered. Today the Accept asks
+  nothing (`OUTSTANDING.md` `[OIL-ACCEPT-BACK-UNASKED]`). An Undo of the take-off asks nothing, then as now.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 

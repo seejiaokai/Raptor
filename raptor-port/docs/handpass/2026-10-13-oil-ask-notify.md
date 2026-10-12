@@ -554,6 +554,12 @@ question Yes. On Edit Schedule that Saturday now has his row on the Ground Progr
    (`[OIL-NOTIFY-SEEN]` (4)); and when an input is put BACK on the programme after its day became a holiday, should the
    put-back wait on the OIL question as a swap does (`[OIL-ACCEPT-BACK-UNASKED]`).
 
+**His answers, 13 Oct 26:** (1) **D791 — "Merge live"**: it goes live on Fable's read and the fresh Opus read, without
+waiting for a ChatGPT read (the job stays on the one list); whether he looked at the preview first he did not say, and
+nothing is assumed. (2) **D792 — "No need to show are you sure"**: an input's Delete asks nothing, as built. **D793 —
+"Yes it should wait on it"**: an input put back on the programme after its day became a holiday waits on its OIL
+question as a swap does — to build (`[OIL-ACCEPT-BACK-UNASKED]`).
+
 ### 16.4 The readings told to him at the close (R1–R18)
 
 R1 the Unavailable row's drag and the Inputs calendar's date drag follow the same rule · R2 a man from the crew list
