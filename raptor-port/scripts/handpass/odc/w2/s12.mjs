@@ -19,7 +19,7 @@ async function lwLook(label, dates) {
   await page.evaluate(() => window.lwSetRole && window.lwSetRole('admin')); await page.waitForTimeout(300)
   const mon = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][+today.slice(5, 7) - 1]
   if (await page.locator(`[data-testid="month-${mon}"]`).count()) { await t.press(`[data-testid="month-${mon}"]`); await page.waitForTimeout(600) }
-  const pid = await page.evaluate(c => { const e = [...document.querySelectorAll('span.cs')].find(x => x.textContent.trim().toLowerCase() === c); const m = e && /person-(\S+)/.exec(e.className); return m ? m[1] : null }, lc)
+  const pid = await page.evaluate(c => { const e = [...document.querySelectorAll('span.cs')].find(x => x.textContent.trim().toLowerCase() === c); const r = e && e.closest('tr'); const m = r && /^row-(.+)$/.exec(r.getAttribute('data-testid') || ''); return m ? m[1] : null }, lc)
   console.log(`  ${label}: his person id on the war: ${pid}`)
   const row = page.locator(`[data-testid="cell-${pid}-${today}"]`)
   console.log(`  ${label}: his cell for today exists: ${await row.count()}`)

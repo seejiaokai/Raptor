@@ -1,12 +1,12 @@
 // W1 part A — scenarios 1-10 at 390x844 (touch). VERSION 1
 import { start, openCalendarWindow, press, shot, text, rect, vis, swipeFrom, swipeOn, pass, rec, summary, errors } from './lib.mjs'
-console.log('w1/a.mjs VERSION 1')
+console.log('w1/a.mjs VERSION 2')
 const SZ = '390x844'
 const L = await start(390, 844)
 const { page } = L
 const month = () => text(L, '[data-testid="days-month"]')
 const undo = () => page.evaluate(() => ({ undo: document.getElementById('undoBtn')?.disabled, redo: document.getElementById('redoBtn')?.disabled }))
-const face = iso => page.evaluate(i => { const b = document.querySelector(`[data-testid="days-step-${i}"]`); return b ? { html: b.innerHTML.replace(/\s+/g, ' ').slice(0, 200), cls: b.className, aria: b.getAttribute('aria-label') || b.title || '' } : null }, iso)
+const face = iso => page.evaluate(i => { const b = document.querySelector(`[data-testid="days-step-${i}"]`); return b ? { html: b.innerHTML.replace(/\s+/g, ' ').slice(0, 400), cls: b.className } : null }, iso)
 const sameFace = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 const step = async (id, fn) => { try { await fn() } catch (e) { rec(id, SZ, 'NOT WALKED', 'the script stopped: ' + String(e).split('\n')[0].slice(0, 200)); await shot(L, `s${id}-STOPPED`).catch(() => {}) } }
 const gridMid = async () => { const g = await rect(L, '[data-testid="days-grid"]'); return g }
@@ -67,19 +67,6 @@ await step('05', async () => {
   const oneChange = !sameFace(t0, t1) && sameFace(c1, t1) && sameFace(c0, t0)
   pass('5', SZ, mN === 'November 2026' && mB === mA && oneChange, `slides ${mA} -> ${mN} -> ${mB}; control tap on ${ctrl}: ${JSON.stringify(c0.html.slice(0, 50))} -> ${JSON.stringify(c1.html.slice(0, 50))}; the tap right after the slides on ${tgt}: ${JSON.stringify(t0.html.slice(0, 50))} -> ${JSON.stringify(t1.html.slice(0, 50))}; same result as the control: ${sameFace(c1, t1)}; Undo/Redo disabled ${JSON.stringify(u)}`, f)
 })
-await step('06', async () => {
-  const mA = await month()
-  const w0 = await rect(L, '[data-testid="win-days"]'), bar0 = await rect(L, '[data-testid="win-days"] .win-bar')
-  /* start the slide on the bar's title text, away from the close button */
-  const x0 = bar0.l + 120, y0 = bar0.t + bar0.h / 2
-  await swipeFrom(L, x0, y0, -140, 0)
-  const m1 = await month(); const w1 = await rect(L, '[data-testid="win-days"]'), bar1 = await rect(L, '[data-testid="win-days"] .win-bar')
-  const f1 = await shot(L, 's06-after-left-on-bar')
-  await swipeFrom(L, bar1.l + 120, bar1.t + bar1.h / 2, 140, 0)
-  const m2 = await month(); const w2 = await rect(L, '[data-testid="win-days"]')
-  const f2 = await shot(L, 's06-after-right-on-bar')
-  pass('6', SZ, m1 === mA && m2 === mA, `month ${mA} -> after left on the bar ${m1} -> after right ${m2}; the window box before ${JSON.stringify(w0)} after left ${JSON.stringify(w1)} after right ${JSON.stringify(w2)} (the bar itself: ${JSON.stringify(bar0)} -> ${JSON.stringify(bar1)})`, f1)
-})
 await step('07', async () => {
   const mA = await month()
   await swipeOn(L, '[data-testid="days-wd-3"]', -140, 0, 0.5, 0.5)
@@ -104,27 +91,36 @@ await step('09', async () => {
   await press(L, '[data-testid="days-tab-holidays"]')
   const y0 = await text(L, '[data-testid="hol-year"]')
   const read = async () => ({ year: await text(L, '[data-testid="hol-year"]'), form: await page.evaluate(() => document.querySelectorAll('[data-testid^="win-"]').length), wins: await page.evaluate(() => [...document.querySelectorAll('[data-testid^="win-"]')].map(e => e.getAttribute('data-testid')).filter(t => !t.endsWith('-x')).join(',')) })
-  await swipeOn(L, '[data-testid="hol-list"]', -140, 0, 0.5, 0.5, 0)
+  const lc = await rect(L, '[data-testid="hol-list"]'), wA = await rect(L, '[data-testid="win-days"]'), pr = await rect(L, '[data-testid="days-parts"]')
+  const lx = lc.l + lc.w / 2 + 70, ly = lc.t + lc.h / 2
+  const roomY = Math.round((lc.b + wA.b) / 2), roomGap = wA.b - lc.b
+  console.log('holidays view: window', JSON.stringify(wA), 'list', JSON.stringify(lc), 'parts', JSON.stringify(pr), 'room y', roomY, 'gap', roomGap)
+  await swipeFrom(L, lx, ly, -140, 0)
   const a = await read(); const fa = await shot(L, 's09-left-on-list')
-  await swipeOn(L, '[data-testid="hol-list"]', 140, 0, 0.5, 0.5, 0)
-  const b = await read()
+  const wB = await rect(L, '[data-testid="win-days"]')
+  await swipeFrom(L, lx, wB.t + 150, 140, 0)   // back, inside the window whatever the list holds
+  const b = await read(); const fb = await shot(L, 's09-right-on-list')
   /* start a slide ON a holiday's line */
   const line = await page.evaluate(() => { const b = document.querySelector('[data-testid="hol-list"] button'); const r = b.getBoundingClientRect(); return { t: b.innerText.replace(/\s+/g, ' ').slice(0, 30), x: r.left + r.width / 2, y: r.top + r.height / 2 } })
   await swipeFrom(L, line.x, line.y, -140, 0)
   const c = await read(); const fc = await shot(L, 's09-left-on-holiday-line')
+  const wC = await rect(L, '[data-testid="win-days"]')
   await swipeOn(L, '[data-testid="hol-add"]', 140, 0, 0.5, 0.5)
   const d = await read(); const fd = await shot(L, 's09-right-on-plus-add')
+  const formAfterAdd = await page.evaluate(() => !!document.querySelector('[data-testid="win-holiday"], [data-testid^="win-hol"], .hol-form, [data-testid="hol-form"]'))
   /* the room under the list */
-  const win = await rect(L, '[data-testid="win-days"]'), list = await rect(L, '[data-testid="hol-list"]')
-  const xr = win.l + win.w / 2, yr = win.b - 24
-  await swipeFrom(L, xr, yr, -140, 0)
+  const wD = await rect(L, '[data-testid="win-days"]'), lD = await rect(L, '[data-testid="hol-list"]')
+  const roomY2 = Math.round((lD.b + wD.b) / 2)
+  const hitRoom = await page.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y); return e ? (e.getAttribute('data-testid') || e.className || e.tagName) : null }, [lx, roomY2])
+  await swipeFrom(L, lx, roomY2, -140, 0)
   const e = await read(); const fe = await shot(L, 's09-left-in-room-under-list')
-  await swipeFrom(L, xr, yr, 140, 0)
+  const wE = await rect(L, '[data-testid="win-days"]')
+  await swipeFrom(L, lx, wE.t + 150, 140, 0)
   const f2 = await read()
   await press(L, '[data-testid="days-tab-month"]')
   const mB = await month()
-  const ok = a.year === String(+y0 + 1) && b.year === y0 && !a.wins.includes('every') && c.year !== b.year && d.year !== c.year && e.year !== f2.year && f2.year === d.year && mB === mA
-  pass('9', SZ, ok, `year ${y0}; left on the list -> ${a.year}; right -> ${b.year}; left starting on the holiday line "${line.t}" -> ${c.year}; right starting on "+ Add" -> ${d.year}; left in the room under the list (list bottom ${list.b}, window bottom ${win.b}, finger y ${yr}) -> ${e.year}; right there -> ${f2.year}; windows open after each: ${[a, b, c, d, e, f2].map(x => x.wins || 'none').join(' | ')}; Month tab afterwards ${mB} (left on ${mA})`, fc)
+  const ok = a.year === String(+y0 + 1) && b.year === y0 && !a.wins.includes('every') && c.year !== b.year && d.year === b.year && e.year !== f2.year && f2.year === d.year && mB === mA
+  pass('9', SZ, ok, `year ${y0}; left on the list -> ${a.year}; right -> ${b.year}; left starting on the holiday line "${line.t}" -> ${c.year}; right starting on "+ Add" -> ${d.year}; left in the room under the list (list bottom ${lD.b}, window bottom ${wD.b}, gap ${wD.b - lD.b}px, finger y ${roomY2}, element there ${hitRoom}) -> ${e.year}; right -> ${f2.year}; windows open after each: ${[a, b, c, d, e, f2].map(x => x.wins || 'none').join(' | ')}; Month tab afterwards ${mB} (left on ${mA}); window boxes ${JSON.stringify(wA)} / ${JSON.stringify(wB)} / ${JSON.stringify(wC)} / ${JSON.stringify(wD)} / ${JSON.stringify(wE)}`, fc)
 })
 await step('10', async () => {
   const mA = await month()
@@ -143,6 +139,30 @@ await step('10', async () => {
   if (await vis(L, '[data-testid="dcal-card"]')) await page.mouse.click(4, 4)
   await page.waitForTimeout(250)
   if (await vis(L, '[data-testid="every-cancel"]')) await press(L, '[data-testid="every-cancel"]')
+})
+await step('06', async () => {
+  const mA = await month()
+  const w0 = await rect(L, '[data-testid="win-days"]'), bar0 = await rect(L, '[data-testid="win-days"] .win-bar')
+  /* start the slide on the bar's title text, away from the close button */
+  const x0 = bar0.l + 120, y0 = bar0.t + bar0.h / 2
+  await swipeFrom(L, x0, y0, -140, 0)
+  const m1 = await month(); const w1 = await rect(L, '[data-testid="win-days"]'), bar1 = await rect(L, '[data-testid="win-days"] .win-bar')
+  const f1 = await shot(L, 's06-after-left-on-bar')
+  await swipeFrom(L, bar1.l + 120, bar1.t + bar1.h / 2, 140, 0)
+  const m2 = await month(); const w2 = await rect(L, '[data-testid="win-days"]')
+  const f2 = await shot(L, 's06-after-right-on-bar')
+  pass('6', SZ, m1 === mA && m2 === mA, `month ${mA} -> after left on the bar ${m1} -> after right ${m2}; the window box before ${JSON.stringify(w0)} after left ${JSON.stringify(w1)} after right ${JSON.stringify(w2)} (the bar itself: ${JSON.stringify(bar0)} -> ${JSON.stringify(bar1)})`, f1)
+})
+await step('08b', async () => {
+  const mA = await month()
+  const win = await rect(L, '[data-testid="win-days"]'), g = await rect(L, '[data-testid="days-grid"]')
+  const x0 = win.l + win.w / 2 + 70, y0 = win.b - 24
+  const hit = await page.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y); return e ? (e.getAttribute('data-testid') || e.className || e.tagName) : null }, [x0, y0])
+  await swipeFrom(L, x0, y0, -140, 0)
+  const m1 = await month(); const f = await shot(L, 's08b-after-left-in-room-shrunk-window')
+  await swipeFrom(L, x0, y0, 140, 0)
+  const m2 = await month()
+  rec('8b', SZ, 'RECORD', `AFTER THE BAR SLIDE (the window had shrunk to fit): grid bottom ${g.b}, window bottom ${win.b}; finger at y=${y0} (element there: ${hit}); month ${mA} -> ${m1} -> back ${m2}`, f)
 })
 console.log('\nRESULTS_JSON ' + JSON.stringify((await import('./lib.mjs')).results))
 summary('a')
