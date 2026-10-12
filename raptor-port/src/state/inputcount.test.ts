@@ -49,7 +49,7 @@ import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
 import { setPage, setBoardDay } from './view'
 import * as view from './view'
-import { commitNewInput, commitInput, draftOf, removeInput } from '../ui/inputedit'
+import { commitNewInput, commitInput, draftOf, removeInput, setInpField } from '../ui/inputedit'
 import { reqRowText } from '../ui/reqrow'
 import { rowPut, rowTake, rowMove } from '../ui/reqdoor'
 import { boardMbtn, cxCommit } from '../ui/board'
@@ -697,6 +697,28 @@ describe('ALL AVAIL / ALL as one of an input\'s people — what a published day 
     expect(html).toContain(`ALL AVAIL · ${TITLE}`)
     expect(html).toContain('taken out')
     expect(html).not.toContain('who it stands for')
+  })
+
+  /* A MAN GIVEN HIS OWN PART OF A SHARED ABSENCE ON A PUBLISHED DAY IS NOT "TAKEN OUT" (Fable's read of the finished code,
+     finding 3 — 12 Oct 26; the plan §4.6, R5, F6 (c)). A time typed on ONE man's row of the Unavailable list gives him an
+     input of his own (engine/inputown.ts ownInputOf). The count was right — one change — but the line read "Rocky · OD —
+     taken out": he is still away, at another time. The words name what it is. */
+  it('the line for a man given his own part of a shared absence says so — never "taken out" — and it is ONE change', async () => {
+    await world(WED)
+    expect(commitInput(null, { ...DRAFT(WED), type: 'OD', title: '', allday: true, sTime: '', eTime: '' }, ['rocky', 'split'])).toBe(true)
+    const od = () => INPUTS.filter((x: any) => x.type === 'OD' && x.date === dOf(WED) && idsOf(x).includes('rocky')) as any[]
+    expect(od()).toHaveLength(1)
+    publish(WED)
+    expect(waiting(WED)).toBe(0)
+    expect(setInpField(od()[0], 'str', '10:00', 'rocky')).toBe(true)
+    expect(od().map(x => idsOf(x)), 'his own input now').toEqual([['rocky']])
+    expect(waiting(WED), 'one change waiting').toBe(1)
+    const html = pendListHTML(WED)
+    expect(html).toContain('1 change<')
+    expect(html).toContain(cs('rocky'))
+    expect(html, 'said as what it is').toContain('his own now')
+    expect(html).toContain('10:00')
+    expect(html, 'he was not taken out of the day').not.toContain('taken out')
   })
 
   it('what goes out is the count the day head showed: re-timed, ALL AVAIL added and a man added — 3, on a Saturday that earns', async () => {

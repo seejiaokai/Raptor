@@ -187,6 +187,16 @@ function inputWords(di: number, it: PendItem): Words {
   /* a MOVE from one input to another is one line, said as a move reads everywhere else — "Ranger: Training → Meeting"
      (owner D109; engine/publish.ts pairs the two units) */
   if (it.pp && it.pp.role === 'move') return { where: cs(it.pp.p), from: it.pp.from ? inpLabel(it.pp.from) : '', to: inpLabel(now), ...none, edited: true } as Words
+  /* …and a man GIVEN HIS OWN PART is not "taken out" (Fable's read of the finished code, finding 3 — 12 Oct 26): a time
+     typed on his row of the Unavailable list, or sick leave cutting his leave, splits him out of the shared input into
+     one of his own (engine/inputown.ts ownInputOf), which the comparison folds into THIS input's one change
+     (engine/inputs.ts frozenInputMatch `pieces`). The piece is the live record of him alone, of the same kind, on this
+     day, carrying the shared input's own filing stamp (ownInputOf copies `by` and `at`). Words only — the count is the
+     people step's. */
+  const piece = it.pp && it.pp.role === 'off' && now ? INPUTS.find((x: any) => x && x !== now && inpId(x) !== inpId(now)
+    && idsOf(x).length === 1 && String(idsOf(x)[0]) === String(it.pp!.p) && x.type === now.type
+    && x.at != null && x.at === now.at && x.by === now.by && !!DAYS[di] && inputCoversDate(x, (DAYS[di] as any).dt)) : null
+  if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, edited: true } as Words
   if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }

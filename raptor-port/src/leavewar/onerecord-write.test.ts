@@ -198,6 +198,24 @@ describe('who may change the one record (the plan §4.9 — Fable F4, F5; D655, 
     expect(commitInput(r, { ...draftOf(r), remarks: 'mine' }, ['bane'])).toBe(true)
     expect(the().remarks).toBe('mine')
   })
+  /* D770 (owner, 12 Oct 26 — R19 put to him and ruled so): "A person who is the only named person in an input that also
+     holds ALL AVAIL or ALL reads the input and may take himself out, but does not change it for everyone — whoever filed
+     it, or a scheduler, does." NO TEST HELD THIS until the job's check (the records helper's register pass, 12 Oct 26:
+     the four cases of ui/placeholderdoors.test.tsx on "a member beside ALL AVAIL" were written before he ruled and pass
+     EITHER way). Broken on purpose — `onlyNamed` made to ignore the placeholder — this case goes red. */
+  it('the only NAMED person beside ALL AVAIL does not change it for everyone — he reads it and may take himself out (D770)', () => {
+    expect(commitInput(null, D({ type: 'Duty', start: SAT }), ['bane', 'allavail'], { oil: { [SAT]: 0.5 } })).toBe(true)
+    ranger()
+    const r = the('Duty'), was = copy(r)
+    expect(mayEditInput(r), 'not his to change for everyone').toBe(false)
+    expect(mayDeleteInput(r), 'nor to delete').toBe(false)
+    expect(commitInput(r, { ...draftOf(r), remarks: 'mine' }, ['bane', 'allavail']), 'a re-word is refused').toBe(false)
+    expect(copy(the('Duty'))).toEqual(was)
+    expect(commitInput(r, draftOf(r), ['allavail']), 'taking himself out is his').toBe(true)
+    expect(idsOf(the('Duty'))).toEqual(['allavail'])
+    saber()
+    expect(mayEditInput(the('Duty')), 'the scheduler changes it').toBe(true)
+  })
   /* SINCE THE BELL'S NOTICES (the one-rule build's step 7, 12 Oct 26 — owner D755 (3); the plan §4.10; R11): his step
      also TELLS the two left in it and whoever filed it, each a notice made inside his own command — so his Undo and his
      Redo carry those notices through the member's commit gate (state/perms.ts, the `notices` case), which this case

@@ -298,7 +298,7 @@ describe('a puck taken off the row takes that person out of the input (D755) (GI
     expect(commitNewInput(DRAFT())).toBe(true)
     const was = JSON.stringify(INPUTS)
     expect(rowTake(rowKey())).toBe('refused')
-    expect(SAID.join(' ')).toContain(`${cs('bane')} is the last on this input — use ✕ to take it off the programme, or delete it in its own window`)
+    expect(SAID.join(' ')).toContain(`${cs('bane')} is the last on this input — take the input off the programme, or delete it in its own window`)
     setDrag({ kind: 'slot', key: rowKey() })
     expect(applyDrop(document.body, 0, 0)).toBe(false)
     writeSlot(rowKey(), '')
@@ -618,7 +618,7 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       const was = both()
       SAID = []
       expect(drop(fromSeat(rowKey(WED, K2)), document.body)).toBe(false)
-      expect(SAID).toEqual(['ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window'])
+      expect(SAID).toEqual(['ALL AVAIL is the last on this input — take the input off the programme, or delete it in its own window'])
       expect(both()).toBe(was)
       expect(onRow(WED, K2)).toEqual([A])
     })
@@ -754,7 +754,7 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       SAID = []
       await rightClick(rowKey(WED, K2))
       expect(people(WED, K2), 'the last on its input: it stays').toEqual([A])
-      expect(SAID).toEqual(['ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window'])
+      expect(SAID).toEqual(['ALL AVAIL is the last on this input — take the input off the programme, or delete it in its own window'])
       await act(async () => { globalUndo() })
       expect(people(), 'Undo of the right-click').toEqual(['bane', A])
     } finally {
