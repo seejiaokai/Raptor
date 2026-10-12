@@ -1,0 +1,52 @@
+import { launch, world, bye, FRI, THU } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'D12' }); const { page, tid } = w
+await w.giveWarden()
+const ids = await w.fileFriday(); await w.makeHoliday('National Day', [FRI])
+const win = tid('win-oilday')
+const cnt = async () => (await tid('odl-count').innerText()).trim()
+const btn = async (kind, id) => tid(`odl-${kind}-${id}`).evaluate(e => { const s = getComputedStyle(e); return { pressed: e.getAttribute('aria-pressed'), bg: s.backgroundColor, col: s.color } })
+// 1 un-pick
+await w.press(tid(`odl-yes-${ids[1]}`)); const a = await cnt()
+await w.press(tid(`odl-yes-${ids[1]}`)); const b = await cnt()
+w.say('Yes, Yes again', { afterFirst: a, afterSecond: b, yesState: await btn('yes', ids[1]) })
+// 2 No to all, then one Yes
+await w.press(tid('odl-noall')); const c = await cnt()
+const noAll = [await btn('no', ids[0]), await btn('no', ids[1]), await btn('no', ids[2])]
+await w.press(tid(`odl-yes-${ids[0]}`)); const d = await cnt()
+w.say('No to all then Yes on Range brief', { noAllCount: c, noAllNoButtons: noAll, afterYes: d, rangeYes: await btn('yes', ids[0]), rangeNo: await btn('no', ids[0]), gateNo: await btn('no', ids[1]), saveDisabled: await tid('odl-save').isDisabled(), left: await tid('odl-left').innerText() })
+await w.hush(); await w.shot('D12-noall-then-yes', { x: 960, y: 80, width: 480, height: 480 }); await w.unhush()
+// 3 Escape with picks present
+const undo0 = await w.undoInfo()
+await page.keyboard.press('Escape'); await page.waitForTimeout(400)
+w.say('after Escape', { list: await win.count(), state: await w.state(ids), undo: await w.undoInfo(), undoBefore: undo0 })
+await w.closeCal()
+w.say('Saber bell', await w.bellLines())
+// reopen via the bell, pick, press the X
+const bl = await w.openBell(); await w.press(bl.locator('.bl-line').first()); await page.waitForTimeout(500)
+w.say('reopened', { list: await win.count(), count: await cnt(), note: 'picks cleared?' })
+await w.press(tid(`odl-yes-${ids[2]}`)); const e1 = await cnt()
+await w.press(win.locator('.win-x')); await page.waitForTimeout(400)
+w.say('after X', { picked: e1, list: await win.count(), state: await w.state(ids), undo: await w.undoInfo() })
+// drag the window and use the page behind
+const bl2 = await w.openBell(); await w.press(bl2.locator('.bl-line').first()); await page.waitForTimeout(500)
+const m0 = await w.measure('[data-testid="win-oilday"]')
+const t = await win.locator('.win-ttl').boundingBox()
+await page.mouse.move(t.x + 40, t.y + 10); await page.mouse.down(); await page.mouse.move(t.x - 200, t.y + 130, { steps: 12 }); await page.mouse.up(); await page.waitForTimeout(300)
+const m1 = await w.measure('[data-testid="win-oilday"]')
+w.say('drag by title', { before: m0, after: m1 })
+await w.hush(); await w.shot('D12-dragged')
+// the page behind: pick a card, then open another day
+await w.press(tid(`odl-yes-${ids[1]}`))
+await page.locator('[data-icday="2026-07-16"]').focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(600)
+w.say('another day opened behind', { dayWin: await page.locator('[data-testid="win-inputsday"]').count(), list: await win.count(), count: await cnt(), dayTitle: (await page.locator('[data-testid="win-inputsday"] .win-ttl').innerText().catch(() => '')).replace(/\s+/g, ' ') })
+await w.shot('D12-day-open-behind')
+await w.press(page.locator('[data-testid="win-inputsday-x"]')); await page.waitForTimeout(300)
+const mon0 = await page.locator('#inpCal .ic-mon').textContent()
+await w.press(page.locator('#icNext')); await page.waitForTimeout(400)
+w.say('month stepped', { from: mon0.trim(), to: (await page.locator('#inpCal .ic-mon').textContent()).trim(), list: await win.count(), count: await cnt() })
+await w.press(page.locator('#icPrev')); await page.waitForTimeout(300)
+await w.press(tid('odl-later')); await page.waitForTimeout(300)
+w.say('state at the end', await w.state(ids))
+w.say('errors', await bye(w))
+await browser.close()

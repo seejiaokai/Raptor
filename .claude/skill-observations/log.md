@@ -4149,3 +4149,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Keep one `scripts/handpass/breaks-run.mjs` that takes a job's list (a small module exporting the array) and handles line endings, "not found exactly once", the restore, a regex to re-run a subset, and a table written to `docs/handpass/parts/`. Name it in the checking guide's §8.4 as the default way to run break tests, with the rule that a break not caught gets a test or a written "decides nothing" disposition.
 
 **Principle:** When a checking step is done the same way every time, the per-job artefact should be the data, not another copy of the program.
+
+### Observation 541: A handoff written while helpers are still running does not say who receives their reports
+
+**Status:** OPEN
+**Date:** 13 Oct 26
+**Session context:** Closing a FULL bug check in a fresh chat, from a handoff block the earlier chat wrote while its two re-walk helpers were still running.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Writing the block — "RUNNING when this was written"
+
+**Issue:** The handoff named the helpers' report files and the next steps, and the owner started a fresh chat on it at once. The earlier chat was still alive and "busy", holding the helpers as its own: their closing messages and token counts would return to IT, one helper's report file did not exist yet, the check lock was held under its name, and nothing said whether it would go on to do the next steps itself. The new chat had to discover this from file times and the session list, then message the earlier chat to agree who owned what. A second gap of the same kind: the break tests' results were in that chat's working folder only — the handoff said they were done, the evidence sheet still said "NOT done", and the figures had to be asked for.
+
+**Suggested improvement:** In the skill's block template, when work is still running at the handoff, require three lines: (1) who receives each helper's closing message and figures, and that the writing chat will do NOTHING further once a new chat picks the block up (or exactly what it will finish); (2) any lock, served build or background process it holds, and who releases it; (3) every result that so far exists only in the chat or its working folder, copied into the repo before the block is committed. And a first step for the reader: list the live sessions and message the one that wrote the block before touching the shared checkout.
+
+**Principle:** A handoff is complete only when nothing the next session needs lives in the writer's head, its working folder or its still-running helpers. If the writer is still alive, the handoff must also say what the writer will and will not do from that moment — two sessions on one checkout need an explicit owner for every remaining step.

@@ -1,0 +1,171 @@
+[
+ {
+  "id": "D1",
+  "did": "Warden given an admin sign-in (Admin → Users); filed Range brief (Training, Ranger+Tally 09:00–12:00), Gate duty (Duty, Trident), Safety board (Meeting, Sidewinder 14:00–15:00) on Fri 17 Jul through the Inputs calendar day window; Inputs ⚙ → Calendar… → Holidays → + Add → public holiday, name \"National Day\", Fri 17, Save.",
+  "said": "The list opened by itself: title \"OIL — Fri 17 Jul\", second line \"Public holiday · National Day\"; \"National Day is now a public holiday.\"; count shown as \"4 TO ANSWER\" (capitals on screen); four cards (Nomad OD \"Overseas duty — exercise, off island\" Yes · FO / No; Trident DUTY Gate duty Yes · FO / No; Ranger, Tally TRAINING Range brief Yes · HO / No; Sidewinder MEETING Safety board Yes · HO / No); Yes to all, No to all; \"What is left goes to the schedulers’ bells\"; Later; Save greyed. Measured: window x984 y96 440x443, inside the 1440x900 screen, element at its centre is itself (on top); Save x1357 y496 54x28 inside and on top. No \"OIL?\" tag inside the list. The Calendar window (Holidays list) stayed open behind it.",
+  "inputs": "Range brief, Gate duty, Safety board: oil null (unanswered) before any pick; Undo button: \"Undo — a public holiday on 17 Jul\"",
+  "urr": "n/a",
+  "verdict": "PASS",
+  "pics": [
+   "D1-list-opens.png"
+  ]
+ },
+ {
+  "id": "D2",
+  "did": "In the list: Yes on Gate duty and on Range brief, No on Safety board; Save. Then Undo once, Redo once. Looked at the Inputs calendar Fri 17 window, Saber's bell, and OIL Earn on Friday (Scheduler Board → OIL Earn).",
+  "said": "After the picks: \"3 OF 4 ANSWERED\"; the No on Safety board a quiet grey (bg rgb(57,66,77)), the Yes picks bright blue; Save live. Save closed the list; the Undo button then read \"Undo — 3 inputs\". Inputs calendar Fri 17 window: only Nomad (OD) wears \"OIL?\"; Gate duty, Range brief, Safety board do not. Saber's own bell: lit, ONE unread line \"National Day  Fri 17 Jul — 1 input needs an OIL answer · Saber  now\". OIL Earn on Friday: Ranger HO and Tally HO on Range brief (on), Trident FO on Gate duty (on), Sidewinder \"—\" on Safety board (off, the No), Nomad \"—\" (unanswered, off); the board also says \"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\" and the mode tag \"Nothing today earns\". Undo once: all three answers gone (oil null), the Calendar still shows ND on Fri 17 (holiday kept), no list reopened; Undo button then \"Undo — a public holiday on 17 Jul\", Redo \"Redo — 3 inputs\". Redo once: answers back; Undo \"Undo — 3 inputs\", Redo greyed.",
+  "inputs": "after Save: Range brief {2026-07-17:0.5}, Gate duty {2026-07-17:1}, Safety board {2026-07-17:0}; after Undo all null; after Redo as after Save",
+  "urr": "Undo x1 → all three gone; Redo x1 → back; reload not done here (D11)",
+  "verdict": "PASS",
+  "pics": [
+   "D2-picked.png",
+   "D2-saber-bell.png",
+   "D2-fri-cards.png",
+   "D2-oil-earn-fri.png",
+   "D2-after-undo.png",
+   "D2-after-redo.png"
+  ]
+ },
+ {
+  "id": "D3",
+  "did": "New world; Warden given admin sign-in; the same four inputs on Fri 17 (three filed + the demo's overseas duty); holiday \"National Day\" on Fri 17 → the list; pressed \"Yes to all\"; Save. Then Saber's bell, and (signed in place with raptorMe) Warden's bell.",
+  "said": "Yes to all: \"4 OF 4 ANSWERED\", all four cards Yes picked, the line under the count empty (nothing left for the bells). Save closed the list. Saber's bell: not lit, opens to \"Nothing new\". Warden's bell: not lit, opens to \"Nothing new\". No holiday line and no \"0 inputs\" line anywhere.",
+  "inputs": "not read in this world (Fri inputs not re-read after Save); the same Yes-to-all in D4 wrote Range brief 0.5, Gate duty 1, Safety board 0.5",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "D3-yes-to-all.png",
+   "D3-saber-bell.png",
+   "D3-warden-bell.png"
+  ]
+ },
+ {
+  "id": "D4",
+  "did": "New world; same four; holiday saved → list; pressed Later with nothing picked. Saber's bell: opened, tapped the line, Later again. Then signed in place as Warden (raptorMe): bell, tap the line, in the list pressed Yes to all, Save. Then back to Saber (raptorMe stiff).",
+  "said": "Later closed the list; Undo button unchanged (\"Undo — a public holiday on 17 Jul\"); nothing written. Saber: bell lit, ONE unread line \"National Day  Fri 17 Jul — 4 inputs need an OIL answer · Saber  now\"; a tap on it opened the list (title \"OIL — Fri 17 Jul / Public holiday · National Day\", \"4 TO ANSWER\", NO \"is now a public holiday\" line) and the bell's list closed. Warden: bell lit, same ONE unread line \"4 inputs need an OIL answer · Saber\"; tap bell → its list → tap line → the one list without the lead line, measured x984 y96 440x404 inside the screen and on top. Yes to all → \"4 OF 4 ANSWERED\" → Save: note \"OIL answered for 4 inputs\". Warden's bell then not lit, \"Nothing new\"; Saber's bell not lit, \"Nothing new\". \"That input is gone\" never appeared.",
+  "inputs": "after Later: Range brief, Gate duty, Safety board all null; after Save: Range brief 0.5, Gate duty 1, Safety board 0.5 (all dated 2026-07-17)",
+  "urr": "Undo not pressed; raptorMe switch kept the Undo list (\"Undo — a public holiday on 17 Jul\" before Later)",
+  "verdict": "PASS",
+  "pics": [
+   "D4-saber-bell.png",
+   "D4-saber-tap-list.png",
+   "D4-warden-bell.png",
+   "D4-warden-list.png",
+   "D4-warden-bell-after.png",
+   "D4-saber-bell-after.png"
+  ]
+ },
+ {
+  "id": "D5",
+  "did": "New world; Warden admin sign-in; filed \"Two day course\" (Training, Ranger 09:00–12:00, Thu 16 – Fri 17 through the input window's own calendar) and \"Safety board\" (Meeting, Sidewinder, Fri 17 only); Holidays → + Add → public holiday \"Founders Days\", picked Thu 16 then Fri 17 on the date picker, Save. In the list: Yes on the Two day course card, Save. Then Saber's bell and Warden's bell (raptorMe).",
+  "said": "ONE list opened, titled \"OIL — Thu 16 – Fri 17 Jul\", second line \"Public holiday · Founders Days\", \"Founders Days is now a public holiday.\", \"4 TO ANSWER\". Four cards, not two: the demo's own Nomad OD (\"till 17 Jul\"), my Two day course (09:00–12:00 · till 17 Jul), my Safety board (Meeting 14:00–15:00), and the demo's own Ranger Appointment \"Medical / PHA\" Thu 16 17:00–18:30 (both demo ones sit on those days). Measured x984 y96 440x443 inside, on top. After Yes + Save on the Two day course: its answer is written for BOTH days. Saber's bell: lit, ONE unread line \"Founders Days  Thu 16 – Fri 17 Jul — 3 inputs need an OIL answer · Saber\". Warden's bell: lit, the same ONE line; a tap opened the one list titled for the run, \"3 TO ANSWER\" (OD, Safety board, Appointment).",
+  "inputs": "Two day course oil {2026-07-16:0.5, 2026-07-17:0.5}; Safety board null",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "D5-list.png",
+   "D5-warden-bell.png",
+   "D5-warden-list.png"
+  ]
+ },
+ {
+  "id": "D6",
+  "did": "D4's state (four inputs, holiday saved, Later). Warden's line unread (4 inputs). As Saber: opened Range brief from the Fri 17 day window, pressed its Save (its own OIL question came up in the input window), Yes — credit HO, Save. Then Undo pressed until the holiday was undone (2 presses), checked both bells (raptorMe) and the Holidays list, then Redo once (the holiday), checked, Redo again.",
+  "said": "Answer in its own window: Range brief written; the line on both bells fell to \"3 inputs need an OIL answer · Saber\" (still unread). Undo press 1 = \"Undo — a personal input\" (took back that answer); press 2 = \"Undo — a public holiday on 17 Jul\". After press 2: Fri 17 is a plain working day on the Inputs calendar (cell no longer green, no ND badge; the Holidays list no longer has Fri 17 Jul); Saber's bell not lit and \"Nothing new\", Warden's bell not lit and \"Nothing new\" — the line is gone from both. Redo #1 (\"Redo — a public holiday on 17 Jul\"): Fri 17 green with ND again; no list opened; BOTH bells lit again with ONE UNREAD line \"National Day  Fri 17 Jul — 4 inputs need an OIL answer · Saber\" (the answer given in between was taken back by the first Undo, so it counts four). Redo #2 (\"Redo — a personal input\"): the answer comes back (Range brief 0.5) and the line reads \"3 inputs need an OIL answer · Saber\" on both bells, still unread.",
+  "inputs": "after own-window answer: Range brief {2026-07-17:0.5}, others null; after Undo x2: all null; after Redo #1: all null; after Redo #2: Range brief 0.5",
+  "urr": "Undo x2, Redo x2 as written; raptorMe person switches kept the Undo/Redo lists",
+  "verdict": "PASS",
+  "pics": [
+   "D6-holiday-undone.png",
+   "D6-holiday-redone.png",
+   "D6-warden-after-redo1.png"
+  ]
+ },
+ {
+  "id": "D7",
+  "did": "D4's state (holiday \"National Day\" on Fri 17 saved, Later; both bells have the line). Holidays → tapped the Fri 17 Jul row → Delete. Looked at both bells. Then Holidays → + Add again, same name \"National Day\", Fri 17, Save; Later; both bells.",
+  "said": "After Delete: the Holidays list no longer lists Fri 17 Jul; no OIL list opened; Saber's bell not lit and \"Nothing new\", Warden's the same (no line on any bell; Undo button then read \"Undo — removing the public holiday on 17 Jul\"). After adding it again: the list opened by itself (\"4 TO ANSWER\"); after Later, Saber's bell lit with ONE unread line \"National Day  Fri 17 Jul — 4 inputs need an OIL answer · Saber\" and Warden's the same ONE line (not two).",
+  "inputs": "n/a (no answers written)",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "D7-removed-warden-bell.png",
+   "D7-readded-saber-bell.png",
+   "D7-readded-warden-bell.png"
+  ]
+ },
+ {
+  "id": "D8",
+  "did": "D4's state but with the list kept open as Saber (4 TO ANSWER). Without closing it, tapped the bold name on the Gate duty card → its own input window opened; pressed its Save, the input window's own OIL question came up, Yes, Save. Then looked at the list, picked Yes on Safety board and pressed the list's Save; looked at both bells.",
+  "said": "The input window opened in FRONT of the list (the list stayed up behind it). After answering there and closing, the list showed \"3 TO ANSWER\" (Nomad OD, Range brief, Safety board) — Gate duty's card gone. A pick on Safety board then read \"1 OF 3 ANSWERED\"; Save wrote only that one. Saber's and Warden's bells: ONE unread line each, \"National Day  Fri 17 Jul — 2 inputs need an OIL answer · Saber\".",
+  "inputs": "after the own-window answer: Gate duty {2026-07-17:1}, others null; after list Save: Gate duty 1, Safety board 0.5, Range brief null",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "D8-input-window-over-list.png",
+   "D8-list-three.png"
+  ]
+ },
+ {
+  "id": "D9",
+  "did": "D4's list open as Saber; picked Yes on the Safety board card (\"1 OF 4 ANSWERED\"); tapped that card's name → its own window → Delete (it deleted at once, note \"Input deleted\"). Looked at the list; then picked Yes on Gate duty and pressed Save.",
+  "said": "The Safety board card went from the list at once; the list stayed up and read \"3 TO ANSWER\" (Nomad, Gate duty, Range brief); no error. The deleted card's pick went with it, so Save was GREYED (nothing to write, nothing to press). Then Yes on Gate duty → \"1 OF 3 ANSWERED\" → Save: note \"OIL answered for 1 input\", list closed. The deleted input is gone from the data and nothing was written for it.",
+  "inputs": "after delete + Save: Range brief null, Gate duty {2026-07-17:1}; Safety board gone (no INPUTS row titled Safety board); browser error list empty",
+  "urr": "Undo label after the delete \"Undo — a personal input\"",
+  "verdict": "PASS",
+  "pics": [
+   "D9-list-after-delete.png"
+  ]
+ },
+ {
+  "id": "D10",
+  "did": "New world: holiday saved on Fri 17 (four inputs), Yes on Gate duty and No on Safety board in the list, Save (two left). As Warden (raptorMe): opened the bell, pressed \"Mark all read\"; then closed the bell; then tapped the line.",
+  "said": "Before: bell lit, ONE unread line \"National Day  Fri 17 Jul — 2 inputs need an OIL answer · Saber\" with a \"Mark all read\" button. After pressing it: the line stays listed, its text turned muted grey (rgb 138,150,163 instead of near-white), the dot gone, the \"Mark all read\" button gone, the bell no longer lit (also after closing the bell). A tap on the muted line still opened the one list (\"2 TO ANSWER\").",
+  "inputs": "Gate duty {2026-07-17:1}, Safety board {…:0}, Range brief null before the Mark all read; unchanged by it",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "D10-before-mark.png",
+   "D10-after-mark.png",
+   "D10-after-mark-closed.png"
+  ]
+ },
+ {
+  "id": "D11",
+  "did": "Two worlds on the plain address (not ?fresh=1, written to first), each reloaded with the browser reload. A = D2-like: Gate duty Yes, Range brief Yes, Safety board No, Save (one left); Saber tapped his line (read) and pressed Later; Warden's line left unread. B = D4: holiday then Later with nothing picked, both lines unread.",
+  "said": "After the reload the page asked for the sign-in again (login form shown; signed in as ad / a, and Warden's admin sign-in was still there). A: the three answers all came back; Saber's line \"1 input needs an OIL answer · Saber\" still READ (bell not lit), Warden's the same line still UNREAD (bell lit); Fri 17 still the holiday colour. B: the four inputs still unanswered; both Saber's and Warden's bells lit with the ONE unread line \"4 inputs need an OIL answer · Saber\". The Undo button is greyed (\"Undo\" off) and Redo greyed after the reload (before it: \"Undo — 3 inputs\" / \"Undo — a public holiday on 17 Jul\").",
+  "inputs": "A before and after: Range brief 0.5, Gate duty 1, Safety board 0 (2026-07-17); B before and after: all three null",
+  "urr": "Undo button emptied by the reload (as expected); reload done",
+  "verdict": "PASS",
+  "pics": [
+   "D11A-warden-after-reload.png",
+   "D11A-topbar-after-reload.png",
+   "D11B-saber-after-reload.png"
+  ]
+ },
+ {
+  "id": "D12",
+  "did": "Holiday saved, list open as Saber (four). (1) Yes on Gate duty, then Yes again. (2) \"No to all\", then one Yes on Range brief. (3) Escape with picks standing. (4) Re-opened it from the bell, picked Yes on Safety board, pressed the ✕. (5) Re-opened it, dragged it by its title with the mouse (real down/move/up), picked a Yes, then in the Inputs calendar behind it opened Thu 16 (Enter on the date) and stepped the month next/prev.",
+  "said": "(1) First Yes: \"1 OF 4 ANSWERED\"; the second press un-picked it: \"4 TO ANSWER\", the button back to plain. (2) \"No to all\": \"4 OF 4 ANSWERED\", every No quiet grey (bg rgb 57,66,77); then Yes on Range brief: Yes bright blue, that card's No back to plain, the others stay grey, count still \"4 OF 4 ANSWERED\", Save live, nothing left for the bells. (3) Escape closed the list, nothing written, Undo button unchanged. Saber's bell still had ONE unread line (4 inputs). (4) Re-opened: picks cleared (\"4 TO ANSWER\"); the ✕ closed it, nothing written. (5) Dragged by the title: window moved from x984,y96 to x744,y216, still 440x404, inside the screen and on top. With the list up I opened Thu 16 behind it — the day window opened and the list stayed up (the day window sits in front of the list where they overlap); the month stepped July → August and back, the list stayed up with its pick (\"1 OF 4 ANSWERED\"). Later at the end wrote nothing.",
+  "inputs": "after Escape, after ✕ and after Later: Range brief, Gate duty, Safety board all null (nothing written)",
+  "urr": "Undo button unchanged after Escape and ✕ (\"Undo — a public holiday on 17 Jul\")",
+  "verdict": "PASS",
+  "pics": [
+   "D12-noall-then-yes.png",
+   "D12-day-open-behind.png"
+  ]
+ },
+ {
+  "id": "D13",
+  "did": "D4's state (holiday saved, Saber pressed Later). Signed in place as Warden (raptorMe nact), Edit Schedule → opened the Scheduler Board for Mon 13 and then for Fri 17; looked at the board's own bell, opened it, tapped its line.",
+  "said": "The board's own bell (the one in the board's bar) is lit with the red dot on both days. Its list opens under it with ONE unread line \"National Day  Fri 17 Jul — 4 inputs need an OIL answer · Saber\" and \"Mark all read\"; measured x919 y101 348x98, inside the screen and on top (bell itself x1233 y65 34x30, inside, on top). A tap on the line closed the bell's list and opened the one list OVER the board (\"OIL — Fri 17 Jul / Public holiday · National Day\", \"4 TO ANSWER\", NO \"is now a public holiday\" line), measured x984 y96 440x404, inside and on top; the board stayed up behind it. Yes on Range brief + Save: the list closed and the bell line read \"3 inputs need an OIL answer · Saber\" (read, so the bell no longer lit).",
+  "inputs": "after the Yes + Save: Range brief 0.5 (the others unchanged)",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "D13-board-bell-lit-day0.png",
+   "D13-board-bell-list-day4.png",
+   "D13-one-list-over-board.png"
+  ]
+ }
+]

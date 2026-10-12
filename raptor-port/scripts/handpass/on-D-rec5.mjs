@@ -1,0 +1,4 @@
+import { rec } from './on-D-lib.mjs'
+rec('D7', 'D4\'s state (holiday "National Day" on Fri 17 saved, Later; both bells have the line). Holidays → tapped the Fri 17 Jul row → Delete. Looked at both bells. Then Holidays → + Add again, same name "National Day", Fri 17, Save; Later; both bells.',
+  'After Delete: the Holidays list no longer lists Fri 17 Jul; no OIL list opened; Saber\'s bell not lit and "Nothing new", Warden\'s the same (no line on any bell; Undo button then read "Undo — removing the public holiday on 17 Jul"). After adding it again: the list opened by itself ("4 TO ANSWER"); after Later, Saber\'s bell lit with ONE unread line "National Day  Fri 17 Jul — 4 inputs need an OIL answer · Saber" and Warden\'s the same ONE line (not two).',
+  'n/a (no answers written)', 'not pressed', 'PASS', ['D7-removed-warden-bell.png', 'D7-readded-saber-bell.png', 'D7-readded-warden-bell.png'])

@@ -1,9 +1,13 @@
-# `[OIL-ASK-NOTIFY]` — the bug check (FULL) — IN PROGRESS, 13 Oct 26
+# `[OIL-ASK-NOTIFY]` — the bug check (FULL) — CLOSED 13 Oct 26; his look is what is left
 
-**Where it stands:** built, unit-tested, the host's own look done on the built screens beside the approved pictures.
-**NOT DONE YET — nothing may be called ready for "merge live":** the walk (§7), the break tests, Fable's read of the
-finished code and the blind Opus read beside it, the fixes and re-walk, the whole gate set in one run, his look (§10).
-`Walk: NOT DONE — the build chat's context ran out after the host's look; the walk is the next chat's first job`.
+**Where it stands:** built; the host's look beside the approved pictures (§7); walked by five helpers (§11 — seven
+faults, fixed); break-tested (§14 — 27 wires given a test); its finished code read by Fable and, blind beside it, by a
+fresh Opus reader (§12 — twelve claims: ten fixed, one filed, one a record); the fixes re-walked (§13 — 22 lines, no
+fault); the whole gate set green in one run (§16.1). **Left: his look (the card, §16.2) and his "merge live" — put to
+him in two parts (§16.3, D764).**
+
+`Walk: docs/handpass/2026-10-13-oil-ask-notify.md · 388 pictures · 24 surfaces (the roll-call's rows, each seen and operated) · 89 lines walked (67 + 22) · MISSING: none open — 7 faults fixed red-first, 6 older things filed ([OIL-NOTIFY-SEEN]), 1 line with no screen route carried by a test`
+Carried by a test, not walked — listed apart in §15 (seven cases, each with its test and what it proves).
 
 Branch `claude/oil-ask-notify`. Rulings D780–D784 (`grep -h '^| D78[0-4] |' .claude/decisions-full/*.md`). The plan
 `docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md` (§5a: Fable's read). The register
@@ -182,9 +186,10 @@ S = setup, A = action, E = expected, D = what would disprove.
   failure the filed unsteady Tracker test `[TRK-DLG-FOCUS-UNSTEADY]`; alone, 3 of 3. (Docs, the list's order, two CSS
   lines and the new browser test came after it: their own files re-run green.)
 - Red first: the gate in `ui/reqdoor.ts` broken on purpose → `ui/oilwait.test.tsx` 10 of 13 red; `leavewar/holnotice.test.tsx`
-  run before its build → every case red. **The break tests proper (one per wired surface) are NOT done.**
-- `e2e/oilwait.spec.ts` 4 of 4 (desktop and phone); `npm run build` clean; `npm run rulecheck` OK (258 rulings, ON1–ON16
-  named); typecheck clean. **NOT RUN on this code: the whole gate set in one run** (tfin, the full e2e, smoke, perf).
+  run before its build → every case red. The break tests proper (one per wired surface): §14.
+- `e2e/oilwait.spec.ts` 4 of 4 (desktop and phone; 6 of 6 since a phone on its side was added — §11.4); `npm run build` clean;
+  `npm run rulecheck` OK (258 rulings, ON1–ON16 named); typecheck clean. **The whole gate set in one run, on the finished
+  code: §16.1.**
 
 ## 9a. The two code reads, side by side — the ONE test he asked for (D788, D789, 13 Oct 26)
 
@@ -196,7 +201,7 @@ Every claim of either is written as a failing test before it is believed. **The 
 false alarms, tokens — is filled in below when both reports are in, and put to him with what is published about the two
 models; no further trial is run before his answer (D789).**
 
-## 10. Questions waiting for him / the look card — to write at the close
+## 10. The readings as the build left them — the look card, the questions for him and the full list of readings are §16
 
 Readings to tell him (the plan §6): R1 the two sibling drags follow the rule too; R2 a crew-list man on the only puck
 uses the swap's words; R3 the admin who made the holiday gets the bell line too; R4 the list's Yes answers that input's
@@ -364,3 +369,204 @@ reader missed five of nine faults already known. What is published about the two
 of 13 Oct 26 (no head-to-head at reading code exists; Opus 5.5 is three weeks the newer and level or ahead on the
 vendor's coding tests; a fresh reader beats the one that wrote the code in the same conversation; whether a different
 MODEL beats the same model starting fresh is unproven).
+
+## 13. The re-walk of what the fixes touched (13 Oct 26) — two Sonnet walkers on the frozen build `index-CoBxP-O_.js` (`f8136bfdd`), port 4231
+
+The brief: `docs/superpowers/briefs/2026-10-13-oil-ask-notify-rewalk-brief.md` — 22 lines, one for each thing the walk's
+seven fixes (W1–W7) and the two reads' ten (C1–C10, C12) changed on screen, written as the RIGHT behaviour, the walkers
+not told whether anything was still wrong. Reports `docs/handpass/parts/on-RX1.md`, `on-RX2.md` (`.json`; RX2's tail
+`on-RX2-tail.md`); pictures `docs/img/handpass/2026-10-13-oil-ask-notify/RX1`, `RX2`; scripts `scripts/handpass/on-RX1-*.mjs`,
+`on-RX2-*.mjs`. No console error, page error or failed request in any world. **No code changed after this build:** every
+commit since `f8136bfdd` is a document.
+
+| Share | Lines | PASS | FAIL | Other | Tokens (the harness's figure) |
+|---|---|---|---|---|---|
+| RX1 — the door, the bar, the flashes, the warnings | 12 | 8 | 0 | 3 RECORD, 1 NOT WALKED | 341,810 |
+| RX2 — the holiday's one line, the list, the short screens | 10 | 10 | 0 | — | 325,756 |
+
+**The host opened** the pictures behind the OIL, published-day and role PASSes and judged each against the report:
+`RX1-1-2` (both pucks lit, the bar up), `RX1-4-2` (OIL Earn on, the bar gone), `RX1-5-2` (an add from a seat left
+unanswered: Tally's puck and the row's lit), `RX1-7-5` (a phone: the dashed ring still round Ranger's puck under
+Unavailable, the bar below), `RX1-11-3` (View-only Sched: the published Saturday holds Ranger on Range brief and Tally on
+Hangar open day), `RX1-12-3` (the member view: a tap on the bell goes to Saber's own input's question, no holiday line —
+the earlier chat opened `RX1-6-1` and `RX1-12-2`), `RX2/R1-5` (the lengthened holiday's one list, six cards, Thursday's
+among them), `R2-5` (the shortened holiday's one line, "Fri 17 Jul"), `R7-2`, `R7-3` (a holiday with no name: "Fri 17 Jul
+is now a public holiday." over the Leave War page; "Public holiday" in bold on the bell), `R8-5` (the open list at three
+after the other admin answered one), `R9-l390-1` (a phone on its side: Later and Save in sight with eleven cards),
+`R10-1` (the question on a phone on its side: both buttons inside the card).
+
+### 13.1 Each fix, and the line that saw it on screen
+
+| Fix | Seen by | Result |
+|---|---|---|
+| W1 the admin's own member view has no holiday line | RX1-12 | PASS — and back as admin the line is there again |
+| W2 a passing note never lands on the bar | RX1-6, both orders, each box measured (8 px apart; the thing under "Answer OIL" is the button) | PASS |
+| W3, C9 the Unavailable row from a seat: both pucks flash, the second time too | RX1-1 (at 100 ms, and at 80 ms after "Answer OIL" → "Don’t swap") | PASS |
+| W4 a holiday with no name of its own | RX2-7 | PASS |
+| W5 "Mark all read" reads only what is shown | not on screen as a line of its own — carried by its test (§15) | — |
+| W6 the question's two buttons on a phone on its side | RX2-10 (both wholly inside the card and the screen; the words scroll above them) | PASS |
+| W7 the list's Later / Save stay in sight | RX2-9, at 1440 × 900, 390 × 844 and 844 × 390, each measured at the top, the middle and the end of the scroll | PASS |
+| C1 the warnings behind the question are the day's as it stands | RX1-1, RX1-2 — **a thin proof:** the Saturday walked had one issue and no ringed puck, so "as before" had little to change; the fix rests on its red-first test (`ui/oilwait.test.tsx` "nothing moves — and the warnings say so…") and its break test (B94, §14) | PASS, thin |
+| C2 "Answer OIL" never makes a different change | RX1-3 ("That row has changed — not swapped"; nothing made) | PASS |
+| C3, C4, C5 one bell line a holiday whatever is done to its dates | RX2-1 (lengthened), RX2-2 (shortened), RX2-3 (taken away, made again over other dates), RX2-4 (Friday to Monday), RX2-5 (renamed), RX2-6 (an event type re-tagged, back, and again) | PASS |
+| C6 a live holiday line is never cut from the bell's list | not walked (it needs more than thirty newer notices) — carried by its test (§15) | — |
+| C7 OIL Earn takes the bar | RX1-4 | PASS |
+| C8 an add from a seat: the dragged puck flashes | RX1-5 | PASS |
+| C10 the Unavailable row's armed tap keeps its ring until the hand-over is made | RX1-7, a phone by touch | PASS |
+| C12 the declared record type | nothing on screen | — |
+
+### 13.2 What the re-walk recorded, and three things it met in passing
+
+- **RX1-8 NOT WALKED — there is no such door.** The app has no box that takes a typed callsign for a row's people: a
+  click on the people cell arms the place, typing does nothing, and the row's title box renames the row. Fable's
+  "typed boxes" door has no route on screen; the store's own writer is held by `ui/oilwait.test.tsx` (ON5).
+- **RX1-9 (RECORD):** Escape with the question up over the Scheduler Board closes only the question — the bar comes,
+  the board stays open.
+- **RX1-10, RX1-11 (RECORD) — to tell him (R16):** the bar outlives a step to another day on the board, and a publish:
+  "Answer OIL" then opens the question of the day it was asked on ("18 Jul") whichever day the board shows, and the
+  swap is made on that day. A Saturday published straight after "Don’t swap" goes out as it stands (Ranger on Range
+  brief, Tally on Hangar open day, no issue naming either).
+- **RX1-5 — to tell him (R17):** on an add left unanswered the two that flash are the dragged puck and the row's first
+  puck; on the board a row that already holds people draws no "+ add" of its own to flash.
+- **RX2-6 — to tell him (R18):** two runs of days that touch (Tue–Wed and Thu) read as ONE line and one list ("Tue 14 –
+  Thu 16 Jul"); an event type re-tagged to an Off day gives no list and no line (D21: an Off day earns no OIL).
+- **RX2-5, and RX2 in passing:** a rename opens no list and keeps each scheduler's read / unread mark; after a holiday
+  is saved from the Holidays list the Calendar window stays open under the one list.
+- **"One Undo on the phone did nothing" (RX1-7's last line) — reproduced by the host, NOT a fault of the swap**
+  (`scripts/handpass/on-H-undo7.mjs`, picture `RX1/H7-after-undo.png`): after the hand-over the crew drawer is still open
+  and, open, it covers the top bar — the finger landed on the drawer's head, not on Undo. With the drawer put away, ONE
+  Undo puts Ranger back ("Undid: a personal input"). That the drawer stays open there is older and filed
+  (`[OIL-NOTIFY-SEEN]` (5)); that it covers Undo is added to that item.
+- **"11 changes" on the just-published Saturday (RX1-11's last line) — reproduced by the host, NOT this job's**
+  (`scripts/handpass/on-H-pub11.mjs`): the same Saturday published WITHOUT any drag reads "11 changes" too. It is the
+  day's count of changes in the changes window (the rows the walker typed), not something waiting to go out; nothing is
+  pending and no mark is left by the swap that was not made.
+- **Older, met by both phone walkers and the browser test — filed, `[OIL-NOTIFY-SEEN]` (6):** on a phone on its side the
+  Scheduler Board leaves a pane about 190 px tall, and a drag held near its top or foot scrolls the board under the
+  finger: the puck is let go over nothing and comes off its row (Undo brings it back). Not this job's drag; on his look
+  card as a thing to try on his own iPhone.
+
+**The size, looked at again (§7.0):** the re-walk found no fault and no MISSING row, so the scope stands; nothing is
+walked a third time.
+
+## 14. The break tests (§8.4) — one wire broken at a time, a named test watched going red
+
+All by the host (Opus), with one script: `scripts/handpass/on-breaks.mjs` — each entry is one exact text swap in one
+source file; the named test files are run; the file is put back (it refuses to start on a tree with uncommitted source).
+Three rounds, 131 break runs. The three logs were kept outside the repo, in the earlier chat's working folder; the
+tallies below are from them, as that chat reported them.
+
+| Round | On | Breaks | Red at once | Bare | After the new tests |
+|---|---|---|---|---|---|
+| 1 | the walked build's code (`d17287535`): B1–B88 | 88 | 61 | 27 | — |
+| 2 | the 27 bare again, and five for the walk's fixes (B89–B93: the member view, Mark all read, the note and the bar twice, the Unavailable row's seat) | 32 | 30 | 2 (B42, B72) | B72's wire removed from the code; B42 left, below |
+| 3 | the two reads' fixes: B94–B104 | 11 | 11 | 0 | — |
+
+**The 27 wires that had no test, by proof — each given one** (about twenty new cases: several cover two wires, four
+wires gained an assertion inside a case that existed): a change that would be refused being asked its question first
+(B2, B31); "Answer OIL" on a row whose man has changed, and its words (B8, B16); the seat he came from found again
+(B9); what flashes (B10, B12); the drop's three other sites and the landing flash handed to the wait (B24–B27); the
+Unavailable row for an input of several (B33–B35); the calendar's drag — the flash, the landing on the answer, an input
+changed since (B38–B40); a locked week's day listed (B49); days outside the run (B50); a switched-off admin told (B52);
+the line covering every date for the bell's tap (B69); the list's words for who saves, its stamp, its cards' order and
+a card's name opening the input (B76, B78, B84, B86). The cases are in `ui/oilwait.test.tsx` ("the wires the break
+tests found bare"), `ui/caldrag.test.tsx` and `leavewar/holnotice.test.tsx`.
+
+**The two left bare after round 2, each with a disposition:**
+- **B72 — the wire is gone.** It broke the bell's own second test of "is this a scheduler" (`ui/topbits.tsx`). Once a
+  holiday's line was made live for a scheduler only, in the one body (W1 — B89's test), that second test decided
+  nothing; it was removed from the code and B72 is a comment in the script. So the script holds 103 live entries.
+- **B42 — left, with its reason beside it in the script.** "The bar shows while the question is up": a guard in the
+  bar's own drawing. The bar is put away whenever a question is held (both places that hold one clear it first), so the
+  two never stand together and this guard decides nothing today — a spare, kept.
+
+**The final tally: every live entry is caught by a named test except B42.** B94, the one behind C1: it takes away the
+re-run of the rules after the tried save, and `ui/oilwait.test.tsx` "nothing moves — and the warnings say so…" goes red.
+
+**Not broken, and what carries them:** the three places the app mounts the question, the bar and the one list
+(`ui/App.tsx`). Breaking one needs a build for each break; the unit tests draw them directly. Each was SEEN and
+OPERATED on the built app by the walk and the re-walk at every size (§11, §13), and `e2e/oilwait.spec.ts` (6 of 6, three
+sizes) fails if the question, the bar or the list is not on the page.
+
+## 15. What was NOT walked, and what a test carries instead (§7.0)
+
+| The case | Why not walked | The test, what it proves, and how it works |
+|---|---|---|
+| A locked week's day made a holiday (S30, R15) | no control makes a week locked — it is a saved week the app cannot read | `leavewar/holnotice.test.tsx` "a day of a week the app holds locked is never listed, and making it a holiday tells nobody": calls the lister and the war's own door on a week PLANTED as locked. It proves the rule; there is no screen route to prove |
+| A live holiday line with more than thirty newer notices (C6) | thirty notices cannot be made in a walk's time | `leavewar/holnotice.test.tsx` "a live holiday line is never one of the lines the bell cuts…": makes the notices through the store's own makers and reads the bell's list |
+| "Mark all read" with a holiday line that is not shown (W5) | the line is by definition not on screen | `leavewar/holnotice.test.tsx` "\"Mark all read\" reads only the lines that are shown…": the store's read marks, then an input needing an answer again |
+| The count on the bell's line at each number (ON15) | the same route as the lines walked at 3, 4, 5, 6 and 11 | `leavewar/holnotice.test.tsx` (ON15): the line's words at each count, from the store |
+| The store's own writers as a door (ON5, R6); a callsign typed into a row (RX1-8) | no control on screen reaches them | `ui/oilwait.test.tsx` (ON5): calls the writers directly — it proves the rule at the writer, not a route |
+| The warnings behind the question on a day that HAS ringed pucks (C1) | walked on a thin day (§13.1) | `ui/oilwait.test.tsx` "nothing moves — and the warnings say so…", through the drop's own function on a stand-in element; break B94 |
+| Safari's own handling of a held finger (§7.9) | the walk ran in Chromium | nothing — on his look card: the drag, the armed tap and the sideways phone on his own iPhone |
+
+Everything else on the roll-call (§4, §11.5) was seen and operated on its own surface.
+
+## 16. The close (13 Oct 26)
+
+### 16.1 The whole gate set, in ONE run under the PC's lock, nothing else running — on the branch at `f5139c13f` (the code of the walked build `f8136bfdd`; every later commit a document)
+
+| Gate | Result |
+|---|---|
+| Unit tests (`npm test`) | **10895 / 10895** (624 files) |
+| Build (`npm run build`) | clean |
+| The original's assertions (`node reference/tfin.js`) | **728 passed, 0 failed** |
+| Browser tests (`npm run test:e2e`) | **775 passed, 0 failed**, 57 skipped |
+| The Tracker's suite (`npm run smoke:tracker`) | **445 passed, 0 failed** |
+| `npm run rulecheck` | OK (the 31 older rulings in its baseline unchanged; ON1–ON16 each named by a test) |
+| `npm run docsize` | OK — every record accounted for |
+| `npm run perf`, after the run, on the served build (byte for byte the gate's own bundle, `index-CoBxP-O_.js`) | 4 passed, 0 failed — the week 5131 nodes under its ceiling of 5450, the board 1018 under 1150 |
+| `npm run probes:adapted`, the same | all 6 passed |
+
+WHOLLY GREEN, 13 Oct 26, 02:50–03:11; a full run took about 21 minutes. `perms.test.ts` and `perms-scan.test.ts` ran green
+inside the unit suite; this change touches no row of `docs/data-model.md` §11 (who is told is decided in
+`state/notices.ts` through the one permissions module — the sheet's W1).
+
+`Docs: OUTSTANDING 168 items (+6 −4, −4 all in ARCHIVE) · DECISIONS D1–D790 (new: D780, D781, D782, D783, D784, D785, D786, D787, D788, D789, D790) · homes OK`
+`docsize: OVER by 3, deferred (D29)`
+
+### 16.2 The look card — five minutes, on his phone and once on a desktop
+
+Make the day first (a minute): on the Inputs calendar file a Training for one man on a SATURDAY and answer its OIL
+question Yes. On Edit Schedule that Saturday now has his row on the Ground Programme.
+
+1. **A swap waits for its answer.** Drag a man who is already on that Saturday (its SDO, say) onto the puck on the
+   Training's row. The OIL
+   question comes first, with "Swapping … and …" at its top — and behind it nothing has moved. Press "Don’t swap":
+   both pucks flash, and a bar stays at the foot — "Not swapped — OIL not answered · Answer OIL · OK". Press "Answer
+   OIL", Yes, "Swap": now they change places, and one Undo puts it back.
+2. **A holiday is never silent.** Inputs → the gear → Calendar → Holidays: add a holiday on a weekday that already has
+   inputs. One list opens by itself — every input of that day that needs an answer, each with Yes and No, "Yes to all"
+   and "No to all". Press "Later".
+3. **The bell carries one line a holiday.** The bell is lit: the holiday's name, its day, "N inputs need an OIL
+   answer". A tap opens the same list. Answer them all and Save: the line is gone.
+4. **Only a scheduler is told.** Tap your name badge (it reads MEMBER): the bell has no holiday line. Tap it again.
+5. **On his own iPhone, which no test here can stand in for:** the drag in 1 by a held finger; then turn the phone on
+   its side — the question's two buttons and the list's Later / Save stay in sight. (On its side, start the drag with
+   both pucks in the middle of the board, not at its edge.)
+
+### 16.3 Questions waiting for him
+
+1. **At the merge, in two parts (D764):** the check is closed and the gates are as above — and does he wait for a
+   ChatGPT read of the finished code (not before 1 Nov 26), or merge on Fable's read and the fresh Opus read? The job is
+   on the one list either way (`OUTSTANDING.md` `[NO-ASTRA-LIST]`).
+2. **Not blocking, with the next Inputs batch:** should "Delete" in an input's own window ask "are you sure"
+   (`[OIL-NOTIFY-SEEN]` (4)); and when an input is put BACK on the programme after its day became a holiday, should the
+   put-back wait on the OIL question as a swap does (`[OIL-ACCEPT-BACK-UNASKED]`).
+
+### 16.4 The readings told to him at the close (R1–R18)
+
+R1 the Unavailable row's drag and the Inputs calendar's date drag follow the same rule · R2 a man from the crew list
+dropped on the only man's puck uses the swap's words ("Putting … in place of …") · R3 the admin who made the holiday
+gets the bell line too · R4 the list's Yes answers that input's unanswered days in the holiday only · R5 a line with
+nothing left to answer is gone · R6 D783's own four · R7 "the schedulers" are the people with an admin sign-in
+(confirmed, D785) · R8 a tap on a card's name in the list opens that input's own window · R9 a holiday declared on a
+PUBLISHED day reads "1 pending — what this day earns changed" at once, and the list's answers ride that one line (D2) ·
+R10 only ONE change waits at a time — a second swap started while the bar is up replaces the first · R11 an event type
+re-tagged so that two separate runs of days ask gives one bell line a run; the list opens by itself for the earlier ·
+R12 a swap from a seat on a published day counts 2 changes (as on the last job) · R13 a holiday with no name of its own
+is named by its day in the list and "Public holiday" on the bell · R14 the bar leaves when OIL Earn is switched on ·
+R15 a locked week cannot be made from the screen, so that rule is held by a test · R16 the bar outlives a step to
+another day on the board and a publish; "Answer OIL" then acts on the day it was asked on · R17 on an add left
+unanswered the dragged puck and the row's first puck flash · R18 runs of holiday days that touch read as one line and
+one list; an event type re-tagged to an Off day asks nothing (D21).

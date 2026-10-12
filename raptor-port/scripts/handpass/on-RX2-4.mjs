@@ -1,0 +1,21 @@
+// RX2-4 (across a weekend) — a new world
+import { launch, world, bye, FRI, MONDAY } from './on-RX2-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'R4' }); const { page, tid } = w
+w.say('Warden admin', await w.giveWarden())
+const ids = await w.fileFriday()
+const mon = await w.fileIt(MONDAY, { type: 'Training', people: ['nick'], from: '09:00', to: '10:00', title: 'Mon brief' })
+w.say('filed', { ids, mon })
+w.say('Sat/Sun inputs the demo holds', await page.evaluate(() => window.INPUTS.filter(r => { const s = JSON.stringify(r); return /2026-07-(18|19)/.test(s) || (r.from && r.to && r.from <= '2026-07-19' && r.to >= '2026-07-18') }).map(r => `${r.iid}:${r.title || r.type}:${r.from || r.d || ''}-${r.to || ''}:${JSON.stringify(r.oil || null)}`)))
+const d0 = await w.makeHoliday('Long weekend', FRI, MONDAY)
+w.say('form dates', d0)
+w.say('list after add', await w.listInfo())
+w.say('measure list', await w.measureT('win-oilday'))
+await w.hush(); await w.shot('R4-1-list')
+await w.press(tid('odl-later')); await page.waitForTimeout(400)
+w.say('holiday lines on the list', await (async () => { await w.openHolidays(); const r = await page.locator('.hol-line').evaluateAll(es => es.map(e => e.dataset.from + '|' + e.innerText.replace(/\s+/g, ' '))); await w.closeCal(); return r })())
+const b = await w.bothBells('R4-2-bells')
+w.say('bells', b)
+w.say('inputs state', await w.state([...ids, mon]))
+w.say('errors', await bye(w))
+await browser.close()

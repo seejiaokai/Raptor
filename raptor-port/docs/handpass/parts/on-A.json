@@ -1,0 +1,27 @@
+{
+  "walker": "A",
+  "build": "assets/index-Bv5bvisT.js",
+  "size": "1440x900 mouse",
+  "counts": { "PASS": 13, "FAIL": 1, "PARTIAL": 0, "NOT_WALKED": 0, "RECORD": 4 },
+  "rows": [
+    { "id": "A1", "verdict": "PASS" },
+    { "id": "A1-record-oil-earn", "verdict": "RECORD", "note": "Fable FO, Ranger HO (Range brief), Tally HO (Hangar open day)" },
+    { "id": "A2", "verdict": "PASS" },
+    { "id": "A3", "verdict": "PASS" },
+    { "id": "A4-week", "verdict": "PASS" },
+    { "id": "A4-board", "verdict": "PASS" },
+    { "id": "A5-one-day", "verdict": "PASS" },
+    { "id": "A5-two-days", "verdict": "PASS", "note": "Thu16-Fri17 substituted for Fri-Sat" },
+    { "id": "A6-duty-desk", "verdict": "FAIL", "note": "not refused; placed with warning 'On leave but tasked'; no OIL question" },
+    { "id": "A6-add", "verdict": "RECORD", "note": "the OIL question was put; not refused" },
+    { "id": "A7", "verdict": "PASS" },
+    { "id": "A8", "verdict": "PASS" },
+    { "id": "A9", "verdict": "PASS" },
+    { "id": "A10", "verdict": "PASS" },
+    { "id": "A11", "verdict": "PASS" },
+    { "id": "A12", "verdict": "RECORD", "note": "one bar; Answer OIL offers the later swap only" },
+    { "id": "A13", "verdict": "PASS" },
+    { "id": "A14", "verdict": "RECORD", "note": "bar in front of changes window; behind the input window's modal backdrop, unpressable" }
+  ],
+  "browserErrors": []
+}

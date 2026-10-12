@@ -1,0 +1,28 @@
+import { launch, world, bye, FRI } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'D10' }); const { page, tid } = w
+await w.giveWarden()
+const ids = await w.fileFriday(); await w.makeHoliday('National Day', [FRI])
+await w.press(tid(`odl-yes-${ids[1]}`)); await w.press(tid(`odl-no-${ids[2]}`)); await w.press(tid('odl-save')); await page.waitForTimeout(600)
+await w.closeCal()
+const sid = 'stiff'
+await w.me('nact')
+w.say('Warden lit', await w.bellLit())
+const bl = await w.openBell()
+w.say('lines', await bl.locator('.bl-line').evaluateAll(es => es.map(e => ({ unread: e.classList.contains('unread'), text: e.innerText.replace(/\s+/g, ' '), op: getComputedStyle(e).opacity, col: getComputedStyle(e.querySelector('.bl-name')).color }))))
+w.say('mark all present', await tid('bell-markall').count())
+await w.hush(); await w.shot('D10-before-mark', { x: 700, y: 0, width: 740, height: 300 }); await w.unhush()
+await w.press(tid('bell-markall')); await page.waitForTimeout(500)
+w.say('bell list still open', await bl.count())
+w.say('lines after', await bl.locator('.bl-line').evaluateAll(es => es.map(e => ({ unread: e.classList.contains('unread'), text: e.innerText.replace(/\s+/g, ' '), op: getComputedStyle(e).opacity, col: getComputedStyle(e.querySelector('.bl-name')).color }))))
+w.say('mark all present after', await tid('bell-markall').count())
+w.say('Warden lit after', await w.bellLit())
+await w.hush(); await w.shot('D10-after-mark', { x: 700, y: 0, width: 740, height: 300 })
+await w.closeBell()
+w.say('Warden lit after closing', await w.bellLit())
+await w.hush(); await w.shot('D10-after-mark-closed', { x: 700, y: 0, width: 740, height: 300 })
+// the line still opens the list
+const bl2 = await w.openBell(); await w.press(bl2.locator('.bl-line').first()); await page.waitForTimeout(500)
+w.say('tap on muted line opens list', await tid('win-oilday').count()); w.say('count', await tid('odl-count').innerText().catch(() => ''))
+w.say('errors', await bye(w))
+await browser.close()

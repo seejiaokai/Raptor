@@ -1,0 +1,43 @@
+import { world, usualSat, fileIt, goBoard, typeRow, seed, groundNow, oilOf, drag, toast, toastsAll, undoState, measure, SAT, SAT_DI } from './on-A-lib.mjs'
+const W = await world({ tag: 'A12' })
+const { page, tid, press, shot, errors } = W
+const iid1 = await usualSat(W)
+const iid2 = await fileIt(W, SAT, { type: 'Meeting', people: ['mamba'], from: '14:00', to: '15:00', title: 'Safety board' })
+await goBoard(W)
+const n = (await groundNow(page)).length
+console.log('rows now', JSON.stringify(await groundNow(page)))
+await typeRow(W, SAT_DI, n, 'Armoury check', '15:00', '16:00')
+await seed(page, SAT_DI, n, 'harpoon')
+await page.evaluate(() => document.querySelectorAll('#sbBoard .sb-fresh').forEach(e => e.classList.remove('sb-fresh')))
+const rows = await page.evaluate(di => (window.DAYS[di].ground || []).map((r, i) => i + ':' + r.prog + ':' + r.who), SAT_DI)
+console.log('rows raw', JSON.stringify(rows))
+const idx = t => page.evaluate(([di, t]) => (window.DAYS[di].ground || []).findIndex(r => (r.prog || '').toLowerCase() === t.toLowerCase()), [SAT_DI, t])
+const iR = await idx('Range brief'), iH = await idx('Hangar open day'), iS = await idx('Safety board'), iA = await idx('Armoury check')
+console.log('idx', iR, iH, iS, iA)
+const pk = i => `#sbBoard [data-slot="g:${SAT_DI}.${i}"] .puck`
+const frame = async (i) => { await page.locator(pk(i)).evaluate(e => { e.scrollIntoView({ block: 'center' }) }); await page.waitForTimeout(250) }
+const state = async () => JSON.stringify(await groundNow(page))
+const s0 = await state()
+console.log('start', s0)
+// swap 1: Hangar's Tally onto Range brief's Ranger
+await frame(iR)
+await drag(page, page.locator(pk(iH)), page.locator(pk(iR)))
+console.log('Q1', await tid('oilconf-lead').innerText().catch(() => 'NO'))
+await press(tid('oilconf-cancel')); await page.waitForTimeout(700)
+console.log('bar after 1st', await tid('oilbar-text').innerText().catch(() => 'NO'))
+// swap 2 without touching the bar
+await frame(iS)
+console.log('bar still there before 2nd drag', await tid('oilbar').count(), JSON.stringify(await measure(page, '[data-testid="oilbar"]')))
+await drag(page, page.locator(pk(iA)), page.locator(pk(iS)))
+console.log('Q2', await tid('oilconf').count(), await tid('oilconf-lead').innerText().catch(() => 'NO'))
+await shot('A12-1-second-question')
+await press(tid('oilconf-cancel')); await page.waitForTimeout(700)
+console.log('bar after 2nd', await tid('oilbar').count(), await tid('oilbar-text').innerText().catch(() => 'NO'), '| nothing moved', (await state()) === s0)
+await shot('A12-2-bar-after-two')
+await press(tid('oilbar-answer')); await page.waitForTimeout(400)
+console.log('Answer OIL offers', await tid('oilconf-lead').innerText().catch(() => 'NO'), '| heading', await page.locator('[data-testid="oilconf"] .airpop-head b').innerText().catch(() => ''))
+await shot('A12-3-answer-offers')
+await press(tid('oil-yes')); await press(tid('oilconf-save')); await page.waitForTimeout(700)
+console.log('after answering', await state(), 'toast', await toast(page), 'bar', await tid('oilbar').count())
+console.log('errors', JSON.stringify(errors))
+await W.ctx.close(); process.exit(0)

@@ -1,0 +1,171 @@
+[
+ {
+  "id": "RX2-1",
+  "did": "New world (desk), Warden given an admin sign-in; filed on the Inputs calendar: Range brief (Training, Ranger+Tally 09:00-12:00), Gate duty (Duty, Trident), Safety board (Meeting, Sidewinder) on Fri 17, and Thu brief (Training, Tally 10:00-11:00) on Thu 16. Holidays list: + Add \"National Day\" on Fri 17, saved; the list opened by itself (Fri 17: 4 cards: the demo's overseas duty + the three); \"Later\". Read both bells. Then opened the holiday on the Holidays list, tapped Thu 16 then Fri 17 on the form (form dates read 16-17), Save.",
+  "said": "Before: both bells lit, ONE line each, \"National Day  Fri 17 Jul / 4 inputs need an OIL answer · Saber\" (name bold, day, count on two rows). After the change the list OPENED BY ITSELF titled \"OIL — Thu 16 – Fri 17 Jul\", second line \"Public holiday · National Day\", lead \"National Day is now a public holiday.\", \"6 TO ANSWER\", six cards: Nomad OD (till 17 Jul), Gate duty, Range brief, Thu brief (Tally, Thu), Safety board, and Ranger's Medical/PHA appointment (Thu 17:00-18:30, a demo input). Inside the screen (984,96, 440x564) and on top. Each bell: ONE line, unread, \"National Day  Thu 16 – Fri 17 Jul / 6 inputs need an OIL answer · Saber\" (no second line). Tap on Warden's line opened the same list titled \"OIL — Thu 16 – Fri 17 Jul\" without the \"is now a public holiday\" line.",
+  "inputs": "all four of my inputs oil=null (Later writes nothing); Thu brief on the Thu card",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R1-1-list-fri.png",
+   "R1-2-bells-before-Saber.png",
+   "R1-4-form.png",
+   "R1-5-list-after.png",
+   "R1-6-bells-after-Saber.png",
+   "R1-6-bells-after-Warden.png",
+   "R1-7-list-from-bell.png"
+  ]
+ },
+ {
+  "id": "RX2-2",
+  "did": "New world (desk), Warden admin. Filed Range brief, Gate duty, Safety board on Fri 17, nothing of mine on Thu 16. Holidays list: + Add \"National Day\", dates Thu 16 – Fri 17, Save; list opened; \"Later\". Both bells read (one line each, \"Thu 16 – Fri 17 Jul\", 5 inputs). Then opened the holiday on the Holidays list, tapped Fri 17 on the form (form dates read 17-17), Save. Read both bells; tapped the line on Saber's and on Warden's bell.",
+  "said": "No list opened on the change. Each bell: ONE line, unread, \"National Day  Fri 17 Jul / 4 inputs need an OIL answer · Saber\" (not \"Thu 16 – Fri 17 Jul\"). A tap on the line (Saber, and Warden) opened the list titled \"OIL — Fri 17 Jul\", second line \"Public holiday · National Day\", no \"is now a public holiday\" line, \"4 TO ANSWER\" (the demo's overseas duty + my three). Holidays list showed the holiday as one row.",
+  "inputs": "oil null on my three",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R2-1-list-thu-fri.png",
+   "R2-2-bells-before-Saber.png",
+   "R2-3-form.png",
+   "R2-5-bells-after-Saber.png",
+   "R2-5-bells-after-Warden.png",
+   "R2-6-list-from-bell.png",
+   "R2-7-list-from-warden.png"
+  ]
+ },
+ {
+  "id": "RX2-3",
+  "did": "New world (desk), Warden admin; three inputs on Fri 17. Holidays list: + Add \"National Day\" Thu 16 – Fri 17, Save; list opened (5 cards); \"Later\". Opened the holiday, pressed its \"Delete\" (no confirm step; the button's own press removed it). Read both bells. Then + Add \"National Day\" on Fri 17 only, Save; the list opened (4 cards); \"Later\". Read both bells.",
+  "said": "After the first add: ONE line each bell, \"Thu 16 – Fri 17 Jul / 5 inputs\". After the removal: the Holidays list lost the row; both bells say \"Nothing new\", not lit, no line, no list. After the second add (Fri only): the list opened \"OIL — Fri 17 Jul\", \"National Day is now a public holiday.\", \"4 TO ANSWER\" (Friday's inputs counted once: the demo's overseas duty + three); after \"Later\" ONE line on each bell, unread, \"National Day  Fri 17 Jul / 4 inputs need an OIL answer · Saber\".",
+  "inputs": "oil null on my three",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R3-1-list.png",
+   "R3-2-bells-first-Saber.png",
+   "R3-4-after-delete-press.png",
+   "R3-5-bells-removed-Saber.png",
+   "R3-5-bells-removed-Warden.png",
+   "R3-6-list-second.png",
+   "R3-7-bells-second-Saber.png",
+   "R3-7-bells-second-Warden.png"
+  ]
+ },
+ {
+  "id": "RX2-4",
+  "did": "New world (desk), Warden admin; Range brief, Gate duty, Safety board on Fri 17 and \"Mon brief\" (Training, Tally 09:00-10:00) on Mon 20. Holidays list: + Add ONE holiday \"Long weekend\", tapped Fri 17 then Mon 20 (form dates read 17-20), Save; \"Later\"; read both bells and the Holidays list.",
+  "said": "ONE list opened by itself, titled \"OIL — Fri 17 – Mon 20 Jul\", second line \"Public holiday · Long weekend\", lead \"Long weekend is now a public holiday.\", \"6 TO ANSWER\", six cards: Nomad OD (all day), Gate duty, Range brief, Mon brief, Vapor's Medical/PHA appointment (Mon 10:00-12:00, a demo input), Safety board. The demo holds NO input on Sat 18 or Sun 19 (none listed). List inside the screen (984,96 440x564) and on top. Holidays list: ONE row \"Fri 17 – Mon 20 Jul  Long weekend\". Each bell: ONE line, unread, \"Long weekend  Fri 17 – Mon 20 Jul / 6 inputs need an OIL answer · Saber\".",
+  "inputs": "oil null on my four",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R4-1-list.png",
+   "R4-2-bells-Saber.png",
+   "R4-2-bells-Warden.png"
+  ]
+ },
+ {
+  "id": "RX2-5",
+  "did": "Continuing in the RX2-1 world: Holidays list, opened the holiday (Thu 16 – Fri 17), typed the name \"Founders Day\" in the name box, left the dates, Save. Both bells read; Warden tapped his line; Holidays list read.",
+  "said": "No list opened on the rename (a rename is not a new holiday). Saber's bell: ONE line \"Founders Day  Thu 16 – Fri 17 Jul / 6 inputs need an OIL answer · Saber\" (still unread for Saber); Warden's bell: ONE line \"Founders Day …\" (it was already read by him in RX2-1, so muted, bell not lit). The list opened from Warden's bell: title \"OIL — Thu 16 – Fri 17 Jul\", second line \"Public holiday · Founders Day\", six cards, count \"6 TO ANSWER\". Holidays list row: \"Thu 16 – Fri 17 Jul  Founders Day  PH\". The words \"National Day\" appear nowhere on the page (page text searched with the bell list, the one list and the Holidays list each open).",
+  "inputs": "oil unchanged (null)",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R5-1-after-rename.png",
+   "R5-2-bells-Saber.png",
+   "R5-2-bells-Warden.png",
+   "R5-3-list-from-bell.png",
+   "R5-4-holidays-list.png"
+  ]
+ },
+ {
+  "id": "RX2-6",
+  "did": "New world (desk), Warden admin. Filed Tue brief (Tally, Tue 14), Wed brief (Sidewinder, Wed 15), Thu duty (Trident, Thu 16). Leave War, July, Event row: \"SC\" preset on Thu 16 (this day) and an \"SC\" band Tue 14 – Wed 15 (read-out \"Working event\"; no list, no line while it is a work type). Then Event sheet on an empty cell → \"Edit presets\": the SC row offers PH / Off day / No leave / Work (Work lit). Pressed PH on SC (re-tag as public holiday); closed the editor; \"Later\"; read both bells. Then Edit presets again, pressed Work (back to its plain kind); read both bells. Then PH again; \"Later\"; read both bells. (An earlier run of the same script that re-tagged SC to \"Off day\" instead of back to Work gave no list and no line.)",
+  "said": "Re-tag SC → PH: the list opened by itself over the Leave War page, titled \"OIL — Tue 14 – Thu 16 Jul\" (the two touching runs read as one run), second line \"Public holiday · SC\", lead \"SC is now a public holiday.\", \"6 TO ANSWER\" (Nomad OD, Thu duty, Wed brief, Tue brief, Saint's Dental appt,Ranger's Medical/PHA). Each bell: ONE line, unread, \"SC  Tue 14 – Thu 16 Jul / 6 inputs need an OIL answer · Saber\". Re-tag back to Work: no list; both bells \"Nothing new\", not lit — the line is GONE from every bell. Re-tag PH again: the list opened again (same title/lead, 6 to answer); after Later each bell has ONE line (unread), same words — not two.",
+  "inputs": "oil unchanged (null) on my three",
+  "urr": "Undo button reads \"Undo — a Leave War setting\" after the re-tag; not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R6-1-sc-placed.png",
+   "R6-2-edit-types.png",
+   "R6-3-after-retag-holiday.png",
+   "R6-4-bells-holiday-Saber.png",
+   "R6-6-after-retag-back.png",
+   "R6-7-bells-back-Saber.png",
+   "R6-7-bells-back-Warden.png",
+   "R6-8-after-retag-again.png",
+   "R6-9-bells-again-Saber.png",
+   "R6-9-bells-again-Warden.png"
+  ]
+ },
+ {
+  "id": "RX2-7",
+  "did": "New world (desk), Warden admin; three inputs on Fri 17. Leave War, July, Event row 1: opened Fri 17's sheet, pressed the \"PH\" preset with the name box empty (read-out \"Public holiday · work on it earns OIL\"), \"This day\", Save (Apply). Later; read both bells.",
+  "said": "The list opened by itself OVER the Leave War page (page still \"leavewar\"), titled \"OIL — Fri 17 Jul\", second line \"Public holiday\" alone, lead \"Fri 17 Jul is now a public holiday.\", \"4 TO ANSWER\", box 984,96 440x437, inside the screen and on top. After \"Later\" the list closed; each bell: ONE line, unread: \"Public holiday\" in bold (font-weight 600, the only bold part), \"Fri 17 Jul\", then \"4 inputs need an OIL answer · Saber\".",
+  "inputs": "oil null on my three",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R7-1-ph-picked.png",
+   "R7-2-list-over-leavewar.png",
+   "R7-3-bells-Saber.png",
+   "R7-3-bells-Warden.png",
+   "R7-4-warden-bell-close.png"
+  ]
+ },
+ {
+  "id": "RX2-8",
+  "did": "New world (desk), Warden admin; three inputs on Fri 17 + the demo's overseas duty = four on the holiday; \"Later\". As Saber opened the list from the bell (4 TO ANSWER) and left it open. In place `raptorMe('nact')`: tapped the name \"Gate duty\" on its card (the input's own window opened), pressed its Save; the OIL question came; Yes — credit FO; Save. Back `raptorMe('stiff')`; read the list; pressed \"Yes to all\" then \"Save\"; read both bells.",
+  "said": "The list stayed up when the person changed. After Warden's answer the open list showed THREE cards, \"3 TO ANSWER\" (Nomad OD, Range brief, Safety board; Gate duty gone) — same reading as Saber. \"Yes to all\" → \"3 OF 3 ANSWERED\", nothing left for the bells, Save live; Save wrote: Range brief HO (0.5), Safety board HO (0.5), the demo's overseas duty FO (1); Gate duty KEPT Warden's Yes FO (1). The list closed. Both bells: no line, not lit (\"Nothing new\").",
+  "inputs": "Range brief {17 Jul: 0.5}, Gate duty {17 Jul: 1} (Warden's), Safety board {17 Jul: 0.5}, overseas duty {17 Jul: 1}",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R8-1-saber-list-four.png",
+   "R8-2-as-warden-list-up.png",
+   "R8-4-warden-question.png",
+   "R8-5-saber-list-three.png",
+   "R8-7-yes-to-all.png",
+   "R8-8-bells-after-Saber.png",
+   "R8-8-bells-after-Warden.png"
+  ]
+ },
+ {
+  "id": "RX2-9",
+  "did": "Three new worlds (desk 1440x900 by mouse; phone 390x844 by touch; phone 844x390 by touch), each: Warden admin; ten short Meetings on Fri 17 (Ranger, Sidewinder, Drifter, Ace, Hunter, Piston, Blade, Trident, Cinch, Cobra — Short 1 … Short 10), then the Holidays list: + Add \"National Day\" on Fri 17, Save. The list (with the demo's own overseas duty) reads \"11 TO ANSWER\" — not ten, because the demo's own input stands on that Friday too. Scrolled the window's cards to the top, middle and end (scrollTop on the body), measured and took pictures at each; then \"Yes to all\" and \"Save\" by a real mouse click / finger tap at the measured centres, no scrolling to find them.",
+  "said": "(a) DESK: top/mid/end: Later (1294,835 55x28) and Save (1357,835 54x28) at the same spot at all three scroll positions (mid 835, end 835); inside the screen and on top (elementFromPoint) at all three: true; window 984,96 440x780 (bottom 876), foot 825-875; cards under the foot's box: 2/1/0, but 0 of 33 sample points over the foot hit a card at each position; page scroll stayed [0,0]; the cards scroll inside the window (win-body 832px tall in 730px). Yes to all by a real press at its measured centre without scrolling → \"11 OF 11 ANSWERED\", nothing left for the bells, Save live; Save pressed at its measured centre (1384,849) → window closed, 10 of my ten inputs written, Undo reads \"on|Undo — 11 inputs\". (b) PHONE 390x844: top/mid/end: Later (248,791 55x28) and Save (311,791 54x28) at the same spot at all three scroll positions (mid 791, end 791); inside the screen and on top (elementFromPoint) at all three: true; window 12,12 366x820 (bottom 832), foot 781-831; cards under the foot's box: 2/1/0, but 0 of 33 sample points over the foot hit a card at each position; page scroll stayed [0,0]; the cards scroll inside the window (win-body 832px tall in 761px). Yes to all by a real press at its measured centre without scrolling → \"11 OF 11 ANSWERED\", nothing left for the bells, Save live; Save pressed at its measured centre (338,805) → window closed, 10 of my ten inputs written, Undo reads \"on|Undo — 11 inputs\". (c) PHONE SIDEWAYS 844x390 (window only 270px tall, 96–366 of 390): top/mid/end: Later (698,325 55x28) and Save (761,325 54x28) at the same spot at all three scroll positions (mid 325, end 325); inside the screen and on top (elementFromPoint) at all three: true; window 388,96 440x270 (bottom 366), foot 315-365; cards under the foot's box: 2/1/0, but 0 of 33 sample points over the foot hit a card at each position; page scroll stayed [0,0]; the cards scroll inside the window (win-body 832px tall in 220px). Yes to all by a real press at its measured centre without scrolling → \"11 OF 11 ANSWERED\", nothing left for the bells, Save live; Save pressed at its measured centre (788,339) → window closed, 10 of my ten inputs written, Undo reads \"on|Undo — 11 inputs\". \"Yes to all\" read \"11 of 11 answered\" at every size (the brief's \"10 of 10\" assumes no demo input on the day).",
+  "inputs": "after Save: my ten inputs each hold {17 Jul: 0.5} (HO) via Yes to all, read at each size (all ten checked; the demo's own overseas duty not read here)",
+  "urr": "Undo \"Undo — 11 inputs\" (one step) at each size; not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R9-desk-1-top.png",
+   "R9-desk-2-middle.png",
+   "R9-desk-3-end.png",
+   "R9-desk-4-after-yes-to-all-at-top.png",
+   "R9-p844-1-top.png",
+   "R9-p844-2-middle.png",
+   "R9-p844-3-end.png",
+   "R9-p844-4-after-yes-to-all-at-top.png",
+   "R9-l390-1-top.png",
+   "R9-l390-2-middle.png",
+   "R9-l390-3-end.png",
+   "R9-l390-4-after-yes-to-all-at-top.png"
+  ]
+ },
+ {
+  "id": "RX2-10",
+  "did": "New world, 844x390 by touch (set up upright at 390x844, then turned sideways). The usual Saturday on the Scheduler Board (Range brief, Training 09:00–12:00 for Ranger answered Yes; \"Hangar open day\" 13:00–15:00 with Tally). Framed the rows clear of the board's edge-scroll zones; real long-press touch drag (600 ms hold, then moves) of Tally's puck onto Ranger's. (Two earlier attempts at other scroll positions auto-scrolled the board under my finger and dropped Tally in the gap — my framing, not asked about further.) Measured, then tapped \"Don’t swap\" at its centre with a real finger.",
+  "said": "The question came: heading \"OIL — Tally, Range brief\", lead \"Swapping Tally and Ranger\", buttons \"Don’t swap\" / \"Swap\" (Swap greyed until an answer is picked: true), nothing moved behind it (true), Undo unchanged (true). Card box 202,39 to 642,351 (440x312) inside the 844x390 screen (true). \"Don’t swap\" box 471,312 to 561,340; \"Swap\" 569,312 to 626,340: both wholly inside the card (true/true), both inside the screen (true/true), both on top at their centres (true/true), side by side. The card scrolls (326px of content in 310px, 16px of travel): after scrolling its words to the end the buttons stayed at y 312–340 (foot of the card at 351) — the words scroll above them, the buttons do not move. After the tap: both pucks flashed ([true,true]); the bar reads \"Not swapped — OIL not answered\" with \"Answer OIL\" and \"OK\"; bar box 229,322,615,372 inside the screen (true), buttons side by side on one row (true: Answer OIL 454,333,546,361, OK 556,333,600,361), all on top at their centres (true/true/true); nothing swapped (true), Undo unchanged (true).",
+  "inputs": "Range brief's answer unchanged: Range brief:{\"2026-07-18\":0.5}",
+  "urr": "not pressed",
+  "verdict": "PASS",
+  "pics": [
+   "R10-0-board-sideways.png",
+   "R10-0c-held.png",
+   "R10-1-question.png",
+   "R10-2-question-words-scrolled.png",
+   "R10-3-bar.png"
+  ]
+ }
+]

@@ -1,0 +1,30 @@
+import { launch, world, bye, FRI } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'D13' }); const { page, tid } = w
+await w.giveWarden()
+const ids = await w.fileFriday(); await w.makeHoliday('National Day', [FRI])
+await w.press(tid('odl-later')); await page.waitForTimeout(400); await w.closeCal()
+await w.me('nact')
+for (const di of [0, 4]) {
+  await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(500)
+  await page.locator(`#eWeek [data-sbday="${di}"]`).first().evaluate(e => { e.scrollIntoView({ block: 'center', inline: 'center' }); e.click() })
+  await page.waitForSelector('#sbBoard .sb-sec', { state: 'attached' }); await page.waitForTimeout(500)
+  const sel = await w.bellSel()
+  w.say(`day ${di}: bell used`, sel); w.say('bell lit', await w.bellLit())
+  w.say('bell measure', await w.measure(sel))
+  await w.hush(); await w.shot(`D13-board-bell-lit-day${di}`, { x: 700, y: 0, width: 740, height: 140 }); await w.unhush()
+  await w.press(await w.bell()); await page.waitForTimeout(400)
+  w.say('bell list measure', await w.measure('[data-testid="bell-list"]'))
+  w.say('lines', await w.bellLines())
+  await w.hush(); await w.shot(`D13-board-bell-list-day${di}`, { x: 700, y: 0, width: 740, height: 300 }); await w.unhush()
+  if (di === 4) {
+    await w.press(page.locator('[data-testid="bell-list"] .bl-line').first()); await page.waitForTimeout(600)
+    w.say('one list over board', { list: await tid('win-oilday').count(), lead: await tid('odl-lead').count(), bell: await page.locator('[data-testid="bell-list"]').count(), m: await w.measure('[data-testid="win-oilday"]'), count: await tid('odl-count').innerText().catch(() => ''), boardStill: await page.locator('#schedBoard:visible').count() })
+    await w.hush(); await w.shot('D13-one-list-over-board')
+    await w.press(tid(`odl-yes-${ids[0]}`)); await w.press(tid('odl-save')); await page.waitForTimeout(600)
+    w.say('after answering one + Save', { list: await tid('win-oilday').count(), bellLit: await w.bellLit() })
+    w.say('lines', await w.bellLines())
+  } else await w.closeBell()
+}
+w.say('errors', await bye(w))
+await browser.close()

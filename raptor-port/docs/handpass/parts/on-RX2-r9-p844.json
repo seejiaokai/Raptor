@@ -1,0 +1,304 @@
+{
+ "title": "OIL — Fri 17 Jul Public holiday · National Day",
+ "count0": "11 TO ANSWER",
+ "cards": 11,
+ "top": {
+  "win": {
+   "x": 12,
+   "y": 12,
+   "w": 366,
+   "h": 820,
+   "right": 378,
+   "bottom": 832,
+   "inside": true,
+   "onTop": true
+  },
+  "later": {
+   "x": 248,
+   "y": 791,
+   "w": 55,
+   "h": 28,
+   "right": 303,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  },
+  "save": {
+   "x": 311,
+   "y": 791,
+   "w": 54,
+   "h": 28,
+   "right": 365,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  },
+  "yesall": {
+   "x": 226,
+   "y": 121,
+   "w": 68,
+   "h": 22,
+   "right": 294,
+   "bottom": 143,
+   "inside": true,
+   "onTop": true
+  },
+  "noall": {
+   "x": 302,
+   "y": 121,
+   "w": 63,
+   "h": 22,
+   "right": 365,
+   "bottom": 143,
+   "inside": true,
+   "onTop": true
+  },
+  "foot": {
+   "foot": {
+    "top": 781,
+    "bottom": 831,
+    "h": 50
+   },
+   "win": {
+    "top": 12,
+    "bottom": 832
+   },
+   "scroller": {
+    "top": 70,
+    "bottom": 831
+   },
+   "scrollerEndsAboveFoot": false,
+   "footBottomAtWindowBottom": true,
+   "samples": 33,
+   "cardHitsInFoot": 0,
+   "cardsOverlappingFoot": 2
+  },
+  "pageScroll": [
+   0,
+   0
+  ]
+ },
+ "scMid": {
+  "top": 36,
+  "sh": 832,
+  "ch": 761,
+  "cls": "win-body"
+ },
+ "mid": {
+  "win": {
+   "x": 12,
+   "y": 12,
+   "w": 366,
+   "h": 820,
+   "right": 378,
+   "bottom": 832,
+   "inside": true,
+   "onTop": true
+  },
+  "later": {
+   "x": 248,
+   "y": 791,
+   "w": 55,
+   "h": 28,
+   "right": 303,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  },
+  "save": {
+   "x": 311,
+   "y": 791,
+   "w": 54,
+   "h": 28,
+   "right": 365,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  },
+  "yesall": {
+   "x": 226,
+   "y": 85,
+   "w": 68,
+   "h": 22,
+   "right": 294,
+   "bottom": 107,
+   "inside": true,
+   "onTop": true
+  },
+  "noall": {
+   "x": 302,
+   "y": 85,
+   "w": 63,
+   "h": 22,
+   "right": 365,
+   "bottom": 107,
+   "inside": true,
+   "onTop": true
+  },
+  "foot": {
+   "foot": {
+    "top": 781,
+    "bottom": 831,
+    "h": 50
+   },
+   "win": {
+    "top": 12,
+    "bottom": 832
+   },
+   "scroller": {
+    "top": 70,
+    "bottom": 831
+   },
+   "scrollerEndsAboveFoot": false,
+   "footBottomAtWindowBottom": true,
+   "samples": 33,
+   "cardHitsInFoot": 0,
+   "cardsOverlappingFoot": 1
+  },
+  "pageScroll": [
+   0,
+   0
+  ]
+ },
+ "scEnd": {
+  "top": 71,
+  "sh": 832,
+  "ch": 761,
+  "cls": "win-body"
+ },
+ "end": {
+  "win": {
+   "x": 12,
+   "y": 12,
+   "w": 366,
+   "h": 820,
+   "right": 378,
+   "bottom": 832,
+   "inside": true,
+   "onTop": true
+  },
+  "later": {
+   "x": 248,
+   "y": 791,
+   "w": 55,
+   "h": 28,
+   "right": 303,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  },
+  "save": {
+   "x": 311,
+   "y": 791,
+   "w": 54,
+   "h": 28,
+   "right": 365,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  },
+  "yesall": {
+   "x": 226,
+   "y": 50,
+   "w": 68,
+   "h": 22,
+   "right": 294,
+   "bottom": 72,
+   "inside": true,
+   "onTop": false
+  },
+  "noall": {
+   "x": 302,
+   "y": 50,
+   "w": 63,
+   "h": 22,
+   "right": 365,
+   "bottom": 72,
+   "inside": true,
+   "onTop": false
+  },
+  "foot": {
+   "foot": {
+    "top": 781,
+    "bottom": 831,
+    "h": 50
+   },
+   "win": {
+    "top": 12,
+    "bottom": 832
+   },
+   "scroller": {
+    "top": 70,
+    "bottom": 831
+   },
+   "scrollerEndsAboveFoot": false,
+   "footBottomAtWindowBottom": true,
+   "samples": 33,
+   "cardHitsInFoot": 0,
+   "cardsOverlappingFoot": 0
+  },
+  "pageScroll": [
+   0,
+   0
+  ]
+ },
+ "yesallTap": {
+  "ok": true,
+  "m": {
+   "x": 226,
+   "y": 121,
+   "w": 68,
+   "h": 22,
+   "right": 294,
+   "bottom": 143,
+   "inside": true,
+   "onTop": true
+  }
+ },
+ "countAfter": "11 OF 11 ANSWERED",
+ "leftAfter": "",
+ "saveLive": true,
+ "saveBeforeTap": {
+  "x": 311,
+  "y": 791,
+  "w": 54,
+  "h": 28,
+  "right": 365,
+  "bottom": 819,
+  "inside": true,
+  "onTop": true
+ },
+ "saveTap": {
+  "ok": true,
+  "m": {
+   "x": 311,
+   "y": 791,
+   "w": 54,
+   "h": 28,
+   "right": 365,
+   "bottom": 819,
+   "inside": true,
+   "onTop": true
+  }
+ },
+ "closed": true,
+ "written": [
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}",
+  "{\"2026-07-17\":0.5}"
+ ],
+ "writtenCount": 10,
+ "undo": {
+  "undo": "on|Undo — 11 inputs",
+  "redo": "off|Redo"
+ },
+ "toast": "",
+ "errors": []
+}

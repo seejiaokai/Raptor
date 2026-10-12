@@ -1,0 +1,18 @@
+import * as L from './on-RX1-lib.mjs'
+const W = await L.world({ tag: 'R5' })
+const { page, tid, shot, press } = W
+const J = o => JSON.stringify(o)
+const trident = await L.idOf(page, 'Trident')
+console.log('trident id', trident)
+const iid = await L.fileIt(W, L.FRI, { type: 'Training', people: ['bane', trident], from: '09:00', to: '12:00', title: 'Range brief' })
+console.log('filed', iid, await L.recOf(page, iid), 'asked', W.lastAsked)
+console.log('holiday', J(await L.makeHoliday(W, L.FRI, 'National Day', { later: true })))
+console.log('rec after Later', await L.recOf(page, iid))
+await L.plainRow(W, L.FRI_DI, 1, 'Hangar open day', '13:00', '15:00', ['nick'])
+const rows = await page.evaluate(di => [...document.querySelectorAll(`#sbBoard [data-slot^="g:${di}."]`)].filter(e => e.getClientRects().length).map(e => e.getAttribute('data-slot') + ' :: ' + e.className + ' :: ' + e.textContent.replace(/\s+/g, ' ').slice(0, 30)), L.FRI_DI)
+console.log('board slots', J(rows))
+const mv = await page.evaluate(di => [...document.querySelectorAll(`#sbBoard [data-move^="mv:g.${di}."]`)].map(e => e.getAttribute('data-move') + ' :: ' + e.textContent.replace(/\s+/g, ' ').slice(0, 40)), L.FRI_DI)
+console.log('moves', J(mv))
+await shot('RX1-5-0-board')
+console.log('errors', J(W.errors))
+await W.ctx.close(); process.exit(0)

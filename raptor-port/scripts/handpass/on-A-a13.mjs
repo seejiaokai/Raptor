@@ -1,0 +1,31 @@
+import { world, usualSat, seed, groundNow, oilOf, drag, puckSel, rowSel, frameBoard, toast, toastsAll, undoState, SAT_DI } from './on-A-lib.mjs'
+const W = await world({ tag: 'A13' })
+const { page, tid, press, shot, errors } = W
+const iid = await usualSat(W)
+await seed(page, SAT_DI, 1, 'harpoon')
+await page.evaluate(() => document.querySelectorAll('#sbBoard .sb-fresh').forEach(e => e.classList.remove('sb-fresh')))
+await frameBoard(page)
+const none = async (what) => console.log(what, '| question', await tid('oilconf').count(), 'bar', await tid('oilbar').count(), '| ground', JSON.stringify(await groundNow(page)), '| toast', await toast(page))
+const inp = () => page.evaluate(i => { const r = window.INPUTS.find(x => x.iid === i); return r ? JSON.stringify({ s: r.s, e: r.e, rmk: r.remarks, oil: r.oil }) : 'GONE' }, iid)
+console.log('start', JSON.stringify(await groundNow(page)), await inp())
+// (1) a new time and a remark on Range brief's row
+const type = async (fld, v) => { const b = page.locator(`#sbBoard [data-bfld="${fld}"]`); await b.evaluate(e => e.scrollIntoView({ block: 'center' })); await b.fill(v); await b.blur(); await page.waitForTimeout(500) }
+await type(`gr:${SAT_DI}.0.str`, '10:00'); await none('typed start 10:00'); console.log('  input now', await inp())
+await type(`gr:${SAT_DI}.0.end`, '13:00'); await none('typed end 13:00'); console.log('  input now', await inp())
+await type(`gr:${SAT_DI}.0.rmks`, 'bring maps'); await none('typed remark'); console.log('  input now', await inp())
+await frameBoard(page)
+await shot('A13-1-typed-time-and-remark')
+// (2) right-click a puck off a row that holds two (Hangar open day: Tally + Trident)
+console.log('Hangar row before', JSON.stringify(await page.evaluate(di => { const r = window.DAYS[di].ground[1]; return [r.who, ...(r.more || [])] }, SAT_DI)))
+const two = page.locator(`#sbBoard [data-slot^="g:${SAT_DI}.1"] .puck`)
+console.log('pucks on Hangar row', await two.count())
+await page.locator(`#sbBoard [data-slot="g:${SAT_DI}.1.x0"] .puck, #sbBoard [data-slot="g:${SAT_DI}.1.x1"] .puck`).first().click({ button: 'right' }).catch(async e => console.log('rc err', String(e).slice(0, 120)))
+await page.waitForTimeout(600)
+await none('right-clicked the second puck'); await shot('A13-2-rightclick')
+console.log('Hangar row after', JSON.stringify(await page.evaluate(di => { const r = window.DAYS[di].ground[1]; return [r.who, ...(r.more || [])] }, SAT_DI)))
+// (3) drag a puck off a row to nowhere: Tally's puck out to an empty spot
+const tb = await page.locator(puckSel(1)).boundingBox()
+await page.mouse.move(tb.x + tb.width / 2, tb.y + tb.height / 2); await page.mouse.down(); await page.mouse.move(tb.x + 10, tb.y + 10, { steps: 3 }); await page.mouse.move(40, 300, { steps: 12 }); await page.waitForTimeout(150); await page.mouse.up(); await page.waitForTimeout(700)
+await none('dragged Tally off to nowhere'); await shot('A13-3-dragoff')
+console.log('errors', JSON.stringify(errors))
+await W.ctx.close(); process.exit(0)

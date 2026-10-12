@@ -1,0 +1,21 @@
+{
+  "walker": "RX1",
+  "build": "assets/index-CoBxP-O_.js",
+  "date": "2026-10-13",
+  "counts": { "PASS": 8, "FAIL": 0, "PARTIAL": 0, "NOT_WALKED": 1, "RECORD": 3 },
+  "rows": [
+    { "n": "RX1-1", "verdict": "PASS", "note": "question first; issue count (1), warning list (1 line) and rings (none) identical behind question and after Don't swap; both pucks flash at 100 ms and again at 80 ms after Answer OIL -> Don't swap. Baseline thin (1 issue, no ring)." },
+    { "n": "RX1-2", "verdict": "PASS", "note": "warnings unchanged behind/after; after Yes+Swap note 'Tally and Ranger swapped'; no clash flagged (still 1 issue, the unpublished-day OIL line)." },
+    { "n": "RX1-3", "verdict": "PASS", "note": "'That row has changed — not swapped'; bar closed; Range brief Ranger+Hex; Tally on Hangar; no question." },
+    { "n": "RX1-4", "verdict": "PASS", "note": "bar gone at once on OIL Earn on; not back after off; nothing swapped." },
+    { "n": "RX1-5", "verdict": "PASS", "note": "'Adding Tally to Range brief'; Don't add: Tally puck and row's first puck flash (add place itself does not); bar 'Not added — OIL not answered'; nothing written." },
+    { "n": "RX1-6", "verdict": "PASS", "note": "note drawn above bar (gap 8 px, no overlap), Answer OIL/OK hit = button, both orders; remark+Tab raises no note." },
+    { "n": "RX1-7", "verdict": "PASS", "note": "armed (dashed cyan seat ring) behind question and after Escape; gone after Swap; RECORD drawer still open at end." },
+    { "n": "RX1-8", "verdict": "NOT WALKED", "note": "no callsign typing box for a row's people; click arms the place; title box typing renames row only." },
+    { "n": "RX1-9", "verdict": "RECORD", "note": "one Escape closes only the question; bar appears; board stays open." },
+    { "n": "RX1-10", "verdict": "RECORD", "note": "bar still up on Friday; Answer OIL opens same Saturday question over Friday board; Swap changes Saturday only." },
+    { "n": "RX1-11", "verdict": "RECORD", "note": "published at once; View-only Saturday: Range brief Ranger, Hangar open day Tally, no issue bar, no warning naming either." },
+    { "n": "RX1-12", "verdict": "PASS", "note": "member view: no holiday line, tap goes to Saber's own input question; chip again: line back." }
+  ],
+  "browserErrors": []
+}
