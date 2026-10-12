@@ -532,3 +532,23 @@ describe('a note carries its own pucks (D684, D695)', () => {
     expect(Array.from(head.querySelectorAll('.ic-pks .ic-pk')).map(x => x.textContent)).toEqual([cs(a), cs(b)])
   })
 })
+
+/* THE "OIL?" SIGN ON THE OPENED DAY'S CARD (owner D777, 12 Oct 26 — the pictures docs/mock/2026-10-12-oil-ask/): the same
+   tag the List's card wears (ui/inputslist.test.tsx) — and the month's bars get nothing. 17 Oct 26 is a Saturday. */
+describe('the "OIL?" tag on the opened day’s card (D777)', () => {
+  it('an input whose OIL question nobody has answered wears it, left of the hours; an answered one does not; the month’s bars carry nothing', async () => {
+    const [a, b, c] = crew()
+    const open1 = await file({ person: undefined, people: [{ p: a }, { p: b }], type: 'Training', date: 'Oct 17', allday: false, s: 540, e: 720, by: a })
+    const done = await file({ person: c, type: 'Training', date: 'Oct 17', allday: false, s: 780, e: 900, oil: { '2026-10-17': 1 } })
+    expect(host.querySelector('.oiltag'), 'the month: no tag on any bar').toBeNull()
+    expect(day('2026-10-17').textContent, 'nor the word').not.toMatch(/OIL\?/)
+    await open('2026-10-17')
+    const t = row(open1).querySelector('[data-testid="idy-oil"]') as HTMLElement
+    expect(t, 'the card of the unanswered one').toBeTruthy()
+    expect(t.textContent).toBe('OIL?')
+    expect([...row(open1).querySelector('.icard-corner')!.children].map(x => x.className)).toEqual(['oiltag', 'icard-hrs'])
+    expect(row(done).querySelector('[data-testid="idy-oil"]')).toBeNull()
+    await click(t)
+    expect(INPEDIT && INPEDIT.iid, 'a tap on the tag opens the input').toBe(open1.iid)
+  })
+})

@@ -31,7 +31,7 @@ import { InputsCal } from './InputsCal'
 import { SansCal } from './SansCal'
 /* the draft shape, the OIL question and the new input's seed are the input window's own — see ui/inputedit.tsx */
 import {
-  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel,
+  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel, oilSignDay, oilSignNote,
   rosterOptions as people, archivedOptions, inputTone, newInputSeed,
 } from './inputedit'
 import { docHas, rowDocIds } from '../state/docs'
@@ -655,7 +655,7 @@ export function InputsPage() {
                   const when = cardWhen(r, b0 != null ? isoOfOrd(b0) : g.iso, g.iso)
                   /* the card is handed the input's ONE record, as a list of one (ui/inputcard-model.ts) */
                   return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf([r], undefined, when)} when={when}
-                    late={lateNoteOf([r], lateWord)} flash={flash.indexOf(r) >= 0} onOpen={() => openInput(r)} />
+                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={flash.indexOf(r) >= 0} onOpen={() => openInput(r)} />
                 })}
               </Fragment>
             ))}
@@ -826,6 +826,15 @@ export function InputsPage() {
                         aria-label={`Answer the OIL question for ${oilDayLabel(oilUnansweredDay(r))}`}
                         onClick={() => reviseOil(r)}>OIL?</button>}
                     </>}
+                    {/* …AND FOR AN INPUT OF SEVERAL PEOPLE TOO (owner D777, 12 Oct 26 — "the desktop List's 'OIL?' button
+                        shows for an input of several people too"). The one sign of a question nobody answered, for
+                        whoever may answer it (ui/inputedit.tsx oilSignDay): it opens the same question, and the
+                        answer is the input's ONE answer, for everyone in it (D762). Its answer, once given, is still
+                        changed in its window — no "OIL" chip here for an input of several, as above. */}
+                    {team && oilSignDay(r) && <button type="button" className="roil ask" data-oilask={inx}
+                      title={`${oilSignNote(oilSignDay(r))} — tap to answer it`}
+                      aria-label={`Answer the OIL question for ${oilDayLabel(oilSignDay(r))}`}
+                      onClick={() => reviseOil(r)}>OIL?</button>}
                   </td>
                 </tr>
               )

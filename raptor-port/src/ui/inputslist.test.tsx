@@ -385,3 +385,93 @@ describe('a just-saved input the filters would hide still shows — on a phone, 
     expect($$('[data-testid^="inl-row-"]').map(el => el.getAttribute('data-iid'))).toEqual([hidden.iid, shown.iid, earlier.iid])
   })
 })
+
+/* THE "OIL?" SIGN (owner D777, 12 Oct 26 — "Oil pictures looks good": the pictures of record are
+   docs/mock/2026-10-12-oil-ask/). On an input's CARD — the List on a phone, here; the opened day, ui/inputsday.test.tsx —
+   a small outlined "OIL?" tag on the top line, left of the hours, where nobody has answered its OIL question: a mark,
+   not a button (a tap opens the input, where "Answer…" is). And the DESKTOP List's "OIL?" button shows for an input of
+   SEVERAL people too. Shown to whoever may answer the question (the agent's reading, told to him): the same test the
+   input's own window puts on "Answer…" — state/perms.ts mayEditInput. 17 Oct 26 is a Saturday. */
+describe('the "OIL?" sign where nobody has answered an input’s OIL question (D777)', () => {
+  const SAT = { type: 'Duty', date: 'Oct 17', allday: false, s: 540, e: 720 }
+  const tag = (r: any) => card(r)!.querySelector('[data-testid="inl-oil"]') as HTMLElement | null
+
+  it('a phone’s card of ONE person: the tag on the top line, left of the hours — a mark, not a button; a tap on it opens the input', async () => {
+    await mount(true)
+    const r = await file(SAT)
+    const t = tag(r)!
+    expect(t, 'the card wears it').toBeTruthy()
+    expect(t.textContent).toBe('OIL?')
+    expect(t.tagName, 'a mark, not a button').not.toBe('BUTTON')
+    expect(t.title).toMatch(/17 Oct/)
+    const corner = card(r)!.querySelector('.icard-corner')!
+    expect([...corner.children].map(c => c.className), 'the corner: the tag, then the hours').toEqual(['oiltag', 'icard-hrs'])
+    expect(part(r, 'open')!.getAttribute('aria-label'), 'and the card says so to a screen reader').toMatch(/OIL question not answered/)
+    await click(t)
+    expect(INPEDIT && INPEDIT.iid, 'the tap opens the input').toBe(r.iid)
+    expect($$('[data-testid="oilconf"]'), 'not the question itself').toHaveLength(0)
+  })
+
+  it('with LATE beside it: LATE, then OIL?, then the hours', async () => {
+    await mount(true)
+    const r = await file({ ...SAT, mod: '2026-10-16' })
+    const corner = card(r)!.querySelector('.icard-corner')!
+    expect([...corner.children].map(c => c.className)).toEqual(['sd-late', 'oiltag', 'icard-hrs'])
+  })
+
+  it('an input of SEVERAL wears it too — on a phone’s card, and on the desktop row as the button that answers for everyone', async () => {
+    await mount(true)
+    const [a, b] = others()
+    const g = await shared([a, b], SAT)
+    const r = g.rows[0]
+    expect(tag(r), 'the card of an input of several').toBeTruthy()
+    await turn(false)
+    const btn = tr(r)!.querySelector('[data-oilask]') as HTMLElement
+    expect(btn, 'the desktop row of an input of several (it wore nothing before D777)').toBeTruthy()
+    expect(btn.textContent).toBe('OIL?')
+    expect(btn.className).toBe('roil ask')
+    await click(btn)
+    expect($$('[data-testid="oilconf"]'), 'it opens the question').toHaveLength(1)
+    expect(INPEDIT, 'and not the input’s window').toBeNull()
+  })
+
+  it('answered — a Yes or a No — the sign goes: no tag on the card, no button on the row of an input of several', async () => {
+    await mount(true)
+    const [a, b] = others()
+    const yes = (await shared([a, b], { ...SAT, oil: { '2026-10-17': 1 } })).rows[0]
+    const no = await file({ ...SAT, s: 780, e: 840, oil: { '2026-10-17': 0 } })
+    expect(tag(yes)).toBeNull()
+    expect(tag(no)).toBeNull()
+    await turn(false)
+    expect(tr(yes)!.querySelector('[data-oilask]')).toBeNull()
+    expect(tr(yes)!.querySelector('[data-oilrev]'), 'an input of several still has no chip to change its answer here — its window does (D762)').toBeNull()
+  })
+
+  it('shown only to whoever may answer: a man IN it who did not file it sees none; nor does its filer once a scheduler has put someone in — the admin does (the walk’s A8)', async () => {
+    await mount(true)
+    const [a] = others()
+    /* filed by the admin for the member and another man */
+    const byAdmin = (await shared([member, a], SAT)).rows[0]
+    /* filed by the member for himself; the admin then put another man in */
+    const a8 = await file({ ...SAT, s: 780, e: 840, iid: 'a8', person: undefined, by: member,
+      people: [{ p: member, by: member, at: T(1, 9, 0) }, { p: a, by: admin, at: T(2, 9, 0) }] })
+    expect(tag(byAdmin), 'the admin may answer').toBeTruthy()
+    expect(tag(a8), 'the admin may answer').toBeTruthy()
+    await as('member')
+    expect(card(byAdmin), 'he still sees the input').toBeTruthy()
+    expect(tag(byAdmin), 'a man in it has no answer of his own to give (D762)').toBeNull()
+    expect(tag(a8), 'its filer can no longer answer once someone else changed who is in it').toBeNull()
+    await turn(false)
+    expect(tr(a8)!.querySelector('[data-oilask]')).toBeNull()
+    await as('admin')
+    expect(tr(a8)!.querySelector('[data-oilask]'), 'so the admin’s List says it — the sign the walk found missing').toBeTruthy()
+  })
+
+  it('nothing where no question waits: a weekday, a kind that never asks (Personal — D778), a request taken off the programme', async () => {
+    await mount(true)
+    const weekday = await file({ ...SAT, date: 'Oct 20' })
+    const personal = await file({ ...SAT, type: 'Personal', person: others()[1] })
+    const off = await file({ ...SAT, person: others()[2], acc: 'r' })
+    for (const r of [weekday, personal, off]) expect(tag(r), r.iid).toBeNull()
+  })
+})

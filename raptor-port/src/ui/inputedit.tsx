@@ -767,6 +767,22 @@ export function oilUnansweredDay(row: any): string {
   const p = oilAskPlan(row).find(x => prev[x.iso] == null)
   return p ? p.iso : ''
 }
+/** THE "OIL?" SIGN — the day nobody has answered for, FOR A READER WHO MAY ANSWER IT; '' otherwise (owner D777, 12 Oct
+ *  26: "Oil pictures looks good" — the pictures of record docs/mock/2026-10-12-oil-ask/). An input's card — the opened
+ *  day's and the List's on a phone (ui/InputCard.tsx) — wears a small outlined "OIL?" tag for it, and the desktop List's
+ *  row its "OIL?" button, for an input of ONE person and of SEVERAL alike (ui/InputsPage.tsx). ONE body for the three,
+ *  so they cannot disagree about an input.
+ *  WHO SEES IT is who the input's own window offers "Answer…" to (state/perms.ts mayEditInput): its only person, whoever
+ *  filed it for others while he may still change it, an admin. That is what closes the gap the one-rule job's walk
+ *  found (A8, H4, H7; the Opus trial read, claim 3): a scheduler puts someone into a member's input and shuts the
+ *  question — the member may no longer answer, no bell asks (D762 reading 3), and the List said nothing to the one
+ *  person who could. A man merely IN a shared input sees none: he has no answer of his own to give (D762). */
+export function oilSignDay(row: any): string {
+  const iso = oilUnansweredDay(row)
+  return iso && mayEditInput(row) ? iso : ''
+}
+/** …and its words: the tag's title, and what the card's label says to a screen reader */
+export const oilSignNote = (iso: string): string => (iso ? `Nobody has answered the OIL question for ${oilDayLabel(iso)}` : '')
 /* the one-line standing beside the button: how many applicable days the
    record currently credits */
 export function oilSummary(row: any): string {
