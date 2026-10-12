@@ -7022,6 +7022,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   (its 8 Oct 26 "fit" rules did not hold on his iPhone); the swipe is the Inputs calendar's own recipe (§Gestures on the month
   grid: 50px, more sideways than up-and-down, the new page sliding in), live anywhere on the month or the Holidays list, and a
   swipe that starts on a date's button turns the page and presses nothing.
+  **And the month the field opens is the app's ONE new date calendar (D796, 13 Oct 26 — `[ONE-DATE-CALENDAR]`):** on the iPhone
+  calendar's pattern in the Raptor look — the month and year as a title that opens a month-and-year chooser, a Today icon
+  right of the year, no Reset and no tick (a tap picks) — used wherever the app picks a date. Not yet drawn or built.
 - **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
   <weekday>" and is lit while that window is up.
 - **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days

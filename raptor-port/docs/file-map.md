@@ -264,6 +264,9 @@ then sets the app's own small month — copied as drawn out of the real "Add a h
 `scripts/handpass/calswipe-mock2.mjs` draws the page's part 3 the same way (his "show me how it looks like first"): the
 app's other date boxes that are still the phone's own — a new person's Post in, Admin → Data's "Older than", the Leave
 War's "PO from" — each as built and with that field drawn where the box stood (pictures `o390-*`).
+`scripts/handpass/calone-mock.mjs` draws `[ONE-DATE-CALENDAR]`'s calendar (D796 — pictures `one-*`, the page's part 1): the
+new calendar over "Every Thursday", its scrolled month-and-year lists, a run of dates inside "Add a holiday", the Leave
+War's post-out date and a new person's Post in — and, as built, the three small calendars the app draws today.
 
 `[OIL-ASK-NOTIFY]` — THE BUILD (12–13 Oct 26; D780–D784; the plan `docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md`,
 its register `docs/superpowers/specs/2026-10-12-oil-ask-notify-behaviour-register.md`, ON1–ON16). NEW: `src/ui/oilwait.ts`
