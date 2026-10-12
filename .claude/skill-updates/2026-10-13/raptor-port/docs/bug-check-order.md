@@ -286,13 +286,14 @@ an area the other found a defect in is the cheapest possible pointer to a real b
   the reader treats it as a question, not a requirement.
 - A scenario's EXPECTED line gets the same check before it goes to a walker: one that names a COUNT, a REFUSAL or a
   PUBLISHED-DAY state is read against the rulings and `main`, and rewritten "RECORD exactly what it says" where the
-  host cannot say what the right answer is. (On two jobs running, a third of the walkers' FAILs were the host's own
-  expected line contradicting an older ruling.)
+  host cannot say what the right answer is. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job
+  before, were the host's own expected line contradicting an older ruling.)
 - A recommended answer to a question parked for him is checked against his words in the full rows — not only that
   the question is still open.
 - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
   owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
-  design are one round, with one brief.
+  design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: both for an
+  important plan, one otherwise), never a second scenarios-only run.
 - Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
   the exact input it would run; the host runs every such case before dispositioning the finding.
 
@@ -301,12 +302,13 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 1. Reproduce each finding through the real production route on the exact revision — its stated REASON as well as its
    symptom: where a finding says something is "unchanged" or "invisible", probe every reader of that state (what
    draws it, what validates it, who is available because of it, what consumes it downstream). A finding that fails
-   there is recorded "not a defect — checked", with the reader that disproves it, and the right behaviour is pinned
-   by a test.
-2. Check it against the governing ruling. And before a fix changes behaviour BEYOND the rule the finding cites, search
-   the tests, the code comments and the records for a decision that pins that behaviour as intended: if one exists,
-   fix only the cited defect and put the rest to him as a question, with a safe interim (the action SAYS what it
-   does).
+   there is dispositioned a false positive (item 5), marked "checked", with the reader that disproves it, and the
+   right behaviour is pinned by a test.
+2. Check it against the governing ruling. Then search the tests, the code comments and the records for a decision that
+   pins as INTENDED either the behaviour the finding calls a defect, or any behaviour the fix would change beyond the
+   rule the finding cites. If the finding's own behaviour is pinned, it goes to him as a question and is not fixed; if
+   only the wider behaviour is, fix the cited defect and put the rest to him. Either way with a safe interim (the
+   action SAYS what it does).
 3. **Compare against `main` before calling anything newly introduced.** Severity depends on it, and
    the two models disagreed about this on three findings here.
 4. Record user impact, reachability and provenance SEPARATELY. "Pre-existing" never erases severity
@@ -321,8 +323,8 @@ by one helper; if the chosen pass is long, D16 requires parallel helpers, as bel
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
 helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
 copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
-rediscover it. (Where the app's limit of five preview servers a folder — counted across every chat — leaves no port
-free, walkers share ONE server of the frozen build, each in its own fresh browser context: what keeps two worlds
+rediscover it. (Where the harness's limit of five preview servers a folder — its preview tool counts every chat's —
+leaves none free, walkers share ONE server of the frozen build, each in its own fresh browser context: what keeps two worlds
 apart is the browser's storage, not the port. A chat stops the servers it started when its walk ends.) The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
 so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
 evidence sheet. **While they walk, nobody rebuilds the build they are served** (23 Sep 26): a rebuild swaps the
@@ -480,8 +482,10 @@ regression: a step whose premise the fix itself consumed (nothing unsaved is lef
 on top of the window it used to hide behind) is walked again with a fresh premise, not reported.
 
 **A fix is new code** (28 Sep 26). When a read's fix rewrites logic — more than a one-line guard — the fix commit gets
-its own narrow read ("is each fix right and complete, and what did it break beside it"), repeated on each round's
-fixes up to the cap of about three rounds; the sheet says which round was last and what carries the rest. "All
+its own narrow read ("is each fix right and complete, and what did it break beside it") by a fresh Opus reader that did
+not write the fix and is handed only the fix commit and the findings it answers (D790 — never the chat that wrote it; a
+further Fable read of a fix round is on his word), repeated on each round's fixes for at most about three rounds (the
+agent's cap, borrowed from the plan-review one, §4a); the sheet says which round was last and what carries the rest. "All
 findings fixed" is a claim about the findings, not about the fixes. And for a finding of the form "X is written
 outside the rules", ask first — and write the answer in its disposition — whether X should be written at all, by this
 actor, from this copy, before making the write conform (30 Sep 26: a bare write was wrapped to satisfy the check,
@@ -539,9 +543,10 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 - **A rule is asked of every SURFACE that draws the thing, by that surface's own builder** (week, board, preview,
   print) — not of the one file where the rule is written: a surface that never called the rule is written MISSING,
   never left out. A new mechanism built "like X" is plugged in at every place X is (search X's entry points).
-- **A change that REMOVES or replaces a control, an event or a way out** lists, from the removed CODE and not from
-  memory: every action it gave, in each role and at each size, with the control that gives it afterwards (an empty
-  cell is a build item or a question for him); everything that stood BELOW it on the page, and every pop-up there
+- **A change that REMOVES or replaces a control, a form or panel, an event or a way out** lists, from the removed CODE
+  and not from memory: every action it gave, in each role and at each size, with the control that gives it afterwards
+  (an empty cell is a build item or a question for him — and the check is sized from this list, not from how the
+  change looks); everything that stood BELOW it on the page, and every pop-up there
   placed against the screen rather than against its own button (his find, 10 Oct 26: a calendar opened one screen
   down once the form above it was gone); what else ran on the event it removes — a deferred paint, a save, a
   tidy-up: still runs / now triggered here / no longer needed, because…; and, for a way out, the surface's own
@@ -587,10 +592,12 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   the sizing assumed, and write down its decision: widen the walk where the finding shows a surface, a state, a
   route or a shared cause of THIS change that has no proof; otherwise record the finding's disposition and why the
   scope still holds. An older fault met in passing does not by itself enlarge the walk.
-- **A designed scenario is left unwalked only for a reason about the SCENARIO** — a named test carries it (as
-  above), or it cannot be reached. "Older behaviour this change does not touch" is not such a reason when the change
-  touches the same listener family, the same component or the same scope rule (10 Oct 26: two real faults sat among
-  eight scenarios set aside that way) — a scripted step is cheaper than a second round of reads.
+- **A scenario an independent designer wrote is set aside only with its reason written beside it in the sheet** — a
+  named test carries it (as above), it cannot be reached, it was walked on code this change leaves as it was (name that
+  walk), or the sizing lines say what makes a walk of it unable to find anything here. "Older behaviour this change does
+  not touch" is never that reason when the change touches the same listener family, the same component or the same scope
+  rule (10 Oct 26: two real faults sat among eight scenarios set aside that way) — drive those once: a scripted step is
+  cheaper than a second round of reads.
 - **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
   reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
   before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
@@ -836,7 +843,7 @@ should.
 - **A change to the LOOK or LAYOUT of a surface he uses daily is shown to him before it is built** — the whole
   screen, before and after — whoever filed it, and even when it reached the list as a defect (27 Sep 26: one was
   built, walked, read and gated, and he chose the old look on sight). The look card then carries only questions
-  about behaviour.
+  about behaviour. The method: `.claude/skills/brainstorming/mockups-on-the-real-app.md`.
 - He never picks the tier, reads code, or runs a gate.
 - **Every defect he finds costs the method a line.** A find of his is, by definition, something every
   check missed — so it is a method failure before it is a bug, and it adds a roll-call row, an order

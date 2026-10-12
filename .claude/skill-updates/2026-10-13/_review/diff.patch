@@ -1,5 +1,5 @@
 diff --git a/.claude/rules/shipping.md b/.claude/skill-updates/2026-10-13/.claude/rules/shipping.md
-index ea805d6dd..12c4b1854 100644
+index ea805d6dd..47385b939 100644
 --- a/.claude/rules/shipping.md
 +++ b/.claude/skill-updates/2026-10-13/.claude/rules/shipping.md
 @@ -75,9 +75,11 @@ half).
@@ -12,7 +12,7 @@ index ea805d6dd..12c4b1854 100644
 +  delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and releases when it ends — a run you
 +  STOP does not: release it yourself at once. A lock older than 2 hours whose run is plainly over is stale — break it and
 +  say so (ask its holder first while a chat that could hold it is open). One UNIT test file, a typecheck or one walk script
-+  on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits for it.
++  on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits until the lock is free.
 +  The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
  - **Parallel chats talk to each other so they do not clash (D302, 27 Sep 26 — "Can all 3 chats communicate so that there
    will not be clashing … U guys handle it").** Before changing a file or function another open chat's branch also
@@ -203,7 +203,7 @@ index 000000000..98b995a2d
 +  live: list the published files, compare each with the local copy, and send
 +  every one that differs, whoever changed it.
 diff --git a/.claude/skills/dispatching-parallel-agents/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/dispatching-parallel-agents/SKILL.md
-index f6d966a2e..f4d65cbb9 100644
+index f6d966a2e..8a35ab860 100644
 --- a/.claude/skills/dispatching-parallel-agents/SKILL.md
 +++ b/.claude/skill-updates/2026-10-13/.claude/skills/dispatching-parallel-agents/SKILL.md
 @@ -112,6 +112,16 @@ Do NOT just increase timeouts - find the real issue.
@@ -223,7 +223,7 @@ index f6d966a2e..f4d65cbb9 100644
  ## Common Mistakes
  
  **❌ Too broad:** "Fix all the tests" - agent gets lost
-@@ -145,8 +155,13 @@ brief:
+@@ -145,8 +155,16 @@ brief:
    agent owns as read-only, with an escape hatch: "report the change you need
    instead of making it". You apply cross-boundary edits when you integrate.
  - **Scratch files go in each agent's own scratch folder**, never the repo
@@ -235,11 +235,14 @@ index f6d966a2e..f4d65cbb9 100644
 +- **Stage by explicit path** in any checkout where someone else's files can
 +  sit — a helper's half-finished output, another session's untracked folder:
 +  never `-A`, `.` or a shared parent directory, and read the staged file count
-+  before the commit. A commit should hold what its author did.
++  before the commit. A commit should hold what its author did. This is how
++  the rule below is kept when your own commit cannot wait: only files you
++  finished go in, by name; nothing a running agent has written or may still
++  write is staged.
  - **Machine resources:** which test suites, ports and folders are already in
    use. Agents run named test files in the foreground, one at a time, and
    never re-run a suite they already started — backgrounded full runs pile up
-@@ -157,6 +172,28 @@ brief:
+@@ -157,6 +175,28 @@ brief:
    stop every running agent that can write, then check `git status` and undo
    partial edits.
  
@@ -364,7 +367,7 @@ index 687110018..71fca4d00 100644
  ## YAGNI Check for "Professional" Features
  
 diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/session-handoff/SKILL.md
-index 51287196e..cbf7ecf17 100644
+index 51287196e..913cfe970 100644
 --- a/.claude/skills/session-handoff/SKILL.md
 +++ b/.claude/skill-updates/2026-10-13/.claude/skills/session-handoff/SKILL.md
 @@ -34,13 +34,23 @@ pushed and waiting for him — the normal end state, not unfinished business.
@@ -401,8 +404,8 @@ index 51287196e..cbf7ecf17 100644
 +  `git fetch origin` and check this branch is level with `origin/main`" —
 +  never "git pull", which pulls nothing on a branch with no upstream; "git
 +  pull" is for a chat continuing a pushed branch. For a design or question job
-+  the line says what he will get from it (pictures and questions; nothing in
-+  the app changes). And tell him to TYPE a word of his own after pasting it
++  the line says why the job is due now and what he will get from it (pictures
++  and questions; nothing in the app changes). And tell him to TYPE a word of his own after pasting it
 +  ("go"; "I'm away — run it"): a first message that is only pasted text may
 +  be held for his confirmation, which stalls a start he meant to leave
 +  unattended.
@@ -546,15 +549,17 @@ index 163fba2d5..412af02be 100644
  2. **Implement Single Fix**
     - Address the root cause identified
 diff --git a/.claude/skills/task-observer/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/task-observer/SKILL.md
-index c6fd492ec..a10fc38a3 100644
+index c6fd492ec..f6364eeab 100644
 --- a/.claude/skills/task-observer/SKILL.md
 +++ b/.claude/skill-updates/2026-10-13/.claude/skills/task-observer/SKILL.md
-@@ -444,6 +444,14 @@ and staging rules. If an observation reveals a principle that applies to
+@@ -444,6 +444,16 @@ and staging rules. If an observation reveals a principle that applies to
  skills generally, propose it for the cross-cutting principles file (see the
  same reference).
  
-+**A trap that recurs after it was logged is not logged again as a note.** Cite
-+the earlier entry's number, and propose the guard instead: a check inside the
++**A trap that recurs after it was logged is not logged again as a fresh note.**
++Add one dated line under the earlier entry ("met again <date>: <job>") — or, if
++that entry is closed, one new note citing its number — and propose the guard: a
++check inside the
 +action that triggers it (a hook, a tool that refuses), or — where a safer way
 +costs nothing extra — an unconditional default in place of a condition to
 +judge each time ("scripts are always written to a file", not "unless it holds
@@ -565,7 +570,7 @@ index c6fd492ec..a10fc38a3 100644
  anywhere — a skill, a project doc, a rules file, by you or at the user's
  request mid-task — mark that entry ACTIONED in the same change, naming where
 diff --git a/.claude/skills/test-driven-development/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/test-driven-development/SKILL.md
-index 9e9589ae2..35d5fc0fd 100644
+index 9e9589ae2..f3fe465d2 100644
 --- a/.claude/skills/test-driven-development/SKILL.md
 +++ b/.claude/skill-updates/2026-10-13/.claude/skills/test-driven-development/SKILL.md
 @@ -127,10 +127,20 @@ Confirm:
@@ -575,7 +580,7 @@ index 9e9589ae2..35d5fc0fd 100644
 -**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
 +**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error. Set the fix aside with a copy of the file, not `git stash`: the stash is shared by every worktree of the repository, and a `; git stash pop` after a chain that failed early pops someone else's work. While another check run is in flight in the same tree, keep a red test that does not compile out of the tree until that run has passed its build stage.
 +
-+**Red is an observation of each assertion, not the order two files were written in.** A test file that cannot load until the code exists (it imports what is not written yet) fails every case alike — that is not red. Prove it one of two ways: run it against a stub that compiles and does the OLD behaviour; or, once green, break the one line that makes it pass and record how many cases went red — one break per rule, by a script that applies each break, runs the narrowest test file and restores the original bytes in a `finally`. In a batch of fixes, run the batch's tests before the first fix lands and keep the output. An integration test of a NEW write path is never blocked by the path not existing: its red is "nothing reached storage".
++**Red is an observation of each assertion, not the order two files were written in.** A test file that cannot load until the code exists (it imports what is not written yet) fails every case alike — that is not red. Prove it one of two ways: run it against a stub that compiles and does the OLD behaviour; or, once green, break the one line that makes it pass and record how many cases went red — one break per rule, by a script that applies each break, runs the narrowest test file and restores the original bytes in a `finally`. In a batch of fixes, run the batch's tests before the first fix lands and keep the output. An integration test of a NEW write path is never blocked by the path not existing: its red is "nothing reached storage". This recovers the proof for a test written first that could not be seen failing; it is not a way to write the code first — the Iron Law stands.
 +
 +**A test selected by name** (`-t`, `-g`, `--grep`): confirm in the summary that it RAN ("1 failed", not "0 tests") before reading the exit code — a name holding brackets or quotes matches nothing, and the run exits 0.
  
@@ -765,7 +770,7 @@ index 4caf369a7..7c8284e1d 100644
  
  - A locator click scrolls its target into view first. When measuring scroll
 diff --git a/.claude/skills/writing-plans/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/writing-plans/SKILL.md
-index 703b80c42..37c0e2284 100644
+index 703b80c42..8ff96a13f 100644
 --- a/.claude/skills/writing-plans/SKILL.md
 +++ b/.claude/skill-updates/2026-10-13/.claude/skills/writing-plans/SKILL.md
 @@ -102,6 +102,11 @@ its checklist"). Each one that applies becomes a Global Constraint AND the
@@ -793,7 +798,7 @@ index 703b80c42..37c0e2284 100644
  
  **5. Replacement code:** For each code block that REPLACES existing lines,
  list the guards and early returns in the original and confirm each survives
-@@ -219,6 +228,37 @@ needs the write path and the existing pins its fix must not move.
+@@ -219,6 +228,40 @@ needs the write path and the existing pins its fix must not move.
  restores it, and a test over a collection first asserts the collection is not
  empty — both otherwise pass while proving nothing.
  
@@ -827,15 +832,18 @@ index 703b80c42..37c0e2284 100644
 +where the new one goes or why not — no blank cells. A phase that an earlier,
 +reviewed plan only sketched inherits none of that review: re-check its
 +premises with a fresh sweep of every mechanism it names before detailing it.
++And before the design, compare the files each other open branch changes with
++the files this plan will touch; for each overlap the plan says which version
++it builds on, and in what order.
 +
  If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
  
  ## Execution Handoff
 diff --git a/DECISIONS.md b/.claude/skill-updates/2026-10-13/DECISIONS.md
-index 1a8c5f494..d3daeb06e 100644
+index 1a8c5f494..c7aae43bc 100644
 --- a/DECISIONS.md
 +++ b/.claude/skill-updates/2026-10-13/DECISIONS.md
-@@ -20,12 +20,18 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
+@@ -20,12 +20,19 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
     the file that now carries it (then make that file carry it, with the D-number beside the ruling there: this list is
     an index, never the only home; the gate fails a new row whose Markdown home never mentions it — a row renumbered
     under D78 counts as new). **The first bold sentence of "what it means" becomes the line every chat loads: it must
@@ -850,26 +858,28 @@ index 1a8c5f494..d3daeb06e 100644
 +   read" line names it. **In the row:** never a third party's names or figures inside his words (paraphrase them); a
 +   reading of yours that says what the app WILL DO is first checked against what it does today in the nearest case (the
 +   code, its tests, the app's own rule text) and says where, or "not checked"; in the home cell backticks are for files
-+   only, and a backlog item is "filed as [ID]", never a home — it leaves at the archive, and the gate refuses the move.
++   only, and a backlog item is written "filed as [ID]" in plain words — never `OUTSTANDING.md` in backticks as a home:
++   the gate then requires that file to name the ruling, the item leaves at the archive, and the move is refused.
 +2. **If it wholly REPLACES an earlier ruling**, start the cell right after the date in that earlier ruling's FULL row
 +   (in `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
 +   `**SPENT <date> — <what used it>.**` — after reading that row sentence by sentence: every "if", "until" or "still" in
 +   it must be carried by a live ruling, or it stays live. A ruling changed only IN PART — or one whose open point a
-+   later ruling ANSWERS — stays live and says so in the cell that states its rule (`**— NARROWED <date> BY D<n>: …**`,
-+   `**— ANSWERED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
++   later ruling ANSWERS — stays live and says so in its FULL row's fourth cell, "what it means" (`**— NARROWED <date> BY
++   D<n>: …**`, `**— ANSWERED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
     **Either way, fix what the old ruling left behind in the same change — the documents, the app (file the build), the
     lists (D201; `record-decisions.md`).**
  3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves each new full row to the full-text file
 diff --git a/HANDOFF.md b/.claude/skill-updates/2026-10-13/HANDOFF.md
-index c0ada449c..646387c1a 100644
+index c0ada449c..efe6a3c0e 100644
 --- a/HANDOFF.md
 +++ b/.claude/skill-updates/2026-10-13/HANDOFF.md
-@@ -8,6 +8,11 @@ in `OUTSTANDING.md`; where each kind of fact goes is `.claude/rules/doc-structur
+@@ -8,6 +8,12 @@ in `OUTSTANDING.md`; where each kind of fact goes is `.claude/rules/doc-structur
  
  **Before acting on a block:** `git fetch`, then check the branch and PR it names — it describes the world when it
  was written. Never push while a PR's checks are running (`gh run list --branch <branch> --limit 1`; D151).
-+Bring the checkout level BEFORE reading this file (a fresh worktree has no upstream, so "git pull" pulls nothing:
-+`git fetch origin`, then `git merge --ff-only origin/main`). List the live chats (`ListAgents`): if the one that wrote
++Bring the checkout level BEFORE reading this file: a chat continuing a pushed branch runs `git pull --ff-only`; a fresh
++worktree has no upstream, so "git pull" pulls nothing there — `git fetch origin`, then `git merge --ff-only origin/main`.
++List the live chats (`ListAgents`): if the one that wrote
 +the block is still running, or another already holds the item you were told to start, message it and agree who owns
 +each remaining step before touching anything. If your opening message and the block's "Opening line" or "Pick up
 +here" differ, name the difference to him and ask before starting.
@@ -877,19 +887,20 @@ index c0ada449c..646387c1a 100644
  markers, even when nothing is pending; newest block first; remove another chat's block only after `git fetch` shows
  its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel chats each keep their own block, and
 diff --git a/raptor-port/CLAUDE.md b/.claude/skill-updates/2026-10-13/raptor-port/CLAUDE.md
-index c8e81cd6b..cc1520a3b 100644
+index c8e81cd6b..dbf0a66bf 100644
 --- a/raptor-port/CLAUDE.md
 +++ b/.claude/skill-updates/2026-10-13/raptor-port/CLAUDE.md
-@@ -265,6 +265,7 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
+@@ -265,6 +265,8 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
  | **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) — and each area file carries that area's settled decisions and architecture too (D140) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/` (one short line per ruling since D390) and their full rows `../.claude/decisions-full/` (searched, never loaded — open one before acting on a ruling's detail), replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
  | **The full text of this guide's one-line rules** (D391) — searched, never loaded; each short form here names its heading there, and the document check pairs the two | `docs/guide-full.md` |
  | **What kind of WALK a change needs, and what past walks found** (D607) — the sizing step Opus writes before any walker starts, the types of change, one row per walk; read before starting a walk, add a row after one | `docs/walk-ledger.md` |
 +| **How a walk script, a walker's brief and a break-test list are written, and what each trap has cost** — read before writing one; every walker's brief names it | `docs/walk-scripts.md` |
++| **How to draw a proposed change on the running app** (a mock-up of a screen that exists) — read before making one | `../.claude/skills/brainstorming/mockups-on-the-real-app.md` |
  | **HOW TO BUG-CHECK — the standing order** (the tiers, the roll-call, the walk, the evidence sheet, and which jobs to spend Fable/Codex on). Read before any bug check | `docs/bug-check-order.md`; the two proposals it was merged from are `docs/superpowers/briefs/2026-09-21-bugcheck-method-fable.md` and `…-codex.md` |
  | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
  | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |
 diff --git a/raptor-port/docs/bug-check-order.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/bug-check-order.md
-index fa3d5561e..76289268b 100644
+index fa3d5561e..1db5d8873 100644
 --- a/raptor-port/docs/bug-check-order.md
 +++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/bug-check-order.md
 @@ -48,7 +48,10 @@ is the agent's job, answered out of §5.
@@ -913,7 +924,7 @@ index fa3d5561e..76289268b 100644
  | **Permissions and roles** | Every role walked on every affected surface, including the read-only viewer | A control offered to someone who cannot use it, or hidden from someone who needs it. |
  | **Cross-app seams** (Leave War, Tracker, the shared data) | Walk the change on BOTH sides of the seam and confirm the two agree; the order's "both arrive" rule for anything that can be true on both sides | Two screens telling the same person different things. |
  | **Cross-platform / phone vs desktop** | Both widths on every walked surface, always; a real touch target, not just a visible one | Something legible on a desktop and clipped, unreachable or two rows tall on a phone. |
-@@ -276,10 +279,34 @@ an area the other found a defect in is the cheapest possible pointer to a real b
+@@ -276,10 +279,36 @@ an area the other found a defect in is the cheapest possible pointer to a real b
  
  **Never show either model the other's conclusions before both reports exist.**
  
@@ -924,13 +935,14 @@ index fa3d5561e..76289268b 100644
 +  the reader treats it as a question, not a requirement.
 +- A scenario's EXPECTED line gets the same check before it goes to a walker: one that names a COUNT, a REFUSAL or a
 +  PUBLISHED-DAY state is read against the rulings and `main`, and rewritten "RECORD exactly what it says" where the
-+  host cannot say what the right answer is. (On two jobs running, a third of the walkers' FAILs were the host's own
-+  expected line contradicting an older ruling.)
++  host cannot say what the right answer is. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job
++  before, were the host's own expected line contradicting an older ruling.)
 +- A recommended answer to a question parked for him is checked against his words in the full rows — not only that
 +  the question is still open.
 +- A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
 +  owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
-+  design are one round, with one brief.
++  design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: both for an
++  important plan, one otherwise), never a second scenarios-only run.
 +- Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
 +  the exact input it would run; the host runs every such case before dispositioning the finding.
 +
@@ -941,22 +953,23 @@ index fa3d5561e..76289268b 100644
 +1. Reproduce each finding through the real production route on the exact revision — its stated REASON as well as its
 +   symptom: where a finding says something is "unchanged" or "invisible", probe every reader of that state (what
 +   draws it, what validates it, who is available because of it, what consumes it downstream). A finding that fails
-+   there is recorded "not a defect — checked", with the reader that disproves it, and the right behaviour is pinned
-+   by a test.
-+2. Check it against the governing ruling. And before a fix changes behaviour BEYOND the rule the finding cites, search
-+   the tests, the code comments and the records for a decision that pins that behaviour as intended: if one exists,
-+   fix only the cited defect and put the rest to him as a question, with a safe interim (the action SAYS what it
-+   does).
++   there is dispositioned a false positive (item 5), marked "checked", with the reader that disproves it, and the
++   right behaviour is pinned by a test.
++2. Check it against the governing ruling. Then search the tests, the code comments and the records for a decision that
++   pins as INTENDED either the behaviour the finding calls a defect, or any behaviour the fix would change beyond the
++   rule the finding cites. If the finding's own behaviour is pinned, it goes to him as a question and is not fixed; if
++   only the wider behaviour is, fix the cited defect and put the rest to him. Either way with a safe interim (the
++   action SAYS what it does).
  3. **Compare against `main` before calling anything newly introduced.** Severity depends on it, and
     the two models disagreed about this on three findings here.
  4. Record user impact, reachability and provenance SEPARATELY. "Pre-existing" never erases severity
-@@ -294,12 +321,19 @@ by one helper; if the chosen pass is long, D16 requires parallel helpers, as bel
+@@ -294,12 +323,19 @@ by one helper; if the chosen pass is long, D16 requires parallel helpers, as bel
  **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
  helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
  copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
 -rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
-+rediscover it. (Where the app's limit of five preview servers a folder — counted across every chat — leaves no port
-+free, walkers share ONE server of the frozen build, each in its own fresh browser context: what keeps two worlds
++rediscover it. (Where the harness's limit of five preview servers a folder — its preview tool counts every chat's —
++leaves none free, walkers share ONE server of the frozen build, each in its own fresh browser context: what keeps two worlds
 +apart is the browser's storage, not the port. A chat stops the servers it started when its walk ends.) The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
  so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
  evidence sheet. **While they walk, nobody rebuilds the build they are served** (23 Sep 26): a rebuild swaps the
@@ -973,7 +986,7 @@ index fa3d5561e..76289268b 100644
  
  **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
  are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
-@@ -313,7 +347,8 @@ the sizing step still lets the host run a short walk itself (§7.0, D608). Every
+@@ -313,7 +349,8 @@ the sizing step still lets the host run a short walk itself (§7.0, D608). Every
  conditions: the host opens the pictures behind every FAIL and every high-consequence PASS (OIL, a published day, a role,
  saved data); a scenario with an EXPECTED line is judged PASS or FAIL — "RECORDED" is only for scenarios the host marks
  so, and the host re-judges any RECORDED row that has an EXPECTED line; a walker's conclusion is a finding only after the
@@ -983,13 +996,15 @@ index fa3d5561e..76289268b 100644
  (`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
  requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
  also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a
-@@ -444,6 +479,14 @@ pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow
+@@ -444,6 +481,16 @@ pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow
  regression: a step whose premise the fix itself consumed (nothing unsaved is left to test; a refusal now drawn
  on top of the window it used to hide behind) is walked again with a fresh premise, not reported.
  
 +**A fix is new code** (28 Sep 26). When a read's fix rewrites logic — more than a one-line guard — the fix commit gets
-+its own narrow read ("is each fix right and complete, and what did it break beside it"), repeated on each round's
-+fixes up to the cap of about three rounds; the sheet says which round was last and what carries the rest. "All
++its own narrow read ("is each fix right and complete, and what did it break beside it") by a fresh Opus reader that did
++not write the fix and is handed only the fix commit and the findings it answers (D790 — never the chat that wrote it; a
++further Fable read of a fix round is on his word), repeated on each round's fixes for at most about three rounds (the
++agent's cap, borrowed from the plan-review one, §4a); the sheet says which round was last and what carries the rest. "All
 +findings fixed" is a claim about the findings, not about the fixes. And for a finding of the form "X is written
 +outside the rules", ask first — and write the answer in its disposition — whether X should be written at all, by this
 +actor, from this copy, before making the write conform (30 Sep 26: a bare write was wrapped to satisfy the check,
@@ -998,7 +1013,7 @@ index fa3d5561e..76289268b 100644
  ---
  
  ## 6. The roll-call — the defence against "never wired up"
-@@ -484,6 +527,36 @@ inside the puck, over exactly the strip the mark occupies (column 3).
+@@ -484,6 +531,37 @@ inside the puck, over exactly the strip the mark occupies (column 3).
    shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
    existed both times this failed.
  
@@ -1014,9 +1029,10 @@ index fa3d5561e..76289268b 100644
 +- **A rule is asked of every SURFACE that draws the thing, by that surface's own builder** (week, board, preview,
 +  print) — not of the one file where the rule is written: a surface that never called the rule is written MISSING,
 +  never left out. A new mechanism built "like X" is plugged in at every place X is (search X's entry points).
-+- **A change that REMOVES or replaces a control, an event or a way out** lists, from the removed CODE and not from
-+  memory: every action it gave, in each role and at each size, with the control that gives it afterwards (an empty
-+  cell is a build item or a question for him); everything that stood BELOW it on the page, and every pop-up there
++- **A change that REMOVES or replaces a control, a form or panel, an event or a way out** lists, from the removed CODE
++  and not from memory: every action it gave, in each role and at each size, with the control that gives it afterwards
++  (an empty cell is a build item or a question for him — and the check is sized from this list, not from how the
++  change looks); everything that stood BELOW it on the page, and every pop-up there
 +  placed against the screen rather than against its own button (his find, 10 Oct 26: a calendar opened one screen
 +  down once the form above it was gone); what else ran on the event it removes — a deferred paint, a save, a
 +  tidy-up: still runs / now triggered here / no longer needed, because…; and, for a way out, the surface's own
@@ -1035,18 +1051,20 @@ index fa3d5561e..76289268b 100644
  ---
  
  ## 7. The walk
-@@ -514,6 +587,10 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
+@@ -514,6 +592,12 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
    the sizing assumed, and write down its decision: widen the walk where the finding shows a surface, a state, a
    route or a shared cause of THIS change that has no proof; otherwise record the finding's disposition and why the
    scope still holds. An older fault met in passing does not by itself enlarge the walk.
-+- **A designed scenario is left unwalked only for a reason about the SCENARIO** — a named test carries it (as
-+  above), or it cannot be reached. "Older behaviour this change does not touch" is not such a reason when the change
-+  touches the same listener family, the same component or the same scope rule (10 Oct 26: two real faults sat among
-+  eight scenarios set aside that way) — a scripted step is cheaper than a second round of reads.
++- **A scenario an independent designer wrote is set aside only with its reason written beside it in the sheet** — a
++  named test carries it (as above), it cannot be reached, it was walked on code this change leaves as it was (name that
++  walk), or the sizing lines say what makes a walk of it unable to find anything here. "Older behaviour this change does
++  not touch" is never that reason when the change touches the same listener family, the same component or the same scope
++  rule (10 Oct 26: two real faults sat among eight scenarios set aside that way) — drive those once: a scripted step is
++  cheaper than a second round of reads.
  - **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
    reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
    before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
-@@ -527,7 +604,8 @@ row, a zero-length row; a Common Programme row with ALL AVAIL and one with named
+@@ -527,7 +611,8 @@ row, a zero-length row; a Common Programme row with ALL AVAIL and one with named
  answered yes, one answered no, one taken off the programme; an overseas duty under Unavailable; a
  SANS man on the programme and a hidden one; a named ground-crew man; a man posted out since the day
  was published; a man wearing a warning chip; a man on four rows where two count; a parked plan; an
@@ -1056,7 +1074,7 @@ index fa3d5561e..76289268b 100644
  
  **It lives in the demo seed**, so a fresh boot shows it, the owner's look starts on it, and the next
  session does not rebuild it from memory. Extended in the same change whenever a new kind arrives.
-@@ -551,6 +629,12 @@ finding.
+@@ -551,6 +636,12 @@ finding.
    window — for any surface built as a viewport-tall column, and measure EVERY edge-docked control against the
    screen edges, not only the one being changed. (Room to scroll past the end goes inside the scroll box as a
    spacer, never as padding on it: padding sets the box's smallest height.)
@@ -1069,7 +1087,7 @@ index fa3d5561e..76289268b 100644
  
  **7.3 Walk the surfaces, not the rulings.** This is the difference that cost the OIL build three
  defects. A ruling about something SHOWN or TAPPED gets **one mark per surface**. A ruling about
-@@ -561,7 +645,11 @@ MONEY gets **one recorded result per required order**, saying whether the walk o
+@@ -561,7 +652,11 @@ MONEY gets **one recorded result per required order**, saying whether the walk o
  actions in BOTH orders, on a published day and an unpublished one; after each, undo, redo, reload; every
  action with an opposite, in the opposite direction AFTER publishing, because that is where money
  freezes. Every line of that list gets a result. Each distinct order on screen is DRIVEN; repeated cases
@@ -1082,7 +1100,7 @@ index fa3d5561e..76289268b 100644
  
  **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
  has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
-@@ -601,7 +689,10 @@ and put it on the owner's look card.
+@@ -601,7 +696,10 @@ and put it on the owner's look card.
  ## 8. Making the checks FIND rather than CONFIRM
  
  1. **Tests loop over the roll-call, never over one fixture.** A test of a mark walks every KIND of
@@ -1094,7 +1112,7 @@ index fa3d5561e..76289268b 100644
  2. **The fixture is the everything day.** A test that sets up a duty desk and a ground row tests a
     duty desk and a ground row.
  3. **Fixtures write the way the app writes.** A test that replaces an object where the app changes
-@@ -611,7 +702,11 @@ and put it on the owner's look card.
+@@ -611,7 +709,11 @@ and put it on the owner's look card.
  4. **Red first, and the break test.** Before a fix goes in, a test must fail on the bug. And for
     every surface the roll-call marks as wired, break that wire once on purpose and watch a named
     test go red. If nothing goes red, **that surface has no test, by proof** — write one before
@@ -1107,7 +1125,7 @@ index fa3d5561e..76289268b 100644
  5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
     the feature and share its blind spots.
  6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
-@@ -619,13 +714,23 @@ and put it on the owner's look card.
+@@ -619,13 +721,23 @@ and put it on the owner's look card.
     pin the unchanged half with a test against today's behaviour, so the new half cannot absorb it. (Last Flown
     worked out from the flights marked done would have overwritten a day typed by hand the moment any OLDER
     flight was marked — the ruling had kept that half as it was.)
@@ -1132,7 +1150,7 @@ index fa3d5561e..76289268b 100644
  
  It holds: the eight answers and the tier · the roll-call table · **the five sizing lines (§7.0)** · the
  orders walked, with what the screen said and what the money said · **the cases carried by a test, each
-@@ -704,7 +809,9 @@ Use these names in reviews and reports.
+@@ -704,7 +816,9 @@ Use these names in reviews and reports.
      picture that showed the defect, and its step asserted only that a class was switched on. A mark,
      an outline or a highlight is asserted as PAINTED (a computed style on each element it must cover —
      a pinned column paints its own background over a row's outline), and every picture a step saves
@@ -1143,14 +1161,14 @@ index fa3d5561e..76289268b 100644
  22. **The walk by habit** *(owner, D607, 7 Oct 26)* — the same number of walkers and scenarios whatever the
      change: five walkers on a rule inside one calculation, 2.24 million tokens, no fault found in the rule
      (`[OIL-WORK-START]`, 6–7 Oct 26). The sizing step (§7.0) is the answer.
-@@ -726,6 +833,10 @@ should.
+@@ -726,6 +840,10 @@ should.
    words — never a list of cases to work through.
  - He answers the product questions the walk raises, and nothing else. "Leave it" is an answer and is
    recorded with its date, so it is never re-fixed later as a bug.
 +- **A change to the LOOK or LAYOUT of a surface he uses daily is shown to him before it is built** — the whole
 +  screen, before and after — whoever filed it, and even when it reached the list as a defect (27 Sep 26: one was
 +  built, walked, read and gated, and he chose the old look on sight). The look card then carries only questions
-+  about behaviour.
++  about behaviour. The method: `.claude/skills/brainstorming/mockups-on-the-real-app.md`.
  - He never picks the tier, reads code, or runs a gate.
  - **Every defect he finds costs the method a line.** A find of his is, by definition, something every
    check missed — so it is a method failure before it is a bug, and it adds a roll-call row, an order
@@ -1171,10 +1189,10 @@ index 49ba9d71d..b9540b96e 100644
    rulings file a tripwire in UTF-8 bytes of the whole file** (D390, 28 Sep 26 — each ruling is one line, so a line count
    cannot see it grow; every area file must have one, and crossing it means split the area or raise it with its reason). Crossing it means "look at what in this file does not belong here and move it to its home" (`.claude/rules/doc-structure.md`) — never "cut to a number"; when what crossed it genuinely belongs, the ceiling RISES with its reason. **Over a ceiling inside a code change
 diff --git a/raptor-port/docs/gates-and-deploy.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/gates-and-deploy.md
-index 1dffe0a5d..5c4d50ea7 100644
+index 1dffe0a5d..a2821f196 100644
 --- a/raptor-port/docs/gates-and-deploy.md
 +++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/gates-and-deploy.md
-@@ -35,6 +35,23 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
+@@ -35,6 +35,24 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
    (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
    and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
    `< /dev/null`.
@@ -1189,7 +1207,8 @@ index 1dffe0a5d..5c4d50ea7 100644
 +  it yourself at once (`gatelock.mjs release`).
 +  **(4) A lock near its two-hour mark is not stale by its age alone.** A lock taken by hand records the short-lived
 +  `take` command, so "its process is gone" proves nothing: ask the chat that holds it before breaking it (28 Sep 26: a
-+  queued run was three minutes from breaking a lock whose holder had just started its last suite).
++  queued run was three minutes from breaking a lock whose holder had just started its last suite). The waiting `take` or
++  `run` breaks it by itself at two hours — stop your own queued run while the holder is still working.
 +  **(5) After resolving a merge conflict by hand, run each conflicted file's own check before the long run** — the test
 +  file itself for a test, the type check for source. The type check does not cover the browser-test folder, and two
 +  tests appended at the same place share their closing lines: read the join, not only the markers.
@@ -1215,13 +1234,14 @@ index b3d3ceb09..d64caf944 100644
  
 diff --git a/.claude/skill-updates/2026-10-13/raptor-port/docs/walk-scripts.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/walk-scripts.md
 new file mode 100644
-index 000000000..506ffc93a
+index 000000000..f06d4a90a
 --- /dev/null
 +++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/walk-scripts.md
-@@ -0,0 +1,167 @@
+@@ -0,0 +1,173 @@
 +# Walk scripts, walkers' briefs and break tests — how they are written, and what each trap has cost
 +
 +**Tier 2: read before writing a walk script, a walker's brief or a break-test list; every walker's brief names this file.**
++**A walker reads §3 to §7; §1, §2, §8 and §9 are the host's.**
 +The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 the walk, §8 the break test) and a walk's
 +size is `docs/walk-ledger.md`. This file is the HOW. Every line is here because a walk, a re-walk or a break test once
 +reported something untrue — a fault that was the script's own, or a pass that proved nothing. The drivers are in
@@ -1316,8 +1336,11 @@ index 000000000..506ffc93a
 +
 +- **The first walk's pictures are the defect's evidence: commit them before the re-walk, and give the re-walk its own
 +  folder.** A re-walk is nearly always launched by reusing the first walk's command line, so a script takes its folder
-+  from the environment only when none is already set (`process.env.HP_SHOTS ||= '<folder>'`), and the evidence sheet
-+  writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
++  from the environment only when none is already set (`process.env.HP_SHOTS ||= '<folder>'`, on a line that runs BEFORE
++  the shared driver loads — the driver reads it once, at import, and a static `import` is hoisted above the line: load
++  it with `await import('./lib.mjs')` afterwards, or set it in a small module imported first, as
++  `scripts/handpass/ab/ab-env.mjs` does — or the pictures go to the driver's default folder in another checkout), and
++  the evidence sheet writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
 +- **Once a finding is fixed, the note that observed it becomes a CHECK** asserting the fixed behaviour, before the
 +  re-walk runs.
 +
@@ -1326,7 +1349,9 @@ index 000000000..506ffc93a
 +Before a FAIL is a finding, ask: what does the world really hold (the seed, the page — is the "bid and award" day
 +really both)? What is the phone's own route to that surface (a menu, a folded panel — take one picture at the failing
 +step)? What did the script actually press, and what did the box actually read? Was the role signed in on a fresh
-+world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one.
++world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one. A fault that
++depends on zoom or display scaling is reproduced in a browser STARTED at that scaling (`--force-device-scale-factor`),
++never with an emulated picture scale, which leaves the page's own arithmetic at 1.
 +
 +## 8. When nothing on screen should change
 +

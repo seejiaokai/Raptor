@@ -41,7 +41,8 @@ Each line is a place where a tool allowed a mistake that a guide now only warns 
 - **The check lock (`scripts/gatelock.mjs`).** A heartbeat from the run it protects, so "stale" means no heartbeat —
   not two hours of age, and not the process id of the command that took it (342). `run` records its own process, so
   the next taker can tell a stopped run from a live one (391). `run` checks its `--from` folder holds a
-  `package.json` before taking the lock, and its usage line shows the form that works from both folders (504).
+  `package.json` before taking the lock, and its usage line shows the form that works from both folders (504). Its
+  header still says "one test file needs no lock" — bring it in step with the corrected rule (444).
 - **The break-test runners (`scripts/handpass/breaks.mjs`, `breaks-browser.mjs`).** Check every entry of a list
   before the first break, and restore the true build on every way out, an error included (471). A subset chosen by
   a pattern, and the result written as a table into the evidence folder (540).

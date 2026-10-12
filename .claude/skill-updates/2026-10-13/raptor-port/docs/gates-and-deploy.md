@@ -46,7 +46,8 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   it yourself at once (`gatelock.mjs release`).
   **(4) A lock near its two-hour mark is not stale by its age alone.** A lock taken by hand records the short-lived
   `take` command, so "its process is gone" proves nothing: ask the chat that holds it before breaking it (28 Sep 26: a
-  queued run was three minutes from breaking a lock whose holder had just started its last suite).
+  queued run was three minutes from breaking a lock whose holder had just started its last suite). The waiting `take` or
+  `run` breaks it by itself at two hours — stop your own queued run while the holder is still working.
   **(5) After resolving a merge conflict by hand, run each conflicted file's own check before the long run** — the test
   file itself for a test, the type check for source. The type check does not cover the browser-test folder, and two
   tests appended at the same place share their closing lines: read the join, not only the markers.

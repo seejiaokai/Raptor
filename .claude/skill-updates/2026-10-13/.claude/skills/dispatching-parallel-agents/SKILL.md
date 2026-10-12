@@ -161,7 +161,10 @@ brief:
 - **Stage by explicit path** in any checkout where someone else's files can
   sit — a helper's half-finished output, another session's untracked folder:
   never `-A`, `.` or a shared parent directory, and read the staged file count
-  before the commit. A commit should hold what its author did.
+  before the commit. A commit should hold what its author did. This is how
+  the rule below is kept when your own commit cannot wait: only files you
+  finished go in, by name; nothing a running agent has written or may still
+  write is staged.
 - **Machine resources:** which test suites, ports and folders are already in
   use. Agents run named test files in the foreground, one at a time, and
   never re-run a suite they already started — backgrounded full runs pile up

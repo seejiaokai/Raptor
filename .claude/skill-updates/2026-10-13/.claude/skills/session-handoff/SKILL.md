@@ -65,8 +65,8 @@ pushed and waiting for him — the normal end state, not unfinished business.
   `git fetch origin` and check this branch is level with `origin/main`" —
   never "git pull", which pulls nothing on a branch with no upstream; "git
   pull" is for a chat continuing a pushed branch. For a design or question job
-  the line says what he will get from it (pictures and questions; nothing in
-  the app changes). And tell him to TYPE a word of his own after pasting it
+  the line says why the job is due now and what he will get from it (pictures
+  and questions; nothing in the app changes). And tell him to TYPE a word of his own after pasting it
   ("go"; "I'm away — run it"): a first message that is only pasted text may
   be held for his confirmation, which stalls a start he meant to leave
   unattended.

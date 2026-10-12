@@ -444,8 +444,10 @@ and staging rules. If an observation reveals a principle that applies to
 skills generally, propose it for the cross-cutting principles file (see the
 same reference).
 
-**A trap that recurs after it was logged is not logged again as a note.** Cite
-the earlier entry's number, and propose the guard instead: a check inside the
+**A trap that recurs after it was logged is not logged again as a fresh note.**
+Add one dated line under the earlier entry ("met again <date>: <job>") — or, if
+that entry is closed, one new note citing its number — and propose the guard: a
+check inside the
 action that triggers it (a hook, a tool that refuses), or — where a safer way
 costs nothing extra — an unconditional default in place of a condition to
 judge each time ("scripts are always written to a file", not "unless it holds

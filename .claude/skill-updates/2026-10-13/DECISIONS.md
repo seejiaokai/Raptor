@@ -25,13 +25,14 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
    read" line names it. **In the row:** never a third party's names or figures inside his words (paraphrase them); a
    reading of yours that says what the app WILL DO is first checked against what it does today in the nearest case (the
    code, its tests, the app's own rule text) and says where, or "not checked"; in the home cell backticks are for files
-   only, and a backlog item is "filed as [ID]", never a home — it leaves at the archive, and the gate refuses the move.
+   only, and a backlog item is written "filed as [ID]" in plain words — never `OUTSTANDING.md` in backticks as a home:
+   the gate then requires that file to name the ruling, the item leaves at the archive, and the move is refused.
 2. **If it wholly REPLACES an earlier ruling**, start the cell right after the date in that earlier ruling's FULL row
    (in `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
    `**SPENT <date> — <what used it>.**` — after reading that row sentence by sentence: every "if", "until" or "still" in
    it must be carried by a live ruling, or it stays live. A ruling changed only IN PART — or one whose open point a
-   later ruling ANSWERS — stays live and says so in the cell that states its rule (`**— NARROWED <date> BY D<n>: …**`,
-   `**— ANSWERED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
+   later ruling ANSWERS — stays live and says so in its FULL row's fourth cell, "what it means" (`**— NARROWED <date> BY
+   D<n>: …**`, `**— ANSWERED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
    **Either way, fix what the old ruling left behind in the same change — the documents, the app (file the build), the
    lists (D201; `record-decisions.md`).**
 3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves each new full row to the full-text file

@@ -266,6 +266,7 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
 | **The full text of this guide's one-line rules** (D391) — searched, never loaded; each short form here names its heading there, and the document check pairs the two | `docs/guide-full.md` |
 | **What kind of WALK a change needs, and what past walks found** (D607) — the sizing step Opus writes before any walker starts, the types of change, one row per walk; read before starting a walk, add a row after one | `docs/walk-ledger.md` |
 | **How a walk script, a walker's brief and a break-test list are written, and what each trap has cost** — read before writing one; every walker's brief names it | `docs/walk-scripts.md` |
+| **How to draw a proposed change on the running app** (a mock-up of a screen that exists) — read before making one | `../.claude/skills/brainstorming/mockups-on-the-real-app.md` |
 | **HOW TO BUG-CHECK — the standing order** (the tiers, the roll-call, the walk, the evidence sheet, and which jobs to spend Fable/Codex on). Read before any bug check | `docs/bug-check-order.md`; the two proposals it was merged from are `docs/superpowers/briefs/2026-09-21-bugcheck-method-fable.md` and `…-codex.md` |
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |

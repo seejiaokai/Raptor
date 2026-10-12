@@ -28,7 +28,8 @@ ruling row and its smallest home — and the reply is one line ("recorded — ne
 **Why:** 24 Sep 26 — after "1-4 yes" the agent cut a branch and rewrote the handoff before replying; he wrote "we
 havent answered all the questions, what are u doing".
 
-**How to apply:** recording a ruling the moment he makes it (D13) stays; only its downstream work waits. Index line:
+**How to apply:** recording a ruling the moment he makes it (D13) stays, and what a replaced ruling leaves behind is
+still fixed in the change that records it (D201); only the wider downstream work waits. Index line:
 `- [Record answers quietly during a round](record-answers-quietly-during-a-round.md) — while he answers a list: one quick record each, a one-line reply; the wider set-up after the round (24 Sep 26).`
 
 ## New note `owner-questions-need-a-worked-example.md` (observations 330, 510) — type: feedback

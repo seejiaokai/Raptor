@@ -9,7 +9,7 @@ draft, is `diff.patch`. **Nothing live is changed until he approves** — bar th
 **Where lessons land** (settled by the reviews of 23 and 24 Sep 26, followed here): in the skills; in the project's own
 method documents where the note is about the bug check (`raptor-port/docs/bug-check-order.md`,
 `raptor-port/docs/gates-and-deploy.md`); never as new lines of lessons in `raptor-port/CLAUDE.md` or `.claude/rules/`
-(one sentence of `shipping.md` is CORRECTED in place — it stated an exemption the gate notes had already withdrawn).
+(three clauses of ONE paragraph of `shipping.md` are CORRECTED in place — the lock's "always releases", its "stale at two hours", and the "one test file needs no lock" exemption the gate notes had already withdrawn).
 **New here:** two reference files that gather notes the logs marked "new skill candidate" again and again —
 `raptor-port/docs/walk-scripts.md` (walk scripts, walkers' briefs, break tests: 59 notes) and
 `.claude/skills/brainstorming/mockups-on-the-real-app.md` (mock-ups: 16 notes). Both are his to approve as NEW guides.
@@ -18,7 +18,7 @@ Lessons that are really a tool to build are filed as two backlog items (`_docs/O
 
 **Also carried, not observations:** the two guide lines already filed and waiting for a read —
 `[WALK-FINGER-NOT-LOCATOR]` (§7.2 and §6) and `[METHOD-LIT-COLOUR]` (§7.1 and anti-pattern 21) — are made in the draft
-of `bug-check-order.md`, as each item worded them.
+of `bug-check-order.md`, as each item worded them. Neither item had the Astra and Sol read its own text asks for; they go in on this one Opus read only if he says so — a separate yes or no in the approval — and both are then written on `[NO-ASTRA-LIST]` (D761).
 
 **Codes** (read by the install script): `APPLY` a draft carries it · `REFLECTED` already written where it belongs ·
 `FILED` a backlog item carries it · `MEMORY` a memory note carries it · `ASK` recommended closed with no change — his
@@ -78,7 +78,7 @@ word · `OPEN` stays open. APPLY, REFLECTED, FILED and MEMORY become `ACTIONED (
 | 281 | APPLY | WS §9 (break where nobody is reading); BCO §4 (the reader's half) |
 | 282 | APPLY | WS §9 (reading 2: the break never met a test able to see it) |
 | 283 | APPLY | MOCK, showing it (a republish is a sync of the whole set) |
-| 284 | REFLECTED | `.claude/rules/shipping.md` §The checks, D302 (compare the open branches' changed files and message that chat before changing a shared one) |
+| 284 | APPLY | WP Self-Review 12 (before the design, compare the files each other open branch changes); the change-time half is already `.claude/rules/shipping.md` §The checks, D302 |
 | 285 | FILED | GUARD carries it as a build condition (measure the harness's behaviour first; tests take the environment as an input); the guard it was written about is fixed (`[BG-GUARD-FALSE]`) |
 | 290 | APPLY | BCO §4, before a brief leaves (a test plan's red team and its scenario design are one round) |
 | 291 | APPLY | WS §3 (what an action created is named by the difference) |
@@ -138,7 +138,7 @@ word · `OPEN` stays open. APPLY, REFLECTED, FILED and MEMORY become `ACTIONED (
 | 348 | APPLY | SH Step 1 (a marker matched on its own line, never as a substring) |
 | 350 | MEMORY | appended to `guides-fewer-words-more-pictures` (let PowerPoint itself make the PDF and the pictures) |
 | 351 | MEMORY | appended to `guides-fewer-words-more-pictures` (marks checked against their picture; pictures shrunk once) |
-| 352 | REFLECTED | D368 and `.claude/rules/doc-structure.md` §In his workflow (which branch to pick, and whether a worktree is needed, said the same way each time) |
+| 352 | OPEN | stays open on ONE question for him (the reader's finding 8): D368 says what to tell him, but not whether a fresh chat that continues a branch can really be opened without ticking "worktree" - only he can see what his new-chat picker does; his answer becomes one line of SH Step 1 |
 | 353 | APPLY | WP Self-Review 11 (each writer's production caller) |
 | 354 | APPLY | WS §7 (reading a FAIL: the script's world first) |
 | 355 | APPLY | SH Step 1 (for a design job the opening line says what he will get) |
@@ -188,7 +188,7 @@ word · `OPEN` stays open. APPLY, REFLECTED, FILED and MEMORY become `ACTIONED (
 | 420 | APPLY | SH Step 1 (the opening line for a new job); HO (bring the checkout level before reading) |
 | 421 | REFLECTED | `AGENTS.md` — the bridge file exists and names the rule files, each hook's job as a step by hand, the limits and the number ranges |
 | 422 | APPLY | WP Self-Review 4 (a text rule is run over the real stored examples; a promised moment names its guard) |
-| 423 | REFLECTED | memory `check-usage-before-heavy-task` (D533), and every handoff's opening line now asks for the usage first |
+| 423 | REFLECTED | memory `check-usage-before-heavy-task` (D533) |
 | 424 | APPLY | BCO §0a step 3 (quote a duration from the last recorded run); memory `quote-measured-gate-times` already had it |
 | 425 | APPLY | MOCK, judging (a reproduction written as assertions measures the proposal) |
 | 426 | APPLY | DPA (stage by explicit path; read the staged file count) |
@@ -199,7 +199,7 @@ word · `OPEN` stays open. APPLY, REFLECTED, FILED and MEMORY become `ACTIONED (
 | 431 | APPLY | DPA (say how the agent ends); WS §2 (report once; a walker's cost is its own token count) |
 | 432 | APPLY | BCO §4 (each walk round is served from its own folder) |
 | 433 | APPLY | BCO §6 (a fix that changes when a writer reports "nothing happened") |
-| 434 | REFLECTED | memory `owner-pc-display-125-percent` (a fault at his zoom is reproduced in a browser STARTED at that scaling) |
+| 434 | APPLY | WS §7 (a fault that depends on zoom or scaling is reproduced in a browser STARTED at that scaling); memory `owner-pc-display-125-percent` already had it |
 | 435 | APPLY | BCO §6 (a change that removes an event: what else ran on it) |
 | 436 | APPLY | WS §4 (a note prints the value it judged; End stops at the wrapped line) and §7 |
 | 437 | APPLY | RCR, before applying a reviewer's fix (a record dropped for one missing field) |
@@ -299,7 +299,7 @@ word · `OPEN` stays open. APPLY, REFLECTED, FILED and MEMORY become `ACTIONED (
 | 531 | APPLY | BCO §8 item 8 (a new kind of record gets one round trip first) |
 | 532 | APPLY | WGT (a fixture never edits live state outside a command) |
 | 533 | REFLECTED | `raptor-port/CLAUDE.md` §Build & verify (stand up the live view and LOOK), VBC "a screen change works", and BC's opening lines |
-| 534 | ASK | recommend closed with no change: the walk stays before the reads; starting a read early is his word on the day, as it was |
+| 534 | ASK | recommend closed with no change: the walk stays before the reads; starting a read early is his word on the day, as it was. Its side lesson - a walk's record gives its SCENARIOS apart from its WALKERS - is already how the walk ledger's rows of 12 Oct 26 are written, and gets no guide line |
 | 535 | APPLY | RCR (a batch of claims from a read that ran nothing); BCO §4 already said "every claim is written as a failing test" (D790) |
 | 536 | APPLY | WS §1 (the clock is set to a start time and left running) |
 | 537 | APPLY | WS §2 (a rewrite and its run are never sent in one step); VBC "my edits landed" |

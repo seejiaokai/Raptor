@@ -1,6 +1,7 @@
 # Walk scripts, walkers' briefs and break tests — how they are written, and what each trap has cost
 
 **Tier 2: read before writing a walk script, a walker's brief or a break-test list; every walker's brief names this file.**
+**A walker reads §3 to §7; §1, §2, §8 and §9 are the host's.**
 The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 the walk, §8 the break test) and a walk's
 size is `docs/walk-ledger.md`. This file is the HOW. Every line is here because a walk, a re-walk or a break test once
 reported something untrue — a fault that was the script's own, or a pass that proved nothing. The drivers are in
@@ -95,8 +96,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 
 - **The first walk's pictures are the defect's evidence: commit them before the re-walk, and give the re-walk its own
   folder.** A re-walk is nearly always launched by reusing the first walk's command line, so a script takes its folder
-  from the environment only when none is already set (`process.env.HP_SHOTS ||= '<folder>'`), and the evidence sheet
-  writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
+  from the environment only when none is already set (`process.env.HP_SHOTS ||= '<folder>'`, on a line that runs BEFORE
+  the shared driver loads — the driver reads it once, at import, and a static `import` is hoisted above the line: load
+  it with `await import('./lib.mjs')` afterwards, or set it in a small module imported first, as
+  `scripts/handpass/ab/ab-env.mjs` does — or the pictures go to the driver's default folder in another checkout), and
+  the evidence sheet writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
 - **Once a finding is fixed, the note that observed it becomes a CHECK** asserting the fixed behaviour, before the
   re-walk runs.
 
@@ -105,7 +109,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 Before a FAIL is a finding, ask: what does the world really hold (the seed, the page — is the "bid and award" day
 really both)? What is the phone's own route to that surface (a menu, a folded panel — take one picture at the failing
 step)? What did the script actually press, and what did the box actually read? Was the role signed in on a fresh
-world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one.
+world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one. A fault that
+depends on zoom or display scaling is reproduced in a browser STARTED at that scaling (`--force-device-scale-factor`),
+never with an emulated picture scale, which leaves the page's own arithmetic at 1.
 
 ## 8. When nothing on screen should change
 

@@ -78,7 +78,7 @@ half).
   delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and releases when it ends — a run you
   STOP does not: release it yourself at once. A lock older than 2 hours whose run is plainly over is stale — break it and
   say so (ask its holder first while a chat that could hold it is open). One UNIT test file, a typecheck or one walk script
-  on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits for it.
+  on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits until the lock is free.
   The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
 - **Parallel chats talk to each other so they do not clash (D302, 27 Sep 26 — "Can all 3 chats communicate so that there
   will not be clashing … U guys handle it").** Before changing a file or function another open chat's branch also

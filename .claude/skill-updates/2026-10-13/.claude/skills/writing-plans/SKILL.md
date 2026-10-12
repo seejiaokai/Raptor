@@ -258,6 +258,9 @@ lists every place X is plugged in (search X's entry points) with, for each,
 where the new one goes or why not — no blank cells. A phase that an earlier,
 reviewed plan only sketched inherits none of that review: re-check its
 premises with a fresh sweep of every mechanism it names before detailing it.
+And before the design, compare the files each other open branch changes with
+the files this plan will touch; for each overlap the plan says which version
+it builds on, and in what order.
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
 
