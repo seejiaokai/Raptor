@@ -212,7 +212,10 @@ const RULING_BYTES = [
   /* scheduler 103000 -> 106000 (12 Oct 26): 103,817 bytes with D767-D773 - his answers on the cancelled look, the
      bell's wording and the Inputs export, all live (D772 alone is replaced, and goes to the archive by its mark). His
      question [SCHEDULER-RULINGS-SIZE] is still WITH HIM and still due; this is room until he answers, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 106000],
+  /* scheduler 106000 -> 109000 (13 Oct 26): 106,294 bytes with D795-D797 - his answers on the Calendar window on a phone
+     and the one date calendar, all live (D795 is narrowed by D796, not replaced). His question [SCHEDULER-RULINGS-SIZE]
+     is still WITH HIM and still due - put to him again the same day; this is room until he answers, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 109000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   ['.claude/rules/decisions/oil.md',     2, 14000],

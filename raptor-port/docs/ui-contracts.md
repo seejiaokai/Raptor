@@ -7024,7 +7024,11 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   swipe that starts on a date's button turns the page and presses nothing.
   **And the month the field opens is the app's ONE new date calendar (D796, 13 Oct 26 — `[ONE-DATE-CALENDAR]`):** on the iPhone
   calendar's pattern in the Raptor look — the month and year as a title that opens a month-and-year chooser, a Today icon
-  right of the year, no Reset and no tick (a tap picks) — used wherever the app picks a date. Not yet drawn or built.
+  right of the year, no Reset and no tick (a tap picks) — used wherever the app picks a date. Drawn 13 Oct 26
+  (`docs/mock/cal-swipe-fit.html`); not built. **Where it sits (D797):** a date that is one box among others opens it OVER the
+  form (a tap picks and it goes; a tap outside closes it; a panel under the box on a desktop, a centred card on a phone);
+  where the dates are what the form is for it stays INSIDE the form (two taps make the run, said in words beneath, no
+  "Clear"); weeks start on Monday; built in two steps — this window and every date box still the phone's own first.
 - **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
   <weekday>" and is lit while that window is up.
 - **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days
