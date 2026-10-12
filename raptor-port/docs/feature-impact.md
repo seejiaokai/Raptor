@@ -1448,3 +1448,25 @@ changes must read `dayPendingItems`, never the raw delta. Still one input a man,
 (D737), the warnings, the Leave War, each man's OIL and his bell, the stored diff and the sign-offs, print, export, the
 SANS calendar.]* The demo carries one (`state/demoseed.ts seedDemoGroup`) — on the Thursday AFTER the seed week, so the
 seed week's pinned warnings, rows and counts do not move.
+
+## The app's one date calendar — a surface that floats over every form (`[ONE-DATE-CALENDAR]` step one, 13 Oct 26)
+
+**What a change here touches.** `ui/DateCal.tsx` and `ui/DateBox.tsx` are drawn by six files in fourteen places (the
+list, with what proves each: `docs/handpass/2026-10-13-one-date-calendar.md` §3; the contract: `docs/ui-contracts.md`
+§Days — the month). A change to either is a change to every one of them: "Every <weekday>", a new person's Post in on
+its three doors, Admin → Data's two forms, the upchit's date, the Leave War's five posting dates.
+
+**The drift-seams — written as the existing places, each with its test:**
+- **A form that picks a date uses `DateBox` (or `DateCal` inside it), never the phone's own date box.** `ui/nodatebox.test.ts`
+  walks the source and names the only three left — the Tracker's, which wait on his choice (D798). Step two folds the
+  app's three older small calendars into this one (`leavewar/ui/RangePicker.tsx`, `ui/RangeCal.tsx`, `ui/WeekCal.tsx`).
+- **The calendar floats on the page itself, inside no form.** So any surface that decides "a press outside me" at the
+  document — and acts on it — must let `.dcal-layer` through, or a tap on a date closes the form whose date was being
+  picked. Today that is the Leave War's touch shield (`leavewar/ui/Sheet.tsx`; `leavewar/ui/datebox-sheet.test.tsx`). A
+  NEW such listener on a surface that holds a date box gets the same test. Its layer (600) is above every window and
+  sheet; a new surface drawn higher than that would cover it (`e2e/datecal.spec.ts`, `e2e/leavewar.spec.ts` — the element
+  at the calendar's centre is the calendar, on each surface).
+- **Two "todays".** The date boxes and the Calendar window use the real date (`ui/daysfmt.ts isoToday`); the schedule's
+  "Jump to a date" and the upchit's own default use the schedule's planning day. Step one keeps each as it was.
+- **A box cannot be emptied.** A form that must be able to go without a date offers that choice itself ("No end"). A
+  writer still refuses a missing date; no screen can send one any more.

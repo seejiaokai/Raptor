@@ -255,7 +255,7 @@ REAL, what is DRAWN) `docs/mock/2026-10-12-oil-notify-run.txt`. `scripts/handpas
 drives the built app by real presses (the swap is a real drag, the holiday is really added), pictures it, then puts the
 proposed words and marks on the page from the app's own classes.
 
-`[CAL-PHONE-SWIPE-FIT]` (13 Oct 26 — a drawing; nothing built; D786): `docs/mock/cal-swipe-fit.html` is the pictures page
+`[CAL-PHONE-SWIPE-FIT]` (13 Oct 26 — the drawing; BUILT the same day as `[ONE-DATE-CALENDAR]` step one — `src/ui/DateCal.tsx` below; D786): `docs/mock/cal-swipe-fit.html` is the pictures page
 put to him with four questions — the "Every <weekday>" window's From box as a date field of the app's own, closed and open,
 and where a sideways swipe works on the month and on the Holidays list; a phone at 390 and at 320 wide. Its pictures are
 `docs/mock/2026-10-13-cal-swipe-fit/`. `scripts/handpass/calswipe-mock.mjs` draws them: it serves the built app itself
@@ -861,6 +861,30 @@ rules already made for that weekday beneath, each with Remove. A second window o
 `setFlyRule`, Remove `removeFlyRule` - one command, one Undo step each. Tests `ui/everyweekday.test.tsx`.
 `src/ui/daysfmt.ts` - the words and small date sums those two windows share (weekday and month names, how a class and a
 date are said, today's date, the first such weekday on or after a date). Pure.
+`src/ui/DateCal.tsx` - THE APP'S ONE DATE CALENDAR (`[ONE-DATE-CALENDAR]` step one, 13 Oct 26 — D796, D797): the title
+that opens the two scrolled month-and-year lists (`Wheel` — rows with no end, a window of them re-centred as it is
+walked), the Today icon, the two arrows, Monday-first dates in six rows; one date or a run; a weekday that stands out; a
+first date that may be picked. It keeps only the month on screen — the date is its form's. Tests `ui/datecal.test.tsx`.
+`src/ui/DateBox.tsx` - THE APP'S OWN DATE BOX: a button reading its date in words, opening `DateCal` as a layer on the
+page itself (`.dcal-layer` on `document.body`) — the veil, where the card sits on a phone and a desktop, Escape first,
+the keyboard kept in it. Used by `EveryWeekday.tsx`, `UsersPanel.tsx` (Post in), `AdminPage.tsx` (`ClearControl`, which
+also draws `DateCal` in the form for a range), `inputedit.tsx` (the upchit date), `leavewar/ui/BidPicker.tsx` and
+`SelectSheet.tsx` (the posting dates). Tests `ui/datebox.test.tsx`, `ui/adminclear.test.tsx`,
+`leavewar/ui/datebox-sheet.test.tsx` (over a Leave War sheet on a touch screen).
+`src/ui/sideswipe.ts` - A SIDEWAYS FINGER TURNS A PAGE (D786, D795): touch events on the element it is given, the Inputs
+calendar's 50px, the one swallowed click; and `slideIn`, the arriving page's slide. Wired in `DaysWindow.tsx` for the
+month and the Holidays list. Tests `ui/dayswipe.test.tsx`.
+`src/ui/datecal-testkit.ts` - test only: how a unit test works a date box as a person does (`pickDate`, `boxValue`,
+`tapDay`, `calPage`, `calRow`). The browser tests' own are in `e2e/app.ts` (`pickDate`, `tapCalendarDate`,
+`calendarOnTop`, `dateBoxValue`).
+`src/ui/nodatebox.test.ts` - the roll-call kept as a test: no `<input type="date">` anywhere in `src` but the Tracker's
+three, which wait on his choice (D798).
+`src/ui/scheduler/26-date-calendar.css` - the date box, the floating layer and the calendar's look.
+`e2e/datecal.spec.ts` (the `raptor` project) - what only a browser shows: the calendar on top of each surface, the boxes'
+fit at four phone widths, the controls standing still, the lists really scrolled, a real finger's swipe, a mouse left alone.
+`scripts/handpass/odc-look.mjs` - the host's look of step one's bug check: every date box reached by the app's own
+controls, measured and pictured at six sizes. The check: `docs/handpass/2026-10-13-one-date-calendar.md`; the walkers'
+and the reader's briefs `docs/superpowers/briefs/2026-10-13-one-date-calendar-walk.md`, `…-read.md`.
 STEP 4, THE SANS CALENDAR (plan §3.5; D617-D619, D626, D630, D635, D646-D651, D664):
 `src/ui/sanscal-model.ts` - how the ONE resolver's answer is READ onto a SANS date (`sansCell`: the sun or moon, or the
 tag NF / the holiday's short form; the still-needed pair or nothing; F, O, A as pairs) and who an opened day lists
