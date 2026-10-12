@@ -11,6 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
+import { cxOf, cxWhy, cxSays } from './inputcard-model'
 import { FloatWin, bringForward } from './FloatWindow'
 import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
@@ -2876,8 +2877,17 @@ export function InputEditor() {
         onUpload={() => setDocConf(null)}
         onNoDoc={() => { setDocConf(null); save(true) }} />}
   </>)
+  /* A CANCELLED INPUT'S OWN WINDOW SAYS SO (owner D771, 12 Oct 26 — "Yes for both"): the card's own small red CX tag and
+     the reason in red, beside the window's title, in both of its shapes. A MARK, never a control — only a scheduler
+     cancels an input or brings it back, on its row on the schedule (D760 reading 2); what the input SAYS is still its
+     owner's to change while it is cancelled. Read off the live record, so it goes the moment the input is brought back. */
+  const cxRec: any = r && !isNew ? (INPUTS.find((x: any) => x.iid === r.iid) || r) : null
+  const cxMark = cxRec && cxOf(cxRec)
+    ? <span className="inped-cx" data-testid="inped-cx" title={cxSays(cxRec)}><span className="icx">CX</span>{cxWhy(cxRec) && <span className="icx-why">{cxWhy(cxRec)}</span>}</span>
+    : null
   if (win) return (<>
-    <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={close}>
+    <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={close}
+      tools={cxMark || undefined}>
       <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
         {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
         {swap && (
@@ -2922,6 +2932,7 @@ export function InputEditor() {
       <div className="airpop-box inpedbox" ref={box}>
         <div className="airpop-head">
           <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
+          {cxMark}
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
         {inner}

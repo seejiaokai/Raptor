@@ -195,6 +195,23 @@ for (const size of Object.keys(SIZES)) {
   }
   await shots(X, 'cx')
 
+  /* 4b — its own window says it is cancelled (owner D771, 12 Oct 26): the card pressed, the window's title bar */
+  await toMonth(); await openDay(DAY)
+  await press(page.locator(`[data-testid="win-inputsday"] .icard[data-popiid="${X}"]`).first())
+  await page.waitForSelector('#inpEditPop', { timeout: 5000 }); await page.waitForTimeout(400); await quiet()
+  say('cx window', JSON.stringify(await page.evaluate(() => {
+    const m = document.querySelector('[data-testid="inped-cx"]'); if (!m) return null
+    const bar = m.closest('.win-bar, .airpop-head'), r = m.getBoundingClientRect(), b = bar.getBoundingClientRect()
+    const t = bar.querySelector('.win-ttl, #inpEditTitle'), x = bar.querySelector('.win-x, #inpEditClose')
+    return { text: m.textContent, tag: getComputedStyle(m.querySelector('.icx')).backgroundColor, why: m.querySelector('.icx-why') ? getComputedStyle(m.querySelector('.icx-why')).color : null,
+      title: t.textContent, inBar: r.left >= b.left && r.right <= b.right && r.top >= b.top - 1 && r.bottom <= b.bottom + 1,
+      afterTitle: r.left >= t.getBoundingClientRect().left, beforeCross: r.right <= x.getBoundingClientRect().left + 1, barH: Math.round(b.height), controls: m.querySelectorAll('button,input').length }
+  })))
+  await page.screenshot({ path: file(`built-cx-${size}-window-full.png`) })
+  { const bar = await page.locator('[data-testid="inped-cx"]').first().evaluateHandle(e => e.closest('.win-bar, .airpop-head')); const bb = await bar.asElement().boundingBox(); await clip(`built-cx-${size}-window-title.png`, bb, [10, 10, 60, 10]) }
+  { const x = page.locator('[data-testid="win-inputedit-x"]:visible, #inpEditClose:visible').first(); if (await x.count()) await press(x); await page.waitForTimeout(300) }
+  await closeDay()
+
   /* 5 — the schedule's own Personal Inputs line: Edit Schedule's week (its fold opened), then the Scheduler Board */
   await page.evaluate(() => window.go('editsched'))
   await page.locator('#eWeek .day').first().waitFor(); await page.waitForTimeout(300)

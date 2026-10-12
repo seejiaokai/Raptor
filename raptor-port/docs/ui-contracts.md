@@ -4388,8 +4388,13 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
 - **The schedule's own line** (Personal Inputs, and the Unavailable list where one was filed there; the week and the
   board): the schedule's red tag with its reason inside ("CX DUE WX"), then the name struck through — the name only;
   the line is not faded. On a phone's board the tag reads "CX".
-- **It stays listed** (D760) and is counted as before. The input's own window says nothing of the CX (not ruled — the
-  plan's §10, Step 5).
+- **It stays listed** (D760) and is counted as before.
+- **The input's own window says it is cancelled (D771, 12 Oct 26 — "Yes for both"):** the same red CX tag and the
+  reason in red beside the window's title, in both of its shapes (the floating window and the sheet), read only — no
+  control there cancels an input or brings it back (D760 reading 2: the scheduler does, on its row). No reason typed:
+  the tag alone.
+- **The CSV export does not mark it (D772, 12 Oct 26 — "Leave the CSV as it is"):** its lines are written like any
+  other input's.
 
 ## The top bar carries the bell and the Undo / Redo pair (owner, Aug 26; the pair on every page — D347–D349, 28 Sep 26)
 

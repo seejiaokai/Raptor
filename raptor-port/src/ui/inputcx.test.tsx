@@ -299,3 +299,47 @@ describe('the schedule\'s own line of a cancelled input (D767 reading 3) — ui/
     expect(inpCxHTML({ cx: false, cxr: 'WX' })).toBe('')
   })
 })
+
+/* D771 (12 Oct 26 — "Yes for both"): "a cancelled input's own window says it is cancelled: the same small red CX tag
+   and its reason in red, beside the window's title — read only". A person who taps his cancelled card must not open a
+   window that looks live; only a scheduler cancels or brings back, on its row on the schedule (D760 reading 2). */
+describe('the input\'s own window says it is cancelled (D771)', () => {
+  const openIt = async (r: any) => { await act(async () => { setInpEdit(live(r.iid)); notify() }) }
+  it('the red CX tag and the reason, beside the window\'s title — and nothing in the window cancels or brings back', async () => {
+    await mount(false)
+    const r = await file(CX)
+    await openIt(r)
+    const mark = $('[data-testid="inped-cx"]')!
+    expect(mark, 'the window says it').toBeTruthy()
+    expect(mark.querySelector('.icx')!.textContent).toBe('CX')
+    expect(mark.querySelector('.icx-why')!.textContent).toBe('WX')
+    expect(mark.querySelectorAll('button, input, select').length, 'read only: a mark, never a control').toBe(0)
+    const head = mark.closest('.win-bar, .airpop-head')
+    expect(head, 'it stands in the window\'s title bar').toBeTruthy()
+  })
+  it('no reason typed: the tag alone (D767 reading 4)', async () => {
+    await mount(false)
+    const r = await file({ cx: true })
+    await openIt(r)
+    const mark = $('[data-testid="inped-cx"]')!
+    expect(mark.querySelector('.icx')!.textContent).toBe('CX')
+    expect(mark.querySelector('.icx-why')).toBeNull()
+  })
+  it('an input that is not cancelled, one brought back, and a new input: no mark', async () => {
+    await mount(false)
+    const a = await file()
+    await openIt(a)
+    expect($('[data-testid="inped-cx"]')).toBeNull()
+    await act(async () => { setInpEdit(null); notify() })
+    const b = await file({ cx: false, cxr: 'WX' })
+    await openIt(b)
+    expect($('[data-testid="inped-cx"]')).toBeNull()
+  })
+  it('a person who may only READ the input sees the mark too', async () => {
+    await mount(false)
+    const r = await file(CX)
+    await act(async () => { setSession({ user: member, role: 'main' }); setMe(member); notify() })
+    await openIt(r)
+    expect($('[data-testid="inped-cx"] .icx-why')!.textContent).toBe('WX')
+  })
+})

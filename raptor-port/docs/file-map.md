@@ -27,6 +27,8 @@ board's `board-html.ts sbInpRow`). Styles: `scheduler/25-inputs-calendar.css` (`
 `06-inputs.css` (`.in-cxline`), `12-schedule-editing.css` (`.inp-cx`, `.inp-cxtag`). New test: `src/ui/inputcx.test.tsx`;
 three cases added to `src/ui/inputmarks-scenarios.test.tsx` (the schedule's lines; the seven-day run inside the week).
 The look by real presses: `scripts/handpass/onerule-step5-look.mjs`, its pictures `docs/handpass/2026-10-12-one-rule-step5/`.
+**And D771, the same day:** `src/ui/inputedit.tsx InputEditor` draws the same tag and reason in the window's title bar
+(`.inped-cx`), in both of its shapes.
 
 `[ALL-AVAIL-AS-MEMBER]` step 6 (12 Oct 26 — the dead code out; D755, D756, D762): **REMOVED** `src/ui/grouprow.ts`,
 `src/engine/entryfold.ts`, `src/state/inputgroup.ts`, `src/engine/inputentry.ts` — the leftovers of "one record a

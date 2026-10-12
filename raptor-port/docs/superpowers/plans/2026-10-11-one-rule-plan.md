@@ -1117,10 +1117,16 @@ stopping before "· accepted", the board's tag on a phone) — seen in this step
 **Read, not ruled, not pinned:** a search for the reason ("WX") does not find the input — the search reads the remark,
 the name and the callsigns.
 
-**Not built, his to answer (parked — nothing waits on it):** should the input's own WINDOW say it is cancelled?
-*Recommended:* yes — the same red CX tag and reason beside its title, read-only; a member who taps his cancelled card
-otherwise opens a window that looks live. And the CSV export writes a cancelled input's line like any other (no
-column says it) — *recommended:* leave it until he wants a column.
+**The two questions step 5 parked — ANSWERED 12 Oct 26 (*"Yes for both"*; asked which he meant for the export:
+*"Leave the CSV as it is (Recommended)"*):**
+- **D771 — the input's own window says it is cancelled:** the same small red CX tag and its reason in red beside the
+  window's title, read only — only a scheduler cancels or brings back, on its row (D760 reading 2). **BUILT the same
+  day** (`ui/inputedit.tsx InputEditor`, both of its shapes — the floating window and the sheet; told by
+  `ui/inputcard-model.ts cxOf` / `cxWhy`, drawn with the card's own `.icx` and `.icx-why`), a failing test first
+  (`src/ui/inputcx.test.tsx`). It shows for whoever opens the input; nothing else of the window changes.
+- **D772 — the CSV export stays as it is:** a cancelled input's lines are written like any other; no column says it.
+  Pinned as it is by the helper's pass (`src/ui/inputcx-scenarios.test.tsx`). Build one only if he asks.
+(R31 above — "the input's own window says nothing of the CX" — is overtaken by D771.)
 
 ### Step 7 — the bell tells him (12 Oct 26; D755 (3), D760, D769 — `[INPUT-CHANGED-TELL]`)
 

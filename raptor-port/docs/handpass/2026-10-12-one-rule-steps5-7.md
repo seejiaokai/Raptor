@@ -60,6 +60,7 @@ NOT.
 | Personal Inputs line, the board | seen | seen | the tag on one line beside the name; "CX" alone on a phone; seven columns |
 | The input's Ground Programme row | seen | seen | as step 4 left it |
 | Brought back | seen | seen | card, row and bar read as any other |
+| The input's own window (D771) | seen | seen | the tag and the red reason in the title bar, before the cross; no control in it |
 | The bell, lit and dark | seen | seen | lit on an unread notice; dark after "Mark all read" |
 | The list under the top bar's bell | seen | seen (a panel as wide as the screen) | 348px wide, 6px under the bell; a line 52px; nothing cut |
 | The list under the board's bell | seen | seen | hung under the bell that was pressed; a press on the board closes it, the board stays |
@@ -89,9 +90,14 @@ back by a Redo already "read"; a member's Undo of his own "Take me out" refused 
 
 The latest counts watched — 12 Oct 26 (the afternoon), `claude/all-avail-as-member` with steps 1 to 7 of the one-rule job (a cancelled input's look; the bell's notices; the seven faults the re-expressed older tests found, fixed — NOT `main`'s code), the whole gate set under the PC lock with nothing else running, in one run: unit 10723 / 10723 (606 files) · build clean · tfin 728 / 0 · e2e 769 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK — WHOLLY GREEN. The unit count rose by 172 over the morning's (the two steps' own tests, and the two helpers' scenario files — 45 and 60 cases); the browser tests are the same 769 — no browser test presses the bell's list or reads a cancelled input's look yet (the job's walk drives both). A full run took about 19 minutes.
 
+**And once more with D771 in (the late afternoon), in one run:** unit 10727 / 10727 (606 files) · build clean · tfin 728 / 0 · e2e 769 passed, 0 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK — wholly green.
+
 ## 5. For him
 
-**Readings to tell him** — the plan's §10: R27–R31 (step 5), R32–R37 (step 7). **Two small questions parked, nothing
-waits on them** (`OUTSTANDING.md` `[CX-INPUT-WINDOW-ASK]`): should a cancelled input's own window say it is cancelled
-(*recommended: yes*); should the CSV export (*recommended: leave it*). **Filed for the database step:**
+**Readings to tell him** — the plan's §10: R27–R31 (step 5), R32–R37 (step 7). **The two small questions step 5
+parked were put to him with the report and answered the same day** (*"Yes for both"*): **D771** — a cancelled input's
+own window says it is cancelled; built at once, a failing test first (four cases in `src/ui/inputcx.test.tsx`), and
+looked at by real presses at both sizes — the red CX tag and the reason stand in the window's title bar, between the
+title and the cross, a mark and not a control (`2026-10-12-one-rule-step5/built-cx-{desk,phone}-window-title.png`);
+**D772** — the CSV export stays as it is. **Filed for the database step:**
 `[NOTICE-RETENTION]` — notices are kept for good in this build.
