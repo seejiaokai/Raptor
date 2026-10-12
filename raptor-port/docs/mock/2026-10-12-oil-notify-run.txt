@@ -1,0 +1,64 @@
+desk filed: {"asked":["the OIL question, answered Yes"],"made":[{"iid":"imqoidgg0ziqaoh","type":"Training","title":"Range brief","date":"Jul 18","s":540,"e":720,"people":["bane"],"oil":{"2026-07-18":0.5}}]}
+desk SETUP — Tally put on the plain row through the bridge: true
+desk the programme before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+desk picture: desk-swap-0-before.png
+desk REAL — after the drag: {"programme":["RANGE BRIEF: Tally","Hangar open day: Ranger"],"oilQuestion":"OIL — Tally, Range brief","note":"Tally and Ranger swapped"}
+desk picture: desk-swap-1-question-asbuilt.png
+desk picture: desk-swap-2-question-takenback.png
+desk REAL, AS BUILT — after Cancel the swap stays, unanswered: ["RANGE BRIEF: Tally","Hangar open day: Ranger"]
+desk REAL — after Undo, the state "not answered" ends in: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+desk picture: desk-swap-3-question-waits.png
+desk picture: desk-swap-4-after-note.png
+desk picture: desk-swap-5-after-stays.png
+desk picture: desk-swap-6-after-rows.png
+desk no console errors, page errors or failed requests
+desk filed: {"asked":[],"made":[{"iid":"imqoidgg0uc6qli","type":"Training","title":"Range brief","date":"Jul 17","s":540,"e":720,"people":["bane","nick"],"oil":null}]}
+desk filed: {"asked":[],"made":[{"iid":"imqoidgg0jgv4js","type":"Duty","title":"Gate duty","date":"Jul 17","s":0,"e":1439,"people":["harpoon"],"oil":null}]}
+desk filed: {"asked":[],"made":[{"iid":"imqoidgg0qcgs5q","type":"Meeting","title":"Safety board","date":"Jul 17","s":840,"e":900,"people":["mamba"],"oil":null}]}
+desk picture: desk-hol-0-form-asbuilt.png
+desk REAL — the holiday saved: {"err":null,"formStillOpen":false}
+desk REAL — the day’s inputs, and which wear the app’s own "OIL?" tag (nobody has answered): [{"who":"Grit","kind":"ATT C","when":"All day","oilTag":false},{"who":"Nomad","kind":"OD","when":"All day","oilTag":true},{"who":"Trident","kind":"Duty","when":"All day","oilTag":true},{"who":"Ranger, Tally","kind":"Training","when":"09:00–12:00","oilTag":true},{"who":"Sidewinder","kind":"Meeting","when":"14:00–15:00","oilTag":true}]
+desk picture: desk-hol-1-day-asbuilt.png
+desk DRAWN — the notice: {"needAnAnswer":4,"answered":0}
+desk picture: desk-hol-2-notice.png
+desk DRAWN — the list, part answered: {"needAnAnswer":4,"answered":3}
+desk picture: desk-hol-3-list.png
+desk DRAWN — the list after "Yes to all": {"needAnAnswer":4,"answered":4}
+desk picture: desk-hol-4-list-yes-to-all.png
+desk REAL — the other scheduler’s bell today: {"list":"Nothing new","note":"Input added"}
+desk picture: desk-hol-5-bell-asbuilt.png
+desk DRAWN — the bell’s line: one line
+desk picture: desk-hol-6-bell.png
+desk no console errors, page errors or failed requests
+phone filed: {"asked":["the OIL question, answered Yes"],"made":[{"iid":"imqoidgg0rhnz2q","type":"Training","title":"Range brief","date":"Jul 18","s":540,"e":720,"people":["bane"],"oil":{"2026-07-18":0.5}}]}
+phone SETUP — Tally put on the plain row through the bridge: true
+phone the programme before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+phone picture: phone-swap-0-before.png
+phone REAL — after the drag: {"programme":["RANGE BRIEF: Tally","Hangar open day: Ranger"],"oilQuestion":"OIL — Tally, Range brief","note":"Tally and Ranger swapped"}
+phone picture: phone-swap-1-question-asbuilt.png
+phone picture: phone-swap-2-question-takenback.png
+phone REAL, AS BUILT — after Cancel the swap stays, unanswered: ["RANGE BRIEF: Tally","Hangar open day: Ranger"]
+phone REAL — after Undo, the state "not answered" ends in: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+phone picture: phone-swap-3-question-waits.png
+phone picture: phone-swap-4-after-note.png
+phone picture: phone-swap-5-after-stays.png
+phone picture: phone-swap-6-after-rows.png
+phone no console errors, page errors or failed requests
+phone filed: {"asked":[],"made":[{"iid":"imqoidgg0wsjmgr","type":"Training","title":"Range brief","date":"Jul 17","s":540,"e":720,"people":["bane","nick"],"oil":null}]}
+phone filed: {"asked":[],"made":[{"iid":"imqoidgg09fj0ro","type":"Duty","title":"Gate duty","date":"Jul 17","s":0,"e":1439,"people":["harpoon"],"oil":null}]}
+phone filed: {"asked":[],"made":[{"iid":"imqoidgg0yamjii","type":"Meeting","title":"Safety board","date":"Jul 17","s":840,"e":900,"people":["mamba"],"oil":null}]}
+phone picture: phone-hol-0-form-asbuilt.png
+phone REAL — the holiday saved: {"err":null,"formStillOpen":false}
+phone REAL — the day’s inputs, and which wear the app’s own "OIL?" tag (nobody has answered): [{"who":"Grit","kind":"ATT C","when":"All day","oilTag":false},{"who":"Nomad","kind":"OD","when":"All day","oilTag":true},{"who":"Trident","kind":"Duty","when":"All day","oilTag":true},{"who":"Ranger, Tally","kind":"Training","when":"09:00–12:00","oilTag":true},{"who":"Sidewinder","kind":"Meeting","when":"14:00–15:00","oilTag":true}]
+phone picture: phone-hol-1-day-asbuilt.png
+phone DRAWN — the notice: {"needAnAnswer":4,"answered":0}
+phone picture: phone-hol-2-notice.png
+phone DRAWN — the list, part answered: {"needAnAnswer":4,"answered":3}
+phone picture: phone-hol-3-list.png
+phone DRAWN — the list after "Yes to all": {"needAnAnswer":4,"answered":4}
+phone picture: phone-hol-4-list-yes-to-all.png
+phone REAL — the other scheduler’s bell today: {"list":"Nothing new","note":"Input added"}
+phone picture: phone-hol-5-bell-asbuilt.png
+phone DRAWN — the bell’s line: one line
+phone picture: phone-hol-6-bell.png
+phone no console errors, page errors or failed requests

@@ -1,0 +1,211 @@
+<title>Unanswered OIL questions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column; each choice is a short statement beside the real screens that show it, phone first */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --shot:#0c1014;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:62ch;margin:8px 0 0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:62ch;margin:0}
+.how b{color:var(--accent)}
+h2{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:18px 0 0}
+.item{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.txt{min-width:0;display:flex;flex-direction:column;gap:10px}
+.head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;min-width:1.1em}
+h3{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.rec{background:var(--ok-soft);border-radius:6px;padding:10px 12px}
+.rec .lab{color:var(--ok)}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.note .lab{color:var(--warn)}
+.shots{min-width:0;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+figure{margin:0;flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:6px}
+figure.desk{flex-basis:100%}
+figure.ph{max-width:230px}
+.zoom{display:block;width:100%;padding:0;border:1px solid var(--edge);border-radius:8px;background:var(--shot);cursor:zoom-in;overflow:hidden}
+.zoom:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.zoom img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--ink-2);line-height:1.35}
+figcaption b{color:var(--ink)}
+.ask{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ask ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px;max-width:68ch}
+.ask li b{font-weight:600}
+.ask .pick{color:var(--ok);font-weight:600}
+.tap{font-size:13px;color:var(--ink-2);max-width:68ch}
+#lb{position:fixed;inset:0;background:rgba(4,6,8,.94);z-index:10;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));cursor:zoom-out;text-align:center}
+#lb img{max-width:none;width:min(100%,1100px);height:auto;border-radius:6px}
+#lb.big img{width:auto;max-width:none}
+#lbx{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:11;font:600 15px var(--body);padding:10px 16px;border-radius:999px;border:1px solid #5b6672;background:#151b22;color:#e9eef3}
+@media (max-width:720px){ .item{grid-template-columns:minmax(0,1fr);padding:14px} h3{font-size:22px} figure.ph{max-width:none} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>When an OIL question is left unanswered</h1>
+    <p class="lede">The three pictures you asked for, on the app’s real screens, phone and desktop. “Today” is the app as it stands. “Drawn” is the same screen with the change drawn on it. Nothing is built. Tap a picture to see it full size.</p>
+  </header>
+
+  <h2>1 · A swap whose OIL question is not answered</h2>
+  <p class="how"><b>The example:</b> Saturday 18 Jul. Ranger is on Range brief, his own input. Tally is on Hangar open day. The scheduler drags Tally’s puck onto Ranger’s.</p>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">A</span><h3>The swap waits for the answer</h3></div>
+      <p><span class="lab">What he sees</span>The OIL question comes up over the schedule. Behind it nothing has moved. The buttons are “Don’t swap” and “Swap”. Swap stays grey until he picks Yes or No.</p>
+      <p><span class="lab">Not answered</span>Nothing moved, so there is nothing to put back.</p>
+      <p class="rec"><span class="lab">Recommended</span>This one. It does what you ruled — no answer, no swap, and the app says so — but no puck ever jumps and jumps back. Also, by the app’s rules a swap that is made and then undone would, for that moment, tell Ranger by his bell that he was taken off, and on a published day it would drop the sign-offs. With A neither happens.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-swap-3-question-waits.png" alt="Phone: the OIL question for Tally over Saturday's board, with the line Swapping Tally and Ranger and the buttons Don't swap and Swap; Ranger's puck is still on Range brief behind it"></button><figcaption><b>Drawn, phone</b> — Ranger still on Range brief behind the question.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-swap-3-question-waits.png" alt="Desktop: the same question over the Ground Programme; both rows unchanged behind it"></button><figcaption><b>Drawn, desktop</b> — both rows as they were.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">B</span><h3>Swap first, take it back if not answered</h3></div>
+      <p><span class="lab">What he sees</span>The swap is made at once, as today. The question says “Tally and Ranger swapped”, and Cancel becomes “Take the swap back”.</p>
+      <p><span class="lab">Today</span>The same screen, but Cancel leaves the swap in place with no OIL answer at all. That is the gap you found.</p>
+      <p class="note"><span class="lab">The cost</span>The pucks move and then move back, which is the part you said is hard to see.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-swap-2-question-takenback.png" alt="Phone: the OIL question with the line Tally and Ranger swapped and the button Take the swap back; the input's own window is open behind it"></button><figcaption><b>Drawn, phone</b> — “Take the swap back”.</figcaption></figure>
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-swap-1-question-asbuilt.png" alt="Phone, today: the same question with a plain Cancel button"></button><figcaption><b>Today, phone</b> — a plain Cancel.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-swap-2-question-takenback.png" alt="Desktop: the question with Take the swap back"></button><figcaption><b>Drawn, desktop.</b></figcaption></figure>
+    </div>
+  </section>
+
+  <h2>The moment after — three ways to show it</h2>
+  <p class="how">Whichever of A or B you pick, the end is the same: Ranger back on Range brief, Tally on Hangar open day. These are three ways of making that plain. The words shown are A’s. With B they would read “Swap taken back”.</p>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">1</span><h3>A note, and both pucks flash</h3></div>
+      <p>The note is at the foot for about three seconds. Both pucks flash once, the same flash a puck makes when it lands.</p>
+      <p class="note"><span class="lab">The cost</span>If he is looking elsewhere for those three seconds, it is gone.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-swap-4-after-note.png" alt="Phone: both pucks lit, and a note at the foot reading Not swapped, OIL not answered"></button><figcaption><b>Drawn, phone.</b></figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-swap-4-after-note.png" alt="Desktop: both pucks lit and the passing note at the foot"></button><figcaption><b>Drawn, desktop.</b></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">2</span><h3>The flash, and a bar that stays</h3></div>
+      <p>Both pucks flash. A bar stays at the foot until he taps it: “Not swapped — OIL not answered”, with “Answer OIL” and “OK”. “Answer OIL” brings the question straight back.</p>
+      <p class="rec"><span class="lab">Recommended</span>This one. It cannot be missed, and the way to finish the swap is one tap away. It is the same bar the app already uses for “Set as default”.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-swap-5-after-stays.png" alt="Phone: both pucks lit, and a bar at the foot reading Not swapped, OIL not answered, with the buttons Answer OIL and OK"></button><figcaption><b>Drawn, phone.</b></figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-swap-5-after-stays.png" alt="Desktop: both pucks lit and the bar with Answer OIL and OK"></button><figcaption><b>Drawn, desktop.</b></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">3</span><h3>A note, and both rows outlined</h3></div>
+      <p>The two rows wear a blue outline for a few seconds, the outline a row wears when it has just been added.</p>
+      <p class="note"><span class="lab">The cost</span>It is the loudest, but that outline already means “new row”, so it would carry two meanings.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-swap-6-after-rows.png" alt="Phone: both rows outlined in blue, and the passing note at the foot"></button><figcaption><b>Drawn, phone.</b></figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-swap-6-after-rows.png" alt="Desktop: both rows outlined in blue and the passing note"></button><figcaption><b>Drawn, desktop.</b></figcaption></figure>
+    </div>
+  </section>
+
+  <h2>2 · The one list</h2>
+  <section class="item">
+    <div class="txt">
+      <div class="head"><h3>Every input of the day that needs an OIL answer</h3></div>
+      <p><span class="lab">What it holds</span>One line an input, drawn as the input’s own card, with Yes and No on it. Yes shows what it gives: FO for a full day, HO for half a day, as the single question offers today.</p>
+      <p><span class="lab">Yes to all · No to all</span>They fill every line. He can still change any one line before Save.</p>
+      <p><span class="lab">Several people</span>An input for several people is one line with one answer (Ranger, Tally).</p>
+      <p><span class="lab">Later</span>Closes it. What is left unanswered goes to the schedulers’ bells.</p>
+      <p><span class="lab">Design notes</span>A chosen Yes is lit; a chosen No is quiet grey, so a long list reads at a glance. On a phone the list is only as tall as what is in it.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-hol-3-list.png" alt="Phone: the list for Friday 17 July, three of four answered, with Yes to all and No to all at the top and Later and Save at the foot"></button><figcaption><b>Drawn, phone</b> — three answered, one left.</figcaption></figure>
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-hol-4-list-yes-to-all.png" alt="Phone: the list after Yes to all, every line lit"></button><figcaption><b>Drawn, phone</b> — after “Yes to all”.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-hol-3-list.png" alt="Desktop: the same list as a small window"></button><figcaption><b>Drawn, desktop</b> — a window he can move.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>3 · A day made a holiday afterwards</h2>
+  <p class="how"><b>The example:</b> three inputs are filed on Friday 17 Jul, a working day. Then Saber makes that day a public holiday, National Day. With the demo’s own overseas duty on that day, four inputs now need an OIL answer.</p>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><h3>The admin is told at once</h3></div>
+      <p><span class="lab">What he sees</span>The moment he saves the holiday, the list opens by itself, with one line above it: “National Day is now a public holiday.”</p>
+      <p><span class="lab">What he answers there</span>Tells nobody. Only what he leaves goes on.</p>
+      <p><span class="lab">Today</span>The holiday saves and nothing is said. The inputs wear the small “OIL?” tag and that is all.</p>
+      <p>The Leave War’s Event row makes the same holiday, so it would open the same list.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-hol-2-notice.png" alt="Phone: the Holidays list with National Day on Friday 17 July, and the OIL list opened over it with four inputs to answer"></button><figcaption><b>Drawn, phone</b> — the list over the Holidays list.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-hol-2-notice.png" alt="Desktop: the Calendar window with National Day in its Holidays list and the OIL list beside it"></button><figcaption><b>Drawn, desktop</b> — beside the Calendar window.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><h3>The schedulers’ bell: one line a holiday</h3></div>
+      <p><span class="lab">What they see</span>The bell lights. One line: the holiday and its date, how many inputs still need an answer, who declared it. A tap opens the same list.</p>
+      <p><span class="lab">Who else</span>Whoever answers for each input is asked by his own bell, as today. Nobody else.</p>
+      <p><span class="lab">Today</span>Another scheduler’s bell says “Nothing new”. Checked on the real app after making the holiday.</p>
+    </div>
+    <div class="shots">
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-hol-6-bell.png" alt="Phone: the bell's list with one line, National Day, Friday 17 July, 4 inputs need an OIL answer, Saber"></button><figcaption><b>Drawn, phone.</b></figcaption></figure>
+      <figure class="ph"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/phone-hol-5-bell-asbuilt.png" alt="Phone, today: the bell's list says Nothing new"></button><figcaption><b>Today, phone</b> — “Nothing new”.</figcaption></figure>
+      <figure class="desk"><button class="zoom" type="button"><img src="2026-10-12-oil-notify/desk-hol-6-bell.png" alt="Desktop: Warden's bell lit, with the one line for National Day"></button><figcaption><b>Drawn, desktop</b> — another scheduler, Warden.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>What I need from you</h2>
+  <section class="ask">
+    <p>Answer by number. A plain “yes to all” takes every recommendation.</p>
+    <ol>
+      <li><b>The swap:</b> A (it waits for the answer) or B (swap first, take it back)? <span class="pick">Recommended: A.</span></li>
+      <li><b>The moment after:</b> 1, 2 or 3? <span class="pick">Recommended: 2.</span></li>
+      <li><b>A person added</b> to an input with no answer yet is treated the same way: “Not added — OIL not answered”. <span class="pick">Recommended: yes.</span></li>
+      <li><b>Nobody else is told</b> when a swap is not made, since nothing changed. <span class="pick">Recommended: yes.</span></li>
+      <li><b>The list opens by itself</b> when the holiday is saved. That is how I read “if the admin already answers for everyone”. <span class="pick">Recommended: yes.</span></li>
+      <li><b>One bell line a holiday</b>, counting only what is left, and a tap opens the list. <span class="pick">Recommended: yes.</span></li>
+    </ol>
+  </section>
+
+  <p class="tap">How these were made: the real app was driven to each state on 12 Oct 26. The swap was a real drag, the holiday was really added, and the four unanswered inputs are real. Then the proposed words, buttons and marks were drawn on with the app’s own styles. Phone pictures are 390 wide, desktop 1440.</p>
+</div>
+
+<div id="lb" hidden></div>
+<button id="lbx" type="button" hidden>Close ✕</button>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.appendChild(document.createElement('img')), x=document.getElementById('lbx'), last=null
+  function shut(){ lb.hidden=true; x.hidden=true; lb.classList.remove('big'); if(last) last.focus() }
+  document.querySelectorAll('.zoom').forEach(function(b){
+    b.addEventListener('click',function(){ var s=b.querySelector('img'); last=b; im.src=s.src; im.alt=s.alt; lb.hidden=false; x.hidden=false; lb.scrollTop=0; x.focus() })
+  })
+  im.addEventListener('click',function(e){ e.stopPropagation(); lb.classList.toggle('big') })
+  lb.addEventListener('click',shut); x.addEventListener('click',shut)
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) shut() })
+})()
+</script>

@@ -247,6 +247,14 @@ Personal Inputs, the week and the board, a phone and a desktop, a published day,
 `docs/mock/img/group-input-one-row/`. `scripts/handpass/gi-mock.mjs` draws them (with `gi-lib.mjs`): it drives the built
 app through its own controls, pictures it, then re-arranges the rows ON THE PAGE into one (`MERGE`) and pictures it again.
 
+`[OIL-ASK-NOTIFY]` (12 Oct 26 — a drawing; nothing built; D780, D781, D782): `docs/mock/oil-notify.html` is the pictures page
+put to him — a swap whose OIL question is not answered (two wordings, three ways of showing the moment after), the ONE
+list with "Yes to all" / "No to all", the notice when a day is made a holiday afterwards and the schedulers' bell line;
+a phone and a desktop. Its pictures are `docs/mock/2026-10-12-oil-notify/`, what the run printed beside them (what is
+REAL, what is DRAWN) `docs/mock/2026-10-12-oil-notify-run.txt`. `scripts/handpass/oilnotify-mock.mjs` draws them: it
+drives the built app by real presses (the swap is a real drag, the holiday is really added), pictures it, then puts the
+proposed words and marks on the page from the app's own classes.
+
 `[OIL-WORK-START]` (D591, D592, 6 Oct 26): a flying line's OIL counts from its entered In-time / Rally, and a published
 day keeps the OIL it went out with. The fixes are in `src/engine/oil.ts` (`dayOilWork`'s flying branch reads
 `reporting.ts resolveReporting`; `OilRuleVals`, the `rv` every walk can be handed), `src/engine/oilev.ts` (the evidence

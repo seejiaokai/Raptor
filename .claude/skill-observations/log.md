@@ -4089,3 +4089,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In walk briefs and test harness notes: "set the clock to a start time and let it RUN (install + resume / fastForward between steps); never freeze it unless the scenario is about one instant". When a rule under test reads a stored timestamp or an ordering by time, say so in the scenario's EXPECTED line so a same-instant result is recognised as an artefact.
 
 **Principle:** A fixture that collapses a dimension the code discriminates on (time, identity, order) can only produce false matches along it; pin the start of time, never its passage.
+
+### Observation 537: A file write and the run that depends on it, sent together — the run used the OLD file and looked like the new one's result
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Drawing a mock-up with a scripted browser; the script was rewritten whole and run in the same step.
+**Skill:** New skill candidate: mock-up on the live build (see the open observation of that name) / verification-before-completion
+**Type:** open-source
+**Phase/Area:** Iterating on a script: edit, run, read the output
+
+**Issue:** The script file had been changed by a helper edit since it was last read, so the editor refused the whole-file rewrite. The run was sent in the same step, went ahead on the old file, exited 0 and printed plausible lines. Only the wording of two printed labels showed the output was the previous version's; a whole round of pictures would otherwise have been judged as the new design.
+
+**Suggested improvement:** In the mock-up / walk-script method: never send a file rewrite and the run that depends on it in one step; after any edit made outside the editor (a helper script), re-read before the next whole-file write; and have the script print a version line of its own (a date or a short tag) at the top of every run so stale output is visible at a glance.
+
+**Principle:** A run is evidence only about the file that actually ran; when the write and the run are issued together, check the write landed before believing the run.
