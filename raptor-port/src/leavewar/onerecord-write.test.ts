@@ -149,14 +149,16 @@ describe('one input, one record — filed in one command (D756; the plan §4.1, 
 describe('what one record may hold is held at the inputs door (the plan §4.1)', () => {
   const rec = (people: string[], over: any = {}) => ({ iid: 'zz1', type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: '', mod: '2026-01-15',
     by: 'stiff', at: 1, people: people.map(p => ({ p, by: 'stiff', at: 1 })), ...over })
-  it('a person twice, nobody, two people on a medical entry or a Personal input: refused whole, with the sentence', () => {
-    for (const bad of [rec(['bane', 'bane']), rec([]), rec(['bane', 'rocky'], { type: 'OML', allday: true }), rec(['bane', 'rocky'], { type: 'Personal' })]) {
+  /* (two people on a Personal input were refused here too until D776, 12 Oct 26 — it is the last line's control now) */
+  it('a person twice, nobody, two people on a medical entry: refused whole, with the sentence', () => {
+    for (const bad of [rec(['bane', 'bane']), rec([]), rec(['bane', 'rocky'], { type: 'OML', allday: true })]) {
       said = []
       expect(writeInputs(() => { INPUTS.unshift(bad) }), JSON.stringify(idsOf(bad)) + bad.type).toBe(false)
       expect(INPUTS.some((r: any) => r.iid === 'zz1')).toBe(false)
       expect(said.join(' | ')).toMatch(/already on this input|at least one person|one person/i)
     }
     expect(writeInputs(() => { INPUTS.unshift(rec(['bane', 'rocky'])) })).toBe(true)
+    expect(writeInputs(() => { INPUTS.unshift(rec(['bane', 'rocky'], { iid: 'zz2', type: 'Personal' })) }), 'a Personal input of two (D776)').toBe(true)
   })
 })
 

@@ -126,7 +126,7 @@ describe('where the input cannot take one, the two are greyed and the reason is 
   it('a kind that is not one of the six', async () => {
     await mount({ people: ['bane', 'pike'], type: 'OD' })
     expect(ph('allavail').disabled).toBe(true)
-    expect(tid('pp-phwhy')!.textContent).toBe('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+    expect(tid('pp-phwhy')!.textContent).toBe('ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
   })
   it('one already picked when the dates grew stays shown and lit — with the sentence, and one press that takes it out', async () => {
     await mount({ people: ['bane', 'pike', 'allavail'], endDate: 'Jul 17' })
@@ -147,7 +147,7 @@ describe('pickProblem — the sentence the window\'s Save refuses with', () => {
   })
   it('longer than a day, or another kind: the one body\'s sentence', () => {
     expect(pickProblem(['bane', 'allavail'], true, 'Meeting', why('Meeting', 'Jul 17'))!.why).toBe('ALL AVAIL is for one day')
-    expect(pickProblem(['bane', 'all'], true, 'OD', why('OD'))!.why).toBe('ALL is for Training, Meeting, Appointment, Duty, Event and Other')
+    expect(pickProblem(['bane', 'all'], true, 'OD', why('OD'))!.why).toBe('ALL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
   })
   it('both of them — however it came about: "This input already has ALL AVAIL"', () => {
     expect(pickProblem(['bane', 'allavail', 'all'], true, 'Meeting', why('Meeting'))!.why).toBe('This input already has ALL AVAIL')

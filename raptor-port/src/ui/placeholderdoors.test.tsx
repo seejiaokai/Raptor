@@ -166,7 +166,7 @@ describe('D700 — choosing it: the two entries in the one-person list', () => {
       const ok = PLACEHOLDER_KINDS.includes(t)
       expect(ph('allavail')!.disabled, t).toBe(!ok)
       expect(ph('all')!.disabled, t).toBe(!ok)
-      expect(tid('pp-phwhy')?.textContent ?? '', t).toBe(ok ? '' : 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+      expect(tid('pp-phwhy')?.textContent ?? '', t).toBe(ok ? '' : 'ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
     }
   })
 
@@ -281,9 +281,9 @@ describe('read only — walker A\u2019s finds (9 Oct 26)', () => {
 
 /* THE RULE SURVIVES in every case of this describe (D711 (2), D712, D713; kept by D753 reading 3); step 3 changed only its
    WORDS — "ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other" is the plan's "ALL AVAIL
-   is for Training, Meeting, Appointment, Duty, Event and Other" (§4.4; D726). The sentence is pinned whole and said
+   is for Training, Meeting, Personal, Appointment, Duty, Event and Other" (§4.4; D726). The sentence is pinned whole and said
    ONCE, so a door that began to say two things would go red. */
-const KIND_WHY = (cs: string) => `${cs} is for Training, Meeting, Appointment, Duty, Event and Other`
+const KIND_WHY = (cs: string) => `${cs} is for Training, Meeting, Personal, Appointment, Duty, Event and Other`
 describe('D711 (2), D712 — a kind that is not allowed is refused, with its sentence, and nothing is saved', () => {
   it('the picker says why the moment the kind changes; Save refuses; what he picked is never substituted', async () => {
     await openNew()
@@ -1070,7 +1070,8 @@ describe('THE SAVE BOUNDARY — one hard check on what a command really changed,
      member", a record carrying `grp` / `grpBy` — is re-expressed below: a ruling changed it and its subject is gone. */
   const bad: Array<[string, any, string]> = [
     ['an overseas duty', { type: 'OD' }, KIND_WHY('ALL AVAIL')], ['a course', { type: 'CSE' }, KIND_WHY('ALL AVAIL')],
-    ['Fly with', { type: 'Fly with' }, KIND_WHY('ALL AVAIL')], ['Personal', { type: 'Personal' }, KIND_WHY('ALL AVAIL')],
+    /* ("Personal" stood in this list until D778, 12 Oct 26 — ALL AVAIL / ALL may be filed for a one-day Personal input) */
+    ['Fly with', { type: 'Fly with' }, KIND_WHY('ALL AVAIL')],
     ['a leave', { type: 'LL', allday: true }, KIND_WHY('ALL AVAIL')], ['two days', { endDate: 'Oct 14' }, 'ALL AVAIL is for one day'],
   ]
   for (const [name, over, why] of bad) {

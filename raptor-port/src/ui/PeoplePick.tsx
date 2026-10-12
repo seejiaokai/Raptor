@@ -50,7 +50,7 @@ const GROUPS: Array<{ k: string; label: string; has: (p: any) => boolean }> = [
    input takes ALL or ALL AVAIL, never both"; the plan 2026-10-11-one-rule-plan.md §4.5). Until then a placeholder was
    filed on its own and "Several people" refused one. Now the two are pucks of their own above the groups, under the
    same heading: one may be picked beside the people; where this input cannot hold one — longer than a day, or not one
-   of the six kinds — they are drawn greyed with the reason under them (`phWhy`: the window's own answer, of its
+   of the seven kinds (six until D778, 12 Oct 26) — they are drawn greyed with the reason under them (`phWhy`: the window's own answer, of its
    draft's kind and dates). */
 export const PLACEHOLDER_IDS = (): string[] => Object.keys(PEOPLE).filter(id => PEOPLE[id].special)
 export const PLACEHOLDER_HEADING = 'Whoever is free that day'

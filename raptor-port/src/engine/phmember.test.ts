@@ -53,15 +53,18 @@ describe('where it cannot apply, the one body says why (D753, D755 (4))', () => 
     expect(placeholderProblem(one({ endDate: 'Jul 18' })), 'an end on its own day is one day').toBe('')
   })
   it('a kind that is not one of the six', () => {
-    const why = 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other'
+    const why = 'ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other'
     expect(placeholderProblem(one({ type: 'OL' }))).toBe(why)
     expect(placeholderProblem(one({ type: 'OD' }))).toBe(why)
     expect(placeholderProblem(one({ type: 'Fly with' }))).toBe(why)
   })
-  it('a Personal input is one person\'s own — nobody beside him, a placeholder included', () => {
-    /* the placeholder's own rule is said first, at every door: Personal is not one of its kinds (D712) */
-    expect(shapeProblem(one({ type: 'Personal' }))).toBe('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
-    expect(shapeProblem(one({ type: 'Personal', people: [{ p: 'bane' }, { p: 'pike' }] }))).toBe('A Personal input is one person’s own')
+  /* A NAMED RULING CHANGED THIS CASE (D776 "A2", D778 — 12 Oct 26). It read "a Personal input is one person's own —
+     nobody beside him, a placeholder included" (D755 (4), D712). A Personal input is now the same as an Event for
+     everything about people: several people, and ALL AVAIL / ALL on a one-day one. */
+  it('a Personal input holds several people, and a placeholder, as an Event does (D776, D778)', () => {
+    expect(shapeProblem(one({ type: 'Personal' }))).toBe('')
+    expect(shapeProblem(one({ type: 'Personal', people: [{ p: 'bane' }, { p: 'pike' }] }))).toBe('')
+    expect(shapeProblem(one({ type: 'Personal', people: [{ p: 'bane' }, { p: 'pike' }, { p: 'allavail' }] }))).toBe('')
   })
   it('never under Unavailable — that names a real person\'s day', () => {
     expect(placeholderProblem(one({ acc: 'u' }))).toMatch(/cannot be filed under Unavailable/)

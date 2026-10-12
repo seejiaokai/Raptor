@@ -648,7 +648,7 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    nobody's name is stored in it — who stands behind it is worked out on the day, as for a placeholder dropped on a row
    (D702, D44). So no man behind it has a record of his own, and none has an OIL answer of his own (D711 (1)).
    ITS STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
-   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" or "Personal" (D712), and the new
+   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" (D712 — "Personal" too until D778, 12 Oct 26: below), and the new
    Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); and never under
    Unavailable (below). `placeholderProblem` answers '' or the sentence the screen says; every save door asks it
    first (ui/inputedit.tsx normalizeInputDraft, commitInput; ui/PeoplePick.tsx; the row's door, ui/reqdoor.ts) and the
@@ -659,7 +659,11 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    third rule, "(c) alone — never a group member": a placeholder was filed on its own. It is gone. What D753 keeps is
    (b) — "offered only where the input is a single day" — and "ALL or ALL AVAIL, never both" (shapeProblem, below).
    The words are the plan's (§4.4), as short as can be understood (D726, D765). */
-export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Appointment','Duty','Event','Other'];
+/* …AND "PERSONAL" IS ONE OF THE KINDS (owner D778, 12 Oct 26 — "So all avail all can go on personal"; it narrows D712,
+   which stands for "Fly with"): a Personal input is the same as an Event for everything about PEOPLE, and it is still
+   NOT WORK — it never asks the OIL question (oilAsks, above), so the men behind its puck are counted and earn nothing
+   (oilev.ts oilEvidence, the membership-only pass). Listed in the type dropdown's own order. */
+export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Personal','Appointment','Duty','Event','Other'];
 export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
 export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
 export function placeholderProblem(inp:any):string{
@@ -686,7 +690,8 @@ export function placeholderProblem(inp:any):string{
        one never twice: one sentence for both, "This input already has ALL AVAIL");
      · a placeholder's own rules (placeholderProblem, above) — first, as every door says them first;
      · a medical entry or an upchit is one person's — each needs its own document (D655 reading 4);
-     · a Personal input is one person's own (D755 (4));
+     · (until D776, 12 Oct 26, "a Personal input is one person's own" — D755 (4) — was the fourth: he ruled "A2", a
+       Personal input may hold several people as every other kind does, and the sentence is refused nowhere now);
      · a leave the Leave War approved (`lw`) is one person's (the one-rule plan §4.1 said so and nothing held it — the
        Opus trial read, claim 5, reproduced red in leavewar/trialread.test.ts, 12 Oct 26): the war finds the leave
        behind a man's cell only where he is its ONE person (leavewar/sync.ts warLeaveRow), so a second person put in
@@ -704,14 +709,9 @@ export function shapeProblem(inp:any):string{
   for(const p of ids){const k=String(p); if(seen.has(k))return `${cs(p)} is already on this input`; seen.add(k);}
   const why=placeholderProblem(inp); if(why)return why;
   if(ids.length>1&&(isDownchit(inp.type)||isUpchit(inp.type)))return `${isUpchit(inp.type)?'An upchit':'A medical entry'} is one person’s — each needs its own document`;
-  if(ids.length>1&&personalKind(inp.type))return PERSONAL_OWN;
   if(ids.length>1&&inp.lw)return LW_OWN;
   return '';}
 export const LW_OWN='A leave approved on the Leave War is one person’s — file the other person’s leave as its own input';
-/* THE "PERSONAL" KIND AND ITS ONE SENTENCE — one body for the record's shape (above) and for the row's door, which
-   refuses a man dropped ON its one person's puck too (ui/reqdoor.ts rowPut — D755 (4), D757; the walk's B8, 12 Oct 26) */
-export function personalKind(t:any):boolean{return /^Personal$/i.test(String(t==null?'':t).trim());}
-export const PERSONAL_OWN='A Personal input is one person’s own';
 /* ---- AN INPUT'S OWN TITLE ([INPUT-OWN-TITLE]; owner D715, D716, D717 — 9 Oct 26; the plan
    docs/superpowers/plans/2026-10-09-input-own-title-plan.md) -------------------------------------------------------
    His words: "select the type of input and it gives the user the option to change the name of the input. Not only to

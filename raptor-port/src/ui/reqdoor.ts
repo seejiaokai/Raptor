@@ -46,7 +46,7 @@
    holding: taken off and dropped back it is a new one (inputown.ts putPerson — Fable F11). */
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { idsOf, inpLabel, oilAsks, personalKind, PERSONAL_OWN } from '../engine/inputs'
+import { idsOf, inpLabel, oilAsks } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { requestOfBox, standsOn } from '../engine/overlay'
 import { toPeople } from '../engine/inputown'
@@ -165,10 +165,9 @@ export function rowPut(key: any, id: any, seat?: (was: string) => boolean | void
   /* a placeholder: never replaces anyone — it joins, where the input may hold one (the input's own save says why
      where it may not) */
   if (isSpecial(pid)) return join(p, pid)
-  /* A PERSONAL INPUT IS ONE PERSON'S OWN — on his puck too (D755 (4), D757: "Anyone onto a Personal input"): the
-     hand-over below would make one man's personal matter another's. Refused with the sentence the "+ add" drop gets
-     from the record's own shape (engine/inputs.ts shapeProblem) — found by the job's walk, B8 (12 Oct 26). */
-  if (p.at && ids.length === 1 && !isSpecial(p.at) && personalKind(p.inp.type)) { HOOKS.toast(PERSONAL_OWN, 'warn'); return 'refused' }
+  /* (A PERSONAL INPUT'S ROW IS A ROW LIKE ANY INPUT'S — owner D776, 12 Oct 26, "A2 B2": it may hold several people, and
+     a puck dropped on it swaps or joins as on any input's. The refusal the job's walk added here for its one person's
+     puck — B8, D755 (4) — is withdrawn with the rule it kept.) */
   if (p.at && ids.length === 1 && !isSpecial(p.at))
     return replace(p, pid, seat, seat ? was => `${csOf(pid)} and ${csOf(was)} swapped` : undefined)
   return join(p, pid)

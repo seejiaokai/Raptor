@@ -143,7 +143,7 @@ test('in the window: ALL AVAIL with an overseas duty is refused in words — and
   await page.selectOption('#inpEditPerson', 'allavail')
   await page.selectOption('#inpEditType', 'OD')
   await expect(page.locator('#inpEditPerson')).toHaveValue('allavail')
-  await expect(page.locator('#inpEditPop [data-testid="pp-why"]')).toContainText('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+  await expect(page.locator('#inpEditPop [data-testid="pp-why"]')).toContainText('ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
   await page.locator('#inpEditSave').click()
   await expect(edWin(page), 'the window stays').toBeVisible()
   expect(await made(page, had)).toHaveLength(0)

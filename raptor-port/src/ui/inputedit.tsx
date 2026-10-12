@@ -600,7 +600,7 @@ export function normalizeInputDraft(draft: any, except: any):
     HOOKS.toast('An upchit stays an upchit — delete it instead if it was filed in error', 'warn'); return null
   }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
-  /* AN INPUT FOR ALL AVAIL / ALL: one of six kinds, one day ([INPUT-ALL-AVAIL] — placeholderRefused above says why).
+  /* AN INPUT FOR ALL AVAIL / ALL: one of seven kinds (Personal among them since D778, 12 Oct 26), one day ([INPUT-ALL-AVAIL] — placeholderRefused above says why).
      Here, at the one body every editor's commit passes through, so no door can write what the picker will not offer. */
   if (placeholderRefused({ person: draft.person, type: draft.type, date, endDate })) return null
   /* A SPAN HAS TO RUN FORWARDS. Dates now carry their year whenever it is not
@@ -884,7 +884,7 @@ export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, ent
     medPlanProtected(newMedTrimPlan(leadOf(base), base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
 
 /* IS THIS DRAFT A PLACEHOLDER INPUT THAT MAY NOT BE SAVED? ([INPUT-ALL-AVAIL] — owner D700, D711, D712, D713; the plan
-   docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2.) An input for ALL AVAIL / ALL is one of six kinds, ONE
+   docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2.) An input for ALL AVAIL / ALL is one of seven kinds (Personal among them since D778, 12 Oct 26), ONE
    day, never in a group — engine/inputs.ts placeholderProblem, the one body. This is its voice at a save DOOR: it says
    the sentence and answers true, and the caller keeps its window open. Asked FIRST by every save handler — before the
    document question, the medical sheets and the OIL question (Astra's read of the plan, 9 Oct 26: changing an ALL AVAIL

@@ -606,10 +606,35 @@ function oilEvidenceNow(di: any, day?: any): OilEvidence {
     const named = claimPeople(inp)
     sent[inputItemKey(inp.iid)] = (HOOKS.oilSentinel(iso as string, inp.win, d) || []).filter((p: any) => !named.includes(String(p)))
   }
-  /* (A REQUEST THAT NEVER ASKS THE OIL QUESTION HOLDS NO PLACEHOLDER any more — the one-rule build, step 2 (d): the
-     placeholder is one of an input's own people, offered only for the six kinds that all ask (inputs.ts
-     PLACEHOLDER_KINDS; owner D712, D753, D755 (4)), so the membership-only pass that counted a puck dropped on a
-     "Personal" request's row — [OIL-PERSONAL-PLACEHOLDER], phase 7 — has nothing left to read and is gone.) */
+  /* AND AN INPUT THAT NEVER ASKS THE OIL QUESTION — "PERSONAL" (owner D778, 12 Oct 26: "Personal is not work" / "So all
+     avail all can go on personal"; [OIL-PERSONAL-PLACEHOLDER], phase 7, back in the one record's shape). The loop above
+     runs over the claims, and only a kind that ASKS projects one (projectOilInputs → oilAsks) — so the puck of a
+     Personal input was written down nowhere: no count, no window, nothing frozen at publication, on any day (D27, D37:
+     the count shows wherever the puck stands; D44: frozen on every day). *(Between step 2 (d) of the one-rule build
+     and D778 no such input could exist — a placeholder was offered only for the six kinds that all ask — and this
+     pass was gone.)*
+
+     MEMBERSHIP ONLY. Nothing here reaches the credit: `inputs` (what an input's people and crowd are paid from) is not
+     touched, so the men behind the puck earn nothing — exactly as a man NAMED in a Personal input earns nothing.
+     Pinned by oilpersonalcrowd.test.ts.
+
+     The same conditions as the loop above, read off the input itself: it holds a placeholder, covers this day, is not
+     taken off, cancelled or information only (its own marks — D760), and its own window measures something. Nobody
+     NAMED in it is in its crowd. `r.iid`, never `inpId`: a read must not mint an id. */
+  { const ord = +String(iso).replace(/-/g, '')
+    for (const r of INPUTS as any[]) {
+      if (!r || !r.iid || oilAsks(r.type) || !placeholderOf(r) || String(r.acc || '') === 'r' || r.cx || r.info) continue
+      const item = inputItemKey(String(r.iid))
+      if (Object.prototype.hasOwnProperty.call(sent, item)) continue
+      const a = dateOrd(r.date, r.yr)
+      if (a == null) continue
+      const b = r.endDate ? dateOrd(r.endDate, r.yr) ?? a : a
+      if (ord < a || ord > b) continue
+      const w = inpWin(r)
+      if (!w || !(w[1] > w[0])) continue
+      const named = namedOf(r).map((e: any) => String(e.p))
+      sent[item] = (HOOKS.oilSentinel(iso as string, [w[0], w[1]], d) || []).filter((p: any) => !named.includes(String(p)))
+    } }
   /* A DAY THAT EARNS NOBODY ANYTHING STILL KNOWS WHO IS BEHIND ITS PUCKS
      ([OIL-SEATS-CAN-EARN] step 9; D27, D44). The count is a SCHEDULING fact —
      dropped anywhere, a placeholder works out who would attend — and until now

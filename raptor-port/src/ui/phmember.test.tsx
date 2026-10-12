@@ -208,18 +208,22 @@ describe('where it cannot apply the drop is refused with its reason, and nothing
     const r = INPUTS.find((x: any) => x.type === 'Fly with' && x.date === 'Jul 15' && idsOf(x).includes('bane') && x.remarks === 'Bring your kit') as any
     const ri = ground().findIndex((g: any) => g && g.src === String(inpId(r)))
     if (ri < 0) return                 // a kind that lands no Ground row has no row door to ask; its window says it (below)
-    refused(`g:${WED}.${ri}.+`, 'allavail', 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+    refused(`g:${WED}.${ri}.+`, 'allavail', 'ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
   })
   it('the same sentences at the input\'s own save — its window, the Inputs calendar', async () => {
     await boot()
     const no = (ppl: string[], over: any, why: string) => { SAID = []; expect(commitInput(null, DRAFT(WED, over), ppl)).toBe(false); expect(SAID).toEqual([why]) }
     const n = INPUTS.length
     no(['bane', 'allavail'], { end: '2026-07-17' }, 'ALL AVAIL is for one day')
-    no(['bane', 'all'], { type: 'Fly with' }, 'ALL is for Training, Meeting, Appointment, Duty, Event and Other')
+    no(['bane', 'all'], { type: 'Fly with' }, 'ALL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
     no(['bane', 'allavail', 'all'], {}, 'This input already has ALL AVAIL')
-    no(['bane', 'allavail'], { type: 'Personal' }, 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
-    no(['bane', 'pike'], { type: 'Personal' }, 'A Personal input is one person’s own')
     expect(INPUTS.length, 'nothing was filed').toBe(n)
+    /* (until D776 and D778, 12 Oct 26, two more were refused here: ALL AVAIL on a Personal input, and a second person on
+       one — "A Personal input is one person's own". Both save now: Personal is the same as an Event for people.) */
+    SAID = []
+    expect(commitInput(null, DRAFT(WED, { type: 'Personal' }), ['bane', 'allavail']), SAID.join(' | ')).toBe(true)
+    expect(commitInput(null, DRAFT(WED, { type: 'Personal', sTime: '16:00', eTime: '17:00' }), ['bane', 'pike']), SAID.join(' | ')).toBe(true)
+    expect(INPUTS.length).toBe(n + 2)
   })
 })
 

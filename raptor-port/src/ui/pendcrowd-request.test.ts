@@ -135,36 +135,31 @@ describe('a request row\'s crowd change is named by its row and can be tapped (F
     expect(pendListHTML(TUE)).toContain('TRAINING · who it stands for')
   })
 
-  /* A PERSONAL REQUEST'S ROW — the subject phase 7 added here ("a Personal row reaches it too") cannot exist: ALL AVAIL
-     put on it is refused at the store's writer, at the row's door and at the engine's belt, so the row has no crowd,
-     and a change in who is free is nothing waiting on its published day — no line, named or nameless. (The drop
-     itself, and the row's missing count chip, are ui/oilpersonalcrowd.test.tsx.) THE REFUSAL'S WORDS CHANGED WITH STEP 3
-     (2): "ALL AVAIL can be filed only for Training, Meeting, Appointment, Duty, Event or Other" was the sentence of an
-     input FILED for the placeholder; now that it is one of an input's people the six kinds are said as the plan's
-     table says them (§4.4; D753 reading 3, D755 (4)) — one sentence at every door, each hand saying it once. */
-  it('a Personal request\'s row holds no placeholder (D755 (4)): ALL AVAIL put on it is refused, so it has no crowd change to name', () => {
-    const row = request({ type: 'Personal', person: 'ignite' })
+  /* A PERSONAL REQUEST'S ROW REACHES IT TOO — the subject phase 7 added here, BACK since D778 (12 Oct 26: "So all avail
+     all can go on personal"). Between the one-rule build's step 2 and that ruling ALL AVAIL was refused on a Personal
+     row at every door (D755 (4), D712), and this case pinned the refusal and "nothing is waiting". Now the puck is one
+     of the input's people there as on any input's row; its crowd is written down (membership only — a Personal input
+     earns nobody anything, oilev.ts), frozen when the day goes out, and a change in who is free is named by its row
+     and can be tapped — the same line a Training's row gets. */
+  it('a Personal request\'s row holds ALL AVAIL as any input\'s does (D778): its crowd change is named by the row and can be tapped', () => {
+    const row = request({ type: 'Personal', people: [{ p: 'ignite', by: 'stiff', at: 1 }] })
     const ri = ((DAYS[TUE] as any).ground as any[]).indexOf(row), add = `g:${TUE}.${ri}.+`
-    const was = JSON.stringify([INPUTS, row])
-    const said: string[] = []
-    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    HOOKS.toast = () => {}
     setSession({ user: 'ad', role: 'admin', name: 'ad' })
-    writeFill(add, 'allavail')
-    expect(rowPut(add, 'allavail'), 'the row\'s door').toBe('refused')
-    expect(fillSlot(add, 'allavail'), 'the engine\'s belt: a raw write to its "+ add"').toBe(false)
-    expect(setSlotVal(`g:${TUE}.${ri}`, 'allavail'), '…and to its name box').toBe(false)
-    const WHY = 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other'
-    expect(said, 'refused with its reason — once by the store\'s writer, once by the door; the belt is silent').toEqual([WHY, WHY])
-    expect(JSON.stringify([INPUTS, row]), 'nothing changed').toBe(was)
-    expect(idsOf(INPUTS[0]).map(String)).toEqual(['ignite'])
-    expect(placeholderOf(INPUTS[0]), 'no placeholder in the input').toBeFalsy()
-    expect([row.who, row.more], 'nor on its row').toEqual(['ignite', undefined])
+    expect(rowPut(add, 'allavail'), 'the row\'s door').toBe('done')
+    viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
+    ensureRowIds(DAYS)
+    expect(idsOf(INPUTS.find((r: any) => r.iid === 'rq1')).map(String), 'it is IN the input').toEqual(['ignite', 'allavail'])
+    const now = ((DAYS[TUE] as any).ground as any[]).find(g => g && g.src === 'rq1')
+    expect([now.who, now.more], 'the man in the name box, the placeholder under him').toEqual(['ignite', ['allavail']])
     publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
     CROWD = ['bane', 'stiff']
-    expect(dayHasChanges(TUE), 'who is free changed, and nothing on this day stands for them: nothing is waiting').toBe(false)
+    expect(dayHasChanges(TUE), 'the crowd changed: the day reads pending').toBe(true)
     const html = pendListHTML(TUE)
-    expect(html).not.toContain('who it stands for')
-    expect(html).not.toContain('A placeholder')
+    expect(html).toContain('PERSONAL · who it stands for')
+    expect(html, 'never the nameless line').not.toContain('A placeholder')
+    expect(html, 'and it is a line you can tap to go there').toMatch(/<button class="pl-item" data-plix="\d+"/)
   })
 
   it('THE CONTROL: a hand-built row reads as it always did', () => {

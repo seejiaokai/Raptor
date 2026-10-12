@@ -225,7 +225,7 @@ function batchResult(r: CommitResult): boolean {
 }
 
 /* AN INPUT FILED FOR "ALL AVAIL" / "ALL" KEEPS ITS SHAPE, WHOEVER SAVES IT AND BY WHATEVER DOOR ([INPUT-ALL-AVAIL]; owner
-   D700, D711, D712, D713 — 9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2). One of six
+   D700, D711, D712, D713 — 9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2). One of seven (six until D778, 12 Oct 26 — Personal joined)
    kinds, one day, never in a group: engine/inputs.ts placeholderProblem is the one body, and every save door asks it
    first, with its sentence. THIS is the layer behind the doors — a HARD check on what a command really changed, kept
    beside the member's ownership check (wireStore below). It reads no role, so an admin is held as a member is (the

@@ -1,25 +1,16 @@
 // @vitest-environment jsdom
-/* A "PERSONAL" REQUEST'S ROW HOLDS NO PLACEHOLDER — ON SCREEN ([ALL-AVAIL-AS-MEMBER] step 2, the one-rule build; the plan
-   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1, §4.4). Owner, D755 (4): "a Personal input is one person's
-   own"; D712: ALL / ALL AVAIL is not offered for a Personal input; D755: a row that came from an input IS the input.
+/* ALL AVAIL / ALL ON A "PERSONAL" INPUT'S ROW — ON SCREEN: IT JOINS, IT IS COUNTED, AND NOBODY EARNS (owner D778, 12 Oct
+   26: "Personal is not work" / "So all avail all can go on personal"; D776: "a Personal input may hold several people
+   … and a puck dropped on its row swaps or joins as on any input's").
 
-   ITS HISTORY, IN TWO LINES. Until 12 Oct 26 this file was [OIL-PERSONAL-PLACEHOLDER] on screen ([DB-READINESS] group A,
-   phase 7): ALL / ALL AVAIL dropped under a member's Personal request wore its count and opened the window, OIL Earn
-   off and on, every man behind it drawn as earning nothing "because a personal request earns no OIL" (D27, D37, D43).
-   That subject cannot exist any more: the placeholder is one of an input's own people, a Personal input never holds
-   one, and every door refuses the drop — so there is no crowd to count, list or switch on such a row.
-
-   WHAT IS TRUE NOW, AND PINNED: ALL AVAIL dropped on a Personal request's row — by the drop itself (ui/drag.ts
-   applyDrop, on a stand-in element carrying the place's key, as ui/reqdoor.test.tsx does) and by the store's writer
-   (state/store.ts writeFill) — changes nothing and says why; the row draws no count chip, on the board and on the edit
-   week; and inside OIL Earn the requester's own puck still says why it earns nothing.
-
-   STEP 3 OF THAT BUILD (12 Oct 26 — owner D750, D753, D755) made ALL AVAIL / ALL one of an input's own people on the
-   six kinds that may hold one. NOTHING OF THIS FILE'S RULE MOVED — a Personal input still holds none — but two things
-   around it did, and the cases say so: the refusal's SENTENCE is the plan's shorter one (§4.4's table: "ALL AVAIL is
-   for Training, Meeting, Appointment, Duty, Event and Other" — D726, D765; it read "… can be filed only for … or
-   Other"), and the refusal is now about the KIND alone, never about standing beside a man — so a control drops the
-   same puck on the same man's Training row, where it joins.
+   ITS HISTORY. [OIL-PERSONAL-PLACEHOLDER] ([DB-READINESS] group A, phase 7, 1 Oct 26): ALL / ALL AVAIL dropped under a
+   member's Personal request wore its count and opened the window, OIL Earn off and on, every man behind it drawn as
+   earning nothing "because a personal request earns no OIL" (D27, D37, D43). The one-rule build (12 Oct 26, D755 (4),
+   D712) made that row impossible — a Personal input was one person's own and held no placeholder — and this file
+   pinned the refusal at every door. D776 and D778, the same day, withdrew that: a Personal input is the same as an
+   Event for everything about people. So phase 7's cases are back, each made through the app's own doors on the one
+   record (the input is FILED, the puck is DROPPED on its row — ui/drag.ts applyDrop on a stand-in element carrying the
+   place's key, as ui/reqdoor.test.tsx does), and the refusals are gone.
 
    jsdom has no layout engine: this proves the markup and the wiring; a real drag is walked in the browser. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -33,10 +24,10 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { SCHED } from '../engine/publish'
 import { ensureRowIds } from '../engine/rowids'
-import { fillSlot, setSlotVal } from '../engine/slots'
+import { fillSlot } from '../engine/slots'
 import { openScheduler, closeScheduler } from './board'
 import { setOilDay } from '../state/view'
-import { setAvailWin } from './pops'
+import { setAvailWin, OILASK } from './pops'
 import { commitInput, draftOf } from './inputedit'
 import { rowPut } from './reqdoor'
 import { applyDrop, setDrag } from './drag'
@@ -115,100 +106,126 @@ const filed = async (di: number) => {
   })
   expect(rowOf(di), 'its row stands on the day').toBeTruthy()
 }
-/* nothing moved: the input holds its one man and no placeholder, and its row is as the landing made it */
-const asItWas = (di: number, was: { inputs: string; row: string }) => {
-  expect(JSON.stringify(INPUTS), 'the input is as it was').toBe(was.inputs)
-  expect(JSON.stringify(rowOf(di)), 'and so is its row').toBe(was.row)
-  expect(idsOf(rec()).map(String)).toEqual(['ignite'])
-  expect(placeholderOf(rec()), 'no placeholder in it').toBeFalsy()
-  expect([rowOf(di).who, rowOf(di).more], 'nor on its row').toEqual(['ignite', undefined])
+/* ALL AVAIL (or ALL) dropped on the row's "+ add" — the scheduler's own gesture */
+const dropOn = async (di: number, ph: string, el?: HTMLElement) => {
+  setDrag({ kind: 'roster', id: ph })
+  let took: boolean | undefined
+  await act(async () => { took = applyDrop(el || cellEl(`${rowKey(di)}.+`), 0, 0); notify() })
+  return took
 }
-const snap = (di: number) => ({ inputs: JSON.stringify(INPUTS), row: JSON.stringify(rowOf(di)) })
 
-describe('ALL AVAIL / ALL dropped on a Personal request\'s row changes nothing (D755 (4), D712)', () => {
+describe('ALL AVAIL / ALL dropped on a Personal input\'s row joins the input, as on any input\'s (D776, D778)', () => {
   for (const ph of ['allavail', 'all']) {
-    /* CHOICE 1 — THE RULE SURVIVES (D755 (4), D712: a Personal input holds no placeholder). Only its sentence changed,
-       with step 3: the one body (engine/inputs.ts placeholderProblem) says the plan's shorter words (§4.4; D726, D765)
-       — "ALL AVAIL is for …", where it said "ALL AVAIL can be filed only for … or Other". Said ONCE, and nothing else. */
-    it(`${ph} — THE DROP, on its "+ add" and on the man's own puck: refused, saying why`, async () => {
+    it(`${ph} — THE DROP on its "+ add": it is one of the input's people, stands on its row, and the app says so`, async () => {
       await filed(TUE)
-      const was = snap(TUE)
-      for (const el of [cellEl(`${rowKey(TUE)}.+`), seatEl(rowKey(TUE))]) {
-        SAID = []
-        setDrag({ kind: 'roster', id: ph })
-        let took: boolean | undefined
-        await act(async () => { took = applyDrop(el, 0, 0); notify() })
-        expect(took, 'the drop is refused').toBe(false)
-        expect(SAID, 'with the reason on screen — the one sentence, once').toEqual([`${cs(ph)} is for Training, Meeting, Appointment, Duty, Event and Other`])
-        expect(SAID.join(' '), 'never the sentence step 3 retired').not.toMatch(/filed on its own|can be filed only/)
-        asItWas(TUE, was)
-      }
-    })
-
-    it(`${ph} — THE STORE'S WRITER (writeFill), the row's door and the engine's belt: nothing is written by any of them`, async () => {
-      await filed(TUE)
-      const was = snap(TUE)
-      await act(async () => {
-        writeFill(`${rowKey(TUE)}.+`, ph)
-        expect(rowPut(`${rowKey(TUE)}.+`, ph), 'the door').toBe('refused')
-        expect(fillSlot(`${rowKey(TUE)}.+`, ph), 'a raw write to its "+ add"').toBe(false)
-        expect(setSlotVal(rowKey(TUE), ph), 'a raw write to its name box').toBe(false)
-        notify()
-      })
-      asItWas(TUE, was)
-      expect(JSON.stringify(SCHED.pending), 'and no mark was raised').toBe('{}')
-    })
-  }
-
-  /* THE CONTROL, NEW WITH STEP 3 (D750, D753, D755): it is the KIND that refuses — the same puck, dropped the same way
-     on the same man's row, joins where the input is one of the six kinds. Without this the refusals above would pass
-     just as well on a build that still refused every placeholder beside a man. */
-  for (const ph of ['allavail', 'all']) {
-    it(`${ph} — THE CONTROL: the same drop on the same man's TRAINING row joins the input, and its row wears the count`, async () => {
-      await act(async () => {
-        expect(commitInput(null, draftOf({ person: 'ignite', type: 'Training', date: 'Jul 14', yr: 2026,
-          allday: false, s: 9 * 60, e: 17 * 60, remarks: '' }), ['ignite']), 'filed').toBe(true)
-        notify()
-      })
-      setDrag({ kind: 'roster', id: ph })
-      let took: boolean | undefined
-      await act(async () => { took = applyDrop(cellEl(`${rowKey(TUE)}.+`), 0, 0); notify() })
-      expect(took, 'the drop is taken').not.toBe(false)
-      expect(idsOf(rec()).map(String), 'it is one of the input\'s people now, beside him').toEqual(['ignite', ph])
+      expect(await dropOn(TUE, ph), 'the drop is taken').not.toBe(false)
+      expect(idsOf(rec()).map(String), 'beside the man who filed it').toEqual(['ignite', ph])
       expect(String(placeholderOf(rec()).p)).toBe(ph)
-      expect([rowOf(TUE).who, rowOf(TUE).more], 'and stands on its row').toEqual(['ignite', [ph]])
+      expect([rowOf(TUE).who, rowOf(TUE).more]).toEqual(['ignite', [ph]])
       expect(SAID.join(' | ')).toContain(`${cs(ph)} added to`)
-      await open(TUE)
-      expect(groundRowEl().querySelector('.oilcount'), 'the board: the count chip, on a weekday too (D27)').toBeTruthy()
+      expect(SAID.join(' | '), 'no refusal of any kind').not.toMatch(/is for|one person/)
+    })
+
+    it(`${ph} — THE STORE'S WRITER (writeFill) and the row's door put it in too; a raw write past the door is still refused by the belt`, async () => {
+      await filed(TUE)
+      await act(async () => { writeFill(`${rowKey(TUE)}.+`, ph); notify() })
+      expect(idsOf(rec()).map(String), 'the store\'s writer goes through the row\'s door').toEqual(['ignite', ph])
+      await act(async () => {
+        expect(rowPut(`${rowKey(TUE)}.+`, ph), 'a second time: already in it').toBe('refused')
+        expect(fillSlot(`${rowKey(TUE)}.+`, 'pump'), 'a raw write to its "+ add" is not the input\'s door').toBe(false)
+        notify()
+      })
+      expect(idsOf(rec()).map(String)).toEqual(['ignite', ph])
     })
   }
-})
 
-describe('so a Personal request\'s row draws no count chip (was D27, D37 on this row)', () => {
-  it('THE BOARD and THE EDIT WEEK, on a weekday, after the drop was tried: the man\'s puck, no placeholder, no chip, no window', async () => {
+  it('ON the lone man\'s puck a NAMED man replaces him, as on any input\'s row (D776 "B2") — a placeholder dropped there joins', async () => {
     await filed(TUE)
-    setDrag({ kind: 'roster', id: 'allavail' })
-    await act(async () => { expect(applyDrop(cellEl(`${rowKey(TUE)}.+`), 0, 0)).toBe(false); writeFill(`${rowKey(TUE)}.+`, 'allavail'); notify() })
-    expect($$(`#eWeek .oilcount[data-oilsent="i:${inpId(rec())}"]`), 'the edit week: no chip on the request\'s row').toHaveLength(0)
-    await open(TUE)
-    const el = groundRowEl()
-    expect(el.querySelector('.oilcount'), 'the board: no chip').toBeNull()
-    expect(el.querySelector('.puck.allavail'), 'and no placeholder puck').toBeNull()
-    expect(el.querySelector('.puck'), 'the requester\'s own puck stands on it').toBeTruthy()
-    const w = $('.availwin')
-    expect(!w || w.hidden, 'nothing to open a window on').toBe(true)
+    expect(await dropOn(TUE, 'pump', seatEl(rowKey(TUE))), 'a named man on the only person\'s puck').not.toBe(false)
+    expect(idsOf(rec()).map(String), 'the input is his now').toEqual(['pump'])
+    expect(SAID.join(' | ')).not.toMatch(/one person/)
+    expect(await dropOn(TUE, 'allavail', seatEl(rowKey(TUE))), 'the placeholder never replaces anyone').not.toBe(false)
+    expect(idsOf(rec()).map(String)).toEqual(['pump', 'allavail'])
   })
 
-  it('INSIDE OIL EARN, on a Saturday: still no chip — and the requester\'s own puck says why it earns nothing', async () => {
+  it('a second NAMED man dropped on its "+ add" joins too — a Personal input of two', async () => {
+    await filed(TUE)
+    expect(await dropOn(TUE, 'pump'), 'taken').not.toBe(false)
+    expect(idsOf(rec()).map(String)).toEqual(['ignite', 'pump'])
+    expect([rowOf(TUE).who, rowOf(TUE).more]).toEqual(['ignite', ['pump']])
+  })
+})
+
+describe('the count shows on a Personal input\'s row, OIL Earn off (D27, D37)', () => {
+  it('THE BOARD, on a weekday: the chip says how many, and opens the window on them', async () => {
+    await filed(TUE)
+    await dropOn(TUE, 'allavail')
+    await open(TUE)
+    const chip = groundRowEl().querySelector('.oilcount') as HTMLElement
+    expect(chip, 'the placeholder wears its count').toBeTruthy()
+    expect((chip.textContent || '').trim()).toBe('2')
+    await click(chip)
+    const w = $('.availwin')
+    expect(w && !w.hidden, 'the window opens').toBe(true)
+    expect(([...w.querySelectorAll('[data-awp]')] as HTMLElement[]).map(r => r.dataset.awp).sort()).toEqual(['plasma', 'stiff'])
+    expect(w.querySelector('.win-lost'), 'and it does not say the row has no puck').toBeNull()
+  })
+
+  it('THE EDIT WEEK draws the same chip on the same row', async () => {
+    await filed(TUE)
+    await dropOn(TUE, 'allavail')
+    const chips = $$(`#eWeek .oilcount[data-oilsent="i:${inpId(rec())}"]`)
+    expect(chips.length, 'one chip, on the input\'s row').toBe(1)
+    expect((chips[0]!.textContent || '').trim()).toBe('2')
+  })
+
+  it('THE CONTROL: a Personal row of named people only wears no chip', async () => {
+    await filed(TUE)
+    await dropOn(TUE, 'pump')
+    await open(TUE)
+    expect(groundRowEl().querySelector('.oilcount')).toBeNull()
+  })
+})
+
+describe('inside OIL Earn, on a Saturday: counted, and nobody earns — said with its reason (D778: "Personal is not work")', () => {
+  it('every man behind the puck is drawn as earning nothing, because a personal request earns no OIL', async () => {
     await filed(SAT)
+    await dropOn(SAT, 'allavail')
     await open(SAT)
     await click(oilBtn())
-    expect(groundRowEl().querySelector('.oilcount')).toBeNull()
-    const own = ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).find(s => (s.title || '').includes('Ignite'))
-      || (groundRowEl().querySelector('.seat.oilpk') as HTMLElement)
-    expect(own.classList.contains('inert')).toBe(true)
-    expect(own.title).toContain('a personal request earns no OIL')
-    await click(own.querySelector('.puck'))
+    const chip = groundRowEl().querySelector('.oilcount') as HTMLElement
+    expect((chip.textContent || '').trim(), 'the plain count — nobody earns, so no "n of m earn"').toBe('2')
+    await click(chip)
+    const seats = [...$('.availwin').querySelectorAll('.seat.oilpk')] as HTMLElement[]
+    expect(seats.length).toBe(2)
+    for (const s of seats) {
+      expect(s.classList.contains('inert'), 'no switch: there is nothing to switch').toBe(true)
+      expect(s.title).toContain('a personal request earns no OIL')
+      expect(s.title).not.toContain('nothing measurable')
+    }
+    await click($('.availwin').querySelector('.seat.oilpk .puck'))
     expect((DAYS[SAT] as any).oild, 'a tap on a man who cannot earn writes nothing').toBeUndefined()
+  })
+
+  it('the men NAMED in it say the same — the one who filed it and one added beside him', async () => {
+    await filed(SAT)
+    await dropOn(SAT, 'pump')
+    await open(SAT)
+    await click(oilBtn())
+    const seats = [...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]
+    expect(seats.length, 'both pucks').toBe(2)
+    for (const own of seats) {
+      expect(own.classList.contains('inert')).toBe(true)
+      expect(own.title).toContain('a personal request earns no OIL')
+    }
+    await click(seats[0]!.querySelector('.puck'))
+    expect((DAYS[SAT] as any).oild, 'a tap on a man who cannot earn writes nothing').toBeUndefined()
+  })
+
+  it('and the drop on a Saturday asks NO OIL question — a Personal input never asks', async () => {
+    await filed(SAT)
+    await dropOn(SAT, 'allavail')
+    expect(rec().oil, 'no answer was asked for or written').toBeUndefined()
+    expect(OILASK, 'no question was opened (ui/pops.ts — the flag the OIL sheet opens on)').toBeNull()
   })
 })

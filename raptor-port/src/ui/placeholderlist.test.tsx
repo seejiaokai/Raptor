@@ -16,7 +16,7 @@
    RE-EXPRESSED FOR STEP 3 OF THE ONE-RULE BUILD (12 Oct 26 — the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md
    §4.1, §4.4, §4.5; owner D750, D753, D755). A placeholder may be ONE OF AN INPUT'S OWN PEOPLE now. In this file:
      · the two rules that SURVIVE — six kinds, one day (D753) — are said in the plan's shorter words ("ALL AVAIL is for
-       Training, Meeting, Appointment, Duty, Event and Other", "ALL AVAIL is for one day"): the cases that pinned the old
+       Training, Meeting, Personal, Appointment, Duty, Event and Other", "ALL AVAIL is for one day"): the cases that pinned the old
        words pin the new ones, whole;
      · the save boundary's "a group mark" case pinned the rule those rulings ended, on a field (`grp`) the one record no
        longer has (D756): it is re-expressed where it stood;
@@ -257,7 +257,7 @@ describe('the List row, and the window it opens (the pencil editor\'s cases — 
       await pick($('#inpEditType'), 'OML')
       const was = world(); said.length = 0
       await save()
-      expect(said).toEqual([`${PEOPLE[ph].cs} is for Training, Meeting, Appointment, Duty, Event and Other`])
+      expect(said).toEqual([`${PEOPLE[ph].cs} is for Training, Meeting, Personal, Appointment, Duty, Event and Other`])
       expect(document.body.textContent || '', 'no document prompt').not.toContain('No document')
       expect(world()).toBe(was)
       expect(live(r.iid).type).toBe('Meeting')
@@ -386,7 +386,7 @@ describe('the List\'s "+ Input" — ALL AVAIL and ALL through the window it open
     const was = world(); said.length = 0
     await click($('#inpEditSave'))
     /* (the rule survives — D711 (2); its words are the plan's since step 3) */
-    expect(said).toEqual(['ALL is for Training, Meeting, Appointment, Duty, Event and Other'])
+    expect(said).toEqual(['ALL is for Training, Meeting, Personal, Appointment, Duty, Event and Other'])
     expect(world()).toBe(was)
   })
 })
@@ -399,7 +399,7 @@ describe('THE SAVE BOUNDARY, with no door in front of it (Sol\'s read of the pla
     /* (the rule survives; the sentence it gives is the one body's, in the plan's words since step 3 — §4.4) */
     for (const role of ['admin', 'member', 'system'])
       for (const origin of ['user', 'restore', 'projection'])
-        expect(placeholderShapeViolation(env({ role, personId: admin }, origin, bad)), `${role} · ${origin}`).toContain('ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other')
+        expect(placeholderShapeViolation(env({ role, personId: admin }, origin, bad)), `${role} · ${origin}`).toContain('ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
     expect(placeholderShapeViolation(env({ role: 'admin' }, 'restore', { ...bad, type: 'Duty' }))).toBeNull()
     /* ADDED FOR STEP 3 (D750, D753, D755): asked of a record that holds a placeholder BESIDE people — kept where the
        input may hold one, refused by the placeholder's own rules where it may not, whoever ran the command */

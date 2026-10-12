@@ -247,26 +247,27 @@ describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the pl
     expect(people(), 'ONE Undo puts both back').toEqual(['bane'])
     expect(slotVal(seat)).toBe(flew)
   })
-  /* A PERSONAL INPUT IS ONE PERSON'S OWN — ON HIS PUCK TOO (owner D755 (4): "other people on a Personal input" are refused;
-     D757: "Anyone onto a Personal input: A Personal input is one person's own."). Found by the job's walk (share B, B8 —
-     12 Oct 26): a man dropped on the row's "+ add" was refused with the sentence, but dropped ON the only person's puck he
-     REPLACED him — the hand-over D755 (2) gives every other kind — and a man's own personal matter became someone else's. */
-  it('a Personal input: a man dropped ON its one person\'s puck is refused with the sentence — from the crew list and from a seat alike', async () => {
+  /* A PERSONAL INPUT'S ROW IS A ROW LIKE ANY INPUT'S (owner D776, 12 Oct 26 — "A2 B2": it may hold several people, and
+     a puck dropped on its row swaps or joins as on any input's). A NAMED RULING CHANGED THIS CASE: after the job's walk
+     (share B, B8) it pinned "a man dropped ON its one person's puck is refused — A Personal input is one person's own"
+     (D755 (4), D757), the refusal that walk had added. It is withdrawn, and what every other kind does is pinned here
+     for this one: from the crew list he replaces the only person; from a seat the two swap; on "+ add" he joins. */
+  it('a Personal input: a man dropped ON its one person\'s puck replaces him; from a seat the two swap; on "+ add" he joins (D776)', async () => {
     await boot(new MemoryBackend())
     file(['bane'], WED, undefined, { type: 'Personal' })
-    const was = JSON.stringify(rec())
-    expect(rowPut(rowKey(), 'pike'), 'from the crew list').toBe('refused')
-    expect(people()).toEqual(['bane'])
-    expect(SAID.join(' | ')).toContain('A Personal input is one person’s own')
+    expect(rowPut(rowKey(), 'pike'), 'from the crew list').toBe('done')
+    expect(people()).toEqual(['pike'])
+    expect(SAID.join(' | ')).not.toMatch(/one person/)
     const seat = '2.0.0.0.p', flew = String(slotVal(seat))
-    expect(flew && flew !== 'bane').toBeTruthy()
+    expect(flew && flew !== 'pike').toBeTruthy()
     SAID = []
     setDrag({ kind: 'slot', key: seat })
     applyDrop(seatEl(rowKey()), 0, 0)
-    expect(people(), 'from a seat: no swap').toEqual(['bane'])
-    expect(slotVal(seat), 'and the man dragged keeps his seat').toBe(flew)
-    expect(SAID.join(' | ')).toContain('A Personal input is one person’s own')
-    expect(JSON.stringify(rec()), 'nothing of the input moved').toBe(was)
+    expect(people(), 'from a seat: the swap').toEqual([flew])
+    expect(slotVal(seat), 'and the man replaced took the seat').toBe('pike')
+    expect(SAID.join(' | ')).toContain(`${cs(flew)} and ${cs('pike')} swapped`)
+    expect(rowPut(`${rowKey()}.+`, 'split'), 'on "+ add"').toBe('done')
+    expect(people(), 'a Personal input of two').toEqual([flew, 'split'])
   })
   it('where the row holds SEVERAL a person dropped on a puck joins — nobody is replaced (the plan\'s R1)', async () => {
     await boot(new MemoryBackend())

@@ -23,11 +23,13 @@ import { INPUT_TYPES, PLACEHOLDER_KINDS, placeholderKind, placeholderProblem, is
 const base = (over: any = {}) => ({ person: 'allavail', type: 'Duty', date: 'Jul 18', yr: 2026, allday: false, s: 540, e: 720, ...over })
 /* the same input as the app has written it since the one record (D756): a list of its people */
 const listed = (ids: string[], over: any = {}) => ({ type: 'Duty', date: 'Jul 18', yr: 2026, allday: false, s: 540, e: 720, people: ids.map(p => ({ p })), ...over })
-const KINDS = 'Training, Meeting, Appointment, Duty, Event and Other'
+const KINDS = 'Training, Meeting, Personal, Appointment, Duty, Event and Other'
 
 describe('D700, D711 (2), D712, D713 — the kinds an ALL / ALL AVAIL input may be', () => {
-  it('exactly six: Training, Meeting, Appointment, Duty, Event, Other', () => {
-    expect([...PLACEHOLDER_KINDS]).toEqual(['Training', 'Meeting', 'Appointment', 'Duty', 'Event', 'Other'])
+  /* SEVEN SINCE D778 (12 Oct 26 — "So all avail all can go on personal"): it read "exactly six", without Personal
+     (D712, which stands for "Fly with") */
+  it('exactly seven: Training, Meeting, Personal, Appointment, Duty, Event, Other', () => {
+    expect([...PLACEHOLDER_KINDS]).toEqual(['Training', 'Meeting', 'Personal', 'Appointment', 'Duty', 'Event', 'Other'])
     for (const t of INPUT_TYPES) expect(placeholderKind(t), t).toBe(PLACEHOLDER_KINDS.includes(t))
     expect(placeholderKind(' duty '), 'whatever the case').toBe(true)
     expect(placeholderKind('Nonsense')).toBe(false)

@@ -367,7 +367,7 @@ describe('a drag across the pucks picks every one it passes (D685)', () => {
    D753 ("an input takes ALL or ALL AVAIL, never both"), D702 ("members can choose too"), D655 reading 6 (one switch puts
    filing for others back to admins only), D712 / D713 (the six kinds). */
 describe('"Several people" with ALL AVAIL / ALL — the kind, "All", a member, a reader (D750, D753, D702)', () => {
-  const KINDS = 'ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other'
+  const KINDS = 'ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other'
 
   it('with no dates to go by, the KIND alone greys them: a leave for several shows both greyed with the reason; a Duty shows both live', async () => {
     await mount({ people: [pilots()[0], wsos()[0]], several: true, type: 'LL' })
