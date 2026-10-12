@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 import { ELEVEN_COUNTERS } from '../src/leavewar/testing/eleven'
 
 /* RETIRED by D509/D510, 3 Oct26. No active consumer; retained as adaptation history.
@@ -330,4 +330,56 @@ export async function elevenCounters(page: Page) {
   }, JSON.parse(JSON.stringify(ELEVEN_COUNTERS)))
   if (refused.length) throw new Error(`elevenCounters: refused ${refused.join(', ')}`)
   await page.waitForSelector('[data-testid="count-scn"]')
+}
+
+/* ---- THE APP'S ONE DATE CALENDAR ([ONE-DATE-CALENDAR], 13 Oct 26 — src/ui/DateCal.tsx, DateBox.tsx). A date box is a
+   button since then, not the phone's own date box: a test that filled one opens the calendar and taps a date. ---- */
+/** what an app date box holds — "yyyy-mm-dd", '' when no date is picked */
+export const dateBoxValue = (page: Page, sel: string) => page.locator(sel).first().getAttribute('data-value')
+
+/** THE CALENDAR A PRESS HAS JUST OPENED IS PROVED ON SCREEN before anything in it is pressed (docs/bug-check-order.md
+ *  §6, §7.2): wholly inside the screen, and at its centre and its four corners the element under a finger is the
+ *  calendar itself — so no window, sheet or bar is drawn over it. */
+export async function calendarOnTop(page: Page, what: string) {
+  const card = page.locator('[data-testid="dcal-card"]')
+  await expect(card, `${what}: the calendar opened`).toBeVisible()
+  await expect.poll(() => card.evaluate(c => getComputedStyle(c).opacity), { message: `${what}: it has finished arriving` }).toBe('1')
+  const m = await card.evaluate(c => {
+    const b = c.getBoundingClientRect()
+    const mine = (x: number, y: number) => { const h = document.elementFromPoint(x, y); return !!h && (h === c || c.contains(h)) }
+    return { l: b.left, t: b.top, r: b.right, b: b.bottom, vw: innerWidth, vh: innerHeight,
+      centre: mine(b.left + b.width / 2, b.top + b.height / 2),
+      corners: [mine(b.left + 6, b.top + 6), mine(b.right - 6, b.top + 6), mine(b.left + 6, b.bottom - 6), mine(b.right - 6, b.bottom - 6)],
+      cut: c.scrollWidth > c.clientWidth || c.scrollHeight > c.clientHeight }
+  })
+  expect(m.l, `${what}: off the left of the screen`).toBeGreaterThanOrEqual(0); expect(m.r, `${what}: off the right`).toBeLessThanOrEqual(m.vw + 0.5)
+  expect(m.t, `${what}: off the top`).toBeGreaterThanOrEqual(0); expect(m.b, `${what}: off the foot`).toBeLessThanOrEqual(m.vh + 0.5)
+  expect(m.centre, `${what}: something is drawn over the calendar's centre`).toBe(true)
+  expect(m.corners, `${what}: something is drawn over one of the calendar's corners`).toEqual([true, true, true, true])
+  expect(m.cut, `${what}: part of the calendar is cut off inside its card`).toBe(false)
+  return m
+}
+
+/** on the calendar that is open: turn to the date's month by the arrows — reading the calendar's own month each time,
+ *  never a counted number of presses — and tap the date; the calendar closes by itself */
+export async function tapCalendarDate(page: Page, iso: string, touch = false) {
+  const press = (sel: string) => { const l = page.locator(sel).first(); return touch ? l.tap() : l.click() }
+  const want = +iso.slice(0, 4) * 12 + +iso.slice(5, 7)
+  for (let i = 0; i < 480; i++) {
+    const at = (await page.locator('[data-testid="dcal"]').getAttribute('data-month'))!
+    const d = want - (+at.slice(0, 4) * 12 + +at.slice(5, 7))
+    if (!d) break
+    await press(d > 0 ? '[data-testid="dcal-next"]' : '[data-testid="dcal-prev"]')
+  }
+  await press(`[data-testid="dcal-day-${iso}"]`)
+  await expect(page.locator('[data-testid="dcal-card"]'), 'a tap on a date closes the calendar').toHaveCount(0)
+}
+
+/** open a date box and pick a date on its calendar, as a person does */
+export async function pickDate(page: Page, sel: string, iso: string, touch = false) {
+  const box = page.locator(sel).first()
+  await (touch ? box.tap() : box.click())
+  await expect(page.locator('[data-testid="dcal-card"]')).toBeVisible()
+  await tapCalendarDate(page, iso, touch)
+  await expect(box).toHaveAttribute('data-value', iso)
 }

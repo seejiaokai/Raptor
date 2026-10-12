@@ -26,8 +26,10 @@
 /* in a form that stacks a label over its box (Admin's, a new person's) the box takes the form's width, as the box it
    replaced did there */
 .mfield > .datebox{width:100%}
-/* "Every <weekday>" (23-days.css `.every-date` is that form's box look — written for a text box, which is a block) */
-.every-date.datebox{display:flex;cursor:pointer}
+/* "Every <weekday>" (23-days.css `.every-date` is that form's box look — written for a text box, which is a block; its
+   size, weight and edge are said again here because `.datebox` above comes later in the sheet and would win them) */
+.every-date.datebox{display:flex;min-height:42px;padding:8px 10px;border-radius:10px;border-color:var(--edge-2);font-size:16px;font-weight:700;cursor:pointer}
+.every-date.datebox.is-open{border-color:var(--accent)}
 /* an input's own window: the upchit's one date, in the look of that window's boxes */
 .inped-f > .datebox{width:100%}
 
@@ -98,11 +100,13 @@
 /* ---- THE MONTH-AND-YEAR LISTS: months beside years, each SCROLLED, the chosen pair in a band across the middle, the
    rows fading away from it (D796 — his second photo). As tall as the weekday line and the six rows it stands in for,
    so the card keeps its size as the two swap. The rows snap to the band; a list scrolls up and down and nothing else,
-   and never hands a scroll on to the page behind. The padding lets the first and the last row reach the band. ---- */
+   and never hands a scroll on to the page behind. The padding lets the first and the last row reach the band. The
+   browser does not keep the rows in place by itself when the list's window of rows moves (overflow-anchor) — the list
+   places itself (ui/DateCal.tsx Wheel). ---- */
 .dcal-lists{position:relative;height:284px;display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:284px}
 .dcal-band{position:absolute;left:4px;right:4px;top:50%;height:44px;transform:translateY(-50%);border-radius:12px;background:var(--panel-2);border:1px solid var(--edge);pointer-events:none}
 .dcal-col{position:relative;box-sizing:border-box;height:284px;padding:120px 0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior:contain;
-  touch-action:pan-y;scrollbar-width:none;outline:none;
+  touch-action:pan-y;scrollbar-width:none;outline:none;overflow-anchor:none;
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%,#000 60%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%,#000 60%,transparent 100%)}
 .dcal-col::-webkit-scrollbar{display:none}
 .dcal-opt{height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:19px;font-weight:600;color:var(--ink);

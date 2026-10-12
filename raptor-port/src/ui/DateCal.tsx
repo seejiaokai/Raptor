@@ -62,10 +62,15 @@ function Wheel({ value, label, onChange, name, tid }: {
   useLayoutEffect(() => {
     const n = ref.current
     if (!n) return
-    /* walked past half the window: re-centre it on the chosen row, and keep what is on screen where it is */
+    /* walked past half the window: re-centre it on the chosen row */
     if (Math.abs(value - base) > SPAN / 2) { setBase(value); return }
-    if (was.current.first !== first) { n.scrollTop += (was.current.first - first) * ROW; was.current.first = first }
     const top = (value - first) * ROW
+    /* THE WINDOW OF ROWS HAS JUST MOVED: the chosen row is put in the band OUTRIGHT. Not "by how far the rows moved":
+       the browser may already have kept the rows on screen where they were when the ones above them went (scroll
+       anchoring — the stylesheet turns it off here; Safari has none), and a list moved twice lands on the wrong year
+       (found by the first browser test, 13 Oct 26: scrolled 78 years on, it read 25). The list is at rest when this
+       happens — a re-centre follows a choice, and a choice by scrolling is read only once the scrolling has stopped. */
+    if (was.current.first !== first) { was.current.first = first; byScroll.current = false; n.scrollTop = top; return }
     const jump = !was.current.drawn
     was.current.drawn = true
     if (byScroll.current) { byScroll.current = false; return }
