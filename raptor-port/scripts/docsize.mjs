@@ -159,7 +159,13 @@ const FILES = [
      archive first (the Inputs pages' eight and the calendar job's two). What is left is 153 open items - nineteen
      more than when 2150 was set - and their priority list; a helper's scan found no other item whose own text says it
      is finished without something still open in it. An open item is never trimmed to fit (D141, D29). */
-  ['OUTSTANDING.md',                     1, 2400],
+  /* 2400 -> 2460, 13 Oct 26 (`main` merged into the Calendar branch after the skills review went live): 2,403 lines -
+     `main` alone stood at 2,387 with 165 open items, twelve more than when 2400 was set; both of the day's other chats
+     had sent their finished items to the archive first (the tidy after the OIL job, the skills review's close-out).
+     This branch adds two open items - [ONE-DATE-CALENDAR], and what was put to him under [CAL-PHONE-SWIPE-FIT] -
+     neither finished. The file was not scanned again for finished items here; an open item is never trimmed to fit
+     (D141, D29). Set about 60 lines above what the file holds, as the first of these notes says. */
+  ['OUTSTANDING.md',                     1, 2460],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
