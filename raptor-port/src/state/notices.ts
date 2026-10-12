@@ -33,6 +33,7 @@
 import { PEOPLE } from '../engine/people'
 import { dateOrd, inpLabel, namedOf, placeholderOf } from '../engine/inputs'
 import { hhmm } from '../engine/time'
+import { mayEditSched } from './perms'
 
 export type NoticePart =
   | { k: 'del' }                                   // the input was deleted
@@ -207,6 +208,13 @@ export function noticeLeft(n: Notice): number { const h = holOf(n); return h && 
 export function noticeLive(n: Notice): boolean {
   const h = holOf(n)
   if (!h) return true
+  /* A SCHEDULER'S LINE, AND ONLY WHILE HE IS ONE (the check's walk, E8 — 13 Oct 26; owner D785, with the reading told to
+     him: "the admin's own member view (D292) is a member for as long as it is on"). The notice is addressed to an admin,
+     but the list it opens is a scheduler's (ui/OilDayList.tsx refuses anyone else): with the member view on, the bell
+     listed the line, stayed lit by it, and a tap on it closed the bell's list and opened nothing. Asked here, in the
+     one body, so the list, the unread count and the bell's own tap all agree; switched back, the line is there again,
+     unread or read as he left it. */
+  if (!mayEditSched()) return false
   if (noticeLeft(n) <= 0) return false
   for (const x of NOTICES) {
     if (x === n || x.to !== n.to) continue

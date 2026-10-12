@@ -6976,6 +6976,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
+- **TO BE BUILT — D786 (owner, 13 Oct 26; `OUTSTANDING.md` `[CAL-PHONE-SWIPE-FIT]`):** on a phone a swipe sideways on the month goes to
+  the next or the last month, and on the Holidays list to the next or the last year (the arrows and "Today" stay); and the
+  "Every <weekday>" window's From date box fits inside the window at any phone width — on his iPhone it ran off the right edge.
 - **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
   <weekday>" and is lit while that window is up.
 - **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days

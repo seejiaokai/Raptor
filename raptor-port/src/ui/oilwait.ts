@@ -18,7 +18,7 @@
    The waiting change and the bar live in state/view.ts, with the resets that take them away. */
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { posKey } from '../engine/rowids'
+import { posKey, ridWriteKey } from '../engine/rowids'
 import { notify } from '../state/store'
 import { OILWAIT, OILBAR, setOilWait, setOilBar, type OilWait, type OilWaitKind } from '../state/view'
 import { landOn } from './lift'
@@ -42,6 +42,16 @@ export function holdForOil(w: OilWait): void { setOilBar(null); setOilWait(w); n
  *  down) — set by the caller that was answered 'asked'; `pre` is read just before the write, `post` runs after it. */
 export function oilWaitThen(pre: () => any, post: (pre: any, landed: string | null) => void): void {
   if (OILWAIT) { OILWAIT.pre = pre; OILWAIT.post = post }
+}
+
+/** ONE MORE PLACE TO FLASH IF IT IS LEFT UNANSWERED — the seat a caller's gesture started from, where the door that
+ *  holds the change does not know it (the Unavailable row's door is handed a person, never the seat he was dragged
+ *  from: ui/drag.ts). `key` is the seat as it stands now; it is kept by its row's id, like every other place. "Both
+ *  pucks flash" (D783 (2)) at every door — the walk's C2, 13 Oct 26. */
+export function oilWaitAlso(key: string): void {
+  if (!OILWAIT || !key) return
+  const pl = ridWriteKey(String(key), DAYS)
+  if (pl && !OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)
 }
 
 /* the places flash where they stand — the same veil a landed drop wears; nothing was rebuilt, so the live nodes are lit

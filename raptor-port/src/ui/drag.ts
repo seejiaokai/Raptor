@@ -15,7 +15,7 @@ import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
 import { rowPut, rowTake, rowLeaveTo, rowMove, isRowMan, onInputRow, placeOnRow, type SeatTake } from './reqdoor'
-import { oilWaitThen } from './oilwait'
+import { oilWaitThen, oilWaitAlso } from './oilwait'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
@@ -222,7 +222,12 @@ export function applyDrop(el: any, x: any, y: any) {
     const iid = (inpEl as HTMLElement).dataset.inpseat!
     const pid = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
     if (!pid || !PEOPLE[pid]) { DRAG = null; dndOff(); return false }
+    const waited = view.OILWAIT
     reassignInput(iid, pid)
+    /* …and where the hand-over WAITS on its OIL question ([OIL-ASK-NOTIFY], D783 (2): "both pucks flash"), the seat he
+       was dragged from is one of the two: he stays on it either way (the note above), and left unanswered his puck
+       there flashes with the row's (ui/oilwait.ts — the walk's C2: only the row's man flashed) */
+    if (DRAG.kind === 'slot' && view.OILWAIT && view.OILWAIT !== waited) oilWaitAlso(DRAG.key)
     /* mirrors done()'s own arm put-down and drawer-park below, without ALSO
        calling afterSchedMutate() — reassignInput's commitInputEdit already
        ran the input funnel's full epilogue (validate, notify, ONE history

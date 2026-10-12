@@ -46,6 +46,10 @@ import { rowPut, rowMove } from './reqdoor'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
 import { answerOilWait, leaveOilWait, oilBarAgain, oilBarOk, WAIT_WORDS } from './oilwait'
+import { markLand, pendingLand } from './lift'
+import { commitChipMove } from './caldrag'
+import { reassignInput } from './inputedit'
+import { toast as realToast } from './toast'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -375,5 +379,212 @@ describe('ON SCREEN — the question\'s own sheet with the waiting change\'s wor
       expect(tid('oilbar')).toBeNull(); expect(tid('oilconf')).toBeNull()
       expect(people()).toEqual(['bane'])
     } finally { await act(async () => { root.unmount() }) }
+  })
+})
+
+/* THE WIRES THE BREAK TESTS FOUND BARE (the check, 13 Oct 26 — scripts/handpass/on-breaks.mjs: each of these was broken
+   once on purpose and no test went red). One case a wire, named for what a person would see go wrong. */
+describe('the wires the break tests found bare', () => {
+  const fillEl = (key: string) => { const el = document.createElement('div'); el.dataset.fill = key; document.body.appendChild(el); return el }
+  const second = () => expect(commitInput(null, DRAFT(SAT, { title: SECOND, sTime: '16:00', eTime: '17:00' }), ['rocky'])).toBe(true)
+
+  it('a change the save itself would refuse is refused in its own words — nobody is asked a question for it first (Fable A2)', async () => {
+    await boot()
+    file(['bane', 'allavail'], SAT)                    // no answer yet — and it already holds ALL AVAIL
+    const was = world()
+    expect(rowPut(`${rowKey()}.+`, 'all'), 'ALL beside ALL AVAIL: the save refuses it').toBe('refused')
+    expect(view.OILWAIT, 'no question was put for it').toBeNull()
+    expect(view.OILBAR).toBeNull()
+    expect(world(), 'and nothing was kept of the try').toBe(was)
+    expect(SAID.length, 'it said why').toBeGreaterThan(0)
+  })
+  it('"Answer OIL" after ANOTHER man took the puck: "That row has changed — not swapped", no question for the wrong man, nothing written (Fable A5)', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    expect(rowPut(rowKey(), 'pike')).toBe('asked')
+    leaveOilWait()
+    /* meanwhile the input is handed to someone else in its own window */
+    expect(commitInput(rec(), draftOf(rec()), ['split'], { oil: { [SAT_ISO]: 1 } })).toBe(true)
+    SAID = []
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question about a swap with a man who was never asked about').toBeNull()
+    expect(view.OILBAR).toBeNull()
+    expect(SAID.join(' | ')).toContain('That row has changed — not swapped')
+    expect(people(), 'and he is untouched').toEqual(['split'])
+  })
+  it('"Answer OIL" after the man dragged has left the seat he came from: the swap is not offered again — another man sits there now', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    const { key: seat } = dutySeat()
+    setDrag({ kind: 'slot', key: seat })
+    expect(applyDrop(seatEl(rowKey()), 0, 0)).toBe(false)
+    leaveOilWait()
+    const ri = +seat.split('.')[1]!
+    schedWrite(SCHED_TYPES.mutate, () => { ground()[ri].who = 'rocky' })
+    SAID = []
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question: the man who sits there now was never part of it').toBeNull()
+    expect(SAID.join(' | ')).toContain('That row has changed — not swapped')
+    expect(people()).toEqual(['bane']); expect(slotVal(seat)).toBe('rocky')
+  })
+  it('not answered: BOTH pucks flash where they stand — the one dropped on, and the one he was dragged from (D783 (2))', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    const { key: seat } = dutySeat()
+    const target = seatEl(rowKey()), source = seatEl(seat)
+    setDrag({ kind: 'slot', key: seat })
+    applyDrop(target, 0, 0)
+    expect(target.classList.contains('lift-land'), 'nothing flashes while the question is up').toBe(false)
+    leaveOilWait()
+    expect(target.classList.contains('lift-land'), 'the puck dropped on').toBe(true)
+    expect(source.classList.contains('lift-land'), 'the puck that was dragged').toBe(true)
+  })
+  it('answered: the landing flash the drag would have made is made then, on where he stands', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    const { key: seat } = dutySeat()
+    markLand('')
+    setDrag({ kind: 'slot', key: seat })
+    applyDrop(seatEl(rowKey()), 0, 0)
+    expect(pendingLand(), 'no landing while it waits').toBeNull()
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(pendingLand()?.sel, 'the flash is his, on the row').toContain(`[data-slot="${rowKey()}"]`)
+    markLand('')
+  })
+  it('a puck dragged from one input\'s row onto the ONLY man\'s puck of another: it waits as a MOVE — never as a swap, nothing written', async () => {
+    await boot()
+    file(['bane', 'pike'], SAT, { [SAT_ISO]: 0.5 }); second()
+    const was = world()
+    setDrag({ kind: 'slot', key: keyOf('pike') })
+    expect(applyDrop(seatEl(rowKey(SAT, SECOND)), 0, 0)).toBe(false)
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.kind).toBe('move')
+    expect(view.OILWAIT!.lead).toBe(`Moving ${cs('pike')} to ${SECOND}`)
+    expect(SAID, 'and nothing is said').toEqual([])
+  })
+  it('the same onto the second row\'s "+ add": a MOVE that waits — not an add', async () => {
+    await boot()
+    file(['bane', 'pike'], SAT, { [SAT_ISO]: 0.5 }); second()
+    const was = world()
+    setDrag({ kind: 'slot', key: keyOf('pike') })
+    expect(applyDrop(fillEl(`${rowKey(SAT, SECOND)}.+`), 0, 0)).toBe(false)
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.kind).toBe('move')
+    expect(SAID).toEqual([])
+  })
+  it('a man dragged from the crew list onto "+ add" of an unanswered input: the drop ends there — nothing written, no Undo step, nothing said', async () => {
+    await boot()
+    file(['bane', 'pike'], SAT)
+    const was = world()
+    setDrag({ kind: 'roster', id: 'split' })
+    expect(applyDrop(fillEl(`${rowKey()}.+`), 0, 0)).toBe(false)
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.kind).toBe('add')
+    expect(SAID).toEqual([])
+    /* …and ALL AVAIL the same way (the roll-call's R8): it joins — on an answer */
+    view.setOilWait(null)
+    setDrag({ kind: 'roster', id: 'allavail' })
+    expect(applyDrop(fillEl(`${rowKey()}.+`), 0, 0)).toBe(false)
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.lead).toBe(`Adding ${cs('allavail')} to ${TITLE}`)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(people()).toEqual(['bane', 'pike', 'allavail'])
+  })
+  /* THE WALK'S C2 (13 Oct 26): on the Unavailable row the man dragged from a SEAT kept his seat's puck unlit when the
+     question was left — only the row's man flashed. "Both pucks flash" (D783 (2)) is the rule at every door. */
+  it('the Unavailable row, dragged onto from a seat: left unanswered, the puck he was dragged from flashes too', async () => {
+    await boot()
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ['bane'], { oil: { [SAT_ISO]: 1 } })).toBe(true)
+    const od = INPUTS.find((x: any) => x.type === 'OD' && x.date === 'Jul 18' && idsOf(x).map(String).join() === 'bane') as any
+    expect(od, 'the overseas duty').toBeTruthy()
+    const { key: seat } = dutySeat()
+    const row = document.createElement('span'); row.className = 'seat'; row.dataset.inpseat = String(od.iid); document.body.appendChild(row)
+    const source = seatEl(seat)
+    setDrag({ kind: 'slot', key: seat })
+    applyDrop(row, 0, 0)
+    expect(view.OILWAIT && view.OILWAIT.kind, 'the question first').toBe('swap')
+    leaveOilWait()
+    expect(row.classList.contains('lift-land'), 'the man on the row').toBe(true)
+    expect(source.classList.contains('lift-land'), 'and the puck that was dragged').toBe(true)
+  })
+
+  /* ---- the Unavailable row and the Inputs calendar (ON9) ---- */
+  const od = (ppl: string[], oil?: Record<string, number>): string => {
+    expect(commitInput(null, draftOf({ person: ppl[0], type: 'OD', date: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ppl, oil ? { oil } : undefined)).toBe(true)
+    const r = INPUTS.find((x: any) => x.type === 'OD' && x.date === 'Jul 18' && idsOf(x).map(String).join() === ppl.join()) as any
+    expect(r, 'the overseas duty').toBeTruthy()
+    return String(r.iid)
+  }
+  const live = (iid: string) => INPUTS.find((x: any) => String(x.iid) === iid) as any
+  it('one man of an overseas duty filed for several, with no answer yet: the swap waits; answered, he is in it WITH the answer — one Undo', async () => {
+    await boot()
+    const iid = od(['bane', 'pike'])
+    const was = world()
+    expect(reassignInput(`${iid}~bane`, 'split'), 'nothing handed over yet').toBe(false)
+    expect(world()).toBe(was)
+    expect(view.OILWAIT!.kind).toBe('swap')
+    expect(view.OILWAIT!.lead).toBe(`Putting ${cs('split')} in place of ${cs('bane')}`)
+    expect(answerOilWait({ [SAT_ISO]: 1 })).toBe(true)
+    expect(idsOf(live(iid)).map(String).sort()).toEqual(['pike', 'split'])
+    expect(live(iid).oil, 'the input\'s one answer, given with the swap').toEqual({ [SAT_ISO]: 1 })
+    globalUndo()
+    expect(idsOf(live(iid)).map(String).sort(), 'ONE Undo').toEqual(['bane', 'pike'])
+    expect(live(iid).oil, 'and it is unanswered again').toBeUndefined()
+  })
+  it('"Answer OIL" after the overseas duty was handed to someone else meanwhile: it says so, and hands nothing over', async () => {
+    await boot()
+    const iid = od(['bane'], { [SAT_ISO]: 1 })
+    expect(reassignInput(iid, 'split')).toBe(false)
+    leaveOilWait()
+    expect(commitInput(live(iid), draftOf(live(iid)), ['pike'], { oil: { [SAT_ISO]: 1 } })).toBe(true)
+    SAID = []
+    oilBarAgain()
+    expect(view.OILWAIT, 'no question about the man who holds it now').toBeNull()
+    expect(SAID.join(' | ')).toContain('That row has changed — not swapped')
+    expect(idsOf(live(iid)).map(String)).toEqual(['pike'])
+  })
+  it('the Inputs calendar: left unanswered the chip flashes where it stands; "Answer OIL" after the input changed meanwhile says so and moves nothing', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    const iid = String(rec().iid)
+    const cal = document.createElement('div'); cal.id = 'inpCal'
+    const chip = document.createElement('span'); chip.dataset.iid = iid; cal.appendChild(chip); document.body.appendChild(cal)
+    expect(commitChipMove({ kind: 'input', iid }, SAT_ISO, '2026-07-19'), 'nothing moved yet').toBe(false)
+    expect(view.OILWAIT!.kind).toBe('move')
+    leaveOilWait()
+    expect(view.OILBAR!.text).toBe('Not moved — OIL not answered')
+    expect(chip.classList.contains('lift-land'), 'the chip flashes where it was').toBe(true)
+    /* someone is added to it in its own window meanwhile: it is no longer what the question was asked about */
+    expect(commitInput(live(iid), draftOf(live(iid)), ['bane', 'pike'], { oil: { [SAT_ISO]: 0.5 } })).toBe(true)
+    SAID = []
+    oilBarAgain()
+    expect(view.OILWAIT).toBeNull()
+    expect(SAID.join(' | ')).toContain('That has changed — not moved')
+    expect(live(iid).date, 'not moved').toBe('Jul 18')
+  })
+  /* THE WALK (C3, A's and D's notes — 13 Oct 26): the passing note ("Input added") is drawn at the foot of the screen,
+     where the bar stands — and the bar STAYS, so every note raised while it is up landed on its words and half its
+     "Answer OIL" button. While the bar is up the note sits above it. */
+  it('a passing note never lands on the bar: while the bar is up the note sits above it — one already showing moves up when the bar arrives', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    const note = () => document.getElementById('toastEl') as HTMLElement
+    try {
+      await act(async () => { root.render(<App />) })
+      realToast('Input added', 'ok')
+      expect(note().style.bottom, 'no bar: at the foot, as ever').toBe('26px')
+      await act(async () => { expect(rowPut(rowKey(), 'pike')).toBe('asked') })
+      await act(async () => { leaveOilWait() })
+      expect(document.querySelector('[data-testid="oilbar"]'), 'the bar is up').toBeTruthy()
+      expect(parseFloat(note().style.bottom), 'the note already showing has moved clear of the bar').toBeGreaterThanOrEqual(60)
+      realToast('Schedule updated', 'ok')
+      expect(parseFloat(note().style.bottom), 'and one raised while the bar is up').toBeGreaterThanOrEqual(60)
+      await act(async () => { oilBarOk() })
+      realToast('Schedule updated', 'ok')
+      expect(note().style.bottom, 'the bar gone: the foot again').toBe('26px')
+    } finally { await act(async () => { root.unmount() }); const t = note(); if (t) t.remove() }
   })
 })

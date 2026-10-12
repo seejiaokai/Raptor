@@ -222,6 +222,16 @@ after). His answer is a new ruling on whether Sol keeps the seat.
 **Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
 fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
+**The Opus read, on trial — D788 (owner, 13 Oct 26: "We test more to see if opus can hold up alone. Don’t test on Things that are too
+token intensive. U make the call. But u can also try to test it when the task are complicated and complex").** On jobs the agent
+chooses — a complicated one is worth it; one whose second read would cost too many tokens is not — a FRESH Opus reader reads the
+finished code blind, with the same brief, BESIDE the independent reader the job already needs (never in its place until he rules:
+Opus wrote the code, D67). Every claim of either reader is written as a failing test before it is believed. The result — what
+each found, what each missed, false alarms, tokens — goes into the evidence sheet and the running table in `OUTSTANDING.md`
+`[OPUS-READ-TRIAL]`. **Narrowed the same day (D789 — "Just test it once and ask me after we get the results to know how we go
+from here."): it is tested ONCE, on `[OIL-ASK-NOTIFY]`’s finished code; he is asked how to go on when the result is in, and no further
+trial is run before his answer.**
+
 **Do NOT spend them on:**
 
 - **Another code review when the missing evidence is runtime.** This is the trap that was actually
@@ -308,6 +318,9 @@ smaller comparison to make a decision from there yourself"): a trial of a cheape
 full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
 evidence sheet and here, and tells him; he can overrule.** His answer to each
 report was to be a new ruling (D588); until then no other build or fix leaves Opus, and haiku stays closed.
+**And confirmed for good (owner, D787, 13 Oct 26 — "Ok sonnet walk. It’s not sustainable for token usage to have opus to walk anyway."):** the
+walk’s helpers stay Sonnet 5.5; no Opus walker is started beside them, not even on one share for comparison, and no further
+walker trial is run or offered. The host still opens the pictures, reproduces every finding and may run a short look itself (§7.0).
 
 **The owner's trigger rule, in one line:**
 

@@ -21,9 +21,11 @@ import { createRoot } from 'react-dom/client'
 import { HOOKS } from '../engine/hooks'
 import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { initStore as raptorInitStore, notify } from '../state/store'
+import { initStore as raptorInitStore, notify, switchRoleView } from '../state/store'
 import { setSession, setMe, DEFAULT_ME } from '../state/auth'
-import { addAccount } from '../state/accounts'
+import { ACCOUNTS_LIST, addAccount, updateAccount } from '../state/accounts'
+import { stashClear, stashPut } from '../engine/weekstash'
+import { weekBundle } from '../engine/weeks-data'
 import { NOTICES, noticesFor, noticeWords, noticeRun } from '../state/notices'
 import { unreadFor, markAllNoticesRead } from '../state/noticeseen'
 import { globalRedo, globalUndo } from '../undo'
@@ -111,6 +113,25 @@ describe('what the list holds — every input of the day that needs an OIL answe
     expect(holidayAdd(ph(FRI)).ok).toBe(true)
     expect(oilOpenOn(FRI, FRI).find(o => o.iid === long)).toMatchObject({ days: [FRI], last: SAT })
   })
+  /* the break tests of 13 Oct 26 found the next two wires bare */
+  it('an input with an UNANSWERED day outside the holiday is listed for its days in the run only — and the list answers only those', () => {
+    const long = file('Det prep', 'Duty', ['pike'], { endDate: 'Jul 18', allday: true })      // its Saturday has no answer either
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(oilOpenOn(FRI, FRI).find(o => o.iid === long)!.days, 'the Friday alone').toEqual([FRI])
+    expect(saveOilDay(FRI, FRI, { [long]: 'y' })).toBe(1)
+    expect(rec(long).oil, 'its Saturday is not answered from the Friday holiday’s list').toEqual({ [FRI]: 1 })
+  })
+  it('a day of a week the app holds locked is never listed, and making it a holiday tells nobody (its answer could not be written)', () => {
+    const next = file('Next week duty', 'Duty', ['pike'], { date: 'Jul 24', allday: true })
+    stashPut('20/07/2026', JSON.stringify({ d: weekBundle('20/07/2026').days, o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }))
+    try {
+      expect(holidayAdd(ph('2026-07-24', 'Locked Friday')).ok).toBe(true)
+      expect(oilOpenOn('2026-07-24', '2026-07-24').map(o => o.iid), 'not listed').not.toContain(next)
+      expect(hol('nact'), 'nobody told').toHaveLength(0)
+      expect(pops.OILLIST, 'no list').toBeNull()
+    } finally { stashClear() }
+    expect(oilOpenOn('2026-07-24', '2026-07-24').map(o => o.iid), 'THE CONTROL — the lock gone, it is listed').toContain(next)
+  })
 })
 
 describe('the Save — the picked answers in ONE command (D782) (ON11)', () => {
@@ -119,7 +140,12 @@ describe('the Save — the picked answers in ONE command (D782) (ON11)', () => {
     const long = file('Det prep', 'Duty', ['pike'], { endDate: 'Jul 18', allday: true })
     rec(long).oil = { [SAT]: 0 }
     holidayAdd(ph(FRI))
+    const untouched = rec(m.board).modAt
+    setMe('nact')                                       // answered by the OTHER scheduler: the stamp must name him
     expect(saveOilDay(FRI, FRI, { [m.range]: 'y', [m.gate]: 'n', [long]: 'y' }), 'three inputs answered').toBe(3)
+    expect(rec(m.range).modBy, 'stamped as the window’s own answer is: who answered').toBe('nact')
+    expect(rec(m.range).modAt, '…and when').toBeTruthy()
+    expect(rec(m.board).modAt, 'an input not picked is not stamped').toBe(untouched)
     expect(rec(m.range).oil).toEqual({ [FRI]: 0.5 })
     expect(rec(m.gate).oil, 'a No is an answer').toEqual({ [FRI]: 0 })
     expect(rec(long).oil, 'its Saturday answer is not touched').toEqual({ [SAT]: 0, [FRI]: 1 })
@@ -138,6 +164,7 @@ describe('the Save — the picked answers in ONE command (D782) (ON11)', () => {
     setSession({ user: 'us', role: 'main', name: 'us' }); setMe('bane')
     expect(saveOilDay(FRI, FRI, yes([m.range])), 'a member').toBe(-1)
     expect(rec(m.range).oil).toBeUndefined()
+    expect(SAID.join(' | '), 'and it says why').toContain('Only a scheduler answers from this list')
   })
 })
 
@@ -154,6 +181,14 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     expect(n).toBeGreaterThanOrEqual(Object.keys(m).length)
     expect(noticeWords(line('nact')[0]!), 'the line counts what is left — it stores no number').toEqual({ name: 'National Day', day: 'Fri 17 Jul', what: `${n} inputs need an OIL answer`, who: cs('stiff') })
     expect(pops.OILLIST, 'the list opens by itself, saying the day is now a holiday').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: true })
+  })
+  it('an admin whose sign-in is switched off is not told (the break tests, 13 Oct 26)', () => {
+    three()
+    const wd = ACCOUNTS_LIST.find(a => String(a.pid) === 'nact')!
+    expect(updateAccount(wd.id, { on: false }), 'Warden’s sign-in switched off').toBeNull()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(hol('nact'), 'no notice for a sign-in that is off').toHaveLength(0)
+    expect(hol('stiff')).toHaveLength(1)
   })
   it('(ON13) a holiday with nothing to answer tells nobody and opens nothing; so does an Off day, and a holiday on a Saturday', () => {
     three()
@@ -275,6 +310,16 @@ describe('the bell (D769 as it stands, D782, D783 (6)) (ON16)', () => {
     expect(pops.INPEDIT).toBeNull()
     expect(pops.BELLLIST, 'the bell\'s list, which carries the holiday\'s line').toBe(true)
   })
+  it('the holiday’s line covers ITS dates only: a scheduler’s own unanswered input on another day still takes the tap, as D769 has it (the break tests, 13 Oct 26)', () => {
+    three()
+    const sat = file('Saturday duty', 'Duty', ['stiff'], { date: 'Jul 18', allday: true })      // his own, on a day the line does not cover
+    holidayAdd(ph(FRI))
+    pops.setOilList(null); pops.setInpEdit(null); pops.setOilAsk(null); pops.setBellList(false)
+    setPage('inputs')
+    bellTap(null)
+    expect(pops.OILASK, 'straight to his own Saturday question').toBe(sat)
+    expect(pops.BELLLIST).toBe(false)
+  })
   it('a member\'s bell is as it was: straight to his own input\'s question', () => {
     const own = file('My duty', 'Duty', ['bane'], { allday: true })
     setSession({ user: 'us', role: 'main', name: 'us' }); setMe('bane')
@@ -286,6 +331,47 @@ describe('the bell (D769 as it stands, D782, D783 (6)) (ON16)', () => {
     bellTap(null)
     expect(pops.OILASK, 'his own question').toBe(own)
     expect(pops.BELLLIST).toBe(false)
+  })
+  /* THE WALK'S E8 (13 Oct 26). With the admin's own "view as member" switch on (D292) the bell still listed the holiday's
+     line and stayed lit by it, and a tap on the line closed the bell's list and opened nothing — the one list is a
+     scheduler's and refused him. His word, D785's reading as told to him: the member view is a member for as long as
+     it is on. So the line is a scheduler's line: not listed, not unread, and never in the way of his own question. */
+  it('the admin’s own member view is a member while it is on: no holiday line, no bell lit by it, a tap goes to his own input’s question — and the line is back, still unread, when he switches back (D292, D785)', () => {
+    three()                                             // Saber filed these for others: each question is his to answer
+    holidayAdd(ph(FRI)); pops.setOilList(null)
+    expect(line('stiff'), 'as the admin: his line').toHaveLength(1)
+    expect(unreadFor('stiff')).toBe(1)
+    setSession({ user: 'ad', role: 'admin', name: 'ad', acct: 'admin' } as any)   // a real admin account: the switch is his
+    switchRoleView()                                    // the top bar's switch: the same person, a member's rights
+    expect(line('stiff'), 'the member view: no holiday line').toHaveLength(0)
+    expect(unreadFor('stiff'), 'and nothing unread of it — the bell is not lit by a line he cannot open').toBe(0)
+    pops.setBellList(false); pops.setOilAsk(null); pops.setInpEdit(null)
+    setPage('inputs')
+    bellTap(null)
+    expect(pops.OILASK, 'straight to his own input’s question, as any member’s bell').toBeTruthy()
+    expect(pops.OILLIST, 'never the one list').toBeNull()
+    switchRoleView()
+    expect(line('stiff'), 'back as the admin: the line again').toHaveLength(1)
+    expect(unreadFor('stiff'), 'still unread').toBe(1)
+  })
+  /* The plan's A6: "a line at 0 is not listed and not unread" sits in ONE place the list, the unread count and Mark all
+     read share. Mark all read still took every notice of his, shown or not — so a holiday's line with nothing left,
+     read without ever being seen, came back already read when something was left again. */
+  it('"Mark all read" reads only the lines that are shown: a holiday’s line with nothing left comes back UNREAD when an input on it needs an answer again', () => {
+    three()
+    file('Thursday brief', 'Training', ['pike'], { date: 'Jul 16' })
+    holidayAdd(ph(FRI)); holidayAdd(ph(THU, 'Founders Day')); pops.setOilList(null)
+    expect(saveOilDay(FRI, FRI, yes(oilOpenOn(FRI, FRI).map(o => o.iid)))).toBeGreaterThan(0)
+    setMe('nact')
+    expect(line('nact').map(n => n.day), 'only Thursday’s line is left').toEqual([THU])
+    expect(markAllNoticesRead()).toBe(true)
+    expect(unreadFor('nact')).toBe(0)
+    /* a new input on the Friday holiday, left unanswered: the Friday line counts one again */
+    setMe('stiff')
+    expect(commitInput(null, draftOf({ person: 'split', type: 'Duty', title: 'Late duty', date: 'Jul 17', yr: 2026, allday: true, remarks: '' }), ['split'])).toBe(true)
+    setMe('nact')
+    expect(line('nact').map(n => n.day).sort(), 'both lines now').toEqual([THU, FRI].sort())
+    expect(unreadFor('nact'), 'and the Friday one is news: it was never shown to him to be read').toBe(1)
   })
 })
 
@@ -310,6 +396,9 @@ describe('ON SCREEN — the one list as drawn (docs/mock/2026-10-12-oil-notify/*
       expect(tid('odl-count')!.textContent).toBe(`${n} to answer`)
       expect(win.querySelectorAll('.icard')).toHaveLength(n)
       expect(win.querySelector('.oiltag'), 'no "OIL?" tag inside the list').toBeNull()
+      /* in the DAY's own order, as drawn — all-day before timed, then by start — not the order they were filed in */
+      const order = [...win.querySelectorAll('[data-testid^="odl-yes-"]')].map(b => b.getAttribute('data-testid')!.slice(8)).filter(i => Object.values(m).includes(i))
+      expect(order, 'Gate duty (all day), Range brief (09:00), Safety board (14:00)').toEqual([m.gate, m.range, m.board])
       expect(tid(`odl-yes-${m.range}`)!.textContent, 'three hours: half a day').toBe('Yes · HO')
       expect(tid(`odl-yes-${m.gate}`)!.textContent, 'all day: a full day').toBe('Yes · FO')
       expect(tid('odl-left')!.textContent).toBe('What is left goes to the schedulers’ bells')
@@ -321,6 +410,10 @@ describe('ON SCREEN — the one list as drawn (docs/mock/2026-10-12-oil-notify/*
       expect((tid('odl-save') as HTMLButtonElement).disabled).toBe(false)
       await click(tid(`odl-no-${m.board}`))
       expect(tid('odl-count')!.textContent).toBe(`${n} to answer`)
+      /* a tap on a card's name opens that input's own window — where everything else about it is */
+      await click(tid(`odl-row-${m.gate}`)!.querySelector('[data-testid="odl-open"]') as HTMLElement)
+      expect(pops.INPEDIT && String((pops.INPEDIT as any).iid), 'the input’s own window').toBe(m.gate)
+      await act(async () => { pops.setInpEdit(null); notify() })
       /* Later: nothing written, the window gone */
       await click(tid('odl-yesall'))
       expect(tid('odl-count')!.textContent).toBe(`${n} of ${n} answered`)

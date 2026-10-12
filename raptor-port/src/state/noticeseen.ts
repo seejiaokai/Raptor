@@ -85,5 +85,9 @@ export function markAllNoticesRead(): boolean {
   const pid = me()
   if (!pid || !unreadFor(pid)) return false
   const cur = SEEN[pid] || { upto: 0, ids: [] }
-  return write(pid, { upto: cur.upto, ids: NOTICES.filter(x => x.to === pid && x.at > cur.upto).map(x => x.id).sort() })
+  /* only what is SHOWN is read (state/notices.ts noticeLive — the one body; Fable's read of the [OIL-ASK-NOTIFY] plan,
+     A6): a holiday's line with nothing left to answer is not in his list, so pressing this cannot have read it — it
+     took every notice of his, and such a line came back already read when an input on it needed an answer again. What
+     he read before stays read. */
+  return write(pid, { upto: cur.upto, ids: NOTICES.filter(x => x.to === pid && x.at > cur.upto && (noticeLive(x) || cur.ids.includes(x.id))).map(x => x.id).sort() })
 }

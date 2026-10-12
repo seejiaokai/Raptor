@@ -106,6 +106,17 @@ except the holiday's save and the bell's line (so a day with nothing left has no
    the list, the bell, the roles, Undo of the holiday, a published Friday, the downstream OIL figure (S16–30, 32–34).
    Desktop 1440×900, phone 390×844 by touch, short 390×568 and 844×390. Carried by a test, not walked: the count's
    arithmetic at each number (ON15), the store's writer door (ON5).
+   **Looked at again before the first walker started (13 Oct 26, the next chat — Opus):** the same scenarios, cut into
+   FIVE shares instead of three, because the third share held 18 scenarios, most of them needing a second scheduler's
+   sign-in, and no walker of the last two jobs held more than about 14 without leaving some unwalked. All 35 of
+   Fable's scenarios are walked, each roll-call row marked "NOT YET SEEN" is given to a named share, and three rows
+   that must NOT ask are added (R12, R13 in A13; a no-fly day in E6). **A** the hands on the board and the week,
+   desktop (14 lines: S1, 2, 6–13, 35; R2, R3, R7, R8, R12–R14); **B** a phone by touch and the short screens (6:
+   S4, 5, 14, 31; R5, R15, R20); **C** published days, the Unavailable row's drag, the Inputs calendar's drag, the
+   downstream figure (7: S3, 14, 15, 30, 32; R9, R10, R23, R24); **D** the holiday, the one list and the bell (13:
+   S16–19, 22–24, 26, 28, 29, 33, 34; R19, R22); **E** the other doors that make a holiday and who is told (8: S20,
+   21, 25, 27; R17, R21). The brief: `docs/superpowers/briefs/2026-10-13-oil-ask-notify-walk-brief.md`. The served
+   build: `http://localhost:4231/`, a frozen copy, bundle `index-Bv5bvisT.js`, of the branch at `d17287535`.
 5. **Its row in the ledger:** to add when the walk closes.
 
 **The walk's scope, by his word (D785, 13 Oct 26):** a scheduler is always an admin. No scenario sets up, and no walker
@@ -174,6 +185,16 @@ S = setup, A = action, E = expected, D = what would disprove.
   run before its build → every case red. **The break tests proper (one per wired surface) are NOT done.**
 - `e2e/oilwait.spec.ts` 4 of 4 (desktop and phone); `npm run build` clean; `npm run rulecheck` OK (258 rulings, ON1–ON16
   named); typecheck clean. **NOT RUN on this code: the whole gate set in one run** (tfin, the full e2e, smoke, perf).
+
+## 9a. The two code reads, side by side — the ONE test he asked for (D788, D789, 13 Oct 26)
+
+His word: *"We test more to see if opus can hold up alone …"* (D788), then *"Just test it once and ask me after we get the
+results to know how we go from here."* (D789). So on this job’s finished code TWO readers read blind to each other and to the
+walk’s findings list: Fable (the independent reader, D784) and a fresh Opus reader (Opus wrote the code — D67 — so its read is
+the thing on trial, never the job’s independent read). Same brief (`docs/superpowers/briefs/2026-10-13-oil-ask-notify-code-read.md`).
+Every claim of either is written as a failing test before it is believed. **The table — what each found, what each missed,
+false alarms, tokens — is filled in below when both reports are in, and put to him with what is published about the two
+models; no further trial is run before his answer (D789).**
 
 ## 10. Questions waiting for him / the look card — to write at the close
 

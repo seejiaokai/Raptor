@@ -12,7 +12,9 @@
    Mounted at App level, like the medical move's question (ui/MedMoveConfirm.tsx), so it opens over whatever surface
    the gesture was on — the week, the Scheduler Board, the Inputs calendar. Only a scheduler's gesture reaches the
    row's door; the calendar's drag is whoever may move the input; nothing here is shown to anyone a door did not ask. */
+import { useEffect } from 'react'
 import { OILWAIT, OILBAR } from '../state/view'
+import { placeToast } from './toast'
 import { OilConfirm } from './OilConfirm'
 import { WAIT_WORDS, answerOilWait, leaveOilWait, oilBarAgain, oilBarOk } from './oilwait'
 import { useVersion } from './useStore'
@@ -33,6 +35,9 @@ export function OilWait() {
 export function OilBar() {
   useVersion()
   const b = OILBAR
+  const up = !!b && !OILWAIT
+  /* a note already showing moves clear of the bar the moment it arrives (ui/toast.ts placeToast — the walk's C3) */
+  useEffect(() => { if (up) placeToast() }, [up])
   if (!b || OILWAIT) return null
   return (
     <div className="secdef-snack oilbar" role="status" data-testid="oilbar">
