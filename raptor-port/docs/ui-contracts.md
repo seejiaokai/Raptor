@@ -10196,7 +10196,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   a person (`howMany`): "for 2 people and ALL AVAIL".
 - **"ALL AVAIL" and "ALL" under "Several people" (step 3 — D750, D753):** the two are pucks of their own in the
   picker (`ui/PeoplePick.tsx`, `data-ppgroup="ph"`), ONE of them, beside named people. Where the input is longer than
-  a day or not one of the six kinds they are drawn greyed with the reason under them (`phWhy` — the window's answer,
+  a day or not one of the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* they are drawn greyed with the reason under them (`phWhy` — the window's answer,
   `inputedit.tsx placeholderWhy`): "ALL AVAIL is for one day" / "ALL AVAIL is for Training, Meeting, Appointment,
   Duty, Event and Other". One already picked stays lit, with the sentence and "Take ALL AVAIL out"; a second one, or
   ALL beside ALL AVAIL: "This input already has ALL AVAIL". The count line reads "2 picked + ALL AVAIL". A reader is
@@ -10244,7 +10244,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
   label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither
   takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add / *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
-  edit dialog and the List's pencil editor. Offered for the six kinds `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
+  edit dialog and the List's pencil editor. Offered for the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
   may pick another person for that kind (an admin; a member while the members' switch is on), never on the SANS
   calendar, never as a puck under "Several people". **A placeholder already chosen is ALWAYS listed, whatever the kind
   becomes** — with no option the box drew the first man on the list over an ALL AVAIL input. The picker's own line

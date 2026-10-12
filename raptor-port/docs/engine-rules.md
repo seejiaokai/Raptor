@@ -4297,10 +4297,10 @@ ones.** What changes in the bullets below, each left as written:
 - **The record:** the placeholder is an entry of the input's `people` (`inputs.ts placeholderOf`), not its `person`;
   `isPlaceholderInput` is "holds a placeholder". It makes no line (`inputLines`), so it is still nobody's absence and
   nobody's warning.
-- **The three structural rules are two:** `placeholderProblem` keeps the six kinds and ONE day and loses "never in a
+- **The three structural rules are two:** `placeholderProblem` keeps the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* and ONE day and loses "never in a
   group" (and it is still never filed under Unavailable); `shapeProblem` adds at most ONE placeholder — "This input
   already has ALL AVAIL" for a second one or for ALL beside it. The sentences are "ALL AVAIL is for one day" and "ALL
-  AVAIL is for Training, Meeting, Appointment, Duty, Event and Other". `commitGroup` is gone: `commitInput` is the
+  AVAIL is for Training, Meeting, Appointment, Duty, Event and Other *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]*". `commitGroup` is gone: `commitInput` is the
   one saver; the save-boundary check (`state/store.ts placeholderShapeViolation`) now holds everything `shapeProblem`
   says of one record.
 - **The doors:** a placeholder dropped on an input's row JOINS the input (`ui/reqdoor.ts rowPut`) where the two rules
