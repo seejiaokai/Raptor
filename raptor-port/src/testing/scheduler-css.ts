@@ -10,6 +10,7 @@ export const SCHEDULER_PARTS = [
   '12-schedule-editing.css', '13-board-rows-responsive.css', '14-input-editors.css',
   '15-admin-help.css', '16-medical.css', '17-save-status.css', '18-oil-board.css',
   '19-availability.css', '20-changes-quals.css', '21-insights.css', '22-float-windows.css', '23-days.css', '24-sans-calendar.css', '25-inputs-calendar.css',
+  '26-date-calendar.css',
 ] as const
 
 export function schedulerParts(entry: string): string[] {

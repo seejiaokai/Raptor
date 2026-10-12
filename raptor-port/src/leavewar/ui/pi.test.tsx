@@ -16,6 +16,8 @@
 // become a way of refusing a record.
 
 import { fireEvent, render, screen } from '@testing-library/react'
+/* a posting's date is picked on the app's own calendar since [ONE-DATE-CALENDAR] (D796, D797) — the box was the phone's own */
+import { boxValue, pickDate } from '../../ui/datecal-testkit'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setPostIn, setPostOut, setRole } from '../state/store'
 import { countsFor, inSquadron } from '../engine'
@@ -118,7 +120,7 @@ describe('placing and managing PI from the grid', () => {
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     expect(screen.queryByTestId('pi-confirm')).toBeNull()   // folded behind one button
     fireEvent.click(screen.getByTestId('bid-postin'))
-    expect((screen.getByTestId('pi-date') as HTMLInputElement).value).toBe(day)
+    expect(boxValue(screen.getByTestId('pi-date'))).toBe(day)
     // the date sits in its own box, so the button says it once — just "Post in" (D300; register PO12)
     expect(screen.getByTestId('pi-confirm').textContent).toBe('Post in')
     fireEvent.click(screen.getByTestId('pi-confirm'))
@@ -130,8 +132,8 @@ describe('placing and managing PI from the grid', () => {
     expect(screen.getByTestId(`cell-${id}-${before}`).className).toContain('gone')
     fireEvent.click(screen.getByTestId(`cell-${id}-${before}`))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect((screen.getByTestId('postin-date') as HTMLInputElement).value).toBe(day)
-    fireEvent.change(screen.getByTestId('postin-date'), { target: { value: '2026-06-20' } })
+    expect(boxValue(screen.getByTestId('postin-date'))).toBe(day)
+    pickDate(screen.getByTestId('postin-date'), '2026-06-20')
     expect(person(id).from).toBe('2026-06-20')
     fireEvent.click(screen.getByTestId('postin-undo'))
     expect(person(id).from).toBeNull()
@@ -167,7 +169,7 @@ describe('a posting that would close before it opens is refused with its reason'
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
     fireEvent.click(screen.getByTestId('bid-postout'))
-    fireEvent.change(screen.getByTestId('po-date'), { target: { value: '2026-06-01' } })
+    pickDate(screen.getByTestId('po-date'), '2026-06-01')
     fireEvent.click(screen.getByTestId('po-confirm'))
     expect(person(id).to).toBeNull()
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
@@ -181,7 +183,7 @@ describe('a posting that would close before it opens is refused with its reason'
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
     fireEvent.click(screen.getByTestId('bid-postin'))
-    fireEvent.change(screen.getByTestId('pi-date'), { target: { value: '2026-09-01' } })
+    pickDate(screen.getByTestId('pi-date'), '2026-09-01')
     fireEvent.click(screen.getByTestId('pi-confirm'))
     expect(person(id).from).toBeNull()
     expect(screen.getByTestId('post-err').textContent).toMatch(/Posted out from 1 Aug 26 — the post-in has to be before that day/)
@@ -193,7 +195,7 @@ describe('a posting that would close before it opens is refused with its reason'
     setPostIn(id, '2026-06-15'); setPostOut(id, '2026-08-01')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-08-05`))
-    fireEvent.change(screen.getByTestId('postout-date'), { target: { value: '2026-06-01' } })
+    pickDate(screen.getByTestId('postout-date'), '2026-06-01')
     expect(person(id).to).toBe('2026-07-31')
     expect(screen.getByTestId('postout-err').textContent).toMatch(/Posted in on 15 Jun 26/)
   })
@@ -204,7 +206,7 @@ describe('a posting that would close before it opens is refused with its reason'
     setPostIn(id, '2026-06-15'); setPostOut(id, '2026-08-01')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-10`))
-    fireEvent.change(screen.getByTestId('postin-date'), { target: { value: '2026-09-01' } })
+    pickDate(screen.getByTestId('postin-date'), '2026-09-01')
     expect(person(id).from).toBe('2026-06-15')
     expect(screen.getByTestId('postin-err').textContent).toMatch(/Posted out from 1 Aug 26/)
   })

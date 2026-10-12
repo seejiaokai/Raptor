@@ -80,6 +80,9 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   const none = gaps.length === 1 && wholeYear(gaps[0])
   const createYear = () => setWhy(createWhy(createOilPeriodFor(String(year)), year))
   const step = (by: number) => { setWhy(''); setYear(year + by) }
+  /* the year can also be turned from outside — a swipe on the list (ui/DaysWindow.tsx, D786): what was said about the
+     year left behind goes with it, as the arrows' own step has it */
+  useEffect(() => { setWhy('') }, [year])
 
   return (
     <div className="hol" data-testid="days-part-holidays">

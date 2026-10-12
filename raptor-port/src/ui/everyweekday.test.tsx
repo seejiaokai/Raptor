@@ -29,6 +29,7 @@ import { setDaysWin } from './pops'
 import { _resetFloatWins } from './FloatWindow'
 import { DaysWindow } from './DaysWindow'
 import { firstWeekdayFrom, sayDateY } from './daysfmt'
+import { boxValue, pickDate } from './datecal-testkit'
 
 const mem = new Map<string, string>()
 beforeEach(() => {
@@ -56,7 +57,9 @@ function openEvery(wd: number, month = '2026-11-02') {
   act(() => { setDaysWin(month); notify() })
   fireEvent.click(t(`days-wd-${wd}`))
 }
-const setDate = (id: string, iso: string) => fireEvent.change(t(id), { target: { value: iso } })
+/* a date is picked as a person picks it since [ONE-DATE-CALENDAR] (D795, D796): the box is tapped, the calendar turned to the
+   month, the date tapped — the boxes were the phone's own until then, and these tests typed into them */
+const setDate = (id: string, iso: string) => pickDate(t(id), iso)
 
 describe('the pure helpers', () => {
   it('the first such weekday on or after a date', () => {
@@ -91,7 +94,7 @@ describe('a weekday’s heading', () => {
     expect(screen.getAllByTestId('win-every').length).toBe(1)
     expect(t('win-every').getAttribute('aria-label')).toBe('Every Monday')
     /* a fresh form for the new weekday — its own start, nothing carried over from Thursday's */
-    expect((t('every-from') as HTMLInputElement).value).toBe('2026-11-02')
+    expect(boxValue(t('every-from'))).toBe('2026-11-02')
     expect(pressed('every-cls-nf')).toBe('true')
     expect(t('days-wd-3').getAttribute('aria-expanded')).toBe('false')
   })
@@ -111,21 +114,21 @@ describe('what it starts with', () => {
   it('a weekday: no fly lit, from the first such day on screen, no end', () => {
     openEvery(3)                                        // November 2026 is on screen
     expect(pressed('every-cls-nf')).toBe('true'); expect(pressed('every-cls-day')).toBe('false'); expect(pressed('every-cls-night')).toBe('false')
-    expect((t('every-from') as HTMLInputElement).value).toBe('2026-11-05')
+    expect(boxValue(t('every-from'))).toBe('2026-11-05')
     expect(pressed('every-until-none')).toBe('true'); expect(pressed('every-until-date')).toBe('false')
     expect(q('every-until')).toBeNull()
     expect(t('every-says').textContent).toBe('Every Thursday from Thu 5 Nov 2026 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
   })
   it('on the month today is in, it starts from the next such day — today counts', () => {
     openEvery(3, '2026-10-08')
-    expect((t('every-from') as HTMLInputElement).value).toBe('2026-10-08')
+    expect(boxValue(t('every-from'))).toBe('2026-10-08')
     cleanup(); _resetFloatWins(); setDaysWin(null)
     openEvery(0, '2026-10-08')
-    expect((t('every-from') as HTMLInputElement).value).toBe('2026-10-12')
+    expect(boxValue(t('every-from'))).toBe('2026-10-12')
   })
   it('on a month already past, it still starts from the next such day — never in the past', () => {
     openEvery(3, '2026-03-10')
-    expect((t('every-from') as HTMLInputElement).value).toBe('2026-10-08')
+    expect(boxValue(t('every-from'))).toBe('2026-10-08')
   })
   it('a Saturday: day flying lit — a Saturday has no flying set until he says so', () => {
     openEvery(5)
@@ -183,20 +186,73 @@ describe('Save', () => {
     expect(t('every-err').textContent).toBe('Choose the date it ends, or pick No end.')
     expect(steps()).toBe(before); expect(rules()).toEqual([]); expect(t('win-every')).toBeTruthy()
   })
-  it('an end before the start, and no start at all, are refused with a sentence', () => {
+  /* RE-EXPRESSED for the app's own date box ([ONE-DATE-CALENDAR], 13 Oct 26). Until then this test typed an end BEFORE
+     the start into the phone's box, then emptied the start. Neither can be done on the calendar: under Until a date
+     before the start is faint and cannot be picked (D795), and a box cannot be emptied (D796 — no Reset). The form's
+     own check is still reached the one way the screen offers — the start moved past an end already chosen — and the
+     two things that are no longer possible are each pinned as such, below. */
+  it('an end before the start is refused with a sentence — reached by moving the start past the end', () => {
     openEvery(3)
-    fireEvent.click(t('every-until-date')); setDate('every-until', '2026-11-01')
+    fireEvent.click(t('every-until-date')); setDate('every-until', '2026-11-19')
+    setDate('every-from', '2026-11-26')
     fireEvent.click(t('every-save'))
     expect(t('every-err').textContent).toBe('It cannot end before it starts.')
-    setDate('every-from', '')
-    fireEvent.click(t('every-save'))
-    expect(t('every-err').textContent).toBe('Choose the date it starts.')
     expect(rules()).toEqual([])
     /* put right, the line goes and it saves */
     setDate('every-from', '2026-10-29')
     expect(q('every-err')).toBeNull()
     fireEvent.click(t('every-save'))
     expect(rules().length).toBe(1)
+  })
+  it('under Until, a date before the start cannot be picked at all — it is faint (D795)', () => {
+    openEvery(3)                                        // the start is Thu 5 Nov 2026
+    fireEvent.click(t('every-until-date')); fireEvent.click(t('every-until'))
+    expect((t('dcal-day-2026-11-04') as HTMLButtonElement).disabled).toBe(true)
+    expect((t('dcal-day-2026-11-05') as HTMLButtonElement).disabled).toBe(false)
+    fireEvent.click(t('dcal-day-2026-11-04'))
+    expect(boxValue(t('every-until'))).toBe('')
+    /* and the start itself may be the end: a rule for one Thursday */
+    fireEvent.click(t('dcal-day-2026-11-05'))
+    expect(boxValue(t('every-until'))).toBe('2026-11-05')
+  })
+  it('the start cannot be emptied: its box always holds a date, and its calendar has no Reset or Clear (D796)', () => {
+    openEvery(3)
+    fireEvent.click(t('every-from'))
+    const words = [...t('dcal-card').querySelectorAll('button')].map(b => (b.textContent || '') + ' ' + (b.getAttribute('aria-label') || ''))
+    expect(words.filter(w => /reset|clear/i.test(w))).toEqual([])
+    fireEvent.click(t('dcal-scrim'))
+    expect(boxValue(t('every-from'))).toBe('2026-11-05')
+  })
+  it('the two dates are the app’s own boxes: nothing of the phone’s date box is left in the window (D786, D795)', () => {
+    openEvery(3)
+    fireEvent.click(t('every-until-date'))
+    expect(t('win-every').querySelector('input[type="date"]')).toBeNull()
+    expect(t('every-from').tagName).toBe('BUTTON'); expect(t('every-until').tagName).toBe('BUTTON')
+    expect(t('every-from').textContent).toContain('Thu 5 Nov 2026')
+    expect(t('every-until').textContent).toContain('Pick a date')
+    expect(t('every-from').getAttribute('aria-label')).toBe('From: Thu 5 Nov 2026')
+    expect(t('every-until').getAttribute('aria-label')).toBe('The date it ends: no date picked')
+  })
+  it('the calendar it opens makes the weekday stand out, and any date may still be picked (D795 — "Any date")', () => {
+    openEvery(3)
+    fireEvent.click(t('every-from'))
+    expect(t('dcal').classList.contains('is-marked')).toBe(true)
+    expect([...t('dcal-dow').children].findIndex(e => e.classList.contains('is-mk'))).toBe(3)
+    expect(t('dcal-day-2026-11-12').classList.contains('is-mk')).toBe(true)
+    fireEvent.click(t('dcal-day-2026-11-10'))             // a Tuesday
+    expect(boxValue(t('every-from'))).toBe('2026-11-10')
+    expect(t('every-says').textContent).toContain('from Tue 10 Nov 2026 onward')
+    /* a Monday's window marks Monday */
+    fireEvent.click(t('days-wd-0')); fireEvent.click(t('every-from'))
+    expect([...t('dcal-dow').children].findIndex(e => e.classList.contains('is-mk'))).toBe(0)
+  })
+  it('Escape closes the calendar first, and the "Every …" window only on a second press', () => {
+    openEvery(3)
+    fireEvent.click(t('every-from'))
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(q('dcal-card')).toBeNull(); expect(t('win-every')).toBeTruthy()
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(q('win-every')).toBeNull(); expect(t('win-days')).toBeTruthy()
   })
   it('a save the store refuses says so and keeps the window', () => {
     openEvery(3)

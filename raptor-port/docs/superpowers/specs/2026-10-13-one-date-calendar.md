@@ -100,6 +100,19 @@ readings):** the Today icon goes to today's month and does not pick today (in "J
 Escape closes an open floating calendar first, and the window behind it only on a second press; the holiday form's dates
 move in step two (they are on the Leave War's calendar), not step one.
 
+## The Tracker's date boxes, and a tick (D798 — his note, not yet a choice)
+
+Found reading the code for step one, 13 Oct 26: the Tracker has three date boxes that are still the phone's own — a date on a
+course (`tracker/components/DateBox.jsx`), and "Done on" and "Failed on" in the marking pop-up (`tracker/components/Pop.jsx`).
+This design never named the Tracker, so they are NOT in step one. The same day, with a picture of that pop-up on his iPhone, he
+noted that a tick to confirm "would make sense … for some interface like the tracker", "or u can put the tick somewhere at the
+top to save space" (D798). Not ruled. Before the Tracker's boxes are built, both ways are drawn on the Tracker's own pop-up at
+phone size: a tap picks and the calendar goes (the recommendation — one behaviour everywhere, D754), and a tick at the top right
+of the calendar's head. In the Tracker a date is saved the moment it is picked — that is the case for a tick.
+
+**And a fifth Leave War date box** the list above missed: "PO from" on the panel for a dragged block of one person's days
+(`leavewar/ui/SelectSheet.tsx`). It is the same kind as the four named — built in step one.
+
 ## The check (step one)
 
 **Tier WALK** by the order's eight questions: no OIL or pay (the boxes hand on the same date string; the calculations are

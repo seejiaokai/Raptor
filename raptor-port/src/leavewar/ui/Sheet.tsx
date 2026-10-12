@@ -112,7 +112,10 @@ function useGridPan(movedRef: { current: boolean }, closeRef: { current: () => v
       // never up at once, but a lower one's shield must not eat the upper's taps.
       if (scrim.contains(t)) return
       const el = t instanceof Element ? t : t.parentElement
-      if (el?.closest('.bidsheet')) return
+      /* nor the app's date calendar, which a sheet's date box floats over the whole page (ui/DateBox.tsx — a layer on
+         <body>, so not inside any sheet): shielded, a tap on one of its dates would be eaten and would CLOSE the sheet
+         whose date was being picked */
+      if (el?.closest('.bidsheet, .dcal-layer')) return
       e.stopPropagation()
       if (e.type === 'mousedown') e.preventDefault()
       if (e.type === 'click') closeRef.current()

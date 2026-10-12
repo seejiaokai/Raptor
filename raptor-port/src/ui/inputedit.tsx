@@ -55,6 +55,7 @@ import { CURPAGE, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { holdForOil } from './oilwait'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
+import { DateBox } from './DateBox'
 import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
 
@@ -2799,8 +2800,9 @@ export function InputEditor() {
               signed a day or two back (owner, 27 Aug 26) */}
           {ctx === 'up' && <label className="inped-f">
             <span className="inped-k">Date</span>
-            <input type="date" id="inpEditUpDate" aria-label="Upchit date" value={draft.start}
-              onChange={e => setDraft({ ...draft, start: e.target.value, end: '' })} />
+            {/* the app's own date box (owner D796, D797 — over its form) */}
+            <DateBox id="inpEditUpDate" label="Upchit date" value={draft.start}
+              onChange={v => setDraft({ ...draft, start: v, end: '' })} />
           </label>}
           {/* ...and a SAVED shared input's (D681 — `datesHere`, above). A saved input's dates are a finished range, so
               the first tap is always the NEW START and the next the new end — "a tap for the start, a tap for the end";
