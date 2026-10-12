@@ -942,8 +942,11 @@ Earn's hint on an input's row said "answered for each person on it" (one answer 
   may take himself out; whoever filed it, or a scheduler, changes it.
 - R20. A scheduler's OIL switch-off about a person ends when he leaves the input — also where he then stands behind its
   ALL AVAIL; switched off again after that, it stands.
-- R21. A person or ALL AVAIL dragged from one input's row onto another's is TWO changes waiting on a published day (two
-  inputs changed — D736), as built in step 2 for a person.
+- R21. *(WITHDRAWN 12 Oct 26 — it was wrong.)* It said a person or ALL AVAIL dragged from one input's row onto another's
+  is TWO changes waiting on a published day. He asked whether that was consistent with the rest of the app; D109 already
+  rules a move on the same day is ONE, a placeholder puck included. Fixed: the two units pair into one line, "Ranger:
+  Training → Meeting" (`engine/publish.ts` after the people step; `ui/pendlist.ts`; `ui/phmember.test.tsx`). Out of one
+  input and a DIFFERENT person into another stays two; inputs on different days are one on each day.
 - R22. The next-week peek draws no counter on ALL AVAIL (it never has, on any row).
 
 **Left for step 8 (the records):** `docs/ui-contracts.md` still describes the picker refusing a placeholder under

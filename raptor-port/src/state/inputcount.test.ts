@@ -628,9 +628,10 @@ describe('ALL AVAIL / ALL as one of an input\'s people — what a published day 
 
   /* FROM ONE INPUT'S ROW TO ANOTHER'S (the plan §4.4: "he MOVES: leaves the first, joins the second, ONE command"). The
      unit is D736's — taken out of one input, added to the other — and whatever that comes to, a placeholder counts
-     what a person counts for the same drag, and Undo takes all of it back. (The NUMBER is deliberately not pinned
-     here: D109 says a man moved from one place to another on the same day is one change, D736 that a man taken off an
-     input's row or added to it is one each; which of them governs a move between two inputs is put to him, not ruled.) */
+     what a person counts for the same drag, and Undo takes all of it back. (The NUMBER is pinned in
+     ui/phmember.test.tsx: ONE. D109 governs — "a man (or a placeholder puck) taken off one place and put on another
+     place of the SAME day pairs into one move"; he asked on 12 Oct 26 whether two was consistent with the rest of the
+     app, and it was not. D736's "one each" is a person put into or taken out of ONE input.) */
   it('ALL AVAIL dragged from one input\'s row to another\'s counts what a person counts for the same drag — on a weekday and on a Saturday that earns; Undo — 0', async () => {
     for (const di of [WED, SAT]) {
       const moved = async (who: string) => {

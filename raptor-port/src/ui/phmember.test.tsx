@@ -51,6 +51,7 @@ import { commitInput, draftOf, howMany } from './inputedit'
 import { rowPut, rowTake, rowMove } from './reqdoor'
 import { monthItems, barText, namesOf, everyoneIn } from './inputscal-model'
 import { toggleOilPerson } from './oilmode'
+import { pendItemWords } from './pendlist'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
 
@@ -426,6 +427,48 @@ describe('on a published day ALL AVAIL put in or taken out is ONE change waiting
       expect(waiting(di)).toBe(2)
     })
   }
+  /* A MOVE IS ONE (owner D109, 25 Sep 26 — "A MAN MOVED FROM ONE PLACE TO ANOTHER ON THE SAME DAY IS ONE PENDING CHANGE,
+     NOT TWO … a man (or a placeholder puck) taken off one place and put on another place of the SAME day pairs into one
+     move, and the pending list's line reads 'Warden: MET + NOTAM BRIEF → SODB'"). Dragged from one INPUT's row to
+     another's it read TWO — "taken out" of the first, "added" to the second (D736's unit, one each an input) — and the
+     builder first parked that as right. He asked whether it was consistent with the rest of the app (12 Oct 26); it
+     was not. Two inputs change, and it is still one act: one line, naming where he came from and where he went. */
+  for (const di of [WED, SAT]) for (const who of ['split', 'allavail']) {
+    const day = di === SAT ? 'a Saturday that earns' : 'a weekday'
+    it(`${day}: ${who === 'allavail' ? 'ALL AVAIL' : 'a person'} dragged from one input's row to another's is ONE change waiting, said as a move; Undo — nothing (D109)`, async () => {
+      oilOn(); await boot(); setBoardDay(di)
+      file(['pike', who], di, di === SAT ? YES : undefined)
+      expect(commitInput(null, DRAFT(di, { title: 'Second brief' }), ['rocky'], di === SAT ? { oil: YES } : undefined)).toBe(true)
+      publish(di)
+      expect(waiting(di)).toBe(0)
+      expect(rowMove(keyOf(who, di), `${rowKey(di, 'Second brief')}.+`)).toBe('done')
+      expect(waiting(di), 'one — not "taken out" and "added"').toBe(1)
+      const w = pendItemWords(di, dayPendingItems(di)[0]!)
+      expect([w.where, w.from, w.to], 'who, from where, to where — as a move reads everywhere else').toEqual([cs(who), TITLE, 'Second brief'])
+      expect(globalUndo()).toBeTruthy()
+      expect(waiting(di)).toBe(0)
+    })
+  }
+  it('…but one person taken out of one input and ANOTHER put into a second is two acts — 2', async () => {
+    oilOn(); await boot(); setBoardDay(WED)
+    file(['pike', 'split'], WED)
+    expect(commitInput(null, DRAFT(WED, { title: 'Second brief' }), ['rocky'])).toBe(true)
+    publish(WED)
+    expect(rowTake(keyOf('split', WED))).toBe('done')
+    expect(rowPut(`${rowKey(WED, 'Second brief')}.+`, 'bane')).toBe('done')
+    expect(waiting(WED)).toBe(2)
+  })
+  it('…and a move, then the man taken out of where he went: he is simply out of the first — 1, "taken out"', async () => {
+    oilOn(); await boot(); setBoardDay(WED)
+    file(['pike', 'split'], WED)
+    expect(commitInput(null, DRAFT(WED, { title: 'Second brief' }), ['rocky'])).toBe(true)
+    publish(WED)
+    expect(rowMove(keyOf('split', WED), `${rowKey(WED, 'Second brief')}.+`)).toBe('done')
+    expect(rowTake(keyOf('split', WED, 'Second brief'))).toBe('done')
+    expect(waiting(WED)).toBe(1)
+    expect(pendItemWords(WED, dayPendingItems(WED)[0]!).to).toBe('taken out')
+  })
+
   it('THE CONTROL: a man of the crowd who files leave of his own is still his own change — and the crowd\'s with it, one line', async () => {
     oilOn(); await boot(); setBoardDay(SAT)
     file(['pike', 'allavail'], SAT, YES)

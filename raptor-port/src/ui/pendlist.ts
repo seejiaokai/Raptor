@@ -184,6 +184,9 @@ function inputWords(di: number, it: PendItem): Words {
   if (!here) return { where: name, from: '', to: now ? 'moved off this day' : 'deleted', ...none }
   /* ONE PERSON put in or taken out — his own line (owner D736: "one man taken off its row or added to it is one change
      each"; engine/publish.ts, the people step) */
+  /* a MOVE from one input to another is one line, said as a move reads everywhere else — "Ranger: Training → Meeting"
+     (owner D109; engine/publish.ts pairs the two units) */
+  if (it.pp && it.pp.role === 'move') return { where: cs(it.pp.p), from: it.pp.from ? inpLabel(it.pp.from) : '', to: inpLabel(now), ...none, edited: true } as Words
   if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }

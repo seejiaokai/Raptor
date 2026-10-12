@@ -213,7 +213,7 @@ export function dayShownPendCount(di:any){di=+di;return dayApproved(di)?dayPendi
 export type PendItem = PendUnit & { axis: 'content'|'filing'|'input'|'oil'|'warn'|'hide', inp?: DeltaEntry, val?: DeltaEntry, rows?: PendUnit[], oilFold?: boolean, was?: any, now?: any, mates?: PendItem[], people?: string[],
   /* `pp`: ONE PERSON put in (`on`) or taken out (`off`) of an input — its own item (the people step, below; D736);
      `pplApart`: an input's own item whose people are counted apart, beside it — its words then say nothing of them */
-  pp?: { p: string, role: 'on'|'off' }, pplApart?: boolean };
+  pp?: { p: string, role: 'on'|'off'|'move', from?: any }, pplApart?: boolean };
 export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
@@ -290,6 +290,23 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     const ix=items.indexOf(item);
     if(other)items.splice(ix+1,0,...made); else items.splice(ix,1,...made);
   });
+  /* …AND A MOVE BETWEEN TWO INPUTS IS ONE (owner D109, 25 Sep 26 — "a man (or a placeholder puck) taken off one place and
+     put on another place of the SAME day pairs into one move"; found 12 Oct 26, when he asked whether two was consistent
+     with the rest of the app). Dragged from one input's row to another's, he is taken out of the first and put in the
+     second — two inputs changed, which the step above counts one each (D736) — and it is still one act. Where the SAME
+     person or placeholder is out of exactly one input and into exactly one other on this day, the two units are one:
+     the "in" unit stays, says where he came from (`pp.from`, for the line "Ranger: Training → Meeting"), and carries the
+     other's tap. Anything else — out of one and a different man into another, out of two — stays one each. */
+  { const pps=items.filter((u:any)=>u.pp&&u.axis==='input'&&!!u.val);
+    const of=(p:any,role:string)=>pps.filter((u:any)=>u.pp.role===role&&String(u.pp.p)===String(p)&&items.indexOf(u)>=0);
+    pps.filter((u:any)=>u.pp.role==='on').forEach((n:any)=>{
+      const ins=of(n.pp.p,'on'), outs=of(n.pp.p,'off');
+      if(ins.length!==1||outs.length!==1||idOf(outs[0].val)===idOf(n.val))return;
+      const o:any=outs[0];
+      n.pp={p:n.pp.p,role:'move',from:o.was||o.now};
+      n.jump=(n.jump||[]).concat(o.jump||[]); n.keys=(n.keys||[]).concat(o.keys||[]);
+      items.splice(items.indexOf(o),1);
+    }); }
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
   /* (the Logic-values entry — `oilrv:` — is never folded: it is nobody's input, and its own act; it is pushed below) */
   const oilAll=oilDelta(di,snap.d), oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));

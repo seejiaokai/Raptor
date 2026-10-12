@@ -115,9 +115,12 @@ The whole set, under the PC's lock, nothing else running, in one run, after the 
    take himself out; whoever filed it, or a scheduler, changes it. *Recommended and built:* as stated (D755 (3), D763 —
    it reaches everyone behind the puck). The other reading — "it is still his own request" — would let one member
    change what 25 people's OIL rests on. Waits on it: nothing; say so if you want the other.
-2. **A person or ALL AVAIL dragged from one input's row onto another's reads as TWO changes waiting on a published day**
-   (out of one input, into the other). *Recommended and built:* two — two inputs changed (D736 "one each"); D109's
-   "a move is one" is about a seat on one day's rows. Waits on it: nothing.
+2. **A person or ALL AVAIL dragged from one input's row onto another's — ANSWERED 12 Oct 26, and the builder's first
+   answer was wrong.** It read TWO changes waiting on a published day (out of one input, into the other), and that was
+   parked here as "recommended and built". He asked: *"Is this consistent with the rest of the app?"* It was not: D109
+   (25 Sep 26) already rules that a man — or a placeholder puck — moved from one place to another on the same day is
+   ONE change, said as a move. Fixed the same day: one line, "Ranger: Range safety brief → Second brief"
+   (`engine/publish.ts`, `ui/pendlist.ts`; pinned in `ui/phmember.test.tsx`). No new ruling — D109 covers it.
 
 `Walk:` SHORT LOOK ONLY at this stop — 8 steps by real presses, a desktop and a phone, 19 pictures, 5 opened by the
 builder; the job's FULL walk is owed after its last screen is built, and nothing here is ready for "merge live".
