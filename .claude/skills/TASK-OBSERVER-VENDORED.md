@@ -97,6 +97,12 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **24 Sep 26 review (owner-approved, D146):** `SKILL.md` Numbering discipline item 4 gained the
   cross-branch check's silent failure (Git Bash rewrites `rev:path` unless
   `MSYS_NO_PATHCONV=1`) and "run it on the current branch first".
+- **13 Oct 26 review (owner-approved, D811; read by one fresh Opus reader, D810):** `SKILL.md` Acting on
+  Observations gained "A trap that recurs after it was logged is not logged again as a note". The
+  same review settled two more places lessons land: `raptor-port/docs/walk-scripts.md` (walk
+  scripts, walkers' briefs, break tests) and, inside the `brainstorming` skill,
+  `mockups-on-the-real-app.md`; and it filed the lessons that are really a tool to build as
+  backlog items instead of guide lines.
 
 ## Known caveats (not bugs)
 

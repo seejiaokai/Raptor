@@ -20,12 +20,19 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
    the file that now carries it (then make that file carry it, with the D-number beside the ruling there: this list is
    an index, never the only home; the gate fails a new row whose Markdown home never mentions it — a row renumbered
    under D78 counts as new). **The first bold sentence of "what it means" becomes the line every chat loads: it must
-   state the rule on its own, in at most 350 characters, with no "|".** A ruling that spans areas goes in the one it
-   mostly governs; the other area's "Also read" line names it.
-2. **If it wholly REPLACES an earlier ruling**, start that earlier ruling's FULL row's ruling cell (in
-   `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
-   `**SPENT <date> — <what used it>.**` A ruling changed only IN PART stays live and says so in its own words in its
-   full row (`**— NARROWED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
+   state the rule on its own, in at most 350 characters, with no "|"** — keeping its "don't", its exception and its
+   scope ahead of any example. A ruling that spans areas goes in the one it mostly governs; the other area's "Also
+   read" line names it. **In the row:** never a third party's names or figures inside his words (paraphrase them); a
+   reading of yours that says what the app WILL DO is first checked against what it does today in the nearest case (the
+   code, its tests, the app's own rule text) and says where, or "not checked"; in the home cell backticks are for files
+   only, and a backlog item is written "filed as [ID]" in plain words — never `OUTSTANDING.md` in backticks as a home:
+   the gate then requires that file to name the ruling, the item leaves at the archive, and the move is refused.
+2. **If it wholly REPLACES an earlier ruling**, start the cell right after the date in that earlier ruling's FULL row
+   (in `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
+   `**SPENT <date> — <what used it>.**` — after reading that row sentence by sentence: every "if", "until" or "still" in
+   it must be carried by a live ruling, or it stays live. A ruling changed only IN PART — or one whose open point a
+   later ruling ANSWERS — stays live and says so in its FULL row's fourth cell, "what it means" (`**— NARROWED <date> BY
+   D<n>: …**`, `**— ANSWERED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
    **Either way, fix what the old ruling left behind in the same change — the documents, the app (file the build), the
    lists (D201; `record-decisions.md`).**
 3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves each new full row to the full-text file
@@ -56,7 +63,7 @@ ruling, or an explicit no. **Not** ordinary task instructions ("run the tests", 
 
 | Area | File | Loads by itself | Rulings, newest first |
 |---|---|---|---|
-| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D810, D794, D790, D787, D785, D784, D779, D775, D774, D766, D765, D764, D761, D758, D754, D752, D749, D746, D726, D672, D667, D625, D623, D615, D614, D611, D610, D609, D608, D607, D602, D601, D596, D595, D590, D588, D587, D568, D541, D499, D495, D493, D491, D490, D489, D487, D486, D485, D473, D466, D465, D453, D368, D353, D351, D350, D349, D348, D347, D390, D343, D302, D228, D203, D201, D106, D90, D162, D148, D147, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
+| How we work | `.claude/rules/decisions/how-we-work.md` | in EVERY session | D811, D810, D794, D790, D787, D785, D784, D779, D775, D774, D766, D765, D764, D761, D758, D754, D752, D749, D746, D726, D672, D667, D625, D623, D615, D614, D611, D610, D609, D608, D607, D602, D601, D596, D595, D590, D588, D587, D568, D541, D499, D495, D493, D491, D490, D489, D487, D486, D485, D473, D466, D465, D453, D368, D353, D351, D350, D349, D348, D347, D390, D343, D302, D228, D203, D201, D106, D90, D162, D148, D147, D144, D143, D141, D140, D138, D137, D136, D135, D151, D89, D87, D86, D84, D78, D73, D72, D70, D69, D68, D67, D63, D62, D60, D59, D58, D57, D56, D54, D53, D29, D23, D22, D17, D16, D14, D13, D12, D11, D10, D9, D8, D7, D6, D5, D4 |
 | Tracker | `.claude/rules/decisions/tracker.md` | when a Tracker file is read (its code, docs, scripts, evidence) | D566, D564, D560, D474, D464, D462, D463, D377, D376, D375, D374, D373, D372, D371, D370, D191, D158, D157, D134, D132, D131, D130, D129, D128, D127, D126, D124, D123, D122, D121, D120, D64 |
 | People & accounts | `.claude/rules/decisions/people-accounts.md` | when an accounts, sign-in, Admin → Users, Quals, one-door or posting file is read (D390) | D329, D328, D327, D326, D325, D323, D322, D321, D320, D310, D309, D308, D307, D306, D305, D304, D303, D301, D300, D299, D298, D297, D296, D295, D294, D293, D292, D291, D290, D289, D288, D287, D286, D285, D284, D283, D282, D281, D280, D229, D227, D226, D225, D224, D223, D222, D221, D220, D219, D217, D216, D215, D214, D213, D211, D210, D204, D200, D218, D166, D165, D149 |
 | Leave War | `.claude/rules/decisions/leave-war.md` | when a Leave War file is read (its code, docs, e2e, evidence) | D679, D678, D677, D676, D674, D673, D670, D669, D461, D460, D418, D352, D365, D335, D334, D333, D332, D331, D330, D267, D266, D265, D264, D262, D160, D159 |

@@ -12,7 +12,9 @@ below is a way a real session "verified" a screen change and was wrong.
 - **The server is serving THIS build.** A reused preview server serves the
   last build. Rebuild before re-testing; a measurement that stays bit-identical
   across a change that should have moved it is a stale-build signature, not a
-  failed fix.
+  failed fix. A server you did not just start (another session's, a leftover)
+  is proved first: the hashed bundle name in the index page it serves equals
+  the one in the local build's `index.html`.
 - **Stop a stale server by the port it holds or its process id** and confirm
   the port is free. On Windows, a server started under a shell survives
   killing the shell — kill the process tree. (This project's exact commands
@@ -21,7 +23,10 @@ below is a way a real session "verified" a screen change and was wrong.
   an asset by its content (content type, first bytes), never by status code.
 - **A throwaway drive script lives inside the project folder**, so it finds
   the project's packages, and imports the browser-test package the project
-  actually installs.
+  actually installs. Give it a name proved unused (`git ls-files
+  --error-unmatch <path>` fails, and no such file exists) and read `git status`
+  after cleaning up: a copy over a tracked file followed by a delete leaves no
+  error to notice.
 
 ## Drive Every State the Change Appears In
 
@@ -41,6 +46,17 @@ below is a way a real session "verified" a screen change and was wrong.
 - **Pointer handlers:** mouse AND touch, from every place the gesture can
   start. Move the mouse after a click — a hover is a move — and include a move
   with no press first.
+- **A control that acts on RELEASE** changes what the browser's follow-up
+  click will hit. Ask what is under the pointer after it acts: if something
+  new, or something that moved, act on the click instead — or swallow the one
+  click that follows — and have the unit test's tap helper fire that click (a
+  layout-less test fires only the events you dispatch). A finger slide the
+  page should own needs `touch-action` set on it, or the browser cancels the
+  press as a scroll.
+- **A dragged CLONE** inherits every rule written for its original, including
+  the ones that make it a target: state its `pointer-events` on the clone's
+  own class. An element found by a data id after a re-render is scoped to its
+  surface — a hidden mounted twin can carry the same id and come first.
 
 ## Measure, Don't Estimate
 
@@ -62,6 +78,9 @@ below is a way a real session "verified" a screen change and was wrong.
   animation frame that follows the switch, and assert what stays put
   relative to the view ("the point in the middle stays in the middle"), not
   absolute screen positions.
+- Where a view LANDS is judged at rest: wait until two scroll readings a short
+  interval apart are equal, then assert ONCE. A polling assertion passes on
+  its first sample — before a deferred scroll carries the target away.
 
 ## CSS Placement
 
@@ -70,6 +89,14 @@ wrapper around the whole file, the nearest `@media` above it, an override
 block that must stay last. A base rule goes ABOVE the block that overrides it.
 Then measure the narrow width on the first drive — the rule "appearing in the
 built file" proves it shipped, not that it applies.
+
+A class placed on `html`, `body` or any wide ancestor is matched by every
+`closest()` below it: search the name in `closest(`, `matches(` and the
+selectors first, and prefer a state name no element uses (`is-…`, `has-…`).
+In a shared global stylesheet a short meaningful class (`day`, `on`, `off`)
+is probably taken already: prefix a new surface's state and value classes, or
+scope them under its root — and take one screenshot at each size before
+writing the browser test, which finds this class of fault in seconds.
 
 ## Drive-Tool Traps
 

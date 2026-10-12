@@ -102,6 +102,11 @@ its checklist"). Each one that applies becomes a Global Constraint AND the
 first step of the first task that touches that surface — an order that lives
 only as a sentence in an index does not fire.
 
+A step that copies or publishes material from a private or out-of-repo source
+is its OWN step, with the owner's go-ahead recorded beside it at planning time
+and "open every file before it crosses" as part of it — never a records
+chore, and never "the N files known to carry X".
+
 ## Task Structure
 
 ````markdown
@@ -193,7 +198,11 @@ touching three or more modules also check — and hand the same four checks to
 an independent reviewer of the plan, because the author shares the plan's
 blind spots: import cycles the plan creates, every existing reader of a rule
 it changes, helpers it assumes exist, and any internal id the screen would
-print.
+print. A claim about a third-party platform (its privileges, defaults, limits,
+ordering) is verified against the vendor's documentation, and cited, before
+anyone reviews the design. A rule that parses or splits user-typed text is run
+over the real stored examples of that field; a promised on-screen moment names
+the guard or event that lets the screen change then.
 
 **5. Replacement code:** For each code block that REPLACES existing lines,
 list the guards and early returns in the original and confirm each survives
@@ -218,6 +227,40 @@ needs the write path and the existing pins its fix must not move.
 **9. Shared state in tests:** A plan-authored test that switches shared state
 restores it, and a test over a collection first asserts the collection is not
 empty — both otherwise pass while proving nothing.
+
+**10. What the plan decided itself:** A backlog item or spec that offers "A
+or B" is an unanswered question for the owner unless a recorded decision picks
+one — having a good reason for one option does not make it yours. A default
+listed as a "reading" is held against the decision's own words AND every
+reading recorded beside it: if it narrows, widens or contradicts either, it is
+a question, with a recommended answer and a stated until-answered default that
+follows the owner's words. Name your own readings as readings, so the plan's
+reviewer attacks them as targets rather than reading them as facts.
+
+**11. Plans that reshape or re-read stored data:** Before the design, an
+inventory of every reader AND writer of the record, with a verdict per site
+(stays right / must change / unsure, and why). Per site also: what it RETURNS
+or passes on and who consumes that (a writer, an identity comparison, an
+editor); who reads whether the record merely EXISTS; each job that every
+delete or rewrite loop's comments and tests say it does; and, for each writer,
+its PRODUCTION caller — a control a person can press (a writer with none is a
+test seam or dead code, never "the door"). A retired field is swept by the
+FIELD's name, copies included (change images, frozen snapshots, exports), not
+by who reads the live collection. Prefer the shape in which existing fields
+keep their meaning and the new meaning is added beside them. Where a derived
+view sits on a saved base, the base is defined as what the persistence layer
+writes at the moment it writes — trace every effect that runs before the
+writer and every cache written on navigation — and a test compares "right
+after the act" with "after a reload", Undo and Redo included.
+
+**12. "Like the existing X", and sketches:** A new thing that behaves "like X"
+lists every place X is plugged in (search X's entry points) with, for each,
+where the new one goes or why not — no blank cells. A phase that an earlier,
+reviewed plan only sketched inherits none of that review: re-check its
+premises with a fresh sweep of every mechanism it names before detailing it.
+And before the design, compare the files each other open branch changes with
+the files this plan will touch; for each overlap the plan says which version
+it builds on, and in what order.
 
 If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
 

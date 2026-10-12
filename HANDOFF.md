@@ -8,6 +8,12 @@ in `OUTSTANDING.md`; where each kind of fact goes is `.claude/rules/doc-structur
 
 **Before acting on a block:** `git fetch`, then check the branch and PR it names — it describes the world when it
 was written. Never push while a PR's checks are running (`gh run list --branch <branch> --limit 1`; D151).
+Bring the checkout level BEFORE reading this file: a chat continuing a pushed branch runs `git pull --ff-only`; a fresh
+worktree has no upstream, so "git pull" pulls nothing there — `git fetch origin`, then `git merge --ff-only origin/main`.
+List the live chats (`ListAgents`): if the one that wrote
+the block is still running, or another already holds the item you were told to start, message it and agree who owns
+each remaining step before touching anything. If your opening message and the block's "Opening line" or "Pick up
+here" differ, name the difference to him and ask before starting.
 **Writing a block** (the session-handoff skill does it, at every handoff): rewrite ONLY your own block, between its
 markers, even when nothing is pending; newest block first; remove another chat's block only after `git fetch` shows
 its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel chats each keep their own block, and

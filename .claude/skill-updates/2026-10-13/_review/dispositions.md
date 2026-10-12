@@ -138,7 +138,7 @@ word · `OPEN` stays open. APPLY, REFLECTED, FILED and MEMORY become `ACTIONED (
 | 348 | APPLY | SH Step 1 (a marker matched on its own line, never as a substring) |
 | 350 | MEMORY | appended to `guides-fewer-words-more-pictures` (let PowerPoint itself make the PDF and the pictures) |
 | 351 | MEMORY | appended to `guides-fewer-words-more-pictures` (marks checked against their picture; pictures shrunk once) |
-| 352 | OPEN | stays open on ONE question for him (the reader's finding 8): D368 says what to tell him, but not whether a fresh chat that continues a branch can really be opened without ticking "worktree" - only he can see what his new-chat picker does; his answer becomes one line of SH Step 1 |
+| 352 | APPLY | SH Step 1 (say in so many words whether he ticks "worktree"; a chat continuing a branch releases it first) - his answer of 13 Oct 26, D811 |
 | 353 | APPLY | WP Self-Review 11 (each writer's production caller) |
 | 354 | APPLY | WS §7 (reading a FAIL: the script's world first) |
 | 355 | APPLY | SH Step 1 (for a design job the opening line says what he will get) |

@@ -153,6 +153,7 @@ A browser-based companion for showing mockups, diagrams, and visual options duri
 - Before sending any mock, tap each of its controls the way the user will.
 - The approved picture becomes the build's contract.
 - If the user says they attached an image and none arrived, say so in your first reply and continue from their words.
+- The method in full, and the trap each line of it came from: `mockups-on-the-real-app.md` in this directory — read it before making any mock-up of a screen that already exists.
 
 **Per-question decision:** Even after the user accepts, decide FOR EACH QUESTION whether to use the browser or the terminal. The test: **would the user understand this better by seeing it than reading it?**
 

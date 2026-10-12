@@ -127,9 +127,19 @@ Confirm:
 
 **Test errors?** Fix error, re-run until it fails correctly.
 
-**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
+**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error. Set the fix aside with a copy of the file, not `git stash`: the stash is shared by every worktree of the repository, and a `; git stash pop` after a chain that failed early pops someone else's work. While another check run is in flight in the same tree, keep a red test that does not compile out of the tree until that run has passed its build stage.
+
+**Red is an observation of each assertion, not the order two files were written in.** A test file that cannot load until the code exists (it imports what is not written yet) fails every case alike — that is not red. Prove it one of two ways: run it against a stub that compiles and does the OLD behaviour; or, once green, break the one line that makes it pass and record how many cases went red — one break per rule, by a script that applies each break, runs the narrowest test file and restores the original bytes in a `finally`. In a batch of fixes, run the batch's tests before the first fix lands and keep the output. An integration test of a NEW write path is never blocked by the path not existing: its red is "nothing reached storage". This recovers the proof for a test written first that could not be seen failing; it is not a way to write the code first — the Iron Law stands.
+
+**A test selected by name** (`-t`, `-g`, `--grep`): confirm in the summary that it RAN ("1 failed", not "0 tests") before reading the exit code — a name holding brackets or quotes matches nothing, and the run exits 0.
 
 **Read the red — it must name the defect's own effect.** A red from a setup step (the test could not draw its line; its own click deleted the thing it meant to test) proves nothing, and will lie again on the fixed code. Before the action, each case asserts its PREMISES — e.g. the object it acts on exists and is the one this case created, the intended tool or mode is active, nothing else is selected — and identifies what it created by a unique handle (an id), never by a count or aggregate the fixture may already satisfy. For rendered geometry, use a measurement that includes every transform in play (element rectangles include CSS zoom; an SVG's screen matrix under a CSS-zoomed ancestor may not).
+
+**An assertion that something is ABSENT** — "gone", "not shown", "nothing written", "refused" — passes on an empty screen, on a fixture step that silently refused, and on an action that never happened. In the same test, first assert the thing was present (or that the gesture landed: its ghost, the refusal's own words), then act, then assert the absence. And judge a red run by the tests that PASSED as closely as by the ones that failed.
+
+**A state-comparison fault** gets the pair — the case reported AND its inverse (add / remove, open / close, first / last) — with the side effects asserted too (the message shown, nothing else reset): coincidence hides the second fault in the first.
+
+**A finding from a device-specific walk** (touch, a coarse pointer, a phone's layout): the red test mounts the real surface the walk saw and stubs the environment switch the code branches on (`matchMedia('(pointer: coarse)')`) — or is renamed to say what it proves. The re-walk of such a fix is never skipped on the strength of the unit test.
 
 **Races:** write the losing order down as steps, and make the test force that order — hook the boundary (the storage read, the network call) and perform the competing write from inside it. Assert that the hook fired, so a green test cannot be one that never reached the race. Adding a delay and hoping is not a race test.
 
@@ -177,6 +187,10 @@ Over-engineered
 
 Don't add features, refactor other code, or "improve" beyond the test.
 
+**A fix guarded on an existing flag or mode:** read every place that flag is assigned before trusting its comment — a lifecycle comment is a claim. If the red test stays red, check the guard first.
+
+**A guard that suppresses input** (a double-click, a stray tap): write down what makes the accident different from the intended act — time, place, target — and key the guard on the narrowest of them, with a test of the accident AND a test of a fast legitimate act that must still pass. Tests written beside a guard inherit its assumptions.
+
 ### Verify GREEN - Watch It Pass
 
 **MANDATORY.**
@@ -194,7 +208,9 @@ Confirm:
 
 **Other tests fail?** Fix now.
 
-**Many fail after a DELIBERATE behaviour change?** Sort them before touching any: (a) a rule still true whose fixture needs updating; (b) a test of behaviour that was deliberately removed — rewrite it to the new contract or delete it openly, citing the decision; (c) new behaviour not yet covered — write it in fresh tests that set up their own state. Never make a red test green by weakening it, and fix the first failures first: in order-dependent tests one failure cascades.
+**Which other tests?** Not only the files that name the functions you edited. Tests of a behaviour you REMOVED or reversed are found by what the user would have seen — the element, the test id, the words on screen. After wiring into a module many suites load (a registry, a store, a permissions table), run suites that reach it from another entry: your own file proves one import order. And run the older tests of the same surface early — they were written without knowledge of your change, so they are the ones able to falsify it.
+
+**Many fail after a DELIBERATE behaviour change?** Sort them before touching any: (a) a rule still true whose fixture needs updating; (b) a test of behaviour that was deliberately removed — rewrite it to the new contract or delete it openly, citing the decision; (c) new behaviour not yet covered — write it in fresh tests that set up their own state. Never make a red test green by weakening it, and fix the first failures first: in order-dependent tests one failure cascades. When a control many tests drive is being replaced, remove it first and run those files: the failures are the list of promises to restate — one helper per file for the new route, each claim kept, and a note beside any claim that changed saying what it used to say and which decision changed it. When the change removed DATA that tests iterate over, the failing list is incomplete: tests that loop over, map or compare that data now pass on nothing — search for every read of it, give each a guard that fails on an empty input, and compare the test COUNT before and after.
 
 ### REFACTOR - Clean Up
 
