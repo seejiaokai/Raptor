@@ -31,7 +31,7 @@ import { InputsCal } from './InputsCal'
 import { SansCal } from './SansCal'
 /* the draft shape, the OIL question and the new input's seed are the input window's own — see ui/inputedit.tsx */
 import {
-  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel, oilSignDay, oilSignNote,
+  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel, oilSignDay, oilSignNote, inputWho,
   rosterOptions as people, archivedOptions, inputTone, newInputSeed,
 } from './inputedit'
 import { docHas, rowDocIds } from '../state/docs'
@@ -376,6 +376,11 @@ export function InputsPage() {
     if (g.kind !== 'ask') return
     setOilConf({
       ...g,
+      /* headed for EVERYONE the one answer is written for (D762) — the words of the input's own window ("Ace +1"),
+         as every other door of the question says it (ui/inputedit.tsx inputWho); the row's "OIL?" button for an
+         input of several is new with D777, and headed it with the one man the record leads with (the second
+         re-walk, RX2-2) */
+      who: inputWho(r) || g.who,
       commit: (dec: Record<string, number>) => {
         /* an answer alone is a change to the record: who gave it, and when (D629). `mod` — the date the late rule
            reads — is NOT moved by it, as before */

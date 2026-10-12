@@ -433,6 +433,9 @@ describe('the "OIL?" sign where nobody has answered an input’s OIL question (D
     await click(btn)
     expect($$('[data-testid="oilconf"]'), 'it opens the question').toHaveLength(1)
     expect(INPEDIT, 'and not the input’s window').toBeNull()
+    /* …headed for EVERYONE the one answer is written for — the words of the input's own window ("Ace +1"), never the
+       one man the record happens to lead with (the second re-walk, RX2-2 in passing: it read "OIL — Tally, …") */
+    expect($('[data-testid="oilconf"]')!.textContent, 'its heading').toContain(`${cs(az([a, b])[0])} +1`)
   })
 
   it('answered — a Yes or a No — the sign goes: no tag on the card, no button on the row of an input of several', async () => {
