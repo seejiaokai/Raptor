@@ -4164,3 +4164,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the skill's block template, when work is still running at the handoff, require three lines: (1) who receives each helper's closing message and figures, and that the writing chat will do NOTHING further once a new chat picks the block up (or exactly what it will finish); (2) any lock, served build or background process it holds, and who releases it; (3) every result that so far exists only in the chat or its working folder, copied into the repo before the block is committed. And a first step for the reader: list the live sessions and message the one that wrote the block before touching the shared checkout.
 
 **Principle:** A handoff is complete only when nothing the next session needs lives in the writer's head, its working folder or its still-running helpers. If the writer is still alive, the handoff must also say what the writer will and will not do from that moment — two sessions on one checkout need an explicit owner for every remaining step.
+
+### Observation 560: A fit fix for a phone's own control, proved only on another platform, was recorded as done and failed on the real phone
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [CAL-PHONE-SWIPE-FIT] — reading the Calendar window before its questions and picture (branch claude/cal-phone-swipe-fit-2affa0; numbered from 560 by agreement with the parallel skills-review chat, which keeps 542–559)
+**Skill:** impeccable (reference/adapt.md); also the bug-check order's walk step
+**Type:** open-source
+**Phase/Area:** Adapt — "Verify adaptations"; the walk's device caveats
+
+**Issue:** A date box drawn by the phone's own browser ran off a window's edge on the owner's iPhone. Five days earlier the same box had been given "fit" style rules after an earlier picture of his, measured as fitting in a Windows browser, and written up as fixed. It still ran off on the real phone. The desktop browser cannot reproduce the fault at all (it draws that control differently), so the first fix was never proven — and nothing in the record said so.
+
+**Suggested improvement:** In adapt.md's verify step (and the walk's device caveats): when the faulty part is a control the platform draws itself (a date, time, select or file box), say plainly that an emulated walk cannot prove a fix to it; then EITHER replace it with the product's own control, which behaves the same everywhere, OR mark the fix "unproven until seen on the device" in the evidence and on the owner's look card. A second style-only attempt after a first one failed on the device needs a stated reason.
+
+**Principle:** A fix can only be called done on the surface where the fault can be reproduced. Where the fault lives in a platform-drawn control that the test environment draws differently, prefer removing the dependency over tuning it blind — and never record a blind fix as proven.

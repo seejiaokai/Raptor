@@ -15,6 +15,16 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/cal-phone-swipe-fit-2affa0 -->
+### `claude/cal-phone-swipe-fit-2affa0` — `[CAL-PHONE-SWIPE-FIT]` (D786) IS STARTED: NOTHING IS BUILT; FOUR QUESTIONS AND THE PHONE-SIZE PICTURE ARE WITH HIM — written 13 Oct 26 — verify before use
+- **Read first:** `OUTSTANDING.md` `[CAL-PHONE-SWIPE-FIT]` — its last paragraph holds what the reading found, the four questions and the agent's pick for each. The pictures page: `raptor-port/docs/mock/cal-swipe-fit.html` (sent to him as an Artifact page), pictures `raptor-port/docs/mock/2026-10-13-cal-swipe-fit/`, drawn by `raptor-port/scripts/handpass/calswipe-mock.mjs`.
+- **The branch:** cut from `main` after pull request #493; it holds documents, the pictures and the mock-up script only — no change under `raptor-port/src`. No pull request yet.
+- **Next:** his answers → each recorded as a ruling BEFORE the build (this chat's numbers are D795–D809 — verify) → the build, a failing test first (the swipe on the month and on the Holidays list by the Inputs calendar's own recipe, `raptor-port/src/ui/calpick.ts`; the From box and Until's "A date") → the bug check, WALK tier (a phone by real touch, both directions, a swipe that starts on a date's button, a desktop unchanged; the fit at 320, 360, 390, 440) → a fresh, blind Opus read of the finished code (D790) → the gates under the PC's lock → his look on his own iPhone, which alone proves the fit (Apple's font and date box are not a Windows browser's).
+- **With the parallel skills-review chat (D794, D302):** told by message that this chat only APPENDS to the end of `.claude/skill-observations/log.md`, numbered from 560 upward, and touches nothing else there.
+- **On his PC:** this worktree's `raptor-port\node_modules` is a junction to the main checkout's — before removing the worktree, delete it with `cmd //c rmdir <path>`, never a forced remove.
+- **Branch and picker:** to carry this job on, a fresh chat picks `claude/cal-phone-swipe-fit-2affa0` in the new-chat picker — no new worktree; NOT `main`.
+<!-- /now -->
+
 <!-- now:claude/after-oil-ask-notify -->
 ### `claude/after-oil-ask-notify` — `[OIL-ASK-NOTIFY]` IS MERGED (pull request #492, 13 Oct 26, his "merge live" — D791); THIS BRANCH IS THE RECORDS TIDY AFTER IT, DOCUMENTS ONLY, WAITING FOR ITS OWN "MERGE LIVE"; TWO JOBS ARE NEXT, SIDE BY SIDE (D794) — written 13 Oct 26, about 04:20 — verify before use
 - **What merged:** the OIL question comes BEFORE a swap, an add or a move and the change is made only on an answer; the bar that stays; the one list; a day made a holiday tells the schedulers (D780–D785). Its full check: `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` (the `Walk:` line at its head; the gate counts, his look card and the readings told to him in §16). **Vercel reported the live app READY for the merge at 04:01 (13 Oct 26); `main`'s own check run was still going when this was written — read its conclusion (`gh run list --branch main --limit 2`).**

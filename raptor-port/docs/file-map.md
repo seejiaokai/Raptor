@@ -255,6 +255,13 @@ REAL, what is DRAWN) `docs/mock/2026-10-12-oil-notify-run.txt`. `scripts/handpas
 drives the built app by real presses (the swap is a real drag, the holiday is really added), pictures it, then puts the
 proposed words and marks on the page from the app's own classes.
 
+`[CAL-PHONE-SWIPE-FIT]` (13 Oct 26 — a drawing; nothing built; D786): `docs/mock/cal-swipe-fit.html` is the pictures page
+put to him with four questions — the "Every <weekday>" window's From box as a date field of the app's own, closed and open,
+and where a sideways swipe works on the month and on the Holidays list; a phone at 390 and at 320 wide. Its pictures are
+`docs/mock/2026-10-13-cal-swipe-fit/`. `scripts/handpass/calswipe-mock.mjs` draws them: it serves the built app itself
+for the length of the run (no preview server is left behind), drives the real Calendar window by real taps, pictures it,
+then sets the app's own small month — copied as drawn out of the real "Add a holiday" window — into "Every Thursday".
+
 `[OIL-ASK-NOTIFY]` — THE BUILD (12–13 Oct 26; D780–D784; the plan `docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md`,
 its register `docs/superpowers/specs/2026-10-12-oil-ask-notify-behaviour-register.md`, ON1–ON16). NEW: `src/ui/oilwait.ts`
 (what the waiting change's buttons do — answered: the door again with the answer; not answered: the flash and the bar),
