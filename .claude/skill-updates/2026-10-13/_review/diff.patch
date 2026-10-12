@@ -1,0 +1,1388 @@
+diff --git a/.claude/rules/shipping.md b/.claude/skill-updates/2026-10-13/.claude/rules/shipping.md
+index ea805d6dd..12c4b1854 100644
+--- a/.claude/rules/shipping.md
++++ b/.claude/skill-updates/2026-10-13/.claude/rules/shipping.md
+@@ -75,9 +75,11 @@ half).
+   walk, TAKE the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
+   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`); if it is held, WAIT (check every
+   few minutes; never start alongside); RELEASE it the moment the run ends, pass or fail (`… gatelock.mjs release`, or
+-  delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and always releases. A lock older
+-  than 2 hours whose run is plainly over is stale — break it and say so. One test file, a typecheck or one walk script
+-  needs no lock. The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
++  delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and releases when it ends — a run you
++  STOP does not: release it yourself at once. A lock older than 2 hours whose run is plainly over is stale — break it and
++  say so (ask its holder first while a chat that could hold it is open). One UNIT test file, a typecheck or one walk script
++  on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits for it.
++  The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
+ - **Parallel chats talk to each other so they do not clash (D302, 27 Sep 26 — "Can all 3 chats communicate so that there
+   will not be clashing … U guys handle it").** Before changing a file or function another open chat's branch also
+   changes (compare the branches: `git diff --name-only $(git merge-base origin/main <branch>) <branch>`), message that
+diff --git a/.claude/skills/FIND-SKILLS-VENDORED.md b/.claude/skill-updates/2026-10-13/.claude/skills/FIND-SKILLS-VENDORED.md
+index 7fa895e50..3e8308f47 100644
+--- a/.claude/skills/FIND-SKILLS-VENDORED.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/FIND-SKILLS-VENDORED.md
+@@ -28,6 +28,13 @@ surfaces enabled skills, and `SuggestSkills`/`SearchSkills` search the
+ org/Anthropic catalog. `find-skills` covers the *public* `skills.sh` ecosystem
+ those don't — that's what it adds.
+ 
++## Local changes to the vendored skill
++
++- **13 Oct 26 review (owner-approved; read by one fresh Opus reader, D810):** `SKILL.md` Step 4
++  gained item 4, "The skill's own text" — read the skill itself, note its licence and compare it
++  with any installed skill covering the same step before advising install, fuse or skip. A re-copy
++  overwrites it: re-apply (`git log -p -- .claude/skills/find-skills`).
++
+ ## Updating
+ 
+ No auto-update. Re-copy the one file:
+diff --git a/.claude/skills/SUPERPOWERS-VENDORED.md b/.claude/skill-updates/2026-10-13/.claude/skills/SUPERPOWERS-VENDORED.md
+index 4653bd61a..f680de502 100644
+--- a/.claude/skills/SUPERPOWERS-VENDORED.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/SUPERPOWERS-VENDORED.md
+@@ -56,11 +56,25 @@ did not.
+    | `verification-before-completion` | three Common Failures rows (a clean verdict's scope, "removed everywhere", green elsewhere); a "long check runs" line (a gate chained into a commit); `browser-checks.md`: line positions not rects, measuring across a mode switch |
+    | `writing-plans` | Task Right-Sizing: a migration of shared records starts with its checks |
+ 
++5. **Local lessons from the skill review of 13 Oct 26** (owner-approved; the same rules as changes 3 and 4 — an
++   upstream refresh overwrites these, re-apply them). The drafts were read by one fresh Opus reader (D810).
++
++   | Skill | What was added |
++   |---|---|
++   | `test-driven-development` | Verify RED: set the fix aside with a copy, not the stash; "red is an observation of each assertion"; a test selected by name; an assertion of absence; the pair for a state-comparison fault; a finding from a device-specific walk. GREEN: a fix guarded on a flag; a guard that suppresses input. Verify GREEN: "which other tests?"; a replaced control and removed data. `writing-good-tests.md`: the absolute table beside a parity test; three more stand-ins; reaching past the door; four fixture rules |
++   | `verification-before-completion` | six Common Failures rows (a silent typecheck, a background run, edits that landed, an audit script's count, a mechanical rewrite, a deferred check); `browser-checks.md`: proving a reused server, an unused scratch name, a control that acts on release, a dragged clone, a landing judged at rest, class names on a wide ancestor and in a global stylesheet |
++   | `systematic-debugging` | Phase 1: an order between two driver actions; a failure by a consistent amount; the identical probe on the base revision. Phase 4: reproduce a reported failure in the running app first |
++   | `writing-plans` | a step that crosses a privacy boundary; Self-Review 4 (platform claims, text rules, promised moments); new checks 10 (what the plan decided itself), 11 (plans that reshape stored data), 12 ("like the existing X", and sketches) |
++   | `receiving-code-review` | a batch of claims from a read that ran nothing; "Before applying a reviewer's fix"; every branch of a "can't happen" |
++   | `dispatching-parallel-agents` | where the report lives and how the agent ends; each helper's scratch sub-folder; stage by explicit path; "A Brief That Worked: Old Tests Re-Expressed After a Rule Change" |
++   | `executing-plans` | "each of these N sites" is a pointer; a branch that merged in another open branch |
++   | `brainstorming` | a pointer to the new reference `mockups-on-the-real-app.md` (the method, the traps of injecting into a live page, judging the proposal, showing it) |
++
+ ## Updating
+ 
+ There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply
+-change 1 — then changes 3 and 4: `cp -a` overwrites every edited file (and keeps
+-the added reference files), so diff each skill in the tables of changes 3 and 4
++change 1 — then changes 3, 4 and 5: `cp -a` overwrites every edited file (and keeps
++the added reference files), so diff each skill in the tables of changes 3, 4 and 5
+ against the pre-refresh commit and carry the local lines forward:
+ 
+ ```sh
+diff --git a/.claude/skills/TASK-OBSERVER-VENDORED.md b/.claude/skill-updates/2026-10-13/.claude/skills/TASK-OBSERVER-VENDORED.md
+index 8a3be1570..fb0d32608 100644
+--- a/.claude/skills/TASK-OBSERVER-VENDORED.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/TASK-OBSERVER-VENDORED.md
+@@ -97,6 +97,12 @@ where that procedure's defaults do not fit a git repo with vendored skills:
+ - **24 Sep 26 review (owner-approved, D146):** `SKILL.md` Numbering discipline item 4 gained the
+   cross-branch check's silent failure (Git Bash rewrites `rev:path` unless
+   `MSYS_NO_PATHCONV=1`) and "run it on the current branch first".
++- **13 Oct 26 review (owner-approved; read by one fresh Opus reader, D810):** `SKILL.md` Acting on
++  Observations gained "A trap that recurs after it was logged is not logged again as a note". The
++  same review settled two more places lessons land: `raptor-port/docs/walk-scripts.md` (walk
++  scripts, walkers' briefs, break tests) and, inside the `brainstorming` skill,
++  `mockups-on-the-real-app.md`; and it filed the lessons that are really a tool to build as
++  backlog items instead of guide lines.
+ 
+ ## Known caveats (not bugs)
+ 
+diff --git a/.claude/skills/brainstorming/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/brainstorming/SKILL.md
+index 43d0c68a2..17d68a64c 100644
+--- a/.claude/skills/brainstorming/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/brainstorming/SKILL.md
+@@ -153,6 +153,7 @@ A browser-based companion for showing mockups, diagrams, and visual options duri
+ - Before sending any mock, tap each of its controls the way the user will.
+ - The approved picture becomes the build's contract.
+ - If the user says they attached an image and none arrived, say so in your first reply and continue from their words.
++- The method in full, and the trap each line of it came from: `mockups-on-the-real-app.md` in this directory — read it before making any mock-up of a screen that already exists.
+ 
+ **Per-question decision:** Even after the user accepts, decide FOR EACH QUESTION whether to use the browser or the terminal. The test: **would the user understand this better by seeing it than reading it?**
+ 
+diff --git a/.claude/skill-updates/2026-10-13/.claude/skills/brainstorming/mockups-on-the-real-app.md b/.claude/skill-updates/2026-10-13/.claude/skills/brainstorming/mockups-on-the-real-app.md
+new file mode 100644
+index 000000000..98b995a2d
+--- /dev/null
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/brainstorming/mockups-on-the-real-app.md
+@@ -0,0 +1,100 @@
++# Mock-ups on the Real App
++
++**Load this reference when:** making a picture of a proposed change to a screen
++that already exists — before the first drawing.
++
++SKILL.md's "Prefer drawing the options on the real running app" is the rule.
++This is the method and its traps; every line comes from a mock-up that misled
++someone.
++
++## The Method
++
++1. Drive a local or preview build — throwaway data, the clock held still where
++   the date colours the screen — to the "today" state through the app's own
++   controls, and picture it at each size the app ships.
++2. Do the nearest REAL interaction first (a real drag, a real open) and record
++   its look and its markup. Reuse those; never restyle them.
++3. Apply ONE named transform on the page: it moves, removes or clones existing
++   nodes. New parts are cloned from a real neighbour and marked as new. Any
++   style the app does not already have is a design decision to tell the owner.
++4. Picture the same frames again at the same sizes. Lay them out
++   today-beside-proposed, numbered, so the owner answers by number, and say on
++   the page which pictures are real and which are drawn in.
++5. Write down everything the transform had to touch that the design note did
++   not name — four places printing one count, a list that was not grouped
++   after all. That list goes into the plan: each item is a requirement nobody
++   had written down.
++6. Commit the injection script beside the pictures, so the set can be shot
++   again and the build starts from it. The picture the owner picks — or the
++   script that drew it, with its exact values — is committed too, and the
++   record of the decision names it: words describing a picture are a summary,
++   not the spec.
++
++## Traps When Injecting Into a Live Page
++
++- The app owns its DOM: a scroll, a repaint or a partial swap wipes injected
++  state silently. Do every scroll first, inject last, and re-apply the fragile
++  part immediately before the picture. Have the capture step ASSERT its
++  premise is still there (a hand-set class, an injected node) — or refuse the
++  picture.
++- Clear injected nodes before staging the next option: the app swaps only what
++  changed, so option A's markup survives into option B's frames.
++- A script that toggles styles by finding "the original rule" finds its own
++  injected copy the second time: keep the app's rule once, and skip your own
++  sheet. A before/after made by removing a rule from the BUILT stylesheet
++  prints how many rules it removed and the measured size on both sides — the
++  build rewrites selectors and media conditions; zero removed, or equal sizes,
++  means the "before" is not a before.
++- Hide transient toasts. Frame clear of sticky bars by asking the page what is
++  at the element's own top edge (`elementFromPoint`), not by trusting
++  scroll-into-view.
++- Look at every picture before sending it: each failure above passed its
++  script with no error.
++
++## Judging the Proposal
++
++- **A mark a few pixels wide:** measure the element boxes and the gaps to
++  their neighbours BEFORE designing; capture at the target screens' real
++  densities (1x desktop, 3x phone) and show those at true size, with an
++  enlarged copy only as a detail view. Enlargement hides sub-pixel collisions.
++- **An existing component shown inside a mock is measured, not styled:** read
++  the live element's computed styles (its pseudo-elements and overflow
++  included) and its markup, reproduce them verbatim, scale them as one piece,
++  and put a close-up of the real one beside the mock's before anyone sees it.
++  A copy made by eye converges one correction at a time, each paid for by the
++  reviewer.
++- **Include one BUSY state by default** — the fullest realistic mix of what
++  the change touches (every mark colour, every ring kind, issued and pending
++  together, a plain case) — and take the fix's scope from what the rule being
++  changed affects, not from the bug's first description.
++- **"This works like the existing X" is a behaviour claim, not a picture.**
++  Exercise X for the behaviour named (close it, press outside it, drag it, use
++  the page behind it) or read its code first, and list what was exercised
++  beside the picture. Where the proposal and the existing behaviour differ,
++  say so on the drawing itself.
++- **A LAYOUT question over a range of content** (long and short text, optional
++  parts) is not answered by a re-lettered screenshot — that shows one
++  instance. Build working markup in the app's own style values: the same
++  varied sample set under every option (the worst case included), a switch per
++  open choice, a measured figure per option computed in the page, a
++  today/proposed toggle. When checking such a page locally, assert the layout
++  width first — a file with no viewport tag opens 980 wide in a phone-emulated
++  browser.
++- **A reproduction written as assertions of the RIGHT behaviour**, with a hook
++  that injects a candidate stylesheet, gives three things from one script: the
++  defect's evidence, the proposal's pictures, and a pass/fail measurement of
++  the proposal on every page and size — and later the fix's re-check. Confirm
++  first that the mode the app is opened in can show the state under test (a
++  memory-only start cannot produce a failed save).
++
++## Showing It
++
++- A change to the LOOK or LAYOUT of a surface the owner uses daily gets a
++  full-screen before/after put to him BEFORE it is built — whoever filed it,
++  and even when it is framed as a defect. Whether it is an improvement is the
++  user's call, not the finder's.
++- When the answer to a choice is a question ("show me what he will see
++  exactly"), it is a request for the picture, not for more words.
++- Republishing a page of pictures is a sync of the whole set against what is
++  live: list the published files, compare each with the local copy, and send
++  every one that differs, whoever changed it.
+diff --git a/.claude/skills/dispatching-parallel-agents/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/dispatching-parallel-agents/SKILL.md
+index f6d966a2e..f4d65cbb9 100644
+--- a/.claude/skills/dispatching-parallel-agents/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/dispatching-parallel-agents/SKILL.md
+@@ -112,6 +112,16 @@ Do NOT just increase timeouts - find the real issue.
+ Return: Summary of what you found and what you fixed.
+ ```
+ 
++**Decide where the report lives, and how the agent ends, before dispatching.**
++A report that must be kept: an agent that may write files writes it to a named
++path and returns a short summary (the count, one line per finding, the path); a
++read-only agent is given a length cap, and the host saves its message once,
++verbatim, by a script — never by retyping it. Say how the agent ENDS: "send
++your report ONCE, after stopping every script and browser you started". And
++bound it: a helper's cost is set by its brief — a scenario count, a
++stop-and-report rule after N failed attempts at one step, and only the
++evidence actually needed.
++
+ ## Common Mistakes
+ 
+ **❌ Too broad:** "Fix all the tests" - agent gets lost
+@@ -145,8 +155,13 @@ brief:
+   agent owns as read-only, with an escape hatch: "report the change you need
+   instead of making it". You apply cross-boundary edits when you integrate.
+ - **Scratch files go in each agent's own scratch folder**, never the repo
+-  tree. An untracked file an agent did not create belongs to someone else —
+-  never delete or "restore" it.
++  tree — name each helper's own sub-folder or file prefix in its brief, or two
++  of them will pick the same output name. An untracked file an agent did not
++  create belongs to someone else — never delete or "restore" it.
++- **Stage by explicit path** in any checkout where someone else's files can
++  sit — a helper's half-finished output, another session's untracked folder:
++  never `-A`, `.` or a shared parent directory, and read the staged file count
++  before the commit. A commit should hold what its author did.
+ - **Machine resources:** which test suites, ports and folders are already in
+   use. Agents run named test files in the foreground, one at a time, and
+   never re-run a suite they already started — backgrounded full runs pile up
+@@ -157,6 +172,28 @@ brief:
+   stop every running agent that can write, then check `git status` and undo
+   partial edits.
+ 
++## A Brief That Worked: Old Tests Re-Expressed After a Rule Change
++
++The builder's own new tests share the builder's picture of the change; the OLD
++tests are a list of situations somebody once found worth pinning. Translated
++onto the new rule by helpers who did not write the build, they are a second,
++independent scenario pass — it found eight to twelve product faults a step
++where the builder's own tests had found one. The brief:
++
++- disjoint file lists per helper; one file run at a time, in the foreground;
++  no git writes;
++- four allowed outcomes per old case and no others: the rule survives (rebuild
++  the fixture) · a named decision changed it (re-express it, cite the
++  decision) · the old rule still holds for old data (keep it as a legacy
++  case) · the subject is gone (pin what is true now, name what was retired);
++- no skip, no todo, no loosened assertion;
++- "a product fault is reported, never pinned: write the test for what SHOULD
++  happen and leave it failing";
++- "say which old cases were passing vacuously";
++- then a second scenario pass of the helper's own area.
++
++Read the reports for the faults before the pass counts.
++
+ ## When NOT to Use
+ 
+ **Related failures:** Fixing one might fix others - investigate together first
+diff --git a/.claude/skills/executing-plans/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/executing-plans/SKILL.md
+index 78553cf69..1373e4457 100644
+--- a/.claude/skills/executing-plans/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/executing-plans/SKILL.md
+@@ -39,6 +39,12 @@ For each task:
+ 3. Run verifications as specified
+ 4. Mark as completed
+ 
++A step that says "each of these N sites" is a pointer, not the scope: re-derive
++the full set with an exhaustive read-only sweep before building, and enforce
++the property with a test that observes every occurrence at runtime — the
++exemptions named inside the test — then break one site on purpose and watch it
++fail.
++
+ ### Step 3: Complete Development
+ 
+ After all tasks complete and verified:
+@@ -46,6 +52,11 @@ After all tasks complete and verified:
+   "add Y"), and list every one you did not follow, with the reason, before
+   any review of the finished work. A deviation you surface is a decision; one
+   the reviewer has to discover is a defect.
++- If this branch merged in another OPEN branch along the way, compare that
++  branch's head now with the commit you merged
++  (`git log <merged>..origin/<branch> -- <source folders>`) before the final
++  checks, and re-merge if code moved: a sibling's branch is a snapshot of work
++  still moving.
+ - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
+ - **REQUIRED SUB-SKILL:** Use finishing-a-development-branch
+ - Follow that skill to verify tests, present options, execute choice
+diff --git a/.claude/skills/find-skills/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/find-skills/SKILL.md
+index a41bdd074..04a277aed 100644
+--- a/.claude/skills/find-skills/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/find-skills/SKILL.md
+@@ -69,6 +69,7 @@ For example:
+ 1. **Install count** — Prefer skills with 1K+ installs. Be cautious with anything under 100.
+ 2. **Source reputation** — Official sources (`vercel-labs`, `anthropics`, `microsoft`) are more trustworthy than unknown authors.
+ 3. **GitHub stars** — Check the source repository. A skill from a repo with <100 stars should be treated with skepticism.
++4. **The skill's own text** — Fetch its `SKILL.md` and read it before any install / fuse / skip advice (say which bundled files you did NOT read), note its licence, and compare it line by line with any installed skill that covers the same step — naming clashes, not only overlaps. A verdict given from a description or an article is labelled provisional.
+ 
+ ### Step 5: Present Options to the User
+ 
+diff --git a/.claude/skills/receiving-code-review/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/receiving-code-review/SKILL.md
+index 687110018..71fca4d00 100644
+--- a/.claude/skills/receiving-code-review/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/receiving-code-review/SKILL.md
+@@ -102,6 +102,38 @@ part on its own:
+ Where two reviewers disagree on a fact, measure the fact — never settle it by
+ majority or by whichever report is more detailed.
+ 
++**A batch of claims from a read that ran nothing** is a list of hypotheses:
++write one failing test per claim, through the real entry points, BEFORE
++judging any of them by plausibility; print the real output where a claim is
++about wording or a count; and report the reader's hit rate — that rate, not
++its confidence, says what its next "this is sound" is worth.
++
++**Before applying a reviewer's fix**, however exact its steps:
++
++- A cited path or line that does not exist means every claim in that report
++  is re-derived on the real code before any is acted on.
++- If the fix REPLACES a mechanism, list the orders of actions the old code
++  was protecting (its tests, its comments) and check the fix against each —
++  including any order the reviewer calls "today's behaviour": verify that
++  claim before pinning it.
++- If it drops, skips or filters a RECORD because one field is missing, list
++  every quantity the rule derives from that record and what each one needs;
++  pin the cases that work today from the record's other fields, and watch
++  them stay green. A missing field invalidates the values that depend on it,
++  not the record.
++- If you swap the reviewer's narrow fix for a broader mechanism (one shared
++  signal in place of three observers), list every existing consumer of that
++  mechanism and say for each whether its reaction is wanted here — or take
++  the narrow fix.
++- A finding of the form "X changed while a confirmation stood": capture what
++  was ASKED once and act from that, and test the change in both directions
++  (a right gained, a right lost) plus the no-change control.
++- A fix to a count or a comparison gets, beside the reported case, its zero
++  case and its already-settled case (a difference that is not the user's) —
++  written before the fix.
++- Then re-ask the risk questions against the fix itself: a fix can reach a
++  more dangerous kind of code than the change it repairs.
++
+ ### Two of a Kind Is a Family
+ 
+ Two findings of the same class are a sample, not the population. State the
+@@ -112,7 +144,9 @@ each, and fix the whole list — another review round would only sample again.
+ 
+ Declining a finding as theoretical needs a positive argument: what would have
+ to be true for it to fire, and why no real path makes that true. "I couldn't
+-think of how" is not that argument.
++think of how" is not that argument. The argument lists EVERY branch of each
++definition it rests on and argues each one — and a test pins the case anyway:
++the branch you did not list is where the next reviewer, or the bug, will be.
+ 
+ ## YAGNI Check for "Professional" Features
+ 
+diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/session-handoff/SKILL.md
+index 51287196e..cbf7ecf17 100644
+--- a/.claude/skills/session-handoff/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/session-handoff/SKILL.md
+@@ -34,13 +34,23 @@ pushed and waiting for him — the normal end state, not unfinished business.
+ - **Only your own block.** It sits between `<!-- now:<branch> -->` and
+   `<!-- /now -->`; rewrite it WHOLE (never append to it — a block that
+   accumulates becomes a changelog, and `git log` already is one). Newest block
+-  first under `## Now`.
++  first under `## Now`. Change it with the editor tool, between its two
++  markers. A script that cuts or replaces a block matches each marker anchored
++  to the start of its own line — never as a substring: a block may quote a
++  marker, and text the same script has just inserted may repeat an anchor —
++  and `npm run docsize` runs before the commit (it checks the file's markers
++  and its three headings).
+ - **Another chat's block** is removed only when `git fetch` shows its work
+   merged into `main` AND anything it left open is already an `OUTSTANDING.md`
+   item. Otherwise leave it exactly as it is — a parallel chat (a second
+   worktree) owns it, and the later merge keeps both (D78). The document gate
+   warns when a block's branch is already merged, and fails two blocks for one
+-  branch.
++  branch. The residue check is a READ of that block, made when it is removed:
++  every line it marks owed, open, "not filed" or "to tell him" is matched to a
++  backlog id, a ruling or an evidence sheet — never taken from a later block's
++  sentence that "its leftovers are filed" (one such sentence was wrong by six
++  items). A long block goes to a helper with that exact brief, and the host
++  checks its quotes.
+ - **Open residue goes to the backlog, not the block:** anything still open
+   becomes (or updates) an `OUTSTANDING.md` item with its place in the priority
+   list; the block names it in one line. A standing item already in the backlog
+@@ -51,6 +61,15 @@ pushed and waiting for him — the normal end state, not unfinished business.
+ - Print the same block in chat, and give him the **ready-to-paste opening line**
+   for the fresh chat: which branch to pick in the new-chat picker, and "Read
+   `HANDOFF.md` — the `claude/<branch>` block under `## Now` — then …".
++  For a NEW job in a fresh worktree on `main` the line says "run
++  `git fetch origin` and check this branch is level with `origin/main`" —
++  never "git pull", which pulls nothing on a branch with no upstream; "git
++  pull" is for a chat continuing a pushed branch. For a design or question job
++  the line says what he will get from it (pictures and questions; nothing in
++  the app changes). And tell him to TYPE a word of his own after pasting it
++  ("go"; "I'm away — run it"): a first message that is only pasted text may
++  be held for his confirmation, which stalls a start he meant to leave
++  unattended.
+ 
+ **Either way, it has to be COMMITTED AND PUSHED to the designated branch —
+ and NEVER merged by you.** SUPERSEDED 2 Sep 26 (`.claude/rules/shipping.md`,
+@@ -99,6 +118,15 @@ deliberately stopped on, or a PR left under `subscribe_pr_activity` watch.
+    report.
+ 4. **Plan file**, if one drove the session (the harness's `plans/` folder:
+    `~/.claude/plans/` on a desktop, `/root/.claude/plans/` in a web container).
++5. **What is still running, and what the next chat is told to use.** Helpers, a
++   served build, the check lock, a background run: for each, who receives its
++   report and who releases it — and that this chat does NOTHING further once a
++   new chat picks the block up (or exactly what it will finish). Every result
++   that so far lives only in this chat or its scratch folder is copied into
++   the repo before the block is committed. A job the block gives to a named
++   model or tool is probed once, by the route the next chat will use; the
++   working command — or "not reachable from here, because …" — goes in the
++   block.
+ 
+ Nothing further — no broad Glob sweeps, no filesystem audit. If you did not
+ touch it this session, it does not belong in the handoff. (Step 3's check is
+@@ -136,6 +164,13 @@ whose branch merged is removed once its open residue is filed (Step 1). A
+ "current state" section must hold nothing already done, and the staleness an
+ earlier session left sits in lines your diff never touched.
+ 
++**Merged between chats — sweep for it, whoever merged.** He merges on his own
++word, often after the chat that built the thing has ended. For every `## Now`
++block and every line of `OUTSTANDING.md`'s priority list that says "waiting
++for … merge", read the named pull request's state now
++(`gh pr view <n> --json state`): one that has merged is retired or rewritten
++in the same change, or named to him if its residue is unclear.
++
+ For each path it reports, confirm — by reading the live record that holds it
+ (`HANDOFF.md`, `OUTSTANDING.md` or `raptor-port/docs/file-map.md`), not from
+ memory:
+@@ -150,7 +185,12 @@ memory:
+   deliverable the item ever named — its oldest blocks included — and mark
+   each done, filed as its own item, or dropped by a ruling: a status line's
+   "the only thing left is X" is a summary, not a check (24 Sep 26: one missed
+-  a second leftover). Its contract goes to the right
++  a second leftover). Search the full rulings rows (`.claude/decisions-full/`)
++  for the item's id named as a HOME, too: point each at
++  `OUTSTANDING-ARCHIVE.md` first, or the gate refuses the move. On a pull
++  request that carries code, archive what the job finishes BEFORE its last
++  checked commit — a refusal met after his "merge live" costs another whole
++  check run (D151). Its contract goes to the right
+   structured doc first (`engine-rules`, `ui-contracts`, `feature-impact`,
+   `performance`); its story goes in the commit message — that is what makes
+   `git log` the changelog. **A known issue CREATED** → an `OUTSTANDING.md`
+@@ -228,10 +268,37 @@ stable structure is the point.
+   (not in CI, so a UI or validation change shipped without them is Unfinished, not a footnote).
+   Run from `raptor-port/`; a fresh checkout needs `npm ci` first.
+ - **Open questions for him:** <question> — <context needed to answer it> (or "none")
++- **Running when written:** <helper / served build / lock / background run — who receives its report, who releases it> (or "none")
+ - **Pick up here:** <1-2 sentences: the single most likely next action; a plan file that drove the session first>
++- **Opening line:** <the exact line he was given for the fresh chat — the next chat compares its first message with it>
+ <!-- /now -->
+ ```
+ 
++**What makes the block something the next chat can act on** — each line from
++a handoff that could not be:
++
++- Every step the next chat is told to RUN names its command, and what that
++  runs is committed (check each path with `git ls-files`). A list of cases to
++  run goes into the repo as data beside its runner, not as a sentence.
++- A "to build" list that turns a ruling into code names says "the agent's
++  reading". The ruling's own words stay the spec: the next chat re-derives the
++  list from them against the code.
++- Work designed but not built: leave its failing tests, parked under a name
++  the build does not compile, and a one-page note of the shapes they call —
++  and tell the next chat to mark the note "built" when it is.
++- A trap is written from what was measured, with how it was measured; a trap
++  that was only inferred is marked a guess.
++- A job that resumes an unmerged branch: beside "where the branch meets
++  `main`", list what the rulings recorded since the branch forked leave stale
++  ON it (`git grep <subject> origin/<branch>`) — the chat that recorded them
++  on `main` could not reach that text.
++- Chats started side by side each get, in the block, a ruling-number range
++  and an observation-number range. A chat joining others reads every open
++  branch's block for claimed ranges before announcing one — a pushed block
++  beats a message.
++- Name any document-size marker carried over (`docsize: OVER by <n>,
++  deferred`): the next documents-only change must settle it.
++
+ ## Rules
+ 
+ 1. **Never append to your `## Now` block — rewrite it whole; never touch
+diff --git a/.claude/skills/systematic-debugging/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/systematic-debugging/SKILL.md
+index 163fba2d5..412af02be 100644
+--- a/.claude/skills/systematic-debugging/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/systematic-debugging/SKILL.md
+@@ -72,6 +72,15 @@ You MUST complete each phase before proceeding to the next.
+      every animation frame; pin it with a `MutationObserver` armed before the
+      action, measuring in its callback — it runs at the microtask checkpoint,
+      before the next rendering opportunity — never after a timeout
++   - An intermittent failure between two consecutive driver actions (type,
++     then Tab) is an ORDER, not a speed. Name the two actors that race — an
++     app timer or redraw, and the driver's next step (read the driver's own
++     source for its step boundaries) — and force the suspect order: in one
++     in-page task, or with a deliberate pause BETWEEN the two actions. A busy
++     machine widens that gap; slowing the whole page slows both sides alike
++     and reproduces nothing. Show which it is — the app never did it (mark
++     the element, watch for its replacement) or the test looked too early —
++     and prove the repair by running it WITH the pause that used to break it
+ 
+ 3. **Check Recent Changes**
+    - What changed that could cause this?
+@@ -93,9 +102,19 @@ You MUST complete each phase before proceeding to the next.
+        — make each one fail fast (for Git on Windows, both
+        `GIT_TERMINAL_PROMPT=0` and `GCM_INTERACTIVE=never`) and switch off
+        optional network look-ups
++     - A browser test that fails only on one machine, by a consistent AMOUNT
++       (N rows, N px) in both directions, is a layout shift, not timing: a
++       transient element whose size depends on the environment (fonts,
++       display scaling, scrollbar width) is moving the page under the
++       pointer. Record geometry and DOM mutations per frame ON that machine,
++       and re-measure the same surface locally at other widths — the other
++       machine is often just another width. Where the app is what moves, fix
++       the app; the test then passes unchanged
+    - Did YOUR last change cause it? A symptom that appears right after a fix
+      may be the fix's side effect on top of behaviour the app had on
+-     purpose — ask what the user expected before removing a deliberate rule
++     purpose — ask what the user expected before removing a deliberate rule.
++     Settle "is this mine?" by setting the change aside and running the
++     identical probe on the base revision: one run decides, reasoning does not
+    - A cause someone else wrote down (a handoff, a review, an earlier chat)
+      is a hypothesis: trust the symptom, re-measure the mechanism
+ 
+@@ -210,6 +229,12 @@ You MUST complete each phase before proceeding to the next.
+    - One-off test script if no framework
+    - MUST have before fixing
+    - Use the `test-driven-development` skill for writing proper failing tests
++   - A failure someone else reported (a walker, a reviewer): reproduce it in
++     the RUNNING app first, by the reported gesture, and check the expectation
++     is something the app promises — then write the test in the environment
++     that can hold the failing state. A layout-less unit test can fabricate a
++     state the product never reaches, and a fix for that state is dead code
++     with a green tick
+ 
+ 2. **Implement Single Fix**
+    - Address the root cause identified
+diff --git a/.claude/skills/task-observer/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/task-observer/SKILL.md
+index c6fd492ec..a10fc38a3 100644
+--- a/.claude/skills/task-observer/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/task-observer/SKILL.md
+@@ -444,6 +444,14 @@ and staging rules. If an observation reveals a principle that applies to
+ skills generally, propose it for the cross-cutting principles file (see the
+ same reference).
+ 
++**A trap that recurs after it was logged is not logged again as a note.** Cite
++the earlier entry's number, and propose the guard instead: a check inside the
++action that triggers it (a hook, a tool that refuses), or — where a safer way
++costs nothing extra — an unconditional default in place of a condition to
++judge each time ("scripts are always written to a file", not "unless it holds
++an apostrophe"). A lesson scanned at the start of a session is not in force at
++the moment it matters.
++
+ **Close it where you apply it.** Whenever an observation's lesson lands
+ anywhere — a skill, a project doc, a rules file, by you or at the user's
+ request mid-task — mark that entry ACTIONED in the same change, naming where
+diff --git a/.claude/skills/test-driven-development/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/test-driven-development/SKILL.md
+index 9e9589ae2..35d5fc0fd 100644
+--- a/.claude/skills/test-driven-development/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/test-driven-development/SKILL.md
+@@ -127,10 +127,20 @@ Confirm:
+ 
+ **Test errors?** Fix error, re-run until it fails correctly.
+ 
+-**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error.
++**Proving an existing fix red:** revert only the lines that ARE the fix — never the whole file when it also holds other uncommitted work — and read the message: it must be the defect's own failure, not a missing-function error. Set the fix aside with a copy of the file, not `git stash`: the stash is shared by every worktree of the repository, and a `; git stash pop` after a chain that failed early pops someone else's work. While another check run is in flight in the same tree, keep a red test that does not compile out of the tree until that run has passed its build stage.
++
++**Red is an observation of each assertion, not the order two files were written in.** A test file that cannot load until the code exists (it imports what is not written yet) fails every case alike — that is not red. Prove it one of two ways: run it against a stub that compiles and does the OLD behaviour; or, once green, break the one line that makes it pass and record how many cases went red — one break per rule, by a script that applies each break, runs the narrowest test file and restores the original bytes in a `finally`. In a batch of fixes, run the batch's tests before the first fix lands and keep the output. An integration test of a NEW write path is never blocked by the path not existing: its red is "nothing reached storage".
++
++**A test selected by name** (`-t`, `-g`, `--grep`): confirm in the summary that it RAN ("1 failed", not "0 tests") before reading the exit code — a name holding brackets or quotes matches nothing, and the run exits 0.
+ 
+ **Read the red — it must name the defect's own effect.** A red from a setup step (the test could not draw its line; its own click deleted the thing it meant to test) proves nothing, and will lie again on the fixed code. Before the action, each case asserts its PREMISES — e.g. the object it acts on exists and is the one this case created, the intended tool or mode is active, nothing else is selected — and identifies what it created by a unique handle (an id), never by a count or aggregate the fixture may already satisfy. For rendered geometry, use a measurement that includes every transform in play (element rectangles include CSS zoom; an SVG's screen matrix under a CSS-zoomed ancestor may not).
+ 
++**An assertion that something is ABSENT** — "gone", "not shown", "nothing written", "refused" — passes on an empty screen, on a fixture step that silently refused, and on an action that never happened. In the same test, first assert the thing was present (or that the gesture landed: its ghost, the refusal's own words), then act, then assert the absence. And judge a red run by the tests that PASSED as closely as by the ones that failed.
++
++**A state-comparison fault** gets the pair — the case reported AND its inverse (add / remove, open / close, first / last) — with the side effects asserted too (the message shown, nothing else reset): coincidence hides the second fault in the first.
++
++**A finding from a device-specific walk** (touch, a coarse pointer, a phone's layout): the red test mounts the real surface the walk saw and stubs the environment switch the code branches on (`matchMedia('(pointer: coarse)')`) — or is renamed to say what it proves. The re-walk of such a fix is never skipped on the strength of the unit test.
++
+ **Races:** write the losing order down as steps, and make the test force that order — hook the boundary (the storage read, the network call) and perform the competing write from inside it. Assert that the hook fired, so a green test cannot be one that never reached the race. Adding a delay and hoping is not a race test.
+ 
+ **A flash or a jump** lives in one painted frame: a test that waits before it asserts passes on it. Arm a `MutationObserver` before the action and measure in its callback — it runs at the microtask checkpoint, before the next rendering opportunity.
+@@ -177,6 +187,10 @@ Over-engineered
+ 
+ Don't add features, refactor other code, or "improve" beyond the test.
+ 
++**A fix guarded on an existing flag or mode:** read every place that flag is assigned before trusting its comment — a lifecycle comment is a claim. If the red test stays red, check the guard first.
++
++**A guard that suppresses input** (a double-click, a stray tap): write down what makes the accident different from the intended act — time, place, target — and key the guard on the narrowest of them, with a test of the accident AND a test of a fast legitimate act that must still pass. Tests written beside a guard inherit its assumptions.
++
+ ### Verify GREEN - Watch It Pass
+ 
+ **MANDATORY.**
+@@ -194,7 +208,9 @@ Confirm:
+ 
+ **Other tests fail?** Fix now.
+ 
+-**Many fail after a DELIBERATE behaviour change?** Sort them before touching any: (a) a rule still true whose fixture needs updating; (b) a test of behaviour that was deliberately removed — rewrite it to the new contract or delete it openly, citing the decision; (c) new behaviour not yet covered — write it in fresh tests that set up their own state. Never make a red test green by weakening it, and fix the first failures first: in order-dependent tests one failure cascades.
++**Which other tests?** Not only the files that name the functions you edited. Tests of a behaviour you REMOVED or reversed are found by what the user would have seen — the element, the test id, the words on screen. After wiring into a module many suites load (a registry, a store, a permissions table), run suites that reach it from another entry: your own file proves one import order. And run the older tests of the same surface early — they were written without knowledge of your change, so they are the ones able to falsify it.
++
++**Many fail after a DELIBERATE behaviour change?** Sort them before touching any: (a) a rule still true whose fixture needs updating; (b) a test of behaviour that was deliberately removed — rewrite it to the new contract or delete it openly, citing the decision; (c) new behaviour not yet covered — write it in fresh tests that set up their own state. Never make a red test green by weakening it, and fix the first failures first: in order-dependent tests one failure cascades. When a control many tests drive is being replaced, remove it first and run those files: the failures are the list of promises to restate — one helper per file for the new route, each claim kept, and a note beside any claim that changed saying what it used to say and which decision changed it. When the change removed DATA that tests iterate over, the failing list is incomplete: tests that loop over, map or compare that data now pass on nothing — search for every read of it, give each a guard that fails on an empty input, and compare the test COUNT before and after.
+ 
+ ### REFACTOR - Clean Up
+ 
+diff --git a/.claude/skills/test-driven-development/writing-good-tests.md b/.claude/skill-updates/2026-10-13/.claude/skills/test-driven-development/writing-good-tests.md
+index d8905678f..bfcb0f2f6 100644
+--- a/.claude/skills/test-driven-development/writing-good-tests.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/test-driven-development/writing-good-tests.md
+@@ -38,6 +38,12 @@ expect(buildSearchQuery({ tag: 'urgent' })).toBe(expected);
+ expect(buildSearchQuery({ tag: 'urgent' })).toBe('tag:"urgent"');
+ ```
+ 
++A test of the form "the new path behaves like the old one" is the same
++mirror one step removed: it proves the new path copies the old, faults
++included. Beside every such loop write the absolute table — one expected
++value per cell, taken from the rule, not from the code — and assert that the
++table names every member of the set, so a new member cannot be skipped.
++
+ **No change detectors.** If only intentional decisions can fail a test —
+ a constant's value, exact message wording, private structure — it fires
+ on redesign and sleeps through bugs. Test the behavior that depends on
+@@ -49,6 +55,14 @@ it.** Two common stand-ins pass while the behaviour is broken: asserting
+ that an identifier or address EXISTS instead of that something RESOLVES it,
+ and asserting a global count as a stand-in for one local fact. Ask what could
+ break while the assertion still passes — then break exactly that and watch.
++Three more that pass while the behaviour is broken: on a single-slot surface
++(a toast, a banner, a status line), asserting that a message was RAISED
++instead of what the slot is left showing — a later message in the same action
++wins; "before and after are equal" when the set-up can already have produced
++the after — take the before from something the set-up cannot have touched;
++and a query for a test id over the whole page once the component has a second
++home — scope it to the container the behaviour belongs to, because a hidden
++mounted twin matches first.
+ 
+ **Behavior, not text.** Asserting that a script, skill, or config
+ contains an exact line proves only that the source is the source. Run
+@@ -123,13 +137,30 @@ record in place, mutate in place — assigning a fresh object hides aliasing
+ bugs. If the app stores `18:00`, write `18:00`: copy the format of a real
+ stored value, because the input form's accepted format is not the stored one.
+ Where you can, set the state up through the entry point a user's action goes
+-through, so a rule is pinned where a user can actually reach it.
++through, so a rule is pinned where a user can actually reach it. A test that
++must reach past the door — calling an internal builder, or handing in a
++hand-made record — copies the real caller's arguments (read the call site)
++and asserts one fact proving it drew the intended mode; and one test through
++the real door asserts that what really arrives has that shape. Set-up runs the
++same start-up path the app runs: a loader the test calls by hand hides a
++loader nothing calls at boot. Where the system derives its changes by
++comparing state before and after a command, a fixture never edits live state
++outside a command if the test goes on to undo, replay or reload — the next
++command records that edit as its own.
+ 
+ **Pick the fixture for THIS test.** One borrowed from another test carries
+ that test's assumptions. When a test asserts which result LEADS, choose the
+ fixture by querying the data for one with nothing else going on, and say why
+ in a comment. When one fact lives in two records, read one of each before
+-writing code that treats them as the same shape.
++writing code that treats them as the same shape. Where the system groups or
++merges neighbours (dates, ranges, same-named records), pick a key well clear
++of the seed's. A snapshot restored between cases is taken AFTER start-up has
++minted ids and filled defaults — an earlier copy is not a state the system
++could have produced, and its own integrity checks will read the difference as
++somebody's change. After a refused command, hold the record's ID and find it
++again: a rollback replaces every object, so a kept reference is a ghost. A
++test of "X may, Y may not" first asserts its two actors resolve to two
++DIFFERENT people.
+ 
+ **Counting calls into a module whose exports are reassigned** (live
+ bindings): wrap the real module — a Proxy over its namespace that swaps only
+diff --git a/.claude/skills/verification-before-completion/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/verification-before-completion/SKILL.md
+index f93cedf2c..be4f8fdd4 100644
+--- a/.claude/skills/verification-before-completion/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/verification-before-completion/SKILL.md
+@@ -56,6 +56,12 @@ Skip any step = lying, not verifying
+ | Clean / nothing found / never happened | The verdict names what was examined AND what was not — which files, which kinds (binaries? the history?), which terms | "Clean", with its scope left for the reader to assume |
+ | Removed everywhere (a name, a secret, an identifier) | A sweep for everything that identifies it — synonyms, variants, codes, not only the words you were given — and the file kinds the sweep could not read, named | A search for the literal strings you were given |
+ | It passes on another machine, or in CI | That environment's own run of the exact commit | A green run on another operating system or checkout — a fault arranged through the platform (a read-only file, a lock) may fault on one only |
++| A typecheck or lint is clean | The pipeline's own command (read it from the build script), or this checker seen to report a planted error in this repo | Silence from a lookalike command — a root config that lists no files of its own checks nothing and exits clean |
++| A background run passed | The tree was committed and untouched from the run's start to its end (`git status --short` empty, read in the same command) | A run during which source was edited, a break test ran, or a test file that does not compile was added — it describes no revision: discard it, never triage it |
++| My edits landed (a batch; a write sent together with the run that depends on it) | After ANY refusal or error inside the batch, each intended change read back; the write confirmed before its run is believed | No error on the other calls; a run that exited 0 — it may have run the old file |
++| A count from a new audit script | One of its hits checked by hand, and the number compared with any earlier count | A surprising number taken as a finding — check the instrument first |
++| A mechanical rewrite across many files is right | The ADDED lines read (doubled words, the rule's own statement reworded), every renamed test title searched for in the docs, and evidence files — reviewers' reports, briefs after their run, archives — excluded by path | "The bundle is byte-identical": that proves no code moved, not that the words are right |
++| A check deferred to the end still holds | Each deferred suite that reads the surface a step changed was run at that step — or the step's record names which of its assertions will need re-pointing | "They ride the final check": a stale check and a real failure look the same until someone investigates |
+ 
+ ## Red Flags - STOP
+ 
+diff --git a/.claude/skills/verification-before-completion/browser-checks.md b/.claude/skill-updates/2026-10-13/.claude/skills/verification-before-completion/browser-checks.md
+index 4caf369a7..7c8284e1d 100644
+--- a/.claude/skills/verification-before-completion/browser-checks.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/verification-before-completion/browser-checks.md
+@@ -12,7 +12,9 @@ below is a way a real session "verified" a screen change and was wrong.
+ - **The server is serving THIS build.** A reused preview server serves the
+   last build. Rebuild before re-testing; a measurement that stays bit-identical
+   across a change that should have moved it is a stale-build signature, not a
+-  failed fix.
++  failed fix. A server you did not just start (another session's, a leftover)
++  is proved first: the hashed bundle name in the index page it serves equals
++  the one in the local build's `index.html`.
+ - **Stop a stale server by the port it holds or its process id** and confirm
+   the port is free. On Windows, a server started under a shell survives
+   killing the shell — kill the process tree. (This project's exact commands
+@@ -21,7 +23,10 @@ below is a way a real session "verified" a screen change and was wrong.
+   an asset by its content (content type, first bytes), never by status code.
+ - **A throwaway drive script lives inside the project folder**, so it finds
+   the project's packages, and imports the browser-test package the project
+-  actually installs.
++  actually installs. Give it a name proved unused (`git ls-files
++  --error-unmatch <path>` fails, and no such file exists) and read `git status`
++  after cleaning up: a copy over a tracked file followed by a delete leaves no
++  error to notice.
+ 
+ ## Drive Every State the Change Appears In
+ 
+@@ -41,6 +46,17 @@ below is a way a real session "verified" a screen change and was wrong.
+ - **Pointer handlers:** mouse AND touch, from every place the gesture can
+   start. Move the mouse after a click — a hover is a move — and include a move
+   with no press first.
++- **A control that acts on RELEASE** changes what the browser's follow-up
++  click will hit. Ask what is under the pointer after it acts: if something
++  new, or something that moved, act on the click instead — or swallow the one
++  click that follows — and have the unit test's tap helper fire that click (a
++  layout-less test fires only the events you dispatch). A finger slide the
++  page should own needs `touch-action` set on it, or the browser cancels the
++  press as a scroll.
++- **A dragged CLONE** inherits every rule written for its original, including
++  the ones that make it a target: state its `pointer-events` on the clone's
++  own class. An element found by a data id after a re-render is scoped to its
++  surface — a hidden mounted twin can carry the same id and come first.
+ 
+ ## Measure, Don't Estimate
+ 
+@@ -62,6 +78,9 @@ below is a way a real session "verified" a screen change and was wrong.
+   animation frame that follows the switch, and assert what stays put
+   relative to the view ("the point in the middle stays in the middle"), not
+   absolute screen positions.
++- Where a view LANDS is judged at rest: wait until two scroll readings a short
++  interval apart are equal, then assert ONCE. A polling assertion passes on
++  its first sample — before a deferred scroll carries the target away.
+ 
+ ## CSS Placement
+ 
+@@ -71,6 +90,14 @@ block that must stay last. A base rule goes ABOVE the block that overrides it.
+ Then measure the narrow width on the first drive — the rule "appearing in the
+ built file" proves it shipped, not that it applies.
+ 
++A class placed on `html`, `body` or any wide ancestor is matched by every
++`closest()` below it: search the name in `closest(`, `matches(` and the
++selectors first, and prefer a state name no element uses (`is-…`, `has-…`).
++In a shared global stylesheet a short meaningful class (`day`, `on`, `off`)
++is probably taken already: prefix a new surface's state and value classes, or
++scope them under its root — and take one screenshot at each size before
++writing the browser test, which finds this class of fault in seconds.
++
+ ## Drive-Tool Traps
+ 
+ - A locator click scrolls its target into view first. When measuring scroll
+diff --git a/.claude/skills/writing-plans/SKILL.md b/.claude/skill-updates/2026-10-13/.claude/skills/writing-plans/SKILL.md
+index 703b80c42..37c0e2284 100644
+--- a/.claude/skills/writing-plans/SKILL.md
++++ b/.claude/skill-updates/2026-10-13/.claude/skills/writing-plans/SKILL.md
+@@ -102,6 +102,11 @@ its checklist"). Each one that applies becomes a Global Constraint AND the
+ first step of the first task that touches that surface — an order that lives
+ only as a sentence in an index does not fire.
+ 
++A step that copies or publishes material from a private or out-of-repo source
++is its OWN step, with the owner's go-ahead recorded beside it at planning time
++and "open every file before it crosses" as part of it — never a records
++chore, and never "the N files known to carry X".
++
+ ## Task Structure
+ 
+ ````markdown
+@@ -193,7 +198,11 @@ touching three or more modules also check — and hand the same four checks to
+ an independent reviewer of the plan, because the author shares the plan's
+ blind spots: import cycles the plan creates, every existing reader of a rule
+ it changes, helpers it assumes exist, and any internal id the screen would
+-print.
++print. A claim about a third-party platform (its privileges, defaults, limits,
++ordering) is verified against the vendor's documentation, and cited, before
++anyone reviews the design. A rule that parses or splits user-typed text is run
++over the real stored examples of that field; a promised on-screen moment names
++the guard or event that lets the screen change then.
+ 
+ **5. Replacement code:** For each code block that REPLACES existing lines,
+ list the guards and early returns in the original and confirm each survives
+@@ -219,6 +228,37 @@ needs the write path and the existing pins its fix must not move.
+ restores it, and a test over a collection first asserts the collection is not
+ empty — both otherwise pass while proving nothing.
+ 
++**10. What the plan decided itself:** A backlog item or spec that offers "A
++or B" is an unanswered question for the owner unless a recorded decision picks
++one — having a good reason for one option does not make it yours. A default
++listed as a "reading" is held against the decision's own words AND every
++reading recorded beside it: if it narrows, widens or contradicts either, it is
++a question, with a recommended answer and a stated until-answered default that
++follows the owner's words. Name your own readings as readings, so the plan's
++reviewer attacks them as targets rather than reading them as facts.
++
++**11. Plans that reshape or re-read stored data:** Before the design, an
++inventory of every reader AND writer of the record, with a verdict per site
++(stays right / must change / unsure, and why). Per site also: what it RETURNS
++or passes on and who consumes that (a writer, an identity comparison, an
++editor); who reads whether the record merely EXISTS; each job that every
++delete or rewrite loop's comments and tests say it does; and, for each writer,
++its PRODUCTION caller — a control a person can press (a writer with none is a
++test seam or dead code, never "the door"). A retired field is swept by the
++FIELD's name, copies included (change images, frozen snapshots, exports), not
++by who reads the live collection. Prefer the shape in which existing fields
++keep their meaning and the new meaning is added beside them. Where a derived
++view sits on a saved base, the base is defined as what the persistence layer
++writes at the moment it writes — trace every effect that runs before the
++writer and every cache written on navigation — and a test compares "right
++after the act" with "after a reload", Undo and Redo included.
++
++**12. "Like the existing X", and sketches:** A new thing that behaves "like X"
++lists every place X is plugged in (search X's entry points) with, for each,
++where the new one goes or why not — no blank cells. A phase that an earlier,
++reviewed plan only sketched inherits none of that review: re-check its
++premises with a fresh sweep of every mechanism it names before detailing it.
++
+ If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+ 
+ ## Execution Handoff
+diff --git a/DECISIONS.md b/.claude/skill-updates/2026-10-13/DECISIONS.md
+index 1a8c5f494..d3daeb06e 100644
+--- a/DECISIONS.md
++++ b/.claude/skill-updates/2026-10-13/DECISIONS.md
+@@ -20,12 +20,18 @@ it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line
+    the file that now carries it (then make that file carry it, with the D-number beside the ruling there: this list is
+    an index, never the only home; the gate fails a new row whose Markdown home never mentions it — a row renumbered
+    under D78 counts as new). **The first bold sentence of "what it means" becomes the line every chat loads: it must
+-   state the rule on its own, in at most 350 characters, with no "|".** A ruling that spans areas goes in the one it
+-   mostly governs; the other area's "Also read" line names it.
+-2. **If it wholly REPLACES an earlier ruling**, start that earlier ruling's FULL row's ruling cell (in
+-   `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
+-   `**SPENT <date> — <what used it>.**` A ruling changed only IN PART stays live and says so in its own words in its
+-   full row (`**— NARROWED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
++   state the rule on its own, in at most 350 characters, with no "|"** — keeping its "don't", its exception and its
++   scope ahead of any example. A ruling that spans areas goes in the one it mostly governs; the other area's "Also
++   read" line names it. **In the row:** never a third party's names or figures inside his words (paraphrase them); a
++   reading of yours that says what the app WILL DO is first checked against what it does today in the nearest case (the
++   code, its tests, the app's own rule text) and says where, or "not checked"; in the home cell backticks are for files
++   only, and a backlog item is "filed as [ID]", never a home — it leaves at the archive, and the gate refuses the move.
++2. **If it wholly REPLACES an earlier ruling**, start the cell right after the date in that earlier ruling's FULL row
++   (in `.claude/decisions-full/`) with `**REPLACED BY D<n> (<date>).**`; **a one-off permission, once used**, with
++   `**SPENT <date> — <what used it>.**` — after reading that row sentence by sentence: every "if", "until" or "still" in
++   it must be carried by a live ruling, or it stays live. A ruling changed only IN PART — or one whose open point a
++   later ruling ANSWERS — stays live and says so in the cell that states its rule (`**— NARROWED <date> BY D<n>: …**`,
++   `**— ANSWERED <date> BY D<n>: …**`), and its short line is rewritten to state the rule as it now stands.
+    **Either way, fix what the old ruling left behind in the same change — the documents, the app (file the build), the
+    lists (D201; `record-decisions.md`).**
+ 3. **Run `node raptor-port/scripts/backlog-archive.mjs --rulings`** — it moves each new full row to the full-text file
+diff --git a/HANDOFF.md b/.claude/skill-updates/2026-10-13/HANDOFF.md
+index c0ada449c..646387c1a 100644
+--- a/HANDOFF.md
++++ b/.claude/skill-updates/2026-10-13/HANDOFF.md
+@@ -8,6 +8,11 @@ in `OUTSTANDING.md`; where each kind of fact goes is `.claude/rules/doc-structur
+ 
+ **Before acting on a block:** `git fetch`, then check the branch and PR it names — it describes the world when it
+ was written. Never push while a PR's checks are running (`gh run list --branch <branch> --limit 1`; D151).
++Bring the checkout level BEFORE reading this file (a fresh worktree has no upstream, so "git pull" pulls nothing:
++`git fetch origin`, then `git merge --ff-only origin/main`). List the live chats (`ListAgents`): if the one that wrote
++the block is still running, or another already holds the item you were told to start, message it and agree who owns
++each remaining step before touching anything. If your opening message and the block's "Opening line" or "Pick up
++here" differ, name the difference to him and ask before starting.
+ **Writing a block** (the session-handoff skill does it, at every handoff): rewrite ONLY your own block, between its
+ markers, even when nothing is pending; newest block first; remove another chat's block only after `git fetch` shows
+ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel chats each keep their own block, and
+diff --git a/raptor-port/CLAUDE.md b/.claude/skill-updates/2026-10-13/raptor-port/CLAUDE.md
+index c8e81cd6b..cc1520a3b 100644
+--- a/raptor-port/CLAUDE.md
++++ b/.claude/skill-updates/2026-10-13/raptor-port/CLAUDE.md
+@@ -265,6 +265,7 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
+ | **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) — and each area file carries that area's settled decisions and architecture too (D140) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/` (one short line per ruling since D390) and their full rows `../.claude/decisions-full/` (searched, never loaded — open one before acting on a ruling's detail), replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
+ | **The full text of this guide's one-line rules** (D391) — searched, never loaded; each short form here names its heading there, and the document check pairs the two | `docs/guide-full.md` |
+ | **What kind of WALK a change needs, and what past walks found** (D607) — the sizing step Opus writes before any walker starts, the types of change, one row per walk; read before starting a walk, add a row after one | `docs/walk-ledger.md` |
++| **How a walk script, a walker's brief and a break-test list are written, and what each trap has cost** — read before writing one; every walker's brief names it | `docs/walk-scripts.md` |
+ | **HOW TO BUG-CHECK — the standing order** (the tiers, the roll-call, the walk, the evidence sheet, and which jobs to spend Fable/Codex on). Read before any bug check | `docs/bug-check-order.md`; the two proposals it was merged from are `docs/superpowers/briefs/2026-09-21-bugcheck-method-fable.md` and `…-codex.md` |
+ | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
+ | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |
+diff --git a/raptor-port/docs/bug-check-order.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/bug-check-order.md
+index fa3d5561e..76289268b 100644
+--- a/raptor-port/docs/bug-check-order.md
++++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/bug-check-order.md
+@@ -48,7 +48,10 @@ is the agent's job, answered out of §5.
+    written down, the answer is YES.
+ 3. **Tell him in one short block what that tier means you are about to do** — the checks, the size
+    of the walk and why (§7.0), and roughly how long. He reads it; he does not choose it. If he wants less, he will say so, and that
+-   is his call to make, not the agent's to assume.
++   is his call to make, not the agent's to assume. Name no check beyond the tier's own list unless its route is traced —
++   which control, in which state, proves it — and quote a duration from the last recorded run (`HANDOFF.md` §Gate baseline,
++   the walk ledger), or say it is not measured: a check withdrawn later, or an hour that turns out to be fourteen
++   minutes, costs trust.
+ 4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
+ 
+ **If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
+@@ -125,7 +128,7 @@ and by how many, is decided per change in the sizing step (§7.0, D607):
+ | **Rules and logic** | The rules sweep: list every applicable ruling, walk it against the behaviour; a ruling about something SHOWN gets one mark per surface, a ruling about MONEY one per order | A rule quietly doing a job a later ruling took away. A rule that holds on one screen and not another. |
+ | **Money or entitlement** | FULL tier: both models read the code independently, plus the walk, plus the real downstream number checked — not just the screen | Money decided from live state instead of the issued record. |
+ | **Published or signed records** | Both orders across the publish boundary; undo of a publish; the amendment and the signature checked each time | A change that moves money without an amendment, or an amendment that moves none. |
+-| **Saved data / storage** | Reload, leave and return, and the reset path walked; older saved data read | A write that never persists. Data that cannot be read back after an upgrade. |
++| **Saved data / storage** | Reload, leave and return, and the reset path walked; older saved data read — data the OLD build really wrote, with a mechanical check on every step (`docs/walk-scripts.md` §When nothing on screen should change) | A write that never persists. Data that cannot be read back after an upgrade. |
+ | **Permissions and roles** | Every role walked on every affected surface, including the read-only viewer | A control offered to someone who cannot use it, or hidden from someone who needs it. |
+ | **Cross-app seams** (Leave War, Tracker, the shared data) | Walk the change on BOTH sides of the seam and confirm the two agree; the order's "both arrive" rule for anything that can be true on both sides | Two screens telling the same person different things. |
+ | **Cross-platform / phone vs desktop** | Both widths on every walked surface, always; a real touch target, not just a visible one | Something legible on a desktop and clipped, unreachable or two rows tall on a phone. |
+@@ -276,10 +279,34 @@ an area the other found a defect in is the cheapest possible pointer to a real b
+ 
+ **Never show either model the other's conclusions before both reports exist.**
+ 
++**Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
++
++- Every sentence of its promise that states a behaviour touching OIL, the published record, roles or saved data is
++  copied from the ruling's FULL row and cites it. A sentence with no row behind it is marked "the host's reading", so
++  the reader treats it as a question, not a requirement.
++- A scenario's EXPECTED line gets the same check before it goes to a walker: one that names a COUNT, a REFUSAL or a
++  PUBLISHED-DAY state is read against the rulings and `main`, and rewritten "RECORD exactly what it says" where the
++  host cannot say what the right answer is. (On two jobs running, a third of the walkers' FAILs were the host's own
++  expected line contradicting an older ruling.)
++- A recommended answer to a question parked for him is checked against his words in the full rows — not only that
++  the question is still open.
++- A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
++  owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
++  design are one round, with one brief.
++- Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
++  the exact input it would run; the host runs every such case before dispositioning the finding.
++
+ **What to do with what they hand back** — this is the requesting agent's job, not theirs:
+ 
+-1. Reproduce each finding through the real production route on the exact revision.
+-2. Check it against the governing ruling.
++1. Reproduce each finding through the real production route on the exact revision — its stated REASON as well as its
++   symptom: where a finding says something is "unchanged" or "invisible", probe every reader of that state (what
++   draws it, what validates it, who is available because of it, what consumes it downstream). A finding that fails
++   there is recorded "not a defect — checked", with the reader that disproves it, and the right behaviour is pinned
++   by a test.
++2. Check it against the governing ruling. And before a fix changes behaviour BEYOND the rule the finding cites, search
++   the tests, the code comments and the records for a decision that pins that behaviour as intended: if one exists,
++   fix only the cited defect and put the rest to him as a question, with a safe interim (the action SAYS what it
++   does).
+ 3. **Compare against `main` before calling anything newly introduced.** Severity depends on it, and
+    the two models disagreed about this on three findings here.
+ 4. Record user impact, reachability and provenance SEPARATELY. "Pre-existing" never erases severity
+@@ -294,12 +321,19 @@ by one helper; if the chosen pass is long, D16 requires parallel helpers, as bel
+ **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
+ helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
+ copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
+-rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
++rediscover it. (Where the app's limit of five preview servers a folder — counted across every chat — leaves no port
++free, walkers share ONE server of the frozen build, each in its own fresh browser context: what keeps two worlds
++apart is the browser's storage, not the port. A chat stops the servers it started when its walk ends.) The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
+ so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
+ evidence sheet. **While they walk, nobody rebuilds the build they are served** (23 Sep 26): a rebuild swaps the
+ bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host fixing in parallel typechecks
+-without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
+-walkers' reports.
++without writing output (`npx tsc --noEmit -p tsconfig.app.json` — the root config lists no files and checks nothing)
++and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the walkers' reports.
++**Each walk ROUND is served from its own folder**, named for the app's commit, made once and never written again — a
++later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next round, under a walker of the last).
++**And the reader's half: while a reader reads the folder, nothing rewrites the source it reads** — a break test, a
++mid-flight fix, the next step's build. Break in a separate worktree, or hand the reader a commit (10 Oct 26: a
++reader reported a line a break test had cut out for one minute).
+ 
+ **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
+ are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
+@@ -313,7 +347,8 @@ the sizing step still lets the host run a short walk itself (§7.0, D608). Every
+ conditions: the host opens the pictures behind every FAIL and every high-consequence PASS (OIL, a published day, a role,
+ saved data); a scenario with an EXPECTED line is judged PASS or FAIL — "RECORDED" is only for scenarios the host marks
+ so, and the host re-judges any RECORDED row that has an EXPECTED line; a walker's conclusion is a finding only after the
+-host reproduces it. One building trial is still to run: ONE small low-risk fix
++host reproduces it. How the brief and the walk scripts are written, and what each trap in them has cost:
++`docs/walk-scripts.md`. One building trial is still to run: ONE small low-risk fix
+ (`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
+ requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
+ also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a
+@@ -444,6 +479,14 @@ pictures are the defect's evidence. Read every re-walk FAIL against the NEW flow
+ regression: a step whose premise the fix itself consumed (nothing unsaved is left to test; a refusal now drawn
+ on top of the window it used to hide behind) is walked again with a fresh premise, not reported.
+ 
++**A fix is new code** (28 Sep 26). When a read's fix rewrites logic — more than a one-line guard — the fix commit gets
++its own narrow read ("is each fix right and complete, and what did it break beside it"), repeated on each round's
++fixes up to the cap of about three rounds; the sheet says which round was last and what carries the rest. "All
++findings fixed" is a claim about the findings, not about the fixes. And for a finding of the form "X is written
++outside the rules", ask first — and write the answer in its disposition — whether X should be written at all, by this
++actor, from this copy, before making the write conform (30 Sep 26: a bare write was wrapped to satisfy the check,
++when the write itself was the defect).
++
+ ---
+ 
+ ## 6. The roll-call — the defence against "never wired up"
+@@ -484,6 +527,36 @@ inside the puck, over exactly the strip the mark occupies (column 3).
+   shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
+   existed both times this failed.
+ 
++**And more rows, each from a fault a roll-call missed (24 Sep – 12 Oct 26):**
++
++- **A navigating action gets one row per OPENER** — every call site of the jump, the "go to", the link — with "is the
++  person still on the page they started from: YES / NO, because…". A reused handler inherits its first surface's
++  assumptions (his find: a tap in the changes list, opened from a second page, left that page).
++- **A changed quantity is listed where it is SHOWN and where it is BRANCHED on.** Map each surface a ruling names to
++  the function that computes its number — a sibling that works the same number out by itself never sees the change —
++  and list every early exit, "nothing to do" message and confirm gate that tests it: each one's sentence must still
++  be true.
++- **A rule is asked of every SURFACE that draws the thing, by that surface's own builder** (week, board, preview,
++  print) — not of the one file where the rule is written: a surface that never called the rule is written MISSING,
++  never left out. A new mechanism built "like X" is plugged in at every place X is (search X's entry points).
++- **A change that REMOVES or replaces a control, an event or a way out** lists, from the removed CODE and not from
++  memory: every action it gave, in each role and at each size, with the control that gives it afterwards (an empty
++  cell is a build item or a question for him); everything that stood BELOW it on the page, and every pop-up there
++  placed against the screen rather than against its own button (his find, 10 Oct 26: a calendar opened one screen
++  down once the form above it was gone); what else ran on the event it removes — a deferred paint, a save, a
++  tidy-up: still runs / now triggered here / no longer needed, because…; and, for a way out, the surface's own
++  positioning rules, with a real-browser test that presses the new way out.
++- **A fix that changes when a writer reports "nothing happened"** — its return value, its no-change condition — lists
++  every caller that reads the return or compares again after the call.
++- **A listener added above its own component** (the document or the window; a key, a press) lists every state in
++  which it is alive while its surface is hidden, covered or not in front, and who is entitled to the input then —
++  with a test for each.
++- **A component that gains a second home on a page** (a hidden form kept mounted counts) has its tests' queries
++  scoped to their container in the same change.
++- **A storage change adds a column per writer:** on its FIRST write, and when it re-places a list, does it write ONLY
++  what its own action changed? Any answer but a plain yes gets a two-tab step, the second tab opened before the first
++  write.
++
+ ---
+ 
+ ## 7. The walk
+@@ -514,6 +587,10 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
+   the sizing assumed, and write down its decision: widen the walk where the finding shows a surface, a state, a
+   route or a shared cause of THIS change that has no proof; otherwise record the finding's disposition and why the
+   scope still holds. An older fault met in passing does not by itself enlarge the walk.
++- **A designed scenario is left unwalked only for a reason about the SCENARIO** — a named test carries it (as
++  above), or it cannot be reached. "Older behaviour this change does not touch" is not such a reason when the change
++  touches the same listener family, the same component or the same scope rule (10 Oct 26: two real faults sat among
++  eight scenarios set aside that way) — a scripted step is cheaper than a second round of reads.
+ - **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
+   reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
+   before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
+@@ -527,7 +604,8 @@ row, a zero-length row; a Common Programme row with ALL AVAIL and one with named
+ answered yes, one answered no, one taken off the programme; an overseas duty under Unavailable; a
+ SANS man on the programme and a hidden one; a named ground-crew man; a man posted out since the day
+ was published; a man wearing a warning chip; a man on four rows where two count; a parked plan; an
+-amendment pending.
++amendment pending; a day whose issues list mixes all three levels — a red item, an amber one and a note — with a
++man each names alone.
+ 
+ **It lives in the demo seed**, so a fresh boot shows it, the owner's look starts on it, and the next
+ session does not rebuild it from memory. Extended in the same change whenever a new kind arrives.
+@@ -551,6 +629,12 @@ finding.
+   window — for any surface built as a viewport-tall column, and measure EVERY edge-docked control against the
+   screen edges, not only the one being changed. (Room to scroll past the end goes inside the scroll box as a
+   spacer, never as padding on it: padding sets the box's smallest height.)
++- **On a phone, what a press opens is proved ON SCREEN before anything in it is pressed** (his find, 10 Oct 26): the
++  page not scrolled by the script, the pop-up's box inside the screen, a finger at a point on it meeting it — and
++  its controls are then pressed at a point. A scripted press that scrolls its target into view first can work on a
++  pop-up nobody could find: four browser tests and every walker passed a calendar drawn below the foot of the screen.
++- **How a walk script, a walker's brief and a break-test list are written — and what each trap in them has cost —
++  is `docs/walk-scripts.md`.** Read it before writing one; every walker's brief names it.
+ 
+ **7.3 Walk the surfaces, not the rulings.** This is the difference that cost the OIL build three
+ defects. A ruling about something SHOWN or TAPPED gets **one mark per surface**. A ruling about
+@@ -561,7 +645,11 @@ MONEY gets **one recorded result per required order**, saying whether the walk o
+ actions in BOTH orders, on a published day and an unpublished one; after each, undo, redo, reload; every
+ action with an opposite, in the opposite direction AFTER publishing, because that is where money
+ freezes. Every line of that list gets a result. Each distinct order on screen is DRIVEN; repeated cases
+-may be carried by a test within §7.0's limits, and the sheet says which is which.
++may be carried by a test within §7.0's limits, and the sheet says which is which. **A control that holds state
++between presses gets its state table too** (9 Oct 26: a walk of a new date picker passed 16 of 16, and two reads then
++found six faults, every one an order of action): each state × each event that can arrive in it — its own presses,
++the record changed behind it, another record opened, each answer to each question — a walk step where it needs the
++screen, a test otherwise; and the readers are asked the same in their brief.
+ 
+ **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
+ has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
+@@ -601,7 +689,10 @@ and put it on the owner's look card.
+ ## 8. Making the checks FIND rather than CONFIRM
+ 
+ 1. **Tests loop over the roll-call, never over one fixture.** A test of a mark walks every KIND of
+-   seat and asserts each by name.
++   seat and asserts each by name. Where an invariant must hold for every output of one central function, attach
++   it to the function instead of to new fixtures: a checker the global test set-up installs on a hook that does
++   nothing in production, so every existing test's own input is checked the moment it is built — with one test
++   that feeds the checker a broken example.
+ 2. **The fixture is the everything day.** A test that sets up a duty desk and a ground row tests a
+    duty desk and a ground row.
+ 3. **Fixtures write the way the app writes.** A test that replaces an object where the app changes
+@@ -611,7 +702,11 @@ and put it on the owner's look card.
+ 4. **Red first, and the break test.** Before a fix goes in, a test must fail on the bug. And for
+    every surface the roll-call marks as wired, break that wire once on purpose and watch a named
+    test go red. If nothing goes red, **that surface has no test, by proof** — write one before
+-   continuing. Two or three minutes per surface.
++   continuing. Two or three minutes per surface. The runners are `scripts/handpass/breaks.mjs` (unit tests) and
++   `scripts/handpass/breaks-browser.mjs` (what only a browser can see): a job writes a LIST for them, never
++   another copy of the loop. And before writing the missing test, rule out the other readings of a break that
++   stayed green — it never met a test able to see it, the wire is invisible to that test world, or the line
++   decides nothing (`docs/walk-scripts.md` §Break tests).
+ 5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
+    the feature and share its blind spots.
+ 6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
+@@ -619,13 +714,23 @@ and put it on the owner's look card.
+    pin the unchanged half with a test against today's behaviour, so the new half cannot absorb it. (Last Flown
+    worked out from the flights marked done would have overwritten a day typed by hand the moment any OLDER
+    flight was marked — the ruling had kept that half as it was.)
++8. **A new writer is tested on what it SAVED, and a new kind of record on its whole life** (27 Sep – 12 Oct 26).
++   At least one test of every new writer — a command, a pass, a door — reads the stored copy, not the live model
++   (seventeen tests of a delete all read memory; the delete was never saved). A new kind of record gets one round
++   trip first — make it, undo it, redo it, reload it — because each registration list it was left out of fails a
++   different leg. And a new optional stored field gets one seeded record that carries it, or the structural tests
++   that walk real records never meet it.
+ 
+ ---
+ 
+ ## 9. The evidence, and the owner's sixty-second check
+ 
+ One file per build, mostly tables, plus a folder of pictures, written DURING the walk:
+-`docs/handpass/<date>-<feature>.md`, pictures in `docs/img/handpass/<date>-<feature>/`.
++`docs/handpass/<date>-<feature>.md`, pictures in `docs/img/handpass/<date>-<feature>/`. Lay down every section
++below as an empty heading when the sheet is created, with the roll-call table drawn — one row per surface — so a
++row nobody walked shows as a blank during the walk, not at the close. Before the sheet goes to a reader, every
++test or file that a "proved by" cell names is checked to exist: a plan's "proved by" is a promise, the sheet's
++must be a fact.
+ 
+ It holds: the eight answers and the tier · the roll-call table · **the five sizing lines (§7.0)** · the
+ orders walked, with what the screen said and what the money said · **the cases carried by a test, each
+@@ -704,7 +809,9 @@ Use these names in reviews and reports.
+     picture that showed the defect, and its step asserted only that a class was switched on. A mark,
+     an outline or a highlight is asserted as PAINTED (a computed style on each element it must cover —
+     a pinned column paints its own background over a row's outline), and every picture a step saves
+-    is opened before the step counts as looked at.
++    is opened before the step counts as looked at. A mark with more than one colour is asserted per man as
++    PAINTED — its computed colour against that man's own item — never only that the mark is on *(his find,
++    11 Oct 26: an open issues list lit every man it named in the day's worst colour)*.
+ 22. **The walk by habit** *(owner, D607, 7 Oct 26)* — the same number of walkers and scenarios whatever the
+     change: five walkers on a rule inside one calculation, 2.24 million tokens, no fault found in the rule
+     (`[OIL-WORK-START]`, 6–7 Oct 26). The sizing step (§7.0) is the answer.
+@@ -726,6 +833,10 @@ should.
+   words — never a list of cases to work through.
+ - He answers the product questions the walk raises, and nothing else. "Leave it" is an answer and is
+   recorded with its date, so it is never re-fixed later as a bug.
++- **A change to the LOOK or LAYOUT of a surface he uses daily is shown to him before it is built** — the whole
++  screen, before and after — whoever filed it, and even when it reached the list as a defect (27 Sep 26: one was
++  built, walked, read and gated, and he chose the old look on sight). The look card then carries only questions
++  about behaviour.
+ - He never picks the tier, reads code, or runs a gate.
+ - **Every defect he finds costs the method a line.** A find of his is, by definition, something every
+   check missed — so it is a method failure before it is a bug, and it adds a roll-call row, an order
+diff --git a/raptor-port/docs/doc-budget.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/doc-budget.md
+index 49ba9d71d..b9540b96e 100644
+--- a/raptor-port/docs/doc-budget.md
++++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/doc-budget.md
+@@ -74,7 +74,10 @@ Stale is worse than absent — the next session trusts it.
+   duplicated, when an archive line is removed, when an item moved to the archive arrived
+   truncated, or when a body line is newly doubled. It runs in CI (`docs-guard.yml`, which exists
+   because docs-only changes otherwise run no checks at all) and as a Stop hook at the end of every
+-  turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]`.
++  turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]` (the same value in the
++  `DOCSGUARD_ALLOW` environment setting while `backlog-archive.mjs` runs before that commit exists). Where one item
++  was filed on two branches, the later merge drops the older copy, leaves the kept copy's own lines untouched — a
++  line is ADDED to it, never edited — and declares the dropped heading this way.
+ - **The ceilings — TRIPWIRES, not targets** (D141, 24 Sep 26). Each always-read file has a line ceiling; **each loaded
+   rulings file a tripwire in UTF-8 bytes of the whole file** (D390, 28 Sep 26 — each ruling is one line, so a line count
+   cannot see it grow; every area file must have one, and crossing it means split the area or raise it with its reason). Crossing it means "look at what in this file does not belong here and move it to its home" (`.claude/rules/doc-structure.md`) — never "cut to a number"; when what crossed it genuinely belongs, the ceiling RISES with its reason. **Over a ceiling inside a code change
+diff --git a/raptor-port/docs/gates-and-deploy.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/gates-and-deploy.md
+index 1dffe0a5d..5c4d50ea7 100644
+--- a/raptor-port/docs/gates-and-deploy.md
++++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/gates-and-deploy.md
+@@ -35,6 +35,23 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
+   (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
+   and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
+   `< /dev/null`.
++- **Six more, from the skill notes of 26 Sep – 9 Oct 26:**
++  **(1) Read only a results folder THIS run made.** A shared scratch folder still held another chat's summary from that
++  morning, and its "failed" lines were told to him as this run's. Name the folder for the branch and the time, and quote
++  the log's own start line.
++  **(2) While the gate set runs, nothing else runs on the PC** — not a build, a browser or a preview, and not a read-only
++  reviewer or a research helper either: the tests that are unsteady under load do not care what kind of work takes the
++  processor. Reviewers run while the builder is fixing; the gates run alone.
++  **(3) A `gatelock.mjs run` you STOP does not release the lock** — its release lives in the process you killed. Release
++  it yourself at once (`gatelock.mjs release`).
++  **(4) A lock near its two-hour mark is not stale by its age alone.** A lock taken by hand records the short-lived
++  `take` command, so "its process is gone" proves nothing: ask the chat that holds it before breaking it (28 Sep 26: a
++  queued run was three minutes from breaking a lock whose holder had just started its last suite).
++  **(5) After resolving a merge conflict by hand, run each conflicted file's own check before the long run** — the test
++  file itself for a test, the type check for source. The type check does not cover the browser-test folder, and two
++  tests appended at the same place share their closing lines: read the join, not only the markers.
++  **(6) On this shared PC, stop only what you started, by its own id** — the harness's task id, the process id noted at
++  launch, the port. Never by a program's name: `taskkill /IM codex.exe` ends every chat's reviewer.
+ - **`gatelock.mjs run --from <folder>` is read from the folder the command runs in** (met 7 Oct 26): started from inside
+   `raptor-port/` with `--from raptor-port`, it looks for `raptor-port/raptor-port`, and all seven gates "FAIL" in 0 seconds
+   with empty logs — a launch fault, not a result. From inside `raptor-port/` leave `--from` out (it defaults to that folder).
+diff --git a/raptor-port/docs/guide-full.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/guide-full.md
+index b3d3ceb09..d64caf944 100644
+--- a/raptor-port/docs/guide-full.md
++++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/guide-full.md
+@@ -341,7 +341,9 @@ treat it as session-only. Provenance and opt-out:
+   7 Aug 26):** a throwaway HTML comp in the app's own stylesheet,
+   screenshotted at phone and desktop widths — pixel-faithful because it IS
+   the real palette — so the owner approves what it looks like, not a
+-  description of it.
++  description of it. For a change to a screen that already EXISTS, draw the
++  change on the running app instead — the method and its traps:
++  `.claude/skills/brainstorming/mockups-on-the-real-app.md`.
+ 
+ ### UI quality is a decision axis on every change
+ 
+diff --git a/.claude/skill-updates/2026-10-13/raptor-port/docs/walk-scripts.md b/.claude/skill-updates/2026-10-13/raptor-port/docs/walk-scripts.md
+new file mode 100644
+index 000000000..506ffc93a
+--- /dev/null
++++ b/.claude/skill-updates/2026-10-13/raptor-port/docs/walk-scripts.md
+@@ -0,0 +1,167 @@
++# Walk scripts, walkers' briefs and break tests — how they are written, and what each trap has cost
++
++**Tier 2: read before writing a walk script, a walker's brief or a break-test list; every walker's brief names this file.**
++The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 the walk, §8 the break test) and a walk's
++size is `docs/walk-ledger.md`. This file is the HOW. Every line is here because a walk, a re-walk or a break test once
++reported something untrue — a fault that was the script's own, or a pass that proved nothing. The drivers are in
++`raptor-port/scripts/handpass/` (`lib.mjs`, `trk-lib.mjs`; the break runners `breaks.mjs` and `breaks-browser.mjs`); the
++traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26 from the skill notes of 24 Sep – 13 Oct 26.
++
++## 1. Before the walkers start
++
++- **The host runs its own short walk on the shared helpers first.** Every trap it meets — a selector whose class has
++  since gained a second use, a helper borrowed from an older walk that names a field by its old id — goes into the
++  walkers' brief by name ("Known traps in the drivers"). A walk's private helper file is evidence of that day's screen,
++  not a library: prove a borrowed helper's first step against the present screen before building a fixture on it.
++- **One served folder a round** (the order's §4). A server found already running is used only once it is proved to
++  serve this build: the hashed bundle name in the index page it serves equals the local build's. Check a port is free
++  before pointing a run at it (`docs/gates-and-deploy.md`).
++- **The clock is set to a start time and left RUNNING.** A frozen clock gives two records filed minutes apart the same
++  moment, and a rule that tells them apart by time then matches them — a FAIL of the walk's own making. Hold it still
++  only for a recording that must repeat byte for byte (§8), or for a scenario about one instant.
++
++## 2. The walker's brief
++
++- **It names this file, and carries the machine's traps itself** — a helper loads none of the host's memory. A script
++  is written to a file with the file tool and run from there, never passed inline to the shell: backslashes are lost
++  and an apostrophe fails to parse, often with no error. A script's rewrite and its run are never sent in one step —
++  the run may use the old file — and a script prints a version line at the top of every run.
++- **Scope and stopping:** the number of scenarios; one picture per assertion that matters; "stop and report after N
++  failed attempts at one gesture"; "send your report ONCE, after stopping every script and browser you started". The
++  report goes to a named file, and the hand-back message is a short summary. A walker's cost is its own token count
++  (the harness's figure): a reading of his allowance needs the host silent for the whole window, so promise one only
++  when it can be.
++- **A scenario with an EXPECTED line is PASS or FAIL** (the order's §4), and its EXPECTED line was checked against the
++  rulings before the brief left (the order's §4, "Before a brief leaves").
++- **Each helper gets its own scratch sub-folder and its own output folder.**
++
++## 3. Fixtures
++
++- **A fixture that will be SAVED and reopened** — at another size, as another role, by another walker — is built on
++  real storage in a fresh browser context, never on the app's "start fresh" address, which keeps nothing. Built there,
++  the saved file is empty, the reopened world is a perfectly valid demo week, and every later step fails "no such
++  line", which reads like a defect in the app. A new browser context is already clean. Straight after reopening a
++  saved world, assert one fact the fixture made — a man on a row — before any step runs. (A saved world is also tied
++  to its port: `docs/handpass/README.md`.)
++- **A fixture step asserts that it landed** before the step that relies on it, and a helper answers every confirmation
++  the real control can raise (the Leave War's "below zero — tap the same leave again") — or the fixture silently lacks
++  its record and the failure is blamed on the app.
++- **What an action created is named by the difference** between the ids before and after it, never by position: one
++  door puts a new record at the top of a list, another at the bottom.
++
++## 4. Steps, and what they assert
++
++- **Press the control the app routes.** Choose it by its action attribute, and use text only to choose AMONG those — a
++  label is echoed in a neighbour's caption. Aim at the control's own box (the "+ add", the button), never at a
++  container's centre: once a row holds people, its centre is a man's puck.
++- **A locator that READS a result is copied from the markup that draws it** (or from an existing test of that element),
++  never composed from a neighbour's attribute. Where a new walk script and a new browser test share a read, run the
++  walk first: it is the cheap place to find that the read is wrong.
++- **A step whose right result is that NOTHING changes** — a refusal, a no-op — also asserts positive proof that the
++  gesture happened: the drag's ghost, the caption under it, the refusal's own words. "Nothing written" cannot tell a
++  correct refusal from a press that landed off the screen.
++- **A negative assertion first asserts that its subject exists:** "not greyed" passes on a row that was never drawn.
++- **A gesture meant only to LOOK** — a tap or a hover that reads — on a surface that can also be edited counts the
++  writes before and after (history lines, the stored record) and requires none: the tap that reads can be the tap
++  that saves.
++- **A single-slot surface** (a toast, a banner) is read for what it is LEFT showing after the whole action.
++- **A new card, form or panel has its geometry measured**, not only its content: the main controls' left and right
++  edges against the fields above, and inside their container. Looking normalises ten pixels.
++- **Leaving a control.** A Tab inside a date box steps to its next part: leave it with Enter (where the app commits on
++  Enter) or a press elsewhere. End and Home stop at the end of the wrapped LINE on a phone: use the document-level key
++  (Control+End). When a "left the box" step fails, record `document.activeElement` before blaming the app.
++- **Navigate by reading the screen's own heading** until it says the wanted month, day or tab — never by a fixed
++  number of steps — and write what was reached into the run's log ("calendar on: July 2026").
++- **Every sentence a script prints is built from what it just read**, or is a plain description of the action. A typed
++  conclusion outlives the fact it described: on the re-walk it prints the old story beside the new reading.
++  Conclusions are the walker's, in the report. And every assertion's note prints the observed value it judged, so a
++  FAIL can be read without a re-run.
++- **A check whose own set-up step could not act reports NOT WALKED, never FAIL**; a helper that fails says why ("not
++  armed", "nobody offered").
++
++## 5. Pictures
++
++- **A step leaves on screen what it asserted.** Its picture is taken after the step's function returns: close a dialog
++  at the START of the next step, not inside this one, or the picture shows the plain page. Whoever cites a picture
++  opens it.
++- **A fixed-coordinate picture ("the top of the page") scrolls to the top first**, and any helper that scrolls runs
++  after it: a row that slid under the sticky bar reads as a new defect. Measure the claim, then picture it.
++- **A script writes only under its own checkout**, every path resolved from the script itself (`import.meta.url`) —
++  never an absolute path into a worktree: worktree folders are reused by other chats.
++- **One run, one folder.** A script that numbers its pictures empties its folder first, or writes a folder per run:
++  two runs' pictures under interleaved numbers are no evidence.
++
++## 6. The re-walk
++
++- **The first walk's pictures are the defect's evidence: commit them before the re-walk, and give the re-walk its own
++  folder.** A re-walk is nearly always launched by reusing the first walk's command line, so a script takes its folder
++  from the environment only when none is already set (`process.env.HP_SHOTS ||= '<folder>'`), and the evidence sheet
++  writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
++- **Once a finding is fixed, the note that observed it becomes a CHECK** asserting the fixed behaviour, before the
++  re-walk runs.
++
++## 7. Reading a FAIL — the script's world first
++
++Before a FAIL is a finding, ask: what does the world really hold (the seed, the page — is the "bid and award" day
++really both)? What is the phone's own route to that surface (a menu, a folded panel — take one picture at the failing
++step)? What did the script actually press, and what did the box actually read? Was the role signed in on a fresh
++world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one.
++
++## 8. When nothing on screen should change
++
++A refactor, a storage-only change, "leave the other sizes exactly as they are":
++
++- **Record the running app twice and compare the records as text.** Hold the clock still and seed the random numbers,
++  so every minted id and time stamp repeats; save each screen's markup and each rule's output as text, on the worst
++  realistic world (plain, published, the next week, a phone, another role); compare the build before with the build
++  after, byte for byte. First compare two runs of the SAME build — that is what proves the comparison sees only the
++  code. An intended difference is saved apart and shown, so that "identical but for X" is literal.
++- **Two equal records prove sameness, not coverage.** A recorder that landed on an empty month recorded it equally in
++  both builds, and the comparison passed. Assert where each step landed, and open the pictures even when the
++  comparison is green.
++- **For one size, role or mode that must not move:** dump everything of the out-of-scope cases (words, boxes, type,
++  colours) from the build BEFORE the first edit, and compare after it. Write the out-of-scope test first and see it
++  pass on the OLD build — that is what makes it a description of "as it was", not of "as I built it".
++- **The build before the change:** `git archive <commit>` of the source and the config into a SHORT path,
++  `node_modules` joined by a junction, built and served on another port (a `git worktree` of an old commit fails on
++  this repo's long picture names — `docs/gates-and-deploy.md`). For one measured number, swap the touched files from
++  `origin/main`, rebuild, run the SAME script into a scratch folder, put the files back and prove it with
++  `git diff --stat` — never while walkers are served that build.
++- **A storage conversion is walked on data the OLD build really wrote.** Serve the old build, make the owner's kind
++  of work through its own controls, and save the browser's storage; serve the new build on the SAME address (storage
++  belongs to an address) and assert that it reads — and exports — exactly what the old one did. Hand-made "old"
++  records prove the converter only against the builder's picture of the old shape.
++- **A storage-shape change is walked with a mechanical check on every step**, through one shared driver: every row the
++  gesture changed is named by that gesture's own change record; the state before a reload equals the state after it;
++  the reload itself writes nothing. The reload is a step, not only the thing between steps.
++
++## 9. Break tests
++
++The rule is the order's §8, item 4. The runners are `scripts/handpass/breaks.mjs` and `breaks-browser.mjs`, each fed a
++list.
++
++- **Commit first, and break where nobody is reading.** The runner restores the exact bytes it changed. By hand,
++  restore from a copy taken just before the break — never `git checkout` / `git restore` on a file with uncommitted
++  work, which returns it to the last commit and throws the fix away — and read `git diff --stat` afterwards. While a
++  reader or a walker is using the checkout, break in a separate worktree at a SHORT path (`node_modules` by a
++  junction). A runner that edits source holds the tree until it prints DONE: no edit, build, browser test or commit
++  meanwhile.
++- **Prove the list runs before trusting its reds.** Run the guard suite once unbroken and compare its file count with
++  the list — a mistyped file name "guards" nothing. A `find` that does not match exactly once is re-targeted, never
++  counted. A test selected by name is confirmed to have RUN.
++- **A break that stays green has four readings — say which.** (1) No test: write one, for the BEHAVIOUR, and run the
++  break again. (2) The break never met a test able to see it: search the whole suite for an assertion on that
++  surface — especially tests that boot the real storage — and run the break against it. (3) The wire is invisible to
++  that test world (layout, a scroll window, real events): write the watcher in the real browser, and prove it against
++  the broken BUILD. (4) The line decides nothing: would anyone see a difference? If not, delete it and run again — or
++  it is a second guard whose behaviour another wire's break already pins: record which, and why the cut one cannot be
++  reached by new data (D56).
++- **A rule held in two layers** — a door's own refusal, and the save boundary behind it — is broken one layer at a
++  time, and each layer's test asserts something only THAT layer does: the exact wording with no rollback tail, one
++  message and not two, no command attempted. An outcome-only test cannot see that the outer layer is missing.
++- **A mapping** (a palette, a lookup, a label wired to a token): at least one break per wired place swaps in ANOTHER
++  CURRENT value, not only the retired one. A break caught only by "the old value must not come back" proves that
++  guard, not the wiring.
++- **Each new test is proved red in the medium it runs in.** A list that runs unit tests says nothing about a browser
++  test. And a browser test of an act that shares a code path with its own set-up takes its "before" from a value read
++  BEFORE the set-up.
