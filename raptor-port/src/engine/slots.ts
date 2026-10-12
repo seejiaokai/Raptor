@@ -10,7 +10,7 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
 import { rowElsewhere } from './weekstash'
-import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow } from './overlay'
+import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, asIssuedOrder } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -535,7 +535,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      was issued, and publishable on the old sign-offs (content-equal, so they still matched).
      The values are minted from the input exactly as any landing's are, so a real difference
      (the scheduler had retimed the issued row) still shows as the change it is. */
-  let ri=d.ground.length, rid:any=null;
+  let ri=d.ground.length, rid:any=null, issuedRid:any=null;
   if(dayApproved(di)){
     const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
     const ig:any[]=(snap&&snap.d&&snap.d.ground)||[];
@@ -544,7 +544,7 @@ export function acceptInput(di:any,inp:any,dest:any){
        a row that looks unchanged — the FULL check, Astra's final read #3, its Accept half declined) */
     const ix=ig.findIndex((r:any)=>r&&r.src===key&&r.rid);
     if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */
-      rid=ig[ix].rid;
+      rid=ig[ix].rid; issuedRid=ig[ix];
       /* back BESIDE ITS ISSUED NEIGHBOURS — before the first surviving row that followed it in the issued
          version — not at its issued index: once an earlier issued row is gone, or under a hand-set order, that
          index is somewhere else, and the day read "1 reorder" for a row that went back where it was (the
@@ -562,6 +562,8 @@ export function acceptInput(di:any,inp:any,dest:any){
      row mint them the same way), and `srcv` records what the row was made from ([DB-READINESS] phase 6 (c)): a later edit
      of the request re-makes it, a scheduler's own edit of the row does not */
   const row:any={...requestRowFields(inp), src:key, srcv:srcvOf(inp)};
+  /* (put back beside an issued row of the same people: in the order that went out — overlay.ts asIssuedOrder) */
+  if(rid)asIssuedOrder(row,issuedRid);
   /* a row an issued version held goes back beside its issued neighbours (above) — a round trip, left exactly as it is; a
      row the day never held goes where a request's new row goes: at the end, or — a record of a SHARED input whose entry
      already stands here — straight after the last of its rows, with their CX, red box and information-only

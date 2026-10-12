@@ -249,9 +249,17 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
      and a NEW record holds [Z] (engine/inputown.ts ownInputOf). That new record has no frozen twin; its person stood
      in a frozen record's list and is out of that record's live twin, and it is the same kind: it is part of THAT
      input's change (already in `out`, above), not a filing of its own — `pieces` tells the filing axis to drop it. */
+  /* …AND ONLY A REAL PIECE (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 8, reproduced red in
+     state/inputcount.test.ts). "The same kind, for a man who left a frozen record" also matched a leave FILED AFRESH for
+     him afterwards: Hex taken out of a shared leave, then a morning's leave of his own filed — the day read 1, "Hex ·
+     LL · taken out", and the new leave had no line at all. A piece is a COPY of the record it was cut from
+     (inputown.ts ownInputOf, pieceOf): it carries that record's own `by` and `at` — who placed it, and when — where a
+     fresh filing has its filer's and its own moment. A record that carries neither (stored before D629) pairs as it
+     did. */
   const pieces:string[]=[];
   for(let j=N.length-1;j>=0;j--){const n=N[j], man=manOf(n.r); if(!man||idsOf(n.r).length!==1)continue;
-    const d=out.find((x:any)=>x.was&&x.now&&holds(x.was,man)&&!holds(x.now,man)&&(x.was.type===n.r.type||(isDownchit(x.was.type)&&isDownchit(n.r.type))));
+    const d=out.find((x:any)=>x.was&&x.now&&holds(x.was,man)&&!holds(x.now,man)&&(x.was.type===n.r.type||(isDownchit(x.was.type)&&isDownchit(n.r.type)))
+      &&String(x.was.by??'')===String(n.r.by??'')&&Number(x.was.at||0)===Number(n.r.at||0));
     if(d){pieces.push(n.id);N.splice(j,1);}}
   /* 4 — one man's record gone and another of his filed, of the same type or both downchits: one edit (F2). Only records
      with no filing state (a downchit, a leave — never a request, whose filing the filing axis words by its own id, so
@@ -678,7 +686,11 @@ export function placeholderProblem(inp:any):string{
        one never twice: one sentence for both, "This input already has ALL AVAIL");
      · a placeholder's own rules (placeholderProblem, above) — first, as every door says them first;
      · a medical entry or an upchit is one person's — each needs its own document (D655 reading 4);
-     · a Personal input is one person's own (D755 (4)).
+     · a Personal input is one person's own (D755 (4));
+     · a leave the Leave War approved (`lw`) is one person's (the one-rule plan §4.1 said so and nothing held it — the
+       Opus trial read, claim 5, reproduced red in leavewar/trialread.test.ts, 12 Oct 26): the war finds the leave
+       behind a man's cell only where he is its ONE person (leavewar/sync.ts warLeaveRow), so a second person put in
+       from the Inputs page left a leave the war could no longer un-approve, move or delete — with no word said.
    (SANS availability holds SANS people only — asked per person at the doors, ui/inputedit.tsx sansRefusal: it reads the
    roster as it stands, which a stored record is never judged by.) */
 export function shapeProblem(inp:any):string{
@@ -693,7 +705,9 @@ export function shapeProblem(inp:any):string{
   const why=placeholderProblem(inp); if(why)return why;
   if(ids.length>1&&(isDownchit(inp.type)||isUpchit(inp.type)))return `${isUpchit(inp.type)?'An upchit':'A medical entry'} is one person’s — each needs its own document`;
   if(ids.length>1&&personalKind(inp.type))return PERSONAL_OWN;
+  if(ids.length>1&&inp.lw)return LW_OWN;
   return '';}
+export const LW_OWN='A leave approved on the Leave War is one person’s — file the other person’s leave as its own input';
 /* THE "PERSONAL" KIND AND ITS ONE SENTENCE — one body for the record's shape (above) and for the row's door, which
    refuses a man dropped ON its one person's puck too (ui/reqdoor.ts rowPut — D755 (4), D757; the walk's B8, 12 Oct 26) */
 export function personalKind(t:any):boolean{return /^Personal$/i.test(String(t==null?'':t).trim());}

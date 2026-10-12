@@ -68,7 +68,9 @@ export function putPerson(r: any, p: any, st?: PutStamp): boolean {
   toPeople(r)
   if (holds(r, p)) return false
   r.hand = Number(r.hand || 0) + 1
-  r.people.push(entry(r, p, st))
+  /* a NEW list, never a push onto the one it had: a record that still shared its list with another (below, pieceOf)
+     would have put him in both */
+  r.people = [...r.people, entry(r, p, st)]
   back(r, p)
   return true
 }
@@ -92,6 +94,20 @@ export function swapPerson(r: any, from: any, to: any, st?: PutStamp): boolean {
   r.leftAt = { ...(r.leftAt || {}), [String(from)]: r.hand }
   back(r, to)
   return true
+}
+
+/** A PIECE OF A RECORD IS A RECORD OF ITS OWN (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 2,
+ *  reproduced red in leavewar/trialread.test.ts). A leave cut in two by a medical, un-approved, deleted or moved in
+ *  the middle on the Leave War, and the tail or a kept segment of a split medical entry, were each made as `{ ...row }`:
+ *  every piece then held the SAME list of people, and a person put into one piece was in all of them — leave on dates
+ *  nobody chose, saved. So a piece takes its own copy of everything the writers here change in place: the list, each
+ *  entry, the OIL answer, the holding stamps. Every other field is a plain value and is copied as it was. */
+export function pieceOf(row: any): any {
+  const out: any = { ...row }
+  if (Array.isArray(row.people)) out.people = row.people.map((e: any) => (e && typeof e === 'object' ? { ...e } : e))
+  if (row.oil && typeof row.oil === 'object') out.oil = { ...row.oil }
+  if (row.leftAt && typeof row.leftAt === 'object') out.leftAt = { ...row.leftAt }
+  return out
 }
 
 /** ONE MAN'S OWN INPUT. Where he is the only one in it, the input itself. Where it holds others too: a NEW record —

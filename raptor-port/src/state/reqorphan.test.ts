@@ -11,7 +11,10 @@ import { setSession } from './auth'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
+import { acceptInput, unacceptInput, acceptedDay, fillSlot } from '../engine/slots'
+import { viewOfWeek } from '../engine/overlay'
+import { idsOf } from '../engine/inputs'
+import { whoId } from '../engine/people'
 import { inpId } from '../engine/inputs'
 import { stashClear, stashPut, rowElsewhere } from '../engine/weekstash'
 import { rowsLeftOut } from '../engine/publish'
@@ -256,5 +259,31 @@ describe('D731 (5) — taking a request off names it', () => {
   it('nowhere does it say "Accept undone" any more', async () => {
     const src = (await import('node:fs')).readFileSync('src/ui/interactions.ts', 'utf8')
     expect(src).not.toMatch(/['`]Accept undone/)
+  })
+})
+
+/* THE OPUS TRIAL READ, CLAIM 11 (the one-rule job's check, 12 Oct 26): "a row adopted back by Accept keeps people its
+   input does not hold". While a request reads "taken off" and its own row stands again (a saved plan switched in — the
+   state dormantWithRow plants above, as this file always has), the row is nobody's input's: a man dropped on it is a
+   plain write. Accept then adopts the row — and a row that came from an input IS the input (D755): the schedule and
+   the Inputs calendar must show the same people. The re-make trusted the row's "made from" mark and never looked at
+   the row. */
+describe('a row adopted back by Accept shows the people its input holds (the trial read, claim 11)', () => {
+  const people = (row: any) => [row.who, ...((row.more || []) as any[])].map((v: any) => String(whoId(v) || v || '')).filter(Boolean)
+  it('a man put on the row while the request read "taken off" does not stay on it once Accept makes it the input\'s row again', () => {
+    const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 15', s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    acceptInput(2, inp, 'g')
+    const row = DAYS[2].ground.find((g: any) => g.src === inpId(inp))
+    unacceptInput(2, inp)
+    DAYS[2].ground.push(row)
+    const ri = DAYS[2].ground.indexOf(row)
+    fillSlot(`g:2.${ri}.+`, 'pike')
+    expect(people(DAYS[2].ground[ri]), 'the plain write landed: the row is nobody\'s input\'s while it reads "taken off"').toEqual(['divot', 'pike'])
+    expect(acceptInput(2, inp, 'g')).toBe(true)
+    expect(inp.acc).toBe('g')
+    viewOfWeek(W1, DAYS as any[], { loaded: true, issued: () => null })
+    const now = DAYS[2].ground.find((g: any) => g.src === inpId(inp))
+    expect(people(now), 'the row and the input agree').toEqual(idsOf(inp).map(String))
   })
 })

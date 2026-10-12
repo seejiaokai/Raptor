@@ -61,10 +61,10 @@ import { PLANPUCKS } from './plan'
 import { commit, CmdRefused, isCommitting } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
-import { mayDeletePerson } from './perms'
+import { mayDeletePerson, byAfterLeaving } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
-import { stampChanged } from './inputstamp'
+import { stampChanged, stampWho } from './inputstamp'
 import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
@@ -228,10 +228,23 @@ export function applyDelete(id: string, cutoff: string): void {
      and the posting pass — leavewar/sync.ts). */
   /* 4b. then the inputs themselves */
   for (const r of gone) { const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1) }
+  /* WHO FILED IT PASSES ON WITH ITS FILER (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 9, reproduced
+     red in leavewar/trialread.test.ts; he was told, D759 reading 7: "'by Ranger' stays while Ranger is in it and passes
+     to the scheduler who takes him out"). The input's own window and the row's door do it (ui/inputedit.tsx commitInput);
+     this door left an input the others still hold reading "By <a man who is gone>", its OIL question his alone. To the
+     admin whose delete this is; for a posting that runs by itself on its date there is nobody acting, and it passes as
+     it does when a filer takes himself out (state/perms.ts byAfterLeaving). His OWN part of an input that spans his
+     cutoff keeps him as its filer — those days are his record (D299). */
+  const passBy = (r: any): void => {
+    if (String(r.by ?? '') !== String(id)) return
+    const who = stampWho()
+    const by = who && who !== String(id) ? who : byAfterLeaving(r, id)
+    if (by != null) r.by = by
+  }
   /* out of every input he shared from his cutoff on: the others keep it, and its row is re-made without him */
-  for (const r of left) { takePerson(r, id); stampChanged(r) }
+  for (const r of left) { passBy(r); takePerson(r, id); stampChanged(r) }
   /* …and one that spans his cutoff: his own part of it, which ends the day before like any input of his */
-  for (const r of split) { const own = ownInputOf(r, id); if (own) { stampChanged(r); ended.push(own) } }
+  for (const r of split) { const own = ownInputOf(r, id); if (own) { passBy(r); stampChanged(r); ended.push(own) } }
   for (const r of ended) {
     const a = dateOrd(r.date, r.yr) as number
     const end = ordShift(cut, -1) as number

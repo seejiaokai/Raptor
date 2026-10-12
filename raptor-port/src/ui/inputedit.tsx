@@ -27,7 +27,7 @@ import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { ClipIcon, UploadIcon } from './icons'
 import { acceptInput } from '../engine/slots'
 import { iuParts } from '../engine/keys'
-import { ownInputOf, toPeople, putPerson, takePerson, swapPerson } from '../engine/inputown'
+import { ownInputOf, toPeople, putPerson, takePerson, swapPerson, pieceOf } from '../engine/inputown'
 import { DAYS } from '../engine/data'
 import { standsOn } from '../engine/overlay'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
@@ -358,7 +358,7 @@ export function applyMedPlan(plan: any[]) {
        days, and the man does not silently read as fit for the rest of a long
        downchit because a two-day one landed in the middle of it. */
     if (p.tail && p.tail.startOrd != null && p.tail.endOrd != null) {
-      const t: any = { ...r, date: ordLabel(p.tail.startOrd, r.yr), mod: nowStamp() }
+      const t: any = { ...pieceOf(r), date: ordLabel(p.tail.startOrd, r.yr), mod: nowStamp() }
       delete t.iid          // its own address, minted below — never a copy
       delete t.lw           // a plain Raptor row; the war re-lands it inbound
       delete t.acc
@@ -422,7 +422,7 @@ export function medKeptSegments(aOrd: any, bOrd: any, clashes: any[], choices: s
 export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd?: any) {
   if (medSegmentsProtected(base, segs, keepTail, entryEnd)) { medicalLocked(); return false }
   for (const g of segs) {
-    const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: nowStamp() }
+    const t: any = { ...pieceOf(base), date: ordLabel(g.startOrd, base.yr), mod: nowStamp() }
     delete t.iid          // its own address, minted below — never a copy
     delete t.lw           // a plain Raptor row; the war re-lands it inbound
     delete t.acc
@@ -488,12 +488,24 @@ export const draftOf = (r: any) => ({
    one-man branch. Pinned in leavewar/onerecord-write.test.ts. */
 export function setLeaveRemarks(row: any, remarks: string, person?: any): boolean {
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
-    return saveBatch(() => {
-      const own = ownInputOf(row, person)
-      return !!own && commitInputEdit(own, { ...draftOf(own), remarks })
-    })
+    return ownPartSave(row, person, own => commitInputEdit(own, { ...draftOf(own), remarks }))
   }
   return commitInputEdit(row, { ...draftOf(row), remarks })
+}
+/* ONE MAN'S PART IS CHANGED, OR NOTHING IS (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 4, reproduced
+   red in leavewar/trialread.test.ts). Both one-man doors — a box typed on his row of the Unavailable list, the Leave
+   War's remark on his cell — first give him an input of his own (engine/inputown.ts ownInputOf: he is OUT of the shared
+   one from that line on) and then save the change on it. A save refused there answered false, and a batch whose body
+   only ANSWERS false is still committed: a start typed equal to the end was refused with its sentence, the cell healed,
+   and the man had been taken out of the shared leave all the same, the others told by their bells. So a refusal inside
+   THROWS, which is what rolls the command back whole (state/store.ts runInputWrite) — the idiom commitInput's own
+   body uses (`stop`). The refusal has already said why; saveBatch says so itself only where nothing did. */
+function ownPartSave(inp: any, who: any, save: (own: any) => boolean): boolean {
+  return saveBatch(() => {
+    const own = ownInputOf(inp, who)
+    if (!own || !save(own)) throw new CmdRefused('one man’s part was not saved')
+    return true
+  })
 }
 
 /* THE UPLOAD CONTROL every editor renders when needsDoc(type) — one
@@ -1415,7 +1427,13 @@ export function reassignInput(iid: any, personId: any) {
   if (idsOf(r).length > 1) {
     if (holds(r, personId)) { HOOKS.toast(`${PEOPLE[personId].cs} is already on this input`, 'warn'); return false }
     if (!normalizeInputDraft({ ...draftOf(r), person: personId }, r)) return false
-    if (!saveBatch(() => { swapPerson(r, from, personId, stampOf()); stampChanged(r) })) return false
+    /* (who filed it passes to the scheduler who swaps its FILER out — D759 reading 7, as the window's save does it in
+       commitInput; the Opus trial read, claim 9, reproduced red in leavewar/trialread.test.ts) */
+    if (!saveBatch(() => {
+      const by = me()
+      if (by != null && String(r.by ?? '') === String(from)) { toPeople(r); r.by = String(by) }
+      swapPerson(r, from, personId, stampOf()); stampChanged(r)
+    })) return false
     HOOKS.toast(isPersonal(r.type) && r.acc !== 'u' ? `${PEOPLE[personId].cs} is on ${inpLabel(r)} instead of ${was}` : `${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
     askOilIfPending(r)
     return true
@@ -1570,10 +1588,7 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any, 
 function saveFromRow(inp: any, d: any, who?: any): boolean {
   const mine = who != null && who !== '' && idsOf(inp).length > 1 && holds(inp, who) && !(isPersonal(inp.type) && inp.acc !== 'u')
   if (!mine) return commitInputEdit(inp, d, undefined, undefined, { sched: true })
-  return saveBatch(() => {
-    const own = ownInputOf(inp, who)
-    return !!own && commitInputEdit(own, { ...d, person: who }, undefined, undefined, { sched: true })
-  })
+  return ownPartSave(inp, who, own => commitInputEdit(own, { ...d, person: who }, undefined, undefined, { sched: true }))
 }
 /* THE NAME TYPED ON A REQUEST'S ROW IS THE INPUT'S OWN TITLE (owner D739, D740; reading R1, told to him — the plan
    2026-10-10-group-input-one-row-plan.md §4.4): the row's name box on the Ground Programme is reached through
@@ -1743,7 +1758,7 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   /* (an input under Unavailable that now holds a placeholder is taken back onto the programme by this save, below —
      so where it is filed TODAY is not held against the placeholder) */
   const offU = !!rec && rec.acc === 'u' && next.some(p => isSpecial(p))
-  const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec && !offU ? rec.acc : undefined, people: next.map(p => ({ p })) })
+  const shape = shapeProblem({ type: draft.type, date: first.date, endDate: first.endDate, yr: baseYear(), acc: rec && !offU ? rec.acc : undefined, lw: rec ? rec.lw : undefined, people: next.map(p => ({ p })) })
   if (shape) { say(shape, 'warn'); return false }
   /* (A PLACEHOLDER IS ONE OF AN INPUT'S PEOPLE since step 3 of the one-rule build — owner D750, D753, D755: it may be
      put in beside them, be left alone when they go, or take the input over in one save. Until then every one of those

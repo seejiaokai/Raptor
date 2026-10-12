@@ -18,7 +18,7 @@
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
 import { useSyncExternalStore } from 'react'
-import { toPeople } from '../engine/inputown'
+import { toPeople, pieceOf } from '../engine/inputown'
 import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
@@ -433,7 +433,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
    split/shrink body (design §5.2 Splitting: the first part keeps the iid, a
    later part gets a fresh one carrying lw / remarks / docs / mod verbatim) */
 export function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
-  const out = { ...row }
+  /* its own people, never the list it was cut from (engine/inputown.ts pieceOf) */
+  const out = pieceOf(row)
   const { date, yr } = isoToInputDate(from)
   out.date = date
   out.yr = yr

@@ -52,6 +52,7 @@ import * as view from './view'
 import { commitNewInput, commitInput, draftOf, removeInput, setInpField } from '../ui/inputedit'
 import { reqRowText } from '../ui/reqrow'
 import { rowPut, rowTake, rowMove } from '../ui/reqdoor'
+import { slotVal, setSlotVal } from '../engine/slots'
 import { boardMbtn, cxCommit } from '../ui/board'
 import { routeClick } from '../ui/interactions'
 import { pendListHTML } from '../ui/pendlist'
@@ -760,5 +761,49 @@ describe('ALL AVAIL / ALL as one of an input\'s people — what a published day 
       view.afterSchedMutate()
       expect(waiting(WED), 'the man added, and who the puck stands for').toBe(2)
     } finally { CROWD.push('plasma') }
+  })
+})
+
+/* THE OPUS TRIAL READ'S THREE CLAIMS ABOUT THE COUNT, EACH DRIVEN THROUGH THE REAL DOORS (the one-rule job's check,
+   12 Oct 26 — docs/superpowers/briefs/2026-10-12-reads/one-rule-code-opus-trial.md, claims 6, 7, 8; the evidence sheet
+   §10b says which were red). Written to the RIGHT behaviour before any fix. */
+describe('the trial read\'s claims about what a published day counts', () => {
+  it('claim 6 — the FIRST to have joined is taken out and put back: the day is back to what was published — 0 waiting (D98; D755: two routes to the same people give the same row)', async () => {
+    await boot(); file(['bane', 'pike', 'split']); publish(WED)
+    expect(waiting()).toBe(0)
+    take('bane')
+    expect(waiting()).toBe(1)
+    add('bane')
+    expect(idsOf(rec()).slice().sort()).toEqual(['bane', 'pike', 'split'])
+    expect(dayPendingItems(WED).map((x: any) => pendListHTML(WED)).slice(0, 1).join(''), 'what would go out').not.toMatch(/order/i)
+    expect(waiting(), 'the same three people as went out').toBe(0)
+  })
+
+  it('claim 7 — a swap from a FLYING SEAT: the input\'s change is one, and the jet\'s crew change is its own line — 2 (D113 is one seat; D109 one man moved)', async () => {
+    await boot(); fileOne('bane'); publish(WED)
+    const seat = `${WED}.0.0.0.p`
+    const flyer = String(slotVal(seat) || '')
+    expect(flyer, 'a man sits in the first jet on Wednesday').not.toBe('')
+    expect(flyer).not.toBe('bane')
+    expect(rowPut(rowKey(), flyer, (was: string) => setSlotVal(seat, was))).toBe('done')
+    expect(idsOf(rec())).toEqual([flyer])
+    expect(String(slotVal(seat)), 'Ranger sits in the jet now').toBe('bane')
+    const lines = pendListHTML(WED)
+    expect(lines, 'the list names the jet\'s change').toMatch(new RegExp(cs('bane')))
+    expect(waiting(), 'the input, and the jet').toBe(2)
+  })
+
+  it('claim 8 — a man taken out of a shared leave, then a NEW leave filed for him with other hours: two changes, and the new leave has its line', async () => {
+    await boot()
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'LL', date: 'Jul 15', yr: 2026, allday: true, remarks: '' }), ['bane', 'split', 'rocky'])).toBe(true)
+    publish(WED)
+    expect(waiting()).toBe(0)
+    const shared = INPUTS.find((x: any) => x.type === 'LL' && x.date === 'Jul 15' && idsOf(x).length === 3) as any
+    expect(commitInput(shared, draftOf(shared), ['bane', 'split'])).toBe(true)
+    expect(waiting(), 'Hex taken out').toBe(1)
+    vi.setSystemTime(new Date(2026, 6, 13, 11, 0, 0))
+    expect(commitInput(null, draftOf({ person: 'rocky', type: 'LL', date: 'Jul 15', yr: 2026, allday: false, s: 480, e: 720, remarks: 'morning only' }), ['rocky'])).toBe(true)
+    expect(waiting(), 'taken out, and a new leave of his own filed').toBe(2)
+    expect(pendListHTML(WED), 'the new leave has a line of its own').toContain('<b>filed</b>')
   })
 })

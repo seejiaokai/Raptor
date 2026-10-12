@@ -195,6 +195,32 @@ export function requestRowFields(inp: any) {
   if (inp.info) f.info = true
   return f
 }
+/* THE SAME PEOPLE AS WENT OUT STAND IN THE ORDER THEY WENT OUT IN (the one-rule job's check, 12 Oct 26 — the Opus trial
+   read, claim 6, reproduced red in state/inputcount.test.ts; owner D98: "a day that is back to what was published shows
+   nothing pending"; D755: two routes to the same people give the same row). A row carries its input's people in the
+   order they JOINED, and a published day compares a row's people place by place (restore.ts dayKeys). So the first to
+   have joined, taken out and put back, came back LAST: the same three people on every screen — the row draws them A to
+   Z — and the day read "1 pending · order changed" for good, its sign-offs fallen; a load re-made the row from the
+   input and it was pending again. Where the issued day's row of the same request holds exactly the people the input
+   holds now, the row is written in the ISSUED order: the day is then what went out, and reads so. Any other case —
+   someone more, someone fewer, someone else — is left in joined order, and its marks are as they were. `f` is changed
+   in place and handed back. */
+export function asIssuedOrder(f: any, issuedRow: any): any {
+  if (!f || !issuedRow) return f
+  const id = (v: any) => String(whoId(v) || v || '')
+  const was = [issuedRow.who, ...((issuedRow.more || []) as any[])].map(id).filter(Boolean)
+  const now = [f.who, ...((f.more || []) as any[])].map(id).filter(Boolean)
+  if (was.length < 2 || was.length !== now.length) return f
+  const have = new Set(now)
+  if (have.size !== now.length || new Set(was).size !== was.length || !was.every(p => have.has(p))) return f
+  f.who = was[0]
+  f.more = was.slice(1)
+  return f
+}
+/* the issued day's row of a request — the row the version PLACED (never one that was dead, `kept`, when it went out) */
+export const issuedRowOf = (snap: any, id: any): any =>
+  (((snap && snap.d && snap.d.ground) || []) as any[]).find((g: any) => g && String(g.src || '') === String(id) && !g.kept)
+
 /* `srcv` — what a row was last made or re-made from: a short hash of those six fields. A row whose `srcv` differs from its
    request's is re-made (rule 6). *(Until 11 Oct 26 a scheduler could type in the row's own cells, which left `srcv`
    alone, so his words stood until the request itself changed — "today's relink rule". Those four cells are the
@@ -304,7 +330,7 @@ export type ViewCtx = {
 }
 
 /* ---- reconcile: each row with `src`, against its request (plan §3 (c) rules 1–7) ---- */
-function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
+function reconcileRequestRows(days: any[], info: ViewDayInfo[], ctx: ViewCtx): void {
   const reqs = requestsById()
   const first = new Set<string>()                         // rule 7: the first standing row per request, in day order
   days.forEach((d: any, di: number) => {
@@ -331,15 +357,22 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
       keep.push(row)
       if (r.acc === 'r') continue                                                                                 // 4.
       const sv = srcvOf(r)
-      if (row.srcv === sv) continue
+      /* (the same people as went out, in the order they went out in — asIssuedOrder, above) */
+      const f: any = asIssuedOrder(requestRowFields(r), issuedRowOf(ctx.issued(di), id))
+      const shows = (x: any) => JSON.stringify([x.prog, x.str, x.end, whoId(x.who) || x.who || '', x.rmks, x.srcType, (x.more || []).map((v: any) => whoId(v) || v || '').filter(Boolean), !!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info])
+      /* LEFT ALONE ONLY WHERE IT IS WHAT THE REQUEST WRITES — its "made from" mark AND the row itself (the one-rule job's
+         check, 12 Oct 26 — the Opus trial read, claim 11, reproduced red in state/reqorphan.test.ts). The mark alone was
+         trusted: while a request reads "taken off" and its own row stands again (a saved plan switched in), the row is
+         nobody's input's and a man dropped on it is a plain write; Accept then adopted the row, its mark still matched,
+         and the schedule showed a man the input, the Inputs calendar and OIL did not hold — until the input next
+         changed and dropped him without a word. */
+      if (row.srcv === sv && shows(row) === shows(f)) continue
       /* 5 + 6. RE-MADE IN PLACE, WHOLE (step 2 (b) of the one-rule build — the plan §4.3): its id and its place in the
          list are kept; everything the request writes — its name, times, remark, EVERYONE on it, and since step 4 the
          marks a scheduler makes (CX with its reason, red box, information only — D760) — is written over the stored row. So a person the holder's stored
          day still carries under the row, after he was put in the input or taken out of it, cannot show twice or
          linger: the re-make owns the row's people. A row with no hash at all (made before hashes) is re-made too.
          `reqChanged` only where something a reader sees moved — a row re-made to the very same words is no change. */
-      const f: any = requestRowFields(r)
-      const shows = (x: any) => JSON.stringify([x.prog, x.str, x.end, whoId(x.who) || x.who || '', x.rmks, x.srcType, (x.more || []).map((v: any) => whoId(v) || v || '').filter(Boolean), !!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info])
       const was = shows(row)
       if (!f.more) delete row.more
       if (!f.cx) { delete row.cx; delete row.cxr }
@@ -409,7 +442,7 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
   if (!Array.isArray(days)) return info
   const taken = new Set<string>()
   for (const d of days) for (const r of rowsOf(d || {})) if (r && r.rid) taken.add(String(r.rid))
-  reconcileRequestRows(days, info)
+  reconcileRequestRows(days, info, ctx)
   overlayDeletedWeek(String(v), days, ctx.book)
   landRequests(days, ctx, info, taken)
   return info

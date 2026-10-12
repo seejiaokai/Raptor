@@ -278,7 +278,27 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     const A=idsOf(item.was).map(String), B=idsOf(item.now).map(String);
     const off=A.filter((p:string)=>!B.includes(p)), on=B.filter((p:string)=>!A.includes(p));
     if(!off.length&&!on.length)return;
-    if(A.length===1&&B.length===1)return;                                    // the only person replaced: ONE (D113)
+    if(A.length===1&&B.length===1){                                          // the only person replaced: ONE (D113)
+      /* …AND THE SEAT THE MAN REPLACED WENT TO IS A CHANGE OF ITS OWN (the one-rule job's check, 12 Oct 26 — the Opus trial
+         read, claim 7, reproduced red in state/inputcount.test.ts). A man dragged from a seat ELSEWHERE onto the only
+         person's puck swaps with him (ui/reqdoor.ts rowPut): the newcomer is on the input, and the man replaced sits
+         where the newcomer came from — a flying seat, a desk. Both men's units touch the input's row, so the loop above
+         took both, and the day read 1: the input's line, and NOTHING for the jet whose crew had changed (the stored
+         amendment held it; the list the scheduler reads before he signs did not). D113 is one replacement in ONE seat;
+         this is two seats, each with a new man (D109 — one man moved is one). So the unit that puts the man replaced
+         on a place that is NOT this input's row is given back, straight after the input's item, with its tap. */
+      const onRow=(k:any)=>{const m=/^g:\d+\.(\d+)(?:\.x\d+)?$/.exec(String(k||'')); const r=m?((DAYS[di]||{}).ground||[])[+m[1]]:null; return !!(r&&!r.kept&&String(r.src||'')===id);};
+      const back=((item.rows||[]) as any[]).filter((u:any)=>u.kind==='reseat'&&String(u.token||'')===off[0]&&!!u.to&&!onRow(u.to));
+      if(back.length){
+        item.rows=(item.rows as any[]).filter((u:any)=>!back.includes(u));
+        const gone=new Set<string>(); back.forEach((u:any)=>[...(u.jump||[]),...(u.keys||[])].forEach((k:any)=>gone.add(String(k))));
+        const kept=new Set<string>(); (item.rows as any[]).forEach((u:any)=>[...(u.jump||[]),...(u.keys||[])].forEach((k:any)=>kept.add(String(k))));
+        const stay=(k:any)=>!gone.has(String(k))||kept.has(String(k));
+        item.jump=(item.jump||[]).filter(stay); item.keys=(item.keys||[]).filter(stay);
+        items.splice(items.indexOf(item)+1,0,...back);
+      }
+      return;
+    }
     /* does it say anything else differently? — the two copies compared with their people set aside */
     const bare=(x:any)=>inpDetailKey({...x,person:'',people:[]});
     const other=bare(item.was)!==bare(item.now)||!!item.inp;
