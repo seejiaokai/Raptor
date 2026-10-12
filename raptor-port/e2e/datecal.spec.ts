@@ -362,6 +362,9 @@ test('a phone turned on its side and back with the calendar up: the calendar is 
     await page.setViewportSize(size)
     const m = await calendarOnTop(page, what)
     if (size.width < 620) expect(Math.abs((m.l + m.r) / 2 - m.vw / 2), `${what}: the card is not in the middle of the phone's screen`).toBeLessThanOrEqual(1)
+    /* on its side the screen is wide enough for the desktop's layout: a panel lined up with its box's left edge — so the
+       layout really was asked again, not kept from the turn before */
+    else expect(Math.abs(m.l - (await rect(page, '[data-testid="every-from"]')).l), `${what}: the panel does not line up with its box`).toBeLessThanOrEqual(1.5)
   }
   await context.close()
 })

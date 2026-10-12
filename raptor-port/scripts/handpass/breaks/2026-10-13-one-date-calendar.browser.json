@@ -42,8 +42,8 @@
    "n": 6,
    "name": "the same tap made twice does nothing more (the patch)",
    "file": "src/ui/DateBox.tsx",
-   "find": "    if (at) {\n      if (patchTimer.current)",
-   "put": "    if (at && false) {\n      if (patchTimer.current)"
+   "find": "const SETTLE_MS = 400",
+   "put": "const SETTLE_MS = 0"
   },
   {
    "n": 7,
@@ -86,6 +86,20 @@
    "file": "src/ui/inputedit.tsx",
    "find": "onChange={v => setDraft({ ...draft, start: v, end: '' })} />",
    "put": "onChange={() => {}} />"
+  },
+  {
+   "n": 13,
+   "name": "a phone card gives back the desktop panel place (the walk W-1)",
+   "file": "src/ui/DateBox.tsx",
+   "find": "if (phone) { n.style.left = ''; n.style.top = ''; return }",
+   "put": "if (phone) return"
+  },
+  {
+   "n": 14,
+   "name": "a sideways finger on the new calendar turns its month (D800)",
+   "file": "src/ui/DateCal.tsx",
+   "find": "return initSideSwipe(el, dir => { slid.current = dir; step(dir) })",
+   "put": "return undefined"
   }
  ]
 }
