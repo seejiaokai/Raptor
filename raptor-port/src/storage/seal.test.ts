@@ -28,7 +28,7 @@ describe('the seal', () => {
 
   it('a sealer may remove an old row in the same group (the purge)', () => {
     const wb = new Whiteboard()
-    wb.fill({ settings: {}, weeks: {}, inputs: {}, people: {}, plan: {}, leavewar: {}, tracker: {}, changes: { old: '{}' } })
+    wb.fill({ settings: {}, weeks: {}, inputs: {}, people: {}, plan: {}, leavewar: {}, tracker: {}, changes: { old: '{}' }, notices: {} })
     const got: Change[][] = []
     wb.subscribe(g => got.push(g))
     wb.setSealer(() => [{ collection: 'changes', id: 'new', value: '{}' }, { collection: 'changes', id: 'old', value: null }])
@@ -95,7 +95,7 @@ describe('the seal', () => {
 describe('the keys of a collection', () => {
   it('follow every kind of write', () => {
     const wb = new Whiteboard()
-    wb.fill({ settings: { a: '1', 'elog:x': '2' }, weeks: {}, inputs: { i1: 'v' }, people: {}, plan: {}, leavewar: {}, tracker: {}, changes: {} })
+    wb.fill({ settings: { a: '1', 'elog:x': '2' }, weeks: {}, inputs: { i1: 'v' }, people: {}, plan: {}, leavewar: {}, tracker: {}, changes: {}, notices: {} })
     expect(wb.keys('settings').sort()).toEqual(['a', 'elog:x'])
     wb.set('settings', 'b', '3'); wb.delete('settings', 'a')
     expect(wb.keys('settings').sort()).toEqual(['b', 'elog:x'])
@@ -107,7 +107,7 @@ describe('the keys of a collection', () => {
     const t3 = wb.transaction(); wb.set('inputs', 'i3', 'z'); t3.commit()
     expect(wb.keys('changes')).toEqual(['b1'])
     expect(wb.keys('inputs').sort()).toEqual(['i1', 'i3'])
-    wb.fill({ settings: {}, weeks: {}, inputs: {}, people: {}, plan: {}, leavewar: {}, tracker: {}, changes: {} })
+    wb.fill({ settings: {}, weeks: {}, inputs: {}, people: {}, plan: {}, leavewar: {}, tracker: {}, changes: {}, notices: {} })
     expect(wb.keys('inputs')).toEqual([])
   })
 })
@@ -136,6 +136,10 @@ describe('the table each stored row belongs to', () => {
     ['settings', 'account:acad', 'User'],
     ['settings', 'accessreq:rq1', 'AccessRequest'],
     ['settings', 'reqseen:acad', 'AccessRequestSeen'],
+    /* the bell's notices and what each person has read of them (the one-rule build's step 7, 12 Oct 26 — D755 (3), D769):
+       a notice is a row of its own collection; "read" is a row a person among the settings, never a write to the notice */
+    ['settings', 'noticeseen:bane', 'NoticeSeen'],
+    ['notices', 'nmg1abc', 'Notice'],
     ['settings', 'rules', 'Setting'],
     ['changes', 'c1-4', 'ChangeBatch'],
     /* the Tracker's per-student records, each its own table (data-model.md §5 — the group-A final read, Astra 3) */

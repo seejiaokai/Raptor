@@ -33,6 +33,7 @@ import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrd
 import { qualColsLoad } from '../engine/qualcols'
 import { elogFlush, elogLoad, setElogDefer, setElogDoor, elogAdoptHeld } from '../engine/editlog'
 import { changesLoad } from './changes'
+import { noticeSeenLoad } from './noticeseen'
 import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
@@ -892,6 +893,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   /* THE CHANGE HISTORY ([DRAFT-PENDING], 28 Sep 26 — D336 (b)): saved, so it is loaded here with every other setting */
   elogLoad()
   changesLoad()
+  noticeSeenLoad()   // what each person has read of his bell's notices (state/noticeseen.ts)
   /* the lines the cell funnels never see — absences, the Leave War, Quals, a publish — from the command stream */
   registerChangeLines()
   /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the

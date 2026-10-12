@@ -174,16 +174,28 @@ describe('who placed each (D629, as narrowed for the card by D720, D723, D724)',
     const [a, b] = crew()
     const r = await file({ person: b, by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10), remarks: 'Dental' })
     const bare = await file({ person: crew()[2], by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10) })
+    /* A CANCELLED INPUT HAS WORDS OF ITS OWN (owner D767, 12 Oct 26 — a small red CX tag before the title; reading 4:
+       "no reason typed — the tag alone"; the look itself is ui/inputcx.test.tsx). So "with no words, the small print
+       alone" holds for an input that is NOT cancelled; a cancelled one with no title and no remark still has its words
+       — the tag — and they come first, the small print after them, on the one row. */
+    const cancelled = await file({ person: crew()[3], type: 'Duty', by: a, at: T(2, 9, 10), modBy: a, modAt: T(2, 9, 10), cx: true })
     await open('2026-10-07')
     const kids = (x: any) => [...row(x).querySelector('.icard-words')!.children].map(c => c.className.split(' ')[0])
     expect(kids(r)).toEqual(['icard-text', 'icard-by'])
     expect(kids(bare)).toEqual(['icard-by'])
+    expect(kids(cancelled), 'D767: the tag is its words').toEqual(['icard-text', 'icard-by'])
   })
-  it('a card with no title, no remark and nobody else’s hand in it is ONE line: no words row at all (D723)', async () => {
-    const [a] = crew()
+  it('a card with no title, no remark and nobody else’s hand in it is ONE line: no words row at all (D723) — and D767 gives a CANCELLED one a second line, for its red CX tag', async () => {
+    const [a, b] = crew()
     const r = await file({ person: a, by: a, at: T(2, 9, 10) })
+    /* D767 (12 Oct 26) changed this for a cancelled input: the tag must be seen, so its card is two lines — the second
+       holding the tag, alone where no reason was typed (reading 4), with the reason after it where one was */
+    const bareCx = await file({ person: b, type: 'Duty', by: b, at: T(2, 9, 10), cx: true })
+    const whyCx = await file({ person: crew()[2], type: 'Duty', by: crew()[2], at: T(2, 9, 10), cx: true, cxr: 'WX' })
     await open('2026-10-07')
     expect(row(r).querySelector('.icard-words')).toBeNull()
+    expect(row(bareCx).querySelector('.icard-words')!.textContent).toBe('CX')
+    expect(row(whyCx).querySelector('.icard-words')!.textContent).toBe('CXWX')
   })
   it('a record that never recorded who placed it shows no line (D56)', async () => {
     const r = await file({})
@@ -227,10 +239,17 @@ describe('what it opens', () => {
     await click(row(r).querySelector('[data-testid="idy-open"]'))
     expect(INPEDIT && INPEDIT.iid).toBe(r.iid)
   })
-  it('the line’s button says the input whole to a screen reader', async () => {
+  it('the line’s button says the input whole to a screen reader — of a cancelled one, that it is cancelled and why (D767)', async () => {
     const r = await file({ type: 'Meeting', allday: false, s: 840, e: 960 })
+    /* "whole" now includes the CX (owner D760, D767 — 12 Oct 26): a reader who cannot see the strike is told, after the
+       hours; with no reason typed, the one word */
+    const cxd = await file({ person: crew()[1], type: 'Meeting', allday: false, s: 840, e: 960, cx: true, cxr: 'WX' })
+    const bare = await file({ person: crew()[2], type: 'Meeting', allday: false, s: 840, e: 960, cx: true })
     await open('2026-10-07')
-    expect(row(r).querySelector('[data-testid="idy-open"]')!.getAttribute('aria-label')).toBe(`${cs(r.person)}, Meeting, 14:00–16:00`)
+    const says = (x: any) => row(x).querySelector('[data-testid="idy-open"]')!.getAttribute('aria-label')
+    expect(says(r)).toBe(`${cs(r.person)}, Meeting, 14:00–16:00`)
+    expect(says(cxd)).toBe(`${cs(cxd.person)}, Meeting, 14:00–16:00, cancelled — WX`)
+    expect(says(bare)).toBe(`${cs(bare.person)}, Meeting, 14:00–16:00, cancelled`)
   })
 })
 

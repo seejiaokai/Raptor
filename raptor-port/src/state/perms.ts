@@ -62,6 +62,10 @@ export const T = {
   /* [DB-READINESS] group A, phase 4.1: one row per saved group, written by the store with every change (state/changebatch.ts) */
   changebatch: 'ChangeBatch',
   seen: 'EditLogSeen',
+  /* the bell's notices (state/notices.ts — the one-rule build's step 7): one row a person told that an input he is in
+     was changed; and what each person has read of them, his own row */
+  notice: 'Notice',
+  noticeseen: 'NoticeSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
@@ -88,6 +92,10 @@ export const PERMS: Record<string, PermRow> = {
   [T.editlog]: row(cell('C R D'), cell('C R')),
   [T.changebatch]: row(cell('C R'), cell('C R'), cell('R'), cell('C')),
   [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
+  /* a notice is written by whoever made the change, inside it, and read by the person it is addressed to; nobody
+     rewrites one, and it is removed only by its maker's own Undo of that change */
+  [T.notice]: row(cell('C R D'), cell('C', 'R D')),
+  [T.noticeseen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -463,6 +471,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'access.seen': op(T.reqseen, 'U', 'required'),
   /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
   'changes.seen': op(T.seen, 'U', 'required'),
+  /* the bell's "Mark all read" and a tap on a line (the one-rule build's step 7): the signed-in person's OWN row only */
+  'notices.seen': op(T.noticeseen, 'U', 'required'),
   /* Admin → Data "Clear edit history…" (D351): deletes exact history lines, run as the admin who asked — the batch names
      him (the group-A final read, Fable F1; state/store.ts setElogDoor). The idle `elog.line` is the app's own act. */
   'elog.sweep': op(T.editlog, 'D'),
@@ -552,9 +562,17 @@ const personOfInput = (v: any): string | null => { const p = v ? leadOf(v) : nul
    of a change (undo/derive.ts). What a save stamps beside the list — who last changed it and when — is no part of the
    comparison; everything the input SAYS is. */
 const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand', 'leftAt'])
+/* …NOR IS THE LANDING MARK (`acc: 'g'`): it is worked out on read, after the command (state/holderbase.ts), and a
+   restore strips it from the image it puts back (sched-commit.ts schedWriteRecords) — so 'g' on one side and nothing
+   on the other is the same input. Read as said, a member's Undo of his own "Take me out" was refused wherever the
+   input had a row on the week on screen ("That couldn't be completed just now"): the gate saw another person's input
+   changed. Left by step 2 of the one-rule build; found by the older tests re-expressed after step 7, 12 Oct 26. The
+   real filings ('u' under Unavailable, 'r' off the programme) are still said. `undo/timeline.ts landed` reads the mark
+   the same way. */
+const said = (x: any, k: string): unknown => (k === 'acc' && x[k] === 'g' ? null : (x[k] ?? null))
 const saysSame = (a: any, b: any, skip?: string): boolean => {
   const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k) && k !== skip))
-  for (const k of ks) if (JSON.stringify(a[k] ?? null) !== JSON.stringify(b[k] ?? null)) return false
+  for (const k of ks) if (JSON.stringify(said(a, k)) !== JSON.stringify(said(b, k))) return false
   return true
 }
 export function ownPart(pid: string, before: any, after: any): boolean {
@@ -705,6 +723,17 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (bad) return `${bad} (${where})`
         break
       }
+      /* A BELL'S NOTICE (state/notices.ts; the plan §4.10): a member's command may make one only as part of his OWN
+         change to the input it names — the same command changes that input — naming himself as its maker and addressed
+         to someone else; his own Undo of that change takes away the notices it made (a Redo puts them back the same
+         way). Nobody rewrites a notice, and nobody removes another person's. */
+      case 'notices': {
+        const b: any = c.before, n: any = c.after
+        const rides = (iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
+        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid)) break
+        if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid)) break
+        return `a notice that is not his own change's (${where})`
+      }
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
       case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
       case 'lw.current': break
@@ -713,6 +742,11 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'settings':
         if (c.id.startsWith('seen:') && env.type === 'changes.seen') {
           if (c.id !== `seen:${pid}`) return `another person's seen record (${where})`
+          break
+        }
+        /* what he has read of his bell's notices — his OWN row, by its one command */
+        if (c.id.startsWith('noticeseen:') && env.type === 'notices.seen') {
+          if (c.id !== `noticeseen:${pid}`) return `another person's read record (${where})`
           break
         }
         return `an admin's record (${where})`

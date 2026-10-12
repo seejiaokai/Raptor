@@ -50,6 +50,7 @@ import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
+import { NOTICES, noticePass } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
 import { deriveActor, isCommitting, activeEnvelope } from '../command'
@@ -103,7 +104,7 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
   if (DECOMPOSED && DECOMPOSED.wk === wk && DECOMPOSED.snap === snapStr) return DECOMPOSED.m
   const s = JSON.parse(snapStr)
   const m = new Map<string, RecordEntry>()
-  const { i: _i, pp: _pp, dm: _dm, ...week } = s
+  const { i: _i, pp: _pp, dm: _dm, nt: _nt, ...week } = s
   let parts: WeekParts | null = null
   try { parts = splitParts(week, wk) } catch (e) {
     /* a week the split cannot place (a book from an older build, loaded read-only — protectedWeek) is one opaque record:
@@ -145,6 +146,12 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
   }
   const dm = s.dm && typeof s.dm === 'object' ? s.dm : {}
   for (const iso of Object.keys(dm)) m.set(`plan/dm:${iso}`, { collection: 'plan', id: `dm:${iso}`, value: dm[iso] })
+  /* the bell's notices, one record each (`notices/<id>` — state/notices.ts): written by the command that changed the
+     input, never rewritten, removed only by that command's own Undo */
+  for (const n of ((s.nt as any[]) || [])) {
+    if (!n || n.id == null) continue
+    m.set(`notices/${n.id}`, { collection: 'notices', id: String(n.id), value: n })
+  }
   DECOMPOSED = { snap: snapStr, wk, m }
   return m
 }
@@ -305,6 +312,13 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
         } else throw new CmdRefused(`scheduler write: no planning record ${e.id}`)
         break
       }
+      case 'notices': {
+        /* a notice goes with the change that made it: an Undo removes it, a Redo puts it back as it was */
+        const ix = NOTICES.findIndex((x: any) => x && String(x.id) === e.id)
+        if (e.op === 'delete') { if (ix >= 0) NOTICES.splice(ix, 1) }
+        else { const v = cw(e.value) as any; if (ix >= 0) NOTICES[ix] = v; else NOTICES.push(v) }
+        break
+      }
       default:
         throw new CmdRefused(`scheduler write: unexpected collection ${e.collection}`)
     }
@@ -383,7 +397,7 @@ export function schedPostRestore(entry: any, dir: 'undo' | 'redo', pulledBack: A
 
 export const schedStore: EnlistableStore = {
   key: 'scheduler',
-  capture: () => baseline(),                          // the before-image + rollback source (lagging)
+  capture: () => { tellBegin(); return baseline() },  // the before-image + rollback source (lagging); and the bell's own before-image
   restore: (snap) => { histRestore(snap as string) }, // histRestore re-syncs the baseline itself
   records: schedRecords,
   signature: () => histSnap(),                        // LIVE — keeps the whole-world guard (SR-005)
@@ -402,8 +416,59 @@ function applyEnd(): void {
   /* the planning notes' places, one `ord` per row, minted beside their ids ([DB-READINESS] group A, phase 2 — plan
      §2.3): only a row with none, or one a writer moved, takes a new one */
   mintOrd(PLANPUCKS, puckIdOf)
+  tellPass()
   SCHED_BASELINE = histSnap()
   afterCommandPass()
+}
+
+/* THE BELL TELLS HIM (the one-rule build's step 7, 12 Oct 26 — owner D755 (3), D760, D769; the plan §4.10). Every
+   command that enlisted the scheduler ends here, BEFORE the baseline moves: each input as it stood before the command
+   (the lagging baseline's own records — already worked out when the command enlisted) is set against the list as it
+   stands, and whoever is in a changed input, and whoever filed it, gets a notice — inside this command, so its Undo
+   takes the notice back with the change. Worked out from the two images, never raised by a door: a door added later
+   cannot change an input and tell nobody.
+   ONLY A PERSON'S OWN ACT TELLS: a restore (an Undo or a Redo puts back the recorded notices themselves), a load, a
+   seed, a change arriving from another device and a reconciler's projection make none. Two commands are the APP's own
+   act on a man — a delete and a posting run on its date: the others in his inputs are told with no name (R12).
+   ONE COMMAND, ONE TELLING. This end runs more than once inside a command whose reducer raises a nested one (a child
+   joins its parent and ends here first — saving an input for several does: the record, then its list), and each run
+   moves the baseline. So the command's FIRST run keeps the inputs as they stood before the command, and every later
+   run takes back what an earlier run of the same command told and works the whole command out again from that first
+   image — a person gets one notice for what the command did to an input, never one a run. */
+/* (a posting whose date is today runs inside the admin's own `lw.postout`; one whose date arrives later runs as the
+   reconciler's `lw.postoutRun`, a projection — both are the posting acting, and both tell with no name) */
+const APP_ACTS = new Set(['person.delete', 'lw.postoutRun', 'lw.postout'])
+const TOLD = new WeakMap<object, { before: Map<string, any>; made: Set<string> }>()
+/* whose commands tell: a person's own, and the app's own acts on a man whatever raised them — never a restore, a seed
+   or a change arriving from another device */
+const tells = (env: { origin: string; type: string }): boolean =>
+  env.origin === 'user' || (env.origin === 'projection' && APP_ACTS.has(env.type))
+/* THE BEFORE-IMAGE IS TAKEN WHEN THE COMMAND FIRST REACHES THE SCHEDULER'S STORE — at its enlist (schedStore.capture),
+   and before an input command brings the baseline up to the live list (commitInputsWith) — never at the first END.
+   A save that changes an input and then raises a nested input command (a time typed on one man's own Unavailable row:
+   he is given an input of his own, then it is saved) had moved the baseline before any end ran, so the first end saw
+   the cut already made and the two people left in the shared leave were told nothing — found by the older tests
+   re-expressed, 12 Oct 26. */
+function tellBegin(): void {
+  const env = activeEnvelope()
+  if (!env || !tells(env) || TOLD.has(env)) return
+  const before = new Map<string, any>()
+  for (const r of schedRecords().values()) if (r.collection === 'inputs') before.set(r.id, r.value)
+  TOLD.set(env, { before, made: new Set() })
+}
+function tellPass(): void {
+  const env = activeEnvelope()
+  if (!env || !tells(env)) return
+  tellBegin()                                          // a command that reached this end by a door of its own
+  const t = TOLD.get(env)!
+  if (t.made.size) {
+    for (let i = NOTICES.length - 1; i >= 0; i--) if (t.made.has(NOTICES[i]!.id)) NOTICES.splice(i, 1)
+    t.made.clear()
+  }
+  const pid = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
+  const from = NOTICES.length
+  noticePass(t.before, INPUTS, { actor: pid, app: APP_ACTS.has(env.type) })
+  for (let i = from; i < NOTICES.length; i++) t.made.add(NOTICES[i]!.id)
 }
 
 /* THE WEEK ON SCREEN, WORKED OUT AFTER EVERY COMMAND THAT ENLISTED THE SCHEDULER ([DB-READINESS] group A, phase 6 (c) v3 —
@@ -558,6 +623,7 @@ export function commitInputsWith(stores: EnlistableStore[], type: string, fn: ()
       // reason to exist). A no-op in the normal case (baseline === live between
       // commands); it makes a protected-week refusal's phase-6 rollback restore the
       // true pre-batch state instead of a stale baseline that drops the bare row.
+      tellBegin()                                    // the inputs as last committed — before the resync takes up anything since
       resyncSchedBaseline()
       txn.enlist(schedStore); for (const s of stores) txn.enlist(s); fn(); applyEnd()
     },
@@ -756,4 +822,6 @@ export function registerSchedCommandLayer(): void {
   // [DB-READINESS] group A, phase 2 — the planning calendar one record per note / pucks row and per day title
   registerRecord({ key: 'plan:pp:<id>', cls: 'record', collection: 'plan', module: 'plan' })
   registerRecord({ key: 'plan:dm:<iso>', cls: 'record', collection: 'plan', module: 'plan' })
+  // the bell's notices, one record a person told (state/notices.ts) — made inside the input command that owes them
+  registerRecord({ key: 'notices:<id>', cls: 'record', collection: 'notices', module: 'inputs' })
 }

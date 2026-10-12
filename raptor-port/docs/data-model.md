@@ -930,6 +930,40 @@ own). One row per admin, written only by him (own row — §11), removed with hi
 
 From today: `settings/reqseen:<accountId>`.
 
+### Notice
+
+Owner: **Scheduler**. New 12 Oct 26 (the one-rule build's step 7 — owner D755 (3), D760, D769). A line of a person's
+bell: someone else changed an input he is in. One row a person told, written INSIDE the change that owes it — in the
+same transaction as the `Input` row it names — never updated; removed only when its maker undoes that change.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `id` | text | yes | the notice — unique |
+| `to` | ref Person | yes | the person told |
+| `by` | ref Person | no | who made the change; empty where the app did (a posting run on its date, a delete) |
+| `at` | datetime | yes | when |
+| `inputId` | text (an `Input` id) | yes | the input — NOT a foreign key that cascades: the input may since be deleted, and the notice ("Deleted") must stay (`iid` today) |
+| `name` | text | yes | what the input was called when it changed — its title, else its kind |
+| `day` | date | yes | its first day then |
+| `what` | JSON | yes | what happened, as a list of parts — never a sentence (the app writes the words, so they can change and a renamed person reads by today's callsign): the kinds are listed in `data-schema.md` §The bell's notices |
+
+Read by `to` only (§11). No retention rule yet — every notice is kept; the organisation's rule decides at the database
+step (`OUTSTANDING.md` `[NOTICE-RETENTION]`). From today: `notices/<id>`.
+
+### NoticeSeen
+
+Owner: **Scheduler**. New 12 Oct 26, with `Notice`. Which of his notices a person has read — its OWN row, so that
+reading never writes to a `Notice` (a notice is part of its maker's Undo step; a reader's write to it would refuse that
+Undo — D148). One row per person, written only by him (own row — §11).
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `personId` | ref Person | yes | the reader — unique |
+| `upTo` | datetime | yes | a floor: every notice made at or before this is read. The app does not move it today (0); it is for a retention sweep, which would raise it and drop the swept ids |
+| `ids` | JSON (ids of `Notice`) | yes | the notices he has read after `upTo` — one for a tap on a line, every one of his for "Mark all read". By id, never by time: a notice put back by its maker's Redo carries its first time and must still be new to him |
+
+From today: `settings/noticeseen:<pid>`.
+
 ### Layout
 
 Owner: **Tracker**. The drawn geometry of one chart.
@@ -1036,6 +1070,7 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | `raptor:plan/all` — `PLANPUCKS`, `DAYRMK` | `PlanningPuck`, `DayRemark` (29 Sep 26 — never inside a day row: the planning calendar is written on any date, with no day held — Fable 1) | One global record today; one `PlanningPuck` per entry, one `DayRemark` per date — own rows from stage 1 |
 | `ELOG.rows` — one row per line, `settings/elog:<lineId>` (since 30 Sep 26; the one settings key `elog` before), and each person's `settings/seen:<pid>` (the one `changeseen` before) | `EditLog`, `EditLogSeen` | Nothing to migrate — demo data, cleared (D56); the table starts empty. Decide retention first. Field map: the row as stored, `lineId` kept; `seq` yours (store-assigned) |
 | `settings/account:<id>`, `settings/accessreq:<id>`, `settings/reqseen:<accountId>` (since 30 Sep 26; the one `accounts` / `accessreqs` records before) | `User`, `AccessRequest`, `AccessRequestSeen` | Not migrated — the demo accounts are wiped (D56); the first admin is the bootstrap (group A phase 5). Field map: one row each, as stored |
+| `notices/<id>` — `NOTICES` (the bell's notices), and each person's `settings/noticeseen:<pid>` (12 Oct 26) | `Notice`, `NoticeSeen` | Nothing to migrate — demo data, cleared before the database (D56) |
 | `raptor:settings/*` — `daytpl`, `wavetpl`, `wavehide`, `wavedefault`, `dutytpl`, `cxreasons`, `lookahead`, `secdefault`, `stores`, `rules` | `Setting` | One row per key, value verbatim. **Do not write a row for a key that is on the shipped standard** — absent still means default |
 | `raptor:settings/qualcols` | `Qualification` + `Setting` | The column list becomes rows — a GUID each, `k` kept as `key` — so `QualMark` can key off the id; display flags travel with each column |
 | IndexedDB `raptor-docs` + `docBackend` map | `Attachment` + shared file store | Bytes to the file store, metadata to the row. Ids are already globally unique (`doc-`+UUID). A pre-drawer browser holds `docId`s with no bytes — import them as "no document on file", never fabricate |
@@ -1438,6 +1473,8 @@ update, delete (delete is the soft delete throughout).
 | `EditLog` | C R D | C R | — | — | **written by whoever made the change, in the same changeset as the rows it describes, as `ChangeBatch` is** — one row per line (`[DB-READINESS]` group A, phase 4.3; corrected by the group-A final read, Fable F1, 30 Sep 26: it said "written by the store, not a role", and the store would have refused every member's action); append-only for a member; the Admin → Data sweep deletes exact lines (D), as the admin who asked — its change-log batch names him; members read it, a medical change in full (D169, D211) — the one changes window, for admins and members alike (`[DRAFT-PENDING]`, 28 Sep 26); kept across sign-outs (D336 (b)); retention is Open question 4 |
 | `ChangeBatch` | C R | C R | R | C | one row per saved change, written with it in the same changeset by whoever made the change — admins and members alike, and a waiting person's one access request (Fable F1, 30 Sep 26) — never by hand; append-only; read by every screen's 30-second check (section 9 — the change log; `[DB-READINESS]` group A, phase 4.1, 30 Sep 26) |
 | `EditLogSeen` | C R U **own** | C R U **own** | — | — | `personId` = my person — which lines of the history he has seen ("Mark all as seen", D170): a line someone else made is new to him until he marks it; his own never is (`[DRAFT-PENDING]`, 28 Sep 26) |
+| `Notice` | C R D | R D **own**; C | — | — | `to` = my person: I read the bell's notices addressed to me. One is written (C) only INSIDE the change to the input it names, by whoever made that change — never one addressed to its own maker — and is never rewritten; it is removed (D) only by its maker's own Undo of that change (the one-rule build's step 7, 12 Oct 26 — D755 (3), D760, D769; `state/notices.ts`, `state/perms.ts ownershipViolation`) |
+| `NoticeSeen` | C R U **own** | C R U **own** | — | — | `personId` = my person — which of my notices I have read (a tap on a line, "Mark all read"); its own row, so reading never writes to a notice and never blocks the maker's Undo (D148) |
 | `Input` | C R U D | C R U D **own**; R | R | — | I am its ONLY person, with nobody and no ALL AVAIL beside me — my own request, whoever filed it (D655; since the one-rule build an input is one row with the list of its people, D756; an input that holds me AND ALL AVAIL reaches everyone behind it and is not mine alone — step 3 of that build, D755 (3)) — or — while the squadron's members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler's (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler's marks on an input — cancelled with its reason, the red box, information only — are never mine to set or clear, on my own input too (D760); an input filed for ALL AVAIL / ALL counts as filed for another person — one of six kinds, one day (D700, D711, D712, D713). For the IT side: an input has no single owner column any more — its people are `InputPerson` rows; "mine" is a server check that I am its only `InputPerson` row, and the filer's right a check on `filedBy`, on every `InputPerson.addedBy` being me, on the setting and on the type; who placed an input (`filedBy`, `filedAt`) and who put each person in (`addedBy`, `addedAt`) are never rewritten by a member, except that `filedBy` passes on when the filer takes himself out (to whoever put in the newest person not his own); the one OIL answer is only for a day the input covers that asks the question, of the amount its hours price; every member reads every input, a medical one in full (D211 — his 27 Aug 26 rule re-confirmed); a guest reads the week's inputs as a member does, a medical one in full too (D213, D215) |
 | `Attachment`, `InputAttachment` | R (D by sweep only) | C R **own**; R | — | — | owned by the person who uploaded it; every member may open it (D211) |
 | `LeaveWar` | C R U D | R | — | — | the stage and the bid window are the admin's — and its day events: the Holidays list's three commands (`lw.holiday.add`, `lw.holiday.change`, `lw.holiday.remove`, 7 Oct 26) write a public holiday or an Off day into the period holding the date; and the Event sheet's Save and Delete are one command each (`lw.event.save`, `lw.event.remove`, 8 Oct 26) |

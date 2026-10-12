@@ -25,6 +25,7 @@ import { CURWEEK } from '../engine/waves'
 import { stashPut, stashHas, isPreservedWeek, setPreservedBlob } from '../engine/weekstash'
 import { amFormatOf } from '../engine/publish'
 import { PLANPUCKS, DAYRMK } from './plan'
+import { NOTICES } from './notices'
 import type { Whiteboard } from '../storage/whiteboard'
 import { storeInitialized } from '../storage/schema'
 import { registerConverter, type Converter } from '../storage/fold'
@@ -217,6 +218,20 @@ export function hydrate(wb: Whiteboard): void {
     for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
     Object.assign(DAYRMK, titles)
   }
+  /* the bell's notices — one row each (`notices/<id>`; state/notices.ts). Read whole: a row that is not a notice is
+     left out, never repaired */
+  {
+    const list: any[] = []
+    for (const id of wb.keys('notices')) {
+      const n = parse(wb.get('notices', id))
+      if (isRecord(n) && typeof n.to === 'string' && Number.isFinite(n.at) && Array.isArray(n.what)) { if (n.id == null) n.id = id; list.push(n) }
+    }
+    if (list.length || startedNow) {
+      list.sort((x, y) => x.at - y.at || (String(x.id) < String(y.id) ? -1 : 1))
+      NOTICES.length = 0
+      list.forEach(n => NOTICES.push(n))
+    }
+  }
   /* every saved week: its rows joined back into the one record the app keeps in memory (the stash), per week */
   const byWeek = new Map<string, WeekRows>()
   for (const id of wb.keys('weeks')) {
@@ -239,7 +254,7 @@ export function hydrate(wb: Whiteboard): void {
 
 /* the rows one change lands in. A put writes the record as it now stands; a delete removes its row — never inferred.
    A placeholder puck is code and is never written. */
-const rowOf = (collection: 'inputs' | 'people' | 'plan') => (c: Change): RowWrite[] => {
+const rowOf = (collection: 'inputs' | 'people' | 'plan' | 'notices') => (c: Change): RowWrite[] => {
   if (collection === 'inputs' && c.id === '__order') return []
   if (collection === 'people' && isPlaceholder(c.id, (c.after ?? c.before) as any)) return []
   return [{ collection, id: c.id, value: c.op === 'delete' ? null : JSON.stringify(c.after) }]
@@ -367,6 +382,8 @@ export function wireRows(wb: Whiteboard): void {
   registerMapper('inputs', (c, env) => (env?.type === SCHED_TYPES.load ? [] : rowOf('inputs')(c)))
   registerMapper('people', rowOf('people'))
   registerMapper('plan', rowOf('plan'))
+  /* the bell's notices: one row each, written by the command that made them and removed by its Undo (state/notices.ts) */
+  registerMapper('notices', rowOf('notices'))
   registerMapper('insights.role', c=>[{collection:'settings',id:'missionrole:'+c.id,value:c.op==='delete'?null:JSON.stringify(c.after)}])
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)

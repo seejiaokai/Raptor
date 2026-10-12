@@ -4343,6 +4343,54 @@ Three things stay decided:
   `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
   back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
 
+## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
+
+*The pictures of record: `docs/mock/2026-10-12-one-rule/bell-desk-list-shorter.png`, `bell-phone-list-shorter.png`,
+`bell-desk-empty.png`. Built: `ui/topbits.tsx` (`bellTap`, `BellList`, `openNotice`), `state/notices.ts`,
+`state/noticeseen.ts`, `scheduler/02-shell.css` (`.bell-list`, `.bl-*`). Pins: `ui/bellnotices.test.tsx`.*
+
+- **What lights the bell:** what lit it before (an access request an admin has not seen, a bug report, an unanswered
+  OIL question, a view's own alert) — and now an UNREAD notice addressed to the person signed in.
+- **What a tap does (D769):** an access request, then a bug report, then an OIL question, then the view's own alert —
+  each exactly as before, opening no list; **only otherwise** the list opens (the tap that used to say "No new
+  notifications for this view"). A second tap closes it; so does a press outside it (a press on a bell is the bell's
+  own) and Escape — the standing rule for a click-open popup.
+- **The list** hangs under whichever bell is on screen (the top bar's, or the Scheduler Board's — one open-state for
+  both, drawn once by the Shell, never inside a bar); on a phone it is a panel as wide as the screen under the bar. The
+  newest thirty, newest first. **A line:** a dot while unread · the input in BOLD and its date · under it what happened
+  and who ("Cancelled — WX · Saber"; no name where the app did it) · its age at the right (now · 2 min · 1 h ·
+  yesterday · 2 d). An unread line is bright, a read one muted. "Mark all read" at the foot while ANY of his is unread
+  — counted over all of them, not only the thirty listed; "Nothing new" when he has no notice at all. Its open flag is
+  one of the windows' (`ui/pops.ts BELLLIST`): closed at every sign-in and sign-out.
+- **A tap on a line** opens the input's own window and marks that line read; where the input has since been deleted it
+  says "That input is gone", marks the line read and leaves the list open.
+- **The words** (one body, `state/notices.ts partWords`; where a save changed several things, the first two, joined by
+  a comma): You were added · You were taken off · Deleted · Cancelled — WX · Un-cancelled · Taken off the programme ·
+  Back on the programme · Now Thu 16 Jul 10:00–11:00 · Tally added · ALL AVAIL taken off · Renamed — was Kit check ·
+  Remark changed.
+- **Who is told:** every named person in the input before or after the change, and whoever filed it — never whoever
+  made the change, never the men behind ALL AVAIL / ALL, never a man archived or deleted. A leave the Leave War
+  approves makes no notice (the war tells it on its own page).
+
+## A cancelled input on the Inputs pages and on the schedule's own line (owner D760, D767, D768 — 12 Oct 26; step 5)
+
+*The pictures of record: `docs/mock/2026-10-12-one-rule/cancelled-B-*-card.png` and `-list.png` (with his two changes —
+the title struck through, the reason in red) and `cancelled-A-*-bar.png`; as built, `docs/handpass/2026-10-12-one-rule-step5/`.
+Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
+
+- **The card** (the opened day, the List on a phone) and **the desktop List's row:** a small red CX tag before the
+  title, the title struck through, the reason after it in red, then the remark in its ordinary grey. Nothing else
+  moves: the names, the kind, LATE, the hours, "By Saber". No reason typed — the tag alone. No title of its own — its
+  kind's name is the struck one (the card's small capitals; the list's pill, with the tag before it and the reason
+  after it on the pill's line).
+- **The month's bar:** its words struck through, the bar faded; no tag and no reason (no room — his word). Its tooltip
+  says "Cancelled — WX". **It keeps its place** in the day's order (D768) — nothing sorts by the mark.
+- **The schedule's own line** (Personal Inputs, and the Unavailable list where one was filed there; the week and the
+  board): the schedule's red tag with its reason inside ("CX DUE WX"), then the name struck through — the name only;
+  the line is not faded. On a phone's board the tag reads "CX".
+- **It stays listed** (D760) and is counted as before. The input's own window says nothing of the CX (not ruled — the
+  plan's §10, Step 5).
+
 ## The top bar carries the bell and the Undo / Redo pair (owner, Aug 26; the pair on every page — D347–D349, 28 Sep 26)
 
 > **BUILT 28 Sep 26 — D347, D348, D349** (`[UNDO-TOPBAR]`, the change-recording re-test; the approved mock-up

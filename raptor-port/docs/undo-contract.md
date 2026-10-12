@@ -352,6 +352,27 @@ whole, the list of its people (`people`) inside them. What follows for Undo:
   of the step — it is worked out from the input after the command, as §0 says of every request's row.
 - **A stored record in the old shape** (`person`, no `people`) restores as it was; nothing is converted (D56).
 
+**The bell's notices ride the input command that owes them (the one-rule build's step 7, 12 Oct 26 — D755 (3), D760,
+D769; the plan §4.10).** `notices/<id>` is a record of the scheduler's store (`state/notices.ts`, in the snapshot as
+`nt`): every command that enlisted the scheduler ends in `state/sched-commit.ts tellPass`, which sets each input as it
+stood before the command against the list as it stands and pushes one notice a person told. So:
+- **The maker's Undo removes the notices with the change**, a Redo puts them back image for image; nobody is told
+  "it was undone". A restore, a load, a seed, a remote change and a projection make none (only `origin: 'user'` tells).
+- **One command, one telling:** the before-image is taken when the command first reaches the scheduler's store
+  (`tellBegin` — at `schedStore.capture`, and before an input command's baseline resync), never at its first end; that
+  end runs again when a reducer raises a nested command, and a later run takes back what the earlier run of the same
+  command told and works the whole command out again from that one before-image.
+- **A notice is never rewritten** — so no reader can advance its revision and refuse its maker's Undo. What a person
+  has READ is `settings/noticeseen:<pid>`, his own record, by `notices.seen` — a `NOT_STEPS` type — and it names the
+  notices by ID, never by time: a Redo puts a notice back with its first time, and it must still be new to its reader.
+- **`perms.ts ownPart` does not read the landing mark** (`acc: 'g'`) as something an input says — a restore strips it,
+  and read as said it refused a member's Undo of his own "Take me out" on the week on screen.
+- **Its Undo module is the input's** (`undo/derive.ts`, `undo/timeline.ts`: `notices` → `inputs`), so a step that told
+  someone lands and is described as the input change it is; its store is registered in `state/undo-wire.ts SCHED_COLLS`
+  — a test harness that registers its own list must name `notices` too.
+- **The commit gate** (`state/perms.ts ownershipViolation`): a member's command may put a notice only beside its own
+  change to the input it names, naming himself its maker and addressed to someone else; only his own restore removes one.
+
 **What the one undo does NOT take back yet (owner, D350, 28 Sep 26 — "4 ok"):** adding a person, Archive, Restore /
 Restore as, Delete (never — D287) and a posting — each writes the Leave War's posting record (`lw.postouts`), deferred
 since CMDL-FINISH (CMDLF-002); `OUTSTANDING.md` `[UNDO-POSTING-RECORD]`. Every other roster and settings change is
@@ -360,7 +381,8 @@ ineligible by the record they write AND by their command type (`NOT_UNDONE_TYPES
 (`NOT_UNDONE_HERE`); an older step taken past one says the later one stays. A roster / settings restore re-checks one
 callsign on the roster (D286), the accounts' guards and a man still named somewhere — before the snap and again inside the
 restore (`state/roster-restore.ts`); a delete stays dead for the man and his account (`person-delete.ts`).
-**Never a step** (`NOT_STEPS`): each person's own seen marks — the changes window's "Mark all as seen", the admins'
+**Never a step** (`NOT_STEPS`): each person's own seen marks — the changes window's "Mark all as seen", the bell's
+"Mark all read" and a tap on one of its lines (`notices.seen`, 12 Oct 26), the admins'
 bell, the welcome-back note, the war's "OK, seen" — and a waiting person's own request. **And never UNDONE by another
 step** (the two final code reads, 29 Sep 26 — Fable F4, Astra F1): three of them write into a record an older step also
 holds (his roster record's `back`, a war day's list, the requests' `seenBy`), so each seen mark is carried onto every saved

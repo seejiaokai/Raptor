@@ -48,7 +48,8 @@ import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
    below, so an off-week undo routes through its CURWEEK-guarded write() seam. */
-const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan']
+/* (`notices` — the bell's notices ride the input command that made them, and its Undo takes them back: state/notices.ts) */
+const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'notices']
 
 /* ---- context helpers ------------------------------------------------------ */
 

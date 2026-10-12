@@ -69,7 +69,7 @@ import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { bugAlert } from '../state/reports'
-import { UndoPair, SyncChip, BellButton, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
+import { UndoPair, SyncChip, BellButton, BellList, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);
@@ -434,7 +434,9 @@ export function Shell() {
               many are waiting and opens Admin → Users, whose list on screen puts it out.
               First because someone locked out of the app outranks a bug report or an OIL
               question (the agent's call, on the look card). */}
-          {/* ONE bell, the board's too (ui/topbits.tsx bellTap): its four triggers and their order are unchanged */}
+          {/* ONE bell, the board's too (ui/topbits.tsx bellTap): its four triggers and their order are unchanged — and
+              since the one-rule build's step 7 (D769) a tap that finds none of them opens the list of notices
+              (BellList, mounted once at the foot of this component) */}
           <BellButton id="notifyBell" />
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
@@ -676,6 +678,9 @@ export function Shell() {
       <AirPop />
       <WeekCal />
       <Drawer />
+      {/* the bell's list of notices — drawn ONCE, out here (never inside a bar: a bar that blurs what is behind it
+          would become the list's frame), and hung under whichever bell is on screen — ui/topbits.tsx BellList */}
+      <BellList />
     </div>
   )
 }

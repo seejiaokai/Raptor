@@ -367,14 +367,19 @@ describe('information only and OIL on a published Saturday (D760 reading 1; D142
   })
 })
 
-/* A PRODUCT FAULT, REPORTED — this case FAILS on the build as it stands (step 4, 12 Oct 26) and is left failing for the
-   builder. D760 reading 1: "a cancelled input earns nobody OIL … taking the CX off brings it back". The CX is the
+/* WAS A PRODUCT FAULT, REPORTED — this case FAILED when it was written (step 4, 12 Oct 26) and was left failing for the
+   builder; FIXED the same day (engine/oilev.ts landedStanding asks the input's own CX first), so it passes and stays
+   as the pin. D760 reading 1: "a cancelled input earns nobody OIL … taking the CX off brings it back". The CX is the
    input's, so it must hold wherever the input is filed. The steps, all a scheduler's own buttons: cancel a weekend
    Duty on its row; ✕ the row (the input is off the programme, still cancelled — the plan §4.4); on its line under
-   Personal Inputs press "→ Unavail". The input now sits on the Unavailable list, cancelled — and it EARNS again:
-   engine/oilev.ts landedStanding answers 'unlanded' for a request filed under Unavailable BEFORE it looks at the
-   input's own CX, and an unlanded request stands on its own answer. Nothing on the Unavailable list shows the CX or
-   can take it off. (The engine-level twin is in engine/oilev.test.ts.) */
+   Personal Inputs press "→ Unavail". The input now sits on the Unavailable list, cancelled — and, as found, it EARNED
+   again: landedStanding answered 'unlanded' for a request filed under Unavailable BEFORE it looked at the input's own
+   CX, and an unlanded request stands on its own answer. (The engine-level twin is in engine/oilev.test.ts.)
+   "NOTHING ON THE UNAVAILABLE LIST SHOWS THE CX", this comment went on — true until step 5; D767 reading 3 changed it:
+   that row now wears the schedule's red CX tag with its reason and the struck name, on the week and on the board
+   (ui/inputcx-scenarios.test.tsx, "the Unavailable list's row of a cancelled input filed there"). There is still no CX
+   button on that list: to bring it back the scheduler takes it out of Unavailable (its Undo), accepts it onto the
+   programme and un-cancels it on its row. */
 describe('a cancelled input earns nobody OIL wherever it is filed (D760 reading 1)', () => {
   it('cancelled on its row, taken off with ✕ and filed under Unavailable: still nobody earns — on the working copy and once published', async () => {
     oilOn([SAT]); await boot()
@@ -656,10 +661,11 @@ describe('…nor on the PUBLISHED face, nor from another week (D760 reading 1 �
     expect(official(), 'published cancelled: the published face is silent too').toEqual(base)
   })
 
-  /* A PRODUCT FAULT, REPORTED — this case FAILS on the build as it stands (step 4, 12 Oct 26) and is left failing for
-     the builder. The count of days worked walking INTO a week (engine/weekctx.ts workedSet, which feeds the seven-day
-     run warning) adds every person of an activity input on a day of the week before, unless the input is off the
-     programme — it does not ask whether the input is CANCELLED. Until this step it could not: the CX was the row's.
+  /* WAS A PRODUCT FAULT, REPORTED — this case FAILED when it was written (step 4, 12 Oct 26) and was left failing for
+     the builder; FIXED since — it passes on the build as it stands (checked 12 Oct 26, step 5) and stays as the pin.
+     As found: the count of days worked walking INTO a week (engine/weekctx.ts workedSet, which feeds the seven-day
+     run warning) added every person of an activity input on a day of the week before, unless the input was off the
+     programme — it did not ask whether the input is CANCELLED. Until that step it could not: the CX was the row's.
      The CX is the input's now (D760), and reading 1 says a cancelled input "is not checked against the rules"; the
      function's own comment says "a cancelled/unlanded activity must never be counted off its input". So a Sunday
      Training the scheduler cancelled still counts as a day the man worked when next week is on screen. */
@@ -680,8 +686,9 @@ describe('…nor on the PUBLISHED face, nor from another week (D760 reading 1 �
     expect(run(), 'brought back: a day worked again').toBe(1)
   })
 
-  /* A PRODUCT FAULT, REPORTED — this case FAILS on the build as it stands (step 4, 12 Oct 26) and is left failing for
-     the builder. The same gap as the case above, in the other reader that looks across the week boundary: Monday's
+  /* WAS A PRODUCT FAULT, REPORTED — this case FAILED when it was written (step 4, 12 Oct 26) and was left failing for
+     the builder; FIXED since — it passes on the build as it stands (checked 12 Oct 26, step 5) and stays as the pin.
+     As found, the same gap as the case above, in the other reader that looks across the week boundary: Monday's
      crew rest is worked out against the Sunday before, and that read takes a Sunday input as it is filed
      (engine/events.ts — the cross-week read answers before `inputFlags`, the one place that asks "cancelled or
      information only?"). So a late Sunday input the scheduler CANCELLED still raises the red crew-rest warning on the

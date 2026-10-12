@@ -184,7 +184,10 @@ const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string', ord: 'number?' },
   { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'], ord: 'number?' },
 ] }
-const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' } }
+/* a line of a person's bell (state/notices.ts; schema.ts NoticeRec) */
+const NOTICE: Spec = { id: 'string', to: 'string', by: { $or: ['string', 'null'] }, at: 'number', iid: 'string', name: 'string', day: 'string',
+  what: [{ k: { $lit: ['del', 'in', 'out', 'cx', 'uncx', 'off', 'on', 'when', 'add', 'rem', 'title', 'rmk'] }, why: 'string?', a: 'string?', b: 'string?', t: 'string?', who: { $opt: ['string'] }, was: 'string?' }] }
+const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' }, nt: { $opt: [NOTICE] } }
 const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'] }
 
 /* pristine copies, taken at import before any test boots the store: the

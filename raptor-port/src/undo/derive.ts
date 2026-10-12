@@ -74,7 +74,7 @@ export function courseOf(collection: string, id: string): string | null {
 }
 
 const MODULE_OF_COLL = (collection: string): Module => {
-  if (collection === 'inputs') return 'inputs'
+  if (collection === 'inputs' || collection === 'notices') return 'inputs'   // a notice is part of the input change that made it
   if (collection === 'plan') return 'plan'
   if (collection === 'people') return 'people'
   if (collection === 'settings') return 'settings'

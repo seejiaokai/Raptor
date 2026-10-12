@@ -190,13 +190,21 @@ describe('on a phone the list is the input card under a heading a day (D718, D72
 })
 
 describe('the list’s card says what the opened day’s card says — one card, asked kind by kind (D723, D724)', () => {
-  it('plain, his own: one line — who, the kind, the hours; no words row', async () => {
+  it('plain, his own: one line — who, the kind, the hours; no words row — and the same input CANCELLED has one, for its red CX tag (D767)', async () => {
     await mount(true)
     const r = await file({ type: 'Duty' })
     expect(part(r, 'who')!.textContent).toBe(cs(r.person))
     expect(part(r, 'kind')!.textContent).toBe('Duty')
     expect(part(r, 'when')!.textContent).toBe('10:00–11:00')
     expect(card(r)!.querySelector('.icard-words')).toBeNull()
+    /* D767 (owner, 12 Oct 26) changed "one line" for a cancelled input: the top line reads as it did — only the kind's
+       name, which it goes by, is struck (reading 2) — and a second line holds the tag, alone where no reason was typed
+       (reading 4). The look itself: ui/inputcx.test.tsx. */
+    const x = await file({ type: 'Duty', person: others()[1], by: others()[1], cx: true })
+    expect(part(x, 'who')!.textContent).toBe(cs(x.person))
+    expect(part(x, 'kind')!.textContent).toBe('Duty')
+    expect(part(x, 'when')!.textContent).toBe('10:00–11:00')
+    expect(card(x)!.querySelector('.icard-words')!.textContent).toBe('CX')
   })
   it('titled, with a remark: the kind on the top line, the title on its own row at the left, the remark after it', async () => {
     await mount(true)

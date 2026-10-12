@@ -361,6 +361,12 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     expect(cmdAuthorize('access.seen', actor('admin', 'stiff'), { owner: 'stiff' })).toBe(true)
     expect(cmdAuthorize('access.seen', actor('admin', 'stiff'), { owner: 'bane' })).toBe(false)
     expect(cmdAuthorize('access.seen', actor('member', 'bane'), { owner: 'bane' })).toBe(false)
+    /* …and what a person has READ of his bell's notices (the one-rule build's step 7, 12 Oct 26 — D769; NoticeSeen in
+       data-model.md §11): his own row, admin and member alike — never another person's */
+    expect(cmdAuthorize('notices.seen', actor('member', 'bane'), { owner: 'bane' })).toBe(true)
+    expect(cmdAuthorize('notices.seen', actor('member', 'bane'), { owner: 'stiff' })).toBe(false)
+    expect(cmdAuthorize('notices.seen', actor('admin', 'stiff'), { owner: 'stiff' })).toBe(true)
+    expect(cmdAuthorize('notices.seen', actor('admin', 'stiff'), { owner: 'bane' })).toBe(false)
     for (const t of ['settings.accounts', 'settings.accessreqs', 'settings.changeseen']) expect(cmdAuthorize(t, actor('admin', 'stiff')), t).toBe(false)
   })
   it('the Leave War: a member\'s own bid rides the war\'s writer; deciding is the admin\'s', () => {

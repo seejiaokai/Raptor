@@ -8,6 +8,7 @@
 import { DAYS } from './engine/data'
 import { posKey } from './engine/rowids'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
+import { NOTICES } from './state/notices'
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
@@ -64,6 +65,7 @@ export function installProbeBridge() {
   const w = window as any
   /* the engine singletons the probes read */
   w.DAYS = DAYS; w.PEOPLE = PEOPLE; w.INPUTS = INPUTS; w.VCONF = VCONF
+  w.NOTICES = NOTICES   // the bell's notices (state/notices.ts) — read by the walk scripts
   w.SCHED = SCHED
   /* WARN/REST/EVD are REASSIGNED by every validate() — getters, or a probe
      reads the pre-validate snapshot */

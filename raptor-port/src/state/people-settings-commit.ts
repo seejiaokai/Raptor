@@ -53,6 +53,7 @@ import {
 import { mintOrd, byOrd } from '../command/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
+import { noticeSeenLoad, NOTICE_TYPES } from './noticeseen'
 import { insightsLoad } from '../engine/insights-config'
 import { flyplanLoad } from './flyplan'
 import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
@@ -88,7 +89,9 @@ export const SETTINGS_KEYS = [
      for one date, a weekday's repeating rule, a required figure running from a date. (`sansday:<iso>`, the first calendar build's
      day row, went with that build's SANS screen on 8 Oct 26 — the plan §3.10; it never left this branch, and a row of
      it still sitting in a browser's storage is read by nothing.) */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', ...FLY_ROW_PREFIXES] as const
+/* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
+     state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', ...FLY_ROW_PREFIXES] as const
 const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
@@ -100,7 +103,7 @@ function settingsRecordKeys(): string[] {
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
 const SETTINGS_LOADERS: Array<() => void> = [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
-  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad, insightsLoad, flyplanLoad,
+  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad, noticeSeenLoad, insightsLoad, flyplanLoad,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -326,6 +329,7 @@ export function registerPeopleSettingsCommandLayer(): void {
      COMMAND_OPS through the resolver store.ts wireStore installs */
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   for (const t of CHANGES_TYPES) definePermission(t, anyone)
+  for (const t of NOTICE_TYPES) definePermission(t, anyone)    // own row only — perms.ts COMMAND_OPS decides
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)

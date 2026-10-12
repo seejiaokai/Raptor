@@ -25,6 +25,7 @@ import { INPUTS, idsOf, peopleOf } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputs } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { mayEditInput, mayDeleteInput } from '../state/perms'
+import { NOTICES, noticeWords } from '../state/notices'
 import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
@@ -82,17 +83,31 @@ beforeEach(() => {
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); resetSession(null) })
 
 describe('its filer changes it for everyone while every entry of its list is his (D655; the plan §4.9)', () => {
-  it('a member who filed a duty for two others: he re-times it, adds a third, takes one out, answers its OIL, deletes it', () => {
+  /* SINCE THE BELL'S NOTICES (the one-rule build's step 7, 12 Oct 26 — owner D755 (3), D769; the plan §4.10): every one
+     of these changes also tells the people in it, each notice made inside the MEMBER's own command and let through the
+     same commit gate that holds him to his own filing — the case counts them, so a gate that began refusing a filer's
+     notices (or a door that stopped telling) fails here. His OIL answer tells nobody (the plan's reading R37). */
+  it('a member who filed a duty for two others: he re-times it, adds a third, takes one out, answers its OIL, deletes it — and each of them is told, by him (D755 (3))', () => {
     ranger()
+    const start = new Set(NOTICES.map(n => n.id)), had = new Set(start)
+    const told = () => { const l = NOTICES.filter(n => !had.has(n.id)); l.forEach(n => had.add(n.id)); return l.map(n => `${n.to}: ${noticeWords(n).what}`).sort() }
+    const cs = (id: string) => String((PEOPLE as any)[id].cs)
     expect(commitInput(null, D({ start: SAT }), ['rocky', 'casper'])).toBe(true)
+    expect(told(), 'filed for two: each told, the filer not').toEqual(['casper: You were added', 'rocky: You were added'])
     expect(mayEditInput(the())).toBe(true); expect(mayDeleteInput(the())).toBe(true)
     expect(change({ sTime: '13:00', eTime: '14:00' })).toBe(true)
+    expect(told()).toEqual(['casper: Now 13:00–14:00', 'rocky: Now 13:00–14:00'])
     expect(change({}, ['rocky', 'casper', 'harpoon'])).toBe(true)
+    expect(told()).toEqual([`casper: ${cs('harpoon')} added`, 'harpoon: You were added', `rocky: ${cs('harpoon')} added`].sort())
     expect(change({}, ['rocky', 'harpoon'])).toBe(true)
+    expect(told()).toEqual(['casper: You were taken off', `harpoon: ${cs('casper')} taken off`, `rocky: ${cs('casper')} taken off`].sort())
     expect(change({}, undefined, { oil: { [SAT]: 0.5 } })).toBe(true)
+    expect(told(), 'an OIL answer tells nobody (R37)').toEqual([])
     expect(the()).toMatchObject({ s: 780, e: 840, by: 'bane', oil: { [SAT]: 0.5 } })
     expect(idsOf(the())).toEqual(['rocky', 'harpoon'])
     expect(removeInput(the())).toBe(true)
+    expect(told()).toEqual(['harpoon: Deleted', 'rocky: Deleted'])
+    expect(NOTICES.filter(n => !start.has(n.id)).map(n => n.by), 'every one of them names Ranger as who did it').toEqual(Array(12).fill('bane'))
     expect(feb()).toHaveLength(0)
   })
   it('never a leave for others, and nothing for others with the members\' switch off — he is told which', () => {

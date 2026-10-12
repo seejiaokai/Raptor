@@ -151,6 +151,16 @@ describe('the change log has its own collection (P0-CHANGES-COLLECTION, F3-05)',
     expect(COLLECTIONS).toContain('changes')
     expect(RESET).toContain('changes')
   })
+  /* the bell's notices (the one-rule build's step 7, 12 Oct 26 — owner D755 (3), D769; the plan §4.10 "the whole wiring
+     of a new record kind"): a collection of their own, and a wipe that clears the inputs clears them too — a notice
+     names an input, and one left behind would list an input that is gone */
+  it('`notices` is a collection, and a wipe clears it with the inputs it names (D755 (3))', () => {
+    expect(COLLECTIONS).toContain('notices')
+    expect(RESET).toContain('notices')
+    expect(RESET.indexOf('inputs'), 'never the notices without the inputs').toBeGreaterThanOrEqual(0)
+    const g = [{ collection: 'inputs', id: 'i1', value: '{}' }, { collection: 'notices', id: 'n1', value: '{}' }]
+    expect(parseGroup(JSON.stringify(g)), 'a stored group holding a notice is a well-formed group').toEqual(g)
+  })
   it('a stored group holding a change-log entry is a well-formed group — never dropped whole', () => {
     const g = [{ collection: 'inputs', id: 'all', value: '[1]' }, { collection: 'changes', id: 'c1-0', value: '{}' }]
     expect(parseGroup(JSON.stringify(g))).toEqual(g)

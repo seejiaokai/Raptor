@@ -200,6 +200,14 @@ function inputWords(di: number, it: PendItem): Words {
   /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
   if (String(was.remarks || '') !== String(now.remarks || '')) { from.push(`“${clip(was.remarks)}”`); to.push(`“${clip(now.remarks)}”`) }
+  /* THE SCHEDULER'S MARKS ARE THE INPUT'S (owner D760) — so a CX, a red box or "information only" put on its row on a
+     published day is THIS line's to say, with the reason, in the words a row of the scheduler's own is said in
+     (valueWords, above: "· CX (WX)", "· flagged", "· info only"). Since step 4 of the one-rule build moved the marks
+     onto the input the line read only "changed" — found by the older tests re-expressed after step 5, 12 Oct 26. */
+  const cxSaid = (r: any) => (r.cx ? `CX${String(r.cxr || '').trim() ? ` (${String(r.cxr).trim()})` : ''}` : 'not cancelled')
+  pair(cxSaid(was), cxSaid(now))
+  pair(was.flag ? 'flagged' : 'not flagged', now.flag ? 'flagged' : 'not flagged')
+  pair(was.info ? 'info only' : 'not info only', now.info ? 'info only' : 'not info only')
   const earns = it.oilFold ? ' · what the day earns changes with it' : ''
   if (!from.length) return { where: name, from: '', to: 'changed' + earns, ...none, edited: true } as Words
   return { where: name, from: from.join(' · '), to: to.join(' · ') + earns, ...none, edited: true } as Words

@@ -141,6 +141,13 @@ export function setSansSet(v: boolean) { SANSSET = v }
    cut-off and the members' switch, open this one window (D639: one setting, two ways in). */
 export let INPSET = false
 export function setInpSet(v: boolean) { INPSET = v }
+/* THE BELL'S LIST OF NOTICES (ui/topbits.tsx BellList — the one-rule build's step 7): open or not, and under WHICH bell
+   (the top bar's `notifyBell` or the board's `sbBell` — the board covers the top bar without hiding it, so the page
+   cannot be asked). Here, with every other window's flag, so a sign-out closes it: the next person on the browser must
+   not find the last one's list open (found by the older tests re-expressed, 12 Oct 26). */
+export let BELLLIST = false
+export let BELLAT = ''
+export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = open ? at : '' }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -160,6 +167,8 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYSWIN', reset: () => setDaysWin(null) },
   { name: 'SANSSET', reset: () => setSansSet(false) },
   { name: 'INPSET', reset: () => setInpSet(false) },
+  { name: 'BELLLIST', reset: () => setBellList(false) },
+  { name: 'BELLAT', reset: () => setBellList(false) },   // set and cleared with the flag above — one setter for the pair
 ]
 export function resetPopsForSession(): void { for (const p of POPS_RESET) p.reset() }
 /* IS A WINDOW OVER THE SCHEDULE UP — OR ASKED FOR AND ABOUT TO BE DRAWN? (W12, the Codex stack check, 5 Oct 26.) The

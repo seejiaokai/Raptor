@@ -41,6 +41,18 @@ describe('who it is for', () => {
     expect(cardOf([old], P)).toEqual(cardOf([neu], P))
     expect(cardOf([old], P)).toMatchObject({ names: 'Ranger', by: 'Saber', title: 'Sports day', remark: 'bring boots' })
   })
+  /* OLD DATA AND THE CX (owner D760, D767 — 12 Oct 26; the look: ui/inputcx.test.tsx). A record stored before the
+     one-rule build never carried the mark — the CX was its ROW's own then (ui/inputmarks.test.tsx, "a row made before
+     the build is re-made once") — so its card reads NOT cancelled, as it always did. And the mark is read off the
+     record whatever its shape: an old-shape record a scheduler cancels today reads cancelled exactly as a new one. */
+  it('LEGACY: an OLD-shape record with no mark is not cancelled; one that carries it reads cancelled as a new record does', () => {
+    const old = rec({ person: 'r', by: 's', type: 'Event', title: 'Sports day' })
+    expect(cardOf([old], P)).toMatchObject({ cx: false, why: '' })
+    const oldCx = { ...old, cx: true, cxr: 'WX' }
+    const [neuCx] = shared(['r'], { type: 'Event', title: 'Sports day', cx: true, cxr: 'WX' })
+    expect(cardOf([oldCx], P)).toMatchObject({ cx: true, why: 'WX', names: 'Ranger', by: 'Saber', title: 'Sports day' })
+    expect(cardOf([oldCx], P)).toEqual(cardOf([neuCx], P))
+  })
   /* …and records of an OLD group filing are each a one-person input now — nothing joins them (D759 reading 10) */
   it('a record that still carries an old group id is its one person’s card', () => {
     expect(cardOf([rec({ person: 'a', grp: 'g1', grpBy: 's', by: 's' })], P)).toMatchObject({ names: 'Ace', by: 'Saber' })

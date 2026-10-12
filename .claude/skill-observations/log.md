@@ -3999,3 +3999,48 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Add a worked brief for "re-express the old tests after a rule change" to the skill: disjoint file lists per helper, the four outcomes, report-never-pin, the second scenario pass, one file run at a time, no git writes, and "say which old cases were passing vacuously".
 
 **Principle:** The author of a change tests the behaviour they intended; the old tests encode the behaviour everyone else relied on. Having someone else translate the old tests onto the new rule turns them from an obstacle into a second, independent specification.
+
+### Observation 531: A new saved record kind fails at Undo, not at build, when one of its registration lists is missed
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Building the bell's notices (one-rule job, step 7) — a new record kind written inside an existing command
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Adding a record kind to a command/undo layer
+
+**Issue:** The new record compiled, saved and passed its forward tests; the first Undo was refused with a generic sentence. The cause was a list (which store answers for which record kind in Undo) that the type system does not check, and four older test files kept their own hand copy of the same list. A second miss (the declared snapshot shape) only showed in the whole suite.
+
+**Suggested improvement:** When a change adds a record kind, write the round-trip test FIRST (make it, undo it, redo it, reload it) rather than only forward-behaviour tests, and grep for hand copies of every registration list in test harnesses before the full run.
+
+**Principle:** For anything that is registered in several untyped lists, the cheapest failing test is the full life of one record — create, undo, redo, reload — because each missed list fails a different leg.
+
+### Observation 532: A test-only reset made outside the command layer is absorbed by the next command
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Same step — a test helper emptied the live notice list directly between two acts, then asserted on Undo
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Test fixtures over a diff-derived change stream
+
+**Issue:** The builder's test cleared a live list by hand to "start the count from nothing". Because changes are derived by diffing state before and after each command, the next real command recorded that clearing as its own deletion, and its Undo put the cleared record back — a failure that looked like a product fault and was the fixture's.
+
+**Suggested improvement:** Note in the testing guidance: where a system derives changes by diffing, a fixture must never mutate live state outside a command if the test goes on to exercise undo, replay or persistence; count from a remembered baseline instead.
+
+**Principle:** In a diff-derived change stream, out-of-band state edits are silently attributed to the next command — fixtures included.
+
+### Observation 533: Looking at the built screen found three faults per step that passing structure tests could not
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Steps 5 and 7 of the one-rule job — pictures taken by real presses before the commit
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Visual verification after green unit tests
+
+**Issue:** With every unit test green, the first pictures showed: a tag squeezed into a four-line block, a strike-through running onto an adjacent word, a list hung under a control hidden behind a full-screen surface, and a button that kept its lit state because its bar did not re-render. None is visible to a DOM-structure test without layout.
+
+**Suggested improvement:** Make "drive the built app by real presses at desktop and phone size and open every picture" an explicit step between green tests and commit for any visible change, with a short list of what layout-less tests cannot see: wrapping, inherited decoration, stacking/covering, stale renders.
+
+**Principle:** Structure tests prove the markup; only a rendered picture proves the look — wrapping, inheritance, covering and staleness need a layout engine and a second pair of eyes.

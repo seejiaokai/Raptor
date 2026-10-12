@@ -57,7 +57,8 @@ export const SCHEMA_VERSION = 5
    coerced on load (daytpl.sanitiseBlob), so they need no reset.
    `changes` joins at group A (F3-05): the change log names rows in the collections a wipe clears, so
    it is cleared with them. */
-export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar', 'changes']
+/* `notices` joins with the one-rule build's step 7 (12 Oct 26): a notice names an input, and the inputs are cleared. */
+export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar', 'changes', 'notices']
 export const resetEntry = (collection: Collection, id: string) => RESET.includes(collection) || (collection==='settings' && id.startsWith('missionrole:'))
 
 /** the wipe is due on this snapshot (below the current format — the reset below will run) */

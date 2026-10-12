@@ -693,6 +693,45 @@ export type PlanPuck = PlanNote
 /** ISO 'yyyy-mm-dd' → the day's free-text title — screen. */
 export type DayRmk = Record<string, string>
 
+/** ONE THING A NOTICE SAYS HAPPENED — data, never a sentence (state/notices.ts writes the words on read). */
+export type NoticePartRec = {
+  /** in / out — HE was put in or taken out · del — deleted · cx / uncx — cancelled / brought back · off / on — taken
+   *  off the programme / put back · when — its day(s) or hours moved · add / rem — others put in or taken out ·
+   *  title — renamed · rmk — its remark changed. */
+  k: 'del' | 'in' | 'out' | 'cx' | 'uncx' | 'off' | 'on' | 'when' | 'add' | 'rem' | 'title' | 'rmk'
+  /** cx: the reason, where one was given — screen. */
+  why?: string
+  /** when: its first and last day NOW, ISO, where the days moved — screen. */
+  a?: string
+  b?: string
+  /** when: its hours NOW ("10:00–11:00", "all day"), where they moved — screen. */
+  t?: string
+  /** add / rem: who — PEOPLE ids, a placeholder among them — screen. */
+  who?: string[]
+  /** title: what it was called before — screen. */
+  was?: string
+}
+/** A LINE OF A PERSON'S BELL — someone else changed an input he is in (the one-rule build's step 7, 12 Oct 26 — owner
+ *  D755 (3), D760, D769; state/notices.ts). Made inside the command that changed the input; never rewritten. */
+export type NoticeRec = {
+  /** Minted 'n…' — state. */
+  id: string
+  /** The person told: a PEOPLE id — state. */
+  to: string
+  /** Who made the change: a PEOPLE id; null where the app did (a posting run on its date, a delete) — screen. */
+  by: string | null
+  /** When, ms — screen (its age). */
+  at: number
+  /** The input — state (a tap opens it). */
+  iid: string
+  /** What the input was called then: its title, else its kind — screen. */
+  name: string
+  /** Its first day then, ISO — screen. */
+  day: string
+  /** What happened — screen. */
+  what: NoticePartRec[]
+}
+
 /* ---------------------------------------------------------------------------
    The week snapshots — histSnap() (state/history.ts) and weekStashSnap()
    (state/store.ts). Both are JSON strings of these objects.
@@ -732,6 +771,8 @@ export type WeekSnapshot = SchedFields & {
   pp: PlanPuck[]
   /** = DAYRMK. */
   dm: DayRmk
+  /** = NOTICES — the bell's notices (state/notices.ts); absent on a snapshot taken before the one-rule build's step 7. */
+  nt?: NoticeRec[]
 }
 
 /** The per-week stash record — `weekStashSnap()`: no inputs or plan layer (those are global). The removed-request list

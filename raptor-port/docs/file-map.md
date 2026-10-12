@@ -1,5 +1,23 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` step 7 (12 Oct 26 — the bell's notices; D755 (3), D760, D769): **NEW** `src/state/notices.ts`
+(the saved record a person told, `noticePass` — who is told and what, worked out from an input before and after a
+command — and the list's words) and `src/state/noticeseen.ts` (what each person has read, his own record; the one
+command `notices.seen`). `src/state/sched-commit.ts` gains `tellPass` (the scheduler store's shared end calls it) and
+the `notices` record kind; `src/state/history.ts` carries them in the snapshot (`nt`); `src/state/persist.ts` saves and
+reads them one row each; `src/ui/topbits.tsx` gains `BellList`, `openNotice`, `bellListOpen` / `closeBellList` and the
+bell's new tap; `src/ui/Shell.tsx` mounts the list once; styles `scheduler/02-shell.css` (`.bell-list`, `.bl-*`). The
+record kind is also named in `src/command/types.ts`, `src/command/registry.ts`, `src/storage/backend.ts`,
+`src/storage/tables.ts`, `src/storage/reset.ts`, `src/state/undo-wire.ts`, `src/undo/derive.ts`, `src/undo/timeline.ts`,
+`src/state/perms.ts`, `src/state/people-settings-commit.ts`, `src/state/store.ts` and `src/probe-bridge.ts`. New test:
+`src/ui/bellnotices.test.tsx`. The look by real presses: `scripts/handpass/onerule-step7-look.mjs`, its pictures
+`docs/handpass/2026-10-12-one-rule-step7/`. **After the older tests were re-expressed (the same day):** two new test
+files — `src/ui/bellnotices-scenarios.test.tsx` (45 cases) and `src/ui/inputcx-scenarios.test.tsx` (60) — and seven
+fixes they forced: `sched-commit.ts tellBegin` (the before-image at the store's capture), `APP_ACTS` (three commands),
+`src/ui/pops.ts` `BELLLIST` / `BELLAT` (the list's open flag, closed at a sign-out), `noticeseen.ts` (read by id),
+`perms.ts saysSame` (the landing mark is not said), `src/ui/pendlist.ts inputWords` (a cancelled input's line says the
+CX and its reason). The stop's sheet: `docs/handpass/2026-10-12-one-rule-steps5-7.md`.
+
 `[ALL-AVAIL-AS-MEMBER]` step 5 (12 Oct 26 — a cancelled input's look; D767, D768): no new source file.
 `src/ui/inputcard-model.ts` gains `cxOf`, `cxWhy`, `cxSays` and the card's `cx` / `why`; `src/ui/InputCard.tsx` draws the
 red CX tag, the struck title (or kind) and the red reason; `src/ui/InputsPage.tsx` the same on the desktop list's row;

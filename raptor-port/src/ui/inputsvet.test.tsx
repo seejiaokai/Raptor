@@ -121,6 +121,19 @@ describe('"till <date>" is said ONCE on an input’s card — the corner says it
     expect(card.querySelector('.icard-words'), 'no second row').toBeNull()
     expect(card.querySelector('[data-testid="inl-when"]')!.textContent).toBe('till 23 Oct')
   })
+  /* RE-EXPRESSED FOR A CANCELLED INPUT (owner D767, 12 Oct 26 — a red CX tag before the title, the reason after it): "no
+     words row at all" is the rule for an input that is not cancelled. A cancelled one whose remark was only the
+     automatic words has a words row — for its tag and its reason — and still no remark on it: "till 23 Oct" is said
+     once, by the corner (D728), cancelled or not. */
+  it('…and the same input CANCELLED: a words row for its CX tag and reason, no remark on it, "till 23 Oct" still said once (D767, D728)', async () => {
+    await mount(true)
+    const r = await file({ ...SEVERAL, type: 'Duty', remarks: 'till 23 Oct', cx: true, cxr: 'WX' })
+    const card = $(`[data-testid="inl-row-${r.iid}"]`)!
+    expect(card.querySelector('[data-testid="inl-rmk"]')).toBeNull()
+    expect(card.querySelector('.icard-words')!.textContent).toBe('CXWX')
+    expect(card.querySelector('[data-testid="inl-when"]')!.textContent).toBe('till 23 Oct')
+    expect(card.textContent!.match(/till 23 Oct/g), 'said once on the whole card').toHaveLength(1)
+  })
   it('a typed remark is untouched, and a title keeps its place', async () => {
     await mount(true)
     const r = await file({ type: 'Duty', allday: true, date: 'Oct 20', endDate: 'Oct 22', title: 'Range week', remarks: 'bring ID card till 22 Oct' })

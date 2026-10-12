@@ -35,6 +35,8 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'inputs': 'inputs',
   'plan': 'plan',
   'people': 'people',
+  // the bell's notices — one row each, in a collection of their own (state/notices.ts)
+  'notices': 'notices',
   // settings — one blob per key
   'settings': 'settings',
   'insights.role': 'settings',

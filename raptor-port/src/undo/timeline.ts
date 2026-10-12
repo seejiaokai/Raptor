@@ -194,7 +194,7 @@ function ingest(env: CommitEnvelope): void {
 /* B1 — the commands that are never an Undo step: each person's own "seen" (the changes window's "Mark all as seen", the
    admins' bell, the welcome-back note, "OK, seen" on a Leave War notice — §10) and a waiting person's own request for
    access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
-const NOT_STEPS = new Set<string>(['changes.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack'])
+const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack'])
 
 /* A seen mark written INTO a record a step also holds (his welcome note on his own roster record, "OK, seen" on a Leave
    War day's list, the admins' bell on the requests) — the older step's before- and after-images still hold it unseen,
@@ -402,7 +402,7 @@ function modulesOf(entry: UndoEntry): Set<Module> {
   return mods
 }
 function moduleOfColl(collection: string): Module {
-  if (collection === 'inputs') return 'inputs'
+  if (collection === 'inputs' || collection === 'notices') return 'inputs'   // a notice is part of the input change that made it
   if (collection === 'plan') return 'plan'
   if (collection === 'people') return 'people'
   if (collection === 'settings') return 'settings'

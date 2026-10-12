@@ -421,6 +421,29 @@ newest 2,000 in order; a row that will not read, or lacks its time, is left in s
 `changeseen` record for everyone): positions in that order, written only by `state/changes.ts` through `changes.seen`,
 his OWN row only (`perms.ts ownershipViolation`) — data-model §11 `EditLogSeen`.
 
+### The bell's notices — `NOTICES[]`, `src/state/notices.ts` (the one-rule build's step 7, 12 Oct 26 — D755 (3), D760, D769)
+
+"Someone else changed an input you are in." One record a person told:
+`{ id, to, by, at, iid, name, day, what }` — `to` the person told (a PEOPLE id); `by` who made the change (a PEOPLE id),
+or `null` where the app did (a posting run on its date, a delete); `at` when (ms); `iid` the input; `name` what the input
+was called then (its title, else its kind) and `day` its first day then (yyyy-mm-dd) — kept on the notice because the
+input may since have been renamed, moved or deleted; `what` what happened, as a list of parts (data, never a
+sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'}` deleted · `{k:'cx', why?}` cancelled ·
+`{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'when', a?, b?, t?}` its
+day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
+taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
+**Stored one row each, in a collection of their own:** `notices/<id>`, written from the command stream
+(`state/persist.ts` — the `notices` mapper) and read back at boot. **Written INSIDE the command that changed the input**
+(`state/sched-commit.ts tellPass`, at the scheduler store's one shared end): the records are that command's own, in its
+saved group — so its Undo removes them and a Redo puts them back. Never rewritten once made. Wiped with the inputs on a
+format change (`storage/reset.ts RESET`). **Kept for good in this build** — no line is pruned; how long a notice is
+kept is the database step's retention rule (`OUTSTANDING.md` `[NOTICE-RETENTION]`).
+**What each person has READ** is `settings/noticeseen:<pid>` = `{ upto: <ms>, ids: <notice id>[] }` — the notices in
+`ids` are read (one for a tap on a line, every one of his for "Mark all read"), over a floor: every notice made at or
+before `upto` is read too. This build never moves `upto` (it stays 0 — it is for the database step's retention sweep);
+read is by id because a Redo puts a notice back with its first time. Written only by `state/noticeseen.ts` through `notices.seen`,
+his OWN row only (`perms.ts ownershipViolation`), never an Undo step — data-model §11 `NoticeSeen`.
+
 ### Accounts and session — `src/state/accounts.ts`, `src/state/auth.ts` (`[ACCOUNTS]`, 26 Sep 26 — D166, D204)
 
 Durable settings rows below — one per account (`account:<id>`), per waiting request (`accessreq:<id>`), per admin's
@@ -463,6 +486,7 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `accessreq:<id>` | `AccessRequest` | one row per waiting request (was one `accessreqs` list): `{ id, name, cs, ini, seat, cat, at }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when. (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219). Who has had it on screen is no longer on it: |
 | `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
 | `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
+| `noticeseen:<pid>` | `{ upto, ids }` | each person's own record of which of his bell's notices he has read — §The bell's notices above |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
 | `memberfile` | `false` or null | the members' switch — "members may file duties and commitments for other people" (owner D654, D655): ON (null) by default, `false` = admins only. Written only by the admin command `settings.memberfile` (`src/state/memberfile.ts`); a raw write is refused. Read live by `src/state/perms.ts membersFileOn`. Switched off, nothing already filed is removed or altered — a member's right over what he had filed for others simply goes |
 | `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin` — and, since 7 Oct 26 (D628, D639), the two late cut-offs' seven: `inputCutMode, inputCutWd, inputCutWeeks, sansLead, sansCutMode, sansCutWd, sansCutWeeks` — a mode (0 days / 1 weekday), a weekday (0 = Monday … 6), a number of weeks (1–8), a number of days (0–60)), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |

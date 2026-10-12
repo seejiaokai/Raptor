@@ -1101,10 +1101,133 @@ b…" — the tag is one line now, and a phone's board drops the reason; on the 
 "· accepted" after the name; on the desktop list an untitled cancelled row was a line taller than its neighbours.
 The script also un-cancels the input by the same button: its card, row and bar read as any other again.
 
+**The older tests, re-expressed by a helper who did not write the build (the four-choice brief; seven files changed,
+twelve more read and left as the rule survives; a second pass of its own — `src/ui/inputcx-scenarios.test.tsx`, 60
+cases): ONE product fault, left by STEP 4 and fixed here, pinned by the two cases that found it.** On a published day
+the "To go out" list said of a cancelled input only "Ranger · Range safety brief — changed" — no word of the cancel,
+no reason — where a cancelled row of the scheduler's own still read "… · CX (WX)" (D760 reading 3: it "reads as a
+change waiting, as today"; D99, D100: before → after). `ui/pendlist.ts inputWords` paired the people, the kind, the
+title, the hours and the remark of the issued copy and the live record, and none of the three marks step 4 had moved
+onto the input. It pairs them now, in the words a row's own marks are said in: "not cancelled → CX (WX)", "flagged",
+"info only". The helper's pass also pins: the reason escaped on every string-built line, a several-day cancelled
+input's every bar piece, the day's order for each position on the opened day and every List sort (D768), the board
+row's one item cell in every branch, the Unavailable list's rows, a reader not shown medical detail seeing no tag,
+and the stylesheet's own rules. **Not covered by any browser test:** the cancelled look itself (wrapping, the strike
+stopping before "· accepted", the board's tag on a phone) — seen in this step's pictures; the job's walk drives it.
+**Read, not ruled, not pinned:** a search for the reason ("WX") does not find the input — the search reads the remark,
+the name and the callsigns.
+
 **Not built, his to answer (parked — nothing waits on it):** should the input's own WINDOW say it is cancelled?
 *Recommended:* yes — the same red CX tag and reason beside its title, read-only; a member who taps his cancelled card
 otherwise opens a window that looks live. And the CSV export writes a cancelled input's line like any other (no
 column says it) — *recommended:* leave it until he wants a column.
+
+### Step 7 — the bell tells him (12 Oct 26; D755 (3), D760, D769 — `[INPUT-CHANGED-TELL]`)
+
+**Built after his look at the pictures, as he answered (D769 — the shorter wording; a tap still goes straight to an
+OIL question, an access request or a bug report where one waits).** A failing test first: `src/ui/bellnotices.test.tsx`
+(30 cases — who is told and the words, the age, T18, who may write a notice, the bell and its list).
+
+- **The record** (`src/state/notices.ts`): `notices/<id>` = `{ id, to, by, at, iid, name, day, what }` — one a person
+  told; `what` is data (a list of parts), the words are worked out on read. Saved one row each in a collection of
+  their own (`notices`), read back at boot; in the scheduler store's snapshot, so the command's rollback and the maker's
+  Undo take them with the change. Never rewritten.
+- **Where it is made** (`src/state/sched-commit.ts tellPass`): at the scheduler store's ONE shared end, inside every
+  command a PERSON makes — each input as it stood before the command against the list as it stands. Worked out from
+  the two images, never raised by a door, so a door added later cannot change an input and tell nobody.
+- **Who is told:** every named person in the input before or after, and whoever filed it; never the maker, never the
+  men behind ALL AVAIL / ALL, never a man archived or deleted.
+- **Read is its own record** (`src/state/noticeseen.ts`; F9): `settings/noticeseen:<pid>` = `{ upto, ids }` — the ids
+  he has read, over a floor — by the one command `notices.seen`: own row only, never an Undo step.
+- **The bell** (`src/ui/topbits.tsx`): an unread notice lights it; the four things it did before come first, exactly as
+  before; otherwise a tap opens the list — the input in bold with its date, what happened and who, its age; a tap on a
+  line opens the input and marks it read ("That input is gone" where it was deleted); "Mark all read"; "Nothing new".
+  One list for both bars, hung under the bell on screen; a panel as wide as the screen on a phone.
+- **Who may** (`state/perms.ts ownershipViolation`, `docs/data-model.md` §11 `Notice`, `NoticeSeen` — together, D200):
+  a member's command may make a notice only beside its own change to the input it names, naming himself, addressed to
+  someone else; only his own Undo removes one; his read record is his own.
+
+**Where step 7 left the plan's letter, and why:**
+1. **`noticeseen/<person>` is a row of the settings collection** (`settings/noticeseen:<pid>`), not a collection of its
+   own — as every other per-person seen record is (the change history's, the admins' bell's): the same
+   one-record-a-person, with no new kind of store.
+2. **One notice a person an input a command**, saying what touches HIM first — he was added, he was taken off, it was
+   deleted — else what changed about the input, the first two things joined by a comma ("Now 10:00–11:00, Tally
+   added"). §4.10 lists what tells; it does not say how several changes in one save read.
+3. **One command, one telling.** The scheduler store's end runs again when a reducer raises a nested command (saving
+   an input for several does) and each run moves the baseline: the first run keeps the before-image, and a later run
+   takes back what the earlier run told and works the whole command out again. Found by the first test — a filing for
+   two told each of them twice.
+4. **Only a person's own act tells** (`origin: 'user'`): an Undo or a Redo puts back the recorded notices themselves; a
+   load, a seed and a reconciler's projection make none. **A leave the Leave War approves makes none either** — the
+   war tells a decision on its own page; a later change to that leave by someone else does tell.
+5. **A man given an input of his own out of a shared one** (a time typed on his Unavailable row, sick leave cutting
+   his part) is told what changed for HIM under his new input — not "taken off" one and "added" to another.
+6. **The app's own acts** (R12) are three commands, named in `sched-commit.ts APP_ACTS`: a delete, a posting run on
+   its date, and a posting dated today (it runs inside the admin's own command) — the others in his inputs read
+   "Ranger taken off", with no name after it.
+7. **The view's own alert** (the hand-set light) still clears with "Notifications cleared", as before; only the tap
+   that used to say "No new notifications for this view" opens the list.
+8. **Nothing is pruned.** A person's list shows his newest thirty; every notice stays stored. A prune inside someone
+   else's command would advance a notice's revision and refuse its maker's Undo — F9's fault from the other side.
+   Filed for the database step: `OUTSTANDING.md` `[NOTICE-RETENTION]`.
+
+**Readings to tell him (none changes a ruling):**
+- R32. He is told ONCE for one save, however many things it changed — what touches him first; the rest of what
+  changed is in the input when he opens it, and in the change history.
+- R33. The words: You were added · You were taken off · Deleted · Cancelled — WX · Un-cancelled · Taken off the
+  programme · Back on the programme · Now Thu 16 Jul 10:00–11:00 · Tally added · ALL AVAIL taken off · Renamed — was
+  Kit check · Remark changed.
+- R34. A read line stays in the list, muted — the list is his last thirty, not only what is new; "Nothing new" shows
+  only when he has none at all.
+- R35. Whoever FILED an input for others is told of a change to it by someone else, though he is not in it.
+- R36. A leave approved on the Leave War lights no bell here.
+- R37. An OIL answer changed by whoever may change it tells nobody (§4.10 does not list it).
+- R11, R12 of §8 stand as built: an Undo takes its notice away; the app's own act names nobody.
+
+**Found by the look (real presses on the built app — Saber files, cancels and re-times; Ranger reads; Ranger files
+for Saber; Saber on the Scheduler Board — `scripts/handpass/onerule-step7-look.mjs`, pictures
+`../../handpass/2026-10-12-one-rule-step7/`), fixed before the commit:** on the Scheduler Board the list hung under the
+TOP BAR's bell, which the board covers without hiding — it hangs under the bell that was pressed now; and the bell
+stayed lit after "Mark all read", and went on saying "closed" while its list was open, because the bar it sits in
+does not redraw — the bell redraws itself. As built it matches his pictures at both sizes: the list 348px wide under
+the bell on a desktop, a panel as wide as the screen on a phone, a line 52px tall, nothing cut.
+
+**The older tests, re-expressed by a helper who did not write the build (the four-choice brief; eight files changed,
+nine more read and left as the rule survives; a second pass of its own — `src/ui/bellnotices-scenarios.test.tsx`, 45
+cases): SIX product faults, each fixed, each pinned by the case that found it.**
+1. **The people left in a shared leave were told nothing when one man was cut out of it** by a time typed on his own
+   Unavailable row. That door changes the input and then raises a nested input command, and every input command first
+   brings the baseline up to the live list — so the first END of the command, where the before-image was taken, already
+   saw the cut. The before-image is taken when the command first reaches the scheduler's store now
+   (`sched-commit.ts tellBegin` — at the store's capture, and before an input command's resync). And the man cut out is
+   told only what his own input now says differently, never who else had been in the shared one.
+2. **A posting out that deletes a man told nobody when it ran on its date**, and named the admin when dated today (R12
+   wants no name either way). The run is a reconciler's projection, which the pass skipped; the same-day run rides the
+   admin's own command. Both are the app's act now (`APP_ACTS`: `person.delete`, `lw.postoutRun`, `lw.postout`; the
+   app's acts tell from a projection too).
+3. **With more than thirty notices read one line at a time, the bell stayed lit with no way to put it out** — "Mark all
+   read" was offered only while one of the thirty LISTED was unread, and the bell counts them all. It is offered while
+   any is unread.
+4. **A notice that came back by a Redo was already "read"** where the reader had pressed "Mark all read" on something
+   newer in between — read was "everything up to a time", and a Redo puts a notice back with its first time. Read is
+   by id now: "Mark all read" names what it read (`noticeseen.ts`; `upto` stays as a floor for the database step's
+   sweep and is not moved in this build).
+5. **NOT the notices' — left by STEP 2:** a member who took himself out of a shared input someone else filed could not
+   Undo it wherever the input had a row on the week on screen ("That couldn't be completed just now"). The check of
+   "is this change his own part" read the landing mark (`acc: 'g'`) as something the input says; a restore strips it,
+   so the gate saw another person's input changed (`perms.ts saysSame` — the mark is read as absent now, as Undo's own
+   check reads it). The older test of this Undo passed only because its input lay off the loaded week.
+6. **The bell's list stayed open across a sign-out** — its open flag was outside the session's reset; it is one of the
+   windows' flags now (`ui/pops.ts BELLLIST`), closed at every sign-in and sign-out.
+
+**Not checked by the helper, for the job's walk:** the list's look in a browser at both sizes and over the board (seen
+in this step's pictures); a change arriving from a real second device. **Seen, small, not built:** two notices made in
+the same instant are ordered by their ids' text; a search for a cancel's reason does not find the input.
+
+**Found building it, fixed before the commit:** the maker's Undo was refused once a notice existed — Undo had no store
+registered for the new record kind (`state/undo-wire.ts SCHED_COLLS`), and filed it under the schedule's module
+instead of the input's; four older test files keep their own copy of that list and were brought up to date.
 
 ### Step 8, first pass — the records for what is built (12 Oct 26); a second pass is owed after steps 5 and 7
 

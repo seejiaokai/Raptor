@@ -135,6 +135,17 @@ describe('an input is one bar across its days (D626)', () => {
     expect(bars(a.iid)[0].title).toContain(`Placed by ${cs(filer)} for ${cs(a.person)} · 2 Oct 26, 09:10`)
     expect(bars(a.iid)[0].title).toContain('5 Oct')
     expect(bars(b.iid)[0].title).not.toContain('Placed by')
+    /* THE TOOLTIP HAS A THIRD THING TO SAY (owner D767, 12 Oct 26 — a cancelled input's bar is struck and faded, with no
+       tag and no reason: "for those areas that have no space to show reason it's ok"; a tooltip has the room): between
+       what it is and who placed it, a line of its own — "Cancelled — WX". An input that is not cancelled has no such
+       line, so the two lines above are the whole of its tooltip, as before. */
+    const c = await file({ type: 'Duty', date: 'Oct 19', by: filer, at: new Date(2026, 9, 2, 9, 10).getTime(), cx: true, cxr: 'WX' })
+    const lines = (t: string) => t.split('\n')
+    expect(lines(bars(a.iid)[0].title), 'not cancelled: what it is, who placed it').toHaveLength(2)
+    expect(lines(bars(b.iid)[0].title), 'no filer on record: what it is').toHaveLength(1)
+    expect(lines(bars(c.iid)[0].title)).toHaveLength(3)
+    expect(lines(bars(c.iid)[0].title)[1]).toBe('Cancelled — WX')
+    expect(lines(bars(c.iid)[0].title)[2]).toContain(`Placed by ${cs(filer)}`)
   })
 })
 

@@ -13,7 +13,9 @@
    UNTIL THIS STEP the three marks were the ROW's own: written on the day (ui/board.ts), kept by the re-make, left
    behind when the request moved (D468). Now the board's three buttons, on a row that came from an input, go through the
    row's door (ui/reqdoor.ts rowMark) and write the INPUT; the row follows as the copy it is. (The Inputs calendar's
-   own look of a cancelled input is step 5; the bell's line is step 7.)
+   own look of a cancelled input was step 5 — BUILT since, D767 and D768: ui/inputcx.test.tsx and
+   ui/inputcx-scenarios.test.tsx hold it, with the schedule's own Personal Inputs and Unavailable lines; the bell's
+   line is step 7.)
 
    Driven through the board's own buttons (ui/board.ts boardMbtn, cxCommit) on a real saved store. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'

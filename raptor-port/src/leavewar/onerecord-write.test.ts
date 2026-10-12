@@ -21,6 +21,7 @@ import { ownInputOf } from '../engine/inputown'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputs } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { mayEditInput, mayDeleteInput } from '../state/perms'
+import { NOTICES, noticeWords } from '../state/notices'
 import { installGlobalUndo } from '../state/undo-wire'
 import { commandStream } from '../command'
 import { globalUndo, globalRedo } from '../undo'
@@ -197,17 +198,30 @@ describe('who may change the one record (the plan §4.9 — Fable F4, F5; D655, 
     expect(commitInput(r, { ...draftOf(r), remarks: 'mine' }, ['bane'])).toBe(true)
     expect(the().remarks).toBe('mine')
   })
-  it('a man IN a shared input he did not file takes himself out — and his own Undo puts him back (F5, T14)', () => {
+  /* SINCE THE BELL'S NOTICES (the one-rule build's step 7, 12 Oct 26 — owner D755 (3); the plan §4.10; R11): his step
+     also TELLS the two left in it and whoever filed it, each a notice made inside his own command — so his Undo and his
+     Redo carry those notices through the member's commit gate (state/perms.ts, the `notices` case), which this case
+     now says out loud.
+     ITS FIXTURE IS A FEBRUARY INPUT, OFF THE WEEK ON SCREEN — and that is the only reason the Undo passes: the same
+     Undo of an input that has a row on the loaded week is REFUSED (the gate reads the row's landing mark as a change —
+     state/perms.ts saysSame). Shown, left failing, in ui/bellnotices-scenarios.test.tsx "FAULT: …the same Undo where the
+     input has a row on the week ON SCREEN". */
+  it('a man IN a shared input he did not file takes himself out — and his own Undo puts him back (F5, T14); the others are told, and untold, with it (D755 (3), R11)', () => {
     expect(commitInput(null, D(), ['bane', 'rocky', 'casper'])).toBe(true)
     hex()
     const r = the(), was = copy(r)
+    const had = new Set(NOTICES.map(n => n.id)), told = () => NOTICES.filter(n => !had.has(n.id))
     expect(mayEditInput(r), 'not his to change for everyone').toBe(false)
     expect(commitInput(r, draftOf(r), ['bane', 'casper'])).toBe(true)
     expect(idsOf(the())).toEqual(['bane', 'casper'])
+    expect(told().map(n => `${n.to} by ${n.by}: ${noticeWords(n).what}`).sort(), 'the two left in it and its filer, by Hex').toEqual(
+      ['bane', 'casper', 'stiff'].map(p => `${p} by rocky: ${PEOPLE.rocky.cs} taken off`).sort())
     expect(globalUndo().ok, 'his own step, though the record is not his alone').toBe(true)
     expect(copy(the())).toEqual(was)
+    expect(told(), 'the Undo took the notices with it').toEqual([])
     expect(globalRedo().ok).toBe(true)
     expect(idsOf(the())).toEqual(['bane', 'casper'])
+    expect(told().map(n => n.to).sort(), 'the Redo tells them again').toEqual(['bane', 'casper', 'stiff'])
   })
   it('he changes nothing else of it, and someone who is not in it changes nothing at all', () => {
     expect(commitInput(null, D(), ['bane', 'rocky', 'casper'])).toBe(true)

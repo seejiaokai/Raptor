@@ -6,6 +6,7 @@ import { logAction } from '../engine/editlog'
 import { ensureRowIds } from '../engine/rowids'
 import { armDrop, prunePreviews, WARNOFF } from './view'
 import { PLANPUCKS, DAYRMK } from './plan'
+import { NOTICES } from './notices'
 
 const toast=(...a:any[])=>HOOKS.toast(...a)
 const reflow=()=>HOOKS.reflow()
@@ -57,7 +58,10 @@ export function setSchedResync(cb:(()=>void)|null){SCHED_RESYNC=cb;}
    writes them as the plan/all record. Worth an undo step as well: a scheduler dragging pucks around a month wants the
    same Ctrl+Z safety net as every other edit, and riding the ordinary
    snapshot is free — it is already whole-state JSON. */
-export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}
+/* `nt` carries the bell's notices (state/notices.ts — the one-rule build's step 7, 12 Oct 26): each is made INSIDE the
+   command that changed an input, so it rides the same snapshot — the command's rollback, and the maker's Undo, take it
+   back with the change. */
+export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK,nt:NOTICES});}
 /* the stable-ids walk (engine/rowids.ts) runs before EVERY snapshot so undo
    never hands back an id-less row */
 /* RE-SYNC BEFORE syncHistBtns (F-01): syncHistBtns() -> HOOKS.syncHistBtns ->
@@ -111,6 +115,8 @@ export function histRestore(snapStr:any){
   PLANPUCKS.length=0; (s.pp||[]).forEach((x:any)=>PLANPUCKS.push(x));
   for(const k of Object.keys(DAYRMK))delete DAYRMK[k];
   Object.assign(DAYRMK,s.dm||{});
+  /* the bell's notices, in place too; an older snapshot carries none */
+  NOTICES.length=0; (s.nt||[]).forEach((x:any)=>NOTICES.push(x));
   /* the command layer's baseline follows every restore (see setSchedResync). It
      reads histSnap() itself, so it runs AFTER the whole model is back in place. */
   SCHED_RESYNC&&SCHED_RESYNC();

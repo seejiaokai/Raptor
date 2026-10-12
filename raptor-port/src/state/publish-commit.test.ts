@@ -180,13 +180,14 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
       d: m.get(`days/${wk}#${di}`)!.value, book: m.get(`sched.book/${wk}#${di}`)!.value, wo: m.get(`sched.mutes/${wk}#${di}`)!.value,
     }))
     const is: Array<[string, any]> = [], rx: Array<[string, any]> = []
-    const inputs: any[] = [], pp: any[] = [], dm: Record<string, string> = {}
+    const inputs: any[] = [], pp: any[] = [], dm: Record<string, string> = {}, nt: any[] = []
     for (const [k, e] of m) {
       if (k.startsWith('sched.issuance/')) is.push([e.id.slice(e.id.indexOf(':') + 1), e.value])
       else if (k.startsWith('sched.retraction/')) rx.push([e.id.slice(e.id.indexOf(':') + 1), e.value])
       else if (k.startsWith('inputs/')) inputs.push(e.value)
       else if (k.startsWith('plan/pp:')) pp.push(e.value)
       else if (k.startsWith('plan/dm:')) dm[e.id.slice(3)] = e.value
+      else if (k.startsWith('notices/')) nt.push(e.value)   // the bell's notices ride the same snapshot (state/notices.ts)
     }
     /* [DB-READINESS] group A, phase 2 — each request and planning note carries its place (ord) */
     sortByOrd(inputs, (r: any) => r.iid); sortByOrd(pp, (p: any) => p.id)
@@ -195,7 +196,7 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
       d: w.d, i: inputs,
       c: w.c, p: w.p, ad: w.ad, a: w.a,
       ok: w.ok, sg: w.sg, sb: w.sb, o: w.o, cv: w.cv, dr: w.dr, cd: w.cd,
-      v: w.v, am: w.am, rt: w.rt, cr: w.cr, wo: w.wo, pp, dm,
+      v: w.v, am: w.am, rt: w.rt, cr: w.cr, wo: w.wo, pp, dm, nt,
     }
   }
 
