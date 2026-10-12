@@ -182,6 +182,28 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     expect(noticeWords(line('nact')[0]!), 'the line counts what is left — it stores no number').toEqual({ name: 'National Day', day: 'Fri 17 Jul', what: `${n} inputs need an OIL answer`, who: cs('stiff') })
     expect(pops.OILLIST, 'the list opens by itself, saying the day is now a holiday').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: true })
   })
+  /* THE WALK'S E1 (13 Oct 26). A holiday made with the Leave War's "PH" button carries no name of its own — it is saved
+     under the preset's own word — and the list said "PH is now a public holiday." under "Public holiday · PH". A
+     holiday with no name of its own is named by its DAY in the list, and "Public holiday" on the bell's line. */
+  it('a holiday with no name of its own: the list says "Fri 17 Jul is now a public holiday." and the bell’s line "Public holiday" — never "PH is now a public holiday."', async () => {
+    three()
+    expect(holidayAdd({ kind: 'ph', name: '', from: FRI, to: FRI }).ok).toBe(true)
+    expect(pops.OILLIST, 'opened with no name').toEqual({ from: FRI, to: FRI, name: '', fresh: true })
+    expect(hol('nact')[0]!.name, 'the notice keeps no name that is only the preset’s word').toBe('')
+    expect(noticeWords(line('nact')[0]!).name, 'the bell’s line').toBe('Public holiday')
+    ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    const tid = (t: string) => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null
+    try {
+      await act(async () => { root.render(<App />) })
+      expect(tid('odl-lead')!.textContent).toBe('Fri 17 Jul is now a public holiday.')
+      expect(tid('win-oilday')!.textContent, 'its second line is the kind alone').not.toContain('Public holiday ·')
+      /* a run of days with no name */
+      await act(async () => { pops.setOilList({ from: THU, to: FRI, name: '', fresh: true }); notify() })
+      expect(tid('odl-lead')!.textContent).toBe('Thu 16 – Fri 17 Jul are now public holidays.')
+    } finally { await act(async () => { root.unmount() }) }
+  })
   it('an admin whose sign-in is switched off is not told (the break tests, 13 Oct 26)', () => {
     three()
     const wd = ACCOUNTS_LIST.find(a => String(a.pid) === 'nact')!

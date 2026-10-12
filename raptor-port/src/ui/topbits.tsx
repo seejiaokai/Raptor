@@ -21,7 +21,6 @@ import { openAdminUsers } from './adminopen'
 import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, BELLAT, setBellList, setOilList } from './pops'
-import { canEditSched } from '../state/auth'
 import { me } from '../state/perms'
 import { noticesFor, noticeWords, noticeAge, holidayLineOn, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
@@ -78,8 +77,10 @@ export function bellTap(from?: HTMLElement | null): void {
      questions, one tap each, and never meet the list. For him those are the list's: the tap falls through to the
      bell's own list, whose line opens it. Every other question of his own — and every member's — goes straight to
      it, as D769 has it. */
-  const sched = canEditSched()
-  const oilHit = mine ? oilPendingFor(mine).find(h => !(sched && holidayLineOn(mine, h.iso))) || null : null
+  /* (a member has no such line, and neither has the admin's own member view while it is on: a holiday's line is live
+     for a scheduler only — state/notices.ts noticeLive, the one body; the break tests of 13 Oct 26 showed a second
+     test of it here decided nothing) */
+  const oilHit = mine ? oilPendingFor(mine).find(h => !holidayLineOn(mine, h.iso)) || null : null
   if (oilHit) {
     const row = inpById(oilHit.iid)
     if (row) {

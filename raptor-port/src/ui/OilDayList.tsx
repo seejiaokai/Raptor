@@ -60,7 +60,9 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
   return (
     <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={name ? `Public holiday · ${name}` : 'Public holiday'}
       testid="win-oilday" className="oildaywin" onClose={close}>
-      {fresh && <p className="odl-lead" data-testid="odl-lead">{name || 'This day'} is now a public holiday.</p>}
+      {/* a holiday with no name of its own is named by its day — never by the preset's word ("PH is now…": the walk, E1) */}
+      {fresh && <p className="odl-lead" data-testid="odl-lead">{name ? `${name} is now a public holiday.`
+        : from === to ? `${noticeRun(from, to)} is now a public holiday.` : `${noticeRun(from, to)} are now public holidays.`}</p>}
       {rows.length === 0
         ? <p className="sd-empty" data-testid="odl-empty">Nothing left to answer.</p>
         : <>

@@ -160,6 +160,14 @@ const BREAKS = [
   ['B86 a card\'s name does not open the input', OL, "onOpen={() => openInput(r)}", "onOpen={() => {}}", HOL],
   ['B87 "Yes to all" picks nothing', OL, "onClick={() => all('y')}", "onClick={() => {}}", HOL],
   ['B88 the card\'s own buttons are not drawn', 'src/ui/InputCard.tsx', "          {action && <span className=\"icard-act\">{action}</span>}\n", "", HOL],
+  /* ---- the walk's fixes (13 Oct 26) ---- */
+  ['B89 the admin\'s member view shows the holiday line (the walk\'s E8)', N, "  if (!mayEditSched()) return false\n", "", HOL],
+  ['B90 "Mark all read" reads a line that is not shown', 'src/state/noticeseen.ts', "(noticeLive(x) || cur.ids.includes(x.id))", "(true)", HOL],
+  ['B91 a passing note lands on the bar that stays (the walk\'s C3)', 'src/ui/toast.ts',
+    "t.style.bottom=up?'auto':bar?`${18+(bar.offsetHeight||50)+8}px`:'26px';", "t.style.bottom=up?'auto':'26px';", DOOR],
+  ['B92 a note already showing is left on the bar when it arrives', SH, "  useEffect(() => { if (up) placeToast() }, [up])\n", "", DOOR],
+  ['B93 the Unavailable row: the seat he was dragged from does not flash (the walk\'s C2)', D,
+    "    if (DRAG.kind === 'slot' && view.OILWAIT && view.OILWAIT !== waited) oilWaitAlso(DRAG.key)\n", "", DOOR],
 ]
 
 let red = 0, green = 0, skip = 0

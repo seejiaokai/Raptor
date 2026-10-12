@@ -4428,10 +4428,18 @@ Three things stay decided:
   under a question's sheet (460). "Not swapped — OIL not answered" / "Not added — …" / "Not moved — …", then **Answer
   OIL** (the door is asked afresh: the question returns, or "That row has changed — not swapped") and **OK** (closes
   it). It has NO timer; a week, a page or a sign-in that changes under it takes it away. On a phone the words take two
-  lines and the two buttons sit side by side under them.
+  lines and the two buttons sit side by side under them. **Both pucks flash at every door** (the check's walk, C2 —
+  13 Oct 26): on the Unavailable row the door is handed a person, never his seat, so the drag hands the seat he was
+  dragged from to the wait (`ui/oilwait.ts oilWaitAlso`). **A passing note never lands on the bar** (the walk's C3): the
+  note is drawn at the foot too, a layer above, and the bar stays — so while the bar is up the note sits just above it
+  (`ui/toast.ts placeToast`, which the bar calls as it arrives, so a note already showing moves clear).
 - **The one list** (`ui/OilDayList.tsx`): a window on the shell at its own width, title "OIL — Fri 17 Jul" (a run:
   "Mon 20 – Tue 21 Jul") over "Public holiday · <name>". Opened by itself it begins "<name> is now a public holiday.";
-  from the bell it does not. Then the count ("4 to answer" / "3 of 4 answered") with "Yes to all" and "No to all" at
+  from the bell it does not. **A holiday with no name of its own** (the Event sheet's "PH" button, the Holidays list's
+  empty name box — saved under the preset's own word) is never called by that word (the walk's E1: "PH is now a public
+  holiday."): the second line is "Public holiday" alone, the first "Fri 17 Jul is now a public holiday." (a run: "Thu
+  16 – Fri 17 Jul are now public holidays."), and the bell's line reads "Public holiday" in bold (`leavewar/sync.ts
+  tellHoliday` keeps its name as ''). Then the count ("4 to answer" / "3 of 4 answered") with "Yes to all" and "No to all" at
   its right; one card an input, the input's own card in the day's own order, with `.icard-act` at the right of its
   words row — "Yes · FO" or "Yes · HO" (`.upconf-seg`, picked: `.on-keep`) and "No" (picked: `.odl-no`, quiet grey); a
   second press un-picks. No "OIL?" tag inside. The foot: "What is left goes to the schedulers’ bells" (gone when every
@@ -4440,6 +4448,10 @@ Three things stay decided:
 - **The bell's line** for a holiday is a line of the bell's list like any other: the holiday's name in bold, its date
   ("Fri 17 Jul"; a run "Mon 20 – Tue 21 Jul"), then "4 inputs need an OIL answer · Saber" ("1 input needs…"), its age at
   the right. The number is read at every draw; at none left the line is not drawn and does not light the bell.
+  **A scheduler's line, and only while he is one** (the walk's E8; D785's reading, D292): with the admin's own member
+  view on it is not listed, not unread and does not light his bell — the list it opens would refuse him — and it is
+  back, read or unread as he left it, when he switches back (`state/notices.ts noticeLive`, the one body the list, the
+  unread count, "Mark all read" and the bell's tap all ask). "Mark all read" reads only the lines that are shown.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 

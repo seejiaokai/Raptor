@@ -286,7 +286,7 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   const h = holOf(n)
   if (h) {
     const left = noticeLeft(n)
-    return { name: n.name, day: noticeRun(h.a, h.b), what: left === 1 ? '1 input needs an OIL answer' : `${left} inputs need an OIL answer`, who: n.by ? cs(n.by) : '' }
+    return { name: n.name || 'Public holiday', day: noticeRun(h.a, h.b), what: left === 1 ? '1 input needs an OIL answer' : `${left} inputs need an OIL answer`, who: n.by ? cs(n.by) : '' }
   }
   return { name: n.name, day: noticeDay(n.day), what: (n.what || []).slice(0, 2).map(partWords).join(', '), who: n.by ? cs(n.by) : '' }
 }

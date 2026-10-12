@@ -897,7 +897,12 @@ const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a)
        has gone through, never for one that was refused.
    A run with nothing to answer tells nobody and opens nothing. The count is never stored (D783 (6)). */
 function tellHoliday(runs: HolidayRun[]): void {
-  const todo = runs.filter(r => oilOpenOn(r.from, r.to).length > 0).map(r => ({ ...r, name: dayFacts(r.from).name || 'Public holiday' }))
+  /* its NAME — only one of its own. A holiday made with no name (the Event sheet's "PH" button; the Holidays list's
+     empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list then
+     said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Kept as '', and
+     each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
+  const own = (iso: string): string => { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
+  const todo = runs.filter(r => oilOpenOn(r.from, r.to).length > 0).map(r => ({ ...r, name: own(r.from) }))
   if (!todo.length) return
   const by = me(), to = schedulerIds()
   commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(to, by != null ? String(by) : null, h.name, h.from, h.to) })
