@@ -1828,7 +1828,7 @@ saved-data reading (the report's §4) is looked at again at `[DB-STEP]`, which r
 (§5) is not split unless a later feature has to work heavily inside it — put it to him then.
 
 ### [LW-ROWS-SPLIT] The Leave War's row drawing moves out of its grid file — APPROVED D493 (2 Oct 26), to build with the next Leave War batch
-**D775 (12 Oct 26): done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
+**D775 (12 Oct 26) - the Tracker tidy-up: done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
 From Astra's tidiness read (its §1 — read it before building: what must stay identical, the tests that pin it, the test to
 write FIRST). `PersonRow`, `PersonMonth`, their props and row-only predicates leave `src/leavewar/ui/Matrix.tsx` (about 4,700
 lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, selection and sheets. Nothing on screen changes.
@@ -1875,7 +1875,7 @@ This is separate from [TRK-KEY-NAME-CLIP] and [TRK-FLEXBAR-INK], and does not st
 **D565 tapered redraw:** `raptor-port/docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; independent Sol challenge/picture read in `raptor-port/docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`. Both-size specific picture shown and accepted D566; chosen replacement implemented; refreshed gates and separate fresh final R1PASS. No further shape-choice question pending.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
-**D775 (12 Oct 26): done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
+**D775 (12 Oct 26) - the Leave War tidy-up: done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
 `src/tracker/app/core.js` for one module beside `fileFormat.js` and `fileStore.js`; the menus keep calling what they call now.
 **Astra's stop condition, kept:** if it cannot use the store and the format through a small explicit interface — no

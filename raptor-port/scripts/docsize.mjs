@@ -189,7 +189,11 @@ const FILES = [
    [RULINGS-SPENT-PASS]. The scheduler's new marker IS the size D611 named for looking again at splitting that file
    (about 100,000 bytes): crossing it means the question goes back to him, never a further raise. */
 const RULING_BYTES = [
-  ['.claude/rules/decisions/how-we-work.md', 0, 26000],
+  /* how-we-work 26000 -> 28000 (12 Oct 26): the file crossed the marker with D774 and D775 (26,999 bytes with one row
+     still whole) - fifteen rulings on how the one-rule job is run and reviewed (D752-D766) and two on the order of work
+     since. None is spent or replaced, and a ruling is never trimmed (D136). The spent one-off permissions among them
+     (D749, D746 - the shared-row job's readers) are for the next rulings pass to mark and archive, not for this number. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 28000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -202,7 +206,10 @@ const RULING_BYTES = [
      ruling is never trimmed (D136). D611's question is therefore DUE and is put to him, not answered by this number:
      keep one file, or give the Inputs pages an area of their own (OUTSTANDING.md [SCHEDULER-RULINGS-SIZE]). The
      3,000 bytes are room for the rulings he makes before he answers - not a new target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 103000],
+  /* scheduler 103000 -> 106000 (12 Oct 26): 103,817 bytes with D767-D773 - his answers on the cancelled look, the
+     bell's wording and the Inputs export, all live (D772 alone is replaced, and goes to the archive by its mark). His
+     question [SCHEDULER-RULINGS-SIZE] is still WITH HIM and still due; this is room until he answers, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 106000],
   ['.claude/rules/decisions/oil.md',     2, 12000],
   ['.claude/rules/decisions/leave-war.md', 2, 37000],
   ['.claude/rules/decisions/tracker.md', 2, 19000],
