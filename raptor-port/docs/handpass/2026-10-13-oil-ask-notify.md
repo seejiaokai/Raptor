@@ -342,7 +342,11 @@ was written as a test of the RIGHT behaviour and run against the code as it stoo
 **False alarms:** none from either reader — every claim that could be written as a test was red. **Each reader's
 negatives the other disproved:** three of Fable's (C1, C2, C6); none of Opus's found so far.
 
-### 12.1 The one test he asked for (D788, D789) — the table to put to him
+### 12.1 The one test he asked for (D788, D789) — the table put to him, and his answer (D790)
+
+**His answer, 13 Oct 26 — D790, "Yes option 2":** from here every job that needs a code read gets a fresh, blind Opus read of
+its finished code, and Fable reads it as well only on the riskiest changes — OIL, published days, who may do what, saved data.
+No further trial is run.
 
 | | Fable | A fresh Opus reader |
 |---|---|---|

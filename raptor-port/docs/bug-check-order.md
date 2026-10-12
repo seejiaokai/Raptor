@@ -222,15 +222,17 @@ after). His answer is a new ruling on whether Sol keeps the seat.
 **Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
 fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
-**The Opus read, on trial — D788 (owner, 13 Oct 26: "We test more to see if opus can hold up alone. Don’t test on Things that are too
-token intensive. U make the call. But u can also try to test it when the task are complicated and complex").** On jobs the agent
-chooses — a complicated one is worth it; one whose second read would cost too many tokens is not — a FRESH Opus reader reads the
-finished code blind, with the same brief, BESIDE the independent reader the job already needs (never in its place until he rules:
-Opus wrote the code, D67). Every claim of either reader is written as a failing test before it is believed. The result — what
-each found, what each missed, false alarms, tokens — goes into the evidence sheet and the running table in `OUTSTANDING.md`
-`[OPUS-READ-TRIAL]`. **Narrowed the same day (D789 — "Just test it once and ask me after we get the results to know how we go
-from here."): it is tested ONCE, on `[OIL-ASK-NOTIFY]`’s finished code; he is asked how to go on when the result is in, and no further
-trial is run before his answer.**
+**Who reads the finished code now — D790 (owner, 13 Oct 26: "Yes option 2").** While the ChatGPT readers are out (D761):
+**every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
+neither the walk's report nor another reader's, given the same brief; Fable reads it as well, blind to the Opus read, only on
+the riskiest changes — OIL, published days, who may do what, saved data** (rank 2's list above). On those, Fable's read is
+standing: his word is not asked again for each job. The chat that wrote the code never reads its own work. Every claim of either
+reader is written as a failing test before it is believed. A plan's read before a build is as it was. A job that goes without
+a ChatGPT read is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and when Astra and Sol 6.1 are back, how
+they fit with this is put to him — not assumed. *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
+(D788, then once more by D789, both now in `DECISIONS-ARCHIVE.md`); on the second, same brief and blind to each other, Fable
+found 3 real faults and the Opus reader 11, with no false alarm from either — the tables are in
+`handpass/2026-10-13-oil-ask-notify.md` §12.1 and `handpass/2026-10-12-one-rule.md` §10b.
 
 **Do NOT spend them on:**
 

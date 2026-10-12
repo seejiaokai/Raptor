@@ -69,7 +69,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Seen by `[OIL-ASK-NOTIFY]`’s walk, older, not fixed (13 Oct 26 — the agent’s placing: with the next Inputs / schedule batch):** [OIL-NOTIFY-SEEN] — five small things met in passing: the Undo note after a swap says "a personal input"; a puck dragged off a row gives no note; the crew list’s ALL AVAIL chip scrolls out of reach on the week; an input’s own window deletes with no "are you sure".
 
-**A trial under way, his word (13 Oct 26 — D788):** [OPUS-READ-TRIAL] — a blind Opus code read is run beside the independent reader on jobs the agent picks, to see whether Opus can hold up as a code reader alone; tested ONCE, on `[OIL-ASK-NOTIFY]`’s finished code (D789); he is asked how to go on when the result is in.
+**A trial, finished and answered (13 Oct 26 — D790, "Yes option 2"):** [OPUS-READ-TRIAL] — a blind Opus code read was run beside Fable’s on two jobs; his answer: every job that needs a code read gets a fresh, blind Opus read of its finished code, and Fable reads it as well only on the riskiest changes — OIL, published days, who may do what, saved data. Kept here for its two tables until the next handoff archives it.
 
 **AFTER `[OIL-ASK-NOTIFY]`’s check, his word (13 Oct 26 — D786):** [CAL-PHONE-SWIPE-FIT] — in the Calendar window on a phone, swipe between months and, on the Holidays list, between years; the "Every Thursday" window’s From date box runs off the right edge of his iPhone and must fit any phone width.
 
@@ -2166,7 +2166,7 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 
 **Found, NOT FIXED — older behaviour, low.** (1) After a swap on an input’s row, the Undo note reads "Undid: a personal input" (and the Undo button "Undo — a personal input") — true, but it does not say it was a swap (walker A; the same words follow an OIL answer given in an input’s own window — walker D). (2) A puck dragged off a row to nowhere gives no note of its own (walker A, A13). (3) On Edit Schedule’s week the crew list’s ALL AVAIL chip scrolls out of the mouse’s reach when a lower day is in view (walker A, A5). (5) On a phone, after a hand-over by an armed tap on the Unavailable row the crew drawer stays open, where the row’s "+ add" puts it away (walker B, B6 — the ring’s half of this was new and is fixed: Fable’s read, the sheet’s C10). (4) "Delete" in an input’s own window deletes at once, with no "are you sure" — Undo brings it back (walker D, D9). **To put to him with (4):** should a delete ask first? **Place:** the agent’s — with the next Inputs / schedule batch (D490). The walk’s record: `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` §11.3.
 
-### [OPUS-READ-TRIAL] Can Opus hold up as a code reader alone? — a blind Opus read beside the independent reader, on jobs the agent picks (his word, 13 Oct 26 — D788) — UNDER WAY
+### [OPUS-READ-TRIAL] Can Opus hold up as a code reader alone? — a blind Opus read beside the independent reader, on jobs the agent picks (his word, 13 Oct 26 — D788) — FINISHED, ANSWERED BY D790
 
 **His words:** *"We test more to see if opus can hold up alone. Don’t test on Things that are too token intensive. U make the call. But u can also try to test it when the task are complicated and complex"*. The rule and the agent’s readings: D788’s full row; the method: `raptor-port/docs/bug-check-order.md` §4.
 
@@ -2179,6 +2179,8 @@ with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
 | `[OIL-ASK-NOTIFY]` (13 Oct 26) — the ONE test of D789, same brief, blind to each other | Fable: 3 real faults, all low (1 found by it alone) | 11 real faults in eight findings — 1 medium (the screen showing a change that was not made) — and 1 older, filed; 9 found by it alone | Fable missed 9 and called three of them sound; Opus missed 1 (the Unavailable row’s tap dropping its ring) | 0 and 0 | Fable 478,816; Opus 610,259 | `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` §12 |
 
 **D789 (13 Oct 26 — "Just test it once and ask me after we get the results to know how we go from here."): ONE test, on `[OIL-ASK-NOTIFY]`; no further trial before his answer. To put to him with that result:** does an Opus read stand as the job’s code read where no ChatGPT reader and no Fable read is available — and on which kinds of change. **Place:** his word — at the close of `[OIL-ASK-NOTIFY]`’s check.
+
+**ANSWERED 13 Oct 26 — D790 (*"Yes option 2"*, of three put to him with the table above: 1 an Opus read only; 2 an Opus read on every job that needs a code read, Fable added only on the riskiest; 3 both every time):** every job that needs a code read gets a FRESH, blind Opus read of its finished code; Fable reads it as well only on the riskiest changes — OIL, published days, who may do what, saved data. The rule and the agent’s readings: D790’s full row; the method: `raptor-port/docs/bug-check-order.md` §4 ("Who reads the finished code now"). D788 and D789 are in `DECISIONS-ARCHIVE.md`. No further trial. **This item is finished:** it leaves for the archive at the next handoff, its two tables with it.
 
 ### [CAL-PHONE-SWIPE-FIT] The Calendar window on a phone: swipe between months and years; the From date box that runs off the screen (his find, 13 Oct 26 — D786) — OPEN
 
