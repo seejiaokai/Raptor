@@ -56,11 +56,25 @@ did not.
    | `verification-before-completion` | three Common Failures rows (a clean verdict's scope, "removed everywhere", green elsewhere); a "long check runs" line (a gate chained into a commit); `browser-checks.md`: line positions not rects, measuring across a mode switch |
    | `writing-plans` | Task Right-Sizing: a migration of shared records starts with its checks |
 
+5. **Local lessons from the skill review of 13 Oct 26** (owner-approved, D811; the same rules as changes 3 and 4 — an
+   upstream refresh overwrites these, re-apply them). The drafts were read by one fresh Opus reader (D810).
+
+   | Skill | What was added |
+   |---|---|
+   | `test-driven-development` | Verify RED: set the fix aside with a copy, not the stash; "red is an observation of each assertion"; a test selected by name; an assertion of absence; the pair for a state-comparison fault; a finding from a device-specific walk. GREEN: a fix guarded on a flag; a guard that suppresses input. Verify GREEN: "which other tests?"; a replaced control and removed data. `writing-good-tests.md`: the absolute table beside a parity test; three more stand-ins; reaching past the door; four fixture rules |
+   | `verification-before-completion` | six Common Failures rows (a silent typecheck, a background run, edits that landed, an audit script's count, a mechanical rewrite, a deferred check); `browser-checks.md`: proving a reused server, an unused scratch name, a control that acts on release, a dragged clone, a landing judged at rest, class names on a wide ancestor and in a global stylesheet |
+   | `systematic-debugging` | Phase 1: an order between two driver actions; a failure by a consistent amount; the identical probe on the base revision. Phase 4: reproduce a reported failure in the running app first |
+   | `writing-plans` | a step that crosses a privacy boundary; Self-Review 4 (platform claims, text rules, promised moments); new checks 10 (what the plan decided itself), 11 (plans that reshape stored data), 12 ("like the existing X", and sketches) |
+   | `receiving-code-review` | a batch of claims from a read that ran nothing; "Before applying a reviewer's fix"; every branch of a "can't happen" |
+   | `dispatching-parallel-agents` | where the report lives and how the agent ends; each helper's scratch sub-folder; stage by explicit path; "A Brief That Worked: Old Tests Re-Expressed After a Rule Change" |
+   | `executing-plans` | "each of these N sites" is a pointer; a branch that merged in another open branch |
+   | `brainstorming` | a pointer to the new reference `mockups-on-the-real-app.md` (the method, the traps of injecting into a live page, judging the proposal, showing it) |
+
 ## Updating
 
 There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply
-change 1 — then changes 3 and 4: `cp -a` overwrites every edited file (and keeps
-the added reference files), so diff each skill in the tables of changes 3 and 4
+change 1 — then changes 3, 4 and 5: `cp -a` overwrites every edited file (and keeps
+the added reference files), so diff each skill in the tables of changes 3, 4 and 5
 against the pre-refresh commit and carry the local lines forward:
 
 ```sh

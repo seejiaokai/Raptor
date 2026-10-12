@@ -39,6 +39,12 @@ For each task:
 3. Run verifications as specified
 4. Mark as completed
 
+A step that says "each of these N sites" is a pointer, not the scope: re-derive
+the full set with an exhaustive read-only sweep before building, and enforce
+the property with a test that observes every occurrence at runtime — the
+exemptions named inside the test — then break one site on purpose and watch it
+fail.
+
 ### Step 3: Complete Development
 
 After all tasks complete and verified:
@@ -46,6 +52,11 @@ After all tasks complete and verified:
   "add Y"), and list every one you did not follow, with the reason, before
   any review of the finished work. A deviation you surface is a decision; one
   the reviewer has to discover is a defect.
+- If this branch merged in another OPEN branch along the way, compare that
+  branch's head now with the commit you merged
+  (`git log <merged>..origin/<branch> -- <source folders>`) before the final
+  checks, and re-merge if code moved: a sibling's branch is a snapshot of work
+  still moving.
 - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
 - **REQUIRED SUB-SKILL:** Use finishing-a-development-branch
 - Follow that skill to verify tests, present options, execute choice

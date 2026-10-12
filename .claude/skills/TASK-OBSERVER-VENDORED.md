@@ -73,7 +73,11 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   the live files on the review branch; going live = his "merge live" (D60).
 - **Who reads the drafts (owner, D70):** Fable AND Astra, one round each, before
   he approves — never the model that wrote them. *(D590, 5 Oct 26: the two readers
-  are now Astra and Sol 6.1 — Fable's round went to Sol.)*
+  are now Astra and Sol 6.1 — Fable's round went to Sol.)* *(D810, 13 Oct 26 —
+  "u can use opus to do the review solely": for the 13 Oct 26 review ONLY, with the
+  ChatGPT readers out, the drafts are read by ONE fresh, blind Opus reader — an Opus
+  that did not write them and sees none of the writing chat's reasoning — not by
+  Fable; the two reads it goes without are on `OUTSTANDING.md` `[NO-ASTRA-LIST]`.)*
 - **Clean up when the review ends (owner, D69):** after installing, delete the
   holding folder (git keeps the drafts), move the resolved entries to
   `archive/` the same day, and delete the review's handoff note once merged.
@@ -93,6 +97,12 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **24 Sep 26 review (owner-approved, D146):** `SKILL.md` Numbering discipline item 4 gained the
   cross-branch check's silent failure (Git Bash rewrites `rev:path` unless
   `MSYS_NO_PATHCONV=1`) and "run it on the current branch first".
+- **13 Oct 26 review (owner-approved, D811; read by one fresh Opus reader, D810):** `SKILL.md` Acting on
+  Observations gained "A trap that recurs after it was logged is not logged again as a note". The
+  same review settled two more places lessons land: `raptor-port/docs/walk-scripts.md` (walk
+  scripts, walkers' briefs, break tests) and, inside the `brainstorming` skill,
+  `mockups-on-the-real-app.md`; and it filed the lessons that are really a tool to build as
+  backlog items instead of guide lines.
 
 ## Known caveats (not bugs)
 

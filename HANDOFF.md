@@ -8,12 +8,35 @@ in `OUTSTANDING.md`; where each kind of fact goes is `.claude/rules/doc-structur
 
 **Before acting on a block:** `git fetch`, then check the branch and PR it names — it describes the world when it
 was written. Never push while a PR's checks are running (`gh run list --branch <branch> --limit 1`; D151).
+Bring the checkout level BEFORE reading this file: a chat continuing a pushed branch runs `git pull --ff-only`; a fresh
+worktree has no upstream, so "git pull" pulls nothing there — `git fetch origin`, then `git merge --ff-only origin/main`.
+List the live chats (`ListAgents`): if the one that wrote
+the block is still running, or another already holds the item you were told to start, message it and agree who owns
+each remaining step before touching anything. If your opening message and the block's "Opening line" or "Pick up
+here" differ, name the difference to him and ask before starting.
 **Writing a block** (the session-handoff skill does it, at every handoff): rewrite ONLY your own block, between its
 markers, even when nothing is pending; newest block first; remove another chat's block only after `git fetch` shows
 its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel chats each keep their own block, and
 the later merge keeps both (D78).
 
 ## Now
+
+<!-- now:claude/skill-observation-review-258b48 -->
+### `claude/skill-observation-review-258b48` — `[SKILL-OBS-REVIEW]` (D794), THE REVIEW OF THE SKILL NOTES: DONE, APPROVED BY HIM (D811) AND INSTALLED ON THIS BRANCH; ITS PULL REQUEST WAITS FOR HIS "MERGE LIVE" — written 13 Oct 26, about 10:00 — verify before use
+- **Where it started:** his opening line (run the review as its own documents-only job) with "u can use opus to do the review solely" — D810: Opus ran it, and ONE fresh, blind Opus reader read the drafted guide changes; no Fable; the missing ChatGPT reads are on the no-ChatGPT list.
+- **Shipped on the branch (documents only):** all 272 open notes read and dispositioned — 264 closed as carried, 6 closed with no change on his word, 120 and 122 left open (D73). 24 files changed and two guides added: `raptor-port/docs/walk-scripts.md` (walk scripts, walkers' briefs, break tests) and `.claude/skills/brainstorming/mockups-on-the-real-app.md`. The checking guide also gained the two lines his own finds were owed (D811). What each skill gained: `.claude/skills/SUPERPOWERS-VENDORED.md` change 5. The reader's report and the table of all 272 notes are in git history (commit `75d5564d2`, `.claude/skill-updates/2026-10-13/_review/`); the resolved notes are `.claude/skill-observations/archive/log-2026-10-13.md`. Five memory notes and two additions were written on his PC (outside the repo).
+- **His rulings, both recorded:** D810 (who reads the guide changes of this review) and D811 ("Approve all" — and, minutes later, on the new-chat picker: picking the branch is usually automatic, the worktree box is not, so every handoff says whether to tick it; now a line of the session-handoff guide's Step 1).
+- **Unfinished:** none on this branch. Filed for later, each a small job: `[SHELL-SCRIPT-GUARD]` (his go to build it: D811), `[CHECK-TOOLS-HARDEN]`, `[HWW-RULINGS-SIZE]` (the general rulings file stands 51 bytes under its size marker — the next ruling recorded there may cross it).
+- **Branch:** `claude/skill-observation-review-258b48`; its pull request is the one open from it (`gh pr list --head claude/skill-observation-review-258b48`). Documents only: the gates do not run for it, the Docs guard does. It merges ONLY on his "merge live". NOT watched.
+- **Gates:** not run and not needed (no app code). `docsize: OK`.
+- **Open questions for him:** none.
+- **Running when written:** none.
+- **Parallel chat:** the Calendar chat (`claude/cal-phone-swipe-fit-2affa0`) appends skill notes from 560 upward; this chat used 542–544 of its 542–559, and rulings D810–D811 of its D810–D824. Whichever of the two merges second brings `main` in first (D78): the notebook's active file now holds only 120, 122 and 542–544, so that chat re-appends its own new notes at its end; `OUTSTANDING.md`, `HANDOFF.md` and the rulings files may need the usual merge care.
+- **Left for the next handoff:** the block below (`claude/after-oil-ask-notify`) is merged; it was NOT removed here — its question about four old preview servers on his PC is filed nowhere else, and the Calendar chat may be tidying the same block.
+- **Trap met:** once a review's drafts are committed, "put the live files back" after a rehearsal restores ONLY the live paths by name — a whole-tree restore rolls the drafts back too (skill note 542).
+- **Pick up here:** nothing to build. After his "merge live": merge when the Docs guard is green, then tell him; this block is removed at the next handoff.
+- **Opening line:** none needed — this branch wants no further chat. A new job: a new chat, tick "worktree", based on `main`.
+<!-- /now -->
 
 <!-- now:claude/after-oil-ask-notify -->
 ### `claude/after-oil-ask-notify` — `[OIL-ASK-NOTIFY]` IS MERGED (pull request #492, 13 Oct 26, his "merge live" — D791); THIS BRANCH IS THE RECORDS TIDY AFTER IT, DOCUMENTS ONLY, WAITING FOR ITS OWN "MERGE LIVE"; TWO JOBS ARE NEXT, SIDE BY SIDE (D794) — written 13 Oct 26, about 04:20 — verify before use
@@ -33,7 +56,7 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
-**RIGHT NOW (13 Oct 26):** `[OIL-ASK-NOTIFY]` is MERGED (pull request #492, 13 Oct 26 — D791) → **two jobs side by side, each in its own chat on `main` (his word, D794): `[CAL-PHONE-SWIPE-FIT]` — the Calendar window on a phone (D786, with the design guide) — and `[SKILL-OBS-REVIEW]` — the review of the skill notes, documents only** → the small Inputs / schedule batch (D793's build with the older small finds — the agent's placing) → `[TILL-FROM-DATES]` (D728 step 2) → the feature batches in D495's order: the Tracker, caps and ops limits, the one whole-app check (`OUTSTANDING.md` `[FEATURE-WISHLIST]`) → the database, at the end (D473). The two paragraphs of his word below (D775, D774) stand.
+**RIGHT NOW (13 Oct 26):** `[OIL-ASK-NOTIFY]` is MERGED (pull request #492, 13 Oct 26 — D791) → **two jobs side by side, each in its own chat on `main` (his word, D794): `[CAL-PHONE-SWIPE-FIT]` — the Calendar window on a phone (D786, with the design guide) — and `[SKILL-OBS-REVIEW]` — the review of the skill notes, documents only (DONE 13 Oct 26 on `claude/skill-observation-review-258b48`, approved by him — D811 — and waiting for his "merge live")** → the small Inputs / schedule batch (D793's build with the older small finds — the agent's placing) → `[TILL-FROM-DATES]` (D728 step 2) → the feature batches in D495's order: the Tracker, caps and ops limits, the one whole-app check (`OUTSTANDING.md` `[FEATURE-WISHLIST]`) → the database, at the end (D473). The two paragraphs of his word below (D775, D774) stand.
 
 **HIS WORD, 12 Oct 26 (D775): after the one-rule job is merged, the Tracker's and the Leave War's approved tidy-ups (`[TRK-FILE-TRANSFER-SPLIT]`, `[LW-ROWS-SPLIT]`) are done as jobs of their own — each started on his word, in its own chat, a worktree on `main`.**
 

@@ -72,6 +72,15 @@ You MUST complete each phase before proceeding to the next.
      every animation frame; pin it with a `MutationObserver` armed before the
      action, measuring in its callback — it runs at the microtask checkpoint,
      before the next rendering opportunity — never after a timeout
+   - An intermittent failure between two consecutive driver actions (type,
+     then Tab) is an ORDER, not a speed. Name the two actors that race — an
+     app timer or redraw, and the driver's next step (read the driver's own
+     source for its step boundaries) — and force the suspect order: in one
+     in-page task, or with a deliberate pause BETWEEN the two actions. A busy
+     machine widens that gap; slowing the whole page slows both sides alike
+     and reproduces nothing. Show which it is — the app never did it (mark
+     the element, watch for its replacement) or the test looked too early —
+     and prove the repair by running it WITH the pause that used to break it
 
 3. **Check Recent Changes**
    - What changed that could cause this?
@@ -93,9 +102,19 @@ You MUST complete each phase before proceeding to the next.
        — make each one fail fast (for Git on Windows, both
        `GIT_TERMINAL_PROMPT=0` and `GCM_INTERACTIVE=never`) and switch off
        optional network look-ups
+     - A browser test that fails only on one machine, by a consistent AMOUNT
+       (N rows, N px) in both directions, is a layout shift, not timing: a
+       transient element whose size depends on the environment (fonts,
+       display scaling, scrollbar width) is moving the page under the
+       pointer. Record geometry and DOM mutations per frame ON that machine,
+       and re-measure the same surface locally at other widths — the other
+       machine is often just another width. Where the app is what moves, fix
+       the app; the test then passes unchanged
    - Did YOUR last change cause it? A symptom that appears right after a fix
      may be the fix's side effect on top of behaviour the app had on
-     purpose — ask what the user expected before removing a deliberate rule
+     purpose — ask what the user expected before removing a deliberate rule.
+     Settle "is this mine?" by setting the change aside and running the
+     identical probe on the base revision: one run decides, reasoning does not
    - A cause someone else wrote down (a handoff, a review, an earlier chat)
      is a hypothesis: trust the symptom, re-measure the mechanism
 
@@ -210,6 +229,12 @@ You MUST complete each phase before proceeding to the next.
    - One-off test script if no framework
    - MUST have before fixing
    - Use the `test-driven-development` skill for writing proper failing tests
+   - A failure someone else reported (a walker, a reviewer): reproduce it in
+     the RUNNING app first, by the reported gesture, and check the expectation
+     is something the app promises — then write the test in the environment
+     that can hold the failing state. A layout-less unit test can fabricate a
+     state the product never reaches, and a fix for that state is dead code
+     with a green tick
 
 2. **Implement Single Fix**
    - Address the root cause identified

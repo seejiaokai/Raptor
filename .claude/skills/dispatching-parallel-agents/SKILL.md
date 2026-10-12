@@ -112,6 +112,16 @@ Do NOT just increase timeouts - find the real issue.
 Return: Summary of what you found and what you fixed.
 ```
 
+**Decide where the report lives, and how the agent ends, before dispatching.**
+A report that must be kept: an agent that may write files writes it to a named
+path and returns a short summary (the count, one line per finding, the path); a
+read-only agent is given a length cap, and the host saves its message once,
+verbatim, by a script — never by retyping it. Say how the agent ENDS: "send
+your report ONCE, after stopping every script and browser you started". And
+bound it: a helper's cost is set by its brief — a scenario count, a
+stop-and-report rule after N failed attempts at one step, and only the
+evidence actually needed.
+
 ## Common Mistakes
 
 **❌ Too broad:** "Fix all the tests" - agent gets lost
@@ -145,8 +155,16 @@ brief:
   agent owns as read-only, with an escape hatch: "report the change you need
   instead of making it". You apply cross-boundary edits when you integrate.
 - **Scratch files go in each agent's own scratch folder**, never the repo
-  tree. An untracked file an agent did not create belongs to someone else —
-  never delete or "restore" it.
+  tree — name each helper's own sub-folder or file prefix in its brief, or two
+  of them will pick the same output name. An untracked file an agent did not
+  create belongs to someone else — never delete or "restore" it.
+- **Stage by explicit path** in any checkout where someone else's files can
+  sit — a helper's half-finished output, another session's untracked folder:
+  never `-A`, `.` or a shared parent directory, and read the staged file count
+  before the commit. A commit should hold what its author did. This is how
+  the rule below is kept when your own commit cannot wait: only files you
+  finished go in, by name; nothing a running agent has written or may still
+  write is staged.
 - **Machine resources:** which test suites, ports and folders are already in
   use. Agents run named test files in the foreground, one at a time, and
   never re-run a suite they already started — backgrounded full runs pile up
@@ -156,6 +174,28 @@ brief:
 - **A stop applies to agents too.** If work must pause (plan mode, "stop"),
   stop every running agent that can write, then check `git status` and undo
   partial edits.
+
+## A Brief That Worked: Old Tests Re-Expressed After a Rule Change
+
+The builder's own new tests share the builder's picture of the change; the OLD
+tests are a list of situations somebody once found worth pinning. Translated
+onto the new rule by helpers who did not write the build, they are a second,
+independent scenario pass — it found eight to twelve product faults a step
+where the builder's own tests had found one. The brief:
+
+- disjoint file lists per helper; one file run at a time, in the foreground;
+  no git writes;
+- four allowed outcomes per old case and no others: the rule survives (rebuild
+  the fixture) · a named decision changed it (re-express it, cite the
+  decision) · the old rule still holds for old data (keep it as a legacy
+  case) · the subject is gone (pin what is true now, name what was retired);
+- no skip, no todo, no loosened assertion;
+- "a product fault is reported, never pinned: write the test for what SHOULD
+  happen and leave it failing";
+- "say which old cases were passing vacuously";
+- then a second scenario pass of the helper's own area.
+
+Read the reports for the faults before the pass counts.
 
 ## When NOT to Use
 

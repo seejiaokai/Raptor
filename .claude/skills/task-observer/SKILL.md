@@ -444,6 +444,16 @@ and staging rules. If an observation reveals a principle that applies to
 skills generally, propose it for the cross-cutting principles file (see the
 same reference).
 
+**A trap that recurs after it was logged is not logged again as a fresh note.**
+Add one dated line under the earlier entry ("met again <date>: <job>") — or, if
+that entry is closed, one new note citing its number — and propose the guard: a
+check inside the
+action that triggers it (a hook, a tool that refuses), or — where a safer way
+costs nothing extra — an unconditional default in place of a condition to
+judge each time ("scripts are always written to a file", not "unless it holds
+an apostrophe"). A lesson scanned at the start of a session is not in force at
+the moment it matters.
+
 **Close it where you apply it.** Whenever an observation's lesson lands
 anywhere — a skill, a project doc, a rules file, by you or at the user's
 request mid-task — mark that entry ACTIONED in the same change, naming where

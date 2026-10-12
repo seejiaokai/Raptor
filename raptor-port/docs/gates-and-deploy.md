@@ -35,6 +35,24 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
   and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
   `< /dev/null`.
+- **Six more, from the skill notes of 26 Sep – 9 Oct 26:**
+  **(1) Read only a results folder THIS run made.** A shared scratch folder still held another chat's summary from that
+  morning, and its "failed" lines were told to him as this run's. Name the folder for the branch and the time, and quote
+  the log's own start line.
+  **(2) While the gate set runs, nothing else runs on the PC** — not a build, a browser or a preview, and not a read-only
+  reviewer or a research helper either: the tests that are unsteady under load do not care what kind of work takes the
+  processor. Reviewers run while the builder is fixing; the gates run alone.
+  **(3) A `gatelock.mjs run` you STOP does not release the lock** — its release lives in the process you killed. Release
+  it yourself at once (`gatelock.mjs release`).
+  **(4) A lock near its two-hour mark is not stale by its age alone.** A lock taken by hand records the short-lived
+  `take` command, so "its process is gone" proves nothing: ask the chat that holds it before breaking it (28 Sep 26: a
+  queued run was three minutes from breaking a lock whose holder had just started its last suite). The waiting `take` or
+  `run` breaks it by itself at two hours — stop your own queued run while the holder is still working.
+  **(5) After resolving a merge conflict by hand, run each conflicted file's own check before the long run** — the test
+  file itself for a test, the type check for source. The type check does not cover the browser-test folder, and two
+  tests appended at the same place share their closing lines: read the join, not only the markers.
+  **(6) On this shared PC, stop only what you started, by its own id** — the harness's task id, the process id noted at
+  launch, the port. Never by a program's name: `taskkill /IM codex.exe` ends every chat's reviewer.
 - **`gatelock.mjs run --from <folder>` is read from the folder the command runs in** (met 7 Oct 26): started from inside
   `raptor-port/` with `--from raptor-port`, it looks for `raptor-port/raptor-port`, and all seven gates "FAIL" in 0 seconds
   with empty logs — a launch fault, not a result. From inside `raptor-port/` leave `--from` out (it defaults to that folder).

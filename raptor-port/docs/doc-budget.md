@@ -74,7 +74,10 @@ Stale is worse than absent — the next session trusts it.
   duplicated, when an archive line is removed, when an item moved to the archive arrived
   truncated, or when a body line is newly doubled. It runs in CI (`docs-guard.yml`, which exists
   because docs-only changes otherwise run no checks at all) and as a Stop hook at the end of every
-  turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]`.
+  turn. A deliberate exception is declared in the commit: `Docs-guard-allow: [ID]` (the same value in the
+  `DOCSGUARD_ALLOW` environment setting while `backlog-archive.mjs` runs before that commit exists). Where one item
+  was filed on two branches, the later merge drops the older copy, leaves the kept copy's own lines untouched — a
+  line is ADDED to it, never edited — and declares the dropped heading this way.
 - **The ceilings — TRIPWIRES, not targets** (D141, 24 Sep 26). Each always-read file has a line ceiling; **each loaded
   rulings file a tripwire in UTF-8 bytes of the whole file** (D390, 28 Sep 26 — each ruling is one line, so a line count
   cannot see it grow; every area file must have one, and crossing it means split the area or raise it with its reason). Crossing it means "look at what in this file does not belong here and move it to its home" (`.claude/rules/doc-structure.md`) — never "cut to a number"; when what crossed it genuinely belongs, the ceiling RISES with its reason. **Over a ceiling inside a code change

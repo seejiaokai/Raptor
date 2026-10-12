@@ -75,9 +75,11 @@ half).
   walk, TAKE the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`); if it is held, WAIT (check every
   few minutes; never start alongside); RELEASE it the moment the run ends, pass or fail (`… gatelock.mjs release`, or
-  delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and always releases. A lock older
-  than 2 hours whose run is plainly over is stale — break it and say so. One test file, a typecheck or one walk script
-  needs no lock. The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
+  delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and releases when it ends — a run you
+  STOP does not: release it yourself at once. A lock older than 2 hours whose run is plainly over is stale — break it and
+  say so (ask its holder first while a chat that could hold it is open). One UNIT test file, a typecheck or one walk script
+  on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits until the lock is free.
+  The folder sits OUTSIDE every checkout, so every worktree on the PC shares it.
 - **Parallel chats talk to each other so they do not clash (D302, 27 Sep 26 — "Can all 3 chats communicate so that there
   will not be clashing … U guys handle it").** Before changing a file or function another open chat's branch also
   changes (compare the branches: `git diff --name-only $(git merge-base origin/main <branch>) <branch>`), message that
