@@ -261,6 +261,9 @@ and where a sideways swipe works on the month and on the Holidays list; a phone 
 `docs/mock/2026-10-13-cal-swipe-fit/`. `scripts/handpass/calswipe-mock.mjs` draws them: it serves the built app itself
 for the length of the run (no preview server is left behind), drives the real Calendar window by real taps, pictures it,
 then sets the app's own small month — copied as drawn out of the real "Add a holiday" window — into "Every Thursday".
+`scripts/handpass/calswipe-mock2.mjs` draws the page's part 3 the same way (his "show me how it looks like first"): the
+app's other date boxes that are still the phone's own — a new person's Post in, Admin → Data's "Older than", the Leave
+War's "PO from" — each as built and with that field drawn where the box stood (pictures `o390-*`).
 
 `[OIL-ASK-NOTIFY]` — THE BUILD (12–13 Oct 26; D780–D784; the plan `docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md`,
 its register `docs/superpowers/specs/2026-10-12-oil-ask-notify-behaviour-register.md`, ON1–ON16). NEW: `src/ui/oilwait.ts`

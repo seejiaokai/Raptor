@@ -7016,6 +7016,12 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
 - **TO BE BUILT — D786 (owner, 13 Oct 26; `OUTSTANDING.md` `[CAL-PHONE-SWIPE-FIT]`):** on a phone a swipe sideways on the month goes to
   the next or the last month, and on the Holidays list to the next or the last year (the arrows and "Today" stay); and the
   "Every <weekday>" window's From date box fits inside the window at any phone width — on his iPhone it ran off the right edge.
+  **How, as he approved it drawn (D795, 13 Oct 26 — `docs/mock/cal-swipe-fit.html`):** the From date and Until's "A date" become
+  the app's OWN date field — the date in words ("Thu 5 Nov 2026"), a tap opening the small month the holiday form uses under
+  it, any date pickable with the window's weekday standing out — so nothing of the phone's own date box is left in the window
+  (its 8 Oct 26 "fit" rules did not hold on his iPhone); the swipe is the Inputs calendar's own recipe (§Gestures on the month
+  grid: 50px, more sideways than up-and-down, the new page sliding in), live anywhere on the month or the Holidays list, and a
+  swipe that starts on a date's button turns the page and presses nothing.
 - **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
   <weekday>" and is lit while that window is up.
 - **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days
