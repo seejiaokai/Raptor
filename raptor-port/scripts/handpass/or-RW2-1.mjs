@@ -1,0 +1,50 @@
+// RW2-1: C11 again - History / the changes window names the man added / taken out; taps land on his puck. Desktop 1440x900. One world.
+import * as L from './or-RW2-lib.mjs'
+const { browser, page: p, errs } = await L.openWorld()
+const DI = 2, ISO = '2026-07-15'
+const j = o => JSON.stringify(o)
+const mt = (await L.fileInput(p, { type: 'Meeting', people: ['Drifter', 'Hunter', 'Ranger'], from: ISO, to: ISO, timed: ['09:00', '10:00'], title: 'Range brief' }))[0]
+const iid = mt.iid
+const day = () => p.locator('#eWeek .day:not(.peek)').nth(DI)
+const people = () => p.evaluate(id => window.INPUTS.find(x => x.iid === id).people.map(e => window.PEOPLE[e.p]?.cs), iid)
+await L.goEdit(p)
+let ri = await L.rowIdx(p, DI, iid)
+await day().locator(`[data-fill="g:${DI}.${ri}.+"]`).first().scrollIntoViewIfNeeded(); await p.evaluate(() => window.scrollBy(0, 120)); await p.waitForTimeout(300)
+let m = await L.toastMark(p)
+await L.drag(p, p.locator(`#eRoster .rpuck[data-person="${await L.csId(p, 'Tally')}"]:visible`).first(), day().locator(`[data-fill="g:${DI}.${ri}.+"] .addz`).first())
+console.log('Tally added toast:', await L.toastsSince(p, m), '| people:', j(await people()))
+const hid = await L.csId(p, 'Hunter')
+m = await L.toastMark(p)
+await day().locator(`[data-fill="g:${DI}.${ri}.+"] [data-person="${hid}"]`).first().click({ button: 'right' }); await p.waitForTimeout(500)
+console.log('Hunter out toast:', await L.toastsSince(p, m), '| people:', j(await people()))
+await L.shot(p, 'rw2-1-0-row-before-retime')
+const e = day().locator(`[data-txt="gr:${DI}.${ri}.end"]`); await e.click(); await p.keyboard.press('Control+A'); await p.keyboard.type('11:00'); await e.evaluate(x => x.blur()); await p.waitForTimeout(500)
+console.log('re-timed:', await p.evaluate(id => { const r = window.INPUTS.find(x => x.iid === id); return r.s + '-' + r.e }, iid), '| people:', j(await people()))
+
+await p.locator('#histBtn').click(); await p.waitForTimeout(700)
+const win = async () => p.evaluate(() => { const w = document.querySelector('.chgwin:not([hidden])'); if (!w) return null; return { title: (w.querySelector('.win-ttl')?.innerText || '').replace(/\s+/g, ' '), tabs: [...w.querySelectorAll('.win-tab')].map(t => t.innerText.replace(/\s+/g, ' ').trim()), text: (w.innerText || '').replace(/\s+/g, ' ').slice(0, 1200) } })
+console.log('window (first tab):', j(await win()))
+await L.shot(p, 'rw2-1-1-window')
+await p.locator('.chgwin .win-tab', { hasText: 'All changes' }).click(); await p.waitForTimeout(400)
+await p.locator('.chgwin .cw-day', { hasText: 'Wed' }).click(); await p.waitForTimeout(400)
+const w1 = await win()
+console.log('ALL CHANGES / Wed window:', j(w1))
+console.log('lines (cw-l):', j(await p.evaluate(() => [...document.querySelectorAll('.chgwin .cw-l, .chgwin .cw-gh')].map(b => b.className.slice(0, 12) + ' :: ' + (b.innerText || '').replace(/\s+/g, ' ')))))
+await L.shot(p, 'rw2-1-2-all-changes')
+const flash = () => p.evaluate(() => [...document.querySelectorAll('.lift-land, .chgflash, .hl-jump, .jumpflash, [class*=flash]')].filter(e => e.getClientRects().length).map(e => ({ cls: e.className.toString().slice(0, 40), puck: (e.closest('.puck') ? e.closest('.puck').innerText : (e.matches('.puck') ? e.innerText : '')).replace(/\s+/g, ' ').trim(), text: (e.innerText || '').replace(/\s+/g, ' ').slice(0, 50), inprow: e.dataset.inprow || e.closest('[data-inprow]')?.dataset.inprow || null, fill: e.closest('[data-fill]')?.dataset.fill || null }))).catch(() => [])
+const rowBox = async () => { const ri2 = await L.rowIdx(p, DI, iid); return p.evaluate(([di, ri]) => { const z = document.querySelectorAll('#eWeek .day:not(.peek)')[di]; const f = z && z.querySelector('[data-fill="g:' + di + '.' + ri + '.+"]'); if (!f) return null; const r = f.getBoundingClientRect(); return { top: Math.round(r.top), inView: r.top >= 60 && r.bottom <= window.innerHeight } }, [DI, ri2]) }
+await day().locator('.sec-grnd').first().scrollIntoViewIfNeeded(); await p.evaluate(() => window.scrollBy(0, -700)); await p.waitForTimeout(300)
+for (const label of ['added', 'taken out']) {
+  const l = p.locator('.chgwin .cw-l', { hasText: new RegExp('15 Jul · ' + label) }).first()
+  const cnt = await p.locator('.chgwin .cw-l', { hasText: new RegExp('15 Jul · ' + label) }).count()
+  const m2 = await L.toastMark(p)
+  await l.click(); await p.waitForTimeout(250)
+  const f = await flash(), rb = await rowBox()
+  await L.shot(p, 'rw2-1-3-tap-' + label.replace(' ', ''))
+  console.log('TAP "' + label + '" (lines matching: ' + cnt + ') toast =', await L.toastsSince(p, m2), '| flash:', j(f), '| row:', j(rb), '| window open:', !!(await win()))
+  await p.waitForTimeout(1200)
+  console.log('   flash 1.4s later:', j(await flash()))
+}
+console.log('ERRORS', errs.join(' | ') || 'none')
+await L.savePart('1')
+await browser.close()
