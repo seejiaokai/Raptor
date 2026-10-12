@@ -1,0 +1,37 @@
+// Walker C, C4 - nobody counts twice (desktop 1440x900).
+import * as L from './or-C-lib.mjs'
+const { browser, page: p, errs } = await L.openWorld()
+const DI = 5, ISO = '2026-07-18'
+const j = o => JSON.stringify(o)
+const tr = (await L.fileInput(p, { type: 'Training', people: ['Ranger', 'Tally'], ph: 'allavail', from: ISO, to: ISO, timed: ['09:00', '12:00'], oil: 'yes' }))[0]
+console.log('filed', j(tr), '| record:', await L.recRaw(p, tr.iid))
+const key = `i:${tr.iid}`
+const chipNow = () => p.evaluate(k => { const c = document.querySelector(`#schedBoard [data-oilsent="${k}"]`); return c ? c.textContent.trim() + ' | ' + (c.getAttribute('title') || '') : '(no chip)' }, key)
+const panel = () => p.evaluate(() => { const t = (document.querySelector('#schedBoard').innerText || '').replace(/\s+/g, ' '); const i = t.indexOf('OIL EARN'); return t.slice(i, i + 260) })
+await L.oilOn(p, DI, true)
+console.log('the OIL panel:', await panel())
+console.log('seats:', j((await L.oilSeats(p, tr.iid)).seats), '| chip:', await chipNow())
+await L.openCrowd(p, key)
+const c0 = await L.crowd(p)
+const hasR = c0.rows.some(r => r.cs === 'Ranger'), hasT = c0.rows.some(r => r.cs === 'Tally')
+console.log('window (who is available tab) tabs', j(c0.tabs), '| rows', c0.rows.length, '| Ranger behind it:', hasR, '| Tally behind it:', hasT)
+await L.crowdTab(p, /earns OIL/i)
+const c1 = await L.crowd(p)
+console.log('earns tab: tabs', j(c1.tabs), '| Ranger behind it:', c1.rows.some(r => r.cs === 'Ranger'), '| Tally behind it:', c1.rows.some(r => r.cs === 'Tally'))
+await L.shot(p, 'c4-1-window')
+await L.crowdClose(p)
+// Ranger off on his own puck
+const rid = await L.csId(p, 'Ranger')
+const seat = p.locator(`#schedBoard .sb-panel.grnd [data-oilitem="${key}"][data-oilp="${rid}"]`).first()
+await seat.scrollIntoViewIfNeeded()
+let m = await L.toastMark(p)
+await seat.click(); await p.waitForTimeout(500)
+console.log('Ranger tapped off: toast', await L.toastsSince(p, m), '| seats:', j((await L.oilSeats(p, tr.iid)).seats), '| chip:', await chipNow())
+console.log('the OIL panel:', await panel())
+await L.shot(p, 'c4-2-ranger-off')
+await L.openCrowd(p, key); await L.crowdTab(p, /earns OIL/i)
+const c2 = await L.crowd(p)
+console.log('window after: tabs', j(c2.tabs), '| rows', c2.rows.length, '| Ranger behind it:', c2.rows.some(r => r.cs === 'Ranger'), '| Tally behind it:', c2.rows.some(r => r.cs === 'Tally'))
+await L.shot(p, 'c4-3-window-after')
+console.log('ERRORS', errs.join(' | ') || 'none')
+await browser.close()

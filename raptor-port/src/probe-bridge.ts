@@ -8,6 +8,7 @@
 import { DAYS } from './engine/data'
 import { posKey } from './engine/rowids'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
+import { NOTICES } from './state/notices'
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
@@ -26,7 +27,7 @@ import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
 import { collectEvents, scSeatHit, avSeatHit } from './engine/events'
 import { reqRowText } from './ui/reqrow'
-import { groupWrite } from './ui/grouprow'
+import { rowWrite } from './ui/reqdoor'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff, dayAway, sansGate, SANS_LABEL } from './engine/avail'
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
@@ -64,6 +65,7 @@ export function installProbeBridge() {
   const w = window as any
   /* the engine singletons the probes read */
   w.DAYS = DAYS; w.PEOPLE = PEOPLE; w.INPUTS = INPUTS; w.VCONF = VCONF
+  w.NOTICES = NOTICES   // the bell's notices (state/notices.ts) — read by the walk scripts
   w.SCHED = SCHED
   /* WARN/REST/EVD are REASSIGNED by every validate() — getters, or a probe
      reads the pre-validate snapshot */
@@ -86,11 +88,12 @@ export function installProbeBridge() {
      getter for the same reason STORE_CFG is */
   Object.defineProperty(w, 'CXR_CFG', { get: () => CXR_CFG, configurable: true })
   /* the mutation funnel + validation */
-  /* a person written to a place goes through the one row's door first, as every door of the app does (owner D734 —
-     ui/grouprow.ts): on a shared input's row the INPUT changes; anywhere else the write is the engine's, as before */
+  /* a person written to a place goes through the input row's door first, as every door of the app does (owner D755 —
+     ui/reqdoor.ts rowWrite; first D734): on ANY input's row the INPUT changes; anywhere else the write is the engine's,
+     as before */
   w.slotVal = slotVal
-  w.setSlotVal = (k: any, id: any) => { const g = groupWrite(k, id); return g === 'none' ? setSlotVal(k, id) : g === 'done' }
-  w.fillSlot = (k: any, id: any) => { const g = groupWrite(k, id); return g === 'none' ? fillSlot(k, id) : g === 'done' }
+  w.setSlotVal = (k: any, id: any) => { const g = rowWrite(k, id); return g === 'none' ? setSlotVal(k, id) : g === 'done' }
+  w.fillSlot = (k: any, id: any) => { const g = rowWrite(k, id); return g === 'none' ? fillSlot(k, id) : g === 'done' }
   /* a change line carries its place by the row's id; a walk names a place by where it is drawn ([HIST-JUMP-EMPTY-SEAT]) */
   w.posKey = (k: any) => posKey(k, DAYS)
   /* a request's row: its name, its times and its remark are the request's (owner D739, D740) — a probe that types there

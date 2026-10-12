@@ -4,20 +4,35 @@
    On a published day, a change in who stands behind an ALL / ALL AVAIL puck is one line of the "To go out" list: the
    row's name, who left, who joined, and a tap that takes the schedule to it (D99, D44). The line was found by the row's
    own id — and a REQUEST's row is addressed by its request (`i:<request id>`), which that lookup never resolved. So a
-   request row's crowd change read "A placeholder · who it stands for": no row named, nothing to tap. Older for a
-   Training row; phase 7 makes a Personal row reach it too. */
+   request row's crowd change read "A placeholder · who it stands for": no row named, nothing to tap.
+
+   RE-BUILT ON THE ONE RULE ([ALL-AVAIL-AS-MEMBER] step 2; owner D755, D753, D712 — the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3, §4.7). A request's row has a crowd only where the
+   placeholder is one of the INPUT's own people: an input FILED for ALL AVAIL alone, and — since step 3 of the build
+   (12 Oct 26; D750, D753, D755, D757) — ALL AVAIL BESIDE a named man in his request, which is the case this file was
+   first written for. Then it wrote the puck straight onto the man's row (`more: ['allavail']` — the row's own extra,
+   D46); a raw write is swept by the re-make now, and the door makes one instead: it is put in the input, by the row's
+   door or held in the record's list, and the row is landed from the input by the engine's own body (overlay.ts
+   viewOfWeek), never written by hand. And a Personal request's row holds no placeholder at all (D755 (4): "a Personal
+   input is one person's own") — phase 7's "a Personal row reaches the line too" went with that: what is pinned for it
+   now is that the hand is refused, and that such a row has no crowd to change. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf, placeholderOf } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { ensureRowIds } from '../engine/rowids'
+import { viewOfWeek } from '../engine/overlay'
+import { fillSlot, setSlotVal } from '../engine/slots'
+import { writeFill } from '../state/store'
+import { setSession } from '../state/auth'
+import { rowPut } from './reqdoor'
 import { pendListHTML } from './pendlist'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 const TUE = 1, TUE_ISO = '2026-07-14'
-const earningDay = HOOKS.oilEarningDay, dayISO = HOOKS.oilDayISO, sentinel = HOOKS.oilSentinel
+const earningDay = HOOKS.oilEarningDay, dayISO = HOOKS.oilDayISO, sentinel = HOOKS.oilSentinel, toast = HOOKS.toast
 let CROWD = ['bane', 'stiff', 'plasma']
 
 beforeEach(() => {
@@ -33,28 +48,116 @@ beforeEach(() => {
   HOOKS.oilDayISO = (di: number) => (di === TUE ? TUE_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => CROWD.slice()
 })
-afterEach(() => { HOOKS.oilEarningDay = earningDay; HOOKS.oilDayISO = dayISO; HOOKS.oilSentinel = sentinel })
+afterEach(() => { HOOKS.oilEarningDay = earningDay; HOOKS.oilDayISO = dayISO; HOOKS.oilSentinel = sentinel; HOOKS.toast = toast; setSession(null) })
 
 const publish = (di: number) => {
   const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
   setDayApproved(di, true)
 }
-/* a request landed on the Tuesday with ALL AVAIL under its row, then published; then one man is no longer free — for a
-   reason that is NOT an input (so the line is the crowd's own, never folded into a leave's) */
-const world = (type: string, prog: string) => {
-  INPUTS.unshift({ iid: 'rq1', person: 'ignite', type, date: 'Jul 14', yr: 2026, acc: 'g', allday: false, s: 9 * 60, e: 17 * 60, remarks: '', mod: '2026-07-01' })
-  ;(DAYS[TUE] as any).ground = [{ prog, str: '0900', end: '1700', who: 'ignite', src: 'rq1', srcType: type, more: ['allavail'] }]
+/* a request for the Tuesday, 09:00–17:00, its row LANDED from it — the engine's own landing, as every read of the week
+   makes it (the row is a whole copy of the input: its name, its times, its people) */
+const request = (over: any) => {
+  INPUTS.unshift({ iid: 'rq1', by: 'stiff', at: 1, date: 'Jul 14', yr: 2026, allday: false, s: 9 * 60, e: 17 * 60, remarks: '', mod: '2026-07-01', ...over })
+  viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
   ensureRowIds(DAYS)
-  publish(TUE)
-  CROWD = ['bane', 'stiff']
-  expect(dayHasChanges(TUE), 'the crowd changed: the day reads pending').toBe(true)
-  return pendListHTML(TUE)
+  const rows = ((DAYS[TUE] as any).ground as any[]).filter(g => g && g.src === 'rq1')
+  expect(rows, 'ONE row, on its day').toHaveLength(1)
+  return rows[0]
 }
 
 describe('a request row\'s crowd change is named by its row and can be tapped (Fable F3)', () => {
-  it.each([['Personal', 'PERSONAL'], ['Training', 'TRAINING']])('a %s request\'s row', (type, prog) => {
-    const html = world(type, prog)
-    expect(html).toContain(`${prog} · who it stands for`)
+  /* the input filed for ALL AVAIL alone, in the shape the list holds it since the build (`people`) and in the shape a
+     record stored before it has (`person`) — one row, one crowd, one line either way. Then the day is published, and
+     one man is no longer free — for a reason that is NOT an input (so the line is the crowd's own, never folded into a
+     leave's) */
+  it.each([
+    ['its list of people', { people: [{ p: 'allavail', by: 'stiff', at: 1 }] }],
+    ['one person (a record stored before the build)', { person: 'allavail' }],
+  ])('a Training request FILED for ALL AVAIL — held as %s', (_shape, who) => {
+    const row = request({ type: 'Training', ...who })
+    expect([row.prog, row.who, row.more], 'the placeholder stands in the row\'s name box').toEqual(['TRAINING', 'allavail', undefined])
+    publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
+    CROWD = ['bane', 'stiff']
+    expect(dayHasChanges(TUE), 'the crowd changed: the day reads pending').toBe(true)
+    const html = pendListHTML(TUE)
+    expect(html).toContain('TRAINING · who it stands for')
+    expect(html, 'never the nameless line').not.toContain('A placeholder')
+    expect(html, 'and it is a line you can tap to go there').toMatch(/<button class="pl-item" data-plix="\d+"/)
+  })
+
+  /* ALL AVAIL UNDER A NAMED MAN'S REQUEST — the case this file began with ("a Training request's row", `who: 'ignite',
+     more: ['allavail']`, written by hand). A NAMED RULING CHANGED THE RULE (2): then the puck was the row's own extra
+     (D46) and its crowd was filed under the man's request; D755 makes it one of the INPUT's people ("a named person or
+     ALL AVAIL / ALL, whoever put them there"), D750 ties it to no man. What the case pinned survives: the crowd's
+     change is named by the row and can be tapped. Made the two ways the app makes it — held in the record's list (an
+     input filed for a man and ALL AVAIL), and put on the man's row through its door. */
+  it.each([
+    ['filed for him and ALL AVAIL together', (): void => { request({ type: 'Training', people: [{ p: 'ignite', by: 'stiff', at: 1 }, { p: 'allavail', by: 'stiff', at: 1 }] }) }],
+    ['ALL AVAIL put on his row through the row\'s door', (): void => {
+      const row = request({ type: 'Training', people: [{ p: 'ignite', by: 'stiff', at: 1 }] })
+      expect([row.who, row.more], 'as he filed it: his row, him alone').toEqual(['ignite', undefined])
+      setSession({ user: 'ad', role: 'admin', name: 'ad' })
+      expect(rowPut(`g:${TUE}.${((DAYS[TUE] as any).ground as any[]).indexOf(row)}.+`, 'allavail'), 'the row\'s door').toBe('done')
+      viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
+      ensureRowIds(DAYS)
+    }],
+  ])('a NAMED man\'s Training request with ALL AVAIL beside him — %s (D755, D750)', (_how, make) => {
+    HOOKS.toast = () => {}
+    make()
+    const rows = ((DAYS[TUE] as any).ground as any[]).filter(g => g && g.src === 'rq1')
+    expect(rows, 'ONE row').toHaveLength(1)
+    expect(idsOf(INPUTS.find((r: any) => r.iid === 'rq1')).map(String), 'it is IN the input').toEqual(['ignite', 'allavail'])
+    expect([rows[0].prog, rows[0].who, rows[0].more], 'the man in the name box, the placeholder under him').toEqual(['TRAINING', 'ignite', ['allavail']])
+    publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
+    CROWD = ['bane', 'stiff']
+    expect(dayHasChanges(TUE), 'the crowd changed: the day reads pending').toBe(true)
+    const html = pendListHTML(TUE)
+    expect(html).toContain('TRAINING · who it stands for')
+    expect(html, 'never the nameless line').not.toContain('A placeholder')
+    expect(html, 'and it is a line you can tap to go there').toMatch(/<button class="pl-item" data-plix="\d+"/)
+  })
+
+  /* …and the man NAMED in the input is never one of the men behind its ALL AVAIL (the plan §4.7: the crowd written
+     down never holds a named person) — so whether he reads "free" or not is no change to who the puck stands for:
+     nothing is waiting, and no line is drawn for it. */
+  it('the man named beside ALL AVAIL is not behind it: his own coming and going from "who is free" is nothing waiting on the published day', () => {
+    CROWD = ['ignite', 'bane', 'stiff', 'plasma']
+    request({ type: 'Training', people: [{ p: 'ignite', by: 'stiff', at: 1 }, { p: 'allavail', by: 'stiff', at: 1 }] })
+    publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
+    CROWD = ['bane', 'stiff', 'plasma']
+    expect(dayHasChanges(TUE), 'he was never one of them').toBe(false)
+    expect(pendListHTML(TUE)).not.toContain('who it stands for')
+    CROWD = ['bane', 'stiff']
+    expect(dayHasChanges(TUE), 'THE CONTROL: a man who IS behind it going is a change').toBe(true)
+    expect(pendListHTML(TUE)).toContain('TRAINING · who it stands for')
+  })
+
+  /* A PERSONAL REQUEST'S ROW REACHES IT TOO — the subject phase 7 added here, BACK since D778 (12 Oct 26: "So all avail
+     all can go on personal"). Between the one-rule build's step 2 and that ruling ALL AVAIL was refused on a Personal
+     row at every door (D755 (4), D712), and this case pinned the refusal and "nothing is waiting". Now the puck is one
+     of the input's people there as on any input's row; its crowd is written down (membership only — a Personal input
+     earns nobody anything, oilev.ts), frozen when the day goes out, and a change in who is free is named by its row
+     and can be tapped — the same line a Training's row gets. */
+  it('a Personal request\'s row holds ALL AVAIL as any input\'s does (D778): its crowd change is named by the row and can be tapped', () => {
+    const row = request({ type: 'Personal', people: [{ p: 'ignite', by: 'stiff', at: 1 }] })
+    const ri = ((DAYS[TUE] as any).ground as any[]).indexOf(row), add = `g:${TUE}.${ri}.+`
+    HOOKS.toast = () => {}
+    setSession({ user: 'ad', role: 'admin', name: 'ad' })
+    expect(rowPut(add, 'allavail'), 'the row\'s door').toBe('done')
+    viewOfWeek('13/07/2026', DAYS as any[], { loaded: true, issued: () => null })
+    ensureRowIds(DAYS)
+    expect(idsOf(INPUTS.find((r: any) => r.iid === 'rq1')).map(String), 'it is IN the input').toEqual(['ignite', 'allavail'])
+    const now = ((DAYS[TUE] as any).ground as any[]).find(g => g && g.src === 'rq1')
+    expect([now.who, now.more], 'the man in the name box, the placeholder under him').toEqual(['ignite', ['allavail']])
+    publish(TUE)
+    expect(dayHasChanges(TUE), 'published clean').toBe(false)
+    CROWD = ['bane', 'stiff']
+    expect(dayHasChanges(TUE), 'the crowd changed: the day reads pending').toBe(true)
+    const html = pendListHTML(TUE)
+    expect(html).toContain('PERSONAL · who it stands for')
     expect(html, 'never the nameless line').not.toContain('A placeholder')
     expect(html, 'and it is a line you can tap to go there').toMatch(/<button class="pl-item" data-plix="\d+"/)
   })

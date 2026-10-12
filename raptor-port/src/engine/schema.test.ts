@@ -92,7 +92,9 @@ const PERSON: Spec = {
   ord: 'number?',   // the roster's order, on each person ([DB-READINESS] group A, phase 2)
 }
 const inputSpec = (booted: boolean): Spec => ({
-  iid: booted ? 'string' : 'string?', person: 'string', date: 'string', endDate: 'string?', yr: 'number?', allday: 'boolean',
+  iid: booted ? 'string' : 'string?', person: 'string?', date: 'string',
+  /* its people (the one-rule build, D756): a record has `people`, or — in the old shape, every verbatim seed — `person` */
+  people: { $opt: [{ p: 'string', by: 'string?', at: 'number?', mod: 'string?', h: 'number?' }] }, endDate: 'string?', yr: 'number?', allday: 'boolean',
   s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?', title: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
@@ -103,7 +105,9 @@ const inputSpec = (booted: boolean): Spec => ({
      step 1 of the Inputs / SANS job, but no SEED did, so this mirror never met them; the demo seed carries them now
      (state/demoseed.ts seedDemoStamps), which is how the gap was found */
   by: { $opt: 'string' }, at: { $opt: 'number' }, modBy: { $opt: 'string' }, modAt: { $opt: 'number' },
-  /* an input filed for a group: its group id and the entry's filer (owner D654, D655; state/inputgroup.ts) */
+  /* the OLD shape of an input filed for a group — its group id and the entry's filer (owner D654, D655). Written by no
+     door since the one-rule build (12 Oct 26, D756: one record with `people`); a record stored before it may still carry
+     them and reads as a one-person input (engine/inputs.ts peopleOf; engine/schema.ts Input.grp) */
   grp: { $opt: 'string' }, grpBy: { $opt: 'string' },
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
@@ -119,7 +123,8 @@ const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }
 /* [OIL-AUTO-REMOVE] — the day's OIL decisions (stored day content) and, on an
    ISSUED SNAPSHOT'S day copy only, the frozen evidence block. engine/oilev.ts. */
 const OILDEC: Spec = { blanket: { $opt: { $lit: [1] } }, items: { $opt: { $map: 'number' } }, people: { $opt: { $map: 'string' } }, pa: { $opt: { $map: 'number' } } }
-const OILINP: Spec = { iid: 'string', person: 'string', type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
+/* a claim: its people and placeholder since the one-rule build; `person` on a block frozen before it */
+const OILINP: Spec = { iid: 'string', person: 'string?', people: { $opt: ['string'] }, ph: { $opt: { $or: ['string', 'null'] } }, type: 'string', asks: 'boolean', acc: 'string', win: { $or: [['number'], 'null'] }, ans: { $or: ['number', 'null'] } }
 const OILEV: Spec = { iso: 'string', earns: 'boolean', d: OILDEC, inputs: [OILINP], sent: { $map: ['string'] }, mem: { $opt: { $lit: [1] } } }
 const DAY: Spec = {
   dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: [{ rid: 'string?', t: 'string' }], allhands: [ALLHANDS], waves: [WAVE],
@@ -181,7 +186,10 @@ const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string', ord: 'number?' },
   { id: 'string', date: 'string', kind: { $lit: ['pucks'] }, ids: ['string'], ord: 'number?' },
 ] }
-const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' } }
+/* a line of a person's bell (state/notices.ts; schema.ts NoticeRec) */
+const NOTICE: Spec = { id: 'string', to: 'string', by: { $or: ['string', 'null'] }, at: 'number', iid: 'string', name: 'string', day: 'string',
+  what: [{ k: { $lit: ['del', 'in', 'out', 'cx', 'uncx', 'off', 'on', 'when', 'add', 'rem', 'title', 'rmk'] }, why: 'string?', a: 'string?', b: 'string?', t: 'string?', who: { $opt: ['string'] }, was: 'string?' }] }
+const WEEK_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], i: [inputSpec(true)], wo: ['string'], pp: [PUCK], dm: { $map: 'string' }, nt: { $opt: [NOTICE] } }
 const STASH_SNAP: Spec = { ...SCHED_FIELDS, d: [DAY], wo: ['string'] }
 
 /* pristine copies, taken at import before any test boots the store: the

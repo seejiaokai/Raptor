@@ -1,0 +1,151 @@
+{
+ "a": {
+  "wedLL": [
+   {
+    "text": "LL Drifter A till 16 Jul",
+    "people": [
+     "Drifter"
+    ],
+    "seat": [
+     "imqoidgg0qqfs30~slipway"
+    ]
+   },
+   {
+    "text": "LL C Hex C till 16 Jul",
+    "people": [
+     "Hex"
+    ],
+    "seat": [
+     "imqoidgg0qqfs30~rocky"
+    ]
+   },
+   {
+    "text": "LL Tally O till 16 Jul",
+    "people": [
+     "Tally"
+    ],
+    "seat": [
+     "imqoidgg0qqfs30~nick"
+    ]
+   }
+  ],
+  "thuLL": [
+   "Drifter",
+   "Hex",
+   "Tally"
+  ],
+  "inputs": [
+   {
+    "iid": "imqoidgg0qqfs30",
+    "people": [
+     "Drifter",
+     "Hex",
+     "Tally"
+    ],
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "cal": {
+   "barText": "ALL | LL | Quill · LL | 3 · LL | Tally · LL",
+   "card": "⠿ Wed 15 Jul + Note ✕ + Input 5 INPUTS All day CobraOL Overseas leave — off island By Saber till 16 Jul Drifter, Hex, TallyLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island"
+  },
+  "lw": "slipway 07-14: \"\" ; slipway 07-15: \"LL\" ; slipway 07-16: \"LL\" ; slipway 07-17: \"\"\nrocky 07-14: \"\" ; rocky 07-15: \"LL\" ; rocky 07-16: \"LL\" ; rocky 07-17: \"\""
+ },
+ "b": {
+  "toast": "Anvil is now unavailable instead of Hex",
+  "unav": [
+   {
+    "text": "LL Drifter A till 16 Jul",
+    "people": [
+     "Drifter"
+    ],
+    "seat": [
+     "imqoidgg0qqfs30~slipway"
+    ]
+   },
+   {
+    "text": "LL C Anvil IP till 16 Jul",
+    "people": [
+     "Anvil"
+    ],
+    "seat": [
+     "imqoidgg0qqfs30~shaft"
+    ]
+   },
+   {
+    "text": "LL Tally O till 16 Jul",
+    "people": [
+     "Tally"
+    ],
+    "seat": [
+     "imqoidgg0qqfs30~nick"
+    ]
+   }
+  ],
+  "thu": [
+   "Drifter",
+   "Anvil",
+   "Tally"
+  ],
+  "inputs": [
+   {
+    "iid": "imqoidgg0qqfs30",
+    "people": [
+     "Drifter",
+     "Anvil",
+     "Tally"
+    ],
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "allLL": [
+   "Drifter+Anvil+Tally Jul 15 till 16 Jul",
+   "Quill Jul 14 Local leave",
+   "Tally Jul 24 Local leave",
+   "Gambit Jan 8 "
+  ],
+  "cal": {
+   "barText": "ALL | LL | Quill · LL | 3 · LL | Tally · LL",
+   "card": "⠿ Wed 15 Jul + Note ✕ + Input 5 INPUTS till 16 Jul Anvil, Drifter, TallyLL By Saber All day CobraOL Overseas leave — off island By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island"
+  },
+  "lw": "slipway 07-14: \"\" ; slipway 07-15: \"LL\" ; slipway 07-16: \"LL\" ; slipway 07-17: \"\"\nrocky 07-14: \"\" ; rocky 07-15: \"\" ; rocky 07-16: \"\" ; rocky 07-17: \"\"\nshaft 07-14: \"\" ; shaft 07-15: \"LL\" ; shaft 07-16: \"LL\" ; shaft 07-17: \"\""
+ },
+ "undo": "pressed Undo; note: Undid: a personal input",
+ "afterUndo": {
+  "unav": [
+   "Drifter",
+   "Hex",
+   "Tally"
+  ],
+  "inputs": [
+   {
+    "iid": "imqoidgg0qqfs30",
+    "people": [
+     "Drifter",
+     "Hex",
+     "Tally"
+    ],
+    "rmk": "till 16 Jul"
+   }
+  ]
+ },
+ "redo": "pressed Redo; note: Redid: a personal input",
+ "afterRedo": {
+  "unav": [
+   "Drifter",
+   "Anvil",
+   "Tally"
+  ],
+  "inputs": [
+   {
+    "iid": "imqoidgg0qqfs30",
+    "people": [
+     "Drifter",
+     "Anvil",
+     "Tally"
+    ],
+    "rmk": "till 16 Jul"
+   }
+  ]
+ }
+}

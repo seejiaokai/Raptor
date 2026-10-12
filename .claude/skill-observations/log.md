@@ -3819,3 +3819,273 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Where a tooling trap has a strictly safer alternative that costs nothing extra, record it as the DEFAULT method ("scripts are always written with the file tool"), not as a condition to check ("unless it contains an apostrophe"); a condition has to be evaluated every time, a default does not.
 
 **Principle:** Record a recurring trap as an unconditional safer default rather than a conditional warning: rules that need a per-use judgment are the ones that get skipped once the risky path has succeeded a few times.
+
+### Observation 519: A record that names a to-be-archived item as its home breaks at the archive step, at merge time
+
+**Status:** OPEN
+**Date:** 2026-10-11
+**Session context:** Merging [GROUP-INPUT-ONE-ROW] on the owner's "merge live"; the four finished backlog items were archived by the script as the last step before the merge. Numbered on claude/all-avail-as-member (cut from main after the merge) — other open branches' logs were not read.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Closing a job: moving finished items out of the live backlog
+
+**Issue:** Fourteen decision records named the job's backlog item as one of their homes ("the build, filed"). The archive script moved the item, the document gate then failed — a decision's named home no longer mentioned it — and the move was rolled back. The fix (point those home cells at the archive) was mechanical but had to be worked out under a waiting merge, and it forced one more full check run on the pull request because the records commit could not be pushed while checks were running.
+
+**Suggested improvement:** In the closing checklist, before "open the pull request": rehearse the archive of every item the job will finish (the script's dry run plus the document gate), and fix what it reports then — so the merge-time step is a no-op that is already in the checked commit. And when recording a decision, name a backlog item as a home only as "the build, filed", never as a place the decision's number must be found.
+
+**Principle:** Rehearse the irreversible-order steps of a release (archive, renumber, handoff state) before the last checked commit, not after approval: anything discovered at merge time costs a full verification cycle, and a pointer to a thing that is about to move should be written to survive the move.
+
+### Observation 520: A comp of a way that is not built is fastest drawn on the running app itself
+
+**Status:** OPEN
+**Date:** 11 Oct 26
+**Session context:** planning the one-rule job; the owner answered a multiple-choice question with a question of his own ("show me what he will see exactly") and a third idea
+**Skill:** brainstorming (the picture-first step); New skill candidate: "comp on the live page"
+**Type:** open-source
+**Phase/Area:** mock-ups for a product choice
+
+**Issue:** The owner would not choose between two written options until he saw the real screens. The built option needed real screenshots; the two unbuilt options needed comps. Driving the built bundle with a short browser script, then editing the rendered page's DOM in place (cloning the app's own nodes, removing one line) and screenshotting, produced comps in the app's own stylesheet in minutes — no throwaway stylesheet, no drift from the real look. His question also surfaced a third option better than either written one; he then chose neither recommended one.
+
+**Suggested improvement:** In the picture-first step: (1) photograph the built behaviour first; (2) draw each unbuilt option by editing the live page's DOM after it renders, reusing the app's own elements, and say on the page which pictures are real and which are drawings; (3) when the answer to a choice is a question, treat it as a request for the picture, not for more words.
+
+**Principle:** When someone cannot choose between described behaviours, show the running thing and draw the alternatives onto it; a comp built from the product's own rendered elements is both the cheapest and the most faithful.
+
+### Observation 521: Before reusing a preview server another session started, prove it serves this build
+
+**Status:** OPEN
+**Date:** 11 Oct 26
+**Session context:** the same session; the harness refused a new preview server (five already belonged to other chats)
+**Skill:** New skill candidate: running the built app for a look (the project's own walk guidance)
+**Type:** internal
+**Phase/Area:** standing up the live view
+
+**Issue:** A server on the wanted port was already running from another chat. Reusing it blind risks photographing another branch's build. Comparing the bundle's hashed entry file name in the freshly built index page with the one the server returned proved in one command that it was serving this exact build.
+
+**Suggested improvement:** Where a walk or look guide says "start the preview", add: if the port is already served, compare the served index page's hashed bundle name with the local build's before using it; use it only on a match, and start nothing new.
+
+**Principle:** A shared resource found already running is usable only once its identity is checked against what you just built; the check is one comparison of a content hash.
+
+### Observation 522: A change that must alter nothing on screen is proved by recording the running app twice and comparing byte for byte
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** `[ALL-AVAIL-AS-MEMBER]` step 1 — moving a dozen readers onto a derived view with the promise "nothing on screen changes"
+**Skill:** New skill candidate: the no-visible-change proof (belongs with the project's bug-check order, §7 the walk, as the walk for a refactor)
+**Type:** open-source
+**Phase/Area:** verifying a refactor in the running app
+
+**Issue:** "Every test passes" does not show that a refactor left the screens alone, and pictures cannot be compared by eye across a whole app. What worked: one script drives the built bundle with the clock held still and the random numbers seeded (so every minted id and time stamp repeats), saves each screen's markup and each rule's output as text, on several worlds (plain, published, the next week, a phone, another role); a second script compares two such folders byte for byte. Two runs of the SAME build were compared first — identical — which is what proves the comparison sees only the code. Before against after then came out identical over 5.2 million characters, and the one deliberate difference was saved apart and shown rather than hidden.
+
+**Suggested improvement:** Add to the walk guidance a "refactor walk": (1) make the world deterministic (fixed clock, seeded randomness); (2) prove determinism by comparing two runs of the unchanged build; (3) record before and after on the worst realistic world; (4) set any intended difference apart in its own record so "identical but for X" is literal; (5) still open the pictures (see the next observation).
+
+**Principle:** To prove sameness, make the system deterministic and compare its whole output as text; first prove the comparison itself is quiet on unchanged code, or a difference means nothing and an equality means less.
+
+### Observation 523: Two equal records prove sameness, not coverage — open the pictures and assert where the fixture landed
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session; the before/after recorder for the SANS calendar
+**Skill:** New skill candidate: the no-visible-change proof (the project's walk scripts, `scripts/handpass/`)
+**Type:** open-source
+**Phase/Area:** walk scripts that navigate to a month, a day or a tab
+
+**Issue:** The recorder stepped "back three months" on a calendar that does not open on today's month, landed on an empty April and recorded it. Before and after were both equally empty, so the byte comparison passed — while proving nothing about the screen it was meant to cover. It was found only because the picture was opened and showed the wrong month and zeros everywhere.
+
+**Suggested improvement:** In any walk or recording script: navigate by reading the screen's own heading until it says the wanted thing, never by a fixed number of steps; write what was reached into the run's log ("calendar on: July 2026", "day opened: 3 commitments"); and open the pictures of a before/after record even when the comparison is green.
+
+**Principle:** A comparison between two runs cannot see a fixture that missed its target in both; say in the record where each step landed, and look at it.
+
+### Observation 524: A survey that sorts code into "readers" and "writers" must look at what each function hands back, not only what it reads
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session; the pre-build survey had listed class-A "per-person readers", and an independent read had already caught one writer among them
+**Skill:** New skill candidate: surveying a code base before a data-shape change (briefs for read-only survey helpers; the project's planning step)
+**Type:** open-source
+**Phase/Area:** survey briefs; classifying call sites before a refactor
+
+**Issue:** Four more "readers" on the survey's list turned out, at the source, to hand the stored object itself onward — to code that trims it, to a test that holds it by identity, to the window that edits it. Handing them frozen copies would have broken a medical trim and an editor. Each was found by reading the function's return value and its callers, and two by an existing test that compared identity. A grep for the field being read cannot tell these apart from a pure reader.
+
+**Suggested improvement:** In a survey brief for a shape change, ask for three columns per call site, not one: what it reads, what it RETURNS or passes on, and who consumes that (a writer, an identity comparison, an editor). Classify as a reader only when nothing downstream writes to, compares, or looks up the object it was handed. Then freeze the derived view in tests, so the misses that remain throw.
+
+**Principle:** Whether a call site is safe to hand a copy depends on where the object goes next, not on what the site itself does with it; classify by the whole path, and make a wrong classification loud.
+
+### Observation 525: Re-expressing old tests on a changed rule finds faults the new tests did not - give that work to a reader who did not write the build
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the one-rule build, step 2 (one record an input): the host wrote new tests first for each part, then handed the tests that pinned the old shape to three helpers with a brief of four choices per case
+**Skill:** New skill candidate: migrating a test suite across a deliberate rule change (the project's build steps; briefs for test-migration helpers)
+**Type:** open-source
+**Phase/Area:** build steps that change a data shape or a ruling; briefs for helpers
+
+**Issue:** The host's own new tests passed at first run for the row and the door. A helper re-expressing the OLD drawing tests on the new record then found four product faults the new tests had not: people drawn in joined order instead of A to Z on three screens (the one helper written for it was called by nothing), an armed place left pointing at another row after an Accept, two toasts saying "undefined's", and a save that did nothing in silence while moving a date. Each came from an old case whose SITUATION the builder had not thought to carry over.
+
+**Suggested improvement:** In a build that changes a rule, brief the migration of the old tests as four explicit choices per case - the rule survives (rebuild the fixture), the rule changed (re-express and name the ruling), the old rule still holds for old data (keep it as a legacy case), the subject is gone (pin what is true now and name what was retired) - forbid skip / todo / loosened assertions, and tell the helper to STOP and report on anything that looks like a product fault rather than pin it. Read the reports for the faults before the pass counts.
+
+**Principle:** Old tests are a list of situations somebody once found worth pinning; re-expressing them under the new rule, by someone who did not write the new code, is a second scenario pass that costs less than a walk and finds what the builder's own tests share his blind spots about.
+
+### Observation 526: A script typed into the shell loses its backslashes - an edit that needs an exact string goes in a script FILE
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session; a here-document holding Python replacements with escaped apostrophes failed its own match, twice, on Windows Git Bash
+**Skill:** the project's working notes (HANDOFF `Gates` line; memory `bash-heredoc-apostrophes-fail`)
+**Type:** open-source
+**Phase/Area:** mechanical multi-file edits
+
+**Issue:** A replacement script passed through a here-document arrived with `\\'` collapsed, so its exact-match assertion failed (harmlessly - it asserts before it writes). The memory note already says to write scripts with the file tool; the lapse came from a script that had no apostrophe in its first version and grew one.
+
+**Suggested improvement:** Make it the default, not the fallback: any edit script goes to the scratchpad by the file tool and is run from there; and every replacement asserts its match count before anything is written, so a mangled script fails loudly and changes nothing.
+
+**Principle:** An edit script should fail closed: assert the exact match first, write last - then the worst a transport fault can do is nothing.
+
+### Observation 527: A reader-class guard that lists FILES misses the readers of a record's saved IMAGES
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the one-rule build, step 2: a guard test lists every file that reads the live input list and classes it; three bodies that read a change's before/after images (the change history's Leave War lines, the published day's freeze of who was on it) still read the old single-person field and were found only by old tests re-run on newly shaped records
+**Skill:** New skill candidate: migrating a stored record's shape (the project's build steps)
+**Type:** open-source
+**Phase/Area:** data-shape migrations; guard tests
+
+**Issue:** The guard covered every reader of the LIVE collection, so the builder took it as proof nothing read the old field. Readers of the command stream's recorded images, of frozen published blocks and of test-harness lookups were outside it; each kept reading `.person` on a record that no longer carries one, silently (a filter that finds nothing, a name that reads undefined).
+
+**Suggested improvement:** When a field is retired from a record, grep for the FIELD across the source, not only for readers of the collection - and class every hit (a per-person view, an old-shape fallback, or a fault). Add the image readers and frozen-block readers to the guard's lists.
+
+**Principle:** A guard keyed on who reads a collection does not cover who reads its copies - change images, frozen snapshots, exports. Retiring a field needs a sweep keyed on the field.
+
+### Observation 528: Parallel helpers given one scratch folder overwrite each other's output files
+
+**Status:** OPEN
+**Date:** 12 Oct 26
+**Session context:** the same session: three test-migration helpers were pointed at one scratchpad directory; two chose the same output file name and one lost its first run's output
+**Skill:** the project's briefs for parallel helpers
+**Type:** open-source
+**Phase/Area:** delegation briefs
+
+**Issue:** No harm reached the repo, and each helper noticed and moved - but each spent a run rediscovering its own result.
+
+**Suggested improvement:** A brief for parallel helpers names a scratch SUB-folder per helper (or a file prefix), as it already names which source files are whose.
+
+**Principle:** Shared state between parallel workers includes their scratch space; partition it in the brief as the source files are partitioned.
+
+### Observation 529: A failing-first test file left in the tree breaks a gate run already in flight
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Building a multi-step feature unattended; the next step's failing tests were written while the previous step's full gate set was still running in the background.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED step, when another verification run shares the working tree
+
+**Issue:** The test for the next step imported a function that did not exist yet. That is correct for a RED test, but the project's build gate type-checks every file in the tree, test files included, and the gate run for the PREVIOUS step had not reached its build stage. The file had to be moved out of the tree mid-run to keep that run honest. Nothing in the TDD skill says a red test that does not compile is a hazard to any other check sharing the tree.
+
+**Suggested improvement:** In the RED step add one line: "If a full verification run is in flight in the same tree, write the new failing test outside the tree (or wait) until that run has passed its compile / type-check stage — a test that does not compile fails checks that have nothing to do with it."
+
+**Principle:** A deliberately broken file is safe only while nothing else is reading the tree; staged work and in-flight verification must not share a compile unit.
+
+### Observation 530: Re-expressing the old tests by helpers who did not write the build finds what the builder's new tests cannot — and what makes the brief work
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** A rule changed in a feature step; the builder wrote about 60 new tests (all green), then three helpers re-expressed every older test that pinned the old rule.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Briefing helpers for test work after a rule change
+
+**Issue:** The builder's own tests found one fault; the helpers found eight more (a screen offering an action the save refused, two state bugs that depended on the ORDER of actions, three wrong sentences, a regression of an old behaviour). Second time running on this job (twelve faults the step before). Three parts of the brief did the work: (a) four allowed outcomes per old case — rule survives / a named decision changed it / old data kept as a legacy case / subject gone — so no case could be quietly dropped; (b) "a product fault is reported, never pinned: write the test for what SHOULD happen and leave it failing"; (c) "then a second scenario pass of your own area". Two helpers also reported old cases that were passing VACUOUSLY after a selector had changed — a class of defect only someone re-reading old tests sees.
+
+**Suggested improvement:** Add a worked brief for "re-express the old tests after a rule change" to the skill: disjoint file lists per helper, the four outcomes, report-never-pin, the second scenario pass, one file run at a time, no git writes, and "say which old cases were passing vacuously".
+
+**Principle:** The author of a change tests the behaviour they intended; the old tests encode the behaviour everyone else relied on. Having someone else translate the old tests onto the new rule turns them from an obstacle into a second, independent specification.
+
+### Observation 531: A new saved record kind fails at Undo, not at build, when one of its registration lists is missed
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Building the bell's notices (one-rule job, step 7) — a new record kind written inside an existing command
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Adding a record kind to a command/undo layer
+
+**Issue:** The new record compiled, saved and passed its forward tests; the first Undo was refused with a generic sentence. The cause was a list (which store answers for which record kind in Undo) that the type system does not check, and four older test files kept their own hand copy of the same list. A second miss (the declared snapshot shape) only showed in the whole suite.
+
+**Suggested improvement:** When a change adds a record kind, write the round-trip test FIRST (make it, undo it, redo it, reload it) rather than only forward-behaviour tests, and grep for hand copies of every registration list in test harnesses before the full run.
+
+**Principle:** For anything that is registered in several untyped lists, the cheapest failing test is the full life of one record — create, undo, redo, reload — because each missed list fails a different leg.
+
+### Observation 532: A test-only reset made outside the command layer is absorbed by the next command
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Same step — a test helper emptied the live notice list directly between two acts, then asserted on Undo
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Test fixtures over a diff-derived change stream
+
+**Issue:** The builder's test cleared a live list by hand to "start the count from nothing". Because changes are derived by diffing state before and after each command, the next real command recorded that clearing as its own deletion, and its Undo put the cleared record back — a failure that looked like a product fault and was the fixture's.
+
+**Suggested improvement:** Note in the testing guidance: where a system derives changes by diffing, a fixture must never mutate live state outside a command if the test goes on to exercise undo, replay or persistence; count from a remembered baseline instead.
+
+**Principle:** In a diff-derived change stream, out-of-band state edits are silently attributed to the next command — fixtures included.
+
+### Observation 533: Looking at the built screen found three faults per step that passing structure tests could not
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Steps 5 and 7 of the one-rule job — pictures taken by real presses before the commit
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Visual verification after green unit tests
+
+**Issue:** With every unit test green, the first pictures showed: a tag squeezed into a four-line block, a strike-through running onto an adjacent word, a list hung under a control hidden behind a full-screen surface, and a button that kept its lit state because its bar did not re-render. None is visible to a DOM-structure test without layout.
+
+**Suggested improvement:** Make "drive the built app by real presses at desktop and phone size and open every picture" an explicit step between green tests and commit for any visible change, with a short list of what layout-less tests cannot see: wrapping, inherited decoration, stacking/covering, stale renders.
+
+**Principle:** Structure tests prove the markup; only a rendered picture proves the look — wrapping, inheritance, covering and staleness need a layout engine and a second pair of eyes.
+
+### Observation 534: A code read can run beside the walk when the allowance is about to reset — with a short second read of the fixes
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** the one-rule job's FULL bug check (ten walkers, Fable's code read, break tests), started two hours before the owner's weekly allowance reset with 23% unused
+**Skill:** the bug-check order (raptor-port/docs/bug-check-order.md §5 — a working guide, not a skill file)
+**Type:** internal
+**Phase/Area:** the order of steps in FULL: walk → fix → the reads with the evidence sheet → fix → re-walk
+
+**Issue:** The order puts the code reads after the walk so the reader has the finished code and the sheet. The owner asked mid-check to use allowance that would otherwise lapse at the reset. The host started the reader at once with the sheet's first half (tier, rulings, roll-call, door check) and promised a second, short read of only the fix diff. It also cut the walk's shares in half (ten walkers for the same scenarios) and sent the break tests to three helpers in their own worktrees — a break edited in the main checkout while a reader reads it would be read as a fault.
+
+**Suggested improvement:** Add to §5 a named variant: "the reads may start beside the walk when (a) the roll-call and door check are written, (b) the reader is told it is blind to the walk, and (c) a second read of the fix diff is owed and written in the sheet" — and to §8.4: "break tests run in a separate worktree whenever anyone else is reading the source." In the walk ledger, record the number of SCENARIOS (sized) apart from the number of WALKERS (may be the owner's wish for speed).
+
+**Principle:** An ordering rule exists to protect a property (the reader sees final code and the list of surfaces); when a constraint makes the order costly, keep the property by another route and write down which route — never drop the property, never keep the order for its own sake.
+
+### Observation 535: A reviewer's unrun claims — reproduce each as a failing test before triage, and count the hit rate
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Closing a FULL bug check: a second, blind code read by the builder's own model had returned eleven claims with nothing run.
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** Verifying review feedback before implementing it
+
+**Issue:** The read's claims were not triaged by plausibility. Each was written as a test of the right behaviour through the real entry points and run against the unchanged code first. All eight unverified claims went red — including two the host would have argued away on reading (a count the host first judged "consistent" printed a line that plainly misreported the change once the test showed the actual words). Two test assertions written from the claim's wording were themselves wrong and were corrected only because the red output showed what the screen really said.
+
+**Suggested improvement:** In "verify before implementing", add: for a batch of unverified claims, write one failing test per claim BEFORE judging any of them; print the real output when a claim is about wording or a count; record per claim red / not red, and report the reviewer's hit rate — that rate, not its confidence, decides how much its next "sound" is worth.
+
+**Principle:** A review that ran nothing is a list of hypotheses; the cheapest honest triage is to make each one fail on purpose, and the pattern of what failed is evidence about the reviewer as well as the code.
+
+### Observation 536: A frozen test clock makes "same moment" a false match — walk and test with a clock that moves
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Re-walking fixes on a published-day change count; one fix told "a piece cut from a record" from "a fresh filing" by the record's stored creation moment.
+**Skill:** New skill candidate: scripted-walk-brief (the walk briefs under docs/superpowers/briefs)
+**Type:** open-source
+**Phase/Area:** Fixture rules in a walker's brief; unit-test fake timers
+
+**Issue:** The walk brief told every walker to set the browser clock to a fixed instant. A walker froze it, so two records filed minutes apart in real use carried the identical timestamp; the app's (correct) rule that distinguishes them by that timestamp matched them, and the walker reported a FAIL that was the walk's own artefact. The unit test of the same rule had passed only because its author happened to advance the fake clock between the two filings. It cost a re-walk scenario and a disposition.
+
+**Suggested improvement:** In walk briefs and test harness notes: "set the clock to a start time and let it RUN (install + resume / fastForward between steps); never freeze it unless the scenario is about one instant". When a rule under test reads a stored timestamp or an ordering by time, say so in the scenario's EXPECTED line so a same-instant result is recognised as an artefact.
+
+**Principle:** A fixture that collapses a dimension the code discriminates on (time, identity, order) can only produce false matches along it; pin the start of time, never its passage.

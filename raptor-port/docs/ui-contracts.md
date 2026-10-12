@@ -2129,6 +2129,47 @@ day's must-read.
 pictured in the same framing: `docs/handpass/img/2026-10-11-group-input-one-row/` (`scripts/handpass/gi-built.mjs`).
 Underneath a shared input is still one ground row a man (`engine-rules.md`, "The rows of one shared input are known as
 one entry"); the ONE row is made where it is drawn.
+**Since the one-rule build (12 Oct 26 — `[ALL-AVAIL-AS-MEMBER]` steps 2, 3, 4 and 6; owner D755, D756, D759, D760,
+D762): the one row is a REAL row.** An input is one stored record with its people and its row is one ground row, a
+whole copy of it (`engine-rules.md`, "A row that came from an input is one row, a whole copy of the input") — for an
+input of one person too. The pictures still stand; what changed underneath, bullet by bullet:
+- **One answer, every builder** is `engine/grouprows.ts rowPeopleDrawn(day, di, ri)` — the named people A to Z by
+  callsign, then the placeholder (ALL AVAIL / ALL), each puck on its own key of that ONE row (`g:di.ri`,
+  `g:di.ri.xN`); `inputRowSeveral(row)` says which rows the week (`ui/html.ts`), the board (`ui/board-html.ts`) and
+  the peek (`ui/peek.ts`) draw through it. `groundGroups` / `drawnPeople` are removed, and there is no lead and no
+  member row that "draws nothing".
+- **In OIL Earn the row has ONE OIL address — the input's own, `i:<iid>`** — and every puck is its own switch under
+  it (`sbGroupPeople`; D762), where each puck was switched under its own request.
+- **Personal Inputs and the Unavailable list draw from faces** (`engine/inputs.ts facesOf` / `facesDrawn` — one
+  frozen per-person view of the record for DRAWING; a placeholder has a face). `state/inputgroup.ts entryLines` is
+  removed: an input has ONE filing, so its line is never split by where each man's request is filed.
+- **The Unavailable list is still one row a man (D737)** — drawn from the record's people; one man's row of an input
+  that holds several is addressed `iu:<iid>~<person>` ("The Unavailable row's person cell is a plant/drop target
+  too", below).
+- **A jump** needs no `leadKeyOf` (`ui/grouprow.ts` is removed): the row is the row.
+- **What a hand does** is the door `ui/reqdoor.ts`, for every input's row: a person dropped on the puck of an input's
+  ONLY entry REPLACES him ("Tally is on Training instead of Ranger"; dragged from a seat elsewhere, "Tally and Ranger
+  swapped"); a placeholder let go anywhere on the row JOINS the input ("ALL AVAIL added to Training") and stays when
+  anyone leaves; a puck dragged from one input's row onto another's moves ("Tally moved to Training"). A person added
+  is never asked an OIL question of his own: where the input has no answer the question opens for the INPUT; where
+  its answer is No the note ends "— not counted for OIL". The last-person refusal reads "Ranger is the last on this
+  input — use ✕ to take it off the programme, or delete it in its own window".
+  *(As of the one-rule job's check, 12 Oct 26: the sentence names the act, not a button — "… is the last on this
+  input — take the input off the programme, or delete it in its own window" — `ui/reqdoor.ts leave`.)*
+- **The row's CX, red box and ⓘ** are the INPUT's on such a row (D760 — `ui/reqdoor.ts rowMark`, asked by
+  `ui/board.ts`): one command, one Undo step; a scheduler's own row is written as before. **Not built yet:** how a
+  cancelled input looks on the Inputs calendar, the opened day's card and the List, and the bell's notice, wait for
+  his look at a picture (the plan `superpowers/plans/2026-10-11-one-rule-plan.md` §8, Q2–Q4); the schedule's own
+  Personal Inputs line of a cancelled input shows nothing of the CX (its Ground Programme row does).
+- **The pending list:** "taken out · ALL AVAIL came off with him" (D745) is said only of a row issued before the build
+  (`ui/pendlist.ts wentWith`); D745 is set aside by D755. One person put in or taken out is his own line; an input of
+  several is named with its people (`engine-rules.md`, "The people step").
+- Pins now: `ui/reqdoor.test.tsx` (replaces `ui/grouprow-hands.test.tsx`), `state/inputcount.test.ts` (replaces
+  `state/grouprow-count.test.ts`), `ui/phmember.test.tsx`, `ui/inputmarks.test.tsx`; `ui/grouprow-draw.test.tsx`,
+  `ui/groupeditor.test.tsx` and `e2e/grouprow.spec.ts` stand, re-expressed on the one record.
+
+*(The bullets below are the build of 11 Oct 26 as written; where they differ from the paragraph above, the paragraph
+is the rule.)*
 - **One answer, every builder.** `engine/grouprows.ts groundGroups(day)` says which rows are one row and which member
   leads; `drawnPeople(day, di, group)` gives its pucks — each member row's own man, A to Z by callsign (D727's order),
   then each row's extras. **Every puck keeps its own row's key** (`g:di.ri`, `g:di.ri.xN`): its flag (a man on leave
@@ -2221,12 +2262,32 @@ brought to what the row now reads — after a save as after a refusal (a name re
 capitals, and nothing else would repaint the typed text). The row's people, CX, red box and information-only stay the
 row's own. Rule and belt: `engine-rules.md`, "A request's row: its name, its two times and its remark are the
 request's".
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D760: NOTHING on a row that came from an input is "the row's own"
+any more. The row is a whole copy of the one record — `engine/overlay.ts requestRowFields` writes its name, times and
+remark AND `who`, `more`, `cx`, `cxr`, `flag`, `info` from the input, and the re-make keeps only the row's id and its
+place. Its PEOPLE are the input's: a hand on a puck is asked of the door `ui/reqdoor.ts` first (`rowPut`, `rowTake`,
+`rowLeaveTo`, `rowMove` — each ONE command through `ui/inputedit.tsx commitInput`), and a raw write of a person to
+such a row is refused by the belt `engine/slots.ts inputSeatBar`. Its CX, red box and information-only are the input's
+too: the board's three buttons ask `ui/reqdoor.ts rowMark` before they write, so a CX there cancels the INPUT — the
+Inputs pages show it cancelled and the member's bell tells him ("A cancelled input on the Inputs pages…", "The bell's
+list of notices", below). WHICH row is one answer, `overlay.ts requestOfBox`, shared by `reqRowText`, the door and the
+belt. What each hand does: "A shared input is ONE row on the schedule", above.)*
 
 Build two of the leave-types work: times, type, remarks and delete, reachable
 from Edit Schedule and from the schedule board, writing back to the Inputs
 page. The commit is the Inputs page's own — both call `commitInputEdit` /
 `removeInput` in `ui/inputedit.tsx`, so the accepted-row relink, the
 validation and the single undo step cannot drift between the two surfaces.
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762: the ONE writer of an input is `ui/inputedit.tsx
+commitInput(rec, draft, people, opts)` — it runs every refusal first, for every person, then one command; it calls
+`commitInputEdit` for what the input SAYS and `engine/inputown.ts putPerson` / `takePerson` for who is in it. The
+dialog's Save goes through `commitInput` where the input holds several people or several are picked, and through
+`commitInputEdit` for an input of one — which still saves what an input says and re-points an input of ONE person, and
+refuses a draft naming someone outside an input of several ("Who is in this input is changed in its own window").
+`removeInput` is the ONE delete — a whole input of several included, asked first ("Delete this input for all 3
+people?"); the separate `removeEntry` is gone. The "accepted-row relink" itself went earlier — `[DB-READINESS]` group A
+phase 6 (c), 1 Oct 26: a save writes the request alone and its row is re-made when its week is read, `engine/overlay.ts
+viewOfWeek`.)*
 
 Two audit fixes on the relink itself (12 Aug 26): **re-filing falls back to
 any covered loaded day** — an Unavailable-filed input whose span STARTS
@@ -2239,6 +2300,14 @@ relink**: the row is still regenerated from the input, but those three are
 captured before the unaccept and put back after the re-accept, instead of
 being silently discarded by any edit, including a member retouching their
 own remark.
+*(As of the one-rule build, 12 Oct 26 — D755, D760, which changes D468 for an input's row: there is nothing "added to
+the row by hand" left to capture and put back. A person put on the row JOINS the input (`ui/reqdoor.ts rowPut`), and
+the red box, the CX with its reason and information-only are written on the input (`rowMark`); the re-make writes the
+whole row from the input (`overlay.ts requestRowFields`; `srcvOf` hashes its people and its marks too), so they come
+back with every re-make and go with the input when it moves to another day. A row made before the build is re-made
+ONCE at its first read, and whoever or whatever a scheduler had put on the ROW alone comes off it — stored demo rows
+only, D56. The un-accept / re-accept this paragraph describes went on 1 Oct 26 with `[DB-READINESS]` phase 6 (c); a
+request filed under Unavailable (`acc: 'u'`) keeps that filing through an edit, `ui/inputedit.tsx commitInputEdit`.)*
 
 **The times and the remarks are ORDINARY CELLS** (owner, 10 Aug 26 — "edit the
 input directly like changing the start and end time... no need to open a new
@@ -2257,6 +2326,14 @@ They carry `data-inp` (week) and `data-ifld` (board), NOT `data-txt` /
 through `setInpField` -> `commitInputEdit` -> `writeInputsBatch` rather than
 `txtSet` / `markEdit`. A refusal heals the cell from the model, exactly as a
 rejected `txtSet` does.
+*(As of the one-rule build, 12 Oct 26 — D756, D737, D759 reading 4: the cell's address is `engine/inputs.ts iuTail` —
+`<iid>.<field>`, or `<iid>~<person>.<field>` on one man's Unavailable row of an input that holds several — read by the
+one parser `engine/keys.ts iuParts` in `ui/textedit.ts` and `ui/board.ts`, which hand the man on:
+`setInpField(inp, field, text, who)` → `saveFromRow`. On a Personal Inputs line the ONE record is saved, for everyone
+in it (D739). On such an Unavailable row the box changes HIS part alone: he is first given an input of his own, in the
+same command (`engine/inputown.ts ownInputOf` — a new record with a new id, him taken out of the original), and
+`commitInputEdit` then saves that. Both are schedule-side saves (`opts.sched`): the late date is not moved (D741) and
+a Yes to the OIL question is kept at what the new hours give.)*
 
 **Clearing a time means all day.** That is what `awayAllDay` already believes,
 so the cell and the rule agree without a third control. It is deliberately
@@ -2276,6 +2353,11 @@ nor by `inpKey`, which is built from the very fields they edit. Minting it
 lazily at render was the first cut and was wrong: a snapshot taken between
 creation and first paint held no id, so an undo back to it handed back a row
 that then minted a different one.
+*(As of the one-rule build, 12 Oct 26 — D756, D759 reading 4: an input of several people is ONE record with ONE `iid`,
+where it was a record and an id a man. One man's part split out of it — a box typed on his own Unavailable row, sick
+leave cutting his share of a leave — is a NEW record with a NEW `iid` (`engine/inputown.ts ownInputOf`), put straight
+after the original, which keeps its own. The Inputs page's `add()` went with the List's own form on 10 Oct 26 (D729):
+a new input is made, given its id and unshifted by `ui/inputedit.tsx commitNewInput`.)*
 
 **What is left behind the TYPE LABEL** — still a `<button>` via `inpEditLabel`
 — is the type and delete: the two that cannot be a text cell in these rows.
@@ -2309,6 +2391,16 @@ live underneath it and renumbers `INPUTS`, and the key is built from the very
 fields the dialog exists to change. A refusal (bad window) keeps it open with
 the typing in it; the one exception is a row that has gone from under it,
 where there is nothing left to hold the typing for.
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770, D771: the object it holds is the input's ONE
+record, and who is in it is read from that record (`engine/inputs.ts idsOf`), never worked out from sibling records.
+Opened on an input of several — from its row, or its line under Personal Inputs — it is the INPUT's dialog (D748): the
+people picker, one Save through `commitInput`, "Delete" asked for everyone, and ONE OIL line for the input's one
+answer. Who may change it is `state/perms.ts mayEditInput(record)`; for anyone else the form is `inert` and the foot
+says who can. A person who is in it but may not change it for everyone — he did not file it, or he is the only named
+person beside ALL AVAIL / ALL — has one thing of his own there, "Take me out"; he adds nobody and gives no OIL answer
+of his own. A cancelled input's dialog wears the small red CX tag and its reason beside its title (`inped-cx`), a mark
+and never a control. In full: "A member edits only their own personal inputs" and the input's window under "The
+Inputs calendar", below.)*
 
 **The two time boxes are 130px, and that is measured, not chosen.** Chromium
 renders `<input type=time>` in the BROWSER's locale, which on en-US is a
@@ -2332,11 +2424,27 @@ already keeps in view, unlike a date move — the row you are looking at is
 still the row you are looking at afterwards, just under a different name.
 The footer reads "The dates are changed on the Inputs page" for a
 scheduler, and the old two-field sentence for anyone else.
+*(As of the one-rule build, 12 Oct 26 — D755 (2), D756, D762: the `<select>` (`#inpEditPerson`) is the Person field of
+an input of ONE person only. Picking another name there is a hand-over — `commitInputEdit` → `engine/inputown.ts
+swapPerson`: the list becomes the new person, the OIL answer is void (it was the first man's own) and the holding
+moves on, so a scheduler's OIL switch made about the old holder reads as nothing. An input of SEVERAL draws the
+people picker (`ui/PeoplePick.tsx`) in the same dialog instead, and who is in it is changed by `commitInput`. The same
+replacement made on the schedule itself — a puck dropped on the only person's puck of the input's row — is the door's
+(`ui/reqdoor.ts rowPut`): "Tally is on Training instead of Ranger", or "Tally and Ranger swapped" when Tally was
+dragged from a seat elsewhere.)*
 
 **The Unavailable row's person cell is a plant/drop target too, on the week
 and the board** — `iu:<iid>` (the input's own id, no day component, since
 one input can cover several loaded days and none of them is more "its" day
-than another). Tap it to arm, then tap a roster name; or drag a name — from
+than another). *(Since the one-rule build, 12 Oct 26 — D755, D756, D759 reading 4; D737: an input is one record with
+its people and is still drawn one row a man under Unavailable, so where it holds several, ONE man's row is addressed
+`iu:<iid>~<person>`; an input of one person keeps `iu:<iid>`. `engine/inputs.ts iuTail` writes the address and
+`engine/keys.ts iuParts(key) → { iid, person }` is the ONE parser — every reader of the grammar goes through it. A
+puck dropped on such a row REPLACES that man in the input's list (`reassignInput` → `engine/inputown.ts swapPerson`):
+the input, its time and its filing are everyone's and stay; someone already in it is refused ("Tally is already on
+this input"). A box typed on such a row changes HIS part alone — he is first given an input of his own in the same
+command (`inputown.ts ownInputOf`). The change history writes one line a person put in or taken out, filed under
+him.)* Tap it to arm, then tap a roster name; or drag a name — from
 the palette, or off another seat — straight onto it. Both routes end at
 the one `reassignInput(iid, personId)` (`inputedit.tsx`), built on
 `commitInputEdit`'s own relink, never a second write path. That one write
@@ -2355,6 +2463,13 @@ it was planted too (the two facts are independent). Reassigning does not
 call `afterSchedMutate()` a second time — `reassignInput`'s own
 `commitInputEdit` already ran the input funnel's full epilogue (validate,
 notify, one history step); the drop/tap handlers only disarm and repaint.
+*(As of the one-rule build, 12 Oct 26 — D756, D762, D737: on one man's row of an input that holds SEVERAL,
+`reassignInput` does not call `commitInputEdit` — it asks every refusal a save can meet for the newcomer alone
+(`normalizeInputDraft`), then writes `swapPerson` inside `saveBatch`, the same inputs funnel with the same one
+epilogue and one Undo step. A one-person input's hand-over still goes through `commitInputEdit`, as a schedule-side
+save, so nobody reads late for it (D742). "Any roster member is a legal target" has two exceptions, each said in
+words: someone already in the input, and ALL AVAIL / ALL — never the target and never the source of this drop. After
+either write `askOilIfPending` opens the INPUT's one OIL question where a day is left unanswered.)*
 
 ## Adding an input from the board (owner, Aug 26; context-bound rework 19 Aug 26)
 
@@ -4295,6 +4410,63 @@ Three things stay decided:
   parity check `cancelled rows greyed` (`tfin.js`) matches the pills' own
   `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
   back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
+
+## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
+
+*The pictures of record: `docs/mock/2026-10-12-one-rule/bell-desk-list-shorter.png`, `bell-phone-list-shorter.png`,
+`bell-desk-empty.png`. Built: `ui/topbits.tsx` (`bellTap`, `BellList`, `openNotice`), `state/notices.ts`,
+`state/noticeseen.ts`, `scheduler/02-shell.css` (`.bell-list`, `.bl-*`). Pins: `ui/bellnotices.test.tsx`.*
+
+- **What lights the bell:** what lit it before (an access request an admin has not seen, a bug report, an unanswered
+  OIL question, a view's own alert) — and now an UNREAD notice addressed to the person signed in.
+- **What a tap does (D769):** an access request, then a bug report, then an OIL question, then the view's own alert —
+  each exactly as before, opening no list; **only otherwise** the list opens (the tap that used to say "No new
+  notifications for this view"). A second tap closes it; so does a press outside it (a press on a bell is the bell's
+  own) and Escape — the standing rule for a click-open popup.
+- **The list** hangs under whichever bell is on screen (the top bar's, or the Scheduler Board's — one open-state for
+  both, drawn once by the Shell, never inside a bar); on a phone it is a panel as wide as the screen under the bar. The
+  newest thirty, newest first. **A line:** a dot while unread · the input in BOLD and its date · under it what happened
+  and who ("Cancelled — WX · Saber"; no name where the app did it) · its age at the right (now · 2 min · 1 h ·
+  yesterday · 2 d). An unread line is bright, a read one muted. "Mark all read" at the foot while ANY of his is unread
+  — counted over all of them, not only the thirty listed; "Nothing new" when he has no notice at all. Its open flag is
+  one of the windows' (`ui/pops.ts BELLLIST`): closed at every sign-in and sign-out.
+- **A tap on a line** opens the input's own window and marks that line read; where the input has since been deleted it
+  says "That input is gone", marks the line read and leaves the list open.
+- **The words** (one body, `state/notices.ts partWords`; where a save changed several things, the first two, joined by
+  a comma): You were added · You were taken off · Deleted · Cancelled — WX · Un-cancelled · Taken off the programme ·
+  Back on the programme · Now Thu 16 Jul 10:00–11:00 · Tally added · ALL AVAIL taken off · Renamed — was Kit check ·
+  Remark changed.
+- **Who is told:** every named person in the input before or after the change, and whoever filed it — never whoever
+  made the change, never the men behind ALL AVAIL / ALL, never a man archived or deleted. A leave the Leave War
+  approves makes no notice (the war tells it on its own page).
+
+## A cancelled input on the Inputs pages and on the schedule's own line (owner D760, D767, D768 — 12 Oct 26; step 5)
+
+*The pictures of record: `docs/mock/2026-10-12-one-rule/cancelled-B-*-card.png` and `-list.png` (with his two changes —
+the title struck through, the reason in red) and `cancelled-A-*-bar.png`; as built, `docs/handpass/2026-10-12-one-rule-step5/`.
+Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
+
+- **The card** (the opened day, the List on a phone) and **the desktop List's row:** a small red CX tag before the
+  title, the title struck through, the reason after it in red, then the remark in its ordinary grey. Nothing else
+  moves: the names, the kind, LATE, the hours, "By Saber". No reason typed — the tag alone. No title of its own — its
+  kind's name is the struck one (the card's small capitals; the list's pill, with the tag before it and the reason
+  after it on the pill's line).
+- **The month's bar:** its words struck through, the bar faded; no tag and no reason (no room — his word). Its tooltip
+  says "Cancelled — WX". **It keeps its place** in the day's order (D768) — nothing sorts by the mark.
+- **The schedule's own line** (Personal Inputs, and the Unavailable list where one was filed there; the week and the
+  board): the schedule's red tag with its reason inside ("CX DUE WX"), then the name struck through — the name only;
+  the line is not faded. On a phone's board the tag reads "CX".
+- **It stays listed** (D760) and is counted as before.
+- **The input's own window says it is cancelled (D771, 12 Oct 26 — "Yes for both"):** the same red CX tag and the
+  reason in red beside the window's title, in both of its shapes (the floating window and the sheet), read only — no
+  control there cancels an input or brings it back (D760 reading 2: the scheduler does, on its row). No reason typed:
+  the tag alone.
+- **The CSV export does not mark it (D772, 12 Oct 26 — "Leave the CSV as it is"):** its lines are written like any
+  other input's. **OVERTAKEN THE SAME DAY BY D773** (*"I don't need an export to excel function for inputs. U can
+  remove it."*): the Inputs List's "Export to Excel" button and the file it writes are REMOVED — only the Inputs
+  page's; the Quals page's export and the schedule's own export and print stay. Built inside the one-rule job's check
+  (`../../OUTSTANDING.md` `[ALL-AVAIL-AS-MEMBER]`); until that build lands the button is still there and writes one
+  line a named person and one for ALL AVAIL / ALL.
 
 ## The top bar carries the bell and the Undo / Redo pair (owner, Aug 26; the pair on every page — D347–D349, 28 Sep 26)
 
@@ -7818,6 +7990,33 @@ backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 `audit-guards-inputs.test.ts`.
 
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770; D760 for the marks: an input is ONE record with
+the list of its people, so "their own" is asked of that list and never of a record's one `person`. Read the paragraph
+above with these — it is left as written:*
+- *WHAT A MEMBER SEES FIRST is unchanged, but an input of several passes his filter when ANY of its people is he
+  (`ui/inputscal-model.ts inputPassesPerson`), so he lands on the inputs he is IN as well as the ones that are his.*
+- *WHOSE AN INPUT IS — `state/perms.ts mayEditInput(record)` / `mayDeleteInput(record)`, both `mayChangeInput`: an
+  admin; the input's ONLY person, with nobody and no ALL AVAIL / ALL beside him (`engine/inputs.ts onlyNamed`),
+  whoever filed it; or its FILER (`filedForOther`) — the members' switch on, a kind a member may file for others, and
+  everyone else in it put in by him (`allPutBy`). Once a scheduler has put someone in beside others, changing it for
+  everyone is the scheduler's (D755 (3)). An input for several people, or for ALL AVAIL, is nobody's own.*
+- *SOMEONE WHO IS IN IT BUT MAY NOT CHANGE IT — he did not file it, or he is the only named person beside ALL AVAIL /
+  ALL (D770) — reads it and has ONE thing of his own: "Take me out" (`ui/inputedit.tsx`, `inped-takeout` — a
+  `commitInput` with himself left off the list, which that writer lets through for him alone). He adds nobody
+  (D763) and gives no OIL answer of his own: the input has ONE answer, given by whoever may change it (D762).*
+- *THE SCHEDULER'S MARKS on an input — cancelled with its reason, the red box, information only — are never a
+  member's to set or clear, on his own input too (D760).*
+- *THE ✎ AND THE ✕ ARE NOT ON THE ROW AT ALL since 10 Oct 26 (D718, D723): the row opens the input's window. What
+  the List's row still asks `mayEditInput` for is its OIL chips, drawn only for an input of ONE person
+  (`ui/InputsPage.tsx`); an input of several carries none.*
+- *THE WRITE-PATH BACKSTOP is three bodies now: `commitInput` — the one writer, which asks `mayEditInput` and
+  `mayFileInputFor` before anything is written — with `commitInputEdit` and `removeInput` beside it; and behind every
+  door the commit gate, `perms.ts ownershipViolation` → `inputBreach`, which reads what a member's command really
+  changed: his own part (`ownPart` — his one-person input, or his own entry alone going out of a list), or an input he
+  filed (`filedForOther`); nobody's entry forged, no person added to an input he did not file, no mark set. The rule
+  is paired word for word with `docs/data-model.md` §11's `Input` row (`perms.ts INPUT_FILER_NOTE`; `perms.test.ts`
+  fails when the two differ — D200). The pinning file is `src/ui/audit-guards-inputs.test.tsx`.)*
+
 **Another man's input opens READ ONLY, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
 From the calendar's chip or the day popover a member opening someone else's input gets the edit window with its body
 `inert`, no Delete and no Save, and "Only Tally or an admin can change this." at the foot (`ui/inputedit.tsx`,
@@ -7827,6 +8026,25 @@ a locked field now reads as its VALUE — no box, no arrow, the plain cursor, th
 is dimmed rather than removed, so the record still shows what was chosen. His own input keeps its live boxes. Before and
 after pictures are on the small-fixes look card — kept on his look (D364, 29 Sep 26). Pinned by `e2e/geometry.spec.ts` ("the read-only
 input window draws its locked fields as values"); walked `scripts/handpass/sf/sf-g4-readonly.mjs`.
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770, D771: "another man's input" is any input its
+reader may not change — `!mayEditInput(record)` — and that now includes an input of several he is IN but did not file,
+and one where he is the only named person beside ALL AVAIL / ALL. The form is `inert` as before, with no Delete and
+no Save; what differs is the foot and what stands outside the form:*
+- *THE SENTENCE. For an input of ONE person it is still "Only Tally or an admin can change this." For an input of
+  several, or one that holds ALL AVAIL / ALL, it is the one body every door says, `ui/inputedit.tsx sharedRefusal`:
+  "Only Saber — who filed it — or an admin can change this for everyone."; once a scheduler has changed who is in it
+  (`perms.ts filedWhole` is false), "A scheduler has changed who is in this — ask an admin to change it for
+  everyone."; and to the filer himself, kept out by the members' switch alone, "Filing for other people is switched
+  off — an admin can change this." (D731 (8)).*
+- *"TAKE ME OUT" (`inped-takeout`) stands in the foot, outside the inert form, for a reader who is in the input — it
+  asks first ("Take yourself out of this input? It stays for the other 2 people.") and then says "You are out of
+  this input". Beside Close and the paperclip it is the only live control in his window.*
+- *THE OIL LINE states the input's ONE answer and has no button for a reader: "Change…" and "Answer…" are drawn only
+  for whoever may change the input (not drawn at all for a reader since 10 Oct 26, `[CAL-CHECK-SEEN]` — it is not
+  "dimmed rather than removed"). There is no "Your OIL" line and no answer of a man's own (D762).*
+- *A CANCELLED INPUT'S WINDOW wears the small red CX tag and its reason beside its title (`inped-cx`, D771), for
+  every reader — a mark, never a control. A document is opened from the paperclip in the foot (`inped-docview`),
+  outside the form, so a reader can still open it.)*
 
 ## The ⓘ info-only switch on programme items (owner, 1 Sep 26)
 
@@ -9071,6 +9289,15 @@ off"* — it said that while the puck on the same line said the man earned a ful
 finding 13). A claim row is not switchable as a whole for a different reason, and should say so:
 **"OIL is decided per person on this request."**
 
+**SUPERSEDED 12 Oct 26 by the one-rule build (`[ALL-AVAIL-AS-MEMBER]` step 2 (d), step 3 — owner D755 (1), D762, which
+change D18 and D470 on a row that came from an input):** such a row no longer carries "two kinds of man". Everyone on
+it is IN the input and follows its ONE OIL answer — whoever filed it, whoever the scheduler put there, and the men
+behind an ALL AVAIL on it; the scheduler still switches any ONE person, by his puck (`<person>|i:<iid>`). So one man
+glowing and another dark on that row now means the scheduler switched one of them, never "his own answer". The row's
+name says: "This request has one answer for everyone on it — tap a puck on this row, or the count, to switch one
+person, not the row itself" ("or the count" only where the input holds ALL AVAIL — `ui/oilmode.ts`). The scheduler's
+own rows are unchanged.
+
 
 - **A bar down the LEFT edge of the puck.** Full height = a full day. The BOTTOM HALF,
   a shade paler = half a day. Height is the structural signal that survives
@@ -9590,7 +9817,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   — the dates (`.ib-day`, `data-icday`), their heads (the number, the PH / OFF / NF tag — never a sun or a moon, D627 —
   the day's title, the planning notes and pucks) and the lines (`.ib-bar`; "+N more") — because a bar lies across dates
   and sits inside none. Red is an absence, amber a duty or commitment (the List's own colours). A group filing is ONE
-  bar, made so by `state/inputgroup.ts entriesOf` alone (D655). A desktop bar's tooltip says who, what, when and who
+  bar, made so by `state/inputgroup.ts entriesOf` alone (D655). *(Since the one-rule build, 12 Oct 26 — D756: it is
+  one bar because it is ONE stored record with its people; `state/inputgroup.ts` is removed.)* A desktop bar's tooltip says who, what, when and who
   placed it (D632, D629).
 - **How many lines a day:** seven on a desktop, then "+N more" (D632, D639). On a phone the week rows share the height
   the screen gives (`fitLanes`, re-measured when the height changes) and the lines are what fits — never fewer than
@@ -9702,7 +9930,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   the List is shown is found, lit and scrolled to BY ITS ENTRY (a shared input stands under its first record A to Z —
   `listRow`, `shown`), and an opened day lists a just-saved shared input hidden by a filter as the whole entry
   (`entryRowsOf`); `remarkOnce` tidies only the JOIN where the words stood — a sign or a dash that belongs to the
-  typed words is never touched.
+  typed words is never touched. *(Since the one-rule build, 12 Oct 26 — D756: `entryRowsOf` is removed; the entry is
+  the one record.)*
 - **THE LIST'S DATES CALENDAR ON A PHONE OPENS UNDER ITS ROW OF BUTTONS (his find, 10 Oct 26 — fixed).** At 700 points
   wide and under, the pop-up spans the row of buttons ("+ Input", the dates button, Export), so that ROW is the box it is
   placed against (`scheduler/06-inputs.css`). Placed against nothing it opened one screen's height down the page — the
@@ -9736,10 +9965,16 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
     days"; a man who has not answered is named by the "Not answered yet" line under it, not here). It is drawn while
     ANY man of the entry has an answer, and then "Change…" is the one button (no second "Answer…"). A reader's line
     carries no button (A7). In the schedule's and the board's dialog the line is the one man's, as before.
+    *(SUPERSEDED 12 Oct 26 by the one-rule build — owner D762, which changes D731 (4): an input has ONE OIL answer
+    for everyone in it, so its people can no longer carry different answers and there is nothing to count.
+    `oilSummaryOf` and "credited for 2 of 3 — Ranger: no" are gone; the line states the input's one answer, with
+    "Change…" for whoever may change the input, in the Inputs page's window and the schedule's dialog alike.)*
   - **A GROUP'S OIL QUESTION IS HEADED FOR THE GROUP (A8).** "OIL — Ace +1, Duty": the entry's first name and how many
     more, the words of the window's own title — decided in ONE place, where the sheet is drawn, for every door (the
     save, "Change…", "Answer…", the bell, the question that follows a bar's drag). A man's OWN answer inside an input
-    he did not file is headed with his name alone.
+    he did not file is headed with his name alone. *(Since the one-rule build, 12 Oct 26 — D762: there is no "man's
+    own answer" inside an input of several, so that last heading is never drawn; the heading's words are the
+    window's title (`ui/inputedit.tsx inputWho`) — the first NAMED person A to Z and "+N", never "ALL AVAIL +1".)*
   - **AN OIL DAY IN ANOTHER YEAR SAYS ITS YEAR (A5).** `inputedit.tsx oilDayLabel` — "9 Jan 2027" — is the one label of
     the question's heading, the window's two "not answered yet" lines and the desktop row's "OIL?" chip.
   - **TAKING A REQUEST OFF NAMES IT (D731 (5)).** "Ranger's Sports day taken off the programme"; where its row stood on
@@ -9806,7 +10041,9 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   for a question nobody has answered yet ("Not answered yet · Answer…"), since a phone's card has no OIL chip.
   **As closed by its check (10 Oct 26 — `docs/handpass/2026-10-10-input-card-check.md`), the window also:** (c) says
   the unanswered line while ANY record of a shared entry is unanswered, naming who, and gives a man in a shared input
-  he did not file his own "Your OIL: not answered yet · Answer…" outside the read-only form; (d) saves an OIL answer
+  he did not file his own "Your OIL: not answered yet · Answer…" outside the read-only form *(GONE 12 Oct 26 — the
+  one-rule build, D762: one answer for everyone, given by whoever filed it or an admin; "Your OIL" and a man's own
+  Answer… are not drawn, and the unanswered line speaks for the INPUT)*; (d) saves an OIL answer
   given ALONE by itself — who answered and when is stamped, the input's late date is NOT moved (as the desktop row's
   chip does); with a change of the input it is one save of both; (e) carries a PAPERCLIP button beside its buttons,
   outside the form, for any saved input with a document — the phone's card has none — for every reader; (f) offers an
@@ -9933,6 +10170,48 @@ Kept as one record a man tied by a group id (`state/inputgroup.ts`; the no-scree
 thing" is made on the Inputs page only — and by ONE function, `entriesOf` / `entryRowsOf`: a screen that draws inputs
 without it shows a group as separate lines.
 
+**Since the one-rule build (12 Oct 26 — `[ALL-AVAIL-AS-MEMBER]` steps 2, 3 and 6; owner D755, D756, D759, D762, D763,
+D753): a shared input IS one thing.** It is one stored record carrying the list of its people (`people`; `engine/inputs.ts
+peopleOf` reads either shape), so a list of inputs is the list of entries. `state/inputgroup.ts` (`entriesOf`,
+`entryRowsOf`, `entryLines`) is removed, and so are `commitGroup`, `removeEntry`, `oilSummaryOf` and `entryOilAnswer`
+in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that draws one row a PERSON reads `facesOf`
+/ `facesDrawn`. Read the bullets of this section with these corrections — each bullet is left as written:
+- **ONE saver, `ui/inputedit.tsx commitInput(rec, draft, people, opts)`** — one command, one Undo step — where the
+  bullets say `commitGroup`; it runs every refusal first (who may, what one record may hold — `inputs.ts
+  shapeProblem`) and calls `commitInputEdit` / `commitNewInput` for what the input SAYS. A filing for ONE person is
+  written with `people` too. "Delete this input for all N people?" (`inped-delall`) is the one delete.
+- **ONE OIL answer for everyone in it (D762):** the window's OIL line states the input's one answer, with "Change…"
+  for whoever may change the input. "Your OIL", a man's own answer and its Change… / Answer… buttons are gone; "a man
+  may change his own again afterwards" (D660 reading 3, D682 reading 2), "a man who may only add somebody answers
+  for the man he adds" and "credited for 2 of 3 — Ranger: no" (D731 (4)) no longer hold — the people of one input
+  cannot carry different answers. Who the scheduler switched off on a day shows in OIL Earn, where it is set.
+- **A man in it who did not file it** reads it and has ONE thing of his own — "Take me out" (`inped-takeout`, asked
+  first: `inped-takeout-ask`). He adds nobody (D763) and has no OIL answer of his own. The same holds for the only
+  NAMED person beside ALL AVAIL: he does not change the input for everyone (reading R19).
+- **Who changes it for everyone:** an admin; its only person, whoever filed it; its filer while everyone in it was put
+  in by him. Once a scheduler has put someone in, the window says "A scheduler has changed who is in this — ask an
+  admin to change it for everyone" (`sharedRefusal`); otherwise "Only Saber — who filed it — or an admin can …".
+- **The window's title** is one body, `inputWho(rec)`: the one person's callsign, or the first NAMED person A to Z
+  and "+N" for the rest — never whoever joined first. A sentence that counts who is in it never counts ALL AVAIL as
+  a person (`howMany`): "for 2 people and ALL AVAIL".
+- **"ALL AVAIL" and "ALL" under "Several people" (step 3 — D750, D753):** the two are pucks of their own in the
+  picker (`ui/PeoplePick.tsx`, `data-ppgroup="ph"`), ONE of them, beside named people. Where the input is longer than
+  a day or not one of the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* they are drawn greyed with the reason under them (`phWhy` — the window's answer,
+  `inputedit.tsx placeholderWhy`): "ALL AVAIL is for one day" / "ALL AVAIL is for Training, Meeting, Appointment,
+  Duty, Event and Other". One already picked stays lit, with the sentence and "Take ALL AVAIL out"; a second one, or
+  ALL beside ALL AVAIL: "This input already has ALL AVAIL". The count line reads "2 picked + ALL AVAIL". A reader is
+  told nothing. So "never as a puck under 'Several people'", "ALL AVAIL is filed on its own — it already stands for
+  whoever is free" / "File it for ALL AVAIL only" and "… is filed one day at a time" below are no longer said. A
+  save may put a placeholder in beside people, leave it alone when they go, or let it take an input over; an input
+  under Unavailable that takes one goes back onto the programme at the save. On the schedule the placeholder's puck
+  is one of the row's pucks (drawn last, after the named people), not "the request row D46 already draws".
+- **A card and the List name every named person A to Z, then "ALL AVAIL"**; "Placed by Saber for 2 people"
+  (`ui/placedline.ts`) counts named people.
+- **Not built yet:** a cancelled input's look on the month's bar, the opened day's card and the List's row (D760),
+  and the bell's notice to its people, wait for his look at a picture (the plan
+  `superpowers/plans/2026-10-11-one-rule-plan.md` §8, Q2–Q4).
+- Tests: `ui/phpick.test.tsx`, `ui/phmember.test.tsx`, `ui/groupeditor.test.tsx`, `leavewar/onerecord-perms.test.ts`.
+
 - **An input's own title, and its kind kept in sight (owner D715, D716, D717 — 9 Oct 26; `[INPUT-OWN-TITLE]`; the drawing
   of record `docs/mock/input-own-title.html`).** *The Title box* — in the input's window (`inputedit.tsx`,
   `#inpEditOwnTitle`, straight under Type), the List's form (`#inTitle`) and the List's pencil editor (`data-ed="title"`), *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
@@ -9955,11 +10234,17 @@ without it shows a group as separate lines.
   was (the view week is compared with the reference). A remark is said under the day card's line whatever the input is
   called — the old "an Other is named by its remark, do not say it twice" test is gone. Search (the List, the month,
   the opened day) matches the title as well as the remarks.
+- *[12 Oct 26 — D778: the two pucks are offered for a one-day PERSONAL input too (D712 narrowed to "Fly with"); and
+  D776: a Personal input's row takes a dropped puck as any input's does — he joins on "+ add", replaces or swaps on the
+  one person's puck. D777: an input's CARD (the opened day; the List on a phone — `ui/InputCard.tsx`) wears a small
+  outlined "OIL?" tag after LATE and left of the hours where nobody has answered its OIL question, and the desktop
+  List's "OIL?" button shows for an input of several too — for whoever may answer (`ui/inputedit.tsx oilSignDay`); the
+  month's bars get nothing. The pictures of record: `docs/mock/2026-10-12-oil-ask/`.]*
 - **"ALL AVAIL" and "ALL" as a choice of person (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`).**
   Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
   label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither
   takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add / *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
-  edit dialog and the List's pencil editor. Offered for the six kinds `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
+  edit dialog and the List's pencil editor. Offered for the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
   may pick another person for that kind (an admin; a member while the members' switch is on), never on the SANS
   calendar, never as a puck under "Several people". **A placeholder already chosen is ALWAYS listed, whatever the kind
   becomes** — with no option the box drew the first man on the list over an ALL AVAIL input. The picker's own line
@@ -10050,9 +10335,19 @@ without it shows a group as separate lines.
 - **The changes window (D663):** "Group by: Item" files the lines of one filing under one item — "Input · Meeting · 4
   people" — each line naming its man; a later change to one man alone is its own line under it. A line each is still
   written (each carries its record's `grp`); "Group by: Who" and the day's count are as they were.
+  *(Since the one-rule build, 12 Oct 26 — D756: an input of several is ONE record, so its filing, a change to what it
+  says and its delete are ONE line, written by `state/changelines.ts` under its first person; ONE LINE A PERSON put in
+  or taken out is written beside it, filed under that person (his callsign, the input and its dates, then "· added" or "· taken out").
+  `grp` is not written any more; a stored line that carries it — made before the build — still groups in the window,
+  read only. A scheduler's mark is the input's own line too: "… · CX: not cancelled → cancelled — WX", "· red box",
+  "· information only" (D760).)*
 - **Everywhere else it is one input a man, unchanged:** the board's and the week's rows, the warnings, the Leave War,
   the bell, a published day's pending count, print and export. The schedule's one row for a group is its own job
   (`[GROUP-INPUT-ONE-ROW]`, D661, D662).
+  *(SUPERSEDED — first by `[GROUP-INPUT-ONE-ROW]`, 11 Oct 26, then by the one-rule build, 12 Oct 26 — D755, D756:
+  nothing is "one input a man" in store any more. The schedule's row is ONE row; a published day's count is worked
+  out from the input's people; the rules about one man's day — the warnings, the Leave War's absences, SANS
+  availability — read one line a person as a DERIVED view of the one record (`engine/inputs.ts inputLines`).)*
 
 ## Inputs calendar and SANS demand — D580
 

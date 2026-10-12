@@ -8,6 +8,7 @@
 import type { Change, LogicalCollection } from '../command'
 import type { RecordCtx, RecordOwner, Module } from './types'
 import { decodeRoleId } from '../engine/mission-role'
+import { onlyNamed, idsOf } from '../engine/inputs'
 
 export function recordKey(c: { collection: string; id: string }): string {
   return `${c.collection}/${c.id}`
@@ -73,7 +74,7 @@ export function courseOf(collection: string, id: string): string | null {
 }
 
 const MODULE_OF_COLL = (collection: string): Module => {
-  if (collection === 'inputs') return 'inputs'
+  if (collection === 'inputs' || collection === 'notices') return 'inputs'   // a notice is part of the input change that made it
   if (collection === 'plan') return 'plan'
   if (collection === 'people') return 'people'
   if (collection === 'settings') return 'settings'
@@ -118,8 +119,12 @@ function ownerOfChange(ch: Change): string | null {
   }
   if (collection === 'inputs') {
     if (id === '__order') return null
+    /* the man whose own request it is — its ONE person. An input for several, or for ALL AVAIL, has no single owner:
+       whose step a change to it is, is the step's own actor (timeline.ts isOwn), and what a member may reverse of it
+       is asked of the recorded images (perms.ts ownPart, filedForOther) — the one-rule plan §4.9, §4.11. */
     const rec = (ch.after ?? ch.before) as any
-    return rec && rec.person != null ? String(rec.person) : null
+    const p = rec && idsOf(rec).length === 1 ? onlyNamed(rec) : null
+    return p != null ? String(p) : null
   }
   if (collection === 'people') return id
   return null

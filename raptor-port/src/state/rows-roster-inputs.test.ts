@@ -87,6 +87,12 @@ describe('a request is one stored row', () => {
     clear()
     expect(file('ONE')).toBe(true)
     expect(writes('inputs')).toEqual([inpId(byRemarks('ONE'))])
+    /* …AND, SINCE THE BELL'S NOTICES (the one-rule build's step 7, 12 Oct 26 — owner D755 (3): "the member is told by his
+       bell"): this request is filed FOR another man, so the same save writes ONE more row — his notice, a row of its own
+       in its own collection, naming the request. The request's row is still the only INPUT row. */
+    const told = writes('notices')
+    expect(told, 'one notice: the man it was filed for').toHaveLength(1)
+    expect(JSON.parse(wb.get('notices', told[0]!)!)).toMatchObject({ to: 'dj', iid: inpId(byRemarks('ONE')), what: [{ k: 'in' }] })
   })
 
   it('a new request goes on top of the list and says so in its own row (ord) — the rows around it are untouched', async () => {
@@ -128,11 +134,18 @@ describe('a request is one stored row', () => {
     const wb = await boot(new MemoryBackend())
     const order = INPUTS.map((r: any) => inpId(r))
     const r = INPUTS[3], id = inpId(r)
+    clear()
     expect(removeInput(r)).not.toBe(false)
     expect(wb.has('inputs', id)).toBe(false)
+    /* (D755 (3), R11 — the bell's notices, 12 Oct 26: the delete told whoever was in the request, each a row; the Undo
+       takes those rows away with the change — nobody is told "it was undone") */
+    const told = writes('notices')
+    expect(told.length, 'the delete told someone: a notice row each').toBeGreaterThan(0)
+    expect(told.every(n => wb.has('notices', n))).toBe(true)
     const u = globalUndo()
     expect(u.ok, u.reason).toBe(true)
     expect(wb.has('inputs', id)).toBe(true)
+    expect(told.some(n => wb.has('notices', n)), 'its notices went with it').toBe(false)
     expect(INPUTS.map((x: any) => inpId(x))).toEqual(order)
   })
 })

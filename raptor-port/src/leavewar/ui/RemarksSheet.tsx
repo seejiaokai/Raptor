@@ -20,11 +20,15 @@ import { setLeaveRemarks } from '../../ui/inputedit'
 
 export function RemarksSheet({
   callsign,
+  personId,
   row,
   code,
   onClose,
 }: {
   callsign: string
+  /** whose cell the sheet was opened on — the remark is HIS: where the leave behind the cell holds several people he is
+   *  given a leave of his own first (ui/inputedit.tsx setLeaveRemarks) */
+  personId: string
   /** the Raptor INPUT the cell derives from (sync.ts:leaveInputAt) */
   row: any
   /** the cell's Leave War code, for the header only */
@@ -35,7 +39,7 @@ export function RemarksSheet({
   // The leave's own span, read off the row — a click on any day of a 13–15 Jul
   // run edits the one note for the whole run (owner's example).
   const span = row?.endDate ? `${inputDayLabel(row.date)} → ${inputDayLabel(row.endDate)}` : inputDayLabel(row?.date)   // day-first ([LW-ISO-DATES])
-  const save = () => { if (setLeaveRemarks(row, remarks)) onClose() }
+  const save = () => { if (setLeaveRemarks(row, remarks, personId)) onClose() }
   return (
     <Sheet testid="remarks-sheet" label="Edit the note on this leave" onClose={onClose}>
       <div className="bidsheet-hd">

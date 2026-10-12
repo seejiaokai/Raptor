@@ -16,16 +16,15 @@
    and extras, sim seats / passengers / extras, a ground row's name and extras, a Common Programme name and extras — the
    same roll-call as state/person-delete.ts personKeysOnDay), a ground row landed from one of his requests goes, his OIL
    switches go, and the day's working sign-offs and its saved plans lose him. Days before it keep him (D297). */
-import { PEOPLE, whoId, isSpecial } from './people'
+import { PEOPLE, whoId } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
-import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd } from './inputs'
+import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed } from './inputs'
 import { hhmm } from './time'
 import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
 import { DAYS } from './data'
 import { rowsOf } from './rowids'
-import { entryIdOf } from './inputentry'
 
 const ROLES = ['cur', 'sked', 'plan', 'appr'] as const
 export const trimTail = (arr: any[]) => { while (arr.length && !arr[arr.length - 1]) arr.pop() }
@@ -62,7 +61,12 @@ export function stripPersonFromDay(d: any, id: string, srcs: Set<string>): boole
     if (keep.length !== d.ground.length) { d.ground = keep; changed = true }
     d.ground.forEach((r: any) => {
       if (!r) return
-      if (!r.src && whoId(r.who) === id) { r.who = ''; changed = true }
+      /* …and the name box of a row that came from an input, where that row is DEAD (`kept` — the reconcile never re-makes
+         it) or its input no longer holds him: a live row of an input that still holds him is left for the re-make, which
+         writes the whole row from the input once the delete has taken him out of its list (Fable's read of the finished
+         code, finding 2 — 12 Oct 26: his name stayed on a dead row of a SHARED input; pinned in overlay-strip.test.ts) */
+      const srcHolds = () => { const inp: any = (INPUTS as any[]).find(x => x && String(inpId(x)) === String(r.src)); return !!inp && idsOf(inp).map(String).includes(String(id)) }
+      if (whoId(r.who) === id && (!r.src || r.kept || !srcHolds())) { r.who = ''; changed = true }
       blankList(r.more, isHim)
     })
   }
@@ -99,7 +103,10 @@ export function stripSign(sign: any, bind: any, id: string): boolean {
 export const hisLanded = (d: any, id: string) => new Set<string>(((d && d.ground) || []).filter((r: any) => {
   if (!r || !r.src) return false
   const inp: any = (INPUTS as any[]).find(x => x && String(inpId(x)) === String(r.src))
-  return inp ? String(inp.person || '') === id : whoId(r.who) === id
+  /* HIS where he is the input's ONLY named person (step 2 (a) of the one-rule build — the plan §4.3): from an input that
+     holds others he leaves the LIST (the delete's own trim) and the row is re-made without him; the row goes whole only
+     where it was his alone. An old-shaped record is a one-person input, so it answers as it always did. */
+  return inp ? String(onlyNamed(inp) || '') === id && idsOf(inp).length === 1 : whoId(r.who) === id
 }).map((r: any) => String(r.src)))
 
 /* ---- the deleted men, with the first day each is gone ---- */
@@ -163,21 +170,64 @@ export function overlayDeletedWeek(v: string, days: any[], book?: { sign?: any; 
 /* THE SIX FIELDS A REQUEST WRITES ON ITS ROW — the one body acceptInput (a scheduler's Accept, the board's "+ Inputs"), a
    landing on read and a re-made row share, so the three cannot mint a row two ways. Title is the input's NAME — its own title, else its TYPE (inpLabel; an Other USED TO read by
    its remarks), the submitter's remarks land in the row's remarks cell, `who` is the stable person id. */
-/* …AND A SEVENTH, FOR A RECORD OF A SHARED INPUT ONLY — `srcg`, its entry's own identity (inputentry.ts entryIdOf: the
-   group's id and every shared field; `[GROUP-INPUT-ONE-ROW]`, owner D661 — the plan 2026-10-10-group-input-one-row-plan.md
-   §4.1). It is what makes the rows of one shared input known as ONE row from the rows alone (grouprows.ts). Written
-   ONLY where it is non-empty, so an ordinary request's row is byte for byte what it was. */
+/* …AND ITS PEOPLE — the row is a COPY of the input, written whole ([ALL-AVAIL-AS-MEMBER] step 2 (b), 12 Oct 26 — owner
+   D755: "a row that came from an input IS the input: whoever stands on it … is in the input"; the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3). The first to join stands in the name box, the rest under
+   it in the order they joined; nobody on such a row is "the row's own" any more — a hand that puts someone there
+   changes the INPUT, through its door (ui/reqdoor.ts), and the row follows by the re-make rule. `more` is written only
+   where there is someone to put in it (the re-make takes the key away where there is not). The old entry mark
+   (`srcg`, one row a man drawn as one) is gone: a row is a row. */
 export function requestRowFields(inp: any) {
   const f: any = {
     prog: inpLabel(inp).toUpperCase(),
     str: inp.allday ? '' : hhmm(inp.s), end: inp.allday ? '' : hhmm(inp.e),
-    who: inp.person,
+    who: leadOf(inp),
     rmks: inp.remarks || '', srcType: inp.type,
   }
-  const g = entryIdOf(inp)
-  if (g) f.srcg = g
+  const rest = idsOf(inp).slice(1)
+  if (rest.length) f.more = rest
+  /* …AND THE SCHEDULER'S MARKS (step 4 of that build — owner D760: "a CX the scheduler puts on a row that came from an
+     input cancels the input itself … the red box and 'information only' go with the input too"). Written as a row
+     has always carried them, and only where set — the re-make takes each key away where the input has none (as it
+     does `more`). So a request moved to another day arrives with them, and nothing stays behind (D468 as changed). */
+  if (inp.cx) { f.cx = true; f.cxr = String(inp.cxr || '') }
+  if (inp.flag) f.flag = true
+  if (inp.info) f.info = true
   return f
 }
+/* THE SAME PEOPLE AS WENT OUT STAND IN THE ORDER THEY WENT OUT IN (the one-rule job's check, 12 Oct 26 — the Opus trial
+   read, claim 6, reproduced red in state/inputcount.test.ts; owner D98: "a day that is back to what was published shows
+   nothing pending"; D755: two routes to the same people give the same row). A row carries its input's people in the
+   order they JOINED, and a published day compares a row's people place by place (restore.ts dayKeys). So the first to
+   have joined, taken out and put back, came back LAST: the same three people on every screen — the row draws them A to
+   Z — and the day read "1 pending · order changed" for good, its sign-offs fallen; a load re-made the row from the
+   input and it was pending again. Where the issued day's row of the same request holds exactly the people the input
+   holds now, the row is written in the ISSUED order: the day is then what went out, and reads so. `f` is changed in
+   place and handed back. */
+export function asIssuedOrder(f: any, issuedRow: any): any {
+  if (!f || !issuedRow) return f
+  const id = (v: any) => String(whoId(v) || v || '')
+  const was = [issuedRow.who, ...((issuedRow.more || []) as any[])].map(id).filter(Boolean)
+  const now = [f.who, ...((f.more || []) as any[])].map(id).filter(Boolean)
+  if (!was.length || now.length < 2) return f
+  const have = new Set(now), went = new Set(was)
+  if (have.size !== now.length || went.size !== was.length) return f
+  /* …AND WHERE THE PEOPLE DIFFER, THOSE WHO WENT OUT WITH THE DAY STILL STAND FIRST, IN THE ORDER THEY WENT OUT IN, AND
+     WHOEVER JOINED SINCE AFTER THEM (the second re-walk, RX3-2 — the same day). Written in the issued order only while
+     the people were EXACTLY the issued ones, the row fell back to the joined order the moment a fourth man was added
+     after one had been taken out and put back: every puck then sat on a new place, and all four wore the hollow "goes
+     out as ALn" tag where only the new man's is a change (D93, D736). Someone who LEFT closes the gap as before — the
+     next man takes his place (state/inputcount.test.ts "the first person leaves"). */
+  const order = [...was.filter(p => have.has(p)), ...now.filter(p => !went.has(p))]
+  if (order.join(' ') === now.join(' ')) return f
+  f.who = order[0]
+  if (order.length > 1) f.more = order.slice(1); else delete f.more
+  return f
+}
+/* the issued day's row of a request — the row the version PLACED (never one that was dead, `kept`, when it went out) */
+export const issuedRowOf = (snap: any, id: any): any =>
+  (((snap && snap.d && snap.d.ground) || []) as any[]).find((g: any) => g && String(g.src || '') === String(id) && !g.kept)
+
 /* `srcv` — what a row was last made or re-made from: a short hash of those six fields. A row whose `srcv` differs from its
    request's is re-made (rule 6). *(Until 11 Oct 26 a scheduler could type in the row's own cells, which left `srcv`
    alone, so his words stood until the request itself changed — "today's relink rule". Those four cells are the
@@ -186,10 +236,14 @@ export function requestRowFields(inp: any) {
    count or signature. */
 export function srcvOf(inp: any): string {
   const f = requestRowFields(inp)
-  /* a grouped record's hash carries its entry too — so its row is re-made when ANY shared field moves, a date or a half
-     the row does not show included, and a row saved before this build is re-made, and marked, at its first read. An
-     ordinary request's hash is the six fields alone, as it always was: no ordinary row is re-made by this build. */
-  const s = [f.prog, f.str, f.end, f.who, f.rmks, f.srcType].map(x => String(x ?? '')).join('|') + (f.srcg ? '|g:' + f.srcg : '')
+  /* EVERYTHING the request writes, people included — and a mark of the build that made the row a whole copy (`2`), so
+     every row made before it is re-made ONCE, at its first read: whoever a scheduler had put on an old request's row
+     without putting him in the input comes off it then (stored demo rows only — D56; told to him, the plan's R6). */
+  /* (`3`: the marks are the input's since step 4 — D760 — so a row made before it is re-made once more, and a CX, red
+     box or "information only" a scheduler had put on the ROW of an old request comes off: the input never carried it.
+     Stored demo rows only — D56.) */
+  const s = '3|' + [f.prog, f.str, f.end, f.who, f.rmks, f.srcType].map(x => String(x ?? '')).join('|') + '|' + (f.more || []).join(',')
+    + '|' + [f.cx ? 'cx:' + f.cxr : '', f.flag ? 'f' : '', f.info ? 'i' : ''].join('|')
   let h = 0x811c9dc5
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) }
   return (h >>> 0).toString(36)
@@ -250,7 +304,11 @@ export function standsOn(d: any, id: any, r?: any): any {
    `kept` row (D363), a row whose request is gone, a request taken off the programme whose row stands again (a version
    loaded, a plan switched in — rule 4 leaves it as it is), and a read-only request's. ONE predicate for the door that
    sends the typing to the request (ui/reqrow.ts) and the belt that refuses a raw write (slots.ts txtSet), so the two
-   cannot disagree about a row. What stays the row's own on every row: its people, CX, red box, information only. */
+   cannot disagree about a row. ITS PEOPLE ARE THE REQUEST'S TOO since the one-rule build (owner D755; the plan
+   2026-10-11-one-rule-plan.md §4.4): the same predicate answers for the door a hand on a puck asks (ui/reqdoor.ts)
+   and the belt behind it (slots.ts inputSeatBar). Its CX, red box and "information only" are the request's too since
+   step 4 of that build (owner D760; ui/reqdoor.ts rowMark) — the row carries a COPY of them, written by
+   requestRowFields above — so nothing on such a row is the row's own. */
 export const REQ_BOX = /^(prog|str|end|rmks)$/
 export function requestOfBox(d: any, row: any): any {
   if (!d || !row || !row.src || row.kept) return null
@@ -259,16 +317,6 @@ export function requestOfBox(d: any, row: any): any {
   if (!r || r.acc === 'r' || inputProtected(r)) return null
   return standsOn(d, id, r) === row ? r : null
 }
-/* A SHARED ROW — a row of the ONE row a shared input is drawn as (`[GROUP-INPUT-ONE-ROW]`, owner D734 — "on a shared
-   input's row the pucks ARE the input's people"; the plan §4.5): it carries its entry's mark (`srcg`) and is its
-   request's standing row, the request one that can be changed from the schedule. Answers that request, else null. ONE
-   predicate for the door that sends a hand on the row to the input (ui/grouprow.ts) and the belt that refuses a raw
-   write to a member's place (slots.ts setSlotVal / fillSlot), so the two cannot disagree about a row. A shared input
-   keeps its mark down to its last man (reading R3), so the row of one man left is still a shared row. */
-export function sharedRowOf(d: any, row: any): any {
-  return row && row.srcg ? requestOfBox(d, row) : null
-}
-
 export type ViewDayInfo = {
   /* the request rows differ from the day handed in (a row made, re-made or taken away — not the deleted strip) */
   reqChanged: boolean
@@ -289,7 +337,7 @@ export type ViewCtx = {
 }
 
 /* ---- reconcile: each row with `src`, against its request (plan §3 (c) rules 1–7) ---- */
-function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
+function reconcileRequestRows(days: any[], info: ViewDayInfo[], ctx: ViewCtx): void {
   const reqs = requestsById()
   const first = new Set<string>()                         // rule 7: the first standing row per request, in day order
   days.forEach((d: any, di: number) => {
@@ -316,124 +364,43 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[]): void {
       keep.push(row)
       if (r.acc === 'r') continue                                                                                 // 4.
       const sv = srcvOf(r)
-      if (!row.srcv) { row.srcv = sv; continue }                                                                  // 5.
-      if (row.srcv === sv) continue
-      /* 6. re-made in place: its id, its place and every field a scheduler set (extras, flag, CX, information only) kept */
-      const f: any = requestRowFields(r)
-      /* THE NAME BOX IS THE SCHEDULER'S WHEN IT HOLDS SOMEONE OTHER THAN THE HOLDER — a man of his (D470: he earns from the
-         row) or a placeholder (D46: its crowd does) — and is KEPT, as the extras are ([DB-READINESS] phase 7, Fable's final
-         read F1). Writing the request's own man back at every re-make took the scheduler's man off the row at the member's
-         next edit of his remarks — and, since D470, his OIL with him — with no line anywhere; state/holderbase.ts
-         requestAddMarks already counts "a man of his in the name box" as the scheduler's change. A FORMER holder left in
-         the box by a hand-over (the request's `leftAt` names him) gives way to the new one. Free text, or an id the roster
-         no longer holds, is not somebody the scheduler placed: the request's man is written, as before. (Known edge: a
-         former holder dragged back into the box deliberately is replaced at the next edit — the extras are his place.) */
-      const w = whoId(row.who)
-      const other = !!w && w !== String(r.person) && !(r.leftAt && r.leftAt[w] != null) && (isSpecial(w) || !!(PEOPLE as any)[w])
-      /* …BUT A SHARED INPUT'S ROW KEEPS ITS OWN MAN IN ITS NAME BOX (`[GROUP-INPUT-ONE-ROW]`, owner D734 — "on a shared
-         input's row the pucks ARE the input's people"; the plan §4.2). The one row is drawn from each member row's own
-         man, so a member's name box holding somebody else would draw the wrong people — and no puck at all for its own
-         man (Astra's read of the plan, 6). Whoever stood there when the request BECAME part of a group — a placeholder,
-         a man of the scheduler's — is moved to that same row's EXTRAS, never dropped: the row, its request and so his
-         OIL item are the same, and no decision made about him moves. (If he is himself one of the input's people he
-         then comes off the extras and stands on his own row — entryPeopleOnce, below.) */
-      const kept = other && !f.srcg
-      if (kept) delete f.who
-      if (!f.srcg) delete row.srcg                        // a record no longer part of any entry: its row says so
-      Object.assign(row, f); row.srcv = sv; info[di].reqChanged = true
-      if (other && f.srcg) {
-        const more: any[] = Array.isArray(row.more) ? row.more.slice() : []
-        /* a man already among the extras is not put there twice (D271); a placeholder may stand twice (D278) */
-        if (isSpecial(w) || !more.some((x: any) => whoId(x) === w)) more.push(w)
-        row.more = more
-      }
-      /* ONE MAN, ONCE PER ROW (D271): the request's holder standing among the extras is kept once, as the holder — when
-         the name box is his; under another man's box (kept, above) the extras are where he stands */
-      if (!kept && Array.isArray(row.more) && row.more.some((x: any) => whoId(x) === r.person)) {
-        const more = row.more.map((x: any) => whoId(x) === r.person ? '' : x)
-        trimTail(more)
-        if (more.length) row.more = more; else delete row.more
-        info[di].blanked.push({ src: id, who: String(r.person) })
-      }
+      /* (the same people as went out, in the order they went out in — asIssuedOrder, above) */
+      const f: any = asIssuedOrder(requestRowFields(r), issuedRowOf(ctx.issued(di), id))
+      const shows = (x: any) => JSON.stringify([x.prog, x.str, x.end, whoId(x.who) || x.who || '', x.rmks, x.srcType, (x.more || []).map((v: any) => whoId(v) || v || '').filter(Boolean), !!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info])
+      /* LEFT ALONE ONLY WHERE IT IS WHAT THE REQUEST WRITES — its "made from" mark AND the row itself (the one-rule job's
+         check, 12 Oct 26 — the Opus trial read, claim 11, reproduced red in state/reqorphan.test.ts). The mark alone was
+         trusted: while a request reads "taken off" and its own row stands again (a saved plan switched in), the row is
+         nobody's input's and a man dropped on it is a plain write; Accept then adopted the row, its mark still matched,
+         and the schedule showed a man the input, the Inputs calendar and OIL did not hold — until the input next
+         changed and dropped him without a word. */
+      if (row.srcv === sv && shows(row) === shows(f)) continue
+      /* 5 + 6. RE-MADE IN PLACE, WHOLE (step 2 (b) of the one-rule build — the plan §4.3): its id and its place in the
+         list are kept; everything the request writes — its name, times, remark, EVERYONE on it, and since step 4 the
+         marks a scheduler makes (CX with its reason, red box, information only — D760) — is written over the stored row. So a person the holder's stored
+         day still carries under the row, after he was put in the input or taken out of it, cannot show twice or
+         linger: the re-make owns the row's people. A row with no hash at all (made before hashes) is re-made too.
+         `reqChanged` only where something a reader sees moved — a row re-made to the very same words is no change. */
+      const was = shows(row)
+      if (!f.more) delete row.more
+      if (!f.cx) { delete row.cx; delete row.cxr }
+      if (!f.flag) delete row.flag
+      if (!f.info) delete row.info
+      delete row.srcg
+      Object.assign(row, f); row.srcv = sv
+      if (shows(row) !== was) info[di].reqChanged = true
     }
     if (keep.length !== d.ground.length) d.ground = keep
   })
 }
 
-/* ---- WHERE A REQUEST'S NEW ROW GOES ON ITS DAY — ONE helper for the two doors that put one there: a landing on read
-   (landRequests, below) and a scheduler's Accept (slots.ts acceptInput). `[GROUP-INPUT-ONE-ROW]`, the plan §4.2.
-   An ordinary request's row goes at the end, as it always did. A record of a SHARED input whose entry already has a
-   row standing on the day goes straight AFTER THE LAST of them, and takes that row's CX and its reason, red box and
-   information-only — so a man added to a shared input later joins the one row where it stands, looking as it looks
-   (rows that are not alike are drawn apart: grouprows.ts). The match is the entry's mark alone; the person is no part
-   of it. Rows below move one index; nothing on screen moves, and every mark is keyed by its row's id. Returns the
-   index used. (A row an issued version already held is put back beside its issued neighbours by Accept itself, before
-   this is asked — that is a round trip, not a new row.) ---- */
-const ROW_OWN = ['cx', 'cxr', 'flag', 'info'] as const
+/* ---- WHERE A REQUEST'S NEW ROW GOES ON ITS DAY — at the end, for the two doors that put one there: a landing on read
+   (landRequests, below) and a scheduler's Accept (slots.ts acceptInput). Returns the index used. *(Until the one-rule
+   build a record of a shared input went straight after its entry's last row and took that row's marks — one row a man,
+   drawn as one. An input is one row now.)* ---- */
 export function placeRequestRow(d: any, row: any): number {
   d.ground = d.ground || []
-  let at = -1
-  if (row && row.srcg) d.ground.forEach((g: any, i: number) => { if (g && g.src && !g.kept && g.srcg === row.srcg) at = i })
-  if (at < 0) { d.ground.push(row); return d.ground.length - 1 }
-  const sib = d.ground[at]
-  for (const k of ROW_OWN) { if (sib[k]) row[k] = sib[k]; else delete row[k] }
-  d.ground.splice(at + 1, 0, row)
-  return at + 1
-}
-
-/* ---- ONE MAN, ONCE ON THE ONE ROW (owner D271; `[GROUP-INPUT-ONE-ROW]`, the plan §4.2 — Astra's second read, 4). The
-   one row of a shared input is drawn from every member row: each row's own man, then each row's extras. A man who
-   stands among a member row's extras — put there by a scheduler, or moved there from its name box when the request
-   became part of a group (reconcile, above) — and who is ALSO one of the input's people, with his own row on that
-   day, would be drawn twice. He comes off the extras: his own row is where he stands.
-   HIS OIL MOVES WITH HIM, NEVER SILENTLY: as an extra he earned through the OTHER man's request, so a scheduler's
-   refusal of him is kept as `<him>|i:<that request>`; on his own row he earns through his OWN request. The refusal is
-   copied to his own item — only a refusal, only where he has no decision there yet, never anybody else's — the way
-   the view already edits a day's OIL switches for a man deleted (stripOilSwitches). The old entry is left where it
-   is (it decides nothing once he is off that row, and still holds if a placeholder on it stands for him). On a
-   published day this reads pending, as any change to what the day earns does; an issued version is never handed
-   here. Undo of the save that made him one of the people gives the holder's stored day back exactly. ---- */
-function entryPeopleOnce(days: any[], info: ViewDayInfo[]): void {
-  const reqs = requestsById()
-  days.forEach((d: any, di: number) => {
-    const rows: any[] = (d && d.ground) || []
-    if (!rows.some((g: any) => g && g.srcg && Array.isArray(g.more) && g.more.length)) return
-    /* the people of each entry on this day: a member row is a standing row whose name box is its own request's man */
-    const people = new Map<string, Map<string, string>>()
-    for (const g of rows) {
-      if (!g || !g.src || g.kept || !g.srcg) continue
-      const r = reqs.get(String(g.src))
-      if (!r || r.acc === 'r' || whoId(g.who) !== String(r.person) || !standingRow(g, r, d.dt)) continue
-      if (!people.has(g.srcg)) people.set(g.srcg, new Map())
-      people.get(g.srcg)!.set(String(r.person), String(g.src))
-    }
-    for (const g of rows) {
-      const mem = g && g.srcg && !g.kept && Array.isArray(g.more) ? people.get(g.srcg) : undefined
-      if (!mem) continue
-      let hit = false
-      const more = g.more.map((x: any) => {
-        const id = whoId(x), own = id && !isSpecial(id) ? mem.get(id) : undefined
-        if (!own || own === String(g.src)) return x
-        carryOilRefusal(d, id, String(g.src), own, reqs.get(own))
-        hit = true
-        return ''
-      })
-      if (!hit) continue
-      trimTail(more)
-      if (more.length) g.more = more; else delete g.more
-      info[di].reqChanged = true
-    }
-  })
-}
-function carryOilRefusal(d: any, person: string, from: string, to: string, own: any): void {
-  const dec = d && d.oild, pp = dec && dec.people
-  if (!pp || typeof pp !== 'object') return
-  const a = `${person}|i:${from}`, b = `${person}|i:${to}`
-  if (pp[a] !== 'deny' || pp[b] != null) return
-  pp[b] = 'deny'
-  /* made under his own request's holding now, as the mode's own writer stamps it (ui/oilmode.ts toggleOilPerson) */
-  dec.pa = dec.pa || {}
-  dec.pa[b] = Number((own && own.hand) || 0)
+  d.ground.push(row)
+  return d.ground.length - 1
 }
 
 /* ---- land: an activity request with no row standing anywhere goes on its START day, if that day is in this week ---- */
@@ -482,10 +449,9 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
   if (!Array.isArray(days)) return info
   const taken = new Set<string>()
   for (const d of days) for (const r of rowsOf(d || {})) if (r && r.rid) taken.add(String(r.rid))
-  reconcileRequestRows(days, info)
+  reconcileRequestRows(days, info, ctx)
   overlayDeletedWeek(String(v), days, ctx.book)
   landRequests(days, ctx, info, taken)
-  entryPeopleOnce(days, info)
   return info
 }
 /* would a week read need the view's landing — some activity request, not taken off or filed, starts on one of its days.

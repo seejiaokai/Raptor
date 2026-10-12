@@ -180,6 +180,10 @@ export function elogLoad(): void {
     if (typeof x.grp === 'string' && x.grp) r.grp = x.grp
     if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
     if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
+    /* …and the mark that the line is about ONE person put into or taken out of an input (logAction, below) — it was
+       saved and never read back, so a reload undid what the mark is for (Fable's second read, finding 1 — 12 Oct 26;
+       pinned across a save and a load in ui/reqdoor.test.tsx) */
+    if (r.sub && (x.one === 1 || x.one === true)) (r as any).one = 1
     const strs = (v: any, ok: (s: string) => boolean) => Array.isArray(v) ? v.filter((s: any) => typeof s === 'string' && ok(s)) : []
     const ids = strs(x.iids, s => !!s), ds = strs(x.days, isoOk), ws = strs(x.wdays, isoOk)
     if (ids.length > 1) r.iids = ids
@@ -464,6 +468,7 @@ export type LineAt = {
   date?: string | null; end?: string | null; wdate?: string | null; wend?: string | null
   iid?: string | null; itype?: string; iname?: string; grp?: string; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
   iids?: string[]; days?: string[]; wdays?: string[]
+  one?: 1 | boolean
 }
 export function logAction(di: any, text: string, at?: LineAt) {
   const d = di == null ? null : +di
@@ -483,6 +488,10 @@ export function logAction(di: any, text: string, at?: LineAt) {
   if (at && at.grp) row.grp = at.grp
   if (at && at.sect) row.sect = at.sect
   if (at && at.sub) { row.sub = at.sub; if (at.fld) row.fld = at.fld }
+  /* a line about ONE person put into or taken out of an input (state/changelines.ts) is marked as HIS, on the saved line:
+     the changes window keeps his name on it and History tells it on his row alone by this mark - which was handed in
+     here and never stored (the one-rule job's walk, shares C and J, 12 Oct 26; pinned in ui/reqdoor.test.tsx) */
+  if (at && at.one && at.sub) (row as any).one = 1
   if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()
   if (at && at.days && at.days.length) row.days = at.days.slice()
   if (at && at.wdays && at.wdays.length) row.wdays = at.wdays.slice()

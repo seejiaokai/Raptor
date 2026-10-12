@@ -8,6 +8,16 @@ shared input…", "A request's row: its name…", "On a shared input's row the p
 input is counted once"); the screens: `../../ui-contracts.md` §A shared input is ONE row on the schedule. The check:
 `../../handpass/2026-10-11-group-input-one-row.md`.
 
+**CHANGED BY THE ONE-RULE BUILD (`[ALL-AVAIL-AS-MEMBER]`, step 2 — 12 Oct 26; owner D755, D756, D762).** An input is ONE
+record and ONE row now, and every input's row is the input — not a shared input's alone. The rows below are as they
+were written on 11 Oct 26; what each reads as now is its line in `scripts/rulecheck.mjs`, and its proof has moved:
+GI6, GI8–GI10, GI12, GI13, GI15 → `src/ui/reqdoor.test.tsx`; GI16–GI18, GI20 → `src/state/inputcount.test.ts`
+(`grouprow-hands.test.tsx` and `grouprow-count.test.ts` are gone). **GI11 and GI19 are SET ASIDE** (D745 → D755: the
+placeholder is one of the input's own people and is tied to no man); their ids are not re-used. **GI7** (D738, D744 →
+D762): a person added follows the input's ONE answer; nobody is asked for himself. This register is rewritten with the
+rest of the records in step 8 of that build (`../plans/2026-10-11-one-rule-plan.md` §5, §10).
+*(Done 12 Oct 26, step 8: "As each line reads now", at the foot of this file. The table is kept as written.)*
+
 | ID | The behaviour | Ruling | Named proof |
 |---|---|---|---|
 | GI1 | A name, a time or a remark typed on a request's row on the Ground Programme — one man's or a shared input's — changes the REQUEST: the Inputs calendar and the Personal Inputs line read the same; a time typed alone fills the other end, a time cleared makes it all day; the name becomes the input's own title; one Undo; a raw write to those boxes is refused | D739, D740 (R1, R2) | `ui/reqrow.test.tsx` |
@@ -42,3 +52,43 @@ input is counted once"); the screens: `../../ui-contracts.md` §A shared input i
   version froze, a record a row) — on the working copy it is any record of the entry.
 - GI11's change-history note is a read of the week ON SCREEN: a man taking himself out while another week is open
   leaves a plain line; the day's own "To go out" line (GI19) still names the puck once that week is opened.
+
+## As each line reads now — since the one-rule build (`[ALL-AVAIL-AS-MEMBER]`, 12 Oct 26; D755, D756, D759, D760, D762, D763, D753)
+
+An input is ONE stored record with the list of its people, and its row is ONE row, a whole copy of it — for an input
+of one person too. The rules as written now: `../../engine-rules.md` ("A row that came from an input is one row, a whole
+copy of the input", "One answer for everyone in an input", "The people step"); the build's record:
+`../plans/2026-10-11-one-rule-plan.md` §10. The ids are those of the table above; the words in `scripts/rulecheck.mjs`
+are the short form of each.
+
+| ID | As it reads now | Ruling | Named proof |
+|---|---|---|---|
+| GI1–GI3 | Unchanged: a box typed on an input's row changes the input; nothing done from the schedule makes it read late; hours typed there keep a Yes at the new amount | D739–D742 | as in the table |
+| GI4 | An input is ONE row: there are no rows of one input to "carry one mark and stand together", and no entry mark (`srcg` is not written). Its CX, red box and "information only" are the INPUT's own and are copied onto the row | D755, D756, D760 (was D661, D735) | `src/state/grouprow-entry.test.ts`, `src/ui/inputmarks.test.tsx` |
+| GI5 | Drawn as one row because it IS one: its named people A to Z, then ALL AVAIL / ALL, each puck on its own key of that one row (`engine/grouprows.ts rowPeopleDrawn`); the Unavailable list is still one row a man, drawn from the record's people | D755, D756, D737 | `src/ui/grouprow-draw.test.tsx`, `e2e/grouprow.spec.ts` |
+| GI6 | A person put anywhere on ANY input's row joins the input — a one-person request's row included; the seat he came from keeps him; already in it: refused, in words. On the puck of the input's ONLY entry he REPLACES that man, and the input becomes his | D755, D755 (2) (first D734) | `src/ui/reqdoor.test.tsx` |
+| GI7 | A person added follows the input's ONE OIL answer and nothing is written for him: unanswered, the question opens at once for the INPUT, for whoever added him; No, the note says he is not counted. Nobody is asked for himself | D762, D755 (1) (was D738, D744) | `src/ui/groupeditor.test.tsx`, `src/ui/reqdoor.test.tsx` |
+| GI8 | Unchanged: a person added from the schedule is never marked late | D741 | `src/ui/reqdoor.test.tsx` |
+| GI9 | A person taken off an input's row leaves the input; the LAST one is refused, saying how | D755, D757 | `src/ui/reqdoor.test.tsx` |
+| GI10 | Dragged to another place he leaves the input and is put there in ONE step; onto another input's row he moves, never in both | D755 | `src/ui/reqdoor.test.tsx` |
+| GI11 | SET ASIDE (D745 → D755). ALL AVAIL / ALL is one of the input's people: it joins wherever it is put on the row, never replaces anyone, and STAYS when anyone else leaves | D750, D753, D755 | `src/ui/phmember.test.tsx`, `src/engine/phmember.test.ts` |
+| GI12 | A box typed on an input's row is everyone's — one record, one time; on the Unavailable list a typed box changes that one man's PART: he is first given an input of his own (`engine/inputown.ts ownInputOf`) | D735, D739, D737, D759 reading 4 | `src/ui/reqdoor.test.tsx` |
+| GI13 | An input is ONE row: its ✕, its drag and its LATE mark are that row's; its CX, red box and "information only" are written on the INPUT, by a scheduler only | D755, D756, D760 | `src/ui/reqdoor.test.tsx`, `src/ui/inputmarks.test.tsx` |
+| GI14 | Unchanged: the window opened from the schedule is the input's, for everyone in it | D748 | `src/ui/groupeditor.test.tsx` |
+| GI15 | The belt refuses a raw write of ANYTHING to any place of an input's row — a one-person request's included (`engine/slots.ts inputSeatBar`); a row nobody filed is written as ever | D755 (was D734, D18, D470) | `src/ui/reqdoor.test.tsx` |
+| GI16 | A published day counts an input once; each person or placeholder put in or taken out is one each; a swap of its only person is one — worked out from the people, with nothing to fold | D736, D113 | `src/state/inputcount.test.ts` |
+| GI17 | What goes out is the count the day head showed. There is no "entry a man" in the record any more — one entry an input; "Discard" counts what a load would put back, and a load never changes an input (a CX on a published day discards 0) | D736, D109, D760 | `src/state/inputcount.test.ts` |
+| GI18 | One line naming the input and its people; one person put in or taken out is his own line | D736, D663 | `src/state/inputcount.test.ts` |
+| GI19 | SET ASIDE (D745 → D755): nothing comes off with a man, so there is no such change to count. "… came off with him" is said only of a row issued before the build | D755 | — |
+| GI20 | Unchanged: a person added to a row the issued day held wears his mark on his puck | D93 | `src/state/inputcount.test.ts` |
+| GI21 | Unchanged | D747 | `e2e/grouprow.spec.ts` |
+
+**Behaviours the build adds, with their proofs** — not given ids of their own here (an id is named in
+`scripts/rulecheck.mjs`, which this record does not change): one OIL answer for everyone in an input, the scheduler
+alone leaving one person out (D762 — `src/engine/onerecord.test.ts`, `src/engine/oilclaimcrowd.test.ts`); who is in an
+input is changed only by whoever filed it or a scheduler, and anyone in it may take himself out (D763 —
+`src/leavewar/onerecord-perms.test.ts`); ALL AVAIL / ALL under "Several people" (D753 — `src/ui/phpick.test.tsx`); a
+cancelled or information-only input is silent to the rules and earns nobody OIL (D760 —
+`src/ui/inputmarks-scenarios.test.tsx`); one man's row under Unavailable is addressed `iu:<iid>~<person>`.
+**Not built yet:** how a cancelled input looks on the Inputs calendar, and the bell's notices, wait for his look at a
+picture (the plan's §8, Q2–Q4).

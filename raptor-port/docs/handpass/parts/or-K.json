@@ -1,0 +1,2870 @@
+{
+ "k1_k7": {
+  "filed": [
+   {
+    "iid": "imqoidgg0e3kko1",
+    "people": [
+     "Ranger",
+     "Tally",
+     "Hex",
+     "ALL AVAIL"
+    ],
+    "type": "Meeting",
+    "title": "Range brief",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "rmk": "Bring ID"
+   }
+  ],
+  "editRows": {
+   "weekGround": [
+    {
+     "who": [
+      "Hex",
+      "Ranger",
+      "Tally",
+      "ALL AVAIL"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 + ADD Bring ID"
+    }
+   ],
+   "weekInputs": [
+    {
+     "who": [
+      "Hex",
+      "Ranger",
+      "Tally",
+      "ALL AVAIL"
+     ],
+     "times": "14:00 15:00",
+     "text": "Range brief MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL Bring ID UNDO"
+    }
+   ],
+   "boardGround": [],
+   "boardInputs": [],
+   "viewGround": [],
+   "viewInputs": []
+  },
+  "chips": [
+   "Jul 06|06/07/2026",
+   "Jul 13|13/07/2026",
+   "Jul 20|20/07/2026",
+   "Jul 27|27/07/2026"
+  ],
+  "peek": {
+   "head": "Wednesday Jul 15 4 X 4",
+   "rows": [
+    {
+     "name": "RANGE BRIEFMeeting",
+     "who": [
+      "Hex C",
+      "Ranger IP",
+      "Tally O",
+      "ALL AVAIL"
+     ],
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL Bring ID",
+     "controls": 0,
+     "cls": "pl-row gr-frominput"
+    }
+   ]
+  },
+  "inputs1": [
+   {
+    "iid": "imqoidgg0e3kko1",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Ranger",
+     "Tally",
+     "Hex",
+     "ALL AVAIL"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "Bring ID"
+    }
+   }
+  ],
+  "k7saber": {
+   "weekGround": [],
+   "weekInputs": [],
+   "boardGround": [],
+   "boardInputs": [],
+   "viewGround": [],
+   "viewInputs": []
+  },
+  "vcur": {
+   "cur": "06/07/2026",
+   "head": "Monday Jul 6 DRAFT 0 X 0 X 0 i Draft"
+  },
+  "k7saberCtl": [],
+  "k7ranger": {
+   "weekGround": [],
+   "weekInputs": [],
+   "boardGround": [],
+   "boardInputs": [],
+   "viewGround": [
+    {
+     "who": [
+      "Hex",
+      "Ranger",
+      "Tally",
+      "ALL AVAIL"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 Bring ID"
+    }
+   ],
+   "viewInputs": []
+  },
+  "k7rangerCtl": [
+   {
+    "editable": 0,
+    "slots": 4,
+    "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 Bring ID"
+   }
+  ],
+  "inputsEnd": [
+   {
+    "iid": "imqoidgg0e3kko1",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Ranger",
+     "Tally",
+     "Hex",
+     "ALL AVAIL"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "Bring ID"
+    }
+   }
+  ],
+  "errs": []
+ },
+ "k1b_k7": {
+  "k7-saber": {
+   "ground": [
+    {
+     "who": [
+      "Hex",
+      "Ranger",
+      "Tally",
+      "ALL AVAIL"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 Bring ID"
+    }
+   ],
+   "inputs": [],
+   "controls": [
+    {
+     "editable": 0,
+     "slotsInRow": 4,
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 Bring ID"
+    }
+   ]
+  },
+  "k7-ranger": {
+   "ground": [
+    {
+     "who": [
+      "Hex",
+      "Ranger",
+      "Tally",
+      "ALL AVAIL"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 Bring ID"
+    }
+   ],
+   "inputs": [],
+   "controls": [
+    {
+     "editable": 0,
+     "slotsInRow": 4,
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL 37 Bring ID"
+    }
+   ]
+  },
+  "afterCx": [
+   {
+    "iid": "imqoidgg0rmm24e",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Ranger",
+     "Tally",
+     "Hex",
+     "ALL AVAIL"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "Bring ID",
+     "cx": true,
+     "cxr": "WX"
+    }
+   }
+  ],
+  "peekCx": [
+   {
+    "text": "CX DUE WXRANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL Bring ID",
+    "cls": "pl-row cx gr-frominput",
+    "nameHtml": "<span class=\"nm\"><span class=\"cxtag\" title=\"CX DUE WX\">CX DUE WX</span><span class=\"ntx\">RANGE BRIEF</span><span class=\"nm-kind\">Meeting</span></span>",
+    "struck": "line-through",
+    "controls": 0
+   }
+  ],
+  "editCx": [
+   {
+    "who": [
+     "Hex",
+     "Ranger",
+     "Tally",
+     "ALL AVAIL"
+    ],
+    "times": "14:00 15:00",
+    "text": "CX DUE WXRANGE BRIEF MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL + ADD Bring ID"
+   },
+   {
+    "who": [
+     "Hex",
+     "Ranger",
+     "Tally",
+     "ALL AVAIL"
+    ],
+    "times": "14:00 15:00",
+    "text": "CX DUE WX Range brief MEETING 14:00 15:00 Hex C Ranger IP Tally O ALL AVAIL Bring ID UNDO"
+   }
+  ],
+  "errs": []
+ },
+ "k4": {
+  "before": {
+   "weekGround": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD till 15 Jul"
+    }
+   ],
+   "weekInputs": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP till 15 Jul UNDO"
+    }
+   ],
+   "boardGround": [],
+   "boardInputs": [],
+   "viewGround": [],
+   "viewInputs": []
+  },
+  "menu1": {
+   "text": "PLANS — WEDNESDAY Live working copy ●live now — this is what publishes + Alt Plan",
+   "btns": [
+    "wm sa|data-plangolive=2|Live working copy ●live now — this is wh",
+    "wm|data-plandup=1|+ Alt Plan"
+   ]
+  },
+  "plansAfterSave": {
+   "list": [
+    "Plan A:dr1",
+    "Plan B:dr2"
+   ],
+   "live": "dr2"
+  },
+  "inputsAfterSave": [
+   {
+    "iid": "imqoidgg0vbes52",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "till 15 Jul"
+    }
+   }
+  ],
+  "addToast": "Tally added to Range brief",
+  "afterAdd": {
+   "weekGround": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O + ADD till 15 Jul"
+    }
+   ],
+   "weekInputs": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "times": "14:00 15:00",
+     "text": "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O till 15 Jul UNDO"
+    }
+   ],
+   "boardGround": [],
+   "boardInputs": [],
+   "viewGround": [],
+   "viewInputs": []
+  },
+  "inputsAfterAdd": [
+   {
+    "iid": "imqoidgg0vbes52",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger",
+     "Tally"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "till 15 Jul"
+    }
+   }
+  ],
+  "plansAfterAdd": {
+   "list": [
+    "Plan A:dr1",
+    "Plan B:dr2"
+   ],
+   "live": "dr2"
+  },
+  "menu2": {
+   "text": "PLANS — WEDNESDAY Plan Atap to make it the live day ✎ Plan B ●live now — this is what publishes ✎ + Alt Plan ✎ Manage plans",
+   "btns": [
+    "wm|data-plansel=dr1|Plan Atap to make it the live day",
+    "wm-edit|data-planedit=dr1|✎",
+    "wm sa|data-plangolive=2|Plan B ●live now — this is what publishe",
+    "wm-edit|data-planedit=dr2|✎",
+    "wm|data-plandup=1|+ Alt Plan",
+    "wm-edit|data-planmanage=1|✎ Manage plans"
+   ]
+  },
+  "switchToast": "Switched to \"Plan A\" — this is now the live Wednesday",
+  "plansAfterSwitch": {
+   "list": [
+    "Plan A:dr1",
+    "Plan B:dr2"
+   ],
+   "live": "dr1"
+  },
+  "afterSwitch": {
+   "weekGround": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O + ADD till 15 Jul"
+    }
+   ],
+   "weekInputs": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "times": "14:00 15:00",
+     "text": "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O till 15 Jul UNDO"
+    }
+   ],
+   "boardGround": [],
+   "boardInputs": [],
+   "viewGround": [],
+   "viewInputs": []
+  },
+  "inputsAfterSwitch": [
+   {
+    "iid": "imqoidgg0vbes52",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger",
+     "Tally"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "till 15 Jul"
+    }
+   }
+  ],
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "ground": [
+    [
+     "Drifter",
+     "Hunter",
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg0vbes52",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ],
+   "plans": {
+    "list": [
+     "Plan A:dr1",
+     "Plan B:dr2"
+    ],
+    "live": "dr2"
+   }
+  },
+  "redo": {
+   "used": "#redoBtn",
+   "ok": true,
+   "ground": [
+    [
+     "Drifter",
+     "Hunter",
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg0vbes52",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ],
+   "plans": {
+    "list": [
+     "Plan A:dr1",
+     "Plan B:dr2"
+    ],
+    "live": "dr1"
+   }
+  },
+  "reload": {
+   "ground": [
+    [
+     "Drifter",
+     "Hunter",
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "line": [
+    [
+     "Drifter",
+     "Hunter",
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg0vbes52",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ],
+   "plans": {
+    "list": [
+     "Plan A:dr1",
+     "Plan B:dr2"
+    ],
+    "live": "dr1"
+   }
+  },
+  "errs": []
+ },
+ "k5": {
+  "wedBefore": [
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "cls": "pl-row",
+    "who": [
+     "Ace"
+    ],
+    "times": "14:00 16:30",
+    "rmk": ""
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "cls": "pl-row",
+    "who": [
+     "Vapor"
+    ],
+    "times": "14:00 ",
+    "rmk": ""
+   },
+   {
+    "name": "RANGE BRIEF",
+    "cls": "pl-row gshared gr-frominput",
+    "who": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "times": "14:00 15:00",
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "thuBefore": [
+   {
+    "name": "MEDICAL APPT",
+    "cls": "pl-row",
+    "who": [
+     "Diesel"
+    ],
+    "times": "10:30 12:30",
+    "rmk": ""
+   },
+   {
+    "name": "DENTAL APPT",
+    "cls": "pl-row",
+    "who": [
+     "Kraken"
+    ],
+    "times": "12:00 13:30",
+    "rmk": ""
+   },
+   {
+    "name": "APPOINTMENT",
+    "cls": "pl-row gr-frominput",
+    "who": [
+     "Ranger"
+    ],
+    "times": "17:00 18:30",
+    "rmk": "Medical / PHA"
+   }
+  ],
+  "inputs0": [
+   {
+    "iid": "imqoidgg0xk8zuo",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "till 15 Jul"
+    }
+   }
+  ],
+  "menuWed": "DAY TEMPLATES — WEDNESDAY No saved templates yet — save this day to start the library. + Save this day as a template ✎ Manage templates",
+  "saveToast": "Saved as \"Template 1\"",
+  "menuThu": "DAY TEMPLATES — THURSDAY Template 12 waves · 1 duty block · 3 ground rows · 5 sims + Save this day as a template ✎ Manage templates",
+  "applyToasts": [
+   "Applied \"Template 1\" to Thursday"
+  ],
+  "thuAfter": [
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "cls": "pl-row",
+    "who": [],
+    "times": "14:00 16:30",
+    "rmk": ""
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "cls": "pl-row",
+    "who": [],
+    "times": "14:00 ",
+    "rmk": ""
+   },
+   {
+    "name": "RANGE BRIEF",
+    "cls": "pl-row",
+    "who": [],
+    "times": "14:00 15:00",
+    "rmk": "till 15 Jul"
+   },
+   {
+    "name": "APPOINTMENT",
+    "cls": "pl-row gr-frominput",
+    "who": [
+     "Ranger"
+    ],
+    "times": "17:00 18:30",
+    "rmk": "Medical / PHA"
+   }
+  ],
+  "wedAfter": [
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "cls": "pl-row",
+    "who": [
+     "Ace"
+    ],
+    "times": "14:00 16:30",
+    "rmk": ""
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "cls": "pl-row",
+    "who": [
+     "Vapor"
+    ],
+    "times": "14:00 ",
+    "rmk": ""
+   },
+   {
+    "name": "RANGE BRIEF",
+    "cls": "pl-row gshared gr-frominput",
+    "who": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "times": "14:00 15:00",
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "inputs1": [
+   {
+    "iid": "imqoidgg0xk8zuo",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "till 15 Jul"
+    }
+   }
+  ],
+  "inputsAll": 1,
+  "marks": [
+   [
+    {
+     "di": 2,
+     "cls": "pl-row gshared gr-frominput",
+     "borderLeft": "rgb(241, 244, 247) 0px",
+     "boxShadow": "rgba(59, 198, 232, 0.42) 2px 0px 0px 0px inset",
+     "nmBefore": "none",
+     "bg": "rgba(59, 198, 232, 0.05)"
+    }
+   ],
+   [
+    {
+     "di": 3,
+     "cls": "pl-row",
+     "borderLeft": "rgb(241, 244, 247) 0px",
+     "boxShadow": "none",
+     "nmBefore": "none",
+     "bg": "rgba(0, 0, 0, 0)"
+    }
+   ]
+  ],
+  "handToast": "",
+  "thuAfterHand": [
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "cls": "pl-row",
+    "who": [],
+    "times": "14:00 16:30",
+    "rmk": ""
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "cls": "pl-row",
+    "who": [],
+    "times": "14:00 ",
+    "rmk": ""
+   },
+   {
+    "name": "RANGE BRIEF",
+    "cls": "pl-row",
+    "who": [
+     "Tally"
+    ],
+    "times": "14:00 15:00",
+    "rmk": "till 15 Jul"
+   },
+   {
+    "name": "APPOINTMENT",
+    "cls": "pl-row gr-frominput",
+    "who": [
+     "Ranger"
+    ],
+    "times": "17:00 18:30",
+    "rmk": "Medical / PHA"
+   }
+  ],
+  "inputs2": [
+   {
+    "iid": "imqoidgg0xk8zuo",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "keys": {
+     "allday": false,
+     "remarks": "till 15 Jul"
+    }
+   }
+  ],
+  "wedAfterHand": [
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "cls": "pl-row",
+    "who": [
+     "Ace"
+    ],
+    "times": "14:00 16:30",
+    "rmk": ""
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "cls": "pl-row",
+    "who": [
+     "Vapor"
+    ],
+    "times": "14:00 ",
+    "rmk": ""
+   },
+   {
+    "name": "RANGE BRIEF",
+    "cls": "pl-row gshared gr-frominput",
+    "who": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "times": "14:00 15:00",
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "undoAfterHand": {
+   "u": {
+    "used": "#undoBtn",
+    "ok": true
+   },
+   "thu": [
+    {
+     "name": "MAINT CONF @ ENG WING",
+     "cls": "pl-row",
+     "who": [],
+     "times": "14:00 16:30",
+     "rmk": ""
+    },
+    {
+     "name": "NAV-SYS TRIAL PREP",
+     "cls": "pl-row",
+     "who": [],
+     "times": "14:00 ",
+     "rmk": ""
+    },
+    {
+     "name": "RANGE BRIEF",
+     "cls": "pl-row",
+     "who": [],
+     "times": "14:00 15:00",
+     "rmk": "till 15 Jul"
+    },
+    {
+     "name": "APPOINTMENT",
+     "cls": "pl-row gr-frominput",
+     "who": [
+      "Ranger"
+     ],
+     "times": "17:00 18:30",
+     "rmk": "Medical / PHA"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg0xk8zuo",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ]
+  },
+  "reload": {
+   "thu": [
+    {
+     "name": "MAINT CONF @ ENG WING",
+     "cls": "pl-row",
+     "who": [],
+     "times": "14:00 16:30",
+     "rmk": ""
+    },
+    {
+     "name": "NAV-SYS TRIAL PREP",
+     "cls": "pl-row",
+     "who": [],
+     "times": "14:00 ",
+     "rmk": ""
+    },
+    {
+     "name": "RANGE BRIEF",
+     "cls": "pl-row",
+     "who": [],
+     "times": "14:00 15:00",
+     "rmk": "till 15 Jul"
+    },
+    {
+     "name": "APPOINTMENT",
+     "cls": "pl-row gr-frominput",
+     "who": [
+      "Ranger"
+     ],
+     "times": "17:00 18:30",
+     "rmk": "Medical / PHA"
+    }
+   ],
+   "wed": [
+    {
+     "name": "MAINT CONF @ ENG WING",
+     "cls": "pl-row",
+     "who": [
+      "Ace"
+     ],
+     "times": "14:00 16:30",
+     "rmk": ""
+    },
+    {
+     "name": "NAV-SYS TRIAL PREP",
+     "cls": "pl-row",
+     "who": [
+      "Vapor"
+     ],
+     "times": "14:00 ",
+     "rmk": ""
+    },
+    {
+     "name": "RANGE BRIEF",
+     "cls": "pl-row gshared gr-frominput",
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "rmk": "till 15 Jul"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg0xk8zuo",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ]
+  },
+  "errs": []
+ },
+ "k6": {
+  "before": {
+   "p1": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD till 15 Jul"
+    }
+   ],
+   "p2": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD till 15 Jul"
+    }
+   ],
+   "inputs1": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ],
+   "inputs2": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ]
+  },
+  "p1AfterTime": {
+   "rows": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "10:00 15:00",
+     "text": "RANGE BRIEF MEETING 10:00 15:00 Drifter A Hunter IP Ranger IP + ADD till 15 Jul"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 600,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ],
+   "toast": "Input added for 3 people"
+  },
+  "p2Now": {
+   "rows": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD till 15 Jul"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ]
+  },
+  "p2Window": {
+   "start": "14:00",
+   "end": "15:00",
+   "rmk": "till 15 Jul"
+  },
+  "p2Said": {
+   "toast": "Input updated",
+   "now": "Input updated",
+   "standing": []
+  },
+  "p2AfterSave": {
+   "rows": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD Bring maps"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "Bring maps"
+     }
+    }
+   ]
+  },
+  "p1BeforeReload": {
+   "rows": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "10:00 15:00",
+     "text": "RANGE BRIEF MEETING 10:00 15:00 Drifter A Hunter IP Ranger IP + ADD till 15 Jul"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 600,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "till 15 Jul"
+     }
+    }
+   ]
+  },
+  "p1AfterReload": {
+   "rows": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD Bring maps"
+    }
+   ],
+   "line": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Bring maps UNDO"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "Bring maps"
+     }
+    }
+   ]
+  },
+  "p2AfterReload": {
+   "rows": [
+    {
+     "who": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "times": "14:00 15:00",
+     "text": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP + ADD Bring maps"
+    }
+   ],
+   "inputs": [
+    {
+     "iid": "imqoidgg09q2z4t",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "keys": {
+      "allday": false,
+      "remarks": "Bring maps"
+     }
+    }
+   ]
+  },
+  "errs": []
+ },
+ "k3": {
+  "version": "ORIG",
+  "dayHead": "Wednesday Jul 15 Templates Live working copy ▾ ORIG 4 X 4 6 changes i Unpublish SIGNED ORIG CUR CKAce SKED CKBasher PLAN",
+  "toast": "Print dialog opened — choose \"Save as PDF\"",
+  "printedSections": [
+   {
+    "head": "Monday Jul 13 WORKING DRAFT — NOT YET SIGNED",
+    "rows": 8,
+    "none": null
+   },
+   {
+    "head": "Tuesday Jul 14 WORKING DRAFT — NOT YET SIGNED",
+    "rows": 8,
+    "none": null
+   },
+   {
+    "head": "Wednesday Jul 15 PUBLISHED — ORIGINAL",
+    "rows": 8,
+    "none": null
+   },
+   {
+    "head": "Thursday Jul 16 WORKING DRAFT — NOT YET SIGNED",
+    "rows": 8,
+    "none": null
+   }
+  ],
+  "printText": "RESTRICTED 142 — Flying Programme Mon 13 Jul – Sun 19 Jul Generated 22 Jun 2026, 09:00 · published schedule Monday Jul 13 WORKING DRAFT — NOT YET SIGNED WAVE CS / MISSION BRIEF T/O LAND FCP RCP AREA TIME REMARKS STORES WAVE 1 VLBFM 10:20 12:40 14:05 Saber IP Echo IW NORTH 1240-1405 1B: BFM-6 TPOD 2 TKS WAVE 1 VLBFM 10:20 12:40 14:05 Ranger IP Static IW SOUTH 1240-1405 2A: BFM-5 2 TKS WAVE 1 RUBFM 11:20 13:40 15:05 Drifter A Vector C NORTH 1340-1505 PRI LSR TPOD 2 TKS WAVE 1 RUBFM 11:20 13:40 15:05 Piston IP Relay IW SOUTH 1340-1505 2A: BFM-ADD 2 TKS WAVE 2 VLBFM 17:25 19:45 21:10 Saber IP Echo IW WEST 1945-2110 1B: NIGHT BFM 2 TKS NAV WAVE 2 VLBFM 17:25 19:45 21:10 Wildcard OCU Tally OCU SOUTH 1945-2110 2A: DT / OCU NAV WAVE 2 RUBFM 17:00 19:20 20:45 Piston IP Relay IW WEST 1920-2045 1A: NIGHT 2 TKS NAV WAVE 2 RUBFM 17:00 19:20 20:45 Outlaw C Wisp C SOUTH 1920-2045 2A: NIGHT BFM NAV Tuesday Jul 14 WORKING DRAFT — NOT YET SIGNED WAVE CS / MISSION BRIEF T/O LAND FCP RCP AREA TIME REMARKS STORES WAVE 1 VLBFM 06:20 08:40 10:05 Warden IP Basher IW EAST 0840-1005 1B: BFM-3 TPOD 2 TKS WAVE 1 VLBFM 06:20 08:40 10:05 Outlaw C Hex C SOUTH 0840-1005 2A: BFM-6 2 TKS WAVE 1 RUBFM 07:20 09:40 11",
+  "mentions": {
+   "rangeBrief": false,
+   "meeting": false,
+   "allAvail": false,
+   "ground": false,
+   "drifter": true,
+   "hunter": false,
+   "ranger": true
+  },
+  "printCalls": 0,
+  "errs": []
+ },
+ "k8": {
+  "1 add Tally": {
+   "note": "Tally added to Range brief",
+   "same": true,
+   "before": {
+    "label": "1 add Tally (before reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 C Ranger IP till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Range brief MEETING Drifter A Hunter IP Ranger IP Tally O UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Ranger"
+       ]
+      ],
+      "line": [
+       [
+        "Ranger"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING C Ranger IP UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Ranger"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   },
+   "after": {
+    "label": "1 add Tally (after reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 C Ranger IP till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Range brief MEETING Drifter A Hunter IP Ranger IP Tally O UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Ranger"
+       ]
+      ],
+      "line": [
+       [
+        "Ranger"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING C Ranger IP UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Ranger"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "2 ALL AVAIL added": {
+   "note": "ALL AVAIL added to Range brief",
+   "same": true,
+   "before": {
+    "label": "2 ALL AVAIL added (before reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 C Ranger IP till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Ranger"
+       ]
+      ],
+      "line": [
+       [
+        "Ranger"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING C Ranger IP UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Ranger"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   },
+   "after": {
+    "label": "2 ALL AVAIL added (after reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Ranger"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 C Ranger IP till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Ranger"
+       ]
+      ],
+      "line": [
+       [
+        "Ranger"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING C Ranger IP UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Ranger"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "3 swap Tally for Ranger": {
+   "note": "Tally is on Solo drill instead of Ranger",
+   "same": true,
+   "before": {
+    "label": "3 swap Tally for Ranger (before reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 Tally O till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING Tally O UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   },
+   "after": {
+    "label": "3 swap Tally for Ranger (after reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 Tally O till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING Tally O UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "4 cancel (CX WX)": {
+   "note": "CX DUE WX",
+   "same": true,
+   "before": {
+    "label": "4 cancel (CX WX) (before reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "lineText": [
+       "CX DUE WX Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 Tally O till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "CX DUE WX Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING Tally O UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul",
+        "cx": true,
+        "cxr": "WX"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   },
+   "after": {
+    "label": "4 cancel (CX WX) (after reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "lineText": [
+       "CX DUE WX Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 Tally O till 16 Jul UNDO"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "CX DUE WX Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [
+       [
+        "Tally"
+       ]
+      ],
+      "line": [
+       [
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING Tally O UNDO",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul",
+        "cx": true,
+        "cxr": "WX"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "5 row X (off the programme)": {
+   "note": "Ground item removed — back under Personal Inputs — SOLO DRILL, 10:00–11:00, Tally",
+   "same": true,
+   "before": {
+    "label": "5 row X (off the programme) (before reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "lineText": [
+       "CX DUE WX Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [],
+      "line": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 Tally O till 16 Jul ACCEPT"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "CX DUE WX Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [],
+      "line": [
+       [
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING Tally O ACCEPT",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul",
+        "cx": true,
+        "cxr": "WX"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   },
+   "after": {
+    "label": "5 row X (off the programme) (after reload)",
+    "week": {
+     "A": {
+      "ground": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "line": [
+       {
+        "who": [
+         "Drifter",
+         "Hunter",
+         "Ranger",
+         "Tally",
+         "ALL AVAIL"
+        ],
+        "cx": "CX DUE WX"
+       }
+      ],
+      "lineText": [
+       "CX DUE WX Range brief MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO"
+      ]
+     },
+     "B": {
+      "ground": [],
+      "line": [
+       {
+        "who": [
+         "Tally"
+        ],
+        "cx": null
+       }
+      ],
+      "lineText": [
+       "Solo drill TRAINING 10:00 11:00 Tally O till 16 Jul ACCEPT"
+      ]
+     }
+    },
+    "board": {
+     "A": {
+      "ground": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "line": [
+       [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ]
+      ],
+      "lineAll": [
+       "CX DUE WX Range brief MEETING Drifter A Hunter IP Ranger IP Tally O ALL AVAIL UNDO"
+      ]
+     },
+     "B": {
+      "ground": [],
+      "line": [
+       [
+        "Tally"
+       ]
+      ],
+      "lineAll": [
+       "Solo drill TRAINING Tally O ACCEPT",
+       "Appointment C Ranger IP UNDO"
+      ]
+     }
+    },
+    "inputs": {
+     "A": [
+      {
+       "iid": "imqoidgg0joc625",
+       "date": "Jul 15",
+       "s": 840,
+       "e": 900,
+       "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 15 Jul",
+        "cx": true,
+        "cxr": "WX"
+       }
+      }
+     ],
+     "B": [
+      {
+       "iid": "imqoidgg031ft8l",
+       "date": "Jul 16",
+       "s": 600,
+       "e": 660,
+       "people": [
+        "Tally"
+       ],
+       "keys": {
+        "allday": false,
+        "remarks": "till 16 Jul"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "errs": []
+ },
+ "k10": {
+  "afterX": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "RANGE BRIEF[slipway+2]*"
+    ],
+    [
+     "MEDICAL APPT[fantom]",
+     "DENTAL APPT[krait]",
+     "APPOINTMENT[bane]*"
+    ]
+   ],
+   "arm": null
+  },
+  "v1armed": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "RANGE BRIEF[slipway+2]*"
+    ],
+    [
+     "MEDICAL APPT[fantom]",
+     "DENTAL APPT[krait]",
+     "APPOINTMENT[bane]*"
+    ]
+   ],
+   "arm": "g:2.2.+"
+  },
+  "v1onThu": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "RANGE BRIEF[slipway+2]*"
+    ],
+    [
+     "MEDICAL APPT[fantom]",
+     "DENTAL APPT[krait]",
+     "APPOINTMENT[bane]*"
+    ]
+   ],
+   "arm": null
+  },
+  "v1backWed": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "RANGE BRIEF[slipway+2]*"
+    ],
+    [
+     "MEDICAL APPT[fantom]",
+     "DENTAL APPT[krait]",
+     "APPOINTMENT[bane]*"
+    ]
+   ],
+   "arm": null
+  },
+  "v1tap": {
+   "toast": "",
+   "before": {
+    "inputs": [
+     "Early drill@Jul 15:Anvil",
+     "Range brief@Jul 15:Drifter+Hunter+Ranger"
+    ],
+    "ground": [
+     [
+      "MAINT CONF @ E[dj]",
+      "NAV-SYS TRIAL [vegas]",
+      "RANGE BRIEF[slipway+2]*"
+     ],
+     [
+      "MEDICAL APPT[fantom]",
+      "DENTAL APPT[krait]",
+      "APPOINTMENT[bane]*"
+     ]
+    ],
+    "arm": null
+   },
+   "after": {
+    "inputs": [
+     "Early drill@Jul 15:Anvil",
+     "Range brief@Jul 15:Drifter+Hunter+Ranger"
+    ],
+    "ground": [
+     [
+      "MAINT CONF @ E[dj]",
+      "NAV-SYS TRIAL [vegas]",
+      "RANGE BRIEF[slipway+2]*"
+     ],
+     [
+      "MEDICAL APPT[fantom]",
+      "DENTAL APPT[krait]",
+      "APPOINTMENT[bane]*"
+     ]
+    ],
+    "arm": null
+   },
+   "same": true
+  },
+  "v2armed": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "RANGE BRIEF[slipway+2]*"
+    ],
+    [
+     "MEDICAL APPT[fantom]",
+     "DENTAL APPT[krait]",
+     "APPOINTMENT[bane]*"
+    ]
+   ],
+   "arm": "g:2.2.+"
+  },
+  "v2accepted": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "RANGE BRIEF[slipway+2]*",
+     "EARLY DRILL[shaft]*"
+    ],
+    [
+     "MEDICAL APPT[fantom]",
+     "DENTAL APPT[krait]",
+     "APPOINTMENT[bane]*"
+    ]
+   ],
+   "arm": "g:2.2.+"
+  },
+  "v2tap": {
+   "toast": "Tally added to Range brief",
+   "before": {
+    "inputs": [
+     "Early drill@Jul 15:Anvil",
+     "Range brief@Jul 15:Drifter+Hunter+Ranger"
+    ],
+    "ground": [
+     [
+      "MAINT CONF @ E[dj]",
+      "NAV-SYS TRIAL [vegas]",
+      "RANGE BRIEF[slipway+2]*",
+      "EARLY DRILL[shaft]*"
+     ],
+     [
+      "MEDICAL APPT[fantom]",
+      "DENTAL APPT[krait]",
+      "APPOINTMENT[bane]*"
+     ]
+    ],
+    "arm": "g:2.2.+"
+   },
+   "after": {
+    "inputs": [
+     "Early drill@Jul 15:Anvil",
+     "Range brief@Jul 15:Drifter+Hunter+Ranger+Tally"
+    ],
+    "ground": [
+     [
+      "MAINT CONF @ E[dj]",
+      "NAV-SYS TRIAL [vegas]",
+      "RANGE BRIEF[slipway+3]*",
+      "EARLY DRILL[shaft]*"
+     ],
+     [
+      "MEDICAL APPT[fantom]",
+      "DENTAL APPT[krait]",
+      "APPOINTMENT[bane]*"
+     ]
+    ],
+    "arm": null
+   },
+   "same": false
+  },
+  "errs": []
+ },
+ "k10b": {
+  "armed": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    "MAINT CONF @ E[dj]",
+    "NAV-SYS TRIAL [vegas]",
+    "RANGE BRIEF[slipway+2]*",
+    "EARLY DRILL[shaft]*"
+   ],
+   "arm": "g:2.3.+"
+  },
+  "afterX": {
+   "inputs": [
+    "Early drill@Jul 15:Anvil",
+    "Range brief@Jul 15:Drifter+Hunter+Ranger"
+   ],
+   "ground": [
+    "MAINT CONF @ E[dj]",
+    "NAV-SYS TRIAL [vegas]",
+    "EARLY DRILL[shaft]*"
+   ],
+   "arm": null
+  },
+  "tap": {
+   "toast": "",
+   "before": {
+    "inputs": [
+     "Early drill@Jul 15:Anvil",
+     "Range brief@Jul 15:Drifter+Hunter+Ranger"
+    ],
+    "ground": [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "EARLY DRILL[shaft]*"
+    ],
+    "arm": null
+   },
+   "after": {
+    "inputs": [
+     "Early drill@Jul 15:Anvil",
+     "Range brief@Jul 15:Drifter+Hunter+Ranger"
+    ],
+    "ground": [
+     "MAINT CONF @ E[dj]",
+     "NAV-SYS TRIAL [vegas]",
+     "EARLY DRILL[shaft]*"
+    ],
+    "arm": null
+   },
+   "same": true
+  },
+  "errs": []
+ },
+ "k7hands": {
+  "saber": {
+   "who": "saber",
+   "toasts": "",
+   "unchanged": true,
+   "inputs": "[[840,900,[\"slipway\",\"prowler\",\"bane\",\"allavail\"],\"till 15 Jul\"]]",
+   "rowText": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP ALL AVAIL 36 till 15 Jul"
+  },
+  "ranger": {
+   "who": "ranger",
+   "toasts": "",
+   "unchanged": true,
+   "inputs": "[[840,900,[\"slipway\",\"prowler\",\"bane\",\"allavail\"],\"till 15 Jul\"]]",
+   "rowText": "RANGE BRIEF MEETING 14:00 15:00 Drifter A Hunter IP Ranger IP ALL AVAIL 36 till 15 Jul"
+  },
+  "errs": []
+ },
+ "verdicts": {
+  "K1": "PASS",
+  "K3": "RECORDED",
+  "K4": "PASS",
+  "K5": "PASS",
+  "K6": "RECORDED",
+  "K7": "PARTIAL",
+  "K8": "PASS",
+  "K10": "PASS (V2 note)",
+  "K2": "withdrawn",
+  "K9": "skipped",
+  "note": "K7: the row and its people PASS for Saber and Ranger; View-only Sched draws NO Personal Inputs section at all, so the line could not be compared. K10: day change drops the arm; a same-day Accept does not (arm stays on the same Meeting row, Tally joined that row)."
+ }
+}

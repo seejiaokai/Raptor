@@ -1,0 +1,67 @@
+{
+ "afterDrag": [
+  "Drifter",
+  "Anvil",
+  "Tally"
+ ],
+ "histOnState": {
+  "pressed": "true",
+  "boardwrap": true
+ },
+ "dotsAfterOpen": [],
+ "dotsAllChanges": [],
+ "lines": [
+  "LL 15 Jul–16 Jul · taken out",
+  "LL 15 Jul–16 Jul · added",
+  "Drifter, Hex, Tally · LL added · 15 Jul–16 Jul"
+ ],
+ "taps": [
+  {
+   "line": "LL 15 Jul–16 Jul · taken out",
+   "flash": [
+    {
+     "tag": "DIV",
+     "cls": "pl-row chgflash",
+     "inprow": "imqoidgg0ad047o~slipway",
+     "row": "LL Drifter A till 16 Jul",
+     "day": 2
+    }
+   ],
+   "toast": "Anvil is now unavailable instead of Hex"
+  },
+  {
+   "line": "LL 15 Jul–16 Jul · added",
+   "flash": [
+    {
+     "tag": "DIV",
+     "cls": "pl-row chgflash",
+     "inprow": "imqoidgg0ad047o~slipway",
+     "row": "LL Drifter A till 16 Jul",
+     "day": 2
+    }
+   ],
+   "toast": "Anvil is now unavailable instead of Hex"
+  },
+  {
+   "line": "Drifter, Hex, Tally · LL added · 15 Jul–16 Jul",
+   "flash": [
+    {
+     "tag": "DIV",
+     "cls": "pl-row chgflash",
+     "inprow": "imqoidgg0ad047o~slipway",
+     "row": "LL Drifter A till 16 Jul",
+     "day": 2
+    }
+   ],
+   "toast": "Anvil is now unavailable instead of Hex"
+  }
+ ],
+ "controlDots": [
+  {
+   "tag": "DIV",
+   "row": "LL Hunter IP till 15 Jul",
+   "seat": "imqoidgg0wdimeb",
+   "day": 2
+  }
+ ]
+}

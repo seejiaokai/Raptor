@@ -1,0 +1,135 @@
+<title>OIL for a shared input</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column of numbered choices; each is a short statement beside the real screen that shows it */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#141a21; --ink-2:#4a5663; --edge:#d5dbe2;
+  --accent:#0b7f9c; --accent-soft:#e0f3f8; --ok:#1d7a4c; --ok-soft:#e3f4ea; --warn:#9a5b00; --warn-soft:#fbeed6;
+  --shot:#0c1014;
+  --display:'Barlow Condensed','Arial Narrow',Arial,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0c1014; --panel:#151b22; --ink:#e9eef3; --ink-2:#9aa7b4; --edge:#2a333d;
+  --accent:#3cc6e8; --accent-soft:#12303a; --ok:#58c98d; --ok-soft:#12301f; --warn:#e3a53c; --warn-soft:#33260c;
+  --shot:#07090c; color-scheme:dark }
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.01em}
+.lede{color:var(--ink-2);max-width:62ch;margin:8px 0 0}
+.how{background:var(--accent-soft);padding:12px 14px;border-radius:6px;max-width:62ch}
+.how b{color:var(--accent)}
+h2{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:14px 0 0}
+.item{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+.item.wide{grid-template-columns:minmax(0,1fr)}
+.txt{min-width:0;display:flex;flex-direction:column;gap:10px}
+.head{display:flex;gap:12px;align-items:baseline}
+.num{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;min-width:1.3em}
+h3{font-family:var(--display);font-weight:600;font-size:24px;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+.lab{font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:2px}
+.rec{background:var(--ok-soft);border-radius:6px;padding:10px 12px}
+.rec .lab{color:var(--ok)}
+.note{background:var(--warn-soft);border-radius:6px;padding:10px 12px}
+.note .lab{color:var(--warn)}
+.where{color:var(--ink-2);font-size:14px}
+.shots{min-width:0;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+figure{margin:0;flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:6px}
+figure.desk{flex-basis:100%}
+.zoom{display:block;width:100%;padding:0;border:1px solid var(--edge);border-radius:8px;background:var(--shot);cursor:zoom-in;overflow:hidden}
+.zoom:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.zoom img{display:block;width:100%;height:auto}
+.zoom.crop{aspect-ratio:var(--ar,16/9)}
+.zoom.crop img{height:100%;object-fit:cover;object-position:var(--pos,50% 100%)}
+figcaption{font-size:14px;color:var(--ink-2);line-height:1.35}
+figcaption b{color:var(--ink)}
+.tap{font-size:13px;color:var(--ink-2)}
+#lb{position:fixed;inset:0;background:rgba(4,6,8,.94);z-index:10;overflow:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));cursor:zoom-out;text-align:center}
+#lb img{max-width:none;width:min(100%,1100px);height:auto;border-radius:6px}
+#lb.big img{width:auto;max-width:none}
+#lbx{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:11;font:600 15px var(--body);padding:10px 16px;border-radius:999px;border:1px solid #5b6672;background:#151b22;color:#e9eef3}
+@media (max-width:720px){ .item{grid-template-columns:minmax(0,1fr);padding:14px} h3{font-size:22px} }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>OIL for an input with several people</h1>
+    <p class="lede">You asked two things: can the person filing choose who gets OIL, and what would a man see if he may answer for himself. Here are the real screens of today, and the two other ways drawn on those same screens. Tap any picture to see it full size.</p>
+  </header>
+  <p class="how"><b>The example:</b> Saber files a Training for Ace, Drifter, Ranger and himself on Saturday 17 Oct, 09:00 to 12:00. Then Ranger opens it on his own phone.</p>
+
+  <h2>Your first question</h2>
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">?</span><h3>Can the person filing choose who gets OIL?</h3></div>
+      <p><span class="lab">Today</span>No. He is asked once, Yes or No, and the answer is written for everyone in the input. He cannot leave one person out there.</p>
+      <p><span class="lab">How one person is left out today</span>Two ways. The man changes his own answer afterwards (way A below). Or the scheduler switches him off for that day in OIL Earn.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/2-filer-oil-question.png" alt="The OIL question Saber gets when he saves a Training for four people: Yes, credit HO, or No OIL"></button><figcaption><b>Today</b> — one question for all four.</figcaption></figure>
+    </div>
+  </section>
+
+  <h2>The three ways</h2>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">A</span><h3>A man may answer for himself — as built today</h3></div>
+      <p><span class="lab">What Ranger sees</span>He opens the Training. He cannot change it, but at the foot he has his own line, “Your OIL”, with a Change button. It asks him the same Yes or No, for himself only.</p>
+      <p><span class="lab">What Saber sees afterwards</span>“credited for 3 of 4 — Ranger: no”.</p>
+      <p class="note"><span class="lab">The cost</span>Two people can change who earns: the filer for everyone, and each man for himself. If the filer answers again, every man’s own answer is overwritten. An ALL AVAIL in the input cannot work this way, so the input has two behaviours.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/5b-ranger-window-own.png" alt="Ranger's view of the shared Training with a Your OIL line and a Change button at the foot"></button><figcaption><b>Ranger</b> — his own line at the foot.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/6-ranger-oil-question.png" alt="The OIL question Ranger gets for himself: Yes, credit HO, or No OIL"></button><figcaption><b>Ranger taps Change</b> — asked for himself.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/8b-saber-window-oil.png" alt="Saber's view of the input afterwards: credited for 3 of 4, Ranger no"></button><figcaption><b>Saber</b> — 3 of 4, Ranger: no.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">B</span><h3>The person filing chooses who earns — your idea</h3></div>
+      <p><span class="lab">What Saber sees</span>The same question, and under it the input’s people. A tap on a name leaves that person out. He can open it again later with Change.</p>
+      <p><span class="lab">What Ranger sees</span>The input’s OIL line and nothing to change — the same as way C. He asks Saber, or takes himself out.</p>
+      <p class="rec"><span class="lab">Recommended</span>This one. Whoever filed it decides, once, in one place, and can see who is in and who is out. The scheduler can still switch any one person on a day in OIL Earn. With ALL AVAIL in the input the row shows the named people and “ALL AVAIL”, and the people behind it follow the answer.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/B-filer-picks-who.png" alt="A drawing: the OIL question with a row of the input's four people under it, Ranger left out"></button><figcaption><b>A drawing, not built</b> — Ranger left out by a tap.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/C-ranger-one-answer.png" alt="A drawing: Ranger's view of the Training with the input's OIL line and no line of his own"></button><figcaption><b>A drawing</b> — what Ranger sees.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="item">
+    <div class="txt">
+      <div class="head"><span class="num">C</span><h3>One answer for everyone, nothing more</h3></div>
+      <p><span class="lab">What Saber sees</span>Today’s question, Yes or No for all. No list of people.</p>
+      <p><span class="lab">What Ranger sees</span>The input’s OIL line, nothing to change.</p>
+      <p class="note"><span class="lab">The cost</span>To leave one person out, the scheduler must switch him off in OIL Earn on the day. The filer cannot do it when he files.</p>
+    </div>
+    <div class="shots">
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/2-filer-oil-question.png" alt="The OIL question as it is today: Yes or No for everyone"></button><figcaption><b>Saber</b> — as today.</figcaption></figure>
+      <figure><button class="zoom" type="button"><img src="img/one-rule-oil/C-ranger-one-answer.png" alt="A drawing: Ranger's view with no line of his own"></button><figcaption><b>A drawing</b> — what Ranger sees.</figcaption></figure>
+    </div>
+  </section>
+
+  <p class="tap">The pictures marked “today” are the app as it stands, taken on a phone-sized screen on 11 Oct 26. The drawings are those same screens with the change drawn in; nothing is built.</p>
+</div>
+
+<div id="lb" hidden></div>
+<button id="lbx" type="button" hidden>Close ✕</button>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.appendChild(document.createElement('img')), x=document.getElementById('lbx'), last=null
+  function shut(){ lb.hidden=true; x.hidden=true; lb.classList.remove('big'); if(last) last.focus() }
+  document.querySelectorAll('.zoom').forEach(function(b){
+    b.addEventListener('click',function(){ var s=b.querySelector('img'); last=b; im.src=s.src; im.alt=s.alt; lb.hidden=false; x.hidden=false; lb.scrollTop=0; x.focus() })
+  })
+  im.addEventListener('click',function(e){ e.stopPropagation(); lb.classList.toggle('big') })
+  lb.addEventListener('click',shut); x.addEventListener('click',shut)
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) shut() })
+})()
+</script>

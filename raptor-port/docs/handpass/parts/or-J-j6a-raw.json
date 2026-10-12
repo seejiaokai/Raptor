@@ -1,0 +1,76 @@
+{
+ "filed": [
+  {
+   "iid": "imqoidgg01e8o56",
+   "type": "Training",
+   "title": "Fri brief",
+   "date": "Jul 17",
+   "s": 540,
+   "e": 600,
+   "grp": null,
+   "people": [
+    "Ranger",
+    "Tally",
+    "Hex",
+    "Drifter"
+   ],
+   "acc": "g"
+  }
+ ],
+ "before": {
+  "label": "1-before",
+  "inputs": [
+   "Ranger",
+   "Tally",
+   "Hex",
+   "Drifter"
+  ],
+  "week": [
+   "Drifter,Hex,Ranger,Tally"
+  ],
+  "weekPers": [],
+  "board": [
+   "Drifter,Hex,Ranger,Tally"
+  ],
+  "card": "⠿ Fri 17 Jul + Note ✕ + Input 3 INPUTS All day GritATT C Medically down till 17 Jul All day NomadOD Overseas duty — exercise, off island 09:00–10:00 Drifter, Hex, Ranger, TallyTRAINING Fri brief · till 17 Jul By Saber",
+  "list": []
+ },
+ "deleteAsks": "Drifter no sign-in · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Give sign-in Archive Tap again to delete Drifter Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+ "deleteToast": "Drifter deleted",
+ "afterDeleteText": " ||  ||  ||  ||  ||  ||  ||  || Nobody i  waiting for acce . || SIGN-IN\nROSTER\nAce\nno  ign-in · Pilot · CAT A\nAnvil\nno  ign-in · Pilot · CAT IP\nBa her\nno  ign-in · WSO · CAT IW\nBlade\nno  ign-in · Pilot · CAT IP\nBolt\nno  ign-in · Pilot · CAT C\nCinch\nno  ign-in · Pi || Make  hi  Qual  row, and hi   ign-in if you give one. The Leave War count  him from the po t-in date. || The order the day’  panel   how in. The  chedule  ection  apply on both Edit Schedule and the Scheduler Board; the crew li t  (Per onal Input , Available crew, SANS, Unavailable) reorder on the Schedu || Off — a new wave i  added at the bottom. Move a wave type to  et the order new wave  are placed in on a fre h  chedule. || A duty template i  a  aved duty block — it  row  and time  — that \"+ Block\" copie  onto any day a  a plain, conflict-checked de k. || A day template i  a whole captured day — wave , dutie ,  im  and ground row  — recaptured off a real day and re-applied from the day-template  picker. || A wave template i  a  aved flying wave — it  rule- et and line  — that \"+ Wave\" drop  onto any day. || Remove  only old calendar puck  and day note  in the cho en period. It never delete  a leave, medical or duty entry ( o no balance change ), never a  aved week, and never the week you're viewing. Anyt || Permanently remove  entrie  from the edit hi tory — the record of who changed what — made in the cho en period. The  chedule it elf i  not touched. || Drifter deleted",
+ "drifterRow": 0,
+ "after": {
+  "label": "2-after",
+  "inputs": [
+   "Ranger",
+   "Tally",
+   "Hex"
+  ],
+  "week": [
+   "Hex,Ranger,Tally"
+  ],
+  "weekPers": [],
+  "board": [
+   "Hex,Ranger,Tally"
+  ],
+  "card": "⠿ Fri 17 Jul + Note ✕ + Input 3 INPUTS All day GritATT C Medically down till 17 Jul All day NomadOD Overseas duty — exercise, off island 09:00–10:00 Hex, Ranger, TallyTRAINING Fri brief · till 17 Jul By Saber",
+  "list": []
+ },
+ "deletedGroup": [
+  {
+   "p": [
+    "Ranger",
+    "Tally",
+    "Hex"
+   ]
+  }
+ ],
+ "personFilter": {
+  "groups": [
+   "Whoever is free that day: ALL AVAIL,ALL",
+   "Deleted: Drifter (deleted)"
+  ],
+  "hasDrifter": true
+ },
+ "changes": "⠿\nChange  · week of 13/7\n5 change  thi  week\n✕\nNew to you 0\nAll change  5\nWeek\nMon\nTue\nWed\nThu\nFri\nSat\nSun\nGROUP BY\nItem\nWho\n▾\nFri · Input · Hex, Ranger, Tally · Fri brief · 2\n09:00\nFri brief 17 Jul · taken out\nSaber · 22/6 09:00\nDrifter, Hex, Ranger, Tally · Fri brief added · 17 Jul (on the programme)\nSaber · 22/6 09:00\nFri · Ground · FRI BRIEF\nSaber · 22/6 09:00\nDrifter taken off\nTue · Flying · RU BFM\nSaber · 22/6 09:00\n#1 FCPDrifter taken off\nMon · Flying · RU BFM\nSaber · 22/6 09:00\n#1 FCPDrifter taken off\nTap a change to go to it — the window  tay  open."
+}

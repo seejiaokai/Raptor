@@ -78,6 +78,101 @@ export function inputsOn(dt:any):any[]{
 export function inputOn(iid:any,dt:any):any{
   if(FZ&&dt!=null){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f.find((r:any)=>r.iid===iid)||null;}
   return inpById(iid);}
+/* WHO IS IN AN INPUT, AND ONE LINE A PERSON ([ALL-AVAIL-AS-MEMBER] step 1, 12 Oct 26 — owner D755, D756, D759: "an input
+   is stored as ONE record with the list of its people"; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.2).
+   Three kinds of body reach the inputs, and each reads its own thing:
+     · a body about ONE MAN'S DAY — is he busy, away, owed, late (the clash and crew-rest rules, who is away, the ALL
+       AVAIL crowd, the Leave War's absences, SANS availability) — reads LINES: one flat object a NAMED person, every
+       field of the record plus `person` (his id) and `mod` (his own late date where he has one);
+     · a body about THE INPUT — it draws, files, counts, freezes, saves or permits it — reads the RECORD;
+     · a body that WRITES finds the RECORD by id and never touches a line.
+   peopleOf is the ONE reader of who is in an input: a record with no `people` — every record stored before the one-rule
+   build, and every seed — answers as a one-person input, so an old-shaped record reads the same everywhere and can never
+   break a load (D756). A placeholder entry (ALL AVAIL / ALL) names nobody and makes NO line: who stands behind it is
+   worked out on the day (D753, D702), and every per-person reader already turned such a record away by hand.
+   A line is FROZEN, and so is the list: a body that still writes to "the record" it was handed throws in every test,
+   where on a plain copy the write would be lost without a word; and a writer handed lines would not find its line in
+   the list and would splice the LAST input out instead (Fable's read of the plan, F1) — which is why the three kinds
+   are pinned file by file in inputs-readers.test.ts. While every stored record is still one a person (step 1) a line is
+   a copy of its record, so JSON.stringify of a line is the record's own text — what the parity tests push into the
+   reference page (testing/refwin.ts). */
+const isPh=(id:any)=>id==='all'||id==='allavail'||isSpecial(id);
+export function peopleOf(r:any):any[]{
+  if(!r||typeof r!=='object')return [];
+  return Array.isArray(r.people)?r.people:[{p:r.person,by:r.by,at:r.at,mod:r.mod}];}
+export function namedOf(r:any):any[]{return peopleOf(r).filter((e:any)=>e&&!isPh(e.p));}
+export function placeholderOf(r:any):any{return peopleOf(r).find((e:any)=>e&&isPh(e.p))||null;}
+/* THE SMALL QUESTIONS EVERY BODY ABOUT THE INPUT ASKS OF ITS PEOPLE (step 2 (a), 12 Oct 26 — the plan §4.1; Fable F3, F4).
+   Each reads through peopleOf, so a record in the old shape answers as the one-person input it is.
+   idsOf — everyone in it, a placeholder included, in the order they joined. leadOf — the first of them: who stands in
+   the name box of its row, and whom a one-person body (a medical plan, the Leave War's approval, a form's Person box)
+   means by "its person". onlyNamed — the man whose own request it is: its ONE person, with nobody and nothing beside
+   him (F4: "the man himself, whoever filed it", D655 — an input for ALL AVAIL alone, or for several, is nobody's own;
+   AND SO IS ONE THAT HOLDS A MAN AND ALL AVAIL, step 3 of the one-rule build, 12 Oct 26: it reaches everyone behind the
+   puck, and D755 (3) leaves changing it for everyone to whoever filed it or a scheduler — found by the re-expressed
+   tests, where the window offered the man Save and the save refused him). holds — is this id in it. */
+export function idsOf(r:any):any[]{return peopleOf(r).filter((e:any)=>e&&e.p!=null&&e.p!=='').map((e:any)=>e.p);}
+export function leadOf(r:any):any{const ids=idsOf(r);return ids.length?ids[0]:undefined;}
+export function onlyNamed(r:any):any{const n=namedOf(r);return n.length===1&&idsOf(r).length===1&&n[0].p!=null&&n[0].p!==''?n[0].p:null;}
+export function holds(r:any,id:any):boolean{return id!=null&&id!==''&&idsOf(r).some((p:any)=>String(p)===String(id));}
+export function entryOf(r:any,id:any):any{return peopleOf(r).find((e:any)=>e&&String(e.p)===String(id))||null;}
+const linesOf=(src:any):any[]=>{const out:any[]=[];
+  for(const r of (src||[])){ if(!r||typeof r!=='object')continue;
+    for(const e of peopleOf(r)){ if(!e||isPh(e.p))continue;
+      const line:any={...r,person:e.p}; if(e.mod!=null)line.mod=e.mod;
+      out.push(Object.freeze(line)); } }
+  return Object.freeze(out) as any[];};
+/* ONE FACE A PERSON — FOR A BODY THAT DRAWS AN INPUT ONCE PER PERSON (step 2 (g) of the one-rule build, 12 Oct 26 — the
+   plan §4.6): the schedule's Unavailable list is one row a man (owner D737), and an input's line under Personal Inputs
+   draws a puck a person. A face is the record's fields plus `person` (and his own late date, where he has one) —
+   frozen, as a line is: a drawing never writes, and a hand on what it drew finds the RECORD by its id. Unlike a line
+   (the rules' view), a PLACEHOLDER has a face: ALL AVAIL is drawn. `several` says the record holds more than one, so
+   the row's address names its man — iuTail, below. */
+export function facesOf(r:any):any[]{
+  if(!r||typeof r!=='object')return [];
+  const es=peopleOf(r).filter((e:any)=>e&&e.p!=null&&e.p!=='');
+  /* its id is minted on the RECORD where it has none yet (as the builders always did, by asking inpId of the record
+     they drew): a face is frozen, and an id minted on a face would be lost with it */
+  if(es.length&&!r.iid&&!Object.isFrozen(r))inpId(r);
+  return es.map((e:any)=>{const f:any={...r,person:e.p,several:es.length>1}; if(e.mod!=null)f.mod=e.mod; return Object.freeze(f);});}
+/* …and the faces in the order an input's people are NAMED on every screen: A to Z by callsign, then the placeholder
+   (owner D721, D727) — for a line that draws a puck a person (Personal Inputs). */
+export function facesDrawn(r:any):any[]{
+  const cs=(p:any)=>String((PEOPLE[p]||{cs:p}).cs), f=facesOf(r), at=new Map(f.map((x:any,i:number)=>[x,i] as [any,number]));
+  return f.slice().sort((a:any,b:any)=>(isPh(a.person)?1:0)-(isPh(b.person)?1:0)||(isPh(a.person)?0:cs(a.person).localeCompare(cs(b.person),undefined,{sensitivity:'base'}))||(at.get(a)!-at.get(b)!));}
+/* AN UNAVAILABLE ROW'S ADDRESS, after its `iu:` — the input's id for an input of one person, `<iid>~<person>` for one
+   man's row of an input that holds several (engine/keys.ts iuParts is the one parser). Asked of a face or a record. */
+export function iuTail(f:any):string{const id=String((f&&f.iid)||'');
+  return f&&f.several&&f.person!=null?`${id}~${f.person}`:id;}
+/* WORKED OUT ONCE PER PASS, NEVER KEPT ACROSS A WRITE (Fable F10). The rules pass asks for a day's inputs several times
+   and the crew list asks four times a man a paint (avail.ts slotBar), so a fresh set of copies at every ask would be a
+   cost on a phone. Inside inputReadPass — the rules pass, the day and board builders, the crew list's paint, a day's OIL
+   evidence: bodies that write nothing — one date under one frozen frame is worked out once, and so is the whole list.
+   Outside a pass every ask is fresh. NOTHING INSIDE MAY WRITE THE INPUTS. Never a long-lived cache keyed on the list:
+   state/holderbase.ts writes a request's filing and a week load clears it outside the inputs door, so no counter could
+   tell a stale view from a fresh one. The same shape as publish.ts publishReadPass and oilev.ts oilReadPass: a pass
+   inside a pass shares the outer one and only the outermost ends it. Keyed by the FRAME as well as the date, so a
+   published face entered inside a pass (withFrozenInputs) is never served the working copy's answer, nor the reverse. */
+const LIVE_FRAME={};
+let LINE_PASS:{all:any[]|null,by:Map<any,Map<number,any[]>>}|null=null;
+export function inputReadPass<T>(fn:()=>T):T{const outer=LINE_PASS; if(!outer)LINE_PASS={all:null,by:new Map()};
+  try{return fn();}finally{if(!outer)LINE_PASS=null;}}
+/* every named person's line — of the live inputs, or of a list handed in (the absences a restore will leave, a test's
+   own rows): the record's order, its people in the order they joined */
+export function inputLines(list?:any):any[]{
+  if(list!==undefined)return linesOf(list);
+  if(!LINE_PASS)return linesOf(INPUTS);
+  return LINE_PASS.all||(LINE_PASS.all=linesOf(INPUTS));}
+/* THE LINES OF ONE DATE, AS THE DOCUMENT BEING READ HOLDS THEM — the per-person view of inputsOn(dt), so a published
+   face's rules read the people of the copies it was issued with (Fable F2: the clash, crew-rest and "away" readers do
+   not read the live list — they read through this funnel's twin, and a shared input on an issued face would otherwise
+   flag nobody). A date no calendar can parse is never memoised: inputsOn matches it by its words, not its ordinal. */
+export function inputLinesOn(dt:any):any[]{
+  if(!LINE_PASS)return linesOf(inputsOn(dt));
+  const k=dateOrd(dt); if(k==null)return linesOf(inputsOn(dt));
+  const fr=FZ&&FZ.has(k)?FZ:LIVE_FRAME; let m=LINE_PASS.by.get(fr); if(!m)LINE_PASS.by.set(fr,m=new Map());
+  let v=m.get(k); if(!v)m.set(k,v=linesOf(inputsOn(dt)));
+  return v;}
 /* WHAT AN INPUT SAYS ON A SCHEDULE, for "has it changed since the day was issued?" (D178: every member input change
    counts; Fable's scenario design Q4/Q5, 25 Sep 26). What the schedule draws or judges ON THIS DAY: whose, what type,
    all day / half / the times, the remarks, the SANS offer. NOT its dates (Fable's code read F1, 26 Sep 26): whether it
@@ -93,15 +188,28 @@ export const stableJson=(v:any):string=>{
   if(v==null||typeof v!=='object')return JSON.stringify(v===undefined?null:v);
   if(Array.isArray(v))return '['+v.map(stableJson).join(',')+']';
   return '{'+Object.keys(v).filter((k:any)=>v[k]!==undefined).sort().map((k:any)=>JSON.stringify(k)+':'+stableJson(v[k])).join(',')+'}';};
+/* WHO IS IN IT is part of what it says (step 2 (a), 12 Oct 26 — the plan §4.2): the named people's ids SORTED — the order
+   they joined in is no part of what a day shows — then the placeholder. Under the key `person`, and for an input of one
+   it is that one id: a record rewritten in the new shape, saying the same, is byte for byte the same key, so a day
+   published before the build reads nothing pending for it. */
+const whoKey=(inp:any):string=>{const ph=placeholderOf(inp);
+  return namedOf(inp).map((e:any)=>String(e.p)).sort().concat(ph?[String(ph.p)]:[]).join('+');};
 export function inpDetailKey(inp:any):string{
   if(!inp)return '';
   const all=!!inp.allday;
-  return stableJson({person:inp.person||'',type:inp.type||'',
+  return stableJson({person:whoKey(inp),type:inp.type||'',
     allday:all,half:inp.half||'',s:all?null:(inp.s??null),e:all?null:(inp.e??null),remarks:inp.remarks||'',
     /* its own title is one of the things a reader sees ([INPUT-OWN-TITLE], D715): a title changed after the day was
        published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
        input's key is byte-for-byte what it was. */
     ...(titleOf(inp.type,inp.title)?{title:titleOf(inp.type,inp.title)}:{}),
+    /* THE SCHEDULER'S MARKS ON IT ARE PART OF WHAT IT SAYS (step 4 of the one-rule build — owner D760: a CX on the row
+       cancels the INPUT; reading 3: "on a published day a CX put on or taken off reads as a change waiting"). NORMALISED
+       (Fable's read of the plan, F14): a CX put on and taken off leaves `cx:false` where a record never cancelled has
+       nothing — compared raw the day would read pending for ever. Named only where set, so an unmarked input's key is
+       byte for byte what it was. NOT the red box: a scheduler-to-scheduler mark is no part of what a member's input
+       says; it rides the row's content. */
+    ...(inp.cx?{cx:String(inp.cxr||'')}:{}),...(inp.info?{info:true}:{}),
     sans:inp.sans||null});}
 /* THE INPUTS ON A DATE THAT DIFFER FROM A VERSION'S FROZEN COPY ([LEAVE-LATE-PUBLISHED], D178): one entry per input
    whose details moved, or which appeared or went away. An input absent on one side and TAKEN OFF ('r') on the other is
@@ -117,7 +225,8 @@ export function inpDetailKey(inp:any):string{
    leftover filed for the same man, of the same type or both downchits, are ONE edit, carried with both records so the
    words read one change), then stands alone (filed / gone). An UPCHIT is out altogether: it draws nothing and flags
    nothing — the downchit it trims is the change (Fable Q6). */
-export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any,nowId?:string}>,same:Array<[string,string]>}{
+const manOf=(r:any):string=>{const n=namedOf(r)[0]||placeholderOf(r);return n&&n.p!=null?String(n.p):'';};
+export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:any,now:any,nowId?:string}>,same:Array<[string,string]>,pieces?:string[]}{
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
@@ -135,16 +244,39 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
      only a dormant request woken back to a live one is a change) */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
     if(j>=0){if(!(String(W[i].r.acc||'')==='r'&&String(N[j].r.acc||'')==='r'))out.push({id:W[i].id,was:W[i].r,now:N[j].r});W.splice(i,1);N.splice(j,1);}}
+  /* 3b — ONE MAN SPLIT OUT OF AN INPUT IS THAT INPUT'S ONE CHANGE (step 2 (e) of the one-rule build — the plan §4.6;
+     Fable's read of it, F6 (c)): sick leave cuts Z out of a leave filed for X, Y and Z — the live input holds [X, Y]
+     and a NEW record holds [Z] (engine/inputown.ts ownInputOf). That new record has no frozen twin; its person stood
+     in a frozen record's list and is out of that record's live twin, and it is the same kind: it is part of THAT
+     input's change (already in `out`, above), not a filing of its own — `pieces` tells the filing axis to drop it. */
+  /* …AND ONLY A REAL PIECE (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 8, reproduced red in
+     state/inputcount.test.ts). "The same kind, for a man who left a frozen record" also matched a leave FILED AFRESH for
+     him afterwards: Hex taken out of a shared leave, then a morning's leave of his own filed — the day read 1, "Hex ·
+     LL · taken out", and the new leave had no line at all. A piece is a COPY of the record it was cut from
+     (inputown.ts ownInputOf, pieceOf): it carries that record's own `by` and `at` — who placed it, and when — where a
+     fresh filing has its filer's and its own moment. A record that carries neither (stored before D629) pairs as it
+     did. …THE FILER OF EITHER COPY (Fable's third read, finding 1 — the same day): a piece is cut from the LIVE record,
+     so it carries the live `by`, and "who filed it" passes on when its filer is taken out (D759 reading 7) — the frozen
+     copy then names another man. Tested against the frozen filer alone, a man given his own part after that was a
+     filing of its own to this body while ui/pendlist.ts inputWords (the live filer) called it "his own now": three
+     lines for two changes. The MOMENT (`at`, which no cut ever moves — state/inputstamp.ts) is what tells a piece from
+     a fresh filing; the two bodies now ask the same two-sided question of `by`. */
+  const pieces:string[]=[];
+  for(let j=N.length-1;j>=0;j--){const n=N[j], man=manOf(n.r); if(!man||idsOf(n.r).length!==1)continue;
+    const d=out.find((x:any)=>x.was&&x.now&&holds(x.was,man)&&!holds(x.now,man)&&(x.was.type===n.r.type||(isDownchit(x.was.type)&&isDownchit(n.r.type)))
+      &&(String(x.was.by??'')===String(n.r.by??'')||String(x.now.by??'')===String(n.r.by??''))&&Number(x.was.at||0)===Number(n.r.at||0));
+    if(d){pieces.push(n.id);N.splice(j,1);}}
   /* 4 — one man's record gone and another of his filed, of the same type or both downchits: one edit (F2). Only records
      with no filing state (a downchit, a leave — never a request, whose filing the filing axis words by its own id, so
      pairing two requests would read one edit AND one filing for two acts) */
   for(let i=W.length-1;i>=0;i--){const w=W[i]; if(String(w.r.acc||'')!=='')continue;
-    const j=N.findIndex((n:any)=>String(n.r.acc||'')===''&&n.r.person===w.r.person&&(n.r.type===w.r.type||(isDownchit(n.r.type)&&isDownchit(w.r.type))));
+    /* "the same man" is the first named person of each, else its placeholder (step 2 (a) — the plan §4.2) */
+    const j=N.findIndex((n:any)=>String(n.r.acc||'')===''&&manOf(n.r)===manOf(w.r)&&(n.r.type===w.r.type||(isDownchit(n.r.type)&&isDownchit(w.r.type))));
     if(j>=0){out.push({id:w.id,was:w.r,now:N[j].r,nowId:N[j].id});W.splice(i,1);N.splice(j,1);}}
   /* 5 — gone, or filed since; a request taken off on the one side and absent on the other shows on neither face (D174, D176) */
   W.forEach((w:any)=>{ if(String(w.r.acc||'')!=='r')out.push({id:w.id,was:w.r,now:null}); });
   N.forEach((n:any)=>{ if(String(n.r.acc||'')!=='r')out.push({id:n.id,was:null,now:n.r}); });
-  return {diffs:out,same};}
+  return {diffs:out,same,pieces};}
 export function frozenInputDiffs(frozen:any,dt:any):Array<{id:string,was:any,now:any}>{return frozenInputMatch(frozen,dt).diffs;}
 /* …and where the caller has a row but not its date (a request's row carries its input's id in `src`): while a frozen
    version is being drawn, the copy that version holds (or null — it never held it); otherwise the live record */
@@ -520,23 +652,32 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    (D700). It is an ORDINARY SINGLE INPUT whose `person` is one of the two placeholder people (people.ts `special`):
    nobody's name is stored in it — who stands behind it is worked out on the day, as for a placeholder dropped on a row
    (D702, D44). So no man behind it has a record of his own, and none has an OIL answer of his own (D711 (1)).
-   THREE STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
-   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" or "Personal" (D712), and the new
-   Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); (c) alone — never a group
-   member: it already stands for whoever is free. `placeholderProblem` answers '' or the sentence the screen says; every
-   save door asks it first (ui/inputedit.tsx normalizeInputDraft, commitGroup; ui/InputsPage.tsx add; ui/PeoplePick.tsx)
-   and the save boundary's hard check asks it of what a command really changed, whoever ran it (state/store.ts
-   wireStore — `placeholder-input-shape`). Pinned by placeholderinput.test.ts. */
-export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Appointment','Duty','Event','Other'];
+   ITS STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
+   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" (D712 — "Personal" too until D778, 12 Oct 26: below), and the new
+   Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); and never under
+   Unavailable (below). `placeholderProblem` answers '' or the sentence the screen says; every save door asks it
+   first (ui/inputedit.tsx normalizeInputDraft, commitInput; ui/PeoplePick.tsx; the row's door, ui/reqdoor.ts) and the
+   save boundary's hard check asks it of what a command really changed, whoever ran it (state/store.ts wireStore —
+   `placeholder-input-shape`). Pinned by placeholderinput.test.ts and phmember.test.ts.
+   IT MAY BE ONE OF AN INPUT'S PEOPLE (step 3 of the one-rule build, 12 Oct 26 — owner D750: "'Several people' takes ALL
+   AVAIL / ALL, so the puck is one of the input's own people and is tied to no man"; D753; D755). Until then there was a
+   third rule, "(c) alone — never a group member": a placeholder was filed on its own. It is gone. What D753 keeps is
+   (b) — "offered only where the input is a single day" — and "ALL or ALL AVAIL, never both" (shapeProblem, below).
+   The words are the plan's (§4.4), as short as can be understood (D726, D765). */
+/* …AND "PERSONAL" IS ONE OF THE KINDS (owner D778, 12 Oct 26 — "So all avail all can go on personal"; it narrows D712,
+   which stands for "Fly with"): a Personal input is the same as an Event for everything about PEOPLE, and it is still
+   NOT WORK — it never asks the OIL question (oilAsks, above), so the men behind its puck are counted and earn nothing
+   (oilev.ts oilEvidence, the membership-only pass). Listed in the type dropdown's own order. */
+export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Personal','Appointment','Duty','Event','Other'];
 export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
-export function isPlaceholderInput(inp:any){return !!inp&&inp.person!=null&&isSpecial(inp.person);}
+export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
 export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
-  const cs=String(PEOPLE[inp.person].cs);
-  if(!placeholderKind(inp.type))return `${cs} can be filed only for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} or ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
+  const ph=placeholderOf(inp).p;
+  const cs=String((PEOPLE[ph]||{cs:ph}).cs);
+  if(!placeholderKind(inp.type))return `${cs} is for ${PLACEHOLDER_KINDS.slice(0,-1).join(', ')} and ${PLACEHOLDER_KINDS[PLACEHOLDER_KINDS.length-1]}`;
   if(inp.endDate&&String(inp.endDate)!==String(inp.date)){const a=dateOrd(inp.date,inp.yr),b=dateOrd(inp.endDate,inp.yr);
-    if(a==null||b==null||a!==b)return `${cs} is filed one day at a time`;}
-  if(inp.grp!=null||inp.grpBy!=null)return `${cs} is filed on its own — it already stands for whoever is free`;
+    if(a==null||b==null||a!==b)return `${cs} is for one day`;}
   /* …and NEVER UNDER UNAVAILABLE (Astra's read of the code, 9 Oct 26). "Unavailable" names a real person's day; a
      placeholder input filed there lands no row, so it has no crowd and nobody behind it can earn from the filer's Yes.
      The accept door refuses to file one there (slots.ts acceptInput) — but an EDIT keeps a request's filing, so a named
@@ -545,6 +686,37 @@ export function placeholderProblem(inp:any):string{
      at the save boundary like the other three. */
   if(inp.acc==='u')return `${cs} cannot be filed under Unavailable — that names a real person’s day`;
   return '';}
+/* WHAT ONE INPUT MAY HOLD — the invariants of the one record, held at the write (step 2 (a), 12 Oct 26 — the plan §4.1;
+   owner D756, D753, D755 (4), D655 reading 4). Asked of every record a command PUT (state/store.ts, beside the
+   placeholder check) and of every record an Undo / Redo restores; never of a record nobody touched (D56). '' or the
+   sentence the screen says. An old-shaped record is a one-person input and breaks none of these but the placeholder's
+   own rules, which it always answered to.
+     · at least one person; nobody twice; never two placeholders (D753: "ALL or ALL AVAIL, never both" — and the same
+       one never twice: one sentence for both, "This input already has ALL AVAIL");
+     · a placeholder's own rules (placeholderProblem, above) — first, as every door says them first;
+     · a medical entry or an upchit is one person's — each needs its own document (D655 reading 4);
+     · (until D776, 12 Oct 26, "a Personal input is one person's own" — D755 (4) — was the fourth: he ruled "A2", a
+       Personal input may hold several people as every other kind does, and the sentence is refused nowhere now);
+     · a leave the Leave War approved (`lw`) is one person's (the one-rule plan §4.1 said so and nothing held it — the
+       Opus trial read, claim 5, reproduced red in leavewar/trialread.test.ts, 12 Oct 26): the war finds the leave
+       behind a man's cell only where he is its ONE person (leavewar/sync.ts warLeaveRow), so a second person put in
+       from the Inputs page left a leave the war could no longer un-approve, move or delete — with no word said.
+   (SANS availability holds SANS people only — asked per person at the doors, ui/inputedit.tsx sansRefusal: it reads the
+   roster as it stands, which a stored record is never judged by.) */
+export function shapeProblem(inp:any):string{
+  if(!inp||typeof inp!=='object')return '';
+  const ids=idsOf(inp), cs=(p:any)=>String((PEOPLE[p]||{cs:p}).cs);
+  /* (asked of a record that CARRIES its list: an old-shaped record that names nobody is not this build's to judge — D56) */
+  if(!ids.length)return Array.isArray(inp.people)?'An input needs at least one person':'';
+  const phs=ids.filter((p:any)=>isPh(p));
+  if(phs.length>1)return `This input already has ${cs(phs[0])}`;
+  const seen=new Set<string>();
+  for(const p of ids){const k=String(p); if(seen.has(k))return `${cs(p)} is already on this input`; seen.add(k);}
+  const why=placeholderProblem(inp); if(why)return why;
+  if(ids.length>1&&(isDownchit(inp.type)||isUpchit(inp.type)))return `${isUpchit(inp.type)?'An upchit':'A medical entry'} is one person’s — each needs its own document`;
+  if(ids.length>1&&inp.lw)return LW_OWN;
+  return '';}
+export const LW_OWN='A leave approved on the Leave War is one person’s — file the other person’s leave as its own input';
 /* ---- AN INPUT'S OWN TITLE ([INPUT-OWN-TITLE]; owner D715, D716, D717 — 9 Oct 26; the plan
    docs/superpowers/plans/2026-10-09-input-own-title-plan.md) -------------------------------------------------------
    His words: "select the type of input and it gives the user the option to change the name of the input. Not only to
@@ -616,7 +788,19 @@ export function inpKindTag(inp:any):string{
 /* An UPCHIT never flags: it is a paperwork record, not a commitment, and this
    gate is ALSO refwin's reference seed filter — the reference simply never
    receives one, so parity cannot diverge (the dormancy precedent). */
-export function inputFlags(inp:any){return !inputDormant(inp)&&!isUpchit(inp.type)&&!(inp.acc==='g'&&!inp.allday);}
+/* …NOR DOES A CANCELLED OR INFORMATION-ONLY INPUT (step 4 of the one-rule build — owner D760 reading 1: "a cancelled
+   input earns nobody OIL and is not checked against the rules, as a cancelled row today"). The marks are the input's
+   now, so an all-day request — whose row carries no event and which therefore speaks here — is silent while it is
+   cancelled, where the row's own CX used to leave it flagging. The seeds carry neither mark, so the reference is fed
+   exactly what it was. */
+export function inputFlags(inp:any){return !inputDormant(inp)&&!isUpchit(inp.type)&&!(inp.acc==='g'&&!inp.allday)&&!inputSilent(inp);}
+/* THE ONE ANSWER TO "IS IT CANCELLED OR INFORMATION ONLY?" — asked by every body that would otherwise let such an input
+   speak: the gate above, the cross-week reads that pass it by (events.ts inpShow), the seven-day run's "did he work
+   that day" (weekctx.ts), who is kept out of an ALL AVAIL crowd (leavewar/sync.ts availableFor) and OIL's standing
+   (oilev.ts landedStanding). Found by the re-expressed tests, 12 Oct 26: three of those asked only "is it off the
+   programme", so a cancelled Sunday input still counted as a day worked in next week's run and still raised crew rest
+   on the Monday. */
+export function inputSilent(inp:any){return !!inp&&(!!inp.cx||!!inp.info);}
 /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — tested the SC-grading
    preview, removed an accepted Training back to Personal Inputs and it still
    flagged: "if it goes there, stop it from flagging anything, until its
@@ -752,7 +936,10 @@ export function dateIx(lbl:any,yr?:any){
    = not offered) and the ONE shared window lives in the row's own standard
    allday / half / s / e fields, read through sansWindow below. */
 export function sansAvailOn(id:any,dt:any){
-  return inputsOn(dt).find((x:any)=>x.person===id&&isSansAvail(x.type))||null;
+  /* the RECORD, found by who is IN it ([ALL-AVAIL-AS-MEMBER] step 1 — namedOf, above): what is handed back is the input's
+     own window, letters and remark — the same for everyone an admin files one offer for (D658) — and its callers hold it
+     as the record it is (state/demosans.test.ts: "one span record answers for BOTH covered days"). */
+  return inputsOn(dt).find((x:any)=>isSansAvail(x.type)&&namedOf(x).some((e:any)=>e.p===id))||null;
 }
 /* the record's one offered window in minutes, [s,e]. AM/PM are the same
    halves the standard template writes (HALF_AM/HALF_PM in ui/inputedit.tsx —

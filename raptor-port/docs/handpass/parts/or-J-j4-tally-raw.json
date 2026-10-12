@@ -1,0 +1,186 @@
+{
+ "third": "Tally",
+ "stage": "2-medical",
+ "leave": [
+  {
+   "iid": "imqoidgg0q4od92",
+   "type": "LL",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Drifter",
+    "Hunter",
+    "Tally"
+   ],
+   "acc": null
+  }
+ ],
+ "leaveDump": [
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter",
+    "Tally"
+   ]
+  }
+ ],
+ "lw1": "slipway: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nprowler: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nnick: 13=none 14=none 15=none 16=none 17=none\nshaft: 13=\"\" 14=\"\" 15=\"\" 16=\"\" 17=\"\"",
+ "wed1": [
+  "LL Drifter A till 17 Jul",
+  "LL Hunter IP till 17 Jul",
+  "LL Tally O till 17 Jul",
+  "ATT C Grit C Medically down till 17 Jul"
+ ],
+ "med": [
+  {
+   "iid": "imqoidgg0eklihc",
+   "type": "ATT C",
+   "date": "Jul 15",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Tally"
+   ],
+   "acc": null
+  },
+  {
+   "iid": "imqoidgg0lizlzu",
+   "type": "LL",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Tally"
+   ],
+   "acc": null
+  },
+  {
+   "iid": "imqoidgg0dpgai0",
+   "type": "LL",
+   "date": "Jul 17",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Tally"
+   ],
+   "acc": null
+  }
+ ],
+ "afterDump": [
+  {
+   "type": "ATT C",
+   "from": "Jul 15",
+   "to": null,
+   "rmk": "till 16 Jul",
+   "who": [
+    "Tally"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 14 Jul",
+   "who": [
+    "Tally"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 17",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Tally"
+   ]
+  }
+ ],
+ "afterWed": [
+  "ATT C Tally O till 16 Jul",
+  "LL Drifter A till 17 Jul",
+  "LL Hunter IP till 17 Jul",
+  "ATT C Grit C Medically down till 17 Jul"
+ ],
+ "afterCal": 5,
+ "afterCard": "⠿ Wed 15 Jul + Note ✕ + Input 6 INPUTS All day CobraOL Overseas leave — off island By Saber till 17 Jul Drifter, HunterLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island till 16 Jul TallyATT C By Saber",
+ "afterLw": "slipway: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nprowler: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nnick: 13=none 14=none 15=none 16=none 17=none\nshaft: 13=\"\" 14=\"\" 15=\"\" 16=\"\" 17=\"\"",
+ "undo": "pressed Undo; note: Undid: 4 inputs",
+ "undoDump": [
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter",
+    "Tally"
+   ]
+  }
+ ],
+ "undoWed": [
+  "LL Drifter A till 17 Jul",
+  "LL Hunter IP till 17 Jul",
+  "LL Tally O till 17 Jul",
+  "ATT C Grit C Medically down till 17 Jul"
+ ],
+ "redo": "pressed Redo; note: Redid: 4 inputs",
+ "redoDump": [
+  {
+   "type": "ATT C",
+   "from": "Jul 15",
+   "to": null,
+   "rmk": "till 16 Jul",
+   "who": [
+    "Tally"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 14 Jul",
+   "who": [
+    "Tally"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 17",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Tally"
+   ]
+  }
+ ]
+}

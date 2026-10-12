@@ -1,0 +1,73 @@
+{
+ "filed": [
+  {
+   "iid": "imrldi1s0arjo3o",
+   "type": "LL",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Hex",
+    "Hunter"
+   ],
+   "acc": null
+  }
+ ],
+ "before": {
+  "label": "before",
+  "inputs": [
+   {
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "end": "Jul 17"
+   }
+  ],
+  "days": [
+   "Mon:Hex,Hunter",
+   "Tue:Hex,Hunter",
+   "Wed:Hex,Hunter",
+   "Thu:Hex,Hunter",
+   "Fri:Hex,Hunter"
+  ],
+  "hex": {
+   "archived": false,
+   "deleted": false,
+   "san": false,
+   "archivedBy": ""
+  }
+ },
+ "archiveToast": "Hex archived — his sign-in is suspended",
+ "after": {
+  "label": "after archive (Wed 15 Jul)",
+  "inputs": [
+   {
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "end": "Jul 17"
+   }
+  ],
+  "days": [
+   "Mon:Hex,Hunter",
+   "Tue:Hex,Hunter",
+   "Wed:Hex,Hunter",
+   "Thu:Hex,Hunter",
+   "Fri:Hex,Hunter"
+  ],
+  "hex": {
+   "archived": true,
+   "deleted": false,
+   "san": false,
+   "archivedBy": "admin"
+  }
+ },
+ "hexAfter": {
+  "onRoster": false,
+  "archBtn": false
+ },
+ "lw": "07-13=\"LL\"  act 07-14=\"LL\nPO\"  act pofin 07-15=\"LL\nPO\" gone outlv act 07-16=\"LL\nPO\" gone outlv act 07-17=\"LL\nPO\" gone outlv act"
+}

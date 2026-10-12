@@ -1,0 +1,855 @@
+{
+ "I1": {
+  "reads": {
+   "0 start (after Saber filed it, Ranger in it)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1a Saber adds Tally (drag from crew list onto a puck of the row)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "2. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1b Saber takes Tally out (right-click his puck)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "2. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "3. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1c Saber adds ALL AVAIL (drag onto a puck)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "2. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "3. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "4. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1d Saber takes ALL AVAIL off (right-click its puck)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "2. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "3. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "4. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "5. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1e Saber re-times to 09:00-11:00 (types the end on the week row)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "2. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "3. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "4. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "5. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "6. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1f Saber renames to Range brief (types on the week row)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "2. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "3. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "4. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "5. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "6. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "7. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1g Saber changes the remark to Bring ID (types on the week row)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "3. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "4. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "5. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "6. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "7. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1h Saber cancels it, WX (board CX)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "4. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "5. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "6. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "7. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1i Saber un-cancels it (board CX again)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "5. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "6. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "7. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1j Saber takes it off the programme (board row ✕)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "6. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "7. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1k Saber presses Accept on the line (back on the programme)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "7. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1l Saber deletes the input in its window": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Range brief Wed 15 Jul — Deleted · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "7. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "13. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "empty": null
+   },
+   "I1m after tap on deleted line": {
+    "lines": [
+     "1. [read] Range brief Wed 15 Jul — Deleted · Saber · now",
+     "2. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "7. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "8. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "13. [unread] Kit check Wed 15 Jul — You were added · Saber · now"
+    ],
+    "noteAfterTap": "That input is gone"
+   },
+   "I2a Saber adds RANGER to Sim brief (drag from crew list)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Sim brief Wed 15 Jul — You were added · Saber · now",
+     "2. [read] Range brief Wed 15 Jul — Deleted · Saber · now",
+     "3. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "7. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "8. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "9. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "13. [unread] Kit check Wed 15 Jul — Tally added · Saber · now",
+     "14. [unread] Kit check Wed 15 Jul — You were added · Saber · 1 min"
+    ],
+    "empty": null
+   },
+   "I2b Saber takes RANGER off Sim brief (right-click his puck)": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Sim brief Wed 15 Jul — You were taken off · Saber · now",
+     "2. [unread] Sim brief Wed 15 Jul — You were added · Saber · now",
+     "3. [read] Range brief Wed 15 Jul — Deleted · Saber · now",
+     "4. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "7. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "8. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "9. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "10. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · now",
+     "13. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · now",
+     "14. [unread] Kit check Wed 15 Jul — Tally added · Saber · 1 min",
+     "15. [unread] Kit check Wed 15 Jul — You were added · Saber · 1 min"
+    ],
+    "empty": null
+   },
+   "I3-0 after Gear check filed": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Gear check Wed 15 Jul — You were added · Saber · now",
+     "2. [unread] Sim brief Wed 15 Jul — You were taken off · Saber · now",
+     "3. [unread] Sim brief Wed 15 Jul — You were added · Saber · now",
+     "4. [read] Range brief Wed 15 Jul — Deleted · Saber · now",
+     "5. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "7. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "8. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "9. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "10. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "11. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · now",
+     "13. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · 1 min",
+     "14. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · 1 min",
+     "15. [unread] Kit check Wed 15 Jul — Tally added · Saber · 1 min",
+     "16. [unread] Kit check Wed 15 Jul — You were added · Saber · 1 min"
+    ],
+    "empty": null
+   },
+   "I3 Saber, ONE save in the window: end 17:00 and Tally added": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "lines": [
+     "1. [unread] Gear check Wed 15 Jul — Now 15:00–17:00, Tally added · Saber · now",
+     "2. [unread] Gear check Wed 15 Jul — You were added · Saber · now",
+     "3. [unread] Sim brief Wed 15 Jul — You were taken off · Saber · now",
+     "4. [unread] Sim brief Wed 15 Jul — You were added · Saber · now",
+     "5. [read] Range brief Wed 15 Jul — Deleted · Saber · now",
+     "6. [unread] Range brief Wed 15 Jul — Back on the programme · Saber · now",
+     "7. [unread] Range brief Wed 15 Jul — Taken off the programme · Saber · now",
+     "8. [unread] Range brief Wed 15 Jul — Un-cancelled · Saber · now",
+     "9. [unread] Range brief Wed 15 Jul — Cancelled — WX · Saber · now",
+     "10. [unread] Range brief Wed 15 Jul — Remark changed · Saber · now",
+     "11. [unread] Range brief Wed 15 Jul — Renamed — was Kit check · Saber · now",
+     "12. [unread] Kit check Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+     "13. [unread] Kit check Wed 15 Jul — ALL AVAIL taken off · Saber · 1 min",
+     "14. [unread] Kit check Wed 15 Jul — ALL AVAIL added · Saber · 1 min",
+     "15. [unread] Kit check Wed 15 Jul — Tally taken off · Saber · 1 min",
+     "16. [unread] Kit check Wed 15 Jul — Tally added · Saber · 1 min",
+     "17. [unread] Kit check Wed 15 Jul — You were added · Saber · 1 min"
+    ],
+    "empty": null
+   }
+  },
+  "log": [
+   {
+    "label": "I1a Saber adds Tally (drag from crew list onto a puck of the row)",
+    "toasts": "Tally added to Kit check"
+   },
+   {
+    "label": "I1b Saber takes Tally out (right-click his puck)",
+    "toasts": "Tally taken out of Kit check"
+   },
+   {
+    "label": "I1c Saber adds ALL AVAIL (drag onto a puck)",
+    "toasts": "ALL AVAIL added to Kit check"
+   },
+   {
+    "label": "I1d Saber takes ALL AVAIL off (right-click its puck)",
+    "toasts": "ALL AVAIL taken out of Kit check"
+   },
+   {
+    "label": "I1e Saber re-times to 09:00-11:00 (types the end on the week row)",
+    "toasts": ""
+   },
+   {
+    "label": "I1f Saber renames to Range brief (types on the week row)",
+    "toasts": ""
+   },
+   {
+    "label": "I1g Saber changes the remark to Bring ID (types on the week row)",
+    "toasts": ""
+   },
+   {
+    "label": "I1h Saber cancels it, WX (board CX)",
+    "toasts": "CX DUE WX || Schedule updated"
+   },
+   {
+    "label": "I1i Saber un-cancels it (board CX again)",
+    "toasts": "Restored || Schedule updated"
+   },
+   {
+    "label": "I1j Saber takes it off the programme (board row ✕)",
+    "toasts": "Ground item removed — back under Personal Inputs — RANGE BRIEF, 09:00–11:00, 2 people || Schedule updated"
+   },
+   {
+    "label": "I1k Saber presses Accept on the line (back on the programme)",
+    "toasts": "2 people's Range brief added to the ground programme"
+   },
+   {
+    "label": "I1l Saber deletes the input in its window",
+    "toasts": "Input deleted for 2 people"
+   },
+   {
+    "label": "I2a Saber adds RANGER to Sim brief (drag from crew list)",
+    "toasts": "Ranger added to Sim brief"
+   },
+   {
+    "label": "I2b Saber takes RANGER off Sim brief (right-click his puck)",
+    "toasts": "Ranger taken out of Sim brief"
+   },
+   {
+    "label": "I3 Saber, ONE save in the window: end 17:00 and Tally added",
+    "toasts": "Input updated"
+   }
+  ]
+ },
+ "I4-I7": {
+  "I4_filed": {
+   "iid": "imv51390kbm7565",
+   "title": "Team brief",
+   "type": "Meeting",
+   "date": "Jul 15",
+   "t": "09:00-10:00",
+   "people": [
+    "Tally",
+    "Hex"
+   ],
+   "by": "bane",
+   "cx": false,
+   "cxr": "",
+   "rmk": "",
+   "oil": null,
+   "acc": "g"
+  },
+  "I4 after Ranger filed it / Ranger": {
+   "lit": false,
+   "lines": []
+  },
+  "I4 after Ranger filed it / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Team brief Wed 15 Jul — You were added · Ranger · now"
+   ]
+  },
+  "I4 after Ranger filed it / Hex": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Team brief Wed 15 Jul — You were added · Ranger · now"
+   ]
+  },
+  "I4 after Ranger filed it / Saber": {
+   "lit": false,
+   "lines": []
+  },
+  "I4 after Saber cancelled it / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Team brief Wed 15 Jul — Cancelled — WX · Saber · now"
+   ]
+  },
+  "I4 after Saber cancelled it / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Team brief Wed 15 Jul — Cancelled — WX · Saber · now",
+    "2. [unread] Team brief Wed 15 Jul — You were added · Ranger · now"
+   ]
+  },
+  "I4 after Saber cancelled it / Hex": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Team brief Wed 15 Jul — Cancelled — WX · Saber · now",
+    "2. [unread] Team brief Wed 15 Jul — You were added · Ranger · now"
+   ]
+  },
+  "I4 after Saber cancelled it / Saber": {
+   "lit": false,
+   "lines": []
+  },
+  "I4_after": {
+   "iid": "imv51390kbm7565",
+   "title": "Team brief",
+   "type": "Meeting",
+   "date": "Jul 15",
+   "t": "09:00-10:00",
+   "people": [
+    "Tally",
+    "Hex"
+   ],
+   "by": "bane",
+   "cx": true,
+   "cxr": "WX",
+   "rmk": "",
+   "oil": null,
+   "acc": "g"
+  },
+  "I5 before the change / Ranger": {
+   "lit": false,
+   "lines": []
+  },
+  "I5 before the change / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Pair brief Wed 15 Jul — You were added · Ranger · now"
+   ]
+  },
+  "I5 after Ranger re-timed his own input / Ranger": {
+   "lit": false,
+   "lines": []
+  },
+  "I5 after Ranger re-timed his own input / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Pair brief Wed 15 Jul — Now 11:00–13:00 · Ranger · now",
+    "2. [unread] Pair brief Wed 15 Jul — You were added · Ranger · now"
+   ]
+  },
+  "I5 after Ranger re-timed his own input / Saber": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 before the re-time / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Crowd duty Wed 15 Jul — ALL AVAIL added · Saber · now",
+    "2. [unread] Crowd duty Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I6 before the re-time / Hex": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Crowd duty Wed 15 Jul — ALL AVAIL added · Saber · now",
+    "2. [unread] Crowd duty Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I6 before the re-time / Tally": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 before the re-time / Anvil": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 before the re-time / Hunter": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 before the re-time / Drifter": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 before the re-time / Saber": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 after the re-time / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Crowd duty Wed 15 Jul — Now 16:00–18:00 · Saber · now",
+    "2. [unread] Crowd duty Wed 15 Jul — ALL AVAIL added · Saber · now",
+    "3. [unread] Crowd duty Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I6 after the re-time / Hex": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Crowd duty Wed 15 Jul — Now 16:00–18:00 · Saber · now",
+    "2. [unread] Crowd duty Wed 15 Jul — ALL AVAIL added · Saber · now",
+    "3. [unread] Crowd duty Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I6 after the re-time / Tally": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 after the re-time / Anvil": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 after the re-time / Hunter": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 after the re-time / Drifter": {
+   "lit": false,
+   "lines": []
+  },
+  "I6 after the re-time / Saber": {
+   "lit": false,
+   "lines": []
+  },
+  "I7 before the OIL change / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Sat training Sat 18 Jul — You were added · Saber · now",
+    "2. [unread] Crowd duty Wed 15 Jul — Now 16:00–18:00 · Saber · now",
+    "3. [unread] Crowd duty Wed 15 Jul — ALL AVAIL added · Saber · now",
+    "4. [unread] Crowd duty Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I7 before the OIL change / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Sat training Sat 18 Jul — You were added · Saber · now"
+   ]
+  },
+  "I7 before the OIL change / Saber": {
+   "lit": false,
+   "lines": []
+  },
+  "I7 after the OIL answer was changed / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Sat training Sat 18 Jul — You were added · Saber · now",
+    "2. [unread] Crowd duty Wed 15 Jul — Now 16:00–18:00 · Saber · now",
+    "3. [unread] Crowd duty Wed 15 Jul — ALL AVAIL added · Saber · now",
+    "4. [unread] Crowd duty Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I7 after the OIL answer was changed / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Sat training Sat 18 Jul — You were added · Saber · now"
+   ]
+  },
+  "I7 after the OIL answer was changed / Saber": {
+   "lit": false,
+   "lines": []
+  }
+ },
+ "I8-I10": {
+  "I8-0 after Ranger filed his own Training": {
+   "lit": false,
+   "lines": [],
+   "empty": "Nothing new"
+  },
+  "I8-1 Ranger reads the list (after Tally added)": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "empty": null
+  },
+  "I8_undo": {
+   "u": "undone",
+   "rec": {
+    "iid": "imv51ecoxv08krw",
+    "title": "Solo training",
+    "type": "Training",
+    "date": "Jul 15",
+    "t": "13:00-14:00",
+    "people": [
+     "Ranger"
+    ],
+    "by": "bane",
+    "cx": false,
+    "cxr": "",
+    "rmk": "",
+    "oil": null,
+    "acc": "g"
+   }
+  },
+  "I8-2 Ranger after Saber pressed Undo": {
+   "lit": false,
+   "lines": [],
+   "empty": "Nothing new"
+  },
+  "I8_redo": {
+   "rd": "redone",
+   "rec": {
+    "iid": "imv51ecoxv08krw",
+    "title": "Solo training",
+    "type": "Training",
+    "date": "Jul 15",
+    "t": "13:00-14:00",
+    "people": [
+     "Ranger",
+     "Tally"
+    ],
+    "by": "bane",
+    "cx": false,
+    "cxr": "",
+    "rmk": "",
+    "oil": null,
+    "acc": "g"
+   }
+  },
+  "I8-3 Ranger after Saber pressed Redo": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "empty": null
+  },
+  "I8-4 Ranger taps the line": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "empty": null
+  },
+  "I8-4 Ranger taps the line after tap": {
+   "lines": [
+    "1. [read] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "bell": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  },
+  "I8-5 Ranger after Undo (the line had been read)": {
+   "lit": false,
+   "lines": [],
+   "empty": "Nothing new"
+  },
+  "I8-6 Ranger after Redo (the line had been read before the Undo)": {
+   "lit": false,
+   "lines": [
+    "1. [read] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "empty": null
+  },
+  "I9_before": {
+   "lines": [
+    "1. [unread] Solo training Wed 15 Jul — Remark changed · Saber · now",
+    "2. [read] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "state": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    },
+    "undo": "disabled",
+    "redo": "disabled"
+   }
+  },
+  "I9_after_markall": {
+   "lines": [
+    "1. [read] Solo training Wed 15 Jul — Remark changed · Saber · now",
+    "2. [read] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "state": {
+    "bell": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "true"
+    },
+    "undo": "disabled",
+    "redo": "disabled"
+   }
+  },
+  "I9_after_reload": {
+   "lines": [
+    "1. [read] Solo training Wed 15 Jul — Remark changed · Saber · now",
+    "2. [read] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "bell": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  },
+  "I9_after_signin": {
+   "lines": [
+    "1. [read] Solo training Wed 15 Jul — Remark changed · Saber · now",
+    "2. [read] Solo training Wed 15 Jul — Tally added · Saber · now"
+   ],
+   "bell": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  },
+  "I10_saved": {
+   "total": 72,
+   "forRanger": 36
+  },
+  "I10_list": {
+   "count": 30,
+   "first": [
+    "1. [unread] Loop brief Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+    "2. [unread] Loop brief Wed 15 Jul — Now 09:00–12:00 · Saber · now",
+    "3. [unread] Loop brief Wed 15 Jul — Now 09:00–11:00 · Saber · now"
+   ],
+   "last": [
+    "29. [unread] Loop brief Wed 15 Jul — Now 09:00–11:00 · Saber · now",
+    "30. [unread] Loop brief Wed 15 Jul — Now 09:00–12:00 · Saber · now"
+   ]
+  },
+  "I10_after": {
+   "bell": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  }
+ },
+ "I11": {
+  "I11 before the delete / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Trio training Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I11 before the delete / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Trio training Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I11 before the delete / Hex": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Trio training Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I11 after Hex was deleted / Ranger": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Trio training Wed 15 Jul — Hex taken off · now",
+    "2. [unread] Trio training Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I11 after Hex was deleted / Tally": {
+   "lit": true,
+   "lines": [
+    "1. [unread] Trio training Wed 15 Jul — Hex taken off · now",
+    "2. [unread] Trio training Wed 15 Jul — You were added · Saber · now"
+   ]
+  },
+  "I11 after Hex was deleted / Saber": {
+   "lit": false,
+   "lines": []
+  }
+ },
+ "I12": {
+  "bell": {
+   "id": "notifyBell",
+   "lit": false,
+   "open": "false"
+  },
+  "list": "Nothing new"
+ },
+ "summary": {
+  "I1": "PASS",
+  "I2": "PASS",
+  "I3": "PASS",
+  "I4": "PASS",
+  "I5": "PASS",
+  "I6": "PASS",
+  "I7": "PASS",
+  "I8": "PASS",
+  "I8b_variant_redo_of_read_line": "FAIL",
+  "I9": "PASS",
+  "I10": "PASS",
+  "I11": "PASS (clock set back to 22 Jun 26)",
+  "I12": "RECORDED (Ranger bell not lit, \"Nothing new\")",
+  "clock": "not set back in I1-I10; set back in I11 and I12",
+  "notWalked": [],
+  "browserErrors": 0
+ }
+}

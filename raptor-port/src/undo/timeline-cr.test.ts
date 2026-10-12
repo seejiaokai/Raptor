@@ -27,7 +27,7 @@ const NAMES: Record<string, string> = { boss: 'Saber', hawk: 'Hawk', pA: 'Ranger
 beforeEach(() => {
   _resetCommandEngine(); _resetPermissions(); _resetInvariants(); _resetEffectContexts(); _resetTimeline()
   installBaselineInvariants()
-  for (const t of ['test.put', 'changes.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.postout', 'lw.postoutRun', 'remote.put'])
+  for (const t of ['test.put', 'changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.postout', 'lw.postoutRun', 'remote.put'])
     definePermission(t, anyone)
   installUndo()
   setUndoHooks({ currentActor: () => BOSS, nameOf: (a) => (a.personId ? NAMES[a.personId] || null : null) })
@@ -41,8 +41,11 @@ function remote(store: any, scope: Scope, mutate: () => void, actor: Actor) {
   return commitAs({ type: 'remote.put', scope, apply: (txn) => { txn.enlist(store); mutate() } }, { actor, origin: 'remote' })
 }
 
-describe('B1 — a seen mark, a waiting request, "OK, seen" are never an Undo step', () => {
-  for (const type of ['changes.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack']) {
+/* `notices.seen` joined the list with the bell's notices (the one-rule build's step 7, 12 Oct 26 — owner D769, D148; the
+   plan §4.10, Fable F9): reading a notice — a tap on its line, "Mark all read" — is the reader's own record and never a
+   step, so it never stands between a person and the step before it. */
+describe('B1 — a seen mark, a notice read on the bell (D769), a waiting request, "OK, seen" are never an Undo step', () => {
+  for (const type of ['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack']) {
     it(`${type} makes no entry, and Undo still takes the step before it`, () => {
       const s = makeStore('S', 'settings'); s.set('x', { v: 1 })
       registerUndoStore(s.store, ['settings']); setCutoverModules(['settings'])

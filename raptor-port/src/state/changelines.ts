@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters } from '../engine/inputs'
+import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -58,6 +58,14 @@ const isoOfLabel = (lbl: any, yr?: any): string | null => {
   return o == null ? null : `${Math.floor(o / 10000)}-${pad(Math.floor(o / 100) % 100)}-${pad(o % 100)}`
 }
 const cs = (pid: any) => ((PEOPLE as any)[pid] && (PEOPLE as any)[pid].cs) || String(pid || '')
+/* WHO AN INPUT IS FOR, as a line names it (the one-rule build, step 2 — an input is one record with its people): its
+   named people A to Z by callsign, then its placeholder; for an input of one, that one callsign — as every line has
+   always read. */
+const whoOf = (x: any): string => {
+  const ph = placeholderOf(x)
+  const names = namedOf(x).map((e: any) => String(cs(e.p))).sort((p: string, q: string) => p.localeCompare(q, undefined, { sensitivity: 'base' }))
+  return names.concat(ph ? [String(cs(ph.p))] : []).join(', ')
+}
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /* '2026-08-01' → '1 Aug' (the day-first voice the rest of the app speaks) */
 const dayWord = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d} ${MON[(m || 1) - 1]}` }
@@ -98,7 +106,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   /* …and, for one record of a SHARED input, its group id: the changes window files the men of one filing under one
      item (D663) — a line each is still written, "To go out" finding a line by its man */
   const grp = (a || b || {}).grp
-  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String((a || b || {}).person || ''), itype: String((a || b || {}).type || ''), ...(inpKindTag(a || b) ? { iname: inpLabel(a || b) } : {}), ...(grp ? { grp: String(grp) } : {}), ...extra })
+  const at = (extra: any = {}) => ({ iid, sect: 'abs', sub: String(leadOf(a || b || {}) || ''), itype: String((a || b || {}).type || ''), ...(inpKindTag(a || b) ? { iname: inpLabel(a || b) } : {}), ...(grp ? { grp: String(grp) } : {}), ...extra })
   /* whether it is on the programme is read as the week on screen now shows it: since [DB-READINESS] phase 6 (c) a request's
      row is worked out AFTER its command (state/holderbase.ts, phase 8), so its `acc` in the envelope is the one it had
      before — this line is written at phase 9, after the working-out (Fable's round-3 F4.3) */
@@ -106,22 +114,32 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   const accNow = (x: any) => (live ? live.acc : x && x.acc)
   if (!b && a) {
     const s = sa
-    logAction(null, `${cs(a.person)} · ${inpLabel(a)} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : ''}${tail}`,
+    logAction(null, `${whoOf(a)} · ${inpLabel(a)} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : ''}${tail}`,
       at({ date: s && s.date, end: s && s.end }))
     return
   }
   if (b && !a) {
     const s = sb
-    logAction(null, `${cs(b.person)} · ${inpLabel(b)} ${war ? 'approval taken back (back to a bid)' : 'deleted'} · ${spanWords(s)}${tail}`,
+    logAction(null, `${whoOf(b)} · ${inpLabel(b)} ${war ? 'approval taken back (back to a bid)' : 'deleted'} · ${spanWords(s)}${tail}`,
       at({ date: s && s.date, end: s && s.end }))
     return
   }
   if (!a || !b) return
   /* named as every screen names it — by its own title where it has one ([INPUT-OWN-TITLE], D716 (2)); its kind is in
      `itype`, and a change of kind has its own line below */
-  const who = cs(a.person), what = inpLabel(a)
+  const who = whoOf(a), what = inpLabel(a)
   const base = (x: any) => at({ date: sa && sa.date, end: sa && sa.end, wdate: sb && sb.date, wend: sb && sb.end, ...x })
-  if (!same(a.person, b.person)) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(b.person), to: cs(a.person) }))
+  /* WHO IS IN IT. One person replaced by another in an input of one is the hand-over it always was — "whose: Ranger →
+     Tally". Otherwise ONE LINE A PERSON put in or taken out, each filed under that person (`sub`), so the changes
+     window and History find his line (the one-rule build, step 2 (c) — owner D755; the plan §4.4: "one line of the
+     change history per thing that changed"). */
+  { const A = idsOf(a).map(String), B = idsOf(b).map(String)
+    const out = B.filter(p => !A.includes(p)), inn = A.filter(p => !B.includes(p))
+    if (A.length === 1 && B.length === 1 && out.length === 1) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(B[0]), to: cs(A[0]) }))
+    else {
+      for (const p of inn) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · added${tail}`, base({ sub: p, one: 1 }))
+      for (const p of out) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · taken out${tail}`, base({ sub: p, one: 1 }))
+    } }
   if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type) }))
   if (!same(sa, sb)) logAction(null, `${who} · ${what}${tail} · dates`, base({ from: spanWords(sb), to: spanWords(sa) }))
   /* the times as a reader sees them — stored times rewritten under an all-day record are no change to it ([HIST-PHONE-HIDE]
@@ -136,6 +154,14 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
+  /* THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760: "a CX the scheduler puts on a
+     row that came from an input cancels the input itself"; the red box and "information only" go with it). Until then
+     the board logged a sentence against the DAY ("CX — WX — this item"); the change is the input's now, so its line is
+     written here, once, with the rest of what an input's change says — one line a mark that moved, the reason in it. */
+  { const cxW = (x: any) => (x.cx ? `cancelled${x.cxr ? ' — ' + String(x.cxr) : ''}` : 'not cancelled')
+    if (cxW(b) !== cxW(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · CX`, base({ from: cxW(b), to: cxW(a) }))
+    if (!!b.flag !== !!a.flag) logAction(null, `${who} · ${what} ${spanWords(sa)} · red box`, base({ from: b.flag ? 'on' : 'off', to: a.flag ? 'on' : 'off' }))
+    if (!!b.info !== !!a.info) logAction(null, `${who} · ${what} ${spanWords(sa)} · information only`, base({ from: b.info ? 'yes' : 'no', to: a.info ? 'yes' : 'no' })) }
   /* WHAT A SANS AVAILABILITY OFFERS (found building D629, 7 Oct 26 — the plan §3.8): a change to the Fly / OFT / AMT
      ticks alone wrote no line at all — the one thing a person reads on that record that the list above never compared.
      Only where both sides are a SANS availability: a change of type is the type line's to say. */
@@ -199,9 +225,10 @@ function crossLines(env: CommitEnvelope): void {
   const covered = new Set<string>()
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.id === '__order' || !c.after) continue
-    const s = spanOf(c.after), p = (c.after as any).person
-    if (!s || !p) continue
-    for (let d = s.date; d <= s.end; d = nextIso(d)) covered.add(`${p}|${d}`)
+    /* everyone the input names (one record an input, with the list of its people — the one-rule build, step 2) */
+    const s = spanOf(c.after), ps = idsOf(c.after)
+    if (!s || !ps.length) continue
+    for (const p of ps) for (let d = s.date; d <= s.end; d = nextIso(d)) covered.add(`${p}|${d}`)
   }
   for (const c of env.changes) {
     if (c.collection !== 'lw.cell') continue
@@ -249,10 +276,12 @@ function warInputLines(env: CommitEnvelope): WarInputs {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.id === '__order') continue
     const ref: any = c.after || c.before
-    if (!ref || !ref.person) continue
-    const k = `${ref.person}|${ref.type}`
+    /* whose leave it is: the record's one person, in either stored shape (leave is always one person's) */
+    const man = ref ? leadOf(ref) : null
+    if (man == null || man === '') continue
+    const k = `${man}|${ref.type}`
     let g = groups.get(k)
-    if (!g) { g = { p: String(ref.person), t: String(ref.type), was: new Set(), now: new Set(), changes: [] }; groups.set(k, g) }
+    if (!g) { g = { p: String(man), t: String(ref.type), was: new Set(), now: new Set(), changes: [] }; groups.set(k, g) }
     const bd = c.before ? daysOf(c.before) : [], ad = c.after ? daysOf(c.after) : []
     g.changes.push({ c, b: bd, a: ad })
     bd.forEach(d => g!.was.add(d)); ad.forEach(d => g!.now.add(d))

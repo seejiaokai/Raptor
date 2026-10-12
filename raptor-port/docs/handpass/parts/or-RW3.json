@@ -1,0 +1,1614 @@
+{
+ "RW3-1": {
+  "build": [
+   "http://localhost:4186/assets/index-BkNByU3k.js"
+  ],
+  "filed": [
+   {
+    "iid": "imqoidgg00uukfd",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "stage": "PUBLISHED",
+  "cellsBefore": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "inputsBefore": [
+   {
+    "iid": "uukfd",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "zr0l0",
+    "type": "LL",
+    "date": "Jul 14",
+    "to": null,
+    "people": [
+     "Quill"
+    ],
+    "rmk": "Local leave",
+    "by": "nasty"
+   },
+   {
+    "iid": "dyvmx",
+    "type": "ATT C",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Grit"
+    ],
+    "rmk": "Medically down till 17 Jul",
+    "by": "sufa"
+   },
+   {
+    "iid": "usemg",
+    "type": "OD",
+    "date": "Jul 15",
+    "to": "Jul 17",
+    "people": [
+     "Nomad"
+    ],
+    "rmk": "Overseas duty — exercise, off island",
+    "by": "pike"
+   },
+   {
+    "iid": "76w7d",
+    "type": "LL",
+    "date": "Jul 24",
+    "to": null,
+    "people": [
+     "Tally"
+    ],
+    "rmk": "Local leave",
+    "by": "stiff"
+   },
+   {
+    "iid": "j7nia",
+    "type": "ATT B",
+    "date": "Jun 15",
+    "to": "Jun 19",
+    "people": [
+     "Zenith"
+    ],
+    "rmk": "Grounded — may still work, till 19 Jun",
+    "by": "vinci"
+   },
+   {
+    "iid": "r96hk",
+    "type": "LL",
+    "date": "Jan 8",
+    "to": null,
+    "people": [
+     "Gambit"
+    ],
+    "rmk": ""
+   },
+   {
+    "iid": "o5685",
+    "type": "ATT C",
+    "date": "Jan 5",
+    "to": null,
+    "people": [
+     "Static"
+    ],
+    "rmk": "ATT C — filed on Inputs"
+   }
+  ],
+  "fieldWas": "till 17 Jul",
+  "toast": "Input added for 3 people",
+  "inputsAfter": [
+   {
+    "iid": "uukfd",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "ecj5s",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "Dental",
+    "by": "stiff"
+   },
+   {
+    "iid": "zr0l0",
+    "type": "LL",
+    "date": "Jul 14",
+    "to": null,
+    "people": [
+     "Quill"
+    ],
+    "rmk": "Local leave",
+    "by": "nasty"
+   },
+   {
+    "iid": "dyvmx",
+    "type": "ATT C",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Grit"
+    ],
+    "rmk": "Medically down till 17 Jul",
+    "by": "sufa"
+   },
+   {
+    "iid": "usemg",
+    "type": "OD",
+    "date": "Jul 15",
+    "to": "Jul 17",
+    "people": [
+     "Nomad"
+    ],
+    "rmk": "Overseas duty — exercise, off island",
+    "by": "pike"
+   },
+   {
+    "iid": "76w7d",
+    "type": "LL",
+    "date": "Jul 24",
+    "to": null,
+    "people": [
+     "Tally"
+    ],
+    "rmk": "Local leave",
+    "by": "stiff"
+   },
+   {
+    "iid": "j7nia",
+    "type": "ATT B",
+    "date": "Jun 15",
+    "to": "Jun 19",
+    "people": [
+     "Zenith"
+    ],
+    "rmk": "Grounded — may still work, till 19 Jun",
+    "by": "vinci"
+   },
+   {
+    "iid": "r96hk",
+    "type": "LL",
+    "date": "Jan 8",
+    "to": null,
+    "people": [
+     "Gambit"
+    ],
+    "rmk": ""
+   },
+   {
+    "iid": "o5685",
+    "type": "ATT C",
+    "date": "Jan 5",
+    "to": null,
+    "people": [
+     "Static"
+    ],
+    "rmk": "ATT C — filed on Inputs"
+   }
+  ],
+  "cellsAfter": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "unavailWedAfter": [
+   "LL Drifter A till 17 Jul",
+   "LL Hunter IP till 17 Jul",
+   "LL C Hex C Dental",
+   "OL Cobra IP Overseas leave — off island",
+   "ATT C Grit C Medically down till 17 Jul",
+   "OD C Nomad C Overseas duty — exercise, off island",
+   "OIL C Gambit C"
+  ],
+  "unavailMonAfter": [
+   "LL C Drifter A till 17 Jul",
+   "LL C Hunter IP till 17 Jul",
+   "LL C Hex C Dental",
+   "OML C Vector C Medical leave 13 Jul",
+   "ATT C C Grit C Medically down till 17 Jul"
+  ],
+  "calWed": {
+   "bars": [
+    "Cinder · Duty @75vll",
+    "Quill · OML @aqneu",
+    "2 · LL @uukfd",
+    "Grit · ATT C @dyvmx",
+    "Hex · LL @ecj5s",
+    "Vector · OML @03u7e",
+    "Gambit · Fly with @twccg",
+    "Zenith · Meeting @2jmkk",
+    "Bolt · Appointment @04f0k",
+    "Quill · LL @zr0l0",
+    "Wisp · OIL @4h2ol",
+    "Saint · Appointment @aeede",
+    "Nomad · OD @usemg",
+    "Cobra · OL @9w4pn",
+    "Gambit · OIL @f3xeg",
+    "Gambit · OIL @zm8l9",
+    "Ranger · Appointment @vajnj",
+    "Vapor · Appointment @g0s2k",
+    "ALL · Sports afternoon @gc7ro",
+    "Gambit · OML @22orh",
+    "4 · Meeting @5hyx6",
+    "Tally · LL @76w7d",
+    "ALL AVAIL · Duty @kxr1v"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, HunterLL By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul HexLL Dental By Saber",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  },
+  "calMon": {
+   "bars": [
+    "Cinder · Duty @75vll",
+    "Quill · OML @aqneu",
+    "2 · LL @uukfd",
+    "Grit · ATT C @dyvmx",
+    "Hex · LL @ecj5s",
+    "Vector · OML @03u7e",
+    "Gambit · Fly with @twccg",
+    "Zenith · Meeting @2jmkk",
+    "Bolt · Appointment @04f0k",
+    "Quill · LL @zr0l0",
+    "Wisp · OIL @4h2ol",
+    "Saint · Appointment @aeede",
+    "Nomad · OD @usemg",
+    "Cobra · OL @9w4pn",
+    "Gambit · OIL @f3xeg",
+    "Gambit · OIL @zm8l9",
+    "Ranger · Appointment @vajnj",
+    "Vapor · Appointment @g0s2k",
+    "ALL · Sports afternoon @gc7ro",
+    "Gambit · OML @22orh",
+    "4 · Meeting @5hyx6",
+    "Tally · LL @76w7d",
+    "ALL AVAIL · Duty @kxr1v"
+   ],
+   "cards": [
+    "till 17 Jul Drifter, HunterLL By Saber",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul HexLL Dental By Saber",
+    "All day VectorOML Medical leave 13 Jul",
+    "All day GambitFLY WITH Keen for any wave",
+    "09:00–17:00 ZenithMEETING Desk / staff work By Saber",
+    "LATE 10:00–11:00 BoltAPPOINTMENT HSP blood panel"
+   ]
+  },
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: 2 inputs"
+  },
+  "inputsUndo": [
+   {
+    "iid": "uukfd",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "zr0l0",
+    "type": "LL",
+    "date": "Jul 14",
+    "to": null,
+    "people": [
+     "Quill"
+    ],
+    "rmk": "Local leave",
+    "by": "nasty"
+   },
+   {
+    "iid": "dyvmx",
+    "type": "ATT C",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Grit"
+    ],
+    "rmk": "Medically down till 17 Jul",
+    "by": "sufa"
+   },
+   {
+    "iid": "usemg",
+    "type": "OD",
+    "date": "Jul 15",
+    "to": "Jul 17",
+    "people": [
+     "Nomad"
+    ],
+    "rmk": "Overseas duty — exercise, off island",
+    "by": "pike"
+   },
+   {
+    "iid": "76w7d",
+    "type": "LL",
+    "date": "Jul 24",
+    "to": null,
+    "people": [
+     "Tally"
+    ],
+    "rmk": "Local leave",
+    "by": "stiff"
+   },
+   {
+    "iid": "j7nia",
+    "type": "ATT B",
+    "date": "Jun 15",
+    "to": "Jun 19",
+    "people": [
+     "Zenith"
+    ],
+    "rmk": "Grounded — may still work, till 19 Jun",
+    "by": "vinci"
+   },
+   {
+    "iid": "r96hk",
+    "type": "LL",
+    "date": "Jan 8",
+    "to": null,
+    "people": [
+     "Gambit"
+    ],
+    "rmk": ""
+   },
+   {
+    "iid": "o5685",
+    "type": "ATT C",
+    "date": "Jan 5",
+    "to": null,
+    "people": [
+     "Static"
+    ],
+    "rmk": "ATT C — filed on Inputs"
+   }
+  ],
+  "unavailWedUndo": [
+   "LL Drifter A till 17 Jul",
+   "LL C Hex C till 17 Jul",
+   "LL Hunter IP till 17 Jul",
+   "OL Cobra IP Overseas leave — off island",
+   "ATT C Grit C Medically down till 17 Jul",
+   "OD C Nomad C Overseas duty — exercise, off island",
+   "OIL C Gambit C"
+  ],
+  "cellsUndo": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "calWedUndo": {
+   "bars": [
+    "Cinder · Duty @75vll",
+    "Quill · OML @aqneu",
+    "3 · LL @uukfd",
+    "Grit · ATT C @dyvmx",
+    "Vector · OML @03u7e",
+    "Gambit · Fly with @twccg",
+    "Zenith · Meeting @2jmkk",
+    "Bolt · Appointment @04f0k",
+    "Quill · LL @zr0l0",
+    "Wisp · OIL @4h2ol",
+    "Saint · Appointment @aeede",
+    "Nomad · OD @usemg",
+    "Cobra · OL @9w4pn",
+    "Gambit · OIL @f3xeg",
+    "Gambit · OIL @zm8l9",
+    "Ranger · Appointment @vajnj",
+    "Vapor · Appointment @g0s2k",
+    "ALL · Sports afternoon @gc7ro",
+    "Gambit · OML @22orh",
+    "4 · Meeting @5hyx6",
+    "Tally · LL @76w7d",
+    "ALL AVAIL · Duty @kxr1v"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, Hex, HunterLL By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  }
+ },
+ "RW3-2": {
+  "filed": [
+   {
+    "iid": "imqoidgg0wxtljf",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "stage": "PUBLISHED",
+  "badge": "142 RAPTOR View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout HEX · MEMBER",
+  "sheetOpen": 1,
+  "fieldWas": "till 17 Jul",
+  "fieldDisabled": false,
+  "sheetText": "REMARKS",
+  "toast": "Input added for 3 people",
+  "sheetTextAfter": "NO SHEET",
+  "inputs": [
+   {
+    "iid": "xtljf",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "3jb2q",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "Dental",
+    "by": "stiff"
+   },
+   {
+    "iid": "6dqf0",
+    "type": "LL",
+    "date": "Jul 14",
+    "to": null,
+    "people": [
+     "Quill"
+    ],
+    "rmk": "Local leave",
+    "by": "nasty"
+   },
+   {
+    "iid": "ghyzv",
+    "type": "ATT C",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Grit"
+    ],
+    "rmk": "Medically down till 17 Jul",
+    "by": "sufa"
+   },
+   {
+    "iid": "z518l",
+    "type": "OD",
+    "date": "Jul 15",
+    "to": "Jul 17",
+    "people": [
+     "Nomad"
+    ],
+    "rmk": "Overseas duty — exercise, off island",
+    "by": "pike"
+   },
+   {
+    "iid": "m2dfz",
+    "type": "LL",
+    "date": "Jul 24",
+    "to": null,
+    "people": [
+     "Tally"
+    ],
+    "rmk": "Local leave",
+    "by": "stiff"
+   },
+   {
+    "iid": "rgrb1",
+    "type": "ATT B",
+    "date": "Jun 15",
+    "to": "Jun 19",
+    "people": [
+     "Zenith"
+    ],
+    "rmk": "Grounded — may still work, till 19 Jun",
+    "by": "vinci"
+   },
+   {
+    "iid": "5vara",
+    "type": "LL",
+    "date": "Jan 8",
+    "to": null,
+    "people": [
+     "Gambit"
+    ],
+    "rmk": ""
+   },
+   {
+    "iid": "bnzr4",
+    "type": "ATT C",
+    "date": "Jan 5",
+    "to": null,
+    "people": [
+     "Static"
+    ],
+    "rmk": "ATT C — filed on Inputs"
+   }
+  ],
+  "cells": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "unavailWed": [
+   "LL Drifter A till 17 Jul",
+   "LL Hunter IP till 17 Jul",
+   "LL C Hex C Dental",
+   "OL Cobra IP Overseas leave — off island",
+   "ATT C Grit C Medically down till 17 Jul",
+   "OD C Nomad C Overseas duty — exercise, off island",
+   "OIL C Gambit C"
+  ],
+  "calWed": {
+   "bars": [
+    "Cinder · Duty @9g11c",
+    "Quill · OML @12mrl",
+    "2 · LL @xtljf",
+    "Grit · ATT C @ghyzv",
+    "Hex · LL @3jb2q",
+    "Vector · OML @xxmtr",
+    "Gambit · Fly with @6h5xk",
+    "Zenith · Meeting @bov89",
+    "Bolt · Appointment @9qhyg",
+    "Quill · LL @6dqf0",
+    "Wisp · OIL @ohywx",
+    "Saint · Appointment @iqaix",
+    "Nomad · OD @z518l",
+    "Cobra · OL @g76j8",
+    "Gambit · OIL @on5eu",
+    "Gambit · OIL @svmrb",
+    "Ranger · Appointment @mc6oo",
+    "Vapor · Appointment @2pl5z",
+    "ALL · Sports afternoon @7paip",
+    "Gambit · OML @sbmn5",
+    "4 · Meeting @3cl5d",
+    "Tally · LL @m2dfz",
+    "ALL AVAIL · Duty @7ot71"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, HunterLL By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul HexLL Dental By Saber",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  }
+ },
+ "RW3-3": {
+  "aFiled": [
+   {
+    "iid": "imqoidgg0ejrfxs",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "aStage": "PUBLISHED",
+  "aBefore": [
+   {
+    "iid": "jrfxs",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   }
+  ],
+  "aFieldWas": "till 17 Jul",
+  "aAfter": [
+   {
+    "iid": "jrfxs",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "Dental",
+    "by": "stiff"
+   }
+  ],
+  "aCells": {
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "aUnavail": [
+   "LL C Hex C Dental"
+  ],
+  "aCal": {
+   "bars": [
+    "Cinder · Duty @zexbs",
+    "Quill · OML @ekhw7",
+    "Grit · ATT C @f1oc4",
+    "Hex · LL @jrfxs",
+    "Vector · OML @1s89q",
+    "Gambit · Fly with @and10",
+    "Zenith · Meeting @6jilt",
+    "Bolt · Appointment @mby1w",
+    "Quill · LL @lx04f",
+    "Wisp · OIL @febo5",
+    "Saint · Appointment @xfpxw",
+    "Nomad · OD @n453f",
+    "Cobra · OL @zsta0",
+    "Gambit · OIL @j0zxk",
+    "Gambit · OIL @nznkg",
+    "Ranger · Appointment @09f3l",
+    "Vapor · Appointment @3bmjy",
+    "ALL · Sports afternoon @5uvhl",
+    "Gambit · OML @lqtb9",
+    "4 · Meeting @9rjad",
+    "Tally · LL @au1sr",
+    "ALL AVAIL · Duty @4n0d8"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul HexLL Dental By Saber",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  },
+  "bStage0": "OPEN FOR BIDDING",
+  "bCellAfterBid": "LL |  act",
+  "bStage1": "BIDDING CLOSED",
+  "bCellAfterApprove": "LL |  act",
+  "bInputsAfterApprove": [
+   {
+    "iid": "e964j",
+    "type": "LL",
+    "date": "Jul 15",
+    "to": null,
+    "people": [
+     "Hex"
+    ],
+    "rmk": "on 15 Jul",
+    "by": "stiff"
+   }
+  ],
+  "bStage2": "PUBLISHED",
+  "bInputsPublished": [
+   {
+    "iid": "e964j",
+    "type": "LL",
+    "date": "Jul 15",
+    "to": null,
+    "people": [
+     "Hex"
+    ],
+    "rmk": "on 15 Jul",
+    "by": "stiff"
+   }
+  ],
+  "bRemarkOpen": 1,
+  "bFieldWas": "on 15 Jul",
+  "bAfter": [
+   {
+    "iid": "e964j",
+    "type": "LL",
+    "date": "Jul 15",
+    "to": null,
+    "people": [
+     "Hex"
+    ],
+    "rmk": "Dental",
+    "by": "stiff"
+   }
+  ],
+  "bCells": {
+   "Hex": [
+    "13:(blank) [.act]",
+    "14:(blank) [.act]",
+    "15:LL [.act]",
+    "16:(blank) [.act]",
+    "17:(blank) [.act]"
+   ]
+  },
+  "bUnavail": [
+   "LL C Hex C Dental"
+  ],
+  "bCal": {
+   "bars": [
+    "Cinder · Duty @cpvod",
+    "Quill · OML @nk20n",
+    "Grit · ATT C @ar3va",
+    "Vector · OML @gf8e4",
+    "Gambit · Fly with @zsj1n",
+    "Zenith · Meeting @o7evn",
+    "Bolt · Appointment @h8lqf",
+    "Quill · LL @jmqfn",
+    "Wisp · OIL @4san9",
+    "Saint · Appointment @vn9g2",
+    "Nomad · OD @4k59s",
+    "Cobra · OL @e6qjq",
+    "Gambit · OIL @vgmtu",
+    "Hex · LL @e964j",
+    "Gambit · OIL @xb51p",
+    "Ranger · Appointment @re4l7",
+    "Vapor · Appointment @8wshk",
+    "ALL · Sports afternoon @wxpg0",
+    "Gambit · OML @pzlmk",
+    "4 · Meeting @jbnss",
+    "Tally · LL @kolwb",
+    "ALL AVAIL · Duty @094ja"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "All day HexLL Dental By Saber",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  }
+ },
+ "RW3-4": {
+  "filed": [
+   {
+    "iid": "imqoidgg0xf5ltb",
+    "type": "OD",
+    "date": "Jul 16",
+    "s": 360,
+    "e": 1080,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "beforeRows": [
+   "OD 06:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "statBefore": "6 changes i Unpublish",
+  "toastTyped": "Thursday published — APPROVED",
+  "inputs": [
+   {
+    "iid": "imqoidgg0xf5ltb",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "06:00-18:00",
+    "people": [
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   },
+   {
+    "iid": "imqoidgg0ei84th",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "10:00-18:00",
+    "people": [
+     "Drifter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "rowsAfter": [
+   "OD 10:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "statAfter": "1 pending i Publish AL1 Unpublish",
+  "changes": {
+   "title": "Changes · Thursday 16/7 Published · 1 change waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 1",
+   "head": "Waiting to go out as AL1 · 1 change",
+   "lines": [
+    "Drifter · OD Saber 22/6 09:00 his own now — 10:00–18:00"
+   ]
+  },
+  "pub2": {
+   "ok": true,
+   "label": "Publish AL1",
+   "version": "AL1",
+   "selects": 4
+  },
+  "statAfterPub": "13 changes i Unpublish",
+  "weekRowsAfterPub": [
+   "OD 06:00 18:00 Hunter IP till 16 Jul",
+   "OD 10:00 18:00 Drifter A till 16 Jul"
+  ],
+  "viewRowsAfterPub": [
+   "OD 06:00 18:00 Hunter IP till 16 Jul",
+   "OD 10:00 18:00 Drifter A till 16 Jul"
+  ],
+  "inputsEnd": [
+   {
+    "iid": "imqoidgg0xf5ltb",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "06:00-18:00",
+    "people": [
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   },
+   {
+    "iid": "imqoidgg0ei84th",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "10:00-18:00",
+    "people": [
+     "Drifter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ]
+ },
+ "RW3-5": {
+  "aFiled": [
+   {
+    "iid": "imqoidgg03hd1dd",
+    "type": "Meeting",
+    "title": "RW3 brief",
+    "date": "Jul 15",
+    "s": 540,
+    "e": 600,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "aPub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "aStat0": "6 changes i Unpublish",
+  "aRowBefore": [
+   {
+    "name": "RW3 BRIEF",
+    "times": [
+     "09:00",
+     "10:00"
+    ],
+    "pucks": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "aToast": "Hunter taken out of RW3 brief",
+  "aRowAfter": [
+   {
+    "name": "RW3 BRIEF",
+    "times": [
+     "09:00",
+     "10:00"
+    ],
+    "pucks": [
+     "Drifter",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "aInputs": [
+   [
+    "Drifter",
+    "Ranger"
+   ]
+  ],
+  "aStat1": "1 pending i Publish AL1 Unpublish",
+  "aChanges": {
+   "title": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 1",
+   "head": "Waiting to go out as AL1 · 1 change",
+   "lines": [
+    "Hunter · RW3 brief Saber 22/6 09:00 taken out"
+   ]
+  },
+  "bFiled": [
+   {
+    "iid": "imqoidgg064b6ie",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Hex"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "bPub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "bStat0": "6 changes i Unpublish",
+  "bLw0": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "bMed": [
+   {
+    "iid": "imqoidgg04jvko2",
+    "type": "ATT C",
+    "date": "Jul 15",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "by": "stiff"
+   },
+   {
+    "iid": "imqoidgg0iae7jg",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "by": "stiff"
+   },
+   {
+    "iid": "imqoidgg0r57mb9",
+    "type": "LL",
+    "date": "Jul 17",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "bToast": "Hex's LL on 15 Jul–16 Jul is cut for the ATT C — that leave goes back to the balance · Input added",
+  "bInputs": [
+   {
+    "iid": "jvko2",
+    "type": "ATT C",
+    "date": "Jul 15",
+    "to": "Jul 16",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "till 16 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "4b6ie",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "ae7jg",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 14",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "till 14 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "57mb9",
+    "type": "LL",
+    "date": "Jul 17",
+    "to": null,
+    "people": [
+     "Hex"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   }
+  ],
+  "bStat1": "2 pending i Publish AL1 Unpublish",
+  "bChanges": {
+   "title": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 2",
+   "head": "Waiting to go out as AL1 · 2 changes",
+   "lines": [
+    "Hex · LL Saber 22/6 09:00 taken out",
+    "Hex · ATT C Saber 22/6 09:00 filed"
+   ]
+  },
+  "bLw1": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:C [.act]",
+    "16:C [.act]",
+    "17:LL [.act]"
+   ]
+  },
+  "bCal": {
+   "bars": [
+    "Cinder · Duty @8wmcp",
+    "Quill · OML @jrx9b",
+    "2 · LL @4b6ie",
+    "Grit · ATT C @1p4v9",
+    "Hex · LL @ae7jg",
+    "Vector · OML @dtbvh",
+    "Gambit · Fly with @3wkje",
+    "Zenith · Meeting @2rmzs",
+    "Bolt · Appointment @ygexj",
+    "Quill · LL @3p5kk",
+    "Wisp · OIL @xroly",
+    "Saint · Appointment @xd5h7",
+    "Nomad · OD @louop",
+    "Hex · ATT C @jvko2",
+    "Cobra · OL @9i91h",
+    "Gambit · OIL @v31o3",
+    "Gambit · OIL @dtiph",
+    "Ranger · Appointment @kejj0",
+    "Hex · LL @57mb9",
+    "Vapor · Appointment @rxv5c",
+    "ALL · Sports afternoon @btfqb",
+    "Gambit · OML @ecbo0",
+    "4 · Meeting @7sws2",
+    "Tally · LL @lzrk2",
+    "ALL AVAIL · Duty @aqqyy"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, HunterLL By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 16 Jul HexATT C By Saber",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  },
+  "bBars": [
+   "2 · LL @4b6ie",
+   "Grit · ATT C @1p4v9",
+   "Hex · LL @ae7jg",
+   "Quill · LL @3p5kk",
+   "Hex · ATT C @jvko2",
+   "Hex · LL @57mb9",
+   "ALL · Sports afternoon @btfqb",
+   "Tally · LL @lzrk2",
+   "ALL AVAIL · Duty @aqqyy"
+  ],
+  "bUnav": [
+   "ATT C C Hex C till 16 Jul",
+   "LL Drifter A till 17 Jul",
+   "LL Hunter IP till 17 Jul"
+  ],
+  "bUndo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: 4 inputs"
+  },
+  "bInputsUndo": [
+   {
+    "iid": "4b6ie",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Hex"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   }
+  ],
+  "bStat2": "9 changes i Unpublish",
+  "bLw2": {
+   "Drifter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hunter": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ],
+   "Hex": [
+    "13:LL [.act]",
+    "14:LL [.act]",
+    "15:LL [.act]",
+    "16:LL [.act]",
+    "17:LL [.act]"
+   ]
+  }
+ },
+ "RW3-6": {
+  "filed": [
+   {
+    "iid": "imqoidgg0c988rm",
+    "type": "Training",
+    "title": "RW3 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "by": "bane"
+   }
+  ],
+  "filedBy": "bane",
+  "weekBefore": [],
+  "del": {
+   "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+   "toast": "Hunter deleted"
+  },
+  "inputs": [
+   {
+    "people": [
+     "Hex"
+    ],
+    "by": "bane"
+   }
+  ],
+  "weekRow": [
+   {
+    "name": "RW3 TRAINING",
+    "times": [
+     "10:00",
+     "11:00"
+    ],
+    "pucks": [
+     "Hex"
+    ],
+    "cx": false
+   }
+  ],
+  "personalLine": [
+   "RW3 TRAINING"
+  ],
+  "boardRow": [
+   {
+    "name": "RW3 TRAINING",
+    "pucks": [
+     "Hex"
+    ]
+   }
+  ],
+  "cal": {
+   "bars": [
+    "Cinder · Duty @zvsig",
+    "Quill · OML @v1ej7",
+    "Grit · ATT C @veabf",
+    "Vector · OML @gef04",
+    "Gambit · Fly with @8kdg5",
+    "Zenith · Meeting @xruid",
+    "Bolt · Appointment @482jr",
+    "Quill · LL @lwdf7",
+    "Wisp · OIL @ot8gk",
+    "Saint · Appointment @2w5ia",
+    "Nomad · OD @sddy8",
+    "Cobra · OL @ivowd",
+    "Gambit · OIL @40ojv",
+    "Hex · RW3 training @988rm",
+    "Gambit · OIL @xoima",
+    "Ranger · Appointment @6z2qx",
+    "Vapor · Appointment @eiaew",
+    "ALL · Sports afternoon @yyy8z",
+    "Gambit · OML @1dq5q",
+    "4 · Meeting @1zn1f",
+    "Tally · LL @wwiic",
+    "ALL AVAIL · Duty @tlddl"
+   ],
+   "cards": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island",
+    "10:00–11:00 HexTRAINING RW3 training · till 15 Jul By Ranger"
+   ]
+  },
+  "list": [],
+  "bell_Ranger": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter deleted",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "RW3 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter taken off",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Hex": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter deleted",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "RW3 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter taken off",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "RW3 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Ranger",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Saber": {
+   "state": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter deleted",
+   "list": {
+    "empty": "Nothing new",
+    "markAll": false,
+    "lines": []
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  }
+ },
+ "RW3-7": {
+  "inputs": [
+   {
+    "iid": "de7ir",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "rmk": "till 17 Jul",
+    "by": "stiff"
+   },
+   {
+    "iid": "n85rr",
+    "type": "LL",
+    "date": "Jul 13",
+    "to": "Jul 17",
+    "people": [
+     "Hex"
+    ],
+    "rmk": "Dental",
+    "by": "stiff"
+   }
+  ],
+  "after": {
+   "Hex": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — Remark changed · Saber (now)",
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Drifter": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — Hex taken off · Saber (now)",
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Hunter": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — Hex taken off · Saber (now)",
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Saber": {
+    "lit": false,
+    "lines": [],
+    "empty": "Nothing new"
+   }
+  },
+  "before": {
+   "Hex": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Drifter": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Hunter": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   }
+  },
+  "afterW2": {
+   "Hex": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — Remark changed · Saber (now)",
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Drifter": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — Hex taken off · Saber (now)",
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   },
+   "Hunter": {
+    "lit": true,
+    "lines": [
+     "[unread] LL Mon 13 Jul — Hex taken off · Saber (now)",
+     "[unread] LL Mon 13 Jul — You were added · Saber (now)"
+    ],
+    "empty": null
+   }
+  }
+ }
+}

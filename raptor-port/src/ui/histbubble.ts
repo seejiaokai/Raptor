@@ -1,13 +1,13 @@
 import { HOOKS } from '../engine/hooks'
 import { elogAllFor, elogWhen, elogWho, elogVal, elogKeySet, ELOG, rowTouches, dateOfDi } from '../engine/editlog'
 import { ridKey } from '../engine/rowids'
-import { seatRow } from '../engine/keys'
+import { seatRow, iuParts } from '../engine/keys'
 import { rowPlaces, rowRef } from '../engine/slots'
 import { rowItemKey } from '../engine/oil'
 import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { inpById, inpLabel } from '../engine/inputs'
+import { inpById, inpLabel, idsOf, isUnavail } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
 
@@ -147,6 +147,25 @@ export function findHistCell(root: ParentNode, key: string): HTMLElement | null 
   return cells.find(e => keyOf(e) === k && !e.closest(LOOK)) || null
 }
 
+/* AN INPUT'S LINE, BY ITS INPUT — whoever of its people the key names. Under Personal Inputs an input of several is ONE
+   line, addressed by the first of its people as they are DRAWN (A to Z — `iu:<iid>~<person>`), while a change-history
+   line names whoever the change was about, or the first to JOIN, or nobody (`iu:<iid>`). The exact cell is tried first
+   (findHistCell — under Unavailable each man has a row of his own); this is the fallback, so a tap on a change of the
+   input never answers "not shown on this day" with its line in plain sight (found by the re-expressed tests, step 6 of
+   the one-rule build: an input whose first to join was not its first A to Z). */
+/* IS A ROW OF THIS INPUT ONE MAN'S OWN ROW - the Unavailable list, a row a man (D737) - or the input's ONE line under
+   Personal Inputs, which is everyone's? Both are addressed `iu:<iid>~<person>` (the line by its first person as drawn),
+   so a line of the history about ONE person put in or taken out is kept to his own row only where each man HAS a row;
+   the one line tells them all. (The mark that a line is one man's is stored since the one-rule job's check, 12 Oct 26 -
+   engine/editlog.ts logAction - so this question is first asked now.) */
+const oneMansRow = (iid: string): boolean => { const inp: any = inpById(iid); return !!inp && (isUnavail(inp.type) || inp.acc === 'u') }
+export function findInputCell(root: ParentNode, key: string): HTMLElement | null {
+  const p = iuParts(String(key))
+  if (!p || !p.iid) return null
+  const cells = [...root.querySelectorAll(CELL_SEL)] as HTMLElement[]
+  return cells.find(e => { const q = iuParts(keyOf(e)); return !!q && q.iid === p.iid && !e.closest(LOOK) }) || null
+}
+
 /* CAN THE BOARD SHOW THIS DETAIL AT ALL? Four key families are edited
    somewhere the board does not draw: `ar:`/`at:` (the area and area-time
    strip) and `it:` (the in-times) render on the WEEK only — measured, 0 of
@@ -283,8 +302,12 @@ export function storyOf(el: HTMLElement): ELogRow[] {
   const key = keyOf(el)
   if (!key) return []
   if (key.startsWith('iu:')) {
-    const iid = key.slice(3), day = dayOfCell(el)
-    return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day)))
+    /* ONE MAN'S ROW of an input that holds several (`iu:<iid>~<person>`) tells the input's story and HIS — a line about
+       one person put in or taken out (`one`) is on that person's row alone; a line written before the build, which
+       says `iu:<iid>` with its man in `sub`, lands on his row the same way (Fable's read of the one-rule plan, F16) */
+    const at = iuParts(key)!, iid = at.iid, day = dayOfCell(el)
+    return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day))
+      && (!at.person || !(r as any).one || !oneMansRow(iid) || String(r.sub || '') === at.person))
   }
   return elogAllFor(key)
 }
@@ -336,9 +359,10 @@ function paint(all: ELogRow[]) {
   const rows = showAll ? all : all.slice(-3)
   b.className = 'histbub' + (rows.length > 1 ? ' open' : '')
   /* an input's own row is headed by the input — "Ranger · LL" — its lines the story under it (Fable F1) */
-  const iid = anchor && keyOf(anchor).startsWith('iu:') ? keyOf(anchor).slice(3) : ''
+  const at = anchor ? iuParts(keyOf(anchor)) : null, iid = at ? at.iid : ''
   const inp: any = iid ? inpById(iid) : null
-  b.innerHTML = `<div class="hb-what">${esc(inp ? `${csOf(inp.person)} · ${inpLabel(inp)}` : row.lbl)}</div>`
+  const whose = inp ? (at && at.person ? csOf(at.person) : idsOf(inp).map(csOf).join(', ')) : ''
+  b.innerHTML = `<div class="hb-what">${esc(inp ? `${whose} · ${inpLabel(inp)}` : row.lbl)}</div>`
     + `<ol class="hb-all">` + rows.map(r =>
       `<li><span class="hb-chg">${chgHTML(r)}</span>`
       + `<span class="hb-who">${esc(elogWho(r))} · ${esc(elogWhen(r.t))}</span></li>`).join('') + `</ol>`
@@ -450,7 +474,11 @@ export function refreshHistDots(root: ParentNode | null | undefined) {
     const rk = !k ? '' : inp ? k : String(ridKey(k, DAYS))
     const sec = rk ? (el.closest('.day[data-day]') as HTMLElement | null)?.dataset.day ?? '' : ''
     const has = !rk ? false : inp
-      ? (() => { const day = dayOfCell(el); return (byInp.get(k.slice(3)) || []).some(r => !day || rowTouches(r, day)) })()
+      /* (by the INPUT's id, whoever's row it is: one man's row of an input that holds several is `iu:<iid>~<person>`
+         — engine/keys.ts iuParts — and looked up whole it found no line, so no row of an absence filed for several ever
+         wore a dot; the one parse site Fable's F16 list missed, found by the one-rule job's walk, share J, J2 — 12 Oct
+         26. A line about ONE man put in or taken out is on HIS row alone, as his bubble tells it — storyOf, above.) */
+      ? (() => { const at = iuParts(k), day = dayOfCell(el); return (byInp.get(at ? at.iid : k.slice(3)) || []).some(r => (!day || rowTouches(r, day)) && (!at || !at.person || !(r as any).one || !oneMansRow(at.iid) || String(r.sub || '') === at.person)) })()
       : set.has(rk)
     const want = has && !seen.has(`${sec}|${rk}`)
     if (want) seen.add(`${sec}|${rk}`)

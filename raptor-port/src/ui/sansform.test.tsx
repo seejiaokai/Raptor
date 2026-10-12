@@ -14,7 +14,7 @@ import { InputsPage } from './InputsPage'
 import { InputEditor, sansRefusal } from './inputedit'
 import { initStore, notify, setSession } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -109,7 +109,8 @@ describe('the SANS calendar’s "+ Commitment" form', () => {
     await click('#inpEditSave')
     expect(INPUTS.length).toBe(n + 1)
     const r = saved()
-    expect(r.person).toBe(sansId())
+    /* a NEW input is written with its list of people (the one record — D756): the SANS man alone */
+    expect(idsOf(r)).toEqual([sansId()])
     expect(r.allday).toBe(true)
     expect(r.half).toBeUndefined()
     expect(r.sans, 'true flags, never the old {s,e} shape').toEqual({ f: true, o: true })

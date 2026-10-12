@@ -1,7 +1,7 @@
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, dateOrd, isSansAvail } from '../engine/inputs'
+import { INPUTS, inpId, dateOrd, isSansAvail, leadOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { keyDay } from '../engine/keys'
+import { keyDay, iuParts } from '../engine/keys'
 import { ridKey } from '../engine/rowids'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
@@ -1171,11 +1171,21 @@ export function armSlot(key:any,el?:any){
   if(DPREV.has(keyDay(base)))return
   if(ARM&&ARM.key===key){disarmSlot();return;}   // tapping it again puts it down
   ARM={key,di:keyDay(base),title:slotTitle(base)};
+  ARM_ROW=armedRowKey();
   paintArm(); renderRosters();
   if(el&&el.scrollIntoView)try{el.scrollIntoView({block:'nearest',inline:'nearest'});}catch(_){}
   if(isPhone())document.body.classList.add('ros-open');   // the palette IS the picker
 }
-export function disarmSlot(){ if(!ARM)return; ARM=null; paintArm(); renderRosters(); }
+export function disarmSlot(){ if(!ARM)return; ARM=null; ARM_ROW=''; paintArm(); renderRosters(); }
+/* THE ROW THAT WAS ARMED, BY ITS ID, kept from the moment of arming (12 Oct 26 — the one-rule build, found re-expressing
+   the rows' tests on the one record). The after-command pass (state/holderbase.ts) puts an armed place down when a row
+   moved under it — but it takes its picture of the armed row at ITS start, and a door that writes the day itself
+   first (a scheduler's Accept puts a request's row back, above an armed "+ add") had already moved the rows by then:
+   the arm stayed, pointing at another row, and the next tap on a name planted him there — since a row that came from
+   an input IS the input (owner D755), into the wrong INPUT. So the row is remembered when it is armed, and every
+   schedule change's epilogue asks whether the armed position is still that row (armStale, below). */
+let ARM_ROW='';
+export function armStale():boolean{ return !!ARM&&!!ARM_ROW&&armedRowKey()!==ARM_ROW; }
 /* THE ARMED PLACE, NAMED BY ITS ROW'S ID rather than by where the row stands ([GROUP-INPUT-ONE-ROW], the plan §4.2; Astra's
    read of it, 10). An armed place is kept as a position (`g:2.5.+`); a row that lands ABOVE it — a man added to a shared
    input joins his entry's rows mid-list — leaves that position pointing at another row, and the next tap on a name
@@ -1218,11 +1228,12 @@ export function placeArmed(id:any){
      lent through HOOKS: state/ may not import ui/). A real man tapped onto it is ADDED TO THE INPUT by the door's own
      command — no schedule write here, so no second Undo step; refused (he is already in it), the place stays armed,
      as for the refusals above. A placeholder is the row's own: re-aimed at the row's "+ add" and written as ever. */
-  if(HOOKS.groupRow){
-    if(isSpecial(id)){const k2=HOOKS.groupRow.retarget(key,id); if(k2!==key){key=k2; base=String(key).replace(/\.\+$/,'');}}
-    else{const a=HOOKS.groupRow.write(key,id);
-      if(a==='refused')return false;
-      if(a==='done'){armDrop(); if(isPhone())document.body.classList.remove('ros-open'); paintArm(); flagDrop(warnBefore,keyDay(base)); return true;}}
+  /* (…since the one-rule build, step 2 (c): EVERY input's row, and a placeholder asks the same door — it is no longer
+     re-aimed at anybody's extras; ui/reqdoor.ts, through HOOKS.inputRow) */
+  if(HOOKS.inputRow){
+    const a=HOOKS.inputRow.write(key,id);
+    if(a==='refused')return false;
+    if(a==='done'){armDrop(); if(isPhone())document.body.classList.remove('ros-open'); paintArm(); flagDrop(warnBefore,keyDay(base)); return true;}
   }
   /* the place he LANDED on — the question after the write is asked of it, not of the row's "+ add" (slots.ts
      lastFilled; [CROWD-SWAP-SAYS-BUSY]): asked of the row, an ordinary add would read as a second copy of him */
@@ -1260,8 +1271,8 @@ export function slotTitle(key:any){
      no day component, since one input can be filed on several loaded days at
      once and none of them is more "its" day than another */
   if(p==='iu'){
-    const inp=INPUTS.find((i:any)=>i.iid===a[0]);
-    return inp?`Unavailable · <span class="mono" style="color:var(--ink-3)">${esc(PEOPLE[inp.person]?PEOPLE[inp.person].cs:String(inp.person))}</span>`:'Unavailable';
+    const at=iuParts(k), inp=at?INPUTS.find((i:any)=>i.iid===at.iid):null, who=inp?(at&&at.person?at.person:leadOf(inp)):null;
+    return inp?`Unavailable · <span class="mono" style="color:var(--ink-3)">${esc(PEOPLE[who]?PEOPLE[who].cs:String(who))}</span>`:'Unavailable';
   }
   const d=DAYS[+a[0]]||{};
   try{
@@ -1281,6 +1292,8 @@ export function slotTitle(key:any){
    which needs a path that does NOT open a command for fixture setup. */
 export function afterSchedMutate(){ runSchedEpilogue(rawSchedEpilogue); }
 export function rawSchedEpilogue(){
+  /* an armed place whose row is no longer the row that was armed is put down (armStale, above) */
+  if(armStale())disarmSlot();
   /* an edit that restored a field to its issued value must not keep its dotted
      "changed" mark (owner, 16 Aug 26). noteChange raised the mark before the
      value landed; this drops it now the write is in, BEFORE markEdit's histPush

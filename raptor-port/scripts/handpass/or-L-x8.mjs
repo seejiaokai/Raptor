@@ -1,0 +1,10 @@
+import { open, fileInput, toWeek, toBoard, shot, errs, browser, toast, inputsOf } from './or-L-lib.mjs'
+const { ctx, page } = await open('ad', 'a')
+await fileInput(page, { type: 'Training', person: 'Ranger', from: '2026-07-15', to: '2026-07-15', timed: ['10:00', '11:00'], title: 'L8 training' })
+await toBoard(page, 2)
+await page.locator('#schedBoard [data-gradd="2"]:visible').first().click(); await page.waitForTimeout(600)
+console.log(await page.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-panel.grnd .sb-arow')].filter(r => r.offsetParent).map(r => ({ v: r.querySelector('textarea.ain, input.ain')?.value, html: r.innerHTML.slice(0, 300) }))))
+console.log(await page.evaluate(() => [...document.querySelectorAll('#sbRoster [data-ph], #sbRoster .rpuck.ph, #sbRoster [data-placeholder], #sbRoster [class*=ph]')].map(e => e.outerHTML.slice(0, 300))))
+console.log(await page.evaluate(() => document.querySelector('#sbRoster')?.innerHTML.slice(0, 1200)))
+await shot(page, 'x8-board')
+await browser.close()

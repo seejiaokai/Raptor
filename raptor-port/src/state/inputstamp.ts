@@ -44,6 +44,11 @@ function stampNow(): Stamp | null {
   return pid == null ? null : { who: String(pid), t }
 }
 
+/** The person the running command acts for — the name a stamp written now would carry; undefined for the app's own
+ *  act and where nobody is signed in. For a door that must say WHO did something beside the stamps (who filed an input
+ *  once its filer was taken out — state/person-delete.ts). */
+export function stampWho(): string | undefined { const s = stampNow(); return s ? s.who : undefined }
+
 /** A record FILED now: who placed it and when — and its last change says the same. */
 export function stampPlaced<T>(row: T): T {
   const s = stampNow(), r: any = row

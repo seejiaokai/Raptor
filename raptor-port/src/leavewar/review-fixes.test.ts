@@ -1,7 +1,7 @@
 // Pins for the step-4 cross-provider code inspection (Fable + Codex, 20 Sep 26).
 // Each test names the finding it closes; each drives the REAL wired stores.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { stashClear, stashPut } from '../engine/weekstash'
@@ -50,7 +50,7 @@ function file(person: string, type: string, date: string, extra: Record<string, 
   return writeInputs(() => { INPUTS.unshift(row) })
 }
 const recsAt = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
-const lwRows = (p: string) => INPUTS.filter((r: any) => r.person === p && r.lw)
+const lwRows = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw)
 
 describe('Fable #1 / Codex AS4-001 — the war repaints after every absence change', () => {
   it('an Inputs-page filing bumps the war with no manual sync', () => {
@@ -104,7 +104,7 @@ describe('Fable #4 / Codex AS4-005 — a morning medical over a timed leave acro
   it('LL 09:00–15:00 + ATT C morning → LL 12:01–15:00', () => {
     expect(file('rocky', 'LL', 'Jul 14', { allday: false, s: 540, e: 900 })).toBe(true)
     expect(file('rocky', 'ATT C', 'Jul 14', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
-    const ll = INPUTS.filter((r: any) => r.person === 'rocky' && r.type === 'LL')
+    const ll = INPUTS.filter((r: any) => holds(r, 'rocky') && r.type === 'LL')
     expect(ll).toHaveLength(1)
     expect(ll[0].s).toBe(721)
     expect(ll[0].e).toBe(900)
@@ -115,7 +115,7 @@ describe('Opus scenario — overnight leave and back-to-back leave', () => {
   it('a next-morning medical cuts the tail of an overnight leave instead of being refused', () => {
     expect(file('ammo', 'LL', 'Aug 5', { allday: false, s: 22 * 60, e: 2 * 60 })).toBe(true)
     expect(file('ammo', 'ATT C', 'Aug 6', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
-    const ll = INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL')
+    const ll = INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL')
     expect(ll).toHaveLength(1)
     expect(ll[0].s).toBe(22 * 60)
     expect(ll[0].e).toBe(1439)

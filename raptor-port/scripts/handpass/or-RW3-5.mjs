@@ -1,0 +1,56 @@
+import { open, fileInput, toWeek, shot, saveRes, errs, browser, csId, toast, inputsOf, signAndPublish, dayStat, openChanges, changesRead, closeChanges, toView, undoRedo, weekRows, lwCells, calRead, leaveInputs, sleep, unavailRows } from './or-RW3-lib.mjs'
+const R = {}
+const DI = 2
+/* ---- a: truly taken out on a published day ---- */
+{
+  const { ctx, page } = await open('ad', 'a')
+  R.aFiled = await fileInput(page, { type: 'Meeting', people: ['Drifter', 'Hunter', 'Ranger'], from: '2026-07-15', to: '2026-07-15', timed: ['09:00', '10:00'], title: 'RW3 brief' })
+  R.aPub = await signAndPublish(page, DI)
+  R.aStat0 = await dayStat(page, DI)
+  await toWeek(page)
+  const row = page.locator('#eWeek .day:not(.peek)').nth(DI).locator('.sec-grnd .pl-row', { hasText: 'RW3 brief' }).first()
+  await row.scrollIntoViewIfNeeded(); await sleep(300)
+  R.aRowBefore = await weekRows(page, DI, 'RW3 brief')
+  const pk = row.locator('.puck', { hasText: 'Hunter' }).first()
+  await pk.click({ button: 'right' }); await sleep(700)
+  R.aToast = await toast(page)
+  R.aRowAfter = await weekRows(page, DI, 'RW3 brief')
+  R.aInputs = (await inputsOf(page, 'RW3 brief')).map(r => r.people)
+  R.aStat1 = await dayStat(page, DI)
+  await openChanges(page, DI)
+  R.aChanges = await changesRead(page)
+  await shot(page, 'rw3-5a-1-changes')
+  await closeChanges(page)
+  await ctx.close()
+}
+/* ---- b: sick leave cuts one man of a shared leave on a published day (G4's steps, Hex in Tally's place) ---- */
+{
+  const { ctx, page } = await open('ad', 'a')
+  const names = ['Drifter', 'Hunter', 'Hex']
+  R.bFiled = await fileInput(page, { type: 'LL', people: ['Drifter', 'Hunter', 'Hex'], from: '2026-07-13', to: '2026-07-17' })
+  R.bPub = await signAndPublish(page, DI)
+  R.bStat0 = await dayStat(page, DI)
+  R.bLw0 = await lwCells(page, names, 'rw3-5b-1-war-before')
+  R.bMed = await fileInput(page, { type: 'ATT C', person: 'Hex', from: '2026-07-15', to: '2026-07-16' })
+  R.bToast = await toast(page)
+  R.bInputs = await leaveInputs(page).then(a => a.filter(r => /Drifter|Hunter|Hex/.test(r.people.join())))
+  R.bStat1 = await dayStat(page, DI)
+  await openChanges(page, DI)
+  R.bChanges = await changesRead(page)
+  await shot(page, 'rw3-5b-2-changes')
+  await closeChanges(page)
+  R.bLw1 = await lwCells(page, names, 'rw3-5b-3-war-after')
+  R.bCal = await calRead(page, '2026-07-15', 'rw3-5b-4-cal')
+  R.bBars = (await calRead(page, '2026-07-14', null)).bars.filter(t => /LL|ATT/.test(t))
+  await toWeek(page)
+  R.bUnav = (await unavailRows(page, '#eWeek', DI)).filter(t => /Drifter|Hunter|Hex/.test(t))
+  R.bUndo = await undoRedo(page, 'undo')
+  R.bInputsUndo = await leaveInputs(page).then(a => a.filter(r => /Drifter|Hunter|Hex/.test(r.people.join())))
+  R.bStat2 = await dayStat(page, DI)
+  R.bLw2 = await lwCells(page, names, 'rw3-5b-5-war-undo')
+  await ctx.close()
+}
+saveRes('RW3-5', R)
+console.log(JSON.stringify(R, (k, v) => (k === 'bars' ? undefined : v), 1))
+console.log('ERRS', errs.join('\n'))
+await browser.close()

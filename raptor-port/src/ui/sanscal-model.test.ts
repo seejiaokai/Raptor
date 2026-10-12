@@ -114,6 +114,24 @@ describe('a day opened on the SANS calendar', () => {
     expect(g.p).toEqual([]); expect(g.w).toEqual([])
     expect(g.out.map(e => [e.id, e.why])).toEqual([['was', 'no longer SANS'], ['gone', 'archived']])
   })
+  /* AN INPUT IS ONE RECORD WITH THE LIST OF ITS PEOPLE (owner D756, 11 Oct 26; D658: an admin files SANS availability
+     for several SANS people at once): the day still lists a line a PERSON, each carrying the one record — the window a
+     tap opens changes the input, never one man's copy of it */
+  it('one commitment filed for several: a line a person, each in his own group, each carrying the ONE record', () => {
+    const rec: any = { ...row(''), by: 'ad', people: [{ p: 'w1', by: 'ad' }, { p: 'p1', by: 'ad' }, { p: 'was', by: 'ad' }] }
+    delete rec.person
+    const g = sansDayGroups(WED, [rec], PEOPLE)
+    expect([g.w.map(e => e.id), g.p.map(e => e.id), g.out.map(e => [e.id, e.why])]).toEqual([['w1'], ['p1'], [['was', 'no longer SANS']]])
+    expect([g.w[0].r, g.p[0].r, g.out[0].r].every(r => r === rec), 'every line is the same record').toBe(true)
+    expect([g.flyW, g.flyP]).toEqual([1, 1])
+  })
+  it('a one-person record in the OLD shape and one in the new are the same one line', () => {
+    const old: any = row('w1'), neu: any = { ...old, people: [{ p: 'w1' }] }
+    delete neu.person
+    const a = sansDayGroups(WED, [old], PEOPLE), b = sansDayGroups(WED, [neu], PEOPLE)
+    expect(a.w.map(e => [e.id, e.letters, e.hours, e.late])).toEqual(b.w.map(e => [e.id, e.letters, e.hours, e.late]))
+    expect(a.w).toHaveLength(1)
+  })
   it('says a man’s hours: all day, the morning, the afternoon, or his own times (D572)', () => {
     expect(hoursOf({ allday: true })).toBe('All day')
     expect(hoursOf({ allday: false, half: 'am' })).toBe('AM')
@@ -131,6 +149,14 @@ describe('a late commitment says the cut-off it missed (D646)', () => {
     expect(late.late).toBe('after the cut-off, Wed 7 Oct')
     const onTime = sansDayGroups('2026-10-21', [row('w1', { date: 'Oct 21', mod: '2026-10-07' })], PEOPLE).w[0]
     expect(onTime.late).toBe('')
+  })
+  /* the one-rule plan §4.5 "The late mark": an input is late when its own late date is; a person in it is late when HIS
+     own — the day he was put in — is later still. A man added after the cut-off is late alone. */
+  it('a man added to a commitment after the cut-off is late alone: his line says so, the others’ do not', () => {
+    const rec: any = { ...row('', { date: 'Oct 21', mod: '2026-10-07' }), people: [{ p: 'w1' }, { p: 'w2', mod: '2026-10-08' }] }
+    delete rec.person
+    const g = sansDayGroups('2026-10-21', [rec], PEOPLE)
+    expect(g.w.map(e => [e.id, e.late])).toEqual([['w1', ''], ['w2', 'after the cut-off, Wed 7 Oct']])
   })
 })
 

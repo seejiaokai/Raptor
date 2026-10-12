@@ -1,5 +1,5 @@
 import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs } from './inputs'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs, inputReadPass } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
@@ -1786,7 +1786,9 @@ export function workingWarn(){ return WORKING_B; }
 let RAW_B:any=WARN;
 export function rawWarn(){ return RAW_B; }
 export function validate(){
-  const raw = validateCore();        // WORKING, as the rules raised it — writes the module globals
+  /* each rules pass reads a day's inputs once (inputs.ts inputReadPass — the per-person lines are worked out once a
+     date, not at every ask); the pass writes its own globals and never the inputs */
+  const raw = inputReadPass(validateCore);        // WORKING, as the rules raised it — writes the module globals
   RAW_B = raw;
   if(HOOKS.validated)HOOKS.validated(raw);
   /* what every surface reads is the bundle AS SHOWN (D469, D472): a hidden warning carries `off`, flags no puck */
@@ -1830,7 +1832,7 @@ function officialFor(working:any){
   /* …and the week this pass judged, kept for the readers that COUNT the issued week (issuedWorld, below): the days as
      installed — every published day its issued snapshot — and the per-person events built from them. Captured inside the
      swap; the finally restores the working globals as before. */
-  return withIssuedWeek(()=>{ const b=validateCore(); ISS_DAYS=DAYS.slice(); ISS_EVD=EVD; return b; });
+  return withIssuedWeek(()=>{ const b=inputReadPass(validateCore); ISS_DAYS=DAYS.slice(); ISS_EVD=EVD; return b; });
 }
 /* THE WEEK AS EVERYONE READS IT ([INSIGHTS-WHICH-COPY], owner D477 / D478, 1 Oct 26 — "It should show the latest copy, so
    if working copy is the only copy then it will use that, unless its published then use Original, if theres an AL1 then

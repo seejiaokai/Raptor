@@ -7,7 +7,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId, idsOf } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
@@ -413,7 +413,8 @@ describe('the Inputs page (tfin)', () => {
       const n = INPUTS.length
       await addNow()
       expect(INPUTS.length, 'filed').toBe(n + 1)
-      expect(INPUTS[0].person, 'for the posted-out man').toBe(id)
+      /* a new input is ONE record with its people — no `person` field (the one-rule build, D756): his, and his alone */
+      expect(idsOf(INPUTS[0]), 'for the posted-out man').toEqual([id])
       await act(async () => { undo() })
     } finally {
       await cancelNew()
@@ -445,7 +446,7 @@ describe('the Inputs page (tfin)', () => {
     const n = INPUTS.length
     await addNow()
     expect(INPUTS.length, 'the add went through').toBe(n + 1)
-    expect(INPUTS[0].person, 'and landed on the signed-in person').toBe('dj')
+    expect(idsOf(INPUTS[0]), 'and landed on the signed-in person').toEqual(['dj'])
     await delRow(0)
     expect(INPUTS.length).toBe(n)
     await act(async () => { setMe('bane'); setSession({ user: 'a', role: 'admin' }); notify() })
@@ -497,7 +498,7 @@ describe('the Inputs page (tfin)', () => {
       ok = commitNewInput({ person: '', type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
     })
     expect(ok).toBe(true)
-    expect(INPUTS[0].person, 'a draft naming nobody is his own').toBe(ME)
+    expect(idsOf(INPUTS[0]), 'a draft naming nobody is his own').toEqual([ME])
     await act(async () => { removeInput(INPUTS[0]) })
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
@@ -1342,17 +1343,15 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     expect(INPUTS.length, 'the add and the delete cancel out').toBe(n)
   })
 
-  it('the CSV export says it downloaded — a phone shows no download UI of its own', async () => {
-    /* jsdom implements neither Blob URLs nor the anchor download it drives —
-       exportCSV (ui/export.ts) is untestable past this point by design (its
-       own doc comment), so only the createObjectURL call is stubbed, the
-       minimum this button's own click handler needs to run to completion */
-    const orig = (URL as any).createObjectURL
-    ;(URL as any).createObjectURL = () => 'blob:x'
-    try {
-      await withToast(async () => { await click($('#inExport')) })
-    } finally { (URL as any).createObjectURL = orig }
-    expect(toasts).toContain('CSV downloaded')
+  /* THE INPUTS LIST HAS NO EXPORT (owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can
+     remove it."). This case used to press "Export to Excel" (#inExport) and read "CSV downloaded"; the button, its file
+     (142-inputs.csv) and ui/export.ts inputRows are gone. The Quals page's export and the schedule's own stay — they are
+     not inputs (ui/QualsPage.tsx #qExport, ui/Shell.tsx #exportSched). */
+  it('the Inputs page offers no export — no "Export to Excel" on the List or the calendar (D773)', async () => {
+    expect($('#inExport'), 'the List\'s export button').toBeNull()
+    const page = document.getElementById('page-inputs') || document.body
+    expect(Array.from(page.querySelectorAll('button')).filter(b => /export/i.test(b.textContent || '')).map(b => b.textContent), 'no button on the Inputs page says Export').toEqual([])
+    expect(Object.keys(await import('./export')), 'and the exporter has no body for inputs').not.toContain('inputRows')
   })
 })
 
@@ -1409,7 +1408,11 @@ describe('Edit history hears an add made on this page', () => {
     const before = ELOG.rows.length
     await addNow()
     const r = INPUTS[0]
-    const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
+    /* whose it is, read off the one record (a new input carries `people`, never `person` — D756): one man's */
+    expect(idsOf(r), 'filed for one person').toHaveLength(1)
+    const who = idsOf(r)[0]
+    expect(PEOPLE[who], 'a person on the roster').toBeTruthy()
+    const cs = PEOPLE[who].cs
     const mine = ELOG.rows.slice(before).filter((x: any) => x.iid === r.iid)
     expect(mine.length, 'exactly one line').toBe(1)
     expect(mine[0]!.lbl).toContain(`${cs} · ${r.type} added`)

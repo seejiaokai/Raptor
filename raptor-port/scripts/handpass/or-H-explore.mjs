@@ -1,0 +1,15 @@
+import { launch, open, shot, as, WIN, fileInput } from './or-H-lib.mjs'
+const browser = await launch()
+const { ctx, page } = await open(browser)
+await as(page, 'Saber')
+const r = await fileInput(page, { type: 'Training', person: 'Ranger', from: '2026-07-15', to: '2026-07-15', timed: ['10:00', '11:00'], title: 'Lone' })
+await page.evaluate(() => window.go('editsched')); await page.locator('#eWeek .day').first().waitFor()
+const day = page.locator('#eWeek .day:not(.peek)').nth(2); await day.scrollIntoViewIfNeeded()
+const hdr = day.locator('.sec-inp').first()
+console.log('sec-inp count', await day.locator('.sec-inp').count())
+console.log(await day.locator('.sec-inp').first().evaluate(e => e.innerText.replace(/\s+/g, ' ').slice(0, 200)))
+const show = day.locator('.sec-inp').getByText(/show/i).first()
+if (await show.count()) { await show.click(); await page.waitForTimeout(400) }
+console.log(await day.locator('.sec-inp').first().evaluate(e => ({ text: e.innerText.replace(/\s+/g, ' ').slice(0, 300), btns: [...e.querySelectorAll('button, [role=button], .x')].filter(b => b.getClientRects().length).map(b => (b.id || b.className) + '|' + (b.getAttribute('title') || b.getAttribute('aria-label') || '') + '|' + b.innerText.trim().slice(0, 14)) })))
+await shot(page, 'x-week-inputs-line')
+await browser.close()

@@ -168,14 +168,35 @@ export type InputAcc = 'g' | 'u' | 'r'
 /** Which SANS events a SANS Availability input offers: fly, OFT, AMT. */
 export type SansOffer = { f?: true; o?: true; a?: true }
 
+/** One of an input's people (`Input.people`). */
+export type InputPerson = {
+  /** A PEOPLE id, or a placeholder (`allavail` / `all` — at most one in an input, D753). */
+  p: string
+  /** Who put THIS person in (a PEOPLE id), and when (ms) — the filer for the people an input was filed with. */
+  by?: string
+  at?: number
+  /** His OWN late date, kept only where it is later than the input's `mod` — only a person added later can be late. */
+  mod?: string
+  /** The input's `hand` when he was put in: a scheduler's OIL switch about him made under an earlier holding reads as
+   *  nothing (engine/oilev.ts pruneHandedOverDecisions). Absent = 0, in it from the filing. */
+  h?: number
+}
+
 /** One filed input (leave / away / medical / activity). */
 export type Input = {
   /** Stable opaque id (`newId('i')`, engine/newid.ts), minted at creation — engine (`mintInpIds` at boot, `inpId` on add). What filing/accept/undo/edit address by (13 Sep 26, ARCH-STACK 1A). Absent only inside a seed literal before boot. */
   iid?: string
   /** Its place in the list of requests — state (`mintOrd`, [DB-READINESS] group A, phase 2; the design's `Input.sortIndex`). Absent only inside a seed literal before boot. */
   ord?: number
-  /** A PEOPLE id — seed; screen. */
-  person: string
+  /** WHO IS IN IT — the list of its people, in the order they joined ([ALL-AVAIL-AS-MEMBER], owner D756, D759 — 12 Oct
+   *  26: "an input is stored as ONE record with the list of its people"). Every input a command writes carries it — an
+   *  input for one person is a list of one. Read through engine/inputs.ts peopleOf, never directly — screen
+   *  (ui/inputedit.tsx commitInput, commitNewInput; engine/inputown.ts; the demo seed). */
+  people?: InputPerson[]
+  /** THE OLD SHAPE — a record stored before the one-rule build, and every verbatim seed literal: its one person (a
+   *  PEOPLE id, or a placeholder). It reads as a one-person input for ever (peopleOf) and is rewritten with `people`
+   *  the first time who is in it changes; nothing stored is converted (D56). A record has `people` or `person`. */
+  person?: string
   /** First day, display form 'Jul 13'; carries a trailing year ('Jan 3 2027') when outside the anchor year — seed; screen. */
   date: string
   /** Last day of a span, same format — seed; screen. */
@@ -211,15 +232,24 @@ export type Input = {
   oil?: Record<string, 0 | 0.5 | 1>
   /** SANS Availability only: which events are offered — screen. */
   sans?: SansOffer
-  /** How many times the request has changed hands — +1 at every change of `person` (ui/inputedit.tsx commitInputEdit);
-   *  absent = 0, never handed on. An OIL decision about its holder records the holding it was made under (`oild.pa`,
+  /** A counter, +1 each time a person is PUT IN after the filing (engine/inputown.ts putPerson, swapPerson; for a record
+   *  in the old shape, at every change of `person` — ui/inputedit.tsx commitInputEdit); absent = 0, never handed on. An OIL decision about its holder records the holding it was made under (`oild.pa`,
    *  engine/oilev.ts), so a refusal made for one holding reads as nothing once the request moves on — even when it
    *  comes back to the same man ([DB-READINESS] group A, phase 6 (a); data-model.md §9 rule 9). */
   hand?: number
   /** Person id → the holding (`hand`) at which the request LEFT him — written by the hand-over (ui/inputedit.tsx
-   *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
+   *  commitInputEdit) and, since step 3 of the one-rule build, whenever a person is taken out of an input's list
+   *  (engine/inputown.ts takePerson, swapPerson — dropped again when he is put back, his entry's `h` saying it then). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
    *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
   leftAt?: Record<string, number>
+  /** THE SCHEDULER'S MARKS, THE INPUT'S OWN since step 4 of the one-rule build (owner D760): cancelled, with its reason
+   *  (`cx` false and no `cxr` once un-cancelled); the red box; information only. Written only by a scheduler, through
+   *  the row's door (ui/reqdoor.ts rowMark); the row carries a copy (engine/overlay.ts requestRowFields) — engine
+   *  (inputs.ts inputFlags, oilev.ts landedStanding) and screen. */
+  cx?: boolean
+  cxr?: string
+  flag?: boolean
+  info?: boolean
   /** Who PLACED it: the signed-in person (a PEOPLE id) who filed it — which can differ from `person`, the man it is
    *  for (an admin filing for a member, an approval on the Leave War). Absent on a record filed before 7 Oct 26, or
    *  with nobody signed in — it then shows no "placed by" line. Never changed by an edit; a piece cut from a record
@@ -233,9 +263,13 @@ export type Input = {
   /** When it was last changed, ms; equal to `at` on a record nobody has changed. Beside `mod`, never instead of it:
    *  `mod` is the DATE the late rule reads and is written exactly as before — screen (state/inputstamp.ts). */
   modAt?: number
-  /** A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. The
-   *  group is kept as one record per man (every reader reads one man's), and an "entry" is worked out on read: the
-   *  records sharing a `grp` AND the same shared fields (state/inputgroup.ts entriesOf; owner D654, D655). */
+  /** NOT WRITTEN ANY MORE (the one-rule build, D756): an input filed for several is ONE record with `people`. A record
+   *  stored before it may still carry the two fields below; it reads as a one-person input (D759 reading 10).
+   *  A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. Until
+   *  that build the group was kept as one record per man, and an "entry" was worked out on read — the records sharing
+   *  a `grp` AND the same shared fields (state/inputgroup.ts entriesOf, removed with the dead code; owner D654, D655).
+   *  The one reader that still groups by it is the changes window, for lines written before the build
+   *  (ui/changesmodel.ts). */
   grp?: string
   /** The ENTRY'S FILER (a PEOPLE id) — the same on every record of the group, never changed once set; what lets the
    *  member who filed a shared input change the whole of it, whoever later added a man (state/perms.ts). `by` stays
@@ -286,10 +320,12 @@ export type GroundRow = AllhandsRow & {
   /** What the row was last made or re-made from — a short hash of the six fields its request writes ([DB-READINESS] phase 6
    *  (c); engine/overlay.ts srcvOf); a row re-made on read when it differs. Not canonical (restore.ts dayKeys). */
   srcv?: string
-  /** For a row from a record of a SHARED input only: its entry's own identity — the group's id and a short hash of every
-   *  shared field (engine/inputentry.ts entryIdOf; [GROUP-INPUT-ONE-ROW], D661). Rows of one day carrying the same one,
-   *  with the scheduler's marks alike, are drawn as ONE row (engine/grouprows.ts). Absent on an ordinary request's row.
-   *  Not canonical (restore.ts dayKeys): it adds no unit to a published day's comparison and binds no sign-off. */
+  /** NOT WRITTEN ANY MORE (the one-rule build, 12 Oct 26 — D755, D756): an input is ONE record and its row ONE row, so
+   *  there is no entry mark. A row stored or issued before that build may still carry it — the old entry's identity, the
+   *  group's id and a short hash of every shared field ([GROUP-INPUT-ONE-ROW], D661; engine/inputentry.ts entryIdOf,
+   *  removed). It is dropped at the row's next re-make (engine/overlay.ts reconcileRequestRows) and from a day
+   *  template's rows (engine/daytpl.ts), and read by ONE body: ui/pendlist.ts, for "came off with him" on a row issued
+   *  before the build. Not canonical (restore.ts dayKeys). */
   srcg?: string
   /** A row a whole-day replacement (a version loaded, a plan switched in) brought back although its request is gone or cannot
    *  stand on the day — the holder's to keep (D363); cleared in the view once its request can stand there again (phase 6 (c);
@@ -661,6 +697,45 @@ export type PlanPuck = PlanNote
 /** ISO 'yyyy-mm-dd' → the day's free-text title — screen. */
 export type DayRmk = Record<string, string>
 
+/** ONE THING A NOTICE SAYS HAPPENED — data, never a sentence (state/notices.ts writes the words on read). */
+export type NoticePartRec = {
+  /** in / out — HE was put in or taken out · del — deleted · cx / uncx — cancelled / brought back · off / on — taken
+   *  off the programme / put back · when — its day(s) or hours moved · add / rem — others put in or taken out ·
+   *  title — renamed · rmk — its remark changed. */
+  k: 'del' | 'in' | 'out' | 'cx' | 'uncx' | 'off' | 'on' | 'when' | 'add' | 'rem' | 'title' | 'rmk'
+  /** cx: the reason, where one was given — screen. */
+  why?: string
+  /** when: its first and last day NOW, ISO, where the days moved — screen. */
+  a?: string
+  b?: string
+  /** when: its hours NOW ("10:00–11:00", "all day"), where they moved — screen. */
+  t?: string
+  /** add / rem: who — PEOPLE ids, a placeholder among them — screen. */
+  who?: string[]
+  /** title: what it was called before — screen. */
+  was?: string
+}
+/** A LINE OF A PERSON'S BELL — someone else changed an input he is in (the one-rule build's step 7, 12 Oct 26 — owner
+ *  D755 (3), D760, D769; state/notices.ts). Made inside the command that changed the input; never rewritten. */
+export type NoticeRec = {
+  /** Minted 'n…' — state. */
+  id: string
+  /** The person told: a PEOPLE id — state. */
+  to: string
+  /** Who made the change: a PEOPLE id; null where the app did (a posting run on its date, a delete) — screen. */
+  by: string | null
+  /** When, ms — screen (its age). */
+  at: number
+  /** The input — state (a tap opens it). */
+  iid: string
+  /** What the input was called then: its title, else its kind — screen. */
+  name: string
+  /** Its first day then, ISO — screen. */
+  day: string
+  /** What happened — screen. */
+  what: NoticePartRec[]
+}
+
 /* ---------------------------------------------------------------------------
    The week snapshots — histSnap() (state/history.ts) and weekStashSnap()
    (state/store.ts). Both are JSON strings of these objects.
@@ -700,6 +775,8 @@ export type WeekSnapshot = SchedFields & {
   pp: PlanPuck[]
   /** = DAYRMK. */
   dm: DayRmk
+  /** = NOTICES — the bell's notices (state/notices.ts); absent on a snapshot taken before the one-rule build's step 7. */
+  nt?: NoticeRec[]
 }
 
 /** The per-week stash record — `weekStashSnap()`: no inputs or plan layer (those are global). The removed-request list

@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -62,6 +62,10 @@ export const T = {
   /* [DB-READINESS] group A, phase 4.1: one row per saved group, written by the store with every change (state/changebatch.ts) */
   changebatch: 'ChangeBatch',
   seen: 'EditLogSeen',
+  /* the bell's notices (state/notices.ts — the one-rule build's step 7): one row a person told that an input he is in
+     was changed; and what each person has read of them, his own row */
+  notice: 'Notice',
+  noticeseen: 'NoticeSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
@@ -88,6 +92,10 @@ export const PERMS: Record<string, PermRow> = {
   [T.editlog]: row(cell('C R D'), cell('C R')),
   [T.changebatch]: row(cell('C R'), cell('C R'), cell('R'), cell('C')),
   [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
+  /* a notice is written by whoever made the change, inside it, and read by the person it is addressed to; nobody
+     rewrites one, and it is removed only by its maker's own Undo of that change */
+  [T.notice]: row(cell('C R D'), cell('C', 'R D')),
+  [T.noticeseen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -220,11 +228,47 @@ const filerOf = (pid: string, row: any): boolean =>
    person — that stays a scheduler's); he is its filer, read from the record as it WAS on a change or a delete, as it
    IS on a filing; and its kind on both sides is one he may file for others. The commit gate asks it of what a command
    changed; Undo asks it of a step's recorded images, under the switch and the kinds as they stand NOW. */
+/* EVERY ENTRY OF ITS LIST WAS PUT IN BY THIS PERSON (the one-rule build, step 2 (f) — owner D755 (3): "changing it for
+   everyone, once the scheduler has added others, is the scheduler's"; the plan §4.9). An entry with no `by` of its own
+   is the filing's (a record rewritten from the old shape; a filing's first people).
+   HIS OWN ENTRY IS NOT ASKED (12 Oct 26, found re-expressing the Leave War's tests): a man whose own input a scheduler
+   filed for him, and who then adds people to it himself, is who filed THAT (takesOn, below) — his own entry still says
+   the scheduler put him in, and it must not cost him the input he made. The rule is about the OTHERS in it. */
+const allPutBy = (pid: string, x: any): boolean => peopleOf(x).every((e: any) => !!e && (String(e.p) === pid || String(e.by ?? x.by ?? '') === pid))
+/* HE MAKES HIS OWN ONE-PERSON INPUT AN INPUT OF SEVERAL (the plan §4.9: the only named person changes it in full —
+   "its fields, its people, its OIL answer" — whoever filed it; D763 reading 2). As before the build ("a record with no
+   group may take one, with HIM as its filer"), who filed the input of several is HE — so `by` passes to him in the same
+   change, and he can go on changing who is in it. For the kinds a member may file for others, switch on (filedForOther). */
+const takesOn = (pid: string, before: any, after: any): boolean =>
+  !!before && !!after && idsOf(before).length === 1 && String(onlyNamed(before) ?? '') === pid
+  && idsOf(after).length > 1 && holds(after, pid) && String(after.by ?? '') === pid
+/** did whoever filed it put in everyone who is in it — is it still wholly its filer's? (for the screens' words) */
+export const filedWhole = (row: any): boolean => !!row && row.by != null && allPutBy(String(row.by), row)
+/* WHO FILED IT ONCE THIS PERSON HAS LEFT IT (Fable's read of the one-rule plan, F13; the plan §4.5 "By Saber"): unchanged
+   unless he is its filer; then whoever put in the NEWEST entry that is not his own — so "who may change it" and the
+   bell's OIL question go to someone still involved. Where every entry left is his own filing, it stays his: he filed
+   it for others and may still change it. ONE body for the writer (ui/inputedit.tsx commitInput) and the check on what
+   a member's command changed (ownPart, below). */
+export function byAfterLeaving(rec: any, pid: string): any {
+  if (!rec || String(rec.by ?? '') !== String(pid)) return rec ? rec.by : undefined
+  let pick: any = null
+  for (const e of peopleOf(rec)) {
+    if (!e || String(e.p) === String(pid) || e.by == null || String(e.by) === String(pid)) continue
+    if (!pick || Number(e.at || 0) >= Number(pick.at || 0)) pick = e
+  }
+  return pick ? pick.by : rec.by
+}
 export function filedForOther(pid: string, before: any, after: any): boolean {
   if (!before && !after) return false
   if (!pid || !membersFileOn()) return false
-  if (before && after && String(before.person) !== String(after.person)) return false
-  if (!filerOf(String(pid), before || after)) return false
+  /* (a record in the OLD shape — one `person` — stays the same man's; one that carries its PEOPLE is its filer's to
+     re-people, and what he may do to the list is the list's own test, inputBreach below) */
+  if (before && after && !Array.isArray(before.people) && !Array.isArray(after.people) && String(before.person) !== String(after.person)) return false
+  const took = takesOn(String(pid), before, after)
+  if (!took && !filerOf(String(pid), before || after)) return false
+  /* …and, for a record that carries its people, every entry of the list AS IT WAS (as it IS, on a filing) was put in
+     by him: once a scheduler has put someone in, changing it for everyone is the scheduler's (D755 (3)) */
+  if (!took && Array.isArray((before || after).people) && !allPutBy(String(pid), before || after)) return false
   return (!before || memberFilesForOthers(before.type)) && (!after || memberFilesForOthers(after.type))
 }
 /* may he file an input of this kind for this man? An admin: anyone, any kind. A member: himself, any kind, as
@@ -248,7 +292,9 @@ function mayChangeInput(row: any, act: Act): boolean {
   const who = roleOf()
   if (who === null) return true
   if (!row) return false
-  if (allows(who, T.input, act, row.person, identityOf(who))) return true  // an admin; the man himself, in full
+  /* an admin; the man himself, in full — "himself" is the input's ONLY NAMED PERSON, whoever filed it (owner D655, D762
+     reading 1; Fable's read of the one-rule plan, F4): an input for several people, or for ALL AVAIL, is nobody's own */
+  if (allows(who, T.input, act, onlyNamed(row), identityOf(who))) return true
   const pid = who === 'member' ? me() : null
   return pid != null && filedForOther(pid, row, row)
 }
@@ -267,7 +313,7 @@ export function filerSwitchedOff(rows: readonly any[]): boolean {
 }
 /* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
    (D200: "the server's rules at the database step are a translation of an agreed list") */
-export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED for him (`filedBy` or `groupFiledBy` = my person; D654, D655, D658): I may create, change and delete it, and answer its OIL question for him (D660); never move it to another person; an input filed for ALL AVAIL / ALL counts as filed for another person — one of six kinds, one day, never in a group (D700, D711, D712, D713)'
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only — are never mine to set or clear, on my own input too (D760); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
@@ -425,6 +471,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'access.seen': op(T.reqseen, 'U', 'required'),
   /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
   'changes.seen': op(T.seen, 'U', 'required'),
+  /* the bell's "Mark all read" and a tap on a line (the one-rule build's step 7): the signed-in person's OWN row only */
+  'notices.seen': op(T.noticeseen, 'U', 'required'),
   /* Admin → Data "Clear edit history…" (D351): deletes exact history lines, run as the admin who asked — the batch names
      him (the group-A final read, Fable F1; state/store.ts setElogDoor). The idle `elog.line` is the app's own act. */
   'elog.sweep': op(T.editlog, 'D'),
@@ -503,7 +551,45 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
    pending person's own access request — ONE new `accessreq:<id>` row under his own sign-in name
    ([DB-READINESS] group A, phase 4.4: the requests are one row each, so his command may add his and touch no other). */
 const INPUT_ORDER = '__order'
-const personOfInput = (v: any): string | null => (v && v.person != null ? String(v.person) : null)
+const personOfInput = (v: any): string | null => { const p = v ? leadOf(v) : null; return p != null ? String(p) : null }
+/* IS THIS CHANGE "HIS OWN PART" OF AN INPUT — ONE predicate ([ALL-AVAIL-AS-MEMBER] step 2 (a), 12 Oct 26; Fable's read of
+   the one-rule plan, F5; the plan §4.9). True when
+     (i)  both images, where present, are an input whose only person is he — his own request, as always; or
+     (ii) the two images differ ONLY in his own entry standing in one list and not in the other: he took himself out
+          (owner D755 (3): "he may always withdraw himself") — or his own Undo is putting him back.
+   Three bodies decided ownership by a record's one `person` and would have refused a member's Undo of his own "take me
+   out": the commit gate below, Undo's "may he reverse it" (undo/timeline.ts, through state/undo-wire.ts) and the owner
+   of a change (undo/derive.ts). What a save stamps beside the list — who last changed it and when — is no part of the
+   comparison; everything the input SAYS is. */
+const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand', 'leftAt'])
+/* …NOR IS THE LANDING MARK (`acc: 'g'`): it is worked out on read, after the command (state/holderbase.ts), and a
+   restore strips it from the image it puts back (sched-commit.ts schedWriteRecords) — so 'g' on one side and nothing
+   on the other is the same input. Read as said, a member's Undo of his own "Take me out" was refused wherever the
+   input had a row on the week on screen ("That couldn't be completed just now"): the gate saw another person's input
+   changed. Left by step 2 of the one-rule build; found by the older tests re-expressed after step 7, 12 Oct 26. The
+   real filings ('u' under Unavailable, 'r' off the programme) are still said. `undo/timeline.ts landed` reads the mark
+   the same way. */
+const said = (x: any, k: string): unknown => (k === 'acc' && x[k] === 'g' ? null : (x[k] ?? null))
+const saysSame = (a: any, b: any, skip?: string): boolean => {
+  const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k) && k !== skip))
+  for (const k of ks) if (JSON.stringify(said(a, k)) !== JSON.stringify(said(b, k))) return false
+  return true
+}
+export function ownPart(pid: string, before: any, after: any): boolean {
+  if (!pid || (!before && !after)) return false
+  const alone = (x: any) => x == null || (idsOf(x).length === 1 && String(onlyNamed(x) ?? '') === String(pid))
+  if (alone(before) && alone(after)) return true
+  if (!before || !after) return false
+  const a = peopleOf(before), b = peopleOf(after)
+  const [more, less] = a.length > b.length ? [a, b] : [b, a]
+  if (more.length !== less.length + 1) return false
+  const rest = more.filter((e: any) => !(e && String(e.p) === String(pid)))
+  if (rest.length !== less.length || JSON.stringify(rest) !== JSON.stringify(less)) return false
+  /* who filed it may have passed on with him (byAfterLeaving): that, and nothing else, may differ */
+  const withHim = a.length > b.length ? before : after, without = withHim === before ? after : before
+  if ((without.by ?? null) === (byAfterLeaving(withHim, pid) ?? null)) return saysSame(before, after, 'by')
+  return saysSame(before, after)
+}
 /* THE SCHEDULE'S OWN RECORDS. A member changes none of them, by any command ([DB-READINESS] group A, phase 6 (c), 1 Oct 26 —
    data-model.md §11; D450: a day is saved only by the scheduler holding it). They were his to change as the landing of his
    own input, inside his input command; that landing is now worked out after the command, on read (state/holderbase.ts),
@@ -547,31 +633,65 @@ const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) 
 const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
 function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: boolean): string | null {
   const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : (c.after ?? null)
-  const own = (b == null || personOfInput(b) === pid) && (f == null || personOfInput(f) === pid)
+  /* his own part — asked FIRST, before the filer's rule, in the forward and the replayed path alike (F5) */
+  const own = ownPart(pid, b, f)
   if (!own && !filedForOther(pid, b, f)) return `another person's input`
   if (replayed || !f) return null
+  /* THE SCHEDULER'S MARKS ARE NEVER A MEMBER'S TO SET (step 4 of the one-rule build — owner D760 reading 2: "only a
+     scheduler puts a CX on or takes it off — the member sees it and is told, he does not set it"). The cancel mark with
+     its reason, the red box and "information only" ride an input he may otherwise change in full: a record he changes
+     keeps them exactly; one he creates carries none — unless it is a piece the app cut from a record this same command
+     changed (one man split out of a cancelled input), which carries that record's. */
+  { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info] : [false, '', false, false])
+    const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
+    if (mk(f) !== mk(src)) return `a scheduler's mark on an input` }
+  /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
+     to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
+  if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`
+  /* NOBODY'S ENTRY IS FORGED: one he puts in names him as who put it in; one that was there is left exactly as it was */
+  { const was = new Map<string, any>(peopleOf(b).map((e: any) => [String(e && e.p), e] as [string, any]))
+    for (const e of (Array.isArray(f.people) ? f.people : [])) {
+      if (!e) continue
+      const old = was.get(String(e.p))
+      if (b && Array.isArray(b.people) && old) { if (JSON.stringify(old) !== JSON.stringify(e)) return `who put a person in an input`; continue }
+      if (old) continue                                        // the record's first rewrite with its list: his entry is the old filing's
+      const piece = env.changes.some(o => o !== c && isInputChange(o) && o.before != null && peopleOf(o.before).some((x: any) => x && JSON.stringify(x) === JSON.stringify(e)))
+      if (!piece && e.by != null && String(e.by) !== pid) return `a person put in an input in another person's name`
+      if (!piece && e.by == null && !own) return `a person put in an input with no name to it`
+    } }
   if (!b) {
     /* a piece the app cut from a record of the same man this command changed or deleted */
     const piece = env.changes.some(o => o !== c && isInputChange(o) && o.before != null
-      && personOfInput(o.before) === personOfInput(f) && filed(o.before, f))
+      && personOfInput(f) != null && holds(o.before, personOfInput(f)) && filed(o.before, f))
     if (!piece) {
       if (own ? (f.by != null && String(f.by) !== pid) : String(f.by ?? '') !== pid) return `an input placed in another person's name`
       const g = f.grp ?? null, gb = f.grpBy ?? null
       if ((g == null) !== (gb == null)) return `a shared input without its filer`
-      if (g != null && String(gb) !== pid && !groupStood(env, g, gb)) return `a shared input filed in another person's name`
+      /* (the old group fields are written by no door any more; a hand-made record carrying them names its maker as the
+         filer or is refused — "it joins a group that already stood" went with D763: a person in a shared input he did
+         not file adds nobody) */
+      if (g != null && String(gb) !== pid) return `a shared input filed in another person's name`
     }
   } else {
-    if (!same(b.by, f.by) || !same(b.at, f.at)) return `who placed an input`
+    /* (who filed it passes on when its filer takes himself out — byAfterLeaving, the one body) */
+    const passed = own && holds(b, pid) && !holds(f, pid) && same(f.by, byAfterLeaving(b, pid))
+    /* (…and to the one person of an input who makes it an input of several — takesOn, above) */
+    if ((!same(b.by, f.by) && !passed && !takesOn(pid, b, f)) || !same(b.at, f.at)) return `who placed an input`
     if (!same(b.grp, f.grp) || !same(b.grpBy, f.grpBy)) {
       const made = b.grp == null && b.grpBy == null && f.grp != null && f.grp !== '' && String(f.grpBy ?? '') === pid
-      if (!made) return `who filed a shared input`
+      /* …or the record was rewritten with its PEOPLE, where the old group fields go (engine/inputown.ts toPeople) */
+      const listed = Array.isArray(f.people) && f.grp == null && f.grpBy == null
+      if (!made && !listed) return `who filed a shared input`
     }
   }
   if (own) return null
   const oil = f.oil
   if (oil == null) return null
   if (typeof oil !== 'object' || Array.isArray(oil)) return `an OIL answer for another person`
-  const kept: Record<string, number> = (b ? voidedOil(b, f) : undefined) || {}
+  /* (a HAND-OVER — the one person of an input replaced by another — keeps no answer, as the save has it
+     (ui/inputedit.tsx commitInputEdit); a record that carries its people has no `person` for voidedOil to compare) */
+  const handedOver = !!b && idsOf(b).length === 1 && idsOf(f).length === 1 && String(leadOf(b)) !== String(leadOf(f))
+  const kept: Record<string, number> = (b && !handedOver ? voidedOil(b, f) : undefined) || {}
   let plan: Map<string, number> | null = null
   for (const k of Object.keys(oil)) {
     if (k in kept && kept[k] === oil[k]) continue
@@ -581,18 +701,6 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
   }
   return null
 }
-/* did this group stand, with this filer, BEFORE the command — a record of it the command did not create? */
-function groupStood(env: CommitEnvelope, grp: any, grpBy: any): boolean {
-  const made = new Set<string>()
-  for (const o of env.changes) {
-    if (!isInputChange(o)) continue
-    if (o.before == null) { made.add(o.id); continue }
-    const was: any = o.before
-    if (same(was.grp, grp) && same(was.grpBy, grpBy)) return true
-  }
-  return (INPUTS as any[]).some(r => r && r.iid && !made.has(String(r.iid)) && same(r.grp, grp) && same(r.grpBy, grpBy))
-}
-
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
@@ -615,6 +723,17 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (bad) return `${bad} (${where})`
         break
       }
+      /* A BELL'S NOTICE (state/notices.ts; the plan §4.10): a member's command may make one only as part of his OWN
+         change to the input it names — the same command changes that input — naming himself as its maker and addressed
+         to someone else; his own Undo of that change takes away the notices it made (a Redo puts them back the same
+         way). Nobody rewrites a notice, and nobody removes another person's. */
+      case 'notices': {
+        const b: any = c.before, n: any = c.after
+        const rides = (iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
+        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid)) break
+        if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid)) break
+        return `a notice that is not his own change's (${where})`
+      }
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
       case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
       case 'lw.current': break
@@ -623,6 +742,11 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'settings':
         if (c.id.startsWith('seen:') && env.type === 'changes.seen') {
           if (c.id !== `seen:${pid}`) return `another person's seen record (${where})`
+          break
+        }
+        /* what he has read of his bell's notices — his OWN row, by its one command */
+        if (c.id.startsWith('noticeseen:') && env.type === 'notices.seen') {
+          if (c.id !== `noticeseen:${pid}`) return `another person's read record (${where})`
           break
         }
         return `an admin's record (${where})`

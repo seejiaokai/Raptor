@@ -15,7 +15,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { INPUTS, DATES, isPersonal, isUnavail, isSansAvail } from '../engine/inputs'
-import { inpId } from '../engine/inputs'
+import { idsOf, inpId, onlyNamed } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import * as view from '../state/view'
@@ -110,7 +110,9 @@ describe('commitNewInput', () => {
     const row = INPUTS.find((i: any) => i.remarks === 'board add')!
     expect(row).toBeTruthy()
     expect(row.date).toBe(MON)
-    expect(row.person).toBe('bane')
+    /* a new input is written as ONE record with its people — never a `person` field (the one-rule build, D756): it is
+       his, and his alone */
+    expect(idsOf(row)).toEqual(['bane'])
     expect(row.type).toBe('LL')
     expect(row.acc, 'a fresh add is unaccepted — the scheduler accepts it after').toBeFalsy()
     expect(row.iid, 'minted an id like every other input').toBeTruthy()
@@ -215,7 +217,7 @@ describe('adding through the board', () => {
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'the pick rewrote the tail').toBe('till 17 Jul')
     await click($('#inpEditSave'))
     expect(INPEDIT, 'the dialog closed on a good save').toBe(null)
-    const row = INPUTS.find((i: any) => i.person === 'bane' && i.type === 'OL' && i.date === 'Jul 15')!
+    const row = INPUTS.find((i: any) => onlyNamed(i) === 'bane' && i.type === 'OL' && i.date === 'Jul 15')!
     expect(row, 'the record exists').toBeTruthy()
     expect(row.endDate).toBe('Jul 17')
     expect(row.remarks).toBe('till 17 Jul')
@@ -232,7 +234,7 @@ describe('adding through the board', () => {
     await setSelect($('#inpEditType'), 'Meeting')
     await click($('#inpEditSave'))
     expect(INPEDIT).toBe(null)
-    const row = onMon().find((i: any) => i.person === 'bane' && i.type === 'Meeting')!
+    const row = onMon().find((i: any) => onlyNamed(i) === 'bane' && i.type === 'Meeting')!
     expect(row, 'the input exists on Monday').toBeTruthy()
     /* untouched All day → a timed window landed, not an all-day record */
     expect(row.allday, 'a Meeting board-add opens and lands timed').toBe(false)
@@ -257,7 +259,7 @@ describe('adding through the board', () => {
     await act(async () => { fly.click() })
     await click($('#inpEditSave'))
     expect(INPEDIT).toBe(null)
-    const row = onMon().find((i: any) => isSansAvail(i.type) && i.person === person)!
+    const row = onMon().find((i: any) => isSansAvail(i.type) && onlyNamed(i) === person)!
     expect(row, 'the offer exists on Monday').toBeTruthy()
     expect(row.sans && row.sans.f, 'Fly is offered').toBe(true)
     expect($(`#schedBoard .sansav [data-inpedit="${row.iid}"]`) || $('#schedBoard .sansav .sanscard'), 'a card is up').toBeTruthy()

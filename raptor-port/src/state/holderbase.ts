@@ -31,7 +31,6 @@ import { rebaseDayPending } from '../engine/drafts'
 import { inputProtected } from '../engine/quarantine'
 import { isPreservedWeek } from '../engine/weekstash'
 import { PEOPLE, whoId } from '../engine/people'
-import { groundGroups } from '../engine/grouprows'
 import { HOOKS } from '../engine/hooks'
 import { armedRowKey, disarmSlot } from './view'
 import type { Change } from '../command'
@@ -87,15 +86,12 @@ function requestAddMarks(di: number): void {
     const f: any = requestRowFields(r)
     const drop: string[] = []
     for (const k of ['str', 'end', 'rmks']) if (String(row[k] || '') === String(f[k] || '')) drop.push(`gr:${di}.${row.rid}.${k}`)
-    /* …BUT A MAN ADDED TO A ONE ROW THE ISSUED DAY ALREADY HAD WEARS HIS MARK ON HIS PUCK (`[GROUP-INPUT-ONE-ROW]` step 6;
-       owner D93 — a change waiting on a puck is its hollow ALn tag; D736; the plan §4.8). His row is new, but it is
-       not drawn: the one row is, and that row is not new — so the row's "added" mark on its name would say nothing of
-       him, and his puck's mark is the one sign that HE is what is waiting. "Was issued" is asked of the ROWS, not of
-       the entry's mark (a re-time changes every member's mark): the drawn row his row belongs to holds at least one
-       row the issued day held. A whole new one row keeps the mark a new row wears, once, on its name. */
-    const mates = groundGroups(d)[(d.ground as any[]).indexOf(row)]
-    const joined = !!row.srcg && !!mates && mates.members.some((i: number) => { const m = (d.ground as any[])[i]; return !!m && issued.has(m.rid) })
-    if (whoId(row.who) === r.person && !joined) drop.push(`g:${di}.${row.rid}`)
+    /* …and its PEOPLE, where they are what the request writes (the one-rule build, step 2 (b)): a row the issued day
+       lacks is ONE addition, marked once on its name — the pucks of the people it arrived with wear none. (A person
+       added to a row the issued day HELD is not this loop's: that row is not new, and his puck's own mark is the
+       sign that he is what is waiting — D93, D736.) */
+    if (whoId(row.who) === String(f.who ?? '')) drop.push(`g:${di}.${row.rid}`)
+    ;((row.more || []) as any[]).forEach((v: any, n: number) => { if (String(whoId(v) || '') === String((f.more || [])[n] ?? '\u0000')) drop.push(`g:${di}.${row.rid}.x${n}`) })
     for (const k of drop) delete SCHED.pending[k]
   }
 }

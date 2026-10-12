@@ -266,14 +266,20 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     await boot(new MemoryBackend())
     INPUTS.unshift({ iid: 'p6dX', person: 'stiff', date: 'Jul 22', yr: 2026, allday: true, type: 'Meeting', mod: 'now' } as any)
     loadWeek(W2)                                         // the week's load lands Saber's meeting on Wednesday
+    /* THE EXTRA STANDS ON A ROW NOBODY FILED (re-expressed 12 Oct 26, the one-rule job's check). This case planted him
+       straight onto the REQUEST's row (`r.more = [HIM]` — "the scheduler puts Hex on it as an extra", D18). Since D755
+       whoever stands on a row that came from an input is IN the input, and no door writes a man there that the input
+       does not hold; the row's re-make now looks at the row itself (engine/overlay.ts — the Opus trial read's claim
+       11), so that planted extra is taken off at the first read, delete or no delete. What this case pins is unchanged
+       — a SAVED week reads without a deleted man, and another man's request row there still stands — so the extra is
+       on the kind of row where an extra still is the row's own: a scheduler's own ground row, beside Saber's. */
     schedWrite(SCHED_TYPES.mutate, () => {
-      const r: any = ((DAYS[2] as any).ground || []).find((g: any) => g && g.src === 'p6dX')
-      r.more = [HIM]                                     // the scheduler puts Hex on it as an extra (D18)
+      ;((DAYS[2] as any).ground = (DAYS[2] as any).ground || []).push({ prog: 'P6D OWN ROW', str: '09:00', end: '10:00', who: 'stiff', more: [HIM], rmks: '' })
     })
     loadWeek(W1)
-    const rowIn = () => ((stashDays(W2) as any).days[2].ground || []).find((g: any) => g && g.src === 'p6dX')
+    const rowIn = () => ((stashDays(W2) as any).days[2].ground || []).find((g: any) => g && g.prog === 'P6D OWN ROW')
     expect(stashGroundBySrc(W2)!.get('p6dX'), 'before: Saber\'s row stands there').toBeTruthy()
-    expect(rowIn().more, 'before: he is an extra on Saber\'s meeting row').toContain(HIM)
+    expect(rowIn().more, 'before: he is an extra on the scheduler\'s own row beside it').toContain(HIM)
     expect(deletePerson(HIM)).toBe(null)
     expect(stashGroundBySrc(W2)!.get('p6dX'), 'Saber\'s row still stands').toBeTruthy()
     expect(rowIn().more || [], 'after: he is gone from it').not.toContain(HIM)

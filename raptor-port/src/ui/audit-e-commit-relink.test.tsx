@@ -5,16 +5,27 @@
    touches). Targets the HANDOFF-listed gaps: the keep / "moved outside the
    programmed week" branch, reassigning an ACCEPTED input to another person,
    moving it to another date, shortening and extending a span, an endDate past
-   the last DATES entry, and delete-then-undo coherence for accepted inputs. */
+   the last DATES entry, and delete-then-undo coherence for accepted inputs.
+
+   CHANGED BY THE ONE-RULE BUILD ([ALL-AVAIL-AS-MEMBER] step 2 — owner D755, D756; D271 kept; D734 widened; D745 set
+   aside): three cases at the foot of this file pinned "extras on the row are the scheduler's own and survive an input
+   edit" — crew written into the row's `more`, in no input, carried across the relink and de-duplicated against a new
+   holder. A row that came from an input is a whole copy of the input now, and a hand puts a person on it only through
+   the door (ui/reqdoor.ts), which puts him IN the input. The three are re-expressed on that, each block saying which
+   case it replaces: he and the row's red box survive an edit; a person already in the input is refused a second place
+   (D271); a one-person request handed to another is the new person's alone. Who an input is for is read through
+   idsOf / onlyNamed (engine/inputs.ts), never off `record.person` — a record carries its people. */
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { initStore, setSession, undo, writeInputs } from '../state/store'
-import { INPUTS, DATES, inpId } from '../engine/inputs'
+import { INPUTS, DATES, inpId, idsOf, onlyNamed } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { acceptInput, acceptedDay, unacceptInput } from '../engine/slots'
-import { commitInputEdit, removeInput, setInpField, draftOf } from './inputedit'
+import { commitInputEdit, commitNewInput, reassignInput, removeInput, setInpField, draftOf } from './inputedit'
+import { rowPut, rowMark } from './reqdoor'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
+import { setMe, DEFAULT_ME } from '../state/auth'
 
 let TOASTS: string[] = []
 const groundRows = () => DAYS.flatMap((d: any, di: number) => (d.ground || []).map((r: any) => ({ di, row: r })))
@@ -117,7 +128,7 @@ describe('commitInputEdit — reassigning an ACCEPTED input to another person', 
     const id = inpId(inp)
     const d = draftOf(inp); d.person = 'stiff'
     expect(commitInputEdit(inp, d)).toBe(true)
-    expect(inp.person).toBe('stiff')
+    expect(idsOf(inp), 'the request is the new person’s, and his alone').toEqual(['stiff'])
     /* the input's stable id does NOT change when the person is reassigned (person
        was part of the old content key, so re-personing used to orphan the row and
        mint a fresh one). The row is now relinked in place: one row, src unchanged,
@@ -194,67 +205,158 @@ describe('removeInput — filed copies and undo coherence', () => {
   })
 })
 
-/* What the relink DISCARDS — a probe documenting current behaviour, reported
-   as a SUSPECT in the audit: the re-accept mints a FRESH row, so anything a
-   scheduler did to the promoted row itself (extra crew dropped in via more[],
-   a red flag, a CX, hand-edited times) is silently thrown away by ANY edit of
-   the source input, including a member retouching their own remark. */
-describe('the relink preserves scheduler additions (fixed 12 Aug 26)', () => {
-  it('extra crew and the red flag on the promoted row survive an input edit', () => {
+/* WHO STANDS ON THE ROW IS IN THE INPUT — SO AN EDIT OF THE INPUT KEEPS HIM (owner D755, 11 Oct 26 — "a row that came
+   from an input IS the input: whoever stands on it … is in the input"; D756 — one record with the list of its people;
+   the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.3, §4.4, §4.9).
+
+   REPLACES "the relink preserves scheduler additions (fixed 12 Aug 26)" — `extra crew and the red flag on the promoted
+   row survive an input edit` — which pinned that crew a scheduler wrote onto the row as the ROW'S OWN (`more`, in no
+   input) were carried across an edit of the source input. Nobody on such a row is the row's own any more: a hand puts
+   him there through the door (ui/reqdoor.ts), which puts him IN the input, and the row is a whole copy of the input,
+   re-made in place. He survives an edit because he is in what is edited.
+   THE RED BOX — re-expressed at step 4 of the one-rule build (12 Oct 26; owner D760: "the red box and 'information
+   only' go with the input too"). These cases wrote it on the ROW (`row.flag = 1`) and pinned that the re-make KEPT it
+   (D468: what the scheduler added to the row was the row's). It is the input's now: a mark written on the row alone
+   comes off at the next re-make, the input never having carried it. Choice (1) of the four — THE RULE SURVIVES on a
+   rebuilt fixture: the red box is set as a scheduler sets it, through the row's door (ui/reqdoor.ts rowMark), and it
+   is still there after the edit, on the input and on its row (`true`, as the door writes it, where the hand-written
+   fixture said `1`).
+   What D755 (3) changed with it: once a scheduler has put someone in beside him, the member's own change of the
+   request for everyone ends — the edit that used to throw the scheduler's work away is now refused. */
+const live = (inp: any): any => INPUTS.find((r: any) => r.iid === inp.iid)
+const keyOfRow = (inp: any) => { const g = groundRows().find(x => x.row.src === inpId(inp))!; return `g:${g.di}.${DAYS[g.di].ground.indexOf(g.row)}` }
+const onRow = (inp: any) => { const r = rowsFor(inp)[0].row; return [r.who, ...(r.more || [])].filter(Boolean) }
+const scheduler = () => { setSession({ user: 'a', role: 'admin' }); setMe('prowler') }     // Hunter, a scheduler
+const member = (p: string) => { setSession({ user: 'us', role: 'main', name: 'us' }); setMe(p) }
+
+describe('a person put on the row through the door is in the input — he and the row’s red box survive an edit of it (D755)', () => {
+  afterEach(() => { setSession(null); setMe(DEFAULT_ME) })
+  it('an edit of the input keeps him: the remark lands, he is still in the input and on the SAME row, the red box kept', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'probe', mod: '' })
     expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const row = rowsFor(inp)[0].row
-    row.more = ['bane']; row.flag = 1
-    const d = draftOf(inp); d.remarks = 'probe — retouched'
-    expect(commitInputEdit(inp, d)).toBe(true)
+    scheduler()
+    expect(rowPut(`${keyOfRow(inp)}.+`, 'bane'), 'Ranger put on the row’s "+ add"').toBe('done')
+    expect(idsOf(live(inp)), 'he is IN the input').toEqual(['stiff', 'bane'])
+    const rid = rowsFor(inp)[0].row.rid
+    expect(rowMark(keyOfRow(inp), 'flag', true), 'the red box, by the row’s door — the input’s own (D760)').toBe('done')
+    expect([live(inp).flag, rowsFor(inp)[0].row.flag], 'on the input, and on its row').toEqual([true, true])
+    setSession(null); setMe(DEFAULT_ME)                         // the edit itself, as every commitInputEdit case above drives it
+    const d = draftOf(live(inp)); d.remarks = 'probe — retouched'
+    expect(commitInputEdit(live(inp), d)).toBe(true)
     const fresh = rowsFor(inp)[0].row
-    /* the row is regenerated by the relink, but what a scheduler added by
-       hand is carried across rather than silently discarded */
     expect(fresh.rmks, 'the edit itself landed').toBe('probe — retouched')
-    expect(fresh.more, 'extra crew survived the relink').toEqual(['bane'])
-    expect(fresh.flag, 'the red flag survived the relink').toBe(1)
-    scrap(inp)
+    expect(idsOf(live(inp)), 'the person the door put in is still in the input').toEqual(['stiff', 'bane'])
+    expect([fresh.who, fresh.more], 'and on its row, under the first to join').toEqual(['stiff', ['bane']])
+    expect([live(inp).flag, fresh.flag], 'the red box is still the input’s, and on its re-made row').toEqual([true, true])
+    expect(fresh.rid, 're-made in place: the same row').toBe(rid)
+    expect(rowsFor(inp).length, 'exactly one row').toBe(1)
+    scrap(live(inp))
+  })
+
+  it('the member’s own edit of the request he filed, once a scheduler has put someone in beside him, is refused — nothing changes and nobody is taken off (D755 (3))', () => {
+    member('bane')
+    expect(commitNewInput(draftOf({ person: 'bane', type: 'Meeting', date: 'Jul 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'mine' }))).toBe(true)
+    const inp: any = INPUTS.find((r: any) => r.remarks === 'mine')
+    expect([onlyNamed(inp), rowsFor(inp).length], 'his own request, on the programme').toEqual(['bane', 1])
+    /* while it is his alone, his own edit goes through — as it always did */
+    let d = draftOf(inp); d.remarks = 'mine — first'
+    expect(commitInputEdit(inp, d), 'his own request: his to change').toBe(true)
+    expect(rowsFor(inp)[0].row.rmks).toBe('mine — first')
+    scheduler()
+    expect(rowPut(`${keyOfRow(inp)}.+`, 'boosh'), 'the scheduler puts Havoc on its row').toBe('done')
+    expect(rowMark(keyOfRow(inp), 'flag', true), 'and red-boxes it — the input’s own mark (D760)').toBe('done')
+    member('bane')
+    TOASTS = []
+    d = draftOf(live(inp)); d.remarks = 'mine — retouched'
+    expect(commitInputEdit(live(inp), d), 'the request is no longer wholly his').toBe(false)
+    expect(TOASTS.length, 'and he is told').toBeGreaterThan(0)
+    expect(live(inp).remarks, 'nothing was saved').toBe('mine — first')
+    expect(idsOf(live(inp)), 'Havoc is still in the input').toEqual(['bane', 'boosh'])
+    expect(onRow(inp), 'and on its row').toEqual(['bane', 'boosh'])
+    expect([live(inp).flag, rowsFor(inp)[0].row.flag], 'the red box is where it was').toEqual([true, true])
+    scheduler()
+    scrap(live(inp))
   })
 })
 
-/* ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26 — "Q1 refused"; Fable's scenario read F1). The relink above puts the
-   scheduler's extras back onto the regenerated row — so a request re-pointed to a man who ALREADY stood on its row as
-   an extra came back with him twice: the holder AND the extra. No door asked (the Person field and the reassign drop
-   both reach here). He is kept once — as the holder, the request is his now — his extra place is left empty (held, as
-   a removed extra always is), and the toast says so. */
-describe('the relink never leaves a man on the row twice (D271)', () => {
-  beforeEach(() => setSession({ user: 'a', role: 'admin' }))     // handing a request to another man is a scheduler's edit
-  afterEach(() => setSession(null))
-  it('re-pointing the request to a man already an extra on its row keeps him once, as its holder, and says so', async () => {
-    const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'twice', mod: '' })
+/* ONE PERSON, ONCE PER ROW (owner, D271, 27 Sep 26 — "Q1 refused"). REPLACES "the relink never leaves a man on the row
+   twice" — `re-pointing the request to a man already an extra on its row keeps him once, as its holder, and says so` —
+   which pinned the relink de-duplicating a request handed to a man who ALREADY stood on its row as the scheduler's
+   extra, with its "already on this row as an extra · kept once" note. With the row a copy of the input there is no
+   extra to collide with: a person is in the list once (engine/inputown.ts — putPerson and swapPerson refuse someone
+   already in it), and each door that could put him there a second time refuses and says so. */
+describe('a person already in the input is never on its row twice (D271)', () => {
+  beforeEach(() => scheduler())
+  afterEach(() => { setSession(null); setMe(DEFAULT_ME) })
+  /* Saber's request with Ranger and Havoc put on its row by the scheduler — three in the input */
+  const three = (remarks: string) => {
+    const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks, mod: '' })
     expect(place(0, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const row = rowsFor(inp)[0].row
-    row.more = ['bane', 'boosh']                                  // Ranger and Havoc added as extras by the scheduler
-    const d = draftOf(inp); d.person = 'bane'                     // the request handed to Ranger
-    expect(commitInputEdit(inp, d)).toBe(true)
-    const fresh = rowsFor(inp)[0].row
-    const places = [fresh.who, ...(fresh.more || [])].filter(Boolean)
-    expect(fresh.who, "Ranger holds the request's row").toBe('bane')
-    expect(places.filter((v: any) => v === 'bane').length, 'Ranger once on the row').toBe(1)
-    expect(places, 'Havoc, the other extra, is kept').toContain('boosh')
-    HOOKS.toast('Input updated', 'ok')                           // the caller's own success line, straight after the save
-    await Promise.resolve()                                       // the note follows it on the next tick, so it is the one left up
-    expect(TOASTS.at(-1), 'and the app says so, last').toMatch(/^Ranger — already on this row as an extra · kept once/)
-    scrap(inp)
+    for (const p of ['bane', 'boosh']) expect(rowPut(`${keyOfRow(inp)}.+`, p), p).toBe('done')
+    expect(onRow(inp)).toEqual(['stiff', 'bane', 'boosh'])
+    TOASTS = []
+    return inp
+  }
+  it('put on the row again, or swapped in for another of its people: refused, in words — and nothing changes', () => {
+    const inp = three('twice')
+    const was = JSON.stringify([live(inp), rowsFor(inp)[0].row])
+    expect(rowPut(keyOfRow(inp), 'bane'), 'Ranger dropped on the name box').toBe('refused')
+    expect(rowPut(`${keyOfRow(inp)}.+`, 'boosh'), 'Havoc dropped on "+ add"').toBe('refused')
+    expect(reassignInput(inp.iid, 'bane'), 'the row’s swap: Ranger for Saber').toBe(false)
+    expect(TOASTS).toEqual(['Ranger is already on this input', 'Havoc is already on this input', 'Ranger is already on this input'])
+    expect(JSON.stringify([live(inp), rowsFor(inp)[0].row]), 'nothing changed').toBe(was)
+    expect(onRow(inp).filter((v: any) => v === 'bane').length, 'Ranger once on the row').toBe(1)
+    scrap(live(inp))
   })
-  it('a hand-over to a man NOT on the row keeps every extra, and says nothing about it', async () => {
-    const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'once', mod: '' })
-    expect(place(0, inp, 'g')).toBe(true)
-    afterSchedMutate()
-    rowsFor(inp)[0].row.more = ['boosh']
-    const d = draftOf(inp); d.person = 'bane'
-    expect(commitInputEdit(inp, d)).toBe(true)
-    expect(rowsFor(inp)[0].row.more).toEqual(['boosh'])
-    await Promise.resolve()
+  it('one of its people swapped for a man NOT in it: the newcomer takes his place in the list — the others, the row and its red box stay', () => {
+    const inp = three('swap')
+    const rid = rowsFor(inp)[0].row.rid
+    /* (1) the rule survives on a rebuilt fixture (D760): the red box is the input's, set by the row's door */
+    expect(rowMark(keyOfRow(inp), 'flag', true)).toBe('done')
+    expect(reassignInput(inp.iid, 'pike'), 'Nomad for Saber, the first to join').toBe(true)
+    expect(idsOf(live(inp))).toEqual(['pike', 'bane', 'boosh'])
+    const fresh = rowsFor(inp)[0].row
+    expect([fresh.who, fresh.more, fresh.rid, fresh.flag]).toEqual(['pike', ['bane', 'boosh'], rid, true])
+    expect(live(inp).flag, 'and the input carries it still').toBe(true)
+    expect(rowsFor(inp).length, 'still exactly one row').toBe(1)
     expect(TOASTS.join('|')).not.toMatch(/kept once/)
-    scrap(inp)
+    scrap(live(inp))
+  })
+})
+
+/* REPLACES `a hand-over to a man NOT on the row keeps every extra, and says nothing about it`: a one-person request
+   handed to another person has nobody else on its row to keep — whoever a scheduler put there is IN the input, and an
+   input of several is not handed over (who is in it is changed through its list). What is left of the case is the
+   hand-over itself, by both doors, for a record in the old shape (`person`) and one that carries its people. */
+describe('a hand-over of a one-person request to a person not on it', () => {
+  beforeEach(() => scheduler())
+  afterEach(() => { setSession(null); setMe(DEFAULT_ME) })
+  it('by its Person field or by the row’s swap: the request is the new person’s alone — the same one row, and nothing is said about anyone "kept once"', async () => {
+    const old: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'once — old shape', mod: '' })
+    expect(place(0, old, 'g')).toBe(true)
+    afterSchedMutate()
+    expect(commitNewInput(draftOf({ person: 'stiff', type: 'Meeting', date: 'Jul 13', yr: 2026, allday: false, s: 720, e: 780, remarks: 'once — its people' }))).toBe(true)
+    const listed: any = INPUTS.find((r: any) => r.remarks === 'once — its people')
+    for (const inp of [old, listed]) {
+      const rid = rowsFor(inp)[0].row.rid, id = inpId(inp)
+      TOASTS = []
+      const d = draftOf(live(inp)); d.person = 'bane'               // the request handed to Ranger, in its own window
+      expect(commitInputEdit(live(inp), d)).toBe(true)
+      expect([idsOf(live(inp)), onlyNamed(live(inp))], 'Ranger’s, and his alone').toEqual([['bane'], 'bane'])
+      expect(onRow(inp), 'the row is his').toEqual(['bane'])
+      expect(reassignInput(id, 'boosh'), 'and on to Havoc, by the row’s swap').toBe(true)
+      expect(idsOf(live(inp))).toEqual(['boosh'])
+      expect(onRow(inp)).toEqual(['boosh'])
+      expect(rowsFor(inp).length, 'still exactly one row').toBe(1)
+      expect([rowsFor(inp)[0].row.rid, rowsFor(inp)[0].row.src], 'the same row, under the unchanged id').toEqual([rid, id])
+      expect(reassignInput(id, 'boosh'), 'dropped back on himself: nothing to do').toBe(false)
+      await Promise.resolve()
+      expect(TOASTS.join('|'), 'the swap said who replaced whom').toMatch(/Havoc.*instead of Ranger/)
+      expect(TOASTS.join('|'), 'and nothing about anyone "kept once"').not.toMatch(/kept once/)
+      scrap(live(inp))
+    }
   })
 })
 

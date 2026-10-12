@@ -1,0 +1,1430 @@
+{
+ "H1": {
+  "badge-start": "Saber · Admin",
+  "gear-memberfile": true,
+  "filed": [
+   {
+    "iid": "imqoidgg0ceerur",
+    "type": "Training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "people": [
+     "bane"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "badge-ranger": "Ranger · Member",
+  "window-ranger": {
+   "text": "⠿ | Ranger · 15 Jul | ✕ | PERSON | Ranger | Several people | TYPE | ? | LL | OL | OIL | CCL | PL | FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | DATES | Jul 15 | WHEN | all day | REMARKS | Placed by Saber for Ranger · 22 Jun 26, 09:00 | Delete | Cancel | Save",
+   "fields": [
+    {
+     "id": "inpEditType",
+     "tag": "select:select-one",
+     "value": "Training"
+    },
+    {
+     "id": "inpEditOwnTitle",
+     "tag": "input:text",
+     "value": "Training",
+     "disabled": false
+    },
+    {
+     "id": "inpEditAllday",
+     "tag": "input:checkbox",
+     "value": false,
+     "disabled": false
+    },
+    {
+     "id": "inpEditStart",
+     "tag": "input:time",
+     "value": "10:00",
+     "disabled": false
+    },
+    {
+     "id": "inpEditEnd",
+     "tag": "input:time",
+     "value": "11:00",
+     "disabled": false
+    },
+    {
+     "id": "inpEditRmk",
+     "tag": "input:text",
+     "value": "till 15 Jul",
+     "disabled": false
+    }
+   ],
+   "buttons": [
+    {
+     "id": "win-inputedit-x",
+     "text": "✕",
+     "disabled": false
+    },
+    {
+     "id": "pp-several",
+     "text": "Several people",
+     "disabled": false
+    },
+    {
+     "id": "inTypeHelp",
+     "text": "?",
+     "disabled": false
+    },
+    {
+     "id": "inpEditDel",
+     "text": "Delete",
+     "disabled": false
+    },
+    {
+     "id": "inpEditCancel",
+     "text": "Cancel",
+     "disabled": false
+    },
+    {
+     "id": "inpEditSave",
+     "text": "Save",
+     "disabled": false
+    }
+   ],
+   "picker": {
+    "n": 0,
+    "pressed": []
+   }
+  },
+  "retime": {
+   "toast": "Input updated",
+   "inputs": "660-720",
+   "winOpen": 0
+  },
+  "reword": {
+   "toast": "Input updated",
+   "title": "Range check",
+   "winOpen": 0
+  },
+  "oil-sheet": {
+   "count": 1,
+   "text": "OIL — Ranger, Range check\n✕\nTHIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH)\nDoes it deserve HO — half a day of OIL?\nYes — credit HO\nNo OIL\nThe credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it.\nChoose an option above\nCancel\nSave"
+  },
+  "oil-answer": "yes",
+  "moved": {
+   "toast": "Input updated || Input updated",
+   "date": "Jul 18",
+   "oil": {
+    "2026-07-18": 0.5
+   },
+   "winOpen": 0
+  },
+  "badge-saber": "Saber · Admin",
+  "row-found": 1,
+  "row-controls": [
+   "puck sm oilbar oilbar-ho|Ranger · IP · instructor pilot · SXO · earns half a day of OIL|Ranger\nIP|vis=true"
+  ],
+  "row-text": "RANGE CHECK TRAINING 11:00 12:00 Ranger IP + ADD till 18 Jul",
+  "drag-off": {
+   "toast": "Input updated || Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+   "peopleBefore": "[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090000000}]",
+   "peopleAfter": "[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090000000}]"
+  },
+  "right-click-off": {
+   "toast": "",
+   "peopleAfter": "[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090000000}]"
+  },
+  "board-row-controls": [
+   {
+    "title": "RANGE CHECK",
+    "controls": [
+     "mbtn|Cancel this item (CX)|CX",
+     "mbtn nfo|Info only — show this item on the programme, never check it against the rules, and never earn OIL from it|ⓘ",
+     "mbtn red|Red box — flag for the next scheduler|■",
+     "mbtn del|Remove this item|✕"
+    ]
+   }
+  ],
+  "board-drag-off": {
+   "toast": "",
+   "people": "[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090000000}]"
+  },
+  "after-delete-inputs": false,
+  "toast-delete": "Input deleted",
+  "errors": []
+ },
+ "H2": {
+  "badge": "Ranger · Member",
+  "filed": [
+   {
+    "iid": "imqoidgg0pbmpa1",
+    "type": "Meeting",
+    "date": "Jul 18",
+    "s": 540,
+    "e": 600,
+    "people": [
+     "nick",
+     "rocky"
+    ],
+    "by": "bane",
+    "oil": {
+     "2026-07-18": 0.5
+    }
+   }
+  ],
+  "inputs-after-file": {
+   "people": [
+    "Tally",
+    "Hex"
+   ],
+   "by": "Ranger",
+   "oil": {
+    "2026-07-18": 0.5
+   },
+   "date": "Jul 18"
+  },
+  "badge-hex": "Hex · Member",
+  "window-hex": {
+   "text": "⠿ | Hex +1 · 18 Jul | ✕ | PEOPLE | 2 picked | Several people | WHOEVER IS FREE THAT DAY | ALL AVAIL | ALL | PILOTS | All | WSOS | All | SANS | PERSONNEL | All | TYPE | LL | OL | OIL | CCL | PL | FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | WHEN | all day | REMARKS | OIL | credited on its non-working day | Placed by Ranger for 2 people · 22 Jun 26, 09:00 | Take me out | Only Ranger — who filed it — or an admin can change this for everyone. | Close",
+   "fields": [
+    {
+     "id": "inpEditType",
+     "tag": "select:select-one",
+     "value": "Meeting"
+    },
+    {
+     "id": "inpEditOwnTitle",
+     "tag": "input:text",
+     "value": "Meeting",
+     "disabled": false
+    },
+    {
+     "id": "inpEditAllday",
+     "tag": "input:checkbox",
+     "value": false,
+     "disabled": false
+    },
+    {
+     "id": "inpEditStart",
+     "tag": "input:time",
+     "value": "09:00",
+     "disabled": false
+    },
+    {
+     "id": "inpEditEnd",
+     "tag": "input:time",
+     "value": "10:00",
+     "disabled": false
+    },
+    {
+     "id": "inpEditRmk",
+     "tag": "input:text",
+     "value": "till 18 Jul",
+     "disabled": false
+    }
+   ],
+   "buttons": [
+    {
+     "id": "win-inputedit-x",
+     "text": "✕",
+     "disabled": false
+    },
+    {
+     "id": "pp-several",
+     "text": "Several people",
+     "disabled": false
+    },
+    {
+     "id": "",
+     "text": "ALL AVAIL",
+     "disabled": false
+    },
+    {
+     "id": "",
+     "text": "ALL",
+     "disabled": false
+    },
+    {
+     "id": "pp-all-pilots",
+     "text": "All",
+     "disabled": false
+    },
+    {
+     "id": "pp-all-wsos",
+     "text": "All",
+     "disabled": false
+    },
+    {
+     "id": "pp-all-personnel",
+     "text": "All",
+     "disabled": false
+    },
+    {
+     "id": "inped-takeout",
+     "text": "Take me out",
+     "disabled": false
+    },
+    {
+     "id": "inpEditCancel",
+     "text": "Close",
+     "disabled": false
+    }
+   ],
+   "picker": {
+    "n": 61,
+    "pressed": [
+     "rocky",
+     "nick"
+    ]
+   }
+  },
+  "hex-field-dom": [
+   "inpEditType: tag=SELECT disabled=false readOnly=undefined pe=auto box=398x33 vis=visible opacity=1",
+   "inpEditOwnTitle: tag=INPUT disabled=false readOnly=false pe=auto box=398x33 vis=visible opacity=1",
+   "inpEditStart: tag=INPUT disabled=false readOnly=false pe=auto box=130x38 vis=visible opacity=1",
+   "inpEditEnd: tag=INPUT disabled=false readOnly=false pe=auto box=130x38 vis=visible opacity=1",
+   "inpEditRmk: tag=INPUT disabled=false readOnly=false pe=auto box=398x33 vis=visible opacity=1"
+  ],
+  "hex-typed-in-title": {
+   "before": "Meeting",
+   "after": "Meeting"
+  },
+  "ace-count": 1,
+  "hex-pressed-ace": {
+   "pressedBefore": "rocky,nick",
+   "pressedAfter": "rocky,nick",
+   "pickedText": "2 picked",
+   "inputs": {
+    "people": [
+     "Tally",
+     "Hex"
+    ],
+    "by": "Ranger",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "date": "Jul 18"
+   }
+  },
+  "hex-pressed-several-toggle": {
+   "pressedAfter": "rocky,nick",
+   "text": "2 picked"
+  },
+  "hex-pressed-allavail": {
+   "pressedAfter": "rocky,nick",
+   "inputs": {
+    "people": [
+     "Tally",
+     "Hex"
+    ],
+    "by": "Ranger",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "date": "Jul 18"
+   }
+  },
+  "after-first-press": {
+   "toast": "",
+   "text": "YPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE WHEN all day REMARKS OIL credited on its non-working day Placed by Ranger for 2 people · 22 Jun 26, 09:00 Take yourself out of this input? It stays for the other person. Take me out Stay in Only Ranger — who filed it — or an admin can change this for everyone. Close",
+   "buttons": [
+    "inped-takeout-yes|Take me out",
+    "inped-takeout-no|Stay in",
+    "inpEditCancel|Close"
+   ]
+  },
+  "after-take-out": {
+   "toast": "You are out of this input",
+   "inputs": {
+    "people": [
+     "Tally"
+    ],
+    "by": "Ranger",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "date": "Jul 18"
+   },
+   "winOpen": 0
+  },
+  "ranger-bell-after-hex-out": {
+   "before": {
+    "lit": true,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "MeetingSat 18 Jul Hex taken off · Hex now"
+     }
+    ]
+   }
+  },
+  "tally-bell-after-hex-out": {
+   "before": {
+    "lit": true,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "MeetingSat 18 Jul Hex taken off · Hex now"
+     },
+     {
+      "unread": true,
+      "text": "MeetingSat 18 Jul You were added · Ranger now"
+     }
+    ]
+   }
+  },
+  "hex-bell": {
+   "before": {
+    "lit": true,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "MeetingSat 18 Jul You were added · Ranger now"
+     }
+    ]
+   }
+  },
+  "undo-state": {
+   "vis": true,
+   "disabled": false
+  },
+  "after-undo": {
+   "toast": "Undid: a personal input",
+   "inputs": {
+    "people": [
+     "Tally",
+     "Hex"
+    ],
+    "by": "Ranger",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "date": "Jul 18"
+   }
+  },
+  "ranger-bell-after-undo": {
+   "before": {
+    "lit": false,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": "Nothing new",
+    "lines": []
+   }
+  },
+  "tally-bell-after-undo": {
+   "before": {
+    "lit": true,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "MeetingSat 18 Jul You were added · Ranger now"
+     }
+    ]
+   }
+  },
+  "errors": []
+ },
+ "H3": {
+  "filed": {
+   "people": [
+    "Ranger(by Ranger)",
+    "Tally(by Ranger)"
+   ],
+   "by": "Ranger",
+   "title": "Weekly sync",
+   "s": 840,
+   "e": 900
+  },
+  "ranger-window-before": {
+   "fields": [
+    "inpEditType=Meeting",
+    "inpEditOwnTitle=Weekly sync",
+    "inpEditAllday=false",
+    "inpEditStart=14:00",
+    "inpEditEnd=15:00",
+    "inpEditRmk=till 15 Jul"
+   ],
+   "buttons": [
+    "Several people",
+    "ALL AVAIL",
+    "ALL",
+    "All",
+    "All",
+    "All",
+    "Delete",
+    "Cancel",
+    "Save"
+   ],
+   "tail": " FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | DATES | Jul 15 | WHEN | all day | REMARKS | Placed by Ranger for 2 people · 22 Jun 26, 09:00 | Date changes apply to all 2. | Delete | Cancel | Save"
+  },
+  "badge": "Saber · Admin",
+  "row-found": 1,
+  "row-html-add": [
+   "g:2.2|seat|Ranger\nIP",
+   "g:2.2.x0|seat|Tally\nO"
+  ],
+  "row-ppl-html": "<div class=\"ppl \" data-fill=\"g:2.2.+\"><span class=\"seat\" data-slot=\"g:2.2\" data-drag=\"1\"><span class=\"puck sm\" tabindex=\"0\" data-person=\"bane\" title=\"Ranger · IP · instructor pilot · SXO\"><span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span></span></span><span class=\"seat\" data-slot=\"g:2.2.x0\" data-drag=\"1\"><span class=\"puck r sm san\" tabindex=\"0\" data-person=\"nick\" title=\"Tally · OCU (ab-initio) · SANS\"><span class=\"nm\">Tally</span><span class=\"role q-ocu\">O</span></span></span><span class=\"addz\" aria-hidden=\"true\">+ add</span></div>",
+  "add-count": 1,
+  "roster-hex": 1,
+  "after-add": {
+   "toast": "Hex added to Weekly sync",
+   "inputs": {
+    "people": [
+     "Ranger(by Ranger)",
+     "Tally(by Ranger)",
+     "Hex(by Saber)"
+    ],
+    "by": "Ranger",
+    "title": "Weekly sync",
+    "s": 840,
+    "e": 900
+   }
+  },
+  "ranger-window-after": {
+   "text": "⠿ | Hex +2 · 15 Jul | ✕ | PEOPLE | 3 picked | Several people | WHOEVER IS FREE THAT DAY | ALL AVAIL | ALL | PILOTS | All | WSOS | All | SANS | PERSONNEL | All | TYPE | [types] | TITLE | WHEN | all day | REMARKS | Placed by Ranger for 3 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 | Take me out | A scheduler has changed who is in this — ask an admin to change it for everyone. | Close",
+   "fields": [
+    "inpEditType=Meeting",
+    "inpEditOwnTitle=Weekly sync",
+    "inpEditAllday=false",
+    "inpEditStart=14:00",
+    "inpEditEnd=15:00",
+    "inpEditRmk=till 15 Jul"
+   ],
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    "pp-all-pilots:All",
+    "pp-all-wsos:All",
+    "pp-all-personnel:All",
+    "inped-takeout:Take me out",
+    "inpEditCancel:Close"
+   ],
+   "picker": {
+    "n": 61,
+    "pressed": [
+     "bane",
+     "rocky",
+     "nick"
+    ]
+   }
+  },
+  "ranger-typed-title": {
+   "before": "Weekly sync",
+   "after": "Weekly sync"
+  },
+  "bottom-of-window": " O PERSONNEL All Cotter Ratchet Widget TYPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE WHEN all day REMARKS Placed by Ranger for 3 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 Take me out A scheduler has changed who is in this — ask an admin to change it for everyone. Close",
+  "errors": []
+ },
+ "H5": {
+  "badge": "Saber · Admin",
+  "filed": {
+   "people": [
+    "Ranger(by Saber)",
+    "ALL AVAIL(by Saber)"
+   ],
+   "by": "Saber",
+   "oil": {
+    "2026-07-18": 0.5
+   },
+   "type": "Duty",
+   "date": "Jul 18"
+  },
+  "badge2": "Ranger · Member",
+  "ranger-window": {
+   "fields": [
+    "inpEditType=Duty",
+    "inpEditOwnTitle=Duty",
+    "inpEditAllday=false",
+    "inpEditStart=09:00",
+    "inpEditEnd=12:00",
+    "inpEditRmk=till 18 Jul"
+   ],
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    "pp-all-pilots:All",
+    "pp-all-wsos:All",
+    "pp-all-personnel:All",
+    "inped-takeout:Take me out",
+    "inpEditCancel:Close"
+   ],
+   "picker": {
+    "n": 61,
+    "pressed": [
+     "bane"
+    ]
+   },
+   "tail": "SONNEL | All | TYPE | LL | OL | OIL | CCL | PL | FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | WHEN | all day | REMARKS | OIL | credited on its non-working day | Placed by Saber for Ranger and ALL AVAIL · 22 Jun 26, 09:00 | Take me out | Only Saber — who filed it — or an admin can change this for everyone. | Close"
+  },
+  "save-button": 0,
+  "ranger-typed-title": {
+   "before": "Duty",
+   "after": "Duty"
+  },
+  "after-take-out": {
+   "toast": "Input added for Ranger and ALL AVAIL || You are out of this input",
+   "inputs": {
+    "people": [
+     "ALL AVAIL(by Saber)"
+    ],
+    "by": "Saber",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "type": "Duty",
+    "date": "Jul 18"
+   },
+   "win": 0
+  },
+  "errors": []
+ },
+ "H6": {
+  "filed": {
+   "people": [
+    "Ranger(by Saber)"
+   ],
+   "by": "Saber",
+   "modBy": "Saber",
+   "type": "Training",
+   "date": "Jul 15"
+  },
+  "picker-before-save": {
+   "n": 61,
+   "pressed": [
+    "bane",
+    "nick"
+   ]
+  },
+  "after-add-tally": {
+   "toast": "Input updated",
+   "inputs": {
+    "people": [
+     "Ranger(by Saber)",
+     "Tally(by Ranger)"
+    ],
+    "by": "Ranger",
+    "modBy": "Ranger",
+    "type": "Training",
+    "date": "Jul 15"
+   },
+   "win": 0,
+   "list": null
+  },
+  "reopened": {
+   "fields": [
+    "inpEditType=Training",
+    "inpEditOwnTitle=Training",
+    "inpEditAllday=false",
+    "inpEditStart=10:00",
+    "inpEditEnd=11:00",
+    "inpEditRmk=till 15 Jul"
+   ],
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    "pp-all-pilots:All",
+    "pp-all-wsos:All",
+    "pp-all-personnel:All",
+    "inTypeHelp:?",
+    "inpEditDel:Delete",
+    "inpEditCancel:Cancel",
+    "inpEditSave:Save"
+   ],
+   "picker": {
+    "n": 61,
+    "pressed": [
+     "bane",
+     "nick"
+    ]
+   },
+   "tail": "| Appointment | Duty | Event | OD | Other | TITLE | DATES | Jul 15 | WHEN | all day | REMARKS | Placed by Ranger for 2 people · 22 Jun 26, 09:00 | Date changes apply to all 2. | Delete | Cancel | Save"
+  },
+  "retimed": {
+   "toast": "",
+   "inputs": 690
+  },
+  "picker-handover": {
+   "n": 61,
+   "pressed": [
+    "rocky",
+    "nick"
+   ]
+  },
+  "after-handover": {
+   "toast": "",
+   "inputs": {
+    "people": [
+     "Tally(by Ranger)",
+     "Hex(by Ranger)"
+    ],
+    "by": "Ranger",
+    "modBy": "Ranger",
+    "type": "Training",
+    "date": "Jul 15"
+   },
+   "win": 0,
+   "winTail": null
+  },
+  "b-filed": {
+   "people": [
+    "Ranger(by Saber)"
+   ],
+   "by": "Saber",
+   "modBy": "Saber",
+   "type": "Training",
+   "date": "Jul 16"
+  },
+  "b-picker": {
+   "n": 61,
+   "pressed": [
+    "rocky"
+   ]
+  },
+  "b-after-handover": {
+   "toast": "Only a scheduler can move an input to another person",
+   "inputs": {
+    "people": [
+     "Ranger(by Saber)"
+    ],
+    "by": "Saber",
+    "modBy": "Saber",
+    "type": "Training",
+    "date": "Jul 16"
+   },
+   "win": 1,
+   "winTail": "hit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 16 WHEN all day REMARKS Placed by Saber for Ranger · 22 Jun 26, 09:00 Delete Cancel Save"
+  },
+  "errors": []
+ },
+ "H7": {
+  "filed": {
+   "people": [
+    "Tally",
+    "Hex"
+   ],
+   "by": "Ranger",
+   "type": "Meeting",
+   "date": "Jul 15"
+  },
+  "switch-before": true,
+  "switch-saved": {
+   "toast": "",
+   "win": 0
+  },
+  "ranger-window": {
+   "fields": [
+    "inpEditType=Meeting",
+    "inpEditOwnTitle=Gear check",
+    "inpEditAllday=false",
+    "inpEditStart=13:00",
+    "inpEditEnd=14:00",
+    "inpEditRmk=till 15 Jul"
+   ],
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    "pp-all-pilots:All",
+    "pp-all-wsos:All",
+    "pp-all-personnel:All",
+    "inpEditCancel:Close"
+   ],
+   "picker": {
+    "n": 61,
+    "pressed": [
+     "rocky",
+     "nick"
+    ]
+   },
+   "tail": "| EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | WHEN | all day | REMARKS | Placed by Ranger for 2 people · 22 Jun 26, 09:00 | Filing for other people is switched off — an admin can change this. | Close"
+  },
+  "typed": {
+   "before": "Gear check",
+   "after": "Gear check"
+  },
+  "save-button": 0,
+  "takeout-button": 0,
+  "new-window-as-ranger": {
+   "several": 0,
+   "text": "⠿ | New input | ✕ | PERSON | Ranger | TYPE | ? | LL | OL | OIL | CCL | PL | FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | DATES | pick a start date | WHEN "
+  },
+  "errors": []
+ },
+ "H4": {
+  "filed-no-question": {
+   "people": [
+    "Ranger(by Ranger)"
+   ],
+   "by": "Ranger",
+   "oil": "undefined",
+   "date": "Jul 15"
+  },
+  "holiday-declared-wed15": [
+   "win-days",
+   "win-days-x",
+   "win-inputsset",
+   "win-inputsset-x"
+  ],
+  "stuck-dialogs": 0,
+  "row-found": 1,
+  "after-add": {
+   "toast": "Tally added to Training",
+   "inputs": {
+    "people": [
+     "Ranger(by Ranger)",
+     "Tally(by Saber)"
+    ],
+    "by": "Ranger",
+    "oil": "undefined",
+    "date": "Jul 15"
+   },
+   "oilSheet": 1,
+   "sheetText": "OIL — Ranger +1, Training\n✕\nTHIS INPUT FALLS ON A NON-WORKING DAY — 15 JUL (WEEKEND / PH)\nDoes it deserve HO — half a day of OIL?\nYes — credit HO\nNo OIL\nThe credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it.\nChoose an option above\nCancel\nSave"
+  },
+  "close-again": "closed",
+  "after-close": {
+   "sheet": 0,
+   "inputs": {
+    "people": [
+     "Ranger(by Ranger)",
+     "Tally(by Saber)"
+    ],
+    "by": "Ranger",
+    "oil": "undefined",
+    "date": "Jul 15"
+   }
+  },
+  "pre-ranger-bell": {
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "TrainingWed 15 Jul Tally added · Saber now"
+     }
+    ]
+   }
+  },
+  "pre-saber-bell": {
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": "Nothing new",
+    "lines": []
+   }
+  },
+  "ranger-window": {
+   "fields": [
+    "inpEditType",
+    "inpEditOwnTitle",
+    "inpEditAllday",
+    "inpEditStart",
+    "inpEditEnd",
+    "inpEditRmk"
+   ],
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    "pp-all-pilots:All",
+    "pp-all-wsos:All",
+    "pp-all-personnel:All",
+    "inped-takeout:Take me out",
+    "inpEditCancel:Close"
+   ],
+   "tail": "TITLE | WHEN | all day | REMARKS | OIL | Not answered yet — 15 Jul | Placed by Ranger for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 | Take me out | A scheduler has changed who is in this — ask an admin to change it for everyone. | Close"
+  },
+  "after-take-out": {
+   "toast": "You are out of this input",
+   "inputs": {
+    "people": [
+     "Tally(by Saber)"
+    ],
+    "by": "Saber",
+    "oil": "undefined",
+    "date": "Jul 15"
+   },
+   "sheet": 0
+  },
+  "list-rows": [],
+  "card": "⠿ Wed 15 Jul Public holiday · Test holiday ✕ + Input 5 INPUTS All day CobraOL Overseas leave — off island By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island 09:00–12:00 TallyTRAINING till 15 Jul By Saber",
+  "saber-bell-tap": {
+   "before": {
+    "lit": true,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "TrainingWed 15 Jul Ranger taken off · Ranger now"
+     }
+    ]
+   }
+  },
+  "ranger-bell-tap": {
+   "before": {
+    "lit": true,
+    "open": "false"
+   },
+   "oilQuestionOpened": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "TrainingWed 15 Jul Tally added · Saber now"
+     }
+    ]
+   }
+  },
+  "errors": []
+ },
+ "H8": {
+  "a-filed": [
+   {
+    "iid": "imqoidgg0mls5k6",
+    "type": "Duty",
+    "date": "Jul 15",
+    "s": 540,
+    "e": 720,
+    "people": [
+     "bane",
+     "allavail"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "a-two-days": {
+   "before": "{\"people\":\"Ranger+ALL AVAIL\",\"type\":\"Duty\",\"date\":\"Jul 15\",\"to\":null,\"days\":null}",
+   "after": "{\"people\":\"Ranger+ALL AVAIL\",\"type\":\"Duty\",\"date\":\"Jul 15\",\"to\":null,\"days\":null}",
+   "toast": "Input added for Ranger and ALL AVAIL || ALL AVAIL is for one day",
+   "winStillOpen": 1,
+   "reasonsAfterSave": [
+    "ALL AVAIL is for one day"
+   ],
+   "preSave": {
+    "reasonsShown": [
+     "ALL AVAIL is for one day"
+    ]
+   }
+  },
+  "b-fly-with": {
+   "before": "{\"people\":\"Ranger+ALL AVAIL\",\"type\":\"Duty\",\"date\":\"Jul 15\",\"to\":null,\"days\":null}",
+   "after": "{\"people\":\"Ranger+ALL AVAIL\",\"type\":\"Duty\",\"date\":\"Jul 15\",\"to\":null,\"days\":null}",
+   "toast": "ALL AVAIL is for one day || ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other",
+   "winStillOpen": 1,
+   "reasonsAfterSave": [
+    "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other"
+   ],
+   "preSave": {
+    "reasonsShown": [
+     "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other"
+    ]
+   }
+  },
+  "c-filed": [
+   {
+    "iid": "imqoidgg0o0o4zi",
+    "type": "Training",
+    "date": "Jul 14",
+    "s": 600,
+    "e": 660,
+    "people": [
+     "bane",
+     "nick"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "c-personal": {
+   "before": "{\"people\":\"Ranger+Tally\",\"type\":\"Training\",\"date\":\"Jul 14\",\"to\":null,\"days\":null}",
+   "after": "{\"people\":\"Ranger+Tally\",\"type\":\"Training\",\"date\":\"Jul 14\",\"to\":null,\"days\":null}",
+   "toast": "Input added for 2 people || A Personal input is one person’s own",
+   "winStillOpen": 1,
+   "reasonsAfterSave": [
+    "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other"
+   ],
+   "preSave": {
+    "reasonsShown": [
+     "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other"
+    ]
+   }
+  },
+  "d1-window-with-OML-first": {
+   "severalToggles": 0,
+   "personField": 1,
+   "reasons": []
+  },
+  "d2-two-picked-before-kind": {
+   "n": 61,
+   "pressed": [
+    "bane",
+    "stiff",
+    "nick"
+   ]
+  },
+  "d2-after-kind-OML": {
+   "picker": {
+    "n": 61,
+    "pressed": [
+     "bane",
+     "stiff",
+     "nick"
+    ]
+   },
+   "toast": "",
+   "reasons": [
+    "A medical entry is filed for one person at a time — each needs its own document",
+    "Keep Saber only"
+   ],
+   "typeNow": "OML"
+  },
+  "d2-after-save": {
+   "toast": "A medical entry is filed for one person at a time — each needs its own document",
+   "win": 1,
+   "nInputsBefore": 51,
+   "nInputsAfter": 51,
+   "reasons": [
+    "A medical entry is filed for one person at a time — each needs its own document",
+    "Keep Saber only"
+   ]
+  },
+  "errors": []
+ },
+ "H9": {
+  "filed-on-time": {
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "late": null,
+   "lateKeys": [],
+   "peopleKeys": [
+    "p",
+    "by",
+    "at"
+   ]
+  },
+  "read-1-ontime-before": {
+   "list": {
+    "text": "Hex, Ranger 15 Jul 14:00–15:00 Ontime meet MEETING till 15 JulBy Saber now ",
+    "late": []
+   },
+   "card": {
+    "late": [],
+    "text": [
+     "14:00–15:00 Hex, RangerMEETING Ontime meet · till 15 Jul By Saber"
+    ]
+   },
+   "week": [
+    {
+     "text": "ONTIME MEET MEETING 14:00 15:00 Hex C Ranger IP + ADD till 15 Jul",
+     "late": []
+    }
+   ]
+  },
+  "after-add-in-window": {
+   "people": [
+    "Ranger",
+    "Hex",
+    "Tally"
+   ],
+   "late": null,
+   "lateKeys": [],
+   "peopleKeys": [
+    "p",
+    "by",
+    "at"
+   ]
+  },
+  "read-2-after-window-add": {
+   "list": {
+    "text": "Hex, Ranger, Tally 15 Jul 14:00–15:00 Ontime meet MEETING LATEtill 15 JulBy Saber 22 Jun 26 ",
+    "late": [
+     "latetag|LATE|in:-"
+    ]
+   },
+   "card": {
+    "late": [
+     "sd-late|LATE|in:-"
+    ],
+    "text": [
+     "LATE 14:00–15:00 Hex, Ranger, TallyMEETING Ontime meet · till 15 Jul By Saber"
+    ]
+   },
+   "week": [
+    {
+     "text": "ONTIME MEET MEETING 14:00 15:00 Hex C Ranger IP Tally O + ADD LATE till 15 Jul",
+     "late": [
+      "rmk has-late|LATEtill 15 Jul|in:-",
+      "latetag|LATE|in:-"
+     ]
+    }
+   ]
+  },
+  "after-schedule-add": {
+   "toast": "Anvil added to Ontime meet",
+   "inputs": {
+    "people": [
+     "Ranger",
+     "Hex",
+     "Tally",
+     "Anvil"
+    ],
+    "late": null,
+    "lateKeys": [],
+    "peopleKeys": [
+     "p",
+     "by",
+     "at"
+    ]
+   }
+  },
+  "read-3-after-schedule-add": {
+   "list": {
+    "text": "Anvil, Hex, Ranger, Tally 15 Jul 14:00–15:00 Ontime meet MEETING LATEtill 15 JulBy Saber 22 Jun 26 ",
+    "late": [
+     "latetag|LATE|in:-"
+    ]
+   },
+   "card": {
+    "late": [
+     "sd-late|LATE|in:-"
+    ],
+    "text": [
+     "LATE 14:00–15:00 Anvil, Hex, Ranger, TallyMEETING Ontime meet · till 15 Jul By Saber"
+    ]
+   },
+   "week": [
+    {
+     "text": "ONTIME MEET MEETING 14:00 15:00 Anvil IP Hex C Ranger IP Tally O + ADD LATE till 15 Jul",
+     "late": [
+      "rmk has-late|LATEtill 15 Jul|in:-",
+      "latetag|LATE|in:-"
+     ]
+    }
+   ]
+  },
+  "sched-only-before": [
+   {
+    "text": "SCHED MEET MEETING 14:00 15:00 Hex C Ranger IP + ADD till 17 Jul",
+    "late": []
+   }
+  ],
+  "sched-only-after": {
+   "toast": "Blade added to Sched meet",
+   "week": [
+    {
+     "text": "SCHED MEET MEETING 14:00 15:00 Blade IP Hex C Ranger IP + ADD till 17 Jul",
+     "late": []
+    }
+   ]
+  },
+  "filed-late": {
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "late": null,
+   "lateKeys": [],
+   "peopleKeys": [
+    "p",
+    "by",
+    "at"
+   ]
+  },
+  "read-4-filed-late": {
+   "list": {
+    "text": "Hex, Ranger 16 Jul 14:00–15:00 Late meet MEETING LATEtill 16 JulBy Saber now ",
+    "late": [
+     "latetag|LATE|in:-"
+    ]
+   },
+   "card": {
+    "late": [
+     "sd-late|LATE|in:-"
+    ],
+    "text": [
+     "LATE 14:00–15:00 Hex, RangerMEETING Late meet · till 16 Jul By Saber"
+    ]
+   },
+   "week": [
+    {
+     "text": "LATE MEET MEETING 14:00 15:00 B Hex C C Ranger IP + ADD LATE till 16 Jul",
+     "late": [
+      "rmk has-late|LATEtill 16 Jul|in:-",
+      "latetag|LATE|in:-"
+     ]
+    }
+   ]
+  },
+  "errors": []
+ },
+ "H10": {
+  "filed": {
+   "people": [
+    "Drifter",
+    "Hunter",
+    "Ranger",
+    "Tally",
+    "ALL AVAIL"
+   ],
+   "by": "Saber"
+  },
+  "bar": {
+   "bars": [
+    "4 + ALL AVAIL · Big brief"
+   ]
+  },
+  "card": [
+   "14:00–15:00 Drifter, Hunter, Ranger, Tally, ALL AVAILMEETING Big brief · till 15 Jul By Saber"
+  ],
+  "list-row": "Drifter, Hunter, Ranger, Tally, ALL AVAIL 15 Jul 14:00–15:00 Big brief MEETING till 15 JulBy Saber now ",
+  "list-row-has-plus-n": false,
+  "filter-options-sample": [
+   "Everyone",
+   "ALL AVAIL",
+   "ALL",
+   "Ace",
+   "Anvil"
+  ],
+  "filter-Hunter": {
+   "listShows": true,
+   "row": "Drifter, Hunter, Ranger, Tally, ALL AVAIL 15 Jul 14:00–15:00 Big brief MEETING till 15 JulBy Saber now "
+  },
+  "filter-Tally": {
+   "listShows": true,
+   "row": "Drifter, Hunter, Ranger, Tally, ALL AVAIL 15 Jul 14:00–15:00 Big brief MEETING till 15 JulBy Saber now "
+  },
+  "filter-Grit": {
+   "listShows": false,
+   "row": null
+  },
+  "calendar-filter-Grit": {
+   "bars": []
+  },
+  "calendar-filter-Hunter": {
+   "bars": [
+    "4 + ALL AVAIL · Big brief"
+   ]
+  },
+  "errors": []
+ },
+ "H11": {
+  "filed": {
+   "oil": {
+    "2026-07-18": 0.5
+   },
+   "people": [
+    "Ranger",
+    "Tally",
+    "Hex"
+   ]
+  },
+  "week-oil-bars-before": [
+   "Hex:ho",
+   "Ranger:ho",
+   "Tally:ho"
+  ],
+  "saber-window": {
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    "pp-all-pilots:All",
+    "pp-all-wsos:All",
+    "pp-all-personnel:All",
+    "inTypeHelp:?",
+    "oil-revise:Change…",
+    "inpEditDel:Delete",
+    "inpEditCancel:Cancel",
+    "inpEditSave:Save"
+   ],
+   "oilText": [
+    "OIL | CCL | PL | FCL ",
+    "OIL | credited on its non-working day | Change… | Placed by Saber for 3 people · 22 Jun 26, 09:00 "
+   ],
+   "yourOil": false,
+   "tail": "| Personal | Appointment | Duty | Event | OD | Other | TITLE | DATES | Jul 18 | WHEN | all day | REMARKS | OIL | credited on its non-working day | Change… | Placed by Saber for 3 people · 22 Jun 26, 09:00 | Date changes apply to all 3. | Delete | Cancel | Save"
+  },
+  "change-buttons": 1,
+  "after-change-click": {
+   "sheet": 1,
+   "text": "OIL — Hex +2, Sat drill\n✕\nTHIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH)\nDoes it deserve HO — half a day of OIL?\nYes — credit HO\nNo OIL\nThe credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it.\nChoose an option above\nCancel\nSave",
+   "win": 1
+  },
+  "after-answer-no": {
+   "toast": "Input updated",
+   "inputs": {
+    "oil": {
+     "2026-07-18": 0
+    },
+    "people": [
+     "Ranger",
+     "Tally",
+     "Hex"
+    ]
+   },
+   "win": 0
+  },
+  "week-oil-bars-after": [
+   "Hex:none",
+   "Ranger:none",
+   "Tally:none"
+  ],
+  "board-oil-earn-row": [
+   "till 18 Jul :: Hex:, Ranger:, Tally:"
+  ],
+  "bell-Ranger": {
+   "oilQuestion": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "Sat drillSat 18 Jul You were added · Saber now"
+     }
+    ]
+   }
+  },
+  "bell-Tally": {
+   "oilQuestion": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "Sat drillSat 18 Jul You were added · Saber now"
+     }
+    ]
+   }
+  },
+  "bell-Hex": {
+   "oilQuestion": 0,
+   "list": {
+    "empty": null,
+    "lines": [
+     {
+      "unread": true,
+      "text": "Sat drillSat 18 Jul You were added · Saber now"
+     }
+    ]
+   }
+  },
+  "errors": []
+ },
+ "H12": {
+  "filed": [
+   {
+    "iid": "imqoidgg0pjua65",
+    "type": "Training",
+    "title": "Tally solo",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "people": [
+     "nick"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "badge-after-tap": "Saber · Member",
+  "saber-member-view": {
+   "badge": "Saber · Member",
+   "textTail": "PE | ? | LL | OL | OIL | CCL | PL | FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | DATES | Jul 15 | WHEN | all day | REMARKS | Placed by Saber for Tally · 22 Jun 26, 09:00 | Delete | Cancel | Save",
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    "inTypeHelp:?",
+    "inpEditDel:Delete",
+    "inpEditCancel:Cancel",
+    "inpEditSave:Save"
+   ],
+   "save": 1,
+   "del": 1,
+   "takeout": 0,
+   "pickerToggles": 1,
+   "pickerPucks": 0,
+   "reasonLines": [],
+   "domControls": [
+    "inpEditType:select",
+    "inpEditOwnTitle:input",
+    "inpEditStart:input",
+    "inpEditEnd:input",
+    "inpEditRmk:input"
+   ]
+  },
+  "saber-member-view-typed": {
+   "before": "Tally solo",
+   "after": "Tally soloZZ"
+  },
+  "badge-back": "Saber · Admin",
+  "ranger-member": {
+   "badge": "Ranger · Member",
+   "textTail": " LL | OL | OIL | CCL | PL | FCL | EL | CL | HL | OML | ATT C | ATT B | Upchit | Training | CSE | Meeting | Fly with | Personal | Appointment | Duty | Event | OD | Other | TITLE | WHEN | all day | REMARKS | Placed by Saber for Tally · 22 Jun 26, 09:00 | Only Tally or an admin can change this. | Close",
+   "buttons": [
+    "win-inputedit-x:✕",
+    "pp-several:Several people",
+    "inpEditCancel:Close"
+   ],
+   "save": 0,
+   "del": 0,
+   "takeout": 0,
+   "pickerToggles": 1,
+   "pickerPucks": 0,
+   "reasonLines": [
+    "Only Tally or an admin can change this."
+   ],
+   "domControls": [
+    "inpEditType:select",
+    "inpEditOwnTitle:input",
+    "inpEditStart:input",
+    "inpEditEnd:input",
+    "inpEditRmk:input"
+   ]
+  },
+  "ranger-member-typed": {
+   "before": "Tally solo",
+   "after": "Tally solo"
+  },
+  "errors": []
+ },
+ "verdicts": {
+  "H1": "PASS",
+  "H2": "PASS",
+  "H3": "PASS",
+  "H4": "PARTIAL",
+  "H5": "PASS",
+  "H6": "FAIL (as written; alone-case refusal passes)",
+  "H7": "PARTIAL (bell clause not walked)",
+  "H8": "PASS",
+  "H9": "RECORDED",
+  "H10": "PASS",
+  "H11": "PASS",
+  "H12": "FAIL (admin in member view edits); member reader PASS"
+ }
+}

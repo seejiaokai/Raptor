@@ -1,0 +1,35 @@
+filed LL for stiff on Jul 13
+filed Meeting for freak on Jul 13
+filed Appointment for nact on Jul 13
+filed ATT B for bane on Jul 13
+filed OD for wolf on Jul 14
+filed SANS Availability for badger on Jul 13
+filed SANS Availability for bullet on Jul 14
+filed Training for slipway on Jul 18
+filed Training for divot on Jul 18
+filed Training for pump on Jul 18
+filed Duty for allavail on Jul 18
+filed Meeting for all on Jul 14
+filed Training for allavail on Jul 19
+w1: engine records saved
+w1: weeks and crew list saved (armed on 0.0.0.0.p, g:0.0, d:0.0.0)
+w1: seven boards saved
+publish Monday: 4 sign-offs set; published days now [0]
+filed after publishing: LL for dirty
+filed after publishing: Appointment for pump
+pub: engine records saved
+pub: weeks and crew list saved (armed on 0.0.0.0.p, g:0.0, d:0.0.0)
+pub: Monday reads 1 pending in all
+member view saved
+inputs calendar: back to July ok
+inputs list saved
+sans calendar on: JULY 2026
+sans day opened: ⠿ Mon 13 Jul Day flying ✕ FIGURE PILOTS WSOS Required to fly – – Available 27 15 SANS committed to fly 0 2 Still needed – – + Commitment Calendar… WSOS · 2 TO F
+inputs, SANS and medical saved
+leave war saved (1422823 characters, settled true)
+week after: 20/07/2026 → ["Jul 20","Jul 21","Jul 22","Jul 23","Jul 24","Jul 25","Jul 26"]
+w2: engine records saved
+w2: weeks and crew list saved (armed on 0.0.0.0.p, g:0.0, d:0.0.0)
+w2: boards of Wed, Thu, Sat saved
+phone screens saved
+browser errors: none

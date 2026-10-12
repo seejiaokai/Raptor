@@ -19,14 +19,20 @@ async function month(p: Page, y: number, m: number) {
   throw new Error('the calendar never reached the month asked for')
 }
 /* made-up inputs of the demo squadron's own people, filed through the app's own door */
-async function file(p: Page, rows: Array<{ who: number; type: string; from: string; to?: string; timed?: [number, number]; more?: Record<string, unknown> }>) {
+/* (`also` — more of the demo crew in the SAME input: an input is ONE record with the list of its people, owner D756; each
+   is put in by whoever `more.by` says filed it, at its moment) */
+async function file(p: Page, rows: Array<{ who: number; also?: number[]; type: string; from: string; to?: string; timed?: [number, number]; more?: Record<string, unknown> }>) {
   return p.evaluate(rows => {
     const w = window as any, P = w.PEOPLE
     const crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
     const out: string[] = []
     rows.forEach((r, i) => {
       const iid = 'e2e-' + Date.now().toString(36) + '-' + i
-      w.fileInput({ iid, person: crew[r.who % crew.length], type: r.type, date: r.from, endDate: r.to, yr: 2026, allday: !r.timed, s: r.timed ? r.timed[0] : 360, e: r.timed ? r.timed[1] : 1080, ...(r.more || {}) })
+      const m: any = r.more || {}
+      const whose = r.also
+        ? { people: [r.who, ...r.also].map(k => ({ p: crew[k % crew.length], ...(m.by != null ? { by: m.by } : {}), ...(m.at != null ? { at: m.at } : {}) })) }
+        : { person: crew[r.who % crew.length] }
+      w.fileInput({ iid, ...whose, type: r.type, date: r.from, endDate: r.to, yr: 2026, allday: !r.timed, s: r.timed ? r.timed[0] : 360, e: r.timed ? r.timed[1] : 1080, ...m })
       out.push(iid)
     })
     return out
@@ -683,9 +689,10 @@ test('a member files a meeting for himself and another man from the month: ONE b
   await page.fill('#inpEditRmk', 'flight meeting')
   await page.click('#inpEditSave')
   await expect(edWin(page)).toHaveCount(0)
-  const made = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => ({ iid: r.iid, person: r.person, grp: r.grp, grpBy: r.grpBy })), had)
-  expect(made).toHaveLength(2)
-  expect(made[0].grp, 'one shared input').toBeTruthy(); expect(made[1].grp).toBe(made[0].grp)
+  /* ONE record for the two of them, he its filer (owner D756 — an input is stored once, with the list of its people) */
+  const made = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => ({ iid: r.iid, people: (r.people || [{ p: r.person }]).map((e: any) => e.p), by: r.by })), had)
+  expect(made, 'one shared input').toHaveLength(1)
+  expect(made[0].people).toHaveLength(2); expect(made[0].people).toContain(other)
   /* ONE bar on the month for the two of them, saying how many and what — "2 · Meeting" (the count first since the
      design vet, D729 V4; it said the first man and "+1" until then) */
   const bars = page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Meeting$/ })
@@ -701,9 +708,10 @@ test('a member files a meeting for himself and another man from the month: ONE b
   await pick(page).locator(`[data-pp="${other}"]`).click()
   await page.click('#inpEditSave')
   await expect(edWin(page)).toHaveCount(0)
-  const left = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => r.person), had)
-  expect(left).toHaveLength(1)
-  expect(left[0]).not.toBe(other)
+  const left = await page.evaluate(had => (window as any).INPUTS.filter((r: any) => !had.includes(r.iid)).map((r: any) => (r.people || [{ p: r.person }]).map((e: any) => e.p)), had)
+  expect(left, 'still the one record').toHaveLength(1)
+  expect(left[0]).toHaveLength(1)
+  expect(left[0][0]).not.toBe(other)
   await expect(page.locator('#inpCal .ib-bar').filter({ hasText: /^2 · Meeting$/ }), 'his own again: no count on its bar').toHaveCount(0)
 })
 
@@ -811,8 +819,8 @@ test('one holiday, one word: "ND" for a National Day on the "Calendar" month, th
    real browser can say: that the calendar is THERE in the window a bar opens, that a real press on two of its days and
    on Save moves the ONE bar to those days for every man, that one press of Undo puts it back — and, on a phone, that
    the calendar fits the window's width and Save can still be reached under it. The rules are `ui/groupeditor.test.tsx`. */
-const sharedMeeting = (p: Page, from: string) => file(p, [0, 1, 2].map(who => ({ who, type: 'Meeting', from, timed: [600, 660] as [number, number],
-  more: { grp: 'e2e-g681', grpBy: 'stiff', by: 'stiff', at: '2026-09-01T08:00:00.000Z', remarks: 'range brief' } })))
+const sharedMeeting = (p: Page, from: string) => file(p, [{ who: 0, also: [1, 2], type: 'Meeting', from, timed: [600, 660] as [number, number],
+  more: { by: 'stiff', at: '2026-09-01T08:00:00.000Z', remarks: 'range brief' } }])
 const sharedBar = (p: Page) => p.locator('.ib-bar[data-iid]').filter({ hasText: /^3 · Meeting/ })
 test('a saved shared input: its window carries the calendar; two presses and Save move the ONE bar for every man; one Undo puts it back (D681)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
@@ -1201,7 +1209,7 @@ test('a phone: in an opened day a long title, a long remark and fourteen names a
       const w = window as any, P = w.PEOPLE, crew = Object.keys(P).filter(id => !P[id].san && !P[id].archived && !P[id].deleted && !P[id].special && !P[id].pers)
       w.fileInput({ iid: 'e2e-longwords', person: crew[2], type: 'Event', title: 'Squadron family day and open house', date: 'Oct 14', yr: 2026, allday: true, remarks: 'A very long remark that runs on and on past the card, to the next line and beyond it' })
       w.fileInput({ iid: 'e2e-longrmk', person: crew[3], type: 'Other', date: 'Oct 14', yr: 2026, allday: false, s: 1020, e: 1110, remarks: 'Collecting a new ID card from the pass office before lunch, then the bank' })
-      crew.slice(4, 18).forEach((p: string, i: number) => w.fileInput({ iid: 'e2e-many-' + i, person: p, type: 'Meeting', date: 'Oct 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '', grp: 'e2e-many', grpBy: crew[0], by: crew[0], at: Date.UTC(2026, 8, 1) }))
+      w.fileInput({ iid: 'e2e-many-0', people: crew.slice(4, 18).map((p: string) => ({ p, by: crew[0], at: Date.UTC(2026, 8, 1) })), type: 'Meeting', date: 'Oct 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '', by: crew[0], at: Date.UTC(2026, 8, 1) })
     })
     await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
     await expect(page.locator('[data-testid="win-inputsday"]')).toBeVisible()
@@ -1239,9 +1247,9 @@ test('a phone: in an opened day a long title, a long remark and fourteen names a
 const vetWorld = (p: Page) => file(p, [
   { who: 0, type: 'LL', from: 'Oct 13' },
   { who: 1, type: 'Appointment', from: 'Oct 13', timed: [600, 660] },
-  ...[2, 3, 4, 5, 6, 7, 8, 9, 10].map(who => ({ who, type: 'Event', from: 'Oct 14', timed: [900, 930] as [number, number],
+  { who: 2, also: [3, 4, 5, 6, 7, 8, 9, 10], type: 'Event', from: 'Oct 14', timed: [900, 930] as [number, number],
     /* `at` is a moment, as the app stamps one (state/inputstamp.ts) — a record with no readable moment has no filer (D56) */
-    more: { grp: 'e2e-vet9', grpBy: 'stiff', by: 'stiff', at: Date.UTC(2026, 8, 1, 8), title: 'Squadron photo', remarks: 'outside the hangar' } })),
+    more: { by: 'stiff', at: Date.UTC(2026, 8, 1, 8), title: 'Squadron photo', remarks: 'outside the hangar' } },
 ])
 /* how bright a painted colour is, 0–255, whichever way the browser writes it ("rgb(…)" or "color(srgb …)") */
 const LUM = `(c => { const m = c.match(/[\\d.]+/g).map(Number); const k = /srgb/.test(c) ? 255 : 1; return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) * k })`

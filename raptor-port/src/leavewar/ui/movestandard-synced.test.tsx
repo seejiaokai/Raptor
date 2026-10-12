@@ -8,7 +8,7 @@
 // wireLeaveWarSync, as main.tsx does), because an approved leave lives on the Inputs page.
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../../engine/inputs'
+import { INPUTS, holds } from '../../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../../state/store'
 import { setMe, setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
@@ -41,7 +41,7 @@ describe('approved leave beside leave filed on the Inputs page (Fable’s S10)',
     setBidStates(cells, 'approved')
     const row = { iid: 'mss1', person: 'ammo', type: 'LL', date: 'Feb 18', yr: 2026, half: 'pm', s: 721, e: 1439, remarks: '', mod: '2026-02-01' }
     expect(writeInputs(() => { INPUTS.unshift(row) })).toBe(true)
-    expect(INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL' && r.date === 'Feb 18')).toHaveLength(2)
+    expect(INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL' && r.date === 'Feb 18')).toHaveLength(2)
   })
 
   it('the approved leave is a record that moves; a block’s Delete would take nothing', () => {
@@ -58,7 +58,7 @@ describe('approved leave beside leave filed on the Inputs page (Fable’s S10)',
 
   it('and the move goes: the approved morning slides, the filed afternoon stays', () => {
     expect(moveCells(cells, 2)).toBe('moved')
-    const ll = INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL')
+    const ll = INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL')
     expect(ll.find((r: any) => r.lw)?.date).toBe('Feb 20')
     expect(ll.some((r: any) => !r.lw && r.date === 'Feb 18')).toBe(true)
   })

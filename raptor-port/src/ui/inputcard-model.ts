@@ -14,10 +14,16 @@
 
    PURE — no screen, no store. `ui/InputCard.tsx` draws what this answers; nothing else works a card's words out, so the
    day and the list cannot disagree (the roll-call of the plan's §4 names the surfaces that must NOT draw it: the SANS
-   day keeps its pucks with the CAT — D647, D649). */
-import { inpKindTag, inpLabel } from '../engine/inputs'
+   day keeps its pucks with the CAT — D647, D649).
+
+   SINCE THE ONE-RULE BUILD (owner D756, 11 Oct 26; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5) AN
+   INPUT IS ONE RECORD with the list of its people: `rows` is that record as a list of one, who it is for is the
+   record's people (never `person`, never how many records), its filer is its `by`, and a person's own late date rides
+   his entry — read through engine/inputs.ts facesOf, one frozen view a person, for words only. A record stored before
+   that build (one `person`) reads as the one-person input it is. */
+import { facesOf, idsOf, inpKindTag, inpLabel, placeholderOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { toneOf } from './inputscal-model'
+import { namesOf, toneOf } from './inputscal-model'
 import { filerName, filerOf } from './placedline'
 import { hoursOf } from './sanscal-model'
 
@@ -34,7 +40,21 @@ export interface CardFacts {
   by: string
   /** red for an absence, amber for a duty or a commitment */
   tone: 'red' | 'amb'
+  /** the scheduler cancelled it — a CX on its row on the schedule cancels the INPUT (D760); it stays listed */
+  cx: boolean
+  /** the reason he gave ("WX"); '' where none was typed, and always '' on an input that is not cancelled (D767) */
+  why: string
 }
+
+/* A CANCELLED INPUT (owner D760, 11 Oct 26; its look D767, 12 Oct 26 — the one-rule plan's step 5). The CX is the
+   INPUT's own mark (`cx`, with its reason `cxr` only while cancelled; `cx: false` once brought back — engine/schema.ts),
+   so every screen that draws an input asks these two and nothing else: the card and the List's row draw a small red CX
+   tag before the title, the title struck through and the reason after it in red; the month's bar is struck through
+   and faded, with no room for either (D767: "for those areas that have no space to show reason it's ok"). */
+export const cxOf = (r: any): boolean => !!(r && r.cx)
+export const cxWhy = (r: any): string => (cxOf(r) ? String(r.cxr || '').trim() : '')
+/** …and in words, for whoever cannot see a strike — a screen reader's label, a bar's tooltip */
+export const cxSays = (r: any): string => (cxOf(r) ? 'Cancelled' + (cxWhy(r) ? ' — ' + cxWhy(r) : '') : '')
 
 const csOf = (id: unknown, people: Record<string, any>): string => {
   const p = people[String(id)]
@@ -73,22 +93,28 @@ export function remarkOnce(remark: string, corner: string): string {
   return (before + after).trim()
 }
 
-/** the facts of one entry's card — `rows` is one record, or the records of one shared input; `corner` is what the
+/** the facts of one input's card — `rows` is its record, as the list of one the screens carry; `corner` is what the
  *  card's right corner says (cardWhen), by which the remark leaves out the "till <date>" the corner already says */
 export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPLE, corner = ''): CardFacts {
   const list = (rows || []).filter(Boolean)
   const r = list[0] || {}
   const filer = filerOf(list)
+  /* everyone it holds — "several people" is how many are IN it, never how many records (D756) */
+  const ids = list.flatMap(x => idsOf(x))
   /* one person: only where someone ELSE placed it (D723) — the card already begins with his name (D720).
      several people: always (D724) — with many names on the card, none of them says who made it */
-  const said = filer != null && (list.length > 1 || String(filer) !== String(r.person))
+  const said = filer != null && (ids.length > 1 || String(filer) !== String(ids[0]))
   return {
-    names: list.map(x => csOf(x.person, people)).sort(az).join(', '),
+    /* every named person A to Z, then the placeholder's own name last (D721, D727 — ui/inputscal-model.ts namesOf, the
+       one order the bar's tooltip and the List's row print too) */
+    names: list.flatMap(x => namesOf(x, people)).join(', '),
     kind: String(r.type || ''),
     title: inpKindTag(r) ? inpLabel(r) : '',
     remark: String(r.remarks || '').trim() ? remarkOnce(String(r.remarks), corner) : '',
     by: said ? filerName(filer, people) : '',
     tone: toneOf(r.type),
+    cx: cxOf(r),
+    why: cxWhy(r),
   }
 }
 
@@ -107,14 +133,20 @@ export function cardWhen(r: any, last: string, iso: string): string {
 /** THE LATE TAG'S NOTE (D646 — pressed, the tag says the cut-off that was missed). '' where nobody is late: no tag.
  *  A shared input says LATE once; where only some of its people are late — a man added later can be late alone — or
  *  their cut-offs differ, the note names who (the List's own rule, 8 Oct 26; the per-man tags went with the pucks —
- *  D721). `lateWord` is the day's own sentence for one record (ui/sanscal-model.ts), '' for one that is not late. */
+ *  D721). `lateWord` is the day's own sentence for one record (ui/sanscal-model.ts), '' for one that is not late.
+ *  ON THE ONE RECORD (the one-rule plan §4.5 "The late mark"): an input is late when its own `mod` is; a person in it is
+ *  late when HIS entry's `mod` is later still. So the sentence is asked of each person's FACE (engine/inputs.ts facesOf
+ *  — the record's fields with his id and his own late date), the placeholder's too: ALL AVAIL is late with the input. */
 export function lateNoteOf(rows: readonly any[], lateWord: (r: any) => string, people: Record<string, any> = PEOPLE): string {
-  const list = (rows || []).filter(Boolean)
-  const lates = list.map(x => ({ who: csOf(x.person, people), note: lateWord(x) })).filter(x => x.note)
+  const list = (rows || []).filter(Boolean).flatMap(x => facesOf(x))
+  /* is this face the input's placeholder? (a face carries its record's fields, so the record's own reader answers) */
+  const isPh = (f: any) => { const ph = placeholderOf(f); return !!ph && String(ph.p) === String(f.person) }
+  const lates = list.map(f => ({ who: csOf(f.person, people), ph: isPh(f), note: lateWord(f) })).filter(x => x.note)
   if (!lates.length) return ''
   const same = lates.every(x => x.note === lates[0].note)
   if (same && lates.length === list.length) return lates[0].note
-  lates.sort((a, b) => az(a.who, b.who))
+  /* named people A to Z, the placeholder last — the card's own order of names (D721, D727) */
+  lates.sort((a, b) => (a.ph === b.ph ? az(a.who, b.who) : a.ph ? 1 : -1))
   if (same) return `${lates.map(x => x.who).join(', ')}: ${lates[0].note}`
   return lates.map(x => `${x.who}: ${x.note}`).join(' · ')
 }

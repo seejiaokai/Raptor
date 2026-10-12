@@ -23,7 +23,8 @@ import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { ridKey, posKey } from '../engine/rowids'
 import { PEOPLE } from '../engine/people'
-import { INPUTS, inpById, inpLabel } from '../engine/inputs'
+import { INPUTS, idsOf, inpById, inpLabel, leadOf } from '../engine/inputs'
+import { namesOf } from './inputscal-model'
 import { dayApproved, approvedDays } from '../engine/publish'
 import { inVersionLook } from './html'
 
@@ -123,7 +124,8 @@ const AIR: Record<string, string> = { ar: 'Area', at: 'Area time', fa: 'Area', f
 
 function inputItem(date: string, iid: string, r: ELogRow): Item {
   const inp: any = inpById(iid)
-  const who = inp ? inp.person : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
+  /* (whose a GONE input was is what its line recorded — `sub`, the first of its people; a live one is read below) */
+  const who = inp ? leadOf(inp) : (r.sub || ((r.to && (PEOPLE as any)[r.to]) ? r.to : ''))
   /* gone, it keeps the type its line recorded (`itype` — Astra's final read, FR-04) */
   const type = inp ? inp.type : (r.itype || '')
   /* …and its NAME: its own title where it has one — off the line once it is gone (`iname`; the check's walk of
@@ -132,21 +134,31 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
   /* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663): keyed by the group its line recorded — never by the input
      as it now stands, so a man since changed alone stays under the filing he was part of. Its title is the kind and how
      many people: those the shared input holds now, or — once it has gone — those its lines name. */
+  /* A LINE THAT CARRIES A GROUP ID WAS WRITTEN FOR AN INPUT STORED BEFORE THE ONE-RULE BUILD (owner D756, 11 Oct 26 — an
+     input is one record with the list of its people; a record that still carries `grp` is one of the old one-a-man
+     records, each a one-person input now — D759 reading 10). Those lines still gather under their filing's one item,
+     as they were written to — READ ONLY: nothing below decides anything about an input as it is filed today, whose
+     item is the plain one at the foot of this function, titled with its people. */
   if (r.grp) {
     /* THE TITLE COUNTS THE NAMES THE ITEM LISTS (`[CAL-TOGO-ONE-ITEM]`'s "also seen" — fixed with `[GROUP-INPUT-ONE-ROW]`
        step 6, the plan §4.8): the men it holds now AND the men its lines name. Counting only those it holds now, an
        input one man had since left was titled "2 people" over a filing line listing three names. */
     const named = new Set<string>(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => String(x.sub)))
-    ;(INPUTS as any[]).forEach(x => { if (x && x.grp === r.grp) named.add(String(x.person)) })
+    ;(INPUTS as any[]).forEach(x => { if (x && x.grp === r.grp) idsOf(x).forEach((p: any) => named.add(String(p))) })
     const n = named.size
-    /* a filing's name: the title its men carry (state/inputgroup.ts SHARED_FIELDS) — EVERY one, where a man since changed
-       alone carries another (Sol's read of the code, 1: the first record's title was said for everybody, and which it
-       was depended on the order the records happened to be stored in). Sorted, so the heading is one thing. */
+    /* a filing's name: the title its men carry (one of the old entry's shared fields — state/inputgroup.ts SHARED_FIELDS,
+       removed with the one-rule build; this branch reads only records stored before it) — EVERY one, where a man since
+       changed alone carries another (Sol's read of the code, 1: the first record's title was said for everybody, and
+       which it was depended on the order the records happened to be stored in). Sorted, so the heading is one thing. */
     const names = [...new Set((INPUTS as any[]).filter(x => x && x.grp === r.grp).map(x => inpLabel(x)))].sort((a, b) => a.localeCompare(b))
     const gname = names.length ? names.join(' / ') : name
     return { id: `${date}|IG|${r.grp}`, title: `Input${gname ? ' · ' + gname : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }
   }
-  const title = inp ? `Input · ${csOf(inp.person)} · ${inpLabel(inp)}` : who ? `Input · ${csOf(who)}${name ? ' · ' + name : ''}` : 'Input'
+  /* ITS PEOPLE'S NAMES — every named person A to Z, then its placeholder (owner D721, D727; ui/inputscal-model.ts
+     namesOf, the one order the card, the bar's tooltip and the List's row print): for an input of one person exactly
+     what it always read, "Input · Ranger · LL"; for several, "Input · Ace, Ranger, Saber · Meeting" (D663's one item,
+     now that the input itself is one record). A gone input keeps the one name its line recorded. */
+  const title = inp ? `Input · ${namesOf(inp).join(', ')} · ${inpLabel(inp)}` : who ? `Input · ${csOf(who)}${name ? ' · ' + name : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
 }
 
@@ -262,8 +274,15 @@ function ownWords(r: ELogRow, item: Item): string {
   if (r.fld === 'mission-role') { const i = lbl.indexOf(' · mission role · '); return i < 0 ? lbl : lbl.slice(i + ' · mission role · '.length) }
   /* under a group filing's item every line NAMES its man — the heading is the kind and how many (D663) */
   if (r.grp) return lbl
-  const who = r.sub || (r.iid ? (inpById(r.iid) as any)?.person : '')
-  for (const lead of [`Leave War · ${csOf(who)} · `, `${csOf(who)} · `]) if (who && lbl.startsWith(lead)) return lbl.slice(lead.length)
+  const inp: any = r.iid ? inpById(r.iid) : null
+  /* a line about ONE person put into or taken out of an input (state/changelines.ts marks it `one`, filed under him:
+     "Ranger · Meeting 15 Jul · added") keeps his name — under an item headed by everyone in it, the name IS the news */
+  if ((r as any).one) return lbl
+  const who = r.sub || (inp ? leadOf(inp) : '')
+  /* …and a line about the input itself leads with everyone in it ("Ace, Ranger · Meeting 15 Jul · times" — the same
+     names, in the same order, as the item's own heading), which is dropped like one person's callsign always was */
+  const all = inp ? namesOf(inp).join(', ') : ''
+  for (const lead of [`Leave War · ${csOf(who)} · `, ...(all ? [`${all} · `] : []), `${csOf(who)} · `]) if (who && lbl.startsWith(lead)) return lbl.slice(lead.length)
   return item.title === lbl ? '' : lbl
 }
 function entryOf(l: CLine, r: ELogRow, day?: string | null): Entry {

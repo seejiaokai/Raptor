@@ -5,7 +5,7 @@
 // amending a weekend day, "OK, seen" permissions and undo, and the OIL pass's
 // fixed point around absences.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf } from '../engine/publish'
@@ -60,7 +60,7 @@ const gridIn = (p: string, d: string) => warOf(d).grid[p]?.[d]
 const recsIn = (p: string, d: string) => (rawState().wars.find(w => w.period.start <= d && d <= w.period.end)!.recs[p]?.[d] ?? [])
 /* the day as the SCREEN reads it — the merged view, not the stored records */
 const view = (p: string, d: string) => getState().wars.find(w => w.period.start <= d && d <= w.period.end)!.views[p]?.[d]
-const lwRows = (p: string) => INPUTS.filter((r: any) => r.person === p && r.lw)
+const lwRows = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw)
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 
 describe('halves across doors', () => {
@@ -106,9 +106,9 @@ describe('a medical that swallows a whole leave', () => {
   it('removes the leave entirely, and undo brings it back', () => {
     file('rocky', 'LL', 'Feb 10', { endDate: 'Feb 11' })
     expect(file('rocky', 'ATT C', 'Feb 09', { endDate: 'Feb 13' }).ok).toBe(true)
-    expect(INPUTS.filter((r: any) => r.person === 'rocky' && r.type === 'LL')).toHaveLength(0)
+    expect(INPUTS.filter((r: any) => holds(r, 'rocky') && r.type === 'LL')).toHaveLength(0)
     expect(globalUndo().ok).toBe(true)
-    expect(INPUTS.filter((r: any) => r.person === 'rocky' && r.type === 'LL')).toHaveLength(1)
+    expect(INPUTS.filter((r: any) => holds(r, 'rocky') && r.type === 'LL')).toHaveLength(1)
     expect(grid('rocky', '2026-02-10')).toBe('LL')
   })
 
@@ -207,7 +207,7 @@ describe('the OIL pass is idempotent around absences', () => {
     runOilPass()
     expect(JSON.stringify(recsIn('plasma', sat))).toBe(withLeave)   // a fixed point
 
-    const row = INPUTS.find((r: any) => r.person === 'plasma' && r.type === 'LL')!
+    const row = INPUTS.find((r: any) => holds(r, 'plasma') && r.type === 'LL')!
     writeInputs(() => { INPUTS.splice(INPUTS.indexOf(row), 1) })
     runOilPass()
     const once = JSON.stringify(recsIn('plasma', sat))

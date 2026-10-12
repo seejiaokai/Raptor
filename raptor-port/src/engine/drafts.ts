@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut, dayPendingItems } from './publish'
 import { inputProtected } from './quarantine'
-import { INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName } from './inputs'
+import { INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
 import { PEOPLE } from './people'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
@@ -93,8 +93,8 @@ const leaveOut = (di: number, nd: any, kept = true) => {
     /* named from the request; from the row itself if the request is gone (the row carries whose and what — the
        pending list's own fallback, D114-2) */
     const inp: any = INPUTS.find((i: any) => inpId(i) === x.id), r: any = x.row || {}
-    const pid = inp ? inp.person : r.who
-    const who = pid && (PEOPLE as any)[pid] ? (PEOPLE as any)[pid].cs : String(pid || '')
+    const csOf = (pid: any) => (pid && (PEOPLE as any)[pid] ? (PEOPLE as any)[pid].cs : String(pid || ''))
+    const who = inp ? idsOf(inp).map(csOf).join(', ') : csOf(r.who)
     const what = inp ? inpLabel(inp) : (goneRequestName(r) || 'A request')
     /* a row whose request stands on ANOTHER week names that day ([REQ-ORPHAN-ROW], 28 Sep 26 — "on Sun 19 Jul's programme") */
     /* …and one whose request covers a saved week that cannot be read is left out on that unknown, and says so (Astra's

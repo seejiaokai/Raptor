@@ -13,14 +13,13 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor, oilGate, draftOf, commitInputEdit, setInpField, reassignInput } from './inputedit'
-import { inputRows, csvText } from './export'
 import { oilRequestName, oilClaimWhat } from './oilmode'
 import { dayEntries } from './InputsCal'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
 import { me } from '../state/perms'
-import { INPUTS, INPUT_TYPES, titledKind, offWord } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, titledKind, offWord, idsOf, inputLines } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { ELOG } from '../engine/editlog'
@@ -420,16 +419,9 @@ describe('the other places that name an input (both reads of the plan)', () => {
     expect(oilRequestName('i:' + t.iid)).toBe('Sports day')
     expect(oilRequestName('i:' + u.iid)).toBe('event')
   })
-  it('the Inputs export keeps Type and adds Title — the title, or the kind where it has none; a formula-like title is neutralised', async () => {
-    const t = await filed({ title: 'Sports day' }), u = await filed({ date: 'Oct 14' }), f = await filed({ date: 'Oct 15', title: '=SUM(A1)' })
-    const rows = inputRows([t, u, f])
-    expect(rows[0]).toEqual(['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks'])
-    expect([rows[1][5], rows[1][6]]).toEqual(['Event', 'Sports day'])
-    expect([rows[2][5], rows[2][6]]).toEqual(['Event', 'Event'])
-    const csv = csvText(rows)
-    expect(csv).toContain('Sports day')
-    expect(csv, 'never a live formula').not.toMatch(/(^|,)=SUM/m)
-  })
+  /* (RETIRED BY NAME — owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can remove it.": "the Inputs export keeps Type and adds Title — … a formula-like title is
+     neutralised" pinned ui/export.ts inputRows, which is gone. That a formula-like cell is neutralised in every file the
+     app still writes is the text builder's own case — ui/export.test.ts csvText.) */
   it('the opened day finds an input by its title, as the month’s bar does', async () => {
     const t = await filed({ title: 'Regatta', remarks: '' })
     const hit = dayEntries('2026-10-13', { fPerson: 'all', fType: 'all', fSearch: 'regat' })
@@ -461,20 +453,45 @@ describe('an edit that does not speak of the title leaves it alone', () => {
 })
 
 describe('a shared input and the List’s own OIL question', () => {
-  it('a shared input’s title is typed once, in its window, and reaches every man’s record; typed back, every record loses it', async () => {
+  /* RE-EXPRESSED ON THE ONE RECORD (the one-rule build, step 2 — owner D756, D759): a shared input is ONE stored record
+     with the list of its people, where it was a record a man tied by a group id. "Every man's record" is now every
+     man's LINE of the one record (engine/inputs.ts inputLines — what the rules about one man's day read). */
+  it('a shared input’s title is typed once, in its window, and reaches every man in it; typed back, every man loses it', async () => {
     const [x, y] = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)
-    const a = await filed({ person: x, grp: 'gT1', grpBy: admin }), b = await filed({ person: y, grp: 'gT1', grpBy: admin })
+    const stamp = '2026-09-01T08:00:00.000Z'
+    const row = { iid: 'ttShared', people: [x, y].map(p => ({ p, by: admin, at: stamp })), by: admin, at: stamp, type: 'Event', date: 'Oct 13', yr: 2026,
+      allday: false, s: 600, e: 660, remarks: '', mod: '2026-09-01' }
+    let ok = false
+    await act(async () => { ok = writeInputs(() => { INPUTS.push(row) }); notify() })
+    expect(ok, 'the fixture itself is a legal record').toBe(true)
+    const a = live('ttShared')
+    const lines = () => inputLines([live(a.iid)])
     await openOn(a)
     expect(box(), 'the shared window carries the Title box').toBeTruthy()
     await type('#inpEditOwnTitle', 'Team day')
     await click($('#inpEditSave'))
     expect(win(), 'saved: the window has closed').toBeNull()
-    expect([live(a.iid).title, live(b.iid).title]).toEqual(['Team day', 'Team day'])
+    expect(lines().map((l: any) => [l.person, l.title])).toEqual([[x, 'Team day'], [y, 'Team day']])
+    expect(idsOf(live(a.iid)), 'still the one input of the two').toEqual([x, y])
     await openOn(a)
     expect(box()!.value).toBe('Team day')
     await type('#inpEditOwnTitle', 'Event')
     await click($('#inpEditSave'))
-    expect(['title' in live(a.iid), 'title' in live(b.iid)]).toEqual([false, false])
+    expect(lines().map((l: any) => [l.person, 'title' in l])).toEqual([[x, false], [y, false]])
+    expect('title' in live(a.iid)).toBe(false)
+  })
+  /* THE OLD SHAPE, STILL READ (D759 reading 10 — "shared inputs saved before this build are read as one-person inputs";
+     stored data only, D56): records tied by the old group id are each an input of their own, so a title typed in one
+     man's window is that man's input's alone. */
+  it('OLD-SHAPE records tied by a group id (D759 reading 10): a title typed in one’s window is that one input’s — the other keeps none', async () => {
+    const [x, y] = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)
+    const a = await filed({ person: x, grp: 'gT1', grpBy: admin }), b = await filed({ person: y, grp: 'gT1', grpBy: admin })
+    await openOn(a)
+    await type('#inpEditOwnTitle', 'Team day')
+    await click($('#inpEditSave'))
+    expect(win(), 'saved: the window has closed').toBeNull()
+    expect(live(a.iid).title).toBe('Team day')
+    expect('title' in live(b.iid), 'the other man’s own input is untouched').toBe(false)
   })
 
   it('the List’s "+ Input" on a weekend: the OIL question is headed by the typed title', async () => {
@@ -557,9 +574,15 @@ describe('the List’s "+ Input", filed for several people (Astra 2 — restated
     const wedOf = () => [...document.querySelectorAll('#inpEdCal [data-cal]')].find(c => new Date(c.getAttribute('data-cal') + 'T12:00:00').getDay() === 3 && !(c as HTMLButtonElement).disabled) as HTMLElement
     await click(wedOf())
     await type('#inpEditOwnTitle', 'Team day')
+    const picked = [...document.querySelectorAll('#inpEditPop .pp-pucks button[aria-pressed="true"]')].map(b => String(b.getAttribute('data-pp'))).sort()
+    expect(picked.length, 'it is being filed for several people').toBeGreaterThanOrEqual(2)
+    for (const id of two) expect(picked).toContain(id)
     await click($('#inpEditSave'))
     const made = INPUTS.filter((r: any) => !had.has(String(r.iid)))
-    expect(made.length, 'one record a man').toBeGreaterThanOrEqual(2)
+    /* THE RULE CHANGED (owner D756, D759 — the one-rule build): a filing for several people is ONE record holding the
+       list of them, where it was a record a man. So: one record, everyone picked in it, the one title on it. */
+    expect(made.length, 'one record for everyone picked (D756)').toBe(1)
+    expect(idsOf(made[0]).map(String).sort(), 'everyone picked is in it').toEqual(picked)
     expect(new Set(made.map((r: any) => r.title))).toEqual(new Set(['Team day']))
     for (const r of made) had.add(String(r.iid))
     await click($('#inNew'))

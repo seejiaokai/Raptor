@@ -3,7 +3,7 @@
    the war's other commands and given its row in perms.ts (admin-only, as the stage is — 27 Aug 26), or every stage move
    would be refused (Astra's red team 4). The change-recording plan §11 item 11. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
@@ -91,9 +91,9 @@ describe('B8 — the Leave War says what came back', () => {
     setRole('admin')
     setCell('xray', '2026-07-15', 'LL'); advanceStage()
     setBidState('xray', '2026-07-15', 'approved')
-    expect(INPUTS.some((r: any) => r.person === 'xray' && r.type === 'LL' && r.lw)).toBe(true)
+    expect(INPUTS.some((r: any) => holds(r, 'xray') && r.type === 'LL' && r.lw)).toBe(true)
     clearCells([{ personId: 'xray', date: '2026-07-15' }])
-    expect(INPUTS.some((r: any) => r.person === 'xray' && r.type === 'LL' && r.lw)).toBe(false)
+    expect(INPUTS.some((r: any) => holds(r, 'xray') && r.type === 'LL' && r.lw)).toBe(false)
     expect(undoState().undoLabel).toBe('removing Ryder’s LL')
   })
   it('a new Leave War period says so — not "taking the war back to a draft" (Fable’s final read, F1)', () => {

@@ -6,8 +6,8 @@
 /* `changes` ([DB-READINESS] group A, phase 0 — F3-05): the change log, one `ChangeBatch` per saved
    group (written from phase 4). A real collection, so a journal holding one of its entries is a
    well-formed group and replays whole, and the Browser backend serves it back at boot. */
-export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker' | 'changes'
-export const COLLECTIONS: Collection[] = ['settings', 'weeks', 'inputs', 'people', 'plan', 'leavewar', 'tracker', 'changes']
+export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker' | 'changes' | 'notices'
+export const COLLECTIONS: Collection[] = ['settings', 'weeks', 'inputs', 'people', 'plan', 'leavewar', 'tracker', 'changes', 'notices']
 
 export type Snapshot = Record<Collection, Record<string, string>>
 

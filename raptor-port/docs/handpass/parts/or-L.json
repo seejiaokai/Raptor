@@ -1,0 +1,3547 @@
+{
+ "L1A": {
+  "filed": [
+   {
+    "iid": "imqoidgg0riyox5",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "before": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0riyox5",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Drifter",
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    }
+   ],
+   "unavailWed": [
+    "LL Drifter A till 17 Jul",
+    "LL C Hex C till 17 Jul",
+    "LL Hunter IP till 17 Jul",
+    "OL Cobra IP Overseas leave — off island",
+    "ATT C Grit C Medically down till 17 Jul",
+    "OD C Nomad C Overseas duty — exercise, off island",
+    "OIL C Gambit C"
+   ],
+   "bar": {
+    "mon13": "",
+    "wed15": ""
+   },
+   "card": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, Hex, HunterLL By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  },
+  "stage": "PUBLISHED",
+  "sheetOpen": 1,
+  "fieldWas": "till 17 Jul",
+  "toast": "Input added for 3 people",
+  "after": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0riyox5",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Drifter",
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "Dental"
+    }
+   ],
+   "unavailWed": [
+    "LL Drifter A Dental",
+    "LL C Hex C Dental",
+    "LL Hunter IP Dental",
+    "OL Cobra IP Overseas leave — off island",
+    "ATT C Grit C Medically down till 17 Jul",
+    "OD C Nomad C Overseas duty — exercise, off island",
+    "OIL C Gambit C"
+   ],
+   "bar": {
+    "mon13": "",
+    "wed15": ""
+   },
+   "card": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, Hex, HunterLL Dental By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  },
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "afterUndo": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0riyox5",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Drifter",
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    }
+   ],
+   "unavailWed": [
+    "LL Drifter A till 17 Jul",
+    "LL C Hex C till 17 Jul",
+    "LL Hunter IP till 17 Jul",
+    "OL Cobra IP Overseas leave — off island",
+    "ATT C Grit C Medically down till 17 Jul",
+    "OD C Nomad C Overseas duty — exercise, off island",
+    "OIL C Gambit C"
+   ],
+   "bar": {
+    "mon13": "",
+    "wed15": ""
+   },
+   "card": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, Hex, HunterLL By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  },
+  "redo": {
+   "used": "#redoBtn",
+   "ok": true,
+   "toast": "Redid: a personal input"
+  },
+  "afterRedo": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0riyox5",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Drifter",
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "Dental"
+    }
+   ],
+   "unavailWed": [
+    "LL Drifter A Dental",
+    "LL C Hex C Dental",
+    "LL Hunter IP Dental",
+    "OL Cobra IP Overseas leave — off island",
+    "ATT C Grit C Medically down till 17 Jul",
+    "OD C Nomad C Overseas duty — exercise, off island",
+    "OIL C Gambit C"
+   ],
+   "bar": {
+    "mon13": "",
+    "wed15": ""
+   },
+   "card": [
+    "All day CobraOL Overseas leave — off island By Saber",
+    "till 17 Jul Drifter, Hex, HunterLL Dental By Saber",
+    "All day GambitOIL",
+    "till 17 Jul GritATT C Medically down",
+    "till 17 Jul NomadOD Overseas duty — exercise, off island"
+   ]
+  }
+ },
+ "L1B": {
+  "filed": [
+   {
+    "iid": "imqoidgg08mm9uu",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "stage": "PUBLISHED",
+  "badge": "142 RAPTOR View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout HEX · MEMBER",
+  "sheetOpen": 1,
+  "fieldWas": "till 17 Jul",
+  "toast": "Only Saber — who filed it — or an admin can change this for everyone",
+  "inputs": [
+   {
+    "iid": "imqoidgg08mm9uu",
+    "type": "LL",
+    "title": "",
+    "date": "Jul 13",
+    "to": null,
+    "t": "00:00-23:59",
+    "people": [
+     "Drifter",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 17 Jul"
+   },
+   {
+    "iid": "imqoidgg0r6k4v3",
+    "type": "LL",
+    "title": "",
+    "date": "Jul 14",
+    "to": null,
+    "t": "-",
+    "person": "Quill",
+    "people": [],
+    "by": "nasty",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "Local leave"
+   }
+  ],
+  "unavailWed": [
+   "LL Drifter A till 17 Jul",
+   "LL C Hex C till 17 Jul",
+   "LL Hunter IP till 17 Jul",
+   "OL Cobra IP Overseas leave — off island",
+   "ATT C Grit C Medically down till 17 Jul",
+   "OD C Nomad C Overseas duty — exercise, off island",
+   "OIL C Gambit C"
+  ],
+  "card": [
+   "All day CobraOL Overseas leave — off island By Saber",
+   "till 17 Jul Drifter, Hex, HunterLL By Saber",
+   "All day GambitOIL",
+   "till 17 Jul GritATT C Medically down",
+   "till 17 Jul NomadOD Overseas duty — exercise, off island"
+  ]
+ },
+ "L2": {
+  "filed": [
+   {
+    "iid": "imqoidgg0cytmsu",
+    "type": "Meeting",
+    "title": "L2 meeting",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "wedBefore": [
+   {
+    "name": "L2 MEETING",
+    "times": [
+     "14:00",
+     "15:00"
+    ],
+    "pucks": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "pubStat": "6 changes i Unpublish",
+  "afterMove": [
+   {
+    "iid": "imqoidgg0cytmsu",
+    "type": "Meeting",
+    "title": "L2 meeting",
+    "date": "Jul 16",
+    "to": null,
+    "t": "14:00-15:00",
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "wedAfterMove": [],
+  "thuAfterMove": [
+   {
+    "name": "L2 MEETING",
+    "times": [
+     "14:00",
+     "15:00"
+    ],
+    "pucks": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "statAfterMove": "1 pending i Publish AL1 Unpublish",
+  "load": {
+   "first": "Load onto working copy",
+   "after": [],
+   "toast": "Wednesday: Original loaded onto the working copy — viewers still see Original until you publish · Drifter, Hunter, Ranger · L2 meeting left out — it is on Thursday's programme"
+  },
+  "wedAfterLoad": [],
+  "thuAfterLoad": [
+   {
+    "name": "L2 MEETING",
+    "times": [
+     "14:00",
+     "15:00"
+    ],
+    "pucks": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "inputsAfterLoad": [
+   {
+    "iid": "imqoidgg0cytmsu",
+    "type": "Meeting",
+    "title": "L2 meeting",
+    "date": "Jul 16",
+    "to": null,
+    "t": "14:00-15:00",
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "del": {
+   "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+   "toast": "Drifter deleted"
+  },
+  "wedAfterDelete": [],
+  "thuAfterDelete": [
+   {
+    "name": "L2 MEETING",
+    "times": [
+     "14:00",
+     "15:00"
+    ],
+    "pucks": [
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "inputsAfterDelete": [
+   {
+    "iid": "imqoidgg0cytmsu",
+    "type": "Meeting",
+    "title": "L2 meeting",
+    "date": "Jul 16",
+    "to": null,
+    "t": "14:00-15:00",
+    "people": [
+     "Hunter",
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "wedAllPucksDrifter": []
+ },
+ "L3": {
+  "filed": [
+   {
+    "iid": "imqoidgg0b9ggsj",
+    "type": "OD",
+    "date": "Jul 16",
+    "s": 360,
+    "e": 1080,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "beforeRows": [
+   "OD 06:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "statBefore": "6 changes i Unpublish",
+  "toastTyped": "Thursday published — APPROVED",
+  "inputs": [
+   {
+    "iid": "imqoidgg0b9ggsj",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "06:00-18:00",
+    "people": [
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   },
+   {
+    "iid": "imqoidgg09rxgz0",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "10:00-18:00",
+    "people": [
+     "Drifter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ],
+  "rowsAfter": [
+   "OD 10:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "statAfter": "1 pending i Publish AL1 Unpublish",
+  "changes": {
+   "title": "Changes · Thursday 16/7 Published · 1 change waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 1",
+   "head": "Waiting to go out as AL1 · 1 change",
+   "lines": [
+    "Drifter · OD Saber 22/6 09:00 taken out"
+   ]
+  },
+  "pub2": {
+   "ok": true,
+   "label": "Publish AL1",
+   "version": "AL1",
+   "selects": 4
+  },
+  "statAfterPub": "13 changes i Unpublish",
+  "weekRowsAfterPub": [
+   "OD 06:00 18:00 Hunter IP till 16 Jul",
+   "OD 10:00 18:00 Drifter A till 16 Jul"
+  ],
+  "viewRowsAfterPub": [
+   "OD 06:00 18:00 Hunter IP till 16 Jul",
+   "OD 10:00 18:00 Drifter A till 16 Jul"
+  ],
+  "inputsEnd": [
+   {
+    "iid": "imqoidgg0b9ggsj",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "06:00-18:00",
+    "people": [
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   },
+   {
+    "iid": "imqoidgg09rxgz0",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 16",
+    "to": null,
+    "t": "10:00-18:00",
+    "people": [
+     "Drifter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 16 Jul"
+   }
+  ]
+ },
+ "L7": {
+  "filed": [
+   {
+    "iid": "imqoidgg0iq3hxm",
+    "type": "Training",
+    "title": "L7 training",
+    "date": "Jul 18",
+    "s": 540,
+    "e": 720,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "inputs0": [
+   {
+    "iid": "imqoidgg0iq3hxm",
+    "type": "Training",
+    "title": "L7 training",
+    "date": "Jul 18",
+    "to": null,
+    "t": "09:00-12:00",
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "stat0": "6 changes i Unpublish",
+  "rows0": [
+   {
+    "name": "L7 TRAINING",
+    "times": [
+     "09:00",
+     "12:00"
+    ],
+    "pucks": [
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "sbBox": {
+   "x": 1257,
+   "y": 268,
+   "width": 74,
+   "height": 15
+  },
+  "tbBox": {
+   "x": 240.65625,
+   "y": 442.609375,
+   "width": 74,
+   "height": 15
+  },
+  "toasts": "Hex is on L7 training instead of Ranger",
+  "oilSheet": "OIL — Hex, L7 training ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save",
+  "sheetFor": {
+   "cls": "airpop upconf-pop oilconf-pop",
+   "parent": "airpop"
+  },
+  "inputs1": [
+   {
+    "iid": "imqoidgg0iq3hxm",
+    "type": "Training",
+    "title": "L7 training",
+    "date": "Jul 18",
+    "to": null,
+    "t": "09:00-12:00",
+    "people": [
+     "Hex"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "rows1": [
+   {
+    "name": "L7 TRAINING",
+    "times": [
+     "09:00",
+     "12:00"
+    ],
+    "pucks": [
+     "Hex"
+    ],
+    "cx": false
+   }
+  ],
+  "stat1": "1 pending i Publish AL1 Unpublish",
+  "changes": {
+   "title": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 1",
+   "head": "Waiting to go out as AL1 · 1 change",
+   "lines": [
+    "Hex · L7 training Saber 22/6 09:00 Ranger → Hex · what the day earns changes with it"
+   ]
+  },
+  "signoffs": [
+   "|— name —",
+   "|— name —",
+   "|— name —",
+   "|— name —"
+  ],
+  "signLine": "SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge ",
+  "oil": {
+   "bar": "Calendar Saturday Jul 18 · scheduler board ‹ Mon 13 Tue 14 Wed 15 Thu 16 Fri 17 Sat 18 Sun 19 › 🔍 ◧ OIL Earn ⇅ Sort all ↶ Undo ↷ Redo History Sync · slow Insights ✓ Done CAT TYPE QUALS",
+   "rows": [],
+   "chips": [
+    "abtn sb-daybtn sb-oilbtn on: ◧ OIL Earn",
+    "sb-panel daybar oilon: OIL EARN Nothing today earns ✓ OIL done Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+    "ain oilitem on: SDO",
+    "role oilamt: FO",
+    "ain oilitem none: L7 TRAINING",
+    "role oilamt half: HO",
+    "sbi-ty inpty ty-gp oilitem non: L7 training",
+    "role oilamt half: HO"
+   ]
+  },
+  "groundOil": {
+   "text": "GROUND PROGRAMME briefs, reviews, admin ITEM START END PEOPLE RMKS L7 TRAINING TRAINING Hex HO SCHEDULER NOTES",
+   "html": "<div class=\"sb-arow c6r gr-frominput\"><span class=\"sb-grip ro\" title=\"\">⠿</span><div class=\"sb-nmk\"><span class=\"ain oilitem none\" title=\"This request has one answer for everyone on it — tap a puck on this row to switch one person, not the row itself\">L7 TRAINING</span><span class=\"nm-kind\">Training</span></div><input class=\"atm\" data-bfld=\"gr:5.0.str\" disabled=\"\" value=\"09:00\" style=\"\"><input class=\"atm\" data-bfld=\"gr:5.0.end\" disabled=\"\" value=\"12:00\" style=\"\"><div class=\"ppl\"><span class=\"seat oilpk on\" data-oilp=\"rocky\" data-oilitem=\"i:imqoidgg0iq3hxm\" data-oilday=\"5\" title=\"Hex earns half a day — tap to take him off this event\"><span class=\"puck r sm oilglow half\" tabindex=\"0\" data-person=\"rocky\" title=\"Hex · C · ops wingman\"><span class=\"nm\">Hex</span><span class=\"role oilamt half\" title=\"Half a day of OIL\">HO</span></span></span></div><textarea rows=\"1\" class=\"ain rmkin\" data-bfld=\"gr:5.0.rmks\" disabled=\"\" placeholder=\"Remarks\" style=\"\">till 18 Jul</textarea></div>",
+   "pucks": [
+    "Hex HO :: puck r sm oilglow half"
+   ]
+  }
+ },
+ "L17": {
+  "filed": [
+   {
+    "iid": "imqoidgg0rqvqza",
+    "type": "Training",
+    "title": "L17 training",
+    "date": "Jul 18",
+    "s": 540,
+    "e": 720,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Hex"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "inputs0": [
+   {
+    "iid": "imqoidgg0rqvqza",
+    "type": "Training",
+    "title": "L17 training",
+    "date": "Jul 18",
+    "to": null,
+    "t": "09:00-12:00",
+    "people": [
+     "Ranger",
+     "Hex"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "A_before": {
+   "board": {
+    "bar": [
+     "OIL EARN Nothing today earns ✓ OIL done Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+    ],
+    "blank": [
+     {
+      "text": "Nothing today earns",
+      "cls": "mbtn daybtn blank",
+      "title": "Nothing today earns — covers anything added later too"
+     }
+    ],
+    "groundPucks": [
+     "Hex HO {puck r sm oilglow half}",
+     "Ranger HO {puck sm oilglow half}",
+     "Hex HO {puck r sm oilglow half}",
+     "Ranger HO {puck sm oilglow half}"
+    ],
+    "glowing": [
+     "SDO / Fable FO / Fable earns a full day — tap to take him off this event",
+     "SDO / Fable FO / Fable · C · ops wingman",
+     "L17 TRAINING / Hex HO / Hex earns half a day — tap to take him off this event",
+     "L17 TRAINING / Hex HO / Hex · C · ops wingman",
+     "L17 TRAINING / Ranger HO / Ranger earns half a day — tap to take him off this event",
+     "L17 TRAINING / Ranger HO / Ranger · IP · instructor pilot · SXO",
+     "till 18 Jul / Hex HO / Hex earns half a day — tap to take him off this event",
+     "till 18 Jul / Hex HO / Hex · C · ops wingman",
+     "till 18 Jul / Ranger HO / Ranger earns half a day — tap to take him off this event",
+     "till 18 Jul / Ranger HO / Ranger · IP · instructor pilot · SXO"
+    ]
+   },
+   "week": {
+    "btns": [],
+    "pucks": [
+     "Hex C {puck r sm oilbar oilbar-ho}",
+     "Ranger IP {puck sm oilbar oilbar-ho}"
+    ],
+    "oilWords": []
+   },
+   "stat": "1 change i Publish day"
+  },
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "B_afterPub": {
+   "board": {
+    "bar": [
+     "OIL EARN Nothing today earns ✓ OIL done Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+    ],
+    "blank": [
+     {
+      "text": "Nothing today earns",
+      "cls": "mbtn daybtn blank",
+      "title": "Nothing today earns — covers anything added later too"
+     }
+    ],
+    "groundPucks": [
+     "Hex HO {puck r sm oilglow half}",
+     "Ranger HO {puck sm oilglow half}",
+     "Hex HO {puck r sm oilglow half}",
+     "Ranger HO {puck sm oilglow half}"
+    ],
+    "glowing": [
+     "SDO / Fable FO / Fable earns a full day — tap to take him off this event",
+     "SDO / Fable FO / Fable · C · ops wingman",
+     "L17 TRAINING / Hex HO / Hex earns half a day — tap to take him off this event",
+     "L17 TRAINING / Hex HO / Hex · C · ops wingman",
+     "L17 TRAINING / Ranger HO / Ranger earns half a day — tap to take him off this event",
+     "L17 TRAINING / Ranger HO / Ranger · IP · instructor pilot · SXO",
+     "till 18 Jul / Hex HO / Hex earns half a day — tap to take him off this event",
+     "till 18 Jul / Hex HO / Hex · C · ops wingman",
+     "till 18 Jul / Ranger HO / Ranger earns half a day — tap to take him off this event",
+     "till 18 Jul / Ranger HO / Ranger · IP · instructor pilot · SXO"
+    ]
+   },
+   "week": {
+    "btns": [],
+    "pucks": [
+     "Hex C {puck r sm oilbar oilbar-ho}",
+     "Ranger IP {puck sm oilbar oilbar-ho}"
+    ],
+    "oilWords": []
+   },
+   "stat": "6 changes i Unpublish"
+  },
+  "rowHtml": "<div class=\"pl-row gshared gr-frominput\"><span class=\"nm\"><span class=\"ntx txed\" contenteditable=\"true\" spellcheck=\"false\" data-txt=\"gr:5.0.prog\" style=\"\">L17 TRAINING</span><span class=\"nm-kind\">Training</span></span><span class=\"t t-s txed\" contenteditable=\"true\" spellcheck=\"false\" data-txt=\"gr:5.0.str\" style=\"\">09:00</span><span class=\"t t-e txed\" contenteditable=\"true\" spellcheck=\"false\" data-txt=\"gr:5.0.end\" style=\"\">12:00</span><div class=\"ppl \" data-fill=\"g:5.0.+\"><span class=\"seat\" data-slot=\"g:5.0.x0\" data-drag=\"1\"><span class=\"puck r sm oilbar oilbar-ho\" tabindex=\"0\" data-person=\"rocky\" title=\"Hex · C · ops wingman · earns half a day of OIL\"><span class=\"nm\">Hex</span><span class=\"role q-c\">C</span></span></span><span class=\"seat\" data-slot=\"g:5.0\" data-drag=\"1\"><span class=\"puck sm oilbar oilbar-ho\" tabindex=\"0\" data-person=\"bane\" title=\"Ranger · IP · instructor pilot · SXO · earns half a day of OIL\"><span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span></span></span><span class=\"addz\" aria-hidden=\"true\">+ add</span></div><span class=\"rmk\"><span class=\"ntx txed\" contenteditable=\"true\" spellcheck=\"false\" data-txt=\"gr:5.0.rmks\" style=\"\">till 18 Jul</span></span></div>",
+  "addTarget": "the row ppl box",
+  "addToast": "Hunter added to L17 training",
+  "sheetAfterAdd": null,
+  "inputs1": [
+   {
+    "iid": "imqoidgg0rqvqza",
+    "type": "Training",
+    "title": "L17 training",
+    "date": "Jul 18",
+    "to": null,
+    "t": "09:00-12:00",
+    "people": [
+     "Ranger",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "pub2": {
+   "ok": true,
+   "label": "Publish AL1",
+   "version": "AL1",
+   "selects": 4
+  },
+  "C_afterAmend": {
+   "board": {
+    "bar": [
+     "OIL EARN Nothing today earns ✓ OIL done Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+    ],
+    "blank": [
+     {
+      "text": "Nothing today earns",
+      "cls": "mbtn daybtn blank",
+      "title": "Nothing today earns — covers anything added later too"
+     }
+    ],
+    "groundPucks": [
+     "Hex HO {puck r sm oilglow half}",
+     "Hunter HO {puck sm oilglow half}",
+     "Ranger HO {puck sm oilglow half}",
+     "Hex HO {puck r sm oilglow half}",
+     "Hunter HO {puck sm oilglow half}",
+     "Ranger HO {puck sm oilglow half}"
+    ],
+    "glowing": [
+     "SDO / Fable FO / Fable earns a full day — tap to take him off this event",
+     "SDO / Fable FO / Fable · C · ops wingman",
+     "L17 TRAINING / Hex HO / Hex earns half a day — tap to take him off this event",
+     "L17 TRAINING / Hex HO / Hex · C · ops wingman",
+     "L17 TRAINING / Hunter HO / Hunter earns half a day — tap to take him off this event",
+     "L17 TRAINING / Hunter HO / Hunter · IP · instructor pilot",
+     "L17 TRAINING / Ranger HO / Ranger earns half a day — tap to take him off this event",
+     "L17 TRAINING / Ranger HO / Ranger · IP · instructor pilot · SXO",
+     "till 18 Jul / Hex HO / Hex earns half a day — tap to take him off this event",
+     "till 18 Jul / Hex HO / Hex · C · ops wingman",
+     "till 18 Jul / Hunter HO / Hunter earns half a day — tap to take him off this event",
+     "till 18 Jul / Hunter HO / Hunter · IP · instructor pilot",
+     "till 18 Jul / Ranger HO / Ranger earns half a day — tap to take him off this event",
+     "till 18 Jul / Ranger HO / Ranger · IP · instructor pilot · SXO"
+    ]
+   },
+   "week": {
+    "btns": [],
+    "pucks": [
+     "Hex C {puck r sm oilbar oilbar-ho}",
+     "Hunter IP {puck sm oilbar oilbar-ho}",
+     "Ranger IP {puck sm oilbar oilbar-ho}"
+    ],
+    "oilWords": []
+   },
+   "stat": "12 changes i Unpublish"
+  },
+  "inputsEnd": [
+   {
+    "iid": "imqoidgg0rqvqza",
+    "type": "Training",
+    "title": "L17 training",
+    "date": "Jul 18",
+    "to": null,
+    "t": "09:00-12:00",
+    "people": [
+     "Ranger",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 0.5
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "D_freshSat": {
+   "board": {
+    "bar": [
+     "OIL EARN Nothing today earns ✓ OIL done Tap a puck to take a man off that event · tap an item to stop the whole item earning"
+    ],
+    "blank": [
+     {
+      "text": "Nothing today earns",
+      "cls": "mbtn daybtn blank",
+      "title": "Nothing today earns — covers anything added later too"
+     }
+    ],
+    "groundPucks": [],
+    "glowing": [
+     "SDO / Fable FO / Fable earns a full day — tap to take him off this event",
+     "SDO / Fable FO / Fable · C · ops wingman"
+    ]
+   },
+   "week": {
+    "btns": [],
+    "pucks": [],
+    "oilWords": []
+   },
+   "stat": "i Publish day"
+  }
+ },
+ "L4": {
+  "filed": [
+   {
+    "iid": "imqoidgg0ecb1sz",
+    "type": "Training",
+    "title": "L4 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "addToast": "Cutter — RU ACM & L4 TRAINING clash (+1 more)",
+  "inputs1": [
+   {
+    "iid": "imqoidgg0ecb1sz",
+    "type": "Training",
+    "title": "L4 training",
+    "date": "Jul 15",
+    "to": null,
+    "t": "10:00-11:00",
+    "people": [
+     "Ranger",
+     "Cutter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "A_ranger_beforeTap": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Cutter — RU ACM & L4 TRAINING clash (+1 more)",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "Cutter added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "tapOpenedWindow": {
+   "win": 1,
+   "title": "L4 training",
+   "listOpen": 0
+  },
+  "B_ranger_afterRead": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Cutter — RU ACM & L4 TRAINING clash (+1 more)",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": false,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "Cutter added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "inputsAfterUndo": [
+   {
+    "iid": "imqoidgg0ecb1sz",
+    "type": "Training",
+    "title": "L4 training",
+    "date": "Jul 15",
+    "to": null,
+    "t": "10:00-11:00",
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "C_ranger_afterUndo": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Undid: a personal input",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "redo": {
+   "used": "#redoBtn",
+   "ok": true,
+   "toast": "Redid: a personal input"
+  },
+  "inputsAfterRedo": [
+   {
+    "iid": "imqoidgg0ecb1sz",
+    "type": "Training",
+    "title": "L4 training",
+    "date": "Jul 15",
+    "to": null,
+    "t": "10:00-11:00",
+    "people": [
+     "Ranger",
+     "Cutter"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "D_ranger_afterRedo": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Redid: a personal input",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": false,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "Cutter added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L4 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "v1_asis": {
+   "filed": [
+    {
+     "iid": "imqoidgg06xwok3",
+     "type": "Training",
+     "title": "L4 training",
+     "date": "Jul 15",
+     "s": 600,
+     "e": 660,
+     "grp": null,
+     "people": [
+      "Ranger"
+     ],
+     "by": "stiff"
+    }
+   ],
+   "addToast": "Hex — VL ACM & L4 TRAINING clash (+1 more)",
+   "inputs1": [
+    [
+     "Ranger",
+     "Hex"
+    ]
+   ],
+   "A_beforeTap": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Hex — VL ACM & L4 TRAINING clash (+1 more)",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "Hex added · Saber",
+       "ago": "now"
+      },
+      {
+       "unread": true,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "tapOpenedWindow": {
+    "win": 1,
+    "title": "L4 training",
+    "listOpen": 0
+   },
+   "B_afterRead": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Hex — VL ACM & L4 TRAINING clash (+1 more)",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "Hex added · Saber",
+       "ago": "now"
+      },
+      {
+       "unread": true,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "undo": {
+    "used": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input"
+   },
+   "peopleAfterUndo": [
+    [
+     "Ranger"
+    ]
+   ],
+   "C_afterUndo": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Undid: a personal input",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "redo": {
+    "used": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input"
+   },
+   "peopleAfterRedo": [
+    [
+     "Ranger",
+     "Hex"
+    ]
+   ],
+   "D_afterRedo": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Redid: a personal input",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "Hex added · Saber",
+       "ago": "now"
+      },
+      {
+       "unread": true,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   }
+  },
+  "v2_markedReadFirst": {
+   "filed": [
+    {
+     "iid": "imqoidgg0pxbid3",
+     "type": "Training",
+     "title": "L4 training",
+     "date": "Jul 15",
+     "s": 600,
+     "e": 660,
+     "grp": null,
+     "people": [
+      "Ranger"
+     ],
+     "by": "stiff"
+    }
+   ],
+   "afterMarkAll": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "false"
+   },
+   "addToast": "Hex — VL ACM & L4 TRAINING clash (+1 more)",
+   "inputs1": [
+    [
+     "Ranger",
+     "Hex"
+    ]
+   ],
+   "A_beforeTap": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Hex — VL ACM & L4 TRAINING clash (+1 more)",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "Hex added · Saber",
+       "ago": "now"
+      },
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "tapOpenedWindow": {
+    "win": 1,
+    "title": "L4 training",
+    "listOpen": 0
+   },
+   "B_afterRead": {
+    "state": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "false"
+    },
+    "toastAfterTap": "Hex — VL ACM & L4 TRAINING clash (+1 more)",
+    "list": {
+     "empty": null,
+     "markAll": false,
+     "lines": [
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "Hex added · Saber",
+       "ago": "now"
+      },
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "true"
+    }
+   },
+   "undo": {
+    "used": "#undoBtn",
+    "ok": true,
+    "toast": "Undid: a personal input"
+   },
+   "peopleAfterUndo": [
+    [
+     "Ranger"
+    ]
+   ],
+   "C_afterUndo": {
+    "state": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "false"
+    },
+    "toastAfterTap": "Undid: a personal input",
+    "list": {
+     "empty": null,
+     "markAll": false,
+     "lines": [
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "true"
+    }
+   },
+   "redo": {
+    "used": "#redoBtn",
+    "ok": true,
+    "toast": "Redid: a personal input"
+   },
+   "peopleAfterRedo": [
+    [
+     "Ranger",
+     "Hex"
+    ]
+   ],
+   "D_afterRedo": {
+    "state": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "false"
+    },
+    "toastAfterTap": "Redid: a personal input",
+    "list": {
+     "empty": null,
+     "markAll": false,
+     "lines": [
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "Hex added · Saber",
+       "ago": "now"
+      },
+      {
+       "unread": false,
+       "name": "L4 training",
+       "day": "Wed 15 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "true"
+    }
+   }
+  }
+ },
+ "L13": {
+  "filed": [
+   {
+    "iid": "imqoidgg0a6tmyw",
+    "type": "Meeting",
+    "title": "L13 meeting",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "addToast": "Hex added to L13 meeting",
+  "afterAdd": [
+   [
+    "Drifter",
+    "Hunter",
+    "Ranger",
+    "Hex"
+   ]
+  ],
+  "rcToast": "Hunter taken out of L13 meeting",
+  "afterRc": [
+   [
+    "Drifter",
+    "Ranger",
+    "Hex"
+   ]
+  ],
+  "histOn": "true",
+  "dots": [],
+  "dotsWeekWed": [],
+  "dotsWeekAll": [],
+  "tapResults": [],
+  "boardDots": []
+ },
+ "L13b": {
+  "addToast": "Hex added to L13 meeting",
+  "rcToast": "Hunter taken out of L13 meeting",
+  "histOn": "true",
+  "allDots": [
+   {
+    "row": "NAV-SYS TRIAL PREP 14:00 Vapor D + ADD control rem",
+    "puck": null,
+    "attr": "data-txt=gr:2.1.rmks data-histdot=",
+    "vis": true
+   }
+  ],
+  "chgList": "⠿ Changes · week of 13/7 4 changes this week ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen",
+  "allChanges": "⠿ Changes · week of 13/7 4 changes this week ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Wed · Ground · NAV-SYS TRIAL PREP Saber · 22/6 09:00 Remarks— → control remark ▾ Wed · Input · Drifter, Hex, Ranger · L13 meeting · 3 09:00 L13 meeting 15 Jul · taken out Saber · 22/6 09:00 L13 meeting 15 Jul · added Saber · 22/6 09:00 Drifter, Hunter, Ranger · L13 meeting added · 15 Jul (on the programme) Saber · 22/6 09:00 Tap a change to go to it — the window stays open.",
+  "hovers": [
+   {
+    "n": "name",
+    "bubble": []
+   },
+   {
+    "n": "Hex puck",
+    "bubble": []
+   },
+   {
+    "n": "Drifter puck",
+    "bubble": []
+   },
+   {
+    "n": "start box",
+    "bubble": []
+   }
+  ]
+ },
+ "L5": {
+  "filedLL": [
+   {
+    "iid": "imqoidgg0c7w875",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "filedMed": [
+   {
+    "iid": "imqoidgg0737mvy",
+    "type": "ATT C",
+    "date": "Jul 15",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "bane"
+   },
+   {
+    "iid": "imqoidgg0em7nlb",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   },
+   {
+    "iid": "imqoidgg09szl1g",
+    "type": "LL",
+    "date": "Jul 17",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "toastAfterFile": "Ranger's LL on 15 Jul–16 Jul is cut for the ATT C — that leave goes back to the balance · Input added",
+  "afterFile": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0737mvy",
+     "type": "ATT C",
+     "title": "",
+     "date": "Jul 15",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger"
+     ],
+     "by": "bane",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 16 Jul"
+    },
+    {
+     "iid": "imqoidgg0c7w875",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    },
+    {
+     "iid": "imqoidgg0em7nlb",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 14 Jul"
+    },
+    {
+     "iid": "imqoidgg09szl1g",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 17",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    }
+   ],
+   "bars": {
+    "2026-07-13": "",
+    "2026-07-14": "",
+    "2026-07-15": "",
+    "2026-07-16": "",
+    "2026-07-17": ""
+   },
+   "cardWed": [
+    "till 16 Jul RangerATT C"
+   ],
+   "cardMon": [
+    "till 14 Jul RangerLL By Saber"
+   ]
+  },
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: 4 inputs"
+  },
+  "afterUndo": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0c7w875",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger",
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    }
+   ],
+   "bars": {
+    "2026-07-13": "",
+    "2026-07-14": "",
+    "2026-07-15": "",
+    "2026-07-16": "",
+    "2026-07-17": ""
+   },
+   "cardWed": [
+    "till 17 Jul Hex, Hunter, RangerLL By Saber"
+   ],
+   "cardMon": [
+    "till 17 Jul Hex, Hunter, RangerLL By Saber"
+   ]
+  },
+  "redo": {
+   "used": "#redoBtn",
+   "ok": true,
+   "toast": "Redid: 4 inputs"
+  },
+  "afterRedo": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0737mvy",
+     "type": "ATT C",
+     "title": "",
+     "date": "Jul 15",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger"
+     ],
+     "by": "bane",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 16 Jul"
+    },
+    {
+     "iid": "imqoidgg0c7w875",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Hex",
+      "Hunter"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    },
+    {
+     "iid": "imqoidgg0em7nlb",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 13",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 14 Jul"
+    },
+    {
+     "iid": "imqoidgg09szl1g",
+     "type": "LL",
+     "title": "",
+     "date": "Jul 17",
+     "to": null,
+     "t": "00:00-23:59",
+     "people": [
+      "Ranger"
+     ],
+     "by": "stiff",
+     "oil": null,
+     "cx": null,
+     "cxr": null,
+     "rmk": "till 17 Jul"
+    }
+   ],
+   "bars": {
+    "2026-07-13": "",
+    "2026-07-14": "",
+    "2026-07-15": "",
+    "2026-07-16": "",
+    "2026-07-17": ""
+   },
+   "cardWed": [
+    "till 16 Jul RangerATT C"
+   ],
+   "cardMon": [
+    "till 14 Jul RangerLL By Saber"
+   ]
+  },
+  "bell_Hex": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Redid: 4 inputs",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "LL",
+      "day": "Mon 13 Jul",
+      "what": "Ranger taken off · Ranger",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "LL",
+      "day": "Mon 13 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Hunter": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Redid: 4 inputs",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "LL",
+      "day": "Mon 13 Jul",
+      "what": "Ranger taken off · Ranger",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "LL",
+      "day": "Mon 13 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Saber": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Redid: 4 inputs",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "LL",
+      "day": "Mon 13 Jul",
+      "what": "Ranger taken off · Ranger",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bells0": {
+   "Hex": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Ranger's LL on 15 Jul–16 Jul is cut for the ATT C — that leave goes back to the balance · Input added",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "LL",
+       "day": "Mon 13 Jul",
+       "what": "Ranger taken off · Ranger",
+       "ago": "now"
+      },
+      {
+       "unread": true,
+       "name": "LL",
+       "day": "Mon 13 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "Hunter": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Ranger's LL on 15 Jul–16 Jul is cut for the ATT C — that leave goes back to the balance · Input added",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "LL",
+       "day": "Mon 13 Jul",
+       "what": "Ranger taken off · Ranger",
+       "ago": "now"
+      },
+      {
+       "unread": true,
+       "name": "LL",
+       "day": "Mon 13 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "Saber": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Ranger's LL on 15 Jul–16 Jul is cut for the ATT C — that leave goes back to the balance · Input added",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "LL",
+       "day": "Mon 13 Jul",
+       "what": "Ranger taken off · Ranger",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   }
+  },
+  "bellsU": {
+   "Hex": {
+    "state": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "false"
+    },
+    "toastAfterTap": "Undid: 4 inputs",
+    "list": {
+     "empty": null,
+     "markAll": true,
+     "lines": [
+      {
+       "unread": true,
+       "name": "LL",
+       "day": "Mon 13 Jul",
+       "what": "You were added · Saber",
+       "ago": "now"
+      }
+     ]
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": true,
+     "open": "true"
+    }
+   },
+   "Saber": {
+    "state": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "false"
+    },
+    "toastAfterTap": "Undid: 4 inputs",
+    "list": {
+     "empty": "Nothing new",
+     "markAll": false,
+     "lines": []
+    },
+    "stateAfterTap": {
+     "id": "notifyBell",
+     "lit": false,
+     "open": "true"
+    }
+   }
+  }
+ },
+ "L6": {
+  "filed": [
+   {
+    "iid": "imqoidgg099l5bb",
+    "type": "Meeting",
+    "title": "L6 meeting",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Hex"
+    ],
+    "by": "bane"
+   }
+  ],
+  "filedBy": "bane",
+  "cardFiled": [
+   "14:00–15:00 Hex, RangerMEETING L6 meeting · till 15 Jul By Ranger"
+  ],
+  "winFiled": {
+   "t": "PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Wildcard O WSOS All Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Grit C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C SANS Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL All Cotter Ratchet Widget TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 15 WHEN all day REMARKS Placed by Ranger for 2 people · 22 Jun 26, 09:00 Date changes apply to all 2. Delete Cancel Save",
+   "btns": [
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    ":ALL",
+    "pp-all-pilots:All",
+    ":AceA",
+    ":AnvilIP",
+    ":BladeIP",
+    ":CinchIP",
+    ":CobraIP",
+    ":CometIP",
+    ":DieselD",
+    ":DrifterA",
+    ":ForgeIP",
+    ":GambitC",
+    ":HavocIP",
+    ":HunterIP",
+    ":NomadC",
+    ":OutlawC",
+    ":PistonIP",
+    ":RangerIP",
+    ":ReaperIR",
+    ":ReconO",
+    ":RidgeC",
+    ":SaberIP",
+    ":SaintB",
+    ":SidewinderIP",
+    ":TalismanO",
+    ":TorchC",
+    ":TridentIP",
+    ":VandalIP",
+    ":VaporD",
+    ":WardenIP",
+    ":WildcardO",
+    "pp-all-wsos:All",
+    ":BasherIW",
+    ":CinderB",
+    ":CutterC",
+    ":DashC",
+    ":EchoIW",
+    ":FableC",
+    ":GhostC",
+    ":GritC",
+    ":HexC",
+    ":LedgerIW",
+    ":QuillIW",
+    ":RelayIW",
+    ":RuneB",
+    ":RyderC",
+    ":ScopeIW",
+    ":StaticIW",
+    ":VectorC",
+    ":WispC",
+    ":BoltC",
+    ":JesterB",
+    ":KrakenD",
+    ":MarlinA",
+    ":OtterD",
+    ":PixelD",
+    ":RebelB",
+    ":ScribeD",
+    ":TallyO",
+    ":ZenithC",
+    ":ZuluO",
+    "pp-all-personnel:All",
+    ":Cotter",
+    ":Ratchet",
+    ":Widget",
+    "inTypeHelp:?",
+    ":‹",
+    ":›",
+    ":13",
+    ":1",
+    ":2",
+    ":3",
+    ":4",
+    ":5",
+    ":6",
+    ":7",
+    ":8",
+    ":9",
+    ":10",
+    ":11",
+    ":12",
+    ":13",
+    ":14",
+    ":15",
+    ":16",
+    ":17",
+    ":18",
+    ":19",
+    ":20",
+    ":21",
+    ":22",
+    ":23",
+    ":24",
+    ":25",
+    ":26",
+    ":27",
+    ":28",
+    ":29",
+    ":30",
+    ":31",
+    "inpEditDel:Delete",
+    "inpEditCancel:Cancel",
+    "inpEditSave:Save"
+   ]
+  },
+  "addToast": "Hunter added to L6 meeting",
+  "afterAdd": [
+   {
+    "people": [
+     "Ranger",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "bane"
+   }
+  ],
+  "cardAdded": [
+   "14:00–15:00 Hex, Hunter, RangerMEETING L6 meeting · till 15 Jul By Ranger"
+  ],
+  "winAdded": {
+   "t": "PEOPLE 3 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Wildcard O WSOS All Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Grit C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C SANS Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL All Cotter Ratchet Widget TYPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE WHEN all day REMARKS Placed by Ranger for 3 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 Take me out A scheduler has changed who is in this — ask an admin to change it for everyone. Close",
+   "btns": [
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    ":ALL",
+    "pp-all-pilots:All",
+    ":AceA",
+    ":AnvilIP",
+    ":BladeIP",
+    ":CinchIP",
+    ":CobraIP",
+    ":CometIP",
+    ":DieselD",
+    ":DrifterA",
+    ":ForgeIP",
+    ":GambitC",
+    ":HavocIP",
+    ":HunterIP",
+    ":NomadC",
+    ":OutlawC",
+    ":PistonIP",
+    ":RangerIP",
+    ":ReaperIR",
+    ":ReconO",
+    ":RidgeC",
+    ":SaberIP",
+    ":SaintB",
+    ":SidewinderIP",
+    ":TalismanO",
+    ":TorchC",
+    ":TridentIP",
+    ":VandalIP",
+    ":VaporD",
+    ":WardenIP",
+    ":WildcardO",
+    "pp-all-wsos:All",
+    ":BasherIW",
+    ":CinderB",
+    ":CutterC",
+    ":DashC",
+    ":EchoIW",
+    ":FableC",
+    ":GhostC",
+    ":GritC",
+    ":HexC",
+    ":LedgerIW",
+    ":QuillIW",
+    ":RelayIW",
+    ":RuneB",
+    ":RyderC",
+    ":ScopeIW",
+    ":StaticIW",
+    ":VectorC",
+    ":WispC",
+    ":BoltC",
+    ":JesterB",
+    ":KrakenD",
+    ":MarlinA",
+    ":OtterD",
+    ":PixelD",
+    ":RebelB",
+    ":ScribeD",
+    ":TallyO",
+    ":ZenithC",
+    ":ZuluO",
+    "pp-all-personnel:All",
+    ":Cotter",
+    ":Ratchet",
+    ":Widget",
+    "inped-takeout:Take me out",
+    "inpEditCancel:Close"
+   ]
+  },
+  "takeOutToast": "You are out of this input",
+  "afterTakeOut": [
+   {
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "cardAfterTakeOut": [
+   "14:00–15:00 Hex, HunterMEETING L6 meeting · till 15 Jul By Saber"
+  ],
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "afterUndo": [
+   {
+    "people": [
+     "Ranger",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "bane"
+   }
+  ],
+  "cardAfterUndo": [
+   "14:00–15:00 Hex, Hunter, RangerMEETING L6 meeting · till 15 Jul By Ranger"
+  ],
+  "winAfterUndo": {
+   "t": "PEOPLE 3 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Wildcard O WSOS All Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Grit C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C SANS Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL All Cotter Ratchet Widget TYPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE WHEN all day REMARKS Placed by Ranger for 3 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 Take me out A scheduler has changed who is in this — ask an admin to change it for everyone. Close",
+   "btns": [
+    "pp-several:Several people",
+    ":ALL AVAIL",
+    ":ALL",
+    "pp-all-pilots:All",
+    ":AceA",
+    ":AnvilIP",
+    ":BladeIP",
+    ":CinchIP",
+    ":CobraIP",
+    ":CometIP",
+    ":DieselD",
+    ":DrifterA",
+    ":ForgeIP",
+    ":GambitC",
+    ":HavocIP",
+    ":HunterIP",
+    ":NomadC",
+    ":OutlawC",
+    ":PistonIP",
+    ":RangerIP",
+    ":ReaperIR",
+    ":ReconO",
+    ":RidgeC",
+    ":SaberIP",
+    ":SaintB",
+    ":SidewinderIP",
+    ":TalismanO",
+    ":TorchC",
+    ":TridentIP",
+    ":VandalIP",
+    ":VaporD",
+    ":WardenIP",
+    ":WildcardO",
+    "pp-all-wsos:All",
+    ":BasherIW",
+    ":CinderB",
+    ":CutterC",
+    ":DashC",
+    ":EchoIW",
+    ":FableC",
+    ":GhostC",
+    ":GritC",
+    ":HexC",
+    ":LedgerIW",
+    ":QuillIW",
+    ":RelayIW",
+    ":RuneB",
+    ":RyderC",
+    ":ScopeIW",
+    ":StaticIW",
+    ":VectorC",
+    ":WispC",
+    ":BoltC",
+    ":JesterB",
+    ":KrakenD",
+    ":MarlinA",
+    ":OtterD",
+    ":PixelD",
+    ":RebelB",
+    ":ScribeD",
+    ":TallyO",
+    ":ZenithC",
+    ":ZuluO",
+    "pp-all-personnel:All",
+    ":Cotter",
+    ":Ratchet",
+    ":Widget",
+    "inped-takeout:Take me out",
+    "inpEditCancel:Close"
+   ]
+  },
+  "cardSaberAfterTakeOut": [
+   "14:00–15:00 Hex, HunterMEETING L6 meeting · till 15 Jul By Saber"
+  ]
+ },
+ "L8": {
+  "filed": [
+   {
+    "iid": "imqoidgg0nf3cxi",
+    "type": "Training",
+    "title": "L8 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "step1Toast": "",
+  "boardAfter1": [
+   {
+    "name": "L8 TRAINING",
+    "pucks": [
+     "Ranger IP"
+    ]
+   },
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "pucks": [
+     "Ace A"
+    ]
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "pucks": [
+     "Vapor D"
+    ]
+   },
+   {
+    "name": "",
+    "pucks": [
+     "ALL AVAIL"
+    ]
+   }
+  ],
+  "inputs1": [
+   {
+    "iid": "imqoidgg0nf3cxi",
+    "type": "Training",
+    "title": "L8 training",
+    "date": "Jul 15",
+    "to": null,
+    "t": "10:00-11:00",
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "step2Toast": "ALL AVAIL added to L8 training",
+  "boardAfter2": [
+   {
+    "name": "L8 TRAINING",
+    "pucks": [
+     "Ranger IP",
+     "ALL AVAIL"
+    ]
+   },
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "pucks": [
+     "Ace A"
+    ]
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "pucks": [
+     "Vapor D"
+    ]
+   },
+   {
+    "name": "",
+    "pucks": [
+     "ALL AVAIL"
+    ]
+   }
+  ],
+  "inputs2": [
+   {
+    "iid": "imqoidgg0nf3cxi",
+    "type": "Training",
+    "title": "L8 training",
+    "date": "Jul 15",
+    "to": null,
+    "t": "10:00-11:00",
+    "people": [
+     "Ranger",
+     "ALL AVAIL"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 15 Jul"
+   }
+  ],
+  "inputs2raw": [
+   "[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090000000},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1782090000000,\"h\":1}]"
+  ],
+  "weekAfter2": [
+   {
+    "name": "L8 TRAINING",
+    "pucks": [
+     "Ranger IP",
+     "ALL AVAIL"
+    ]
+   },
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "pucks": [
+     "Ace A"
+    ]
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "pucks": [
+     "Vapor D"
+    ]
+   },
+   {
+    "name": "",
+    "pucks": [
+     "ALL AVAIL"
+    ]
+   }
+  ],
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "afterUndo": [
+   {
+    "name": "L8 TRAINING",
+    "pucks": [
+     "Ranger IP"
+    ]
+   },
+   {
+    "name": "MAINT CONF @ ENG WING",
+    "pucks": [
+     "Ace A"
+    ]
+   },
+   {
+    "name": "NAV-SYS TRIAL PREP",
+    "pucks": [
+     "Vapor D"
+    ]
+   },
+   {
+    "name": "",
+    "pucks": [
+     "ALL AVAIL"
+    ]
+   }
+  ],
+  "inputsAfterUndo": [
+   {
+    "iid": "imqoidgg0nf3cxi",
+    "type": "Training",
+    "title": "L8 training",
+    "date": "Jul 15",
+    "to": null,
+    "t": "10:00-11:00",
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff",
+    "oil": null,
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 15 Jul"
+   }
+  ]
+ },
+ "L9": {
+  "filed": [
+   {
+    "iid": "imqoidgg0apzqnb",
+    "type": "Meeting",
+    "title": "L9 meeting",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "afterCancel": {
+   "cx": true,
+   "cxr": "WX"
+  },
+  "toast1": "CX DUE WX",
+  "sheetOnSecondPress": 1,
+  "afterUncancel": {
+   "cx": null,
+   "cxr": null
+  },
+  "toast2": "Restored",
+  "undo1": {
+   "used": "#sbUndo",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "afterUndo1": {
+   "cx": true,
+   "cxr": "WX"
+  },
+  "undo2": {
+   "used": "#sbUndo",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "afterUndo2": {
+   "cx": null,
+   "cxr": null
+  },
+  "afterCancel2": {
+   "cx": true,
+   "cxr": "WX"
+  },
+  "history": "⠿ Changes · week of 13/7 6 changes this week ✕ New to you 0 All changes 6 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Drifter, Hunter · L9 meeting · 4 09:00 L9 meeting 15 Jul · CX not cancelled → cancelled — WX Saber · 22/6 09:00 L9 meeting 15 Jul · CX cancelled — WX → not cancelled Saber · 22/6 09:00 L9 meeting 15 Jul · CX not cancelled → cancelled — WX Saber · 22/6 09:00 L9 meeting added · 15 Jul (on the programme) Saber · 22/6 09:00 ▾ Wed · The day · 2 09:00 Undo — a personal input Saber · 22/6 09:00 Undo — a personal input Saber · 22/6 09:00 Tap a change to go to it — the window stays open."
+ },
+ "L10": {
+  "filed": [
+   {
+    "iid": "imqoidgg0rlojrq",
+    "type": "Training",
+    "title": "L10 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "by": "bane"
+   }
+  ],
+  "filedBy": "bane",
+  "del": {
+   "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+   "toast": "Hunter deleted"
+  },
+  "inputs": [
+   {
+    "people": [
+     "Hex"
+    ],
+    "by": "bane"
+   }
+  ],
+  "weekRow": [
+   {
+    "name": "L10 TRAINING",
+    "times": [
+     "10:00",
+     "11:00"
+    ],
+    "pucks": [
+     "Hex"
+    ],
+    "cx": false
+   }
+  ],
+  "bell_Ranger": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter deleted",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L10 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter taken off",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Hex": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter deleted",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L10 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter taken off",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L10 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Ranger",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Saber": {
+   "state": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter deleted",
+   "list": {
+    "empty": "Nothing new",
+    "markAll": false,
+    "lines": []
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  }
+ },
+ "L11": {
+  "filed": [
+   {
+    "iid": "imqoidgg04c7h5v",
+    "type": "Training",
+    "title": "L11 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "todayInBrowser": "2026-06-22T01:00:00.000Z",
+  "sheetTestids": [
+   "bid-window",
+   "bid-box",
+   "bid-cancel",
+   "bid-LL",
+   "bid-OL",
+   "bid-OIL",
+   "bid-CCL",
+   "bid-FCL",
+   "bid-PL",
+   "bid-EL",
+   "bid-CL",
+   "bid-oil",
+   "bid-postout",
+   "bid-postin"
+  ],
+  "afterPO": [
+   "bid-window",
+   "bid-box",
+   "bid-cancel",
+   "bid-LL",
+   "bid-OL",
+   "bid-OIL",
+   "bid-CCL",
+   "bid-FCL",
+   "bid-PL",
+   "bid-EL",
+   "bid-CL",
+   "po-date",
+   "po-overseas",
+   "po-delete",
+   "po-sans",
+   "po-transfer",
+   "po-line",
+   "po-confirm"
+  ],
+  "deleteChip": 1,
+  "toast": "Input added for 3 people",
+  "inputs": [
+   {
+    "people": [
+     "Ranger",
+     "Hex"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "hunterStillOnRoster": true,
+  "weekRow": [
+   {
+    "name": "L11 TRAINING",
+    "times": [
+     "10:00",
+     "11:00"
+    ],
+    "pucks": [
+     "Hex",
+     "Ranger"
+    ],
+    "cx": false
+   }
+  ],
+  "bell_Ranger": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Input added for 3 people",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L11 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter taken off",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L11 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "bell_Hex": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Input added for 3 people",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L11 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter taken off",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L11 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "poLine": "On 22 Jun: deleted. Days he flew keep his puck.",
+  "afterConfirm": [
+   "po-delete:✓ Delete",
+   "po-line:On 22 Jun: deleted. Days he flew keep his puck.",
+   "po-confirm:Tap again to delete Hunter"
+  ]
+ },
+ "L12": {
+  "filed": [
+   {
+    "iid": "imqoidgg0h85c7b",
+    "type": "Training",
+    "title": "L12 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "add1": "Hex — VL ACM & L12 TRAINING clash (+1 more)",
+  "add2": "Hunter added to L12 training",
+  "A_before": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Hunter added to L12 training",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "Hunter added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "Hex added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": true,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  },
+  "A_afterMarkAll": {
+   "state": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  },
+  "bellAfterMarkAllClosed": {
+   "id": "notifyBell",
+   "lit": false,
+   "open": "false"
+  },
+  "undo": {
+   "used": "#undoBtn",
+   "ok": true,
+   "toast": "Undid: a personal input"
+  },
+  "afterUndo": [
+   [
+    "Ranger",
+    "Hex"
+   ]
+  ],
+  "B_afterUndo": {
+   "state": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "false"
+   },
+   "toastAfterTap": "Undid: a personal input",
+   "list": {
+    "empty": null,
+    "markAll": false,
+    "lines": [
+     {
+      "unread": false,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "Hex added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": false,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": false,
+    "open": "true"
+   }
+  },
+  "add3": "Tally added to L12 training",
+  "afterNew": [
+   [
+    "Ranger",
+    "Hex",
+    "Tally"
+   ]
+  ],
+  "C_afterNewChange": {
+   "state": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "false"
+   },
+   "toastAfterTap": "Tally added to L12 training",
+   "list": {
+    "empty": null,
+    "markAll": true,
+    "lines": [
+     {
+      "unread": true,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "Tally added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": false,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "Hex added · Saber",
+      "ago": "now"
+     },
+     {
+      "unread": false,
+      "name": "L12 training",
+      "day": "Wed 15 Jul",
+      "what": "You were added · Saber",
+      "ago": "now"
+     }
+    ]
+   },
+   "stateAfterTap": {
+    "id": "notifyBell",
+    "lit": true,
+    "open": "true"
+   }
+  }
+ },
+ "L14": {
+  "filed": [
+   {
+    "iid": "imqoidgg0peh1ah",
+    "type": "Meeting",
+    "title": "L14 meeting",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "beforeCancel": {
+   "week": [
+    {
+     "text": "L14 MEETING MEETING 14:00 15:00 Drifter A Hunter IP + ADD till 15 Jul",
+     "cls": "pl-row gshared gr-frominput",
+     "cx": false,
+     "struck": false
+    }
+   ]
+  },
+  "inputsAfterCancel": [
+   {
+    "cx": true,
+    "cxr": "WX"
+   }
+  ],
+  "editRows1": [
+   {
+    "text": "CX DUE WXL14 MEETING MEETING 14:00 15:00 Drifter A Hunter IP + ADD till 15 Jul",
+    "cls": "pl-row gshared cx gr-frominput",
+    "cx": true,
+    "struck": true
+   }
+  ],
+  "stat1": "1 pending i Publish AL1 Unpublish",
+  "viewRows1": [
+   {
+    "text": "L14 MEETING MEETING 14:00 15:00 Drifter A Hunter IP till 15 Jul",
+    "cls": "pl-row gshared gr-frominput",
+    "cx": false,
+    "struck": false
+   }
+  ],
+  "pub2": {
+   "ok": true,
+   "label": "Publish AL1",
+   "version": "AL1",
+   "selects": 4
+  },
+  "editRows2": [
+   {
+    "text": "CX DUE WXL14 MEETING MEETING 14:00 15:00 Drifter A Hunter IP + ADD till 15 Jul",
+    "cls": "pl-row gshared cx gr-frominput",
+    "cx": true,
+    "struck": true
+   }
+  ],
+  "stat2": "12 changes i Unpublish",
+  "viewRows2": [
+   {
+    "text": "CX DUE WXL14 MEETING MEETING 14:00 15:00 Drifter A Hunter IP till 15 Jul",
+    "cls": "pl-row gshared cx gr-frominput",
+    "cx": true,
+    "struck": true
+   }
+  ]
+ },
+ "L15": {
+  "filed": [
+   {
+    "iid": "imqoidgg0ory81h",
+    "type": "Duty",
+    "title": "L15 duty",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "bane"
+   }
+  ],
+  "filedBy": "bane",
+  "t1": "ALL AVAIL added to L15 duty",
+  "s1": {
+   "people": [
+    {
+     "p": [
+      "Ranger",
+      "ALL AVAIL"
+     ],
+     "by": "bane"
+    }
+   ],
+   "week": [
+    {
+     "name": "L15 DUTY",
+     "times": [
+      "14:00",
+      "15:00"
+     ],
+     "pucks": [
+      "Ranger",
+      "ALL AVAIL"
+     ],
+     "cx": false
+    }
+   ]
+  },
+  "t2": "Ranger taken out of L15 duty",
+  "s2": {
+   "people": [
+    {
+     "p": [
+      "ALL AVAIL"
+     ],
+     "by": "stiff"
+    }
+   ],
+   "week": [
+    {
+     "name": "L15 DUTY",
+     "times": [
+      "14:00",
+      "15:00"
+     ],
+     "pucks": [
+      "ALL AVAIL"
+     ],
+     "cx": false
+    }
+   ]
+  },
+  "cardAfterRangerOut": [
+   "14:00–15:00 ALL AVAILDUTY L15 duty · till 15 Jul By Saber"
+  ],
+  "t3": "ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+  "s3": {
+   "people": [
+    {
+     "p": [
+      "ALL AVAIL"
+     ],
+     "by": "stiff"
+    }
+   ],
+   "week": [
+    {
+     "name": "L15 DUTY",
+     "times": [
+      "14:00",
+      "15:00"
+     ],
+     "pucks": [
+      "ALL AVAIL"
+     ],
+     "cx": false
+    }
+   ]
+  },
+  "t4rightclick": "ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+  "s4": {
+   "people": [
+    {
+     "p": [
+      "ALL AVAIL"
+     ],
+     "by": "stiff"
+    }
+   ],
+   "week": [
+    {
+     "name": "L15 DUTY",
+     "times": [
+      "14:00",
+      "15:00"
+     ],
+     "pucks": [
+      "ALL AVAIL"
+     ],
+     "cx": false
+    }
+   ]
+  }
+ },
+ "L16": {
+  "filed": [
+   {
+    "iid": "imqoidgg0zi03rd",
+    "type": "OD",
+    "date": "Jul 18",
+    "s": 360,
+    "e": 1080,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "inputs0": [
+   {
+    "iid": "imqoidgg0zi03rd",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 18",
+    "to": null,
+    "t": "06:00-18:00",
+    "people": [
+     "Drifter",
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 1
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "stat0": "6 changes i Unpublish",
+  "rows0": [
+   "OD 06:00 18:00 Drifter A till 18 Jul",
+   "OD 06:00 18:00 Hunter IP till 18 Jul"
+  ],
+  "dragSourceCheck": "rocky",
+  "toasts": "Hex is now unavailable instead of Drifter",
+  "oilSheet": null,
+  "inputs1": [
+   {
+    "iid": "imqoidgg0zi03rd",
+    "type": "OD",
+    "title": "",
+    "date": "Jul 18",
+    "to": null,
+    "t": "06:00-18:00",
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "by": "stiff",
+    "oil": {
+     "2026-07-18": 1
+    },
+    "cx": null,
+    "cxr": null,
+    "rmk": "till 18 Jul"
+   }
+  ],
+  "rows1": [
+   "OD 06:00 18:00 Hex C till 18 Jul",
+   "OD 06:00 18:00 Hunter IP till 18 Jul"
+  ],
+  "stat1": "2 pending i Publish AL1 Unpublish",
+  "changes": {
+   "title": "Changes · Saturday 18/7 Published · 2 changes waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 2",
+   "head": "Waiting to go out as AL1 · 2 changes",
+   "lines": [
+    "Drifter · OD Saber 22/6 09:00 taken out",
+    "Hex · OD Saber 22/6 09:00 added"
+   ]
+  },
+  "panelClasses": [
+   "sb-panel daybar oilon :: OIL EARN Nothing today earns ✓ OIL done ",
+   "sb-panel notes :: OVERALL NOTES shown at the head of the d",
+   "sb-panel prog :: COMMON PROGRAMME squadron-wide — affects",
+   "sb-panel duty :: DUTIES SDO / SXO / ops desk, by block RO",
+   "sb-panel simr :: SIMS AMT and OFT rows AMT No AMT rows. O",
+   "sb-panel grnd :: GROUND PROGRAMME briefs, reviews, admin ",
+   "sb-panel pinp :: PERSONAL INPUTS submitted by aircrew — a",
+   "sb-panel sansav :: SANS AVAIL what SANS aircrew are offerin",
+   "sb-panel unav :: UNAVAILABLE leave, medical and overseas "
+  ],
+  "oilBoard": [
+   {
+    "text": "UNAVAILABLE leave, medical and overseas duty OD Hex FO OD Hunter FO",
+    "pucks": [
+     "Hex FO {puck r sm oilglow}",
+     "Hunter FO {puck sm oilglow}"
+    ]
+   }
+  ]
+ },
+ "L18": {
+  "filed": [
+   {
+    "iid": "imqoidgg0t5zdfa",
+    "type": "Training",
+    "title": "L18 training",
+    "date": "Jul 15",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "by": "stiff"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "page": "viewsched",
+  "taps": [
+   {
+    "what": "row name 'L18 TRAINING'",
+    "found": true,
+    "before": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    },
+    "after": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    }
+   },
+   {
+    "what": "Ranger's puck on his row",
+    "found": true,
+    "before": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    },
+    "after": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 6
+    }
+   },
+   {
+    "what": "the row start time",
+    "found": true,
+    "before": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 6
+    },
+    "after": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    }
+   },
+   {
+    "what": "the row remark",
+    "found": true,
+    "before": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    },
+    "after": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    }
+   },
+   {
+    "what": "a flying line's puck (first one on the wave)",
+    "found": true,
+    "before": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 0
+    },
+    "after": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 3
+    }
+   },
+   {
+    "what": "a duty desk puck",
+    "found": true,
+    "before": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 3
+    },
+    "after": {
+     "wins": [],
+     "toast": "Wednesday published — APPROVED",
+     "sel": 2
+    }
+   },
+   {
+    "what": "Personal Inputs line (if drawn)",
+    "found": false
+   }
+  ],
+  "personalInputsDrawnOnView": 0
+ },
+ "verdicts": {
+  "L1": "FAIL (A: remark on all three; B: refused for Hex)",
+  "L2": "PARTIAL",
+  "L3": "FAIL",
+  "L4": "RECORDED",
+  "L5": "FAIL",
+  "L6": "PASS",
+  "L7": "PASS",
+  "L8": "PASS",
+  "L9": "PASS",
+  "L10": "PASS",
+  "L11": "PASS",
+  "L12": "PASS",
+  "L13": "RECORDED",
+  "L14": "PASS",
+  "L15": "PASS",
+  "L16": "PASS",
+  "L17": "RECORDED",
+  "L18": "RECORDED"
+ }
+}

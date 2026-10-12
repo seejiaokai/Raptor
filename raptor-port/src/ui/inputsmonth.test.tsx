@@ -104,10 +104,14 @@ describe('an input is one bar across its days (D626)', () => {
     const r = await file({ person: sans, type: 'SANS Availability', sans: { f: true } })
     expect(bars(r.iid)).toHaveLength(0)
   })
+  /* (the fixture is ONE record holding the four — the one-rule build, owner D756, D759: an input is one stored record
+     with the list of its people; it was a record a man tied by a group id, which now reads as four one-person inputs —
+     the case under this one) */
   it('a group filing is ONE bar: how many, then the kind (D655; the count first — D729)', async () => {
     const four = crew().slice(0, 4)
-    const rows: any[] = []
-    for (const p of four) rows.push(await file({ person: p, type: 'Meeting', date: 'Oct 8', allday: false, s: 600, e: 660, grp: 'g-test', grpBy: four[0] }))
+    const one: any = { iid: 'mon' + (++n), people: four.map(p => ({ p, by: four[0] })), by: four[0], type: 'Meeting', date: 'Oct 8', yr: 2026, allday: false, s: 600, e: 660 }
+    await act(async () => { INPUTS.push(one); notify() })
+    const rows: any[] = [one]
     const drawn = $$('.ib-bar').filter(b => rows.some(r => r.iid === b.dataset.iid))
     expect(drawn).toHaveLength(1)
     expect(drawn[0].textContent).toBe('4 · Meeting')
@@ -117,6 +121,13 @@ describe('an input is one bar across its days (D626)', () => {
     expect(bars(day.iid)[0].classList.contains('timed'), 'a day of leave stays solid').toBe(false)
     for (const p of four) expect(drawn[0].title, 'its tooltip lists everyone').toContain(cs(p))
   })
+  it('OLD-SHAPE records tied by a group id (D759 reading 10): each is its own input — a bar a man, named by him, never joined into one', async () => {
+    const two = crew().slice(0, 2)
+    const rows: any[] = []
+    for (const p of two) rows.push(await file({ person: p, type: 'Meeting', date: 'Oct 8', allday: false, s: 600, e: 660, grp: 'g-test', grpBy: two[0] }))
+    const drawn = $$('.ib-bar').filter(b => rows.some(r => r.iid === b.dataset.iid))
+    expect(drawn.map(b => b.textContent).sort()).toEqual(two.map(p => `${cs(p)} · Meeting`).sort())
+  })
   it('a desktop bar’s tooltip says its dates and who placed it (D629, D632); a record with no filer says no such line', async () => {
     const filer = crew()[1]
     const a = await file({ date: 'Oct 5', endDate: 'Oct 6', by: filer, at: new Date(2026, 9, 2, 9, 10).getTime(), modBy: filer, modAt: new Date(2026, 9, 2, 9, 10).getTime() })
@@ -124,6 +135,17 @@ describe('an input is one bar across its days (D626)', () => {
     expect(bars(a.iid)[0].title).toContain(`Placed by ${cs(filer)} for ${cs(a.person)} · 2 Oct 26, 09:10`)
     expect(bars(a.iid)[0].title).toContain('5 Oct')
     expect(bars(b.iid)[0].title).not.toContain('Placed by')
+    /* THE TOOLTIP HAS A THIRD THING TO SAY (owner D767, 12 Oct 26 — a cancelled input's bar is struck and faded, with no
+       tag and no reason: "for those areas that have no space to show reason it's ok"; a tooltip has the room): between
+       what it is and who placed it, a line of its own — "Cancelled — WX". An input that is not cancelled has no such
+       line, so the two lines above are the whole of its tooltip, as before. */
+    const c = await file({ type: 'Duty', date: 'Oct 19', by: filer, at: new Date(2026, 9, 2, 9, 10).getTime(), cx: true, cxr: 'WX' })
+    const lines = (t: string) => t.split('\n')
+    expect(lines(bars(a.iid)[0].title), 'not cancelled: what it is, who placed it').toHaveLength(2)
+    expect(lines(bars(b.iid)[0].title), 'no filer on record: what it is').toHaveLength(1)
+    expect(lines(bars(c.iid)[0].title)).toHaveLength(3)
+    expect(lines(bars(c.iid)[0].title)[1]).toBe('Cancelled — WX')
+    expect(lines(bars(c.iid)[0].title)[2]).toContain(`Placed by ${cs(filer)}`)
   })
 })
 

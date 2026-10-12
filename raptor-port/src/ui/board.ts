@@ -4,7 +4,7 @@
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
 import { briefLeadShown } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
+import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL } from '../engine/reporting'
@@ -14,16 +14,16 @@ import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { standsOn } from '../engine/overlay'
-import { groundGroups } from '../engine/grouprows'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayShownPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, publishReadPass } from '../engine/publish'
 import { logAction } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
-import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
+import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
 import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
-import { setInpField } from './inputedit'
+import { onInputRow, rowMark } from './reqdoor'
+import { setInpField, howMany } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -63,7 +63,9 @@ const afterSchedMutate = () => view.afterSchedMutate()
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function boardHTML(di: number, pv?: boolean) { return oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv))) }
+/* …and the inputs' per-person lines once a date ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputReadPass): the
+   same contract, the same reason. */
+export function boardHTML(di: number, pv?: boolean) { return inputReadPass(() => oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv)))) }
 function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the
@@ -587,9 +589,11 @@ export function dayTabsHTML(di: number) {
    The dialog now reads CXR_CFG; nothing here owns the list any more. */
 export let CXT: any = null
 export function setCxt(v: any) { CXT = v }
-export function askCx(o: any, key: any, label: any, after?: any) {
+/* `via` — where the line is not the day's own to mark: a row that came from an input, whose CX is the INPUT's (owner
+   D760; ui/reqdoor.ts rowMark). cxCommit then hands the answer to it and writes nothing itself. */
+export function askCx(o: any, key: any, label: any, after?: any, via?: (cancel: boolean, reason: string) => boolean) {
   if (!o) return
-  CXT = { o, key, after: after || null, label: label || 'this line' }
+  CXT = { o, key, after: after || null, label: label || 'this line', via: via || null }
   notify()
 }
 export function cxCommit(cancel: boolean, reason: string) {
@@ -605,7 +609,15 @@ export function cxCommit(cancel: boolean, reason: string) {
      there), same defence-in-depth framing as the rest of this task — but
      it is the last write path of this family with no check at all. */
   if (!canEditSched() || !HOOKS.editMode()) { CXT = null; notify(); return }
-  const { o, key, after, label } = CXT
+  const { o, key, after, label, via } = CXT
+  if (via) {
+    /* the INPUT is cancelled or brought back, by its own door's one command: its own line of the change history, its
+       own Undo step — and the row follows */
+    CXT = null
+    if (via(cancel, reason)) toast(cancel ? cxText({ cx: true, cxr: String(reason).trim() }) : 'Restored')
+    else notify()
+    return
+  }
   if (cancel) { o.cx = true; o.cxr = String(reason).trim() }
   else { o.cx = false; delete o.cxr }
   CXT = null
@@ -755,9 +767,8 @@ const whoText = (row: any) => {
   return names.length > 1 ? `${names[0]} +${names.length - 1}` : names[0]
 }
 
-/* the rows a ground row is DRAWN with as one row — the members of a shared input's one row, read BEFORE anything is
-   written (engine/grouprows.ts; owner D661); itself alone otherwise */
-const oneRow = (di: number, ri: number): number[] => { const g = groundGroups(DAYS[di])[ri]; return g && g.members.length > 1 ? g.members.slice() : [ri] }
+
+
 
 /* the board's delegated .mbtn click handler, verbatim bodies */
 export function boardMbtn(e: MouseEvent) {
@@ -1072,20 +1083,6 @@ export function boardMbtn(e: MouseEvent) {
   if (ds.grdel != null) {
     const [di, ri] = ds.grdel.split('.').map(Number)
     const row = DAYS[di].ground[ri]
-    /* THE ONE ROW OF A SHARED INPUT COMES OFF WHOLE (owner D736 — "a shared input … taken off the programme … is ONE
-       change waiting"; D114; the plan 2026-10-10-group-input-one-row-plan.md §4.5): the ✕ is drawn once, for the row
-       of everyone, so every member's request is taken off, in this one press — one Undo step. The requests are
-       gathered FIRST: each take-off cuts its row out and moves the others up. */
-    const mates = oneRow(di, ri)
-    if (mates.length > 1) {
-      const reqs = mates.map(i => DAYS[di].ground[i]).map((x: any) => (x && x.src && standsOn(DAYS[di], x.src) === x ? srcInput(x) : null)).filter(Boolean)
-      let n = 0
-      for (const q of reqs) if (unacceptInput(di, q)) n++
-      if (n) {
-        afterSchedMutate(); notify()
-        return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), `${n} people`))
-      }
-    }
     /* An auto-landed / accepted input row carries a `src` back-link. The plain
        splice below would strip the ROW but leave its input still marked
        accepted (inp.acc) with nothing behind it — an orphan the validator reads
@@ -1103,7 +1100,11 @@ export function boardMbtn(e: MouseEvent) {
       /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the
          programme", the change history's one writer) is this act's one line (D114 — one act, one change; Fable's final
          read, F1) */
-      return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), whoText(row)))
+      /* an input of several is named by HOW MANY, a placeholder said beside them ("3 people", "2 people and ALL AVAIL")
+         — as it was while a shared input was several rows taken off as one; since the one-rule build the one row said
+         "Nomad +2", the first to join and "the rest" (found by the re-expressed tests, step 6) */
+      const ids = [row.who, ...((row && row.more) || [])].map((v: any) => whoId(v)).filter(Boolean)
+      return toast('Ground item removed — back under Personal Inputs' + desc(row.prog, timeSpan(row.str, row.end), ids.length > 1 ? howMany(ids) : whoText(row)))
     }
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))
@@ -1113,31 +1114,34 @@ export function boardMbtn(e: MouseEvent) {
     dropRowMarks([rid])
     markDeletion(di, 'ground', issued); logAction(di, said); afterSchedMutate(); notify(); return toast(said)
   }
-  /* CX, THE RED BOX AND INFORMATION-ONLY ARE THE ONE ROW'S — SET ALIKE ON EVERY ROW OF IT (the plan §4.5; D735 — "the row
-     never splits or joins by itself"): the rows of a shared input are one row only while these marks are alike
-     (engine/grouprows.ts), so a mark made on the lead alone would split it. One question and one reason for CX; each
-     press is one Undo step. A row that stands alone is written exactly as before. */
+  /* CX, THE RED BOX AND INFORMATION ONLY. On a scheduler's own row they are the ROW's, written here. ON A ROW THAT CAME
+     FROM AN INPUT ALL THREE ARE THE INPUT'S (step 4 of the one-rule build — owner D760): asked of the row's door first,
+     which changes the input in one command; the row follows as the copy it is. */
   if (ds.grcx != null) {
     const [di, ri] = ds.grcx.split('.').map(Number); const lead = DAYS[di].ground[ri]
-    const others = oneRow(di, ri).filter(i => i !== ri)
-    return askCx(lead, `gr:${di}.${ri}.prog`, 'this item', others.length ? () => {
-      for (const i of others) { const x = DAYS[di].ground[i]; if (!x) continue; if (lead.cx) { x.cx = true; x.cxr = lead.cxr } else { x.cx = false; delete x.cxr } markEdit(`gr:${di}.${i}.prog`) }
-    } : undefined)
+    if (onInputRow(`g:${di}.${ri}`)) return askCx(lead, null, 'this item', undefined, (cancel, reason) => rowMark(`g:${di}.${ri}`, 'cx', cancel, reason) === 'done')
+    return askCx(lead, `gr:${di}.${ri}.prog`, 'this item')
   }
   if (ds.grflag != null) {
     const [di, ri] = ds.grflag.split('.').map(Number); const x = DAYS[di].ground[ri]
-    const mates = oneRow(di, ri)                // read before the mark is made: rows are one row only while alike
+    if (onInputRow(`g:${di}.${ri}`)) {
+      const on = !x.flag
+      if (rowMark(`g:${di}.${ri}`, 'flag', on) !== 'done') return
+      return toast(on ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+    }
     x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`)
-    for (const i of mates) if (i !== ri && DAYS[di].ground[i]) { DAYS[di].ground[i].flag = x.flag; markEdit(`gr:${di}.${i}.prog`) }
     afterSchedMutate(); notify()
     return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
   }
   /* ⓘ info-only, ground twin of ds.pinfo above */
   if (ds.grinfo != null) {
     const [di, ri] = ds.grinfo.split('.').map(Number); const x = DAYS[di].ground[ri]
-    const mates = oneRow(di, ri)                // read before the mark is made: rows are one row only while alike
+    if (onInputRow(`g:${di}.${ri}`)) {
+      const on = !x.info
+      if (rowMark(`g:${di}.${ri}`, 'info', on) !== 'done') return
+      return toast(on ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
+    }
     x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`)
-    for (const i of mates) if (i !== ri && DAYS[di].ground[i]) { DAYS[di].ground[i].info = x.info; markEdit(`gr:${di}.${i}.prog`) }
     afterSchedMutate(); notify()
     return toast(x.info ? 'Info only — this item is no longer checked against the rules, and earns nobody any OIL' : 'This item is checked against the rules again')
   }
@@ -1211,12 +1215,14 @@ export function boardChange(e: Event) {
      screen looking saved. */
   const inf = (e.target as HTMLElement).closest('[data-ifld]') as HTMLInputElement | null
   if (inf) {
-    const [id, field] = inf.dataset.ifld!.split('.')
+    const [tail, field] = inf.dataset.ifld!.split('.')
+    /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
+    const at = iuParts('iu:' + tail), id = at ? at.iid : tail
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
     const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
     if (RO) return back()
-    if (setInpField(inp, field as any, inf.value)) notify()
+    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) notify()
     else back()
     return
   }
@@ -1840,8 +1846,8 @@ export function boardTab(n: number) {
       let want = iv
       if (ae.dataset.bfld != null) want = txtGet(ae.dataset.bfld)
       else {
-        const [id, field] = ae.dataset.ifld.split('.')
-        const inp = inpById(id)
+        const [tail, field] = ae.dataset.ifld.split('.')
+        const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)
         if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
       }
       /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —

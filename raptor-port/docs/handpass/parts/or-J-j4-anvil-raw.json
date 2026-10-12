@@ -1,0 +1,186 @@
+{
+ "third": "Anvil",
+ "stage": "2-medical",
+ "leave": [
+  {
+   "iid": "imqoidgg0w9osaj",
+   "type": "LL",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Drifter",
+    "Hunter",
+    "Anvil"
+   ],
+   "acc": null
+  }
+ ],
+ "leaveDump": [
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter",
+    "Anvil"
+   ]
+  }
+ ],
+ "lw1": "slipway: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nprowler: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nnick: 13=none 14=none 15=none 16=none 17=none\nshaft: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"",
+ "wed1": [
+  "LL Drifter A till 17 Jul",
+  "LL Hunter IP till 17 Jul",
+  "LL C Anvil IP till 17 Jul",
+  "ATT C Grit C Medically down till 17 Jul"
+ ],
+ "med": [
+  {
+   "iid": "imqoidgg0p4oiua",
+   "type": "ATT C",
+   "date": "Jul 15",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Anvil"
+   ],
+   "acc": null
+  },
+  {
+   "iid": "imqoidgg0a2qnhl",
+   "type": "LL",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Anvil"
+   ],
+   "acc": null
+  },
+  {
+   "iid": "imqoidgg0sub6rm",
+   "type": "LL",
+   "date": "Jul 17",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Anvil"
+   ],
+   "acc": null
+  }
+ ],
+ "afterDump": [
+  {
+   "type": "ATT C",
+   "from": "Jul 15",
+   "to": null,
+   "rmk": "till 16 Jul",
+   "who": [
+    "Anvil"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 14 Jul",
+   "who": [
+    "Anvil"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 17",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Anvil"
+   ]
+  }
+ ],
+ "afterWed": [
+  "ATT C C Anvil IP till 16 Jul",
+  "LL Drifter A till 17 Jul",
+  "LL Hunter IP till 17 Jul",
+  "ATT C Grit C Medically down till 17 Jul"
+ ],
+ "afterCal": 5,
+ "afterCard": "⠿ Wed 15 Jul + Note ✕ + Input 6 INPUTS till 16 Jul AnvilATT C By Saber All day CobraOL Overseas leave — off island By Saber till 17 Jul Drifter, HunterLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island",
+ "afterLw": "slipway: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nprowler: 13=\"LL\" 14=\"LL\" 15=\"LL\" 16=\"LL\" 17=\"LL\"\nnick: 13=none 14=none 15=none 16=none 17=none\nshaft: 13=\"LL\" 14=\"LL\" 15=\"C\" 16=\"C\" 17=\"LL\"",
+ "undo": "pressed Undo; note: Undid: 4 inputs",
+ "undoDump": [
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter",
+    "Anvil"
+   ]
+  }
+ ],
+ "undoWed": [
+  "LL Drifter A till 17 Jul",
+  "LL Hunter IP till 17 Jul",
+  "LL C Anvil IP till 17 Jul",
+  "ATT C Grit C Medically down till 17 Jul"
+ ],
+ "redo": "pressed Redo; note: Redid: 4 inputs",
+ "redoDump": [
+  {
+   "type": "ATT C",
+   "from": "Jul 15",
+   "to": null,
+   "rmk": "till 16 Jul",
+   "who": [
+    "Anvil"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Drifter",
+    "Hunter"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 13",
+   "to": null,
+   "rmk": "till 14 Jul",
+   "who": [
+    "Anvil"
+   ]
+  },
+  {
+   "type": "LL",
+   "from": "Jul 17",
+   "to": null,
+   "rmk": "till 17 Jul",
+   "who": [
+    "Anvil"
+   ]
+  }
+ ]
+}

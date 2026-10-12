@@ -1,0 +1,26 @@
+// RW1-3b — B1's replace from the crew list on a Saturday: the OIL question opens at once
+import { launch, openWorld, fileInput, shotP, rowIdx, inputOf, toastMark, toastsSince, errs, openBoard, centre, boardRowEl, boardRowNames, drag2, rosterPuckOf, toastNow, waitQuiet, log, answerOil, undoRedo } from './or-RW1-lib.mjs'
+const browser = await launch()
+const { page: p } = await openWorld(browser)
+const DI = 5
+const iid = (await fileInput(p, { type: 'Training', person: 'Ranger', from: '2026-07-18', to: '2026-07-18', timed: ['09:00', '12:00'], oil: 'yes' }))[0].iid
+log('input0', await inputOf(p, iid))
+await openBoard(p, DI)
+const ri = await rowIdx(p, DI, iid)
+const row = boardRowEl(p, DI, ri); await centre(row); await p.waitForTimeout(300)
+await waitQuiet(p)
+const m0 = await toastMark(p)
+await drag2(p, await rosterPuckOf(p, '#sbRoster', 'Tally'), row.locator('.puck').first())
+await p.waitForTimeout(500)
+log('oil question open', await p.locator('[data-testid="oilconf"]').count())
+log('oil question text', await p.locator('[data-testid="oilconf"]').innerText().catch(() => '').then(t => t.replace(/\s+/g, ' ').slice(0, 400)))
+await shotP(p, 'rw1-3b-1-oil-question')
+log('toasts', await toastsSince(p, m0))
+log('input before answer', (await inputOf(p, iid)).people)
+await answerOil(p, 'yes'); await p.waitForTimeout(400)
+log('toasts after answer', await toastsSince(p, m0))
+log('input after', await inputOf(p, iid))
+log('row', await boardRowNames(p, DI, ri))
+await centre(boardRowEl(p, DI, ri)); await shotP(p, 'rw1-3b-2-after-answer')
+log('errs', errs)
+await browser.close()

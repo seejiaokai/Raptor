@@ -2,7 +2,7 @@
 // H1, H2; design §25, §26; owner answers A–D). Driven through the REAL Raptor
 // inputs door (writeInputs) and the real global undo, over both wired stores.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
@@ -43,7 +43,7 @@ function file(person: string, type: string, date: string, extra: Record<string, 
   if (row.allday === false) delete (row as any).allday
   return writeInputs(() => { INPUTS.unshift(row) })
 }
-const rowsOf = (person: string, type?: string) => INPUTS.filter((r: any) => r.person === person && (!type || r.type === type))
+const rowsOf = (person: string, type?: string) => INPUTS.filter((r: any) => holds(r, person) && (!type || r.type === type))
 const codeAt = (p: string, d: string) => getState().grid[p]?.[d]
 const recsAt = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
 

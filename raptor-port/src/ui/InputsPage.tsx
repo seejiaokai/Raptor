@@ -11,7 +11,7 @@
    Type → ui/TypeLegend.tsx; an admin's posted-out people for a NEW input; the just-saved row lit). */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp } from '../engine/inputs'
+import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -31,19 +31,17 @@ import { InputsCal } from './InputsCal'
 import { SansCal } from './SansCal'
 /* the draft shape, the OIL question and the new input's seed are the input window's own — see ui/inputedit.tsx */
 import {
-  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel,
+  fmtDay, fmtDMY, unfmt, typeOptions, draftOf, saveBatch, oilGate, oilAnswered, oilUnansweredDay, oilDayLabel, oilSignDay, oilSignNote, inputWho,
   rosterOptions as people, archivedOptions, inputTone, newInputSeed,
 } from './inputedit'
 import { docHas, rowDocIds } from '../state/docs'
 import { stampChanged } from '../state/inputstamp'
-import { entriesOf } from '../state/inputgroup'
 import { PlaceholderGroup } from './PeoplePick'
-import { EVERYONE, personFilterId, personFilterPasses, personFilterValue } from './inputscal-model'
+import { EVERYONE, personFilterId, personFilterValue, inputPassesPerson, inputMatchesSearch, namesOf } from './inputscal-model'
 import { useVersion } from './useStore'
-import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
 import { InputCard } from './InputCard'
-import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
+import { cardOf, cardWhen, cxOf, cxWhy, lateNoteOf } from './inputcard-model'
 import { dayWord, lateWord } from './sanscal-model'
 import { useMedia } from './usemedia'
 
@@ -71,7 +69,8 @@ function ArchivedGroup() {
    picker — D287). (The row's own editor, which kept his name as the row's value, went with the List's pencil — D718,
    10 Oct 26; the input's window keeps it the same way.) */
 function DeletedGroup() {
-  const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && INPUTS.some((r: any) => r && r.person === id))
+  const lines = inputLines()   // one line a named person of each input (engine/inputs.ts) — read once, not once a man
+  const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
   if (!ids.length) return null
   return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
 }
@@ -130,7 +129,8 @@ const pad4 = (m: any) => String(m).padStart(4, '0')
 /* a date as the engine numbers it (yyyymmdd) → 'yyyy-mm-dd' */
 const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${pad(Math.floor(o / 100) % 100)}-${pad(o % 100)}`
 const SORTKEY: any = {
-  name: (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : String(r.person || '')).toLowerCase(),
+  /* its first callsign — of its people A to Z, the first name its row shows (ui/inputscal-model.ts namesOf) */
+  name: (r: any) => (namesOf(r)[0] || '').toLowerCase(),
   start: (r: any) => unfmt(r.date) + pad4(r.allday ? 0 : (r.s ?? 0)),
   end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
@@ -261,19 +261,19 @@ export function InputsPage() {
     /* MOVED TO THE TOP OF THE LIST ONLY WHEN ITS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already
        in view, undo/redo don't need to snap to view"): an Undo of an input he is looking at used to lift it to the top
        every time. A row brought back by the Undo (it was not drawn a moment ago) is still lifted, so it is found. */
-    /* THE ROW IT IS DRAWN AS (Astra's read of the code, 10 Oct 26 — finding 2): a shared input stands under its FIRST
-       record A to Z, and the page is shown whichever record the save made first. Asked for by that record's own id,
-       the row was never found: it was pinned and lit, and never brought into view. So the look-up is by the id the
-       List draws the entry under — and inside the List, where the month's bars carry ids of their own. */
-    const shown=(entriesOf(inputsInMode(INPUTS,INPMODE)).find(e=>e.rows.includes(row))?.rows[0])||row
+    /* THE ROW IT IS DRAWN AS (Astra's read of the code, 10 Oct 26 — finding 2): a shared input stood under its FIRST
+       record A to Z while the page was shown whichever record the save made first, so the look-up had to be turned
+       into the id the List drew the entry under. An input is ONE record now (owner D756, 11 Oct 26), so the record the
+       page is shown IS the row — looked up inside the List, where the month's bars carry ids of their own. */
+    const shown=row
     if(!rowOnScreen(document.querySelector(listRow(shown.iid))))setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
     setJustAddedIid({iid:shown.iid})
     /* …AND IT IS LIT (D729 — V1). The List's own add form lit the row it had just added — "so the add is visible even
        from a view that would filter it out" — and was the only thing that did: an input saved through its window was
        brought into view dark. With the form gone the window is the List's one door, so the light is given HERE, to
        whatever input the page has just been shown: one added, one changed, one put back by Undo (the month's bar
-       has always flashed for all three — `[CAL-CHECK-SEEN]`, "its row does not flash on Undo or Redo"). A shared
-       input lights by any of its records (the row below asks `some`). It comes off on a timer; the pin waits for him. */
+       has always flashed for all three — `[CAL-CHECK-SEEN]`, "its row does not flash on Undo or Redo"). It comes off
+       on a timer; the pin waits for him. */
     setFlash(f=>[row,...f.filter(x=>x!==row)])
     timers.current.push(setTimeout(()=>setFlash(f=>f.filter(x=>x!==row)),FLASH_MS))
   },[reveal])
@@ -376,6 +376,11 @@ export function InputsPage() {
     if (g.kind !== 'ask') return
     setOilConf({
       ...g,
+      /* headed for EVERYONE the one answer is written for (D762) — the words of the input's own window ("Ace +1"),
+         as every other door of the question says it (ui/inputedit.tsx inputWho); the row's "OIL?" button for an
+         input of several is new with D777, and headed it with the one man the record leads with (the second
+         re-walk, RX2-2) */
+      who: inputWho(r) || g.who,
       commit: (dec: Record<string, number>) => {
         /* an answer alone is a change to the record: who gave it, and when (D629). `mod` — the date the late rule
            reads — is NOT moved by it, as before */
@@ -386,25 +391,18 @@ export function InputsPage() {
 
   let pinCount = 0
   let rows = inputsInMode(INPUTS, INPMODE)
-  /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13): the records of one entry
-     (state/inputgroup.ts — worked out on read) are drawn as its FIRST record's row, the Name naming EVERYONE in it,
-     A to Z (D727 — "Saber +3" until 10 Oct 26). The filters show an entry when ANY of its people passes; it sorts by
-     its first callsign — the first name it shows. */
-  const entryOf = new Map<any, any[]>()
-  for (const e of entriesOf(rows)) if (e.rows.length > 1) for (const r of e.rows) entryOf.set(r, e.rows)
-  rows = rows.filter((r: any) => personFilterPasses(fPerson, r.person))   // one body with the month and the opened day
+  /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13) — and since the one-rule
+     build it IS one record with the list of its people (owner D756, 11 Oct 26; the plan
+     docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5): a row a record, the Name naming EVERYONE in it, A to Z,
+     its placeholder last (D727 — "Saber +3" until 10 Oct 26). The filters show an input when ANY of its people passes,
+     or its placeholder does, and the search finds it by any of their callsigns — one body with the month and the
+     opened day (ui/inputscal-model.ts); it sorts by its first callsign — the first name it shows. "Several people" is
+     how many are IN the record (`several`), never how many records. */
+  const several = (r: any) => idsOf(r).length > 1
+  rows = rows.filter((r: any) => inputPassesPerson(fPerson, r))
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
-  if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || inpLabel(r).toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
+  if (fSearch) rows = rows.filter((r: any) => inputMatchesSearch(r, fSearch))
   rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
-  if (entryOf.size) {
-    const seen = new Set<any[]>(), one: any[] = []
-    for (const r of rows) {
-      const e = entryOf.get(r)
-      if (!e) { one.push(r); continue }
-      if (!seen.has(e)) { seen.add(e); one.push(e[0]) }
-    }
-    rows = one
-  }
   {
     const key = SORTKEY[sort.key] || SORTKEY.start
     const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
@@ -434,11 +432,10 @@ export function InputsPage() {
      Deleted and undone rows fall out here — the pin points at an object, so a
      row that has left INPUTS simply stops matching. */
   {
-    /* A PIN IS ITS ENTRY'S ONE ROW (Sol's read of the calendar job's bug check, 8 Oct 26 — and what a walker had seen):
-       a pin points at a RECORD, and a shared input is drawn as its first record's row. A man sorting first, added
-       from the List, made another record the first — and the pinned one went on top as a row of its own: one filing,
-       drawn twice. Each pin is turned into the row its entry is drawn as, once. */
-    const pins = [...new Set(inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0).map((r: any) => (entryOf.get(r) || [r])[0]))]
+    /* A PIN IS ITS INPUT'S ONE ROW, ONCE (Sol's read of the calendar job's bug check, 8 Oct 26 — one filing was drawn
+       twice while a shared input was a record a man and a pin pointed at one of them). A pin points at a RECORD and
+       the record is the row, so each is listed once. */
+    const pins = [...new Set(inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0))]
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
     pinCount = pins.length
   }
@@ -450,7 +447,7 @@ export function InputsPage() {
      date of its own, so the heading says it — the pinned input first under it. Worked out only where it is drawn. */
   const dayGroups = !phone ? [] : (() => {
     const first = (r: any) => dateOrd(r.date, r.yr) ?? 0
-    const whoOf = (r: any) => (PEOPLE[r.person] ? String(PEOPLE[r.person].cs) : String(r.person || ''))
+    const whoOf = (r: any) => namesOf(r)[0] || ''   // its first callsign, of its people A to Z
     const byDay = (a: any, b: any) =>
       first(a) - first(b) || (a.allday === b.allday ? 0 : a.allday ? -1 : 1) || (a.allday ? 0 : (a.s ?? 0) - (b.s ?? 0)) ||
       whoOf(a).localeCompare(whoOf(b), undefined, { sensitivity: 'base' })
@@ -646,16 +643,8 @@ export function InputsPage() {
             </div>
           )}
         </div>
-        <button className="abtn" id="inExport" hidden={!listUp} onClick={() => {
-          /* EVERY input, each one's whole span (AB10) — never only the rows the list is filtered to. The calendar
-             build had narrowed it to the filtered rows, so a member (whose list opens on himself) exported his own
-             inputs only, and a search that matched nothing wrote an empty file (Opus's own read, step 0, 7 Oct 26) */
-          exportCSV('142-inputs.csv', inputRows(INPUTS))
-          /* a phone browser often shows nothing at all when a download lands —
-             no bar, no tray notification the user is looking at — so the tap
-             otherwise reads as dead (owner audit) */
-          HOOKS.toast('CSV downloaded', 'ok')
-        }}>Export to Excel</button>
+        {/* (no export here — owner, D773, 12 Oct 26: "I don't need an export to excel function for inputs. U can remove it."
+            The List's "Export to Excel" button, its file and ui/export.ts inputRows are gone; pinned by ui/inputs.test.tsx) */}
       </div>
       <div className="inwrap" hidden={!listUp}>
         {phone ? (
@@ -667,11 +656,11 @@ export function InputsPage() {
                   <i>{g.rows.length} input{g.rows.length > 1 ? 's' : ''}</i>
                 </div>
                 {g.rows.map((r: any) => {
-                  const team = entryOf.get(r) || [r]
                   const b0 = r.endDate ? dateOrd(r.endDate, r.yr) : null
                   const when = cardWhen(r, b0 != null ? isoOfOrd(b0) : g.iso, g.iso)
-                  return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf(team, undefined, when)} when={when}
-                    late={lateNoteOf(team, lateWord)} flash={team.some((x: any) => flash.indexOf(x) >= 0)} onOpen={() => openInput(r)} />
+                  /* the card is handed the input's ONE record, as a list of one (ui/inputcard-model.ts) */
+                  return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf([r], undefined, when)} when={when}
+                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={flash.indexOf(r) >= 0} onOpen={() => openInput(r)} />
                 })}
               </Fragment>
             ))}
@@ -685,9 +674,8 @@ export function InputsPage() {
           </tr></thead>
           <tbody id="inBody">
             {rows.map((r: any) => {
-              const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
-              /* the entry this row stands for — a shared input's people, A to Z — or undefined for an ordinary input */
-              const team = entryOf.get(r)
+              /* does it hold several PEOPLE? — the record's own list (owner D756), never how many records */
+              const team = several(r)
               /* WHO IT IS FOR AND WHO FILED IT ARE THE CARD'S OWN ANSWERS (ui/inputcard-model.ts cardOf), so the desktop
                  list, the phone's list and the opened day cannot say different things:
                  · `names` — EVERY person of a shared input, A to Z, wrapping in the Name column; never "Drifter +3"
@@ -697,7 +685,7 @@ export function InputsPage() {
                    full "Placed by Bolt · 6 Jul 26, 09:10" stood under every remark, repeating the first column's name
                    and the last column's date, and made every row two lines. The whole stamp — who, the day, the time,
                    the last change — is in the input's own window. */
-              const said = cardOf(team || [r])
+              const said = cardOf([r])
               /* DAY-FIRST and de-duplicated (owner, 21 Aug 26 — standardise +
                  compress). Start carries the day-first date + its time; End
                  drops the date when the span stays on one day, so a same-day
@@ -726,11 +714,17 @@ export function InputsPage() {
               /* the stripe mirrors the month calendar's chip tones — both
                  read inputTone so the two surfaces can't disagree on a
                  colour (see ui/inputedit.tsx) */
-              /* LIT BY ANY RECORD OF ITS ENTRY (the host's own find in the walk's pictures, 10 Oct 26): the page is shown
-                 ONE record of a shared input — whichever the save made first — and this row stands under the entry's
-                 first record A to Z, so a light asked of `r` alone left a just-added shared row dark unless the two
-                 were the same man. The phone's card asks the same question the same way. */
-              const rowCls = ['in-' + inputTone(r.type), ...((team || [r]).some((x: any) => flash.indexOf(x) >= 0) ? ['innew'] : [])].join(' ')
+              /* LIT WHERE THE PAGE WAS JUST SHOWN IT (the host's own find in the walk's pictures, 10 Oct 26 — a just-added
+                 shared row stayed dark while it stood under another of its records): the record IS the row now, so
+                 the light is asked of it. The phone's card asks the same question the same way. */
+              const rowCls = ['in-' + inputTone(r.type), ...(flash.indexOf(r) >= 0 ? ['innew'] : [])].join(' ')
+              /* WHO IS LATE (the one-rule plan §4.5 "The late mark"): the input is late when its own late date is; a
+                 person in it is late when HIS own is later still — a person added after the cut-off can be late alone.
+                 Asked of one FACE a person (engine/inputs.ts facesOf: the record's fields with his id and his own late
+                 date — for words only), named A to Z where the input holds several. */
+              const csOf = (p: any) => String(PEOPLE[p] ? PEOPLE[p].cs : p)
+              const lates = facesOf(r).filter((f: any) => isLateInput(f))
+                .sort((a: any, b: any) => csOf(a.person).localeCompare(csOf(b.person), undefined, { sensitivity: 'base' }))
               return (
                 <tr key={inx} className={rowCls} data-iid={r.iid}
                   /* A CLICK ON THE ROW OPENS THE INPUT (D718, D723 — the pencil and the cross are gone). Not a press on
@@ -747,7 +741,7 @@ export function InputsPage() {
                     {/* the row's BUTTON — what a keyboard and a screen reader meet (the pencil and the cross were spans a
                         Tab never reached: `[TITLE-CHECK-SEEN]` 6) */}
                     <button type="button" className="in-open" data-testid="in-open" title="Open this input"
-                      onClick={() => openInput(r)}>{team ? said.names : cs}</button></td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
+                      onClick={() => openInput(r)}>{said.names}</button></td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
                   {/* The two chips too wide for the phone card's aligned type
                       column wear the board day name's split-span idiom (owner,
                       22 Aug 26 — "if there's no space like sans availability u
@@ -768,11 +762,21 @@ export function InputsPage() {
                       already reflected in the Start/End columns — a timed SANS
                       row reads its span there like any other timed input. */}
                   <td data-label="Type">{/* a titled input reads by its title, its kind kept beside it (D716 (2), D717) */}
-                    {inpKindTag(r) && <b className="intitle" data-testid="in-title">{inpLabel(r)}</b>}<span className="intag">{
+                    {/* A CANCELLED INPUT (D767 — look B with his two changes; docs/mock/2026-10-12-one-rule/
+                        cancelled-B-desk-list.png): the red CX tag before the title, the title struck through, the reason
+                        after it in red — on the title's own line, the kind's pill whole under it as ever. With no title
+                        of its own it goes by its kind, so the PILL is struck: the tag before it and the reason after it,
+                        on the pill's one line — the row no taller than any other (step 5's look: with the tag on a line
+                        of its own the row grew). The pill's own words are untouched either way (the sort, the export
+                        and the tests read them). */}
+                    {cxOf(r) && inpKindTag(r)
+                      ? <span className="in-cxline"><span className="icx" data-testid="in-cx">CX</span><b className="intitle is-cx" data-testid="in-title">{inpLabel(r)}</b>{cxWhy(r) && <span className="icx-why" data-testid="in-why">{cxWhy(r)}</span>}</span>
+                      : cxOf(r) ? <span className="icx" data-testid="in-cx">CX</span>
+                        : inpKindTag(r) && <b className="intitle" data-testid="in-title">{inpLabel(r)}</b>}<span className={'intag' + (cxOf(r) && !inpKindTag(r) ? ' is-cx' : '')}>{
                     isSansAvail(r.type) ? <>SANS Avail<span className="bl">ability</span></>
                       : r.type === 'Appointment' ? <>Appoint<span className="bl">ment</span></>
                         : r.type
-                  }</span>{isSansAvail(r.type) && <span className="foa" title="Available for">{sansLetters(r) || 'F/O/A'}</span>}</td>
+                  }</span>{cxOf(r) && !inpKindTag(r) && cxWhy(r) && <span className="icx-why" data-testid="in-why">{cxWhy(r)}</span>}{isSansAvail(r.type) && <span className="foa" title="Available for">{sansLetters(r) || 'F/O/A'}</span>}</td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
@@ -781,9 +785,9 @@ export function InputsPage() {
                       the column with room for it. */}
                   {/* a shared input is LATE on its line where any of its people is — a man added later can be late alone,
                       and the note says who */}
-                  <td data-label="Remarks">{(team || [r]).some((x: any) => isLateInput(x)) && <span className="latetag"
-                    title={team ? team.filter((x: any) => isLateInput(x)).map((x: any) => `${PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person}: ${lateNote(x)}`).join(' · ') : lateNote(r)}>LATE</span>}{r.remarks || ''}
-                    {said.by && <span className={'in-placed' + (r.remarks || (team || [r]).some((x: any) => isLateInput(x)) ? '' : ' alone')} data-testid="in-placed">By {said.by}</span>}</td>
+                  <td data-label="Remarks">{lates.length > 0 && <span className="latetag"
+                    title={team ? lates.map((f: any) => `${csOf(f.person)}: ${lateNote(f)}`).join(' · ') : lateNote(lates[0])}>LATE</span>}{r.remarks || ''}
+                    {said.by && <span className={'in-placed' + (r.remarks || lates.length ? '' : ' alone')} data-testid="in-placed">By {said.by}</span>}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     {/* the paperwork behind a medical row — EVERY account may
@@ -804,9 +808,10 @@ export function InputsPage() {
                         mayEditInput, which takes the record. */}
                     {/* NO PENCIL, NO CROSS (owner D718, D723): the row opens the input's window, where it is changed and
                         deleted — a shared input's for everyone, asked first (the plan §3.13). What stays here is what
-                        acts on the record WITHOUT opening it: the paperclip above, and the OIL chips of an ordinary
-                        input its reader may change (a shared input's OIL answer is in its window: here it would act
-                        on the first man's record alone). */}
+                        acts on the record WITHOUT opening it: the paperclip above, and the OIL chips of an input of
+                        ONE person its reader may change. An input of several has ONE answer for everyone in it (owner
+                        D762, 11 Oct 26 — "whoever filed it, or an admin, gives it"), given in its window beside the
+                        names it is given for; no chip here, and no man in it has an answer of his own. */}
                     {!team && mayEditInput(r) && <>
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
@@ -826,6 +831,15 @@ export function InputsPage() {
                         aria-label={`Answer the OIL question for ${oilDayLabel(oilUnansweredDay(r))}`}
                         onClick={() => reviseOil(r)}>OIL?</button>}
                     </>}
+                    {/* …AND FOR AN INPUT OF SEVERAL PEOPLE TOO (owner D777, 12 Oct 26 — "the desktop List's 'OIL?' button
+                        shows for an input of several people too"). The one sign of a question nobody answered, for
+                        whoever may answer it (ui/inputedit.tsx oilSignDay): it opens the same question, and the
+                        answer is the input's ONE answer, for everyone in it (D762). Its answer, once given, is still
+                        changed in its window — no "OIL" chip here for an input of several, as above. */}
+                    {team && oilSignDay(r) && <button type="button" className="roil ask" data-oilask={inx}
+                      title={`${oilSignNote(oilSignDay(r))} — tap to answer it`}
+                      aria-label={`Answer the OIL question for ${oilDayLabel(oilSignDay(r))}`}
+                      onClick={() => reviseOil(r)}>OIL?</button>}
                   </td>
                 </tr>
               )

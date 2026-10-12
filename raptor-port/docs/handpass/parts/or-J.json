@@ -1,0 +1,20 @@
+{
+  "letter": "J",
+  "date": "2026-10-12",
+  "build": "http://localhost:4186/",
+  "size": "1440x900 desktop",
+  "count": { "PASS": 7, "FAIL": 2, "NOT_WALKED": 0 },
+  "rows": {
+    "J1": { "verdict": "PASS", "note": "Grit refused (on seeded ATT C: leave can't go over a medical); walked with Anvil. Wed rows Drifter/Hex/Tally -> Drifter/Anvil/Tally, one input, card 'Anvil, Drifter, Tally'. Tally has no Leave War row (SANS). Undo/Redo fine." },
+    "J2": { "verdict": "FAIL", "note": "History on: no gold dot on any row of the three-man leave (control: one-person LL row wears one). Tap on each of the 3 changes-window lines lands on Drifter's (first) row, not the swapped-in man's. Lines 'LL 15 Jul-16 Jul - added/taken out' name nobody." },
+    "J3": { "verdict": "PASS", "note": "Drifter 09:00-18:00 own input, Hunter untouched; calendar shows two; Undo 'Undid: 2 inputs' -> one OD for both; Hunter's bell: 'Drifter taken off - Saber', 'You were added - Saber'." },
+    "J4": { "verdict": "PASS", "note": "Leave Drifter+Hunter whole Mon-Fri; Tally's leave cut to 13-14 and 17; ATT C 15-16; one Undo 'Undid: 4 inputs' restores one 3-man LL. Leave War cells right (Anvil stand-in: LL LL C C LL)." },
+    "J5": { "verdict": "PASS", "note": "Ranger, Tally credited once (HO* / tracker 1 credit on 18 Jul), men behind ALL AVAIL credited once, Hunter (switched off) none; window 43 of 44. Tally needs Show SANS to appear." },
+    "J6": { "verdict": "FAIL", "note": "Delete of Drifter: row re-made for three on every surface, changes window names the input; delete sheet itself names no input. Posting Hex out dated Wed 15 Jul (Archive with clock on 15 Jul; and Leave War posting + clock set + reload): Wed-Fri Unavailable rows and INPUTS still hold Hex; Leave War shows him 'gone' from Wed 15." },
+    "J7": { "verdict": "PASS", "note": "F 0 0 -> 2 1 -> 1 1 on Fri 17 Jul; week SANS list Tally, Bolt, Jester -> Tally, Bolt; U/R fine." },
+    "J8": { "verdict": "PASS", "note": "Medical order Ranger, Grit, Vector, Tally = crew list order (30,47,48,57); each opens own entry; no 'undefined'." },
+    "J9": { "verdict": "PASS", "note": "Mon 20 crew-rest breach named Ranger and Tally ('Sunday ended 23:59 ... only 5h41 rest'), identical to two one-person inputs; both gone after CX; Undo/Redo toggle both." }
+  },
+  "errors": [],
+  "notWalked": []
+}

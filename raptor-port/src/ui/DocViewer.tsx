@@ -11,7 +11,7 @@
 import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE } from '../engine/people'
-import { inpMeta, baseYear } from '../engine/inputs'
+import { inpMeta, baseYear, leadOf } from '../engine/inputs'
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
 import { docGet, rowDocIds } from '../state/docs'
@@ -67,7 +67,10 @@ export function DocViewer() {
   }, [r])
 
   const close = () => { setDocView(null); notify() }
-  const mine = r && (canEditSched() || isMe(r.person))
+  /* a medical entry is ONE person's (D655 reading 4): its person is the first of its people — engine/inputs.ts leadOf,
+     which answers for a record stored before the one-rule build (one `person`) and one after it alike */
+  const pid = r ? leadOf(r) : undefined
+  const mine = r && (canEditSched() || isMe(pid))
   const edit = () => { setDocView(null); setInpEdit(r); notify() }
   /* the pending card's own Upchit path (owner, 27 Aug 26 — "the user can
      click on their own puck and upload their document to upchit"): a seed
@@ -77,11 +80,11 @@ export function DocViewer() {
     /* the date defaults to TODAY (the app's notional today) and stays
        editable in the dialog — a certificate is sometimes signed a day or
        two before it is filed (owner, 27 Aug 26) */
-    setInpEdit({ _new: true, _ctx: 'up', person: r.person, type: 'Upchit', allday: true, date: fmt(keyToIso(TODAY)), yr: baseYear(), remarks: '' })
+    setInpEdit({ _new: true, _ctx: 'up', person: pid, type: 'Upchit', allday: true, date: fmt(keyToIso(TODAY)), yr: baseYear(), remarks: '' })
     notify()
   }
 
-  const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
+  const who = r && PEOPLE[pid] ? PEOPLE[pid].cs : (r ? String(pid) : '')
   const when = !r ? '' : r.date + (r.endDate ? ' → ' + r.endDate : '')
   const m = r ? inpMeta(r.type) : null
 

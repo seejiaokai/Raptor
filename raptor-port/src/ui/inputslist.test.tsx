@@ -58,12 +58,24 @@ const file = async (over: any = {}) => {
   await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
   return live(row.iid)
 }
+/* A SHARED INPUT IS ONE RECORD HOLDING ITS PEOPLE, in the order they joined (the one-rule build, step 2 — owner D756,
+   D759; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1). Until that build this fixture was a record a
+   man tied by a group id — which is read, now and for ever, as so many one-person inputs (D759 reading 10): the case
+   "OLD-SHAPE records tied by a group id" below keeps that. */
 const shared = async (people: string[], over: any = {}) => {
-  const grp = 'gI' + (++n)
+  const iid = 'gI' + (++n)
+  const row = { iid, people: people.map(p => ({ p, by: admin, at: T(1, 9, 0) })), type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660,
+    remarks: '', mod: '2026-09-01', by: admin, at: T(1, 9, 0), ...over }
+  await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
+  return { rows: [live(iid)], first: az(people)[0] }
+}
+/* …and the same people as the OLD shape kept them: a record a man, tied by a group id */
+const oldGroup = async (people: string[], over: any = {}) => {
+  const grp = 'gO' + (++n)
   const rows = people.map((p, i) => ({ iid: `${grp}-${i}`, person: p, type: 'Meeting', date: 'Oct 20', yr: 2026, allday: false, s: 600, e: 660,
     remarks: '', mod: '2026-09-01', grp, grpBy: admin, by: admin, at: T(1, 9, 0), ...over }))
   await act(async () => { writeInputs(() => { INPUTS.push(...rows) }); notify() })
-  return { grp, rows: rows.map(r => live(r.iid)), first: az(people)[0] }
+  return rows.map(r => live(r.iid))
 }
 const card = (r: any) => $(`[data-testid="inl-row-${r.iid}"]`)
 const part = (r: any, k: string) => card(r)!.querySelector(`[data-testid="inl-${k}"]`) as HTMLElement | null
@@ -178,13 +190,21 @@ describe('on a phone the list is the input card under a heading a day (D718, D72
 })
 
 describe('the list’s card says what the opened day’s card says — one card, asked kind by kind (D723, D724)', () => {
-  it('plain, his own: one line — who, the kind, the hours; no words row', async () => {
+  it('plain, his own: one line — who, the kind, the hours; no words row — and the same input CANCELLED has one, for its red CX tag (D767)', async () => {
     await mount(true)
     const r = await file({ type: 'Duty' })
     expect(part(r, 'who')!.textContent).toBe(cs(r.person))
     expect(part(r, 'kind')!.textContent).toBe('Duty')
     expect(part(r, 'when')!.textContent).toBe('10:00–11:00')
     expect(card(r)!.querySelector('.icard-words')).toBeNull()
+    /* D767 (owner, 12 Oct 26) changed "one line" for a cancelled input: the top line reads as it did — only the kind's
+       name, which it goes by, is struck (reading 2) — and a second line holds the tag, alone where no reason was typed
+       (reading 4). The look itself: ui/inputcx.test.tsx. */
+    const x = await file({ type: 'Duty', person: others()[1], by: others()[1], cx: true })
+    expect(part(x, 'who')!.textContent).toBe(cs(x.person))
+    expect(part(x, 'kind')!.textContent).toBe('Duty')
+    expect(part(x, 'when')!.textContent).toBe('10:00–11:00')
+    expect(card(x)!.querySelector('.icard-words')!.textContent).toBe('CX')
   })
   it('titled, with a remark: the kind on the top line, the title on its own row at the left, the remark after it', async () => {
     await mount(true)
@@ -216,6 +236,14 @@ describe('the list’s card says what the opened day’s card says — one card,
     expect($('[data-testid="inl-day"] i')!.textContent, 'a shared input counts once').toBe('1 input')
     await click(c)
     expect(document.querySelector('[data-testid="win-inputedit"]')!.textContent, 'the tap opens the ENTRY').toContain(`${cs(g.first)} +2`)
+  })
+  it('OLD-SHAPE records tied by a group id (D759 reading 10): each is its own input — a card a man, his own name on it, each counted', async () => {
+    await mount(true)
+    const [a, b] = others()
+    const rows = await oldGroup([admin, b, a])
+    expect($$('[data-testid^="inl-row-"]'), 'a card for each of the three').toHaveLength(3)
+    for (const r of rows) expect(part(r, 'who')!.textContent).toBe(cs(r.person))
+    expect($('[data-testid="inl-day"] i')!.textContent, 'three inputs, counted as three').toBe('3 inputs')
   })
   it('an input for ALL AVAIL: its own name, and who filed it', async () => {
     await mount(true)
@@ -355,5 +383,98 @@ describe('a just-saved input the filters would hide still shows — on a phone, 
     const heads = $$('[data-testid="inl-day"]').map(h => [h.querySelector('b')!.textContent, h.querySelector('i')!.textContent])
     expect(heads).toEqual([['Tue 20 Oct', '2 inputs'], ['Mon 19 Oct', '1 input']])
     expect($$('[data-testid^="inl-row-"]').map(el => el.getAttribute('data-iid'))).toEqual([hidden.iid, shown.iid, earlier.iid])
+  })
+})
+
+/* THE "OIL?" SIGN (owner D777, 12 Oct 26 — "Oil pictures looks good": the pictures of record are
+   docs/mock/2026-10-12-oil-ask/). On an input's CARD — the List on a phone, here; the opened day, ui/inputsday.test.tsx —
+   a small outlined "OIL?" tag on the top line, left of the hours, where nobody has answered its OIL question: a mark,
+   not a button (a tap opens the input, where "Answer…" is). And the DESKTOP List's "OIL?" button shows for an input of
+   SEVERAL people too. Shown to whoever may answer the question (the agent's reading, told to him): the same test the
+   input's own window puts on "Answer…" — state/perms.ts mayEditInput. 17 Oct 26 is a Saturday. */
+describe('the "OIL?" sign where nobody has answered an input’s OIL question (D777)', () => {
+  const SAT = { type: 'Duty', date: 'Oct 17', allday: false, s: 540, e: 720 }
+  const tag = (r: any) => card(r)!.querySelector('[data-testid="inl-oil"]') as HTMLElement | null
+
+  it('a phone’s card of ONE person: the tag on the top line, left of the hours — a mark, not a button; a tap on it opens the input', async () => {
+    await mount(true)
+    const r = await file(SAT)
+    const t = tag(r)!
+    expect(t, 'the card wears it').toBeTruthy()
+    expect(t.textContent).toBe('OIL?')
+    expect(t.tagName, 'a mark, not a button').not.toBe('BUTTON')
+    expect(t.title).toMatch(/17 Oct/)
+    const corner = card(r)!.querySelector('.icard-corner')!
+    expect([...corner.children].map(c => c.className), 'the corner: the tag, then the hours').toEqual(['oiltag', 'icard-hrs'])
+    expect(part(r, 'open')!.getAttribute('aria-label'), 'and the card says so to a screen reader').toMatch(/OIL question not answered/)
+    await click(t)
+    expect(INPEDIT && INPEDIT.iid, 'the tap opens the input').toBe(r.iid)
+    expect($$('[data-testid="oilconf"]'), 'not the question itself').toHaveLength(0)
+  })
+
+  it('with LATE beside it: LATE, then OIL?, then the hours', async () => {
+    await mount(true)
+    const r = await file({ ...SAT, mod: '2026-10-16' })
+    const corner = card(r)!.querySelector('.icard-corner')!
+    expect([...corner.children].map(c => c.className)).toEqual(['sd-late', 'oiltag', 'icard-hrs'])
+  })
+
+  it('an input of SEVERAL wears it too — on a phone’s card, and on the desktop row as the button that answers for everyone', async () => {
+    await mount(true)
+    const [a, b] = others()
+    const g = await shared([a, b], SAT)
+    const r = g.rows[0]
+    expect(tag(r), 'the card of an input of several').toBeTruthy()
+    await turn(false)
+    const btn = tr(r)!.querySelector('[data-oilask]') as HTMLElement
+    expect(btn, 'the desktop row of an input of several (it wore nothing before D777)').toBeTruthy()
+    expect(btn.textContent).toBe('OIL?')
+    expect(btn.className).toBe('roil ask')
+    await click(btn)
+    expect($$('[data-testid="oilconf"]'), 'it opens the question').toHaveLength(1)
+    expect(INPEDIT, 'and not the input’s window').toBeNull()
+    /* …headed for EVERYONE the one answer is written for — the words of the input's own window ("Ace +1"), never the
+       one man the record happens to lead with (the second re-walk, RX2-2 in passing: it read "OIL — Tally, …") */
+    expect($('[data-testid="oilconf"]')!.textContent, 'its heading').toContain(`${cs(az([a, b])[0])} +1`)
+  })
+
+  it('answered — a Yes or a No — the sign goes: no tag on the card, no button on the row of an input of several', async () => {
+    await mount(true)
+    const [a, b] = others()
+    const yes = (await shared([a, b], { ...SAT, oil: { '2026-10-17': 1 } })).rows[0]
+    const no = await file({ ...SAT, s: 780, e: 840, oil: { '2026-10-17': 0 } })
+    expect(tag(yes)).toBeNull()
+    expect(tag(no)).toBeNull()
+    await turn(false)
+    expect(tr(yes)!.querySelector('[data-oilask]')).toBeNull()
+    expect(tr(yes)!.querySelector('[data-oilrev]'), 'an input of several still has no chip to change its answer here — its window does (D762)').toBeNull()
+  })
+
+  it('shown only to whoever may answer: a man IN it who did not file it sees none; nor does its filer once a scheduler has put someone in — the admin does (the walk’s A8)', async () => {
+    await mount(true)
+    const [a] = others()
+    /* filed by the admin for the member and another man */
+    const byAdmin = (await shared([member, a], SAT)).rows[0]
+    /* filed by the member for himself; the admin then put another man in */
+    const a8 = await file({ ...SAT, s: 780, e: 840, iid: 'a8', person: undefined, by: member,
+      people: [{ p: member, by: member, at: T(1, 9, 0) }, { p: a, by: admin, at: T(2, 9, 0) }] })
+    expect(tag(byAdmin), 'the admin may answer').toBeTruthy()
+    expect(tag(a8), 'the admin may answer').toBeTruthy()
+    await as('member')
+    expect(card(byAdmin), 'he still sees the input').toBeTruthy()
+    expect(tag(byAdmin), 'a man in it has no answer of his own to give (D762)').toBeNull()
+    expect(tag(a8), 'its filer can no longer answer once someone else changed who is in it').toBeNull()
+    await turn(false)
+    expect(tr(a8)!.querySelector('[data-oilask]')).toBeNull()
+    await as('admin')
+    expect(tr(a8)!.querySelector('[data-oilask]'), 'so the admin’s List says it — the sign the walk found missing').toBeTruthy()
+  })
+
+  it('nothing where no question waits: a weekday, a kind that never asks (Personal — D778), a request taken off the programme', async () => {
+    await mount(true)
+    const weekday = await file({ ...SAT, date: 'Oct 20' })
+    const personal = await file({ ...SAT, type: 'Personal', person: others()[1] })
+    const off = await file({ ...SAT, person: others()[2], acc: 'r' })
+    for (const r of [weekday, personal, off]) expect(tag(r), r.iid).toBeNull()
   })
 })

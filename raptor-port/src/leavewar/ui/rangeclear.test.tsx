@@ -7,7 +7,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../../engine/inputs'
+import { INPUTS, holds } from '../../engine/inputs'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setMe, setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
@@ -29,7 +29,7 @@ beforeEach(() => {
 })
 afterEach(() => { setSession(null); setMe('bane') })
 
-const warLeave = () => INPUTS.filter((r: any) => r.person === 'ammo' && r.type === 'LL' && r.lw)
+const warLeave = () => INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 'LL' && r.lw)
 
 describe('the range Clear (F5)', () => {
   it('takes a leave the war approved inside the span, as the one-day Clear does', () => {

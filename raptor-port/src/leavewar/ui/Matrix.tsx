@@ -4345,6 +4345,7 @@ export function Matrix() {
         <RemarksSheet
           key={`dlrmk-${open.id}-${open.date}`}
           callsign={open.callsign}
+          personId={open.id}
           row={listRemark.row}
           code={grid[open.id]?.[open.date] ?? ''}
           onClose={() => setListRemark(null)}
@@ -4354,6 +4355,7 @@ export function Matrix() {
         <RemarksSheet
           key={`rmk-${open.id}-${open.date}`}
           callsign={open.callsign}
+          personId={open.id}
           row={remarkRow}
           code={grid[open.id]?.[open.date] ?? ''}
           onClose={close}

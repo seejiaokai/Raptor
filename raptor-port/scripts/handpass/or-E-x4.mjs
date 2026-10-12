@@ -1,0 +1,17 @@
+import { world, sleep, browser, PHONE, touchDrag } from './or-E-lib.mjs'
+const w = await world({ size: PHONE, touch: true, who: 'ad', pass: 'a', tag: 'x4' })
+const { page, press } = w
+await w.fileIt({ day: '2026-07-18', pick: ['Ranger'], title: 'Sat X', from: '09:00', to: '10:00', kind: 'Training', oil: 'yes' })
+const rec = await w.rec('Sat X'); console.log('filed', JSON.stringify(rec))
+await w.openBoard(5)
+const tab = page.locator('.sb-ros .ros-tab:visible').first(); console.log('roster tab', await tab.count())
+await tab.tap(); await sleep(800)
+const tid = await w.csId('Tally'), rid = await w.csId('Ranger')
+const ri = await w.rowIdx(5, rec.iid)
+const rowPuck = page.locator(`#schedBoard .sb-arow.gr-frominput:visible .puck[data-person="${rid}"]`).first()
+console.log('row puck', await rowPuck.count(), JSON.stringify(await rowPuck.boundingBox()))
+const rp = page.locator(`#sbRoster .rpuck .puck[data-person="${tid}"]`)
+console.log('roster pucks', await rp.count())
+for (let i = 0; i < await rp.count(); i++) console.log(i, JSON.stringify(await rp.nth(i).boundingBox()))
+await w.shot('x4-before')
+await browser.close()

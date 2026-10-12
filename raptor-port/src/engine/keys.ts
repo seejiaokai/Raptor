@@ -25,6 +25,15 @@ export function seatRow(k:any){
   s=s.replace(/\.pax\.\d+$/,'').replace(/\.(p|w)$/,'');      // a sim's two seats and its pax
   return s.replace(/^(a:\d+\.\d+)\.\d+$/,'$1');              // programme: a place in the crowd → its row
 }
+/* AN UNAVAILABLE ROW'S ADDRESS ([ALL-AVAIL-AS-MEMBER] step 2 (g), 12 Oct 26 — the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.6; Fable's read of it, F16). `iu:<iid>` names the row of an
+   input of ONE person; `iu:<iid>~<person>` one man's row of an input that holds several — the Unavailable list stays a
+   row a man (owner D737). ONE parser, and every site through it: the grammar used to be read in eleven places, each
+   slicing the id off by hand. null for a key that is not an `iu:` key. */
+export function iuParts(key:any):{iid:string,person:string|null}|null{
+  const s=String(key==null?'':key); if(s.indexOf('iu:')!==0)return null;
+  const t=s.slice(3), c=t.indexOf('~');
+  return c<0?{iid:t,person:null}:{iid:t.slice(0,c),person:t.slice(c+1)||null};}
 export function uniqDays(keys:any):any[]{return [...new Set((keys||[]).map(keyDay))].filter((i:any)=>i>=0&&i<DAYS.length).sort((a:any,b:any)=>a-b);}
 /* ---------------------------------------------------------------------------
    DELETING A ROW RENUMBERS EVERYTHING AFTER IT

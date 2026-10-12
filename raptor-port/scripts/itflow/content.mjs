@@ -744,13 +744,12 @@ export const JOURNEYS = [
     ],
   },
   {
-    n: 15, title: 'Print, export and data', who: 'admin', page: 'admin', where: 'Edit Schedule · Inputs · Admin → Data',
+    n: 15, title: 'Print, export and data', who: 'admin', page: 'admin', where: 'Edit Schedule · Admin → Data',
     slides: [{
       steps: [
         { shot: 'export-1', lines: [c(1, 'Export to Excel'), c(2, 'Export as PDF')] },
         { shot: 'export-2', lines: [see('The printable report')] },
-        { shot: 'export-3', lines: [c(3, 'Inputs: Export to Excel')] },
-        { shot: 'export-4', lines: [c(4, 'Admin → Data'), see('Clear old data (asks twice)')] },
+        { shot: 'export-4', lines: [c(3, 'Admin → Data'), see('Clear old data (asks twice)')] },
       ],
       checks: [
         'The schedule\'s CSV is 142-schedule.csv; a published day exports its issued version.',

@@ -23,7 +23,7 @@
 import { placedLine } from './placedline'
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
-import { inpType } from '../engine/inputs'
+import { inpType, leadOf } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
 import { docHas, rowDocIds } from '../state/docs'
 import { MEDASOF, setMedAsOf } from '../state/view'
@@ -75,6 +75,9 @@ function remarkNote(remark: any): string {
    in the puck's own box is the documented trap. */
 function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolean, docs?: number, onOpen: (row: any, up?: boolean) => void }) {
   const r = e.row
+  /* (whose it is: a medical entry and an upchit are ONE person's — engine/inputs.ts shapeProblem, D655 reading 4 — so
+     the puck is the first of the record's people, leadOf: a record stored before the one-rule build answers with its
+     one `person`, one after it with its list) */
   /* when this person's overlapping medical entries form one episode, the card
      says how many documents are behind it so a checker knows to page through
      them (owner, 1 Sep 26); one document shows the plain title as before */
@@ -84,7 +87,7 @@ function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolea
       title={n > 1 ? `Tap to view ${n} documents` : 'Tap to view the document'}
       onClick={() => onOpen(r, up)}>
       <span className="medcard-top">
-        <span className="seat" dangerouslySetInnerHTML={{ __html: puck(r.person, 0, true, '') }} />
+        <span className="seat" dangerouslySetInnerHTML={{ __html: puck(leadOf(r), 0, true, '') }} />
         <span className="medcard-type">{inpType(r.type)}</span>
       </span>
       <span className="medcard-t">{line}</span>
@@ -107,6 +110,8 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   /* byCrew assumes roster members; a record restored for a body since
      removed from the roster must still LIST, not crash the page — it sorts
      to the tail by name (fail open for display, the missing-input doctrine) */
+  /* (`a` and `b` are the tracker's own entries — engine/medical.ts: { person, row, endOrd }, the person already read
+     off the record through leadOf — not input records) */
   const crew = (a: any, b: any) => (PEOPLE[a.person] && PEOPLE[b.person])
     ? byCrew(a.person, b.person)
     : String(a.person).localeCompare(String(b.person))

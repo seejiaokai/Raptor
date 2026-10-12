@@ -4,7 +4,9 @@
    These pin the BOM and the bytes behind it — the glyph alone would still pass
    if the file were written as Latin-1. */
 import { describe, expect, it } from 'vitest'
-import { csvText, schedRows, inputRows } from './export'
+import { csvText, schedRows } from './export'
+import * as exporter from './export'
+import { PEOPLE } from '../engine/people'
 
 const bytes = (s: string) => Array.from(new TextEncoder().encode(s))
 
@@ -44,23 +46,14 @@ describe('CSV export encoding', () => {
   })
 })
 
-/* THE INPUTS PAGE'S EXPORT CARRIES EACH INPUT'S WHOLE SPAN (the absence-record re-test, AB10, 26 Sep 26). Its
-   columns carried the start and end TIMES but only the FIRST date, so a leave 20–24 Jul reached the spreadsheet as
-   "Jul 20" — four of its five days gone from the only copy that leaves the app. */
-describe('the Inputs export (142-inputs.csv)', () => {
-  const rows = inputRows([
-    { person: 'bapster', type: 'LL', date: 'Jul 20', endDate: 'Jul 24', allday: true, s: 0, e: 1439, remarks: 'Bali' },
-    { person: 'bapster', type: 'ATT C', date: 'Jul 22', allday: true, s: 0, e: 1439, remarks: 'sick' },
-    { person: 'bane', type: 'Appointment', date: 'Jul 16', allday: false, s: 1020, e: 1110, remarks: 'PHA' },
-  ])
-  it('names both ends of the span', () => {
-    /* + Title, beside Type ([INPUT-OWN-TITLE], D715 — two Events exported as "Event" and "Event" could not be told
-       apart; ui/inputtitle.test.tsx pins what the column holds) */
-    expect(rows[0]).toEqual(['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks'])
-    expect(rows[1].slice(1, 3)).toEqual(['Jul 20', 'Jul 24'])
-  })
-  it('a one-day input reads the same date at both ends; a timed one keeps its times', () => {
-    expect(rows[2].slice(1, 3)).toEqual(['Jul 22', 'Jul 22'])
-    expect(rows[3].slice(1, 5)).toEqual(['Jul 16', 'Jul 16', '17:00', '18:30'])
+/* THE INPUTS PAGE'S EXPORT IS GONE (owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can remove it."). The five cases that stood here pinned ui/export.ts
+   inputRows — both ends of a span (AB10), a one-day and a timed input, a line a person of an input of several (D756),
+   the old and the new stored shape writing the same line. Their subject no longer exists; what is true now is pinned
+   here and, on the page itself, by ui/inputs.test.tsx ("the Inputs page offers no export"). */
+describe('the Inputs export is removed (D773)', () => {
+  it('the exporter has no body for inputs — the schedule flattening and the text builder are what is left', () => {
+    expect(Object.keys(exporter)).not.toContain('inputRows')
+    expect(typeof exporter.schedRows).toBe('function')
+    expect(typeof exporter.csvText).toBe('function')
   })
 })

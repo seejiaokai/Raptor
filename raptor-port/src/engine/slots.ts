@@ -2,15 +2,15 @@ import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
-import { shiftKeys, seatRow } from './keys'
+import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
 import { rowElsewhere } from './weekstash'
-import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, sharedRowOf } from './overlay'
+import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, asIssuedOrder } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -146,21 +146,23 @@ export function sentinelSeatOK(key:any,id:any):boolean{
   const k=String(key).replace(/\.\+$/,'');
   return k.indexOf(':')>=0;                            // no prefix = a flying seat
 }
-/* THE BELT OF THE ONE ROW (`[GROUP-INPUT-ONE-ROW]`; owner D734 — "on a shared input's row the pucks ARE the input's
-   people: a puck taken off the row takes that man out of the input itself, and a puck put on the row adds him to it";
-   the plan 2026-10-10-group-input-one-row-plan.md §4.5). The name box of a member row is its own man's — the row is
-   drawn from it, and his OIL is his request's — so a hand that puts a man on the row, or takes one off, changes the
-   INPUT, through its door (ui/grouprow.ts). A write that reaches the row itself would leave a stranger in one man's
-   request, or a member's name box empty with the man still in the input. So, held here where no door forgotten today
-   and none added later can pass it: a write of ANYTHING — a man, a placeholder, a blank — to a shared row's name box
-   is refused, and so is a REAL man on its "+ add". A placeholder on "+ add" is the row's own (D46) and goes to its
-   extras; the extras' own places (`.xN`), a one-man request's row (D18, D470), a `kept` row and a read-only request's
-   are written as before. The view makes these rows by Object.assign (overlay.ts); Accept, a version load, an Undo and
-   a person's delete do not come through here. `own`: the name box itself; else the row's "+ add". */
-export function sharedSeatBar(key:any,id:any):boolean{
-  const m=/^g:(\d+)\.(\d+)(\.\+)?$/.exec(String(key)); if(!m)return false;
-  const d=DAYS[+m[1]!],row=d&&(d.ground||[])[+m[2]!]; if(!sharedRowOf(d,row))return false;
-  return m[3]?!!(id&&PEOPLE[id]&&!isSpecial(id)):true;
+/* THE BELT BEHIND THE DOOR OF AN INPUT'S ROW ([ALL-AVAIL-AS-MEMBER] step 2 (c), 12 Oct 26 — owner D755: "a row that came
+   from an input IS the input: whoever stands on it … is in the input"; the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.4 "The belt"; before it, `sharedSeatBar` for a shared input's
+   row alone — D734). The people of such a row are the input's: a hand that puts someone on it, or takes someone off,
+   changes the INPUT through its door (ui/reqdoor.ts), and the row is re-made from the input (overlay.ts). A write that
+   reached the row itself would leave it saying what its input does not — until the next re-make silently took it
+   back. So, held here where no door forgotten today and none added later can pass it: a raw write of ANYTHING — a
+   person, a placeholder, a blank — to the name box, to a place under it (`.xN`) or to the "+ add" of a row
+   `requestOfBox` answers for is refused. One predicate with the door, so the two cannot disagree about a row: a row
+   nobody filed, a dead `kept` row (D363), a row whose request is gone or taken off the programme, and a read-only
+   request's are written as any ground row is. It refuses no legitimate writer: the re-make and a landing
+   (Object.assign), Accept, a version or plan load, a day template, Undo's restore, a delete's strip and a rename do
+   not come through setSlotVal / fillSlot. */
+export function inputSeatBar(key:any):boolean{
+  const m=/^g:(\d+)\.(\d+)(\.x\d+|\.\+)?$/.exec(String(key)); if(!m)return false;
+  const d=DAYS[+m[1]!],row=d&&(d.ground||[])[+m[2]!];
+  return !!requestOfBox(d,row);
 }
 /* THE RETURN VALUE SAYS ONE THING ONLY: `false` means the write was REFUSED
    (D33) and nothing at all was written — no value, no pending mark, no edit-log
@@ -178,7 +180,7 @@ export function setSlotVal(key:any,id:any):boolean{
      It must sit above the mark: a pending mark with no change behind it reaches
      the next amendment as an unexplained item (Fable M4). */
   if(!sentinelSeatOK(key,id))return false;
-  if(sharedSeatBar(key,id))return false;         // a member's place on the one row of a shared input: the input's door
+  if(inputSeatBar(key))return false;             // a place on a row that came from an input: the input's door (above)
   if(c<0&&!flyRef(key))return true;              // a stale flying key: nothing to write, nothing to mark
   /* dropping someone onto the seat they already occupy is not a change — it
      used to raise a pending mark, an undo step and a line in the next AL */
@@ -234,7 +236,7 @@ export function fillSlot(key:any,id:any):boolean{
   /* the belt, ahead of every branch — so the append doors cannot reach a
      cockpit by a route the preflight was not asked about */
   if(!sentinelSeatOK(key,id))return false;
-  if(sharedSeatBar(key,id))return false;         // a real man on a shared input's "+ add": the input's door (above)
+  if(inputSeatBar(key))return false;             // the "+ add" of a row that came from an input: the input's door (above)
   /* …and ONE MAN, ONCE PER ROW (owner, D271, 27 Sep 26). An append puts him on the row at a NEW place, so any place he
      already holds there refuses it and nothing is written. The doors ask first, with their own words (avail.ts
      rowTwice, called by drag.ts applyDrop and state/view.ts placeArmed — a move clears the place he leaves BEFORE this
@@ -430,7 +432,7 @@ export function armTargetExists(key:any){
        INPUT by iid, not a schedule row — rowRef knows nothing of that grammar,
        so it is answered here directly: the arm is live exactly as long as the
        input record it names still exists. */
-    if(k.indexOf('iu:')===0)return INPUTS.some((i:any)=>i.iid===k.slice(3));
+    if(k.indexOf('iu:')===0){const p=iuParts(k); return !!p&&INPUTS.some((i:any)=>i.iid===p.iid&&(!p.person||holds(i,p.person)));}
     return rowRef(k.slice(0,k.indexOf(':')),k.slice(k.indexOf(':')+1).split('.'))!=null;
   }catch(_){ return false; }}
 /* ---- board line / wave / panel controls --------------------------------
@@ -464,7 +466,7 @@ export const rollCx=(f:any)=>{f.cx=f.aircraft.length>0&&f.aircraft.every((a:any)
    record from this year's card. The RAW field, never baseYear(): a fallback
    that moved with the loaded week would change the key on every week switch
    and orphan the ground rows that store it as `src`. */
-export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}|${inp.yr==null?'':inp.yr}`;}
+export function inpKey(inp:any){return `${leadOf(inp)}|${inp.date}|${inp.type}|${inp.s==null?'':inp.s}|${inp.yr==null?'':inp.yr}`;}
 /* A FILING IS COUNTED FROM THE FILING, NEVER MARKED ON THE DAYS ([DB-READINESS] group A, phase 6 (b); data-model.md §3
    ScheduleWeek — the `inp:` marks are "not stored at all — worked out on read"). Filing under Unavailable, its undo and
    the adoption of a standing row used to write an `inp:<di>.<id>` mark into the book of EVERY loaded day the request
@@ -498,7 +500,7 @@ export function acceptInput(di:any,inp:any,dest:any){
   /* "UNAVAILABLE" DESCRIBES A REAL PERSON'S DAY ([INPUT-ALL-AVAIL]): an input filed for ALL AVAIL / ALL has no day to
      describe, and under Unavailable its person cell is a drop target that would turn it into one man's input. The
      button is not drawn for one (ui/html.ts accBtns); this is the door behind it. */
-  if(dest==='u'&&isSpecial(inp.person))return false;
+  if(dest==='u'&&isPlaceholderInput(inp))return false;
   if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
   /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
      was the content key inpKey). Content keys are not unique — two inputs
@@ -533,7 +535,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      was issued, and publishable on the old sign-offs (content-equal, so they still matched).
      The values are minted from the input exactly as any landing's are, so a real difference
      (the scheduler had retimed the issued row) still shows as the change it is. */
-  let ri=d.ground.length, rid:any=null;
+  let ri=d.ground.length, rid:any=null, issuedRid:any=null;
   if(dayApproved(di)){
     const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
     const ig:any[]=(snap&&snap.d&&snap.d.ground)||[];
@@ -542,7 +544,7 @@ export function acceptInput(di:any,inp:any,dest:any){
        a row that looks unchanged — the FULL check, Astra's final read #3, its Accept half declined) */
     const ix=ig.findIndex((r:any)=>r&&r.src===key&&r.rid);
     if(ix>=0&&!(d.ground||[]).some((r:any)=>r&&r.rid===ig[ix].rid)){   /* never mint a second row with one id */
-      rid=ig[ix].rid;
+      rid=ig[ix].rid; issuedRid=ig[ix];
       /* back BESIDE ITS ISSUED NEIGHBOURS — before the first surviving row that followed it in the issued
          version — not at its issued index: once an earlier issued row is gone, or under a hand-set order, that
          index is somewhere else, and the day read "1 reorder" for a row that went back where it was (the
@@ -560,6 +562,8 @@ export function acceptInput(di:any,inp:any,dest:any){
      row mint them the same way), and `srcv` records what the row was made from ([DB-READINESS] phase 6 (c)): a later edit
      of the request re-makes it, a scheduler's own edit of the row does not */
   const row:any={...requestRowFields(inp), src:key, srcv:srcvOf(inp)};
+  /* (put back beside an issued row of the same people: in the order that went out — overlay.ts asIssuedOrder) */
+  if(rid)asIssuedOrder(row,issuedRid);
   /* a row an issued version held goes back beside its issued neighbours (above) — a round trip, left exactly as it is; a
      row the day never held goes where a request's new row goes: at the end, or — a record of a SHARED input whose entry
      already stands here — straight after the last of its rows, with their CX, red box and information-only

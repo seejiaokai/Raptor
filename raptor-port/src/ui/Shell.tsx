@@ -26,7 +26,7 @@ import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
-import { groupTake } from './grouprow'
+import { rowTake } from './reqdoor'
 import { afterSchedMutate } from '../state/view'
 import { toast } from './toast'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
@@ -69,7 +69,7 @@ import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { bugAlert } from '../state/reports'
-import { UndoPair, SyncChip, BellButton, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
+import { UndoPair, SyncChip, BellButton, BellList, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);
@@ -227,9 +227,10 @@ export function Shell() {
       const key = s.dataset.slot!, id = slotVal(key)
       e.preventDefault()
       if (!id) return
-      /* one of a shared input's men, on its one row: he leaves the INPUT (owner D734) — the door's own command, its own
-         words; the last man is refused there, saying how (ui/grouprow.ts) */
-      if (groupTake(key) !== 'none') return
+      /* someone on a row that came from an input — a one-person request's too: he leaves the INPUT (owner D755; first
+         D734) — the door's own command, its own words; the last one is refused there, saying how (ui/reqdoor.ts
+         rowTake) */
+      if (rowTake(key) !== 'none') return
       setSlotVal(key, '')
       afterSchedMutate()
       HOOKS.toast((PEOPLE[id] ? PEOPLE[id].cs : id) + ' removed')
@@ -434,7 +435,9 @@ export function Shell() {
               many are waiting and opens Admin → Users, whose list on screen puts it out.
               First because someone locked out of the app outranks a bug report or an OIL
               question (the agent's call, on the look card). */}
-          {/* ONE bell, the board's too (ui/topbits.tsx bellTap): its four triggers and their order are unchanged */}
+          {/* ONE bell, the board's too (ui/topbits.tsx bellTap): its four triggers and their order are unchanged — and
+              since the one-rule build's step 7 (D769) a tap that finds none of them opens the list of notices
+              (BellList, mounted once at the foot of this component) */}
           <BellButton id="notifyBell" />
           <button className="abtn" id="insightBtn" title="Week insights" onClick={() => { setInsights(true); notify() }}>Insights</button>
           {/* resetSession (state/store.ts) is the one session-change path: it clears
@@ -676,6 +679,9 @@ export function Shell() {
       <AirPop />
       <WeekCal />
       <Drawer />
+      {/* the bell's list of notices — drawn ONCE, out here (never inside a bar: a bar that blurs what is behind it
+          would become the list's frame), and hung under whichever bell is on screen — ui/topbits.tsx BellList */}
+      <BellList />
     </div>
   )
 }

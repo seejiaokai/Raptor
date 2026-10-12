@@ -20,7 +20,7 @@ import { DayPop } from './Modals'
 import { setDayPop } from './pops'
 import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, withRemarksTail } from '../engine/inputs'
+import { INPUTS, inpId, withRemarksTail, holds } from '../engine/inputs'
 import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
 import { loadVersionToWorkingCopy, inputsLeftSaid, draftDup, dayDrafts } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
@@ -151,7 +151,7 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     expect(removeInput(inp)).toBeTruthy()
     expect(commitNewInput({ ...copy, person: inp.person })).toBe(true)
     validate()
-    expect(INPUTS.find((r: any) => r.person === 'taipan' && r.type === 'OL')!.iid, 'a new record').not.toBe(inp.iid)
+    expect(INPUTS.find((r: any) => holds(r, 'taipan') && r.type === 'OL')!.iid, 'a new record').not.toBe(inp.iid)
     expect(dayDelta(WED), 'nothing pending').toEqual([])
   })
 
@@ -516,7 +516,7 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
   const TUE = 1, THU = 3, FRI = 4
   /* a man on none of Monday–Friday's content and with no input that week — a clean slate for his own records */
   const loner = () => Object.keys(PEOPLE).find((id: string) => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].pers
-    && [0, 1, 2, 3, 4].every(d => !JSON.stringify(DAYS[d]).includes(`"${id}"`)) && !INPUTS.some((r: any) => r.person === id))!
+    && [0, 1, 2, 3, 4].every(d => !JSON.stringify(DAYS[d]).includes(`"${id}"`)) && !INPUTS.some((r: any) => holds(r, id)))!
 
   /* WHAT THIS PROVES, AND WHAT IT DOES NOT (§8.3 — a fixture that writes the way the app writes): the DATES alone are no
      detail of the day. Every door that re-dates an input in the app — the Inputs page's calendar, the Leave War's sync,
@@ -545,7 +545,7 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     expect(commitNewInput({ ...leaveDraft(who, '2026-07-13', withRemarksTail('Bali', '2026-07-13', '2026-07-14', 'till')), end: '2026-07-14' })).toBe(true)
     validate()
     for (const d of [MON, TUE, WED]) publishDay(d)
-    const inp = INPUTS.find((r: any) => r.person === who)!
+    const inp = INPUTS.find((r: any) => holds(r, who))!
     expect(inp.remarks).toBe('Bali till 14 Jul')
     const d0 = draftOf(inp)
     /* the Inputs page's editor: a pick on its calendar sets the end AND rewrites the note (InputsPage.tsx withTill) */
@@ -567,7 +567,7 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     for (const d of [MON, WED, THU, FRI]) publishDay(d)
     expect(commitNewInput({ ...leaveDraft(who, '2026-07-16', 'FIT AGAIN', 'Upchit') })).toBe(true)
     validate()
-    const down = INPUTS.find((r: any) => r.person === who && r.type === 'ATT C')!
+    const down = INPUTS.find((r: any) => holds(r, who) && r.type === 'ATT C')!
     expect(down.endDate, 'the downchit now ends Wednesday').toBe('Jul 15')
     /* the trim writes "till 15 Jul" into the downchit's remarks, and the Unavailable block prints the remarks — so the
        face's words DO move on Monday and Wednesday: one change each, worded as the remark alone (the dates are the
@@ -589,7 +589,7 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
     validate(); publishDay(WED)
     expect(commitNewInput({ ...leaveDraft(who, '2026-07-14', 'MO OML', 'OML') })).toBe(true)   // the MO, Tuesday
     validate()
-    const downs = INPUTS.filter((r: any) => r.person === who && r.type === 'ATT C')
+    const downs = INPUTS.filter((r: any) => holds(r, who) && r.type === 'ATT C')
     expect(downs.length, 'the cascade trimmed the head and minted a tail').toBe(2)
     const items = dayPendingItems(WED)
     expect(items.length, 'one status change for one man on Wednesday').toBe(1)
@@ -623,7 +623,7 @@ describe('a rule change under a published day goes out with the next AL', () => 
 describe('the second reads: the roster a face counts, a person slot, a brief a face prints', () => {
   const freeAll = (html: string) => { const m = /Free all day<\/span><span class="v">(\d+)/.exec(html); return m ? +m[1] : -1 }
   const loner = () => Object.keys(PEOPLE).find((id: string) => !(PEOPLE as any)[id].special && !(PEOPLE as any)[id].pers && !(PEOPLE as any)[id].archived
-    && !JSON.stringify(DAYS[MON]).includes(`"${id}"`) && !INPUTS.some((r: any) => r.person === id))!
+    && !JSON.stringify(DAYS[MON]).includes(`"${id}"`) && !INPUTS.some((r: any) => holds(r, id)))!
 
   it('a man posted out who is nowhere on the day: the published panel keeps its "free all day", the working copy\'s drops, nothing pending (Astra #3)', () => {
     publishDay(MON)

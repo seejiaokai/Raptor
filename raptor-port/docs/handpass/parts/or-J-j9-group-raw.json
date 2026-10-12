@@ -1,0 +1,117 @@
+{
+ "mode": "group",
+ "base": [
+  "⚠ 10 issues",
+  "· 2 warnings ·",
+  "tap to review",
+  "Outlaw — RU BFM & Sim EP-4 clash",
+  "✕",
+  "Vapor — APPOINTMENT & MEDICAL APPT clash",
+  "✕",
+  "Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+  "✕",
+  "Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+  "✕",
+  "Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+  "✕",
+  "Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+  "✕",
+  "Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+  "✕",
+  "Ranger, Echo — 2 people are double turning: Ranger, Echo",
+  "✕",
+  "Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+  "✕",
+  "Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+  "✕"
+ ],
+ "filed": [
+  {
+   "iid": "imqoidgg0zvaxux",
+   "type": "Training",
+   "title": "Late sortie brief",
+   "date": "Jul 19",
+   "s": 1320,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Ranger",
+    "Tally"
+   ],
+   "acc": null
+  }
+ ],
+ "withInput": [
+  "⚠ 12 issues",
+  "· 4 warnings ·",
+  "tap to review",
+  "Outlaw — RU BFM & Sim EP-4 clash",
+  "✕",
+  "Vapor — APPOINTMENT & MEDICAL APPT clash",
+  "✕",
+  "Ranger — Crew rest breach — Sunday ended 23:59 → crew rest clear at 11:59, but told to report 05:40 — only 5h41 rest.",
+  "✕",
+  "Tally — Crew rest breach — Sunday ended 23:59 → crew rest clear at 11:59, but told to report 05:40 — only 5h41 rest.",
+  "✕",
+  "Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+  "✕",
+  "Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+  "✕",
+  "Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+  "✕",
+  "Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+  "✕",
+  "Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+  "✕",
+  "Ranger, Echo — 2 people are double turning: Ranger, Echo",
+  "✕",
+  "Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+  "✕",
+  "Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+  "✕"
+ ],
+ "cxRows": [
+  "LATE SORTIE BRIEF"
+ ],
+ "sunRow": [
+  "⠿ TRAINING Ranger IP Tally O + ADD CXⓘ■✕"
+ ],
+ "cancelled": [
+  "⚠ 10 issues",
+  "· 2 warnings ·",
+  "tap to review",
+  "Outlaw — RU BFM & Sim EP-4 clash",
+  "✕",
+  "Vapor — APPOINTMENT & MEDICAL APPT clash",
+  "✕",
+  "Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+  "✕",
+  "Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+  "✕",
+  "Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+  "✕",
+  "Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+  "✕",
+  "Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+  "✕",
+  "Ranger, Echo — 2 people are double turning: Ranger, Echo",
+  "✕",
+  "Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+  "✕",
+  "Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+  "✕"
+ ],
+ "cxState": [
+  {
+   "cx": true,
+   "cxr": "WX"
+  }
+ ],
+ "undo": "pressed Undo; note: Undid: a personal input",
+ "afterUndo": [
+  "Ranger — Crew rest breach — Sunday ended 23:59 → crew rest clear at 11:59, but told to report 05:40 — only 5h41 rest.",
+  "Tally — Crew rest breach — Sunday ended 23:59 → crew rest clear at 11:59, but told to report 05:40 — only 5h41 rest."
+ ],
+ "redo": "pressed Redo; note: Redid: a personal input",
+ "afterRedo": []
+}

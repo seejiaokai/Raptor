@@ -8,7 +8,7 @@
    Same harness as oilsync.test.ts: both real stores, headless, the seed Saturday (plasma stands SDO 0800–1800). */
 import { render } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
@@ -79,7 +79,7 @@ describe('every clash line names where it can be undone', () => {
     stageTo('closed')
     setCell('plasma', SAT, 'LL')
     setBidState('plasma', SAT, 'approved')             // the absence door writes the Input, carrying the war's mark
-    expect(INPUTS.some((r: any) => r.person === 'plasma' && r.lw), 'the approval wrote war-approved leave').toBe(true)
+    expect(INPUTS.some((r: any) => holds(r, 'plasma') && r.lw), 'the approval wrote war-approved leave').toBe(true)
     publishSat()
     expect(theClash().wayOut).toBe('war')
     expect(stripLine()).toMatch(/— send the leave back or delete it on the sheet$/)

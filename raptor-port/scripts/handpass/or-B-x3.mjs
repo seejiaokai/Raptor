@@ -1,0 +1,26 @@
+import { launch, openWorld, fileInput, shot, rowIdx, rowData, weekRow, inputOf, toastMark, toastsSince, readToast } from './or-B-lib.mjs'
+const browser = await launch()
+const { page: p } = await openWorld(browser)
+const f = await fileInput(p, { type: 'Training', person: 'Ranger', from: '2026-07-18', to: '2026-07-18', timed: ['09:00', '12:00'], oil: 'yes' })
+const iid = f[0].iid
+await p.evaluate(() => window.go('editsched'))
+await p.locator('#eWeek .day').first().waitFor()
+await p.waitForTimeout(400)
+await p.click('#eWeek [data-sbday="5"]:visible')
+await p.waitForSelector('#schedBoard')
+await p.waitForTimeout(500)
+await p.click('#sbOil'); await p.waitForTimeout(700)
+const sel = `#schedBoard [data-oilp="bane"][data-oilitem="i:${iid}"]`
+console.log('n', await p.locator(sel).count())
+for (let i = 0; i < await p.locator(sel).count(); i++) { const l = p.locator(sel).nth(i); console.log(i, await l.isVisible(), JSON.stringify(await l.evaluate(e => ({ par: e.parentElement.className, gp: e.parentElement.parentElement.className, txt: e.parentElement.innerText.replace(/\s+/g,' ').slice(0,100) })))) }
+await p.locator(sel).first().evaluate(e => e.scrollIntoView({ block: 'center' }))
+await p.waitForTimeout(300)
+await shot(p, 'x3-oil-row')
+console.log('ground', await p.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-arow')].filter(e => e.offsetParent && /TRAINING/i.test(e.innerText)).map(e => e.className + ' :: ' + e.innerText.replace(/\s+/g, ' '))))
+const m = await (async () => { const t = await p.evaluate(() => window.__toasts.length); return t })()
+await p.locator(sel).first().click(); await p.waitForTimeout(500)
+console.log('after click toasts', await toastsSince(p, m), '| ', await p.evaluate(() => JSON.stringify([...document.querySelectorAll('#schedBoard [data-oilp="bane"]')].map(e => e.className))))
+console.log('bar', await p.evaluate(() => (document.querySelector('#schedBoard [data-testid="oilbar"], #schedBoard .oil-bar, #schedBoard .sb-oil') || {}).innerText))
+await shot(p, 'x3-oil-off')
+console.log('INPUT', JSON.stringify(await inputOf(p, iid)))
+await browser.close()

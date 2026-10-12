@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate } from '../engine/inputs'
+import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf, placeholderOf } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -119,7 +119,8 @@ function requestWords(e: any, row?: any, was?: any): { where: string, from: stri
 /* whose · what — from the request while it exists, from its row once it is gone (the row carries who, the type and the
    remarks). ONE body for every line that names a request, so they cannot word it two ways. */
 function requestName(inp: any, row?: any): string {
-  if (inp) { const who = cs(inp.person); return `${who ? who + ' · ' : ''}${inpLabel(inp)}` }
+  /* (an input of one is named by its person; one of several by itself — its people are named under its line) */
+  if (inp) { const ids = idsOf(inp), who = ids.length === 1 ? cs(ids[0]) : ''; return `${who ? who + ' · ' : ''}${inpLabel(inp)}` }
   const who = row ? cs(row.who) : '', what = row ? goneRequestName(row) : ''
   return what ? `${who ? who + ' · ' : ''}${what}` : 'A request'
 }
@@ -181,9 +182,28 @@ function inputWords(di: number, it: PendItem): Words {
     return { where: name, from: '', to: f && f.to === 'u' ? 'filed under Unavailable' : f && f.to === 'g' ? 'filed — on the programme' : 'filed', ...none }
   }
   if (!here) return { where: name, from: '', to: now ? 'moved off this day' : 'deleted', ...none }
+  /* ONE PERSON put in or taken out — his own line (owner D736: "one man taken off its row or added to it is one change
+     each"; engine/publish.ts, the people step) */
+  /* a MOVE from one input to another is one line, said as a move reads everywhere else — "Ranger: Training → Meeting"
+     (owner D109; engine/publish.ts pairs the two units) */
+  if (it.pp && it.pp.role === 'move') return { where: cs(it.pp.p), from: it.pp.from ? inpLabel(it.pp.from) : '', to: inpLabel(now), ...none, edited: true } as Words
+  /* …and a man GIVEN HIS OWN PART is not "taken out" (Fable's read of the finished code, finding 3 — 12 Oct 26): a time
+     typed on his row of the Unavailable list, or sick leave cutting his leave, splits him out of the shared input into
+     one of his own (engine/inputown.ts ownInputOf), which the comparison folds into THIS input's one change
+     (engine/inputs.ts frozenInputMatch `pieces`). The piece is the live record of him alone, of the same kind, on this
+     day, carrying the shared input's own filing stamp (ownInputOf copies `by` and `at`). Words only — the count is the
+     people step's. (Who filed it is asked of BOTH copies, the live and the one the day went out with — it passes on
+     when its filer is taken out; the same two-sided test as engine/inputs.ts frozenInputMatch 3b, so the words and
+     the count cannot disagree — Fable's third read, finding 1.) */
+  const piece = it.pp && it.pp.role === 'off' && now ? INPUTS.find((x: any) => x && x !== now && inpId(x) !== inpId(now)
+    && idsOf(x).length === 1 && String(idsOf(x)[0]) === String(it.pp!.p) && x.type === now.type
+    && x.at != null && x.at === now.at && (x.by === now.by || (!!was && x.by === was.by)) && !!DAYS[di] && inputCoversDate(x, (DAYS[di] as any).dt)) : null
+  if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, edited: true } as Words
+  if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
-  pair(cs(was.person), cs(now.person))
+  /* whose — said here only where the people are not counted apart (a swap of the only person: "Ranger → Tally") */
+  if (!it.pplApart) pair(idsOf(was).map(cs).join(', '), idsOf(now).map(cs).join(', '))
   pair(String(was.type || ''), String(now.type || ''))
   /* its own title (D715): "Event → Sports day" — compared by itself, the title each side stores (Astra's read of the
      code, 1: said only where the kind stood still, a kind and a title changed together lost the title). Two untitled
@@ -192,6 +212,14 @@ function inputWords(di: number, it: PendItem): Words {
   /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
   if (String(was.remarks || '') !== String(now.remarks || '')) { from.push(`“${clip(was.remarks)}”`); to.push(`“${clip(now.remarks)}”`) }
+  /* THE SCHEDULER'S MARKS ARE THE INPUT'S (owner D760) — so a CX, a red box or "information only" put on its row on a
+     published day is THIS line's to say, with the reason, in the words a row of the scheduler's own is said in
+     (valueWords, above: "· CX (WX)", "· flagged", "· info only"). Since step 4 of the one-rule build moved the marks
+     onto the input the line read only "changed" — found by the older tests re-expressed after step 5, 12 Oct 26. */
+  const cxSaid = (r: any) => (r.cx ? `CX${String(r.cxr || '').trim() ? ` (${String(r.cxr).trim()})` : ''}` : 'not cancelled')
+  pair(cxSaid(was), cxSaid(now))
+  pair(was.flag ? 'flagged' : 'not flagged', now.flag ? 'flagged' : 'not flagged')
+  pair(was.info ? 'info only' : 'not info only', now.info ? 'info only' : 'not info only')
   const earns = it.oilFold ? ' · what the day earns changes with it' : ''
   if (!from.length) return { where: name, from: '', to: 'changed' + earns, ...none, edited: true } as Words
   return { where: name, from: from.join(' · '), to: to.join(' · ') + earns, ...none, edited: true } as Words
@@ -271,16 +299,17 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   return { where: 'What this day shows', from: '', to: '', ...none, rows }
 }
 /* A SHARED INPUT'S ONE LINE (owner D736 — "one line, naming its people"; D663's words in the changes window; the plan
-   2026-10-10-group-input-one-row-plan.md §4.8). The item stands for every record of the entry that the same act
-   reached (engine/entryfold.ts — `mates`, `people`): it is led by the INPUT — "Range safety brief · 4 people" — its
-   people named under it A to Z (`names`, drawn as `pl-names`), and then says what changed in the first man's own
-   words, which are every man's: the act is the same. No man's name stands in front of it. Who and when, and the tap
-   (to the one row), are the first's. */
+   2026-10-10-group-input-one-row-plan.md §4.8). The item is the input's own — one record since the one-rule build
+   (D756) — and carries its people (`people`, set by engine/publish.ts dayPendingItemsIn; `mates`, which
+   engine/entryfold.ts set before it was removed, is set by nothing now): it is led by the INPUT — "Range safety
+   brief · 4 people" — its people named under it A to Z (`names`, drawn as `pl-names`), and then says what changed in
+   the first man's own words, which are every man's: the act is the same. No man's name stands in front of it. Who and
+   when, and the tap (to the one row), are the first's. */
 function foldedWords(di: number, it: PendItem): Words & { names: string[] } {
   const w = pendItemWords(di, { ...it, mates: undefined, people: undefined } as PendItem)
   const ids = it.people && it.people.length ? it.people : []
   const names = ids.map(cs).filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
-  return { ...w, where: `${entryName(di, it)} · ${names.length || (it.mates!.length + 1)} people`, names }
+  return { ...w, where: `${entryName(di, it)} · ${names.length || ((it.mates || []).length + 1)} people`, names }
 }
 /* what a shared input is called on its one line: its own name (title, else kind) — from the live record, else the copy
    the issued version froze, else the row that carried it */
@@ -294,10 +323,14 @@ function entryName(di: number, it: PendItem): string {
   const live = INPUTS.find((x: any) => inpId(x) === row.src) || (snap && snap.inp && snap.inp[row.src])
   return live ? inpLabel(live) : goneRequestName(row) || 'A shared input'
 }
-/* THE PUCK THAT WENT WITH A MAN (owner D745): the placeholders that stood on the row the issued day held for him */
-const wentWith = (row: any): string => { const p = ((row && row.more) || []).map((v: any) => whoId(v)).filter((x: any) => x && isSpecial(x)).map(cs); return p.length ? ` · ${p.join(', ')} came off with him` : '' }
+/* THE PUCK THAT WENT WITH A MAN (owner D745) — FOR A ROW ISSUED BEFORE THE ONE-RULE BUILD ONLY (`srcg`, below): the
+   placeholders that stood on the row the issued day held for him. D755 set D745 aside (12 Oct 26, step 3 of that
+   build): on every row made since, ALL AVAIL is one of the input's own people — it rides no man's place, so nothing
+   "comes off with him", and a line about such an input names it among its people like anyone else. */
+const wentWith =(row: any): string => { const p = ((row && row.more) || []).map((v: any) => whoId(v)).filter((x: any) => x && isSpecial(x)).map(cs); return p.length ? ` · ${p.join(', ')} came off with him` : '' }
 export function pendItemWords(di: number, it: PendItem): Words {
-  if (it.mates && it.mates.length) return foldedWords(di, it)
+  /* an input of several: one line, led by the input and naming its people (D736) — never a person's own line (`pp`) */
+  if ((it.mates && it.mates.length) || (it.people && it.people.length > 1 && !it.pp)) return foldedWords(di, it)
   const e: any = it.entry || {}
   if (it.val) {
     /* a request whose filing moved too — filed, taken off, deleted — keeps the request's own words below ("on the
@@ -356,8 +389,9 @@ export function pendItemWords(di: number, it: PendItem): Words {
       return { where: was ? requestName(was) : requestName(null, row), from: 'on the programme', to: `taken out${wentWith(row)}${earns}`, ...whoWhen(editRowOf(di, it)), jump: false }
     }
     { const w = requestWords(it.inp, row)
-      /* …and ✕ on a request's row that carried a placeholder: the puck went with the row (D745, the same act) */
-      if (it.kind === 'delete' && row && wentWith(row)) w.to += wentWith(row)
+      /* (✕ on a request's row that carried a placeholder used to add "· ALL AVAIL came off with him" — D745. The
+         placeholder is one of the input's people now, D755: the input was taken off, with everyone in it, and the line
+         says only that — the same whichever of them joined first. Found by the re-expressed tests, 12 Oct 26.) */
       return { ...w, ...whoWhen(editRowOf(di, it)), jump: it.kind === 'add' && jump } }
   }
   /* A REQUEST'S ROW WITH NO FILING CHANGE BESIDE IT — the request moved to another day's programme (✕ here, Accept
@@ -442,12 +476,19 @@ function crowdChange(di: number): CrowdRow[] | null {
   const d: any = DAYS[di]
   return diff.map(x => {
     const row = rowByItem(d, di, x.item)
-    /* A PUCK THAT IS GONE WITH ITS REQUEST'S ROW (owner D745): the live day has no row for it, so it is named from the
-       row the issued day held — whose place it stood on — and said as what happened: it came off with him. Never "A
-       placeholder … no longer free", which names nothing and reads as if the men had become busy. */
-    if (!row && String(x.item).startsWith('i:') && !x.on.length) {
-      const was = ((snap.d.ground || []) as any[]).find((r: any) => r && String(r.src || '') === String(x.item).slice(2))
-      if (was) return { where: `${was.prog || 'A request'} · the puck on ${cs(was.who) || 'its'} place`, from: names(x.off), to: `came off with ${cs(was.who) || 'its row'}`, keys: [] }
+    /* THE MEN BEHIND A PUCK THAT IS GONE — with its input's row, or taken out of the input: named from the row the
+       issued day held, and said as what happened. Never "A placeholder … no longer free", which names nothing and
+       reads as if the men had become busy. (Until step 3 of the one-rule build this said "the puck on Ranger place …
+       came off with Ranger" — D745, a puck riding one man's place. D755 set that aside: the puck is one of the
+       input's own people, named by its own callsign, whoever else is in it.) */
+    if (String(x.item).startsWith('i:') && !x.on.length) {
+      const iid = String(x.item).slice(2)
+      const was = ((snap.d.ground || []) as any[]).find((r: any) => r && String(r.src || '') === iid)
+      const ph = was ? [was.who, ...(was.more || [])].map((v: any) => whoId(v)).find((p: any) => p && isSpecial(p)) : null
+      const what = `who ${ph ? cs(ph) : 'its puck'} stood for`
+      if (!row && was) return { where: `${was.prog || 'A request'} · ${what}`, from: names(x.off), to: 'gone with it', keys: [] }
+      const live: any = INPUTS.find((r: any) => inpId(r) === iid)
+      if (row && ph && live && !placeholderOf(live)) return { where: `${row.name} · ${what}`, from: names(x.off), to: `${cs(ph)} taken out`, keys: row.keys }
     }
     return { where: (row ? row.name : 'A placeholder') + ' · who it stands for', from: names(x.off),
       to: x.on.length ? names(x.on) : 'no longer free', keys: row ? row.keys : [] }

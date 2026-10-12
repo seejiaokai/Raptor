@@ -15,7 +15,7 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { histInit, initStore, setSession, undo } from '../state/store'
 import { setMe } from '../state/auth'
-import { INPUTS, inpId, mintInpIds } from '../engine/inputs'
+import { INPUTS, idsOf, inpId, inputLines, mintInpIds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { initCalDrag } from './caldrag'
 import { markLand, pendingLand } from './lift'
@@ -185,50 +185,82 @@ describe('who may move a bar', () => {
 })
 
 /* A SHARED INPUT'S BAR (owner D655: "one shared group input, shown and edited as one thing"; the plan §3.13: "Dragging
-   the bar moves the whole entry in one command — for the filer and an admin; for anyone else it does not lift"). The
-   bar is addressed by the entry's FIRST record; the move is every record's. */
+   the bar moves the whole entry in one command — for the filer and an admin; for anyone else it does not lift").
+   RE-EXPRESSED ON THE ONE RECORD (the one-rule build, step 2 — owner D756, D759; the plan
+   docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5): a shared input is ONE stored record with the list of its
+   people, so the bar is that record's and the move is that record's. "Every man's day moved" is read the way the rules
+   read one man's day — one line a named person (engine/inputs.ts inputLines). */
 describe('a shared input’s bar moves the whole entry', () => {
-  const team = (people: string[], over: any = {}) => people.map(p =>
-    input({ person: p, type: 'Meeting', date: 'Jul 8', endDate: undefined, allday: false, s: 600, e: 660, remarks: 'brief', grp: 'gB', grpBy: 'stiff', by: 'stiff', ...over }))
-  const dates = (rows: any[]) => rows.map(r => INPUTS.find((x: any) => x.iid === r.iid)!.date)
+  const team = (people: string[], over: any = {}) => {
+    const by = over.by ?? 'stiff'
+    const row: any = { people: people.map(p => ({ p, by, at: 1 })), type: 'Meeting', date: 'Jul 8', allday: false, s: 600, e: 660, remarks: 'brief', mod: 'now', by, at: 1, ...over }
+    inpId(row); INPUTS.unshift(row); return row
+  }
+  /* each man's date as the app holds it now: the people still in the input, in the order they joined, and the date on
+     each one's own line — so a man dropped from it, or one left behind on the old date, fails here */
+  const dates = (row: any) => {
+    const live: any = INPUTS.find((x: any) => x.iid === row.iid)
+    return idsOf(live).map((p: any) => [p, inputLines([live]).find((l: any) => l.person === p)!.date])
+  }
+  const all = (people: string[], date: string) => people.map(p => [p, date])
   /* pressed, lifted and carried over another date — and still held */
   const carry = (bar: HTMLElement, from: HTMLElement, to: HTMLElement) => {
     under(bar, from); bar.dispatchEvent(ptr('pointerdown', 10, 10)); bar.dispatchEvent(ptr('pointermove', 20, 10))
     under(to); bar.dispatchEvent(ptr('pointermove', 200, 10))
   }
-  it('an admin drags it two days on: every man’s record moves, and one Undo puts them all back', () => {
-    const rows = team(['stiff', 'bane', 'casper'])
+  it('an admin drags it two days on: it moves for every man in it, and one Undo puts them all back', () => {
+    const who = ['stiff', 'bane', 'casper']
+    const row = team(who)
     histInit()
-    const m = month(rows[2].iid)
+    const n = INPUTS.length
+    const m = month(row.iid)
     drag(m.bars[0], m.day(8), m.day(10))
-    expect(dates(rows)).toEqual(['Jul 10', 'Jul 10', 'Jul 10'])
+    expect(dates(row)).toEqual(all(who, 'Jul 10'))
+    expect(INPUTS.length, 'still the one record — nobody was split out of it').toBe(n)
     expect(said.join(' | ')).toContain('Moved to')
     undo()
-    expect(dates(rows), 'one step').toEqual(['Jul 8', 'Jul 8', 'Jul 8'])
+    expect(dates(row), 'one step').toEqual(all(who, 'Jul 8'))
   })
   it('the member who filed it drags it: it moves for everyone', () => {
     setSession({ user: 'user', role: 'main' } as any)
-    const rows = team(['bane', 'stiff', 'casper'], { grpBy: 'bane', by: 'bane' })
-    const m = month(rows[1].iid)
+    const who = ['bane', 'stiff', 'casper']
+    const row = team(who, { by: 'bane' })
+    const n = INPUTS.length
+    const m = month(row.iid)
     drag(m.bars[0], m.day(8), m.day(9))
-    expect(dates(rows)).toEqual(['Jul 9', 'Jul 9', 'Jul 9'])
+    expect(dates(row)).toEqual(all(who, 'Jul 9'))
+    expect(INPUTS.length, 'still the one record').toBe(n)
   })
-  it('a man in it who did not file it: the bar does not lift, and nothing moves — his own record included', () => {
+  it('a man in it who did not file it: the bar does not lift, and nothing moves — his own day included', () => {
     setSession({ user: 'user', role: 'main' } as any)
-    const rows = team(['bane', 'stiff', 'casper'])
-    const m = month(rows[0].iid)
+    const who = ['bane', 'stiff', 'casper']
+    const row = team(who)
+    const before = JSON.stringify(INPUTS)
+    const m = month(row.iid)
     carry(m.bars[0], m.day(8), m.day(10))
     expect(ghost(), 'while it is held').toBeNull()
     m.bars[0].dispatchEvent(ptr('pointerup', 200, 10))
-    expect(dates(rows)).toEqual(['Jul 8', 'Jul 8', 'Jul 8'])
+    expect(dates(row)).toEqual(all(who, 'Jul 8'))
+    expect(JSON.stringify(INPUTS), 'nothing was written — he was not split out into an input of his own').toBe(before)
   })
   it('anyone else: it does not lift', () => {
     setSession({ user: 'user', role: 'main' } as any)
-    const rows = team(['stiff', 'casper'])
-    const m = month(rows[0].iid)
+    const who = ['stiff', 'casper']
+    const row = team(who)
+    const m = month(row.iid)
     carry(m.bars[0], m.day(8), m.day(10))
     expect(ghost(), 'while it is held').toBeNull()
     m.bars[0].dispatchEvent(ptr('pointerup', 200, 10))
-    expect(dates(rows)).toEqual(['Jul 8', 'Jul 8'])
+    expect(dates(row)).toEqual(all(who, 'Jul 8'))
+  })
+  /* THE OLD SHAPE, STILL READ (owner D759 reading 10 — "shared inputs saved before this build are read as one-person
+     inputs"; stored data only, D56): records tied by the old group id are each an input of their own, so each has a bar
+     of its own and a drag moves that one alone. */
+  it('OLD-SHAPE records tied by a group id (D759 reading 10): each is its own input — an admin’s drag moves the one bar grabbed, never the others', () => {
+    const rows = ['stiff', 'bane', 'casper'].map(p =>
+      input({ person: p, type: 'Meeting', date: 'Jul 8', endDate: undefined, allday: false, s: 600, e: 660, remarks: 'brief', grp: 'gB', grpBy: 'stiff', by: 'stiff' }))
+    const m = month(rows[2].iid)
+    drag(m.bars[0], m.day(8), m.day(10))
+    expect(rows.map(r => INPUTS.find((x: any) => x.iid === r.iid)!.date)).toEqual(['Jul 8', 'Jul 8', 'Jul 10'])
   })
 })

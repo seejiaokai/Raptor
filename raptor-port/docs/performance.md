@@ -110,6 +110,15 @@ Grouped by area. Each is the short rule; the source has the full story.
   is the pass; anything that wants a post-write answer (barDrop, the drop
   delta, placeArmed's reason) reads AFTER it, never revalidates first.
   Pinned `ui/dropvalidate.test.tsx`. (ledger 21)
+- **A day's inputs are read as per-person lines ONCE per pass, never kept across a write** (the one-rule job, step 1,
+  12 Oct 26 — `engine/inputs.ts inputReadPass`, ledger 27). The rules about one man's day read copies of the inputs —
+  one line a named person — and a copy made at every ask is a cost on a phone. So every body that asks many times and
+  writes nothing opens a pass: the rules pass (`validate`), the day and board builders, the crew list's paint, one
+  "may he take it?" (`avail.ts slotBar`), the week read into events, a day's OIL evidence, the green rings on every
+  place a picked man may take (`highlights.ts paintSelRings`). **A new body that asks about many people or many places
+  in a loop opens a pass round the loop**; a body that needs only some inputs picks the RECORDS first and makes lines
+  of those (the ALL AVAIL crowd, the Leave War's re-read). Never a cache that outlives the pass: a request's filing
+  is written outside the inputs door (`state/holderbase.ts`, a week load).
 - **An edit on one day must not disturb the other days** — per-day string diff
   (gate check B). If you add a new cross-day trace, extend B's named exemption
   *precisely*; never loosen it to "some other days may change." Two named
@@ -702,6 +711,39 @@ through sourcemaps for the JS split, paired A/B runs.
     pure seed) — under 1% of a painted edit at 4× (oneEdit ≈145 ms). *Not built, recorded:* a memo of the overlaid seed on
     (week, `deletedSig()`) would take it back; on a shared store there is no seed, so it matters most in the demo. The 30-second
     check (group B) will run the same overlay on a day already on screen — measure it there. · *No ceiling moved.*
+
+## The inputs read as one line a person (the one-rule job, step 1)
+
+27. **What the per-person view costs, and what the pass gives back** (`[ALL-AVAIL-AS-MEMBER]` step 1, 12 Oct 26 — the
+    plan `docs/superpowers/plans/2026-10-11-one-rule-plan.md` §4.2, Fable's F10). Every rule about one man's day now
+    reads frozen copies of the inputs, one a named person (`engine/inputs.ts inputLines` / `inputLinesOn`), instead of
+    the stored records. Measured on the built bundle, a phone's width, 4× slowdown, paired runs — 8 of the build before
+    against 5 of the build after, the middle run of each (`scripts/handpass/onerule-timing.mjs`; the table
+    `…/onerule-timing-table.mjs`), on the demo (53 inputs) and with 250 more filed (303):
+
+    | The act | 53 inputs: before → after (ms) | 303 inputs: before → after (ms) |
+    |---|---|---|
+    | the rules pass (`validate`) | 16.6 → 15.3 | 45.8 → 39.5 |
+    | the week read into events | 1.9 → 1.8 | 5.8 → 4.5 |
+    | the crew list drawn, nothing armed | 2.7 → 2.2 | 10.8 → 7.6 |
+    | the crew list drawn, a flying seat armed | 17.1 → 10.0 | 68.7 → 42.9 |
+    | Monday drawn (Edit Schedule) | 7.1 → 7.1 | 22.1 → 22.5 |
+    | a Saturday with an ALL AVAIL duty drawn | 5.9 → 5.8 | 8.7 → 7.5 |
+    | that Saturday's OIL worked out | 0.6 → 0.4 | 2.2 → 1.3 |
+    | a puck dropped on a seat, to the screen | 251 → 247 | 385 → 375 |
+    | the whole week redrawn | 67.2 → 67.8 | 100 → 100 |
+    | a man picked: a ring on every place he may take | 546 → 516 | 736 → 653 |
+    | ONE "may he take it?" asked 183 times in a row, nothing shared | 11.6 → 14.4 | 44.2 → 67.8 |
+
+    The last row is the one cost left, and it is not a thing the app does: a single ask on its own now copies that
+    day's inputs — about 0.13 ms more an ask at 4× with 303 inputs (0.02 ms on the demo) — where the app asks once (a
+    puck held over a place, the note after a drop). Everywhere the app asks MANY times it is inside a pass and the same
+    or faster. **What the first cut cost, and why each pass exists:** with only the plan's four passes the crew list at
+    rest was 1.3× slower (the whole list copied for two readers that need one day — they read the day now), a Saturday's
+    OIL 2.8× slower and its day 1.4× (the ALL AVAIL crowd copied every input once a window — it picks the inputs that
+    could keep a man out first, once for the whole walk, then makes lines of those), and the week read into events 1.2×
+    slower when asked on its own (it opens a pass). `npm run perf`: 4 passed, the week 5131 nodes and the board 1018
+    before and after · *No ceiling moved.*
 
 ---
 

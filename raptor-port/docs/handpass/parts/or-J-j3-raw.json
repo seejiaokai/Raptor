@@ -1,0 +1,168 @@
+{
+ "filed": [
+  {
+   "iid": "imqoidgg0wybzc3",
+   "type": "OD",
+   "date": "Jul 16",
+   "s": 360,
+   "e": 1080,
+   "grp": null,
+   "people": [
+    "Drifter",
+    "Hunter"
+   ],
+   "acc": null
+  }
+ ],
+ "before": {
+  "rows": [
+   "OD 06:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "inputs": [
+   {
+    "who": [
+     "Drifter:-",
+     "Hunter:-"
+    ],
+    "s": 360,
+    "e": 1080,
+    "rmk": "till 16 Jul",
+    "n": 2
+   }
+  ]
+ },
+ "after": {
+  "toast": "",
+  "rows": [
+   "OD 09:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "inputs": [
+   {
+    "who": [
+     "Hunter:-"
+    ],
+    "s": 360,
+    "e": 1080,
+    "rmk": "till 16 Jul",
+    "n": 1
+   },
+   {
+    "who": [
+     "Drifter:-"
+    ],
+    "s": 540,
+    "e": 1080,
+    "rmk": "till 16 Jul",
+    "n": 1
+   }
+  ],
+  "all": [
+   {
+    "iid": "ybzc3",
+    "date": "Jul 16",
+    "cs": [
+     "Hunter"
+    ],
+    "s": 360,
+    "e": 1080
+   },
+   {
+    "iid": "r5e0p",
+    "date": "Jul 16",
+    "cs": [
+     "Drifter"
+    ],
+    "s": 540,
+    "e": 1080
+   },
+   {
+    "iid": "1ulmj",
+    "date": "Jul 15",
+    "cs": "Nomad"
+   }
+  ]
+ },
+ "afterCard": "⠿ Thu 16 Jul + Note ✕ + Input 6 INPUTS All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island 06:00–18:00 HunterOD till 16 Jul By Saber 09:00–18:00 DrifterOD till 16 Jul By Saber 17:00–18:30 RangerAPPOINTMENT Medical / PHA",
+ "hunterBell": {
+  "lit": true,
+  "cls": "bellbtn on"
+ },
+ "hunterList": {
+  "empty": null,
+  "lines": [
+   "ODThu 16 Jul Drifter taken off · Saber now",
+   "ODThu 16 Jul You were added · Saber now"
+  ]
+ },
+ "notices": [
+  [
+   "slipway",
+   "stiff",
+   "in"
+  ],
+  [
+   "prowler",
+   "stiff",
+   "in"
+  ],
+  [
+   "slipway",
+   "stiff",
+   "when"
+  ],
+  [
+   "prowler",
+   "stiff",
+   "rem"
+  ]
+ ],
+ "undo": "pressed Undo; note: Undid: 2 inputs",
+ "afterUndo": {
+  "rows": [
+   "OD 06:00 18:00 Drifter A till 16 Jul",
+   "OD 06:00 18:00 Hunter IP till 16 Jul"
+  ],
+  "inputs": [
+   {
+    "who": [
+     "Drifter:-",
+     "Hunter:-"
+    ],
+    "s": 360,
+    "e": 1080,
+    "rmk": "till 16 Jul",
+    "n": 2
+   }
+  ],
+  "undoDisabled": false
+ },
+ "redo": "pressed Redo; note: Redid: 2 inputs",
+ "afterRedo": {
+  "rows": [
+   "OD 06:00 18:00 Hunter IP till 16 Jul",
+   "OD 09:00 18:00 Drifter A till 16 Jul"
+  ],
+  "inputs": [
+   {
+    "who": [
+     "Hunter:-"
+    ],
+    "s": 360,
+    "e": 1080,
+    "rmk": "till 16 Jul",
+    "n": 1
+   },
+   {
+    "who": [
+     "Drifter:-"
+    ],
+    "s": 540,
+    "e": 1080,
+    "rmk": "till 16 Jul",
+    "n": 1
+   }
+  ]
+ }
+}

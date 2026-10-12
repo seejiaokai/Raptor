@@ -26,14 +26,16 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { ensureRowIds } from '../engine/rowids'
-import { setOilDay } from '../state/view'
-import { toggleOilMode, oilDayFigures } from './oilmode'
+import { setOilDay, setPage, CURPAGE } from '../state/view'
+import { toggleOilMode, oilDayFigures, oilFigureFor } from './oilmode'
 import { openScheduler } from './board'
+import { rowPut } from './reqdoor'
+import { setOilAsk, setInpEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -41,9 +43,13 @@ const SAT = 5, SAT_ISO = '2026-07-18'
 const DSNAP = JSON.stringify(DAYS)
 const INERT = /nothing on this row can earn/i
 const EARNS = /earns (a full day|half a day)/i
-const PER_PERSON = /answered for each person on it/i
+/* (the words until step 3 of the one-rule build were "answered for each person on it" — D762 gave an input ONE answer
+   for everyone in it; what the hint is FOR is unchanged: the switch is on the pucks, not on the row) */
+const PER_PERSON = /one answer for everyone on it — tap a puck on this row/i
 let host: HTMLDivElement
 let root: Root
+/* the page the suite stands on once signed in */
+let HOME: any
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 
 beforeAll(async () => {
@@ -52,6 +58,7 @@ beforeAll(async () => {
   root = createRoot(host)
   await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' } as any); notify() })
+  HOME = CURPAGE
 })
 afterAll(async () => { await act(async () => { root.unmount() }); host.remove() })
 beforeEach(async () => {
@@ -64,7 +71,9 @@ beforeEach(async () => {
   HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => ['bane', 'stiff']
 })
-afterEach(() => { setOilDay(null) })
+/* (a man put on a row whose input has no OIL answer opens the question, in the input's window — closed here; and the
+   page a tap was made from is put back, so no case inherits another's) */
+afterEach(async () => { await act(async () => { setOilDay(null); setOilAsk(null); setInpEdit(null); setPage(HOME); notify() }) })
 
 const addRow = (di: number, r: any) => {
   ;(DAYS[di] as any).ground = (((DAYS[di] as any).ground) || []).concat([r]); ensureRowIds(DAYS)
@@ -93,6 +102,19 @@ const openMode = async () => {
   await act(async () => { openScheduler(SAT); notify() })
   await act(async () => { toggleOilMode(SAT); notify() })
 }
+/* a TAP on a puck is a scheduler's, on Edit Schedule — the board takes none from any other page (boardArmClick) */
+const onEditSchedule = async () => { await act(async () => { setPage('editsched'); notify() }) }
+/* a man put on the claim's row as a hand does it now — on its "+ add", through the row's door (D755): he joins the input */
+const putOnRow = async (id: string) => {
+  const ri = ((DAYS[SAT] as any).ground as any[]).findIndex(g => g && g.src === 'cl1')
+  await act(async () => { expect(rowPut(`g:${SAT}.${ri}.+`, id), `${id} put on the row`).toBe('done'); notify() })
+}
+/* his switch on the claim's own row (he may wear other pucks on the seed Saturday, each with its own item) */
+const hisOnClaim = (id: string) => {
+  const el = $$('.sb-arow .seat.oilpk').find(p => p.dataset.oilp === id && p.dataset.oilitem === 'i:cl1')
+  expect(el, `${id}'s switch on the claim's row`).toBeTruthy()
+  return el as HTMLElement
+}
 
 describe('a claim row and the puck beside it agree about OIL', () => {
   it('NO row says nothing here can earn while a puck on it says a man earns', async () => {
@@ -114,9 +136,13 @@ describe('a claim row and the puck beside it agree about OIL', () => {
     mine.forEach(r => expect(r.cell, r.row).toMatch(PER_PERSON))
   })
 
+  /* (1) THE RULE SURVIVES, on a rebuilt fixture (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX the
+     scheduler puts on a row that came from an input cancels the input itself"). The fixture cancelled the ROW alone; the
+     CX is the claim's own now, so the record carries it with its reason and the row is the copy of it. The inert
+     switch and its wording are what they were. */
   it('a CANCELLED claim keeps the ordinary inert wording — it is true there', async () => {
-    claim()
-    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', cx: true })
+    claim({ cx: true, cxr: 'WX' })
+    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', cx: true, cxr: 'WX' })
     await openMode()
     const mine = pairs().filter(r => /TRAINING/i.test(r.row))
     expect(mine.length, 'the cancelled claim row is on screen').toBeGreaterThan(0)
@@ -136,10 +162,22 @@ describe('a claim row and the puck beside it agree about OIL', () => {
 
      The cause is two bodies: the credit moved to `oilEarnedWork` (oilev.ts,
      where D18 was built) while `oilEligible` still asked `dayOilWork`, whose
-     ground walk skips every `src` row whole. */
-  it('D18 — a second man on a claim row is drawn earning, not inert', async () => {
+     ground walk skips every `src` row whole.
+
+     UNDER THE ONE RULE (owner D755, D762 — 11 Oct 26; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md
+     §4.4, §4.7) he is no longer "the scheduler's extra" on another man's row: put on it — through the row's door
+     (ui/reqdoor.ts; a raw write under the row is refused by the engine's belt and swept by the re-make) — he is IN
+     the input, and D18's "earns by default, whatever the member answered" is gone with the split: there is ONE answer
+     an input, for everyone in it. What the walk found still stands and is what these two pin: the screen and the
+     credit agree about him, and he is NEVER inert — on the input's Yes he is drawn earning; on its No, or with no
+     answer, he is OFF, a real switch, told whose answer it is (the words for an input of several — never "he
+     answered No": he gave no answer of his own), and a tap credits HIM alone. */
+  it('D762 (was D18) — a second man put on a claim row is IN the input: on its Yes he is drawn earning, not inert', async () => {
     claim()
-    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', more: ['stiff'] })
+    addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1' })
+    await putOnRow('stiff')
+    expect(idsOf(INPUTS[0]).map(String), 'he joined the input — the same record').toEqual(['bane', 'stiff'])
+    expect((INPUTS[0] as any).oil, 'and follows its one answer: nothing was written for him').toEqual({ [SAT_ISO]: 1 })
     await openMode()
     expect(oilDayFigures(SAT)['stiff'], 'the credit pass credits the second man').toBeTruthy()
     /* by his DISPLAYED name, derived — an inert puck carries no data-oilp at
@@ -152,7 +190,41 @@ describe('a claim row and the puck beside it agree about OIL', () => {
     const inert = his.filter(p => p.className.includes('inert'))
     expect(inert.map(p => p.getAttribute('title')), 'none of his pucks is inert').toEqual([])
     expect(his.some(p => (p.getAttribute('title') || '').match(EARNS)), 'and one of them says he earns').toBe(true)
+    const onRow = hisOnClaim('stiff')
+    expect(onRow.classList.contains('on'), 'the puck on the claim\'s own row is lit').toBe(true)
+    expect(onRow.title).toMatch(EARNS)
+    expect(oilFigureFor(SAT, 'stiff', 'i:cl1'), 'and it is THIS input that counts towards his day').toBeTruthy()
   })
+
+  for (const [what, oil, words] of [
+    ['a No', { [SAT_ISO]: 0 }, /whoever filed this Training answered No to OIL; tap to credit him anyway/],
+    ['no answer', undefined, /the OIL question for this Training has not been answered yet; tap to credit him/],
+  ] as const) {
+    it(`D762 — on ${what} the second man is OFF, a real switch, in the words for an input of several; a tap credits HIM alone`, async () => {
+      claim({ oil })
+      addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1' })
+      await putOnRow('stiff')
+      await onEditSchedule()
+      await openMode()
+      const seat = () => hisOnClaim('stiff')
+      expect(seat().classList.contains('inert'), 'not inert — he can be credited').toBe(false)
+      expect(seat().classList.contains('off'), 'he follows the input\'s answer').toBe(true)
+      expect(seat().title).toMatch(words)
+      expect(seat().title, 'never his own refusal — he gave no answer of his own').not.toMatch(/answered No for/)
+      expect(seat().title).not.toMatch(EARNS)
+      expect(oilFigureFor(SAT, 'stiff', 'i:cl1'), 'the credit agrees: nothing from this input').toBeNull()
+      /* the man who filed it is one of several now, and reads the same way */
+      expect(hisOnClaim('bane').classList.contains('off')).toBe(true)
+      expect(hisOnClaim('bane').title).toMatch(words)
+      await act(async () => { seat().querySelector('.puck')!.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+      expect((DAYS[SAT] as any).oild.people, 'a decision about HIM alone, under his own name and the input\'s id')
+        .toEqual({ 'stiff|i:cl1': 'allow' })
+      expect(seat().classList.contains('on')).toBe(true)
+      expect(hisOnClaim('bane').classList.contains('off'), 'the other man is untouched').toBe(true)
+      expect(oilFigureFor(SAT, 'stiff', 'i:cl1'), 'and the credit follows the tap').toBeTruthy()
+      expect(oilFigureFor(SAT, 'bane', 'i:cl1'), 'for him alone').toBeNull()
+    })
+  }
 
   it('an ⓘ row keeps it too', async () => {
     addRow(SAT, { prog: 'ADMIN', str: '0900', end: '1000', who: 'bane', info: true })

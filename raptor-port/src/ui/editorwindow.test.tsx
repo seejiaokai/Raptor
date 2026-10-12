@@ -23,7 +23,7 @@ import { InputsPage } from './InputsPage'
 import { InputEditor, commitInputEdit, draftOf, removeInput } from './inputedit'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -281,11 +281,14 @@ describe('Escape belongs to the window in FRONT, never to an editor behind it (D
 })
 
 describe('a change of the PEOPLE alone is unsaved work too (D654, D656)', () => {
-  const group = async () => {
+  /* ONE RECORD FOR THE SEVERAL (the one-rule build, step 2 — owner D756, D759: an input is one stored record with the list
+     of its people; until then this fixture was a record a man tied by a group id, which now reads as so many one-person
+     inputs — D759 reading 10). Filed by its first person, everyone in it put in by him. */
+  const group = async (...more: string[]) => {
     const [p1, p2] = crew()
-    const a = await file({ person: p1, grp: 'g-ew', grpBy: p1, remarks: 'shared' })
-    await file({ person: p2, grp: 'g-ew', grpBy: p1, remarks: 'shared' })
-    return a
+    const row = { iid: 'ew' + (++n), people: [p1, p2, ...more].map(p => ({ p, by: p1 })), by: p1, type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'shared', mod: '2026-09-01' }
+    await act(async () => { writeInputs(() => { INPUTS.push(row) }); notify() })
+    return live(row.iid)
   }
   const puck = (id: string) => $(`#inpEditPop .pp-pucks button[aria-label="${PEOPLE[id].cs}"]`)
   const pickedNow = () => [...document.querySelectorAll('#inpEditPop .pp-pucks button[aria-pressed="true"]')].map(b => b.getAttribute('aria-label')).sort()
@@ -304,12 +307,11 @@ describe('a change of the PEOPLE alone is unsaved work too (D654, D656)', () => 
     expect(pickedNow()).toHaveLength(3)
     await click(tid('inped-swap-stay'))
     expect(pickedNow()).toHaveLength(3)
-    expect(INPUTS.filter((r: any) => r.grp === 'g-ew'), 'and nothing was saved').toHaveLength(2)
+    expect(idsOf(live(a.iid)), 'and nothing was saved: the input still holds the two it opened with').toEqual(crew().slice(0, 2))
   })
   it('one person taken out of three: the same question', async () => {
-    const a = await group()
     const third = crew()[2]
-    await file({ person: third, grp: 'g-ew', grpBy: crew()[0], remarks: 'shared' })
+    const a = await group(third)
     const b = await file({ person: crew()[3], date: 'Oct 14', remarks: 'second' })
     await openOn(a)
     expect(pickedNow()).toHaveLength(3)

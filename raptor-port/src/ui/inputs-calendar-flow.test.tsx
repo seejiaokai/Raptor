@@ -5,7 +5,7 @@ import { beforeEach, afterEach, it, expect } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { initStore, setSession, notify } from '../state/store'
 import { setCalMonth, setInpView } from '../state/view'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { setFlyDays } from '../state/flyplan'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -218,13 +218,17 @@ it('a new input on the Inputs calendar has no line of instructions; the SANS cal
   await click('#inSansMode');await openDate();await click(addBtn())
   expect(hint()).toMatch(/available hours/i)
 })
-it('Export writes every input, whatever the list is filtered to (as before the calendar was built)',async()=>{
-  const blobs:Blob[]=[]
-  const orig=(URL as any).createObjectURL
-  ;(URL as any).createObjectURL=(b:Blob)=>{blobs.push(b);return 'blob:x'}
-  try{
-    await click('#inListBtn');await value('#inFSearch','NOBODY_HAS_THIS_REMARK');await click('#inExport')
-  } finally{(URL as any).createObjectURL=orig}
-  const text=await new Promise<string>(res=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result));fr.readAsText(blobs[0])})
-  expect(text.split('\r\n').length-1).toBe(INPUTS.length)
+/* ONE LINE A PERSON OF EACH INPUT (the one-rule build — owner D756: an input is one record with the list of its people;
+   the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5: "the CSV export writes one line per named person and
+   one for the placeholder"). Until that build a shared input was a record a man, so "every input" was a line a record;
+   now the file still has a line a person, and the count is the people across every input — never the records. */
+/* THE LIST HAS NO EXPORT (owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can remove
+   it."). The case that stood here — "Export writes every input — a line for each person of each (D756) — whatever the
+   list is filtered to" — pressed #inExport and read the file. The button and its file are gone; what is pinned now is
+   that the List, however it is filtered, offers none. */
+it('the List offers no export, whatever it is filtered to (D773)',async()=>{
+  await click('#inListBtn');await value('#inFSearch','NOBODY_HAS_THIS_REMARK')
+  expect(document.querySelector('#inExport')).toBeNull()
+  const page=document.getElementById('page-inputs')||document.body
+  expect(Array.from(page.querySelectorAll('button')).filter(x=>/export/i.test(x.textContent||'')).map(x=>x.textContent)).toEqual([])
 })

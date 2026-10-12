@@ -14,7 +14,7 @@ import { notify } from '../state/store'
 import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
-import { groupPut, groupTake, groupLeaveTo, groupMove, groupRetarget, isRowMan, onSharedRow, placeOnRow } from './grouprow'
+import { rowPut, rowTake, rowLeaveTo, rowMove, isRowMan, onInputRow, placeOnRow } from './reqdoor'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
@@ -297,14 +297,15 @@ export function applyDrop(el: any, x: any, y: any) {
     if (!flagDrop(warnBefore, served ? keyDay(served) : null)) (asks || []).some(([id, key]) => barDrop(id, key))
     notify(); return true
   }
-  /* ==== THE ONE ROW OF A SHARED INPUT (owner D734 — "on a shared input's row the pucks ARE the input's people: a puck
-     taken off the row takes that man out of the input itself, and a puck put on the row adds him to it"; the plan
-     2026-10-10-group-input-one-row-plan.md §4.5; the door is ui/grouprow.ts). Asked in each branch below BEFORE it
-     writes — the TARGET on a shared row first, then a SOURCE that is one of an input's men:
-       · a real man dropped anywhere on the row is ADDED to the input, and the place he came from keeps him;
-       · a placeholder dropped there is the row's own: re-aimed at the row's "+ add";
-       · one of the input's men dragged onto another place LEAVES the input and is put there, in ONE command;
-       · one of them let go on nothing leaves the input; the last man is refused, saying how.
+  /* ==== THE ROW OF AN INPUT (owner D755 — "a row that came from an input IS the input"; first D734, a shared input's
+     row alone; the plan 2026-10-11-one-rule-plan.md §4.4; the door is ui/reqdoor.ts). Asked in each branch below
+     BEFORE it writes — the TARGET on an input's row first, then a SOURCE that is one of an input's people:
+       · a real person dropped on the row JOINS the input, and the place he came from keeps him — except on the puck
+         of the input's ONLY person, where he REPLACES him (dragged from a seat, the two swap: rowPut's `seat`);
+       · a placeholder dropped there joins the input too (D753) — the same door; it is re-aimed nowhere;
+       · one of the input's people dragged onto another place LEAVES the input and is put there, in ONE command
+         (rowLeaveTo); onto another input's row he MOVES (rowMove);
+       · one of them let go on nothing leaves the input (rowTake); the last one is refused, saying how.
      THE DOOR'S COMMAND HAS ALREADY RUN THE EPILOGUE (validate, one history step, the repaint), so these paths finish
      through `fin`, which makes NO schedule write — `done()` would push a second Undo step for the one drop
      (reassignInput's precedent, above). `landed` is the place the puck stands on NOW (a row above it may have gone). */
@@ -320,18 +321,29 @@ export function applyDrop(el: any, x: any, y: any) {
     const targetKey = slotEl.dataset.slot || (slotEl.querySelector('[data-slot]') && slotEl.querySelector('[data-slot]').dataset.slot)
     if (!targetKey) { DRAG = null; dndOff(); return false }
     let asks: any[][]
-    /* a placeholder aimed at a man's puck on the one row is never put in his place: it goes to the row's "+ add" */
     const aimed = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
-    if (groupRetarget(targetKey, aimed) !== targetKey) return onCell(groupRetarget(targetKey, aimed))
     /* one of an input's men onto ANOTHER shared input's row: he MOVES — out of the first, into the second, one command
        (Fable F1; asked before the target's own door, whose "the seat he came from keeps him" is for a seat elsewhere) */
     if (DRAG.kind === 'slot' && DRAG.key !== targetKey) {
-      const mv = groupMove(DRAG.key, targetKey)
+      const mv = rowMove(DRAG.key, targetKey)
       if (mv === 'refused') return no()
       if (mv === 'done') return fin(placeOnRow(targetKey, aimed) || targetKey, aimed)
     }
     if (DRAG.kind === 'roster' || DRAG.key !== targetKey) {
-      const put = groupPut(targetKey, aimed)
+      /* …and dragged FROM A SEAT ELSEWHERE onto the ONLY person's puck it is a SWAP (Fable F8; the one-rule plan §4.4):
+         the man replaced takes the seat the newcomer came from, inside the door's own command — a seat that refuses
+         him refuses the whole swap, and one Undo puts both back. From a place of an input's own row there is no seat
+         to hand over (rowMove, above, has answered for another input's row). */
+      const src = DRAG.kind === 'slot' && !onInputRow(DRAG.key) ? DRAG.key : null
+      /* …and a seat that refuses him SAYS WHY (the walk's B3; Fable's read, finding 4 — 12 Oct 26): the reason was worked
+         out here and said by nobody, so the refusal read "Not saved — that change was refused, and nothing was kept" */
+      const csOf = (x: any) => (PEOPLE[x] ? PEOPLE[x].cs : String(x))
+      const seat = src ? (was: string) => {
+        const why = !sentinelSeatOK(src, was) ? 'that seat cannot take him' : rowTwice(was, src, src)
+        if (why) { HOOKS.toast(`${csOf(was)} cannot take ${csOf(aimed)}’s place — ${why}`, 'warn'); return false }
+        return setSlotVal(src, was)
+      } : undefined
+      const put = rowPut(targetKey, aimed, seat)
       if (put === 'refused') return no()
       if (put === 'done') return fin(placeOnRow(targetKey, aimed) || targetKey, aimed)
     }
@@ -364,12 +376,12 @@ export function applyDrop(el: any, x: any, y: any) {
       const a = slotVal(DRAG.key), b = slotVal(targetKey)
       if (!sentinelSeatOK(targetKey, a)) return refuse(a, targetKey)
       /* ONE OF A SHARED INPUT'S MEN, DRAGGED ONTO ANOTHER PLACE: he leaves the input and is put there in ONE command
-         (ui/grouprow.ts groupLeaveTo). The man already standing there comes off it, as when a name from the crew list
-         is dropped on him — nobody is ever swapped INTO the request. The preflight is the roster's (no `from`: he does
-         not come from that row). */
+         (ui/reqdoor.ts rowLeaveTo — `groupLeaveTo` until the one-rule build). The man already standing there comes off
+         it, as when a name from the crew list is dropped on him — nobody is ever swapped INTO the request. The
+         preflight is the roster's (no `from`: he does not come from that row). */
       if (isRowMan(DRAG.key)) {
         if (twice(a, targetKey)) return false
-        const out = groupLeaveTo(DRAG.key, targetKey, () => setSlotVal(targetKey, a))
+        const out = rowLeaveTo(DRAG.key, targetKey, () => setSlotVal(targetKey, a))
         if (out === 'refused') return no()
         if (out !== 'none') return fin(out.landed, a)
       }
@@ -378,7 +390,7 @@ export function applyDrop(el: any, x: any, y: any) {
       /* …and a swap never carries a real man BACK onto a shared input's row: from one of its extras' places (a
          placeholder, a man of the scheduler's) the puck simply moves, and the man it lands on comes off — put on that
          row by a swap he would stand on it without being in the input, which D734 rules out */
-      const back = b && !isSpecial(b) && onSharedRow(DRAG.key) ? '' : b
+      const back = b && !isSpecial(b) && onInputRow(DRAG.key) ? '' : b
       setSlotVal(targetKey, a); setSlotVal(DRAG.key, back)
       asks = back ? [[a, targetKey], [back, DRAG.key]] : [[a, targetKey]]
     }
@@ -404,13 +416,13 @@ export function applyDrop(el: any, x: any, y: any) {
     const moving = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
     /* the one row of a shared input (the block above): a placeholder goes to the row's own "+ add" (the lead's — the
        one drawn); a real man is ADDED to the input, the place he came from keeping him */
-    const fillKey = groupRetarget(fillKey0, moving)
-    if (DRAG.kind === 'slot') {                      // from one shared input's row onto another's: a move (Fable F1)
-      const mv = groupMove(DRAG.key, fillKey)
+    const fillKey = fillKey0
+    if (DRAG.kind === 'slot') {                      // from one input's row onto another's: a move (Fable F1)
+      const mv = rowMove(DRAG.key, fillKey)
       if (mv === 'refused') return no()
       if (mv === 'done') return fin(placeOnRow(fillKey, moving) || fillKey, moving)
     }
-    { const put = groupPut(fillKey, moving)
+    { const put = rowPut(fillKey, moving)
       if (put === 'refused') return no()
       if (put === 'done') return fin(placeOnRow(fillKey, moving) || fillKey, moving) }
     /* the same preflight as the seat branch, for the same reason: the MOVE below
@@ -430,7 +442,7 @@ export function applyDrop(el: any, x: any, y: any) {
        ordinary add as a second copy of him ([CROWD-SWAP-SAYS-BUSY], slots.ts lastFilled) */
     /* one of a shared input's men dragged onto another row's cell: out of the input and onto that row, ONE command */
     if (DRAG.kind === 'slot' && isRowMan(DRAG.key)) {
-      const out = groupLeaveTo(DRAG.key, fillKey, () => fillSlot(fillKey, moving))
+      const out = rowLeaveTo(DRAG.key, fillKey, () => fillSlot(fillKey, moving))
       if (out === 'refused') return no()
       if (out !== 'none') return fin(out.landed, moving)
     }
@@ -444,7 +456,7 @@ export function applyDrop(el: any, x: any, y: any) {
      off-window) never reaches here, so leaving the window never deletes. */
   if (DRAG.kind === 'slot') {
     /* one of a shared input's men let go on nothing: he leaves the INPUT (D734); the last man is refused, saying how */
-    const out = groupTake(DRAG.key)
+    const out = rowTake(DRAG.key)
     if (out === 'refused') return no()
     if (out === 'done') return fin()
     setSlotVal(DRAG.key, ''); return done()

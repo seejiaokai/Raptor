@@ -12,7 +12,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST, loadWeek } from '../state/store'
-import { INPUTS, oilAsks, inpId } from '../engine/inputs'
+import { INPUTS, oilAsks, inpId, holds } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { inputItemKey, oilEvidence } from '../engine/oilev'
@@ -72,7 +72,7 @@ const openAdd = async (seed: any) => {
   })
 }
 /* only the rows THIS suite files — the seed already carries bane activity rows */
-const mine = () => INPUTS.filter((r: any) => r.person === 'bane' && oilAsks(r.type) && /oiltest/.test(r.remarks || ''))
+const mine = () => INPUTS.filter((r: any) => holds(r, 'bane') && oilAsks(r.type) && /oiltest/.test(r.remarks || ''))
 
 describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
   it('Save opens the sheet INSTEAD of writing; Cancel leaves everything unwritten', async () => {
@@ -417,7 +417,7 @@ describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
    A man who worked and answered Yes is credited nothing, silently; and if that day
    was already published the live and frozen keys match, so nothing flags it. */
 describe('a refusal must not survive a hand-over made while its week is off screen', () => {
-  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'weekstash']
+  const SCHED_COLLS = ['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'inputs', 'plan', 'notices', 'weekstash']
   const plant = (r: any) => { const row: any = { allday: true, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }; inpId(row); writeInputsBatch(() => { INPUTS.unshift(row) }); return INPUTS[0] }
   const handTo = (r: any, person: string) => { const d = draftOf(r); d.person = person; expect(commitInputEdit(r, d)).toBe(true) }
   const keyOn = (di: number, k: string) => (((DAYS[di] as any).oild || {}).people || {})[k]

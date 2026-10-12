@@ -8,7 +8,14 @@
      alone). Delete on the focused line asks 'Delete this input for all 4 people?' of the filer or an admin, and 'Take
      yourself out of this input?' of a man in it."
      The List: "one line, its Person cell reading 'Saber +3' (the title lists everyone); its ✎ opens the editor window,
-     not the row's in-place edit; sorted by its first callsign." */
+     not the row's in-place edit; sorted by its first callsign."
+
+   RE-EXPRESSED ON THE ONE RECORD (the one-rule build, step 2 — owner D756, D759, 11 Oct 26: "an input is stored as ONE
+   record with the list of its people"; docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.1, §4.5). Until that build
+   a shared input was kept as one record a man tied by a group id, and these fixtures pushed N records with `grp` /
+   `grpBy`. They push the ONE record now — `people` in the order they joined, each entry with who put him in (`by`) and,
+   where he has one, his own late date (`mod`) — and where a case counted "his record" or "three records" it counts the
+   people of the one record. Every assertion about what is on screen is as it was. */
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -17,7 +24,7 @@ import { InputEditor } from './inputedit'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setMe } from '../state/auth'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
@@ -38,18 +45,23 @@ const cs = (id: any) => PEOPLE[id].cs as string
 const admin = 'stiff', member = 'bane'
 const others = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)
 const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
-const of = (grp: string) => INPUTS.filter((r: any) => r.grp === grp) as any[]
+/* the one record of an input, by its id; and who is in it — nobody, once it is deleted */
+const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
+const inIt = (iid: string) => (live(iid) ? idsOf(live(iid)).map(String) : []) as string[]
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
 const key = async (el: Element, k: string) => act(async () => { el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })) })
 const day = (iso: string) => $(`[data-icday="${iso}"]`)!
 const open = async (iso: string) => key(day(iso), 'Enter')
 let n = 0
+/* a shared input as it is kept: ONE record with its people (D756) — `each` is one man's own entry (his late date) */
 const shared = async (people: string[], over: any = {}, each: Record<string, any> = {}) => {
-  const grp = 'gL' + (++n)
-  const rows = people.map((p, i) => ({ iid: `${grp}-${i}`, person: p, type: 'Meeting', date: 'Oct 7', yr: 2026, allday: false, s: 600, e: 660,
-    remarks: 'range brief', mod: '2026-09-01', grp, grpBy: admin, by: admin, at: new Date(2026, 8, 1, 14, 32).getTime(), ...over, ...(each[p] || {}) }))
-  await act(async () => { writeInputs(() => { INPUTS.push(...rows) }); notify() })
-  return { grp, first: az(people)[0], line: () => $$('[data-testid^="idy-row-"]').find(el => of(grp).some(r => el.getAttribute('data-popiid') === r.iid))! }
+  const iid = 'gL' + (++n)
+  const at = new Date(2026, 8, 1, 14, 32).getTime()
+  const rec: any = { iid, type: 'Meeting', date: 'Oct 7', yr: 2026, allday: false, s: 600, e: 660,
+    remarks: 'range brief', mod: '2026-09-01', by: admin, at, ...over }
+  rec.people = people.map(p => ({ p, by: rec.by, at, ...(each[p] || {}) }))
+  await act(async () => { writeInputs(() => { INPUTS.push(rec) }); notify() })
+  return { iid, first: az(people)[0], line: () => $$('[data-testid^="idy-row-"]').find(el => el.getAttribute('data-popiid') === iid)! }
 }
 const as = async (who: 'admin' | 'member') => act(async () => {
   if (who === 'admin') { setSession({ user: admin, role: 'admin' }); setMe(admin) } else { setSession({ user: member, role: 'main' }); setMe(member) }
@@ -78,7 +90,7 @@ describe('a day opened: a shared input is one line', () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c])
     await open('2026-10-07')
-    const lines = $$('[data-testid^="idy-row-"]').filter(el => of(g.grp).some(r => el.getAttribute('data-popiid') === r.iid))
+    const lines = $$('[data-testid^="idy-row-"]').filter(el => el.getAttribute('data-popiid') === g.iid)
     expect(lines, 'one card').toHaveLength(1)
     expect(lines[0].querySelector('[data-testid="idy-who"]')!.textContent).toBe(az([a, b, c]).map(cs).join(', '))
     expect(lines[0].textContent).not.toMatch(/\+\d/)
@@ -126,13 +138,16 @@ describe('a day opened: a shared input is one line', () => {
     await open('2026-10-07')
     await key(g.line().querySelector('[data-testid="idy-open"]')!, 'Delete')
     expect(tid('idy-ask')!.textContent).toContain('Delete this input for all 3 people?')
-    expect(of(g.grp)).toHaveLength(3)
+    expect(inIt(g.iid)).toHaveLength(3)
     await click(tid('idy-del-yes'))
-    expect(of(g.grp)).toHaveLength(0)
+    expect(live(g.iid), 'the input is gone').toBeUndefined()
+    expect(inIt(g.iid)).toHaveLength(0)
     await act(async () => { undo(); notify() })
-    expect(of(g.grp), 'one Undo').toHaveLength(3)
+    expect(inIt(g.iid), 'one Undo').toHaveLength(3)
   })
-  it('Delete, for a man in it who did not file it: "Take yourself out of this input?" — his record alone', async () => {
+  /* "his record alone" was one of three records; it is HIS ENTRY in the one record now, and the input stays (D755 (3):
+     a person in it "may always withdraw himself") */
+  it('Delete, for a man in it who did not file it: "Take yourself out of this input?" — he alone leaves, the input stays (D755)', async () => {
     const [a, b] = others()
     const g = await shared([a, member, b])
     await as('member')
@@ -141,7 +156,7 @@ describe('a day opened: a shared input is one line', () => {
     expect(tid('idy-ask')!.textContent).toContain('Take yourself out of this input?')
     expect(tid('idy-del-yes')!.textContent).toBe('Take me out')
     await click(tid('idy-del-yes'))
-    expect(of(g.grp).map(r => String(r.person)).sort()).toEqual([a, b].sort())
+    expect(inIt(g.iid).sort()).toEqual([a, b].sort())
   })
   it('Delete, for anyone else: nothing is asked — it says who can', async () => {
     const g = await shared(others().slice(0, 3))
@@ -150,7 +165,7 @@ describe('a day opened: a shared input is one line', () => {
     await key(g.line().querySelector('[data-testid="idy-open"]')!, 'Delete')
     expect(tid('idy-ask')).toBeNull()
     expect(said.join(' | ')).toContain(`Only ${cs(admin)} — who filed it — or an admin can delete this for everyone`)
-    expect(of(g.grp)).toHaveLength(3)
+    expect(inIt(g.iid)).toHaveLength(3)
   })
 })
 
@@ -158,7 +173,7 @@ describe('the List: a shared input is one line', () => {
   /* the List opens on today onward — a date the demo's today has not passed */
   const LATER = { date: 'Oct 14' }
   const listUp = async () => act(async () => { setInpView('table'); notify() })
-  const rowsOf = (grp: string) => $$('#inBody tr[data-iid]').filter(tr => of(grp).some(r => r.iid === tr.getAttribute('data-iid')))
+  const rowsOf = (iid: string) => $$('#inBody tr[data-iid]').filter(tr => tr.getAttribute('data-iid') === iid)
   /* EVERY NAME, A TO Z — NEVER "ACE +2" (owner D727, 10 Oct 26 — drawing A of the desktop list: "On the desktop Inputs
      list a shared input names everyone in it"). Until then the Name read the first callsign and "+2", the rest behind
      a hover. And its small print is "By Saber" — the card's own words (the design vet's V2, D729) — where it read
@@ -167,7 +182,7 @@ describe('the List: a shared input is one line', () => {
     const [a, b, c] = others()
     const g = await shared([a, b, c], LATER)
     await listUp()
-    const rows = rowsOf(g.grp)
+    const rows = rowsOf(g.iid)
     expect(rows).toHaveLength(1)
     const name = rows[0].querySelector('[data-label="Name"]')!
     expect(name.textContent).toBe(az([a, b, c]).map(cs).join(', '))
@@ -178,14 +193,14 @@ describe('the List: a shared input is one line', () => {
     const nine = others().slice(0, 9)
     const g = await shared(nine, LATER)
     await listUp()
-    const name = rowsOf(g.grp)[0].querySelector('[data-label="Name"]')!
+    const name = rowsOf(g.iid)[0].querySelector('[data-label="Name"]')!
     expect(name.textContent!.split(', ')).toEqual(az(nine).map(cs))
   })
   /* the row's own button since D718 (10 Oct 26) — the ✎ a shared row carried is gone with every row's pencil */
   it('its row opens the editor window on the entry — nothing is edited in place', async () => {
     const g = await shared(others().slice(0, 3), LATER)
     await listUp()
-    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
+    await click(rowsOf(g.iid)[0].querySelector('[data-testid="in-open"]'))
     expect($('#inBody tr.ined')).toBeNull()
     expect(tid('win-inputedit')!.textContent).toContain(`${cs(g.first)} +2`)
   })
@@ -197,19 +212,21 @@ describe('the List: a shared input is one line', () => {
     const [z, x, y] = az(others())
     const g = await shared([x, y], LATER)
     await listUp()
-    expect(rowsOf(g.grp)).toHaveLength(1)
-    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
+    expect(rowsOf(g.iid)).toHaveLength(1)
+    await click(rowsOf(g.iid)[0].querySelector('[data-testid="in-open"]'))
     await click($(`#inpEditPop .pp-pucks button[aria-label="${cs(z)}"]`))
     await click($('#inpEditSave'))
-    expect(of(g.grp), 'three records saved').toHaveLength(3)
-    const rows = rowsOf(g.grp)
+    /* "three records saved" until the one-rule build: ONE record now, of three people (D756) */
+    expect(INPUTS.filter((r: any) => r.iid === g.iid), 'still the one record').toHaveLength(1)
+    expect(inIt(g.iid).sort(), 'three people saved').toEqual([x, y, z].sort())
+    const rows = rowsOf(g.iid)
     expect(rows, 'one row for the one filing').toHaveLength(1)
     expect(rows[0].querySelector('[data-label="Name"]')!.textContent, 'every name, A to Z — his first').toBe(az([z, x, y]).map(cs).join(', '))
   })
   it('its row has no ✕ and no OIL chip of one man’s: deleting it, and its OIL answer, are in its window — for everyone', async () => {
     const g = await shared(others().slice(0, 3), { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
     await listUp()
-    const row = rowsOf(g.grp)[0]
+    const row = rowsOf(g.iid)[0]
     expect(row.querySelector('.rmx')).toBeNull()
     expect(row.querySelector('.roil')).toBeNull()
     expect(row.querySelector('[data-edit]'), 'nor a pencil: the row itself opens it').toBeNull()
@@ -222,7 +239,7 @@ describe('the List: a shared input is one line', () => {
     const g = await shared(others().slice(0, 3), LATER)
     await as('member')
     await listUp()
-    await click(rowsOf(g.grp)[0].querySelector('[data-testid="in-open"]'))
+    await click(rowsOf(g.iid)[0].querySelector('[data-testid="in-open"]'))
     expect(tid('inped-ro')).toBeTruthy()
   })
   it('filtered to ONE of its people the line still shows — as the whole entry', async () => {
@@ -233,7 +250,7 @@ describe('the List: a shared input is one line', () => {
     const sel = $('#inFPerson') as HTMLSelectElement
     expect(sel, 'the List’s person filter').toBeTruthy()
     await act(async () => { sel.value = last; sel.dispatchEvent(new Event('change', { bubbles: true })) })
-    const rows = rowsOf(g.grp)
+    const rows = rowsOf(g.iid)
     expect(rows).toHaveLength(1)
     expect(rows[0].querySelector('[data-label="Name"]')!.textContent, 'all three named, not only the one filtered to').toBe(az([a, b, c]).map(cs).join(', '))
   })
@@ -270,7 +287,9 @@ describe('the List’s "+ Input" files for several people too', () => {
   const plus = async () => { await listUp(); await click($('#inNew')); expect($(W), 'the new input’s window').toBeTruthy() }
   const form = () => $(`${W} [data-testid="pp"]`) as HTMLElement
   const pickDate = async () => { await click($('#inpEdCal [data-cal]')) }
-  it('an admin: the Person list, with "Several people" beside it — three picked, one Add, one shared input', async () => {
+  /* ONE RECORD FOR THE THREE (D756): the save used to add three records tied by one group id, each naming whoever
+     filed the entry (`grpBy`); it adds ONE, whose `by` is the filer and whose every entry says he put that man in */
+  it('an admin: the Person list, with "Several people" beside it — three picked, one Add, one shared input (D756: ONE record)', async () => {
     await plus()
     expect($('#inpEditPerson'), 'the one-person list').toBeTruthy()
     await choose('#inpEditType', 'Meeting')
@@ -282,10 +301,11 @@ describe('the List’s "+ Input" files for several people too', () => {
     const before = INPUTS.length, had = new Set(INPUTS.map((r: any) => r.iid))
     await click($('#inpEditSave'))
     const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
-    expect(INPUTS.length).toBe(before + 3)
-    expect(new Set(made.map(r => r.grp)).size).toBe(1)
-    expect(made.map(r => String(r.person)).sort()).toEqual([admin, b, c].sort())
-    expect(made.every(r => String(r.grpBy) === admin && r.type === 'Meeting')).toBe(true)
+    expect(INPUTS.length).toBe(before + 1)
+    expect(made).toHaveLength(1)
+    expect(idsOf(made[0]).map(String).sort()).toEqual([admin, b, c].sort())
+    expect(String(made[0].by) === admin && made[0].type === 'Meeting').toBe(true)
+    expect(made[0].people.every((e: any) => String(e.by) === admin), 'each man put in by whoever filed it').toBe(true)
     expect(said.join(' | ')).toContain('Input added for 3 people')
     await act(async () => { undo(); notify() })
     expect(INPUTS.length, 'one Undo').toBe(before)

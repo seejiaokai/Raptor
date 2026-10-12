@@ -1,6 +1,6 @@
 import { parseReportingLines, resolveReporting, flightBrief, scIntime, type ReportingLine } from './reporting'
 import { DAYS } from './data'
-import { INPUTS, inputsOn, inputOn, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
+import { INPUTS, inputLinesOn, inputReadPass, inputOn, inputCoversDate, inputFlags, inputDormant, inputSilent, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
@@ -59,6 +59,7 @@ export const inpShow=(inp:any,dt:any,xweek?:any,undeferred?:any)=>{
   if(filingActive()){
     const eff=inp.iid?fileAcc(dt,inp.iid,inp.acc):'r';
     if(eff==='r')return false;                    // dormant, or absent when this date was signed
+    if(inputSilent(inp))return false;             // cancelled or information only (D760) — on a face, as its issued copy says
     if(xweek||undeferred)return true;             // `undeferred`: the comment at the foot of this function
     if(!isUpchit(inp.type)&&!(eff==='g'&&!inp.allday))return true;   // not a timed accepted input → a live flag
     /* a timed accept speaks as its landed ground row: find that row on the SWAPPED DAYS
@@ -68,6 +69,9 @@ export const inpShow=(inp:any,dt:any,xweek?:any,undeferred?:any)=>{
     return di<0||(DAYS[di]||{}).dt!==dt;
   }
   if(inputDormant(inp))return false;
+  /* …NOR A CANCELLED OR INFORMATION-ONLY ONE (step 4 of the one-rule build — owner D760 reading 1), asked HERE because
+     the cross-week read below answers before inputFlags is ever reached */
+  if(inputSilent(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,
@@ -83,7 +87,10 @@ export const inpShow=(inp:any,dt:any,xweek?:any,undeferred?:any)=>{
      All day tick (never deferred: its row has no times — inputs.ts inputFlags) kept its voice. buildDay's `whole`
      list asks with this flag; day.input never does. */
   if(undeferred)return true;
-  const di=acceptedDay(inp);
+  /* `inp` is a LINE here — a frozen view of the request (inputs.ts inputLinesOn), never to be written. acceptedDay mints
+     an id on a request that has none; one with no id stands on no row (a row is tied to its request BY that id), so the
+     answer is the same and nothing is written — as the official branch above has always read it (FR-005). */
+  const di=inp.iid?acceptedDay(inp):-1;
   return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
 };
 /* DOES THIS INPUT COVER THE WHOLE OF ITS DAY? (owner, D605, 6 Oct 26). Asked of a day.input entry — the All day
@@ -499,7 +506,9 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       /* its own title rides along: a warning names an input as every screen does (inpLabel — [INPUT-OWN-TITLE]) */
       return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks,...(inp.title?{title:inp.title}:{})};};
-    const input:any[]=inputsOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);
+    /* LINES, not records ([ALL-AVAIL-AS-MEMBER] step 1 — inputs.ts inputLinesOn): one entry a NAMED person of each input
+       on the date, from a published face's own copies where the date is frozen; ALL AVAIL / ALL name nobody here. */
+    const input:any[]=inputLinesOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);
     /* THE WHOLE-DAY INPUTS OF THIS DAY — what a seat with no hours is judged against (D605). The same gate, the
        same frozen world on a published face, as day.input, asked UNDEFERRED (inpShow's last comment: a landed row
        cannot speak against a seat with no hours). Only THIS day's records: a neighbour's copy in the midnight tails
@@ -507,7 +516,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        request put on the Ground Programme must not flag its own man on its OWN row when that row has no times (an
        all-day request lands one by construction — inputs.ts inputFlags — and a timed one may have its hours cleared),
        or he would be "Training but tasked" on the row that IS his Training. Port-only, like `blank`. */
-    const whole:any[]=inputsOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek,true)).map((inp:any)=>({...mapInp(inp),iid:inp.iid})).filter(wholeDay);
+    const whole:any[]=inputLinesOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek,true)).map((inp:any)=>({...mapInp(inp),iid:inp.iid})).filter(wholeDay);
     blank.forEach((b:any)=>{b.abs=whole.filter((m:any)=>m.id===b.id&&!(b.src!=null&&m.iid===b.src));});
     /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
        in the same modality for all applicable rules based on timing"). A window that
@@ -521,7 +530,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        with no usable window stays uncheckable, exactly as its unshifted copy is.
        `nx` marks the entries as port-only for the parity excision (parity.test.ts)
        and the positive pin in the overnight suite. */
-    if(nextDt!=null)inputsOn(nextDt).filter((inp:any)=>inpShow(inp,nextDt)).forEach((inp:any)=>{
+    if(nextDt!=null)inputLinesOn(nextDt).filter((inp:any)=>inpShow(inp,nextDt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s+1440,e:m.e+1440,nx:true});
     });
@@ -543,7 +552,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        ordinary daytime sortie can never match one of these — its window never
        goes negative — so this adds no warning to any day that did not earn one.
        `pv` marks them port-only for the parity excision, as `nx` does. */
-    if(prevDt!=null)inputsOn(prevDt).filter((inp:any)=>inpShow(inp,prevDt)).forEach((inp:any)=>{
+    if(prevDt!=null)inputLinesOn(prevDt).filter((inp:any)=>inpShow(inp,prevDt)).forEach((inp:any)=>{
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s-1440,e:m.e-1440,pv:true});
     });
@@ -553,10 +562,12 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
    past DAYS' own ends (owner ask: continuous rule reading — see weekctx.ts).
    edgeDate hands them the adjacent week's Monday/Sunday date label instead,
    and the global (date-keyed) INPUTS array already carries every authored
-   week's rows, so the tail's date read (inputsOn — the live records, or a published date's frozen copies) just
+   week's rows, so the tail's date read (inputLinesOn — the live records' people, or a published date's frozen copies') just
    starts finding matches at the week edges it could never reach before. */
 export function collectEvents(){
-  return DAYS.map((d:any,di:any)=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1)));
+  /* each date is asked three times across the week — its own day, the day before's tail and the day after's — and read
+     once (inputs.ts inputReadPass); the build only reads */
+  return inputReadPass(()=>DAYS.map((d:any,di:any)=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1))));
 }
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
 export function waveInTime(w:any){

@@ -1,0 +1,113 @@
+{
+ "f1": [
+  {
+   "iid": "imqoidgg0ve6spy",
+   "type": "ATT C",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Tally"
+   ],
+   "acc": null
+  }
+ ],
+ "f2": [
+  {
+   "iid": "imqoidgg0dmxjqi",
+   "type": "ATT C",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Ranger"
+   ],
+   "acc": null
+  }
+ ],
+ "cards": [
+  "Placed by Saber for Ranger · 22 Jun 26, 09:00",
+  "Placed by Grit · 12 Jul 26, 14:42",
+  "Placed by Vector · 12 Jul 26, 08:00",
+  "Placed by Saber for Tally · 22 Jun 26, 09:00",
+  "Placed by Quill · 5 Jul 26, 10:20",
+  "Placed by Zenith · 20 Jun 26, 12:34"
+ ],
+ "text": false,
+ "groups": [
+  "Medical as of 13 Jul"
+ ],
+ "crewOrder": [
+  "ALL AVAIL",
+  "ALL",
+  "Comet",
+  "Havoc",
+  "Nomad",
+  "Reaper",
+  "Saint",
+  "Vandal",
+  "Ace",
+  "Anvil",
+  "Blade",
+  "Cinch",
+  "Cobra",
+  "Diesel",
+  "Drifter",
+  "Forge",
+  "Hunter",
+  "Outlaw",
+  "Piston",
+  "Recon",
+  "Ridge",
+  "Saber",
+  "Sidewinder",
+  "Talisman",
+  "Torch",
+  "Trident",
+  "Vapor",
+  "Warden",
+  "Wildcard",
+  "Gambit",
+  "Ranger",
+  "Cinder",
+  "Dash",
+  "Fable",
+  "Rune",
+  "Ryder",
+  "Basher",
+  "Cutter",
+  "Echo",
+  "Ghost",
+  "Hex",
+  "Ledger",
+  "Quill",
+  "Relay",
+  "Scope",
+  "Static",
+  "Wisp",
+  "Grit",
+  "Vector",
+  "Bolt",
+  "Jester",
+  "Kraken",
+  "Marlin",
+  "Otter",
+  "Pixel",
+  "Rebel",
+  "Scribe",
+  "Tally",
+  "Zenith",
+  "Zulu",
+  "Cotter",
+  "Ratchet",
+  "Widget"
+ ],
+ "crewIdx": {
+  "Ranger": 30,
+  "Tally": 57,
+  "Grit": 47,
+  "Vector": 48
+ }
+}

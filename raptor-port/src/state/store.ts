@@ -14,7 +14,6 @@
    --------------------------------------------------------------------------- */
 import { HOOKS } from '../engine/hooks'
 import { inputGate } from './inputgate-hook'
-import { groupSnapshot, groupsTouched, groupBreach } from './inputgroup'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
@@ -22,7 +21,7 @@ import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, placeholderProblem } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -34,6 +33,7 @@ import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrd
 import { qualColsLoad } from '../engine/qualcols'
 import { elogFlush, elogLoad, setElogDefer, setElogDoor, elogAdoptHeld } from '../engine/editlog'
 import { changesLoad } from './changes'
+import { noticeSeenLoad } from './noticeseen'
 import { registerChangeLines } from './changelines'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
@@ -92,10 +92,10 @@ export function notifyBoard() { BOARD_VERSION++; boardListeners.forEach(f => f()
    itself opens with, repeated here so the epilogue is skipped too. */
 export function writeSlot(key: any, id: any) {
   if (slotVal(key) === (id || '')) return     // no-op — nothing moved
-  /* a member's place on the one row of a shared input: the INPUT changes, through its door (owner D734 — ui/grouprow.ts,
-     lent through HOOKS as the typed box's door is). Its answer is this writer's: never on to setSlotVal, which
-     refuses such a place (the belt). */
-  if (HOOKS.groupRow && HOOKS.groupRow.write(key, id) !== 'none') return
+  /* a place on a row that came from an input: the INPUT changes, through its door (owner D755; first D734 —
+     ui/reqdoor.ts rowWrite, lent through HOOKS.inputRow as the typed box's door is). Its answer is this writer's: never
+     on to setSlotVal, which refuses such a place (the belt, engine/slots.ts inputSeatBar). */
+  if (HOOKS.inputRow && HOOKS.inputRow.write(key, id) !== 'none') return
   /* [ARCH-STACK] Step 2 (additive): the identical write, now inside commit() —
      enlist snapshot, run setSlotVal+afterSchedMutate exactly as before, emit the
      record-level change. The legacy histPush/persistAll/undo stack still run. */
@@ -104,7 +104,7 @@ export function writeSlot(key: any, id: any) {
 
 /* a people cell ("first free seat, else add one more") */
 export function writeFill(key: any, id: any) {
-  if (HOOKS.groupRow && HOOKS.groupRow.write(key, id) !== 'none') return     // a man on a shared input's row: the input's door (D734)
+  if (HOOKS.inputRow && HOOKS.inputRow.write(key, id) !== 'none') return     // someone on an input's row: the input's door (D755)
   commitSchedVoid(SCHED_TYPES.fill, () => { fillSlot(key, id); afterSchedMutate() })
 }
 
@@ -187,19 +187,11 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
      before, enforce after, inside this same command */
   const gate = inputGate()
   const gateSnap = gate ? gate.snapshot() : null
-  /* ONE MAN ONCE AN ENTRY, ONE FILER A GROUP — held HERE, at the write, beside the absence rules (the group input:
-     owner D654, D655; the build plan §3.13 "Records", Astra's finding G5). A group is one record per man tied by a
-     group id, and what the Inputs page shows as one shared input is worked out on read (state/inputgroup.ts). Two
-     doors that each look innocent — a man's record changed alone, the same man added to the entry again, his first
-     record changed back — would leave two inputs for one man where the screen shows one. So for every group this
-     write touched, no two live records may name the same man with the same shared fields, and every record carries
-     the group's one filer; a write that would break either is refused whole, with its sentence. The same check sits
-     in the Undo / Redo restore (state/sched-commit.ts). */
-  const grpSnap = groupSnapshot(INPUTS)
+  /* (WHAT ONE RECORD MAY HOLD is held at the save boundary, for every command — placeholderShapeViolation, below. The
+     check that kept a group of one-record-a-man honest — one man once an entry, one filer a group — went with the
+     group: the one-rule build, step 2 (g).) */
   try {
     fn(); if (gate) gate.apply(gateSnap)
-    const breach = groupBreach(INPUTS, groupsTouched(grpSnap, INPUTS))
-    if (breach) { HOOKS.toast(breach, 'warn'); throw new CmdRefused(breach) }
   }
   catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
   finally { if (suppressHist) HOOKS.histPush = push }
@@ -233,7 +225,7 @@ function batchResult(r: CommitResult): boolean {
 }
 
 /* AN INPUT FILED FOR "ALL AVAIL" / "ALL" KEEPS ITS SHAPE, WHOEVER SAVES IT AND BY WHATEVER DOOR ([INPUT-ALL-AVAIL]; owner
-   D700, D711, D712, D713 — 9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2). One of six
+   D700, D711, D712, D713 — 9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §3.2). One of seven (six until D778, 12 Oct 26 — Personal joined)
    kinds, one day, never in a group: engine/inputs.ts placeholderProblem is the one body, and every save door asks it
    first, with its sentence. THIS is the layer behind the doors — a HARD check on what a command really changed, kept
    beside the member's ownership check (wireStore below). It reads no role, so an admin is held as a member is (the
@@ -245,7 +237,10 @@ const PLACEHOLDER_SHAPE = 'placeholder-input-shape'
 export function placeholderShapeViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
-    const why = placeholderProblem(c.after)
+    /* …AND EVERYTHING ELSE ONE RECORD MAY HOLD (step 2 (a) of the one-rule build — engine/inputs.ts shapeProblem, which
+       asks the placeholder's rules first): at least one person, nobody twice, one placeholder at most, a medical
+       entry or a Personal input one person's. The same layer, for the same reason: whoever saves it, by whatever door. */
+    const why = shapeProblem(c.after)
     if (why) return why
   }
   return null
@@ -898,6 +893,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   /* THE CHANGE HISTORY ([DRAFT-PENDING], 28 Sep 26 — D336 (b)): saved, so it is loaded here with every other setting */
   elogLoad()
   changesLoad()
+  noticeSeenLoad()   // what each person has read of his bell's notices (state/noticeseen.ts)
   /* the lines the cell funnels never see — absences, the Leave War, Quals, a publish — from the command stream */
   registerChangeLines()
   /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the

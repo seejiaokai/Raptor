@@ -21,6 +21,7 @@
    it stands on is the button. */
 import { placedShort } from './placedline'
 import { useState } from 'react'
+import { idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
@@ -67,11 +68,17 @@ export function SansDay({ iso, hi, onClose }: {
 
   const line = (e: SansEntry & { why?: string }) => {
     const iid = String(e.r.iid)
+    /* ONE LINE A PERSON, AND AN INPUT MAY HOLD SEVERAL (owner D756 — one record with the list of its people; D658: an
+       admin files SANS availability for several at once): such a line's own address is the input's id and his, the way
+       an Unavailable row's is (engine/inputs.ts iuTail — `<iid>~<person>`), so two lines of one input never share a
+       key or a LATE note. An input of one person keeps the bare id. `data-popiid` stays the INPUT's id on every line:
+       a tap opens the input. */
+    const lid = idsOf(e.r).length > 1 ? `${iid}~${e.id}` : iid
     return (
       /* THE LINE'S BUTTON is the puck and the letters — what a keyboard and a screen reader meet. A press anywhere else
          on the line opens the commitment too (a finger aims at the line, not at a word in it); the LATE tag is a
          button of its own beside it, so it can never be a button inside a button. */
-      <div key={iid} className={'sd-row' + (hi && hi === e.id ? ' is-hi' : '')} data-testid={'sd-row-' + iid} data-popiid={iid}
+      <div key={lid} className={'sd-row' + (hi && hi === e.id ? ' is-hi' : '')} data-testid={'sd-row-' + lid} data-popiid={iid}
         onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) open(e.r) }}>
         <button type="button" className="sd-open" data-testid="sd-open" aria-label={`${PEOPLE[e.id] ? PEOPLE[e.id].cs : e.id}, ${e.letters || 'no activity'}, ${e.hours}`}
           onClick={() => open(e.r)}>
@@ -79,11 +86,11 @@ export function SansDay({ iso, hi, onClose }: {
           <span className="sd-letters" data-testid="sd-letters">{e.letters || '—'}</span>
         </button>
         {e.late ? (
-          <button type="button" className="sd-late" data-testid="sd-late" aria-expanded={lateOpen === iid} title={e.late}
-            onClick={() => setLateOpen(o => (o === iid ? null : iid))}>LATE</button>
+          <button type="button" className="sd-late" data-testid="sd-late" aria-expanded={lateOpen === lid} title={e.late}
+            onClick={() => setLateOpen(o => (o === lid ? null : lid))}>LATE</button>
         ) : <span />}
         <span className="sd-hours" data-testid="sd-hours">{e.hours}</span>
-        {e.late && lateOpen === iid && <span className="sd-latenote" data-testid="sd-latenote" role="status">{e.late}</span>}
+        {e.late && lateOpen === lid && <span className="sd-latenote" data-testid="sd-latenote" role="status">{e.late}</span>}
         {e.why && <span className="sd-why" data-testid="sd-why">{e.why}</span>}
         {/* the remark and the small print share one line, the small print short — as on the Inputs calendar's day
             (owner D701, 9 Oct 26: "B and sans day should follow"; InputsCal.tsx has the whole of it) */}

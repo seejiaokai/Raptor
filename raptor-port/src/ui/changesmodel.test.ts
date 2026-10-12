@@ -345,7 +345,14 @@ describe('the counts', () => {
 /* SEVERAL PEOPLE FILED TOGETHER ARE ONE ITEM (owner D663, 7 Oct 26: "in the changes window a group filing is one item —
    its kind and how many people, the names listed under it — not a line for each man"). The history still writes a line
    for each man (the plan §3.13: "To go out" finds a line by its man); each carries its record's group id, and "Group
-   by: Item" keys a grouped record by its group. "Group by: Who" is unchanged, and so is the day's count. */
+   by: Item" keys a grouped record by its group. "Group by: Who" is unchanged, and so is the day's count.
+
+   SINCE THE ONE-RULE BUILD (owner D756, 11 Oct 26 — an input is ONE record with the list of its people) THIS BLOCK, AND
+   THE ONE AFTER IT, PIN THE STORED HISTORY: lines written before that build carry a group id (`grp`), and the records
+   of an old group filing — one a man, each a one-person input now (D759 reading 10) — still carry theirs. Those lines
+   still gather under their filing's one item, read only, exactly as below; the fixtures are left as the history and
+   the store hold them, not rebuilt. An input filed for several people TODAY writes no group id: its one item, titled
+   with its people, is pinned in the last block of this file. */
 describe('a group filing is one item (D663)', () => {
   const T = '2026-07-14'
   /* the callsign each line names is the man's as the roster has it now (the window draws a renamed callsign live) */
@@ -446,5 +453,64 @@ describe('[INPUT-OWN-TITLE] a shared filing whose men now carry different titles
       INPUTS.push(rec('inC', 'bane'), rec('inD', 'stiff'))
       expect(itemOf(line, T).title).toBe('Input · Sports day · 2 people')
     } finally { INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed)) }
+  })
+})
+
+/* AN INPUT OF SEVERAL PEOPLE IS ONE ITEM BECAUSE IT IS ONE RECORD (the one-rule build, 12 Oct 26 — owner D756: "an input
+   is stored as ONE record with the list of its people"; D663: one item, not a line for each man; D721, D727: every name,
+   A to Z, the placeholder last). Its lines carry no group id — the history writes ONE line for the filing, leading with
+   everyone in it (state/changelines.ts) — so the item is the input's own, titled with its people; for an input of one
+   person the title is exactly what it always was, whichever shape the record is stored in. */
+describe('an input for several people is one item, titled with its people (the one record)', () => {
+  const T = '2026-07-14'
+  const cs = (pid: string) => String((PEOPLE as any)[pid]?.cs || pid)
+  const az = (ids: string[]) => ids.map(cs).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).join(', ')
+  const MEN = ['stiff', 'bane', 'casper', 'dj']          // the order they joined in — not the alphabet's
+  const withInputs = (recs: any[], fn: () => void) => {
+    const seed = JSON.stringify(INPUTS)
+    try { INPUTS.push(...recs); fn() } finally { INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed)) }
+  }
+  const shared = (iid: string, people: string[]) => ({ iid, type: 'Meeting', date: 'Jul 14', yr: 2026, allday: false, s: 600, e: 660, remarks: '', by: 'stiff', people: people.map(p => ({ p, by: 'stiff' })) })
+  const line = (iid: string, lead: string, lbl: string, extra: any = {}) => row({ key: '', iid, sub: lead, sect: 'abs', itype: 'Meeting', date: T, lbl, ...extra } as any)
+
+  it('four people filed together: ONE item — "Input · <everyone, A to Z> · Meeting" — and ONE line, the change said once', () => {
+    withInputs([shared('s1', MEN)], () => {
+      put(line('s1', 'stiff', `${az(MEN)} · Meeting added · 14 Jul`))
+      const groups = byItem(linesFor([T], () => false), false, [T])
+      expect(groups).toHaveLength(1)
+      expect(groups[0]!.key, 'the input’s own item — no group id is read').toContain(`${T}|I|s1`)
+      expect(groups[0]!.title).toBe(`Input · ${az(MEN)} · Meeting`)
+      expect(groups[0]!.entries).toHaveLength(1)
+      expect(groups[0]!.entries[0]!.text, 'the names are the heading’s; the line says the change').toBe('Meeting added · 14 Jul')
+    })
+  })
+  it('a person put in or taken out later is his own line under the item, and keeps his name', () => {
+    withInputs([shared('s1', MEN)], () => {
+      put(line('s1', 'stiff', `${az(MEN.slice(0, 3))} · Meeting added · 14 Jul`),
+        line('s1', 'dj', `${cs('dj')} · Meeting 14 Jul · added`, { one: 1 }))
+      const g = byItem(linesFor([T], () => false), false, [T])[0]!
+      expect(g.entries).toHaveLength(2)
+      expect(g.title, 'everyone it holds now').toBe(`Input · ${az(MEN)} · Meeting`)
+      expect(g.entries.map(e => e.text)).toContain(`${cs('dj')} · Meeting 14 Jul · added`)
+    })
+  })
+  it('one person: the title is exactly as it always read — a record in the OLD shape and one in the new alike', () => {
+    const old = { iid: 'o1', person: 'bane', type: 'LL', date: 'Jul 14', yr: 2026, allday: true }
+    const neu = { iid: 'o2', type: 'LL', date: 'Jul 14', yr: 2026, allday: true, people: [{ p: 'bane' }] }
+    withInputs([old, neu], () => {
+      const l1 = line('o1', 'bane', 'Ranger · LL added · 14 Jul', { itype: 'LL' }), l2 = line('o2', 'bane', 'Ranger · LL added · 14 Jul', { itype: 'LL' })
+      expect(itemOf(l1, T)).toMatchObject({ id: `${T}|I|o1`, title: 'Input · Ranger · LL' })
+      expect(itemOf(l2, T).title).toBe(itemOf(l1, T).title)
+      put(l1)
+      expect(byItem(linesFor([T], () => false), false, [T])[0]!.entries[0]!.text).toBe('LL added · 14 Jul')
+    })
+  })
+  it('named people and ALL AVAIL: the names first, the placeholder last', () => {
+    withInputs([shared('s2', ['allavail', 'stiff', 'bane'])], () => {
+      expect(itemOf(line('s2', 'allavail', 'x'), T).title).toBe(`Input · ${az(['stiff', 'bane'])}, ${cs('allavail')} · Meeting`)
+    })
+  })
+  it('gone, it keeps the name and the kind its line recorded', () => {
+    expect(itemOf(line('gone1', 'bane', 'Ranger, Saber · Meeting deleted · 14 Jul'), T)).toMatchObject({ id: `${T}|I|gone1`, title: 'Input · Ranger · Meeting' })
   })
 })

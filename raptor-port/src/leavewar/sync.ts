@@ -18,7 +18,8 @@
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
 import { useSyncExternalStore } from 'react'
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
+import { toPeople, pieceOf } from '../engine/inputown'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -169,7 +170,9 @@ let INDEX: AbsenceIndex = new Map()
  *  when anything did (the caller then repaints). */
 export function refreshAbsences(force = false): boolean {
   const byPerson = new Map<string, any[]>()
-  for (const row of INPUTS) {
+  /* one LINE a named person of each input ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputLines): the index is
+     one man's absences, so a leave filed for three is three men's, and an input for ALL AVAIL is nobody's */
+  for (const row of inputLines(INPUTS.filter((r: any) => r && warVisible(r.type)))) {   // only the kinds the war shows are copied — this runs on every repaint
     if (!row || !warVisible(row.type) || !row.person) continue
     const p = String(row.person)
     const list = byPerson.get(p)
@@ -221,7 +224,7 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
   const touched = new Set(ins.map(ch => String(ch.id)))
   const rows = INPUTS.filter((r: any) => r && !touched.has(String(r.iid)))
   for (const ch of ins) if (ch.op !== 'delete' && ch.after && typeof ch.after === 'object') rows.push(ch.after)
-  const ix = buildAbsenceIndex(rows.filter((r: any) => r && r.person && warVisible(r.type)))
+  const ix = buildAbsenceIndex(inputLines(rows).filter((r: any) => r && r.person && warVisible(r.type)))
   return (personId, date) => ix.get(personId)?.get(date) ?? []
 }
 
@@ -328,7 +331,8 @@ export const inDoor = (): boolean => DOOR > 0
 function warLeaveRow(it: { personId: string; date: string; iid: string }): any | null {
   const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
   if (!row || !row.lw || !isLeave(row.type)) return null
-  if (String(row.person) !== it.personId || !inputDates(row).includes(it.date)) return null
+  /* (a war-approved leave is one person's — read through the record's own list) */
+  if (String(onlyNamed(row) ?? '') !== it.personId || !inputDates(row).includes(it.date)) return null
   return row
 }
 function doorWrite(fn: () => void): boolean {
@@ -387,7 +391,9 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     inpId(row)
     /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
     stampPlaced(row)
-    return row
+    /* …and written with its list, as every input is since the one-rule build: a leave the war approves is an input of
+       one person (the plan §4.6) */
+    return toPeople(row)
   })
   let ok = false
   doorWrite(() => {
@@ -399,7 +405,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       /* …and only when the remark (without its date tail) matches, so an
          extension never swallows the run's own carried remark (Fable #7) */
       const body = (t: unknown) => withRemarksTail(t ?? '', null, null, 'none')
-      const same = (x: any) => x !== r && x.person === r.person && x.lw === r.lw && x.type === r.type &&
+      const same = (x: any) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
         !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x.remarks) === body(r.remarks)
       const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
       const after = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
@@ -427,7 +433,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
    split/shrink body (design §5.2 Splitting: the first part keeps the iid, a
    later part gets a fresh one carrying lw / remarks / docs / mod verbatim) */
 export function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
-  const out = { ...row }
+  /* its own people, never the list it was cut from (engine/inputown.ts pieceOf) */
+  const out = pieceOf(row)
   const { date, yr } = isoToInputDate(from)
   out.date = date
   out.yr = yr
@@ -810,10 +817,18 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
      members' switch is not asked, and the scheduler meets the unanswered question on the Inputs List and in OIL Earn.
      Asked of the one permissions module, for the person signed in. */
   const session = me()
-  const filedByHim = (row: any) => !!PEOPLE[row.person] && !!PEOPLE[row.person].special && row.by != null && String(row.by) === String(personId)
+  /* …AND AN INPUT HE FILED FOR SEVERAL PEOPLE (owner D762, 11 Oct 26 — "for an input with several people the OIL
+     question has one answer, for everyone in it: whoever filed it, or an admin, gives it; no man in it gives an answer
+     of his own"; step 2 (a) of the one-rule build). So "an input he answers for" is ONE test: its only person is he —
+     his own request, whoever filed it — or it holds anyone else (several people, ALL AVAIL) and he is its filer, while
+     he may still change it. A man who is merely IN a shared input is not asked. */
+  const filedByHim = (row: any) => (idsOf(row).length > 1 || isPlaceholderInput(row)) && row.by != null && String(row.by) === String(personId)
     && (session == null || String(session) === String(personId)) && mayEditInput(row)
+  const ownOf = (row: any) => idsOf(row).length === 1 && onlyNamed(row) === personId
+  /* the RECORDS, not the per-person lines (engine/inputs.ts): this asks who ANSWERS for an input — its own man, or
+     whoever filed it for ALL AVAIL, an input that has no line at all — and hands back the input's id for the editor */
   for (const row of INPUTS) {
-    if ((row.person !== personId && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue
+    if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue
     const answered = (row.oil ?? {}) as Record<string, number>
     const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
@@ -878,6 +893,29 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
     return isoOrd >= a && isoOrd <= b
   }
   const hits = (inp: any) => { const w = inpWin(inp); return !!w && w[0] < win[1] && win[0] < w[1] }
+  /* WHO IS KEPT OUT BY AN INPUT OF HIS OWN, worked out ONCE for the whole walk, not once a man ([ALL-AVAIL-AS-MEMBER]
+     step 1): the inputs that could keep anyone out of this window are picked first — every test below is about the
+     INPUT (its filing, its kind, its dates, its hours) — and then read as LINES, one a named person (engine/inputs.ts
+     inputLines): a man's own line is his commitment over the window, whoever else is in the input, and an input for
+     ALL AVAIL / ALL has no line and so keeps nobody out. */
+  const keptOut = new Set<any>(inputLines(INPUTS.filter((inp: any) => {
+    /* A REMOVED REQUEST IS SILENT EVERYWHERE (Astra, 21 Sep 26). The dormant
+       test used to sit on the `commit` branch only, so a Training or Meeting
+       the scheduler had turned down correctly stopped speaking — while a
+       LEAVE, MEDICAL or OVERSEAS DUTY he had turned down still kept its man
+       out of ALL AVAIL. He was then missing from the membership frozen into
+       the issued day and earned nothing, with nothing on screen to say why.
+       `inputDormant` has always defined every removed input as silent; this
+       is the one reader that applied it to half the types. */
+    if (!inp || inp.acc === 'r') return false
+    /* …and so is a CANCELLED or information-only one (step 4 of the one-rule build — owner D760: the scheduler's CX on
+       its row cancels the input itself): its people are free for whoever else needs them */
+    if (inputSilent(inp)) return false
+    const away = isAway(inp) && !canWork(inp.type)
+    const commit = isPersonal(inp.type)
+    if (!away && !commit) return false
+    return covers(inp) && hits(inp)
+  })).map((l: any) => l.person))
   for (const id of Object.keys(PEOPLE)) {
     const p: any = (PEOPLE as any)[id]
     if (!p || p.special || p.pers) continue
@@ -893,22 +931,7 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
     if (p.san && !(engaged && engaged.has(id))) continue
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
-    const blocked = INPUTS.some((inp: any) => {
-      /* A REMOVED REQUEST IS SILENT EVERYWHERE (Astra, 21 Sep 26). The dormant
-         test used to sit on the `commit` branch only, so a Training or Meeting
-         the scheduler had turned down correctly stopped speaking — while a
-         LEAVE, MEDICAL or OVERSEAS DUTY he had turned down still kept its man
-         out of ALL AVAIL. He was then missing from the membership frozen into
-         the issued day and earned nothing, with nothing on screen to say why.
-         `inputDormant` has always defined every removed input as silent; this
-         is the one reader that applied it to half the types. */
-      if (inp.person !== id || inp.acc === 'r') return false
-      const away = isAway(inp) && !canWork(inp.type)
-      const commit = isPersonal(inp.type)
-      if (!away && !commit) return false
-      return covers(inp) && hits(inp)
-    })
-    if (blocked) continue
+    if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: any) => w[0] < win[1] && win[0] < w[1])) continue
     out.push(id)
   }
@@ -1670,7 +1693,7 @@ export function deletePersonOnWar(txn: any, id: string, cutoff: string, frozen: 
 function pastOnWar(id: string, cutoff: string): boolean {
   const cut = +cutoff.replace(/-/g, '')
   return getState().wars.some(w => Object.keys(((w as any).recs || {})[id] || {}).some(d => d < cutoff))
-    || INPUTS.some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
+    || inputLines().some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
     /* an OIL award before the cutoff is his past on the war too — a ledger entry since [OIL-AWARD-IS-A-GRANT], so the
        war's records no longer carry it (Astra's plan read F03; D299: his past OIL stays, and so does his row) */
     || rawState().ledger.some(e => e.personId === id && isOilAward(e) && e.date < cutoff)

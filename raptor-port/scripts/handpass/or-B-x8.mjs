@@ -1,0 +1,12 @@
+import { launch, openWorld, fileInput, shot, rowIdx, inputOf, toWeek, openBoard } from './or-B-lib2.mjs'
+const browser = await launch()
+const { page: p } = await openWorld(browser)
+const f = await fileInput(p, { type: 'Meeting', people: ['Drifter', 'Hunter', 'Ranger'], from: '2026-07-17', to: '2026-07-17', timed: ['14:00', '15:00'], title: 'Gear brief' })
+await toWeek(p)
+console.log('badge', await p.locator('#roleBadge').innerText(), '| nav', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('nav button, .tabs button, #nav button, header button')].filter(e => e.offsetParent).map(e => e.textContent.trim()).slice(0, 20))))
+await p.locator('#roleBadge').click(); await p.waitForTimeout(800)
+console.log('after click: badge', await p.locator('#roleBadge').innerText(), 'page', await p.evaluate(() => window.CURPAGE), 'role', await p.evaluate(() => window.ROLE || window.raptorRole && 'fn'))
+console.log('nav', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('button')].filter(e => e.offsetParent && e.getBoundingClientRect().top < 60).map(e => e.id + ':' + e.textContent.trim()).slice(0, 25))))
+await shot(p, 'x8-member-view')
+console.log('toast', await p.evaluate(() => (document.getElementById('toastEl') || {}).innerText))
+await browser.close()

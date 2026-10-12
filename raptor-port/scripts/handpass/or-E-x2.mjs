@@ -1,0 +1,10 @@
+import { browser, PARTS, URL, sleep, mk } from './or-E-lib.mjs'
+const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, storageState: `${PARTS}/or-E-state3.json` })
+const page = await ctx.newPage()
+await page.clock.install({ time: new Date('2026-06-22T17:00:00') })
+await page.goto(URL)
+const w = mk(page, ctx, true, [], 'x')
+await w.signIn('ad', 'a')
+await w.openBoard(2)
+console.log(await page.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-arow.gr-frominput')].filter(e => e.offsetParent).map(e => e.outerHTML.slice(0, 2500))[0]))
+await browser.close()

@@ -3,7 +3,7 @@
    files its Input in the same command, and the two must not read as two changes). Runs in the Leave War project (fixed
    TZ), over the full wired sync, the way causal-envelope.test.ts does. */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, holds } from '../engine/inputs'
 import { ELOG, elogClear, rowTouches } from '../engine/editlog'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
@@ -142,7 +142,7 @@ describe('an approved leave changed on the Leave War', () => {
   const approvedIid = () => {
     const had = new Set(INPUTS.map((x: any) => x.iid))
     setBidState(pid, '2026-02-02', 'approved')
-    const inp: any = INPUTS.find((x: any) => x.person === pid && !had.has(x.iid))
+    const inp: any = INPUTS.find((x: any) => holds(x, pid) && !had.has(x.iid))
     expect(inp, 'the approval filed an input').toBeTruthy()
     elogClear()
     return String(inp.iid)
@@ -214,7 +214,7 @@ describe('one day of a three-day approved leave', () => {
     setCell(pid, '2026-02-03', 'LL'); setCell(pid, '2026-02-04', 'LL')
     const had = new Set(INPUTS.map((x: any) => x.iid))
     for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) setBidState(pid, d, 'approved')
-    const mine = INPUTS.filter((x: any) => x.person === pid && !had.has(x.iid))
+    const mine = INPUTS.filter((x: any) => holds(x, pid) && !had.has(x.iid))
     expect(mine, 'the three approvals are one Input').toHaveLength(1)
     elogClear()
     return String((mine[0] as any).iid)
@@ -315,7 +315,7 @@ describe('Astra R3', () => {
     setCell(pid, '2026-02-03', 'LL'); setCell(pid, '2026-02-04', 'LL')
     const had = new Set(INPUTS.map((x: any) => x.iid))
     for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) setBidState(pid, d, 'approved')
-    const mine = INPUTS.filter((x: any) => x.person === pid && !had.has(x.iid))
+    const mine = INPUTS.filter((x: any) => holds(x, pid) && !had.has(x.iid))
     elogClear()
     return String((mine[0] as any).iid)
   }

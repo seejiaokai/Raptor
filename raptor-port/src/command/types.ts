@@ -34,6 +34,8 @@ export type LogicalCollection =
   | 'sched.issuance' | 'sched.retraction'
   // the other scheduler-side stores
   | 'inputs' | 'plan' | 'people' | 'settings' | 'insights.role'
+  // the bell's notices — one record a person told that an input he is in was changed (state/notices.ts)
+  | 'notices'
   // off-week session memory (the weekstash) — one record per stashed week, so a
   // protected-week clear that drops it rolls back atomically ([CMDL-FINISH] §6)
   | 'weekstash'

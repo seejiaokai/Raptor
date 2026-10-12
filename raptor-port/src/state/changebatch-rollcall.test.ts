@@ -45,6 +45,8 @@ import { useStorageImpl } from '../tracker/storage.js'
 import * as trk from '../tracker/app/core.js'
 import { PEOPLE } from '../engine/people'
 import { PERMS, T } from './perms'
+import { NOTICES } from './notices'
+import { unreadFor, markAllNoticesRead } from './noticeseen'
 
 let be: MemoryBackend
 let wb: Whiteboard
@@ -93,6 +95,10 @@ describe('the roll-call: every save after boot carries its batch', () => {
     schedWrite(SCHED_TYPES.text, () => { txtSet('dn:0.0', 'ROLL-CALL NOTE'); markEdit() })
     /* a request, the roster, the planning calendar */
     expect(writeInputs(() => { INPUTS.push({ person: 'dj', date: 'Jul 14', allday: true, type: 'LL', remarks: 'ROLL', mod: '2026-07-01' }) })).toBe(true)
+    /* …and one for the member who signs in below, so his bell has something to read (the bell's notices — the one-rule
+       build's step 7, 12 Oct 26; owner D755 (3), D769): a request someone ELSE files for a man writes his notice in the
+       same group — a kind of writer this battery did not have before, checked below */
+    expect(writeInputs(() => { INPUTS.push({ person: 'bane', date: 'Aug 4', allday: false, s: 540, e: 600, type: 'Meeting', remarks: 'ROLL FOR THE MEMBER', mod: '2026-07-01' }) })).toBe(true)
     expect(updatePersonField('dj', { remarks: 'roll-call' } as any)).toBeNull()
     expect(addPlanPuck('2026-07-15', 'ROLL PUCK')).not.toBe(false)
     /* a setting, an account, each person's seen, the admins' bell */
@@ -144,6 +150,11 @@ describe('the roll-call: every save after boot carries its batch', () => {
       expect([...b.items].sort(byKey)).toEqual(itemsOf(g).sort(byKey))
     }
     expect(bare, 'groups saved after boot with no batch, outside the named exempt writers').toEqual([])
+    /* D755 (3): the battery DID drive the bell's notice writer — a notice row rode the request's own group, named in
+       that group's batch like every other row (the loop above held it to the batch, row for row) */
+    const withNotice = after.filter(({ g }) => itemsOf(g).some(i => i.table === 'Notice'))
+    expect(withNotice.length, 'a filing for another man saved his notice').toBeGreaterThanOrEqual(2)
+    for (const { g } of withNotice) expect(itemsOf(g).some(i => i.table === 'Input'), 'a notice never travels without its input').toBe(true)
   })
 
   /* THE FINAL READ'S F1 (Fable, 30 Sep 26): every row a MEMBER's own actions save must be one his role may write in the
@@ -159,10 +170,24 @@ describe('the roll-call: every save after boot carries its batch', () => {
     expect(writeInputs(() => { INPUTS.push({ person: me, date: 'Aug 3', allday: true, type: 'LL', remarks: 'MEMBER OWN', mod: '2026-07-01' }) })).toBe(true)
     expect(updatePersonField(me, { remarks: 'member own' } as any)).toBeNull()
     markSeen(ELOG.rows)
+    /* THE BELL'S NOTICES ARE HIS OWN ACTIONS TOO (the one-rule build's step 7, 12 Oct 26 — owner D755 (3), D769; §11's
+       `Notice` and `NoticeSeen`): he reads what the admin's filing told him — his own read record — and he files a
+       duty for another man (D655), whose notice rides his own command; then his own Undo takes that notice away again.
+       Each of those rows must be one §11 lets a member write. */
+    expect(unreadFor(me), 'the roll-call above filed one for him').toBeGreaterThan(0)
+    expect(markAllNoticesRead()).toBe(true)
+    const nBefore = NOTICES.length
+    expect(writeInputs(() => { INPUTS.push({ person: 'dj', by: me, at: Date.now(), date: 'Aug 5', allday: false, s: 540, e: 600, type: 'Duty', remarks: 'MEMBER FOR DJ', mod: '2026-07-01' }) }), 'a duty he files for another man').toBe(true)
+    expect(NOTICES.length, 'that man is told, inside the member\'s own command').toBe(nBefore + 1)
+    expect(globalUndo().ok, 'his own Undo').toBe(true)
+    expect(NOTICES.length, 'and the notice went with it').toBe(nBefore)
     setRole('member')
     const day = String(getState().period.bidFrom || getState().period.start)
     setCell(me, day, 'LL')
     await flushAll()
+    /* (the three kinds of row the bell added were really saved — else the check below would hold them to nothing) */
+    const saved = groups.slice(from).flatMap(({ g }) => itemsOf(g)).map(i => `${i.table} ${i.op}`)
+    for (const want of ['NoticeSeen put', 'Notice put', 'Notice delete']) expect(saved, want).toContain(want)
     const permKey = (table: string) => Object.keys(PERMS).find(k => k.split(', ').includes(table))
       ?? (table === 'ScheduleDay' || table === 'ScheduleWeek' ? T.sched : table === 'AmendmentRetraction' ? T.amendment : undefined)
     const refused: string[] = []
@@ -270,5 +295,12 @@ describe('the stand-in reader (phase 4.2): a second client catches up from the c
     /* and the whole of what it holds is the first client's store, row for row */
     const now = wb.snapshot()
     for (const c of ['inputs', 'weeks', 'leavewar', 'people', 'plan'] as const) expect(reader.view[c]).toEqual(now[c])
+    /* …AND THE BELL'S NOTICES (the one-rule build's step 7, 12 Oct 26 — owner D755 (3)): the request above was filed for
+       another man, so its group carried his notice; the reader — who may BE that man, on his own phone — gets it from
+       the change log like every other row, or his bell would stay dark until a reload */
+    const nid = Object.keys(now.notices).find(k => JSON.parse(now.notices[k]!).iid === iid)
+    expect(nid, 'the filing told the man it was for').toBeTruthy()
+    expect(reader.view.notices[nid!]).toBe(wb.get('notices', nid!))
+    expect(reader.view.notices).toEqual(now.notices)
   })
 })

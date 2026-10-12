@@ -24,14 +24,19 @@
    version change its own count the moment somebody filed leave — the one thing
    D44 forbids. So a block says whether it records membership at all; one that
    does not says "membership not recorded" and nothing is invented for it. */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS } from './inputs'
+import { INPUTS, inpId, idsOf } from './inputs'
 import { HOOKS } from './hooks'
 import { SCHED } from './publish'
 import { ensureRowIds } from './rowids'
 import { rowItemKey, inputItemKey } from './oil'
 import { oilEvidence, oilSentOf, type OilEvidence } from './oilev'
+import { initStore } from '../state/store'
+import { setSession, setMe, DEFAULT_ME } from '../state/auth'
+import { commitInput, draftOf } from '../ui/inputedit'
+import { rowPut, rowTake } from '../ui/reqdoor'
+import { setOilAsk, setInpEdit } from '../ui/pops'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -146,12 +151,91 @@ describe('the issued day holds its people still (D44)', () => {
   })
 })
 
-describe('a request row\'s crowd is written down the same way (step 6)', () => {
-  it('on a weekday as well as a weekend', () => {
-    INPUTS.unshift({ iid: 'rq9', person: 'bane', type: 'Training', date: 'Jul 14', yr: 2026,
-      acc: 'g', allday: false, s: 9 * 60, e: 17 * 60, remarks: '', mod: 'now', oil: {} })
-    ;(DAYS[TUE] as any).ground = [{ prog: 'Training', str: '0900', end: '1700', who: 'bane', src: 'rq9', more: ['allavail'] }]
+/* SINCE THE ONE-RULE BUILD THE PLACEHOLDER ON A REQUEST'S ROW IS ONE OF THE INPUT'S OWN PEOPLE (owner D755, 11 Oct 26:
+   "a row that came from an input IS the input: whoever stands on it … is in the input"; D753), so it is the INPUT that
+   is asked, not its row (oilev.ts oilEvidence) — and a man NAMED in the input is never in its crowd: he is there as
+   himself (D762; the plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.7). In this describe the record is put
+   straight into INPUTS — in step 2 of that build the doors refused a placeholder beside named people, and a fixture
+   was the only way to have one. Step 3 (12 Oct 26 — owner D750, D753, D755) opened the doors; the describe after it
+   writes the same membership down with the hands themselves. */
+describe('an input\'s crowd is written down the same way — under the input\'s own address (step 6; D753, D755)', () => {
+  const filed = (ids: string[]) => {
+    INPUTS.unshift({ iid: 'rq9', type: 'Training', date: 'Jul 14', yr: 2026, acc: 'g', allday: false, s: 9 * 60, e: 17 * 60,
+      remarks: '', mod: 'now', oil: {}, people: ids.map(p => ({ p })) })
+    ;(DAYS[TUE] as any).ground = [{ prog: 'TRAINING', str: '0900', end: '1700', who: ids[0], more: ids.slice(1), src: 'rq9' }]
     ensureRowIds(DAYS)
+  }
+
+  it('on a weekday as well as a weekend — an input for ALL AVAIL alone: everyone who is free', () => {
+    filed(['allavail'])
     expect(oilEvidence(TUE).sent[inputItemKey('rq9')]).toEqual(CROWD)
+  })
+
+  it('…and beside a named man: he is in the input as himself, never in its crowd', () => {
+    filed(['bane', 'allavail'])
+    expect(oilEvidence(TUE).sent[inputItemKey('rq9')]).toEqual(['stiff', 'plasma'])
+  })
+
+  /* (second pass, with step 3) ALL reads as ALL AVAIL does, and the order they joined in is no part of it */
+  it('ALL beside a named man, and the placeholder first of the list: the same crowd, without him', () => {
+    filed(['bane', 'all'])
+    expect(oilEvidence(TUE).sent[inputItemKey('rq9')]).toEqual(['stiff', 'plasma'])
+    INPUTS[0].people = [{ p: 'all' }, { p: 'bane' }]
+    expect(oilEvidence(TUE).sent[inputItemKey('rq9')]).toEqual(['stiff', 'plasma'])
+  })
+})
+
+/* THE SAME MEMBERSHIP, WRITTEN DOWN AS THE DOORS CHANGE WHO IS IN THE INPUT (step 3 of the one-rule build, 12 Oct 26 —
+   owner D750, D753, D755, D757; the plan §4.4, §4.7). On a WEEKDAY, deliberately: the count is a scheduling fact, not
+   a credit one (D27) — nothing here earns anybody anything, and who stands behind the puck is still written down at
+   every hand. The input is filed by its one writer (ui/inputedit.tsx commitInput) and changed by its row's door
+   (ui/reqdoor.ts); nothing is written onto the row. Kept last: the store is wired here. */
+describe('who is behind an input\'s placeholder follows every hand on its row — a weekday too (step 3; D27, D753, D755, D757)', () => {
+  const toast = HOOKS.toast
+  beforeAll(() => { initStore() })
+  beforeEach(() => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff'); HOOKS.toast = () => {} })
+  afterEach(() => { HOOKS.toast = toast; setOilAsk(null); setInpEdit(null); setSession(null); setMe(DEFAULT_ME) })
+  const file = (ppl: string[]): any => {
+    const had = new Set((INPUTS as any[]).map(r => String(inpId(r))))
+    expect(commitInput(null, draftOf({ person: ppl[0], type: 'Training', date: 'Jul 14', yr: 2026, allday: false, s: 9 * 60, e: 17 * 60, remarks: '' }), ppl), 'filed').toBe(true)
+    const made = (INPUTS as any[]).filter(r => !had.has(String(inpId(r))))
+    expect(made, 'ONE record').toHaveLength(1)
+    return made[0]
+  }
+  const rowOf = (r: any) => ((DAYS[TUE] as any).ground || []).find((g: any) => g && String(g.src) === String(inpId(r)))
+  const place = (r: any, who?: string) => {
+    const row = rowOf(r), ri = ((DAYS[TUE] as any).ground || []).indexOf(row)
+    if (who == null) return `g:${TUE}.${ri}.+`
+    return String(row.who) === who ? `g:${TUE}.${ri}` : `g:${TUE}.${ri}.x${(row.more || []).indexOf(who)}`
+  }
+  const crowd = (r: any) => oilEvidence(TUE).sent[inputItemKey(String(inpId(r)))]
+
+  it('filed for a named man alone: nothing is written down — ALL AVAIL dropped on its row: everyone free but him', () => {
+    const r = file(['bane'])
+    expect(crowd(r), 'no puck, no entry — an ordinary day is unchanged').toBeUndefined()
+    expect(rowPut(place(r), 'allavail')).toBe('done')
+    expect(idsOf(r).map(String)).toEqual(['bane', 'allavail'])
+    expect(crowd(r), 'he is in the input as himself, never in its crowd').toEqual(['stiff', 'plasma'])
+    expect(oilEvidence(TUE).earns, 'and a Tuesday earns nobody anything').toBe(false)
+  })
+
+  it('a man of the crowd put on by name leaves it; the named man taken off joins it (D757 step 4: "the count rises by one"); ALL AVAIL taken off: no entry', () => {
+    const r = file(['bane', 'allavail'])
+    expect(crowd(r)).toEqual(['stiff', 'plasma'])
+    expect(rowPut(place(r), 'stiff')).toBe('done')
+    expect(crowd(r), 'stiff is named in it now').toEqual(['plasma'])
+    expect(rowTake(place(r, 'bane'))).toBe('done')
+    expect(idsOf(r).map(String), 'ALL AVAIL stays when anyone leaves').toEqual(['allavail', 'stiff'])
+    expect(crowd(r), 'bane is free now: one of the crowd').toEqual(['bane', 'plasma'])
+    expect(rowTake(place(r, 'allavail'))).toBe('done')
+    expect(crowd(r), 'no placeholder in the input: nothing is written down for it').toBeUndefined()
+  })
+
+  it('ONE body still answers for it: resolved while the puck is in the input, none once it has left', () => {
+    const r = file(['bane', 'allavail'])
+    const item = inputItemKey(String(inpId(r)))
+    expect(oilSentOf(oilEvidence(TUE), item)).toMatchObject({ people: ['stiff', 'plasma'], state: 'resolved' })
+    expect(rowTake(place(r, 'allavail'))).toBe('done')
+    expect(oilSentOf(oilEvidence(TUE), item).state).toBe('none')
   })
 })

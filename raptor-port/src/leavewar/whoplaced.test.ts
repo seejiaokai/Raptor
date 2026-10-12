@@ -12,7 +12,7 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { INPUTS, dateOrd, nowStamp } from '../engine/inputs'
+import { INPUTS, dateOrd, holds, idsOf, nowStamp, peopleOf } from '../engine/inputs'
 import { medClashes } from '../engine/medical'
 import { ELOG, elogClear } from '../engine/editlog'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputs, writeInputsBatch } from '../state/store'
@@ -21,7 +21,7 @@ import { deletePerson } from '../state/person-delete'
 import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
-import { commitNewInput, commitInputEdit, draftOf, setInpField, medKeptSegments, mintMedSegments, ordISO } from '../ui/inputedit'
+import { commitInput, commitNewInput, commitInputEdit, draftOf, setInpField, medKeptSegments, mintMedSegments, ordISO } from '../ui/inputedit'
 import { advanceStage, clearCells, getState, initStore as lwInitStore, lwHistInit, moveCells, setBidStates, setCell, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -43,10 +43,14 @@ const rocky = () => signInAs('hex')            // a member — person `rocky`
 const casper = () => { resetSession({ user: 'acoutlaw', role: 'admin', pid: 'casper', name: 'outlaw', acct: 'admin' }); raptorNotify() }
 
 const stamps = (r: any) => ({ by: r.by, at: r.at, modBy: r.modBy, modAt: r.modAt })
+/* …and who put each person IN the input, and when — his own entry of its list (the one-rule build, D756: an input is
+   ONE record with the list of its people). For an input of one person it says what the filing says. */
+const entries = (r: any) => peopleOf(r).map((e: any) => ({ p: e.p, by: e.by, at: e.at }))
 const placed = (who: string, t: number) => ({ by: who, at: t, modBy: who, modAt: t })
 const span = (r: any) => `${r.date}-${r.endDate ?? r.date}`
-/* a man's inputs of one kind in the test's own months (the demo's own rows are in July) */
-const mine = (p: string, type: string, mon = 'Feb') => INPUTS.filter((r: any) => r.person === p && r.type === type && String(r.date).startsWith(mon))
+/* a man's inputs of one kind in the test's own months (the demo's own rows are in July) — the inputs he is IN, read
+   through the one reader of who is in an input (engine/inputs.ts holds), never a record's `person` */
+const mine = (p: string, type: string, mon = 'Feb') => INPUTS.filter((r: any) => holds(r, p) && r.type === type && String(r.date).startsWith(mon))
   .sort((a: any, b: any) => (dateOrd(a.date, a.yr) as number) - (dateOrd(b.date, b.yr) as number))
 const one = (p: string, type: string, mon = 'Feb') => { const l = mine(p, type, mon); expect(l, `${p} has one ${type}`).toHaveLength(1); return l[0] }
 /* the editor's own save for a new input */
@@ -92,6 +96,7 @@ describe('the editor (§3.8 rows 1 and 3)', () => {
     expect(add('bane', 'Meeting', '2026-02-10')).toBe(true)
     const r = one('bane', 'Meeting')
     expect(stamps(r)).toEqual(placed('bane', t1))
+    expect(entries(r), 'his entry of its list says who put him in, and when').toEqual([{ p: 'bane', by: 'bane', at: t1 }])
     expect(r.mod, 'the late rule\'s date is written as before').toBe(nowStamp())
   })
 
@@ -99,6 +104,7 @@ describe('the editor (§3.8 rows 1 and 3)', () => {
     const t1 = T(9)
     expect(add('bane', 'Meeting', '2026-02-10')).toBe(true)
     expect(stamps(one('bane', 'Meeting'))).toEqual(placed('stiff', t1))
+    expect(entries(one('bane', 'Meeting')), 'put in by the admin too').toEqual([{ p: 'bane', by: 'stiff', at: t1 }])
   })
 
   it('a CHANGE keeps who placed it and names who changed it, now', () => {
@@ -110,6 +116,7 @@ describe('the editor (§3.8 rows 1 and 3)', () => {
     const t2 = T(10)
     expect(commitInputEdit(r, { ...draftOf(r), remarks: 'moved to the briefing room' })).toBe(true)
     expect(stamps(r)).toEqual({ by: 'bane', at: t1, modBy: 'stiff', modAt: t2 })
+    expect(entries(r), 'a change re-stamps no entry of its list').toEqual([{ p: 'bane', by: 'bane', at: t1 }])
     expect(r.mod).toBe(nowStamp())
   })
 
@@ -182,6 +189,7 @@ describe('the Leave War (§3.8 rows 5, 6 and 7)', () => {
     const t2 = T(10)
     setBidStates(cells('ammo', '2026-02-10'), 'approved')
     expect(stamps(one('ammo', 'LL'))).toEqual(placed('stiff', t2))
+    expect(entries(one('ammo', 'LL')), 'written with its people: the one man, put in by the approver').toEqual([{ p: 'ammo', by: 'stiff', at: t2 }])
   })
 
   it('a leave EXTENDED by approving the next day: one record, placed by that approver, now', () => {
@@ -194,6 +202,7 @@ describe('the Leave War (§3.8 rows 5, 6 and 7)', () => {
     const r = one('ammo', 'LL')
     expect({ iid: r.iid, span: span(r) }).toEqual({ iid, span: 'Feb 10-Feb 11' })
     expect(stamps(r)).toEqual(placed('casper', t3))
+    expect(idsOf(r)).toEqual(['ammo'])
   })
 
   it('a leave MOVED on the war is the same leave: who placed it is kept, changed by who moved it', () => {
@@ -239,6 +248,41 @@ describe('the Leave War (§3.8 rows 5, 6 and 7)', () => {
     expect(pieces.map(span)).toEqual(['Feb 10-Feb 11', 'Feb 13-Feb 14'])
     for (const p of pieces) expect(stamps(p), span(p)).toEqual({ by: 'stiff', at: t1, modBy: 'rocky', modAt: t2 })
     expect(stamps(one('rocky', 'ATT C'))).toEqual(placed('rocky', t2))
+  })
+
+  /* THE SAME ROW, FOR A LEAVE FILED FOR SEVERAL (the one-rule build — owner D756; D759 reading 4: "a change to one man's
+     part alone gives him an input of his own"; the plan 2026-10-11-one-rule-plan.md §4.6): sick leave cuts ONE man's
+     days, so he is first given a leave of his own — every field and who placed it copied — and that is what is cut.
+     The leave the others share is theirs as it was: the Leave War goes on showing each of them the whole of it. */
+  it('…of a leave filed for SEVERAL: the sick man is given a leave of his own first, cut as above — the others\' leave is the same record, its days untouched', () => {
+    const t1 = T(9)
+    expect(commitInput(null, { type: 'LL', allday: true, half: '', start: '2026-02-10', end: '2026-02-14', sTime: '06:00', eTime: '18:00', remarks: '', sans: null, docIds: [] }, ['rocky', 'ammo', 'bane'])).toBe(true)
+    const iid = one('ammo', 'LL').iid
+    expect(idsOf(one('ammo', 'LL'))).toEqual(['rocky', 'ammo', 'bane'])
+    rocky()
+    const t2 = T(10)
+    expect(add('rocky', 'ATT C', '2026-02-12')).toBe(true)
+    const his = mine('rocky', 'LL')
+    expect(his.map(span), 'his own leave, cut round the sick day').toEqual(['Feb 10-Feb 11', 'Feb 13-Feb 14'])
+    for (const p of his) {
+      expect(idsOf(p), span(p)).toEqual(['rocky'])
+      expect(p.iid, 'a record of his own').not.toBe(iid)
+      expect(stamps(p), span(p)).toEqual({ by: 'stiff', at: t1, modBy: 'rocky', modAt: t2 })
+      expect(entries(p), span(p)).toEqual([{ p: 'rocky', by: 'stiff', at: t1 }])
+    }
+    const theirs = one('ammo', 'LL')
+    expect(theirs.iid, 'the others\' leave is the record it was').toBe(iid)
+    expect(idsOf(theirs)).toEqual(['ammo', 'bane'])
+    expect(span(theirs)).toBe('Feb 10-Feb 14')
+    expect({ by: theirs.by, at: theirs.at }).toEqual({ by: 'stiff', at: t1 })
+    expect(entries(theirs)).toEqual([{ p: 'ammo', by: 'stiff', at: t1 }, { p: 'bane', by: 'stiff', at: t1 }])
+    expect(stamps(one('rocky', 'ATT C'))).toEqual(placed('rocky', t2))
+    /* one Undo of the medical puts the one shared leave back as it was filed */
+    T(15); expect(globalUndo().ok).toBe(true)
+    expect(mine('rocky', 'ATT C')).toHaveLength(0)
+    const back = one('rocky', 'LL')
+    expect({ iid: back.iid, ids: idsOf(back), span: span(back) }).toEqual({ iid, ids: ['rocky', 'ammo', 'bane'], span: 'Feb 10-Feb 14' })
+    expect(stamps(back)).toEqual(placed('stiff', t1))
   })
 })
 
@@ -321,7 +365,7 @@ describe('Undo and Redo put a record back as recorded — never stamped as a new
 
 describe('…and so for every door: Undo reads as before it, Redo as it left things — at a later hour, with no new stamp', () => {
   /* every record of a man in the test's month, with its stamps — what Undo must put back, to the letter */
-  const snap = (p: string) => JSON.stringify(INPUTS.filter((r: any) => r.person === p && String(r.date).startsWith('Feb'))
+  const snap = (p: string) => JSON.stringify(INPUTS.filter((r: any) => holds(r, p) && String(r.date).startsWith('Feb'))
     .map((r: any) => ({ iid: r.iid, type: r.type, span: span(r), ...stamps(r) })).sort((a: any, b: any) => (a.iid < b.iid ? -1 : 1)))
   const roundTrip = (p: string, door: () => void) => {
     const before = snap(p)

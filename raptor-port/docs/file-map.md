@@ -1,5 +1,166 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` — the one-rule job's check, its last round (12 Oct 26, evening): the Opus trial read's eight
+real faults fixed, `[PERSONAL-SEVERAL]` (D776, D778) and `[OIL-ASK-LIST-SEVERAL]` (D777) built. No new source file.
+**New tests:** `src/leavewar/trialread.test.ts` (the read's claims 2, 4, 5 and 9, through the real doors) and
+`src/leavewar/personalseveral.test.ts` (a Personal input for several, by an admin and by a member; no OIL question).
+**Changed:** `src/engine/inputown.ts` gains `pieceOf` (a piece of a cut record takes its own list of people — used by
+`src/leavewar/sync.ts sliceInput` and `src/ui/inputedit.tsx applyMedPlan` / `mintMedSegments`); `src/engine/inputs.ts`
+— `shapeProblem` loses the Personal rule and gains `LW_OWN` (a leave the Leave War approved is one person's),
+`PLACEHOLDER_KINDS` takes Personal, `frozenInputMatch` 3b pairs only a real piece (`personalKind`, `PERSONAL_OWN` are
+removed); `src/engine/overlay.ts` gains `asIssuedOrder` and `issuedRowOf`, and the row's re-make looks at the row
+itself as well as its mark; `src/engine/slots.ts acceptInput` (the issued order); `src/engine/publish.ts` (the people
+step gives a swapped-out man's seat back as its own change); `src/engine/oilev.ts` (the membership-only pass for a
+Personal input's ALL AVAIL, back); `src/state/inputstamp.ts` gains `stampWho`; `src/state/person-delete.ts` (who filed
+an input passes on with a deleted filer); `src/ui/inputedit.tsx` gains `ownPartSave`, `oilSignDay`, `oilSignNote`, and
+`reassignInput` passes "By" on; `src/ui/reqdoor.ts rowPut` (the Personal refusal withdrawn); `src/ui/InputCard.tsx`
+(the "OIL?" tag — the `oil` prop), `src/ui/InputsCal.tsx` and `src/ui/InputsPage.tsx` (the tag on both cards; the
+desktop row's "OIL?" button for an input of several); styles `scheduler/25-inputs-calendar.css` (`.icard .oiltag`) and
+`scheduler/18-oil-board.css` (`.roil.ask` written as what it renders). The IT flow guide's sources lose the Inputs
+export shot (`scripts/itflow/j/export.mjs`, `content.mjs` — D773; the deck itself is re-shot only on his word, D403).
+**And after Fable's third read and the second re-walk:** `src/ui/pendlist.ts inputWords` and `frozenInputMatch` 3b ask the filer of
+either copy; `asIssuedOrder` keeps those who went out with the day first, newcomers after; `src/ui/interactions.ts` (Accept
+says who comes off an adopted row); `src/ui/InputsPage.tsx reviseOil` heads the question for everyone (`inputWho`);
+`src/state/perms.ts INPUT_FILER_NOTE` says seven kinds. Its records: `docs/handpass/2026-10-12-one-rule.md` §10b–§10h; the
+re-walks' briefs `docs/superpowers/briefs/2026-10-12-one-rule-rewalk2-brief.md`, `…-rewalk3-brief.md`; Fable's third
+read's `…-code-read-3.md`.
+
+`[ALL-AVAIL-AS-MEMBER]` step 7 (12 Oct 26 — the bell's notices; D755 (3), D760, D769): **NEW** `src/state/notices.ts`
+(the saved record a person told, `noticePass` — who is told and what, worked out from an input before and after a
+command — and the list's words) and `src/state/noticeseen.ts` (what each person has read, his own record; the one
+command `notices.seen`). `src/state/sched-commit.ts` gains `tellPass` (the scheduler store's shared end calls it) and
+the `notices` record kind; `src/state/history.ts` carries them in the snapshot (`nt`); `src/state/persist.ts` saves and
+reads them one row each; `src/ui/topbits.tsx` gains `BellList`, `openNotice`, `bellListOpen` / `closeBellList` and the
+bell's new tap; `src/ui/Shell.tsx` mounts the list once; styles `scheduler/02-shell.css` (`.bell-list`, `.bl-*`). The
+record kind is also named in `src/command/types.ts`, `src/command/registry.ts`, `src/storage/backend.ts`,
+`src/storage/tables.ts`, `src/storage/reset.ts`, `src/state/undo-wire.ts`, `src/undo/derive.ts`, `src/undo/timeline.ts`,
+`src/state/perms.ts`, `src/state/people-settings-commit.ts`, `src/state/store.ts` and `src/probe-bridge.ts`. New test:
+`src/ui/bellnotices.test.tsx`. The look by real presses: `scripts/handpass/onerule-step7-look.mjs`, its pictures
+`docs/handpass/2026-10-12-one-rule-step7/`. **After the older tests were re-expressed (the same day):** two new test
+files — `src/ui/bellnotices-scenarios.test.tsx` (45 cases) and `src/ui/inputcx-scenarios.test.tsx` (60) — and seven
+fixes they forced: `sched-commit.ts tellBegin` (the before-image at the store's capture), `APP_ACTS` (three commands),
+`src/ui/pops.ts` `BELLLIST` / `BELLAT` (the list's open flag, closed at a sign-out), `noticeseen.ts` (read by id),
+`perms.ts saysSame` (the landing mark is not said), `src/ui/pendlist.ts inputWords` (a cancelled input's line says the
+CX and its reason). The stop's sheet: `docs/handpass/2026-10-12-one-rule-steps5-7.md`.
+
+`[ALL-AVAIL-AS-MEMBER]` step 5 (12 Oct 26 — a cancelled input's look; D767, D768): no new source file.
+`src/ui/inputcard-model.ts` gains `cxOf`, `cxWhy`, `cxSays` and the card's `cx` / `why`; `src/ui/InputCard.tsx` draws the
+red CX tag, the struck title (or kind) and the red reason; `src/ui/InputsPage.tsx` the same on the desktop list's row;
+`src/ui/inputscal-model.ts` `BarItem.cx` and `src/ui/InputsCal.tsx` the struck, faded bar and its tooltip;
+`src/ui/html.ts` `inpCxHTML` / `inpCxCls` — the schedule's own line of a cancelled input (the week's `inGrp`, the
+board's `board-html.ts sbInpRow`). Styles: `scheduler/25-inputs-calendar.css` (`.icx`, `.is-cx`, `.icx-why`, the bar),
+`06-inputs.css` (`.in-cxline`), `12-schedule-editing.css` (`.inp-cx`, `.inp-cxtag`). New test: `src/ui/inputcx.test.tsx`;
+three cases added to `src/ui/inputmarks-scenarios.test.tsx` (the schedule's lines; the seven-day run inside the week).
+The look by real presses: `scripts/handpass/onerule-step5-look.mjs`, its pictures `docs/handpass/2026-10-12-one-rule-step5/`.
+**And D771, the same day:** `src/ui/inputedit.tsx InputEditor` draws the same tag and reason in the window's title bar
+(`.inped-cx`), in both of its shapes.
+
+`[ALL-AVAIL-AS-MEMBER]` step 6 (12 Oct 26 — the dead code out; D755, D756, D762): **REMOVED** `src/ui/grouprow.ts`,
+`src/engine/entryfold.ts`, `src/state/inputgroup.ts`, `src/engine/inputentry.ts` — the leftovers of "one record a
+person, several rows drawn as one". `src/engine/grouprows.ts` keeps `rowPeopleDrawn` and `inputRowSeveral` only
+(`groundGroups`, `drawnPeople` gone); `src/ui/inputedit.tsx` loses `commitGroup`, `removeEntry` (folded into
+`removeInput`, which says the shared sentence for an input of several), `oilSummaryOf` and `entryOilAnswer`; their
+callers in `ui/interactions.ts`, `ui/board.ts`, `ui/InputsCal.tsx`, `engine/daytpl.ts`, `engine/reorder.ts` are
+simplified. **Every mention of those four files further down this page is history** — how each step of the earlier
+jobs was built. Which tests went or were re-expressed: the plan's §10, Step 6.
+
+`[ALL-AVAIL-AS-MEMBER]` step 4 (12 Oct 26 — the scheduler's marks on an input's row are the input's; D760): no new
+source file. `src/ui/reqdoor.ts` gains `rowMark` (CX with its reason, the red box, information only — the input changed
+in one command); `src/ui/board.ts`'s three buttons ask it on an input's row (`askCx`'s `via`); `src/engine/overlay.ts
+requestRowFields` writes the marks on the row and the re-make takes them away; `src/engine/oilev.ts landedStanding` and
+`src/engine/inputs.ts inputFlags` / `inpDetailKey` read them off the input; `src/state/perms.ts inputBreach` bars a
+member from setting them; `src/state/changelines.ts` writes their line. New tests: `src/ui/inputmarks.test.tsx` (the builder's) and `src/ui/inputmarks-scenarios.test.tsx` (the second scenario pass
+of the helper who re-expressed the older tests). `src/engine/inputs.ts` gains `inputSilent` — the one answer to "is it
+cancelled or information only?", asked by the rules' cross-week reads, the seven-day run and the ALL AVAIL crowd too.
+Mock-ups for his look before steps 5 and 7 (not gates, not built): `scripts/handpass/onerule-mock-cancelled.mjs`,
+`scripts/handpass/onerule-mock-bell.mjs` — they draw a proposed look on the real screens by injection; their pictures
+are `docs/mock/2026-10-12-one-rule/`, their questions the plan's §8 (Q2–Q4).
+
+`[ALL-AVAIL-AS-MEMBER]` step 3 (12 Oct 26 — ALL AVAIL / ALL as one of an input's own people; D750, D753, D755, D757): no
+new source file. `src/engine/inputs.ts placeholderProblem` loses "filed on its own" and says the plan's shorter words;
+`src/ui/PeoplePick.tsx` draws the two placeholders as pucks of their own in "Several people" (`phWhy` — the window's
+answer to "may this input hold one?", `src/ui/inputedit.tsx placeholderWhy`); `src/ui/reqdoor.ts` lets one join, leave
+and move; `src/engine/publish.ts` counts the crowd that arrives with an input as that input's change. New tests:
+`src/engine/phmember.test.ts`, `src/ui/phmember.test.tsx` (the doors, OIL, the published count, his two routes — the
+plan's T1, T3, T16, T17), `src/ui/phpick.test.tsx` (the picker). What was built and found: the plan's §10
+(`docs/superpowers/plans/2026-10-11-one-rule-plan.md`).
+
+`[ALL-AVAIL-AS-MEMBER]` step 2 (b) to (i) (12 Oct 26 — one row an input, the door, OIL, the count, who may, the
+pages, the Leave War's writers, the seed; D755, D756, D762, D763): NEW `src/ui/reqdoor.ts` (THE DOOR OF AN INPUT'S ROW —
+what a hand on a puck does where the row came from an input: `rowPut`, `rowTake`, `rowLeaveTo`, `rowMove`; it installs
+`HOOKS.inputRow` for `state/store.ts` and `state/view.ts`; the belt behind it is `engine/slots.ts inputSeatBar`). It
+takes over from `src/ui/grouprow.ts`, which keeps only `leadKeyOf` and `lineOf` until the dead code goes (the plan's
+step 6 — with `engine/grouprows.ts groundGroups`, `engine/inputentry.ts`, `engine/entryfold.ts`,
+`state/inputgroup.ts`, whose three readers now answer every record as its own entry). `src/engine/grouprows.ts` gains
+`rowPeopleDrawn` and `inputRowSeveral` (whose pucks a ground row draws, in what order); `src/engine/inputs.ts` gains
+`facesOf` / `facesDrawn` (one per-person view of a record for DRAWING), `iuTail`, and `src/engine/keys.ts` `iuParts`
+(the one parser of an Unavailable row's address, `iu:<iid>` or `iu:<iid>~<person>`); `src/engine/oilev.ts`
+`claimPeople`, `claimPh`, `legacyClaim` (a claim in either shape; the reader for a day issued before the build);
+`src/state/perms.ts` `ownPart`, `filedWhole`, `byAfterLeaving`; `src/state/view.ts` `armStale`. New tests:
+`src/ui/reqdoor.test.tsx` (in place of `grouprow-hands.test.tsx`, removed), `src/state/inputcount.test.ts` (in place of
+`grouprow-count.test.ts`, removed), `src/leavewar/onerecord-perms.test.ts`. Re-expressed on the one record, same
+files: the OIL tests of a request's row (`engine/oilclaimcrowd`, `oilnamebox`, `oilplaceholderclaim`,
+`oilpersonalcrowd`, `oilev`, `oilsent`, `state/p6a-oilstamp`, and their `ui/` twins with `ui/pendcrowd-request`), the
+rows (`engine/grouprows.test.ts`, `ui/grouprow-draw.test.tsx`, `state/grouprow-entry.test.ts`,
+`ui/audit-e-commit-relink.test.tsx`), the Inputs pages' and the Leave War's shared-input tests. What each letter
+built: the plan's §10. The look at this stop: `scripts/handpass/onerule-step2-look.mjs` (one input through its life by
+real presses, a desktop and a phone), its sheet `docs/handpass/2026-10-12-one-rule-step2.md` and pictures
+`docs/handpass/2026-10-12-one-rule-step2/`. Added afterwards: `ui/inputedit.tsx inputWho` (who an input is called by
+in a title or a question), `state/perms.ts takesOn` (the one person of an input making it an input of several).
+
+`[ALL-AVAIL-AS-MEMBER]` step 2 (a) (12 Oct 26 — the record, its one writer, and the bodies that would otherwise read
+nobody; D756, D762, D755 (3), D763): NEW `src/engine/inputown.ts` (the writes to who is in an input — `toPeople`,
+`putPerson`, `takePerson`, `swapPerson`, and `ownInputOf`: one man of a shared input given an input of his own; a
+WRITER's file on the readers' guard). `src/engine/inputs.ts` gains the small questions about an input's people
+(`idsOf`, `leadOf`, `onlyNamed`, `holds`, `entryOf`) and `shapeProblem` (what one record may hold — held at the save
+boundary by `state/store.ts`, beside the placeholder's own rules); `inpDetailKey` and `frozenInputMatch` read the
+people. `src/ui/inputedit.tsx` gains `commitInput` (THE ONE WRITER: files, changes and re-peoples the one record in one
+command). Read on the one record now: `engine/overlay.ts` (`requestRowFields` — the name box and everyone under it;
+`hisLanded`), `engine/oilev.ts` (one claim an input, `claimPeople` / `claimPh`; everyone in it on its one answer),
+`state/perms.ts` (`ownPart`; "the man himself" is the input's only named person), `undo/derive.ts`, `undo/timeline.ts`
+and `state/undo-wire.ts` (whose step a change to a shared input is), `leavewar/sync.ts` (`oilPendingFor` — the bell
+asks whoever answers for the input). New tests: `src/engine/onerecord.test.ts`, `src/leavewar/onerecord-write.test.ts`.
+No file removed yet (the plan's step 6 lists what goes).
+
+**Added by the job's FULL check (12 Oct 26 — `docs/handpass/2026-10-12-one-rule.md`):** `src/engine/overlay-strip.test.ts`
+(a deleted man on a row that came from an input of several); and the tests the BREAK TESTS found missing, each red
+with its wire broken (`*.wire.test.ts(x)`, beside the module it holds): `src/ui/html.wire.test.tsx` and
+`src/ui/board-html.wire.test.tsx` (the SANS availability list of an input for several), `src/engine/medical.wire.test.ts`
+(the Medical tab's person on a record filed through the real door), `src/ui/reqdoor.wire.test.tsx` (a refusing seat
+refuses the whole swap; only a scheduler's hand), `src/engine/inputown.wire.test.ts` (the swap moves the holding on),
+`src/engine/inputs.wire.test.ts` (a cancelled or information-only input at the rules' own gate),
+`src/engine/inputs-frozenmatch.wire.test.ts` (one man split out on a published day is one change),
+`src/engine/canonical.wire.test.ts` (an input's row's people as one list place), `src/leavewar/sync.wire.test.ts` (a named
+person and a cancelled input against the ALL AVAIL crowd), `src/ui/inputedit.wire.test.tsx` (a member's hand-over refused
+at the window's own save), `src/ui/topbits.wire.test.tsx` (an access request and a bug report before the bell's list —
+D769), `src/state/person-delete.wire.test.ts` (a delete of a man in a shared input that spans his last day),
+`src/state/demoseed.wire.test.ts` (the demo seed knows both stored shapes). The Inputs export left `ui/export.ts` (D773).
+
+`[ALL-AVAIL-AS-MEMBER]` step 1 (12 Oct 26 — the reader; nothing changed on screen; D755, D756, D759): `src/engine/inputs.ts`
+gains who is in an input whatever shape it is stored in (`peopleOf`, `namedOf`, `placeholderOf`), the per-person view
+of the inputs (`inputLines`, and `inputLinesOn(dt)` — a published face's own copies where the date is frozen) and its
+once-per-pass memo (`inputReadPass`). Moved onto the view, each a body about ONE MAN'S DAY: `engine/events.ts` (a day's
+inputs as the rules read them, and both midnight tails), `engine/avail.ts` (who is away; "may he take it?"),
+`engine/weekctx.ts` (who worked a neighbour day), `leavewar/sync.ts` (the absence index, the absences a restore will
+leave, the ALL AVAIL crowd, "has he a past here"), `ui/palette-html.ts` (the crew list's reasons), `state/flyplan.ts`
+(the SANS men committed on a date), `state/roster-restore.ts` (is he still named in an input), `ui/InputsPage.tsx` (the
+deleted men who still have an input), `testing/refwin.ts` (what the parity tests push into the reference page). The
+passes are opened in `engine/validate.ts`, `engine/events.ts`, `engine/avail.ts`, `engine/oilev.ts`, `ui/html.ts`,
+`ui/board.ts`, `ui/palette-html.ts` and `ui/highlights.ts`. New tests: `src/engine/inputlines.test.ts` (the view),
+`src/engine/inputs-readers.test.ts` (THE GUARD — every file that reaches the inputs is on one of three lists: lines,
+records, writers; a new file stays red until a person lists it), `src/state/roster-restore-inputs.test.ts` and
+`src/ui/inputsdeleted.test.tsx` (two readers that had no test, found by blanking the view on purpose). New scripts, not
+gates: `scripts/handpass/onerule-surfaces.mjs` (records every screen and rule output of a build, the clock held still),
+`onerule-compare.mjs` (two such records, byte for byte), `onerule-timing.mjs` and `onerule-timing-table.mjs` (the
+timings of `docs/performance.md` ledger 27). No file removed. Its check: `docs/handpass/2026-10-12-one-rule-step1.md`.
+
+`[ALL-AVAIL-AS-MEMBER]`, planning only (11–12 Oct 26): NO source file added or changed. Two look scripts, not gates and
+asserting nothing: `scripts/handpass/oilown-look.mjs` (real phone screens of the OIL question for a shared input — the
+filer's, one man's own, the filer's window afterwards) and `scripts/handpass/oilown-comps.mjs` (the two ways that are
+not built, drawn by editing the rendered page); their pictures `docs/mock/img/one-rule-oil/`, the page shown to him
+`docs/mock/one-rule-oil.html` (D762). The plan names the files the BUILD will add and remove
+(`docs/superpowers/plans/2026-10-11-one-rule-plan.md` §5 — step 6 lists what goes).
+
 `[GROUP-INPUT-ONE-ROW]` step 2 (D739, D740 — 11 Oct 26): a request's boxes write the request. New: `src/ui/reqrow.ts`
 (`reqRowText` — the one door every writer of a typed box asks first; it installs itself as `HOOKS.reqRowText` for
 `state/store.ts writeText`) and its test `src/ui/reqrow.test.tsx`. `src/engine/overlay.ts` gained `requestOfBox` and
@@ -287,7 +448,7 @@ in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old opt
 | `logout.ts` | THE ONE LOGOUT (23 Sep 26, D129): the top bar's and the phone drawer's Logout both call it; it asks the Tracker about unsaved chart edits (through `tracker/role.js`) before `resetSession`. |
 | `topbits.tsx` | **The top bar's shared controls** (`[UNDO-TOPBAR]`, D347–D349, 28 Sep 26): `UndoPair` (presentational — handed an ENGINE: `globalUndoEngine`, with the OIL Earn stop inside, or `trackerUndoEngine` through `tracker/undo-bridge.js`), `SyncChip` (the ONE Sync state for the top bar and the board), `BellButton` / `bellTap` (the one bell, its four triggers). Drawn by `Shell.tsx` (on every page where a change is made — `pairOn`) and `SchedBoard.tsx` (its bar, before ✓ Done; the ⋯ menu beside the highlighter on a phone). Pinned in `topbar-pair.test.tsx` (the roll-call) and `topbar-css.test.ts` (`.editing` the tint, `.has-undo` the phone's sync dot). |
 | `HelpPage.tsx` + `state/reports.ts` | **The Help tab** (25 Aug 26) — the eighth tab, for EVERYONE, before Admin (which stays last). Bug reports: anyone files with a category (`BUG_CATS`) + description (blank Send toasts); a member sees their own receipts; the ADMIN list is newest-first with date/who/category chip, and OPENING it is the acknowledgement (`markReportsSeen` + NEW badges captured first). The top-bar bell (`#notifyBell`) lights for an admin with unseen reports (`bugAlert` — the bell seam's first wired trigger) and a tap lands on Help. `REPORTS` is DATA: survives login switches (NOT wiped by resetSession), outside the undo snapshot; DB-era it becomes a table + realtime push, shape already right. Pinned in `help.test.tsx`. |
-| `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. Since `[ACCOUNTS]` (26 Sep 26) every window flag in `pops.ts` (`POPS_RESET`) and the toast close at every sign-in and sign-out (the `'session'` view reset), pinned in `pops.test.ts`; the undo list empties with them (`undo/timeline.ts endUndoSession`, `state/session-undo.test.ts`). |
+| `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it — **the Inputs page's export (`inputRows`, the List's "Export to Excel", `142-inputs.csv`) was REMOVED on 12 Oct 26 (D773); the schedule's and the Quals page's stay.** Since `[ACCOUNTS]` (26 Sep 26) every window flag in `pops.ts` (`POPS_RESET`) and the toast close at every sign-in and sign-out (the `'session'` view reset), pinned in `pops.test.ts`; the undo list empties with them (`undo/timeline.ts endUndoSession`, `state/session-undo.test.ts`). |
 | `printpdf.ts` | The schedule's PDF export (23 Aug 26) — `schedPrintHTML` builds a standalone black-on-white printable document (own stylesheet, every cell escaped, layout deliberately basic for now); `printSchedPDF` prints it through a hidden iframe so "Save as PDF" in the browser dialog is the file. Pinned in `printpdf.test.ts` (the text half only, the csvText precedent). |
 | `scheduler.css` / `scheduler/*.css` | **D540/D541 mechanical split (3 Oct 26):** the entry eagerly imports 22 contiguous screen/shared runs in the original cascade order; later overrides stay late. Ownership/order: `docs/superpowers/plans/2026-10-03-css-split-plan.md`. The ported stylesheet — it carries MEASURED contracts, not preferences. **App-wide text-selection baseline (2 Sep 26, owner ask): `html{user-select:none;-webkit-touch-callout:none}` near the top, with `input,textarea,select,[contenteditable]` handed `user-select:text` (and callout back) — so click-only chrome (nav tabs, buttons, pucks, grid cells, chips) never paints a blue text range on a tap-hold, while typed/edited text still selects. Leave War is in the same document, so this covers it too; its scoped editable-cell opt-ins keep winning. When you add a new EDITABLE surface or a block of real content that must be copyable, add a `user-select:text` opt-in for it — a new contenteditable/input is already covered.** |
 | `postout.css` | **The posting-out work's styles** (`[POST-OUT-OUTCOMES]`, 27 Sep 26) — the Users editor's Delete confirm, the "he's back" prompt (Quals' Archived Rename / Restore-as boxes went with `[ONE-DOOR]`, which adds the one-door rows — the dots, `.od-*` — and his welcome note) and its row outline (`.back-hl`), the member-view badge button — kept OUT of `scheduler.css` (the overlap with the parallel chats). Imported by `QualsPage.tsx` / `UsersPanel.tsx` / `WelcomeBack.tsx`. |

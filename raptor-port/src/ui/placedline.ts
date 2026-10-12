@@ -11,10 +11,17 @@
      Placed by Saber · 7 Oct 26, 14:32
      Placed by Saber for Wisp · 7 Oct 26, 14:32                         the filer is not the person it is for
      Placed by Saber · 7 Oct 26, 14:32 · changed by Ranger · 8 Oct 26, 09:10
+     Placed by Saber for 4 people · 7 Oct 26, 14:32                     it holds several people
 
    A record that never recorded who placed it shows NO line (D56: what was saved before the stamps existed is demo
    data — it is not guessed at). A change the app made by itself (a posting that ran on its date) has a time and no
-   name. The day and time are the reader's own clock's — the moment is stored once, as a moment. */
+   name. The day and time are the reader's own clock's — the moment is stored once, as a moment.
+
+   SINCE THE ONE-RULE BUILD (owner D756, 11 Oct 26 — "an input is stored as ONE record with the list of its people"; the
+   plan docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5 "By Saber") the four facts are the INPUT's: one filer
+   (`by` — D724, D729, D720), one moment, one last change. Who it is for is read from its people (engine/inputs.ts
+   idsOf) — a record stored before that build, with its one `person`, reads as the one-person input it is. */
+import { idsOf, namedOf, placeholderOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -36,7 +43,15 @@ export function placedLine(r: any, people: Record<string, any> = PEOPLE): string
   if (!r || r.by == null || r.by === '') return ''
   const when = stampText(r.at)
   if (!when) return ''
-  const forWhom = r.person != null && String(r.person) !== String(r.by) ? ` for ${nameOf(r.person, people)}` : ''
+  /* for whom: nothing where its one person filed it himself; his name where someone else did; how many where it holds
+     several — the names are the card's to say (D721), and the filer may be one of them (D724) */
+  const ids = idsOf(r)
+  /* the PEOPLE are counted and a placeholder is said beside them — ALL AVAIL is nobody to count (D702; the wording of
+     the month's bar and of ui/inputedit.tsx howMany: "for 2 people and ALL AVAIL", "for Ranger and ALL AVAIL") */
+  const named = namedOf(r), ph = placeholderOf(r)
+  const many = [named.length === 1 ? nameOf(named[0].p, people) : named.length ? `${named.length} people` : '', ph ? nameOf(ph.p, people) : ''].filter(Boolean).join(' and ')
+  const forWhom = ids.length > 1 ? ` for ${many}`
+    : ids.length === 1 && String(ids[0]) !== String(r.by) ? ` for ${nameOf(ids[0], people)}` : ''
   let out = `Placed by ${nameOf(r.by, people)}${forWhom} · ${when}`
   const changed = stampText(r.modAt)
   /* a record as it was filed says its last change is the filing itself — one fact, said once */
@@ -57,34 +72,22 @@ export function placedShort(line: string, year: number): string {
   return line.replace(/^Placed by /, '').replace(new RegExp(`(\\d{1,2} [A-Z][a-z]{2}) ${two(year % 100)}(?=, \\d\\d:\\d\\d)`, 'g'), '$1')
 }
 
-/** WHO FILED AN ENTRY — the one answer for the line below and for the input card's "By Saber" (D720, D723, D724;
- *  ui/inputcard-model.ts). A shared input's filer is the entry's own (`grpBy`), else whoever placed its first stamped
- *  record; an ordinary input's is its `by`. `null` for an entry that never recorded one (D56) — judged as the line is:
- *  a filer with no readable moment is no filer. */
+/** WHO FILED AN INPUT — the one answer for the line below and for the input card's "By Saber" (D720, D723, D724;
+ *  ui/inputcard-model.ts): the record's `by`, one person in it or several — never whoever put a person in later (his
+ *  name is on that person's own entry). `rows` is the input's record, as the list of one the screens carry. `null` for
+ *  an input that never recorded one (D56) — judged as the line is: a filer with no readable moment is no filer. */
 export function filerOf(rows: readonly any[]): unknown {
-  const stamped = (rows || []).filter(r => r && r.by != null && r.by !== '' && stampText(r.at))
-  if (!stamped.length) return null
-  if ((rows || []).filter(Boolean).length < 2) return stamped[0].by
-  const withFiler = stamped.find(r => r.grpBy != null && r.grpBy !== '')
-  return withFiler ? withFiler.grpBy : stamped[0].by
+  const r = (rows || []).find(x => x && x.by != null && x.by !== '' && stampText(x.at))
+  return r ? r.by : null
 }
 /** a callsign for the small print — the line's own rule for a name (someone taken off every list is said in words) */
 export const filerName = (id: unknown, people: Record<string, any> = PEOPLE): string => nameOf(id, people)
 
-/** THE LINE FOR A SHARED INPUT (owner D655, D629 — "Placed by Saber for 4 people · 7 Oct 26, 14:32"): who filed the
- *  entry, for how many, and when — one line for the whole of it. Its filer is the entry's own (`grpBy`), else whoever
- *  placed its first record; the moment is the earliest any of its records was placed; its last change is the latest
- *  any of them carries. One record is the ordinary line. */
+/** THE LINE OF AN ENTRY AS THE SCREENS CARRY IT — a list of one record (owner D655, D629 — "Placed by Saber for 4
+ *  people · 7 Oct 26, 14:32"): who filed the input, for how many, and when — the record's own `by`, `at`, `modBy` and
+ *  `modAt`, said by the ordinary line above. An input is one record since the one-rule build (D756), so there is
+ *  nothing to gather across records any more. */
 export function placedLineOf(rows: readonly any[], people: Record<string, any> = PEOPLE): string {
-  const list = (rows || []).filter(Boolean)
-  if (list.length < 2) return list.length ? placedLine(list[0], people) : ''
-  const stamped = list.filter(r => r.by != null && r.by !== '' && stampText(r.at))
-  if (!stamped.length) return ''
-  const filer = filerOf(list)
-  let out = `Placed by ${nameOf(filer, people)} for ${list.length} people · ${stampText(Math.min(...stamped.map(r => r.at)))}`
-  const changed = stamped
-    .filter(r => stampText(r.modAt) && (r.modAt !== r.at || (r.modBy != null && String(r.modBy) !== String(r.by))))
-    .sort((a, b) => b.modAt - a.modAt)[0]
-  if (changed) out += changed.modBy != null && changed.modBy !== '' ? ` · changed by ${nameOf(changed.modBy, people)} · ${stampText(changed.modAt)}` : ` · changed ${stampText(changed.modAt)}`
-  return out
+  const r = (rows || []).find(Boolean)
+  return r ? placedLine(r, people) : ''
 }

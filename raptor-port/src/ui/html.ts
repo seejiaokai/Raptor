@@ -1,10 +1,9 @@
-import { groundGroups, drawnPeople } from '../engine/grouprows'
-import { entryLines, entryRowsOf } from '../state/inputgroup'
+import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
+import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
@@ -958,7 +957,7 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any){
    explicit "nil" every single day. */
 export function sansSectionHTML(d:any,di:any,ed:any){
   if(!ed)return '';
-  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type));
+  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
   if(!rows.length)return '';
   return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail`
     +`<span class="pl-hint">press a card to edit</span></div>`
@@ -1314,6 +1313,20 @@ export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.info?' fyi':'')+(o
    scheduler reading the day knows why the line went. */
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
+/* THE SCHEDULE'S OWN LINE OF A CANCELLED INPUT (owner D767 reading 3, 12 Oct 26 — "the schedule's own line of a cancelled
+   input under Personal Inputs wears the same red CX tag and struck-through name"; D760: the CX is the INPUT's). Until
+   then that line showed nothing while the input's row on the Ground Programme read "CX DUE WX". The schedule's own tag,
+   its reason riding in it as on that row (cxTag), before the input's name; `inpCxCls` is the class that strikes the
+   name. One body for the week (inGrp, below) and the board (board-html.ts sbInpRow) — and for the Unavailable list's
+   row of a cancelled input filed there, which the same two builders draw. Nothing for an input that is not cancelled,
+   so every other line's markup — and the view week's reference compare — is untouched. */
+/* (the reason is a part of its own inside the tag — `.cxwhy` — so a place with no room drops it and keeps "CX": his
+   word, D767 — "for those areas that have no space to show reason it's ok". The board's row on a phone is that place:
+   there the whole "CX DUE WX" wrapped into a block four lines tall and cut the name to "Range b…" — step 5's look.) */
+export function inpCxHTML(inp:any){ if(!inp||!inp.cx)return'';
+  const why=inp.cxr?String(inp.cxr).trim():'';
+  return `<span class="cxtag inp-cxtag" title="${esc(cxText(inp))}">CX${why?`<span class="cxwhy"> DUE ${esc(why)}</span>`:''}</span>`;}
+export function inpCxCls(inp:any){return inp&&inp.cx?' inp-cx':'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
 /* the ⓘ info-only chip (owner, 1 Sep 26): a ground/programme item flagged info
    is shown for information and never checked — the chip says so wherever the
@@ -1387,8 +1400,11 @@ export function saRoleHTML(key:any,a:any,ed:any){
    themselves alone. Every helper below asks it, so the passive tag, the board's chip, the promoted row's amber edge
    and its tooltip agree. */
 export function lateMates(inp:any):any[]{
-  if(!inp||inp.grp==null||inp.grp===''||!isPersonal(inp.type)||inp.acc==='u'||(INPUTS as any[]).indexOf(inp)<0)return [inp];
-  return entryRowsOf(INPUTS as any[],inp);}
+  /* (since the one-rule build: the people of the ONE record — its faces, each with his own late date where he has one;
+     under Unavailable a row is one man's, and speaks for him alone) */
+  if(!inp||!isPersonal(inp.type)||inp.acc==='u')return [inp];
+  const f=facesOf(inp.several?(inputOnAny(inp.iid)||inp):inp);
+  return f.length?f:[inp];}
 const lateOne=(inp:any):any=>inp?lateMates(inp).find((r:any)=>isLateInput(r)&&lateShown(r))||null:null;
 export function lateTag(inp:any){
   const l=lateOne(inp); return l?`<span class="latetag" title="${esc(lateNote(l))}">LATE</span>`:'';}
@@ -1595,7 +1611,7 @@ export function dayStatHTML(di:any,ed:any){
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function dayHTML(di:any,ed:any,vsel?:any){ return oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
+export function dayHTML(di:any,ed:any,vsel?:any){ return inputReadPass(()=>oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel)))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
 function dayHTMLBody(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
      and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the
@@ -1969,12 +1985,12 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          name, its times, its remark, its one "+ add" — and the other members draw nothing. Every puck keeps ITS OWN
          row's key, so its flag, its amendment mark, its OIL bar and a tap or a drag on it are that man's row's. A row
          that stands alone takes the branch below it and is byte for byte what it was. */
-      const grps=groundGroups(d);
+      /* …SINCE THE ONE-RULE BUILD (step 2 (b)) an input is ONE record and its row ONE ground row: the row of an input
+         that holds several is drawn by the ONE answer to "whose pucks, in what order" (engine/grouprows.ts
+         rowPeopleDrawn — A to Z, then the placeholder), each puck on its own place's key. */
       groundOrder(grd,d.gman).forEach(({row:x,ri}:any)=>{const id=whoId(x.who), key=`g:${di}.${ri}`;
-        const gp=grps[ri];
-        if(gp&&gp.members.length>1){
-          if(gp.lead!==ri)return;
-          const ppl=drawnPeople(d,di,gp);
+        if(inputRowSeveral(x)){
+          const ppl=rowPeopleDrawn(d,di,ri);
           /* `gshared` — the one row's own class: on a phone its two times stay together at its top, where a tall row's
              would spread down it (scheduler/09-week-responsive.css — the approved picture 2) */
           h+=plRow(x.prog,x.str,x.end,lCell(ppl.map((p:any)=>lSeat(di,p.id,p.key,ed)).join(''),key+'.+',ed,ppl.length<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x).replace('class="pl-row','class="pl-row gshared');
@@ -2025,7 +2041,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          man's puck, the entry's title, kind, times and remark, one Undo / Accept — split by where each man's request is
          filed, so the line never says "accepted" for a man who is not (state/inputgroup.ts entryLines). THE UNAVAILABLE
          LIST IS LEFT AS IT IS — a row a man (D737): every record there is a line of its own. */
-      const lines:any[][]=acc?entryLines(rows):rows.map((r:any)=>[r]);
+      /* (…since the one-rule build an input is ONE record with its people: a line under Personal Inputs is the record's
+         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf) */
+      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):rows.flatMap((r:any)=>facesOf(r).map((f:any)=>[f]));
       /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
          Now that activity inputs auto-land on the ground programme, this block
          is the faded audit echo, not the primary planning surface — so it folds
@@ -2071,7 +2089,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         const unfile=!acc&&ed&&inp.acc==='u'&&isPersonal(inp.type)&&canEditSched();
         /* one puck a man of the line — each by his OWN record, so its OIL bar is his own claim's */
         const pk=line.map((one:any)=>PEOPLE[one.person]
-          ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(one))}"`:''}>${puck(one.person,sev(di,one.person),true,chip(di,one.person),false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`
+          ? `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${puck(one.person,sev(di,one.person),true,chip(di,one.person),false,null,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil)}</span>`
           : `<span class="itxt">${esc(one.person)}</span>`).join('');
         /* the input's own free text now reads in the RMKS column, so the NAME column
            carries the type and every block lines up on the same five columns */
@@ -2081,12 +2099,12 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            headless render (the parity week) is untouched. */
         /* …and under Personal Inputs too: a request waiting there is where its "added" line must land (Fable's final
            read, F5 — it was a button that landed nowhere) */
-        const inprow=isMember()?` data-inprow="${esc(inpId(inp))}"`:'';
+        const inprow=isMember()?` data-inprow="${esc(iuTail(inp))}"`:'';
         s+=`<div class="pl-row${line.length>1?' gshared':''}${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
-          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpEditLabel(inp,ed,inpLabel(inp),'ntx')+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
+          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpCxHTML(inp)+inpEditLabel(inp,ed,inpLabel(inp),'ntx'+inpCxCls(inp))+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl${line.length>1?'':' one'}">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
@@ -2167,7 +2185,7 @@ export function inpTimeCells(inp:any,ed:any){
      twice down the column — and on either width the pair only needs telling
      once. */
   const cell=(f:any,c:any)=>`<span class="t t-${c} txed inpt" contenteditable="true" spellcheck="false" `
-    +`data-inp="${esc(inpId(inp))}.${f}"${f==='str'?' data-ph="all day"':''}>${esc(inpTimeText(inp,f))}</span>`;
+    +`data-inp="${esc(iuTail(inp))}.${f}"${f==='str'?' data-ph="all day"':''}>${esc(inpTimeText(inp,f))}</span>`;
   return cell('str','s')+cell('end','e');
 }
 /* dt (day's date label, only ever in scope where this cell is built) is what
@@ -2187,7 +2205,7 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
   const v=inp.remarks||'';
   if(!ed||!canEditSched())return `<span class="rmk${v?'':' rk-e'}${lc}">${lt}${sbt}<span class="ntx">${esc(v)}</span></span>`;
   return `<span class="rmk${lc}">${lt}${sbt}<span class="ntx txed inpt" contenteditable="true" spellcheck="false" `
-    +`data-inp="${esc(inpId(inp))}.rmks" data-ph="remarks">${esc(v)}</span></span>`;
+    +`data-inp="${esc(iuTail(inp))}.rmks" data-ph="remarks">${esc(v)}</span></span>`;
 }
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
   const t=esc(txt);

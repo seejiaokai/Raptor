@@ -54,11 +54,13 @@ export function tableOf(collection: Collection, id: string): string {
       if (id === 'schema') return 'SchemaVersion'
       if (id.startsWith('elog:')) return 'EditLog'
       if (id.startsWith('seen:')) return 'EditLogSeen'
+      if (id.startsWith('noticeseen:')) return 'NoticeSeen'
       if (id.startsWith('account:')) return 'User'
       if (id.startsWith('accessreq:')) return 'AccessRequest'
       if (id.startsWith('reqseen:')) return 'AccessRequestSeen'
       return 'Setting'
     case 'tracker': return TRACKER(id)
     case 'changes': return 'ChangeBatch'
+    case 'notices': return 'Notice'
   }
 }

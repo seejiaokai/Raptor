@@ -67,11 +67,11 @@ export function setInpEdit(r: any) { INPEDIT = r }
    land after an undo reminted every row, and InputEditor re-resolves through
    inpById at open. One-shot: the editor clears it as it consumes it. */
 export let OILASK: string | null = null
-/* …FOR THAT ONE MAN'S ANSWER ALONE (`[GROUP-INPUT-ONE-ROW]`; owner D744 — a man added to a shared input from the
-   schedule, where its people's answers differ, is asked at once: ui/grouprow.ts groupPut). Set with the hand-off and
-   consumed with it: the editor opens the sheet on his record in its `own` mode — the answer is written on him alone,
-   nobody else's is touched — and the dialog closes when the question is answered or cancelled, because whoever added
-   him was on the schedule, not in the input's window. */
+/* …RAISED FROM THE INPUT'S ROW ON THE SCHEDULE (ui/reqdoor.ts → ui/inputedit.tsx askOilIfPending(r, true); first
+   `[GROUP-INPUT-ONE-ROW]`, D744 — "for that one man's answer alone", which D762 left nothing to ask: an input has ONE
+   answer). Set with the hand-off and consumed with it: the editor opens the sheet for the INPUT's one question, and
+   the dialog closes when it is answered or cancelled, because whoever put the person on the row was on the schedule,
+   not in the input's window. */
 export let OILOWN = false
 export function setOilAsk(iid: string | null, own = false) { OILASK = iid; OILOWN = !!iid && own }
 /* A MEDICAL MOVED BY A DRAG OR A REASSIGN, waiting on its question (the absence-record re-test, AB4, 26 Sep 26): the
@@ -141,6 +141,13 @@ export function setSansSet(v: boolean) { SANSSET = v }
    cut-off and the members' switch, open this one window (D639: one setting, two ways in). */
 export let INPSET = false
 export function setInpSet(v: boolean) { INPSET = v }
+/* THE BELL'S LIST OF NOTICES (ui/topbits.tsx BellList — the one-rule build's step 7): open or not, and under WHICH bell
+   (the top bar's `notifyBell` or the board's `sbBell` — the board covers the top bar without hiding it, so the page
+   cannot be asked). Here, with every other window's flag, so a sign-out closes it: the next person on the browser must
+   not find the last one's list open (found by the older tests re-expressed, 12 Oct 26). */
+export let BELLLIST = false
+export let BELLAT = ''
+export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = open ? at : '' }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -160,6 +167,8 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYSWIN', reset: () => setDaysWin(null) },
   { name: 'SANSSET', reset: () => setSansSet(false) },
   { name: 'INPSET', reset: () => setInpSet(false) },
+  { name: 'BELLLIST', reset: () => setBellList(false) },
+  { name: 'BELLAT', reset: () => setBellList(false) },   // set and cleared with the flag above — one setter for the pair
 ]
 export function resetPopsForSession(): void { for (const p of POPS_RESET) p.reset() }
 /* IS A WINDOW OVER THE SCHEDULE UP — OR ASKED FOR AND ABOUT TO BE DRAWN? (W12, the Codex stack check, 5 Oct 26.) The
