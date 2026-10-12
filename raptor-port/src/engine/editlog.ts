@@ -180,6 +180,10 @@ export function elogLoad(): void {
     if (typeof x.grp === 'string' && x.grp) r.grp = x.grp
     if (typeof x.sect === 'string' && x.sect) r.sect = x.sect
     if (typeof x.sub === 'string' && x.sub) { r.sub = x.sub; if (typeof x.fld === 'string' && x.fld) r.fld = x.fld }
+    /* …and the mark that the line is about ONE person put into or taken out of an input (logAction, below) — it was
+       saved and never read back, so a reload undid what the mark is for (Fable's second read, finding 1 — 12 Oct 26;
+       pinned across a save and a load in ui/reqdoor.test.tsx) */
+    if (r.sub && (x.one === 1 || x.one === true)) (r as any).one = 1
     const strs = (v: any, ok: (s: string) => boolean) => Array.isArray(v) ? v.filter((s: any) => typeof s === 'string' && ok(s)) : []
     const ids = strs(x.iids, s => !!s), ds = strs(x.days, isoOk), ws = strs(x.wdays, isoOk)
     if (ids.length > 1) r.iids = ids

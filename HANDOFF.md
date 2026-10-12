@@ -29,6 +29,8 @@ the later merge keeps both (D78).
 
 ## Next, in order
 
+**HIS WORD, 12 Oct 26 (D774): the Tracker's progress graph is NOT started yet — no chat begins it (its questions, its design, its build) until he says so; D495's order itself is unchanged.**
+
 **RIGHT NOW (10 Oct 26):** the Inputs calendar and the SANS availability calendar are LIVE (D614 — PR #487, 9 Oct 26), and so is the Inputs pages' work that followed (D684–D732 — PR #488, 10 Oct 26; the changes-window fix, D733 — PR #489, the same day) → **`[GROUP-INPUT-ONE-ROW]`, the schedule's one row for a shared input (his word, D662 — IN HAND on `claude/group-input-one-row`: its rules are asked of him first)** → `[TILL-FROM-DATES]` (D728 step 2 — the agent's placing; questions first) → the feature batches in D495's order: the Tracker, caps and ops limits, the one whole-app check (`OUTSTANDING.md` `[FEATURE-WISHLIST]`) → the database, at the end (D473). **The two paragraphs below are as written on 6 and 7 Oct 26 — every step they name is done and live.**
 
 **RIGHT NOW (his word, D602, 6 Oct 26):** the Codex stack is LIVE (PR #481, merged 6 Oct 26 on his "merge live" — D589) → the crew-rest fault `[REST-BLANK-LINE]` (LIVE, PR #482, 6 Oct 26) →

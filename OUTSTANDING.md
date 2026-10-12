@@ -1617,6 +1617,7 @@ keyboard/browser-bar states; no app repair is filed for that recovered behaviour
 Board's blank Desktop layout is selected. The original observations are retained.
 
 ### [FEATURE-WISHLIST] Features he means to add — his list, not yet ruled or designed (2 Oct 26)
+**D774 (12 Oct 26, *"I'll not work on the tracker progress graph yet"*): item 4, the Tracker's progress graph, is not started — questions, design or build — until he says so; the order below is unchanged.**
 His words, 2 Oct 26, asking where new features fit in the order of work: *"1. Format of how the inputs are displayed to calendar
 2. Caps & Ops limits 3. Insights to what type of mission each person flew 4. Training progress tracker graph 5. Workflow UI
 changes — More to come"*. D512 now defines Insights' blue/red sortie categories; its picture and remaining choices are in

@@ -37,7 +37,7 @@ import { CURWEEK } from '../engine/waves'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { SCHED } from '../engine/publish'
-import { ELOG } from '../engine/editlog'
+import { ELOG, elogFlush, elogClear, elogLoad } from '../engine/editlog'
 import { setSlotVal, fillSlot, slotVal } from '../engine/slots'
 import { rowPeopleDrawn } from '../engine/grouprows'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
@@ -297,6 +297,16 @@ describe('a puck taken off the row takes that person out of the input (D755) (GI
     expect([added.sub, added.one], 'filed under him, marked as his').toEqual(['split', 1])
     expect(out && out.lbl).toContain(cs('pike'))
     expect([out.sub, out.one]).toEqual(['pike', 1])
+    /* …AND THE MARK COMES BACK FROM STORAGE (Fable's second read, finding 1 — 12 Oct 26): the line was saved whole, but
+       the reader at start-up (engine/editlog.ts elogLoad) rebuilds each line from a fixed list of fields and the mark
+       was not on it — so after a reload the changes window dropped the man's name again and History told his line on
+       every man's row. The saved history, read back as a boot reads it: */
+    elogFlush()
+    const n = ELOG.rows.length
+    elogClear(); elogLoad()
+    expect(ELOG.rows.length, 'the history came back').toBe(n)
+    const back = (ELOG.rows as any[]).filter(r => r.one)
+    expect(back.map(r => r.sub).sort(), 'both lines still marked as one man\'s, each under him').toEqual(['pike', 'split'])
   })
   it('dragged to nowhere, right-clicked, written blank: he leaves; the others and the row stay', async () => {
     await boot(new MemoryBackend())
