@@ -15,6 +15,15 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/skill-observation-review-258b48 -->
+### `claude/skill-observation-review-258b48` — `[SKILL-OBS-REVIEW]` (D794), THE REVIEW OF THE SKILL NOTES, DOCUMENTS ONLY: STARTED 13 Oct 26 — written 13 Oct 26, about 05:00 — verify before use
+- **His word on who reads the guide changes — D810 (*"u can use opus to do the review solely"*):** Opus alone. Opus runs the review; the drafted guide changes are read by ONE fresh, blind Opus reader before he approves them; Fable is not called; the missing ChatGPT reads are on `OUTSTANDING.md` `[NO-ASTRA-LIST]`. It answers the A-or-B question the block below still shows as open.
+- **How it runs:** `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo and the skill's `references/weekly-review.md`. 272 notes open at the start (120 to 541), none resolved. Drafts are staged under `.claude/skill-updates/2026-10-13/`, never over a live guide, until he approves.
+- **Where it stands:** the ruling recorded; the reading of the notebook not yet begun. Nothing of the app is touched; no check lock is needed.
+- **Ruling numbers:** this chat holds D810–D824 (the Calendar chat D795–D809); D810 used. Next free here: D811 (verify).
+- **Branch and picker:** to carry this review on, a fresh chat picks `claude/skill-observation-review-258b48` — no new worktree; NOT `main`.
+<!-- /now -->
+
 <!-- now:claude/after-oil-ask-notify -->
 ### `claude/after-oil-ask-notify` — `[OIL-ASK-NOTIFY]` IS MERGED (pull request #492, 13 Oct 26, his "merge live" — D791); THIS BRANCH IS THE RECORDS TIDY AFTER IT, DOCUMENTS ONLY, WAITING FOR ITS OWN "MERGE LIVE"; TWO JOBS ARE NEXT, SIDE BY SIDE (D794) — written 13 Oct 26, about 04:20 — verify before use
 - **What merged:** the OIL question comes BEFORE a swap, an add or a move and the change is made only on an answer; the bar that stays; the one list; a day made a holiday tells the schedulers (D780–D785). Its full check: `raptor-port/docs/handpass/2026-10-13-oil-ask-notify.md` (the `Walk:` line at its head; the gate counts, his look card and the readings told to him in §16). **Vercel reported the live app READY for the merge at 04:01 (13 Oct 26); `main`'s own check run was still going when this was written — read its conclusion (`gh run list --branch main --limit 2`).**
