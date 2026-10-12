@@ -50,6 +50,7 @@ import { openScheduler } from './board'
 import { setOilDay, afterSchedMutate } from '../state/view'
 import { commitInput, draftOf } from './inputedit'
 import { rowPut, rowTake } from './reqdoor'
+import { answerOilWait } from './oilwait'
 import { setOilAsk, setInpEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -346,18 +347,26 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
    the row is a real switch — never the inert "nothing measurable to earn from here" — it glows once the input's
    question is answered Yes, and a tap is a decision about him alone. */
 describe('a named man put in the request row\'s NAME BOX takes the input over, and is his own switch (D470 as changed by D755 (2), D762)', () => {
-  it('his puck is a switch from the start — OFF until the question is answered again, ON after a Yes; a tap takes HIM off and writes a decision about him alone', async () => {
+  /* A NAMED RULING CHANGED HOW HE GETS THERE (owner D783, 12 Oct 26 — a swap that raises the OIL question "is NOT MADE
+     until the question is answered"): this case pinned the swap made at once, the input left with NO answer ("OFF
+     until the question is answered again … has not answered the OIL question"). The swap now waits and is made WITH
+     its answer — here a No, so his puck starts OFF on his own answer; the first man's answer still does not pass to
+     him. What the case is about is unchanged: his puck is a real switch, never inert, ON after a Yes, and a tap is a
+     decision about him alone. */
+  it('his puck is a switch from the start — the swap waits on the OIL question; made on a No he is OFF, ON after a Yes; a tap takes HIM off and writes a decision about him alone', async () => {
     await filed(['bane'])
-    await act(async () => { expect(rowPut(rowKey(), 'stiff'), 'dropped on the only man\'s puck').toBe('done'); notify() })
+    await act(async () => { expect(rowPut(rowKey(), 'stiff'), 'dropped on the only man\'s puck: it waits').toBe('asked'); notify() })
+    expect(idsOf(rec()).map(String), 'nothing moved').toEqual(['bane'])
+    await act(async () => { expect(answerOilWait({ [SAT_ISO]: 0 }), 'answered No for the new man').toBe(true); notify() })
     expect(idsOf(rec()).map(String), 'the input is his now').toEqual(['stiff'])
-    expect(rec().oil, 'the answer was the first man\'s own — void').toBeUndefined()
+    expect(rec().oil, 'the answer is his own — the first man\'s Yes did not pass to him').toEqual({ [SAT_ISO]: 0 })
     await open(SAT)
     await click(oilBtn())
     const seat = () => ([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).find(s => s.dataset.oilp === 'stiff')!
     expect(seat(), 'the man in the box is drawn as a switch').toBeTruthy()
     expect(seat().classList.contains('inert'), 'not inert — he can earn').toBe(false)
-    expect(seat().classList.contains('off'), 'nobody has answered for him yet').toBe(true)
-    expect(seat().title, 'his own input: the words are his').toContain('has not answered the OIL question')
+    expect(seat().classList.contains('off'), 'his answer is No').toBe(true)
+    expect(seat().title, 'his own input: the words are his').toMatch(/answered No/)
     expect(([...groundRowEl().querySelectorAll('.seat.oilpk')] as HTMLElement[]).map(s => s.dataset.oilp), 'the man replaced is off the row').not.toContain('bane')
     /* the question answered Yes, by the input's one writer */
     await act(async () => { expect(commitInput(rec(), draftOf(rec()), ['stiff'], { oil: YES })).toBe(true); notify() })

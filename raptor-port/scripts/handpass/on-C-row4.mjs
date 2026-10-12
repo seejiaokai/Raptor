@@ -1,0 +1,7 @@
+import * as L from './on-C-lib.mjs'
+L.row({ n: 'C4', did: 'World signed in as admin ad / a (Saber), Inputs month July 2026. Filed a Training for Tally ("Sim refresher", Wed 15 10:00-12:00). Real mouse drag of its chip from Wed 15 onto Sun 19: "Don’t move"; Answer OIL -> Yes -> Move; Undo once, Redo once. Then dragged the same chip from Wed 15 onto Thu 16 (weekday to weekday).',
+ saw: 'Wed -> Sun: question first, heading "OIL — Tally, Sim refresher", lead "Moving Sim refresher to 19 Jul", "THIS INPUT FALLS ON A NON-WORKING DAY — 19 JUL (WEEKEND / PH)", "Does it deserve HO — half a day of OIL?", "Don’t move" / "Move" (greyed); question box 0,0 1440x900 inside, on top; nothing moved behind it. "Don’t move": bar "Not moved — OIL not answered", "Answer OIL" / "OK" (x533 y832 375x50, inside, on top), chip flashes where it was (Wed 15, cyan ring), nothing moved. Answer OIL -> Yes -> Move: toast "Moved to 19 Jul", chip on Sun 19 answered HO. Wed -> Thu (weekday): NO question, no bar, toast "Moved to 16 Jul", chip on Thu 16 at once (picture C4-wd-moved).',
+ inputs: 'Before {"date":"Jul 15","oil":null}; after the Sunday answer {"date":"Jul 19","oil":{"2026-07-19":0.5}}; after Don’t move unchanged; weekday move {"date":"Jul 16","oil":null}.',
+ ur: 'Undo once (Sunday move): back to Jul 15, no answer; Redo: Jul 19 with HO. Undo once after the weekday move: back to Jul 15.',
+ verdict: 'PASS',
+ pics: 'C/C4-sun-1-question.png, C4-sun-2a-flash-100ms.png, C4-sun-2-bar.png, C4-sun-3-answered.png, C4-wd-moved.png' })

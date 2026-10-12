@@ -1,0 +1,15 @@
+import { launch, world, bye, FRI } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'P7' }); const { page, tid } = w
+await w.giveWarden()
+const ids = await w.fileFriday()
+await w.makeHoliday('National Day', [FRI])
+await w.press(tid('odl-later')); await page.waitForTimeout(400)
+await w.openHolidays()
+const rows = await page.evaluate(() => [...document.querySelectorAll('[data-testid="hol-list"] > *')].map(e => (e.getAttribute('data-testid') || e.className) + ':' + e.innerText.replace(/\s+/g, ' ')))
+console.log(JSON.stringify(rows))
+const row = page.locator('[data-testid="hol-list"] > *').filter({ hasText: 'Fri 17 Jul' }).first()
+await w.press(row); await page.waitForTimeout(400)
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid^="hol-"]')].filter(e => e.offsetParent).map(e => e.getAttribute('data-testid') + ':' + (e.innerText || '').replace(/\s+/g, ' ').slice(0, 30)).join(' | ')))
+await w.shot('probe7')
+await bye(w); await browser.close()

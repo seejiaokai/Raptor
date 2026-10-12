@@ -30,6 +30,7 @@ import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { iuParts } from '../engine/keys'
 import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
+import { oilWaitThen } from './oilwait'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
@@ -975,8 +976,16 @@ export function routeClick(e: MouseEvent) {
     const armKey = view.ARM.key
     if (String(armKey).indexOf('iu:') === 0) {
       const iid = String(armKey).slice(3)
-      view.disarmSlot()
-      reassignInput(iid, rp.dataset.person)
+      /* THE ARM IS PUT DOWN WHEN THE HAND-OVER IS MADE — OR REFUSED — NOT BEFORE IT IS ASKED ([OIL-ASK-NOTIFY]; Fable's read
+         of the finished code, F2 — 13 Oct 26). It used to be put down first, which was right while the hand-over was
+         made at once. Now one that raises the OIL question WAITS (D783): the row lost its ring while its question
+         stood, where an input's own row keeps it until the answer (state/view.ts placeArmed; D754 — the same
+         everywhere). So: made or refused → down, as before; waiting → it stays, and goes down when the answer comes
+         and he holds the row (ui/oilwait.ts). Left unanswered it stays armed, as an input's row does. */
+      const waited = view.OILWAIT
+      const made = reassignInput(iid, rp.dataset.person)
+      if (made || !view.OILWAIT || view.OILWAIT === waited) view.disarmSlot()
+      else oilWaitThen(() => null, () => { if (view.armedKey() === armKey) view.disarmSlot() })
       notify(); return
     }
     view.placeArmed(rp.dataset.person)

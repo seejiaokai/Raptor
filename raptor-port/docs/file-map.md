@@ -247,6 +247,32 @@ Personal Inputs, the week and the board, a phone and a desktop, a published day,
 `docs/mock/img/group-input-one-row/`. `scripts/handpass/gi-mock.mjs` draws them (with `gi-lib.mjs`): it drives the built
 app through its own controls, pictures it, then re-arranges the rows ON THE PAGE into one (`MERGE`) and pictures it again.
 
+`[OIL-ASK-NOTIFY]` (12 Oct 26 — a drawing; nothing built; D780, D781, D782): `docs/mock/oil-notify.html` is the pictures page
+he approved as recommended ("Yes to all" — D783: the design of record) — a swap whose OIL question is not answered (two wordings, three ways of showing the moment after), the ONE
+list with "Yes to all" / "No to all", the notice when a day is made a holiday afterwards and the schedulers' bell line;
+a phone and a desktop. Its pictures are `docs/mock/2026-10-12-oil-notify/`, what the run printed beside them (what is
+REAL, what is DRAWN) `docs/mock/2026-10-12-oil-notify-run.txt`. `scripts/handpass/oilnotify-mock.mjs` draws them: it
+drives the built app by real presses (the swap is a real drag, the holiday is really added), pictures it, then puts the
+proposed words and marks on the page from the app's own classes.
+
+`[OIL-ASK-NOTIFY]` — THE BUILD (12–13 Oct 26; D780–D784; the plan `docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md`,
+its register `docs/superpowers/specs/2026-10-12-oil-ask-notify-behaviour-register.md`, ON1–ON16). NEW: `src/ui/oilwait.ts`
+(what the waiting change's buttons do — answered: the door again with the answer; not answered: the flash and the bar),
+`src/ui/OilWaitSheet.tsx` (`OilWait` — the OIL question's sheet with the change's own words; `OilBar` — the bar that
+stays), `src/ui/OilDayList.tsx` (the ONE list — a window on the shell) and `src/ui/oilday.ts` (its save, one command);
+tests `src/ui/oilwait.test.tsx`, `src/leavewar/holnotice.test.tsx`, `e2e/oilwait.spec.ts`; the look
+`scripts/handpass/oilnotify-look.mjs` (the built screens at the approved pictures' frames, every step a PASS / FAIL).
+CHANGED: `src/ui/reqdoor.ts` (`gated`: the gate first, the save tried and thrown away, the fourth answer `'asked'`;
+`SeatTake`), `src/ui/inputedit.tsx` (`dryRun`, `oilFirst`, `commitInputEdit` writes `opts.oil` after the hand-over,
+`reassignInput`), `src/ui/caldrag.ts`, `src/ui/drag.ts` and `src/state/view.ts placeArmed` (the gesture's own ending
+handed to the wait; `OILWAIT`, `OILBAR` and their resets live in `state/view.ts`), `src/state/store.ts tryInputsBatch`,
+`src/ui/OilConfirm.tsx` (`lead`, `noLabel`, `yesLabel`), `src/ui/InputCard.tsx` (`action`), `src/state/notices.ts`
+(the part `oilhol`, `noticeHoliday`, `noticeLive`, `noticeLeft`, `noticeRun`, `holidayLineOn`), `src/state/noticeseen.ts`,
+`src/ui/topbits.tsx` (the line's tap, the scheduler's tap order), `src/ui/pops.ts` (`OILLIST`), `src/leavewar/state/store.ts`
+(`newHolidayRuns`, `setHolidayTell`, called from `gesture` and from `persistNotify`'s `lw.edit`), `src/leavewar/sync.ts`
+(`oilOpenOn`, `tellHoliday`, `holidayLeft`). Styles: `scheduler/08-windows-tools.css` (`.oilbar`, `.oilconf-lead`),
+`scheduler/25-inputs-calendar.css` (the list, `.icard-act`).
+
 `[OIL-WORK-START]` (D591, D592, 6 Oct 26): a flying line's OIL counts from its entered In-time / Rally, and a published
 day keeps the OIL it went out with. The fixes are in `src/engine/oil.ts` (`dayOilWork`'s flying branch reads
 `reporting.ts resolveReporting`; `OilRuleVals`, the `rv` every walk can be handed), `src/engine/oilev.ts` (the evidence

@@ -23,7 +23,7 @@
 import { store } from '../engine/hooks'
 import { me } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
-import { NOTICES, type Notice } from './notices'
+import { NOTICES, noticeLive, type Notice } from './notices'
 
 export const NOTICESEEN_PFX = 'noticeseen:'
 export const NOTICE_TYPES = ['notices.seen'] as const
@@ -50,6 +50,9 @@ export function noticeSeenLoad(): void {
 /** is this notice unread by the person it is addressed to? (`pid` — the person signed in) */
 export function isUnread(n: Notice, pid: string | null = me()): boolean {
   if (!pid || n.to !== pid) return false
+  /* a holiday's line with nothing left to answer is not listed, so it is not unread either — it must never light a
+     bell whose list would then be empty ([OIL-ASK-NOTIFY]; state/notices.ts noticeLive — the one body) */
+  if (!noticeLive(n)) return false
   const s = SEEN[pid]
   return !s || (n.at > s.upto && !s.ids.includes(n.id))
 }
@@ -82,5 +85,9 @@ export function markAllNoticesRead(): boolean {
   const pid = me()
   if (!pid || !unreadFor(pid)) return false
   const cur = SEEN[pid] || { upto: 0, ids: [] }
-  return write(pid, { upto: cur.upto, ids: NOTICES.filter(x => x.to === pid && x.at > cur.upto).map(x => x.id).sort() })
+  /* only what is SHOWN is read (state/notices.ts noticeLive — the one body; Fable's read of the [OIL-ASK-NOTIFY] plan,
+     A6): a holiday's line with nothing left to answer is not in his list, so pressing this cannot have read it — it
+     took every notice of his, and such a line came back already read when an input on it needed an answer again. What
+     he read before stays read. */
+  return write(pid, { upto: cur.upto, ids: NOTICES.filter(x => x.to === pid && x.at > cur.upto && (noticeLive(x) || cur.ids.includes(x.id))).map(x => x.id).sort() })
 }

@@ -8,6 +8,7 @@
 
 import {
   addDays,
+  isNonWorkingDay,
   assignGroup,
   biddingClosed,
   canDecide,
@@ -1534,7 +1535,13 @@ function persistNotify(): void {
   const r = cmdCommit({
     type: 'lw.edit', scope,
     /* [ARCH-STACK-4] §21.1c (FB5-03) — the backend write defers with the repaint */
-    apply: (txn) => { txn.enlist(lwStore); cmdDeferEffect(rawPersist); LW_BASELINE = state; cmdDeferEffect(rawNotify) },
+    apply: (txn) => {
+      txn.enlist(lwStore); cmdDeferEffect(rawPersist)
+      const before = LW_BASELINE
+      LW_BASELINE = state
+      tellHolidays(before)                       // [OIL-ASK-NOTIFY]: the Event row's writers, a band, an event type — this end
+      cmdDeferEffect(rawNotify)
+    },
   })
   if ((r as any).ok === false) rawNotify()   // a rejected edit reverted the model; re-read the grid + toast idiom
 }
@@ -2608,6 +2615,61 @@ export function absenceDoor(): AbsenceDoor | null { return DOOR }
 /** Run a war gesture as ONE command — every cell it touches, requests and
  *  approved leave alike, lands in one envelope and one undo step (design §5.2
  *  OA-003). Inside an already-running command it simply joins. */
+/* ---- [OIL-ASK-NOTIFY] A WORKING DAY MADE A HOLIDAY — worked out from the calendar before and after, never raised by a
+   door (owner D780, 12 Oct 26: "If a holiday is made afterwards the input is there. There should be a notification to
+   the schedulers to award oil on those inputs. And should not be silent."; the plan
+   docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md §3.3, §5a A1).
+   A day becomes a holiday by more doors than the Holidays list: a word typed on the Event row, a band, the Event
+   sheet's save, an event TYPE whose kind is changed, the list's own change onto new dates. Raised by each door it
+   would be forgotten by the next one — so it is worked out here, from the state as last committed and the state now,
+   by the ONE test (engine/eventdefs.ts isNonWorkingDay — each state judged with its OWN event types and bands), at the
+   TWO ends every write of a person's own passes: `gesture` below, and persistNotify's `lw.edit`. The projections, a
+   restore (an Undo or a Redo puts the recorded notices back themselves), a load and the boot are none of them a
+   person making a holiday, and tell nobody. What is DONE with the news is the sync's (leavewar/sync.ts tellHoliday:
+   the schedulers' notices, the one list) — this store only says which dates. */
+export type HolidayRun = { from: string; to: string }
+let HOLIDAY_TELL: ((runs: HolidayRun[]) => void) | null = null
+export function setHolidayTell(fn: ((runs: HolidayRun[]) => void) | null): void { HOLIDAY_TELL = fn }
+/** The dates that were WORKING days in `before` and are non-working in `after`, as runs of days in a row. A weekend
+ *  was never a working day; a date no period held before was a working day unless a weekend. */
+export function newHolidayRuns(before: State, after: State): HolidayRun[] {
+  if (before === after || (before.wars === after.wars && before.eventDefs === after.eventDefs)) return []
+  const defsMoved = before.eventDefs !== after.eventDefs
+  const was = new Map<string, LeaveWar>()
+  for (const w of before.wars) was.set(w.period.id, w)
+  const daysBefore = new Map<string, Map<string, Period['days'][number]>>()
+  const dayBefore = (date: string): { day: Period['days'][number] | undefined; bands: readonly EventBand[] } => {
+    const w = warHolding(before.wars, date)
+    if (!w) return { day: undefined, bands: [] }
+    let m = daysBefore.get(w.period.id)
+    if (!m) { m = new Map(w.period.days.map(d => [d.date, d])); daysBefore.set(w.period.id, m) }
+    return { day: m.get(date), bands: w.period.bands }
+  }
+  const dates: string[] = []
+  for (const w of after.wars) {
+    const p = w.period
+    if (!defsMoved && was.get(p.id)?.period === p) continue          // this period's days and bands did not move
+    for (const d of p.days) {
+      if (!isNonWorkingDay(d.date, d, after.eventDefs, p.bands)) continue
+      const b = dayBefore(d.date)
+      if (!isNonWorkingDay(d.date, b.day, before.eventDefs, b.bands)) dates.push(d.date)
+    }
+  }
+  dates.sort()
+  const runs: HolidayRun[] = []
+  for (const d of dates) {
+    const last = runs[runs.length - 1]
+    if (last && (d === last.to || d === addDays(last.to, 1))) last.to = d
+    else runs.push({ from: d, to: d })
+  }
+  return runs
+}
+function tellHolidays(before: State): void {
+  if (!HOLIDAY_TELL) return
+  const runs = newHolidayRuns(before, state)
+  if (runs.length) HOLIDAY_TELL(runs)
+}
+
 function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
   let out!: T
@@ -2618,7 +2680,9 @@ function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: st
     ...(opts.note ? { meta: { key: opts.note } } : {}),
     apply: (t) => {
       t.enlist(lwStore)
+      const before = LW_BASELINE
       out = fn()
+      tellHolidays(before)                       // [OIL-ASK-NOTIFY]: inside this command — its Undo takes the notices too
       /* the per-cell persists inside ran as joined children (locked — no
          legacy undo step each); ONE unlocked persist at the seal records the
          whole gesture as one step on the legacy Leave War stack too */

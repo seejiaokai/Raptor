@@ -36,7 +36,7 @@ import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
-import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
+import { writeInputsBatch, tryInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -51,7 +51,8 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
-import { CURPAGE, revealInput } from '../state/view'
+import { CURPAGE, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
+import { holdForOil } from './oilwait'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
 import { TypeLegend } from './TypeLegend'
@@ -1245,6 +1246,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     /* …from a row on the schedule a Yes is KEPT, at what the new hours give — engine/oil.ts repricedOil (D739 reading 4) */
     const keptOil = (sched ? repricedOil : voidedOil)({ person: wasPerson, oil: r.oil }, { ...r, person: leadOf(r) })
     if (keptOil) r.oil = keptOil; else delete r.oil
+    /* …AND THE ANSWER GIVEN WITH THIS VERY SAVE ([OIL-ASK-NOTIFY] — owner D783: a swap "is not made until the question
+       is answered", so the new holder's answer arrives WITH the swap, in its one command). Written HERE, after the
+       hand-over above voided the old holder's — a line earlier and the same save would void it too (Fable's read of
+       the plan, A8). */
+    if (opts && opts.oil) r.oil = { ...opts.oil }
     /* ...and the SCHEDULER's own override on this request dies with the
        assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
        answers above was only half of it: a refusal the scheduler made about the
@@ -1383,6 +1389,65 @@ export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: bo
 }
 export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
 
+/** WOULD THIS SAVE GO THROUGH? — the door's own body, run for real and thrown away (state/store.ts tryInputsBatch;
+ *  [OIL-ASK-NOTIFY], owner D783 — the OIL question is put BEFORE the change, so the change must be known good before
+ *  anyone is asked). Silent: whatever the save says is said when it is run for real — a refusal by the real run, in
+ *  its own words. A refused try puts the lists back as NEW objects: find a record again by its id afterwards. */
+export function dryRun(fn: () => boolean | void): boolean {
+  const say = HOOKS.toast
+  HOOKS.toast = () => {}
+  try { return tryInputsBatch(fn) } finally { HOOKS.toast = say }
+}
+/** THE OIL QUESTION FIRST, FOR A DOOR OF THIS FILE THAT IS NOT AN INPUT'S ROW ([OIL-ASK-NOTIFY] — owner D780: "…holds at
+ *  every door"; D783: a change that raises the OIL question "is NOT MADE until the question is answered"; the plan
+ *  §3.1, readings R1). The Unavailable row's person (reassignInput, below) and the Inputs calendar's date drag
+ *  (ui/caldrag.ts) each made their change and THEN put the question, and a Cancel left it made with nobody having
+ *  answered. They now go the way the row's door goes (ui/reqdoor.ts `gated`): the door's own save is tried and thrown
+ *  away; a change that would be refused is refused, in its own words; one that raises the question writes NOTHING and
+ *  waits (ui/oilwait.ts); the answer runs `make` again WITH it — the change and the answer one command, one Undo.
+ *  The record is found again by its id each time (a tried save puts the list back as new objects), and `same` says
+ *  whether it is still what the question was asked about. True: the change was made now. */
+export function oilFirst(o: {
+  kind: OilWaitKind
+  lead: string
+  iid: string
+  /** the change, on the record as it stands; false — refused, and it said why */
+  make: (r: any, oil?: Record<string, number>) => boolean
+  same: (r: any) => boolean
+  gate: (r: any) => ReturnType<typeof oilGate>
+  /** what flashes when it is not answered (ui/oilwait.ts — `sel:` + a selector) */
+  places: string[]
+  /** this door asked afresh — the bar's "Answer OIL"; true: made */
+  again: () => boolean
+}): boolean {
+  const find = () => INPUTS.find((x: any) => String(x.iid) === String(o.iid))
+  const run = (oil?: Record<string, number>): string => { const r = find(); return !r || !o.same(r) ? 'none' : o.make(r, oil) ? 'done' : 'refused' }
+  /* THE GATE FIRST, THE TRY ONLY WHERE THERE IS A QUESTION: nothing to ask (a working day, a kind that never earns) →
+     the change is made exactly as it always was, on the very record — a thrown-away save puts every record back as a
+     NEW object, and that is paid only where a question is about to be put. The gate is asked without a word: a draft
+     it would refuse is the save's to refuse, in the save's own words. */
+  const say = HOOKS.toast
+  let g: ReturnType<typeof oilGate> | null = null
+  HOOKS.toast = () => {}
+  try { const r = find(); g = r ? o.gate(r) : null } finally { HOOKS.toast = say }
+  if (!g || g.kind !== 'ask') return run() === 'done'
+  if (!dryRun(() => run() === 'done')) {
+    /* it would be refused: the real run says why and writes nothing. (Should the two ever disagree, the change is made
+       as it always was and the question follows it — never silent.) */
+    const a = run()
+    if (a === 'done') askOilIfPending(find())
+    else notify()                                    // every screen reads its records again after the thrown-away save
+    return a === 'done'
+  }
+  holdForOil({
+    kind: o.kind, lead: o.lead, places: o.places,
+    gate: { who: g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
+    redo: oil => run(oil),
+    ask: () => { const x = find(); if (!x || !o.same(x)) return 'none'; return o.again() ? 'done' : OILWAIT ? 'asked' : 'refused' },
+  })
+  return false
+}
+
 /** The upchit sheet's Save for an EDIT: the edit and the ticked leftover removals as ONE undo step (the nested batch
  *  is safe — the inner writeInputsBatch's push is a no-op under the outer). */
 export function commitEditUpchit(r: any, draft: any, removals: any[]): boolean {
@@ -1405,7 +1470,7 @@ export function commitEditUpchit(r: any, draft: any, removals: any[]): boolean {
    a data edit to who is unavailable, not a seat assignment, so any roster
    member (including one already filed unavailable elsewhere, or flying) is
    a legal target. */
-export function reassignInput(iid: any, personId: any) {
+export function reassignInput(iid: any, personId: any): boolean {
   /* write-path role backstop (CLAUDE.md: role checks at the write path, not
      only the render). Reassigning WHOSE day an Unavailable row is, is a
      scheduler action — the dialog's Person field and the iu: arm/drop targets
@@ -1445,14 +1510,26 @@ export function reassignInput(iid: any, personId: any) {
     if (!normalizeInputDraft({ ...draftOf(r), person: personId }, r)) return false
     /* (who filed it passes to the scheduler who swaps its FILER out — D759 reading 7, as the window's save does it in
        commitInput; the Opus trial read, claim 9, reproduced red in leavewar/trialread.test.ts) */
-    if (!saveBatch(() => {
-      const by = me()
-      if (by != null && String(r.by ?? '') === String(from)) { toPeople(r); r.by = String(by) }
-      swapPerson(r, from, personId, stampOf()); stampChanged(r)
-    })) return false
-    HOOKS.toast(isPersonal(r.type) && r.acc !== 'u' ? `${PEOPLE[personId].cs} is on ${inpLabel(r)} instead of ${was}` : `${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
-    askOilIfPending(r)
-    return true
+    /* (THE OIL QUESTION FIRST — oilFirst, above: the input keeps its ONE answer through this swap, D762, so there is a
+       question only where it has none yet; then the swap waits on it and is made with the answer) */
+    return oilFirst({
+      kind: 'swap', lead: `Putting ${PEOPLE[personId].cs} in place of ${was}`, iid: String(r.iid),
+      same: x => holds(x, from) && !holds(x, personId),
+      make: (x, oil) => {
+        if (!saveBatch(() => {
+          const by = me()
+          if (by != null && String(x.by ?? '') === String(from)) { toPeople(x); x.by = String(by) }
+          swapPerson(x, from, personId, stampOf())
+          if (oil) x.oil = { ...oil }
+          stampChanged(x)
+        })) return false
+        HOOKS.toast(isPersonal(x.type) && x.acc !== 'u' ? `${PEOPLE[personId].cs} is on ${inpLabel(x)} instead of ${was}` : `${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
+        return true
+      },
+      gate: x => oilGate(draftOf(x), x),
+      places: [`sel:[data-inpseat="${String(iid)}"]`],
+      again: () => !!reassignInput(iid, personId),
+    })
   }
   const draft = draftOf(r)
   draft.person = personId
@@ -1467,7 +1544,24 @@ export function reassignInput(iid: any, personId: any) {
     return false
   }
   /* from a row on the schedule: the late date is not moved (D742 reading 3). The new holder's OIL answer is void all
-     the same — he has not answered — and the question below still follows (the plan §4.7: not touched). */
+     the same — he has not answered — so THE QUESTION IS PUT FIRST and the hand-over is made with its answer (oilFirst,
+     above — [OIL-ASK-NOTIFY], owner D783; until then the hand-over was made and the question followed it, and a Cancel
+     left the new holder unanswered). A medical never asks the OIL question, so its own wait, just above, and this
+     one never meet on one gesture (Fable's read of the plan, A10). */
+  return oilFirst({
+    kind: 'swap', lead: `Putting ${PEOPLE[personId].cs} in place of ${was}`, iid: String(r.iid),
+    same: x => idsOf(x).length === 1 && holds(x, from),
+    make: (x, oil) => {
+      if (!commitInputEdit(x, { ...draftOf(x), person: personId }, undefined, undefined, oil ? { sched: true, oil } : { sched: true })) return false
+      HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
+      return true
+    },
+    gate: x => oilGate({ ...draftOf(x), person: personId }, x),
+    places: [`sel:[data-inpseat="${String(iid)}"]`],
+    again: () => !!reassignInput(iid, personId),
+  })
+}
+/* (what stood here until [OIL-ASK-NOTIFY]: the hand-over made, then the question — kept for its reasoning)
   if (!commitInputEdit(r, draft, undefined, undefined, { sched: true })) return false
   HOOKS.toast(`${PEOPLE[personId].cs} is now unavailable instead of ${was}`, 'ok')
   /* THE SECOND DOOR ONTO THE SAME BUG (Fable M2, 22 Sep 26). This helper goes
@@ -1476,10 +1570,10 @@ export function reassignInput(iid: any, personId: any) {
      the wording of a refusal. Refusing the drag was the cheaper repair and is
      the wrong one: the app DRAWS this gesture as available, and inviting a
      gesture then declining it is the defect G5 is about. So the reassign stands
-     and the question follows. */
+     and the question follows.
   askOilIfPending(r)
   return true
-}
+} */
 
 /** THE QUESTION FOLLOWS A SAVE THAT LEFT A DAY UNANSWERED — the one body, so
  *  every door that writes an input straight through `commitInputEdit` raises it

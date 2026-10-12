@@ -210,7 +210,9 @@ const RULING_BYTES = [
      bell's wording and the Inputs export, all live (D772 alone is replaced, and goes to the archive by its mark). His
      question [SCHEDULER-RULINGS-SIZE] is still WITH HIM and still due; this is room until he answers, not a target. */
   ['.claude/rules/decisions/scheduler.md', 2, 106000],
-  ['.claude/rules/decisions/oil.md',     2, 12000],
+  /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
+     rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
+  ['.claude/rules/decisions/oil.md',     2, 14000],
   ['.claude/rules/decisions/leave-war.md', 2, 37000],
   ['.claude/rules/decisions/tracker.md', 2, 19000],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt

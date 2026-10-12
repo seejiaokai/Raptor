@@ -1,0 +1,25 @@
+import { launch, world, bye, rec, FRI, ON_FRI } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'D1' })
+const { page, tid } = w
+const ok = await w.giveWarden(); w.say('warden admin', ok)
+const ids = await w.fileFriday(); w.say('ids', ids)
+w.say('inputs on Fri', await page.evaluate(() => window.INPUTS.map(r => `${r.iid}|${r.title||r.type}|${r.d||r.date||''}|${(r.people||[]).map(p=>p.p).join('+')}`)))
+await w.makeHoliday('National Day', [FRI])
+const win = tid('win-oilday')
+w.say('list count', await win.count())
+if (await win.count()) {
+  w.say('title', (await win.locator('.win-ttl').innerText()).replace(/\s+/g, ' '))
+  w.say('lead', await tid('odl-lead').innerText().catch(() => 'none'))
+  w.say('count', await tid('odl-count').innerText())
+  w.say('save disabled', await tid('odl-save').isDisabled())
+  w.say('left', await tid('odl-left').innerText())
+  w.say('cards', await win.locator('.icard').evaluateAll(es => es.map(e => e.innerText.replace(/\s+/g, ' ').trim())))
+  w.say('measure', await w.measure('[data-testid="win-oilday"]'))
+  w.say('measure save', await w.measure('[data-testid="odl-save"]'))
+  w.say('undo', await w.undoInfo())
+  await w.hush()
+  w.say('pic', await w.shot('D1-list-opens'))
+}
+w.say('errors', await bye(w))
+await browser.close()

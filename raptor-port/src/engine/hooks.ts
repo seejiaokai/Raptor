@@ -26,7 +26,7 @@ export const HOOKS = {
      the same `write` (there is no `retarget` any more: ALL AVAIL / ALL joins the input like anyone). Unset (an
      engine-only test): every place is written as before, and the engine's own belt refuses any place of an input's
      row (slots.ts inputSeatBar). */
-  inputRow: null as null | { write: (key: any, id: any) => 'none' | 'done' | 'refused' },
+  inputRow: null as null | { write: (key: any, id: any) => 'none' | 'done' | 'refused' | 'asked' },
   /* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26): run `fn`, and every toast raised inside it is said as ONE
      line, in order, when it returns (ui/toast.ts toastBatch). The toast is a single element whose text is replaced, so a
      publish that then raised the OIL check's warning showed only the warning. Scoped on purpose — only a publish uses

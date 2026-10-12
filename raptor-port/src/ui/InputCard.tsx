@@ -34,7 +34,7 @@
 import { useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import type { CardFacts } from './inputcard-model'
 
-export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey, flash, children }: {
+export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey, flash, action, children }: {
   /** the input's address — its record's id */
   id: string
   facts: CardFacts
@@ -56,6 +56,9 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
   onKey?: (e: ReactKeyboardEvent) => void
   /** just saved: the list's flash */
   flash?: boolean
+  /** the card's own buttons, at the right of its words row — the one list's "Yes · HO" / "No" ([OIL-ASK-NOTIFY], owner
+   *  D783: "one line an input, on the input's own card"; ui/OilDayList.tsx). A press on one is the button's own. */
+  action?: ReactNode
   children?: ReactNode
 }) {
   const [lateOpen, setLateOpen] = useState(false)
@@ -83,8 +86,8 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
         <span className={'icard-kind' + (cx && !title ? ' is-cx' : '')} data-testid={`${tid}-kind`}>{kind}</span>
       </div>
       {late && lateOpen && <div className="sd-latenote icard-latenote" data-testid={`${tid}-latenote`} role="status">{late}</div>}
-      {(title || remark || by || cx) && (
-        <div className="icard-words">
+      {(title || remark || by || cx || action) && (
+        <div className={'icard-words' + (action ? ' has-act' : '')}>
           {(title || remark || cx) && (
             <span className="icard-text">
               {cx && <span className="icx" data-testid={`${tid}-cx`}>CX</span>}
@@ -95,6 +98,7 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
             </span>
           )}
           {by && <span className="icard-by" data-testid={`${tid}-by`}>By {by}</span>}
+          {action && <span className="icard-act">{action}</span>}
         </div>
       )}
       {children}

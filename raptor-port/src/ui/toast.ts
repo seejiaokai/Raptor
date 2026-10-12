@@ -40,9 +40,15 @@ export function toastBatch<T>(fn:()=>T):T{
 export function placeToast(){
   const t=$('toastEl'); if(!t)return;
   const up=phoneLayout()&&!!document.querySelector('.floatwin');
+  /* …AND NEVER ON THE BAR THAT STAYS ([OIL-ASK-NOTIFY] — the check's walk, 13 Oct 26: "Not swapped — OIL not answered ·
+     Answer OIL · OK" stands at the foot until it is tapped (D783 (2)), exactly where a note is drawn, and the note is the
+     layer above — so every note raised while it was up, and one still showing when it arrived, covered its words and half
+     its "Answer OIL" button). While that bar is up the note sits just above it; ui/OilWaitSheet.tsx calls this when the
+     bar arrives. The "Set as default" offer goes by itself after seven seconds and is left as it was. */
+  const bar=up?null:document.querySelector('.secdef-snack.oilbar') as HTMLElement|null;
   t.dataset.at=up?'top':'foot';
   t.style.top=up?'calc(env(safe-area-inset-top, 0px) + 10px)':'';
-  t.style.bottom=up?'auto':'26px';
+  t.style.bottom=up?'auto':bar?`${18+(bar.offsetHeight||50)+8}px`:'26px';
 }
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */

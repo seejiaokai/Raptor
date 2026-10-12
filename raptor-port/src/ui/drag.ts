@@ -14,7 +14,8 @@ import { notify } from '../state/store'
 import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
-import { rowPut, rowTake, rowLeaveTo, rowMove, isRowMan, onInputRow, placeOnRow } from './reqdoor'
+import { rowPut, rowTake, rowLeaveTo, rowMove, isRowMan, onInputRow, placeOnRow, type SeatTake } from './reqdoor'
+import { oilWaitThen, oilWaitAlso } from './oilwait'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
@@ -221,7 +222,12 @@ export function applyDrop(el: any, x: any, y: any) {
     const iid = (inpEl as HTMLElement).dataset.inpseat!
     const pid = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
     if (!pid || !PEOPLE[pid]) { DRAG = null; dndOff(); return false }
+    const waited = view.OILWAIT
     reassignInput(iid, pid)
+    /* …and where the hand-over WAITS on its OIL question ([OIL-ASK-NOTIFY], D783 (2): "both pucks flash"), the seat he
+       was dragged from is one of the two: he stays on it either way (the note above), and left unanswered his puck
+       there flashes with the row's (ui/oilwait.ts — the walk's C2: only the row's man flashed) */
+    if (DRAG.kind === 'slot' && view.OILWAIT && view.OILWAIT !== waited) oilWaitAlso(DRAG.key)
     /* mirrors done()'s own arm put-down and drawer-park below, without ALSO
        calling afterSchedMutate() — reassignInput's commitInputEdit already
        ran the input funnel's full epilogue (validate, notify, ONE history
@@ -310,6 +316,25 @@ export function applyDrop(el: any, x: any, y: any) {
      through `fin`, which makes NO schedule write — `done()` would push a second Undo step for the one drop
      (reassignInput's precedent, above). `landed` is the place the puck stands on NOW (a row above it may have gone). */
   const no = () => { DRAG = null; dndOff(); return false }
+  /* …AND THE DOOR'S FOURTH ANSWER ([OIL-ASK-NOTIFY] — owner D783: "a swap or an add that raises an OIL question is NOT
+     MADE until the question is answered — nothing moves"). The door wrote NOTHING and left the change waiting on the
+     question (ui/oilwait.ts): the drop ends here with nothing moved, no flash and no note — and hands the wait this
+     gesture's own ending, to run when the answer comes: the landing flash on where he stands THEN, and the "already
+     busy" note, against the warnings as they are at that moment (Fable's read of the plan, A3, A4). */
+  const held = (id: any) => {
+    oilWaitThen(() => WARN, (wb: any, landed: string | null) => {
+      if (!landed) return
+      if (view.armedKey() === landed) view.disarmSlot()
+      markLand(landSel(landed))
+      if (!flagDrop(wb, keyDay(landed)) && id) barDrop(id, landed)
+    })
+    /* "both pucks flash" (D783 (2)) at every site: a man dragged from a SEAT onto a row's open place is an add and
+       keeps his seat, and the door was handed no seat there — left unanswered, only the row's box flashed (the Opus
+       read, F6). A place the door already lists is not listed twice. */
+    if (DRAG.kind === 'slot') oilWaitAlso(DRAG.key)
+    ROS_REOPEN = false
+    return no()
+  }
   const fin = (landed?: any, id?: any) => {
     if (landed && view.armedKey() === landed) view.disarmSlot()
     ROS_REOPEN = false
@@ -327,6 +352,7 @@ export function applyDrop(el: any, x: any, y: any) {
     if (DRAG.kind === 'slot' && DRAG.key !== targetKey) {
       const mv = rowMove(DRAG.key, targetKey)
       if (mv === 'refused') return no()
+      if (mv === 'asked') return held(aimed)
       if (mv === 'done') return fin(placeOnRow(targetKey, aimed) || targetKey, aimed)
     }
     if (DRAG.kind === 'roster' || DRAG.key !== targetKey) {
@@ -338,13 +364,16 @@ export function applyDrop(el: any, x: any, y: any) {
       /* …and a seat that refuses him SAYS WHY (the walk's B3; Fable's read, finding 4 — 12 Oct 26): the reason was worked
          out here and said by nobody, so the refusal read "Not saved — that change was refused, and nothing was kept" */
       const csOf = (x: any) => (PEOPLE[x] ? PEOPLE[x].cs : String(x))
-      const seat = src ? (was: string) => {
-        const why = !sentinelSeatOK(src, was) ? 'that seat cannot take him' : rowTwice(was, src, src)
+      /* (the seat is NAMED to the door, with this way of putting a man on it — so a swap that waits on its OIL answer
+         finds the seat again when the answer comes, wherever its row then stands: ui/reqdoor.ts SeatTake) */
+      const seat: SeatTake | undefined = src ? { from: src, take: (from: string, was: string) => {
+        const why = !sentinelSeatOK(from, was) ? 'that seat cannot take him' : rowTwice(was, from, from)
         if (why) { HOOKS.toast(`${csOf(was)} cannot take ${csOf(aimed)}’s place — ${why}`, 'warn'); return false }
-        return setSlotVal(src, was)
-      } : undefined
+        return setSlotVal(from, was)
+      } } : undefined
       const put = rowPut(targetKey, aimed, seat)
       if (put === 'refused') return no()
+      if (put === 'asked') return held(aimed)
       if (put === 'done') return fin(placeOnRow(targetKey, aimed) || targetKey, aimed)
     }
     /* THE PREFLIGHT, AND WHY IT CANNOT BE A CHECK INSIDE THE WRITER (D33 +
@@ -420,10 +449,12 @@ export function applyDrop(el: any, x: any, y: any) {
     if (DRAG.kind === 'slot') {                      // from one input's row onto another's: a move (Fable F1)
       const mv = rowMove(DRAG.key, fillKey)
       if (mv === 'refused') return no()
+      if (mv === 'asked') return held(moving)
       if (mv === 'done') return fin(placeOnRow(fillKey, moving) || fillKey, moving)
     }
     { const put = rowPut(fillKey, moving)
       if (put === 'refused') return no()
+      if (put === 'asked') return held(moving)
       if (put === 'done') return fin(placeOnRow(fillKey, moving) || fillKey, moving) }
     /* the same preflight as the seat branch, for the same reason: the MOVE below
        clears the source seat BEFORE it fills the target, so a refusal after the

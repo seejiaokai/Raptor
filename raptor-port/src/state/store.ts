@@ -260,6 +260,33 @@ export function writeInputsBatch(fn: () => void): boolean {
   return batchResult(commitInputsWith([], SCHED_TYPES.inputsBatch, () => { runInputWrite(fn, true) }))
 }
 
+/* A SAVE TRIED AND THROWN AWAY ([OIL-ASK-NOTIFY] — owner D783: a swap or an add that raises the OIL question "is not
+   made until the question is answered"; Fable's read of the plan, A2). The door must know, BEFORE it asks, that the
+   change would go through — or a man answers a question for a change that is then refused (leave over recorded work,
+   ALL AVAIL on an input longer than a day, a locked week: refusals made INSIDE the save, which no check outside it can
+   see). So the door's own body is run here for real, inside an input batch, and the batch is then refused on purpose:
+   every enlisted store goes back as it was, no effect is released, no Undo step, no row written, nobody told.
+   `fn` answers false where its own save refused. The absence rules run where they always do (runInputWrite, after
+   `fn`), so they are tried too. NOT through batchResult: a tried save is no refusal the person made — the armed place
+   stays armed and nothing repaints. True: it would be saved. */
+const TRIED = 'tried — thrown away'
+export function tryInputsBatch(fn: () => boolean | void): boolean {
+  let passed = false
+  commitInputsWith([], SCHED_TYPES.inputsBatch, () => {
+    runInputWrite(() => { if (fn() === false) throw new CmdRefused(TRIED) }, true)
+    passed = true
+    throw new CmdRefused(TRIED)
+  })
+  /* …AND THE RULES ARE RUN AGAIN, ON THE WORLD AS IT STANDS (the Opus read of the finished code, F1 — 13 Oct 26). The
+     save's own epilogue ran them INSIDE the batch, on the tried world (HOOKS.reflow → validate()), and what they find —
+     WARN, REST, EVD — is module state, no part of what the rollback puts back. With nothing after it, every screen then
+     repainted the day's issues and the rings on its pucks from a change that was never made: behind the question, and
+     for as long as the bar stood. "Nothing moves" (D783) is what the screen must say too. No repaint of its own — the
+     caller notifies; not through batchResult, which would put the armed place down (above). */
+  validate()
+  return passed
+}
+
 /* [CMDL-FINISH] §6 — the off-week session-memory store, enlisted in an input
    batch (not a guarded store): a protected-week clear that drops a stashed week
    does so INSIDE the batch, so a phase-6 refusal rolls the drop back with it.

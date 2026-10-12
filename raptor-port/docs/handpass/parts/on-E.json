@@ -1,0 +1,94 @@
+{
+ "walker": "E",
+ "build": "assets/index-Bv5bvisT.js",
+ "counts": {
+  "PASS": 18,
+  "FAIL": 1,
+  "PARTIAL": 0,
+  "NOT WALKED": 0,
+  "RECORD": 1
+ },
+ "rows": [
+  {
+   "id": "E1a",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E1a-bell",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E1b",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E1n",
+   "verdict": "RECORD"
+  },
+  {
+   "id": "E1c",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E2-off",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E2-gap",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E2-free",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E2-nolv",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E3-Ranger",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E3-Hex",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E3-Tally",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E3-Guest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E4",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E5",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E6a",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E6b",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E6c",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E7",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E8",
+   "verdict": "FAIL"
+  }
+ ],
+ "table": "docs/handpass/parts/on-E.md"
+}

@@ -2254,6 +2254,9 @@ row's pucks and its CX / ⓘ / red box / ✕ buttons start at that edge, so the 
 
 ## Editing an input from the schedule (owner, 10 Aug 26)
 
+**"Delete" in an input's own window deletes at once and asks nothing (owner D792, 13 Oct 26 — "No need to show are you
+sure").** As built, on the Inputs pages and from the schedule alike; Undo brings the input back. No confirm step is added.
+
 **SINCE 11 Oct 26 THE GROUND PROGRAMME'S OWN BOXES DO IT TOO (owner D739, D740).** The name, the two times and the remark
 of a request's row on the Ground Programme — the week's `data-txt="gr:di.ri.{prog|str|end|rmks}"`, the board's
 `data-bfld` — are the REQUEST's boxes: typing there changes the request (and so its Personal Inputs line and the Inputs
@@ -4410,6 +4413,70 @@ Three things stay decided:
   parity check `cancelled rows greyed` (`tfin.js`) matches the pills' own
   `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
   back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
+
+## The OIL question comes before the change; the bar; the one list; the holiday's line (owner D780–D783 — 12–13 Oct 26, `[OIL-ASK-NOTIFY]`)
+
+*The pictures of record: `docs/mock/2026-10-12-oil-notify/` (D783 — "Yes to all"); the built screens at the same frames:
+`docs/img/handpass/2026-10-13-oil-ask-notify/look/`, taken by `scripts/handpass/oilnotify-look.mjs`.*
+
+- **The sheet** is the OIL question's own (`ui/OilConfirm.tsx`), opened by `ui/OilWaitSheet.tsx OilWait` over whatever
+  surface the gesture was on, with NO window of the input behind it (nothing has changed). Above the question, in bold,
+  what is waiting: "Swapping Tally and Ranger" (a drag from a seat), "Putting Tally in place of Ranger" (from the crew
+  list, and on the Unavailable row), "Adding Tally to Range brief", "Moving Tally to Range brief", "Moving Range brief
+  to Sat 18 Jul" (the calendar's drag). Its two buttons: "Don’t swap" / "Swap" — "Don’t add" / "Add" — "Don’t move" /
+  "Move"; the right one is greyed until an answer is picked. ✕, Escape and a press outside are the left button.
+- **Not answered:** nothing is written. The places flash with the landing flash (`.lift-land` — the puck dropped on and
+  the seat dragged from; the Unavailable row's person; the calendar's chip) and **the bar** appears: `.secdef-snack.oilbar`,
+  the "Set as default" bar's look, at the foot of the screen, z-index 440 — over the full-screen Scheduler Board (400),
+  under a question's sheet (460). "Not swapped — OIL not answered" / "Not added — …" / "Not moved — …", then **Answer
+  OIL** (the door is asked afresh: the question returns, or "That row has changed — not swapped") and **OK** (closes
+  it). It has NO timer; a week, a page or a sign-in that changes under it takes it away. On a phone the words take two
+  lines and the two buttons sit side by side under them. **Both pucks flash at every door** (the check's walk, C2 —
+  13 Oct 26): on the Unavailable row the door is handed a person, never his seat, so the drag hands the seat he was
+  dragged from to the wait (`ui/oilwait.ts oilWaitAlso`). **A passing note never lands on the bar** (the walk's C3): the
+  note is drawn at the foot too, a layer above, and the bar stays — so while the bar is up the note sits just above it
+  (`ui/toast.ts placeToast`, which the bar calls as it arrives, so a note already showing moves clear).
+- **Nothing moves — and the screen says so** (the Opus read of the finished code, C1 — 13 Oct 26). The door's save is
+  tried and thrown away before the question is put, and the rules ran inside it: `state/store.ts tryInputsBatch` runs
+  them again on the world as it stands, so the day's issues and the rings on its pucks behind the question, and under
+  the bar, are never those of the change that was not made. **"Answer OIL" makes the change that was waiting or none**
+  (C2): a row that has changed in any way since — its man, its seat, or how many it holds, so that a swap would now
+  be an add — says "That row has changed — not swapped". **OIL Earn switched on takes the waiting change and its bar
+  away** (C7 — in that mode the day does not move). **The Unavailable row's armed tap keeps the row's ring** until
+  the hand-over is made or refused (C10), as an input's row keeps its arm; both doors flash both pucks a second time
+  too (C9), and an add dragged from a seat flashes the seat (C8).
+- **The one list** (`ui/OilDayList.tsx`): a window on the shell at its own width, title "OIL — Fri 17 Jul" (a run:
+  "Mon 20 – Tue 21 Jul") over "Public holiday · <name>". Opened by itself it begins "<name> is now a public holiday.";
+  from the bell it does not. **A holiday with no name of its own** (the Event sheet's "PH" button, the Holidays list's
+  empty name box — saved under the preset's own word) is never called by that word (the walk's E1: "PH is now a public
+  holiday."): the second line is "Public holiday" alone, the first "Fri 17 Jul is now a public holiday." (a run: "Thu
+  16 – Fri 17 Jul are now public holidays."), and the bell's line reads "Public holiday" in bold (`leavewar/sync.ts
+  tellHoliday` keeps its name as ''). Then the count ("4 to answer" / "3 of 4 answered") with "Yes to all" and "No to all" at
+  its right; one card an input, the input's own card in the day's own order, with `.icard-act` at the right of its
+  words row — "Yes · FO" or "Yes · HO" (`.upconf-seg`, picked: `.on-keep`) and "No" (picked: `.odl-no`, quiet grey); a
+  second press un-picks. No "OIL?" tag inside. The foot: "What is left goes to the schedulers’ bells" (gone when every
+  line is picked), "Later", "Save" (greyed until a pick). A press on a card's name opens that input's own window. On
+  a phone it is the shell's bottom panel, as tall as what is in it.
+- **The bell's line** for a holiday is a line of the bell's list like any other: the holiday's name in bold, its date
+  ("Fri 17 Jul"; a run "Mon 20 – Tue 21 Jul"), then "4 inputs need an OIL answer · Saber" ("1 input needs…"), its age at
+  the right. The number is read at every draw; at none left the line is not drawn and does not light the bell.
+  **A scheduler's line, and only while he is one** (the walk's E8; D785's reading, D292): with the admin's own member
+  view on it is not listed, not unread and does not light his bell — the list it opens would refuse him — and it is
+  back, read or unread as he left it, when he switches back (`state/notices.ts noticeLive`, the one body the list, the
+  unread count, "Mark all read" and the bell's tap all ask). "Mark all read" reads only the lines that are shown.
+  **ONE LINE A HOLIDAY, WHATEVER IS DONE TO ITS DATES** (the two code reads, C3–C6 — 13 Oct 26). A notice keeps the
+  dates as they were when it was made, and that is only where to look: the line's dates, its name, its count, the day
+  it covers and the list it opens are read from the war AS IT STANDS (`state/notices.ts noticeSpan`, fed by
+  `leavewar/sync.ts holidaySpan`) — a holiday shortened names the days still a holiday, renamed its new name, taken
+  away it has no line. The notice itself is made for the WHOLE holiday as the war's list has it (`tellHoliday`
+  widens a run to the holiday that holds it), so a holiday lengthened by a day, or entered Friday to Monday, is one
+  notice and one list; and a newer notice whose live days hold all of an older one's takes its place. A live holiday
+  line is never one of the lines the bell cuts at thirty — the bell's tap leaves a scheduler's own question on that
+  day to it.
+- **TO BE BUILT — one more door (owner D793, 13 Oct 26 — "Yes it should wait on it"):** an input taken off the
+  programme whose day has since become a holiday, put back by the scheduler's Accept, waits on its OIL question as a
+  swap does — the question first, put back only on an answer, the bar if it is left unanswered. Today the Accept asks
+  nothing (`OUTSTANDING.md` `[OIL-ACCEPT-BACK-UNASKED]`). An Undo of the take-off asks nothing, then as now.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
@@ -6946,6 +7013,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
+- **TO BE BUILT — D786 (owner, 13 Oct 26; `OUTSTANDING.md` `[CAL-PHONE-SWIPE-FIT]`):** on a phone a swipe sideways on the month goes to
+  the next or the last month, and on the Holidays list to the next or the last year (the arrows and "Today" stay); and the
+  "Every <weekday>" window's From date box fits inside the window at any phone width — on his iPhone it ran off the right edge.
 - **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
   <weekday>" and is lit while that window is up.
 - **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days

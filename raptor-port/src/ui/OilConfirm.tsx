@@ -74,13 +74,21 @@ function OilDayCal({ days, sel, onToggle }: {
   )
 }
 
-export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel }: {
+/* `lead`, `noLabel`, `yesLabel` — THE QUESTION PUT BEFORE A CHANGE ([OIL-ASK-NOTIFY], owner D783 — the pictures of
+   record docs/mock/2026-10-12-oil-notify/*-swap-3-question-waits.png): a swap, an add or a move that raises the
+   question is not made until it is answered, so the sheet says what is waiting ("Swapping Tally and Ranger" — a
+   statement above the question, never a second question) and its two buttons say what each does ("Don’t swap" /
+   "Swap"). Without them it is the input's own save, as it always was: Cancel / Save. Drawn by ui/OilWaitSheet.tsx. */
+export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead, noLabel, yesLabel }: {
   who: string
   typeLabel: string
   plan: { iso: string, amt: 0.5 | 1 }[]
   prev: Record<string, number>
   onSave: (decisions: Record<string, number>) => void
   onCancel: () => void
+  lead?: string
+  noLabel?: string
+  yesLabel?: string
 }) {
   const multi = plan.length > 1
   const amt = plan[0].amt                                    // one window → one standing for every day
@@ -122,6 +130,7 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel }: {
         <div className="airpop-head"><b>OIL — {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">
+          {lead && <div className="oilconf-what oilconf-lead" data-testid="oilconf-lead"><b>{lead}</b></div>}
           {multi ? <>
             <div className="upconf-h">This input covers {plan.length} non-working days (weekend / PH)</div>
             <div className="oilconf-what">Each confirmed day earns <b>{amtWord}</b> of OIL. Which days does it deserve?</div>
@@ -153,8 +162,8 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel }: {
         <div className="airpop-foot upconf-foot">
           {!ready && <span className="upconf-need">Choose an option above</span>}
           <span style={{ flex: 1 }}></span>
-          <button className="abtn ghost" onClick={onCancel}>Cancel</button>
-          <button className="abtn primary" data-testid="oilconf-save" disabled={!ready} onClick={save}>Save</button>
+          <button className="abtn ghost" data-testid="oilconf-cancel" onClick={onCancel}>{noLabel || 'Cancel'}</button>
+          <button className="abtn primary" data-testid="oilconf-save" disabled={!ready} onClick={save}>{yesLabel || 'Save'}</button>
         </div>
       </div>
     </div>

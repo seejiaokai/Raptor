@@ -17,7 +17,11 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
 import { markLand, pendingLand } from './lift'
+import { stashClear, stashPut } from '../engine/weekstash'
+import { weekBundle } from '../engine/weeks-data'
 import { OILASK, setOilAsk } from './pops'
+import { OILWAIT, OILBAR, setOilWait, setOilBar } from '../state/view'
+import { answerOilWait, leaveOilWait } from './oilwait'
 
 /* jsdom 30 (this repo's version, verified directly) constructs a full
    PointerEvent — clientX/clientY, pointerId, pointerType and isPrimary all
@@ -331,6 +335,30 @@ describe('initCalDrag — the pointer machine', () => {
     } finally { off() }
   })
 
+  /* [OIL-ASK-NOTIFY] — the break tests of 13 Oct 26 found this wire bare: a move that WAITS on its OIL question lands
+     nothing, and the landing flash is made when the answer comes and the move is made (ui/oilwait.ts oilWaitThen). */
+  it('a move that waits on its OIL question marks no landing — the chip is marked in the day it lands in when the answer comes', () => {
+    markLand('')
+    const row: any = { person: 'bane', date: 'Jul 18', allday: true, type: 'Duty', remarks: '', mod: 'now', yr: 2026, oil: { '2026-07-18': 1 } }
+    inpId(row)
+    INPUTS.unshift(row)
+    const { root, cellA, cellB, chip } = buildCalDom(row.iid)
+    cellA.setAttribute('data-icday', '2026-07-18'); cellB.setAttribute('data-icday', '2026-07-19')
+    EFP_TARGET = cellB
+    const live = () => INPUTS.find((x: any) => x.iid === row.iid) as any
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      chip.dispatchEvent(ptr('pointerup', 20, 10))
+      expect(live().date, 'not moved yet').toBe('Jul 18')
+      expect(OILWAIT && OILWAIT.kind, 'the question waits').toBe('move')
+      expect(pendingLand(), 'and nothing has landed').toBeNull()
+      expect(answerOilWait({ '2026-07-19': 1 })).toBe(true)
+      expect(live().date).toBe('Jul 19')
+      expect(pendingLand()!.sel, 'the landing flash, now').toBe(`[data-icday="2026-07-19"] [data-iid="${row.iid}"]`)
+    } finally { off(); setOilWait(null); setOilBar(null); markLand('') }
+  })
+
   /* a planning section carries its own id, not an input's — the calendar draws
      it as [data-pid] (InputsCal's `.ic-pks` / `.ic-chip.plan`) */
   it('a plan puck is marked by its own id', () => {
@@ -435,14 +463,44 @@ describe('the calendar drag raises the OIL question when the move leaves a day u
     inpId(row); INPUTS.unshift(row); return row
   }
 
-  afterEach(() => { setOilAsk(null) })
+  afterEach(() => { setOilAsk(null); setOilWait(null); setOilBar(null) })
 
-  it('a request answered for the Saturday, dragged to the Sunday, asks about the Sunday (Codex rank 5)', () => {
+  /* A NAMED RULING CHANGED THIS CASE (owner D780 — "…holds at every door"; D783, 12 Oct 26: a change that raises the OIL
+     question "is NOT MADE until the question is answered"; the plan's reading R1). It pinned "it did move — and the
+     question came up for it, there and then": the move made, the question after it, a Cancel leaving it moved and
+     unanswered. Now the question is put FIRST: not answered, it is not moved and a bar says so; answered, the move and
+     the answer are one step. */
+  it('(ON9) a request answered for the Saturday, dragged to the Sunday, asks about the Sunday FIRST — moved only on an answer (Codex rank 5; D783)', () => {
     const row = answered()
+    const live = () => INPUTS.find((x: any) => x.iid === row.iid) as any
     setOilAsk(null)
-    expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-18', '2026-07-19')).toBe(true)
-    expect(row.date, 'it did move').toBe('Jul 19')
-    expect(OILASK, 'and the question came up for it, there and then').toBe(row.iid)
+    expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-18', '2026-07-19'), 'nothing moved yet').toBe(false)
+    expect(live().date, 'it did NOT move').toBe('Jul 18')
+    expect(OILASK, 'no window of the input is opened for it').toBe(null)
+    expect(OILWAIT && OILWAIT.kind, 'the question waits').toBe('move')
+    expect(OILWAIT!.gate.plan.map(p => p.iso), 'and it is about the Sunday').toEqual(['2026-07-19'])
+    leaveOilWait()
+    expect(live().date, 'not answered: not moved').toBe('Jul 18')
+    expect(OILBAR && OILBAR.text).toBe('Not moved — OIL not answered')
+    setOilBar(null)
+    expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-18', '2026-07-19')).toBe(false)
+    expect(answerOilWait({ '2026-07-19': 1 }), 'answered: moved, with its answer').toBe(true)
+    expect(live().date).toBe('Jul 19')
+    expect(live().oil).toEqual({ '2026-07-19': 1 })
+  })
+
+  /* the break tests of 13 Oct 26: the door's own save is TRIED before anyone is asked (Fable's read of the plan, A2). A
+     move the save would refuse — here onto a week the app holds locked — is refused, and no question is put for it. */
+  it('a move the save would refuse is refused — nobody is asked an OIL question for it first', () => {
+    const row = answered()
+    const live = () => INPUTS.find((x: any) => x.iid === row.iid) as any
+    stashPut('20/07/2026', JSON.stringify({ d: weekBundle('20/07/2026').days, o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }))
+    try {
+      expect(commitChipMove({ kind: 'input', iid: row.iid }, '2026-07-18', '2026-07-25'), 'onto the Saturday of a locked week').toBe(false)
+      expect(OILWAIT, 'no question for a move that cannot be made').toBe(null)
+      expect(OILBAR).toBe(null)
+      expect(live().date, 'and it did not move').toBe('Jul 18')
+    } finally { stashClear() }
   })
 
   it('THE CONTROL — a move that leaves nothing to ask about is silent', () => {

@@ -1,0 +1,15 @@
+import { launch, world, bye, FRI, THU } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'P5' }); const { page, tid } = w
+await w.openHolidays()
+await w.press(tid('hol-add')); await page.waitForTimeout(500)
+const ids = await page.evaluate(() => [...document.querySelectorAll('[data-testid^="hol-"],[data-testid^="holcal-"]')].filter(e => e.offsetParent).map(e => e.getAttribute('data-testid') + ':' + (e.innerText || '').replace(/\s+/g, ' ').slice(0, 30)).filter(s => !/holcal-day-/.test(s)))
+console.log(JSON.stringify(ids))
+await w.press(tid('hol-kind-ph'))
+for (let i = 0; i < 24 && !(await tid(`holcal-day-${THU}`).count()); i++) await w.press(tid('holcal-next-month'))
+await w.press(tid(`holcal-day-${THU}`)); await page.waitForTimeout(200)
+await w.press(tid(`holcal-day-${FRI}`)); await page.waitForTimeout(300)
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid^="hol-"]')].filter(e => e.offsetParent).map(e => e.getAttribute('data-testid') + ':' + (e.innerText || '').replace(/\s+/g, ' ').slice(0, 60)).join(' | ')))
+console.log(await page.locator('[data-testid="win-days"]').innerText().then(s => s.replace(/\s+/g, ' ').slice(0, 700)))
+await w.shot('probe5')
+await bye(w); await browser.close()

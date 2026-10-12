@@ -51,6 +51,7 @@ import { initStore } from '../state/store'
 import { setSession, setMe, DEFAULT_ME } from '../state/auth'
 import { commitInput, draftOf } from '../ui/inputedit'
 import { rowPut, rowTake } from '../ui/reqdoor'
+import { leaveOilWait, oilBarOk } from '../ui/oilwait'
 import * as pops from '../ui/pops'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -398,17 +399,33 @@ describe('a named man put on the row of an input filed for ALL AVAIL, by the doo
     ['No', NO, null, ' — not counted for OIL', false],
     ['no answer', undefined, null, '', true],
   ] as Array<[string, any, any, string, boolean]>) {
-    it(`the input's answer being ${name}: ${got ? 'he earns, as the crowd does' : 'he does not, and neither does the crowd'}${asked ? ' — and the question is asked on the spot' : ''}`, () => {
-      const r = file(['allavail'], oil)
+    /* A NAMED RULING CHANGED THE UNANSWERED CASE (owner D783, 12 Oct 26 — "a person added with no answer yet is treated
+       the same": the add is NOT MADE until the OIL question is answered). It pinned "the question is asked on the
+       spot" AFTER the man was put in. Now the door answers 'asked' and writes nothing; the case's own subject — on an
+       unanswered input he does not earn, and neither does the crowd — is kept by putting him in through the input's
+       own save with no answer, the state a day made a holiday after the filing leaves. */
+    it(`the input's answer being ${name}: ${got ? 'he earns, as the crowd does' : 'he does not, and neither does the crowd'}${asked ? ' — and the add waits on the question' : ''}`, () => {
+      const r0 = file(['allavail'], oil)
+      const id = String(inpId(r0)), key = add(r0)
+      const live = () => INPUTS.find((x: any) => String(x.iid) === id) as any
       SAID = []
-      expect(rowPut(add(r), 'divot')).toBe('done')
+      if (asked) {
+        expect(rowPut(key, 'divot'), 'no answer: the add waits on the question').toBe('asked')
+        expect(idsOf(live()).map(String), 'and nothing was written').toEqual(['allavail'])
+        expect(SAID, 'nor said').toEqual([])
+        leaveOilWait(); oilBarOk()
+        expect(commitInput(live(), draftOf(live()), ['allavail', 'divot'], { sched: true })).toBe(true)
+      } else {
+        expect(rowPut(key, 'divot')).toBe('done')
+        expect(SAID.length, 'one note').toBe(1)
+        expect(SAID[0], 'his callsign, the input\'s name — and on a No that he is not counted').toBe(`${String((PEOPLE as any).divot.cs)} added to Duty${said}`)
+      }
+      const r = live()
       expect(idsOf(r).map(String), 'he joined beside it').toEqual(['allavail', 'divot'])
-      expect(SAID.length, 'one note').toBe(1)
-      expect(SAID[0], 'his callsign, the input\'s name — and on a No that he is not counted').toBe(`${String((PEOPLE as any).divot.cs)} added to Duty${said}`)
       expect(figure(SAT, 'divot')).toBe(got)
       expect(figure(SAT, 'stiff'), 'the crowd: the same answer').toBe(got)
       expect(paidNames(SAT)).toEqual(got ? ['bane', 'divot', 'plasma', 'stiff'] : [])
-      expect(pops.OILASK, asked ? 'no answer: the question opens at once, for the INPUT' : 'answered: nothing is asked').toBe(asked ? String(inpId(r)) : null)
+      expect(pops.OILASK, 'no question is left standing, and no window of the input was opened for one').toBe(null)
       const item = inputItemKey(String(inpId(r)))
       const ev = oilEvidence(SAT), c = ev.inputs.find(i => i.iid === String(inpId(r)))!
       expect(claimDefault(DAYS[SAT], ev, c, 'divot'), 'the one body, for the switch and the credit').toBe(!!got)

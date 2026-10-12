@@ -222,6 +222,18 @@ after). His answer is a new ruling on whether Sol keeps the seat.
 **Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
 fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
+**Who reads the finished code now — D790 (owner, 13 Oct 26: "Yes option 2").** While the ChatGPT readers are out (D761):
+**every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
+neither the walk's report nor another reader's, given the same brief; Fable reads it as well, blind to the Opus read, only on
+the riskiest changes — OIL, published days, who may do what, saved data** (rank 2's list above). On those, Fable's read is
+standing: his word is not asked again for each job. The chat that wrote the code never reads its own work. Every claim of either
+reader is written as a failing test before it is believed. A plan's read before a build is as it was. A job that goes without
+a ChatGPT read is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and when Astra and Sol 6.1 are back, how
+they fit with this is put to him — not assumed. *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
+(D788, then once more by D789, both now in `DECISIONS-ARCHIVE.md`); on the second, same brief and blind to each other, Fable
+found 3 real faults and the Opus reader 11, with no false alarm from either — the tables are in
+`handpass/2026-10-13-oil-ask-notify.md` §12.1 and `handpass/2026-10-12-one-rule.md` §10b.
+
 **Do NOT spend them on:**
 
 - **Another code review when the missing evidence is runtime.** This is the trap that was actually
@@ -308,6 +320,9 @@ smaller comparison to make a decision from there yourself"): a trial of a cheape
 full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
 evidence sheet and here, and tells him; he can overrule.** His answer to each
 report was to be a new ruling (D588); until then no other build or fix leaves Opus, and haiku stays closed.
+**And confirmed for good (owner, D787, 13 Oct 26 — "Ok sonnet walk. It’s not sustainable for token usage to have opus to walk anyway."):** the
+walk’s helpers stay Sonnet 5.5; no Opus walker is started beside them, not even on one share for comparison, and no further
+walker trial is run or offered. The host still opens the pictures, reproduces every finding and may run a short look itself (§7.0).
 
 **The owner's trigger rule, in one line:**
 

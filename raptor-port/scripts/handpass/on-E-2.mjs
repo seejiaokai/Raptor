@@ -1,0 +1,51 @@
+// E2 — an event TYPE re-tagged. arg: off | free | nolv
+import { launch, session, lw, addRow } from './on-E-lib.mjs'
+const kind = process.argv[2] || 'off'
+const TUE = '2026-07-14', WED = '2026-07-15', THU = '2026-07-16'
+const browser = await launch()
+await session(browser, `E2-${kind}`, async s => {
+  const { page, press, say, shot, tid, measure, bell, openBell, closeBell } = s
+  say('Warden admin', await s.giveWarden())
+  const a = await s.fileIt(TUE, { type: 'Training', people: ['nick'], from: '09:00', to: '10:00', title: 'Tue brief' })
+  const b = await s.fileIt(WED, { type: 'Training', people: ['mamba'], from: '09:00', to: '10:00', title: 'Wed brief' })
+  const c = await s.fileIt(THU, { type: 'Duty', people: ['harpoon'], title: 'Thu duty' })
+  say('filed', [a, b, c])
+  const war = lw(page); await war.go('JUL')
+  // SC on Thu 16 (event row 1, this day)
+  await war.openEventSheet(0, THU)
+  const chips = await page.evaluate(() => [...document.querySelectorAll('[data-testid^="event-quick-"]')].map(b => [b.dataset.testid, b.textContent]))
+  const sc = chips.find(x => x[1] === 'SC'); say('presets', chips)
+  await press(page.locator(`[data-testid="${sc[0]}"]`)); await press(tid('event-scope-day'))
+  say('SC read-out', await tid('event-readout').innerText())
+  await press(tid('event-apply')); await page.waitForTimeout(700)
+  // SC as a merged band Tue 14 - Wed 15 (event row 2)
+  await war.openEventSheet(1, TUE)
+  await press(page.locator(`[data-testid="${sc[0]}"]`)); await press(tid('event-scope-range')); await page.waitForTimeout(250)
+  await press(tid(`event-day-${TUE}`)); await press(tid(`event-day-${WED}`)); await page.waitForTimeout(200)
+  say('band range', await tid('event-selection').innerText())
+  await press(tid('event-apply')); await page.waitForTimeout(700)
+  say('lists / bells after tagging SC (work): list', await tid('win-oilday').count())
+  say('Saber bell', await bell())
+  await shot('1-sc-placed')
+  // Edit presets: re-tag SC
+  await war.openEventSheet(0, '2026-07-21')       // an empty cell, only to reach "Edit presets"
+  await press(tid('event-edit-types')); await page.waitForTimeout(400)
+  const kinds = await page.evaluate(() => [...document.querySelectorAll('[data-testid^="evtype-kind-3-"]')].map(b => [b.dataset.testid, b.textContent, b.getAttribute('aria-pressed')]))
+  say('SC row kinds offered', kinds)
+  await shot('2-edit-presets')
+  await press(tid(`evtype-kind-3-${kind}`)); await page.waitForTimeout(900)
+  say(`after re-tag SC -> ${kind}: kinds`, await page.evaluate(() => [...document.querySelectorAll('[data-testid^="evtype-kind-3-"]')].map(b => b.textContent + ':' + b.getAttribute('aria-pressed'))))
+  say('list up', await tid('win-oilday').count())
+  const lst = await tid('win-oilday').count() ? { title: (await tid('win-oilday').locator('.win-ttl').innerText()).replace(/\s+/g, ' '), lead: await tid('odl-lead').innerText().catch(() => ''), count: await tid('odl-count').innerText(), box: await measure('[data-testid="win-oilday"]') } : null
+  say('list', lst)
+  await shot('3-after-retag')
+  say('Saber bell', await bell())
+  await press(tid('types-done')); await page.waitForTimeout(300)
+  if (await tid('event-cancel').count()) await press(tid('event-cancel'))
+  await page.waitForTimeout(400)
+  await openBell(); say('Saber bell list', await bell()); await closeBell()
+  await page.evaluate(() => window.raptorMe('nact')); await page.waitForTimeout(500)
+  await openBell(); say('Warden bell list', await bell())
+  await shot('4-warden-bell')
+})
+await browser.close()

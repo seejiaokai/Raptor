@@ -13,6 +13,8 @@ import { InputEditor } from './inputedit'
 import { DocViewer } from './DocViewer'
 import { ChangesWindow } from './ChangesWindow'
 import { MedMoveConfirm } from './MedMoveConfirm'
+import { OilWait, OilBar } from './OilWaitSheet'
+import { OilDayList } from './OilDayList'
 import { DutyTplModal } from './DutyTplModal'
 import { WaveTplModal } from './WaveTplModal'
 import { DayTplModal } from './DayTplModal'
@@ -53,5 +55,5 @@ export function App() {
   const who = roleOf()
   if (who === 'pending' || who === 'off') return <AccessScreen />
   if (who === 'guest') return <GuestApp />
-  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /><DaysWindow /><SansSettings /><InputsSettings /></>
+  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><OilWait /><OilBar /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /><DaysWindow /><SansSettings /><InputsSettings /><OilDayList /></>
 }

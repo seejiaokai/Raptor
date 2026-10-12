@@ -1,0 +1,26 @@
+import { world, done, log, rec, sleep, FRI, makeHoliday, closeCal } from './on-B-lib.mjs'
+const w = await world('p844')
+const { page, tid, press } = w
+const iid = await w.fileIt(FRI, { type: 'Training', people: ['bane', 'harpoon'], from: '09:00', to: '12:00', title: 'Fri brief' })
+await makeHoliday(w); await press(tid('odl-later')); await sleep(400); await closeCal(w)
+await page.evaluate(() => window.go('editsched')); await sleep(800)
+const row = page.locator('#page-editsched .day:not(.peek)').nth(4).locator('.pl-row').filter({ has: page.locator('.nm .ntx', { hasText: /fri brief/i }) }).first()
+await row.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await sleep(400)
+const arm = () => page.evaluate(() => JSON.stringify(window.ARM || null))
+log('ARM before', await arm())
+const info = await page.evaluate(() => {
+  const r = [...document.querySelectorAll('#page-editsched .day:not(.peek) .pl-row')].find(x => /fri brief/i.test(x.textContent))
+  const a = r.querySelector('.addz'), p = r.querySelector('.ppl')
+  const ar = a.getBoundingClientRect(), pr = p.getBoundingClientRect()
+  const hit = document.elementFromPoint(ar.x + ar.width / 2, ar.y + ar.height / 2)
+  const cs = getComputedStyle(a)
+  return { ar: [ar.x, ar.y, ar.width, ar.height], pr: [pr.x, pr.y, pr.width, pr.height], hit: hit && (hit.tagName + '.' + hit.className), pe: cs.pointerEvents, vp: [innerWidth, innerHeight] }
+})
+log('geom', info)
+const ab = await row.locator('.addz').first().boundingBox()
+await page.touchscreen.tap(ab.x + ab.width / 2, ab.y + ab.height / 2); await sleep(700)
+log('ARM after touch tap on addz', await arm())
+await page.mouse.click(ab.x + ab.width / 2, ab.y + ab.height / 2); await sleep(700)
+log('ARM after mouse click', await arm())
+await w.shot('B2-dbg')
+await done(w); process.exit(0)

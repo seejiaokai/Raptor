@@ -35,6 +35,7 @@ import * as view from '../state/view'
 import { labelToISO } from '../leavewar/absences'
 import { toggleOilPerson, oilFigureFor } from '../ui/oilmode'
 import { rowPut } from '../ui/reqdoor'
+import { answerOilWait } from '../ui/oilwait'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -103,13 +104,19 @@ describe('the SWAP on the row moves the holding on — a switch made under an ea
     expect(oilFigureFor(5, 'bane', item), 'he earns the Saturday before anyone touches it').toBe('FO')
     expect(toggleOilPerson(5, 'bane', item), 'the scheduler takes him off').toBe(false)
     expect(seen(5, `bane|${item}`)).toBe('deny')
-    expect(rowPut(rowKey(iid), 'stiff'), 'another man dropped on his puck: the input is that man\'s').toBe('done')
+    /* A NAMED RULING CHANGED THIS CASE (owner D783, 12 Oct 26 — "a swap … that raises an OIL question is NOT MADE until
+       the question is answered"): until then each drop was made at once, left the input with no answer ("the answer
+       was void at each swap"), and the Yes was written afterwards by hand. Now each drop WAITS and is made with its
+       answer; what this case is about — a refusal made under an earlier holding reads as nothing — is unchanged. */
+    expect(rowPut(rowKey(iid), 'stiff'), 'another man dropped on his puck: it waits on the OIL question').toBe('asked')
+    expect(inIt(iid), 'nothing moved').toEqual(['bane'])
+    expect(answerOilWait({ '2026-07-18': 0 }), 'answered: the input is that man\'s').toBe(true)
     expect(inIt(iid)).toEqual(['stiff'])
     expect(seen(5, `bane|${item}`), 'with Stiff holding it, Bane\'s refusal is not read').toBeUndefined()
-    expect(rowPut(rowKey(iid), 'bane'), 'and Bane dropped back on it').toBe('done')
+    expect(rowPut(rowKey(iid), 'bane'), 'and Bane dropped back on it — the question again').toBe('asked')
+    expect(answerOilWait({ '2026-07-18': 1 }), 'the input\'s answer: Yes again, given with the swap').toBe(true)
     expect(inIt(iid)).toEqual(['bane'])
-    expect(reqOf(iid).oil, 'the answer was void at each swap').toBeUndefined()
-    writeInputsBatch(() => { reqOf(iid).oil = { '2026-07-18': 1 } })   // the input's answer: Yes again
+    expect(reqOf(iid).oil, 'the answer given with the swap — never the first holding\'s own').toEqual({ '2026-07-18': 1 })
     expect(seen(5, `bane|${item}`), 'the refusal was made under his FIRST holding — it reads as nothing now').toBeUndefined()
     expect(oilFigureFor(5, 'bane', item), 'he worked the Saturday and the input says Yes').toBe('FO')
   })

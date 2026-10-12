@@ -703,6 +703,10 @@ export type NoticePartRec = {
    *  off the programme / put back · when — its day(s) or hours moved · add / rem — others put in or taken out ·
    *  title — renamed · rmk — its remark changed. */
   k: 'del' | 'in' | 'out' | 'cx' | 'uncx' | 'off' | 'on' | 'when' | 'add' | 'rem' | 'title' | 'rmk'
+    /** oilhol — a day made a public holiday after inputs stood on it ([OIL-ASK-NOTIFY], D780): the notice is about no one
+     *  input (its `iid` is ''), its `name` is the holiday's ('' where it has none of its own) and `a`..`b` the run of
+     *  dates as they were when it was made. It stores no count: how many inputs still need an answer is read live. */
+    | 'oilhol'
   /** cx: the reason, where one was given — screen. */
   why?: string
   /** when: its first and last day NOW, ISO, where the days moved — screen. */

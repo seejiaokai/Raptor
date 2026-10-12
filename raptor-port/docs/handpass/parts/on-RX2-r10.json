@@ -1,0 +1,104 @@
+{
+ "up": 1,
+ "lead": "Swapping Tally and Ranger",
+ "cancelText": "Don’t swap",
+ "saveText": "Swap",
+ "saveDisabled": true,
+ "nothingMoved": true,
+ "undoSame": true,
+ "geo": {
+  "card": {
+   "x": 202,
+   "y": 39,
+   "r": 642,
+   "b": 351,
+   "w": 440,
+   "h": 312
+  },
+  "cancel": {
+   "x": 471,
+   "y": 312,
+   "r": 561,
+   "b": 340,
+   "w": 90,
+   "h": 28
+  },
+  "save": {
+   "x": 569,
+   "y": 312,
+   "r": 626,
+   "b": 340,
+   "w": 57,
+   "h": 28
+  },
+  "cardInScreen": true,
+  "cancelInCard": true,
+  "saveInCard": true,
+  "cancelInScreen": true,
+  "saveInScreen": true,
+  "cancelOnTop": true,
+  "saveOnTop": true,
+  "sameRow": true,
+  "scroller": {
+   "cls": "airpop-box upconf-box",
+   "sh": 326,
+   "ch": 310,
+   "top": 39,
+   "bottom": 351
+  },
+  "buttonsBelowWords": false,
+  "innerH": 390,
+  "innerW": 844
+ },
+ "geoEnd": {
+  "scrollTop": 16,
+  "cancel": [
+   312,
+   340
+  ],
+  "save": [
+   312,
+   340
+  ],
+  "cardBottom": 351,
+  "innerH": 390
+ },
+ "lit": [
+  true,
+  true
+ ],
+ "bar": {
+  "text": "Not swapped — OIL not answered",
+  "answer": "Answer OIL",
+  "ok": "OK"
+ },
+ "barGeo": {
+  "bar": [
+   229,
+   322,
+   615,
+   372
+  ],
+  "answer": [
+   454,
+   333,
+   546,
+   361
+  ],
+  "ok": [
+   556,
+   333,
+   600,
+   361
+  ],
+  "insideScreen": true,
+  "sideBySide": true,
+  "barOnTop": true,
+  "answerOnTop": true,
+  "okOnTop": true
+ },
+ "nothingMovedAfter": true,
+ "undoSameAfter": true,
+ "oil": "Range brief:{\"2026-07-18\":0.5}",
+ "errors": []
+}

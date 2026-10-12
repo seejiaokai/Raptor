@@ -1,0 +1,23 @@
+import { world, done, log, rec, sleep, FRI, makeHoliday, closeCal } from './on-B-lib.mjs'
+const w = await world('p844')
+const { page, tid, press } = w
+const iid = await w.fileIt(FRI, { type: 'Training', people: ['bane', 'harpoon'], from: '09:00', to: '12:00', title: 'Fri brief' })
+await makeHoliday(w); await press(tid('odl-later')); await sleep(400); await closeCal(w)
+await page.evaluate(() => window.go('editsched')); await sleep(800)
+const row = page.locator('#page-editsched .day:not(.peek)').nth(4).locator('.pl-row').filter({ has: page.locator('.nm .ntx', { hasText: /fri brief/i }) }).first()
+await row.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await sleep(400)
+const tally = await page.evaluate(() => Object.keys(window.PEOPLE).find(k => window.PEOPLE[k].cs === 'Tally'))
+const tl = page.locator(`#eRoster .rpuck .puck[data-person="${tally}"]`)
+await page.locator('#rosTab').tap(); await sleep(800)
+await tl.first().evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(300); await tl.first().tap(); await sleep(600)
+await page.locator('#rosTab').tap(); await sleep(800)
+await row.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await sleep(400)
+const st = async lab => log(lab, await page.evaluate(i => ({ q: !!document.querySelector('[data-testid="oilconf"]'), who: JSON.stringify((window.INPUTS.find(x => x.iid === i) || {}).people), toast: (document.getElementById('toastEl') || {}).innerText, oktake: document.querySelectorAll('#page-editsched .oktake').length }), iid))
+const pb = await row.locator('.ppl').first().boundingBox()
+log('ppl box', pb)
+const tap = async (lab, x, y) => { await page.touchscreen.tap(x, y); await sleep(700); await st(lab) }
+await tap('tap puck Ranger', ...(await (async () => { const b = await row.locator('.puck[data-person="bane"]').boundingBox(); return [b.x + b.width / 2, b.y + b.height / 2] })()))
+await tap('tap addz centre', pb.x + pb.width / 2, pb.y + pb.height - 7)
+await tap('tap ppl bottom edge', pb.x + 10, pb.y + pb.height - 2)
+await w.shot('B2-dbg4')
+await done(w); process.exit(0)

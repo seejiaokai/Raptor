@@ -4089,3 +4089,78 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In walk briefs and test harness notes: "set the clock to a start time and let it RUN (install + resume / fastForward between steps); never freeze it unless the scenario is about one instant". When a rule under test reads a stored timestamp or an ordering by time, say so in the scenario's EXPECTED line so a same-instant result is recognised as an artefact.
 
 **Principle:** A fixture that collapses a dimension the code discriminates on (time, identity, order) can only produce false matches along it; pin the start of time, never its passage.
+
+### Observation 537: A file write and the run that depends on it, sent together — the run used the OLD file and looked like the new one's result
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Drawing a mock-up with a scripted browser; the script was rewritten whole and run in the same step.
+**Skill:** New skill candidate: mock-up on the live build (see the open observation of that name) / verification-before-completion
+**Type:** open-source
+**Phase/Area:** Iterating on a script: edit, run, read the output
+
+**Issue:** The script file had been changed by a helper edit since it was last read, so the editor refused the whole-file rewrite. The run was sent in the same step, went ahead on the old file, exited 0 and printed plausible lines. Only the wording of two printed labels showed the output was the previous version's; a whole round of pictures would otherwise have been judged as the new design.
+
+**Suggested improvement:** In the mock-up / walk-script method: never send a file rewrite and the run that depends on it in one step; after any edit made outside the editor (a helper script), re-read before the next whole-file write; and have the script print a version line of its own (a date or a short tag) at the top of every run so stale output is visible at a glance.
+
+**Principle:** A run is evidence only about the file that actually ran; when the write and the run are issued together, check the write landed before believing the run.
+
+### Observation 538: "A failing test first" is unproven when the test is first RUN after the code exists
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** building [OIL-ASK-NOTIFY] (the OIL question before a swap; the one list; the holiday notice) with the owner's instruction "build with a failing test first"
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** the red step
+
+**Issue:** For the first piece the test file was written before the implementation, but it could not even be imported until the implementation's module existed, so its first real run was green (11 of 13). "Written first" had quietly replaced "seen failing". The red was only established afterwards, by breaking the new gate on purpose (10 of 13 went red). For the later pieces the tests were run BEFORE the build and were red for the trivial reason that the functions did not exist yet, which proves nothing about each assertion either.
+
+**Suggested improvement:** In the red step, add: a test that cannot be loaded before the code exists has not been seen failing. Two accepted proofs of red: (a) run it against a stub that compiles and does the OLD behaviour, or (b) once green, break the one line that makes it pass and count which cases go red, recording the count. Report the red as a number of cases, never as "written first".
+
+**Principle:** Red is an observation about each assertion, not about the order two files were written in; where the order cannot produce it, a deliberate break must.
+
+### Observation 539: A scenario's EXPECTED line is checked against the rulings before it goes to a walker
+
+**Status:** OPEN
+**Date:** 13 Oct 26
+**Session context:** the FULL check of [OIL-ASK-NOTIFY] — five Sonnet walkers driving 35 scenarios designed by an outside reader (Fable)
+**Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §4, §7) and the walk briefs built from it
+**Type:** internal
+**Phase/Area:** turning a reader's scenario list into a walk brief
+
+**Issue:** Four of the walk's five FAILs were not faults: the scenario's EXPECTED line (written by the scenario designer from the promise, and copied into the brief by the host) contradicted an OLDER ruling the feature does not change — a swap from a seat on a published day counts 2 (told on the previous job), a holiday declared on a published day reads pending at once (a ruling of three weeks ago), a man on leave on a duty desk is warned not refused. The same happened on the previous job (about 12 walker FAILs were the host's expected line). Each costs a walker's attention, a host disposition and a line of explaining to the owner.
+
+**Suggested improvement:** In the checking guide's walk section, add one step between "the other model designs the scenarios" and "hand them to walkers": the host reads each EXPECTED line that names a COUNT, a REFUSAL or a PUBLISHED-DAY state against the rulings and the code on `main`, and rewrites it as "RECORD exactly what it says" where it cannot say what the right answer is. Three kinds to look at first: pending counts, "refused" versus "warned", and what a published day does by itself.
+
+**Principle:** A scenario's action comes from the promise; its expected result must come from the rules already in force. An expected line nobody checked against the standing rules manufactures false failures at the dearest stage of a check.
+
+### Observation 540: The break-test runner is the same script every job — make it one tool that takes a list
+
+**Status:** OPEN
+**Date:** 13 Oct 26
+**Session context:** the break tests of [OIL-ASK-NOTIFY] — 93 exact-text breaks run one by one by `scripts/handpass/on-breaks.mjs`, copied from the previous job's `aa-breaks.mjs`
+**Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §8.4) — break tests
+**Type:** internal
+**Phase/Area:** break tests
+
+**Issue:** Each job copies the runner and re-writes its loop; this copy had to add Windows-line-ending matching and a "found N times" skip by hand, and the runner refuses a tree with uncommitted source so the fixes had to be committed before the re-run. The useful part of the job is the LIST of breaks (the wire, the exact text, the tests that should catch it); the loop is boilerplate. One scripted run of 88 breaks cost the host about 15k tokens against roughly 9k a break when helpers did it by hand on the previous job.
+
+**Suggested improvement:** Keep one `scripts/handpass/breaks-run.mjs` that takes a job's list (a small module exporting the array) and handles line endings, "not found exactly once", the restore, a regex to re-run a subset, and a table written to `docs/handpass/parts/`. Name it in the checking guide's §8.4 as the default way to run break tests, with the rule that a break not caught gets a test or a written "decides nothing" disposition.
+
+**Principle:** When a checking step is done the same way every time, the per-job artefact should be the data, not another copy of the program.
+
+### Observation 541: A handoff written while helpers are still running does not say who receives their reports
+
+**Status:** OPEN
+**Date:** 13 Oct 26
+**Session context:** Closing a FULL bug check in a fresh chat, from a handoff block the earlier chat wrote while its two re-walk helpers were still running.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Writing the block — "RUNNING when this was written"
+
+**Issue:** The handoff named the helpers' report files and the next steps, and the owner started a fresh chat on it at once. The earlier chat was still alive and "busy", holding the helpers as its own: their closing messages and token counts would return to IT, one helper's report file did not exist yet, the check lock was held under its name, and nothing said whether it would go on to do the next steps itself. The new chat had to discover this from file times and the session list, then message the earlier chat to agree who owned what. A second gap of the same kind: the break tests' results were in that chat's working folder only — the handoff said they were done, the evidence sheet still said "NOT done", and the figures had to be asked for.
+
+**Suggested improvement:** In the skill's block template, when work is still running at the handoff, require three lines: (1) who receives each helper's closing message and figures, and that the writing chat will do NOTHING further once a new chat picks the block up (or exactly what it will finish); (2) any lock, served build or background process it holds, and who releases it; (3) every result that so far exists only in the chat or its working folder, copied into the repo before the block is committed. And a first step for the reader: list the live sessions and message the one that wrote the block before touching the shared checkout.
+
+**Principle:** A handoff is complete only when nothing the next session needs lives in the writer's head, its working folder or its still-running helpers. If the writer is still alive, the handoff must also say what the writer will and will not do from that moment — two sessions on one checkout need an explicit owner for every remaining step.

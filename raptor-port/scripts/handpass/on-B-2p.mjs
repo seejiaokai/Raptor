@@ -1,0 +1,18 @@
+import { world, done, log, rec, sleep, FRI, makeHoliday, closeCal } from './on-B-lib.mjs'
+const w = await world('p844')
+const { page, tid, press } = w
+const iid = await w.fileIt(FRI, { type: 'Training', people: ['bane', 'harpoon'], from: '09:00', to: '12:00', title: 'Fri brief' })
+await makeHoliday(w); await press(tid('odl-later')); await sleep(400); await closeCal(w)
+await page.evaluate(() => window.go('editsched')); await sleep(800)
+await page.evaluate(() => window.openScheduler(4)); await sleep(900)
+const isArmed = () => page.evaluate(() => ({ rosArm: !!document.querySelector('.ros-arm'), ros: document.body.classList.contains('ros-open'), t: document.querySelector('.ros-arm')?.innerText?.replace(/\s+/g, ' ') }))
+const rows = page.locator('#schedBoard .sb-arow')
+const idx = await rows.evaluateAll(els => els.findIndex(e => /fri brief/i.test((e.querySelector('textarea.ain, input.ain') || {}).value || '')))
+const el = rows.nth(idx)
+await el.evaluate(e => e.scrollIntoView({ block: 'center' })); await sleep(400)
+const ab = await el.locator('.addz').first().boundingBox()
+log('addz', ab)
+await page.touchscreen.tap(ab.x + ab.width / 2, ab.y + ab.height / 2); await sleep(900)
+log('armed on board?', await isArmed())
+await w.shot('B2-dbg6-board-tap')
+await done(w); process.exit(0)

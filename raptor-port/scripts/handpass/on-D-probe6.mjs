@@ -1,0 +1,18 @@
+import { launch, world, bye, FRI } from './on-D-lib.mjs'
+const browser = await launch()
+const w = await world(browser, { tag: 'P6' }); const { page, tid } = w
+await w.giveWarden()
+const ids = await w.fileFriday()
+await w.makeHoliday('National Day', [FRI])
+await w.press(tid('odl-later')); await page.waitForTimeout(400); await w.closeCal()
+await w.toMonth(); await w.openDay(FRI)
+await w.press(page.locator(`[data-testid="win-inputsday"] .icard[data-popiid="${ids[0]}"]`).first())
+await page.waitForSelector('#inpEditPop #inpEditStart'); await page.waitForTimeout(400)
+console.log('POP:', (await page.locator('#inpEditPop').innerText()).replace(/\s+/g, ' ').slice(0, 800))
+console.log(await page.evaluate(() => [...document.querySelectorAll('#inpEditPop [data-testid]')].map(e => e.getAttribute('data-testid') + ':' + (e.innerText || '').replace(/\s+/g, ' ').slice(0, 40)).join(' | ')))
+await w.shot('probe6')
+await w.press(page.locator('#inpEditSave')); await page.waitForTimeout(600)
+console.log('after Save, oilconf:', await tid('oilconf').count(), 'pop:', await page.locator('#inpEditPop:visible').count())
+if (await tid('oilconf').count()) console.log((await tid('oilconf').innerText()).replace(/\s+/g, ' '))
+await w.shot('probe6b')
+await bye(w); await browser.close()

@@ -52,6 +52,8 @@ import * as view from './view'
 import { commitNewInput, commitInput, draftOf, removeInput, setInpField } from '../ui/inputedit'
 import { reqRowText } from '../ui/reqrow'
 import { rowPut, rowTake, rowMove } from '../ui/reqdoor'
+import { answerOilWait } from '../ui/oilwait'
+import { OILWAIT } from './view'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { boardMbtn, cxCommit } from '../ui/board'
 import { routeClick } from '../ui/interactions'
@@ -392,7 +394,11 @@ describe('on a day that EARNS, an input of four counts what an input of one coun
     await boot(); oilOn([SAT])
     fileOne('bane', SAT)
     publish(SAT)
-    expect(rowPut(rowKey(SAT), 'pike')).toBe('done')
+    /* (owner D783, 12 Oct 26: on a day that earns the swap WAITS on its OIL question — nothing waits to go out until
+       it is answered; made with its answer, the swap and the answer are still ONE change) */
+    expect(rowPut(rowKey(SAT), 'pike')).toBe('asked')
+    expect(waiting(SAT), 'asked, not made: nothing waits').toBe(0)
+    expect(answerOilWait(Object.fromEntries(OILWAIT!.gate.plan.map(x => [x.iso, x.amt])))).toBe(true)
     expect(waiting(SAT)).toBe(1)
   })
 })
@@ -785,7 +791,7 @@ describe('the trial read\'s claims about what a published day counts', () => {
     const flyer = String(slotVal(seat) || '')
     expect(flyer, 'a man sits in the first jet on Wednesday').not.toBe('')
     expect(flyer).not.toBe('bane')
-    expect(rowPut(rowKey(), flyer, (was: string) => setSlotVal(seat, was))).toBe('done')
+    expect(rowPut(rowKey(), flyer, { from: seat, take: (from: string, was: string) => setSlotVal(from, was) })).toBe('done')
     expect(idsOf(rec())).toEqual([flyer])
     expect(String(slotVal(seat)), 'Ranger sits in the jet now').toBe('bane')
     const lines = pendListHTML(WED)

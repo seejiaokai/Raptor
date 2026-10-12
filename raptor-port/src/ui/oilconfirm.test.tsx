@@ -25,7 +25,9 @@ import { labelToISO } from '../leavewar/absences'
 import { toggleOilPerson, oilFigureFor } from './oilmode'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT, OILASK, setOilAsk } from './pops'
-import { CURPAGE, setPage } from '../state/view'
+import { CURPAGE, setPage, OILWAIT, OILBAR, setOilWait, setOilBar } from '../state/view'
+import { answerOilWait, leaveOilWait } from './oilwait'
+import { INPUTS as LIVE_INPUTS } from '../engine/inputs'
 import { commitInputEdit, draftOf, oilGate, oilAnswered, reassignInput, setInpField } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -207,13 +209,32 @@ describe('the answers belong to the acknowledged commitment', () => {
      the gesture as available, and a gesture that is invited and then declined is
      the same defect as finding G5. So the drag REASSIGNS and then raises the
      question, through the same one-shot hand-off the bell already uses. */
-  it('the drag-reassign raises the OIL question for the new holder, instead of silently skipping it (Fable M2)', () => {
+  /* A NAMED RULING CHANGED THE ORDER (owner D780 — "…holds at every door"; D783, 12 Oct 26: a change that raises the OIL
+     question "is NOT MADE until the question is answered"; the plan's reading R1). This case pinned "the reassign
+     itself still happens … the new holder must be asked, not left unanswered" — the hand-over made, the question after
+     it, and a Cancel leaving the new holder unanswered all the same. Now the question is put FIRST: not answered, the
+     hand-over is not made and a bar says so; answered, it is made with the new holder's own answer — never the old
+     holder's. What M2 was about — the new holder is never silently left unanswered — holds more strongly. */
+  it('(ON9) the drag-reassign puts the OIL question for the new holder FIRST — handed over only on an answer, never silently unanswered (Fable M2; D783)', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const live = () => LIVE_INPUTS.find((x: any) => x.iid === r.iid) as any
     setOilAsk(null)
-    expect(reassignInput(r.iid, 'stiff')).toBe(true)
-    expect(r.person, 'the reassign itself still happens').toBe('stiff')
-    expect(r.oil, "and the old holder's answers are still voided").toBeUndefined()
-    expect(OILASK, 'the new holder must be asked, not left unanswered').toBe(r.iid)
+    expect(reassignInput(r.iid, 'stiff'), 'nothing handed over yet').toBe(false)
+    expect(live().person, 'he still holds it').toBe('bane')
+    expect(live().oil, 'with his own answer').toEqual({ '2026-07-18': 1 })
+    expect(OILASK, 'no window of the input is opened for it').toBe(null)
+    expect(OILWAIT && OILWAIT.kind, 'the question waits, in the swap\'s words').toBe('swap')
+    expect(OILWAIT!.gate.who, 'asked about the NEW holder').toBe(PEOPLE['stiff'].cs)
+    expect(Object.keys(OILWAIT!.gate.prev || {}), "with none of the old man's ticks pre-loaded").toEqual([])
+    leaveOilWait()
+    expect(live().person, 'not answered: not handed over').toBe('bane')
+    expect(OILBAR && OILBAR.text).toBe('Not swapped — OIL not answered')
+    setOilBar(null)
+    expect(reassignInput(r.iid, 'stiff')).toBe(false)
+    expect(answerOilWait({ '2026-07-18': 0 }), 'answered: handed over').toBe(true)
+    expect(live().person).toBe('stiff')
+    expect(live().oil, "the new holder's own answer — the old holder's is gone").toEqual({ '2026-07-18': 0 })
+    setOilWait(null); setOilBar(null)
 
     /* the control: a type that never asks for OIL must NOT raise the sheet */
     setOilAsk(null)

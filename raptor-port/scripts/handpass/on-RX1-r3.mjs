@@ -1,0 +1,36 @@
+import * as L from './on-RX1-lib.mjs'
+const W = await L.world({ tag: 'R3' })
+const { page, tid, shot, press } = W
+const J = o => JSON.stringify(o)
+const iid = await L.usualSat(W, { goToBoard: false })
+await L.frameGrnd(page)
+const fill = await L.rowFill(page, L.SAT_DI, 'Range brief')
+console.log('fill', fill, 'row', await L.rowPeople(page, L.SAT_DI, fill))
+const b0 = { ground: await L.groundNow(page), oil: await L.oilOf(page, iid), rec: await L.recOf(page, iid), undo: await L.undoState(page) }
+console.log('BEFORE', J(b0))
+await L.drag(page, page.locator(L.wkSel(1)), page.locator(L.wkSel(0)))
+console.log('Q1', await tid('oilconf').count(), await tid('oilconf-lead').innerText().catch(() => 'NO'))
+await press(tid('oilconf-cancel')); await page.waitForTimeout(700)
+console.log('bar', await tid('oilbar-text').innerText().catch(() => 'NO'))
+await shot('RX1-3-1-bar-up')
+// crew list: Hex onto Range brief's + add
+const hex = await L.rosterPuck(page, 'rocky')
+await L.frameGrnd(page); await page.waitForTimeout(300)
+const undoBefore = await L.undoState(page)
+await L.drag(page, hex, L.addz(page, L.SAT_DI, fill))
+console.log('after Hex drop: question', await tid('oilconf').count(), 'bar', await tid('oilbar').count(), 'toast', await L.toast(page))
+console.log('row', await L.rowPeople(page, L.SAT_DI, fill), 'ground', J(await L.groundNow(page)), 'oil', await L.oilOf(page, iid), 'rec', await L.recOf(page, iid))
+await shot('RX1-3-2-hex-added-bar')
+const barUp = await tid('oilbar').count()
+console.log('bar still up before Answer OIL', barUp, await tid('oilbar-text').innerText().catch(() => 'NO'))
+if (barUp) {
+  await press(tid('oilbar-answer')); await page.waitForTimeout(80)
+  const earlyToast = await L.toast(page)
+  await page.waitForTimeout(500)
+  console.log('AFTER Answer OIL: toast(80ms)', earlyToast, 'toast now', await L.toast(page), 'toasts', J((await L.toastsAll(page)).slice(-3)))
+  console.log('question', await tid('oilconf').count(), 'bar', await tid('oilbar').count())
+  console.log('row', await L.rowPeople(page, L.SAT_DI, fill), 'ground', J(await L.groundNow(page)), 'oil', await L.oilOf(page, iid), 'rec', await L.recOf(page, iid))
+  await shot('RX1-3-3-after-answer-oil')
+}
+console.log('errors', J(W.errors))
+await W.ctx.close(); process.exit(0)
