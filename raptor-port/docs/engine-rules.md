@@ -3188,6 +3188,13 @@ stay LIVE (below), which the face draws from today and which never make the day 
     man added to an input that carries ALL AVAIL — who thereby leaves its crowd — is one change, not two. And the
     crowd that ARRIVES with an input (ALL AVAIL put on a row, an input filed holding it) is that input's change, as
     the crowd that leaves with one is.
+  - **A move between two inputs is ONE (owner D109 — "a man (or a placeholder puck) taken off one place and put on
+    another place of the SAME day pairs into one move"; 12 Oct 26).** Dragged from one input's row to another's he is
+    taken out of the first and put in the second: two inputs changed, and still one act. Where the same person or
+    placeholder is out of exactly one input and into exactly one other on the day, the two units pair into one — the
+    "in" unit, carrying where he came from (`pp.role: 'move'`, `pp.from`) — and the line reads "Ranger: Training →
+    Meeting" (`ui/pendlist.ts`). Out of one and a DIFFERENT person into another stays one each; inputs on different
+    days are one on each day.
   - **A man split out of an input** (sick leave cutting his share of a shared leave — `inputown.ts ownInputOf`) is
     that input's change, with no filing item of his own: `inputs.ts frozenInputMatch` pairs the new record with it
     (`pieces`).
