@@ -100,15 +100,17 @@ readings):** the Today icon goes to today's month and does not pick today (in "J
 Escape closes an open floating calendar first, and the window behind it only on a second press; the holiday form's dates
 move in step two (they are on the Leave War's calendar), not step one.
 
-## The Tracker's date boxes, and a tick (D798 — his note, not yet a choice)
+## The Tracker's date boxes (D801 — a tap picks, no tick), and the calendar's own swipe (D800)
 
-Found reading the code for step one, 13 Oct 26: the Tracker has three date boxes that are still the phone's own — a date on a
+Found reading the code for step one, 13 Oct 26: the Tracker has three date boxes that were still the phone's own — a date on a
 course (`tracker/components/DateBox.jsx`), and "Done on" and "Failed on" in the marking pop-up (`tracker/components/Pop.jsx`).
-This design never named the Tracker, so they are NOT in step one. The same day, with a picture of that pop-up on his iPhone, he
-noted that a tick to confirm "would make sense … for some interface like the tracker", "or u can put the tick somewhere at the
-top to save space" (D798). Not ruled. Before the Tracker's boxes are built, both ways are drawn on the Tracker's own pop-up at
-phone size: a tap picks and the calendar goes (the recommendation — one behaviour everywhere, D754), and a tick at the top right
-of the calendar's head. In the Tracker a date is saved the moment it is picked — that is the case for a tick.
+The design had never named the Tracker. That evening he noted that a tick to confirm might suit the Tracker, at the top to
+save space (D798); asked what was recommended, he took it — **D801: the app's own date box, a tap picks, no tick; the pop-up
+stays open and the box reads the date in words.** His tick at the top right of the calendar's head stays the fallback, for
+the Tracker alone, if a tap proves too easy to get wrong. Built that night on step one's branch.
+
+**D800, the same answer:** a sideways finger on the new calendar's dates turns its month, as in the Calendar window — built
+into step one; and step two is not started until he has looked at step one.
 
 **And a fifth Leave War date box** the list above missed: "PO from" on the panel for a dragged block of one person's days
 (`leavewar/ui/SelectSheet.tsx`). It is the same kind as the four named — built in step one.

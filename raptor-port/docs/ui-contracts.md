@@ -7039,6 +7039,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   Saturday and a Sunday quiet. **A tap on a date picks it — no tick, no Reset, no Clear.** The title has a fixed room and
   the card a fixed height, so the arrows, the Today icon and everything under the month stand still as months change
   (the standing rule). Keyboard: one tab stop on the dates, the arrow keys walk them, Page Up / Down a month.
+  **A sideways finger on its dates turns its month too (D800, 13 Oct 26)** — the Calendar window's own gesture
+  (`ui/sideswipe.ts`), wherever the calendar is drawn; a swipe that begins on a date picks nothing; the lists scroll and
+  are not swiped.
   - **Over the form — a date that is one box among others** (`DateBox`): the box is a button reading its date in words; a
     tap opens the calendar as a LAYER ON THE PAGE ITSELF (`document.body`, layer 600 — above the windows shell, the modal,
     the Leave War's sheets and the passing note), a veil with the card on it — in the middle of the screen on a phone, a
