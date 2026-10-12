@@ -97,6 +97,20 @@ and `state/undo-wire.ts` (whose step a change to a shared input is), `leavewar/s
 asks whoever answers for the input). New tests: `src/engine/onerecord.test.ts`, `src/leavewar/onerecord-write.test.ts`.
 No file removed yet (the plan's step 6 lists what goes).
 
+**Added by the job's FULL check (12 Oct 26 — `docs/handpass/2026-10-12-one-rule.md`):** `src/engine/overlay-strip.test.ts`
+(a deleted man on a row that came from an input of several); and the tests the BREAK TESTS found missing, each red
+with its wire broken (`*.wire.test.ts(x)`, beside the module it holds): `src/ui/html.wire.test.tsx` and
+`src/ui/board-html.wire.test.tsx` (the SANS availability list of an input for several), `src/engine/medical.wire.test.ts`
+(the Medical tab's person on a record filed through the real door), `src/ui/reqdoor.wire.test.tsx` (a refusing seat
+refuses the whole swap; only a scheduler's hand), `src/engine/inputown.wire.test.ts` (the swap moves the holding on),
+`src/engine/inputs.wire.test.ts` (a cancelled or information-only input at the rules' own gate),
+`src/engine/inputs-frozenmatch.wire.test.ts` (one man split out on a published day is one change),
+`src/engine/canonical.wire.test.ts` (an input's row's people as one list place), `src/leavewar/sync.wire.test.ts` (a named
+person and a cancelled input against the ALL AVAIL crowd), `src/ui/inputedit.wire.test.tsx` (a member's hand-over refused
+at the window's own save), `src/ui/topbits.wire.test.tsx` (an access request and a bug report before the bell's list —
+D769), `src/state/person-delete.wire.test.ts` (a delete of a man in a shared input that spans his last day),
+`src/state/demoseed.wire.test.ts` (the demo seed knows both stored shapes). The Inputs export left `ui/export.ts` (D773).
+
 `[ALL-AVAIL-AS-MEMBER]` step 1 (12 Oct 26 — the reader; nothing changed on screen; D755, D756, D759): `src/engine/inputs.ts`
 gains who is in an input whatever shape it is stored in (`peopleOf`, `namedOf`, `placeholderOf`), the per-person view
 of the inputs (`inputLines`, and `inputLinesOn(dt)` — a published face's own copies where the date is frozen) and its
