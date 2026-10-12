@@ -26,6 +26,7 @@ import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
 import { InputCard } from './InputCard'
 import { cardOf, cardWhen } from './inputcard-model'
+import { monthItems } from './inputscal-model'
 import { saveOilDay, type OilPick } from './oilday'
 import { OILLIST, setInpEdit, setOilList } from './pops'
 import { useVersion } from './useStore'
@@ -44,7 +45,11 @@ function Body({ from, to, name, fresh }: { from: string; to: string; name: strin
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
   const [picks, setPicks] = useState<Record<string, OilPick | undefined>>({})
   const open = oilOpenOn(from, to)
-  const rows = open.map(o => ({ o, r: INPUTS.find((x: any) => String(x.iid) === o.iid) as any })).filter(x => x.r)
+  /* IN THE DAY'S OWN ORDER — the order the opened day lists the same inputs in (ui/inputscal-model.ts monthItems:
+     absences first, all-day before timed, then by start), so the list and the day behind it read alike, as drawn */
+  const found = open.map(o => ({ o, r: INPUTS.find((x: any) => String(x.iid) === o.iid) as any })).filter(x => x.r)
+  const order = monthItems(found.map(x => x.r), { fPerson: 'all', fType: 'all', fSearch: '' } as any).map(it => it.rows[0])
+  const rows = found.slice().sort((x, y) => order.indexOf(x.r) - order.indexOf(y.r))
   const done = rows.filter(x => picks[x.o.iid]).length
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))

@@ -4411,6 +4411,36 @@ Three things stay decided:
   `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
   back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
 
+## The OIL question comes before the change; the bar; the one list; the holiday's line (owner D780–D783 — 12–13 Oct 26, `[OIL-ASK-NOTIFY]`)
+
+*The pictures of record: `docs/mock/2026-10-12-oil-notify/` (D783 — "Yes to all"); the built screens at the same frames:
+`docs/img/handpass/2026-10-13-oil-ask-notify/look/`, taken by `scripts/handpass/oilnotify-look.mjs`.*
+
+- **The sheet** is the OIL question's own (`ui/OilConfirm.tsx`), opened by `ui/OilWaitSheet.tsx OilWait` over whatever
+  surface the gesture was on, with NO window of the input behind it (nothing has changed). Above the question, in bold,
+  what is waiting: "Swapping Tally and Ranger" (a drag from a seat), "Putting Tally in place of Ranger" (from the crew
+  list, and on the Unavailable row), "Adding Tally to Range brief", "Moving Tally to Range brief", "Moving Range brief
+  to Sat 18 Jul" (the calendar's drag). Its two buttons: "Don’t swap" / "Swap" — "Don’t add" / "Add" — "Don’t move" /
+  "Move"; the right one is greyed until an answer is picked. ✕, Escape and a press outside are the left button.
+- **Not answered:** nothing is written. The places flash with the landing flash (`.lift-land` — the puck dropped on and
+  the seat dragged from; the Unavailable row's person; the calendar's chip) and **the bar** appears: `.secdef-snack.oilbar`,
+  the "Set as default" bar's look, at the foot of the screen, z-index 440 — over the full-screen Scheduler Board (400),
+  under a question's sheet (460). "Not swapped — OIL not answered" / "Not added — …" / "Not moved — …", then **Answer
+  OIL** (the door is asked afresh: the question returns, or "That row has changed — not swapped") and **OK** (closes
+  it). It has NO timer; a week, a page or a sign-in that changes under it takes it away. On a phone the words take two
+  lines and the two buttons sit side by side under them.
+- **The one list** (`ui/OilDayList.tsx`): a window on the shell at its own width, title "OIL — Fri 17 Jul" (a run:
+  "Mon 20 – Tue 21 Jul") over "Public holiday · <name>". Opened by itself it begins "<name> is now a public holiday.";
+  from the bell it does not. Then the count ("4 to answer" / "3 of 4 answered") with "Yes to all" and "No to all" at
+  its right; one card an input, the input's own card in the day's own order, with `.icard-act` at the right of its
+  words row — "Yes · FO" or "Yes · HO" (`.upconf-seg`, picked: `.on-keep`) and "No" (picked: `.odl-no`, quiet grey); a
+  second press un-picks. No "OIL?" tag inside. The foot: "What is left goes to the schedulers’ bells" (gone when every
+  line is picked), "Later", "Save" (greyed until a pick). A press on a card's name opens that input's own window. On
+  a phone it is the shell's bottom panel, as tall as what is in it.
+- **The bell's line** for a holiday is a line of the bell's list like any other: the holiday's name in bold, its date
+  ("Fri 17 Jul"; a run "Mon 20 – Tue 21 Jul"), then "4 inputs need an OIL answer · Saber" ("1 input needs…"), its age at
+  the right. The number is read at every draw; at none left the line is not drawn and does not light the bell.
+
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
 *The pictures of record: `docs/mock/2026-10-12-one-rule/bell-desk-list-shorter.png`, `bell-phone-list-shorter.png`,

@@ -4104,3 +4104,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the mock-up / walk-script method: never send a file rewrite and the run that depends on it in one step; after any edit made outside the editor (a helper script), re-read before the next whole-file write; and have the script print a version line of its own (a date or a short tag) at the top of every run so stale output is visible at a glance.
 
 **Principle:** A run is evidence only about the file that actually ran; when the write and the run are issued together, check the write landed before believing the run.
+
+### Observation 538: "A failing test first" is unproven when the test is first RUN after the code exists
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** building [OIL-ASK-NOTIFY] (the OIL question before a swap; the one list; the holiday notice) with the owner's instruction "build with a failing test first"
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** the red step
+
+**Issue:** For the first piece the test file was written before the implementation, but it could not even be imported until the implementation's module existed, so its first real run was green (11 of 13). "Written first" had quietly replaced "seen failing". The red was only established afterwards, by breaking the new gate on purpose (10 of 13 went red). For the later pieces the tests were run BEFORE the build and were red for the trivial reason that the functions did not exist yet, which proves nothing about each assertion either.
+
+**Suggested improvement:** In the red step, add: a test that cannot be loaded before the code exists has not been seen failing. Two accepted proofs of red: (a) run it against a stub that compiles and does the OLD behaviour, or (b) once green, break the one line that makes it pass and count which cases go red, recording the count. Report the red as a number of cases, never as "written first".
+
+**Principle:** Red is an observation about each assertion, not about the order two files were written in; where the order cannot produce it, a deliberate break must.
