@@ -4164,3 +4164,50 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the skill's block template, when work is still running at the handoff, require three lines: (1) who receives each helper's closing message and figures, and that the writing chat will do NOTHING further once a new chat picks the block up (or exactly what it will finish); (2) any lock, served build or background process it holds, and who releases it; (3) every result that so far exists only in the chat or its working folder, copied into the repo before the block is committed. And a first step for the reader: list the live sessions and message the one that wrote the block before touching the shared checkout.
 
 **Principle:** A handoff is complete only when nothing the next session needs lives in the writer's head, its working folder or its still-running helpers. If the writer is still alive, the handoff must also say what the writer will and will not do from that moment — two sessions on one checkout need an explicit owner for every remaining step.
+
+## 2026-10-13 (the branch claude/skill-observation-review-258b48 — the skill review; 542–559 are this chat's, the Calendar chat appends from 560)
+
+### Observation 542: A rehearsal's "put the live files back" also rolled back the review's own drafts — they were tracked too
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The skill review of 13 Oct 26. To prove the document check would pass with the drafts installed, the staged drafts were copied over the live files, the check was run, and the live files were restored with `git checkout -- .`.
+**Skill:** task-observer (`references/weekly-review.md`, Delivering updated skills; this repo's `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo — Staging)
+**Type:** open-source
+**Phase/Area:** Staging and rehearsing a review's drafts
+
+**Issue:** The first rehearsal was safe only by accident: the holding folder was still untracked, so a whole-tree restore could not touch it. After the drafts were committed (so the independent reader would read a fixed snapshot) and then edited again to take the reader's 21 findings, the same whole-tree restore returned every draft to its committed state and silently threw away those edits — about twenty-five of them, re-applied from the conversation. It is the trap notes 262 and 341 record for break tests ("a restore that returns to the last commit, not to the state just before"), met in a new place: the thing restored and the thing being worked on sat in one tree.
+
+**Suggested improvement:** In the review procedure's staging section (and this repo's Staging line): "Rehearse the project's document check with the drafts in place before the read and again after the reader's fixes: COMMIT the drafts first, copy them over the live files, run the check, then restore ONLY the live paths, by name — never the whole tree — and delete only the files the drafts add." Keep the list of live paths in the install script so the rehearsal and the install use one list.
+
+**Principle:** An undo scoped wider than the do reaches work that was never part of the experiment; commit what must survive, and restore by the same list you copied by.
+
+### Observation 543: A review left for three weeks held 272 notes, and a third of them were one lesson logged again
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The same review: 272 open notes since 24 Sep 26, about 70,000 words, one whole session to read and sort.
+**Skill:** task-observer (SKILL.md Session Start Protocol step 3; `references/weekly-review.md`, the 7-day fallback)
+**Type:** open-source
+**Phase/Area:** When a review is triggered
+
+**Issue:** The 7-day fallback offers the review in one line at the start of every interactive session and never gates the task — so across about forty busy sessions the offer was made and passed over each time, and the backlog grew past what a session can review beside its own job. The cost fell on the review: twelve notes of one shell trap, six of "an assertion of absence passes on nothing", four of "the re-walk overwrote the first walk's pictures". Several said in their own text "the note has been tested and has failed; build the guard" — and were themselves only notes.
+
+**Suggested improvement:** Add a SIZE trigger beside the age one: when OPEN notes pass a threshold (say 60), the offer stops being a one-line aside and becomes a line in the session's closing report or handoff ("the notebook holds N unreviewed notes — a review is its own job; start one?"), so the owner places it like any other work. And let a review be run on ONE skill's notes when a cluster on it passes a smaller threshold (say 10), which is cheap enough to do beside a task.
+
+**Principle:** An offer that never blocks is never taken while there is work to do; a backlog needs a trigger that turns it into scheduled work before it is too large to do in passing.
+
+### Observation 544: A large review is kept honest by a table every note appears in exactly once, checked by machine, and by a brief that names where the drafts are most likely wrong
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The same review. Positive signal.
+**Skill:** task-observer (`references/weekly-review.md` Steps 1, 3 and 8)
+**Type:** open-source
+**Phase/Area:** Dispositioning many notes; briefing the independent reader
+
+**Issue:** Two things carried a 272-note review. (1) One table, one row a note, with a code per row (carried by a draft / already written / filed / memory / recommend closed / stays open) — and a three-line check that the set of numbers in the table equals the set of `### Observation` headers in the log, with no duplicate. The reader ran the same check independently. The install script then reads the table, so the statuses written into the log cannot drift from what was approved. (2) The reader's brief did not ask "is this right?": it listed nine checks and, under "contradictions", the eight places the writer already suspected (an approved wording touched, a ruling's recipe narrowed, a rule file corrected). The reader found 21 things, 8 of them in those named places, and its factual claims held when checked.
+
+**Suggested improvement:** In `weekly-review.md`: extend Step 1's reconciliation guard to the output — "the dispositions table has exactly one row per header; check it by machine before the read and before the install" — and add to Step 8 that the reader's brief names the writer's own doubts as targets, asks for exact replacement text, and lets the reader write one file, its report.
+
+**Principle:** A review of many items needs an account in which every item appears exactly once and a machine says so; and a reviewer told where the author is unsure finds more than one asked whether the work is good.
