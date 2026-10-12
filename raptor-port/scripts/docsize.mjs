@@ -96,7 +96,10 @@ const FILES = [
      2 over before this and still is; that excess waits for his ruling on [START-CONTEXT-AUDIT]. */
   /* 78 -> 80, 7 Oct 26 (D609): the two lines it stood over since 5 Oct are the model line of D590 (who reviews now) -
      a live rule that belongs in the always-loaded copy. Nothing in the file is spent. */
-  ['.claude/rules/bug-check.md',         0,   80],
+  /* 80 -> 83, 13 Oct 26 (owner, D790 - "Yes option 2"): three lines beside the model line of D590 say who reads
+     finished code while the ChatGPT readers are out - a fresh, blind Opus read on every job that needs one, Fable
+     as well only on the riskiest. A live rule every chat needs before it chooses its readers. Nothing is spent. */
+  ['.claude/rules/bug-check.md',         0,   83],
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,

@@ -232,7 +232,8 @@ a ChatGPT read is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIS
 they fit with this is put to him — not assumed. *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
 (D788, then once more by D789, both now in `DECISIONS-ARCHIVE.md`); on the second, same brief and blind to each other, Fable
 found 3 real faults and the Opus reader 11, with no false alarm from either — the tables are in
-`handpass/2026-10-13-oil-ask-notify.md` §12.1 and `handpass/2026-10-12-one-rule.md` §10b.
+`handpass/2026-10-13-oil-ask-notify.md` §12.1 and `handpass/2026-10-12-one-rule.md` §10b (the trial’s backlog item,
+`[OPUS-READ-TRIAL]`, is in `OUTSTANDING-ARCHIVE.md`).
 
 **Do NOT spend them on:**
 
