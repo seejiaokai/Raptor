@@ -46,6 +46,13 @@ export type NoticePart =
   | { k: 'rem'; who: string[] }                    // others taken out
   | { k: 'title'; was: string }                    // renamed
   | { k: 'rmk' }                                   // its remark changed
+  /* A DAY MADE A PUBLIC HOLIDAY AFTER WHAT STANDS ON IT WAS FILED ([OIL-ASK-NOTIFY] — owner D780: "There should be a notification
+     to the schedulers to award oil on those inputs. And should not be silent."; D783 (6): "one bell line a holiday,
+     counting only what is left unanswered, a tap opening the list"). ITS OWN KIND OF NOTICE: it is about no one input
+     (`iid` is ''), `name` is the holiday's and `day` its first day; `a`..`b` is the run of dates that became non-working.
+     IT STORES NO COUNT — how many inputs still need an answer is read live when the bell draws (noticeWords), so what
+     an admin answers tells nobody (D781), and a line with nothing left is not listed at all (noticeLive). */
+  | { k: 'oilhol'; a: string; b: string }
 
 export interface Notice {
   id: string
@@ -170,12 +177,58 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
   return made
 }
 
+/* ---- a day made a holiday ([OIL-ASK-NOTIFY]) ------------------------------------------------------------------- */
+/** THE HOLIDAY'S NOTICES — one a scheduler, pushed INSIDE the command that made the day a holiday (leavewar/sync.ts
+ *  tellHoliday, through the scheduler store's own input command), so that command's Undo takes them away and its Redo
+ *  puts them back. `to` — every scheduler, the one who made the holiday too: what he leaves for "Later" is on his own
+ *  bell as well. Answers how many were made. */
+export function noticeHoliday(to: readonly string[], by: string | null, name: string, a: string, b: string, at: number = Date.now()): number {
+  let made = 0
+  for (const p of new Set(to.map(String))) {
+    if (!here(p)) continue
+    NOTICES.push({ id: mint(at), to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b }] })
+    made++
+  }
+  return made
+}
+/* how many inputs on a run of dates still need an OIL answer — the Leave War's to say (leavewar/sync.ts oilOpenOn),
+   handed over by the sync's wiring so state/ never imports the war (the inputgate-hook way). No reader installed (a
+   scheduler-only test): nothing is left. */
+let HOL_LEFT: ((a: string, b: string) => number) | null = null
+export function setHolidayLeft(fn: ((a: string, b: string) => number) | null): void { HOL_LEFT = fn }
+const holOf = (n: Notice): { a: string; b: string } | null => { const p: any = (n.what || [])[0]; return p && p.k === 'oilhol' ? { a: String(p.a), b: String(p.b || p.a) } : null }
+/** how many inputs a holiday's notice still counts (0 for any other notice) */
+export function noticeLeft(n: Notice): number { const h = holOf(n); return h && HOL_LEFT ? HOL_LEFT(h.a, h.b) : 0 }
+/** IS THIS NOTICE ONE TO SHOW? Every notice about an input is. A holiday's is only while an input on its dates still
+ *  needs an answer — and, where the same dates were made a holiday more than once (made, taken away, made again), only
+ *  the NEWEST of them: one line a holiday (D783 (6); Fable's read of the plan, A7). ONE BODY, read by the bell's list,
+ *  by what counts as unread (state/noticeseen.ts) and so by whether the bell is lit: a line the list leaves out can
+ *  never light it. */
+export function noticeLive(n: Notice): boolean {
+  const h = holOf(n)
+  if (!h) return true
+  if (noticeLeft(n) <= 0) return false
+  for (const x of NOTICES) {
+    if (x === n || x.to !== n.to) continue
+    const o = holOf(x)
+    if (o && o.a === h.a && o.b === h.b && (x.at > n.at || (x.at === n.at && x.id > n.id))) return false
+  }
+  return true
+}
+/** the holiday line that covers this date for this person, if one is live — the bell's tap asks it (ui/topbits.tsx) */
+export function holidayLineOn(pid: string | null | undefined, iso: string): Notice | null {
+  if (!pid) return null
+  for (const n of NOTICES) { const h = n.to === pid ? holOf(n) : null; if (h && h.a <= iso && iso <= h.b && noticeLive(n)) return n }
+  return null
+}
+
 /* ---- reading them --------------------------------------------------------------------------------------------- */
 const LIST_MAX = 30
-/** one person's notices, newest first — the bell's list */
+/** one person's notices, newest first — the bell's list (a holiday's line with nothing left to answer is left out
+ *  BEFORE the thirty are cut, so it never takes a place from a notice he should see) */
 export function noticesFor(pid: string | null | undefined): Notice[] {
   if (!pid) return []
-  return NOTICES.filter(n => n.to === pid).sort((x, y) => y.at - x.at || (x.id < y.id ? 1 : -1)).slice(0, LIST_MAX)
+  return NOTICES.filter(n => n.to === pid && noticeLive(n)).sort((x, y) => y.at - x.at || (x.id < y.id ? 1 : -1)).slice(0, LIST_MAX)
 }
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -185,6 +238,14 @@ export function noticeDay(iso: string): string {
   if (!m) return ''
   const y = +m[1]!, mo = +m[2]!, d = +m[3]!
   return `${DOW[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()]} ${d} ${MON[mo - 1]}`
+}
+/* a run of dates, as a line's or a window's heading says it: 'Fri 17 Jul'; 'Mon 20 – Tue 21 Jul'; across two months
+   'Fri 31 Jul – Sat 1 Aug' */
+export function noticeRun(a: string, b?: string | null): string {
+  const A = noticeDay(a)
+  if (!b || b === a) return A
+  const B = noticeDay(b)
+  return a.slice(0, 7) === b.slice(0, 7) ? `${A.replace(/ [A-Za-z]{3}$/, '')} – ${B}` : `${A} – ${B}`
 }
 const cs = (id: string): string => { const p: any = PEOPLE[id]; return p && p.cs ? String(p.cs) : String(id) }
 const names = (who: readonly string[]): string => (who.length <= 2 ? who.map(cs).join(', ') : `${who.length} people`)
@@ -205,11 +266,20 @@ function partWords(p: NoticePart): string {
     case 'rem': return `${names(p.who)} taken off`
     case 'title': return `Renamed — was ${p.was}`
     case 'rmk': return 'Remark changed'
+    /* (its count is the line's own, read live: noticeWords) */
+    case 'oilhol': return 'Inputs need an OIL answer'
   }
 }
 /** A LINE OF THE LIST, IN THE SHORTER WORDING (D769): the input and its date; what happened — the first two things,
  *  where a save changed several — and who did it ('' where the app did). */
 export function noticeWords(n: Notice): { name: string; day: string; what: string; who: string } {
+  /* A HOLIDAY'S LINE (D783 (6) — the picture of record, docs/mock/2026-10-12-oil-notify/*-hol-6-bell.png): the holiday
+     and its date(s); how many inputs are LEFT to answer, counted now; who made it a holiday */
+  const h = holOf(n)
+  if (h) {
+    const left = noticeLeft(n)
+    return { name: n.name, day: noticeRun(h.a, h.b), what: left === 1 ? '1 input needs an OIL answer' : `${left} inputs need an OIL answer`, who: n.by ? cs(n.by) : '' }
+  }
   return { name: n.name, day: noticeDay(n.day), what: (n.what || []).slice(0, 2).map(partWords).join(', '), who: n.by ? cs(n.by) : '' }
 }
 

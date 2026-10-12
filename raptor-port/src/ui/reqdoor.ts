@@ -34,9 +34,24 @@
    the OIL question is kept at what the hours give.
 
    OIL AT THE ADD (owner D755 (1), D762): the person added follows the input's ONE answer — nothing is written for him.
-   Where the input asks the question for a day and has no answer, the question opens at once, for the INPUT, for whoever
-   added him; where its answer is No, the note says he is not counted. A REPLACEMENT voids the answer — it was the first
-   man's own (D762 reading 1; Fable F7) — and asks again.
+   Where its answer is No, the note says he is not counted. A REPLACEMENT voids the answer — it was the first man's own
+   (D762 reading 1; Fable F7).
+
+   THE OIL QUESTION COMES FIRST, AND THE WRITE ONLY ON AN ANSWER ([OIL-ASK-NOTIFY] — owner D780, D781, D783, 12 Oct 26:
+   "a swap or an add that raises an OIL question is NOT MADE until the question is answered — nothing moves; not
+   answered, both pucks flash and a bar stays until tapped"; the plan docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md
+   §3.1, §5a). Until then this door made the change and THEN opened the question over the input's window, and a Cancel
+   left the change made with nobody having answered. Now a person put in where the input has no answer, a man put in
+   place of its only person (whose answer was his own), and a move onto such an input each go through `gated`:
+     1. the door's own save is TRIED and thrown away (ui/inputedit.tsx dryRun) — a change that would be refused is
+        refused now, in its own words, and nobody is asked a question for it (Fable's read of the plan, A2);
+     2. the one gate is asked (inputedit.tsx oilGate — the body the input's window asks);
+     3. nothing to ask → the change is made, as before; something to ask → NOTHING is written, the change is left
+        waiting (ui/oilwait.ts) and the door answers 'asked' — a FOURTH answer: every caller ends its gesture there
+        with nothing moved and nothing said.
+   The answer, when it comes, runs this same door again WITH it: the change and the answer are one command, one Undo.
+   The row, the seat and the men are found again by what they ARE (the row's id, the input's id, who stands where),
+   never by where they stood — the page works while the bar is up, and a row may have moved or gone (Fable A5).
 
    ALL AVAIL / ALL IS ONE OF THE INPUT'S PEOPLE (step 3 of the build, 12 Oct 26 — owner D750, D753, D755, D757): put
    anywhere on the row it JOINS — it never replaces anyone, and a named person put on ITS puck joins beside it; taken
@@ -46,21 +61,28 @@
    holding: taken off and dropped back it is a new one (inputown.ts putPerson — Fable F11). */
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { idsOf, inpLabel, oilAsks } from '../engine/inputs'
+import { INPUTS, idsOf, inpLabel, oilAsks } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { requestOfBox, standsOn } from '../engine/overlay'
 import { toPeople } from '../engine/inputown'
 import { ridWriteKey, posKey } from '../engine/rowids'
-import { lastFilled } from '../engine/slots'
+import { lastFilled, slotVal } from '../engine/slots'
 import { CmdRefused } from '../command'
 import { canEditSched } from '../state/auth'
 import { me } from '../state/perms'
 import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
 import { oilAskPlan } from '../leavewar/sync'
-import { commitInput, commitInputEdit, draftOf, saveBatchX, askOilIfPending } from './inputedit'
+import { commitInput, commitInputEdit, draftOf, saveBatchX, askOilIfPending, dryRun, oilGate, inputWho } from './inputedit'
+import { holdForOil } from './oilwait'
+import type { OilWait, OilWaitKind } from '../state/view'
 
-export type RowAnswer = 'none' | 'done' | 'refused'
+/** 'asked' — the change raises the OIL question: NOTHING was written, and it waits on the answer (ui/oilwait.ts). */
+export type RowAnswer = 'none' | 'done' | 'refused' | 'asked'
+type Oil = Record<string, number>
+/** THE SEAT A SWAP HANDS THE MAN REPLACED — the seat the newcomer was dragged from, and the caller's own way of putting
+ *  a man on it (its checks, its words). The seat is named so the swap can find it again when the answer comes. */
+export type SeatTake = { from: string; take: (from: string, was: string) => boolean | void }
 
 /* a place on a row that came from an input: the row, its input, and who stands on the place ('' — its "+ add", or an
    empty place) */
@@ -107,9 +129,70 @@ function quietly<T>(fn: () => T): { out: T; spoke: boolean } {
   try { const out = fn(); return { out, spoke } } finally { HOOKS.toast = say }
 }
 const people = (inp: any): string[] => idsOf(inp).map(String)
+const iidOf = (p: Place): string => String(p.inp.iid)
+/* a save's options from the schedule: nobody reads late (D741) — and the OIL answer given with it, where there is one */
+const opts = (oil?: Oil) => (oil ? { sched: true, oil } : { sched: true })
 
-/* THE NOTE AFTER SOMEONE WAS PUT IN, AND THE OIL QUESTION WHERE THE INPUT HAS NO ANSWER (D755 (1), D762). The person
-   follows the input's one answer; nothing was written for him. */
+/* ---- THE QUESTION FIRST ([OIL-ASK-NOTIFY]) ------------------------------------------------------------------------ */
+/* the gate, asked without a word: a draft it would refuse is the save's to refuse, in the save's own words */
+function quietGate<T>(gate: () => T): T {
+  const say = HOOKS.toast
+  HOOKS.toast = () => {}
+  try { return gate() } finally { HOOKS.toast = say }
+}
+/* a save being tried and thrown away: it says nothing and repaints nothing */
+let TRYING = false
+/* where the person stands after the change just made — for the landing flash and the "is he busy" question */
+let LANDED: string | null = null
+function gated(o: {
+  kind: OilWaitKind
+  /** the sheet's own first line */
+  lead: string
+  /** the answer in hand: the wait's own second call */
+  oil?: Oil
+  /** the change, on the row AS IT STANDS NOW: 'none' where the row, the seat or the men are no longer what they were */
+  make: (oil?: Oil) => RowAnswer
+  /** the question the change would raise, asked of the records as they stand now; null where they are gone */
+  gate: () => ReturnType<typeof oilGate> | null
+  /** who the question names, where it is not the gate's own person */
+  who?: () => string
+  /** the input the change is made to */
+  iid: string
+  /** what flashes when it is not answered */
+  places: string[]
+  /** this whole door, asked afresh — the bar's "Answer OIL" */
+  again: () => RowAnswer
+}): RowAnswer {
+  if (o.oil) return o.make(o.oil)
+  /* THE GATE FIRST, THE TRY ONLY WHERE THERE IS A QUESTION. Nothing to ask (a working day, a kind that never earns, an
+     input already answered — nearly every drop there is) → the change is made exactly as it always was. Only a change
+     that WOULD raise the question is tried and thrown away first — and a thrown-away save puts every record back as a
+     NEW object, so nothing here keeps one across it (`make` and `gate` find theirs afresh). */
+  const g = quietGate(o.gate)
+  if (!g || g.kind !== 'ask') return o.make()
+  TRYING = true
+  let good = false
+  try { good = dryRun(() => o.make() === 'done') } finally { TRYING = false }
+  if (!good) {
+    /* it would be refused: the real run says why, in its own words, and writes nothing. (Should the two ever disagree
+       — tried: no, real: yes — the change is made as it always was, and the question follows it: never silent.) */
+    const a = o.make()
+    if (a === 'done') askOilIfPending(INPUTS.find((x: any) => String(x.iid) === o.iid), true)
+    else notify()                                    // every screen reads its records again after the thrown-away save
+    return a
+  }
+  const w: OilWait = {
+    kind: o.kind, lead: o.lead, places: o.places,
+    gate: { who: o.who ? o.who() : g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
+    redo: oil => { LANDED = null; const a = o.make(oil); w.landed = LANDED; return a },
+    ask: () => { LANDED = null; const a = o.again(); w.landed = LANDED; return a },
+  }
+  holdForOil(w)
+  return 'asked'
+}
+
+/* THE NOTE AFTER SOMEONE WAS PUT IN (D755 (1), D762). The person follows the input's one answer; nothing was written
+   for him. (The OIL question no longer FOLLOWS the add — where the input has no answer it was asked first: `gated`.) */
 function afterPut(inp: any, said: string, spoke: boolean): void {
   let tail = ''
   if (oilAsks(inp.type)) {
@@ -117,16 +200,16 @@ function afterPut(inp: any, said: string, spoke: boolean): void {
     if (plan.length && plan.every((p: any) => ans[p.iso] === 0)) tail = ' — not counted for OIL'
   }
   if (!spoke) HOOKS.toast(said + tail, 'ok')
-  askOilIfPending(inp, true)
 }
 
-/* SOMEONE JOINS — appended to the input's list, by the input's own save. */
-function join(p: Place, pid: string): RowAnswer {
+/* SOMEONE JOINS — appended to the input's list, by the input's own save; with the input's one OIL answer where the
+   question was put first. */
+function join(p: Place, pid: string, oil?: Oil): RowAnswer {
   const name = inpLabel(p.inp)
-  const { out, spoke } = quietly(() => commitInput(p.inp, draftOf(p.inp), [...people(p.inp), pid], { sched: true }))
+  const { out, spoke } = quietly(() => commitInput(p.inp, draftOf(p.inp), [...people(p.inp), pid], opts(oil)))
   if (!out) return 'refused'
   afterPut(p.inp, `${csOf(pid)} added to ${name}`, spoke)
-  notify()
+  if (!TRYING) notify()
   return 'done'
 }
 
@@ -134,12 +217,13 @@ function join(p: Place, pid: string): RowAnswer {
    whoever did this (§4.5 "By Saber" — so the bell's OIL question and "who may change it" go to someone still involved),
    the OIL answer is void and the holding moves on (commitInputEdit's hand-over: engine/inputown.ts swapPerson, engine/oil.ts —
    a new holder has not answered). `then` runs INSIDE the command — the man replaced taking the seat the newcomer came
-   from; a `false` from it refuses the whole command. */
-function replace(p: Place, pid: string, then?: (was: string) => boolean | void, said?: (was: string) => string): RowAnswer {
+   from; a `false` from it refuses the whole command. `oil` — the new holder's answer, given before the swap was made
+   (`gated`): written by the same save, after the hand-over voided the first man's. */
+function replace(p: Place, pid: string, then?: (was: string) => boolean | void, said?: (was: string) => string, oil?: Oil): RowAnswer {
   const was = p.at, name = inpLabel(p.inp)
   const { out, spoke } = quietly(() => saveBatchX(() => {
     toPeople(p.inp)
-    if (!commitInputEdit(p.inp, { ...draftOf(p.inp), person: pid }, undefined, undefined, { sched: true })) return false
+    if (!commitInputEdit(p.inp, { ...draftOf(p.inp), person: pid }, undefined, undefined, opts(oil))) return false
     const by = me()
     if (by != null) p.inp.by = String(by)
     if (then && then(was) === false) throw new CmdRefused('the seat he came from refused the man replaced')
@@ -147,30 +231,54 @@ function replace(p: Place, pid: string, then?: (was: string) => boolean | void, 
   }))
   if (!out.ok) return 'refused'
   if (!spoke) HOOKS.toast(said ? said(was) : `${csOf(pid)} is on ${name} instead of ${csOf(was)}`, 'ok')
-  askOilIfPending(p.inp, true)
-  notify()
+  if (!TRYING) notify()
   return 'done'
 }
 
-/** A PERSON PUT ON A PLACE OF AN INPUT'S ROW. `from` — the seat he was dragged from, when it is a seat elsewhere on the
- *  schedule (not a place of an input's row): onto the ONLY person's puck that is a swap, and `seat(was)` — handed in by
- *  the drag — puts the man replaced on that seat inside the command. */
-export function rowPut(key: any, id: any, seat?: (was: string) => boolean | void): RowAnswer {
+/** A PERSON PUT ON A PLACE OF AN INPUT'S ROW. `seat` — the seat he was dragged from, when it is a seat elsewhere on the
+ *  schedule (not a place of an input's row): onto the ONLY person's puck that is a swap, and `seat.take` — handed in by
+ *  the drag — puts the man replaced on that seat inside the command. `oil` — the answer to the OIL question this
+ *  change raised, when it is being made on that answer (ui/oilwait.ts); without it a change that raises the question
+ *  is NOT made, and the answer is 'asked' (`gated`, above). */
+export function rowPut(key: any, id: any, seat?: SeatTake, oil?: Oil): RowAnswer {
   const p = placeOf(key)
   const pid = String(id || '')
   if (!p || !pid || !PEOPLE[pid]) return 'none'
   if (!canEditSched()) return 'refused'
   const ids = people(p.inp)
   if (ids.includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
-  /* a placeholder: never replaces anyone — it joins, where the input may hold one (the input's own save says why
-     where it may not) */
-  if (isSpecial(pid)) return join(p, pid)
-  /* (A PERSONAL INPUT'S ROW IS A ROW LIKE ANY INPUT'S — owner D776, 12 Oct 26, "A2 B2": it may hold several people, and
+  /* a placeholder never replaces anyone — it joins, where the input may hold one (the input's own save says why where
+     it may not). A real person on the ONLY person's puck replaces him; anywhere else he joins.
+     (A PERSONAL INPUT'S ROW IS A ROW LIKE ANY INPUT'S — owner D776, 12 Oct 26, "A2 B2": it may hold several people, and
      a puck dropped on it swaps or joins as on any input's. The refusal the job's walk added here for its one person's
      puck — B8, D755 (4) — is withdrawn with the rule it kept.) */
-  if (p.at && ids.length === 1 && !isSpecial(p.at))
-    return replace(p, pid, seat, seat ? was => `${csOf(pid)} and ${csOf(was)} swapped` : undefined)
-  return join(p, pid)
+  const swap = !isSpecial(pid) && !!p.at && ids.length === 1 && !isSpecial(p.at)
+  /* the row, the seat and the men by what they ARE — found again each time the change is run */
+  const T = ridWriteKey(String(key), DAYS), F = seat ? ridWriteKey(String(seat.from), DAYS) : null
+  const iid = iidOf(p), at = p.at
+  const here = (): Place | null => { const k = posKey(T, DAYS), q = k ? placeOf(k) : null; return q && iidOf(q) === iid && q.at === at ? q : null }
+  /* the seat he came from, while he still sits on it (a swap hands it to the man replaced) */
+  const seatNow = (): string | null => { const k = F ? posKey(F, DAYS) : null; return k && String(whoId(slotVal(k)) || '') === pid ? k : null }
+  const make = (o?: Oil): RowAnswer => {
+    const q = here(), sk = swap ? seatNow() : null
+    if (!q || (swap && F && !sk)) return 'none'
+    if (people(q.inp).includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
+    const a = swap
+      ? replace(q, pid, sk ? was => seat!.take(sk, was) : undefined, sk ? was => `${csOf(pid)} and ${csOf(was)} swapped` : undefined, o)
+      : join(q, pid, o)
+    if (a === 'done') LANDED = placeOnRow(posKey(T, DAYS) || String(key), pid)
+    return a
+  }
+  return gated({
+    kind: swap ? 'swap' : 'add', oil, make, iid,
+    lead: swap ? (seat ? `Swapping ${csOf(pid)} and ${csOf(at)}` : `Putting ${csOf(pid)} in place of ${csOf(at)}`) : `Adding ${csOf(pid)} to ${inpLabel(p.inp)}`,
+    /* a replacement is asked of the NEW holder — the first man's answer was his own; a join of the input as it stands */
+    gate: () => { const q = here(); return q ? oilGate(swap ? { ...draftOf(q.inp), person: pid } : draftOf(q.inp), q.inp) : null },
+    ...(swap ? {} : { who: () => { const q = here(); return inputWho({ people: [...(q ? people(q.inp) : ids), pid].map(x => ({ p: x })) }) } }),
+    /* the puck dropped on (a "+ add": the row's own name box), and the seat he was dragged from */
+    places: [ridWriteKey(`g:${p.di}.${p.ri}${at ? p.rest : ''}`, DAYS), ...(F ? [F] : [])],
+    again: () => { const k = posKey(T, DAYS), sk = F ? posKey(F, DAYS) : null; return !k || (F && !sk) || !here() ? 'none' : rowPut(k, pid, seat && sk ? { from: sk, take: seat.take } : undefined) },
+  })
 }
 
 /* SOMEONE LEAVES — the body of a puck taken off the row and of one dragged to another place. The LAST one is not taken
@@ -230,16 +338,38 @@ export function rowLeaveTo(fromKey: any, toKey: any, write: () => boolean | void
  *  second in ONE command (one Undo), following the second's OIL answer. Refused whole — he stays where he was — when
  *  he is the first input's last person or is already in the second. 'none' when either end is not an input's row, or
  *  both are the same input's (rowPut then says he is already on it). */
-export function rowMove(fromKey: any, toKey: any): RowAnswer {
+export function rowMove(fromKey: any, toKey: any, oil?: Oil): RowAnswer {
   const a = placeOf(fromKey), b = placeOf(toKey)
   if (!a || !a.at || !b || a.inp === b.inp) return 'none'
   if (!canEditSched()) return 'refused'
   const pid = a.at
   if (people(b.inp).includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
-  if (!leave(a, () => commitInput(b.inp, draftOf(b.inp), [...people(b.inp), pid], { sched: true }), `${csOf(pid)} moved to ${inpLabel(b.inp)}`)) return 'refused'
-  askOilIfPending(b.inp, true)
-  notify()
-  return 'done'
+  /* both rows and the man by what they are — found again each time the move is run ([OIL-ASK-NOTIFY]; `gated`, above:
+     where the input he moves INTO has no OIL answer the move waits on the question, as an add does — D783's reading) */
+  const A = ridWriteKey(String(fromKey), DAYS), B = ridWriteKey(String(toKey), DAYS)
+  const ai = iidOf(a), bi = iidOf(b), bat = b.at
+  const ends = (): [Place, Place] | null => {
+    const ka = posKey(A, DAYS), kb = posKey(B, DAYS), x = ka ? placeOf(ka) : null, y = kb ? placeOf(kb) : null
+    return x && y && iidOf(x) === ai && iidOf(y) === bi && x.at === pid && y.at === bat ? [x, y] : null
+  }
+  const make = (o?: Oil): RowAnswer => {
+    const e = ends()
+    if (!e) return 'none'
+    const [x, y] = e
+    if (people(y.inp).includes(pid)) { HOOKS.toast(alreadyOn(pid), 'warn'); return 'refused' }
+    if (!leave(x, () => commitInput(y.inp, draftOf(y.inp), [...people(y.inp), pid], opts(o)), `${csOf(pid)} moved to ${inpLabel(y.inp)}`)) return 'refused'
+    LANDED = placeOnRow(posKey(B, DAYS) || String(toKey), pid)
+    if (!TRYING) notify()
+    return 'done'
+  }
+  return gated({
+    kind: 'move', oil, make, iid: bi,
+    lead: `Moving ${csOf(pid)} to ${inpLabel(b.inp)}`,
+    gate: () => { const e = ends(); return e ? oilGate(draftOf(e[1].inp), e[1].inp) : null },
+    who: () => { const e = ends(); return inputWho({ people: [...people(e ? e[1].inp : b.inp), pid].map(x => ({ p: x })) }) },
+    places: [A, ridWriteKey(`g:${b.di}.${b.ri}${bat ? b.rest : ''}`, DAYS)],
+    again: () => { const ka = posKey(A, DAYS), kb = posKey(B, DAYS); return !ka || !kb || !ends() ? 'none' : rowMove(ka, kb) },
+  })
 }
 
 /** A SCHEDULER'S MARK ON AN INPUT'S ROW IS THE INPUT'S (step 4 of the one-rule build, 12 Oct 26 — owner D760: "a CX the

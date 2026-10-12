@@ -211,6 +211,16 @@
 .secdef-btn:hover{border-color:var(--ink-3);color:var(--ink)}
 .secdef-btn.yes{background:var(--accent);border-color:var(--accent);color:#05222b}
 .secdef-btn.yes:hover{filter:brightness(1.06)}
+/* THE BAR THAT STAYS — "Not swapped — OIL not answered · Answer OIL · OK" ([OIL-ASK-NOTIFY], owner D783 (2): "the flash
+   and a bar that stays"; the pictures of record docs/mock/2026-10-12-oil-notify/*-swap-5-after-stays.png). The "Set as
+   default" bar's own look, with two differences that are its job: it sits OVER the full-screen Scheduler Board (the
+   board is 400; a question's sheet, 460 and up, still covers it), and its words are a size up — it is the only thing
+   on screen that says a swap was not made. On a phone the two buttons drop under the words, as drawn. */
+.secdef-snack.oilbar{z-index:440;padding:12px 14px 12px 18px;gap:12px;border-radius:14px}
+.oilbar .secdef-msg{font-size:15px}
+.oilbar .secdef-btn{font-size:14px;padding:8px 14px;border-radius:10px}
+/* the statement above the question a waiting change is asked with (ui/OilConfirm.tsx `lead`) */
+.oilconf-lead{margin:0 0 10px}
 .addrow:hover{border-color:var(--ok);color:#9BE3B4}
 /* ---- the Flying-wave-templates editor (owner, 25 Aug 26). Reuses the duty
    editor's modal/tab/name/nudge/del/addrow chrome above; these are the parts a

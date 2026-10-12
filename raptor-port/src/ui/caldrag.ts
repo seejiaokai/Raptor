@@ -20,13 +20,15 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, commitInput, fmtDay, askOilIfPending, medAskFor, sharedRefusal } from './inputedit'
+import { draftOf, commitInputEdit, commitInput, fmtDay, oilFirst, oilGate, medAskFor, sharedRefusal } from './inputedit'
+import { oilWaitThen } from './oilwait'
+import { OILWAIT } from '../state/view'
 import { movePlanPuck, planMoveBlock } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
 import { mayEditInput } from '../state/perms'
-import { INPUTS, idsOf } from '../engine/inputs'
+import { INPUTS, idsOf, inpLabel } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
@@ -140,23 +142,31 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
 
   /* the one writer for an input of several — its people as they are, so only what it SAYS changes; one person's goes
      through the body every single input's fields are saved by, as it always did */
-  const ok = whole ? commitInput(r, d, idsOf(r)) : commitInputEdit(r, d)
   /* commitInputEdit already toasts every refusal it can produce (a SANS
      clash, a backwards range, a row deleted underneath the edit) — adding a
      second toast on failure here would double up on the same news. Only the
      success case needs one, because "moved to <date>" is wording specific to
      a drag, which commitInputEdit has no way to know it was. */
-  if (ok) {
-    HOOKS.toast('Moved to ' + fmtDay(d.start), 'ok')
-    /* THE THIRD DOOR (Codex rank 5): a date-only move KEEPS the old answers by
-       design — an entry for a day the row no longer covers is inert — but the
-       day it has just landed on was never answered for, so the request arrives
-       unanswered and pays nothing until somebody notices the member's bell.
-       The question follows the move instead, exactly as it follows the
-       drag-reassign. */
-    askOilIfPending(r)
-  }
-  return !!ok
+  /* THE THIRD DOOR (Codex rank 5, 22 Sep 26): a date-only move KEEPS the old answers by design — an entry for a day the
+     row no longer covers is inert — but the day it lands on was never answered for. Until [OIL-ASK-NOTIFY] the move was
+     made and the question FOLLOWED it, so a Cancel left the input moved and unanswered. Now THE QUESTION IS PUT FIRST
+     (owner D780 — "holds at every door"; D783: not made until the question is answered — ui/inputedit.tsx oilFirst):
+     a move onto a day that asks it waits, is made WITH its answer, and unanswered is not made — "Not moved — OIL not
+     answered". The same order the input's own window keeps when its dates are changed there. */
+  /* (what the record WAS, kept as plain values: the tried save changes this very object before it is thrown away) */
+  const people = idsOf(r).map(String).join(','), date0 = r.date, end0 = r.endDate || '', label = inpLabel(r)
+  return oilFirst({
+    kind: 'move', lead: `Moving ${label} to ${fmtDay(d.start)}`, iid: String(r.iid),
+    same: x => idsOf(x).map(String).join(',') === people && x.date === date0 && (x.endDate || '') === end0,
+    make: (x, oil) => {
+      const ok = whole ? commitInput(x, d, idsOf(x), oil ? { oil } : undefined) : commitInputEdit(x, d, undefined, undefined, oil ? { oil } : undefined)
+      if (ok) HOOKS.toast('Moved to ' + fmtDay(d.start), 'ok')
+      return !!ok
+    },
+    gate: x => oilGate(whole ? d : { ...d, person: idsOf(x)[0] }, x),
+    places: [`sel:#inpCal [data-iid="${String(r.iid)}"]`],
+    again: () => commitChipMove(entry, fromIso, toIso),
+  })
 }
 
 /* ===========================================================================
@@ -360,8 +370,11 @@ export function initCalDrag(root: HTMLElement, opts: {
       /* a chip inside a date is found in the date it landed in. A BAR is inside no date, so it is found by its own id
          — AS A BAR: the Inputs List stays in the page, hidden, under the calendar, and its row carries the same id (the
          first real-mouse move flashed that hidden row instead). A planning note is found in a date's head. */
-      if (to && commitChipMove(entry, entry.fromIso, to))
-        markLand(entry.inDay ? `[data-icday="${to}"] ${chipSel(entry)}` : entry.kind === 'puck' ? `[data-ichead="${to}"] ${chipSel(entry)}` : `.ib-bar${chipSel(entry)}`)
+      const landing = entry.inDay ? `[data-icday="${to}"] ${chipSel(entry)}` : entry.kind === 'puck' ? `[data-ichead="${to}"] ${chipSel(entry)}` : `.ib-bar${chipSel(entry)}`
+      if (to && commitChipMove(entry, entry.fromIso, to)) markLand(landing)
+      /* the move WAITS on its OIL question ([OIL-ASK-NOTIFY]): nothing moved; its landing flash runs when the answer
+         comes and the move is made (ui/oilwait.ts) */
+      else if (to && to !== entry.fromIso && OILWAIT) oilWaitThen(() => null, () => markLand(landing))
       else if (to && to === entry.fromIso) landOn(entry.el)
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
     } else if (gaveUp) {

@@ -48,6 +48,8 @@ import { openScheduler } from './board'
 import { setOilDay } from '../state/view'
 import { setOilBlanket } from './oilmode'
 import { rowPut, rowTake } from './reqdoor'
+import { leaveOilWait, oilBarOk } from './oilwait'
+import { OILWAIT } from '../state/view'
 import { commitInput, draftOf } from './inputedit'
 import * as pops from './pops'
 
@@ -162,6 +164,19 @@ const putOnRow = async (key: string, id: string, via: 'door' | 'store' = 'door')
   expect(onRow(), 'and the row is a whole copy of the input (D755)').toEqual(people())
   return said.join(' | ')
 }
+/* ON AN UNANSWERED INPUT THE ADD WAITS (owner D783, 12 Oct 26 — "a person added with no answer yet is treated the same":
+   not made until the OIL question is answered). The door answers 'asked' and writes nothing; the question is left
+   unanswered here, and the man is then put in by the input's own save with no answer — the state a day made a holiday
+   AFTER the input was filed leaves, which is the one way such an input now comes to hold a named man unanswered. */
+const waitsThenIn = async (key: string, id: string) => {
+  const before = people()
+  await act(async () => { expect(rowPut(key, id), 'the row\'s door: the add waits on the question').toBe('asked'); notify() })
+  expect(OILWAIT && OILWAIT.kind, 'the question waits').toBe('add')
+  expect(people(), 'and nothing was written').toEqual(before)
+  await act(async () => { leaveOilWait(); oilBarOk(); notify() })
+  await act(async () => { expect(commitInput(rec(), draftOf(rec()), [...before, id], { sched: true }), 'in it, unanswered').toBe(true); notify() })
+  expect(people()).toEqual([...before, id])
+}
 const takeOffRow = async (id: string) => {
   const n = onRow().indexOf(id)
   expect(n, `${id} is on the row`).toBeGreaterThanOrEqual(0)
@@ -215,13 +230,16 @@ describe('the row itself — the placeholder is never a switch', () => {
       const was = JSON.stringify(INPUTS)
       expect(fillSlot(ADD, 'divot'), 'a raw write to its "+ add"').toBe(false)
       expect(JSON.stringify(INPUTS)).toBe(was)
-      const said = await putOnRow(ADD, 'divot')
+      /* A NAMED RULING CHANGED THE UNANSWERED HALF (owner D783): an unanswered input no longer takes the man and THEN
+         asks — the add waits on the question (waitsThenIn, above). An answered one takes him at once, as before. */
+      let said = ''
+      if (name === 'no answer') await waitsThenIn(ADD, 'divot')
+      else said = await putOnRow(ADD, 'divot')
       expect(people(), 'he joined beside the placeholder — nobody was replaced').toEqual(['allavail', 'divot'])
       if (name === 'a No') expect(said, 'the add\'s own note says he is not counted (D755 (1))').toMatch(/added to .* — not counted for OIL$/)
       else expect(said).not.toMatch(/not counted for OIL/)
-      /* an unanswered input asks its question on the spot, for the INPUT, of whoever added him — never otherwise */
-      expect(questionOpen(), 'the OIL question, in the input\'s window').toBe(name === 'no answer')
-      if (name === 'no answer') expect(String(inpId(pops.INPEDIT)), 'opened on the INPUT').toBe('rq1')
+      expect(questionOpen(), 'no question is left standing, and no window of the input was opened for one').toBe(false)
+      expect(pops.INPEDIT).toBeFalsy()
       await shutQuestion()
       await openWindow()
       expect(rowSeats().map(s => s.dataset.oilp), 'his switch is on the ROW, and it is the only man\'s switch there').toEqual(['divot'])
@@ -559,16 +577,16 @@ describe('ALL (not ALL AVAIL) beside a named man reads exactly the same (D753: "
 })
 
 describe('an UNANSWERED input that holds a named man and ALL AVAIL: nobody earns, and the question is its filer\'s alone (D753 reading 1, D762 reading 3, D711 (4))', () => {
-  it('nobody is ON; the add asked the question on the spot; shut unanswered it waits on the filer\'s bell — never on the bell of the man who is merely in it', async () => {
+  /* A NAMED RULING CHANGED HOW THIS STATE IS REACHED (owner D783): "the add asked the question on the spot; shut
+     unanswered it waits on the filer's bell" — an add is no longer made unanswered. The state itself still arises (a
+     day made a holiday after the input was filed), and whose bell asks is unchanged. */
+  it('nobody is ON; an add waits on the question and is not made unanswered; the unanswered input waits on the filer\'s bell — never on the bell of the man who is merely in it', async () => {
     /* Saber filed it for ALL AVAIL, and it is Saber — a scheduler — who drags a named man onto its row */
     setMe('stiff')
     landed({ oil: {}, by: 'stiff' })
-    await putOnRow(ADD, 'divot')
-    expect(questionOpen(), 'asked at once, for the INPUT, of whoever added him (the plan §4.4)').toBe(true)
-    expect(String(inpId(pops.INPEDIT))).toBe('rq1')
-    await shutQuestion()
-    expect(questionOpen(), 'the sheet is shut').toBe(false)
-    expect(rec().oil || {}, 'closing it unanswered leaves the input unanswered').toEqual({})
+    await waitsThenIn(ADD, 'divot')
+    expect(questionOpen(), 'no question is left standing').toBe(false)
+    expect(rec().oil || {}, 'the input is unanswered').toEqual({})
     await openWindow()
     expect(rowSeat('divot').classList.contains('off')).toBe(true)
     for (const s of inWin()) expect(s.classList.contains('off'), String(s.dataset.oilp)).toBe(true)

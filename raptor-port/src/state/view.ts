@@ -392,6 +392,41 @@ export let SECDEFOFFER: number | null = null
 let secDefSeq = 0
 export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) secDefSeq++ }
 
+/* ---- [OIL-ASK-NOTIFY] THE CHANGE THAT WAITS ON ITS OIL ANSWER, AND THE BAR THAT SAYS IT WAS NOT MADE (owner D783, 12 Oct
+   26 — "Yes to all": a swap or an add that raises the OIL question is NOT MADE until the question is answered — nothing
+   moves; not answered, both pucks flash and a bar stays until tapped; the plan
+   docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md §3.1, §5a). A door that would have to ask (ui/reqdoor.ts, the
+   Unavailable row's drag and the Inputs calendar's date drag in ui/inputedit.tsx / ui/caldrag.ts) writes NOTHING and
+   leaves the change here; ui/OilWaitSheet.tsx puts the question; ui/oilwait.ts answers it or leaves it.
+   HERE, beside SECDEFOFFER and for its reason: both name rows of the week on screen, so a week, a page or a sign-in
+   that changes under them must take them away — and state/ cannot reach into ui/. They name rows by their IDS, never
+   their places (the page behind the bar works — D641 — so a row may have moved or gone before "Answer OIL").
+     kind    which words: swap / add / move (ui/oilwait.ts WAIT_WORDS);
+     lead    the sheet's own first line — "Swapping Tally and Ranger";
+     gate    the question itself (ui/inputedit.tsx oilGate's 'ask');
+     redo    the door's own call WITH the answer: the change and the answer in ONE command; 'done' | 'refused' | 'none'
+             ('none' — the row is no longer what it was);
+     ask     the door asked afresh, with no answer — "Answer OIL" on the bar;
+     places  what flashes when it is not answered (row-id keys; `sel:` + a selector for a place that is not a seat);
+     pre/post the CALLER's own ending for the gesture, run round the write when the answer comes — the landing flash,
+             the "already busy" note, the arm put down (the drag, the armed tap); `landed` is where he stands then. */
+export type OilWaitKind = 'swap' | 'add' | 'move'
+export interface OilWait {
+  kind: OilWaitKind
+  lead: string
+  gate: { who: string; typeLabel: string; plan: { iso: string; amt: 0.5 | 1 }[]; prev: Record<string, number> }
+  redo: (oil: Record<string, number>) => string
+  ask: () => string
+  places: string[]
+  pre?: () => any
+  post?: (pre: any, landed: string | null) => void
+  landed?: string | null
+}
+export let OILWAIT: OilWait | null = null
+export function setOilWait(w: OilWait | null){ OILWAIT = w }
+export let OILBAR: { text: string; wait: OilWait } | null = null
+export function setOilBar(b: { text: string; wait: OilWait } | null){ OILBAR = b }
+
 /* ---- [ALL-AVAIL-WINDOW] — the counter's window (owner, D38–D41) -----------
    HELD HERE, not in ui/pops (which re-exports it), so the page, week and
    session resets below can close it (D66) without state reaching into ui.
@@ -528,6 +563,8 @@ export function setPage(p:any){
   /* a page navigation dismisses the transient "set default?" offer — it belongs
      to the drag that raised it on the page being left (31 Aug 26 bug pass). */
   SECDEFOFFER=null;
+  /* …and the change waiting on its OIL answer, and its bar: they belong to the page being left ([OIL-ASK-NOTIFY]) */
+  if(p!==CURPAGE){ OILWAIT=null; OILBAR=null; }
   /* A page change closes any body-level popup (owner, 8 Aug 26 — the stores
      box used to ride along to View-only Sched, floating over a page with no C
      button on it). These popups live outside the React tree, so no component
@@ -950,6 +987,10 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      week being left; resetSession clears the offer through setPage instead */
   { name:'ROSDAY',     scopes:['session','week'], reset:()=>setRosDay(0) },   // [ACCOUNTS]: the next person starts on the first day (Astra code read)
   { name:'SECDEFOFFER',scopes:['week'], reset:()=>setSecDefOffer(null) },
+  /* [OIL-ASK-NOTIFY]: a change waiting on its OIL answer, and the bar that says it was not made, name rows of the week
+     on screen and are the outgoing person's (the page half is in setPage) */
+  { name:'OILWAIT', scopes:['session','week'], reset:()=>setOilWait(null) },
+  { name:'OILBAR',  scopes:['session','week'], reset:()=>setOilBar(null) },
   /* [ACCOUNTS-NEW-PERSON]: a pending "open Admin → Users" is the outgoing person's */
   { name:'ADMINOPEN', scopes:['session'], reset:()=>clearAdminOpen() },
   { name:'BACKPROMPT', scopes:['session'], reset:()=>{ BACKPROMPT = [] } },
@@ -1233,6 +1274,23 @@ export function placeArmed(id:any){
   if(HOOKS.inputRow){
     const a=HOOKS.inputRow.write(key,id);
     if(a==='refused')return false;
+    /* THE DOOR'S FOURTH ANSWER ([OIL-ASK-NOTIFY] — owner D783): the add raises the OIL question, so NOTHING was written
+       and it waits on the answer. The place stays armed and the drawer stays up, as for a refusal; when the answer
+       comes and he is in, this tap's own ending runs — the arm put down, the drawer parked, the "is he busy" note
+       against the warnings as they are THEN (Fable's read of the plan, A3, A4). */
+    if(a==='asked'){
+      const armed=key;
+      if(OILWAIT){
+        OILWAIT.pre=()=>WARN;
+        OILWAIT.post=(wb:any,landed:string|null)=>{
+          if(armedKey()===armed)armDrop();
+          if(isPhone())document.body.classList.remove('ros-open');
+          paintArm();
+          if(landed)flagDrop(wb,keyDay(landed));
+        };
+      }
+      return false;
+    }
     if(a==='done'){armDrop(); if(isPhone())document.body.classList.remove('ros-open'); paintArm(); flagDrop(warnBefore,keyDay(base)); return true;}
   }
   /* the place he LANDED on — the question after the write is asked of it, not of the row's "+ add" (slots.ts

@@ -35,6 +35,8 @@ import { setOilDay, setPage, CURPAGE } from '../state/view'
 import { toggleOilMode, oilDayFigures, oilFigureFor } from './oilmode'
 import { openScheduler } from './board'
 import { rowPut } from './reqdoor'
+import { leaveOilWait, oilBarOk } from './oilwait'
+import { commitInput, draftOf } from './inputedit'
 import { setOilAsk, setInpEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -105,9 +107,17 @@ const openMode = async () => {
 /* a TAP on a puck is a scheduler's, on Edit Schedule — the board takes none from any other page (boardArmClick) */
 const onEditSchedule = async () => { await act(async () => { setPage('editsched'); notify() }) }
 /* a man put on the claim's row as a hand does it now — on its "+ add", through the row's door (D755): he joins the input */
-const putOnRow = async (id: string) => {
+/* …ON AN INPUT WITH NO ANSWER THE ADD WAITS (owner D783, 12 Oct 26 — "a person added with no answer yet is treated the
+   same": not made until the OIL question is answered). `waits` says the case expects that: the door answers 'asked'
+   and writes nothing; the question is left unanswered, and the man is then put in by the input's own save with no
+   answer — the state a day made a holiday AFTER the filing leaves, the one way such an input now holds him unanswered. */
+const putOnRow = async (id: string, waits = false) => {
   const ri = ((DAYS[SAT] as any).ground as any[]).findIndex(g => g && g.src === 'cl1')
-  await act(async () => { expect(rowPut(`g:${SAT}.${ri}.+`, id), `${id} put on the row`).toBe('done'); notify() })
+  await act(async () => { expect(rowPut(`g:${SAT}.${ri}.+`, id), `${id} put on the row`).toBe(waits ? 'asked' : 'done'); notify() })
+  if (!waits) return
+  const before = idsOf(INPUTS[0]).map(String)
+  expect(before, 'asked: nothing was written').not.toContain(id)
+  await act(async () => { leaveOilWait(); oilBarOk(); expect(commitInput(INPUTS[0], draftOf(INPUTS[0]), [...before, id], { sched: true })).toBe(true); notify() })
 }
 /* his switch on the claim's own row (he may wear other pucks on the seed Saturday, each with its own item) */
 const hisOnClaim = (id: string) => {
@@ -203,7 +213,7 @@ describe('a claim row and the puck beside it agree about OIL', () => {
     it(`D762 — on ${what} the second man is OFF, a real switch, in the words for an input of several; a tap credits HIM alone`, async () => {
       claim({ oil })
       addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1' })
-      await putOnRow('stiff')
+      await putOnRow('stiff', what === 'no answer')
       await onEditSchedule()
       await openMode()
       const seat = () => hisOnClaim('stiff')

@@ -20,9 +20,10 @@ import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
 import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
-import { setOilAsk, setInpEdit, BELLLIST, BELLAT, setBellList } from './pops'
+import { setOilAsk, setInpEdit, BELLLIST, BELLAT, setBellList, setOilList } from './pops'
+import { canEditSched } from '../state/auth'
 import { me } from '../state/perms'
-import { noticesFor, noticeWords, noticeAge, type Notice } from '../state/notices'
+import { noticesFor, noticeWords, noticeAge, holidayLineOn, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { useVersion } from './useStore'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
@@ -71,7 +72,14 @@ export function bellTap(from?: HTMLElement | null): void {
     setPage('help'); notify(); return
   }
   const mine = me()
-  const oilHit = mine ? oilPendingFor(mine)[0] : null
+  /* A SCHEDULER'S OWN UNANSWERED INPUT ON A DAY A HOLIDAY'S LINE ALREADY COVERS DOES NOT TAKE THE TAP ([OIL-ASK-NOTIFY] —
+     owner D782: "the admin answers a day's open OIL questions from ONE list"; D783 (6)). Left to this branch, an admin
+     who made a day a holiday with three inputs he had filed for others on it would be walked through three single
+     questions, one tap each, and never meet the list. For him those are the list's: the tap falls through to the
+     bell's own list, whose line opens it. Every other question of his own — and every member's — goes straight to
+     it, as D769 has it. */
+  const sched = canEditSched()
+  const oilHit = mine ? oilPendingFor(mine).find(h => !(sched && holidayLineOn(mine, h.iso))) || null : null
   if (oilHit) {
     const row = inpById(oilHit.iid)
     if (row) {
@@ -88,6 +96,15 @@ export function bellTap(from?: HTMLElement | null): void {
 }
 /* a tap on a line: the input's own window — or, where it has since been deleted, the words; either way that line is read */
 export function openNotice(n: Notice): void {
+  /* a holiday's line opens the ONE list for its dates ([OIL-ASK-NOTIFY], owner D783 (6): "a tap opening the list") — it
+     is about no single input, so it is asked before any input is looked for (Fable's read of the plan, A6) */
+  const hol: any = (n.what || [])[0]
+  if (hol && hol.k === 'oilhol') {
+    markNoticeRead(n.id)
+    setBellList(false)
+    setOilList({ from: String(hol.a), to: String(hol.b || hol.a), name: n.name, fresh: false })
+    notify(); return
+  }
   const row = inpById(n.iid)
   markNoticeRead(n.id)
   if (!row) { HOOKS.toast('That input is gone'); notify(); return }

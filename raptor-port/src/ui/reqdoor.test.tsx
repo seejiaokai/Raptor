@@ -58,6 +58,7 @@ import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
 import { commitInput, commitNewInput, draftOf, setInpField } from './inputedit'
 import { rowPut, rowTake, rowMove, onInputRow, isRowMan } from './reqdoor'
+import { answerOilWait } from './oilwait'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
 import { pendingLand } from './lift'
@@ -89,6 +90,7 @@ function resetWorld() {
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
   SCHED.signBind = {}; SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
   view.WARNOFF.clear(); view.disarmSlot()
+  view.setOilWait(null); view.setOilBar(null)
   pops.setInpEdit(null); pops.setOilAsk(null)
   stashClear()
 }
@@ -196,7 +198,10 @@ describe('a person put on the row JOINS the input (D755) (GI6)', () => {
     expect(SAID.join(' ')).toContain(`${cs('pike')} is already on this input`)
     expect(JSON.stringify(INPUTS)).toBe(was)
   })
-  it('he follows the input\'s ONE OIL answer: nothing is written for him; a No says he is not counted; no answer opens the question for the input (D755 (1), D762)', async () => {
+  /* A NAMED RULING CHANGED THE LAST HALF OF THIS CASE (owner D783, 12 Oct 26): it pinned "no answer yet: the question
+     opens at once, for the input" — AFTER the add was made. Now an add that raises the question is not made until it
+     is answered (the whole of that is ui/oilwait.test.tsx); here, that he is NOT in it and no window of the input opens. */
+  it('he follows the input\'s ONE OIL answer: nothing is written for him; a No says he is not counted; with NO answer the add waits on the question (D755 (1), D762, D783)', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike'], SAT, { [SAT_ISO]: 0.5 })
     expect(rowPut(`${rowKey(SAT)}.+`, 'split')).toBe('done')
@@ -209,25 +214,32 @@ describe('a person put on the row JOINS the input (D755) (GI6)', () => {
     expect(SAID.join(' | ')).toContain(`${cs('split')} added to ${TITLE} — not counted for OIL`)
     resetWorld(); await boot(new MemoryBackend())
     file(['bane', 'pike'], SAT)
-    expect(rowPut(`${rowKey(SAT)}.+`, 'split')).toBe('done')
-    expect(pops.OILASK, 'no answer yet: the question opens at once, for the input').toBe(String(inpId(rec(SAT))))
+    expect(rowPut(`${rowKey(SAT)}.+`, 'split'), 'no answer yet: the add waits on the question').toBe('asked')
+    expect(people(SAT), 'and he is not in it').toEqual(['bane', 'pike'])
+    expect(view.OILWAIT!.kind).toBe('add')
+    expect(pops.OILASK, 'no window of the input is opened for it').toBeFalsy()
   })
 })
 
 describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the plan\'s T15 — Fable F7, F8)', () => {
-  it('from the crew list: the input becomes the new man\'s — "by" passes to whoever did it, the OIL answer is void and asked again', async () => {
+  /* A NAMED RULING CHANGED THIS CASE (owner D783): it pinned the replacement made at once, "the OIL answer is void and
+     asked again" over the input's window. Now the question is put FIRST and the replacement is made with its answer —
+     the first man's own answer still does not pass to the new man. */
+  it('from the crew list: the question first; answered, the input becomes the new man\'s — "by" passes to whoever did it, and its OIL answer is the one just given, never the first man\'s', async () => {
     await boot(new MemoryBackend())
     setSession({ user: 'us', role: 'main', name: 'us' }); setMe('bane')
     expect(commitNewInput(DRAFT(SAT))).toBe(true)
     rec(SAT).oil = { [SAT_ISO]: 0.5 }
     setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff')
     const id = String(inpId(rec(SAT)))
-    expect(rowPut(rowKey(SAT), 'pike')).toBe('done')
+    expect(rowPut(rowKey(SAT), 'pike')).toBe('asked')
+    expect(people(SAT), 'nothing moved').toEqual(['bane'])
+    expect(answerOilWait({ [SAT_ISO]: 0 })).toBe(true)
     expect(people(SAT)).toEqual(['pike'])
     expect(String(inpId(rec(SAT))), 'the same input').toBe(id)
     expect(rec(SAT).by, 'by Saber now').toBe('stiff')
-    expect(rec(SAT).oil, 'the answer was the first man\'s own').toBeUndefined()
-    expect(pops.OILASK, 'and the question opens at once').toBe(id)
+    expect(rec(SAT).oil, 'the answer was the first man\'s own — the new man\'s is the one given with the swap').toEqual({ [SAT_ISO]: 0 })
+    expect(pops.OILASK, 'and no question is left standing').toBeFalsy()
     expect(SAID.join(' | ')).toContain(`${cs('pike')} is on ${TITLE} instead of ${cs('bane')}`)
     expect(onRow(SAT)).toEqual(['pike'])
     globalUndo()

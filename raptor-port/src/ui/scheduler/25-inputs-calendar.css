@@ -517,3 +517,23 @@ body.in-cal{padding-bottom:0}
 /* the picker opened for a note being written says which words it is for */
 .ic-pick-for{padding:6px 12px 0;font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}
 .ic-pick-for b{color:var(--ink);font-weight:700}
+
+/* ---- THE ONE LIST — every input of a day that needs an OIL answer ([OIL-ASK-NOTIFY], owner D782, D783 — the pictures of
+   record docs/mock/2026-10-12-oil-notify/*-hol-2-notice.png, *-hol-3-list.png; ui/OilDayList.tsx). A window on the
+   shell, a little wider than the settings windows: a card must hold its title, "By Saber" and the two answer buttons
+   on one row at a desktop's width. On a phone it is the shell's bottom panel, as tall as what is in it (D706).
+   The cards are the input's OWN (ui/InputCard.tsx) with one thing added: `.icard-act`, the two buttons at the right of
+   the words row — "By …" then stands just before them, as drawn, instead of at the row's far right. */
+.floatwin.oildaywin{width:min(520px,calc(100vw - 32px))}
+.odl-lead{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--edge);font-size:15px;line-height:1.35;color:var(--ink)}
+.odl-count{display:flex;align-items:center;gap:8px;margin:2px 0 10px}
+.odl-count .sd-gh{margin:0;flex:1}
+.oildaywin .icard{cursor:default}
+.icard-words.has-act{align-items:center}
+.icard-words.has-act .icard-by{margin-left:auto}
+.icard-act{display:inline-flex;gap:6px;flex:none;margin-left:auto}
+.icard-words.has-act .icard-by + .icard-act{margin-left:0}
+/* a chosen No, in quiet grey (D783) — a Yes wears the app's own "picked" colour (.upconf-seg.on-keep) */
+.upconf-seg.odl-no{background:var(--edge-2);border-color:transparent;color:var(--ink)}
+.odl-foot{display:flex;align-items:center;gap:8px;padding:14px 0 2px}
+.odl-foot .upconf-need{flex:1;min-width:0}

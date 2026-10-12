@@ -299,6 +299,23 @@ const RULES = {
   GI18: 'one line naming the input and its people (D736, D663)',
   GI20: 'a person added to a row the issued day held wears his mark on his puck (D93)',
   GI21: 'the board row\'s coloured line stands clear of its pucks and buttons (D747)',
+  /* [OIL-ASK-NOTIFY] (D780–D783, 12 Oct 26) — docs/superpowers/specs/2026-10-12-oil-ask-notify-behaviour-register.md */
+  ON1: 'a swap that raises the OIL question is not made until it is answered — nothing moves (D783)',
+  ON2: 'answered, the change and the answer are one command, one Undo (D783, D762)',
+  ON3: 'a person added where the input has no answer waits the same way; answered, he is put in at once (D783)',
+  ON4: 'a move from one input to another waits on the second input\'s question (D783)',
+  ON5: 'every way of putting a person on the row reaches the same wait; a working day asks nothing (D783, D754)',
+  ON6: 'not answered: nothing made, nobody told, and a bar that stays with Answer OIL and OK (D783)',
+  ON7: 'Answer OIL asks afresh — a changed row says so; the wait and the bar end with the week, page and sign-in',
+  ON8: 'on a published day nothing waits to go out and no sign-off falls until the answer is given (D103, D783)',
+  ON9: 'the same rule at the Unavailable row\'s drag and the Inputs calendar\'s date drag (D780, D783)',
+  ON10: 'the one list holds every input on the programme with an unanswered day in the run, read live (D782)',
+  ON11: 'the list\'s Save is one command; only its unanswered days of the run are written; schedulers only (D782)',
+  ON12: 'a working day made a holiday tells every scheduler once, inside its command, and opens the list (D780, D783)',
+  ON13: 'every door that makes a holiday tells the same way; nothing to answer, an Off day, a Saturday tell nobody',
+  ON14: 'the holiday\'s Undo takes its notices; its Redo brings them back unread (D780)',
+  ON15: 'the bell line counts what is left, read live; at nothing left it is gone; one line a holiday (D781, D783)',
+  ON16: 'the line opens the one list; a scheduler is not sent to a single question the line covers (D782, D769)',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

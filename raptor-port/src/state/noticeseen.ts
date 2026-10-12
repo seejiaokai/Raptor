@@ -23,7 +23,7 @@
 import { store } from '../engine/hooks'
 import { me } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
-import { NOTICES, type Notice } from './notices'
+import { NOTICES, noticeLive, type Notice } from './notices'
 
 export const NOTICESEEN_PFX = 'noticeseen:'
 export const NOTICE_TYPES = ['notices.seen'] as const
@@ -50,6 +50,9 @@ export function noticeSeenLoad(): void {
 /** is this notice unread by the person it is addressed to? (`pid` — the person signed in) */
 export function isUnread(n: Notice, pid: string | null = me()): boolean {
   if (!pid || n.to !== pid) return false
+  /* a holiday's line with nothing left to answer is not listed, so it is not unread either — it must never light a
+     bell whose list would then be empty ([OIL-ASK-NOTIFY]; state/notices.ts noticeLive — the one body) */
+  if (!noticeLive(n)) return false
   const s = SEEN[pid]
   return !s || (n.at > s.upto && !s.ids.includes(n.id))
 }

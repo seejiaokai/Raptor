@@ -148,6 +148,12 @@ export function setInpSet(v: boolean) { INPSET = v }
 export let BELLLIST = false
 export let BELLAT = ''
 export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = open ? at : '' }
+/* THE ONE LIST ([OIL-ASK-NOTIFY] — owner D782, D783; ui/OilDayList.tsx): every input of a day that needs an OIL answer.
+   Closed = null; open = the run of dates it is for, the holiday's name, and `fresh` — it opened by itself the moment
+   the holiday was saved, so it says "<name> is now a public holiday." (from the bell's line it does not). What it LISTS
+   is read live, never held here. One of the windows that do NOT block the page (D641), so not in windowOverSchedule. */
+export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean } = null
+export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh } : null }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -167,6 +173,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYSWIN', reset: () => setDaysWin(null) },
   { name: 'SANSSET', reset: () => setSansSet(false) },
   { name: 'INPSET', reset: () => setInpSet(false) },
+  { name: 'OILLIST', reset: () => setOilList(null) },
   { name: 'BELLLIST', reset: () => setBellList(false) },
   { name: 'BELLAT', reset: () => setBellList(false) },   // set and cleared with the flag above — one setter for the pair
 ]

@@ -37,7 +37,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin } from '../ui/pops'
+import { setDaysWin, setOilList } from '../ui/pops'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -83,6 +83,8 @@ import {
   availRules,
   getVersion,
   setRefusalHook,
+  setHolidayTell,
+  type HolidayRun,
   clearRaptorCell,
   createWar,
   figureCtxOf,
@@ -111,12 +113,13 @@ import {
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
-import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
+import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
+import { noticeHoliday, setHolidayLeft } from '../state/notices'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
@@ -238,6 +241,10 @@ export function installAbsenceDoor(): void {
   setPublishGate(publishFlagsBids)
   /* which days of an input ask the OIL question, for the check on a filer's answers (state/perms.ts - D660) */
   setOilPlan(oilAskPlan)
+  /* [OIL-ASK-NOTIFY]: a working day made a holiday tells the schedulers and opens the one list (tellHoliday, below);
+     and the bell's holiday line asks how many inputs are still left to answer (state/notices.ts) */
+  setHolidayTell(tellHoliday)
+  setHolidayLeft(holidayLeft)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
      this before it speaks, and only Leave War can answer for a public holiday
      (the engine covers Saturday and Sunday from the day's own name). One
@@ -834,6 +841,68 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
   }
   return out
+}
+
+/* ---- [OIL-ASK-NOTIFY] THE ONE LIST, AND THE HOLIDAY'S NOTICE (owner D780, D781, D782, D783 — 12 Oct 26; the plan
+   docs/superpowers/plans/2026-10-12-oil-ask-notify-plan.md §3.2, §3.3) ---------------------------------------------- */
+
+/** One input of the one list: its id, its days IN THE RUN that nobody has answered for, what its own hours earn on a
+ *  day (the amount the single question offers — one standing for every day of an input), and its last day. */
+export interface OilOpen { iid: string; days: string[]; amt: 0.5 | 1; last: string }
+/** EVERY INPUT THAT NEEDS AN OIL ANSWER ON A RUN OF DATES (owner D782: "every input of that day that needs an answer").
+ *  Read live, never stored: a duty-and-commitments input, on the programme, with a day in `from`..`to` that asks the
+ *  question and has no answer — an explicit 0 IS an answer. One line an input, however many people are in it (D762:
+ *  one answer for everyone). A day of a locked (older-version) week is never asked, as the bell's own scan never asks
+ *  it (oilPendingFor, above) — its answer could not be written. WHO may answer is the reader's to ask: the list is a
+ *  scheduler's (ui/OilDayList.tsx); a member's own input still reaches him by his own bell. */
+export function oilOpenOn(from: string, to?: string | null): OilOpen[] {
+  if (!validIso(from)) return []
+  const hi = to && validIso(to) && to >= from ? to : from
+  const prot = protectedDates()
+  const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
+  const out: OilOpen[] = []
+  for (const row of INPUTS as any[]) {
+    if (!row || !row.iid || !oilAsks(row.type) || row.acc === 'r') continue
+    const plan = oilAskPlan(row)
+    if (!plan.length) continue
+    const answered = (row.oil ?? {}) as Record<string, number>
+    const days = plan.filter(p => p.iso >= from && p.iso <= hi && answered[p.iso] == null && !isoProt(p.iso)).map(p => p.iso)
+    if (!days.length) continue
+    const start = labelToISO(row.date, row.yr) ?? days[0]!
+    const end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
+    out.push({ iid: String(row.iid), days, amt: plan[0]!.amt, last: end < start ? start : end })
+  }
+  return out
+}
+/* how many are left on a run — the bell's holiday line asks at every draw of both bells, so the answer is kept until
+   something it was read from has moved: the scheduler's store (every change there ends in a notify), the war's facts,
+   the list's own length (Fable's read of the plan, A9) */
+let LEFT: { v: number; wf: number; n: number; m: Map<string, number> } = { v: -1, wf: -1, n: -1, m: new Map() }
+function holidayLeft(a: string, b: string): number {
+  const v = raptorVersion(), wf = warFactsVersion(), n = INPUTS.length
+  if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n) LEFT = { v, wf, n, m: new Map() }
+  const key = `${a}|${b}`
+  let c = LEFT.m.get(key)
+  if (c == null) { c = oilOpenOn(a, b).length; LEFT.m.set(key, c) }
+  return c
+}
+/* the schedulers — every account that is an admin, switched on and tied to a person (state/accounts.ts) */
+const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a) && a.on && !!a.pid).map(a => String(a.pid))
+/* A WORKING DAY WAS MADE A HOLIDAY — called by the war's store INSIDE the command that did it (state/store.ts
+   tellHolidays), with the runs of dates. For each run with an input that now needs an OIL answer:
+     · ONE notice a scheduler (state/notices.ts noticeHoliday — "never silent", D780), the one who made the holiday
+       too: what he leaves for "Later" is on his own bell as well. Written through the scheduler store's own input
+       command, as a child of this one — so the holiday's Undo takes the notices away and its Redo puts them back;
+     · the ONE list opens by itself for the first run, saying the day is now a holiday (D783 (5)) — once the command
+       has gone through, never for one that was refused.
+   A run with nothing to answer tells nobody and opens nothing. The count is never stored (D783 (6)). */
+function tellHoliday(runs: HolidayRun[]): void {
+  const todo = runs.filter(r => oilOpenOn(r.from, r.to).length > 0).map(r => ({ ...r, name: dayFacts(r.from).name || 'Public holiday' }))
+  if (!todo.length) return
+  const by = me(), to = schedulerIds()
+  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(to, by != null ? String(by) : null, h.name, h.from, h.to) })
+  const first = todo[0]!
+  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
 }
 
 /* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
