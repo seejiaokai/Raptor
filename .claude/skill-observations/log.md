@@ -4044,3 +4044,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Make "drive the built app by real presses at desktop and phone size and open every picture" an explicit step between green tests and commit for any visible change, with a short list of what layout-less tests cannot see: wrapping, inherited decoration, stacking/covering, stale renders.
 
 **Principle:** Structure tests prove the markup; only a rendered picture proves the look — wrapping, inheritance, covering and staleness need a layout engine and a second pair of eyes.
+
+### Observation 534: A code read can run beside the walk when the allowance is about to reset — with a short second read of the fixes
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** the one-rule job's FULL bug check (ten walkers, Fable's code read, break tests), started two hours before the owner's weekly allowance reset with 23% unused
+**Skill:** the bug-check order (raptor-port/docs/bug-check-order.md §5 — a working guide, not a skill file)
+**Type:** internal
+**Phase/Area:** the order of steps in FULL: walk → fix → the reads with the evidence sheet → fix → re-walk
+
+**Issue:** The order puts the code reads after the walk so the reader has the finished code and the sheet. The owner asked mid-check to use allowance that would otherwise lapse at the reset. The host started the reader at once with the sheet's first half (tier, rulings, roll-call, door check) and promised a second, short read of only the fix diff. It also cut the walk's shares in half (ten walkers for the same scenarios) and sent the break tests to three helpers in their own worktrees — a break edited in the main checkout while a reader reads it would be read as a fault.
+
+**Suggested improvement:** Add to §5 a named variant: "the reads may start beside the walk when (a) the roll-call and door check are written, (b) the reader is told it is blind to the walk, and (c) a second read of the fix diff is owed and written in the sheet" — and to §8.4: "break tests run in a separate worktree whenever anyone else is reading the source." In the walk ledger, record the number of SCENARIOS (sized) apart from the number of WALKERS (may be the owner's wish for speed).
+
+**Principle:** An ordering rule exists to protect a property (the reader sees final code and the list of surfaces); when a constraint makes the order costly, keep the property by another route and write down which route — never drop the property, never keep the order for its own sake.
