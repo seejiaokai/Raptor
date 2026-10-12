@@ -1459,6 +1459,7 @@ flagged correctly and still swept the man out of the crew palette.
     save refuses with the one body's sentence: "ALL AVAIL is for one day", "ALL AVAIL is for Training, Meeting,
     Appointment, Duty, Event and Other", "This input already has ALL AVAIL" (a second one, or ALL beside it); a named
     person on a Personal input — "A Personal input is one person's own".
+    *[CORRECTED 12 Oct 26 — D776, D778: a Personal input is the same as an Event for everything about people — it may hold several people, and ALL AVAIL / ALL on a one-day one; "A Personal input is one person's own" is refused nowhere; the kinds' sentence reads "ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other". It is still not work: no OIL question, nothing earned.]*
   - **OIL at the add (D755 (1), D762):** the person added follows the input's ONE answer and nothing is written for
     him. Where the input asks for a day and has no answer the question opens at once, for the INPUT, for whoever
     added him (`ui/inputedit.tsx askOilIfPending`); where the answer is No the note ends "— not counted for OIL".
@@ -2395,6 +2396,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   a row that came from an input is one of the input's people, and a Personal input holds none ("ALL AVAIL is for
   Training, Meeting, Appointment, Duty, Event and Other" — `inputs.ts placeholderProblem`); the membership-only pass
   `oilev.ts` wrote for it is gone. Every kind that may hold a placeholder asks the OIL question.)*
+  *[BACK 12 Oct 26 — D778 ("Personal is not work" / "So all avail all can go on personal"): a Personal input may hold ALL
+  AVAIL / ALL again — as one of the INPUT's people, on a one-day one — and the membership-only pass is back in the one
+  record's shape (`oilev.ts oilEvidence`): the men behind its puck, less anyone NAMED in the input, are counted,
+  listed in the window and frozen at publication; no claim is projected, so nobody earns and no OIL question is asked
+  of anyone. Personal is the one kind that may hold a placeholder and never asks. Pins as above, re-expressed.]*
 - **ONE ANSWER FOR EVERYONE IN AN INPUT (owner D762, D755 (1), D753 — built 12 Oct 26, `[ALL-AVAIL-AS-MEMBER]` step 2
   (d), proved through the doors in step 3).** OIL is earned leave — time off banked — never pay.
   - **One claim an input** (`oilev.ts projectOilInputs`): it carries `people` (the named ids) and `ph` (the
@@ -4314,7 +4320,8 @@ ones.** What changes in the bullets below, each left as written:
   request, the placeholder's puck in the name box.
 - **Three structural rules, ONE body — `inputs.ts placeholderProblem`:** one of six kinds (`PLACEHOLDER_KINDS`: Training,
   Meeting, Appointment, Duty, Event, Other — never an overseas duty or a course, D711 (2); never "Fly with" or
-  "Personal", D712); ONE day (D711 (3)); never in a group. Asked first at every save door, with its sentence
+  "Personal", D712) *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]*; ONE day
+  (D711 (3)); never in a group *[one of an input's own people since the one-rule build — D750, D753, D755]*. Asked first at every save door, with its sentence
   (`ui/inputedit.tsx placeholderRefused` — inside `normalizeInputDraft`, and before the document question in the three
   save handlers; `commitGroup` judges the whole selection; `ui/PeoplePick.tsx pickProblem`), and by the HARD check
   `placeholder-input-shape` at the save boundary (`state/store.ts placeholderShapeViolation`): it reads no role and no

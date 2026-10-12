@@ -4059,3 +4059,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** Add to §5 a named variant: "the reads may start beside the walk when (a) the roll-call and door check are written, (b) the reader is told it is blind to the walk, and (c) a second read of the fix diff is owed and written in the sheet" — and to §8.4: "break tests run in a separate worktree whenever anyone else is reading the source." In the walk ledger, record the number of SCENARIOS (sized) apart from the number of WALKERS (may be the owner's wish for speed).
 
 **Principle:** An ordering rule exists to protect a property (the reader sees final code and the list of surfaces); when a constraint makes the order costly, keep the property by another route and write down which route — never drop the property, never keep the order for its own sake.
+
+### Observation 535: A reviewer's unrun claims — reproduce each as a failing test before triage, and count the hit rate
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Closing a FULL bug check: a second, blind code read by the builder's own model had returned eleven claims with nothing run.
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** Verifying review feedback before implementing it
+
+**Issue:** The read's claims were not triaged by plausibility. Each was written as a test of the right behaviour through the real entry points and run against the unchanged code first. All eight unverified claims went red — including two the host would have argued away on reading (a count the host first judged "consistent" printed a line that plainly misreported the change once the test showed the actual words). Two test assertions written from the claim's wording were themselves wrong and were corrected only because the red output showed what the screen really said.
+
+**Suggested improvement:** In "verify before implementing", add: for a batch of unverified claims, write one failing test per claim BEFORE judging any of them; print the real output when a claim is about wording or a count; record per claim red / not red, and report the reviewer's hit rate — that rate, not its confidence, decides how much its next "sound" is worth.
+
+**Principle:** A review that ran nothing is a list of hypotheses; the cheapest honest triage is to make each one fail on purpose, and the pattern of what failed is evidence about the reviewer as well as the code.

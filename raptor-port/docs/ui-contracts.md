@@ -10234,6 +10234,12 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   was (the view week is compared with the reference). A remark is said under the day card's line whatever the input is
   called — the old "an Other is named by its remark, do not say it twice" test is gone. Search (the List, the month,
   the opened day) matches the title as well as the remarks.
+- *[12 Oct 26 — D778: the two pucks are offered for a one-day PERSONAL input too (D712 narrowed to "Fly with"); and
+  D776: a Personal input's row takes a dropped puck as any input's does — he joins on "+ add", replaces or swaps on the
+  one person's puck. D777: an input's CARD (the opened day; the List on a phone — `ui/InputCard.tsx`) wears a small
+  outlined "OIL?" tag after LATE and left of the hours where nobody has answered its OIL question, and the desktop
+  List's "OIL?" button shows for an input of several too — for whoever may answer (`ui/inputedit.tsx oilSignDay`); the
+  month's bars get nothing. The pictures of record: `docs/mock/2026-10-12-oil-ask/`.]*
 - **"ALL AVAIL" and "ALL" as a choice of person (owner D700, D702, D711, D712, D713 — 9 Oct 26; `[INPUT-ALL-AVAIL]`).**
   Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
   label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither

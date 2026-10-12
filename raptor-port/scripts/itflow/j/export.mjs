@@ -1,6 +1,8 @@
 /* J15 — print, export and data: Edit Schedule's two export icons (admin), the PDF report itself (read from the
-   hidden print frame and drawn on its own page), the Inputs page's Export to Excel (everyone), Admin → Data
-   (nothing destructive is pressed — a date is not even picked). */
+   hidden print frame and drawn on its own page), Admin → Data (nothing destructive is pressed — a date is not even
+   picked). *(Until 12 Oct 26 a third shot, `export-3`, showed the Inputs page's "Export to Excel": that button and its
+   file are removed — owner D773 — so the shot is gone from here and from content.mjs. The built deck still carries
+   it until he asks for a re-shoot, D403.)* */
 import { go } from '../lib.mjs'
 
 export default async function ({ fresh, shot }) {
@@ -18,12 +20,10 @@ export default async function ({ fresh, shot }) {
   await rep.setContent(html || '<p>no report</p>'); await rep.waitForTimeout(400)
   await shot(rep, 'export-2', { x: 0, y: 0, w: 794, h: 596 }, [])
   await rep.close()
-  await go(page, 'inputs')
-  await shot(page, 'export-3', { x: 0, y: 56, w: 840, h: 630 }, [{ n: 3, sel: '#inExport', pos: 'b' }])
   await go(page, 'admin')
   await page.click('.adm-rail .adm-cat:has-text("Data")'); await page.waitForTimeout(500)
   await shot(page, 'export-4', { x: 270, y: 60, w: 900, h: 675 }, [
-    { n: 4, sel: '.adm-rail .adm-cat:has-text("Data")' }, { see: true, sel: '#admWipe' }, { see: true, sel: '#admLog' },
+    { n: 3, sel: '.adm-rail .adm-cat:has-text("Data")' }, { see: true, sel: '#admWipe' }, { see: true, sel: '#admLog' },
   ])
   await page.context().close()
 }

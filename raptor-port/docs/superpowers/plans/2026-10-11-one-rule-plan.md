@@ -199,6 +199,7 @@ belt); `sharedRowOf` goes. Its three answers stay: `none` / `done` / `refused`.
 | Already in it; a second placeholder; ALL with ALL AVAIL | REFUSED (D271; D753) | "Tally is already on this input" / "This input already has ALL AVAIL" |
 | ALL AVAIL / ALL onto an input longer than a day, or not one of the six kinds | REFUSED — D753, D755 (4) | "ALL AVAIL is for one day." / "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other." |
 | Anyone onto a Personal input; a second person onto a medical kind or an upchit | REFUSED — D755 (4); D655 reading 4 | "A Personal input is one person's own." / "A medical entry is one person's — each needs its own document." |
+| *(12 Oct 26 — D776, D778: the Personal half of the row above is WITHDRAWN. A Personal input takes a dropped puck as any input does — joins, replaces, swaps — and ALL AVAIL / ALL on a one-day one; the medical half stands.)* | | |
 | A time, a remark or the title typed on the row | changes the input (as built — `ui/reqrow.ts`, D739, D740, D742) | as built |
 | CX, the red box, information only | changes the INPUT (D760); CX asks its reason as today | as today |
 | The row's ✕ | takes the input off the programme (`acc: 'r'`), as built (D114); its people and marks stay IN the input, so Accept or Undo brings the row back as it was | as built |
@@ -924,6 +925,7 @@ AVAIL" in the picker; "for 2 people and ALL AVAIL" wherever a sentence counts wh
    "what this day earns" — on a weekday too. §4.8 names the fold only for a man who leaves a crowd.
 4. **A placeholder on a Personal input is told its own rule** ("ALL AVAIL is for Training, …"), a named person the
    Personal one ("A Personal input is one person's own") — the placeholder's rule is said first at every door.
+   *(Withdrawn 12 Oct 26 — D776, D778: neither is refused on a Personal input now.)*
 5. **Named beside ALL AVAIL is "several"** for the door: a person dropped on the puck of the one named man of such an
    input JOINS; only on the puck of an input's ONLY entry does he replace him (R1, as built).
 

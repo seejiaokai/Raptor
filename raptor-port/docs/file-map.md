@@ -1,5 +1,26 @@
 # The file map — where each source file lives and what it does
 
+`[ALL-AVAIL-AS-MEMBER]` — the one-rule job's check, its last round (12 Oct 26, evening): the Opus trial read's eight
+real faults fixed, `[PERSONAL-SEVERAL]` (D776, D778) and `[OIL-ASK-LIST-SEVERAL]` (D777) built. No new source file.
+**New tests:** `src/leavewar/trialread.test.ts` (the read's claims 2, 4, 5 and 9, through the real doors) and
+`src/leavewar/personalseveral.test.ts` (a Personal input for several, by an admin and by a member; no OIL question).
+**Changed:** `src/engine/inputown.ts` gains `pieceOf` (a piece of a cut record takes its own list of people — used by
+`src/leavewar/sync.ts sliceInput` and `src/ui/inputedit.tsx applyMedPlan` / `mintMedSegments`); `src/engine/inputs.ts`
+— `shapeProblem` loses the Personal rule and gains `LW_OWN` (a leave the Leave War approved is one person's),
+`PLACEHOLDER_KINDS` takes Personal, `frozenInputMatch` 3b pairs only a real piece (`personalKind`, `PERSONAL_OWN` are
+removed); `src/engine/overlay.ts` gains `asIssuedOrder` and `issuedRowOf`, and the row's re-make looks at the row
+itself as well as its mark; `src/engine/slots.ts acceptInput` (the issued order); `src/engine/publish.ts` (the people
+step gives a swapped-out man's seat back as its own change); `src/engine/oilev.ts` (the membership-only pass for a
+Personal input's ALL AVAIL, back); `src/state/inputstamp.ts` gains `stampWho`; `src/state/person-delete.ts` (who filed
+an input passes on with a deleted filer); `src/ui/inputedit.tsx` gains `ownPartSave`, `oilSignDay`, `oilSignNote`, and
+`reassignInput` passes "By" on; `src/ui/reqdoor.ts rowPut` (the Personal refusal withdrawn); `src/ui/InputCard.tsx`
+(the "OIL?" tag — the `oil` prop), `src/ui/InputsCal.tsx` and `src/ui/InputsPage.tsx` (the tag on both cards; the
+desktop row's "OIL?" button for an input of several); styles `scheduler/25-inputs-calendar.css` (`.icard .oiltag`) and
+`scheduler/18-oil-board.css` (`.roil.ask` written as what it renders). The IT flow guide's sources lose the Inputs
+export shot (`scripts/itflow/j/export.mjs`, `content.mjs` — D773; the deck itself is re-shot only on his word, D403).
+Its records: `docs/handpass/2026-10-12-one-rule.md` §10b–§10d; the second re-walk's brief
+`docs/superpowers/briefs/2026-10-12-one-rule-rewalk2-brief.md`.
+
 `[ALL-AVAIL-AS-MEMBER]` step 7 (12 Oct 26 — the bell's notices; D755 (3), D760, D769): **NEW** `src/state/notices.ts`
 (the saved record a person told, `noticePass` — who is told and what, worked out from an input before and after a
 command — and the list's words) and `src/state/noticeseen.ts` (what each person has read, his own record; the one

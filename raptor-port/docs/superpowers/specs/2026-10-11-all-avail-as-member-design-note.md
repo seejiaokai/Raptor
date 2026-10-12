@@ -168,7 +168,8 @@ for OIL? Yes / No" — once, for the input. Ranger answered No: Tally is added w
 scheduler may change the input's answer or switch Tally on.
 
 **Refusals, each with its reason.** ALL AVAIL onto a three-day input: "ALL AVAIL is for one day." Anyone onto a Personal
-input: "A Personal input is one person's own." The last person dragged off with nobody put in his place: refused — the
+input: "A Personal input is one person's own." *(withdrawn 12 Oct 26 — D776, D778: a Personal input is the same as an
+Event for people)* The last person dragged off with nobody put in his place: refused — the
 ✕ on the row takes the input off the programme.
 
 **A swap.** Tally dropped ONTO Ranger's puck while Ranger is alone: Tally replaces him; schedule and Inputs calendar
