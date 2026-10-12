@@ -8,7 +8,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
 import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial } from '../engine/people'
+import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
 import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -680,6 +680,19 @@ export function routeClick(e: MouseEvent) {
        since a row that came from an input IS the input (D755), into the wrong INPUT (found re-expressing the rows'
        tests on the one record, 12 Oct 26). The same rule the pass keeps: the row at the armed position is no longer
        the row that was armed → the place is put down. */
+    /* …and WHO STANDS ON THAT ROW WITHOUT BEING IN THE INPUT (the second re-walk, RX3-6 — 12 Oct 26). While the request
+       reads "taken off" its row is nobody's input's, so a man dropped there is a plain write; adopted, the row shows
+       the people the INPUT holds (D755 — engine/overlay.ts re-makes it) and he is off it. Read before the write, said
+       in the note below: a drop that vanished with only "its row was already there" was a silent loss. */
+    const strays: string[] = []
+    if (adopts) {
+      const row: any = DAYS.map((d: any) => standsOn(d, k, inp)).find(Boolean)
+      const held = idsOf(inp).map(String)
+      for (const v of row ? [row.who, ...((row.more || []) as any[])] : []) {
+        const p = String(whoId(v) || v || '')
+        if (p && !held.includes(p) && !strays.includes(p)) strays.push(p)
+      }
+    }
     const armWas = view.armedRowKey()
     let ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
@@ -709,6 +722,7 @@ export function routeClick(e: MouseEvent) {
           : `${cs}'s ${inpLabel(inp)} taken off the programme`
         : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`
         : adopts ? `${cs}'s ${inpLabel(inp)} is on the ground programme again — its row was already there`
+          + (strays.length ? ` · ${strays.map(p => (PEOPLE[p] ? PEOPLE[p].cs : p)).join(', ')} came off its row — not in the input; drop ${strays.length > 1 ? 'them' : 'him'} on again to add ${strays.length > 1 ? 'them' : 'him'}` : '')
         : `${cs}'s ${inpLabel(inp)} added to the ground programme`
       /* the history line is the change history's one writer's (state/changelines.ts): the catch-all command below diffs
          every input against the last committed state, so the filing that moved IS in its envelope and is said once. A

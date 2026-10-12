@@ -840,3 +840,34 @@ describe('a man given his own part AFTER "who filed it" has passed on is still O
     expect(waiting(WED), 'two changes: the filer taken out, and one man\'s own part').toBe(2)
   })
 })
+
+/* THE SECOND RE-WALK'S RX3-2 (12 Oct 26) — a leftover of claim 6's fix. A man taken off a published row and put back
+   left the day reading nothing pending (right) but the input's list in a new order; the row was written in the issued
+   order only while its people were EXACTLY the issued ones, so the moment a fourth man was added it fell back to the
+   joined order — and the hollow "goes out as AL1" tag stood on all four pucks, where only the new man's is a change
+   (D93, D736). The control beside it — the same add with nobody taken out and back — is the case above ("added: the
+   hollow tag is on HIS puck"). */
+describe('the tag is on the new man alone, whatever order the others left and came back in (the second re-walk, RX3-2)', () => {
+  const tag = (p: string) => !!SCHED.pending[ridKey(keyOf(p), DAYS)]
+  it('issued for three; the first to join taken out and put back; a fourth added: 1 waiting, the tag on HIS puck only', async () => {
+    await boot(); file(['bane', 'pike', 'split']); publish(WED)
+    take('bane'); add('bane')
+    expect(waiting(), 'back to what was published').toBe(0)
+    add('ignite')
+    expect(waiting()).toBe(1)
+    expect(tag('ignite'), 'the new man is marked').toBe(true)
+    expect(['bane', 'pike', 'split'].map(p => tag(p)), 'the three who went out with the day wear none').toEqual([false, false, false])
+    expect([ground()[riOf()].who, ...(ground()[riOf()].more || [])], 'the issued three in the places they went out in, the new man after them').toEqual(['bane', 'pike', 'split', 'ignite'])
+    take('ignite')
+    expect(waiting(), 'and taken off again: nothing').toBe(0)
+  })
+  it('the MIDDLE man taken out and put back, then one of the three taken out for good: 1 waiting — "taken out" — and nobody added reads as moved', async () => {
+    await boot(); file(['bane', 'pike', 'split']); publish(WED)
+    take('pike'); add('pike')
+    expect(waiting()).toBe(0)
+    take('split')
+    expect(waiting()).toBe(1)
+    expect([ground()[riOf()].who, ...(ground()[riOf()].more || [])], 'the two left stand in their issued order').toEqual(['bane', 'pike'])
+    expect(pendListHTML(WED)).toContain('taken out')
+  })
+})

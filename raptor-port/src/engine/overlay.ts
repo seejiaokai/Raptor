@@ -202,19 +202,26 @@ export function requestRowFields(inp: any) {
    have joined, taken out and put back, came back LAST: the same three people on every screen — the row draws them A to
    Z — and the day read "1 pending · order changed" for good, its sign-offs fallen; a load re-made the row from the
    input and it was pending again. Where the issued day's row of the same request holds exactly the people the input
-   holds now, the row is written in the ISSUED order: the day is then what went out, and reads so. Any other case —
-   someone more, someone fewer, someone else — is left in joined order, and its marks are as they were. `f` is changed
-   in place and handed back. */
+   holds now, the row is written in the ISSUED order: the day is then what went out, and reads so. `f` is changed in
+   place and handed back. */
 export function asIssuedOrder(f: any, issuedRow: any): any {
   if (!f || !issuedRow) return f
   const id = (v: any) => String(whoId(v) || v || '')
   const was = [issuedRow.who, ...((issuedRow.more || []) as any[])].map(id).filter(Boolean)
   const now = [f.who, ...((f.more || []) as any[])].map(id).filter(Boolean)
-  if (was.length < 2 || was.length !== now.length) return f
-  const have = new Set(now)
-  if (have.size !== now.length || new Set(was).size !== was.length || !was.every(p => have.has(p))) return f
-  f.who = was[0]
-  f.more = was.slice(1)
+  if (!was.length || now.length < 2) return f
+  const have = new Set(now), went = new Set(was)
+  if (have.size !== now.length || went.size !== was.length) return f
+  /* …AND WHERE THE PEOPLE DIFFER, THOSE WHO WENT OUT WITH THE DAY STILL STAND FIRST, IN THE ORDER THEY WENT OUT IN, AND
+     WHOEVER JOINED SINCE AFTER THEM (the second re-walk, RX3-2 — the same day). Written in the issued order only while
+     the people were EXACTLY the issued ones, the row fell back to the joined order the moment a fourth man was added
+     after one had been taken out and put back: every puck then sat on a new place, and all four wore the hollow "goes
+     out as ALn" tag where only the new man's is a change (D93, D736). Someone who LEFT closes the gap as before — the
+     next man takes his place (state/inputcount.test.ts "the first person leaves"). */
+  const order = [...was.filter(p => have.has(p)), ...now.filter(p => !went.has(p))]
+  if (order.join(' ') === now.join(' ')) return f
+  f.who = order[0]
+  if (order.length > 1) f.more = order.slice(1); else delete f.more
   return f
 }
 /* the issued day's row of a request — the row the version PLACED (never one that was dead, `kept`, when it went out) */

@@ -381,6 +381,23 @@ describe('an input brought back by a load (W4-F3)', () => {
     expect(inp.acc, 'on the programme again').toBe('g')
     expect(DAYS.flatMap((d: any) => (d.ground || []).filter((g: any) => g.src === inpId(inp))).length, 'still ONE row').toBe(1)
   })
+  /* …AND IT SAYS WHO COMES OFF THE ROW (the second re-walk, RX3-6 — 12 Oct 26). While the request reads "taken off" its row
+     is nobody's input's, so a man dropped on it is a plain write; once Accept makes it the input's row again it shows
+     the people the INPUT holds (D755 — engine/overlay.ts re-makes it), and he is gone from it. Right — and it was
+     silent: the scheduler's drop vanished with only "its row was already there". The note names him and the way back. */
+  it('…and where someone stands on that row who is not in the input, the note says he came off it', () => {
+    const inp = meeting()
+    acceptInput(MON, inp, 'g')
+    inp.acc = 'r'
+    const row = (DAYS[MON] as any).ground.find((g: any) => g.src === inpId(inp))
+    row.more = ['pike']                                     // dropped on the row while it read "taken off" — a plain write
+    const b = document.createElement('button')
+    b.dataset.acc = 'g'; b.dataset.accd = String(MON); b.dataset.acck = inpId(inp)
+    document.body.appendChild(b)
+    const said = withToasts(() => { try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() } }).join(' ')
+    expect(said).toMatch(/its row was already there/i)
+    expect(said, 'names the man and why').toContain(`${(PEOPLE as any).pike.cs} came off its row — not in the input`)
+  })
 })
 
 describe('the board keeps the plans selector and the version tag while you look at an issued version (W2-F1, AM28)', () => {
