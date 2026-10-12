@@ -4433,6 +4433,15 @@ Three things stay decided:
   dragged from to the wait (`ui/oilwait.ts oilWaitAlso`). **A passing note never lands on the bar** (the walk's C3): the
   note is drawn at the foot too, a layer above, and the bar stays — so while the bar is up the note sits just above it
   (`ui/toast.ts placeToast`, which the bar calls as it arrives, so a note already showing moves clear).
+- **Nothing moves — and the screen says so** (the Opus read of the finished code, C1 — 13 Oct 26). The door's save is
+  tried and thrown away before the question is put, and the rules ran inside it: `state/store.ts tryInputsBatch` runs
+  them again on the world as it stands, so the day's issues and the rings on its pucks behind the question, and under
+  the bar, are never those of the change that was not made. **"Answer OIL" makes the change that was waiting or none**
+  (C2): a row that has changed in any way since — its man, its seat, or how many it holds, so that a swap would now
+  be an add — says "That row has changed — not swapped". **OIL Earn switched on takes the waiting change and its bar
+  away** (C7 — in that mode the day does not move). **The Unavailable row's armed tap keeps the row's ring** until
+  the hand-over is made or refused (C10), as an input's row keeps its arm; both doors flash both pucks a second time
+  too (C9), and an add dragged from a seat flashes the seat (C8).
 - **The one list** (`ui/OilDayList.tsx`): a window on the shell at its own width, title "OIL — Fri 17 Jul" (a run:
   "Mon 20 – Tue 21 Jul") over "Public holiday · <name>". Opened by itself it begins "<name> is now a public holiday.";
   from the bell it does not. **A holiday with no name of its own** (the Event sheet's "PH" button, the Holidays list's
@@ -4452,6 +4461,15 @@ Three things stay decided:
   view on it is not listed, not unread and does not light his bell — the list it opens would refuse him — and it is
   back, read or unread as he left it, when he switches back (`state/notices.ts noticeLive`, the one body the list, the
   unread count, "Mark all read" and the bell's tap all ask). "Mark all read" reads only the lines that are shown.
+  **ONE LINE A HOLIDAY, WHATEVER IS DONE TO ITS DATES** (the two code reads, C3–C6 — 13 Oct 26). A notice keeps the
+  dates as they were when it was made, and that is only where to look: the line's dates, its name, its count, the day
+  it covers and the list it opens are read from the war AS IT STANDS (`state/notices.ts noticeSpan`, fed by
+  `leavewar/sync.ts holidaySpan`) — a holiday shortened names the days still a holiday, renamed its new name, taken
+  away it has no line. The notice itself is made for the WHOLE holiday as the war's list has it (`tellHoliday`
+  widens a run to the holiday that holds it), so a holiday lengthened by a day, or entered Friday to Monday, is one
+  notice and one list; and a newer notice whose live days hold all of an older one's takes its place. A live holiday
+  line is never one of the lines the bell cuts at thirty — the bell's tap leaves a scheduler's own question on that
+  day to it.
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 

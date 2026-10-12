@@ -170,6 +170,20 @@ const BREAKS = [
   ['B92 a note already showing is left on the bar when it arrives', SH, "  useEffect(() => { if (up) placeToast() }, [up])\n", "", DOOR],
   ['B93 the Unavailable row: the seat he was dragged from does not flash (the walk\'s C2)', D,
     "    if (DRAG.kind === 'slot' && view.OILWAIT && view.OILWAIT !== waited) oilWaitAlso(DRAG.key)\n", "", DOOR],
+  /* ---- the two code reads' fixes (13 Oct 26; the sheet's §12) ---- */
+  ['B94 the rules are not run again after the tried save (C1)', 'src/state/store.ts', "  validate()\n  return passed\n", "  return passed\n", DOOR],
+  ['B95 "Answer OIL" takes a row whose KIND of change is no longer the same (C2)', R, "      return swapNow !== swap ? 'none' : rowPut(", "      return rowPut(", DOOR],
+  ['B96 the notice is made for the dates that became non-working only, not the whole holiday (C3, C5)', SY,
+    "    const from = h1 && h1.from < r.from ? h1.from : r.from, to = h2 && h2.to > r.to ? h2.to : r.to\n", "    const from = r.from, to = r.to; void h1; void h2\n", HOL],
+  ['B97 the line prints the dates as stored, not as the holiday stands (C3)', N, "return !h ? null : HOL_SPAN ? HOL_SPAN(h.a, h.b) : h }", "return !h ? null : h }", HOL],
+  ['B98 a newer notice takes an older one\'s place only on IDENTICAL dates (C4)', N, "    if (o && o.a <= s.a && s.b <= o.b) return false\n", "    if (o && o.a === s.a && s.b === o.b && false) return false\n", HOL],
+  ['B99 a live holiday line is cut with the others at thirty (C6)', N, ".filter(n => holOf(n) != null || others++ < LIST_MAX)", ".slice(0, LIST_MAX)", HOL],
+  ['B100 OIL Earn switched on leaves the waiting change and its bar (C7)', V, " if(OILDAY!=null){OILWAIT=null;OILBAR=null;}}", "}", DOOR],
+  ['B101 the drop does not hand its seat to the wait at the open place (C8)', D, "    if (DRAG.kind === 'slot') oilWaitAlso(DRAG.key)\n    ROS_REOPEN = false\n", "    ROS_REOPEN = false\n", DOOR],
+  ['B102 the wait asked again loses the places a caller added (C9)', W, "    if (OILWAIT) for (const pl of w.places) if (!OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)\n", "", DOOR],
+  ['B103 the Unavailable row\'s armed tap drops its ring before the question (C10)', 'src/ui/interactions.ts',
+    "      if (made || !view.OILWAIT || view.OILWAIT === waited) view.disarmSlot()\n", "      view.disarmSlot(); void made; void waited\n", ['src/ui/unavailedit.test.tsx']],
+  ['B104 a holiday with no name is called by the preset\'s word (W4)', SY, "return n && n !== holidayWord('ph') ? n : '' }", "return n || '' }", HOL],
 ]
 
 let red = 0, green = 0, skip = 0

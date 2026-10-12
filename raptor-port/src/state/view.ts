@@ -36,7 +36,10 @@ export let SBDAY:any=null
    scheduler has walked away from would keep the board read-only and keep showing
    green pucks for a day nobody is looking at. */
 export let OILDAY:any=null
-export function setOilDay(n:any){OILDAY=n==null?null:+n;}
+/* (switched ON it takes a change waiting on its OIL answer, and its bar, away — [OIL-ASK-NOTIFY]; the Opus read of the
+   finished code, F5, 13 Oct 26: in this mode "the day underneath does not move" — every drop is refused, ui/drag.ts —
+   and the bar's "Answer OIL" still made its swap inside it. The bar belongs to editing; it ends where editing does.) */
+export function setOilDay(n:any){OILDAY=n==null?null:+n; if(OILDAY!=null){OILWAIT=null;OILBAR=null;}}
 /* Monotonic board-navigation generation. A swipe settles asynchronously; the
    day value alone cannot distinguish close -> reopen on the same day (ABA).
    Every real open/close/day change advances this token so an older settle can

@@ -433,7 +433,7 @@ sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'
 day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
 taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
 *(13 Oct 26, `[OIL-ASK-NOTIFY]`: a second kind rides the same record — a day made a holiday, `iid` empty and `what` =
-`[{ k: 'oilhol', a, b }]`, one a scheduler, written inside the Leave War's own command through the scheduler store;
+`[{ k: 'oilhol', a, b }]` (`name` is the holiday's own name, '' where it has none; `a`..`b` the whole holiday as it stood when the notice was made — what the bell shows is read live from the war, never from these), one a scheduler, written inside the Leave War's own command through the scheduler store;
 `state/notices.ts noticeHoliday`. Nothing else about how a notice is stored changes.)*
 **Stored one row each, in a collection of their own:** `notices/<id>`, written from the command stream
 (`state/persist.ts` — the `notices` mapper) and read back at boot. **Written INSIDE the command that changed the input**

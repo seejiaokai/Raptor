@@ -50,6 +50,8 @@ import { markLand, pendingLand } from './lift'
 import { commitChipMove } from './caldrag'
 import { reassignInput } from './inputedit'
 import { toast as realToast } from './toast'
+import { WARN } from '../engine/validate'
+import { warnKey } from '../state/dropflag'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -586,5 +588,105 @@ describe('the wires the break tests found bare', () => {
       realToast('Schedule updated', 'ok')
       expect(note().style.bottom, 'the bar gone: the foot again').toBe('26px')
     } finally { await act(async () => { root.unmount() }); const t = note(); if (t) t.remove() }
+  })
+})
+
+/* THE TWO CODE READS OF THE FINISHED CODE (13 Oct 26 — Fable, and a fresh Opus reader beside it: D788, D789). Each claim
+   was written here as a case of the RIGHT behaviour and run against the code as it stood; every one below was red. */
+describe('the two code reads — each claim reproduced before it was believed', () => {
+  const warns = () => (WARN.all as any[]).map(warnKey).sort().join(' || ')
+  const od = (ppl: string[], oil?: Record<string, number>): string => {
+    expect(commitInput(null, draftOf({ person: ppl[0], type: 'OD', date: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ppl, oil ? { oil } : undefined)).toBe(true)
+    const r = INPUTS.find((x: any) => x.type === 'OD' && x.date === 'Jul 18' && idsOf(x).map(String).join() === ppl.join()) as any
+    expect(r, 'the overseas duty').toBeTruthy()
+    return String(r.iid)
+  }
+  const inpSeat = (iid: string) => { const el = document.createElement('span'); el.className = 'seat'; el.dataset.inpseat = iid; document.body.appendChild(el); return el }
+  afterEach(() => { view.setOilDay(null) })
+
+  /* Opus F1. The door's save is TRIED and thrown away — and the rules run inside it, on the tried world; the rollback
+     put the schedule back but not what the rules had found, so behind the question, and for as long as the bar stood,
+     the day's warnings and the rings on the pucks were those of a change that was never made. */
+  it('nothing moves — and the warnings say so: behind the question and after "Don’t swap" they are those of the day as it STANDS', async () => {
+    await boot()
+    const iid = od(['bane'], { [SAT_ISO]: 1 })
+    const { who } = dutySeat()                         // a man at work on Saturday: handed the overseas duty he would be "away but tasked"
+    const was = warns()
+    expect(reassignInput(iid, who), 'the hand-over waits').toBe(false)
+    expect(view.OILWAIT, 'on its question').toBeTruthy()
+    expect(warns(), 'behind the question: the warnings of the day as it stands').toBe(was)
+    leaveOilWait()
+    expect(warns(), 'and after "Don’t swap"').toBe(was)
+  })
+
+  /* Opus F2. "Answer OIL" asks the door afresh — and the door worked the KIND of change out again from the row as it
+     then stood: with a second man added meanwhile the waiting SWAP became an ADD, the input was answered, and he was
+     added at once with no question, keeping his seat. */
+  it('"Answer OIL" never makes a different change from the one that was waiting: a second man added meanwhile → "That row has changed — not swapped"', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    const { key: seat, who } = dutySeat()
+    setDrag({ kind: 'slot', key: seat })
+    expect(applyDrop(seatEl(rowKey()), 0, 0)).toBe(false)
+    leaveOilWait()
+    expect(commitInput(rec(), draftOf(rec()), ['bane', 'pike'], { oil: { [SAT_ISO]: 0.5 } }), 'someone is added in its own window').toBe(true)
+    SAID = []
+    oilBarAgain()
+    expect(people(), 'the man who was to swap is NOT added').toEqual(['bane', 'pike'])
+    expect(slotVal(seat)).toBe(who)
+    expect(view.OILWAIT).toBeNull(); expect(view.OILBAR).toBeNull()
+    expect(SAID.join(' | ')).toContain('That row has changed — not swapped')
+  })
+
+  /* Opus F5. The bar's "Answer OIL" still made its change with OIL Earn switched on — the mode in which "the day
+     underneath does not move" (every drop is refused there). */
+  it('OIL Earn switched on takes the waiting change and its bar away — nothing is made inside the mode', async () => {
+    await boot()
+    file(['bane'], SAT, { [SAT_ISO]: 0.5 })
+    expect(rowPut(rowKey(), 'pike')).toBe('asked')
+    leaveOilWait()
+    expect(view.OILBAR).toBeTruthy()
+    view.setOilDay(SAT)
+    expect(view.OILBAR, 'the bar goes with the mode').toBeNull()
+    expect(view.OILWAIT).toBeNull()
+    view.setOilDay(null)
+    expect(rowPut(rowKey(), 'pike'), 'and a question still up when the mode comes on goes too').toBe('asked')
+    view.setOilDay(SAT)
+    expect(view.OILWAIT).toBeNull()
+    view.setOilDay(null)
+  })
+
+  /* Opus F6 (first half). A man dragged from a SEAT onto a row's open place ("+ add") is an add, and he keeps his seat:
+     left unanswered only the row's box flashed — the puck that was dragged did not ("both pucks flash", D783 (2)). */
+  it('an add dragged from a seat onto "+ add": left unanswered, the puck that was dragged flashes too', async () => {
+    await boot()
+    file(['bane', 'pike'], SAT)
+    const { key: seat } = dutySeat()
+    const cell = document.createElement('div'); cell.dataset.fill = `${rowKey()}.+`; document.body.appendChild(cell)
+    const source = seatEl(seat)
+    setDrag({ kind: 'slot', key: seat })
+    expect(applyDrop(cell, 0, 0)).toBe(false)
+    expect(view.OILWAIT!.kind).toBe('add')
+    leaveOilWait()
+    expect(source.classList.contains('lift-land'), 'the puck that was dragged').toBe(true)
+  })
+
+  /* Fable F3 / Opus F6 (second half). On the Unavailable row the seat he was dragged from is handed to the wait by the
+     drag; "Answer OIL" builds the wait again through a door that knows no seat — and a second "Don’t swap" flashed the
+     row's man alone. */
+  it('the Unavailable row, "Answer OIL" then "Don’t swap" again: BOTH pucks flash the second time too', async () => {
+    await boot()
+    const iid = od(['bane'], { [SAT_ISO]: 1 })
+    const { key: seat } = dutySeat()
+    const row = inpSeat(iid), source = seatEl(seat)
+    setDrag({ kind: 'slot', key: seat })
+    applyDrop(row, 0, 0)
+    leaveOilWait()
+    row.classList.remove('lift-land'); source.classList.remove('lift-land')
+    oilBarAgain()
+    expect(view.OILWAIT, 'the question again').toBeTruthy()
+    leaveOilWait()
+    expect(row.classList.contains('lift-land'), 'the man on the row').toBe(true)
+    expect(source.classList.contains('lift-land'), 'and the puck that was dragged, again').toBe(true)
   })
 })

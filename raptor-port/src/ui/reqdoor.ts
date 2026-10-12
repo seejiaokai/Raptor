@@ -277,7 +277,16 @@ export function rowPut(key: any, id: any, seat?: SeatTake, oil?: Oil): RowAnswer
     ...(swap ? {} : { who: () => { const q = here(); return inputWho({ people: [...(q ? people(q.inp) : ids), pid].map(x => ({ p: x })) }) } }),
     /* the puck dropped on (a "+ add": the row's own name box), and the seat he was dragged from */
     places: [ridWriteKey(`g:${p.di}.${p.ri}${at ? p.rest : ''}`, DAYS), ...(F ? [F] : [])],
-    again: () => { const k = posKey(T, DAYS), sk = F ? posKey(F, DAYS) : null; return !k || (F && !sk) || !here() ? 'none' : rowPut(k, pid, seat && sk ? { from: sk, take: seat.take } : undefined) },
+    /* …and it must still be the SAME KIND of change (the Opus read, F2 — 13 Oct 26): the door works swap-or-add out from
+       the row as it stands, so with a second man put on the row meanwhile the waiting SWAP came back as an ADD — and,
+       the input being answered, was made at once: no question, the man added and still on his seat. A row that is no
+       longer what the question was asked about says so (A5), whatever has changed about it. */
+    again: () => {
+      const k = posKey(T, DAYS), sk = F ? posKey(F, DAYS) : null, q = here()
+      if (!k || (F && !sk) || !q) return 'none'
+      const swapNow = !isSpecial(pid) && !!q.at && people(q.inp).length === 1 && !isSpecial(q.at)
+      return swapNow !== swap ? 'none' : rowPut(k, pid, seat && sk ? { from: sk, take: seat.take } : undefined)
+    },
   })
 }
 

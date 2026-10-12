@@ -460,3 +460,66 @@ describe('ON SCREEN — the one list as drawn (docs/mock/2026-10-12-oil-notify/*
     } finally { await act(async () => { root.unmount() }) }
   })
 })
+
+/* THE TWO CODE READS OF THE FINISHED CODE (13 Oct 26 — Fable F1; the Opus read F3, F4). "One bell line a holiday" (D783
+   (6)) held only while a holiday's dates never changed: a notice kept the run of dates that BECAME non-working when it
+   was made, and two notices folded only where those dates were identical. Each case below was red. */
+describe('one bell line a holiday, whatever is done to its dates (the two code reads)', () => {
+  const MON = '2026-07-20'
+  const lines = (pid: string) => line(pid).map(n => noticeWords(n).day)
+  const hline = (from: string) => holidaysIn(2026).find(h => h.from === from)!
+  it('LENGTHENED by a day: one line, for the whole holiday — never a second line for the day added', () => {
+    three()
+    file('Thursday brief', 'Training', ['pike'], { date: 'Jul 16' })
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(holidayChange(hline(FRI), ph(THU, 'National Day', FRI)).ok).toBe(true)
+    expect(lines('nact'), 'ONE line, Thu to Fri').toEqual(['Thu 16 – Fri 17 Jul'])
+    expect(noticeWords(line('nact')[0]!).what).toBe(`${oilOpenOn(THU, FRI).length} inputs need an OIL answer`)
+    expect(pops.OILLIST, 'and the list opens for the whole holiday').toMatchObject({ from: THU, to: FRI })
+  })
+  it('SHORTENED: the one line, and the list it opens, name the days that are still a holiday', () => {
+    three()
+    expect(holidayAdd(ph(THU, 'National Day', FRI)).ok).toBe(true)
+    expect(lines('nact')).toEqual(['Thu 16 – Fri 17 Jul'])
+    expect(holidayChange(hline(THU), ph(FRI)).ok).toBe(true)
+    expect(lines('nact'), 'Thursday is a working day again').toEqual(['Fri 17 Jul'])
+    setMe('nact'); pops.setOilList(null)
+    openNotice(line('nact')[0]!)
+    expect(pops.OILLIST).toMatchObject({ from: FRI, to: FRI })
+  })
+  it('taken away and made again over OTHER dates: still one line — not the old one come back to life beside the new', () => {
+    three()
+    expect(holidayAdd(ph(THU, 'National Day', FRI)).ok).toBe(true)
+    holidayRemove(hline(THU))
+    expect(lines('nact'), 'gone with the holiday').toEqual([])
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(lines('nact')).toEqual(['Fri 17 Jul'])
+  })
+  it('ONE holiday that runs across a weekend is one line and one list — Friday to Monday', () => {
+    three()
+    const mon = file('Monday brief', 'Training', ['pike'], { date: 'Jul 20' })
+    expect(holidayAdd(ph(FRI, 'Long weekend', MON)).ok).toBe(true)
+    expect(hol('nact'), 'one notice').toHaveLength(1)
+    expect(lines('nact')).toEqual(['Fri 17 – Mon 20 Jul'])
+    expect(pops.OILLIST, 'the list is for the whole of it').toMatchObject({ from: FRI, to: MON })
+    expect(oilOpenOn(FRI, MON).map(o => o.iid), 'and holds Monday’s input too').toContain(mon)
+  })
+  it('RENAMED: the line and the list it opens say the holiday’s name as it is NOW (Fable’s read, F1 — the name was read at the telling only)', () => {
+    three()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    expect(holidayChange(hline(FRI), ph(FRI, 'Founders Day')).ok).toBe(true)
+    expect(noticeWords(line('nact')[0]!).name).toBe('Founders Day')
+    expect(lines('nact'), 'still one line').toEqual(['Fri 17 Jul'])
+    setMe('nact'); pops.setOilList(null)
+    openNotice(line('nact')[0]!)
+    expect(pops.OILLIST).toMatchObject({ from: FRI, to: FRI, name: 'Founders Day' })
+  })
+  it('a live holiday line is never one of the lines the bell cuts: with forty newer notices it is still listed, and the tap still reaches it', () => {
+    three()
+    expect(holidayAdd(ph(FRI)).ok).toBe(true)
+    const at = Date.now() + 1000
+    for (let k = 0; k < 40; k++) NOTICES.push({ id: `zz${String(k).padStart(2, '0')}`, to: 'nact', by: 'stiff', at: at + k, iid: 'gone', name: 'Some input', day: FRI, what: [{ k: 'rmk' }] } as any)
+    expect(line('nact'), 'still listed').toHaveLength(1)
+    expect(noticesFor('nact').length, 'thirty of the others, and the holiday’s').toBe(31)
+  })
+})

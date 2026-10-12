@@ -277,6 +277,13 @@ export function tryInputsBatch(fn: () => boolean | void): boolean {
     passed = true
     throw new CmdRefused(TRIED)
   })
+  /* …AND THE RULES ARE RUN AGAIN, ON THE WORLD AS IT STANDS (the Opus read of the finished code, F1 — 13 Oct 26). The
+     save's own epilogue ran them INSIDE the batch, on the tried world (HOOKS.reflow → validate()), and what they find —
+     WARN, REST, EVD — is module state, no part of what the rollback puts back. With nothing after it, every screen then
+     repainted the day's issues and the rings on its pucks from a change that was never made: behind the question, and
+     for as long as the bar stood. "Nothing moves" (D783) is what the screen must say too. No repaint of its own — the
+     caller notifies; not through batchResult, which would put the armed place down (above). */
+  validate()
   return passed
 }
 

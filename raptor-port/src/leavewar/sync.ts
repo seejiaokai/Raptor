@@ -119,7 +119,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, setHolidayLeft } from '../state/notices'
+import { noticeHoliday, setHolidayLeft, setHolidaySpan } from '../state/notices'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
@@ -245,6 +245,7 @@ export function installAbsenceDoor(): void {
      and the bell's holiday line asks how many inputs are still left to answer (state/notices.ts) */
   setHolidayTell(tellHoliday)
   setHolidayLeft(holidayLeft)
+  setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
      this before it speaks, and only Leave War can answer for a public holiday
      (the engine covers Saturday and Sunday from the day's own name). One
@@ -886,6 +887,20 @@ function holidayLeft(a: string, b: string): number {
   if (c == null) { c = oilOpenOn(a, b).length; LEFT.m.set(key, c) }
   return c
 }
+/* the days of a run of dates that are a holiday NOW — its first and last weekday that does not work (a weekend inside it
+   is part of it; a weekend alone is no holiday); null where none is left. The bell's line reads its dates, its count,
+   the day it covers and the list it opens through this (state/notices.ts noticeSpan). */
+function holidaySpan(a: string, b: string): { a: string; b: string; name: string } | null {
+  if (!validIso(a) || !validIso(b) || b < a) return null
+  let lo: string | null = null, hi: string | null = null
+  for (let d = a, n = 0; d <= b && n < 400; d = addDays(d, 1), n++) if (isNonWorkingISO(d) && !isWeekend(d)) { if (!lo) lo = d; hi = d }
+  return lo && hi ? { a: lo, b: hi, name: holidayOwnName(lo) } : null
+}
+/* a holiday's NAME — only one of its own. A holiday made with no name (the Event sheet's "PH" button; the Holidays
+   list's empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list
+   then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',
+   and each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
+function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
 /* the schedulers — every account that is an admin, switched on and tied to a person (state/accounts.ts) */
 const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a) && a.on && !!a.pid).map(a => String(a.pid))
 /* A WORKING DAY WAS MADE A HOLIDAY — called by the war's store INSIDE the command that did it (state/store.ts
@@ -897,12 +912,23 @@ const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a)
        has gone through, never for one that was refused.
    A run with nothing to answer tells nobody and opens nothing. The count is never stored (D783 (6)). */
 function tellHoliday(runs: HolidayRun[]): void {
-  /* its NAME — only one of its own. A holiday made with no name (the Event sheet's "PH" button; the Holidays list's
-     empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list then
-     said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Kept as '', and
-     each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
-  const own = (iso: string): string => { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
-  const todo = runs.filter(r => oilOpenOn(r.from, r.to).length > 0).map(r => ({ ...r, name: own(r.from) }))
+  const own = holidayOwnName
+  /* ONE NOTICE A HOLIDAY — FOR THE WHOLE OF IT AS IT NOW STANDS, not only the dates that have just become non-working
+     (the two code reads of the finished code, 13 Oct 26 — Fable F1, the Opus read F3). A holiday lengthened by a day
+     gave a run of that one day, and so a second line beside the first; one entered Friday to Monday gave two runs —
+     the weekend was never a working day — two lines, and a list opened for the Friday alone. So each run is widened
+     to the holiday that holds its ends, as the war's own list has it (holidaysIn — a band, a repeated word, a seeded
+     flag), and two runs of one holiday are one. */
+  const lineOn = (iso: string) => holidaysIn(iso.slice(0, 4)).find(h => h.kind === 'ph' && h.from <= iso && iso <= h.to) || null
+  const seen = new Set<string>()
+  const todo: (HolidayRun & { name: string })[] = []
+  for (const r of runs) {
+    const h1 = lineOn(r.from), h2 = lineOn(r.to)
+    const from = h1 && h1.from < r.from ? h1.from : r.from, to = h2 && h2.to > r.to ? h2.to : r.to
+    if (seen.has(`${from}|${to}`)) continue
+    seen.add(`${from}|${to}`)
+    if (oilOpenOn(from, to).length > 0) todo.push({ from, to, name: own(r.from) })
+  }
   if (!todo.length) return
   const by = me(), to = schedulerIds()
   commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(to, by != null ? String(by) : null, h.name, h.from, h.to) })

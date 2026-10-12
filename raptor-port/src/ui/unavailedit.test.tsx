@@ -12,7 +12,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
-import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
+import { INPUTS, inpId, inputCoversDate, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { isSpecial } from '../engine/people'
 import { SCHED, dayFilingFingerprint } from '../engine/publish'
@@ -20,7 +20,8 @@ import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
-import { commitInputEdit, draftOf, setInpField, reassignInput, removeInput } from './inputedit'
+import { commitInput, commitInputEdit, draftOf, setInpField, reassignInput, removeInput } from './inputedit'
+import { answerOilWait } from './oilwait'
 import { INPEDIT, setInpEdit } from './pops'
 import { openScheduler } from './board'
 import { dayHTML } from './html'
@@ -303,6 +304,29 @@ describe('the puck itself — armed tap, and drag, on both surfaces', () => {
     /* put it back so later tests (and any that follow in the file) see the
        seed's original shape */
     await act(async () => { reassignInput(iid, 'divot'); notify() })
+  })
+
+  /* Fable's read of the finished [OIL-ASK-NOTIFY] code, F2 (13 Oct 26). The tap put the arm down BEFORE the hand-over — right
+     while the hand-over was made at once; now a hand-over that raises the OIL question WAITS (D783), and the row lost
+     its ring while its question stood, where an input's own row keeps it until the answer (ON5; D754 — the same
+     everywhere). */
+  it('an armed tap whose hand-over WAITS on its OIL question keeps the row armed until the answer', async () => {
+    await act(async () => { expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 18', yr: 2026, allday: true, remarks: '' }), ['bane'], { oil: { '2026-07-18': 1 } })).toBe(true); notify() })
+    const od = INPUTS.find((i: any) => i.type === 'OD' && i.date === 'Jul 18' && idsOf(i).map(String).join() === 'bane')!
+    const iid = od.iid
+    const seat = () => $(`#eWeek .day[data-day="5"] [data-inpseat="${iid}"]`)
+    expect(seat(), 'Saturday’s Unavailable row draws it').toBeTruthy()
+    await click(seat())
+    expect(view.armedKey()).toBe(`iu:${iid}`)
+    const next = $$('#eRoster .rpuck[data-person]').find(p => p.dataset.person !== 'bane' && !isSpecial(p.dataset.person))!
+    await click(next)
+    expect(view.OILWAIT, 'a weekend: the question first, nothing handed over').toBeTruthy()
+    expect(idsOf(INPUTS.find((i: any) => i.iid === iid)).map(String)).toEqual(['bane'])
+    expect(view.armedKey(), 'the row is STILL armed while its question stands').toBe(`iu:${iid}`)
+    await act(async () => { expect(answerOilWait({ '2026-07-18': 1 })).toBe(true) })
+    expect(idsOf(INPUTS.find((i: any) => i.iid === iid)).map(String)).toEqual([next.dataset.person])
+    expect(view.armedKey(), 'put down once he holds it').toBe('')
+    await act(async () => { writeInputsBatch(() => { const ix = INPUTS.findIndex((i: any) => i.iid === iid); if (ix >= 0) INPUTS.splice(ix, 1) }); notify() })
   })
 
   it('a puck dragged from the roster onto the board\'s Unavailable seat reassigns it, without a ground-seat write anywhere', async () => {

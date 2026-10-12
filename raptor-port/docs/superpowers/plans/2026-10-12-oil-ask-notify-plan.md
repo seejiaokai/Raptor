@@ -70,7 +70,7 @@ lead, gate, places: [row-id keys], redo: (oil) => RowAnswer, again: () => void }
 - **The same rule at the two sibling doors** (the agent's reading of D780's "holds at every door" and D754 — to tell
   him): `reassignInput` (a man dragged onto another's Unavailable row — "Not swapped") and the Inputs calendar's date
   drag (`caldrag.ts` — "Not moved"; a member dragging his own input onto a weekend is then asked first, as the input's
-  own window already does). After this, the only way an input's question opens with nobody asked is a day made a
+  own window already does). *(Corrected 13 Oct 26 by the Opus read of the finished code, F7: there is a second way, older than this job — an input put BACK on the programme after its day became a holiday; filed `OUTSTANDING.md` `[OIL-ACCEPT-BACK-UNASKED]`.)* After this, the only way an input's question opens with nobody asked is a day made a
   holiday afterwards. `askOilIfPending` keeps its last caller, `setInpField`'s non-scheduler branch (not reachable from
   a screen).
 - **Not changed:** a person taken OFF a row; a swap between two seats that are not an input's row; an input whose

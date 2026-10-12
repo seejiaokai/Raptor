@@ -314,3 +314,49 @@ and then puts the drawer away.
 | R22 the "OIL?" tag after a holiday | D2 (the unanswered card still wears it; the answered three do not) | unchanged |
 | R23 the downstream OIL figure | C7 (Ranger and Hunter each credited half a day on the Leave War once Friday is published, nothing before; the input answered No credits nobody), D2 and A2 (OIL Earn: HO on the men of a Yes, a dash on a No) | HAS |
 | R24 a published Friday made a holiday | C5 — as D2 has it (§11.2) | as ruled |
+
+## 12. The two code reads of the finished code (13 Oct 26) — every claim reproduced before it was believed
+
+Both read the branch at `2f677c0d8` with the same brief (`docs/superpowers/briefs/2026-10-13-oil-ask-notify-code-read.md`)
+and this sheet as it then stood, blind to each other. **Fable** (the job's independent reader — D784):
+`docs/superpowers/briefs/2026-10-13-reads/oil-ask-notify-code-fable.md` — "CLEAN WITH THESE EXACT CHANGES", three findings,
+478,816 tokens. **A fresh Opus reader** (the trial of D788 / D789 — Opus wrote the code, so NOT the job's independent
+read): `…/oil-ask-notify-code-opus.md` — "CLEAN WITH THESE EXACT CHANGES", eight findings, 610,259 tokens. Each claim
+was written as a test of the RIGHT behaviour and run against the code as it stood; *red* = it failed, the claim is real.
+
+| # | The claim, as a person meets it | Who | Reproduced | Done |
+|---|---|---|---|---|
+| C1 | Behind the OIL question, and after "Don’t swap" for as long as the bar stands, the day's issues and the rings on its pucks are those of the change that was NOT made (until the next edit re-checks) — the rules ran inside the save that is tried and thrown away, and what they found is not part of what the rollback puts back | Opus F1 (MEDIUM). **Fable traced the same save and called it sound** ("leaves no … repaint behind") | **red** — `ui/oilwait.test.tsx` "nothing moves — and the warnings say so…" | **fixed:** the rules are run again on the world as it stands (`state/store.ts tryInputsBatch`) |
+| C2 | "Answer OIL" after a second man was put on the row meanwhile turns the waiting SWAP into an ADD made at once — no question, the man added and still on his seat | Opus F2. **Fable: "Can Answer OIL write to the wrong row or person? No"** | **red** — "…never makes a different change from the one that was waiting…" | **fixed:** the door asked again must still be the same kind of change, or "That row has changed — not swapped" (`ui/reqdoor.ts rowPut`) |
+| C3 | A holiday whose dates are CHANGED: lengthened, a second bell line for the day added; shortened, the one line and the list it opens keep the old dates | Fable F1 **and** Opus F3 (b) | **red** — `leavewar/holnotice.test.tsx` "LENGTHENED…", "SHORTENED…" | **fixed:** the notice is made for the whole holiday as it now stands (`leavewar/sync.ts tellHoliday`), and the line's dates, count, day and list are read from the war as it stands (`state/notices.ts noticeSpan`) |
+| C4 | A holiday taken away and made again over other dates: two lines counting the same inputs | Opus F3 (a) | **red** — "taken away and made again over OTHER dates…" | **fixed** with C3 (a newer notice whose live days hold all of an older one's takes its place) |
+| C5 | ONE holiday entered Friday to Monday: two lines, and the list opens for the Friday alone | Opus F3 (c) | **red** — "ONE holiday that runs across a weekend…" | **fixed** with C3 (a run is widened to the holiday that holds it) |
+| C6 | With more than thirty newer notices the live holiday line is cut from the bell's list while the tap still defers to it — that scheduler's own question cannot be reached from his bell | Opus F4. **Fable: "the thirty-line cut is applied after noticeLive" — sound** | **red** — "a live holiday line is never one of the lines the bell cuts…" | **fixed:** the thirty are of the other notices (`state/notices.ts noticesFor`) |
+| C7 | The bar's "Answer OIL" makes its swap with OIL Earn switched on — the mode in which the day does not move | Opus F5 | **red** — "OIL Earn switched on takes the waiting change and its bar away…" | **fixed:** switching the mode on takes the waiting change and its bar away (`state/view.ts setOilDay`) |
+| C8 | An add dragged from a SEAT onto a row's open place: left unanswered, the puck that was dragged does not flash | Opus F6 (first half) | **red** — "an add dragged from a seat onto \"+ add\"…" | **fixed:** the drop hands the seat to the wait at every site (`ui/drag.ts held`) |
+| C9 | The Unavailable row: "Answer OIL", then "Don’t swap" again — only the row's man flashes | Fable F3 **and** Opus F6 (second half) | **red** — "…BOTH pucks flash the second time too" | **fixed:** the places a caller added are carried to the wait asked again (`ui/oilwait.ts oilBarAgain`) |
+| C10 | The Unavailable row's armed TAP drops the ring on the row before its question is put — an input's own row keeps it until the answer | Fable F2. **Opus did not report it** (the sheet had filed its drawer half as older) | **red** — `ui/unavailedit.test.tsx` "an armed tap whose hand-over WAITS…" | **fixed:** the arm goes down when the hand-over is made or refused; waiting, it stays (`ui/interactions.ts`) |
+| C11 | An input taken off the programme, its weekday then made a holiday, then put back (Accept, or Undo of the take-off): it needs an OIL answer and nobody is asked — only its "OIL?" tag and the bell of whoever answers for it say so. The plan's "the only way left" is not true | Opus F7 (OLDER — not this job's code) | by reading: `ui/interactions.ts` Accept → `engine/slots.ts acceptInput` puts no question | **filed** `[OIL-ACCEPT-BACK-UNASKED]`, with a recommendation; the plan's sentence corrected |
+| C12 | The declared record type of a notice lacks the new holiday part | Opus F8 (records) | by reading `engine/schema.ts` | **fixed:** `'oilhol'` declared, with what its fields then mean |
+
+**False alarms:** none from either reader — every claim that could be written as a test was red. **Each reader's
+negatives the other disproved:** three of Fable's (C1, C2, C6); none of Opus's found so far.
+
+### 12.1 The one test he asked for (D788, D789) — the table to put to him
+
+| | Fable | A fresh Opus reader |
+|---|---|---|
+| Real faults found | 3 | 11 (its eight findings; F3 and F6 are several faults each) + 1 older, filed |
+| …found by both | 2 (C3, C9) | 2 |
+| …found by this reader alone | 1 (C10) | 9 (C1, C2, C4, C5, C6, C7, C8, C11, C12) |
+| The most serious | low | C1 — the screen showing a change that was not made (medium) |
+| Said "sound" about something the other proved faulty | 3 times | 0 |
+| False alarms | 0 | 0 |
+| Tokens | 478,816 | 610,259 |
+
+Read with care: ONE job; the Opus reader is the model that wrote the code, reading fresh — which is the thing being
+tested, not a fault in the test; and on the previous job (`docs/handpass/2026-10-12-one-rule.md` §10b) the same kind of
+reader missed five of nine faults already known. What is published about the two models is in the chat's report to him
+of 13 Oct 26 (no head-to-head at reading code exists; Opus 5.5 is three weeks the newer and level or ahead on the
+vendor's coding tests; a fresh reader beats the one that wrote the code in the same conversation; whether a different
+MODEL beats the same model starting fresh is unproven).

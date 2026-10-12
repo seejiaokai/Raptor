@@ -953,7 +953,7 @@ step (`OUTSTANDING.md` `[NOTICE-RETENTION]`). From today: `notices/<id>`.
 **A second kind of notice in the same table (`[OIL-ASK-NOTIFY]`, 13 Oct 26 — D780, D783 (6)):** a working day made a
 public holiday, with inputs on it that now need an OIL answer, writes ONE row to each scheduler (every account that is
 an admin, switched on, tied to a person — the one who made the holiday too). Its `input` is EMPTY (it is about no one
-input), `name` is the holiday's name, `day` its first day, and `what` is one part `{ k: 'oilhol', a, b }` — the run of
+input), `name` is the holiday's own name ('' where it has none — the preset's word is not a name), `day` its first day, and `what` is one part `{ k: 'oilhol', a, b }` — the run of
 dates. It stores NO count: how many inputs are still unanswered is read live, and a row with none left is simply not
 shown. Written inside the Leave War command that made the day a holiday (its Undo removes the rows, its Redo returns
 them) — the one place a command of the war writes a `Notice`. No new table, no new column; `input` must allow empty.

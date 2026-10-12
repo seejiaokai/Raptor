@@ -22,7 +22,7 @@ import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, BELLAT, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { noticesFor, noticeWords, noticeAge, holidayLineOn, type Notice } from '../state/notices'
+import { noticesFor, noticeWords, noticeAge, holidayLineOn, noticeSpan, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { useVersion } from './useStore'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
@@ -103,7 +103,10 @@ export function openNotice(n: Notice): void {
   if (hol && hol.k === 'oilhol') {
     markNoticeRead(n.id)
     setBellList(false)
-    setOilList({ from: String(hol.a), to: String(hol.b || hol.a), name: n.name, fresh: false })
+    /* (for the days that are a holiday NOW — a holiday shortened since its notice was made opens the list for what is
+       left of it: state/notices.ts noticeSpan) */
+    const span = noticeSpan(n) || { a: String(hol.a), b: String(hol.b || hol.a) }
+    setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false })
     notify(); return
   }
   const row = inpById(n.iid)

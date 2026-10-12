@@ -328,6 +328,10 @@ export function applyDrop(el: any, x: any, y: any) {
       markLand(landSel(landed))
       if (!flagDrop(wb, keyDay(landed)) && id) barDrop(id, landed)
     })
+    /* "both pucks flash" (D783 (2)) at every site: a man dragged from a SEAT onto a row's open place is an add and
+       keeps his seat, and the door was handed no seat there — left unanswered, only the row's box flashed (the Opus
+       read, F6). A place the door already lists is not listed twice. */
+    if (DRAG.kind === 'slot') oilWaitAlso(DRAG.key)
     ROS_REOPEN = false
     return no()
   }
