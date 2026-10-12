@@ -807,3 +807,36 @@ describe('the trial read\'s claims about what a published day counts', () => {
     expect(pendListHTML(WED), 'the new leave has a line of its own').toContain('<b>filed</b>')
   })
 })
+
+/* FABLE'S THIRD READ, FINDING 1 (12 Oct 26) — the eighth fix above ("only a real piece pairs": the frozen copy's `by` and
+   `at`) and the list's words (ui/pendlist.ts: the LIVE record's `by`) asked "is this a piece?" of two different
+   filers. Once "who filed it" has passed on — a scheduler took the filer out (D759 reading 7) — a man then given his
+   own part carries the LIVE filer, so the count called his piece a filing of its own while the words called it "his
+   own now": three lines where there are two changes, two of them about the same act. */
+describe('a man given his own part AFTER "who filed it" has passed on is still ONE change (Fable\'s third read, finding 1)', () => {
+  const asMember = (pid: string) => { setSession({ user: 'us', role: 'main', name: 'us' }); setMe(pid) }
+  const asAdmin = () => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff') }
+  it('a member files an OD for three; published; the admin takes the FILER out, then types a time on another man\'s row: 2 waiting — "taken out", and "his own now" — never "filed"', async () => {
+    await boot()
+    asMember('bane')
+    expect(commitInput(null, { ...DRAFT(WED), type: 'OD', title: '', allday: true, sTime: '', eTime: '' }, ['bane', 'rocky', 'split'])).toBe(true)
+    asAdmin()
+    /* (the demo holds an OD of its own that day: this one is the OD Split is in; Hex's own, once he has one, apart) */
+    const all = () => INPUTS.filter((x: any) => x.type === 'OD' && x.date === dOf(WED) && (idsOf(x).includes('split') || idsOf(x).includes('rocky'))) as any[]
+    const od = () => all().filter(x => idsOf(x).includes('split'))
+    expect(od()).toHaveLength(1)
+    expect(od()[0].by, 'filed by the member').toBe('bane')
+    publish(WED)
+    expect(waiting(WED)).toBe(0)
+    vi.setSystemTime(new Date(2026, 6, 13, 11, 0, 0))
+    expect(commitInput(od()[0], draftOf(od()[0]), ['rocky', 'split'])).toBe(true)
+    expect(od()[0].by, 'who filed it passed to the admin who took him out (D759 reading 7)').toBe('stiff')
+    expect(waiting(WED), 'the filer taken out').toBe(1)
+    expect(setInpField(od()[0], 'str', '10:00', 'rocky')).toBe(true)
+    expect(all().map(x => idsOf(x)).sort(), 'the input for one, and his own').toEqual([['rocky'], ['split']])
+    const html = pendListHTML(WED)
+    expect(html, 'his own part is said as what it is').toContain('his own now')
+    expect(html, 'and is not ALSO a filing of its own').not.toContain('<b>filed</b>')
+    expect(waiting(WED), 'two changes: the filer taken out, and one man\'s own part').toBe(2)
+  })
+})

@@ -255,11 +255,16 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
      LL · taken out", and the new leave had no line at all. A piece is a COPY of the record it was cut from
      (inputown.ts ownInputOf, pieceOf): it carries that record's own `by` and `at` — who placed it, and when — where a
      fresh filing has its filer's and its own moment. A record that carries neither (stored before D629) pairs as it
-     did. */
+     did. …THE FILER OF EITHER COPY (Fable's third read, finding 1 — the same day): a piece is cut from the LIVE record,
+     so it carries the live `by`, and "who filed it" passes on when its filer is taken out (D759 reading 7) — the frozen
+     copy then names another man. Tested against the frozen filer alone, a man given his own part after that was a
+     filing of its own to this body while ui/pendlist.ts inputWords (the live filer) called it "his own now": three
+     lines for two changes. The MOMENT (`at`, which no cut ever moves — state/inputstamp.ts) is what tells a piece from
+     a fresh filing; the two bodies now ask the same two-sided question of `by`. */
   const pieces:string[]=[];
   for(let j=N.length-1;j>=0;j--){const n=N[j], man=manOf(n.r); if(!man||idsOf(n.r).length!==1)continue;
     const d=out.find((x:any)=>x.was&&x.now&&holds(x.was,man)&&!holds(x.now,man)&&(x.was.type===n.r.type||(isDownchit(x.was.type)&&isDownchit(n.r.type)))
-      &&String(x.was.by??'')===String(n.r.by??'')&&Number(x.was.at||0)===Number(n.r.at||0));
+      &&(String(x.was.by??'')===String(n.r.by??'')||String(x.now.by??'')===String(n.r.by??''))&&Number(x.was.at||0)===Number(n.r.at||0));
     if(d){pieces.push(n.id);N.splice(j,1);}}
   /* 4 — one man's record gone and another of his filed, of the same type or both downchits: one edit (F2). Only records
      with no filing state (a downchit, a leave — never a request, whose filing the filing axis words by its own id, so

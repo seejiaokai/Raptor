@@ -192,10 +192,12 @@ function inputWords(di: number, it: PendItem): Words {
      one of his own (engine/inputown.ts ownInputOf), which the comparison folds into THIS input's one change
      (engine/inputs.ts frozenInputMatch `pieces`). The piece is the live record of him alone, of the same kind, on this
      day, carrying the shared input's own filing stamp (ownInputOf copies `by` and `at`). Words only — the count is the
-     people step's. */
+     people step's. (Who filed it is asked of BOTH copies, the live and the one the day went out with — it passes on
+     when its filer is taken out; the same two-sided test as engine/inputs.ts frozenInputMatch 3b, so the words and
+     the count cannot disagree — Fable's third read, finding 1.) */
   const piece = it.pp && it.pp.role === 'off' && now ? INPUTS.find((x: any) => x && x !== now && inpId(x) !== inpId(now)
     && idsOf(x).length === 1 && String(idsOf(x)[0]) === String(it.pp!.p) && x.type === now.type
-    && x.at != null && x.at === now.at && x.by === now.by && !!DAYS[di] && inputCoversDate(x, (DAYS[di] as any).dt)) : null
+    && x.at != null && x.at === now.at && (x.by === now.by || (!!was && x.by === was.by)) && !!DAYS[di] && inputCoversDate(x, (DAYS[di] as any).dt)) : null
   if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, edited: true } as Words
   if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
