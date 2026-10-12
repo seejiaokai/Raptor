@@ -155,4 +155,4 @@ input of ONE, unanswered. Then drag Ranger onto its "+ add" and Cancel the quest
 - **RX3-9.** PHONE 390 × 844: RX3-3's "2 pending" list in the changes window — both lines readable, inside the screen.
 
 ## The build
-`http://localhost:4186/` — its page must load **`assets/__BUNDLE__`**.
+`http://localhost:4186/` — its page must load **`assets/index-2kPmWmeP.js`**.
