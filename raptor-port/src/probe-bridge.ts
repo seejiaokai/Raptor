@@ -88,8 +88,9 @@ export function installProbeBridge() {
      getter for the same reason STORE_CFG is */
   Object.defineProperty(w, 'CXR_CFG', { get: () => CXR_CFG, configurable: true })
   /* the mutation funnel + validation */
-  /* a person written to a place goes through the one row's door first, as every door of the app does (owner D734 —
-     ui/grouprow.ts): on a shared input's row the INPUT changes; anywhere else the write is the engine's, as before */
+  /* a person written to a place goes through the input row's door first, as every door of the app does (owner D755 —
+     ui/reqdoor.ts rowWrite; first D734): on ANY input's row the INPUT changes; anywhere else the write is the engine's,
+     as before */
   w.slotVal = slotVal
   w.setSlotVal = (k: any, id: any) => { const g = rowWrite(k, id); return g === 'none' ? setSlotVal(k, id) : g === 'done' }
   w.fillSlot = (k: any, id: any) => { const g = rowWrite(k, id); return g === 'none' ? fillSlot(k, id) : g === 'done' }

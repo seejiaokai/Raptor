@@ -625,11 +625,11 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;
 }
-/* THE PUCKS OF A SHARED INPUT'S ONE ROW (engine/grouprows.ts drawnPeople — the people A to Z, then the extras, each
-   under its own row's key). IN OIL EARN EACH PUCK IS SWITCHED UNDER ITS OWN REQUEST: a man earns through his own
-   record, and a man among a member row's extras through that row's request (D18, D470) — so the row's OIL address
-   (OILITEM, which a seat reads) is set to the puck's OWN row before each one, and put back to the lead's afterwards
-   for the name cell. There is no switch for the whole row (the plan §4.9: a named request's name is not a switch). */
+/* THE PUCKS OF AN INPUT'S ROW THAT HOLDS SEVERAL (engine/grouprows.ts rowPeopleDrawn — the named people A to Z, then
+   ALL AVAIL / ALL, each on its own key of that ONE row; `drawnPeople` until the one-rule build). IN OIL EARN THE ROW
+   HAS ONE OIL ADDRESS — the input's own, `i:<iid>` (owner D762: one answer for everyone in it; D18 and D470 as
+   changed) — and every puck is its own switch under it. There is no switch for the whole row (the plan §4.9: a named
+   request's name is not a switch). */
 function sbGroupPeople(d:any,di:any,ri:any,row:any,ro:any){
   /* one row, one OIL address — the input's own (`i:<iid>`): every puck is its own switch under it (D762) */
   oilRow(groundItemKey(row));
@@ -660,9 +660,11 @@ function sbGroupPeople(d:any,di:any,ri:any,row:any,ro:any){
    did — see the c6r register comment further down) is a real, fiddly shape
    to re-derive, and the two rows below already carry it correctly for
    whichever future row type needs a badge like this again. */
-/* `mates` (7th param — [GROUP-INPUT-ONE-ROW], owner D661, D743 pictures 5 and 6): the records of the LINE this row
+/* `mates` (7th param — [GROUP-INPUT-ONE-ROW], owner D661, D743 pictures 5 and 6): the FACES of the line this row
    stands for, the first of them `inp` — under Personal Inputs a shared input is one line holding every man's puck
-   (state/inputgroup.ts entryLines; html.ts inGrp is the week's twin). Absent, or a line of one: the row it always was. */
+   (engine/inputs.ts facesDrawn — one frozen per-person view of the ONE record, A to Z then the placeholder; html.ts
+   inGrp is the week's twin; `state/inputgroup.ts entryLines` until the one-rule build). Absent, or a line of one: the
+   row it always was. */
 function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
   const RO=ro??pv;
   const line:any[]=mates&&mates.length>1?mates:[inp];

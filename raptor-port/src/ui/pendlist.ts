@@ -297,11 +297,12 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   return { where: 'What this day shows', from: '', to: '', ...none, rows }
 }
 /* A SHARED INPUT'S ONE LINE (owner D736 — "one line, naming its people"; D663's words in the changes window; the plan
-   2026-10-10-group-input-one-row-plan.md §4.8). The item stands for every record of the entry that the same act
-   reached (engine/entryfold.ts — `mates`, `people`): it is led by the INPUT — "Range safety brief · 4 people" — its
-   people named under it A to Z (`names`, drawn as `pl-names`), and then says what changed in the first man's own
-   words, which are every man's: the act is the same. No man's name stands in front of it. Who and when, and the tap
-   (to the one row), are the first's. */
+   2026-10-10-group-input-one-row-plan.md §4.8). The item is the input's own — one record since the one-rule build
+   (D756) — and carries its people (`people`, set by engine/publish.ts dayPendingItemsIn; `mates`, which
+   engine/entryfold.ts set before it was removed, is set by nothing now): it is led by the INPUT — "Range safety
+   brief · 4 people" — its people named under it A to Z (`names`, drawn as `pl-names`), and then says what changed in
+   the first man's own words, which are every man's: the act is the same. No man's name stands in front of it. Who and
+   when, and the tap (to the one row), are the first's. */
 function foldedWords(di: number, it: PendItem): Words & { names: string[] } {
   const w = pendItemWords(di, { ...it, mates: undefined, people: undefined } as PendItem)
   const ids = it.people && it.people.length ? it.people : []

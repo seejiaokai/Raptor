@@ -105,7 +105,9 @@ const inputSpec = (booted: boolean): Spec => ({
      step 1 of the Inputs / SANS job, but no SEED did, so this mirror never met them; the demo seed carries them now
      (state/demoseed.ts seedDemoStamps), which is how the gap was found */
   by: { $opt: 'string' }, at: { $opt: 'number' }, modBy: { $opt: 'string' }, modAt: { $opt: 'number' },
-  /* an input filed for a group: its group id and the entry's filer (owner D654, D655; state/inputgroup.ts) */
+  /* the OLD shape of an input filed for a group — its group id and the entry's filer (owner D654, D655). Written by no
+     door since the one-rule build (12 Oct 26, D756: one record with `people`); a record stored before it may still carry
+     them and reads as a one-person input (engine/inputs.ts peopleOf; engine/schema.ts Input.grp) */
   grp: { $opt: 'string' }, grpBy: { $opt: 'string' },
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }

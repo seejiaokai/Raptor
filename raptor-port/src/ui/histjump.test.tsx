@@ -23,13 +23,13 @@ import { DAYS } from '../engine/data'
 import { makeStandalone } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { ridKey, ensureRowIds } from '../engine/rowids'
-import { elogClear } from '../engine/editlog'
+import { elogClear, ELOG } from '../engine/editlog'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { moveProgRow } from '../engine/reorder'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { hideHistBub, HIST_CELLS, histKeyOf, onlyOn } from './histbubble'
+import { hideHistBub, HIST_CELLS, histKeyOf, onlyOn, refreshHistDots } from './histbubble'
 import { jumpToChange } from './interactions'
 import { jumpOf } from './ChangesWindow'
 import { toggleOilMode, oilModeOn } from './oilmode'
@@ -567,5 +567,79 @@ describe.each(SURFS)('an input of several — a tap on its line in the changes w
       expect(lit && lit.dataset.inprow, 'the first to join’s own row').toBe(`${inp.iid}~${JOINED[0]}`)
       expect(onIt(lit), 'one puck: his').toEqual([JOINED[0]])
     } finally { await drop(inp) }
+  })
+  /* ON THE PROGRAMME, A LINE ABOUT ONE MAN LANDS ON HIS PUCK (the one-rule job's walk, share C, C11 — 12 Oct 26): the tap
+     on "Tally · Range brief · added" went to the row's name box and lit the FIRST man on the row. His own place on the
+     row comes first now; the row's name box stays the fallback (a man taken out has no place left). */
+  it('ON THE PROGRAMME: a line about ONE man put in lands on HIS puck on the row, not the first man’s', async () => {
+    await goto(s)
+    const inp = make()
+    await act(async () => { INPUTS.push(inp); expect(acceptInput(DI, inp, 'g')).toBe(true); notify() })
+    try {
+      const row = (day().ground as any[]).find(g => g.src === inp.iid), ri = day().ground.indexOf(row)
+      const n = (row.more || []).indexOf('pike')
+      expect(row.who !== 'pike' && n >= 0, 'he stands under the name box').toBe(true)
+      const line: any = { iid: inp.iid, key: '', rows: [{ date: ISO[DI], wdate: ISO[DI], iid: inp.iid, sub: 'pike', one: 1 }] }
+      const j = jumpOf(line, ISO, null)!
+      expect(j.keys.slice(0, 2), 'his own place first, then the row').toEqual([`g:${DI}.${ri}.x${n}`, `g:${DI}.${ri}`])
+      const { said, lit } = await go(j)
+      expect(said).toBe('')
+      expect(lit && lit.dataset.slot, 'his puck').toBe(`g:${DI}.${ri}.x${n}`)
+      const gone: any = { iid: inp.iid, key: '', rows: [{ date: ISO[DI], wdate: ISO[DI], iid: inp.iid, sub: 'rocky', one: 1 }] }
+      expect(jumpOf(gone, ISO, null)!.keys[0], 'a man no longer on it: the row').toBe(`g:${DI}.${ri}`)
+    } finally { await drop(inp) }
+  })
+  /* THE LINE AS THE CHANGES WINDOW REALLY BUILDS IT (the one-rule job's walk, share J, J2 — 12 Oct 26). The case above
+     hands `jumpOf` a line carrying `sub` — but a line of the window (ui/changesmodel.ts CLine) has no `sub` of its own:
+     the man a change is about is on the line's ROW (state/changelines.ts files "Nomad · OD … · added" under him). So in
+     the running app the tap was sent to the bare `iu:<iid>`, which no row of an input of several answers to, and fell
+     back to the FIRST row — a line about the man put in landed on another man's row. */
+  it('UNDER UNAVAILABLE: a line about ONE man put in — his name on the line’s ROW, as the window builds it — lands on HIS row', async () => {
+    await goto(s)
+    const inp = make({ type: 'OD', title: undefined, allday: true, s: undefined, e: undefined, remarks: 'det' })
+    await act(async () => { INPUTS.push(inp); notify() })
+    try {
+      const line: any = { iid: inp.iid, key: '', rows: [{ date: ISO[DI], wdate: ISO[DI], iid: inp.iid, sub: 'pike', one: 1 }] }
+      const j = jumpOf(line, ISO, null)!
+      expect(j.keys, 'his own row first, then the input').toEqual([`iu:${inp.iid}~pike`, `iu:${inp.iid}`])
+      const { said, lit } = await go(j)
+      expect(said).toBe('')
+      expect(lit && lit.dataset.inprow, 'the row of the man the line is about').toBe(`${inp.iid}~pike`)
+    } finally { await drop(inp) }
+  })
+  /* …AND HISTORY'S GOLD DOT (the same walk, J2): with History on, no row of an absence filed for several wore a dot — the
+     painter looked the input's lines up by the row's whole address (`<iid>~<person>`) where they are kept by the input
+     (`<iid>`); a one-person absence, whose address IS its input's id, wore one. A line about ONE man put in or taken out
+     dots HIS row alone (as his bubble tells only his story — storyOf); a line about the input dots every man's. */
+  it('UNDER UNAVAILABLE: History’s gold dot — a line about one man dots HIS row; a line about the input dots every man’s', async () => {
+    await goto(s)
+    const inp = make({ type: 'OD', title: undefined, allday: true, s: undefined, e: undefined, remarks: 'det' })
+    await act(async () => { INPUTS.push(inp); notify() })
+    const dotted = () => [...rootOf(s)!.querySelectorAll('[data-histdot]')].map(e => histKeyOf(e as HTMLElement)).filter(k => String(k).startsWith(`iu:${inp.iid}`)).sort()
+    try {
+      elogClear()
+      ;(ELOG.rows as any[]).push({ seq: 1, t: 1, lbl: 'Nomad · OD · added', iid: inp.iid, sub: 'pike', one: 1, date: ISO[DI], sect: 'abs' })
+      await act(async () => { view.setHistMode(true); notify() })
+      refreshHistDots(rootOf(s))
+      expect(dotted(), 'his row, and only his').toEqual([`iu:${inp.iid}~pike`])
+      ;(ELOG.rows as any[]).push({ seq: 2, t: 2, lbl: 'OD · remark', iid: inp.iid, sub: 'split', date: ISO[DI], sect: 'abs' })
+      refreshHistDots(rootOf(s))
+      expect(dotted(), 'a change to the input is on every man’s row').toEqual(JOINED.map(p => `iu:${inp.iid}~${p}`).sort())
+    } finally { elogClear(); await act(async () => { view.setHistMode(false); notify() }); await drop(inp) }
+  })
+  /* …while UNDER PERSONAL INPUTS an input of several is ONE line, everyone's: a line about one man is told there, whoever
+     the line happens to be addressed by (its first person as drawn) */
+  it('UNDER PERSONAL INPUTS: the input’s ONE line wears the dot for a line about any one of its people', async () => {
+    await goto(s)
+    const inp = make()
+    await act(async () => { INPUTS.push(inp); view.PIOPEN.add(DI); notify() })
+    const dotted = () => [...rootOf(s)!.querySelectorAll('[data-histdot]')].map(e => histKeyOf(e as HTMLElement)).filter(k => String(k).startsWith(`iu:${inp.iid}`))
+    try {
+      elogClear()
+      ;(ELOG.rows as any[]).push({ seq: 1, t: 1, lbl: 'Vandal · Meeting · added', iid: inp.iid, sub: 'split', one: 1, date: ISO[DI], sect: 'abs' })
+      await act(async () => { view.setHistMode(true); notify() })
+      refreshHistDots(rootOf(s))
+      expect(dotted(), 'its one line').toHaveLength(1)
+    } finally { elogClear(); await act(async () => { view.setHistMode(false); notify() }); await drop(inp) }
   })
 })

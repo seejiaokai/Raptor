@@ -146,9 +146,10 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
     const named = new Set<string>(ELOG.rows.filter(x => x.grp === r.grp && x.sub).map(x => String(x.sub)))
     ;(INPUTS as any[]).forEach(x => { if (x && x.grp === r.grp) idsOf(x).forEach((p: any) => named.add(String(p))) })
     const n = named.size
-    /* a filing's name: the title its men carry (state/inputgroup.ts SHARED_FIELDS) — EVERY one, where a man since changed
-       alone carries another (Sol's read of the code, 1: the first record's title was said for everybody, and which it
-       was depended on the order the records happened to be stored in). Sorted, so the heading is one thing. */
+    /* a filing's name: the title its men carry (one of the old entry's shared fields — state/inputgroup.ts SHARED_FIELDS,
+       removed with the one-rule build; this branch reads only records stored before it) — EVERY one, where a man since
+       changed alone carries another (Sol's read of the code, 1: the first record's title was said for everybody, and
+       which it was depended on the order the records happened to be stored in). Sorted, so the heading is one thing. */
     const names = [...new Set((INPUTS as any[]).filter(x => x && x.grp === r.grp).map(x => inpLabel(x)))].sort((a, b) => a.localeCompare(b))
     const gname = names.length ? names.join(' / ') : name
     return { id: `${date}|IG|${r.grp}`, title: `Input${gname ? ' · ' + gname : ''}${n > 1 ? ` · ${n} people` : ''}`, detail: '' }

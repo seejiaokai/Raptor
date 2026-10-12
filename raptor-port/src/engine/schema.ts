@@ -265,9 +265,11 @@ export type Input = {
   modAt?: number
   /** NOT WRITTEN ANY MORE (the one-rule build, D756): an input filed for several is ONE record with `people`. A record
    *  stored before it may still carry the two fields below; it reads as a one-person input (D759 reading 10).
-   *  A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. The
-   *  group is kept as one record per man (every reader reads one man's), and an "entry" is worked out on read: the
-   *  records sharing a `grp` AND the same shared fields (state/inputgroup.ts entriesOf; owner D654, D655). */
+   *  A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. Until
+   *  that build the group was kept as one record per man, and an "entry" was worked out on read — the records sharing
+   *  a `grp` AND the same shared fields (state/inputgroup.ts entriesOf, removed with the dead code; owner D654, D655).
+   *  The one reader that still groups by it is the changes window, for lines written before the build
+   *  (ui/changesmodel.ts). */
   grp?: string
   /** The ENTRY'S FILER (a PEOPLE id) — the same on every record of the group, never changed once set; what lets the
    *  member who filed a shared input change the whole of it, whoever later added a man (state/perms.ts). `by` stays
@@ -318,10 +320,12 @@ export type GroundRow = AllhandsRow & {
   /** What the row was last made or re-made from — a short hash of the six fields its request writes ([DB-READINESS] phase 6
    *  (c); engine/overlay.ts srcvOf); a row re-made on read when it differs. Not canonical (restore.ts dayKeys). */
   srcv?: string
-  /** For a row from a record of a SHARED input only: its entry's own identity — the group's id and a short hash of every
-   *  shared field (engine/inputentry.ts entryIdOf; [GROUP-INPUT-ONE-ROW], D661). Rows of one day carrying the same one,
-   *  with the scheduler's marks alike, are drawn as ONE row (engine/grouprows.ts). Absent on an ordinary request's row.
-   *  Not canonical (restore.ts dayKeys): it adds no unit to a published day's comparison and binds no sign-off. */
+  /** NOT WRITTEN ANY MORE (the one-rule build, 12 Oct 26 — D755, D756): an input is ONE record and its row ONE row, so
+   *  there is no entry mark. A row stored or issued before that build may still carry it — the old entry's identity, the
+   *  group's id and a short hash of every shared field ([GROUP-INPUT-ONE-ROW], D661; engine/inputentry.ts entryIdOf,
+   *  removed). It is dropped at the row's next re-make (engine/overlay.ts reconcileRequestRows) and from a day
+   *  template's rows (engine/daytpl.ts), and read by ONE body: ui/pendlist.ts, for "came off with him" on a row issued
+   *  before the build. Not canonical (restore.ts dayKeys). */
   srcg?: string
   /** A row a whole-day replacement (a version loaded, a plan switched in) brought back although its request is gone or cannot
    *  stand on the day — the holder's to keep (D363); cleared in the view once its request can stand there again (phase 6 (c);

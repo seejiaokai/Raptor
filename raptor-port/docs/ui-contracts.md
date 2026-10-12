@@ -2154,6 +2154,8 @@ input of one person too. The pictures still stand; what changed underneath, bull
   is never asked an OIL question of his own: where the input has no answer the question opens for the INPUT; where
   its answer is No the note ends "— not counted for OIL". The last-person refusal reads "Ranger is the last on this
   input — use ✕ to take it off the programme, or delete it in its own window".
+  *(As of the one-rule job's check, 12 Oct 26: the sentence names the act, not a button — "… is the last on this
+  input — take the input off the programme, or delete it in its own window" — `ui/reqdoor.ts leave`.)*
 - **The row's CX, red box and ⓘ** are the INPUT's on such a row (D760 — `ui/reqdoor.ts rowMark`, asked by
   `ui/board.ts`): one command, one Undo step; a scheduler's own row is written as before. **Not built yet:** how a
   cancelled input looks on the Inputs calendar, the opened day's card and the List, and the bell's notice, wait for

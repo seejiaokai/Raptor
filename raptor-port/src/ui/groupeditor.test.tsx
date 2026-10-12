@@ -511,7 +511,8 @@ describe('the input changed behind its window', () => {
    dates are part of it, but no door changed them: the List's row opens this window (no edit in place on a shared row),
    the window drew its date picker for a NEW input only, and a bar's drag keeps the length. The window now carries the
    same two-tap picker for a saved shared input its reader may change for everyone, and the save is the entry's ONE
-   command — the write path (`commitGroup`) always took the dates from the draft; only the control was missing.
+   command — the write path (`commitInput`; `commitGroup` until the one-rule build) always took the dates from the
+   draft; only the control was missing.
    ON THE ONE RECORD (D756): "every man's record" moved alike; the one record moves, and everyone is still in it. */
 describe('the dates of a saved shared input are changed in its window (D681)', () => {
   const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)

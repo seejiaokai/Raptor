@@ -92,9 +92,9 @@ export function notifyBoard() { BOARD_VERSION++; boardListeners.forEach(f => f()
    itself opens with, repeated here so the epilogue is skipped too. */
 export function writeSlot(key: any, id: any) {
   if (slotVal(key) === (id || '')) return     // no-op — nothing moved
-  /* a member's place on the one row of a shared input: the INPUT changes, through its door (owner D734 — ui/grouprow.ts,
-     lent through HOOKS as the typed box's door is). Its answer is this writer's: never on to setSlotVal, which
-     refuses such a place (the belt). */
+  /* a place on a row that came from an input: the INPUT changes, through its door (owner D755; first D734 —
+     ui/reqdoor.ts rowWrite, lent through HOOKS.inputRow as the typed box's door is). Its answer is this writer's: never
+     on to setSlotVal, which refuses such a place (the belt, engine/slots.ts inputSeatBar). */
   if (HOOKS.inputRow && HOOKS.inputRow.write(key, id) !== 'none') return
   /* [ARCH-STACK] Step 2 (additive): the identical write, now inside commit() —
      enlist snapshot, run setSlotVal+afterSchedMutate exactly as before, emit the

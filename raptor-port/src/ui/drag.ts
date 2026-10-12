@@ -297,14 +297,15 @@ export function applyDrop(el: any, x: any, y: any) {
     if (!flagDrop(warnBefore, served ? keyDay(served) : null)) (asks || []).some(([id, key]) => barDrop(id, key))
     notify(); return true
   }
-  /* ==== THE ONE ROW OF A SHARED INPUT (owner D734 — "on a shared input's row the pucks ARE the input's people: a puck
-     taken off the row takes that man out of the input itself, and a puck put on the row adds him to it"; the plan
-     2026-10-10-group-input-one-row-plan.md §4.5; the door is ui/grouprow.ts). Asked in each branch below BEFORE it
-     writes — the TARGET on a shared row first, then a SOURCE that is one of an input's men:
-       · a real man dropped anywhere on the row is ADDED to the input, and the place he came from keeps him;
-       · a placeholder dropped there is the row's own: re-aimed at the row's "+ add";
-       · one of the input's men dragged onto another place LEAVES the input and is put there, in ONE command;
-       · one of them let go on nothing leaves the input; the last man is refused, saying how.
+  /* ==== THE ROW OF AN INPUT (owner D755 — "a row that came from an input IS the input"; first D734, a shared input's
+     row alone; the plan 2026-10-11-one-rule-plan.md §4.4; the door is ui/reqdoor.ts). Asked in each branch below
+     BEFORE it writes — the TARGET on an input's row first, then a SOURCE that is one of an input's people:
+       · a real person dropped on the row JOINS the input, and the place he came from keeps him — except on the puck
+         of the input's ONLY person, where he REPLACES him (dragged from a seat, the two swap: rowPut's `seat`);
+       · a placeholder dropped there joins the input too (D753) — the same door; it is re-aimed nowhere;
+       · one of the input's people dragged onto another place LEAVES the input and is put there, in ONE command
+         (rowLeaveTo); onto another input's row he MOVES (rowMove);
+       · one of them let go on nothing leaves the input (rowTake); the last one is refused, saying how.
      THE DOOR'S COMMAND HAS ALREADY RUN THE EPILOGUE (validate, one history step, the repaint), so these paths finish
      through `fin`, which makes NO schedule write — `done()` would push a second Undo step for the one drop
      (reassignInput's precedent, above). `landed` is the place the puck stands on NOW (a row above it may have gone). */
@@ -375,9 +376,9 @@ export function applyDrop(el: any, x: any, y: any) {
       const a = slotVal(DRAG.key), b = slotVal(targetKey)
       if (!sentinelSeatOK(targetKey, a)) return refuse(a, targetKey)
       /* ONE OF A SHARED INPUT'S MEN, DRAGGED ONTO ANOTHER PLACE: he leaves the input and is put there in ONE command
-         (ui/grouprow.ts groupLeaveTo). The man already standing there comes off it, as when a name from the crew list
-         is dropped on him — nobody is ever swapped INTO the request. The preflight is the roster's (no `from`: he does
-         not come from that row). */
+         (ui/reqdoor.ts rowLeaveTo — `groupLeaveTo` until the one-rule build). The man already standing there comes off
+         it, as when a name from the crew list is dropped on him — nobody is ever swapped INTO the request. The
+         preflight is the roster's (no `from`: he does not come from that row). */
       if (isRowMan(DRAG.key)) {
         if (twice(a, targetKey)) return false
         const out = rowLeaveTo(DRAG.key, targetKey, () => setSlotVal(targetKey, a))

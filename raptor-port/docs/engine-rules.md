@@ -1383,6 +1383,8 @@ flagged correctly and still swept the man out of the crew palette.
     refused whole. **The LAST man is not taken off
     that way** (R5) — "Ranger is the last person on this input — use ✕ to take it off the programme, or delete it in
     its own window".
+    *(As of the one-rule job's check, 12 Oct 26: the sentence names the act, not a button — "… is the last on this
+    input — take the input off the programme, or delete it in its own window" — `ui/reqdoor.ts leave`.)*
   - **A placeholder (ALL / ALL AVAIL) aimed anywhere on the row is the row's own:** re-aimed at the lead's "+ add"
     (`groupRetarget`), never a man's place. **It leaves with the member whose row carries it** (D745; kept so for now by D750, 11 Oct 26 — his idea of letting "Several people" take ALL AVAIL / ALL, so the puck is one of the input's own people and tied to no man, is PLANNED after this job merges: `OUTSTANDING.md` `[ALL-AVAIL-AS-MEMBER]`): the door says so
     to whoever did it ("ALL AVAIL came off Range safety brief with Ranger — drop it on the row again if it still
@@ -1446,7 +1448,9 @@ flagged correctly and still swept the man out of the crew palette.
     input's ONLY entry he REPLACES him (D755 (2)) — who filed it passes to whoever did it, the OIL answer is voided
     and asked again, and dragged from a seat elsewhere it is a swap in the same command; already in it, refused
     ("Tally is already on this input"). `rowTake`: a puck taken off LEAVES the input; the last is refused ("Ranger is
-    the last on this input — use ✕ to take it off the programme, or delete it in its own window"). `rowLeaveTo`:
+    the last on this input — use ✕ to take it off the programme, or delete it in its own window").
+    *(As of the one-rule job's check, 12 Oct 26: the sentence names the act, not a button — "… is the last on this
+    input — take the input off the programme, or delete it in its own window" — `ui/reqdoor.ts leave`.)* `rowLeaveTo`:
     dragged to another place, he leaves and is put there in one command. `rowMove`: dragged onto another input's row
     he moves, never in both. Every save there is a schedule-side one (D741).
   - **ALL AVAIL / ALL is one of the input's people (D750, D753, D755 (4) — step 3).** Put anywhere on the row it joins

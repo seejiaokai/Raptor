@@ -7,7 +7,7 @@ import { rowItemKey } from '../engine/oil'
 import { isStandalone } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { inpById, inpLabel, idsOf } from '../engine/inputs'
+import { inpById, inpLabel, idsOf, isUnavail } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
 
@@ -153,6 +153,12 @@ export function findHistCell(root: ParentNode, key: string): HTMLElement | null 
    (findHistCell — under Unavailable each man has a row of his own); this is the fallback, so a tap on a change of the
    input never answers "not shown on this day" with its line in plain sight (found by the re-expressed tests, step 6 of
    the one-rule build: an input whose first to join was not its first A to Z). */
+/* IS A ROW OF THIS INPUT ONE MAN'S OWN ROW - the Unavailable list, a row a man (D737) - or the input's ONE line under
+   Personal Inputs, which is everyone's? Both are addressed `iu:<iid>~<person>` (the line by its first person as drawn),
+   so a line of the history about ONE person put in or taken out is kept to his own row only where each man HAS a row;
+   the one line tells them all. (The mark that a line is one man's is stored since the one-rule job's check, 12 Oct 26 -
+   engine/editlog.ts logAction - so this question is first asked now.) */
+const oneMansRow = (iid: string): boolean => { const inp: any = inpById(iid); return !!inp && (isUnavail(inp.type) || inp.acc === 'u') }
 export function findInputCell(root: ParentNode, key: string): HTMLElement | null {
   const p = iuParts(String(key))
   if (!p || !p.iid) return null
@@ -301,7 +307,7 @@ export function storyOf(el: HTMLElement): ELogRow[] {
        says `iu:<iid>` with its man in `sub`, lands on his row the same way (Fable's read of the one-rule plan, F16) */
     const at = iuParts(key)!, iid = at.iid, day = dayOfCell(el)
     return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day))
-      && (!at.person || !(r as any).one || String(r.sub || '') === at.person))
+      && (!at.person || !(r as any).one || !oneMansRow(iid) || String(r.sub || '') === at.person))
   }
   return elogAllFor(key)
 }
@@ -468,7 +474,11 @@ export function refreshHistDots(root: ParentNode | null | undefined) {
     const rk = !k ? '' : inp ? k : String(ridKey(k, DAYS))
     const sec = rk ? (el.closest('.day[data-day]') as HTMLElement | null)?.dataset.day ?? '' : ''
     const has = !rk ? false : inp
-      ? (() => { const day = dayOfCell(el); return (byInp.get(k.slice(3)) || []).some(r => !day || rowTouches(r, day)) })()
+      /* (by the INPUT's id, whoever's row it is: one man's row of an input that holds several is `iu:<iid>~<person>`
+         — engine/keys.ts iuParts — and looked up whole it found no line, so no row of an absence filed for several ever
+         wore a dot; the one parse site Fable's F16 list missed, found by the one-rule job's walk, share J, J2 — 12 Oct
+         26. A line about ONE man put in or taken out is on HIS row alone, as his bubble tells it — storyOf, above.) */
+      ? (() => { const at = iuParts(k), day = dayOfCell(el); return (byInp.get(at ? at.iid : k.slice(3)) || []).some(r => (!day || rowTouches(r, day)) && (!at || !at.person || !(r as any).one || !oneMansRow(at.iid) || String(r.sub || '') === at.person)) })()
       : set.has(rk)
     const want = has && !seen.has(`${sec}|${rk}`)
     if (want) seen.add(`${sec}|${rk}`)

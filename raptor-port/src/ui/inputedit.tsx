@@ -2068,11 +2068,11 @@ export function InputEditor() {
   const [swap, setSwap] = useState<any>(null)
   const swapOk = useRef(false)
   /* WHO IT IS FOR (owner D654–D656; the plan §3.13). On the Inputs page the Person field is the people picker
-     (ui/PeoplePick.tsx): `ppl` in the order picked, `several` its switch. The editor opened on ANY record of a shared
-     input holds the ENTRY — its records worked out on read (state/inputgroup.ts), never kept here — and a save for
-     more than one man, or of an entry of more than one, is ONE command (commitGroup). `basePpl` is the entry's people
-     as the window last saw them: a man added or taken off on the page behind is followed silently — an add and a
-     removal of different men cannot collide. */
+     (ui/PeoplePick.tsx): `ppl` in the order picked, `several` its switch. The editor holds the input's ONE record,
+     which carries its people (engine/inputs.ts idsOf — D756; until the one-rule build an "entry" worked out on read
+     by state/inputgroup.ts, removed) — and a save for more than one person, or of an input that holds more than one,
+     is ONE command (commitInput). `basePpl` is the input's people as the window last saw them: a man added or taken
+     off on the page behind is followed silently — an add and a removal of different men cannot collide. */
   const [ppl, setPpl] = useState<string[]>([])
   const [several, setSeveral] = useState(false)
   const basePpl = useRef<string[]>([])
@@ -2158,11 +2158,11 @@ export function InputEditor() {
     setPpl(p0); setSeveral(p0.length > 1); basePpl.current = p0; entryIds.current = r && !r._new ? [r.iid] : []
     setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
-      /* …or for the ONE man the schedule's door just added to a shared input whose answers differ (owner D744 —
-         ui/grouprow.ts groupPut; pops.ts OILOWN): the question is his alone — written on his record, nobody else's
-         touched — and the dialog shuts with the sheet (`shut`), answered or not: whoever added him was on the
-         schedule, not in the input's window. Nothing to ask after all (the day stopped asking): the dialog is not left
-         standing open for no reason. */
+      /* …or the question was raised from the input's ROW on the schedule (ui/reqdoor.ts afterPut / replace / rowMove →
+         askOilIfPending(r, true); pops.ts OILOWN carries the mark): it is the INPUT's one question (owner D762 —
+         D744's "his alone" has nothing left to ask), and the dialog shuts with the sheet (`shut`), answered or not:
+         whoever put the person on the row was on the schedule, not in the input's window. Nothing to ask after all
+         (the day stopped asking): the dialog is not left standing open for no reason. */
       const one = OILOWN
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
@@ -2300,8 +2300,8 @@ export function InputEditor() {
   const saveNow = (removals: any[], oilDec?: Record<string, number>) => {
     if (undecided()) return
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
-    /* FOR SEVERAL PEOPLE, OR A SHARED INPUT: one command for the whole entry (commitGroup) — the OIL answer, asked
-       once, written for every man (D660) */
+    /* FOR SEVERAL PEOPLE, OR AN INPUT THAT HOLDS SEVERAL: one command for the one record (commitInput) — the OIL
+       answer, asked once, is the input's ONE answer for everyone in it (D762; first D660) */
     if (grouped) {
       const had = new Set(INPUTS.map((x: any) => x.iid))
       const rec = isNew ? null : r
@@ -2517,10 +2517,11 @@ export function InputEditor() {
      man's record alone), the window drew its date picker for a NEW input only, and a bar's drag keeps the length. So
      the window carries the same two-tap calendar for a saved entry of more than one man — on the Inputs page, and only
      for a reader who may change it for EVERYONE (`readOnly` is the write path's own rule): a man in it who did not file
-     it keeps his two things and no more. Nothing new is written: the entry's ONE command (`commitGroup`) always took
-     the dates from the draft, asks the OIL question of every man kept (D660, D682) and follows the remark's "till"
-     word (`commitInputEdit`) — only the control was missing. The board's and the week's dialogs are as they were:
-     there a moved span would take the row off the day it was opened from.
+     it keeps his one thing — "Take me out" — and no more. Nothing new is written: the input's ONE command
+     (`commitInput`; `commitGroup` until the one-rule build) always took the dates from the draft, asks the input's one
+     OIL question against the new days (D762; first D660, D682) and follows the remark's "till" word
+     (`commitInputEdit`) — only the control was missing. The board's and the week's dialogs are as they were: there a
+     moved span would take the row off the day it was opened from.
      AND AN ORDINARY ONE-PERSON INPUT'S TOO (owner D718, D723, 10 Oct 26 — `[INPUT-LIST-AS-DAY-CARD]`; the plan
      docs/superpowers/plans/2026-10-10-input-card-plan.md §3.1). D681's reading (7) left it "the ways it already has
      (its row in the List)" — and that row's pencil, the ONLY form that changed a saved one-person input's dates, went
@@ -2541,9 +2542,10 @@ export function InputEditor() {
   /* …asked of EVERY record of the entry, not of the one the window happens to be opened on (walker C's find, 10 Oct 26 —
      Astra's scenario 69: a shared duty whose first man had answered from his own bell read "no OIL … Change…", with no
      word that another man of it was still unanswered) */
-  /* THE RECORDS THE OIL LINES SPEAK FOR (owner D731 (4)): on the Inputs page a shared input's window holds the ENTRY, and
-     its line counts every man of it (`oilSummaryOf`); the schedule's and the board's dialog holds ONE man's row and
-     saves one, so there the line is his alone, as it was. The line shows while ANY of them has an answer.
+  /* THE RECORD THE OIL LINES SPEAK FOR: the input's ONE record, wherever the window was opened from — its line states
+     the input's one answer for everyone in it (`oilSummary`; owner D762, which changed D731 (4): `oilSummaryOf`'s
+     "credited for 2 of 3" and a man's own line are gone, and since D748 the schedule's dialog on an input of several is
+     the input's, not one man's row). The line shows while the input has an answer.
      ONE SCOPE FOR BOTH LINES (Astra's read of this batch, 10 Oct 26 — finding 2): "Not answered yet" was asked of every
      record of the entry wherever the editor stood, so the schedule's dialog on Ace's row named RANGER as unanswered —
      beside a button that answers for Ace alone. It is asked of the same records the line above it speaks for. */
@@ -2748,7 +2750,8 @@ export function InputEditor() {
               doSave as the gate, one batch, one undo step. */}
           {/* NO "CHANGE…" FOR A READER (`[CAL-CHECK-SEEN]`, the editor — 10 Oct 26): his form is inert, so the button was
               one that is seen and cannot be pressed — as the "?" beside Type was until D729. The line still says what
-              stands. A man in a shared input he did not file has his OWN line, and its own live button, below. */}
+              stands. A man in a shared input he did not file has no line and no answer of his own (owner D762) — only
+              "Take me out", in the foot. */}
           {anyAnswered && <div className="inped-f">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">
@@ -2811,7 +2814,8 @@ export function InputEditor() {
               ? 'The dates are changed on the Inputs page.'
               : 'The person and the dates are changed on the Inputs page.')}
         </div>}
-        {/* HIS OWN TWO THINGS in a shared input he did not file — outside the read-only form, so they are live */}
+        {/* HIS ONE THING in an input he is in but may not change — "Take me out" (D755 (3), D762) — outside the read-only
+            form, so it is live */}
         {mineRow && draft && (
           <div className="inped-own">
             {takeOut && (

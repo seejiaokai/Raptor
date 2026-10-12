@@ -273,7 +273,9 @@ export function standsOn(d: any, id: any, r?: any): any {
    sends the typing to the request (ui/reqrow.ts) and the belt that refuses a raw write (slots.ts txtSet), so the two
    cannot disagree about a row. ITS PEOPLE ARE THE REQUEST'S TOO since the one-rule build (owner D755; the plan
    2026-10-11-one-rule-plan.md §4.4): the same predicate answers for the door a hand on a puck asks (ui/reqdoor.ts)
-   and the belt behind it (slots.ts inputSeatBar). What stays the row's own: CX, red box, information only. */
+   and the belt behind it (slots.ts inputSeatBar). Its CX, red box and "information only" are the request's too since
+   step 4 of that build (owner D760; ui/reqdoor.ts rowMark) — the row carries a COPY of them, written by
+   requestRowFields above — so nothing on such a row is the row's own. */
 export const REQ_BOX = /^(prog|str|end|rmks)$/
 export function requestOfBox(d: any, row: any): any {
   if (!d || !row || !row.src || row.kept) return null

@@ -67,11 +67,11 @@ export function setInpEdit(r: any) { INPEDIT = r }
    land after an undo reminted every row, and InputEditor re-resolves through
    inpById at open. One-shot: the editor clears it as it consumes it. */
 export let OILASK: string | null = null
-/* …FOR THAT ONE MAN'S ANSWER ALONE (`[GROUP-INPUT-ONE-ROW]`; owner D744 — a man added to a shared input from the
-   schedule, where its people's answers differ, is asked at once: ui/grouprow.ts groupPut). Set with the hand-off and
-   consumed with it: the editor opens the sheet on his record in its `own` mode — the answer is written on him alone,
-   nobody else's is touched — and the dialog closes when the question is answered or cancelled, because whoever added
-   him was on the schedule, not in the input's window. */
+/* …RAISED FROM THE INPUT'S ROW ON THE SCHEDULE (ui/reqdoor.ts → ui/inputedit.tsx askOilIfPending(r, true); first
+   `[GROUP-INPUT-ONE-ROW]`, D744 — "for that one man's answer alone", which D762 left nothing to ask: an input has ONE
+   answer). Set with the hand-off and consumed with it: the editor opens the sheet for the INPUT's one question, and
+   the dialog closes when it is answered or cancelled, because whoever put the person on the row was on the schedule,
+   not in the input's window. */
 export let OILOWN = false
 export function setOilAsk(iid: string | null, own = false) { OILASK = iid; OILOWN = !!iid && own }
 /* A MEDICAL MOVED BY A DRAG OR A REASSIGN, waiting on its question (the absence-record re-test, AB4, 26 Sep 26): the

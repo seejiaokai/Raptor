@@ -279,6 +279,25 @@ describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the pl
 })
 
 describe('a puck taken off the row takes that person out of the input (D755) (GI9)', () => {
+  /* THE CHANGE HISTORY'S LINE FOR ONE PERSON PUT IN OR TAKEN OUT IS MARKED AS HIS — in the SAVED line (the one-rule job's
+     walk, shares C and J — C11, J2 — 12 Oct 26). The changes window keeps his name on such a line, and History tells it
+     on HIS row alone, by a mark on the line (`one`) — which the history's writer never stored (engine/editlog.ts
+     logAction copied a fixed list of fields and `one` was not on it). Every test that pinned those readers built its
+     line by hand WITH the mark, so they passed while the running app read "Range brief 15 Jul · added" — nobody named
+     — and showed one man's line on every man's row. Through the real door, on the real saved line: */
+  it('the saved history line of a person put in, and of one taken out, carries his id and the mark that it is his', async () => {
+    await boot(new MemoryBackend())
+    file(['bane', 'pike'])
+    const before = lines()
+    expect(rowPut(`${rowKey()}.+`, 'split')).toBe('done')
+    expect(rowTake(keyOf('pike'))).toBe('done')
+    const made = (ELOG.rows as any[]).slice(before)
+    const added = made.find(r => / · added/.test(r.lbl)), out = made.find(r => / · taken out/.test(r.lbl))
+    expect(added && added.lbl, 'a line for the man put in, naming him').toContain(cs('split'))
+    expect([added.sub, added.one], 'filed under him, marked as his').toEqual(['split', 1])
+    expect(out && out.lbl).toContain(cs('pike'))
+    expect([out.sub, out.one]).toEqual(['pike', 1])
+  })
   it('dragged to nowhere, right-clicked, written blank: he leaves; the others and the row stay', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike', 'split'])

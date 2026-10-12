@@ -227,8 +227,9 @@ export function Shell() {
       const key = s.dataset.slot!, id = slotVal(key)
       e.preventDefault()
       if (!id) return
-      /* one of a shared input's men, on its one row: he leaves the INPUT (owner D734) — the door's own command, its own
-         words; the last man is refused there, saying how (ui/grouprow.ts) */
+      /* someone on a row that came from an input — a one-person request's too: he leaves the INPUT (owner D755; first
+         D734) — the door's own command, its own words; the last one is refused there, saying how (ui/reqdoor.ts
+         rowTake) */
       if (rowTake(key) !== 'none') return
       setSlotVal(key, '')
       afterSchedMutate()
