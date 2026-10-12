@@ -56,7 +56,7 @@ did not.
    | `verification-before-completion` | three Common Failures rows (a clean verdict's scope, "removed everywhere", green elsewhere); a "long check runs" line (a gate chained into a commit); `browser-checks.md`: line positions not rects, measuring across a mode switch |
    | `writing-plans` | Task Right-Sizing: a migration of shared records starts with its checks |
 
-5. **Local lessons from the skill review of 13 Oct 26** (owner-approved; the same rules as changes 3 and 4 — an
+5. **Local lessons from the skill review of 13 Oct 26** (owner-approved, D811; the same rules as changes 3 and 4 — an
    upstream refresh overwrites these, re-apply them). The drafts were read by one fresh Opus reader (D810).
 
    | Skill | What was added |

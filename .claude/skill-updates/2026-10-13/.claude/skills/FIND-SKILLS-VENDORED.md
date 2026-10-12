@@ -30,7 +30,7 @@ those don't — that's what it adds.
 
 ## Local changes to the vendored skill
 
-- **13 Oct 26 review (owner-approved; read by one fresh Opus reader, D810):** `SKILL.md` Step 4
+- **13 Oct 26 review (owner-approved, D811; read by one fresh Opus reader, D810):** `SKILL.md` Step 4
   gained item 4, "The skill's own text" — read the skill itself, note its licence and compare it
   with any installed skill covering the same step before advising install, fuse or skip. A re-copy
   overwrites it: re-apply (`git log -p -- .claude/skills/find-skills`).
