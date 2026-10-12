@@ -111,7 +111,7 @@ The whole set, under the PC's lock, nothing else running, in one run, after the 
 
 ## 5. Questions waiting for him — none stops the run (D596)
 
-1. **A man who is the only named person beside ALL AVAIL may not change the input for everyone** — he reads it and may
+1. **ANSWERED 12 Oct 26 — "as recommended", D770.** **A man who is the only named person beside ALL AVAIL may not change the input for everyone** — he reads it and may
    take himself out; whoever filed it, or a scheduler, changes it. *Recommended and built:* as stated (D755 (3), D763 —
    it reaches everyone behind the puck). The other reading — "it is still his own request" — would let one member
    change what 25 people's OIL rests on. Waits on it: nothing; say so if you want the other.

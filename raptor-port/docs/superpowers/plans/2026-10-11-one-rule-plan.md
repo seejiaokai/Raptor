@@ -600,7 +600,7 @@ phone and a desktop, sharp: `docs/mock/2026-10-12-one-rule/` (37 pictures), draw
 and cancelled by real presses, step 4's build); only its look on the Inputs pages, and the whole bell list, are drawn.
 Neither screen is built until he answers.
 
-**Q2 — a cancelled input on the Inputs calendar: which look?** Two were drawn, each on the month's bar, the opened
+**Q2 — ANSWERED 12 Oct 26, D767** (*"as recommended but change something … strike through the title"*; the reason in red): **on the card and the List's row a small red CX tag before the title, the title struck through, the reason after it in red; on the month's bar the words struck through and the bar faded, no tag; the same tag and struck-through name on the schedule's Personal Inputs line.** As it was put — a cancelled input on the Inputs calendar: which look? Two were drawn, each on the month's bar, the opened
 day's card and the List's row. **A** (the plan's words): the title struck through, "CANCELLED — WX" in red where the
 remark sits, the bar struck through and faded. **B** (quieter): a small red "CX" tag before the title — the schedule's
 own tag — and the reason after it; nothing struck through. What the drawing showed: on a phone's narrow bar B loses the
@@ -609,12 +609,12 @@ where B stays at two; the schedule itself says "CX", not "CANCELLED". *Recommend
 row, A on the bar** — the same red CX the schedule shows wherever there is room for it, and the struck-through title
 where there is not. Waits on it: step 5.
 
-**Q3 — where does a cancelled input sit in a crowded day on a phone?** A phone's month shows three bars a day; in the
+**Q3 — ANSWERED 12 Oct 26, D768: it keeps its place in the day's order — not sorted last.** As it was put — where does a cancelled input sit in a crowded day on a phone? A phone's month shows three bars a day; in the
 drawing the cancelled one fell behind "+2 more". *Recommended:* leave the order alone (a cancelled input is still
 somebody's day — he opens the day to see it); the other answer is "cancelled sorts last", which hides it sooner. Waits
 on it: step 5.
 
-**Q4 — the bell's list: which wording, and what when an OIL question waits too?** Drawn: the plan's sentences ("Saber
+**Q4 — ANSWERED 12 Oct 26, D769: the shorter wording (the input first, in bold, with its date; then what happened and who); and a tap still goes straight to an OIL question, an access request or a bug report where one waits, opening the list otherwise.** As it was put — the bell's list: which wording, and what when an OIL question waits too? Drawn: the plan's sentences ("Saber
 changed the time of your Meeting to 10:00–11:00" — wraps to two lines at both sizes), and a shorter form that leads
 with the input in bold and its date, then what happened and who ("**Range brief** Wed 15 Jul — Cancelled — WX · Saber"),
 the age at the right — every notice fits two lines, and it leads with the item as the changes window does (D340).
@@ -939,7 +939,7 @@ Earn's hint on an input's row said "answered for each person on it" (one answer 
 
 **Readings to tell him, beside R1–R18 (none changes a ruling):**
 - R19. A man who is the only named person beside ALL AVAIL does not change the input for everyone — he reads it and
-  may take himself out; whoever filed it, or a scheduler, changes it.
+  may take himself out; whoever filed it, or a scheduler, changes it. **Put to him and ruled so: D770, 12 Oct 26.**
 - R20. A scheduler's OIL switch-off about a person ends when he leaves the input — also where he then stands behind its
   ALL AVAIL; switched off again after that, it stands.
 - R21. *(WITHDRAWN 12 Oct 26 — it was wrong.)* It said a person or ALL AVAIL dragged from one input's row onto another's
