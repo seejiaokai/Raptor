@@ -248,7 +248,7 @@ Personal Inputs, the week and the board, a phone and a desktop, a published day,
 app through its own controls, pictures it, then re-arranges the rows ON THE PAGE into one (`MERGE`) and pictures it again.
 
 `[OIL-ASK-NOTIFY]` (12 Oct 26 — a drawing; nothing built; D780, D781, D782): `docs/mock/oil-notify.html` is the pictures page
-put to him — a swap whose OIL question is not answered (two wordings, three ways of showing the moment after), the ONE
+he approved as recommended ("Yes to all" — D783: the design of record) — a swap whose OIL question is not answered (two wordings, three ways of showing the moment after), the ONE
 list with "Yes to all" / "No to all", the notice when a day is made a holiday afterwards and the schedulers' bell line;
 a phone and a desktop. Its pictures are `docs/mock/2026-10-12-oil-notify/`, what the run printed beside them (what is
 REAL, what is DRAWN) `docs/mock/2026-10-12-oil-notify-run.txt`. `scripts/handpass/oilnotify-mock.mjs` draws them: it
