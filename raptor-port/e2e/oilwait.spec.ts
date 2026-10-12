@@ -14,9 +14,18 @@ const SAT = '2026-07-18', SAT_DI = 5, FRI = '2026-07-17'
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
 const noErrors = (p: Page) => { const errs: string[] = []; p.on('pageerror', e => errs.push(String(e))); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()) }); return errs }
 const SIZES = [
-  { name: 'desktop', use: { viewport: { width: 1440, height: 900 } }, tap: false },
-  { name: 'phone', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, tap: true },
+  { name: 'desktop', use: { viewport: { width: 1440, height: 900 } }, tap: false, short: false },
+  { name: 'phone', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, tap: true, short: false },
+  /* A PHONE ON ITS SIDE (the check's walk, B4 — 13 Oct 26): 390 tall. The question's card is taller than that, and the
+     list scrolls inside its window — so the buttons that END each of them must stay in sight: the card cut its two
+     buttons at its bottom edge, and the list's Later / Save were below the window until it was scrolled to its end. */
+  { name: 'phone on its side', use: { viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true }, tap: true, short: true },
 ] as const
+/* is every one of these wholly inside `boxSel`'s box and inside the screen — nothing of it cut by the box's edge? */
+const whollyIn = (p: Page, boxSel: string, sels: string[]) => p.evaluate(([boxSel, sels]) => {
+  const box = document.querySelector(boxSel as string)!.getBoundingClientRect()
+  return (sels as string[]).every(q => { const r = document.querySelector(q)!.getBoundingClientRect(); return r.height > 0 && r.top >= box.top - 0.5 && r.bottom <= box.bottom + 0.5 && r.left >= box.left - 0.5 && r.right <= box.right + 0.5 && r.bottom <= window.innerHeight + 0.5 })
+}, [boxSel, sels] as const)
 
 /* an input filed through the Inputs calendar's own day window and "+ Input"; the OIL question answered Yes where asked */
 async function fileIt(p: Page, tap: boolean, iso: string, spec: { type: string; people: string[]; from?: string; to?: string; title: string }) {
@@ -77,7 +86,12 @@ for (const size of SIZES) {
       await page.evaluate(di => { const w = window as any; w.DAYS[di].ground.push({ prog: 'Hangar open day', str: '13:00', end: '15:00', who: '', rmks: '' }); w.afterSchedMutate(); w.fillSlot(`g:${di}.${w.DAYS[di].ground.length - 1}.+`, 'nick'); w.afterSchedMutate() }, SAT_DI)
       const before = await ground(page)
       const from = `#sbBoard [data-slot="g:${SAT_DI}.1"] .puck`, to = `#sbBoard [data-slot="g:${SAT_DI}.0"] .puck`
-      await page.locator(to).scrollIntoViewIfNeeded()
+      /* (the phone on its side: the DRAG is made with the screen held upright-size — on a 390-tall screen the board's own bars
+         take half of it and a drag held near the foot scrolls the board under the pointer; the real touch drag at that size
+         was walked by hand, docs/handpass/2026-10-13-oil-ask-notify.md §11.4 — and the screen is turned once the question
+         is up: what is measured here is how the question, and then the bar, FIT the short screen) */
+      if (size.short) await page.setViewportSize({ width: 1024, height: 768 })
+      await page.locator(to).evaluate((e: HTMLElement) => e.scrollIntoView({ block: 'center' }))
       const fb = (await page.locator(from).boundingBox())!, tb = (await page.locator(to).boundingBox())!
       await page.mouse.move(fb.x + fb.width / 2, fb.y + fb.height / 2); await page.mouse.down()
       await page.mouse.move(fb.x + fb.width / 2 + 6, fb.y + fb.height / 2 + 6, { steps: 3 })
@@ -86,10 +100,12 @@ for (const size of SIZES) {
       await page.mouse.up()
       /* the question, and nothing moved */
       await expect(page.locator('[data-testid="oilconf-lead"]')).toHaveText('Swapping Tally and Ranger')
+      if (size.short) await page.setViewportSize({ width: 844, height: 390 })
       await expect(page.locator('[data-testid="oilconf-cancel"]')).toHaveText('Don’t swap')
       await expect(page.locator('[data-testid="oilconf-save"]')).toHaveText('Swap')
       await expect(page.locator('[data-testid="oilconf-save"]')).toBeDisabled()
       expect(await ground(page), 'nothing moved').toEqual(before)
+      expect(await whollyIn(page, '[data-testid="oilconf"] .airpop-box', ['[data-testid="oilconf-cancel"]', '[data-testid="oilconf-save"]']), 'both buttons are wholly inside the question’s card, at any height').toBe(true)
       /* not answered: the bar, on top of the board, inside the screen */
       await press('[data-testid="oilconf-cancel"]')
       await expect(page.locator('[data-testid="oilbar-text"]')).toHaveText('Not swapped — OIL not answered')
@@ -114,6 +130,12 @@ for (const size of SIZES) {
       await login(page)
       const press = (sel: string) => (size.tap ? page.locator(sel).tap() : page.locator(sel).click())
       await fileIt(page, size.tap, FRI, { type: 'Training', people: ['bane', 'nick'], from: '09:00', to: '12:00', title: 'Range brief' })
+      /* on the short screen: enough inputs that the list must scroll inside its window */
+      if (size.short) {
+        await fileIt(page, size.tap, FRI, { type: 'Duty', people: ['harpoon'], title: 'Gate duty' })
+        await fileIt(page, size.tap, FRI, { type: 'Meeting', people: ['mamba'], from: '14:00', to: '15:00', title: 'Safety board' })
+        await fileIt(page, size.tap, FRI, { type: 'Meeting', people: ['nick'], from: '15:30', to: '16:30', title: 'Tally meet' })
+      }
       await go(page, 'inputs')
       await press('#inGear')
       await press('[data-testid="iset-days"]')
@@ -141,6 +163,9 @@ for (const size of SIZES) {
         return [...c.querySelectorAll('.icard-act button')].length === 2 && [...c.querySelectorAll('.icard-act button')].every(b => { const r = b.getBoundingClientRect(); return r.left >= cr.left - 0.5 && r.right <= cr.right + 0.5 && r.top >= cr.top - 0.5 && r.bottom <= cr.bottom + 0.5 })
       }))
       expect(fits, 'the answer buttons sit inside their cards').toBe(true)
+      /* Later and Save are in sight in the window WITHOUT scrolling the list, however many cards it holds */
+      expect(await whollyIn(page, '[data-testid="win-oilday"]', ['[data-testid="odl-later"]', '[data-testid="odl-save"]']), 'Later and Save are in the window, not below it').toBe(true)
+      expect(await onTopAndInside(page, '[data-testid="odl-save"]')).toEqual({ there: true, top: true, inside: true })
       await press('[data-testid="odl-later"]')
       await expect(page.locator('[data-testid="win-oilday"]')).toHaveCount(0)
       /* the bell — Saber made the holiday and left it for later: his own bell carries the line */

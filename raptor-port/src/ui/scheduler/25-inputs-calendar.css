@@ -534,4 +534,11 @@ body.in-cal{padding-bottom:0}
 /* a chosen No, in quiet grey (D783) — a Yes wears the app's own "picked" colour (.upconf-seg.on-keep) */
 .upconf-seg.odl-no{background:var(--edge-2);border-color:transparent;color:var(--ink)}
 .odl-foot{display:flex;align-items:center;gap:8px;padding:14px 0 2px}
+/* LATER AND SAVE STAY IN SIGHT WHILE THE CARDS SCROLL (the check's walk, B4b — 13 Oct 26). The list is as tall as what
+   is in it up to the window's limit, then its cards scroll inside the window (.floatwin .win-body) — and the foot was
+   the END of that scroll: on a short screen, or a day with many inputs, Save was below the window until the list was
+   scrolled to its end, and never in sight together with "Yes to all". The foot is pinned to the window's foot: -12px
+   is the body's own bottom padding, so it sits flush whether or not there is anything to scroll, on the window's own
+   ground so a card passing under it does not show through. */
+.oildaywin .odl-foot{position:sticky;bottom:-12px;z-index:1;margin:4px -12px -12px;padding:10px 12px 12px;background:var(--panel)}
 .odl-foot .upconf-need{flex:1;min-width:0}

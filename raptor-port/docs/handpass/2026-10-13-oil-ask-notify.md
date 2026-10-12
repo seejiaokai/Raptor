@@ -215,7 +215,7 @@ No console error, page error or failed request in any world.
 | Share | Lines | PASS | FAIL | Other | Tokens |
 |---|---|---|---|---|---|
 | A — the hands on the board and the week, desktop | 18 | 13 | 1 | 4 RECORD | about 379k |
-| B — a phone by touch, the short screens | (see §11.4) | | | | |
+| B — a phone by touch, the short screens | 9 | 7 | 0 | 2 PARTIAL | about 354k |
 | C — published days, the Unavailable row, the calendar's drag | 7 | 3 | 3 | 1 NOT WALKED | about 402k |
 | D — the holiday, the one list, the bell | 13 | 13 | 0 | — | about 268k |
 | E — the other doors that make a holiday; who is told | 20 | 18 | 1 | 1 RECORD | about 376k |
@@ -262,7 +262,34 @@ No console error, page error or failed request in any world.
 
 ### 11.4 Share B — the phone and the short screens
 
-*(added when its report is in)*
+No FAIL. Two faults of fit on a phone held sideways (844 × 390), found by the walker's measurements and its pictures,
+both fixed with a browser test that was red first (`e2e/oilwait.spec.ts`, the size "phone on its side"):
+
+| # | Found by | What a person saw | Fix |
+|---|---|---|---|
+| W6 | B4c (picture `B/B4c-l390-1-question-568.png`) | the question's card is taller than the screen with its new first line: the bottom of "Don’t swap" and "Swap" was cut by the card's edge until the card was scrolled | the card's foot stays in sight while its body scrolls (`.upconf-box > .airpop-foot`, as the input's window and the document viewer already do) |
+| W7 | B4b (pictures `B/B4b-l390-1-top.png`, `-2-end.png`) | the one list scrolls inside its window, and Later / Save were at the END of the scroll — below the window until scrolled, and never in sight together with "Yes to all" | the list's foot stays in sight at the window's foot while the cards scroll (`.oildaywin .odl-foot`) — at every size, so a day with many inputs is answered without scrolling to find Save |
+
+**PARTIAL — the brief's recipe was wrong, the rule held where the gesture exists:**
+- **B2 — the armed tap on "+ add".** On Edit Schedule's WEEK a row that already holds people has no tappable "+ add"
+  (older, filed: `[WEEK-ADD-TAP-PHONE]`). On the Scheduler Board a tap on the row's blank part arms it and opens the crew
+  drawer: there the add WAITS ("Adding Tally to Fri brief"); Escape and ✕ leave the place armed, the drawer open and
+  the bar "Not added — OIL not answered", nothing written; No → Add gives "Tally added to Fri brief — not counted for
+  OIL", the arm put down and the drawer away — on the phone and once on a desktop (B2d). **R5: HAS.**
+- **B3 — "the swap by an armed tap".** There is no such gesture: a tap on a puck SELECTS that man (older behaviour).
+  The swap's doors are the drags; by a real touch drag from the crew list onto the only man's puck it waits ("Putting
+  Hex in place of Ranger"), is not made unanswered, is made on Yes, one Undo.
+
+**PASS:** B1 (390 × 568: the touch drag, the question, the bar — two buttons side by side, inside, on top), B4a (390 ×
+568: the list with five cards, the bell's list and line — every one measured inside the screen and on top), B4b / B4c
+(844 × 390 — with W6, W7), B5 (390 × 844: the other scheduler's bell, the line, the list over the phone's page, one
+answered, the count falls — **R20: HAS**), B6 (the Unavailable row by an armed tap on a phone: the question first,
+"Not swapped", answered → Hex, one Undo — **R9's second door: HAS**). **R15: HAS** (the bar and the question at
+390 × 568 and 844 × 390; the list at both).
+
+**Seen in passing, older (added to `[OIL-NOTIFY-SEEN]`):** on the Unavailable row an armed tap puts the arm down
+BEFORE its question and leaves the crew drawer open afterwards, where the row's "+ add" keeps the arm until the answer
+and then puts the drawer away.
 
 ### 11.5 The roll-call's marks after the walk (§4's "NOT YET SEEN" rows)
 
@@ -271,18 +298,18 @@ No console error, page error or failed request in any world.
 | R2 the week's drag | A3 (question, bar, swap, Undo — measured on the week) | HAS |
 | R3 crew list onto the only puck | A4, on the week and on the board ("Putting Hex in place of Ranger"; Ranger on no row after) | HAS |
 | R4 "+ add" / a puck of several | A5, A7, A8 | HAS |
-| R5 the armed tap | §11.4 | |
+| R5 the armed tap | B2 on a phone and B2d on a desktop, on the Scheduler Board (the week's populated row has no tappable "+ add" — older, filed) | HAS |
 | R7 a move between two inputs' rows | A8 ("Moving Ranger to Safety board"; one Undo) | HAS |
 | R8 ALL AVAIL on an unanswered row | A5 ("Adding ALL AVAIL to Range brief"; refused on a two-day input with NO question) — and now a test by name (`ui/oilwait.test.tsx`) | HAS |
 | R9 the Unavailable row | C2 by the mouse, from the crew list and from a seat (the flash: W3, fixed); the armed tap: §11.4 | HAS |
 | R10 the calendar's drag — a chip and a BAR | C3 (the member), C4 (the admin): both ask first; the two-day BAR flashes where it was — the selector is proved on screen | HAS |
 | R12, R13 must not ask | A13 (a time and a remark typed, a right-click, a drag off) | MUST NOT — holds |
 | R14 the bar over each surface | the board (A1), the week (A3), the Inputs calendar (C3) — each measured inside the screen and on top; in front of the changes window, behind a blocking window (A14); the Leave War page: it cannot be there — it leaves with the page (A11) | HAS |
-| R15 short screens | §11.4 | |
+| R15 short screens | B1, B4a (390 × 568); B4b, B4c (844 × 390) — every box measured; W6, W7 fixed | HAS |
 | R16 the list from the Holidays list | D1 (and D2–D12) | HAS |
 | R17 the list from the Leave War's Event row | E1: the PH preset, a typed "PH", a band — the list opens over the Leave War page at once, measured on top | HAS |
 | R18, R19 the two bells | D4 (the top bar's), D13 (the Scheduler Board's own, its list and the one list over the board) | HAS |
-| R20 the bell on a phone | §11.4 | |
+| R20 the bell on a phone | B5 (and B4a's bell at 390 × 568) | HAS |
 | R21 who must not be told | E3 (the member who filed, a man merely in a shared input, a guest), E5, E6 — and W1, the admin's own member view | MUST NOT — holds since W1 |
 | R22 the "OIL?" tag after a holiday | D2 (the unanswered card still wears it; the answered three do not) | unchanged |
 | R23 the downstream OIL figure | C7 (Ranger and Hunter each credited half a day on the Leave War once Friday is published, nothing before; the input answered No credits nobody), D2 and A2 (OIL Earn: HO on the men of a Yes, a dash on a No) | HAS |

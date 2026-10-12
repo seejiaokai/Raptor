@@ -4119,3 +4119,33 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In the red step, add: a test that cannot be loaded before the code exists has not been seen failing. Two accepted proofs of red: (a) run it against a stub that compiles and does the OLD behaviour, or (b) once green, break the one line that makes it pass and count which cases go red, recording the count. Report the red as a number of cases, never as "written first".
 
 **Principle:** Red is an observation about each assertion, not about the order two files were written in; where the order cannot produce it, a deliberate break must.
+
+### Observation 539: A scenario's EXPECTED line is checked against the rulings before it goes to a walker
+
+**Status:** OPEN
+**Date:** 13 Oct 26
+**Session context:** the FULL check of [OIL-ASK-NOTIFY] — five Sonnet walkers driving 35 scenarios designed by an outside reader (Fable)
+**Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §4, §7) and the walk briefs built from it
+**Type:** internal
+**Phase/Area:** turning a reader's scenario list into a walk brief
+
+**Issue:** Four of the walk's five FAILs were not faults: the scenario's EXPECTED line (written by the scenario designer from the promise, and copied into the brief by the host) contradicted an OLDER ruling the feature does not change — a swap from a seat on a published day counts 2 (told on the previous job), a holiday declared on a published day reads pending at once (a ruling of three weeks ago), a man on leave on a duty desk is warned not refused. The same happened on the previous job (about 12 walker FAILs were the host's expected line). Each costs a walker's attention, a host disposition and a line of explaining to the owner.
+
+**Suggested improvement:** In the checking guide's walk section, add one step between "the other model designs the scenarios" and "hand them to walkers": the host reads each EXPECTED line that names a COUNT, a REFUSAL or a PUBLISHED-DAY state against the rulings and the code on `main`, and rewrites it as "RECORD exactly what it says" where it cannot say what the right answer is. Three kinds to look at first: pending counts, "refused" versus "warned", and what a published day does by itself.
+
+**Principle:** A scenario's action comes from the promise; its expected result must come from the rules already in force. An expected line nobody checked against the standing rules manufactures false failures at the dearest stage of a check.
+
+### Observation 540: The break-test runner is the same script every job — make it one tool that takes a list
+
+**Status:** OPEN
+**Date:** 13 Oct 26
+**Session context:** the break tests of [OIL-ASK-NOTIFY] — 93 exact-text breaks run one by one by `scripts/handpass/on-breaks.mjs`, copied from the previous job's `aa-breaks.mjs`
+**Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §8.4) — break tests
+**Type:** internal
+**Phase/Area:** break tests
+
+**Issue:** Each job copies the runner and re-writes its loop; this copy had to add Windows-line-ending matching and a "found N times" skip by hand, and the runner refuses a tree with uncommitted source so the fixes had to be committed before the re-run. The useful part of the job is the LIST of breaks (the wire, the exact text, the tests that should catch it); the loop is boilerplate. One scripted run of 88 breaks cost the host about 15k tokens against roughly 9k a break when helpers did it by hand on the previous job.
+
+**Suggested improvement:** Keep one `scripts/handpass/breaks-run.mjs` that takes a job's list (a small module exporting the array) and handles line endings, "not found exactly once", the restore, a regex to re-run a subset, and a table written to `docs/handpass/parts/`. Name it in the checking guide's §8.4 as the default way to run break tests, with the rule that a break not caught gets a test or a written "decides nothing" disposition.
+
+**Principle:** When a checking step is done the same way every time, the per-job artefact should be the data, not another copy of the program.
