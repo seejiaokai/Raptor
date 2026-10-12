@@ -32,7 +32,6 @@ import { InputEditor, commitInput, commitInputEdit, draftOf } from './inputedit'
 import { dayEntries } from './InputsCal'
 import { EVERYONE, inputMatchesSearch, monthItems, personFilterId, personFilterPasses, personFilterValue } from './inputscal-model'
 import { cardOf } from './inputcard-model'
-import { inputRows } from './export'
 import { initStore, notify, setSession, writeInputs, placeholderShapeViolation } from '../state/store'
 import { schedStore } from '../state/sched-commit'
 import { installGlobalUndo } from '../state/undo-wire'
@@ -647,12 +646,6 @@ describe('the List, the month and the opened day naming an input of people AND a
     expect(world()).toBe(was)
   })
 
-  it('THE EXPORT: one line for each named person, in the order they joined, then one for the placeholder — the same input on every line', async () => {
-    const [a, b] = [others()[0], others()[1]]
-    const r = await putMixed([b, 'allavail', a], { remarks: 'export me' })
-    const lines = inputRows([r])
-    expect(lines.slice(1).map(l => l[0])).toEqual([cs(b), cs(a), 'ALL AVAIL'])
-    expect(new Set(lines.slice(1).map(l => JSON.stringify(l.slice(1)))).size, 'everything but the name is the input\'s own').toBe(1)
-    expect(lines[1].slice(1)).toEqual(['Oct 13', 'Oct 13', '10:00', '11:00', 'Meeting', 'Meeting', 'export me'])
-  })
+  /* (RETIRED BY NAME — owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can remove it.": "THE EXPORT: one line for each named person, in the order they joined, then one
+     for the placeholder" pinned ui/export.ts inputRows, which is gone.) */
 })

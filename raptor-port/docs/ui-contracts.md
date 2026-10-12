@@ -2260,12 +2260,32 @@ brought to what the row now reads — after a save as after a refusal (a name re
 capitals, and nothing else would repaint the typed text). The row's people, CX, red box and information-only stay the
 row's own. Rule and belt: `engine-rules.md`, "A request's row: its name, its two times and its remark are the
 request's".
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D760: NOTHING on a row that came from an input is "the row's own"
+any more. The row is a whole copy of the one record — `engine/overlay.ts requestRowFields` writes its name, times and
+remark AND `who`, `more`, `cx`, `cxr`, `flag`, `info` from the input, and the re-make keeps only the row's id and its
+place. Its PEOPLE are the input's: a hand on a puck is asked of the door `ui/reqdoor.ts` first (`rowPut`, `rowTake`,
+`rowLeaveTo`, `rowMove` — each ONE command through `ui/inputedit.tsx commitInput`), and a raw write of a person to
+such a row is refused by the belt `engine/slots.ts inputSeatBar`. Its CX, red box and information-only are the input's
+too: the board's three buttons ask `ui/reqdoor.ts rowMark` before they write, so a CX there cancels the INPUT — the
+Inputs pages show it cancelled and the member's bell tells him ("A cancelled input on the Inputs pages…", "The bell's
+list of notices", below). WHICH row is one answer, `overlay.ts requestOfBox`, shared by `reqRowText`, the door and the
+belt. What each hand does: "A shared input is ONE row on the schedule", above.)*
 
 Build two of the leave-types work: times, type, remarks and delete, reachable
 from Edit Schedule and from the schedule board, writing back to the Inputs
 page. The commit is the Inputs page's own — both call `commitInputEdit` /
 `removeInput` in `ui/inputedit.tsx`, so the accepted-row relink, the
 validation and the single undo step cannot drift between the two surfaces.
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762: the ONE writer of an input is `ui/inputedit.tsx
+commitInput(rec, draft, people, opts)` — it runs every refusal first, for every person, then one command; it calls
+`commitInputEdit` for what the input SAYS and `engine/inputown.ts putPerson` / `takePerson` for who is in it. The
+dialog's Save goes through `commitInput` where the input holds several people or several are picked, and through
+`commitInputEdit` for an input of one — which still saves what an input says and re-points an input of ONE person, and
+refuses a draft naming someone outside an input of several ("Who is in this input is changed in its own window").
+`removeInput` is the ONE delete — a whole input of several included, asked first ("Delete this input for all 3
+people?"); the separate `removeEntry` is gone. The "accepted-row relink" itself went earlier — `[DB-READINESS]` group A
+phase 6 (c), 1 Oct 26: a save writes the request alone and its row is re-made when its week is read, `engine/overlay.ts
+viewOfWeek`.)*
 
 Two audit fixes on the relink itself (12 Aug 26): **re-filing falls back to
 any covered loaded day** — an Unavailable-filed input whose span STARTS
@@ -2278,6 +2298,14 @@ relink**: the row is still regenerated from the input, but those three are
 captured before the unaccept and put back after the re-accept, instead of
 being silently discarded by any edit, including a member retouching their
 own remark.
+*(As of the one-rule build, 12 Oct 26 — D755, D760, which changes D468 for an input's row: there is nothing "added to
+the row by hand" left to capture and put back. A person put on the row JOINS the input (`ui/reqdoor.ts rowPut`), and
+the red box, the CX with its reason and information-only are written on the input (`rowMark`); the re-make writes the
+whole row from the input (`overlay.ts requestRowFields`; `srcvOf` hashes its people and its marks too), so they come
+back with every re-make and go with the input when it moves to another day. A row made before the build is re-made
+ONCE at its first read, and whoever or whatever a scheduler had put on the ROW alone comes off it — stored demo rows
+only, D56. The un-accept / re-accept this paragraph describes went on 1 Oct 26 with `[DB-READINESS]` phase 6 (c); a
+request filed under Unavailable (`acc: 'u'`) keeps that filing through an edit, `ui/inputedit.tsx commitInputEdit`.)*
 
 **The times and the remarks are ORDINARY CELLS** (owner, 10 Aug 26 — "edit the
 input directly like changing the start and end time... no need to open a new
@@ -2296,6 +2324,14 @@ They carry `data-inp` (week) and `data-ifld` (board), NOT `data-txt` /
 through `setInpField` -> `commitInputEdit` -> `writeInputsBatch` rather than
 `txtSet` / `markEdit`. A refusal heals the cell from the model, exactly as a
 rejected `txtSet` does.
+*(As of the one-rule build, 12 Oct 26 — D756, D737, D759 reading 4: the cell's address is `engine/inputs.ts iuTail` —
+`<iid>.<field>`, or `<iid>~<person>.<field>` on one man's Unavailable row of an input that holds several — read by the
+one parser `engine/keys.ts iuParts` in `ui/textedit.ts` and `ui/board.ts`, which hand the man on:
+`setInpField(inp, field, text, who)` → `saveFromRow`. On a Personal Inputs line the ONE record is saved, for everyone
+in it (D739). On such an Unavailable row the box changes HIS part alone: he is first given an input of his own, in the
+same command (`engine/inputown.ts ownInputOf` — a new record with a new id, him taken out of the original), and
+`commitInputEdit` then saves that. Both are schedule-side saves (`opts.sched`): the late date is not moved (D741) and
+a Yes to the OIL question is kept at what the new hours give.)*
 
 **Clearing a time means all day.** That is what `awayAllDay` already believes,
 so the cell and the rule agree without a third control. It is deliberately
@@ -2315,6 +2351,11 @@ nor by `inpKey`, which is built from the very fields they edit. Minting it
 lazily at render was the first cut and was wrong: a snapshot taken between
 creation and first paint held no id, so an undo back to it handed back a row
 that then minted a different one.
+*(As of the one-rule build, 12 Oct 26 — D756, D759 reading 4: an input of several people is ONE record with ONE `iid`,
+where it was a record and an id a man. One man's part split out of it — a box typed on his own Unavailable row, sick
+leave cutting his share of a leave — is a NEW record with a NEW `iid` (`engine/inputown.ts ownInputOf`), put straight
+after the original, which keeps its own. The Inputs page's `add()` went with the List's own form on 10 Oct 26 (D729):
+a new input is made, given its id and unshifted by `ui/inputedit.tsx commitNewInput`.)*
 
 **What is left behind the TYPE LABEL** — still a `<button>` via `inpEditLabel`
 — is the type and delete: the two that cannot be a text cell in these rows.
@@ -2348,6 +2389,16 @@ live underneath it and renumbers `INPUTS`, and the key is built from the very
 fields the dialog exists to change. A refusal (bad window) keeps it open with
 the typing in it; the one exception is a row that has gone from under it,
 where there is nothing left to hold the typing for.
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770, D771: the object it holds is the input's ONE
+record, and who is in it is read from that record (`engine/inputs.ts idsOf`), never worked out from sibling records.
+Opened on an input of several — from its row, or its line under Personal Inputs — it is the INPUT's dialog (D748): the
+people picker, one Save through `commitInput`, "Delete" asked for everyone, and ONE OIL line for the input's one
+answer. Who may change it is `state/perms.ts mayEditInput(record)`; for anyone else the form is `inert` and the foot
+says who can. A person who is in it but may not change it for everyone — he did not file it, or he is the only named
+person beside ALL AVAIL / ALL — has one thing of his own there, "Take me out"; he adds nobody and gives no OIL answer
+of his own. A cancelled input's dialog wears the small red CX tag and its reason beside its title (`inped-cx`), a mark
+and never a control. In full: "A member edits only their own personal inputs" and the input's window under "The
+Inputs calendar", below.)*
 
 **The two time boxes are 130px, and that is measured, not chosen.** Chromium
 renders `<input type=time>` in the BROWSER's locale, which on en-US is a
@@ -2371,6 +2422,14 @@ already keeps in view, unlike a date move — the row you are looking at is
 still the row you are looking at afterwards, just under a different name.
 The footer reads "The dates are changed on the Inputs page" for a
 scheduler, and the old two-field sentence for anyone else.
+*(As of the one-rule build, 12 Oct 26 — D755 (2), D756, D762: the `<select>` (`#inpEditPerson`) is the Person field of
+an input of ONE person only. Picking another name there is a hand-over — `commitInputEdit` → `engine/inputown.ts
+swapPerson`: the list becomes the new person, the OIL answer is void (it was the first man's own) and the holding
+moves on, so a scheduler's OIL switch made about the old holder reads as nothing. An input of SEVERAL draws the
+people picker (`ui/PeoplePick.tsx`) in the same dialog instead, and who is in it is changed by `commitInput`. The same
+replacement made on the schedule itself — a puck dropped on the only person's puck of the input's row — is the door's
+(`ui/reqdoor.ts rowPut`): "Tally is on Training instead of Ranger", or "Tally and Ranger swapped" when Tally was
+dragged from a seat elsewhere.)*
 
 **The Unavailable row's person cell is a plant/drop target too, on the week
 and the board** — `iu:<iid>` (the input's own id, no day component, since
@@ -2402,6 +2461,13 @@ it was planted too (the two facts are independent). Reassigning does not
 call `afterSchedMutate()` a second time — `reassignInput`'s own
 `commitInputEdit` already ran the input funnel's full epilogue (validate,
 notify, one history step); the drop/tap handlers only disarm and repaint.
+*(As of the one-rule build, 12 Oct 26 — D756, D762, D737: on one man's row of an input that holds SEVERAL,
+`reassignInput` does not call `commitInputEdit` — it asks every refusal a save can meet for the newcomer alone
+(`normalizeInputDraft`), then writes `swapPerson` inside `saveBatch`, the same inputs funnel with the same one
+epilogue and one Undo step. A one-person input's hand-over still goes through `commitInputEdit`, as a schedule-side
+save, so nobody reads late for it (D742). "Any roster member is a legal target" has two exceptions, each said in
+words: someone already in the input, and ALL AVAIL / ALL — never the target and never the source of this drop. After
+either write `askOilIfPending` opens the INPUT's one OIL question where a day is left unanswered.)*
 
 ## Adding an input from the board (owner, Aug 26; context-bound rework 19 Aug 26)
 
@@ -4394,7 +4460,11 @@ Pins: `ui/inputcx.test.tsx`, `ui/inputmarks-scenarios.test.tsx`.*
   control there cancels an input or brings it back (D760 reading 2: the scheduler does, on its row). No reason typed:
   the tag alone.
 - **The CSV export does not mark it (D772, 12 Oct 26 — "Leave the CSV as it is"):** its lines are written like any
-  other input's.
+  other input's. **OVERTAKEN THE SAME DAY BY D773** (*"I don't need an export to excel function for inputs. U can
+  remove it."*): the Inputs List's "Export to Excel" button and the file it writes are REMOVED — only the Inputs
+  page's; the Quals page's export and the schedule's own export and print stay. Built inside the one-rule job's check
+  (`../../OUTSTANDING.md` `[ALL-AVAIL-AS-MEMBER]`); until that build lands the button is still there and writes one
+  line a named person and one for ALL AVAIL / ALL.
 
 ## The top bar carries the bell and the Undo / Redo pair (owner, Aug 26; the pair on every page — D347–D349, 28 Sep 26)
 
@@ -7918,6 +7988,33 @@ backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 `audit-guards-inputs.test.ts`.
 
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770; D760 for the marks: an input is ONE record with
+the list of its people, so "their own" is asked of that list and never of a record's one `person`. Read the paragraph
+above with these — it is left as written:*
+- *WHAT A MEMBER SEES FIRST is unchanged, but an input of several passes his filter when ANY of its people is he
+  (`ui/inputscal-model.ts inputPassesPerson`), so he lands on the inputs he is IN as well as the ones that are his.*
+- *WHOSE AN INPUT IS — `state/perms.ts mayEditInput(record)` / `mayDeleteInput(record)`, both `mayChangeInput`: an
+  admin; the input's ONLY person, with nobody and no ALL AVAIL / ALL beside him (`engine/inputs.ts onlyNamed`),
+  whoever filed it; or its FILER (`filedForOther`) — the members' switch on, a kind a member may file for others, and
+  everyone else in it put in by him (`allPutBy`). Once a scheduler has put someone in beside others, changing it for
+  everyone is the scheduler's (D755 (3)). An input for several people, or for ALL AVAIL, is nobody's own.*
+- *SOMEONE WHO IS IN IT BUT MAY NOT CHANGE IT — he did not file it, or he is the only named person beside ALL AVAIL /
+  ALL (D770) — reads it and has ONE thing of his own: "Take me out" (`ui/inputedit.tsx`, `inped-takeout` — a
+  `commitInput` with himself left off the list, which that writer lets through for him alone). He adds nobody
+  (D763) and gives no OIL answer of his own: the input has ONE answer, given by whoever may change it (D762).*
+- *THE SCHEDULER'S MARKS on an input — cancelled with its reason, the red box, information only — are never a
+  member's to set or clear, on his own input too (D760).*
+- *THE ✎ AND THE ✕ ARE NOT ON THE ROW AT ALL since 10 Oct 26 (D718, D723): the row opens the input's window. What
+  the List's row still asks `mayEditInput` for is its OIL chips, drawn only for an input of ONE person
+  (`ui/InputsPage.tsx`); an input of several carries none.*
+- *THE WRITE-PATH BACKSTOP is three bodies now: `commitInput` — the one writer, which asks `mayEditInput` and
+  `mayFileInputFor` before anything is written — with `commitInputEdit` and `removeInput` beside it; and behind every
+  door the commit gate, `perms.ts ownershipViolation` → `inputBreach`, which reads what a member's command really
+  changed: his own part (`ownPart` — his one-person input, or his own entry alone going out of a list), or an input he
+  filed (`filedForOther`); nobody's entry forged, no person added to an input he did not file, no mark set. The rule
+  is paired word for word with `docs/data-model.md` §11's `Input` row (`perms.ts INPUT_FILER_NOTE`; `perms.test.ts`
+  fails when the two differ — D200). The pinning file is `src/ui/audit-guards-inputs.test.tsx`.)*
+
 **Another man's input opens READ ONLY, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
 From the calendar's chip or the day popover a member opening someone else's input gets the edit window with its body
 `inert`, no Delete and no Save, and "Only Tally or an admin can change this." at the foot (`ui/inputedit.tsx`,
@@ -7927,6 +8024,25 @@ a locked field now reads as its VALUE — no box, no arrow, the plain cursor, th
 is dimmed rather than removed, so the record still shows what was chosen. His own input keeps its live boxes. Before and
 after pictures are on the small-fixes look card — kept on his look (D364, 29 Sep 26). Pinned by `e2e/geometry.spec.ts` ("the read-only
 input window draws its locked fields as values"); walked `scripts/handpass/sf/sf-g4-readonly.mjs`.
+*(As of the one-rule build, 12 Oct 26 — D755, D756, D762, D763, D770, D771: "another man's input" is any input its
+reader may not change — `!mayEditInput(record)` — and that now includes an input of several he is IN but did not file,
+and one where he is the only named person beside ALL AVAIL / ALL. The form is `inert` as before, with no Delete and
+no Save; what differs is the foot and what stands outside the form:*
+- *THE SENTENCE. For an input of ONE person it is still "Only Tally or an admin can change this." For an input of
+  several, or one that holds ALL AVAIL / ALL, it is the one body every door says, `ui/inputedit.tsx sharedRefusal`:
+  "Only Saber — who filed it — or an admin can change this for everyone."; once a scheduler has changed who is in it
+  (`perms.ts filedWhole` is false), "A scheduler has changed who is in this — ask an admin to change it for
+  everyone."; and to the filer himself, kept out by the members' switch alone, "Filing for other people is switched
+  off — an admin can change this." (D731 (8)).*
+- *"TAKE ME OUT" (`inped-takeout`) stands in the foot, outside the inert form, for a reader who is in the input — it
+  asks first ("Take yourself out of this input? It stays for the other 2 people.") and then says "You are out of
+  this input". It is the only live control of his in the window.*
+- *THE OIL LINE states the input's ONE answer and has no button for a reader: "Change…" and "Answer…" are drawn only
+  for whoever may change the input (not drawn at all for a reader since 10 Oct 26, `[CAL-CHECK-SEEN]` — it is not
+  "dimmed rather than removed"). There is no "Your OIL" line and no answer of a man's own (D762).*
+- *A CANCELLED INPUT'S WINDOW wears the small red CX tag and its reason beside its title (`inped-cx`, D771), for
+  every reader — a mark, never a control. A document is opened from the paperclip in the foot (`inped-docview`),
+  outside the form, so a reader can still open it.)*
 
 ## The ⓘ info-only switch on programme items (owner, 1 Sep 26)
 

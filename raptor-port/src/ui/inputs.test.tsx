@@ -1343,17 +1343,15 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     expect(INPUTS.length, 'the add and the delete cancel out').toBe(n)
   })
 
-  it('the CSV export says it downloaded — a phone shows no download UI of its own', async () => {
-    /* jsdom implements neither Blob URLs nor the anchor download it drives —
-       exportCSV (ui/export.ts) is untestable past this point by design (its
-       own doc comment), so only the createObjectURL call is stubbed, the
-       minimum this button's own click handler needs to run to completion */
-    const orig = (URL as any).createObjectURL
-    ;(URL as any).createObjectURL = () => 'blob:x'
-    try {
-      await withToast(async () => { await click($('#inExport')) })
-    } finally { (URL as any).createObjectURL = orig }
-    expect(toasts).toContain('CSV downloaded')
+  /* THE INPUTS LIST HAS NO EXPORT (owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can
+     remove it."). This case used to press "Export to Excel" (#inExport) and read "CSV downloaded"; the button, its file
+     (142-inputs.csv) and ui/export.ts inputRows are gone. The Quals page's export and the schedule's own stay — they are
+     not inputs (ui/QualsPage.tsx #qExport, ui/Shell.tsx #exportSched). */
+  it('the Inputs page offers no export — no "Export to Excel" on the List or the calendar (D773)', async () => {
+    expect($('#inExport'), 'the List\'s export button').toBeNull()
+    const page = document.getElementById('page-inputs') || document.body
+    expect(Array.from(page.querySelectorAll('button')).filter(b => /export/i.test(b.textContent || '')).map(b => b.textContent), 'no button on the Inputs page says Export').toEqual([])
+    expect(Object.keys(await import('./export')), 'and the exporter has no body for inputs').not.toContain('inputRows')
   })
 })
 

@@ -33,7 +33,6 @@ import { InputEditor, commitInput, draftOf } from './inputedit'
 import { dayEntries } from './InputsCal'
 import { cardOf, cxSays } from './inputcard-model'
 import { monthItems, barText } from './inputscal-model'
-import { inputRows } from './export'
 import { dayHTML } from './html'
 import { boardMbtn, cxCommit, CXT, boardHTML } from './board'
 import { peekDayHTML } from './peek'
@@ -535,17 +534,9 @@ describe('PART ONE — the Inputs pages', () => {
     })
   })
 
-  describe('the Inputs export (ui/export.ts inputRows) — PINNED AS IT IS, a question parked for him (the plan §10, step 5)', () => {
-    it('writes a cancelled input\'s lines exactly as its not-cancelled twin\'s: no column says it, and its reason is nowhere in the file', () => {
-      const [a, b] = others()
-      const rec = (over: any = {}) => ({ iid: 'x1', people: [{ p: a }, { p: b }, { p: 'allavail' }], type: 'Training', title: 'Range brief', date: 'Oct 20', yr: 2026, allday: false, s: 540, e: 600, remarks: 'Bring your kit', ...over })
-      const rows = inputRows([rec({ cx: true, cxr: 'ZZWX' })])
-      expect(rows[0]).toEqual(['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks'])
-      expect(rows).toEqual(inputRows([rec()]))
-      expect(rows, 'a line a person, the placeholder last').toHaveLength(4)
-      expect(JSON.stringify(rows)).not.toMatch(/ZZWX|cancel|"CX"/i)
-    })
-  })
+  /* (RETIRED BY NAME — owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can remove it.": "the Inputs export … writes a cancelled input's lines exactly as its not-cancelled
+     twin's" pinned D772, which D773 replaced the same day — there is no export of inputs to mark or leave unmarked;
+     ui/inputs.test.tsx pins that the page offers none.) */
 
   describe('SANS availability is on no bar, cancelled or not (D620) — and nothing here could cancel one', () => {
     it('a hand-made record carrying the mark is still on no bar', () => {
@@ -932,11 +923,10 @@ describe('PART TWO — the schedule\'s own lines, by the board\'s real CX button
   })
 
   describe('the real button and the Inputs pages\' own readers agree (D760 — the CX is the input\'s)', () => {
-    it('cancelled on the board: the card\'s facts, the bar\'s item and the tooltip\'s words say so; brought back, none does; the export is unmoved', async () => {
+    it('cancelled on the board: the card\'s facts, the bar\'s item and the tooltip\'s words say so; brought back, none does', async () => {
       await boot()
       file(['bane', 'pike'])
       const F = { fType: 'all', fPerson: 'all', fSearch: '' } as any
-      const csv = JSON.stringify(inputRows([the()]))
       const bar = () => { const { cx: c, rows: _r, ...rest } = monthItems([the()], F)[0] as any; return { c, rest } }
       const plain = bar()
       cx(WED, 'WX')
@@ -944,7 +934,6 @@ describe('PART TWO — the schedule\'s own lines, by the board\'s real CX button
       expect(bar().c).toBe(true)
       expect(bar().rest, 'nothing else of the bar moved').toEqual(plain.rest)
       expect(cxSays(the())).toBe('Cancelled — WX')
-      expect(JSON.stringify(inputRows([the()]))).toBe(csv)
       uncx(WED)
       expect([cardOf([the()]).cx, cardOf([the()]).why, bar().c, cxSays(the())]).toEqual([false, '', false, ''])
     })

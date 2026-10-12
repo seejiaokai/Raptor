@@ -39,7 +39,6 @@ import { stampChanged } from '../state/inputstamp'
 import { PlaceholderGroup } from './PeoplePick'
 import { EVERYONE, personFilterId, personFilterValue, inputPassesPerson, inputMatchesSearch, namesOf } from './inputscal-model'
 import { useVersion } from './useStore'
-import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
 import { InputCard } from './InputCard'
 import { cardOf, cardWhen, cxOf, cxWhy, lateNoteOf } from './inputcard-model'
@@ -639,16 +638,8 @@ export function InputsPage() {
             </div>
           )}
         </div>
-        <button className="abtn" id="inExport" hidden={!listUp} onClick={() => {
-          /* EVERY input, each one's whole span (AB10) — never only the rows the list is filtered to. The calendar
-             build had narrowed it to the filtered rows, so a member (whose list opens on himself) exported his own
-             inputs only, and a search that matched nothing wrote an empty file (Opus's own read, step 0, 7 Oct 26) */
-          exportCSV('142-inputs.csv', inputRows(INPUTS))
-          /* a phone browser often shows nothing at all when a download lands —
-             no bar, no tray notification the user is looking at — so the tap
-             otherwise reads as dead (owner audit) */
-          HOOKS.toast('CSV downloaded', 'ok')
-        }}>Export to Excel</button>
+        {/* (no export here — owner, D773, 12 Oct 26: "I don't need an export to excel function for inputs. U can remove it."
+            The List's "Export to Excel" button, its file and ui/export.ts inputRows are gone; pinned by ui/inputs.test.tsx) */}
       </div>
       <div className="inwrap" hidden={!listUp}>
         {phone ? (

@@ -13,7 +13,6 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor, oilGate, draftOf, commitInputEdit, setInpField, reassignInput } from './inputedit'
-import { inputRows, csvText } from './export'
 import { oilRequestName, oilClaimWhat } from './oilmode'
 import { dayEntries } from './InputsCal'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
@@ -420,16 +419,9 @@ describe('the other places that name an input (both reads of the plan)', () => {
     expect(oilRequestName('i:' + t.iid)).toBe('Sports day')
     expect(oilRequestName('i:' + u.iid)).toBe('event')
   })
-  it('the Inputs export keeps Type and adds Title — the title, or the kind where it has none; a formula-like title is neutralised', async () => {
-    const t = await filed({ title: 'Sports day' }), u = await filed({ date: 'Oct 14' }), f = await filed({ date: 'Oct 15', title: '=SUM(A1)' })
-    const rows = inputRows([t, u, f])
-    expect(rows[0]).toEqual(['Name', 'From', 'To', 'Start', 'End', 'Type', 'Title', 'Remarks'])
-    expect([rows[1][5], rows[1][6]]).toEqual(['Event', 'Sports day'])
-    expect([rows[2][5], rows[2][6]]).toEqual(['Event', 'Event'])
-    const csv = csvText(rows)
-    expect(csv).toContain('Sports day')
-    expect(csv, 'never a live formula').not.toMatch(/(^|,)=SUM/m)
-  })
+  /* (RETIRED BY NAME — owner, D773, 12 Oct 26 — "I don't need an export to excel function for inputs. U can remove it.": "the Inputs export keeps Type and adds Title — … a formula-like title is
+     neutralised" pinned ui/export.ts inputRows, which is gone. That a formula-like cell is neutralised in every file the
+     app still writes is the text builder's own case — ui/export.test.ts csvText.) */
   it('the opened day finds an input by its title, as the month’s bar does', async () => {
     const t = await filed({ title: 'Regatta', remarks: '' })
     const hit = dayEntries('2026-10-13', { fPerson: 'all', fType: 'all', fSearch: 'regat' })
