@@ -42,8 +42,8 @@
    "n": 6,
    "name": "the same tap made twice does nothing more (the patch)",
    "file": "src/ui/DateBox.tsx",
-   "find": "const SETTLE_MS = 400",
-   "put": "const SETTLE_MS = 0"
+   "find": "    if (at) {\n      if (patchTimer.current)",
+   "put": "    if (at && at.x < -1e9) {\n      if (patchTimer.current)"
   },
   {
    "n": 7,
