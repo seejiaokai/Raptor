@@ -27,6 +27,14 @@ import { DaysWindow } from './DaysWindow'
 import { SWIPE_MIN } from './calpick'
 import { initSideSwipe } from './sideswipe'
 
+/* the one refusal the Holidays list can speak ("A leave period already covers part of …") is made to order here: the
+   war's own writer is asked for real unless a test says a year is to be refused */
+const refuse = vi.hoisted(() => ({ on: false }))
+vi.mock('../leavewar/sync', async importOriginal => {
+  const real = await importOriginal<typeof import('../leavewar/sync')>()
+  return { ...real, createOilPeriodFor: (y: string) => (refuse.on ? 'overlap' : real.createOilPeriodFor(y)) }
+})
+
 /* a finger: a touch that lands at one point and lifts at another. A touch's later events go to the element it landed
    on, so both are sent there. */
 const touch = (type: string, el: Element, x: number, y: number, fingers = 1) => {
@@ -185,6 +193,25 @@ describe('the Calendar window', () => {
     /* and the month it left is where it was */
     press(t('days-tab-month'))
     expect(month()).toBe('November 2026')
+  })
+  it('what was said about one year does not follow a swipe to the next (as the arrows’ own step has it)', () => {
+    open()
+    fireEvent.click(t('days-tab-holidays'))
+    /* a year no leave period covers offers to make one; made to refuse, it says why */
+    for (let i = 0; i < 8 && !q('hol-create-year'); i++) press(t('hol-next'))
+    const y = +t('hol-year').textContent!
+    refuse.on = true
+    try { press(t('hol-create-year')) } finally { refuse.on = false }
+    expect(t('hol-why').textContent).toContain(`already covers part of ${y}`)
+    swipe(t('days-part-holidays'), -80)
+    expect(t('hol-year').textContent).toBe(String(y + 1))
+    expect(q('hol-why'), 'the note about one year is still up on the next').toBeNull()
+    /* and the arrows, which had this manner before the swipe */
+    refuse.on = true
+    try { press(t('hol-create-year')) } finally { refuse.on = false }
+    expect(t('hol-why')).toBeTruthy()
+    press(t('hol-prev'))
+    expect(q('hol-why')).toBeNull()
   })
   it('a swipe that begins on a holiday’s line turns the year and opens no form', () => {
     open()

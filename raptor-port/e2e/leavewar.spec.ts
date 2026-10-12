@@ -6357,6 +6357,20 @@ test('the posting dates are the app’s own date boxes: the calendar opens on to
   expect(await dateBoxValue(page, '[data-testid="po-date"]')).toBe('2026-07-20')
   await expect(page.locator('[data-testid="po-date"]')).toContainText('Mon 20 Jul 2026')
 
+  /* THE SAME TAP MADE TWICE DOES NOTHING MORE (the read's F1): on this sheet the calendar opens over the sheet's own
+     leave chips and its shade — a double-click on a date must leave the sheet up, the date in its box, and no bid placed */
+  if (!touch) {
+    await tapOn('[data-testid="po-date"]')
+    await calendarOnTop(page, 'PO from, for a double-click')
+    await page.locator('[data-testid="dcal-day-2026-07-21"]').dblclick()
+    await expect(page.locator('[data-testid="dcal-card"]')).toHaveCount(0)
+    await expect(sheet, 'the second click of a double-click closed the sheet').toBeVisible()
+    expect(await dateBoxValue(page, '[data-testid="po-date"]')).toBe('2026-07-21')
+    await expect(page.locator('[data-testid="cell-slipway-2026-07-14"]'), 'the second click placed a bid').not.toHaveClass(/\bbid\b/)
+    await tapOn('[data-testid="po-date"]')
+    await tapCalendarDate(page, '2026-07-20', touch)
+  }
+
   /* the Post out sheet — a struck day manages the posting; its date is committed the moment it is picked */
   await page.locator('[data-testid="po-confirm"]').click()
   await expect(sheet).toHaveCount(0)

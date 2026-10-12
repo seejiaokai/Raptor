@@ -61,6 +61,35 @@ describe('a date picked on the calendar that floats over a sheet, on a touch scr
     expect(onChange).not.toHaveBeenCalled()
     expect(boxValue(screen.getByTestId('po-date'))).toBe('2026-07-14')
   })
+  /* A SHEET HEARS ESCAPE AND TAB AT THE DOCUMENT, ON THE WAY DOWN (Sheet.tsx — Escape closes the topmost sheet; Tab is
+     kept inside it, and "focus left behind it is brought in"). The calendar floats outside the sheet, so both would act
+     on the SHEET while a date was being picked: Escape would close the sheet under the calendar, and Tab would pull the
+     keyboard back behind the veil. The calendar takes both keys first, at the window (ui/DateBox.tsx). */
+  it('Escape closes the calendar first — the sheet only on a second press', () => {
+    fireEvent.click(screen.getByTestId('po-date'))
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(screen.queryByTestId('dcal-card')).toBeNull()
+    expect(onClose).not.toHaveBeenCalled()
+    expect(screen.getByTestId('the-sheet')).toBeTruthy()
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+  it('Tab walks the calendar’s own stops: the sheet does not pull the keyboard back behind the veil', () => {
+    fireEvent.click(screen.getByTestId('po-date'))
+    const card = screen.getByTestId('dcal-card')
+    const stops = [...card.querySelectorAll<HTMLElement>('button, [tabindex]')].filter(e => !(e as HTMLButtonElement).disabled && e.tabIndex >= 0)
+    expect(stops.length).toBeGreaterThan(3)
+    stops[1].focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'Tab' })
+    expect(document.activeElement, 'Tab did not go to the calendar’s next stop').toBe(stops[2])
+    fireEvent.keyDown(document.activeElement!, { key: 'Tab', shiftKey: true })
+    expect(document.activeElement).toBe(stops[1])
+    /* and round the ends, still inside the card */
+    stops[stops.length - 1].focus()
+    fireEvent.keyDown(document.activeElement!, { key: 'Tab' })
+    expect(document.activeElement).toBe(stops[0])
+    expect(card.contains(document.activeElement)).toBe(true)
+  })
   it('with the calendar gone, a tap under the sheet still closes the sheet (the shield keeps its job)', () => {
     pickDate(screen.getByTestId('po-date'), '2026-07-20')
     const under = document.createElement('div'); document.body.appendChild(under)

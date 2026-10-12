@@ -167,6 +167,25 @@ for (const [what, viewport, touch] of [['a phone', PHONE, true], ['a desktop', D
     expect(await boxValue(page, '[data-testid="every-until"]')).toBe('')
     await expect(page.locator(win), 'the tap outside the calendar closed the window behind it').toBeVisible()
 
+    /* THE SAME TAP MADE TWICE DOES NOTHING MORE (the read's F1): a double-click on a date drawn over Save picks the
+       date — the second click does not fall through onto Save, so the window is still up and no rule is saved */
+    if (!touch) {
+      await press('[data-testid="every-until-none"]')
+      await press('[data-testid="every-from"]')
+      await calendarOnTop(page, 'From, for a double-click')
+      const save = await rect(page, '[data-testid="every-save"]')
+      const over = await page.locator('[data-testid="dcal-grid"] button:not([disabled])').evaluateAll((els, sv) => {
+        const hit = els.find(e => { const b = e.getBoundingClientRect(); const x = b.left + b.width / 2, y = b.top + b.height / 2; return x > sv.l && x < sv.r && y > sv.t && y < sv.b })
+        return hit ? hit.getAttribute('data-testid') : null
+      }, save)
+      expect(over, 'no date of the calendar is drawn over Save — the test proves nothing').toBeTruthy()
+      await page.locator(`[data-testid="${over}"]`).dblclick()
+      await expect(page.locator('[data-testid="dcal-card"]')).toHaveCount(0)
+      await expect(page.locator(win), 'the second click fell on Save and closed the window').toBeVisible()
+      expect(await boxValue(page, '[data-testid="every-from"]')).toBe(over!.slice('dcal-day-'.length))
+      await press('[data-testid="every-until-date"]')
+    }
+
     /* ESCAPE closes the calendar first, and the "Every …" window only on a second press (a keyboard — a desktop) */
     if (!touch) {
       await press('[data-testid="every-from"]')
@@ -207,7 +226,7 @@ for (const [what, viewport, touch] of [['a phone', PHONE, true], ['a desktop', D
       /* "A date range": ONE calendar in the form — no second box, nothing floating */
       await page.selectOption(`#${id}Mode`, 'range')
       await expect(page.locator(`#${id}Run`)).toBeVisible()
-      expect(await page.locator(`#${id}Date2`).count()).toBe(0); expect(await page.locator('.dcal-layer').count()).toBe(0)
+      expect(await page.locator(`#${id}Date2`).count()).toBe(0); expect(await page.locator('.dcal-layer:not(.dcal-patch)').count()).toBe(0)
       await page.locator(`#${id}Run`).scrollIntoViewIfNeeded()
       await boxFits(page, `#${id}Run`, '#admData', `${id}: the range calendar`)
       await press(`[data-testid="${id}Run-day-${today.slice(0, 8)}09"]`); await press(`[data-testid="${id}Run-day-${today.slice(0, 8)}12"]`)
@@ -290,6 +309,60 @@ test('a sideways phone (844 × 390): the whole calendar is on the screen', async
   await calendarOnTop(page, 'From, sideways')
   await press('[data-testid="dcal-title"]')
   await calendarOnTop(page, 'the lists, sideways')
+  await context.close()
+})
+
+/* THE WALK'S FIND (13 Oct 26, W2's scenario 9): with a calendar open, the mouse wheel scrolled the page behind the veil
+   and the panel ended up over its own box. The veil has taken the page: the wheel moves nothing behind it — and still
+   scrolls a month-and-year list. */
+test('a desktop: the mouse wheel does not scroll the page behind an open calendar, and still scrolls its lists', async ({ browser, baseURL }) => {
+  const { context, page, press } = await world(browser, baseURL, { width: 1280, height: 640 }, false)
+  await adminPanel(page, 'Users')
+  await page.locator('#accAddPostIn').evaluate(e => { const r = e.getBoundingClientRect(); window.scrollBy(0, r.top - 320) })
+  const scrolled = () => page.evaluate(() => Math.round(document.scrollingElement!.scrollTop + [...document.querySelectorAll<HTMLElement>('#page-admin, #page-admin *')].reduce((a, e) => a + e.scrollTop, 0)))
+  /* the page CAN scroll here — or "it did not scroll" would prove nothing */
+  const y0 = await scrolled()
+  await page.mouse.move(640, 100); await page.mouse.wheel(0, -120)
+  await expect.poll(scrolled, { message: 'the page under test does not scroll at all' }).not.toBe(y0)
+  await page.mouse.wheel(0, 120)
+  await expect.poll(scrolled).toBe(y0)
+  await press('#accAddPostIn')
+  const m0 = await calendarOnTop(page, 'Post in')
+  const box0 = await rect(page, '#accAddPostIn')
+  await page.mouse.move(20, 300)                                           // over the veil
+  await page.mouse.wheel(0, -240); await page.mouse.wheel(0, 240); await page.mouse.wheel(0, -240)
+  await page.waitForTimeout(250)
+  expect(await scrolled(), 'the page scrolled behind the calendar').toBe(y0)
+  expect((await rect(page, '#accAddPostIn')).t, 'the box moved under the calendar').toBe(box0.t)
+  await page.mouse.move((m0.l + m0.r) / 2, (m0.t + m0.b) / 2)              // over the dates
+  await page.mouse.wheel(0, -240)
+  await page.waitForTimeout(250)
+  expect(await scrolled()).toBe(y0)
+  /* the lists still scroll under the wheel */
+  await press('[data-testid="dcal-title"]')
+  const title = () => page.locator('[data-testid="dcal-title"]').innerText()
+  const t0 = await title()
+  const yr = await rect(page, '[data-testid="dcal-years"]')
+  await page.mouse.move(yr.l + yr.w / 2, yr.t + yr.h / 2)
+  await page.mouse.wheel(0, 132)
+  await expect.poll(title, { message: 'the wheel over the year list chose no other year' }).not.toBe(t0)
+  expect(await scrolled()).toBe(y0)
+  await context.close()
+})
+
+/* THE WALK'S FIND (13 Oct 26, W1's scenario 14): a phone turned on its side and back with the calendar up left the card
+   half off the screen — it kept the place written for the other layout. Whole on the screen, and on top, at each turn. */
+test('a phone turned on its side and back with the calendar up: the calendar is wholly on the screen at each turn', async ({ browser, baseURL }) => {
+  const { context, page, press } = await world(browser, baseURL, PHONE, true)
+  await openCalendarWindow(page, press)
+  await press('[data-testid="days-wd-3"]')
+  await press('[data-testid="every-from"]')
+  await calendarOnTop(page, 'upright')
+  for (const [what, size] of [['on its side', { width: 844, height: 390 }], ['upright again', PHONE], ['on its side again', { width: 844, height: 390 }], ['upright a third time', PHONE]] as const) {
+    await page.setViewportSize(size)
+    const m = await calendarOnTop(page, what)
+    if (size.width < 620) expect(Math.abs((m.l + m.r) / 2 - m.vw / 2), `${what}: the card is not in the middle of the phone's screen`).toBeLessThanOrEqual(1)
+  }
   await context.close()
 })
 

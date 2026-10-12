@@ -81,9 +81,19 @@ export async function newWorld(which, opts = {}) {
     await page.waitForTimeout(150)
     await w.press(sel); await page.waitForTimeout(350)
   }
-  w.close = async () => { await w.browser.close() }
+  w.close = async () => { try { appendFileSync(join(HERE, 'results.ndjson'), JSON.stringify({ run: process.argv[1].split(/[\\/]/).pop() + ' ' + which, results: w.results }) + '\n') } catch {} ; await w.browser.close() }
   return w
 }
 // the app's hidden person id for a callsign as the Leave War's rows show it (Drifter is "slipway", Ranger is "bane" ...)
 export const idOf = (page, name) => page.evaluate(n => { const r = [...document.querySelectorAll('[data-testid^="row-"]')].find(e => new RegExp('^\\s*' + n + '\\b', 'm').test(e.innerText)); return r ? r.getAttribute('data-testid').slice(4) : null }, name)
 export const rec =(w, id, verdict, seen, pic = '') => { w.results.push({ id, verdict, seen, pic }); console.log(`>> S${id} ${verdict} - ${seen} ${pic ? '[' + pic + ']' : ''}`) }
+
+// every run appends what the browser reported (console errors, page errors, 4xx responses) and its results to files beside the scripts
+import { appendFileSync } from 'node:fs'
+process.on('exit', () => {
+  try {
+    const who = process.argv[1].split(/[\/]/).pop() + ' ' + (process.argv[2] || '')
+    appendFileSync(join(HERE, 'errors.log'), `${who}: ${errors.length ? '\n  ' + errors.join('\n  ') : 'none'}\n`)
+  } catch {}
+})
+const _newWorld = newWorld

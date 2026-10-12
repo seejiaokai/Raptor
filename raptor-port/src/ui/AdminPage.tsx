@@ -80,10 +80,12 @@ export function ClearControl(props: {
   }
   /* THE APP'S OWN DATE BOX for the one date of "older than" and "a specific date"; for "a date range", ONE calendar
      drawn in the form itself — two taps make the run, and it is said in words beneath (owner D796, D797; before, two of
-     the phone's own date boxes). A run is always whole: one tap is a run of one day. */
+     the phone's own date boxes). A run is always whole: one tap is a run of one day. A date picked in a one-date mode
+     drops a range's old end, so back on "a date range" it is a run of THAT day — never a run to an end chosen earlier,
+     in another month, on a form that clears for good (the read of the finished code, 13 Oct 26 — F6). */
   const date = (lbl: string, v: string, set: (x: string) => void, id: string) => (
     <div className="mfield"><label htmlFor={id}>{lbl}</label>
-      <DateBox id={id} label={lbl} value={v} onChange={x => { set(x); setArmed(-1) }} /></div>
+      <DateBox id={id} label={lbl} value={v} onChange={x => { set(x); setB(''); setArmed(-1) }} /></div>
   )
   return (<div className="adm-clear">
     <div className="mfield"><label>Period</label>

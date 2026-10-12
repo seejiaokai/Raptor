@@ -122,6 +122,18 @@ describe('"A date range" — one calendar in the form, not two boxes', () => {
     fireEvent.click(go())
     expect(run).toHaveBeenLastCalledWith('on', '2026-11-09', '2026-11-12', true)
   })
+  /* THE READ'S F6 (13 Oct 26): a range made, then ONE date picked in another mode, came back as a run from that date to
+     the OLD end — fourteen days where he last chose one, its end in another month, on a form that clears for good */
+  it('a date picked in a one-date mode after a range was made is a run of THAT day, not a run to the old end', () => {
+    mode('range')
+    tapDay('2026-10-28', 'xRun'); tapDay('2026-11-02', 'xRun')
+    mode('on')
+    pickDate($('#xDate'), '2026-10-20')
+    mode('range')
+    expect(screen.getByTestId('xRun-foot').textContent).toBe('Tue 20 Oct 2026')
+    fireEvent.click(go())
+    expect(run).toHaveBeenLastCalledWith('range', '2026-10-20', '2026-10-20', true)
+  })
   it('changing the period DISARMS', () => {
     pickDate($('#xDate'), '2026-10-01'); fireEvent.click(go())
     expect(go().textContent).toBe('Tap again to clear 3 items')

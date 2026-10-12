@@ -12,7 +12,7 @@
    test (e2e/datebox.spec.ts) — jsdom has no layout. */
 import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { DateBox } from './DateBox'
 import { FloatWin, _resetFloatWins } from './FloatWindow'
 import { boxValue, calMonth, pickDate } from './datecal-testkit'
@@ -26,7 +26,8 @@ afterEach(() => { cleanup(); _resetFloatWins(); vi.useRealTimers() })
 
 const t = (id: string) => screen.getByTestId(id)
 const q = (id: string) => screen.queryByTestId(id)
-const layer = () => document.querySelector('.dcal-layer')
+/* the calendar's layer — not the small patch that stands for a moment after it has gone, which wears the same class */
+const layer = () => document.querySelector('.dcal-layer:not(.dcal-patch)')
 
 function Box(p: { value0?: string; onChange?: (v: string) => void; min?: string; markWd?: number; at?: string; disabled?: boolean }) {
   const [v, setV] = useState(p.value0 ?? '2026-11-05')
@@ -235,6 +236,133 @@ describe('the keyboard stays in the calendar while it is up', () => {
     fireEvent.keyDown(t('dcal-day-2026-11-06'), { key: 'Enter' })
     fireEvent.click(t('dcal-next'))
     expect(heard).not.toHaveBeenCalled()
+  })
+})
+
+/* THE READ'S F1 (13 Oct 26): the calendar goes at the first click of a double-click, and the second click fell on
+   whatever of the form lay under that date — Save, a rule's Remove, a leave chip, the shade that closes a Leave War
+   sheet. For a moment after a pick or a tap outside made by a pointer, a small see-through patch stands where the click
+   landed and takes the click that may follow there. By place AND time, as the Leave War guards its Move button: a
+   time alone would eat a deliberate quick click somewhere else. */
+describe('the same tap made twice does nothing more', () => {
+  const at = { detail: 1, clientX: 140, clientY: 260 }
+  it('a date picked by a pointer leaves a patch where the click landed, and it takes the click that follows', () => {
+    const behind = vi.fn()
+    render(<div onClick={behind}><Box /></div>)
+    fireEvent.click(t('box'))
+    fireEvent.click(t('dcal-day-2026-11-19'), at)
+    expect(layer()).toBeNull()
+    const patch = t('dcal-patch')
+    expect(patch.parentElement).toBe(document.body)
+    expect(patch.style.left).toBe('128px'); expect(patch.style.top).toBe('248px')
+    expect(patch.style.width).toBe('24px'); expect(patch.style.height).toBe('24px')
+    /* it carries the layer's own class, so a Leave War sheet's tap shield lets it through as it does the calendar */
+    expect(patch.classList.contains('dcal-layer')).toBe(true)
+    behind.mockClear()
+    fireEvent.pointerDown(patch); fireEvent.mouseDown(patch); fireEvent.click(patch, at)
+    expect(behind).not.toHaveBeenCalled()
+    expect(q('dcal-patch'), 'the patch is spent by the click it took').toBeNull()
+    expect(boxValue(t('box'))).toBe('2026-11-19')
+  })
+  it('the patch goes by itself after a moment, so a later press there is its own', () => {
+    vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] })
+    vi.setSystemTime(new Date(2026, 10, 3, 12, 0, 0))
+    render(<Box />)
+    fireEvent.click(t('box'))
+    fireEvent.click(t('dcal-day-2026-11-19'), at)
+    expect(q('dcal-patch')).toBeTruthy()
+    act(() => { vi.advanceTimersByTime(399) })
+    expect(q('dcal-patch')).toBeTruthy()
+    act(() => { vi.advanceTimersByTime(2) })
+    expect(q('dcal-patch')).toBeNull()
+  })
+  it('a tap outside made by a pointer leaves one too; a pick by the keyboard, and Escape, leave none', () => {
+    render(<Box />)
+    fireEvent.click(t('box'))
+    fireEvent.click(t('dcal-scrim'), at)
+    expect(layer()).toBeNull(); expect(q('dcal-patch')).toBeTruthy()
+    cleanup()
+    render(<Box />)
+    fireEvent.click(t('box'))
+    fireEvent.click(t('dcal-day-2026-11-19'))                              // Enter on a date is a click with no pointer
+    expect(q('dcal-patch')).toBeNull()
+    fireEvent.click(t('box'))
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+    expect(q('dcal-patch')).toBeNull()
+  })
+  it('opening the box again while a patch stands takes the patch away', () => {
+    render(<Box />)
+    fireEvent.click(t('box'))
+    fireEvent.click(t('dcal-day-2026-11-19'), at)
+    fireEvent.click(t('box'))
+    expect(q('dcal-patch')).toBeNull(); expect(layer()).toBeTruthy()
+  })
+  it('the patch leaves the page with its box', () => {
+    const a = render(<Box />)
+    fireEvent.click(t('box'))
+    fireEvent.click(t('dcal-day-2026-11-19'), at)
+    a.unmount()
+    expect(q('dcal-patch')).toBeNull()
+  })
+})
+
+/* THE READ'S F7 (latent): a box switched off while its calendar is up must not spring open again when switched on */
+describe('a box switched off while its calendar is up', () => {
+  it('is closed for good: switched on again, no calendar is up', () => {
+    const view = render(<DateBox testid="box" label="From" value="2026-11-05" onChange={() => {}} />)
+    fireEvent.click(t('box'))
+    expect(layer()).toBeTruthy()
+    view.rerender(<DateBox testid="box" label="From" value="2026-11-05" onChange={() => {}} disabled />)
+    expect(layer()).toBeNull()
+    view.rerender(<DateBox testid="box" label="From" value="2026-11-05" onChange={() => {}} />)
+    expect(layer(), 'the calendar came back up by itself').toBeNull()
+    expect(t('box').getAttribute('aria-expanded')).toBe('false')
+  })
+})
+
+describe('the page behind does not scroll under the calendar (the walk, 13 Oct 26)', () => {
+  const wheel = (el: Element) => { const e = new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 120 }); el.dispatchEvent(e); return e.defaultPrevented }
+  it('a mouse wheel over the veil or the dates scrolls nothing; over a month-and-year list it scrolls that list', () => {
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(wheel(t('dcal-scrim')), 'the wheel over the veil is left to scroll the page').toBe(true)
+    expect(wheel(t('dcal-day-2026-11-05')), 'the wheel over the dates is left to scroll the page').toBe(true)
+    expect(wheel(t('dcal-title'))).toBe(true)
+    fireEvent.click(t('dcal-title'))
+    expect(wheel(t('dcal-years').querySelector('[role="option"]')!), 'the wheel over the year list is taken from it').toBe(false)
+    expect(wheel(t('dcal-months'))).toBe(false)
+    expect(wheel(t('dcal-today'))).toBe(true)
+  })
+  it('with no calendar up, the wheel is nobody’s but the page’s', () => {
+    render(<Box />)
+    expect(wheel(t('box'))).toBe(false)
+    fireEvent.click(t('box')); fireEvent.click(t('dcal-scrim'))
+    expect(wheel(t('box'))).toBe(false)
+  })
+})
+
+describe('a phone turned on its side with the calendar up (the walk, 13 Oct 26)', () => {
+  const realMM = window.matchMedia
+  const screenIs = (phone: boolean) => { (window as any).matchMedia = (q: string) => ({ matches: phone && /max-width:\s*620px/.test(q), addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }) }
+  afterEach(() => { (window as any).matchMedia = realMM })
+  it('the layout is asked again when the screen changes size, and the desktop panel’s place is given back', () => {
+    screenIs(false)
+    render(<Box />)
+    fireEvent.click(t('box'))
+    expect(layer()!.classList.contains('is-phone')).toBe(false)
+    /* a desktop's panel is placed under its box: its place is written on the card */
+    expect(t('dcal-card').style.left).not.toBe('')
+    screenIs(true)
+    fireEvent(window, new Event('resize'))
+    expect(layer()!.classList.contains('is-phone'), 'still the desktop layout on a phone-wide screen').toBe(true)
+    expect(t('dcal-card').style.left, 'the desktop panel’s place is still written on the phone’s card').toBe('')
+    expect(t('dcal-card').style.top).toBe('')
+    screenIs(false)
+    fireEvent(window, new Event('resize'))
+    expect(layer()!.classList.contains('is-phone')).toBe(false)
+    expect(t('dcal-card').style.left).not.toBe('')
+    /* and it is still the same calendar, open, with its date */
+    expect(t('dcal-day-2026-11-05').classList.contains('is-sel')).toBe(true)
   })
 })
 
