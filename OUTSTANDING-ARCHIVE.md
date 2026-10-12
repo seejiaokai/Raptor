@@ -4318,3 +4318,48 @@ The record of step 5: `raptor-port/docs/superpowers/plans/2026-10-11-one-rule-pl
 
 **ANSWERED 13 Oct 26 — D790 (*"Yes option 2"*, of three put to him with the table above: 1 an Opus read only; 2 an Opus read on every job that needs a code read, Fable added only on the riskiest; 3 both every time):** every job that needs a code read gets a FRESH, blind Opus read of its finished code; Fable reads it as well only on the riskiest changes — OIL, published days, who may do what, saved data. The rule and the agent’s readings: D790’s full row; the method: `raptor-port/docs/bug-check-order.md` §4 ("Who reads the finished code now"). D788 and D789 are in `DECISIONS-ARCHIVE.md`. No further trial. **This item is finished:** it leaves for the archive at the next handoff, its two tables with it.
 
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([WALK-FINGER-NOT-LOCATOR]). Forward facts: `raptor-port/docs/bug-check-order.md`.*
+
+### [WALK-FINGER-NOT-LOCATOR] Two lines for the checking guide, from his find of 10 Oct 26 — a proposal, NOT yet in the guide
+**Status: PROPOSED — a change to a working guide is read by Astra and Sol 6.1 before he approves it (D70); nothing in `raptor-port/docs/bug-check-order.md` is changed.** His find (the List's dates calendar drawn below the foot of a phone's screen — `raptor-port/docs/handpass/2026-10-10-list-dates-picker.md` §1) passed a FULL check the night before: four browser tests and every walker pressed that calendar with a scripted press that scrolls its target into view first, so the buttons worked and nobody saw that a person could not find them. **Proposed line 1 (§7.2, beside "the driver moves the view the way a person does"):** on a phone, a pop-up, menu or window that a press opens is proved ON SCREEN before anything in it is pressed — the page not scrolled by the script, the pop-up's box inside the screen, a finger at a point on it meeting it — and its controls are then pressed at a point; a scripted press that scrolls first can hide a pop-up nobody could find. **Proposed line 2 (§6, the roll-call):** a build that REMOVES something from a page lists what moved because of it — everything that stood below it — and every pop-up on that page placed against the screen rather than against its own button. **Until it is read and approved** the two are followed by this branch's own tests (`raptor-port/e2e/inputs-calendar.spec.ts`, "the dates button opens its calendar on screen") and nothing else is claimed. **Place:** the agent's — with the next change to the checking guide, one round each by Astra and Sol 6.1, then his approval.
+
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([METHOD-LIT-COLOUR]). Forward facts: `raptor-port/docs/bug-check-order.md`.*
+
+### [METHOD-LIT-COLOUR] The checking guide gains a line from his find of 11 Oct 26: a mark's COLOUR is checked per man, on a day that mixes levels (owed — a guide change, read by Astra and Sol first, D70)
+**Owed, NOT made.** On 11 Oct 26 he found, on his phone, that a day's open issues list lit every man it named in the day's worst colour — older than any walk (31 Jul 26), fixed on `claude/group-input-one-row` (`raptor-port/docs/handpass/2026-10-11-group-input-one-row.md` §14). Every defect he finds costs the method a line (`raptor-port/docs/bug-check-order.md` §11). **The line proposed, for the two readers:** in §7.1's everything-day, "a day whose issues list mixes all three levels — a red item, an amber one and a note — with a man each names alone"; and under anti-pattern 21 (the picture taken, not looked at), "a mark with more than one colour is asserted per man as PAINTED — its computed colour against that man's own item — never only that the mark is on". **Why not made with the fix:** a change to a working guide is read by Astra and Sol 6.1 before he approves it (D70), and his ChatGPT allowance is out until 14 Oct 26. **As filed:** small; do it with the next guide change after 14 Oct.
+
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([SKILL-OBS-REVIEW]). Forward facts: `.claude/skills/TASK-OBSERVER-VENDORED.md`.*
+
+### [SKILL-OBS-REVIEW] Review the skill-observation backlog — he asked for it "soon" (8 Oct 26)
+
+Told that the observation backlog had not been reviewed since 24 Sep 26 (about 200 open entries in
+`.claude/skill-observations/log.md`), he said: *"Yeah we should review the skill soon too"*. **To do:** run the review as
+its own job, in a fresh chat, documents only — the way this repo runs it is `.claude/skills/TASK-OBSERVER-VENDORED.md`
+and the skill's `references/weekly-review.md`; a change to a working guide that comes out of it is read by Astra and
+Sol 6.1 before his approval (D70), and merges only on his "merge live". **Place:** his "soon" — offer it at the next
+handoff; it needs no code and can run beside the calendar job in its own worktree on `main`.
+
+**HIS WORD, 13 Oct 26 — D794 (*"1"*, of three orders put to him): it is run NOW, in its own documents-only chat, beside the
+Calendar-on-a-phone job (`[CAL-PHONE-SWIPE-FIT]`, D786) — neither waits for the other.** About 270 notes are open (541 is
+the newest). **To put to him before any guide is changed (asked 13 Oct 26, not answered):** who reads the guide changes
+that come out of it while Astra and Sol 6.1 are out (D70) — A, Fable on his word, the missing ChatGPT read on the one list
+(`[NO-ASTRA-LIST]`) — recommended; or B, every guide change held unmerged until ChatGPT is back.
+
+**ANSWERED 13 Oct 26 — D810 (*"u can use opus to do the review solely"*): neither A nor B — Opus alone.** Opus runs the
+review, and the guide changes it drafts are read by ONE fresh, blind Opus reader (an Opus that did not write them) before
+he approves them; Fable is not called; the two ChatGPT reads it goes without are on `[NO-ASTRA-LIST]`. **IN HAND on
+`claude/skill-observation-review-258b48`** (its block in `HANDOFF.md`): 272 notes open at the start (120 to 541).
+
+**DONE 13 Oct 26 — approved by him (D811, *"Approve all"*) and installed on the branch; live on his "merge live".** All
+272 notes dispositioned: 264 closed as carried (a guide, a memory note, a filed job, or already written), 6 closed with
+no change on his word, 2 left open on D73 (120, 122). 24 files changed and two guides added —
+`raptor-port/docs/walk-scripts.md` and `.claude/skills/brainstorming/mockups-on-the-real-app.md`; what each skill
+gained is listed in `.claude/skills/SUPERPOWERS-VENDORED.md` change 5 and `.claude/skills/TASK-OBSERVER-VENDORED.md`
+§Local changes. The fresh Opus reader's report (REVISE, 21 items — 20 taken, one answered by him) and the table of all
+272 notes are in git history (commit `75d5564d2`, `.claude/skill-updates/2026-10-13/_review/`). Filed from it:
+`[SHELL-SCRIPT-GUARD]`, `[CHECK-TOOLS-HARDEN]`, `[HWW-RULINGS-SIZE]`. The resolved notes:
+`.claude/skill-observations/archive/log-2026-10-13.md`.
+
