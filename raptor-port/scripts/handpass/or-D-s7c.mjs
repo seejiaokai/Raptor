@@ -1,0 +1,48 @@
+// D7 (part 3) — 844x390 in a context OPENED at that size (the world — a Meeting filed through the app — is carried over as the browser's own storage)
+import { open, fileInput, shot, sleep, log, errs, browser, press, WIN, swipeIn, inputsOf, goWeek, popInfo, signIn, BASE, touchDrag } from './or-D-lib.mjs'
+
+const A = await open({ viewport: { width: 390, height: 844 } })
+await fileInput(A.page, { type: 'Meeting', people: ['Drifter', 'Hunter', 'Blade'], from: '2026-07-15', to: '2026-07-15', timed: ['14:00', '15:00'], title: 'Range brief' })
+const state = await A.ctx.storageState()
+await A.ctx.close()
+const V = { width: 844, height: 390 }
+const ctx = await browser.newContext({ viewport: V, deviceScaleFactor: 2, isMobile: true, hasTouch: true, storageState: state })
+const page = await ctx.newPage()
+await page.clock.setFixedTime(new Date('2026-06-22T09:00:00'))
+page.on('pageerror', e => errs.push('844 pageerror ' + String(e).slice(0, 200)))
+page.on('console', m => { if (m.type() === 'error') errs.push('844 console ' + m.text().slice(0, 200)) })
+await page.goto(BASE); await signIn(page, 'ad', 'a'); await sleep(800)
+const rb = await inputsOf(page, 'Range brief')
+log('D7c carried over: Range brief people =', JSON.stringify(rb[0] && rb[0].people), '| layout', JSON.stringify(await page.evaluate(() => ({ iw: innerWidth, ih: innerHeight, sw: document.documentElement.scrollWidth }))))
+const geoNew = () => page.evaluate(sel => { const w = document.querySelector(sel).getBoundingClientRect(); const a = document.getElementById('inpEditSave').getBoundingClientRect(); const x = document.querySelector('[data-testid="win-inputedit-x"]'); const xb = x ? x.getBoundingClientRect() : null; return { screen: [844, 390], page: [innerWidth, innerHeight], win: [w.x, w.y, w.width, w.height].map(Math.round), winRight: Math.round(w.right), add: [a.x, a.y, a.width, a.height].map(Math.round), addFullyOnScreen: a.right <= 844 && a.bottom <= 390 && a.left >= 0, closeX: xb && [xb.x, xb.y, xb.width, xb.height].map(Math.round), closeFullyOnScreen: xb ? xb.right <= 844 : null } }, WIN)
+await page.evaluate(() => window.go('inputs')); await sleep(500)
+if (await page.locator('#inListBtn[aria-pressed="false"]').count()) { await press(page.locator('#inListBtn')); await sleep(300) }
+log('D7c layout on the Inputs page before the window:', JSON.stringify(await page.evaluate(() => ({ iw: innerWidth, ih: innerHeight }))))
+await press(page.locator('#inNew')); await page.locator(WIN).waitFor(); await sleep(700)
+log('D7c "+ Input" window at 844x390:', JSON.stringify(await geoNew()))
+await shot(page, 'D7-844x390-c01-window')
+// the finger route that brings it in: drag its grip
+const grip = await page.locator(`${WIN} .win-grip, ${WIN} .airpop-head`).first().boundingBox()
+await touchDrag(page, { x: grip.x + 8, y: grip.y + 8 }, { x: grip.x - 300, y: grip.y + 8 }, { hold: 100, settle: 500 })
+log('D7c after dragging the window by its grip 300px left:', JSON.stringify(await geoNew()))
+await shot(page, 'D7-844x390-c02-window-dragged')
+await press(page.locator('#inpEditCancel'), 5000).catch(e => log('D7c Cancel could not be tapped', String(e).slice(0, 80)))
+await sleep(400)
+// the schedule's window
+await goWeek(page); await sleep(800)
+await page.evaluate(() => { const t = document.querySelector('#page-editsched .day:not(.peek) [data-pitog="2"]'); if (t && /show/.test(t.innerText)) t.click() }); await sleep(500)
+const il = page.locator('#page-editsched .day:not(.peek) .sec-inp .pl-row', { hasText: 'Range brief' }).first()
+await il.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await sleep(900)
+await il.locator('.inpedit').tap({ timeout: 8000 }).catch(e => log('D7c could not tap the line', String(e).slice(0, 120))); await sleep(900)
+const pi = await popInfo(page)
+log('D7c window from the schedule at 844x390:', JSON.stringify(pi && { box: pi.box, gapTop: pi.gapTop, gapBottom: pi.gapBottom, vh: pi.vh, content: pi.content, shown: pi.shown }))
+await shot(page, 'D7-844x390-c03-sched-window')
+if (pi) {
+  const y0 = await page.evaluate(() => Math.round(window.scrollY))
+  for (const dy of [-250, -250, -250, -250, 250, 250, 250, 250, 250]) await swipeIn(page, 300, 250, dy)
+  const y1 = await page.evaluate(() => Math.round(window.scrollY)); const p2 = await popInfo(page)
+  log('D7c page behind (scrollY) before / after nine swipes inside the schedule window:', y0, y1, '| window scrollTop now', p2 && p2.scrollTop)
+  await shot(page, 'D7-844x390-c04-sched-after-swipes')
+}
+log('D7c errs', JSON.stringify(errs))
+await ctx.close(); await browser.close()

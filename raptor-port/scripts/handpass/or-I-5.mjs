@@ -1,0 +1,48 @@
+// I12 (a leave approved on the Leave War lights no bell).
+import * as L from './or-I-lib.mjs'
+const { page, browser } = await L.start({ who: 'us', pass: 'us', clock: '2026-06-22T09:00:00' })
+const RANGER = await L.csId(page, 'Ranger')
+const CELL = `[data-testid="cell-${RANGER}-2026-02-10"]`
+const say = L.say
+const results = {}
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1500)
+say('Ranger on the Leave War; viewing as:', (await page.locator('#page-leavewar').innerText()).replace(/\s+/g, ' ').match(/VIEWING AS \S+/)?.[0], '| stage text:', (await page.locator('#page-leavewar').innerText()).replace(/\s+/g, ' ').match(/STAGE [A-Z ]+?(?= →| ←|\s{2})/)?.[0])
+say('bell at the start:', JSON.stringify(await L.bellState(page)))
+await page.locator('[data-testid="month-FEB"]').click(); await page.waitForTimeout(1200)
+await page.locator(CELL).scrollIntoViewIfNeeded()
+await page.locator(CELL).click(); await page.waitForTimeout(700)
+await L.shot(page, 'I12-ranger-sheet')
+say('sheet buttons:', await page.evaluate(() => [...document.querySelectorAll('[data-testid^="bid-"], [data-testid^="decide-"], [data-testid^="sheet"], [data-testid^="bidsheet"]')].filter(b => b.offsetParent).map(b => b.getAttribute('data-testid') + ':' + b.textContent.trim().slice(0, 20)).join(' | ')))
+await page.locator('[data-testid="bid-LL"]').click(); await page.waitForTimeout(500)
+await page.locator('[data-testid="bid-LL"]').click(); await page.waitForTimeout(800)
+say('after the second tap; sheet up?', await page.locator('[data-testid="sheet-scrim"]').count(), '| cell text:', JSON.stringify((await page.locator(CELL).innerText()).trim()), '| note:', await L.note(page))
+await L.shot(page, 'I12-ranger-after-bid')
+say("Ranger's bell after his own bid:", JSON.stringify(await L.bellState(page)))
+const bidState = () => page.evaluate(id => { const c = document.querySelector('[data-testid="cell-' + id + '-2026-02-10"]'); return c ? c.className.slice(0, 80) : 'no cell' }, RANGER)
+say('cell class:', await bidState())
+// Saber signs in, closes bidding, approves
+await L.signOut(page); await L.signIn(page, 'ad', 'a')
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1500)
+await page.locator('[data-testid="month-FEB"]').click(); await page.waitForTimeout(1000)
+say('Saber stage button:', (await page.locator('[data-testid="stage-advance"]').innerText()))
+await page.locator('[data-testid="stage-advance"]').click(); await page.waitForTimeout(800)
+say('after the stage button: note', await L.note(page), '| confirm?', await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent && /confirm|yes|close bidding|advance/i.test(b.textContent)).map(b => (b.getAttribute('data-testid') || b.id) + ':' + b.textContent.trim().slice(0, 25)).join(' | ')))
+await page.locator(CELL).scrollIntoViewIfNeeded(); await page.locator(CELL).click(); await page.waitForTimeout(700)
+await L.shot(page, 'I12-saber-sheet')
+say('sheet buttons:', await page.evaluate(() => [...document.querySelectorAll('[data-testid^="decide-"], [data-testid^="bid-"]')].filter(b => b.offsetParent).map(b => b.getAttribute('data-testid') + ':' + b.textContent.trim().slice(0, 20)).join(' | ')))
+const ap = page.locator('[data-testid="decide-approve"]')
+if (await ap.count()) { await ap.first().click(); await page.waitForTimeout(800) }
+say('after Approve: cell class', await bidState(), '| note:', await L.note(page))
+await L.shot(page, 'I12-saber-after-approve')
+say("Saber's own bell:", JSON.stringify(await L.bellState(page)))
+// Ranger signs in
+await L.signOut(page); await L.signIn(page, 'us', 'us')
+const st = await L.bellState(page)
+say("Ranger's bell after the approval:", JSON.stringify(st))
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1200)
+const f = await L.openList(page)
+say('list:', f && f.empty ? f.empty : JSON.stringify(L.lineTexts(f)))
+await L.shotList(page, 'I12-ranger-bell')
+L.record('I12', { bell: st, list: f && (f.empty || L.lineTexts(f)) })
+console.log(L.errs)
+await browser.close()

@@ -1,0 +1,20 @@
+// does the week's Personal Inputs line appear straight after Saber signs in? (seen in passing during A1/A5)
+import { launch, openWorld, fileInput, signOut, signIn, SAT, SAT_DI, errs, OUT } from './or-A-lib.mjs'
+import { readWeek, weekDayLoc, openBoard, closeBoard, toWeek } from './or-A-read.mjs'
+import { join } from 'node:path'
+const browser = await launch()
+const { page } = await openWorld(browser, 'probe1', { who: 'us', pass: 'us' })
+await fileInput(page, { type: 'Training', person: 'Ranger', from: SAT, to: SAT, timed: ['09:00', '12:00'], title: '', oil: 'yes' })
+await signOut(page); await signIn(page, 'ad', 'a')
+await page.evaluate(() => window.go('editsched'))
+await page.locator('#eWeek .day').first().waitFor(); await page.waitForTimeout(800)
+const secs = () => weekDayLoc(page, SAT_DI).locator('.sec-inp').first()
+let w = await readWeek(page, SAT_DI)
+console.log('first view: PI lines', w.inputs.length)
+await secs().scrollIntoViewIfNeeded(); await secs().screenshot({ path: join(OUT, 'P1-week-inputs-first-view.png') })
+await openBoard(page, SAT_DI); await closeBoard(page); await toWeek(page)
+w = await readWeek(page, SAT_DI)
+console.log('after a visit to the board: PI lines', w.inputs.length, JSON.stringify(w.inputs.map(g => g.txt)))
+await secs().scrollIntoViewIfNeeded(); await secs().screenshot({ path: join(OUT, 'P1-week-inputs-after-board.png') })
+console.log(JSON.stringify(errs))
+await browser.close()

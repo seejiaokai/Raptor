@@ -1,0 +1,11 @@
+import { open, fileInput, toWeek, shot, saveRes, errs, browser, toast, signAndPublish } from './or-L-lib.mjs'
+const { ctx, page } = await open('ad', 'a')
+const f = await fileInput(page, { type: 'OD', people: ['Drifter', 'Hunter'], from: '2026-07-16', to: '2026-07-16' })
+console.log(JSON.stringify(f))
+console.log(await page.evaluate(() => JSON.stringify(window.INPUTS.find(r => r.type === 'OD' && r.date === 'Jul 16' && r.people))))
+console.log(JSON.stringify(await signAndPublish(page, 3)))
+await toWeek(page)
+const html = await page.evaluate(() => { const d = [...document.querySelectorAll('#eWeek .day:not(.peek)')][3]; return [...d.querySelectorAll('.sec-unav .pl-row')].slice(0, 3).map(r => r.outerHTML.slice(0, 1500)) })
+console.log(html.join('\n\n'))
+console.log(errs.join('\n'))
+await browser.close()

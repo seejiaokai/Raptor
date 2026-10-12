@@ -1,0 +1,63 @@
+{
+ "filed": [
+  {
+   "iid": "imqoidgg0d4c2wy",
+   "type": "Training",
+   "title": "Course wk",
+   "date": "Jul 13",
+   "s": 540,
+   "e": 600,
+   "grp": null,
+   "people": [
+    "Hex",
+    "Hunter",
+    "Ranger"
+   ],
+   "acc": "g"
+  }
+ ],
+ "before": {
+  "label": "before",
+  "inputs": {
+   "people": [
+    "Hex",
+    "Hunter",
+    "Ranger"
+   ],
+   "date": "Jul 13"
+  },
+  "week": [
+   "0:Hex,Hunter,Ranger",
+   "1:",
+   "2:",
+   "3:",
+   "4:"
+  ]
+ },
+ "poLine": "On 15 Jul: archived, account suspended.",
+ "afterConfirmBtn": "(sheet gone)",
+ "hex": {
+  "archived": false,
+  "san": false,
+  "deleted": false,
+  "po": null
+ },
+ "after": {
+  "label": "after",
+  "inputs": {
+   "people": [
+    "Hex",
+    "Hunter",
+    "Ranger"
+   ],
+   "date": "Jul 13"
+  },
+  "week": [
+   "0:Hex,Hunter,Ranger",
+   "1:",
+   "2:",
+   "3:",
+   "4:"
+  ]
+ }
+}

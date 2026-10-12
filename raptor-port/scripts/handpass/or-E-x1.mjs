@@ -1,0 +1,15 @@
+// explore: reload the saved world, find the week's Personal Inputs line for the cancelled input
+import { browser, PARTS, URL, sleep, mk, DI } from './or-E-lib.mjs'
+const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, storageState: `${PARTS}/or-E-state1.json` })
+const page = await ctx.newPage()
+await page.clock.setFixedTime(new Date('2026-06-22T09:00:00'))
+await page.goto(URL)
+const w = mk(page, ctx, true, [], 'x')
+await w.signIn('ad', 'a')
+console.log('INPUTS', await page.evaluate(() => window.INPUTS.filter(r => r.title === 'Range brief').map(r => [r.iid, r.cx, r.cxr])))
+await page.evaluate(() => window.go('editsched')); await page.locator('#eWeek .day').first().waitFor(); await sleep(500)
+console.log(await page.evaluate(di => { const d = [...document.querySelectorAll('#eWeek .day')][di]; const s = d.querySelector('.sec-inp'); return s ? s.outerHTML.slice(0, 3000) : 'no sec-inp: ' + [...d.children].map(c => c.className).join('|') }, DI))
+const f = page.locator('#eWeek .sec-inp .pl-fold[data-pitog="2"]').first()
+await f.scrollIntoViewIfNeeded(); await f.tap(); await sleep(500)
+console.log(JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('#eWeek .sec-inp .pl-row, #eWeek .sec-inp .pl-row *')].filter(x => getComputedStyle(x, '::after').content.includes('accepted')).map(x => ({ cls: x.className, deco: getComputedStyle(x, '::after').textDecorationLine, parentDeco: getComputedStyle(x).textDecorationLine, col: getComputedStyle(x, '::after').color })))))
+await browser.close()

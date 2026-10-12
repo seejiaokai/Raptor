@@ -1,0 +1,66 @@
+{
+ "poLine": "On 15 Jul: archived, account suspended.",
+ "filed": [
+  {
+   "iid": "imqoidgg0ef03kk",
+   "type": "LL",
+   "date": "Jul 13",
+   "s": 0,
+   "e": 1439,
+   "grp": null,
+   "people": [
+    "Hex",
+    "Hunter"
+   ],
+   "acc": null
+  }
+ ],
+ "before": {
+  "label": "before the day",
+  "inputs": [
+   {
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "end": "Jul 17"
+   }
+  ],
+  "days": [
+   "Mon:Hex,Hunter",
+   "Tue:Hex,Hunter",
+   "Wed:Hex,Hunter",
+   "Thu:Hex,Hunter",
+   "Fri:Hex,Hunter"
+  ],
+  "hex": {
+   "archived": false,
+   "deleted": false,
+   "archivedBy": ""
+  }
+ },
+ "onTheDay": {
+  "label": "on the day (reloaded, clock Wed 15 Jul 08:00)",
+  "inputs": [
+   {
+    "people": [
+     "Hex",
+     "Hunter"
+    ],
+    "end": "Jul 17"
+   }
+  ],
+  "days": [
+   "Mon:Hex,Hunter",
+   "Tue:Hex,Hunter",
+   "Wed:Hex,Hunter",
+   "Thu:Hex,Hunter",
+   "Fri:Hex,Hunter"
+  ],
+  "hex": {
+   "archived": true,
+   "deleted": false,
+   "archivedBy": "po"
+  }
+ }
+}

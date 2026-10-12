@@ -1,0 +1,7414 @@
+{
+ "walker": "F",
+ "share": "F — the published day, the counts (desktop 1440x900)",
+ "build": "http://localhost:4186/",
+ "cases": {
+  "F1": {
+   "key": "F1",
+   "did": [
+    "filed a Meeting \"Range safety brief\" for Drifter, Hunter, Ranger on Wed 15 Jul 14:00-15:00 through + Input / Several people after Wed was published"
+   ],
+   "pics": [
+    "f1-window.png",
+    "f1-amend.png",
+    "f1-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 5 changes | (b board) 5 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[]",
+   "filed": [
+    {
+     "iid": "imqoidgg065v587",
+     "people": [
+      "slipway",
+      "prowler",
+      "bane"
+     ],
+     "type": "Meeting",
+     "title": "Range safety brief",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "grp": null,
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "rowAfter": "[]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Range safety brief · 3 people Saber 22/6 09:00 Drifter, Hunter, Ranger not on the programme → on the programme"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [
+     "Discard 1 edit & load — confirm",
+     "Keep editing"
+    ],
+    "toast1": "Input added for 3 people",
+    "armed": true,
+    "offer": "Discard 1 edit & load — confirm",
+    "toast2": "Wednesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced",
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Range safety brief · 3 people Saber 22/6 09:00 Drifter, Hunter, Ranger not on the programme → on the programme"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2a": {
+   "key": "F2a",
+   "did": [
+    "dragged Tally from the crew list onto the row's + add: {\"ok\":true,\"toast\":\"Tally added to Range safety brief\"}"
+   ],
+   "pics": [
+    "f2a-window.png",
+    "f2a-amend.png",
+    "f2a-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0z716zy\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "Tally added to Range safety brief"
+   },
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Tally · Range safety brief Saber 22/6 09:00 added"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Tally · Range safety brief Saber 22/6 09:00 added"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2b": {
+   "key": "F2b",
+   "did": [
+    "dragged Tally then Anvil from the crew list onto + add: [{\"ok\":true,\"toast\":\"Tally added to Range safety brief\"},{\"ok\":true,\"toast\":\"Anvil added to Range safety brief\"}]"
+   ],
+   "pics": [
+    "f2b-window.png",
+    "f2b-amend.png",
+    "f2b-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg00q1alj\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": [
+    {
+     "ok": true,
+     "toast": "Tally added to Range safety brief"
+    },
+    {
+     "ok": true,
+     "toast": "Anvil added to Range safety brief"
+    }
+   ],
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Anvil IP\",\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 2 pending | (b board) 2 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] => [2,2,2,2,2] AGREE",
+   "lines": [
+    "Tally · Range safety brief Saber 22/6 09:00 added",
+    "Anvil · Range safety brief Saber 22/6 09:00 added"
+   ],
+   "n": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 2 changes",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally",
+      "Anvil"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 2 member input changes stay pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 2 pending | (b board) 2 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] => [2,2,2,2,2] AGREE",
+    "afterLines": [
+     "Tally · Range safety brief Saber 22/6 09:00 added",
+     "Anvil · Range safety brief Saber 22/6 09:00 added"
+    ],
+    "afterNums": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Anvil IP\",\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2c": {
+   "key": "F2c",
+   "did": [
+    "typed 14:30 over the row start; dragged Tally onto + add: [{\"ok\":true,\"box\":\"14:30\",\"toast\":\"Wednesday published — APPROVED\"},{\"ok\":true,\"toast\":\"Tally added to Range safety brief\"}]"
+   ],
+   "pics": [
+    "f2c-window.png",
+    "f2c-amend.png",
+    "f2c-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg08qigt0\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": [
+    {
+     "ok": true,
+     "box": "14:30",
+     "toast": "Wednesday published — APPROVED"
+    },
+    {
+     "ok": true,
+     "toast": "Tally added to Range safety brief"
+    }
+   ],
+   "rowAfter": "[{\"times\":[\"14:30\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 2 pending | (b board) 2 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] => [2,2,2,2,2] AGREE",
+   "lines": [
+    "Range safety brief · 4 people Saber 22/6 09:00 Drifter, Hunter, Ranger, Tally 14:00–15:00 → 14:30–15:00",
+    "Tally · Range safety brief Saber 22/6 09:00 added"
+   ],
+   "n": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 2 changes",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 870,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 2 member input changes stay pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 2 pending | (b board) 2 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] => [2,2,2,2,2] AGREE",
+    "afterLines": [
+     "Range safety brief · 4 people Saber 22/6 09:00 Drifter, Hunter, Ranger, Tally 14:00–15:00 → 14:30–15:00",
+     "Tally · Range safety brief Saber 22/6 09:00 added"
+    ],
+    "afterNums": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "afterRow": "[{\"times\":[\"14:30\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2d": {
+   "key": "F2d",
+   "did": [
+    "right-clicked Drifter (first A to Z) puck on the row: {\"ok\":true,\"toast\":\"Drifter taken out of Range safety brief\"}"
+   ],
+   "pics": [
+    "f2d-window.png",
+    "f2d-amend.png",
+    "f2d-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg08zysbv\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "Drifter taken out of Range safety brief"
+   },
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Drifter · Range safety brief Saber 22/6 09:00 taken out"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Drifter · Range safety brief Saber 22/6 09:00 taken out"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2e": {
+   "key": "F2e",
+   "did": [
+    "right-clicked Ranger (first to join, last A to Z) puck: {\"ok\":true,\"toast\":\"Ranger taken out of Range safety brief\"}"
+   ],
+   "pics": [
+    "f2e-window.png",
+    "f2e-amend.png",
+    "f2e-head.png"
+   ],
+   "joinOrder": "picked in the window in the order Ranger, Hunter, Drifter (INPUTS list order is read below)",
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg059t94q\",\"people\":[\"bane\",\"prowler\",\"slipway\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "Ranger taken out of Range safety brief"
+   },
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Ranger · Range safety brief Saber 22/6 09:00 taken out"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Hunter",
+      "Drifter"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Ranger · Range safety brief Saber 22/6 09:00 taken out"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2f": {
+   "key": "F2f",
+   "did": [
+    "on the Scheduler Board pressed the row's X (take off the programme): {\"ok\":true,\"ri\":\"2.2\",\"toast\":\"Ground item removed — back under Personal Inputs — RANGE SAFETY BRIEF, 14:00–15:00, 3 people\",\"confirmed\":null}"
+   ],
+   "pics": [
+    "f2f-window.png",
+    "f2f-amend.png",
+    "f2f-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg00vx1xb\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "ri": "2.2",
+    "toast": "Ground item removed — back under Personal Inputs — RANGE SAFETY BRIEF, 14:00–15:00, 3 people",
+    "confirmed": null
+   },
+   "rowAfter": "[]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 removal Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Range safety brief · 3 people Saber 22/6 09:00 Drifter, Hunter, Ranger on the programme → taken off"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 removal Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [
+     "Discard 1 edit & load — confirm",
+     "Keep editing"
+    ],
+    "toast1": "Ground item removed — back under Personal Inputs — RANGE SAFETY BRIEF, 14:00–15:00, 3 people",
+    "armed": true,
+    "offer": "Discard 1 edit & load — confirm",
+    "toast2": "Wednesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced",
+    "afterCounts": "(a day) 9 changes | (b board) 9 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+    "afterLines": [],
+    "afterNums": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F2g": {
+   "key": "F2g",
+   "did": [
+    "on the Scheduler Board pressed CX on the row, reason WX: {\"ok\":true,\"ri\":\"2.2\",\"toast\":\"CX DUE WX\"}"
+   ],
+   "pics": [
+    "f2g-window.png",
+    "f2g-amend.png",
+    "f2g-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg01l4me4\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "ri": "2.2",
+    "toast": "CX DUE WX"
+   },
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared cx gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Range safety brief · 3 people Saber 22/6 09:00 Drifter, Hunter, Ranger not cancelled → CX (WX)"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": true,
+     "cxr": "WX"
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Range safety brief · 3 people Saber 22/6 09:00 Drifter, Hunter, Ranger not cancelled → CX (WX)"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared cx gr-frominput\"}]"
+   }
+  },
+  "F2h": {
+   "key": "F2h",
+   "did": [
+    "board CX with reason WX, then CX pressed again (un-cancel): [{\"ok\":true,\"ri\":\"2.2\",\"toast\":\"CX DUE WX\"},{\"ok\":true,\"ri\":\"2.2\",\"toast\":\"Restored\"}]"
+   ],
+   "pics": [
+    "f2h-window.png",
+    "f2h-amend.png",
+    "f2h-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0aw131l\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": [
+    {
+     "ok": true,
+     "ri": "2.2",
+     "toast": "CX DUE WX"
+    },
+    {
+     "ok": true,
+     "ri": "2.2",
+     "toast": "Restored"
+    }
+   ],
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 8 changes | (b board) 8 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "lines": [],
+   "n": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "8 changes  [dstat: 8 changes i Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+   "togoHead": "Waiting to go out as AL1 · 0 changes",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original",
+    "armed": false,
+    "afterCounts": "(a day) 8 changes | (b board) 8 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+    "afterLines": [],
+    "afterNums": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F3": {
+   "key": "F3",
+   "did": [
+    "dragged Tally from the crew list ONTO Ranger's lone puck: {\"ok\":true,\"toast\":\"Tally is on Ranger training instead of Ranger\"}"
+   ],
+   "pics": [
+    "f3-window.png",
+    "f3-amend.png",
+    "f3-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0xpajlu\",\"people\":[\"bane\"],\"type\":\"Training\",\"title\":\"Ranger training\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "Tally is on Ranger training instead of Ranger"
+   },
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Tally O\"],\"cls\":\"pl-row gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Tally · Ranger training Saber 22/6 09:00 Ranger → Tally"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Ranger training",
+     "type": "Training",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Tally · Ranger training Saber 22/6 09:00 Ranger → Tally"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[]"
+   }
+  },
+  "F4": {
+   "key": "F4",
+   "did": [
+    "dragged Tally from the crew list onto the Duty row's + add: {\"ok\":true,\"toast\":\"Tally added to Range duty\"}"
+   ],
+   "pics": [
+    "f4-window.png",
+    "f4-amend.png",
+    "f4-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0l7sv9w\",\"people\":[\"bane\",\"allavail\"],\"type\":\"Duty\",\"title\":\"Range duty\",\"date\":\"Jul 18\",\"s\":540,\"e\":720,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Saturday 18/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"09:00\",\"12:00\"],\"pucks\":[\"Ranger IP\",\"ALL AVAIL\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "Tally added to Range duty"
+   },
+   "rowAfter": "[{\"times\":[\"09:00\",\"12:00\"],\"pucks\":[\"Ranger IP\",\"Tally O\",\"ALL AVAIL\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Tally · Range duty Saber 22/6 09:00 added"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range duty",
+     "type": "Duty",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "Ranger",
+      "ALL AVAIL",
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Saturday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Tally · Range duty Saber 22/6 09:00 added"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"09:00\",\"12:00\"],\"pucks\":[\"Ranger IP\",\"Tally O\",\"ALL AVAIL\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F5": {
+   "key": "F5",
+   "did": [
+    "dragged ALL AVAIL from the crew list onto the row: {\"ok\":true,\"toast\":\"ALL AVAIL added to Range safety brief\"}"
+   ],
+   "pics": [
+    "f5-window.png",
+    "f5-amend.png",
+    "f5-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg08nyeed\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "ALL AVAIL added to Range safety brief"
+   },
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"ALL AVAIL\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "ALL AVAIL · Range safety brief Saber 22/6 09:00 added"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "ALL AVAIL · Range safety brief Saber 22/6 09:00 added"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\",\"ALL AVAIL\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F6a": {
+   "key": "F6a",
+   "did": [
+    "dragged Ranger's puck from the Training row onto the Meeting row's + add: {\"ok\":true,\"toast\":\"Ranger moved to Range safety brief\",\"from\":{\"x\":240.65625,\"y\":374.15625,\"width\":74,\"height\":15},\"to\":{\"x\":240.65625,\"y\":448.78125,\"width\":158,\"height\":13}}"
+   ],
+   "pics": [
+    "f6a-window.png",
+    "f6a-amend.png",
+    "f6a-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0wokvuz\",\"people\":[\"bane\",\"nick\"],\"type\":\"Training\",\"title\":\"Training for two\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}],[{\"iid\":\"imqoidgg0iqcezk\",\"people\":[\"slipway\",\"prowler\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 7 changes | (b board) 7 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\"]}]",
+   "act": {
+    "ok": true,
+    "toast": "Ranger moved to Range safety brief",
+    "from": {
+     "x": 240.65625,
+     "y": 374.15625,
+     "width": 74,
+     "height": 15
+    },
+    "to": {
+     "x": 240.65625,
+     "y": 448.78125,
+     "width": 158,
+     "height": 13
+    }
+   },
+   "rowsAfter": "[{\"name\":\"TRAINING FOR TWO\",\"pucks\":[\"Tally O\"]},{\"name\":\"RANGE SAFETY BRIEF\",\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "lines": [
+    "Ranger Saber 22/6 09:00 Training for two → Range safety brief"
+   ],
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 1 change",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Training for two",
+     "type": "Training",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 1 member input change stays pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+    "afterLines": [
+     "Ranger Saber 22/6 09:00 Training for two → Range safety brief"
+    ],
+    "afterNums": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F6b": {
+   "key": "F6b",
+   "did": [
+    "right-clicked Ranger off the Training row; dragged Anvil from the crew list onto the Meeting's + add: [{\"ok\":true,\"toast\":\"Ranger taken out of Training for two\"},{\"ok\":true,\"toast\":\"Anvil added to Range safety brief\"}]"
+   ],
+   "pics": [
+    "f6b-window.png",
+    "f6b-amend.png",
+    "f6b-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0vhj3xv\",\"people\":[\"bane\",\"nick\"],\"type\":\"Training\",\"title\":\"Training for two\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}],[{\"iid\":\"imqoidgg0azalqh\",\"people\":[\"slipway\",\"prowler\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 7 changes | (b board) 7 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\"]}]",
+   "act": [
+    {
+     "ok": true,
+     "toast": "Ranger taken out of Training for two"
+    },
+    {
+     "ok": true,
+     "toast": "Anvil added to Range safety brief"
+    }
+   ],
+   "rowsAfter": "[{\"name\":\"TRAINING FOR TWO\",\"pucks\":[\"Tally O\"]},{\"name\":\"RANGE SAFETY BRIEF\",\"pucks\":[\"Anvil IP\",\"Drifter A\",\"Hunter IP\"]}]",
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Anvil IP\",\"Drifter A\",\"Hunter IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 2 pending | (b board) 2 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] => [2,2,2,2,2] AGREE",
+   "lines": [
+    "Ranger · Training for two Saber 22/6 09:00 taken out",
+    "Anvil · Range safety brief Saber 22/6 09:00 added"
+   ],
+   "n": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+   "togoHead": "Waiting to go out as AL1 · 2 changes",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "Publish AL1 [disabled] title=Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Anvil"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Training for two",
+     "type": "Training",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original · 2 member input changes stay pending — a load cannot put back a member's own record",
+    "armed": false,
+    "afterCounts": "(a day) 2 pending | (b board) 2 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] => [2,2,2,2,2] AGREE",
+    "afterLines": [
+     "Ranger · Training for two Saber 22/6 09:00 taken out",
+     "Anvil · Range safety brief Saber 22/6 09:00 added"
+    ],
+    "afterNums": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Anvil IP\",\"Drifter A\",\"Hunter IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  },
+  "F7a": {
+   "key": "F7a",
+   "did": [
+    "on Monday dragged Tally from the crew list onto the three-day Training row's + add: {\"ok\":true,\"toast\":\"Tally added to Three day training\"}"
+   ],
+   "pics": [
+    "f7a-mon-window.png",
+    "f7a-mon-amend.png",
+    "f7a-mon-head.png",
+    "f7a-tue-window.png",
+    "f7a-tue-amend.png",
+    "f7a-tue-head.png",
+    "f7a-amend-full.png"
+   ],
+   "filed": [
+    {
+     "iid": "imqoidgg00n5vps",
+     "people": [
+      "bane"
+     ],
+     "type": "Training",
+     "title": "Three day training",
+     "date": "Jul 13",
+     "s": 840,
+     "e": 900,
+     "grp": null,
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "pubMon": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "pubTue": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "rows": {
+    "0": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"C Ranger IP\"]}]",
+    "1": "[]",
+    "2": "[]"
+   },
+   "clean": {
+    "0": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Monday 13/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+    "1": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Tuesday 14/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE"
+   },
+   "act": {
+    "ok": true,
+    "toast": "Tally added to Three day training"
+   },
+   "after": {
+    "0": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"C Ranger IP\",\"CP Tally O\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+    "1": "[]",
+    "2": "[]"
+   },
+   "res": {
+    "0": {
+     "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Monday 13/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+     "lines": [
+      "Tally · Three day training Saber 22/6 09:00 added"
+     ],
+     "n": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "agree": true,
+     "amend": "AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+     "day": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+     "windowTitle": "Changes · Monday 13/7 Published · 1 change waiting to go out as AL1"
+    },
+    "1": {
+     "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+     "lines": [
+      "Tally · Three day training Saber 22/6 09:00 added"
+     ],
+     "n": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "agree": true,
+     "amend": "AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+     "day": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+     "windowTitle": "Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1"
+    }
+   },
+   "wedHead": "2 changes i Publish day",
+   "inputs": [
+    {
+     "title": "Three day training",
+     "date": "Jul 13",
+     "to": null,
+     "people": [
+      "Ranger",
+      "Tally"
+     ],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "amendFull": "f7a-amend-full.png",
+   "amendText": "AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL."
+  },
+  "F7b": {
+   "key": "F7b",
+   "did": [
+    "on Monday's Scheduler Board pressed CX on the three-day Training row, reason WX: {\"ok\":true,\"ri\":\"0.9\",\"toast\":\"CX DUE WX\"}"
+   ],
+   "pics": [
+    "f7b-mon-window.png",
+    "f7b-mon-amend.png",
+    "f7b-mon-head.png",
+    "f7b-tue-window.png",
+    "f7b-tue-amend.png",
+    "f7b-tue-head.png",
+    "f7b-amend-full.png"
+   ],
+   "filed": [
+    {
+     "iid": "imqoidgg09bunuc",
+     "people": [
+      "bane"
+     ],
+     "type": "Training",
+     "title": "Three day training",
+     "date": "Jul 13",
+     "s": 840,
+     "e": 900,
+     "grp": null,
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "pubMon": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "pubTue": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "rows": {
+    "0": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"C Ranger IP\"]}]",
+    "1": "[]",
+    "2": "[]"
+   },
+   "clean": {
+    "0": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Monday 13/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+    "1": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Tuesday 14/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE"
+   },
+   "act": {
+    "ok": true,
+    "ri": "0.9",
+    "toast": "CX DUE WX"
+   },
+   "after": {
+    "0": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"C Ranger IP\"],\"cls\":\"pl-row cx gr-frominput\"}]",
+    "1": "[]",
+    "2": "[]"
+   },
+   "res": {
+    "0": {
+     "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Monday 13/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+     "lines": [
+      "Ranger · Three day training Saber 22/6 09:00 not cancelled → CX (WX)"
+     ],
+     "n": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "agree": true,
+     "amend": "AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+     "day": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+     "windowTitle": "Changes · Monday 13/7 Published · 1 change waiting to go out as AL1"
+    },
+    "1": {
+     "counts": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+     "lines": [
+      "Ranger · Three day training Saber 22/6 09:00 not cancelled → CX (WX)"
+     ],
+     "n": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "agree": true,
+     "amend": "AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+     "day": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+     "windowTitle": "Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1"
+    }
+   },
+   "wedHead": "2 changes i Publish day",
+   "inputs": [
+    {
+     "title": "Three day training",
+     "date": "Jul 13",
+     "to": null,
+     "people": [
+      "Ranger"
+     ],
+     "cx": true,
+     "cxr": "WX"
+    }
+   ],
+   "amendFull": "f7b-amend-full.png",
+   "amendText": "AMENDMENTS 2 days with changes to publish Mon · 1 change · 1 input change Publish AL1 Tue · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL."
+  },
+  "F9": {
+   "key": "F9",
+   "did": [
+    "dragged Tally onto + add (pending then read: (a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE); then right-clicked Tally off the row: [{\"ok\":true,\"toast\":\"Tally added to Range safety brief\"},{\"ok\":true,\"toast\":\"Tally taken out of Range safety brief\"}]"
+   ],
+   "pics": [
+    "f9-window.png",
+    "f9-amend.png",
+    "f9-head.png"
+   ],
+   "pub": {
+    "ok": true,
+    "label": "Publish day",
+    "version": "ORIG",
+    "selects": 4
+   },
+   "filedBefore": "[[{\"iid\":\"imqoidgg0i2lvj5\",\"people\":[\"slipway\",\"prowler\",\"bane\"],\"type\":\"Meeting\",\"title\":\"Range safety brief\",\"date\":\"Jul 15\",\"s\":840,\"e\":900,\"grp\":null,\"cx\":false,\"cxr\":\"\"}]]",
+   "signsPublished": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "cleanCounts": "(a day) 6 changes | (b board) 6 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "rowBefore": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"]}]",
+   "afterAdd": "(a day) 1 pending | (b board) 1 pending | (c Amendments) AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | (e To go out) Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] => [1,1,1,1,1] AGREE",
+   "afterAddLines": [
+    "Tally · Range safety brief Saber 22/6 09:00 added"
+   ],
+   "act": [
+    {
+     "ok": true,
+     "toast": "Tally added to Range safety brief"
+    },
+    {
+     "ok": true,
+     "toast": "Tally taken out of Range safety brief"
+    }
+   ],
+   "rowAfter": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]",
+   "counts": "(a day) 8 changes | (b board) 8 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+   "lines": [],
+   "n": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "agree": true,
+   "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "dayText": "8 changes  [dstat: 8 changes i Unpublish]",
+   "windowTitle": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+   "togoHead": "Waiting to go out as AL1 · 0 changes",
+   "signsAfter": {
+    "signs": [
+     "(empty)",
+     "(empty)",
+     "(empty)",
+     "(empty)"
+    ],
+    "button": "no button"
+   },
+   "inputs": [
+    {
+     "title": "Range safety brief",
+     "type": "Meeting",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 16",
+     "s": 1020,
+     "e": 1110,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 14",
+     "s": 840,
+     "e": 960,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Fly with",
+     "date": "Jul 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 13",
+     "s": 540,
+     "e": 1020,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OD",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 13",
+     "s": 600,
+     "e": 660,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 23",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Appointment",
+     "date": "Jul 20",
+     "s": 600,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jul 24",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 13",
+     "s": 721,
+     "e": 1439,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "s": 0,
+     "e": 720,
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "SANS Availability",
+     "date": "Jul 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jul 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT B",
+     "date": "Jun 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jun 20",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Meeting",
+     "date": "Jul 23",
+     "s": 600,
+     "e": 660,
+     "people": [
+      "Saber",
+      "Ranger",
+      "Drifter",
+      "Echo"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 25",
+     "s": 540,
+     "e": 720,
+     "people": [
+      "ALL AVAIL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "title": "Sports afternoon",
+     "type": "Event",
+     "date": "Jul 22",
+     "s": 900,
+     "e": 1020,
+     "people": [
+      "ALL"
+     ],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 9",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OL",
+     "date": "Jan 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "LL",
+     "date": "Jan 8",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CSE",
+     "date": "Jan 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "CCL",
+     "date": "Jan 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 11",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "May 12",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 13",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Mar 30",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jul 16",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 1",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 2",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jun 3",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Feb 15",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OIL",
+     "date": "Jan 14",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "ATT C",
+     "date": "Jan 5",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "OML",
+     "date": "Jan 6",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Upchit",
+     "date": "Jan 7",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    },
+    {
+     "type": "Duty",
+     "date": "Jul 4",
+     "people": [],
+     "cx": false,
+     "cxr": ""
+    }
+   ],
+   "discard": {
+    "steps": [],
+    "before": [
+     "Load onto working copy"
+    ],
+    "afterFirstPress": [],
+    "toast1": "Wednesday is already at Original",
+    "armed": false,
+    "afterCounts": "(a day) 8 changes | (b board) 8 changes | (c Amendments) AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | (d window title) Changes · Wednesday 15/7 Published · nothing waiting to go out | (e To go out) Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] => [0,0,0,0,0] AGREE",
+    "afterLines": [],
+    "afterNums": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "afterRow": "[{\"times\":[\"14:00\",\"15:00\"],\"pucks\":[\"Drifter A\",\"Hunter IP\",\"Ranger IP\"],\"cls\":\"pl-row gshared gr-frominput\"}]"
+   }
+  }
+ },
+ "errors": [
+  {
+   "run": "errs-F1.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F2a_F2b_F2c.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F2d_F2e_F2f.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F2e.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F2f.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F2g_F2h_F3.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F2h.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F4_F5_F9.json",
+   "errs": []
+  },
+  {
+   "run": "errs-F6a_F6b.json",
+   "errs": []
+  },
+  {
+   "run": "errs-f7-F7a.json",
+   "errs": []
+  },
+  {
+   "run": "errs-f7-F7b.json",
+   "errs": []
+  }
+ ]
+}

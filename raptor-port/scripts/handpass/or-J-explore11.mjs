@@ -1,0 +1,16 @@
+import { open, shot, errs, browser } from './or-J-lib.mjs'
+const { ctx, page } = await open({ fresh: true })
+await page.evaluate(() => window.go('inputs')); await page.waitForTimeout(500)
+await page.locator('#inSansMode').click(); await page.waitForTimeout(700)
+await page.locator('[data-testid="sc-next"]').click(); await page.waitForTimeout(300)
+console.log(await page.locator('[data-testid="sc-month"]').textContent())
+await page.locator('[data-testid="sc-day-2026-07-15"]').click({ position: { x: 8, y: 8 } }); await page.waitForTimeout(700)
+await shot(page, 'x-sansday')
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-sansday"] *')].filter(e => e.dataset.testid || e.tagName === 'BUTTON').map(e => e.tagName + '|' + (e.dataset.testid || '') + '|' + (e.innerText||'').trim().replace(/\s+/g,' ').slice(0, 40)).join('\n')))
+
+console.log(await page.evaluate(() => JSON.stringify(window.INPUTS.filter(r => /SANS/i.test(r.type) && /Jul 15/.test(r.date)).map(r => ({ type: r.type, date: r.date, end: r.endDate, who: r.people ? r.people.map(e => window.PEOPLE[e.p]?.cs) : window.PEOPLE[r.person]?.cs })))))
+await page.locator('[data-testid="sd-add"]').click(); await page.waitForTimeout(700)
+await shot(page, 'x-sansadd')
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.offsetParent && /^(sa|sans|pp|win-sans|sd-add|sf)/.test(e.dataset.testid) && !/^sc-/.test(e.dataset.testid)).map(e => e.dataset.testid + '|' + (e.innerText||'').trim().replace(/\s+/g,' ').slice(0, 30)).join('\n')))
+console.log(await page.evaluate(() => [...document.querySelectorAll('input, select, button')].filter(e => e.offsetParent && e.closest('[data-testid^="win-"], .win, .sheet')).map(e => e.tagName + '#' + e.id + '|' + (e.innerText||e.value||'').trim().slice(0, 24)).join('\n')))
+await ctx.close(); await browser.close()

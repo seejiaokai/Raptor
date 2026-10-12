@@ -1,0 +1,17 @@
+import { open, fileInput, toWeek, shot, saveRes, errs, browser, csId } from './or-L-lib.mjs'
+const { ctx, page } = await open('ad', 'a')
+const r = await fileInput(page, { type: 'LL', people: ['Drifter', 'Hex', 'Hunter'], from: '2026-07-13', to: '2026-07-17' })
+console.log(JSON.stringify(r))
+console.log(await page.evaluate(() => window.INPUTS.filter(r => r.type === 'LL').map(r => JSON.stringify(r)).join('\n')))
+await toWeek(page)
+const secs = await page.evaluate(() => { const d = [...document.querySelectorAll('#eWeek .day:not(.peek)')][2]; return [...d.children].map(c => c.className + ' :: ' + c.innerText.replace(/\s+/g, ' ').slice(0, 200)) })
+console.log(secs.join('\n'))
+const sec2 = await page.evaluate(() => { const d = [...document.querySelectorAll('#eWeek .day:not(.peek)')][2]; return [...d.querySelectorAll('[class*=sec-]')].map(c => c.className + ' :: ' + c.innerText.replace(/\s+/g, ' ').slice(0, 300)) })
+console.log(sec2.join('\n'))
+await shot(page, 'x1-week')
+// leave war
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1500)
+await shot(page, 'x1-lw')
+console.log(await page.evaluate(() => [...document.querySelectorAll('[data-testid^="stage"],[data-testid^="month-"]')].map(e => e.getAttribute('data-testid') + ':' + e.innerText.replace(/\s+/g, ' ').slice(0, 40)).join(' | ')))
+console.log(errs.join('\n'))
+await browser.close()

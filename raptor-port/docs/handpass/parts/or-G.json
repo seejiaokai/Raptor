@@ -1,0 +1,2178 @@
+{
+ "G1_G7": {
+  "pub1": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "A": {
+   "inputs": [
+    {
+     "iid": "imqoidgg079js2w",
+     "type": "Training",
+     "title": "Range brief",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "cx": null,
+     "cxr": null,
+     "oil": {
+      "2026-07-18": 0.5
+     },
+     "people": [
+      "Ranger"
+     ],
+     "grp": null
+    }
+   ],
+   "counts": {
+    "a": "6 changes  [dstat: 6 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL1 0",
+    "e": "Waiting to go out as AL1 · 0 changes",
+    "lines": []
+   },
+   "edit": [
+    [
+     "Ranger"
+    ]
+   ],
+   "viewSaber": [
+    [
+     "Ranger"
+    ]
+   ],
+   "lw": {
+    "cells": {
+     "Ranger": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Tally": "NO CELL"
+    },
+    "rangerSeg": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left ",
+    "tallySeg": "NO Tally in tracker text",
+    "jul18": [
+     "+0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left",
+     "+1 18 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left"
+    ]
+   },
+   "earn": {
+    "pucks": [
+     {
+      "who": "Ranger",
+      "cls": "puck sm oilglow half",
+      "title": "Ranger · IP · instructor pilot · SXO"
+     }
+    ],
+    "dayBar": "Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ⇅ | Sort all | ↶ | Undo | ↷ | Redo | History | Sync · slow | Insights | ✓ | Done | CAT | TYPE | QUALS"
+   }
+  },
+  "B": {
+   "toast": "Tally added to Range brief",
+   "inputs": [
+    {
+     "iid": "imqoidgg079js2w",
+     "type": "Training",
+     "title": "Range brief",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "cx": null,
+     "cxr": null,
+     "oil": {
+      "2026-07-18": 0.5
+     },
+     "people": [
+      "Ranger",
+      "Tally"
+     ],
+     "grp": null
+    }
+   ],
+   "edit": [
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "counts": {
+    "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+    "tabLabel": "To go out · AL1 1",
+    "e": "Waiting to go out as AL1 · 1 change",
+    "lines": [
+     "Tally · Range brief Saber 22/6 09:00 added"
+    ]
+   },
+   "viewSaber": [
+    [
+     "Ranger"
+    ]
+   ],
+   "lw": {
+    "cells": {
+     "Ranger": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Tally": "NO CELL"
+    },
+    "rangerSeg": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left ",
+    "tallySeg": "NO Tally in tracker text",
+    "jul18": [
+     "+0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left",
+     "+1 18 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left"
+    ]
+   },
+   "earn": {
+    "pucks": [
+     {
+      "who": "Ranger",
+      "cls": "puck sm oilglow half",
+      "title": "Ranger · IP · instructor pilot · SXO"
+     },
+     {
+      "who": "Tally",
+      "cls": "puck r sm san oilglow half",
+      "title": "Tally · OCU (ab-initio) · SANS"
+     }
+    ],
+    "dayBar": "Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ⇅ | Sort all | ↶ | Undo | ↷ | Redo | History | Sync · slow | Insights | ✓ | Done | CAT | TYPE | QUALS"
+   },
+   "undoToast": "Undid: a personal input",
+   "undo": {
+    "inputs": [
+     {
+      "iid": "imqoidgg079js2w",
+      "type": "Training",
+      "title": "Range brief",
+      "date": "Jul 18",
+      "s": 540,
+      "e": 720,
+      "cx": null,
+      "cxr": null,
+      "oil": {
+       "2026-07-18": 0.5
+      },
+      "people": [
+       "Ranger"
+      ],
+      "grp": null
+     }
+    ],
+    "edit": [
+     [
+      "Ranger"
+     ]
+    ],
+    "counts": {
+     "a": "8 changes  [dstat: 8 changes i Unpublish]",
+     "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+     "tabLabel": "To go out · AL1 0",
+     "e": "Waiting to go out as AL1 · 0 changes",
+     "lines": []
+    }
+   },
+   "redo": {
+    "inputs": [
+     {
+      "iid": "imqoidgg079js2w",
+      "type": "Training",
+      "title": "Range brief",
+      "date": "Jul 18",
+      "s": 540,
+      "e": 720,
+      "cx": null,
+      "cxr": null,
+      "oil": {
+       "2026-07-18": 0.5
+      },
+      "people": [
+       "Ranger",
+       "Tally"
+      ],
+      "grp": null
+     }
+    ],
+    "edit": [
+     [
+      "Ranger",
+      "Tally"
+     ]
+    ],
+    "counts": {
+     "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+     "c": "AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+     "d": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabLabel": "To go out · AL1 1",
+     "e": "Waiting to go out as AL1 · 1 change",
+     "lines": [
+      "Tally · Range brief Saber 22/6 09:00 added"
+     ]
+    }
+   },
+   "viewRanger": [
+    [
+     "Ranger"
+    ]
+   ],
+   "rangerInputs": [
+    {
+     "iid": "imqoidgg079js2w",
+     "type": "Training",
+     "title": "Range brief",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "cx": null,
+     "cxr": null,
+     "oil": {
+      "2026-07-18": 0.5
+     },
+     "people": [
+      "Ranger",
+      "Tally"
+     ],
+     "grp": null
+    }
+   ]
+  },
+  "C": {
+   "pub": {
+    "ok": true,
+    "label": "Publish AL1",
+    "version": "AL1",
+    "selects": 4
+   },
+   "inputs": [
+    {
+     "iid": "imqoidgg079js2w",
+     "type": "Training",
+     "title": "Range brief",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "cx": null,
+     "cxr": null,
+     "oil": {
+      "2026-07-18": 0.5
+     },
+     "people": [
+      "Ranger",
+      "Tally"
+     ],
+     "grp": null
+    }
+   ],
+   "counts": {
+    "a": "14 changes  [dstat: 14 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes AL1 Sat · 1 item · 1 input change · appr Cinch",
+    "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL2 0",
+    "e": "Waiting to go out as AL2 · 0 changes",
+    "lines": []
+   },
+   "edit": [
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "viewSaber": [
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "lw": {
+    "cells": {
+     "Ranger": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Tally": "NO CELL"
+    },
+    "rangerSeg": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left ",
+    "tallySeg": "NO Tally in tracker text",
+    "jul18": [
+     "+0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left",
+     "+1 18 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left"
+    ]
+   },
+   "earn": {
+    "pucks": [
+     {
+      "who": "Ranger",
+      "cls": "puck sm oilglow half",
+      "title": "Ranger · IP · instructor pilot · SXO"
+     },
+     {
+      "who": "Tally",
+      "cls": "puck r sm san oilglow half",
+      "title": "Tally · OCU (ab-initio) · SANS"
+     }
+    ],
+    "dayBar": "Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ⇅ | Sort all | ↶ | Undo | ↷ | Redo | History | Sync · slow | Insights | ✓ | Done | CAT | TYPE | QUALS"
+   },
+   "undoDisabled": false,
+   "undoToast": "Undid: publishing an amendment",
+   "undo": {
+    "inputs": [
+     {
+      "iid": "imqoidgg079js2w",
+      "type": "Training",
+      "title": "Range brief",
+      "date": "Jul 18",
+      "s": 540,
+      "e": 720,
+      "cx": null,
+      "cxr": null,
+      "oil": {
+       "2026-07-18": 0.5
+      },
+      "people": [
+       "Ranger",
+       "Tally"
+      ],
+      "grp": null
+     }
+    ],
+    "edit": [
+     [
+      "Ranger",
+      "Tally"
+     ]
+    ],
+    "counts": {
+     "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+     "c": "AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+     "d": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabLabel": "To go out · AL1 1",
+     "e": "Waiting to go out as AL1 · 1 change",
+     "lines": [
+      "Tally · Range brief Saber 22/6 09:00 added"
+     ]
+    }
+   },
+   "redoDisabled": false,
+   "redo": {
+    "inputs": [
+     {
+      "iid": "imqoidgg079js2w",
+      "type": "Training",
+      "title": "Range brief",
+      "date": "Jul 18",
+      "s": 540,
+      "e": 720,
+      "cx": null,
+      "cxr": null,
+      "oil": {
+       "2026-07-18": 0.5
+      },
+      "people": [
+       "Ranger",
+       "Tally"
+      ],
+      "grp": null
+     }
+    ],
+    "edit": [
+     [
+      "Ranger",
+      "Tally"
+     ]
+    ],
+    "counts": {
+     "a": "16 changes  [dstat: 16 changes i Unpublish]",
+     "c": "AMENDMENTS No pending changes AL1 Sat · 1 item · 1 input change · appr Cinch",
+     "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+     "tabLabel": "To go out · AL2 0",
+     "e": "Waiting to go out as AL2 · 0 changes",
+     "lines": []
+    }
+   },
+   "viewRanger": [
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ]
+  },
+  "G7": {
+   "inputs": [
+    {
+     "iid": "imqoidgg079js2w",
+     "type": "Training",
+     "title": "Range brief",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "cx": null,
+     "cxr": null,
+     "oil": {
+      "2026-07-18": 0.5
+     },
+     "people": [
+      "Ranger",
+      "Tally"
+     ],
+     "grp": null
+    }
+   ],
+   "counts": {
+    "a": "16 changes  [dstat: 16 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes AL1 Sat · 1 item · 1 input change · appr Cinch",
+    "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL2 0",
+    "e": "Waiting to go out as AL2 · 0 changes",
+    "lines": []
+   },
+   "edit": [
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "viewSaber": [
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "lw": {
+    "cells": {
+     "Ranger": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Tally": "NO CELL"
+    },
+    "rangerSeg": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left ",
+    "tallySeg": "NO Tally in tracker text",
+    "jul18": [
+     "+0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left",
+     "+1 18 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left"
+    ]
+   },
+   "earn": {
+    "pucks": [
+     {
+      "who": "Ranger",
+      "cls": "puck sm oilglow half",
+      "title": "Ranger · IP · instructor pilot · SXO"
+     },
+     {
+      "who": "Tally",
+      "cls": "puck r sm san oilglow half",
+      "title": "Tally · OCU (ab-initio) · SANS"
+     }
+    ],
+    "dayBar": "Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ⇅ | Sort all | ↶ | Undo | ↷ | Redo | History | Sync · slow | Insights | ✓ | Done | CAT | TYPE | QUALS"
+   }
+  },
+  "errs": []
+ },
+ "G1b_hex": {
+  "pub1": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "A": {
+   "cells": {
+    "Ranger": {
+     "text": "HO*",
+     "cls": "duty weekend act",
+     "title": ""
+    },
+    "Hex": {
+     "text": "",
+     "cls": "weekend act",
+     "title": ""
+    }
+   },
+   "ranger": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left Saber IP 0 Sidewinder IP 0 War",
+   "hex": "Hex C 1 + 1 +1 carried in opening figure 1 left Ryder C 0 Vector C 3.5 + 3.5 +2 carried in opening figure 2 le"
+  },
+  "B": {
+   "toast": "Hex added to Range brief",
+   "counts": {
+    "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+    "tabLabel": "To go out · AL1 1",
+    "e": "Waiting to go out as AL1 · 1 change",
+    "lines": [
+     "Hex · Range brief Saber 22/6 09:00 added"
+    ]
+   },
+   "lw": {
+    "cells": {
+     "Ranger": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Hex": {
+      "text": "",
+      "cls": "weekend act",
+      "title": ""
+     }
+    },
+    "ranger": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left Saber IP 0 Sidewinder IP 0 War",
+    "hex": "Hex C 1 + 1 +1 carried in opening figure 1 left Ryder C 0 Vector C 3.5 + 3.5 +2 carried in opening figure 2 le"
+   },
+   "inputs": [
+    {
+     "iid": "imqoidgg09a2y73",
+     "type": "Training",
+     "title": "Range brief",
+     "date": "Jul 18",
+     "s": 540,
+     "e": 720,
+     "cx": null,
+     "cxr": null,
+     "oil": {
+      "2026-07-18": 0.5
+     },
+     "people": [
+      "Ranger",
+      "Hex"
+     ],
+     "grp": null
+    }
+   ],
+   "view": [
+    [
+     "Ranger"
+    ]
+   ]
+  },
+  "C0": {
+   "ok": true,
+   "label": "Publish AL1",
+   "version": "AL1",
+   "selects": 4
+  },
+  "C": {
+   "counts": {
+    "a": "12 changes  [dstat: 12 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes AL1 Sat · 1 item · 1 input change · appr Cinch",
+    "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL2 0",
+    "e": "Waiting to go out as AL2 · 0 changes",
+    "lines": []
+   },
+   "lw": {
+    "cells": {
+     "Ranger": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Hex": {
+      "text": "HO*",
+      "cls": "duty weekend act",
+      "title": ""
+     }
+    },
+    "ranger": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 left Saber IP 0 Sidewinder IP 0 War",
+    "hex": "Hex C 1.5 + 1.5 +1 carried in opening figure 1 left +0.5 18 Jul AUTO Duty input Training · 09:00–12:00 0.5 lef"
+   },
+   "view": [
+    [
+     "Hex",
+     "Ranger"
+    ]
+   ]
+  }
+ },
+ "G2": {
+  "seatBefore": "TT Relay IW",
+  "seatToast": "Trident — 1 person is double turning: Trident",
+  "seatAfter": "Tally O",
+  "wave2": {
+   "to": "13:00",
+   "ld": "14:25"
+  },
+  "filed": [
+   {
+    "iid": "imqoidgg0fong2j",
+    "type": "Training",
+    "title": "Range brief",
+    "date": "Jul 15",
+    "s": 810,
+    "e": 870,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Tally",
+     "Hex",
+     "ALL AVAIL"
+    ],
+    "cx": null
+   }
+  ],
+  "edit": {
+   "editWeek": [
+    [
+     "Hex",
+     "Ranger",
+     "Tally",
+     "ALL AVAIL"
+    ]
+   ],
+   "viewWeek": [],
+   "board": []
+  },
+  "editWarn": {
+   "chip": "⚠ 9 issues",
+   "list": "9 issues · 3 warning · tap to collapse ▲ Conflict — two events at once Tally — VL BFM & RANGE BRIEF clash ✕ On leave + flying Gambit — On leave but planned to fly VL ACM ✕ Personal input clash Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕ Tight turn Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕ No time for the flight debrief Hex — Not enough time to attend the VL ACM debrief — RANGE BRIEF sits inside 12:00–14:00 (land + 2h) ✕ No time for the flight debrief Tally — Not enough time to attend the VL BFM debrief — RANGE BRIEF sits inside 14:25–16:25 (land + 2h) ✕ Double turning Trident — 1 person is ",
+   "pucks": [
+    {
+     "cls": "puck r warn hard boxred san wfoc",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": false,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(240, 85, 95) solid 2px"
+    },
+    {
+     "cls": "puck r sm warn hard boxred san wfoc",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": true,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(240, 85, 95) solid 2px"
+    }
+   ]
+  },
+  "boardWarn": "⚠ 9 issues · 3 warnings · tap to review Tally — VL BFM & RANGE BRIEF clash ✕ Gambit — On leave but planned to fly VL ACM ✕ Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕ Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕ Hex — Not enough time to attend the VL ACM debrief — RANGE BRIEF sits inside 12:00–14:00 (land + 2h) ✕ Tally — Not enough time to attend the VL BFM debrief — RANGE BRIEF sits inside 14:25–16:25 (land + 2h) ✕ Trident — 1 person is double turning: Trident ✕ Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕ Nomad, Pixel — CAT C pilot Nomad with CAT",
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "editWarnAfterPub": {
+   "chip": "⚠ 9 issues",
+   "list": "9 issues · 3 warning · tap to review ▼ ⠿ COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 + ADD SCHEDULER NOTES MAKE PUBLIC ⠿ FLYING WAVES ⠿ WAVE 1 Traffic + In-time / Rally 07:35H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 07:35H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕ CS MSN B TO LD FCP / RCP RMKS VL ACM 08:15 10:35 12:00 TT Trident IP Relay IW 1B: ACM-4 TPOD 2 TKS C C Gambit C D Hex C 2A: ACM ADD 2 TKS C AREA EAST · SOUTH 1035-1200 RU ACM 08:15 10:35 12:00 Torch C Cutter C RED AIR 2 TKS C CP Kraken D CP Otter D 2A: ACM-8 2 TKS C AREA EAST · SOUTH 1035-1200 ⠿ WAVE 2 Traffic + In-time / Rally 10:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 10:00H: SECOND WAVE",
+   "pucks": [
+    {
+     "cls": "puck r warn hard boxred san",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": false,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(234, 251, 243) none 3px"
+    },
+    {
+     "cls": "puck r sm warn hard boxred san",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": true,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(234, 251, 243) none 3px"
+    }
+   ]
+  },
+  "viewRows": [
+   [
+    "Hex",
+    "Ranger",
+    "Tally",
+    "ALL AVAIL"
+   ]
+  ],
+  "viewWarn": {
+   "chip": "⚠ 9 issues",
+   "list": "9 issues · 3 warning · tap to collapse ▲ Conflict — two events at once Tally — VL BFM & RANGE BRIEF clash On leave + flying Gambit — On leave but planned to fly VL ACM Personal input clash Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island Tight turn Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) No time for the flight debrief Hex — Not enough time to attend the VL ACM debrief — RANGE BRIEF sits inside 12:00–14:00 (land + 2h) No time for the flight debrief Tally — Not enough time to attend the VL BFM debrief — RANGE BRIEF sits inside 14:25–16:25 (land + 2h) Double turning Trident — 1 person is double turni",
+   "pucks": [
+    {
+     "cls": "puck r warn hard boxred san wfoc",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": false,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(240, 85, 95) solid 2px"
+    },
+    {
+     "cls": "puck r sm warn hard boxred san wfoc",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": true,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(240, 85, 95) solid 2px"
+    }
+   ]
+  },
+  "viewRanger": {
+   "chip": "⚠ 9 issues",
+   "list": "9 issues · 3 warning · tap to collapse ▲ Conflict — two events at once Tally — VL BFM & RANGE BRIEF clash On leave + flying Gambit — On leave but planned to fly VL ACM Personal input clash Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island Tight turn Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) No time for the flight debrief Hex — Not enough time to attend the VL ACM debrief — RANGE BRIEF sits inside 12:00–14:00 (land + 2h) No time for the flight debrief Tally — Not enough time to attend the VL BFM debrief — RANGE BRIEF sits inside 14:25–16:25 (land + 2h) Double turning Trident — 1 person is double turni",
+   "pucks": [
+    {
+     "cls": "puck r warn hard boxred san wfoc",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": false,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(240, 85, 95) solid 2px"
+    },
+    {
+     "cls": "puck r sm warn hard boxred san wfoc",
+     "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+     "inRow": true,
+     "ring": "rgb(240, 85, 95) 0px 0px 0px 2px | outline rgb(240, 85, 95) solid 2px"
+    }
+   ]
+  }
+ },
+ "G3": {
+  "filed": [
+   {
+    "iid": "imqoidgg0mzmdop",
+    "type": "Meeting",
+    "title": "Range brief",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": null
+   }
+  ],
+  "pub1": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "addTally": "Tally added to Range brief",
+  "afterTally": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0mzmdop",
+     "type": "Meeting",
+     "title": "Range brief",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "cx": null,
+     "cxr": null,
+     "oil": null,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ],
+     "grp": null
+    }
+   ],
+   "counts": {
+    "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+    "tabLabel": "To go out · AL1 1",
+    "e": "Waiting to go out as AL1 · 1 change",
+    "lines": [
+     "Tally · Range brief Saber 22/6 09:00 added"
+    ]
+   }
+  },
+  "pub2": {
+   "ok": true,
+   "label": "Publish AL1",
+   "version": "AL1",
+   "selects": 4
+  },
+  "addHex": "Hex added to Range brief",
+  "beforeLoad": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0mzmdop",
+     "type": "Meeting",
+     "title": "Range brief",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "cx": null,
+     "cxr": null,
+     "oil": null,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally",
+      "Hex"
+     ],
+     "grp": null
+    }
+   ],
+   "rows": {
+    "editWeek": [
+     [
+      "Drifter",
+      "Hex",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ]
+    ],
+    "viewWeek": [],
+    "board": [
+     [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ]
+    ]
+   },
+   "counts": {
+    "a": "1 pending  [dstat: 1 pending i Publish AL2 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL2 AL1 Wed · 1 item · 1 input change · appr Cinch",
+    "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL2",
+    "tabLabel": "To go out · AL2 1",
+    "e": "Waiting to go out as AL2 · 1 change",
+    "lines": [
+     "Hex · Range brief Saber 22/6 09:00 added"
+    ]
+   }
+  },
+  "menu": "PLANS — WEDNESDAY This day is published — the issued versions don't change. Switching plans marks the differences as the next AL. Live working copy ●live now — differences from AL1 go out as AL2 ISSUED · READ-ONLY Originalread-only — look, don't change AL1read-only — look, don't change + Alt Plan",
+  "lookText": "← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+  "loadBtn": "Load onto working copy",
+  "loadToast": "Wednesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 1 member input change stays pending — a load cannot put back a member's own record",
+  "loadButtons": [],
+  "loadDialog": [],
+  "afterLoad": {
+   "inputs": [
+    {
+     "iid": "imqoidgg0mzmdop",
+     "type": "Meeting",
+     "title": "Range brief",
+     "date": "Jul 15",
+     "s": 840,
+     "e": 900,
+     "cx": null,
+     "cxr": null,
+     "oil": null,
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally",
+      "Hex"
+     ],
+     "grp": null
+    }
+   ],
+   "rows": {
+    "editWeek": [
+     [
+      "Drifter",
+      "Hex",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ]
+    ],
+    "viewWeek": [],
+    "board": [
+     [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+     ]
+    ]
+   },
+   "counts": {
+    "a": "1 pending  [dstat: 1 pending i Publish AL2 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL2 AL1 Wed · 1 item · 1 input change · appr Cinch",
+    "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL2",
+    "tabLabel": "To go out · AL2 1",
+    "e": "Waiting to go out as AL2 · 1 change",
+    "lines": [
+     "Hex · Range brief Saber 22/6 09:00 added"
+    ]
+   }
+  },
+  "chgText": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL2 ✕ New to you 0 All changes 14 To go out · AL2 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL2 · 1 change Hex · Range brief Saber 22/6 09:00 added Tap a change to go to it. Tap a change to go to it.",
+  "chgButtons": [
+   "✕",
+   "New to you 0",
+   "All changes 14",
+   "To go out · AL2 1",
+   "Week",
+   "Mon",
+   "Tue",
+   "Wed",
+   "Thu",
+   "Fri",
+   "Sat",
+   "Sun",
+   "Hex · Range briefSaber22/6 09:00added"
+  ]
+ },
+ "G4": {
+  "filed": [
+   {
+    "iid": "imqoidgg066jifq",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Tally"
+    ],
+    "cx": null
+   }
+  ],
+  "inputsLL": [
+   {
+    "iid": "6jifq",
+    "type": "LL",
+    "date": "Jul 13",
+    "endDate": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Tally"
+    ],
+    "docs": null,
+    "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+   },
+   {
+    "iid": "ad0f6",
+    "type": "LL",
+    "date": "Jul 14",
+    "endDate": null,
+    "people": [
+     "Quill"
+    ],
+    "docs": null,
+    "keys": "person,date,allday,type,remarks,mod,by,at,modBy,modAt,yr,iid,ord"
+   },
+   {
+    "iid": "qx0ft",
+    "type": "ATT C",
+    "date": "Jul 13",
+    "endDate": "Jul 17",
+    "people": [
+     "Grit"
+    ],
+    "docs": null,
+    "keys": "person,date,endDate,allday,type,remarks,mod,docId,by,at,modBy,modAt,yr,iid,ord"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "beforeMed": {
+   "counts": {
+    "a": "6 changes  [dstat: 6 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL1 0",
+    "e": "Waiting to go out as AL1 · 0 changes",
+    "lines": []
+   },
+   "lw": {
+    "Drifter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hunter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Tally": [
+     "13:NO CELL",
+     "14:NO CELL",
+     "15:NO CELL",
+     "16:NO CELL",
+     "17:NO CELL"
+    ],
+    "rowsDrawn": [
+     true,
+     true,
+     false
+    ]
+   },
+   "cal": {
+    "bars": [
+     "Quill · OML @e1jff",
+     "3 · LL @6jifq",
+     "Grit · ATT C @qx0ft",
+     "Quill · LL @ad0f6",
+     "ALL · Sports afternoon @q07xk",
+     "Tally · LL @qma2n",
+     "ALL AVAIL · Duty @l3o1f"
+    ],
+    "card": "⠿ Wed 15 Jul + Note ✕ + Input 5 INPUTS All day CobraOL Overseas leave — off island By Saber till 17 Jul Drifter, Hunter, TallyLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island"
+   }
+  },
+  "medFiled": [
+   {
+    "iid": "imqoidgg0hqj4ij",
+    "type": "ATT C",
+    "date": "Jul 15",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Tally"
+    ],
+    "cx": null
+   },
+   {
+    "iid": "imqoidgg083dh5w",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Tally"
+    ],
+    "cx": null
+   },
+   {
+    "iid": "imqoidgg0fx2fwd",
+    "type": "LL",
+    "date": "Jul 17",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Tally"
+    ],
+    "cx": null
+   }
+  ],
+  "after": {
+   "inputs": [
+    {
+     "iid": "qj4ij",
+     "type": "ATT C",
+     "date": "Jul 15",
+     "endDate": "Jul 16",
+     "people": [
+      "Tally"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+    },
+    {
+     "iid": "6jifq",
+     "type": "LL",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Drifter",
+      "Hunter"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord,hand,leftAt"
+    },
+    {
+     "iid": "3dh5w",
+     "type": "LL",
+     "date": "Jul 13",
+     "endDate": "Jul 14",
+     "people": [
+      "Tally"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+    },
+    {
+     "iid": "x2fwd",
+     "type": "LL",
+     "date": "Jul 17",
+     "endDate": null,
+     "people": [
+      "Tally"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,by,modBy,at,modAt,iid,ord"
+    },
+    {
+     "iid": "ad0f6",
+     "type": "LL",
+     "date": "Jul 14",
+     "endDate": null,
+     "people": [
+      "Quill"
+     ],
+     "docs": null,
+     "keys": "person,date,allday,type,remarks,mod,by,at,modBy,modAt,yr,iid,ord"
+    },
+    {
+     "iid": "qx0ft",
+     "type": "ATT C",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Grit"
+     ],
+     "docs": null,
+     "keys": "person,date,endDate,allday,type,remarks,mod,docId,by,at,modBy,modAt,yr,iid,ord"
+    }
+   ],
+   "counts": {
+    "a": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+    "tabLabel": "To go out · AL1 2",
+    "e": "Waiting to go out as AL1 · 2 changes",
+    "lines": [
+     "Tally · LL Saber 22/6 09:00 taken out",
+     "Tally · ATT C Saber 22/6 09:00 filed"
+    ]
+   },
+   "lw": {
+    "Drifter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hunter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Tally": [
+     "13:NO CELL",
+     "14:NO CELL",
+     "15:NO CELL",
+     "16:NO CELL",
+     "17:NO CELL"
+    ],
+    "rowsDrawn": [
+     true,
+     true,
+     false
+    ]
+   },
+   "cal": {
+    "bars": [
+     "Quill · OML @e1jff",
+     "2 · LL @6jifq",
+     "Grit · ATT C @qx0ft",
+     "Tally · LL @3dh5w",
+     "Quill · LL @ad0f6",
+     "Tally · ATT C @qj4ij",
+     "Tally · LL @x2fwd",
+     "ALL · Sports afternoon @q07xk",
+     "Tally · LL @qma2n",
+     "ALL AVAIL · Duty @l3o1f"
+    ],
+    "card": "⠿ Wed 15 Jul + Note ✕ + Input 6 INPUTS All day CobraOL Overseas leave — off island By Saber till 17 Jul Drifter, HunterLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island till 16 Jul TallyATT C By Saber"
+   }
+  },
+  "undoToast": "",
+  "undo": {
+   "inputs": [
+    {
+     "iid": "6jifq",
+     "type": "LL",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Tally"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+    },
+    {
+     "iid": "ad0f6",
+     "type": "LL",
+     "date": "Jul 14",
+     "endDate": null,
+     "people": [
+      "Quill"
+     ],
+     "docs": null,
+     "keys": "person,date,allday,type,remarks,mod,by,at,modBy,modAt,yr,iid,ord"
+    },
+    {
+     "iid": "qx0ft",
+     "type": "ATT C",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Grit"
+     ],
+     "docs": null,
+     "keys": "person,date,endDate,allday,type,remarks,mod,docId,by,at,modBy,modAt,yr,iid,ord"
+    }
+   ],
+   "counts": {
+    "a": "9 changes  [dstat: 9 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL1 0",
+    "e": "Waiting to go out as AL1 · 0 changes",
+    "lines": []
+   },
+   "lw": {
+    "Drifter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hunter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Tally": [
+     "13:NO CELL",
+     "14:NO CELL",
+     "15:NO CELL",
+     "16:NO CELL",
+     "17:NO CELL"
+    ],
+    "rowsDrawn": [
+     true,
+     true,
+     false
+    ]
+   }
+  }
+ },
+ "G4b_hex": {
+  "filed": [
+   {
+    "iid": "imqoidgg0hq1dyn",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Hex"
+    ],
+    "cx": null
+   }
+  ],
+  "inputsLL": [
+   {
+    "iid": "q1dyn",
+    "type": "LL",
+    "date": "Jul 13",
+    "endDate": "Jul 17",
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Hex"
+    ],
+    "docs": null,
+    "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+   },
+   {
+    "iid": "db5cw",
+    "type": "LL",
+    "date": "Jul 14",
+    "endDate": null,
+    "people": [
+     "Quill"
+    ],
+    "docs": null,
+    "keys": "person,date,allday,type,remarks,mod,by,at,modBy,modAt,yr,iid,ord"
+   },
+   {
+    "iid": "2u042",
+    "type": "ATT C",
+    "date": "Jul 13",
+    "endDate": "Jul 17",
+    "people": [
+     "Grit"
+    ],
+    "docs": null,
+    "keys": "person,date,endDate,allday,type,remarks,mod,docId,by,at,modBy,modAt,yr,iid,ord"
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "beforeMed": {
+   "counts": {
+    "a": "6 changes  [dstat: 6 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL1 0",
+    "e": "Waiting to go out as AL1 · 0 changes",
+    "lines": []
+   },
+   "lw": {
+    "Drifter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hunter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hex": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "rowsDrawn": [
+     true,
+     true,
+     true
+    ]
+   },
+   "cal": {
+    "bars": [
+     "Quill · OML @130ia",
+     "3 · LL @q1dyn",
+     "Grit · ATT C @2u042",
+     "Quill · LL @db5cw",
+     "ALL · Sports afternoon @2wam8",
+     "Tally · LL @y7s9t",
+     "ALL AVAIL · Duty @1ssgw"
+    ],
+    "card": "⠿ Wed 15 Jul + Note ✕ + Input 5 INPUTS All day CobraOL Overseas leave — off island By Saber till 17 Jul Drifter, Hex, HunterLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island"
+   }
+  },
+  "medFiled": [
+   {
+    "iid": "imqoidgg0ondguk",
+    "type": "ATT C",
+    "date": "Jul 15",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "cx": null
+   },
+   {
+    "iid": "imqoidgg0lgapme",
+    "type": "LL",
+    "date": "Jul 13",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "cx": null
+   },
+   {
+    "iid": "imqoidgg0nlx3ky",
+    "type": "LL",
+    "date": "Jul 17",
+    "s": 0,
+    "e": 1439,
+    "grp": null,
+    "people": [
+     "Hex"
+    ],
+    "cx": null
+   }
+  ],
+  "after": {
+   "inputs": [
+    {
+     "iid": "ndguk",
+     "type": "ATT C",
+     "date": "Jul 15",
+     "endDate": "Jul 16",
+     "people": [
+      "Hex"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+    },
+    {
+     "iid": "q1dyn",
+     "type": "LL",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Drifter",
+      "Hunter"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord,hand,leftAt"
+    },
+    {
+     "iid": "gapme",
+     "type": "LL",
+     "date": "Jul 13",
+     "endDate": "Jul 14",
+     "people": [
+      "Hex"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+    },
+    {
+     "iid": "lx3ky",
+     "type": "LL",
+     "date": "Jul 17",
+     "endDate": null,
+     "people": [
+      "Hex"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,by,modBy,at,modAt,iid,ord"
+    },
+    {
+     "iid": "db5cw",
+     "type": "LL",
+     "date": "Jul 14",
+     "endDate": null,
+     "people": [
+      "Quill"
+     ],
+     "docs": null,
+     "keys": "person,date,allday,type,remarks,mod,by,at,modBy,modAt,yr,iid,ord"
+    },
+    {
+     "iid": "2u042",
+     "type": "ATT C",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Grit"
+     ],
+     "docs": null,
+     "keys": "person,date,endDate,allday,type,remarks,mod,docId,by,at,modBy,modAt,yr,iid,ord"
+    }
+   ],
+   "counts": {
+    "a": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+    "c": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+    "tabLabel": "To go out · AL1 2",
+    "e": "Waiting to go out as AL1 · 2 changes",
+    "lines": [
+     "Hex · LL Saber 22/6 09:00 taken out",
+     "Hex · ATT C Saber 22/6 09:00 filed"
+    ]
+   },
+   "lw": {
+    "Drifter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hunter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hex": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:C[.act]",
+     "16:C[.act]",
+     "17:LL[.act]"
+    ],
+    "rowsDrawn": [
+     true,
+     true,
+     true
+    ]
+   },
+   "cal": {
+    "bars": [
+     "Quill · OML @130ia",
+     "2 · LL @q1dyn",
+     "Grit · ATT C @2u042",
+     "Hex · LL @gapme",
+     "Quill · LL @db5cw",
+     "Hex · ATT C @ndguk",
+     "Hex · LL @lx3ky",
+     "ALL · Sports afternoon @2wam8",
+     "Tally · LL @y7s9t",
+     "ALL AVAIL · Duty @1ssgw"
+    ],
+    "card": "⠿ Wed 15 Jul + Note ✕ + Input 6 INPUTS All day CobraOL Overseas leave — off island By Saber till 17 Jul Drifter, HunterLL By Saber All day GambitOIL till 17 Jul GritATT C Medically down till 16 Jul HexATT C By Saber till 17 Jul NomadOD Overseas duty — exercise, off island"
+   }
+  },
+  "undoToast": "",
+  "undo": {
+   "inputs": [
+    {
+     "iid": "q1dyn",
+     "type": "LL",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Drifter",
+      "Hunter",
+      "Hex"
+     ],
+     "docs": null,
+     "keys": "people,type,allday,s,e,date,yr,remarks,mod,endDate,iid,by,modBy,at,modAt,ord"
+    },
+    {
+     "iid": "db5cw",
+     "type": "LL",
+     "date": "Jul 14",
+     "endDate": null,
+     "people": [
+      "Quill"
+     ],
+     "docs": null,
+     "keys": "person,date,allday,type,remarks,mod,by,at,modBy,modAt,yr,iid,ord"
+    },
+    {
+     "iid": "2u042",
+     "type": "ATT C",
+     "date": "Jul 13",
+     "endDate": "Jul 17",
+     "people": [
+      "Grit"
+     ],
+     "docs": null,
+     "keys": "person,date,endDate,allday,type,remarks,mod,docId,by,at,modBy,modAt,yr,iid,ord"
+    }
+   ],
+   "counts": {
+    "a": "9 changes  [dstat: 9 changes i Unpublish]",
+    "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+    "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+    "tabLabel": "To go out · AL1 0",
+    "e": "Waiting to go out as AL1 · 0 changes",
+    "lines": []
+   },
+   "lw": {
+    "Drifter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hunter": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "Hex": [
+     "13:LL[.act]",
+     "14:LL[.act]",
+     "15:LL[.act]",
+     "16:LL[.act]",
+     "17:LL[.act]"
+    ],
+    "rowsDrawn": [
+     true,
+     true,
+     true
+    ]
+   }
+  }
+ },
+ "G5": {
+  "f1": [
+   {
+    "iid": "imqoidgg07dsd5f",
+    "type": "Meeting",
+    "title": "Range brief",
+    "date": "Jul 16",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Hex",
+     "Drifter",
+     "ALL AVAIL"
+    ],
+    "cx": null
+   }
+  ],
+  "f2": [
+   {
+    "iid": "imqoidgg0mme1ii",
+    "type": "Training",
+    "title": "Kit check",
+    "date": "Jul 16",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Tally"
+    ],
+    "cx": null
+   }
+  ],
+  "inputs": [
+   {
+    "iid": "imqoidgg0mme1ii",
+    "type": "Training",
+    "title": "Kit check",
+    "date": "Jul 16",
+    "s": 840,
+    "e": 900,
+    "cx": true,
+    "cxr": "WX",
+    "oil": null,
+    "people": [
+     "Ranger",
+     "Tally"
+    ],
+    "grp": null
+   },
+   {
+    "iid": "imqoidgg07dsd5f",
+    "type": "Meeting",
+    "title": "Range brief",
+    "date": "Jul 16",
+    "s": 600,
+    "e": 660,
+    "cx": null,
+    "cxr": null,
+    "oil": null,
+    "people": [
+     "Ranger",
+     "Hex",
+     "Drifter",
+     "ALL AVAIL"
+    ],
+    "grp": null
+   }
+  ],
+  "saberRows": {
+   "editWeek": [
+    [
+     "Drifter",
+     "Hex",
+     "Ranger",
+     "ALL AVAIL"
+    ],
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "viewWeek": [],
+   "board": [
+    [
+     "Drifter",
+     "Hex",
+     "Ranger",
+     "ALL AVAIL"
+    ],
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ]
+  },
+  "vRows": {
+   "editWeek": [],
+   "viewWeek": [
+    [
+     "Drifter",
+     "Hex",
+     "Ranger",
+     "ALL AVAIL"
+    ],
+    [
+     "Ranger",
+     "Tally"
+    ]
+   ],
+   "board": []
+  },
+  "vDom": {
+   "secs": [
+    "allhands sec sec-prog :: COMMON PROGRAMME EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:45 08:00 HQ ENGAGEMENT 08:45 16:30 C Ace A",
+    "sub plist sec sec-duty :: DUTIES NAME START END PEOPLE RMKS 1ST WAVE SDO 08:00 14:00 Ridge C SXO 08:00 14:00 Anvil IP OPS-O 08:00 14:00 Vector C 2ND WAVE SDO 14:00 19:00 Comet IP SXO 14:00 19:00 Forge IP OPS-O 14:00 19:00 Dash C",
+    "sub plist sec sec-sim :: SIMS NAME START END PEOPLE RMKS AMT BRIEF 11:00 BOX 11:30 12:30 DEBRIEF 12:30 OFT EP-4 09:00 10:30 Talisman O Fable C SIMS (EXT SQN) 12:00 13:30 EXT SQN",
+    "sub plist one sec sec-grnd :: GROUND PROGRAMME NAME START END PEOPLE RMKS RANGE BRIEF MEETING 10:00 11:00 Drifter A Hex C C Ranger IP ALL AVAIL 36 till 16 Jul MEDICAL APPT 10:30 12:30 Diesel D DENTAL APPT 12:00 13:30 Kraken D CX DUE WXKIT CHECK TRAINING 14:00 15:00 C Ranger IP Tally O till",
+    "sub plist one sec sec-unav :: UNAVAILABLE NAME START END PEOPLE RMKS ATT C all day Grit C Medically down till 17 Jul OD all day Nomad C Overseas duty — exercise, off island OIL all day Gambit C"
+   ],
+   "rows": [
+    {
+     "sec": "sub plist one sec sec-grnd",
+     "text": "RANGE BRIEF MEETING 10:00 11:00 Drifter A Hex C C Ranger IP ALL AVAIL 36 till 16 Jul",
+     "html": "<div class=\"pl-row gshared gr-frominput\"><span class=\"nm\"><span class=\"ntx\">RANGE BRIEF</span><span class=\"nm-kind\">Meeting</span></span><span class=\"t t-s\">10:00</span><span class=\"t t-e\">11:00</span><div class=\"ppl \"><span class=\"seat\" data-slot=\"g:3.3.x1\"><span class=\"puck sm\" tabindex=\"0\" data-person=\"slipway\" title=\"Drifter · A · 4-ship FL · SXO\"><span class=\"nm\">Drifter</span><span class=\"role q-a\">A</span></span></span><span class=\"seat\" data-slot=\"g:3.3.x0\"><span class=\"puck r sm\" tabindex=\"0\" data-person=\"rocky\" title=\"Hex · C · ops wingman\"><span class=\"nm\">Hex</span><span class=\"role q-c\">C</span></span></span><span class=\"seat\" data-slot=\"g:3.3\"><span class=\"puck sm warn hard boxred me\" tabindex=\"0\" data-person=\"bane\" title=\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"><span class=\"lchip l-c\" title=\"Conflict (two events at once)\">C</span><span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span></span></span><span class=\"seat\" data-slot=\"g:3.3.x2\"><span class=\"puck allavail sm\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL\"><span class=\"nm\">ALL AVAIL</span></span><span class=\"oilcount\" data-oilsent=\"i:imqoidgg07dsd5f\" data-oilday=\"3",
+     "editable": 0,
+     "draggable": 0,
+     "inputs": 0,
+     "strike": "none"
+    },
+    {
+     "sec": "sub plist one sec sec-grnd",
+     "text": "MEDICAL APPT 10:30 12:30 Diesel D",
+     "html": "<div class=\"pl-row\"><span class=\"nm\"><span class=\"ntx\">MEDICAL APPT</span></span><span class=\"t t-s\">10:30</span><span class=\"t t-e\">12:30</span><div class=\"ppl one\"><span class=\"seat\" data-slot=\"g:3.0\"><span class=\"puck sm\" tabindex=\"0\" data-person=\"fantom\" title=\"Diesel · D · wingman\"><span class=\"nm\">Diesel</span><span class=\"role q-d\">D</span></span></span></div><span class=\"rmk rk-e\"></span></div>",
+     "editable": 0,
+     "draggable": 0,
+     "inputs": 0,
+     "strike": "none"
+    },
+    {
+     "sec": "sub plist one sec sec-grnd",
+     "text": "DENTAL APPT 12:00 13:30 Kraken D",
+     "html": "<div class=\"pl-row\"><span class=\"nm\"><span class=\"ntx\">DENTAL APPT</span></span><span class=\"t t-s\">12:00</span><span class=\"t t-e\">13:30</span><div class=\"ppl one\"><span class=\"seat\" data-slot=\"g:3.1\"><span class=\"puck sm san\" tabindex=\"0\" data-person=\"krait\" title=\"Kraken · D · wingman · SANS\"><span class=\"nm\">Kraken</span><span class=\"role q-d\">D</span></span></span></div><span class=\"rmk rk-e\"></span></div>",
+     "editable": 0,
+     "draggable": 0,
+     "inputs": 0,
+     "strike": "none"
+    },
+    {
+     "sec": "sub plist one sec sec-grnd",
+     "text": "CX DUE WXKIT CHECK TRAINING 14:00 15:00 C Ranger IP Tally O till 16 Jul",
+     "html": "<div class=\"pl-row gshared cx gr-frominput\"><span class=\"nm\"><span class=\"cxtag\" title=\"CX DUE WX\">CX DUE WX</span><span class=\"ntx\">KIT CHECK</span><span class=\"nm-kind\">Training</span></span><span class=\"t t-s\">14:00</span><span class=\"t t-e\">15:00</span><div class=\"ppl \"><span class=\"seat\" data-slot=\"g:3.4\"><span class=\"puck sm warn hard boxred me\" tabindex=\"0\" data-person=\"bane\" title=\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"><span class=\"lchip l-c\" title=\"Conflict (two events at once)\">C</span><span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span></span></span><span class=\"seat\" data-slot=\"g:3.4.x0\"><span class=\"puck r sm san\" tabindex=\"0\" data-person=\"nick\" title=\"Tally · OCU (ab-initio) · SANS\"><span class=\"nm\">Tally</span><span class=\"role q-ocu\">O</span></span></span></div><span class=\"rmk\"><span class=\"ntx\">till 16 Jul</span></span></div>",
+     "editable": 0,
+     "draggable": 0,
+     "inputs": 0,
+     "strike": "line-through"
+    },
+    {
+     "sec": "sub plist one sec sec-grnd",
+     "text": "APPOINTMENT 17:00 18:30 C Ranger IP Medical / PHA",
+     "html": "<div class=\"pl-row gr-frominput\"><span class=\"nm\"><span class=\"ntx\">APPOINTMENT</span></span><span class=\"t t-s\">17:00</span><span class=\"t t-e\">18:30</span><div class=\"ppl one\"><span class=\"seat\" data-slot=\"g:3.2\"><span class=\"puck sm warn hard boxred me\" tabindex=\"0\" data-person=\"bane\" title=\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"><span class=\"lchip l-c\" title=\"Conflict (two events at once)\">C</span><span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span></span></span></div><span class=\"rmk\"><span class=\"ntx\">Medical / PHA</span></span></div>",
+     "editable": 0,
+     "draggable": 0,
+     "inputs": 0,
+     "strike": "none"
+    }
+   ]
+  },
+  "hands": {
+   "before": "[[\"Ranger\",\"Hex\",\"Drifter\",\"ALL AVAIL\"]]",
+   "after": "[[\"Ranger\",\"Hex\",\"Drifter\",\"ALL AVAIL\"]]",
+   "hexPuckFound": true,
+   "toast": ""
+  },
+  "taps": [
+   {
+    "nm": "view row name (Range brief)",
+    "found": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "nm": "view Personal Inputs line (Range brief)",
+    "found": 0,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "nm": "view Personal Inputs line (Kit check)",
+    "found": 0,
+    "opened": false,
+    "text": ""
+   }
+  ],
+  "edit": {
+   "page": "editsched",
+   "navHas": true,
+   "text": "142 RAPTOR View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout RANGER · MEMBER Jul 06 Jul 13 Jul 20 Jul 27 CAT TYPE QUALS AMENDMENTS No pending changes No amendments publishe"
+  }
+ },
+ "G5b": {
+  "f1": [
+   {
+    "iid": "imqoidgg07x6h4c",
+    "type": "Meeting",
+    "title": "Range brief",
+    "date": "Jul 16",
+    "s": 600,
+    "e": 660,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Hex",
+     "Drifter",
+     "ALL AVAIL"
+    ],
+    "cx": null
+   }
+  ],
+  "f2": [
+   {
+    "iid": "imqoidgg0ah2c30",
+    "type": "Training",
+    "title": "Kit check",
+    "date": "Jul 16",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Ranger",
+     "Tally"
+    ],
+    "cx": null
+   }
+  ],
+  "f3": [
+   {
+    "iid": "imqoidgg0brj174",
+    "type": "Appointment",
+    "title": "Own errand",
+    "date": "Jul 16",
+    "s": 480,
+    "e": 540,
+    "grp": null,
+    "people": [
+     "Ranger"
+    ],
+    "cx": null
+   }
+  ],
+  "taps": [
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"RANGE BRIEF\") .nm",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"RANGE BRIEF\") .ntx",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"RANGE BRIEF\") .t-s",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"RANGE BRIEF\") .puck:has-text(\"Ranger\")",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"RANGE BRIEF\") .rmk",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"OWN ERRAND\") .nm",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"OWN ERRAND\") .puck",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"KIT CHECK\") .nm",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   },
+   {
+    "t": ".sec-grnd .pl-row:has-text(\"KIT CHECK\") .puck:has-text(\"Ranger\")",
+    "n": 1,
+    "opened": false,
+    "text": ""
+   }
+  ],
+  "rows": [
+   [
+    "Ranger"
+   ],
+   [
+    "Drifter",
+    "Hex",
+    "Ranger",
+    "ALL AVAIL"
+   ],
+   [
+    "Ranger",
+    "Tally"
+   ]
+  ]
+ },
+ "G6": {
+  "steps": [
+   {
+    "name": "add Hex to Range brief",
+    "toast": "Hex added to Range brief",
+    "ppl": [
+     "Kit check: Tally",
+     "Range brief: Drifter,Hunter,Ranger,Hex"
+    ],
+    "pend": "1 pending i Publish AL1 Unpublish"
+   },
+   {
+    "name": "take Hunter out of Range brief (right-click)",
+    "toast": "Hunter taken out of Range brief",
+    "ppl": [
+     "Kit check: Tally",
+     "Range brief: Drifter,Ranger,Hex"
+    ],
+    "pend": "2 pending i Publish AL1 Unpublish"
+   },
+   {
+    "name": "move Drifter Range brief -> Kit check (drag)",
+    "toast": "Drifter moved to Kit check",
+    "ppl": [
+     "Kit check: Tally,Drifter",
+     "Range brief: Ranger,Hex"
+    ],
+    "pend": "3 pending i Publish AL1 Unpublish"
+   },
+   {
+    "name": "cancel Kit check (WX) on the board",
+    "toast": "CX DUE WX",
+    "ppl": [
+     "Kit check: Tally,Drifter",
+     "Range brief: Ranger,Hex"
+    ],
+    "pend": "4 pending i Publish AL1 Unpublish"
+   }
+  ],
+  "f1": [
+   {
+    "iid": "imqoidgg0a5znku",
+    "type": "Meeting",
+    "title": "Range brief",
+    "date": "Jul 15",
+    "s": 840,
+    "e": 900,
+    "grp": null,
+    "people": [
+     "Drifter",
+     "Hunter",
+     "Ranger"
+    ],
+    "cx": null
+   }
+  ],
+  "f2": [
+   {
+    "iid": "imqoidgg0qwi8qu",
+    "type": "Training",
+    "title": "Kit check",
+    "date": "Jul 15",
+    "s": 960,
+    "e": 1020,
+    "grp": null,
+    "people": [
+     "Tally"
+    ],
+    "cx": null
+   }
+  ],
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "start": {
+   "ppl": [
+    "Kit check: Tally",
+    "Range brief: Drifter,Hunter,Ranger"
+   ],
+   "pend": "7 changes i Unpublish"
+  },
+  "rows": {
+   "editWeek": [
+    [
+     "Hex",
+     "Ranger"
+    ],
+    [
+     "Drifter",
+     "Tally"
+    ]
+   ],
+   "viewWeek": [],
+   "board": [
+    [
+     "Hex",
+     "Ranger"
+    ],
+    [
+     "Drifter",
+     "Tally"
+    ]
+   ]
+  },
+  "final": {
+   "a": "4 pending  [dstat: 4 pending i Publish AL1 Unpublish]",
+   "c": "AMENDMENTS 1 day with changes to publish Wed · 4 changes · 4 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Wednesday 15/7 Published · 4 changes waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 4",
+   "e": "Waiting to go out as AL1 · 4 changes",
+   "lines": [
+    "Hunter · Range brief Saber 22/6 09:00 taken out",
+    "Hex · Range brief Saber 22/6 09:00 added",
+    "Kit check · 2 people Saber 22/6 09:00 Drifter, Tally not cancelled → CX (WX)",
+    "Drifter Saber 22/6 09:00 Range brief → Kit check"
+   ]
+  },
+  "allTabLabel": "All changes 12",
+  "history": [],
+  "taps": [
+   {
+    "i": 0,
+    "label": "Hunter · Range brief Saber 22/6 09:00 taken out",
+    "after": {
+     "sbday": null,
+     "chgwinOpen": true,
+     "land": [],
+     "toast": "CX DUE WX"
+    }
+   },
+   {
+    "i": 1,
+    "label": "Hex · Range brief Saber 22/6 09:00 added",
+    "after": {
+     "sbday": null,
+     "chgwinOpen": true,
+     "land": [],
+     "toast": "CX DUE WX"
+    }
+   },
+   {
+    "i": 2,
+    "label": "Kit check · 2 people Saber 22/6 09:00 Drifter, Tally not cancelled → CX (WX)",
+    "after": {
+     "sbday": null,
+     "chgwinOpen": true,
+     "land": [],
+     "toast": "CX DUE WX"
+    }
+   },
+   {
+    "i": 3,
+    "label": "Drifter Saber 22/6 09:00 Range brief → Kit check",
+    "after": {
+     "sbday": null,
+     "chgwinOpen": true,
+     "land": [],
+     "toast": "CX DUE WX"
+    }
+   }
+  ]
+ },
+ "G1c_stageA_undo": {
+  "pub": {
+   "ok": true,
+   "label": "Publish day",
+   "version": "ORIG",
+   "selects": 4
+  },
+  "published": {
+   "a": "6 changes",
+   "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+   "edit": [
+    [
+     "Ranger"
+    ]
+   ],
+   "view": [
+    [
+     "Ranger"
+    ]
+   ],
+   "viewHead": "Saturday Jul 18 ORIG 0 X 0 X 0 Original — as issued Working draft — not issued i"
+  },
+  "undoDisabled": false,
+  "undoToast": "Undid: publishing a day",
+  "undone": {
+   "a": "7 changes",
+   "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Saturday 18/7 Not yet published",
+   "edit": [
+    [
+     "Ranger"
+    ]
+   ],
+   "view": [
+    [
+     "Ranger"
+    ]
+   ],
+   "viewHead": "Saturday Jul 18 DRAFT 0 X 0 X 0 7 changes i Draft"
+  },
+  "redoDisabled": false,
+  "redone": {
+   "a": "8 changes",
+   "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Saturday 18/7 Published · nothing waiting to go out",
+   "edit": [
+    [
+     "Ranger"
+    ]
+   ],
+   "view": [
+    [
+     "Ranger"
+    ]
+   ],
+   "viewHead": "Saturday Jul 18 ORIG 0 X 0 X 0 Original — as issued Working draft — not issued i"
+  }
+ },
+ "summary": {
+  "G1": "PARTIAL",
+  "G2": "PASS",
+  "G3": "PASS",
+  "G4": "PARTIAL",
+  "G5": "FAIL (tap clause)",
+  "G6": "FAIL (line order)",
+  "G7": "PASS",
+  "notWalked": [],
+  "errors": []
+ }
+}

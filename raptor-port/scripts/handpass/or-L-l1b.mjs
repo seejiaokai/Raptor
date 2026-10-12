@@ -1,0 +1,33 @@
+import { open, fileInput, toWeek, shot, saveRes, errs, browser, csId, toast, toMonth, openDay, dayCardText, closeDay, inputsOf, undoRedo, unavailRows } from './or-L-lib.mjs'
+const R = {}
+const { ctx, page } = await open('ad', 'a')
+R.filed = await fileInput(page, { type: 'LL', people: ['Drifter', 'Hex', 'Hunter'], from: '2026-07-13', to: '2026-07-17' })
+await page.evaluate(() => window.go('leavewar')); await page.waitForTimeout(1500)
+for (let i = 0; i < 2; i++) { await page.locator('[data-testid="stage-advance"]').click(); await page.waitForTimeout(600) }
+R.stage = await page.locator('[data-testid="stage-now"]').innerText()
+const hex = await csId(page, 'Hex')
+await page.evaluate(h => { window.raptorMe(h); window.raptorRole('member') }, hex); await page.waitForTimeout(600)
+R.badge = await page.evaluate(() => document.querySelector('#whoami, .whoami, [data-testid="whoami"]')?.innerText || document.querySelector('header, .topbar')?.innerText.replace(/\s+/g, ' ').slice(0, 200))
+await page.locator('[data-testid="month-JUL"]').click().catch(() => {}); await page.waitForTimeout(900)
+const cell = page.locator(`[data-testid="cell-${hex}-2026-07-15"]`).first()
+await cell.scrollIntoViewIfNeeded(); await cell.click(); await page.waitForTimeout(600)
+R.sheetOpen = await page.locator('[data-testid="remarks-field"]').count()
+await shot(page, 'l1-B-sheet')
+if (R.sheetOpen) {
+  R.fieldWas = await page.locator('[data-testid="remarks-field"]').inputValue()
+  await page.locator('[data-testid="remarks-field"]').fill('Dental')
+  await page.locator('[data-testid="remarks-save"]').click(); await page.waitForTimeout(700)
+  R.toast = await toast(page)
+}
+await shot(page, 'l1-B-after-save')
+R.inputs = (await inputsOf(page)).filter(r => r.type === 'LL' && /Jul 1[3-7]/.test(r.date))
+await page.evaluate(() => window.raptorRole('admin')); await page.waitForTimeout(300)
+await toWeek(page)
+R.unavailWed = await unavailRows(page, '#eWeek', 2)
+await page.locator('#eWeek .day:not(.peek)').nth(2).locator('.sec-unav').scrollIntoViewIfNeeded()
+await page.locator('#eWeek .day:not(.peek)').nth(2).locator('.sec-unav').screenshot({ path: 'docs/img/handpass/2026-10-12-one-rule/L/l1-B-unav.png' })
+await toMonth(page); await openDay(page, '2026-07-15'); R.card = await dayCardText(page); await shot(page, 'l1-B-card')
+saveRes('L1B', R)
+console.log(JSON.stringify(R, null, 1))
+console.log('ERRS', errs.join('\n'))
+await browser.close()

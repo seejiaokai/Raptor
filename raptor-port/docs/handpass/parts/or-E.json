@@ -1,0 +1,1154 @@
+{
+ "e1_board_line": {
+  "text": "CX Range brief TRAINING Hex C Ranger IP UNDO",
+  "tag": "CX DUE WX bg rgb(240, 85, 95)",
+  "name": "Range brief",
+  "nameStrike": "line-through",
+  "w": 320,
+  "h": 89,
+  "inScreen": true,
+  "over": false,
+  "kids": [
+   {
+    "cls": "sb-grip ro",
+    "text": "",
+    "top": 420,
+    "h": 25,
+    "cut": false
+   },
+   {
+    "cls": "itemcell",
+    "text": "CX Range brief TRAINING",
+    "top": 424,
+    "h": 17,
+    "cut": false
+   },
+   {
+    "cls": "atm",
+    "text": "",
+    "top": 420,
+    "h": 25,
+    "cut": false
+   },
+   {
+    "cls": "atm",
+    "text": "",
+    "top": 420,
+    "h": 25,
+    "cut": false
+   },
+   {
+    "cls": "ppl",
+    "text": "Hex C Ranger IP",
+    "top": 456,
+    "h": 15,
+    "cut": false
+   },
+   {
+    "cls": "ain rmkin",
+    "text": "",
+    "top": 451,
+    "h": 24,
+    "cut": false
+   },
+   {
+    "cls": "lctl",
+    "text": "UNDO",
+    "top": 481,
+    "h": 19,
+    "cut": false
+   }
+  ],
+  "sameLine": true
+ },
+ "e1_week_line": {
+  "text": "CX DUE WX Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO",
+  "tag": "CX DUE WX bg rgb(240, 85, 95)",
+  "nameStrike": "line-through",
+  "name": "Range brief",
+  "accText": "Undo",
+  "accStrike": "none",
+  "rowCls": "pl-row gshared accd",
+  "accPseudo": [
+   "\" · accepted\"|none",
+   "\" · accepted\"|none"
+  ],
+  "tagText": "CX DUE WX",
+  "cxwhyStrike": "none",
+  "h": 72,
+  "over": false
+ },
+ "e1_card": [
+  {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "kindStrike": "none",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "rmkColour": "rgb(138, 150, 163)",
+   "h": 51,
+   "w": 332,
+   "over": false
+  }
+ ],
+ "e1_window": {
+  "text": "CXWX",
+  "tag": "rgb(240, 85, 95)",
+  "why": "rgb(240, 85, 95)",
+  "title": "Hex +1 · 15 Jul",
+  "inBar": true,
+  "controls": 0,
+  "barH": 57
+ },
+ "e1_list": [
+  {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "kindStrike": "none",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "rmkColour": "rgb(138, 150, 163)",
+   "h": 51,
+   "w": 330,
+   "over": false
+  }
+ ],
+ "e1_errors": [],
+ "e3_bar": [
+  {
+   "text": "2 · Training",
+   "strike": "line-through",
+   "opacity": "0.6",
+   "tip": "Hex, Ranger · Training · 17 Jul · 09:00–10:00\nCancelled\nPlaced by Saber for 2 people · 22 Jun 26, 11:00 · changed by Saber · 22 Jun 26, 11:00",
+   "w": 48,
+   "h": 14,
+   "inScreen": true
+  }
+ ],
+ "e3_card": [
+  {
+   "text": "09:00–10:00 Hex, RangerTRAINING CX By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": null,
+   "kindStrike": "line-through",
+   "why": null,
+   "rmkColour": null,
+   "h": 51,
+   "w": 332,
+   "over": false
+  }
+ ],
+ "e3_list": [
+  {
+   "text": "09:00–10:00 Hex, RangerTRAINING CX By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": null,
+   "kindStrike": "line-through",
+   "why": null,
+   "rmkColour": null,
+   "h": 51,
+   "w": 330,
+   "over": false
+  }
+ ],
+ "e3_week_line": {
+  "text": "CX Training 09:00 10:00 Hex C Ranger IP UNDO",
+  "tag": "CX",
+  "name": "Training",
+  "nameStrike": "line-through",
+  "h": 62
+ },
+ "e3_board_line": {
+  "text": "CX Training Hex C Ranger IP UNDO",
+  "tag": "CX",
+  "itemcell": "CX Training",
+  "nameStrike": "none",
+  "h": 89,
+  "inScreen": true
+ },
+ "e3_errors": [],
+ "e6_bell_start": {
+  "id": "notifyBell",
+  "lit": true,
+  "open": "false"
+ },
+ "e6_list": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 357
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-t",
+  "scrolls": false,
+  "markAll": {
+   "x": 283,
+   "y": 373,
+   "bottom": 395,
+   "visible": true
+  },
+  "empty": null,
+  "n": 6,
+  "lines": [
+   "[unread] Training | Fri 17 Jul | Cancelled · Saber | 2 h | bold 600 h52 op 1",
+   "[unread] Training | Fri 17 Jul | You were added · Saber | 2 h | bold 600 h52 op 1",
+   "[unread] Solo drill | Thu 16 Jul | Cancelled — WX · Saber | 2 h | bold 600 h52 op 1",
+   "[unread] Solo drill | Thu 16 Jul | You were added · Saber | 2 h | bold 600 h52 op 1",
+   "[unread] Range brief | Wed 15 Jul | Cancelled — WX · Saber | 4 h | bold 600 h52 op 1",
+   "[unread] Range brief | Wed 15 Jul | You were added · Saber | 4 h | bold 600 h52 op 1"
+  ]
+ },
+ "e6_list_after_one": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 357
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-t",
+  "scrolls": false,
+  "markAll": {
+   "x": 283,
+   "y": 373,
+   "bottom": 395,
+   "visible": true
+  },
+  "empty": null,
+  "n": 6,
+  "lines": [
+   "[read] Training | Fri 17 Jul | Cancelled · Saber | 3 h | bold 400 h52 op 1",
+   "[unread] Training | Fri 17 Jul | You were added · Saber | 3 h | bold 600 h52 op 1",
+   "[unread] Solo drill | Thu 16 Jul | Cancelled — WX · Saber | 3 h | bold 600 h52 op 1",
+   "[unread] Solo drill | Thu 16 Jul | You were added · Saber | 3 h | bold 600 h52 op 1",
+   "[unread] Range brief | Wed 15 Jul | Cancelled — WX · Saber | 5 h | bold 600 h52 op 1",
+   "[unread] Range brief | Wed 15 Jul | You were added · Saber | 5 h | bold 600 h52 op 1"
+  ]
+ },
+ "e5_bars": [
+  {
+   "iid": "imqoidhybvv2jdp",
+   "t": "2 · Range brief",
+   "strike": "line-through",
+   "op": "0.6",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Cancelled — WX"
+  },
+  {
+   "iid": "imqomntn0ung5d8",
+   "t": "Ranger",
+   "strike": "line-through",
+   "op": "0.6",
+   "tip": "Ranger · Solo drill · Training · 16 Jul · 10:00–11:00 / Cancelled — WX"
+  },
+  {
+   "iid": "imqoidgimhl1km7",
+   "t": "Ranger",
+   "strike": "none",
+   "op": "1",
+   "tip": "Ranger · Appointment · 16 Jul · 17:00–18:30 / Placed by Ranger · 29 Jun 26, 09:07"
+  },
+  {
+   "iid": "imqomnxgx1tqlvw",
+   "t": "2 · Training",
+   "strike": "line-through",
+   "op": "0.6",
+   "tip": "Hex, Ranger · Training · 17 Jul · 09:00–10:00 / Cancelled"
+  },
+  {
+   "iid": "imqoidgimw4gb9c",
+   "t": "4 · Meeting",
+   "strike": "none",
+   "op": "1",
+   "tip": "Drifter, Echo, Ranger, Saber · Meeting · 23 Jul · 10:00–11:00 / Placed by Saber for 4 people · 25 Jun 26, 14:32"
+  }
+ ],
+ "e5_card": [
+  {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "kindStrike": "none",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "rmkColour": "rgb(138, 150, 163)",
+   "h": 51,
+   "w": 332,
+   "over": false
+  }
+ ],
+ "e5_tally_tap": {
+  "before": {
+   "pressed": "false",
+   "cls": "pp-puck",
+   "aria": null,
+   "pe": "auto"
+  },
+  "after": {
+   "pressed": "false",
+   "cls": "pp-puck"
+  },
+  "saveVisible": 0
+ },
+ "e5_window": {
+  "wt": {
+   "text": "CXWX",
+   "controls": 0
+  },
+  "ctl": [
+   {
+    "id": "pp-several",
+    "tag": "button",
+    "text": "Several people",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "pp-all-pilots",
+    "tag": "button",
+    "text": "All",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "pp-all-wsos",
+    "tag": "button",
+    "text": "All",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "pp-all-personnel",
+    "tag": "button",
+    "text": "All",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditType",
+    "tag": "select",
+    "text": "LL OL OIL CCL PL FCL EL CL HL OML ATT C ",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditOwnTitle",
+    "tag": "input",
+    "text": "Range brief",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditAllday",
+    "tag": "input",
+    "text": "on",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditStart",
+    "tag": "input",
+    "text": "09:00",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditEnd",
+    "tag": "input",
+    "text": "10:00",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditRmk",
+    "tag": "input",
+    "text": "Bring your kit",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inped-takeout",
+    "tag": "button",
+    "text": "Take me out",
+    "dis": false,
+    "ro": false
+   },
+   {
+    "id": "inpEditCancel",
+    "tag": "button",
+    "text": "Close",
+    "dis": false,
+    "ro": false
+   }
+  ],
+  "wbody": "PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Wildcard O WSOS All Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Grit C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C SANS Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL All Cotter Ratchet Widget TYPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE WHEN all day REMARKS Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 Take me out Only"
+ },
+ "e5_list_Range brief": [
+  {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "kindStrike": "none",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "rmkColour": "rgb(138, 150, 163)",
+   "h": 51,
+   "w": 330,
+   "over": false
+  }
+ ],
+ "e5_list_Solo drill": [
+  {
+   "text": "10:00–11:00 RangerTRAINING CXSolo drillWX By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "kindStrike": "none",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "rmkColour": null,
+   "h": 51,
+   "w": 330,
+   "over": false
+  }
+ ],
+ "e5_solo_after": {
+  "text": "10:00–11:00 RangerTRAINING CXSolo drill rewordedWX · Bring water By Saber",
+  "tag": "CX",
+  "strike": "line-through",
+  "why": "WX"
+ },
+ "e6_bell_after_reload": {
+  "id": "notifyBell",
+  "lit": false,
+  "open": "false"
+ },
+ "e56_errors": [],
+ "e2_before": {
+  "weekLine": {
+   "text": "CX DUE WX Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO",
+   "tag": "CX DUE WX",
+   "nameStrike": "line-through",
+   "h": 72
+  },
+  "weekGround": {
+   "cls": "pl-row gshared cx gr-frominput",
+   "tag": "CX DUE WX",
+   "strike": "none",
+   "h": 58,
+   "text": "CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD Bring your kit"
+  },
+  "boardRow": {
+   "cls": "sb-arow c6r cx gr-frominput",
+   "cxBtn": "mbtn on",
+   "infoBtn": "mbtn nfo",
+   "flagBtn": "mbtn red"
+  },
+  "boardLine": {
+   "text": "CX Range brief TRAINING Hex C Ranger IP UNDO",
+   "tag": "CX",
+   "nameStrike": "none",
+   "h": 89
+  },
+  "bar": {
+   "text": "2 · Range brief",
+   "strike": "line-through",
+   "op": "0.6",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Cancelled — WX"
+  },
+  "card": {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "h": 51
+  },
+  "windowCx": "CXWX",
+  "list": {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "h": 51
+  },
+  "rec": {
+   "iid": "imqoidhybvv2jdp",
+   "title": "Range brief",
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "cx": true,
+   "cxr": "WX",
+   "s": 540,
+   "e": 600
+  }
+ },
+ "e2_after": {
+  "weekLine": {
+   "text": "Range brief TRAINING 09:00 10:00 C Hex C Ranger IP Bring your kit UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 62
+  },
+  "weekGround": {
+   "cls": "pl-row gshared gr-frominput",
+   "tag": null,
+   "strike": "none",
+   "h": 58,
+   "text": "RANGE BRIEF TRAINING 09:00 10:00 C Hex C Ranger IP + ADD Bring your kit"
+  },
+  "boardRow": {
+   "cls": "sb-arow c6r gr-frominput",
+   "cxBtn": "mbtn",
+   "infoBtn": "mbtn nfo",
+   "flagBtn": "mbtn red"
+  },
+  "boardLine": {
+   "text": "Range brief TRAINING C Hex C Ranger IP UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 89
+  },
+  "bar": {
+   "text": "2 · Range brief",
+   "strike": "none",
+   "op": "1",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"
+  },
+  "card": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "windowCx": null,
+  "list": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "rec": {
+   "iid": "imqoidhybvv2jdp",
+   "title": "Range brief",
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "cx": false,
+   "cxr": "",
+   "s": 540,
+   "e": 600
+  }
+ },
+ "e2_undo": {
+  "weekLine": {
+   "text": "CX DUE WX Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO",
+   "tag": "CX DUE WX",
+   "nameStrike": "line-through",
+   "h": 72
+  },
+  "weekGround": {
+   "cls": "pl-row gshared cx gr-frominput",
+   "tag": "CX DUE WX",
+   "strike": "none",
+   "h": 58,
+   "text": "CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD Bring your kit"
+  },
+  "boardRow": {
+   "cls": "sb-arow c6r cx gr-frominput",
+   "cxBtn": "mbtn on",
+   "infoBtn": "mbtn nfo",
+   "flagBtn": "mbtn red"
+  },
+  "boardLine": {
+   "text": "CX Range brief TRAINING Hex C Ranger IP UNDO",
+   "tag": "CX",
+   "nameStrike": "none",
+   "h": 89
+  },
+  "bar": {
+   "text": "2 · Range brief",
+   "strike": "line-through",
+   "op": "0.6",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Cancelled — WX"
+  },
+  "card": {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "h": 51
+  },
+  "windowCx": "CXWX",
+  "list": {
+   "text": "09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber",
+   "tag": "CX / bg rgb(240, 85, 95)",
+   "titleStrike": "line-through",
+   "why": "WX / colour rgb(240, 85, 95)",
+   "h": 51
+  },
+  "rec": {
+   "iid": "imqoidhybvv2jdp",
+   "title": "Range brief",
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "cx": true,
+   "cxr": "WX",
+   "s": 540,
+   "e": 600
+  }
+ },
+ "e2_redo": {
+  "weekLine": {
+   "text": "Range brief TRAINING 09:00 10:00 C Hex C Ranger IP Bring your kit UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 62
+  },
+  "weekGround": {
+   "cls": "pl-row gshared gr-frominput",
+   "tag": null,
+   "strike": "none",
+   "h": 58,
+   "text": "RANGE BRIEF TRAINING 09:00 10:00 C Hex C Ranger IP + ADD Bring your kit"
+  },
+  "boardRow": {
+   "cls": "sb-arow c6r gr-frominput",
+   "cxBtn": "mbtn",
+   "infoBtn": "mbtn nfo",
+   "flagBtn": "mbtn red"
+  },
+  "boardLine": {
+   "text": "Range brief TRAINING C Hex C Ranger IP UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 89
+  },
+  "bar": {
+   "text": "2 · Range brief",
+   "strike": "none",
+   "op": "1",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"
+  },
+  "card": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "windowCx": null,
+  "list": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "rec": {
+   "iid": "imqoidhybvv2jdp",
+   "title": "Range brief",
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "cx": false,
+   "cxr": "",
+   "s": 540,
+   "e": 600
+  }
+ },
+ "e4_redbox": {
+  "weekLine": {
+   "text": "Range brief TRAINING 09:00 10:00 C Hex C Ranger IP Bring your kit UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 62
+  },
+  "weekGround": {
+   "cls": "pl-row gshared redbox gr-frominput",
+   "tag": null,
+   "strike": "none",
+   "h": 58,
+   "text": "!RANGE BRIEF TRAINING 09:00 10:00 C Hex C Ranger IP + ADD Bring your kit"
+  },
+  "boardRow": {
+   "cls": "sb-arow c6r redbox gr-frominput",
+   "cxBtn": "mbtn",
+   "infoBtn": "mbtn nfo",
+   "flagBtn": "mbtn red on"
+  },
+  "boardLine": {
+   "text": "Range brief TRAINING C Hex C Ranger IP UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 89
+  },
+  "bar": {
+   "text": "2 · Range brief",
+   "strike": "none",
+   "op": "1",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"
+  },
+  "card": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "windowCx": null,
+  "list": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "rec": {
+   "iid": "imqoidhybvv2jdp",
+   "title": "Range brief",
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "cx": false,
+   "cxr": "",
+   "s": 540,
+   "e": 600
+  }
+ },
+ "e4_redbox_same": {
+  "card": true,
+  "list": true,
+  "bar": true,
+  "window": true
+ },
+ "e4_info": {
+  "weekLine": {
+   "text": "Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 62
+  },
+  "weekGround": {
+   "cls": "pl-row gshared fyi redbox gr-frominput",
+   "tag": null,
+   "strike": "none",
+   "h": 58,
+   "text": "!RANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD ⓘ Bring your kit"
+  },
+  "boardRow": {
+   "cls": "sb-arow c6r fyi redbox gr-frominput",
+   "cxBtn": "mbtn",
+   "infoBtn": "mbtn nfo on",
+   "flagBtn": "mbtn red on"
+  },
+  "boardLine": {
+   "text": "Range brief TRAINING Hex C Ranger IP UNDO",
+   "tag": null,
+   "nameStrike": "none",
+   "h": 89
+  },
+  "bar": {
+   "text": "2 · Range brief",
+   "strike": "none",
+   "op": "1",
+   "tip": "Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"
+  },
+  "card": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "windowCx": null,
+  "list": {
+   "text": "09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber",
+   "tag": null,
+   "titleStrike": "none",
+   "why": null,
+   "h": 51
+  },
+  "rec": {
+   "iid": "imqoidhybvv2jdp",
+   "title": "Range brief",
+   "people": [
+    "Ranger",
+    "Hex"
+   ],
+   "cx": false,
+   "cxr": "",
+   "s": 540,
+   "e": 600
+  }
+ },
+ "e4_info_same": {
+  "card": true,
+  "list": true,
+  "bar": true,
+  "window": true
+ },
+ "e24_errors": [],
+ "e7_editsched_list": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 98
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-line unread",
+  "scrolls": false,
+  "markAll": {
+   "x": 283,
+   "y": 114,
+   "bottom": 136,
+   "visible": true
+  },
+  "empty": null,
+  "n": 1,
+  "lines": [
+   "[unread] Standby brief | Wed 15 Jul | You were added · Ranger | now | bold 600 h52 op 1"
+  ]
+ },
+ "e7_editsched_outside": {
+  "hit": "t txed",
+  "listOpen": 0
+ },
+ "e7_board_list": {
+  "box": {
+   "x": 8,
+   "y": 42,
+   "w": 374,
+   "h": 98
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-line unread",
+  "scrolls": false,
+  "markAll": {
+   "x": 283,
+   "y": 110,
+   "bottom": 132,
+   "visible": true
+  },
+  "empty": null,
+  "n": 1,
+  "lines": [
+   "[unread] Standby brief | Wed 15 Jul | You were added · Ranger | now | bold 600 h52 op 1"
+  ]
+ },
+ "e7_board_outside": {
+  "hit": "sb-ph (inside board)",
+  "listOpen": 0,
+  "boardOpen": 1
+ },
+ "e7_e10": {
+  "listNodesAfterSignIn": 0,
+  "bell": {
+   "id": "notifyBell",
+   "lit": false,
+   "open": "false"
+  }
+ },
+ "e7_errors": [],
+ "e7d_editsched_list": {
+  "box": {
+   "x": 782,
+   "y": 51,
+   "w": 348,
+   "h": 98
+  },
+  "vw": 1440,
+  "vh": 900,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": false,
+  "hitIsList": true,
+  "hitTag": "bl-line unread",
+  "scrolls": false,
+  "markAll": {
+   "x": 1031,
+   "y": 119,
+   "bottom": 141,
+   "visible": true
+  },
+  "empty": null,
+  "n": 1,
+  "lines": [
+   "[unread] Standby brief | Wed 15 Jul | You were added · Ranger | now | bold 600 h52 op 1"
+  ]
+ },
+ "e7d_editsched_outside": {
+  "hit": "fcell ld",
+  "listOpen": 0
+ },
+ "e7d_board_list": {
+  "box": {
+   "x": 919,
+   "y": 101,
+   "w": 348,
+   "h": 98
+  },
+  "vw": 1440,
+  "vh": 900,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": false,
+  "hitIsList": true,
+  "hitTag": "bl-line unread",
+  "scrolls": false,
+  "markAll": {
+   "x": 1168,
+   "y": 169,
+   "bottom": 191,
+   "visible": true
+  },
+  "empty": null,
+  "n": 1,
+  "lines": [
+   "[unread] Standby brief | Wed 15 Jul | You were added · Ranger | now | bold 600 h52 op 1"
+  ]
+ },
+ "e7d_board_outside": {
+  "hit": "sb-line (inside board)",
+  "listOpen": 0,
+  "boardOpen": 1
+ },
+ "e7d_e10": {
+  "listNodesAfterSignIn": 0,
+  "bell": {
+   "id": "notifyBell",
+   "lit": false,
+   "open": "false"
+  }
+ },
+ "e7d_errors": [],
+ "e8_nothing_new": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 62
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-empty",
+  "scrolls": false,
+  "markAll": null,
+  "empty": "Nothing new",
+  "n": 0,
+  "lines": []
+ },
+ "e9_844": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 512
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-line unread",
+  "scrolls": false,
+  "markAll": {
+   "x": 283,
+   "y": 528,
+   "bottom": 550,
+   "visible": true
+  },
+  "empty": null,
+  "n": 9,
+  "lines": [
+   "[unread] Wed brief | Wed 15 Jul | Now 06:00–07:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 07:00–08:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 08:00–09:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 16:00–17:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 15:00–16:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 14:00–15:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 13:00–14:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 12:00–13:00 · Saber | now | bold 600 h52 op 1",
+   "[unread] Wed brief | Wed 15 Jul | Now 11:00–12:00 · Saber | now | bold 600 h52 op 1"
+  ]
+ },
+ "e9_844_fit": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 512
+  },
+  "scroll": {
+   "scroller": null,
+   "sh": null,
+   "ch": null,
+   "listOverflowY": "auto",
+   "listSH": 510,
+   "listCH": 510
+  },
+  "mark": {
+   "top": 528,
+   "bottom": 550,
+   "left": 283,
+   "right": 370,
+   "inScreen": true,
+   "hit": true
+  }
+ },
+ "e9-02-390x568": {
+  "fit": {
+   "box": {
+    "x": 8,
+    "y": 46,
+    "w": 374,
+    "h": 398
+   },
+   "scroll": {
+    "scroller": "bell-list wide",
+    "sh": 510,
+    "ch": 396,
+    "listOverflowY": "auto",
+    "listSH": 510,
+    "listCH": 396
+   },
+   "mark": {
+    "top": 528,
+    "bottom": 550,
+    "left": 283,
+    "right": 370,
+    "inScreen": true,
+    "hit": false
+   },
+   "topClearOfBar": true
+  },
+  "reach": {
+   "scroller": "bell-list wide",
+   "scrolledTo": 114,
+   "lastLineBottom": 403,
+   "vh": 568,
+   "markVisible": true
+  }
+ },
+ "e9-03-844x390": {
+  "fit": {
+   "box": {
+    "x": 171,
+    "y": 96,
+    "w": 348,
+    "h": 273
+   },
+   "scroll": {
+    "scroller": "bell-list",
+    "sh": 510,
+    "ch": 271,
+    "listOverflowY": "auto",
+    "listSH": 510,
+    "listCH": 271
+   },
+   "mark": {
+    "top": 578,
+    "bottom": 600,
+    "left": 420,
+    "right": 507,
+    "inScreen": false,
+    "hit": false
+   },
+   "topClearOfBar": true
+  },
+  "reach": {
+   "scroller": "bell-list",
+   "scrolledTo": 239,
+   "lastLineBottom": 328,
+   "vh": 390,
+   "markVisible": true
+  }
+ },
+ "e8_first_tap": {
+  "oil": {
+   "buttons": [
+    "x:✕",
+    "oil-yes:Yes — credit HO",
+    "oil-no:No OIL",
+    "abtn ghost:Cancel",
+    "oilconf-save:Save"
+   ],
+   "text": "OIL — Anvil +1, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit "
+  },
+  "listOpen": 0
+ },
+ "e89_errors": [],
+ "e8b_errors": [],
+ "e8_second_tap_list": {
+  "box": {
+   "x": 8,
+   "y": 46,
+   "w": 374,
+   "h": 98
+  },
+  "vw": 390,
+  "vh": 844,
+  "underBell": 6,
+  "inView": true,
+  "wideAsScreen": true,
+  "hitIsList": true,
+  "hitTag": "bl-line unread",
+  "scrolls": false,
+  "markAll": {
+   "x": 283,
+   "y": 114,
+   "bottom": 136,
+   "visible": true
+  },
+  "empty": null,
+  "n": 1,
+  "lines": [
+   "[unread] Sat X | Sat 18 Jul | Tally taken off · Tally | now | bold 600 h52 op 1"
+  ]
+ },
+ "e8c_errors": [],
+ "verdicts": {
+  "E1": "PASS",
+  "E2": "PASS",
+  "E3": "PASS",
+  "E4": "PASS",
+  "E5": "PASS",
+  "E6": "PASS",
+  "E7": "PASS",
+  "E8": "PASS (setup by replace-then-join; see report)",
+  "E9": "PASS (Mark all read only by scrolling the list)",
+  "E10": "PASS"
+ },
+ "not_walked": [],
+ "fails": []
+}

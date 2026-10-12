@@ -1,0 +1,15 @@
+import { open, fileInput, shot, sleep, log, inputsOf, goWeek, toWeekSec, unfoldWeek, readRows, errs, browser, DI } from './or-D-lib.mjs'
+const { ctx, page } = await open()
+const f = await fileInput(page, { type: 'Meeting', people: ['Drifter', 'Hunter'], from: '2026-07-15', to: '2026-07-15', timed: ['14:00', '15:00'], title: 'Range brief' })
+log('filed', f)
+await goWeek(page)
+await unfoldWeek(page)
+await toWeekSec(page, 'grnd').catch(e => log('toWeekSec err', String(e).slice(0, 100)))
+await sleep(500)
+await shot(page, 'x1-week')
+log(await readRows(page, 'Range brief'))
+// list rows' html
+const html = await page.evaluate(() => { const r = [...document.querySelectorAll('#page-editsched .day:not(.peek) .sec-grnd .pl-row')].map(r => r.outerHTML.slice(0, 1500)); return r })
+log(html.slice(0, 3))
+log(errs)
+await ctx.close(); await browser.close()

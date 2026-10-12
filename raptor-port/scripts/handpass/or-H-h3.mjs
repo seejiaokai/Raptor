@@ -1,0 +1,48 @@
+import { launch, open, fileInput, openFromList, describeWin, shot, WIN, toastMark, toastsSince, inputOf, save, errs, as, badgeText, bellRead, drag, ID } from './or-H-lib.mjs'
+const out = {}
+const log = (k, v) => { out[k] = v; console.log('## ' + k + ' ' + JSON.stringify(v)) }
+const browser = await launch()
+const { ctx, page } = await open(browser)
+const who = iid => page.evaluate(i => { const r = window.INPUTS.find(x => x.iid === i); return r ? { people: r.people.map(e => window.PEOPLE[e.p].cs + (e.by ? '(by ' + window.PEOPLE[e.by]?.cs + ')' : '')), by: window.PEOPLE[r.by]?.cs, title: r.title, s: r.s, e: r.e } : null }, iid)
+await as(page, 'Ranger')
+const r = await fileInput(page, { type: 'Meeting', people: ['Ranger', 'Tally'], from: '2026-07-15', to: '2026-07-15', timed: ['14:00', '15:00'], title: 'Weekly sync' })
+const iid = r[0].iid
+log('filed', await who(iid))
+/* Ranger BEFORE the scheduler: can he change it for everyone? */
+await openFromList(page, iid)
+const d0 = await describeWin(page)
+log('ranger-window-before', { fields: d0.fields.map(f => f.id + '=' + f.value), buttons: d0.buttons.map(b => b.text).filter(t => t.length > 1), tail: d0.text.slice(-300) })
+await shot(page, 'H3-0-ranger-window-before')
+await page.locator('#inpEditCancel').click(); await page.waitForTimeout(250)
+/* Saber adds Hex from the schedule */
+await as(page, 'Saber'); log('badge', await badgeText(page))
+await page.evaluate(() => window.go('editsched')); await page.locator('#eWeek .day').first().waitFor()
+const day = page.locator('#eWeek .day:not(.peek)').nth(2); await day.scrollIntoViewIfNeeded()
+const row = day.locator('.sec-grnd .pl-row', { hasText: 'Weekly sync' }).first()
+log('row-found', await row.count())
+await row.scrollIntoViewIfNeeded()
+log('row-html-add', await row.evaluate(r => [...r.querySelectorAll('[data-slot]')].map(e => e.getAttribute('data-slot') + '|' + e.className + '|' + e.innerText.trim().slice(0, 12))))
+log('row-ppl-html', await row.locator('.ppl').first().evaluate(e => e.outerHTML.replace(/\s+/g, ' ').slice(0, 900)))
+const add = row.getByText('+ add').first()
+log('add-count', await row.getByText('+ add').count())
+const hexPuck = page.locator('#eRoster .rpuck[data-person="rocky"]:visible').first()
+log('roster-hex', await hexPuck.count())
+const m = await toastMark(page)
+await hexPuck.scrollIntoViewIfNeeded().catch(() => {})
+await drag(page, hexPuck, add)
+log('after-add', { toast: await toastsSince(page, m), inputs: await who(iid) })
+await shot(page, 'H3-1-saber-added-hex')
+/* Ranger again */
+await as(page, 'Ranger')
+await openFromList(page, iid)
+const d1 = await describeWin(page)
+log('ranger-window-after', { text: d1.text.replace(/LL \| OL.*Other \|/, '[types] |'), fields: d1.fields.map(f => f.id + '=' + f.value), buttons: d1.buttons.map(b => b.id + ':' + b.text).filter(t => t.length > 4), picker: d1.picker })
+await shot(page, 'H3-2-ranger-window-after')
+/* can he type / press? */
+const tl = page.locator('#inpEditOwnTitle'); const tv = await tl.inputValue().catch(() => null)
+await tl.click({ force: true }).catch(() => {}); await page.keyboard.type('ZZ')
+log('ranger-typed-title', { before: tv, after: await tl.inputValue().catch(() => null) })
+log('bottom-of-window', await page.locator(WIN).evaluate(w => w.innerText.replace(/\s+/g, ' ').slice(-380)))
+log('errors', errs)
+save('H3', out)
+await browser.close()

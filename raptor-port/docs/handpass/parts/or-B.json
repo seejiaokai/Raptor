@@ -1,0 +1,2350 @@
+{
+  "B1": {
+    "filed": [
+      {
+        "iid": "imqoidgg0o2rg8p",
+        "type": "Training",
+        "date": "Jul 18",
+        "s": 540,
+        "e": 720,
+        "people": [
+          "Ranger"
+        ]
+      }
+    ],
+    "input0": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "oil": {
+        "2026-07-18": 0.5
+      },
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"oil\":{\"2026-07-18\":0.5},\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,oil,acc\"}"
+    },
+    "oil before": {
+      "Ranger": "on"
+    },
+    "oil Ranger switched off": {
+      "Ranger": "off"
+    },
+    "tally visible": true,
+    "oil question open after swap": 1,
+    "oil question text": "OIL — Tally, Training ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save",
+    "toasts after drop": "Back to editing the schedule || Tally is on Training instead of Ranger",
+    "input after drop (before answer)": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Tally"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc,hand,leftAt\"}"
+    },
+    "toasts after answer": "Back to editing the schedule || Tally is on Training instead of Ranger || OIL answer saved",
+    "input after swap1": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Tally"
+      ],
+      "cx": false,
+      "cxr": "",
+      "oil": {
+        "2026-07-18": 0.5
+      },
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"oil\":{\"2026-07-18\":0.5},\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc,hand,leftAt,oil\"}"
+    },
+    "board row": {
+      "names": [
+        "Tally"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "board lines": [
+      "Training Tally O UNDO {Tally}"
+    ],
+    "oil after swap1": {
+      "Tally": "on"
+    },
+    "week row": {
+      "names": [
+        "Tally"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "pl-row gr-frominput",
+      "late": false
+    },
+    "week lines": [
+      "Training 09:00 12:00 Tally O till 18 Jul UNDO {Tally}"
+    ],
+    "inputs surf": {
+      "bar": [
+        "Tally · Training | Tally · Training · 18 Jul · 09:00–12:00 Placed by Saber for Tally · 22 Jun 26, 09:00"
+      ],
+      "card": "09:00–12:00 TallyTRAINING till 18 Jul By Saber"
+    },
+    "window": {
+      "person": [
+        "Tally"
+      ],
+      "text": "PERSON <list> Several people TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DATES ‹ JUL 2026 › 13 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 18 WHEN all day REMARKS OIL credited on its non-working day Change… Placed by Saber for Tally · 22 Jun 26, 09:00 Delete Cancel Save",
+      "pressed": [],
+      "ph": []
+    },
+    "list": [
+      "Tally 18 Jul 09:00–12:00 TRAINING till 18 JulBy Saber now OIL"
+    ],
+    "undo1 used": {
+      "used": "#sbUndo",
+      "ok": true
+    },
+    "after undo1 input": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Tally"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,hand,leftAt,acc\"}"
+    },
+    "after undo1 board row": {
+      "names": [
+        "Tally"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "after undo1 oil": {
+      "Tally": "off"
+    },
+    "undo2 used": {
+      "used": "#sbUndo",
+      "ok": true
+    },
+    "after undo2 input": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "oil": {
+        "2026-07-18": 0.5
+      },
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"oil\":{\"2026-07-18\":0.5},\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,oil,acc\"}"
+    },
+    "after undo2 board row": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "after undo2 oilq": 0,
+    "after undo2 oil": {
+      "Ranger": "off"
+    },
+    "redo1 used": {
+      "used": "#sbRedo",
+      "ok": true
+    },
+    "after redo1 input": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Tally"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,hand,leftAt,acc\"}"
+    },
+    "after redo1 board row": {
+      "names": [
+        "Tally"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "after redo1 oil": {
+      "Tally": "off"
+    },
+    "redo2 used": {
+      "used": "#sbRedo",
+      "ok": true
+    },
+    "after redo2 input": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Tally"
+      ],
+      "cx": false,
+      "cxr": "",
+      "oil": {
+        "2026-07-18": 0.5
+      },
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"oil\":{\"2026-07-18\":0.5},\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,hand,leftAt,oil,acc\"}"
+    },
+    "after redo2 board row": {
+      "names": [
+        "Tally"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "after redo2 oil": {
+      "Tally": "on"
+    },
+    "oil question open after swap2": 1,
+    "toasts swap2 drop": "Back to editing the schedule || Ranger is on Training instead of Tally",
+    "toasts swap2 after answer": "Back to editing the schedule || Ranger is on Training instead of Tally || OIL answer saved",
+    "input after swap2": {
+      "iid": "imqoidgg0o2rg8p",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 18",
+      "t": "09:00-12:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "oil": {
+        "2026-07-18": 0.5
+      },
+      "info": false,
+      "rmk": "till 18 Jul",
+      "raw": "{\"oil\":{\"2026-07-18\":0.5},\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,hand,leftAt,acc,oil\"}"
+    },
+    "board row after swap2": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "09:00",
+      "e": "12:00",
+      "rmk": "till 18 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "oil after swap2": {
+      "Ranger": "on"
+    },
+    "errs": []
+  },
+  "B2": {
+    "filed": [
+      {
+        "iid": "imqoidgg0i85vc4",
+        "type": "Training",
+        "date": "Jul 15",
+        "s": 1020,
+        "e": 1080,
+        "people": [
+          "Ranger"
+        ]
+      }
+    ],
+    "oilq left": 0,
+    "ri": 2,
+    "seat count": 1,
+    "seat man before": "Torch",
+    "week row before": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "pl-row gr-frominput",
+      "late": false
+    },
+    "toasts": "Input added || Torch and Ranger swapped",
+    "oilq after": 0,
+    "input after": {
+      "iid": "imqoidgg0i85vc4",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 15",
+      "t": "17:00-18:00",
+      "people": [
+        "Torch"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 15 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc,hand,leftAt\"}"
+    },
+    "seat man after": "Ranger",
+    "week row after": {
+      "names": [
+        "Torch"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "pl-row gr-frominput",
+      "late": false
+    },
+    "week lines": [
+      "Training 17:00 18:00 Torch C till 15 Jul UNDO {Torch}"
+    ],
+    "board row": {
+      "names": [
+        "Torch"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "board lines": [
+      "Training Torch C UNDO {Torch}"
+    ],
+    "board seat": "Ranger",
+    "inputs surf": {
+      "bar": [
+        "Torch · Training | Torch · Training · 15 Jul · 17:00–18:00 Placed by Saber for Torch · 22 Jun 26, 09:00"
+      ],
+      "card": "17:00–18:00 TorchTRAINING till 15 Jul By Saber"
+    },
+    "list": [
+      "Torch 15 Jul 17:00–18:00 TRAINING till 15 JulBy Saber now"
+    ],
+    "undo1": {
+      "used": "#sbUndo",
+      "ok": true
+    },
+    "after undo input": {
+      "iid": "imqoidgg0i85vc4",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 15",
+      "t": "17:00-18:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 15 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc\"}"
+    },
+    "after undo seat": "Torch",
+    "after undo board row": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "redo1": {
+      "used": "#sbRedo",
+      "ok": true
+    },
+    "after redo input": {
+      "iid": "imqoidgg0i85vc4",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 15",
+      "t": "17:00-18:00",
+      "people": [
+        "Torch"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 15 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,hand,leftAt,acc\"}"
+    },
+    "after redo seat": "Ranger",
+    "errs": []
+  },
+  "B3": {
+    "ground rows before": 2,
+    "ground rows after +Item": 3,
+    "put Tally": "",
+    "put Ranger": "",
+    "own row": {
+      "names": [
+        "Tally",
+        "Ranger"
+      ],
+      "title": "MY OWN ROW",
+      "s": "",
+      "e": "",
+      "rmk": "",
+      "cls": "sb-arow c6r sb-fresh"
+    },
+    "own row data": null,
+    "filed": [
+      {
+        "iid": "imqoidgg0wxif88",
+        "type": "Training",
+        "date": "Jul 17",
+        "s": 1020,
+        "e": 1080,
+        "people": [
+          "Ranger"
+        ]
+      }
+    ],
+    "ri / own row idx": [
+      3,
+      2
+    ],
+    "own row after filing": {
+      "names": [
+        "Tally",
+        "Ranger"
+      ],
+      "title": "MY OWN ROW",
+      "s": "",
+      "e": "",
+      "rmk": "",
+      "cls": "sb-arow c6r"
+    },
+    "training row": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 17 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "before": {
+      "input": {
+        "iid": "imqoidgg0wxif88",
+        "type": "Training",
+        "title": "",
+        "date": "Jul 17",
+        "t": "17:00-18:00",
+        "people": [
+          "Ranger"
+        ],
+        "cx": false,
+        "cxr": "",
+        "info": false,
+        "rmk": "till 17 Jul",
+        "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc\"}"
+      },
+      "own": "\"nick\"|[\"bane\"]",
+      "train": {
+        "who": "bane",
+        "str": "17:00",
+        "end": "18:00",
+        "prog": "TRAINING"
+      }
+    },
+    "tally puck on own row visible": true,
+    "toasts": "Not saved — that change was refused, and nothing was kept",
+    "toast now": "Not saved — that change was refused, and nothing was kept",
+    "oilq": 0,
+    "after": {
+      "input": {
+        "iid": "imqoidgg0wxif88",
+        "type": "Training",
+        "title": "",
+        "date": "Jul 17",
+        "t": "17:00-18:00",
+        "people": [
+          "Ranger"
+        ],
+        "cx": false,
+        "cxr": "",
+        "info": false,
+        "rmk": "till 17 Jul",
+        "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc\"}"
+      },
+      "own": "\"nick\"|[\"bane\"]",
+      "train": {
+        "who": "bane",
+        "str": "17:00",
+        "end": "18:00",
+        "prog": "TRAINING"
+      }
+    },
+    "unchanged": true,
+    "own row names after": {
+      "names": [
+        "Tally",
+        "Ranger"
+      ],
+      "title": "MY OWN ROW",
+      "s": "",
+      "e": "",
+      "rmk": "",
+      "cls": "sb-arow c6r"
+    },
+    "training row names after": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 17 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "undo used": {
+      "used": "#sbUndo",
+      "ok": true
+    },
+    "undo toast": "Undid: a personal input",
+    "input exists after undo": null,
+    "own row after undo": {
+      "names": [
+        "Tally",
+        "Ranger"
+      ],
+      "title": "MY OWN ROW",
+      "s": "",
+      "e": "",
+      "rmk": "",
+      "cls": "sb-arow c6r"
+    },
+    "redo used": {
+      "used": "#sbRedo",
+      "ok": true
+    },
+    "redo toast": "Redid: a personal input",
+    "input after redo": {
+      "iid": "imqoidgg0wxif88",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 17",
+      "t": "17:00-18:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 17 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc\"}"
+    },
+    "errs": []
+  },
+  "B4": {
+    "filed": [
+      {
+        "iid": "imqoidgg0qge87f",
+        "type": "Meeting",
+        "title": "Range sync",
+        "date": "Jul 15",
+        "s": 1020,
+        "e": 1080,
+        "people": [
+          "Drifter",
+          "Hunter",
+          "Ranger"
+        ]
+      }
+    ],
+    "start": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\"]}"
+    },
+    "a Tally on Hunter BEFORE": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\"]}"
+    },
+    "a Tally on Hunter toasts": "Input added for 3 people || Tally added to Range sync",
+    "a Tally on Hunter oilq": 0,
+    "a Tally on Hunter AFTER": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\"]}"
+    },
+    "a Tally on Hunter changed": true,
+    "a Tally on Hunter undo toast": "Undid: a personal input",
+    "a Tally on Hunter AFTER UNDO": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\"]}"
+    },
+    "a Tally on Hunter redo toast": "Redid: a personal input",
+    "a Tally on Hunter AFTER REDO": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\"]}"
+    },
+    "b Tally again BEFORE": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\"]}"
+    },
+    "b Tally again toasts": "Redid: a personal input || Tally is already on this input",
+    "b Tally again oilq": 0,
+    "b Tally again AFTER": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\"]}"
+    },
+    "b Tally again changed": false,
+    "c ALL AVAIL on Hunter BEFORE": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\"]}"
+    },
+    "c ALL AVAIL on Hunter toasts": "Tally is already on this input || ALL AVAIL added to Range sync",
+    "c ALL AVAIL on Hunter oilq": 0,
+    "c ALL AVAIL on Hunter AFTER": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "c ALL AVAIL on Hunter changed": true,
+    "c ALL AVAIL on Hunter undo toast": "Undid: a personal input",
+    "c ALL AVAIL on Hunter AFTER UNDO": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\"]}"
+    },
+    "c ALL AVAIL on Hunter redo toast": "Redid: a personal input",
+    "c ALL AVAIL on Hunter AFTER REDO": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "d ALL on row BEFORE": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "d ALL on row toasts": "Redid: a personal input || This input already has ALL AVAIL",
+    "d ALL on row oilq": 0,
+    "d ALL on row AFTER": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "d ALL on row changed": false,
+    "e ALL AVAIL again BEFORE": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "e ALL AVAIL again toasts": "This input already has ALL AVAIL",
+    "e ALL AVAIL again oilq": 0,
+    "e ALL AVAIL again AFTER": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "e ALL AVAIL again changed": false,
+    "f Anvil on ALL AVAIL BEFORE": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "f Anvil on ALL AVAIL toasts": "This input already has ALL AVAIL || Anvil added to Range sync",
+    "f Anvil on ALL AVAIL oilq": 0,
+    "f Anvil on ALL AVAIL AFTER": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL",
+        "Anvil"
+      ],
+      "row": [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\",\"shaft\"]}"
+    },
+    "f Anvil on ALL AVAIL changed": true,
+    "f Anvil on ALL AVAIL undo toast": "Undid: a personal input",
+    "f Anvil on ALL AVAIL AFTER UNDO": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\"]}"
+    },
+    "f Anvil on ALL AVAIL redo toast": "Redid: a personal input",
+    "f Anvil on ALL AVAIL AFTER REDO": {
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL",
+        "Anvil"
+      ],
+      "row": [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "extra": "{\"who\":\"slipway\",\"more\":[\"prowler\",\"bane\",\"nick\",\"allavail\",\"shaft\"]}"
+    },
+    "week row": {
+      "names": [
+        "Anvil",
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally",
+        "ALL AVAIL"
+      ],
+      "title": "RANGE SYNC",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "pl-row gshared gr-frominput",
+      "late": false
+    },
+    "week lines": [
+      "Range sync MEETING 17:00 18:00 Anvil IP Drifter A Hunter IP Ranger IP Tally O ALL AVAIL till 15 Jul UNDO {Anvil,Drifter,Hunter,Ranger,Tally,ALL AVAIL}"
+    ],
+    "inputs surf": {
+      "bar": [
+        "5 + ALL AVAIL · Range sync | Anvil, Drifter, Hunter, Ranger, Tally, ALL AVAIL · Range sync · Meeting · 15 Jul · 17:00–18:00 Placed by Saber for 5 people and ALL AVAIL · 22 Jun 26, 09:00"
+      ],
+      "card": "17:00–18:00 Anvil, Drifter, Hunter, Ranger, Tally, ALL AVAILMEETING Range sync · till 15 Jul By Saber"
+    },
+    "list": [
+      "Anvil, Drifter, Hunter, Ranger, Tally, ALL AVAIL 15 Jul 17:00–18:00 Range sync MEETING till 15 JulBy Saber now"
+    ],
+    "errs": []
+  },
+  "B5": {
+    "filed": [
+      {
+        "iid": "imqoidgg085a014",
+        "type": "Training",
+        "date": "Jul 17",
+        "s": 1020,
+        "e": 1080,
+        "people": [
+          "Ranger"
+        ]
+      }
+    ],
+    "start": {
+      "input": [
+        "Ranger"
+      ],
+      "row": [
+        "Ranger"
+      ]
+    },
+    "a toasts": "Input added || Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+    "a toast now": "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+    "a after drag-off": {
+      "input": [
+        "Ranger"
+      ],
+      "row": [
+        "Ranger"
+      ]
+    },
+    "a changed": false,
+    "b toasts": "",
+    "b toast now": "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+    "b after right-click": {
+      "input": [
+        "Ranger"
+      ],
+      "row": [
+        "Ranger"
+      ]
+    },
+    "b changed": false,
+    "x count": 1,
+    "c toasts": "Ground item removed — back under Personal Inputs — TRAINING, 17:00–18:00, Ranger",
+    "c toast now": "Ground item removed — back under Personal Inputs — TRAINING, 17:00–18:00, Ranger",
+    "c ground rows for input": 0,
+    "c input": {
+      "iid": "imqoidgg085a014",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 17",
+      "t": "17:00-18:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 17 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc\"}"
+    },
+    "c board lines": [
+      "Training Ranger IP ACCEPT {Ranger}"
+    ],
+    "c week lines": [
+      "Training 17:00 18:00 Ranger IP till 17 Jul ACCEPT {Ranger}"
+    ],
+    "c card": {
+      "bar": [
+        "Ranger · Training | Ranger · Training · 17 Jul · 17:00–18:00 Placed by Saber for Ranger · 22 Jun 26, 09:00"
+      ],
+      "card": "17:00–18:00 RangerTRAINING till 17 Jul By Saber"
+    },
+    "c list": [
+      "Ranger 17 Jul 17:00–18:00 TRAINING till 17 JulBy Saber now"
+    ],
+    "accept count": 1,
+    "accept text": "ACCEPT",
+    "d toasts": "Ranger's Training added to the ground programme",
+    "d ri": 2,
+    "d row": {
+      "names": [
+        "Ranger"
+      ],
+      "title": "TRAINING",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 17 Jul",
+      "cls": "sb-arow c6r gr-frominput sb-fresh"
+    },
+    "d input": {
+      "iid": "imqoidgg085a014",
+      "type": "Training",
+      "title": "",
+      "date": "Jul 17",
+      "t": "17:00-18:00",
+      "people": [
+        "Ranger"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 17 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc\"}"
+    },
+    "e filed": [
+      {
+        "iid": "imqoidgg0wjt2by",
+        "type": "Meeting",
+        "title": "Crowd only",
+        "date": "Jul 17",
+        "s": 840,
+        "e": 900,
+        "people": [
+          "Saber",
+          "ALL AVAIL"
+        ]
+      }
+    ],
+    "e row idx": 3,
+    "e input": {
+      "iid": "imqoidgg0wjt2by",
+      "type": "Meeting",
+      "title": "Crowd only",
+      "date": "Jul 17",
+      "t": "14:00-15:00",
+      "people": [
+        "Saber",
+        "ALL AVAIL"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 17 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc\"}"
+    },
+    "e row": {
+      "names": [
+        "Saber",
+        "ALL AVAIL"
+      ],
+      "title": "CROWD ONLY",
+      "s": "14:00",
+      "e": "15:00",
+      "rmk": "till 17 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "e toasts": "Input added for Saber and ALL AVAIL || Saber taken out of Crowd only",
+    "e toast now": "Saber taken out of Crowd only",
+    "e input after": {
+      "iid": "imqoidgg0wjt2by",
+      "type": "Meeting",
+      "title": "Crowd only",
+      "date": "Jul 17",
+      "t": "14:00-15:00",
+      "people": [
+        "ALL AVAIL"
+      ],
+      "cx": false,
+      "cxr": "",
+      "info": false,
+      "rmk": "till 17 Jul",
+      "raw": "{\"keys\":\"people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand,leftAt\"}"
+    },
+    "e row after": {
+      "names": [
+        "ALL AVAIL"
+      ],
+      "title": "CROWD ONLY",
+      "s": "14:00",
+      "e": "15:00",
+      "rmk": "till 17 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "errs": []
+  },
+  "B5b": {
+    "toast before right-click": "Input added [opacity 0]",
+    "b toast after right-click": "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window [opacity 1]",
+    "b input": [
+      "Ranger"
+    ],
+    "week line text": "Training 17:00 18:00 Ranger IP till 17 Jul ACCEPT",
+    "filed": [
+      {
+        "iid": "imqoidgg0hpv41m",
+        "type": "Meeting",
+        "title": "Crowd only",
+        "date": "Jul 17",
+        "s": 840,
+        "e": 900,
+        "people": [
+          "Saber",
+          "ALL AVAIL"
+        ]
+      }
+    ],
+    "saber out toast": "Saber taken out of Crowd only",
+    "input now": [
+      "ALL AVAIL"
+    ],
+    "row now": [
+      "ALL AVAIL"
+    ],
+    "allavail drag-off toasts": "ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+    "toast now": "ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window [opacity 1]",
+    "input after": [
+      "ALL AVAIL"
+    ],
+    "row after": [
+      "ALL AVAIL"
+    ],
+    "allavail right-click toast": "ALL AVAIL is the last on this input — use ✕ to take it off the programme, or delete it in its own window [opacity 1]",
+    "input after rc": [
+      "ALL AVAIL"
+    ],
+    "errs": []
+  },
+  "B6": {
+    "filed": [
+      {
+        "iid": "imqoidgg0hr660u",
+        "type": "Meeting",
+        "title": "Gear brief",
+        "date": "Jul 17",
+        "s": 840,
+        "e": 900,
+        "people": [
+          "Drifter",
+          "Hunter",
+          "Ranger"
+        ]
+      }
+    ],
+    "Tally toast": "Input added for 3 people || Tally added to Gear brief",
+    "marks 0": {
+      "gKeys": "prog,str,end,who,rmks,srcType,more,src,srcv,rid",
+      "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand",
+      "rowCls": "sb-arow c6r gr-frominput",
+      "btns": [
+        "mbtn|null",
+        "mbtn nfo|null",
+        "mbtn red|null",
+        "mbtn del|null"
+      ]
+    },
+    "board row (3 + Tally)": {
+      "names": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "title": "GEAR BRIEF",
+      "s": "14:00",
+      "e": "15:00",
+      "rmk": "till 17 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "grflag toast": "Red box — flagged for the next scheduler",
+    "marks after grflag": {
+      "gKeys": "prog,str,end,who,rmks,srcType,more,flag,src,srcv,rid",
+      "flag": true,
+      "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand,flag",
+      "inpFlag": true,
+      "rowCls": "sb-arow c6r redbox gr-frominput",
+      "btns": [
+        "mbtn|null",
+        "mbtn nfo|null",
+        "mbtn red on|null",
+        "mbtn del|null"
+      ]
+    },
+    "grinfo toast": "Info only — this item is no longer checked against the rules, and earns nobody any OIL",
+    "marks after grinfo": {
+      "gKeys": "prog,str,end,who,rmks,srcType,more,flag,info,src,srcv,rid",
+      "info": true,
+      "flag": true,
+      "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand,flag,info",
+      "inpInfo": true,
+      "inpFlag": true,
+      "rowCls": "sb-arow c6r fyi redbox gr-frominput",
+      "btns": [
+        "mbtn|null",
+        "mbtn nfo on|null",
+        "mbtn red on|null",
+        "mbtn del|null"
+      ]
+    },
+    "state before X": {
+      "ri": 2,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "marks": {
+        "gKeys": "prog,str,end,who,rmks,srcType,more,flag,info,src,srcv,rid",
+        "info": true,
+        "flag": true,
+        "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand,flag,info",
+        "inpInfo": true,
+        "inpFlag": true,
+        "rowCls": "sb-arow c6r fyi redbox gr-frominput",
+        "btns": [
+          "mbtn|null",
+          "mbtn nfo on|null",
+          "mbtn red on|null",
+          "mbtn del|null"
+        ]
+      }
+    },
+    "X toast": "Ground item removed — back under Personal Inputs — GEAR BRIEF, 14:00–15:00, 4 people",
+    "state after X": {
+      "ri": -1,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": null,
+      "marks": null
+    },
+    "lines after X": [
+      "Gear brief MEETING Drifter A Hunter IP Ranger IP Tally O ACCEPT {Drifter,Hunter,Ranger,Tally}"
+    ],
+    "accept toast": "4 people's Gear brief added to the ground programme",
+    "state after Accept": {
+      "ri": 2,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "marks": {
+        "gKeys": "prog,str,end,who,rmks,srcType,more,flag,info,src,srcv,rid",
+        "info": true,
+        "flag": true,
+        "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand,flag,info",
+        "inpInfo": true,
+        "inpFlag": true,
+        "rowCls": "sb-arow c6r fyi redbox gr-frominput sb-fresh",
+        "btns": [
+          "mbtn|null",
+          "mbtn nfo on|null",
+          "mbtn red on|null",
+          "mbtn del|null"
+        ]
+      }
+    },
+    "week row": {
+      "names": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "title": "GEAR BRIEF",
+      "s": "14:00",
+      "e": "15:00",
+      "rmk": "till 17 Jul",
+      "cls": "pl-row gshared fyi redbox gr-frominput",
+      "late": false
+    },
+    "2nd X": {
+      "ri": -1,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": null,
+      "marks": null
+    },
+    "undo toast": "Undid: a change to the schedule",
+    "after undo of X": {
+      "ri": 2,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "marks": {
+        "gKeys": "prog,str,end,who,rmks,srcType,more,flag,info,src,srcv,rid",
+        "info": true,
+        "flag": true,
+        "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,hand,flag,info,acc",
+        "inpInfo": true,
+        "inpFlag": true,
+        "rowCls": "sb-arow c6r fyi redbox gr-frominput sb-fresh",
+        "btns": [
+          "mbtn|null",
+          "mbtn nfo on|null",
+          "mbtn red on|null",
+          "mbtn del|null"
+        ]
+      }
+    },
+    "redo toast": "Redid: a change to the schedule",
+    "after redo of X": {
+      "ri": -1,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": null,
+      "marks": null
+    },
+    "lines after redo": [
+      "Gear brief MEETING Drifter A Hunter IP Ranger IP Tally O ACCEPT {Drifter,Hunter,Ranger,Tally}"
+    ],
+    "final": {
+      "ri": 2,
+      "input": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "row": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "marks": {
+        "gKeys": "prog,str,end,who,rmks,srcType,more,flag,info,src,srcv,rid",
+        "info": true,
+        "flag": true,
+        "inpKeys": "people,type,allday,s,e,date,yr,remarks,mod,title,iid,by,modBy,at,modAt,ord,acc,hand,flag,info",
+        "inpInfo": true,
+        "inpFlag": true,
+        "rowCls": "sb-arow c6r fyi redbox gr-frominput sb-fresh sb-fresh-out",
+        "btns": [
+          "mbtn|null",
+          "mbtn nfo on|null",
+          "mbtn red on|null",
+          "mbtn del|null"
+        ]
+      }
+    },
+    "errs": []
+  },
+  "B7": {
+    "seats before": {
+      "p": "Blade",
+      "w": "Basher"
+    },
+    "seats after right-click": {
+      "p": null,
+      "w": null
+    },
+    "toast": "Basher removed",
+    "filed": [
+      [
+        {
+          "iid": "imqoidgg038ka6m",
+          "type": "Meeting",
+          "title": "Kit check",
+          "date": "Jul 16",
+          "s": 1200,
+          "e": 1260,
+          "people": [
+            "Drifter",
+            "Hunter",
+            "Ranger"
+          ]
+        }
+      ],
+      [
+        {
+          "iid": "imqoidgg0c62jyf",
+          "type": "Training",
+          "date": "Jul 16",
+          "s": 1020,
+          "e": 1080,
+          "people": [
+            "Ranger"
+          ]
+        }
+      ]
+    ],
+    "rows": [
+      3,
+      4
+    ],
+    "start": {
+      "meeting": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Hunter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": null,
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "a toasts": "Hunter taken out of Kit check",
+    "a after": {
+      "meeting": [
+        "Drifter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "a undo toast": "Undid: a personal input",
+    "a after ONE undo": {
+      "meeting": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Hunter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": null,
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "a redo toast": "Redid: a personal input",
+    "a after redo": {
+      "meeting": [
+        "Drifter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "b before": {
+      "meeting": [
+        "Drifter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "b toasts": "Redid: a personal input || Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+    "b toast now": "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window",
+    "b after": {
+      "meeting": [
+        "Drifter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "b unchanged": true,
+    "c toasts": "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window || Drifter moved to Training",
+    "c after": {
+      "meeting": [
+        "Ranger"
+      ],
+      "training": [
+        "Ranger",
+        "Drifter"
+      ],
+      "mRow": [
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "c undo toast": "Undid: 2 inputs",
+    "c after ONE undo": {
+      "meeting": [
+        "Drifter",
+        "Ranger"
+      ],
+      "training": [
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "c redo toast": "Redid: 2 inputs",
+    "c after redo": {
+      "meeting": [
+        "Ranger"
+      ],
+      "training": [
+        "Ranger",
+        "Drifter"
+      ],
+      "mRow": [
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "desk puck": 1,
+    "desk man before": "Ridge",
+    "d toasts": "Redid: 2 inputs || Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)",
+    "d after": {
+      "meeting": [
+        "Ridge"
+      ],
+      "training": [
+        "Ranger",
+        "Drifter"
+      ],
+      "mRow": [
+        "Ridge"
+      ],
+      "tRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ranger"
+    },
+    "d undo toast": "Undid: a personal input",
+    "d after undo": {
+      "meeting": [
+        "Ranger"
+      ],
+      "training": [
+        "Ranger",
+        "Drifter"
+      ],
+      "mRow": [
+        "Ranger(warn-ring)"
+      ],
+      "tRow": [
+        "Drifter",
+        "Ranger(warn-ring)"
+      ],
+      "seats": {
+        "p": "Hunter",
+        "w": null
+      },
+      "desk": "Ridge"
+    },
+    "errs": []
+  },
+  "B7b": {
+    "start": {
+      "meeting": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Hunter",
+        "Ranger(warn-ring)"
+      ],
+      "desk": "Ridge"
+    },
+    "d toasts": "Ridge added to Kit check",
+    "d after": {
+      "meeting": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Ridge"
+      ],
+      "mRow": [
+        "Drifter",
+        "Hunter",
+        "Ranger(warn-ring)",
+        "Ridge(warn-ring)"
+      ],
+      "desk": "Ridge"
+    },
+    "desk puck still drawn": 1,
+    "undo toast": "Undid: a personal input",
+    "after undo": {
+      "meeting": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "mRow": [
+        "Drifter",
+        "Hunter",
+        "Ranger(warn-ring)"
+      ],
+      "desk": "Ridge"
+    },
+    "redo toast": "Redid: a personal input",
+    "after redo": {
+      "meeting": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Ridge"
+      ],
+      "mRow": [
+        "Drifter",
+        "Hunter",
+        "Ranger(warn-ring)",
+        "Ridge(warn-ring)"
+      ],
+      "desk": "Ridge"
+    },
+    "errs": []
+  },
+  "B8": {
+    "ids": {
+      "t3": "imqoidgg0inx5lf",
+      "fw": "imqoidgg014nkhn",
+      "pe": "imqoidgg0kkr5bd"
+    },
+    "t3 rows Mon/Tue/Wed": [
+      9,
+      -1,
+      -1
+    ],
+    "1 ALL AVAIL onto 3-day Training row (Mon) toasts": "ALL AVAIL is for one day",
+    "1 ALL AVAIL onto 3-day Training row (Mon) toast now": "ALL AVAIL is for one day [op 1]",
+    "1 ALL AVAIL onto 3-day Training row (Mon) before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      }
+    ],
+    "1 ALL AVAIL onto 3-day Training row (Mon) unchanged": true,
+    "2 ALL onto 3-day Training row (Mon) toasts": "ALL is for one day",
+    "2 ALL onto 3-day Training row (Mon) toast now": "ALL is for one day [op 1]",
+    "2 ALL onto 3-day Training row (Mon) before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      }
+    ],
+    "2 ALL onto 3-day Training row (Mon) unchanged": true,
+    "3 ALL AVAIL onto Fly with row toasts": "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other",
+    "3 ALL AVAIL onto Fly with row toast now": "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other [op 1]",
+    "3 ALL AVAIL onto Fly with row before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      }
+    ],
+    "3 ALL AVAIL onto Fly with row unchanged": true,
+    "4 ALL AVAIL onto Fly with line line count": 1,
+    "4 ALL AVAIL onto Fly with line toasts": "",
+    "4 ALL AVAIL onto Fly with line toast now": "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other [op 0]",
+    "4 ALL AVAIL onto Fly with line before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      }
+    ],
+    "4 ALL AVAIL onto Fly with line unchanged": true,
+    "5 ALL AVAIL onto Personal row toasts": "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other",
+    "5 ALL AVAIL onto Personal row toast now": "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other [op 1]",
+    "5 ALL AVAIL onto Personal row before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      }
+    ],
+    "5 ALL AVAIL onto Personal row unchanged": true,
+    "6 ALL AVAIL onto Personal line line count": 1,
+    "6 ALL AVAIL onto Personal line toasts": "",
+    "6 ALL AVAIL onto Personal line toast now": "ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other [op 0]",
+    "6 ALL AVAIL onto Personal line before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      }
+    ],
+    "6 ALL AVAIL onto Personal line unchanged": true,
+    "7 Tally onto Personal row toasts": "Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)",
+    "7 Tally onto Personal row toast now": "Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h) [op 1]",
+    "7 Tally onto Personal row before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Ranger"
+          ]
+        },
+        "row": [
+          "Ranger(warn-ring)"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Tally"
+          ]
+        },
+        "row": [
+          "Tally"
+        ]
+      }
+    ],
+    "7 Tally onto Personal row unchanged": false,
+    "8 Tally onto Personal line line count": 1,
+    "8 Tally onto Personal line toasts": "",
+    "8 Tally onto Personal line toast now": "Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h) [op 0]",
+    "8 Tally onto Personal line before/after": [
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Tally"
+          ]
+        },
+        "row": [
+          "Tally"
+        ]
+      },
+      {
+        "s": {
+          "t3": [
+            "Ranger"
+          ],
+          "fw": [
+            "Ranger"
+          ],
+          "pe": [
+            "Tally"
+          ]
+        },
+        "row": [
+          "Tally"
+        ]
+      }
+    ],
+    "8 Tally onto Personal line unchanged": true,
+    "errs": []
+  },
+  "B8b": {
+    "t3 rows Mon/Tue/Wed": [
+      9,
+      -1,
+      -1
+    ],
+    "t3 accepted?": "{\"acc\":\"g\",\"endDate\":\"Jul 15\",\"date\":\"Jul 13\"}",
+    "Tue lines": [
+      "Training Ranger IP UNDO · MON {Ranger}",
+      "Appointment LATE C Saint B UNDO {Saint}"
+    ],
+    "Wed lines (Training only)": [
+      "Training Ranger IP UNDO · MON {Ranger}"
+    ],
+    "pe row": {
+      "names": [
+        "Ranger(warn-ring)"
+      ],
+      "title": "PERSONAL",
+      "s": "19:00",
+      "e": "20:00",
+      "rmk": "till 16 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "addz count": 1,
+    "i toasts": "A Personal input is one person’s own",
+    "i toast now": "A Personal input is one person’s own [op 1]",
+    "i input": [
+      "Ranger"
+    ],
+    "i row": [
+      "Ranger(warn-ring)"
+    ],
+    "ii toasts": "Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h)",
+    "ii toast now": "Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h) [op 1]",
+    "ii input": [
+      "Tally"
+    ],
+    "ii row": [
+      "Tally"
+    ],
+    "ii undo toast": "Undid: a personal input [op 1]",
+    "ii after undo": [
+      "Ranger"
+    ],
+    "ii redo toast": "Redid: a personal input [op 1]",
+    "ii after redo": [
+      "Tally"
+    ],
+    "errs": []
+  },
+  "B9": {
+    "admin: editable boxes on the row": 4,
+    "before": {
+      "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "t": "14:00-15:00",
+      "rmk": "till 17 Jul",
+      "title": "Gear brief",
+      "cx": false
+    },
+    "badge": "SABER · MEMBER",
+    "page": "viewsched",
+    "tabs": [
+      "Sync · slow",
+      "Insights",
+      "Logout",
+      "Saber · Member"
+    ],
+    "row found": 1,
+    "row: editable boxes / cx buttons / puck draggable": {
+      "ce": 0,
+      "cx": 0,
+      "drag": 0,
+      "pucks": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ]
+    },
+    "typed: input after": {
+      "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "t": "14:00-15:00",
+      "rmk": "till 17 Jul",
+      "title": "Gear brief",
+      "cx": false
+    },
+    "right-click: input after": {
+      "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "t": "14:00-15:00",
+      "rmk": "till 17 Jul",
+      "title": "Gear brief",
+      "cx": false
+    },
+    "toasts": "",
+    "drag-off: input after": {
+      "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "t": "14:00-15:00",
+      "rmk": "till 17 Jul",
+      "title": "Gear brief",
+      "cx": false
+    },
+    "toast": "Input added for 3 people [op 0]",
+    "all unchanged after member-view hands": true,
+    "go(editsched) while member: page": "editsched",
+    "edit week drawn": 14,
+    "badge back": "SABER · ADMIN",
+    "page back": "editsched",
+    "admin again: editable boxes": 4,
+    "admin typed start: input": {
+      "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger"
+      ],
+      "t": "10:00-15:00",
+      "rmk": "till 17 Jul",
+      "title": "Gear brief",
+      "cx": false
+    },
+    "admin drag Tally: input": {
+      "people": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally"
+      ],
+      "t": "10:00-15:00",
+      "rmk": "till 17 Jul",
+      "title": "Gear brief",
+      "cx": false
+    },
+    "errs": []
+  },
+  "B9b": {
+    "badge": "SABER · MEMBER",
+    "page after go": "editsched",
+    "edit week: editable boxes / drag handles / roster pucks / board buttons": {
+      "ce": 0,
+      "drag": 0,
+      "roster": 63,
+      "sbday": 0
+    },
+    "errs": []
+  },
+  "B10": {
+    "LL filed": [
+      {
+        "iid": "imqoidgg0h6c98d",
+        "type": "LL",
+        "date": "Jul 15",
+        "s": 0,
+        "e": 1439,
+        "people": [
+          "Tally"
+        ]
+      }
+    ],
+    "meeting": [
+      {
+        "iid": "imqoidgg0mej6ut",
+        "type": "Meeting",
+        "title": "Range sync",
+        "date": "Jul 15",
+        "s": 1020,
+        "e": 1080,
+        "people": [
+          "Drifter",
+          "Hunter",
+          "Ranger"
+        ]
+      }
+    ],
+    "warnings naming Tally before": [],
+    "roster puck for Tally": {
+      "cls": "rpuck no",
+      "title": "Tally — local leave (LL) — till 15 Jul"
+    },
+    "toasts": "Input added for 3 people || Tally — On leave but tasked — RANGE SYNC — reason: till 15 Jul",
+    "toast now": "Tally — On leave but tasked — RANGE SYNC — reason: till 15 Jul [op 1]",
+    "input after": [
+      "Drifter",
+      "Hunter",
+      "Ranger",
+      "Tally"
+    ],
+    "board row": {
+      "names": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally(warn-ring)"
+      ],
+      "title": "RANGE SYNC",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "sb-arow c6r gr-frominput"
+    },
+    "puck of Tally on board row": {
+      "cls": "puck r sm warn hard boxred san flagnew",
+      "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)",
+      "chip": "C"
+    },
+    "warnings naming Tally after (board)": [
+      "Tally — On leave but tasked — RANGE SYNC — reason: till 15 Jul"
+    ],
+    "week row": {
+      "names": [
+        "Drifter",
+        "Hunter",
+        "Ranger",
+        "Tally(warn-ring)"
+      ],
+      "title": "RANGE SYNC",
+      "s": "17:00",
+      "e": "18:00",
+      "rmk": "till 15 Jul",
+      "cls": "pl-row gshared gr-frominput",
+      "late": false
+    },
+    "week puck of Tally": {
+      "cls": "puck r sm warn hard boxred san flagnew",
+      "title": "Tally · OCU (ab-initio) · SANS · Conflict (two events at once)"
+    },
+    "week warnings naming Tally": [],
+    "errs": []
+  }
+}

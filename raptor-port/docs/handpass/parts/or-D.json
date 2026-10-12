@@ -1,0 +1,22 @@
+{
+  "walker": "D",
+  "share": "D (phone 390x844, touch; D7 also 390x568 and 844x390)",
+  "build": "http://localhost:4186/",
+  "date": "2026-10-12",
+  "count": { "PASS": 6, "FAIL": 2, "PARTIAL": 0, "NOT_WALKED": 0 },
+  "scenarios": {
+    "D1": { "verdict": "PASS", "notes": ["Blade used for Tally (Tally struck through in the crew list on Wed 15 Jul)", "week: tap on '+ add' arms nothing; long-press drag works", "board: tap row then tap name arms and adds"], "notes_seen": ["Blade added to Range brief", "ALL AVAIL added to Range brief", "Anvil added to Range brief"], "pictures": ["D1-02-tap-addz", "D1-03-after-blade", "D1-04-blade-day", "D1-06-after-allavail", "D1-07-allavail-day", "D1b-arm-Anvil", "D1b-after-ALLAVAIL"] },
+    "D2": { "verdict": "PASS", "notes_seen": ["Hunter taken out of Range brief", "Blade taken out of Range brief", "Already in that seat (long-press alone)"], "pictures": ["D2-02-week-longpress", "D2-03-week-dragoff", "D2-07-board-dragoff"] },
+    "D3": { "verdict": "PASS", "notes_seen": ["ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other", "ALL AVAIL is for one day", "A Personal input is one person’s own", "Ranger is the last on this input — use ✕ to take it off the programme, or delete it in its own window"], "note_boxes_inside_screen": true, "nothing_changed": true, "pictures": ["D3-a-note", "D3-b-note", "D3-c-note", "D3-d-note", "D3-e-note"] },
+    "D4": { "verdict": "FAIL", "failing_clause": "window not as tall as its content up to nearly the whole screen: box 675 of 844 px (84 px above and below), content 1390 px; the Inputs-page window is 820 px", "other_clauses": "everyone shown, changes for everyone, Save and Delete reachable by scrolling the window: PASS; Ground row name/kind label do not open it", "window": { "box": [22, 84, 346, 675], "content": 1390, "viewport": [390, 844] }, "pictures": ["D4-02-week-window-top", "D4-03-week-window-bottom", "D4-04-saved-day", "D4-06-board-window", "D4-07-delete-question", "D4-08-after-delete"] },
+    "D5": { "verdict": "PASS", "count_lines": ["2 picked", "2 picked + ALL AVAIL", "2 picked + ALL"], "greyed_reasons": ["ALL AVAIL is for Training, Meeting, Appointment, Duty, Event and Other", "ALL AVAIL is for one day"], "finger_drag_picked": ["Ace", "Anvil", "Blade", "Cinch"], "pictures": ["D5-01-placeholders-apart", "D5-03-plus-allavail", "D5-04-swapped-to-all", "D5-05-LL-greyed", "D5-06-two-day-greyed", "D5-07-finger-drag"] },
+    "D6": { "verdict": "PASS", "notes_seen": ["Tally earns nothing from Sat course", "Tally earns OIL from Sat course again", "Reaper earns nothing from Sat course.", "43 of 44 earn"], "banner_unchanged": "OIL EARN Nothing today earns ✓ OIL done", "pictures": ["D6-01-oil-on", "D6-02-tally-off", "D6-03-tally-on", "D6-04-allavail-window", "D6-05-oil-tab", "D6-06-one-man-off"] },
+    "D7": { "verdict": "FAIL", "findings": [
+      "844x390: the '+ Input' window opens at x 461-891 on an 844-wide screen; close X, Several people and Add (x 826-875) cut off; Add cannot be tapped; dragging the window by its grip 300 px left brings the X in but Add is then cut at the bottom (y 373-401 on 390)",
+      "Edit Schedule: swipes inside the schedule's input window scroll the page behind: 390x568 scrollY 2041 -> 2611; 844x390 scrollY 2170 -> 1935"
+    ], "ok": ["390x568: '+ Input' window, picker and OIL question inside the screen, every control reachable, page behind unchanged", "844x390: OIL question and the schedule window inside the screen and reachable"], "pictures": ["D7-390x568-01-window-top", "D7-390x568-02-picker", "D7-390x568-05-oil-question", "D7-390x568-07-sched-window-top", "D7-390x568-08-sched-after-swipes", "D7-844x390-c01-window", "D7-844x390-c02-window-dragged", "D7-844x390-c03-sched-window", "D7-844x390-c04-sched-after-swipes", "D7-844x390-05-oil-question"] },
+    "D8": { "verdict": "PASS", "notes_seen": ["Take yourself out of this input? It stays for the other 2 people.", "You are out of this input", "Undid: a personal input", "Only Ranger — who filed it — or an admin can change this for everyone."], "oil_line": "OIL credited on its non-working day (no Change…)", "members_may_file_for_others": "already on as found", "pictures": ["D8-01-before-day", "D8-02-window-top", "D8-03-window-bottom", "D8-04b-question", "D8-05-after-day", "D8-06-undone-day"] }
+  },
+  "browser_errors": [],
+  "not_walked": []
+}

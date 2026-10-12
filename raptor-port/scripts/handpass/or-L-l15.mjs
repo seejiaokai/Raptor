@@ -1,0 +1,42 @@
+import { open, fileInput, toWeek, shot, saveRes, errs, browser, toast, inputsOf, become, mouseDrag, centre, findEmpty, toastMark, toastsSince, undoRedo, weekRows, toMonth, openDay, dayCardText, closeDay } from './or-L-lib.mjs'
+const R = {}
+const { ctx, page } = await open('ad', 'a')
+await become(page, 'Ranger', 'member')
+R.filed = await fileInput(page, { type: 'Duty', from: '2026-07-15', to: '2026-07-15', timed: ['14:00', '15:00'], title: 'L15 duty' })
+R.filedBy = R.filed[0]?.by
+await become(page, 'Saber', 'admin'); await toWeek(page)
+const row = () => page.locator('#eWeek .day:not(.peek)').nth(2).locator('.sec-grnd .pl-row', { hasText: 'L15 DUTY' })
+const snap = async () => ({ people: (await inputsOf(page, 'L15 duty')).map(r => ({ p: r.people, by: r.by })), week: await weekRows(page, 2, 'L15 duty') })
+/* ALL AVAIL from the placeholders onto the row */
+const ph = page.locator('#eRoster .rpuck[data-person="allavail"]:visible').first()
+let dest = row().locator('.ppl').first()
+await dest.scrollIntoViewIfNeeded()
+let sb = await ph.boundingBox(), db = await dest.boundingBox()
+let m = await toastMark(page)
+await mouseDrag(page, centre(sb), { x: db.x + db.width - 10, y: db.y + db.height / 2 })
+R.t1 = await toastsSince(page, m); R.s1 = await snap()
+/* Ranger off */
+await toWeek(page)
+const rp = row().locator('.puck', { hasText: 'Ranger' }).first()
+await rp.scrollIntoViewIfNeeded()
+let b = await rp.boundingBox(); let e = await findEmpty(page)
+m = await toastMark(page)
+await mouseDrag(page, centre(b), e)
+R.t2 = await toastsSince(page, m); R.s2 = await snap()
+await toMonth(page); await page.selectOption('#inFPerson', { label: 'Everyone' }).catch(() => {}); await openDay(page, '2026-07-15'); R.cardAfterRangerOut = (await dayCardText(page)).filter(x => /L15/.test(x)); await shot(page, 'l15-1-card-after-ranger-out'); await closeDay(page)
+/* ALL AVAIL to empty space */
+await toWeek(page)
+const ap = row().locator('.puck', { hasText: 'ALL AVAIL' }).first()
+await ap.scrollIntoViewIfNeeded()
+b = await ap.boundingBox(); e = await findEmpty(page)
+m = await toastMark(page)
+await mouseDrag(page, centre(b), e)
+R.t3 = await toastsSince(page, m); R.s3 = await snap()
+await shot(page, 'l15-2-after-allavail-drag')
+/* and a right-click for good measure (recorded, extra) */
+await row().locator('.puck', { hasText: 'ALL AVAIL' }).first().click({ button: 'right' }); await page.waitForTimeout(500)
+R.t4rightclick = await toast(page); R.s4 = await snap()
+saveRes('L15', R)
+console.log(JSON.stringify(R, null, 1))
+console.log('ERRS', errs.join('\n'))
+await browser.close()

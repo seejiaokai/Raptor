@@ -1,0 +1,168 @@
+{
+ "second": "Tally",
+ "filed": [
+  {
+   "iid": "imqoidgg0kmmp1l",
+   "type": "Training",
+   "title": "Oil drill",
+   "date": "Jul 18",
+   "s": 540,
+   "e": 720,
+   "grp": null,
+   "people": [
+    "Ranger",
+    "Tally"
+   ],
+   "acc": "g"
+  }
+ ],
+ "drop": {
+  "toast": "ALL AVAIL added to Oil drill",
+  "row": "OIL DRILL TRAINING 09:00 12:00 Ranger IP Tally O ALL AVAIL 44 + ADD till 18 Jul",
+  "people": [
+   "Ranger",
+   "Tally",
+   "ALL AVAIL"
+  ]
+ },
+ "win0": {
+  "tabs": [
+   "Who’s available 44",
+   "Who earns OIL 44 of 44"
+  ],
+  "seats": {
+   "Reaper": "on",
+   "Anvil": "on",
+   "Blade": "on",
+   "Cinch": "on",
+   "Cobra": "on",
+   "Comet": "on",
+   "Forge": "on",
+   "Havoc": "on",
+   "Hunter": "on",
+   "Piston": "on",
+   "Saber": "on",
+   "Sidewinder": "on",
+   "Trident": "on",
+   "Vandal": "on",
+   "Warden": "on",
+   "Ace": "on",
+   "Drifter": "on",
+   "Saint": "on",
+   "Gambit": "on",
+   "Nomad": "on",
+   "Outlaw": "on",
+   "Ridge": "on",
+   "Diesel": "on",
+   "Vapor": "on",
+   "Recon": "on",
+   "Talisman": "on",
+   "Wildcard": "on",
+   "Basher": "on",
+   "Echo": "on",
+   "Ledger": "on",
+   "Quill": "on",
+   "Relay": "on",
+   "Scope": "on",
+   "Static": "on",
+   "Cinder": "on",
+   "Rune": "on",
+   "Cutter": "on",
+   "Dash": "on",
+   "Ghost": "on",
+   "Grit": "on",
+   "Hex": "on",
+   "Ryder": "on",
+   "Vector": "on",
+   "Wisp": "on"
+  },
+  "on": 44,
+  "off": [],
+  "total": 44,
+  "text": "Diesel HO Vapor HO Recon HO Talisman HO Wildcard HO WSOS · 17 EARN Basher HO Echo HO Ledger HO Quill HO Relay HO Scope HO Static HO Cinder HO Rune HO Cutter HO Dash HO Ghost HO Grit HO Hex HO Ryder HO Vector HO Wisp HO who is free as things stand now Tap a puck to stop a man earning from this event."
+ },
+ "win1": {
+  "tabs": [
+   "Who’s available 44",
+   "Who earns OIL 43 of 44"
+  ],
+  "seats": {
+   "Reaper": "on",
+   "Anvil": "on",
+   "Blade": "on",
+   "Cinch": "on",
+   "Cobra": "on",
+   "Comet": "on",
+   "Forge": "on",
+   "Havoc": "on",
+   "Hunter": "off",
+   "Piston": "on",
+   "Saber": "on",
+   "Sidewinder": "on",
+   "Trident": "on",
+   "Vandal": "on",
+   "Warden": "on",
+   "Ace": "on",
+   "Drifter": "on",
+   "Saint": "on",
+   "Gambit": "on",
+   "Nomad": "on",
+   "Outlaw": "on",
+   "Ridge": "on",
+   "Diesel": "on",
+   "Vapor": "on",
+   "Recon": "on",
+   "Talisman": "on",
+   "Wildcard": "on",
+   "Basher": "on",
+   "Echo": "on",
+   "Ledger": "on",
+   "Quill": "on",
+   "Relay": "on",
+   "Scope": "on",
+   "Static": "on",
+   "Cinder": "on",
+   "Rune": "on",
+   "Cutter": "on",
+   "Dash": "on",
+   "Ghost": "on",
+   "Grit": "on",
+   "Hex": "on",
+   "Ryder": "on",
+   "Vector": "on",
+   "Wisp": "on"
+  },
+  "on": 43,
+  "off": [
+   "Hunter"
+  ],
+  "total": 44,
+  "text": " HO Ridge HO Diesel HO Vapor HO Recon HO Talisman HO Wildcard HO WSOS · 17 EARN Basher HO Echo HO Ledger HO Quill HO Relay HO Scope HO Static HO Cinder HO Rune HO Cutter HO Dash HO Ghost HO Grit HO Hex HO Ryder HO Vector HO Wisp HO who is free as things stand now Hunter earns nothing from Oil drill."
+ },
+ "publish": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4
+ },
+ "cells": "Ranger: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"\nTally: 07-17=none 07-18=none 07-19=none\nPiston: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"\nAnvil: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"\nHunter: 07-17=\"\" 07-18=\"\" 07-19=\"\"\nBlade: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"\nDrifter: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"",
+ "cellTitles": [
+  "bane: (no title) | duty weekend act",
+  "nick: (no title) | ",
+  "pump: (no title) | duty weekend act",
+  "shaft: (no title) | duty weekend act",
+  "prowler: (no title) | weekend act",
+  "slash: (no title) | duty weekend act",
+  "slipway: (no title) | duty weekend act"
+ ],
+ "cellsSans": "Tally: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"\nRanger: 07-17=\"\" 07-18=\"HO*\" 07-19=\"\"",
+ "tracker": [
+  "Ranger => 18 Jul credits: 1 | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 0",
+  "Tally => 18 Jul credits: 1 | Tally OCU 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 0",
+  "Piston => 18 Jul credits: 1 | Piston IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 0",
+  "Anvil => 18 Jul credits: 1 | Anvil IP 0.5 + 0.5 +0.5 18 Jul AUTO Duty input Training · 09",
+  "Hunter => 18 Jul credits: 0 | Hunter IP 2.5 + 5.5 − 3 2 +1 4 Jan Weekend recovery −0.5 30 ",
+  "Blade => 18 Jul credits: 1 | Blade IP 3.5 + 7.5 − 4 +6 carried in opening figure −1 20 Ma",
+  "Drifter => 18 Jul credits: 1 | Drifter A 4.5 + 7 − 2.5 +3 carried in opening figure −0.5 10"
+ ]
+}
