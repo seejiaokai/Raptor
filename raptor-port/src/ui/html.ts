@@ -1313,6 +1313,20 @@ export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.info?' fyi':'')+(o
    scheduler reading the day knows why the line went. */
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
+/* THE SCHEDULE'S OWN LINE OF A CANCELLED INPUT (owner D767 reading 3, 12 Oct 26 — "the schedule's own line of a cancelled
+   input under Personal Inputs wears the same red CX tag and struck-through name"; D760: the CX is the INPUT's). Until
+   then that line showed nothing while the input's row on the Ground Programme read "CX DUE WX". The schedule's own tag,
+   its reason riding in it as on that row (cxTag), before the input's name; `inpCxCls` is the class that strikes the
+   name. One body for the week (inGrp, below) and the board (board-html.ts sbInpRow) — and for the Unavailable list's
+   row of a cancelled input filed there, which the same two builders draw. Nothing for an input that is not cancelled,
+   so every other line's markup — and the view week's reference compare — is untouched. */
+/* (the reason is a part of its own inside the tag — `.cxwhy` — so a place with no room drops it and keeps "CX": his
+   word, D767 — "for those areas that have no space to show reason it's ok". The board's row on a phone is that place:
+   there the whole "CX DUE WX" wrapped into a block four lines tall and cut the name to "Range b…" — step 5's look.) */
+export function inpCxHTML(inp:any){ if(!inp||!inp.cx)return'';
+  const why=inp.cxr?String(inp.cxr).trim():'';
+  return `<span class="cxtag inp-cxtag" title="${esc(cxText(inp))}">CX${why?`<span class="cxwhy"> DUE ${esc(why)}</span>`:''}</span>`;}
+export function inpCxCls(inp:any){return inp&&inp.cx?' inp-cx':'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
 /* the ⓘ info-only chip (owner, 1 Sep 26): a ground/programme item flagged info
    is shown for information and never checked — the chip says so wherever the
@@ -2090,7 +2104,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
-          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpEditLabel(inp,ed,inpLabel(inp),'ntx')+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
+          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpCxHTML(inp)+inpEditLabel(inp,ed,inpLabel(inp),'ntx'+inpCxCls(inp))+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl${line.length>1?'':' one'}">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };

@@ -256,6 +256,26 @@ body.in-cal{padding-bottom:0}
 .icard-title{color:var(--ink);font-weight:600}
 .icard-rmk{color:var(--ink-3);font-size:12px}
 .icard-by{margin-left:auto;text-align:right;font-size:11.5px;line-height:1.35;color:var(--ink-3);white-space:nowrap}
+/* ---- A CANCELLED INPUT (owner D760; its look D767, 12 Oct 26 — "as recommended but change something. For the cx I also
+   want u to strike through the title and the reason … is red"). The pictures of record:
+   docs/mock/2026-10-12-one-rule/cancelled-B-*-card.png and -list.png (the tag and the reason) with his two changes, and
+   cancelled-A-*-bar.png (the bar). ONE set of rules for the card, the desktop list's row and the bar:
+     .icx      the small red CX tag — the schedule's own tag (.cxtag) in the card's type, a size up, before the title;
+     .is-cx    the name it goes by, struck through with the schedule's own cancelled strike (12-schedule-editing.css),
+               a step quieter — its title, or its kind's name where it has no title of its own;
+     .icx-why  the reason, after the title, in the app's red.
+   Nothing else of a cancelled card moves or fades: the names, LATE, the hours and "By Saber" are as on any card. ---- */
+.icx{display:inline-block;vertical-align:1px;font-size:9.5px;font-weight:800;letter-spacing:.06em;line-height:1.5;color:#fff;
+  background:var(--hard);border-radius:3px;padding:0 5px;margin-right:6px;white-space:nowrap;text-decoration:none}
+.icx-why{font-size:12px;font-weight:400;color:var(--hard);margin-left:6px;overflow-wrap:anywhere}
+/* with no title between them the tag's own margin is the gap */
+.icx + .icx-why{margin-left:0}
+.icard-title.is-cx,.icard-kind.is-cx,.intitle.is-cx,.intag.is-cx{text-decoration:line-through;text-decoration-color:rgba(240,85,95,.85);
+  text-decoration-thickness:1px;text-decoration-skip-ink:none}
+.icard-title.is-cx,.intitle.is-cx{color:var(--ink-2)}
+/* the month's bar has room for no tag and no reason (D767): its words struck through, the bar faded — look A. It keeps
+   its place among the day's bars (D768). */
+.ib-bar.is-cx{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.9);text-decoration-thickness:1px;opacity:.6}
 .icard-latenote{display:block}
 /* just saved on the list: the row's own flash (06-inputs.css @keyframes inflash) */
 .icard.innew{animation:inflash 6s ease-out 1}

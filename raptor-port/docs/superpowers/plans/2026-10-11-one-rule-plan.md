@@ -1059,6 +1059,53 @@ says (D200) — the test that pairs the two was red from step 4's document chang
 
 **The whole gate set after steps 4 and 6 (12 Oct 26):** unit 10545 / 10545 (602 files) · build clean · tfin 728 / 0 · e2e 768 passed, 1 failed, 57 skipped · smoke 445 / 0 · rulecheck OK · docsize OK. The one failure is the Leave War desktop timing test ("the grid draws a window of months…", D84), which this work does not touch: by itself, three times over, 3 of 3. **Steps 1 to 4 and 6 are built and gated; steps 5 and 7 wait for his look at their pictures (§8, Q2–Q4); the job's FULL check and Fable's read wait for those two screens.**
 
+### Step 5 — a cancelled input's look on the Inputs pages and on the schedule's own line (12 Oct 26; D767, D768)
+
+**Built after his look at the pictures, as he answered (D767 — look B on the card and the List's row with his two
+changes, look A on the bar; D768 — its place kept).** A failing test first: `src/ui/inputcx.test.tsx` (24 cases), and
+three in `src/ui/inputmarks-scenarios.test.tsx` — the schedule's lines by the board's real CX button, and the one he
+asked for: a cancelled input is not a day worked for the seven-day run INSIDE the week (it passed as written — step 4's
+one answer, `inputSilent`, already covered it; it is pinned now).
+
+- **The card** (the opened day, and the List on a phone — `ui/InputCard.tsx`, told by `ui/inputcard-model.ts cardOf`'s
+  `cx` / `why`): a small red CX tag before the title, the title struck through, the reason after it in red, then the
+  remark in its ordinary grey. The names, the kind, LATE, the hours and "By Saber" are untouched (reading 1). No reason
+  typed: the tag alone (reading 4). The card's button says "cancelled — WX" to a screen reader.
+- **The desktop List's row** (`ui/InputsPage.tsx`): the same three on the title's own line, the kind's pill whole
+  under it (D727).
+- **The month's bar** (`ui/InputsCal.tsx`, `inputscal-model.ts BarItem.cx`): its words struck through and the bar
+  faded; no tag, no reason (D767: "for those areas that have no space to show reason it's ok"). Hovered, its tooltip
+  says "Cancelled — WX". Nothing sorts by the mark, so it keeps its place (D768 — pinned for each of four inputs of a day).
+- **The schedule's own line** (D767 reading 3 — `ui/html.ts inpCxHTML` / `inpCxCls`; the week's `inGrp`, the board's
+  `sbInpRow`): the schedule's red tag, its reason riding in it ("CX DUE WX") as on the input's Ground Programme row,
+  before the name; the name struck through.
+
+**Where step 5 left the plan's letter, and the readings to tell him (none changes a ruling):**
+- R27. **An input with no title of its own** (reading 2): on the card its kind's name — the small grey capitals of the
+  top line — is struck, and the tag and reason lead the row under it; on the desktop list the kind's pill is struck,
+  the tag before it and the reason after it on the pill's own line, so the row is no taller than any other.
+- R28. **On the schedule's line the tag is the schedule's own** — "CX DUE WX", the reason inside the tag, as the same
+  input's row reads two sections up — not the Inputs pages' "CX" with the reason beside it. On the Scheduler Board on a
+  phone there is no room for the reason, and the tag reads "CX" (reading 5).
+- R29. **The line under Personal Inputs is not faded or struck whole** — only its name: it is the input's own line,
+  still to be read and acted on; its cancelled ROW is on the programme above.
+- R30. **The Unavailable list's row of a cancelled input filed there wears the same tag and struck name** — the same
+  two builders draw it (step 4 found such an input can exist; it earns nobody OIL — R25).
+- R31. **The input's own window says nothing of the CX** — not drawn, not ruled; a question for him (below).
+- §4.5 has "CANCELLED — <reason> in the remark's place"; D767 replaced that wording with the tag and the red reason.
+
+**Found by the look (real presses on the built app, a desktop and a phone — `scripts/handpass/onerule-step5-look.mjs`,
+pictures `../../handpass/2026-10-12-one-rule-step5/`), fixed before the commit:** on the Scheduler Board the tag
+"CX DUE WX" was squeezed into a block three lines tall on a desktop and four on a phone, cutting the name to "Range
+b…" — the tag is one line now, and a phone's board drops the reason; on the week the strike ran on through the small
+"· accepted" after the name; on the desktop list an untitled cancelled row was a line taller than its neighbours.
+The script also un-cancels the input by the same button: its card, row and bar read as any other again.
+
+**Not built, his to answer (parked — nothing waits on it):** should the input's own WINDOW say it is cancelled?
+*Recommended:* yes — the same red CX tag and reason beside its title, read-only; a member who taps his cancelled card
+otherwise opens a window that looks live. And the CSV export writes a cancelled input's line like any other (no
+column says it) — *recommended:* leave it until he wants a column.
+
 ### Step 8, first pass — the records for what is built (12 Oct 26); a second pass is owed after steps 5 and 7
 
 **The reference documents were swept by a helper** (documents only; every change a dated correction beside the old

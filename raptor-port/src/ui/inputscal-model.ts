@@ -45,6 +45,9 @@ export interface BarItem {
   allday: boolean
   /** minutes into the day it starts — 0 for an all-day input */
   s: number
+  /** the scheduler cancelled it (D760): its bar is struck through and faded, its words and its PLACE as they were
+   *  (D767, D768 — "it keeps its place in the day's order"; nothing below sorts by this) */
+  cx: boolean
 }
 export interface BarSeg {
   item: BarItem
@@ -156,6 +159,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
       key: String(r.iid), rows: [r], people: who, ph: ph && ph.p != null ? cs(ph.p) : '',
       a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type),
       who: who.length ? cs(who[0]) : '', more: Math.max(0, who.length - 1), word: inpLabel(r), kind: inpKindTag(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
+      cx: !!r.cx,
     })
   }
   const at = new Map(out.map((it, i) => [it, i] as const))

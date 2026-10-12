@@ -131,6 +131,19 @@
    scheduler can still read WHO was crewed where. The store pills keep the old
    desaturated look by carrying their OWN grayscale (below), the one place it
    still belongs. */
+/* THE SCHEDULE'S OWN LINE OF A CANCELLED INPUT — under Personal Inputs, and on the Unavailable list where one was filed
+   there (owner D767 reading 3; html.ts inpCxHTML / inpCxCls): the same red tag leads the name and the NAME alone takes
+   the strike. The line itself is not faded and its times and remark are not struck — it is the input's own line, still
+   to be read and still to be acted on; the row that is cancelled is its row on the programme, above. */
+.inp-cx{text-decoration:line-through;text-decoration-color:rgba(240,85,95,.85);text-decoration-thickness:1px;text-decoration-skip-ink:none}
+/* …the NAME alone: the small "· accepted" the week prints after it (04-pucks-sections.css) is a box of its own here, so
+   the strike stops at the name's last letter */
+.pl-row.accd .ntx.inp-cx::after{display:inline-block;white-space:pre}
+/* its tag is ONE line — on the board it rides the row's item cell beside the name and must not be squeezed into a
+   column of letters; where that cell is a phone's, the reason is dropped and "CX" stays (D767 reading 5) */
+.inp-cxtag{white-space:nowrap}
+.itemcell>.inp-cxtag{flex:none;margin-right:0}
+@media (max-width:820px){.sb-arow .inp-cxtag .cxwhy,.sbi-row .inp-cxtag .cxwhy{display:none}}
 .cx .puck{opacity:1}
 .cx .stores,.cx .stchip,.cx .bombs{opacity:.5;filter:grayscale(.7)}
 .form.cx .fcell b .mdot{text-decoration:none}

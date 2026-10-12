@@ -57,6 +57,11 @@
    "EVEN" over "T" (the check's walk, walker C — W2). A long title wraps; the pill never breaks. */
 .intitle{display:block;font-weight:700;line-height:1.2;margin-bottom:3px;overflow-wrap:anywhere}
 .intitle + .intag{display:inline-block;white-space:nowrap}
+/* A CANCELLED INPUT'S ROW (D767 — 25-inputs-calendar.css has the tag, the strike and the reason): the tag, the struck
+   title and the reason share the title's line, and the pill sits whole under them as it does under any title. */
+.in-cxline{display:block;line-height:1.2;margin-bottom:3px;overflow-wrap:anywhere}
+.in-cxline .intitle{display:inline;margin-bottom:0}
+.in-cxline + .intag{display:inline-block;white-space:nowrap}
 /* the pencil row's Title box: under the Type list, as wide as it — never wider than its own column (a box at the
    browser's default width widened the column) */
 .intitle-ed{display:block;width:100%;box-sizing:border-box;min-width:0;margin-top:3px}

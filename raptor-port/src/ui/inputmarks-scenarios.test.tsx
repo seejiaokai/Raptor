@@ -27,7 +27,7 @@
    real saved store, as ui/inputmarks.test.tsx is. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId, idsOf, isLateInput } from '../engine/inputs'
-import { WARN, validate, officialWarn } from '../engine/validate'
+import { WARN, RUNLEN, validate, officialWarn } from '../engine/validate'
 import { seedRunIn } from '../engine/weekctx'
 import { VCONF } from '../engine/rules'
 import { PEOPLE, ID_BY_CS, indexCallsigns, isScheduler } from '../engine/people'
@@ -61,6 +61,7 @@ import { reqRowText } from './reqrow'
 import { rowMark, rowPut, rowTake } from './reqdoor'
 import { boardMbtn, cxCommit, CXT, boardHTML } from './board'
 import * as pops from './pops'
+import { dayHTML } from './html'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -747,5 +748,80 @@ describe('OIL Earn on a cancelled input\'s row: no switch that earns, and the re
     uncx(SAT); setOilDay(SAT)
     expect([...row().querySelectorAll('[data-oilp]')].map(t => (t as HTMLElement).dataset.oilp).sort(), 'brought back').toEqual(['bane', 'pike'])
     expect(paid(SAT)).toEqual(['bane', 'pike'])
+  })
+})
+
+/* STEP 5 (12 Oct 26) — his look at the pictures, D767 reading 3: "the schedule's own line of a cancelled input under
+   Personal Inputs wears the same red CX tag and struck-through name". Until this step that line showed nothing of the
+   CX while the input's own row on the Ground Programme, two sections up, read "CX DUE WX" (the plan §10, step 4, "Not
+   settled"). The week and the board each have a builder for it (ui/html.ts inGrp, ui/board-html.ts sbInpRow). */
+describe('the schedule\'s own Personal Inputs line of a cancelled input (D767 reading 3; D760)', () => {
+  const dom = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
+  const weekLine = (di = WED) => { view.PIOPEN.add(di); return [...dom(dayHTML(di, true)).querySelectorAll('.sec-inp .pl-row')].find(r => (r.textContent || '').includes(TITLE)) as HTMLElement }
+  const boardLine = (di = WED) => { view.PIOPEN.add(di); setBoardDay(di); return [...dom(boardHTML(di)).querySelectorAll('.sb-panel.pinp .sb-arow')].find(r => r.outerHTML.includes(TITLE)) as HTMLElement }
+  afterEach(() => { view.PIOPEN.clear() })
+
+  it('on Edit Schedule\'s week: the red CX tag with its reason before the name, and the name struck through; brought back, neither', async () => {
+    await boot()
+    file(['bane', 'pike'])
+    expect(weekLine(), 'the control: the line is drawn').toBeTruthy()
+    expect(weekLine().querySelector('.cxtag'), 'the control: no tag on a live input').toBeNull()
+    expect(weekLine().querySelector('.inp-cx')).toBeNull()
+    cx(WED, 'WX')
+    const line = weekLine()
+    const tag = line.querySelector('.nm .cxtag') as HTMLElement
+    expect(tag, 'the schedule\'s own tag, in the name\'s cell').toBeTruthy()
+    expect(tag.textContent).toBe('CX DUE WX')
+    const name = line.querySelector('.nm .inp-cx') as HTMLElement
+    expect(name, 'the name is the struck one').toBeTruthy()
+    expect(name.textContent).toBe(TITLE)
+    expect(tag.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING, 'the tag leads').toBeTruthy()
+    expect(line.querySelectorAll('.puck').length, 'its people are still on the line').toBe(2)
+    uncx(WED)
+    expect(weekLine().querySelector('.cxtag')).toBeNull()
+    expect(weekLine().querySelector('.inp-cx')).toBeNull()
+  })
+  it('on the Scheduler Board: the same tag and struck name, inside the row\'s ONE item cell — its seven columns are not moved', async () => {
+    await boot()
+    file(['bane', 'pike'])
+    const kids = (r: HTMLElement) => [...r.children].map(c => c.className.split(' ')[0])
+    const before = kids(boardLine())
+    expect(boardLine().querySelector('.cxtag')).toBeNull()
+    cx(WED, 'WX')
+    const line = boardLine()
+    const tag = line.querySelector('.itemcell .cxtag') as HTMLElement
+    expect(tag, 'the tag rides the item cell').toBeTruthy()
+    expect(tag.textContent).toBe('CX DUE WX')
+    expect(line.querySelector('.itemcell .inp-cx')!.textContent).toBe(TITLE)
+    expect(kids(line).length, 'the row has as many columns as before').toBe(before.length)
+    uncx(WED)
+    expect(boardLine().querySelector('.cxtag')).toBeNull()
+  })
+  it('a cancelled input with no reason: the tag reads "CX"', async () => {
+    await boot()
+    file(['bane'])
+    cx(WED, '')
+    expect(weekLine().querySelector('.nm .cxtag')!.textContent).toBe('CX')
+    expect(boardLine().querySelector('.itemcell .cxtag')!.textContent).toBe('CX')
+  })
+})
+
+/* STEP 5 (12 Oct 26) — he asked whether a cancelled input still counts toward the seven-day run. Step 4 pinned the
+   count walking INTO a week (the case "a cancelled input on the Sunday before…", above); this is the count INSIDE the
+   week, from the day's own events (engine/validate.ts RUNLEN). D760 reading 1; the plan's R24. */
+describe('a cancelled input is not a day worked INSIDE the week either (D760 reading 1 — the seven-day run)', () => {
+  it('his only event of the day is the input: filed it is a day worked, cancelled it is not, brought back it is again', async () => {
+    await boot()
+    const idle = Object.keys(PEOPLE).find(id => PEOPLE[id] && !PEOPLE[id].special && !JSON.stringify(DAYS[WED]).includes(`"${id}"`) && !JSON.stringify(DAYS[WED - 1]).includes(`"${id}"`)
+      && !INPUTS.some((r: any) => idsOf(r).includes(id)) && !['allavail', 'all'].includes(id))!
+    expect(idle, 'someone with nothing on the Wednesday, nor the Tuesday before').toBeTruthy()
+    const run = () => { validate(); return (RUNLEN[WED] || {})[idle] || 0 }
+    expect(run(), 'the control: no run on the Wednesday').toBe(0)
+    expect(commitInput(null, DRAFT(WED), [idle])).toBe(true)
+    expect(run(), 'the control: the input makes it a day worked').toBe(1)
+    cx(WED, 'WX')
+    expect(run(), 'cancelled: it did not happen').toBe(0)
+    uncx(WED)
+    expect(run(), 'brought back: a day worked again').toBe(1)
   })
 })

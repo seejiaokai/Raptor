@@ -40,7 +40,21 @@ export interface CardFacts {
   by: string
   /** red for an absence, amber for a duty or a commitment */
   tone: 'red' | 'amb'
+  /** the scheduler cancelled it — a CX on its row on the schedule cancels the INPUT (D760); it stays listed */
+  cx: boolean
+  /** the reason he gave ("WX"); '' where none was typed, and always '' on an input that is not cancelled (D767) */
+  why: string
 }
+
+/* A CANCELLED INPUT (owner D760, 11 Oct 26; its look D767, 12 Oct 26 — the one-rule plan's step 5). The CX is the
+   INPUT's own mark (`cx`, with its reason `cxr` only while cancelled; `cx: false` once brought back — engine/schema.ts),
+   so every screen that draws an input asks these two and nothing else: the card and the List's row draw a small red CX
+   tag before the title, the title struck through and the reason after it in red; the month's bar is struck through
+   and faded, with no room for either (D767: "for those areas that have no space to show reason it's ok"). */
+export const cxOf = (r: any): boolean => !!(r && r.cx)
+export const cxWhy = (r: any): string => (cxOf(r) ? String(r.cxr || '').trim() : '')
+/** …and in words, for whoever cannot see a strike — a screen reader's label, a bar's tooltip */
+export const cxSays = (r: any): string => (cxOf(r) ? 'Cancelled' + (cxWhy(r) ? ' — ' + cxWhy(r) : '') : '')
 
 const csOf = (id: unknown, people: Record<string, any>): string => {
   const p = people[String(id)]
@@ -99,6 +113,8 @@ export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPL
     remark: String(r.remarks || '').trim() ? remarkOnce(String(r.remarks), corner) : '',
     by: said ? filerName(filer, people) : '',
     tone: toneOf(r.type),
+    cx: cxOf(r),
+    why: cxWhy(r),
   }
 }
 

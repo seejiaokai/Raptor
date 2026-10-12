@@ -18,7 +18,13 @@
    The card's BUTTON is its names (what a keyboard and a screen reader meet — its label says the card whole); a press
    anywhere else on the card opens the input too. LATE is its own button: pressed, it says the cut-off that was missed
    (D646) and does not open the input. Anything the screen adds under the card (the day's "Delete this input?") comes
-   as `children`. */
+   as `children`.
+
+   A CANCELLED INPUT (owner D767, 12 Oct 26 — look B of his pictures with his two changes; the picture of record
+   docs/mock/2026-10-12-one-rule/cancelled-B-desk-card.png): a small red CX tag BEFORE the title, the title struck
+   through, the reason after it in red, then the remark in its ordinary grey. Nothing else of the card changes — the
+   names, LATE, the hours and "By Saber" read as on any card. An input with no title of its own goes by its kind's
+   name, so THAT is struck (the top line's small capitals) and the tag and reason lead the words row. */
 import { useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import type { CardFacts } from './inputcard-model'
 
@@ -44,8 +50,9 @@ export function InputCard({ id, facts, when, late, tid, row, onOpen, onKey, flas
   children?: ReactNode
 }) {
   const [lateOpen, setLateOpen] = useState(false)
-  const { names, kind, title, remark, by, tone } = facts
-  const label = [names, title, kind, when].filter(Boolean).join(', ') + (late ? ', late' : '') + (by ? `, placed by ${by}` : '')
+  const { names, kind, title, remark, by, tone, cx, why } = facts
+  const label = [names, title, kind, when].filter(Boolean).join(', ') + (cx ? ', cancelled' + (why ? ' — ' + why : '') : '')
+    + (late ? ', late' : '') + (by ? `, placed by ${by}` : '')
   return (
     <div className={'icard ' + tone + (flash ? ' innew' : '')} data-popiid={id} data-iid={row ? id : undefined} data-testid={`${tid}-row-${id}`}
       onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) onOpen() }}>
@@ -63,15 +70,17 @@ export function InputCard({ id, facts, when, late, tid, row, onOpen, onKey, flas
           <span className="icard-sq" aria-hidden="true" />
           <b className="icard-who" data-testid={`${tid}-who`}>{names}</b>
         </span>
-        <span className="icard-kind" data-testid={`${tid}-kind`}>{kind}</span>
+        <span className={'icard-kind' + (cx && !title ? ' is-cx' : '')} data-testid={`${tid}-kind`}>{kind}</span>
       </div>
       {late && lateOpen && <div className="sd-latenote icard-latenote" data-testid={`${tid}-latenote`} role="status">{late}</div>}
-      {(title || remark || by) && (
+      {(title || remark || by || cx) && (
         <div className="icard-words">
-          {(title || remark) && (
+          {(title || remark || cx) && (
             <span className="icard-text">
-              {title && <b className="icard-title" data-testid={`${tid}-title`}>{title}</b>}
-              {title && remark && <span className="icard-rmk" aria-hidden="true"> · </span>}
+              {cx && <span className="icx" data-testid={`${tid}-cx`}>CX</span>}
+              {title && <b className={'icard-title' + (cx ? ' is-cx' : '')} data-testid={`${tid}-title`}>{title}</b>}
+              {cx && why && <span className="icx-why" data-testid={`${tid}-why`}>{why}</span>}
+              {(title || (cx && why)) && remark && <span className="icard-rmk" aria-hidden="true"> · </span>}
               {remark && <span className="icard-rmk" data-testid={`${tid}-rmk`}>{remark}</span>}
             </span>
           )}

@@ -14,7 +14,7 @@ import { canEditSched } from '../state/auth'
 import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
-import { rowKindTag, inpKindTagHTML, oilSeatDeco } from './html'
+import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco } from './html'
 import { ORD, puck, puckMarks, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
@@ -312,7 +312,8 @@ const oilRow=(item:any)=>{OILITEM=item||'';return '';};
    that route named a titled input and dropped its kind: an overseas duty titled "Exercise Darwin" has no programme row
    to say "OD" for it. The label rides the name's own cell (`.itemcell`), as on the editable card: the card's grid
    places its cells by their order, so it is never a cell of its own. An untitled card keeps the bare name it had. */
-function sbiName(nameHtml:any,inp:any){const k=inpKindTagHTML(inp); return k?`<span class="itemcell">${nameHtml}${k}</span>`:nameHtml;}
+/* (a cancelled input's red CX tag leads the name, inside the same ONE cell — html.ts inpCxHTML, D767 reading 3) */
+function sbiName(nameHtml:any,inp:any){const k=inpKindTagHTML(inp), x=inpCxHTML(inp); return k||x?`<span class="itemcell">${x}${nameHtml}${k}</span>`:nameHtml;}
 function sbName(di:any,cls:any,path:any,v:any,ph:any,ro:any,extra?:any){
   if(oilModeOn(di))return oilItemCellHTML(di,OILITEM,v,cls);
   return sbTxt(cls,path,v,ph,ro,extra);
@@ -702,7 +703,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`
-      +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`),inp)
+      +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}${inpCxCls(inp)}`),inp)
       +sbiRmk(inp,dt)+`</div>`;
   }
   /* (one man's row of an input that holds several names its man — engine/inputs.ts iuTail — so a box typed on it
@@ -737,12 +738,15 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
   /* the passive badge inside the mode: it still SAYS the input was late, it just cannot be turned off from here */
   const lc=modeRO?lateTag(inp):lateChip(inp);
   const itemCell=oilItem
-    ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`)
-    : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}`);
+    ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}${inpCxCls(inp)}`)
+    : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}${inpCxCls(inp)}`);
+  /* a cancelled input's red CX tag (D767 reading 3) rides the item cell too, ahead of the name — never a grid child of
+     its own, for the reason the LATE chip is not (below) */
+  const cxh=inpCxHTML(inp);
   return `<div class="sb-arow c6r inprow${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${lateRowCls(inp)}${acc?dormRowCls(inp):''}"${lateRowTitle(inp)||(acc?dormRowTitle(inp):'')}${inprow}>`
     +sbGrip(true)
     /* a titled input's kind rides the same wrapper, for the same reason (D717 — html.ts inpKindTagHTML) */
-    +(lc||inpKindTagHTML(inp)?`<span class="itemcell">${itemCell}${inpKindTagHTML(inp)}${lc||''}</span>`:itemCell)
+    +(lc||cxh||inpKindTagHTML(inp)?`<span class="itemcell">${cxh}${itemCell}${inpKindTagHTML(inp)}${lc||''}</span>`:itemCell)
     +fld('atm','str',inpTimeText(inp,'str'),'all day')+fld('atm','end',inpTimeText(inp,'end'),'')
     +`<div class="ppl">${pk}${sbt}</div>`
     +fld('ain rmkin','rmks',inp.remarks||'','remarks')

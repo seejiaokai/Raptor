@@ -52,7 +52,7 @@ import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
 import { placedLineOf } from './placedline'
 import { InputCard } from './InputCard'
-import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
+import { cardOf, cardWhen, cxSays, lateNoteOf } from './inputcard-model'
 import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
@@ -624,7 +624,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
     const hours = r.allday ? '' : ` · ${hhmm(r.s)}–${hhmm(r.e)}`
     /* a titled input's bar has room for its name only — its kind is said here (D717's row for the month) */
     /* …and EVERYONE in it — the named people A to Z, then its placeholder (D721, D727; the item's own `people`) */
-    return [`${it.people.map(nameOf).join(', ')} · ${it.word}${it.kind ? ' · ' + it.kind : ''} · ${dates}${hours}`, placedLineOf(it.rows)].filter(Boolean).join('\n')
+    /* …and that it is CANCELLED, with its reason: the bar has room for neither (D767), a tooltip has */
+    return [`${it.people.map(nameOf).join(', ')} · ${it.word}${it.kind ? ' · ' + it.kind : ''} · ${dates}${hours}`, cxSays(r), placedLineOf(it.rows)].filter(Boolean).join('\n')
   }
 
   /* THE DAY POPOVER — a day's inputs, remark and planning notes without
@@ -1276,7 +1277,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   /* `timed`: an input with hours (a half day too) is drawn LIGHTER than one that takes the whole day — a tint
                      of its colour with a solid edge (D729, V4: "a one-hour appointment looks as heavy as a whole day
                      of leave"; 25-inputs-calendar.css) */
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on')}
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '')}
                     data-iid={sg.item.key} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}

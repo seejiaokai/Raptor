@@ -42,7 +42,7 @@ import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
 import { InputCard } from './InputCard'
-import { cardOf, cardWhen, lateNoteOf } from './inputcard-model'
+import { cardOf, cardWhen, cxOf, cxWhy, lateNoteOf } from './inputcard-model'
 import { dayWord, lateWord } from './sanscal-model'
 import { useMedia } from './usemedia'
 
@@ -766,11 +766,21 @@ export function InputsPage() {
                       already reflected in the Start/End columns — a timed SANS
                       row reads its span there like any other timed input. */}
                   <td data-label="Type">{/* a titled input reads by its title, its kind kept beside it (D716 (2), D717) */}
-                    {inpKindTag(r) && <b className="intitle" data-testid="in-title">{inpLabel(r)}</b>}<span className="intag">{
+                    {/* A CANCELLED INPUT (D767 — look B with his two changes; docs/mock/2026-10-12-one-rule/
+                        cancelled-B-desk-list.png): the red CX tag before the title, the title struck through, the reason
+                        after it in red — on the title's own line, the kind's pill whole under it as ever. With no title
+                        of its own it goes by its kind, so the PILL is struck: the tag before it and the reason after it,
+                        on the pill's one line — the row no taller than any other (step 5's look: with the tag on a line
+                        of its own the row grew). The pill's own words are untouched either way (the sort, the export
+                        and the tests read them). */}
+                    {cxOf(r) && inpKindTag(r)
+                      ? <span className="in-cxline"><span className="icx" data-testid="in-cx">CX</span><b className="intitle is-cx" data-testid="in-title">{inpLabel(r)}</b>{cxWhy(r) && <span className="icx-why" data-testid="in-why">{cxWhy(r)}</span>}</span>
+                      : cxOf(r) ? <span className="icx" data-testid="in-cx">CX</span>
+                        : inpKindTag(r) && <b className="intitle" data-testid="in-title">{inpLabel(r)}</b>}<span className={'intag' + (cxOf(r) && !inpKindTag(r) ? ' is-cx' : '')}>{
                     isSansAvail(r.type) ? <>SANS Avail<span className="bl">ability</span></>
                       : r.type === 'Appointment' ? <>Appoint<span className="bl">ment</span></>
                         : r.type
-                  }</span>{isSansAvail(r.type) && <span className="foa" title="Available for">{sansLetters(r) || 'F/O/A'}</span>}</td>
+                  }</span>{cxOf(r) && !inpKindTag(r) && cxWhy(r) && <span className="icx-why" data-testid="in-why">{cxWhy(r)}</span>}{isSansAvail(r.type) && <span className="foa" title="Available for">{sansLetters(r) || 'F/O/A'}</span>}</td>
                   {/* the mark reads in Remarks, not beside the type (owner,
                       9 Aug 26) — same column on every surface that draws an
                       input, and the type column stays pure identity */}
