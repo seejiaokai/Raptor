@@ -75,7 +75,9 @@
 .dcal-dow span{text-align:center;font-size:10px;line-height:14px;font-weight:800;letter-spacing:.08em;color:var(--ink-3)}
 .dcal-dow span.is-mk{color:var(--accent)}
 /* SIX ROWS ALWAYS (the component draws 42 places), each a finger tall, so nothing under the month hops as it turns */
-.dcal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+/* a sideways finger on the dates turns the month (D800 — ui/sideswipe.ts): the browser keeps the up-and-down scroll of a
+   form the calendar is drawn in, and never takes the sideways move for itself */
+.dcal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));touch-action:pan-y}
 .dcal-d{position:relative;height:44px;display:flex;align-items:center;justify-content:center;margin:0;padding:0;border:0;border-radius:0;background:none;
   color:inherit;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .dcal-d:focus{outline:none}

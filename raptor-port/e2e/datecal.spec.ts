@@ -456,6 +456,33 @@ test('a phone: a finger slid sideways turns the Calendar window’s month and th
   await press('[data-testid="days-next"]'); await expect.poll(month).toBe(shift(m0, 1))
   await press('[data-testid="days-prev"]'); await expect.poll(month).toBe(m0)
 
+  /* THE APP'S NEW CALENDAR ITSELF (D800): a sideways finger on its dates turns its month; begun on a date it picks
+     nothing and the calendar stays up; a tap afterwards picks */
+  await press('[data-testid="days-wd-3"]')
+  await press('[data-testid="every-from"]')
+  await expect(page.locator('[data-testid="dcal-card"]')).toBeVisible()
+  const calMonth = () => page.locator('[data-testid="dcal"]').getAttribute('data-month')
+  const from0 = (await page.locator('[data-testid="every-from"]').getAttribute('data-value'))!
+  const c0 = (await calMonth())!
+  const add = (ym: string, by: number) => { const n = +ym.slice(0, 4) * 12 + +ym.slice(5, 7) - 1 + by; return `${Math.floor(n / 12)}-${String(n % 12 + 1).padStart(2, '0')}` }
+  await swipe('[data-testid="dcal-grid"]', -140)
+  await expect.poll(calMonth, { message: 'a finger slid left on the calendar is the next month' }).toBe(add(c0, 1))
+  await swipe('[data-testid="dcal-grid"]', 140)
+  await expect.poll(calMonth).toBe(c0)
+  await swipe(`[data-testid="dcal-day-${from0.slice(0, 8)}15"]`, -140)
+  await expect.poll(calMonth, { message: 'a swipe begun on a date did not turn the month' }).toBe(add(c0, 1))
+  await expect(page.locator('[data-testid="dcal-card"]'), 'a swipe begun on a date picked it').toBeVisible()
+  expect(await page.locator('[data-testid="every-from"]').getAttribute('data-value')).toBe(from0)
+  await swipe('[data-testid="dcal-grid"]', 140)
+  await expect.poll(calMonth).toBe(c0)
+  /* the browser is told the dates scroll up and down only — it never takes the sideways move for itself */
+  expect(await page.locator('[data-testid="dcal-grid"]').evaluate(e => getComputedStyle(e).touchAction)).toBe('pan-y')
+  const other = from0.slice(0, 8) + (from0.slice(8) === '16' ? '17' : '16')
+  await press(`[data-testid="dcal-day-${other}"]`)
+  await expect(page.locator('[data-testid="dcal-card"]'), 'a tap after a swipe did not pick').toHaveCount(0)
+  expect(await page.locator('[data-testid="every-from"]').getAttribute('data-value')).toBe(other)
+  await press('[data-testid="every-cancel"]')
+
   /* THE HOLIDAYS LIST: the year */
   await press('[data-testid="days-tab-holidays"]')
   const year = () => page.locator('[data-testid="hol-year"]').innerText()

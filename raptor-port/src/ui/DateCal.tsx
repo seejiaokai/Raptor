@@ -22,11 +22,14 @@
    "TODAY" is the real date (ui/daysfmt.ts isoToday), as the Calendar window's is; the icon goes to today's MONTH and
    picks nothing (the agent's reading, told to him — a tap on today's date picks it).
 
+   THE MONTH TURNS BY ITS TWO ARROWS, BY THE LISTS, AND BY A SIDEWAYS FINGER ON THE DATES (D800).
+
    Its look: ui/scheduler/26-date-calendar.css. Its class names are prefixed (`dcal-`, `is-`): the scheduler's sheet is
    one global sheet, and its week already owns `.day` (23-days.css says how that was found). */
-import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { addDays, monthDates, validIso, weekdayOf } from '../state/flyplan-model'
 import { MONTHS, isoToday, sayDateY } from './daysfmt'
+import { initSideSwipe, slideIn } from './sideswipe'
 
 const DOW = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
 /** a row of a month-and-year list is a finger tall */
@@ -192,6 +195,23 @@ export function DateCal(p: {
     setKb(to2)
     setYm(ymOf(to2))
   }
+
+  /* A SIDEWAYS FINGER ON THE DATES TURNS THE MONTH (owner D800, 13 Oct 26 — "All as recommended": as in the Calendar
+     window and on his iPhone's own calendar). The Calendar window's own gesture (ui/sideswipe.ts — touch only, 50px,
+     more sideways than up-and-down, the one click that may follow swallowed, so a swipe begun on a date picks
+     nothing). On the dates only: the lists are scrolled, not swiped. The month that arrives slides in from that side. */
+  const slid = useRef(0)
+  useEffect(() => {
+    const el = grid.current
+    if (!el) return
+    return initSideSwipe(el, dir => { slid.current = dir; step(dir) })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the dates are drawn again when the lists close; `step` only sets state
+  }, [lists])
+  useLayoutEffect(() => {
+    const dir = slid.current
+    slid.current = 0
+    if (dir) slideIn(grid.current, dir)
+  }, [ym.y, ym.m])
 
   const lead = weekdayOf(dates[0])
   const cells: ReactNode[] = []

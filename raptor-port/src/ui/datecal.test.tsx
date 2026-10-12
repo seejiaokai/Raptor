@@ -12,7 +12,7 @@
    lists, the Today icon, the keyboard. Where it floats and what closes it is the date box's (ui/datebox.test.tsx). */
 import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { DateCal } from './DateCal'
 import { calMonth, calPage, calRow, calShow } from './datecal-testkit'
 
@@ -280,6 +280,67 @@ describe('the keyboard on the dates', () => {
     expect(document.activeElement).toBe(day('2026-11-12'))
     fireEvent.keyDown(document.activeElement!, { key: 'ArrowUp' })
     expect(document.activeElement).toBe(day('2026-11-12'))
+  })
+})
+
+/* D800 (owner, 13 Oct 26 — "All as recommended"): a sideways finger on the calendar's dates turns its month, as in the
+   Calendar window and on his iPhone's own calendar; a swipe that begins on a date picks nothing. */
+describe('a sideways finger turns the month (D800)', () => {
+  /* a finger: a touch that lands at one point and lifts at another; its later events go to the element it landed on */
+  const touch = (type: string, el: Element, x: number, y: number) => {
+    const e = new Event(type, { bubbles: true, cancelable: true })
+    const pts = [{ clientX: x, clientY: y, target: el }]
+    Object.defineProperty(e, 'touches', { value: type === 'touchend' ? [] : pts })
+    Object.defineProperty(e, 'changedTouches', { value: pts })
+    act(() => { el.dispatchEvent(e) })
+  }
+  const swipe = (el: Element, dx: number, dy = 0) => { touch('touchstart', el, 200, 300); touch('touchend', el, 200 + dx, 300 + dy) }
+
+  it('left is the next month, right the last — across a year’s end', () => {
+    render(<DateCal value="2026-12-10" today="2026-11-03" onPick={() => {}} />)
+    swipe(t('dcal-grid'), -80); expect(calMonth()).toBe('2027-01')
+    swipe(t('dcal-grid'), 80); swipe(t('dcal-grid'), 80); expect(calMonth()).toBe('2026-11')
+  })
+  it('a swipe that begins ON a date turns the month and picks nothing — nor does the click that may follow it', () => {
+    const onPick = vi.fn()
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={onPick} />)
+    const d = day('2026-11-19')
+    swipe(d, -80)
+    act(() => { if (d.isConnected) d.click() })
+    expect(calMonth()).toBe('2026-12')
+    /* the click a browser may send lands on whatever date is now under the finger */
+    act(() => { day('2026-12-17').click() })
+    expect(onPick).not.toHaveBeenCalled()
+    /* a real press afterwards is its own */
+    fireEvent.pointerDown(day('2026-12-17')); fireEvent.click(day('2026-12-17'))
+    expect(onPick).toHaveBeenCalledWith('2026-12-17')
+  })
+  it('less than the Calendar window’s own distance, or more up-and-down than sideways, turns nothing', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    swipe(t('dcal-grid'), -40); swipe(t('dcal-grid'), -80, 90)
+    expect(calMonth()).toBe('2026-11')
+  })
+  it('a run is kept while the months are swiped, and its band is on the month it reaches', () => {
+    render(<DateCal mode="run" from="2026-11-28" to="2026-12-02" today="2026-11-03" onRun={() => {}} />)
+    swipe(t('dcal-grid'), -80)
+    expect(calMonth()).toBe('2026-12')
+    expect(has('2026-12-01', 'is-in')).toBe(true); expect(has('2026-12-02', 'is-to')).toBe(true)
+  })
+  it('the month-and-year lists are scrolled, not swiped: a sideways finger on them turns nothing', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    fireEvent.click(t('dcal-title'))
+    swipe(t('dcal-months'), -80); swipe(t('dcal-lists'), 80)
+    expect(t('dcal-title').textContent).toContain('November 2026')
+    /* and back on the dates the swipe is there again */
+    fireEvent.click(t('dcal-title'))
+    swipe(t('dcal-grid'), -80)
+    expect(calMonth()).toBe('2026-12')
+  })
+  it('the arrows still turn it, one month a press, straight after a swipe', () => {
+    render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
+    swipe(t('dcal-grid'), -80)
+    fireEvent.pointerDown(t('dcal-next')); fireEvent.click(t('dcal-next'))
+    expect(calMonth()).toBe('2027-01')
   })
 })
 
