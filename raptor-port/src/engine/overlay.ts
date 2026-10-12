@@ -61,7 +61,12 @@ export function stripPersonFromDay(d: any, id: string, srcs: Set<string>): boole
     if (keep.length !== d.ground.length) { d.ground = keep; changed = true }
     d.ground.forEach((r: any) => {
       if (!r) return
-      if (!r.src && whoId(r.who) === id) { r.who = ''; changed = true }
+      /* …and the name box of a row that came from an input, where that row is DEAD (`kept` — the reconcile never re-makes
+         it) or its input no longer holds him: a live row of an input that still holds him is left for the re-make, which
+         writes the whole row from the input once the delete has taken him out of its list (Fable's read of the finished
+         code, finding 2 — 12 Oct 26: his name stayed on a dead row of a SHARED input; pinned in overlay-strip.test.ts) */
+      const srcHolds = () => { const inp: any = (INPUTS as any[]).find(x => x && String(inpId(x)) === String(r.src)); return !!inp && idsOf(inp).map(String).includes(String(id)) }
+      if (whoId(r.who) === id && (!r.src || r.kept || !srcHolds())) { r.who = ''; changed = true }
       blankList(r.more, isHim)
     })
   }

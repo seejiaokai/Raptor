@@ -479,7 +479,20 @@ export const draftOf = (r: any) => ({
    the Inputs page reads is rewritten. The member-own / scheduler-any gate,
    the mod timestamp and the undo snapshot all come free from commitInputEdit
    — this must NOT grow its own copy of any of them. */
-export function setLeaveRemarks(row: any, remarks: string): boolean {
+/* ON ONE MAN'S CELL OF A LEAVE FILED FOR SEVERAL THE REMARK IS HIS ALONE (Fable's read of the finished code, finding 1 —
+   12 Oct 26; the one-rule plan §4.6; owner D737, D755 (3), reading R5). The sheet is opened on a PERSON's cell and is
+   handed whatever leave stands behind it (leavewar/sync.ts leaveInputAt — a leave filed on the Inputs page for several
+   as readily as one the war approved for one man). So where the input holds several, he is first given a leave of his
+   own, in the same command (engine/inputown.ts ownInputOf), and the remark is written on THAT — the others' leave is
+   untouched, and the man himself may do it (the piece is his one-person input). The same shape as `saveFromRow`'s
+   one-man branch. Pinned in leavewar/onerecord-write.test.ts. */
+export function setLeaveRemarks(row: any, remarks: string, person?: any): boolean {
+  if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
+    return saveBatch(() => {
+      const own = ownInputOf(row, person)
+      return !!own && commitInputEdit(own, { ...draftOf(own), remarks })
+    })
+  }
   return commitInputEdit(row, { ...draftOf(row), remarks })
 }
 

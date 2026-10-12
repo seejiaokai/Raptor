@@ -26,7 +26,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { commandStream } from '../command'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
-import { commitInput, draftOf } from '../ui/inputedit'
+import { commitInput, draftOf, setLeaveRemarks } from '../ui/inputedit'
 import { initStore as lwInitStore, lwHistInit, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -257,5 +257,49 @@ describe('the bell\'s OIL question goes to whoever answers for the input (D762, 
     ranger()
     expect(commitInput(r, draftOf(r), ['rocky', 'casper'], { oil: { [SAT]: 0 } })).toBe(true)
     expect(oilPendingFor('bane').map(x => x.iid), 'answered — a No is an answer').toEqual([])
+  })
+})
+
+/* THE LEAVE WAR'S REMARKS SHEET ON ONE MAN'S CELL OF A SHARED LEAVE (Fable's read of the finished code, finding 1 — 12 Oct
+   26; the plan §4.6 names setLeaveRemarks as a caller of ownInputOf; owner D737 — an absence for several is one row a
+   man; R5 — a change to one man's part gives him an input of his own; D755 (3)). The sheet is opened on ONE man's cell
+   (leavewar/ui/RemarksSheet.tsx, handed whatever leave stands behind it — sync.ts leaveInputAt), so its remark is HIS:
+   before the one-rule build a shared leave was a record a man and the remark landed on him alone; built on the one
+   record it rewrote the remark for everyone in the leave and refused the man himself. */
+describe('a remark saved on one man’s cell of a leave filed for several is his alone (the war’s remarks sheet)', () => {
+  const WED = '2026-02-11', THU = '2026-02-12'
+  const leave = () => commitInput(null, D({ type: 'LL', allday: true, start: TUE, end: THU, sTime: '', eTime: '', remarks: '' }), ['bane', 'rocky', 'casper'])
+  const lls = () => INPUTS.filter((r: any) => r.type === 'LL' && String(r.date).startsWith('Feb')) as any[]
+  const of = (p: string) => lls().filter(r => idsOf(r).includes(p))
+  it('as an admin: Hex gets a leave of his own carrying it; the other two keep theirs untouched; one Undo puts the three back as one', () => {
+    expect(leave()).toBe(true)
+    expect(lls()).toHaveLength(1)
+    const r = lls()[0], was = copy(r)
+    expect(setLeaveRemarks(r, 'Dental', 'rocky')).toBe(true)
+    expect(lls(), 'the leave for two, and his own').toHaveLength(2)
+    expect(of('rocky').map(x => idsOf(x)), 'his own, of him alone').toEqual([['rocky']])
+    expect(String(of('rocky')[0].remarks)).toContain('Dental')
+    expect(of('bane').map(x => idsOf(x))).toEqual([['bane', 'casper']])
+    expect(String(of('bane')[0].remarks), 'the others never read his note').not.toContain('Dental')
+    expect([of('bane')[0].date, of('bane')[0].endDate, of('rocky')[0].date, of('rocky')[0].endDate]).toEqual([was.date, was.endDate, was.date, was.endDate])
+    expect(globalUndo().ok).toBe(true)
+    expect(lls()).toHaveLength(1)
+    expect(copy(lls()[0])).toEqual(was)
+    void WED
+  })
+  it('as the man himself (a member, not its filer): saved, and his own', () => {
+    expect(leave()).toBe(true)
+    hex()
+    const r = lls()[0]
+    expect(setLeaveRemarks(r, 'Dental', 'rocky'), said.join(' | ')).toBe(true)
+    expect(of('rocky').map(x => idsOf(x))).toEqual([['rocky']])
+    expect(String(of('rocky')[0].remarks)).toContain('Dental')
+    expect(String(of('bane')[0].remarks)).not.toContain('Dental')
+  })
+  it('a leave of ONE person is written as before — no second record', () => {
+    expect(commitInput(null, D({ type: 'LL', allday: true, start: TUE, end: THU, sTime: '', eTime: '', remarks: '' }), ['rocky'])).toBe(true)
+    expect(setLeaveRemarks(lls()[0], 'Dental', 'rocky')).toBe(true)
+    expect(lls()).toHaveLength(1)
+    expect(String(lls()[0].remarks)).toContain('Dental')
   })
 })

@@ -8036,7 +8036,7 @@ no Save; what differs is the foot and what stands outside the form:*
   off — an admin can change this." (D731 (8)).*
 - *"TAKE ME OUT" (`inped-takeout`) stands in the foot, outside the inert form, for a reader who is in the input — it
   asks first ("Take yourself out of this input? It stays for the other 2 people.") and then says "You are out of
-  this input". It is the only live control of his in the window.*
+  this input". Beside Close and the paperclip it is the only live control in his window.*
 - *THE OIL LINE states the input's ONE answer and has no button for a reader: "Change…" and "Answer…" are drawn only
   for whoever may change the input (not drawn at all for a reader since 10 Oct 26, `[CAL-CHECK-SEEN]` — it is not
   "dimmed rather than removed"). There is no "Your OIL" line and no answer of a man's own (D762).*

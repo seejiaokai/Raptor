@@ -334,7 +334,14 @@ export function applyDrop(el: any, x: any, y: any) {
          him refuses the whole swap, and one Undo puts both back. From a place of an input's own row there is no seat
          to hand over (rowMove, above, has answered for another input's row). */
       const src = DRAG.kind === 'slot' && !onInputRow(DRAG.key) ? DRAG.key : null
-      const seat = src ? (was: string) => sentinelSeatOK(src, was) && !rowTwice(was, src, src) && setSlotVal(src, was) : undefined
+      /* …and a seat that refuses him SAYS WHY (the walk's B3; Fable's read, finding 4 — 12 Oct 26): the reason was worked
+         out here and said by nobody, so the refusal read "Not saved — that change was refused, and nothing was kept" */
+      const csOf = (x: any) => (PEOPLE[x] ? PEOPLE[x].cs : String(x))
+      const seat = src ? (was: string) => {
+        const why = !sentinelSeatOK(src, was) ? 'that seat cannot take him' : rowTwice(was, src, src)
+        if (why) { HOOKS.toast(`${csOf(was)} cannot take ${csOf(aimed)}’s place — ${why}`, 'warn'); return false }
+        return setSlotVal(src, was)
+      } : undefined
       const put = rowPut(targetKey, aimed, seat)
       if (put === 'refused') return no()
       if (put === 'done') return fin(placeOnRow(targetKey, aimed) || targetKey, aimed)

@@ -692,8 +692,12 @@ export function shapeProblem(inp:any):string{
   for(const p of ids){const k=String(p); if(seen.has(k))return `${cs(p)} is already on this input`; seen.add(k);}
   const why=placeholderProblem(inp); if(why)return why;
   if(ids.length>1&&(isDownchit(inp.type)||isUpchit(inp.type)))return `${isUpchit(inp.type)?'An upchit':'A medical entry'} is one person’s — each needs its own document`;
-  if(ids.length>1&&/^Personal$/i.test(String(inp.type==null?'':inp.type).trim()))return 'A Personal input is one person’s own';
+  if(ids.length>1&&personalKind(inp.type))return PERSONAL_OWN;
   return '';}
+/* THE "PERSONAL" KIND AND ITS ONE SENTENCE — one body for the record's shape (above) and for the row's door, which
+   refuses a man dropped ON its one person's puck too (ui/reqdoor.ts rowPut — D755 (4), D757; the walk's B8, 12 Oct 26) */
+export function personalKind(t:any):boolean{return /^Personal$/i.test(String(t==null?'':t).trim());}
+export const PERSONAL_OWN='A Personal input is one person’s own';
 /* ---- AN INPUT'S OWN TITLE ([INPUT-OWN-TITLE]; owner D715, D716, D717 — 9 Oct 26; the plan
    docs/superpowers/plans/2026-10-09-input-own-title-plan.md) -------------------------------------------------------
    His words: "select the type of input and it gives the user the option to change the name of the input. Not only to

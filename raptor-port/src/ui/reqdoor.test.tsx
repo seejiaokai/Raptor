@@ -247,6 +247,27 @@ describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the pl
     expect(people(), 'ONE Undo puts both back').toEqual(['bane'])
     expect(slotVal(seat)).toBe(flew)
   })
+  /* A PERSONAL INPUT IS ONE PERSON'S OWN — ON HIS PUCK TOO (owner D755 (4): "other people on a Personal input" are refused;
+     D757: "Anyone onto a Personal input: A Personal input is one person's own."). Found by the job's walk (share B, B8 —
+     12 Oct 26): a man dropped on the row's "+ add" was refused with the sentence, but dropped ON the only person's puck he
+     REPLACED him — the hand-over D755 (2) gives every other kind — and a man's own personal matter became someone else's. */
+  it('a Personal input: a man dropped ON its one person\'s puck is refused with the sentence — from the crew list and from a seat alike', async () => {
+    await boot(new MemoryBackend())
+    file(['bane'], WED, undefined, { type: 'Personal' })
+    const was = JSON.stringify(rec())
+    expect(rowPut(rowKey(), 'pike'), 'from the crew list').toBe('refused')
+    expect(people()).toEqual(['bane'])
+    expect(SAID.join(' | ')).toContain('A Personal input is one person’s own')
+    const seat = '2.0.0.0.p', flew = String(slotVal(seat))
+    expect(flew && flew !== 'bane').toBeTruthy()
+    SAID = []
+    setDrag({ kind: 'slot', key: seat })
+    applyDrop(seatEl(rowKey()), 0, 0)
+    expect(people(), 'from a seat: no swap').toEqual(['bane'])
+    expect(slotVal(seat), 'and the man dragged keeps his seat').toBe(flew)
+    expect(SAID.join(' | ')).toContain('A Personal input is one person’s own')
+    expect(JSON.stringify(rec()), 'nothing of the input moved').toBe(was)
+  })
   it('where the row holds SEVERAL a person dropped on a puck joins — nobody is replaced (the plan\'s R1)', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike'])
@@ -418,6 +439,28 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
     return `g:${WED}.${ri}`
   }
   const member = (id: string) => { setSession({ user: 'us', role: 'main', name: 'us' }); setMe(id) }
+
+  /* A SWAP THE SEAT REFUSES SAYS WHY (the job's walk, share B, B3; Fable's read of the finished code, finding 4 — 12 Oct
+     26). The man replaced must take the seat the newcomer came from; where he cannot (he is already on that row — D271)
+     the whole swap is refused, and it said only "Not saved — that change was refused, and nothing was kept". */
+  describe('a swap the seat refuses says why', () => {
+    it('the man replaced is already on the row the newcomer came from: refused whole, naming both and the reason', async () => {
+      await boot(new MemoryBackend())
+      file(['bane'])
+      const own = ownRow('pike')
+      expect(fillSlot(`${own}.+`, 'bane'), 'both men on the scheduler\'s own row').toBe(true)
+      SAID = []
+      const was = JSON.stringify([rec(), ground()])
+      drop(fromSeat(own), seatEl(rowKey()))
+      expect(people(), 'nobody replaced').toEqual(['bane'])
+      expect(JSON.stringify([rec(), ground()]), 'nothing moved').toBe(was)
+      const said = SAID.join(' | ')
+      expect(said).toContain('already on')
+      expect(said).toContain(cs('bane'))
+      expect(said).toContain(cs('pike'))
+      expect(said, 'never the bare refusal').not.toContain('Not saved')
+    })
+  })
 
   describe('from the crew list', () => {
     /* (2) grouprow-hands: "ALL AVAIL dropped anywhere on the row is the ROW's own — never a man's place: it joins the
