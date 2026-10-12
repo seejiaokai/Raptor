@@ -1,0 +1,23 @@
+p='scripts/handpass/odc/w2/s48.mjs'
+s=open(p,newline='').read()
+# toast reader
+s=s.replace("async function openData()","""const toast = () => page.evaluate(() => { const c = [...document.querySelectorAll('body *')].filter(e => { const cs = getComputedStyle(e); if (cs.position !== 'fixed') return false; const r = e.getBoundingClientRect(); return r.width > 0 && r.top > innerHeight * 0.6 && (e.innerText || '').trim() && e.children.length < 4 }); return c.map(e => e.innerText.trim().replace(/\s+/g, ' ')).join(' | ') })
+async function openData()""")
+s=s.replace("""  await t.press(sel)
+  const after = (await dataText())""","""  await t.press(sel)
+  await page.waitForTimeout(150)
+  lastToast = await toast()
+  const after = (await dataText())""")
+s=s.replace("async function diffPress(sel) {","let lastToast = ''\nasync function diffPress(sel) {")
+s=s.replace("console.log('S4 pressing it before a date:', JSON.stringify(nopress))","console.log('S4 pressing it before a date:', JSON.stringify(nopress).slice(0, 80))")
+s=s.replace("const nopress = await diffPress('#admWipe').catch(e => ({ err: String(e).slice(0, 100) }))","const nopress = await page.locator('#admWipe').click({ timeout: 2000 }).then(() => 'clicked').catch(e => 'could not be pressed (disabled)')")
+s=s.replace("""console.log(`S4 first press with ${first}: new text ${JSON.stringify(r1)}; button now "${b2.text}"`)""","""console.log(`S4 first press with ${first}: toast "${lastToast}"; new text ${JSON.stringify(r1)}; button now "${b2.text}"`)""")
+s=s.replace("""console.log(`S4 retry with ${dd}: ${JSON.stringify(r)}; button "${bb.text}"`)""","""console.log(`S4 retry with ${dd}: toast "${lastToast}" ${JSON.stringify(r)}; button "${bb.text}"`)""")
+s=s.replace("pressed with ${first}: ${JSON.stringify(r1)}, button","pressed with ${first}: toast \"${lastToast}\", button")
+s=s.replace("(ok6 ?","(ok6 ?")
+s=s.replace("""const secondBox = await page.evaluate(() => [...document.querySelectorAll('#admData button')].filter(b => /Pick a date/.test(b.innerText)).length)""","""const secondBox = await page.evaluate(() => { const clutter = document.getElementById('admWipe'); const hist = document.getElementById('admLog'); return [...document.querySelectorAll('#admData button')].filter(b => /Pick a date/.test(b.innerText) && (b.compareDocumentPosition(clutter) & 4) !== 0 && (b.compareDocumentPosition(hist) & 4) !== 0).length })""")
+s=s.replace("""console.log(`S6 button before "${b6.text}" disabled=${b6.disabled}; pressed: ${JSON.stringify(r6)}; after "${b6b.text}"`)""","""const toast6 = lastToast
+console.log(`S6 button before "${b6.text}" disabled=${b6.disabled}; pressed: toast "${toast6}" ${JSON.stringify(r6)}; after "${b6b.text}"`)""")
+s=s.replace("pressed -> \"${b6b.text}\" ${JSON.stringify(r6)}","pressed -> toast \"${toast6}\", button \"${b6b.text}\"")
+s=s.replace("const ok6 = /Tap the first day, then the last\./.test(foot6a) && !calCard && secondBox === 0","const ok6 = /Tap the first day, then the last\./.test(foot6a) && !calCard && secondBox === 0 && foot6b === 'Wed 28 Oct 2026' && / to /.test(foot6c)")
+open(p,'w',newline='').write(s)

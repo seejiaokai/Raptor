@@ -84,4 +84,6 @@ export async function newWorld(which, opts = {}) {
   w.close = async () => { await w.browser.close() }
   return w
 }
-export const rec = (w, id, verdict, seen, pic = '') => { w.results.push({ id, verdict, seen, pic }); console.log(`>> S${id} ${verdict} - ${seen} ${pic ? '[' + pic + ']' : ''}`) }
+// the app's hidden person id for a callsign as the Leave War's rows show it (Drifter is "slipway", Ranger is "bane" ...)
+export const idOf = (page, name) => page.evaluate(n => { const r = [...document.querySelectorAll('[data-testid^="row-"]')].find(e => new RegExp('^\\s*' + n + '\\b', 'm').test(e.innerText)); return r ? r.getAttribute('data-testid').slice(4) : null }, name)
+export const rec =(w, id, verdict, seen, pic = '') => { w.results.push({ id, verdict, seen, pic }); console.log(`>> S${id} ${verdict} - ${seen} ${pic ? '[' + pic + ']' : ''}`) }

@@ -84,7 +84,7 @@ const selected = (page, sel) => page.evaluate(s => { const o = document.querySel
       if (await page.locator('[data-testid="bid-postin"]').count()) {
         await w.press('[data-testid="bid-postin"]'); await w.press('[data-testid="pi-date"]'); await w.cardOnTop('S8 PI'); await w.pickDay('2026-07-22')
         await w.press('[data-testid="pi-confirm"]'); await page.waitForTimeout(700)
-        piOk = true
+        piOk = range(await gone(page)) !== g0
       }
     }
     if (!piOk) {
@@ -94,7 +94,7 @@ const selected = (page, sel) => page.evaluate(s => { const o = document.querySel
     const g1 = await gone(page)
     console.log('  after PI from 07-22, struck:', range(g1))
     await w.shot(`s8-${P}-grid-out-then-in`)
-    if (!piOk) { rec(w, '8', 'NOT WALKED', `could not post him in again later from the Leave War: sheet read "${sh1.slice(0, 200)}"`, `s8-${P}-grid-out-then-in.png`) }
+    if (!piOk) { rec(w, '8-lw', 'RECORD', `the Leave War's own PI refused a post-in AFTER the post-out; PI sheet then read: "${(await sheetText(page)).slice(0, 400)}"; first sheet read "${sh1.slice(0, 200)}"`, `s8-${P}-grid-out-then-in.png`) }
     else {
       // tap a day at the end of his EARLIER stay (07-09)
       await page.keyboard.press('Escape').catch(() => {}); await page.waitForTimeout(300)
@@ -140,6 +140,24 @@ const selected = (page, sel) => page.evaluate(s => { const o = document.querySel
     const days = await page.evaluate(() => [...document.querySelectorAll('.bidsheet button, .bidsheet [role="button"], .bidsheet td, .bidsheet [data-iso], .bidsheet [data-date]')].slice(0, 80).map(e => (e.getAttribute('data-testid') || e.getAttribute('data-iso') || e.getAttribute('data-date') || e.tagName) + ':' + (e.textContent || '').trim().slice(0, 4)).join(' ; '))
     console.log('  candidate controls:', days)
     rec(w, '14a', 'RECORD', `Pick a range tapped on 14 Jul: new round-disc calendar present=${cal.newCard}; Today icon present=${cal.newToday}; sheet text: "${cal.sheet.slice(0, 400)}"`, `s14-${P}-pick-a-range-open.png`)
+    // two taps make a range
+    const readSel = () => page.evaluate(() => ({ selection: (document.querySelector('[data-testid="span-selection"]') || {}).innerText, lit: [...document.querySelectorAll('.bidsheet [data-testid^="span-day-"]')].filter(e => /\b(on|start|end|rday|in)\b/.test(e.className)).map(e => e.getAttribute('data-testid').slice(-2)).join(',') }))
+    const steps = [`opened (14 Jul tapped): ${JSON.stringify(await readSel())}`]
+    await w.press('[data-testid="span-day-2026-07-16"]'); steps.push(`tap 16: ${JSON.stringify(await readSel())}`)
+    await w.press('[data-testid="span-day-2026-07-18"]'); steps.push(`tap 18: ${JSON.stringify(await readSel())}`)
+    await w.shot(`s14-${P}-after-16-then-18`)
+    await w.press('[data-testid="span-clear"]'); steps.push(`Clear: ${JSON.stringify(await readSel())}`)
+    await w.press('[data-testid="span-day-2026-07-20"]'); steps.push(`tap 20: ${JSON.stringify(await readSel())}`)
+    await w.press('[data-testid="span-day-2026-07-23"]'); steps.push(`tap 23: ${JSON.stringify(await readSel())}`)
+    console.log('  STEPS:\n  ' + steps.join('\n  '))
+    await page.waitForTimeout(300)
+    const afterTaps = await page.evaluate(() => ({
+      selection: (document.querySelector('[data-testid="span-selection"]') || {}).innerText,
+      lit: [...document.querySelectorAll('.bidsheet [data-testid^="span-day-"]')].filter(e => /sel|range|in|on/.test(e.className)).map(e => e.getAttribute('data-testid').slice(-5) + ':' + e.className.replace(/\s+/g, '.')).join(' ') }))
+    console.log('  after two taps:', JSON.stringify(afterTaps))
+    await w.shot(`s14-${P}-range-made`)
+    const todayIcon = await page.evaluate(() => !!document.querySelector('.bidsheet [data-testid="dcal-today"], .bidsheet [aria-label*="Today" i]'))
+    rec(w, '14b', 'RECORD', `taps on the sheet's own calendar: ${steps.join(' || ')}; end state ${JSON.stringify(afterTaps)}; a Today icon on the sheet's calendar: ${todayIcon}`, `s14-${P}-range-made.png`)
   } catch (e) { console.log('ERR S14', String(e).slice(0, 500)); await w.shot(`C-S14-ERR-${P}`).catch(() => {}); rec(w, '14', 'NOT WALKED', 'script error: ' + String(e).slice(0, 200)) }
   await w.close().catch(() => {})
 }

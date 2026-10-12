@@ -1,0 +1,28 @@
+// W2 scenario 9, "under the box" measured on boxes that sit high enough: Admin -> Data "Older than", and Post in with room below. VERSION 1
+import { openWorld, tools, adminCategory } from './lib.mjs'
+console.log('s9b VERSION 1')
+const w = await openWorld('desktop'); const t = tools(w, 'desktop-s9b'); const { page } = w
+await adminCategory(page, '^Data')
+await page.waitForSelector('#admWipeDate')
+const br = async sel => page.evaluate(s => { const b = document.querySelector(s).getBoundingClientRect(); return { l: Math.round(b.left), t: Math.round(b.top), r: Math.round(b.right), b: Math.round(b.bottom) } }, sel)
+const b0 = await br('#admWipeDate')
+await t.press('#admWipeDate')
+const c = await t.cardOnTop('Older than')
+console.log(`S9b Older than: box ${JSON.stringify(b0)}; card l ${c.l} t ${c.t}; card top - box bottom = ${c.t - b0.b}; card left - box left = ${c.l - b0.l}; wholly=${c.wholly}`)
+await t.shot('s9b-older-than-under-box')
+await t.closeCal()
+// Post in with the Role row shown, scrolled to the foot of the page
+await adminCategory(page, '^Users')
+await page.locator('#accAddPostIn').scrollIntoViewIfNeeded()
+await page.fill('#accAddName', 'zzz@x.test'); await page.waitForTimeout(300)
+await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await page.waitForTimeout(300)
+const b1 = await br('#accAddPostIn')
+console.log('S9b Post in box with sign-in typed, foot of page:', JSON.stringify(b1), `space below it ${900 - b1.b}px`)
+await page.evaluate(() => window.scrollBy(0, -200)); await page.waitForTimeout(250)
+const b2 = await br('#accAddPostIn')
+await t.press('#accAddPostIn')
+const c2 = await t.cardOnTop('Post in (lower)')
+console.log(`S9b Post in (scrolled up 200): box ${JSON.stringify(b2)}; card t ${c2.t} b ${c2.b} l ${c2.l}; ${c2.t >= b2.b ? 'card is under the box, gap ' + (c2.t - b2.b) : 'card is above the box, gap ' + (b2.t - c2.b)}`)
+await t.shot('s9b-postin-lower')
+console.log('errors', JSON.stringify(w.errors))
+await w.browser.close()
