@@ -18,8 +18,12 @@ an input passes on with a deleted filer); `src/ui/inputedit.tsx` gains `ownPartS
 desktop row's "OIL?" button for an input of several); styles `scheduler/25-inputs-calendar.css` (`.icard .oiltag`) and
 `scheduler/18-oil-board.css` (`.roil.ask` written as what it renders). The IT flow guide's sources lose the Inputs
 export shot (`scripts/itflow/j/export.mjs`, `content.mjs` — D773; the deck itself is re-shot only on his word, D403).
-Its records: `docs/handpass/2026-10-12-one-rule.md` §10b–§10d; the second re-walk's brief
-`docs/superpowers/briefs/2026-10-12-one-rule-rewalk2-brief.md`.
+**And after Fable's third read and the second re-walk:** `src/ui/pendlist.ts inputWords` and `frozenInputMatch` 3b ask the filer of
+either copy; `asIssuedOrder` keeps those who went out with the day first, newcomers after; `src/ui/interactions.ts` (Accept
+says who comes off an adopted row); `src/ui/InputsPage.tsx reviseOil` heads the question for everyone (`inputWho`);
+`src/state/perms.ts INPUT_FILER_NOTE` says seven kinds. Its records: `docs/handpass/2026-10-12-one-rule.md` §10b–§10h; the
+re-walks' briefs `docs/superpowers/briefs/2026-10-12-one-rule-rewalk2-brief.md`, `…-rewalk3-brief.md`; Fable's third
+read's `…-code-read-3.md`.
 
 `[ALL-AVAIL-AS-MEMBER]` step 7 (12 Oct 26 — the bell's notices; D755 (3), D760, D769): **NEW** `src/state/notices.ts`
 (the saved record a person told, `noticePass` — who is told and what, worked out from an input before and after a

@@ -67,4 +67,4 @@ typed on his row of the Unavailable list — is ONE change, said as "his own now
   for both — the first name A to Z and "+1" (as the input's own window is headed) — not one man's name alone.
 
 ## The build
-`http://localhost:4186/` — its page must load **`assets/__BUNDLE3__`** (check before your first step; STOP if not).
+`http://localhost:4186/` — its page must load **`assets/index-Cn1o4bH6.js`** (check before your first step; STOP if not).

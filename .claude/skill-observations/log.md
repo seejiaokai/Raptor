@@ -4074,3 +4074,18 @@ belongs to, and treat "a second instance now exists" as a change with its own bl
 **Suggested improvement:** In "verify before implementing", add: for a batch of unverified claims, write one failing test per claim BEFORE judging any of them; print the real output when a claim is about wording or a count; record per claim red / not red, and report the reviewer's hit rate — that rate, not its confidence, decides how much its next "sound" is worth.
 
 **Principle:** A review that ran nothing is a list of hypotheses; the cheapest honest triage is to make each one fail on purpose, and the pattern of what failed is evidence about the reviewer as well as the code.
+
+### Observation 536: A frozen test clock makes "same moment" a false match — walk and test with a clock that moves
+
+**Status:** OPEN
+**Date:** 2026-10-12
+**Session context:** Re-walking fixes on a published-day change count; one fix told "a piece cut from a record" from "a fresh filing" by the record's stored creation moment.
+**Skill:** New skill candidate: scripted-walk-brief (the walk briefs under docs/superpowers/briefs)
+**Type:** open-source
+**Phase/Area:** Fixture rules in a walker's brief; unit-test fake timers
+
+**Issue:** The walk brief told every walker to set the browser clock to a fixed instant. A walker froze it, so two records filed minutes apart in real use carried the identical timestamp; the app's (correct) rule that distinguishes them by that timestamp matched them, and the walker reported a FAIL that was the walk's own artefact. The unit test of the same rule had passed only because its author happened to advance the fake clock between the two filings. It cost a re-walk scenario and a disposition.
+
+**Suggested improvement:** In walk briefs and test harness notes: "set the clock to a start time and let it RUN (install + resume / fastForward between steps); never freeze it unless the scenario is about one instant". When a rule under test reads a stored timestamp or an ordering by time, say so in the scenario's EXPECTED line so a same-instant result is recognised as an artefact.
+
+**Principle:** A fixture that collapses a dimension the code discriminates on (time, identity, order) can only produce false matches along it; pin the start of time, never its passage.
