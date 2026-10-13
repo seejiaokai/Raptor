@@ -11,6 +11,11 @@ this guide, so every `/impeccable` reads it — is **NOT built yet** (`OUTSTANDI
 has no record of this app, and writing one needs his answers); until it is, `/impeccable` reaches this guide through
 that rule file.
 
+**The design skill itself is used without being asked for** (owner, 13 Oct 26): for a design job — a new screen or
+control, a restyle, a look over something built, a pass over a page's words, a mock-up — the agent invokes `impeccable`
+with the command that fits (`shape`, `critique`, `audit`, `clarify`, `distill`, `polish`), on top of this guide. Not for a
+small code change that merely sits in an interface file: the skill's detector already runs after every interface edit.
+
 **Open it before** designing, restyling, wording or reviewing anything a person sees — a screen, a window, a note, a
 button's label — and before a look-and-feel review. It does not replace `ui-contracts.md` (how each surface behaves and
 its measured sizes) or `performance.md` (what may never be slowed): it is the judgement that sits on top of them.

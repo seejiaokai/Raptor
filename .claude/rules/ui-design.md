@@ -14,8 +14,15 @@ paths:
 in the engine and the state files too, not only in the screens). Before designing, restyling, wording or reviewing
 anything a person sees, **open `raptor-port/docs/design-practices.md`** — the ONE guide (his rulings, then three outside
 design skills' good practices in our own words; nothing installed whole). It is written first and interface jobs are
-judged against it — the calendar's design included (D813). `/impeccable` is used on top of it, never instead of it.
-A change that touches nothing a person sees needs none of this.
+judged against it — the calendar's design included (D813). A change that touches nothing a person sees needs none of this.
+
+**The design skill is used WITHOUT being asked for (owner, 13 Oct 26 — "impeccable is being called automatically too
+when designing UI?").** For a design job — a new screen, window or control, a restyle, a look over something built, a
+pass over a page's words, a mock-up — invoke the `impeccable` skill yourself, with the command that fits: `shape`
+before building something new, `critique` or `audit` for a look, `clarify` for words, `distill` for clutter, `polish`
+before it is shown to him. It works ON TOP of the guide, never instead of it: where the skill's default meets this
+guide or one of his rulings, the ruling wins. NOT for a small code change that merely sits in an interface file (a
+fix to behaviour, a test, a comment) — the skill's detector already runs after every interface edit.
 
 ## The short form — in force the moment this loads
 
