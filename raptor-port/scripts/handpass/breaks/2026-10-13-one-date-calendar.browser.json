@@ -1,0 +1,105 @@
+{
+ "spec": "e2e/datecal.spec.ts",
+ "grep": ".",
+ "port": 4180,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "the calendar is above every window and sheet (its layer)",
+   "file": "src/ui/scheduler/26-date-calendar.css",
+   "find": ".dcal-layer{position:fixed;inset:0;z-index:600}",
+   "put": ".dcal-layer{position:fixed;inset:0;z-index:400}"
+  },
+  {
+   "n": 2,
+   "name": "the swiped part reaches the window foot",
+   "file": "src/ui/scheduler/23-days.css",
+   "find": "  .dayswin .days-parts{flex:1 0 auto}\n",
+   "put": ""
+  },
+  {
+   "n": 3,
+   "name": "the browser is told the part scrolls up and down only",
+   "file": "src/ui/scheduler/23-days.css",
+   "find": "  touch-action:pan-y}",
+   "put": "  }"
+  },
+  {
+   "n": 4,
+   "name": "the title has a fixed room, so the Today icon stands still",
+   "file": "src/ui/scheduler/26-date-calendar.css",
+   "find": "box-sizing:border-box;width:10em;min-width:0;background:none",
+   "put": "box-sizing:border-box;min-width:0;background:none"
+  },
+  {
+   "n": 5,
+   "name": "six rows always, so the card keeps its height",
+   "file": "src/ui/DateCal.tsx",
+   "find": "for (let i = 0; i < 42; i++) {",
+   "put": "for (let i = 0; i < Math.ceil((lead + dates.length) / 7) * 7; i++) {"
+  },
+  {
+   "n": 6,
+   "name": "the same tap made twice does nothing more (the patch)",
+   "file": "src/ui/DateBox.tsx",
+   "find": "    if (at) {\n      if (patchTimer.current)",
+   "put": "    if (at && at.x < -1e9) {\n      if (patchTimer.current)"
+  },
+  {
+   "n": 7,
+   "name": "the wheel scrolls nothing behind the calendar",
+   "file": "src/ui/DateBox.tsx",
+   "find": "!e.target.closest('.dcal-col')) e.preventDefault() }",
+   "put": "!e.target.closest('.dcal-col')) void 0 }"
+  },
+  {
+   "n": 8,
+   "name": "a phone turned: the layout is asked again",
+   "file": "src/ui/DateBox.tsx",
+   "find": "const on = () => setPhone(phoneLayout())",
+   "put": "const on = () => {}"
+  },
+  {
+   "n": 9,
+   "name": "a desktop panel opens above its box where there is no room beneath",
+   "file": "src/ui/DateBox.tsx",
+   "find": "const top = below + h <= vh - EDGE ? below : above >= EDGE ? above : Math.max(EDGE, vh - EDGE - h)",
+   "put": "const top = below"
+  },
+  {
+   "n": 10,
+   "name": "the year list is placed outright when its rows move",
+   "file": "src/ui/DateCal.tsx",
+   "find": "if (was.current.first !== first) { was.current.first = first; byScroll.current = false; n.scrollTop = top; return }",
+   "put": "if (was.current.first !== first) { n.scrollTop += (was.current.first - first) * ROW; was.current.first = first }"
+  },
+  {
+   "n": 11,
+   "name": "Post in hands its date to the form",
+   "file": "src/ui/UsersPanel.tsx",
+   "find": "<DateBox id={p.id} label=\"Post in\" value={p.value} onChange={p.onChange} />",
+   "put": "<DateBox id={p.id} label=\"Post in\" value={p.value} onChange={() => {}} />"
+  },
+  {
+   "n": 12,
+   "name": "the upchit date hands its date to the form",
+   "file": "src/ui/inputedit.tsx",
+   "find": "onChange={v => setDraft({ ...draft, start: v, end: '' })} />",
+   "put": "onChange={() => {}} />"
+  },
+  {
+   "n": 13,
+   "name": "a phone card gives back the desktop panel place (the walk W-1)",
+   "file": "src/ui/DateBox.tsx",
+   "find": "if (phone) { n.style.left = ''; n.style.top = ''; return }",
+   "put": "if (phone) return"
+  },
+  {
+   "n": 14,
+   "name": "a sideways finger on the new calendar turns its month (D800)",
+   "file": "src/ui/DateCal.tsx",
+   "find": "return initSideSwipe(el, dir => { slid.current = dir; step(dir) })",
+   "put": "return undefined"
+  }
+ ]
+}

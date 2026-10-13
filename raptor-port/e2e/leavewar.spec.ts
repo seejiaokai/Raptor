@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, stageMove } from './app'
+import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, stageMove, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -3907,7 +3907,8 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
      and "not in the past" are held) */
   await expect(tid('every-cls-nf')).toHaveAttribute('aria-pressed', 'true')
   await expect(tid('every-until-none')).toHaveAttribute('aria-pressed', 'true')
-  const from0 = await tid('every-from').inputValue()
+  /* the app's own date box since [ONE-DATE-CALENDAR] (13 Oct 26): it holds its date as `data-value` */
+  const from0 = (await tid('every-from').getAttribute('data-value'))!
   expect(new Date(from0 + 'T00:00:00Z').getUTCDay(), 'the start is not a Thursday').toBe(4)
   expect(from0 >= await page.evaluate(() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}` })).toBe(true)
 
@@ -3925,7 +3926,8 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
   await expect(tid('every-err')).toHaveCount(0)
 
   /* from Thu 15 Jan 2026 on, no end */
-  await tid('every-from').fill('2026-01-15')
+  /* picked on the calendar the box opens, as a person does (it was typed into the phone's date box until 13 Oct 26) */
+  await pickDate(page, '[data-testid="every-from"]', '2026-01-15', isPhone())
   await expect(tid('every-says')).toHaveText('Every Thursday from Thu 15 Jan 2026 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
   await press(tid('every-save'))
   await expect(win).toHaveCount(0)
@@ -6298,9 +6300,87 @@ test('a post-out dated in July keeps his July row, after the war was first shown
   await gridAtRest(page, '2026-07-01')
   await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
   await page.locator('[data-testid="bid-postout"]').click()
-  await page.locator('[data-testid="po-date"]').fill('2026-07-15')
+  await pickDate(page, '[data-testid="po-date"]', '2026-07-15', isPhone())
   await page.locator('[data-testid="po-confirm"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="row-slipway"]'), 'his row is still drawn in July').toBeVisible()
   await expect(page.locator('[data-testid="cell-slipway-2026-07-13"]'), 'his last days in are still there to read').toBeVisible()
+})
+
+/* [ONE-DATE-CALENDAR] step one (owner D796, D797 — 13 Oct 26): the Leave War's posting dates were the phone's own date
+   boxes and are the app's own now, opening the app's calendar OVER the sheet. The calendar is a layer on the page
+   itself, so it is inside no sheet: this proves, in a real browser at both sizes, that it is drawn on top of the sheet
+   (the checking order §6 — the element at its centre is the calendar), that a date picked on it leaves the sheet up
+   with the date in its box, and that a tap on the veil round it closes the calendar and nothing else. On a touch screen
+   that last is the tap shield's doing (Sheet.tsx — pinned red-first in src/leavewar/ui/datebox-sheet.test.tsx). */
+test('the posting dates are the app’s own date boxes: the calendar opens on top of the sheet, and a date picked leaves the sheet up', async ({ page }) => {
+  await openLeaveWar(page, 'a')
+  await lwRole(page, 'admin')
+  const touch = isPhone()
+  const tapOn = (sel: string) => { const l = page.locator(sel).first(); return touch ? l.tap() : l.click() }
+  const vw = page.viewportSize()!.width
+  const fits = async (sel: string, what: string) => {
+    const [b, h] = await Promise.all([sel, '.bidsheet'].map(q => page.locator(q).first().evaluate(el => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, w: r.width } })))
+    expect(b!.w, `${what}: the box has no width`).toBeGreaterThan(60)
+    expect(b!.l, `${what}: out of its sheet`).toBeGreaterThanOrEqual(h!.l - 0.5); expect(b!.r, `${what}: out of its sheet`).toBeLessThanOrEqual(h!.r + 0.5)
+    expect(b!.r, `${what}: off the screen`).toBeLessThanOrEqual(vw + 0.5)
+  }
+  const veil = () => (touch ? page.touchscreen.tap(3, 3) : page.mouse.click(3, 3))
+  await page.locator('[data-testid="month-JUL"]').click()
+  await gridAtRest(page, '2026-07-01')
+  await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
+  const sheet = page.locator('[data-testid="bid-picker"]')
+
+  /* PI from — on the one-day sheet */
+  await page.locator('[data-testid="bid-postin"]').click()
+  expect(await page.locator('.bidsheet input[type="date"]').count(), 'the phone’s own date box is still on the sheet').toBe(0)
+  await fits('[data-testid="pi-date"]', 'PI from')
+  await tapOn('[data-testid="pi-date"]')
+  await calendarOnTop(page, 'PI from')
+  await veil()
+  await expect(page.locator('[data-testid="dcal-card"]'), 'a tap outside the calendar closes it').toHaveCount(0)
+  await expect(sheet, 'the tap outside the calendar closed the sheet under it').toBeVisible()
+  expect(await dateBoxValue(page, '[data-testid="pi-date"]')).toBe('2026-07-14')
+
+  /* PO from — on the one-day sheet (opened afresh: the sheet shows one posting's controls at a time) */
+  await page.keyboard.press('Escape')
+  await expect(sheet).toHaveCount(0)
+  await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
+  await page.locator('[data-testid="bid-postout"]').click()
+  await fits('[data-testid="po-date"]', 'PO from')
+  expect(await dateBoxValue(page, '[data-testid="po-date"]'), 'it opens on the day tapped').toBe('2026-07-14')
+  await tapOn('[data-testid="po-date"]')
+  await calendarOnTop(page, 'PO from')
+  await expect(page.locator('[data-testid="dcal-day-2026-07-14"]')).toHaveClass(/is-sel/)
+  await tapCalendarDate(page, '2026-07-20', touch)
+  await expect(sheet, 'picking a date closed the sheet').toBeVisible()
+  expect(await dateBoxValue(page, '[data-testid="po-date"]')).toBe('2026-07-20')
+  await expect(page.locator('[data-testid="po-date"]')).toContainText('Mon 20 Jul 2026')
+
+  /* THE SAME TAP MADE TWICE DOES NOTHING MORE (the read's F1): on this sheet the calendar opens over the sheet's own
+     leave chips and its shade — a double-click on a date must leave the sheet up, the date in its box, and no bid placed */
+  if (!touch) {
+    await tapOn('[data-testid="po-date"]')
+    await calendarOnTop(page, 'PO from, for a double-click')
+    await page.locator('[data-testid="dcal-day-2026-07-21"]').dblclick()
+    await expect(page.locator('[data-testid="dcal-card"]')).toHaveCount(0)
+    await expect(sheet, 'the second click of a double-click closed the sheet').toBeVisible()
+    expect(await dateBoxValue(page, '[data-testid="po-date"]')).toBe('2026-07-21')
+    await expect(page.locator('[data-testid="cell-slipway-2026-07-14"]'), 'the second click placed a bid').not.toHaveClass(/\bbid\b/)
+    await tapOn('[data-testid="po-date"]')
+    await tapCalendarDate(page, '2026-07-20', touch)
+  }
+
+  /* the Post out sheet — a struck day manages the posting; its date is committed the moment it is picked */
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(sheet).toHaveCount(0)
+  await page.locator('[data-testid="cell-slipway-2026-07-22"]').click()
+  await expect(page.locator('[data-testid="postout-date"]')).toHaveAttribute('data-value', '2026-07-20')
+  await fits('[data-testid="postout-date"]', 'the Post out sheet’s date')
+  await tapOn('[data-testid="postout-date"]')
+  await calendarOnTop(page, 'the Post out sheet’s date')
+  await tapCalendarDate(page, '2026-07-16', touch)
+  await expect(page.locator('[data-testid="postout-date"]'), 'the earlier date was not committed').toHaveAttribute('data-value', '2026-07-16')
+  await expect(page.locator('[data-testid="cell-slipway-2026-07-17"]'), 'the day after the new date is not struck').toHaveClass(/gone/)
+  await expect(page.locator('[data-testid="cell-slipway-2026-07-15"]'), 'a day before the new date is struck').not.toHaveClass(/gone/)
 })

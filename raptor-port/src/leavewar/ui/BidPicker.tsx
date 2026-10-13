@@ -21,6 +21,7 @@ import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, MAX_GIVEN_
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
+import { DateBox } from '../../ui/DateBox'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { awardDays, awardsClause } from './awardwords'
 import { belowZeroAsk, goesBelow } from './belowzero'
@@ -683,17 +684,11 @@ export function BidPicker({
           <div className="bidsheet-row postout">
             <span className="lab">PI from</span>
             {/* Unbounded like the post-out's, and for the same reason: a
-                joining date can sit anywhere in real time, and the keyboard
-                path is what reaches a year the calendar would take twelve taps
-                to walk to. */}
-            <input
-              type="date"
-              className="dateinput"
-              data-testid="pi-date"
-              aria-label={`Post ${callsign} in from`}
-              value={piDate}
-              onChange={e => { setPostErr(''); setPiDate(e.target.value) }}
-            />
+                joining date can sit anywhere in real time. The app's own date
+                box (owner D796, D797): its month-and-year lists are what reach
+                a year the arrows would take twelve taps a year to walk to. */}
+            <DateBox className="dateinput" testid="pi-date" label={`Post ${callsign} in from`}
+              value={piDate} onChange={v => { setPostErr(''); setPiDate(v) }} />
           </div>
           <div className="bidsheet-row postout">
             <button
@@ -721,17 +716,12 @@ export function BidPicker({
                 war (strike their whole history from a past date) or land past
                 its end; the store takes any real date (owner, 19 Aug 26 —
                 "prior to this date to infinity… now till the future
-                infinity"). Native picker: a single date, not a range, and the
-                keyboard path is what reaches a year the calendar UI would
-                take twelve taps to walk to. */}
-            <input
-              type="date"
-              className="dateinput"
-              data-testid="po-date"
-              aria-label={`Post ${callsign} out from`}
-              value={poDate}
-              onChange={e => { setPostErr(''); setDelArmed(false); setPoDate(e.target.value) }}
-            />
+                infinity"). The app's own date box (owner D796, D797): a
+                single date, not a range, and its month-and-year lists are what
+                reach a year the arrows would take twelve taps a year to walk
+                to. */}
+            <DateBox className="dateinput" testid="po-date" label={`Post ${callsign} out from`}
+              value={poDate} onChange={v => { setPostErr(''); setDelArmed(false); setPoDate(v) }} />
           </div>
           {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): which posting it is — four short chips; one line saying what
               the chosen one does on the date; the button just "Post out". A Delete asks twice (D287 (3)). */}
@@ -1037,18 +1027,13 @@ export function PostOutSheet({
       </div>
       <div className="bidsheet-row postout">
         <span className="lab">PO from</span>
-        {/* Unbounded like the picker's — a posting moves to any real date. An
-            emptied field commits nothing: clearing a PO is the Undo button's
-            job, and it should not happen by backspacing a date. */}
-        <input
-          type="date"
-          className="dateinput"
-          data-testid="postout-date"
-          aria-label={`Move ${callsign}'s post-out date`}
-          value={poFrom}
-          disabled={locked}
-          onChange={e => { if (e.target.value) { setDelArm(false); setErr(onChange(e.target.value, outcome) || '') } }}
-        />
+        {/* Unbounded like the picker's — a posting moves to any real date. The
+            box cannot be emptied (the app's own date box — owner D796: no
+            Reset): clearing a PO is the Undo button's job. A date picked is
+            committed at once, as it always was. */}
+        <DateBox className="dateinput" testid="postout-date" label={`Move ${callsign}'s post-out date`}
+          value={poFrom} disabled={locked}
+          onChange={v => { setDelArm(false); setErr(onChange(v, outcome) || '') }} />
       </div>
       {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-locked">{lockedWhy}</span></div>}
       {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the four chips, committed on the tap as the date is — a Delete
@@ -1166,17 +1151,11 @@ export function PostInSheet({
       </div>
       <div className="bidsheet-row postout">
         <span className="lab">PI from</span>
-        {/* Unbounded, and an emptied field commits nothing — clearing a
-            post-in is the Undo button's job, not a backspace. */}
-        <input
-          type="date"
-          className="dateinput"
-          data-testid="postin-date"
-          aria-label={`Move ${callsign}'s post-in date`}
-          value={piFrom}
-          disabled={locked}
-          onChange={e => { if (e.target.value) setErr(onChange(e.target.value) || '') }}
-        />
+        {/* Unbounded, and the box cannot be emptied (the app's own date box —
+            owner D796) — clearing a post-in is the Undo button's job. */}
+        <DateBox className="dateinput" testid="postin-date" label={`Move ${callsign}'s post-in date`}
+          value={piFrom} disabled={locked}
+          onChange={v => setErr(onChange(v) || '')} />
       </div>
       {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postin-locked">{lockedWhy}</span></div>}
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}

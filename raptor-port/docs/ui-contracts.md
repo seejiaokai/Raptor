@@ -7013,9 +7013,57 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
-- **TO BE BUILT — D786 (owner, 13 Oct 26; `OUTSTANDING.md` `[CAL-PHONE-SWIPE-FIT]`):** on a phone a swipe sideways on the month goes to
-  the next or the last month, and on the Holidays list to the next or the last year (the arrows and "Today" stay); and the
-  "Every <weekday>" window's From date box fits inside the window at any phone width — on his iPhone it ran off the right edge.
+- **A sideways finger turns the page (D786, D795 — built 13 Oct 26, `[ONE-DATE-CALENDAR]` step one; `ui/sideswipe.ts`,
+  wired in `ui/DaysWindow.tsx`).** On the month it goes to the next month (left) or the last (right); on the Holidays list,
+  the year. It is the Inputs calendar's own distance (`ui/calpick.ts` `SWIPE_MIN`, 50px, and more sideways than
+  up-and-down) and the page that arrives slides in from that side (28px over 240ms; not under reduced motion; an arrow
+  pressed does not slide). ONE listener, on the element that holds the two parts (`.days-parts`, `touch-action:pan-y`): on
+  a phone that element reaches the window's foot, so the empty room under a short month or list is part of it; where both
+  parts are in sight (1510px and wider) the part under the finger decides and the gap between them is neither. It listens
+  for TOUCH events, so a mouse is untouched, and it works on the dates' own buttons, the weekday headings and "+ Add" — the
+  page turns and nothing is pressed (the click that could follow a swipe is swallowed once, for at most 350ms). The arrows
+  and "Today" stay. Not swiped: the window's top bar, and the two form windows beside it. Pins: `ui/dayswipe.test.tsx`,
+  `e2e/datecal.spec.ts` (a real finger; a mouse).
+- **The dates of "Every <weekday>" are the app's own date box (D786, D795 — `ui/DateBox.tsx`).** From, and Until's "A
+  date", read the date in words ("Thu 5 Nov 2026"; "Pick a date" while Until has none) and open the app's one calendar
+  over the window, the window's weekday standing out and any date pickable; under Until a date before From is faint and
+  cannot be picked. Nothing of the phone's own date box is left in the window — that is the fit: an iPhone gave that box a
+  width of its own (his pictures of 8 and 13 Oct 26). A box cannot be emptied (D796 — no Reset): "No end" is how a rule
+  has no end. Pins: `ui/everyweekday.test.tsx`; `e2e/datecal.spec.ts` (320, 360, 390 and 440 wide).
+- **THE APP'S ONE DATE CALENDAR (D796, D797 — `ui/DateCal.tsx`, `ui/DateBox.tsx`, `ui/scheduler/26-date-calendar.css`;
+  the design of record `docs/superpowers/specs/2026-10-13-one-date-calendar.md`).** On the iPhone calendar's pattern in
+  the Raptor look: the month and year as a title that opens two SCROLLED lists (months beside years — the months go round,
+  the years have no end, the chosen pair in a band across the middle), the Today icon right of the year (the page with
+  today's number, "Jump to a date"'s own — it goes to today's month and picks nothing), two arrows at the far right,
+  MON … SUN, the dates as round discs in SIX rows always; today on a soft accent disc, the picked date on the full one, a
+  Saturday and a Sunday quiet. **A tap on a date picks it — no tick, no Reset, no Clear.** The title has a fixed room and
+  the card a fixed height, so the arrows, the Today icon and everything under the month stand still as months change
+  (the standing rule). Keyboard: one tab stop on the dates, the arrow keys walk them, Page Up / Down a month.
+  **A sideways finger on its dates turns its month too (D800, 13 Oct 26)** — the Calendar window's own gesture
+  (`ui/sideswipe.ts`), wherever the calendar is drawn; a swipe that begins on a date picks nothing; the lists scroll and
+  are not swiped.
+  - **Over the form — a date that is one box among others** (`DateBox`): the box is a button reading its date in words; a
+    tap opens the calendar as a LAYER ON THE PAGE ITSELF (`document.body`, layer 600 — above the windows shell, the modal,
+    the Leave War's sheets and the passing note), a veil with the card on it — in the middle of the screen on a phone, a
+    small panel under its box on a desktop (above it where there is no room beneath, and always on the screen). A tap on a
+    date picks and it goes; a tap on the veil closes it and changes nothing (on the click, not the press); Escape closes
+    it FIRST and the window behind only on a second press; the keyboard goes onto it, stays in it, and returns to the box.
+    Nothing pressed or typed in it reaches the form behind. **A surface that eats presses "outside itself" at the
+    document must let `.dcal-layer` through** — the Leave War's touch shield does (`leavewar/ui/Sheet.tsx`; pin
+    `leavewar/ui/datebox-sheet.test.tsx`).
+  - **Inside the form — the dates are what the form is for** (`DateCal` with `mode="run"`): two taps make the run (one
+    tap is a run of one day; a tap on a new day starts a finished run over; a tap before a one-day run starts over
+    there), the first and last day on full discs with a soft band between, and the run said in words beneath.
+  - **Where it is, since step one:** over the form — "Every <weekday>" From and Until; a new person's Post in (Add a
+    person, Restore, Give access); Admin → Data's "Older than" and "A specific date"; the upchit's date; the Leave War's
+    five posting dates (PO from and PI from on the one-day sheet, the Post out and Post in sheets, the dragged-block
+    panel's PO from). Inside the form — Admin → Data's "A date range" (two date boxes before). **Step two (not built):**
+    the places that draw one of the app's three small calendars — the Leave War's range calendar and the holiday form
+    with it, the calendar in an input's own window, "Jump to a date". **Not this step, and waiting on his choice (D798):**
+    the Tracker's three date boxes. `ui/nodatebox.test.ts` fails the day another form reaches for the phone's date box.
+  - Pins: `ui/datecal.test.tsx`, `ui/datebox.test.tsx`, `ui/adminclear.test.tsx`; in a real browser `e2e/datecal.spec.ts`
+    (on top of each surface at a phone and a desktop, the lists really scrolled, a sideways phone) and
+    `e2e/leavewar.spec.ts` (over the Leave War's sheets).
 - **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
   <weekday>" and is lit while that window is up.
 - **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days

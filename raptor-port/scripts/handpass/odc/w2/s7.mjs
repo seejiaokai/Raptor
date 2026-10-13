@@ -1,0 +1,60 @@
+// W2 scenario 7 — Edit history, "A specific date" = today. VERSION 1
+// usage: node s7.mjs desktop|phone
+import { openWorld, tools, adminCategory } from './lib.mjs'
+const WHICH = process.argv[2] || 'desktop'
+console.log(`s7 VERSION 1 — ${WHICH}`)
+const w = await openWorld(WHICH)
+const { page, TOUCH } = w
+const t = tools(w, `${WHICH}-s7`)
+const today = t.addDays(0)
+const toast = () => page.evaluate(() => [...document.querySelectorAll('body *')].filter(e => { const cs = getComputedStyle(e); if (cs.position !== 'fixed') return false; const r = e.getBoundingClientRect(); return r.width > 0 && r.top > innerHeight * 0.6 && (e.innerText || '').trim() && e.children.length < 4 }).map(e => e.innerText.trim().replace(/\s+/g, ' ')).join(' | '))
+const btn = async sel => page.locator(sel).first().evaluate(e => ({ text: e.innerText.replace(/\s+/g, ' ').trim(), disabled: e.disabled }))
+
+await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(1500)
+// find a visible remark cell on a flying line
+const cells = await page.locator('.rmkcell span.txed').all()
+let cell = null
+for (const c of cells) { if (await c.isVisible()) { cell = c; break } }
+console.log(`remark cells ${cells.length}, a visible one found: ${!!cell}`)
+if (!cell) { await t.shot('s7-no-cell'); t.rec('7', WHICH, 'NOT WALKED', 'could not find a visible remark cell on a flying line to type in', ''); console.log(JSON.stringify(t.results)); await w.browser.close(); process.exit(0) }
+await cell.scrollIntoViewIfNeeded()
+const before = await cell.innerText()
+if (TOUCH) await cell.tap(); else await cell.click()
+await page.waitForTimeout(300)
+await page.keyboard.press('End'); await page.keyboard.type(' odc7'); await page.keyboard.press('Tab'); await page.waitForTimeout(600)
+const after = await cell.innerText().catch(() => '?')
+console.log(`S7 remark before "${before.replace(/\s+/g, ' ')}" after "${after.replace(/\s+/g, ' ')}"`)
+await t.shot('s7-remark-typed')
+await adminCategory(page, '^Data')
+await page.waitForSelector('#admLogMode')
+await page.selectOption('#admLogMode', { label: 'A specific date' }); await page.waitForTimeout(350)
+await page.locator('#admLogDate').scrollIntoViewIfNeeded()
+const lab = await page.evaluate(() => { const l = document.querySelector('label[for="admLogDate"]'); return l ? l.textContent.trim() : null })
+console.log(`S7 Edit history specific date label "${lab}"; box reads "${(await t.text('#admLogDate')).replace(/\s+/g, ' ')}"; button ${JSON.stringify(await btn('#admLog'))}`)
+await t.press('#admLogDate')
+const c = await t.cardOnTop('Edit history date')
+await t.shot('s7-calendar')
+// today = the 13th: its button
+await t.pick(today)
+await page.locator('#admLogDate').scrollIntoViewIfNeeded()
+const v = await t.val('#admLogDate'), tx = await t.text('#admLogDate')
+console.log(`S7 box now "${tx.replace(/\s+/g, ' ')}" (${v}); button ${JSON.stringify(await btn('#admLog'))}`)
+await t.shot('s7-date-picked')
+await page.locator('#admLog').scrollIntoViewIfNeeded()
+const log0 = (await page.locator('#admData').innerText()).split('\n').map(s => s.trim()).filter(Boolean)
+await t.press('#admLog')
+const tst1 = await toast()
+const b1 = await btn('#admLog')
+const log1 = (await page.locator('#admData').innerText()).split('\n').map(s => s.trim()).filter(Boolean)
+console.log(`S7 FIRST press: toast "${tst1}"; button "${b1.text}"; new lines ${JSON.stringify(log1.filter(l => !log0.includes(l)))}`)
+await t.shot('s7-first-press')
+await t.press('#admLog')
+const tst2 = await toast()
+const b2 = await btn('#admLog')
+const log2 = (await page.locator('#admData').innerText()).split('\n').map(s => s.trim()).filter(Boolean)
+console.log(`S7 SECOND press: toast "${tst2}"; button "${b2.text}"; new lines vs first ${JSON.stringify(log2.filter(l => !log1.includes(l)))}`)
+await t.shot('s7-second-press')
+t.rec('7', WHICH, 'RECORD', `remark typed (${before.replace(/\s+/g, ' ')} -> ${after.replace(/\s+/g, ' ')}); Edit history, A specific date: label "${lab}", picked ${v}; first press: toast "${tst1}", button "${b1.text}"; second press: toast "${tst2}", button "${b2.text}"; card wholly=${c.wholly} onTop=${c.onTop}`, `${WHICH}-s7-first-press.png / s7-second-press.png`)
+console.log('RESULTS', JSON.stringify(t.results, null, 1))
+console.log('errors', JSON.stringify(w.errors))
+await w.browser.close()

@@ -159,7 +159,13 @@ const FILES = [
      archive first (the Inputs pages' eight and the calendar job's two). What is left is 153 open items - nineteen
      more than when 2150 was set - and their priority list; a helper's scan found no other item whose own text says it
      is finished without something still open in it. An open item is never trimmed to fit (D141, D29). */
-  ['OUTSTANDING.md',                     1, 2400],
+  /* 2400 -> 2460, 13 Oct 26 (`main` merged into the Calendar branch after the skills review went live): 2,403 lines -
+     `main` alone stood at 2,387 with 165 open items, twelve more than when 2400 was set; both of the day's other chats
+     had sent their finished items to the archive first (the tidy after the OIL job, the skills review's close-out).
+     This branch adds two open items - [ONE-DATE-CALENDAR], and what was put to him under [CAL-PHONE-SWIPE-FIT] -
+     neither finished. The file was not scanned again for finished items here; an open item is never trimmed to fit
+     (D141, D29). Set about 60 lines above what the file holds, as the first of these notes says. */
+  ['OUTSTANDING.md',                     1, 2460],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
@@ -212,7 +218,10 @@ const RULING_BYTES = [
   /* scheduler 103000 -> 106000 (12 Oct 26): 103,817 bytes with D767-D773 - his answers on the cancelled look, the
      bell's wording and the Inputs export, all live (D772 alone is replaced, and goes to the archive by its mark). His
      question [SCHEDULER-RULINGS-SIZE] is still WITH HIM and still due; this is room until he answers, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 106000],
+  /* scheduler 106000 -> 109000 (13 Oct 26): 106,294 bytes with D795-D797 - his answers on the Calendar window on a phone
+     and the one date calendar, all live (D795 is narrowed by D796, not replaced). His question [SCHEDULER-RULINGS-SIZE]
+     is still WITH HIM and still due - put to him again the same day; this is room until he answers, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 109000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   ['.claude/rules/decisions/oil.md',     2, 14000],

@@ -38,6 +38,7 @@ import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
 import { Sheet } from './Sheet'
+import { DateBox } from '../../ui/DateBox'
 import { useCloseOnCellClick } from './gridclick'
 import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
@@ -269,7 +270,8 @@ export function SelectSheet({
         <>
           <div className="bidsheet-row postout">
             <span className="lab">PO from</span>
-            <input type="date" data-testid="sel-po-date" value={poDate} onChange={e => { setDelArmed(false); setPoDate(e.target.value) }} />
+            {/* the app's own date box, as the one-day sheet's "PO from" (owner D796, D797) */}
+            <DateBox className="dateinput" testid="sel-po-date" label={`Post ${people(sel.people[0])} out from`} value={poDate} onChange={v => { setDelArmed(false); setPoDate(v) }} />
           </div>
           {/* the four chips and the one line, as on the bid sheet (D229, D294, D298, D300) */}
           <OutcomeChips value={poOutcome} testid="sel-po" onChange={o => { setPoOutcome(o); setDelArmed(false) }} />

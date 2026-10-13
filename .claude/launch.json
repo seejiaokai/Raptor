@@ -533,6 +533,23 @@
         "--strictPort"
       ],
       "port": 4241
+    },
+    {
+      "name": "odc-walk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-odc1",
+        "--port",
+        "4187",
+        "--strictPort"
+      ],
+      "port": 4187
     }
   ]
 }

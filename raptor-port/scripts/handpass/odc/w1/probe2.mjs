@@ -1,0 +1,18 @@
+import { start, openCalendarWindow, press, shot, text, rect, vis, swipeOn } from './lib.mjs'
+console.log('probe2 VERSION 1')
+const L = await start(390, 844)
+const { page } = L
+await openCalendarWindow(L)
+const face = iso => page.evaluate(i => { const b = document.querySelector(`[data-testid="days-step-${i}"]`); return b ? { html: b.innerHTML.replace(/\s+/g, ' '), cls: b.className, aria: b.getAttribute('aria-label') || '', title: b.title || '', txt: b.innerText } : null }, iso)
+console.log('win', JSON.stringify(await rect(L, '[data-testid="win-days"]')))
+for (const iso of ['2026-10-21', '2026-10-22']) console.log(iso, JSON.stringify(await face(iso)))
+await page.locator('[data-testid="days-step-2026-10-22"]').tap(); await page.waitForTimeout(400)
+console.log('after tap 22', JSON.stringify(await face('2026-10-22')))
+console.log('win', JSON.stringify(await rect(L, '[data-testid="win-days"]')))
+await swipeOn(L, '[data-testid="days-grid"]', -140, 0, 0.5, 0.3)
+console.log('win after swipe', JSON.stringify(await rect(L, '[data-testid="win-days"]')), await text(L, '[data-testid="days-month"]'))
+await swipeOn(L, '[data-testid="days-grid"]', 140, 0, 0.5, 0.3)
+console.log('win after back', JSON.stringify(await rect(L, '[data-testid="win-days"]')))
+await page.locator('[data-testid="days-step-2026-10-21"]').tap(); await page.waitForTimeout(400)
+console.log('after tap 21', JSON.stringify(await face('2026-10-21')))
+await L.browser.close()

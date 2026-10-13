@@ -71,6 +71,12 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 - **Leaving a control.** A Tab inside a date box steps to its next part: leave it with Enter (where the app commits on
   Enter) or a press elsewhere. End and Home stop at the end of the wrapped LINE on a phone: use the document-level key
   (Control+End). When a "left the box" step fails, record `document.activeElement` before blaming the app.
+- **A scripted finger RESTS before it lifts** (about 90ms after its last move, as a finger does). A swipe sent as a
+  touch-start, a burst of moves and a touch-end with no pause lifts at full speed; the test browser then believes a
+  fling is under way and SWALLOWS THE NEXT TAP — seconds later, on another page — which reads exactly like a dead
+  button (13 Oct 26: a tap on a date box "opened nothing"; the Inputs calendar built before that job did the same
+  under the same script). And a swipe that must BEGIN on a control starts at that control's centre, not half the
+  swipe's length to one side of it. Worked example: `swipe()` in `scripts/handpass/odc-look.mjs`.
 - **Navigate by reading the screen's own heading** until it says the wanted month, day or tab — never by a fixed
   number of steps — and write what was reached into the run's log ("calendar on: July 2026").
 - **Every sentence a script prints is built from what it just read**, or is a plain description of the action. A typed

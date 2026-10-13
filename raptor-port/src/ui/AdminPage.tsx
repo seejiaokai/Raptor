@@ -33,6 +33,9 @@ import { secDefault, moveSecDefault, secDefaultSave, secDefaultReset, waveDefaul
 import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
 import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
+import { DateBox } from './DateBox'
+import { DateCal } from './DateCal'
+import { sayDateY } from './daysfmt'
 
 /* The rail is data-driven so a new settings category is one row here plus its
    panel below — nothing else in the layout moves. */
@@ -53,7 +56,8 @@ const CATS = [
    the count the second tap clears. A zero count never arms: the toast says
    so instead of offering a no-op confirm (a silent no-op reads as a broken
    button — the 12 Aug 26 audit rule). State is chrome, like `drilled`. */
-function ClearControl(props: {
+/* exported for its own test (ui/adminclear.test.tsx) — it is drawn only by this page */
+export function ClearControl(props: {
   idp: string; act: string; note: string; zero: string; unit: [string, string]
   run: (mode: ClearMode, a: string, b: string, dry?: boolean) => number
 }) {
@@ -74,22 +78,35 @@ function ClearControl(props: {
     setArmed(-1)
     HOOKS.toast(n ? `Cleared ${n} ${n === 1 ? props.unit[0] : props.unit[1]}` : props.zero)
   }
+  /* THE APP'S OWN DATE BOX for the one date of "older than" and "a specific date"; for "a date range", ONE calendar
+     drawn in the form itself — two taps make the run, and it is said in words beneath (owner D796, D797; before, two of
+     the phone's own date boxes). A run is always whole: one tap is a run of one day. A date picked in a one-date mode
+     drops a range's old end, so back on "a date range" it is a run of THAT day — never a run to an end chosen earlier,
+     in another month, on a form that clears for good (the read of the finished code, 13 Oct 26 — F6). */
   const date = (lbl: string, v: string, set: (x: string) => void, id: string) => (
-    <div className="mfield"><label>{lbl}</label>
-      <input type="date" id={id} value={v} onChange={e => { set(e.target.value); setArmed(-1) }} /></div>
+    <div className="mfield"><label htmlFor={id}>{lbl}</label>
+      <DateBox id={id} label={lbl} value={v} onChange={x => { set(x); setB(''); setArmed(-1) }} /></div>
   )
   return (<div className="adm-clear">
     <div className="mfield"><label>Period</label>
       <select id={props.idp + 'Mode'} value={mode} aria-label="Which period to clear"
-        onChange={e => { setMode(e.target.value as ClearMode); setArmed(-1) }}>
+        onChange={e => {
+          const m = e.target.value as ClearMode
+          setMode(m); setArmed(-1)
+          /* the calendar shows the one date already chosen as a run of one day — so it IS one, not half of one */
+          if (m === 'range' && a && (!b || b < a)) setB(a)
+        }}>
         <option value="before">Anything older than a date</option>
         <option value="on">A specific date</option>
         <option value="range">A date range</option>
       </select></div>
     {mode === 'range'
-      ? <div className="adm-2col">
-          {date('From', a, setA, props.idp + 'Date')}
-          {date('To', b, setB, props.idp + 'Date2')}
+      ? <div className="mfield"><label>Dates</label>
+          <div className="dcal-inline" id={props.idp + 'Run'} data-from={a} data-to={b}>
+            <DateCal mode="run" tid={props.idp + 'Run'} from={a} to={b}
+              onRun={(f, t) => { setA(f); setB(t); setArmed(-1) }}
+              foot={!a ? 'Tap the first day, then the last.' : a === b || !b ? sayDateY(a) : `${sayDateY(a)} to ${sayDateY(b)}`} />
+          </div>
         </div>
       : date(mode === 'before' ? 'Older than' : 'Date', a, setA, props.idp + 'Date')}
     <button className={'abtn' + (armed >= 0 ? ' danger' : '')} id={props.idp} style={{ width: '100%' }}
@@ -254,7 +271,8 @@ export function AdminPage() {
               {/* Clear old data (owner, 25 Aug 26 — "clear a set date of history
                   data. Wipe it clean so that the app stays snappy", widened the
                   same day to the full period grammar). The ids the pins hold:
-                  #admWipeMode/#admWipeDate/#admWipeDate2/#admWipe. */}
+                  #admWipeMode/#admWipeDate/#admWipe — and, for a date range, the one
+                  calendar #admWipeRun (two date boxes until [ONE-DATE-CALENDAR], 13 Oct 26). */}
               <h4 className="adm-sub">Old clutter</h4>
               <ClearControl idp="admWipe" act="Clear old clutter…"
                 zero="No old clutter in that period" unit={['item', 'items']}

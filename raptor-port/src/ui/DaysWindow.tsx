@@ -28,7 +28,7 @@
    side by side on a desktop, two tabs on a phone"). The holiday form is a second window too, and ONE side window is up at a time: opening the holiday
    form takes the place of "Every <weekday>", and the other way round — two forms stacked in one corner would hide
    each other. */
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 /* ON SCREEN IT IS CALLED "CALENDAR" (owner, D675, 8 Oct 26 — "The terms days seems abit weird … Change it to Calendar
    instead of days"): the window's title and its line in the settings that open it. "Days" stays the name in the code
    and the working records — nothing he sees. */
@@ -47,6 +47,7 @@ import { type HolidayLine } from '../leavewar/sync'
 import { EveryWeekday } from './EveryWeekday'
 import { HolidayForm, HolidaysPanel } from './HolidaysPanel'
 import { MONTHS, SAY, WD, WD_LONG, firstWeekdayFrom, isoToday, sayDate } from './daysfmt'
+import { initSideSwipe, slideIn } from './sideswipe'
 
 const KEYS: Array<{ k: 'd' | 'n' | 'nf'; cls: FlyCls; text: string }> = [
   { k: 'd', cls: 'day', text: 'D' }, { k: 'n', cls: 'night', text: 'N' }, { k: 'nf', cls: 'nf', text: 'NF' },
@@ -143,6 +144,36 @@ function DaysBody({ at }: { at: string }) {
      such day by default"; the fourth mock-up: November on screen, "Thu 5 Nov"). */
   const everyFrom = (wd: number) => firstWeekdayFrom(wd, dates[0] > today ? dates[0] : today)
 
+  /* A SIDEWAYS FINGER TURNS THE PAGE (owner D786, D795 — ui/sideswipe.ts): on the month, the month; on the Holidays
+     list, the year; left = the next, right = the last. ONE listener, on the element that holds the two parts — on a
+     phone it reaches the window's foot (the stylesheet's), so the empty room under a short month or list is part of it.
+     Where both parts are in sight the part under the finger decides, and the gap between them is neither. The arrows
+     and "Today" stay: the swipe is a second way, not a replacement. The page that arrives slides in from the side it
+     was turned from — by a swipe only; an arrow pressed again and again is not made to wait for a slide. */
+  const parts = useRef<HTMLDivElement>(null)
+  const slide = useRef<{ part: 'month' | 'holidays'; dir: number } | null>(null)
+  const live = useRef({ tabbed, tab })
+  live.current = { tabbed, tab }
+  useEffect(() => {
+    const el = parts.current
+    if (!el) return
+    return initSideSwipe(el, (dir, from) => {
+      const inHol = !!from && !!from.closest('[data-testid="days-part-holidays"]')
+      const inMonth = !!from && !!from.closest('[data-testid="days-part-month"]')
+      const part = inHol ? 'holidays' : inMonth ? 'month' : live.current.tabbed ? live.current.tab : null
+      if (!part) return
+      slide.current = { part, dir }
+      if (part === 'month') step(dir); else setHolYear(y => y + dir)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- wired once; it reads the latest through `live`
+  }, [])
+  useLayoutEffect(() => {
+    const s = slide.current
+    slide.current = null
+    if (!s || !parts.current) return
+    slideIn(parts.current.querySelector(s.part === 'month' ? '[data-testid="days-grid"]' : '[data-testid="hol-list"], [data-testid="hol-empty"]'), s.dir)
+  }, [ym.y, ym.m, holYear])
+
   return (
     <>
     <FloatWin id="days" title="Calendar" sub="admins only" testid="win-days" className={'dayswin' + (tabbed ? '' : ' two')} onClose={close}>
@@ -154,7 +185,7 @@ function DaysBody({ at }: { at: string }) {
           ))}
         </div>
       )}
-      <div className="days-parts">
+      <div className="days-parts" data-testid="days-parts" ref={parts}>
       {(!tabbed || tab === 'month') && (
       <div className="days-part" data-testid="days-part-month">
       <div className="days-head">

@@ -93,7 +93,10 @@
 /* ---- THE TWO PARTS: the month and the year's holidays — side by side from 1510px (`.two`), two tabs under it. 1094px:
    a form window (380px, at the left of the screen) then clears it on every screen that gets the two parts ---- */
 .floatwin.dayswin.two{width:min(1094px,calc(100vw - 32px))}
-.dayswin .days-parts{display:flex;gap:14px;align-items:flex-start;min-height:0}
+.dayswin .days-parts{display:flex;gap:14px;align-items:flex-start;min-height:0;
+  /* a sideways finger on the two parts turns the month or the year (ui/sideswipe.ts — D786): the browser keeps the
+     up-and-down scroll and never takes the sideways move */
+  touch-action:pan-y}
 .dayswin .days-part{flex:1 1 0;min-width:0}
 .dayswin.two .hol{flex:0 0 300px;min-width:0}
 .dayswin:not(.two) .hol{flex:1 1 0;min-width:0}
@@ -167,6 +170,9 @@
      share the room left under the heading, each date's button growing with them — never under 36px, where a six-week
      month on a short phone scrolls instead, and never over 60px on a tall one. */
   .dayswin .win-body{display:flex;flex-direction:column}
+  /* the two parts reach the window's foot, so the empty room under a short month or a short list is part of what a
+     finger swipes (D795: "anywhere on the month or the Holidays list"); what is in them keeps its place at the top */
+  .dayswin .days-parts{flex:1 0 auto}
   /* 1 0: it grows to the foot but never shrinks under its dates (its clipped corners would hide the last week) */
   .dayswin .days-grid{flex:1 0 auto;grid-template-rows:auto;grid-auto-rows:minmax(min-content,1fr)}
   .dayswin .days-hint{margin:6px 0}
