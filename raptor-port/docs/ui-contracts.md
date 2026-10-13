@@ -4503,6 +4503,7 @@ removed, and help still wanted may sit under one short "How it works" fold — i
 the words half of `OUTSTANDING.md` `[UI-SLEEK-PASS]`.
 The rules such a going-over is held to — taken from three outside design skills and from his own rulings — are being gathered into
 ONE design guide of our own that loads by itself for interface work (owner D812): `OUTSTANDING.md` `[SKILL-FUSION-JAKUB]`.
+That guide is written FIRST, and the interface jobs after it are judged against it — the calendar's design included (owner D813).
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
