@@ -58,9 +58,25 @@ describe('the OIL question — the words of record (D837, D839)', () => {
     expect(tid('oil-yes')!.textContent).toBe('Yes: credit HO')
     expect(tid('oil-no')!.textContent).toBe('No OIL')
   })
-  it('the small print: "the day", "published work the same day", and what is raised is named — the credit', async () => {
-    await mount(sheet())
-    expect($('[data-testid="oilconf"] .oilconf-note')!.textContent).toBe('The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.')
+  /* NO SMALL PRINT, NO "CHOOSE AN OPTION ABOVE" (owner D846, 14 Oct 26 — he circled both on the built question: "These are
+     the examples of things u can delete and they are self explanatory"). The sentence under the answers told how the app
+     works (where the credit lands, how hours are counted), not what to do; the hint told him a button was waiting when
+     the two answers stood right above it. Both are gone from every form of the question — one day, several days, a
+     change that waits — and the waiting button is still dimmed and cannot be pressed. (D839's reworded small print —
+     "can raise the credit" — went with it.) */
+  it('D846 — no small print under the answers and no hint in the foot: one day, several days, a change that waits', async () => {
+    const gone = () => {
+      const all = tid('oilconf')!.textContent || ''
+      expect($('[data-testid="oilconf"] .oilconf-note'), 'no small print').toBeNull()
+      expect($('[data-testid="oilconf"] .upconf-need'), 'no hint in the foot').toBeNull()
+      expect(all).not.toMatch(/The credit lands|Hours count|Choose an option/)
+      expect((tid('oilconf-save') as HTMLButtonElement).disabled, 'nothing picked: the button still waits').toBe(true)
+    }
+    await mount(sheet()); gone()
+    await act(async () => { root!.unmount() }); host!.remove()
+    await mount(sheet({ plan: [{ iso: '2026-07-18', amt: 1 }, { iso: '2026-07-19', amt: 1 }] })); gone()
+    await act(async () => { root!.unmount() }); host!.remove()
+    await mount(sheet({ lead: 'Swapping Tally and Ranger', noLabel: 'Don’t swap', yesLabel: 'Swap' })); gone()
   })
   it('the several-days form keeps the words it had (not on the page he approved — D808)', async () => {
     await mount(sheet({ plan: [{ iso: '2026-07-18', amt: 1 }, { iso: '2026-07-19', amt: 1 }] }))

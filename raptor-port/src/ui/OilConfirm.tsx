@@ -171,10 +171,14 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
               {seg('no', 'No OIL', 'oil-no')}
             </div>
           </>}
-          <div className="oilconf-note">The credit lands on the Leave War as {amt === 1 ? 'an FO' : 'an HO'} cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.</div>
+          {/* (NO SMALL PRINT HERE, AND NO "CHOOSE AN OPTION ABOVE" IN THE FOOT — owner D846, 14 Oct 26: he circled both on the
+              built question, "these are the examples of things u can delete and they are self explanatory". The sentence said
+              where the credit lands and that published work the same day can raise it — how the app works, not what to do;
+              the Leave War shows the credit as it ends up. The hint said a button was waiting with the answers right above
+              it. The design guide's §1 carries the rule; the upchit question and the day's one list keep their hint until he
+              has seen them.) */}
         </div>
         <div className="airpop-foot upconf-foot">
-          {!ready && <span className="upconf-need">Choose an option above</span>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn ghost" data-testid="oilconf-cancel" onClick={onCancel}>{noLabel || 'Back'}</button>
           <button className="abtn primary" data-testid="oilconf-save" disabled={!ready} onClick={save}>{yesLabel || 'Save'}</button>

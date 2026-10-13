@@ -211,7 +211,6 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .airpop.docconf-pop{z-index:472}
 .docconf-what{font-size:12.5px;color:var(--ink-2);margin:2px 0 0}
 .oilconf-count{font-size:11.5px;color:var(--ink-2);margin:8px 0 2px}
-.oilconf-note{font-size:11px;color:var(--ink-3);margin:10px 0 0}
 .rangecal.oilcal{margin:10px auto 0}
 /* the OIL revise chip on an inputs-table row (owner, 29 Aug 26): a recorded
    weekend/PH OIL decision is changed here, in place — the chip only draws

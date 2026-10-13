@@ -30,7 +30,7 @@ const sheetFacts = () => p.evaluate(accent => {
   const main = s.querySelector('[data-testid="oilconf-save"]'), ms = getComputedStyle(main)
   return {
     title: b.textContent, ask: ask ? ask.textContent.replace(/\s+/g, ' ').trim() : null, caps: ask ? getComputedStyle(ask).textTransform : null,
-    note: s.querySelector('.oilconf-note').textContent, answers: ans.map(a => a.textContent), buttons: [s.querySelector('[data-testid="oilconf-cancel"]').textContent, main.textContent],
+    note: s.querySelector('.oilconf-note')?.textContent || '', answers: ans.map(a => a.textContent), buttons: [s.querySelector('[data-testid="oilconf-cancel"]').textContent, main.textContent],
     xGap: Math.round(hr.right - xr.right), titleToX: Math.round(xr.left - b.getBoundingClientRect().right),
     rowClass: row.className, rowBg: rs.backgroundColor, rowBorder: rs.borderBottomWidth, rowPadL: rs.paddingLeft, wornSeg: !!s.querySelector('.seg'), boxed: !!s.querySelector('.upconf-left'),
     answerLeftVsQuestion: Math.round(a0.left - q.left),
@@ -69,8 +69,8 @@ await L.pic(w, `oil-${K}-0-question-at-a-save`)
   ok(`OIL question at a new input's save [${K}]`, 'L4 — its two buttons', 'Back / Add (the form behind it says Add)', f.buttons.join(' / '), f.buttons.join('/') === 'Back/Add')
   ok(`OIL question at a new input's save [${K}]`, 'L3 — the title and the sentence, the words of record', 'OIL: <who>, Range brief · "This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?" in ordinary letters', `${f.title} · ${f.ask} · letters: ${f.caps}`,
     /^OIL: .+, Range brief$/.test(f.title) && f.ask === 'This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve HO, half a day of OIL?' && f.caps === 'none')
-  ok(`OIL question at a new input's save [${K}]`, 'the answers and the small print', 'Yes: credit HO · No OIL · "…so published work the same day can raise the credit."', `${f.answers.join(' · ')} · ${f.note}`,
-    f.answers.join('|') === 'Yes: credit HO|No OIL' && f.note === 'The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the day, so published work the same day can raise the credit.')
+  ok(`OIL question at a new input's save [${K}]`, 'the answers — and no small print, no "Choose an option above" (D846)', 'Yes: credit HO · No OIL; nothing under them; the foot holds its two buttons only', `${f.answers.join(' · ')} · small print: ${JSON.stringify(f.note)} · hint: ${JSON.stringify(await p.evaluate(() => document.querySelector('[data-testid="oilconf"] .upconf-need')?.textContent || ''))}`,
+    f.answers.join('|') === 'Yes: credit HO|No OIL' && !f.note && !(await p.evaluate(() => document.querySelector('[data-testid="oilconf"] .upconf-need, [data-testid="oilconf"] .oilconf-note'))))
   ok(`OIL question at a new input's save [${K}]`, 'L1 — the answers sit flat under the question', 'a row of their own: no patch, no line under it, no box round it, starting at the question\'s left edge', JSON.stringify({ rowClass: f.rowClass, rowBg: f.rowBg, rowBorder: f.rowBorder, wornSeg: f.wornSeg, boxed: f.boxed, left: f.answerLeftVsQuestion }),
     f.rowClass === 'oilconf-answers' && /rgba\(0, 0, 0, 0\)|transparent/.test(f.rowBg) && f.rowBorder === '0px' && !f.wornSeg && !f.boxed && Math.abs(f.answerLeftVsQuestion) <= 1)
   ok(`OIL question at a new input's save [${K}]`, 'L2 — the ✕', 'in the head\'s corner (its right edge within the head\'s own padding), not following the title', `${f.xGap}px from the head's right edge; ${f.titleToX}px after the title's last letter; the sheet is ${f.boxW} wide`, f.xGap <= 20 && f.titleToX > 30)

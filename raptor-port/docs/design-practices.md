@@ -66,6 +66,30 @@ as it stands.
 - **Every word earns its place or goes.** What the screen already shows is a candidate to go (a hint that repeats its
   own label, a count the list makes obvious). Three ends for any note, each put to him before and after: **shortened**,
   **removed**, or **moved under one short "How this works" fold** for that page — as the two calendars have (D628, D646).
+- **Text that only explains what the screen already makes plain is recommended for deletion (owner D846, 14 Oct 26 —
+  "these are the examples of things u can delete and they are self explanatory").** His two examples, both on the OIL
+  question: the small print under its answers ("The credit lands on the Leave War as an HO cell and moves the OIL
+  balance. Hours count start to finish for the day, so published work the same day can raise the credit.") and the hint
+  beside its waiting button ("Choose an option above"). **The three tests are the agent's reading of those two
+  examples, his to correct.** A text that meets any one of them is a delete candidate:
+  1. **It says what the screen beside it already says or shows** — a hint to choose an answer beside a button that
+     already waits, greyed, under the answers; a line under a heading that repeats the heading; a count the list makes
+     obvious.
+  2. **It explains how the app works, and he can act rightly without it** — where a credit lands, how hours are
+     counted, on a question whose answers already say what each one does. Whoever needs it meets it where the result
+     shows.
+  3. **It is a hint or small print that reads the same every time, on something he opens many times a day** — read
+     once, then only in the way. A label, a heading, a question's own sentence, an empty place's one line and a state
+     the screen reports are not hints.
+  **Never a delete candidate:** a warning of what a press will cost ("No warning is dropped to save words", below),
+  above all a consequence he cannot see on the screen and cannot take back; why a press was refused, and the way to
+  put an error right; an instruction for a gesture nothing on screen suggests; the word that tells two like controls
+  apart; what a colour or a mark means (the Legend); and text he opens in order to read how the app works (a "How this
+  works" fold, the Logic page). **Every look names its delete candidates (§8), and a deletion is still put to him
+  first, never made by the look:** the text, its picture with and without it, every fact (if any) that would leave the
+  screen with it, and the ruling where he ruled that wording. Where a fact that would leave matters and shows nowhere
+  else, the recommendation is to move it (the fold, or the place the result shows), not to delete it. New text that
+  would meet one of the tests is not written (the agent's reading).
 - **A passing note says one of three things:** it is happening ("Saving…"), it is done ("Saved"), or it failed and what
   to do ("Not saved — keep this page open"). What happened, then the ONE thing he must know. The day or the person is
   named once. Never "successfully", never "please", no exclamation. That is for a NEW note; one already on screen
@@ -463,6 +487,10 @@ state nobody drew.
   proposed. With its picture.
 - **Three weights:** it misleads, hides how to recover, or cannot be used by keyboard · it is inconsistent or cluttered
   · it is polish.
+- **The delete candidates, as a list of their own (D846):** every text on the surfaces looked at that meets one of
+  §1's three tests — the text, where it stands, which test, each fact (if any) that would leave the screen with it,
+  the ruling where he ruled that wording, and its picture with and without it. A look that found none says so. The
+  list goes to him as the findings do (the last point): nothing on it is deleted by the look.
 - A short **"considered and left"** list — and why.
 - **What a machine recorded reaches the report by count, not by recollection:** every gap a key-by-key or measured
   record holds is on the page by its number, or under "considered and left" with its reason; the report states both

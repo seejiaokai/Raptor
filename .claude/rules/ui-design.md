@@ -29,7 +29,11 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
 1. **His rulings win:** buttons keep their size (D487) · the Raptor look and what its colours mean stay (D765) · a
    working screen stays dense (D812) · never at a cost of speed (`raptor-port/docs/performance.md` Part 1) · a visual
    change is a picture to him first, at his iPhone's size and a desktop's (D541) · pucks never wrap.
-2. **Words:** every word earns its place or goes (D726); a note is shortened, removed where the screen says it already,
+2. **Words:** every word earns its place or goes (D726); text that only explains what the screen already makes plain — a hint
+   beside a button that already waits, small print on how the app works where the answers already say what each does, a hint
+   that reads the same on something opened many times a day — is named in every look and recommended for deletion, never
+   deleted by the look: put to him with its picture and any fact that would leave the screen with it; never a warning, a
+   refusal's reason, an error's remedy or the Legend (D846); a note is shortened, removed where the screen says it already,
    or moved under one short "How this works" fold (D808) — each put to him before and after, nothing built reworded
    unasked; what happened, then the one thing he must know; no warning dropped to save words; an error says how to put
    it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** the box is

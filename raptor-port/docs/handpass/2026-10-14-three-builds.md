@@ -367,6 +367,18 @@ step two's (`[ONE-DATE-CALENDAR]`).
    **Break tests after the read: five more wires (32 to 36 — the four fixes above with a line to cut, and the
    refusal under the day's switch said from the event's mark).**
 
+9. **His look at the picture page (14 Oct, after the check had closed) — two texts on the OIL question circled: "These
+   are the examples of things u can delete and they are self explanatory" (D846).** The small print under the answers
+   and "Choose an option above" are gone from every form of the question (`ui/OilConfirm.tsx`; the unused style rule
+   with them). Test first (`oilconfirm-look.test.tsx` — red: the small print was there): one day, several days, a
+   change that waits; the waiting button still cannot be pressed. On the rebuilt build: `e2e/oilwait.spec.ts` 12 of
+   12; `dl-oil.mjs` phone 14 and desktop 26 lines, all `works` (its line on the small print now asserts there is
+   none); picture `oil-phone-0-question-at-a-save.png`, opened — the foot is its two buttons. NOT re-run after this
+   change: the whole gate set on his PC (the change is two deleted texts in one component; GitHub's checks run the
+   whole set on the push). The design guide's §1 and §8 and its short form carry the rule, read by one fresh Opus
+   reader before he approves the wording (D70, D810); the same hint on the upchit and medical-clash questions is
+   filed as a delete candidate, not deleted (`[BATCH-14OCT-LEFTOVERS]`).
+
 ## 10. Break tests, errors seen, what was not walked
 
 **Break tests — `scripts/handpass/breaks/2026-10-14-three-builds.json`, 31 wires, each cut once
