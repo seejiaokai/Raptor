@@ -73,8 +73,8 @@ one, and neither is an instruction about the work itself.
    whole-app pass (`OUTSTANDING.md` `[UI-SLEEK-PASS]`), where the fuller one belongs (D808, D765).
 
 (The three things are his words. How each is done — at once, asked each time there is a wider point, only on his yes,
-at most four, a picture first — and that the suggesting is a duty where he wrote "u can", are the agent's reading, his
-to correct.)
+at most four, a picture first — and that the suggesting is a duty where he wrote "u can", began as the agent's reading;
+he approved the paragraph as written, D855, 14 Oct 26 — "Approve both".)
 
 ## 1. Words on screen
 
@@ -120,8 +120,8 @@ as it stands.
   would meet one of the tests is not written (the agent's reading).
 - **Feedback is designed into the screen first; a passing note is only for what the screen does not make plain (owner
   D850, 14 Oct 26 — "When there is a feedback, design it and also don’t need to have a note for very single thing. Only
-  important ones that are not intuitive or complicated.").** **Everything below is the agent's reading of those words,
-  his to correct.** When a press succeeds and the screen itself shows that it happened, that is the feedback, and no
+  important ones that are not intuitive or complicated.").** **Everything below began as the agent's reading of those
+  words; he approved it as written here (D855, 14 Oct 26 — "Approve both").** When a press succeeds and the screen itself shows that it happened, that is the feedback, and no
   note says it again:
   - a thing added to a list — a row, a card, a line — appears where it belongs, in view, wearing the app's one
     just-added mark (§4: the selection-blue box, about six seconds), as a row just added on the Scheduler Board does;
