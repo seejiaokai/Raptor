@@ -151,3 +151,138 @@ resolved statuses always carry their resolution date
 ode_modules"`), and build before any look" — and say that facts about THIS folder (a link, a stale bundle) do not carry to the next one.
 
 **Principle:** A handoff describes a machine state. A fact that belongs to the finishing chat's folder must be marked as such, and what the next chat's folder will LACK is worth more to it than what the old one holds.
+
+### Observation 564: A class name added to the one global stylesheet was already the Tracker's — the roll-call listed where the new box is DRAWN, never who already used its name
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [ONE-DATE-CALENDAR] step one, found on starting the Tracker's date boxes (D801)
+**Skill:** bug-check (the roll-call, order §6); raptor-executor (inspect before editing)
+**Type:** internal
+**Phase/Area:** The roll-call's question "where is this drawn" for a change that adds a stylesheet rule
+
+**Issue:** The app's new date box was styled by a class named `datebox` on the scheduler's stylesheet, which is one global sheet for all three apps. The Tracker already wrapped each of ITS date boxes in an element of that same class, so the new look (a border, a height, a flex row) reached every Tracker date box. The roll-call had fourteen rows — every place the new box is drawn — and all fourteen were right; three walkers and a blind read passed it. None of them looks at a place the change does not draw in. It was found only when the next job opened the Tracker's file.
+
+**Suggested improvement:** In the roll-call step, for any change that ADDS a class, an id or a `data-` name to a shared stylesheet or a shared query: one more row — "who already uses this name" — answered by a search of all three apps' sources (`grep -rn "datebox" src/`) BEFORE the name is chosen, with the result written in the table. Prefer a selector that names the element kind too (`button.datebox`).
+
+**Principle:** A roll-call of "everywhere I draw it" cannot find a collision with something that was already there. A new NAME on shared ground needs its own search — for the name, not for the feature.
+
+### Observation 565: A look script that passed everything had picked a date in one box of five — the narrow boxes were only ever seen empty
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Tracker's date boxes (D801) — the host's scripted look at a phone and a desktop
+**Skill:** bug-check (the host's look; `raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** What state a fit check is run in
+
+**Issue:** The first version of the look checked "no box's words are cut short" on all five side-panel boxes and passed at both sizes. Four of the five were EMPTY ("Pick a date" — short words). Only when the script was made to put a date in every box did two of them (108px wide on a phone, three across in their card) show "Wed 28 Oct 20…", and a third place (the failures list) the same. The check was true and worthless: it measured the shortest words each box can hold. The same run also wrote a wrong expectation ("a refused day goes back") that the app's own ruled behaviour contradicted — the look's author had not read the store's comment first.
+
+**Suggested improvement:** In `walk-scripts.md`, under the fit checks: "a fit check is run with the LONGEST content the control can hold, in EVERY instance — fill each box (the widest weekday and month: a Wednesday in a long month), then measure; an empty control proves nothing about fit". And: an expectation about what a control does after a refusal is taken from the rule's own text (the ruling's full row, the code's comment), not from what seems natural.
+
+**Principle:** A fit check proves only the content it was run with. Fill every instance with its worst case before measuring; a pass on the default state is a pass on the easiest input.
+
+### Observation 566: The break run used the look script as its detector and overwrote the committed evidence pictures with pictures of broken builds
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Tracker's date boxes (D801) — browser break tests whose detector was the host's look script
+**Skill:** bug-check (break tests, order §8.4; `raptor-port/docs/walk-scripts.md` on break-test lists)
+**Type:** internal
+**Phase/Area:** A script that both proves and records
+
+**Issue:** The look script empties its pictures folder and writes new pictures on every run — right for a look, since stale pictures must not survive. The browser break script ran that same look against six deliberately broken builds, so the folder of committed evidence pictures was replaced, six times, by pictures of broken screens; `git status` showed them deleted or changed mid-run. Nothing was lost (they were committed, and the look was run again on the true build), but a stop half-way would have left broken-build pictures sitting in the evidence folder.
+
+**Suggested improvement:** In `walk-scripts.md`: a look or walk script takes its output folder from an environment variable (`LOOK_OUT`), defaulting to the evidence folder; any script that runs it as a DETECTOR (break tests, a re-run to reproduce) passes a scratch folder. And the break script's closing step re-runs the look on the true build, or says that it must be.
+
+**Principle:** A script that records evidence must not be reused as a detector without redirecting what it writes: proof runs and record runs need different output folders.
+
+### Observation 567: The walker's brief named a control that is not there — the host's own browser test of the route was written AFTER the brief, and corrected it
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Inputs / schedule batch (D793) — one Sonnet walker, a brief written by the host. (Numbered past 564–566, which are on the open branch claude/tracker-date-boxes and not in this copy of the log.)
+**Skill:** bug-check (the walk — `raptor-port/docs/walk-scripts.md`, writing a walker's brief)
+**Type:** internal
+**Phase/Area:** The order of the host's own run and the walker's brief
+
+**Issue:** The brief told the walker to take an input off the programme with a button it named and to press "Accept" on its card. Written from the code: the button exists in the source. On the real board the take-off is a different control (the ✕ at the end of the row), and the card with "Accept" is inside a panel that opens folded — so the first control named was not on screen at all. This was found only because the host then wrote a browser test of the same route for the gates, which failed three times on exactly those steps before anything of the app was wrong. Had the walker gone first, its first hour would have been spent finding the route.
+
+**Suggested improvement:** In `walk-scripts.md`, under writing a walker's brief: "the route every scenario starts from is DRIVEN by the host first — a browser test or a look script that passes — and the brief names that file as the recipe. Control names in a brief come from that passing run, never from reading the source: the source says what exists, not what is on screen, visible, in which panel."
+
+**Principle:** A brief written from the code describes the code. The route a helper must walk is proved by walking it once before the brief is written.
+
+### Observation 568: A new path that skips the usual ending of a write dropped a duty that ending performed — found by a blind reader, not by any test of the path
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** The Inputs / schedule batch (D793) — the put-back made WITH its OIL answer is its own command and so does not call the schedule's usual ending
+**Skill:** raptor-executor (inspect before editing); bug-check (the reads)
+**Type:** internal
+**Phase/Area:** Giving one branch of an existing handler a different ending
+
+**Issue:** Every "Accept" ended in the schedule's standard ending (the epilogue that validates, saves and reconciles the "goes out" marks). The new answered path is saved as one input batch, so the builder skipped that ending for it — "a second command would be a second Undo step" — and tested the Undo. The ending also reconciled the marks on an issued row; with it skipped, a row put back exactly as issued kept a "goes out" mark. Every test of the new path published the day AFTER the take-off, so no test had an issued row to put back. A fresh reader found it by listing what the skipped call does.
+
+**Suggested improvement:** In the executor's guide, under minimal changes: "when a new branch SKIPS a call the other branches make (an epilogue, an after-step, a notify), write down — in the comment beside the skip — each thing that call does, and for each either show where the new branch gets it or say why it does not need it." And in the bug-check brief for readers, keep the line that asked for it: "what does the changed path no longer run?"
+
+**Principle:** Skipping a shared ending is a change to everything that ending does, not only to the one effect you meant to avoid. List its effects before skipping it.
+
+### Observation 569: A rulings move was refused twice by its own script for reasons that were one line each — the refusal named the fix, and both were the builder's set-up slips
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** D802 — the Inputs pages' rulings moved to a file of their own with `backlog-archive.mjs --rulings --move-rows`
+**Skill:** record-decisions / doc-structure (a NEW area file); session work with the mover script
+**Type:** internal
+**Phase/Area:** Setting up a new area file before the mover runs
+
+**Issue:** A new area needs four things before a row can move into it: the file with its short table, a row in the map, a byte tripwire, and (the script makes it) the full-text file. The builder's set-up left the map row's last cell empty — the map reader then did not see the row and the move was put back whole with "not in the map"; and a placeholder string was written into the checker's tripwire list by a patch that did not match, which removed the scheduler's own tripwire. Both were caught by the script's own all-or-nothing check — nothing was lost — but each cost a round, and the dry run did not show the first (it reports the map as rewritten).
+
+**Suggested improvement:** In `DECISIONS.md`'s steps (or `record-decisions.md` §Keeping the list whole): a four-line recipe for a NEW area — "(1) the file: `paths:`, title, preamble, the short table's header; (2) its map row with at least one D-number in the last cell (the script rewrites it); (3) its row in `RULING_BYTES`, added beside the others — never a placeholder; (4) `--dry-run`, then the move, then a row-by-row compare against the base". And have `--dry-run` run the same inventory the real run does.
+
+**Principle:** An all-or-nothing script turns set-up slips into refusals, which is right — but a rehearsal that skips the real run's last check rehearses the wrong thing.
+
+### Observation 570: The quick type check the builder ran while iterating was not the build's own — a move of code passed it and then failed the first full gate run
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** `[LW-ROWS-SPLIT]` — the Leave War's row drawing moved to a file of its own (branch `claude/lw-rows-split`; this note is written on `claude/inputs-rulings-file`, the night's documents-only branch, because the log there holds the night's other notes — numbered past 564–566 on the Tracker branch and 567–569 here)
+**Skill:** raptor-executor (Verification without self-approval); the project guide's Build & verify
+**Type:** internal
+**Phase/Area:** Checking a change before the full gate run
+
+**Issue:** After the move the builder ran a bare type check (`npx tsc --noEmit -p .`), which passed. The build's own type check is stricter (it refuses a type name imported as a value) and failed on three names — found only by the first full gate run, under the PC's lock, about fifteen minutes in. Both blind readers then reported the same three as their top finding. A whole gate run and two readers' attention went on something one command would have shown in a minute.
+
+**Suggested improvement:** In the project guide's Token discipline or Build & verify, one line: "while iterating, the type check is the BUILD's own (`npm run build`, or its type-check half) — a bare `tsc --noEmit -p .` uses a different set-up and passes what the build refuses." And in the executor's guide: run the build once before taking the lock for the full set.
+
+**Principle:** A faster stand-in for a gate is only worth running if it refuses what the gate refuses. Check which configuration the real gate uses before trusting a shortcut to it.
+
+### Observation 571: Putting a file back with `git checkout --` after a hand-run break test also threw away two edits not yet committed
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** `[LW-ROWS-SPLIT]` — a break test run by hand because its output was too large for the break runner
+**Skill:** bug-check order (the break tests); `raptor-port/docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** Running a break test by hand
+
+**Issue:** The break runner restores the file it breaks from a copy it took. Run by hand, the builder restored the file with `git checkout -- <file>` — which restores the last COMMIT, not the file as it stood. Two edits made after the last commit (a reader's finding fixed, a comment corrected) went with the break and had to be made again; nothing warned.
+
+**Suggested improvement:** In `walk-scripts.md`, beside the break-test section: "a break run by hand is run on a COMMITTED tree (commit first, even a work-in-progress commit), or the file is copied aside and copied back — never restored with `git checkout --`, which also discards whatever was not yet committed."
+
+**Principle:** "Put it back" by way of version control puts back the last commit, not the last state. Before a deliberate break, make the state you want back a state that exists somewhere.
+
+### Observation 572: The break runner reported an ERROR, not a caught break, when the failing test's output was a very large recorded-markup difference
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** `[LW-ROWS-SPLIT]` — break 1 changed a class on a row; the test that pins every row's whole markup (about 375,000 characters of record) failed as it should
+**Skill:** bug-check order (the break tests); `raptor-port/scripts/handpass/breaks.mjs`
+**Type:** internal
+**Phase/Area:** Break tests against a test that compares a large recorded file
+
+**Issue:** The test failed correctly, but its failure message is the whole difference between two very large records, and the runner could not hold the output: it reported an error for that break. An error reads as "the list is wrong", not "caught" — the builder had to run the break by hand to learn it was caught, and say so in the evidence sheet. (Running it by hand is also what led to Observation 571.)
+
+**Suggested improvement:** Either the runner judges a break by the test run's exit code and keeps only the first lines of its output (a larger buffer, or output sent to a file), or `walk-scripts.md` says: "a break aimed at a test that compares a large record is run with the output cut short — the runner cannot hold it." And a test that pins a large record should fail with a short message naming the first place the two differ, not the whole of both.
+
+**Principle:** A check's verdict should come from the result, not from being able to hold everything the result printed. A tool that fails on large output turns a pass into an unknown.

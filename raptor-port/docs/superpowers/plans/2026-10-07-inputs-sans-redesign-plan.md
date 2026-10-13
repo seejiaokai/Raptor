@@ -5,7 +5,7 @@ each blind to the other (D353, D590). **Nothing in it is built.** *Both have rea
 and what changed; the sections below are the plan as it now stands.* The job: `OUTSTANDING.md` `[SANS-COMMITMENT-CALENDAR]`,
 on the branch `claude/inputs-sans-calendar` (Codex's build of 5 Oct 26 with `main` merged in). The design he approved,
 picture by picture, and every answer he gave: `../specs/2026-10-07-inputs-sans-redesign.md` — read it first. The
-rulings, full rows: `grep -h '^| D6[1-4][0-9] |' .claude/decisions-full/scheduler.md` (D617–D641; D623–D625 are in
+rulings, full rows: `grep -h '^| D6[1-4][0-9] |' .claude/decisions-full/*.md` (D617–D641; D623–D625 are in
 `how-we-work.md`), and the earlier ones that still stand: D569–D572, D577, D581 (same grep, `D5[67][0-9]`, `D58[01]`).
 **Added since, each read alone by both readers before it is built:** §3.12 (the Event sheet — D643–D645) and §3.13
 (an input filed for a group — D654–D656).
@@ -863,7 +863,7 @@ now — by a member (D654); a member files for others only duties and commitment
 filing is ONE shared input, shown and edited as one thing; the man himself, whoever filed it and an admin may change or
 delete it (D655); the picker is a hybrid — one person from an A-to-Z list by default, a "Several people" switch showing
 the schedule's pucks in three groups, Pilots, WSOs and SANS (D656). The full rows: `grep -h '^| D65[4-7] |'
-.claude/decisions-full/scheduler.md`; the design note's section "An input filed for a group". **It changes who may
+.claude/decisions-full/*.md`; the design note's section "An input filed for a group". **It changes who may
 file for whom, so it goes to both readers alone, one round each, before any of it is built.** *Both have read it
 (7 Oct 26): both CHANGES REQUIRED, nine distinct findings, each checked against the code and written in below — §10's
 third table. Two of them are choices of his and are with him (§8).*

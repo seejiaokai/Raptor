@@ -7091,8 +7091,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     five posting dates (PO from and PI from on the one-day sheet, the Post out and Post in sheets, the dragged-block
     panel's PO from). Inside the form — Admin → Data's "A date range" (two date boxes before). **Step two (not built):**
     the places that draw one of the app's three small calendars — the Leave War's range calendar and the holiday form
-    with it, the calendar in an input's own window, "Jump to a date". **Not this step, and waiting on his choice (D798):**
-    the Tracker's three date boxes. `ui/nodatebox.test.ts` fails the day another form reaches for the phone's date box.
+    with it, the calendar in an input's own window, "Jump to a date". **The Tracker's date boxes (D801 — a tap picks, no tick; D798 before it)** were
+    built the same night on a branch of their own: §The Tracker tab → Marking. `ui/nodatebox.test.ts` fails the day
+    another form reaches for the phone's date box — none is left anywhere in the app.
   - Pins: `ui/datecal.test.tsx`, `ui/datebox.test.tsx`, `ui/adminclear.test.tsx`; in a real browser `e2e/datecal.spec.ts`
     (on top of each surface at a phone and a desktop, the lists really scrolled, a sideways phone) and
     `e2e/leavewar.spec.ts` (over the Leave War's sheets).
@@ -9251,10 +9252,10 @@ screen:
   student ticked (“the lull periods for 3 students”), taken back together
   without moving the picker. Restoring a mark step saves itself, closes the
   grading pop-up, and **moves the Crew picker to that student** when it has
-  moved on (an undo you cannot see is a mystery). A date box saves when it
-  is LEFT (blur, Enter; the pop-up's also on Escape), never per keystroke, so one
-  day typed is one step, and the same day retyped is none ([TRK-RETEST-NOTES] C5,
-  28 Sep 26); a number box's keystrokes within two seconds are one step. The buttons are greyed
+  moved on (an undo you cannot see is a mystery). A date box saves the moment a day
+  is PICKED on the app's calendar (D801, 13 Oct 26 — until then it was typed, and saved when the box
+  was LEFT, never per keystroke: [TRK-RETEST-NOTES] C5, 28 Sep 26), so one
+  day picked is one step, and the same day picked again is none; a number box's keystrokes within two seconds are one step. The buttons are greyed
   (`disabled`) with nothing to take back and their tooltip names the next
   step ("Undo the mark on ST-05 for STUDENT A (Ctrl+Z)"); Ctrl/⌘+Z undoes,
   Ctrl+Y and Ctrl/⌘+Shift+Z redo, bound only while the tab is up and never
@@ -9342,17 +9343,43 @@ screen:
     plus the students.
   - **Marking.** Last Flown is the latest day actually flown, worked out from
     the done flights; a correction or un-mark pulls it back; a day typed by
-    hand stands until a later flight (D123). No date box saves a half-typed
-    day: the eight (Done on, Failed on, each failures-list row, Last Flown ×2,
-    Upchit, End date A / B) save when LEFT, and a half-typed day is put back
-    ([TRK-RETEST-NOTES] C5). A day after today is refused in Done on, Failed on
+    hand stands until a later flight (D123). **The eight date boxes (Done on,
+    Failed on, each failures-list row, Last Flown ×2, Upchit, End date A / B) are
+    the app's own date box, opening the app's one calendar (D801, 13 Oct 26 —
+    `tracker/components/DateBox.jsx` wraps `ui/DateBox.tsx`; the pop-up's two use it bare):**
+    a tap on a date picks it, saves it and closes the calendar — no tick; looking (opening it,
+    turning its months) saves nothing; the box reads its day in words ("Tue 13 Oct 2026" — End
+    date A and B, three across in their card, leave the weekday out so the date is never cut
+    short, and still say it to a screen reader); every other Tracker date stays dd/mm/yy (his
+    16 Aug choice). The calendar floats over the marking pop-up and the failures list, which
+    stay open under it — a press on the calendar is not "a click outside the pop-up", and
+    Escape closes the calendar first. **A side-panel or failures-row box that holds a date
+    carries "take this date off" (✕) inside its right end, where its arrow was** — the calendar
+    has no Clear (D796), and an emptied box still means something here (no Upchit, no end date,
+    a failure with no day; Done on and Failed on have none: empty there means today, and they
+    are never empty). **On the two Last Flown boxes the ✕ is offered only for a day put in BY
+    HAND, and taking it off shows the latest flight marked done — blank only where no flight is
+    done** (the agent's reading of D123, told to him: Last Flown IS the latest day flown, so a
+    day that comes from the flights cannot be taken off). The ✕ SETTLES: for 400ms after it a
+    press on that box's row reaches nothing (in the failures list the next failure slides up
+    under the finger, and a double press took its day off too). **A double tap on a box opens
+    the calendar and picks nothing:** the tap that opens it leaves the app box's small patch
+    where it landed, over the card (on a phone the card lands under the finger). The calendar's
+    "today" is the squadron's day (D374), not the device's; no day before 1900 is offered (the
+    store refuses one). Each box says what it is to a screen reader ("Upchit date: …"), its ✕
+    says whose date it takes off, and the keyboard stays on the box after it. A refusal's line
+    goes at the next press on its box. Delete or Backspace on a date box does nothing to a
+    chart being arranged. Two days picked in one box are two undo steps (a pick is not typing —
+    the two-second fold stays for the pace and the down days, which are typed). No box can hold a half-typed day any more — a day is picked whole
+    (what [TRK-RETEST-NOTES] C5 guarded against). A day after today is refused in Done on, Failed on
     and both Last Flown boxes, with one line under the box saying why; Upchit
     and the end dates take any day (D374, 28 Sep 26). **The grading pop-up never
     turns a refused day into today** (the leftovers' walk, walker b, 28 Sep 26):
     a day after today, or a day not finished (a year still being typed, a part
     cleared), STAYS in Done on / Failed on with its line — "That day hasn’t come
     yet…" or "That day isn’t finished — type the whole day, or clear the box for
-    today." — and a grade or a + pressed on it is refused, the pop-up staying
+    today." (the second can no longer be reached from the box — the store still refuses such a
+    day) — and a grade or a + pressed on it is refused, the pop-up staying
     open, until the day is put right; an EMPTY box still means today. (Done on of
     an event already done shows the day its mark keeps instead — re-dating is
     refused.) A side-panel date box's line goes when the day it refused changes

@@ -22,7 +22,7 @@ or change anything.**
 3. `raptor-port/CLAUDE.md` — the project guide and its map (§Where things live). Most of its rules are one line;
    the full text of each is a heading of `raptor-port/docs/guide-full.md` — search it, never read it whole.
 4. Before planning, reviewing or changing anything in an AREA, that area's rulings file under `.claude/rules/decisions/`
-   (`scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md`, `people-accounts.md`, `it-flow-guide.md`) — the `paths:`
+   (`scheduler.md`, `inputs.md`, `leave-war.md`, `oil.md`, `tracker.md`, `people-accounts.md`, `it-flow-guide.md`) — the `paths:`
    at the top of each says which source files it governs. Before any build: `.claude/rules/raptor-executor.md`.
 5. A ruling there is ONE line. Before acting on its detail or asking him about it, open its full row:
    `grep -h '^| D149 |' .claude/decisions-full/*.md`.
