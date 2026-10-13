@@ -21,6 +21,16 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/pan-timer-guard -->
+### `claude/pan-timer-guard` — ONE SMALL FIX: THE LIVE APP'S CHECK RUN FOR PULL REQUEST 497 WAS MARKED FAILED WITH EVERY TEST PASSING — A TIMER THAT OUTLIVED ITS TEST; FIXED HERE, WAITING FOR ITS CHECKS AND HIS "MERGE LIVE" — written 13 Oct 26 — verify before use
+- **What happened:** after pull request 497 was merged (13 Oct 26), `main`'s own run failed in the unit job: 473 files and 8,129 tests passed, then one unhandled error — the phone week's deferred "jump to today" (`raptor-port/src/ui/pan.ts`, a 120ms timer) fired after a test file had ended and its page was gone ("document is not defined"). Not a fault of the app (a browser always has its page) and not of 497's code; the same family as the two timers guarded on 13 Oct in `ui/caldrag.ts` and `ui/drag.ts`. Vercel's live copy for 497 was built and is up.
+- **Shipped on this branch:** the week's own tidy-up clears that timer, and the timer does nothing where there is no page; two tests in `raptor-port/src/ui/pan.test.tsx` (the first failed before the fix). Nothing a person sees changes: on a phone the week still jumps to today.
+- **Unfinished:** its checks on GitHub, then his "merge live" (D817 covered three named pull requests and is spent). After it is live, `main`'s run should be green again — look.
+- **Branch:** `claude/pan-timer-guard`, cut from `main`, in the checkout `.claude/worktrees/one-date-calendar-step-one-55ba13`.
+- **Gates:** see this branch's pull request; the local run's counts are in the commit that closes it.
+- **Pick up here:** `gh pr list --head claude/pan-timer-guard`; then the block below (the design page is next — D813).
+<!-- /now -->
+
 <!-- now:claude/design-guide -->
 ### `claude/design-guide` — THE NIGHT'S FIVE PULL REQUESTS ARE ALL LIVE (13 Oct 26); THE ONE DESIGN GUIDE (D812, D813) IS APPROVED (D819) AND MERGED FROM THIS BRANCH, PULL REQUEST 500 — documents only — written 13 Oct 26 — verify before use
 - **Where it started:** the night of 13 Oct 26 (D799 — one chat, five jobs) and the day after it, in the same chat. **All five merged on his word that afternoon** ("merge live 499 and merge live 495"; then D817, "auto merge the rest one after another"): 499 the Leave War's row drawing in its own file · 495 step one of the one date calendar · 496 the Tracker's date boxes · 498 the Inputs pages' rulings file · 497 the Inputs batch (D793) with the day's additions — D804 ("→ Unavail" puts the OIL question first), D814 (a cancelled or information-only input is never asked), D815 (the member's bell: "Filed under Unavailable" / "Taken out of Unavailable"). Their checks: the evidence sheets under `raptor-port/docs/handpass/2026-10-13-*.md`.
