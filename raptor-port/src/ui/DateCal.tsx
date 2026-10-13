@@ -108,6 +108,12 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
        only way back was to go up to the title and press it again. A row is chosen as it comes into the band, so Enter
        has nothing left to choose: it closes the lists onto that month. */
     if (e.key === 'Enter') { e.preventDefault(); onEnter(); return }
+    /* …AND THE KEYS THAT ARE NOT A LIST'S DO NOTHING HERE (the check's walk of 14 Oct 26). The list is a scrolling box
+       that holds the keyboard, so the browser scrolled it for Home, End, Page Up, Page Down and Space by itself — and
+       a row left in the band when the scrolling stops IS the choice (settle, above): End ran the years to the foot of
+       their window and chose 2086 from 2026, Page Down and Space six years on, each by a key the calendar gives no
+       meaning in a list. The arrows move a list one row; a wheel or a finger scrolls it; no other key moves it. */
+    if (e.key === 'Home' || e.key === 'End' || e.key === 'PageUp' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); return }
     if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
     e.preventDefault()
     onChange(value + (e.key === 'ArrowDown' ? 1 : -1))

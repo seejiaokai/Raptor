@@ -127,8 +127,12 @@ try {
       const onYears = await kbOn(w), ry = await ringOf('years')
       check(LISTS, 'L13 — the keyboard in the year list', 'the ring moves to the YEAR list; both words still the plain ink', `after Tab the keyboard is on ${onYears}; ${ry.saw}`, onYears === 'dcal-years' && ry.ok)
       await L.pic(w, `cal-${K}-5-lists-keyboard`, { around: '[data-testid="dcal-card"]', pad: 24 })
-      const hm0 = await month(); await p.keyboard.press('End'); await L.sleep(450); const hm1 = await month(); await p.keyboard.press('Shift+PageDown'); await L.sleep(450); const hm2 = await month()
-      check(LISTS, 'Home / End / Page keys in a list', 'not the lists’ keys: nothing moves (the arrows move a list)', `${hm0} → End ${hm1} → Shift+PageDown ${hm2}; the lists ${(await p.locator('[data-testid="dcal-lists"]').count()) ? 'still open' : 'CLOSED'}`, hm1 === hm0 && hm2 === hm0 && (await p.locator('[data-testid="dcal-lists"]').count()) === 1)
+      /* READ ONLY ONCE ANY SCROLLING WOULD HAVE SETTLED (14 Oct 26). The first cut read the year 450ms after the key: a
+         list the browser scrolls by End takes about 750ms to stop and be read as a choice, so "nothing moved" was true
+         of every reading and false of the app — End chose 2086. The next key then raced it (one run in four). */
+      const hm0 = await month(); await p.keyboard.press('End'); await L.sleep(1300); const hm1 = await month(); await p.keyboard.press('Shift+PageDown'); await L.sleep(1300); const hm2 = await month()
+      await p.keyboard.press('PageDown'); await L.sleep(1300); const hm3 = await month(); await p.keyboard.press('Space'); await L.sleep(1300); const hm4 = await month(); await p.keyboard.press('Home'); await L.sleep(1300); const hm5 = await month()
+      check(LISTS, 'Home / End / Page keys in a list', 'not the lists’ keys: nothing moves (the arrows move a list)', `${hm0} → End ${hm1} → Shift+PageDown ${hm2} → PageDown ${hm3} → Space ${hm4} → Home ${hm5} (each read 1.3s after its key); the lists ${(await p.locator('[data-testid="dcal-lists"]').count()) ? 'still open' : 'CLOSED'}`, hm1 === hm0 && hm2 === hm0 && hm3 === hm0 && hm4 === hm0 && hm5 === hm0 && (await p.locator('[data-testid="dcal-lists"]').count()) === 1)
       /* K4 — a year on, then Enter */
       await p.keyboard.press('ArrowDown'); await L.sleep(500)
       const chosen = await month()

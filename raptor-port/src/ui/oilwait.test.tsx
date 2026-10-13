@@ -42,6 +42,7 @@ import { _resetDisclosure } from '../state/disclosure'
 import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
+import { closeScheduler } from './board'
 import { commitInput, commitInputEdit, draftOf, inputWho } from './inputedit'
 import { rowPut, rowMove, rowMark } from './reqdoor'
 import * as pops from './pops'
@@ -597,7 +598,19 @@ describe('the wires the break tests found bare', () => {
       expect(note().style.bottom, 'the note already showing stays where it was').toBe('26px')
       realToast('Schedule updated', 'ok')
       expect(note().style.bottom, 'and one raised while the bar is up is at the foot too').toBe('26px')
+      /* THE BOARD CLOSED WITH THE BAR STILL UP (nothing was swapped): the top bar carries it now — one bar still — and
+         the top bar and the shell both say so, which is what makes the room for it and moves what hangs under the bar
+         (17-save-status.css). The break test of 14 Oct 26 found nothing watched this: with the class cut, every test
+         stayed green. */
+      await act(async () => { closeScheduler() })
+      const top = document.querySelector('[data-testid="oilbar"]') as HTMLElement
+      expect(document.querySelectorAll('[data-testid="oilbar"]'), 'still one bar').toHaveLength(1)
+      expect(top.className, 'the top bar\u2019s own').toBe('oilband is-top')
+      expect(top.closest('#shell .topbar'), 'inside the top bar').toBeTruthy()
+      expect(document.querySelector('#shell .topbar')!.classList.contains('oil-waiting'), 'the top bar makes room').toBe(true)
+      expect(document.getElementById('shell')!.classList.contains('oil-waiting'), 'and the shell says so to the windows beside it').toBe(true)
       await act(async () => { oilBarOk() })
+      expect(document.getElementById('shell')!.classList.contains('oil-waiting')).toBe(false)
       expect(document.querySelector('.topbar')!.classList.contains('oil-waiting'), 'the bar gone, the room goes').toBe(false)
       realToast('Schedule updated', 'ok')
       expect(note().style.bottom, 'the bar gone: the foot again').toBe('26px')

@@ -1,0 +1,702 @@
+[
+ {
+  "surface": "X1 OIL question [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 501–939 (438 wide); ✕ 897.3–924, 15px inside the head's right edge; title \"OIL: Ranger, Range brief\" ends 685.7, 211.6px before the ✕; overlaps: none; children: b[516-685.7] button.x[897.3-924]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X1 OIL question [desk]",
+  "key": "T1 - where the keyboard is as it opens",
+  "expected": "on its first answer",
+  "saw": "button[oil-yes] \"Yes: credit HO\" · ring NO RING",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X1 OIL question [desk]",
+  "key": "T1 - the first Tab",
+  "expected": "the first own control, never the ✕",
+  "saw": "button[oil-no] \"No OIL\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X1 OIL question [desk]",
+  "key": "T1 - the round",
+  "expected": "the ✕ is the LAST stop before the round starts again; Tab never leaves the sheet",
+  "saw": "round: button[oil-no] \"No OIL\" → button[oilconf-cancel] \"Back\" → button[x] \"Close\" → button[oil-yes] \"Yes: credit HO\" → (again); ✕ at place 3 of 4; the stop after the ✕ is button[oil-yes] \"Yes: credit HO\" and the round's first control is button[oil-yes] \"Yes: credit HO\"; every stop inside: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X1 OIL question [desk]",
+  "key": "T1 - Shift+Tab from the first control",
+  "expected": "goes to the ✕",
+  "saw": "from button[oil-yes] \"Yes: credit HO\" to button[x] \"Close\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X1 OIL question [desk]",
+  "key": "T1 - the ring",
+  "expected": "a cyan ring on every stop",
+  "saw": "solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X2 input's own window [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 995–1423 (428 wide); ✕ 1387–1415, 8px inside the head's right edge; title \"Ranger · 18 Jul\" ends 1114.5, 272.5px before the ✕; overlaps: none; children: span.win-grip[1003-1015] span.win-ttl[1022-1380] button.win-x[1387-1415]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 511–929 (418 wide); ✕ 887.3–914, 15px inside the head's right edge; title \"Cancel this item\" ends 637, 250.3px before the ✕; overlaps: none; children: b[526-637] button.x[887.3-914]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [desk]",
+  "key": "T1 - where the keyboard is as it opens",
+  "expected": "on the sheet itself",
+  "saw": "input[cxReason] \"Reason for cancellation\" · ring NO RING",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [desk]",
+  "key": "T1 - the first Tab",
+  "expected": "the first own control, never the ✕",
+  "saw": "button[button] \"WX\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [desk]",
+  "key": "T1 - the round",
+  "expected": "the ✕ is the LAST stop before the round starts again; Tab never leaves the sheet",
+  "saw": "round: button[button] \"WX\" → button[button] \"OPS\" → button[button] \"LOGS\" → button[cxq-edit] \"✎ Edit\" → button[cxSave] \"Cancel line\" → button[cxClose] \"Close\" → input[cxReason] \"Reason for cancellation\" → (again); ✕ at place 6 of 7; the stop after the ✕ is input[cxReason] \"Reason for cancellation\" and the round's first control is input[cxReason] \"Reason for cancellation\"; every stop inside: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [desk]",
+  "key": "T1 - Shift+Tab from the first control",
+  "expected": "goes to the ✕",
+  "saw": "from input[cxReason] \"Reason for cancellation\" to button[cxClose] \"Close\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [desk]",
+  "key": "T1 - the ring",
+  "expected": "a cyan ring on every stop",
+  "saw": "auto 1px rgb(16, 16, 16) | auto 1px rgb(16, 16, 16) | auto 1px rgb(16, 16, 16) | auto 1px rgb(16, 16, 16) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | NO RING | auto 1px rgb(16, 16, 16)",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "X10 Sort all dialog [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 461–979 (518 wide); ✕ 937.3–964, 15px inside the head's right edge; title \"Sort all — Saturday\" ends 611.3, 326px before the ✕; overlaps: none; children: b[476-611.3] button.x[937.3-964]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X10 Sort all dialog [desk]",
+  "key": "T1 - where the keyboard is as it opens",
+  "expected": "on the sheet itself",
+  "saw": "div[airpop-box] \"Sort all — Saturday✕Every se\" · ring NO RING",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X10 Sort all dialog [desk]",
+  "key": "T1 - the first Tab",
+  "expected": "the first own control, never the ✕",
+  "saw": "button[sortAllCancel] \"Cancel\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X10 Sort all dialog [desk]",
+  "key": "T1 - the round",
+  "expected": "the ✕ is the LAST stop before the round starts again; Tab never leaves the sheet",
+  "saw": "round: button[sortAllCancel] \"Cancel\" → button[sortAllConfirm] \"Sort all\" → button[sortAllClose] \"Close\" → (again); ✕ at place 3 of 3; the stop after the ✕ is button[sortAllCancel] \"Cancel\" and the round's first control is button[sortAllCancel] \"Cancel\"; every stop inside: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X10 Sort all dialog [desk]",
+  "key": "T1 - Shift+Tab from the first control",
+  "expected": "goes to the ✕",
+  "saw": "from button[sortAllCancel] \"Cancel\" to button[sortAllClose] \"Close\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X10 Sort all dialog [desk]",
+  "key": "T1 - the ring",
+  "expected": "a cyan ring on every stop",
+  "saw": "solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X3 cancelled input's window [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 995–1423 (428 wide); ✕ 1387–1415, 8px inside the head's right edge; title \"Ranger · 18 Jul\" ends 1114.5, 272.5px before the ✕; overlaps: none; children: span.win-grip[1003-1015] span.win-ttl[1022-1257.4] span.win-tools[1264.4-1380] button.win-x[1387-1415]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X3 cancelled input's window [desk]",
+  "key": "CX mark",
+  "expected": "the red CX mark and its reason stay beside the TITLE, not beside the ✕",
+  "saw": "mark \"CXRange closed\" 1272.4-1372; title ends 1114.5 (157.9px before the mark); the ✕ starts 1387 (15px after the mark)",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "X8 Jump to a date [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 461–979 (518 wide); ✕ 937.3–964, 15px inside the head's right edge; title \"Jump to a date\" ends 580.6, 356.7px before the ✕; overlaps: none; children: b[476-580.6] button.wc-today[893.3-931.3] button.x[937.3-964]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X8 Jump to a date [desk]",
+  "key": "Today icon",
+  "expected": "the Today icon sits just left of the ✕, both at the right",
+  "saw": "Today icon 893.3-931.3; ✕ 937.3-964; head right 979; gap icon→✕ 6px; icon's right edge is 47.7px from the head's right edge",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X11 a day's pop-up [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 461–979 (518 wide); ✕ 937.3–964, 15px inside the head's right edge; title \"Monday · Jul 13 · 4 X 4\" ends 634, 303.3px before the ✕; overlaps: none; children: b[476-634] button.x[937.3-964]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X1 OIL question [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"OIL: Ranger, Range brief\" ends 207.7, 117.6px before the ✕; overlaps: none; children: b[38-207.7] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X2 input's own window [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 13–369 (356 wide); ✕ 319–363, 6px inside the head's right edge; title \"Ranger · 18 Jul\" ends 134.5, 184.5px before the ✕; overlaps: none; children: span.win-grip[23-35] span.win-ttl[42-312] button.win-x[319-363]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X9 cancel-reason dialog [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"Cancel this item\" ends 149, 176.3px before the ✕; overlaps: none; children: b[38-149] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X10 Sort all dialog [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"Sort all — Saturday\" ends 173.3, 152px before the ✕; overlaps: none; children: b[38-173.3] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X3 cancelled input's window [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 13–369 (356 wide); ✕ 319–363, 6px inside the head's right edge; title \"Ranger · 18 Jul\" ends 134.5, 184.5px before the ✕; overlaps: none; children: span.win-grip[23-35] span.win-ttl[42-189.4] span.win-tools[196.4-312] button.win-x[319-363]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X3 cancelled input's window [phone]",
+  "key": "CX mark",
+  "expected": "the red CX mark and its reason stay beside the TITLE, not beside the ✕",
+  "saw": "mark \"CXRange closed\" 204.4-304; title ends 134.5 (69.9px before the mark); the ✕ starts 319 (15px after the mark)",
+  "verdict": "FAIL"
+ },
+ {
+  "surface": "X8 Jump to a date [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"Jump to a date\" ends 142.6, 182.7px before the ✕; overlaps: none; children: b[38-142.6] button.wc-today[281.3-319.3] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X8 Jump to a date [phone]",
+  "key": "Today icon",
+  "expected": "the Today icon sits just left of the ✕, both at the right",
+  "saw": "Today icon 281.3-319.3; ✕ 325.3-352; head right 367; gap icon→✕ 6px; icon's right edge is 47.7px from the head's right edge",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X11 a day's pop-up [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"Monday · Jul 13 · 4 X 4\" ends 196, 129.3px before the ✕; overlaps: none; children: b[38-196] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 501–939 (438 wide); ✕ 897.3–924, 15px inside the head's right edge; title \"No medical document — Ranger, ATT C\" ends 791, 106.3px before the ✕; overlaps: none; children: b[516-791] button.x[897.3-924]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [desk]",
+  "key": "T1 - where the keyboard is as it opens",
+  "expected": "on the sheet itself",
+  "saw": "div[airpop-box] \"No medical document — Ranger\" · ring NO RING",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [desk]",
+  "key": "T1 - the first Tab",
+  "expected": "the first own control, never the ✕",
+  "saw": "button[docconf-nodoc] \"No document\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [desk]",
+  "key": "T1 - the round",
+  "expected": "the ✕ is the LAST stop before the round starts again; Tab never leaves the sheet",
+  "saw": "round: button[docconf-nodoc] \"No document\" → button[docconf-upload] \"Upload\" → button[x] \"Close\" → (again); ✕ at place 3 of 3; the stop after the ✕ is button[docconf-nodoc] \"No document\" and the round's first control is button[docconf-nodoc] \"No document\"; every stop inside: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [desk]",
+  "key": "T1 - Shift+Tab from the first control",
+  "expected": "goes to the ✕",
+  "saw": "from button[docconf-nodoc] \"No document\" to button[x] \"Close\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [desk]",
+  "key": "T1 - the ring",
+  "expected": "a cyan ring on every stop",
+  "saw": "solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X5 Upchit question [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 501–939 (438 wide); ✕ 897.3–924, 15px inside the head's right edge; title \"Upchit — Ranger, Jul 14\" ends 683, 214.3px before the ✕; overlaps: none; children: b[516-683] button.x[897.3-924]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O5 upchit question answer buttons [desk]",
+  "key": "the .seg wrapper (record, no PASS/FAIL)",
+  "expected": "computed background-color, padding, border-bottom of the element wrapping each pair",
+  "saw": "[{\"bg\":\"rgba(20, 24, 29, 0.5)\",\"padding\":\"8px 20px\",\"borderBottom\":\"1px solid rgb(42, 49, 58)\",\"w\":162,\"h\":42,\"btns\":[\"Keep\",\"Remove\"]}]",
+  "verdict": "RECORD"
+ },
+ {
+  "surface": "X5 Upchit question [desk]",
+  "key": "T1 - where the keyboard is as it opens",
+  "expected": "on the sheet itself",
+  "saw": "div[airpop-box] \"Upchit — Ranger, Jul 14✕Savi\" · ring NO RING",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X5 Upchit question [desk]",
+  "key": "T1 - the first Tab",
+  "expected": "the first own control, never the ✕",
+  "saw": "button[upconf-seg] \"Keep\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X5 Upchit question [desk]",
+  "key": "T1 - the round",
+  "expected": "the ✕ is the LAST stop before the round starts again; Tab never leaves the sheet",
+  "saw": "round: button[upconf-seg] \"Keep\" → button[upconf-seg] \"Remove\" → button[abtn] \"Cancel\" → button[x] \"Close\" → (again); ✕ at place 4 of 4; the stop after the ✕ is button[upconf-seg] \"Keep\" and the round's first control is button[upconf-seg] \"Keep\"; every stop inside: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X5 Upchit question [desk]",
+  "key": "T1 - Shift+Tab from the first control",
+  "expected": "goes to the ✕",
+  "saw": "from button[upconf-seg] \"Keep\" to button[x] \"Close\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X5 Upchit question [desk]",
+  "key": "T1 - the ring",
+  "expected": "a cyan ring on every stop",
+  "saw": "solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X4 No medical document [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"No medical document — Ranger, ATT C\" ends 313, 12.3px before the ✕; overlaps: none; children: b[38-313] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X5 Upchit question [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"Upchit — Ranger, Jul 14\" ends 205, 120.3px before the ✕; overlaps: none; children: b[38-205] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O5 upchit question answer buttons [phone]",
+  "key": "the .seg wrapper (record, no PASS/FAIL)",
+  "expected": "computed background-color, padding, border-bottom of the element wrapping each pair",
+  "saw": "[{\"bg\":\"rgba(20, 24, 29, 0.5)\",\"padding\":\"8px 20px\",\"borderBottom\":\"1px solid rgb(42, 49, 58)\",\"w\":162,\"h\":42,\"btns\":[\"Keep\",\"Remove\"]}]",
+  "verdict": "RECORD"
+ },
+ {
+  "surface": "X6 medical-clash question [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 501–939 (438 wide); ✕ 897.3–924, 15px inside the head's right edge; title \"ATT B — Ranger, Jul 14 – Jul 16\" ends 734.3, 163px before the ✕; overlaps: none; children: b[516-734.3] button.x[897.3-924]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O5 medical-clash question answer buttons [desk]",
+  "key": "the .seg wrapper (record, no PASS/FAIL)",
+  "expected": "computed background-color, padding, border-bottom of the element wrapping each pair",
+  "saw": "[{\"bg\":\"rgba(20, 24, 29, 0.5)\",\"padding\":\"8px 20px\",\"borderBottom\":\"1px solid rgb(42, 49, 58)\",\"w\":285,\"h\":42,\"btns\":[\"ATT B replaces\",\"Keep ATT C till Jul 15\"]}]",
+  "verdict": "RECORD"
+ },
+ {
+  "surface": "X6 medical-clash question [desk]",
+  "key": "T1 - where the keyboard is as it opens",
+  "expected": "on the sheet itself",
+  "saw": "div[airpop-box] \"ATT B — Ranger, Jul 14 – Jul\" · ring NO RING",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X6 medical-clash question [desk]",
+  "key": "T1 - the first Tab",
+  "expected": "the first own control, never the ✕",
+  "saw": "button[upconf-seg] \"ATT B replaces\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X6 medical-clash question [desk]",
+  "key": "T1 - the round",
+  "expected": "the ✕ is the LAST stop before the round starts again; Tab never leaves the sheet",
+  "saw": "round: button[upconf-seg] \"ATT B replaces\" → button[upconf-seg] \"Keep ATT C till Jul 15\" → button[abtn] \"Cancel\" → button[x] \"Close\" → (again); ✕ at place 4 of 4; the stop after the ✕ is button[upconf-seg] \"ATT B replaces\" and the round's first control is button[upconf-seg] \"ATT B replaces\"; every stop inside: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X6 medical-clash question [desk]",
+  "key": "T1 - Shift+Tab from the first control",
+  "expected": "goes to the ✕",
+  "saw": "from button[upconf-seg] \"ATT B replaces\" to button[x] \"Close\"",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X6 medical-clash question [desk]",
+  "key": "T1 - the ring",
+  "expected": "a cyan ring on every stop",
+  "saw": "solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232) | solid 2px rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X7 document viewer [desk]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 361–1079 (718 wide); ✕ 1037.3–1064, 15px inside the head's right edge; title \"Ranger · HL · Jul 27\" ends 510.3, 527px before the ✕; overlaps: none; children: b[376-510.3] button.x[1037.3-1064]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "X6 medical-clash question [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"ATT B — Ranger, Jul 14 – Jul 16\" ends 256.3, 69px before the ✕; overlaps: none; children: b[38-256.3] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O5 medical-clash question answer buttons [phone]",
+  "key": "the .seg wrapper (record, no PASS/FAIL)",
+  "expected": "computed background-color, padding, border-bottom of the element wrapping each pair",
+  "saw": "[{\"bg\":\"rgba(20, 24, 29, 0.5)\",\"padding\":\"8px 20px\",\"borderBottom\":\"1px solid rgb(42, 49, 58)\",\"w\":285,\"h\":42,\"btns\":[\"ATT B replaces\",\"Keep ATT C till Jul 15\"]}]",
+  "verdict": "RECORD"
+ },
+ {
+  "surface": "X7 document viewer [phone]",
+  "key": "head",
+  "expected": "the ✕ in the head's top-right corner (right edge within 20px of the head's), not following the title; nothing in the head overlaps",
+  "saw": "head 23–367 (344 wide); ✕ 325.3–352, 15px inside the head's right edge; title \"Ranger · HL · Jul 27\" ends 172.3, 153px before the ✕; overlaps: none; children: b[38-172.3] button.x[325.3-352]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [desk]",
+  "key": "the heading",
+  "expected": "This input covers 2 non-working days (weekend / PH)",
+  "saw": "This input covers 2 non-working days (weekend / PH)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [desk]",
+  "key": "the three answers",
+  "expected": "All days · Only some days… · No OIL",
+  "saw": "All days · Only some days… · No OIL",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [desk]",
+  "key": "flat under the sentence",
+  "expected": "no darker patch or line behind them (no .seg, no box, transparent ground, no bottom line)",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"rowBg\":\"rgba(0, 0, 0, 0)\",\"rowBorder\":\"0px\",\"wornSeg\":false,\"boxed\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [desk]",
+  "key": "the foot buttons",
+  "expected": "Back and Add",
+  "saw": "Back / Add",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [desk]",
+  "key": "the picked answer",
+  "expected": "a cyan edge and cyan words on a dark ground (not a solid cyan fill)",
+  "saw": "{\"text\":\"All days\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"} accent rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [desk]",
+  "key": "\"Only some days…\" opens a small calendar",
+  "expected": "a small calendar in the question",
+  "saw": "{\"cls\":\"rangecal oilcal\",\"id\":\"oilcal\",\"w\":212,\"h\":167,\"inside\":440}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O2 saved Duty, end time changed [desk]",
+  "key": "the foot buttons",
+  "expected": "Back and Save",
+  "saw": "Back / Save · heading: null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O3 the List's OIL? chip [desk]",
+  "key": "the question opens; its foot buttons",
+  "expected": "Back and Save",
+  "saw": "Back / Save · heading: (none)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O4 the day's one list [desk]",
+  "key": "the two picked buttons",
+  "expected": "both picked buttons wear the SAME look: a cyan edge and cyan words on a dark ground; neither solid cyan, neither grey-filled",
+  "saw": "[{\"id\":\"odl-yes-imv718sqqtdafbc\",\"pressed\":\"true\",\"cls\":\"upconf-seg on-pick\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"},{\"id\":\"odl-no-imv718rus918qfg\",\"pressed\":\"true\",\"cls\":\"upconf-seg on-pick\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"}] accent rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [phone]",
+  "key": "the heading",
+  "expected": "This input covers 2 non-working days (weekend / PH)",
+  "saw": "This input covers 2 non-working days (weekend / PH)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [phone]",
+  "key": "the three answers",
+  "expected": "All days · Only some days… · No OIL",
+  "saw": "All days · Only some days… · No OIL",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [phone]",
+  "key": "flat under the sentence",
+  "expected": "no darker patch or line behind them (no .seg, no box, transparent ground, no bottom line)",
+  "saw": "{\"rowClass\":\"oilconf-answers\",\"rowBg\":\"rgba(0, 0, 0, 0)\",\"rowBorder\":\"0px\",\"wornSeg\":false,\"boxed\":false}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [phone]",
+  "key": "the foot buttons",
+  "expected": "Back and Add",
+  "saw": "Back / Add",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [phone]",
+  "key": "the picked answer",
+  "expected": "a cyan edge and cyan words on a dark ground (not a solid cyan fill)",
+  "saw": "{\"text\":\"All days\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"} accent rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O1 two-day Duty question [phone]",
+  "key": "\"Only some days…\" opens a small calendar",
+  "expected": "a small calendar in the question",
+  "saw": "{\"cls\":\"rangecal oilcal\",\"id\":\"oilcal\",\"w\":212,\"h\":167,\"inside\":346}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O2 saved Duty, end time changed [phone]",
+  "key": "the foot buttons",
+  "expected": "Back and Save",
+  "saw": "Back / Save · heading: null",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "O4 the day's one list [phone]",
+  "key": "the two picked buttons",
+  "expected": "both picked buttons wear the SAME look: a cyan edge and cyan words on a dark ground; neither solid cyan, neither grey-filled",
+  "saw": "[{\"id\":\"odl-yes-imv71c3igwc4r1n\",\"pressed\":\"true\",\"cls\":\"upconf-seg on-pick\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"},{\"id\":\"odl-no-imv71c2mihipftr\",\"pressed\":\"true\",\"cls\":\"upconf-seg on-pick\",\"bg\":\"rgb(26, 31, 38)\",\"edge\":\"rgb(59, 198, 232)\",\"ink\":\"rgb(59, 198, 232)\"}] accent rgb(59, 198, 232)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B1 the bar from the calendar [desk]",
+  "key": "the bar and the page",
+  "expected": "ONE amber line directly under the app's top bar, edge to edge, 36 px tall, \"Not moved — OIL not answered\" with Answer OIL and OK; the page below moved down (nothing under the bar); the input has not moved",
+  "saw": "raised by: the Inputs calendar's own drag (mouse); {\"where\":\"topbar\",\"text\":\"Not moved — OIL not answered\",\"btns\":[\"Answer OIL\",\"OK\"],\"box\":\"0,56 1440×36\",\"edge\":\"rgba(229, 194, 74, 0.5)\",\"oneLine\":true,\"topbarH\":93,\"topbarBottom\":93,\"barBottom\":92,\"pageTop\":93,\"belowIsBar\":false,\"count\":1}; the input stands on Ranger · Range brief · Training · 18 Jul · 09:00–12:00 (before: Ranger · Range brief · Training · 18 Jul · 09:00–12:00)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B3 the bar by keyboard [desk]",
+  "key": "where the keyboard is as the bar appears",
+  "expected": "on \"Answer OIL\"",
+  "saw": "button[oilbar-answer] \"Answer OIL\" · NO RING · 93×26",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B3 the bar by keyboard [desk]",
+  "key": "Tab",
+  "expected": "goes to \"OK\"",
+  "saw": "button[oilbar-ok] \"OK\" · outline 2px rgb(59, 198, 232) · 44×26",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B3 the bar by keyboard [desk]",
+  "key": "Shift+Tab",
+  "expected": "goes back to \"Answer OIL\"",
+  "saw": "button[oilbar-answer] \"Answer OIL\" · outline 2px rgb(59, 198, 232) · 93×26",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B3 the bar by keyboard [desk]",
+  "key": "Escape on the bar",
+  "expected": "closes the bar; the input still has not moved",
+  "saw": "bar before up, after gone; the input stands on Ranger · Range brief · Training · 18 Jul · 09:00–12:00",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B5 Quals and back [desk]",
+  "key": "the bar after another page",
+  "expected": "the bar is gone and the top bar is its usual height",
+  "saw": "bar up before leaving (36px); at Quals: 0 bar(s), top bar 57px; back on Inputs: 0 bar(s), top bar 57px (usual: 57px)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B4 Answer OIL, then the move [desk]",
+  "key": "the move",
+  "expected": "the question comes back; after the answer the move is made and the bar is gone",
+  "saw": "question came back: true (\"OIL: Ranger, Range brief ✕ Moving Range brief to 19 Jul This input fal\"); right-hand button read \"Move\"; after it: question closed, bar gone; the input stood on Ranger · Range brief · Training · 18 Jul · 09:00–12:00, now on Ranger · Range brief · Training · 19 Jul · 09:00–12:00",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B1 the bar from the calendar [phone]",
+  "key": "the bar and the page",
+  "expected": "ONE amber line directly under the app's top bar, edge to edge, 36 px tall, \"Not moved — OIL not answered\" with Answer OIL and OK; the page below moved down (nothing under the bar); the input has not moved",
+  "saw": "raised by: the Inputs calendar's own drag (mouse); {\"where\":\"topbar\",\"text\":\"Not moved — OIL not answered\",\"btns\":[\"Answer OIL\",\"OK\"],\"box\":\"0,48 390×36\",\"edge\":\"rgba(229, 194, 74, 0.5)\",\"oneLine\":true,\"topbarH\":85,\"topbarBottom\":85,\"barBottom\":84,\"pageTop\":85,\"belowIsBar\":false,\"count\":1}; the input stands on Ranger · Range brief · Training · 18 Jul · 09:00–12:00 (before: Ranger · Range brief · Training · 18 Jul · 09:00–12:00)",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B2 the bar at three widths [phone]",
+  "key": "390 wide",
+  "expected": "the words and both buttons on ONE line; no word cut or ending in \"…\"; nothing sticks out of the bar (letters may be a little smaller — report their size)",
+  "saw": "{\"w\":390,\"vw\":390,\"box\":\"0,48 390×36\",\"oneLine\":true,\"ellipsis\":false,\"nothingCut\":true,\"inside\":true,\"fonts\":\"12.5px/12.5px/12.5px\",\"kids\":\"Not moved — OIL not answ:14-200.3 | Answer OIL:231.6-324.4 | OK:332.4-376\",\"edge\":\"rgba(229, 194, 74, 0.5)\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B2 the bar at three widths [phone]",
+  "key": "360 wide",
+  "expected": "the words and both buttons on ONE line; no word cut or ending in \"…\"; nothing sticks out of the bar (letters may be a little smaller — report their size)",
+  "saw": "{\"w\":360,\"vw\":360,\"box\":\"0,48 360×36\",\"oneLine\":true,\"ellipsis\":false,\"nothingCut\":true,\"inside\":true,\"fonts\":\"12.125px/12.125px/12.125px\",\"kids\":\"Not moved — OIL not answ:14-194.6 | Answer OIL:205.9-295.9 | OK:303.7-346\",\"edge\":\"rgba(229, 194, 74, 0.5)\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B2 the bar at three widths [phone]",
+  "key": "320 wide",
+  "expected": "the words and both buttons on ONE line; no word cut or ending in \"…\"; nothing sticks out of the bar (letters may be a little smaller — report their size)",
+  "saw": "{\"w\":320,\"vw\":320,\"box\":\"0,48 320×36\",\"oneLine\":true,\"ellipsis\":false,\"nothingCut\":true,\"inside\":true,\"fonts\":\"10.625px/10.625px/10.625px\",\"kids\":\"Not moved — OIL not answ:14-172 | Answer OIL:182.8-261.9 | OK:268.7-306\",\"edge\":\"rgba(229, 194, 74, 0.5)\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "B4 Answer OIL, then the move [phone]",
+  "key": "the move",
+  "expected": "the question comes back; after the answer the move is made and the bar is gone",
+  "saw": "question came back: true (\"OIL: Ranger, Range brief ✕ Moving Range brief to 19 Jul This input fal\"); right-hand button read \"Move\"; after it: question closed, bar gone; the input stood on Ranger · Range brief · Training · 18 Jul · 09:00–12:00, now on Ranger · Range brief · Training · 19 Jul · 09:00–12:00",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 From (Calendar window → Every Thursday) [phone]",
+  "key": "the card names its box",
+  "expected": "FROM — one line, above the month's title",
+  "saw": "line \"FROM\" (typed \"From\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Until (Every Thursday → A date) [phone]",
+  "key": "the card names its box",
+  "expected": "UNTIL — one line, above the month's title",
+  "saw": "line \"UNTIL\" (typed \"Until\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Post in (Admin → Users → Add a person) [phone]",
+  "key": "the card names its box",
+  "expected": "POST IN — one line, above the month's title",
+  "saw": "line \"POST IN\" (typed \"Post in\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Upchit date (a medical input, Upchit form) [phone]",
+  "key": "the card names its box",
+  "expected": "UPCHIT DATE — one line, above the month's title",
+  "saw": "line \"UPCHIT DATE\" (typed \"Upchit date\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Last Flown (Syllabus) (Tracker's side panel) [phone]",
+  "key": "the card names its box",
+  "expected": "LAST FLOWN (SYLLABUS) — one line, above the month's title",
+  "saw": "line \"LAST FLOWN (SYLLABUS)\" (typed \"Last Flown (Syllabus)\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Upchit Date (Tracker's side panel) [phone]",
+  "key": "the card names its box",
+  "expected": "UPCHIT DATE — one line, above the month's title",
+  "saw": "line \"UPCHIT DATE\" (typed \"Upchit date\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 End date A (Tracker's side panel) [phone]",
+  "key": "the card names its box",
+  "expected": "END DATE A — one line, above the month's title",
+  "saw": "line \"END DATE A\" (typed \"End date A\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Done on (Tracker marking pop-up) [phone]",
+  "key": "the card names its box",
+  "expected": "DONE ON — one line, above the month's title",
+  "saw": "line \"DONE ON\" (typed \"Done on\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 Failed on (Tracker marking pop-up) [phone]",
+  "key": "the card names its box",
+  "expected": "FAILED ON — one line, above the month's title",
+  "saw": "line \"FAILED ON\" (typed \"Failed on\", uppercase), 324×16 at 33,249; the month's title starts at y 266 (line ends y 265); card 350×368 at 20,238; the line sits 11px under the card's top; one line: true",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K1 same height on every card [phone]",
+  "key": "the line is the same height on every card",
+  "expected": "the same height on every card",
+  "saw": "line heights seen: 16; the line's distance from the card's top, per card: From=11, Until=11, Post in=11, Upchit date=11, Last Flown=11, Upchit Date=11, End date A=11, Done on=11, Failed on=11",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "K2 desk [desk]",
+  "key": "From on a desktop",
+  "expected": "No name line: the small panel hangs under its own box",
+  "saw": "name line: none; the box 29,256 354×42 (bottom 298); the panel 29,304 336×352 — its top is 6px under the box's bottom",
+  "verdict": "PASS"
+ }
+]

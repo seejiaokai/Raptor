@@ -1,0 +1,121 @@
+[
+ {
+  "surface": "W1",
+  "key": "C1",
+  "expected": "one clash, list open; row Fable · Sat 18 Jul · Change the leave on Inputs › ; Weekend/PH work earns FO, but the day holds LL; line \"⚠ 1 clash with the schedule\" + Hide",
+  "saw": "{\"line\":\"⚠ 1 clash with the schedule Hide\",\"expanded\":\"true\",\"rows\":[[\"Fable\",\"Sat 18 Jul\",\"Change the leave on Inputs ›\",\"Weekend/PH work earns FO, but the day holds LL\"]]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C2",
+  "expected": "now on Inputs page, that leave's own window open (names Fable and LL), nothing else opened on the Leave War",
+  "saw": "{\"page\":\"inputs\",\"window\":{\"person\":\"Fable\",\"type\":\"LL\"},\"dialogs\":[[\"win-inputedit\",null,\"⠿Fable · 18 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDr\"]],\"leaveWarDialogs\":0}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C3a",
+  "expected": "strip inside the stage line: \"Fable · Sat 18 Jul · Weekend/PH work earns FO, but the day holds LL. Change the leave on Inputs ›\", no dash",
+  "saw": "{\"cls\":\"syncclash\",\"inFilters\":true,\"strip\":[\"Fable · Sat 18 Jul · Weekend/PH work earns FO, but the day holds LL. Change the leave on Inputs ›\"],\"line\":null}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C3b",
+  "expected": "clicking the instruction: on Inputs, that leave window open (Fable, LL), nothing on the Leave War",
+  "saw": "{\"page\":\"inputs\",\"window\":{\"person\":\"Fable\",\"type\":\"LL\"},\"leaveWarDialogs\":0}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C4a",
+  "expected": "a clash: instruction \"Send the leave back or delete it ›\"; sentence \"Weekend/PH work earns FO, but the day holds LL\"",
+  "saw": "{\"stage\":\"BIDDING CLOSED\",\"line\":\"⚠ 1 clash with the schedule Hide\",\"rows\":[[\"Fable\",\"Sat 18 Jul\",\"Send the leave back or delete it ›\",\"Weekend/PH work earns FO, but the day holds LL\"]]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C4b",
+  "expected": "tap on the row opens Fable's Sat 18 Jul sheet, offering to send the leave back or delete it",
+  "saw": "{\"open\":\"daylist-sheet\",\"text\":\"Fable Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. LL — local leave · approved on 18 Jul Back to bid Refuse ⇄Move Delete FO — OIL earned (Duty), worked 08:00–18:00 · given by Weekend/PH From the published schedule. OIL EARNED a day — worked 08:00–18:00 REASON Duty GIVEN BY Weekend/PH\",\"buttons\":[\"daylist-close:✕\",\"dl-unapprove-imv70hahidn5avg:Back to bid\",\"dl-refuse-imv70hahidn5avg:Refuse\",\"dl-move-imv70hahidn5avg:⇄Move\",\"dl-remove-imv70hahidn5avg:Delete\"]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C5a",
+  "expected": "same clash now \"Weekend/PH work earns FO, but the day holds published LL\" with \"Step the war back to Bidding Closed ›\"",
+  "saw": "{\"stage\":\"PUBLISHED\",\"line\":\"⚠ 1 clash with the schedule Hide\",\"expanded\":\"true\",\"rows\":[[\"Fable\",\"Sat 18 Jul\",\"Step the war back to Bidding Closed ›\",\"Weekend/PH work earns FO, but the day holds published LL\"]]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C5b",
+  "expected": "a tap opens Fable's Sat 18 Jul",
+  "saw": "{\"open\":\"daylist-sheet\",\"text\":\"Fable Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. LL — local leave · approved on 18 Jul Note FO — OIL earned (Duty), worked 08:00–18:00 · given by Weekend/PH From the published schedule. OIL EARNED a day — worked 08:00–18:00 REASON Duty GIVEN BY Weekend/PH\",\"buttons\":[\"daylist-close:✕\",\"dl-note-imv70hahidn5avg:Note\"]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C6",
+  "expected": "one clash: list open with no tap; then with the second clash (nothing pressed) the list is closed and the line reads \"⚠ 2 clashes with the schedule Show\"",
+  "saw": "{\"one\":{\"line\":\"⚠ 1 clash with the schedule Hide\",\"expanded\":\"true\",\"rows\":1},\"two\":{\"line\":\"⚠ 2 clashes with the schedule Show\",\"expanded\":\"false\",\"rows\":0}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C7",
+  "expected": "tap1 opens, tap2 closes, tap3 opens (in place); after Edit Schedule and back the list is still open",
+  "saw": "[[\"tap1\",\"true\",2,\"⚠ 2 clashes with the schedule Hide\"],[\"tap2\",\"false\",0,\"⚠ 2 clashes with the schedule Show\"],[\"tap3\",\"true\",2,\"⚠ 2 clashes with the schedule Hide\"],[\"after another page\",\"true\",2,\"⚠ 2 clashes with the schedule Hide\"]]",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C8 360x740",
+  "expected": "note full width; names at one edge, days at one edge, instructions end at one edge; each day on one line; second line of buttons keeps its height; no sideways scroll",
+  "saw": "{\"size\":\"360x740\",\"noteW\":360,\"vw\":360,\"cls\":\"clashnote\",\"expanded\":\"true\",\"rows\":2,\"whoL\":[10],\"dayL\":[82],\"doR\":[350],\"dayLines\":[1,1],\"nameCut\":[false,false],\"filtersH\":34,\"baselineFiltersH\":34,\"overflowX\":false,\"baselineOverflow\":false,\"words\":[[\"Fable\",\"Sat 18 Jul\",\"Decide the bid ›\",\"Weekend/PH work earns FO, but the day holds LL\"],[\"Ranger\",\"Sat 18 Jul\",\"Decide the bid ›\",\"Weekend/PH work earns *HO, but the day holds OL\"]]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C8 430x932",
+  "expected": "note full width; names at one edge, days at one edge, instructions end at one edge; each day on one line; second line of buttons keeps its height; no sideways scroll",
+  "saw": "{\"size\":\"430x932\",\"noteW\":430,\"vw\":430,\"cls\":\"clashnote\",\"expanded\":\"true\",\"rows\":2,\"whoL\":[10],\"dayL\":[82],\"doR\":[420],\"dayLines\":[1,1],\"nameCut\":[false,false],\"filtersH\":34,\"baselineFiltersH\":34,\"overflowX\":false,\"baselineOverflow\":false,\"words\":[[\"Fable\",\"Sat 18 Jul\",\"Decide the bid ›\",\"Weekend/PH work earns FO, but the day holds LL\"],[\"Ranger\",\"Sat 18 Jul\",\"Decide the bid ›\",\"Weekend/PH work earns *HO, but the day holds OL\"]]}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C9 431x932",
+  "expected": "the strip of a desktop (inside the stage line), not the phone's line",
+  "saw": "{\"cls\":\"syncclash\",\"inFilters\":true,\"line\":null,\"strip\":[\"Fable · Sat 18 Jul · Weekend/PH work earns FO, but the day holds LL. Decide the bid ›\",\"Ranger · Sat 18 Jul · Weekend/PH work earns *HO, but the day holds OL. Decide the bid ›\"],\"box\":\"20,253 391x102\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C10",
+  "expected": "each centre (line, each row) belongs to it; nothing over the note — not the menu button, not a passing note",
+  "saw": "{\"quiet\":{\"line\":{\"x\":195,\"y\":140,\"ok\":true,\"hit\":\"BUTTON.clashline\"},\"rows\":[{\"x\":195,\"y\":179,\"ok\":true,\"hit\":\"SPAN.clash-what\"},{\"x\":195,\"y\":226,\"ok\":true,\"hit\":\"SPAN.clash-what\"}],\"burgerOverlapsNote\":false,\"burger\":\"14,9 32x30\",\"note\":\"0,125 390x125\",\"toast\":{\"text\":\"Saturday published and approved\",\"opacity\":\"0\",\"overlapsNote\":false}},\"afterUndoPress\":{\"line\":{\"x\":195,\"y\":140,\"ok\":true,\"hit\":\"BUTTON.clashline\"},\"rows\":[{\"x\":195,\"y\":179,\"ok\":true,\"hit\":\"SPAN.clash-what\"}],\"burgerOverlapsNote\":false,\"toast\":{\"text\":\"Undid: Ranger’s bid\",\"opacity\":\"1\",\"overlapsNote\":false}}}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C11",
+  "expected": "Tab from Legend lands on the first clash's instruction \"Decide the bid ›\" wearing a cyan ring; Enter opens Fable's Sat 18 Jul sheet with Ack, Approve, Refuse",
+  "saw": "{\"focusBefore\":\"button[legend-open] \\\"Legend\\\" · NO RING · 67×28\",\"focus\":{\"tid\":\"clash-go-0\",\"text\":\"Decide the bid ›\",\"ring\":\"solid 2px rgb(59, 198, 232)\"},\"accent\":\"rgb(59, 198, 232)\",\"sheet\":{\"open\":\"daylist-sheet\",\"text\":\"Fable Sat 18 Jul ✕ Two of these can’t both stand on the same\",\"buttons\":[\"✕\",\"Ack\",\"Approve\",\"Refuse\",\"⇄Move\",\"Delete\"]},\"firstWho\":\"Fable\"}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C12 phone",
+  "expected": "a member sees no clash note at all",
+  "saw": "{\"signedInAs\":\"Viewing asRanger\",\"fixtureLanded\":{\"cells\":[[\"plasma\",\"FO* !\"],[\"bane\",\"HO* !\"]],\"day5\":{\"appr\":\"\"}},\"noteElements\":0,\"clashWords\":false,\"adminSawNoteInBuild\":1}",
+  "verdict": "PASS"
+ },
+ {
+  "surface": "W1",
+  "key": "C12 desk",
+  "expected": "a member sees no clash note at all",
+  "saw": "{\"signedInAs\":\"Viewing asRanger\",\"fixtureLanded\":{\"cells\":[[\"plasma\",\"FO* !\"],[\"bane\",\"HO* !\"]],\"day5\":{\"appr\":\"\"}},\"noteElements\":0,\"clashWords\":false,\"adminSawNoteInBuild\":1}",
+  "verdict": "PASS"
+ }
+]

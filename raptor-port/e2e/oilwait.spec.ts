@@ -143,6 +143,16 @@ for (const size of SIZES) {
       expect(await ground(page)).toEqual(before)
       /* answered: the swap, with its answer */
       await press('[data-testid="oilbar-answer"]')
+      /* ONE RING, NEVER TWO (owner D842, 14 Oct 26 — "Double blue ring"). An answer picked BY KEYBOARD is both picked
+         and under the keyboard: the picked look's cyan edge and the keyboard's cyan ring, set a little off the button,
+         drew two rings one inside the other. The keyboard's ring is drawn ON the picked answer's own edge. Only a real
+         screen has a cascade to ask (jsdom loads no stylesheet), so the pin is here. */
+      await page.locator('[data-testid="oil-yes"]').focus()
+      await page.keyboard.press('Space')
+      const ring = await page.locator('[data-testid="oil-yes"]').evaluate(e => { const s = getComputedStyle(e); return { picked: e.classList.contains('on-pick'), keyboardOnIt: e.matches(':focus-visible'), ring: `${s.outlineStyle} ${s.outlineWidth}`, offset: s.outlineOffset } })
+      expect(ring, 'a picked answer with the keyboard on it wears ONE ring, on its own edge').toEqual({ picked: true, keyboardOnIt: true, ring: 'solid 2px', offset: '-1px' })
+      const plain = await page.locator('[data-testid="oil-no"]').evaluate(e => { (e as HTMLElement).focus(); return getComputedStyle(e).outlineOffset })
+      expect(plain, 'an answer that is NOT picked keeps the ring a little off its grey edge').toBe('2px')
       await press('[data-testid="oil-yes"]')
       await press('[data-testid="oilconf-save"]')
       await expect(page.locator('[data-testid="oilconf"]')).toHaveCount(0)

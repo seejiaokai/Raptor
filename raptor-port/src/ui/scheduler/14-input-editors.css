@@ -168,6 +168,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    The OIL question (ui/OilConfirm.tsx) and the day's one list of them (ui/OilDayList.tsx) alike, a Yes and a No alike.
    The upchit and the medical-clash sheets keep `.on-keep` / `.on-rem` — they were not on the page he approved. */
 .upconf-seg.on-pick{border-color:var(--accent);background:var(--panel-2);color:var(--accent)}
+/* ONE RING, NEVER TWO (owner D842, 14 Oct 26 — "Double blue ring", of the built question with a picked answer that had the
+   keyboard on it). The picked answer's cyan edge and the keyboard's cyan ring, set a little off the button, drew two
+   rings one inside the other. On a picked answer the keyboard's ring is drawn ON its edge: one ring, a little thicker.
+   An answer that is not picked keeps the ring off its grey edge, as above. */
+.upconf-seg.on-pick:focus-visible{outline-offset:-1px}
 .upconf-need{font-size:11.5px;color:var(--ink-3)}
 /* THE CLASH SHEET'S ROWS ARE FLAT (owner, 28 Aug 26 — "remove the box around
    the buttons. It looks unclean"): no card fill, border or radius — each clash

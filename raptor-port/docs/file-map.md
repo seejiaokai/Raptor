@@ -27,7 +27,8 @@ behaviour), `src/engine/lockednote.test.ts`, `src/ui/toastplace.test.tsx`, `src/
 script `scripts/handpass/dl-band.mjs`; the check's sheet `docs/handpass/2026-10-14-three-builds.md`, its pictures and key
 record `docs/img/handpass/2026-10-14-three-builds/`, the walkers' brief
 `docs/superpowers/briefs/2026-10-14-three-builds-walk-brief.md`; the walk's scripts, each line an assertion —
-`scripts/handpass/dl-clash-built.mjs`, `dl-band-built.mjs`, `dl-check.mjs` (the shared grammar of a check), and `dl-oil.mjs`,
+`scripts/handpass/dl-clash-built.mjs`, `dl-band-built.mjs`, `dl-notes-built.mjs` (the publish note he pictured, raised by
+the screen's own "Publish day"), `dl-check.mjs` (the shared grammar of a check), and `dl-oil.mjs`,
 `dl-cal.mjs`, `dl-trk.mjs`, `dl-keys.mjs` rewritten from records of what was found into checks of what was built
 (`dl-lib.mjs` takes its folder from `DL_SHOTS`); the walkers' own scripts `scripts/handpass/tb/`.
 

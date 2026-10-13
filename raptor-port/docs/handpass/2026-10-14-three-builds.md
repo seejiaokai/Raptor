@@ -221,10 +221,107 @@ step two's (`[ONE-DATE-CALENDAR]`).
    **Fixed:** every part of the note wears a name of its own (`clash-…`). Pinned by `src/leavewar/clashwayout.test.tsx`
    "every part of the note wears a name of its own" (it lists the bare names it finds — red on the first cut) and by
    `e2e/leavewar.spec.ts` (the line no taller than 34 on a real screen). The script's own line then passed.
+2. **"Double blue ring" — his own find, from a picture of the built OIL question (14 Oct, D842).** An answer picked by
+   keyboard wore the picked look's cyan edge and, a little off it, the keyboard's cyan ring. **Fixed:** on a picked
+   answer the keyboard's ring is drawn on the answer's own edge (`14-input-editors.css`). Pinned on a real screen by
+   `e2e/oilwait.spec.ts` (the swap that waits: Space on "Yes", then the ring read) and by `dl-oil.mjs`'s own line.
+3. **W1 — the clash note: 12 scenarios, 12 PASS** (`parts/2026-10-14-three-builds-w1.md`; the host opened its pictures
+   for C2, C5 and C8). Its "seen in passing", each judged by the host:
+   - `earns *HO` for three men and `earns HO*` for a fourth — NOT a fault: the star's side is the half of the day
+     (`*HO` the morning, `HO*` the afternoon — `leavewar/sync.ts notationOf`), the clash strip's notation since before
+     this batch; the sentence prints the code it is handed.
+   - On a phone a passing note lies over the lower part of an open Leave War day sheet for its three seconds — older
+     behaviour, wider now (D828). Put to him with N-TOP below (§0, question 2).
+   - "Fable is recorded as working 08:00–18:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve"
+     keeps its dash: it is not one of the 33 notes of 13 Oct 26. Filed for the whole-app words pass (D808).
+   - a publish note still on screen in one picture: the script's (it read before the note had gone), not the app's.
+4. **W2 — the passing notes: 32 rows, 28 PASS, 2 FAIL, 1 NOT WALKED, 1 for the host**
+   (`parts/2026-10-14-three-builds-w2.md`). Each FAIL was taken to the code before it was believed:
+   - **N12 "FAIL" — NOT a fault of this build; a question for him (§0, question 1).** The sentence he approved
+     ("Nothing on this day earns. Turn that off first.") is on a man's puck under the day's switch — and since
+     21 Sep 26 that puck is not a control there (it is drawn inert, on purpose: `ui/oilmode.ts`), so no tap raises it.
+     What a tap DOES raise is the same sentence on the ITEM's own switch and in the ALL AVAIL window — two copies the
+     words of record list as "not on his list, never changed unasked", so they keep "— turn that off first". The build
+     did what the list said; the result is that the wording he approved is the one he cannot see.
+   - **N24 "FAIL" — NOT a fault; the walker's brief guessed the gesture.** The three things the walker did are each
+     as ruled: a man dropped on an ALL AVAIL input's row joins it (D755, D757), ALL AVAIL then comes off it (D734),
+     and ALL AVAIL alone is refused with N27's new words. N24's own sentence is said by ONE door — a drop on an
+     Unavailable row — and an ALL AVAIL input can never be filed under Unavailable (the save refuses it), so the
+     sentence is a guard no screen gesture reaches today. Carried by `src/ui/placeholderdoors.test.tsx` (the door
+     called) and `src/ui/noteswords.test.ts` (the words). Added to §8.
+   - **N1b (for the host) — walked by the host, WORKS.** The seed Saturday's Common Programme holds no row, so the app
+     rightly had no OIL sentence to add. `scripts/handpass/dl-notes-built.mjs` makes the day he pictured (two men on a timed
+     ground row, one on a Common Programme row with no times — a fixture) and publishes it by the screen's own four
+     names and "Publish day": the note reads `Saturday 18 Jul published and approved. The Common Programme has no
+     usable times, so nobody on it earns OIL.` — on a phone two lines, 12 from each edge (picture
+     `note-phone-1-published-with-oil-line.png`, opened); the same words on a desktop. The first two runs failed for the
+     script's own reason (it put the man on a row that was not there) — written here as the script's.
+   - **N4 NOT WALKED** — the warning before an Unpublish needs a man whose OIL from that day is already spent on the
+     Leave War. Carried by `src/ui/unpublish-button.test.tsx` (the real button, pressed twice) and
+     `src/ui/noteswords.test.ts`. Said in §10.
+   - Its "seen in passing": on a phone a note raised while a window is up goes to the TOP and, full width now, lies
+     over the window's title and ✕ for its three seconds (picture `w2/ntop-phone-note-with-window-up.png`, opened) —
+     a ripple of D828, put to him (§0, question 2). On a desktop a two-line note's words are left-aligned — the
+     desktop's note is unchanged by this batch (D828); filed for D808. The brief named a `clearToast` helper the
+     build does not have — the brief's mistake; the walker waited for the note to fade instead.
+5. **W3 — the eleven window heads, the question sheets, the OIL question's other forms, the bar, the calendar card's
+   name: 100 rows — 92 PASS, 4 FAIL, 4 records** (`parts/2026-10-14-three-builds-w3.md`; the host opened its pictures
+   for X3 and X9). Each FAIL was taken to the code before it was believed:
+   - **X3 "FAIL" (both sizes) — NOT this batch's; put to him.** In a cancelled input's own window the red CX tag and
+     its reason stand at the right of the head, just before the ✕, with empty head between the title and them (158
+     wide on a desktop, 70 on a phone). That window is the app's movable one, and the tag is handed to it as one of the
+     head's tools — which the window draws at the right. Neither that window nor its head's rules are in this batch's
+     difference (`git diff bfaa68489 --stat -- src/ui/FloatWindow.tsx` is empty; the stylesheet rules this batch
+     changed are the small sheets' ✕ and the offer's buttons). The brief's expectation ("beside the title") was
+     written from D771's words; how it was built on 12 Oct is this. A small question for him (§0, question 3).
+   - **X9 "FAIL" × 2 (the board's "Cancel this item" sheet, desktop) — one is the brief's, one is filed.** (a) It opens
+     with the keyboard in its reason box, not on the sheet: right — it is a box to type in, and the brief's "on the
+     sheet itself" was written for the question sheets. (b) Its reason chips (WX, OPS, LOGS) and "Edit" show the
+     browser's own white ring, not the app's cyan one: true, and the same kind of gap as K10 — but K10's list is the
+     OIL answers, the small sheets' ✕ and the offer's buttons, and these chips are not on it. Filed, not fixed.
+   - Its records (O5): the upchit question's and the medical-clash question's answers still sit on the stray darker
+     strip with a line under it — the very fault L1 took off the OIL question. Not on his list of 13 Oct; put to him
+     with the close-ups (§0, question 4).
+   - Its "seen in passing": a note said to stay 25 seconds — NOT reproduced: the host timed it on the same build
+     ("Schedule updated" after the board's Done: gone 2.8 seconds on, as written); the walker's script read it about
+     three seconds after the press. A two-day Duty whose end time changed saved with no OIL question — as built before
+     this batch (the question returns when the credit changes); not judged here. "Answer OIL" shows no ring when the
+     bar arrives after a MOUSE drag and does after a Tab — the browser's rule for a ring, as on every button.
+6. **The calendar's month-and-year lists: End chose a year sixty years on; Page Down and Space six (the host's
+   re-walk, 14 Oct — older than this batch, in the keys this batch covers).** `dl-cal.mjs` failed one run in four on
+   "Enter in a list": the year list had gone to 2086. Cause: a list is a scrolling box that holds the keyboard, and
+   the browser scrolls it for Home, End, Page Up, Page Down and Space unless the key is taken — and a row left in the
+   band when the scrolling stops is the choice. The unit test asked for exactly the wrong thing ("the key is not
+   taken"); the walk's script read the year 450ms after the key, before a 750ms scroll had settled, so "nothing
+   moved" was true of every reading and false of the app. **Fixed, red first:** the list keeps those keys from the
+   browser (`src/ui/DateCal.tsx`); `src/ui/datecal.test.tsx` pins that (it failed first); the script now reads 1.3
+   seconds after each key and adds Page Down, Space and Home — it FAILED on the build as walked (End 2086, Page Down
+   2092, Space 2098) and passes on the rebuilt one: desktop 24 lines, phone 9, all `works`.
+7. **The new browser test for D842 passed with its rule cut — the first time.** The browser tests reuse a preview
+   already serving on their port, and one was (the walk's): the cut never reached the build they ran on. Cut again
+   WITH a rebuild: red ("offset 2px", wanted "-1px"); rule put back, rebuilt: green. A break test of a stylesheet rule
+   needs its own build — written into the skill notes.
 
 ## 10. Break tests, errors seen, what was not walked
 
-*(filled at the close)*
+**Break tests — `scripts/handpass/breaks/2026-10-14-three-builds.json`, 31 wires, each cut once
+(`node scripts/handpass/breaks.mjs scripts/handpass/breaks/2026-10-14-three-builds.json`): 31 of 31 go red.**
+
+| Wires | The surface | Result |
+|---|---|---|
+| 1–9 | the clash note: one clash starts open; the Inputs window; the person asked for; the ask taken once; the grid opens the day; a clash in another period; "published"; a member sees none; a clash carries its period | 9 CAUGHT (`clashwayout.test.tsx`, `clashperiod.test.tsx`, `oilsync.test.ts`) |
+| 10–16 | the OIL question: the first answer has the keyboard; the ✕ last; Back; Add at a new input's save; the outline look; the one list's No; the one-day sentence | 7 CAUGHT — 12 and 13 BY HAND (the runner could not read the run: the failure's printout is longer than it holds; cut by hand, `oilconfirm.test.tsx` and `oilconfirm-look.test.tsx` went red, the lines put back and `git diff` clean) |
+| 17–20 | the bar: the keyboard goes to it; Escape; the top bar's copy stands down; the top bar makes room | 4 CAUGHT — **20 was NOT caught the first time: nothing watched the class that makes the top bar's room.** A test was written (`oilwait.test.tsx`: the board closed with the bar up — the top bar carries it and says so) and the break run again: caught |
+| 21–22 | the passing note: a phone's width; two notes of one day said once | 2 CAUGHT |
+| 23–28 | the calendar: the last date; Home; Shift+Page; Enter in a list; the phone card's name; Until's card | 6 CAUGHT |
+| 29–31 | the Tracker: a failures-list row; Delete; the dim date | 3 CAUGHT |
+
+**What a break here cannot reach** (a stylesheet's rule — the test world lays nothing out): the ✕ in the corner, the
+band's one line and its stacking, the amber line, the clash list's columns. Those are asserted on the built screen by
+`e2e/leavewar.spec.ts`, `e2e/oilwait.spec.ts` (in the gates) and by the walk's scripts; the calendar's and the Tracker
+boxes' rules are read as contracts by `src/ui/datecal-look.test.ts`.
+
+*(errors seen, and what was not walked: filled at the close)*
 
 ## 11. The gates, and the look card
 

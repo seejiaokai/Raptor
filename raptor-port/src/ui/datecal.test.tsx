@@ -476,12 +476,18 @@ describe('the keys the look found missing on the dates (K1, K2 — D830)', () =>
     at('2026-11-05')('PageUp', { shiftKey: true })
     expect(calMonth()).toBe('2026-11'); expect(on()).toBe('2026-11-05')
   })
-  it('K1, K2 — with the lists open those keys are not the lists’: nothing moves and the key is not taken', () => {
+  /* "NOT TAKEN" WAS THE FAULT (the check's walk, 14 Oct 26). This test first asked that the key be left alone — and in a
+     real browser a key left alone by a scrolling box that holds the keyboard SCROLLS it: End ran the years to the foot
+     of their window, and once the scrolling stopped the row left in the band was chosen — 2086 from 2026, by a key the
+     calendar gives no meaning in a list. (Seen by the walk's own script one run in four: it read the year before the
+     scrolling had settled.) There is no scrolling here to see it by, so what is pinned is the cause: in a list the
+     browser is not left these keys — Home, End, Page Up, Page Down, with Shift or without, and Space. */
+  it('K1, K2 — with the lists open those keys are not the lists’: nothing moves, and the browser is not left them to scroll the list by', () => {
     render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
     fireEvent.click(t('dcal-title'))
     for (const which of ['dcal-months', 'dcal-years']) {
-      for (const [key, shiftKey] of [['Home', false], ['End', false], ['PageDown', true], ['PageUp', true]] as const) {
-        expect(fireEvent.keyDown(t(which), { key, shiftKey }), `${key} on ${which}`).toBe(true)
+      for (const [key, shiftKey] of [['Home', false], ['End', false], ['PageDown', false], ['PageUp', false], ['PageDown', true], ['PageUp', true], [' ', false]] as const) {
+        expect(fireEvent.keyDown(t(which), { key, shiftKey }), `${JSON.stringify(key)}${shiftKey ? ' with Shift' : ''} on ${which} is taken from the browser`).toBe(false)
       }
     }
     expect(t('dcal-title').textContent).toContain('November 2026')
@@ -576,10 +582,12 @@ describe('the keyboard’s way into and out of the month-and-year lists (K3, K4 
     expect(calMonth()).toBe('2026-12'); expect(q('dcal-lists')).toBeNull()
     expect(document.activeElement).toBe(t('dcal-title'))
   })
-  it('K4 — every other key in a list is as it was: the arrows move a row, and nothing else is taken', () => {
+  /* (Space was first written here as "not taken". A real browser scrolls a list by it — six years on — so it is one of
+     the keys the list keeps from the browser: the test above, 14 Oct 26.) */
+  it('K4 — every other key in a list is as it was: the arrows move a row; Tab and a letter are left to the browser', () => {
     render(<DateCal value="2026-11-05" today="2026-11-03" onPick={() => {}} />)
     fireEvent.click(t('dcal-title'), byKey)
-    expect(fireEvent.keyDown(t('dcal-months'), { key: ' ' })).toBe(true)
+    expect(fireEvent.keyDown(t('dcal-months'), { key: 'a' })).toBe(true)
     expect(fireEvent.keyDown(t('dcal-months'), { key: 'Tab' })).toBe(true)
     expect(t('dcal-lists')).toBeTruthy()
     expect(fireEvent.keyDown(t('dcal-months'), { key: 'ArrowUp' })).toBe(false)

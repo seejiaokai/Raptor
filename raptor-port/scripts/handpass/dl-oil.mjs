@@ -126,6 +126,10 @@ if (!w.phone) {
   ok('OIL question', 'Space on "Yes"', 'picks it; "Swap" comes alive', `Swap is ${live ? 'live' : 'still off'}`, live)
   const f = await sheetFacts()
   ok('OIL question', 'L5 — a picked answer', `the outline look: its edge and its words ${ACCENT}, its ground NOT the main button's solid fill`, JSON.stringify(f.picked) + ` · main button ${f.mainBg}`, !!f.picked && f.picked.edge === ACCENT && f.picked.ink === ACCENT && f.picked.bg !== ACCENT && f.mainBg === ACCENT)
+  /* D842 — "Double blue ring": the picked answer has the keyboard on it here (Space picked it). ONE ring: the
+     keyboard's ring is drawn on the picked answer's own edge, not a second ring a little off it. */
+  const one = await p.locator('[data-testid="oil-yes"]').evaluate(e => { const s = getComputedStyle(e); return { focused: document.activeElement === e, ring: `${s.outlineStyle} ${s.outlineWidth} ${s.outlineColor}`, offset: s.outlineOffset, edge: `${s.borderTopWidth} ${s.borderTopColor}` } })
+  ok('OIL question', 'D842 — a picked answer with the keyboard on it', `ONE ring: the keyboard's ring (solid 2px ${ACCENT}) drawn on the answer's own edge (offset -1px), not a second ring round it`, one, one.focused && one.ring === `solid 2px ${ACCENT}` && one.offset === '-1px')
   await L.pic(w, `oil-${K}-3-question-answered`, { around: '[data-testid="oilconf"] .airpop-box', pad: 40 })
   await p.keyboard.press('Escape'); await L.sleep(400)
   const bar = await p.locator('[data-testid="oilbar"]').count()
