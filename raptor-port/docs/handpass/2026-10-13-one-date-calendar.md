@@ -274,6 +274,14 @@ inert (`23-days.css`), noted in `[ONE-DATE-CALENDAR]`.
 twenty lines) — which the two real double-clicks in the browser tests and nine break tests hold. A narrow read of the
 fix commit is the first thing to add if he wants more before "merge live".
 
+**Added after this check closed, from the read of the NEXT job (the Tracker's date boxes, the same night — its F1):**
+this read's own F1 guarded the second half of a double tap AFTER a pick; nothing guarded the tap that OPENS the calendar.
+On a phone the card is put in the middle of the screen and can land under the finger: the second half of a double tap on
+a date box then fell on a date and picked it (in the forms of this step, a field of a form not yet saved; in the Tracker,
+a date saved at once — which is where it was found). The opening tap now leaves the same patch, over the card
+(`ui/DateBox.tsx`, `26-date-calendar.css`; two unit tests, red first, in `ui/datebox.test.tsx`; the browser test and the
+walk of it are the Tracker job's — `docs/handpass/2026-10-13-tracker-date-boxes.md` §9, S6). Not walked again here.
+
 ## 11. What was NOT walked, and why
 
 - **The Leave War's sheets on a phone on its side** — the host's script could not reach a man's day there (the grid
