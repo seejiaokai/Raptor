@@ -45,6 +45,12 @@ Every build that follows gets its own check.
   (the busy picture); the list needs a cap (five, then it scrolls inside); the line is a real button for a keyboard
   (`aria-expanded`).
 
+## 1a. His choice, the same evening — A, neater (D823), and the key words kept (D825)
+
+- **D823** ("this but neater like alignment", of the busy picture of option A). `dl-clash.mjs` modes `N-closed` / `N-open`: ONE grid for the whole list (`grid-template-columns: max-content minmax(0,1fr) max-content 7px`, each row a subgrid) — the name | the day | what to do, right-aligned | its arrow; what clashes on a second line across the whole row (it wrapped to a third line when held to the day's column: the longest callsign widens the first column). The script prints, per state, that every row's name, day, instruction and arrow share one edge, the rows' heights (48, 49), and that the line's edges are the chips' (10, 380). The card from 156 (closed), 205 (one clash open), 254 (two), 450 (six). Subgrid is in every browser the app is used in; a build that cannot use it sets the first column from the longest callsign.
+- **D825** ("the key words are gone. Too summarised"). The clash lines say today's sentence less the name and the date ("Weekend/PH work earns FO, but the day holds LL"; "Input OML against bid LL"), and the four instructions keep their words. The notes list on the page was redone to the same rule — only filler cut, each row saying what went; the first list's wordings (still in `[NOTES-SHORTER]`'s first paragraph and in the L3 table's first form) are NOT the ones to build. `dl-notes.mjs` now draws the redone N1–N3.
+- **D824** — the ring round a picked date in `cal-desk-3` is `:focus-visible` only; nothing to build.
+
 ## 2. The passing notes (D806)
 
 - **The count:** 276 `toast(` calls outside the tests; 99 whose words run to nine or more (a script over `src/`, the

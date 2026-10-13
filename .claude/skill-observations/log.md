@@ -376,3 +376,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** Decide once, in the project's note on the vendored design skill: either the document check lets .impeccable/critique/ through (it is the skill's own store, like its config), or critique is told here to skip persistence and write its scores into the look's own record under docs/handpass/. Until then a critique in this repo ends with a moved file and a broken trend.
 
 **Principle:** A vendored tool's own store and the host project's filing rule have to be reconciled once, in writing — otherwise every run pays for the clash again, and the tool's later steps silently lose what an earlier step saved.
+
+### Observation 579: "Shorten it" was answered with summaries — the owner sent the list back: "the key words are gone"
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] / [NOTES-SHORTER] — 33 shorter wordings for the app's passing notes, put to him before and after; his answer the same evening (D825)
+**Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen); plain-language (the same failure as a "condensed record that changed what the original meant", D138)
+**Type:** open-source
+**Phase/Area:** Clarify — rewriting existing copy shorter
+
+**Issue:** Asked to make wordy notes shorter, the first draft rewrote each note as a summary: named things became pronouns, reasons and consequences were dropped or compressed ("the common programme has no usable times, so nobody on it earns OIL" became "no times — no OIL from it"). The owner read it as key words gone. Redone with one test per word — would the sentence still say the same fact without it — the honest result was fourteen notes with filler cut (a day said twice, "Heads up", "it has been") and nineteen left whole. Nothing in the method had asked for the cut words to be listed, so the loss was invisible until he read it.
+
+**Suggested improvement:** In clarify.md and the guide's §1: a shortening is shown as before, after, and the exact words cut. A cut is allowed only for a word the sentence says the same without; a named thing, a number, a reason, a consequence and the place to fix it are never cut. A note that cannot lose a word that way is reported as "left whole", and the next question is its box, not its words.
+
+**Principle:** Shortening removes words; summarising removes facts. Show the removed words, and the difference polices itself.

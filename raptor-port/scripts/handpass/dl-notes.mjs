@@ -1,6 +1,7 @@
 /* THE DESIGN LOOK — the passing notes ([NOTES-SHORTER], owner D806): the two he pictured, as built and in the shorter
    words proposed, drawn by the app's OWN note (the developer's bridge calls the same `toast` the app calls — the box,
-   its width, its wrapping and its place are the built ones; only the WORDS of the "after" pictures are the proposal).
+   its width, its wrapping and its place are the built ones; only the WORDS of the "after" pictures are the proposal — the wordings of owner D825, every key word kept: the first
+   drafts, cut further, were sent back as "too summarised").
    node scripts/handpass/dl-notes.mjs [phone|desk] */
 import * as L from './dl-lib.mjs'
 const size = process.argv[2] || 'phone'
@@ -9,9 +10,9 @@ const p = w.page
 await L.go(w, 'editsched')
 await L.sleep(400)
 const PAIRS = [
-  ['publish', 'Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL', 'Monday published · Common Programme has no times — no OIL from it'],
-  ['unpublish', 'Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is published again', 'Monday unpublished — its OIL is off the Leave War until republished'],
-  ['withdraw', 'Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing again reissues AL2', 'Monday: AL2 withdrawn — AL1 is issued again; its changes are pending'],
+  ['publish', 'Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL', 'Monday published — approved · Common Programme has no usable times: nobody on it earns OIL'],
+  ['unpublish', 'Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is published again', 'Monday unpublished — a draft again; publishing reissues the Original · its OIL credits leave the Leave War until then'],
+  ['withdraw', 'Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing again reissues AL2', 'Monday: AL2 withdrawn — its changes are pending on the working copy again; AL1 is the issued schedule; publishing reissues AL2'],
 ]
 for (const [name, before, after] of PAIRS) {
   for (const [k, text] of [['before', before], ['after', after]]) {

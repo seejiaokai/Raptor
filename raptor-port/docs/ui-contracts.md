@@ -4490,7 +4490,7 @@ Three things stay decided:
 
 ## The passing notes' wording — to be shortened (owner D806, 13 Oct 26)
 
-**Not yet built.** His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over
+**Not yet built.** His iPhone pictures: the note after publishing a day and the one after unpublishing it each ran five lines over **AND A SHORTER WORDING KEEPS EVERY KEY WORD (owner D825, 13 Oct 26 — "some of them I feel like the key words are gone. Too summarised"):** what happened, why, what it costs and where to put it right all stay; only filler is cut; a wording that cannot lose a word without losing a fact is left as it is.
 the schedule ("Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns
 OIL"; "Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it
 is published again"). The rule for a passing note from here on: what happened, then the ONE thing he must know, the day named
@@ -7063,6 +7063,7 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   cannot be picked. Nothing of the phone's own date box is left in the window — that is the fit: an iPhone gave that box a
   width of its own (his pictures of 8 and 13 Oct 26). A box cannot be emptied (D796 — no Reset): "No end" is how a rule
   has no end. Pins: `ui/everyweekday.test.tsx`; `e2e/datecal.spec.ts` (320, 360, 390 and 440 wide).
+- **THE PICKED DATE IS THE PLAIN BRIGHT DISC, NO RING (owner D824, 13 Oct 26 — "I like the others which doesn't have that blue ring"):** a ring round a date is the KEYBOARD'S place only (`:focus-visible`), never drawn after a tap or a click, and no design adds one to the picked date at rest.
 - **THE APP'S ONE DATE CALENDAR (D796, D797 — `ui/DateCal.tsx`, `ui/DateBox.tsx`, `ui/scheduler/26-date-calendar.css`;
   the design of record `docs/superpowers/specs/2026-10-13-one-date-calendar.md`).** On the iPhone calendar's pattern in
   the Raptor look: the month and year as a title that opens two SCROLLED lists (months beside years — the months go round,

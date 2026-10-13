@@ -50,6 +50,20 @@ const CSS = `
 #page-leavewar .umlist.dl-um .umrow .why{margin-left:0;color:#F5E3BF}
 #page-leavewar .umlist.dl-um .umrow .dl-do{margin-left:auto;white-space:nowrap}
 .dl-hide{display:none !important}
+/* THE NEATER A (owner D823, 13 Oct 26 — "this but neater like alignment"). ONE GRID FOR THE WHOLE LIST, so every row's
+   parts start at the same place: the name | the day | what to do | its arrow, and under them, across the whole row,
+   edge to the row's right edge, what clashes — said with its key words (owner D825: "weekend/PH work", "the day
+   holds"). Each row is the same shape — two lines — whatever its words. The line's own edges are the buttons' above it (10px), not the screen's. */
+#page-leavewar .dn-line{display:flex;align-items:center;width:100%;margin:0;padding:6px 10px;border:0;border-bottom:1px solid rgba(229,168,59,.5);background:rgba(229,168,59,.16);color:#FFF0D6;font:700 12px/18px inherit;font-family:inherit;text-align:left;cursor:pointer}
+#page-leavewar .dn-line .dn-go{margin-left:auto;font-weight:600;color:#F5E3BF}
+#page-leavewar .dn-list{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content 7px;column-gap:10px;margin:0;padding:0 10px;border-bottom:1px solid rgba(229,168,59,.5);background:rgba(229,168,59,.08)}
+#page-leavewar .dn-row{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;align-items:start;padding:7px 0;border:0;border-top:1px solid rgba(229,168,59,.22);background:none;color:#F5E3BF;font:500 12px/16px inherit;font-family:inherit;text-align:left}
+#page-leavewar .dn-row:first-child{border-top:0}
+#page-leavewar .dn-who{font-weight:700;color:#FFF0D6}
+#page-leavewar .dn-day{color:#FFF0D6;font-variant-numeric:tabular-nums}
+#page-leavewar .dn-what{grid-column:1 / -1;color:#F5E3BF;opacity:.85}
+#page-leavewar .dn-do{font-weight:600;color:#FFF0D6;text-align:right;white-space:nowrap}
+#page-leavewar .dn-chev{color:#F5E3BF;text-align:right}
 `
 await p.addStyleTag({ content: CSS })
 /* the same two clashes the built note shows, under every option, in the shorter words: who · the day — what clashes · what to do */
@@ -81,6 +95,14 @@ const stage = (mode, rows) => p.evaluate(([mode, rows]) => {
       filters.append(list)
     }
   }
+  if (mode === 'N-closed' || mode === 'N-open') {
+    const line = el('button', 'dn-line', `<span>⚠ ${n} ${n === 1 ? 'clash' : 'clashes'} with the schedule</span><span class="dn-go">${mode === 'N-open' ? 'Hide ▴' : 'Show ▾'}</span>`)
+    filters.after(line)
+    if (mode === 'N-open') {
+      const list = el('div', 'dn-list', rows.map(r => `<button class="dn-row"><span class="dn-who">${r.who}</span><span class="dn-day">${r.day}</span><span class="dn-do">${r.go}</span><span class="dn-chev">›</span><span class="dn-what">${r.what}</span></button>`).join(''))
+      line.after(list)
+    }
+  }
   if (mode === 'C') {
     const line = el('button', 'dl-line', `<span>⚠ <b>${rows[0].who}</b> · ${rows[0].day} · ${rows[0].what}</span><span class="dl-go">+${n - 1} more ›</span>`)
     filters.after(line)
@@ -89,7 +111,9 @@ const stage = (mode, rows) => p.evaluate(([mode, rows]) => {
   const stageEl = pg.querySelector('.stage').getBoundingClientRect()
   const chips = [...filters.querySelectorAll(':scope > .fchip')].map(c => `${c.textContent.trim().slice(0, 18)}:${Math.round(c.getBoundingClientRect().width)}`)
   const st = filters.querySelector('.stagetxt')
-  return { mode, has: pg.querySelectorAll('.dl-new').length, filtersH: Math.round(f.height), gridTop: Math.round(stageEl.top), chips, stageCut: st ? st.scrollWidth > st.clientWidth : null, overflow: document.documentElement.scrollWidth > innerWidth }
+  const cols = [...pg.querySelectorAll('.dn-row')].map(r => ({ who: Math.round(r.querySelector('.dn-who').getBoundingClientRect().left), day: Math.round(r.querySelector('.dn-day').getBoundingClientRect().left), doR: Math.round(r.querySelector('.dn-do').getBoundingClientRect().right), chev: Math.round(r.querySelector('.dn-chev').getBoundingClientRect().right), h: Math.round(r.getBoundingClientRect().height) }))
+  const firstChip = filters.querySelector(':scope > .fchip').getBoundingClientRect().left, lastChip = [...filters.querySelectorAll(':scope > .fchip')].pop().getBoundingClientRect().right
+  return { mode, cols, chipEdges: [Math.round(firstChip), Math.round(lastChip)], has: pg.querySelectorAll('.dl-new').length, filtersH: Math.round(f.height), gridTop: Math.round(stageEl.top), chips, stageCut: st ? st.scrollWidth > st.clientWidth : null, overflow: document.documentElement.scrollWidth > innerWidth }
 }, [mode, rows])
 
 if (w.phone) {
@@ -110,6 +134,25 @@ if (w.phone) {
   for (const [mode, name] of [['A-open', 'A3-line-open-busy'], ['B-open', 'B3-chip-list-busy']]) {
     console.log('BUSY', JSON.stringify(await stage(mode, BUSY))); await L.sleep(150)
     await L.pic(w, `clash-${K}-${name}`)
+  }
+  /* THE NEATER A — closed, open with the two real clashes, one clash, and the busy case; the words with their key
+     words kept (D825) */
+  const NROWS = [
+    { who: 'Fable', day: 'Sat 18 Jul', what: 'Weekend/PH work earns FO, but the day holds LL', go: 'Decide the bid' },
+    { who: 'Ranger', day: 'Sat 18 Jul', what: 'Weekend/PH work earns *HO, but the day holds OL', go: 'Decide the bid' }]
+  const NBUSY = [...NROWS,
+    { who: 'Sidewinder', day: 'Sun 19 Jul', what: 'Weekend/PH work earns FO, but the day holds OML', go: 'Change the leave on Inputs' },
+    { who: 'Warden', day: 'Mon 10 Aug', what: 'Input OML against bid LL', go: 'Decide the bid' },
+    { who: 'Drifter', day: 'Sat 22 Aug', what: 'Weekend/PH work earns FO, but the day holds LL', go: 'Send back or delete' },
+    { who: 'Basher', day: 'Sun 23 Aug', what: 'Weekend/PH work earns HO, but the day holds published OL', go: 'Step back to Bidding Closed' }]
+  for (const [mode, name, rows] of [['N-closed', 'N1-neat-closed', NROWS], ['N-open', 'N2-neat-open', NROWS], ['N-open', 'N3-neat-open-busy', NBUSY], ['N-open', 'N4-neat-open-one', NROWS.slice(0, 1)]]) {
+    const m = await stage(mode, rows)
+    if (!m.has) throw new Error('nothing was drawn for ' + mode)
+    const same = k => new Set(m.cols.map(c => c[k])).size <= 1
+    console.log('NEAT', name, JSON.stringify({ gridTop: m.gridTop, rows: m.cols.length, heights: [...new Set(m.cols.map(c => c.h))], aligned: { who: same('who'), day: same('day'), doRight: same('doR'), chev: same('chev') }, edges: m.cols[0] ? [m.cols[0].who, m.cols[0].chev] : null, chipEdges: m.chipEdges, overflow: m.overflow }))
+    await L.sleep(150)
+    await L.pic(w, `clash-${K}-${name}`)
+    await L.pic(w, `clash-${K}-${name}-top`, { clip: { x: 0, y: 40, width: 390, height: name.includes('busy') ? 420 : name.includes('open') ? 250 : 170 } })
   }
 } else {
   /* the desktop keeps its strip (D679, D805 reading 1) — shown once with the same shorter words, for him to take or leave */
