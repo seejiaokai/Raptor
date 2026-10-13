@@ -83,6 +83,9 @@ describe('the clash sheet gates a different-type overlap', () => {
     const depth = HIST.stack.length
     await openMedAdd('ATT B', 'Jul 13', 'Jul 18')
     await click($('#inpEditSave'))
+    /* THE ANSWERS SIT FLAT (owner D849, 14 Oct 26 — "3 yes"): no `.seg`, the week strip's rule, whose darker patch and line
+       underneath they wore — a wrapper of the sheet's own (what it looks like on screen: e2e/feedback-marks.spec.ts) */
+    expect($('[data-testid="medclash"] .seg'), 'the week strip\'s class is not worn').toBeNull()
     await click($('[data-testid="medclash-0"] .upconf-ans button'))               // "ATT B replaces"
     await click($('[data-testid="medclash-save"]'))
     expect(c.endDate).toBe('Jul 12')

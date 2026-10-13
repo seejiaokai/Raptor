@@ -1,5 +1,20 @@
 # The file map — where each source file lives and what it does
 
+`[BATCH-14OCT-LEFTOVERS]` — the three leftovers and three note deletions (D849, D851, D854; built on the night of 14 Oct 26).
+**New:** `src/ui/seen.ts` — is a just-saved input IN VIEW wearing its mark (`inView`: its head, middle and foot its own on
+screen), and the save's note said only where it is not (`noteUnlessSeen`; a screen reader told the words in `#srSay`);
+`src/ui/seen.test.ts`; `e2e/feedback-marks.spec.ts` (what only a browser can say: the mark painted and in view, no note
+drawn, the cancelled tag's place, the flat answers — in the `raptor` project of `playwright.config.ts`);
+`scripts/handpass/lo-walk.mjs` (the batch's walk, as assertions with pictures). **What each existing file gained:**
+`src/ui/inputedit.tsx` — `show`, `saidSaved` (where the save's note is left to the screen) and the cancelled tag handed to
+the window as its `mark`; `src/ui/FloatWindow.tsx` — `mark`, drawn straight after the title; `src/ui/InputsCal.tsx` — `lit`
+(the inputs the page has just been shown), `barLit`, the day's card lit and brought into the window's view;
+`src/ui/InputsPage.tsx` and `src/ui/InputCard.tsx` — `data-fresh` on whatever wears the mark; `src/ui/toast.ts` —
+`toastHeld`; `src/state/view.ts` — `revealInput` answers whether the page was asked; `src/ui/reqdoor.ts` — `afterPut` and
+`leave` say nothing for a plain add or take-off; `src/ui/SchedBoard.tsx` — Done says nothing; `src/ui/UpchitConfirm.tsx`,
+`src/ui/MedClashConfirm.tsx` — `.upconf-ans`; the stylesheets `scheduler/06-inputs.css`, `25-inputs-calendar.css` (the mark,
+steady for less motion), `14-input-editors.css`, `22-float-windows.css`.
+
 `[LW-CLASH-NOTE-PHONE]`, `[NOTES-SHORTER]`, `[LOOK-13OCT-SMALL-FIXES]` — the three approved builds of 14 Oct 26, one batch
 (D827, D828, D830, D831, D837–D841). **No new source file; what each existing one gained:**
 `src/leavewar/ui/Chrome.tsx` — the clash note: on a phone a line of its own after the two lines of buttons that opens its

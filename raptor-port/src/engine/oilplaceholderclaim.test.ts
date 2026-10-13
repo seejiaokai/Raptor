@@ -417,8 +417,10 @@ describe('a named man put on the row of an input filed for ALL AVAIL, by the doo
         expect(commitInput(live(), draftOf(live()), ['allavail', 'divot'], { sched: true })).toBe(true)
       } else {
         expect(rowPut(key, 'divot')).toBe('done')
-        expect(SAID.length, 'one note').toBe(1)
-        expect(SAID[0], 'his callsign, the input\'s name — and on a No that he is not counted').toBe(`${String((PEOPLE as any).divot.cs)} added to Duty${said}`)
+        /* on a No the add says he is not counted; on a Yes it says nothing — the puck on the row is the sign (owner D854,
+           14 Oct 26: "<name> added to <row>" goes; the note is kept where it says what the puck does not) */
+        expect(SAID, said ? 'one note: his callsign, the input\'s name, and that he is not counted' : 'no note: the puck is the sign (D854)')
+          .toEqual(said ? [`${String((PEOPLE as any).divot.cs)} added to Duty${said}`] : [])
       }
       const r = live()
       expect(idsOf(r).map(String), 'he joined beside it').toEqual(['allavail', 'divot'])

@@ -5,6 +5,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { HOOKS } from '../engine/hooks'
 import { inView, noteUnlessSeen, SEEN_FIRST_MS, SEEN_SETTLE_MS } from './seen'
+import { toast as theToast } from './toast'
 
 const toast = HOOKS.toast
 let SAID: Array<[string, any]> = []
@@ -139,6 +140,44 @@ describe('the note after a save — said only where the saved thing cannot be se
     vi.advanceTimersByTime(SEEN_FIRST_MS + SEEN_SETTLE_MS)
     expect(SAID).toEqual([])
     expect(hidden.isConnected).toBe(true)
+  })
+  /* THE FRESH READ'S F3 (14 Oct 26). A save's own after-pass raises its warning a beat AFTER the save returns — on
+     purpose, so that it stands over the window's plain line (state/holderbase.ts: "LL does not go on the Ground
+     Programme — its row has been removed"). The plain line now comes later still, and replaced it. A note raised
+     since the save asked keeps the screen; the late words go to a screen reader only. With the app's real note. */
+  for (const [how, covered] of [['nothing wears the mark', false], ['the mark is covered when the page has settled', true]] as const) {
+    it(`a note raised since the save asked is not replaced by the late words (${how})`, () => {
+      HOOKS.toast = theToast as any
+      const over = document.createElement('div'); document.body.appendChild(over)
+      if (covered) card('a')
+      layOut(() => over)
+      noteUnlessSeen('a', 'Input updated', 'ok')
+      theToast('LL does not go on the Ground Programme — its row has been removed', 'warn')
+      vi.advanceTimersByTime(SEEN_FIRST_MS + SEEN_SETTLE_MS + 50)
+      expect(document.getElementById('toastEl')!.textContent, 'the warning stands').toBe('LL does not go on the Ground Programme — its row has been removed')
+      expect(spoken(), 'and the words are still told to a screen reader').toBe('Input updated')
+    })
+  }
+  it('with no note raised meanwhile the late words ARE the note, as before', () => {
+    HOOKS.toast = theToast as any
+    const over = document.createElement('div'); document.body.appendChild(over)
+    theToast('an older note, from before the save', 'ok')
+    layOut(() => over)
+    noteUnlessSeen('a', 'Input updated', 'ok')
+    vi.advanceTimersByTime(SEEN_FIRST_MS + 50)
+    expect(document.getElementById('toastEl')!.textContent).toBe('Input updated')
+  })
+  /* a live region made and filled in the same breath is often not read the first time: it is made when the save asks,
+     a beat before anything is put in it (the read's "worth a look") */
+  it('the screen reader\'s region is on the page from the moment the save asks, empty', () => {
+    const el = card('a')
+    layOut(() => el)
+    noteUnlessSeen('a', 'Input added', 'ok')
+    const live = document.getElementById('srSay')
+    expect(live, 'made at once').toBeTruthy()
+    expect(live!.textContent).toBe('')
+    vi.advanceTimersByTime(SEEN_FIRST_MS + 50)
+    expect(spoken()).toBe('Input added')
   })
   it('an id that would break a selector is looked up safely', () => {
     const el = card('a"]b')

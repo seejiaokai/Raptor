@@ -70,7 +70,11 @@ test('D851, D854 — a day opened on the calendar: the new input’s card wears 
   await expect(page.locator('#srSay'), 'a screen reader is told what the mark says').toHaveText('Input added')
   expect(await page.evaluate(() => (document.activeElement as HTMLElement | null)?.id), 'the keyboard is back on the button that opened the window, not on the new card').toBe('icPopAdd')
   expect(await page.locator(`.ib-bar.innew[data-iid="${id}"]`).count(), 'the bar behind the open day does not light too').toBe(0)
-  /* changed: its card lights again and "Input updated" is not said */
+  /* changed FOUR SECONDS IN: its card lights again for six seconds from THIS save, the box started again, and "Input
+     updated" is not said. (The fresh read's F1, 14 Oct 26: the six seconds were one timer from the first light, and a
+     box already running does not start over — the step passed on the first save's mark, and two seconds after a
+     second save there was neither box nor note.) */
+  await page.waitForTimeout(2600)
   await page.locator(`${card} [data-testid="idy-open"]`).click()
   await page.locator('#inpEditRmk').fill('weekly sync, room 2')
   await page.locator('#inpEditSave').click()
@@ -79,6 +83,28 @@ test('D851, D854 — a day opened on the calendar: the new input’s card wears 
   expect((await markOf(page, card))!.painted).toBe(true)
   expect(await notesFor(page)).toEqual([])
   await expect(page.locator('#srSay')).toHaveText('Input updated')
+  /* 2.8 s after the second save — past the first save's six seconds — the box is still up, at full strength */
+  await page.waitForTimeout(1500)
+  const later = await markOf(page, card)
+  expect([later!.innew, later!.painted], 'the mark runs from the second save').toEqual([true, true])
+  expect(await page.evaluate(sel => getComputedStyle(document.querySelector(sel)!).boxShadow, card), 'not in its fade').toContain('rgb(30, 134, 255) 0px 0px 0px 2px inset')
+})
+
+test('D851 — the desktop List, a second input added four seconds after the first: each row keeps its own box', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs')
+  await page.locator('#inListBtn').click()
+  const add = async (nth: number) => { await page.locator('#inNew').click(); await page.locator('#inpEdCal [data-cal]').nth(nth).click(); await page.locator('#inpEditSave').click(); return newest(page) }
+  const a = await add(14)
+  await expect(page.locator(`#inBody tr[data-iid="${a}"]`)).toHaveClass(/\binnew\b/)
+  await page.waitForTimeout(4000)
+  const b = await add(15)
+  expect(b).not.toBe(a)
+  await page.waitForTimeout(2500)                // 6.5 s after the first, 2.5 s after the second
+  const rowB = await markOf(page, `#inBody tr[data-iid="${b}"]`), rowA = await markOf(page, `#inBody tr[data-iid="${a}"]`)
+  expect([rowB!.innew, rowB!.painted], 'the second row: its own six seconds, not what was left of the first row\'s').toEqual([true, true])
+  /* (the first input may have left the List: "+ Input" lets go of the row it was holding at the head) */
+  expect(rowA ? rowA.innew : false, 'the first row\'s have ended').toBe(false)
 })
 
 test('D854 — the month with no day open: a changed input’s bar wears the mark, no note, and no day opens over the month', async ({ page }) => {
@@ -181,6 +207,29 @@ for (const size of ['a desktop', 'a phone'] as const) {
     } finally { if (ctx) await ctx.close() }
   })
 }
+
+test('D849 (2), D771 — a phone, a title that fills the bar (a long callsign, three people, four days): the CX tag is still whole', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    await month(page, 2026, 10)
+    const who = [await crew(page, 3), await crew(page, 4), await crew(page, 6)]
+    /* a callsign long enough that the title alone is wider than the bar — the layout's worst case, not a real name */
+    await page.evaluate(ids => { ids.forEach((id: string, i: number) => { (window as any).PEOPLE[id].cs = 'Thunderstruck-Longbow-Wanderer-' + i }) }, who)
+    await page.evaluate(who => (window as any).fileInput({ iid: 'fm-cx3', people: who.map((p: string) => ({ p })), type: 'Training', title: 'Range brief', date: 'Oct 20', endDate: 'Oct 23', yr: 2026, allday: false, s: 540, e: 600, cx: true, cxr: 'Range closed' }), who)
+    await page.locator('#inpCal [data-icday="2026-10-20"]').click()
+    await page.locator('[data-testid="idy-row-fm-cx3"] [data-testid="idy-open"]').click()
+    await expect(page.locator('[data-testid="win-inputedit"] [data-testid="inped-cx"]')).toBeVisible()
+    const h = await page.evaluate(() => {
+      const bar = document.querySelector('[data-testid="win-inputedit"] .win-bar')!
+      const ttl = bar.querySelector('.win-ttl') as HTMLElement, tag = bar.querySelector('.icx')!, mark = bar.querySelector('.win-mark')!, x = bar.querySelector('.win-x')!
+      const t = tag.getBoundingClientRect(), m = mark.getBoundingClientRect(), hit = document.elementFromPoint(t.left + t.width / 2, t.top + t.height / 2)
+      return { title: ttl.textContent, titleCut: ttl.scrollWidth > ttl.clientWidth + 1, tagW: t.width, tagInMark: t.left >= m.left - 0.5 && t.right <= m.right + 0.5, tagSeen: hit === tag, clearOfX: m.right <= x.getBoundingClientRect().left + 0.5 }
+    })
+    expect(h.titleCut, `the title is what gives way here ("${h.title}")`).toBe(true)
+    expect(h.tagW, 'the tag has its width').toBeGreaterThan(18)
+    expect([h.tagInMark, h.tagSeen, h.clearOfX], 'whole, on screen, clear of the ✕').toEqual([true, true, true])
+  } finally { await context.close() }
+})
 
 test('D849 (3) — the medical-clash and the upchit questions: their answers sit flat, no patch and no line under them', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })

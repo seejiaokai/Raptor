@@ -244,13 +244,16 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, le
   const barLit=(key:string)=>popIso==null&&lit.includes(key)
   /* …AND IN THE OPENED DAY ITS CARD IS BROUGHT INTO THE WINDOW'S OWN VIEW — a day with many inputs lists the new one
      below the fold, and a mark nobody can see is no feedback (the guide's "appears where it belongs, in view"). The
-     least movement, inside the window only; jsdom has no scrolling at all, hence the guard. */
-  const litKey=lit.join('|')
+     least movement, inside the window only; jsdom has no scrolling at all, hence the guard.
+     THE CARD JUST SAVED, and only when one is (the fresh read's F2, 14 Oct 26): `lit` is newest first. It went to the
+     FIRST lit card in the day's own order — the older of two — and, keyed on the whole list, moved the window again
+     when an older mark ran out, under his hand. */
+  const newest=lit[0]||''
   useEffect(()=>{
-    if(popIso==null||!litKey)return
-    const card=document.querySelector('[data-testid="win-inputsday"] .icard.innew') as any
+    if(popIso==null||!newest)return
+    const card=Array.from(document.querySelectorAll('[data-testid="win-inputsday"] .icard.innew')).find(el=>el.getAttribute('data-fresh')===newest) as any
     if(card&&typeof card.scrollIntoView==='function')card.scrollIntoView({block:'nearest'})
-  },[litKey,popIso])
+  },[newest,popIso])
   /* every press that opens or closes a day goes through here — the one place the reveal is spent */
   const showDay=(iso:string|null)=>{
     /* A PICKER ENDS WITH ITS DAY (Sol S2): the day closed or changed with the picker up used to leave the picker

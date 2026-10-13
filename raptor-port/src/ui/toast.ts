@@ -95,8 +95,13 @@ export function placeToast(){
 }
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */
+/* how many notes have been SHOWN — a note that is waiting to be said asks it, so as not to replace one raised since
+   (ui/seen.ts; the fresh read of the leftovers batch, 14 Oct 26 — F3) */
+let SHOWN=0;
+export function toastCount():number{ return SHOWN }
 export function toast(msg:any,kind:any,part?:ToastPart){
   if(BATCH){ BATCH.push({msg:String(msg==null?'':msg).trim(),kind,part}); return; }
+  SHOWN++;
   let t=$('toastEl'); if(!t){t=document.createElement('div');t.id='toastEl';
     /* above the scheduler board (400) and the drag ghost (520) — a toast raised
    from inside the board used to render behind it */

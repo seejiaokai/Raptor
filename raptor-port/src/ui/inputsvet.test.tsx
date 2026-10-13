@@ -32,6 +32,8 @@ import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/stat
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
 import { setInpEdit } from './pops'
+import { toast as theToast, toastBatch as theBatch } from './toast'
+import { setInputGate } from '../state/inputgate-hook'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -551,6 +553,70 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     await click($('#inpEditSave'))
     lit(tr(live(r.iid)), r.iid, 'the changed row')
   })
+  /* THE FRESH READ'S F1 (14 Oct 26). The six seconds were ONE timer started by the first light and never cleared, and the
+     box's own clock (a stylesheet animation) is not started again while the class stays on: saved a second time four
+     seconds in, the row lost its mark two seconds later — and saved at 5.6 s it showed neither box nor note. */
+  it('saved again inside its six seconds: the mark runs six seconds from THAT save, and its box starts again', async () => {
+    vi.useFakeTimers()
+    try {
+      await mount(false)
+      const r = await file({ remarks: 'before' })
+      const row = () => tr(live(r.iid))!
+      const change = async (words: string) => { await click(row().querySelector('[data-testid="in-open"]')); await type('#inpEditRmk', words); await click($('#inpEditSave')) }
+      await change('one')
+      lit(row(), r.iid, 'the row')
+      await act(async () => { vi.advanceTimersByTime(4000) })
+      /* the box's clock on each cell, as a browser keeps it: four seconds in */
+      const cells = [...row().children] as any[]
+      const clocks = cells.map(() => ({ currentTime: 4000 }))
+      cells.forEach((c, i) => { c.getAnimations = () => [clocks[i]] })
+      await change('two')
+      expect(clocks.map(c => c.currentTime), 'the box starts again on every cell').toEqual(clocks.map(() => 0))
+      await act(async () => { vi.advanceTimersByTime(2100) })
+      expect(row().classList.contains('innew'), 'still lit 2.1 s after the second save — 6.1 s after the first').toBe(true)
+      await act(async () => { vi.advanceTimersByTime(4000) })
+      expect(row().classList.contains('innew'), 'and off six seconds after the second').toBe(false)
+      expect(row().hasAttribute('data-fresh')).toBe(false)
+    } finally { vi.useRealTimers() }
+  })
+  /* …and the desktop row was keyed by its PLACE in the list: a second input added took the first one's row — and with
+     it the first one's box, four seconds old. A row is its input's own. */
+  it('a second input added: the first input keeps its own row, and each is lit', async () => {
+    await mount(false)
+    await click($('#inNew')); await click($('#inpEdCal [data-cal="2026-07-14"]')); await click($('#inpEditSave'))
+    const a = newest(), rowA = tr(a)
+    await click($('#inNew')); await click($('#inpEdCal [data-cal="2026-07-15"]')); await click($('#inpEditSave'))
+    const b = newest()
+    expect(b.iid).not.toBe(a.iid)
+    expect(tr(live(a.iid)), 'the first input is still drawn by the row it had').toBe(rowA)
+    lit(tr(b), b.iid, 'the new row')
+    lit(tr(live(a.iid)), a.iid, 'the first, for what is left of its own six seconds')
+  })
+  /* THE READ'S F2: in an opened day the window was brought to the FIRST lit card in the day's order, not the one just
+     saved — and moved again, under his hand, when an older mark ran out. */
+  it('an opened day is brought to the card JUST saved, and is not moved again when an older mark runs out', async () => {
+    vi.useFakeTimers()
+    const proto = HTMLElement.prototype as any, real = proto.scrollIntoView
+    const went: string[] = []
+    proto.scrollIntoView = function (this: HTMLElement) { went.push(this.getAttribute('data-fresh') || '(not a marked card)') }
+    try {
+      await mount(false, 'cal')
+      await openDay('2026-10-21')
+      await click($('#icPopAdd')); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      const first = newest().iid
+      await act(async () => { vi.advanceTimersByTime(3000) })
+      await click($('#icPopAdd')); await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      const second = newest().iid
+      expect(second).not.toBe(first)
+      const cards = $$('[data-testid="win-inputsday"] .icard.innew').map(c => c.getAttribute('data-fresh'))
+      expect(cards, 'both are lit, the earlier one first in the day').toEqual([first, second])
+      expect(went[went.length - 1], 'the window goes to the one just saved').toBe(second)
+      const moves = went.length
+      await act(async () => { vi.advanceTimersByTime(3100) })                  // the first mark's six seconds end
+      expect($$('[data-testid="win-inputsday"] .icard.innew').map(c => c.getAttribute('data-fresh')), 'only the second is still lit').toEqual([second])
+      expect(went.length, 'and the window is not moved a second time').toBe(moves)
+    } finally { proto.scrollIntoView = real; vi.useRealTimers() }
+  })
   it('the mark comes off when its six seconds are up — class and name both', async () => {
     vi.useFakeTimers()
     try {
@@ -601,5 +667,21 @@ describe('the save’s note on a laid-out page: left to the screen only where th
     await change(r)
     expect(live(r.iid).remarks).toBe('after')
     expect(said).toEqual(['Input updated'])
+  })
+  /* THE SAVE HAD A WORD OF ITS OWN (D851: "the note stays … where the save has a warning to give"). The Leave War's rules
+     speak from inside the save, through the inputs door's one gate (state/inputgate-hook.ts) — stood in for here by a
+     gate that says a sentence and lets the save through. With the app's real note and its real batch, on a laid-out
+     Inputs page: the two are ONE note, at once, as they were before the mark took the plain note's place. */
+  it('the save said a word of its own: "Input updated" stays beside it in the one note, at once', async () => {
+    await mount(false)
+    const r = await file({ remarks: 'before' })
+    const realBatch = HOOKS.toastBatch
+    HOOKS.toast = theToast as any; HOOKS.toastBatch = theBatch as any
+    setInputGate({ snapshot: () => null, apply: () => { HOOKS.toast('The leave is cut for the ATT C', 'warn') }, vetRestore: () => {} })
+    try {
+      await change(r)
+      expect(live(r.iid).remarks).toBe('after')
+      expect(document.getElementById('toastEl')?.textContent).toBe('The leave is cut for the ATT C · Input updated')
+    } finally { setInputGate(null); HOOKS.toastBatch = realBatch; document.getElementById('toastEl')?.remove() }
   })
 })

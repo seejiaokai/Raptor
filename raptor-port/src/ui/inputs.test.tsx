@@ -1276,6 +1276,12 @@ describe('a new input announces itself', () => {
      suite to fake timers. */
   it('flashes once and settles back', async () => {
     const n = INPUTS.length
+    /* A MARK IS THE INPUT'S, FOR ITS SIX SECONDS (the leftovers batch's fresh read, 14 Oct 26 — F1): it is held by the
+       input's id, where it was held by the record's object — which an Undo replaces, so a row the tests above had
+       changed and undone went dark at once, by accident. Those rows are still inside their own six seconds here: they
+       are let run out, so that "the only one" below is about THIS add. */
+    await act(async () => { await new Promise(r => setTimeout(r, 6200)) })
+    expect($$('#inBody tr.innew').length, 'nothing is lit before the add').toBe(0)
     await addOne('FLASHES ONCE')
     const lit = $$('#inBody tr').find(tr => (tr.textContent || '').includes('FLASHES ONCE'))!
     expect(lit.className, 'lit on arrival').toContain('innew')
@@ -1285,7 +1291,7 @@ describe('a new input announces itself', () => {
     await act(async () => { undo() })
     await reset()
     expect(INPUTS.length).toBe(n)
-  }, 10000)
+  }, 20000)
 
   /* the owner's phone complaint, literally: "once an input is made, the view
      will snap to the input u just made" — it did not. The row carries a
