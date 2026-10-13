@@ -272,11 +272,18 @@ export function writeInputsBatch(fn: () => void): boolean {
 const TRIED = 'tried — thrown away'
 export function tryInputsBatch(fn: () => boolean | void): boolean {
   let passed = false
-  commitInputsWith([], SCHED_TYPES.inputsBatch, () => {
-    runInputWrite(() => { if (fn() === false) throw new CmdRefused(TRIED) }, true)
-    passed = true
-    throw new CmdRefused(TRIED)
-  })
+  /* …and the "just added" flash is not armed for a row that was only tried (the Opus read of the Inputs batch, F4 —
+     13 Oct 26): the set it lights is view state, no part of what the rollback puts back, and a put-back tried here
+     (ui/interactions.ts — the first tried door to reach a landing) left it lit for six seconds over nothing. */
+  const flash = HOOKS.flashAdded
+  HOOKS.flashAdded = () => {}
+  try {
+    commitInputsWith([], SCHED_TYPES.inputsBatch, () => {
+      runInputWrite(() => { if (fn() === false) throw new CmdRefused(TRIED) }, true)
+      passed = true
+      throw new CmdRefused(TRIED)
+    })
+  } finally { HOOKS.flashAdded = flash }
   /* …AND THE RULES ARE RUN AGAIN, ON THE WORLD AS IT STANDS (the Opus read of the finished code, F1 — 13 Oct 26). The
      save's own epilogue ran them INSIDE the batch, on the tried world (HOOKS.reflow → validate()), and what they find —
      WARN, REST, EVD — is module state, no part of what the rollback puts back. With nothing after it, every screen then

@@ -331,7 +331,9 @@ function seatInputLines(key: string, el: HTMLElement, rows?: (iid: string) => EL
   if (!who) return []
   const day = dayOfCell(el)
   const of = rows ? rows(iid) : ELOG.rows.filter(r => r.iid === iid || (r.iids || []).includes(iid))
-  return of.filter(r => !!(r as any).one && String(r.sub || '') === who && (!day || rowTouches(r, day)))
+  /* (`one` — put in or taken out; `whose` — the hand-over line of a man dropped on the input's ONLY person, who
+     replaces him: the other way onto the row, and it carries the new man in `sub` — the Opus read, F3) */
+  return of.filter(r => (!!(r as any).one || r.fld === 'whose') && String(r.sub || '') === who && (!day || rowTouches(r, day)))
 }
 
 /* "from → to" with the arrow only when there is a before worth naming; a

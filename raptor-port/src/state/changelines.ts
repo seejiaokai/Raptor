@@ -135,7 +135,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
      change history per thing that changed"). */
   { const A = idsOf(a).map(String), B = idsOf(b).map(String)
     const out = B.filter(p => !A.includes(p)), inn = A.filter(p => !B.includes(p))
-    if (A.length === 1 && B.length === 1 && out.length === 1) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(B[0]), to: cs(A[0]) }))
+    if (A.length === 1 && B.length === 1 && out.length === 1) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(B[0]), to: cs(A[0]), fld: 'whose' }))
     else {
       for (const p of inn) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · added${tail}`, base({ sub: p, one: 1 }))
       for (const p of out) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · taken out${tail}`, base({ sub: p, one: 1 }))

@@ -22,6 +22,7 @@ import { posKey, ridWriteKey } from '../engine/rowids'
 import { notify } from '../state/store'
 import { OILWAIT, OILBAR, setOilWait, setOilBar, type OilWait, type OilWaitKind } from '../state/view'
 import { landOn } from './lift'
+import { clearToast } from './toast'
 
 /** the three kinds' words: the sheet's two buttons, and the bar */
 export const WAIT_WORDS: Record<OilWaitKind, { no: string; yes: string; not: string }> = {
@@ -40,7 +41,9 @@ const CHANGED: Record<OilWaitKind, string> = {
 }
 
 /** A door holds its change: nothing is written, the question is put. */
-export function holdForOil(w: OilWait): void { setOilBar(null); setOilWait(w); notify() }
+/* (a note still on screen from the step before is taken down: on a phone on its side it lay over the question's two
+   buttons — the walk of the Inputs batch, 13 Oct 26; the question is what he is to read now) */
+export function holdForOil(w: OilWait): void { setOilBar(null); setOilWait(w); clearToast(); notify() }
 /** The gesture's own ending for the change now waiting (the landing flash, the "already busy" note, the arm put
  *  down) — set by the caller that was answered 'asked'; `pre` is read just before the write, `post` runs after it. */
 export function oilWaitThen(pre: () => any, post: (pre: any, landed: string | null) => void): void {

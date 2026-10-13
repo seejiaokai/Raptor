@@ -1122,6 +1122,21 @@ describe('History: the puck of a man put on an input’s row wears the gold dot,
     root.remove()
   })
 
+  /* the other way of putting a man on the row: dropped on its ONLY person he REPLACES him (D755), and the line reads
+     "whose: Ranger → Tally" — no line "added". His puck wore no dot either (the Opus read of this change, F3). */
+  it('a man who REPLACED the input’s only person wears the dot too, and his bubble tells the hand-over', async () => {
+    await boot(new MemoryBackend())
+    file(['bane'])
+    expect(rowPut(rowKey(), 'split')).toBe('done')
+    await Promise.resolve()
+    const { root, els } = page(keyOf('split'))
+    view.setHistMode(true)
+    refreshHistDots(root)
+    expect(els[0]!.hasAttribute('data-histdot')).toBe(true)
+    expect(storyOf(els[0]!).map((r: any) => r.lbl).join(' | ')).toMatch(/whose/)
+    root.remove()
+  })
+
   it('a plain programme row beside it is untouched: a seat is dotted only for its own lines', async () => {
     await boot(new MemoryBackend())
     file(['bane'])

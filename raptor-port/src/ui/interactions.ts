@@ -4,9 +4,10 @@
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
 import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay } from '../engine/slots'
+import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf } from '../engine/inputs'
+import { INPUTS, DATES, withRemarksTail, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -16,7 +17,7 @@ import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSaid, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -29,7 +30,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { iuParts } from '../engine/keys'
-import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX } from './inputedit'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
@@ -669,6 +670,21 @@ export function routeClick(e: MouseEvent) {
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     const find = () => INPUTS.find((x: any) => inpId(x) === k)
+    /* WHY A PRESS WAS REFUSED, in words (a refused press is never silent — [HUMAN-RETEST] walk W4-F3, 24 Sep 26: "→ Ground"
+       on an input whose row is already on the programme, or on a locked week, used to do nothing at all). Named as the
+       note of a press that worked names it: how many where it holds several, else its one person. Its row on ANOTHER
+       week ([REQ-ORPHAN-ROW], 28 Sep 26) is named, with the week to load; a saved week that could not be read refuses
+       too, and says so rather than guess (never a second row on an unknown). */
+    const refusalWords = (inp: any): string => {
+      const many = idsOf(inp).length, one = leadOf(inp)
+      const cs = many > 1 ? howMany(idsOf(inp)) : PEOPLE[one] ? PEOPLE[one].cs : one
+      const onProg = dest !== 'x' && DAYS.some((d: any) => !!standsOn(d, k, inp))
+      const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null
+      return onProg ? `${cs}'s ${inpLabel(inp)} is already on the programme`
+        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inpLabel(inp)} already has a row on another week — load that week first`
+        : away ? `${cs}'s ${inpLabel(inp)} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
+        : `${cs}'s ${inpLabel(inp)} can't be changed here right now`
+    }
     /* THE PUT-BACK OR THE TAKE-OFF ITSELF, and what it says. `oil`: the answer a put-back is made WITH (below) — the
        answer and the put-back are then ONE command, one Undo. (The body keeps the indentation it had before it was
        given a name, so the change reads as the change.) */
@@ -700,8 +716,20 @@ export function routeClick(e: MouseEvent) {
       }
     }
     const armWas = view.armedRowKey()
+    /* (the answer is written first and the put-back second, and a batch whose body only ANSWERS false is still
+       committed — so a put-back refused at that moment THROWS, after saying why: the answer is never kept without
+       it. Fable's read of the finished code, F1 — the shape ui/inputedit.tsx ownPartSave keeps.) */
     let ok = oil
-      ? saveBatchX(() => { const x = find(); return !!x && !!commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil }) && !!acceptInput(di, find(), dest) }).ok
+      ? saveBatchX(() => {
+          const x = find()
+          if (!x || !commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil })) return false
+          if (!acceptInput(di, find(), dest)) { HOOKS.toast(refusalWords(find() || x), 'warn'); throw new CmdRefused('the put-back was refused') }
+          /* …and the marks are settled inside the step: an issued row put back as it went out wears no "goes out" mark.
+             Every other Accept ends in afterSchedMutate, whose epilogue does this; this one is its own command and
+             has no such ending (the Opus read of the finished code, F1) */
+          reconcileIssuedMarks([di])
+          return true
+        }).ok
       : dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
@@ -743,17 +771,8 @@ export function routeClick(e: MouseEvent) {
       /* A REFUSED PRESS IS NEVER SILENT ([HUMAN-RETEST] walk W4-F3, 24 Sep 26): "→ Ground" on an
          input whose row is already on the programme, or on a locked week, used to do nothing at
          all — a control that looks dead. Say why. */
-      /* (named as the note of a press that worked names it, above: how many where it holds several, else its one person) */
-      const many = idsOf(inp).length, one = leadOf(inp)
-      const cs = many > 1 ? howMany(idsOf(inp)) : PEOPLE[one] ? PEOPLE[one].cs : one
-      const onProg = dest !== 'x' && DAYS.some((d: any) => !!standsOn(d, k, inp))
-      /* …and its row on ANOTHER week ([REQ-ORPHAN-ROW], 28 Sep 26): named, with the week to load; a saved week that could
-         not be read refuses too, and says so rather than guess (never a second row on an unknown) */
-      const away = dest !== 'x' && !onProg ? rowElsewhere(k, inp) : null
-      HOOKS.toast(onProg ? `${cs}'s ${inpLabel(inp)} is already on the programme`
-        : away === 'unreadable' ? `Can't tell whether ${cs}'s ${inpLabel(inp)} already has a row on another week — load that week first`
-        : away ? `${cs}'s ${inpLabel(inp)} is already on the programme — on ${isoDayWords(away.iso)}; load that week to change it`
-        : `${cs}'s ${inpLabel(inp)} can't be changed here right now`, 'warn')
+      /* (made with its answer, the refusal was said inside the step that threw it away — above) */
+      if (!oil) HOOKS.toast(refusalWords(inp), 'warn')
     }
     return !!ok
     }
@@ -769,6 +788,9 @@ export function routeClick(e: MouseEvent) {
       const r = find()
       if (!r) return 'none'
       const off = (x: any) => !!x && x.acc !== 'g' && x.acc !== 'u'
+      /* …and still an input of THIS card's day: the bar keeps the day the card was pressed on, and the input's dates
+         can be changed under it (the Opus read, F5 — a row was written on a day it no longer covered) */
+      const here = (x: any) => !!DAYS[di] && inputCoversDate(x, DAYS[di].dt)
       let g: ReturnType<typeof oilGate> | null = null
       /* (only the PROGRAMME: "→ Unavail" files an Other under Unavailable, where it is off the programme — nothing asks) */
       if (dest === 'g' && off(r)) { const say = HOOKS.toast; HOOKS.toast = () => {}; try { g = oilGate(draftOf(r), r) } finally { HOOKS.toast = say } }
@@ -782,9 +804,10 @@ export function routeClick(e: MouseEvent) {
       holdForOil({
         kind: 'back', lead: `Putting ${who}'s ${inpLabel(now)} back on the programme`,
         places: [`sel:[data-acck="${k}"]`],
-        gate: { who: g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
-        redo: oil => { const x = find(); return !x || !off(x) ? 'none' : run(x, oil) ? 'done' : 'refused' },
-        ask: () => { const x = find(); return !x || !off(x) ? 'none' : press() },
+        /* headed for EVERYONE the one answer is written for (D762), as every other door of the question says it */
+        gate: { who: inputWho(now) || g.who, typeLabel: g.typeLabel, plan: g.plan, prev: g.prev },
+        redo: oil => { const x = find(); return !x || !off(x) || !here(x) ? 'none' : run(x, oil) ? 'done' : 'refused' },
+        ask: () => { const x = find(); return !x || !off(x) || !here(x) ? 'none' : press() },
       })
       return 'asked'
     }
