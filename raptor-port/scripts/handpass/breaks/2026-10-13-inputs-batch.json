@@ -278,5 +278,67 @@
     "tests": [
       "src/ui/oilwait.test.tsx"
     ]
+  },
+  {
+    "n": 31,
+    "name": "D814: no door prices a question for a cancelled or information-only input",
+    "file": "src/ui/inputedit.tsx",
+    "find": "  if (oilNeverEarns(prevRow)) return { kind: 'none' }\n",
+    "put": "",
+    "tests": [
+      "src/ui/oilwait.test.tsx",
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 32,
+    "name": "D814: an information-only input is never asked either (not only a cancelled one)",
+    "file": "src/engine/inputs.ts",
+    "find": "export function oilNeverEarns(inp:any){return !!inp&&(!!inp.cx||!!inp.info);}",
+    "put": "export function oilNeverEarns(inp:any){return !!inp&&(!!inp.cx);}",
+    "tests": [
+      "src/ui/oilwait.test.tsx",
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 33,
+    "name": "D814: the day's one list leaves a cancelled input out",
+    "file": "src/leavewar/sync.ts",
+    "find": "if (!row || !row.iid || !oilAsks(row.type) || oilSilent(row)) continue",
+    "put": "if (!row || !row.iid || !oilAsks(row.type) || row.acc === 'r') continue",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 34,
+    "name": "D814: the bell's scan leaves a cancelled input out",
+    "file": "src/leavewar/sync.ts",
+    "find": "if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || oilSilent(row)) continue",
+    "put": "if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 35,
+    "name": "D814: the \"OIL?\" sign leaves a cancelled input out",
+    "file": "src/ui/inputedit.tsx",
+    "find": "  if (!row || !oilAsks(row.type) || oilSilent(row)) return ''\n",
+    "put": "  if (!row || !oilAsks(row.type) || row.acc === 'r') return ''\n",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
+  },
+  {
+    "n": 36,
+    "name": "D814: no answer to change on a cancelled input",
+    "file": "src/ui/inputedit.tsx",
+    "find": "  if (!row || !oilAsks(row.type) || oilSilent(row)) return false\n",
+    "put": "  if (!row || !oilAsks(row.type) || row.acc === 'r') return false\n",
+    "tests": [
+      "src/leavewar/holnotice.test.tsx"
+    ]
   }
 ]

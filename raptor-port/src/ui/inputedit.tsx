@@ -17,7 +17,7 @@ import { frontWin } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -714,6 +714,9 @@ export function oilGate(draft: any, prevRow: any, force = false):
   { kind: 'none' } | { kind: 'refused' } |
   { kind: 'ask', who: string, typeLabel: string, plan: { iso: string, amt: 0.5 | 1 }[], prev: Record<string, number> } {
   if (!draft || !oilAsks(draft.type)) return { kind: 'none' }
+  /* a cancelled or information-only input can earn nothing, so no door asks for it — the save, the put-back, the
+     filing, the revise button (owner D814; engine/inputs.ts oilNeverEarns) */
+  if (oilNeverEarns(prevRow)) return { kind: 'none' }
   const n = normalizeInputDraft(draft, prevRow)
   if (!n) return { kind: 'refused' }
   const plan = oilAskPlan({ person: draft.person, date: n.date, endDate: n.endDate, yr: baseYear(), allday: !!draft.allday, s: n.s, e: n.e })
@@ -748,7 +751,7 @@ export function oilGate(draft: any, prevRow: any, force = false):
    this runs per render. Unanswered days alone stay the bell's business:
    this affordance only ever REVISES. */
 export function oilAnswered(row: any): boolean {
-  if (!row || !oilAsks(row.type) || row.acc === 'r') return false
+  if (!row || !oilAsks(row.type) || oilSilent(row)) return false
   const prev = (row.oil || {}) as Record<string, number>
   return oilAskPlan(row).some(p => prev[p.iso] != null)
 }
@@ -763,7 +766,7 @@ export function oilAnswered(row: any): boolean {
  *  Derived, like the bell: answer the day, move the request or retype it out of
  *  the ask set and the row stops matching, with nothing to clear. */
 export function oilUnansweredDay(row: any): string {
-  if (!row || !oilAsks(row.type) || row.acc === 'r') return ''
+  if (!row || !oilAsks(row.type) || oilSilent(row)) return ''
   const prev = (row.oil || {}) as Record<string, number>
   const p = oilAskPlan(row).find(x => prev[x.iso] == null)
   return p ? p.iso : ''

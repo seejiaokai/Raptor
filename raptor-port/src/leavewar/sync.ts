@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -836,7 +836,7 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
   /* the RECORDS, not the per-person lines (engine/inputs.ts): this asks who ANSWERS for an input — its own man, or
      whoever filed it for ALL AVAIL, an input that has no line at all — and hands back the input's id for the editor */
   for (const row of INPUTS) {
-    if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || row.acc === 'r') continue
+    if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || oilSilent(row)) continue
     const answered = (row.oil ?? {}) as Record<string, number>
     const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
@@ -863,7 +863,7 @@ export function oilOpenOn(from: string, to?: string | null): OilOpen[] {
   const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
   const out: OilOpen[] = []
   for (const row of INPUTS as any[]) {
-    if (!row || !row.iid || !oilAsks(row.type) || row.acc === 'r') continue
+    if (!row || !row.iid || !oilAsks(row.type) || oilSilent(row)) continue
     const plan = oilAskPlan(row)
     if (!plan.length) continue
     const answered = (row.oil ?? {}) as Record<string, number>
@@ -2208,7 +2208,7 @@ export function wireLeaveWarSync(): void {
     const ods = oilDaySig()
     if (ods !== lastOilDaySig) { lastOilDaySig = ods; validate(); raptorNotify() }
     const sig = INPUTS
-      .filter((r: any) => oilAsks(r.type) && r.acc !== 'r' && r.iid)
+      .filter((r: any) => oilAsks(r.type) && !oilSilent(r) && r.iid)
       .flatMap((r: any) => {
         const answered = (r.oil ?? {}) as Record<string, number>
         return oilAskPlan(r).filter(p => answered[p.iso] == null).map(p => `${r.iid}|${p.iso}`)

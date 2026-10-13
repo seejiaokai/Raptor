@@ -43,7 +43,7 @@ import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-co
 import { setPage, setBoardDay } from '../state/view'
 import * as view from '../state/view'
 import { commitInput, commitInputEdit, draftOf, inputWho } from './inputedit'
-import { rowPut, rowMove } from './reqdoor'
+import { rowPut, rowMove, rowMark } from './reqdoor'
 import * as pops from './pops'
 import { applyDrop, setDrag } from './drag'
 import { answerOilWait, leaveOilWait, oilBarAgain, oilBarOk, WAIT_WORDS } from './oilwait'
@@ -903,6 +903,48 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
     expect(SAID.join(' | ')).toContain('taken out of Unavailable')
   })
 
+  /* A CANCELLED INPUT IS NEVER ASKED (owner D814, 13 Oct 26 — "Canceled input doesn't need to ask OIL"; found by both
+     reads of the change above: every door priced the question from the input's dates and kind alone, so a cancelled
+     input — which earns nobody OIL, D760 — was still asked at the put-back and the filing). Information-only the same:
+     it earns nothing either. The mark is the INPUT's (D760), put on by the board's own door (ui/reqdoor.ts rowMark). */
+  for (const [what, name] of [['cx', 'cancelled'], ['info', 'information-only']] as const) {
+    it(`(D814) a ${name} input put back with Accept is asked nothing — it can earn nothing: it goes back at once`, async () => {
+      await boot()
+      file(['bane'], SAT)
+      expect(rowMark(rowKey(), what, true, 'weather')).toBe('done')
+      expect(rec()[what], `the premise: the input itself is ${name} (D760)`).toBe(true)
+      press('x')
+      expect(rec().acc).toBe('r')
+      SAID = []
+      press('g')
+      expect(view.OILWAIT, 'no question').toBeNull(); expect(view.OILBAR).toBeNull()
+      expect(riOf(), 'on the programme again').toBeGreaterThanOrEqual(0)
+      expect(rec().oil || {}, 'and no answer was written for it').toEqual({})
+    })
+    it(`(D814) a ${name} Other filed with "→ Unavail" is asked nothing: it is filed at once`, async () => {
+      await boot()
+      file(['bane'], SAT, undefined, { type: 'Other' })
+      expect(rowMark(rowKey(), what, true, 'weather')).toBe('done')
+      press('x'); SAID = []
+      press('u')
+      expect(view.OILWAIT, 'no question').toBeNull(); expect(view.OILBAR).toBeNull()
+      expect(rec().acc).toBe('u')
+      expect(SAID.join(' | ')).toContain('filed under Unavailable')
+    })
+  }
+  it('(D814) the mark taken off again, the input needs its answer again: the next put-back asks', async () => {
+    await boot()
+    file(['bane'], SAT)
+    expect(rowMark(rowKey(), 'cx', true, 'weather')).toBe('done')
+    expect(rowMark(rowKey(), 'cx', false)).toBe('done')
+    expect(!!rec().cx, 'the premise: no longer cancelled').toBe(false)
+    press('x'); SAID = []
+    press('g')
+    expect(view.OILWAIT, 'the question is back').toBeTruthy()
+    expect(view.OILWAIT!.kind).toBe('back')
+    expect(riOf(), 'and nothing is put back until it is answered').toBe(-1)
+  })
+
   it('an Undo of the take-off puts the input back as it was and asks nothing (D793, reading 3)', async () => {
     await boot()
     takenOff()
@@ -1042,5 +1084,37 @@ describe('an input put BACK on the programme where it needs an OIL answer is NOT
     expect(dayPendingItems(SAT).length, 'asked: still nothing pending').toBe(0)
     expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
     expect(dayPendingItems(SAT).length, 'answered: the put-back waits to go out').toBeGreaterThan(0)
+  })
+
+  /* THE FILING'S OWN PINS (the two reads of D804, 13 Oct 26 — both probed these on scratch tests and found them right;
+     nothing held them for the "file" kind) */
+  it('(D804, the reads) "→ Unavail" on a PUBLISHED day: nothing waits to go out and no sign-off falls until the answer is given; one Undo puts it all back', async () => {
+    await boot()
+    otherOff()
+    sign(SAT); commitSetDayApproved(SAT, true)
+    const signed = JSON.stringify(SCHED.sign[SAT])
+    expect(dayPendingItems(SAT).length, 'the premise: nothing pending').toBe(0)
+    press('u')
+    expect(view.OILWAIT!.kind).toBe('file')
+    expect(dayPendingItems(SAT).length, 'asked: still nothing pending').toBe(0)
+    expect(JSON.stringify(SCHED.sign[SAT]), 'and the four sign-offs stand').toBe(signed)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(rec().acc).toBe('u')
+    expect(dayPendingItems(SAT).length, 'answered: the filing waits to go out').toBeGreaterThan(0)
+    globalUndo()
+    expect(rec().acc, 'ONE Undo').toBe('r')
+    expect(dayPendingItems(SAT).length, 'nothing pending again').toBe(0)
+  })
+  it('(D804, the reads) an Other of several filed with "→ Unavail": the question is headed for everyone, and ONE answer is written on the one record', async () => {
+    await boot()
+    file(['pike', 'bane', 'split'], SAT, undefined, { type: 'Other' })
+    press('x')
+    press('u')
+    expect(view.OILWAIT!.gate.who).toBe(inputWho(rec()))
+    expect(view.OILWAIT!.lead).toBe(`Filing 3 people's ${TITLE} under Unavailable`)
+    expect(answerOilWait({ [SAT_ISO]: 0.5 })).toBe(true)
+    expect(rec().acc).toBe('u')
+    expect(rec().oil, 'one answer, on the input').toEqual({ [SAT_ISO]: 0.5 })
+    expect(people(), 'and its people are as they were').toEqual(['pike', 'bane', 'split'])
   })
 })
