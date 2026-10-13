@@ -11,8 +11,8 @@ await L.go(w, 'editsched')
 await L.sleep(400)
 const PAIRS = [
   ['publish', 'Monday published — APPROVED · Monday 13 Jul: the common programme has no usable times, so nobody on it earns OIL', 'Monday published — approved · Common Programme has no usable times: nobody on it earns OIL'],
-  ['unpublish', 'Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is published again', 'Monday unpublished — a draft again; publishing reissues the Original · its OIL credits leave the Leave War until then'],
-  ['withdraw', 'Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing again reissues AL2', 'Monday: AL2 withdrawn — its changes are pending on the working copy again; AL1 is the issued schedule; publishing reissues AL2'],
+  ['unpublish', 'Monday unpublished — it is a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is published again', 'Monday unpublished — a draft again; publishing reissues the Original · its OIL credits leave the Leave War until it is republished'],
+  ['withdraw', 'Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing again reissues AL2', 'Monday: AL2 withdrawn — its changes are back on the working copy as pending; AL1 is the issued schedule; publishing reissues AL2'],
 ]
 for (const [name, before, after] of PAIRS) {
   for (const [k, text] of [['before', before], ['after', after]]) {

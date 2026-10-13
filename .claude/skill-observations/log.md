@@ -391,3 +391,18 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 **Suggested improvement:** In clarify.md and the guide's §1: a shortening is shown as before, after, and the exact words cut. A cut is allowed only for a word the sentence says the same without; a named thing, a number, a reason, a consequence and the place to fix it are never cut. A note that cannot lose a word that way is reported as "left whole", and the next question is its box, not its words.
 
 **Principle:** Shortening removes words; summarising removes facts. Show the removed words, and the difference polices itself.
+
+### Observation 580: A gap the machine record held never reached the page; a redraft said the opposite of its original — both caught only by a second model's read
+
+**Status:** OPEN
+**Date:** 2026-10-13
+**Session context:** [DESIGN-LOOK-13OCT] — Fable's read of the whole design page, on the owner's word (D826), after the host's own look and a fresh Opus reader's
+**Skill:** impeccable (reference/critique.md — synthesis; reference/clarify.md); the design guide §8 (how a look is reported)
+**Type:** open-source
+**Phase/Area:** Critique — from evidence to report; Clarify — checking a rewrite
+
+**Issue:** (1) The keyboard sweep wrote one row per key pressed, with a verdict. One row marked a gap (Delete on a filled date box does nothing) was reasoned away while the page was written and silently left off its list. Nothing compared the record's gap rows with the page's. (2) One shortened wording ("Nothing on this day earns OIL — anything added later too") could be read as the opposite of its original; the writer, knowing the meaning, could not see it. (3) A drawing's "every row the same shape" was proved only in the test browser's letters, and the column allowed to shrink was the date. A same-model reader given the pictures found none of the three; a different model given the page, the record and the source found all three.
+
+**Suggested improvement:** In the look's report step: every row a machine record marks as a gap appears on the page by number, or in "considered and left" with its reason — and the count is checked by a script, not by eye. In clarify: each rewrite is read back COLD for its literal meaning, without the original beside it, before the pair is shown. In a mock-up's script: name which part gives way when the letters are wider, and draw that case.
+
+**Principle:** Evidence that is gathered by machine must reach the report by count, not by recollection; and a rewrite is checked by someone who does not already know what it is meant to say.

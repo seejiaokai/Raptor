@@ -123,3 +123,44 @@ Tracker's own notes.
   `leavewar/ui/Chrome.tsx`): exit 0, no finding. Run by a Sonnet helper (D588 — it runs checks; it read no code for bugs).
 - **Seen in passing, outside the four, not weighed:** on a phone a passing note raised while a window is up sits at the
   top of the screen over Undo and Redo for as long as it shows (it takes no tap — a finger passes through it).
+
+## 6. Fable's read (owner D826, 13 Oct 26 — "Ask fable go read the entire thing he hasn’t read and see what can be improved")
+
+Fable read the page, every picture it names, the key record, the drawing scripts and each "today" wording in the source.
+The host checked every point against the app before using it. **Taken, and now on the page:**
+
+- **Words.** N11's first redraft read as its opposite ("anything added later too") → "Nothing on this day earns OIL,
+  including anything added later". N2 "until then" → "until it is republished" (the app's own word). N3 keeps "back".
+  N24 stays TWO notes — they are two refusals, and "ALL AVAIL" is the first one's reason (`ui/inputedit.tsx`). N28 is
+  left whole ("can carry it" says which mark was refused). The OIL question's small print does NOT gain "to FO": the
+  line serves the full-day question too (`ui/OilConfirm.tsx`, the `amt === 1` branch). "Send back or delete" → "Send the
+  leave back or delete it".
+- **The clash list (`dl-clash.mjs`, modes N-…).** The name's column is a fixed width — the roster's longest callsign,
+  measured in the list's own letters — so the day starts in the same place on every visit; the day never shrinks or
+  wraps (`max-content`, `nowrap`); the instruction is the column that gives way (it wraps inside its own column,
+  right-aligned); the arrow rides inside the instruction; one bold a row (the name). `N5` draws the busy case in
+  letters a seventh wider as a stand-in for his iPhone's: every day on one line, one instruction and one sentence
+  gain a line, nothing cut. Rows 46 tall; the card from 156 / 203 / 250 / 438 (closed / one / two / six).
+- **Behaviour written on the page for the build:** a tap opens that day FOR that person (the sheet that holds Decide),
+  or the leave's own window on the Inputs page — today the under-manned list only jumps to the day
+  (`leavewar/state/store.ts focusDay`), so opening the sheet is new work; with one clash the list starts open; the
+  open-or-closed state is kept for the visit; no inner scroll — a long list pushes the grid, Hide is the way back; the
+  keyboard set (Enter / Space on the line, each row a Tab stop, Enter on a row); the desktop strip takes the same words,
+  its layout unchanged (D679 is about layout) — said to him under "build it".
+- **L17 (new)** — weekend dates inside a picked run stay dim: `26-date-calendar.css` `.dcal-d.is-we b` is never
+  overridden for `.is-in`. **K12 (new)** — Delete / Backspace on a filled box does nothing (the key record had it; the
+  page had dropped it); the Tracker's own Delete key must not fire from the box. **L2** — the ✕ goes to the END of the
+  Tab order when it moves to the corner. **The step-two key set** gains: where the keyboard lands, the roll into the
+  next month, a faint date reachable but not pickable, Escape with the lists open, Enter never sending a form, Delete.
+- **L6's place, put to him (the page's choice 5):** D587 gives a warning that stays a band under the top bar; the OIL
+  bar is the same kind of thing and floats at the foot. Recommended to him: the band, drawn first.
+- **The page:** the three first-drawn ways (A, B, C), their table and "what the drawing found" left the page (they are
+  §1 above and the pictures `clash-phone-A*`, `-B*`, `-C*`); the score and the method paragraph went; the asks name the
+  bar's place apart.
+
+**Not taken, and why:** hiding "Failed on" until Fails is 1 — its date is set BEFORE "+" is pressed (`tracker/app/core.js`,
+the pop-up's "Failed on" box: "only where the NEXT + lands"), so the box is needed at 0; the dim look stands (L15). N9
+shortened ("take him off") — left whole, every part is the instruction. Dropping "Applying" from N8 — Fable called it
+borderline; kept cut. **For the words job (D808), seen by Fable outside the four:** the question's grey explanation
+belongs under a "How this works" fold; the Calendar window's two hint lines; the Tracker panel's grey "No currency date
+set" pills read as buttons; "Close" sits among the marks in the marking pop-up.
