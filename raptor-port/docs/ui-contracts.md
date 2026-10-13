@@ -4485,7 +4485,7 @@ Three things stay decided:
   the answer throws the whole step away (the answer is never kept alone). "Answer OIL" on an input that has since been
   put back, deleted or moved off that card's day says "That input has changed — not put back". **Nothing asks:** the
   take-off; the app's Undo of a take-off (an Undo never asks); a working day; an input already answered (a No is an
-  answer). **"→ Unavail" WAITS TOO (owner D804, 13 Oct 26 — "For others just ask the OIL question"; it replaced D803 of the same morning):** an Other filed under Unavailable where it needs an answer is not filed until it is answered — the same sheet, headed "Filing <who>'s <input> under Unavailable", its buttons "Don’t file" / "File"; left unanswered the bar reads "Not filed — OIL not answered"; answered, the answer and the filing are one step and one Undo; changed meanwhile, "That input has changed — not filed". A note still on screen from the step before is taken down when ANY OIL question is put (on
+  answer). **"→ Unavail" WAITS TOO (`[UNAVAIL-FILE-OIL-ASK]`; owner D804, 13 Oct 26 — "For others just ask the OIL question"; it replaced D803 of the same morning):** an Other filed under Unavailable where it needs an answer is not filed until it is answered — the same sheet, headed "Filing <who>'s <input> under Unavailable", its buttons "Don’t file" / "File"; left unanswered the bar reads "Not filed — OIL not answered"; answered, the answer and the filing are one step and one Undo; changed meanwhile, "That input has changed — not filed". A note still on screen from the step before is taken down when ANY OIL question is put (on
   a phone on its side it lay over the question's two buttons). Pins: `ui/oilwait.test.tsx` (ON9), `e2e/oilwait.spec.ts`.
 
 ## The passing notes' wording — to be shortened (owner D806, 13 Oct 26)
@@ -4502,12 +4502,13 @@ The same going-over of EVERY page's notes, hints, labels and small print — les
 removed, and help still wanted may sit under one short "How it works" fold — is a job of its own, later (owner D808):
 the words half of `OUTSTANDING.md` `[UI-SLEEK-PASS]`.
 The rules such a going-over is held to — taken from three outside design skills and from his own rulings — are being gathered into
-ONE design guide of our own that loads by itself for interface work (owner D812): `OUTSTANDING.md` `[SKILL-FUSION-JAKUB]`.
+ONE design guide of our own that loads by itself for interface work (owner D812): **`design-practices.md`** — the guide itself
+(what is still to build of it: `OUTSTANDING.md` `[SKILL-FUSION-JAKUB]`).
 That guide is written FIRST, and the interface jobs after it are judged against it — the calendar's design included (owner D813).
 
 ## The bell's list of notices (owner D755 (3), D760, D769 — 12 Oct 26; the one-rule build's step 7)
 
-**A filing under Unavailable has its own two lines (owner D815, 13 Oct 26):** "Filed under Unavailable" when a scheduler files a
+**A filing under Unavailable has its own two lines (`[BELL-UNAVAIL-WORDS]`; owner D815, 13 Oct 26):** "Filed under Unavailable" when a scheduler files a
 member's input there, "Taken out of Unavailable" when it is taken out — the parts `unav` / `unavoff` (`state/notices.ts`), tested
 ahead of "Taken off the programme" / "Back on the programme", which read wrongly for both until then.
 

@@ -2428,6 +2428,9 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     by themselves — but taking the mark off asks nothing itself, and the schedulers' holiday line (a stored notice) does
     not come back for it. **RULED, not yet built (owner D816, 13 Oct 26):** taking the mark off an input that has no
     answer for a non-working day puts the OIL question first, as "Accept" does — `OUTSTANDING.md` `[OIL-UNCANCEL-UNASKED]`.
+    **And, ruled the same day, not yet built (owner D818):** after a published version is loaded back onto the working copy,
+    the app says how many of the inputs it put back still need an OIL answer and opens that day's one list — the load
+    itself is not held: `OUTSTANDING.md` `[OIL-LOAD-VERSION-UNASKED]`.
   - **Leave and medical inputs never earn OIL and are never asked; every other kind that can earn is asked, and its
     answer decides — wherever it is filed** (owner D804, 13 Oct 26 — "As long as leave and medical they don't earn
     oil. For others just ask the OIL question, it may or may not credit OIL" — it replaced D803 of the same morning; `inputs.ts oilAsks` is the list of kinds
