@@ -316,6 +316,30 @@ test('the Tracker’s own date boxes are untouched: the app’s date-box look do
   await context.close()
 })
 
+/* THE SECOND HALF OF A DOUBLE TAP (the read of the Tracker's date boxes, 13 Oct 26 — F1). On a phone the calendar's card
+   is put in the middle of the screen, so it can land under the finger that opened it: the second tap fell on a date, and
+   in the Tracker a date picked is saved at once. The tap that opens the calendar now leaves the same small patch a pick
+   leaves, over the card, for a moment. Only a browser can show it — it is a matter of what lies under the finger. */
+test('a phone: a double tap on a date box opens the calendar and picks nothing (the Tracker’s Upchit, where a pick is the save)', async ({ browser, baseURL }) => {
+  const { context, page } = await world(browser, baseURL, PHONE, true)
+  await go(page, 'tracker')
+  await page.waitForSelector('#flowSvg .ball', { state: 'attached', timeout: 20000 })
+  await page.locator('#page-tracker button[data-view="info"]').tap()
+  const box = page.locator('#upchit')
+  await expect(box).toHaveAttribute('data-value', '')
+  await box.evaluate(e => e.scrollIntoView({ block: 'center' }))
+  const at = await box.evaluate(e => { const r = e.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } })
+  await page.touchscreen.tap(at.x, at.y); await page.touchscreen.tap(at.x, at.y)
+  const card = page.locator('[data-testid="dcal-card"]')
+  await expect(card, 'the calendar is open — not opened and shut').toBeVisible()
+  const c = await rect(page, '[data-testid="dcal-card"]')
+  expect(at.x > c.l && at.x < c.r && at.y > c.t && at.y < c.b, 'the premise: the card lies under the place tapped — else this proves nothing').toBe(true)
+  await page.waitForTimeout(500)
+  await expect(card).toBeVisible()
+  await expect(box, 'nothing was picked by the second half of the tap').toHaveAttribute('data-value', '')
+  await context.close()
+})
+
 test('a sideways phone (844 × 390): the whole calendar is on the screen', async ({ browser, baseURL }) => {
   const { context, page, press } = await world(browser, baseURL, { width: 844, height: 390 }, true)
   await openCalendarWindow(page, press)

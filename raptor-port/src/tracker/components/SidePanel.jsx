@@ -182,10 +182,9 @@ function FailLog() {
             <div className="frow" key={x.id + ':' + x.i} data-ev={x.id} data-fi={x.i}>
               <span className="chip failchip">{x.label}</span>
               <span className="mini">{core.ordinal(x.i + 1)} failure{core.infoFor(x.id).name ? ' · ' + core.infoFor(x.id).name : ''}</span>
-              {/* saves when left, not as typed ([TRK-RETEST-NOTES] C5): typed per keystroke,
-                  a failure re-dated to the 1st on the way to the 17th re-sorted the list
-                  (D371) under the cursor */}
-              <DateBox value={x.date || ''} title={x.date ? 'The day this failure happened' : 'No day recorded for this failure — set one'}
+              {/* picked on the app's calendar since 13 Oct 26 (D801) — a pick is the save, and the list
+                  re-sorts by day (D371) at once; before that it was typed, and saved when the box was left */}
+              <DateBox value={x.date || ''} title={x.label + ' failed on'}
                 onCommit={v => core.setFailDate(s, x.id, x.i, v)} />
             </div>
           ))
@@ -332,13 +331,13 @@ export default function SidePanel({ zoom }) {
       <div className="card wide c-curr">
         <h3>Currency &amp; flex</h3>
         <div className="curGrid">
-          {/* the date boxes save when LEFT, never as typed, and are keyed by student and
-              field so a Crew switch never carries a half-typed day across
-              ([TRK-RETEST-NOTES] C5 — DateBox.jsx) */}
-          <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
-          <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
+          {/* the date boxes are the app's own since 13 Oct 26 (D801 — DateBox.jsx): a day picked is saved at once.
+              Keyed by student and field, so a Crew switch never carries a refusal's line across. The two Last Flown
+              boxes offer "take this date off" only for a day put in by hand (D123). */}
+          <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" title="Last Flown (Syllabus)" clearable={!!core.dates[s].handSyll} value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
+          <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" title="Last Flown (Currency)" clearable={!!core.dates[s].handCurr} value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
           <div className="field"><label>No. of Down Days</label><input type="number" min="0" id="downDays" value={core.dates[s].downDays || ''} style={{ width: 80 }} onChange={e => core.setDownDays(s, e.target.value)} /></div>
-          <div className="field"><label>Upchit Date</label><DateBox key={s + ':upchit'} id="upchit" value={core.dates[s].upchit || ''} onCommit={v => core.setUpchit(s, v)} /></div>
+          <div className="field"><label>Upchit Date</label><DateBox key={s + ':upchit'} id="upchit" title="Upchit date" value={core.dates[s].upchit || ''} onCommit={v => core.setUpchit(s, v)} /></div>
         </div>
         <div className="curKv">
           <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div>
@@ -369,12 +368,12 @@ export default function SidePanel({ zoom }) {
           </div>
           <div className="o">
             <div className="t">End date A</div>
-            <DateBox key={s + ':target'} id="targetIn" value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
+            <DateBox key={s + ':target'} id="targetIn" title="End date A" narrow value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw}{reqEpw !== '—' && reqEpw !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
           <div className="o">
             <div className="t">End date B</div>
-            <DateBox key={s + ':target2'} id="targetIn2" value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
+            <DateBox key={s + ':target2'} id="targetIn2" title="End date B" narrow value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw2}{reqEpw2 !== '—' && reqEpw2 !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
         </div>
