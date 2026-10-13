@@ -1488,7 +1488,7 @@ Found by the war re-walker on the rebuilt app; no record is harmed and each refu
 re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be taken) is not kept here:
 1. **A morning the WAR approved, then a tap on that day:** the bid sheet offers Whole day (already picked) and AM, and
    pressing LL is refused "That time is already taken by LL — clear it first." The same morning filed on the Inputs page
-   offers only PM (the free half, `Matrix.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
+   offers only PM (the free half, `MatrixRows.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
    Pictures: `docs/img/handpass/2026-09-26-absence/rewalk/w3/rw-w3-11-{desktop,phone}-A-whole-a-sheet`, `-A-whole-b-after-LL`,
    `-C-inputs-filed-sheet`.
 2. **A refused bid under a medical filed since:** the tap list still offers Approve and Ack on it; both are refused in

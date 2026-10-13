@@ -142,7 +142,7 @@ export function CountRows({
             data-testid={`count-${ruleId}`}
             /* the drag machine hit-tests this attribute, not the testid — the
                day cells are `count-<id>-<date>` and would shadow a testid
-               prefix match (Matrix: MANNING_DRAG) */
+               prefix match (MatrixRows: MANNING_DRAG) */
             data-mrow={editing ? ruleId : undefined}
             className={cls || undefined}
           >
