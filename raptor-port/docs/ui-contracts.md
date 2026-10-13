@@ -6766,7 +6766,7 @@ counter row is dropped above the four, between any two of them, or below all fou
   they stand at the foot (`orderToSave`) — so a squadron that never puts a counter among them saves exactly what it
   always saved — and the whole order, tokens and all, once a counter sits among or below them. Undo takes a move back
   and a reload keeps it, as a counter's place always did (reading 3).
-- **The drag is the one row drag** (`Matrix.tsx startRowDrag`, `MANNING_DRAG`): while an admin rearranges, each of the
+- **The drag is the one row drag** (`Matrix.tsx startRowDrag`, `MatrixRows.tsx MANNING_DRAG`): while an admin rearranges, each of the
   four carries `data-mrow` = its token, so it is hit-tested as a place to DROP — its upper half "before it", its lower
   half "before the row that follows", the lower half of the block's last row "the end" — and wears the same landing
   bar (`tr.dragover` / `.after`) from the drag state Matrix hands `FlyRows`. The four carry no grip and no cross, so
@@ -7277,7 +7277,7 @@ Four asks from the same sitting, all on the Leave War grid:
 - **Manning rows reorder by DRAG, and the ▲▼ arrows are gone** ("the rearrange
   could u do drag and drop … remove the arrow function … the drag and drop rows
   function is already designed on other areas of the app"). Rather than a second
-  drag machine, `Matrix.tsx`'s `startRowDrag` is now driven by a `RowDragCfg`
+  drag machine, `Matrix.tsx`'s `startRowDrag` is now driven by a `RowDragCfg` (the configurations live in `MatrixRows.tsx` since 13 Oct 26)
   (`sel` / `idOf` / `move`) and serves BOTH row kinds: `ROSTER_DRAG` (people) and
   `MANNING_DRAG` (counts). The count rows carry `data-mrow` for the hit-test
   rather than a `data-testid` prefix — their day cells are `count-<id>-<date>`

@@ -4370,3 +4370,15 @@ gained is listed in `.claude/skills/SUPERPOWERS-VENDORED.md` change 5 and `.clau
 
 **Found, not fixed** — by the Inputs / SANS calendar chat (`claude/inputs-sans-calendar`), which touched nothing of the Tracker. In a full unit run under the PC lock (7 Oct 26, 506 files, 8,186 tests) ONE test failed: `raptor-port/src/tracker/leftovers.test.tsx`, "[TRK-DLG-LEFTOVERS] B1 — while a question is up, the rest of the Tracker page is inert, and Tab / Shift+Tab stay inside the box" — its last check, "Shift+Tab from the first goes to the last", found the focus still on the text box. Run alone straight afterwards it passed three times out of three (53 of 53), and the full run of that morning passed it. **Seen again 8 Oct 26, night** (the same chat, step 5): the same check failed in ONE of three full runs that evening (9,293 tests), and passed alone twice. So it depends on timing or on what ran before it in the same worker, not on the app's rule. **To do, with the next Tracker batch (D490):** read how the test moves focus (a key event sent before the box has taken focus is the likely cause), make it wait on what it needs rather than on timing (D87's rule for browser tests, applied here), and run the file fifty times in a loaded run to prove it. Until then: a red full run whose only failure is this test is re-run once for that file, and said so in the report.
 
+
+*Moved here 2026-10-13 by backlog-archive.mjs ([LW-ROWS-SPLIT]). Forward facts: `raptor-port/docs/file-map.md`.*
+
+### [LW-ROWS-SPLIT] The Leave War's row drawing moves out of its grid file — APPROVED D493 (2 Oct 26), to build with the next Leave War batch
+**DONE 13 Oct 26** on `claude/lw-rows-split` (his word to start: D799): 507 lines moved by a script to `raptor-port/src/leavewar/ui/MatrixRows.tsx`; proved a move line for line, by a record of every row made before it, and by recording the built app before and after (8 views identical byte for byte); read by Fable and a fresh Opus reader. Its check: `raptor-port/docs/handpass/2026-10-13-lw-rows-split.md`. Filed by it: `[LW-MONTH-MEMO-UNPINNED]`, `[LW-ROWS-STALE-NOTES]`.
+**D775 (12 Oct 26) - the Tracker tidy-up: done AFTER the one-rule job is merged, as a job of its own - not with its area’s feature batch (D493 narrowed) - started on his word, in a chat of its own.**
+From Astra's tidiness read (its §1 — read it before building: what must stay identical, the tests that pin it, the test to
+write FIRST). `PersonRow`, `PersonMonth`, their props and row-only predicates leave `src/leavewar/ui/Matrix.tsx` (about 4,700
+lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, selection and sheets. Nothing on screen changes.
+New file → `docs/file-map.md` in the same change. Tier by the order's questions at build time (Astra says FULL: permissions
+and the OIL display are drawn there). **Place — D493, D485: with the next Leave War feature batch, never alone.**
+
