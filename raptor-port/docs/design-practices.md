@@ -70,8 +70,9 @@ as it stands.
   "these are the examples of things u can delete and they are self explanatory").** His two examples, both on the OIL
   question: the small print under its answers ("The credit lands on the Leave War as an HO cell and moves the OIL
   balance. Hours count start to finish for the day, so published work the same day can raise the credit.") and the hint
-  beside its waiting button ("Choose an option above"). **The three tests are the agent's reading of those two
-  examples, his to correct.** A text that meets any one of them is a delete candidate:
+  beside its waiting button ("Choose an option above"). **The three tests began as the agent's reading of
+  those two examples; he approved the rule as written here (D847, 14 Oct 26 — "approve").** A text that meets any one of
+  them is a delete candidate:
   1. **It says what the screen beside it already says or shows** — a hint to choose an answer beside a button that
      already waits, greyed, under the answers; a line under a heading that repeats the heading; a count the list makes
      obvious.

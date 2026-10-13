@@ -33,7 +33,7 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    beside a button that already waits, small print on how the app works where the answers already say what each does, a hint
    that reads the same on something opened many times a day — is named in every look and recommended for deletion, never
    deleted by the look: put to him with its picture and any fact that would leave the screen with it; never a warning, a
-   refusal's reason, an error's remedy or the Legend (D846); a note is shortened, removed where the screen says it already,
+   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847); a note is shortened, removed where the screen says it already,
    or moved under one short "How this works" fold (D808) — each put to him before and after, nothing built reworded
    unasked; what happened, then the one thing he must know; no warning dropped to save words; an error says how to put
    it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** the box is
