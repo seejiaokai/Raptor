@@ -49,10 +49,33 @@ when that one is live.)*
 A practice below that meets one of his rulings carries the ruling beside it. A finding against a look he approved from
 a picture is put to him, never "fixed".
 
+**When he corrects a design, three things follow without his asking, in any chat, whatever the job in hand (owner D852,
+14 Oct 26 — "I want u to automatically note how I’m trying to redesign the app to make it like what I intend it to be,
+clean. Intuitive. Ask me if I want the skills design to be updated and also u can suggest somewhere else … that can be
+improved that is similar to this new design implementation").** A correction is his saying that something a person sees
+— built, drawn or proposed — should look, read or behave differently. A plain yes or no to a picture put to him is not
+one, and neither is an instruction about the work itself.
+
+1. **The correction is noted with the point behind it.** It is recorded as a ruling at once
+   (`../../.claude/rules/record-decisions.md`); its row says the particular fix and, in one line, the point behind it:
+   what it says about the app he intends — clean, intuitive (D821).
+2. **He is asked whether this guide should carry it as a rule** — in one line, with the rule as it would read. Where
+   the correction has no point beyond its own screen (it only brings a screen back to what he had already ruled), the
+   agent says so in a line and asks nothing. His yes starts a draft and nothing more: the wording is then read as any
+   change to this guide is ("Changing this guide", at its foot; D70) and put to him to approve before it counts as the guide's.
+3. **Other places the same improvement would apply are named** — at most four, from what the chat already knows, each
+   with what would change; if it knows of none it says so and does not go looking. They are suggestions: nothing is
+   changed unasked, and one he takes up is drawn for him before it is built (D541). The list is filed with the
+   whole-app pass (`OUTSTANDING.md` `[UI-SLEEK-PASS]`), where the fuller one belongs (D808, D765).
+
+(The three things are his words. How each is done — at once, asked each time there is a wider point, only on his yes,
+at most four, a picture first — and that the suggesting is a duty where he wrote "u can", are the agent's reading, his
+to correct.)
+
 ## 1. Words on screen
 
-*From the writing guide of `jakubkrehel/skills` and the Apple design skill (a note for what is done, a question only for
-a choice; an empty place says one thing); his D726, D806, D808.*
+*From the writing guide of `jakubkrehel/skills` and the Apple design skill (a note, never a window, for what is done —
+narrowed by his D850; a question only for a choice; an empty place says one thing); his D726, D806, D808, D846, D850.*
 
 **§1, §1a and §1b together are THE WRITING GUIDE (owner D833, 13 Oct 26):** what each kind of text says (here), how
 text already on screen is shortened (§1a), and how the app speaks (§1b). It is used every time text in the app is
@@ -91,7 +114,43 @@ as it stands.
   screen with it, and the ruling where he ruled that wording. Where a fact that would leave matters and shows nowhere
   else, the recommendation is to move it (the fold, or the place the result shows), not to delete it. New text that
   would meet one of the tests is not written (the agent's reading).
-- **A passing note says one of three things:** it is happening ("Saving…"), it is done ("Saved"), or it failed and what
+- **Feedback is designed into the screen first; a passing note is only for what the screen does not make plain (owner
+  D850, 14 Oct 26 — "When there is a feedback, design it and also don’t need to have a note for very single thing. Only
+  important ones that are not intuitive or complicated.").** **Everything below is the agent's reading of those words,
+  his to correct.** When a press succeeds and the screen itself shows that it happened, that is the feedback, and no
+  note says it again:
+  - a thing added to a list — a row, a card, a line — appears where it belongs, in view, wearing the app's one
+    just-added mark (§4: the selection-blue box, about six seconds), as a row just added on the Scheduler Board does;
+  - a changed value shows changed;
+  - a removed thing is gone, and Undo brings it back.
+
+  **"In view" is D672's:** wholly on screen, clear of the top bar and of any window or sheet over it. A note is raised
+  only where:
+  1. **the screen does not show that it happened** — the result, or part of it, is on another day or page, off the
+     screen, behind a filter or a window; it left the app (a file, the printer, a report sent); it takes effect
+     later; or the screen looks the same after the press as before — a Save on a form that stays open, a press that
+     changed nothing ("Already in order", "Nothing to undo");
+  2. **the press did more, or less, than he would expect of it** — something he did not touch changed or went with
+     it, in view or not ("The 07:30 brief was after the new take-off, so it was removed"); an OIL credit moved; other
+     people are issued something (a day published or unpublished); part of what he asked was left out; Undo cannot
+     take it back (D350); or a warning goes with it ("No warning is dropped", below). What the press plainly does to
+     the people he picked is not this: an input filed for three people is one input he can see;
+  3. **it failed or was refused** — never silent: a failure says how to put it right, a refusal says why (the two
+     points below), beside where it went wrong where there is such a place.
+
+  This point leaves the signs of saving as they are: the passing "Saving…" and the "Not saved — keep this page open"
+  band (D587).
+  **The mark is feedback, not decoration.** It is the app's own mark, never a new one; §5's limits hold — none added on
+  the week or the board's dense grid, none on something done many times a minute: there the changed thing is the
+  feedback. For a reader who asked for less motion it still shows, steady, and goes without its fade. A screen reader
+  is told the same thing in words, whether or not a note is on screen. The keyboard stays where §2 puts it — back on
+  the button that opened the window — and is not moved to the new thing.
+  **For a new action, its feedback is designed with it and drawn in its picture (D541):** what changes, where the eye
+  lands, the mark, what a screen reader is told and where the keyboard is left. Only then is a note weighed against
+  the three cases. **A note already built that none of the three cases covers is a delete candidate** (the point
+  above; listed in every look, §8) — put to him with the picture of what shows the result once the note is gone, never
+  deleted on this guide's word alone.
+- **Where a passing note is raised at all (the point on feedback above, D850), it says one of three things:** it is happening ("Saving…"), it is done ("Saved"), or it failed and what
   to do ("Not saved — keep this page open"). What happened, then the ONE thing he must know. The day or the person is
   named once. Never "successfully", never "please", no exclamation. That is for a NEW note; one already on screen
   keeps every fact it carries (§1a, D825).
@@ -104,7 +163,8 @@ as it stands.
   "Delete counter" — never a bare "OK" / "Yes" / "No" under a question that does not itself say what will happen.
   **Ruled and staying:** the OIL question's "Yes · FO / HO", "No", "Yes to all", "No to all" (D782), and the bare "OK" on
   a bar that only closes.
-- **A done thing gets a passing note, never a window; a window asks only where he must CHOOSE** (the OIL question). A
+- **A done thing never gets a window, and it gets a passing note only where the point on feedback above calls for one
+  (D850). A window asks only where he must CHOOSE** (the OIL question). A
   "sure?" question names what will happen, not "Are you sure?" — and **Undo beats it** where the thing can be undone
   (D792; the counter's cross in Rearrange, D677). Ask "sure?" only where it cannot be undone, touches other people, or
   removes many things at once. **Left as ruled, never a finding:** "Delete counter" in the counter's own window still
@@ -444,7 +504,8 @@ does not report them.
   dense grid.** Never on something done many times a minute (typing, tapping a puck).
 - **Never animate "everything"** — name the properties (the app has no `transition: all`: keep it so).
 - **Motion is never the only signal** — the thing that flashed must also read differently afterwards.
-- **Off for a reader who asked for less motion.**
+- **Off for a reader who asked for less motion** — the movement and the fade. A mark that is a press's feedback (§1,
+  D850) still shows, steady, and then goes.
 - A pressed button may give a little; a sheet slides up; a window grows in; a passing note fades. Each is offered to
   him as a picture or a short clip first, and measured on a phone before it is kept.
 
@@ -490,8 +551,9 @@ state nobody drew.
   · it is polish.
 - **The delete candidates, as a list of their own (D846):** every text on the surfaces looked at that meets one of
   §1's three tests — the text, where it stands, which test, each fact (if any) that would leave the screen with it,
-  the ruling where he ruled that wording, and its picture with and without it. A look that found none says so. The
-  list goes to him as the findings do (the last point): nothing on it is deleted by the look.
+  the ruling where he ruled that wording, and its picture with and without it; and every passing note raised on them
+  that none of §1's three cases covers (D850), with what shows the result once it is gone. A look that found none
+  says so. The list goes to him as the findings do (the last point): nothing on it is deleted by the look.
 - A short **"considered and left"** list — and why.
 - **What a machine recorded reaches the report by count, not by recollection:** every gap a key-by-key or measured
   record holds is on the page by its number, or under "considered and left" with its reason; the report states both

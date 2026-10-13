@@ -33,7 +33,12 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    beside a button that already waits, small print on how the app works where the answers already say what each does, a hint
    that reads the same on something opened many times a day — is named in every look and recommended for deletion, never
    deleted by the look: put to him with its picture and any fact that would leave the screen with it; never a warning, a
-   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847); a note is shortened, removed where the screen says it already,
+   refusal's reason, an error's remedy or the Legend (D846; the wording approved, D847); feedback is designed into the screen first — a thing
+   added shows in view wearing the Scheduler Board's just-added mark, a changed value shows changed, a removed thing is gone —
+   and a passing note is raised only where the screen does not show that it happened (out of view, outside the app, later, or
+   nothing changed), where the press did more or less than he would expect of it (something he did not touch changed, a credit
+   moved, a warning goes with it), or where it failed or was refused; the mark still shows for a reader who asked for less
+   motion, and a screen reader is told in words; a built note outside those cases is put to him, never deleted unasked (D850); a note is shortened, removed where the screen says it already,
    or moved under one short "How this works" fold (D808) — each put to him before and after, nothing built reworded
    unasked; what happened, then the one thing he must know; no warning dropped to save words; an error says how to put
    it right; a button starts with its verb. **Shortening is not summarising (D825, D832):** the box is
@@ -61,3 +66,8 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
    new on the dense grid, never the only signal, off for a reader who asked for less.
 7. **A look changes nothing:** it reports what was and was not looked at, each finding with its place in the app's own
    words, the rule, what the person meets and the exact change — and goes to him in rounds of at most four.
+8. **When he corrects a design (D852)** — he says something a person sees should look, read or behave differently; not a plain
+   yes or no, not an instruction about the work: note it with the point behind it (a ruling, at once); where it has a point
+   beyond its own screen, ask him whether the guide should carry it as a rule — the guide changes only on his yes and after
+   its read (D70); and name up to four other places the same improvement would apply, from what the chat already knows —
+   suggested and filed, never changed unasked, one he takes up drawn for him before it is built.
